@@ -1,0 +1,27 @@
+{
+  "id": "first-proof-short",
+  "title": "Replace this with the approved title",
+  "format": "short",
+  "fps": 30,
+  "max_cost_usd": 0.75,
+  "narration": "../assets/narration/first-proof-short.mp3",
+  "music": null,
+  "scenes": [
+    {
+      "id": "hook",
+      "media": "../assets/scenes/hook.webp",
+      "duration": 3.0,
+      "caption": "The opening consequence"
+    },
+    {
+      "id": "reveal",
+      "media": "../assets/scenes/reveal.webp",
+      "duration": 5.0,
+      "caption": "The person and danger"
+    }
+  ],
+  "publish": {
+    "approved": false
+  }
+}
+
