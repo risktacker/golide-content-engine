@@ -1,0 +1,26 @@
+{
+  "format": "short",
+  "target_seconds": 60,
+  "scenes": [
+    {"id":"s01","duration":2.0,"purpose":"Impossible result","visual":"Large 0 snaps into 1 inside a memory cell","asset":"chip-cutaway","motion":"hard snap","caption":"0 → 1"},
+    {"id":"s02","duration":2.5,"purpose":"Remove expected causes","visual":"Hacker, bug and broken-chip icons crossed out","asset":"cause-icons","motion":"three rapid stamps","caption":"No hacker. No bug."},
+    {"id":"s03","duration":2.5,"purpose":"Open cosmic cause","visual":"Camera pulls from chip through roof toward space","asset":"scale-journey","motion":"zoom out","caption":"The chain begins in space"},
+    {"id":"s04","duration":3.0,"purpose":"Primary particle","visual":"Cyan particle approaches Earth","asset":"earth-cosmic-ray","motion":"diagonal streak","caption":"Cosmic ray"},
+    {"id":"s05","duration":3.0,"purpose":"Atmospheric cascade","visual":"Particle branches into an atmospheric shower","asset":"atmosphere-shower","motion":"branch reveal","caption":"Secondary particles"},
+    {"id":"s06","duration":2.5,"purpose":"Scale and rarity","visual":"Particles pass through a human and room","asset":"room-cross-section","motion":"paper cut wipe","caption":"Mostly harmless"},
+    {"id":"s07","duration":3.0,"purpose":"Enter chip","visual":"One particle enters magnified memory chip","asset":"chip-cutaway","motion":"microscope zoom","caption":"But one hits here"},
+    {"id":"s08","duration":3.0,"purpose":"Charge mechanism","visual":"Electron-hole charge blooms at storage node","asset":"charge-bloom","motion":"cyan pulse","caption":"A tiny charge"},
+    {"id":"s09","duration":2.5,"purpose":"Payoff preparation","visual":"Stored 0 trembles; sound drops to silence","asset":"bit-cell","motion":"hold then shake","caption":"Enough to change data"},
+    {"id":"s10","duration":2.0,"purpose":"Core payoff","visual":"0 flips to 1 with red highlight","asset":"bit-cell","motion":"single flip","caption":"BIT FLIP"},
+    {"id":"s11","duration":3.0,"purpose":"Explain soft error","visual":"Chip stays intact while one data square turns red","asset":"healthy-chip-wrong-data","motion":"split reveal","caption":"Chip works. Data is wrong."},
+    {"id":"s12","duration":2.5,"purpose":"Name concept","visual":"Hand-drawn label locks beside cell","asset":"bit-cell","motion":"ink write-on","caption":"Single-event upset"},
+    {"id":"s13","duration":3.0,"purpose":"Escalate to orbit","visual":"Satellite emerges above atmosphere","asset":"swarm-satellite","motion":"vertical rise","caption":"Space is harsher"},
+    {"id":"s14","duration":3.0,"purpose":"Show documented case","visual":"Three Swarm satellites orbit Earth","asset":"swarm-constellation","motion":"orbit parallax","caption":"10 years of Swarm data"},
+    {"id":"s15","duration":3.0,"purpose":"Observed events","visual":"Memory grid receives scattered red flips","asset":"memory-grid","motion":"random controlled flashes","caption":"Random memory flips"},
+    {"id":"s16","duration":3.0,"purpose":"Introduce defense","visual":"Extra parity bits appear around data block","asset":"ecc-diagram","motion":"tiles assemble","caption":"Error correction"},
+    {"id":"s17","duration":3.0,"purpose":"Demonstrate correction","visual":"Red corrupted bit is detected and restored","asset":"ecc-diagram","motion":"scan and repair","caption":"Detect. Correct."},
+    {"id":"s18","duration":3.0,"purpose":"Reframe machine","visual":"Programmer writes 0; particle changes stored result","asset":"programmer-vs-physics","motion":"split screen","caption":"Code vs physics"},
+    {"id":"s19","duration":3.5,"purpose":"Final line","visual":"Physics hand moves the bit while programmer watches","asset":"programmer-vs-physics","motion":"slow push","caption":"Physics followed its rules"},
+    {"id":"s20","duration":3.0,"purpose":"Loop","visual":"Red 1 rotates back toward opening 0","asset":"bit-cell","motion":"circular flip","caption":"But not the programmer's"}
+  ]
+}
