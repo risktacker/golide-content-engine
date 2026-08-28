@@ -9,7 +9,8 @@ but narrow enough that a viewer who likes one video has a reason to watch the ne
 The system must not imitate another creator's wording, visuals, or identity. It uses
 repeatable audience patterns—consequence-first hooks, escalating reveals, clear
 mechanism animation, and factual payoff—to create original work from primary and
-reputable sources.
+reputable sources. Generic AI-cinematic footage is explicitly excluded. GOLIDE uses
+an original illustrated-explainer language with meaningful visual flips.
 
 ## What the channel evidence says
 
@@ -64,6 +65,7 @@ What repeats across videos—not just isolated hits:
 - 35–55 s: reversal or missing fact.
 - Final 5–10 s: payoff that resolves the first frame and can loop naturally.
 - 105–175 spoken words; captions limited to short semantic phrases.
+- Meaningful visual flip every 2–4 seconds.
 - Primary success gates: stayed-to-watch, engaged views, average percentage viewed,
   replays, shares, and subscribers per 1,000 views.
 
@@ -75,7 +77,7 @@ What repeats across videos—not just isolated hits:
 - 90–210 s: escalation through 2–3 discoveries or decisions.
 - 210–270 s: reveal/payoff and the clearest visual model.
 - Final 15–30 s: implication, unresolved risk, or useful conclusion.
-- 525–825 spoken words; visual change or meaningful reframing within 5–10 s.
+- 525–825 spoken words; meaningful visual flip every 5–8 seconds.
 - Primary success gates: thumbnail impressions CTR, 30-second retention, average
   percentage viewed, end-screen continuation, subscribers, and RPM.
 
@@ -119,4 +121,3 @@ score of at least 78/100.
 
 The target is **under $1 per Short and under $5 per five-minute video** before any
 optional premium generation. Budget gates live in every project manifest.
-
