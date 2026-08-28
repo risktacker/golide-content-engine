@@ -1,0 +1,18 @@
+{
+  "id": "cosmic-ray-long",
+  "format": "long",
+  "concept": {
+    "promise": "How invisible particles can silently corrupt computers",
+    "scores": {
+      "click_promise": 9,
+      "thumbnail_title_fit": 9,
+      "narrative_engine": 8,
+      "visual_depth": 9,
+      "evidence_strength": 8,
+      "retention_design": 8,
+      "broad_relevance": 8,
+      "novelty": 8,
+      "revenue_fit": 7
+    }
+  }
+}
