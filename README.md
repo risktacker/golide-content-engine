@@ -4,14 +4,12 @@ Independent, lightweight production engine for evidence-led YouTube Shorts and
 16:9 videos up to five minutes. The first release is intentionally not a SaaS:
 it stores jobs on disk, renders with FFmpeg, and keeps providers replaceable.
 
-## MVP workflow
+## Pipeline
 
-1. Research and approve a topic.
-2. Save a structured project manifest.
-3. Add generated images and/or licensed stock clips per scene.
-4. Add narration and optional music.
-5. Render a 9:16 Short or 16:9 video.
-6. Review locally before upload.
+`research → concept scoring → script → storyboard → assets → voice → captions → render → thumbnail → human QA`
+
+Shorts and 16:9 videos use different scoring weights. Both must pass an evidence
+gate, a cost ceiling, and manual approval before production or publishing.
 
 Uploads remain manual until rendering quality is proven.
 
@@ -25,6 +23,8 @@ No Python packages are required for the first renderer.
 ## Quick start
 
 ```bash
+python -m golide_engine score examples/concept-short.json
+python -m golide_engine plan examples/concept-long.json
 cp examples/short.json projects/first-short.json
 python -m golide_engine validate projects/first-short.json
 python -m golide_engine render projects/first-short.json
@@ -41,10 +41,12 @@ written to `build/<project-id>/video.mp4`.
 - Prefer Pexels footage, generated stills, and FFmpeg motion effects.
 - Uploading is never automatic unless `publish.approved` is explicitly true.
 
+See [the evidence-led content strategy](docs/research/strategy.md) for the channel
+findings, benchmark patterns, format specifications, first proof pair, and cost target.
+
 ## Roadmap
 
 - Phase A: deterministic renderer and project schema
-- Phase B: research, scripting, image, stock, voice and thumbnail providers
+- Phase B: provider adapters for research, scripting, assets, voice and thumbnails
 - Phase C: YouTube OAuth upload and analytics collector
 - Phase D: performance feedback and experiment scoring
-
