@@ -24,8 +24,8 @@ Production is intentionally blocked until the source packet and script are appro
 
 ## Visual proofs
 
-- `assets/style/golide-style-frame-v1.png` — four-panel look and visual-flow test.
-- `assets/thumbnail/thumbnail-concept-v1.png` — first no-text thumbnail direction.
+- `assets/style/golide-style-frame-v1.webp` — four-panel look and visual-flow test.
+- `assets/thumbnail/thumbnail-concept-v1.webp` — first no-text thumbnail direction.
 
 Both are design proofs, not final scenes. Final artwork will reuse the same palette,
 line character, and causal clarity while keeping individual frames independently
