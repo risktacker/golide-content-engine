@@ -1,0 +1,21 @@
+{
+  "id": "first-proof-long",
+  "title": "Replace this with the approved title",
+  "format": "long",
+  "fps": 30,
+  "max_cost_usd": 3.00,
+  "narration": "../assets/narration/first-proof-long.mp3",
+  "music": null,
+  "scenes": [
+    {
+      "id": "cold-open",
+      "media": "../assets/scenes/cold-open.webp",
+      "duration": 5.0,
+      "caption": "Cold open"
+    }
+  ],
+  "publish": {
+    "approved": false
+  }
+}
+
