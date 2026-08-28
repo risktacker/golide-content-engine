@@ -1,0 +1,18 @@
+{
+  "id": "cosmic-ray-short",
+  "format": "short",
+  "concept": {
+    "promise": "The invisible particle that can flip a computer bit",
+    "scores": {
+      "scroll_stop": 9,
+      "visual_payoff": 9,
+      "curiosity_gap": 9,
+      "retention_design": 8,
+      "broad_relevance": 8,
+      "evidence_strength": 8,
+      "novelty": 8,
+      "replay_or_loop": 7,
+      "revenue_fit": 6
+    }
+  }
+}
