@@ -13,6 +13,20 @@ gate, a cost ceiling, and manual approval before production or publishing.
 
 Uploads remain manual until rendering quality is proven.
 
+## Locked production policy
+
+`config/production-policy.json` is the production source of truth created from
+the first Short review. Future videos require a circular hook, a mature and
+highly engaging explainer delivery, licensed background music with voice ducking,
+and two simultaneous caption systems: scene-level visual labels plus smaller
+spoken captions in the bottom safe zone. Explanations default to centered paper
+subjects with intentional negative space; the consistent GOLIDE avatar appears
+when emotion or human stakes improve the explanation.
+
+The cosmic-ray proof is preserved for manual scheduling on 7 September 2026.
+The first video uploaded through the automated pipeline will be the first
+weekly long-form production.
+
 ## Requirements
 
 - Python 3.11+
