@@ -1,0 +1,17 @@
+{
+  "asset": "build/cosmic-ray-short/final-short.mp4",
+  "status": "ready-for-manual-scheduling",
+  "approved": true,
+  "planned_publish_at": "2026-09-07T15:00:00+02:00",
+  "timezone": "Africa/Lusaka",
+  "cadence_role": "short-1-of-3",
+  "upload_mode": "manual",
+  "reason": "The first automated pipeline upload is reserved for the weekly long-form video.",
+  "review_notes_for_next_production": [
+    "Use licensed background music with narration ducking.",
+    "Use a mature, commanding, high-retention explainer voice with dynamic emphasis.",
+    "Center explanatory subjects with negative space instead of defaulting to edge-to-edge composition.",
+    "Write a circular hook whose ending flows into the opening.",
+    "Render both visual labels and smaller spoken-word captions."
+  ]
+}
