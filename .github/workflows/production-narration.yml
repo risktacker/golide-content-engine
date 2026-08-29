@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - .github/workflows/production-narration.yml
+      - scripts/generate_cosmic_ray_narration.py
 
 permissions:
   contents: read
