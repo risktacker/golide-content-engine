@@ -1,0 +1,77 @@
+{
+  "version": 2,
+  "locked_from_review": "2026-08-29",
+  "shorts": {
+    "start_date": "2026-09-07",
+    "weekly_count": 3,
+    "days": ["Monday", "Wednesday", "Friday"],
+    "time": "15:00",
+    "timezone": "Africa/Lusaka",
+    "upload_mode_until_youtube_oauth": "manual"
+  },
+  "long_form": {
+    "weekly_count": 1,
+    "maximum_seconds": 300,
+    "first_pipeline_upload": true
+  },
+  "loop": {
+    "required": true,
+    "opening": "question or impossible consequence",
+    "closing": "unresolved question or sentence that flows into the opening",
+    "closing_reconnects_to_opening": true,
+    "standalone_conclusion_forbidden": true
+  },
+  "voice": {
+    "profile": "mature-high-retention-explainer",
+    "age_character": "mature-adult",
+    "energy": "very_high",
+    "pace_wpm_range": [170, 190],
+    "delivery": ["commanding", "curious", "intelligent", "dynamic", "conversational"],
+    "performance_notes": [
+      "Use deliberate emphasis changes every sentence, not constant shouting.",
+      "Accelerate through setup and pause briefly before the reveal.",
+      "Sound invested in the discovery, not like a calm documentary reader."
+    ],
+    "forbidden": ["young-sounding", "calm-documentary", "trailer-voice", "flat", "sleepy", "specific-creator-clone"],
+    "benchmark_note": "Match the engagement mechanics of leading visual explainers without cloning a specific creator's voice."
+  },
+  "captions": {
+    "visual_labels": true,
+    "visual_position": "scene-dependent",
+    "spoken_captions": true,
+    "spoken_position": "bottom-safe-zone",
+    "spoken_words_per_phrase": [2, 5],
+    "spoken_size": "smaller-than-visual-label",
+    "palette": ["warm-ivory", "deep-navy", "neon-blue", "golide-gold"],
+    "red_usage": "danger-or-error-only"
+  },
+  "music": {
+    "required": true,
+    "allowed_sources": ["youtube-audio-library", "owned", "cc0"],
+    "license_record_required": true,
+    "vocals": false,
+    "target_under_narration_lufs": -24,
+    "duck_under_voice": true,
+    "fade_in_seconds": 0.4,
+    "fade_out_seconds": 1.2
+  },
+  "visuals": {
+    "style": "GOLIDE-color-paper-explainer",
+    "maximum_static_hold_seconds": 3.2,
+    "prioritize_consistency_over_paid-regeneration": true,
+    "composition": {
+      "default": "center-stage-with-negative-space",
+      "subject_width_percent": [38, 68],
+      "safe_margin_percent": 8,
+      "edge_to_edge_default": false,
+      "simple_explanation_mode": "one centered paper figure or object with only the props needed to explain the idea",
+      "wide_scene_allowed_for": ["scale", "environment", "journey", "before-after-comparison"]
+    },
+    "avatar": {
+      "style": "unrealistic-paper-cut-GOLIDE-avatar",
+      "use_for": ["emotion", "reaction", "amusement", "human-stakes", "thumbnail-expression"],
+      "default_role": "supporting-presenter-not-full-frame-host",
+      "face_consistency_required": true
+    }
+  }
+}
