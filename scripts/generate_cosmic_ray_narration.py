@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -49,8 +50,12 @@ def main() -> None:
     )
     output = Path("build/cosmic-ray-short/narration.mp3")
     output.parent.mkdir(parents=True, exist_ok=True)
-    with urllib.request.urlopen(request, timeout=120) as response:
-        output.write_bytes(response.read())
+    try:
+        with urllib.request.urlopen(request, timeout=120) as response:
+            output.write_bytes(response.read())
+    except urllib.error.HTTPError as error:
+        details = error.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"OpenAI TTS request failed ({error.code}): {details}") from error
     print(f"Generated {output} ({output.stat().st_size} bytes)")
 
 
