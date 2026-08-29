@@ -1,0 +1,79 @@
+{
+  "version": 1,
+  "channel": {
+    "default_language": "en",
+    "country": "ZM",
+    "keywords": [
+      "GOLIDE",
+      "visual explainer",
+      "science explained",
+      "technology explained",
+      "curious facts",
+      "true stories",
+      "paper animation"
+    ]
+  },
+  "titles": {
+    "short": {
+      "target_characters": [38, 60],
+      "maximum_characters": 100,
+      "emoji_default": false,
+      "hashtags_in_title": false,
+      "formula": "specific subject + surprising consequence or unanswered question"
+    },
+    "long": {
+      "target_characters": [45, 70],
+      "maximum_characters": 100,
+      "emoji_default": false,
+      "hashtags_in_title": false,
+      "formula": "clear promise + one honest curiosity gap"
+    }
+  },
+  "descriptions": {
+    "maximum_characters": 5000,
+    "short": {
+      "structure": ["one-sentence promise", "one-sentence context", "sources-or-attribution", "hashtags"],
+      "paste_full_script": false,
+      "hashtags": [0, 3],
+      "chapters": false
+    },
+    "long": {
+      "structure": ["two-sentence hook-and-summary", "chapters", "sources", "music-and-asset-attribution", "hashtags"],
+      "paste_full_script": false,
+      "hashtags": [0, 3],
+      "chapters": true,
+      "chapter_first_timestamp": "00:00",
+      "chapter_minimum_count": 3,
+      "chapter_minimum_seconds": 10
+    }
+  },
+  "tags": {
+    "role": "misspellings-and-topic-clarity-not-primary-discovery",
+    "target_count": [5, 12],
+    "maximum_characters_total": 500,
+    "include": ["exact topic", "named entities", "common synonym", "common misspelling when relevant", "GOLIDE"],
+    "forbidden": ["unrelated trending terms", "competitor names used only for traffic", "repeated keyword variants"]
+  },
+  "upload_defaults": {
+    "audience": "not-made-for-kids",
+    "category": "Education",
+    "education_type": "concept-overview",
+    "license": "standard-youtube-license",
+    "allow_embedding": true,
+    "comments": "on",
+    "show_like_count": true,
+    "notify_subscribers": true,
+    "paid_promotion": false,
+    "video_language": "en",
+    "title_description_language": "en",
+    "recording_location_rule": "blank-unless-the-real-filming-location-is-material-to-the-story",
+    "altered_content_rule": "disclose-when-generated-or-meaningfully-altered-content-seems-realistic",
+    "allow_automatic_chapters": true,
+    "allow_automatic_featured_places": false,
+    "shorts_remixing": "allow-audio-and-video",
+    "visibility_before_checks": "private"
+  },
+  "shorts_to_long": {
+    "related_video_required_when_relevant": true
+  }
+}
