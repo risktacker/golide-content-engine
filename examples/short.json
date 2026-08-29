@@ -6,6 +6,15 @@
   "max_cost_usd": 0.75,
   "narration": "../assets/narration/first-proof-short.mp3",
   "music": null,
+  "audio": {
+    "music_source": null,
+    "music_license": null,
+    "music_volume": 0.08,
+    "duck_under_voice": true
+  },
+  "captions": {
+    "spoken_srt": "../assets/captions/first-proof-short.srt"
+  },
   "scenes": [
     {
       "id": "hook",
@@ -24,4 +33,3 @@
     "approved": false
   }
 }
-
