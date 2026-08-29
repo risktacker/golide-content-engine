@@ -78,19 +78,22 @@ def render(project: Project, root: Path) -> Path:
                 f"[2:a]volume={project.music_volume}[music];"
                 "[music][1:a]sidechaincompress=threshold=0.02:ratio=8:"
                 "attack=20:release=350[ducked];"
-                "[1:a][ducked]amix=inputs=2:duration=first:normalize=0[a]"
+                "[1:a][ducked]amix=inputs=2:duration=first:normalize=0[mixed];"
+                "[mixed]loudnorm=I=-16:TP=-1:LRA=11[a]"
             )
         else:
             audio_filter = (
                 f"[2:a]volume={project.music_volume}[music];"
-                "[1:a][music]amix=inputs=2:duration=first:normalize=0[a]"
+                "[1:a][music]amix=inputs=2:duration=first:normalize=0[mixed];"
+                "[mixed]loudnorm=I=-16:TP=-1:LRA=11[a]"
             )
         command += ["-stream_loop", "-1", "-i", str(project.music)]
         filter_complex = f"[0:v]{','.join(video_filters)}[v];{audio_filter}"
         command += ["-filter_complex", filter_complex, "-map", "[v]", "-map", "[a]"]
     else:
-        command += ["-vf", ",".join(video_filters), "-map", "0:v", "-map", "1:a"]
-    command += ["-c:v", "libx264", "-preset", "medium", "-crf", "18", "-c:a", "aac", "-b:a", "192k", "-shortest", str(final)]
+        filter_complex = f"[0:v]{','.join(video_filters)}[v];[1:a]loudnorm=I=-16:TP=-1:LRA=11[a]"
+        command += ["-filter_complex", filter_complex, "-map", "[v]", "-map", "[a]"]
+    command += ["-c:v", "libx264", "-preset", "medium", "-crf", "18", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", "-shortest", str(final)]
     _run(command)
 
     metadata = {

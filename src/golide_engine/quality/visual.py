@@ -18,6 +18,7 @@ def probe_video(path: str | Path) -> dict:
 def check_video(path: str | Path, format_name: str, policy: dict) -> list[str]:
     data = probe_video(path)
     stream = next((item for item in data["streams"] if item.get("codec_type") == "video"), None)
+    audio = next((item for item in data["streams"] if item.get("codec_type") == "audio"), None)
     if not stream:
         return ["no video stream"]
     expected = policy["visual"][f"{format_name}_dimensions"]
@@ -28,6 +29,14 @@ def check_video(path: str | Path, format_name: str, policy: dict) -> list[str]:
     fps = float(rate[0]) / float(rate[1]) if float(rate[1]) else 0
     if fps < float(policy["visual"]["minimum_fps"]):
         failures.append(f"frame rate {fps:.2f} below policy")
+    if not audio:
+        failures.append("no audio stream")
+    else:
+        video_duration = float(data.get("format", {}).get("duration", 0) or 0)
+        audio_duration = float(audio.get("duration", video_duration) or video_duration)
+        tolerance = float(policy["visual"]["duration_tolerance_seconds"])
+        if abs(video_duration - audio_duration) > tolerance:
+            failures.append(f"audio/video duration mismatch exceeds {tolerance}s")
     return failures
 
 

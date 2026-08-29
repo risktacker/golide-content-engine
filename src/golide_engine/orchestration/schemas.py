@@ -13,12 +13,12 @@ RESEARCH_SCHEMA = {
 STORYBOARD_SCHEMA = {
     "type": "object",
     "properties": {"scenes": {"type": "array", "items": {"type": "object", "properties": {
-        "id": {"type": "string"}, "duration": {"type": "number"}, "visual_caption": {"type": "string"},
+        "id": {"type": "string"}, "asset_key": {"type": "string"}, "duration": {"type": "number"}, "visual_caption": {"type": "string"},
         "visual_prompt": {"type": "string"},
         "subject_bounds": {"type": "array", "items": {"type": "object", "properties": {
             "x": {"type": "number"}, "y": {"type": "number"}, "width": {"type": "number"}, "height": {"type": "number"},
         }, "required": ["x", "y", "width", "height"], "additionalProperties": False}},
-    }, "required": ["id", "duration", "visual_caption", "visual_prompt", "subject_bounds"], "additionalProperties": False}}},
+    }, "required": ["id", "asset_key", "duration", "visual_caption", "visual_prompt", "subject_bounds"], "additionalProperties": False}}},
     "required": ["scenes"], "additionalProperties": False,
 }
 

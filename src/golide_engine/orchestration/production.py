@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+import re
 from pathlib import Path
 from typing import Any
 
@@ -88,6 +89,12 @@ class ProductionService:
         )
         return float(result.stdout.strip())
 
+    @staticmethod
+    def _safe_id(value: str) -> str:
+        if not re.fullmatch(r"[a-z0-9][a-z0-9_-]{0,63}", value):
+            raise RuntimeError(f"unsafe generated identifier: {value!r}")
+        return value
+
     def run(self, spec_path: str | Path) -> Path:
         spec = json.loads(Path(spec_path).read_text(encoding="utf-8"))
         self._assert_authorized(spec)
@@ -149,27 +156,33 @@ class ProductionService:
             limit = 90 if spec["format"] == "short" else 300
             self._reserve(spec, "gpt-5.6-sol", Usage(input_tokens=max(1, len(script) // 4), output_tokens=12000))
             output = text.generate_json(
-                "Create a timed G$LIDE paper-explainer storyboard. Center subjects with negative space and an 8% safe margin. Use neon blue, GOLIDE gold, warm ivory and deep navy. Visual captions explain diagrams; they are not spoken captions.",
+                "Create a timed G$LIDE paper-explainer storyboard. Center subjects with negative space and an 8% safe margin. Use neon blue, GOLIDE gold, warm ivory and deep navy. Visual captions explain diagrams; they are not spoken captions. Use lowercase safe IDs. Reuse an asset_key when the same character, object or diagram can be reframed across multiple cuts; do not request a new paid image for every cut.",
                 f"FORMAT={spec['format']} MAX_SECONDS={limit}\nSCRIPT\n{script}", STORYBOARD_SCHEMA,
             )
             storyboard_path.write_text(json.dumps(output.value, indent=2) + "\n", encoding="utf-8")
             self._record_text(production_id, "storyboard", output)
         self.runner.run(production_id, "storyboard", storyboard_stage)
         storyboard = json.loads(storyboard_path.read_text(encoding="utf-8"))
+        for scene in storyboard["scenes"]:
+            self._safe_id(scene["id"])
+            self._safe_id(scene["asset_key"])
         self._budget(spec)
 
         asset_provider = self.providers.images(live=True)
         asset_dir = work / "assets"
         reference_images = [Path(path) for path in spec.get("avatar_reference_images", [])]
         size = self.providers.config["assets"][f"{spec['format']}_size"]
+        unique_assets = {}
         for scene in storyboard["scenes"]:
-            target = asset_dir / f"{scene['id']}.png"
+            unique_assets.setdefault(scene["asset_key"], scene)
+        for asset_key, scene in unique_assets.items():
+            target = asset_dir / f"{asset_key}.png"
             def asset_stage(scene=scene, target=target):
-                self._require_absent(target, f"asset:{scene['id']}")
+                self._require_absent(target, f"asset:{scene['asset_key']}")
                 self._reserve(spec, image_cost_model, Usage(images=1))
                 output = asset_provider.create_image(scene["visual_prompt"], target, size, reference_images or None)
-                self._record_image(production_id, f"asset:{scene['id']}", image_cost_model, output)
-            self.runner.run(production_id, f"asset:{scene['id']}", asset_stage)
+                self._record_image(production_id, f"asset:{scene['asset_key']}", image_cost_model, output)
+            self.runner.run(production_id, f"asset:{asset_key}", asset_stage)
             self._budget(spec)
 
         narration = work / "narration.wav"
@@ -184,6 +197,17 @@ class ProductionService:
             self.costs.record(production_id, "voice", "openai", "gpt-4o-mini-tts", actual)
         self.runner.run(production_id, "voice", voice_stage)
         self._budget(spec)
+        narration_seconds = self._duration(narration)
+        maximum = 90 if spec["format"] == "short" else 300
+        if narration_seconds > maximum:
+            raise RuntimeError(f"narration is {narration_seconds:.1f}s and exceeds the {maximum}s format limit")
+        planned_seconds = sum(float(scene["duration"]) for scene in storyboard["scenes"])
+        if planned_seconds <= 0:
+            raise RuntimeError("storyboard has no positive duration")
+        scale = narration_seconds / planned_seconds
+        for scene in storyboard["scenes"]:
+            scene["duration"] = round(float(scene["duration"]) * scale, 3)
+        storyboard_path.write_text(json.dumps(storyboard, indent=2) + "\n", encoding="utf-8")
 
         spoken_srt = work / "spoken-captions.srt"
         timed_words_path = work / "timed-words.json"
@@ -207,7 +231,7 @@ class ProductionService:
             "format": spec["format"], "max_cost_usd": spec["max_cost_usd"], "narration": str(narration),
             "music": str(music.path), "audio": {"music_source": music.source_url, "music_license": music.license, "music_volume": 0.08, "duck_under_voice": True},
             "captions": {"spoken_srt": str(spoken_srt)},
-            "scenes": [{"id": scene["id"], "media": str(asset_dir / f"{scene['id']}.png"), "duration": scene["duration"], "caption": scene["visual_caption"]} for scene in storyboard["scenes"]],
+            "scenes": [{"id": scene["id"], "media": str(asset_dir / f"{scene['asset_key']}.png"), "duration": scene["duration"], "caption": scene["visual_caption"]} for scene in storyboard["scenes"]],
             "publish": {"approved": True},
         }
         manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
