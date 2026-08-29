@@ -1,0 +1,29 @@
+name: Production narration
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/production-narration.yml
+
+permissions:
+  contents: read
+
+jobs:
+  cosmic-ray-short:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate narration
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python scripts/generate_cosmic_ray_narration.py
+      - name: Validate audio
+        run: ffprobe -v error -show_entries format=duration -of default=nw=1 build/cosmic-ray-short/narration.mp3
+      - name: Upload narration artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cosmic-ray-short-narration
+          path: build/cosmic-ray-short/narration.mp3
+          if-no-files-found: error
+          retention-days: 7
