@@ -1,0 +1,38 @@
+{
+  "id": "replace-with-production-id",
+  "format": "long",
+  "title": "Working title",
+  "brief": "Evidence-led concept brief goes here.",
+  "generate_at": "2026-09-01T06:00:00Z",
+  "max_cost_usd": 5.0,
+  "production_authorized": false,
+  "concept": {
+    "family": "science-explainer",
+    "promise": "A specific, honest promise",
+    "scores": {
+      "click_promise": 8,
+      "thumbnail_title_fit": 8,
+      "narrative_engine": 8,
+      "visual_depth": 8,
+      "evidence_strength": 8,
+      "retention_design": 8,
+      "broad_relevance": 8,
+      "novelty": 7,
+      "revenue_fit": 7
+    }
+  },
+  "generation_parameters": {
+    "hook_type": "impossible-consequence-question",
+    "script_structure": "causal-reveal-loop",
+    "visual_style": "GOLIDE-color-paper-explainer",
+    "voice": "cedar-mature-high-energy",
+    "upload_slot": "weekly-long"
+  },
+  "music": {"mood": "curious-tension"},
+  "avatar_reference_images": [],
+  "release": {
+    "approved": false,
+    "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+    "scheduled_at": "2026-09-07T13:00:00Z"
+  }
+}

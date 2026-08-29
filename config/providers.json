@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "dry_run_by_default": true,
+  "text": {
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "research_web_search": true
+  },
+  "assets": {
+    "provider": "openai",
+    "model": "gpt-image-2",
+    "quality": "medium",
+    "short_size": "1024x1536",
+    "long_size": "1536x1024"
+  },
+  "voice": {
+    "provider": "openai",
+    "model": "gpt-4o-mini-tts",
+    "voice": "cedar",
+    "format": "mp3",
+    "instructions": "Mature adult explainer. Commanding, curious, intelligent and dynamic. Move quickly through setup, pause before reveals, vary emphasis every sentence, and never sound sleepy, youthful or like a movie trailer."
+  },
+  "captions": {
+    "provider": "openai",
+    "model": "whisper-1",
+    "word_timestamps": true
+  },
+  "thumbnail": {
+    "provider": "openai",
+    "model": "gpt-image-2",
+    "quality": "high",
+    "size": "1536x1024",
+    "text_policy": "no-words-by-default",
+    "avatar_style": "consistent-unrealistic-paper-cut-esiah-avatar"
+  }
+}

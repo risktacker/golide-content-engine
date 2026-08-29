@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "audio": {
+    "integrated_lufs_min": -18.0,
+    "integrated_lufs_max": -13.0,
+    "true_peak_dbtp_max": -1.0,
+    "minimum_duration_seconds": 1.0
+  },
+  "visual": {
+    "safe_margin_percent": 8,
+    "short_dimensions": [1080, 1920],
+    "long_dimensions": [1920, 1080],
+    "duration_tolerance_seconds": 0.35,
+    "minimum_fps": 24
+  },
+  "spelling": {
+    "language": "en",
+    "ignore": [
+      "GOLIDE",
+      "Shorts",
+      "YouTube",
+      "AI",
+      "CTA",
+      "FFmpeg",
+      "OAuth"
+    ]
+  }
+}

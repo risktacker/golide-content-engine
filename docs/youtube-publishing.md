@@ -39,7 +39,7 @@ true stories, paper animation`
 
 ## Upload decisions
 
-- Upload as Private, complete copyright/ad-suitability checks and human QA, then schedule.
+- Upload as Private only after automated QA passes, then schedule through the official API.
 - Category: Education; type: concept overview when the field is available.
 - Audience: not made for kids unless a specific production is genuinely directed at children.
 - Original video and title/description language: English.
@@ -49,6 +49,7 @@ true stories, paper animation`
   itself require Yes; realistic synthetic scenes, cloned voices, or AI-generated music do.
 - Paid promotion remains off unless the specific video contains a sponsorship or endorsement.
 - Add a related long-form video to a Short when it genuinely continues the same subject.
+- Channel country is outside the automation scope and must remain unchanged.
 
 ## Official controls
 

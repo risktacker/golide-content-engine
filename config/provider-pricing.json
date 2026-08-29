@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "currency": "USD",
+  "updated_at": "2026-08-29",
+  "models": {
+    "gpt-5.6-sol": {
+      "input_per_million_tokens": 4.0,
+      "cached_input_per_million_tokens": 0.4,
+      "output_per_million_tokens": 20.0
+    },
+    "gpt-image-2-medium-portrait": {
+      "billing": "published-output-estimate",
+      "fallback_per_image": 0.041
+    },
+    "gpt-image-2-medium-landscape": {
+      "billing": "published-output-estimate",
+      "fallback_per_image": 0.041
+    },
+    "gpt-image-2-high-landscape": {
+      "billing": "published-output-estimate",
+      "fallback_per_image": 0.165
+    },
+    "gpt-image-2-text-input": {
+      "input_per_million_tokens": 5.0
+    },
+    "gpt-image-2-image-input": {
+      "input_per_million_tokens": 8.0
+    },
+    "gpt-image-2-image-output": {
+      "output_per_million_tokens": 30.0
+    },
+    "gpt-4o-mini-tts": {
+      "billing": "token-estimate-from-script-and-rendered-audio",
+      "input_per_million_tokens": 0.6,
+      "output_per_million_tokens": 12.0
+    },
+    "whisper-1": {
+      "billing": "response-reported-or-manual-rate",
+      "fallback_per_minute": 0.006
+    },
+    "web-search": {
+      "billing": "per-call-plus-model-tokens",
+      "per_tool_call": 0.01
+    }
+  },
+  "rules": {
+    "zero_fallback_blocks_production": true,
+    "refresh_before_first_paid_run": false,
+    "prefer_response_reported_cost": true
+  }
+}

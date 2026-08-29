@@ -38,7 +38,7 @@ class ScoreResult:
     blockers: tuple[str, ...]
 
 
-def score_concept(format: str, dimensions: Mapping[str, float]) -> ScoreResult:
+def score_concept(format: str, dimensions: Mapping[str, float], feedback_adjustment: float = 0.0) -> ScoreResult:
     weights = SHORT_WEIGHTS if format == "short" else LONG_WEIGHTS if format == "long" else None
     if weights is None:
         raise ValueError("format must be 'short' or 'long'")
@@ -54,9 +54,10 @@ def score_concept(format: str, dimensions: Mapping[str, float]) -> ScoreResult:
     for gate in ("evidence_strength", "visual_payoff" if format == "short" else "thumbnail_title_fit"):
         if normalized[gate] < 6:
             blockers.append(f"{gate} must score at least 6")
-    total = round(sum(normalized[key] * weights[key] for key in weights) * 10, 1)
+    if not -1 <= feedback_adjustment <= 1:
+        raise ValueError("feedback_adjustment must be between -1 and 1")
+    total = round(max(0, min(100, sum(normalized[key] * weights[key] for key in weights) * 10 + feedback_adjustment * 5)), 1)
     verdict = "produce" if total >= 78 and not blockers else "develop" if total >= 65 else "reject"
     if blockers:
         verdict = "reject"
     return ScoreResult(format, total, verdict, normalized, tuple(blockers))
-

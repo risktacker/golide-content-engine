@@ -1,4 +1,5 @@
 import argparse
+from datetime import date
 import json
 from pathlib import Path
 
@@ -6,6 +7,14 @@ from .manifest import load_project, validate_assets
 from .render import render
 from .pipeline import build_plan
 from .scoring import score_concept
+from .animatic import render_animatic
+
+
+def _database(path: str):
+    from .storage.database import Database
+    database = Database(path)
+    database.initialize()
+    return database
 
 
 def main() -> int:
@@ -19,7 +28,135 @@ def main() -> int:
     plan_parser = sub.add_parser("plan")
     plan_parser.add_argument("spec")
     plan_parser.add_argument("--output", default="build")
+    animatic_parser = sub.add_parser("animatic")
+    animatic_parser.add_argument("storyboard")
+    animatic_parser.add_argument("assets")
+    animatic_parser.add_argument("--output", default="build/animatic.mp4")
+    db_parser = sub.add_parser("db-init")
+    db_parser.add_argument("--database", default="data/golide.sqlite3")
+    oauth_parser = sub.add_parser("oauth-bootstrap")
+    oauth_parser.add_argument("client_secrets")
+    oauth_parser.add_argument("--token", default=".secrets/youtube-token.json")
+    verify_parser = sub.add_parser("youtube-verify")
+    verify_parser.add_argument("--token", default=".secrets/youtube-token.json")
+    analytics_parser = sub.add_parser("analytics-collect")
+    analytics_parser.add_argument("--database", default="data/golide.sqlite3")
+    analytics_parser.add_argument("--token", default=".secrets/youtube-token.json")
+    analytics_parser.add_argument("--start")
+    analytics_parser.add_argument("--end")
+    feedback_parser = sub.add_parser("feedback-recalculate")
+    feedback_parser.add_argument("--database", default="data/golide.sqlite3")
+    production_parser = sub.add_parser("production-run")
+    production_parser.add_argument("spec")
+    production_parser.add_argument("--database", default="data/golide.sqlite3")
+    release_parser = sub.add_parser("release-verify")
+    release_parser.add_argument("package_directory")
+    upload_parser = sub.add_parser("youtube-upload")
+    upload_parser.add_argument("package_directory")
+    upload_parser.add_argument("--database", default="data/golide.sqlite3")
+    upload_parser.add_argument("--token", default=".secrets/youtube-token.json")
+    automation_parser = sub.add_parser("automation-run")
+    automation_parser.add_argument("--queue", default="production-queue")
+    automation_parser.add_argument("--database", default="data/golide.sqlite3")
+    automation_parser.add_argument("--token", default=".secrets/youtube-token.json")
     args = parser.parse_args()
+
+    if args.command == "db-init":
+        database = _database(args.database)
+        print(database.path)
+        return 0
+
+    if args.command == "oauth-bootstrap":
+        from .youtube.auth import bootstrap
+        print(bootstrap(args.client_secrets, args.token))
+        return 0
+
+    if args.command == "youtube-verify":
+        from .youtube.auth import assert_channel, credentials, services
+        youtube, _ = services(credentials(args.token))
+        channel = assert_channel(youtube, "UCqaXVBSBz7iQsRHOupKt-3w")
+        print(json.dumps({"channel_id": channel["id"], "title": channel["snippet"]["title"]}, indent=2))
+        return 0
+
+    if args.command == "analytics-collect":
+        from .youtube.analytics import AnalyticsCollector
+        from .youtube.auth import assert_channel, credentials, services
+        database = _database(args.database)
+        youtube, analytics = services(credentials(args.token))
+        assert_channel(youtube, "UCqaXVBSBz7iQsRHOupKt-3w")
+        collector = AnalyticsCollector(analytics, database)
+        count = collector.collect(date.fromisoformat(args.start), date.fromisoformat(args.end)) if args.start and args.end else collector.collect_daily()
+        print(json.dumps({"rows_collected": count}))
+        return 0
+
+    if args.command == "feedback-recalculate":
+        from .feedback.engine import FeedbackEngine
+        print(json.dumps({"factors_updated": FeedbackEngine(_database(args.database)).recalculate()}))
+        return 0
+
+    if args.command == "production-run":
+        from .orchestration.production import ProductionService
+        database = _database(args.database)
+        print(ProductionService(Path.cwd(), database).run(args.spec))
+        return 0
+
+    if args.command == "release-verify":
+        from .release.package import ReleasePackager
+        failures = ReleasePackager.verify(args.package_directory)
+        print(json.dumps({"passed": not failures, "failures": failures}, indent=2))
+        return 0 if not failures else 4
+
+    if args.command == "youtube-upload":
+        from .youtube.auth import assert_channel, credentials, services
+        from .youtube.uploader import YouTubeUploader
+        root = Path(args.package_directory)
+        package = json.loads((root / "package-manifest.json").read_text(encoding="utf-8"))
+        files = package["files"]
+        metadata = json.loads((root / files["metadata"]["file"]).read_text(encoding="utf-8"))
+        database = _database(args.database)
+        youtube, _ = services(credentials(args.token))
+        assert_channel(youtube, "UCqaXVBSBz7iQsRHOupKt-3w")
+        uploader = YouTubeUploader(youtube, database, "UCqaXVBSBz7iQsRHOupKt-3w")
+        release = package["release"]
+        video_id = uploader.upload_private(package["production_id"], root / files["video"]["file"], root / files["thumbnail"]["file"], metadata, release)
+        if release.get("scheduled_at"):
+            uploader.schedule(package["production_id"], video_id, release["scheduled_at"], release)
+        print(json.dumps({"youtube_video_id": video_id, "scheduled_at": release.get("scheduled_at")}, indent=2))
+        return 0
+
+    if args.command == "automation-run":
+        from .orchestration.production import ProductionService
+        from .orchestration.queue import due_specs
+        from .youtube.auth import assert_channel, credentials, services
+        from .youtube.uploader import YouTubeUploader
+        database = _database(args.database)
+        due = due_specs(args.queue)
+        if not due:
+            print(json.dumps({"status": "no_due_production"}))
+            return 0
+        spec_path = due[0]
+        spec = json.loads(spec_path.read_text(encoding="utf-8"))
+        ProductionService(Path.cwd(), database).run(spec_path)
+        package_root = Path("release-packages") / spec["id"]
+        package = json.loads((package_root / "package-manifest.json").read_text(encoding="utf-8"))
+        files = package["files"]
+        metadata = json.loads((package_root / files["metadata"]["file"]).read_text(encoding="utf-8"))
+        youtube, _ = services(credentials(args.token))
+        assert_channel(youtube, "UCqaXVBSBz7iQsRHOupKt-3w")
+        uploader = YouTubeUploader(youtube, database, "UCqaXVBSBz7iQsRHOupKt-3w")
+        release = package["release"]
+        video_id = uploader.upload_private(spec["id"], package_root / files["video"]["file"], package_root / files["thumbnail"]["file"], metadata, release)
+        if release.get("scheduled_at"):
+            uploader.schedule(spec["id"], video_id, release["scheduled_at"], release)
+        done = spec_path.with_suffix(".completed.json")
+        spec_path.rename(done)
+        print(json.dumps({"status": "scheduled", "production_id": spec["id"], "youtube_video_id": video_id}))
+        return 0
+
+    if args.command == "animatic":
+        output = render_animatic(Path(args.storyboard).resolve(), Path(args.assets).resolve(), Path(args.output).resolve())
+        print(output)
+        return 0
 
     if args.command in {"score", "plan"}:
         spec_path = Path(args.spec).resolve()

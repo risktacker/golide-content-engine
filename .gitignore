@@ -4,7 +4,11 @@ __pycache__/
 .env
 credentials.json
 token.json
+.secrets/
+*.sqlite3-shm
+*.sqlite3-wal
 build/
 assets/generated/
 assets/downloads/
-
+release-packages/
+failure-events/
