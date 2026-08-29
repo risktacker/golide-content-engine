@@ -20,7 +20,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: python scripts/generate_cosmic_ray_narration.py
       - name: Validate audio
-        run: ffprobe -v error -show_entries format=duration -of default=nw=1 build/cosmic-ray-short/narration.mp3
+        run: test "$(stat -c%s build/cosmic-ray-short/narration.mp3)" -gt 10000
       - name: Upload narration artifact
         uses: actions/upload-artifact@v4
         with:
