@@ -43,6 +43,11 @@ class Project:
     max_cost_usd: float
     narration: Path
     music: Path | None
+    music_source: str | None
+    music_license: str | None
+    music_volume: float
+    music_ducking: bool
+    spoken_captions: Path | None
     scenes: tuple[Scene, ...]
     approved: bool
 
@@ -66,6 +71,16 @@ class Project:
         if ceiling <= 0:
             raise ManifestError("max_cost_usd must be positive")
         music = raw.get("music")
+        audio = raw.get("audio", {})
+        captions = raw.get("captions", {})
+        music_source = str(audio.get("music_source", "")).strip() or None
+        music_license = str(audio.get("music_license", "")).strip() or None
+        music_volume = float(audio.get("music_volume", 0.08))
+        if not 0 <= music_volume <= 0.25:
+            raise ManifestError("audio.music_volume must be between 0 and 0.25")
+        if music and (not music_source or not music_license):
+            raise ManifestError("music_source and music_license are required when music is used")
+        spoken_captions = captions.get("spoken_srt")
         return cls(
             id=str(raw["id"]),
             title=str(raw["title"]),
@@ -76,7 +91,11 @@ class Project:
             max_cost_usd=ceiling,
             narration=(base / str(raw["narration"])).resolve(),
             music=(base / str(music)).resolve() if music else None,
+            music_source=music_source,
+            music_license=music_license,
+            music_volume=music_volume,
+            music_ducking=bool(audio.get("duck_under_voice", True)),
+            spoken_captions=(base / str(spoken_captions)).resolve() if spoken_captions else None,
             scenes=scenes,
             approved=bool(raw.get("publish", {}).get("approved", False)),
         )
-
