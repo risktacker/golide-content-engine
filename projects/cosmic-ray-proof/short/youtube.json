@@ -1,0 +1,27 @@
+{
+  "format": "short",
+  "title": "A Particle From Space Can Flip Your Computer's Memory",
+  "description": "A particle born from cosmic radiation can change a stored 0 into a 1—without breaking the chip. Here’s how a single-event upset happens and how error-correcting memory fights back.\n\nSources:\nESA — Swarm vs. space radiation: https://www.esa.int/Enabling_Support/Space_Engineering_Technology/Swarm_vs._space_radiation_the_first_10_years\nIBM Research — Terrestrial cosmic rays: https://research.ibm.com/publications/terrestrial-cosmic-rays\n\n#Science #Technology #GOLIDE",
+  "tags": [
+    "cosmic rays",
+    "computer memory",
+    "bit flip",
+    "single event upset",
+    "soft error",
+    "error correcting memory",
+    "science explained",
+    "GOLIDE"
+  ],
+  "video_language": "en",
+  "title_description_language": "en",
+  "altered_content": false,
+  "altered_content_review_note": "Stylized paper animation and a non-imitative narrator do not depict a realistic event or cloned person.",
+  "recording_location": null,
+  "location_is_material": false,
+  "chapters": [],
+  "category": "Education",
+  "audience": "not-made-for-kids",
+  "paid_promotion": false,
+  "visibility_before_checks": "private",
+  "planned_publish_at": "2026-09-07T15:00:00+02:00"
+}
