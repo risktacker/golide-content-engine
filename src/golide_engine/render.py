@@ -6,6 +6,7 @@ import subprocess
 from pathlib import Path
 
 from .models import Project
+from .captions import scenes_to_srt
 
 
 def _run(command: list[str]) -> None:
@@ -14,6 +15,10 @@ def _run(command: list[str]) -> None:
 
 def _escape_concat(path: Path) -> str:
     return str(path).replace("'", "'\\''")
+
+
+def _escape_subtitle(path: Path) -> str:
+    return str(path.resolve()).replace("'", "\\'").replace(":", "\\:")
 
 
 def render(project: Project, root: Path) -> Path:
@@ -45,13 +50,47 @@ def render(project: Project, root: Path) -> Path:
     silent = output_dir / "silent.mp4"
     _run(["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", str(concat), "-c", "copy", str(silent)])
 
+    visual_srt = output_dir / "visual-labels.srt"
+    visual_srt.write_text(
+        scenes_to_srt([
+            {"duration": scene.duration, "caption": scene.caption}
+            for scene in project.scenes
+        ]),
+        encoding="utf-8",
+    )
+    video_filters = [
+        "subtitles='{}':force_style='FontName=DejaVu Sans,FontSize=18,Bold=1,"
+        "PrimaryColour=&H00F5F1E8,OutlineColour=&H00111B36,Outline=2,"
+        "Shadow=0,Alignment=8,MarginV=250'".format(_escape_subtitle(visual_srt))
+    ]
+    if project.spoken_captions:
+        video_filters.append(
+            "subtitles='{}':force_style='FontName=DejaVu Sans,FontSize=12,Bold=1,"
+            "PrimaryColour=&H00F5F1E8,OutlineColour=&H00111B36,Outline=2,"
+            "Shadow=0,Alignment=2,MarginV=120'".format(_escape_subtitle(project.spoken_captions))
+        )
+
     final = output_dir / "video.mp4"
     command = ["ffmpeg", "-y", "-i", str(silent), "-i", str(project.narration)]
     if project.music:
-        command += ["-i", str(project.music), "-filter_complex", "[2:a]volume=0.10[m];[1:a][m]amix=inputs=2:duration=first[a]", "-map", "0:v", "-map", "[a]"]
+        if project.music_ducking:
+            audio_filter = (
+                f"[2:a]volume={project.music_volume}[music];"
+                "[music][1:a]sidechaincompress=threshold=0.02:ratio=8:"
+                "attack=20:release=350[ducked];"
+                "[1:a][ducked]amix=inputs=2:duration=first:normalize=0[a]"
+            )
+        else:
+            audio_filter = (
+                f"[2:a]volume={project.music_volume}[music];"
+                "[1:a][music]amix=inputs=2:duration=first:normalize=0[a]"
+            )
+        command += ["-stream_loop", "-1", "-i", str(project.music)]
+        filter_complex = f"[0:v]{','.join(video_filters)}[v];{audio_filter}"
+        command += ["-filter_complex", filter_complex, "-map", "[v]", "-map", "[a]"]
     else:
-        command += ["-map", "0:v", "-map", "1:a"]
-    command += ["-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest", str(final)]
+        command += ["-vf", ",".join(video_filters), "-map", "0:v", "-map", "1:a"]
+    command += ["-c:v", "libx264", "-preset", "medium", "-crf", "18", "-c:a", "aac", "-b:a", "192k", "-shortest", str(final)]
     _run(command)
 
     metadata = {
@@ -61,7 +100,9 @@ def render(project: Project, root: Path) -> Path:
         "duration": sum(x.duration for x in project.scenes),
         "max_cost_usd": project.max_cost_usd,
         "publish_approved": project.approved,
+        "music_source": project.music_source,
+        "music_license": project.music_license,
+        "dual_caption_tracks": bool(project.spoken_captions),
     }
     (output_dir / "metadata.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
     return final
-
