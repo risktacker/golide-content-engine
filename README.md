@@ -57,6 +57,8 @@ written to `build/<project-id>/video.mp4`.
 
 See [the evidence-led content strategy](docs/research/strategy.md) for the channel
 findings, benchmark patterns, format specifications, first proof pair, and cost target.
+See [the YouTube publishing standard](docs/youtube-publishing.md) for titles,
+descriptions, chapters, tags, disclosure, language, location and upload QA.
 
 ## Roadmap
 
