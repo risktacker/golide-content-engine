@@ -17,6 +17,7 @@ def load_policy(path: str | Path) -> dict[str, Any]:
     music = policy.get("music", {})
     loop = policy.get("loop", {})
     visuals = policy.get("visuals", {})
+    thumbnail = policy.get("thumbnail", {})
 
     if short.get("weekly_count") != 3:
         raise PolicyError("shorts.weekly_count must remain 3")
@@ -40,4 +41,10 @@ def load_policy(path: str | Path) -> dict[str, Any]:
         raise PolicyError("edge-to-edge framing cannot be the default")
     if not visuals.get("avatar", {}).get("face_consistency_required"):
         raise PolicyError("avatar face consistency must be enforced")
+    if thumbnail.get("text_policy") != "none":
+        raise PolicyError("thumbnail text must remain disabled")
+    if thumbnail.get("output_dimensions") != [1280, 720]:
+        raise PolicyError("thumbnail output must remain 1280x720")
+    if thumbnail.get("banner_safe_area_rules_apply") is not False:
+        raise PolicyError("banner safe-area rules cannot be applied to thumbnails")
     return policy

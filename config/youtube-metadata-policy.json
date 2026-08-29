@@ -2,7 +2,8 @@
   "version": 1,
   "channel": {
     "default_language": "en",
-    "country": "IN",
+    "existing_country_reference_only": "IN",
+    "country_updates": "forbidden",
     "keywords": [
       "GOLIDE",
       "visual explainer",

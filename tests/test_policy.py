@@ -16,6 +16,8 @@ class PolicyTests(unittest.TestCase):
         self.assertEqual(policy["voice"]["age_character"], "mature-adult")
         self.assertEqual(policy["visuals"]["composition"]["default"], "center-stage-with-negative-space")
         self.assertTrue(policy["visuals"]["avatar"]["face_consistency_required"])
+        self.assertEqual(policy["thumbnail"]["text_policy"], "none")
+        self.assertFalse(policy["thumbnail"]["banner_safe_area_rules_apply"])
 
 
 if __name__ == "__main__":

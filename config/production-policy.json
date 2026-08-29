@@ -73,5 +73,14 @@
       "default_role": "supporting-presenter-not-full-frame-host",
       "face_consistency_required": true
     }
+  },
+  "thumbnail": {
+    "aspect_ratio": "16:9",
+    "output_dimensions": [1280, 720],
+    "text_policy": "none",
+    "avatar_required_when_human_reaction_improves_curiosity": true,
+    "avatar_style": "consistent-unrealistic-paper-cut-esiah-avatar",
+    "topic_specific_object_or_consequence_required": true,
+    "banner_safe_area_rules_apply": false
   }
 }

@@ -20,7 +20,8 @@ class PipelinePlan:
 
 STAGES = (
     "research", "concept_scoring", "script", "storyboard", "assets",
-    "voice", "captions", "render", "thumbnail", "human_qa",
+    "voice", "captions", "render", "thumbnail", "automated_qa",
+    "release_package", "private_upload", "schedule",
 )
 
 
@@ -33,7 +34,6 @@ def build_plan(spec: dict[str, Any], output_root: Path) -> PipelinePlan:
     destination.mkdir(parents=True, exist_ok=True)
     plan = PipelinePlan(spec["id"], spec["format"], result.total, result.verdict, STAGES, str(destination))
     (destination / "plan.json").write_text(json.dumps(asdict(plan), indent=2) + "\n", encoding="utf-8")
-    for folder in ("research", "script", "storyboard", "assets", "voice", "captions", "render", "thumbnail"):
+    for folder in STAGES:
         (destination / folder).mkdir(exist_ok=True)
     return plan
-
