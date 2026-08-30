@@ -1,6 +1,9 @@
 name: Daily YouTube analytics
 
 on:
+  push:
+    paths:
+      - .github/workflows/daily-analytics.yml
   schedule:
     - cron: "20 4 * * *"
   workflow_dispatch:
