@@ -29,7 +29,14 @@ def bootstrap(client_secrets: str | Path, token_path: str | Path = ".secrets/you
     token = Path(token_path)
     token.parent.mkdir(parents=True, exist_ok=True)
     flow = InstalledAppFlow.from_client_secrets_file(str(client_secrets), SCOPES)
-    credentials = flow.run_local_server(host="localhost", port=0, open_browser=True, access_type="offline", prompt="consent")
+    credentials = flow.run_local_server(
+        host="127.0.0.1",
+        port=0,
+        open_browser=True,
+        access_type="offline",
+        prompt="consent",
+        success_message="GOLIDE YouTube authorization completed. Return to PowerShell.",
+    )
     token.write_text(credentials.to_json(), encoding="utf-8")
     token.chmod(0o600)
     return token
