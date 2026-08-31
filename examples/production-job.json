@@ -4,7 +4,7 @@
   "title": "Working title",
   "brief": "Evidence-led concept brief goes here.",
   "generate_at": "2026-09-01T06:00:00Z",
-  "max_cost_usd": 5.0,
+  "max_cost_usd": 5,
   "production_authorized": false,
   "concept": {
     "family": "science-explainer",
@@ -25,10 +25,13 @@
     "hook_type": "impossible-consequence-question",
     "script_structure": "causal-reveal-loop",
     "visual_style": "GOLIDE-color-paper-explainer",
-    "voice": "cedar-mature-high-energy",
-    "upload_slot": "weekly-long"
+    "voice": "elevenlabs-golide-narrator-v1",
+    "upload_slot": "weekly-long",
+    "editorial_manifest": "beat-motion-audio-v1"
   },
-  "music": {"mood": "curious-tension"},
+  "music": {
+    "mood": "curious-tension"
+  },
   "avatar_reference_images": [],
   "release": {
     "approved": false,
