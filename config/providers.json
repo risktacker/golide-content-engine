@@ -18,7 +18,7 @@
     "provider": "elevenlabs",
     "model": "eleven_multilingual_v2",
     "voice_id": "WpJF8X6OVIJigRbSwZIv",
-    "approval_status": "pending",
+    "approval_status": "approved",
     "output_format": "mp3_44100_128",
     "max_characters_per_request": 10000,
     "monthly_character_limit": 27000,
