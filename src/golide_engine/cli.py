@@ -46,6 +46,8 @@ def main() -> int:
     analytics_parser.add_argument("--end")
     feedback_parser = sub.add_parser("feedback-recalculate")
     feedback_parser.add_argument("--database", default="data/golide.sqlite3")
+    voice_verify_parser = sub.add_parser("voice-verify")
+    voice_verify_parser.add_argument("--config", default="config/providers.json")
     production_parser = sub.add_parser("production-run")
     production_parser.add_argument("spec")
     production_parser.add_argument("--database", default="data/golide.sqlite3")
@@ -92,6 +94,12 @@ def main() -> int:
     if args.command == "feedback-recalculate":
         from .feedback.engine import FeedbackEngine
         print(json.dumps({"factors_updated": FeedbackEngine(_database(args.database)).recalculate()}))
+        return 0
+
+    if args.command == "voice-verify":
+        from .providers.registry import ProviderRegistry
+        result = ProviderRegistry(args.config).voice().validate_voice()
+        print(json.dumps({"status": "verified", **result}, indent=2))
         return 0
 
     if args.command == "production-run":
