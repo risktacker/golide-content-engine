@@ -24,6 +24,22 @@ ANNOTATION_SCHEMA = {
     "additionalProperties": False,
 }
 
+SECONDARY_ASSET_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "asset_key": {"type": "string"},
+        "visual_prompt": {"type": "string"},
+        "role": {"type": "string", "enum": ["foreground", "detail", "label", "inset"]},
+        "position": {"type": "string", "enum": ["top", "center", "bottom", "left", "right"]},
+        "scale": {"type": "number"},
+        "entrance": {"type": "string", "enum": ["fade", "drift-left", "drift-right", "pop"]},
+        "start_offset": {"type": "number"},
+        "duration": {"type": "number"},
+    },
+    "required": ["asset_key", "visual_prompt", "role", "position", "scale", "entrance", "start_offset", "duration"],
+    "additionalProperties": False,
+}
+
 MOTION_SCHEMA = {
     "type": "object",
     "properties": {
@@ -48,10 +64,11 @@ STORYBOARD_SCHEMA = {
         "visual_caption": {"type": "string"},
         "visual_prompt": {"type": "string"},
         "motion": MOTION_SCHEMA,
+        "secondary_assets": {"type": "array", "items": SECONDARY_ASSET_SCHEMA},
         "subject_bounds": {"type": "array", "items": {"type": "object", "properties": {
             "x": {"type": "number"}, "y": {"type": "number"}, "width": {"type": "number"}, "height": {"type": "number"},
         }, "required": ["x", "y", "width", "height"], "additionalProperties": False}},
-    }, "required": ["beat_id", "visual_role", "asset_key", "visual_caption", "visual_prompt", "motion", "subject_bounds"], "additionalProperties": False}}},
+    }, "required": ["beat_id", "visual_role", "asset_key", "visual_caption", "visual_prompt", "motion", "secondary_assets", "subject_bounds"], "additionalProperties": False}}},
     "required": ["scenes"], "additionalProperties": False,
 }
 
