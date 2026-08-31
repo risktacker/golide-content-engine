@@ -10,15 +10,28 @@ RESEARCH_SCHEMA = {
     "required": ["summary", "claims"], "additionalProperties": False,
 }
 
+MOTION_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "type": {"type": "string", "enum": ["hold", "push-in", "pull-out", "pan-left", "pan-right", "reframe", "layer-reveal"]},
+        "intensity": {"type": "string", "enum": ["subtle", "medium", "strong"]},
+        "transition": {"type": "string", "enum": ["cut", "paper-wipe", "match-cut", "object-transition"]},
+        "emphasis": {"type": "string"},
+    },
+    "required": ["type", "intensity", "transition", "emphasis"],
+    "additionalProperties": False,
+}
+
 STORYBOARD_SCHEMA = {
     "type": "object",
     "properties": {"scenes": {"type": "array", "items": {"type": "object", "properties": {
-        "id": {"type": "string"}, "asset_key": {"type": "string"}, "duration": {"type": "number"}, "visual_caption": {"type": "string"},
-        "visual_prompt": {"type": "string"},
+        "beat_id": {"type": "string"}, "asset_key": {"type": "string"},
+        "visual_caption": {"type": "string"}, "visual_prompt": {"type": "string"},
+        "motion": MOTION_SCHEMA,
         "subject_bounds": {"type": "array", "items": {"type": "object", "properties": {
             "x": {"type": "number"}, "y": {"type": "number"}, "width": {"type": "number"}, "height": {"type": "number"},
         }, "required": ["x", "y", "width", "height"], "additionalProperties": False}},
-    }, "required": ["id", "asset_key", "duration", "visual_caption", "visual_prompt", "subject_bounds"], "additionalProperties": False}}},
+    }, "required": ["beat_id", "asset_key", "visual_caption", "visual_prompt", "motion", "subject_bounds"], "additionalProperties": False}}},
     "required": ["scenes"], "additionalProperties": False,
 }
 
