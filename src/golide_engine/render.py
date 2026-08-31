@@ -31,16 +31,18 @@ def _render_scene_clips(project: Project, output_dir: Path) -> list[Path]:
         clip_duration = scene.duration + tail
         destination = scene_dir / f"{index:03d}.mp4"
         command = ["ffmpeg", "-y"]
-        if scene.media.suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"}:
-            command += ["-loop", "1", "-t", f"{clip_duration:.3f}", "-i", str(scene.media)]
+        still_image = scene.media.suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"}
+        if still_image:
+            command += ["-i", str(scene.media)]
         else:
             command += ["-stream_loop", "-1", "-t", f"{clip_duration:.3f}", "-i", str(scene.media)]
         command += [
             "-an",
             "-vf", scene_filter(
                 scene.motion, scene.annotation, project.width, project.height,
-                project.fps, clip_duration,
+                project.fps, clip_duration, still_image=still_image,
             ),
+            "-t", f"{clip_duration:.3f}",
             "-c:v", "libx264", "-preset", "medium", "-crf", "18",
             "-pix_fmt", "yuv420p", str(destination),
         ]
