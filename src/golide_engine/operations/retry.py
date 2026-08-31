@@ -9,7 +9,11 @@ T = TypeVar("T")
 
 
 def is_transient_error(exc: Exception) -> bool:
-    status = getattr(exc, "status_code", None) or getattr(getattr(exc, "resp", None), "status", None)
+    status = (
+        getattr(exc, "status_code", None)
+        or getattr(exc, "code", None)
+        or getattr(getattr(exc, "resp", None), "status", None)
+    )
     return status in {408, 409, 429, 500, 502, 503, 504} or isinstance(exc, (TimeoutError, ConnectionError))
 
 
