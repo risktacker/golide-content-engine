@@ -221,7 +221,7 @@ class ProductionService:
                 Usage(input_tokens=max(1, (len(script) + len(beat_packet)) // 4), output_tokens=12000),
             )
             output = text.generate_json(
-                "Act as the G$LIDE Editorial Director. Return exactly one scene for every supplied beat_id and never invent timing. Map meaning to visible response: introduce nouns, punch spoken numbers, trace processes, switch composition for contrast, link cause to effect, and reserve strong reveals for key insights. Center subjects with negative space and an 8% safe margin. Use only named G$LIDE colors: neon-blue, golide-gold, warm-ivory, deep-navy, and danger-red only for danger/error. Reuse asset_key values when one explanatory asset can be reframed, progressively revealed, pushed, panned or match-cut across beats. Vary camera and transition recipes; avoid Ken Burns repetition, transition spam, sound-effect spam, caption overload and avatar wallpaper. Motion, annotation and audio cues must be semantically synchronized. Use impact only for a true reveal and use none when narration should carry the emphasis.",
+                "Act as the G$LIDE Editorial Director. Return exactly one scene for every supplied beat_id and never invent timing. Map meaning to visible response: introduce nouns, punch spoken numbers, trace processes, switch composition for contrast, link cause to effect, and reserve strong reveals for key insights. Center subjects with negative space and an 8% safe margin. Use only named G$LIDE colors: neon-blue, golide-gold, warm-ivory, deep-navy, and danger-red only for danger/error. Reuse asset_key values when one explanatory asset can be reframed, progressively revealed, pushed, panned or match-cut across beats. Use secondary_assets only when an independent foreground, detail crop, label object or inset materially improves the explanation. Across the entire project, request no more than four unique secondary assets for a Short or twelve for long-form; reuse them across beats and request isolated paper-cut objects on transparent backgrounds. Vary camera and transition recipes; avoid Ken Burns repetition, transition spam, sound-effect spam, caption overload and avatar wallpaper. Motion, annotation and audio cues must be semantically synchronized. Use impact only for a true reveal and use none when narration should carry the emphasis.",
                 f"FORMAT={spec['format']} NARRATION_SECONDS={narration_seconds:.3f}\nSCRIPT\n{script}\nTIMED_BEATS\n{beat_packet}",
                 STORYBOARD_SCHEMA,
             )
@@ -245,6 +245,7 @@ class ProductionService:
                     "visual_caption": scene["visual_caption"],
                     "visual_prompt": scene["visual_prompt"],
                     "motion": scene["motion"],
+                    "secondary_assets": scene["secondary_assets"],
                     "subject_bounds": scene["subject_bounds"],
                 })
             storyboard_path.write_text(
@@ -262,8 +263,17 @@ class ProductionService:
         reference_images = [Path(path) for path in spec.get("avatar_reference_images", [])]
         size = self.providers.config["assets"][f"{spec['format']}_size"]
         unique_assets = {}
+        secondary_keys = set()
         for scene in storyboard["scenes"]:
             unique_assets.setdefault(scene["asset_key"], scene)
+            for layer in scene.get("secondary_assets", []):
+                secondary_keys.add(layer["asset_key"])
+                unique_assets.setdefault(layer["asset_key"], layer)
+        secondary_limit = 4 if spec["format"] == "short" else 12
+        if len(secondary_keys) > secondary_limit:
+            raise RuntimeError(
+                f"editorial plan requests {len(secondary_keys)} secondary assets; limit is {secondary_limit}"
+            )
         for asset_key, scene in unique_assets.items():
             target = asset_dir / f"{asset_key}.png"
 
@@ -297,6 +307,15 @@ class ProductionService:
                 "visual_role": scene["visual_role"],
                 "motion": scene["motion"],
                 "annotation": scene["motion"]["annotation"],
+                "layers": [{
+                    "media": str(asset_dir / f"{layer['asset_key']}.png"),
+                    "role": layer["role"],
+                    "position": layer["position"],
+                    "scale": layer["scale"],
+                    "entrance": layer["entrance"],
+                    "start_offset": layer["start_offset"],
+                    "duration": layer["duration"],
+                } for layer in scene.get("secondary_assets", [])],
             } for scene in storyboard["scenes"]],
             "publish": {"approved": True},
         }
