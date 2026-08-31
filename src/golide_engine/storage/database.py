@@ -35,6 +35,11 @@ class Database:
         schema = Path(__file__).with_name("schema.sql").read_text(encoding="utf-8")
         with self.connect() as connection:
             connection.executescript(schema)
+            columns = {row["name"] for row in connection.execute("PRAGMA table_info(cost_events)")}
+            if "characters" not in columns:
+                connection.execute(
+                    "ALTER TABLE cost_events ADD COLUMN characters INTEGER NOT NULL DEFAULT 0"
+                )
 
     def upsert_production(self, spec: dict[str, Any], status: str = "planned") -> None:
         now = utc_now()
