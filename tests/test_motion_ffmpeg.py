@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from golide_engine.models import Annotation, Motion, Project, Scene
+from golide_engine.models import Annotation, Layer, Motion, Project, Scene
 from golide_engine.render import _build_sfx_track, _compose_scene_clips, _render_scene_clips
 
 
@@ -28,6 +28,7 @@ class MotionFFmpegSmokeTests(unittest.TestCase):
                     "beat-001", media[0], 0.6, "", 0.0, 0.6, "REVEAL",
                     Motion("push-in", "medium", "paper-wipe", "ease-out", "reveal", "impact"),
                     Annotation("number", "42", 0.1, 0.35, "center", "golide-gold"),
+                    (Layer(media[1], "detail", "right", 0.25, "drift-left", 0.1, 0.35),),
                 ),
                 Scene(
                     "beat-002", media[1], 0.6, "", 0.6, 1.2, "PROCESS",
