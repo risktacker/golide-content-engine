@@ -221,7 +221,7 @@ class ProductionService:
                 Usage(input_tokens=max(1, (len(script) + len(beat_packet)) // 4), output_tokens=12000),
             )
             output = text.generate_json(
-                "Build the premium editorial plan for a G$LIDE paper explainer. Return exactly one scene for every supplied beat_id and never invent timing. Center subjects with negative space and an 8% safe margin. Use neon blue, G$LIDE gold, warm ivory and deep navy. Visual captions explain diagrams and are not spoken subtitles. Reuse asset_key values when one layered asset can be reframed, revealed, pushed, panned or matched across multiple beats. Motion intent is mandatory for every beat and must serve the explanation.",
+                "Act as the G$LIDE Editorial Director. Return exactly one scene for every supplied beat_id and never invent timing. Map meaning to visible response: introduce nouns, punch spoken numbers, trace processes, switch composition for contrast, link cause to effect, and reserve strong reveals for key insights. Center subjects with negative space and an 8% safe margin. Use only named G$LIDE colors: neon-blue, golide-gold, warm-ivory, deep-navy, and danger-red only for danger/error. Reuse asset_key values when one explanatory asset can be reframed, progressively revealed, pushed, panned or match-cut across beats. Vary camera and transition recipes; avoid Ken Burns repetition, transition spam, sound-effect spam, caption overload and avatar wallpaper. Motion, annotation and audio cues must be semantically synchronized. Use impact only for a true reveal and use none when narration should carry the emphasis.",
                 f"FORMAT={spec['format']} NARRATION_SECONDS={narration_seconds:.3f}\nSCRIPT\n{script}\nTIMED_BEATS\n{beat_packet}",
                 STORYBOARD_SCHEMA,
             )
@@ -237,6 +237,7 @@ class ProductionService:
                 merged.append({
                     "id": beat["id"],
                     "asset_key": scene["asset_key"],
+                    "visual_role": scene["visual_role"],
                     "start": beat["start"],
                     "end": beat["end"],
                     "duration": beat["duration"],
@@ -293,7 +294,9 @@ class ProductionService:
                 "end": scene["end"],
                 "duration": scene["duration"],
                 "caption": scene["visual_caption"],
+                "visual_role": scene["visual_role"],
                 "motion": scene["motion"],
+                "annotation": scene["motion"]["annotation"],
             } for scene in storyboard["scenes"]],
             "publish": {"approved": True},
         }
