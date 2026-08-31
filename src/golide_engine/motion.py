@@ -91,6 +91,8 @@ def scene_filter(
     height: int,
     fps: int,
     duration: float,
+    *,
+    still_image: bool = True,
 ) -> str:
     frames = max(1, round(duration * fps))
     p = _progress(frames, motion.easing)
@@ -124,7 +126,7 @@ def scene_filter(
     filters = [
         f"scale={round(width * 1.18)}:{round(height * 1.18)}:force_original_aspect_ratio=increase",
         f"crop={round(width * 1.18)}:{round(height * 1.18)}",
-        f"zoompan=z='{zoom}':x='{x}':y='{y}':d={frames}:s={width}x{height}:fps={fps}",
+        f"zoompan=z='{zoom}':x='{x}':y='{y}':d={frames if still_image else 1}:s={width}x{height}:fps={fps}",
     ]
     if motion.type == "layer-reveal":
         filters.append("fade=t=in:st=0:d=0.18")
