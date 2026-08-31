@@ -19,9 +19,9 @@ class PipelinePlan:
 
 
 STAGES = (
-    "research", "concept_scoring", "script", "storyboard", "assets",
-    "voice", "captions", "render", "thumbnail", "automated_qa",
-    "release_package", "private_upload", "schedule",
+    "research", "concept_scoring", "script", "voice", "captions",
+    "editorial_beats", "storyboard", "assets", "render", "thumbnail",
+    "automated_qa", "release_package", "private_upload", "schedule",
 )
 
 
