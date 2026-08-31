@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "dry_run_by_default": true,
   "text": {
     "provider": "openai",
@@ -15,15 +15,24 @@
     "long_size": "1536x1024"
   },
   "voice": {
-    "provider": "openai",
-    "model": "gpt-4o-mini-tts",
-    "voice": "cedar",
-    "format": "mp3",
-    "instructions": "Mature adult explainer. Commanding, curious, intelligent and dynamic. Move quickly through setup, pause before reveals, vary emphasis every sentence, and never sound sleepy, youthful or like a movie trailer."
+    "provider": "elevenlabs",
+    "model": "eleven_multilingual_v2",
+    "voice_id": "WpJF8X6OVIJigRbSwZIv",
+    "approval_status": "approved",
+    "output_format": "mp3_44100_128",
+    "max_characters_per_request": 10000,
+    "monthly_character_limit": 27000,
+    "settings": {
+      "stability": 0.5,
+      "similarity_boost": 0.75,
+      "style": 0.15,
+      "use_speaker_boost": true
+    }
   },
   "captions": {
-    "provider": "openai",
-    "model": "whisper-1",
+    "provider": "elevenlabs-alignment",
+    "source": "voice.normalized_alignment",
+    "fallback_provider": null,
     "word_timestamps": true
   },
   "thumbnail": {

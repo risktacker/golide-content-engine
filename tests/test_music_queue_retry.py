@@ -25,6 +25,18 @@ class MusicQueueRetryTests(unittest.TestCase):
             (root / "old.completed.json").write_text(json.dumps(job))
             self.assertEqual([root / "due.json"], due_specs(root, datetime(2026, 2, 1, tzinfo=timezone.utc)))
 
+    def test_http_status_attribute_is_retryable(self):
+        class APIError(RuntimeError):
+            status_code = 429
+        attempts = []
+        def operation():
+            attempts.append(1)
+            if len(attempts) == 1:
+                raise APIError("rate limited")
+            return "ok"
+        self.assertEqual("ok", with_retry(operation, sleeper=lambda _: None))
+        self.assertEqual(2, len(attempts))
+
     def test_transient_failure_retries(self):
         attempts = []
         def operation():

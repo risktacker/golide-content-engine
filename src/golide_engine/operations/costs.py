@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 
 from ..storage.database import Database, utc_now
 
@@ -56,15 +55,38 @@ class CostTracker:
             raise UnknownPriceError(f"{rate_key} price for {model} must be refreshed before production")
         return value
 
+    def monthly_characters(self, provider: str) -> int:
+        month = utc_now()[:7]
+        rows = self.database.rows(
+            """SELECT COALESCE(SUM(characters), 0) total
+               FROM cost_events
+               WHERE provider=? AND substr(created_at, 1, 7)=?""",
+            (provider, month),
+        )
+        return int(rows[0]["total"])
+
+    def require_monthly_character_capacity(self, provider: str, characters: int, limit: int) -> None:
+        if characters < 1:
+            raise ValueError("character reservation must be positive")
+        projected = self.monthly_characters(provider) + characters
+        if projected > limit:
+            raise RuntimeError(
+                f"{provider} monthly character guard would reach {projected:,}; limit is {limit:,}"
+            )
+
     def record(self, production_id: str, stage: str, provider: str, model: str, usage: Usage, request_id: str | None = None) -> float:
         cost = self.estimate(provider, model, usage)
         self.database.execute(
             """INSERT INTO cost_events
                (production_id, stage, provider, model, input_units, cached_input_units,
-                output_units, images, audio_minutes, cost_usd, provider_request_id, created_at)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-            (production_id, stage, provider, model, usage.input_tokens, usage.cached_input_tokens,
-             usage.output_tokens, usage.images, usage.audio_minutes, cost, request_id, utc_now()),
+                output_units, images, audio_minutes, characters, cost_usd,
+                provider_request_id, created_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            (
+                production_id, stage, provider, model, usage.input_tokens,
+                usage.cached_input_tokens, usage.output_tokens, usage.images,
+                usage.audio_minutes, usage.characters, cost, request_id, utc_now(),
+            ),
         )
         return cost
 

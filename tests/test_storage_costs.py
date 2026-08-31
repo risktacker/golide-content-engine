@@ -40,6 +40,18 @@ class StorageAndCostTests(unittest.TestCase):
         self.assertEqual(10.2, cost)
         self.assertEqual(10.2, tracker.total("p1"))
 
+    def test_monthly_character_guard_tracks_elevenlabs_usage(self):
+        pricing = self.root / "pricing.json"
+        pricing.write_text(json.dumps({"models": {"eleven": {
+            "fallback_per_million_characters": 200,
+        }}}))
+        tracker = CostTracker(self.database, pricing)
+        tracker.record("p1", "voice", "elevenlabs", "eleven", Usage(characters=900))
+        self.assertEqual(900, tracker.monthly_characters("elevenlabs"))
+        tracker.require_monthly_character_capacity("elevenlabs", 100, 1000)
+        with self.assertRaises(RuntimeError):
+            tracker.require_monthly_character_capacity("elevenlabs", 101, 1000)
+
     def test_zero_rate_blocks_paid_stage(self):
         pricing = self.root / "pricing.json"
         pricing.write_text(json.dumps({"models": {"image": {"fallback_per_image": 0}}}))

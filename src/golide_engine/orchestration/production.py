@@ -7,7 +7,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from ..captions import words_to_srt
+from ..captions import words_to_beats, words_to_srt
 from ..feedback.engine import FeedbackEngine
 from ..manifest import load_project
 from ..music.registry import MusicRegistry
@@ -43,6 +43,11 @@ class ProductionService:
             raise RuntimeError("production and release must both be explicitly approved")
         if spec.get("release", {}).get("channel_id") != "UCqaXVBSBz7iQsRHOupKt-3w":
             raise RuntimeError("production does not target the locked G$LIDE channel")
+        voice_cfg = self.providers.config.get("voice", {})
+        if voice_cfg.get("provider") != "elevenlabs":
+            raise RuntimeError("production narration must use ElevenLabs")
+        if voice_cfg.get("approval_status") != "approved":
+            raise RuntimeError("GOLIDE narrator is not approved; production remains locked")
 
     def _record_text(self, production_id: str, stage: str, output: ProviderOutput) -> None:
         self.costs.record(production_id, stage, "openai", "gpt-5.6-sol", Usage(
@@ -76,8 +81,8 @@ class ProductionService:
         if path.exists():
             raise RuntimeError(f"{stage} has an uncheckpointed artifact at {path}; reconcile it instead of repeating a paid request")
 
-    def _reserve(self, spec: dict[str, Any], model: str, usage: Usage) -> None:
-        projected = self.costs.total(spec["id"]) + self.costs.estimate("openai", model, usage)
+    def _reserve(self, spec: dict[str, Any], model: str, usage: Usage, provider: str = "openai") -> None:
+        projected = self.costs.total(spec["id"]) + self.costs.estimate(provider, model, usage)
         if projected > float(spec["max_cost_usd"]):
             raise RuntimeError(f"next request could exceed the ${float(spec['max_cost_usd']):.2f} production ceiling")
 
@@ -112,9 +117,8 @@ class ProductionService:
         self.costs.require_rate("gpt-image-2-text-input", "input_per_million_tokens")
         self.costs.require_rate("gpt-image-2-image-input", "input_per_million_tokens")
         self.costs.require_rate("gpt-image-2-image-output", "output_per_million_tokens")
-        self.costs.require_rate("gpt-4o-mini-tts", "input_per_million_tokens")
-        self.costs.require_rate("gpt-4o-mini-tts", "output_per_million_tokens")
-        self.costs.require_rate("whisper-1", "fallback_per_minute")
+        voice_cfg = self.providers.config["voice"]
+        self.costs.require_rate(voice_cfg["model"], "fallback_per_million_characters")
         self.costs.require_rate("web-search", "per_tool_call")
         adjustment = FeedbackEngine(self.database).adjustment(spec["format"], spec.get("generation_parameters", {}))
         score = score_concept(spec["format"], spec["concept"]["scores"], adjustment)
@@ -150,22 +154,106 @@ class ProductionService:
         script = script_path.read_text(encoding="utf-8").strip()
         self._budget(spec)
 
+        voice_cfg = self.providers.config["voice"]
+        narration = work / "narration.mp3"
+        timed_words_path = work / "timed-words.json"
+        voice = self.providers.voice(live=True)
+
+        def voice_stage():
+            self._require_absent(narration, "voice")
+            self._require_absent(timed_words_path, "voice")
+            characters = len(script)
+            self.costs.require_monthly_character_capacity(
+                "elevenlabs", characters, int(voice_cfg["monthly_character_limit"])
+            )
+            self._reserve(
+                spec, voice_cfg["model"], Usage(characters=characters), provider="elevenlabs"
+            )
+            voice.validate_voice()
+            output = voice.synthesize(script, narration)
+            details = output.details or {}
+            words = details.get("words")
+            if not words:
+                raise RuntimeError("ElevenLabs narration returned no timing alignment")
+            timed_words_path.write_text(
+                json.dumps(words, indent=2) + "\n", encoding="utf-8"
+            )
+            self.costs.record(
+                production_id, "voice", "elevenlabs", voice_cfg["model"],
+                Usage(characters=characters), output.request_id,
+            )
+
+        self.runner.run(production_id, "voice", voice_stage)
+        self._budget(spec)
+        narration_seconds = self._duration(narration)
+        maximum = 90 if spec["format"] == "short" else 300
+        if narration_seconds > maximum:
+            raise RuntimeError(
+                f"narration is {narration_seconds:.1f}s and exceeds the {maximum}s format limit"
+            )
+
+        timed_words = json.loads(timed_words_path.read_text(encoding="utf-8"))
+        spoken_srt = work / "spoken-captions.srt"
+
+        def caption_stage():
+            self._require_absent(spoken_srt, "captions")
+            spoken_srt.write_text(words_to_srt(timed_words), encoding="utf-8")
+
+        self.runner.run(production_id, "captions", caption_stage, attempts=1)
+
+        beats_path = work / "editorial-beats.json"
+
+        def beat_stage():
+            self._require_absent(beats_path, "editorial-beats")
+            beats = words_to_beats(timed_words, max_seconds=3.2)
+            beats_path.write_text(json.dumps(beats, indent=2) + "\n", encoding="utf-8")
+
+        self.runner.run(production_id, "editorial-beats", beat_stage, attempts=1)
+        beats = json.loads(beats_path.read_text(encoding="utf-8"))
+
         storyboard_path = work / "storyboard.json"
+
         def storyboard_stage():
             self._require_absent(storyboard_path, "storyboard")
-            limit = 90 if spec["format"] == "short" else 300
-            self._reserve(spec, "gpt-5.6-sol", Usage(input_tokens=max(1, len(script) // 4), output_tokens=12000))
-            output = text.generate_json(
-                "Create a timed G$LIDE paper-explainer storyboard. Center subjects with negative space and an 8% safe margin. Use neon blue, GOLIDE gold, warm ivory and deep navy. Visual captions explain diagrams; they are not spoken captions. Use lowercase safe IDs. Reuse an asset_key when the same character, object or diagram can be reframed across multiple cuts; do not request a new paid image for every cut.",
-                f"FORMAT={spec['format']} MAX_SECONDS={limit}\nSCRIPT\n{script}", STORYBOARD_SCHEMA,
+            beat_packet = json.dumps(beats, separators=(",", ":"))
+            self._reserve(
+                spec, "gpt-5.6-sol",
+                Usage(input_tokens=max(1, (len(script) + len(beat_packet)) // 4), output_tokens=12000),
             )
-            storyboard_path.write_text(json.dumps(output.value, indent=2) + "\n", encoding="utf-8")
+            output = text.generate_json(
+                "Build the premium editorial plan for a G$LIDE paper explainer. Return exactly one scene for every supplied beat_id and never invent timing. Center subjects with negative space and an 8% safe margin. Use neon blue, G$LIDE gold, warm ivory and deep navy. Visual captions explain diagrams and are not spoken subtitles. Reuse asset_key values when one layered asset can be reframed, revealed, pushed, panned or matched across multiple beats. Motion intent is mandatory for every beat and must serve the explanation.",
+                f"FORMAT={spec['format']} NARRATION_SECONDS={narration_seconds:.3f}\nSCRIPT\n{script}\nTIMED_BEATS\n{beat_packet}",
+                STORYBOARD_SCHEMA,
+            )
+            planned_scenes = output.value["scenes"]
+            planned = {scene["beat_id"]: scene for scene in planned_scenes}
+            expected = {beat["id"] for beat in beats}
+            if len(planned) != len(planned_scenes) or set(planned) != expected:
+                raise RuntimeError("storyboard must contain every editorial beat exactly once")
+            merged = []
+            for beat in beats:
+                scene = planned[beat["id"]]
+                self._safe_id(scene["asset_key"])
+                merged.append({
+                    "id": beat["id"],
+                    "asset_key": scene["asset_key"],
+                    "start": beat["start"],
+                    "end": beat["end"],
+                    "duration": beat["duration"],
+                    "spoken_excerpt": beat["text"],
+                    "visual_caption": scene["visual_caption"],
+                    "visual_prompt": scene["visual_prompt"],
+                    "motion": scene["motion"],
+                    "subject_bounds": scene["subject_bounds"],
+                })
+            storyboard_path.write_text(
+                json.dumps({"timing_source": "elevenlabs-normalized-alignment", "scenes": merged}, indent=2) + "\n",
+                encoding="utf-8",
+            )
             self._record_text(production_id, "storyboard", output)
+
         self.runner.run(production_id, "storyboard", storyboard_stage)
         storyboard = json.loads(storyboard_path.read_text(encoding="utf-8"))
-        for scene in storyboard["scenes"]:
-            self._safe_id(scene["id"])
-            self._safe_id(scene["asset_key"])
         self._budget(spec)
 
         asset_provider = self.providers.images(live=True)
@@ -177,52 +265,19 @@ class ProductionService:
             unique_assets.setdefault(scene["asset_key"], scene)
         for asset_key, scene in unique_assets.items():
             target = asset_dir / f"{asset_key}.png"
+
             def asset_stage(scene=scene, target=target):
                 self._require_absent(target, f"asset:{scene['asset_key']}")
                 self._reserve(spec, image_cost_model, Usage(images=1))
-                output = asset_provider.create_image(scene["visual_prompt"], target, size, reference_images or None)
-                self._record_image(production_id, f"asset:{scene['asset_key']}", image_cost_model, output)
+                output = asset_provider.create_image(
+                    scene["visual_prompt"], target, size, reference_images or None
+                )
+                self._record_image(
+                    production_id, f"asset:{scene['asset_key']}", image_cost_model, output
+                )
+
             self.runner.run(production_id, f"asset:{asset_key}", asset_stage)
             self._budget(spec)
-
-        narration = work / "narration.wav"
-        voice = self.providers.voice(live=True)
-        def voice_stage():
-            self._require_absent(narration, "voice")
-            estimated_seconds = max(1, len(script.split()) / 180 * 60)
-            estimate = Usage(input_tokens=max(1, len(script) // 4), output_tokens=round(estimated_seconds * 20))
-            self._reserve(spec, "gpt-4o-mini-tts", estimate)
-            voice.synthesize(script, narration)
-            actual = Usage(input_tokens=max(1, len(script) // 4), output_tokens=round(self._duration(narration) * 20))
-            self.costs.record(production_id, "voice", "openai", "gpt-4o-mini-tts", actual)
-        self.runner.run(production_id, "voice", voice_stage)
-        self._budget(spec)
-        narration_seconds = self._duration(narration)
-        maximum = 90 if spec["format"] == "short" else 300
-        if narration_seconds > maximum:
-            raise RuntimeError(f"narration is {narration_seconds:.1f}s and exceeds the {maximum}s format limit")
-        planned_seconds = sum(float(scene["duration"]) for scene in storyboard["scenes"])
-        if planned_seconds <= 0:
-            raise RuntimeError("storyboard has no positive duration")
-        scale = narration_seconds / planned_seconds
-        for scene in storyboard["scenes"]:
-            scene["duration"] = round(float(scene["duration"]) * scale, 3)
-        storyboard_path.write_text(json.dumps(storyboard, indent=2) + "\n", encoding="utf-8")
-
-        spoken_srt = work / "spoken-captions.srt"
-        timed_words_path = work / "timed-words.json"
-        captions_provider = self.providers.captions(live=True)
-        def caption_stage():
-            self._require_absent(timed_words_path, "captions")
-            self._require_absent(spoken_srt, "captions")
-            minutes = self._duration(narration) / 60
-            self._reserve(spec, "whisper-1", Usage(audio_minutes=minutes))
-            output = captions_provider.transcribe_words(narration)
-            timed_words_path.write_text(json.dumps(output.value, indent=2) + "\n", encoding="utf-8")
-            spoken_srt.write_text(words_to_srt(output.value), encoding="utf-8")
-            self.costs.record(production_id, "captions", "openai", "whisper-1", Usage(audio_minutes=minutes), output.request_id)
-        self.runner.run(production_id, "captions", caption_stage)
-        self._budget(spec)
 
         music = MusicRegistry(self.root / "config/music-registry.json").select(spec["music"]["mood"], spec["music"].get("track_id"))
         manifest_path = work / "render-manifest.json"
@@ -231,7 +286,15 @@ class ProductionService:
             "format": spec["format"], "max_cost_usd": spec["max_cost_usd"], "narration": str(narration),
             "music": str(music.path), "audio": {"music_source": music.source_url, "music_license": music.license, "music_volume": 0.08, "duck_under_voice": True},
             "captions": {"spoken_srt": str(spoken_srt)},
-            "scenes": [{"id": scene["id"], "media": str(asset_dir / f"{scene['asset_key']}.png"), "duration": scene["duration"], "caption": scene["visual_caption"]} for scene in storyboard["scenes"]],
+            "scenes": [{
+                "id": scene["id"],
+                "media": str(asset_dir / f"{scene['asset_key']}.png"),
+                "start": scene["start"],
+                "end": scene["end"],
+                "duration": scene["duration"],
+                "caption": scene["visual_caption"],
+                "motion": scene["motion"],
+            } for scene in storyboard["scenes"]],
             "publish": {"approved": True},
         }
         manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")

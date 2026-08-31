@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS cost_events (
     output_units REAL NOT NULL DEFAULT 0,
     images INTEGER NOT NULL DEFAULT 0,
     audio_minutes REAL NOT NULL DEFAULT 0,
+    characters INTEGER NOT NULL DEFAULT 0,
     cost_usd REAL NOT NULL,
     provider_request_id TEXT,
     created_at TEXT NOT NULL

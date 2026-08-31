@@ -4,7 +4,8 @@ import json
 import os
 from pathlib import Path
 
-from .openai_media import OpenAICaptionProvider, OpenAIImageProvider, OpenAIVoiceProvider
+from .elevenlabs import ElevenLabsVoiceProvider
+from .openai_media import OpenAICaptionProvider, OpenAIImageProvider
 from .openai_text import OpenAITextProvider
 
 
@@ -28,16 +29,27 @@ class ProviderRegistry:
         cfg = self.config["assets"]
         return OpenAIImageProvider(cfg["model"], cfg["quality"])
 
-    def voice(self, *, live: bool = False) -> OpenAIVoiceProvider:
+    def voice(self, *, live: bool = False) -> ElevenLabsVoiceProvider:
         if live:
             self._require_live()
         cfg = self.config["voice"]
-        return OpenAIVoiceProvider(cfg["model"], cfg["voice"], cfg["instructions"])
+        if cfg.get("provider") != "elevenlabs":
+            raise RuntimeError("production narration provider must be elevenlabs")
+        return ElevenLabsVoiceProvider(
+            model=cfg["model"],
+            voice_id=os.getenv("ELEVENLABS_VOICE_ID", cfg["voice_id"]),
+            output_format=cfg.get("output_format", "mp3_44100_128"),
+            voice_settings=cfg.get("settings", {}),
+            max_characters_per_request=cfg.get("max_characters_per_request", 10_000),
+            monthly_character_limit=cfg.get("monthly_character_limit", 27_000),
+        )
 
     def captions(self, *, live: bool = False) -> OpenAICaptionProvider:
+        cfg = self.config["captions"]
+        if cfg.get("provider") == "elevenlabs-alignment":
+            raise RuntimeError("captions are supplied by ElevenLabs narration alignment; transcription is disabled")
         if live:
             self._require_live()
-        cfg = self.config["captions"]
         return OpenAICaptionProvider(cfg["model"])
 
     def thumbnails(self, *, live: bool = False) -> OpenAIImageProvider:
