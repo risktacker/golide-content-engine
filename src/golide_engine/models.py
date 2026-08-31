@@ -17,6 +17,39 @@ AUDIO_CUES = {"none", "tick", "soft-trace", "paper", "swipe", "impact"}
 ANNOTATION_KINDS = {"none", "keyword", "number", "label", "callout"}
 ANNOTATION_POSITIONS = {"top", "center", "bottom", "left", "right"}
 COLOR_TOKENS = {"warm-ivory", "deep-navy", "neon-blue", "golide-gold", "danger-red"}
+LAYER_ROLES = {"foreground", "detail", "label", "inset"}
+LAYER_POSITIONS = {"top", "center", "bottom", "left", "right"}
+LAYER_ENTRANCES = {"fade", "drift-left", "drift-right", "pop"}
+
+
+@dataclass(frozen=True)
+class Layer:
+    media: Path
+    role: str
+    position: str
+    scale: float
+    entrance: str
+    start_offset: float
+    duration: float
+
+    @classmethod
+    def from_dict(cls, raw: dict[str, Any], base: Path, scene_duration: float) -> "Layer":
+        role = str(raw.get("role", "detail"))
+        position = str(raw.get("position", "center"))
+        entrance = str(raw.get("entrance", "fade"))
+        scale = float(raw.get("scale", 0.3))
+        start = float(raw.get("start_offset", 0))
+        duration = float(raw.get("duration", scene_duration - start))
+        if role not in LAYER_ROLES or position not in LAYER_POSITIONS or entrance not in LAYER_ENTRANCES:
+            raise ManifestError("unsupported editorial layer recipe")
+        if not 0.12 <= scale <= 0.65:
+            raise ManifestError("editorial layer scale must be 0.12-0.65")
+        if start < 0 or duration <= 0 or start + duration > scene_duration + 0.05:
+            raise ManifestError("editorial layer timing must fit inside its narration beat")
+        return cls(
+            (base / str(raw["media"])).resolve(), role, position,
+            scale, entrance, start, duration,
+        )
 
 
 @dataclass(frozen=True)
@@ -96,6 +129,7 @@ class Scene:
     visual_role: str
     motion: Motion
     annotation: Annotation
+    layers: tuple[Layer, ...] = ()
 
     @classmethod
     def from_dict(cls, raw: dict[str, Any], base: Path) -> "Scene":
@@ -121,6 +155,10 @@ class Scene:
                 visual_role=str(raw.get("visual_role", "CONTEXT")),
                 motion=Motion.from_dict(motion_raw),
                 annotation=Annotation.from_dict(annotation_raw, duration),
+                layers=tuple(
+                    Layer.from_dict(item, base, duration)
+                    for item in raw.get("layers", [])
+                ),
             )
         except ManifestError:
             raise
