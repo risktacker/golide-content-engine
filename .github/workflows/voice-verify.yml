@@ -1,0 +1,29 @@
+name: Verify ElevenLabs voice connection
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "config/providers.json"
+      - "src/golide_engine/providers/elevenlabs.py"
+      - "src/golide_engine/providers/registry.py"
+      - ".github/workflows/voice-verify.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e .
+      - name: Verify configured private narrator
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: golide voice-verify
