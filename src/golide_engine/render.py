@@ -7,8 +7,8 @@ from collections import Counter
 from pathlib import Path
 
 from .captions import scenes_to_srt
-from .models import Project
-from .motion import scene_filter, transition_for
+from .models import Annotation, Project
+from .motion import annotation_filter, scene_filter, transition_for
 
 
 def _run(command: list[str]) -> None:
@@ -19,6 +19,24 @@ def _run(command: list[str]) -> None:
 
 def _escape_subtitle(path: Path) -> str:
     return str(path.resolve()).replace("'", "\\'").replace(":", "\\:")
+
+
+def _layer_position(position: str, entrance: str) -> tuple[str, str]:
+    positions = {
+        "top": ("(main_w-overlay_w)/2", "main_h*0.08"),
+        "center": ("(main_w-overlay_w)/2", "(main_h-overlay_h)/2"),
+        "bottom": ("(main_w-overlay_w)/2", "main_h*0.82-overlay_h"),
+        "left": ("main_w*0.08", "(main_h-overlay_h)/2"),
+        "right": ("main_w*0.92-overlay_w", "(main_h-overlay_h)/2"),
+    }
+    x, y = positions[position]
+    if entrance == "drift-left":
+        x = f"({x})-12*sin(2*PI*t/2.8)"
+    elif entrance == "drift-right":
+        x = f"({x})+12*sin(2*PI*t/2.8)"
+    else:
+        y = f"({y})+6*sin(2*PI*t/3.2)"
+    return x, y
 
 
 def _render_scene_clips(project: Project, output_dir: Path) -> list[Path]:
@@ -36,13 +54,56 @@ def _render_scene_clips(project: Project, output_dir: Path) -> list[Path]:
             command += ["-i", str(scene.media)]
         else:
             command += ["-stream_loop", "-1", "-t", f"{clip_duration:.3f}", "-i", str(scene.media)]
+        for layer in scene.layers:
+            command += ["-loop", "1", "-t", f"{clip_duration:.3f}", "-i", str(layer.media)]
+
+        if scene.layers:
+            filters = [
+                "[0:v]"
+                + scene_filter(
+                    scene.motion, Annotation(), project.width, project.height,
+                    project.fps, clip_duration, still_image=still_image,
+                )
+                + "[base]"
+            ]
+            current = "base"
+            for layer_index, layer in enumerate(scene.layers, 1):
+                label = f"layer{layer_index}"
+                output_label = f"overlay{layer_index}"
+                pixel_width = max(1, round(project.width * layer.scale))
+                fade_out = max(layer.start_offset, layer.start_offset + layer.duration - 0.15)
+                filters.append(
+                    f"[{layer_index}:v]scale={pixel_width}:-1,format=rgba,"
+                    f"fade=t=in:st={layer.start_offset:.3f}:d=0.15:alpha=1,"
+                    f"fade=t=out:st={fade_out:.3f}:d=0.15:alpha=1[{label}]"
+                )
+                x, y = _layer_position(layer.position, layer.entrance)
+                end_time = layer.start_offset + layer.duration
+                filters.append(
+                    f"[{current}][{label}]overlay=x='{x}':y='{y}':"
+                    f"enable='between(t,{layer.start_offset:.3f},{end_time:.3f})'"
+                    f"[{output_label}]"
+                )
+                current = output_label
+            annotation = annotation_filter(scene.annotation, project.width, project.height)
+            if annotation:
+                filters.append(f"[{current}]{annotation}[vout]")
+            else:
+                filters.append(f"[{current}]null[vout]")
+            command += [
+                "-filter_complex", ";".join(filters), "-map", "[vout]", "-an",
+                "-t", f"{clip_duration:.3f}",
+            ]
+        else:
+            command += [
+                "-an",
+                "-vf", scene_filter(
+                    scene.motion, scene.annotation, project.width, project.height,
+                    project.fps, clip_duration, still_image=still_image,
+                ),
+                "-t", f"{clip_duration:.3f}",
+            ]
         command += [
-            "-an",
-            "-vf", scene_filter(
-                scene.motion, scene.annotation, project.width, project.height,
-                project.fps, clip_duration, still_image=still_image,
-            ),
-            "-t", f"{clip_duration:.3f}",
             "-c:v", "libx264", "-preset", "medium", "-crf", "18",
             "-pix_fmt", "yuv420p", str(destination),
         ]
