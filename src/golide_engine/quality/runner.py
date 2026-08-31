@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .audio import check_audio, measure_loudness
+from .editorial import check_editorial
 from .spelling import check_spelling
 from .visual import check_safe_zones, check_thumbnail, check_video
 
@@ -15,6 +16,7 @@ class QualityReport:
     passed: bool
     failures: tuple[str, ...]
     audio: dict[str, float]
+    editorial: dict[str, float | int]
     checked_at: str
 
 
@@ -26,10 +28,18 @@ class QualityRunner:
         failures = check_audio(video, self.policy)
         failures.extend(check_video(video, format_name, self.policy))
         failures.extend(check_safe_zones(storyboard, self.policy))
+        editorial_failures, editorial_metrics = check_editorial(storyboard, format_name, self.policy)
+        failures.extend(editorial_failures)
         if thumbnail:
             failures.extend(check_thumbnail(thumbnail))
         failures.extend(check_spelling(texts, self.policy))
-        report = QualityReport(not failures, tuple(failures), measure_loudness(video), datetime.now(timezone.utc).isoformat())
+        report = QualityReport(
+            not failures,
+            tuple(failures),
+            measure_loudness(video),
+            editorial_metrics,
+            datetime.now(timezone.utc).isoformat(),
+        )
         if output:
             output.parent.mkdir(parents=True, exist_ok=True)
             output.write_text(json.dumps(asdict(report), indent=2) + "\n", encoding="utf-8")

@@ -3,22 +3,205 @@ from __future__ import annotations
 import json
 import shutil
 import subprocess
+from collections import Counter
 from pathlib import Path
 
-from .models import Project
 from .captions import scenes_to_srt
+from .models import Annotation, Project
+from .motion import annotation_filter, scene_filter, transition_for
 
 
 def _run(command: list[str]) -> None:
-    subprocess.run(command, check=True)
-
-
-def _escape_concat(path: Path) -> str:
-    return str(path).replace("'", "'\\''")
+    result = subprocess.run(command, capture_output=True, text=True, check=False)
+    if result.returncode:
+        raise RuntimeError(result.stderr[-4000:])
 
 
 def _escape_subtitle(path: Path) -> str:
     return str(path.resolve()).replace("'", "\\'").replace(":", "\\:")
+
+
+def _layer_position(position: str, entrance: str) -> tuple[str, str]:
+    positions = {
+        "top": ("(main_w-overlay_w)/2", "main_h*0.08"),
+        "center": ("(main_w-overlay_w)/2", "(main_h-overlay_h)/2"),
+        "bottom": ("(main_w-overlay_w)/2", "main_h*0.82-overlay_h"),
+        "left": ("main_w*0.08", "(main_h-overlay_h)/2"),
+        "right": ("main_w*0.92-overlay_w", "(main_h-overlay_h)/2"),
+    }
+    x, y = positions[position]
+    if entrance == "drift-left":
+        x = f"({x})-12*sin(2*PI*t/2.8)"
+    elif entrance == "drift-right":
+        x = f"({x})+12*sin(2*PI*t/2.8)"
+    else:
+        y = f"({y})+6*sin(2*PI*t/3.2)"
+    return x, y
+
+
+def _render_scene_clips(project: Project, output_dir: Path) -> list[Path]:
+    scene_dir = output_dir / "scenes"
+    scene_dir.mkdir(parents=True, exist_ok=True)
+    rendered: list[Path] = []
+    for index, scene in enumerate(project.scenes):
+        transition = transition_for(scene.motion, project.fps)
+        tail = transition.duration if index + 1 < len(project.scenes) else 0.0
+        clip_duration = scene.duration + tail
+        destination = scene_dir / f"{index:03d}.mp4"
+        command = ["ffmpeg", "-y"]
+        still_image = scene.media.suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"}
+        if still_image:
+            command += ["-i", str(scene.media)]
+        else:
+            command += ["-stream_loop", "-1", "-t", f"{clip_duration:.3f}", "-i", str(scene.media)]
+        for layer in scene.layers:
+            command += ["-loop", "1", "-t", f"{clip_duration:.3f}", "-i", str(layer.media)]
+
+        if scene.layers:
+            filters = [
+                "[0:v]"
+                + scene_filter(
+                    scene.motion, Annotation(), project.width, project.height,
+                    project.fps, clip_duration, still_image=still_image,
+                )
+                + "[base]"
+            ]
+            current = "base"
+            for layer_index, layer in enumerate(scene.layers, 1):
+                label = f"layer{layer_index}"
+                output_label = f"overlay{layer_index}"
+                pixel_width = max(1, round(project.width * layer.scale))
+                fade_out = max(layer.start_offset, layer.start_offset + layer.duration - 0.15)
+                filters.append(
+                    f"[{layer_index}:v]scale={pixel_width}:-1,format=rgba,"
+                    f"fade=t=in:st={layer.start_offset:.3f}:d=0.15:alpha=1,"
+                    f"fade=t=out:st={fade_out:.3f}:d=0.15:alpha=1[{label}]"
+                )
+                x, y = _layer_position(layer.position, layer.entrance)
+                end_time = layer.start_offset + layer.duration
+                filters.append(
+                    f"[{current}][{label}]overlay=x='{x}':y='{y}':"
+                    f"enable='between(t,{layer.start_offset:.3f},{end_time:.3f})'"
+                    f"[{output_label}]"
+                )
+                current = output_label
+            annotation = annotation_filter(scene.annotation, project.width, project.height)
+            if annotation:
+                filters.append(f"[{current}]{annotation}[vout]")
+            else:
+                filters.append(f"[{current}]null[vout]")
+            command += [
+                "-filter_complex", ";".join(filters), "-map", "[vout]", "-an",
+                "-t", f"{clip_duration:.3f}",
+            ]
+        else:
+            command += [
+                "-an",
+                "-vf", scene_filter(
+                    scene.motion, scene.annotation, project.width, project.height,
+                    project.fps, clip_duration, still_image=still_image,
+                ),
+                "-t", f"{clip_duration:.3f}",
+            ]
+        command += [
+            "-c:v", "libx264", "-preset", "medium", "-crf", "18",
+            "-pix_fmt", "yuv420p", str(destination),
+        ]
+        _run(command)
+        rendered.append(destination)
+    return rendered
+
+
+def _compose_scene_clips(project: Project, rendered: list[Path], destination: Path) -> None:
+    if len(rendered) == 1:
+        shutil.copyfile(rendered[0], destination)
+        return
+    command = ["ffmpeg", "-y"]
+    for item in rendered:
+        command += ["-i", str(item)]
+    filters = [f"[{index}:v]settb=AVTB,setpts=PTS-STARTPTS[v{index}]" for index in range(len(rendered))]
+    current = "v0"
+    offset = 0.0
+    for index in range(1, len(rendered)):
+        offset += project.scenes[index - 1].duration
+        transition = transition_for(project.scenes[index - 1].motion, project.fps)
+        output = f"x{index}"
+        filters.append(
+            f"[{current}][v{index}]xfade=transition={transition.name}:"
+            f"duration={transition.duration:.5f}:offset={offset:.5f}[{output}]"
+        )
+        current = output
+    total = sum(scene.duration for scene in project.scenes)
+    filters.append(f"[{current}]trim=duration={total:.5f},setpts=PTS-STARTPTS[vout]")
+    command += [
+        "-filter_complex", ";".join(filters), "-map", "[vout]", "-an",
+        "-c:v", "libx264", "-preset", "medium", "-crf", "18",
+        "-pix_fmt", "yuv420p", str(destination),
+    ]
+    _run(command)
+
+
+def _generate_sfx(kind: str, output: Path) -> None:
+    sources = {
+        "tick": ("sine=frequency=1350:duration=0.07:sample_rate=48000", "volume=0.10,afade=t=out:st=0.02:d=0.05"),
+        "soft-trace": ("anoisesrc=color=pink:duration=0.28:sample_rate=48000", "highpass=f=700,lowpass=f=4800,volume=0.055,afade=t=out:st=0.05:d=0.23"),
+        "paper": ("anoisesrc=color=pink:duration=0.18:sample_rate=48000", "highpass=f=1000,lowpass=f=6500,volume=0.07,afade=t=out:st=0.03:d=0.15"),
+        "swipe": ("anoisesrc=color=white:duration=0.22:sample_rate=48000", "highpass=f=900,lowpass=f=7000,volume=0.04,afade=t=in:st=0:d=0.04,afade=t=out:st=0.10:d=0.12"),
+        "impact": ("sine=frequency=90:duration=0.26:sample_rate=48000", "volume=0.16,afade=t=out:st=0.03:d=0.23"),
+    }
+    source, audio_filter = sources[kind]
+    output.parent.mkdir(parents=True, exist_ok=True)
+    _run([
+        "ffmpeg", "-y", "-f", "lavfi", "-i", source,
+        "-af", audio_filter + ",pan=stereo|c0=c0|c1=c0",
+        "-ar", "48000", "-c:a", "pcm_s16le", str(output),
+    ])
+
+
+def _build_sfx_track(project: Project, output_dir: Path) -> tuple[Path | None, int]:
+    events = []
+    cursor = 0.0
+    last_high_salience = -10.0
+    for scene in project.scenes:
+        cue = scene.motion.audio_cue
+        event_time = cursor + min(max(scene.annotation.start_offset, 0.03), scene.duration * 0.5)
+        if cue == "impact" and event_time - last_high_salience < 2.5:
+            cue = "tick"
+        if cue != "none":
+            events.append((event_time, cue))
+            if cue == "impact":
+                last_high_salience = event_time
+        cursor += scene.duration
+    if not events:
+        return None, 0
+
+    library = output_dir / "procedural-sfx"
+    for cue in sorted({cue for _, cue in events}):
+        _generate_sfx(cue, library / f"{cue}.wav")
+
+    track = output_dir / "sfx-track.wav"
+    command = ["ffmpeg", "-y"]
+    for _, cue in events:
+        command += ["-i", str(library / f"{cue}.wav")]
+    filters = []
+    labels = []
+    for index, (when, _) in enumerate(events):
+        label = f"s{index}"
+        delay = round(when * 1000)
+        filters.append(f"[{index}:a]adelay={delay}|{delay}[{label}]")
+        labels.append(f"[{label}]")
+    total = sum(scene.duration for scene in project.scenes)
+    filters.append(
+        "".join(labels)
+        + f"amix=inputs={len(labels)}:duration=longest:normalize=0,"
+        + f"apad=pad_dur={total:.3f},atrim=duration={total:.3f}[sfx]"
+    )
+    command += [
+        "-filter_complex", ";".join(filters), "-map", "[sfx]",
+        "-ar", "48000", "-ac", "2", "-c:a", "pcm_s16le", str(track),
+    ]
+    _run(command)
+    return track, len(events)
 
 
 def render(project: Project, root: Path) -> Path:
@@ -26,29 +209,10 @@ def render(project: Project, root: Path) -> Path:
         raise RuntimeError("FFmpeg is required but was not found on PATH")
 
     output_dir = root / "build" / project.id
-    scene_dir = output_dir / "scenes"
-    scene_dir.mkdir(parents=True, exist_ok=True)
-    rendered: list[Path] = []
-
-    for index, scene in enumerate(project.scenes):
-        destination = scene_dir / f"{index:03d}.mp4"
-        vf = (
-            f"scale={project.width}:{project.height}:force_original_aspect_ratio=increase,"
-            f"crop={project.width}:{project.height},fps={project.fps},format=yuv420p"
-        )
-        command = ["ffmpeg", "-y"]
-        if scene.media.suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"}:
-            command += ["-loop", "1", "-t", str(scene.duration), "-i", str(scene.media)]
-        else:
-            command += ["-stream_loop", "-1", "-t", str(scene.duration), "-i", str(scene.media)]
-        command += ["-an", "-vf", vf, "-c:v", "libx264", "-preset", "medium", str(destination)]
-        _run(command)
-        rendered.append(destination)
-
-    concat = output_dir / "concat.txt"
-    concat.write_text("".join(f"file '{_escape_concat(x)}'\n" for x in rendered), encoding="utf-8")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    rendered = _render_scene_clips(project, output_dir)
     silent = output_dir / "silent.mp4"
-    _run(["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", str(concat), "-c", "copy", str(silent)])
+    _compose_scene_clips(project, rendered, silent)
 
     visual_srt = output_dir / "visual-labels.srt"
     visual_srt.write_text(
@@ -58,11 +222,13 @@ def render(project: Project, root: Path) -> Path:
         ]),
         encoding="utf-8",
     )
-    video_filters = [
-        "subtitles='{}':force_style='FontName=DejaVu Sans,FontSize=18,Bold=1,"
-        "PrimaryColour=&H00F5F1E8,OutlineColour=&H00111B36,Outline=2,"
-        "Shadow=0,Alignment=8,MarginV=250'".format(_escape_subtitle(visual_srt))
-    ]
+    video_filters = []
+    if visual_srt.read_text(encoding="utf-8").strip():
+        video_filters.append(
+            "subtitles='{}':force_style='FontName=DejaVu Sans,FontSize=18,Bold=1,"
+            "PrimaryColour=&H00F5F1E8,OutlineColour=&H00111B36,Outline=2,"
+            "Shadow=0,Alignment=8,MarginV=250'".format(_escape_subtitle(visual_srt))
+        )
     if project.spoken_captions:
         video_filters.append(
             "subtitles='{}':force_style='FontName=DejaVu Sans,FontSize=12,Bold=1,"
@@ -70,30 +236,43 @@ def render(project: Project, root: Path) -> Path:
             "Shadow=0,Alignment=2,MarginV=120'".format(_escape_subtitle(project.spoken_captions))
         )
 
+    sfx_track, sfx_events = _build_sfx_track(project, output_dir)
     final = output_dir / "video.mp4"
     command = ["ffmpeg", "-y", "-i", str(silent), "-i", str(project.narration)]
+    music_index = None
+    sfx_index = None
     if project.music:
-        if project.music_ducking:
-            audio_filter = (
-                f"[2:a]volume={project.music_volume}[music];"
-                "[music][1:a]sidechaincompress=threshold=0.02:ratio=8:"
-                "attack=20:release=350[ducked];"
-                "[1:a][ducked]amix=inputs=2:duration=first:normalize=0[mixed];"
-                "[mixed]loudnorm=I=-16:TP=-1:LRA=11[a]"
-            )
-        else:
-            audio_filter = (
-                f"[2:a]volume={project.music_volume}[music];"
-                "[1:a][music]amix=inputs=2:duration=first:normalize=0[mixed];"
-                "[mixed]loudnorm=I=-16:TP=-1:LRA=11[a]"
-            )
+        music_index = 2
         command += ["-stream_loop", "-1", "-i", str(project.music)]
-        filter_complex = f"[0:v]{','.join(video_filters)}[v];{audio_filter}"
-        command += ["-filter_complex", filter_complex, "-map", "[v]", "-map", "[a]"]
+    if sfx_track:
+        sfx_index = 3 if project.music else 2
+        command += ["-i", str(sfx_track)]
+
+    filters = [f"[0:v]{','.join(video_filters) if video_filters else 'null'}[v]"]
+    if music_index is not None:
+        filters.append(f"[{music_index}:a]volume={project.music_volume}[music]")
+        if project.music_ducking:
+            filters.append(
+                "[music][1:a]sidechaincompress=threshold=0.02:ratio=8:"
+                "attack=20:release=350[ducked]"
+            )
+            filters.append("[1:a][ducked]amix=inputs=2:duration=first:normalize=0[base]")
+        else:
+            filters.append("[1:a][music]amix=inputs=2:duration=first:normalize=0[base]")
     else:
-        filter_complex = f"[0:v]{','.join(video_filters)}[v];[1:a]loudnorm=I=-16:TP=-1:LRA=11[a]"
-        command += ["-filter_complex", filter_complex, "-map", "[v]", "-map", "[a]"]
-    command += ["-c:v", "libx264", "-preset", "medium", "-crf", "18", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", "-shortest", str(final)]
+        filters.append("[1:a]anull[base]")
+    if sfx_index is not None:
+        filters.append(f"[base][{sfx_index}:a]amix=inputs=2:duration=first:normalize=0[mixed]")
+    else:
+        filters.append("[base]anull[mixed]")
+    filters.append("[mixed]loudnorm=I=-16:TP=-1:LRA=11[a]")
+
+    command += [
+        "-filter_complex", ";".join(filters), "-map", "[v]", "-map", "[a]",
+        "-c:v", "libx264", "-preset", "medium", "-crf", "18",
+        "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart",
+        "-shortest", str(final),
+    ]
     _run(command)
 
     metadata = {
@@ -106,6 +285,10 @@ def render(project: Project, root: Path) -> Path:
         "music_source": project.music_source,
         "music_license": project.music_license,
         "dual_caption_tracks": bool(project.spoken_captions),
+        "motion_recipes": dict(Counter(scene.motion.type for scene in project.scenes)),
+        "transition_recipes": dict(Counter(scene.motion.transition for scene in project.scenes)),
+        "annotations": sum(scene.annotation.kind != "none" for scene in project.scenes),
+        "procedural_sfx_events": sfx_events,
     }
     (output_dir / "metadata.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
     return final

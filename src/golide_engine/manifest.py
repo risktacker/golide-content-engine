@@ -19,4 +19,10 @@ def validate_assets(project: Project) -> list[str]:
     if project.spoken_captions and not project.spoken_captions.exists():
         missing.append(str(project.spoken_captions))
     missing.extend(str(scene.media) for scene in project.scenes if not scene.media.exists())
+    missing.extend(
+        str(layer.media)
+        for scene in project.scenes
+        for layer in scene.layers
+        if not layer.media.exists()
+    )
     return missing
