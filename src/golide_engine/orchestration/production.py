@@ -41,8 +41,12 @@ class ProductionService:
             raise RuntimeError("paid production lock is closed")
         if spec.get("production_authorized") is not True or spec.get("release", {}).get("approved") is not True:
             raise RuntimeError("production and release must both be explicitly approved")
-        if spec.get("release", {}).get("channel_id") != "UCqaXVBSBz7iQsRHOupKt-3w":
-            raise RuntimeError("production does not target the locked G$LIDE channel")
+        destination = spec.get("output_destination", "render-and-upload")
+        channel_id = spec.get("release", {}).get("channel_id")
+        if destination == "render-and-upload" and channel_id != "UCqaXVBSBz7iQsRHOupKt-3w":
+            raise RuntimeError("upload production does not target the locked G$LIDE channel")
+        if destination not in {"render-only", "render-and-queue", "render-and-upload"}:
+            raise RuntimeError(f"unsupported output destination: {destination}")
         voice_cfg = self.providers.config.get("voice", {})
         if voice_cfg.get("provider") != "elevenlabs":
             raise RuntimeError("production narration must use ElevenLabs")
@@ -126,32 +130,50 @@ class ProductionService:
             raise RuntimeError(f"concept is not production-ready: {score.verdict} {score.blockers}")
         (work / "concept-score.json").write_text(json.dumps({"total": score.total, "verdict": score.verdict, "feedback_adjustment": adjustment}, indent=2) + "\n", encoding="utf-8")
 
-        text = self.providers.text(live=True)
         research_path = work / "research.json"
-        def research_stage():
-            self._require_absent(research_path, "research")
-            self._reserve(spec, "gpt-5.6-sol", Usage(input_tokens=max(1, len(spec["brief"]) // 4), output_tokens=12000))
-            output = text.generate_json(
-                "Research only verifiable claims for an original G$LIDE explainer. Every claim requires a direct source URL. Reject sensational claims unsupported by evidence.",
-                spec["brief"], RESEARCH_SCHEMA, web_search=True,
-            )
-            research_path.write_text(json.dumps(output.value, indent=2) + "\n", encoding="utf-8")
-            self._record_text(production_id, "research", output)
-            self.costs.record(production_id, "research-search", "openai", "web-search", Usage(tool_calls=1))
-        self.runner.run(production_id, "research", research_stage)
-        research = json.loads(research_path.read_text(encoding="utf-8"))
-        self._budget(spec)
-
         script_path = work / "script.txt"
-        def script_stage():
-            self._require_absent(script_path, "script")
-            script_input = spec["brief"] + json.dumps(research)
-            self._reserve(spec, "gpt-5.6-sol", Usage(input_tokens=max(1, len(script_input) // 4), output_tokens=12000))
-            output = text.write_script(spec["brief"], json.dumps(research))
-            script_path.write_text(output.value.strip() + "\n", encoding="utf-8")
-            self._record_text(production_id, "script", output)
-        self.runner.run(production_id, "script", script_stage)
-        script = script_path.read_text(encoding="utf-8").strip()
+        script_mode = spec.get("script_mode", "creative_brief")
+        if script_mode == "approved_script":
+            script = str(spec.get("approved_script") or "").strip()
+            if len(script) < 40:
+                raise RuntimeError("approved script is missing or too short")
+            if not research_path.exists():
+                research_path.write_text(json.dumps({
+                    "summary": "Administrator supplied an approved script; no automated research request was made.",
+                    "claims": [],
+                }, indent=2) + "\n", encoding="utf-8")
+            if not script_path.exists():
+                script_path.write_text(script + "\n", encoding="utf-8")
+            research = json.loads(research_path.read_text(encoding="utf-8"))
+        elif script_mode == "creative_brief":
+            text = self.providers.text(live=True)
+            def research_stage():
+                self._require_absent(research_path, "research")
+                self._reserve(spec, "gpt-5.6-sol", Usage(input_tokens=max(1, len(spec["brief"]) // 4), output_tokens=12000))
+                output = text.generate_json(
+                    "Research only verifiable claims for an original G$LIDE explainer. Every claim requires a direct source URL. Reject sensational claims unsupported by evidence.",
+                    spec["brief"], RESEARCH_SCHEMA, web_search=True,
+                )
+                research_path.write_text(json.dumps(output.value, indent=2) + "\n", encoding="utf-8")
+                self._record_text(production_id, "research", output)
+                self.costs.record(production_id, "research-search", "openai", "web-search", Usage(tool_calls=1))
+            self.runner.run(production_id, "research", research_stage)
+            research = json.loads(research_path.read_text(encoding="utf-8"))
+            self._budget(spec)
+
+            def script_stage():
+                self._require_absent(script_path, "script")
+                script_input = spec["brief"] + json.dumps(research)
+                self._reserve(spec, "gpt-5.6-sol", Usage(input_tokens=max(1, len(script_input) // 4), output_tokens=12000))
+                output = text.write_script(spec["brief"], json.dumps(research))
+                script_path.write_text(output.value.strip() + "\n", encoding="utf-8")
+                self._record_text(production_id, "script", output)
+            self.runner.run(production_id, "script", script_stage)
+            script = script_path.read_text(encoding="utf-8").strip()
+            self._budget(spec)
+        else:
+            raise RuntimeError(f"unsupported script mode: {script_mode}")
+
         self._budget(spec)
 
         voice_cfg = self.providers.config["voice"]
