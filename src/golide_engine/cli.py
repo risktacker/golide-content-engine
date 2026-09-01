@@ -144,13 +144,40 @@ def main() -> int:
             return 0
         spec_path = due[0]
         spec = json.loads(spec_path.read_text(encoding="utf-8"))
-        ProductionService(Path.cwd(), database).run(spec_path)
+        youtube, _ = services(credentials(args.token))
+        assert_channel(youtube, "UCqaXVBSBz7iQsRHOupKt-3w")
+        from .operations.budget import BudgetPaused
+        from .youtube.demand import TopicDemandRejected
+        try:
+            ProductionService(Path.cwd(), database, youtube=youtube).run(spec_path)
+        except BudgetPaused as exc:
+            print(json.dumps({
+                "status": "paused_funds",
+                "production_id": spec["id"],
+                "provider": exc.provider,
+                "required_usd": exc.required_usd,
+                "remaining_usd": exc.remaining_usd,
+                "resume": "automatic_from_checkpoint_after_recharge",
+            }))
+            return 0
+        except TopicDemandRejected as exc:
+            database.execute(
+                "UPDATE productions SET status='topic_rejected', updated_at=datetime('now') WHERE production_id=?",
+                (spec["id"],),
+            )
+            rejected = spec_path.with_suffix(".topic-rejected.json")
+            spec_path.rename(rejected)
+            print(json.dumps({
+                "status": "topic_rejected",
+                "production_id": spec["id"],
+                "reason": str(exc),
+                "next_action": "select_next_evidence_valid_trending_candidate",
+            }))
+            return 0
         package_root = Path("release-packages") / spec["id"]
         package = json.loads((package_root / "package-manifest.json").read_text(encoding="utf-8"))
         files = package["files"]
         metadata = json.loads((package_root / files["metadata"]["file"]).read_text(encoding="utf-8"))
-        youtube, _ = services(credentials(args.token))
-        assert_channel(youtube, "UCqaXVBSBz7iQsRHOupKt-3w")
         uploader = YouTubeUploader(youtube, database, "UCqaXVBSBz7iQsRHOupKt-3w")
         release = package["release"]
         video_id = uploader.upload_private(spec["id"], package_root / files["video"]["file"], package_root / files["thumbnail"]["file"], metadata, release)
