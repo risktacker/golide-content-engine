@@ -17,3 +17,4 @@ class TrendingFallbackContractTests(unittest.TestCase):
         self.assertIn('stage="trend-candidates"', source)
         self.assertIn("Do not copy video titles or premises.", source)
         self.assertIn("candidate, demand = gate.select(spec)", source)
+        self.assertIn('"platform_seed_demand" not in item', source)

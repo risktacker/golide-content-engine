@@ -201,7 +201,28 @@ class ProductionService:
                     production_id, "trend-candidates", trend_candidate_stage, attempts=1
                 )
                 packet = json.loads(candidate_path.read_text(encoding="utf-8"))
-                spec["topic_candidates"] = packet["candidates"]
+                candidates = packet["candidates"]
+                if any(
+                    "platform_seed_demand" not in item for item in candidates
+                ):
+                    current_seeds = gate.trending_seeds()
+                    if not current_seeds:
+                        raise TopicDemandRejected(
+                            "the YouTube trend feed returned no usable Science & Technology seeds"
+                        )
+                    for item in candidates:
+                        item["platform_seed_demand"] = asdict(
+                            gate.evaluate_trending_candidate(
+                                item.get("query") or item["title"],
+                                spec["format"],
+                                current_seeds,
+                            )
+                        )
+                    candidate_path.write_text(
+                        json.dumps({"candidates": candidates}, indent=2) + "\n",
+                        encoding="utf-8",
+                    )
+                spec["topic_candidates"] = candidates
                 candidate, demand = gate.select(spec)
 
             spec["brief"] = candidate["brief"]
