@@ -32,7 +32,10 @@ from .stage_runner import StageRunner
 class ProductionService:
     """Runs one explicitly approved production through a checkpointed release build."""
 
-    def __init__(\n        self, root: str | Path, database: Database, youtube: Any | None = None,\n        stage_listener=None,\n    ):
+    def __init__(
+        self, root: str | Path, database: Database, youtube: Any | None = None,
+        stage_listener=None,
+    ):
         self.root = Path(root).resolve()
         self.database = database
         self.youtube = youtube
@@ -41,7 +44,9 @@ class ProductionService:
         self.budget = MonthlyBudget(
             database, self.costs, self.root / "config/budget-policy.json"
         )
-        self.runner = StageRunner(\n            database, Notifier(self.root / "failure-events"), on_update=stage_listener\n        )
+        self.runner = StageRunner(
+            database, Notifier(self.root / "failure-events"), on_update=stage_listener
+        )
 
     def _assert_authorized(self, spec: dict[str, Any]) -> None:
         if os.getenv("GOLIDE_ENABLE_PAID_PRODUCTION") != "1":
