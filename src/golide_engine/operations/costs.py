@@ -90,6 +90,23 @@ class CostTracker:
         )
         return cost
 
+    def provider_total(self, production_id: str, provider: str) -> float:
+        rows = self.database.rows(
+            "SELECT COALESCE(SUM(cost_usd), 0) total FROM cost_events WHERE production_id=? AND provider=?",
+            (production_id, provider),
+        )
+        return round(float(rows[0]["total"]), 6)
+
+    def monthly_total(self, provider: str) -> float:
+        month = utc_now()[:7]
+        rows = self.database.rows(
+            """SELECT COALESCE(SUM(cost_usd), 0) total
+               FROM cost_events
+               WHERE provider=? AND substr(created_at, 1, 7)=?""",
+            (provider, month),
+        )
+        return round(float(rows[0]["total"]), 6)
+
     def total(self, production_id: str) -> float:
         rows = self.database.rows("SELECT COALESCE(SUM(cost_usd), 0) total FROM cost_events WHERE production_id=?", (production_id,))
         return round(float(rows[0]["total"]), 6)
