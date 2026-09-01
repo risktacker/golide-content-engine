@@ -9,7 +9,7 @@ def due_specs(queue_directory: str | Path, now: datetime | None = None) -> list[
     now = now or datetime.now(timezone.utc)
     due = []
     for path in Path(queue_directory).glob("*.json"):
-        if path.name.endswith(".completed.json"):
+        if path.name.endswith((".completed.json", ".topic-rejected.json")):
             continue
         spec = json.loads(path.read_text(encoding="utf-8"))
         generate_at = datetime.fromisoformat(spec["generate_at"].replace("Z", "+00:00"))
