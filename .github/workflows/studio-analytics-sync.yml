@@ -1,0 +1,27 @@
+name: Sync analytics to private GOLIDE Studio
+
+on:
+  schedule:
+    - cron: "0 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  sync:
+    if: vars.GOLIDE_ANALYTICS_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e '.[production]'
+      - name: Deliver stored YouTube analytics to Studio
+        env:
+          YOUTUBE_OAUTH_TOKEN_B64: ${{ secrets.YOUTUBE_OAUTH_TOKEN_B64 }}
+          GOLIDE_STUDIO_BASE_URL: "https://golide-studio.esiahkapinga.chatgpt.site"
+          GOLIDE_STUDIO_BYPASS_TOKEN: ${{ secrets.GOLIDE_STUDIO_BYPASS_TOKEN }}
+        run: golide analytics-sync-studio
