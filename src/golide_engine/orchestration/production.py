@@ -173,7 +173,16 @@ class ProductionService:
                         url = item["authoritative_source_url"].strip()
                         if not url.startswith(("https://", "http://")):
                             continue
-                        candidates.append({**item, "evidence_valid": True})
+                        seed_demand = gate.evaluate_trending_candidate(
+                            item.get("query") or item["title"],
+                            spec["format"],
+                            seeds,
+                        )
+                        candidates.append({
+                            **item,
+                            "evidence_valid": True,
+                            "platform_seed_demand": asdict(seed_demand),
+                        })
                     if len(candidates) < 3:
                         raise TopicDemandRejected(
                             "trend planning did not return three evidence-backed candidates"
