@@ -144,6 +144,21 @@ def main() -> int:
         if studio_url:
             from .studio_bridge import StudioBridge
             bridge = StudioBridge(studio_url)
+
+        from .orchestration.schedule import materialize_due
+        created = materialize_due(
+            args.queue, "config/automation-schedule.json"
+        )
+        for created_path in created:
+            created_spec = json.loads(created_path.read_text(encoding="utf-8"))
+            created_spec["_studio_job_id"] = created_spec["id"]
+            created_path.write_text(
+                json.dumps(created_spec, indent=2) + "\n", encoding="utf-8"
+            )
+            if bridge:
+                bridge.register(created_spec)
+
+        if bridge:
             claimed = bridge.claim_next()
             if claimed:
                 queue_root = Path(args.queue)
