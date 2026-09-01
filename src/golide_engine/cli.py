@@ -1,6 +1,7 @@
 import argparse
 from datetime import date
 import json
+import os
 from pathlib import Path
 
 from .manifest import load_project, validate_assets
@@ -138,19 +139,63 @@ def main() -> int:
         from .youtube.auth import assert_channel, credentials, services
         from .youtube.uploader import YouTubeUploader
         database = _database(args.database)
+        bridge = None
+        studio_url = os.getenv("GOLIDE_STUDIO_BASE_URL", "").strip()
+        if studio_url:
+            from .studio_bridge import StudioBridge
+            bridge = StudioBridge(studio_url)
+            claimed = bridge.claim_next()
+            if claimed:
+                queue_root = Path(args.queue)
+                queue_root.mkdir(parents=True, exist_ok=True)
+                claimed_path = queue_root / f"{claimed['jobId']}.json"
+                if not claimed_path.exists():
+                    claimed_path.write_text(
+                        json.dumps(claimed["spec"], indent=2) + "\n", encoding="utf-8"
+                    )
         due = due_specs(args.queue)
         if not due:
             print(json.dumps({"status": "no_due_production"}))
             return 0
         spec_path = due[0]
         spec = json.loads(spec_path.read_text(encoding="utf-8"))
+        studio_job_id = spec.get("_studio_job_id")
         youtube, _ = services(credentials(args.token))
         assert_channel(youtube, "UCqaXVBSBz7iQsRHOupKt-3w")
         from .operations.budget import BudgetPaused
         from .youtube.demand import TopicDemandRejected
+        service = ProductionService(Path.cwd(), database, youtube=youtube)
+
+        def report_studio(status: str, stage: str, error: str | None = None) -> None:
+            if not bridge or not studio_job_id:
+                return
+            voice_rows = database.rows(
+                "SELECT COALESCE(SUM(characters), 0) characters FROM cost_events WHERE production_id=? AND provider='elevenlabs'",
+                (spec["id"],),
+            )
+            run_url = None
+            if os.getenv("GITHUB_RUN_ID"):
+                run_url = (
+                    f"{os.getenv('GITHUB_SERVER_URL', 'https://github.com')}/"
+                    f"{os.getenv('GITHUB_REPOSITORY', 'risktacker/golide-content-engine')}/"
+                    f"actions/runs/{os.getenv('GITHUB_RUN_ID')}"
+                )
+            bridge.report(
+                studio_job_id,
+                status=status,
+                stage=stage,
+                actual_cost_usd=service.costs.total(spec["id"]),
+                openai_cost_usd=service.costs.provider_total(spec["id"], "openai"),
+                elevenlabs_cost_usd=service.costs.provider_total(spec["id"], "elevenlabs"),
+                elevenlabs_characters=int(voice_rows[0]["characters"]),
+                run_url=run_url,
+                error=error,
+            )
+
         try:
-            ProductionService(Path.cwd(), database, youtube=youtube).run(spec_path)
+            service.run(spec_path)
         except BudgetPaused as exc:
+            report_studio("paused_funds", "funding-check", str(exc))
             print(json.dumps({
                 "status": "paused_funds",
                 "production_id": spec["id"],
@@ -161,6 +206,7 @@ def main() -> int:
             }))
             return 0
         except TopicDemandRejected as exc:
+            report_studio("topic_rejected", "platform-demand", str(exc))
             database.execute(
                 "UPDATE productions SET status='topic_rejected', updated_at=datetime('now') WHERE production_id=?",
                 (spec["id"],),
@@ -185,6 +231,7 @@ def main() -> int:
             uploader.schedule(spec["id"], video_id, release["scheduled_at"], release)
         done = spec_path.with_suffix(".completed.json")
         spec_path.rename(done)
+        report_studio("scheduled", "youtube-scheduled")
         print(json.dumps({"status": "scheduled", "production_id": spec["id"], "youtube_video_id": video_id}))
         return 0
 
