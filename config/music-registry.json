@@ -1,4 +1,20 @@
 {
-  "version": 1,
-  "tracks": []
+  "version": 2,
+  "tracks": [
+    {
+      "id": "golide-curiosity-bed-v1",
+      "path": "../generated/music/golide-curiosity-bed-v1.m4a",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": "",
+      "moods": [
+        "curious-tension",
+        "focused-documentary",
+        "curious",
+        "science"
+      ]
+    }
+  ]
 }

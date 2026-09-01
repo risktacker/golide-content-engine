@@ -3,6 +3,7 @@ from datetime import date
 import json
 import os
 from pathlib import Path
+import shutil
 
 from .manifest import load_project, validate_assets
 from .render import render
@@ -144,6 +145,21 @@ def main() -> int:
         if studio_url:
             from .studio_bridge import StudioBridge
             bridge = StudioBridge(studio_url)
+
+        from .orchestration.schedule import materialize_due
+        created = materialize_due(
+            args.queue, "config/automation-schedule.json"
+        )
+        for created_path in created:
+            created_spec = json.loads(created_path.read_text(encoding="utf-8"))
+            created_spec["_studio_job_id"] = created_spec["id"]
+            created_path.write_text(
+                json.dumps(created_spec, indent=2) + "\n", encoding="utf-8"
+            )
+            if bridge:
+                bridge.register(created_spec)
+
+        if bridge:
             claimed = bridge.claim_next()
             if claimed:
                 queue_root = Path(args.queue)
@@ -232,6 +248,10 @@ def main() -> int:
         done = spec_path.with_suffix(".completed.json")
         spec_path.rename(done)
         report_studio("scheduled", "youtube-scheduled")
+        # A successful private upload and schedule is the durable checkpoint. Remove
+        # paid working media so runner caches stay small; paused jobs retain theirs.
+        for directory in ("productions", "build", "release-packages"):
+            shutil.rmtree(Path(directory) / spec["id"], ignore_errors=True)
         print(json.dumps({"status": "scheduled", "production_id": spec["id"], "youtube_video_id": video_id}))
         return 0
 

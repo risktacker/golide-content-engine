@@ -32,6 +32,25 @@ class StudioBridgeTests(unittest.TestCase):
         self.assertEqual("paused_funds", status_payload["status"])
         self.assertEqual(0.2, status_payload["providerUsage"]["openAiCostUsd"])
 
+    def test_register_posts_recurring_spec_idempotently(self):
+        calls = []
+        def transport(method, url, headers, body):
+            calls.append((method, url, headers, body))
+            return 201, b'{"ok":true}'
+        bridge = StudioBridge(
+            "https://studio.example",
+            transport=transport,
+            token_provider=lambda: "token",
+        )
+        spec = {"id": "golide-long-2026-09-01", "format": "long"}
+        bridge.register(spec)
+        self.assertEqual("POST", calls[0][0])
+        self.assertTrue(calls[0][1].endswith("/api/engine/jobs/register"))
+        self.assertEqual(
+            {"jobId": spec["id"], "spec": spec},
+            json.loads(calls[0][3]),
+        )
+
     def test_no_content_means_no_due_studio_job(self):
         bridge = StudioBridge(
             "https://studio.example",
