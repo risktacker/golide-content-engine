@@ -110,6 +110,20 @@ class ProductionService:
             raise RuntimeError(f"unsafe generated identifier: {value!r}")
         return value
 
+    @staticmethod
+    def _fit_annotation(raw: dict[str, Any] | None, beat_duration: float) -> dict[str, Any]:
+        """Fit model-authored annotation timing inside its authoritative narration beat."""
+        annotation = dict(raw or {})
+        if annotation.get("kind", "none") == "none":
+            return annotation
+        beat = max(0.01, float(beat_duration))
+        start = max(0.0, min(float(annotation.get("start_offset", 0)), beat - 0.01))
+        remaining = max(0.01, beat - start)
+        duration = max(0.01, min(float(annotation.get("duration", remaining)), remaining))
+        annotation["start_offset"] = round(start, 4)
+        annotation["duration"] = round(duration, 4)
+        return annotation
+
     def run(self, spec_path: str | Path) -> Path:
         spec = json.loads(Path(spec_path).read_text(encoding="utf-8"))
         self._assert_authorized(spec)
@@ -498,7 +512,9 @@ class ProductionService:
                 "caption": scene["visual_caption"],
                 "visual_role": scene["visual_role"],
                 "motion": scene["motion"],
-                "annotation": scene["motion"]["annotation"],
+                "annotation": self._fit_annotation(
+                    scene["motion"].get("annotation"), scene["duration"]
+                ),
                 "layers": [{
                     "media": str(asset_dir / f"{layer['asset_key']}.png"),
                     "role": layer["role"],
