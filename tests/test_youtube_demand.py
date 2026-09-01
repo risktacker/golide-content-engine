@@ -67,6 +67,35 @@ class DemandGateTests(unittest.TestCase):
         cached = gate.evaluate("quantum battery breakthrough", "short")
         self.assertEqual(result, cached)
 
+    def test_current_popular_seeds_can_supply_transparent_fallback_signal(self):
+        gate = YouTubeDemandGate(YouTube(False), self.db, now=self.now)
+        seeds = [
+            {
+                "title": "Quantum battery breakthrough explained",
+                "markets": ["US", "GB", "IN", "ZA"],
+                "views_per_day": 250000,
+            }
+            for _ in range(20)
+        ]
+        seed_result = gate.evaluate_trending_candidate(
+            "quantum battery breakthrough", "long", seeds
+        )
+        self.assertEqual("pass", seed_result.verdict)
+        self.assertEqual("youtube-most-popular-seed-proxy", seed_result.signal_type)
+        spec = {
+            "format": "long",
+            "brief": "quantum battery",
+            "topic_candidates": [{
+                "title": "Quantum battery",
+                "query": "quantum battery breakthrough",
+                "brief": "quantum battery",
+                "evidence_valid": True,
+                "platform_seed_demand": seed_result.__dict__,
+            }],
+        }
+        _, selected = gate.select(spec)
+        self.assertEqual(seed_result, selected)
+
     def test_weak_signal_is_rejected(self):
         gate = YouTubeDemandGate(YouTube(False), self.db, now=self.now)
         spec = {

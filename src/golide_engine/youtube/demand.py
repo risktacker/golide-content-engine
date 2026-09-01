@@ -163,10 +163,17 @@ class YouTubeDemandGate:
         evidence_valid = [candidate for candidate in candidates if candidate.get("evidence_valid") is True]
         if not evidence_valid:
             raise TopicDemandRejected("no evidence-valid topic candidates were supplied")
-        ranked = [
-            (candidate, self.evaluate(candidate.get("query") or candidate["title"], spec["format"]))
-            for candidate in evidence_valid
-        ]
+        ranked = []
+        for candidate in evidence_valid:
+            result = self.evaluate(
+                candidate.get("query") or candidate["title"], spec["format"]
+            )
+            seed_payload = candidate.get("platform_seed_demand")
+            if isinstance(seed_payload, dict):
+                seed_result = DemandResult(**seed_payload)
+                if seed_result.score > result.score:
+                    result = seed_result
+            ranked.append((candidate, result))
         candidate, result = max(ranked, key=lambda item: item[1].score)
         if result.verdict != "pass":
             raise TopicDemandRejected(
@@ -174,7 +181,47 @@ class YouTubeDemandGate:
             )
         return candidate, result
 
-    def trending_seeds(self, category_id: str = "28") -> list[dict[str, str]]:
+    def evaluate_trending_candidate(
+        self, query: str, format: str, seeds: list[dict[str, Any]]
+    ) -> DemandResult:
+        """Score an original candidate against current most-popular seed telemetry."""
+        query_tokens = self._tokens(query)
+        velocities = [
+            float(item.get("views_per_day", 0) or 0) for item in seeds
+        ]
+        overlaps = []
+        markets: set[str] = set()
+        for item in seeds:
+            markets.update(item.get("markets") or [item.get("market", "")])
+            title_tokens = self._tokens(str(item.get("title", "")))
+            if query_tokens:
+                overlaps.append(len(query_tokens & title_tokens) / len(query_tokens))
+        market_coverage = len({market for market in markets if market})
+        median_velocity = statistics.median(velocities) if velocities else 0.0
+        top_velocity = max(velocities, default=0.0)
+        overlap = max(overlaps, default=0.0)
+        score = round(
+            min(25.0, len(seeds) * 1.25)
+            + min(30.0, math.log10(1 + median_velocity) * 7.5)
+            + min(15.0, math.log10(1 + top_velocity) * 3.0)
+            + min(15.0, market_coverage / max(1, len(self.markets)) * 15.0)
+            + min(15.0, overlap * 15.0),
+            1,
+        )
+        return DemandResult(
+            query=query,
+            score=score,
+            verdict="pass" if score >= self.threshold else "reject",
+            recent_videos=len(seeds),
+            median_views_per_day=round(median_velocity, 2),
+            top_views_per_day=round(top_velocity, 2),
+            market_coverage=market_coverage,
+            title_query_overlap=round(overlap, 4),
+            measured_at=utc_now(),
+            signal_type="youtube-most-popular-seed-proxy",
+        )
+
+    def trending_seeds(self, category_id: str = "28") -> list[dict[str, Any]]:
         """Return current platform seeds for the topic planner, not copy-ready topics."""
         seeds: dict[str, dict[str, str]] = {}
         for market in self.markets:
@@ -188,9 +235,25 @@ class YouTubeDemandGate:
             for item in response.get("items", []):
                 video_id = item.get("id")
                 if video_id:
-                    seeds.setdefault(video_id, {
+                    snippet = item.get("snippet", {})
+                    statistics_payload = item.get("statistics", {})
+                    published = snippet.get("publishedAt")
+                    age_days = 1.0
+                    if published:
+                        published_at = datetime.fromisoformat(
+                            published.replace("Z", "+00:00")
+                        )
+                        age_days = max(
+                            1.0,
+                            (self.now - published_at).total_seconds() / 86400,
+                        )
+                    views = int(statistics_payload.get("viewCount", 0) or 0)
+                    entry = seeds.setdefault(video_id, {
                         "video_id": video_id,
-                        "title": item.get("snippet", {}).get("title", ""),
-                        "market": market,
+                        "title": snippet.get("title", ""),
+                        "markets": [],
+                        "views_per_day": round(views / age_days, 2),
                     })
+                    if market not in entry["markets"]:
+                        entry["markets"].append(market)
         return list(seeds.values())
