@@ -86,3 +86,40 @@ CREATE TABLE IF NOT EXISTS uploads (
 CREATE INDEX IF NOT EXISTS idx_analytics_video ON analytics_daily(youtube_video_id);
 CREATE INDEX IF NOT EXISTS idx_cost_production ON cost_events(production_id);
 CREATE INDEX IF NOT EXISTS idx_stage_production ON stage_runs(production_id, stage);
+
+
+CREATE TABLE IF NOT EXISTS budget_allocations (
+    production_id TEXT NOT NULL REFERENCES productions(production_id),
+    provider TEXT NOT NULL,
+    month TEXT NOT NULL,
+    budget_class TEXT NOT NULL CHECK(budget_class IN ('scheduled', 'independent')),
+    allocated_usd REAL NOT NULL CHECK(allocated_usd >= 0),
+    created_at TEXT NOT NULL,
+    PRIMARY KEY(production_id, provider, month)
+);
+
+CREATE TABLE IF NOT EXISTS budget_pauses (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    production_id TEXT NOT NULL REFERENCES productions(production_id),
+    stage TEXT NOT NULL,
+    provider TEXT NOT NULL,
+    reason TEXT NOT NULL,
+    required_usd REAL NOT NULL DEFAULT 0,
+    remaining_usd REAL NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL,
+    resolved_at TEXT
+);
+
+CREATE TABLE IF NOT EXISTS topic_demand_snapshots (
+    cache_key TEXT PRIMARY KEY,
+    query TEXT NOT NULL,
+    format TEXT NOT NULL CHECK(format IN ('short', 'long')),
+    score REAL NOT NULL,
+    verdict TEXT NOT NULL CHECK(verdict IN ('pass', 'reject')),
+    result_json TEXT NOT NULL,
+    created_at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_budget_month ON budget_allocations(provider, budget_class, month);
+CREATE INDEX IF NOT EXISTS idx_budget_pause_open ON budget_pauses(production_id, resolved_at);
+CREATE INDEX IF NOT EXISTS idx_topic_demand_created ON topic_demand_snapshots(created_at);
