@@ -25,7 +25,7 @@ from ..scoring import score_concept
 from ..storage.database import Database
 from ..youtube.demand import TopicDemandRejected, YouTubeDemandGate
 from ..youtube_metadata import load_metadata_policy, validate_upload_metadata
-from .schemas import METADATA_SCHEMA, RESEARCH_SCHEMA, STORYBOARD_SCHEMA
+from .schemas import METADATA_SCHEMA, RESEARCH_SCHEMA, STORYBOARD_SCHEMA, TREND_CANDIDATES_SCHEMA
 from .stage_runner import StageRunner
 
 
@@ -114,22 +114,6 @@ class ProductionService:
         work = self.root / "productions" / production_id
         work.mkdir(parents=True, exist_ok=True)
 
-        demand_path = work / "platform-demand.json"
-        if self.youtube is not None:
-            candidate, demand = YouTubeDemandGate(self.youtube, self.database).select(spec)
-            spec["brief"] = candidate["brief"]
-            spec["title"] = candidate.get("title", spec.get("title", production_id))
-            spec["platform_demand"] = asdict(demand)
-            Path(spec_path).write_text(json.dumps(spec, indent=2) + "\n", encoding="utf-8")
-            demand_path.write_text(
-                json.dumps(spec["platform_demand"], indent=2) + "\n", encoding="utf-8"
-            )
-            self.database.upsert_production(spec, "running")
-        elif spec.get("platform_demand", {}).get("verdict") != "pass":
-            raise TopicDemandRejected(
-                "platform-wide YouTube demand validation is required before production"
-            )
-
         # Validate every paid unit before the first API request.
         text_model = self.providers.config["text"]["model"]
         orientation = "portrait" if spec["format"] == "short" else "landscape"
@@ -147,13 +131,93 @@ class ProductionService:
         voice_cfg = self.providers.config["voice"]
         self.costs.require_rate(voice_cfg["model"], "fallback_per_million_characters")
         self.costs.require_rate("web-search", "per_tool_call")
+        text = self.providers.text(live=True)
+
+        demand_path = work / "platform-demand.json"
+        if self.youtube is not None:
+            gate = YouTubeDemandGate(self.youtube, self.database)
+            try:
+                candidate, demand = gate.select(spec)
+            except TopicDemandRejected:
+                candidate_path = work / "trend-candidates.json"
+
+                def trend_candidate_stage():
+                    self._require_absent(candidate_path, "trend-candidates")
+                    seeds = gate.trending_seeds()
+                    if not seeds:
+                        raise TopicDemandRejected(
+                            "the YouTube trend feed returned no usable Science & Technology seeds"
+                        )
+                    seed_packet = json.dumps(
+                        [{"title": item["title"], "market": item["market"]} for item in seeds[:60]],
+                        separators=(",", ":"),
+                    )
+                    self._reserve(
+                        spec,
+                        text_model,
+                        Usage(
+                            input_tokens=max(1, (len(spec["brief"]) + len(seed_packet)) // 4),
+                            output_tokens=3000,
+                        ),
+                        stage="trend-candidates",
+                    )
+                    output = text.generate_json(
+                        "Create 3 to 5 original G$LIDE science, technology, unusual-true-event or impossible-but-real explainer candidates from current YouTube platform signals. Do not copy video titles or premises. Each candidate must have a concise search query and one direct authoritative primary or institutional source URL found through web search. Reject gossip, celebrity news, politics, unsupported claims and topics that cannot support a premium visual explanation.",
+                        f"CURRENT BRIEF\n{spec['brief']}\n\nPLATFORM TREND SEEDS\n{seed_packet}",
+                        TREND_CANDIDATES_SCHEMA,
+                        web_search=True,
+                        max_output_tokens=3000,
+                    )
+                    candidates = []
+                    for item in output.value["candidates"]:
+                        url = item["authoritative_source_url"].strip()
+                        if not url.startswith(("https://", "http://")):
+                            continue
+                        candidates.append({**item, "evidence_valid": True})
+                    if len(candidates) < 3:
+                        raise TopicDemandRejected(
+                            "trend planning did not return three evidence-backed candidates"
+                        )
+                    candidate_path.write_text(
+                        json.dumps({"candidates": candidates}, indent=2) + "\n",
+                        encoding="utf-8",
+                    )
+                    self._record_text(production_id, "trend-candidates", output)
+                    self.costs.record(
+                        production_id, "trend-candidates-search", "openai",
+                        "web-search", Usage(tool_calls=1),
+                    )
+
+                self.runner.run(
+                    production_id, "trend-candidates", trend_candidate_stage, attempts=1
+                )
+                packet = json.loads(candidate_path.read_text(encoding="utf-8"))
+                spec["topic_candidates"] = packet["candidates"]
+                candidate, demand = gate.select(spec)
+
+            spec["brief"] = candidate["brief"]
+            spec["title"] = candidate.get("title", spec.get("title", production_id))
+            spec["platform_demand"] = asdict(demand)
+            spec["selected_topic_source"] = candidate.get("authoritative_source_url")
+            Path(spec_path).write_text(
+                json.dumps(spec, indent=2) + "\n", encoding="utf-8"
+            )
+            demand_path.write_text(
+                json.dumps(spec["platform_demand"], indent=2) + "\n",
+                encoding="utf-8",
+            )
+            self.database.upsert_production(spec, "running")
+        elif spec.get("platform_demand", {}).get("verdict") != "pass":
+            raise TopicDemandRejected(
+                "platform-wide YouTube demand validation is required before production"
+            )
+
         adjustment = FeedbackEngine(self.database).adjustment(spec["format"], spec.get("generation_parameters", {}))
         score = score_concept(spec["format"], spec["concept"]["scores"], adjustment)
         if score.verdict != "produce":
             raise RuntimeError(f"concept is not production-ready: {score.verdict} {score.blockers}")
         (work / "concept-score.json").write_text(json.dumps({"total": score.total, "verdict": score.verdict, "feedback_adjustment": adjustment}, indent=2) + "\n", encoding="utf-8")
 
-        text = self.providers.text(live=True)
         research_path = work / "research.json"
         def research_stage():
             self._require_absent(research_path, "research")
