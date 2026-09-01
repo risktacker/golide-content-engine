@@ -24,7 +24,8 @@
     "publish_time": "18:00",
     "timezone": "Africa/Lusaka",
     "maximum_seconds": 300,
-    "upload_mode": "private-first-automatic-schedule"
+    "upload_mode": "private-first-automatic-schedule",
+    "first_pipeline_upload": true
   },
   "loop": {
     "required": true,
