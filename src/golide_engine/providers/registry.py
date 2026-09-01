@@ -23,11 +23,13 @@ class ProviderRegistry:
         cfg = self.config["text"]
         return OpenAITextProvider(cfg["model"], cfg["reasoning_effort"])
 
-    def images(self, *, live: bool = False) -> OpenAIImageProvider:
+    def images(self, tier: str = "support", *, live: bool = False) -> OpenAIImageProvider:
         if live:
             self._require_live()
+        if tier not in {"support", "hero"}:
+            raise ValueError("image tier must be support or hero")
         cfg = self.config["assets"]
-        return OpenAIImageProvider(cfg["model"], cfg["quality"])
+        return OpenAIImageProvider(cfg[f"{tier}_model"], cfg[f"{tier}_quality"])
 
     def voice(self, *, live: bool = False) -> ElevenLabsVoiceProvider:
         if live:
