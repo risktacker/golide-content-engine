@@ -46,6 +46,9 @@ def main() -> int:
     analytics_parser.add_argument("--token", default=".secrets/youtube-token.json")
     analytics_parser.add_argument("--start")
     analytics_parser.add_argument("--end")
+    analytics_sync_parser = sub.add_parser("analytics-sync-studio")
+    analytics_sync_parser.add_argument("--database", default="data/golide.sqlite3")
+    analytics_sync_parser.add_argument("--token", default=".secrets/youtube-token.json")
     feedback_parser = sub.add_parser("feedback-recalculate")
     feedback_parser.add_argument("--database", default="data/golide.sqlite3")
     voice_verify_parser = sub.add_parser("voice-verify")
@@ -91,6 +94,26 @@ def main() -> int:
         collector = AnalyticsCollector(analytics, database)
         count = collector.collect(date.fromisoformat(args.start), date.fromisoformat(args.end)) if args.start and args.end else collector.collect_daily()
         print(json.dumps({"rows_collected": count}))
+        return 0
+
+    if args.command == "analytics-sync-studio":
+        from .studio_analytics import build_studio_analytics_payload
+        from .studio_bridge import StudioBridge
+        from .youtube.auth import assert_channel, credentials, services
+        studio_url = os.getenv("GOLIDE_STUDIO_BASE_URL", "").strip()
+        if not studio_url:
+            raise RuntimeError("GOLIDE_STUDIO_BASE_URL is required")
+        database = _database(args.database)
+        youtube, _ = services(credentials(args.token))
+        channel_id = "UCqaXVBSBz7iQsRHOupKt-3w"
+        assert_channel(youtube, channel_id)
+        payload = build_studio_analytics_payload(database, youtube, channel_id)
+        StudioBridge(studio_url).sync_analytics(payload)
+        print(json.dumps({
+            "status": "studio_analytics_synced",
+            "daily": len(payload["daily"]),
+            "videos": len(payload["videos"]),
+        }))
         return 0
 
     if args.command == "feedback-recalculate":
@@ -195,10 +218,10 @@ def main() -> int:
         assert_channel(youtube, "UCqaXVBSBz7iQsRHOupKt-3w")
         from .operations.budget import BudgetPaused
         from .youtube.demand import TopicDemandRejected
-        service = ProductionService(Path.cwd(), database, youtube=youtube)
+        service = None
 
         def report_studio(status: str, stage: str, error: str | None = None) -> None:
-            if not bridge or not studio_job_id:
+            if not bridge or not studio_job_id or service is None:
                 return
             voice_rows = database.rows(
                 "SELECT COALESCE(SUM(characters), 0) characters FROM cost_events WHERE production_id=? AND provider='elevenlabs'",
@@ -230,6 +253,21 @@ def main() -> int:
                     "error": str(exc),
                 }))
 
+        def stage_listener(
+            production_id: str, stage_status: str, stage: str, error: str | None
+        ) -> None:
+            mapped = {
+                "running": "running",
+                "completed": "running",
+                "paused_funds": "paused_funds",
+                "failed": "failed",
+            }[stage_status]
+            report_studio(mapped, stage, error)
+
+        service = ProductionService(
+            Path.cwd(), database, youtube=youtube, stage_listener=stage_listener
+        )
+        report_studio("running", "production-started")
         try:
             service.run(spec_path)
         except BudgetPaused as exc:
@@ -258,6 +296,9 @@ def main() -> int:
                 "next_action": "select_next_evidence_valid_trending_candidate",
             }))
             return 0
+        except Exception as exc:
+            report_studio("failed", "production-failed", str(exc))
+            raise
         package_root = Path("release-packages") / spec["id"]
         package = json.loads((package_root / "package-manifest.json").read_text(encoding="utf-8"))
         files = package["files"]

@@ -8,10 +8,30 @@ from ..operations.retry import with_retry
 from ..storage.database import Database, utc_now
 
 
+StageListener = Callable[[str, str, str, str | None], None]
+
+
 class StageRunner:
-    def __init__(self, database: Database, notifier: Notifier):
+    def __init__(
+        self,
+        database: Database,
+        notifier: Notifier,
+        on_update: StageListener | None = None,
+    ):
         self.database = database
         self.notifier = notifier
+        self.on_update = on_update
+
+    def _emit(
+        self, production_id: str, status: str, stage: str, error: str | None = None
+    ) -> None:
+        if not self.on_update:
+            return
+        try:
+            self.on_update(production_id, status, stage, error)
+        except Exception:
+            # Telemetry must never block or repeat a paid production stage.
+            pass
 
     def run(self, production_id: str, stage: str, operation: Callable[[], object], attempts: int = 2):
         completed = self.database.rows(
@@ -19,6 +39,7 @@ class StageRunner:
             (production_id, stage),
         )
         if completed:
+            self._emit(production_id, "completed", stage)
             return None
         previous = self.database.rows(
             "SELECT COALESCE(MAX(attempt), 0) attempt FROM stage_runs WHERE production_id=? AND stage=?",
@@ -29,6 +50,7 @@ class StageRunner:
             "INSERT INTO stage_runs(production_id, stage, attempt, status, started_at) VALUES (?, ?, ?, 'running', ?)",
             (production_id, stage, attempt, utc_now()),
         )
+        self._emit(production_id, "running", stage)
         try:
             result = with_retry(operation, attempts=attempts)
         except Exception as exc:
@@ -55,15 +77,18 @@ class StageRunner:
                         paused.required_usd, paused.remaining_usd, utc_now(),
                     ),
                 )
+                self._emit(production_id, "paused_funds", stage, str(paused))
                 raise paused
             self.database.execute(
                 "UPDATE stage_runs SET status='failed', completed_at=?, error=? WHERE production_id=? AND stage=? AND attempt=?",
                 (utc_now(), str(exc)[:2000], production_id, stage, attempt),
             )
             self.notifier.failure(production_id, stage, str(exc))
+            self._emit(production_id, "failed", stage, str(exc))
             raise
         self.database.execute(
             "UPDATE stage_runs SET status='completed', completed_at=? WHERE production_id=? AND stage=? AND attempt=?",
             (utc_now(), production_id, stage, attempt),
         )
+        self._emit(production_id, "completed", stage)
         return result
