@@ -64,20 +64,12 @@ class ProductionService:
         ), output.request_id)
 
     def _record_image(self, production_id: str, stage: str, fallback_model: str, output: ProviderOutput) -> None:
-        usage = output.details or {}
-        details = usage.get("input_tokens_details", {}) or {}
-        text_tokens = int(details.get("text_tokens", 0) or 0)
-        image_tokens = int(details.get("image_tokens", 0) or 0)
-        output_tokens = int(usage.get("output_tokens", 0) or 0)
-        if text_tokens or image_tokens or output_tokens:
-            if text_tokens:
-                self.costs.record(production_id, stage, "openai", "gpt-image-2-text-input", Usage(input_tokens=text_tokens), output.request_id)
-            if image_tokens:
-                self.costs.record(production_id, stage, "openai", "gpt-image-2-image-input", Usage(input_tokens=image_tokens), output.request_id)
-            if output_tokens:
-                self.costs.record(production_id, stage, "openai", "gpt-image-2-image-output", Usage(output_tokens=output_tokens), output.request_id)
-        else:
-            self.costs.record(production_id, stage, "openai", fallback_model, Usage(images=1), output.request_id)
+        # Published per-image output prices are the predictable reservation unit.
+        # Request IDs remain attached for provider reconciliation and audit.
+        self.costs.record(
+            production_id, stage, "openai", fallback_model,
+            Usage(images=1), output.request_id,
+        )
 
     def _budget(self, spec: dict[str, Any]) -> None:
         spent = self.costs.total(spec["id"])
