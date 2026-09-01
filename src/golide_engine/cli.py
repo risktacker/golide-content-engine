@@ -157,10 +157,25 @@ def main() -> int:
                 json.dumps(created_spec, indent=2) + "\n", encoding="utf-8"
             )
             if bridge:
-                bridge.register(created_spec)
+                try:
+                    bridge.register(created_spec)
+                except Exception as exc:
+                    print(json.dumps({
+                        "status": "studio_telemetry_unavailable",
+                        "operation": "register",
+                        "error": str(exc),
+                    }))
 
         if bridge:
-            claimed = bridge.claim_next()
+            try:
+                claimed = bridge.claim_next()
+            except Exception as exc:
+                claimed = None
+                print(json.dumps({
+                    "status": "studio_telemetry_unavailable",
+                    "operation": "claim",
+                    "error": str(exc),
+                }))
             if claimed:
                 queue_root = Path(args.queue)
                 queue_root.mkdir(parents=True, exist_ok=True)
@@ -196,17 +211,24 @@ def main() -> int:
                     f"{os.getenv('GITHUB_REPOSITORY', 'risktacker/golide-content-engine')}/"
                     f"actions/runs/{os.getenv('GITHUB_RUN_ID')}"
                 )
-            bridge.report(
-                studio_job_id,
-                status=status,
-                stage=stage,
-                actual_cost_usd=service.costs.total(spec["id"]),
-                openai_cost_usd=service.costs.provider_total(spec["id"], "openai"),
-                elevenlabs_cost_usd=service.costs.provider_total(spec["id"], "elevenlabs"),
-                elevenlabs_characters=int(voice_rows[0]["characters"]),
-                run_url=run_url,
-                error=error,
-            )
+            try:
+                bridge.report(
+                    studio_job_id,
+                    status=status,
+                    stage=stage,
+                    actual_cost_usd=service.costs.total(spec["id"]),
+                    openai_cost_usd=service.costs.provider_total(spec["id"], "openai"),
+                    elevenlabs_cost_usd=service.costs.provider_total(spec["id"], "elevenlabs"),
+                    elevenlabs_characters=int(voice_rows[0]["characters"]),
+                    run_url=run_url,
+                    error=error,
+                )
+            except Exception as exc:
+                print(json.dumps({
+                    "status": "studio_telemetry_unavailable",
+                    "operation": "report",
+                    "error": str(exc),
+                }))
 
         try:
             service.run(spec_path)
