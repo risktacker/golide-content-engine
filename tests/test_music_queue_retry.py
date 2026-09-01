@@ -17,6 +17,13 @@ class MusicQueueRetryTests(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 MusicRegistry(path).select("curious")
 
+    def test_owned_music_recipe_renders_with_ci_ffmpeg(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / "owned.m4a"
+            MusicRegistry._generate_owned_bed(path, duration_seconds=1)
+            self.assertTrue(path.exists())
+            self.assertGreater(path.stat().st_size, 1000)
+
     def test_completed_queue_item_is_ignored(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
