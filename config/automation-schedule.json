@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "timezone": "Africa/Lusaka",
+  "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+  "rules": [
+    {
+      "id": "golide-long-tuesday",
+      "format": "long",
+      "start_date": "2026-09-01",
+      "weekdays": ["tuesday"],
+      "generate_time": "06:00",
+      "publish_time": "18:00",
+      "openai_allocation_usd": 0.50
+    },
+    {
+      "id": "golide-shorts-wed-fri-sun",
+      "format": "short",
+      "start_date": "2026-09-09",
+      "weekdays": ["wednesday", "friday", "sunday"],
+      "generate_time": "09:00",
+      "publish_time": "13:00",
+      "openai_allocation_usd": 0.20
+    }
+  ]
+}
