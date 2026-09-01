@@ -236,9 +236,19 @@ class ProductionService:
         script_path = work / "script.txt"
         def script_stage():
             self._require_absent(script_path, "script")
-            script_input = spec["brief"] + json.dumps(research)
-            self._reserve(spec, text_model, Usage(input_tokens=max(1, len(script_input) // 4), output_tokens=12000))
-            output = text.write_script(spec["brief"], json.dumps(research))
+            target_words = "130-170" if spec["format"] == "short" else "650-780"
+            script_brief = (
+                f"FORMAT={spec['format']} TARGET_WORDS={target_words}. "
+                "Stay inside the word range and end with a circular question. "
+                + spec["brief"]
+            )
+            script_input = script_brief + json.dumps(research)
+            self._reserve(
+                spec, text_model,
+                Usage(input_tokens=max(1, len(script_input) // 4), output_tokens=6000),
+                stage="script",
+            )
+            output = text.write_script(script_brief, json.dumps(research))
             script_path.write_text(output.value.strip() + "\n", encoding="utf-8")
             self._record_text(production_id, "script", output)
         self.runner.run(production_id, "script", script_stage)
@@ -312,15 +322,22 @@ class ProductionService:
                 Usage(input_tokens=max(1, (len(script) + len(beat_packet)) // 4), output_tokens=12000),
             )
             output = text.generate_json(
-                "Act as the G$LIDE Editorial Director. Return exactly one scene for every supplied beat_id and never invent timing. Map meaning to visible response: introduce nouns, punch spoken numbers, trace processes, switch composition for contrast, link cause to effect, and reserve strong reveals for key insights. Center subjects with negative space and an 8% safe margin. Use only named G$LIDE colors: neon-blue, golide-gold, warm-ivory, deep-navy, and danger-red only for danger/error. Reuse asset_key values when one explanatory asset can be reframed, progressively revealed, pushed, panned or match-cut across beats. Use secondary_assets only when an independent foreground, detail crop, label object or inset materially improves the explanation. Across the entire project, request no more than four unique secondary assets for a Short or twelve for long-form; reuse them across beats and request isolated paper-cut objects on transparent backgrounds. Vary camera and transition recipes; avoid Ken Burns repetition, transition spam, sound-effect spam, caption overload and avatar wallpaper. Motion, annotation and audio cues must be semantically synchronized. Use impact only for a true reveal and use none when narration should carry the emphasis.",
+                "Act as the G$LIDE Editorial Director. Return exactly one scene for every supplied beat_id and never invent timing. Map meaning to visible response: introduce nouns, punch spoken numbers, trace processes, switch composition for contrast, link cause to effect, and reserve strong reveals for key insights. Center subjects with negative space and an 8% safe margin. Use only named G$LIDE colors: neon-blue, golide-gold, warm-ivory, deep-navy, and danger-red only for danger/error. STRICT ASSET LIMIT: use no more than five unique primary asset_key values for a Short or twelve for long-form. Reuse those assets through reframing, progressive reveals, pushes, pans, crops, layers and match-cuts. Use secondary_assets only when an independent foreground, detail crop, label object or inset materially improves the explanation. Across the entire project, request no more than four unique secondary assets for a Short or twelve for long-form; reuse them across beats and request isolated paper-cut objects on transparent backgrounds. Vary camera and transition recipes; avoid Ken Burns repetition, transition spam, sound-effect spam, caption overload and avatar wallpaper. Motion, annotation and audio cues must be semantically synchronized. Use impact only for a true reveal and use none when narration should carry the emphasis.",
                 f"FORMAT={spec['format']} NARRATION_SECONDS={narration_seconds:.3f}\nSCRIPT\n{script}\nTIMED_BEATS\n{beat_packet}",
                 STORYBOARD_SCHEMA,
+                max_output_tokens=18000,
             )
             planned_scenes = output.value["scenes"]
             planned = {scene["beat_id"]: scene for scene in planned_scenes}
             expected = {beat["id"] for beat in beats}
             if len(planned) != len(planned_scenes) or set(planned) != expected:
                 raise RuntimeError("storyboard must contain every editorial beat exactly once")
+            primary_limit = 5 if spec["format"] == "short" else 12
+            primary_keys = {scene["asset_key"] for scene in planned_scenes}
+            if len(primary_keys) > primary_limit:
+                raise RuntimeError(
+                    f"storyboard requested {len(primary_keys)} primary assets; limit is {primary_limit}"
+                )
             merged = []
             for beat in beats:
                 scene = planned[beat["id"]]
