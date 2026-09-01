@@ -84,3 +84,31 @@ METADATA_SCHEMA = {
     "required": ["title", "description", "tags", "category_id", "video_language", "recording_location", "location_is_material", "altered_content", "chapters"],
     "additionalProperties": False,
 }
+
+TREND_CANDIDATES_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "candidates": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 5,
+            "items": {
+                "type": "object",
+                "properties": {
+                    "title": {"type": "string"},
+                    "query": {"type": "string"},
+                    "brief": {"type": "string"},
+                    "evidence_summary": {"type": "string"},
+                    "authoritative_source_url": {"type": "string"},
+                },
+                "required": [
+                    "title", "query", "brief", "evidence_summary",
+                    "authoritative_source_url",
+                ],
+                "additionalProperties": False,
+            },
+        }
+    },
+    "required": ["candidates"],
+    "additionalProperties": False,
+}
