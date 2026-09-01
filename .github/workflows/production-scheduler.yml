@@ -2,6 +2,7 @@ name: Approved production scheduler
 
 on:
   push:
+    branches: ["main"]
     paths:
       - ".github/production-kick"
   schedule:
