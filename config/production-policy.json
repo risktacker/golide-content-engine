@@ -1,18 +1,30 @@
 {
-  "version": 2,
-  "locked_from_review": "2026-08-29",
+  "version": 3,
+  "locked_from_review": "2026-09-01",
   "shorts": {
-    "start_date": "2026-09-07",
+    "start_date": "2026-09-09",
     "weekly_count": 3,
-    "days": ["Monday", "Wednesday", "Friday"],
-    "time": "15:00",
+    "days": [
+      "Wednesday",
+      "Friday",
+      "Sunday"
+    ],
+    "generation_time": "09:00",
+    "publish_time": "13:00",
     "timezone": "Africa/Lusaka",
-    "upload_mode_until_youtube_oauth": "manual"
+    "upload_mode": "private-first-automatic-schedule"
   },
   "long_form": {
+    "start_date": "2026-09-01",
     "weekly_count": 1,
+    "days": [
+      "Tuesday"
+    ],
+    "generation_time": "06:00",
+    "publish_time": "18:00",
+    "timezone": "Africa/Lusaka",
     "maximum_seconds": 300,
-    "first_pipeline_upload": true
+    "upload_mode": "private-first-automatic-schedule"
   },
   "loop": {
     "required": true,
@@ -25,14 +37,30 @@
     "profile": "mature-high-retention-explainer",
     "age_character": "mature-adult",
     "energy": "very_high",
-    "pace_wpm_range": [170, 190],
-    "delivery": ["commanding", "curious", "intelligent", "dynamic", "conversational"],
+    "pace_wpm_range": [
+      170,
+      190
+    ],
+    "delivery": [
+      "commanding",
+      "curious",
+      "intelligent",
+      "dynamic",
+      "conversational"
+    ],
     "performance_notes": [
       "Use deliberate emphasis changes every sentence, not constant shouting.",
       "Accelerate through setup and pause briefly before the reveal.",
       "Sound invested in the discovery, not like a calm documentary reader."
     ],
-    "forbidden": ["young-sounding", "calm-documentary", "trailer-voice", "flat", "sleepy", "specific-creator-clone"],
+    "forbidden": [
+      "young-sounding",
+      "calm-documentary",
+      "trailer-voice",
+      "flat",
+      "sleepy",
+      "specific-creator-clone"
+    ],
     "benchmark_note": "Match the engagement mechanics of leading visual explainers without cloning a specific creator's voice."
   },
   "captions": {
@@ -40,14 +68,26 @@
     "visual_position": "scene-dependent",
     "spoken_captions": true,
     "spoken_position": "bottom-safe-zone",
-    "spoken_words_per_phrase": [2, 5],
+    "spoken_words_per_phrase": [
+      2,
+      5
+    ],
     "spoken_size": "smaller-than-visual-label",
-    "palette": ["warm-ivory", "deep-navy", "neon-blue", "golide-gold"],
+    "palette": [
+      "warm-ivory",
+      "deep-navy",
+      "neon-blue",
+      "golide-gold"
+    ],
     "red_usage": "danger-or-error-only"
   },
   "music": {
     "required": true,
-    "allowed_sources": ["youtube-audio-library", "owned", "cc0"],
+    "allowed_sources": [
+      "youtube-audio-library",
+      "owned",
+      "cc0"
+    ],
     "license_record_required": true,
     "vocals": false,
     "target_under_narration_lufs": -24,
@@ -61,22 +101,39 @@
     "prioritize_consistency_over_paid-regeneration": true,
     "composition": {
       "default": "center-stage-with-negative-space",
-      "subject_width_percent": [38, 68],
+      "subject_width_percent": [
+        38,
+        68
+      ],
       "safe_margin_percent": 8,
       "edge_to_edge_default": false,
       "simple_explanation_mode": "one centered paper figure or object with only the props needed to explain the idea",
-      "wide_scene_allowed_for": ["scale", "environment", "journey", "before-after-comparison"]
+      "wide_scene_allowed_for": [
+        "scale",
+        "environment",
+        "journey",
+        "before-after-comparison"
+      ]
     },
     "avatar": {
       "style": "unrealistic-paper-cut-GOLIDE-avatar",
-      "use_for": ["emotion", "reaction", "amusement", "human-stakes", "thumbnail-expression"],
+      "use_for": [
+        "emotion",
+        "reaction",
+        "amusement",
+        "human-stakes",
+        "thumbnail-expression"
+      ],
       "default_role": "supporting-presenter-not-full-frame-host",
       "face_consistency_required": true
     }
   },
   "thumbnail": {
     "aspect_ratio": "16:9",
-    "output_dimensions": [1280, 720],
+    "output_dimensions": [
+      1280,
+      720
+    ],
     "text_policy": "none",
     "avatar_required_when_human_reaction_improves_curiosity": true,
     "avatar_style": "consistent-unrealistic-paper-cut-esiah-avatar",
