@@ -1,16 +1,23 @@
 {
-  "version": 2,
+  "version": 3,
   "dry_run_by_default": true,
   "text": {
     "provider": "openai",
-    "model": "gpt-5.6-sol",
-    "reasoning_effort": "high",
-    "research_web_search": true
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "medium",
+    "research_web_search": true,
+    "max_output_tokens": 6000
   },
   "assets": {
     "provider": "openai",
-    "model": "gpt-image-2",
-    "quality": "medium",
+    "support_model": "gpt-image-1-mini",
+    "support_quality": "medium",
+    "hero_model": "gpt-image-2",
+    "hero_quality": "medium",
+    "hero_limits": {
+      "short": 1,
+      "long": 2
+    },
     "short_size": "1024x1536",
     "long_size": "1536x1024"
   },
@@ -38,7 +45,7 @@
   "thumbnail": {
     "provider": "openai",
     "model": "gpt-image-2",
-    "quality": "high",
+    "quality": "medium",
     "size": "1536x1024",
     "text_policy": "no-words-by-default",
     "avatar_style": "consistent-unrealistic-paper-cut-esiah-avatar"

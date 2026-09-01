@@ -4,6 +4,7 @@ import json
 import os
 import subprocess
 import re
+from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
@@ -11,6 +12,7 @@ from ..captions import words_to_beats, words_to_srt
 from ..feedback.engine import FeedbackEngine
 from ..manifest import load_project
 from ..music.registry import MusicRegistry
+from ..operations.budget import MonthlyBudget
 from ..operations.costs import CostTracker, Usage
 from ..operations.notifications import Notifier
 from ..providers.base import ProviderOutput
@@ -21,6 +23,7 @@ from ..release.package import ReleasePackager
 from ..render import render
 from ..scoring import score_concept
 from ..storage.database import Database
+from ..youtube.demand import TopicDemandRejected, YouTubeDemandGate
 from ..youtube_metadata import load_metadata_policy, validate_upload_metadata
 from .schemas import METADATA_SCHEMA, RESEARCH_SCHEMA, STORYBOARD_SCHEMA
 from .stage_runner import StageRunner
@@ -29,11 +32,15 @@ from .stage_runner import StageRunner
 class ProductionService:
     """Runs one explicitly approved production through a checkpointed release build."""
 
-    def __init__(self, root: str | Path, database: Database):
+    def __init__(self, root: str | Path, database: Database, youtube: Any | None = None):
         self.root = Path(root).resolve()
         self.database = database
+        self.youtube = youtube
         self.providers = ProviderRegistry(self.root / "config/providers.json")
         self.costs = CostTracker(database, self.root / "config/provider-pricing.json")
+        self.budget = MonthlyBudget(
+            database, self.costs, self.root / "config/budget-policy.json"
+        )
         self.runner = StageRunner(database, Notifier(self.root / "failure-events"))
 
     def _assert_authorized(self, spec: dict[str, Any]) -> None:
@@ -50,26 +57,19 @@ class ProductionService:
             raise RuntimeError("GOLIDE narrator is not approved; production remains locked")
 
     def _record_text(self, production_id: str, stage: str, output: ProviderOutput) -> None:
-        self.costs.record(production_id, stage, "openai", "gpt-5.6-sol", Usage(
+        model = self.providers.config["text"]["model"]
+        self.costs.record(production_id, stage, "openai", model, Usage(
             input_tokens=output.input_tokens, cached_input_tokens=output.cached_input_tokens,
             output_tokens=output.output_tokens,
         ), output.request_id)
 
     def _record_image(self, production_id: str, stage: str, fallback_model: str, output: ProviderOutput) -> None:
-        usage = output.details or {}
-        details = usage.get("input_tokens_details", {}) or {}
-        text_tokens = int(details.get("text_tokens", 0) or 0)
-        image_tokens = int(details.get("image_tokens", 0) or 0)
-        output_tokens = int(usage.get("output_tokens", 0) or 0)
-        if text_tokens or image_tokens or output_tokens:
-            if text_tokens:
-                self.costs.record(production_id, stage, "openai", "gpt-image-2-text-input", Usage(input_tokens=text_tokens), output.request_id)
-            if image_tokens:
-                self.costs.record(production_id, stage, "openai", "gpt-image-2-image-input", Usage(input_tokens=image_tokens), output.request_id)
-            if output_tokens:
-                self.costs.record(production_id, stage, "openai", "gpt-image-2-image-output", Usage(output_tokens=output_tokens), output.request_id)
-        else:
-            self.costs.record(production_id, stage, "openai", fallback_model, Usage(images=1), output.request_id)
+        # Published per-image output prices are the predictable reservation unit.
+        # Request IDs remain attached for provider reconciliation and audit.
+        self.costs.record(
+            production_id, stage, "openai", fallback_model,
+            Usage(images=1), output.request_id,
+        )
 
     def _budget(self, spec: dict[str, Any]) -> None:
         spent = self.costs.total(spec["id"])
@@ -81,10 +81,15 @@ class ProductionService:
         if path.exists():
             raise RuntimeError(f"{stage} has an uncheckpointed artifact at {path}; reconcile it instead of repeating a paid request")
 
-    def _reserve(self, spec: dict[str, Any], model: str, usage: Usage, provider: str = "openai") -> None:
-        projected = self.costs.total(spec["id"]) + self.costs.estimate(provider, model, usage)
-        if projected > float(spec["max_cost_usd"]):
-            raise RuntimeError(f"next request could exceed the ${float(spec['max_cost_usd']):.2f} production ceiling")
+    def _reserve(
+        self,
+        spec: dict[str, Any],
+        model: str,
+        usage: Usage,
+        provider: str = "openai",
+        stage: str = "paid-request",
+    ) -> None:
+        self.budget.reserve(spec, model, usage, provider=provider, stage=stage)
 
     @staticmethod
     def _duration(audio: Path) -> float:
@@ -108,12 +113,34 @@ class ProductionService:
         production_id = spec["id"]
         work = self.root / "productions" / production_id
         work.mkdir(parents=True, exist_ok=True)
-        # Validate every paid unit before the first API request to prevent a partial, unusable production.
-        self.costs.require_rate("gpt-5.6-sol", "input_per_million_tokens")
-        self.costs.require_rate("gpt-5.6-sol", "output_per_million_tokens")
-        image_cost_model = f"gpt-image-2-medium-{ 'portrait' if spec['format'] == 'short' else 'landscape' }"
-        self.costs.require_rate(image_cost_model, "fallback_per_image")
-        self.costs.require_rate("gpt-image-2-high-landscape", "fallback_per_image")
+
+        demand_path = work / "platform-demand.json"
+        if self.youtube is not None:
+            candidate, demand = YouTubeDemandGate(self.youtube, self.database).select(spec)
+            spec["brief"] = candidate["brief"]
+            spec["title"] = candidate.get("title", spec.get("title", production_id))
+            spec["platform_demand"] = asdict(demand)
+            Path(spec_path).write_text(json.dumps(spec, indent=2) + "\n", encoding="utf-8")
+            demand_path.write_text(
+                json.dumps(spec["platform_demand"], indent=2) + "\n", encoding="utf-8"
+            )
+            self.database.upsert_production(spec, "running")
+        elif spec.get("platform_demand", {}).get("verdict") != "pass":
+            raise TopicDemandRejected(
+                "platform-wide YouTube demand validation is required before production"
+            )
+
+        # Validate every paid unit before the first API request.
+        text_model = self.providers.config["text"]["model"]
+        orientation = "portrait" if spec["format"] == "short" else "landscape"
+        support_image_cost_model = f"gpt-image-1-mini-medium-{orientation}"
+        hero_image_cost_model = f"gpt-image-2-medium-{orientation}"
+        thumbnail_cost_model = "gpt-image-2-medium-landscape"
+        self.costs.require_rate(text_model, "input_per_million_tokens")
+        self.costs.require_rate(text_model, "output_per_million_tokens")
+        self.costs.require_rate(support_image_cost_model, "fallback_per_image")
+        self.costs.require_rate(hero_image_cost_model, "fallback_per_image")
+        self.costs.require_rate(thumbnail_cost_model, "fallback_per_image")
         self.costs.require_rate("gpt-image-2-text-input", "input_per_million_tokens")
         self.costs.require_rate("gpt-image-2-image-input", "input_per_million_tokens")
         self.costs.require_rate("gpt-image-2-image-output", "output_per_million_tokens")
@@ -130,7 +157,7 @@ class ProductionService:
         research_path = work / "research.json"
         def research_stage():
             self._require_absent(research_path, "research")
-            self._reserve(spec, "gpt-5.6-sol", Usage(input_tokens=max(1, len(spec["brief"]) // 4), output_tokens=12000))
+            self._reserve(spec, text_model, Usage(input_tokens=max(1, len(spec["brief"]) // 4), output_tokens=12000))
             output = text.generate_json(
                 "Research only verifiable claims for an original G$LIDE explainer. Every claim requires a direct source URL. Reject sensational claims unsupported by evidence.",
                 spec["brief"], RESEARCH_SCHEMA, web_search=True,
@@ -146,7 +173,7 @@ class ProductionService:
         def script_stage():
             self._require_absent(script_path, "script")
             script_input = spec["brief"] + json.dumps(research)
-            self._reserve(spec, "gpt-5.6-sol", Usage(input_tokens=max(1, len(script_input) // 4), output_tokens=12000))
+            self._reserve(spec, text_model, Usage(input_tokens=max(1, len(script_input) // 4), output_tokens=12000))
             output = text.write_script(spec["brief"], json.dumps(research))
             script_path.write_text(output.value.strip() + "\n", encoding="utf-8")
             self._record_text(production_id, "script", output)
@@ -217,7 +244,7 @@ class ProductionService:
             self._require_absent(storyboard_path, "storyboard")
             beat_packet = json.dumps(beats, separators=(",", ":"))
             self._reserve(
-                spec, "gpt-5.6-sol",
+                spec, text_model,
                 Usage(input_tokens=max(1, (len(script) + len(beat_packet)) // 4), output_tokens=12000),
             )
             output = text.generate_json(
@@ -258,14 +285,18 @@ class ProductionService:
         storyboard = json.loads(storyboard_path.read_text(encoding="utf-8"))
         self._budget(spec)
 
-        asset_provider = self.providers.images(live=True)
+        support_provider = self.providers.images("support", live=True)
+        hero_provider = self.providers.images("hero", live=True)
         asset_dir = work / "assets"
         reference_images = [Path(path) for path in spec.get("avatar_reference_images", [])]
         size = self.providers.config["assets"][f"{spec['format']}_size"]
         unique_assets = {}
         secondary_keys = set()
+        hero_candidates = []
         for scene in storyboard["scenes"]:
             unique_assets.setdefault(scene["asset_key"], scene)
+            if scene.get("visual_role") in {"REVEAL", "CONTRAST", "CAUSE_EFFECT"}:
+                hero_candidates.append(scene["asset_key"])
             for layer in scene.get("secondary_assets", []):
                 secondary_keys.add(layer["asset_key"])
                 unique_assets.setdefault(layer["asset_key"], layer)
@@ -274,17 +305,30 @@ class ProductionService:
             raise RuntimeError(
                 f"editorial plan requests {len(secondary_keys)} secondary assets; limit is {secondary_limit}"
             )
+        hero_limit = int(self.providers.config["assets"]["hero_limits"][spec["format"]])
+        hero_keys = set(dict.fromkeys(hero_candidates[:hero_limit]))
         for asset_key, scene in unique_assets.items():
             target = asset_dir / f"{asset_key}.png"
+            is_hero = asset_key in hero_keys and asset_key not in secondary_keys
+            asset_provider = hero_provider if is_hero else support_provider
+            asset_cost_model = hero_image_cost_model if is_hero else support_image_cost_model
 
-            def asset_stage(scene=scene, target=target):
+            def asset_stage(
+                scene=scene,
+                target=target,
+                asset_provider=asset_provider,
+                asset_cost_model=asset_cost_model,
+            ):
                 self._require_absent(target, f"asset:{scene['asset_key']}")
-                self._reserve(spec, image_cost_model, Usage(images=1))
+                self._reserve(
+                    spec, asset_cost_model, Usage(images=1),
+                    stage=f"asset:{scene['asset_key']}",
+                )
                 output = asset_provider.create_image(
                     scene["visual_prompt"], target, size, reference_images or None
                 )
                 self._record_image(
-                    production_id, f"asset:{scene['asset_key']}", image_cost_model, output
+                    production_id, f"asset:{scene['asset_key']}", asset_cost_model, output
                 )
 
             self.runner.run(production_id, f"asset:{asset_key}", asset_stage)
@@ -327,7 +371,7 @@ class ProductionService:
         policy = load_metadata_policy(self.root / "config/youtube-metadata-policy.json")
         def metadata_stage():
             self._require_absent(metadata_path, "metadata")
-            self._reserve(spec, "gpt-5.6-sol", Usage(input_tokens=max(1, len(script) // 4), output_tokens=12000))
+            self._reserve(spec, text_model, Usage(input_tokens=max(1, len(script) // 4), output_tokens=12000))
             output = text.generate_json(
                 "Create accurate YouTube metadata for G$LIDE. No hashtags in title. Describe the actual video, place only a few relevant hashtags at the description end, and use chapters only for long videos.",
                 f"FORMAT={spec['format']}\nSCRIPT\n{script}", METADATA_SCHEMA,
@@ -348,7 +392,9 @@ class ProductionService:
         def thumbnail_stage():
             self._require_absent(raw_thumbnail, "thumbnail")
             self._require_absent(thumbnail, "thumbnail")
-            self._reserve(spec, "gpt-image-2-high-landscape", Usage(images=1))
+            self._reserve(
+                spec, thumbnail_cost_model, Usage(images=1), stage="thumbnail"
+            )
             prompt = (
                 "Original high-CTR G$LIDE paper-cut explainer thumbnail in 16:9 composition. "
                 "Use the consistent unrealistic paper-cut Esiah avatar with a topic-specific expression, "
@@ -358,13 +404,20 @@ class ProductionService:
             )
             output = thumbnail_provider.create_thumbnail(prompt, raw_thumbnail, self.providers.config["thumbnail"]["size"], reference_images or None)
             normalize_thumbnail(raw_thumbnail, thumbnail)
-            self._record_image(production_id, "thumbnail", "gpt-image-2-high-landscape", output)
+            self._record_image(production_id, "thumbnail", thumbnail_cost_model, output)
         self.runner.run(production_id, "thumbnail", thumbnail_stage)
         self._budget(spec)
 
         visual_srt = self.root / "build" / production_id / "visual-labels.srt"
         source_ledger = work / "source-ledger.json"
-        source_ledger.write_text(json.dumps({"claims": research["claims"], "music": MusicRegistry.source_ledger(music)}, indent=2) + "\n", encoding="utf-8")
+        source_ledger.write_text(
+            json.dumps({
+                "claims": research["claims"],
+                "platform_demand": spec["platform_demand"],
+                "music": MusicRegistry.source_ledger(music),
+            }, indent=2) + "\n",
+            encoding="utf-8",
+        )
         params_path = work / "generation-parameters.json"
         params_path.write_text(json.dumps(spec.get("generation_parameters", {}), indent=2) + "\n", encoding="utf-8")
         qa_path = work / "qa-report.json"
