@@ -12,6 +12,7 @@ concurrency:
 permissions:
   contents: write
   issues: write
+  id-token: write
 
 jobs:
   produce:
@@ -33,6 +34,7 @@ jobs:
           GOLIDE_ENABLE_PAID_PRODUCTION: "1"
           GOLIDE_ENABLE_YOUTUBE_UPLOAD: "1"
           GOLIDE_OPENAI_MONTHLY_CAP_USD: "5.00"
+          GOLIDE_STUDIO_BASE_URL: "https://golide-studio.esiahkapinga.chatgpt.site"
           GOLIDE_FAILURE_WEBHOOK: ${{ secrets.GOLIDE_FAILURE_WEBHOOK }}
         run: golide automation-run
       - name: Save state and completed queue item
