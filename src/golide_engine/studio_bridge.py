@@ -72,6 +72,14 @@ class StudioBridge:
         payload["spec"]["_studio_job_id"] = payload["jobId"]
         return payload
 
+    def register(self, spec: dict[str, Any]) -> None:
+        job_id = str(spec["id"])
+        status, _ = self._request(
+            "POST", "/api/engine/jobs/register", {"jobId": job_id, "spec": spec}
+        )
+        if status not in {200, 201}:
+            raise RuntimeError(f"Studio job registration failed with HTTP {status}")
+
     def report(
         self,
         job_id: str,
