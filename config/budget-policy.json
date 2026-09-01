@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "currency": "USD",
+  "openai": {
+    "monthly_cap_usd": 5.0,
+    "monthly_reserve_usd": 0.5,
+    "scheduled_plan": {
+      "long": 5,
+      "short": 10
+    },
+    "scheduled_allocations_usd": {
+      "long": 0.5,
+      "short": 0.2
+    },
+    "allocation_note": "Five long allocations plus ten short allocations total $4.50, preserving a $0.50 monthly buffer.",
+    "resume_after_recharge": true
+  },
+  "independent_production": {
+    "requires_explicit_openai_budget_usd": true,
+    "does_not_consume_scheduled_allocation": true
+  }
+}
