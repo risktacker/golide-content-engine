@@ -319,9 +319,41 @@ class ProductionService:
         narration_seconds = self._duration(narration)
         maximum = 90 if spec["format"] == "short" else 300
         if narration_seconds > maximum:
-            raise RuntimeError(
-                f"narration is {narration_seconds:.1f}s and exceeds the {maximum}s format limit"
+            if narration_seconds > maximum * 1.08:
+                raise RuntimeError(
+                    f"narration is {narration_seconds:.1f}s and exceeds the "
+                    f"{maximum}s format limit by more than the safe 8% correction"
+                )
+            target_seconds = maximum - 2
+            tempo = narration_seconds / target_seconds
+            corrected = narration.with_name(
+                f"{narration.stem}.duration-corrected{narration.suffix}"
             )
+            subprocess.run(
+                [
+                    "ffmpeg", "-y", "-i", str(narration),
+                    "-filter:a", f"atempo={tempo:.8f}",
+                    "-vn", str(corrected),
+                ],
+                capture_output=True, text=True, check=True,
+            )
+            corrected.replace(narration)
+            adjusted_words = json.loads(
+                timed_words_path.read_text(encoding="utf-8")
+            )
+            for word in adjusted_words:
+                word["start"] = round(float(word["start"]) / tempo, 4)
+                word["end"] = round(float(word["end"]) / tempo, 4)
+            timed_words_path.write_text(
+                json.dumps(adjusted_words, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            narration_seconds = self._duration(narration)
+            if narration_seconds > maximum:
+                raise RuntimeError(
+                    f"duration correction left narration at "
+                    f"{narration_seconds:.1f}s"
+                )
 
         timed_words = json.loads(timed_words_path.read_text(encoding="utf-8"))
         spoken_srt = work / "spoken-captions.srt"
