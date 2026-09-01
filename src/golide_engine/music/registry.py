@@ -58,7 +58,7 @@ class MusicRegistry:
             "-f", "lavfi", "-i", f"anoisesrc=color=pink:amplitude=0.02:sample_rate=44100:duration={duration_seconds}",
             "-filter_complex",
             (
-                "[0:a]volume=0.22,tremolo=f=0.07:d=0.18[a0];"
+                "[0:a]volume=0.22,tremolo=f=0.10:d=0.18[a0];"
                 "[1:a]volume=0.07,tremolo=f=0.11:d=0.35[a1];"
                 "[2:a]volume=0.025,tremolo=f=0.17:d=0.45[a2];"
                 "[3:a]lowpass=f=850,highpass=f=80,volume=0.10[a3];"
