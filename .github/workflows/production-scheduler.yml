@@ -20,6 +20,17 @@ jobs:
     timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
+      - name: Restore resumable media checkpoint
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            productions
+            build
+            release-packages
+            generated
+          key: golide-production-checkpoint-${{ github.run_id }}
+          restore-keys: |
+            golide-production-checkpoint-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -36,7 +47,18 @@ jobs:
           GOLIDE_STUDIO_BASE_URL: "https://golide-studio.esiahkapinga.chatgpt.site"
           GOLIDE_FAILURE_WEBHOOK: ${{ secrets.GOLIDE_FAILURE_WEBHOOK }}
         run: golide automation-run
+      - name: Save resumable media checkpoint
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            productions
+            build
+            release-packages
+            generated
+          key: golide-production-checkpoint-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Save state and completed queue item
+        if: always()
         run: |
           git config user.name "golide-production-bot"
           git config user.email "actions@users.noreply.github.com"
