@@ -71,15 +71,19 @@ class YouTubeUploader:
     def schedule(self, production_id: str, video_id: str, publish_at: str, release: dict) -> None:
         self._assert_release(release)
         instant = datetime.fromisoformat(publish_at.replace("Z", "+00:00"))
-        if instant.astimezone(timezone.utc) <= datetime.now(timezone.utc):
-            raise ValueError("publish_at must be in the future")
-        body = {"id": video_id, "status": {"privacyStatus": "private", "publishAt": instant.astimezone(timezone.utc).isoformat().replace("+00:00", "Z"), "selfDeclaredMadeForKids": False}}
+        missed = instant.astimezone(timezone.utc) <= datetime.now(timezone.utc)
+        status = {"privacyStatus": "public" if missed else "private", "selfDeclaredMadeForKids": False}
+        if not missed:
+            status["publishAt"] = instant.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+        body = {"id": video_id, "status": status}
         with_retry(lambda: self.youtube.videos().update(part="status", body=body).execute())
+        final_state = "published" if missed else "scheduled"
+        privacy = "public" if missed else "private"
         self.database.execute(
-            "UPDATE uploads SET privacy_status='private', scheduled_at=?, upload_status='scheduled', updated_at=? WHERE production_id=?",
-            (publish_at, utc_now(), production_id),
+            "UPDATE uploads SET privacy_status=?, scheduled_at=?, upload_status=?, updated_at=? WHERE production_id=?",
+            (privacy, publish_at, final_state, utc_now(), production_id),
         )
         self.database.execute(
-            "UPDATE productions SET status='scheduled', scheduled_at=?, updated_at=? WHERE production_id=?",
-            (publish_at, utc_now(), production_id),
+            "UPDATE productions SET status=?, scheduled_at=?, updated_at=? WHERE production_id=?",
+            (final_state, publish_at, utc_now(), production_id),
         )
