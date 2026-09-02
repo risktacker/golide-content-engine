@@ -214,6 +214,15 @@ def main() -> int:
         spec_path = due[0]
         spec = json.loads(spec_path.read_text(encoding="utf-8"))
         studio_job_id = spec.get("_studio_job_id")
+        if bridge and studio_job_id:
+            try:
+                bridge.register(spec)
+            except Exception as exc:
+                print(json.dumps({
+                    "status": "studio_telemetry_unavailable",
+                    "operation": "register-existing",
+                    "error": str(exc),
+                }))
         youtube, _ = services(credentials(args.token))
         assert_channel(youtube, "UCqaXVBSBz7iQsRHOupKt-3w")
         from .operations.budget import BudgetPaused
