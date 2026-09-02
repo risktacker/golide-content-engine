@@ -53,8 +53,28 @@ class YouTubeUploader:
         self._assert_release(release)
         fingerprint = _fingerprint(video, metadata)
         prior = self.database.rows("SELECT youtube_video_id FROM uploads WHERE request_fingerprint=?", (fingerprint,))
-        if prior and prior[0]["youtube_video_id"]:
+        force_reupload = release.get("force_reupload") is True
+        if prior and prior[0]["youtube_video_id"] and not force_reupload:
             return str(prior[0]["youtube_video_id"])
+        if force_reupload:
+            existing = self.database.rows(
+                "SELECT youtube_video_id FROM uploads WHERE production_id=?",
+                (production_id,),
+            )
+            if existing and existing[0]["youtube_video_id"]:
+                old_id = str(existing[0]["youtube_video_id"])
+                private_body = {
+                    "id": old_id,
+                    "status": {
+                        "privacyStatus": "private",
+                        "selfDeclaredMadeForKids": False,
+                    },
+                }
+                with_retry(
+                    lambda: self.youtube.videos().update(
+                        part="status", body=private_body
+                    ).execute()
+                )
         try:
             from googleapiclient.http import MediaFileUpload
         except ImportError as exc:
