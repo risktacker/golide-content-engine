@@ -496,11 +496,13 @@ class ProductionService:
 
         previous_storyboard_path = work / "storyboard-authoritative-v2.json"
         asset_inventory: dict[str, dict[str, Any]] = {}
+        previous_scenes: list[dict[str, Any]] = []
         if previous_storyboard_path.exists():
             previous_storyboard = json.loads(
                 previous_storyboard_path.read_text(encoding="utf-8")
             )
-            for previous_scene in previous_storyboard.get("scenes", []):
+            previous_scenes = previous_storyboard.get("scenes", [])
+            for previous_scene in previous_scenes:
                 asset_inventory.setdefault(
                     previous_scene["asset_key"],
                     {
@@ -520,22 +522,79 @@ class ProductionService:
             list(asset_inventory.values()), separators=(",", ":")
         )
 
-        storyboard_path = work / "storyboard-authoritative-v3.json"
+        storyboard_path = work / "storyboard-authoritative-v4.json"
 
         def storyboard_stage():
             self._require_absent(storyboard_path, "storyboard")
-            beat_packet = json.dumps(beats, separators=(",", ":"))
-            self._reserve(
-                spec, text_model,
-                Usage(input_tokens=max(1, (len(script) + len(beat_packet)) // 4), output_tokens=14000),
-            )
-            output = text.generate_json(
-                "Act as the G$LIDE Editorial Director. Return exactly one scene for every supplied beat_id and never invent timing. Map meaning to visible response: introduce nouns, punch spoken numbers, trace processes, switch composition for contrast, link cause to effect, and reserve strong reveals for key insights. Center subjects with negative space and an 8% safe margin. Use only named G$LIDE colors: neon-blue, golide-gold, warm-ivory, deep-navy, and danger-red only for danger/error. STRICT ASSET LIMIT: use no more than five unique primary asset_key values for a Short or twelve for long-form. Reuse those assets through reframing, progressive reveals, pushes, pans, crops, layers and match-cuts. Use secondary_assets only when an independent foreground, detail crop, label object or inset materially improves the explanation. Across the entire project, request no more than four unique secondary assets for a Short or twelve for long-form; reuse them across beats and request isolated paper-cut objects on transparent backgrounds. Vary camera and transition recipes; avoid Ken Burns repetition, transition spam, sound-effect spam, caption overload and avatar wallpaper. Motion, annotation and audio cues must be semantically synchronized. Use impact only for a true reveal and use none when narration should carry the emphasis. When EXISTING_ASSET_LIBRARY is supplied, every primary and secondary asset_key must come from that library; reuse those paid assets through editorial reframing and layering and never invent a new key.",
-                f"FORMAT={spec['format']} NARRATION_SECONDS={narration_seconds:.3f}\nSCRIPT\n{script}\nTIMED_BEATS\n{beat_packet}\nEXISTING_ASSET_LIBRARY\n{existing_asset_packet}",
-                STORYBOARD_SCHEMA,
-                max_output_tokens=14000,
-            )
-            planned_scenes = output.value["scenes"]
+            if not previous_scenes:
+                raise RuntimeError("corrective storyboard requires the cached paid asset library")
+
+            def editorial_tokens(value: str) -> set[str]:
+                return {
+                    token for token in re.findall(r"[a-z0-9]+", value.lower())
+                    if len(token) > 2
+                }
+
+            template_tokens = []
+            for template in previous_scenes:
+                searchable = " ".join([
+                    str(template.get("spoken_excerpt", "")),
+                    str(template.get("visual_caption", "")),
+                    str(template.get("visual_prompt", "")),
+                ])
+                template_tokens.append(editorial_tokens(searchable))
+
+            motion_types = [
+                "push-in", "pan-left", "reframe", "pull-out",
+                "pan-right", "layer-reveal",
+            ]
+            transitions = ["cut", "match-cut", "paper-wipe", "object-transition"]
+            roles = ["CONTEXT", "CAUSE_EFFECT", "CONTRAST", "REVEAL"]
+            planned_scenes = []
+            for index, beat in enumerate(beats):
+                beat_tokens = editorial_tokens(beat["text"])
+                scores = [
+                    len(beat_tokens & tokens) * 100
+                    - ((template_index - index) % len(previous_scenes))
+                    for template_index, tokens in enumerate(template_tokens)
+                ]
+                template = previous_scenes[max(range(len(scores)), key=scores.__getitem__)]
+                spoken_words = str(beat["text"]).split()
+                caption = " ".join(spoken_words[:6]).rstrip(".,;:!?")
+                number_match = re.search(r"\b\d+(?:\.\d+)?\b", beat["text"])
+                annotation = {"kind": "none"}
+                if number_match:
+                    annotation = {
+                        "kind": "number",
+                        "text": number_match.group(0),
+                        "start_offset": 0.08,
+                        "duration": min(1.1, max(0.1, float(beat["duration"]) - 0.1)),
+                        "position": "center",
+                        "color_token": "golide-gold",
+                    }
+                planned_scenes.append({
+                    "beat_id": beat["id"],
+                    "asset_key": template["asset_key"],
+                    "visual_role": template.get("visual_role", roles[index % len(roles)]),
+                    "visual_caption": caption,
+                    "visual_prompt": template.get("visual_prompt", ""),
+                    "motion": {
+                        "type": motion_types[index % len(motion_types)],
+                        "intensity": "strong" if index % 5 == 0 else "medium",
+                        "transition": transitions[index % len(transitions)],
+                        "easing": "ease-in-out",
+                        "emphasis": caption,
+                        "audio_cue": "impact" if index % 9 == 0 else (
+                            "soft-trace" if index % 3 == 0 else "none"
+                        ),
+                        "annotation": annotation,
+                    },
+                    "secondary_assets": [],
+                    "subject_bounds": template.get(
+                        "subject_bounds",
+                        {"x": 0.2, "y": 0.15, "width": 0.6, "height": 0.7},
+                    ),
+                })
             planned = {scene["beat_id"]: scene for scene in planned_scenes}
             expected = {beat["id"] for beat in beats}
             if len(planned) != len(planned_scenes) or set(planned) != expected:
@@ -581,7 +640,7 @@ class ProductionService:
             )
             self._record_text(production_id, "storyboard", output)
 
-        self.runner.run(production_id, "storyboard-authoritative-v3", storyboard_stage)
+        self.runner.run(production_id, "storyboard-authoritative-v4", storyboard_stage)
         storyboard = json.loads(storyboard_path.read_text(encoding="utf-8"))
         qa_policy = json.loads(
             (self.root / "config/qa-policy.json").read_text(encoding="utf-8")
@@ -692,7 +751,7 @@ class ProductionService:
         manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
         video_path = self.root / "build" / production_id / "video.mp4"
         self.runner.run(
-            production_id, "render-full-duration-v6",
+            production_id, "render-full-duration-v7",
             lambda: render(load_project(manifest_path), self.root), attempts=1,
         )
         rendered_seconds = self._duration(video_path)
