@@ -750,7 +750,7 @@ class ProductionService:
         manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
         video_path = self.root / "build" / production_id / "video.mp4"
         self.runner.run(
-            production_id, "render-full-duration-v8",
+            production_id, "render-full-duration-v9",
             lambda: render(load_project(manifest_path), self.root), attempts=1,
         )
         rendered_seconds = self._duration(video_path)
