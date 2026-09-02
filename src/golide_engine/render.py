@@ -51,7 +51,10 @@ def _render_scene_clips(project: Project, output_dir: Path) -> list[Path]:
         command = ["ffmpeg", "-y"]
         still_image = scene.media.suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"}
         if still_image:
-            command += ["-i", str(scene.media)]
+            command += [
+                "-loop", "1", "-framerate", str(project.fps),
+                "-t", f"{clip_duration:.3f}", "-i", str(scene.media),
+            ]
         else:
             command += ["-stream_loop", "-1", "-t", f"{clip_duration:.3f}", "-i", str(scene.media)]
         for layer in scene.layers:
