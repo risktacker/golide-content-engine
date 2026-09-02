@@ -125,13 +125,83 @@ class ProductionService:
         annotation = dict(raw or {})
         if annotation.get("kind", "none") == "none":
             return annotation
-        beat = max(0.01, float(beat_duration))
+        beat = max(0.0, float(beat_duration))
+        if beat <= 0.02:
+            return {"kind": "none"}
         start = max(0.0, min(float(annotation.get("start_offset", 0)), beat - 0.01))
-        remaining = max(0.01, beat - start)
-        duration = max(0.01, min(float(annotation.get("duration", remaining)), remaining))
-        annotation["start_offset"] = round(start, 4)
-        annotation["duration"] = round(duration, 4)
+        remaining = beat - start
+        duration = max(0.001, min(float(annotation.get("duration", remaining)), remaining))
+        annotation["start_offset"] = round(start, 6)
+        annotation["duration"] = round(duration, 6)
         return annotation
+
+    @classmethod
+    def _normalize_editorial_intent(
+        cls, storyboard: dict[str, Any], policy: dict[str, Any]
+    ) -> dict[str, Any]:
+        """Enforce premium rhythm without repeating a paid planning request."""
+        normalized = json.loads(json.dumps(storyboard))
+        scenes = normalized.get("scenes", [])
+        if not scenes:
+            return normalized
+        rules = policy["editorial"]
+
+        def spread(indices: list[int], limit: int) -> set[int]:
+            if len(indices) <= limit:
+                return set(indices)
+            if limit <= 0:
+                return set()
+            if limit == 1:
+                return {indices[len(indices) // 2]}
+            return {
+                indices[round(position * (len(indices) - 1) / (limit - 1))]
+                for position in range(limit)
+            }
+
+        non_cuts = [
+            index for index, scene in enumerate(scenes)
+            if (scene.get("motion") or {}).get("transition") != "cut"
+        ]
+        keep_transitions = spread(
+            non_cuts,
+            int(len(scenes) * float(rules["maximum_non_cut_transition_ratio"])),
+        )
+        cue_indices = [
+            index for index, scene in enumerate(scenes)
+            if (scene.get("motion") or {}).get("audio_cue", "none") != "none"
+        ]
+        keep_cues = spread(
+            cue_indices,
+            int(len(scenes) * float(rules["maximum_sfx_beat_ratio"])),
+        )
+        strong_indices = [
+            index for index, scene in enumerate(scenes)
+            if (scene.get("motion") or {}).get("intensity") == "strong"
+        ]
+        keep_strong = spread(
+            strong_indices,
+            int(len(scenes) * float(rules["maximum_strong_motion_ratio"])),
+        )
+
+        last_impact = -100.0
+        for index, scene in enumerate(scenes):
+            motion = scene.setdefault("motion", {})
+            if index in non_cuts and index not in keep_transitions:
+                motion["transition"] = "cut"
+            if index in cue_indices and index not in keep_cues:
+                motion["audio_cue"] = "none"
+            if index in strong_indices and index not in keep_strong:
+                motion["intensity"] = "medium"
+            if motion.get("audio_cue") == "impact":
+                start = float(scene.get("start", 0))
+                if start - last_impact < float(rules["minimum_impact_spacing_seconds"]):
+                    motion["audio_cue"] = "tick"
+                else:
+                    last_impact = start
+            motion["annotation"] = cls._fit_annotation(
+                motion.get("annotation"), float(scene.get("duration", 0))
+            )
+        return normalized
 
     def run(self, spec_path: str | Path) -> Path:
         spec = json.loads(Path(spec_path).read_text(encoding="utf-8"))
@@ -454,6 +524,17 @@ class ProductionService:
 
         self.runner.run(production_id, "storyboard", storyboard_stage)
         storyboard = json.loads(storyboard_path.read_text(encoding="utf-8"))
+        qa_policy = json.loads(
+            (self.root / "config/qa-policy.json").read_text(encoding="utf-8")
+        )
+        normalized_storyboard = self._normalize_editorial_intent(
+            storyboard, qa_policy
+        )
+        if normalized_storyboard != storyboard:
+            storyboard = normalized_storyboard
+            storyboard_path.write_text(
+                json.dumps(storyboard, indent=2) + "\n", encoding="utf-8"
+            )
         self._budget(spec)
 
         support_provider = self.providers.images("support", live=True)
@@ -538,7 +619,10 @@ class ProductionService:
         }
         manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
         video_path = self.root / "build" / production_id / "video.mp4"
-        self.runner.run(production_id, "render", lambda: render(load_project(manifest_path), self.root), attempts=1)
+        self.runner.run(
+            production_id, "render-editorial-policy-v2",
+            lambda: render(load_project(manifest_path), self.root), attempts=1,
+        )
 
         metadata_path = work / "upload-metadata.json"
         policy = load_metadata_policy(self.root / "config/youtube-metadata-policy.json")

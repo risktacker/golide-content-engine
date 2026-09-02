@@ -265,7 +265,8 @@ def render(project: Project, root: Path) -> Path:
         filters.append(f"[base][{sfx_index}:a]amix=inputs=2:duration=first:normalize=0[mixed]")
     else:
         filters.append("[base]anull[mixed]")
-    filters.append("[mixed]loudnorm=I=-16:TP=-1:LRA=11[a]")
+    # Leave encoder headroom so the final AAC true peak remains below -1 dBTP.
+    filters.append("[mixed]loudnorm=I=-16:TP=-1.5:LRA=11[a]")
 
     command += [
         "-filter_complex", ";".join(filters), "-map", "[v]", "-map", "[a]",
