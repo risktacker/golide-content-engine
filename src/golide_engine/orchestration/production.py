@@ -384,8 +384,8 @@ class ProductionService:
         self._budget(spec)
 
         voice_cfg = self.providers.config["voice"]
-        narration = work / "narration.mp3"
-        timed_words_path = work / "timed-words.json"
+        narration = work / "narration-full-script-v2.mp3"
+        timed_words_path = work / "timed-words-full-script-v2.json"
         voice = self.providers.voice(live=True)
 
         def voice_stage():
@@ -412,7 +412,7 @@ class ProductionService:
                 Usage(characters=characters), output.request_id,
             )
 
-        self.runner.run(production_id, "voice", voice_stage)
+        self.runner.run(production_id, "voice-full-script-v2", voice_stage)
         self._budget(spec)
         narration_seconds = self._duration(narration)
         maximum = 90 if spec["format"] == "short" else 300
@@ -454,7 +454,7 @@ class ProductionService:
                 )
 
         raw_timed_words = json.loads(timed_words_path.read_text(encoding="utf-8"))
-        authoritative_words_path = work / "timed-words-authoritative-v2.json"
+        authoritative_words_path = work / "timed-words-authoritative-v3.json"
         if authoritative_words_path.exists():
             timed_words = json.loads(authoritative_words_path.read_text(encoding="utf-8"))
         else:
@@ -472,29 +472,55 @@ class ProductionService:
                 json.dumps(timed_words, indent=2) + "\n", encoding="utf-8"
             )
 
-        spoken_srt = work / "spoken-captions-authoritative-v2.srt"
+        spoken_srt = work / "spoken-captions-authoritative-v3.srt"
 
         def caption_stage():
-            self._require_absent(spoken_srt, "captions-authoritative-v2")
+            self._require_absent(spoken_srt, "captions-authoritative-v3")
             spoken_srt.write_text(words_to_srt(timed_words), encoding="utf-8")
 
         self.runner.run(
-            production_id, "captions-authoritative-v2", caption_stage, attempts=1
+            production_id, "captions-authoritative-v3", caption_stage, attempts=1
         )
 
-        beats_path = work / "editorial-beats-authoritative-v2.json"
+        beats_path = work / "editorial-beats-authoritative-v3.json"
 
         def beat_stage():
-            self._require_absent(beats_path, "editorial-beats-authoritative-v2")
+            self._require_absent(beats_path, "editorial-beats-authoritative-v3")
             beats = words_to_beats(timed_words, max_seconds=3.2)
             beats_path.write_text(json.dumps(beats, indent=2) + "\n", encoding="utf-8")
 
         self.runner.run(
-            production_id, "editorial-beats-authoritative-v2", beat_stage, attempts=1
+            production_id, "editorial-beats-authoritative-v3", beat_stage, attempts=1
         )
         beats = json.loads(beats_path.read_text(encoding="utf-8"))
 
-        storyboard_path = work / "storyboard-authoritative-v2.json"
+        previous_storyboard_path = work / "storyboard-authoritative-v2.json"
+        asset_inventory: dict[str, dict[str, Any]] = {}
+        if previous_storyboard_path.exists():
+            previous_storyboard = json.loads(
+                previous_storyboard_path.read_text(encoding="utf-8")
+            )
+            for previous_scene in previous_storyboard.get("scenes", []):
+                asset_inventory.setdefault(
+                    previous_scene["asset_key"],
+                    {
+                        "asset_key": previous_scene["asset_key"],
+                        "visual_prompt": previous_scene.get("visual_prompt", ""),
+                    },
+                )
+                for previous_layer in previous_scene.get("secondary_assets", []):
+                    asset_inventory.setdefault(
+                        previous_layer["asset_key"],
+                        {
+                            "asset_key": previous_layer["asset_key"],
+                            "visual_prompt": previous_layer.get("visual_prompt", ""),
+                        },
+                    )
+        existing_asset_packet = json.dumps(
+            list(asset_inventory.values()), separators=(",", ":")
+        )
+
+        storyboard_path = work / "storyboard-authoritative-v3.json"
 
         def storyboard_stage():
             self._require_absent(storyboard_path, "storyboard")
@@ -504,8 +530,8 @@ class ProductionService:
                 Usage(input_tokens=max(1, (len(script) + len(beat_packet)) // 4), output_tokens=14000),
             )
             output = text.generate_json(
-                "Act as the G$LIDE Editorial Director. Return exactly one scene for every supplied beat_id and never invent timing. Map meaning to visible response: introduce nouns, punch spoken numbers, trace processes, switch composition for contrast, link cause to effect, and reserve strong reveals for key insights. Center subjects with negative space and an 8% safe margin. Use only named G$LIDE colors: neon-blue, golide-gold, warm-ivory, deep-navy, and danger-red only for danger/error. STRICT ASSET LIMIT: use no more than five unique primary asset_key values for a Short or twelve for long-form. Reuse those assets through reframing, progressive reveals, pushes, pans, crops, layers and match-cuts. Use secondary_assets only when an independent foreground, detail crop, label object or inset materially improves the explanation. Across the entire project, request no more than four unique secondary assets for a Short or twelve for long-form; reuse them across beats and request isolated paper-cut objects on transparent backgrounds. Vary camera and transition recipes; avoid Ken Burns repetition, transition spam, sound-effect spam, caption overload and avatar wallpaper. Motion, annotation and audio cues must be semantically synchronized. Use impact only for a true reveal and use none when narration should carry the emphasis.",
-                f"FORMAT={spec['format']} NARRATION_SECONDS={narration_seconds:.3f}\nSCRIPT\n{script}\nTIMED_BEATS\n{beat_packet}",
+                "Act as the G$LIDE Editorial Director. Return exactly one scene for every supplied beat_id and never invent timing. Map meaning to visible response: introduce nouns, punch spoken numbers, trace processes, switch composition for contrast, link cause to effect, and reserve strong reveals for key insights. Center subjects with negative space and an 8% safe margin. Use only named G$LIDE colors: neon-blue, golide-gold, warm-ivory, deep-navy, and danger-red only for danger/error. STRICT ASSET LIMIT: use no more than five unique primary asset_key values for a Short or twelve for long-form. Reuse those assets through reframing, progressive reveals, pushes, pans, crops, layers and match-cuts. Use secondary_assets only when an independent foreground, detail crop, label object or inset materially improves the explanation. Across the entire project, request no more than four unique secondary assets for a Short or twelve for long-form; reuse them across beats and request isolated paper-cut objects on transparent backgrounds. Vary camera and transition recipes; avoid Ken Burns repetition, transition spam, sound-effect spam, caption overload and avatar wallpaper. Motion, annotation and audio cues must be semantically synchronized. Use impact only for a true reveal and use none when narration should carry the emphasis. When EXISTING_ASSET_LIBRARY is supplied, every primary and secondary asset_key must come from that library; reuse those paid assets through editorial reframing and layering and never invent a new key.",
+                f"FORMAT={spec['format']} NARRATION_SECONDS={narration_seconds:.3f}\nSCRIPT\n{script}\nTIMED_BEATS\n{beat_packet}\nEXISTING_ASSET_LIBRARY\n{existing_asset_packet}",
                 STORYBOARD_SCHEMA,
                 max_output_tokens=14000,
             )
@@ -516,6 +542,17 @@ class ProductionService:
                 raise RuntimeError("storyboard must contain every editorial beat exactly once")
             primary_limit = 5 if spec["format"] == "short" else 12
             primary_keys = {scene["asset_key"] for scene in planned_scenes}
+            requested_asset_keys = set(primary_keys)
+            requested_asset_keys.update(
+                layer["asset_key"]
+                for scene in planned_scenes
+                for layer in scene.get("secondary_assets", [])
+            )
+            if asset_inventory and not requested_asset_keys.issubset(asset_inventory):
+                unknown = sorted(requested_asset_keys - set(asset_inventory))
+                raise RuntimeError(
+                    f"corrective storyboard invented uncached assets: {unknown}"
+                )
             if len(primary_keys) > primary_limit:
                 raise RuntimeError(
                     f"storyboard requested {len(primary_keys)} primary assets; limit is {primary_limit}"
@@ -544,7 +581,7 @@ class ProductionService:
             )
             self._record_text(production_id, "storyboard", output)
 
-        self.runner.run(production_id, "storyboard-authoritative-v2", storyboard_stage)
+        self.runner.run(production_id, "storyboard-authoritative-v3", storyboard_stage)
         storyboard = json.loads(storyboard_path.read_text(encoding="utf-8"))
         qa_policy = json.loads(
             (self.root / "config/qa-policy.json").read_text(encoding="utf-8")
@@ -655,7 +692,7 @@ class ProductionService:
         manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
         video_path = self.root / "build" / production_id / "video.mp4"
         self.runner.run(
-            production_id, "render-full-duration-v5",
+            production_id, "render-full-duration-v6",
             lambda: render(load_project(manifest_path), self.root), attempts=1,
         )
         rendered_seconds = self._duration(video_path)
