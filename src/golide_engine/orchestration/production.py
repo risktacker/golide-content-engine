@@ -639,10 +639,23 @@ class ProductionService:
             } for scene in storyboard["scenes"]],
             "publish": {"approved": True},
         }
+        scene_total = sum(float(scene["duration"]) for scene in manifest["scenes"])
+        if scene_total <= 0:
+            raise RuntimeError("render manifest has no positive scene duration")
+        manifest_tolerance = max(0.75, narration_seconds * 0.01)
+        if abs(scene_total - narration_seconds) > manifest_tolerance:
+            timeline_scale = narration_seconds / scene_total
+            cursor = 0.0
+            for scene in manifest["scenes"]:
+                duration = float(scene["duration"]) * timeline_scale
+                scene["start"] = round(cursor, 6)
+                cursor += duration
+                scene["end"] = round(cursor, 6)
+                scene["duration"] = round(duration, 6)
         manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
         video_path = self.root / "build" / production_id / "video.mp4"
         self.runner.run(
-            production_id, "render-full-duration-v4",
+            production_id, "render-full-duration-v5",
             lambda: render(load_project(manifest_path), self.root), attempts=1,
         )
         rendered_seconds = self._duration(video_path)
