@@ -1,0 +1,170 @@
+{
+  "id": "golide-long-2026-09-01",
+  "studio_managed": true,
+  "format": "long",
+  "title": "The USB Port That Can Destroy a Computer in One Pulse",
+  "brief": "A non-instructional teardown of why a malicious USB device can turn a normal 5-volt port into a destructive surge: capacitors charge from the port, then discharge energy back through the interface. Visuals can map the power path, protection circuits, and failure points without reproducing the attack.",
+  "demand_query": "current science technology explainer",
+  "demand_validation_required": true,
+  "budget_class": "scheduled",
+  "purpose": "channel-automation",
+  "generate_at": "2026-09-01T04:00:00Z",
+  "max_cost_usd": 6,
+  "production_authorized": true,
+  "output_destination": "render-and-upload",
+  "concept": {
+    "family": "science-explainer",
+    "promise": "A current impossible-but-real idea explained with authoritative evidence",
+    "scores": {
+      "click_promise": 9,
+      "thumbnail_title_fit": 9,
+      "narrative_engine": 9,
+      "visual_depth": 9,
+      "evidence_strength": 8,
+      "retention_design": 9,
+      "broad_relevance": 8,
+      "novelty": 8,
+      "revenue_fit": 7
+    }
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "elevenlabs-golide-narrator-v1",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-long-tuesday"
+  },
+  "music": {
+    "mood": "curious-tension"
+  },
+  "avatar_reference_images": [],
+  "release": {
+    "approved": true,
+    "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+    "scheduled_at": "2026-09-01T16:00:00Z",
+    "force_reupload": true
+  },
+  "_studio_job_id": "golide-long-2026-09-01",
+  "topic_candidates": [
+    {
+      "title": "The Password Guess That Took 20 Nanoseconds Longer",
+      "query": "USENIX timing attack password execution time constant time",
+      "brief": "A visual explainer showing how attackers can recover secret information by measuring tiny differences in how long software takes to compare or process guesses. Animated request timing, noise averaging, and a safe constant-time fix make the invisible attack understandable without demonstrating real intrusion.",
+      "evidence_summary": "Strongest signal from the US market seed about tiny delays revealing passwords, reinforced by broader security and privacy interest. The mechanism has a clear visual payoff: microscopic timing differences accumulate into a readable secret. USENIX research documents remote timing attacks and explains that secret-dependent execution time can leak information.",
+      "authoritative_source_url": "https://www.usenix.org/system/files/sec20-van_goethem.pdf",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "USENIX timing attack password execution time constant time",
+        "score": 87.1,
+        "verdict": "pass",
+        "recent_videos": 63,
+        "median_views_per_day": 429623.44,
+        "top_views_per_day": 5695060.76,
+        "market_coverage": 4,
+        "title_query_overlap": 0.1429,
+        "measured_at": "2026-09-01T13:17:46.839666+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "Why a Chicken Can Beat a Phone Gimbal",
+      "query": "avian head stabilization chicken pigeon motion stabilization study",
+      "brief": "A premium biology-versus-technology experiment: compare a chicken’s head stabilization with a handheld phone gimbal, then reveal how birds use neck muscles, sensory feedback, and gaze control to keep the world visually stable while the body moves.",
+      "evidence_summary": "Directly inspired by the US seed asking whether a chicken is better than a camera stabilizer, with additional camera-robot and stabilization signals in the supplied trend set. The result is unusual but real, easy to film, and mechanically explainable through side-by-side motion tracking. Research on birds shows that head stabilization can nearly eliminate rotational disturbance and preserve a stable retinal image.",
+      "authoritative_source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5633612/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "avian head stabilization chicken pigeon motion stabilization study",
+        "score": 87.1,
+        "verdict": "pass",
+        "recent_videos": 63,
+        "median_views_per_day": 429623.44,
+        "top_views_per_day": 5695060.76,
+        "market_coverage": 4,
+        "title_query_overlap": 0.1429,
+        "measured_at": "2026-09-01T13:17:46.840237+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "The USB Port That Can Destroy a Computer in One Pulse",
+      "query": "USB Killer electrical surge USB port protection USB specification",
+      "brief": "A non-instructional teardown of why a malicious USB device can turn a normal 5-volt port into a destructive surge: capacitors charge from the port, then discharge energy back through the interface. Visuals can map the power path, protection circuits, and failure points without reproducing the attack.",
+      "evidence_summary": "The US seed explicitly features USB Killer testing, while console-damage, repair, and broken-device seeds show strong cross-market appetite for destructive tech mysteries. The official USBKill FAQ documents repeated high-voltage pulse behavior; USB-IF specifications provide the institutional context for USB voltage alarms, over-voltage protection, and discharge thresholds.",
+      "authoritative_source_url": "https://usbkill.com/pages/faq",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "USB Killer electrical surge USB port protection USB specification",
+        "score": 89.3,
+        "verdict": "pass",
+        "recent_videos": 63,
+        "median_views_per_day": 429623.44,
+        "top_views_per_day": 5695060.76,
+        "market_coverage": 4,
+        "title_query_overlap": 0.2857,
+        "measured_at": "2026-09-01T13:17:46.840717+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "Why Old CRTs Can Look Sharper Than New OLEDs in Motion",
+      "query": "CRT OLED motion clarity phosphor persistence sample and hold academic study",
+      "brief": "A visual display explainer comparing the way a CRT scans and fades each pixel with the way modern flat panels hold an image until the next frame. Motion-camera footage, scrolling text, phosphor decay, and retinal tracking explain why a lower-resolution CRT can appear clearer during fast movement.",
+      "evidence_summary": "Supported by multiple supplied seeds about CRT-versus-OLED comparisons, screen technology history, gaming displays, and motion tests across the US, GB, and ZA markets. The topic has a strong before-and-after visual demonstration and a counterintuitive consequence: resolution alone does not determine perceived motion sharpness. Optical research identifies phosphor persistence and scan behavior as major contributors to CRT motion rendering.",
+      "authoritative_source_url": "https://opg.optica.org/ao/abstract.cfm?uri=ao-30-26-3734",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "CRT OLED motion clarity phosphor persistence sample and hold academic study",
+        "score": 87.7,
+        "verdict": "pass",
+        "recent_videos": 63,
+        "median_views_per_day": 429623.44,
+        "top_views_per_day": 5695060.76,
+        "market_coverage": 4,
+        "title_query_overlap": 0.1818,
+        "measured_at": "2026-09-01T13:17:46.841210+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "The Phone Screen That Could Feel How Hard You Pressed",
+      "query": "Apple 3D Touch force sensing iPhone pressure sensor how it works",
+      "brief": "Explain how early iPhones converted tiny changes in the display assembly into a force value, allowing pressure-sensitive shortcuts, previews, and drawing effects. A cutaway animation can distinguish force sensing from ordinary capacitive touch and show why pressure input was useful but difficult to make universal.",
+      "evidence_summary": "Builds on the supplied Apple hardware, phone-history, repair, and “why Apple removed it” signals across the US, GB, and IN markets, while avoiding a copied product-news premise. Apple’s own developer documentation confirms that supported iPhones exposed a high-dynamic-range force value to apps, making the mechanism and user consequence directly sourceable.",
+      "authoritative_source_url": "https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/Adopting3DTouchOniPhone/3DTouchAPIs.html",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Apple 3D Touch force sensing iPhone pressure sensor how it works",
+        "score": 88.3,
+        "verdict": "pass",
+        "recent_videos": 63,
+        "median_views_per_day": 429623.44,
+        "top_views_per_day": 5695060.76,
+        "market_coverage": 4,
+        "title_query_overlap": 0.2222,
+        "measured_at": "2026-09-01T13:17:46.841690+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    }
+  ],
+  "platform_demand": {
+    "query": "USB Killer electrical surge USB port protection USB specification",
+    "score": 89.3,
+    "verdict": "pass",
+    "recent_videos": 63,
+    "median_views_per_day": 429623.44,
+    "top_views_per_day": 5695060.76,
+    "market_coverage": 4,
+    "title_query_overlap": 0.2857,
+    "measured_at": "2026-09-01T13:17:46.840717+00:00",
+    "signal_type": "youtube-most-popular-seed-proxy"
+  },
+  "selected_topic_source": "https://usbkill.com/pages/faq"
+}
