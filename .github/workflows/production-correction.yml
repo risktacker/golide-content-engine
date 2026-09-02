@@ -54,6 +54,7 @@ jobs:
           GOLIDE_ENABLE_PAID_PRODUCTION: "1"
           GOLIDE_ENABLE_YOUTUBE_UPLOAD: "1"
           GOLIDE_FORCE_REUPLOAD_PRODUCTION_ID: "golide-long-2026-09-01"
+          GOLIDE_OBSOLETE_YOUTUBE_VIDEO_ID: "P7on5HfmI4Q"
           GOLIDE_OPENAI_MONTHLY_CAP_USD: "5.00"
           GOLIDE_STUDIO_BASE_URL: "https://golide-studio.esiahkapinga.chatgpt.site"
           GOLIDE_STUDIO_BYPASS_TOKEN: ${{ secrets.GOLIDE_STUDIO_BYPASS_TOKEN }}
