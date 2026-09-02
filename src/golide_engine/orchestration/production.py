@@ -620,9 +620,16 @@ class ProductionService:
         manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
         video_path = self.root / "build" / production_id / "video.mp4"
         self.runner.run(
-            production_id, "render-editorial-policy-v2",
+            production_id, "render-full-duration-v3",
             lambda: render(load_project(manifest_path), self.root), attempts=1,
         )
+        rendered_seconds = self._duration(video_path)
+        duration_tolerance = max(0.75, narration_seconds * 0.01)
+        if abs(rendered_seconds - narration_seconds) > duration_tolerance:
+            raise RuntimeError(
+                f"render duration {rendered_seconds:.2f}s does not match narration "
+                f"{narration_seconds:.2f}s within {duration_tolerance:.2f}s"
+            )
 
         metadata_path = work / "upload-metadata.json"
         policy = load_metadata_policy(self.root / "config/youtube-metadata-policy.json")

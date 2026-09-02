@@ -152,8 +152,6 @@ def main() -> int:
         uploader = YouTubeUploader(youtube, database, "UCqaXVBSBz7iQsRHOupKt-3w")
         release = package["release"]
         video_id = uploader.upload_private(package["production_id"], root / files["video"]["file"], root / files["thumbnail"]["file"], metadata, release)
-        if release.get("scheduled_at"):
-            uploader.schedule(package["production_id"], video_id, release["scheduled_at"], release)
         print(json.dumps({"youtube_video_id": video_id, "scheduled_at": release.get("scheduled_at")}, indent=2))
         return 0
 
@@ -315,8 +313,6 @@ def main() -> int:
         uploader = YouTubeUploader(youtube, database, "UCqaXVBSBz7iQsRHOupKt-3w")
         release = package["release"]
         video_id = uploader.upload_private(spec["id"], package_root / files["video"]["file"], package_root / files["thumbnail"]["file"], metadata, release)
-        if release.get("scheduled_at"):
-            uploader.schedule(spec["id"], video_id, release["scheduled_at"], release)
         done = spec_path.with_suffix(".completed.json")
         spec_path.rename(done)
         report_studio("scheduled", "youtube-scheduled")
