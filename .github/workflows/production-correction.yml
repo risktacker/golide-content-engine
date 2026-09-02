@@ -29,8 +29,9 @@ jobs:
             build
             release-packages
             generated
-          key: golide-production-correction-${{ github.run_id }}
+          key: golide-production-correction-restore-${{ github.run_id }}
           restore-keys: |
+            golide-production-correction-
             golide-production-checkpoint-33609292568-1
       - uses: actions/setup-python@v5
         with:
@@ -59,6 +60,16 @@ jobs:
           GOLIDE_STUDIO_BASE_URL: "https://golide-studio.esiahkapinga.chatgpt.site"
           GOLIDE_STUDIO_BYPASS_TOKEN: ${{ secrets.GOLIDE_STUDIO_BYPASS_TOKEN }}
         run: golide automation-run --queue production-correction-queue
+      - name: Save corrected media checkpoint
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            productions
+            build
+            release-packages
+            generated
+          key: golide-production-correction-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Save corrected state
         if: always()
         run: |
