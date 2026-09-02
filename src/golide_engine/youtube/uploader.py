@@ -17,6 +17,22 @@ def _fingerprint(video: Path, metadata: dict) -> str:
     return digest.hexdigest()
 
 
+def _initial_release_status(release: dict) -> tuple[dict, str, str]:
+    """Set final visibility during upload so youtube.upload scope is sufficient."""
+    status = {"privacyStatus": "private", "selfDeclaredMadeForKids": False}
+    publish_at = release.get("scheduled_at")
+    if not publish_at:
+        return status, "uploaded_private", "private"
+    instant = datetime.fromisoformat(str(publish_at).replace("Z", "+00:00"))
+    if instant.astimezone(timezone.utc) <= datetime.now(timezone.utc):
+        status["privacyStatus"] = "public"
+        return status, "published", "public"
+    status["publishAt"] = instant.astimezone(timezone.utc).isoformat().replace(
+        "+00:00", "Z"
+    )
+    return status, "scheduled", "private"
+
+
 class YouTubeUploader:
     def __init__(self, youtube, database: Database, expected_channel_id: str):
         self.youtube = youtube
@@ -43,13 +59,15 @@ class YouTubeUploader:
             from googleapiclient.http import MediaFileUpload
         except ImportError as exc:
             raise RuntimeError("install production dependencies") from exc
+        status, upload_state, privacy = _initial_release_status(release)
+        status["containsSyntheticMedia"] = bool(metadata["altered_content"])
         body = {
             "snippet": {
                 "title": metadata["title"], "description": metadata["description"],
                 "tags": metadata.get("tags", []), "categoryId": str(metadata.get("category_id", 28)),
                 "defaultLanguage": metadata.get("video_language", "en"),
             },
-            "status": {"privacyStatus": "private", "selfDeclaredMadeForKids": False, "containsSyntheticMedia": bool(metadata["altered_content"])},
+            "status": status,
         }
         request = self.youtube.videos().insert(part="snippet,status", body=body, media_body=MediaFileUpload(str(video), chunksize=-1, resumable=True))
         response = with_retry(request.execute)
@@ -57,14 +75,15 @@ class YouTubeUploader:
         with_retry(lambda: self.youtube.thumbnails().set(videoId=video_id, media_body=MediaFileUpload(str(thumbnail))).execute())
         self.database.execute(
             """INSERT INTO uploads(production_id, youtube_video_id, privacy_status, upload_status, request_fingerprint, updated_at)
-               VALUES (?, ?, 'private', 'uploaded', ?, ?)
+               VALUES (?, ?, ?, ?, ?, ?)
                ON CONFLICT(production_id) DO UPDATE SET youtube_video_id=excluded.youtube_video_id,
-               privacy_status='private', upload_status='uploaded', updated_at=excluded.updated_at""",
-            (production_id, video_id, fingerprint, utc_now()),
+               privacy_status=excluded.privacy_status, upload_status=excluded.upload_status,
+               request_fingerprint=excluded.request_fingerprint, updated_at=excluded.updated_at""",
+            (production_id, video_id, privacy, upload_state, fingerprint, utc_now()),
         )
         self.database.execute(
-            "UPDATE productions SET youtube_video_id=?, status='uploaded_private', updated_at=? WHERE production_id=?",
-            (video_id, utc_now(), production_id),
+            "UPDATE productions SET youtube_video_id=?, status=?, updated_at=? WHERE production_id=?",
+            (video_id, upload_state, utc_now(), production_id),
         )
         return video_id
 
