@@ -72,9 +72,17 @@ class YouTubeUploader:
                         "forced reupload refused: stored YouTube ID does not match "
                         "the explicitly authorized obsolete upload"
                     )
-                with_retry(
-                    lambda: self.youtube.videos().delete(id=expected_old_id).execute()
+                obsolete = with_retry(
+                    lambda: self.youtube.videos().list(
+                        part="id", id=expected_old_id
+                    ).execute()
                 )
+                if obsolete.get("items"):
+                    with_retry(
+                        lambda: self.youtube.videos().delete(
+                            id=expected_old_id
+                        ).execute()
+                    )
         try:
             from googleapiclient.http import MediaFileUpload
         except ImportError as exc:
