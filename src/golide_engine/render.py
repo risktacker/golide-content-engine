@@ -251,7 +251,12 @@ def render(project: Project, root: Path) -> Path:
         sfx_index = 3 if project.music else 2
         command += ["-i", str(sfx_track)]
 
-    filters = [f"[0:v]{','.join(video_filters) if video_filters else 'null'}[v]"]
+    total_duration = sum(scene.duration for scene in project.scenes)
+    video_chain = ",".join(video_filters) if video_filters else "null"
+    filters = [
+        f"[0:v]{video_chain},tpad=stop_mode=clone:stop_duration={total_duration:.3f},"
+        f"trim=duration={total_duration:.3f},setpts=PTS-STARTPTS[v]"
+    ]
     if music_index is not None:
         filters.append(f"[{music_index}:a]volume={project.music_volume}[music]")
         if project.music_ducking:
@@ -269,13 +274,17 @@ def render(project: Project, root: Path) -> Path:
     else:
         filters.append("[base]anull[mixed]")
     # Leave encoder headroom so the final AAC true peak remains below -1 dBTP.
-    filters.append("[mixed]loudnorm=I=-16:TP=-1.5:LRA=11[a]")
+    filters.append(
+        f"[mixed]loudnorm=I=-16:TP=-1.5:LRA=11,"
+        f"apad=pad_dur={total_duration:.3f},"
+        f"atrim=duration={total_duration:.3f}[a]"
+    )
 
     command += [
         "-filter_complex", ";".join(filters), "-map", "[v]", "-map", "[a]",
         "-c:v", "libx264", "-preset", "medium", "-crf", "18",
         "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart",
-        "-shortest", str(final),
+        "-t", f"{total_duration:.3f}", str(final),
     ]
     _run(command)
 
