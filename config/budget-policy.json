@@ -2,17 +2,17 @@
   "version": 1,
   "currency": "USD",
   "openai": {
-    "monthly_cap_usd": 5.0,
+    "monthly_cap_usd": 5,
     "monthly_reserve_usd": 0.5,
     "scheduled_plan": {
       "long": 5,
       "short": 10
     },
     "scheduled_allocations_usd": {
-      "long": 0.5,
+      "long": 0.7,
       "short": 0.2
     },
-    "allocation_note": "Five long allocations plus ten short allocations total $4.50, preserving a $0.50 monthly buffer.",
+    "allocation_note": "The current long-form release may use up to $0.70 from the correction buffer; the hard scheduled monthly ceiling remains $5.00.",
     "resume_after_recharge": true
   },
   "independent_production": {
