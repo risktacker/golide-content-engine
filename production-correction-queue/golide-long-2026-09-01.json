@@ -76,7 +76,7 @@
     {
       "title": "Why a Chicken Can Beat a Phone Gimbal",
       "query": "avian head stabilization chicken pigeon motion stabilization study",
-      "brief": "A premium biology-versus-technology experiment: compare a chicken’s head stabilization with a handheld phone gimbal, then reveal how birds use neck muscles, sensory feedback, and gaze control to keep the world visually stable while the body moves.",
+      "brief": "A premium biology-versus-technology experiment: compare a chicken\u2019s head stabilization with a handheld phone gimbal, then reveal how birds use neck muscles, sensory feedback, and gaze control to keep the world visually stable while the body moves.",
       "evidence_summary": "Directly inspired by the US seed asking whether a chicken is better than a camera stabilizer, with additional camera-robot and stabilization signals in the supplied trend set. The result is unusual but real, easy to film, and mechanically explainable through side-by-side motion tracking. Research on birds shows that head stabilization can nearly eliminate rotational disturbance and preserve a stable retinal image.",
       "authoritative_source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5633612/",
       "evidence_valid": true,
@@ -137,7 +137,7 @@
       "title": "The Phone Screen That Could Feel How Hard You Pressed",
       "query": "Apple 3D Touch force sensing iPhone pressure sensor how it works",
       "brief": "Explain how early iPhones converted tiny changes in the display assembly into a force value, allowing pressure-sensitive shortcuts, previews, and drawing effects. A cutaway animation can distinguish force sensing from ordinary capacitive touch and show why pressure input was useful but difficult to make universal.",
-      "evidence_summary": "Builds on the supplied Apple hardware, phone-history, repair, and “why Apple removed it” signals across the US, GB, and IN markets, while avoiding a copied product-news premise. Apple’s own developer documentation confirms that supported iPhones exposed a high-dynamic-range force value to apps, making the mechanism and user consequence directly sourceable.",
+      "evidence_summary": "Builds on the supplied Apple hardware, phone-history, repair, and \u201cwhy Apple removed it\u201d signals across the US, GB, and IN markets, while avoiding a copied product-news premise. Apple\u2019s own developer documentation confirms that supported iPhones exposed a high-dynamic-range force value to apps, making the mechanism and user consequence directly sourceable.",
       "authoritative_source_url": "https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/Adopting3DTouchOniPhone/3DTouchAPIs.html",
       "evidence_valid": true,
       "platform_seed_demand": {
