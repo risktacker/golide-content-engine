@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import random
+import ssl
 import time
 from collections.abc import Callable
 from typing import TypeVar
@@ -14,7 +15,9 @@ def is_transient_error(exc: Exception) -> bool:
         or getattr(exc, "code", None)
         or getattr(getattr(exc, "resp", None), "status", None)
     )
-    return status in {408, 409, 429, 500, 502, 503, 504} or isinstance(exc, (TimeoutError, ConnectionError))
+    return status in {408, 409, 429, 500, 502, 503, 504} or isinstance(
+        exc, (TimeoutError, ConnectionError, ConnectionResetError, BrokenPipeError, ssl.SSLError)
+    )
 
 
 def with_retry(
