@@ -1,0 +1,48 @@
+name: Delete exact obsolete YouTube upload
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/delete-obsolete-video-kick"
+
+permissions:
+  contents: read
+
+jobs:
+  delete:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e '.[production]'
+      - name: Delete and verify exact obsolete ID
+        env:
+          YOUTUBE_OAUTH_TOKEN_B64: ${{ secrets.YOUTUBE_OAUTH_TOKEN_B64 }}
+        run: |
+          python - <<'PY'
+          from golide_engine.operations.retry import with_retry
+          from golide_engine.youtube.auth import assert_channel, credentials, services
+          video_id = "P7on5HfmI4Q"
+          youtube, _ = services(credentials())
+          assert_channel(youtube, "UCqaXVBSBz7iQsRHOupKt-3w")
+          found = with_retry(
+              lambda: youtube.videos().list(part="id", id=video_id).execute(),
+              attempts=8,
+          ).get("items", [])
+          if found:
+              with_retry(
+                  lambda: youtube.videos().delete(id=video_id).execute(),
+                  attempts=8,
+              )
+          remaining = with_retry(
+              lambda: youtube.videos().list(part="id", id=video_id).execute(),
+              attempts=8,
+          ).get("items", [])
+          if remaining:
+              raise RuntimeError("obsolete upload still exists after deletion")
+          print(f"Deleted and verified absent: {video_id}")
+          PY
