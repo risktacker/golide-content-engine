@@ -20,6 +20,7 @@ permissions:
 
 jobs:
   produce:
+    if: ${{ false }} # Emergency pause while fixing QA normalization
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
