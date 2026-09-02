@@ -104,7 +104,17 @@ class MonthlyBudget:
             (production_id, provider, month),
         )
         if rows:
-            return str(rows[0]["budget_class"]), float(rows[0]["allocated_usd"])
+            budget_class = str(rows[0]["budget_class"])
+            allocated = float(rows[0]["allocated_usd"])
+            desired_class, desired = self._allocation_for(spec, provider)
+            if budget_class == "scheduled" and desired_class == "scheduled" and desired > allocated:
+                self.database.execute(
+                    """UPDATE budget_allocations SET allocated_usd=?
+                       WHERE production_id=? AND provider=? AND month=?""",
+                    (desired, production_id, provider, month),
+                )
+                allocated = desired
+            return budget_class, allocated
         budget_class, amount = self._allocation_for(spec, provider)
         self.database.execute(
             """INSERT INTO budget_allocations
