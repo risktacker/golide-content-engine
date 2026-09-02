@@ -29,6 +29,15 @@ from .schemas import METADATA_SCHEMA, RESEARCH_SCHEMA, STORYBOARD_SCHEMA, TREND_
 from .stage_runner import StageRunner
 
 
+def apply_locked_upload_defaults(metadata: dict[str, Any], policy: dict[str, Any]) -> dict[str, Any]:
+    """Apply deterministic channel defaults after creative metadata generation."""
+    normalized = dict(metadata)
+    defaults = policy["upload_defaults"]
+    normalized["video_language"] = defaults["video_language"]
+    normalized["title_description_language"] = defaults["title_description_language"]
+    return normalized
+
+
 class ProductionService:
     """Runs one explicitly approved production through a checkpointed release build."""
 
@@ -540,7 +549,9 @@ class ProductionService:
                 "Create accurate YouTube metadata for G$LIDE. No hashtags in title. Describe the actual video, place only a few relevant hashtags at the description end, and use chapters only for long videos.",
                 f"FORMAT={spec['format']}\nSCRIPT\n{script}", METADATA_SCHEMA,
             )
-            metadata = output.value | {"format": spec["format"]}
+            metadata = apply_locked_upload_defaults(
+                output.value | {"format": spec["format"]}, policy
+            )
             if music.attribution and music.attribution not in metadata["description"]:
                 metadata["description"] = metadata["description"].rstrip() + f"\n\nMusic: {music.attribution}"
             validate_upload_metadata(metadata, policy)
