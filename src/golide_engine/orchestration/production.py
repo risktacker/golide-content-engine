@@ -522,7 +522,7 @@ class ProductionService:
             list(asset_inventory.values()), separators=(",", ":")
         )
 
-        storyboard_path = work / "storyboard-authoritative-v4.json"
+        storyboard_path = work / "storyboard-authoritative-v5.json"
 
         def storyboard_stage():
             self._require_absent(storyboard_path, "storyboard")
@@ -638,9 +638,8 @@ class ProductionService:
                 json.dumps({"timing_source": "elevenlabs-normalized-alignment", "scenes": merged}, indent=2) + "\n",
                 encoding="utf-8",
             )
-            self._record_text(production_id, "storyboard", output)
 
-        self.runner.run(production_id, "storyboard-authoritative-v4", storyboard_stage)
+        self.runner.run(production_id, "storyboard-authoritative-v5", storyboard_stage)
         storyboard = json.loads(storyboard_path.read_text(encoding="utf-8"))
         qa_policy = json.loads(
             (self.root / "config/qa-policy.json").read_text(encoding="utf-8")
@@ -751,7 +750,7 @@ class ProductionService:
         manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
         video_path = self.root / "build" / production_id / "video.mp4"
         self.runner.run(
-            production_id, "render-full-duration-v7",
+            production_id, "render-full-duration-v8",
             lambda: render(load_project(manifest_path), self.root), attempts=1,
         )
         rendered_seconds = self._duration(video_path)
