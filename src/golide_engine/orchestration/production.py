@@ -453,26 +453,48 @@ class ProductionService:
                     f"{narration_seconds:.1f}s"
                 )
 
-        timed_words = json.loads(timed_words_path.read_text(encoding="utf-8"))
-        spoken_srt = work / "spoken-captions.srt"
+        raw_timed_words = json.loads(timed_words_path.read_text(encoding="utf-8"))
+        authoritative_words_path = work / "timed-words-authoritative-v2.json"
+        if authoritative_words_path.exists():
+            timed_words = json.loads(authoritative_words_path.read_text(encoding="utf-8"))
+        else:
+            timed_words = json.loads(json.dumps(raw_timed_words))
+            alignment_seconds = float(timed_words[-1]["end"])
+            timing_tolerance = max(0.75, narration_seconds * 0.01)
+            if alignment_seconds <= 0:
+                raise RuntimeError("ElevenLabs timing alignment has no positive duration")
+            if abs(alignment_seconds - narration_seconds) > timing_tolerance:
+                timing_scale = narration_seconds / alignment_seconds
+                for word in timed_words:
+                    word["start"] = round(float(word["start"]) * timing_scale, 4)
+                    word["end"] = round(float(word["end"]) * timing_scale, 4)
+            authoritative_words_path.write_text(
+                json.dumps(timed_words, indent=2) + "\n", encoding="utf-8"
+            )
+
+        spoken_srt = work / "spoken-captions-authoritative-v2.srt"
 
         def caption_stage():
-            self._require_absent(spoken_srt, "captions")
+            self._require_absent(spoken_srt, "captions-authoritative-v2")
             spoken_srt.write_text(words_to_srt(timed_words), encoding="utf-8")
 
-        self.runner.run(production_id, "captions", caption_stage, attempts=1)
+        self.runner.run(
+            production_id, "captions-authoritative-v2", caption_stage, attempts=1
+        )
 
-        beats_path = work / "editorial-beats.json"
+        beats_path = work / "editorial-beats-authoritative-v2.json"
 
         def beat_stage():
-            self._require_absent(beats_path, "editorial-beats")
+            self._require_absent(beats_path, "editorial-beats-authoritative-v2")
             beats = words_to_beats(timed_words, max_seconds=3.2)
             beats_path.write_text(json.dumps(beats, indent=2) + "\n", encoding="utf-8")
 
-        self.runner.run(production_id, "editorial-beats", beat_stage, attempts=1)
+        self.runner.run(
+            production_id, "editorial-beats-authoritative-v2", beat_stage, attempts=1
+        )
         beats = json.loads(beats_path.read_text(encoding="utf-8"))
 
-        storyboard_path = work / "storyboard.json"
+        storyboard_path = work / "storyboard-authoritative-v2.json"
 
         def storyboard_stage():
             self._require_absent(storyboard_path, "storyboard")
@@ -522,7 +544,7 @@ class ProductionService:
             )
             self._record_text(production_id, "storyboard", output)
 
-        self.runner.run(production_id, "storyboard", storyboard_stage)
+        self.runner.run(production_id, "storyboard-authoritative-v2", storyboard_stage)
         storyboard = json.loads(storyboard_path.read_text(encoding="utf-8"))
         qa_policy = json.loads(
             (self.root / "config/qa-policy.json").read_text(encoding="utf-8")
@@ -620,7 +642,7 @@ class ProductionService:
         manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
         video_path = self.root / "build" / production_id / "video.mp4"
         self.runner.run(
-            production_id, "render-full-duration-v3",
+            production_id, "render-full-duration-v4",
             lambda: render(load_project(manifest_path), self.root), attempts=1,
         )
         rendered_seconds = self._duration(video_path)
