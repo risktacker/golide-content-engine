@@ -1,41 +1,26 @@
 {
-  "version": 2,
+  "version": 3,
   "audio": {
     "integrated_lufs_min": -18,
     "integrated_lufs_max": -13,
     "true_peak_dbtp_max": -1,
-    "minimum_duration_seconds": 1
+    "minimum_duration_seconds": 1,
+    "target_music_volume": 0.03,
+    "minimum_sfx_events_short": 3,
+    "minimum_sfx_events_long": 8
   },
   "visual": {
     "safe_margin_percent": 8,
-    "short_dimensions": [
-      1080,
-      1920
-    ],
-    "long_dimensions": [
-      1920,
-      1080
-    ],
+    "short_dimensions": [1080, 1920],
+    "long_dimensions": [1920, 1080],
     "duration_tolerance_seconds": 0.35,
     "minimum_fps": 24
   },
   "spelling": {
     "language": "en",
     "ignore": [
-      "GOLIDE",
-      "Shorts",
-      "YouTube",
-      "AI",
-      "CTA",
-      "FFmpeg",
-      "OAuth",
-      "BadUSB",
-      "cybersecurity",
-      "eFuse",
-      "milliamps",
-      "overvoltage",
-      "USB",
-      "VBUS"
+      "GOLIDE", "Shorts", "YouTube", "AI", "CTA", "FFmpeg", "OAuth",
+      "BadUSB", "cybersecurity", "eFuse", "milliamps", "overvoltage", "USB", "VBUS"
     ]
   },
   "editorial": {
@@ -43,10 +28,18 @@
     "short_max_visual_beat_seconds": 3.2,
     "long_max_visual_beat_seconds": 5,
     "max_consecutive_same_motion": 3,
-    "minimum_motion_recipes": 2,
+    "max_consecutive_same_primary_asset": 2,
+    "minimum_unique_primary_assets_short": 5,
+    "minimum_unique_primary_assets_long": 12,
+    "minimum_layered_scene_ratio_short": 0.15,
+    "minimum_layered_scene_ratio_long": 0.25,
+    "maximum_primary_asset_runtime_ratio": 0.22,
+    "minimum_motion_recipes": 4,
     "maximum_non_cut_transition_ratio": 0.65,
     "maximum_strong_motion_ratio": 0.45,
     "maximum_sfx_beat_ratio": 0.6,
+    "minimum_sfx_beat_ratio_short": 0.12,
+    "minimum_sfx_beat_ratio_long": 0.10,
     "minimum_impact_spacing_seconds": 2.5,
     "max_visual_caption_characters_with_annotation": 64
   }
