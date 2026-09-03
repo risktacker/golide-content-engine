@@ -8,13 +8,28 @@ from pathlib import Path
 
 from .captions import scenes_to_srt
 from .models import Annotation, Project
-from .motion import annotation_filter, scene_filter, transition_for
+from .motion import annotation_filter, scene_filter
 
 
 def _run(command: list[str]) -> None:
     result = subprocess.run(command, capture_output=True, text=True, check=False)
     if result.returncode:
         raise RuntimeError(result.stderr[-4000:])
+
+
+def _probe_duration(path: Path) -> float:
+    result = subprocess.run(
+        [
+            "ffprobe", "-v", "error", "-show_entries", "format=duration",
+            "-of", "default=nw=1:nk=1", str(path),
+        ],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode:
+        raise RuntimeError(result.stderr[-2000:])
+    return float(result.stdout.strip())
 
 
 def _escape_subtitle(path: Path) -> str:
@@ -44,9 +59,11 @@ def _render_scene_clips(project: Project, output_dir: Path) -> list[Path]:
     scene_dir.mkdir(parents=True, exist_ok=True)
     rendered: list[Path] = []
     for index, scene in enumerate(project.scenes):
-        transition = transition_for(scene.motion, project.fps)
-        tail = transition.duration if index + 1 < len(project.scenes) else 0.0
-        clip_duration = scene.duration + tail
+        # Scene clips are authoritative editorial units. Do not append transition tails:
+        # the previous xfade compositor accumulated timestamp rounding across a long
+        # episode and silently stopped after the first few scenes. Fast hard cuts are
+        # intentional for the explainer style and keep every narration beat visible.
+        clip_duration = scene.duration
         destination = scene_dir / f"{index:03d}.mp4"
         command = ["ffmpeg", "-y"]
         still_image = scene.media.suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"}
@@ -116,32 +133,44 @@ def _render_scene_clips(project: Project, output_dir: Path) -> list[Path]:
 
 
 def _compose_scene_clips(project: Project, rendered: list[Path], destination: Path) -> None:
-    if len(rendered) == 1:
-        shutil.copyfile(rendered[0], destination)
-        return
+    if not rendered:
+        raise RuntimeError("cannot compose an empty scene list")
+
     command = ["ffmpeg", "-y"]
     for item in rendered:
         command += ["-i", str(item)]
-    filters = [f"[{index}:v]settb=AVTB,setpts=PTS-STARTPTS[v{index}]" for index in range(len(rendered))]
-    current = "v0"
-    offset = 0.0
-    for index in range(1, len(rendered)):
-        offset += project.scenes[index - 1].duration
-        transition = transition_for(project.scenes[index - 1].motion, project.fps)
-        output = f"x{index}"
+
+    filters: list[str] = []
+    labels: list[str] = []
+    for index, scene in enumerate(project.scenes):
+        label = f"v{index}"
         filters.append(
-            f"[{current}][v{index}]xfade=transition={transition.name}:"
-            f"duration={transition.duration:.5f}:offset={offset:.5f}[{output}]"
+            f"[{index}:v]fps={project.fps},trim=duration={scene.duration:.5f},"
+            f"setpts=PTS-STARTPTS[{label}]"
         )
-        current = output
+        labels.append(f"[{label}]")
+
     total = sum(scene.duration for scene in project.scenes)
-    filters.append(f"[{current}]trim=duration={total:.5f},setpts=PTS-STARTPTS[vout]")
+    filters.append(
+        "".join(labels)
+        + f"concat=n={len(labels)}:v=1:a=0,"
+        + f"trim=duration={total:.5f},setpts=PTS-STARTPTS[vout]"
+    )
     command += [
         "-filter_complex", ";".join(filters), "-map", "[vout]", "-an",
         "-c:v", "libx264", "-preset", "medium", "-crf", "18",
         "-pix_fmt", "yuv420p", str(destination),
     ]
     _run(command)
+
+    # Never let the final mux hide a broken compositor by cloning one last frame for
+    # minutes. A long edit must contain the complete silent visual timeline first.
+    actual = _probe_duration(destination)
+    tolerance = max(0.15, 3 / project.fps)
+    if abs(actual - total) > tolerance:
+        raise RuntimeError(
+            f"scene compositor duration mismatch: expected {total:.3f}s, got {actual:.3f}s"
+        )
 
 
 def _generate_sfx(kind: str, output: Path) -> None:
@@ -227,6 +256,8 @@ def _build_sfx_track(project: Project, output_dir: Path) -> tuple[Path | None, i
 def render(project: Project, root: Path) -> Path:
     if not shutil.which("ffmpeg"):
         raise RuntimeError("FFmpeg is required but was not found on PATH")
+    if not shutil.which("ffprobe"):
+        raise RuntimeError("FFprobe is required but was not found on PATH")
 
     output_dir = root / "build" / project.id
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -270,8 +301,11 @@ def render(project: Project, root: Path) -> Path:
 
     total_duration = sum(scene.duration for scene in project.scenes)
     video_chain = ",".join(video_filters) if video_filters else "null"
+    # Only permit a tiny two-frame pad for codec rounding. The previous full-duration
+    # tpad concealed a 13-second compositor output by freezing its last frame to 4:45.
+    rounding_pad = max(0.05, 2 / project.fps)
     filters = [
-        f"[0:v]{video_chain},tpad=stop_mode=clone:stop_duration={total_duration:.3f},"
+        f"[0:v]{video_chain},tpad=stop_mode=clone:stop_duration={rounding_pad:.3f},"
         f"trim=duration={total_duration:.3f},setpts=PTS-STARTPTS[v]"
     ]
     if music_index is not None:
@@ -318,6 +352,7 @@ def render(project: Project, root: Path) -> Path:
         "music_volume_requested": project.music_volume,
         "music_volume_effective": min(project.music_volume, 0.03),
         "dual_caption_tracks": bool(project.spoken_captions),
+        "scene_compositor": "hard-cut-concat-v2",
         "motion_recipes": dict(Counter(scene.motion.type for scene in project.scenes)),
         "transition_recipes": dict(Counter(scene.motion.transition for scene in project.scenes)),
         "annotations": sum(scene.annotation.kind != "none" for scene in project.scenes),
