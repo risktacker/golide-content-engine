@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "locked": true,
+  "brand": "G$LIDE",
+  "palette": [
+    "deep navy",
+    "electric/neon blue",
+    "G$LIDE gold",
+    "warm ivory/paper"
+  ],
+  "avatar": {
+    "name": "G$LIDE Esiah avatar",
+    "canonical_direction": "A stylized human portrait with realistic adult human facial proportions and anatomy, rendered as an intentionally unreal layered paper-cut/ink illustration in the G$LIDE palette. The unreal quality comes from paper texture, cut-paper edges, ink/sketch detail, graphic lighting and navy/gold/electric-blue color treatment — not from cartoon anatomy.",
+    "required_traits": [
+      "human-looking adult facial structure",
+      "normal human eye proportions",
+      "normal human mouth and jaw proportions",
+      "recognizable consistent facial geometry across productions",
+      "layered paper-cut texture and edges",
+      "ink/sketch detailing where useful",
+      "deep navy, G$LIDE gold and electric-blue treatment",
+      "expressive but believable human emotion"
+    ],
+    "forbidden_traits": [
+      "toon character",
+      "cartoon face",
+      "Pixar-like proportions",
+      "Disney-like proportions",
+      "anime proportions",
+      "oversized eyes",
+      "exaggerated cartoon mouth",
+      "chibi features",
+      "childlike facial proportions",
+      "rubber-hose or mascot anatomy",
+      "3D animated-film character look"
+    ],
+    "thumbnail_rule": "When the avatar is used in a thumbnail, preserve realistic human proportions even under a strong reaction. Use pose, lighting, paper layers and composition for drama instead of distorting the face into a cartoon.",
+    "in_video_rule": "Any appearance of the G$LIDE avatar inside the video must follow the same canonical facial treatment as thumbnails. Do not switch avatar styles between scenes or episodes."
+  },
+  "image_generation_rule": "If any generated image contains the G$LIDE avatar or a representation of Esiah, the avatar policy is mandatory. If the image does not contain the avatar, retain the G$LIDE palette and premium paper-cut/technical-explainer visual language without forcing a person into the scene.",
+  "qa_rule": "A generated avatar that reads primarily as a cartoon/toon/animated-film character is a brand failure and must not pass release QA."
+}
