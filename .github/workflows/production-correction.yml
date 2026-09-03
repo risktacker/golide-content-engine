@@ -48,7 +48,7 @@ jobs:
           set -euo pipefail
           python - <<'PY'
           from pathlib import Path
-          from golide_engine.models import load_project
+          from golide_engine.manifest import load_project
           from golide_engine.render import render
 
           root = Path('.').resolve()
