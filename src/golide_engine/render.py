@@ -145,12 +145,29 @@ def _compose_scene_clips(project: Project, rendered: list[Path], destination: Pa
 
 
 def _generate_sfx(kind: str, output: Path) -> None:
+    # Small procedural library: clearly audible in the mix, but short enough not to
+    # compete with narration. Each cue is tied to a visible editorial action.
     sources = {
-        "tick": ("sine=frequency=1350:duration=0.07:sample_rate=48000", "volume=0.10,afade=t=out:st=0.02:d=0.05"),
-        "soft-trace": ("anoisesrc=color=pink:duration=0.28:sample_rate=48000", "highpass=f=700,lowpass=f=4800,volume=0.055,afade=t=out:st=0.05:d=0.23"),
-        "paper": ("anoisesrc=color=pink:duration=0.18:sample_rate=48000", "highpass=f=1000,lowpass=f=6500,volume=0.07,afade=t=out:st=0.03:d=0.15"),
-        "swipe": ("anoisesrc=color=white:duration=0.22:sample_rate=48000", "highpass=f=900,lowpass=f=7000,volume=0.04,afade=t=in:st=0:d=0.04,afade=t=out:st=0.10:d=0.12"),
-        "impact": ("sine=frequency=90:duration=0.26:sample_rate=48000", "volume=0.16,afade=t=out:st=0.03:d=0.23"),
+        "tick": (
+            "sine=frequency=1450:duration=0.075:sample_rate=48000",
+            "volume=0.18,afade=t=out:st=0.02:d=0.055",
+        ),
+        "soft-trace": (
+            "sine=frequency=780:duration=0.30:sample_rate=48000",
+            "highpass=f=500,lowpass=f=4200,volume=0.13,afade=t=in:st=0:d=0.04,afade=t=out:st=0.12:d=0.18",
+        ),
+        "paper": (
+            "anoisesrc=color=pink:duration=0.20:sample_rate=48000",
+            "highpass=f=900,lowpass=f=6200,volume=0.12,afade=t=in:st=0:d=0.02,afade=t=out:st=0.05:d=0.15",
+        ),
+        "swipe": (
+            "anoisesrc=color=white:duration=0.24:sample_rate=48000",
+            "highpass=f=1100,lowpass=f=7500,volume=0.09,afade=t=in:st=0:d=0.05,afade=t=out:st=0.10:d=0.14",
+        ),
+        "impact": (
+            "sine=frequency=82:duration=0.30:sample_rate=48000",
+            "volume=0.24,lowpass=f=180,afade=t=out:st=0.035:d=0.265",
+        ),
     }
     source, audio_filter = sources[kind]
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -258,11 +275,13 @@ def render(project: Project, root: Path) -> Path:
         f"trim=duration={total_duration:.3f},setpts=PTS-STARTPTS[v]"
     ]
     if music_index is not None:
-        filters.append(f"[{music_index}:a]volume={project.music_volume}[music]")
+        # Voice first. Even an old manifest that asks for a louder bed is clamped.
+        music_volume = min(project.music_volume, 0.03)
+        filters.append(f"[{music_index}:a]volume={music_volume}[music]")
         if project.music_ducking:
             filters.append(
-                "[music][1:a]sidechaincompress=threshold=0.02:ratio=8:"
-                "attack=20:release=350[ducked]"
+                "[music][1:a]sidechaincompress=threshold=0.012:ratio=12:"
+                "attack=12:release=420:makeup=1[ducked]"
             )
             filters.append("[1:a][ducked]amix=inputs=2:duration=first:normalize=0[base]")
         else:
@@ -273,7 +292,6 @@ def render(project: Project, root: Path) -> Path:
         filters.append(f"[base][{sfx_index}:a]amix=inputs=2:duration=first:normalize=0[mixed]")
     else:
         filters.append("[base]anull[mixed]")
-    # Leave encoder headroom so the final AAC true peak remains below -1 dBTP.
     filters.append(
         f"[mixed]loudnorm=I=-16:TP=-1.5:LRA=11,"
         f"apad=pad_dur={total_duration:.3f},"
@@ -297,6 +315,8 @@ def render(project: Project, root: Path) -> Path:
         "publish_approved": project.approved,
         "music_source": project.music_source,
         "music_license": project.music_license,
+        "music_volume_requested": project.music_volume,
+        "music_volume_effective": min(project.music_volume, 0.03),
         "dual_caption_tracks": bool(project.spoken_captions),
         "motion_recipes": dict(Counter(scene.motion.type for scene in project.scenes)),
         "transition_recipes": dict(Counter(scene.motion.transition for scene in project.scenes)),
