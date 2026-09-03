@@ -16,14 +16,14 @@ permissions:
   id-token: write
 
 jobs:
-  publish-existing-correction:
+  rebuild-verify-publish-correction:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Restore approved corrected media
+      - name: Restore preserved production assets
         uses: actions/cache/restore@v4
         with:
           path: |
@@ -31,19 +31,89 @@ jobs:
             build
             release-packages
             generated
-          key: golide-production-correction-upload-${{ github.run_id }}
+          key: golide-production-correction-rebuild-${{ github.run_id }}
           restore-keys: |
             golide-production-correction-
             golide-production-checkpoint-33609292568-1
+      - name: Install deterministic render dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - run: python -m pip install -e '.[production]'
-      - name: Verify existing corrected release package
+      - name: Rebuild final video from preserved manifest and assets
         run: |
-          test -f release-packages/golide-long-2026-09-01/package-manifest.json
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          from golide_engine.models import load_project
+          from golide_engine.render import render
+
+          root = Path('.').resolve()
+          production_id = 'golide-long-2026-09-01'
+          manifest = root / 'productions' / production_id / 'render-manifest.json'
+          if not manifest.exists():
+              raise SystemExit(f'missing preserved render manifest: {manifest}')
+          render(load_project(manifest), root)
+          PY
+      - name: Hard duration and stream gate
+        run: |
+          set -euo pipefail
+          VIDEO="build/golide-long-2026-09-01/video.mp4"
+          test -s "$VIDEO"
+          DURATION=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$VIDEO")
+          VSTREAMS=$(ffprobe -v error -select_streams v -show_entries stream=index -of csv=p=0 "$VIDEO" | wc -l)
+          ASTREAMS=$(ffprobe -v error -select_streams a -show_entries stream=index -of csv=p=0 "$VIDEO" | wc -l)
+          echo "FINAL_DURATION_SECONDS=$DURATION"
+          echo "VIDEO_STREAMS=$VSTREAMS AUDIO_STREAMS=$ASTREAMS"
+          python - "$DURATION" <<'PY'
+          import sys
+          seconds = float(sys.argv[1])
+          if not (270.0 <= seconds <= 360.0):
+              raise SystemExit(f'BLOCKED: long-form duration {seconds:.3f}s is outside 4:30-6:00 safety range')
+          print(f'DURATION_GATE_PASSED={seconds:.3f}s')
+          PY
+          test "$VSTREAMS" -ge 1
+          test "$ASTREAMS" -ge 1
+      - name: Replace stale release-package video with verified final render
+        run: |
+          set -euo pipefail
+          cp -f build/golide-long-2026-09-01/video.mp4 release-packages/golide-long-2026-09-01/video.mp4
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          package = Path('release-packages/golide-long-2026-09-01')
+          manifest_path = package / 'package-manifest.json'
+          manifest = json.loads(manifest_path.read_text())
+          video = package / 'video.mp4'
+          digest = hashlib.sha256(video.read_bytes()).hexdigest()
+          size = video.stat().st_size
+          updated = False
+          for item in manifest.get('files', []):
+              if item.get('path') == 'video.mp4' or item.get('name') == 'video.mp4':
+                  if 'sha256' in item: item['sha256'] = digest
+                  if 'size' in item: item['size'] = size
+                  updated = True
+          if not updated:
+              raise SystemExit('package manifest has no video.mp4 entry; refusing upload')
+          manifest_path.write_text(json.dumps(manifest, indent=2) + '\n')
+          print(f'RELEASE_VIDEO_SHA256={digest}')
+          PY
           golide release-verify release-packages/golide-long-2026-09-01
-      - name: Upload existing corrected video as a new YouTube video
+      - name: Re-check packaged video immediately before YouTube
+        run: |
+          set -euo pipefail
+          DURATION=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 release-packages/golide-long-2026-09-01/video.mp4)
+          python - "$DURATION" <<'PY'
+          import sys
+          seconds = float(sys.argv[1])
+          if not (270.0 <= seconds <= 360.0):
+              raise SystemExit(f'UPLOAD BLOCKED: packaged video is {seconds:.3f}s')
+          print(f'UPLOAD_DURATION_GATE_PASSED={seconds:.3f}s')
+          PY
+      - name: Upload verified corrected long video as a new YouTube video
         env:
           YOUTUBE_OAUTH_TOKEN_B64: ${{ secrets.YOUTUBE_OAUTH_TOKEN_B64 }}
           GOLIDE_ENABLE_YOUTUBE_UPLOAD: "1"
@@ -56,6 +126,6 @@ jobs:
           git config user.name "golide-production-bot"
           git config user.email "actions@users.noreply.github.com"
           git add data
-          git diff --cached --quiet || git commit -m "ops: record corrected YouTube publication"
+          git diff --cached --quiet || git commit -m "ops: record corrected long-video publication"
           git pull --rebase origin main
           git push
