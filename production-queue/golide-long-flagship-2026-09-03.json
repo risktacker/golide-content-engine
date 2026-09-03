@@ -1,0 +1,51 @@
+{
+  "id": "golide-long-flagship-2026-09-03",
+  "studio_managed": true,
+  "format": "long",
+  "title": "G$LIDE Flagship · 2026-09-03",
+  "brief": "Choose a fresh original evidence-backed G$LIDE science, technology, unusual true event or impossible-but-real explainer with strong current YouTube-wide demand. Compare multiple current niche candidates, avoid any topic already used in recent G$LIDE trials or productions, and explain the winning topic's real mechanism and consequence visually. Never copy an existing video.",
+  "demand_query": "current science technology explainer",
+  "demand_validation_required": true,
+  "budget_class": "scheduled",
+  "purpose": "channel-automation",
+  "generate_at": "2026-09-03T12:00:00Z",
+  "max_cost_usd": 5.0,
+  "production_authorized": true,
+  "output_destination": "render-and-upload",
+  "concept": {
+    "family": "science-explainer",
+    "promise": "A fresh current impossible-but-real idea explained with authoritative evidence",
+    "scores": {
+      "click_promise": 9,
+      "thumbnail_title_fit": 9,
+      "narrative_engine": 9,
+      "visual_depth": 9,
+      "evidence_strength": 8,
+      "retention_design": 9,
+      "broad_relevance": 8,
+      "novelty": 9,
+      "revenue_fit": 7
+    }
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "elevenlabs-golide-narrator-v1",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "one-off-first-flagship"
+  },
+  "music": {"mood": "curious-tension"},
+  "avatar_reference_images": [],
+  "release": {
+    "approved": true,
+    "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+    "scheduled_at": "2026-09-03T16:00:00Z"
+  }
+}
