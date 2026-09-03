@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import base64
+import hashlib
 import json
 from pathlib import Path
 from typing import Any
@@ -16,11 +18,52 @@ class VisualIdentity:
     def avatar(self) -> dict[str, Any]:
         return dict(self.config["avatar"])
 
+    @property
+    def repository_root(self) -> Path:
+        # visual-identity.json lives under <repo>/config/.
+        return self.path.resolve().parent.parent
+
+    def requests_avatar(self, prompt: str) -> bool:
+        value = prompt.lower()
+        markers = [str(item).lower() for item in self.avatar.get("reference_markers", [])]
+        return any(marker in value for marker in markers)
+
+    def canonical_avatar_reference(self) -> Path:
+        avatar = self.avatar
+        source_rel = avatar.get("canonical_reference_b64")
+        expected_sha = avatar.get("canonical_reference_sha256")
+        if not source_rel or not expected_sha:
+            raise RuntimeError("canonical G$LIDE avatar reference is not configured")
+
+        source = self.repository_root / str(source_rel)
+        if not source.is_file():
+            raise RuntimeError(f"canonical G$LIDE avatar source is missing: {source}")
+
+        target = self.repository_root / "generated" / "brand" / "golide-canonical-avatar-v1.jpg"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if not target.is_file() or hashlib.sha256(target.read_bytes()).hexdigest() != expected_sha:
+            try:
+                payload = base64.b64decode(source.read_text(encoding="ascii").strip(), validate=True)
+            except Exception as exc:
+                raise RuntimeError("canonical G$LIDE avatar reference is not valid base64") from exc
+            actual = hashlib.sha256(payload).hexdigest()
+            if actual != expected_sha:
+                raise RuntimeError(
+                    f"canonical G$LIDE avatar checksum mismatch: expected {expected_sha}, got {actual}"
+                )
+            target.write_bytes(payload)
+
+        return target
+
     def prompt_guard(self) -> str:
         avatar = self.avatar
         required = "; ".join(avatar["required_traits"])
         forbidden = "; ".join(avatar["forbidden_traits"])
         palette = ", ".join(self.config["palette"])
+        non_avatar_rule = avatar.get(
+            "non_avatar_rule",
+            "Do not invent a host, presenter or substitute avatar in topic visuals.",
+        )
         return (
             "LOCKED G$LIDE VISUAL IDENTITY. "
             f"Palette: {palette}. "
@@ -31,6 +74,7 @@ class VisualIdentity:
             f"Forbidden avatar traits: {forbidden}. "
             f"Thumbnail rule: {avatar['thumbnail_rule']} "
             f"In-video rule: {avatar['in_video_rule']} "
+            f"Non-avatar rule: {non_avatar_rule} "
             "Do not reinterpret the avatar as a cartoon, mascot, anime figure or animated-film character."
         )
 
