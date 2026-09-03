@@ -59,30 +59,10 @@ class YouTubeUploader:
         )
         if prior and prior[0]["youtube_video_id"] and not force_reupload:
             return str(prior[0]["youtube_video_id"])
-        if force_reupload:
-            existing = self.database.rows(
-                "SELECT youtube_video_id FROM uploads WHERE production_id=?",
-                (production_id,),
-            )
-            if existing and existing[0]["youtube_video_id"]:
-                old_id = str(existing[0]["youtube_video_id"])
-                expected_old_id = os.getenv("GOLIDE_OBSOLETE_YOUTUBE_VIDEO_ID", "")
-                if not expected_old_id or old_id != expected_old_id:
-                    raise RuntimeError(
-                        "forced reupload refused: stored YouTube ID does not match "
-                        "the explicitly authorized obsolete upload"
-                    )
-                obsolete = with_retry(
-                    lambda: self.youtube.videos().list(
-                        part="id", id=expected_old_id
-                    ).execute()
-                )
-                if obsolete.get("items"):
-                    with_retry(
-                        lambda: self.youtube.videos().delete(
-                            id=expected_old_id
-                        ).execute()
-                    )
+
+        # A forced corrected upload always creates a brand-new YouTube video.
+        # Cleanup of any obsolete upload is intentionally separate and must never
+        # block publication of the corrected render.
         try:
             from googleapiclient.http import MediaFileUpload
         except ImportError as exc:
