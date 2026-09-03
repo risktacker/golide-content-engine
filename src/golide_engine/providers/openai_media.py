@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import base64
+import subprocess
+import tempfile
+from contextlib import ExitStack
 from pathlib import Path
 
 from .base import ProviderOutput
@@ -51,6 +54,38 @@ class OpenAIImageProvider:
             references.insert(0, canonical)
         return references
 
+    @staticmethod
+    def _normalize_edit_references(references: list[Path], temp_dir: Path) -> list[Path]:
+        """Normalize edit references to RGB PNG for the Images API.
+
+        Some otherwise-valid JPEG references can be rejected by the image-edit endpoint
+        because of their encoded color mode. Converting only the request copy keeps the
+        locked canonical source/checksum untouched while giving the API a deterministic
+        supported representation.
+        """
+        normalized: list[Path] = []
+        for index, source in enumerate(references):
+            if source.suffix.lower() not in {".jpg", ".jpeg"}:
+                normalized.append(source)
+                continue
+            target = temp_dir / f"reference-{index:02d}.png"
+            subprocess.run(
+                [
+                    "ffmpeg",
+                    "-v",
+                    "error",
+                    "-y",
+                    "-i",
+                    str(source),
+                    "-vf",
+                    "format=rgb24",
+                    str(target),
+                ],
+                check=True,
+            )
+            normalized.append(target)
+        return normalized
+
     def _create(
         self,
         prompt: str,
@@ -63,18 +98,17 @@ class OpenAIImageProvider:
         references = self._references_for(prompt, reference_images, thumbnail=thumbnail)
         prompt = self._locked_prompt(prompt)
         if references:
-            handles = [path.open("rb") for path in references]
-            try:
-                response = client().images.edit(
-                    model=self.model,
-                    image=handles,
-                    prompt=prompt,
-                    size=size,
-                    quality=self.quality,
-                )
-            finally:
-                for handle in handles:
-                    handle.close()
+            with tempfile.TemporaryDirectory(prefix="golide-image-ref-") as temp_name:
+                normalized = self._normalize_edit_references(references, Path(temp_name))
+                with ExitStack() as stack:
+                    handles = [stack.enter_context(path.open("rb")) for path in normalized]
+                    response = client().images.edit(
+                        model=self.model,
+                        image=handles,
+                        prompt=prompt,
+                        size=size,
+                        quality=self.quality,
+                    )
         else:
             response = client().images.generate(
                 model=self.model,
