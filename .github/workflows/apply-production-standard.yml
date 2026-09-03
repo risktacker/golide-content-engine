@@ -18,15 +18,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Add final zero-spend editorial and budget guards
-        run: python tools/finalize_production_guards.py
+      - name: Apply fresh trending-topic selection fix
+        run: python tools/fix_topic_selection.py
       - name: Compile patched orchestrator
         run: python -m compileall -q src/golide_engine/orchestration/production.py
-      - name: Commit final production guards
+      - name: Commit fresh topic selection
         run: |
           git config user.name "golide-maintenance-bot"
           git config user.email "actions@users.noreply.github.com"
           git add src/golide_engine/orchestration/production.py
           git diff --cached --quiet && exit 0
-          git commit -m "feat: gate visual spend on editorial and full-batch preflight"
+          git commit -m "feat: force fresh trending topic discovery for scheduled production"
           git push
