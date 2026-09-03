@@ -204,6 +204,76 @@ class ProductionService:
             )
         return normalized
 
+    @staticmethod
+    def _build_recovery_storyboard(
+        beats: list[dict[str, Any]], primary_limit: int
+    ) -> list[dict[str, Any]]:
+        """Build a deterministic no-text-API storyboard after a failed paid planner call."""
+        if not beats:
+            return []
+        asset_count = min(primary_limit, len(beats))
+        roles = ["CONTEXT", "PROCESS", "CAUSE_EFFECT", "CONTRAST", "REVEAL", "DATA"]
+        motion_types = [
+            "push-in", "pan-left", "reframe", "pull-out", "pan-right", "layer-reveal",
+        ]
+        templates: list[dict[str, str]] = []
+        for slot in range(asset_count):
+            representative_index = (
+                0 if asset_count == 1
+                else round(slot * (len(beats) - 1) / (asset_count - 1))
+            )
+            representative = str(beats[representative_index]["text"])
+            prompt_excerpt = " ".join(representative.split()[:18]).rstrip(".,;:!?")
+            templates.append({
+                "asset_key": f"recovery-visual-{slot:02d}",
+                "visual_role": roles[slot % len(roles)],
+                "visual_prompt": (
+                    "Blue and gold paper-cut scientific explainer scene showing "
+                    f"{prompt_excerpt}. Clean mechanism or diagram composition, no readable text."
+                ),
+            })
+
+        scenes: list[dict[str, Any]] = []
+        for index, beat in enumerate(beats):
+            base_slot = min(asset_count - 1, (index * asset_count) // len(beats))
+            slot = (base_slot + (index % 2)) % asset_count
+            template = templates[slot]
+            caption = " ".join(str(beat["text"]).split()[:6]).rstrip(".,;:!?")
+            duration = max(0.05, float(beat["duration"]))
+            secondary_assets = []
+            if index % 4 == 0 and asset_count > 1:
+                detail = templates[(slot + 1) % asset_count]
+                start_offset = min(0.10, max(0.0, duration - 0.01))
+                secondary_assets.append({
+                    "asset_key": detail["asset_key"],
+                    "visual_prompt": detail["visual_prompt"],
+                    "role": "detail",
+                    "position": "right" if index % 8 == 0 else "left",
+                    "scale": 0.42,
+                    "entrance": "fade",
+                    "start_offset": round(start_offset, 6),
+                    "duration": round(max(0.01, duration - start_offset), 6),
+                })
+            scenes.append({
+                "beat_id": beat["id"],
+                "asset_key": template["asset_key"],
+                "visual_role": template["visual_role"],
+                "visual_caption": caption,
+                "visual_prompt": template["visual_prompt"],
+                "motion": {
+                    "type": motion_types[index % len(motion_types)],
+                    "intensity": "strong" if index % 8 == 0 else "medium",
+                    "transition": "match-cut" if index % 5 == 0 else "cut",
+                    "easing": "ease-in-out",
+                    "emphasis": caption,
+                    "audio_cue": "tick" if index % 7 == 0 else "none",
+                    "annotation": {"kind": "none"},
+                },
+                "secondary_assets": secondary_assets,
+                "subject_bounds": [],
+            })
+        return scenes
+
     def run(self, spec_path: str | Path) -> Path:
         spec = json.loads(Path(spec_path).read_text(encoding="utf-8"))
         self._assert_authorized(spec)
@@ -559,6 +629,13 @@ class ProductionService:
             minimum_unique = 5 if spec["format"] == "short" else 12
             minimum_layered_ratio = 0.15 if spec["format"] == "short" else 0.25
 
+            prior_storyboard_failure = bool(self.database.rows(
+                """SELECT 1 FROM stage_runs
+                   WHERE production_id=? AND stage='storyboard-authoritative-v5'
+                   AND status='failed' LIMIT 1""",
+                (production_id,),
+            ))
+
             if previous_scenes:
                 # Recovery uses already-paid media and never invents replacement assets.
                 def editorial_tokens(value: str) -> set[str]:
@@ -624,6 +701,10 @@ class ProductionService:
                         "secondary_assets": template.get("secondary_assets", []),
                         "subject_bounds": template.get("subject_bounds", []),
                     })
+            elif prior_storyboard_failure:
+                # A prior paid planner response already failed to parse. Recover locally
+                # from checkpointed narration beats rather than buying the same text stage again.
+                planned_scenes = self._build_recovery_storyboard(beats, primary_limit)
             else:
                 # New production: plan the full edit before the first image purchase.
                 # The authoritative caption beats are intentionally merged in pairs for
