@@ -626,35 +626,171 @@ class ProductionService:
                     })
             else:
                 # New production: plan the full edit before the first image purchase.
+                # The authoritative caption beats are intentionally merged in pairs for
+                # the paid planning call. A long-form episode can contain ~100 three-second
+                # beats; asking the model to repeat the full nested scene schema for every
+                # beat made the structured JSON hit the output ceiling and truncate.
+                # Pair planning cuts that payload roughly in half while preserving the
+                # final one-scene-per-authoritative-beat contract after local expansion.
+                planning_groups = []
+                for offset in range(0, len(beats), 2):
+                    members = beats[offset:offset + 2]
+                    planning_groups.append({
+                        "id": f"plan-{offset // 2:03d}",
+                        "source_beat_ids": [member["id"] for member in members],
+                        "start": members[0]["start"],
+                        "end": members[-1]["end"],
+                        "duration": round(
+                            float(members[-1]["end"]) - float(members[0]["start"]), 6
+                        ),
+                        "text": " ".join(str(member["text"]) for member in members),
+                    })
+                compact_beats = [{
+                    "id": group["id"],
+                    "start": group["start"],
+                    "end": group["end"],
+                    "duration": group["duration"],
+                    "text": group["text"],
+                } for group in planning_groups]
                 planning_input = json.dumps({
                     "format": spec["format"],
                     "brief": spec["brief"],
                     "narration": script,
                     "research": research,
-                    "editorial_beats": beats,
+                    "editorial_beats": compact_beats,
                     "primary_asset_limit": primary_limit,
                     "minimum_unique_primary_assets": minimum_unique,
                     "minimum_layered_scene_ratio": minimum_layered_ratio,
                 }, separators=(",", ":"))
+                storyboard_output_tokens = 9000
                 self._reserve(
                     spec, text_model,
                     Usage(
                         input_tokens=max(1, len(planning_input) // 4),
-                        output_tokens=12000,
+                        output_tokens=storyboard_output_tokens,
                     ),
                     stage="storyboard-authoritative-v5",
                 )
                 output = text.generate_json(
-                    """Plan a premium G$LIDE science/technology explanation edit. Return exactly one scene for every supplied beat_id and never change narration timing. Build a deliberate Premiere-Pro/After-Effects-like visual language using the available motion grammar: multi-layer composition, 2.5D-feeling parallax through foreground/detail layers, camera push/pull/pan/reframe, diagram-like reveals, tracked labels or numbers, kinetic emphasis, object/match transitions, depth, restrained technical HUD/data overlays, and blue/gold paper-cut compositing. Do not use an effect merely because it exists; each motion, layer and SFX cue must explain what the narrator is saying.
+                    """Plan a premium G$LIDE science/technology explanation edit. Return exactly one scene for every supplied planning beat_id and never change narration timing. Each planning beat represents one or two final authoritative beats, so NEVER reuse the same primary asset_key on adjacent planning beats. Build a deliberate Premiere-Pro/After-Effects-like visual language using the available motion grammar: multi-layer composition, 2.5D-feeling parallax through foreground/detail layers, camera push/pull/pan/reframe, diagram-like reveals, tracked labels or numbers, kinetic emphasis, object/match transitions, depth, restrained technical HUD/data overlays, and blue/gold paper-cut compositing. Do not use an effect merely because it exists; each motion, layer and SFX cue must explain what the narrator is saying.
 
-Use the smallest paid image set that still looks genuinely varied. Respect the supplied primary asset limit. Meet or exceed the supplied minimum unique primary assets. No primary asset may dominate the episode or repeat for more than two consecutive beats. Reuse an asset only when the viewer is intentionally returning to the same concept, and change framing/layers to show progression. At least the supplied minimum layered-scene ratio must use secondary assets. Reuse secondary detail/HUD assets when sensible rather than generating needless images.
+Use the smallest paid image set that still looks genuinely varied. Respect the supplied primary asset limit. Meet or exceed the supplied minimum unique primary assets. No primary asset may dominate the episode. Reuse an asset only when the viewer is intentionally returning to the same concept, and change framing/layers to show progression. At least the supplied minimum layered-scene ratio must use secondary assets. Reuse secondary detail/HUD assets when sensible rather than generating needless images.
 
-Sound cues must correspond to visible actions: soft-trace for diagram/data movement, tick for numbers/UI, paper/swipe for directional reveals, impact only for rare major reveals. Keep many beats without SFX so sound has hierarchy. Use hard cuts often; reserve paper-wipe, match-cut and object-transition for motivated transitions. Use annotations sparingly and keep them inside each beat. Visual prompts must describe the actual explanatory image to generate, not editing instructions or text-heavy title cards. Favor diagrams, cutaways, mechanisms, scale comparisons, maps/data or object relationships over generic decorative art. Never request readable paragraphs in generated images.""",
+Keep the structured response compact: visual_caption and motion emphasis at six words or fewer; each visual_prompt at thirty words or fewer; no prose explanations outside schema fields. Sound cues must correspond to visible actions: soft-trace for diagram/data movement, tick for numbers/UI, paper/swipe for directional reveals, impact only for rare major reveals. Keep many beats without SFX so sound has hierarchy. Use hard cuts often; reserve paper-wipe, match-cut and object-transition for motivated transitions. Use annotations sparingly. Visual prompts must describe the actual explanatory image to generate, not editing instructions or text-heavy title cards. Favor diagrams, cutaways, mechanisms, scale comparisons, maps/data or object relationships over generic decorative art. Never request readable paragraphs in generated images.""",
                     planning_input,
                     STORYBOARD_SCHEMA,
-                    max_output_tokens=12000,
+                    max_output_tokens=storyboard_output_tokens,
                 )
-                planned_scenes = output.value["scenes"]
+                group_scenes = output.value["scenes"]
+                expected_group_ids = {group["id"] for group in planning_groups}
+                planned_group_ids = {scene["beat_id"] for scene in group_scenes}
+                if (
+                    len(planned_group_ids) != len(group_scenes)
+                    or planned_group_ids != expected_group_ids
+                ):
+                    raise RuntimeError(
+                        "compact storyboard must contain every planning beat exactly once"
+                    )
+
+                # If the model reuses one asset on adjacent planning beats, repair the
+                # sequence locally from its already-approved asset catalog instead of
+                # repeating the paid planning request.
+                asset_templates = {}
+                for scene in group_scenes:
+                    asset_templates.setdefault(scene["asset_key"], scene)
+
+                def compact_tokens(value: str) -> set[str]:
+                    return {
+                        token for token in re.findall(r"[a-z0-9]+", value.lower())
+                        if len(token) > 2
+                    }
+
+                for index in range(1, len(group_scenes)):
+                    current = group_scenes[index]
+                    previous = group_scenes[index - 1]
+                    if current["asset_key"] != previous["asset_key"]:
+                        continue
+                    candidates = [
+                        template for key, template in asset_templates.items()
+                        if key != previous["asset_key"]
+                    ]
+                    if not candidates:
+                        continue
+                    beat_tokens = compact_tokens(planning_groups[index]["text"])
+                    replacement = max(
+                        candidates,
+                        key=lambda template: len(
+                            beat_tokens & compact_tokens(
+                                " ".join([
+                                    str(template.get("visual_caption", "")),
+                                    str(template.get("visual_prompt", "")),
+                                ])
+                            )
+                        ),
+                    )
+                    current["asset_key"] = replacement["asset_key"]
+                    current["visual_role"] = replacement["visual_role"]
+                    current["visual_prompt"] = replacement["visual_prompt"]
+                    current["secondary_assets"] = json.loads(json.dumps(
+                        replacement.get("secondary_assets", [])
+                    ))
+                    current["subject_bounds"] = json.loads(json.dumps(
+                        replacement.get("subject_bounds", [])
+                    ))
+
+                # Expand each compact planning scene back onto the original authoritative
+                # narration beats. Two beats may intentionally share one explanatory
+                # asset, matching the policy's maximum consecutive reuse of two.
+                group_scene_map = {scene["beat_id"]: scene for scene in group_scenes}
+                beat_map = {beat["id"]: beat for beat in beats}
+                motion_types = [
+                    "push-in", "pan-left", "reframe", "pull-out",
+                    "pan-right", "layer-reveal",
+                ]
+                planned_scenes = []
+                for group_index, group in enumerate(planning_groups):
+                    template = group_scene_map[group["id"]]
+                    for member_index, beat_id in enumerate(group["source_beat_ids"]):
+                        beat = beat_map[beat_id]
+                        scene = json.loads(json.dumps(template))
+                        scene["beat_id"] = beat_id
+                        caption = " ".join(
+                            str(beat["text"]).split()[:6]
+                        ).rstrip(".,;:!?")
+                        scene["visual_caption"] = caption
+                        motion = scene.setdefault("motion", {})
+                        if member_index == 1:
+                            current_type = motion.get("type", "push-in")
+                            try:
+                                motion_index = motion_types.index(current_type) + 1
+                            except ValueError:
+                                motion_index = group_index + 1
+                            motion["type"] = motion_types[motion_index % len(motion_types)]
+                            motion["transition"] = "cut"
+                            motion["audio_cue"] = "none"
+                        motion["emphasis"] = caption
+
+                        # Layer timings authored for a paired planning beat must be
+                        # clamped inside the shorter authoritative beat before render.
+                        beat_duration = max(0.05, float(beat["duration"]))
+                        for layer in scene.get("secondary_assets", []):
+                            start_offset = max(
+                                0.0, min(
+                                    float(layer.get("start_offset", 0.0)),
+                                    max(0.0, beat_duration - 0.01),
+                                )
+                            )
+                            remaining = max(0.01, beat_duration - start_offset)
+                            layer["start_offset"] = round(start_offset, 6)
+                            layer["duration"] = round(
+                                min(
+                                    max(0.01, float(layer.get("duration", remaining))),
+                                    remaining,
+                                ),
+                                6,
+                            )
+                        planned_scenes.append(scene)
+
                 self._record_text(production_id, "storyboard-authoritative-v5", output)
 
             planned = {scene["beat_id"]: scene for scene in planned_scenes}
