@@ -36,13 +36,15 @@ class EditorialQualityTests(unittest.TestCase):
         self.policy = json.loads(Path("config/qa-policy.json").read_text(encoding="utf-8"))
 
     @staticmethod
-    def _scene(index, motion, transition="cut", audio="none"):
+    def _scene(index, motion, transition="cut", audio="none", layered=False):
         start = float(index)
         return {
             "id": f"beat-{index + 1:03d}",
             "start": start,
             "end": start + 1,
             "duration": 1,
+            "asset_key": f"asset-{index + 1}",
+            "secondary_assets": [{"asset_key": "detail-1"}] if layered else [],
             "visual_caption": "",
             "motion": {
                 "type": motion,
@@ -60,19 +62,22 @@ class EditorialQualityTests(unittest.TestCase):
 
     def test_varied_timing_bound_edit_passes(self):
         storyboard = {"scenes": [
-            self._scene(0, "push-in"),
+            self._scene(0, "push-in", audio="soft-trace", layered=True),
             self._scene(1, "pan-left"),
-            self._scene(2, "layer-reveal", audio="soft-trace"),
+            self._scene(2, "layer-reveal"),
             self._scene(3, "reframe"),
+            self._scene(4, "pull-out"),
         ]}
         failures, metrics = check_editorial(storyboard, "short", self.policy)
         self.assertEqual([], failures)
-        self.assertEqual(4, metrics["beats"])
-        self.assertEqual(4, metrics["unique_motion_recipes"])
+        self.assertEqual(5, metrics["beats"])
+        self.assertEqual(5, metrics["unique_primary_assets"])
+        self.assertGreaterEqual(metrics["layered_scene_ratio"], 0.15)
+        self.assertGreaterEqual(metrics["unique_motion_recipes"], 4)
 
     def test_repetitive_motion_and_transition_spam_fail(self):
         storyboard = {"scenes": [
-            self._scene(i, "push-in", transition="paper-wipe")
+            self._scene(i, "push-in", transition="paper-wipe", audio="soft-trace")
             for i in range(5)
         ]}
         failures, _ = check_editorial(storyboard, "short", self.policy)
