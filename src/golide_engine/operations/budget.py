@@ -137,17 +137,14 @@ class MonthlyBudget:
         )
         return round(float(rows[0]["total"]), 6)
 
-    def reserve(
+    def _assert_estimate_fits(
         self,
         spec: dict[str, Any],
-        model: str,
-        usage: Usage,
-        *,
-        provider: str = "openai",
-        stage: str = "paid-request",
+        provider: str,
+        estimated: float,
+        stage: str,
     ) -> BudgetDecision:
         budget_class, allocation = self.ensure_allocation(spec, provider)
-        estimated = self.tracker.estimate(provider, model, usage)
         spent = self.tracker.provider_total(spec["id"], provider)
         remaining = max(0.0, allocation - spent)
         if estimated > remaining + 1e-9:
@@ -176,6 +173,35 @@ class MonthlyBudget:
         return BudgetDecision(
             spec["id"], provider, budget_class, allocation, spent, estimated, remaining
         )
+
+    def reserve(
+        self,
+        spec: dict[str, Any],
+        model: str,
+        usage: Usage,
+        *,
+        provider: str = "openai",
+        stage: str = "paid-request",
+    ) -> BudgetDecision:
+        estimated = self.tracker.estimate(provider, model, usage)
+        return self._assert_estimate_fits(spec, provider, estimated, stage)
+
+    def reserve_batch(
+        self,
+        spec: dict[str, Any],
+        requests: list[tuple[str, Usage]],
+        *,
+        provider: str = "openai",
+        stage: str = "paid-batch",
+    ) -> BudgetDecision:
+        """Preflight a whole planned provider batch before the first paid request fires."""
+        if not requests:
+            return self._assert_estimate_fits(spec, provider, 0.0, stage)
+        estimated = round(
+            sum(self.tracker.estimate(provider, model, usage) for model, usage in requests),
+            6,
+        )
+        return self._assert_estimate_fits(spec, provider, estimated, stage)
 
     def snapshot(self) -> dict[str, float]:
         cap = self._scheduled_cap()
