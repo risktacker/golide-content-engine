@@ -58,6 +58,49 @@ class MotionFFmpegSmokeTests(unittest.TestCase):
             duration = float(json.loads(probe.stdout)["format"]["duration"])
             self.assertAlmostEqual(1.2, duration, delta=0.15)
 
+    def test_many_irregular_scene_clips_compose_to_full_timeline(self):
+        """Regression for the flagship edit that previously stopped after ~13 seconds."""
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            fps = 12
+            rendered = []
+            scenes = []
+            cursor = 0.0
+            durations = [0.173, 0.241, 0.199, 0.317, 0.227, 0.289] * 4
+            for index, duration in enumerate(durations):
+                clip = root / f"clip-{index:02d}.mp4"
+                color = f"0x{(0x111B36 + index * 0x070503) % 0xFFFFFF:06x}"
+                subprocess.run([
+                    "ffmpeg", "-y", "-f", "lavfi", "-i",
+                    f"color=c={color}:s=96x54:r={fps}",
+                    "-t", f"{duration:.3f}", "-c:v", "libx264",
+                    "-pix_fmt", "yuv420p", str(clip),
+                ], check=True, capture_output=True)
+                rendered.append(clip)
+                end = cursor + duration
+                scenes.append(Scene(
+                    f"beat-{index + 1:03d}", clip, duration, "", cursor, end, "PROCESS",
+                    Motion("pan-left", "subtle", "cut", "ease-in-out", "process", "none"),
+                    Annotation(),
+                ))
+                cursor = end
+
+            project = Project(
+                "many-scenes", "Many Scenes", "long", 96, 54, fps, 1.0,
+                root / "narration.wav", None, None, None, 0.03, True,
+                None, tuple(scenes), False,
+            )
+            output = root / "silent.mp4"
+            _compose_scene_clips(project, rendered, output)
+
+            probe = subprocess.run([
+                "ffprobe", "-v", "error", "-show_entries", "format=duration",
+                "-of", "default=nw=1:nk=1", str(output),
+            ], check=True, capture_output=True, text=True)
+            actual = float(probe.stdout.strip())
+            self.assertAlmostEqual(sum(durations), actual, delta=0.15)
+            self.assertGreater(actual, sum(durations[:6]) * 3)
+
 
 if __name__ == "__main__":
     unittest.main()
