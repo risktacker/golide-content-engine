@@ -20,7 +20,8 @@
     "language": "en",
     "ignore": [
       "GOLIDE", "Shorts", "YouTube", "AI", "CTA", "FFmpeg", "OAuth",
-      "BadUSB", "cybersecurity", "eFuse", "milliamps", "overvoltage", "USB", "VBUS"
+      "BadUSB", "cybersecurity", "eFuse", "milliamps", "overvoltage", "USB", "VBUS",
+      "saccades", "vestibulo"
     ]
   },
   "editorial": {
