@@ -1,0 +1,194 @@
+name: One-time flagship scene-art repair
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/flagship-scene-repair-kick"
+
+concurrency:
+  group: golide-state-writer
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  repair-scene-art:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      PRODUCTION_ID: golide-long-flagship-2026-09-03
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      GOLIDE_ENABLE_PAID_PRODUCTION: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Restore preserved flagship checkpoint
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            productions
+            build
+            release-packages
+            generated
+          key: golide-flagship-scene-repair-${{ github.run_id }}
+          restore-keys: |
+            golide-production-correction-flagship-2026-09-03-
+            golide-production-checkpoint-33798206892-1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install image provider only
+        run: python -m pip install -e '.[production]'
+
+      - name: Preflight preserved paid stages and exact art batch
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          pid = os.environ['PRODUCTION_ID']
+          work = Path('productions') / pid
+          package = Path('release-packages') / pid
+          required = [
+              work / 'script.txt',
+              work / 'storyboard-authoritative-v5.json',
+              work / 'render-manifest.json',
+              work / 'upload-metadata.json',
+              package / 'package-manifest.json',
+          ]
+          missing = [str(p) for p in required if not p.is_file()]
+          if missing:
+              raise SystemExit('BLOCKED: preserved paid-stage checkpoint is incomplete: ' + ', '.join(missing))
+
+          assets = work / 'assets'
+          expected = [assets / f'recovery-visual-{i:02d}.png' for i in range(12)]
+          missing_assets = [str(p) for p in expected if not p.is_file()]
+          if missing_assets:
+              raise SystemExit('BLOCKED: cached 12-art batch is incomplete: ' + ', '.join(missing_assets))
+
+          # These three were visually inspected and are topic-correct: chicken mechanism,
+          # eye/brain stabilization, and chicken neuro-visual integration. Pin them so the
+          # repair cannot accidentally spend money replacing already-good art.
+          keep = {
+              'recovery-visual-00.png': 'c3492a5bd5a7af14',
+              'recovery-visual-03.png': '9f694a337110d891',
+              'recovery-visual-07.png': 'b25f08dc850e461a',
+          }
+          for name, prefix in keep.items():
+              digest = hashlib.sha256((assets / name).read_bytes()).hexdigest()
+              if not digest.startswith(prefix):
+                  raise SystemExit(f'BLOCKED: known-good cached art changed unexpectedly: {name}')
+
+          manifest = json.loads((work / 'render-manifest.json').read_text(encoding='utf-8'))
+          if len(manifest.get('scenes', [])) != 108:
+              raise SystemExit('BLOCKED: preserved editorial timing is not the 108-scene flagship edit')
+          print('SCENE_REPAIR_PREFLIGHT=passed|keep=3|replace=9|paid_text_voice_stages=preserved')
+          PY
+
+      - name: Replace only the nine wrong cached artworks
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          from golide_engine.providers.registry import ProviderRegistry
+
+          pid = os.environ['PRODUCTION_ID']
+          work = Path('productions') / pid
+          assets = work / 'assets'
+          provider = ProviderRegistry().images('support', live=True)
+
+          prompts = {
+              1: 'Topic-first scientific visual of a chicken keeping its gaze steady while the head changes orientation. Show a chicken head and eye, a simple camera-gimbal analogy, and clean motion arrows only. No human, no presenter, no face other than the chicken, no words, no letters, no labels, no typography.',
+              2: 'Scientific mechanism visual explaining inertial stabilization in chicken vision: chicken head, eye axis, horizon line, and a compact mechanical gimbal/camera analogy with directional arrows. No human figure, no presenter, no text, no letters, no captions, no labels.',
+              4: 'Topic-first diagrammatic visual of gaze stabilization: a chicken eye locks onto a fixed environmental target while the head rotates around it; show eye axis and counter-rotation with simple arrows and shapes. No people, no human face, no words, no letters, no labels.',
+              5: 'Scientific visual of vestibular and visual signals working together in a chicken: stylized chicken head silhouette, inner-ear balance cue, eye, and neural pathway flowing toward a simplified brain, with motion arrows. No human presenter, no text, no lettering, no labels.',
+              6: 'Wordless visual explaining the fixed-point principle in chicken gaze stabilization: chicken head moves along an arc while the eye remains aligned to one stable point in the environment. Use only geometry, arrows, and the chicken subject. No humans, no text, no labels, no letters.',
+              8: 'Topic-first visual showing a control-system loop for chicken visual stabilization: chicken eye, head-motion sensor cue, neural controller/brain icon, and corrective eye movement connected by arrows. No human, no presenter, no software interface, no words, no letters, no labels.',
+              9: 'Scientific visual of rapid compensatory eye movement during chicken head motion: two sequential chicken-head orientations with one stable gaze target and clear counter-motion arrows. No humans, no presenter, no text, no captions, no letters.',
+              10: 'Wordless scientific visual comparing body locomotion disturbances with stable visual perception in a chicken: moving legs/body trajectory below, stable eye-to-target line above, and a compact stabilization mechanism between them. No human figure, no presenter, no words, no letters, no labels.',
+              11: 'Topic-first closing mechanism visual: chicken head and eye connected to a simplified neural feedback loop and gimbal-like stabilization geometry, showing prediction plus correction with arrows and layered scientific shapes. No human, no presenter, no text, no letters, no labels.',
+          }
+
+          if len(prompts) != 9:
+              raise SystemExit('internal repair plan must contain exactly nine replacements')
+
+          generated = []
+          for index, prompt in prompts.items():
+              target = assets / f'recovery-visual-{index:02d}.png'
+              provider.create_image(prompt, target, '1536x1024')
+              if not target.is_file() or target.stat().st_size < 50_000:
+                  raise SystemExit(f'generated scene art is missing/too small: {target}')
+              generated.append({
+                  'file': target.name,
+                  'bytes': target.stat().st_size,
+                  'sha256': hashlib.sha256(target.read_bytes()).hexdigest(),
+              })
+              print(f'SCENE_ART_REPLACED={target.name}|bytes={target.stat().st_size}')
+
+          report = {
+              'production_id': pid,
+              'policy': 'topic-first-no-generic-presenter-no-baked-text',
+              'kept_good_cached_art': [
+                  'recovery-visual-00.png',
+                  'recovery-visual-03.png',
+                  'recovery-visual-07.png',
+              ],
+              'replaced_wrong_cached_art': generated,
+              'replaced_count': len(generated),
+              'preserved_paid_stages': ['research', 'script', 'ElevenLabs narration', 'caption alignment'],
+          }
+          (work / 'scene-art-correction-report.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
+          print('SCENE_ART_CORRECTION=passed|kept=3|replaced=9')
+          PY
+
+      - name: Verify known-good art was not replaced
+        run: |
+          python - <<'PY'
+          import hashlib
+          import os
+          from pathlib import Path
+          assets = Path('productions') / os.environ['PRODUCTION_ID'] / 'assets'
+          keep = {
+              'recovery-visual-00.png': 'c3492a5bd5a7af14',
+              'recovery-visual-03.png': '9f694a337110d891',
+              'recovery-visual-07.png': 'b25f08dc850e461a',
+          }
+          for name, prefix in keep.items():
+              digest = hashlib.sha256((assets / name).read_bytes()).hexdigest()
+              if not digest.startswith(prefix):
+                  raise SystemExit(f'known-good art was modified: {name}')
+          print('GOOD_CACHED_ART_PRESERVED=3/3')
+          PY
+
+      - name: Save corrected scene-art checkpoint
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            productions
+            build
+            release-packages
+            generated
+          key: golide-production-correction-flagship-2026-09-03-${{ github.run_id }}-scene-fixed
+
+      - name: Trigger verified re-edit from corrected checkpoint
+        run: |
+          set -euo pipefail
+          git config user.name "golide-production-bot"
+          git config user.email "actions@users.noreply.github.com"
+          printf '%s\n' "scene-art-fixed-${GITHUB_RUN_ID}-${GITHUB_SHA}" > .github/production-correction-kick
+          git add .github/production-correction-kick
+          git commit -m "ops: run corrected flagship re-edit after scene-art repair"
+          git pull --rebase origin main
+          git push
