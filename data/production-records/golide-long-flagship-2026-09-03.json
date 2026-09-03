@@ -1,0 +1,566 @@
+{
+  "production_id": "golide-long-flagship-2026-09-03",
+  "youtube_video_id": "e5LVF8QZ2VA",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "e5LVF8QZ2VA",
+    "upload_status": "published",
+    "privacy_status": "public",
+    "scheduled_at": null,
+    "uploaded_at": "2026-09-03T19:46:20.426886+00:00"
+  },
+  "production": {
+    "format": "long",
+    "title": "The Chicken Is a Living Gimbal",
+    "status": "published",
+    "scheduled_at": "2026-09-03T16:00:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"one-off-first-flagship\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"elevenlabs-golide-narrator-v1\"}"
+  },
+  "narration": "A chicken can walk across uneven ground while its body bounces, its feet shift, and its neck bends from side to side… yet the world in front of its eyes can look surprisingly steady.\n\nThat matters because vision depends on more than having good eyes. If the image of a tree, a predator, or a patch of food slides around on the retina every time the body moves, seeing clearly becomes much harder. So how does a bird turn a moving body into a relatively stable viewing platform?\n\nThe answer isn’t that the chicken holds its head perfectly still. It doesn’t. The more interesting answer is that it moves at exactly the right moments.\n\nWatch the walk as three separate signals. First, the body moves through space. Second, the head moves relative to the body. Third, the image of the outside world moves across the retina, the light-sensitive surface inside the eye.\n\nThose three motions aren’t identical. And that difference is where the control system begins.\n\nDuring a typical step, the head moves forward quickly in what researchers call the thrust phase. Then it pauses, or nearly pauses, while the body catches up. This is the hold phase. The chicken hasn’t stopped walking. It has separated walking into two different jobs: move the body, then briefly stabilize the head.\n\nWhy would that help? Because the hold phase creates a comparatively steady interval for visual processing. The bird gets a clearer view while its body continues underneath it.\n\nBut the thrust phase has a purpose too. As the head moves through space, nearby objects shift differently from distant ones. That difference is called motion parallax. It gives the visual system information about depth and distance.\n\nSo the head bob isn’t simply a flaw being corrected. Part of it may help the bird understand the shape of the world, while another part protects the image from unnecessary blur.\n\nThere’s another layer. The eyes don’t just sit passively inside the head. Chicken eye movements are coordinated with the head movement. In one study, quick eye movements called saccades appeared during most thrust phases, but not during hold phases.\n\nThat timing is revealing. The bird can reposition its gaze while the head is being moved, then use the steadier interval to inspect what it sees.\n\nStill, walking isn’t the only disturbance. The head can rotate unexpectedly, and the body can shift in ways the bird didn’t plan. To handle that, animals use a system called the vestibulo-ocular reflex.\n\nThe name sounds complicated, but the idea is simple. Sensors in the inner ear detect head rotation. The nervous system then drives the eyes in the opposite direction, helping keep the visual scene from sliding across the retina.\n\nTurn your head slowly to the left while looking at a fixed point. Your eyes automatically move slightly to the right. You’re not consciously calculating that correction. Your body is doing it for you.\n\nAnd this reflex isn’t a fixed mechanical setting. In chickens, visual feedback can change how strongly the eyes respond. If the correction is too weak or too strong, the system can adjust.\n\nThat’s the key term here: feedback. A feedback loop compares what is happening with what should be happening, then uses the difference to make a correction. The chicken’s sensors include vision, the inner ear, and signals from muscles and joints in the neck and body. Its actuators are the eyes, neck muscles, and posture.\n\nTogether, they don’t try to freeze the whole animal. They try to control the part that matters most at that moment: the visual image.\n\nNow compare that with a camera gimbal. A gimbal carries a camera on motorized rotating joints. Inertial sensors detect how the base is moving. Software estimates the camera’s desired orientation, and motors turn the joints in the opposite direction.\n\nThe hardware is different, but the logic is strikingly similar: detect disturbance, estimate the error, apply a correction, and check the result.\n\nThat’s why calling a chicken a biological gimbal is useful, but incomplete. A gimbal mainly stabilizes orientation around its axes. A chicken is coordinating gaze, head position, body movement, visual timing, and depth information. Its stability is selective, flexible, and tied to what it needs to see.\n\nThis principle is now valuable beyond biology. Researchers use it when designing gaze-stabilized robots, walking machines, and moving camera systems. The goal isn’t always to eliminate motion. Sometimes the smarter solution is to coordinate motion so perception remains useful.\n\nA chicken, then, isn’t keeping its head still. It’s arranging movement into moments of action and moments of clarity, while using several senses to correct the difference.\n\nThe body moves. The head responds. The eyes refine the picture. And from that coordinated sequence, a stable view emerges.\n\nSo when a chicken seems to carry the world steadily through a bouncing walk, is it really defeating motion—or is it showing us that the best way to see clearly is to move at the right time?\n",
+  "research": {
+    "summary": "Working title: “The Head That Outruns the Body.” A mechanism-led G$LIDE explainer about how a chicken turns a moving body into a comparatively stable visual platform—and how the same control logic reappears in robotics and camera stabilization. The story should avoid treating the chicken as a literal gimbal: biological stabilization is an active, sensory-motor process involving neck motion, eye movements, and visual feedback.",
+    "claims": [
+      {
+        "claim": "During avian walking, the apparent head bob is divided into a rapid thrust phase and a hold phase. In the hold phase, the head remains nearly stationary relative to the environment while the body catches up; in the thrust phase, the head moves forward to a new position.",
+        "source_title": "Visual control of head movements during avian locomotion",
+        "source_url": "https://www.nature.com/articles/255067a0",
+        "published_or_updated": "Published May 1, 1975"
+      },
+      {
+        "claim": "Head-bobbing is not only a stabilization behavior: the thrust phase can generate motion-parallax information, while the hold phase provides a relatively stable interval for visual processing.",
+        "source_title": "On vision in birds: coordination of head-bobbing and gait stabilises vertical head position in quail",
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3987125/",
+        "published_or_updated": "Published 2014"
+      },
+      {
+        "claim": "Chicken eye movements are coordinated with head movements: one study reported saccades during about 80% of thrust phases and not during hold phases.",
+        "source_title": "Saccadic eye movements are coordinated with head movements in walking chickens",
+        "source_url": "https://pubmed.ncbi.nlm.nih.gov/7086341/",
+        "published_or_updated": "Published 1982"
+      },
+      {
+        "claim": "The vestibulo-ocular reflex produces compensatory eye movements when the head turns, helping stabilize the visual scene on the retina; experiments in chickens found that continuous visual feedback can adjust VOR gain.",
+        "source_title": "Visual influences on the development and recovery of the vestibuloocular reflex in the chicken",
+        "source_url": "https://pubmed.ncbi.nlm.nih.gov/11247982/",
+        "published_or_updated": "Published March 2001"
+      },
+      {
+        "claim": "Avian head stabilization depends on multimodal feedback from vision, the vestibular system, and proprioceptive signals from the body and neck; head stabilization and gaze stabilization are therefore related but not identical processes.",
+        "source_title": "Head Stabilization in the Pigeon: Role of Vision to Correct for Translational and Rotational Disturbances",
+        "source_url": "https://www.frontiersin.org/journals/neuroscience/articles/10.3389/fnins.2017.00551/full",
+        "published_or_updated": "Published September 8, 2017"
+      },
+      {
+        "claim": "A useful visual sequence is to separate three signals: movement of the body, movement of the head relative to the body, and motion of the target’s image across the retina. The biological objective is to reduce retinal image slip during selected phases, not to keep every part of the animal motionless.",
+        "source_title": "Self-motion-induced eye movements: effects on visual acuity and navigation",
+        "source_url": "https://www.nature.com/articles/nrn1804",
+        "published_or_updated": "Published December 1, 2005"
+      },
+      {
+        "claim": "A mechanical camera-stabilization platform can use inertial sensors to estimate motion and a feedback controller to adjust motorized gimbal axes, maintaining the camera’s line of sight despite movement of the base.",
+        "source_title": "Attitude control strategy for a camera stabilization platform",
+        "source_url": "https://doi.org/10.1016/j.mechatronics.2017.06.012",
+        "published_or_updated": "Published October 2017"
+      },
+      {
+        "claim": "The biological-to-engineering analogy is strongest at the control-loop level: sensors detect disturbance, a controller estimates the desired orientation, and actuators generate compensatory motion. The chicken uses visual, vestibular, and neck-related signals; a gimbal uses inertial measurements, encoders, motors, and control software.",
+        "source_title": "Bird-Inspired Stabilization",
+        "source_url": "https://www.esa.int/gsp/ACT/projects/bird_inspired_stabilization/",
+        "published_or_updated": "Updated approximately 2025"
+      },
+      {
+        "claim": "Bird-inspired stabilization has been investigated as a route toward gaze-stabilized robots and other systems that must maintain a camera or sensor orientation while the supporting platform moves.",
+        "source_title": "Multimodal Gaze Stabilization of a Humanoid Robot based on Reafferences",
+        "source_url": "https://arxiv.org/abs/1703.00390",
+        "published_or_updated": "Published 2017"
+      },
+      {
+        "claim": "Suggested explainer structure: open with body motion and a locked visual target; isolate body, head, and retinal-image traces; reveal the thrust/hold cycle; add the eye and inner-ear pathways; then translate the same feedback diagram into a motorized camera gimbal. End on the broader design principle: stable perception can come from coordinating sensors and actuators, rather than eliminating movement.",
+        "source_title": "Head Stabilization in the Pigeon: Role of Vision to Correct for Translational and Rotational Disturbances",
+        "source_url": "https://www.frontiersin.org/journals/neuroscience/articles/10.3389/fnins.2017.00551/full",
+        "published_or_updated": "Published September 8, 2017"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "How Chickens Keep Their Vision Stable While Walking",
+    "description": "A chicken’s body can bounce across uneven ground while its visual world remains surprisingly steady. This video explains how the chicken’s thrust-and-hold walking pattern, coordinated eye movements, vestibulo-ocular reflex, and sensory feedback work together to stabilize its view.\n\nThe video also compares this biological control system with a camera gimbal and shows why a chicken’s head-bobbing motion is more than a simple attempt to stay still. Some movements help gather depth information through motion parallax, while others create brief moments of visual clarity.\n\n#AnimalScience #Neuroscience #Robotics",
+    "tags": [
+      "chicken vision",
+      "how chickens see",
+      "chicken head bobbing",
+      "bird vision",
+      "animal biomechanics",
+      "vestibulo-ocular reflex",
+      "visual stabilization",
+      "motion parallax",
+      "neuroscience",
+      "biological gimbal",
+      "camera gimbal",
+      "robotics",
+      "sensory feedback",
+      "animal behavior",
+      "science explained"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [
+      "00:00 How chickens stabilize their vision",
+      "00:47 Body movement, head movement, and retinal image motion",
+      "01:32 The thrust and hold phases of walking",
+      "02:19 Motion parallax and depth perception",
+      "03:05 Eye movements during the walking cycle",
+      "03:50 The vestibulo-ocular reflex",
+      "04:42 Sensory feedback and visual control",
+      "05:31 Comparing a chicken with a camera gimbal",
+      "06:20 Applications in robotics and moving cameras",
+      "07:02 Why chickens move at the right time"
+    ],
+    "format": "long",
+    "title_description_language": "en"
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "During avian walking, the apparent head bob is divided into a rapid thrust phase and a hold phase. In the hold phase, the head remains nearly stationary relative to the environment while the body catches up; in the thrust phase, the head moves forward to a new position.",
+        "source_title": "Visual control of head movements during avian locomotion",
+        "source_url": "https://www.nature.com/articles/255067a0",
+        "published_or_updated": "Published May 1, 1975"
+      },
+      {
+        "claim": "Head-bobbing is not only a stabilization behavior: the thrust phase can generate motion-parallax information, while the hold phase provides a relatively stable interval for visual processing.",
+        "source_title": "On vision in birds: coordination of head-bobbing and gait stabilises vertical head position in quail",
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3987125/",
+        "published_or_updated": "Published 2014"
+      },
+      {
+        "claim": "Chicken eye movements are coordinated with head movements: one study reported saccades during about 80% of thrust phases and not during hold phases.",
+        "source_title": "Saccadic eye movements are coordinated with head movements in walking chickens",
+        "source_url": "https://pubmed.ncbi.nlm.nih.gov/7086341/",
+        "published_or_updated": "Published 1982"
+      },
+      {
+        "claim": "The vestibulo-ocular reflex produces compensatory eye movements when the head turns, helping stabilize the visual scene on the retina; experiments in chickens found that continuous visual feedback can adjust VOR gain.",
+        "source_title": "Visual influences on the development and recovery of the vestibuloocular reflex in the chicken",
+        "source_url": "https://pubmed.ncbi.nlm.nih.gov/11247982/",
+        "published_or_updated": "Published March 2001"
+      },
+      {
+        "claim": "Avian head stabilization depends on multimodal feedback from vision, the vestibular system, and proprioceptive signals from the body and neck; head stabilization and gaze stabilization are therefore related but not identical processes.",
+        "source_title": "Head Stabilization in the Pigeon: Role of Vision to Correct for Translational and Rotational Disturbances",
+        "source_url": "https://www.frontiersin.org/journals/neuroscience/articles/10.3389/fnins.2017.00551/full",
+        "published_or_updated": "Published September 8, 2017"
+      },
+      {
+        "claim": "A useful visual sequence is to separate three signals: movement of the body, movement of the head relative to the body, and motion of the target’s image across the retina. The biological objective is to reduce retinal image slip during selected phases, not to keep every part of the animal motionless.",
+        "source_title": "Self-motion-induced eye movements: effects on visual acuity and navigation",
+        "source_url": "https://www.nature.com/articles/nrn1804",
+        "published_or_updated": "Published December 1, 2005"
+      },
+      {
+        "claim": "A mechanical camera-stabilization platform can use inertial sensors to estimate motion and a feedback controller to adjust motorized gimbal axes, maintaining the camera’s line of sight despite movement of the base.",
+        "source_title": "Attitude control strategy for a camera stabilization platform",
+        "source_url": "https://doi.org/10.1016/j.mechatronics.2017.06.012",
+        "published_or_updated": "Published October 2017"
+      },
+      {
+        "claim": "The biological-to-engineering analogy is strongest at the control-loop level: sensors detect disturbance, a controller estimates the desired orientation, and actuators generate compensatory motion. The chicken uses visual, vestibular, and neck-related signals; a gimbal uses inertial measurements, encoders, motors, and control software.",
+        "source_title": "Bird-Inspired Stabilization",
+        "source_url": "https://www.esa.int/gsp/ACT/projects/bird_inspired_stabilization/",
+        "published_or_updated": "Updated approximately 2025"
+      },
+      {
+        "claim": "Bird-inspired stabilization has been investigated as a route toward gaze-stabilized robots and other systems that must maintain a camera or sensor orientation while the supporting platform moves.",
+        "source_title": "Multimodal Gaze Stabilization of a Humanoid Robot based on Reafferences",
+        "source_url": "https://arxiv.org/abs/1703.00390",
+        "published_or_updated": "Published 2017"
+      },
+      {
+        "claim": "Suggested explainer structure: open with body motion and a locked visual target; isolate body, head, and retinal-image traces; reveal the thrust/hold cycle; add the eye and inner-ear pathways; then translate the same feedback diagram into a motorized camera gimbal. End on the broader design principle: stable perception can come from coordinating sensors and actuators, rather than eliminating movement.",
+        "source_title": "Head Stabilization in the Pigeon: Role of Vision to Correct for Translational and Rotational Disturbances",
+        "source_url": "https://www.frontiersin.org/journals/neuroscience/articles/10.3389/fnins.2017.00551/full",
+        "published_or_updated": "Published September 8, 2017"
+      }
+    ],
+    "platform_demand": {
+      "query": "chicken head stabilization vestibulo ocular reflex research PubMed",
+      "score": 86.9,
+      "verdict": "pass",
+      "recent_videos": 62,
+      "median_views_per_day": 446624.92,
+      "top_views_per_day": 4272694.3,
+      "market_coverage": 4,
+      "title_query_overlap": 0.125,
+      "measured_at": "2026-09-03T13:38:34.642317+00:00",
+      "signal_type": "youtube-most-popular-seed-proxy"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -17.43,
+      "true_peak_dbtp": -1.14,
+      "loudness_range": 2.4
+    },
+    "editorial": {
+      "beats": 108,
+      "duration_seconds": 285.259,
+      "longest_beat_seconds": 3.494,
+      "unique_primary_assets": 12,
+      "dominant_primary_asset_runtime_ratio": 0.103,
+      "layered_scene_ratio": 0.25,
+      "unique_motion_recipes": 6,
+      "non_cut_transition_ratio": 0.204,
+      "strong_motion_ratio": 0.13,
+      "sfx_beat_ratio": 0.148,
+      "visible_annotations": 0,
+      "most_used_motion_count": 18
+    },
+    "checked_at": "2026-09-03T19:46:15.603336+00:00"
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "elevenlabs-golide-narrator-v1",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "one-off-first-flagship"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-long-flagship-2026-09-03",
+    "created_at": "2026-09-03T19:46:15.654373+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-09-03T16:00:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "428750bac3e4ec3b1531da6315f0f0c868462dfd5377ab18a781d24059f68052",
+        "bytes": 42677879
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "698284f15693b9d2de4ccf0bd402bc9b931396e329f4b8cddfe733dd1cf21e47",
+        "bytes": 2294536
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "c266d541e82fe250af026ecaac073e1418a9e703b6cf87ba44306545e2ea0343",
+        "bytes": 1829
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "9a145655eece13d64994ecb47ac96d517250619a9e83010048f550b5b6069fb2",
+        "bytes": 11890
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "55d1227979c9644f913b3db7abbf9cf354246c26d7e076ce6d70f57ebc9bae56",
+        "bytes": 7247
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "ecd0c5a2a5a4f1e1cb2615c918c495f04323bc09a515ac5b13f69ec184e9dcff",
+        "bytes": 5916
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "1fee3c690141d540cba086b82a4b5216c237a45c4630b39b581bcb4811515701",
+        "bytes": 396
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "c98b8a0af1e17614167c09719fb9b8049a8f453a9f88c9b12454fff44856f142",
+        "bytes": 616
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 24308.0,
+      "cached_input_units": 0.0,
+      "output_units": 1927.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007174,
+      "created_at": "2026-09-03T13:38:34.643193+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-09-03T13:38:34.647084+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 27870.0,
+      "cached_input_units": 0.0,
+      "output_units": 1897.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00785,
+      "created_at": "2026-09-03T13:39:10.305695+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-09-03T13:39:10.307505+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1823.0,
+      "cached_input_units": 0.0,
+      "output_units": 1103.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001688,
+      "created_at": "2026-09-03T13:39:20.577924+00:00"
+    },
+    {
+      "stage": "voice",
+      "provider": "elevenlabs",
+      "model": "eleven_multilingual_v2",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 5018,
+      "cost_usd": 1.0036,
+      "created_at": "2026-09-03T13:39:57.341367+00:00"
+    },
+    {
+      "stage": "asset:recovery-visual-00",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-09-03T18:20:31.596971+00:00"
+    },
+    {
+      "stage": "asset:recovery-visual-01",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-09-03T18:20:53.484383+00:00"
+    },
+    {
+      "stage": "asset:recovery-visual-02",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-09-03T18:21:14.525304+00:00"
+    },
+    {
+      "stage": "asset:recovery-visual-03",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-09-03T18:21:34.772488+00:00"
+    },
+    {
+      "stage": "asset:recovery-visual-04",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-09-03T18:21:56.442269+00:00"
+    },
+    {
+      "stage": "asset:recovery-visual-05",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-09-03T18:22:15.974465+00:00"
+    },
+    {
+      "stage": "asset:recovery-visual-06",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-09-03T18:22:38.605540+00:00"
+    },
+    {
+      "stage": "asset:recovery-visual-07",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-09-03T18:23:00.658165+00:00"
+    },
+    {
+      "stage": "asset:recovery-visual-08",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-09-03T18:23:26.352930+00:00"
+    },
+    {
+      "stage": "asset:recovery-visual-09",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-09-03T18:23:50.129135+00:00"
+    },
+    {
+      "stage": "asset:recovery-visual-10",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-09-03T18:24:09.573270+00:00"
+    },
+    {
+      "stage": "asset:recovery-visual-11",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-09-03T18:24:31.940082+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1155.0,
+      "cached_input_units": 0.0,
+      "output_units": 572.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000917,
+      "created_at": "2026-09-03T18:39:11.276055+00:00"
+    },
+    {
+      "stage": "thumbnail",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-09-03T18:39:49.528668+00:00"
+    }
+  ],
+  "recorded_at": "2026-09-03T19:46:20.432306+00:00"
+}
