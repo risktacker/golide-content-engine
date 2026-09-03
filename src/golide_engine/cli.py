@@ -3,7 +3,6 @@ from datetime import date
 import json
 import os
 from pathlib import Path
-import shutil
 
 from .manifest import load_project, validate_assets
 from .render import render
@@ -66,6 +65,8 @@ def main() -> int:
     automation_parser.add_argument("--queue", default="production-queue")
     automation_parser.add_argument("--database", default="data/golide.sqlite3")
     automation_parser.add_argument("--token", default=".secrets/youtube-token.json")
+    retention_parser = sub.add_parser("retention-cleanup")
+    retention_parser.add_argument("--database", default="data/golide.sqlite3")
     args = parser.parse_args()
 
     if args.command == "db-init":
@@ -140,6 +141,7 @@ def main() -> int:
         return 0 if not failures else 4
 
     if args.command == "youtube-upload":
+        from .storage.retention import register_successful_upload
         from .youtube.auth import assert_channel, credentials, services
         from .youtube.uploader import YouTubeUploader
         root = Path(args.package_directory)
@@ -152,12 +154,21 @@ def main() -> int:
         uploader = YouTubeUploader(youtube, database, "UCqaXVBSBz7iQsRHOupKt-3w")
         release = package["release"]
         video_id = uploader.upload_private(package["production_id"], root / files["video"]["file"], root / files["thumbnail"]["file"], metadata, release)
-        print(json.dumps({"youtube_video_id": video_id, "scheduled_at": release.get("scheduled_at")}, indent=2))
+        retention = register_successful_upload(Path.cwd(), database, package["production_id"], video_id)
+        print(json.dumps({"youtube_video_id": video_id, "scheduled_at": release.get("scheduled_at"), "retention": retention}, indent=2))
+        return 0
+
+    if args.command == "retention-cleanup":
+        from .storage.retention import cleanup_expired_media
+        database = _database(args.database)
+        purged = cleanup_expired_media(Path.cwd(), database)
+        print(json.dumps({"status": "retention_cleanup", "purged": purged}, indent=2))
         return 0
 
     if args.command == "automation-run":
         from .orchestration.production import ProductionService
         from .orchestration.queue import due_specs
+        from .storage.retention import register_successful_upload
         from .youtube.auth import assert_channel, credentials, services
         from .youtube.uploader import YouTubeUploader
         database = _database(args.database)
@@ -313,14 +324,11 @@ def main() -> int:
         uploader = YouTubeUploader(youtube, database, "UCqaXVBSBz7iQsRHOupKt-3w")
         release = package["release"]
         video_id = uploader.upload_private(spec["id"], package_root / files["video"]["file"], package_root / files["thumbnail"]["file"], metadata, release)
+        retention = register_successful_upload(Path.cwd(), database, spec["id"], video_id)
         done = spec_path.with_suffix(".completed.json")
         spec_path.rename(done)
         report_studio("scheduled", "youtube-scheduled")
-        # A successful private upload and schedule is the durable checkpoint. Remove
-        # paid working media so runner caches stay small; paused jobs retain theirs.
-        for directory in ("productions", "build", "release-packages"):
-            shutil.rmtree(Path(directory) / spec["id"], ignore_errors=True)
-        print(json.dumps({"status": "scheduled", "production_id": spec["id"], "youtube_video_id": video_id}))
+        print(json.dumps({"status": "scheduled", "production_id": spec["id"], "youtube_video_id": video_id, "retention": retention}))
         return 0
 
     if args.command == "animatic":
