@@ -51,3 +51,28 @@ def test_too_short_beat_drops_annotation_safely():
     assert ProductionService._fit_annotation(
         {"kind": "arrow", "start_offset": 0, "duration": 1}, 0.01
     ) == {"kind": "none"}
+
+
+def test_failed_planner_recovery_is_local_diverse_and_qa_shaped():
+    beats = [
+        {
+            "id": f"beat-{index:03d}",
+            "start": index * 2.0,
+            "end": (index + 1) * 2.0,
+            "duration": 2.0,
+            "text": f"Narration beat {index} explains a different part of the mechanism",
+        }
+        for index in range(48)
+    ]
+
+    scenes = ProductionService._build_recovery_storyboard(beats, primary_limit=12)
+
+    assert len(scenes) == len(beats)
+    assert {scene["beat_id"] for scene in scenes} == {beat["id"] for beat in beats}
+    assert len({scene["asset_key"] for scene in scenes}) == 12
+    assert sum(bool(scene["secondary_assets"]) for scene in scenes) / len(scenes) >= 0.25
+    assert len({scene["motion"]["type"] for scene in scenes}) >= 4
+    assert sum(scene["motion"]["audio_cue"] != "none" for scene in scenes) / len(scenes) >= 0.10
+
+    keys = [scene["asset_key"] for scene in scenes]
+    assert all(not (a == b == c) for a, b, c in zip(keys, keys[1:], keys[2:]))
