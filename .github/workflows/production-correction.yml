@@ -1,4 +1,4 @@
-name: One-time corrected long-video publication
+name: One-time corrected flagship re-edit
 
 on:
   push:
@@ -16,15 +16,18 @@ permissions:
   id-token: write
 
 jobs:
-  rebuild-verify-publish-correction:
+  rebuild-verify-upload-private-correction:
     runs-on: ubuntu-latest
     timeout-minutes: 120
+    env:
+      PRODUCTION_ID: golide-long-flagship-2026-09-03
+      ORIGINAL_YOUTUBE_VIDEO_ID: e5LVF8QZ2VA
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Restore preserved production assets
+      - name: Restore flagship cached production media
         uses: actions/cache/restore@v4
         with:
           path: |
@@ -32,120 +35,275 @@ jobs:
             build
             release-packages
             generated
-          key: golide-production-correction-rebuild-${{ github.run_id }}
+          key: golide-production-correction-flagship-2026-09-03-${{ github.run_id }}
           restore-keys: |
-            golide-production-correction-verified-
-            golide-production-correction-
-            golide-production-checkpoint-33609292568-1
-
-      - name: Install deterministic render dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg fonts-dejavu-core
+            golide-production-correction-flagship-2026-09-03-
+            golide-production-checkpoint-33798206892-1
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - run: python -m pip install -e '.[production]'
+      - name: Install deterministic correction dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          python -m pip install -e '.[production]'
 
-      - name: Preflight preserved package and release gates
+      - name: Preflight exact flagship cached inputs
         run: |
           set -euo pipefail
           python - <<'PY'
           import json
+          import os
           from pathlib import Path
 
-          production_id = 'golide-long-2026-09-01'
-          package = Path('release-packages') / production_id
-          manifest_path = package / 'package-manifest.json'
-          render_manifest = Path('productions') / production_id / 'render-manifest.json'
-          if not render_manifest.is_file():
-              raise SystemExit(f'missing preserved render manifest: {render_manifest}')
-          if not manifest_path.is_file():
-              raise SystemExit(f'missing release package manifest: {manifest_path}')
+          pid = os.environ['PRODUCTION_ID']
+          work = Path('productions') / pid
+          package = Path('release-packages') / pid
+          required = [
+              work / 'render-manifest.json',
+              work / 'storyboard-authoritative-v5.json',
+              work / 'script.txt',
+              work / 'upload-metadata.json',
+              package / 'package-manifest.json',
+          ]
+          missing = [str(path) for path in required if not path.is_file()]
+          if missing:
+              raise SystemExit('missing cached correction inputs: ' + ', '.join(missing))
 
-          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
-          if manifest.get('production_id') != production_id:
-              raise SystemExit('package production_id mismatch')
-          files = manifest.get('files')
-          if not isinstance(files, dict):
-              raise SystemExit('package files schema is not role->object mapping')
-          for role in ('video','thumbnail','metadata','spoken_captions','visual_captions','source_ledger','generation_parameters','qa_report'):
-              item = files.get(role)
-              if not isinstance(item, dict) or not item.get('file'):
-                  raise SystemExit(f'missing/invalid package role: {role}')
-              if not (package / item['file']).is_file():
-                  raise SystemExit(f'missing packaged file for {role}: {item["file"]}')
+          render = json.loads((work / 'render-manifest.json').read_text(encoding='utf-8'))
+          scenes = render.get('scenes', [])
+          unique_media = {scene.get('media') for scene in scenes}
+          total = sum(float(scene.get('duration', 0)) for scene in scenes)
+          if len(scenes) != 108:
+              raise SystemExit(f'expected 108 cached editorial scenes, found {len(scenes)}')
+          if len(unique_media) < 12:
+              raise SystemExit(f'expected at least 12 cached primary media files, found {len(unique_media)}')
+          if not (280 <= total <= 290):
+              raise SystemExit(f'unexpected cached editorial duration: {total:.3f}s')
+          for item in unique_media:
+              if not item or not Path(item).is_file():
+                  raise SystemExit(f'missing cached visual asset: {item}')
 
-          release = manifest.get('release', {})
-          if release.get('approved') is not True:
-              raise SystemExit('release is not approved')
-          if release.get('qa', {}).get('passed') is not True:
-              raise SystemExit('release QA is not passed')
+          release_manifest = json.loads((package / 'package-manifest.json').read_text(encoding='utf-8'))
+          if release_manifest.get('production_id') != pid:
+              raise SystemExit('release package production id mismatch')
+          release = release_manifest.get('release', {})
+          if release.get('approved') is not True or release.get('qa', {}).get('passed') is not True:
+              raise SystemExit('original release approval/QA gate is not passed')
           if release.get('channel_id') != 'UCqaXVBSBz7iQsRHOupKt-3w':
               raise SystemExit('release channel mismatch')
-
-          metadata = json.loads((package / files['metadata']['file']).read_text(encoding='utf-8'))
-          for key in ('title','description','altered_content'):
-              if key not in metadata:
-                  raise SystemExit(f'metadata missing required field: {key}')
-          print('PREFLIGHT_PASSED=1')
+          print(f'CORRECTION_PREFLIGHT=passed|scenes={len(scenes)}|unique_media={len(unique_media)}|duration={total:.3f}')
           PY
 
-      - name: Reuse verified final or rebuild from preserved manifest
+      - name: Force full re-edit from 108 cached scenes
         run: |
           set -euo pipefail
-          VIDEO="build/golide-long-2026-09-01/video.mp4"
-          REUSE=0
-          if [ -s "$VIDEO" ]; then
-            DURATION=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$VIDEO" || echo 0)
-            VSTREAMS=$(ffprobe -v error -select_streams v -show_entries stream=index -of csv=p=0 "$VIDEO" | wc -l || true)
-            ASTREAMS=$(ffprobe -v error -select_streams a -show_entries stream=index -of csv=p=0 "$VIDEO" | wc -l || true)
-            if python - "$DURATION" "$VSTREAMS" "$ASTREAMS" <<'PY'
-          import sys
-          seconds=float(sys.argv[1]); v=int(sys.argv[2]); a=int(sys.argv[3])
-          raise SystemExit(0 if 270.0 <= seconds <= 360.0 and v >= 1 and a >= 1 else 1)
-          PY
-            then
-              echo "REUSING_VERIFIED_FINAL=$DURATION"
-              REUSE=1
-            fi
-          fi
-          if [ "$REUSE" -ne 1 ]; then
-            python - <<'PY'
+          rm -rf "build/${PRODUCTION_ID}/scenes"
+          rm -f "build/${PRODUCTION_ID}/silent.mp4" "build/${PRODUCTION_ID}/video.mp4" "build/${PRODUCTION_ID}/metadata.json"
+          python - <<'PY'
+          import os
           from pathlib import Path
           from golide_engine.manifest import load_project
           from golide_engine.render import render
 
           root = Path('.').resolve()
-          production_id = 'golide-long-2026-09-01'
-          manifest = root / 'productions' / production_id / 'render-manifest.json'
-          render(load_project(manifest), root)
+          pid = os.environ['PRODUCTION_ID']
+          manifest = root / 'productions' / pid / 'render-manifest.json'
+          output = render(load_project(manifest), root)
+          print(f'CORRECTED_RENDER={output}')
           PY
-          fi
 
-      - name: Hard duration and stream gate
+      - name: Block any short or frozen-tail edit
         run: |
           set -euo pipefail
-          VIDEO="build/golide-long-2026-09-01/video.mp4"
-          test -s "$VIDEO"
-          DURATION=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$VIDEO")
-          VSTREAMS=$(ffprobe -v error -select_streams v -show_entries stream=index -of csv=p=0 "$VIDEO" | wc -l)
-          ASTREAMS=$(ffprobe -v error -select_streams a -show_entries stream=index -of csv=p=0 "$VIDEO" | wc -l)
-          echo "FINAL_DURATION_SECONDS=$DURATION"
-          echo "VIDEO_STREAMS=$VSTREAMS AUDIO_STREAMS=$ASTREAMS"
-          python - "$DURATION" <<'PY'
-          import sys
-          seconds = float(sys.argv[1])
-          if not (270.0 <= seconds <= 360.0):
-              raise SystemExit(f'BLOCKED: long-form duration {seconds:.3f}s is outside 4:30-6:00 safety range')
-          print(f'DURATION_GATE_PASSED={seconds:.3f}s')
-          PY
-          test "$VSTREAMS" -ge 1
-          test "$ASTREAMS" -ge 1
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
 
-      - name: Preserve verified final checkpoint
+          pid = os.environ['PRODUCTION_ID']
+          work = Path('productions') / pid
+          build = Path('build') / pid
+          manifest = json.loads((work / 'render-manifest.json').read_text(encoding='utf-8'))
+          expected = sum(float(scene['duration']) for scene in manifest['scenes'])
+
+          def duration(path: Path) -> float:
+              result = subprocess.run([
+                  'ffprobe','-v','error','-show_entries','format=duration',
+                  '-of','default=nw=1:nk=1',str(path)
+              ], capture_output=True, text=True, check=True)
+              return float(result.stdout.strip())
+
+          silent = build / 'silent.mp4'
+          final = build / 'video.mp4'
+          silent_seconds = duration(silent)
+          final_seconds = duration(final)
+          tolerance = 0.35
+          if abs(silent_seconds - expected) > tolerance:
+              raise SystemExit(
+                  f'BLOCKED: silent edit is {silent_seconds:.3f}s; expected {expected:.3f}s. '
+                  'Never hide a short compositor output under a frozen frame.'
+              )
+          if abs(final_seconds - expected) > tolerance:
+              raise SystemExit(f'BLOCKED: final edit is {final_seconds:.3f}s; expected {expected:.3f}s')
+
+          sample_times = [20, 45, 75, 105, 135, 165, 195, 225, 255, 280]
+          signatures = []
+          for second in sample_times:
+              result = subprocess.run([
+                  'ffmpeg','-v','error','-ss',str(second),'-i',str(final),
+                  '-frames:v','1','-vf','scale=48:27,format=gray','-f','rawvideo','-'
+              ], capture_output=True, check=True)
+              signatures.append(hashlib.sha256(result.stdout).hexdigest()[:16])
+          unique = len(set(signatures))
+          tail_unique = len(set(signatures[-5:]))
+          print(f'VISUAL_SAMPLES={list(zip(sample_times, signatures))}')
+          print(f'VISUAL_CADENCE_GATE=unique={unique}|tail_unique={tail_unique}|silent={silent_seconds:.3f}|final={final_seconds:.3f}')
+          if unique < 7 or tail_unique < 4:
+              raise SystemExit('BLOCKED: visual timeline still appears frozen/repetitive across the long-form edit')
+          PY
+
+      - name: Build one corrected thumbnail from the locked canonical avatar
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GOLIDE_ENABLE_PAID_PRODUCTION: "1"
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          from golide_engine.providers.registry import ProviderRegistry
+          from golide_engine.quality.visual import normalize_thumbnail
+          from golide_engine.visual_identity import VisualIdentity
+
+          pid = os.environ['PRODUCTION_ID']
+          work = Path('productions') / pid
+          source = work / 'thumbnail-correction-source.png'
+          target = work / 'thumbnail-correction.jpg'
+          identity = VisualIdentity('config/visual-identity.json')
+          canonical = identity.canonical_avatar_reference()
+          checksum = hashlib.sha256(canonical.read_bytes()).hexdigest()
+          print(f'CANONICAL_AVATAR_SHA256={checksum}')
+
+          if target.is_file() and target.stat().st_size > 0:
+              print('CORRECTED_THUMBNAIL_REUSED=1')
+          else:
+              if not source.is_file() or source.stat().st_size == 0:
+                  metadata = json.loads((work / 'upload-metadata.json').read_text(encoding='utf-8'))
+                  prompt = (
+                      'Create a premium wordless G$LIDE YouTube thumbnail for the chicken vision-stabilization explainer. '
+                      'The supplied canonical avatar is the exact host identity: preserve the same Black adult male, skin tone, '
+                      'facial geometry, hair, age and realistic human proportions. Do not substitute a white person, a different '
+                      'person, a generic presenter, a cartoon face or an animated-film character. Keep the G$LIDE layered '
+                      'paper-cut/ink treatment in deep navy, electric blue, gold and warm ivory. Compose the canonical host on '
+                      'one side with a strong but believable surprised/curious expression; on the other side show one clear chicken '
+                      'head plus a simple camera-gimbal/stabilization visual cue. High contrast, clean focal hierarchy, generous '
+                      'crop-safe margins, no words, letters, logos, captions or typography. '
+                      f"Video title context: {metadata['title']}"
+                  )
+                  provider = ProviderRegistry().thumbnails(live=True)
+                  provider.create_thumbnail(prompt, source)
+                  print('CORRECTED_THUMBNAIL_GENERATED=1')
+              normalize_thumbnail(source, target)
+              print('CORRECTED_THUMBNAIL_NORMALIZED=1')
+
+          if target.stat().st_size > 2_000_000:
+              raise SystemExit(f'corrected thumbnail exceeds 2 MB: {target.stat().st_size} bytes')
+          PY
+
+      - name: Rerun automatic QA on the corrected edit and thumbnail
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          from golide_engine.quality.runner import QualityRunner
+
+          pid = os.environ['PRODUCTION_ID']
+          work = Path('productions') / pid
+          video = Path('build') / pid / 'video.mp4'
+          thumbnail = work / 'thumbnail-correction.jpg'
+          storyboard = json.loads((work / 'storyboard-authoritative-v5.json').read_text(encoding='utf-8'))
+          metadata = json.loads((work / 'upload-metadata.json').read_text(encoding='utf-8'))
+          script = (work / 'script.txt').read_text(encoding='utf-8').strip()
+          report_path = work / 'qa-report-correction.json'
+          report = QualityRunner('config/qa-policy.json').run(
+              video,
+              'long',
+              storyboard,
+              [script, metadata['title'], metadata['description']],
+              report_path,
+              thumbnail,
+          )
+          if not report.passed:
+              raise SystemExit('CORRECTION QA FAILED: ' + '; '.join(report.failures))
+          print('CORRECTION_QA=passed')
+          PY
+
+      - name: Replace release media and force corrected upload to private
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import shutil
+          from pathlib import Path
+
+          pid = os.environ['PRODUCTION_ID']
+          old_video_id = os.environ['ORIGINAL_YOUTUBE_VIDEO_ID']
+          work = Path('productions') / pid
+          package = Path('release-packages') / pid
+          manifest_path = package / 'package-manifest.json'
+          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+          files = manifest['files']
+
+          video_src = Path('build') / pid / 'video.mp4'
+          video_dst = package / files['video']['file']
+          shutil.copy2(video_src, video_dst)
+
+          thumb_src = work / 'thumbnail-correction.jpg'
+          thumb_name = 'thumbnail-correction.jpg'
+          thumb_dst = package / thumb_name
+          shutil.copy2(thumb_src, thumb_dst)
+          files['thumbnail']['file'] = thumb_name
+
+          qa_src = work / 'qa-report-correction.json'
+          qa_dst = package / files['qa_report']['file']
+          shutil.copy2(qa_src, qa_dst)
+
+          for role in ('video', 'thumbnail', 'qa_report'):
+              item = files[role]
+              path = package / item['file']
+              item['sha256'] = hashlib.sha256(path.read_bytes()).hexdigest()
+              item['bytes'] = path.stat().st_size
+
+          release = manifest['release']
+          release['approved'] = True
+          release['qa'] = {'passed': True}
+          release['scheduled_at'] = None
+          release['force_reupload'] = True
+          manifest['correction'] = {
+              'reason': 'fix 13-second compositor freeze and enforce canonical G$LIDE avatar thumbnail',
+              'original_youtube_video_id': old_video_id,
+              'upload_policy': 'private-corrected-preview',
+              'scene_compositor': 'hard-cut-concat-v2',
+          }
+          manifest_path.write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
+          print('CORRECTED_RELEASE_PACKAGE=updated')
+          print(f'CORRECTED_VIDEO_SHA256={files["video"]["sha256"]}')
+          print(f'CORRECTED_THUMBNAIL_SHA256={files["thumbnail"]["sha256"]}')
+          PY
+          golide release-verify "release-packages/${PRODUCTION_ID}"
+
+      - name: Save verified correction before any YouTube write
         uses: actions/cache/save@v4
         with:
           path: |
@@ -153,69 +311,22 @@ jobs:
             build
             release-packages
             generated
-          key: golide-production-correction-verified-${{ github.run_id }}
+          key: golide-production-correction-flagship-2026-09-03-${{ github.run_id }}-verified
 
-      - name: Replace stale package video and refresh manifest checksum
-        run: |
-          set -euo pipefail
-          cp -f build/golide-long-2026-09-01/video.mp4 release-packages/golide-long-2026-09-01/video.mp4
-          python - <<'PY'
-          import hashlib, json
-          from pathlib import Path
-
-          package = Path('release-packages/golide-long-2026-09-01')
-          manifest_path = package / 'package-manifest.json'
-          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
-          item = manifest.get('files', {}).get('video')
-          if not isinstance(item, dict) or item.get('file') != 'video.mp4':
-              raise SystemExit('unexpected video entry in package manifest; refusing upload')
-          video = package / item['file']
-          digest = hashlib.sha256(video.read_bytes()).hexdigest()
-          item['sha256'] = digest
-          item['bytes'] = video.stat().st_size
-          manifest_path.write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
-          print(f'RELEASE_VIDEO_SHA256={digest}')
-          print(f'RELEASE_VIDEO_BYTES={item["bytes"]}')
-          PY
-          golide release-verify release-packages/golide-long-2026-09-01
-
-      - name: Final upload preflight
-        run: |
-          set -euo pipefail
-          PACKAGE="release-packages/golide-long-2026-09-01"
-          DURATION=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$PACKAGE/video.mp4")
-          VSTREAMS=$(ffprobe -v error -select_streams v -show_entries stream=index -of csv=p=0 "$PACKAGE/video.mp4" | wc -l)
-          ASTREAMS=$(ffprobe -v error -select_streams a -show_entries stream=index -of csv=p=0 "$PACKAGE/video.mp4" | wc -l)
-          python - "$DURATION" "$VSTREAMS" "$ASTREAMS" <<'PY'
-          import json, sys
-          from pathlib import Path
-          seconds=float(sys.argv[1]); v=int(sys.argv[2]); a=int(sys.argv[3])
-          if not (270.0 <= seconds <= 360.0 and v >= 1 and a >= 1):
-              raise SystemExit(f'UPLOAD BLOCKED: duration={seconds:.3f}s video_streams={v} audio_streams={a}')
-          root=Path('release-packages/golide-long-2026-09-01')
-          package=json.loads((root/'package-manifest.json').read_text(encoding='utf-8'))
-          release=package['release']
-          if release.get('approved') is not True or release.get('qa',{}).get('passed') is not True:
-              raise SystemExit('UPLOAD BLOCKED: release approval/QA gate failed')
-          if release.get('channel_id') != 'UCqaXVBSBz7iQsRHOupKt-3w':
-              raise SystemExit('UPLOAD BLOCKED: wrong channel')
-          print(f'UPLOAD_PREFLIGHT_PASSED={seconds:.3f}s')
-          PY
-
-      - name: Upload verified corrected long video as a new YouTube video
+      - name: Upload corrected flagship as a new private YouTube video
         env:
           YOUTUBE_OAUTH_TOKEN_B64: ${{ secrets.YOUTUBE_OAUTH_TOKEN_B64 }}
           GOLIDE_ENABLE_YOUTUBE_UPLOAD: "1"
-          GOLIDE_FORCE_REUPLOAD_PRODUCTION_ID: "golide-long-2026-09-01"
+          GOLIDE_FORCE_REUPLOAD_PRODUCTION_ID: golide-long-flagship-2026-09-03
         run: |
-          golide youtube-upload release-packages/golide-long-2026-09-01
+          golide youtube-upload "release-packages/${PRODUCTION_ID}"
 
-      - name: Save corrected state
+      - name: Save corrected private-upload state
         if: success()
         run: |
           git config user.name "golide-production-bot"
           git config user.email "actions@users.noreply.github.com"
           git add data
-          git diff --cached --quiet || git commit -m "ops: record corrected long-video publication"
+          git diff --cached --quiet || git commit -m "ops: record corrected flagship private preview"
           git pull --rebase origin main
           git push
