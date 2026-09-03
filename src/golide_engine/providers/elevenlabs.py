@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import json
 import os
+import re
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
@@ -56,6 +57,14 @@ def alignment_to_words(alignment: dict[str, Any]) -> list[dict[str, float | str]
 
 class ElevenLabsVoiceProvider:
     api_root = "https://api.elevenlabs.io/v1"
+    _FORBIDDEN_NARRATION_PREFIX = re.compile(
+        r"(?im)^\s*(?:#{1,6}\s*)?(?:script|narrator|visual|scene|camera|shot|b-?roll|"
+        r"caption|on[- ]?screen|music|sfx|sound effect|transition|editor(?:ial)? note|"
+        r"production note)\s*[:\-]"
+    )
+    _FORBIDDEN_BRACKET_DIRECTION = re.compile(
+        r"(?i)\[(?:visual|scene|camera|shot|b-?roll|music|sfx|sound effect|transition|pause\s+\d+[^]]*)\]"
+    )
 
     def __init__(
         self,
@@ -83,6 +92,34 @@ class ElevenLabsVoiceProvider:
         if not key:
             raise RuntimeError("ELEVENLABS_API_KEY is not configured")
         return key
+
+    @classmethod
+    def validate_spoken_narration(cls, text: str) -> None:
+        """Fail before any paid TTS request if production directions leaked into speech."""
+        stripped = text.strip()
+        if not stripped:
+            raise ValueError("narration script is empty")
+        marker = cls._FORBIDDEN_NARRATION_PREFIX.search(stripped)
+        if marker:
+            raise ValueError(
+                "narration contains a production-direction label and was blocked before ElevenLabs: "
+                + marker.group(0).strip()
+            )
+        bracket = cls._FORBIDDEN_BRACKET_DIRECTION.search(stripped)
+        if bracket:
+            raise ValueError(
+                "narration contains a bracketed production direction and was blocked before ElevenLabs"
+            )
+        if "```" in stripped:
+            raise ValueError("narration contains a code/markdown fence and was blocked before ElevenLabs")
+        words = re.findall(r"\b[\w'-]+\b", stripped)
+        if len(words) < 20:
+            raise ValueError("narration is too short to authorize a paid ElevenLabs request")
+        sentence_marks = len(re.findall(r"[.!?]", stripped))
+        if sentence_marks < max(2, len(words) // 120):
+            raise ValueError(
+                "narration has too little sentence punctuation for natural speech; blocked before ElevenLabs"
+            )
 
     def _request(self, method: str, url: str, payload: dict[str, Any] | None = None) -> tuple[dict[str, Any], Any]:
         body = json.dumps(payload).encode("utf-8") if payload is not None else None
@@ -120,9 +157,8 @@ class ElevenLabsVoiceProvider:
 
     def synthesize(self, script: str, output: Path) -> ProviderOutput:
         text = script.strip()
+        self.validate_spoken_narration(text)
         characters = len(text)
-        if not text:
-            raise ValueError("narration script is empty")
         if characters > self.max_characters_per_request:
             raise ValueError(
                 f"narration has {characters} characters; limit is {self.max_characters_per_request}"
