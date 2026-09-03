@@ -23,6 +23,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Restore preserved production assets
         uses: actions/cache/restore@v4
         with:
@@ -33,20 +34,86 @@ jobs:
             generated
           key: golide-production-correction-rebuild-${{ github.run_id }}
           restore-keys: |
+            golide-production-correction-verified-
             golide-production-correction-
             golide-production-checkpoint-33609292568-1
+
       - name: Install deterministic render dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg fonts-dejavu-core
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
       - run: python -m pip install -e '.[production]'
-      - name: Rebuild final video from preserved manifest and assets
+
+      - name: Preflight preserved package and release gates
         run: |
           set -euo pipefail
           python - <<'PY'
+          import json
+          from pathlib import Path
+
+          production_id = 'golide-long-2026-09-01'
+          package = Path('release-packages') / production_id
+          manifest_path = package / 'package-manifest.json'
+          render_manifest = Path('productions') / production_id / 'render-manifest.json'
+          if not render_manifest.is_file():
+              raise SystemExit(f'missing preserved render manifest: {render_manifest}')
+          if not manifest_path.is_file():
+              raise SystemExit(f'missing release package manifest: {manifest_path}')
+
+          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+          if manifest.get('production_id') != production_id:
+              raise SystemExit('package production_id mismatch')
+          files = manifest.get('files')
+          if not isinstance(files, dict):
+              raise SystemExit('package files schema is not role->object mapping')
+          for role in ('video','thumbnail','metadata','spoken_captions','visual_captions','source_ledger','generation_parameters','qa_report'):
+              item = files.get(role)
+              if not isinstance(item, dict) or not item.get('file'):
+                  raise SystemExit(f'missing/invalid package role: {role}')
+              if not (package / item['file']).is_file():
+                  raise SystemExit(f'missing packaged file for {role}: {item["file"]}')
+
+          release = manifest.get('release', {})
+          if release.get('approved') is not True:
+              raise SystemExit('release is not approved')
+          if release.get('qa', {}).get('passed') is not True:
+              raise SystemExit('release QA is not passed')
+          if release.get('channel_id') != 'UCqaXVBSBz7iQsRHOupKt-3w':
+              raise SystemExit('release channel mismatch')
+
+          metadata = json.loads((package / files['metadata']['file']).read_text(encoding='utf-8'))
+          for key in ('title','description','altered_content'):
+              if key not in metadata:
+                  raise SystemExit(f'metadata missing required field: {key}')
+          print('PREFLIGHT_PASSED=1')
+          PY
+
+      - name: Reuse verified final or rebuild from preserved manifest
+        run: |
+          set -euo pipefail
+          VIDEO="build/golide-long-2026-09-01/video.mp4"
+          REUSE=0
+          if [ -s "$VIDEO" ]; then
+            DURATION=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$VIDEO" || echo 0)
+            VSTREAMS=$(ffprobe -v error -select_streams v -show_entries stream=index -of csv=p=0 "$VIDEO" | wc -l || true)
+            ASTREAMS=$(ffprobe -v error -select_streams a -show_entries stream=index -of csv=p=0 "$VIDEO" | wc -l || true)
+            if python - "$DURATION" "$VSTREAMS" "$ASTREAMS" <<'PY'
+          import sys
+          seconds=float(sys.argv[1]); v=int(sys.argv[2]); a=int(sys.argv[3])
+          raise SystemExit(0 if 270.0 <= seconds <= 360.0 and v >= 1 and a >= 1 else 1)
+          PY
+            then
+              echo "REUSING_VERIFIED_FINAL=$DURATION"
+              REUSE=1
+            fi
+          fi
+          if [ "$REUSE" -ne 1 ]; then
+            python - <<'PY'
           from pathlib import Path
           from golide_engine.manifest import load_project
           from golide_engine.render import render
@@ -54,10 +121,10 @@ jobs:
           root = Path('.').resolve()
           production_id = 'golide-long-2026-09-01'
           manifest = root / 'productions' / production_id / 'render-manifest.json'
-          if not manifest.exists():
-              raise SystemExit(f'missing preserved render manifest: {manifest}')
           render(load_project(manifest), root)
           PY
+          fi
+
       - name: Hard duration and stream gate
         run: |
           set -euo pipefail
@@ -77,42 +144,64 @@ jobs:
           PY
           test "$VSTREAMS" -ge 1
           test "$ASTREAMS" -ge 1
-      - name: Replace stale release-package video with verified final render
+
+      - name: Preserve verified final checkpoint
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            productions
+            build
+            release-packages
+            generated
+          key: golide-production-correction-verified-${{ github.run_id }}
+
+      - name: Replace stale package video and refresh manifest checksum
         run: |
           set -euo pipefail
           cp -f build/golide-long-2026-09-01/video.mp4 release-packages/golide-long-2026-09-01/video.mp4
           python - <<'PY'
           import hashlib, json
           from pathlib import Path
+
           package = Path('release-packages/golide-long-2026-09-01')
           manifest_path = package / 'package-manifest.json'
-          manifest = json.loads(manifest_path.read_text())
-          video = package / 'video.mp4'
+          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+          item = manifest.get('files', {}).get('video')
+          if not isinstance(item, dict) or item.get('file') != 'video.mp4':
+              raise SystemExit('unexpected video entry in package manifest; refusing upload')
+          video = package / item['file']
           digest = hashlib.sha256(video.read_bytes()).hexdigest()
-          size = video.stat().st_size
-          updated = False
-          for item in manifest.get('files', []):
-              if item.get('path') == 'video.mp4' or item.get('name') == 'video.mp4':
-                  if 'sha256' in item: item['sha256'] = digest
-                  if 'size' in item: item['size'] = size
-                  updated = True
-          if not updated:
-              raise SystemExit('package manifest has no video.mp4 entry; refusing upload')
-          manifest_path.write_text(json.dumps(manifest, indent=2) + '\n')
+          item['sha256'] = digest
+          item['bytes'] = video.stat().st_size
+          manifest_path.write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
           print(f'RELEASE_VIDEO_SHA256={digest}')
+          print(f'RELEASE_VIDEO_BYTES={item["bytes"]}')
           PY
           golide release-verify release-packages/golide-long-2026-09-01
-      - name: Re-check packaged video immediately before YouTube
+
+      - name: Final upload preflight
         run: |
           set -euo pipefail
-          DURATION=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 release-packages/golide-long-2026-09-01/video.mp4)
-          python - "$DURATION" <<'PY'
-          import sys
-          seconds = float(sys.argv[1])
-          if not (270.0 <= seconds <= 360.0):
-              raise SystemExit(f'UPLOAD BLOCKED: packaged video is {seconds:.3f}s')
-          print(f'UPLOAD_DURATION_GATE_PASSED={seconds:.3f}s')
+          PACKAGE="release-packages/golide-long-2026-09-01"
+          DURATION=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$PACKAGE/video.mp4")
+          VSTREAMS=$(ffprobe -v error -select_streams v -show_entries stream=index -of csv=p=0 "$PACKAGE/video.mp4" | wc -l)
+          ASTREAMS=$(ffprobe -v error -select_streams a -show_entries stream=index -of csv=p=0 "$PACKAGE/video.mp4" | wc -l)
+          python - "$DURATION" "$VSTREAMS" "$ASTREAMS" <<'PY'
+          import json, sys
+          from pathlib import Path
+          seconds=float(sys.argv[1]); v=int(sys.argv[2]); a=int(sys.argv[3])
+          if not (270.0 <= seconds <= 360.0 and v >= 1 and a >= 1):
+              raise SystemExit(f'UPLOAD BLOCKED: duration={seconds:.3f}s video_streams={v} audio_streams={a}')
+          root=Path('release-packages/golide-long-2026-09-01')
+          package=json.loads((root/'package-manifest.json').read_text(encoding='utf-8'))
+          release=package['release']
+          if release.get('approved') is not True or release.get('qa',{}).get('passed') is not True:
+              raise SystemExit('UPLOAD BLOCKED: release approval/QA gate failed')
+          if release.get('channel_id') != 'UCqaXVBSBz7iQsRHOupKt-3w':
+              raise SystemExit('UPLOAD BLOCKED: wrong channel')
+          print(f'UPLOAD_PREFLIGHT_PASSED={seconds:.3f}s')
           PY
+
       - name: Upload verified corrected long video as a new YouTube video
         env:
           YOUTUBE_OAUTH_TOKEN_B64: ${{ secrets.YOUTUBE_OAUTH_TOKEN_B64 }}
@@ -120,6 +209,7 @@ jobs:
           GOLIDE_FORCE_REUPLOAD_PRODUCTION_ID: "golide-long-2026-09-01"
         run: |
           golide youtube-upload release-packages/golide-long-2026-09-01
+
       - name: Save corrected state
         if: success()
         run: |
