@@ -2,8 +2,8 @@
   "id": "golide-long-flagship-2026-09-03",
   "studio_managed": true,
   "format": "long",
-  "title": "G$LIDE Flagship · 2026-09-03",
-  "brief": "Choose a fresh original evidence-backed G$LIDE science, technology, unusual true event or impossible-but-real explainer with strong current YouTube-wide demand. Compare multiple current niche candidates, avoid any topic already used in recent G$LIDE trials or productions, and explain the winning topic's real mechanism and consequence visually. Never copy an existing video.",
+  "title": "The Chicken Is a Living Gimbal",
+  "brief": "A biology-and-engineering explainer triggered by the supplied chicken-versus-stabilizer signal, but developed as a mechanism story rather than a comparison video. When a chicken\u2019s body moves, its head can remain visually stable through coordinated neck motion, visual feedback and vestibulo-ocular reflexes. Visuals can isolate body motion, head motion and retinal image stability, then compare the biological control loop with a mechanical camera gimbal. Consequence: the same principles inform animal vision research, robotics and stabilization systems.",
   "demand_query": "current science technology explainer",
   "demand_validation_required": true,
   "budget_class": "scheduled",
@@ -41,11 +41,108 @@
     "platform_demand_gate": "youtube-wide-proxy-v1",
     "schedule_rule": "one-off-first-flagship"
   },
-  "music": {"mood": "curious-tension"},
+  "music": {
+    "mood": "curious-tension"
+  },
   "avatar_reference_images": [],
   "release": {
     "approved": true,
     "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
     "scheduled_at": "2026-09-03T16:00:00Z"
-  }
+  },
+  "topic_candidates": [
+    {
+      "title": "Your Phone\u2019s LiDAR Can Now See Around Corners",
+      "query": "MIT consumer LiDAR see around corners motion induced aperture sampling 2026",
+      "brief": "Winner. Strongest current-demand fit: it combines smartphone hardware, robot vision, hidden-scene mystery and a newly reported 2026 breakthrough. It is distinct from the recent USB-destruction topic and from ordinary phone reviews. Visual arc: LiDAR pulse leaves a phone, bounces off a wall, grazes a hidden object, returns faintly, and motion plus reconstruction algorithms turn those timing differences into a 3D silhouette. Consequence: blind-corner detection, search-and-rescue and robot navigation may become possible using sensors already found in phones and consumer devices.",
+      "evidence_summary": "Demand: Very high, combining the supplied smartphone, camera-robot and hidden-tech signals. Visual potential: exceptional\u2014ray-traced light paths, picosecond timing, synthetic-aperture animation and side-by-side reconstruction. Evidence strength: high; MIT Media Lab reports a 2026 Nature result and provides a reproducible consumer-LiDAR project. Broad curiosity: very high. Novelty: very high because the current version uses ordinary consumer LiDAR rather than an expensive laboratory femtosecond setup.",
+      "authoritative_source_url": "https://www.media.mit.edu/posts/mit-media-lab-researchers-turn-everyday-lidar-into-an-around-the-corner-camera/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "MIT consumer LiDAR see around corners motion induced aperture sampling 2026",
+        "score": 86.4,
+        "verdict": "pass",
+        "recent_videos": 62,
+        "median_views_per_day": 446624.92,
+        "top_views_per_day": 4272694.3,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0909,
+        "measured_at": "2026-09-03T13:38:34.641237+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "The Computer That Boils Its Own Cooling Liquid",
+      "query": "Microsoft Research two phase immersion cooling server boiling liquid overclocking",
+      "brief": "A premium technology explainer about servers immersed in nonconductive fluid. The mechanism is counterintuitive: hot chips boil a low-boiling-point dielectric liquid, vapor rises to condenser coils, then the liquid rains back down. Visual explanation can contrast air cooling, water cooling and phase-change cooling while showing why dense AI hardware is pushing datacenters toward radically different thermal designs. Consequence: higher power density and potential performance gains, balanced against fluid chemistry, lifecycle and regulatory tradeoffs.",
+      "evidence_summary": "Demand: High, supported by the supplied liquid-PC, GPU-cost and AI/hardware signals. Visual potential: exceptional\u2014transparent tank cutaway, boiling bubbles, heat maps and rack-density comparisons. Evidence strength: very high; Microsoft Research documents prototype tanks, overclocking results and system-level tradeoffs. Broad curiosity: high. Novelty: high, although the broad idea of liquid-cooled computers is already familiar, so the story should focus on phase change and datacenter scale rather than a desktop stunt.",
+      "authoritative_source_url": "https://www.microsoft.com/en-us/research/?p=743035",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Microsoft Research two phase immersion cooling server boiling liquid overclocking",
+        "score": 86.5,
+        "verdict": "pass",
+        "recent_videos": 62,
+        "median_views_per_day": 446624.92,
+        "top_views_per_day": 4272694.3,
+        "market_coverage": 4,
+        "title_query_overlap": 0.1,
+        "measured_at": "2026-09-03T13:38:34.641812+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "The Chicken Is a Living Gimbal",
+      "query": "chicken head stabilization vestibulo ocular reflex research PubMed",
+      "brief": "A biology-and-engineering explainer triggered by the supplied chicken-versus-stabilizer signal, but developed as a mechanism story rather than a comparison video. When a chicken\u2019s body moves, its head can remain visually stable through coordinated neck motion, visual feedback and vestibulo-ocular reflexes. Visuals can isolate body motion, head motion and retinal image stability, then compare the biological control loop with a mechanical camera gimbal. Consequence: the same principles inform animal vision research, robotics and stabilization systems.",
+      "evidence_summary": "Demand: High for short-form curiosity because it is instantly demonstrable and animal behavior travels broadly across markets. Visual potential: high\u2014slow motion, motion tracking and gyroscope/gimbal overlays. Evidence strength: high for the stabilization mechanism, supported by peer-reviewed research indexed by the U.S. National Library of Medicine. Broad curiosity: very high. Novelty: medium-high; the framing should emphasize sensory control and retinal stability, not simply the familiar \u2018chicken head stays still\u2019 gag.",
+      "authoritative_source_url": "https://pubmed.ncbi.nlm.nih.gov/11247982/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "chicken head stabilization vestibulo ocular reflex research PubMed",
+        "score": 86.9,
+        "verdict": "pass",
+        "recent_videos": 62,
+        "median_views_per_day": 446624.92,
+        "top_views_per_day": 4272694.3,
+        "market_coverage": 4,
+        "title_query_overlap": 0.125,
+        "measured_at": "2026-09-03T13:38:34.642317+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "A Wi-Fi Network Can Make a Rough Moving Picture Through a Wall",
+      "query": "WiFi channel state information through wall imaging research dataset IEEE 2024",
+      "brief": "An evidence-backed sensing explainer about reconstructing movement from radio reflections rather than visible light. Wi-Fi signals scatter through a room; changes in channel-state information encode motion, position and activity, and machine-learning reconstruction can produce an approximate image or activity map. Visuals can show invisible wavefronts, wall penetration, signal distortion and the gradual emergence of a human silhouette. Consequence: contactless monitoring and search applications become possible, while accuracy, privacy and environmental limitations provide necessary tension.",
+      "evidence_summary": "Demand: High, combining the supplied password/privacy, mapping and unusual-tech signals without repeating the password-leak premise. Visual potential: very high\u2014animated radio fields, raw signal traces and reconstruction timelapses. Evidence strength: high; the TU Wien research dataset links the method to a peer-reviewed IEEE image-processing paper and provides data provenance. Broad curiosity: very high. Novelty: high, though the script must clearly distinguish activity recognition and rough imaging from cinematic \u2018Wi-Fi sees everything\u2019 claims.",
+      "authoritative_source_url": "https://data.niaid.nih.gov/resources?id=zenodo_11554279",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "WiFi channel state information through wall imaging research dataset IEEE 2024",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 62,
+        "median_views_per_day": 446624.92,
+        "top_views_per_day": 4272694.3,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-09-03T13:38:34.642837+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    }
+  ],
+  "platform_demand": {
+    "query": "chicken head stabilization vestibulo ocular reflex research PubMed",
+    "score": 86.9,
+    "verdict": "pass",
+    "recent_videos": 62,
+    "median_views_per_day": 446624.92,
+    "top_views_per_day": 4272694.3,
+    "market_coverage": 4,
+    "title_query_overlap": 0.125,
+    "measured_at": "2026-09-03T13:38:34.642317+00:00",
+    "signal_type": "youtube-most-popular-seed-proxy"
+  },
+  "selected_topic_source": "https://pubmed.ncbi.nlm.nih.gov/11247982/"
 }
