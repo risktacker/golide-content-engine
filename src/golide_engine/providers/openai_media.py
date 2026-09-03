@@ -14,31 +14,74 @@ class OpenAIImageProvider:
         self.quality = quality
 
     @staticmethod
-    def _locked_prompt(prompt: str) -> str:
-        """Apply the repository's locked visual identity to every generated image.
-
-        This intentionally lives in the provider layer rather than only in one
-        production prompt so automatic productions, thumbnails and future image
-        call sites cannot silently forget the G$LIDE avatar rules.
-        """
+    def _identity() -> VisualIdentity:
         policy_path = Path.cwd() / "config" / "visual-identity.json"
         if not policy_path.exists():
             raise RuntimeError(
                 "locked G$LIDE visual identity config is missing; image generation is blocked"
             )
-        return VisualIdentity(policy_path).apply(prompt)
+        return VisualIdentity(policy_path)
 
-    def create_image(self, prompt: str, output: Path, size: str, reference_images: list[Path] | None = None) -> ProviderOutput:
+    @classmethod
+    def _locked_prompt(cls, prompt: str) -> str:
+        """Apply the repository's locked visual identity to every generated image."""
+        return cls._identity().apply(prompt)
+
+    @classmethod
+    def _references_for(
+        cls,
+        prompt: str,
+        supplied: list[Path] | None,
+        *,
+        thumbnail: bool,
+    ) -> list[Path]:
+        identity = cls._identity()
+        references = list(supplied or [])
+        # A thumbnail is a branded host surface: it must never invent a replacement
+        # person. Explicit avatar scenes get the same treatment. Ordinary subject
+        # visuals do not receive the avatar reference, so the model is not encouraged
+        # to insert a person where the story calls for a mechanism/object/diagram.
+        if thumbnail or identity.requests_avatar(prompt):
+            canonical = identity.canonical_avatar_reference()
+            canonical_resolved = canonical.resolve()
+            references = [
+                item for item in references
+                if item.resolve() != canonical_resolved
+            ]
+            references.insert(0, canonical)
+        return references
+
+    def _create(
+        self,
+        prompt: str,
+        output: Path,
+        size: str,
+        reference_images: list[Path] | None,
+        *,
+        thumbnail: bool,
+    ) -> ProviderOutput:
+        references = self._references_for(prompt, reference_images, thumbnail=thumbnail)
         prompt = self._locked_prompt(prompt)
-        if reference_images:
-            handles = [path.open("rb") for path in reference_images]
+        if references:
+            handles = [path.open("rb") for path in references]
             try:
-                response = client().images.edit(model=self.model, image=handles, prompt=prompt, size=size, quality=self.quality)
+                response = client().images.edit(
+                    model=self.model,
+                    image=handles,
+                    prompt=prompt,
+                    size=size,
+                    quality=self.quality,
+                )
             finally:
                 for handle in handles:
                     handle.close()
         else:
-            response = client().images.generate(model=self.model, prompt=prompt, size=size, quality=self.quality)
+            response = client().images.generate(
+                model=self.model,
+                prompt=prompt,
+                size=size,
+                quality=self.quality,
+            )
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_bytes(base64.b64decode(response.data[0].b64_json))
         usage = getattr(response, "usage", None)
@@ -48,8 +91,35 @@ class OpenAIImageProvider:
             usage = None
         return ProviderOutput(output, getattr(response, "id", None), details=usage)
 
-    def create_thumbnail(self, prompt: str, output: Path, size: str = "1536x1024", reference_images: list[Path] | None = None) -> ProviderOutput:
-        return self.create_image(prompt, output, size, reference_images)
+    def create_image(
+        self,
+        prompt: str,
+        output: Path,
+        size: str,
+        reference_images: list[Path] | None = None,
+    ) -> ProviderOutput:
+        return self._create(
+            prompt,
+            output,
+            size,
+            reference_images,
+            thumbnail=False,
+        )
+
+    def create_thumbnail(
+        self,
+        prompt: str,
+        output: Path,
+        size: str = "1536x1024",
+        reference_images: list[Path] | None = None,
+    ) -> ProviderOutput:
+        return self._create(
+            prompt,
+            output,
+            size,
+            reference_images,
+            thumbnail=True,
+        )
 
 
 class OpenAIVoiceProvider:
