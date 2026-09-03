@@ -17,6 +17,7 @@ from ..operations.costs import CostTracker, Usage
 from ..operations.notifications import Notifier
 from ..providers.base import ProviderOutput
 from ..providers.registry import ProviderRegistry
+from ..quality.editorial import check_editorial
 from ..quality.runner import QualityRunner
 from ..quality.visual import normalize_thumbnail
 from ..release.package import ReleasePackager
@@ -708,6 +709,25 @@ Sound cues must correspond to visible actions: soft-trace for diagram/data movem
             storyboard_path.write_text(
                 json.dumps(storyboard, indent=2) + "\n", encoding="utf-8"
             )
+        # Editorial structure must pass locally before the first paid image request.
+        # This catches repetitive assets, weak layering, motion spam and missing SFX
+        # while the only sunk cost is the already-checkpointed planning/narration work.
+        editorial_failures, editorial_metrics = check_editorial(
+            storyboard, spec["format"], qa_policy
+        )
+        (work / "storyboard-preflight.json").write_text(
+            json.dumps({
+                "passed": not editorial_failures,
+                "failures": editorial_failures,
+                "metrics": editorial_metrics,
+            }, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        if editorial_failures:
+            raise RuntimeError(
+                "storyboard failed zero-image-spend editorial preflight: "
+                + "; ".join(editorial_failures)
+            )
         self._budget(spec)
 
         support_provider = self.providers.images("support", live=True)
@@ -735,13 +755,24 @@ Sound cues must correspond to visible actions: soft-trace for diagram/data movem
         # Preflight the complete image batch before generating the first image.
         image_batch = []
         for asset_key in unique_assets:
+            target = asset_dir / f"{asset_key}.png"
+            if target.exists():
+                # Checkpointed paid media is never charged a second time in preflight.
+                continue
             is_hero = asset_key in hero_keys and asset_key not in secondary_keys
             image_batch.append((
                 hero_image_cost_model if is_hero else support_image_cost_model,
                 Usage(images=1),
             ))
+        # Reserve room for the one thumbnail as part of the same visual-spend plan.
+        # The later thumbnail stage still performs its own exact reservation; this
+        # batch check only guarantees we do not knowingly consume the asset budget
+        # and discover at the end that the release thumbnail cannot be finished.
+        thumbnail_checkpoint = work / "thumbnail.png"
+        if not thumbnail_checkpoint.exists():
+            image_batch.append((thumbnail_cost_model, Usage(images=1)))
         self.budget.reserve_batch(
-            spec, image_batch, provider="openai", stage="planned-visual-asset-batch"
+            spec, image_batch, provider="openai", stage="planned-visual-and-thumbnail-batch"
         )
         for asset_key, scene in unique_assets.items():
             target = asset_dir / f"{asset_key}.png"
