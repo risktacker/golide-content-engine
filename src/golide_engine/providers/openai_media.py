@@ -5,6 +5,7 @@ from pathlib import Path
 
 from .base import ProviderOutput
 from .openai_client import client
+from ..visual_identity import VisualIdentity
 
 
 class OpenAIImageProvider:
@@ -12,7 +13,23 @@ class OpenAIImageProvider:
         self.model = model
         self.quality = quality
 
+    @staticmethod
+    def _locked_prompt(prompt: str) -> str:
+        """Apply the repository's locked visual identity to every generated image.
+
+        This intentionally lives in the provider layer rather than only in one
+        production prompt so automatic productions, thumbnails and future image
+        call sites cannot silently forget the G$LIDE avatar rules.
+        """
+        policy_path = Path.cwd() / "config" / "visual-identity.json"
+        if not policy_path.exists():
+            raise RuntimeError(
+                "locked G$LIDE visual identity config is missing; image generation is blocked"
+            )
+        return VisualIdentity(policy_path).apply(prompt)
+
     def create_image(self, prompt: str, output: Path, size: str, reference_images: list[Path] | None = None) -> ProviderOutput:
+        prompt = self._locked_prompt(prompt)
         if reference_images:
             handles = [path.open("rb") for path in reference_images]
             try:
