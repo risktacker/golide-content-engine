@@ -88,7 +88,6 @@ CREATE TABLE IF NOT EXISTS uploads (
 CREATE INDEX IF NOT EXISTS idx_analytics_video ON analytics_daily(youtube_video_id);
 CREATE INDEX IF NOT EXISTS idx_cost_production ON cost_events(production_id);
 CREATE INDEX IF NOT EXISTS idx_stage_production ON stage_runs(production_id, stage);
-CREATE INDEX IF NOT EXISTS idx_upload_uploaded_at ON uploads(uploaded_at);
 
 CREATE TABLE IF NOT EXISTS budget_allocations (
     production_id TEXT NOT NULL REFERENCES productions(production_id),
