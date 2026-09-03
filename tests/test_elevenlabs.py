@@ -44,10 +44,17 @@ class ElevenLabsProviderTests(unittest.TestCase):
         )
 
     def test_synthesis_writes_audio_and_returns_native_words(self):
+        text = (
+            "Your USB port looks harmless. Five volts sounds tiny, but that number matters more "
+            "than it seems. So what changes when the wrong device answers back?"
+        )
+        characters = list(text)
+        starts = [round(index * 0.01, 4) for index in range(len(characters))]
+        ends = [round((index + 1) * 0.01, 4) for index in range(len(characters))]
         alignment = {
-            "characters": list("Go."),
-            "character_start_times_seconds": [0.0, 0.1, 0.2],
-            "character_end_times_seconds": [0.1, 0.2, 0.3],
+            "characters": characters,
+            "character_start_times_seconds": starts,
+            "character_end_times_seconds": ends,
         }
         response = {
             "audio_base64": base64.b64encode(b"audio").decode("ascii"),
@@ -60,11 +67,24 @@ class ElevenLabsProviderTests(unittest.TestCase):
             "golide_engine.providers.elevenlabs.urlopen", return_value=_Response(response)
         ):
             output = Path(temp) / "narration.mp3"
-            result = provider.synthesize("Go.", output)
+            result = provider.synthesize(text, output)
             self.assertEqual(b"audio", output.read_bytes())
-            self.assertEqual("Go.", result.details["words"][0]["word"])
-            self.assertEqual(3, result.details["characters"])
+            self.assertEqual("Your", result.details["words"][0]["word"])
+            self.assertEqual(len(text), result.details["characters"])
             self.assertEqual("req-1", result.request_id)
+
+    def test_production_direction_is_blocked_before_network(self):
+        provider = ElevenLabsVoiceProvider("eleven_multilingual_v2", "voice-id")
+        bad = (
+            "Narrator: This line should never be spoken. Visual: show the circuit. "
+            "The remaining words make this deliberately long enough to look like a real narration payload."
+        )
+        with tempfile.TemporaryDirectory() as temp, patch(
+            "golide_engine.providers.elevenlabs.urlopen"
+        ) as network:
+            with self.assertRaises(ValueError):
+                provider.synthesize(bad, Path(temp) / "narration.mp3")
+            network.assert_not_called()
 
     def test_request_character_ceiling_fails_before_network(self):
         provider = ElevenLabsVoiceProvider(
