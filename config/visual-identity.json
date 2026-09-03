@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "locked": true,
   "brand": "G$LIDE",
   "palette": [
@@ -11,6 +11,17 @@
   "avatar": {
     "name": "G$LIDE Esiah avatar",
     "canonical_direction": "A stylized human portrait with realistic adult human facial proportions and anatomy, rendered as an intentionally unreal layered paper-cut/ink illustration in the G$LIDE palette. The unreal quality comes from paper texture, cut-paper edges, ink/sketch detail, graphic lighting and navy/gold/electric-blue color treatment — not from cartoon anatomy.",
+    "canonical_reference_b64": "assets/brand/golide-canonical-avatar-v1.jpg.b64",
+    "canonical_reference_sha256": "20df496e51d6af9d7e31008762100c0a07d7b307a2d2e8bb4c5f43e8f4809727",
+    "reference_markers": [
+      "g$lide esiah avatar",
+      "esiah avatar",
+      "canonical avatar",
+      "host avatar",
+      "presenter avatar",
+      "avatar portrait",
+      "esiah portrait"
+    ],
     "required_traits": [
       "human-looking adult facial structure",
       "normal human eye proportions",
@@ -34,9 +45,10 @@
       "rubber-hose or mascot anatomy",
       "3D animated-film character look"
     ],
-    "thumbnail_rule": "When the avatar is used in a thumbnail, preserve realistic human proportions even under a strong reaction. Use pose, lighting, paper layers and composition for drama instead of distorting the face into a cartoon.",
-    "in_video_rule": "Any appearance of the G$LIDE avatar inside the video must follow the same canonical facial treatment as thumbnails. Do not switch avatar styles between scenes or episodes."
+    "thumbnail_rule": "Every production thumbnail must use the canonical avatar reference image when a human host/avatar is shown. Preserve the reference facial identity and realistic human proportions even under a strong reaction. Use pose, lighting, paper layers and composition for drama instead of changing the person or distorting the face.",
+    "in_video_rule": "Any explicit G$LIDE/Esiah avatar appearance inside the video must use the same canonical reference image as thumbnails. Do not switch identity, ethnicity, facial geometry or avatar style between scenes or episodes.",
+    "non_avatar_rule": "A normal topic/support visual must not invent a host, presenter or substitute avatar. If a person is not explicitly required by the scene request, use the subject, mechanism, object, environment or diagram instead."
   },
-  "image_generation_rule": "If any generated image contains the G$LIDE avatar or a representation of Esiah, the avatar policy is mandatory. If the image does not contain the avatar, retain the G$LIDE palette and premium paper-cut/technical-explainer visual language without forcing a person into the scene.",
-  "qa_rule": "A generated avatar that reads primarily as a cartoon/toon/animated-film character is a brand failure and must not pass release QA."
+  "image_generation_rule": "If any generated image contains the G$LIDE avatar or a representation of Esiah, the canonical reference image and avatar policy are mandatory. If the image does not contain the avatar, retain the G$LIDE palette and premium paper-cut/technical-explainer visual language without forcing a person into the scene.",
+  "qa_rule": "A generated avatar that is a different person, changes facial identity, or reads primarily as a cartoon/toon/animated-film character is a brand failure and must not pass release QA."
 }
