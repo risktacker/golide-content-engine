@@ -46,6 +46,8 @@ class Database:
                 connection.execute(
                     "UPDATE uploads SET uploaded_at=updated_at WHERE youtube_video_id IS NOT NULL AND uploaded_at IS NULL"
                 )
+            if "media_purged_at" not in upload_columns:
+                connection.execute("ALTER TABLE uploads ADD COLUMN media_purged_at TEXT")
 
     def upsert_production(self, spec: dict[str, Any], status: str = "planned") -> None:
         now = utc_now()
