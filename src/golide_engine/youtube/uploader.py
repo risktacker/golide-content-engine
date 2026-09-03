@@ -81,17 +81,19 @@ class YouTubeUploader:
         response = with_retry(request.execute)
         video_id = response["id"]
         with_retry(lambda: self.youtube.thumbnails().set(videoId=video_id, media_body=MediaFileUpload(str(thumbnail))).execute())
+        uploaded_at = utc_now()
         self.database.execute(
-            """INSERT INTO uploads(production_id, youtube_video_id, privacy_status, upload_status, request_fingerprint, updated_at)
-               VALUES (?, ?, ?, ?, ?, ?)
+            """INSERT INTO uploads(production_id, youtube_video_id, privacy_status, upload_status, request_fingerprint, uploaded_at, updated_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?)
                ON CONFLICT(production_id) DO UPDATE SET youtube_video_id=excluded.youtube_video_id,
                privacy_status=excluded.privacy_status, upload_status=excluded.upload_status,
-               request_fingerprint=excluded.request_fingerprint, updated_at=excluded.updated_at""",
-            (production_id, video_id, privacy, upload_state, fingerprint, utc_now()),
+               request_fingerprint=excluded.request_fingerprint, uploaded_at=excluded.uploaded_at,
+               updated_at=excluded.updated_at""",
+            (production_id, video_id, privacy, upload_state, fingerprint, uploaded_at, uploaded_at),
         )
         self.database.execute(
             "UPDATE productions SET youtube_video_id=?, status=?, updated_at=? WHERE production_id=?",
-            (video_id, upload_state, utc_now(), production_id),
+            (video_id, upload_state, uploaded_at, production_id),
         )
         return video_id
 
