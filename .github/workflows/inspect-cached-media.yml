@@ -13,9 +13,12 @@ jobs:
   inspect:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      PRODUCTION_ID: golide-long-flagship-2026-09-03
     steps:
       - uses: actions/checkout@v4
-      - name: Restore preserved production media
+
+      - name: Restore latest preserved production media
         uses: actions/cache/restore@v4
         with:
           path: |
@@ -25,24 +28,108 @@ jobs:
             generated
           key: golide-media-inspect-${{ github.run_id }}
           restore-keys: |
+            golide-production-checkpoint-
             golide-production-correction-
-            golide-production-checkpoint-33609292568-1
-      - name: Ensure ffprobe
+
+      - name: Ensure FFmpeg tools
         run: |
-          if ! command -v ffprobe >/dev/null; then
+          if ! command -v ffprobe >/dev/null || ! command -v ffmpeg >/dev/null; then
             sudo apt-get update
             sudo apt-get install -y ffmpeg
           fi
-      - name: List every cached MP4 with duration
+
+      - name: Inspect flagship manifest and cached assets
         run: |
           set -euo pipefail
-          found=0
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from collections import Counter
+          from pathlib import Path
+
+          pid = os.environ['PRODUCTION_ID']
+          work = Path('productions') / pid
+          manifest_path = work / 'render-manifest.json'
+          storyboard_path = work / 'storyboard.json'
+          if not manifest_path.is_file():
+              raise SystemExit(f'MISSING_MANIFEST|{manifest_path}')
+          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+          scenes = manifest.get('scenes', [])
+          if not scenes:
+              raise SystemExit('MISSING_SCENES')
+
+          media = [Path(scene['media']).name for scene in scenes]
+          counts = Counter(media)
+          max_run = 1
+          current_run = 1
+          for i in range(1, len(media)):
+              if media[i] == media[i-1]:
+                  current_run += 1
+                  max_run = max(max_run, current_run)
+              else:
+                  current_run = 1
+          total = sum(float(scene['duration']) for scene in scenes)
+          runtime = Counter()
+          for scene, name in zip(scenes, media):
+              runtime[name] += float(scene['duration'])
+
+          print(f'MANIFEST|scenes={len(scenes)}|unique_media={len(counts)}|duration={total:.3f}|max_same_run={max_run}')
+          if runtime:
+              name, seconds = runtime.most_common(1)[0]
+              print(f'DOMINANT_MEDIA|{name}|seconds={seconds:.3f}|ratio={seconds/total:.4f}')
+          for index, scene in enumerate(scenes):
+              motion = scene.get('motion') or {}
+              print(
+                  'SCENE|%03d|start=%.3f|end=%.3f|duration=%.3f|media=%s|motion=%s|transition=%s'
+                  % (
+                      index,
+                      float(scene.get('start', 0)),
+                      float(scene.get('end', 0)),
+                      float(scene.get('duration', 0)),
+                      Path(scene['media']).name,
+                      motion.get('type', ''),
+                      motion.get('transition', ''),
+                  )
+              )
+
+          assets = work / 'assets'
+          for path in sorted(assets.glob('*')):
+              if not path.is_file():
+                  continue
+              digest = hashlib.sha256(path.read_bytes()).hexdigest()[:16]
+              print(f'ASSET|{path.name}|bytes={path.stat().st_size}|sha={digest}')
+
+          if storyboard_path.is_file():
+              storyboard = json.loads(storyboard_path.read_text(encoding='utf-8'))
+              sscenes = storyboard.get('scenes', [])
+              keys = [str(scene.get('asset_key', '')) for scene in sscenes]
+              print(f'STORYBOARD|scenes={len(sscenes)}|unique_assets={len(set(keys))}')
+          PY
+
+      - name: Sample final rendered frames
+        run: |
+          set -euo pipefail
+          VIDEO="build/${PRODUCTION_ID}/video.mp4"
+          test -s "$VIDEO"
+          duration=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$VIDEO")
+          echo "FINAL_VIDEO|duration=$duration|bytes=$(stat -c%s "$VIDEO")"
+          for t in 0 2 4 6 8 10 12 14 16 18 20 25 30 45 60 90 120 180 240 300 360 420; do
+            if python - "$t" "$duration" <<'PY'
+          import sys
+          raise SystemExit(0 if float(sys.argv[1]) < float(sys.argv[2]) else 1)
+          PY
+            then
+              sig=$(ffmpeg -v error -ss "$t" -i "$VIDEO" -frames:v 1 -vf 'scale=32:18,format=gray' -f rawvideo - 2>/dev/null | sha256sum | cut -c1-16)
+              echo "FRAME|t=$t|sha=$sig"
+            fi
+          done
+
+      - name: List cached MP4s
+        run: |
+          set -euo pipefail
           while IFS= read -r -d '' f; do
-            found=1
             duration=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$f" 2>/dev/null || echo unreadable)
             bytes=$(stat -c%s "$f")
             echo "MEDIA|$duration|$bytes|$f"
           done < <(find productions build release-packages generated -type f -iname '*.mp4' -print0 2>/dev/null)
-          if [ "$found" -eq 0 ]; then
-            echo "MEDIA|NONE"
-          fi
