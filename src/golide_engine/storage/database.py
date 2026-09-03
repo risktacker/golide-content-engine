@@ -34,6 +34,9 @@ class Database:
     def initialize(self) -> None:
         schema = Path(__file__).with_name("schema.sql").read_text(encoding="utf-8")
         with self.connect() as connection:
+            # Base schema must remain safe for both brand-new and legacy databases.
+            # Indexes that depend on migrated columns are created only after the
+            # ALTER TABLE compatibility work below.
             connection.executescript(schema)
             cost_columns = {row["name"] for row in connection.execute("PRAGMA table_info(cost_events)")}
             if "characters" not in cost_columns:
@@ -48,6 +51,10 @@ class Database:
                 )
             if "media_purged_at" not in upload_columns:
                 connection.execute("ALTER TABLE uploads ADD COLUMN media_purged_at TEXT")
+            # Safe only after uploaded_at is guaranteed to exist on old databases.
+            connection.execute(
+                "CREATE INDEX IF NOT EXISTS idx_upload_uploaded_at ON uploads(uploaded_at)"
+            )
 
     def upsert_production(self, spec: dict[str, Any], status: str = "planned") -> None:
         now = utc_now()
