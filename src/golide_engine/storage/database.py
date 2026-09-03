@@ -35,10 +35,16 @@ class Database:
         schema = Path(__file__).with_name("schema.sql").read_text(encoding="utf-8")
         with self.connect() as connection:
             connection.executescript(schema)
-            columns = {row["name"] for row in connection.execute("PRAGMA table_info(cost_events)")}
-            if "characters" not in columns:
+            cost_columns = {row["name"] for row in connection.execute("PRAGMA table_info(cost_events)")}
+            if "characters" not in cost_columns:
                 connection.execute(
                     "ALTER TABLE cost_events ADD COLUMN characters INTEGER NOT NULL DEFAULT 0"
+                )
+            upload_columns = {row["name"] for row in connection.execute("PRAGMA table_info(uploads)")}
+            if "uploaded_at" not in upload_columns:
+                connection.execute("ALTER TABLE uploads ADD COLUMN uploaded_at TEXT")
+                connection.execute(
+                    "UPDATE uploads SET uploaded_at=updated_at WHERE youtube_video_id IS NOT NULL AND uploaded_at IS NULL"
                 )
 
     def upsert_production(self, spec: dict[str, Any], status: str = "planned") -> None:
