@@ -81,6 +81,7 @@ CREATE TABLE IF NOT EXISTS uploads (
     upload_status TEXT NOT NULL,
     request_fingerprint TEXT NOT NULL UNIQUE,
     uploaded_at TEXT,
+    media_purged_at TEXT,
     updated_at TEXT NOT NULL
 );
 
