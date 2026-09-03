@@ -16,12 +16,14 @@ permissions:
   id-token: write
 
 jobs:
-  correct-and-publish:
+  publish-existing-correction:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
-      - name: Restore full paid-media checkpoint
+        with:
+          fetch-depth: 0
+      - name: Restore approved corrected media
         uses: actions/cache/restore@v4
         with:
           path: |
@@ -29,52 +31,31 @@ jobs:
             build
             release-packages
             generated
-          key: golide-production-correction-restore-${{ github.run_id }}
+          key: golide-production-correction-upload-${{ github.run_id }}
           restore-keys: |
             golide-production-correction-
             golide-production-checkpoint-33609292568-1
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Ensure FFmpeg and GOLIDE fonts
-        run: |
-          if command -v ffmpeg >/dev/null && fc-match DejaVuSans >/dev/null; then
-            ffmpeg -version | head -1
-            fc-match DejaVuSans | head -1
-          else
-            sudo find /etc/apt/sources.list.d -maxdepth 1 -type f -iname '*microsoft*' -exec mv {} {}.disabled \;
-            sudo apt-get update
-            sudo apt-get install -y ffmpeg fonts-dejavu-core
-          fi
       - run: python -m pip install -e '.[production]'
-      - name: Rebuild corrected mux and replace upload
+      - name: Verify existing corrected release package
+        run: |
+          test -f release-packages/golide-long-2026-09-01/package-manifest.json
+          golide release-verify release-packages/golide-long-2026-09-01
+      - name: Upload existing corrected video as a new YouTube video
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
           YOUTUBE_OAUTH_TOKEN_B64: ${{ secrets.YOUTUBE_OAUTH_TOKEN_B64 }}
-          GOLIDE_ENABLE_PAID_PRODUCTION: "1"
           GOLIDE_ENABLE_YOUTUBE_UPLOAD: "1"
           GOLIDE_FORCE_REUPLOAD_PRODUCTION_ID: "golide-long-2026-09-01"
-          GOLIDE_OBSOLETE_YOUTUBE_VIDEO_ID: "P7on5HfmI4Q"
-          GOLIDE_OPENAI_MONTHLY_CAP_USD: "5.00"
-          GOLIDE_STUDIO_BASE_URL: "https://golide-studio.esiahkapinga.chatgpt.site"
-          GOLIDE_STUDIO_BYPASS_TOKEN: ${{ secrets.GOLIDE_STUDIO_BYPASS_TOKEN }}
-        run: golide automation-run --queue production-correction-queue
-      - name: Save corrected media checkpoint
-        if: always()
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            productions
-            build
-            release-packages
-            generated
-          key: golide-production-correction-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          golide youtube-upload release-packages/golide-long-2026-09-01
       - name: Save corrected state
-        if: always()
+        if: success()
         run: |
           git config user.name "golide-production-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data production-correction-queue
-          git diff --cached --quiet || git commit -m "ops: record corrected production"
+          git add data
+          git diff --cached --quiet || git commit -m "ops: record corrected YouTube publication"
+          git pull --rebase origin main
           git push
