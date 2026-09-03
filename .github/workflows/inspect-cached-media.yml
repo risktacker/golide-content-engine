@@ -1,0 +1,48 @@
+name: Inspect cached production media
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/inspect-cached-media-kick"
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore preserved production media
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            productions
+            build
+            release-packages
+            generated
+          key: golide-media-inspect-${{ github.run_id }}
+          restore-keys: |
+            golide-production-correction-
+            golide-production-checkpoint-33609292568-1
+      - name: Ensure ffprobe
+        run: |
+          if ! command -v ffprobe >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg
+          fi
+      - name: List every cached MP4 with duration
+        run: |
+          set -euo pipefail
+          found=0
+          while IFS= read -r -d '' f; do
+            found=1
+            duration=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$f" 2>/dev/null || echo unreadable)
+            bytes=$(stat -c%s "$f")
+            echo "MEDIA|$duration|$bytes|$f"
+          done < <(find productions build release-packages generated -type f -iname '*.mp4' -print0 2>/dev/null)
+          if [ "$found" -eq 0 ]; then
+            echo "MEDIA|NONE"
+          fi
