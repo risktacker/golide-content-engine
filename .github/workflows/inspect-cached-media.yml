@@ -51,7 +51,7 @@ jobs:
           pid = os.environ['PRODUCTION_ID']
           work = Path('productions') / pid
           manifest_path = work / 'render-manifest.json'
-          storyboard_path = work / 'storyboard.json'
+          storyboard_path = work / 'storyboard-authoritative-v5.json'
           if not manifest_path.is_file():
               raise SystemExit(f'MISSING_MANIFEST|{manifest_path}')
           manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
@@ -133,3 +133,11 @@ jobs:
             bytes=$(stat -c%s "$f")
             echo "MEDIA|$duration|$bytes|$f"
           done < <(find productions build release-packages generated -type f -iname '*.mp4' -print0 2>/dev/null)
+
+      - name: Upload cached flagship artworks for visual inspection
+        uses: actions/upload-artifact@v4
+        with:
+          name: flagship-cached-artworks
+          path: productions/${{ env.PRODUCTION_ID }}/assets/*.png
+          if-no-files-found: error
+          retention-days: 1
