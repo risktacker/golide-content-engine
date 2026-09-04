@@ -4,6 +4,7 @@ on:
   push:
     branches: [codex/final]
     paths: [.github/flagship-thumbnail-finalize-kick]
+  workflow_dispatch:
 
 concurrency:
   group: golide-flagship-thumbnail-finalize
@@ -17,21 +18,36 @@ env:
   NEW_ID: golide-long-flagship-33845066363
   CHANNEL_ID: UCqaXVBSBz7iQsRHOupKt-3w
   SOURCE_ID: golide-long-flagship-2026-09-03
+  SOURCE_CACHE_KEY: golide-production-correction-flagship-2026-09-03-33805778023-scene-fixed
 
 jobs:
   finalize:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install only required runtime
+
+      - name: Install required runtime
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
           python -m pip install -e '.[production]'
+
+      - name: Restore source release-package support files only
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            productions
+            build
+            release-packages
+            generated
+          key: ${{ env.SOURCE_CACHE_KEY }}
+          fail-on-cache-miss: true
+
       - name: Download already-checkpointed assembled product
         uses: actions/download-artifact@v4
         with:
@@ -39,28 +55,77 @@ jobs:
           run-id: ${{ env.FAILED_RUN_ID }}
           name: flagship-${{ env.NEW_ID }}-assembled
           path: .
+
       - name: Verify checkpoint and do not render
         run: |
           set -euo pipefail
           test -s "build/${NEW_ID}/video.mp4"
           test -s "build/${NEW_ID}/silent.mp4"
-          ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "build/${NEW_ID}/video.mp4"
+          duration="$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "build/${NEW_ID}/video.mp4")"
+          echo "VIDEO_CHECKPOINT_DURATION=${duration}"
           echo 'VIDEO_CHECKPOINT=restored'
           echo 'RENDER=SKIPPED'
-      - name: Generate fresh thumbnail with FFmpeg only
+
+      - name: Generate GPT thumbnail with locked Esiah identity
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GOLIDE_ENABLE_PAID_PRODUCTION: '1'
         run: |
           set -euo pipefail
-          WORK="productions/${NEW_ID}"
-          VIDEO="build/${NEW_ID}/silent.mp4"
-          rm -f "$WORK/thumbnail.jpg" "$WORK/thumbnail-frame.jpg"
-          mkdir -p "$WORK"
-          ffmpeg -hide_banner -loglevel error -y \
-            -ss 12 -i "$VIDEO" -frames:v 1 \
-            -vf "scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=0x0c1834,drawbox=x=8:y=8:w=1264:h=704:color=0xD4A749:t=10,drawbox=x=26:y=26:w=1228:h=668:color=0x1E9DFF:t=4" \
-            -q:v 2 "$WORK/thumbnail.jpg"
-          test -s "$WORK/thumbnail.jpg"
-          ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0:s=x "$WORK/thumbnail.jpg"
-          echo 'FRESH_THUMBNAIL=passed'
+          python - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          from golide_engine.providers.registry import ProviderRegistry
+          from golide_engine.quality.visual import normalize_thumbnail
+
+          pid=os.environ['NEW_ID']
+          w=Path('productions')/pid
+          b=Path('build')/pid
+          topic=w/'thumbnail-topic-reference.png'
+          raw=w/'thumbnail-gpt.png'
+          final=w/'thumbnail.jpg'
+          for p in (topic, raw, final):
+              p.unlink(missing_ok=True)
+
+          subprocess.run([
+              'ffmpeg','-v','error','-y','-ss','12','-i',str(b/'silent.mp4'),
+              '-frames:v','1','-vf','scale=1536:-2',str(topic)
+          ], check=True)
+          metadata=json.loads((w/'upload-metadata.json').read_text(encoding='utf-8'))
+          prompt=(
+              'Create a premium 16:9 G$LIDE YouTube thumbnail for this science explainer. '
+              'The subject is chicken head stabilization: show a large chicken dominating the left side, '
+              'its body clearly in dynamic motion while its head remains visually locked and stable. '
+              'Use elegant electric-blue stabilization rings, axis guides or gimbal-like technical cues around the head. '
+              'On the lower-right include the G$LIDE Esiah host reacting with strong surprise/curiosity, looking toward the chicken. '
+              'The supplied Esiah identity references are authoritative: preserve the SAME Black adult male identity, '
+              'medium-deep brown skin, short tightly curled black hair, facial geometry, nose, lips, jawline and trimmed facial hair. '
+              'Only expression, gaze and head angle may change. Never substitute a white, Asian or generic presenter. '
+              'Match the established G$LIDE layered paper-cut / ink-engraving visual language with warm ivory paper, deep navy linework, '
+              'G$LIDE gold and electric-blue glow. High contrast, clean composition, dramatic but credible anatomy. '
+              'No words, no captions, no logos, no typography, no clutter. '
+              f"Video title context: {metadata['title']}"
+          )
+          result=ProviderRegistry().thumbnails(live=True).create_thumbnail(
+              prompt, raw, size='1536x1024', reference_images=[topic]
+          )
+          normalize_thumbnail(raw, final)
+          if not final.is_file() or final.stat().st_size == 0:
+              raise SystemExit('GPT_THUMBNAIL_EMPTY')
+          if final.stat().st_size > 2_000_000:
+              raise SystemExit('GPT_THUMBNAIL_OVER_2MB')
+          print(f'GPT_THUMBNAIL=passed bytes={final.stat().st_size} provider_id={result.provider_id}')
+          PY
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0:s=x "productions/${NEW_ID}/thumbnail.jpg"
+
+      - name: Checkpoint generated GPT thumbnail
+        uses: actions/upload-artifact@v4
+        with:
+          name: flagship-${{ env.NEW_ID }}-thumbnail
+          retention-days: 30
+          if-no-files-found: error
+          path: productions/${{ env.NEW_ID }}/thumbnail.jpg
+
       - name: Full QA from restored video checkpoint
         run: |
           set -euo pipefail
@@ -78,11 +143,12 @@ jobs:
           if not r.passed: raise SystemExit('QA_FAILED='+'; '.join(r.failures))
           print('QA=passed')
           PY
+
       - name: Build verified NEW release package from checkpoint
         run: |
           set -euo pipefail
           python - <<'PY'
-          import hashlib,json,os,shutil
+          import json,os,shutil
           from pathlib import Path
           from golide_engine.release.package import ReleasePackager
           pid=os.environ['NEW_ID']; w=Path('productions')/pid; b=Path('build')/pid; new=Path('release-packages')/pid
@@ -98,11 +164,23 @@ jobs:
           release={'approved':True,'channel_id':os.environ['CHANNEL_ID'],'scheduled_at':None,'qa':{'passed':True}}
           if new.exists(): shutil.rmtree(new)
           out=ReleasePackager('release-packages').build(pid,files,release,{
-            'mode':'finalize-existing-assembled-checkpoint','source_production_id':os.environ['SOURCE_ID'],
-            'thumbnail_generation':'local-ffmpeg','paid_thumbnail_generation':0})
+            'mode':'finalize-existing-assembled-checkpoint',
+            'source_production_id':os.environ['SOURCE_ID'],
+            'thumbnail_generation':'gpt-image-identity-locked',
+            'thumbnail_identity':'stable-Esiah-references',
+            'video_render':'reused-checkpoint-no-rerender'})
           print('PACKAGE='+str(out))
           PY
           golide release-verify "release-packages/${NEW_ID}"
+
+      - name: Checkpoint verified release package before YouTube write
+        uses: actions/upload-artifact@v4
+        with:
+          name: flagship-${{ env.NEW_ID }}-release
+          retention-days: 30
+          if-no-files-found: error
+          path: release-packages/${{ env.NEW_ID }}
+
       - name: Upload NEW product privately
         env:
           YOUTUBE_OAUTH_TOKEN_B64: ${{ secrets.YOUTUBE_OAUTH_TOKEN_B64 }}
