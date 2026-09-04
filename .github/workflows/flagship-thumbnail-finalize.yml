@@ -1,0 +1,114 @@
+name: Flagship thumbnail finalize
+
+on:
+  push:
+    branches: [codex/final]
+    paths: [.github/flagship-thumbnail-finalize-kick]
+
+concurrency:
+  group: golide-flagship-thumbnail-finalize
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  FAILED_RUN_ID: '33845066363'
+  NEW_ID: golide-long-flagship-33845066363
+  CHANNEL_ID: UCqaXVBSBz7iQsRHOupKt-3w
+  SOURCE_ID: golide-long-flagship-2026-09-03
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install only required runtime
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          python -m pip install -e '.[production]'
+      - name: Download already-checkpointed assembled product
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ env.FAILED_RUN_ID }}
+          name: flagship-${{ env.NEW_ID }}-assembled
+          path: .
+      - name: Verify checkpoint and do not render
+        run: |
+          set -euo pipefail
+          test -s "build/${NEW_ID}/video.mp4"
+          test -s "build/${NEW_ID}/silent.mp4"
+          ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "build/${NEW_ID}/video.mp4"
+          echo 'VIDEO_CHECKPOINT=restored'
+          echo 'RENDER=SKIPPED'
+      - name: Generate fresh thumbnail with FFmpeg only
+        run: |
+          set -euo pipefail
+          WORK="productions/${NEW_ID}"
+          VIDEO="build/${NEW_ID}/silent.mp4"
+          rm -f "$WORK/thumbnail.jpg" "$WORK/thumbnail-frame.jpg"
+          mkdir -p "$WORK"
+          ffmpeg -hide_banner -loglevel error -y \
+            -ss 12 -i "$VIDEO" -frames:v 1 \
+            -vf "scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=0x0c1834,drawbox=x=8:y=8:w=1264:h=704:color=0xD4A749:t=10,drawbox=x=26:y=26:w=1228:h=668:color=0x1E9DFF:t=4" \
+            -q:v 2 "$WORK/thumbnail.jpg"
+          test -s "$WORK/thumbnail.jpg"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0:s=x "$WORK/thumbnail.jpg"
+          echo 'FRESH_THUMBNAIL=passed'
+      - name: Full QA from restored video checkpoint
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from golide_engine.quality.runner import QualityRunner
+          pid=os.environ['NEW_ID']; w=Path('productions')/pid; b=Path('build')/pid
+          s=json.loads((w/'storyboard-authoritative-v5.json').read_text())
+          m=json.loads((w/'upload-metadata.json').read_text())
+          script=(w/'script.txt').read_text().strip()
+          r=QualityRunner('config/qa-policy.json').run(
+              b/'video.mp4','long',s,[script,m['title'],m['description']],
+              w/'qa-report.json',w/'thumbnail.jpg')
+          if not r.passed: raise SystemExit('QA_FAILED='+'; '.join(r.failures))
+          print('QA=passed')
+          PY
+      - name: Build verified NEW release package from checkpoint
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,os,shutil
+          from pathlib import Path
+          from golide_engine.release.package import ReleasePackager
+          pid=os.environ['NEW_ID']; w=Path('productions')/pid; b=Path('build')/pid; new=Path('release-packages')/pid
+          src=Path('release-packages')/os.environ['SOURCE_ID']
+          sm=json.loads((src/'package-manifest.json').read_text())
+          files={
+            'video':b/'video.mp4','thumbnail':w/'thumbnail.jpg','metadata':w/'upload-metadata.json',
+            'spoken_captions':w/'spoken-captions-authoritative-v3.srt','visual_captions':b/'visual-labels.srt',
+            'source_ledger':w/'source-ledger.json','generation_parameters':w/'generation-parameters.json',
+            'qa_report':w/'qa-report.json'}
+          for role in ('metadata','spoken_captions','visual_captions','source_ledger','generation_parameters'):
+              if not files[role].is_file(): files[role]=src/sm['files'][role]['file']
+          release={'approved':True,'channel_id':os.environ['CHANNEL_ID'],'scheduled_at':None,'qa':{'passed':True}}
+          if new.exists(): shutil.rmtree(new)
+          out=ReleasePackager('release-packages').build(pid,files,release,{
+            'mode':'finalize-existing-assembled-checkpoint','source_production_id':os.environ['SOURCE_ID'],
+            'thumbnail_generation':'local-ffmpeg','paid_thumbnail_generation':0})
+          print('PACKAGE='+str(out))
+          PY
+          golide release-verify "release-packages/${NEW_ID}"
+      - name: Upload NEW product privately
+        env:
+          YOUTUBE_OAUTH_TOKEN_B64: ${{ secrets.YOUTUBE_OAUTH_TOKEN_B64 }}
+        run: |
+          set -euo pipefail
+          test -n "$YOUTUBE_OAUTH_TOKEN_B64"
+          mkdir -p .secrets
+          printf '%s' "$YOUTUBE_OAUTH_TOKEN_B64" | base64 --decode > .secrets/youtube-token.json
+          golide youtube-upload "release-packages/${NEW_ID}" --token .secrets/youtube-token.json
