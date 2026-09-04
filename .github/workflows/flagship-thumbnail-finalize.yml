@@ -107,7 +107,7 @@ jobs:
               'No words, no captions, no logos, no typography, no clutter. '
               f"Video title context: {metadata['title']}"
           )
-          result=ProviderRegistry().thumbnails(live=True).create_thumbnail(
+          ProviderRegistry().thumbnails(live=True).create_thumbnail(
               prompt, raw, size='1536x1024', reference_images=[topic]
           )
           normalize_thumbnail(raw, final)
@@ -115,7 +115,7 @@ jobs:
               raise SystemExit('GPT_THUMBNAIL_EMPTY')
           if final.stat().st_size > 2_000_000:
               raise SystemExit('GPT_THUMBNAIL_OVER_2MB')
-          print(f'GPT_THUMBNAIL=passed bytes={final.stat().st_size} provider_id={result.provider_id}')
+          print(f'GPT_THUMBNAIL=passed bytes={final.stat().st_size}')
           PY
           ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0:s=x "productions/${NEW_ID}/thumbnail.jpg"
 
