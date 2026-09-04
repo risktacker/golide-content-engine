@@ -21,7 +21,6 @@ class VisualIdentity:
 
     @property
     def repository_root(self) -> Path:
-        # visual-identity.json lives under <repo>/config/.
         return self.path.resolve().parent.parent
 
     def requests_avatar(self, prompt: str) -> bool:
@@ -54,29 +53,40 @@ class VisualIdentity:
                 alphabet = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=")
                 encoded = "".join(ch for ch in encoded if ch in alphabet)
 
-                # A previous repository transport concatenated encoded material after a
-                # padded JPEG payload. Recover only a segment whose decoded bytes match
-                # the already-locked canonical SHA-256. This cannot accept a substitute.
-                candidates = [encoded]
-                candidates.extend(re.findall(r"[A-Za-z0-9+/]+={1,2}", encoded))
-                candidates.extend(re.findall(r"[A-Za-z0-9+/]{128,}", encoded))
+                def decode_strict(value: str) -> bytes | None:
+                    if not value:
+                        return None
+                    padded = value + ("=" * ((-len(value)) % 4))
+                    try:
+                        return base64.b64decode(padded, validate=True)
+                    except Exception:
+                        return None
 
                 payload = None
-                seen: set[str] = set()
-                for candidate in candidates:
-                    if candidate in seen:
-                        continue
-                    seen.add(candidate)
-                    padded = candidate + ("=" * ((-len(candidate)) % 4))
-                    try:
-                        decoded = base64.b64decode(padded, validate=True)
-                    except Exception:
-                        continue
+                decoded_candidates: list[bytes] = []
+                direct = decode_strict(encoded)
+                if direct is not None:
+                    decoded_candidates.append(direct)
+
+                # Repository transport may contain independently padded base64 chunks.
+                # Test each chunk and their decoded concatenation, but accept only bytes
+                # matching the pre-existing locked canonical SHA-256.
+                chunks = re.findall(r"[A-Za-z0-9+/]+={1,2}|[A-Za-z0-9+/]{128,}", encoded)
+                decoded_chunks: list[bytes] = []
+                for chunk in chunks:
+                    decoded = decode_strict(chunk)
+                    if decoded is not None:
+                        decoded_candidates.append(decoded)
+                        decoded_chunks.append(decoded)
+                if decoded_chunks:
+                    decoded_candidates.append(b"".join(decoded_chunks))
+
+                for decoded in decoded_candidates:
                     if hashlib.sha256(decoded).hexdigest() == expected_sha:
                         payload = decoded
                         break
                 if payload is None:
-                    raise ValueError("no encoded segment matches locked canonical checksum")
+                    raise ValueError("no decoded representation matches locked canonical checksum")
             except Exception as exc:
                 raise RuntimeError("canonical G$LIDE avatar reference is not valid base64") from exc
 
