@@ -65,6 +65,20 @@ def _render_scene_clips(project: Project, output_dir: Path) -> list[Path]:
         # intentional for the explainer style and keep every narration beat visible.
         clip_duration = scene.duration
         destination = scene_dir / f"{index:03d}.mp4"
+
+        # Correction runs restore the already-rendered editorial scene cache. Reuse a
+        # valid clip instead of re-encoding the same motion/annotation scene again.
+        # The original flagship failure was in final composition, not these clips.
+        if destination.is_file() and destination.stat().st_size > 0:
+            try:
+                cached_duration = _probe_duration(destination)
+            except Exception:
+                cached_duration = 0.0
+            tolerance = max(0.18, 3 / project.fps)
+            if abs(cached_duration - clip_duration) <= tolerance:
+                rendered.append(destination)
+                continue
+
         command = ["ffmpeg", "-y"]
         still_image = scene.media.suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"}
         if still_image:
