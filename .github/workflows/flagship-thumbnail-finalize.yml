@@ -11,16 +11,19 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: read
+  contents: write
   actions: read
 
 env:
   RELEASE_RUN_ID: '33861278521'
   NEW_ID: golide-long-flagship-33845066363
+  SOURCE_ID: golide-long-flagship-2026-09-03
   CHANNEL_ID: UCqaXVBSBz7iQsRHOupKt-3w
+  FAILED_UPLOAD_STARTED_UTC: '2026-09-04T10:55:00Z'
+  FAILED_UPLOAD_ENDED_UTC: '2026-09-04T10:57:30Z'
 
 jobs:
-  upload:
+  reconcile:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -30,7 +33,7 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install upload runtime
+      - name: Install reconciliation runtime
         run: python -m pip install -e '.[production]'
 
       - name: Download verified release checkpoint
@@ -46,13 +49,128 @@ jobs:
           set -euo pipefail
           golide release-verify "release-packages/${NEW_ID}"
 
-      - name: Upload NEW product privately
+      - name: Reconcile the already-created YouTube video without re-uploading
         env:
           YOUTUBE_OAUTH_TOKEN_B64: ${{ secrets.YOUTUBE_OAUTH_TOKEN_B64 }}
-          GOLIDE_ENABLE_YOUTUBE_UPLOAD: '1'
         run: |
           set -euo pipefail
           test -n "$YOUTUBE_OAUTH_TOKEN_B64"
-          mkdir -p .secrets
-          printf '%s' "$YOUTUBE_OAUTH_TOKEN_B64" | base64 --decode > .secrets/youtube-token.json
-          golide youtube-upload "release-packages/${NEW_ID}" --token .secrets/youtube-token.json
+          python - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          from golide_engine.storage.database import Database, utc_now
+          from golide_engine.storage.retention import register_successful_upload
+          from golide_engine.youtube.auth import assert_channel, credentials, services
+          from golide_engine.youtube.uploader import _fingerprint
+
+          root = Path.cwd()
+          pid = os.environ["NEW_ID"]
+          source_id = os.environ["SOURCE_ID"]
+          package_root = root / "release-packages" / pid
+          package = json.loads((package_root / "package-manifest.json").read_text(encoding="utf-8"))
+          files = package["files"]
+          metadata = json.loads((package_root / files["metadata"]["file"]).read_text(encoding="utf-8"))
+          release = package["release"]
+
+          youtube, _ = services(credentials())
+          assert_channel(youtube, os.environ["CHANNEL_ID"])
+
+          channel = youtube.channels().list(part="contentDetails", mine=True).execute()["items"][0]
+          uploads_playlist = channel["contentDetails"]["relatedPlaylists"]["uploads"]
+          items = youtube.playlistItems().list(
+              part="contentDetails", playlistId=uploads_playlist, maxResults=25
+          ).execute().get("items", [])
+          video_ids = [item["contentDetails"]["videoId"] for item in items]
+          if not video_ids:
+              raise SystemExit("NO_RECENT_CHANNEL_UPLOADS")
+
+          videos = youtube.videos().list(
+              part="snippet,status", id=",".join(video_ids)
+          ).execute().get("items", [])
+
+          start = datetime.fromisoformat(os.environ["FAILED_UPLOAD_STARTED_UTC"].replace("Z", "+00:00"))
+          end = datetime.fromisoformat(os.environ["FAILED_UPLOAD_ENDED_UTC"].replace("Z", "+00:00"))
+          candidates = []
+          for video in videos:
+              snippet = video.get("snippet", {})
+              status = video.get("status", {})
+              published = snippet.get("publishedAt")
+              if not published:
+                  continue
+              stamp = datetime.fromisoformat(published.replace("Z", "+00:00"))
+              if (
+                  start <= stamp <= end
+                  and snippet.get("title") == metadata["title"]
+                  and status.get("privacyStatus") == "private"
+              ):
+                  candidates.append(video)
+
+          if len(candidates) != 1:
+              summary = [
+                  {
+                      "id": v.get("id"),
+                      "title": v.get("snippet", {}).get("title"),
+                      "publishedAt": v.get("snippet", {}).get("publishedAt"),
+                      "privacy": v.get("status", {}).get("privacyStatus"),
+                  }
+                  for v in videos[:10]
+              ]
+              raise SystemExit("RECOVERY_VIDEO_MATCH_COUNT=" + str(len(candidates)) + " recent=" + json.dumps(summary))
+
+          video = candidates[0]
+          video_id = video["id"]
+          published_at = video["snippet"]["publishedAt"]
+
+          database = Database(root / "data/golide.sqlite3")
+          database.initialize()
+
+          source_spec_path = root / "production-queue" / f"{source_id}.completed.json"
+          source_spec = json.loads(source_spec_path.read_text(encoding="utf-8"))
+          recovery_spec = json.loads(json.dumps(source_spec))
+          recovery_spec["id"] = pid
+          recovery_spec["title"] = metadata["title"]
+          recovery_spec["release"] = release
+          database.upsert_production(recovery_spec, "uploaded_private")
+
+          video_path = package_root / files["video"]["file"]
+          fingerprint = _fingerprint(video_path, metadata)
+          now = utc_now()
+          database.execute(
+              """INSERT INTO uploads
+                 (production_id, youtube_video_id, privacy_status, scheduled_at, upload_status,
+                  request_fingerprint, uploaded_at, updated_at)
+                 VALUES (?, ?, 'private', NULL, 'uploaded_private', ?, ?, ?)
+                 ON CONFLICT(production_id) DO UPDATE SET
+                   youtube_video_id=excluded.youtube_video_id,
+                   privacy_status=excluded.privacy_status,
+                   upload_status=excluded.upload_status,
+                   request_fingerprint=excluded.request_fingerprint,
+                   uploaded_at=excluded.uploaded_at,
+                   updated_at=excluded.updated_at""",
+              (pid, video_id, fingerprint, published_at, now),
+          )
+          database.execute(
+              "UPDATE productions SET youtube_video_id=?, status='uploaded_private', updated_at=? WHERE production_id=?",
+              (video_id, now, pid),
+          )
+          retention = register_successful_upload(root, database, pid, video_id)
+          print(json.dumps({
+              "status": "reconciled_existing_private_upload",
+              "production_id": pid,
+              "youtube_video_id": video_id,
+              "uploaded_at": published_at,
+              "retention": retention,
+              "reupload": False,
+          }, indent=2))
+          PY
+
+      - name: Persist reconciled production state
+        run: |
+          set -euo pipefail
+          git config user.name "golide-production-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/golide.sqlite3 "data/production-records/${NEW_ID}.json"
+          git diff --cached --quiet || git commit -m "ops: reconcile flagship private upload"
+          git push
