@@ -10,9 +10,9 @@
   ],
   "avatar": {
     "name": "G$LIDE Esiah avatar",
-    "canonical_direction": "A stylized human portrait with realistic adult human facial proportions and anatomy, rendered as an intentionally unreal layered paper-cut/ink illustration in the G$LIDE palette. The unreal quality comes from paper texture, cut-paper edges, ink/sketch detail, graphic lighting and navy/gold/electric-blue color treatment — not from cartoon anatomy.",
+    "canonical_direction": "A stylized human portrait with realistic adult human facial proportions and anatomy, rendered as an intentionally unreal layered paper-cut/ink illustration in the G$LIDE palette. The unreal quality comes from paper texture, cut-paper edges, ink/sketch detail, graphic lighting and navy/gold/electric-blue color treatment \u2014 not from cartoon anatomy.",
     "canonical_reference_b64": "assets/brand/golide-canonical-avatar-v1.jpg.b64",
-    "canonical_reference_sha256": "20df496e51d6af9d7e31008762100c0a07d7b307a2d2e8bb4c5f43e8f4809727",
+    "canonical_reference_sha256": "ef154d9bb69139f46b0ea6b90419ae7eda2394e2b037273eb416bc7f5139549a",
     "reference_markers": [
       "g$lide esiah avatar",
       "esiah avatar",
