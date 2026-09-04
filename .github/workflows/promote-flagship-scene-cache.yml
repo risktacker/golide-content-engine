@@ -67,13 +67,16 @@ jobs:
               permissive = base64.b64decode(encoded, validate=False)
               start = permissive.find(bytes.fromhex('ffd8ff'))
               end = permissive.find(bytes.fromhex('ffd9'), start + 3) if start >= 0 else -1
-              if start >= 0 and end >= 0:
-                  jpeg = permissive[start:end+2]
-                  print(f'AVATAR_JPEG_CANDIDATE=bytes:{len(jpeg)}|sha:{hashlib.sha256(jpeg).hexdigest()}|whole_sha:{hashlib.sha256(permissive).hexdigest()}')
-              else:
-                  print(f'AVATAR_PERMISSIVE=bytes:{len(permissive)}|sha:{hashlib.sha256(permissive).hexdigest()}|jpeg_start:{start}|jpeg_end:{end}')
+              print(f'AVATAR_SOURCE_DECODE=bytes:{len(permissive)}|sha:{hashlib.sha256(permissive).hexdigest()}|jpeg_start:{start}|jpeg_end:{end}')
           except Exception as exc:
               print(f'AVATAR_PERMISSIVE_ERROR={type(exc).__name__}:{exc}')
+
+          cached = Path('generated/brand/golide-canonical-avatar-v1.jpg')
+          if cached.is_file():
+              b = cached.read_bytes()
+              print(f'AVATAR_CACHED_TARGET=bytes:{len(b)}|sha:{hashlib.sha256(b).hexdigest()}|jpeg_start:{b.startswith(bytes.fromhex("ffd8ff"))}|jpeg_end:{b.endswith(bytes.fromhex("ffd9"))}')
+          else:
+              print('AVATAR_CACHED_TARGET=missing')
 
           avatar = VisualIdentity('config/visual-identity.json').canonical_avatar_reference()
           if not avatar.is_file() or avatar.stat().st_size < 10_000:
