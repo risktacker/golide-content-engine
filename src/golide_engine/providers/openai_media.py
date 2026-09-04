@@ -6,6 +6,8 @@ import tempfile
 from contextlib import ExitStack
 from pathlib import Path
 
+from PIL import Image, ImageFile
+
 from .base import ProviderOutput
 from .openai_client import client
 from ..visual_identity import VisualIdentity
@@ -56,20 +58,19 @@ class OpenAIImageProvider:
 
     @staticmethod
     def _normalize_edit_references(references: list[Path], temp_dir: Path) -> list[Path]:
-        """Normalize edit references to RGB PNG for the Images API.
+        """Normalize JPEG edit references to RGB PNG for the Images API.
 
-        Some otherwise-valid JPEG references can be rejected by the image-edit endpoint
-        because of their encoded color mode. Converting only the request copy keeps the
-        locked canonical source/checksum untouched while giving the API a deterministic
-        supported representation. A legacy canonical JPEG snapshot is known to be
-        missing a terminal EOI marker; if ffmpeg rejects it, repair only the temporary
-        request copy by appending the marker and retry once.
+        Keep the locked canonical bytes/checksum untouched. Prefer ffmpeg for the
+        normal path, then recover legacy/truncated JPEG snapshots with Pillow in the
+        temporary request directory only. This prevents one malformed cached JPEG
+        from blocking thumbnail QA/upload while preserving the canonical identity.
         """
         normalized: list[Path] = []
         for index, source in enumerate(references):
             if source.suffix.lower() not in {".jpg", ".jpeg"}:
                 normalized.append(source)
                 continue
+
             target = temp_dir / f"reference-{index:02d}.png"
             command = [
                 "ffmpeg",
@@ -84,27 +85,29 @@ class OpenAIImageProvider:
             ]
             try:
                 subprocess.run(command, check=True)
-            except subprocess.CalledProcessError:
+            except subprocess.CalledProcessError as ffmpeg_error:
                 payload = source.read_bytes()
+                candidate = source
                 if payload.startswith(b"\xff\xd8") and not payload.endswith(b"\xff\xd9"):
-                    repaired = temp_dir / f"reference-{index:02d}-repaired.jpg"
-                    repaired.write_bytes(payload + b"\xff\xd9")
-                    subprocess.run(
-                        [
-                            "ffmpeg",
-                            "-v",
-                            "error",
-                            "-y",
-                            "-i",
-                            str(repaired),
-                            "-vf",
-                            "format=rgb24",
-                            str(target),
-                        ],
-                        check=True,
-                    )
-                else:
-                    raise
+                    candidate = temp_dir / f"reference-{index:02d}-repaired.jpg"
+                    candidate.write_bytes(payload + b"\xff\xd9")
+
+                try:
+                    ImageFile.LOAD_TRUNCATED_IMAGES = True
+                    with Image.open(candidate) as image:
+                        image.load()
+                        image.convert("RGB").save(target, format="PNG")
+                except Exception as pillow_error:
+                    raise RuntimeError(
+                        f"unable to decode image-edit reference {source}; "
+                        "both ffmpeg and Pillow rejected the canonical bytes"
+                    ) from pillow_error
+
+                if not target.is_file() or target.stat().st_size == 0:
+                    raise RuntimeError(
+                        f"image-edit reference recovery produced no PNG for {source}"
+                    ) from ffmpeg_error
+
             normalized.append(target)
         return normalized
 
@@ -208,5 +211,4 @@ class OpenAICaptionProvider:
             {"word": item.word, "start": float(item.start), "end": float(item.end)}
             for item in response.words
         ]
-        return ProviderOutput(words, getattr(response, "id", None)
-        )
+        return ProviderOutput(words, getattr(response, "id", None))
