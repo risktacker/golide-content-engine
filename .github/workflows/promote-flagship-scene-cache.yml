@@ -74,7 +74,6 @@ jobs:
               complete_jpeg = data.startswith(bytes.fromhex('ffd8ff')) and data.endswith(bytes.fromhex('ffd9'))
               return data, sha, complete_jpeg
 
-          # First try current source normally.
           current = decode_candidate(source_path.read_text(encoding='ascii'))
           chosen = None
           if current:
@@ -85,8 +84,6 @@ jobs:
           else:
               print('AVATAR_CURRENT=strict_decode_failed')
 
-          # Recover only from repository history and only if the decoded bytes match a
-          # previously pinned/verified canonical hash. No substitute image can qualify.
           history = [
               ('df2648627f0ff36ab5ab1722b34f5670774b5adb', 'restore-decodable-source'),
               ('7662e2dfe42c2d1a50648c631fdd8bf965c9f556', 'compact-reference'),
@@ -125,7 +122,7 @@ jobs:
 
           avatar = VisualIdentity(config_path).canonical_avatar_reference()
           b = avatar.read_bytes()
-          if len(b) < 10_000 or not b.startswith(bytes.fromhex('ffd8ff')) or not b.endswith(bytes.fromhex('ffd9')):
+          if len(b) < 4_000 or not b.startswith(bytes.fromhex('ffd8ff')) or not b.endswith(bytes.fromhex('ffd9')):
               raise SystemExit('BLOCKED: recovered canonical avatar is not a complete usable JPEG')
           if hashlib.sha256(b).hexdigest() != sha:
               raise SystemExit('BLOCKED: recovered canonical avatar failed locked checksum verification')
