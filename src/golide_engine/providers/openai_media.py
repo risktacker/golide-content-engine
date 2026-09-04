@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import subprocess
 import tempfile
+import urllib.request
 from contextlib import ExitStack
 from pathlib import Path
 
@@ -31,40 +32,67 @@ class OpenAIImageProvider:
         return cls._identity().apply(prompt)
 
     @classmethod
+    def _download_identity_references(cls, temp_dir: Path) -> list[Path]:
+        """Fetch stable Esiah identity references declared by visual identity policy.
+
+        These references live in the public GOLIDE portfolio repo so unattended
+        productions can always ground the GPT thumbnail in the same real identity.
+        A network failure does not silently invent a person: the caller falls back
+        to the locked repository canonical asset instead.
+        """
+        identity = cls._identity()
+        urls = [str(x).strip() for x in identity.avatar.get("identity_reference_urls", []) if str(x).strip()]
+        downloaded: list[Path] = []
+        for index, url in enumerate(urls):
+            if not url.startswith("https://raw.githubusercontent.com/risktacker/golide/"):
+                raise RuntimeError(f"unapproved thumbnail identity reference URL: {url}")
+            suffix = Path(url.split("?", 1)[0]).suffix.lower() or ".png"
+            target = temp_dir / f"golide-avatar-identity-reference-{index:02d}{suffix}"
+            try:
+                with urllib.request.urlopen(url, timeout=30) as response:
+                    payload = response.read()
+            except Exception as exc:
+                raise RuntimeError(f"unable to download locked Esiah identity reference: {url}") from exc
+            if len(payload) < 1024:
+                raise RuntimeError(f"downloaded Esiah identity reference is unexpectedly small: {url}")
+            target.write_bytes(payload)
+            downloaded.append(target)
+        return downloaded
+
+    @classmethod
     def _references_for(
         cls,
         prompt: str,
         supplied: list[Path] | None,
         *,
         thumbnail: bool,
+        downloaded_identity: list[Path] | None = None,
     ) -> list[Path]:
         identity = cls._identity()
         references = list(supplied or [])
-        # A thumbnail is a branded host surface: it must never invent a replacement
-        # person. Explicit avatar scenes get the same treatment. Ordinary subject
-        # visuals do not receive the avatar reference, so the model is not encouraged
-        # to insert a person where the story calls for a mechanism/object/diagram.
+
+        if thumbnail:
+            identity_refs = list(downloaded_identity or [])
+            if identity_refs:
+                # Stable real-person references are authoritative for thumbnail identity.
+                # They come first; topic/style references follow.
+                identity_resolved = {item.resolve() for item in identity_refs}
+                references = [item for item in references if item.resolve() not in identity_resolved]
+                references = identity_refs + references
+                return references
+
+        # Explicit avatar scenes, or thumbnails without downloadable identity refs,
+        # retain the repository canonical fallback.
         if thumbnail or identity.requests_avatar(prompt):
             canonical = identity.canonical_avatar_reference()
             canonical_resolved = canonical.resolve()
-            references = [
-                item for item in references
-                if item.resolve() != canonical_resolved
-            ]
+            references = [item for item in references if item.resolve() != canonical_resolved]
             references.insert(0, canonical)
         return references
 
     @staticmethod
     def _normalize_edit_references(references: list[Path], temp_dir: Path) -> list[Path]:
-        """Normalize edit references to RGB PNG for the Images API.
-
-        Some otherwise-valid JPEG references can be rejected by the image-edit endpoint
-        because of their encoded color mode. Converting only the request copy keeps the
-        locked canonical source/checksum untouched while giving the API a deterministic
-        supported representation. A legacy canonical JPEG snapshot is known to be
-        missing a terminal EOI marker; if ffmpeg rejects it, repair only the temporary
-        request copy by appending the marker and retry once.
-        """
+        """Normalize JPEG edit references to RGB PNG for the Images API."""
         normalized: list[Path] = []
         for index, source in enumerate(references):
             if source.suffix.lower() not in {".jpg", ".jpeg"}:
@@ -105,6 +133,8 @@ class OpenAIImageProvider:
                     )
                 else:
                     raise
+            if not target.is_file() or target.stat().st_size == 0:
+                raise RuntimeError(f"image reference normalization produced no output: {source}")
             normalized.append(target)
         return normalized
 
@@ -117,11 +147,20 @@ class OpenAIImageProvider:
         *,
         thumbnail: bool,
     ) -> ProviderOutput:
-        references = self._references_for(prompt, reference_images, thumbnail=thumbnail)
         prompt = self._locked_prompt(prompt)
-        if references:
-            with tempfile.TemporaryDirectory(prefix="golide-image-ref-") as temp_name:
-                normalized = self._normalize_edit_references(references, Path(temp_name))
+        with tempfile.TemporaryDirectory(prefix="golide-image-ref-") as temp_name:
+            temp_dir = Path(temp_name)
+            identity_refs: list[Path] = []
+            if thumbnail:
+                identity_refs = self._download_identity_references(temp_dir)
+            references = self._references_for(
+                prompt,
+                reference_images,
+                thumbnail=thumbnail,
+                downloaded_identity=identity_refs,
+            )
+            if references:
+                normalized = self._normalize_edit_references(references, temp_dir)
                 with ExitStack() as stack:
                     handles = [stack.enter_context(path.open("rb")) for path in normalized]
                     response = client().images.edit(
@@ -131,13 +170,13 @@ class OpenAIImageProvider:
                         size=size,
                         quality=self.quality,
                     )
-        else:
-            response = client().images.generate(
-                model=self.model,
-                prompt=prompt,
-                size=size,
-                quality=self.quality,
-            )
+            else:
+                response = client().images.generate(
+                    model=self.model,
+                    prompt=prompt,
+                    size=size,
+                    quality=self.quality,
+                )
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_bytes(base64.b64decode(response.data[0].b64_json))
         usage = getattr(response, "usage", None)
@@ -154,13 +193,7 @@ class OpenAIImageProvider:
         size: str,
         reference_images: list[Path] | None = None,
     ) -> ProviderOutput:
-        return self._create(
-            prompt,
-            output,
-            size,
-            reference_images,
-            thumbnail=False,
-        )
+        return self._create(prompt, output, size, reference_images, thumbnail=False)
 
     def create_thumbnail(
         self,
@@ -169,13 +202,7 @@ class OpenAIImageProvider:
         size: str = "1536x1024",
         reference_images: list[Path] | None = None,
     ) -> ProviderOutput:
-        return self._create(
-            prompt,
-            output,
-            size,
-            reference_images,
-            thumbnail=True,
-        )
+        return self._create(prompt, output, size, reference_images, thumbnail=True)
 
 
 class OpenAIVoiceProvider:
@@ -185,7 +212,6 @@ class OpenAIVoiceProvider:
         self.instructions = instructions
 
     def synthesize(self, script: str, output: Path) -> ProviderOutput:
-        output.parent.mkdir(parents=True, exist_ok=True)
         with client().audio.speech.with_streaming_response.create(
             model=self.model, voice=self.voice, input=script,
             instructions=self.instructions, response_format="wav",
@@ -208,5 +234,4 @@ class OpenAICaptionProvider:
             {"word": item.word, "start": float(item.start), "end": float(item.end)}
             for item in response.words
         ]
-        return ProviderOutput(words, getattr(response, "id", None)
-        )
+        return ProviderOutput(words, getattr(response, "id", None))
