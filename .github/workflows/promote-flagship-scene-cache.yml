@@ -40,58 +40,40 @@ jobs:
         run: |
           set -euo pipefail
           PYTHONPATH=src python - <<'PY'
-          import base64
-          import hashlib
-          import json
-          import os
-          import re
+          import base64, hashlib, json, os
           from pathlib import Path
           from golide_engine.visual_identity import VisualIdentity
 
           pid = os.environ['PRODUCTION_ID']
           work = Path('productions') / pid
-          report_path = work / 'scene-art-correction-report.json'
-          if not report_path.is_file():
-              raise SystemExit('BLOCKED: exact corrected scene-art report is missing')
-          report = json.loads(report_path.read_text(encoding='utf-8'))
-          if report.get('replaced_count') != 9:
-              raise SystemExit(f"BLOCKED: expected 9 corrected artworks, found {report.get('replaced_count')}")
-          if len(report.get('kept_good_cached_art', [])) != 3:
-              raise SystemExit('BLOCKED: corrected scene batch does not preserve exactly 3 known-good artworks')
+          report = json.loads((work / 'scene-art-correction-report.json').read_text(encoding='utf-8'))
+          if report.get('replaced_count') != 9 or len(report.get('kept_good_cached_art', [])) != 3:
+              raise SystemExit('BLOCKED: corrected 9-replaced/3-kept scene checkpoint is invalid')
           if report.get('policy') != 'topic-first-no-generic-presenter-no-baked-text':
               raise SystemExit('BLOCKED: corrected scene-art policy marker is missing')
-
           render = json.loads((work / 'render-manifest.json').read_text(encoding='utf-8'))
           if len(render.get('scenes', [])) != 108:
               raise SystemExit('BLOCKED: corrected checkpoint is not the 108-scene edit')
 
-          # Safe metadata-only diagnostics for the checked-in canonical source. Never print
-          # source/base64/image bytes; only lengths, hashes and JPEG boundary flags.
           cfg = json.loads(Path('config/visual-identity.json').read_text(encoding='utf-8'))
           expected = cfg['avatar']['canonical_reference_sha256']
           source = Path(cfg['avatar']['canonical_reference_b64'])
-          raw_bytes = source.read_bytes()
-          raw = raw_bytes.decode('ascii').strip()
+          raw = source.read_text(encoding='ascii').strip()
           normalized = ''.join(raw.replace('\\r\\n','').replace('\\n','').replace('\\r','').replace('\\t','').split())
-          print(f'AVATAR_DIAG_SOURCE=raw_bytes:{len(raw_bytes)}|raw_sha:{hashlib.sha256(raw_bytes).hexdigest()}|normalized_chars:{len(normalized)}|normalized_sha:{hashlib.sha256(normalized.encode()).hexdigest()}|expected:{expected}')
           alphabet = set('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=')
           encoded = ''.join(ch for ch in normalized if ch in alphabet)
-          print(f'AVATAR_DIAG_BASE64=filtered_chars:{len(encoded)}|padding_count:{encoded.count("=")}')
-
-          chunks = re.findall(r'[A-Za-z0-9+/]+={1,2}', encoded)
-          decoded_chunks = []
-          for i, chunk in enumerate(chunks[:20]):
-              try:
-                  decoded = base64.b64decode(chunk, validate=True)
-              except Exception:
-                  continue
-              decoded_chunks.append(decoded)
-              sha = hashlib.sha256(decoded).hexdigest()
-              print(f'AVATAR_DIAG_CHUNK={i}|chars:{len(chunk)}|bytes:{len(decoded)}|sha:{sha}|jpeg_start:{decoded.startswith(bytes.fromhex("ffd8ff"))}|jpeg_end:{decoded.endswith(bytes.fromhex("ffd9"))}|matches_expected:{sha==expected}')
-          if decoded_chunks:
-              joined = b''.join(decoded_chunks)
-              sha = hashlib.sha256(joined).hexdigest()
-              print(f'AVATAR_DIAG_JOINED=chunks:{len(decoded_chunks)}|bytes:{len(joined)}|sha:{sha}|jpeg_start:{joined.startswith(bytes.fromhex("ffd8ff"))}|jpeg_end:{joined.endswith(bytes.fromhex("ffd9"))}|matches_expected:{sha==expected}')
+          print(f'AVATAR_DIAG=raw:{source.stat().st_size}|encoded:{len(encoded)}|pads:{encoded.count("=")}|expected:{expected}')
+          try:
+              permissive = base64.b64decode(encoded, validate=False)
+              start = permissive.find(bytes.fromhex('ffd8ff'))
+              end = permissive.find(bytes.fromhex('ffd9'), start + 3) if start >= 0 else -1
+              if start >= 0 and end >= 0:
+                  jpeg = permissive[start:end+2]
+                  print(f'AVATAR_JPEG_CANDIDATE=bytes:{len(jpeg)}|sha:{hashlib.sha256(jpeg).hexdigest()}|whole_sha:{hashlib.sha256(permissive).hexdigest()}')
+              else:
+                  print(f'AVATAR_PERMISSIVE=bytes:{len(permissive)}|sha:{hashlib.sha256(permissive).hexdigest()}|jpeg_start:{start}|jpeg_end:{end}')
+          except Exception as exc:
+              print(f'AVATAR_PERMISSIVE_ERROR={type(exc).__name__}:{exc}')
 
           avatar = VisualIdentity('config/visual-identity.json').canonical_avatar_reference()
           if not avatar.is_file() or avatar.stat().st_size < 10_000:
