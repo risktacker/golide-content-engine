@@ -99,7 +99,6 @@ jobs:
           set -euo pipefail
           rm -f "build/${PRODUCTION_ID}/silent.mp4" "build/${PRODUCTION_ID}/video.mp4" "build/${PRODUCTION_ID}/metadata.json"
           python - <<'PY'
-          import json
           import os
           from pathlib import Path
           from golide_engine.manifest import load_project
@@ -157,46 +156,105 @@ jobs:
           print('FROZEN_TAIL_GATE=passed')
           PY
 
-      - name: Build corrected thumbnail from repaired canonical avatar
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          GOLIDE_ENABLE_PAID_PRODUCTION: "1"
+      - name: Save passed video assembly checkpoint
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            productions
+            build
+            release-packages
+            generated
+          key: golide-production-correction-flagship-2026-09-03-finalize-${{ github.run_id }}-assembled
+
+      - name: Build corrected thumbnail directly from locked canonical avatar
         run: |
           set -euo pipefail
           python - <<'PY'
+          import base64
           import hashlib
+          import io
           import json
           import os
           from pathlib import Path
-          from golide_engine.providers.registry import ProviderRegistry
+          from PIL import Image, ImageDraw, ImageFilter, ImageOps
           from golide_engine.quality.visual import normalize_thumbnail
-          from golide_engine.visual_identity import VisualIdentity
 
           pid = os.environ['PRODUCTION_ID']
           work = Path('productions') / pid
-          source = work / 'thumbnail-correction-source.png'
           target = work / 'thumbnail-correction.jpg'
-          identity = VisualIdentity('config/visual-identity.json')
-          canonical = identity.canonical_avatar_reference()
-          print('CANONICAL_AVATAR_SHA256=' + hashlib.sha256(canonical.read_bytes()).hexdigest())
+          source_png = work / 'thumbnail-correction-source.png'
 
-          if not source.is_file() or source.stat().st_size == 0:
-              metadata = json.loads((work / 'upload-metadata.json').read_text(encoding='utf-8'))
-              prompt = (
-                  'Create a premium wordless G$LIDE YouTube thumbnail for the chicken vision-stabilization explainer. '
-                  'The supplied canonical avatar is the exact host identity: preserve the same Black adult male, skin tone, '
-                  'facial geometry, hair, age and realistic human proportions. Do not substitute a different person, generic '
-                  'presenter, cartoon face or animated-film character. Keep the layered paper-cut/ink treatment in deep navy, '
-                  'electric blue, gold and warm ivory. Put the canonical host on one side with a believable surprised/curious '
-                  'expression; on the other side show one clear chicken head plus a simple camera-gimbal/stabilization cue. '
-                  'No words, letters, logos, captions or typography. High contrast and crop-safe composition. '
-                  f"Video title context: {metadata['title']}"
-              )
-              ProviderRegistry().thumbnails(live=True).create_thumbnail(prompt, source)
-          normalize_thumbnail(source, target)
+          identity = json.loads(Path('config/visual-identity.json').read_text(encoding='utf-8'))
+          avatar_cfg = identity['avatar']
+          canonical_b64 = Path(avatar_cfg['canonical_reference_b64'])
+          encoded = ''.join(canonical_b64.read_text(encoding='ascii').split())
+          raw = base64.b64decode(encoded + ('=' * ((-len(encoded)) % 4)), validate=False)
+          if not raw.startswith(b'\xff\xd8\xff'):
+              raise SystemExit('locked canonical avatar source did not decode to JPEG')
+          avatar = Image.open(io.BytesIO(raw)).convert('RGB')
+          avatar.verify if False else None
+          print('CANONICAL_AVATAR_SOURCE_SHA256=' + hashlib.sha256(raw).hexdigest())
+          print(f'CANONICAL_AVATAR_SOURCE_SIZE={avatar.width}x{avatar.height}')
+
+          manifest = json.loads((work / 'render-manifest.json').read_text(encoding='utf-8'))
+          topic = None
+          for scene in manifest['scenes']:
+              candidate = Path(scene['media'])
+              if not candidate.is_file() or candidate.suffix.lower() not in {'.jpg','.jpeg','.png','.webp'}:
+                  continue
+              try:
+                  image = Image.open(candidate).convert('RGB')
+              except Exception:
+                  continue
+              # Prefer a landscape or square topic frame with enough detail for a thumbnail.
+              if image.width >= 512 and image.height >= 512:
+                  topic = image
+                  print(f'THUMBNAIL_TOPIC_SOURCE={candidate}')
+                  break
+          if topic is None:
+              raise SystemExit('no cached topic visual available for deterministic thumbnail')
+
+          W, H = 1280, 720
+          navy = (15, 24, 48)
+          gold = (212, 167, 73)
+          blue = (25, 157, 255)
+          ivory = (245, 240, 225)
+          canvas = Image.new('RGB', (W, H), navy)
+
+          # Topic side: crop-fill and soften behind a clean paper edge.
+          topic_panel = ImageOps.fit(topic, (760, 720), method=Image.Resampling.LANCZOS, centering=(0.55, 0.5))
+          topic_panel = topic_panel.filter(ImageFilter.UnsharpMask(radius=1.2, percent=120, threshold=3))
+          canvas.paste(topic_panel, (520, 0))
+
+          # Canonical avatar side: use the exact tracked portrait pixels, never a regenerated substitute.
+          avatar_panel = ImageOps.fit(avatar, (520, 650), method=Image.Resampling.LANCZOS, centering=(0.5, 0.35))
+          mask = Image.new('L', avatar_panel.size, 0)
+          md = ImageDraw.Draw(mask)
+          md.rounded_rectangle((8, 8, 512, 642), radius=54, fill=255)
+          avatar_panel.putalpha(mask)
+          canvas_rgba = canvas.convert('RGBA')
+          shadow = Image.new('RGBA', (W, H), (0,0,0,0))
+          sd = ImageDraw.Draw(shadow)
+          sd.rounded_rectangle((24, 52, 536, 704), radius=58, fill=(0,0,0,90))
+          shadow = shadow.filter(ImageFilter.GaussianBlur(18))
+          canvas_rgba.alpha_composite(shadow)
+          canvas_rgba.alpha_composite(avatar_panel, (8, 34))
+
+          draw = ImageDraw.Draw(canvas_rgba)
+          # Paper-cut separation and stabilization/gimbal cue; deliberately no text.
+          draw.line((520, 0, 520, H), fill=ivory + (255,), width=10)
+          draw.line((530, 0, 530, H), fill=gold + (255,), width=5)
+          cx, cy = 1005, 365
+          for radius, color, width in [(170, gold, 8), (112, blue, 6), (58, ivory, 5)]:
+              draw.ellipse((cx-radius, cy-radius, cx+radius, cy+radius), outline=color + (230,), width=width)
+          draw.line((cx-210, cy, cx+210, cy), fill=blue + (210,), width=4)
+          draw.line((cx, cy-210, cx, cy+210), fill=gold + (210,), width=4)
+
+          canvas_rgba.convert('RGB').save(source_png, quality=96)
+          normalize_thumbnail(source_png, target)
           if target.stat().st_size > 2_000_000:
               raise SystemExit('corrected thumbnail exceeds 2 MB')
-          print('CORRECTED_THUMBNAIL=ready')
+          print('CORRECTED_THUMBNAIL=ready|identity=exact-tracked-canonical-source|paid_generation=0')
           PY
 
       - name: Automatic QA on corrected video and thumbnail
@@ -266,6 +324,8 @@ jobs:
               'original_youtube_video_id': os.environ['ORIGINAL_YOUTUBE_VIDEO_ID'],
               'upload_policy': 'private-corrected-preview',
               'scene_media_generation': 'reused-cached-108-clips-only',
+              'thumbnail_identity': 'exact-tracked-canonical-avatar-source',
+              'thumbnail_paid_generation': False,
           }
           manifest_path.write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
           PY
