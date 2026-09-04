@@ -7,7 +7,7 @@ on:
       - ".github/thumbnail-only-recovery-kick"
 
 concurrency:
-  group: golide-state-writer
+  group: golide-thumbnail-only-recovery
   cancel-in-progress: true
 
 permissions:
@@ -27,7 +27,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Restore assembled flagship checkpoint
+      - name: Restore assembled flagship checkpoint only
         uses: actions/cache/restore@v4
         with:
           path: |
@@ -37,7 +37,6 @@ jobs:
             generated
           key: golide-production-correction-flagship-2026-09-03-thumbnail-${{ github.run_id }}
           restore-keys: |
-            golide-production-correction-flagship-2026-09-03-thumbnail-
             golide-production-correction-flagship-2026-09-03-finalize-
 
       - uses: actions/setup-python@v5
@@ -50,12 +49,13 @@ jobs:
           sudo apt-get install -y ffmpeg fonts-dejavu-core
           python -m pip install -e '.[production]'
 
-      - name: Require cached corrected video
+      - name: Require already-assembled corrected video
         run: |
           set -euo pipefail
           test -s "build/${PRODUCTION_ID}/video.mp4"
           test -s "productions/${PRODUCTION_ID}/render-manifest.json"
-          echo "CACHED_CORRECTED_VIDEO=present"
+          ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "build/${PRODUCTION_ID}/video.mp4"
+          echo "ASSEMBLED_VIDEO_CHECKPOINT=present"
 
       - name: Delete old thumbnail and generate a fresh local thumbnail
         run: |
@@ -70,8 +70,9 @@ jobs:
           video = Path('build') / pid / 'video.mp4'
           old = work / 'thumbnail-correction.jpg'
           old_source = work / 'thumbnail-correction-source.png'
-          old.unlink(missing_ok=True)
-          old_source.unlink(missing_ok=True)
+          old_frame = work / 'thumbnail-fresh-frame.jpg'
+          for p in (old, old_source, old_frame):
+              p.unlink(missing_ok=True)
 
           frame = work / 'thumbnail-fresh-frame.jpg'
           subprocess.run([
@@ -80,34 +81,26 @@ jobs:
 
           image = Image.open(frame).convert('RGB')
           W,H = 1280,720
-          bg = ImageOps.fit(image,(W,H),method=Image.Resampling.LANCZOS,centering=(0.55,0.45))
-          bg = bg.convert('RGBA')
+          bg = ImageOps.fit(image,(W,H),method=Image.Resampling.LANCZOS,centering=(0.55,0.45)).convert('RGBA')
           overlay = Image.new('RGBA',(W,H),(8,15,32,0))
           od = ImageDraw.Draw(overlay)
           od.rectangle((0,0,W,H),fill=(8,15,32,105))
-          # Left-side dark panel for readable branding text.
-          od.rounded_rectangle((35,70,650,650),radius=36,fill=(8,15,32,185),outline=(212,167,73,255),width=5)
+          od.rounded_rectangle((35,70,650,650),radius=36,fill=(8,15,32,190),outline=(212,167,73,255),width=5)
           bg = Image.alpha_composite(bg,overlay)
           draw = ImageDraw.Draw(bg)
           font_path='/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
-          def font_fit(text,maxw,start):
-              for size in range(start,25,-2):
+          def fit(text,maxw,start):
+              for size in range(start,24,-2):
                   f=ImageFont.truetype(font_path,size)
                   if draw.textbbox((0,0),text,font=f)[2] <= maxw: return f
               return ImageFont.truetype(font_path,26)
-          f1=font_fit('CHICKENS',520,76)
-          f2=font_fit('DON’T MOVE',520,70)
-          f3=font_fit('THEIR HEADS',520,70)
-          draw.text((75,120),'CHICKENS',font=f1,fill=(245,240,225,255))
-          draw.text((75,215),'DON’T MOVE',font=f2,fill=(25,157,255,255))
-          draw.text((75,305),'THEIR HEADS',font=f3,fill=(212,167,73,255))
-          small=ImageFont.truetype(font_path,28)
-          draw.text((78,415),'THE SECRET IS HEAD STABILIZATION',font=small,fill=(245,240,225,255))
-          brand=ImageFont.truetype(font_path,34)
-          draw.text((1080,650),'G$LIDE',font=brand,fill=(212,167,73,255))
+          draw.text((75,120),'CHICKENS',font=fit('CHICKENS',520,76),fill=(245,240,225,255))
+          draw.text((75,215),'DON’T MOVE',font=fit('DON’T MOVE',520,70),fill=(25,157,255,255))
+          draw.text((75,305),'THEIR HEADS',font=fit('THEIR HEADS',520,70),fill=(212,167,73,255))
+          draw.text((78,415),'THE SECRET IS HEAD STABILIZATION',font=ImageFont.truetype(font_path,28),fill=(245,240,225,255))
+          draw.text((1080,650),'G$LIDE',font=ImageFont.truetype(font_path,34),fill=(212,167,73,255))
           fresh = work / 'thumbnail-fresh.jpg'
           bg.convert('RGB').save(fresh,format='JPEG',quality=90,optimize=True,progressive=False)
-          # Make the canonical correction filename point to only this newly generated image.
           fresh.replace(old)
           if old.stat().st_size > 2_000_000:
               raise SystemExit('fresh thumbnail exceeds 2 MB')
@@ -115,7 +108,7 @@ jobs:
           print(f'FRESH_THUMBNAIL_BYTES={old.stat().st_size}')
           PY
 
-      - name: Run automatic QA with the fresh thumbnail
+      - name: Automatic QA with fresh thumbnail
         run: |
           set -euo pipefail
           python - <<'PY'
@@ -136,7 +129,7 @@ jobs:
           print('CORRECTION_QA=passed')
           PY
 
-      - name: Update release package with fresh thumbnail
+      - name: Update release package
         run: |
           set -euo pipefail
           python - <<'PY'
@@ -161,24 +154,15 @@ jobs:
           manifest['release']['scheduled_at']=None
           manifest['release']['force_reupload']=True
           manifest['correction']={
-              'reason':'fresh local thumbnail replacement after prior invalid thumbnail',
+              'reason':'fresh local thumbnail replacement after invalid prior thumbnail',
               'original_youtube_video_id':os.environ['ORIGINAL_YOUTUBE_VIDEO_ID'],
               'upload_policy':'private-corrected-preview',
               'thumbnail_paid_generation':False,
+              'video_source':'already-assembled-checkpoint',
           }
           manifest_path.write_text(json.dumps(manifest,indent=2)+'\n')
           PY
           golide release-verify "release-packages/${PRODUCTION_ID}"
-
-      - name: Save corrected package before YouTube write
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            productions
-            build
-            release-packages
-            generated
-          key: golide-production-correction-flagship-2026-09-03-thumbnail-${{ github.run_id }}-verified
 
       - name: Upload corrected flagship as private YouTube video
         env:
