@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -44,8 +45,6 @@ class VisualIdentity:
         if not target.is_file() or hashlib.sha256(target.read_bytes()).hexdigest() != expected_sha:
             try:
                 raw = source.read_text(encoding="ascii").strip()
-                # Normalize transport-only wrapping while retaining strict base64 and the
-                # canonical SHA-256 integrity lock below.
                 raw = raw.replace("\\r\\n", "").replace("\\n", "").replace("\\r", "").replace("\\t", "")
                 if raw.startswith('"') and raw.endswith('"'):
                     raw = raw[1:-1]
@@ -55,31 +54,29 @@ class VisualIdentity:
                 alphabet = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=")
                 encoded = "".join(ch for ch in encoded if ch in alphabet)
 
+                # A previous repository transport concatenated encoded material after a
+                # padded JPEG payload. Recover only a segment whose decoded bytes match
+                # the already-locked canonical SHA-256. This cannot accept a substitute.
                 candidates = [encoded]
-                # Some repository transports have appended data after a complete padded
-                # base64 payload. Try only complete padded prefixes; accept one solely if
-                # it hashes to the locked canonical checksum.
-                for index, char in enumerate(encoded):
-                    if char != "=":
-                        continue
-                    end = index + 1
-                    while end < len(encoded) and encoded[end] == "=":
-                        end += 1
-                    candidate = encoded[:end]
-                    if len(candidate) % 4 == 0 and candidate not in candidates:
-                        candidates.append(candidate)
+                candidates.extend(re.findall(r"[A-Za-z0-9+/]+={1,2}", encoded))
+                candidates.extend(re.findall(r"[A-Za-z0-9+/]{128,}", encoded))
 
                 payload = None
+                seen: set[str] = set()
                 for candidate in candidates:
+                    if candidate in seen:
+                        continue
+                    seen.add(candidate)
+                    padded = candidate + ("=" * ((-len(candidate)) % 4))
                     try:
-                        decoded = base64.b64decode(candidate, validate=True)
+                        decoded = base64.b64decode(padded, validate=True)
                     except Exception:
                         continue
                     if hashlib.sha256(decoded).hexdigest() == expected_sha:
                         payload = decoded
                         break
                 if payload is None:
-                    raise ValueError("no base64 candidate matches locked canonical checksum")
+                    raise ValueError("no encoded segment matches locked canonical checksum")
             except Exception as exc:
                 raise RuntimeError("canonical G$LIDE avatar reference is not valid base64") from exc
 
