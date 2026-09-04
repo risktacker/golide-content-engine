@@ -44,22 +44,45 @@ class VisualIdentity:
         if not target.is_file() or hashlib.sha256(target.read_bytes()).hexdigest() != expected_sha:
             try:
                 raw = source.read_text(encoding="ascii").strip()
-                # The checked-in reference can be line-wrapped or transported with literal
-                # escape sequences. Normalize transport-only wrapping, then keep strict
-                # base64 validation and the locked SHA-256 integrity check below.
+                # Normalize transport-only wrapping while retaining strict base64 and the
+                # canonical SHA-256 integrity lock below.
                 raw = raw.replace("\\r\\n", "").replace("\\n", "").replace("\\r", "").replace("\\t", "")
                 if raw.startswith('"') and raw.endswith('"'):
                     raw = raw[1:-1]
                 if raw.lower().startswith("data:") and "base64," in raw.lower():
                     raw = raw.split(",", 1)[1]
                 encoded = "".join(raw.split())
-                # Ignore punctuation-only transport wrappers. Any wrong payload still fails
-                # the mandatory canonical checksum, so identity integrity is not weakened.
                 alphabet = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=")
                 encoded = "".join(ch for ch in encoded if ch in alphabet)
-                payload = base64.b64decode(encoded, validate=True)
+
+                candidates = [encoded]
+                # Some repository transports have appended data after a complete padded
+                # base64 payload. Try only complete padded prefixes; accept one solely if
+                # it hashes to the locked canonical checksum.
+                for index, char in enumerate(encoded):
+                    if char != "=":
+                        continue
+                    end = index + 1
+                    while end < len(encoded) and encoded[end] == "=":
+                        end += 1
+                    candidate = encoded[:end]
+                    if len(candidate) % 4 == 0 and candidate not in candidates:
+                        candidates.append(candidate)
+
+                payload = None
+                for candidate in candidates:
+                    try:
+                        decoded = base64.b64decode(candidate, validate=True)
+                    except Exception:
+                        continue
+                    if hashlib.sha256(decoded).hexdigest() == expected_sha:
+                        payload = decoded
+                        break
+                if payload is None:
+                    raise ValueError("no base64 candidate matches locked canonical checksum")
             except Exception as exc:
                 raise RuntimeError("canonical G$LIDE avatar reference is not valid base64") from exc
+
             actual = hashlib.sha256(payload).hexdigest()
             if actual != expected_sha:
                 raise RuntimeError(
