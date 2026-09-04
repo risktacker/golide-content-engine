@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "locked": true,
   "brand": "G$LIDE",
   "palette": [
@@ -10,9 +10,13 @@
   ],
   "avatar": {
     "name": "G$LIDE Esiah avatar",
-    "canonical_direction": "A stylized human portrait with realistic adult human facial proportions and anatomy, rendered as an intentionally unreal layered paper-cut/ink illustration in the G$LIDE palette. The unreal quality comes from paper texture, cut-paper edges, ink/sketch detail, graphic lighting and navy/gold/electric-blue color treatment \u2014 not from cartoon anatomy.",
+    "canonical_direction": "A stylized Black adult male portrait with realistic adult human facial proportions and anatomy, short tightly curled black hair, dark brown eyes, medium-deep brown skin, a defined nose and lips, and light trimmed facial hair. Preserve the same facial geometry and identity across every production. Render him as an intentionally unreal layered paper-cut/ink illustration in the G$LIDE palette. The unreal quality comes from paper texture, cut-paper edges, ink/sketch detail, graphic lighting and navy/gold/electric-blue color treatment — not from changing ethnicity, facial identity or human anatomy.",
     "canonical_reference_b64": "assets/brand/golide-canonical-avatar-v1.jpg.b64",
     "canonical_reference_sha256": "ef154d9bb69139f46b0ea6b90419ae7eda2394e2b037273eb416bc7f5139549a",
+    "identity_reference_urls": [
+      "https://raw.githubusercontent.com/risktacker/golide/main/public/esiah-founder.png",
+      "https://raw.githubusercontent.com/risktacker/golide/main/public/esiah-graduate.webp"
+    ],
     "reference_markers": [
       "g$lide esiah avatar",
       "esiah avatar",
@@ -23,16 +27,26 @@
       "esiah portrait"
     ],
     "required_traits": [
+      "same Black adult male identity as the supplied Esiah references",
+      "medium-deep brown skin tone",
+      "short tightly curled black hair",
+      "dark brown eyes",
+      "same nose, lips, jawline and facial geometry across productions",
+      "light trimmed facial hair consistent with the reference identity",
       "human-looking adult facial structure",
       "normal human eye proportions",
       "normal human mouth and jaw proportions",
-      "recognizable consistent facial geometry across productions",
       "layered paper-cut texture and edges",
       "ink/sketch detailing where useful",
       "deep navy, G$LIDE gold and electric-blue treatment",
       "expressive but believable human emotion"
     ],
     "forbidden_traits": [
+      "different person",
+      "white host substitution",
+      "Asian host substitution",
+      "generic stock presenter",
+      "identity drift",
       "toon character",
       "cartoon face",
       "Pixar-like proportions",
@@ -45,10 +59,10 @@
       "rubber-hose or mascot anatomy",
       "3D animated-film character look"
     ],
-    "thumbnail_rule": "Every production thumbnail must use the canonical avatar reference image when a human host/avatar is shown. Preserve the reference facial identity and realistic human proportions even under a strong reaction. Use pose, lighting, paper layers and composition for drama instead of changing the person or distorting the face.",
-    "in_video_rule": "Any explicit G$LIDE/Esiah avatar appearance inside the video must use the same canonical reference image as thumbnails. Do not switch identity, ethnicity, facial geometry or avatar style between scenes or episodes.",
+    "thumbnail_rule": "Every production thumbnail that contains the G$LIDE host must use the supplied Esiah identity references as the authoritative person. Preserve the same Black adult male identity, skin tone, hair, facial geometry and facial-hair pattern. Expression, gaze, head angle, pose and emotion may change freely for the topic, but the person must remain recognizably the same avatar. Use pose, lighting, paper layers and composition for drama instead of substituting or redesigning the person.",
+    "in_video_rule": "Any explicit G$LIDE/Esiah avatar appearance inside the video must preserve the same identity. Do not switch identity, ethnicity, facial geometry or avatar style between scenes or episodes.",
     "non_avatar_rule": "A normal topic/support visual must not invent a host, presenter or substitute avatar. If a person is not explicitly required by the scene request, use the subject, mechanism, object, environment or diagram instead."
   },
-  "image_generation_rule": "If any generated image contains the G$LIDE avatar or a representation of Esiah, the canonical reference image and avatar policy are mandatory. If the image does not contain the avatar, retain the G$LIDE palette and premium paper-cut/technical-explainer visual language without forcing a person into the scene.",
-  "qa_rule": "A generated avatar that is a different person, changes facial identity, or reads primarily as a cartoon/toon/animated-film character is a brand failure and must not pass release QA."
+  "image_generation_rule": "If any generated image contains the G$LIDE avatar or a representation of Esiah, the identity references and avatar policy are mandatory. If the image does not contain the avatar, retain the G$LIDE palette and premium paper-cut/technical-explainer visual language without forcing a person into the scene.",
+  "qa_rule": "A generated avatar that is a different person, changes ethnicity or facial identity, or reads primarily as a cartoon/toon/animated-film character is a brand failure and must not pass release QA."
 }
