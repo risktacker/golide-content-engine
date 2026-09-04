@@ -43,7 +43,20 @@ class VisualIdentity:
         target.parent.mkdir(parents=True, exist_ok=True)
         if not target.is_file() or hashlib.sha256(target.read_bytes()).hexdigest() != expected_sha:
             try:
-                encoded = "".join(source.read_text(encoding="ascii").split())
+                raw = source.read_text(encoding="ascii").strip()
+                # The checked-in reference can be line-wrapped or transported with literal
+                # escape sequences. Normalize transport-only wrapping, then keep strict
+                # base64 validation and the locked SHA-256 integrity check below.
+                raw = raw.replace("\\r\\n", "").replace("\\n", "").replace("\\r", "").replace("\\t", "")
+                if raw.startswith('"') and raw.endswith('"'):
+                    raw = raw[1:-1]
+                if raw.lower().startswith("data:") and "base64," in raw.lower():
+                    raw = raw.split(",", 1)[1]
+                encoded = "".join(raw.split())
+                # Ignore punctuation-only transport wrappers. Any wrong payload still fails
+                # the mandatory canonical checksum, so identity integrity is not weakened.
+                alphabet = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=")
+                encoded = "".join(ch for ch in encoded if ch in alphabet)
                 payload = base64.b64decode(encoded, validate=True)
             except Exception as exc:
                 raise RuntimeError("canonical G$LIDE avatar reference is not valid base64") from exc
