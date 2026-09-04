@@ -97,21 +97,48 @@ jobs:
           print(f'CORRECTION_PREFLIGHT=passed|scenes={len(scenes)}|unique_media={len(unique_media)}|duration={total:.3f}')
           PY
 
-      - name: Force full re-edit from 108 cached scenes
+      - name: Fast re-edit from validated cached scene clips
         run: |
           set -euo pipefail
-          rm -rf "build/${PRODUCTION_ID}/scenes"
           rm -f "build/${PRODUCTION_ID}/silent.mp4" "build/${PRODUCTION_ID}/video.mp4" "build/${PRODUCTION_ID}/metadata.json"
           python - <<'PY'
+          import json
           import os
+          import subprocess
           from pathlib import Path
           from golide_engine.manifest import load_project
           from golide_engine.render import render
 
           root = Path('.').resolve()
           pid = os.environ['PRODUCTION_ID']
-          manifest = root / 'productions' / pid / 'render-manifest.json'
-          output = render(load_project(manifest), root)
+          manifest_path = root / 'productions' / pid / 'render-manifest.json'
+          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+          scene_dir = root / 'build' / pid / 'scenes'
+          valid = 0
+          for index, scene in enumerate(manifest['scenes']):
+              clip = scene_dir / f"{index:03d}.mp4"
+              if not clip.is_file() or clip.stat().st_size == 0:
+                  continue
+              probe = subprocess.run(
+                  ['ffprobe','-v','error','-show_entries','format=duration',
+                   '-of','default=nw=1:nk=1',str(clip)],
+                  capture_output=True, text=True
+              )
+              if probe.returncode != 0:
+                  continue
+              try:
+                  actual = float(probe.stdout.strip())
+              except ValueError:
+                  continue
+              if abs(actual - float(scene['duration'])) <= 0.20:
+                  valid += 1
+          print(f'CACHED_SCENE_CLIPS_VALID={valid}/108')
+          if valid < 100:
+              raise SystemExit(
+                  f'cached scene clip set incomplete: {valid}/108; refusing another blind full re-encode'
+              )
+
+          output = render(load_project(manifest_path), root)
           print(f'CORRECTED_RENDER={output}')
           PY
 
