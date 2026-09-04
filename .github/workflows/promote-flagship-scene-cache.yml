@@ -36,11 +36,11 @@ jobs:
           key: ${{ env.CORRECTED_SCENE_CACHE }}
           fail-on-cache-miss: true
 
-      - name: Verify corrected scene batch and canonical avatar before long render
+      - name: Verify corrected scene batch and recover verified canonical avatar if needed
         run: |
           set -euo pipefail
           PYTHONPATH=src python - <<'PY'
-          import base64, hashlib, json, os
+          import base64, hashlib, json, os, subprocess
           from pathlib import Path
           from golide_engine.visual_identity import VisualIdentity
 
@@ -55,34 +55,97 @@ jobs:
           if len(render.get('scenes', [])) != 108:
               raise SystemExit('BLOCKED: corrected checkpoint is not the 108-scene edit')
 
-          cfg = json.loads(Path('config/visual-identity.json').read_text(encoding='utf-8'))
-          expected = cfg['avatar']['canonical_reference_sha256']
-          source = Path(cfg['avatar']['canonical_reference_b64'])
-          raw = source.read_text(encoding='ascii').strip()
-          normalized = ''.join(raw.replace('\\r\\n','').replace('\\n','').replace('\\r','').replace('\\t','').split())
-          alphabet = set('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=')
-          encoded = ''.join(ch for ch in normalized if ch in alphabet)
-          print(f'AVATAR_DIAG=raw:{source.stat().st_size}|encoded:{len(encoded)}|pads:{encoded.count("=")}|expected:{expected}')
-          try:
-              permissive = base64.b64decode(encoded, validate=False)
-              start = permissive.find(bytes.fromhex('ffd8ff'))
-              end = permissive.find(bytes.fromhex('ffd9'), start + 3) if start >= 0 else -1
-              print(f'AVATAR_SOURCE_DECODE=bytes:{len(permissive)}|sha:{hashlib.sha256(permissive).hexdigest()}|jpeg_start:{start}|jpeg_end:{end}')
-          except Exception as exc:
-              print(f'AVATAR_PERMISSIVE_ERROR={type(exc).__name__}:{exc}')
+          config_path = Path('config/visual-identity.json')
+          cfg = json.loads(config_path.read_text(encoding='utf-8'))
+          source_path = Path(cfg['avatar']['canonical_reference_b64'])
+          trusted_hashes = {
+              '20df496e51d6af9d7e31008762100c0a07d7b307a2d2e8bb4c5f43e8f4809727',
+              'ef154d9bb69139f46b0ea6b90419ae7eda2394e2b037273eb416bc7f5139549a',
+              'ba957904693cb273772a95e6a081a022bbf37d3ccd2d817302b53a5cdaeaa226',
+          }
 
-          cached = Path('generated/brand/golide-canonical-avatar-v1.jpg')
-          if cached.is_file():
-              b = cached.read_bytes()
-              print(f'AVATAR_CACHED_TARGET=bytes:{len(b)}|sha:{hashlib.sha256(b).hexdigest()}|jpeg_start:{b.startswith(bytes.fromhex("ffd8ff"))}|jpeg_end:{b.endswith(bytes.fromhex("ffd9"))}')
+          def decode_candidate(text: str):
+              raw = ''.join(text.strip().replace('\\r\\n','').replace('\\n','').replace('\\r','').replace('\\t','').split())
+              try:
+                  data = base64.b64decode(raw, validate=True)
+              except Exception:
+                  return None
+              sha = hashlib.sha256(data).hexdigest()
+              complete_jpeg = data.startswith(bytes.fromhex('ffd8ff')) and data.endswith(bytes.fromhex('ffd9'))
+              return data, sha, complete_jpeg
+
+          # First try current source normally.
+          current = decode_candidate(source_path.read_text(encoding='ascii'))
+          chosen = None
+          if current:
+              data, sha, complete = current
+              print(f'AVATAR_CURRENT=bytes:{len(data)}|sha:{sha}|complete_jpeg:{complete}|trusted:{sha in trusted_hashes}')
+              if complete and sha in trusted_hashes:
+                  chosen = (data, sha, 'current')
           else:
-              print('AVATAR_CACHED_TARGET=missing')
+              print('AVATAR_CURRENT=strict_decode_failed')
 
-          avatar = VisualIdentity('config/visual-identity.json').canonical_avatar_reference()
-          if not avatar.is_file() or avatar.stat().st_size < 10_000:
-              raise SystemExit('BLOCKED: canonical avatar did not decode to a usable image')
-          print(f'CORRECTED_CACHE_PREFLIGHT=passed|replaced=9|kept=3|avatar_bytes={avatar.stat().st_size}')
+          # Recover only from repository history and only if the decoded bytes match a
+          # previously pinned/verified canonical hash. No substitute image can qualify.
+          history = [
+              ('df2648627f0ff36ab5ab1722b34f5670774b5adb', 'restore-decodable-source'),
+              ('7662e2dfe42c2d1a50648c631fdd8bf965c9f556', 'compact-reference'),
+              ('b937d86f2986e20ed0277f4255783a1808bbf65f', 'initial-canonical-reference'),
+          ]
+          if chosen is None:
+              for ref, label in history:
+                  try:
+                      text = subprocess.check_output(
+                          ['git', 'show', f'{ref}:{source_path.as_posix()}'],
+                          text=True,
+                          stderr=subprocess.DEVNULL,
+                      )
+                  except subprocess.CalledProcessError:
+                      print(f'AVATAR_HISTORY={label}|missing')
+                      continue
+                  candidate = decode_candidate(text)
+                  if not candidate:
+                      print(f'AVATAR_HISTORY={label}|strict_decode_failed')
+                      continue
+                  data, sha, complete = candidate
+                  print(f'AVATAR_HISTORY={label}|bytes:{len(data)}|sha:{sha}|complete_jpeg:{complete}|trusted:{sha in trusted_hashes}')
+                  if complete and sha in trusted_hashes:
+                      chosen = (data, sha, label)
+                      break
+
+          if chosen is None:
+              raise SystemExit('BLOCKED: no complete canonical JPEG matching a previously verified hash exists in repository history')
+
+          data, sha, provenance = chosen
+          if provenance != 'current' or cfg['avatar']['canonical_reference_sha256'] != sha:
+              source_path.write_text(base64.b64encode(data).decode('ascii') + '\n', encoding='ascii')
+              cfg['avatar']['canonical_reference_sha256'] = sha
+              config_path.write_text(json.dumps(cfg, indent=2) + '\n', encoding='utf-8')
+              print(f'AVATAR_RECOVERED=provenance:{provenance}|bytes:{len(data)}|sha:{sha}')
+
+          avatar = VisualIdentity(config_path).canonical_avatar_reference()
+          b = avatar.read_bytes()
+          if len(b) < 10_000 or not b.startswith(bytes.fromhex('ffd8ff')) or not b.endswith(bytes.fromhex('ffd9')):
+              raise SystemExit('BLOCKED: recovered canonical avatar is not a complete usable JPEG')
+          if hashlib.sha256(b).hexdigest() != sha:
+              raise SystemExit('BLOCKED: recovered canonical avatar failed locked checksum verification')
+          print(f'CORRECTED_CACHE_PREFLIGHT=passed|replaced=9|kept=3|avatar_bytes={len(b)}|avatar_sha={sha}|avatar_provenance={provenance}')
           PY
+
+      - name: Persist canonical avatar recovery when required
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- assets/brand/golide-canonical-avatar-v1.jpg.b64 config/visual-identity.json; then
+            echo "AVATAR_REPO_REPAIR=not_required"
+            exit 0
+          fi
+          git config user.name "golide-production-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add assets/brand/golide-canonical-avatar-v1.jpg.b64 config/visual-identity.json
+          git commit -m "fix: restore verified canonical avatar bytes"
+          git pull --rebase origin main
+          git push
+          echo "AVATAR_REPO_REPAIR=committed"
 
       - name: Promote corrected cache as newest correction checkpoint
         uses: actions/cache/save@v4
@@ -97,6 +160,7 @@ jobs:
       - name: Trigger corrected re-edit without regenerating paid stages
         run: |
           set -euo pipefail
+          git pull --rebase origin main
           git config user.name "golide-production-bot"
           git config user.email "actions@users.noreply.github.com"
           printf '%s\n' "promoted-scene-cache-${GITHUB_RUN_ID}-${GITHUB_SHA}" > .github/production-correction-kick
