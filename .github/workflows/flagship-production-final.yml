@@ -217,6 +217,7 @@ jobs:
       - name: Upload NEW product privately
         env:
           YOUTUBE_OAUTH_TOKEN_B64: ${{ secrets.YOUTUBE_OAUTH_TOKEN_B64 }}
+          GOLIDE_ENABLE_YOUTUBE_UPLOAD: '1'
           NEW_ID: ${{ steps.prod.outputs.id }}
         run: |
           set -euo pipefail
