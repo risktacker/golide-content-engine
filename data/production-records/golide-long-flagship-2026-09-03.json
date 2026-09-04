@@ -1,18 +1,18 @@
 {
   "production_id": "golide-long-flagship-2026-09-03",
-  "youtube_video_id": "e5LVF8QZ2VA",
+  "youtube_video_id": "A1QAnm3GoVs",
   "retention_hours": 48,
   "upload": {
-    "youtube_video_id": "e5LVF8QZ2VA",
-    "upload_status": "published",
-    "privacy_status": "public",
+    "youtube_video_id": "A1QAnm3GoVs",
+    "upload_status": "uploaded_private",
+    "privacy_status": "private",
     "scheduled_at": null,
-    "uploaded_at": "2026-09-03T19:46:20.426886+00:00"
+    "uploaded_at": "2026-09-04T06:59:07.547768+00:00"
   },
   "production": {
     "format": "long",
     "title": "The Chicken Is a Living Gimbal",
-    "status": "published",
+    "status": "uploaded_private",
     "scheduled_at": "2026-09-03T16:00:00Z",
     "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"one-off-first-flagship\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"elevenlabs-golide-narrator-v1\"}"
   },
@@ -251,21 +251,22 @@
     "release": {
       "approved": true,
       "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
-      "scheduled_at": "2026-09-03T16:00:00Z",
+      "scheduled_at": null,
       "qa": {
         "passed": true
-      }
+      },
+      "force_reupload": true
     },
     "files": {
       "video": {
         "file": "video.mp4",
-        "sha256": "428750bac3e4ec3b1531da6315f0f0c868462dfd5377ab18a781d24059f68052",
-        "bytes": 42677879
+        "sha256": "61fed3f8ae5b7eb95eedfe9b965c5c58e6ad2a03ece8e4ba7df329807a3c7def",
+        "bytes": 223732860
       },
       "thumbnail": {
-        "file": "thumbnail.png",
-        "sha256": "698284f15693b9d2de4ccf0bd402bc9b931396e329f4b8cddfe733dd1cf21e47",
-        "bytes": 2294536
+        "file": "thumbnail-correction.jpg",
+        "sha256": "2b85cd5e775586712938d18a19ffe71ff1f3e344f5868841613c58b56bf70d03",
+        "bytes": 119597
       },
       "metadata": {
         "file": "upload-metadata.json",
@@ -294,11 +295,19 @@
       },
       "qa_report": {
         "file": "qa-report.json",
-        "sha256": "c98b8a0af1e17614167c09719fb9b8049a8f453a9f88c9b12454fff44856f142",
+        "sha256": "bec2c7267b5e4f1007a5bba0ed98d4aa6c77f11dbd561ffbd0f0e6c57e5849cd",
         "bytes": 616
       }
     },
-    "cost_summary": "cost-summary.json"
+    "cost_summary": "cost-summary.json",
+    "correction": {
+      "reason": "repair cached final edit and restore canonical avatar thumbnail",
+      "original_youtube_video_id": "e5LVF8QZ2VA",
+      "upload_policy": "private-corrected-preview",
+      "scene_media_generation": "reused-cached-108-clips-only",
+      "thumbnail_identity": "exact-tracked-canonical-avatar-source",
+      "thumbnail_paid_generation": false
+    }
   },
   "cost_events": [
     {
@@ -562,5 +571,5 @@
       "created_at": "2026-09-03T18:39:49.528668+00:00"
     }
   ],
-  "recorded_at": "2026-09-03T19:46:20.432306+00:00"
+  "recorded_at": "2026-09-04T06:59:07.552830+00:00"
 }
