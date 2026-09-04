@@ -1,0 +1,83 @@
+{
+  "production_id": "golide-long-flagship-33845066363",
+  "youtube_video_id": "vMMxLX-DlOo",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "vMMxLX-DlOo",
+    "upload_status": "uploaded_private",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-09-04T10:56:03Z"
+  },
+  "production": {
+    "format": "long",
+    "title": "How Chickens Keep Their Vision Stable While Walking",
+    "status": "uploaded_private",
+    "scheduled_at": null,
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"one-off-first-flagship\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"elevenlabs-golide-narrator-v1\"}"
+  },
+  "narration": null,
+  "research": null,
+  "metadata": null,
+  "source_ledger": null,
+  "qa_report": null,
+  "generation_parameters": null,
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-long-flagship-33845066363",
+    "created_at": "2026-09-04T10:05:45.719002+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": null,
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "61fed3f8ae5b7eb95eedfe9b965c5c58e6ad2a03ece8e4ba7df329807a3c7def",
+        "bytes": 223732860
+      },
+      "thumbnail": {
+        "file": "thumbnail.jpg",
+        "sha256": "7af990599ed345e6f970e5496e5f06f534ff7b245df5def5383f01f62e2da731",
+        "bytes": 156474
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "c266d541e82fe250af026ecaac073e1418a9e703b6cf87ba44306545e2ea0343",
+        "bytes": 1829
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "9a145655eece13d64994ecb47ac96d517250619a9e83010048f550b5b6069fb2",
+        "bytes": 11890
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "55d1227979c9644f913b3db7abbf9cf354246c26d7e076ce6d70f57ebc9bae56",
+        "bytes": 7247
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "ecd0c5a2a5a4f1e1cb2615c918c495f04323bc09a515ac5b13f69ec184e9dcff",
+        "bytes": 5916
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "1fee3c690141d540cba086b82a4b5216c237a45c4630b39b581bcb4811515701",
+        "bytes": 396
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "2b441c65ef994844d4afed0f6f7387ae649095bcb70d92856ab575e88146f20a",
+        "bytes": 616
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [],
+  "recorded_at": "2026-09-04T11:16:29.423699+00:00"
+}
