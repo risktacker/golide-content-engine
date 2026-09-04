@@ -61,7 +61,9 @@ class OpenAIImageProvider:
         Some otherwise-valid JPEG references can be rejected by the image-edit endpoint
         because of their encoded color mode. Converting only the request copy keeps the
         locked canonical source/checksum untouched while giving the API a deterministic
-        supported representation.
+        supported representation. A legacy canonical JPEG snapshot is known to be
+        missing a terminal EOI marker; if ffmpeg rejects it, repair only the temporary
+        request copy by appending the marker and retry once.
         """
         normalized: list[Path] = []
         for index, source in enumerate(references):
@@ -69,20 +71,40 @@ class OpenAIImageProvider:
                 normalized.append(source)
                 continue
             target = temp_dir / f"reference-{index:02d}.png"
-            subprocess.run(
-                [
-                    "ffmpeg",
-                    "-v",
-                    "error",
-                    "-y",
-                    "-i",
-                    str(source),
-                    "-vf",
-                    "format=rgb24",
-                    str(target),
-                ],
-                check=True,
-            )
+            command = [
+                "ffmpeg",
+                "-v",
+                "error",
+                "-y",
+                "-i",
+                str(source),
+                "-vf",
+                "format=rgb24",
+                str(target),
+            ]
+            try:
+                subprocess.run(command, check=True)
+            except subprocess.CalledProcessError:
+                payload = source.read_bytes()
+                if payload.startswith(b"\xff\xd8") and not payload.endswith(b"\xff\xd9"):
+                    repaired = temp_dir / f"reference-{index:02d}-repaired.jpg"
+                    repaired.write_bytes(payload + b"\xff\xd9")
+                    subprocess.run(
+                        [
+                            "ffmpeg",
+                            "-v",
+                            "error",
+                            "-y",
+                            "-i",
+                            str(repaired),
+                            "-vf",
+                            "format=rgb24",
+                            str(target),
+                        ],
+                        check=True,
+                    )
+                else:
+                    raise
             normalized.append(target)
         return normalized
 
@@ -186,4 +208,5 @@ class OpenAICaptionProvider:
             {"word": item.word, "start": float(item.start), "end": float(item.end)}
             for item in response.words
         ]
-        return ProviderOutput(words, getattr(response, "id", None))
+        return ProviderOutput(words, getattr(response, "id", None)
+        )
