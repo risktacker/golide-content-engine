@@ -1,0 +1,90 @@
+name: Promote corrected flagship scene cache
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/promote-flagship-scene-cache-kick"
+
+concurrency:
+  group: golide-state-writer
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  promote-corrected-cache:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PRODUCTION_ID: golide-long-flagship-2026-09-03
+      CORRECTED_SCENE_CACHE: golide-production-correction-flagship-2026-09-03-33805778023-scene-fixed
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Restore exact corrected scene-art checkpoint
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            productions
+            build
+            release-packages
+            generated
+          key: ${{ env.CORRECTED_SCENE_CACHE }}
+          fail-on-cache-miss: true
+
+      - name: Verify corrected scene batch and canonical avatar before long render
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          from golide_engine.visual_identity import VisualIdentity
+
+          pid = os.environ['PRODUCTION_ID']
+          work = Path('productions') / pid
+          report_path = work / 'scene-art-correction-report.json'
+          if not report_path.is_file():
+              raise SystemExit('BLOCKED: exact corrected scene-art report is missing')
+          report = json.loads(report_path.read_text(encoding='utf-8'))
+          if report.get('replaced_count') != 9:
+              raise SystemExit(f"BLOCKED: expected 9 corrected artworks, found {report.get('replaced_count')}")
+          if len(report.get('kept_good_cached_art', [])) != 3:
+              raise SystemExit('BLOCKED: corrected scene batch does not preserve exactly 3 known-good artworks')
+          if report.get('policy') != 'topic-first-no-generic-presenter-no-baked-text':
+              raise SystemExit('BLOCKED: corrected scene-art policy marker is missing')
+
+          render = json.loads((work / 'render-manifest.json').read_text(encoding='utf-8'))
+          if len(render.get('scenes', [])) != 108:
+              raise SystemExit('BLOCKED: corrected checkpoint is not the 108-scene edit')
+
+          avatar = VisualIdentity('config/visual-identity.json').canonical_avatar_reference()
+          if not avatar.is_file() or avatar.stat().st_size < 10_000:
+              raise SystemExit('BLOCKED: canonical avatar did not decode to a usable image')
+          print(f'CORRECTED_CACHE_PREFLIGHT=passed|replaced=9|kept=3|avatar_bytes={avatar.stat().st_size}')
+          PY
+
+      - name: Promote corrected cache as newest correction checkpoint
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            productions
+            build
+            release-packages
+            generated
+          key: golide-production-correction-flagship-2026-09-03-${{ github.run_id }}-scene-fixed-promoted
+
+      - name: Trigger corrected re-edit without regenerating paid stages
+        run: |
+          set -euo pipefail
+          git config user.name "golide-production-bot"
+          git config user.email "actions@users.noreply.github.com"
+          printf '%s\n' "promoted-scene-cache-${GITHUB_RUN_ID}-${GITHUB_SHA}" > .github/production-correction-kick
+          git add .github/production-correction-kick
+          git commit -m "ops: resume flagship from corrected scene checkpoint"
+          git pull --rebase origin main
+          git push
