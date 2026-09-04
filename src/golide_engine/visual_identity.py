@@ -43,7 +43,8 @@ class VisualIdentity:
         target.parent.mkdir(parents=True, exist_ok=True)
         if not target.is_file() or hashlib.sha256(target.read_bytes()).hexdigest() != expected_sha:
             try:
-                payload = base64.b64decode(source.read_text(encoding="ascii").strip(), validate=True)
+                encoded = "".join(source.read_text(encoding="ascii").split())
+                payload = base64.b64decode(encoded, validate=True)
             except Exception as exc:
                 raise RuntimeError("canonical G$LIDE avatar reference is not valid base64") from exc
             actual = hashlib.sha256(payload).hexdigest()
