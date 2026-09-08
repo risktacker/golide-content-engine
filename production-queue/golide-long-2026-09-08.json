@@ -1,0 +1,149 @@
+{
+  "id": "golide-long-2026-09-08",
+  "studio_managed": true,
+  "format": "long",
+  "title": "How One Robot Learns to Move in Three Different Bodies",
+  "brief": "A visual explanation of how a control model can transfer movement intelligence across different robot bodies instead of programming every joint from scratch. Show the same task\u2014walking, reaching or placing an object\u2014being translated into different limb lengths, joint layouts and hand designs.",
+  "demand_query": "current science technology explainer",
+  "demand_validation_required": true,
+  "budget_class": "scheduled",
+  "purpose": "channel-automation",
+  "generate_at": "2026-09-08T04:00:00Z",
+  "max_cost_usd": 6.0,
+  "production_authorized": true,
+  "output_destination": "render-and-upload",
+  "concept": {
+    "family": "science-explainer",
+    "promise": "A current impossible-but-real idea explained with authoritative evidence",
+    "scores": {
+      "click_promise": 9,
+      "thumbnail_title_fit": 9,
+      "narrative_engine": 9,
+      "visual_depth": 9,
+      "evidence_strength": 8,
+      "retention_design": 9,
+      "broad_relevance": 8,
+      "novelty": 8,
+      "revenue_fit": 7
+    }
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "elevenlabs-golide-narrator-v1",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-long-tuesday"
+  },
+  "music": {
+    "mood": "curious-tension"
+  },
+  "avatar_reference_images": [],
+  "release": {
+    "approved": true,
+    "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+    "scheduled_at": "2026-09-08T16:00:00Z"
+  },
+  "_studio_job_id": "golide-long-2026-09-08",
+  "topic_candidates": [
+    {
+      "title": "The Password Can Leak One Microsecond at a Time",
+      "query": "NIST timing side-channel attack password validation",
+      "brief": "A premium cybersecurity explainer showing how software that stops checking a password at the first wrong character creates a measurable timing fingerprint. Viewers see an attacker statistically reconstruct a secret one character at a time, turning invisible delays into a practical breach.",
+      "evidence_summary": "Current demand: Very high, directly supported by the supplied seed \u201cHow Tiny Delays Reveal Your Password\u201d at 960,659 views/day across US, GB, IN and ZA. Visual potential: Excellent\u2014animated request timers, signal averaging and a password gradually resolving. Evidence strength: Strong; NIST defines timing as a side channel, and its NVD documents a real password-validation vulnerability exploitable through timing differences. Broad curiosity: High because the mechanism is counterintuitive and applies to websites, APIs and authentication systems. Novelty: Strong if framed around the statistical reconstruction process rather than simply warning about hacking. ([nvd.nist.gov](https://nvd.nist.gov/vuln/detail/CVE-2014-0984?utm_source=openai))",
+      "authoritative_source_url": "https://nvd.nist.gov/vuln/detail/CVE-2014-0984",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "NIST timing side-channel attack password validation",
+        "score": 87.1,
+        "verdict": "pass",
+        "recent_videos": 64,
+        "median_views_per_day": 412105.92,
+        "top_views_per_day": 3850139.03,
+        "market_coverage": 4,
+        "title_query_overlap": 0.1429,
+        "measured_at": "2026-09-08T05:46:39.962698+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "The Hidden Skeleton Inside a Foldable Screen",
+      "query": "Samsung Display foldable OLED titanium plate durability micro holes crease",
+      "brief": "Explain why a foldable OLED is not merely a flexible sheet: beneath the pixels is a layered mechanical system that spreads stress, supports the bend and limits crease damage. The episode can visualize how microscopic holes, adhesive layers and a titanium support structure change where force travels.",
+      "evidence_summary": "Current demand: High, supported by repeated foldable-phone and durability signals, including the supplied seed \u201cIs the iPhone fold\u2019s durability cooked..\u201d at 1,010,592 views/day and multiple foldable-phone trend entries. Visual potential: Excellent\u2014cutaway animations, repeated-bend stress maps and microscopic crease simulations. Evidence strength: Strong for the engineering mechanism, with Samsung Display describing its reinforced titanium plate, hole-processing and adhesive structure. Broad curiosity: High because viewers understand the visible crease but rarely see the hidden load-bearing architecture. Novelty: Good; avoid a generic durability test and focus on the invisible mechanical stack that keeps a screen alive. ([global.samsungdisplay.com](https://global.samsungdisplay.com/31479?type=main&utm_source=openai))",
+      "authoritative_source_url": "https://global.samsungdisplay.com/31479?type=main",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Samsung Display foldable OLED titanium plate durability micro holes crease",
+        "score": 88.0,
+        "verdict": "pass",
+        "recent_videos": 64,
+        "median_views_per_day": 412105.92,
+        "top_views_per_day": 3850139.03,
+        "market_coverage": 4,
+        "title_query_overlap": 0.2,
+        "measured_at": "2026-09-08T05:46:39.963264+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "How One Robot Learns to Move in Three Different Bodies",
+      "query": "Google DeepMind Gemini Robotics 2 whole body control humanoid robot",
+      "brief": "A visual explanation of how a control model can transfer movement intelligence across different robot bodies instead of programming every joint from scratch. Show the same task\u2014walking, reaching or placing an object\u2014being translated into different limb lengths, joint layouts and hand designs.",
+      "evidence_summary": "Current demand: High and rising, supported by the supplied \u201cHumanoid Robot Unboxing\u201d seed at 570,148 views/day and the broader robot/future-gadget cluster. Visual potential: Exceptional\u2014side-by-side body mapping, motion retargeting, balance corrections and failure cases are naturally cinematic. Evidence strength: Strong; Google DeepMind reports a single model controlling multiple embodiments and whole-body tasks, including humanoid walking and manipulation. Broad curiosity: Very high because it addresses the intuitive question of whether a robot\u2019s \u201cskill\u201d belongs to its body or its software. Novelty: Stronger than a generic robot unboxing because the story is about transferable physical intelligence. ([deepmind.google](https://deepmind.google/blog/gemini-robotics-2-brings-whole-body-intelligence-to-robots/?utm_source=openai))",
+      "authoritative_source_url": "https://deepmind.google/blog/gemini-robotics-2-brings-whole-body-intelligence-to-robots/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Google DeepMind Gemini Robotics 2 whole body control humanoid robot",
+        "score": 88.3,
+        "verdict": "pass",
+        "recent_videos": 64,
+        "median_views_per_day": 412105.92,
+        "top_views_per_day": 3850139.03,
+        "market_coverage": 4,
+        "title_query_overlap": 0.2222,
+        "measured_at": "2026-09-08T05:46:39.963841+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "Why Morse Code Still Wins When the Radio Is Almost Dead",
+      "query": "ARRL Morse code narrow bandwidth weak signal noise advantage",
+      "brief": "Reveal the engineering reason a century-old signaling system can remain intelligible inside static: short, narrowband on-off pulses let receivers filter away much of the surrounding noise. Build the story around a simulated radio signal disappearing into noise, then recover it by narrowing the receiver and slowing the code.",
+      "evidence_summary": "Current demand: Medium-high, supported by the supplied Morse-code seed at 853,439 views/day across US, GB and ZA. Visual potential: Very strong\u2014waterfall displays, bandwidth comparisons, noise injection and signal recovery create immediate before/after moments. Evidence strength: Strong; ARRL explains that CW/Morse occupies far less bandwidth than voice and that narrow filtering improves readability under weak-signal conditions. Broad curiosity: High because it turns a familiar historical code into a modern lesson in signal processing. Novelty: Strong if the focus is not Morse history or speed records, but the physics of why it survives interference. ([arrl.org](https://www.arrl.org/weak-signal-modes?utm_source=openai))",
+      "authoritative_source_url": "https://www.arrl.org/weak-signal-modes",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "ARRL Morse code narrow bandwidth weak signal noise advantage",
+        "score": 88.3,
+        "verdict": "pass",
+        "recent_videos": 64,
+        "median_views_per_day": 412105.92,
+        "top_views_per_day": 3850139.03,
+        "market_coverage": 4,
+        "title_query_overlap": 0.2222,
+        "measured_at": "2026-09-08T05:46:39.964361+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    }
+  ],
+  "platform_demand": {
+    "query": "Google DeepMind Gemini Robotics 2 whole body control humanoid robot",
+    "score": 88.3,
+    "verdict": "pass",
+    "recent_videos": 64,
+    "median_views_per_day": 412105.92,
+    "top_views_per_day": 3850139.03,
+    "market_coverage": 4,
+    "title_query_overlap": 0.2222,
+    "measured_at": "2026-09-08T05:46:39.963841+00:00",
+    "signal_type": "youtube-most-popular-seed-proxy"
+  },
+  "selected_topic_source": "https://deepmind.google/blog/gemini-robotics-2-brings-whole-body-intelligence-to-robots/"
+}
