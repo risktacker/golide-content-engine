@@ -17,6 +17,7 @@ permissions:
   contents: write
   issues: write
   id-token: write
+  actions: write
 
 jobs:
   produce:
@@ -62,6 +63,7 @@ jobs:
           GOLIDE_FAILURE_WEBHOOK: ${{ secrets.GOLIDE_FAILURE_WEBHOOK }}
         run: golide automation-run
       - name: Save resumable media checkpoint
+        id: checkpoint_save
         if: always()
         uses: actions/cache/save@v4
         with:
@@ -71,6 +73,26 @@ jobs:
             release-packages
             generated
           key: golide-production-checkpoint-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Remove superseded production checkpoints
+        if: always() && steps.checkpoint_save.outcome == 'success'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CURRENT_CACHE_KEY: golide-production-checkpoint-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          set -euo pipefail
+          gh api --paginate "/repos/${GITHUB_REPOSITORY}/actions/caches?per_page=100" \
+            --jq '.actions_caches[] | [.id,.key] | @tsv' | \
+          while IFS=$'\t' read -r id key; do
+            case "$key" in
+              golide-production-checkpoint-*)
+                if [ "$key" != "$CURRENT_CACHE_KEY" ]; then
+                  echo "Deleting superseded checkpoint: $key"
+                  gh api --method DELETE "/repos/${GITHUB_REPOSITORY}/actions/caches/${id}"
+                fi
+                ;;
+            esac
+          done
       - name: Save state and completed queue item
         if: always()
         run: |
