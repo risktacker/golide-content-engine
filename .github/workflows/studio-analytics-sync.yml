@@ -22,6 +22,6 @@ jobs:
       - name: Deliver stored YouTube analytics to Studio
         env:
           YOUTUBE_OAUTH_TOKEN_B64: ${{ secrets.YOUTUBE_OAUTH_TOKEN_B64 }}
-          GOLIDE_STUDIO_BASE_URL: "https://golide-studio.esiahkapinga.chatgpt.site"
+          GOLIDE_STUDIO_BASE_URL: "https://studio.golidee.com"
           GOLIDE_STUDIO_BYPASS_TOKEN: ${{ secrets.GOLIDE_STUDIO_BYPASS_TOKEN }}
         run: golide analytics-sync-studio
