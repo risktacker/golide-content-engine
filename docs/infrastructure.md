@@ -90,3 +90,39 @@ Every successful release contains the video, 1280×720 thumbnail, upload metadat
 spoken captions, visual captions, claim/music source ledger, generation parameters,
 QA report, cost summary and SHA-256 package manifest. Missing licensing, failed QA,
 wrong channel identity or an exceeded cost ceiling blocks upload.
+
+
+## Studio production address
+
+The canonical Content Engine interface is:
+
+`https://studio.golidee.com/`
+
+The old `https://golidee.com/studio` and `/content-engine` paths are legacy entry
+points and should redirect to the Studio subdomain.
+
+Studio authentication reuses the existing GOLIDE session cookie, which is scoped to
+`.golidee.com`. The Studio server validates that cookie against:
+
+`https://golidee.com/api/auth/session`
+
+Only sessions where `isAdmin=true` are allowed to load Studio pages or API routes.
+Non-admin and signed-out requests fail closed.
+
+Optional override:
+
+`GOLIDE_AUTH_SESSION_URL`
+
+Use it only if the main-site authentication endpoint changes.
+
+### Required post-deploy updates
+
+After the Studio production deployment is live:
+
+1. Set `GOLIDE_STUDIO_BASE_URL=https://studio.golidee.com`.
+2. In Cloudflare R2 bucket `golide-content-temp`, add
+   `https://studio.golidee.com` to the CORS AllowedOrigins list.
+3. Keep `PUT`, `Content-Type`, and exposed `ETag`.
+4. Remove `http://localhost:8787` from CORS once local browser testing is no longer needed.
+5. Do not use a wildcard origin.
+6. Keep real social publishing locked until LinkedIn and X are connected and final verification passes.

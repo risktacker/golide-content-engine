@@ -1,14 +1,54 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import os
+import time
+import urllib.error
+import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, quote, urlparse
 
 from golide_engine.storage import Database
 from golide_engine.storage.r2 import r2_store_from_environment
 from .service import StudioService
+
+_AUTH_CACHE: dict[str, tuple[float, bool]] = {}
+_AUTH_CACHE_SECONDS = 30
+
+
+def _admin_from_cookie(cookie_header: str) -> bool:
+    if not cookie_header:
+        return False
+    cache_key = hashlib.sha256(cookie_header.encode("utf-8")).hexdigest()
+    cached = _AUTH_CACHE.get(cache_key)
+    if cached and cached[0] > time.time():
+        return cached[1]
+
+    session_url = os.getenv(
+        "GOLIDE_AUTH_SESSION_URL",
+        "https://golidee.com/api/auth/session",
+    ).strip()
+    request = urllib.request.Request(
+        session_url,
+        headers={
+            "Accept": "application/json",
+            "Cookie": cookie_header,
+            "User-Agent": "GOLIDE-Content-Engine/1.0",
+        },
+    )
+    allowed = False
+    try:
+        with urllib.request.urlopen(request, timeout=8) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+        allowed = bool(payload.get("user", {}).get("isAdmin"))
+    except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, ValueError, json.JSONDecodeError):
+        allowed = False
+
+    _AUTH_CACHE[cache_key] = (time.time() + _AUTH_CACHE_SECONDS, allowed)
+    return allowed
 
 
 class StudioHandler(BaseHTTPRequestHandler):
@@ -19,9 +59,28 @@ class StudioHandler(BaseHTTPRequestHandler):
         body = json.dumps(payload, indent=2).encode("utf-8")
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Cache-Control", "no-store")
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
+
+    def _authorized(self) -> bool:
+        return _admin_from_cookie(self.headers.get("Cookie", ""))
+
+    def _require_admin(self, path: str) -> bool:
+        if self._authorized():
+            return True
+
+        if path.startswith("/api/"):
+            self._json(401, {"error": "admin authentication required"})
+            return False
+
+        login = "https://golidee.com/login?returnTo=" + quote("/studio", safe="")
+        self.send_response(302)
+        self.send_header("Location", login)
+        self.send_header("Cache-Control", "no-store")
+        self.end_headers()
+        return False
 
     def _read_json(self) -> dict:
         length = int(self.headers.get("Content-Length", "0"))
@@ -30,6 +89,8 @@ class StudioHandler(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:
         parsed = urlparse(self.path)
+        if not self._require_admin(parsed.path):
+            return
         if parsed.path == "/api/health":
             return self._json(200, {"status": "ok"})
         if parsed.path == "/api/overview":
@@ -45,6 +106,8 @@ class StudioHandler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:
         parsed = urlparse(self.path)
+        if not self._require_admin(parsed.path):
+            return
         if parsed.path == "/api/posts":
             try:
                 created = self.service.create_post(self._read_json())
@@ -80,6 +143,7 @@ class StudioHandler(BaseHTTPRequestHandler):
         body = candidate.read_bytes()
         self.send_response(200)
         self.send_header("Content-Type", content_type)
+        self.send_header("Cache-Control", "no-store" if suffix == ".html" else "public, max-age=300")
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
