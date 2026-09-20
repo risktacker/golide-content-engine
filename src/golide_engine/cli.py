@@ -74,6 +74,11 @@ def main() -> int:
     social_status_parser.add_argument("--database", default="data/golide.sqlite3")
     social_publish_parser = sub.add_parser("social-publish-due")
     social_publish_parser.add_argument("--database", default="data/golide.sqlite3")
+    studio_parser = sub.add_parser("studio-serve")
+    studio_parser.add_argument("--database", default="data/golide.sqlite3")
+    studio_parser.add_argument("--app-dir", default="app")
+    studio_parser.add_argument("--host", default="127.0.0.1")
+    studio_parser.add_argument("--port", type=int, default=8787)
     args = parser.parse_args()
 
     if args.command == "db-init":
@@ -160,6 +165,16 @@ def main() -> int:
                 for item in summaries
             ]
         }, indent=2))
+        return 0
+
+    if args.command == "studio-serve":
+        from .web.server import serve
+        serve(
+            database_path=args.database,
+            app_dir=args.app_dir,
+            host=args.host,
+            port=args.port,
+        )
         return 0
 
     if args.command == "oauth-bootstrap":

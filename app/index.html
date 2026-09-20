@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GOLIDE Content Engine</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark"></span>
+        <div><strong>GOLIDE</strong><small>Content Engine</small></div>
+      </div>
+      <nav>
+        <button class="nav active" data-view="dashboard">Dashboard</button>
+        <button class="nav" data-view="create">Create</button>
+        <button class="nav" data-view="schedule">Schedule</button>
+        <button class="nav" data-view="inbox">Inbox</button>
+        <button class="nav" data-view="connections">Connections</button>
+      </nav>
+      <div class="sidebar-foot">
+        <span class="dot"></span>
+        <span>Distribution core</span>
+      </div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">OWNED DISTRIBUTION</p>
+          <h1 id="view-title">Dashboard</h1>
+        </div>
+        <div class="top-actions">
+          <span id="health" class="health">Checking engine…</span>
+          <button class="primary" data-open-create>Create post</button>
+        </div>
+      </header>
+
+      <section class="view active" id="dashboard">
+        <div class="stats" id="stats"></div>
+        <div class="grid two">
+          <article class="panel">
+            <div class="panel-head"><div><span class="kicker">QUEUE</span><h2>Upcoming</h2></div></div>
+            <div id="upcoming" class="stack empty-state">No scheduled posts yet.</div>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><div><span class="kicker">RESPONSES</span><h2>Needs attention</h2></div></div>
+            <div id="dashboard-inbox" class="stack empty-state">No conversations waiting.</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="create">
+        <div class="create-grid">
+          <form id="create-form" class="panel form-panel">
+            <div class="panel-head">
+              <div><span class="kicker">MASTER CONTENT</span><h2>Create once. Adapt per platform.</h2></div>
+            </div>
+            <label>Title <input id="title" placeholder="Internal title"></label>
+            <label>Master content <textarea id="master" rows="7" placeholder="Write or generate the core idea here…" required></textarea></label>
+            <div class="row">
+              <label>Type
+                <select id="kind"><option value="social">Social post</option><option value="video">Video</option></select>
+              </label>
+              <label>Schedule
+                <input id="scheduled-at" type="datetime-local">
+              </label>
+            </div>
+            <div class="variant-head">
+              <span>Platform versions</span>
+              <button type="button" class="ghost" id="copy-master">Fill from master</button>
+            </div>
+            <div class="platforms" id="platforms"></div>
+            <div class="form-actions">
+              <span id="form-message"></span>
+              <button class="primary" type="submit">Save to queue</button>
+            </div>
+          </form>
+
+          <aside class="panel preview">
+            <span class="kicker">FLOW</span>
+            <h2>What happens next</h2>
+            <div class="flow">
+              <div><b>1</b><span>Master idea</span></div>
+              <i></i>
+              <div><b>2</b><span>Platform versions</span></div>
+              <i></i>
+              <div><b>3</b><span>Schedule / publish</span></div>
+              <i></i>
+              <div><b>4</b><span>Remote content IDs</span></div>
+              <i></i>
+              <div><b>5</b><span>Temp media deleted</span></div>
+            </div>
+            <p class="note">Media is temporary by design. GOLIDE keeps the post record and platform ID, not a permanent media library.</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view" id="schedule">
+        <article class="panel">
+          <div class="panel-head"><div><span class="kicker">CALENDAR QUEUE</span><h2>Scheduled content</h2></div></div>
+          <div id="schedule-list" class="stack empty-state">Nothing scheduled.</div>
+        </article>
+      </section>
+
+      <section class="view" id="inbox">
+        <article class="panel">
+          <div class="panel-head"><div><span class="kicker">UNIFIED INBOX</span><h2>Responses</h2></div></div>
+          <div id="inbox-list" class="stack empty-state">No open conversations.</div>
+        </article>
+      </section>
+
+      <section class="view" id="connections">
+        <article class="panel">
+          <div class="panel-head">
+            <div><span class="kicker">PLATFORMS</span><h2>Connections</h2></div>
+            <span class="subtle">Tokens are never displayed here.</span>
+          </div>
+          <div class="connection-grid" id="connection-grid"></div>
+        </article>
+      </section>
+    </main>
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>
