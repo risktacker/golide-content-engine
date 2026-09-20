@@ -4,6 +4,7 @@ import json
 import os
 import urllib.parse
 import urllib.request
+import urllib.error
 
 
 def main() -> int:
@@ -26,8 +27,12 @@ def main() -> int:
         "access_token": page_token,
     })
     url = f"https://graph.facebook.com/{api_version}/{page_id}?{params}"
-    with urllib.request.urlopen(url, timeout=20) as response:
-        payload = json.loads(response.read().decode("utf-8"))
+    try:
+        with urllib.request.urlopen(url, timeout=20) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        body = exc.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"Meta Graph API returned HTTP {exc.code}: {body}") from None
 
     resolved_id = str(payload.get("id", ""))
     if resolved_id != page_id:
