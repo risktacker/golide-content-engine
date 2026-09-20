@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import urllib.error
+import urllib.parse
 import urllib.request
 from dataclasses import dataclass
 from typing import Any, Protocol
@@ -15,40 +16,74 @@ class ApiResponse:
 
 
 class JsonApiClient(Protocol):
+    def get(
+        self,
+        url: str,
+        *,
+        bearer_token: str,
+        params: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
+    ) -> ApiResponse: ...
+
     def post(
         self,
         url: str,
         *,
         bearer_token: str,
-        json_body: dict[str, Any],
+        json_body: dict[str, Any] | None = None,
         headers: dict[str, str] | None = None,
-    ) -> ApiResponse:
-        ...
+    ) -> ApiResponse: ...
 
 
 class UrlLibJsonApiClient:
     def __init__(self, timeout_seconds: float = 30.0):
         self.timeout_seconds = timeout_seconds
 
+    def get(
+        self,
+        url: str,
+        *,
+        bearer_token: str,
+        params: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
+    ) -> ApiResponse:
+        if params:
+            query = urllib.parse.urlencode(
+                {k: v for k, v in params.items() if v is not None}
+            )
+            url = f"{url}{'&' if '?' in url else '?'}{query}"
+        request = urllib.request.Request(
+            url,
+            method="GET",
+            headers={"Authorization": f"Bearer {bearer_token}", **(headers or {})},
+        )
+        return self._send(request)
+
     def post(
         self,
         url: str,
         *,
         bearer_token: str,
-        json_body: dict[str, Any],
+        json_body: dict[str, Any] | None = None,
         headers: dict[str, str] | None = None,
     ) -> ApiResponse:
         request_headers = {
             "Authorization": f"Bearer {bearer_token}",
-            "Content-Type": "application/json",
             **(headers or {}),
         }
+        data = None
+        if json_body is not None:
+            request_headers["Content-Type"] = "application/json"
+            data = json.dumps(json_body).encode("utf-8")
         request = urllib.request.Request(
             url,
-            data=json.dumps(json_body).encode("utf-8"),
+            data=data,
             method="POST",
             headers=request_headers,
         )
+        return self._send(request)
+
+    def _send(self, request: urllib.request.Request) -> ApiResponse:
         try:
             with urllib.request.urlopen(request, timeout=self.timeout_seconds) as response:
                 raw = response.read().decode("utf-8")

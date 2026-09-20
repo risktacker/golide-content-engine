@@ -74,6 +74,8 @@ def main() -> int:
     social_status_parser.add_argument("--database", default="data/golide.sqlite3")
     social_publish_parser = sub.add_parser("social-publish-due")
     social_publish_parser.add_argument("--database", default="data/golide.sqlite3")
+    social_cleanup_parser = sub.add_parser("social-media-cleanup")
+    social_cleanup_parser.add_argument("--database", default="data/golide.sqlite3")
     studio_parser = sub.add_parser("studio-serve")
     studio_parser.add_argument("--database", default="data/golide.sqlite3")
     studio_parser.add_argument("--app-dir", default="app")
@@ -126,6 +128,9 @@ def main() -> int:
             "linkedin_author_configured": bool(os.getenv("GOLIDE_LINKEDIN_AUTHOR_URN", "").strip()),
             "linkedin_version_configured": bool(os.getenv("GOLIDE_LINKEDIN_VERSION", "").strip()),
             "x_token_configured": bool(os.getenv("X_USER_ACCESS_TOKEN", "").strip()),
+            "r2_configured": all(bool(os.getenv(name, "").strip()) for name in (
+                "R2_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY", "R2_BUCKET"
+            )),
             "connections": [
                 {
                     "platform": item.platform,
@@ -142,18 +147,27 @@ def main() -> int:
     if args.command == "social-publish-due":
         from .db import ContentRepository
         from .engine.social import SocialBridge
-        from .jobs import publish_due
+        from .jobs import cleanup_temporary_media, publish_due
         from .providers.social_factory import providers_from_environment
+        from .storage.r2 import r2_store_from_environment
         from .storage.temporary import TemporaryMediaRepository
         database = _database(args.database)
         providers = providers_from_environment()
         if not providers:
             raise RuntimeError("no real social providers are fully configured")
+        content = ContentRepository(database)
+        media = TemporaryMediaRepository(database)
+        store = r2_store_from_environment()
         summaries = publish_due(
-            ContentRepository(database),
-            SocialBridge(ContentRepository(database), providers),
-            media_repository=TemporaryMediaRepository(database),
+            content,
+            SocialBridge(
+                content,
+                providers,
+                media_resolver=store if store is not None else None,
+            ),
+            media_repository=media,
         )
+        purged = cleanup_temporary_media(media, store) if store is not None else []
         print(json.dumps({
             "published_due": [
                 {
@@ -163,7 +177,26 @@ def main() -> int:
                     "failed": item.failed,
                 }
                 for item in summaries
-            ]
+            ],
+            "temporary_media_deleted": purged,
+        }, indent=2))
+        return 0
+
+    if args.command == "social-media-cleanup":
+        from .jobs import cleanup_temporary_media
+        from .storage.r2 import r2_store_from_environment
+        from .storage.temporary import TemporaryMediaRepository
+        database = _database(args.database)
+        store = r2_store_from_environment()
+        if store is None:
+            raise RuntimeError("R2 temporary storage is not configured")
+        purged = cleanup_temporary_media(
+            TemporaryMediaRepository(database),
+            store,
+        )
+        print(json.dumps({
+            "status": "temporary_media_cleanup",
+            "deleted": purged,
         }, indent=2))
         return 0
 

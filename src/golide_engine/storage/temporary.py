@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Protocol
 from uuid import uuid4
 
@@ -9,8 +9,7 @@ from .database import Database, utc_now
 
 
 class TemporaryMediaStore(Protocol):
-    def delete(self, object_key: str) -> None:
-        ...
+    def delete(self, object_key: str) -> None: ...
 
 
 class MemoryMediaStore:
@@ -58,6 +57,33 @@ class TemporaryMediaRepository:
             (media_id, object_key, media_kind, post_id, _iso(expires_at), utc_now()),
         )
         return media_id
+
+    def attach_to_post(
+        self,
+        object_key: str,
+        post_id: str,
+        *,
+        scheduled_at: datetime | None = None,
+        minimum_hours_after_publish: int = 24,
+    ) -> None:
+        rows = self.database.rows(
+            "SELECT expires_at FROM temporary_media WHERE object_key=? AND status='active'",
+            (object_key,),
+        )
+        if not rows:
+            return
+        current = datetime.fromisoformat(rows[0]["expires_at"])
+        base = scheduled_at or datetime.now(timezone.utc)
+        if base.tzinfo is None:
+            base = base.replace(tzinfo=timezone.utc)
+        target = base.astimezone(timezone.utc) + timedelta(hours=minimum_hours_after_publish)
+        expires_at = max(current, target)
+        self.database.execute(
+            """UPDATE temporary_media
+               SET post_id=?, expires_at=?
+               WHERE object_key=? AND status='active'""",
+            (post_id, _iso(expires_at), object_key),
+        )
 
     def mark_post_confirmed(self, post_id: str) -> int:
         post = self.database.rows(

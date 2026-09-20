@@ -7,6 +7,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 from golide_engine.storage import Database
+from golide_engine.storage.r2 import r2_store_from_environment
 from .service import StudioService
 
 
@@ -50,6 +51,14 @@ class StudioHandler(BaseHTTPRequestHandler):
             except (ValueError, TypeError, KeyError) as exc:
                 return self._json(400, {"error": str(exc)})
             return self._json(201, created)
+        if parsed.path == "/api/media/prepare":
+            try:
+                prepared = self.service.prepare_media_upload(self._read_json())
+            except RuntimeError as exc:
+                return self._json(503, {"error": str(exc)})
+            except (ValueError, TypeError, KeyError) as exc:
+                return self._json(400, {"error": str(exc)})
+            return self._json(201, prepared)
         return self._json(404, {"error": "not found"})
 
     def _serve_static(self, path: str) -> None:
@@ -88,11 +97,12 @@ def serve(
 ) -> None:
     database = Database(database_path)
     database.initialize()
+    media_store = r2_store_from_environment()
     handler = type(
         "ConfiguredStudioHandler",
         (StudioHandler,),
         {
-            "service": StudioService(database),
+            "service": StudioService(database, media_store=media_store),
             "app_dir": Path(app_dir).resolve(),
         },
     )

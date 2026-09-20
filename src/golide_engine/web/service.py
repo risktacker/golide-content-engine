@@ -7,16 +7,25 @@ from golide_engine.db.connections import ConnectionRepository
 from golide_engine.db.inbox import InboxRepository
 from golide_engine.engine import ContentDraft, PlatformVariant
 from golide_engine.storage import Database
+from golide_engine.storage.r2 import R2TemporaryMediaStore
+from golide_engine.storage.temporary import TemporaryMediaRepository
 
 
 class StudioService:
     """Small JSON-facing service layer. It stores records, never media bytes."""
 
-    def __init__(self, database: Database):
+    def __init__(
+        self,
+        database: Database,
+        *,
+        media_store: R2TemporaryMediaStore | None = None,
+    ):
         self.database = database
         self.content = ContentRepository(database)
         self.connections = ConnectionRepository(database)
         self.inbox = InboxRepository(database)
+        self.media = TemporaryMediaRepository(database)
+        self.media_store = media_store
 
     def overview(self) -> dict:
         def count(query: str, params: tuple = ()) -> int:
@@ -43,6 +52,10 @@ class StudioService:
             "connected_platforms": count(
                 "SELECT COUNT(*) count FROM social_accounts WHERE status='connected'"
             ),
+            "temporary_media": count(
+                "SELECT COUNT(*) count FROM temporary_media WHERE status!='deleted'"
+            ),
+            "r2_ready": self.media_store is not None,
         }
 
     def posts(self, status: str | None = None) -> list[dict]:
@@ -58,6 +71,30 @@ class StudioService:
         for row in rows:
             row["variants"] = self.content.variants(row["id"])
         return rows
+
+    def prepare_media_upload(self, payload: dict) -> dict:
+        if self.media_store is None:
+            raise RuntimeError("temporary R2 storage is not configured")
+        filename = str(payload.get("filename", "")).strip()
+        media_kind = str(payload.get("media_kind", "")).strip()
+        if not filename:
+            raise ValueError("filename is required")
+        if media_kind not in {"image", "audio", "video", "render_asset"}:
+            raise ValueError("unsupported media kind")
+        prepared = self.media_store.prepare_upload(
+            filename=filename,
+            media_kind=media_kind,
+        )
+        self.media.register(
+            object_key=prepared.media_ref,
+            media_kind=media_kind,
+            expires_at=prepared.expires_at,
+        )
+        return {
+            "media_ref": prepared.media_ref,
+            "upload_url": prepared.upload_url,
+            "expires_at": prepared.expires_at.isoformat(),
+        }
 
     def create_post(self, payload: dict) -> dict:
         variants = [
@@ -78,6 +115,12 @@ class StudioService:
             kind=str(payload.get("kind", "social")),
         )
         post_id = self.content.create(draft, scheduled_at=scheduled_at)
+        for media_ref in {item.media_ref for item in variants if item.media_ref}:
+            self.media.attach_to_post(
+                media_ref,
+                post_id,
+                scheduled_at=scheduled_at,
+            )
         return {"id": post_id, "status": self.content.get(post_id).status}
 
     def connection_rows(self) -> list[dict]:

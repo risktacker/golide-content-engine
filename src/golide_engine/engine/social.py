@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from golide_engine.db import ContentRepository
+from golide_engine.engine.media import IdentityMediaResolver, MediaResolver
 from golide_engine.providers import PublishRequest, SocialProvider
 
 
@@ -17,9 +18,16 @@ class PublishSummary:
 class SocialBridge:
     """Publish normalized variants without leaking platform quirks into the engine."""
 
-    def __init__(self, repository: ContentRepository, providers: list[SocialProvider]):
+    def __init__(
+        self,
+        repository: ContentRepository,
+        providers: list[SocialProvider],
+        *,
+        media_resolver: MediaResolver | None = None,
+    ):
         self.repository = repository
         self.providers = {provider.platform: provider for provider in providers}
+        self.media_resolver = media_resolver or IdentityMediaResolver()
 
     def publish_post(self, post_id: str) -> PublishSummary:
         self.repository.get(post_id)
@@ -45,15 +53,20 @@ class SocialBridge:
                 failed += 1
                 continue
 
-            request = PublishRequest(
-                post_id=post_id,
-                variant_id=variant["id"],
-                platform=platform,
-                body=variant["body"],
-                title=variant["title"],
-                media_ref=variant["media_ref"],
-            )
             try:
+                media_ref = (
+                    self.media_resolver.resolve(variant["media_ref"])
+                    if variant["media_ref"]
+                    else None
+                )
+                request = PublishRequest(
+                    post_id=post_id,
+                    variant_id=variant["id"],
+                    platform=platform,
+                    body=variant["body"],
+                    title=variant["title"],
+                    media_ref=media_ref,
+                )
                 result = provider.publish(request)
             except Exception as exc:
                 error = str(exc) or exc.__class__.__name__
