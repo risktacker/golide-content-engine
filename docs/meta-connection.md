@@ -1,54 +1,62 @@
 # Meta connection — Instagram + Facebook
 
-The Content Engine uses one Meta integration for Facebook Page publishing and
-Instagram Professional publishing.
+The Content Engine now treats Instagram and Facebook as independent Meta
+connections.
 
-## Required account shape
+## Instagram — preferred route: Instagram Login
 
-- A Facebook Page managed by the GOLIDE account.
-- An Instagram Professional account (Business or Creator) linked to that Page
-  when using the Facebook Login route.
-- A Meta app with the required Page/Instagram permissions approved for the
-  environment in which the app will run.
+Instagram Professional accounts (Business or Creator) connect directly through
+Instagram Login. This route does **not** require a Facebook Page to be linked to
+the Instagram account.
 
-## Required permissions
+Required Instagram Login permissions:
 
-For the current adapter:
+- `instagram_business_basic`
+- `instagram_business_content_publish`
+
+Future inbox/comment work can additionally request:
+
+- `instagram_business_manage_messages`
+- `instagram_business_manage_comments`
+
+Environment contract:
+
+```text
+GOLIDE_META_API_VERSION=<Graph API version configured for the app>
+INSTAGRAM_USER_ACCESS_TOKEN=<Instagram Login user token>
+GOLIDE_INSTAGRAM_USER_ID=<Instagram professional account id>
+```
+
+The engine uses `graph.instagram.com` for this direct Instagram path.
+
+## Facebook Page — separate connection
+
+Facebook Page publishing remains independent and uses:
+
+```text
+GOLIDE_META_API_VERSION=<Graph API version configured for the app>
+META_USER_ACCESS_TOKEN=<temporary Page discovery token, if needed>
+META_PAGE_ACCESS_TOKEN=<Page publishing token>
+GOLIDE_FACEBOOK_PAGE_ID=<Page id>
+```
+
+Required Page permissions for the current publisher:
 
 - `pages_show_list`
 - `pages_read_engagement`
 - `pages_manage_posts`
-- `instagram_basic`
-- `instagram_content_publish`
 
-Comment/inbox permissions are added when that adapter is enabled; they are not
-required merely to prove publishing.
+A Facebook Page is therefore not a prerequisite for the Instagram connection.
 
-## Environment contract
+## Safety lock
 
-Secrets are not written into SQLite or committed to GitHub.
+Real publishing stays disabled until explicitly enabled:
 
 ```text
-GOLIDE_META_API_VERSION=<Graph API version configured for the app>
-META_USER_ACCESS_TOKEN=<temporary token used only for account discovery>
-META_PAGE_ACCESS_TOKEN=<Page token used by the publishing adapters>
-GOLIDE_FACEBOOK_PAGE_ID=<Page id>
-GOLIDE_INSTAGRAM_USER_ID=<Instagram professional account id>
-
-# Safety lock. Leave unset until the account test is complete.
 GOLIDE_ENABLE_SOCIAL_PUBLISH=1
 ```
 
-## Discovery
-
-With only the user token and API version configured:
-
-```bash
-golide meta-discover
-```
-
-The command prints Page IDs, Page names, Instagram professional account IDs and
-Page tasks. It deliberately does not print access tokens.
+Leave this unset while account connections are being validated.
 
 ## Diagnostics
 
@@ -56,27 +64,21 @@ Page tasks. It deliberately does not print access tokens.
 golide social-status
 ```
 
-This reports whether required settings exist without displaying their values.
+The diagnostics report only whether credentials are configured. They never
+display token values.
 
 ## Publishing
 
-```bash
-golide social-publish-due
-```
-
-Real publishing is refused unless `GOLIDE_ENABLE_SOCIAL_PUBLISH=1`.
-
 Instagram:
-- single-image content creates a media container, waits until Meta reports it
-  finished, then publishes the container;
-- video uses the Reels container path;
-- media must be an HTTPS URL from temporary object storage.
+- image or Reel media is read from the temporary HTTPS R2 URL;
+- a media container is created;
+- processing is polled until finished;
+- the container is published;
+- the platform content ID is persisted.
 
 Facebook:
 - text posts use the Page feed;
 - images use the Page photos edge;
-- Facebook video/Reels publishing is intentionally handled by the dedicated
-  video adapter because its upload lifecycle differs from text/photo publishing.
+- Facebook video/Reels remain a separate lifecycle.
 
-No published URL is guessed. The remote content ID is persisted immediately;
-permalinks can be fetched in the later analytics/sync layer.
+Temporary media is deleted only after all selected platforms confirm publishing.

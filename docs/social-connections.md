@@ -24,20 +24,30 @@ The database stores only `r2://...` references. At publish time the engine
 creates a fresh signed HTTPS URL for the platform adapter. Once all selected
 platforms confirm with remote content IDs, the temporary object is deleted.
 
-## Meta
+## Instagram — direct Instagram Login
+
+```text
+GOLIDE_META_API_VERSION=<Graph API version configured for the app>
+INSTAGRAM_USER_ACCESS_TOKEN=<Instagram Login user token>
+GOLIDE_INSTAGRAM_USER_ID=<Instagram professional account id>
+```
+
+This is the preferred Instagram path. It does not require a Facebook Page link.
+
+Required scopes:
+- `instagram_business_basic`
+- `instagram_business_content_publish`
+
+## Facebook Page
 
 ```text
 GOLIDE_META_API_VERSION=<Graph API version configured for the app>
 META_USER_ACCESS_TOKEN=<discovery only>
 META_PAGE_ACCESS_TOKEN=<Page publishing token>
 GOLIDE_FACEBOOK_PAGE_ID=<Page id>
-GOLIDE_INSTAGRAM_USER_ID=<Instagram professional account id>
 ```
 
-Instagram and Facebook share the Meta connection. See `meta-connection.md`.
-Instagram handles image containers and Reels. Facebook currently handles Page
-text and photo posts; its dedicated video path is added with the video publishing
-adapter.
+Facebook is connected separately from Instagram.
 
 ## LinkedIn
 
@@ -47,11 +57,7 @@ GOLIDE_LINKEDIN_AUTHOR_URN=<urn:li:person:... or urn:li:organization:...>
 GOLIDE_LINKEDIN_VERSION=<YYYYMM>
 ```
 
-The adapter supports:
-- text posts;
-- image initialization/upload followed by a post using the returned image URN;
-- MP4 video initialization, byte-range multipart upload, ETag finalization, then
-  a post using the returned video URN.
+The adapter supports text, image and MP4 video publishing.
 
 ## X
 
@@ -59,11 +65,7 @@ The adapter supports:
 X_USER_ACCESS_TOKEN=<user-context token with post-write/media permissions>
 ```
 
-The adapter supports:
-- text posts;
-- image upload then Post creation with the returned media ID;
-- chunked video initialize/append/finalize, processing-status polling, then Post
-  creation with the returned media ID.
+The adapter supports text, image and chunked video publishing.
 
 ## Diagnostics
 
@@ -79,6 +81,6 @@ The command reports only whether settings exist. It never prints token values.
 golide social-publish-due
 ```
 
-The job loads fully configured providers, resolves temporary media only for the
-duration of the publish, stores platform content IDs, and deletes media only
-after the complete selected-platform publish has succeeded.
+The job loads configured providers, resolves temporary media for publishing,
+stores remote content IDs, and deletes media only after the complete selected
+platform publish succeeds.

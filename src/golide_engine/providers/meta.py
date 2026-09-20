@@ -18,6 +18,12 @@ class ManagedMetaAccount:
     tasks: tuple[str, ...]
 
 
+@dataclass(frozen=True)
+class InstagramIdentity:
+    id: str
+    username: str
+
+
 class MetaGraph:
     def __init__(
         self,
@@ -25,17 +31,22 @@ class MetaGraph:
         api_version: str,
         access_token: str,
         http: JsonHttpClient | None = None,
+        host: str = "graph.facebook.com",
     ):
         api_version = api_version.strip()
         access_token = access_token.strip()
+        host = host.strip().strip("/")
         if not api_version or not access_token:
             raise ValueError("Meta API version and access token are required")
+        if not host:
+            raise ValueError("Meta Graph host is required")
         self.api_version = api_version
         self.access_token = access_token
         self.http = http or UrlLibJsonClient()
+        self.host = host
 
     def url(self, edge: str) -> str:
-        return f"https://graph.facebook.com/{self.api_version}/{edge.lstrip('/')}"
+        return f"https://{self.host}/{self.api_version}/{edge.lstrip('/')}"
 
     def get(self, edge: str, **params):
         payload = {"access_token": self.access_token, **params}
@@ -75,6 +86,26 @@ def discover_managed_accounts(
     return accounts
 
 
+def discover_instagram_identity(
+    *,
+    api_version: str,
+    instagram_access_token: str,
+    http: JsonHttpClient | None = None,
+) -> InstagramIdentity:
+    graph = MetaGraph(
+        api_version=api_version,
+        access_token=instagram_access_token,
+        http=http,
+        host="graph.instagram.com",
+    )
+    response = graph.get("me", fields="id,username")
+    ig_id = str(response.get("id", "")).strip()
+    username = str(response.get("username", "")).strip()
+    if not ig_id:
+        raise RuntimeError("Instagram Login did not return an account id")
+    return InstagramIdentity(id=ig_id, username=username)
+
+
 def social_publish_enabled() -> bool:
     return os.getenv("GOLIDE_ENABLE_SOCIAL_PUBLISH", "").strip() == "1"
 
@@ -110,11 +141,13 @@ class InstagramProvider(SocialProvider):
         sleeper: Callable[[float], None] = time.sleep,
         poll_attempts: int = 30,
         poll_seconds: float = 2.0,
+        graph_host: str = "graph.facebook.com",
     ):
         self.graph = MetaGraph(
             api_version=api_version,
             access_token=access_token,
             http=http,
+            host=graph_host,
         )
         self.instagram_user_id = instagram_user_id.strip()
         self.sleeper = sleeper

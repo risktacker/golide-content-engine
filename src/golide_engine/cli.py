@@ -122,6 +122,7 @@ def main() -> int:
             "live_publish_enabled": social_publish_enabled(),
             "meta_api_version_configured": bool(os.getenv("GOLIDE_META_API_VERSION", "").strip()),
             "meta_page_token_configured": bool(os.getenv("META_PAGE_ACCESS_TOKEN", "").strip()),
+            "instagram_login_token_configured": bool(os.getenv("INSTAGRAM_USER_ACCESS_TOKEN", "").strip()),
             "instagram_id_configured": bool(os.getenv("GOLIDE_INSTAGRAM_USER_ID", "").strip()),
             "facebook_page_id_configured": bool(os.getenv("GOLIDE_FACEBOOK_PAGE_ID", "").strip()),
             "linkedin_token_configured": bool(os.getenv("LINKEDIN_ACCESS_TOKEN", "").strip()),

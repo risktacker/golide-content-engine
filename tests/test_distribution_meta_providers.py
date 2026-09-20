@@ -9,6 +9,7 @@ from golide_engine.providers.http import JsonResponse
 from golide_engine.providers.meta import (
     FacebookPageProvider,
     InstagramProvider,
+    discover_instagram_identity,
     discover_managed_accounts,
 )
 
@@ -60,6 +61,42 @@ class MetaProviderTests(unittest.TestCase):
         self.assertEqual(accounts[0].page_id, "page-123")
         self.assertEqual(accounts[0].instagram_user_id, "ig-456")
         self.assertFalse(hasattr(accounts[0], "access_token"))
+
+    def test_direct_instagram_login_identity_uses_instagram_graph(self) -> None:
+        http = FakeHttp(gets=[{"id": "ig-direct-1", "username": "esiah_kapinga"}])
+        identity = discover_instagram_identity(
+            api_version="v99.0",
+            instagram_access_token="ig-secret",
+            http=http,
+        )
+        self.assertEqual(identity.id, "ig-direct-1")
+        self.assertEqual(identity.username, "esiah_kapinga")
+        self.assertTrue(http.calls[0][1].startswith("https://graph.instagram.com/"))
+
+    def test_direct_instagram_provider_uses_instagram_graph(self) -> None:
+        http = FakeHttp(
+            gets=[{"status_code": "FINISHED", "status": "Finished"}],
+            posts=[{"id": "container-direct"}, {"id": "media-direct"}],
+        )
+        provider = InstagramProvider(
+            api_version="v99.0",
+            access_token="ig-secret",
+            instagram_user_id="ig-direct-1",
+            http=http,
+            sleeper=lambda _: None,
+            graph_host="graph.instagram.com",
+        )
+        with patch.dict(os.environ, {"GOLIDE_ENABLE_SOCIAL_PUBLISH": "1"}):
+            result = provider.publish(
+                self.request("instagram", "https://cdn.example.com/post.jpg")
+            )
+        self.assertEqual(result.content_id, "media-direct")
+        self.assertTrue(
+            all(
+                call[1].startswith("https://graph.instagram.com/")
+                for call in http.calls
+            )
+        )
 
     def test_real_publish_is_locked_by_default(self) -> None:
         provider = FacebookPageProvider(
