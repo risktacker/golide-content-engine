@@ -1,5 +1,6 @@
-"""Replaceable providers for text, research, imagery, voice, and timing."""
+"""Publishing provider adapters."""
 
-from .registry import ProviderRegistry
+from .base import PublishRequest, PublishResult, SocialProvider
+from .memory import MemoryProvider
 
-__all__ = ["ProviderRegistry"]
+__all__ = ["MemoryProvider", "PublishRequest", "PublishResult", "SocialProvider"]

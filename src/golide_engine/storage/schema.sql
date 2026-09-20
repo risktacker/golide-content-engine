@@ -124,3 +124,53 @@ CREATE TABLE IF NOT EXISTS topic_demand_snapshots (
 CREATE INDEX IF NOT EXISTS idx_budget_month ON budget_allocations(provider, budget_class, month);
 CREATE INDEX IF NOT EXISTS idx_budget_pause_open ON budget_pauses(production_id, resolved_at);
 CREATE INDEX IF NOT EXISTS idx_topic_demand_created ON topic_demand_snapshots(created_at);
+
+-- Distribution System v1: lightweight content records only. Media bytes never
+-- belong in SQLite/GitHub; media_ref is an ephemeral object-storage pointer.
+CREATE TABLE IF NOT EXISTS content_posts (
+    id TEXT PRIMARY KEY,
+    kind TEXT NOT NULL CHECK(kind IN ('social', 'video')),
+    title TEXT NOT NULL DEFAULT '',
+    master_text TEXT NOT NULL,
+    status TEXT NOT NULL CHECK(status IN ('draft', 'scheduled', 'publishing', 'published', 'partial', 'failed')),
+    scheduled_at TEXT,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS social_variants (
+    id TEXT PRIMARY KEY,
+    post_id TEXT NOT NULL REFERENCES content_posts(id) ON DELETE CASCADE,
+    platform TEXT NOT NULL,
+    title TEXT NOT NULL DEFAULT '',
+    body TEXT NOT NULL,
+    media_ref TEXT,
+    status TEXT NOT NULL CHECK(status IN ('pending', 'published', 'failed')),
+    platform_content_id TEXT,
+    published_url TEXT,
+    last_error TEXT,
+    published_at TEXT,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    UNIQUE(post_id, platform)
+);
+
+CREATE TABLE IF NOT EXISTS publish_attempts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    post_id TEXT NOT NULL REFERENCES content_posts(id) ON DELETE CASCADE,
+    variant_id TEXT NOT NULL REFERENCES social_variants(id) ON DELETE CASCADE,
+    platform TEXT NOT NULL,
+    status TEXT NOT NULL CHECK(status IN ('published', 'failed')),
+    remote_id TEXT,
+    error TEXT,
+    created_at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_content_posts_due
+ON content_posts(status, scheduled_at);
+
+CREATE INDEX IF NOT EXISTS idx_social_variants_post
+ON social_variants(post_id, status);
+
+CREATE INDEX IF NOT EXISTS idx_publish_attempts_post
+ON publish_attempts(post_id, created_at);
