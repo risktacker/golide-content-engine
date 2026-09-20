@@ -174,3 +174,63 @@ ON social_variants(post_id, status);
 
 CREATE INDEX IF NOT EXISTS idx_publish_attempts_post
 ON publish_attempts(post_id, created_at);
+
+
+-- Connected accounts store secret references only; tokens remain in the platform
+-- secret manager and are never written into SQLite.
+CREATE TABLE IF NOT EXISTS social_accounts (
+    id TEXT PRIMARY KEY,
+    platform TEXT NOT NULL,
+    account_label TEXT NOT NULL DEFAULT '',
+    external_account_id TEXT NOT NULL,
+    transport TEXT NOT NULL CHECK(transport IN ('official_api', 'self_hosted', 'unified_connector', 'browser_session', 'assisted_send')),
+    credential_ref TEXT NOT NULL,
+    status TEXT NOT NULL CHECK(status IN ('connected', 'disconnected', 'error')),
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    UNIQUE(platform, external_account_id)
+);
+
+CREATE TABLE IF NOT EXISTS inbox_threads (
+    id TEXT PRIMARY KEY,
+    platform TEXT NOT NULL,
+    external_thread_id TEXT NOT NULL,
+    account_id TEXT NOT NULL REFERENCES social_accounts(id) ON DELETE CASCADE,
+    participant_ref TEXT NOT NULL DEFAULT '',
+    subject TEXT NOT NULL DEFAULT '',
+    status TEXT NOT NULL CHECK(status IN ('open', 'closed')),
+    last_message_at TEXT,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    UNIQUE(platform, external_thread_id)
+);
+
+CREATE TABLE IF NOT EXISTS inbox_messages (
+    id TEXT PRIMARY KEY,
+    thread_id TEXT NOT NULL REFERENCES inbox_threads(id) ON DELETE CASCADE,
+    external_message_id TEXT NOT NULL,
+    direction TEXT NOT NULL CHECK(direction IN ('inbound', 'outbound')),
+    body TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    UNIQUE(thread_id, external_message_id)
+);
+
+CREATE TABLE IF NOT EXISTS temporary_media (
+    id TEXT PRIMARY KEY,
+    object_key TEXT NOT NULL UNIQUE,
+    media_kind TEXT NOT NULL CHECK(media_kind IN ('image', 'audio', 'video', 'render_asset')),
+    post_id TEXT REFERENCES content_posts(id) ON DELETE SET NULL,
+    status TEXT NOT NULL CHECK(status IN ('active', 'ready_for_cleanup', 'deleted')),
+    expires_at TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    deleted_at TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_inbox_threads_open
+ON inbox_threads(status, last_message_at);
+
+CREATE INDEX IF NOT EXISTS idx_inbox_messages_thread
+ON inbox_messages(thread_id, created_at);
+
+CREATE INDEX IF NOT EXISTS idx_temporary_media_cleanup
+ON temporary_media(status, expires_at);
