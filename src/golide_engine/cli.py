@@ -67,11 +67,95 @@ def main() -> int:
     automation_parser.add_argument("--token", default=".secrets/youtube-token.json")
     retention_parser = sub.add_parser("retention-cleanup")
     retention_parser.add_argument("--database", default="data/golide.sqlite3")
+    meta_parser = sub.add_parser("meta-discover")
+    meta_parser.add_argument("--api-version", default=os.getenv("GOLIDE_META_API_VERSION", ""))
+    meta_parser.add_argument("--token-env", default="META_USER_ACCESS_TOKEN")
+    social_status_parser = sub.add_parser("social-status")
+    social_status_parser.add_argument("--database", default="data/golide.sqlite3")
+    social_publish_parser = sub.add_parser("social-publish-due")
+    social_publish_parser.add_argument("--database", default="data/golide.sqlite3")
     args = parser.parse_args()
 
     if args.command == "db-init":
         database = _database(args.database)
         print(database.path)
+        return 0
+
+    if args.command == "meta-discover":
+        from .providers.meta import discover_managed_accounts
+        api_version = args.api_version.strip()
+        token = os.getenv(args.token_env, "").strip()
+        if not api_version:
+            raise RuntimeError("GOLIDE_META_API_VERSION or --api-version is required")
+        if not token:
+            raise RuntimeError(f"{args.token_env} is required")
+        accounts = discover_managed_accounts(
+            api_version=api_version,
+            user_access_token=token,
+        )
+        print(json.dumps({
+            "accounts": [
+                {
+                    "page_id": item.page_id,
+                    "page_name": item.page_name,
+                    "instagram_user_id": item.instagram_user_id,
+                    "tasks": list(item.tasks),
+                }
+                for item in accounts
+            ]
+        }, indent=2))
+        return 0
+
+    if args.command == "social-status":
+        from .db.connections import ConnectionRepository
+        from .providers.meta import social_publish_enabled
+        database = _database(args.database)
+        connections = ConnectionRepository(database).list()
+        print(json.dumps({
+            "live_publish_enabled": social_publish_enabled(),
+            "meta_api_version_configured": bool(os.getenv("GOLIDE_META_API_VERSION", "").strip()),
+            "meta_page_token_configured": bool(os.getenv("META_PAGE_ACCESS_TOKEN", "").strip()),
+            "instagram_id_configured": bool(os.getenv("GOLIDE_INSTAGRAM_USER_ID", "").strip()),
+            "facebook_page_id_configured": bool(os.getenv("GOLIDE_FACEBOOK_PAGE_ID", "").strip()),
+            "connections": [
+                {
+                    "platform": item.platform,
+                    "account_label": item.account_label,
+                    "external_account_id": item.external_account_id,
+                    "transport": item.transport,
+                    "status": item.status,
+                }
+                for item in connections
+            ],
+        }, indent=2))
+        return 0
+
+    if args.command == "social-publish-due":
+        from .db import ContentRepository
+        from .engine.social import SocialBridge
+        from .jobs import publish_due
+        from .providers.social_factory import providers_from_environment
+        from .storage.temporary import TemporaryMediaRepository
+        database = _database(args.database)
+        providers = providers_from_environment()
+        if not providers:
+            raise RuntimeError("no real social providers are fully configured")
+        summaries = publish_due(
+            ContentRepository(database),
+            SocialBridge(ContentRepository(database), providers),
+            media_repository=TemporaryMediaRepository(database),
+        )
+        print(json.dumps({
+            "published_due": [
+                {
+                    "post_id": item.post_id,
+                    "status": item.status,
+                    "published": item.published,
+                    "failed": item.failed,
+                }
+                for item in summaries
+            ]
+        }, indent=2))
         return 0
 
     if args.command == "oauth-bootstrap":

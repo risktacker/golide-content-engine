@@ -1,14 +1,15 @@
 """Replaceable providers for production and social distribution.
 
-The legacy production registry is loaded lazily so the lightweight distribution
-core does not import OpenAI/media dependencies unless that registry is actually
-requested.
+Legacy production providers load lazily so the lightweight distribution core
+does not import media/AI dependencies until they are explicitly requested.
 """
 
 from .base import PublishRequest, PublishResult, SocialProvider
 from .memory import MemoryProvider
 
 __all__ = [
+    "FacebookPageProvider",
+    "InstagramProvider",
     "MemoryProvider",
     "ProviderRegistry",
     "PublishRequest",
@@ -20,6 +21,8 @@ __all__ = [
 def __getattr__(name: str):
     if name == "ProviderRegistry":
         from .registry import ProviderRegistry
-
         return ProviderRegistry
+    if name in {"FacebookPageProvider", "InstagramProvider"}:
+        from .meta import FacebookPageProvider, InstagramProvider
+        return {"FacebookPageProvider": FacebookPageProvider, "InstagramProvider": InstagramProvider}[name]
     raise AttributeError(name)

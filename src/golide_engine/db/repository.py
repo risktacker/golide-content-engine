@@ -141,7 +141,7 @@ class ContentRepository:
         variant_id: str,
         *,
         content_id: str,
-        url: str,
+        url: str | None,
     ) -> None:
         now = utc_now()
         self.database.execute(
