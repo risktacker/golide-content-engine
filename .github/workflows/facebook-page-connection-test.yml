@@ -1,0 +1,29 @@
+name: Facebook Page Connection Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/facebook-page-connection-test.yml"
+      - "src/golide_engine/providers/facebook_verify.py"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GOLIDE_META_API_VERSION: ${{ secrets.GOLIDE_META_API_VERSION }}
+      META_PAGE_ACCESS_TOKEN: ${{ secrets.META_PAGE_ACCESS_TOKEN }}
+      GOLIDE_FACEBOOK_PAGE_ID: ${{ secrets.GOLIDE_FACEBOOK_PAGE_ID }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify Facebook Page token and account
+        run: python src/golide_engine/providers/facebook_verify.py
