@@ -2,6 +2,12 @@ name: R2 Smoke Test
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/r2-smoke-test.yml"
+      - "src/golide_engine/storage/r2.py"
+      - "src/golide_engine/storage/r2_smoke.py"
 
 permissions:
   contents: read
