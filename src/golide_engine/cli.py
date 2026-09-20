@@ -117,6 +117,10 @@ def main() -> int:
             "meta_page_token_configured": bool(os.getenv("META_PAGE_ACCESS_TOKEN", "").strip()),
             "instagram_id_configured": bool(os.getenv("GOLIDE_INSTAGRAM_USER_ID", "").strip()),
             "facebook_page_id_configured": bool(os.getenv("GOLIDE_FACEBOOK_PAGE_ID", "").strip()),
+            "linkedin_token_configured": bool(os.getenv("LINKEDIN_ACCESS_TOKEN", "").strip()),
+            "linkedin_author_configured": bool(os.getenv("GOLIDE_LINKEDIN_AUTHOR_URN", "").strip()),
+            "linkedin_version_configured": bool(os.getenv("GOLIDE_LINKEDIN_VERSION", "").strip()),
+            "x_token_configured": bool(os.getenv("X_USER_ACCESS_TOKEN", "").strip()),
             "connections": [
                 {
                     "platform": item.platform,

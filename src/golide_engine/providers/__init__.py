@@ -10,11 +10,13 @@ from .memory import MemoryProvider
 __all__ = [
     "FacebookPageProvider",
     "InstagramProvider",
+    "LinkedInProvider",
     "MemoryProvider",
     "ProviderRegistry",
     "PublishRequest",
     "PublishResult",
     "SocialProvider",
+    "XProvider",
 ]
 
 
@@ -25,4 +27,10 @@ def __getattr__(name: str):
     if name in {"FacebookPageProvider", "InstagramProvider"}:
         from .meta import FacebookPageProvider, InstagramProvider
         return {"FacebookPageProvider": FacebookPageProvider, "InstagramProvider": InstagramProvider}[name]
+    if name == "LinkedInProvider":
+        from .linkedin import LinkedInProvider
+        return LinkedInProvider
+    if name == "XProvider":
+        from .x import XProvider
+        return XProvider
     raise AttributeError(name)
