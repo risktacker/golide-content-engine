@@ -1,0 +1,109 @@
+{
+  "version": 1,
+  "style_name": "GOLIDE Reference Editorial Motion",
+  "model_reference_style": true,
+  "voice": {
+    "source": "owner_recording_only",
+    "ai_voice_allowed": false,
+    "cloned_voice_allowed": false,
+    "audio_is_master_timeline": true,
+    "trim_dead_air": true,
+    "optional_speed_min": 1.0,
+    "optional_speed_max": 1.12
+  },
+  "background": {
+    "base": "warm_white",
+    "clean": true,
+    "texture": "minimal"
+  },
+  "typography": {
+    "headline": "strong_condensed",
+    "large_text": true,
+    "handwritten_annotation": true,
+    "short_text_states": true,
+    "text_participates_in_motion": true
+  },
+  "palette": {
+    "background": ["#FFFFFF", "#F7F3EA"],
+    "text": ["#111111", "#252525"],
+    "reference_accents": ["muted_olive", "burnt_orange", "muted_red"],
+    "golide_accents": ["electric_cyan", "deep_navy"],
+    "golide_accent_usage": "restrained"
+  },
+  "illustration": {
+    "style": "simple_editorial_line_art",
+    "allowed": [
+      "editorial_drawings",
+      "line_art",
+      "diagrams",
+      "cards",
+      "gauges",
+      "timelines",
+      "checklists",
+      "charts",
+      "visual_metaphors"
+    ]
+  },
+  "motion": {
+    "allowed": [
+      "reveal",
+      "draw",
+      "slide",
+      "grow",
+      "sweep",
+      "tick",
+      "cross_out",
+      "underline",
+      "fill",
+      "stack",
+      "fan",
+      "progress"
+    ],
+    "micro_beat_seconds": {
+      "min": 0.5,
+      "max": 1.0
+    },
+    "fast": true,
+    "tight": true,
+    "little_dead_air": true,
+    "constant_micro_animation": true
+  },
+  "sync": {
+    "spoken_keyword_triggers_visual": true,
+    "spoken_conclusion_triggers_payoff": true,
+    "charts_progress_with_explanation": true,
+    "checkmarks_land_with_spoken_points": true,
+    "cta_enters_when_spoken": true,
+    "visuals_follow_meaning": true
+  },
+  "sound": {
+    "voice_dominates": true,
+    "allowed_accents": [
+      "transition_hit",
+      "tick",
+      "pop",
+      "reveal",
+      "cross_out"
+    ],
+    "background_music": "optional_low"
+  },
+  "composition": {
+    "9:16": {
+      "layout": "vertical_recomposition",
+      "stacked_cards": true,
+      "larger_type": true,
+      "single_focal_element_per_beat": true
+    },
+    "16:9": {
+      "layout": "horizontal_editorial",
+      "side_by_side_comparisons": true,
+      "wider_charts": true,
+      "wider_timelines": true
+    }
+  },
+  "render": {
+    "intermediate_video_files": false,
+    "final_render_count": 1,
+    "delete_temp_after_confirmed_publish": true
+  }
+}

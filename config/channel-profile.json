@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "default_niche": "technology and software",
+  "goals": ["reach", "authority", "education", "conversion"],
+  "formats": ["9:16", "16:9"],
+  "topic_sources": [
+    "youtube",
+    "search_web_news",
+    "x",
+    "reddit_community",
+    "niche_sources",
+    "previous_golide_performance"
+  ],
+  "topic_scoring": [
+    "relevance",
+    "freshness",
+    "engagement_potential",
+    "audience_fit",
+    "originality_of_angle",
+    "golide_relevance"
+  ]
+}
