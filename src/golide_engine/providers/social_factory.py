@@ -4,7 +4,11 @@ import os
 
 from .base import SocialProvider
 from .linkedin import LinkedInProvider
-from .meta import FacebookPageProvider, InstagramProvider
+from .meta import (
+    FacebookPageProvider,
+    InstagramProvider,
+    discover_instagram_identity,
+)
 from .x import XProvider
 
 
@@ -14,16 +18,20 @@ def providers_from_environment() -> list[SocialProvider]:
 
     meta_version = os.getenv("GOLIDE_META_API_VERSION", "").strip()
 
-    # Preferred Instagram path: Instagram Login. It does not require the
-    # professional Instagram account to be linked to a Facebook Page.
+    # Preferred Instagram path: Instagram Login. The account id is resolved
+    # directly from the token so the operator does not have to copy a separate
+    # Meta/Instagram identifier by hand.
     instagram_token = os.getenv("INSTAGRAM_USER_ACCESS_TOKEN", "").strip()
-    ig_user_id = os.getenv("GOLIDE_INSTAGRAM_USER_ID", "").strip()
-    if meta_version and instagram_token and ig_user_id:
+    if meta_version and instagram_token:
+        identity = discover_instagram_identity(
+            api_version=meta_version,
+            instagram_access_token=instagram_token,
+        )
         providers.append(
             InstagramProvider(
                 api_version=meta_version,
                 access_token=instagram_token,
-                instagram_user_id=ig_user_id,
+                instagram_user_id=identity.id,
                 graph_host="graph.instagram.com",
             )
         )
@@ -40,8 +48,8 @@ def providers_from_environment() -> list[SocialProvider]:
             )
         )
 
-    # Backward compatibility only: if no direct Instagram Login token exists,
-    # the old Facebook-Login/Page-token path can still operate.
+    # Backward compatibility for the old Facebook-Login Instagram route.
+    ig_user_id = os.getenv("GOLIDE_INSTAGRAM_USER_ID", "").strip()
     if (
         meta_version
         and not instagram_token
