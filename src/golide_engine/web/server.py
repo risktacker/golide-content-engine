@@ -104,6 +104,24 @@ class StudioHandler(BaseHTTPRequestHandler):
             return self._json(200, {"connections": self.service.connection_rows()})
         if parsed.path == "/api/policy":
             return self._json(200, self.service.policy_snapshot())
+        if parsed.path == "/api/product-registry":
+            registry_url = os.getenv(
+                "GOLIDE_PRODUCT_REGISTRY_URL",
+                "https://marketplace.golidee.com/api/product-registry",
+            ).strip()
+            try:
+                request = urllib.request.Request(
+                    registry_url,
+                    headers={"Accept": "application/json", "User-Agent": "GOLIDE-Content-Engine/1.0"},
+                )
+                with urllib.request.urlopen(request, timeout=8) as response:
+                    payload = json.loads(response.read().decode("utf-8"))
+                if not isinstance(payload.get("products"), list):
+                    raise ValueError("invalid product registry")
+                return self._json(200, payload)
+            except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, ValueError, json.JSONDecodeError):
+                # Local snapshot is a safe fallback when Marketplace is briefly unavailable.
+                return self._json(200, self.service.policy_snapshot()["product_registry"])
         return self._serve_static(parsed.path)
 
     def do_POST(self) -> None:
