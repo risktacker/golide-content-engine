@@ -66,6 +66,7 @@ def build_spec(rule: dict[str, Any], day, timezone_name: str, channel_id: str) -
         "max_cost_usd": 6.0,
         "production_authorized": True,
         "output_destination": "render-and-upload",
+        "owner_voice_required": True,
         "concept": {
             "family": "science-explainer",
             "promise": "A current impossible-but-real idea explained with authoritative evidence",
@@ -73,7 +74,7 @@ def build_spec(rule: dict[str, Any], day, timezone_name: str, channel_id: str) -
         },
         "generation_parameters": {
             "brand_preset": "golide-editorial",
-            "voice": "elevenlabs-golide-narrator-v1",
+            "voice": "owner-recording-only",
             "pacing": "fast",
             "visual_density": 4,
             "motion_intensity": 4,
