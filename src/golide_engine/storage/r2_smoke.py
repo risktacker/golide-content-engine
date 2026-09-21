@@ -64,11 +64,14 @@ def run() -> int:
                 "Scheduled attachment retention verification.",
                 "Temporary object cleanup verification.",
             ],
-            "variants": [{
-                "platform": "instagram",
-                "body": "Temporary integration verification",
-                "media_ref": prepared["media_ref"],
-            }],
+            "variants": [
+                {
+                    "platform": platform,
+                    "body": "Temporary integration verification",
+                    "media_ref": prepared["media_ref"],
+                }
+                for platform in ("instagram", "facebook", "linkedin", "x")
+            ],
         })
         attached = database.rows(
             "SELECT post_id, expires_at FROM temporary_media WHERE object_key=?",
