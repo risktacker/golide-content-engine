@@ -193,11 +193,24 @@ class StudioService:
 
         if content_class is ContentClass.POST:
             live_products = payload.get("registry_products")
-            registry = (
-                ProductRegistry.from_payload({"version": 1, "products": live_products})
-                if isinstance(live_products, list) and live_products
-                else self.policy.products
-            )
+            if isinstance(live_products, list) and live_products:
+                enriched_products = []
+                for item in live_products:
+                    if not isinstance(item, dict):
+                        continue
+                    product = dict(item)
+                    product_id_value = str(product.get("id", "")).strip()
+                    recent = self.database.rows(
+                        """SELECT COUNT(*) count FROM content_posts
+                           WHERE content_class='post' AND product_id=?
+                           AND datetime(created_at) >= datetime('now', '-14 days')""",
+                        (product_id_value,),
+                    ) if product_id_value else []
+                    product["recent_post_count"] = int(recent[0]["count"]) if recent else 0
+                    enriched_products.append(product)
+                registry = ProductRegistry.from_payload({"version": 1, "products": enriched_products})
+            else:
+                registry = self.policy.products
             selected_product = registry.resolve(
                 product_mode,
                 product_id=product_id,
