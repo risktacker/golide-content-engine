@@ -6,152 +6,79 @@ const labels = {
   youtube: "YouTube",
 };
 
-const routes = {
-  post: ["instagram", "facebook", "linkedin", "x"],
-  short: ["instagram", "facebook", "youtube"],
-  long: ["youtube"],
-};
-
-const routeText = {
-  post: "Post: IG + FB + LinkedIn + X",
-  short: "Short: IG + FB + YouTube Shorts",
-  long: "Long: YouTube only",
-};
-
-const $ = (s) => document.querySelector(s);
-const $$ = (s) => [...document.querySelectorAll(s)];
+const $ = (selector) => document.querySelector(selector);
+const $$ = (selector) => [...document.querySelectorAll(selector)];
 
 let policy = null;
+let overview = null;
+let productionJobs = [];
 let r2Ready = false;
 let uploadCount = 0;
-let mediaRefs = { meta: null, square: null, voice: null, video: null };
+
+async function api(path, opts = {}) {
+  const response = await fetch(path, {
+    headers: { "content-type": "application/json", ...(opts.headers || {}) },
+    ...opts,
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || "Request failed");
+  return data;
+}
+
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;",
+  }[char]));
+}
+
+function escAttr(value) {
+  return esc(value).replace(/\n/g, "");
+}
+
+function pretty(value) {
+  return String(value || "")
+    .replaceAll("_", " ")
+    .replaceAll("-", " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function money(value) {
+  return new Intl.NumberFormat("en", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+  }).format(Number(value || 0));
+}
 
 function switchView(name) {
-  $$(".view").forEach((v) => v.classList.toggle("active", v.id === name));
-  $$(".nav").forEach((v) => v.classList.toggle("active", v.dataset.view === name));
-  $("#view-title").textContent = name[0].toUpperCase() + name.slice(1);
+  $$(".view").forEach((view) => view.classList.toggle("active", view.id === name));
+  $$(".nav").forEach((button) => button.classList.toggle("active", button.dataset.view === name));
+  const titles = {
+    dashboard: "Dashboard",
+    create: "Automation",
+    schedule: "Schedule",
+    inbox: "Inbox",
+    connections: "Connections",
+  };
+  $("#view-title").textContent = titles[name] || pretty(name);
+  if (name === "create") loadProductionJobs();
   if (name === "schedule") loadSchedule();
   if (name === "inbox") loadInbox();
   if (name === "connections") loadConnections();
 }
 
-$$(".nav").forEach((b) => (b.onclick = () => switchView(b.dataset.view)));
-$$("[data-open-create]").forEach((b) => (b.onclick = () => switchView("create")));
-
-async function api(path, opts = {}) {
-  const res = await fetch(path, {
-    headers: { "content-type": "application/json", ...(opts.headers || {}) },
-    ...opts,
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || "Request failed");
-  return data;
-}
-
-function currentClass() {
-  return $("#content-class").value;
-}
-
-function valueUnits() {
-  return [1, 2, 3, 4]
-    .map((n) => $("#unit-" + n).value.trim())
-    .filter(Boolean);
-}
-
-function platformRows() {
-  const klass = currentClass();
-  $("#route-chip").textContent = routeText[klass];
-  const root = $("#platforms");
-  root.innerHTML = routes[klass]
-    .map((p) => {
-      const youtubeTitle = p === "youtube"
-        ? '<label class="mini-label">YouTube title<input id="title-' + p + '" placeholder="Platform title"></label>'
-        : "";
-      return '<div class="platform-row">' +
-        '<div class="platform-top"><span class="route-dot"></span><strong>' + labels[p] + '</strong><small>locked route</small></div>' +
-        youtubeTitle +
-        '<label class="mini-label">Platform framing / copy<textarea id="copy-' + p + '" placeholder="Leave blank to use the locked value sequence"></textarea></label>' +
-        '</div>';
-    }).join("");
-}
-
-function syncProductContext() {
-  const mode = $("#product-mode").value;
-  const product = $("#product-id");
-  const bridge = $("#bridge-position");
-  const url = $("#product-url");
-  const status = $("#product-context-status");
-  const products = policy?.product_registry?.products || [];
-
-  product.disabled = mode !== "specific_product";
-  if (mode === "brand") {
-    product.value = "";
-    bridge.value = "";
-    bridge.disabled = true;
-    url.value = "";
-    status.textContent = "Brand mode keeps this static post non-product-centered.";
-    return;
-  }
-
-  bridge.disabled = false;
-  if (mode === "auto_product") {
-    product.value = "";
-    url.value = "";
-    status.textContent = "Auto Product favors new and under-covered products while keeping mature products in rotation.";
-    return;
-  }
-
-  if (!product.value && products.length) product.value = products[0].id;
-  const selected = products.find((item) => item.id === product.value);
-  url.value = selected?.marketplace_url || "";
-  status.textContent = selected
-    ? selected.name + " · " + selected.lifecycle_status + " · priority " + selected.priority
-    : "Choose a registered product.";
-}
-
-function renderProductRegistry() {
-  const products = policy?.product_registry?.products || [];
-  const select = $("#product-id");
-  const current = select.value;
-  select.innerHTML = '<option value="">Auto selects from registry</option>' +
-    products.map((item) => '<option value="' + escAttr(item.id) + '">' +
-      esc(item.name) + " · " + esc(item.lifecycle_status) + "</option>").join("");
-  if (products.some((item) => item.id === current)) select.value = current;
-  syncProductContext();
-}
-
-function classChanged() {
-  const isPost = currentClass() === "post";
-  $("#post-fields").hidden = !isPost;
-  $("#video-fields").hidden = isPost;
-  $("#media-approved").closest("label").hidden = !isPost;
-  $("#qa-approved").closest("label").hidden = isPost;
-  platformRows();
-  if (isPost) syncProductContext();
-}
-
-$("#content-class").onchange = classChanged;
-$("#product-mode").onchange = syncProductContext;
-$("#product-id").onchange = syncProductContext;
-
-$("#fill-platforms").onclick = () => {
-  const klass = currentClass();
-  if (klass === "post") {
-    const parts = valueUnits();
-    const text = parts.join("\n\n");
-    routes[klass].forEach((p) => {
-      const box = $("#copy-" + p);
-      if (box) box.value = text;
-    });
-    if (!$("#master").value.trim()) $("#master").value = text;
-  } else {
-    const text = $("#master").value.trim();
-    routes[klass].forEach((p) => {
-      const box = $("#copy-" + p);
-      if (box) box.value = text;
-    });
-  }
-};
+$$(".nav").forEach((button) => {
+  button.onclick = () => switchView(button.dataset.view);
+});
+$$("[data-open-automation]").forEach((button) => {
+  button.onclick = () => switchView("create");
+});
+$$("[data-view-link]").forEach((link) => {
+  link.onclick = (event) => {
+    event.preventDefault();
+    switchView(link.dataset.viewLink);
+  };
+});
 
 async function loadHealth() {
   try {
@@ -167,40 +94,54 @@ async function loadHealth() {
 async function loadPolicy() {
   try {
     policy = await api("/api/policy");
-    try {
-      const liveRegistry = await api("/api/product-registry");
-      if (Array.isArray(liveRegistry.products) && liveRegistry.products.length) {
-        policy.product_registry = liveRegistry;
-      }
-    } catch {
-      // Keep the checked-in snapshot as a fallback.
-    }
-    renderCadence();
-    renderProductRegistry();
   } catch {
     policy = null;
   }
+  renderCadence();
 }
 
 async function loadOverview() {
-  const o = await api("/api/overview");
-  r2Ready = Boolean(o.r2_ready);
-  const stats = [
-    ["Posts today", o.posts_today],
-    ["Draft posts", o.draft_posts],
-    ["Draft Shorts", o.draft_shorts],
-    ["Draft long", o.draft_longs],
-    ["Scheduled", o.scheduled],
-    ["Failed / partial", o.failed],
-  ];
-  $("#stats").innerHTML = stats
-    .map(([l, v]) => '<div class="stat"><b>' + v + '</b><span>' + l + '</span></div>')
-    .join("");
+  overview = await api("/api/overview");
+  r2Ready = Boolean(overview.r2_ready);
 
-  const posts = await api("/api/posts?status=scheduled");
-  renderPosts($("#upcoming"), posts.posts.slice(0, 6));
-  const inbox = await api("/api/inbox");
-  renderThreads($("#dashboard-inbox"), inbox.threads.slice(0, 5));
+  const stats = [
+    ["Waiting on you", overview.waiting_voice],
+    ["Engine running", overview.production_running],
+    ["Scheduled", overview.scheduled],
+    ["Published", overview.published],
+    ["Failed / partial", overview.failed],
+    ["Temp media", overview.temporary_media],
+  ];
+  $("#stats").innerHTML = stats.map(([label, value]) =>
+    '<div class="stat"><b>' + esc(value) + '</b><span>' + esc(label) + '</span></div>'
+  ).join("");
+
+  const scheduled = await api("/api/posts?status=scheduled");
+  renderPosts($("#upcoming"), scheduled.posts.slice(0, 6));
+
+  renderBudget();
+}
+
+function renderBudget() {
+  if (!overview) return;
+  const budget = policy?.budget || {
+    openai_deposit_target_usd: 10,
+    scheduled_video_guard_usd: 7,
+    static_post_guard_usd: 3,
+    x_opening_credit_usd: 5,
+  };
+  const video = Number(overview.video_openai_spend_usd || 0);
+  const staticEstimate = Number(overview.static_openai_estimate_usd || 0);
+  const cards = [
+    [money(budget.openai_deposit_target_usd), "OpenAI API opening balance", "One prepaid API balance"],
+    [money(video), "Video API spend this month", "Guard: " + money(budget.scheduled_video_guard_usd)],
+    [money(staticEstimate), "Static estimate this month", "Guard: " + money(budget.static_post_guard_usd)],
+    [money(budget.x_opening_credit_usd), "X opening credits", "Separate pay-per-use balance"],
+  ];
+  $("#budget-strip").innerHTML = cards.map(([amount, label, note]) =>
+    '<div class="budget-card"><strong>' + esc(amount) + '</strong><span>' +
+    esc(label) + '</span><small>' + esc(note) + '</small></div>'
+  ).join("");
 }
 
 function renderPosts(root, posts) {
@@ -210,13 +151,14 @@ function renderPosts(root, posts) {
     return;
   }
   root.className = "stack";
-  root.innerHTML = posts.map((p) => {
-    const platforms = p.variants.map((v) => labels[v.platform] || v.platform).join(", ");
-    const when = p.scheduled_at ? new Date(p.scheduled_at).toLocaleString() : "Unscheduled";
+  root.innerHTML = posts.map((post) => {
+    const platforms = (post.variants || []).map((variant) => labels[variant.platform] || variant.platform).join(", ");
+    const when = post.scheduled_at ? new Date(post.scheduled_at).toLocaleString() : "Unscheduled";
     return '<div class="item"><div class="item-main"><strong>' +
-      esc(p.title || p.master_text) +
-      '</strong><small>' + esc(p.content_class.toUpperCase()) + ' · ' + esc(when) + ' · ' + esc(platforms) +
-      '</small></div><span class="pill">' + esc(p.status) + '</span></div>';
+      esc(post.title || post.master_text || "Scheduled content") +
+      '</strong><small>' + esc(String(post.content_class || "").toUpperCase()) +
+      " · " + esc(when) + " · " + esc(platforms) +
+      '</small></div><span class="pill">' + esc(post.status) + '</span></div>';
   }).join("");
 }
 
@@ -227,22 +169,22 @@ function renderThreads(root, threads) {
     return;
   }
   root.className = "stack";
-  root.innerHTML = threads.map((t) => {
-    const last = t.messages[t.messages.length - 1];
+  root.innerHTML = threads.map((thread) => {
+    const last = thread.messages?.[thread.messages.length - 1];
     return '<div class="item"><div class="item-main"><strong>' +
-      esc(t.participant_ref || t.subject || "Conversation") +
-      '</strong><small>' + esc(labels[t.platform] || t.platform) + ' · ' +
-      (last ? esc(last.body) : "No messages") +
+      esc(thread.participant_ref || thread.subject || "Conversation") +
+      '</strong><small>' + esc(labels[thread.platform] || thread.platform) +
+      " · " + (last ? esc(last.body) : "No messages") +
       '</small></div><span class="pill">open</span></div>';
   }).join("");
 }
 
 function renderCadence() {
-  if (!policy) return;
-  const cal = policy.calendar;
-  const days = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
-  const shorts = Object.fromEntries(cal.shorts.map((x) => [x.day, x.time]));
-  const longs = Object.fromEntries(cal.long_videos.map((x) => [x.day, x.time]));
+  if (!policy?.calendar) return;
+  const calendar = policy.calendar;
+  const days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+  const shorts = Object.fromEntries(calendar.shorts.map((item) => [item.day, item.time]));
+  const longs = Object.fromEntries(calendar.long_videos.map((item) => [item.day, item.time]));
   $("#cadence-grid").innerHTML =
     '<div class="cadence-head"><span>Day</span><span>08:30</span><span>13:00</span><span>17:30</span><span>19:30</span></div>' +
     days.map((day) =>
@@ -254,201 +196,214 @@ function renderCadence() {
     ).join("");
 }
 
+function stageProgress(job) {
+  const stage = String(job.stage || "").toLowerCase();
+  const status = String(job.status || "").toLowerCase();
+  if (["scheduled", "completed", "release_ready"].includes(status)) return 5;
+  if (stage.includes("release") || stage.includes("qa") || stage.includes("upload")) return 5;
+  if (stage.includes("render") || stage.includes("storyboard") || stage.includes("asset") || stage.includes("thumbnail")) return 4;
+  if (status === "waiting_owner_voice" || stage.includes("script")) return 3;
+  if (stage.includes("research") || stage.includes("trend") || stage.includes("demand")) return 2;
+  if (status === "claimed" || status === "running") return 1;
+  return 0;
+}
+
+function stageBars(job) {
+  const progress = stageProgress(job);
+  return '<div class="stage-track">' +
+    [1, 2, 3, 4, 5].map((step) =>
+      '<span class="stage-node ' + (step < progress ? "done" : step === progress ? "current" : "") + '"></span>'
+    ).join("") + '</div>';
+}
+
+function jobSecondary(job) {
+  const pieces = [];
+  if (job.format) pieces.push(String(job.format).toUpperCase());
+  if (job.stage) pieces.push(pretty(job.stage));
+  if (job.scheduled_at) pieces.push(new Date(job.scheduled_at).toLocaleString());
+  return pieces.join(" · ");
+}
+
+function renderJobList() {
+  const root = $("#job-list");
+  if (!productionJobs.length) {
+    root.className = "job-list empty-state";
+    root.innerHTML = "No production jobs yet. Scheduled automation will populate this pipeline.";
+    return;
+  }
+  root.className = "job-list";
+  root.innerHTML = productionJobs.map((job) => {
+    const retry = ["failed", "paused_funds"].includes(job.status)
+      ? '<button class="ghost retry-job" data-job="' + escAttr(job.job_id) + '">Retry</button>'
+      : "";
+    return '<div class="job-card"><div class="job-title"><strong>' +
+      esc(job.title || "Engine planning job") + '</strong><small>' +
+      esc(jobSecondary(job)) + '</small></div>' +
+      stageBars(job) +
+      '<div><span class="status-pill ' + escAttr(job.status) + '">' +
+      esc(pretty(job.status)) + '</span>' + retry + '</div></div>';
+  }).join("");
+
+  $$(".retry-job").forEach((button) => {
+    button.onclick = () => retryJob(button.dataset.job);
+  });
+}
+
+function actionCard(job) {
+  const script = job.script || "The engine is finishing the approved script.";
+  return '<article class="action-card"><div><span class="kicker gold">VOICE NEEDED · ' +
+    esc(String(job.format || "video").toUpperCase()) + '</span><h4>' +
+    esc(job.title || "Script ready") + '</h4><p>The topic was selected from current demand and researched by the engine. Record this approved script in your own voice; the pipeline resumes automatically after upload.</p>' +
+    '<div class="script-box">' + esc(script) + '</div></div>' +
+    '<div class="action-controls">' +
+      '<label class="upload-button">Upload my recording<input class="voice-input" type="file" accept="audio/*" data-job="' + escAttr(job.job_id) + '"></label>' +
+      '<button class="action-button copy-script" data-job="' + escAttr(job.job_id) + '">Copy script</button>' +
+      '<span class="voice-status" id="voice-status-' + escAttr(job.job_id) + '"></span>' +
+    '</div></article>';
+}
+
+function renderActionQueues() {
+  const waiting = productionJobs.filter((job) => job.status === "waiting_owner_voice");
+  const root = $("#action-queue");
+  const dashboard = $("#dashboard-actions");
+
+  if (!waiting.length) {
+    root.className = "action-queue empty-state";
+    root.innerHTML = "No voice recordings required right now.";
+    dashboard.className = "stack empty-state";
+    dashboard.innerHTML = "Nothing needs you right now.";
+    return;
+  }
+
+  root.className = "action-queue";
+  root.innerHTML = waiting.map(actionCard).join("");
+  dashboard.className = "stack";
+  dashboard.innerHTML = waiting.slice(0, 4).map((job) =>
+    '<div class="item"><div class="item-main"><strong>' +
+    esc(job.title || "Video script ready") + '</strong><small>' +
+    esc(String(job.format || "video").toUpperCase()) +
+    ' · owner recording required</small></div><span class="pill">voice needed</span></div>'
+  ).join("");
+
+  $$(".voice-input").forEach((input) => {
+    input.onchange = () => uploadVoice(input.dataset.job, input.files?.[0]);
+  });
+  $$(".copy-script").forEach((button) => {
+    button.onclick = async () => {
+      const job = productionJobs.find((item) => item.job_id === button.dataset.job);
+      if (!job?.script) return;
+      await navigator.clipboard.writeText(job.script);
+      button.textContent = "Copied";
+      setTimeout(() => { button.textContent = "Copy script"; }, 1200);
+    };
+  });
+}
+
+async function prepareUpload(file) {
+  if (!file) throw new Error("Choose an audio recording.");
+  if (!r2Ready) throw new Error("Temporary R2 storage is not ready.");
+  const prepared = await api("/api/media/prepare", {
+    method: "POST",
+    body: JSON.stringify({
+      filename: file.name,
+      media_kind: file.type.startsWith("audio/") ? "audio" : "render_asset",
+    }),
+  });
+  const uploaded = await fetch(prepared.upload_url, {
+    method: "PUT",
+    headers: { "Content-Type": file.type || "application/octet-stream" },
+    body: file,
+  });
+  if (!uploaded.ok) throw new Error("Temporary upload failed (" + uploaded.status + ")");
+  return prepared.media_ref;
+}
+
+async function uploadVoice(jobId, file) {
+  if (!jobId || !file || uploadCount) return;
+  const status = $("#voice-status-" + CSS.escape(jobId));
+  uploadCount += 1;
+  if (status) status.textContent = "Uploading " + file.name + "...";
+  try {
+    const mediaRef = await prepareUpload(file);
+    await api("/api/production-jobs/" + encodeURIComponent(jobId) + "/voice", {
+      method: "POST",
+      body: JSON.stringify({ media_ref: mediaRef }),
+    });
+    if (status) status.textContent = "Uploaded. Engine will resume on the next cycle.";
+    await loadProductionJobs();
+    await loadOverview();
+  } catch (error) {
+    if (status) status.textContent = error.message;
+  } finally {
+    uploadCount -= 1;
+  }
+}
+
+async function retryJob(jobId) {
+  if (!jobId) return;
+  try {
+    await api("/api/production-jobs/" + encodeURIComponent(jobId) + "/retry", {
+      method: "POST",
+      body: "{}",
+    });
+    await loadProductionJobs();
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
+async function loadProductionJobs() {
+  try {
+    const data = await api("/api/production-jobs");
+    productionJobs = data.jobs || [];
+  } catch {
+    productionJobs = [];
+  }
+  renderJobList();
+  renderActionQueues();
+}
+
 async function loadSchedule() {
   const data = await api("/api/posts?status=scheduled");
-  renderPosts($("#schedule-list"), data.posts);
+  renderPosts($("#schedule-list"), data.posts || []);
   if (!policy) await loadPolicy();
   renderCadence();
 }
 
 async function loadInbox() {
   const data = await api("/api/inbox");
-  renderThreads($("#inbox-list"), data.threads);
+  renderThreads($("#inbox-list"), data.threads || []);
 }
 
 async function loadConnections() {
-  const data = await api("/api/connections");
-  const by = Object.fromEntries(data.connections.map((c) => [c.platform, c]));
-  $("#connection-grid").innerHTML = ["instagram", "facebook", "linkedin", "x", "youtube"]
-    .map((p) => {
-      const c = by[p];
-      return '<div class="connection ' + (c && c.status === "connected" ? "connected" : "") + '">' +
-        '<strong>' + labels[p] + '</strong>' +
-        '<small>' + (c ? esc(c.account_label || c.external_account_id) : "Not connected") + '</small>' +
-        '<div class="state">' + (c ? esc(c.status) : "Setup required") + '</div></div>';
-    }).join("");
-}
-
-function mediaKind(file) {
-  if (file.type.startsWith("image/")) return "image";
-  if (file.type.startsWith("video/")) return "video";
-  if (file.type.startsWith("audio/")) return "audio";
-  return "render_asset";
-}
-
-async function uploadFile(file, statusText) {
-  if (!file) return null;
-  if (!r2Ready) throw new Error("Temporary R2 storage is not configured.");
-  uploadCount += 1;
-  setBusy(true);
-  if (statusText) statusText.textContent = "Uploading " + file.name + "...";
+  let connections = [];
   try {
-    const prepared = await api("/api/media/prepare", {
-      method: "POST",
-      body: JSON.stringify({ filename: file.name, media_kind: mediaKind(file) }),
-    });
-    const uploaded = await fetch(prepared.upload_url, {
-      method: "PUT",
-      headers: { "Content-Type": file.type || "application/octet-stream" },
-      body: file,
-    });
-    if (!uploaded.ok) throw new Error("Temporary upload failed (" + uploaded.status + ")");
-    if (statusText) statusText.textContent = "Ready: " + file.name;
-    return prepared.media_ref;
-  } finally {
-    uploadCount -= 1;
-    setBusy(uploadCount > 0);
+    const data = await api("/api/connections");
+    connections = data.connections || [];
+  } catch {
+    connections = [];
   }
+  const byPlatform = Object.fromEntries(connections.map((item) => [item.platform, item]));
+  $("#connection-grid").innerHTML = ["instagram", "facebook", "linkedin", "x", "youtube"].map((platform) => {
+    const connected = byPlatform[platform];
+    const isX = platform === "x";
+    const stateClass = connected ? "connected" : "pending";
+    const state = connected ? "Connected" : (isX ? "Authorization pending" : "Awaiting engine sync");
+    const detail = connected
+      ? (connected.account_label || connected.external_account_id || "Verified route")
+      : (isX ? "Finish OAuth user authorization" : "Existing credential will be reflected after engine sync");
+    return '<div class="connection ' + stateClass + '"><strong>' +
+      esc(labels[platform]) + '</strong><small>' + esc(detail) +
+      '</small><div class="state">' + esc(state) + '</div></div>';
+  }).join("");
 }
 
-$("#meta-image-file").onchange = async (e) => {
-  try { mediaRefs.meta = await uploadFile(e.target.files[0], $("#image-generation-status")); }
-  catch (err) { $("#image-generation-status").textContent = err.message; }
-};
-$("#square-image-file").onchange = async (e) => {
-  try { mediaRefs.square = await uploadFile(e.target.files[0], $("#image-generation-status")); }
-  catch (err) { $("#image-generation-status").textContent = err.message; }
-};
-$("#owner-voice-file").onchange = async (e) => {
-  try { mediaRefs.voice = await uploadFile(e.target.files[0], $("#video-status")); }
-  catch (err) { $("#video-status").textContent = err.message; }
-};
-$("#final-video-file").onchange = async (e) => {
-  try { mediaRefs.video = await uploadFile(e.target.files[0], $("#video-status")); }
-  catch (err) { $("#video-status").textContent = err.message; }
-};
+$("#refresh-jobs").onclick = loadProductionJobs;
 
-$("#generate-image").onclick = async () => {
-  const status = $("#image-generation-status");
-  status.textContent = "Generating one paid master and adapting it...";
-  setBusy(true);
-  try {
-    const result = await api("/api/social-image/generate", {
-      method: "POST",
-      body: JSON.stringify({
-        hook: $("#image-hook").value,
-        concept: $("#image-concept").value,
-        context: $("#master").value || valueUnits().join(" "),
-      }),
-    });
-    mediaRefs.meta = result.meta_4x5.media_ref;
-    mediaRefs.square = result.square_1x1.media_ref;
-    $("#image-previews").innerHTML =
-      '<figure><img src="' + escAttr(result.meta_4x5.preview_url) + '" alt="Meta 4:5 preview"><figcaption>Meta 4:5</figcaption></figure>' +
-      '<figure><img src="' + escAttr(result.square_1x1.preview_url) + '" alt="LinkedIn and X square preview"><figcaption>LinkedIn / X 1:1</figcaption></figure>';
-    status.textContent = "Generated. Review both crops, then tick Static image approved.";
-  } catch (err) {
-    status.textContent = err.message;
-  } finally {
-    setBusy(false);
-  }
-};
-
-function setBusy(busy) {
-  const button = $("#create-form button[type=submit]");
-  button.disabled = busy;
-  button.textContent = busy ? "Working..." : "Save to queue";
+async function boot() {
+  await Promise.all([loadHealth(), loadPolicy()]);
+  await Promise.all([loadOverview(), loadProductionJobs(), loadConnections()]);
+  renderBudget();
 }
 
-$("#create-form").onsubmit = async (e) => {
-  e.preventDefault();
-  if (uploadCount > 0) {
-    $("#form-message").textContent = "Wait for temporary media uploads to finish.";
-    return;
-  }
-
-  const klass = currentClass();
-  const units = klass === "post" ? valueUnits() : [];
-  const bridge = $("#bridge-position").value || null;
-  const route = routes[klass];
-
-  const variants = route.map((p) => {
-    let mediaRef = null;
-    if (klass === "post") {
-      mediaRef = ["instagram", "facebook"].includes(p) ? mediaRefs.meta : mediaRefs.square;
-    } else {
-      mediaRef = mediaRefs.video;
-    }
-    const copy = $("#copy-" + p);
-    const title = $("#title-" + p);
-    return {
-      platform: p,
-      title: title ? title.value.trim() : "",
-      body: copy ? copy.value.trim() : "",
-      media_ref: mediaRef,
-    };
-  });
-
-  let scheduled = $("#scheduled-at").value;
-  scheduled = scheduled ? new Date(scheduled).toISOString() : null;
-
-  try {
-    const result = await api("/api/posts", {
-      method: "POST",
-      body: JSON.stringify({
-        content_class: klass,
-        content_lane: $("#content-lane").value,
-        weekly_theme: $("#weekly-theme").value,
-        title: $("#title").value,
-        master_text: $("#master").value,
-        value_units: units,
-        product_bridge_position: bridge,
-        product_url: klass === "post" ? $("#product-url").value : "",
-        product_mode: klass === "post" ? $("#product-mode").value : "brand",
-        product_id: klass === "post" && $("#product-mode").value === "specific_product" ? $("#product-id").value : "",
-        selection_seed: [
-          $("#weekly-theme").value,
-          $("#title").value,
-          units.join("|"),
-          scheduled || "",
-        ].join("::"),
-        registry_products: klass === "post" ? (policy?.product_registry?.products || []) : [],
-        owner_voice_media_ref: klass === "post" ? null : mediaRefs.voice,
-        media_approved: $("#media-approved").checked,
-        qa_approved: $("#qa-approved").checked,
-        release_approved: $("#release-approved").checked,
-        scheduled_at: scheduled,
-        variants,
-      }),
-    });
-
-    const productNote = result.product_name ? " Product: " + result.product_name + "." : "";
-    $("#form-message").textContent =
-      (result.status === "scheduled" ? "Added to locked schedule." : "Draft saved.") + productNote;
-    e.target.reset();
-    mediaRefs = { meta: null, square: null, voice: null, video: null };
-    $("#image-previews").innerHTML = "";
-    $("#image-generation-status").textContent = "Generation remains behind the paid-production lock.";
-    $("#video-status").textContent = "Product-independent business content. Topic selection follows strong current niche demand. AI or cloned narration is not allowed; owner recording is the master timeline.";
-    $("#product-mode").value = "auto_product";
-    classChanged();
-    await loadOverview();
-  } catch (err) {
-    $("#form-message").textContent = err.message;
-  }
-};
-
-function esc(v) {
-  return String(v ?? "").replace(/[&<>"']/g, (c) => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;",
-  }[c]));
-}
-
-function escAttr(v) {
-  return esc(v).replace(/\n/g, "");
-}
-
-classChanged();
-loadHealth();
-loadPolicy();
-loadOverview();
+boot();
