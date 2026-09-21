@@ -11,7 +11,7 @@ class PolicyTests(unittest.TestCase):
         self.assertTrue(policy["captions"]["visual_labels"])
         self.assertTrue(policy["captions"]["spoken_captions"])
         self.assertTrue(policy["music"]["required"])
-        self.assertEqual(policy["shorts"]["weekly_count"], 3)
+        self.assertEqual(policy["shorts"]["weekly_count"], 4)
         self.assertTrue(policy["long_form"]["first_pipeline_upload"])
         self.assertEqual(policy["voice"]["age_character"], "mature-adult")
         self.assertEqual(policy["visuals"]["composition"]["default"], "center-stage-with-negative-space")
