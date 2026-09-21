@@ -80,7 +80,7 @@ class StudioService:
     def posts(self, status: str | None = None) -> list[dict]:
         query = """SELECT id, kind, content_class, title, master_text, weekly_theme,
                           content_lane, value_units_json, product_bridge_position,
-                          product_url, owner_voice_media_ref, media_approved,
+                          product_url, product_mode, product_id, owner_voice_media_ref, media_approved,
                           qa_approved, release_approved, status, scheduled_at,
                           created_at, updated_at
                    FROM content_posts"""
@@ -184,14 +184,45 @@ class StudioService:
         raw_units = [str(item).strip() for item in payload.get("value_units", []) if str(item).strip()]
         bridge_raw = payload.get("product_bridge_position")
         bridge_position = int(bridge_raw) if bridge_raw not in (None, "", 0, "0") else None
-        product_url = str(payload.get("product_url", "")).strip()
+
+        product_mode = str(payload.get("product_mode", "brand") or "brand").strip().lower()
+        product_id = str(payload.get("product_id", "") or "").strip()
+        selected_product = None
+        product_url = ""
 
         if content_class is ContentClass.POST:
-            raw_units = list(self.policy.validate_post_structure(raw_units, bridge_position, product_url))
+            selected_product = self.policy.products.resolve(
+                product_mode,
+                product_id=product_id,
+                seed=payload.get("selection_seed"),
+            )
+            if selected_product is not None:
+                product_id = selected_product.id
+                product_url = selected_product.marketplace_url
+            else:
+                product_id = ""
+                product_mode = "brand"
+            raw_units = list(
+                self.policy.validate_post_structure(raw_units, bridge_position, product_url)
+                if bridge_position is not None
+                else raw_units
+            )
+            if not 3 <= len(raw_units) <= 4:
+                raw_units = list(
+                    self.policy.validate_post_structure(raw_units, None, "")
+                )
             if bridge_position is not None and product_url not in raw_units[bridge_position - 1]:
                 raw_units[bridge_position - 1] = (
                     raw_units[bridge_position - 1].rstrip() + "\n" + product_url
                 )
+        else:
+            # Video lanes stay business/trend centered. Product metadata supplied
+            # by a client is intentionally discarded rather than leaking into
+            # Shorts or long-form topic selection.
+            product_mode = "brand"
+            product_id = ""
+            product_url = ""
+            bridge_position = None
 
         variants = []
         for item in payload.get("variants", []):
@@ -229,27 +260,26 @@ class StudioService:
             value_units=raw_units,
             product_bridge_position=bridge_position,
             product_url=product_url,
+            product_mode=product_mode,
+            product_id=product_id,
             owner_voice_media_ref=payload.get("owner_voice_media_ref"),
             media_approved=bool(payload.get("media_approved", False)),
             qa_approved=bool(payload.get("qa_approved", False)),
             release_approved=bool(payload.get("release_approved", False)),
         )
         post_id = self.content.create(draft, scheduled_at=scheduled_at)
-        media_refs = {
-            item.media_ref for item in variants if item.media_ref
-        }
+        media_refs = {item.media_ref for item in variants if item.media_ref}
         if draft.owner_voice_media_ref:
             media_refs.add(draft.owner_voice_media_ref)
         for media_ref in media_refs:
-            self.media.attach_to_post(
-                media_ref,
-                post_id,
-                scheduled_at=scheduled_at,
-            )
+            self.media.attach_to_post(media_ref, post_id, scheduled_at=scheduled_at)
         return {
             "id": post_id,
             "status": self.content.get(post_id).status,
             "content_class": content_class.value,
+            "product_mode": product_mode,
+            "product_id": product_id,
+            "product_name": selected_product.name if selected_product else "",
         }
 
     def connection_rows(self) -> list[dict]:
