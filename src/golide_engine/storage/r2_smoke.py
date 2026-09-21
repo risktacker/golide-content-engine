@@ -59,6 +59,11 @@ def run() -> int:
             "title": "R2 smoke test",
             "master_text": "Temporary integration verification",
             "scheduled_at": scheduled.isoformat(),
+            "value_units": [
+                "Temporary storage upload verification.",
+                "Scheduled attachment retention verification.",
+                "Temporary object cleanup verification.",
+            ],
             "variants": [{
                 "platform": "instagram",
                 "body": "Temporary integration verification",
