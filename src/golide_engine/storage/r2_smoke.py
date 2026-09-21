@@ -64,6 +64,8 @@ def run() -> int:
                 "Scheduled attachment retention verification.",
                 "Temporary object cleanup verification.",
             ],
+            "media_approved": True,
+            "release_approved": True,
             "variants": [
                 {
                     "platform": platform,
