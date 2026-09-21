@@ -77,6 +77,8 @@ def main() -> int:
     social_cleanup_parser = sub.add_parser("social-media-cleanup")
     social_cleanup_parser.add_argument("--database", default="data/golide.sqlite3")
     sub.add_parser("connections-sync-studio")
+    sub.add_parser("static-automation-run")
+    sub.add_parser("studio-social-publish")
     studio_parser = sub.add_parser("studio-serve")
     studio_parser.add_argument("--database", default="data/golide.sqlite3")
     studio_parser.add_argument("--app-dir", default="app")
@@ -182,6 +184,18 @@ def main() -> int:
             ],
             "temporary_media_deleted": purged,
         }, indent=2))
+        return 0
+
+    if args.command == "static-automation-run":
+        from .orchestration.static_automation import StaticAutomation
+        results = StaticAutomation().run_due()
+        print(json.dumps({"status": "static_automation", "results": results}, indent=2))
+        return 0
+
+    if args.command == "studio-social-publish":
+        from .orchestration.studio_social import StudioSocialPublisher
+        results = StudioSocialPublisher().run_due()
+        print(json.dumps({"status": "studio_social_publish", "results": results}, indent=2))
         return 0
 
     if args.command == "connections-sync-studio":
