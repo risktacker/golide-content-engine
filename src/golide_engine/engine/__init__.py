@@ -1,5 +1,12 @@
 """Lightweight content-distribution domain logic."""
 
-from .content import ContentDraft, ContentKind, PlatformVariant
+from .content import ContentClass, ContentDraft, ContentKind, PlatformVariant
+from .policy import ContentPolicy
 
-__all__ = ["ContentDraft", "ContentKind", "PlatformVariant"]
+__all__ = [
+    "ContentClass",
+    "ContentDraft",
+    "ContentKind",
+    "ContentPolicy",
+    "PlatformVariant",
+]

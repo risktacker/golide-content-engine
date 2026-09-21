@@ -47,6 +47,7 @@ class PublishRequest:
     body: str
     title: str = ""
     media_ref: str | None = None
+    parts: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)

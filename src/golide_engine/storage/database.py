@@ -56,6 +56,39 @@ class Database:
                 "CREATE INDEX IF NOT EXISTS idx_upload_uploaded_at ON uploads(uploaded_at)"
             )
 
+            content_columns = {
+                row["name"] for row in connection.execute("PRAGMA table_info(content_posts)")
+            }
+            content_additions = {
+                "content_class": "TEXT NOT NULL DEFAULT 'post'",
+                "weekly_theme": "TEXT NOT NULL DEFAULT ''",
+                "content_lane": "TEXT NOT NULL DEFAULT ''",
+                "value_units_json": "TEXT NOT NULL DEFAULT '[]'",
+                "product_bridge_position": "INTEGER",
+                "product_url": "TEXT NOT NULL DEFAULT ''",
+                "owner_voice_media_ref": "TEXT",
+                "media_approved": "INTEGER NOT NULL DEFAULT 0",
+                "qa_approved": "INTEGER NOT NULL DEFAULT 0",
+                "release_approved": "INTEGER NOT NULL DEFAULT 0",
+            }
+            for name, definition in content_additions.items():
+                if name not in content_columns:
+                    connection.execute(
+                        f"ALTER TABLE content_posts ADD COLUMN {name} {definition}"
+                    )
+
+            variant_columns = {
+                row["name"] for row in connection.execute("PRAGMA table_info(social_variants)")
+            }
+            if "parts_json" not in variant_columns:
+                connection.execute(
+                    "ALTER TABLE social_variants ADD COLUMN parts_json TEXT NOT NULL DEFAULT '[]'"
+                )
+            connection.execute(
+                "CREATE INDEX IF NOT EXISTS idx_content_posts_class_schedule "
+                "ON content_posts(content_class, status, scheduled_at)"
+            )
+
     def upsert_production(self, spec: dict[str, Any], status: str = "planned") -> None:
         now = utc_now()
         concept = spec.get("concept", {})

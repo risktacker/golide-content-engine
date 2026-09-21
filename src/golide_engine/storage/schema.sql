@@ -130,8 +130,18 @@ CREATE INDEX IF NOT EXISTS idx_topic_demand_created ON topic_demand_snapshots(cr
 CREATE TABLE IF NOT EXISTS content_posts (
     id TEXT PRIMARY KEY,
     kind TEXT NOT NULL CHECK(kind IN ('social', 'video')),
+    content_class TEXT NOT NULL DEFAULT 'post' CHECK(content_class IN ('post', 'short', 'long')),
     title TEXT NOT NULL DEFAULT '',
     master_text TEXT NOT NULL,
+    weekly_theme TEXT NOT NULL DEFAULT '',
+    content_lane TEXT NOT NULL DEFAULT '',
+    value_units_json TEXT NOT NULL DEFAULT '[]',
+    product_bridge_position INTEGER CHECK(product_bridge_position IS NULL OR product_bridge_position IN (2,3)),
+    product_url TEXT NOT NULL DEFAULT '',
+    owner_voice_media_ref TEXT,
+    media_approved INTEGER NOT NULL DEFAULT 0,
+    qa_approved INTEGER NOT NULL DEFAULT 0,
+    release_approved INTEGER NOT NULL DEFAULT 0,
     status TEXT NOT NULL CHECK(status IN ('draft', 'scheduled', 'publishing', 'published', 'partial', 'failed')),
     scheduled_at TEXT,
     created_at TEXT NOT NULL,
@@ -144,6 +154,7 @@ CREATE TABLE IF NOT EXISTS social_variants (
     platform TEXT NOT NULL,
     title TEXT NOT NULL DEFAULT '',
     body TEXT NOT NULL,
+    parts_json TEXT NOT NULL DEFAULT '[]',
     media_ref TEXT,
     status TEXT NOT NULL CHECK(status IN ('pending', 'published', 'failed')),
     platform_content_id TEXT,
@@ -234,3 +245,6 @@ ON inbox_messages(thread_id, created_at);
 
 CREATE INDEX IF NOT EXISTS idx_temporary_media_cleanup
 ON temporary_media(status, expires_at);
+
+CREATE INDEX IF NOT EXISTS idx_content_posts_class_schedule
+ON content_posts(content_class, status, scheduled_at);

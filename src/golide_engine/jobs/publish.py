@@ -20,7 +20,7 @@ def publish_due(
     deletion remains a separate cleanup job.
     """
     results: list[PublishSummary] = []
-    for post in repository.due(now):
+    for post in repository.due(now, content_class="post"):
         summary = bridge.publish_post(post.id)
         results.append(summary)
         if summary.status == "published" and media_repository is not None:
