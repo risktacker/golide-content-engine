@@ -10,6 +10,7 @@ from golide_engine.db.connections import ConnectionRepository
 from golide_engine.db.inbox import InboxRepository
 from golide_engine.engine import ContentClass, ContentDraft, ContentPolicy, PlatformVariant
 from golide_engine.engine.social_image import SocialImageProfile
+from golide_engine.engine.products import ProductRegistry
 from golide_engine.storage import Database
 from golide_engine.storage.r2 import R2TemporaryMediaStore
 from golide_engine.storage.temporary import TemporaryMediaRepository
@@ -191,7 +192,13 @@ class StudioService:
         product_url = ""
 
         if content_class is ContentClass.POST:
-            selected_product = self.policy.products.resolve(
+            live_products = payload.get("registry_products")
+            registry = (
+                ProductRegistry.from_payload({"version": 1, "products": live_products})
+                if isinstance(live_products, list) and live_products
+                else self.policy.products
+            )
+            selected_product = registry.resolve(
                 product_mode,
                 product_id=product_id,
                 seed=payload.get("selection_seed"),
