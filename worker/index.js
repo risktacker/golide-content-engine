@@ -50,6 +50,13 @@ const POLICY = {
   social_image:{profile_name:"GOLIDE Social Post Editorial",generation:{temporary_media_only:true,approval_required_before_publish:true,provider:"openai",model:"gpt-image-2",quality:"medium"}},
   video:{style_name:"GOLIDE Reference Editorial Motion",voice:{source:"owner_recording_only",ai_voice_allowed:false,cloned_voice_allowed:false}},
   product_registry:{version:1,products:FALLBACK_PRODUCTS},
+  budget:{
+    currency:"USD",
+    openai_deposit_target_usd:10,
+    scheduled_video_guard_usd:7,
+    static_post_guard_usd:3,
+    x_opening_credit_usd:5,
+  },
 };
 
 let schemaReady = false;
@@ -161,6 +168,8 @@ async function count(db,sql,...args){
 
 async function overview(env){
   const db=env.DB;
+  const videoSpend=await db.prepare(`SELECT COALESCE(SUM(openai_cost_usd),0) total FROM production_jobs WHERE substr(created_at,1,7)=substr(datetime('now'),1,7)`).first();
+  const staticMonth=await db.prepare(`SELECT COUNT(*) count FROM content_posts WHERE id LIKE ?`).bind(`golide-post-${new Date().toISOString().slice(0,7)}-%`).first();
   return {
     posts_today:await count(db,`SELECT COUNT(*) count FROM content_posts WHERE content_class='post' AND date(created_at)=date('now')`),
     scheduled:await count(db,`SELECT COUNT(*) count FROM content_posts WHERE status='scheduled'`),
@@ -174,6 +183,8 @@ async function overview(env){
     production_jobs:await count(db,`SELECT COUNT(*) count FROM production_jobs`),
     waiting_voice:await count(db,`SELECT COUNT(*) count FROM production_jobs WHERE status='waiting_owner_voice'`),
     production_running:await count(db,`SELECT COUNT(*) count FROM production_jobs WHERE status IN ('claimed','running')`),
+    video_openai_spend_usd:Number(videoSpend?.total||0),
+    static_openai_estimate_usd:Number(staticMonth?.count||0)*0.049,
     r2_ready:hasAll(env,["R2_ACCOUNT_ID","R2_ACCESS_KEY_ID","R2_SECRET_ACCESS_KEY","R2_BUCKET"]),
   };
 }
