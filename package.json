@@ -1,0 +1,10 @@
+{
+  "name": "golide-content-engine-studio",
+  "version": "0.4.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node --check worker/index.js",
+    "test:worker": "node --check worker/index.js"
+  }
+}

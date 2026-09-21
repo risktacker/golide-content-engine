@@ -15,9 +15,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
       - run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core
       - run: python -m pip install -e '.[production]'
       - name: Preflight real tracked production database migration
         run: golide db-init --database data/golide.sqlite3
       - run: python -m compileall -q src tests
       - run: python -m unittest discover -s tests -v
+      - name: Verify Cloudflare Studio Worker syntax
+        run: node --check worker/index.js
