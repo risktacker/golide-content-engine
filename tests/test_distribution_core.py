@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import tempfile
 import unittest
+from dataclasses import replace
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -92,6 +93,23 @@ class DistributionCoreTests(unittest.TestCase):
         self.assertEqual(variants["linkedin"]["status"], "published")
         self.assertEqual(variants["x"]["status"], "failed")
         self.assertIn("no connected provider", variants["x"]["last_error"])
+
+    def test_product_context_round_trips_without_hard_coding(self) -> None:
+        draft = replace(
+            self.draft(),
+            product_mode="specific_product",
+            product_id="job-search-conversion-system",
+            product_url="https://marketplace.golidee.com/jobsearch/jobsearch-toolkit",
+            product_bridge_position=2,
+        )
+        post_id = self.repo.create(draft)
+        stored = self.repo.get(post_id)
+        self.assertEqual("specific_product", stored.product_mode)
+        self.assertEqual("job-search-conversion-system", stored.product_id)
+        self.assertEqual(
+            "https://marketplace.golidee.com/jobsearch/jobsearch-toolkit",
+            stored.product_url,
+        )
 
     def test_only_lightweight_media_reference_is_persisted(self) -> None:
         post_id = self.repo.create(self.draft())
