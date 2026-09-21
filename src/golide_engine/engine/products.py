@@ -64,11 +64,21 @@ class ProductRegistry:
     def __init__(self, path: str | Path = "config/product-registry.json"):
         self.path = Path(path)
         payload = json.loads(self.path.read_text(encoding="utf-8"))
+        self._load(payload)
+
+    def _load(self, payload: dict[str, Any]) -> None:
         self.version = int(payload.get("version", 1))
         self.products = tuple(
             product for product in (ProductRecord.from_dict(item) for item in payload.get("products", []))
             if product.id and product.name
         )
+
+    @classmethod
+    def from_payload(cls, payload: dict[str, Any]) -> "ProductRegistry":
+        registry = cls.__new__(cls)
+        registry.path = Path("<live-marketplace>")
+        registry._load(payload)
+        return registry
 
     def get(self, product_id: str) -> ProductRecord:
         key = str(product_id).strip()
