@@ -273,6 +273,12 @@ async function resolveProduct(payload,db){
     return found;
   }
   if(!eligible.length) throw new Error("no active products are available for auto product selection");
+  const resolvedId=safeText(payload.resolved_product_id);
+  if(resolvedId){
+    const resolved=eligible.find((p)=>String(p.id)===resolvedId);
+    if(!resolved) throw new Error("resolved auto product is not active");
+    return resolved;
+  }
   const weights=eligible.map(productWeight);
   const total=weights.reduce((a,b)=>a+b,0);
   let point=(await seedNumber(payload.selection_seed))%total;
@@ -329,7 +335,12 @@ async function createPost(env,payload){
   if(unsupported.length) throw new Error(`${klass} cannot route to: ${[...new Set(unsupported)].join(", ")}`);
   validateSchedule(payload,klass,variants,units);
 
-  const id=crypto.randomUUID(), now=nowIso(), scheduled=safeText(payload.scheduled_at)||null;
+  const requestedId=safeText(payload.id);
+  if(requestedId){
+    const existing=await db.prepare(`SELECT id,status,content_class,product_mode,product_id FROM content_posts WHERE id=?`).bind(requestedId).first();
+    if(existing) return {...existing,product_name:"",existing:true};
+  }
+  const id=requestedId||crypto.randomUUID(), now=nowIso(), scheduled=safeText(payload.scheduled_at)||null;
   const status=scheduled?"scheduled":"draft", kind=klass==="post"?"social":"video";
   const master=safeText(payload.master_text)||(units.length?units.join("\n\n"):"");
   await db.prepare(`INSERT INTO content_posts
@@ -513,6 +524,74 @@ async function machineAuthorized(request){
   }catch{return false;}
 }
 
+async function registerEngineMedia(db,payload){
+  const records=Array.isArray(payload.records)?payload.records:[];
+  const now=nowIso();
+  for(const item of records){
+    const ref=safeText(item.media_ref);
+    const kind=safeText(item.media_kind);
+    if(!ref.startsWith("r2://")||!["image","audio","video","render_asset"].includes(kind)) continue;
+    const expires=safeText(item.expires_at)||new Date(Date.now()+24*3600*1000).toISOString();
+    await db.prepare(`INSERT INTO temporary_media(id,object_key,media_kind,status,expires_at,created_at)
+      VALUES(?,?,?,'active',?,?)
+      ON CONFLICT(object_key) DO UPDATE SET media_kind=excluded.media_kind,status='active',
+      expires_at=CASE WHEN temporary_media.expires_at<excluded.expires_at THEN excluded.expires_at ELSE temporary_media.expires_at END`)
+      .bind(crypto.randomUUID(),ref,kind,expires,now).run();
+  }
+  return {registered:records.length};
+}
+
+async function claimDueSocial(db,nowValue){
+  const moment=safeText(nowValue)||nowIso();
+  const row=await db.prepare(`SELECT id FROM content_posts
+    WHERE content_class='post' AND status IN ('scheduled','partial','failed')
+      AND scheduled_at IS NOT NULL AND scheduled_at<=?
+    ORDER BY scheduled_at ASC,created_at ASC LIMIT 1`).bind(moment).first();
+  if(!row) return null;
+  await db.prepare(`UPDATE content_posts SET status='publishing',updated_at=? WHERE id=?`).bind(nowIso(),row.id).run();
+  const posts=await listPosts(db,null);
+  const post=posts.find((item)=>item.id===row.id);
+  if(!post) return null;
+  post.variants=post.variants.filter((v)=>v.status!=="published");
+  return post;
+}
+
+async function recordSocialResult(db,postId,variantId,payload){
+  const status=safeText(payload.status);
+  if(!["published","failed"].includes(status)) throw new Error("invalid social result status");
+  const variant=await db.prepare(`SELECT platform FROM social_variants WHERE id=? AND post_id=?`).bind(variantId,postId).first();
+  if(!variant) throw new Error("social variant not found");
+  const now=nowIso();
+  await db.prepare(`INSERT INTO publish_attempts(post_id,variant_id,platform,status,remote_id,error,created_at)
+    VALUES(?,?,?,?,?,?,?)`).bind(postId,variantId,variant.platform,status,safeText(payload.remote_id)||null,safeText(payload.error)||null,now).run();
+  if(status==="published"){
+    await db.prepare(`UPDATE social_variants SET status='published',platform_content_id=?,published_url=?,last_error=NULL,published_at=?,updated_at=? WHERE id=?`)
+      .bind(safeText(payload.remote_id),safeText(payload.url)||null,now,now,variantId).run();
+  }else{
+    await db.prepare(`UPDATE social_variants SET status='failed',last_error=?,updated_at=? WHERE id=?`)
+      .bind(safeText(payload.error)||"publish failed",now,variantId).run();
+  }
+  const counts=await db.prepare(`SELECT
+    SUM(CASE WHEN status='published' THEN 1 ELSE 0 END) published,
+    SUM(CASE WHEN status='failed' THEN 1 ELSE 0 END) failed,
+    COUNT(*) total FROM social_variants WHERE post_id=?`).bind(postId).first();
+  let postStatus="publishing";
+  if(Number(counts.published)===Number(counts.total)) postStatus="published";
+  else if(Number(counts.failed)>0&&Number(counts.published)>0) postStatus="partial";
+  else if(Number(counts.failed)===Number(counts.total)) postStatus="failed";
+  await db.prepare(`UPDATE content_posts SET status=?,updated_at=? WHERE id=?`).bind(postStatus,now,postId).run();
+  return {post_id:postId,status:postStatus,published:Number(counts.published),failed:Number(counts.failed),total:Number(counts.total)};
+}
+
+async function markMediaDeleted(db,payload){
+  const refs=Array.isArray(payload.media_refs)?payload.media_refs.map(safeText).filter(Boolean):[];
+  const now=nowIso();
+  for(const ref of refs){
+    await db.prepare(`UPDATE temporary_media SET status='deleted',deleted_at=? WHERE object_key=?`).bind(now,ref).run();
+  }
+  return {deleted:refs.length};
+}
+
 async function handleMachineApi(request,env,url){
   await ensureSchema(env.DB);
   if(url.pathname==="/api/engine/next"&&request.method==="GET"){
@@ -528,6 +607,24 @@ async function handleMachineApi(request,env,url){
   }
   if(url.pathname==="/api/engine/connections"&&request.method==="POST"){
     try{return json(await syncEngineConnections(env.DB,await request.json()));}catch(e){return err(e?.message||String(e),400);}
+  }
+  if(url.pathname==="/api/engine/posts"&&request.method==="POST"){
+    try{return json(await createPost(env,await request.json()),201);}catch(e){return err(e?.message||String(e),400);}
+  }
+  if(url.pathname==="/api/engine/media/register"&&request.method==="POST"){
+    try{return json(await registerEngineMedia(env.DB,await request.json()));}catch(e){return err(e?.message||String(e),400);}
+  }
+  if(url.pathname==="/api/engine/social/next"&&request.method==="GET"){
+    const claimed=await claimDueSocial(env.DB,url.searchParams.get("now"));
+    return claimed?json(claimed):new Response(null,{status:204});
+  }
+  const socialResult=url.pathname.match(/^\/api\/engine\/social\/([^/]+)\/variants\/([^/]+)$/);
+  if(socialResult&&request.method==="POST"){
+    try{return json(await recordSocialResult(env.DB,decodeURIComponent(socialResult[1]),decodeURIComponent(socialResult[2]),await request.json()));}
+    catch(e){return err(e?.message||String(e),400);}
+  }
+  if(url.pathname==="/api/engine/media/deleted"&&request.method==="POST"){
+    try{return json(await markMediaDeleted(env.DB,await request.json()));}catch(e){return err(e?.message||String(e),400);}
   }
   if(url.pathname==="/api/engine/analytics"&&request.method==="POST"){
     return json({status:"accepted"});
@@ -613,6 +710,11 @@ async function handleApi(request,env,url){
     const id=decodeURIComponent(retryMatch[1]);
     await env.DB.prepare(`UPDATE production_jobs SET status='queued',stage='manual-retry',error=NULL,updated_at=? WHERE job_id=?`).bind(nowIso(),id).run();
     return json({jobId:id,status:"queued"});
+  }
+  if(url.pathname==="/api/media/preview"&&request.method==="GET"){
+    const ref=safeText(url.searchParams.get("ref"));
+    if(!ref.startsWith("r2://")) return err("invalid media reference",400);
+    try{return json({preview_url:await presign(env,"GET",ref.slice(5),900)});}catch(e){return err(e?.message||String(e),503);}
   }
   if(url.pathname==="/api/media/prepare"&&request.method==="POST"){
     try{return json(await prepareMedia(env,await request.json()),201);}catch(e){return err(e?.message||String(e),503);}
