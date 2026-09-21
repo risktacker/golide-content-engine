@@ -1,0 +1,107 @@
+{
+  "version": 1,
+  "locked": true,
+  "timezone": "Africa/Lusaka",
+  "note": "Times are operational defaults, not claims of universal best posting times. Analytics may optimize clock times later without changing the locked weekly cadence or platform routing.",
+  "daily_posts": [
+    {
+      "slot": "post-a",
+      "time": "08:30",
+      "days": [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday"
+      ],
+      "platforms": [
+        "instagram",
+        "facebook",
+        "linkedin",
+        "x"
+      ]
+    },
+    {
+      "slot": "post-b",
+      "time": "17:30",
+      "days": [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday"
+      ],
+      "platforms": [
+        "instagram",
+        "facebook",
+        "linkedin",
+        "x"
+      ]
+    }
+  ],
+  "shorts": [
+    {
+      "day": "monday",
+      "time": "13:00",
+      "platforms": [
+        "instagram",
+        "facebook",
+        "youtube"
+      ]
+    },
+    {
+      "day": "wednesday",
+      "time": "13:00",
+      "platforms": [
+        "instagram",
+        "facebook",
+        "youtube"
+      ]
+    },
+    {
+      "day": "friday",
+      "time": "13:00",
+      "platforms": [
+        "instagram",
+        "facebook",
+        "youtube"
+      ]
+    },
+    {
+      "day": "sunday",
+      "time": "13:00",
+      "platforms": [
+        "instagram",
+        "facebook",
+        "youtube"
+      ]
+    }
+  ],
+  "long_videos": [
+    {
+      "day": "tuesday",
+      "time": "19:30",
+      "platforms": [
+        "youtube"
+      ]
+    },
+    {
+      "day": "saturday",
+      "time": "19:30",
+      "platforms": [
+        "youtube"
+      ]
+    }
+  ],
+  "weekly_totals": {
+    "core_posts": 14,
+    "post_platform_deliveries": 56,
+    "shorts": 4,
+    "short_platform_deliveries": 12,
+    "long_videos": 2
+  }
+}

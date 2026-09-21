@@ -4,22 +4,30 @@
   "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
   "rules": [
     {
-      "id": "golide-long-tuesday",
+      "id": "golide-long-tuesday-saturday",
       "format": "long",
       "start_date": "2026-09-01",
-      "weekdays": ["tuesday"],
+      "weekdays": [
+        "tuesday",
+        "saturday"
+      ],
       "generate_time": "06:00",
-      "publish_time": "18:00",
-      "openai_allocation_usd": 0.50
+      "publish_time": "19:30",
+      "openai_allocation_usd": 0.5
     },
     {
-      "id": "golide-shorts-wed-fri-sun",
+      "id": "golide-shorts-mon-wed-fri-sun",
       "format": "short",
-      "start_date": "2026-09-09",
-      "weekdays": ["wednesday", "friday", "sunday"],
+      "start_date": "2026-09-21",
+      "weekdays": [
+        "monday",
+        "wednesday",
+        "friday",
+        "sunday"
+      ],
       "generate_time": "09:00",
       "publish_time": "13:00",
-      "openai_allocation_usd": 0.20
+      "openai_allocation_usd": 0.2
     }
   ]
 }

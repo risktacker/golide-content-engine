@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "locked": true,
+  "profile_name": "GOLIDE Social Post Editorial",
+  "purpose": "Static feed imagery for Instagram, Facebook, LinkedIn and X",
+  "visual_direction": {
+    "primary_style": "premium realistic conceptual editorial still-life",
+    "realism": "photographic realism or believable real-world color is allowed and encouraged when stronger than a dark set",
+    "backgrounds": [
+      "dark navy",
+      "black",
+      "natural real-photo environments and realistic color when appropriate"
+    ],
+    "accents": [
+      "restrained electric cyan glow",
+      "subtle metallic or GOLIDE gold only when useful"
+    ],
+    "composition": [
+      "sparse composition",
+      "one strong physical or visual metaphor",
+      "single dominant focal idea",
+      "no clutter"
+    ]
+  },
+  "typography": {
+    "hook_required": true,
+    "hook_style": "short clean white curiosity hook",
+    "hook_case": "uppercase preferred",
+    "hook_length": "minimal, readable at a glance",
+    "cyan_underline": "optional restrained accent",
+    "em_dash_allowed": false
+  },
+  "branding": {
+    "wordmark": "small understated GOLIDE branding",
+    "preferred_position": "bottom-right",
+    "dominant_logo_forbidden": true
+  },
+  "people": {
+    "people_by_default": false,
+    "hands_when_relevant": true,
+    "visible_hands_skin_tone": "dark-skinned / Black",
+    "random_stock_people_forbidden": true
+  },
+  "forbidden": [
+    "busy collage",
+    "generic stock-photo look",
+    "forced dark background when a realistic natural scene is stronger",
+    "excessive glow",
+    "excessive gold",
+    "large branding",
+    "long blocks of text",
+    "multiple competing metaphors",
+    "fake interface unless the subject specifically requires an interface",
+    "light-skinned hands when a hand is intentionally featured",
+    "em dash typography"
+  ],
+  "formats": {
+    "instagram_feed": {
+      "aspect_ratio": "4:5",
+      "role": "primary"
+    },
+    "facebook_feed": {
+      "aspect_ratio": "4:5",
+      "role": "primary"
+    },
+    "linkedin_feed": {
+      "aspect_ratio": "1:1",
+      "role": "adapted"
+    },
+    "x_feed": {
+      "aspect_ratio": "1:1",
+      "role": "adapted"
+    }
+  },
+  "generation": {
+    "master_concept_count": 1,
+    "preserve_same_concept_across_ratios": true,
+    "regenerate_only_when_crop_breaks_metaphor_or_hook": true,
+    "temporary_media_only": true,
+    "approval_required_before_publish": true
+  }
+}

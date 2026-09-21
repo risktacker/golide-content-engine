@@ -32,3 +32,45 @@ Both point toward the GOLIDE product catalogue, conversion, and attributable rev
 ## Phase 1 contract
 
 The first core normalizes one master item into platform variants, schedules it, publishes it through replaceable provider adapters, records remote content IDs, and makes failures explicit. The first adapter is in-memory only so CI cannot accidentally contact a real account. Real Instagram, Facebook, LinkedIn, X and YouTube connectors are added only after their account connection is configured.
+
+
+## Locked content operating system
+
+The production cadence and routing are now machine-readable in:
+
+- `config/content-routing.json`
+- `config/content-calendar.json`
+- `config/social-image-profile.json`
+- `config/video-profile.json`
+- `config/automation-schedule.json`
+
+### Platform routing
+
+- Instagram: static posts and short videos.
+- Facebook: static posts and short videos.
+- LinkedIn: static posts only.
+- X: static posts only.
+- YouTube: Shorts and long-form video only. No static-post workflow.
+- Pinterest: outside native engine automation for now; reconnect and derive manually from Instagram.
+
+### Locked weekly cadence
+
+- 2 core static posts every day: 14 per week.
+- Every core post receives platform-specific copy for Instagram, Facebook, LinkedIn and X.
+- 4 short videos per week: Monday, Wednesday, Friday and Sunday.
+- Shorts route to Instagram, Facebook and YouTube.
+- 2 long videos per week: Tuesday and Saturday.
+- Long videos route to YouTube only.
+
+Clock times are operational defaults and may later be optimized from analytics. Cadence and routing do not change without an explicit policy revision.
+
+### Static post structure
+
+Each core post uses 3 to 4 related value units. The second or third unit can create a deliberate next-step gap that redirects to the most relevant GOLIDE product. The bridge must be useful and contextual rather than an artificial sales interruption. Where a platform supports a natural thread or follow-up-comment presentation, units can be rendered that way; otherwise they remain clearly separated parts of the post body.
+
+### Static image identity
+
+Static feed images do not reuse the video frame language by default. They use the locked `GOLIDE Social Post Editorial` profile: premium realistic conceptual/editorial still-life, believable photography, sparse composition, one strong metaphor, restrained cyan light, subtle gold when useful, short white hook text, small GOLIDE branding, and dark-skinned/Black hands whenever hands are intentionally featured. Dark navy or black is a strong option, not a mandatory background.
+
+Instagram and Facebook use 4:5 as the primary feed composition. LinkedIn and X use a 1:1 adaptation of the same concept.
+
