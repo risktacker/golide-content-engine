@@ -64,6 +64,7 @@ class ContentRepository:
                 require_complete=False,
             )
             self.policy.validate_lane(draft.content_lane)
+            self.policy.validate_product_context(draft)
             self.policy.validate_variant_copy(draft.variants)
             if draft.content_class is ContentClass.POST and draft.value_units:
                 self.policy.validate_post_structure(
