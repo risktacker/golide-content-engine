@@ -22,23 +22,44 @@ class StudioServiceTests(unittest.TestCase):
     def tearDown(self) -> None:
         self.temp.cleanup()
 
-    def test_create_and_overview(self) -> None:
+    def test_create_and_overview_with_locked_static_route(self) -> None:
         scheduled = datetime.now(timezone.utc) + timedelta(hours=1)
+        units = [
+            "Make the problem visible.",
+            "Give the reader useful value.",
+            "Close with a practical next step.",
+        ]
         created = self.service.create_post({
+            "content_class": "post",
+            "content_lane": "authority",
+            "weekly_theme": "Workflow clarity",
             "title": "Proof post",
-            "master_text": "One useful idea.",
+            "master_text": "\n\n".join(units),
+            "value_units": units,
+            "media_approved": True,
+            "release_approved": True,
             "scheduled_at": scheduled.isoformat(),
             "variants": [
-                {"platform": "instagram", "body": "IG version"},
-                {"platform": "linkedin", "body": "LinkedIn version"},
+                {"platform": "instagram", "body": "IG version", "media_ref": "r2://meta.jpg"},
+                {"platform": "facebook", "body": "FB version", "media_ref": "r2://meta.jpg"},
+                {"platform": "linkedin", "body": "LinkedIn version", "media_ref": "r2://square.jpg"},
+                {"platform": "x", "body": "X version", "media_ref": "r2://square.jpg"},
             ],
         })
         self.assertEqual(created["status"], "scheduled")
+        self.assertEqual(created["content_class"], "post")
         overview = self.service.overview()
         self.assertEqual(overview["scheduled"], 1)
         posts = self.service.posts("scheduled")
         self.assertEqual(len(posts), 1)
-        self.assertEqual(len(posts[0]["variants"]), 2)
+        self.assertEqual(posts[0]["content_class"], "post")
+        self.assertEqual(len(posts[0]["variants"]), 4)
+        self.assertEqual(posts[0]["value_units"], units)
+
+    def test_policy_snapshot_exposes_locked_calendar(self) -> None:
+        snapshot = self.service.policy_snapshot()
+        self.assertEqual(snapshot["calendar"]["weekly_totals"]["core_posts"], 14)
+        self.assertEqual(snapshot["routing"]["content_types"]["long_video"]["platforms"], ["youtube"])
 
     def test_connections_and_inbox_are_normalized_for_ui(self) -> None:
         connections = ConnectionRepository(self.db)
