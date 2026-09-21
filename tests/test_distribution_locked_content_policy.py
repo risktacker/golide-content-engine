@@ -2,7 +2,7 @@ import json
 import unittest
 from pathlib import Path
 
-from golide_engine.engine import ContentPolicy
+from golide_engine.engine import ContentDraft, ContentPolicy, PlatformVariant
 from golide_engine.engine.content import ContentValidationError
 
 
@@ -16,6 +16,14 @@ class LockedContentPolicyTests(unittest.TestCase):
         self.assertEqual(["instagram", "facebook", "youtube"], policy["content_types"]["short"]["platforms"])
         self.assertEqual(["youtube"], policy["content_types"]["long_video"]["platforms"])
         self.assertFalse(policy["pinterest"]["native_engine_integration"])
+        self.assertEqual(
+            ["brand", "specific_product", "auto_product"],
+            policy["content_types"]["post"]["product_context"]["modes"],
+        )
+        self.assertEqual("auto_product", policy["content_types"]["post"]["product_context"]["default_mode"])
+        self.assertFalse(policy["content_types"]["short"]["product_centered"])
+        self.assertFalse(policy["content_types"]["long_video"]["product_centered"])
+        self.assertEqual("high_trending_business_niche", policy["content_types"]["short"]["topic_source"])
 
     def test_weekly_cadence_is_locked(self):
         calendar = json.loads((ROOT / "config/content-calendar.json").read_text())
@@ -57,6 +65,29 @@ class LockedContentPolicyTests(unittest.TestCase):
                 1,
                 "https://marketplace.golidee.com/jobsearch/",
             )
+
+    def test_video_lanes_reject_product_context(self):
+        policy = ContentPolicy(ROOT)
+        draft = ContentDraft.build(
+            "Current business topic",
+            [
+                PlatformVariant("instagram", "Current business topic", media_ref="temp://video"),
+                PlatformVariant("facebook", "Current business topic", media_ref="temp://video"),
+                PlatformVariant("youtube", "Current business topic", media_ref="temp://video"),
+            ],
+            content_class="short",
+            product_mode="specific_product",
+            product_id="job-search-conversion-system",
+            product_url="https://marketplace.golidee.com/jobsearch/jobsearch-toolkit",
+        )
+        with self.assertRaises(ContentValidationError):
+            policy.validate_product_context(draft)
+
+    def test_product_registry_is_exposed_by_policy(self):
+        snapshot = ContentPolicy(ROOT).snapshot()
+        registry = snapshot["product_registry"]
+        self.assertTrue(registry["products"])
+        self.assertEqual("job-search-conversion-system", registry["products"][0]["id"])
 
     def test_policy_rejects_extended_dash_typography(self):
         policy = ContentPolicy(ROOT)
