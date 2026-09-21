@@ -144,3 +144,60 @@ class StudioBridge:
             raise RuntimeError(
                 f"Studio connection sync failed with HTTP {response_status}"
             )
+
+    def create_content(self, payload: dict[str, Any]) -> dict[str, Any]:
+        status, body = self._request("POST", "/api/engine/posts", payload)
+        if status not in {200, 201}:
+            raise RuntimeError(f"Studio content creation failed with HTTP {status}")
+        return json.loads(body.decode("utf-8"))
+
+    def register_media(self, records: list[dict[str, Any]]) -> None:
+        status, _ = self._request(
+            "POST", "/api/engine/media/register", {"records": records}
+        )
+        if status != 200:
+            raise RuntimeError(f"Studio media registration failed with HTTP {status}")
+
+    def claim_due_social(self, now: datetime | None = None) -> dict[str, Any] | None:
+        now = now or datetime.now(timezone.utc)
+        status, body = self._request(
+            "GET", f"/api/engine/social/next?now={quote(now.isoformat())}"
+        )
+        if status == 204:
+            return None
+        if status != 200:
+            raise RuntimeError(f"Studio social claim failed with HTTP {status}")
+        return json.loads(body.decode("utf-8"))
+
+    def report_social_variant(
+        self,
+        post_id: str,
+        variant_id: str,
+        *,
+        status: str,
+        remote_id: str | None = None,
+        url: str | None = None,
+        error: str | None = None,
+    ) -> dict[str, Any]:
+        response_status, body = self._request(
+            "POST",
+            f"/api/engine/social/{quote(post_id)}/variants/{quote(variant_id)}",
+            {
+                "status": status,
+                "remote_id": remote_id,
+                "url": url,
+                "error": error,
+            },
+        )
+        if response_status != 200:
+            raise RuntimeError(
+                f"Studio social result update failed with HTTP {response_status}"
+            )
+        return json.loads(body.decode("utf-8"))
+
+    def mark_media_deleted(self, refs: list[str]) -> None:
+        status, _ = self._request(
+            "POST", "/api/engine/media/deleted", {"media_refs": refs}
+        )
+        if status != 200:
+            raise RuntimeError(f"Studio media cleanup sync failed with HTTP {status}")
