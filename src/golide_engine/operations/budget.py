@@ -72,7 +72,12 @@ class MonthlyBudget:
 
     def _scheduled_cap(self) -> float:
         configured = os.getenv("GOLIDE_OPENAI_MONTHLY_CAP_USD")
-        value = float(configured) if configured else float(self.policy["openai"]["monthly_cap_usd"])
+        value = float(configured) if configured else float(
+            self.policy["openai"].get(
+                "scheduled_video_cap_usd",
+                self.policy["openai"]["monthly_cap_usd"],
+            )
+        )
         if value < 0:
             raise ValueError("monthly OpenAI cap cannot be negative")
         return value
