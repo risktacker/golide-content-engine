@@ -2,7 +2,10 @@ name: Content distribution scheduler
 
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    # 08:30 and 17:30 Africa/Lusaka (UTC+2). These are the two locked
+    # daily static-post windows; do not poll every 15 minutes.
+    - cron: "30 6 * * *"
+    - cron: "30 15 * * *"
   workflow_dispatch:
 
 concurrency:
@@ -48,7 +51,8 @@ jobs:
       - name: Sync verified connection state to Studio
         run: golide connections-sync-studio
       - name: Create due static content
+        if: vars.GOLIDE_AUTOMATION_ENABLED == '1'
         run: golide static-automation-run
       - name: Publish due static content when the release gate is open
-        if: env.GOLIDE_ENABLE_SOCIAL_PUBLISH == '1'
+        if: vars.GOLIDE_AUTOMATION_ENABLED == '1' && env.GOLIDE_ENABLE_SOCIAL_PUBLISH == '1'
         run: golide studio-social-publish
