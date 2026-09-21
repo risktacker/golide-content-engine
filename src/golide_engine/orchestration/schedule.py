@@ -54,11 +54,13 @@ def build_spec(rule: dict[str, Any], day, timezone_name: str, channel_id: str) -
         "format": format,
         "title": f"GOLIDE {format.title()} · {day.isoformat()}",
         "brief": (
-            "Choose an original evidence-backed GOLIDE science, technology, unusual true event "
-            "or impossible-but-real explainer with strong current YouTube-wide demand. "
-            "Explain the real mechanism and consequence visually; never copy an existing video."
+            "Choose an original evidence-backed GOLIDE technology, software or business topic "
+            "with strong current niche demand and a timely angle. Prioritize useful changes, tools, "
+            "workflows, industry shifts or surprising real mechanisms. Keep Shorts and long-form "
+            "product-independent; never turn scheduled video into a GOLIDE product advertisement "
+            "and never copy an existing video."
         ),
-        "demand_query": "current science technology explainer",
+        "demand_query": "current technology software business trends",
         "demand_validation_required": True,
         "budget_class": "scheduled",
         "purpose": "channel-automation",
@@ -68,8 +70,8 @@ def build_spec(rule: dict[str, Any], day, timezone_name: str, channel_id: str) -
         "output_destination": "render-and-upload",
         "owner_voice_required": True,
         "concept": {
-            "family": "science-explainer",
-            "promise": "A current impossible-but-real idea explained with authoritative evidence",
+            "family": "technology-software-business",
+            "promise": "A high-interest current niche topic explained with authoritative evidence and a useful GOLIDE angle",
             "scores": _scores(format),
         },
         "generation_parameters": {
