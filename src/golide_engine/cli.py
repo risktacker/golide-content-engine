@@ -261,8 +261,16 @@ def main() -> int:
 
     if args.command == "voice-verify":
         from .providers.registry import ProviderRegistry
-        result = ProviderRegistry(args.config).voice().validate_voice()
-        print(json.dumps({"status": "verified", **result}, indent=2))
+        voice = ProviderRegistry(args.config).config.get("voice", {})
+        if voice.get("provider") != "owner_recording":
+            raise RuntimeError("voice policy drifted from owner_recording")
+        if voice.get("ai_voice_allowed") or voice.get("cloned_voice_allowed"):
+            raise RuntimeError("AI or cloned narration must remain disabled")
+        print(json.dumps({
+            "status": "locked",
+            "provider": "owner_recording",
+            "required_spec_field": voice.get("required_spec_field", "owner_voice_media_ref"),
+        }, indent=2))
         return 0
 
     if args.command == "production-run":
@@ -360,6 +368,14 @@ def main() -> int:
         spec_path = due[0]
         spec = json.loads(spec_path.read_text(encoding="utf-8"))
         studio_job_id = spec.get("_studio_job_id")
+        if not str(spec.get("owner_voice_media_ref", "")).strip():
+            print(json.dumps({
+                "status": "waiting_owner_voice",
+                "production_id": spec["id"],
+                "required_field": "owner_voice_media_ref",
+                "message": "Owner recording must be attached before the video production pipeline can run.",
+            }))
+            return 0
         if bridge and studio_job_id:
             try:
                 bridge.register(spec)

@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import difflib
 import json
 import os
-import subprocess
 import re
+import shutil
+import subprocess
+import urllib.request
 from dataclasses import asdict
 from pathlib import Path
 from typing import Any
@@ -66,10 +69,10 @@ class ProductionService:
         if spec.get("release", {}).get("channel_id") != "UCqaXVBSBz7iQsRHOupKt-3w":
             raise RuntimeError("production does not target the locked G$LIDE channel")
         voice_cfg = self.providers.config.get("voice", {})
-        if voice_cfg.get("provider") != "elevenlabs":
-            raise RuntimeError("production narration must use ElevenLabs")
-        if voice_cfg.get("approval_status") != "approved":
-            raise RuntimeError("GOLIDE narrator is not approved; production remains locked")
+        if voice_cfg.get("provider") != "owner_recording":
+            raise RuntimeError("production narration must use the owner's recorded voice")
+        if not str(spec.get("owner_voice_media_ref", "")).strip():
+            raise RuntimeError("owner_voice_media_ref is required before video production can run")
 
     def _record_text(self, production_id: str, stage: str, output: ProviderOutput) -> None:
         model = self.providers.config["text"]["model"]
@@ -297,8 +300,6 @@ class ProductionService:
         self.costs.require_rate("gpt-image-2-text-input", "input_per_million_tokens")
         self.costs.require_rate("gpt-image-2-image-input", "input_per_million_tokens")
         self.costs.require_rate("gpt-image-2-image-output", "output_per_million_tokens")
-        voice_cfg = self.providers.config["voice"]
-        self.costs.require_rate(voice_cfg["model"], "fallback_per_million_characters")
         self.costs.require_rate("web-search", "per_tool_call")
         text = self.providers.text(live=True)
 
@@ -474,47 +475,65 @@ class ProductionService:
         script = script_path.read_text(encoding="utf-8").strip()
         self._budget(spec)
 
-        voice_cfg = self.providers.config["voice"]
-        narration_payload = work / "narration-tts.txt"
-        narration = work / "narration-full-script-v2.mp3"
-        timed_words_path = work / "timed-words-full-script-v2.json"
-        voice = self.providers.voice(live=True)
+        narration = work / "narration-owner.wav"
+        timed_words_path = work / "timed-words-owner.json"
+        owner_voice_ref = str(spec.get("owner_voice_media_ref", "")).strip()
+
+        def _normalized_words(value: str) -> str:
+            return " ".join(re.findall(r"[a-z0-9']+", value.lower()))
 
         def voice_stage():
-            self._require_absent(narration, "voice")
-            self._require_absent(timed_words_path, "voice")
-            spoken_text = script.strip()
-            # This local guard runs before balance checks, voice lookups or paid TTS.
-            voice.validate_spoken_narration(spoken_text)
-            if narration_payload.exists():
-                existing_payload = narration_payload.read_text(encoding="utf-8").strip()
-                if existing_payload != spoken_text:
-                    raise RuntimeError("narration TTS payload differs from checkpointed spoken script")
+            self._require_absent(narration, "owner-voice")
+            self._require_absent(timed_words_path, "owner-voice")
+            source = work / "owner-voice-source"
+
+            if owner_voice_ref.startswith("r2://"):
+                from ..storage.r2 import r2_store_from_environment
+                store = r2_store_from_environment()
+                if store is None:
+                    raise RuntimeError("R2 is required to resolve the owner voice recording")
+                source_url = store.resolve(owner_voice_ref, expires_seconds=3600)
+                with urllib.request.urlopen(source_url, timeout=90) as response:
+                    source.write_bytes(response.read())
+            elif owner_voice_ref.startswith("https://"):
+                with urllib.request.urlopen(owner_voice_ref, timeout=90) as response:
+                    source.write_bytes(response.read())
             else:
-                narration_payload.write_text(spoken_text + "\n", encoding="utf-8")
-            characters = len(spoken_text)
-            self.costs.require_monthly_character_capacity(
-                "elevenlabs", characters, int(voice_cfg["monthly_character_limit"])
+                local = Path(owner_voice_ref).expanduser()
+                if not local.is_file():
+                    raise RuntimeError("owner voice recording could not be found")
+                shutil.copyfile(local, source)
+
+            subprocess.run(
+                [
+                    "ffmpeg", "-y", "-i", str(source),
+                    "-vn", "-ac", "1", "-ar", "44100", str(narration),
+                ],
+                capture_output=True, text=True, check=True,
             )
-            self._reserve(
-                spec, voice_cfg["model"], Usage(characters=characters), provider="elevenlabs",
-                stage="voice-full-script-v2",
-            )
-            voice.validate_voice()
-            output = voice.synthesize(spoken_text, narration)
-            details = output.details or {}
-            words = details.get("words")
+
+            captioner = self.providers.captions(live=True)
+            output = captioner.transcribe_words(narration)
+            words = output.value
             if not words:
-                raise RuntimeError("ElevenLabs narration returned no timing alignment")
+                raise RuntimeError("owner voice transcription returned no word timing")
+
+            transcript = " ".join(str(item.get("word", "")) for item in words)
+            similarity = difflib.SequenceMatcher(
+                None,
+                _normalized_words(script),
+                _normalized_words(transcript),
+            ).ratio()
+            if similarity < 0.55:
+                raise RuntimeError(
+                    f"owner voice does not match the approved script closely enough ({similarity:.2f})"
+                )
+
             timed_words_path.write_text(
                 json.dumps(words, indent=2) + "\n", encoding="utf-8"
             )
-            self.costs.record(
-                production_id, "voice", "elevenlabs", voice_cfg["model"],
-                Usage(characters=characters), output.request_id,
-            )
 
-        self.runner.run(production_id, "voice-full-script-v2", voice_stage)
+        self.runner.run(production_id, "owner-voice", voice_stage)
         self._budget(spec)
         narration_seconds = self._duration(narration)
         maximum = 90 if spec["format"] == "short" else 300
@@ -564,7 +583,7 @@ class ProductionService:
             alignment_seconds = float(timed_words[-1]["end"])
             timing_tolerance = max(0.75, narration_seconds * 0.01)
             if alignment_seconds <= 0:
-                raise RuntimeError("ElevenLabs timing alignment has no positive duration")
+                raise RuntimeError("owner-voice timing alignment has no positive duration")
             if abs(alignment_seconds - narration_seconds) > timing_tolerance:
                 timing_scale = narration_seconds / alignment_seconds
                 for word in timed_words:

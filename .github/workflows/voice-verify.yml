@@ -1,4 +1,4 @@
-name: Verify ElevenLabs voice connection
+name: Verify owner-recording voice policy
 
 on:
   workflow_dispatch:
@@ -6,8 +6,9 @@ on:
     branches: [main]
     paths:
       - "config/providers.json"
-      - "src/golide_engine/providers/elevenlabs.py"
+      - "config/video-profile.json"
       - "src/golide_engine/providers/registry.py"
+      - "src/golide_engine/orchestration/production.py"
       - ".github/workflows/voice-verify.yml"
 
 permissions:
@@ -23,7 +24,5 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m pip install -e .
-      - name: Verify configured private narrator
-        env:
-          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+      - name: Verify owner-recording-only narration policy
         run: golide voice-verify

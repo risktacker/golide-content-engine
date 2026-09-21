@@ -4,7 +4,6 @@ import json
 import os
 from pathlib import Path
 
-from .elevenlabs import ElevenLabsVoiceProvider
 from .openai_media import OpenAICaptionProvider, OpenAIImageProvider
 from .openai_text import OpenAITextProvider
 
@@ -15,7 +14,9 @@ class ProviderRegistry:
 
     def _require_live(self) -> None:
         if self.config.get("dry_run_by_default", True) and os.getenv("GOLIDE_ENABLE_PAID_PRODUCTION") != "1":
-            raise RuntimeError("paid providers are locked; set GOLIDE_ENABLE_PAID_PRODUCTION=1 only for an approved release")
+            raise RuntimeError(
+                "paid providers are locked; set GOLIDE_ENABLE_PAID_PRODUCTION=1 only for an approved release"
+            )
 
     def text(self, *, live: bool = False) -> OpenAITextProvider:
         if live:
@@ -31,25 +32,15 @@ class ProviderRegistry:
         cfg = self.config["assets"]
         return OpenAIImageProvider(cfg[f"{tier}_model"], cfg[f"{tier}_quality"])
 
-    def voice(self, *, live: bool = False) -> ElevenLabsVoiceProvider:
-        if live:
-            self._require_live()
-        cfg = self.config["voice"]
-        if cfg.get("provider") != "elevenlabs":
-            raise RuntimeError("production narration provider must be elevenlabs")
-        return ElevenLabsVoiceProvider(
-            model=cfg["model"],
-            voice_id=os.getenv("ELEVENLABS_VOICE_ID", cfg["voice_id"]),
-            output_format=cfg.get("output_format", "mp3_44100_128"),
-            voice_settings=cfg.get("settings", {}),
-            max_characters_per_request=cfg.get("max_characters_per_request", 10_000),
-            monthly_character_limit=cfg.get("monthly_character_limit", 27_000),
+    def voice(self, *, live: bool = False):
+        raise RuntimeError(
+            "voice synthesis is disabled; GOLIDE video narration must come from the owner's recording"
         )
 
     def captions(self, *, live: bool = False) -> OpenAICaptionProvider:
         cfg = self.config["captions"]
-        if cfg.get("provider") == "elevenlabs-alignment":
-            raise RuntimeError("captions are supplied by ElevenLabs narration alignment; transcription is disabled")
+        if cfg.get("provider") != "openai-transcription":
+            raise RuntimeError("captions must be derived from the owner recording")
         if live:
             self._require_live()
         return OpenAICaptionProvider(cfg["model"])

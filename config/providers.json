@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "dry_run_by_default": true,
   "text": {
     "provider": "openai",
@@ -22,25 +22,17 @@
     "long_size": "1536x1024"
   },
   "voice": {
-    "provider": "elevenlabs",
-    "model": "eleven_multilingual_v2",
-    "voice_id": "WpJF8X6OVIJigRbSwZIv",
-    "approval_status": "approved",
-    "output_format": "mp3_44100_128",
-    "max_characters_per_request": 10000,
-    "monthly_character_limit": 27000,
-    "settings": {
-      "stability": 0.5,
-      "similarity_boost": 0.75,
-      "style": 0.15,
-      "use_speaker_boost": true
-    }
+    "provider": "owner_recording",
+    "source": "owner_recording_only",
+    "ai_voice_allowed": false,
+    "cloned_voice_allowed": false,
+    "required_spec_field": "owner_voice_media_ref"
   },
   "captions": {
-    "provider": "elevenlabs-alignment",
-    "source": "voice.normalized_alignment",
-    "fallback_provider": null,
-    "word_timestamps": true
+    "provider": "openai-transcription",
+    "model": "whisper-1",
+    "word_timestamps": true,
+    "source": "owner_recording"
   },
   "thumbnail": {
     "provider": "openai",
