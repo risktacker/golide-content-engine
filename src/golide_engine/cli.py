@@ -195,10 +195,9 @@ def main() -> int:
                 "connected": bool(
                     os.getenv("GOLIDE_META_API_VERSION", "").strip()
                     and os.getenv("INSTAGRAM_USER_ACCESS_TOKEN", "").strip()
-                    and os.getenv("GOLIDE_INSTAGRAM_USER_ID", "").strip()
                 ),
                 "accountLabel": "Instagram",
-                "externalAccountId": os.getenv("GOLIDE_INSTAGRAM_USER_ID", "").strip(),
+                "externalAccountId": os.getenv("GOLIDE_INSTAGRAM_USER_ID", "").strip() or "instagram-login",
             },
             {
                 "platform": "facebook",
@@ -415,10 +414,18 @@ def main() -> int:
                 queue_root = Path(args.queue)
                 queue_root.mkdir(parents=True, exist_ok=True)
                 claimed_path = queue_root / f"{claimed['jobId']}.json"
-                if not claimed_path.exists():
-                    claimed_path.write_text(
-                        json.dumps(claimed["spec"], indent=2) + "\n", encoding="utf-8"
-                    )
+                claimed_spec = dict(claimed["spec"])
+                if claimed_path.exists():
+                    existing_spec = json.loads(claimed_path.read_text(encoding="utf-8"))
+                    existing_spec.update({
+                        key: value
+                        for key, value in claimed_spec.items()
+                        if value not in (None, "", [], {})
+                    })
+                    claimed_spec = existing_spec
+                claimed_path.write_text(
+                    json.dumps(claimed_spec, indent=2) + "\n", encoding="utf-8"
+                )
         due = due_specs(args.queue)
         if not due:
             print(json.dumps({"status": "no_due_production"}))
