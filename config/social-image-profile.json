@@ -77,6 +77,10 @@
     "preserve_same_concept_across_ratios": true,
     "regenerate_only_when_crop_breaks_metaphor_or_hook": true,
     "temporary_media_only": true,
-    "approval_required_before_publish": true
+    "approval_required_before_publish": true,
+    "provider": "openai",
+    "model": "gpt-image-2",
+    "quality": "medium",
+    "strategy": "generate one master concept, derive platform ratios without a second paid generation unless crop or composition fails QA"
   }
 }
