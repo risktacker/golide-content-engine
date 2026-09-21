@@ -3,8 +3,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from PIL import Image, ImageOps
-
 
 class SocialImageProfile:
     def __init__(self, path: str | Path = "config/social-image-profile.json"):
@@ -49,6 +47,12 @@ class SocialImageProfile:
 
     @staticmethod
     def adapt(master: Path, meta_output: Path, square_output: Path) -> None:
+        try:
+            from PIL import Image, ImageOps
+        except ImportError as exc:
+            raise RuntimeError(
+                "Pillow is required for social image adaptation; install production dependencies"
+            ) from exc
         with Image.open(master) as image:
             image = image.convert("RGB")
             meta = ImageOps.fit(
