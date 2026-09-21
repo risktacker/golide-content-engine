@@ -1,0 +1,54 @@
+name: Content distribution scheduler
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: golide-content-distribution
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  distribute:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      GOLIDE_ENABLE_PAID_PRODUCTION: "1"
+      GOLIDE_STATIC_OPENAI_MONTHLY_CAP_USD: "3.00"
+      GOLIDE_STUDIO_BASE_URL: "https://studio.golidee.com"
+      GOLIDE_PRODUCT_REGISTRY_URL: "https://marketplace.golidee.com/api/product-registry"
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+      GOLIDE_META_API_VERSION: ${{ secrets.GOLIDE_META_API_VERSION }}
+      INSTAGRAM_USER_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_USER_ACCESS_TOKEN }}
+      GOLIDE_INSTAGRAM_USER_ID: ${{ secrets.GOLIDE_INSTAGRAM_USER_ID }}
+      META_PAGE_ACCESS_TOKEN: ${{ secrets.META_PAGE_ACCESS_TOKEN }}
+      GOLIDE_FACEBOOK_PAGE_ID: ${{ secrets.GOLIDE_FACEBOOK_PAGE_ID }}
+      LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+      GOLIDE_LINKEDIN_AUTHOR_URN: ${{ secrets.GOLIDE_LINKEDIN_AUTHOR_URN }}
+      GOLIDE_LINKEDIN_VERSION: ${{ secrets.GOLIDE_LINKEDIN_VERSION }}
+      X_USER_ACCESS_TOKEN: ${{ secrets.X_USER_ACCESS_TOKEN }}
+      YOUTUBE_OAUTH_TOKEN_B64: ${{ secrets.YOUTUBE_OAUTH_TOKEN_B64 }}
+      GOLIDE_ENABLE_SOCIAL_PUBLISH: ${{ secrets.GOLIDE_ENABLE_SOCIAL_PUBLISH }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e '.[production]'
+      - name: Sync verified connection state to Studio
+        run: golide connections-sync-studio
+      - name: Create due static content
+        run: golide static-automation-run
+      - name: Publish due static content when the release gate is open
+        if: env.GOLIDE_ENABLE_SOCIAL_PUBLISH == '1'
+        run: golide studio-social-publish
