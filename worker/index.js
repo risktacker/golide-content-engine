@@ -115,11 +115,40 @@ async function ensureSchema(db){
       post_id TEXT, status TEXT NOT NULL DEFAULT 'active', expires_at TEXT NOT NULL,
       created_at TEXT NOT NULL, deleted_at TEXT
     )`,
+    `CREATE TABLE IF NOT EXISTS production_jobs (
+      job_id TEXT PRIMARY KEY,
+      format TEXT NOT NULL,
+      spec_json TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'queued',
+      stage TEXT NOT NULL DEFAULT 'registered',
+      title TEXT NOT NULL DEFAULT '',
+      selected_topic TEXT NOT NULL DEFAULT '',
+      script TEXT NOT NULL DEFAULT '',
+      owner_voice_media_ref TEXT,
+      generate_at TEXT,
+      scheduled_at TEXT,
+      actual_cost_usd REAL NOT NULL DEFAULT 0,
+      openai_cost_usd REAL NOT NULL DEFAULT 0,
+      run_url TEXT,
+      release_url TEXT,
+      error TEXT,
+      claimed_at TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    )`,
+    `CREATE TABLE IF NOT EXISTS engine_connections (
+      platform TEXT PRIMARY KEY,
+      connected INTEGER NOT NULL DEFAULT 0,
+      account_label TEXT NOT NULL DEFAULT '',
+      external_account_id TEXT NOT NULL DEFAULT '',
+      synced_at TEXT NOT NULL
+    )`,
     `CREATE INDEX IF NOT EXISTS idx_content_posts_due ON content_posts(status, scheduled_at)`,
     `CREATE INDEX IF NOT EXISTS idx_social_variants_post ON social_variants(post_id, status)`,
     `CREATE INDEX IF NOT EXISTS idx_inbox_threads_open ON inbox_threads(status, last_message_at)`,
     `CREATE INDEX IF NOT EXISTS idx_inbox_messages_thread ON inbox_messages(thread_id, created_at)`,
     `CREATE INDEX IF NOT EXISTS idx_temporary_media_cleanup ON temporary_media(status, expires_at)`,
+    `CREATE INDEX IF NOT EXISTS idx_production_jobs_queue ON production_jobs(status, generate_at, updated_at)`,
   ];
   for(const sql of statements) await db.prepare(sql).run();
   schemaReady=true;
@@ -142,6 +171,9 @@ async function overview(env){
     draft_posts:await count(db,`SELECT COUNT(*) count FROM content_posts WHERE content_class='post' AND status='draft'`),
     draft_shorts:await count(db,`SELECT COUNT(*) count FROM content_posts WHERE content_class='short' AND status='draft'`),
     draft_longs:await count(db,`SELECT COUNT(*) count FROM content_posts WHERE content_class='long' AND status='draft'`),
+    production_jobs:await count(db,`SELECT COUNT(*) count FROM production_jobs`),
+    waiting_voice:await count(db,`SELECT COUNT(*) count FROM production_jobs WHERE status='waiting_owner_voice'`),
+    production_running:await count(db,`SELECT COUNT(*) count FROM production_jobs WHERE status IN ('claimed','running')`),
     r2_ready:hasAll(env,["R2_ACCOUNT_ID","R2_ACCESS_KEY_ID","R2_SECRET_ACCESS_KEY","R2_BUCKET"]),
   };
 }
@@ -171,15 +203,27 @@ async function inbox(db){
   return threads;
 }
 
-function connectionRows(env){
+async function connectionRows(db,env){
+  const synced=(await db.prepare(`SELECT platform,connected,account_label,external_account_id,synced_at FROM engine_connections ORDER BY platform`).all()).results||[];
+  if(synced.length){
+    return synced.filter((row)=>Number(row.connected)===1).map((row)=>({
+      id:row.platform,
+      platform:row.platform,
+      account_label:row.account_label,
+      external_account_id:row.external_account_id,
+      transport:"official_api",
+      status:"connected",
+      synced_at:row.synced_at,
+    }));
+  }
   const rows=[];
   const push=(platform,connected,label,external="")=>{if(connected)rows.push({id:platform,platform,account_label:label,external_account_id:external,transport:"official_api",status:"connected"});};
   const meta=Boolean(safeText(env.GOLIDE_META_API_VERSION));
-  push("instagram",meta&&Boolean(safeText(env.INSTAGRAM_USER_ACCESS_TOKEN)),"Instagram","instagram-login");
+  push("instagram",meta&&Boolean(safeText(env.INSTAGRAM_USER_ACCESS_TOKEN)),"Instagram",safeText(env.GOLIDE_INSTAGRAM_USER_ID)||"instagram-login");
   push("facebook",meta&&hasAll(env,["META_PAGE_ACCESS_TOKEN","GOLIDE_FACEBOOK_PAGE_ID"]),"Facebook Page",safeText(env.GOLIDE_FACEBOOK_PAGE_ID));
   push("linkedin",hasAll(env,["LINKEDIN_ACCESS_TOKEN","GOLIDE_LINKEDIN_AUTHOR_URN","GOLIDE_LINKEDIN_VERSION"]),"LinkedIn",safeText(env.GOLIDE_LINKEDIN_AUTHOR_URN));
   push("x",Boolean(safeText(env.X_USER_ACCESS_TOKEN)),"X","x-user");
-  push("youtube",Boolean(safeText(env.YOUTUBE_REFRESH_TOKEN)||safeText(env.GOOGLE_OAUTH_REFRESH_TOKEN)||safeText(env.GOLIDE_YOUTUBE_CONNECTED)),"YouTube","youtube-channel");
+  push("youtube",Boolean(safeText(env.YOUTUBE_REFRESH_TOKEN)||safeText(env.GOOGLE_OAUTH_REFRESH_TOKEN)||safeText(env.GOLIDE_YOUTUBE_CONNECTED)),"YouTube","UCqaXVBSBz7iQsRHOupKt-3w");
   return rows;
 }
 
@@ -314,6 +358,183 @@ async function createPost(env,payload){
   return {id,status,content_class:klass,product_mode:productMode,product_id:productId,product_name:productName};
 }
 
+async function listProductionJobs(db){
+  const {results=[]}=await db.prepare(`SELECT job_id,format,status,stage,title,selected_topic,script,owner_voice_media_ref,
+    generate_at,scheduled_at,actual_cost_usd,openai_cost_usd,run_url,release_url,error,claimed_at,created_at,updated_at
+    FROM production_jobs ORDER BY COALESCE(scheduled_at,generate_at,created_at) DESC LIMIT 100`).all();
+  return results;
+}
+
+async function registerProductionJob(db,payload){
+  const jobId=safeText(payload.jobId);
+  const spec=payload.spec;
+  if(!jobId||!spec||typeof spec!=="object") throw new Error("jobId and spec are required");
+  const now=nowIso();
+  const existing=await db.prepare(`SELECT status,script,owner_voice_media_ref FROM production_jobs WHERE job_id=?`).bind(jobId).first();
+  const voice=safeText(spec.owner_voice_media_ref)||safeText(existing?.owner_voice_media_ref)||null;
+  if(voice) spec.owner_voice_media_ref=voice;
+  let status=existing?.status||"queued";
+  if(!existing) status="queued";
+  else if(voice && status==="waiting_owner_voice") status="queued";
+  await db.prepare(`INSERT INTO production_jobs
+    (job_id,format,spec_json,status,stage,title,selected_topic,script,owner_voice_media_ref,generate_at,scheduled_at,created_at,updated_at)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
+    ON CONFLICT(job_id) DO UPDATE SET
+      format=excluded.format,spec_json=excluded.spec_json,
+      status=CASE WHEN production_jobs.status='waiting_owner_voice' AND excluded.owner_voice_media_ref IS NOT NULL THEN 'queued' ELSE production_jobs.status END,
+      title=CASE WHEN excluded.title<>'' THEN excluded.title ELSE production_jobs.title END,
+      owner_voice_media_ref=COALESCE(excluded.owner_voice_media_ref,production_jobs.owner_voice_media_ref),
+      generate_at=excluded.generate_at,scheduled_at=excluded.scheduled_at,updated_at=excluded.updated_at`)
+    .bind(
+      jobId,safeText(spec.format)||"short",JSON.stringify(spec),status,"registered",
+      safeText(spec.title),safeText(spec.brief),safeText(existing?.script),voice,
+      safeText(spec.generate_at)||null,safeText(spec.release?.scheduled_at)||null,
+      now,now
+    ).run();
+  return {jobId,status};
+}
+
+async function claimNextProduction(db,nowValue){
+  const now=safeText(nowValue)||nowIso();
+  const row=await db.prepare(`SELECT job_id,spec_json FROM production_jobs
+    WHERE status IN ('queued','paused_funds')
+      AND (generate_at IS NULL OR generate_at='' OR generate_at<=?)
+    ORDER BY COALESCE(generate_at,created_at) ASC LIMIT 1`).bind(now).first();
+  if(!row) return null;
+  const claimed=nowIso();
+  await db.prepare(`UPDATE production_jobs SET status='claimed',stage='claimed-by-engine',claimed_at=?,updated_at=? WHERE job_id=?`)
+    .bind(claimed,claimed,row.job_id).run();
+  return {jobId:row.job_id,spec:JSON.parse(row.spec_json)};
+}
+
+async function updateProductionStatus(db,jobId,payload){
+  const current=await db.prepare(`SELECT spec_json FROM production_jobs WHERE job_id=?`).bind(jobId).first();
+  if(!current) throw new Error("production job not found");
+  const status=safeText(payload.status)||"running";
+  const stage=safeText(payload.stage)||status;
+  const title=safeText(payload.title);
+  const script=safeText(payload.script);
+  const topic=safeText(payload.selectedTopic);
+  let spec=JSON.parse(current.spec_json);
+  if(title) spec.title=title;
+  if(topic) spec.brief=topic;
+  await db.prepare(`UPDATE production_jobs SET
+    spec_json=?,status=?,stage=?,
+    title=CASE WHEN ?<>'' THEN ? ELSE title END,
+    selected_topic=CASE WHEN ?<>'' THEN ? ELSE selected_topic END,
+    script=CASE WHEN ?<>'' THEN ? ELSE script END,
+    actual_cost_usd=?,openai_cost_usd=?,
+    run_url=?,release_url=?,error=?,updated_at=?
+    WHERE job_id=?`)
+    .bind(
+      JSON.stringify(spec),status,stage,
+      title,title,topic,topic,script,script,
+      Number(payload.actualCostUsd||0),Number(payload.providerUsage?.openAiCostUsd||0),
+      safeText(payload.runUrl)||null,safeText(payload.releaseUrl)||null,safeText(payload.error)||null,
+      nowIso(),jobId
+    ).run();
+  return {jobId,status,stage};
+}
+
+async function attachOwnerVoice(db,jobId,mediaRef){
+  const ref=safeText(mediaRef);
+  if(!ref.startsWith("r2://")) throw new Error("owner voice must be a temporary R2 media reference");
+  const row=await db.prepare(`SELECT spec_json,scheduled_at FROM production_jobs WHERE job_id=?`).bind(jobId).first();
+  if(!row) throw new Error("production job not found");
+  const spec=JSON.parse(row.spec_json);
+  spec.owner_voice_media_ref=ref;
+  const scheduled=safeText(row.scheduled_at);
+  if(scheduled){
+    const d=new Date(scheduled);
+    if(!Number.isNaN(d.valueOf())){
+      const expiry=new Date(d.getTime()+24*3600*1000).toISOString();
+      await db.prepare(`UPDATE temporary_media SET expires_at=CASE WHEN expires_at<? THEN ? ELSE expires_at END WHERE object_key=?`)
+        .bind(expiry,expiry,ref).run();
+    }
+  }
+  await db.prepare(`UPDATE production_jobs SET spec_json=?,owner_voice_media_ref=?,status='queued',stage='owner-voice-ready',error=NULL,updated_at=? WHERE job_id=?`)
+    .bind(JSON.stringify(spec),ref,nowIso(),jobId).run();
+  return {jobId,status:"queued",stage:"owner-voice-ready"};
+}
+
+async function syncEngineConnections(db,payload){
+  const rows=Array.isArray(payload.connections)?payload.connections:[];
+  const now=nowIso();
+  for(const item of rows){
+    const platform=safeText(item.platform).toLowerCase();
+    if(!["instagram","facebook","linkedin","x","youtube"].includes(platform)) continue;
+    await db.prepare(`INSERT INTO engine_connections(platform,connected,account_label,external_account_id,synced_at)
+      VALUES(?,?,?,?,?)
+      ON CONFLICT(platform) DO UPDATE SET connected=excluded.connected,account_label=excluded.account_label,
+      external_account_id=excluded.external_account_id,synced_at=excluded.synced_at`)
+      .bind(platform,item.connected?1:0,safeText(item.accountLabel),safeText(item.externalAccountId),now).run();
+  }
+  return {synced:rows.length};
+}
+
+let githubJwksCache={expires:0,keys:[]};
+function b64urlBytes(value){
+  const normalized=value.replace(/-/g,"+").replace(/_/g,"/");
+  const padded=normalized+"=".repeat((4-normalized.length%4)%4);
+  const binary=atob(padded);
+  return Uint8Array.from(binary,(ch)=>ch.charCodeAt(0));
+}
+function b64urlJson(value){
+  return JSON.parse(new TextDecoder().decode(b64urlBytes(value)));
+}
+async function githubJwks(){
+  if(githubJwksCache.expires>Date.now()&&githubJwksCache.keys.length) return githubJwksCache.keys;
+  const response=await fetch("https://token.actions.githubusercontent.com/.well-known/jwks");
+  if(!response.ok) throw new Error("GitHub OIDC JWKS unavailable");
+  const payload=await response.json();
+  githubJwksCache={expires:Date.now()+3600_000,keys:payload.keys||[]};
+  return githubJwksCache.keys;
+}
+async function machineAuthorized(request){
+  const auth=request.headers.get("authorization")||"";
+  if(!auth.startsWith("Bearer ")) return false;
+  const token=auth.slice(7).trim();
+  const parts=token.split(".");
+  if(parts.length!==3) return false;
+  try{
+    const header=b64urlJson(parts[0]);
+    const claims=b64urlJson(parts[1]);
+    if(header.alg!=="RS256"||!header.kid) return false;
+    if(claims.aud!=="golide-studio-engine") return false;
+    if(claims.repository!=="risktacker/golide-content-engine") return false;
+    const now=Math.floor(Date.now()/1000);
+    if(Number(claims.exp||0)<=now||Number(claims.nbf||0)>now+60) return false;
+    const keys=await githubJwks();
+    const jwk=keys.find((key)=>key.kid===header.kid);
+    if(!jwk) return false;
+    const key=await crypto.subtle.importKey("jwk",jwk,{name:"RSASSA-PKCS1-v1_5",hash:"SHA-256"},false,["verify"]);
+    const signed=new TextEncoder().encode(parts[0]+"."+parts[1]);
+    return await crypto.subtle.verify("RSASSA-PKCS1-v1_5",key,b64urlBytes(parts[2]),signed);
+  }catch{return false;}
+}
+
+async function handleMachineApi(request,env,url){
+  await ensureSchema(env.DB);
+  if(url.pathname==="/api/engine/next"&&request.method==="GET"){
+    const claimed=await claimNextProduction(env.DB,url.searchParams.get("now"));
+    return claimed?json(claimed):new Response(null,{status:204});
+  }
+  if(url.pathname==="/api/engine/jobs/register"&&request.method==="POST"){
+    try{return json(await registerProductionJob(env.DB,await request.json()),201);}catch(e){return err(e?.message||String(e),400);}
+  }
+  const statusMatch=url.pathname.match(/^\/api\/engine\/jobs\/([^/]+)\/status$/);
+  if(statusMatch&&request.method==="POST"){
+    try{return json(await updateProductionStatus(env.DB,decodeURIComponent(statusMatch[1]),await request.json()));}catch(e){return err(e?.message||String(e),400);}
+  }
+  if(url.pathname==="/api/engine/connections"&&request.method==="POST"){
+    try{return json(await syncEngineConnections(env.DB,await request.json()));}catch(e){return err(e?.message||String(e),400);}
+  }
+  if(url.pathname==="/api/engine/analytics"&&request.method==="POST"){
+    return json({status:"accepted"});
+  }
+  return err("not found",404);
+}
+
 function safeFilename(name){
   const base=String(name||"").replace(/\\/g,"/").split("/").pop().trim().replace(/[^A-Za-z0-9._-]+/g,"-").replace(/^[-._]+|[-._]+$/g,"");
   return (base||"media.bin").slice(0,120);
@@ -378,7 +599,21 @@ async function handleApi(request,env,url){
     try{return json(await createPost(env,await request.json()),201);}catch(e){return err(e?.message||String(e),400);}
   }
   if(url.pathname==="/api/inbox"&&request.method==="GET") return json({threads:await inbox(env.DB)});
-  if(url.pathname==="/api/connections"&&request.method==="GET") return json({connections:connectionRows(env)});
+  if(url.pathname==="/api/connections"&&request.method==="GET") return json({connections:await connectionRows(env.DB,env)});
+  if(url.pathname==="/api/production-jobs"&&request.method==="GET") return json({jobs:await listProductionJobs(env.DB)});
+  const voiceMatch=url.pathname.match(/^\/api\/production-jobs\/([^/]+)\/voice$/);
+  if(voiceMatch&&request.method==="POST"){
+    try{
+      const payload=await request.json();
+      return json(await attachOwnerVoice(env.DB,decodeURIComponent(voiceMatch[1]),payload.media_ref));
+    }catch(e){return err(e?.message||String(e),400);}
+  }
+  const retryMatch=url.pathname.match(/^\/api\/production-jobs\/([^/]+)\/retry$/);
+  if(retryMatch&&request.method==="POST"){
+    const id=decodeURIComponent(retryMatch[1]);
+    await env.DB.prepare(`UPDATE production_jobs SET status='queued',stage='manual-retry',error=NULL,updated_at=? WHERE job_id=?`).bind(nowIso(),id).run();
+    return json({jobId:id,status:"queued"});
+  }
   if(url.pathname==="/api/media/prepare"&&request.method==="POST"){
     try{return json(await prepareMedia(env,await request.json()),201);}catch(e){return err(e?.message||String(e),503);}
   }
@@ -392,6 +627,10 @@ async function handleApi(request,env,url){
 export default {
   async fetch(request,env){
     const url=new URL(request.url);
+    if(url.pathname.startsWith("/api/engine/")){
+      if(!(await machineAuthorized(request))) return err("engine authentication required",401);
+      return handleMachineApi(request,env,url);
+    }
     const user=await adminSession(request);
     if(!user){
       if(url.pathname.startsWith("/api/")) return err("admin authentication required",401);
