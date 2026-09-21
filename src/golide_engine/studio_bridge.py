@@ -151,6 +151,22 @@ class StudioBridge:
             raise RuntimeError(f"Studio content creation failed with HTTP {status}")
         return json.loads(body.decode("utf-8"))
 
+    def content_exists(self, content_id: str) -> bool:
+        status, body = self._request(
+            "GET", f"/api/engine/posts/{quote(content_id)}"
+        )
+        if status != 200:
+            raise RuntimeError(f"Studio content lookup failed with HTTP {status}")
+        return bool(json.loads(body.decode("utf-8")).get("exists"))
+
+    def static_month_count(self, month: str) -> int:
+        status, body = self._request(
+            "GET", f"/api/engine/static-count?month={quote(month)}"
+        )
+        if status != 200:
+            raise RuntimeError(f"Studio static count failed with HTTP {status}")
+        return int(json.loads(body.decode("utf-8")).get("count", 0))
+
     def register_media(self, records: list[dict[str, Any]]) -> None:
         status, _ = self._request(
             "POST", "/api/engine/media/register", {"records": records}
