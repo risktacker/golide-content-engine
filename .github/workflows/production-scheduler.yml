@@ -56,11 +56,22 @@ jobs:
           YOUTUBE_OAUTH_TOKEN_B64: ${{ secrets.YOUTUBE_OAUTH_TOKEN_B64 }}
           GOLIDE_ENABLE_PAID_PRODUCTION: "1"
           GOLIDE_ENABLE_YOUTUBE_UPLOAD: "1"
-          GOLIDE_OPENAI_MONTHLY_CAP_USD: "5.00"
+          GOLIDE_OPENAI_MONTHLY_CAP_USD: "7.00"
           GOLIDE_STUDIO_BASE_URL: "https://studio.golidee.com"
           GOLIDE_STUDIO_BYPASS_TOKEN: ${{ secrets.GOLIDE_STUDIO_BYPASS_TOKEN }}
           GOLIDE_FAILURE_WEBHOOK: ${{ secrets.GOLIDE_FAILURE_WEBHOOK }}
-        run: golide automation-run
+          GOLIDE_META_API_VERSION: ${{ secrets.GOLIDE_META_API_VERSION }}
+          INSTAGRAM_USER_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_USER_ACCESS_TOKEN }}
+          GOLIDE_INSTAGRAM_USER_ID: ${{ secrets.GOLIDE_INSTAGRAM_USER_ID }}
+          META_PAGE_ACCESS_TOKEN: ${{ secrets.META_PAGE_ACCESS_TOKEN }}
+          GOLIDE_FACEBOOK_PAGE_ID: ${{ secrets.GOLIDE_FACEBOOK_PAGE_ID }}
+          LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+          GOLIDE_LINKEDIN_AUTHOR_URN: ${{ secrets.GOLIDE_LINKEDIN_AUTHOR_URN }}
+          GOLIDE_LINKEDIN_VERSION: ${{ secrets.GOLIDE_LINKEDIN_VERSION }}
+          X_USER_ACCESS_TOKEN: ${{ secrets.X_USER_ACCESS_TOKEN }}
+        run: |
+          golide connections-sync-studio
+          golide automation-run
       - name: Save resumable media checkpoint
         id: checkpoint_save
         if: always()
