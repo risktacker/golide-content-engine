@@ -76,6 +76,7 @@ def main() -> int:
     social_publish_parser.add_argument("--database", default="data/golide.sqlite3")
     social_cleanup_parser = sub.add_parser("social-media-cleanup")
     social_cleanup_parser.add_argument("--database", default="data/golide.sqlite3")
+    sub.add_parser("connections-sync-studio")
     studio_parser = sub.add_parser("studio-serve")
     studio_parser.add_argument("--database", default="data/golide.sqlite3")
     studio_parser.add_argument("--app-dir", default="app")
@@ -181,6 +182,63 @@ def main() -> int:
             ],
             "temporary_media_deleted": purged,
         }, indent=2))
+        return 0
+
+    if args.command == "connections-sync-studio":
+        from .studio_bridge import StudioBridge
+        studio_url = os.getenv("GOLIDE_STUDIO_BASE_URL", "").strip()
+        if not studio_url:
+            raise RuntimeError("GOLIDE_STUDIO_BASE_URL is required")
+        connections = [
+            {
+                "platform": "instagram",
+                "connected": bool(
+                    os.getenv("GOLIDE_META_API_VERSION", "").strip()
+                    and os.getenv("INSTAGRAM_USER_ACCESS_TOKEN", "").strip()
+                    and os.getenv("GOLIDE_INSTAGRAM_USER_ID", "").strip()
+                ),
+                "accountLabel": "Instagram",
+                "externalAccountId": os.getenv("GOLIDE_INSTAGRAM_USER_ID", "").strip(),
+            },
+            {
+                "platform": "facebook",
+                "connected": bool(
+                    os.getenv("GOLIDE_META_API_VERSION", "").strip()
+                    and os.getenv("META_PAGE_ACCESS_TOKEN", "").strip()
+                    and os.getenv("GOLIDE_FACEBOOK_PAGE_ID", "").strip()
+                ),
+                "accountLabel": "Facebook Page",
+                "externalAccountId": os.getenv("GOLIDE_FACEBOOK_PAGE_ID", "").strip(),
+            },
+            {
+                "platform": "linkedin",
+                "connected": bool(
+                    os.getenv("LINKEDIN_ACCESS_TOKEN", "").strip()
+                    and os.getenv("GOLIDE_LINKEDIN_AUTHOR_URN", "").strip()
+                    and os.getenv("GOLIDE_LINKEDIN_VERSION", "").strip()
+                ),
+                "accountLabel": "LinkedIn",
+                "externalAccountId": os.getenv("GOLIDE_LINKEDIN_AUTHOR_URN", "").strip(),
+            },
+            {
+                "platform": "x",
+                "connected": bool(os.getenv("X_USER_ACCESS_TOKEN", "").strip()),
+                "accountLabel": "X",
+                "externalAccountId": "x-user" if os.getenv("X_USER_ACCESS_TOKEN", "").strip() else "",
+            },
+            {
+                "platform": "youtube",
+                "connected": bool(
+                    os.getenv("YOUTUBE_OAUTH_TOKEN_B64", "").strip()
+                    or os.getenv("YOUTUBE_REFRESH_TOKEN", "").strip()
+                    or os.getenv("GOOGLE_OAUTH_REFRESH_TOKEN", "").strip()
+                ),
+                "accountLabel": "YouTube",
+                "externalAccountId": "UCqaXVBSBz7iQsRHOupKt-3w",
+            },
+        ]
+        StudioBridge(studio_url).sync_connections(connections)
+        print(json.dumps({"status": "studio_connections_synced", "connections": connections}))
         return 0
 
     if args.command == "social-media-cleanup":
@@ -368,14 +426,6 @@ def main() -> int:
         spec_path = due[0]
         spec = json.loads(spec_path.read_text(encoding="utf-8"))
         studio_job_id = spec.get("_studio_job_id")
-        if not str(spec.get("owner_voice_media_ref", "")).strip():
-            print(json.dumps({
-                "status": "waiting_owner_voice",
-                "production_id": spec["id"],
-                "required_field": "owner_voice_media_ref",
-                "message": "Owner recording must be attached before the video production pipeline can run.",
-            }))
-            return 0
         if bridge and studio_job_id:
             try:
                 bridge.register(spec)
@@ -389,9 +439,18 @@ def main() -> int:
         assert_channel(youtube, "UCqaXVBSBz7iQsRHOupKt-3w")
         from .operations.budget import BudgetPaused
         from .youtube.demand import TopicDemandRejected
+        from .orchestration.production import WaitingOwnerVoice
         service = None
 
-        def report_studio(status: str, stage: str, error: str | None = None) -> None:
+        def report_studio(
+            status: str,
+            stage: str,
+            error: str | None = None,
+            *,
+            title: str | None = None,
+            script: str | None = None,
+            selected_topic: str | None = None,
+        ) -> None:
             if not bridge or not studio_job_id or service is None:
                 return
             voice_rows = database.rows(
@@ -416,6 +475,9 @@ def main() -> int:
                     elevenlabs_characters=int(voice_rows[0]["characters"]),
                     run_url=run_url,
                     error=error,
+                    title=title,
+                    script=script,
+                    selected_topic=selected_topic,
                 )
             except Exception as exc:
                 print(json.dumps({
@@ -441,6 +503,23 @@ def main() -> int:
         report_studio("running", "production-started")
         try:
             service.run(spec_path)
+        except WaitingOwnerVoice as exc:
+            refreshed = json.loads(spec_path.read_text(encoding="utf-8"))
+            report_studio(
+                "waiting_owner_voice",
+                "script-ready",
+                title=refreshed.get("title") or exc.title,
+                script=exc.script,
+                selected_topic=refreshed.get("brief") or refreshed.get("title"),
+            )
+            print(json.dumps({
+                "status": "waiting_owner_voice",
+                "production_id": spec["id"],
+                "title": refreshed.get("title") or exc.title,
+                "required_field": "owner_voice_media_ref",
+                "message": "Topic research and script are ready. Upload the owner recording in Studio to resume from checkpoints.",
+            }))
+            return 0
         except BudgetPaused as exc:
             report_studio("paused_funds", "funding-check", str(exc))
             print(json.dumps({
