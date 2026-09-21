@@ -28,6 +28,16 @@
         "product_bridge_rule": "Create a genuine information gap or next-step bridge to the most relevant GOLIDE product. Do not make every unit promotional.",
         "presentation": "Use a compact multi-part post. Where platform mechanics support follow-up comments or threads, the value units may be rendered there; otherwise keep them as clearly separated points in the post body.",
         "guarantee_language_forbidden": true
+      },
+      "product_context": {
+        "modes": [
+          "brand",
+          "specific_product",
+          "auto_product"
+        ],
+        "default_mode": "auto_product",
+        "registry": "config/product-registry.json",
+        "auto_priority_rule": "favor new and under-covered products, rotate mature products, exclude paused"
       }
     },
     "short": {
@@ -41,7 +51,9 @@
       "aspect_ratio": "9:16",
       "weekly_items": 4,
       "video_profile": "config/video-profile.json",
-      "voice": "owner_recording_only"
+      "voice": "owner_recording_only",
+      "product_centered": false,
+      "topic_source": "high_trending_business_niche"
     },
     "long_video": {
       "platforms": [
@@ -50,7 +62,9 @@
       "aspect_ratio": "16:9",
       "weekly_items": 2,
       "video_profile": "config/video-profile.json",
-      "voice": "owner_recording_only"
+      "voice": "owner_recording_only",
+      "product_centered": false,
+      "topic_source": "high_trending_business_niche"
     }
   },
   "pinterest": {
