@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "source_of_truth": "GOLIDE Marketplace product registry (market_products)",
+  "note": "Automation snapshot only. Product IDs are stable automation keys; Marketplace/D1 remains authoritative.",
+  "products": [
+    {
+      "id": "job-search-conversion-system",
+      "name": "Easy With Golide — Job Search Conversion System",
+      "lifecycle_status": "ACTIVE",
+      "target_audience": "Job seekers actively applying but not converting enough applications into interviews.",
+      "problem_solved": "Turns scattered job applications into a clearer repeatable application-to-interview system.",
+      "marketplace_url": "https://marketplace.golidee.com/jobsearch/jobsearch-toolkit",
+      "keywords": [
+        "job search",
+        "applications",
+        "interviews",
+        "resume",
+        "career"
+      ],
+      "creator_niches": [
+        "career coach",
+        "job search creator",
+        "resume creator",
+        "HR creator",
+        "remote work creator"
+      ],
+      "target_geographies": [
+        "US",
+        "India",
+        "UK",
+        "Canada",
+        "global English-speaking"
+      ],
+      "priority": 70,
+      "affiliate_rate": 80,
+      "launch_date": "",
+      "partner_coverage": 0,
+      "recent_post_count": 0,
+      "paused": false
+    }
+  ]
+}
