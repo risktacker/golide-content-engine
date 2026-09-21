@@ -246,5 +246,3 @@ ON inbox_messages(thread_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_temporary_media_cleanup
 ON temporary_media(status, expires_at);
 
-CREATE INDEX IF NOT EXISTS idx_content_posts_class_schedule
-ON content_posts(content_class, status, scheduled_at);
