@@ -66,6 +66,8 @@ class Database:
                 "value_units_json": "TEXT NOT NULL DEFAULT '[]'",
                 "product_bridge_position": "INTEGER",
                 "product_url": "TEXT NOT NULL DEFAULT ''",
+                "product_mode": "TEXT NOT NULL DEFAULT 'brand'",
+                "product_id": "TEXT NOT NULL DEFAULT ''",
                 "owner_voice_media_ref": "TEXT",
                 "media_approved": "INTEGER NOT NULL DEFAULT 0",
                 "qa_approved": "INTEGER NOT NULL DEFAULT 0",
