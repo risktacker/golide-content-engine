@@ -19,8 +19,8 @@ def load_policy(path: str | Path) -> dict[str, Any]:
     visuals = policy.get("visuals", {})
     thumbnail = policy.get("thumbnail", {})
 
-    if short.get("weekly_count") != 3:
-        raise PolicyError("shorts.weekly_count must remain 3")
+    if short.get("weekly_count") != 4:
+        raise PolicyError("shorts.weekly_count must remain 4")
     if not loop.get("required") or not loop.get("closing_reconnects_to_opening"):
         raise PolicyError("shorts must use a circular opening/closing loop")
     if voice.get("age_character") != "mature-adult":
