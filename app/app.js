@@ -75,6 +75,51 @@ function platformRows() {
     }).join("");
 }
 
+function syncProductContext() {
+  const mode = $("#product-mode").value;
+  const product = $("#product-id");
+  const bridge = $("#bridge-position");
+  const url = $("#product-url");
+  const status = $("#product-context-status");
+  const products = policy?.product_registry?.products || [];
+
+  product.disabled = mode !== "specific_product";
+  if (mode === "brand") {
+    product.value = "";
+    bridge.value = "";
+    bridge.disabled = true;
+    url.value = "";
+    status.textContent = "Brand mode keeps this static post non-product-centered.";
+    return;
+  }
+
+  bridge.disabled = false;
+  if (mode === "auto_product") {
+    product.value = "";
+    url.value = "";
+    status.textContent = "Auto Product favors new and under-covered products while keeping mature products in rotation.";
+    return;
+  }
+
+  if (!product.value && products.length) product.value = products[0].id;
+  const selected = products.find((item) => item.id === product.value);
+  url.value = selected?.marketplace_url || "";
+  status.textContent = selected
+    ? selected.name + " · " + selected.lifecycle_status + " · priority " + selected.priority
+    : "Choose a registered product.";
+}
+
+function renderProductRegistry() {
+  const products = policy?.product_registry?.products || [];
+  const select = $("#product-id");
+  const current = select.value;
+  select.innerHTML = '<option value="">Auto selects from registry</option>' +
+    products.map((item) => '<option value="' + escAttr(item.id) + '">' +
+      esc(item.name) + " · " + esc(item.lifecycle_status) + "</option>").join("");
+  if (products.some((item) => item.id === current)) select.value = current;
+  syncProductContext();
+}
+
 function classChanged() {
   const isPost = currentClass() === "post";
   $("#post-fields").hidden = !isPost;
@@ -82,9 +127,12 @@ function classChanged() {
   $("#media-approved").closest("label").hidden = !isPost;
   $("#qa-approved").closest("label").hidden = isPost;
   platformRows();
+  if (isPost) syncProductContext();
 }
 
 $("#content-class").onchange = classChanged;
+$("#product-mode").onchange = syncProductContext;
+$("#product-id").onchange = syncProductContext;
 
 $("#fill-platforms").onclick = () => {
   const klass = currentClass();
@@ -120,6 +168,7 @@ async function loadPolicy() {
   try {
     policy = await api("/api/policy");
     renderCadence();
+    renderProductRegistry();
   } catch {
     policy = null;
   }
@@ -346,7 +395,15 @@ $("#create-form").onsubmit = async (e) => {
         master_text: $("#master").value,
         value_units: units,
         product_bridge_position: bridge,
-        product_url: $("#product-url").value,
+        product_url: klass === "post" ? $("#product-url").value : "",
+        product_mode: klass === "post" ? $("#product-mode").value : "brand",
+        product_id: klass === "post" && $("#product-mode").value === "specific_product" ? $("#product-id").value : "",
+        selection_seed: [
+          $("#weekly-theme").value,
+          $("#title").value,
+          units.join("|"),
+          scheduled || "",
+        ].join("::"),
         owner_voice_media_ref: klass === "post" ? null : mediaRefs.voice,
         media_approved: $("#media-approved").checked,
         qa_approved: $("#qa-approved").checked,
@@ -356,13 +413,15 @@ $("#create-form").onsubmit = async (e) => {
       }),
     });
 
+    const productNote = result.product_name ? " Product: " + result.product_name + "." : "";
     $("#form-message").textContent =
-      result.status === "scheduled" ? "Added to locked schedule." : "Draft saved.";
+      (result.status === "scheduled" ? "Added to locked schedule." : "Draft saved.") + productNote;
     e.target.reset();
     mediaRefs = { meta: null, square: null, voice: null, video: null };
     $("#image-previews").innerHTML = "";
     $("#image-generation-status").textContent = "Generation remains behind the paid-production lock.";
-    $("#video-status").textContent = "AI or cloned narration is not allowed. Owner recording is the master timeline.";
+    $("#video-status").textContent = "Product-independent business content. Topic selection follows strong current niche demand. AI or cloned narration is not allowed; owner recording is the master timeline.";
+    $("#product-mode").value = "auto_product";
     classChanged();
     await loadOverview();
   } catch (err) {
