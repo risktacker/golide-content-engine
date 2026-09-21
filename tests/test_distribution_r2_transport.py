@@ -12,7 +12,6 @@ from golide_engine.engine.social import SocialBridge
 from golide_engine.providers import MemoryProvider
 from golide_engine.storage import Database
 from golide_engine.storage.r2 import R2TemporaryMediaStore
-from golide_engine.storage.temporary import TemporaryMediaRepository
 from golide_engine.web import StudioService
 
 
@@ -32,6 +31,25 @@ class R2TransportTests(unittest.TestCase):
             secret_access_key="SECRET456",
             bucket="golide-temp",
             delete_http=delete,
+        )
+
+    @staticmethod
+    def locked_draft(logical: str) -> ContentDraft:
+        units = ("Hook the problem.", "Give useful value.", "Close with a practical step.")
+        body = "\n\n".join(units)
+        return ContentDraft.build(
+            body,
+            [
+                PlatformVariant("instagram", body, media_ref=logical),
+                PlatformVariant("facebook", body, media_ref=logical),
+                PlatformVariant("linkedin", body, media_ref=logical),
+                PlatformVariant("x", body, media_ref=logical, parts=units),
+            ],
+            content_class="post",
+            value_units=units,
+            content_lane="authority",
+            media_approved=True,
+            release_approved=True,
         )
 
     def test_presigned_upload_keeps_secret_out_of_url(self) -> None:
@@ -69,22 +87,20 @@ class R2TransportTests(unittest.TestCase):
             repo = ContentRepository(db)
             logical = "r2://temp/item.png"
             post_id = repo.create(
-                ContentDraft.build(
-                    "Master",
-                    [PlatformVariant("instagram", "IG", media_ref=logical)],
-                ),
+                self.locked_draft(logical),
                 scheduled_at=datetime.now(timezone.utc) - timedelta(seconds=1),
             )
-            provider = MemoryProvider("instagram")
+            providers = [MemoryProvider(p) for p in ("instagram", "facebook", "linkedin", "x")]
             store = self.store()
             result = SocialBridge(
                 repo,
-                [provider],
+                providers,
                 media_resolver=store,
             ).publish_post(post_id)
             self.assertEqual(result.status, "published")
-            self.assertEqual(repo.variants(post_id)[0]["media_ref"], logical)
-            self.assertTrue(provider.requests[0].media_ref.startswith("https://"))
+            variants = {row["platform"]: row for row in repo.variants(post_id)}
+            self.assertEqual(variants["instagram"]["media_ref"], logical)
+            self.assertTrue(providers[0].requests[0].media_ref.startswith("https://"))
 
     def test_studio_direct_upload_registers_and_extends_scheduled_retention(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -101,15 +117,24 @@ class R2TransportTests(unittest.TestCase):
             )[0]
             self.assertIsNone(before["post_id"])
             scheduled = datetime.now(timezone.utc) + timedelta(days=3)
+            units = [
+                "Hook the problem.",
+                "Give useful value.",
+                "Close with a practical step.",
+            ]
             created = service.create_post({
+                "content_class": "post",
+                "content_lane": "authority",
                 "title": "Scheduled media",
-                "master_text": "Master",
+                "master_text": "\n\n".join(units),
+                "value_units": units,
+                "media_approved": True,
+                "release_approved": True,
                 "scheduled_at": scheduled.isoformat(),
-                "variants": [{
-                    "platform": "instagram",
-                    "body": "IG",
-                    "media_ref": prepared["media_ref"],
-                }],
+                "variants": [
+                    {"platform": p, "body": p, "media_ref": prepared["media_ref"]}
+                    for p in ("instagram", "facebook", "linkedin", "x")
+                ],
             })
             after = db.rows(
                 "SELECT expires_at, post_id FROM temporary_media WHERE object_key=?",
