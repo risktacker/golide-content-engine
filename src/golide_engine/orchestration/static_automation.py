@@ -282,7 +282,7 @@ class StaticAutomation:
                     "id": content_id,
                     "status": "paused_funds",
                     "reason": (
-                        f"static OpenAI guard is $${monthly_cap:.2f}; "
+                        f"static OpenAI guard is ${monthly_cap:.2f}; "
                         f"estimated next monthly total would exceed it"
                     ),
                 })
