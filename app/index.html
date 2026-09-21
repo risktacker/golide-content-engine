@@ -25,10 +25,7 @@
         <a href="https://marketplace.golidee.com/">Marketplace</a>
         <a href="https://marketplace.golidee.com/partners">Partner Engine</a>
       </div>
-      <div class="sidebar-foot">
-        <span class="dot"></span>
-        <span>Private admin workspace</span>
-      </div>
+      <div class="sidebar-foot"><span class="dot"></span><span>Private admin workspace</span></div>
     </aside>
 
     <main>
@@ -38,8 +35,8 @@
           <h1 id="view-title">Dashboard</h1>
         </div>
         <div class="top-actions">
-          <span id="health" class="health">Checking engine…</span>
-          <button class="primary" data-open-create>Create post</button>
+          <span id="health" class="health">Checking engine...</span>
+          <button class="primary" data-open-create>Create content</button>
         </div>
       </header>
 
@@ -48,7 +45,7 @@
         <div class="grid two">
           <article class="panel">
             <div class="panel-head"><div><span class="kicker">QUEUE</span><h2>Upcoming</h2></div></div>
-            <div id="upcoming" class="stack empty-state">No scheduled posts yet.</div>
+            <div id="upcoming" class="stack empty-state">No scheduled content yet.</div>
           </article>
           <article class="panel">
             <div class="panel-head"><div><span class="kicker">RESPONSES</span><h2>Needs attention</h2></div></div>
@@ -61,25 +58,96 @@
         <div class="create-grid">
           <form id="create-form" class="panel form-panel">
             <div class="panel-head">
-              <div><span class="kicker">MASTER CONTENT</span><h2>Create once. Adapt per platform.</h2></div>
+              <div><span class="kicker">LOCKED PRODUCTION LANES</span><h2>Create once. Route correctly.</h2></div>
+              <span class="policy-chip" id="route-chip">Post: IG + FB + LinkedIn + X</span>
             </div>
-            <label>Title <input id="title" placeholder="Internal title"></label>
-            <label>Master content <textarea id="master" rows="7" placeholder="Write or generate the core idea here…" required></textarea></label>
+
             <div class="row">
-              <label>Type
-                <select id="kind"><option value="social">Social post</option><option value="video">Video</option></select>
+              <label>Content class
+                <select id="content-class">
+                  <option value="post">Static post</option>
+                  <option value="short">Short video</option>
+                  <option value="long">YouTube long video</option>
+                </select>
               </label>
+              <label>Content lane
+                <select id="content-lane">
+                  <option value="awareness">Awareness</option>
+                  <option value="authority">Authority</option>
+                  <option value="proof">Proof</option>
+                  <option value="story">Story / Founder</option>
+                  <option value="conversion">Conversion</option>
+                  <option value="education">Education</option>
+                  <option value="flexible">Flexible / signal-based</option>
+                </select>
+              </label>
+            </div>
+
+            <label>Weekly theme <input id="weekly-theme" placeholder="One dominant problem space for the week"></label>
+            <label>Internal title <input id="title" placeholder="Internal title"></label>
+            <label>Core framing / notes <textarea id="master" rows="4" placeholder="Core idea, evidence or production notes"></textarea></label>
+
+            <div id="post-fields">
+              <div class="section-label"><span>STATIC POST ARCHITECTURE</span><small>3-4 related value units. Product bridge may occupy unit 2 or 3.</small></div>
+              <div class="unit-grid">
+                <label>Unit 1 - Hook / framing<textarea id="unit-1" rows="3" placeholder="Open the problem clearly"></textarea></label>
+                <label>Unit 2 - Value<textarea id="unit-2" rows="3" placeholder="Useful point or product bridge"></textarea></label>
+                <label>Unit 3 - Value / closure<textarea id="unit-3" rows="3" placeholder="Useful point, bridge or closure"></textarea></label>
+                <label>Unit 4 - Optional closure<textarea id="unit-4" rows="3" placeholder="Optional fourth related unit"></textarea></label>
+              </div>
+              <div class="row">
+                <label>Product bridge
+                  <select id="bridge-position">
+                    <option value="">No bridge for this post</option>
+                    <option value="2">Unit 2</option>
+                    <option value="3">Unit 3</option>
+                  </select>
+                </label>
+                <label>Product URL <input id="product-url" type="url" placeholder="https://marketplace.golidee.com/..."></label>
+              </div>
+
+              <div class="section-label"><span>POST IMAGE</span><small>One paid master concept, adapted to 4:5 and 1:1.</small></div>
+              <div class="row">
+                <label>White hook text <input id="image-hook" placeholder="Short, simple, catching"></label>
+                <label>One visual metaphor <input id="image-concept" placeholder="One strong physical or visual metaphor"></label>
+              </div>
+              <div class="media-actions">
+                <button class="ghost" type="button" id="generate-image">Generate locked GOLIDE image</button>
+                <span id="image-generation-status" class="subtle">Generation remains behind the paid-production lock.</span>
+              </div>
+              <div class="image-previews" id="image-previews"></div>
+              <div class="row">
+                <label>Manual Meta 4:5 image <input id="meta-image-file" type="file" accept="image/*"></label>
+                <label>Manual LinkedIn / X 1:1 image <input id="square-image-file" type="file" accept="image/*"></label>
+              </div>
+            </div>
+
+            <div id="video-fields" hidden>
+              <div class="section-label"><span>OWNER VOICE + FINAL VIDEO</span><small>Shorts use 9:16. Long-form is 16:9 YouTube only.</small></div>
+              <div class="row">
+                <label>Owner voice recording <input id="owner-voice-file" type="file" accept="audio/*"></label>
+                <label>Final approved video <input id="final-video-file" type="file" accept="video/*"></label>
+              </div>
+              <p class="media-status" id="video-status">AI or cloned narration is not allowed. Owner recording is the master timeline.</p>
+            </div>
+
+            <div class="row">
               <label>Schedule
                 <input id="scheduled-at" type="datetime-local">
               </label>
+              <div class="approval-box">
+                <label class="check"><input id="media-approved" type="checkbox"> Static image approved</label>
+                <label class="check"><input id="qa-approved" type="checkbox"> Video QA passed</label>
+                <label class="check"><input id="release-approved" type="checkbox"> Release approved</label>
+              </div>
             </div>
-            <label>Media <input id="media-file" type="file" accept="image/*,video/*,audio/*"></label>
-            <div id="media-status" class="media-status">Optional. Media uploads directly to temporary storage and is removed after confirmed publishing.</div>
+
             <div class="variant-head">
-              <span>Platform versions</span>
-              <button type="button" class="ghost" id="copy-master">Fill from master</button>
+              <span>Locked platform route</span>
+              <button type="button" class="ghost" id="fill-platforms">Use locked value sequence</button>
             </div>
             <div class="platforms" id="platforms"></div>
+
             <div class="form-actions">
               <span id="form-message"></span>
               <button class="primary" type="submit">Save to queue</button>
@@ -87,26 +155,30 @@
           </form>
 
           <aside class="panel preview">
-            <span class="kicker">FLOW</span>
-            <h2>What happens next</h2>
+            <span class="kicker">OPERATING CONTRACT</span>
+            <h2>Three lanes, fixed destinations</h2>
+            <div class="lane-card"><b>POST</b><span>2 every day</span><small>Instagram, Facebook, LinkedIn, X</small></div>
+            <div class="lane-card"><b>SHORT</b><span>4 every week</span><small>Instagram, Facebook, YouTube Shorts</small></div>
+            <div class="lane-card"><b>LONG</b><span>2 every week</span><small>YouTube only</small></div>
             <div class="flow">
-              <div><b>1</b><span>Master idea</span></div>
-              <i></i>
-              <div><b>2</b><span>Platform versions</span></div>
-              <i></i>
-              <div><b>3</b><span>Schedule / publish</span></div>
-              <i></i>
-              <div><b>4</b><span>Remote content IDs</span></div>
-              <i></i>
-              <div><b>5</b><span>Temp media deleted</span></div>
+              <div><b>1</b><span>Core idea</span></div><i></i>
+              <div><b>2</b><span>Platform adaptation</span></div><i></i>
+              <div><b>3</b><span>QA + approval</span></div><i></i>
+              <div><b>4</b><span>Schedule / publish</span></div><i></i>
+              <div><b>5</b><span>Confirmed remote ID</span></div><i></i>
+              <div><b>6</b><span>Temporary media cleanup</span></div>
             </div>
-            <p class="note">Media is temporary by design. GOLIDE keeps the post record and platform ID, not a permanent media library.</p>
+            <p class="note">Nothing publishes silently. Static posts, Shorts and long-form each clear their own locked gate.</p>
           </aside>
         </div>
       </section>
 
       <section class="view" id="schedule">
-        <article class="panel">
+        <article class="panel cadence-panel">
+          <div class="panel-head"><div><span class="kicker">LOCKED WEEK</span><h2>Operating cadence</h2></div><span class="subtle">Africa/Lusaka</span></div>
+          <div id="cadence-grid" class="cadence-grid"></div>
+        </article>
+        <article class="panel schedule-panel">
           <div class="panel-head"><div><span class="kicker">CALENDAR QUEUE</span><h2>Scheduled content</h2></div></div>
           <div id="schedule-list" class="stack empty-state">Nothing scheduled.</div>
         </article>
@@ -126,6 +198,7 @@
             <span class="subtle">Tokens are never displayed here.</span>
           </div>
           <div class="connection-grid" id="connection-grid"></div>
+          <p class="note connection-note">Pinterest remains manual from Instagram. It is intentionally outside native engine automation.</p>
         </article>
       </section>
     </main>
