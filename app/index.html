@@ -7,213 +7,161 @@
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
   <div class="shell">
     <aside class="sidebar">
-      <div class="brand">
-        <span class="brand-mark"></span>
-        <div><strong>GOLIDE</strong><small>Admin Studio</small></div>
-      </div>
+      <a class="brand" href="#" data-view-link="dashboard">
+        <span class="brand-beam"></span>
+        <div><strong>GOLIDE</strong><small>Content Engine</small></div>
+      </a>
       <nav>
-        <button class="nav active" data-view="dashboard">Dashboard</button>
-        <button class="nav" data-view="create">Create</button>
-        <button class="nav" data-view="schedule">Schedule</button>
-        <button class="nav" data-view="inbox">Inbox</button>
-        <button class="nav" data-view="connections">Connections</button>
+        <button class="nav active" data-view="dashboard"><span>01</span>Dashboard</button>
+        <button class="nav" data-view="create"><span>02</span>Automation</button>
+        <button class="nav" data-view="schedule"><span>03</span>Schedule</button>
+        <button class="nav" data-view="inbox"><span>04</span>Inbox</button>
+        <button class="nav" data-view="connections"><span>05</span>Connections</button>
       </nav>
       <div class="workspace-links">
         <a href="https://golidee.com/">Main site</a>
         <a href="https://marketplace.golidee.com/">Marketplace</a>
         <a href="https://marketplace.golidee.com/partners">Partner Engine</a>
       </div>
-      <div class="sidebar-foot"><span class="dot"></span><span>Private admin workspace</span></div>
+      <div class="sidebar-foot"><span class="live-dot"></span><span>Private admin workspace</span></div>
     </aside>
 
     <main>
       <header class="topbar">
         <div>
-          <p class="eyebrow">GOLIDE CONTENT ENGINE / ADMIN</p>
+          <p class="eyebrow">GOLIDE / OWNED DISTRIBUTION</p>
           <h1 id="view-title">Dashboard</h1>
         </div>
         <div class="top-actions">
           <span id="health" class="health">Checking engine...</span>
-          <button class="primary" data-open-create>Create content</button>
+          <button class="primary" data-open-automation>Open automation</button>
         </div>
       </header>
 
       <section class="view active" id="dashboard">
+        <section class="hero-panel">
+          <div class="hero-glow"></div>
+          <div class="hero-copy">
+            <p class="kicker">AUTONOMOUS CONTENT SYSTEM</p>
+            <h2>The engine does the hunting.<br><span>You add the human voice.</span></h2>
+            <p>Research, topic scoring, writing, visuals, rendering, routing and scheduling run behind Studio. Your intervention appears only when a locked gate genuinely needs you.</p>
+          </div>
+          <div class="hero-orbit" aria-hidden="true"><span></span><i></i></div>
+        </section>
+
         <div class="stats" id="stats"></div>
-        <div class="grid two">
+
+        <div class="grid two dashboard-grid">
+          <article class="panel attention-panel">
+            <div class="panel-head">
+              <div><span class="kicker gold">YOUR QUEUE</span><h3>Needs you</h3></div>
+              <span class="micro">Only real intervention gates</span>
+            </div>
+            <div id="dashboard-actions" class="stack empty-state">Nothing needs you right now.</div>
+          </article>
           <article class="panel">
-            <div class="panel-head"><div><span class="kicker">QUEUE</span><h2>Upcoming</h2></div></div>
+            <div class="panel-head">
+              <div><span class="kicker">DISTRIBUTION</span><h3>Next scheduled</h3></div>
+            </div>
             <div id="upcoming" class="stack empty-state">No scheduled content yet.</div>
           </article>
-          <article class="panel">
-            <div class="panel-head"><div><span class="kicker">RESPONSES</span><h2>Needs attention</h2></div></div>
-            <div id="dashboard-inbox" class="stack empty-state">No conversations waiting.</div>
-          </article>
         </div>
+
+        <article class="panel budget-panel">
+          <div class="panel-head">
+            <div><span class="kicker gold">FIRST-SCALE GUARD</span><h3>Spend stays bounded</h3></div>
+            <span class="micro">API billing · not ChatGPT subscription</span>
+          </div>
+          <div id="budget-strip" class="budget-strip"></div>
+        </article>
       </section>
 
       <section class="view" id="create">
-        <div class="create-grid">
-          <form id="create-form" class="panel form-panel">
-            <div class="panel-head">
-              <div><span class="kicker">LOCKED PRODUCTION LANES</span><h2>Create once. Route correctly.</h2></div>
-              <span class="policy-chip" id="route-chip">Post: IG + FB + LinkedIn + X</span>
-            </div>
+        <section class="automation-hero">
+          <div>
+            <p class="kicker">MINIMAL-INPUT OPERATING MODEL</p>
+            <h2>Autopilot, with one human checkpoint.</h2>
+            <p>No topic box. No manual script writing. No final-video upload. The engine discovers demand and builds the asset; video pauses only for your recorded narration.</p>
+          </div>
+          <div class="autopilot-state"><span class="live-dot"></span><strong>Automation armed</strong><small>Every 15 minutes</small></div>
+        </section>
 
-            <div class="row">
-              <label>Content class
-                <select id="content-class">
-                  <option value="post">Static post</option>
-                  <option value="short">Short video</option>
-                  <option value="long">YouTube long video</option>
-                </select>
-              </label>
-              <label>Content lane
-                <select id="content-lane">
-                  <option value="awareness">Awareness</option>
-                  <option value="authority">Authority</option>
-                  <option value="proof">Proof</option>
-                  <option value="story">Story / Founder</option>
-                  <option value="conversion">Conversion</option>
-                  <option value="education">Education</option>
-                  <option value="flexible">Flexible / signal-based</option>
-                </select>
-              </label>
-            </div>
+        <div class="lane-grid">
+          <article class="lane post-lane">
+            <div class="lane-icon">P</div>
+            <div class="lane-count"><strong>2</strong><span>every day</span></div>
+            <h3>Static posts</h3>
+            <p>Signal + product registry → 3–4 value units → platform copy → one GOLIDE master image → 4:5 + 1:1 → schedule.</p>
+            <div class="lane-route">IG · FB · LINKEDIN · X</div>
+            <ol><li>Find angle</li><li>Write</li><li>Generate image</li><li>Engine approval</li><li>Publish</li></ol>
+          </article>
 
-            <label>Weekly theme <input id="weekly-theme" placeholder="One dominant problem space for the week"></label>
-            <label>Internal title <input id="title" placeholder="Internal title"></label>
-            <label>Core framing / notes <textarea id="master" rows="4" placeholder="Core idea, evidence or production notes"></textarea></label>
+          <article class="lane short-lane">
+            <div class="lane-icon">S</div>
+            <div class="lane-count"><strong>4</strong><span>every week</span></div>
+            <h3>Short videos</h3>
+            <p>Current YouTube signals → demand scoring → research → script → your voice → visual plan → render → QA → route.</p>
+            <div class="lane-route">IG REELS · FB REELS · YT SHORTS</div>
+            <ol><li>Trend scout</li><li>Research + script</li><li class="human-step">Your voice</li><li>Render + QA</li><li>Publish</li></ol>
+          </article>
 
-            <div id="post-fields">
-              <div class="section-label"><span>STATIC POST ARCHITECTURE</span><small>3-4 related value units. Product context is selected per post, never hard-coded.</small></div>
-              <div class="row product-context-row">
-                <label>Content source
-                  <select id="product-mode">
-                    <option value="auto_product" selected>Auto Product</option>
-                    <option value="specific_product">Specific Product</option>
-                    <option value="brand">Brand / non-product</option>
-                  </select>
-                </label>
-                <label>Product
-                  <select id="product-id" disabled>
-                    <option value="">Auto selects from registry</option>
-                  </select>
-                </label>
-              </div>
-              <p class="media-status" id="product-context-status">Auto Product favors new and under-covered products while keeping mature products in rotation.</p>
-              <div class="unit-grid">
-                <label>Unit 1 - Hook / framing<textarea id="unit-1" rows="3" placeholder="Open the problem clearly"></textarea></label>
-                <label>Unit 2 - Value<textarea id="unit-2" rows="3" placeholder="Useful point or product bridge"></textarea></label>
-                <label>Unit 3 - Value / closure<textarea id="unit-3" rows="3" placeholder="Useful point, bridge or closure"></textarea></label>
-                <label>Unit 4 - Optional closure<textarea id="unit-4" rows="3" placeholder="Optional fourth related unit"></textarea></label>
-              </div>
-              <div class="row">
-                <label>Product bridge
-                  <select id="bridge-position">
-                    <option value="">No bridge for this post</option>
-                    <option value="2">Unit 2</option>
-                    <option value="3">Unit 3</option>
-                  </select>
-                </label>
-                <label>Resolved product URL <input id="product-url" type="url" placeholder="Chosen from Product Registry" readonly></label>
-              </div>
-
-              <div class="section-label"><span>POST IMAGE</span><small>One paid master concept, adapted to 4:5 and 1:1.</small></div>
-              <div class="row">
-                <label>White hook text <input id="image-hook" placeholder="Short, simple, catching"></label>
-                <label>One visual metaphor <input id="image-concept" placeholder="One strong physical or visual metaphor"></label>
-              </div>
-              <div class="media-actions">
-                <button class="ghost" type="button" id="generate-image">Generate locked GOLIDE image</button>
-                <span id="image-generation-status" class="subtle">Generation remains behind the paid-production lock.</span>
-              </div>
-              <div class="image-previews" id="image-previews"></div>
-              <div class="row">
-                <label>Manual Meta 4:5 image <input id="meta-image-file" type="file" accept="image/*"></label>
-                <label>Manual LinkedIn / X 1:1 image <input id="square-image-file" type="file" accept="image/*"></label>
-              </div>
-            </div>
-
-            <div id="video-fields" hidden>
-              <div class="section-label"><span>OWNER VOICE + FINAL VIDEO</span><small>Shorts use 9:16. Long-form is 16:9 YouTube only.</small></div>
-              <div class="row">
-                <label>Owner voice recording <input id="owner-voice-file" type="file" accept="audio/*"></label>
-                <label>Final approved video <input id="final-video-file" type="file" accept="video/*"></label>
-              </div>
-              <p class="media-status" id="video-status">Product-independent business content. Topic selection follows strong current niche demand. AI or cloned narration is not allowed; owner recording is the master timeline.</p>
-            </div>
-
-            <div class="row">
-              <label>Schedule
-                <input id="scheduled-at" type="datetime-local">
-              </label>
-              <div class="approval-box">
-                <label class="check"><input id="media-approved" type="checkbox"> Static image approved</label>
-                <label class="check"><input id="qa-approved" type="checkbox"> Video QA passed</label>
-                <label class="check"><input id="release-approved" type="checkbox"> Release approved</label>
-              </div>
-            </div>
-
-            <div class="variant-head">
-              <span>Locked platform route</span>
-              <button type="button" class="ghost" id="fill-platforms">Use locked value sequence</button>
-            </div>
-            <div class="platforms" id="platforms"></div>
-
-            <div class="form-actions">
-              <span id="form-message"></span>
-              <button class="primary" type="submit">Save to queue</button>
-            </div>
-          </form>
-
-          <aside class="panel preview">
-            <span class="kicker">OPERATING CONTRACT</span>
-            <h2>Three lanes, fixed destinations</h2>
-            <div class="lane-card"><b>POST</b><span>2 every day</span><small>Instagram, Facebook, LinkedIn, X</small></div>
-            <div class="lane-card"><b>SHORT</b><span>4 every week</span><small>Instagram, Facebook, YouTube Shorts</small></div>
-            <div class="lane-card"><b>LONG</b><span>2 every week</span><small>YouTube only</small></div>
-            <div class="flow">
-              <div><b>1</b><span>Core idea</span></div><i></i>
-              <div><b>2</b><span>Platform adaptation</span></div><i></i>
-              <div><b>3</b><span>QA + approval</span></div><i></i>
-              <div><b>4</b><span>Schedule / publish</span></div><i></i>
-              <div><b>5</b><span>Confirmed remote ID</span></div><i></i>
-              <div><b>6</b><span>Temporary media cleanup</span></div>
-            </div>
-            <p class="note">Nothing publishes silently. Static posts, Shorts and long-form each clear their own locked gate.</p>
-          </aside>
+          <article class="lane long-lane">
+            <div class="lane-icon gold-icon">L</div>
+            <div class="lane-count"><strong>2</strong><span>every week</span></div>
+            <h3>Long-form</h3>
+            <p>Fresh demand → evidence packet → long script → your voice → 16:9 editorial render → metadata + thumbnail → private-first release.</p>
+            <div class="lane-route gold">YOUTUBE ONLY</div>
+            <ol><li>Trend scout</li><li>Research + script</li><li class="human-step">Your voice</li><li>Render + QA</li><li>Schedule</li></ol>
+          </article>
         </div>
+
+        <article class="panel action-room">
+          <div class="panel-head">
+            <div><span class="kicker gold">ACTION ROOM</span><h3>Waiting on you</h3></div>
+            <span class="micro">Record only from the script the engine selected</span>
+          </div>
+          <div id="action-queue" class="action-queue empty-state">No voice recordings required right now.</div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head">
+            <div><span class="kicker">ENGINE PIPELINE</span><h3>Production jobs</h3></div>
+            <button class="ghost" id="refresh-jobs">Refresh</button>
+          </div>
+          <div id="job-list" class="job-list empty-state">No production jobs yet.</div>
+        </article>
       </section>
 
       <section class="view" id="schedule">
         <article class="panel cadence-panel">
-          <div class="panel-head"><div><span class="kicker">LOCKED WEEK</span><h2>Operating cadence</h2></div><span class="subtle">Africa/Lusaka</span></div>
+          <div class="panel-head"><div><span class="kicker">LOCKED WEEK</span><h3>Operating cadence</h3></div><span class="micro">Africa/Lusaka</span></div>
           <div id="cadence-grid" class="cadence-grid"></div>
         </article>
         <article class="panel schedule-panel">
-          <div class="panel-head"><div><span class="kicker">CALENDAR QUEUE</span><h2>Scheduled content</h2></div></div>
+          <div class="panel-head"><div><span class="kicker gold">CALENDAR QUEUE</span><h3>Scheduled content</h3></div></div>
           <div id="schedule-list" class="stack empty-state">Nothing scheduled.</div>
         </article>
       </section>
 
       <section class="view" id="inbox">
         <article class="panel">
-          <div class="panel-head"><div><span class="kicker">UNIFIED INBOX</span><h2>Responses</h2></div></div>
+          <div class="panel-head"><div><span class="kicker">UNIFIED INBOX</span><h3>Responses</h3></div><span class="micro">Draft assistance, never silent auto-replies</span></div>
           <div id="inbox-list" class="stack empty-state">No open conversations.</div>
         </article>
       </section>
 
       <section class="view" id="connections">
-        <article class="panel">
+        <article class="panel connection-panel">
           <div class="panel-head">
-            <div><span class="kicker">PLATFORMS</span><h2>Connections</h2></div>
-            <span class="subtle">Tokens are never displayed here.</span>
+            <div><span class="kicker">LIVE ROUTES</span><h3>Connections</h3></div>
+            <span class="micro">Synced from the credentialed execution engine · tokens never displayed</span>
           </div>
           <div class="connection-grid" id="connection-grid"></div>
-          <p class="note connection-note">Pinterest remains manual from Instagram. It is intentionally outside native engine automation.</p>
+          <p class="note">Pinterest remains manual from Instagram. X will stay pending until its user authorization is completed.</p>
         </article>
       </section>
     </main>
