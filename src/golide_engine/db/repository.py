@@ -26,6 +26,8 @@ class StoredPost:
     value_units_json: str
     product_bridge_position: int | None
     product_url: str
+    product_mode: str
+    product_id: str
     owner_voice_media_ref: str | None
     media_approved: int
     qa_approved: int
@@ -78,10 +80,10 @@ class ContentRepository:
             connection.execute(
                 """INSERT INTO content_posts
                    (id, kind, content_class, title, master_text, weekly_theme, content_lane,
-                    value_units_json, product_bridge_position, product_url, owner_voice_media_ref,
-                    media_approved, qa_approved, release_approved,
+                    value_units_json, product_bridge_position, product_url, product_mode, product_id,
+                    owner_voice_media_ref, media_approved, qa_approved, release_approved,
                     status, scheduled_at, created_at, updated_at)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                 (
                     pid,
                     draft.kind.value,
@@ -93,6 +95,8 @@ class ContentRepository:
                     json.dumps(list(draft.value_units), ensure_ascii=False),
                     draft.product_bridge_position,
                     draft.product_url,
+                    draft.product_mode,
+                    draft.product_id,
                     draft.owner_voice_media_ref,
                     int(draft.media_approved),
                     int(draft.qa_approved),
@@ -140,8 +144,8 @@ class ContentRepository:
         moment = _iso(now or datetime.now(timezone.utc))
         query = """SELECT id, kind, content_class, title, master_text, status, scheduled_at,
                           weekly_theme, content_lane, value_units_json, product_bridge_position,
-                          product_url, owner_voice_media_ref, media_approved, qa_approved,
-                          release_approved
+                          product_url, product_mode, product_id, owner_voice_media_ref,
+                          media_approved, qa_approved, release_approved
                    FROM content_posts
                    WHERE status='scheduled' AND scheduled_at IS NOT NULL AND scheduled_at <= ?"""
         params: tuple[Any, ...] = (moment,)
@@ -155,8 +159,8 @@ class ContentRepository:
         rows = self.database.rows(
             """SELECT id, kind, content_class, title, master_text, status, scheduled_at,
                       weekly_theme, content_lane, value_units_json, product_bridge_position,
-                      product_url, owner_voice_media_ref, media_approved, qa_approved,
-                      release_approved
+                      product_url, product_mode, product_id, owner_voice_media_ref,
+                      media_approved, qa_approved, release_approved
                FROM content_posts WHERE id=?""",
             (post_id,),
         )
@@ -202,6 +206,8 @@ class ContentRepository:
             value_units=post.value_units,
             product_bridge_position=post.product_bridge_position,
             product_url=post.product_url,
+            product_mode=post.product_mode,
+            product_id=post.product_id,
             owner_voice_media_ref=post.owner_voice_media_ref,
             media_approved=bool(post.media_approved),
             qa_approved=bool(post.qa_approved),
