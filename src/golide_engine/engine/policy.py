@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Iterable
 
 from .content import ContentClass, ContentValidationError, PlatformVariant
+from .products import ProductRegistry
 
 
 _FORBIDDEN_DASHES = ("—", "–")
@@ -20,6 +21,7 @@ class ContentPolicy:
         self.calendar = json.loads((root / "config/content-calendar.json").read_text(encoding="utf-8"))
         self.social_image = json.loads((root / "config/social-image-profile.json").read_text(encoding="utf-8"))
         self.video = json.loads((root / "config/video-profile.json").read_text(encoding="utf-8"))
+        self.products = ProductRegistry(root / "config/product-registry.json")
 
     def expected_platforms(self, content_class: ContentClass | str) -> tuple[str, ...]:
         value = content_class if isinstance(content_class, ContentClass) else ContentClass(str(content_class))
@@ -77,9 +79,41 @@ class ContentPolicy:
             values.extend(variant.parts)
         self._reject_extended_dashes(values)
 
+    def validate_product_context(self, draft) -> None:
+        mode = str(getattr(draft, "product_mode", "brand") or "brand").strip().lower()
+        product_id = str(getattr(draft, "product_id", "") or "").strip()
+
+        if draft.content_class is not ContentClass.POST:
+            if mode != "brand" or product_id or str(getattr(draft, "product_url", "") or "").strip():
+                raise ContentValidationError(
+                    "Shorts and long-form are product-independent business content"
+                )
+            return
+
+        if mode not in ProductRegistry.MODES:
+            raise ContentValidationError(f"unsupported product mode: {mode}")
+        if mode == "brand":
+            if product_id:
+                raise ContentValidationError("brand posts cannot carry a product id")
+            if draft.product_bridge_position is not None:
+                raise ContentValidationError("brand posts cannot use a product bridge")
+            return
+
+        if not product_id:
+            raise ContentValidationError(f"{mode} must resolve to a product id before saving")
+        try:
+            product = self.products.get(product_id)
+        except ValueError as exc:
+            raise ContentValidationError(str(exc)) from exc
+        if product.paused or product.lifecycle_status == "PAUSED":
+            raise ContentValidationError("paused products cannot be distributed")
+        if draft.product_bridge_position is not None and draft.product_url != product.marketplace_url:
+            raise ContentValidationError("product bridge URL must match the selected registry product")
+
     def validate_ready_for_schedule(self, draft) -> None:
         self.validate_route(draft.content_class, (item.platform for item in draft.variants))
         self.validate_lane(draft.content_lane)
+        self.validate_product_context(draft)
         self.validate_variant_copy(draft.variants)
         if not draft.release_approved:
             raise ContentValidationError("release approval is required before scheduling")
@@ -117,4 +151,5 @@ class ContentPolicy:
             "calendar": self.calendar,
             "social_image": self.social_image,
             "video": self.video,
+            "product_registry": self.products.snapshot(),
         }
