@@ -2,18 +2,20 @@
   "version": 1,
   "currency": "USD",
   "openai": {
-    "monthly_cap_usd": 5,
-    "monthly_reserve_usd": 0.5,
+    "monthly_cap_usd": 10,
+    "monthly_reserve_usd": 1,
     "scheduled_plan": {
-      "long": 5,
-      "short": 10
+      "long": 9,
+      "short": 18,
+      "static_post": 61
     },
     "scheduled_allocations_usd": {
       "long": 0.7,
       "short": 0.2
     },
-    "allocation_note": "The current long-form release may use up to $0.70 from the correction buffer; the hard scheduled monthly ceiling remains $5.00.",
-    "resume_after_recharge": true
+    "allocation_note": "First-scale operating cap: $10/month OpenAI API. Jobs pause before exceeding allocations or the monthly ceiling and resume from checkpoints after recharge.",
+    "resume_after_recharge": true,
+    "static_post_allocation_usd": 0.07
   },
   "independent_production": {
     "requires_explicit_openai_budget_usd": true,
