@@ -167,6 +167,14 @@ async function loadHealth() {
 async function loadPolicy() {
   try {
     policy = await api("/api/policy");
+    try {
+      const liveRegistry = await api("/api/product-registry");
+      if (Array.isArray(liveRegistry.products) && liveRegistry.products.length) {
+        policy.product_registry = liveRegistry;
+      }
+    } catch {
+      // Keep the checked-in snapshot as a fallback.
+    }
     renderCadence();
     renderProductRegistry();
   } catch {
@@ -404,6 +412,7 @@ $("#create-form").onsubmit = async (e) => {
           units.join("|"),
           scheduled || "",
         ].join("::"),
+        registry_products: klass === "post" ? (policy?.product_registry?.products || []) : [],
         owner_voice_media_ref: klass === "post" ? null : mediaRefs.voice,
         media_approved: $("#media-approved").checked,
         qa_approved: $("#qa-approved").checked,
