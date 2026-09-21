@@ -63,6 +63,8 @@ class ContentDraft:
     value_units: tuple[str, ...] = ()
     product_bridge_position: int | None = None
     product_url: str = ""
+    product_mode: str = "brand"
+    product_id: str = ""
     owner_voice_media_ref: str | None = None
     media_approved: bool = False
     qa_approved: bool = False
@@ -86,6 +88,8 @@ class ContentDraft:
         value_units: Iterable[str] = (),
         product_bridge_position: int | None = None,
         product_url: str = "",
+        product_mode: str = "brand",
+        product_id: str = "",
         owner_voice_media_ref: str | None = None,
         media_approved: bool = False,
         qa_approved: bool = False,
@@ -139,6 +143,8 @@ class ContentDraft:
             value_units=units,
             product_bridge_position=product_bridge_position,
             product_url=product_url.strip(),
+            product_mode=str(product_mode or "brand").strip().lower(),
+            product_id=str(product_id or "").strip(),
             owner_voice_media_ref=owner_ref,
             media_approved=bool(media_approved),
             qa_approved=bool(qa_approved),
