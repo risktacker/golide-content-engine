@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from typing import Iterable
+from urllib.parse import urlparse
 
 from .content import ContentClass, ContentValidationError, PlatformVariant
 from .products import ProductRegistry
@@ -103,8 +104,13 @@ class ContentPolicy:
             raise ContentValidationError(f"{mode} must resolve to a product id before saving")
         try:
             product = self.products.get(product_id)
-        except ValueError as exc:
-            raise ContentValidationError(str(exc)) from exc
+        except ValueError:
+            # New Marketplace products can arrive from the live registry without
+            # a code/config change. Accept only a resolved GOLIDE Marketplace URL.
+            parsed = urlparse(str(getattr(draft, "product_url", "") or ""))
+            if parsed.scheme != "https" or parsed.hostname != "marketplace.golidee.com":
+                raise ContentValidationError("unknown product must resolve from the live GOLIDE Marketplace registry")
+            return
         if product.paused or product.lifecycle_status == "PAUSED":
             raise ContentValidationError("paused products cannot be distributed")
         if draft.product_bridge_position is not None and draft.product_url != product.marketplace_url:
