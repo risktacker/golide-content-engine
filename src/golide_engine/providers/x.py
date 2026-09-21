@@ -46,6 +46,35 @@ class XProvider(SocialProvider):
             else:
                 raise ValueError(f"X media type is not supported: {probe.content_type}")
 
+        parts = tuple(item.strip() for item in request.parts if item.strip())
+        if parts:
+            if len(parts) > 4:
+                raise ValueError("locked GOLIDE X post sequence supports at most four parts")
+            root_id = ""
+            previous_id = ""
+            for index, text in enumerate(parts):
+                payload: dict = {"text": text}
+                if index == 0 and media_id:
+                    payload["media"] = {"media_ids": [media_id]}
+                if previous_id:
+                    payload["reply"] = {"in_reply_to_tweet_id": previous_id}
+                response = self.http.post(
+                    "https://api.x.com/2/tweets",
+                    bearer_token=self.user_access_token,
+                    json_body=payload,
+                )
+                data = response.data.get("data") or {}
+                post_id = str(data.get("id", ""))
+                if not post_id:
+                    raise RuntimeError("X did not return a post id for thread part")
+                if not root_id:
+                    root_id = post_id
+                previous_id = post_id
+            return PublishResult(
+                content_id=root_id,
+                url=f"https://x.com/i/web/status/{root_id}",
+            )
+
         payload: dict = {"text": request.body}
         if media_id:
             payload["media"] = {"media_ids": [media_id]}

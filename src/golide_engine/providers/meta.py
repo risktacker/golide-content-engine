@@ -159,7 +159,8 @@ class InstagramProvider(SocialProvider):
     def publish(self, request: PublishRequest) -> PublishResult:
         _require_publish_enabled()
         media_url = _require_https_media(request.media_ref)
-        payload: dict[str, object] = {"caption": request.body}
+        body = request.body.strip() or "\n\n".join(request.parts)
+        payload: dict[str, object] = {"caption": body}
         if _looks_like_video(media_url):
             payload.update(
                 {
@@ -223,8 +224,9 @@ class FacebookPageProvider(SocialProvider):
 
     def publish(self, request: PublishRequest) -> PublishResult:
         _require_publish_enabled()
+        body = request.body.strip() or "\n\n".join(request.parts)
         if not request.media_ref:
-            result = self.graph.post(f"{self.page_id}/feed", message=request.body)
+            result = self.graph.post(f"{self.page_id}/feed", message=body)
         else:
             media_url = _require_https_media(request.media_ref)
             if _looks_like_video(media_url):
@@ -234,7 +236,7 @@ class FacebookPageProvider(SocialProvider):
             result = self.graph.post(
                 f"{self.page_id}/photos",
                 url=media_url,
-                caption=request.body,
+                caption=body,
             )
         content_id = str(result.get("post_id") or result.get("id") or "")
         if not content_id:

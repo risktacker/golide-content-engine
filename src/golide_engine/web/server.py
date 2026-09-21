@@ -102,6 +102,8 @@ class StudioHandler(BaseHTTPRequestHandler):
             return self._json(200, {"threads": self.service.inbox_rows()})
         if parsed.path == "/api/connections":
             return self._json(200, {"connections": self.service.connection_rows()})
+        if parsed.path == "/api/policy":
+            return self._json(200, self.service.policy_snapshot())
         return self._serve_static(parsed.path)
 
     def do_POST(self) -> None:
@@ -122,6 +124,14 @@ class StudioHandler(BaseHTTPRequestHandler):
             except (ValueError, TypeError, KeyError) as exc:
                 return self._json(400, {"error": str(exc)})
             return self._json(201, prepared)
+        if parsed.path == "/api/social-image/generate":
+            try:
+                generated = self.service.generate_social_image(self._read_json())
+            except RuntimeError as exc:
+                return self._json(503, {"error": str(exc)})
+            except (ValueError, TypeError, KeyError) as exc:
+                return self._json(400, {"error": str(exc)})
+            return self._json(201, generated)
         return self._json(404, {"error": "not found"})
 
     def _serve_static(self, path: str) -> None:

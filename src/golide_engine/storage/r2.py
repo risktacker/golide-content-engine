@@ -85,6 +85,30 @@ class R2TemporaryMediaStore:
         key = self._key(media_ref)
         return self._presign("GET", key, expires_seconds)
 
+    def upload_bytes(
+        self,
+        *,
+        filename: str,
+        media_kind: str,
+        data: bytes,
+        content_type: str = "application/octet-stream",
+        retention_hours: int = 24,
+    ) -> PreparedUpload:
+        prepared = self.prepare_upload(
+            filename=filename,
+            media_kind=media_kind,
+            retention_hours=retention_hours,
+        )
+        request = urllib.request.Request(
+            prepared.upload_url,
+            data=data,
+            method="PUT",
+            headers={"Content-Type": content_type},
+        )
+        with urllib.request.urlopen(request, timeout=60):
+            pass
+        return prepared
+
     def delete(self, media_ref: str) -> None:
         key = self._key(media_ref)
         self.delete_http.delete(self._presign("DELETE", key, 900))

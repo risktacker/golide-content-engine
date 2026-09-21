@@ -140,7 +140,7 @@ class LinkedInProvider(SocialProvider):
     ) -> PublishResult:
         payload: dict = {
             "author": self.author_urn,
-            "commentary": request.body,
+            "commentary": request.body.strip() or "\n\n".join(request.parts),
             "visibility": "PUBLIC",
             "distribution": {
                 "feedDistribution": "MAIN_FEED",
