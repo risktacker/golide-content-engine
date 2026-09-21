@@ -27,14 +27,37 @@ permissions:
 
 jobs:
   produce:
-    # Paid production stays dormant until API funding is ready and the
-    # repository variable is explicitly set to 1.
-    if: vars.GOLIDE_AUTOMATION_ENABLED == '1'
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
+      - name: Check Studio automation control
+        id: automation
+        shell: bash
+        run: |
+          set -u
+          echo "enabled=false" >> "$GITHUB_OUTPUT"
+          OIDC_JSON="$(curl --fail --silent --show-error \
+            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=golide-studio-engine" || true)"
+          TOKEN="$(printf '%s' "$OIDC_JSON" | jq -r '.value // empty')"
+          if [ -z "$TOKEN" ]; then
+            echo "Studio automation gate unavailable; failing closed."
+            exit 0
+          fi
+          STATE="$(curl --fail --silent --show-error \
+            -H "Authorization: Bearer $TOKEN" \
+            "https://studio.golidee.com/api/engine/automation/status" || true)"
+          ENABLED="$(printf '%s' "$STATE" | jq -r '.enabled // false')"
+          if [ "$ENABLED" = "true" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+            echo "Studio automation is RUNNING."
+          else
+            echo "Studio automation is PAUSED; no paid work will run."
+          fi
       - uses: actions/checkout@v4
+        if: steps.automation.outputs.enabled == 'true'
       - name: Restore resumable media checkpoint
+        if: steps.automation.outputs.enabled == 'true'
         uses: actions/cache/restore@v4
         with:
           path: |
@@ -46,9 +69,11 @@ jobs:
           restore-keys: |
             golide-production-checkpoint-
       - uses: actions/setup-python@v5
+        if: steps.automation.outputs.enabled == 'true'
         with:
           python-version: "3.12"
       - name: Ensure FFmpeg and GOLIDE fonts
+        if: steps.automation.outputs.enabled == 'true'
         run: |
           if command -v ffmpeg >/dev/null && fc-match DejaVuSans >/dev/null; then
             ffmpeg -version | head -1
@@ -59,7 +84,9 @@ jobs:
             sudo apt-get install -y ffmpeg fonts-dejavu-core
           fi
       - run: python -m pip install -e '.[production]'
+        if: steps.automation.outputs.enabled == 'true'
       - name: Sync verified connection state to Studio
+        if: steps.automation.outputs.enabled == 'true'
         continue-on-error: true
         env:
           GOLIDE_STUDIO_BASE_URL: "https://studio.golidee.com"
@@ -75,6 +102,7 @@ jobs:
           YOUTUBE_OAUTH_TOKEN_B64: ${{ secrets.YOUTUBE_OAUTH_TOKEN_B64 }}
         run: golide connections-sync-studio
       - name: Produce, upload privately, then schedule
+        if: steps.automation.outputs.enabled == 'true'
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           YOUTUBE_OAUTH_TOKEN_B64: ${{ secrets.YOUTUBE_OAUTH_TOKEN_B64 }}
@@ -87,7 +115,7 @@ jobs:
         run: golide automation-run
       - name: Save resumable media checkpoint
         id: checkpoint_save
-        if: always()
+        if: steps.automation.outputs.enabled == 'true' && always()
         uses: actions/cache/save@v4
         with:
           path: |
@@ -97,7 +125,7 @@ jobs:
             generated
           key: golide-production-checkpoint-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Remove superseded production checkpoints
-        if: always() && steps.checkpoint_save.outcome == 'success'
+        if: steps.automation.outputs.enabled == 'true' && always() && steps.checkpoint_save.outcome == 'success'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
@@ -117,7 +145,7 @@ jobs:
             esac
           done
       - name: Save state and completed queue item
-        if: always()
+        if: steps.automation.outputs.enabled == 'true' && always()
         run: |
           git config user.name "golide-production-bot"
           git config user.email "actions@users.noreply.github.com"
@@ -125,7 +153,7 @@ jobs:
           git diff --cached --quiet || git commit -m "ops: record automated production"
           git push
       - name: Open one failure issue
-        if: failure()
+        if: steps.automation.outputs.enabled == 'true' && failure()
         uses: actions/github-script@v7
         with:
           script: |

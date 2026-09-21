@@ -14,6 +14,8 @@ let overview = null;
 let productionJobs = [];
 let r2Ready = false;
 let uploadCount = 0;
+let automationControl = null;
+let automationBusy = false;
 
 async function api(path, opts = {}) {
   const response = await fetch(path, {
@@ -98,6 +100,71 @@ async function loadPolicy() {
     policy = null;
   }
   renderCadence();
+}
+
+function renderAutomationControl() {
+  const enabled = Boolean(automationControl?.enabled);
+  const panel = $("#automation-control");
+  const button = $("#automation-toggle");
+  if (panel) {
+    panel.classList.toggle("running", enabled);
+    panel.classList.toggle("paused", !enabled);
+  }
+  if ($("#automation-control-title")) {
+    $("#automation-control-title").textContent = enabled ? "Automation running" : "Automation paused";
+  }
+  if ($("#automation-control-copy")) {
+    $("#automation-control-copy").textContent = enabled
+      ? "The engine is armed. It will generate and resume work only at the locked schedule windows."
+      : "Deployment is safe: scheduled runners can wake, but paid generation and publishing stay blocked until you start automation.";
+  }
+  if ($("#automation-control-meta")) {
+    const stamp = automationControl?.updated_at
+      ? new Date(automationControl.updated_at).toLocaleString()
+      : "not changed yet";
+    $("#automation-control-meta").textContent = enabled
+      ? "Started " + stamp + ". Pause blocks new automated work."
+      : "Paused " + stamp + ". Existing Studio data and schedules are preserved.";
+  }
+  if (button) {
+    button.disabled = automationBusy;
+    button.textContent = automationBusy
+      ? "Updating..."
+      : (enabled ? "Pause automation" : "Start automation");
+  }
+  if ($("#autopilot-label")) {
+    $("#autopilot-label").textContent = enabled ? "Automation running" : "Automation paused";
+  }
+  if ($("#autopilot-state")) {
+    $("#autopilot-state").classList.toggle("running", enabled);
+    $("#autopilot-state").classList.toggle("paused", !enabled);
+  }
+}
+
+async function loadAutomationControl() {
+  try {
+    automationControl = await api("/api/automation-control");
+  } catch {
+    automationControl = { enabled: false, state: "paused" };
+  }
+  renderAutomationControl();
+}
+
+async function toggleAutomation() {
+  if (automationBusy) return;
+  automationBusy = true;
+  renderAutomationControl();
+  try {
+    automationControl = await api("/api/automation-control", {
+      method: "POST",
+      body: JSON.stringify({ enabled: !Boolean(automationControl?.enabled) }),
+    });
+  } catch (error) {
+    alert(error.message);
+  } finally {
+    automationBusy = false;
+    renderAutomationControl();
+  }
 }
 
 async function loadOverview() {
@@ -399,9 +466,10 @@ async function loadConnections() {
 }
 
 $("#refresh-jobs").onclick = loadProductionJobs;
+$("#automation-toggle").onclick = toggleAutomation;
 
 async function boot() {
-  await Promise.all([loadHealth(), loadPolicy()]);
+  await Promise.all([loadHealth(), loadPolicy(), loadAutomationControl()]);
   await Promise.all([loadOverview(), loadProductionJobs(), loadConnections()]);
   renderBudget();
 }

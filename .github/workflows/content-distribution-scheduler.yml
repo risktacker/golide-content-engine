@@ -43,16 +43,44 @@ jobs:
       GOLIDE_ENABLE_SOCIAL_PUBLISH: ${{ secrets.GOLIDE_ENABLE_SOCIAL_PUBLISH }}
 
     steps:
+      - name: Check Studio automation control
+        id: automation
+        shell: bash
+        run: |
+          set -u
+          echo "enabled=false" >> "$GITHUB_OUTPUT"
+          OIDC_JSON="$(curl --fail --silent --show-error \
+            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=golide-studio-engine" || true)"
+          TOKEN="$(printf '%s' "$OIDC_JSON" | jq -r '.value // empty')"
+          if [ -z "$TOKEN" ]; then
+            echo "Studio automation gate unavailable; failing closed."
+            exit 0
+          fi
+          STATE="$(curl --fail --silent --show-error \
+            -H "Authorization: Bearer $TOKEN" \
+            "https://studio.golidee.com/api/engine/automation/status" || true)"
+          ENABLED="$(printf '%s' "$STATE" | jq -r '.enabled // false')"
+          if [ "$ENABLED" = "true" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+            echo "Studio automation is RUNNING."
+          else
+            echo "Studio automation is PAUSED; no paid work will run."
+          fi
       - uses: actions/checkout@v4
+        if: steps.automation.outputs.enabled == 'true'
       - uses: actions/setup-python@v5
+        if: steps.automation.outputs.enabled == 'true'
         with:
           python-version: "3.12"
       - run: python -m pip install -e '.[production]'
+        if: steps.automation.outputs.enabled == 'true'
       - name: Sync verified connection state to Studio
+        if: steps.automation.outputs.enabled == 'true'
         run: golide connections-sync-studio
       - name: Create due static content
-        if: vars.GOLIDE_AUTOMATION_ENABLED == '1'
+        if: steps.automation.outputs.enabled == 'true'
         run: golide static-automation-run
       - name: Publish due static content when the release gate is open
-        if: vars.GOLIDE_AUTOMATION_ENABLED == '1' && env.GOLIDE_ENABLE_SOCIAL_PUBLISH == '1'
+        if: steps.automation.outputs.enabled == 'true' && env.GOLIDE_ENABLE_SOCIAL_PUBLISH == '1'
         run: golide studio-social-publish

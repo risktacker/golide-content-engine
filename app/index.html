@@ -55,6 +55,19 @@
 
         <div class="stats" id="stats"></div>
 
+        <article class="automation-control paused" id="automation-control">
+          <div class="control-status">
+            <span class="control-light" aria-hidden="true"></span>
+            <div>
+              <span class="kicker gold">MASTER CONTROL</span>
+              <h3 id="automation-control-title">Automation paused</h3>
+              <p id="automation-control-copy">Deployment is safe: scheduled runners can wake, but paid generation and publishing stay blocked until you start automation.</p>
+              <small id="automation-control-meta">Default after deployment: paused.</small>
+            </div>
+          </div>
+          <button class="control-button" id="automation-toggle" type="button">Start automation</button>
+        </article>
+
         <div class="grid two dashboard-grid">
           <article class="panel attention-panel">
             <div class="panel-head">
@@ -87,7 +100,7 @@
             <h2>Autopilot, with one human checkpoint.</h2>
             <p>No topic box. No manual script writing. No final-video upload. The engine discovers demand and builds the asset; video pauses only for your recorded narration.</p>
           </div>
-          <div class="autopilot-state"><span class="live-dot"></span><strong>Automation armed</strong><small>Every 15 minutes</small></div>
+          <div class="autopilot-state" id="autopilot-state"><span class="live-dot"></span><strong id="autopilot-label">Automation paused</strong><small id="autopilot-window">Owner-controlled · scheduled windows only</small></div>
         </section>
 
         <div class="lane-grid">

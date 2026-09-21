@@ -150,6 +150,12 @@ async function ensureSchema(db){
       external_account_id TEXT NOT NULL DEFAULT '',
       synced_at TEXT NOT NULL
     )`,
+    `CREATE TABLE IF NOT EXISTS automation_control (
+      id INTEGER PRIMARY KEY CHECK(id=1),
+      enabled INTEGER NOT NULL DEFAULT 0,
+      updated_at TEXT NOT NULL,
+      updated_by TEXT NOT NULL DEFAULT 'system'
+    )`,
     `CREATE INDEX IF NOT EXISTS idx_content_posts_due ON content_posts(status, scheduled_at)`,
     `CREATE INDEX IF NOT EXISTS idx_social_variants_post ON social_variants(post_id, status)`,
     `CREATE INDEX IF NOT EXISTS idx_inbox_threads_open ON inbox_threads(status, last_message_at)`,
@@ -158,6 +164,8 @@ async function ensureSchema(db){
     `CREATE INDEX IF NOT EXISTS idx_production_jobs_queue ON production_jobs(status, generate_at, updated_at)`,
   ];
   for(const sql of statements) await db.prepare(sql).run();
+  await db.prepare(`INSERT OR IGNORE INTO automation_control(id,enabled,updated_at,updated_by) VALUES(1,0,?,'deployment-default')`)
+    .bind(nowIso()).run();
   schemaReady=true;
 }
 
@@ -603,8 +611,30 @@ async function markMediaDeleted(db,payload){
   return {deleted:refs.length};
 }
 
+async function automationState(db){
+  const row=await db.prepare(`SELECT enabled,updated_at,updated_by FROM automation_control WHERE id=1`).first();
+  return {
+    enabled:Boolean(Number(row?.enabled||0)),
+    state:Number(row?.enabled||0)===1?"running":"paused",
+    updated_at:row?.updated_at||null,
+    updated_by:row?.updated_by||"system",
+  };
+}
+
+async function setAutomationState(db,enabled,actor){
+  const now=nowIso();
+  await db.prepare(`INSERT INTO automation_control(id,enabled,updated_at,updated_by)
+    VALUES(1,?,?,?)
+    ON CONFLICT(id) DO UPDATE SET enabled=excluded.enabled,updated_at=excluded.updated_at,updated_by=excluded.updated_by`)
+    .bind(enabled?1:0,now,safeText(actor)||"admin").run();
+  return automationState(db);
+}
+
 async function handleMachineApi(request,env,url){
   await ensureSchema(env.DB);
+  if(url.pathname==="/api/engine/automation/status"&&request.method==="GET"){
+    return json(await automationState(env.DB));
+  }
   if(url.pathname==="/api/engine/next"&&request.method==="GET"){
     const claimed=await claimNextProduction(env.DB,url.searchParams.get("now"));
     return claimed?json(claimed):new Response(null,{status:204});
@@ -720,6 +750,14 @@ async function handleApi(request,env,url){
   }
   if(url.pathname==="/api/inbox"&&request.method==="GET") return json({threads:await inbox(env.DB)});
   if(url.pathname==="/api/connections"&&request.method==="GET") return json({connections:await connectionRows(env.DB,env)});
+  if(url.pathname==="/api/automation-control"&&request.method==="GET") return json(await automationState(env.DB));
+  if(url.pathname==="/api/automation-control"&&request.method==="POST"){
+    try{
+      const payload=await request.json();
+      if(typeof payload.enabled!=="boolean") return err("enabled must be a boolean",400);
+      return json(await setAutomationState(env.DB,payload.enabled,"studio-admin"));
+    }catch(e){return err(e?.message||String(e),400);}
+  }
   if(url.pathname==="/api/production-jobs"&&request.method==="GET") return json({jobs:await listProductionJobs(env.DB)});
   const voiceMatch=url.pathname.match(/^\/api\/production-jobs\/([^/]+)\/voice$/);
   if(voiceMatch&&request.method==="POST"){
