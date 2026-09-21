@@ -26,6 +26,25 @@ class ConnectionsInboxCleanupTests(unittest.TestCase):
     def tearDown(self) -> None:
         self.temp.cleanup()
 
+    @staticmethod
+    def locked_draft(object_key: str) -> ContentDraft:
+        units = ("Hook the problem.", "Give useful value.", "Close with a practical step.")
+        body = "\n\n".join(units)
+        return ContentDraft.build(
+            body,
+            [
+                PlatformVariant("instagram", body, media_ref=object_key),
+                PlatformVariant("facebook", body, media_ref=object_key),
+                PlatformVariant("linkedin", body, media_ref=object_key),
+                PlatformVariant("x", body, media_ref=object_key, parts=units),
+            ],
+            content_class="post",
+            content_lane="authority",
+            value_units=units,
+            media_approved=True,
+            release_approved=True,
+        )
+
     def test_connection_keeps_secret_reference_not_token(self) -> None:
         connections = ConnectionRepository(self.db)
         account_id = connections.upsert(
@@ -78,10 +97,7 @@ class ConnectionsInboxCleanupTests(unittest.TestCase):
         media = TemporaryMediaRepository(self.db)
         object_key = "temp://posts/proof/image.png"
         post_id = content.create(
-            ContentDraft.build(
-                "Master post",
-                [PlatformVariant("instagram", "Instagram copy", media_ref=object_key)],
-            ),
+            self.locked_draft(object_key),
             scheduled_at=datetime.now(timezone.utc) - timedelta(seconds=1),
         )
         media.register(
@@ -91,7 +107,10 @@ class ConnectionsInboxCleanupTests(unittest.TestCase):
             expires_at=datetime.now(timezone.utc) + timedelta(hours=24),
         )
 
-        bridge = SocialBridge(content, [MemoryProvider("instagram")])
+        bridge = SocialBridge(
+            content,
+            [MemoryProvider(p) for p in ("instagram", "facebook", "linkedin", "x")],
+        )
         result = publish_due(content, bridge, media_repository=media)[0]
         self.assertEqual(result.status, "published")
 
@@ -110,13 +129,7 @@ class ConnectionsInboxCleanupTests(unittest.TestCase):
         media = TemporaryMediaRepository(self.db)
         object_key = "temp://posts/partial/image.png"
         post_id = content.create(
-            ContentDraft.build(
-                "Master post",
-                [
-                    PlatformVariant("instagram", "IG", media_ref=object_key),
-                    PlatformVariant("linkedin", "LI", media_ref=object_key),
-                ],
-            ),
+            self.locked_draft(object_key),
             scheduled_at=datetime.now(timezone.utc) - timedelta(seconds=1),
         )
         media.register(
@@ -125,7 +138,10 @@ class ConnectionsInboxCleanupTests(unittest.TestCase):
             post_id=post_id,
             expires_at=datetime.now(timezone.utc) + timedelta(hours=24),
         )
-        bridge = SocialBridge(content, [MemoryProvider("instagram")])
+        bridge = SocialBridge(
+            content,
+            [MemoryProvider(p) for p in ("instagram", "facebook", "linkedin")],
+        )
         result = publish_due(content, bridge, media_repository=media)[0]
         self.assertEqual(result.status, "partial")
 
