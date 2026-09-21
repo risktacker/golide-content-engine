@@ -33,6 +33,16 @@ from .schemas import METADATA_SCHEMA, RESEARCH_SCHEMA, STORYBOARD_SCHEMA, TREND_
 from .stage_runner import StageRunner
 
 
+class WaitingOwnerVoice(RuntimeError):
+    """Checkpointed pause after topic research and script generation."""
+
+    def __init__(self, production_id: str, title: str, script: str):
+        super().__init__("owner voice recording is required to resume production")
+        self.production_id = production_id
+        self.title = title
+        self.script = script
+
+
 def apply_locked_upload_defaults(metadata: dict[str, Any], policy: dict[str, Any]) -> dict[str, Any]:
     """Apply deterministic channel defaults after creative metadata generation."""
     normalized = dict(metadata)
@@ -71,8 +81,6 @@ class ProductionService:
         voice_cfg = self.providers.config.get("voice", {})
         if voice_cfg.get("provider") != "owner_recording":
             raise RuntimeError("production narration must use the owner's recorded voice")
-        if not str(spec.get("owner_voice_media_ref", "")).strip():
-            raise RuntimeError("owner_voice_media_ref is required before video production can run")
 
     def _record_text(self, production_id: str, stage: str, output: ProviderOutput) -> None:
         model = self.providers.config["text"]["model"]
@@ -475,9 +483,16 @@ class ProductionService:
         script = script_path.read_text(encoding="utf-8").strip()
         self._budget(spec)
 
+        owner_voice_ref = str(spec.get("owner_voice_media_ref", "")).strip()
+        if not owner_voice_ref:
+            raise WaitingOwnerVoice(
+                production_id,
+                str(spec.get("title", production_id)),
+                script,
+            )
+
         narration = work / "narration-owner.wav"
         timed_words_path = work / "timed-words-owner.json"
-        owner_voice_ref = str(spec.get("owner_voice_media_ref", "")).strip()
 
         def _normalized_words(value: str) -> str:
             return " ".join(re.findall(r"[a-z0-9']+", value.lower()))
