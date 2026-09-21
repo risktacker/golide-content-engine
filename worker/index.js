@@ -611,6 +611,18 @@ async function handleMachineApi(request,env,url){
   if(url.pathname==="/api/engine/posts"&&request.method==="POST"){
     try{return json(await createPost(env,await request.json()),201);}catch(e){return err(e?.message||String(e),400);}
   }
+  const enginePost=url.pathname.match(/^\/api\/engine\/posts\/([^/]+)$/);
+  if(enginePost&&request.method==="GET"){
+    const id=decodeURIComponent(enginePost[1]);
+    const row=await env.DB.prepare(`SELECT id,status,content_class,scheduled_at FROM content_posts WHERE id=?`).bind(id).first();
+    return row?json({exists:true,post:row}):json({exists:false});
+  }
+  if(url.pathname==="/api/engine/static-count"&&request.method==="GET"){
+    const month=safeText(url.searchParams.get("month"));
+    if(!/^\d{4}-\d{2}$/.test(month)) return err("month must use YYYY-MM",400);
+    const row=await env.DB.prepare(`SELECT COUNT(*) count FROM content_posts WHERE id LIKE ?`).bind(`golide-post-${month}-%`).first();
+    return json({month,count:Number(row?.count||0)});
+  }
   if(url.pathname==="/api/engine/media/register"&&request.method==="POST"){
     try{return json(await registerEngineMedia(env.DB,await request.json()));}catch(e){return err(e?.message||String(e),400);}
   }
