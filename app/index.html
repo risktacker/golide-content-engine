@@ -88,7 +88,22 @@
             <label>Core framing / notes <textarea id="master" rows="4" placeholder="Core idea, evidence or production notes"></textarea></label>
 
             <div id="post-fields">
-              <div class="section-label"><span>STATIC POST ARCHITECTURE</span><small>3-4 related value units. Product bridge may occupy unit 2 or 3.</small></div>
+              <div class="section-label"><span>STATIC POST ARCHITECTURE</span><small>3-4 related value units. Product context is selected per post, never hard-coded.</small></div>
+              <div class="row product-context-row">
+                <label>Content source
+                  <select id="product-mode">
+                    <option value="auto_product" selected>Auto Product</option>
+                    <option value="specific_product">Specific Product</option>
+                    <option value="brand">Brand / non-product</option>
+                  </select>
+                </label>
+                <label>Product
+                  <select id="product-id" disabled>
+                    <option value="">Auto selects from registry</option>
+                  </select>
+                </label>
+              </div>
+              <p class="media-status" id="product-context-status">Auto Product favors new and under-covered products while keeping mature products in rotation.</p>
               <div class="unit-grid">
                 <label>Unit 1 - Hook / framing<textarea id="unit-1" rows="3" placeholder="Open the problem clearly"></textarea></label>
                 <label>Unit 2 - Value<textarea id="unit-2" rows="3" placeholder="Useful point or product bridge"></textarea></label>
@@ -103,7 +118,7 @@
                     <option value="3">Unit 3</option>
                   </select>
                 </label>
-                <label>Product URL <input id="product-url" type="url" placeholder="https://marketplace.golidee.com/..."></label>
+                <label>Resolved product URL <input id="product-url" type="url" placeholder="Chosen from Product Registry" readonly></label>
               </div>
 
               <div class="section-label"><span>POST IMAGE</span><small>One paid master concept, adapted to 4:5 and 1:1.</small></div>
@@ -128,7 +143,7 @@
                 <label>Owner voice recording <input id="owner-voice-file" type="file" accept="audio/*"></label>
                 <label>Final approved video <input id="final-video-file" type="file" accept="video/*"></label>
               </div>
-              <p class="media-status" id="video-status">AI or cloned narration is not allowed. Owner recording is the master timeline.</p>
+              <p class="media-status" id="video-status">Product-independent business content. Topic selection follows strong current niche demand. AI or cloned narration is not allowed; owner recording is the master timeline.</p>
             </div>
 
             <div class="row">
