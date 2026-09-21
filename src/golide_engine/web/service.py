@@ -10,7 +10,6 @@ from golide_engine.db.connections import ConnectionRepository
 from golide_engine.db.inbox import InboxRepository
 from golide_engine.engine import ContentClass, ContentDraft, ContentPolicy, PlatformVariant
 from golide_engine.engine.social_image import SocialImageProfile
-from golide_engine.providers.openai_media import OpenAIImageProvider
 from golide_engine.storage import Database
 from golide_engine.storage.r2 import R2TemporaryMediaStore
 from golide_engine.storage.temporary import TemporaryMediaRepository
@@ -135,6 +134,7 @@ class StudioService:
             concept=str(payload.get("concept", "")),
             context=str(payload.get("context", "")),
         )
+        from golide_engine.providers.openai_media import OpenAIImageProvider
         provider = OpenAIImageProvider(profile.model, profile.quality)
 
         with tempfile.TemporaryDirectory(prefix="golide-social-image-") as temp:
