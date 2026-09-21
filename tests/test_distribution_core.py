@@ -24,13 +24,26 @@ class DistributionCoreTests(unittest.TestCase):
         self.temp.cleanup()
 
     def draft(self) -> ContentDraft:
+        units = (
+            "The problem is visible.",
+            "Here is the useful mechanism.",
+            "Close with the practical next step.",
+        )
         return ContentDraft.build(
-            "One canonical GOLIDE post.",
+            "\n\n".join(units),
             [
-                PlatformVariant("Instagram", "Instagram-native version", media_ref="temp://image/abc"),
-                PlatformVariant("LinkedIn", "LinkedIn-native version"),
+                PlatformVariant("Instagram", "\n\n".join(units), media_ref="temp://image/meta"),
+                PlatformVariant("Facebook", "\n\n".join(units), media_ref="temp://image/meta"),
+                PlatformVariant("LinkedIn", "\n\n".join(units), media_ref="temp://image/square"),
+                PlatformVariant("X", "\n\n".join(units), media_ref="temp://image/square", parts=units),
             ],
             title="Distribution core proof",
+            content_class="post",
+            weekly_theme="Useful systems",
+            content_lane="authority",
+            value_units=units,
+            media_approved=True,
+            release_approved=True,
         )
 
     def test_create_schedule_and_publish_due(self) -> None:
@@ -40,26 +53,24 @@ class DistributionCoreTests(unittest.TestCase):
         due_at = datetime.now(timezone.utc) - timedelta(minutes=1)
         schedule_post(self.repo, post_id, due_at)
 
-        instagram = MemoryProvider("instagram")
-        linkedin = MemoryProvider("linkedin")
-        bridge = SocialBridge(self.repo, [instagram, linkedin])
+        providers = [MemoryProvider(platform) for platform in ("instagram", "facebook", "linkedin", "x")]
+        bridge = SocialBridge(self.repo, providers)
         results = publish_due(self.repo, bridge)
 
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0].status, "published")
-        self.assertEqual(results[0].published, 2)
+        self.assertEqual(results[0].published, 4)
         self.assertEqual(self.repo.get(post_id).status, "published")
-
-        variants = self.repo.variants(post_id)
-        self.assertTrue(all(item["platform_content_id"] for item in variants))
-        self.assertEqual(len(instagram.requests), 1)
-        self.assertEqual(len(linkedin.requests), 1)
+        self.assertTrue(all(item["platform_content_id"] for item in self.repo.variants(post_id)))
+        self.assertTrue(all(len(provider.requests) == 1 for provider in providers))
 
     def test_future_post_is_not_published(self) -> None:
         future = datetime.now(timezone.utc) + timedelta(hours=2)
         post_id = self.repo.create(self.draft(), scheduled_at=future)
-        bridge = SocialBridge(self.repo, [MemoryProvider("instagram"), MemoryProvider("linkedin")])
-
+        bridge = SocialBridge(
+            self.repo,
+            [MemoryProvider(platform) for platform in ("instagram", "facebook", "linkedin", "x")],
+        )
         self.assertEqual(publish_due(self.repo, bridge), [])
         self.assertEqual(self.repo.get(post_id).status, "scheduled")
 
@@ -68,20 +79,26 @@ class DistributionCoreTests(unittest.TestCase):
             self.draft(),
             scheduled_at=datetime.now(timezone.utc) - timedelta(seconds=1),
         )
-        bridge = SocialBridge(self.repo, [MemoryProvider("instagram")])
+        bridge = SocialBridge(
+            self.repo,
+            [MemoryProvider(platform) for platform in ("instagram", "facebook", "linkedin")],
+        )
         result = publish_due(self.repo, bridge)[0]
 
         self.assertEqual(result.status, "partial")
         variants = {row["platform"]: row for row in self.repo.variants(post_id)}
         self.assertEqual(variants["instagram"]["status"], "published")
-        self.assertEqual(variants["linkedin"]["status"], "failed")
-        self.assertIn("no connected provider", variants["linkedin"]["last_error"])
+        self.assertEqual(variants["facebook"]["status"], "published")
+        self.assertEqual(variants["linkedin"]["status"], "published")
+        self.assertEqual(variants["x"]["status"], "failed")
+        self.assertIn("no connected provider", variants["x"]["last_error"])
 
     def test_only_lightweight_media_reference_is_persisted(self) -> None:
         post_id = self.repo.create(self.draft())
-        variants = self.repo.variants(post_id)
-        instagram = next(row for row in variants if row["platform"] == "instagram")
-        self.assertEqual(instagram["media_ref"], "temp://image/abc")
+        variants = {row["platform"]: row for row in self.repo.variants(post_id)}
+        self.assertEqual(variants["instagram"]["media_ref"], "temp://image/meta")
+        self.assertEqual(variants["x"]["media_ref"], "temp://image/square")
+        self.assertEqual(len(variants["x"]["parts"]), 3)
 
 
 if __name__ == "__main__":
