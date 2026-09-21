@@ -104,6 +104,9 @@ class StudioBridge:
         run_url: str | None = None,
         release_url: str | None = None,
         error: str | None = None,
+        title: str | None = None,
+        script: str | None = None,
+        selected_topic: str | None = None,
     ) -> None:
         payload: dict[str, Any] = {
             "status": status,
@@ -121,8 +124,23 @@ class StudioBridge:
             payload["releaseUrl"] = release_url
         if error:
             payload["error"] = error[:2000]
+        if title:
+            payload["title"] = title[:300]
+        if script:
+            payload["script"] = script[:20000]
+        if selected_topic:
+            payload["selectedTopic"] = selected_topic[:1000]
         response_status, _ = self._request(
             "POST", f"/api/engine/jobs/{quote(job_id)}/status", payload
         )
         if response_status != 200:
             raise RuntimeError(f"Studio status update failed with HTTP {response_status}")
+
+    def sync_connections(self, connections: list[dict[str, Any]]) -> None:
+        response_status, _ = self._request(
+            "POST", "/api/engine/connections", {"connections": connections}
+        )
+        if response_status != 200:
+            raise RuntimeError(
+                f"Studio connection sync failed with HTTP {response_status}"
+            )
