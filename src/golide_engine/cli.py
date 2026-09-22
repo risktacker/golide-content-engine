@@ -76,7 +76,18 @@ def main() -> int:
     social_publish_parser.add_argument("--database", default="data/golide.sqlite3")
     social_cleanup_parser = sub.add_parser("social-media-cleanup")
     social_cleanup_parser.add_argument("--database", default="data/golide.sqlite3")
-    sub.add_parser("connections-sync-studio")
+    connection_sync_parser = sub.add_parser("connections-sync-studio")
+    connection_sync_parser.add_argument(
+        "--platform",
+        action="append",
+        choices=("instagram", "facebook", "linkedin", "youtube"),
+        help="Verify and sync only the selected provider. May be repeated.",
+    )
+    connection_sync_parser.add_argument(
+        "--require-connected",
+        action="store_true",
+        help="Return a failure exit code when any selected provider is not connected.",
+    )
     sub.add_parser("static-automation-run")
     sub.add_parser("studio-social-publish")
     studio_parser = sub.add_parser("studio-serve")
@@ -199,59 +210,23 @@ def main() -> int:
         return 0
 
     if args.command == "connections-sync-studio":
+        from .connection_status import SUPPORTED_PROVIDERS, verify_provider
         from .studio_bridge import StudioBridge
+
         studio_url = os.getenv("GOLIDE_STUDIO_BASE_URL", "").strip()
         if not studio_url:
             raise RuntimeError("GOLIDE_STUDIO_BASE_URL is required")
-        connections = [
-            {
-                "platform": "instagram",
-                "connected": bool(
-                    os.getenv("GOLIDE_META_API_VERSION", "").strip()
-                    and os.getenv("INSTAGRAM_USER_ACCESS_TOKEN", "").strip()
-                ),
-                "accountLabel": "Instagram",
-                "externalAccountId": os.getenv("GOLIDE_INSTAGRAM_USER_ID", "").strip() or "instagram-login",
-            },
-            {
-                "platform": "facebook",
-                "connected": bool(
-                    os.getenv("GOLIDE_META_API_VERSION", "").strip()
-                    and os.getenv("META_PAGE_ACCESS_TOKEN", "").strip()
-                    and os.getenv("GOLIDE_FACEBOOK_PAGE_ID", "").strip()
-                ),
-                "accountLabel": "Facebook Page",
-                "externalAccountId": os.getenv("GOLIDE_FACEBOOK_PAGE_ID", "").strip(),
-            },
-            {
-                "platform": "linkedin",
-                "connected": bool(
-                    os.getenv("LINKEDIN_ACCESS_TOKEN", "").strip()
-                    and os.getenv("GOLIDE_LINKEDIN_AUTHOR_URN", "").strip()
-                    and os.getenv("GOLIDE_LINKEDIN_VERSION", "").strip()
-                ),
-                "accountLabel": "LinkedIn",
-                "externalAccountId": os.getenv("GOLIDE_LINKEDIN_AUTHOR_URN", "").strip(),
-            },
-            {
-                "platform": "x",
-                "connected": bool(os.getenv("X_USER_ACCESS_TOKEN", "").strip()),
-                "accountLabel": "X",
-                "externalAccountId": "x-user" if os.getenv("X_USER_ACCESS_TOKEN", "").strip() else "",
-            },
-            {
-                "platform": "youtube",
-                "connected": bool(
-                    os.getenv("YOUTUBE_OAUTH_TOKEN_B64", "").strip()
-                    or os.getenv("YOUTUBE_REFRESH_TOKEN", "").strip()
-                    or os.getenv("GOOGLE_OAUTH_REFRESH_TOKEN", "").strip()
-                ),
-                "accountLabel": "YouTube",
-                "externalAccountId": "UCqaXVBSBz7iQsRHOupKt-3w",
-            },
-        ]
+
+        selected = tuple(dict.fromkeys(args.platform or SUPPORTED_PROVIDERS))
+        connections = [verify_provider(platform) for platform in selected]
         StudioBridge(studio_url).sync_connections(connections)
-        print(json.dumps({"status": "studio_connections_synced", "connections": connections}))
+
+        print(json.dumps({
+            "status": "studio_connections_synced",
+            "connections": connections,
+        }, indent=2))
+        if args.require_connected and any(not item["connected"] for item in connections):
+            return 1
         return 0
 
     if args.command == "social-media-cleanup":

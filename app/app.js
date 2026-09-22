@@ -450,20 +450,32 @@ async function loadConnections() {
   } catch {
     connections = [];
   }
+
   const byPlatform = Object.fromEntries(connections.map((item) => [item.platform, item]));
   $("#connection-grid").innerHTML = ["instagram", "facebook", "linkedin", "x", "youtube"].map((platform) => {
-    const connected = byPlatform[platform];
+    const item = byPlatform[platform];
     const isX = platform === "x";
-    const stateClass = connected ? "connected" : "pending";
-    const state = connected ? "Connected" : (isX ? "Authorization pending" : "Awaiting engine sync");
-    const detail = connected
-      ? (connected.account_label || connected.external_account_id || "Verified route")
-      : (isX ? "Finish OAuth user authorization" : "Existing credential will be reflected after engine sync");
+    const connected = Boolean(item?.connected || item?.status === "connected");
+    const status = connected
+      ? "connected"
+      : (item?.status === "connection_failed" ? "connection_failed" : "needs_attention");
+
+    const stateClass = connected ? "connected" : (status === "connection_failed" ? "failed" : "attention");
+    const state = connected ? "Connected" : (status === "connection_failed" ? "Connection failed" : "Needs attention");
+    const account = item?.account_label || item?.external_account_id || "";
+    const detail = account || (isX
+      ? "Authorize X directly from Studio"
+      : (status === "connection_failed" ? "Provider verification failed" : "Credential verification has not succeeded yet"));
+    const verified = item?.synced_at
+      ? "Last verified " + new Date(item.synced_at).toLocaleString()
+      : "Not verified yet";
     const action = isX
-      ? '<a class="connection-action" href="/api/x/connect">' + (connected ? 'Reconnect X' : 'Connect X') + '</a>'
+      ? '<a class="connection-action" href="/api/x/connect">' + (connected ? "Reconnect X" : "Connect X") + "</a>"
       : "";
+
     return '<div class="connection ' + stateClass + '"><strong>' +
       esc(labels[platform]) + '</strong><small>' + esc(detail) +
+      '</small><small class="verified-at">' + esc(verified) +
       '</small><div class="state">' + esc(state) + '</div>' + action + '</div>';
   }).join("");
 }

@@ -148,7 +148,9 @@ async function ensureSchema(db){
       connected INTEGER NOT NULL DEFAULT 0,
       account_label TEXT NOT NULL DEFAULT '',
       external_account_id TEXT NOT NULL DEFAULT '',
-      synced_at TEXT NOT NULL
+      synced_at TEXT NOT NULL,
+      verification_status TEXT NOT NULL DEFAULT 'unknown',
+      verification_note TEXT NOT NULL DEFAULT ''
     )`,
     `CREATE TABLE IF NOT EXISTS automation_control (
       id INTEGER PRIMARY KEY CHECK(id=1),
@@ -181,6 +183,8 @@ async function ensureSchema(db){
     `CREATE INDEX IF NOT EXISTS idx_production_jobs_queue ON production_jobs(status, generate_at, updated_at)`,
   ];
   for(const sql of statements) await db.prepare(sql).run();
+  try{await db.prepare(`ALTER TABLE engine_connections ADD COLUMN verification_status TEXT NOT NULL DEFAULT 'unknown'`).run();}catch{}
+  try{await db.prepare(`ALTER TABLE engine_connections ADD COLUMN verification_note TEXT NOT NULL DEFAULT ''`).run();}catch{}
   await db.prepare(`INSERT OR IGNORE INTO automation_control(id,enabled,updated_at,updated_by) VALUES(1,0,?,'deployment-default')`)
     .bind(nowIso()).run();
   schemaReady=true;
@@ -240,27 +244,21 @@ async function inbox(db){
 }
 
 async function connectionRows(db,env){
-  const synced=(await db.prepare(`SELECT platform,connected,account_label,external_account_id,synced_at FROM engine_connections ORDER BY platform`).all()).results||[];
-  if(synced.length){
-    return synced.filter((row)=>Number(row.connected)===1).map((row)=>({
+  const synced=(await db.prepare(`SELECT platform,connected,account_label,external_account_id,synced_at,verification_status,verification_note FROM engine_connections ORDER BY platform`).all()).results||[];
+  return synced.map((row)=>{
+    const connected=Number(row.connected)===1;
+    return {
       id:row.platform,
       platform:row.platform,
+      connected,
       account_label:row.account_label,
       external_account_id:row.external_account_id,
       transport:"official_api",
-      status:"connected",
+      status:connected?"connected":(safeText(row.verification_status)||"needs_attention"),
+      verification_note:safeText(row.verification_note),
       synced_at:row.synced_at,
-    }));
-  }
-  const rows=[];
-  const push=(platform,connected,label,external="")=>{if(connected)rows.push({id:platform,platform,account_label:label,external_account_id:external,transport:"official_api",status:"connected"});};
-  const meta=Boolean(safeText(env.GOLIDE_META_API_VERSION));
-  push("instagram",meta&&Boolean(safeText(env.INSTAGRAM_USER_ACCESS_TOKEN)),"Instagram",safeText(env.GOLIDE_INSTAGRAM_USER_ID)||"instagram-login");
-  push("facebook",meta&&hasAll(env,["META_PAGE_ACCESS_TOKEN","GOLIDE_FACEBOOK_PAGE_ID"]),"Facebook Page",safeText(env.GOLIDE_FACEBOOK_PAGE_ID));
-  push("linkedin",hasAll(env,["LINKEDIN_ACCESS_TOKEN","GOLIDE_LINKEDIN_AUTHOR_URN","GOLIDE_LINKEDIN_VERSION"]),"LinkedIn",safeText(env.GOLIDE_LINKEDIN_AUTHOR_URN));
-  push("x",Boolean(safeText(env.X_USER_ACCESS_TOKEN)),"X","x-user");
-  push("youtube",Boolean(safeText(env.YOUTUBE_REFRESH_TOKEN)||safeText(env.GOOGLE_OAUTH_REFRESH_TOKEN)||safeText(env.GOLIDE_YOUTUBE_CONNECTED)),"YouTube","UCqaXVBSBz7iQsRHOupKt-3w");
-  return rows;
+    };
+  });
 }
 
 async function liveRegistry(request){
@@ -506,7 +504,7 @@ async function attachOwnerVoice(db,jobId,mediaRef){
 
 async function syncEngineConnections(db,payload){
   const rows=Array.isArray(payload.connections)?payload.connections:[];
-  const now=nowIso();
+  let synced=0;
   for(const item of rows){
     const platform=safeText(item.platform).toLowerCase();
     if(!["instagram","facebook","linkedin","x","youtube"].includes(platform)) continue;
@@ -514,13 +512,25 @@ async function syncEngineConnections(db,payload){
       const stored=await db.prepare(`SELECT id FROM x_oauth_tokens WHERE id=1`).first();
       if(stored) continue;
     }
-    await db.prepare(`INSERT INTO engine_connections(platform,connected,account_label,external_account_id,synced_at)
-      VALUES(?,?,?,?,?)
-      ON CONFLICT(platform) DO UPDATE SET connected=excluded.connected,account_label=excluded.account_label,
-      external_account_id=excluded.external_account_id,synced_at=excluded.synced_at`)
-      .bind(platform,item.connected?1:0,safeText(item.accountLabel),safeText(item.externalAccountId),now).run();
+    const connected=Boolean(item.connected);
+    const requested=safeText(item.status).toLowerCase();
+    const status=connected?"connected":(requested==="connection_failed"?"connection_failed":"needs_attention");
+    const verifiedAt=safeText(item.verifiedAt)||nowIso();
+    const note=safeText(item.verificationNote).slice(0,300);
+    await db.prepare(`INSERT INTO engine_connections
+      (platform,connected,account_label,external_account_id,synced_at,verification_status,verification_note)
+      VALUES(?,?,?,?,?,?,?)
+      ON CONFLICT(platform) DO UPDATE SET
+        connected=excluded.connected,
+        account_label=excluded.account_label,
+        external_account_id=excluded.external_account_id,
+        synced_at=excluded.synced_at,
+        verification_status=excluded.verification_status,
+        verification_note=excluded.verification_note`)
+      .bind(platform,connected?1:0,safeText(item.accountLabel),safeText(item.externalAccountId),verifiedAt,status,note).run();
+    synced+=1;
   }
-  return {synced:rows.length};
+  return {synced};
 }
 
 let githubJwksCache={expires:0,keys:[]};
@@ -757,10 +767,16 @@ async function xSaveTokens(env,tokenPayload,identity){
       now
     ).run();
   const username=safeText(identity?.username);
-  await env.DB.prepare(`INSERT INTO engine_connections(platform,connected,account_label,external_account_id,synced_at)
-    VALUES('x',1,?,?,?)
-    ON CONFLICT(platform) DO UPDATE SET connected=1,account_label=excluded.account_label,
-    external_account_id=excluded.external_account_id,synced_at=excluded.synced_at`)
+  await env.DB.prepare(`INSERT INTO engine_connections
+    (platform,connected,account_label,external_account_id,synced_at,verification_status,verification_note)
+    VALUES('x',1,?,?,?,'connected','X OAuth identity verified.')
+    ON CONFLICT(platform) DO UPDATE SET
+      connected=1,
+      account_label=excluded.account_label,
+      external_account_id=excluded.external_account_id,
+      synced_at=excluded.synced_at,
+      verification_status='connected',
+      verification_note='X OAuth identity verified.'`)
     .bind(username?"@"+username:"X",safeText(identity?.id),now).run();
 }
 async function xHandleCallback(env,url){

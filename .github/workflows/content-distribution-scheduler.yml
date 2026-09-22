@@ -70,15 +70,15 @@ jobs:
             echo "Studio automation is PAUSED; no paid work will run."
           fi
       - uses: actions/checkout@v4
-        if: steps.automation.outputs.enabled == 'true'
+        if: steps.automation.outputs.enabled == 'true' || github.event.schedule == '30 6 * * *' || github.event_name == 'workflow_dispatch'
       - uses: actions/setup-python@v5
-        if: steps.automation.outputs.enabled == 'true'
+        if: steps.automation.outputs.enabled == 'true' || github.event.schedule == '30 6 * * *' || github.event_name == 'workflow_dispatch'
         with:
           python-version: "3.12"
       - run: python -m pip install -e '.[production]'
-        if: steps.automation.outputs.enabled == 'true'
-      - name: Sync verified connection state to Studio
-        if: steps.automation.outputs.enabled == 'true'
+        if: steps.automation.outputs.enabled == 'true' || github.event.schedule == '30 6 * * *' || github.event_name == 'workflow_dispatch'
+      - name: Verify provider connections and sync safe status to Studio
+        if: steps.automation.outputs.enabled == 'true' || github.event.schedule == '30 6 * * *' || github.event_name == 'workflow_dispatch'
         run: golide connections-sync-studio
       - name: Create due static content
         if: steps.automation.outputs.enabled == 'true'

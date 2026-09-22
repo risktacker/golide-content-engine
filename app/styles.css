@@ -210,9 +210,10 @@ main{width:100%;max-width:1700px;margin:0 auto;padding:28px clamp(20px,3vw,42px)
 .connection-grid{display:grid;grid-template-columns:repeat(5,minmax(130px,1fr));gap:9px}
 .connection{position:relative;min-height:116px;padding:13px;border:1px solid rgba(121,216,236,.1);border-radius:13px;background:linear-gradient(145deg,#0a161d,#071017);overflow:hidden}
 .connection:after{content:"";position:absolute;right:-30px;bottom:-40px;width:80px;height:80px;border:1px solid rgba(90,224,248,.06);border-radius:50%}
-.connection strong{font-size:11px}.connection small{display:block;margin-top:6px;color:#657b86;font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.connection .state{display:inline-flex;margin-top:17px;padding:4px 7px;border-radius:999px;background:rgba(255,255,255,.025);color:#657c88;font-size:8px}
+.connection strong{font-size:11px}.connection small{display:block;margin-top:6px;color:#657b86;font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.connection small.verified-at{margin-top:4px;color:#4e646e}.connection .state{display:inline-flex;margin-top:14px;padding:4px 7px;border-radius:999px;background:rgba(255,255,255,.025);color:#657c88;font-size:8px}
 .connection.connected{border-color:rgba(112,239,172,.14)}.connection.connected .state{color:var(--ok);background:rgba(112,239,172,.05)}
-.connection.pending{border-color:rgba(242,190,93,.13)}.connection.pending .state{color:#d8b66e;background:rgba(242,190,93,.04)}
+.connection.attention{border-color:rgba(242,190,93,.13)}.connection.attention .state{color:#d8b66e;background:rgba(242,190,93,.04)}
+.connection.failed{border-color:rgba(255,112,112,.17)}.connection.failed .state{color:#ff9a9a;background:rgba(255,112,112,.055)}
 .connection-action{position:relative;z-index:2;display:inline-flex;margin-top:10px;padding:6px 9px;border:1px solid rgba(103,236,255,.18);border-radius:999px;color:#8de9f7;text-decoration:none;font-size:8px;font-weight:850}
 .connection-action:hover{border-color:rgba(103,236,255,.38);color:#e9fbff}
 .connection-panel .note{margin:15px 0 0;line-height:1.5}
