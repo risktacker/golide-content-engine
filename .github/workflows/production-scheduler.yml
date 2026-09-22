@@ -44,8 +44,13 @@ jobs:
             echo "Studio automation gate unavailable; failing closed."
             exit 0
           fi
+          if [ -z "${GOLIDE_STUDIO_BYPASS_TOKEN:-}" ]; then
+            echo "Studio Sites bypass token is missing; failing closed."
+            exit 0
+          fi
           STATE="$(curl --fail --silent --show-error \
             -H "Authorization: Bearer $TOKEN" \
+            -H "OAI-Sites-Authorization: Bearer $GOLIDE_STUDIO_BYPASS_TOKEN" \
             "https://studio.golidee.com/api/engine/automation/status" || true)"
           ENABLED="$(printf '%s' "$STATE" | jq -r '.enabled // false')"
           if [ "$ENABLED" = "true" ]; then

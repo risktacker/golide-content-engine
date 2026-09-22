@@ -25,6 +25,7 @@ jobs:
       GOLIDE_ENABLE_PAID_PRODUCTION: "1"
       GOLIDE_STATIC_OPENAI_MONTHLY_CAP_USD: "3.00"
       GOLIDE_STUDIO_BASE_URL: "https://studio.golidee.com"
+      GOLIDE_STUDIO_BYPASS_TOKEN: ${{ secrets.GOLIDE_STUDIO_BYPASS_TOKEN }}
       GOLIDE_PRODUCT_REGISTRY_URL: "https://marketplace.golidee.com/api/product-registry"
       R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
       R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
@@ -59,8 +60,13 @@ jobs:
             echo "Studio automation gate unavailable; failing closed."
             exit 0
           fi
+          if [ -z "${GOLIDE_STUDIO_BYPASS_TOKEN:-}" ]; then
+            echo "Studio Sites bypass token is missing; failing closed."
+            exit 0
+          fi
           STATE="$(curl --fail --silent --show-error \
             -H "Authorization: Bearer $TOKEN" \
+            -H "OAI-Sites-Authorization: Bearer $GOLIDE_STUDIO_BYPASS_TOKEN" \
             "https://studio.golidee.com/api/engine/automation/status" || true)"
           ENABLED="$(printf '%s' "$STATE" | jq -r '.enabled // false')"
           if [ "$ENABLED" = "true" ]; then
