@@ -459,9 +459,12 @@ async function loadConnections() {
     const detail = connected
       ? (connected.account_label || connected.external_account_id || "Verified route")
       : (isX ? "Finish OAuth user authorization" : "Existing credential will be reflected after engine sync");
+    const action = isX
+      ? '<a class="connection-action" href="/api/x/connect">' + (connected ? 'Reconnect X' : 'Connect X') + '</a>'
+      : "";
     return '<div class="connection ' + stateClass + '"><strong>' +
       esc(labels[platform]) + '</strong><small>' + esc(detail) +
-      '</small><div class="state">' + esc(state) + '</div></div>';
+      '</small><div class="state">' + esc(state) + '</div>' + action + '</div>';
   }).join("");
 }
 
@@ -472,6 +475,24 @@ async function boot() {
   await Promise.all([loadHealth(), loadPolicy(), loadAutomationControl()]);
   await Promise.all([loadOverview(), loadProductionJobs(), loadConnections()]);
   renderBudget();
+
+  const params = new URLSearchParams(window.location.search);
+  const xResult = params.get("x");
+  if (xResult) {
+    switchView("connections");
+    const health = $("#health");
+    if (xResult === "connected") {
+      health.textContent = "X connected";
+      health.style.color = "var(--ok)";
+    } else if (xResult === "cancelled") {
+      health.textContent = "X authorization cancelled";
+      health.style.color = "var(--gold)";
+    } else {
+      health.textContent = "X authorization failed — reconnect";
+      health.style.color = "var(--danger)";
+    }
+    window.history.replaceState({}, "", window.location.pathname);
+  }
 }
 
 boot();

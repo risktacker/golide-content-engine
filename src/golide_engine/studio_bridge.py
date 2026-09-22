@@ -145,6 +145,16 @@ class StudioBridge:
                 f"Studio connection sync failed with HTTP {response_status}"
             )
 
+    def x_access_token(self) -> str:
+        status, body = self._request("GET", "/api/engine/x/access-token")
+        if status != 200:
+            raise RuntimeError(f"Studio X token request failed with HTTP {status}")
+        payload = json.loads(body.decode("utf-8"))
+        token = str(payload.get("access_token") or "").strip()
+        if not token:
+            raise RuntimeError("Studio returned an empty X access token")
+        return token
+
     def create_content(self, payload: dict[str, Any]) -> dict[str, Any]:
         status, body = self._request("POST", "/api/engine/posts", payload)
         if status not in {200, 201}:

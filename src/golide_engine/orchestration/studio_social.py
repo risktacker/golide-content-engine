@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 
 from golide_engine.providers.base import PublishRequest
 from golide_engine.providers.social_factory import providers_from_environment
+from golide_engine.providers.x import XProvider
 from golide_engine.storage.r2 import r2_store_from_environment
 from golide_engine.studio_bridge import StudioBridge
 
@@ -20,6 +21,13 @@ class StudioSocialPublisher:
             provider.platform: provider
             for provider in providers_from_environment()
         }
+        try:
+            self.providers["x"] = XProvider(
+                user_access_token=self.bridge.x_access_token()
+            )
+        except Exception:
+            # X may still be disconnected; other configured routes must continue.
+            self.providers.pop("x", None)
         self.media_store = r2_store_from_environment()
         if self.media_store is None:
             raise RuntimeError("R2 temporary storage is required for social publishing")

@@ -156,6 +156,23 @@ async function ensureSchema(db){
       updated_at TEXT NOT NULL,
       updated_by TEXT NOT NULL DEFAULT 'system'
     )`,
+    `CREATE TABLE IF NOT EXISTS x_oauth_sessions (
+      state TEXT PRIMARY KEY,
+      verifier TEXT NOT NULL,
+      expires_at TEXT NOT NULL,
+      created_at TEXT NOT NULL
+    )`,
+    `CREATE TABLE IF NOT EXISTS x_oauth_tokens (
+      id INTEGER PRIMARY KEY CHECK(id=1),
+      access_token_enc TEXT NOT NULL,
+      refresh_token_enc TEXT NOT NULL,
+      expires_at TEXT NOT NULL,
+      scope TEXT NOT NULL DEFAULT '',
+      user_id TEXT NOT NULL DEFAULT '',
+      username TEXT NOT NULL DEFAULT '',
+      display_name TEXT NOT NULL DEFAULT '',
+      updated_at TEXT NOT NULL
+    )`,
     `CREATE INDEX IF NOT EXISTS idx_content_posts_due ON content_posts(status, scheduled_at)`,
     `CREATE INDEX IF NOT EXISTS idx_social_variants_post ON social_variants(post_id, status)`,
     `CREATE INDEX IF NOT EXISTS idx_inbox_threads_open ON inbox_threads(status, last_message_at)`,
@@ -493,6 +510,10 @@ async function syncEngineConnections(db,payload){
   for(const item of rows){
     const platform=safeText(item.platform).toLowerCase();
     if(!["instagram","facebook","linkedin","x","youtube"].includes(platform)) continue;
+    if(platform==="x"&&!item.connected){
+      const stored=await db.prepare(`SELECT id FROM x_oauth_tokens WHERE id=1`).first();
+      if(stored) continue;
+    }
     await db.prepare(`INSERT INTO engine_connections(platform,connected,account_label,external_account_id,synced_at)
       VALUES(?,?,?,?,?)
       ON CONFLICT(platform) DO UPDATE SET connected=excluded.connected,account_label=excluded.account_label,
@@ -630,10 +651,210 @@ async function setAutomationState(db,enabled,actor){
   return automationState(db);
 }
 
+const X_OAUTH_REDIRECT="https://studio.golidee.com/api/x/callback";
+const X_OAUTH_SCOPES="tweet.read tweet.write users.read media.write offline.access";
+
+function xBase64Url(bytes){
+  let binary="";
+  for(const byte of bytes) binary+=String.fromCharCode(byte);
+  return btoa(binary).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+}
+function xRandomUrlSafe(size=32){
+  const bytes=new Uint8Array(size);
+  crypto.getRandomValues(bytes);
+  return xBase64Url(bytes);
+}
+async function xPkceChallenge(verifier){
+  const digest=new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(verifier)));
+  return xBase64Url(digest);
+}
+async function xTokenKey(env){
+  const secret=safeText(env.X_OAUTH_CLIENT_SECRET);
+  if(!secret) throw new Error("X OAuth client secret is not configured");
+  const digest=await crypto.subtle.digest("SHA-256",new TextEncoder().encode("golide-x-token:"+secret));
+  return crypto.subtle.importKey("raw",digest,{name:"AES-GCM"},false,["encrypt","decrypt"]);
+}
+function xB64(bytes){
+  let binary="";
+  for(const byte of bytes) binary+=String.fromCharCode(byte);
+  return btoa(binary);
+}
+function xUnb64(value){
+  const binary=atob(value);
+  return Uint8Array.from(binary,(ch)=>ch.charCodeAt(0));
+}
+async function xSeal(env,value){
+  const iv=new Uint8Array(12);
+  crypto.getRandomValues(iv);
+  const key=await xTokenKey(env);
+  const encrypted=new Uint8Array(await crypto.subtle.encrypt({name:"AES-GCM",iv},key,new TextEncoder().encode(value)));
+  return xB64(iv)+"."+xB64(encrypted);
+}
+async function xOpen(env,value){
+  const parts=safeText(value).split(".");
+  if(parts.length!==2) throw new Error("invalid encrypted X token");
+  const key=await xTokenKey(env);
+  const clear=await crypto.subtle.decrypt({name:"AES-GCM",iv:xUnb64(parts[0])},key,xUnb64(parts[1]));
+  return new TextDecoder().decode(clear);
+}
+function xClientConfigured(env){
+  return Boolean(safeText(env.X_OAUTH_CLIENT_ID)&&safeText(env.X_OAUTH_CLIENT_SECRET));
+}
+function xBasicAuth(env){
+  return "Basic "+btoa(safeText(env.X_OAUTH_CLIENT_ID)+":"+safeText(env.X_OAUTH_CLIENT_SECRET));
+}
+async function xStartOauth(env){
+  if(!xClientConfigured(env)) throw new Error("X OAuth credentials are not configured in Studio");
+  const state=xRandomUrlSafe(32);
+  const verifier=xRandomUrlSafe(64);
+  const challenge=await xPkceChallenge(verifier);
+  const created=nowIso();
+  const expires=new Date(Date.now()+10*60*1000).toISOString();
+  await env.DB.prepare(`DELETE FROM x_oauth_sessions WHERE expires_at<?`).bind(created).run();
+  await env.DB.prepare(`INSERT INTO x_oauth_sessions(state,verifier,expires_at,created_at) VALUES(?,?,?,?)`)
+    .bind(state,verifier,expires,created).run();
+  const params=new URLSearchParams({
+    response_type:"code",
+    client_id:safeText(env.X_OAUTH_CLIENT_ID),
+    redirect_uri:X_OAUTH_REDIRECT,
+    scope:X_OAUTH_SCOPES,
+    state,
+    code_challenge:challenge,
+    code_challenge_method:"S256",
+  });
+  return "https://x.com/i/oauth2/authorize?"+params.toString();
+}
+function xCallbackRedirect(status){
+  return Response.redirect("https://studio.golidee.com/?x="+encodeURIComponent(status),302);
+}
+async function xSaveTokens(env,tokenPayload,identity){
+  const access=safeText(tokenPayload.access_token);
+  const refresh=safeText(tokenPayload.refresh_token);
+  if(!access||!refresh) throw new Error("X did not return both access and refresh tokens");
+  const expiresIn=Math.max(60,Number(tokenPayload.expires_in||7200));
+  const expiresAt=new Date(Date.now()+expiresIn*1000).toISOString();
+  const now=nowIso();
+  await env.DB.prepare(`INSERT INTO x_oauth_tokens
+    (id,access_token_enc,refresh_token_enc,expires_at,scope,user_id,username,display_name,updated_at)
+    VALUES(1,?,?,?,?,?,?,?,?)
+    ON CONFLICT(id) DO UPDATE SET
+      access_token_enc=excluded.access_token_enc,
+      refresh_token_enc=excluded.refresh_token_enc,
+      expires_at=excluded.expires_at,
+      scope=excluded.scope,
+      user_id=excluded.user_id,
+      username=excluded.username,
+      display_name=excluded.display_name,
+      updated_at=excluded.updated_at`)
+    .bind(
+      await xSeal(env,access),
+      await xSeal(env,refresh),
+      expiresAt,
+      safeText(tokenPayload.scope),
+      safeText(identity?.id),
+      safeText(identity?.username),
+      safeText(identity?.name),
+      now
+    ).run();
+  const username=safeText(identity?.username);
+  await env.DB.prepare(`INSERT INTO engine_connections(platform,connected,account_label,external_account_id,synced_at)
+    VALUES('x',1,?,?,?)
+    ON CONFLICT(platform) DO UPDATE SET connected=1,account_label=excluded.account_label,
+    external_account_id=excluded.external_account_id,synced_at=excluded.synced_at`)
+    .bind(username?"@"+username:"X",safeText(identity?.id),now).run();
+}
+async function xHandleCallback(env,url){
+  await ensureSchema(env.DB);
+  const oauthError=safeText(url.searchParams.get("error"));
+  if(oauthError) return xCallbackRedirect("cancelled");
+  const code=safeText(url.searchParams.get("code"));
+  const state=safeText(url.searchParams.get("state"));
+  if(!code||!state||!xClientConfigured(env)) return xCallbackRedirect("error");
+  const session=await env.DB.prepare(`SELECT verifier,expires_at FROM x_oauth_sessions WHERE state=?`).bind(state).first();
+  if(!session||new Date(session.expires_at).valueOf()<=Date.now()) return xCallbackRedirect("expired");
+  await env.DB.prepare(`DELETE FROM x_oauth_sessions WHERE state=?`).bind(state).run();
+
+  const tokenResponse=await fetch("https://api.x.com/2/oauth2/token",{
+    method:"POST",
+    headers:{
+      authorization:xBasicAuth(env),
+      "content-type":"application/x-www-form-urlencoded",
+      accept:"application/json",
+    },
+    body:new URLSearchParams({
+      code,
+      grant_type:"authorization_code",
+      redirect_uri:X_OAUTH_REDIRECT,
+      code_verifier:safeText(session.verifier),
+    }),
+  });
+  if(!tokenResponse.ok) return xCallbackRedirect("token-error");
+  const tokenPayload=await tokenResponse.json();
+  if(!safeText(tokenPayload.access_token)||!safeText(tokenPayload.refresh_token)) return xCallbackRedirect("token-error");
+
+  const meResponse=await fetch("https://api.x.com/2/users/me",{
+    headers:{authorization:"Bearer "+safeText(tokenPayload.access_token),accept:"application/json"},
+  });
+  if(!meResponse.ok) return xCallbackRedirect("verify-error");
+  const mePayload=await meResponse.json();
+  const identity=mePayload?.data||{};
+  await xSaveTokens(env,tokenPayload,identity);
+  return xCallbackRedirect("connected");
+}
+async function xAccessToken(env){
+  if(!xClientConfigured(env)) throw new Error("X OAuth credentials are not configured");
+  const row=await env.DB.prepare(`SELECT access_token_enc,refresh_token_enc,expires_at,scope,user_id,username,display_name FROM x_oauth_tokens WHERE id=1`).first();
+  if(!row) throw new Error("X is not connected");
+  const expiry=new Date(row.expires_at).valueOf();
+  if(Number.isFinite(expiry)&&expiry>Date.now()+5*60*1000){
+    return {
+      access_token:await xOpen(env,row.access_token_enc),
+      expires_at:row.expires_at,
+      username:safeText(row.username),
+      user_id:safeText(row.user_id),
+    };
+  }
+  const refreshToken=await xOpen(env,row.refresh_token_enc);
+  const response=await fetch("https://api.x.com/2/oauth2/token",{
+    method:"POST",
+    headers:{
+      authorization:xBasicAuth(env),
+      "content-type":"application/x-www-form-urlencoded",
+      accept:"application/json",
+    },
+    body:new URLSearchParams({
+      grant_type:"refresh_token",
+      refresh_token:refreshToken,
+    }),
+  });
+  if(!response.ok) throw new Error("X access token refresh failed");
+  const payload=await response.json();
+  const nextRefresh=safeText(payload.refresh_token)||refreshToken;
+  const expiresIn=Math.max(60,Number(payload.expires_in||7200));
+  const expiresAt=new Date(Date.now()+expiresIn*1000).toISOString();
+  await env.DB.prepare(`UPDATE x_oauth_tokens SET access_token_enc=?,refresh_token_enc=?,expires_at=?,scope=?,updated_at=? WHERE id=1`)
+    .bind(
+      await xSeal(env,safeText(payload.access_token)),
+      await xSeal(env,nextRefresh),
+      expiresAt,
+      safeText(payload.scope)||safeText(row.scope),
+      nowIso()
+    ).run();
+  return {
+    access_token:safeText(payload.access_token),
+    expires_at:expiresAt,
+    username:safeText(row.username),
+    user_id:safeText(row.user_id),
+  };
+}
+
 async function handleMachineApi(request,env,url){
   await ensureSchema(env.DB);
   if(url.pathname==="/api/engine/automation/status"&&request.method==="GET"){
     return json(await automationState(env.DB));
+  }
+  if(url.pathname==="/api/engine/x/access-token"&&request.method==="GET"){
+    try{return json(await xAccessToken(env));}catch(e){return err(e?.message||String(e),503);}
   }
   if(url.pathname==="/api/engine/next"&&request.method==="GET"){
     const claimed=await claimNextProduction(env.DB,url.searchParams.get("now"));
@@ -750,6 +971,9 @@ async function handleApi(request,env,url){
   }
   if(url.pathname==="/api/inbox"&&request.method==="GET") return json({threads:await inbox(env.DB)});
   if(url.pathname==="/api/connections"&&request.method==="GET") return json({connections:await connectionRows(env.DB,env)});
+  if(url.pathname==="/api/x/connect"&&request.method==="GET"){
+    try{return Response.redirect(await xStartOauth(env),302);}catch(e){return err(e?.message||String(e),503);}
+  }
   if(url.pathname==="/api/automation-control"&&request.method==="GET") return json(await automationState(env.DB));
   if(url.pathname==="/api/automation-control"&&request.method==="POST"){
     try{
@@ -790,6 +1014,9 @@ async function handleApi(request,env,url){
 export default {
   async fetch(request,env){
     const url=new URL(request.url);
+    if(url.pathname==="/api/x/callback"&&request.method==="GET"){
+      try{return await xHandleCallback(env,url);}catch{return xCallbackRedirect("error");}
+    }
     if(url.pathname.startsWith("/api/engine/")){
       if(!(await machineAuthorized(request))) return err("engine authentication required",401);
       return handleMachineApi(request,env,url);
