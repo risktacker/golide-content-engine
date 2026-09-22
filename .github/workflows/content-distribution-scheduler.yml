@@ -40,7 +40,9 @@ jobs:
       GOLIDE_LINKEDIN_VERSION: ${{ secrets.GOLIDE_LINKEDIN_VERSION }}
       X_USER_ACCESS_TOKEN: ${{ secrets.X_USER_ACCESS_TOKEN }}
       YOUTUBE_OAUTH_TOKEN_B64: ${{ secrets.YOUTUBE_OAUTH_TOKEN_B64 }}
-      GOLIDE_ENABLE_SOCIAL_PUBLISH: ${{ secrets.GOLIDE_ENABLE_SOCIAL_PUBLISH }}
+      # The Studio master Start/Pause control is the single runtime gate.
+      # Publishing is allowed whenever that owner-controlled gate is running.
+      GOLIDE_ENABLE_SOCIAL_PUBLISH: "1"
 
     steps:
       - name: Check Studio automation control
@@ -81,6 +83,6 @@ jobs:
       - name: Create due static content
         if: steps.automation.outputs.enabled == 'true'
         run: golide static-automation-run
-      - name: Publish due static content when the release gate is open
-        if: steps.automation.outputs.enabled == 'true' && env.GOLIDE_ENABLE_SOCIAL_PUBLISH == '1'
+      - name: Publish due static content
+        if: steps.automation.outputs.enabled == 'true'
         run: golide studio-social-publish
