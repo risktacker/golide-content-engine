@@ -136,25 +136,18 @@ class StudioBridge:
         if response_status != 200:
             raise RuntimeError(f"Studio status update failed with HTTP {response_status}")
 
-    def sync_connections(self, connections: list[dict[str, Any]]) -> None:
-        response_status, _ = self._request(
-            "POST", "/api/engine/connections", {"connections": connections}
-        )
-        if response_status != 200:
-            raise RuntimeError(
-                f"Studio connection sync failed with HTTP {response_status}"
-            )
-
     def social_credentials(self, platform: str) -> dict[str, Any]:
         platform = platform.strip().lower()
         status, body = self._request(
             "GET", f"/api/engine/social-credentials?platform={quote(platform)}"
         )
         if status != 200:
-            raise RuntimeError(f"Studio {platform} credential request failed with HTTP {status}")
+            raise RuntimeError(
+                f"Studio {platform} credential request failed with HTTP {status}"
+            )
         payload = json.loads(body.decode("utf-8"))
-        if not str(payload.get("access_token") or "").strip():
-            raise RuntimeError(f"Studio returned an empty {platform} access token")
+        if str(payload.get("platform") or "").strip().lower() != platform:
+            raise RuntimeError("Studio returned credentials for the wrong provider")
         return payload
 
     def x_access_token(self) -> str:

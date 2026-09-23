@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+from datetime import datetime, timezone
 
 from .base import SocialProvider
 from .linkedin import LinkedInProvider
@@ -81,3 +82,30 @@ def providers_from_environment() -> list[SocialProvider]:
         providers.append(XProvider(user_access_token=x_token))
 
     return providers
+
+
+def provider_from_studio_credentials(platform: str, payload: dict) -> SocialProvider:
+    """Build one publisher from a Studio machine-credential response."""
+    platform = platform.strip().lower()
+    if platform == "instagram":
+        return InstagramProvider(
+            api_version=str(payload.get("api_version") or "v23.0"),
+            access_token=str(payload["access_token"]),
+            instagram_user_id=str(payload["instagram_user_id"]),
+            graph_host=str(payload.get("graph_host") or "graph.instagram.com"),
+        )
+    if platform == "facebook":
+        return FacebookPageProvider(
+            api_version=str(payload.get("api_version") or "v23.0"),
+            page_access_token=str(payload["page_access_token"]),
+            page_id=str(payload["page_id"]),
+        )
+    if platform == "linkedin":
+        return LinkedInProvider(
+            access_token=str(payload["access_token"]),
+            author_urn=str(payload["author_urn"]),
+            linkedin_version=datetime.now(timezone.utc).strftime("%Y%m"),
+        )
+    if platform == "x":
+        return XProvider(user_access_token=str(payload["access_token"]))
+    raise ValueError(f"Studio does not expose a static publisher for {platform}")

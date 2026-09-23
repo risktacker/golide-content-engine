@@ -453,18 +453,22 @@ async function loadConnections() {
 
   const byPlatform = Object.fromEntries(connections.map((item) => [item.platform, item]));
   $("#connection-grid").innerHTML = ["instagram", "facebook", "linkedin", "x", "youtube"].map((platform) => {
-    const item = byPlatform[platform];
-    const connected = Boolean(item?.connected || item?.status === "connected");
-    const status = connected
-      ? "connected"
-      : (item?.status === "connection_failed" ? "connection_failed" : "needs_attention");
-
-    const stateClass = connected ? "connected" : (status === "connection_failed" ? "failed" : "attention");
-    const state = connected ? "Connected" : (status === "connection_failed" ? "Connection failed" : "Needs attention");
-    const account = item?.account_label || item?.external_account_id || "";
-    const detail = account || (status === "connection_failed" ? "Provider verification failed" : "Authorize directly from Studio");
-    const verified = item?.synced_at ? "Last verified " + new Date(item.synced_at).toLocaleString() : "Not verified yet";
-    const action = '<a class="connection-action" href="/api/' + platform + '/connect">' + (connected ? "Reconnect " : "Connect ") + esc(labels[platform]) + "</a>";
+    const item = byPlatform[platform] || {};
+    const connected = Boolean(item.connected || item.status === "connected");
+    const configured = Boolean(item.configured);
+    const stateClass = connected ? "connected" : "attention";
+    const state = connected ? "Connected" : (configured ? "Ready to connect" : "App credentials needed");
+    const account = item.account_label || item.external_account_id || "";
+    const detail = account || (configured
+      ? "Authorize this account directly from Studio"
+      : "Add this provider's OAuth Client ID and Secret to Studio");
+    const verified = item.synced_at
+      ? "Verified " + new Date(item.synced_at).toLocaleString()
+      : (configured ? "Not connected yet" : "OAuth app not configured");
+    const action = configured
+      ? '<a class="connection-action" href="/api/' + platform + '/connect">' +
+        (connected ? "Reconnect " : "Connect ") + esc(labels[platform]) + "</a>"
+      : "";
 
     return '<div class="connection ' + stateClass + '"><strong>' +
       esc(labels[platform]) + '</strong><small>' + esc(detail) +

@@ -29,6 +29,9 @@ jobs:
   produce:
     runs-on: ubuntu-latest
     timeout-minutes: 180
+    env:
+      GOLIDE_STUDIO_BASE_URL: "https://studio.golidee.com"
+      GOLIDE_STUDIO_BYPASS_TOKEN: ${{ secrets.GOLIDE_STUDIO_BYPASS_TOKEN }}
     steps:
       - name: Check Studio automation control
         id: automation

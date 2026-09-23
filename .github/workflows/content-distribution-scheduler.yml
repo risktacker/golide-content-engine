@@ -31,16 +31,6 @@ jobs:
       R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
       R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
       R2_BUCKET: ${{ secrets.R2_BUCKET }}
-      GOLIDE_META_API_VERSION: ${{ secrets.GOLIDE_META_API_VERSION }}
-      INSTAGRAM_USER_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_USER_ACCESS_TOKEN }}
-      GOLIDE_INSTAGRAM_USER_ID: ${{ secrets.GOLIDE_INSTAGRAM_USER_ID }}
-      META_PAGE_ACCESS_TOKEN: ${{ secrets.META_PAGE_ACCESS_TOKEN }}
-      GOLIDE_FACEBOOK_PAGE_ID: ${{ secrets.GOLIDE_FACEBOOK_PAGE_ID }}
-      LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
-      GOLIDE_LINKEDIN_AUTHOR_URN: ${{ secrets.GOLIDE_LINKEDIN_AUTHOR_URN }}
-      GOLIDE_LINKEDIN_VERSION: ${{ secrets.GOLIDE_LINKEDIN_VERSION }}
-      X_USER_ACCESS_TOKEN: ${{ secrets.X_USER_ACCESS_TOKEN }}
-      YOUTUBE_OAUTH_TOKEN_B64: ${{ secrets.YOUTUBE_OAUTH_TOKEN_B64 }}
       # The Studio master Start/Pause control is the single runtime gate.
       # Publishing is allowed whenever that owner-controlled gate is running.
       GOLIDE_ENABLE_SOCIAL_PUBLISH: "1"
@@ -76,13 +66,13 @@ jobs:
             echo "Studio automation is PAUSED; no paid work will run."
           fi
       - uses: actions/checkout@v4
-        if: steps.automation.outputs.enabled == 'true' || github.event.schedule == '30 6 * * *' || github.event_name == 'workflow_dispatch'
+        if: steps.automation.outputs.enabled == 'true'
       - uses: actions/setup-python@v5
-        if: steps.automation.outputs.enabled == 'true' || github.event.schedule == '30 6 * * *' || github.event_name == 'workflow_dispatch'
+        if: steps.automation.outputs.enabled == 'true'
         with:
           python-version: "3.12"
       - run: python -m pip install -e '.[production]'
-        if: steps.automation.outputs.enabled == 'true' || github.event.schedule == '30 6 * * *' || github.event_name == 'workflow_dispatch'
+        if: steps.automation.outputs.enabled == 'true'
       - name: Create due static content
         if: steps.automation.outputs.enabled == 'true'
         run: golide static-automation-run

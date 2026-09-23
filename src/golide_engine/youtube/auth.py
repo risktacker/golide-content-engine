@@ -63,6 +63,7 @@ def credentials(token_path: str | Path = ".secrets/youtube-token.json"):
             "client_id": str(bundle.get("client_id") or ""),
             "client_secret": str(bundle.get("client_secret") or ""),
             "scopes": list(bundle.get("scopes") or SCOPES),
+            "expiry": str(bundle.get("expires_at") or ""),
         }
         studio_owned = True
     creds = Credentials.from_authorized_user_info(info, SCOPES)
