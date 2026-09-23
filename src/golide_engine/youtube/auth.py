@@ -45,17 +45,34 @@ def bootstrap(client_secrets: str | Path, token_path: str | Path = ".secrets/you
 def credentials(token_path: str | Path = ".secrets/youtube-token.json"):
     Request, Credentials, _ = _imports()
     encoded = os.getenv("YOUTUBE_OAUTH_TOKEN_B64")
-    raw = base64.b64decode(encoded).decode() if encoded else Path(token_path).read_text(encoding="utf-8")
-    info = json.loads(raw)
+    path = Path(token_path)
+    studio_owned = False
+    if encoded:
+        info = json.loads(base64.b64decode(encoded).decode())
+    elif path.exists():
+        info = json.loads(path.read_text(encoding="utf-8"))
+    else:
+        from golide_engine.studio_bridge import StudioBridge
+        bundle = StudioBridge(
+            os.getenv("GOLIDE_STUDIO_BASE_URL", "https://studio.golidee.com")
+        ).social_credentials("youtube")
+        info = {
+            "token": str(bundle.get("access_token") or ""),
+            "refresh_token": str(bundle.get("refresh_token") or ""),
+            "token_uri": str(bundle.get("token_uri") or "https://oauth2.googleapis.com/token"),
+            "client_id": str(bundle.get("client_id") or ""),
+            "client_secret": str(bundle.get("client_secret") or ""),
+            "scopes": list(bundle.get("scopes") or SCOPES),
+        }
+        studio_owned = True
     creds = Credentials.from_authorized_user_info(info, SCOPES)
     if creds.expired and creds.refresh_token:
         creds.refresh(Request())
-        if not encoded:
-            path = Path(token_path)
+        if not encoded and not studio_owned:
             path.write_text(creds.to_json(), encoding="utf-8")
             path.chmod(0o600)
     if not creds.valid:
-        raise RuntimeError("YouTube OAuth token is invalid; run oauth-bootstrap again")
+        raise RuntimeError("YouTube OAuth token is invalid; reconnect YouTube in Studio")
     return creds
 
 

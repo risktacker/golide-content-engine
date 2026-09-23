@@ -145,6 +145,18 @@ class StudioBridge:
                 f"Studio connection sync failed with HTTP {response_status}"
             )
 
+    def social_credentials(self, platform: str) -> dict[str, Any]:
+        platform = platform.strip().lower()
+        status, body = self._request(
+            "GET", f"/api/engine/social-credentials?platform={quote(platform)}"
+        )
+        if status != 200:
+            raise RuntimeError(f"Studio {platform} credential request failed with HTTP {status}")
+        payload = json.loads(body.decode("utf-8"))
+        if not str(payload.get("access_token") or "").strip():
+            raise RuntimeError(f"Studio returned an empty {platform} access token")
+        return payload
+
     def x_access_token(self) -> str:
         status, body = self._request("GET", "/api/engine/x/access-token")
         if status != 200:

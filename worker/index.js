@@ -175,6 +175,23 @@ async function ensureSchema(db){
       display_name TEXT NOT NULL DEFAULT '',
       updated_at TEXT NOT NULL
     )`,
+    `CREATE TABLE IF NOT EXISTS social_oauth_sessions (
+      state TEXT PRIMARY KEY,
+      platform TEXT NOT NULL,
+      expires_at TEXT NOT NULL,
+      created_at TEXT NOT NULL
+    )`,
+    `CREATE TABLE IF NOT EXISTS social_oauth_tokens (
+      platform TEXT PRIMARY KEY,
+      access_token_enc TEXT NOT NULL,
+      refresh_token_enc TEXT NOT NULL DEFAULT '',
+      expires_at TEXT NOT NULL DEFAULT '',
+      scope TEXT NOT NULL DEFAULT '',
+      external_account_id TEXT NOT NULL DEFAULT '',
+      account_label TEXT NOT NULL DEFAULT '',
+      metadata_json TEXT NOT NULL DEFAULT '{}',
+      updated_at TEXT NOT NULL
+    )`,
     `CREATE INDEX IF NOT EXISTS idx_content_posts_due ON content_posts(status, scheduled_at)`,
     `CREATE INDEX IF NOT EXISTS idx_social_variants_post ON social_variants(post_id, status)`,
     `CREATE INDEX IF NOT EXISTS idx_inbox_threads_open ON inbox_threads(status, last_message_at)`,
@@ -864,10 +881,148 @@ async function xAccessToken(env){
   };
 }
 
+
+const SOCIAL_OAUTH={
+  instagram:{id:"INSTAGRAM_OAUTH_CLIENT_ID",secret:"INSTAGRAM_OAUTH_CLIENT_SECRET",redirect:"https://studio.golidee.com/api/instagram/callback"},
+  facebook:{id:"FACEBOOK_OAUTH_CLIENT_ID",secret:"FACEBOOK_OAUTH_CLIENT_SECRET",redirect:"https://studio.golidee.com/api/facebook/callback"},
+  linkedin:{id:"LINKEDIN_OAUTH_CLIENT_ID",secret:"LINKEDIN_OAUTH_CLIENT_SECRET",redirect:"https://studio.golidee.com/api/linkedin/callback"},
+  youtube:{id:"YOUTUBE_OAUTH_CLIENT_ID",secret:"YOUTUBE_OAUTH_CLIENT_SECRET",redirect:"https://studio.golidee.com/api/youtube/callback"},
+};
+function socialCfg(env,p){
+  const s=SOCIAL_OAUTH[p]; if(!s) throw new Error("unsupported OAuth provider");
+  const clientId=safeText(env[s.id]),clientSecret=safeText(env[s.secret]);
+  if(!clientId||!clientSecret) throw new Error(p+" OAuth client credentials are not configured in Studio");
+  return {...s,clientId,clientSecret};
+}
+async function socialKey(env,p){
+  const c=socialCfg(env,p);
+  const d=await crypto.subtle.digest("SHA-256",new TextEncoder().encode("golide-social-token:"+p+":"+c.clientSecret));
+  return crypto.subtle.importKey("raw",d,{name:"AES-GCM"},false,["encrypt","decrypt"]);
+}
+async function socialSeal(env,p,v){
+  if(!v) return "";
+  const iv=new Uint8Array(12);crypto.getRandomValues(iv);
+  const enc=new Uint8Array(await crypto.subtle.encrypt({name:"AES-GCM",iv},await socialKey(env,p),new TextEncoder().encode(v)));
+  return xB64(iv)+"."+xB64(enc);
+}
+async function socialOpen(env,p,v){
+  if(!v) return "";
+  const a=safeText(v).split(".");if(a.length!==2) throw new Error("invalid encrypted social token");
+  const clear=await crypto.subtle.decrypt({name:"AES-GCM",iv:xUnb64(a[0])},await socialKey(env,p),xUnb64(a[1]));
+  return new TextDecoder().decode(clear);
+}
+async function oauthState(env,p){
+  const state=xRandomUrlSafe(32),now=nowIso(),expires=new Date(Date.now()+600000).toISOString();
+  await env.DB.prepare("DELETE FROM social_oauth_sessions WHERE expires_at<?").bind(now).run();
+  await env.DB.prepare("INSERT INTO social_oauth_sessions(state,platform,expires_at,created_at) VALUES(?,?,?,?)").bind(state,p,expires,now).run();
+  return state;
+}
+async function takeOauthState(env,p,state){
+  const row=await env.DB.prepare("SELECT platform,expires_at FROM social_oauth_sessions WHERE state=?").bind(state).first();
+  if(!row||row.platform!==p||new Date(row.expires_at).valueOf()<=Date.now()) return false;
+  await env.DB.prepare("DELETE FROM social_oauth_sessions WHERE state=?").bind(state).run(); return true;
+}
+function oauthBack(p,status){return Response.redirect("https://studio.golidee.com/?"+new URLSearchParams({provider:p,oauth:status}),302);}
+function expiry(seconds,fallback){return new Date(Date.now()+Math.max(60,Number(seconds||fallback))*1000).toISOString();}
+async function saveSocial(env,p,d){
+  const access=safeText(d.accessToken);if(!access) throw new Error(p+" returned no access token");
+  await env.DB.prepare(\`INSERT INTO social_oauth_tokens
+    (platform,access_token_enc,refresh_token_enc,expires_at,scope,external_account_id,account_label,metadata_json,updated_at)
+    VALUES(?,?,?,?,?,?,?,?,?)
+    ON CONFLICT(platform) DO UPDATE SET access_token_enc=excluded.access_token_enc,refresh_token_enc=excluded.refresh_token_enc,
+    expires_at=excluded.expires_at,scope=excluded.scope,external_account_id=excluded.external_account_id,
+    account_label=excluded.account_label,metadata_json=excluded.metadata_json,updated_at=excluded.updated_at\`)
+    .bind(p,await socialSeal(env,p,access),await socialSeal(env,p,safeText(d.refreshToken)),safeText(d.expiresAt),safeText(d.scope),
+      safeText(d.externalId),safeText(d.accountLabel),JSON.stringify(d.metadata||{}),nowIso()).run();
+  await env.DB.prepare(\`INSERT INTO engine_connections(platform,connected,account_label,external_account_id,synced_at,verification_status,verification_note)
+    VALUES(?,1,?,?,?,'connected',?)
+    ON CONFLICT(platform) DO UPDATE SET connected=1,account_label=excluded.account_label,external_account_id=excluded.external_account_id,
+    synced_at=excluded.synced_at,verification_status='connected',verification_note=excluded.verification_note\`)
+    .bind(p,safeText(d.accountLabel)||p,safeText(d.externalId),nowIso(),p+" OAuth identity verified in Studio.").run();
+}
+async function socialRow(env,p){return env.DB.prepare("SELECT * FROM social_oauth_tokens WHERE platform=?").bind(p).first();}
+
+async function startSocialOauth(env,p){
+  const c=socialCfg(env,p),state=await oauthState(env,p);
+  if(p==="instagram") return "https://www.instagram.com/oauth/authorize?"+new URLSearchParams({client_id:c.clientId,redirect_uri:c.redirect,response_type:"code",scope:"instagram_business_basic,instagram_business_content_publish",state});
+  if(p==="facebook") return "https://www.facebook.com/dialog/oauth?"+new URLSearchParams({client_id:c.clientId,redirect_uri:c.redirect,response_type:"code",scope:"pages_show_list,pages_read_engagement,pages_manage_posts",state});
+  if(p==="linkedin") return "https://www.linkedin.com/oauth/v2/authorization?"+new URLSearchParams({response_type:"code",client_id:c.clientId,redirect_uri:c.redirect,state,scope:"openid profile w_member_social"});
+  if(p==="youtube"){
+    const scope=["https://www.googleapis.com/auth/youtube.upload","https://www.googleapis.com/auth/youtube.readonly","https://www.googleapis.com/auth/yt-analytics.readonly","https://www.googleapis.com/auth/yt-analytics-monetary.readonly"].join(" ");
+    return "https://accounts.google.com/o/oauth2/v2/auth?"+new URLSearchParams({client_id:c.clientId,redirect_uri:c.redirect,response_type:"code",scope,access_type:"offline",include_granted_scopes:"true",prompt:"consent",state});
+  }
+  throw new Error("unsupported OAuth provider");
+}
+async function finishInstagram(env,code){
+  const c=socialCfg(env,"instagram");
+  const r=await fetch("https://api.instagram.com/oauth/access_token",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({client_id:c.clientId,client_secret:c.clientSecret,grant_type:"authorization_code",redirect_uri:c.redirect,code})});
+  if(!r.ok) throw new Error("Instagram code exchange failed");const s=await r.json(),short=safeText(s.access_token);
+  const u=new URL("https://graph.instagram.com/access_token");u.search=new URLSearchParams({grant_type:"ig_exchange_token",client_secret:c.clientSecret,access_token:short});
+  const lr=await fetch(u);if(!lr.ok) throw new Error("Instagram long-lived token exchange failed");const l=await lr.json(),access=safeText(l.access_token);
+  const m=new URL("https://graph.instagram.com/me");m.search=new URLSearchParams({fields:"id,username",access_token:access});
+  const mr=await fetch(m);if(!mr.ok) throw new Error("Instagram identity verification failed");const me=await mr.json();
+  const id=safeText(me.id),username=safeText(me.username);if(!id)throw new Error("Instagram account id missing");
+  await saveSocial(env,"instagram",{accessToken:access,expiresAt:expiry(l.expires_in,60*24*3600),scope:"instagram_business_basic instagram_business_content_publish",externalId:id,accountLabel:username?"@"+username:"Instagram",metadata:{account_id:id,username,graph_host:"graph.instagram.com"}});
+}
+async function finishFacebook(env,code){
+  const c=socialCfg(env,"facebook");
+  const r=await fetch("https://graph.facebook.com/oauth/access_token",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({client_id:c.clientId,client_secret:c.clientSecret,redirect_uri:c.redirect,code})});
+  if(!r.ok) throw new Error("Facebook code exchange failed");const s=await r.json(),short=safeText(s.access_token);
+  const x=new URL("https://graph.facebook.com/oauth/access_token");x.search=new URLSearchParams({grant_type:"fb_exchange_token",client_id:c.clientId,client_secret:c.clientSecret,fb_exchange_token:short});
+  const lr=await fetch(x);if(!lr.ok)throw new Error("Facebook long-lived token exchange failed");const l=await lr.json(),user=safeText(l.access_token);
+  const pu=new URL("https://graph.facebook.com/me/accounts");pu.search=new URLSearchParams({fields:"id,name,access_token,tasks",access_token:user});
+  const pr=await fetch(pu);if(!pr.ok)throw new Error("Facebook Page discovery failed");const pp=await pr.json();
+  const pages=(Array.isArray(pp?.data)?pp.data:[]).filter(q=>safeText(q?.id)&&safeText(q?.access_token)),wanted=safeText(env.FACEBOOK_PAGE_ID);
+  let page=wanted?pages.find(q=>safeText(q.id)===wanted):null;if(!page&&pages.length===1)page=pages[0];
+  if(!page&&pages.length>1)throw new Error("Multiple Facebook Pages found; set FACEBOOK_PAGE_ID in Studio");
+  if(!page)throw new Error("No manageable Facebook Page returned");
+  await saveSocial(env,"facebook",{accessToken:safeText(page.access_token),refreshToken:user,expiresAt:expiry(l.expires_in,60*24*3600),scope:"pages_show_list pages_read_engagement pages_manage_posts",externalId:safeText(page.id),accountLabel:safeText(page.name)||"Facebook Page",metadata:{page_id:safeText(page.id),page_name:safeText(page.name)}});
+}
+async function finishLinkedin(env,code){
+  const c=socialCfg(env,"linkedin");
+  const r=await fetch("https://www.linkedin.com/oauth/v2/accessToken",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({grant_type:"authorization_code",code,redirect_uri:c.redirect,client_id:c.clientId,client_secret:c.clientSecret})});
+  if(!r.ok)throw new Error("LinkedIn code exchange failed");const t=await r.json(),access=safeText(t.access_token);
+  const mr=await fetch("https://api.linkedin.com/v2/userinfo",{headers:{authorization:"Bearer "+access}});if(!mr.ok)throw new Error("LinkedIn identity verification failed");
+  const me=await mr.json(),sub=safeText(me.sub);if(!sub)throw new Error("LinkedIn member id missing");
+  await saveSocial(env,"linkedin",{accessToken:access,refreshToken:safeText(t.refresh_token),expiresAt:expiry(t.expires_in,60*24*3600),scope:safeText(t.scope)||"openid profile w_member_social",externalId:sub,accountLabel:safeText(me.name)||"LinkedIn",metadata:{author_urn:"urn:li:person:"+sub}});
+}
+async function finishYoutube(env,code){
+  const c=socialCfg(env,"youtube");
+  const r=await fetch("https://oauth2.googleapis.com/token",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({code,client_id:c.clientId,client_secret:c.clientSecret,redirect_uri:c.redirect,grant_type:"authorization_code"})});
+  if(!r.ok)throw new Error("YouTube code exchange failed");const t=await r.json(),access=safeText(t.access_token),refresh=safeText(t.refresh_token);
+  if(!access||!refresh)throw new Error("YouTube did not return access and refresh tokens");
+  const cr=await fetch("https://www.googleapis.com/youtube/v3/channels?part=id,snippet&mine=true",{headers:{authorization:"Bearer "+access}});if(!cr.ok)throw new Error("YouTube channel verification failed");
+  const cp=await cr.json(),items=Array.isArray(cp?.items)?cp.items:[];if(items.length!==1)throw new Error("YouTube did not resolve exactly one active channel");
+  const ch=items[0],id=safeText(ch.id),expected=safeText(env.YOUTUBE_CHANNEL_ID);if(expected&&id!==expected)throw new Error("Wrong YouTube channel selected");
+  const scopes=["https://www.googleapis.com/auth/youtube.upload","https://www.googleapis.com/auth/youtube.readonly","https://www.googleapis.com/auth/yt-analytics.readonly","https://www.googleapis.com/auth/yt-analytics-monetary.readonly"];
+  await saveSocial(env,"youtube",{accessToken:access,refreshToken:refresh,expiresAt:expiry(t.expires_in,3600),scope:safeText(t.scope)||scopes.join(" "),externalId:id,accountLabel:safeText(ch?.snippet?.title)||"YouTube",metadata:{channel_id:id,scopes,token_uri:"https://oauth2.googleapis.com/token"}});
+}
+async function handleSocialCallback(env,p,url){
+  await ensureSchema(env.DB);if(safeText(url.searchParams.get("error")))return oauthBack(p,"cancelled");
+  const code=safeText(url.searchParams.get("code")),state=safeText(url.searchParams.get("state"));if(!code||!state)return oauthBack(p,"error");
+  if(!(await takeOauthState(env,p,state)))return oauthBack(p,"expired");
+  try{if(p==="instagram")await finishInstagram(env,code);else if(p==="facebook")await finishFacebook(env,code);else if(p==="linkedin")await finishLinkedin(env,code);else if(p==="youtube")await finishYoutube(env,code);return oauthBack(p,"connected");}
+  catch(e){console.error("social OAuth failed",p,e?.message||String(e));return oauthBack(p,"error");}
+}
+async function socialCredentials(env,p){
+  if(p==="x"){const t=await xAccessToken(env);return {platform:"x",access_token:t.access_token,expires_at:t.expires_at,user_id:t.user_id,username:t.username};}
+  const row=await socialRow(env,p);if(!row)throw new Error(p+" is not connected in Studio");
+  let meta={};try{meta=JSON.parse(row.metadata_json||"{}");}catch{}
+  const base={platform:p,access_token:await socialOpen(env,p,row.access_token_enc),refresh_token:await socialOpen(env,p,row.refresh_token_enc),expires_at:safeText(row.expires_at),scope:safeText(row.scope),account_id:safeText(row.external_account_id),account_label:safeText(row.account_label),...meta};
+  if(p==="linkedin"&&new Date(row.expires_at||0).valueOf()<=Date.now()&&!base.refresh_token)throw new Error("LinkedIn expired; reconnect in Studio");
+  if(p==="facebook"&&new Date(row.expires_at||0).valueOf()<=Date.now())throw new Error("Facebook authorization expired; reconnect in Studio");
+  if(p==="youtube"){const c=socialCfg(env,"youtube");base.client_id=c.clientId;base.client_secret=c.clientSecret;base.token_uri="https://oauth2.googleapis.com/token";}
+  return base;
+}
+
 async function handleMachineApi(request,env,url){
   await ensureSchema(env.DB);
   if(url.pathname==="/api/engine/automation/status"&&request.method==="GET"){
     return json(await automationState(env.DB));
+  }
+  if(url.pathname==="/api/engine/social-credentials"&&request.method==="GET"){
+    try{return json(await socialCredentials(env,safeText(url.searchParams.get("platform")).toLowerCase()));}
+    catch(e){return err(e?.message||String(e),503);}
   }
   if(url.pathname==="/api/engine/x/access-token"&&request.method==="GET"){
     try{return json(await xAccessToken(env));}catch(e){return err(e?.message||String(e),503);}
@@ -883,9 +1038,7 @@ async function handleMachineApi(request,env,url){
   if(statusMatch&&request.method==="POST"){
     try{return json(await updateProductionStatus(env.DB,decodeURIComponent(statusMatch[1]),await request.json()));}catch(e){return err(e?.message||String(e),400);}
   }
-  if(url.pathname==="/api/engine/connections"&&request.method==="POST"){
-    try{return json(await syncEngineConnections(env.DB,await request.json()));}catch(e){return err(e?.message||String(e),400);}
-  }
+  if(url.pathname==="/api/engine/connections"&&request.method==="POST") return json({synced:0,retired:true,source:"studio-oauth"});
   if(url.pathname==="/api/engine/posts"&&request.method==="POST"){
     try{return json(await createPost(env,await request.json()),201);}catch(e){return err(e?.message||String(e),400);}
   }
@@ -990,6 +1143,10 @@ async function handleApi(request,env,url){
   if(url.pathname==="/api/x/connect"&&request.method==="GET"){
     try{return Response.redirect(await xStartOauth(env),302);}catch(e){return err(e?.message||String(e),503);}
   }
+  const socialConnect=url.pathname.match(/^\/api\/(instagram|facebook|linkedin|youtube)\/connect$/);
+  if(socialConnect&&request.method==="GET"){
+    try{return Response.redirect(await startSocialOauth(env,socialConnect[1]),302);}catch(e){return err(e?.message||String(e),503);}
+  }
   if(url.pathname==="/api/automation-control"&&request.method==="GET") return json(await automationState(env.DB));
   if(url.pathname==="/api/automation-control"&&request.method==="POST"){
     try{
@@ -1033,6 +1190,8 @@ export default {
     if(url.pathname==="/api/x/callback"&&request.method==="GET"){
       try{return await xHandleCallback(env,url);}catch{return xCallbackRedirect("error");}
     }
+    const socialCallback=url.pathname.match(/^\/api\/(instagram|facebook|linkedin|youtube)\/callback$/);
+    if(socialCallback&&request.method==="GET") return handleSocialCallback(env,socialCallback[1],url);
     if(url.pathname.startsWith("/api/engine/")){
       if(!(await machineAuthorized(request))) return err("engine authentication required",401);
       return handleMachineApi(request,env,url);

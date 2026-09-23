@@ -454,7 +454,6 @@ async function loadConnections() {
   const byPlatform = Object.fromEntries(connections.map((item) => [item.platform, item]));
   $("#connection-grid").innerHTML = ["instagram", "facebook", "linkedin", "x", "youtube"].map((platform) => {
     const item = byPlatform[platform];
-    const isX = platform === "x";
     const connected = Boolean(item?.connected || item?.status === "connected");
     const status = connected
       ? "connected"
@@ -463,15 +462,9 @@ async function loadConnections() {
     const stateClass = connected ? "connected" : (status === "connection_failed" ? "failed" : "attention");
     const state = connected ? "Connected" : (status === "connection_failed" ? "Connection failed" : "Needs attention");
     const account = item?.account_label || item?.external_account_id || "";
-    const detail = account || (isX
-      ? "Authorize X directly from Studio"
-      : (status === "connection_failed" ? "Provider verification failed" : "Credential verification has not succeeded yet"));
-    const verified = item?.synced_at
-      ? "Last verified " + new Date(item.synced_at).toLocaleString()
-      : "Not verified yet";
-    const action = isX
-      ? '<a class="connection-action" href="/api/x/connect">' + (connected ? "Reconnect X" : "Connect X") + "</a>"
-      : "";
+    const detail = account || (status === "connection_failed" ? "Provider verification failed" : "Authorize directly from Studio");
+    const verified = item?.synced_at ? "Last verified " + new Date(item.synced_at).toLocaleString() : "Not verified yet";
+    const action = '<a class="connection-action" href="/api/' + platform + '/connect">' + (connected ? "Reconnect " : "Connect ") + esc(labels[platform]) + "</a>";
 
     return '<div class="connection ' + stateClass + '"><strong>' +
       esc(labels[platform]) + '</strong><small>' + esc(detail) +
@@ -489,21 +482,19 @@ async function boot() {
   renderBudget();
 
   const params = new URLSearchParams(window.location.search);
-  const xResult = params.get("x");
-  if (xResult) {
+  const legacyX = params.get("x");
+  const provider = params.get("provider") || (legacyX ? "x" : "");
+  const oauthResult = params.get("oauth") || legacyX;
+  if (provider && oauthResult) {
     switchView("connections");
     const health = $("#health");
-    if (xResult === "connected") {
-      health.textContent = "X connected";
-      health.style.color = "var(--ok)";
-    } else if (xResult === "cancelled") {
-      health.textContent = "X authorization cancelled";
-      health.style.color = "var(--gold)";
-    } else {
-      health.textContent = "X authorization failed — reconnect";
-      health.style.color = "var(--danger)";
-    }
+    const name = labels[provider] || pretty(provider);
+    if (oauthResult === "connected") { health.textContent = name + " connected"; health.style.color = "var(--ok)"; }
+    else if (oauthResult === "cancelled") { health.textContent = name + " authorization cancelled"; health.style.color = "var(--gold)"; }
+    else if (oauthResult === "expired") { health.textContent = name + " authorization expired — connect again"; health.style.color = "var(--gold)"; }
+    else { health.textContent = name + " authorization failed — reconnect"; health.style.color = "var(--danger)"; }
     window.history.replaceState({}, "", window.location.pathname);
+    await loadConnections();
   }
 }
 

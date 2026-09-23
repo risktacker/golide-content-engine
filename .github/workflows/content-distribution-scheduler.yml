@@ -83,9 +83,6 @@ jobs:
           python-version: "3.12"
       - run: python -m pip install -e '.[production]'
         if: steps.automation.outputs.enabled == 'true' || github.event.schedule == '30 6 * * *' || github.event_name == 'workflow_dispatch'
-      - name: Verify provider connections and sync safe status to Studio
-        if: steps.automation.outputs.enabled == 'true' || github.event.schedule == '30 6 * * *' || github.event_name == 'workflow_dispatch'
-        run: golide connections-sync-studio
       - name: Create due static content
         if: steps.automation.outputs.enabled == 'true'
         run: golide static-automation-run
