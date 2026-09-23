@@ -47,15 +47,18 @@ def credentials(token_path: str | Path = ".secrets/youtube-token.json"):
     encoded = os.getenv("YOUTUBE_OAUTH_TOKEN_B64")
     path = Path(token_path)
     studio_owned = False
-    if encoded:
-        info = json.loads(base64.b64decode(encoded).decode())
-    elif path.exists():
-        info = json.loads(path.read_text(encoding="utf-8"))
-    else:
+    studio_error: Exception | None = None
+    info: dict
+
+    # Studio is authoritative once YouTube is connected there. The old
+    # GitHub/local token remains only as a migration fallback.
+    try:
         from golide_engine.studio_bridge import StudioBridge
         bundle = StudioBridge(
             os.getenv("GOLIDE_STUDIO_BASE_URL", "https://studio.golidee.com")
         ).social_credentials("youtube")
+        if not bundle.get("access_token") or not bundle.get("refresh_token"):
+            raise RuntimeError("Studio returned an incomplete YouTube credential")
         info = {
             "token": str(bundle.get("access_token") or ""),
             "refresh_token": str(bundle.get("refresh_token") or ""),
@@ -66,16 +69,26 @@ def credentials(token_path: str | Path = ".secrets/youtube-token.json"):
             "expiry": str(bundle.get("expires_at") or ""),
         }
         studio_owned = True
+    except Exception as exc:
+        studio_error = exc
+        if encoded:
+            info = json.loads(base64.b64decode(encoded).decode())
+        elif path.exists():
+            info = json.loads(path.read_text(encoding="utf-8"))
+        else:
+            raise RuntimeError(
+                "YouTube is not connected in Studio and no legacy OAuth token is available"
+            ) from studio_error
+
     creds = Credentials.from_authorized_user_info(info, SCOPES)
     if creds.expired and creds.refresh_token:
         creds.refresh(Request())
-        if not encoded and not studio_owned:
+        if not studio_owned and not encoded:
             path.write_text(creds.to_json(), encoding="utf-8")
             path.chmod(0o600)
     if not creds.valid:
         raise RuntimeError("YouTube OAuth token is invalid; reconnect YouTube in Studio")
     return creds
-
 
 def services(creds=None):
     try:

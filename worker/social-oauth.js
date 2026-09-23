@@ -105,6 +105,15 @@ export async function ensureSocialOauthSchema(db) {
     "expires_at TEXT NOT NULL DEFAULT '', scope TEXT NOT NULL DEFAULT '', account_id TEXT NOT NULL DEFAULT '', " +
     "account_label TEXT NOT NULL DEFAULT '', metadata_json TEXT NOT NULL DEFAULT '{}', updated_at TEXT NOT NULL)"
   ).run();
+  try {
+    await db.prepare("ALTER TABLE social_oauth_tokens ADD COLUMN account_id TEXT NOT NULL DEFAULT ''").run();
+  } catch {}
+  try {
+    await db.prepare(
+      "UPDATE social_oauth_tokens SET account_id=external_account_id " +
+      "WHERE account_id='' AND external_account_id<>''"
+    ).run();
+  } catch {}
 }
 
 async function createSession(env, platform) {
@@ -237,6 +246,8 @@ export async function startSocialOauth(env, platform) {
     const params = new URLSearchParams({
       client_id:clientId(env,platform), redirect_uri:redirect, response_type:"code",
       scope:INSTAGRAM_SCOPES, state,
+      enable_fb_login:"0",
+      force_authentication:"1",
     });
     return "https://www.instagram.com/oauth/authorize?" + params.toString();
   }
@@ -465,7 +476,9 @@ export async function handleSocialOauthCallback(env, platform, url) {
     else if (platform === "linkedin") await linkedinCallback(env, code);
     else await youtubeCallback(env, code);
     return resultRedirect(platform, "connected");
-  } catch {
+  } catch (error) {
+    const message = text(error?.message || error || "OAuth connection failed").slice(0,280);
+    await markReconnect(env, platform, message);
     return resultRedirect(platform, "error");
   }
 }

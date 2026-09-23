@@ -195,7 +195,7 @@ async function ensureSchema(db){
       refresh_token_enc TEXT NOT NULL DEFAULT '',
       expires_at TEXT NOT NULL DEFAULT '',
       scope TEXT NOT NULL DEFAULT '',
-      external_account_id TEXT NOT NULL DEFAULT '',
+      account_id TEXT NOT NULL DEFAULT '',
       account_label TEXT NOT NULL DEFAULT '',
       metadata_json TEXT NOT NULL DEFAULT '{}',
       updated_at TEXT NOT NULL
