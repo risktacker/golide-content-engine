@@ -1067,6 +1067,10 @@ async function handleApi(request,env,url){
 export default {
   async fetch(request,env){
     const url=new URL(request.url);
+    if(["/favicon.ico","/favicon.png","/apple-touch-icon.png"].includes(url.pathname)){
+      if(!env.ASSETS) return new Response("Not found",{status:404});
+      return env.ASSETS.fetch(request);
+    }
     if(url.pathname==="/api/x/callback"&&request.method==="GET"){
       try{return await xHandleCallback(env,url);}catch{return xCallbackRedirect("error");}
     }
