@@ -2,6 +2,10 @@ name: Deploy GOLIDE Studio to Cloudflare
 
 on:
   workflow_dispatch:
+  # Test deploys: pushing the migration branch deploys to *.workers.dev only
+  # (no custom domain is attached yet, so live sites are untouched).
+  push:
+    branches: [cloudflare-migration]
   # Turn on automatic deploys after the first manual deploy is verified:
   # push:
   #   branches: [main]
