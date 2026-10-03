@@ -47,13 +47,14 @@ jobs:
             echo "Studio automation gate unavailable; failing closed."
             exit 0
           fi
-          if [ -z "${GOLIDE_STUDIO_BYPASS_TOKEN:-}" ]; then
-            echo "Studio Sites bypass token is missing; failing closed."
-            exit 0
+          # ChatGPT Sites gate pass: only needed while Studio is hosted on ChatGPT Sites.
+          SITES_HEADER=()
+          if [ -n "${GOLIDE_STUDIO_BYPASS_TOKEN:-}" ]; then
+            SITES_HEADER=(-H "OAI-Sites-Authorization: Bearer $GOLIDE_STUDIO_BYPASS_TOKEN")
           fi
           STATE="$(curl --fail --silent --show-error \
             -H "Authorization: Bearer $TOKEN" \
-            -H "OAI-Sites-Authorization: Bearer $GOLIDE_STUDIO_BYPASS_TOKEN" \
+            "${SITES_HEADER[@]}" \
             "https://studio.golidee.com/api/engine/automation/status" || true)"
           ENABLED="$(printf '%s' "$STATE" | jq -r '.enabled // false')"
           if [ "$ENABLED" = "true" ]; then

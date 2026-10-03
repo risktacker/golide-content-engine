@@ -1,0 +1,42 @@
+{
+  "$schema": "https://unpkg.com/wrangler/config-schema.json",
+  // GOLIDE Studio (studio.golidee.com) — Cloudflare Workers deployment.
+  "name": "golide-studio",
+  "main": "./worker/index.js",
+  "compatibility_date": "2026-05-15",
+  "observability": { "enabled": true },
+
+  // Static UI. run_worker_first keeps every page behind the admin check in
+  // worker/index.js — without it Cloudflare would serve app/ files publicly.
+  "assets": {
+    "directory": "./app",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+
+  // Cloudflare D1 — created 2026-10-03 (Western Europe). Tables self-create.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "golide-studio-db",
+      "database_id": "d54288eb-9655-4994-998a-e0cb69c8a83d"
+    }
+  ],
+
+  // Secrets (set once, survive every deploy, never in git):
+  //   npx wrangler secret put R2_ACCOUNT_ID
+  //   npx wrangler secret put R2_ACCESS_KEY_ID
+  //   npx wrangler secret put R2_SECRET_ACCESS_KEY
+  //   npx wrangler secret put R2_BUCKET                    (golide-content-temp)
+  //   npx wrangler secret put GOOGLE_OAUTH_CLIENT_ID / _SECRET      (YouTube)
+  //   npx wrangler secret put FACEBOOK_OAUTH_CLIENT_ID / _SECRET
+  //   npx wrangler secret put INSTAGRAM_OAUTH_CLIENT_ID / _SECRET
+  //   npx wrangler secret put LINKEDIN_OAUTH_CLIENT_ID / _SECRET
+  //   npx wrangler secret put X_OAUTH_CLIENT_ID / _SECRET
+  // GOLIDE_ENABLE_PAID_PRODUCTION stays unset (locked) unless approved.
+
+  // Custom domain — enable once golidee.com DNS is on Cloudflare:
+  // "routes": [{ "pattern": "studio.golidee.com", "custom_domain": true }],
+
+  "workers_dev": true
+}
