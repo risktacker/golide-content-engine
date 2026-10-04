@@ -20,7 +20,6 @@ class StudioBridgeTests(unittest.TestCase):
             "https://studio.example",
             transport=transport,
             token_provider=lambda: "short-lived-token",
-            sites_token="sites-machine-token",
         )
         claimed = bridge.claim_next(datetime(2026, 9, 1, 6, tzinfo=timezone.utc))
         self.assertEqual("job-1", claimed["spec"]["_studio_job_id"])
@@ -29,7 +28,7 @@ class StudioBridgeTests(unittest.TestCase):
             openai_cost_usd=0.2, error="recharge needed",
         )
         self.assertTrue(all(call[2]["Authorization"] == "Bearer short-lived-token" for call in calls))
-        self.assertTrue(all(call[2]["OAI-Sites-Authorization"] == "Bearer sites-machine-token" for call in calls))
+        self.assertTrue(all("OAI-Sites-Authorization" not in call[2] for call in calls))
         status_payload = json.loads(calls[-1][3])
         self.assertEqual("paused_funds", status_payload["status"])
         self.assertEqual(0.2, status_payload["providerUsage"]["openAiCostUsd"])
@@ -62,7 +61,6 @@ class StudioBridgeTests(unittest.TestCase):
             "https://studio.example",
             transport=transport,
             token_provider=lambda: "oidc",
-            sites_token="sites",
         )
         payload = {"channelId": "channel-12345", "daily": [], "videos": []}
         bridge.sync_analytics(payload)

@@ -31,7 +31,6 @@ jobs:
     timeout-minutes: 180
     env:
       GOLIDE_STUDIO_BASE_URL: "https://studio.golidee.com"
-      GOLIDE_STUDIO_BYPASS_TOKEN: ${{ secrets.GOLIDE_STUDIO_BYPASS_TOKEN }}
     steps:
       - name: Check Studio automation control
         id: automation
@@ -47,15 +46,8 @@ jobs:
             echo "::warning::GitHub OIDC token unavailable; Studio automation gate failing closed."
             exit 0
           fi
-          # OpenAI Sites gate pass: only needed while Studio is hosted on OpenAI Sites.
-          # On Cloudflare the GitHub OIDC token alone is accepted.
-          SITES_HEADER=()
-          if [ -n "${GOLIDE_STUDIO_BYPASS_TOKEN:-}" ]; then
-            SITES_HEADER=(-H "OAI-Sites-Authorization: Bearer $GOLIDE_STUDIO_BYPASS_TOKEN")
-          fi
           HTTP_CODE="$(curl --silent --show-error -o gate.json -w '%{http_code}' \
             -H "Authorization: Bearer $TOKEN" \
-            "${SITES_HEADER[@]}" \
             "https://studio.golidee.com/api/engine/automation/status" || echo 000)"
           if [ "$HTTP_CODE" != "200" ]; then
             echo "::warning::Studio automation gate returned HTTP $HTTP_CODE; failing closed."
@@ -108,7 +100,6 @@ jobs:
           GOLIDE_ENABLE_YOUTUBE_UPLOAD: "1"
           GOLIDE_OPENAI_MONTHLY_CAP_USD: "7.00"
           GOLIDE_STUDIO_BASE_URL: "https://studio.golidee.com"
-          GOLIDE_STUDIO_BYPASS_TOKEN: ${{ secrets.GOLIDE_STUDIO_BYPASS_TOKEN }}
           GOLIDE_FAILURE_WEBHOOK: ${{ secrets.GOLIDE_FAILURE_WEBHOOK }}
           GOLIDE_SMTP_USER: ${{ secrets.GOLIDE_SMTP_USER }}
           GOLIDE_SMTP_APP_PASSWORD: ${{ secrets.GOLIDE_SMTP_APP_PASSWORD }}

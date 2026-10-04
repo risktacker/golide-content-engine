@@ -27,15 +27,11 @@ class StudioBridge:
         audience: str = "golide-studio-engine",
         transport: Transport = _transport,
         token_provider: Callable[[], str] | None = None,
-        sites_token: str | None = None,
     ):
         self.base_url = base_url.rstrip("/")
         self.audience = audience
         self.transport = transport
         self.token_provider = token_provider or self._actions_oidc_token
-        self.sites_token = sites_token if sites_token is not None else os.getenv(
-            "GOLIDE_STUDIO_BYPASS_TOKEN", ""
-        ).strip()
 
     def _actions_oidc_token(self) -> str:
         request_url = os.getenv("ACTIONS_ID_TOKEN_REQUEST_URL")
@@ -57,8 +53,6 @@ class StudioBridge:
     def _request(self, method: str, path: str, payload: dict[str, Any] | None = None) -> tuple[int, bytes]:
         body = json.dumps(payload).encode("utf-8") if payload is not None else None
         headers = {"Authorization": f"Bearer {self.token_provider()}"}
-        if self.sites_token:
-            headers["OAI-Sites-Authorization"] = f"Bearer {self.sites_token}"
         if body is not None:
             headers["Content-Type"] = "application/json"
         return self.transport(method, f"{self.base_url}{path}", headers, body)

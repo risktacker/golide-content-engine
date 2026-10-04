@@ -22,5 +22,4 @@ jobs:
       - name: Deliver stored YouTube analytics to Studio
         env:
           GOLIDE_STUDIO_BASE_URL: "https://studio.golidee.com"
-          GOLIDE_STUDIO_BYPASS_TOKEN: ${{ secrets.GOLIDE_STUDIO_BYPASS_TOKEN }}
         run: golide analytics-sync-studio
