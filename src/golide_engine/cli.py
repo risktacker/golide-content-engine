@@ -436,6 +436,7 @@ def main() -> int:
         from .operations.budget import BudgetPaused
         from .youtube.demand import TopicDemandRejected
         from .orchestration.production import WaitingOwnerVoice
+        from .orchestration.recording import RecordingLengthError
         service = None
 
         def report_studio(
@@ -446,6 +447,7 @@ def main() -> int:
             title: str | None = None,
             script: str | None = None,
             selected_topic: str | None = None,
+            clear_voice: bool = False,
         ) -> None:
             if not bridge or not studio_job_id or service is None:
                 return
@@ -474,6 +476,7 @@ def main() -> int:
                     title=title,
                     script=script,
                     selected_topic=selected_topic,
+                    clear_voice=clear_voice,
                 )
             except Exception as exc:
                 print(json.dumps({
@@ -508,12 +511,44 @@ def main() -> int:
                 script=exc.script,
                 selected_topic=refreshed.get("brief") or refreshed.get("title"),
             )
+            from .operations.email import send_record_needed
+            send_record_needed(
+                job_id=str(studio_job_id or spec["id"]),
+                title=str(refreshed.get("title") or exc.title),
+                format_name=str(spec.get("format", "short")),
+                script=exc.script,
+            )
             print(json.dumps({
                 "status": "waiting_owner_voice",
                 "production_id": spec["id"],
                 "title": refreshed.get("title") or exc.title,
                 "required_field": "owner_voice_media_ref",
                 "message": "Topic research and script are ready. Upload the owner recording in Studio to resume from checkpoints.",
+            }))
+            return 0
+        except RecordingLengthError as exc:
+            refreshed = json.loads(spec_path.read_text(encoding="utf-8"))
+            refreshed.pop("owner_voice_media_ref", None)
+            spec_path.write_text(json.dumps(refreshed, indent=2) + "\n", encoding="utf-8")
+            report_studio(
+                "waiting_owner_voice",
+                "recording-rejected",
+                str(exc),
+                clear_voice=True,
+            )
+            from .operations.email import send_record_needed
+            script_file = Path("productions") / spec["id"] / "script.txt"
+            send_record_needed(
+                job_id=str(studio_job_id or spec["id"]),
+                title=str(refreshed.get("title") or spec["id"]),
+                format_name=str(spec.get("format", "short")),
+                script=script_file.read_text(encoding="utf-8") if script_file.exists() else "",
+                rejection=str(exc),
+            )
+            print(json.dumps({
+                "status": "waiting_owner_voice",
+                "production_id": spec["id"],
+                "reason": str(exc),
             }))
             return 0
         except BudgetPaused as exc:

@@ -47,23 +47,28 @@ jobs:
             "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=golide-studio-engine" || true)"
           TOKEN="$(printf '%s' "$OIDC_JSON" | jq -r '.value // empty')"
           if [ -z "$TOKEN" ]; then
-            echo "Studio automation gate unavailable; failing closed."
+            echo "::warning::GitHub OIDC token unavailable; Studio automation gate failing closed."
             exit 0
           fi
           if [ -z "${GOLIDE_STUDIO_BYPASS_TOKEN:-}" ]; then
-            echo "Studio Sites bypass token is missing; failing closed."
+            echo "::warning::GOLIDE_STUDIO_BYPASS_TOKEN secret is missing; Studio automation gate failing closed."
             exit 0
           fi
-          STATE="$(curl --fail --silent --show-error \
+          HTTP_CODE="$(curl --silent --show-error -o gate.json -w '%{http_code}' \
             -H "Authorization: Bearer $TOKEN" \
             -H "OAI-Sites-Authorization: Bearer $GOLIDE_STUDIO_BYPASS_TOKEN" \
-            "https://studio.golidee.com/api/engine/automation/status" || true)"
-          ENABLED="$(printf '%s' "$STATE" | jq -r '.enabled // false')"
+            "https://studio.golidee.com/api/engine/automation/status" || echo 000)"
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::warning::Studio automation gate returned HTTP $HTTP_CODE; failing closed."
+            head -c 300 gate.json 2>/dev/null || true
+            exit 0
+          fi
+          ENABLED="$(jq -r '.enabled // false' gate.json)"
           if [ "$ENABLED" = "true" ]; then
             echo "enabled=true" >> "$GITHUB_OUTPUT"
             echo "Studio automation is RUNNING."
           else
-            echo "Studio automation is PAUSED; no paid work will run."
+            echo "::notice::Studio automation is PAUSED (Start automation not switched on); no paid work will run."
           fi
       - uses: actions/checkout@v4
         if: steps.automation.outputs.enabled == 'true'

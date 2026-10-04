@@ -44,23 +44,28 @@ jobs:
             "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=golide-studio-engine" || true)"
           TOKEN="$(printf '%s' "$OIDC_JSON" | jq -r '.value // empty')"
           if [ -z "$TOKEN" ]; then
-            echo "Studio automation gate unavailable; failing closed."
+            echo "::warning::GitHub OIDC token unavailable; Studio automation gate failing closed."
             exit 0
           fi
           if [ -z "${GOLIDE_STUDIO_BYPASS_TOKEN:-}" ]; then
-            echo "Studio Sites bypass token is missing; failing closed."
+            echo "::warning::GOLIDE_STUDIO_BYPASS_TOKEN secret is missing; Studio automation gate failing closed."
             exit 0
           fi
-          STATE="$(curl --fail --silent --show-error \
+          HTTP_CODE="$(curl --silent --show-error -o gate.json -w '%{http_code}' \
             -H "Authorization: Bearer $TOKEN" \
             -H "OAI-Sites-Authorization: Bearer $GOLIDE_STUDIO_BYPASS_TOKEN" \
-            "https://studio.golidee.com/api/engine/automation/status" || true)"
-          ENABLED="$(printf '%s' "$STATE" | jq -r '.enabled // false')"
+            "https://studio.golidee.com/api/engine/automation/status" || echo 000)"
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::warning::Studio automation gate returned HTTP $HTTP_CODE; failing closed."
+            head -c 300 gate.json 2>/dev/null || true
+            exit 0
+          fi
+          ENABLED="$(jq -r '.enabled // false' gate.json)"
           if [ "$ENABLED" = "true" ]; then
             echo "enabled=true" >> "$GITHUB_OUTPUT"
             echo "Studio automation is RUNNING."
           else
-            echo "Studio automation is PAUSED; no paid work will run."
+            echo "::notice::Studio automation is PAUSED (Start automation not switched on); no paid work will run."
           fi
       - uses: actions/checkout@v4
         if: steps.automation.outputs.enabled == 'true'
@@ -80,18 +85,18 @@ jobs:
         if: steps.automation.outputs.enabled == 'true'
         with:
           python-version: "3.12"
-      - name: Ensure FFmpeg and GOLIDE fonts
+      - name: Ensure FFmpeg, fonts and Cairo (vector renderer)
         if: steps.automation.outputs.enabled == 'true'
         run: |
-          if command -v ffmpeg >/dev/null && fc-match DejaVuSans >/dev/null; then
+          if command -v ffmpeg >/dev/null && fc-match DejaVuSans >/dev/null && pkg-config --exists cairo; then
             ffmpeg -version | head -1
-            fc-match DejaVuSans | head -1
+            pkg-config --modversion cairo
           else
             sudo find /etc/apt/sources.list.d -maxdepth 1 -type f -iname '*microsoft*' -exec mv {} {}.disabled \;
             sudo apt-get update
-            sudo apt-get install -y ffmpeg fonts-dejavu-core
+            sudo apt-get install -y ffmpeg fonts-dejavu-core libcairo2-dev pkg-config
           fi
-      - run: python -m pip install -e '.[production]'
+      - run: python -m pip install -e '.[production,video]'
         if: steps.automation.outputs.enabled == 'true'
       - name: Produce, upload privately, then schedule
         if: steps.automation.outputs.enabled == 'true'
@@ -103,6 +108,9 @@ jobs:
           GOLIDE_STUDIO_BASE_URL: "https://studio.golidee.com"
           GOLIDE_STUDIO_BYPASS_TOKEN: ${{ secrets.GOLIDE_STUDIO_BYPASS_TOKEN }}
           GOLIDE_FAILURE_WEBHOOK: ${{ secrets.GOLIDE_FAILURE_WEBHOOK }}
+          GOLIDE_SMTP_USER: ${{ secrets.GOLIDE_SMTP_USER }}
+          GOLIDE_SMTP_APP_PASSWORD: ${{ secrets.GOLIDE_SMTP_APP_PASSWORD }}
+          GOLIDE_NOTIFY_EMAIL: ${{ secrets.GOLIDE_NOTIFY_EMAIL }}
         run: golide automation-run
       - name: Save resumable media checkpoint
         id: checkpoint_save

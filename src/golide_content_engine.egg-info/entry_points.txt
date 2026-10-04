@@ -1,0 +1,2 @@
+[console_scripts]
+golide = golide_engine.cli:main

@@ -1,0 +1,10 @@
+
+[production]
+google-api-python-client<3,>=2.179
+google-auth<3,>=2.40
+google-auth-oauthlib<2,>=1.2
+openai<3,>=2
+pillow<13,>=11
+pyspellchecker<1,>=0.8
+
+[test]
