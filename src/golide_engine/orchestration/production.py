@@ -594,517 +594,567 @@ class ProductionService:
             production_id, "captions-authoritative-v3", caption_stage, attempts=1
         )
 
-        beats_path = work / "editorial-beats-authoritative-v3.json"
+        # Locked 2026-10-04: new jobs are drawn by the GOLIDE Black vector
+        # renderer (code-drawn line art synced to the owner's words). Jobs
+        # created before the change, which have no scene plan, keep the old
+        # still-image path so their checkpoints remain valid.
+        scene_plan_path = work / "scene-plan.json"
+        vector_mode = scene_plan_path.exists()
+        video_path = self.root / "build" / production_id / "video.mp4"
+        if vector_mode:
+            from ..vector.align import align_lines
+            from ..vector.render import VectorRenderer
 
-        def beat_stage():
-            self._require_absent(beats_path, "editorial-beats-authoritative-v3")
-            beats = words_to_beats(timed_words, max_seconds=3.2)
-            beats_path.write_text(json.dumps(beats, indent=2) + "\n", encoding="utf-8")
-
-        self.runner.run(
-            production_id, "editorial-beats-authoritative-v3", beat_stage, attempts=1
-        )
-        beats = json.loads(beats_path.read_text(encoding="utf-8"))
-
-        previous_storyboard_path = work / "storyboard-authoritative-v2.json"
-        asset_inventory: dict[str, dict[str, Any]] = {}
-        previous_scenes: list[dict[str, Any]] = []
-        if previous_storyboard_path.exists():
-            previous_storyboard = json.loads(
-                previous_storyboard_path.read_text(encoding="utf-8")
+            music = MusicRegistry(self.root / "config/music-registry.json").select(
+                spec["music"]["mood"], spec["music"].get("track_id")
             )
-            previous_scenes = previous_storyboard.get("scenes", [])
-            for previous_scene in previous_scenes:
-                asset_inventory.setdefault(
-                    previous_scene["asset_key"],
-                    {
-                        "asset_key": previous_scene["asset_key"],
-                        "visual_prompt": previous_scene.get("visual_prompt", ""),
-                    },
+            plan = json.loads(scene_plan_path.read_text(encoding="utf-8"))
+            timed_lines = align_lines(plan, timed_words, narration_seconds)
+            storyboard = {
+                "renderer": "vector",
+                "scenes": [
+                    {"id": f"line-{line.index:03d}", "start": line.start, "end": line.end,
+                     "duration": line.end - line.start, "visual": line.visual,
+                     "visual_caption": line.label}
+                    for line in timed_lines
+                ],
+            }
+            storyboard_path = work / "storyboard-vector.json"
+            storyboard_path.write_text(json.dumps(storyboard, indent=2) + "\n", encoding="utf-8")
+            labels_srt = self.root / "build" / production_id / "visual-labels.srt"
+            labels_srt.parent.mkdir(parents=True, exist_ok=True)
+            labels_srt.write_text(words_to_srt([
+                {"word": line.label or line.visual.replace("_", " ").upper(),
+                 "start": line.start, "end": line.end}
+                for line in timed_lines
+            ]), encoding="utf-8")
+
+            def vector_render_stage():
+                VectorRenderer(str(spec["format"])).render(
+                    plan, timed_words, narration, video_path, narration_seconds,
+                    music=Path(music.path) if Path(music.path).exists() else None,
+                    music_volume=0.03,
                 )
-                for previous_layer in previous_scene.get("secondary_assets", []):
+
+            self.runner.run(production_id, "render-vector-v1", vector_render_stage, attempts=1)
+            rendered_seconds = self._duration(video_path)
+            if abs(rendered_seconds - narration_seconds) > max(0.75, narration_seconds * 0.01):
+                raise RuntimeError(
+                    f"render duration {rendered_seconds:.2f}s does not match narration "
+                    f"{narration_seconds:.2f}s"
+                )
+        else:
+            beats_path = work / "editorial-beats-authoritative-v3.json"
+
+            def beat_stage():
+                self._require_absent(beats_path, "editorial-beats-authoritative-v3")
+                beats = words_to_beats(timed_words, max_seconds=3.2)
+                beats_path.write_text(json.dumps(beats, indent=2) + "\n", encoding="utf-8")
+
+            self.runner.run(
+                production_id, "editorial-beats-authoritative-v3", beat_stage, attempts=1
+            )
+            beats = json.loads(beats_path.read_text(encoding="utf-8"))
+
+            previous_storyboard_path = work / "storyboard-authoritative-v2.json"
+            asset_inventory: dict[str, dict[str, Any]] = {}
+            previous_scenes: list[dict[str, Any]] = []
+            if previous_storyboard_path.exists():
+                previous_storyboard = json.loads(
+                    previous_storyboard_path.read_text(encoding="utf-8")
+                )
+                previous_scenes = previous_storyboard.get("scenes", [])
+                for previous_scene in previous_scenes:
                     asset_inventory.setdefault(
-                        previous_layer["asset_key"],
+                        previous_scene["asset_key"],
                         {
-                            "asset_key": previous_layer["asset_key"],
-                            "visual_prompt": previous_layer.get("visual_prompt", ""),
+                            "asset_key": previous_scene["asset_key"],
+                            "visual_prompt": previous_scene.get("visual_prompt", ""),
                         },
                     )
+                    for previous_layer in previous_scene.get("secondary_assets", []):
+                        asset_inventory.setdefault(
+                            previous_layer["asset_key"],
+                            {
+                                "asset_key": previous_layer["asset_key"],
+                                "visual_prompt": previous_layer.get("visual_prompt", ""),
+                            },
+                        )
 
-        storyboard_path = work / "storyboard-authoritative-v5.json"
+            storyboard_path = work / "storyboard-authoritative-v5.json"
 
-        def storyboard_stage():
-            self._require_absent(storyboard_path, "storyboard")
-            primary_limit = 5 if spec["format"] == "short" else 12
-            minimum_unique = 5 if spec["format"] == "short" else 12
-            minimum_layered_ratio = 0.15 if spec["format"] == "short" else 0.25
+            def storyboard_stage():
+                self._require_absent(storyboard_path, "storyboard")
+                primary_limit = 5 if spec["format"] == "short" else 12
+                minimum_unique = 5 if spec["format"] == "short" else 12
+                minimum_layered_ratio = 0.15 if spec["format"] == "short" else 0.25
 
-            prior_storyboard_failure = bool(self.database.rows(
-                """SELECT 1 FROM stage_runs
-                   WHERE production_id=? AND stage='storyboard-authoritative-v5'
-                   AND status='failed' LIMIT 1""",
-                (production_id,),
-            ))
+                prior_storyboard_failure = bool(self.database.rows(
+                    """SELECT 1 FROM stage_runs
+                       WHERE production_id=? AND stage='storyboard-authoritative-v5'
+                       AND status='failed' LIMIT 1""",
+                    (production_id,),
+                ))
 
-            if previous_scenes:
-                # Recovery uses already-paid media and never invents replacement assets.
-                def editorial_tokens(value: str) -> set[str]:
-                    return {
-                        token for token in re.findall(r"[a-z0-9]+", value.lower())
-                        if len(token) > 2
-                    }
-
-                template_tokens = []
-                for template in previous_scenes:
-                    searchable = " ".join([
-                        str(template.get("spoken_excerpt", "")),
-                        str(template.get("visual_caption", "")),
-                        str(template.get("visual_prompt", "")),
-                    ])
-                    template_tokens.append(editorial_tokens(searchable))
-
-                motion_types = [
-                    "push-in", "pan-left", "reframe", "pull-out",
-                    "pan-right", "layer-reveal",
-                ]
-                transitions = ["cut", "match-cut", "paper-wipe", "object-transition"]
-                roles = ["CONTEXT", "CAUSE_EFFECT", "CONTRAST", "REVEAL"]
-                planned_scenes = []
-                for index, beat in enumerate(beats):
-                    beat_tokens = editorial_tokens(beat["text"])
-                    scores = [
-                        len(beat_tokens & tokens) * 100
-                        - ((template_index - index) % len(previous_scenes))
-                        for template_index, tokens in enumerate(template_tokens)
-                    ]
-                    template = previous_scenes[max(range(len(scores)), key=scores.__getitem__)]
-                    spoken_words = str(beat["text"]).split()
-                    caption = " ".join(spoken_words[:6]).rstrip(".,;:!?")
-                    number_match = re.search(r"\b\d+(?:\.\d+)?\b", beat["text"])
-                    annotation = {"kind": "none"}
-                    if number_match:
-                        annotation = {
-                            "kind": "number",
-                            "text": number_match.group(0),
-                            "start_offset": 0.08,
-                            "duration": min(1.1, max(0.1, float(beat["duration"]) - 0.1)),
-                            "position": "center",
-                            "color_token": "golide-gold",
+                if previous_scenes:
+                    # Recovery uses already-paid media and never invents replacement assets.
+                    def editorial_tokens(value: str) -> set[str]:
+                        return {
+                            token for token in re.findall(r"[a-z0-9]+", value.lower())
+                            if len(token) > 2
                         }
-                    planned_scenes.append({
-                        "beat_id": beat["id"],
-                        "asset_key": template["asset_key"],
-                        "visual_role": template.get("visual_role", roles[index % len(roles)]),
-                        "visual_caption": caption,
-                        "visual_prompt": template.get("visual_prompt", ""),
-                        "motion": {
-                            "type": motion_types[index % len(motion_types)],
-                            "intensity": "strong" if index % 5 == 0 else "medium",
-                            "transition": transitions[index % len(transitions)],
-                            "easing": "ease-in-out",
-                            "emphasis": caption,
-                            "audio_cue": "impact" if index % 9 == 0 else (
-                                "soft-trace" if index % 3 == 0 else "none"
-                            ),
-                            "annotation": annotation,
-                        },
-                        "secondary_assets": template.get("secondary_assets", []),
-                        "subject_bounds": template.get("subject_bounds", []),
-                    })
-            elif prior_storyboard_failure:
-                # A prior paid planner response already failed to parse. Recover locally
-                # from checkpointed narration beats rather than buying the same text stage again.
-                planned_scenes = self._build_recovery_storyboard(beats, primary_limit)
-            else:
-                # New production: plan the full edit before the first image purchase.
-                # The authoritative caption beats are intentionally merged in pairs for
-                # the paid planning call. A long-form episode can contain ~100 three-second
-                # beats; asking the model to repeat the full nested scene schema for every
-                # beat made the structured JSON hit the output ceiling and truncate.
-                # Pair planning cuts that payload roughly in half while preserving the
-                # final one-scene-per-authoritative-beat contract after local expansion.
-                planning_groups = []
-                for offset in range(0, len(beats), 2):
-                    members = beats[offset:offset + 2]
-                    planning_groups.append({
-                        "id": f"plan-{offset // 2:03d}",
-                        "source_beat_ids": [member["id"] for member in members],
-                        "start": members[0]["start"],
-                        "end": members[-1]["end"],
-                        "duration": round(
-                            float(members[-1]["end"]) - float(members[0]["start"]), 6
-                        ),
-                        "text": " ".join(str(member["text"]) for member in members),
-                    })
-                compact_beats = [{
-                    "id": group["id"],
-                    "start": group["start"],
-                    "end": group["end"],
-                    "duration": group["duration"],
-                    "text": group["text"],
-                } for group in planning_groups]
-                planning_input = json.dumps({
-                    "format": spec["format"],
-                    "brief": spec["brief"],
-                    "narration": script,
-                    "research": research,
-                    "editorial_beats": compact_beats,
-                    "primary_asset_limit": primary_limit,
-                    "minimum_unique_primary_assets": minimum_unique,
-                    "minimum_layered_scene_ratio": minimum_layered_ratio,
-                }, separators=(",", ":"))
-                storyboard_output_tokens = 9000
-                self._reserve(
-                    spec, text_model,
-                    Usage(
-                        input_tokens=max(1, len(planning_input) // 4),
-                        output_tokens=storyboard_output_tokens,
-                    ),
-                    stage="storyboard-authoritative-v5",
-                )
-                output = text.generate_json(
-                    """Plan a premium G$LIDE science/technology explanation edit. Return exactly one scene for every supplied planning beat_id and never change narration timing. Each planning beat represents one or two final authoritative beats, so NEVER reuse the same primary asset_key on adjacent planning beats. Build a deliberate Premiere-Pro/After-Effects-like visual language using the available motion grammar: multi-layer composition, 2.5D-feeling parallax through foreground/detail layers, camera push/pull/pan/reframe, diagram-like reveals, tracked labels or numbers, kinetic emphasis, object/match transitions, depth, restrained technical HUD/data overlays, and blue/gold paper-cut compositing. Do not use an effect merely because it exists; each motion, layer and SFX cue must explain what the narrator is saying.
 
-Use the smallest paid image set that still looks genuinely varied. Respect the supplied primary asset limit. Meet or exceed the supplied minimum unique primary assets. No primary asset may dominate the episode. Reuse an asset only when the viewer is intentionally returning to the same concept, and change framing/layers to show progression. At least the supplied minimum layered-scene ratio must use secondary assets. Reuse secondary detail/HUD assets when sensible rather than generating needless images.
+                    template_tokens = []
+                    for template in previous_scenes:
+                        searchable = " ".join([
+                            str(template.get("spoken_excerpt", "")),
+                            str(template.get("visual_caption", "")),
+                            str(template.get("visual_prompt", "")),
+                        ])
+                        template_tokens.append(editorial_tokens(searchable))
 
-Keep the structured response compact: visual_caption and motion emphasis at six words or fewer; each visual_prompt at thirty words or fewer; no prose explanations outside schema fields. Sound cues must correspond to visible actions: soft-trace for diagram/data movement, tick for numbers/UI, paper/swipe for directional reveals, impact only for rare major reveals. Keep many beats without SFX so sound has hierarchy. Use hard cuts often; reserve paper-wipe, match-cut and object-transition for motivated transitions. Use annotations sparingly. Visual prompts must describe the actual explanatory image to generate, not editing instructions or text-heavy title cards. Favor diagrams, cutaways, mechanisms, scale comparisons, maps/data or object relationships over generic decorative art. Never request readable paragraphs in generated images.""",
-                    planning_input,
-                    STORYBOARD_SCHEMA,
-                    max_output_tokens=storyboard_output_tokens,
-                )
-                group_scenes = output.value["scenes"]
-                expected_group_ids = {group["id"] for group in planning_groups}
-                planned_group_ids = {scene["beat_id"] for scene in group_scenes}
-                if (
-                    len(planned_group_ids) != len(group_scenes)
-                    or planned_group_ids != expected_group_ids
-                ):
-                    raise RuntimeError(
-                        "compact storyboard must contain every planning beat exactly once"
-                    )
-
-                # If the model reuses one asset on adjacent planning beats, repair the
-                # sequence locally from its already-approved asset catalog instead of
-                # repeating the paid planning request.
-                asset_templates = {}
-                for scene in group_scenes:
-                    asset_templates.setdefault(scene["asset_key"], scene)
-
-                def compact_tokens(value: str) -> set[str]:
-                    return {
-                        token for token in re.findall(r"[a-z0-9]+", value.lower())
-                        if len(token) > 2
-                    }
-
-                for index in range(1, len(group_scenes)):
-                    current = group_scenes[index]
-                    previous = group_scenes[index - 1]
-                    if current["asset_key"] != previous["asset_key"]:
-                        continue
-                    candidates = [
-                        template for key, template in asset_templates.items()
-                        if key != previous["asset_key"]
+                    motion_types = [
+                        "push-in", "pan-left", "reframe", "pull-out",
+                        "pan-right", "layer-reveal",
                     ]
-                    if not candidates:
-                        continue
-                    beat_tokens = compact_tokens(planning_groups[index]["text"])
-                    replacement = max(
-                        candidates,
-                        key=lambda template: len(
-                            beat_tokens & compact_tokens(
-                                " ".join([
-                                    str(template.get("visual_caption", "")),
-                                    str(template.get("visual_prompt", "")),
-                                ])
-                            )
-                        ),
-                    )
-                    current["asset_key"] = replacement["asset_key"]
-                    current["visual_role"] = replacement["visual_role"]
-                    current["visual_prompt"] = replacement["visual_prompt"]
-                    current["secondary_assets"] = json.loads(json.dumps(
-                        replacement.get("secondary_assets", [])
-                    ))
-                    current["subject_bounds"] = json.loads(json.dumps(
-                        replacement.get("subject_bounds", [])
-                    ))
-
-                # Expand each compact planning scene back onto the original authoritative
-                # narration beats. Two beats may intentionally share one explanatory
-                # asset, matching the policy's maximum consecutive reuse of two.
-                group_scene_map = {scene["beat_id"]: scene for scene in group_scenes}
-                beat_map = {beat["id"]: beat for beat in beats}
-                motion_types = [
-                    "push-in", "pan-left", "reframe", "pull-out",
-                    "pan-right", "layer-reveal",
-                ]
-                planned_scenes = []
-                for group_index, group in enumerate(planning_groups):
-                    template = group_scene_map[group["id"]]
-                    for member_index, beat_id in enumerate(group["source_beat_ids"]):
-                        beat = beat_map[beat_id]
-                        scene = json.loads(json.dumps(template))
-                        scene["beat_id"] = beat_id
-                        caption = " ".join(
-                            str(beat["text"]).split()[:6]
-                        ).rstrip(".,;:!?")
-                        scene["visual_caption"] = caption
-                        motion = scene.setdefault("motion", {})
-                        if member_index == 1:
-                            current_type = motion.get("type", "push-in")
-                            try:
-                                motion_index = motion_types.index(current_type) + 1
-                            except ValueError:
-                                motion_index = group_index + 1
-                            motion["type"] = motion_types[motion_index % len(motion_types)]
-                            motion["transition"] = "cut"
-                            motion["audio_cue"] = "none"
-                        motion["emphasis"] = caption
-
-                        # Layer timings authored for a paired planning beat must be
-                        # clamped inside the shorter authoritative beat before render.
-                        beat_duration = max(0.05, float(beat["duration"]))
-                        for layer in scene.get("secondary_assets", []):
-                            start_offset = max(
-                                0.0, min(
-                                    float(layer.get("start_offset", 0.0)),
-                                    max(0.0, beat_duration - 0.01),
-                                )
-                            )
-                            remaining = max(0.01, beat_duration - start_offset)
-                            layer["start_offset"] = round(start_offset, 6)
-                            layer["duration"] = round(
-                                min(
-                                    max(0.01, float(layer.get("duration", remaining))),
-                                    remaining,
+                    transitions = ["cut", "match-cut", "paper-wipe", "object-transition"]
+                    roles = ["CONTEXT", "CAUSE_EFFECT", "CONTRAST", "REVEAL"]
+                    planned_scenes = []
+                    for index, beat in enumerate(beats):
+                        beat_tokens = editorial_tokens(beat["text"])
+                        scores = [
+                            len(beat_tokens & tokens) * 100
+                            - ((template_index - index) % len(previous_scenes))
+                            for template_index, tokens in enumerate(template_tokens)
+                        ]
+                        template = previous_scenes[max(range(len(scores)), key=scores.__getitem__)]
+                        spoken_words = str(beat["text"]).split()
+                        caption = " ".join(spoken_words[:6]).rstrip(".,;:!?")
+                        number_match = re.search(r"\b\d+(?:\.\d+)?\b", beat["text"])
+                        annotation = {"kind": "none"}
+                        if number_match:
+                            annotation = {
+                                "kind": "number",
+                                "text": number_match.group(0),
+                                "start_offset": 0.08,
+                                "duration": min(1.1, max(0.1, float(beat["duration"]) - 0.1)),
+                                "position": "center",
+                                "color_token": "golide-gold",
+                            }
+                        planned_scenes.append({
+                            "beat_id": beat["id"],
+                            "asset_key": template["asset_key"],
+                            "visual_role": template.get("visual_role", roles[index % len(roles)]),
+                            "visual_caption": caption,
+                            "visual_prompt": template.get("visual_prompt", ""),
+                            "motion": {
+                                "type": motion_types[index % len(motion_types)],
+                                "intensity": "strong" if index % 5 == 0 else "medium",
+                                "transition": transitions[index % len(transitions)],
+                                "easing": "ease-in-out",
+                                "emphasis": caption,
+                                "audio_cue": "impact" if index % 9 == 0 else (
+                                    "soft-trace" if index % 3 == 0 else "none"
                                 ),
-                                6,
-                            )
-                        planned_scenes.append(scene)
+                                "annotation": annotation,
+                            },
+                            "secondary_assets": template.get("secondary_assets", []),
+                            "subject_bounds": template.get("subject_bounds", []),
+                        })
+                elif prior_storyboard_failure:
+                    # A prior paid planner response already failed to parse. Recover locally
+                    # from checkpointed narration beats rather than buying the same text stage again.
+                    planned_scenes = self._build_recovery_storyboard(beats, primary_limit)
+                else:
+                    # New production: plan the full edit before the first image purchase.
+                    # The authoritative caption beats are intentionally merged in pairs for
+                    # the paid planning call. A long-form episode can contain ~100 three-second
+                    # beats; asking the model to repeat the full nested scene schema for every
+                    # beat made the structured JSON hit the output ceiling and truncate.
+                    # Pair planning cuts that payload roughly in half while preserving the
+                    # final one-scene-per-authoritative-beat contract after local expansion.
+                    planning_groups = []
+                    for offset in range(0, len(beats), 2):
+                        members = beats[offset:offset + 2]
+                        planning_groups.append({
+                            "id": f"plan-{offset // 2:03d}",
+                            "source_beat_ids": [member["id"] for member in members],
+                            "start": members[0]["start"],
+                            "end": members[-1]["end"],
+                            "duration": round(
+                                float(members[-1]["end"]) - float(members[0]["start"]), 6
+                            ),
+                            "text": " ".join(str(member["text"]) for member in members),
+                        })
+                    compact_beats = [{
+                        "id": group["id"],
+                        "start": group["start"],
+                        "end": group["end"],
+                        "duration": group["duration"],
+                        "text": group["text"],
+                    } for group in planning_groups]
+                    planning_input = json.dumps({
+                        "format": spec["format"],
+                        "brief": spec["brief"],
+                        "narration": script,
+                        "research": research,
+                        "editorial_beats": compact_beats,
+                        "primary_asset_limit": primary_limit,
+                        "minimum_unique_primary_assets": minimum_unique,
+                        "minimum_layered_scene_ratio": minimum_layered_ratio,
+                    }, separators=(",", ":"))
+                    storyboard_output_tokens = 9000
+                    self._reserve(
+                        spec, text_model,
+                        Usage(
+                            input_tokens=max(1, len(planning_input) // 4),
+                            output_tokens=storyboard_output_tokens,
+                        ),
+                        stage="storyboard-authoritative-v5",
+                    )
+                    output = text.generate_json(
+                        """Plan a premium G$LIDE science/technology explanation edit. Return exactly one scene for every supplied planning beat_id and never change narration timing. Each planning beat represents one or two final authoritative beats, so NEVER reuse the same primary asset_key on adjacent planning beats. Build a deliberate Premiere-Pro/After-Effects-like visual language using the available motion grammar: multi-layer composition, 2.5D-feeling parallax through foreground/detail layers, camera push/pull/pan/reframe, diagram-like reveals, tracked labels or numbers, kinetic emphasis, object/match transitions, depth, restrained technical HUD/data overlays, and blue/gold paper-cut compositing. Do not use an effect merely because it exists; each motion, layer and SFX cue must explain what the narrator is saying.
 
-                self._record_text(production_id, "storyboard-authoritative-v5", output)
+    Use the smallest paid image set that still looks genuinely varied. Respect the supplied primary asset limit. Meet or exceed the supplied minimum unique primary assets. No primary asset may dominate the episode. Reuse an asset only when the viewer is intentionally returning to the same concept, and change framing/layers to show progression. At least the supplied minimum layered-scene ratio must use secondary assets. Reuse secondary detail/HUD assets when sensible rather than generating needless images.
 
-            planned = {scene["beat_id"]: scene for scene in planned_scenes}
-            expected = {beat["id"] for beat in beats}
-            if len(planned) != len(planned_scenes) or set(planned) != expected:
-                raise RuntimeError("storyboard must contain every editorial beat exactly once")
+    Keep the structured response compact: visual_caption and motion emphasis at six words or fewer; each visual_prompt at thirty words or fewer; no prose explanations outside schema fields. Sound cues must correspond to visible actions: soft-trace for diagram/data movement, tick for numbers/UI, paper/swipe for directional reveals, impact only for rare major reveals. Keep many beats without SFX so sound has hierarchy. Use hard cuts often; reserve paper-wipe, match-cut and object-transition for motivated transitions. Use annotations sparingly. Visual prompts must describe the actual explanatory image to generate, not editing instructions or text-heavy title cards. Favor diagrams, cutaways, mechanisms, scale comparisons, maps/data or object relationships over generic decorative art. Never request readable paragraphs in generated images.""",
+                        planning_input,
+                        STORYBOARD_SCHEMA,
+                        max_output_tokens=storyboard_output_tokens,
+                    )
+                    group_scenes = output.value["scenes"]
+                    expected_group_ids = {group["id"] for group in planning_groups}
+                    planned_group_ids = {scene["beat_id"] for scene in group_scenes}
+                    if (
+                        len(planned_group_ids) != len(group_scenes)
+                        or planned_group_ids != expected_group_ids
+                    ):
+                        raise RuntimeError(
+                            "compact storyboard must contain every planning beat exactly once"
+                        )
 
-            primary_keys = {scene["asset_key"] for scene in planned_scenes}
-            if len(primary_keys) > primary_limit:
-                raise RuntimeError(
-                    f"storyboard requested {len(primary_keys)} primary assets; limit is {primary_limit}"
+                    # If the model reuses one asset on adjacent planning beats, repair the
+                    # sequence locally from its already-approved asset catalog instead of
+                    # repeating the paid planning request.
+                    asset_templates = {}
+                    for scene in group_scenes:
+                        asset_templates.setdefault(scene["asset_key"], scene)
+
+                    def compact_tokens(value: str) -> set[str]:
+                        return {
+                            token for token in re.findall(r"[a-z0-9]+", value.lower())
+                            if len(token) > 2
+                        }
+
+                    for index in range(1, len(group_scenes)):
+                        current = group_scenes[index]
+                        previous = group_scenes[index - 1]
+                        if current["asset_key"] != previous["asset_key"]:
+                            continue
+                        candidates = [
+                            template for key, template in asset_templates.items()
+                            if key != previous["asset_key"]
+                        ]
+                        if not candidates:
+                            continue
+                        beat_tokens = compact_tokens(planning_groups[index]["text"])
+                        replacement = max(
+                            candidates,
+                            key=lambda template: len(
+                                beat_tokens & compact_tokens(
+                                    " ".join([
+                                        str(template.get("visual_caption", "")),
+                                        str(template.get("visual_prompt", "")),
+                                    ])
+                                )
+                            ),
+                        )
+                        current["asset_key"] = replacement["asset_key"]
+                        current["visual_role"] = replacement["visual_role"]
+                        current["visual_prompt"] = replacement["visual_prompt"]
+                        current["secondary_assets"] = json.loads(json.dumps(
+                            replacement.get("secondary_assets", [])
+                        ))
+                        current["subject_bounds"] = json.loads(json.dumps(
+                            replacement.get("subject_bounds", [])
+                        ))
+
+                    # Expand each compact planning scene back onto the original authoritative
+                    # narration beats. Two beats may intentionally share one explanatory
+                    # asset, matching the policy's maximum consecutive reuse of two.
+                    group_scene_map = {scene["beat_id"]: scene for scene in group_scenes}
+                    beat_map = {beat["id"]: beat for beat in beats}
+                    motion_types = [
+                        "push-in", "pan-left", "reframe", "pull-out",
+                        "pan-right", "layer-reveal",
+                    ]
+                    planned_scenes = []
+                    for group_index, group in enumerate(planning_groups):
+                        template = group_scene_map[group["id"]]
+                        for member_index, beat_id in enumerate(group["source_beat_ids"]):
+                            beat = beat_map[beat_id]
+                            scene = json.loads(json.dumps(template))
+                            scene["beat_id"] = beat_id
+                            caption = " ".join(
+                                str(beat["text"]).split()[:6]
+                            ).rstrip(".,;:!?")
+                            scene["visual_caption"] = caption
+                            motion = scene.setdefault("motion", {})
+                            if member_index == 1:
+                                current_type = motion.get("type", "push-in")
+                                try:
+                                    motion_index = motion_types.index(current_type) + 1
+                                except ValueError:
+                                    motion_index = group_index + 1
+                                motion["type"] = motion_types[motion_index % len(motion_types)]
+                                motion["transition"] = "cut"
+                                motion["audio_cue"] = "none"
+                            motion["emphasis"] = caption
+
+                            # Layer timings authored for a paired planning beat must be
+                            # clamped inside the shorter authoritative beat before render.
+                            beat_duration = max(0.05, float(beat["duration"]))
+                            for layer in scene.get("secondary_assets", []):
+                                start_offset = max(
+                                    0.0, min(
+                                        float(layer.get("start_offset", 0.0)),
+                                        max(0.0, beat_duration - 0.01),
+                                    )
+                                )
+                                remaining = max(0.01, beat_duration - start_offset)
+                                layer["start_offset"] = round(start_offset, 6)
+                                layer["duration"] = round(
+                                    min(
+                                        max(0.01, float(layer.get("duration", remaining))),
+                                        remaining,
+                                    ),
+                                    6,
+                                )
+                            planned_scenes.append(scene)
+
+                    self._record_text(production_id, "storyboard-authoritative-v5", output)
+
+                planned = {scene["beat_id"]: scene for scene in planned_scenes}
+                expected = {beat["id"] for beat in beats}
+                if len(planned) != len(planned_scenes) or set(planned) != expected:
+                    raise RuntimeError("storyboard must contain every editorial beat exactly once")
+
+                primary_keys = {scene["asset_key"] for scene in planned_scenes}
+                if len(primary_keys) > primary_limit:
+                    raise RuntimeError(
+                        f"storyboard requested {len(primary_keys)} primary assets; limit is {primary_limit}"
+                    )
+                if not previous_scenes and len(primary_keys) < minimum_unique:
+                    raise RuntimeError(
+                        f"storyboard has only {len(primary_keys)} unique primary assets; minimum is {minimum_unique}"
+                    )
+                layered_ratio = sum(bool(scene.get("secondary_assets")) for scene in planned_scenes) / len(planned_scenes)
+                if not previous_scenes and layered_ratio < minimum_layered_ratio:
+                    raise RuntimeError(
+                        f"storyboard layered-scene ratio {layered_ratio:.1%} is below {minimum_layered_ratio:.1%}"
+                    )
+
+                requested_asset_keys = set(primary_keys)
+                requested_asset_keys.update(
+                    layer["asset_key"]
+                    for scene in planned_scenes
+                    for layer in scene.get("secondary_assets", [])
                 )
-            if not previous_scenes and len(primary_keys) < minimum_unique:
-                raise RuntimeError(
-                    f"storyboard has only {len(primary_keys)} unique primary assets; minimum is {minimum_unique}"
-                )
-            layered_ratio = sum(bool(scene.get("secondary_assets")) for scene in planned_scenes) / len(planned_scenes)
-            if not previous_scenes and layered_ratio < minimum_layered_ratio:
-                raise RuntimeError(
-                    f"storyboard layered-scene ratio {layered_ratio:.1%} is below {minimum_layered_ratio:.1%}"
+                if previous_scenes and not requested_asset_keys.issubset(asset_inventory):
+                    unknown = sorted(requested_asset_keys - set(asset_inventory))
+                    raise RuntimeError(f"corrective storyboard invented uncached assets: {unknown}")
+
+                merged = []
+                for beat in beats:
+                    scene = planned[beat["id"]]
+                    self._safe_id(scene["asset_key"])
+                    for layer in scene.get("secondary_assets", []):
+                        self._safe_id(layer["asset_key"])
+                    merged.append({
+                        "id": beat["id"],
+                        "asset_key": scene["asset_key"],
+                        "visual_role": scene["visual_role"],
+                        "start": beat["start"],
+                        "end": beat["end"],
+                        "duration": beat["duration"],
+                        "spoken_excerpt": beat["text"],
+                        "visual_caption": scene["visual_caption"],
+                        "visual_prompt": scene["visual_prompt"],
+                        "motion": scene["motion"],
+                        "secondary_assets": scene.get("secondary_assets", []),
+                        "subject_bounds": scene.get("subject_bounds", []),
+                    })
+                storyboard_path.write_text(
+                    json.dumps({
+                        "timing_source": "elevenlabs-normalized-alignment",
+                        "planning_mode": "cached-correction" if previous_scenes else "fresh-premium",
+                        "scenes": merged,
+                    }, indent=2) + "\n",
+                    encoding="utf-8",
                 )
 
-            requested_asset_keys = set(primary_keys)
-            requested_asset_keys.update(
-                layer["asset_key"]
-                for scene in planned_scenes
-                for layer in scene.get("secondary_assets", [])
+            self.runner.run(production_id, "storyboard-authoritative-v5", storyboard_stage)
+            storyboard = json.loads(storyboard_path.read_text(encoding="utf-8"))
+            qa_policy = json.loads(
+                (self.root / "config/qa-policy.json").read_text(encoding="utf-8")
             )
-            if previous_scenes and not requested_asset_keys.issubset(asset_inventory):
-                unknown = sorted(requested_asset_keys - set(asset_inventory))
-                raise RuntimeError(f"corrective storyboard invented uncached assets: {unknown}")
-
-            merged = []
-            for beat in beats:
-                scene = planned[beat["id"]]
-                self._safe_id(scene["asset_key"])
-                for layer in scene.get("secondary_assets", []):
-                    self._safe_id(layer["asset_key"])
-                merged.append({
-                    "id": beat["id"],
-                    "asset_key": scene["asset_key"],
-                    "visual_role": scene["visual_role"],
-                    "start": beat["start"],
-                    "end": beat["end"],
-                    "duration": beat["duration"],
-                    "spoken_excerpt": beat["text"],
-                    "visual_caption": scene["visual_caption"],
-                    "visual_prompt": scene["visual_prompt"],
-                    "motion": scene["motion"],
-                    "secondary_assets": scene.get("secondary_assets", []),
-                    "subject_bounds": scene.get("subject_bounds", []),
-                })
-            storyboard_path.write_text(
+            normalized_storyboard = self._normalize_editorial_intent(
+                storyboard, qa_policy
+            )
+            if normalized_storyboard != storyboard:
+                storyboard = normalized_storyboard
+                storyboard_path.write_text(
+                    json.dumps(storyboard, indent=2) + "\n", encoding="utf-8"
+                )
+            # Editorial structure must pass locally before the first paid image request.
+            # This catches repetitive assets, weak layering, motion spam and missing SFX
+            # while the only sunk cost is the already-checkpointed planning/narration work.
+            editorial_failures, editorial_metrics = check_editorial(
+                storyboard, spec["format"], qa_policy
+            )
+            (work / "storyboard-preflight.json").write_text(
                 json.dumps({
-                    "timing_source": "elevenlabs-normalized-alignment",
-                    "planning_mode": "cached-correction" if previous_scenes else "fresh-premium",
-                    "scenes": merged,
+                    "passed": not editorial_failures,
+                    "failures": editorial_failures,
+                    "metrics": editorial_metrics,
                 }, indent=2) + "\n",
                 encoding="utf-8",
             )
-
-        self.runner.run(production_id, "storyboard-authoritative-v5", storyboard_stage)
-        storyboard = json.loads(storyboard_path.read_text(encoding="utf-8"))
-        qa_policy = json.loads(
-            (self.root / "config/qa-policy.json").read_text(encoding="utf-8")
-        )
-        normalized_storyboard = self._normalize_editorial_intent(
-            storyboard, qa_policy
-        )
-        if normalized_storyboard != storyboard:
-            storyboard = normalized_storyboard
-            storyboard_path.write_text(
-                json.dumps(storyboard, indent=2) + "\n", encoding="utf-8"
-            )
-        # Editorial structure must pass locally before the first paid image request.
-        # This catches repetitive assets, weak layering, motion spam and missing SFX
-        # while the only sunk cost is the already-checkpointed planning/narration work.
-        editorial_failures, editorial_metrics = check_editorial(
-            storyboard, spec["format"], qa_policy
-        )
-        (work / "storyboard-preflight.json").write_text(
-            json.dumps({
-                "passed": not editorial_failures,
-                "failures": editorial_failures,
-                "metrics": editorial_metrics,
-            }, indent=2) + "\n",
-            encoding="utf-8",
-        )
-        if editorial_failures:
-            raise RuntimeError(
-                "storyboard failed zero-image-spend editorial preflight: "
-                + "; ".join(editorial_failures)
-            )
-        self._budget(spec)
-
-        support_provider = self.providers.images("support", live=True)
-        hero_provider = self.providers.images("hero", live=True)
-        asset_dir = work / "assets"
-        reference_images = [Path(path) for path in spec.get("avatar_reference_images", [])]
-        size = self.providers.config["assets"][f"{spec['format']}_size"]
-        unique_assets = {}
-        secondary_keys = set()
-        hero_candidates = []
-        for scene in storyboard["scenes"]:
-            unique_assets.setdefault(scene["asset_key"], scene)
-            if scene.get("visual_role") in {"REVEAL", "CONTRAST", "CAUSE_EFFECT"}:
-                hero_candidates.append(scene["asset_key"])
-            for layer in scene.get("secondary_assets", []):
-                secondary_keys.add(layer["asset_key"])
-                unique_assets.setdefault(layer["asset_key"], layer)
-        secondary_limit = 4 if spec["format"] == "short" else 12
-        if len(secondary_keys) > secondary_limit:
-            raise RuntimeError(
-                f"editorial plan requests {len(secondary_keys)} secondary assets; limit is {secondary_limit}"
-            )
-        hero_limit = int(self.providers.config["assets"]["hero_limits"][spec["format"]])
-        hero_keys = set(dict.fromkeys(hero_candidates[:hero_limit]))
-        # Preflight the complete image batch before generating the first image.
-        image_batch = []
-        for asset_key in unique_assets:
-            target = asset_dir / f"{asset_key}.png"
-            if target.exists():
-                # Checkpointed paid media is never charged a second time in preflight.
-                continue
-            is_hero = asset_key in hero_keys and asset_key not in secondary_keys
-            image_batch.append((
-                hero_image_cost_model if is_hero else support_image_cost_model,
-                Usage(images=1),
-            ))
-        # Reserve room for the one thumbnail as part of the same visual-spend plan.
-        # The later thumbnail stage still performs its own exact reservation; this
-        # batch check only guarantees we do not knowingly consume the asset budget
-        # and discover at the end that the release thumbnail cannot be finished.
-        thumbnail_checkpoint = work / "thumbnail.png"
-        if not thumbnail_checkpoint.exists():
-            image_batch.append((thumbnail_cost_model, Usage(images=1)))
-        self.budget.reserve_batch(
-            spec, image_batch, provider="openai", stage="planned-visual-and-thumbnail-batch"
-        )
-        for asset_key, scene in unique_assets.items():
-            target = asset_dir / f"{asset_key}.png"
-            is_hero = asset_key in hero_keys and asset_key not in secondary_keys
-            asset_provider = hero_provider if is_hero else support_provider
-            asset_cost_model = hero_image_cost_model if is_hero else support_image_cost_model
-
-            def asset_stage(
-                scene=scene,
-                target=target,
-                asset_provider=asset_provider,
-                asset_cost_model=asset_cost_model,
-            ):
-                self._require_absent(target, f"asset:{scene['asset_key']}")
-                self._reserve(
-                    spec, asset_cost_model, Usage(images=1),
-                    stage=f"asset:{scene['asset_key']}",
+            if editorial_failures:
+                raise RuntimeError(
+                    "storyboard failed zero-image-spend editorial preflight: "
+                    + "; ".join(editorial_failures)
                 )
-                output = asset_provider.create_image(
-                    scene["visual_prompt"], target, size, reference_images or None
-                )
-                self._record_image(
-                    production_id, f"asset:{scene['asset_key']}", asset_cost_model, output
-                )
-
-            self.runner.run(production_id, f"asset:{asset_key}", asset_stage)
             self._budget(spec)
 
-        music = MusicRegistry(self.root / "config/music-registry.json").select(spec["music"]["mood"], spec["music"].get("track_id"))
-        manifest_path = work / "render-manifest.json"
-        manifest = {
-            "id": production_id, "title": spec.get("title", spec["concept"].get("promise", production_id)),
-            "format": spec["format"], "max_cost_usd": spec["max_cost_usd"], "narration": str(narration),
-            "music": str(music.path), "audio": {"music_source": music.source_url, "music_license": music.license, "music_volume": 0.03, "duck_under_voice": True},
-            "captions": {"spoken_srt": str(spoken_srt)},
-            "scenes": [{
-                "id": scene["id"],
-                "media": str(asset_dir / f"{scene['asset_key']}.png"),
-                "start": scene["start"],
-                "end": scene["end"],
-                "duration": scene["duration"],
-                "caption": scene["visual_caption"],
-                "visual_role": scene["visual_role"],
-                "motion": scene["motion"],
-                "annotation": self._fit_annotation(
-                    scene["motion"].get("annotation"), scene["duration"]
-                ),
-                "layers": [{
-                    "media": str(asset_dir / f"{layer['asset_key']}.png"),
-                    "role": layer["role"],
-                    "position": layer["position"],
-                    "scale": layer["scale"],
-                    "entrance": layer["entrance"],
-                    "start_offset": layer["start_offset"],
-                    "duration": layer["duration"],
-                } for layer in scene.get("secondary_assets", [])],
-            } for scene in storyboard["scenes"]],
-            "publish": {"approved": True},
-        }
-        scene_total = sum(float(scene["duration"]) for scene in manifest["scenes"])
-        if scene_total <= 0:
-            raise RuntimeError("render manifest has no positive scene duration")
-        manifest_tolerance = max(0.75, narration_seconds * 0.01)
-        if abs(scene_total - narration_seconds) > manifest_tolerance:
-            timeline_scale = narration_seconds / scene_total
-            cursor = 0.0
-            for scene in manifest["scenes"]:
-                duration = float(scene["duration"]) * timeline_scale
-                scene["start"] = round(cursor, 6)
-                cursor += duration
-                scene["end"] = round(cursor, 6)
-                scene["duration"] = round(duration, 6)
-        manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
-        video_path = self.root / "build" / production_id / "video.mp4"
-        self.runner.run(
-            production_id, "render-full-duration-v11",
-            lambda: render(load_project(manifest_path), self.root), attempts=1,
-        )
-        rendered_seconds = self._duration(video_path)
-        duration_tolerance = max(0.75, narration_seconds * 0.01)
-        if abs(rendered_seconds - narration_seconds) > duration_tolerance:
-            raise RuntimeError(
-                f"render duration {rendered_seconds:.2f}s does not match narration "
-                f"{narration_seconds:.2f}s within {duration_tolerance:.2f}s"
+            support_provider = self.providers.images("support", live=True)
+            hero_provider = self.providers.images("hero", live=True)
+            asset_dir = work / "assets"
+            reference_images = [Path(path) for path in spec.get("avatar_reference_images", [])]
+            size = self.providers.config["assets"][f"{spec['format']}_size"]
+            unique_assets = {}
+            secondary_keys = set()
+            hero_candidates = []
+            for scene in storyboard["scenes"]:
+                unique_assets.setdefault(scene["asset_key"], scene)
+                if scene.get("visual_role") in {"REVEAL", "CONTRAST", "CAUSE_EFFECT"}:
+                    hero_candidates.append(scene["asset_key"])
+                for layer in scene.get("secondary_assets", []):
+                    secondary_keys.add(layer["asset_key"])
+                    unique_assets.setdefault(layer["asset_key"], layer)
+            secondary_limit = 4 if spec["format"] == "short" else 12
+            if len(secondary_keys) > secondary_limit:
+                raise RuntimeError(
+                    f"editorial plan requests {len(secondary_keys)} secondary assets; limit is {secondary_limit}"
+                )
+            hero_limit = int(self.providers.config["assets"]["hero_limits"][spec["format"]])
+            hero_keys = set(dict.fromkeys(hero_candidates[:hero_limit]))
+            # Preflight the complete image batch before generating the first image.
+            image_batch = []
+            for asset_key in unique_assets:
+                target = asset_dir / f"{asset_key}.png"
+                if target.exists():
+                    # Checkpointed paid media is never charged a second time in preflight.
+                    continue
+                is_hero = asset_key in hero_keys and asset_key not in secondary_keys
+                image_batch.append((
+                    hero_image_cost_model if is_hero else support_image_cost_model,
+                    Usage(images=1),
+                ))
+            # Reserve room for the one thumbnail as part of the same visual-spend plan.
+            # The later thumbnail stage still performs its own exact reservation; this
+            # batch check only guarantees we do not knowingly consume the asset budget
+            # and discover at the end that the release thumbnail cannot be finished.
+            thumbnail_checkpoint = work / "thumbnail.png"
+            if not thumbnail_checkpoint.exists():
+                image_batch.append((thumbnail_cost_model, Usage(images=1)))
+            self.budget.reserve_batch(
+                spec, image_batch, provider="openai", stage="planned-visual-and-thumbnail-batch"
             )
+            for asset_key, scene in unique_assets.items():
+                target = asset_dir / f"{asset_key}.png"
+                is_hero = asset_key in hero_keys and asset_key not in secondary_keys
+                asset_provider = hero_provider if is_hero else support_provider
+                asset_cost_model = hero_image_cost_model if is_hero else support_image_cost_model
+
+                def asset_stage(
+                    scene=scene,
+                    target=target,
+                    asset_provider=asset_provider,
+                    asset_cost_model=asset_cost_model,
+                ):
+                    self._require_absent(target, f"asset:{scene['asset_key']}")
+                    self._reserve(
+                        spec, asset_cost_model, Usage(images=1),
+                        stage=f"asset:{scene['asset_key']}",
+                    )
+                    output = asset_provider.create_image(
+                        scene["visual_prompt"], target, size, reference_images or None
+                    )
+                    self._record_image(
+                        production_id, f"asset:{scene['asset_key']}", asset_cost_model, output
+                    )
+
+                self.runner.run(production_id, f"asset:{asset_key}", asset_stage)
+                self._budget(spec)
+
+            music = MusicRegistry(self.root / "config/music-registry.json").select(spec["music"]["mood"], spec["music"].get("track_id"))
+            manifest_path = work / "render-manifest.json"
+            manifest = {
+                "id": production_id, "title": spec.get("title", spec["concept"].get("promise", production_id)),
+                "format": spec["format"], "max_cost_usd": spec["max_cost_usd"], "narration": str(narration),
+                "music": str(music.path), "audio": {"music_source": music.source_url, "music_license": music.license, "music_volume": 0.03, "duck_under_voice": True},
+                "captions": {"spoken_srt": str(spoken_srt)},
+                "scenes": [{
+                    "id": scene["id"],
+                    "media": str(asset_dir / f"{scene['asset_key']}.png"),
+                    "start": scene["start"],
+                    "end": scene["end"],
+                    "duration": scene["duration"],
+                    "caption": scene["visual_caption"],
+                    "visual_role": scene["visual_role"],
+                    "motion": scene["motion"],
+                    "annotation": self._fit_annotation(
+                        scene["motion"].get("annotation"), scene["duration"]
+                    ),
+                    "layers": [{
+                        "media": str(asset_dir / f"{layer['asset_key']}.png"),
+                        "role": layer["role"],
+                        "position": layer["position"],
+                        "scale": layer["scale"],
+                        "entrance": layer["entrance"],
+                        "start_offset": layer["start_offset"],
+                        "duration": layer["duration"],
+                    } for layer in scene.get("secondary_assets", [])],
+                } for scene in storyboard["scenes"]],
+                "publish": {"approved": True},
+            }
+            scene_total = sum(float(scene["duration"]) for scene in manifest["scenes"])
+            if scene_total <= 0:
+                raise RuntimeError("render manifest has no positive scene duration")
+            manifest_tolerance = max(0.75, narration_seconds * 0.01)
+            if abs(scene_total - narration_seconds) > manifest_tolerance:
+                timeline_scale = narration_seconds / scene_total
+                cursor = 0.0
+                for scene in manifest["scenes"]:
+                    duration = float(scene["duration"]) * timeline_scale
+                    scene["start"] = round(cursor, 6)
+                    cursor += duration
+                    scene["end"] = round(cursor, 6)
+                    scene["duration"] = round(duration, 6)
+            manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+            video_path = self.root / "build" / production_id / "video.mp4"
+            self.runner.run(
+                production_id, "render-full-duration-v11",
+                lambda: render(load_project(manifest_path), self.root), attempts=1,
+            )
+            rendered_seconds = self._duration(video_path)
+            duration_tolerance = max(0.75, narration_seconds * 0.01)
+            if abs(rendered_seconds - narration_seconds) > duration_tolerance:
+                raise RuntimeError(
+                    f"render duration {rendered_seconds:.2f}s does not match narration "
+                    f"{narration_seconds:.2f}s within {duration_tolerance:.2f}s"
+                )
 
         metadata_path = work / "upload-metadata.json"
         policy = load_metadata_policy(self.root / "config/youtube-metadata-policy.json")
@@ -1137,13 +1187,16 @@ Keep the structured response compact: visual_caption and motion emphasis at six 
                 spec, thumbnail_cost_model, Usage(images=1), stage="thumbnail"
             )
             prompt = (
-                "Original high-CTR G$LIDE paper-cut explainer thumbnail in 16:9 composition. "
-                "Use the consistent unrealistic paper-cut Esiah avatar with a topic-specific expression, "
-                "one clear topic object or consequence, deep navy, neon blue, warm ivory and G$LIDE gold. "
-                "No words, letters, captions, labels, logos or typography anywhere in the image. "
-                f"Topic context: {metadata['title']}"
+                "Cinematic 16:9 YouTube thumbnail in the locked GOLIDE Black style. Pure black "
+                "deep-space background with a faint starfield. One single subject that stands "
+                "for the topic, drawn as luminous fine-line illustration or a cinematic real object, "
+                "with exactly one element glowing warm gold or soft cyan. Strong contrast, readable "
+                "at small size, one focal point, generous empty black space on one side. If a person "
+                "or hand appears they are dark-skinned/Black. No words, letters, numbers, captions, "
+                "labels, logos or user-interface elements anywhere in the image. "
+                f"Topic: {metadata['title']}"
             )
-            output = thumbnail_provider.create_thumbnail(prompt, raw_thumbnail, self.providers.config["thumbnail"]["size"], reference_images or None)
+            output = thumbnail_provider.create_thumbnail(prompt, raw_thumbnail, self.providers.config["thumbnail"]["size"], None)
             normalize_thumbnail(raw_thumbnail, thumbnail)
             self._record_image(production_id, "thumbnail", thumbnail_cost_model, output)
         self.runner.run(production_id, "thumbnail", thumbnail_stage)
@@ -1163,12 +1216,12 @@ Keep the structured response compact: visual_caption and motion emphasis at six 
         params_path.write_text(json.dumps(spec.get("generation_parameters", {}), indent=2) + "\n", encoding="utf-8")
         qa_path = work / "qa-report.json"
         def qa_stage():
-            result = QualityRunner(self.root / "config/qa-policy.json").run(video_path, spec["format"], storyboard, [script, metadata["title"], metadata["description"]], qa_path, thumbnail)
+            result = QualityRunner(self.root / "config/qa-policy.json").run(video_path, spec["format"], storyboard, [script, metadata["title"], metadata["description"]], qa_path, thumbnail, editorial=not vector_mode)
             if not result.passed:
                 raise RuntimeError("automatic QA failed: " + "; ".join(result.failures))
             return result
         qa_result = self.runner.run(production_id, "qa", qa_stage, attempts=1)
-        qa = qa_result or QualityRunner(self.root / "config/qa-policy.json").run(video_path, spec["format"], storyboard, [script, metadata["title"], metadata["description"]], None, thumbnail)
+        qa = qa_result or QualityRunner(self.root / "config/qa-policy.json").run(video_path, spec["format"], storyboard, [script, metadata["title"], metadata["description"]], None, thumbnail, editorial=not vector_mode)
         if not qa.passed:
             raise RuntimeError("automatic QA failed: " + "; ".join(qa.failures))
 

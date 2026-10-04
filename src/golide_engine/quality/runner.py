@@ -24,12 +24,17 @@ class QualityRunner:
     def __init__(self, policy_path: str | Path):
         self.policy = json.loads(Path(policy_path).read_text(encoding="utf-8"))
 
-    def run(self, video: Path, format_name: str, storyboard: dict, texts: list[str], output: Path | None = None, thumbnail: Path | None = None) -> QualityReport:
+    def run(self, video: Path, format_name: str, storyboard: dict, texts: list[str], output: Path | None = None, thumbnail: Path | None = None, editorial: bool = True) -> QualityReport:
         failures = check_audio(video, self.policy)
         failures.extend(check_video(video, format_name, self.policy))
-        failures.extend(check_safe_zones(storyboard, self.policy))
-        editorial_failures, editorial_metrics = check_editorial(storyboard, format_name, self.policy)
-        failures.extend(editorial_failures)
+        if editorial:
+            # Still-image storyboards only; vector videos are built from a fixed,
+            # pre-tested visual vocabulary and have no assets or safe-zone boxes.
+            failures.extend(check_safe_zones(storyboard, self.policy))
+            editorial_failures, editorial_metrics = check_editorial(storyboard, format_name, self.policy)
+            failures.extend(editorial_failures)
+        else:
+            editorial_metrics = {"beats": len(storyboard.get("scenes", [])), "renderer": "vector"}
         if thumbnail:
             failures.extend(check_thumbnail(thumbnail))
         failures.extend(check_spelling(texts, self.policy))

@@ -85,18 +85,18 @@ jobs:
         if: steps.automation.outputs.enabled == 'true'
         with:
           python-version: "3.12"
-      - name: Ensure FFmpeg and GOLIDE fonts
+      - name: Ensure FFmpeg, fonts and Cairo (vector renderer)
         if: steps.automation.outputs.enabled == 'true'
         run: |
-          if command -v ffmpeg >/dev/null && fc-match DejaVuSans >/dev/null; then
+          if command -v ffmpeg >/dev/null && fc-match DejaVuSans >/dev/null && pkg-config --exists cairo; then
             ffmpeg -version | head -1
-            fc-match DejaVuSans | head -1
+            pkg-config --modversion cairo
           else
             sudo find /etc/apt/sources.list.d -maxdepth 1 -type f -iname '*microsoft*' -exec mv {} {}.disabled \;
             sudo apt-get update
-            sudo apt-get install -y ffmpeg fonts-dejavu-core
+            sudo apt-get install -y ffmpeg fonts-dejavu-core libcairo2-dev pkg-config
           fi
-      - run: python -m pip install -e '.[production]'
+      - run: python -m pip install -e '.[production,video]'
         if: steps.automation.outputs.enabled == 'true'
       - name: Produce, upload privately, then schedule
         if: steps.automation.outputs.enabled == 'true'

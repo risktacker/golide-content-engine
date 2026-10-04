@@ -1,5 +1,7 @@
 """Locked 2026-10-04: post-a is a trend post, post-b is a product post."""
 
+import unittest
+
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -23,7 +25,7 @@ class FakeBridge:
         return {"status": "scheduled"}
 
 
-def _automation(monkeypatch):
+def _automation():
     auto = StaticAutomation.__new__(StaticAutomation)
     auto.root = Path(".").resolve()
     auto.bridge = FakeBridge()
@@ -54,21 +56,28 @@ def _automation(monkeypatch):
     return auto, seen
 
 
-def test_post_a_has_no_product_and_post_b_always_has_one(monkeypatch):
-    auto, seen = _automation(monkeypatch)
-    sunday_evening = datetime(2026, 10, 4, 18, 0, tzinfo=timezone.utc)
-    results = auto.run_due(sunday_evening)
-    assert [r["slot"] for r in results] == ["post-a", "post-b"]
-    assert seen["post-a"] is None
-    assert seen["post-b"] is not None
-    post_a, post_b = auto.bridge.created
-    assert post_a["resolved_product_id"] == ""
-    assert post_b["resolved_product_id"] == seen["post-b"].id
-    assert seen["post-b"].marketplace_url in post_b["variants"][0]["body"]
+class StaticPostSplitTests(unittest.TestCase):
+    def test_post_a_has_no_product_and_post_b_always_has_one(self):
+        auto, seen = _automation()
+        sunday_evening = datetime(2026, 10, 4, 18, 0, tzinfo=timezone.utc)
+        results = auto.run_due(sunday_evening)
+        self.assertEqual([r["slot"] for r in results], ["post-a", "post-b"])
+        self.assertIsNone(seen["post-a"])
+        self.assertIsNotNone(seen["post-b"])
+        post_a, post_b = auto.bridge.created
+        self.assertEqual(post_a["resolved_product_id"], "")
+        self.assertEqual(post_b["resolved_product_id"], seen["post-b"].id)
+        self.assertIn(seen["post-b"].marketplace_url, post_b["variants"][0]["body"])
+
+    def test_rulebook_differs_per_slot(self):
+        a = static_post_instructions("post-a")
+        b = static_post_instructions("post-b")
+        self.assertIn("TREND POST", a)
+        self.assertIn("Use web search", a)
+        self.assertIn("Do not mention or promote", a)
+        self.assertIn("PRODUCT POST", b)
+        self.assertIn("subject of this post", b)
 
 
-def test_rulebook_differs_per_slot():
-    a = static_post_instructions("post-a")
-    b = static_post_instructions("post-b")
-    assert "TREND POST" in a and "Use web search" in a and "Do not mention or promote" in a
-    assert "PRODUCT POST" in b and "subject of this post" in b
+if __name__ == "__main__":
+    unittest.main()
