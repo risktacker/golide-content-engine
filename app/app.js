@@ -513,7 +513,12 @@ async function loadConnections() {
     const data = await api("/api/connections");
     connections = data.connections || [];
   } catch {
-    connections = [];
+    // Never claim credentials are missing just because the request failed.
+    $("#connection-grid").innerHTML =
+      '<p class="micro">Couldn\'t load connections. <a href="#connections" id="retry-connections">Try again</a></p>';
+    const retry = $("#retry-connections");
+    if (retry) retry.onclick = (event) => { event.preventDefault(); loadConnections(); };
+    return;
   }
 
   const byPlatform = Object.fromEntries(connections.map((item) => [item.platform, item]));
@@ -554,8 +559,11 @@ async function boot() {
   } else if (VIEWS.includes(startHash)) {
     switchView(startHash);
   }
-  await Promise.all([loadHealth(), loadPolicy(), loadAutomationControl()]);
-  await Promise.all([loadOverview(), loadProductionJobs(), loadConnections()]);
+  // Load everything at once; the page you are on fills in as soon as its own data arrives.
+  await Promise.allSettled([
+    loadHealth(), loadPolicy(), loadAutomationControl(),
+    loadOverview(), loadProductionJobs(), loadConnections(),
+  ]);
   renderBudget();
 
   // Links from the "record needed" email land on the exact job card.

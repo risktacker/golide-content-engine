@@ -77,9 +77,25 @@ function safeInt(v,d=0){const n=Number.parseInt(v,10);return Number.isFinite(n)?
 function bool(v){return Boolean(v);}
 function hasAll(env,names){return names.every((name)=>safeText(env[name]));}
 
+// Each Studio page load makes several API calls; checking the golidee.com
+// session once per minute per browser keeps the dashboard fast.
+const SESSION_CACHE=new Map();
 async function adminSession(request){
   const cookie=request.headers.get("cookie")||"";
   if(!cookie) return null;
+  const digest=Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(cookie))))
+    .map((b)=>b.toString(16).padStart(2,"0")).join("");
+  const cached=SESSION_CACHE.get(digest);
+  if(cached&&cached.until>Date.now()) return cached.user;
+  const user=await fetchAdminSession(cookie);
+  if(user){
+    if(SESSION_CACHE.size>200) SESSION_CACHE.clear();
+    SESSION_CACHE.set(digest,{user,until:Date.now()+60*1000});
+  }
+  return user;
+}
+
+async function fetchAdminSession(cookie){
   try{
     const response=await fetch("https://golidee.com/api/auth/session",{headers:{accept:"application/json",cookie,"user-agent":"GOLIDE-Content-Engine/2.0"}});
     if(!response.ok) return null;
