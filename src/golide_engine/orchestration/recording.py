@@ -29,6 +29,7 @@ def check_recording_length(format_name: str, seconds: float) -> None:
         raise RecordingLengthError(f"unknown video format '{format_name}'")
     low, high = window
     label = "Short" if format_name == "short" else "Long video"
+    seconds = float(round(seconds))  # same whole-second rule as the Studio upload form
     if seconds < low:
         raise RecordingLengthError(
             f"{label} recording is {_clock(seconds)}, too short. "

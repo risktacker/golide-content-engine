@@ -316,11 +316,51 @@ function renderJobList() {
   });
 }
 
+// Locked 2026-10-04: recordings outside these windows are refused before upload.
+const RECORDING_WINDOWS = { short: [30, 90], long: [210, 300] };
+
+function clock(seconds) {
+  const whole = Math.round(seconds);
+  return Math.floor(whole / 60) + ":" + String(whole % 60).padStart(2, "0");
+}
+
+function audioDuration(file) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const audio = new Audio();
+    audio.preload = "metadata";
+    audio.onloadedmetadata = () => {
+      URL.revokeObjectURL(url);
+      if (Number.isFinite(audio.duration) && audio.duration > 0) resolve(audio.duration);
+      else reject(new Error("Could not read the length of this recording. Try exporting it as MP3 or M4A."));
+    };
+    audio.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("This file could not be read as audio. Try exporting it as MP3 or M4A."));
+    };
+    audio.src = url;
+  });
+}
+
+function recordingLengthProblem(format, seconds) {
+  const key = format === "long" ? "long" : "short";
+  const [low, high] = RECORDING_WINDOWS[key];
+  const label = key === "long" ? "Long video" : "Short";
+  seconds = Math.round(seconds);
+  if (seconds < low) return label + " recording is " + clock(seconds) + ", too short. Allowed: " + clock(low) + " to " + clock(high) + ". Please re-record and upload again.";
+  if (seconds > high) return label + " recording is " + clock(seconds) + ", too long. Allowed: " + clock(low) + " to " + clock(high) + ". Please re-record and upload again.";
+  return "";
+}
+
 function actionCard(job) {
   const script = job.script || "The engine is finishing the approved script.";
-  return '<article class="action-card"><div><span class="kicker gold">VOICE NEEDED · ' +
+  const windowRange = RECORDING_WINDOWS[job.format === "long" ? "long" : "short"];
+  const rejected = job.stage === "recording-rejected" && job.error
+    ? '<p class="voice-rejected">Last upload was rejected: ' + esc(job.error) + '</p>'
+    : "";
+  return '<article class="action-card" id="job-' + escAttr(job.job_id) + '"><div><span class="kicker gold">VOICE NEEDED · ' +
     esc(String(job.format || "video").toUpperCase()) + '</span><h4>' +
-    esc(job.title || "Script ready") + '</h4><p>The topic was selected from current demand and researched by the engine. Record this approved script in your own voice; the pipeline resumes automatically after upload.</p>' +
+    esc(job.title || "Script ready") + '</h4><p>The topic was selected from current demand and researched by the engine. Record this script in your own voice (' + clock(windowRange[0]) + ' to ' + clock(windowRange[1]) + '); the pipeline resumes automatically after upload.</p>' + rejected +
     '<div class="script-box">' + esc(script) + '</div></div>' +
     '<div class="action-controls">' +
       '<label class="upload-button">Upload my recording<input class="voice-input" type="file" accept="audio/*" data-job="' + escAttr(job.job_id) + '"></label>' +
@@ -353,7 +393,10 @@ function renderActionQueues() {
   ).join("");
 
   $$(".voice-input").forEach((input) => {
-    input.onchange = () => uploadVoice(input.dataset.job, input.files?.[0]);
+    input.onchange = () => {
+      uploadVoice(input.dataset.job, input.files?.[0]);
+      input.value = "";
+    };
   });
   $$(".copy-script").forEach((button) => {
     button.onclick = async () => {
@@ -388,6 +431,21 @@ async function prepareUpload(file) {
 async function uploadVoice(jobId, file) {
   if (!jobId || !file || uploadCount) return;
   const status = $("#voice-status-" + CSS.escape(jobId));
+  const job = productionJobs.find((item) => item.job_id === jobId);
+  try {
+    if (status) status.textContent = "Checking length...";
+    const seconds = await audioDuration(file);
+    const problem = recordingLengthProblem(job?.format, seconds);
+    if (problem) {
+      if (status) status.textContent = problem;
+      alert(problem);
+      return;
+    }
+  } catch (error) {
+    if (status) status.textContent = error.message;
+    alert(error.message);
+    return;
+  }
   uploadCount += 1;
   if (status) status.textContent = "Uploading " + file.name + "...";
   try {
@@ -484,6 +542,14 @@ async function boot() {
   await Promise.all([loadHealth(), loadPolicy(), loadAutomationControl()]);
   await Promise.all([loadOverview(), loadProductionJobs(), loadConnections()]);
   renderBudget();
+
+  // Links from the "record needed" email land on the exact job card.
+  if (window.location.hash.startsWith("#job-")) {
+    switchView("create");
+    await loadProductionJobs();
+    const card = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+    if (card) card.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 
   const params = new URLSearchParams(window.location.search);
   const legacyX = params.get("x");
