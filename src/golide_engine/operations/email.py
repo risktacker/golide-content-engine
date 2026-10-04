@@ -77,14 +77,27 @@ def build_record_needed(
     return message
 
 
-def send_record_needed(**kwargs) -> bool:
+def build_reconnect_reminder(*, platform: str, days_left: int, account: str = "") -> EmailMessage:
+    name = {"linkedin": "LinkedIn"}.get(platform, platform.title())
+    link = f"{STUDIO_URL}/#connections"
+    when = "today" if days_left <= 0 else ("tomorrow" if days_left == 1 else f"in {days_left} days")
+    message = EmailMessage()
+    message["Subject"] = f"Reconnect {name}: access expires {when}"
+    message.set_content(
+        f"{name}{' (' + account + ')' if account else ''} only allows 60-day access, "
+        f"and it runs out {when}. After that, {name} posts stop until you reconnect.\n\n"
+        f"Takes 20 seconds: open Studio, Connections, Reconnect {name}, Allow.\n\n{link}\n"
+    )
+    return message
+
+
+def _send(message: EmailMessage) -> bool:
     user = os.getenv("GOLIDE_SMTP_USER", "").strip()
     password = os.getenv("GOLIDE_SMTP_APP_PASSWORD", "").strip()
     to = os.getenv("GOLIDE_NOTIFY_EMAIL", "").strip() or user
     if not user or not password or not to:
         print('{"status": "email_skipped", "reason": "SMTP secrets are not configured"}')
         return False
-    message = build_record_needed(**kwargs)
     message["From"] = f"GOLIDE Engine <{user}>"
     message["To"] = to
     try:
@@ -95,3 +108,11 @@ def send_record_needed(**kwargs) -> bool:
         print(f'{{"status": "email_failed", "error": {str(exc)!r}}}')
         return False
     return True
+
+
+def send_record_needed(**kwargs) -> bool:
+    return _send(build_record_needed(**kwargs))
+
+
+def send_reconnect_reminder(**kwargs) -> bool:
+    return _send(build_reconnect_reminder(**kwargs))

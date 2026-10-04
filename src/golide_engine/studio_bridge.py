@@ -139,6 +139,12 @@ class StudioBridge:
         if response_status != 200:
             raise RuntimeError(f"Studio status update failed with HTTP {response_status}")
 
+    def connection_expiry(self) -> list[dict[str, Any]]:
+        status, body = self._request("GET", "/api/engine/connections/expiry")
+        if status != 200:
+            raise RuntimeError(f"Studio connection expiry request failed with HTTP {status}")
+        return list(json.loads(body.decode("utf-8")).get("connections", []))
+
     def social_credentials(self, platform: str) -> dict[str, Any]:
         platform = platform.strip().lower()
         status, body = self._request(

@@ -900,6 +900,17 @@ async function handleMachineApi(request,env,url){
   if(url.pathname==="/api/engine/automation/status"&&request.method==="GET"){
     return json(await automationState(env.DB));
   }
+  if(url.pathname==="/api/engine/connections/expiry"&&request.method==="GET"){
+    // Expiry dates only (never tokens), so the engine can warn the owner
+    // before a platform that cannot auto-renew (LinkedIn) stops posting.
+    let rows=[];
+    try{
+      ({results:rows=[]}=await env.DB.prepare(
+        "SELECT platform,expires_at,account_label FROM social_oauth_tokens WHERE platform='linkedin'"
+      ).all());
+    }catch{}
+    return json({connections:rows.map((r)=>({platform:r.platform,expires_at:r.expires_at||null,account:r.account_label||""}))});
+  }
   if(url.pathname==="/api/engine/social-credentials"&&request.method==="GET"){
     const platform=safeText(url.searchParams.get("platform")).toLowerCase();
     try{

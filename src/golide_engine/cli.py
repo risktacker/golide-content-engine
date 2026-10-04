@@ -89,6 +89,7 @@ def main() -> int:
         help="Return a failure exit code when any selected provider is not connected.",
     )
     sub.add_parser("static-automation-run")
+    sub.add_parser("connection-reminders")
     sub.add_parser("studio-social-publish")
     studio_parser = sub.add_parser("studio-serve")
     studio_parser.add_argument("--database", default="data/golide.sqlite3")
@@ -195,6 +196,17 @@ def main() -> int:
             ],
             "temporary_media_deleted": purged,
         }, indent=2))
+        return 0
+
+    if args.command == "connection-reminders":
+        from datetime import datetime, timezone
+        from .operations.email import send_reconnect_reminder
+        from .operations.reminders import due_reminders
+        from .studio_bridge import StudioBridge
+        studio = StudioBridge(os.getenv("GOLIDE_STUDIO_BASE_URL", "https://studio.golidee.com"))
+        due = due_reminders(studio.connection_expiry(), datetime.now(timezone.utc))
+        sent = [item for item in due if send_reconnect_reminder(**item)]
+        print(json.dumps({"status": "connection_reminders", "due": due, "sent": len(sent)}, indent=2))
         return 0
 
     if args.command == "static-automation-run":

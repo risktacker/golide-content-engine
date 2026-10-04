@@ -52,7 +52,14 @@ function money(value) {
   }).format(Number(value || 0));
 }
 
+const VIEWS = ["dashboard", "create", "schedule", "inbox", "connections"];
+
 function switchView(name) {
+  if (!VIEWS.includes(name)) name = "dashboard";
+  // Keep the current page in the address bar so a refresh lands back here.
+  if (!window.location.hash.startsWith("#job-") && window.location.hash !== "#" + name) {
+    window.history.replaceState({}, "", window.location.pathname + window.location.search + "#" + name);
+  }
   $$(".view").forEach((view) => view.classList.toggle("active", view.id === name));
   $$(".nav").forEach((button) => button.classList.toggle("active", button.dataset.view === name));
   const titles = {
@@ -539,6 +546,14 @@ $("#refresh-jobs").onclick = loadProductionJobs;
 $("#automation-toggle").onclick = toggleAutomation;
 
 async function boot() {
+  // Restore the page before any data loads, so refresh and OAuth returns are instant.
+  const earlyParams = new URLSearchParams(window.location.search);
+  const startHash = window.location.hash.slice(1);
+  if (earlyParams.get("provider") || earlyParams.get("oauth") || earlyParams.get("x")) {
+    switchView("connections");
+  } else if (VIEWS.includes(startHash)) {
+    switchView(startHash);
+  }
   await Promise.all([loadHealth(), loadPolicy(), loadAutomationControl()]);
   await Promise.all([loadOverview(), loadProductionJobs(), loadConnections()]);
   renderBudget();
@@ -563,7 +578,7 @@ async function boot() {
     else if (oauthResult === "cancelled") { health.textContent = name + " authorization cancelled"; health.style.color = "var(--gold)"; }
     else if (oauthResult === "expired") { health.textContent = name + " authorization expired — connect again"; health.style.color = "var(--gold)"; }
     else { health.textContent = name + " authorization failed — reconnect"; health.style.color = "var(--danger)"; }
-    window.history.replaceState({}, "", window.location.pathname);
+    window.history.replaceState({}, "", window.location.pathname + "#connections");
     await loadConnections();
   }
 }

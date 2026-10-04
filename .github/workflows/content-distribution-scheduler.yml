@@ -86,3 +86,11 @@ jobs:
       - name: Publish due static content
         if: steps.automation.outputs.enabled == 'true'
         run: golide studio-social-publish
+      - name: Remind owner before LinkedIn access expires
+        if: steps.automation.outputs.enabled == 'true' && always()
+        continue-on-error: true
+        env:
+          GOLIDE_SMTP_USER: ${{ secrets.GOLIDE_SMTP_USER }}
+          GOLIDE_SMTP_APP_PASSWORD: ${{ secrets.GOLIDE_SMTP_APP_PASSWORD }}
+          GOLIDE_NOTIFY_EMAIL: ${{ secrets.GOLIDE_NOTIFY_EMAIL }}
+        run: golide connection-reminders
