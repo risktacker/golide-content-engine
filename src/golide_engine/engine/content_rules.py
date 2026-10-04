@@ -1,0 +1,212 @@
+"""GOLIDE content rulebook.
+
+These are the instructions the text model (gpt-5.6-luna today, swappable
+later) follows when it writes posts, image concepts and video scripts. They
+encode the locked 2026-10-04 direction:
+
+* Visual reference: innertune.affirmations, black theme only.
+* Two daily posts: Post A is a pure trend post, Post B is a GOLIDE
+  Marketplace product post.
+* Shorts and long videos are trend-only and are read aloud by the owner.
+
+Keep every rule here, not scattered through prompts in other modules, so the
+whole voice of the engine can be reviewed in one file.
+"""
+
+from __future__ import annotations
+
+# ---------------------------------------------------------------------------
+# Shared voice
+# ---------------------------------------------------------------------------
+
+VOICE_RULES = """\
+VOICE
+- Write for a smart 16-year-old on a phone: plain words, short sentences, one idea per line.
+- Speak to the reader as "you". Confident, calm, direct. Never hype, never preachy.
+- Every claim must be true and checkable. No invented statistics, studies, quotes or names.
+  If a number is not from a credible current source, do not use a number.
+- Never promise jobs, income, trading results, health outcomes or guaranteed results.
+- No pseudoscience framed as fact (no "vibration", "manifesting", "the universe decides").
+- No em dashes or en dashes anywhere. Use a full stop or a comma.
+- No hashtags inside the body text. No emojis in hooks.
+"""
+
+HOOK_RULES = """\
+HOOK (the line on the image and the first line of every caption)
+- 4 to 9 words. Must stop the scroll on its own, with no context.
+- Use one of these proven shapes:
+  1. Hidden truth: "Most people never notice this about [X]."
+  2. Reframe: "[Common belief] isn't the problem. [Real cause] is."
+  3. Ladder: "The [N] levels of [skill]. Most stop at 1."
+  4. Too late: "[N] [things] most people learn too late."
+  5. Direct call-out: "You're training yourself to [bad outcome]."
+- Pick the ONE phrase in the hook that carries the meaning (1 to 3 words). This is the
+  emphasis phrase: it is rendered bold with a soft glow. It must appear in the hook exactly.
+"""
+
+IMAGE_CONCEPT_RULES = """\
+IMAGE CONCEPT (describes the picture only; the image model never draws text)
+- One subject. One metaphor. Something a viewer understands in one second.
+- Draw it as luminous fine-line illustration or a cinematic real-world object, alone in
+  deep black space. Good subjects: a single object (jar, key, door, clock, glass of water,
+  staircase, seed, chain, compass), one silhouette, one simple diagram shape.
+- Exactly one element glows. Name which element glows.
+- Describe it in one or two plain sentences. No text, letters, numbers, logos, screens
+  with readable UI, or brand names in the concept.
+- If a hand or person is shown, they are dark-skinned/Black.
+- glow_color: "gold" for growth, value, reward; "cyan" for tech, clarity, insight;
+  "white" for neutral or serious.
+"""
+
+# ---------------------------------------------------------------------------
+# Static posts
+# ---------------------------------------------------------------------------
+
+STATIC_STRUCTURE_RULES = """\
+POST STRUCTURE
+- value_units: 3 or 4 short points that solve ONE clear problem in order. Each point is
+  1 or 2 sentences and stands on its own. Not a list of unrelated tips.
+- platform_copy, same truth adapted natively:
+  * instagram / facebook: hook as first line, a blank line, the points as short lines,
+    end with one question that invites a comment.
+  * linkedin: professional framing, first line is the hook, points as short paragraphs,
+    end with a question for professionals.
+  * x: under 270 characters. Hook plus the single sharpest point. No thread markers.
+- title: a plain internal label for the post (not shown publicly).
+"""
+
+POST_A_TREND_RULES = """\
+THIS IS POST A: THE TREND POST.
+- Use web search. Find what is being talked about RIGHT NOW (last 7 days) in technology,
+  AI, software, careers in tech, the future of work, digital productivity or online
+  business. Prefer topics with visible public momentum: a launch, a shift, a debate, a
+  number that changed.
+- Turn the news into a lesson the reader can use. Do not write a news report.
+- Do not mention or promote any GOLIDE product. No links. use_product must be false and
+  product_bridge_position must be 0.
+"""
+
+POST_B_PRODUCT_RULES = """\
+THIS IS POST B: THE GOLIDE MARKETPLACE PRODUCT POST.
+- The supplied CANDIDATE_PRODUCT is the subject of this post. use_product must be true.
+- Lead with the reader's problem the product solves, never with the product name.
+  The hook names the problem or the result, not the brand.
+- value_units: point 1 sharpens the problem, point 2 or 3 shows how the product solves it
+  (set product_bridge_position to that point), the last point gives one action the reader
+  can take today.
+- Use only facts present in CANDIDATE_PRODUCT. Do not invent features, prices,
+  testimonials, numbers of users or results.
+- Do not paste the URL; the engine appends the product link itself.
+"""
+
+
+def static_post_instructions(slot: str) -> str:
+    lane = POST_A_TREND_RULES if slot == "post-a" else POST_B_PRODUCT_RULES
+    return (
+        "You write one static social post for GOLIDE, a marketplace for digital products, "
+        "software and tools. The operator supplies no topic.\n\n"
+        + lane + "\n" + VOICE_RULES + "\n" + HOOK_RULES + "\n"
+        + IMAGE_CONCEPT_RULES + "\n" + STATIC_STRUCTURE_RULES
+    )
+
+
+# ---------------------------------------------------------------------------
+# Video scripts (owner reads these aloud; the recording is the master timeline)
+# ---------------------------------------------------------------------------
+
+SCRIPT_LENGTH_TARGETS = {
+    # Spoken words at ~150 wpm, set below the recording window so the owner
+    # has room to breathe. Windows: short 0:30-1:30, long 3:30-5:00.
+    "short": {"words_min": 150, "words_max": 185, "seconds": "60 to 75"},
+    "long": {"words_min": 600, "words_max": 680, "seconds": "240 to 270"},
+}
+
+SCRIPT_STRUCTURE_RULES = """\
+SCRIPT STRUCTURE (in this order)
+1. CLAIM: one blunt sentence that flips a common belief. Example shape:
+   "AI doesn't decide who gets hired. Systems do."
+2. PROOF: one concrete, true example anyone already understands.
+3. PATTERN: show the rule behind the proof. Name 2 to 4 cases of the same rule.
+4. COST: what happens to people who ignore the rule. Make it specific and familiar.
+5. REFRAME: the one sentence the viewer should remember.
+6. CALL TO ACTION: one small action, then a line that loops back to the claim.
+"""
+
+SCRIPT_LINE_RULES = """\
+LINE RULES (the owner reads this out loud, so write for the mouth, not the eye)
+- One spoken line = one idea = 4 to 12 words. Never two ideas in one line.
+- Every line must be easy to say in one breath. No brackets, no abbreviations,
+  no symbols, write numbers as they are spoken.
+- Each line names ONE emphasis word (the word that glows white in the captions).
+- Each line has a visual cue for the animation, chosen from this fixed list only:
+  dot_field, grid, ladder, staircase, bar_chart, line_chart, spike_vs_curve, gears,
+  ring_of_points, branching_tree, person_outline, clock, gauge, seed_to_plant,
+  cross_out, checklist, split_compare, single_glow, logo_end.
+- Keep the same visual for consecutive lines that build one idea, so the animation
+  grows instead of cutting.
+- Plain English for a global audience. No slang, no religion, no politics.
+"""
+
+
+def script_instructions(format_name: str) -> str:
+    target = SCRIPT_LENGTH_TARGETS.get(format_name, SCRIPT_LENGTH_TARGETS["short"])
+    return (
+        "You write a narration script for a GOLIDE "
+        + ("YouTube/Instagram/Facebook short" if format_name == "short" else "long YouTube video")
+        + " on a trending technology, AI, career or digital-work topic. The owner records it "
+        "in his own voice; the visuals are animated line diagrams on black, synced to his words.\n\n"
+        f"LENGTH: {target['words_min']} to {target['words_max']} spoken words "
+        f"(about {target['seconds']} seconds). Do not go over.\n\n"
+        + SCRIPT_STRUCTURE_RULES + "\n" + SCRIPT_LINE_RULES + "\n" + VOICE_RULES
+        + "\n" + SCRIPT_OUTPUT_RULES
+    )
+
+
+VISUAL_CUES = (
+    "dot_field", "grid", "ladder", "staircase", "bar_chart", "line_chart",
+    "spike_vs_curve", "gears", "ring_of_points", "branching_tree",
+    "person_outline", "clock", "gauge", "seed_to_plant", "cross_out",
+    "checklist", "split_compare", "single_glow", "logo_end",
+)
+
+SCRIPT_SCHEMA: dict = {
+    "type": "object",
+    "additionalProperties": False,
+    "properties": {
+        "title": {"type": "string"},
+        "lines": {
+            "type": "array",
+            "minItems": 8,
+            "items": {
+                "type": "object",
+                "additionalProperties": False,
+                "properties": {
+                    "section": {
+                        "type": "string",
+                        "enum": ["claim", "proof", "pattern", "cost", "reframe", "cta"],
+                    },
+                    "text": {"type": "string"},
+                    "emphasis": {"type": "string"},
+                    "visual": {"type": "string", "enum": list(VISUAL_CUES)},
+                    "label": {"type": "string"},
+                },
+                "required": ["section", "text", "emphasis", "visual", "label"],
+            },
+        },
+    },
+    "required": ["title", "lines"],
+}
+
+SCRIPT_OUTPUT_RULES = """\
+OUTPUT
+- Return JSON matching the schema. "lines" are the spoken lines in order.
+- "text" is exactly what the owner says. Nothing else: no stage directions, labels or notes.
+- "emphasis" is one word (or two) copied exactly from "text".
+- "label" is a tiny monospace tag drawn on the animation (1 to 3 words, uppercase), for
+  example "TRIAL 01", "DAY 30", "WITHOUT A SYSTEM". Never a full sentence.
+"""
+
+
+def script_text(plan: dict) -> str:
+    """The plain words the owner reads, one spoken line per row."""
+    return "\n".join(str(line["text"]).strip() for line in plan["lines"] if str(line["text"]).strip())

@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "locked": true,
+  "name": "GOLIDE Black",
+  "reference": "innertune.affirmations (locked 2026-10-04): black theme only, for static posts, shorts and long videos",
+  "colors": {
+    "background": "#0B0B0E",
+    "background_vignette": "#16161C",
+    "text": "#F4F4F5",
+    "text_muted": "#7A7A84",
+    "line": "#D9D9DE",
+    "line_dim": "#3A3A44",
+    "gold": "#E9C46A",
+    "cyan": "#7FD8EA",
+    "red": "#D0605E",
+    "white_glow": "#FFFFFF"
+  },
+  "fonts": {
+    "light": "assets/fonts/Poppins-Light.ttf",
+    "regular": "assets/fonts/Poppins-Regular.ttf",
+    "bold": "assets/fonts/Poppins-SemiBold.ttf",
+    "mono": "assets/fonts/JetBrainsMono-Regular.ttf"
+  },
+  "glow": {
+    "text_blur_radius": 14,
+    "text_glow_strength": 0.85,
+    "line_blur_radius": 10
+  },
+  "watermark": {
+    "text": "GOLIDE",
+    "color": "text_muted",
+    "letter_spacing": 6
+  }
+}

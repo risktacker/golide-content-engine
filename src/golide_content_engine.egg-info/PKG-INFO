@@ -1,0 +1,13 @@
+Metadata-Version: 2.4
+Name: golide-content-engine
+Version: 0.3.0
+Summary: Independent YouTube Shorts and short-form video production engine
+Requires-Python: >=3.11
+Provides-Extra: production
+Requires-Dist: google-api-python-client<3,>=2.179; extra == "production"
+Requires-Dist: google-auth<3,>=2.40; extra == "production"
+Requires-Dist: google-auth-oauthlib<2,>=1.2; extra == "production"
+Requires-Dist: openai<3,>=2; extra == "production"
+Requires-Dist: pillow<13,>=11; extra == "production"
+Requires-Dist: pyspellchecker<1,>=0.8; extra == "production"
+Provides-Extra: test

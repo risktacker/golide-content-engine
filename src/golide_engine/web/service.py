@@ -130,10 +130,11 @@ class StudioService:
             raise RuntimeError("temporary R2 storage is not configured")
 
         profile = SocialImageProfile(self.root / "config/social-image-profile.json")
+        hook = str(payload.get("hook", "")).strip()
+        emphasis = str(payload.get("emphasis", "")).strip()
         prompt = profile.build_prompt(
-            hook=str(payload.get("hook", "")),
             concept=str(payload.get("concept", "")),
-            context=str(payload.get("context", "")),
+            glow_color=str(payload.get("glow_color", "gold")),
         )
         from golide_engine.providers.openai_media import OpenAIImageProvider
         provider = OpenAIImageProvider(profile.model, profile.quality)
@@ -144,7 +145,7 @@ class StudioService:
             meta = temp_root / "meta-4x5.jpg"
             square = temp_root / "square-1x1.jpg"
             output = provider.create_image(prompt, master, "1024x1536")
-            profile.adapt(master, meta, square)
+            profile.adapt(master, meta, square, hook=hook, emphasis=emphasis)
 
             meta_upload = self.media_store.upload_bytes(
                 filename="golide-post-meta-4x5.jpg",

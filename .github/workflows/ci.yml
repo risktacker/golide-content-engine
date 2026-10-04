@@ -18,8 +18,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core
-      - run: python -m pip install -e '.[production]'
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core libcairo2-dev pkg-config
+      - run: python -m pip install -e '.[production,video]'
       - name: Preflight real tracked production database migration
         run: golide db-init --database data/golide.sqlite3
       - run: python -m compileall -q src tests

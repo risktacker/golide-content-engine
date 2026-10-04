@@ -107,6 +107,7 @@ class StudioBridge:
         title: str | None = None,
         script: str | None = None,
         selected_topic: str | None = None,
+        clear_voice: bool = False,
     ) -> None:
         payload: dict[str, Any] = {
             "status": status,
@@ -130,6 +131,8 @@ class StudioBridge:
             payload["script"] = script[:20000]
         if selected_topic:
             payload["selectedTopic"] = selected_topic[:1000]
+        if clear_voice:
+            payload["clearVoice"] = True
         response_status, _ = self._request(
             "POST", f"/api/engine/jobs/{quote(job_id)}/status", payload
         )

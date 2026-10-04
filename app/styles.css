@@ -189,6 +189,7 @@ main{width:100%;max-width:1700px;margin:0 auto;padding:28px clamp(20px,3vw,42px)
 .upload-button{border-radius:999px;background:linear-gradient(135deg,#f2c76b,#d99c34);color:#171107;font-size:10px;font-weight:900;cursor:pointer;box-shadow:0 9px 26px rgba(219,158,53,.13)}
 .upload-button input{display:none}.action-button{border:1px solid rgba(97,224,247,.18);background:#0a1a22;color:#aeeaf5;font-size:9px}
 .voice-status{min-height:14px;color:#7d929c;font-size:8px;text-align:center}
+.action-card p.voice-rejected{margin-top:6px;color:#e07a72}
 
 .job-list{display:grid;gap:8px}
 .job-card{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(220px,.7fr) auto;gap:14px;align-items:center;padding:12px 13px;border:1px solid rgba(117,218,238,.1);border-radius:11px;background:#07131a}

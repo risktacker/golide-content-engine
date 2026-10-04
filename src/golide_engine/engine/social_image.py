@@ -19,51 +19,59 @@ class SocialImageProfile:
     def quality(self) -> str:
         return self.raw["generation"]["quality"]
 
-    def build_prompt(self, *, hook: str, concept: str, context: str = "") -> str:
-        hook = hook.strip()
-        concept = concept.strip()
-        if not hook or not concept:
-            raise ValueError("hook and visual concept are required")
-        if "—" in hook or "–" in hook:
-            raise ValueError("hook must not use extended dash typography")
-        if len(hook) > 90:
-            raise ValueError("hook is too long for the locked static-post image style")
+    GLOW_COLORS = {
+        "gold": "warm soft gold",
+        "cyan": "cool soft cyan",
+        "white": "clean soft white",
+    }
+
+    def build_prompt(
+        self,
+        *,
+        concept: str,
+        glow_color: str = "gold",
+        hook: str = "",
+        context: str = "",
+    ) -> str:
+        """Locked GOLIDE Black still prompt (innertune reference, 2026-10-04).
+
+        The image model only draws the picture. The hook is typeset afterwards
+        by code (see engine.typeset), so the prompt forbids any text.
+        """
+        concept = " ".join(concept.split())
+        if not concept:
+            raise ValueError("a visual concept is required")
+        glow = self.GLOW_COLORS.get(glow_color, self.GLOW_COLORS["gold"])
         return (
-            "Create one premium realistic conceptual editorial still-life for GOLIDE. "
-            "The scene may use dark navy or black, but do not force darkness: use believable "
-            "real-photo colors and a real environment when that makes the concept stronger. "
-            "Use restrained electric-cyan light as an identity cue and subtle metallic or gold "
-            "only when useful. Keep the composition sparse with one strong physical or visual "
-            "metaphor and one dominant focal idea. No clutter, no generic stock-photo look, "
-            "no busy collage, no excessive glow, no large logo. If hands are intentionally "
-            "visible, they must be dark-skinned/Black hands. Do not invent random people. "
-            "Place a short clean white hook in the upper-left with generous safe margins; a thin "
-            "cyan underline is optional. Place a small understated GOLIDE wordmark at bottom-right. "
-            "Keep all essential visual information inside a central square-safe area so the same "
-            "paid master can be adapted to 4:5 and 1:1 without breaking the metaphor or hook. "
-            f'HOOK TEXT: "{hook}". VISUAL METAPHOR: {concept}. '
-            f"CONTENT CONTEXT: {context.strip() or 'Use only the supplied metaphor and hook.'}"
+            "Vertical 2:3 artwork. Pure black deep-space background (#0B0B0E) with a very faint, "
+            "sparse starfield and a subtle dark vignette. "
+            f"SUBJECT: {concept} "
+            "Render the subject as luminous fine-line illustration or a cinematic, softly lit real "
+            "object, alone in the black space, centered in the upper two thirds of the frame. "
+            f"Exactly one element of the subject glows with a {glow} light; everything else is "
+            "rendered in thin, calm white or grey lines. High contrast, minimal, calm, premium, "
+            "instantly readable in one second. One subject only, no clutter, no busy background, "
+            "no collage. If a hand or person appears, they are dark-skinned/Black. "
+            "Keep the bottom third of the image completely empty and dark: no objects, no light. "
+            "Keep the subject inside the central square so it survives 4:5 and 1:1 crops. "
+            "ABSOLUTELY NO text, letters, words, numbers, captions, labels, logos, watermarks, "
+            "signatures, user-interface elements or borders anywhere in the image."
         )
 
     @staticmethod
-    def adapt(master: Path, meta_output: Path, square_output: Path) -> None:
+    def adapt(
+        master: Path,
+        meta_output: Path,
+        square_output: Path,
+        *,
+        hook: str = "",
+        emphasis: str = "",
+    ) -> None:
         try:
-            from PIL import Image, ImageOps
-        except ImportError as exc:
+            from golide_engine.engine.typeset import compose_post
+        except ImportError as exc:  # pragma: no cover
             raise RuntimeError(
                 "Pillow is required for social image adaptation; install production dependencies"
             ) from exc
-        with Image.open(master) as image:
-            image = image.convert("RGB")
-            meta = ImageOps.fit(
-                image, (1080, 1350), method=Image.Resampling.LANCZOS,
-                centering=(0.5, 0.43),
-            )
-            square = ImageOps.fit(
-                image, (1080, 1080), method=Image.Resampling.LANCZOS,
-                centering=(0.5, 0.38),
-            )
-            meta_output.parent.mkdir(parents=True, exist_ok=True)
-            square_output.parent.mkdir(parents=True, exist_ok=True)
-            meta.save(meta_output, "JPEG", quality=94, optimize=True)
-            square.save(square_output, "JPEG", quality=94, optimize=True)
+        compose_post(master, hook, emphasis, meta_output, (1080, 1350), centering=(0.5, 0.42))
+        compose_post(master, hook, emphasis, square_output, (1080, 1080), centering=(0.5, 0.36))

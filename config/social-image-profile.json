@@ -1,38 +1,37 @@
 {
-  "version": 1,
+  "version": 2,
   "locked": true,
-  "profile_name": "GOLIDE Social Post Editorial",
+  "profile_name": "GOLIDE Black Social Post",
   "purpose": "Static feed imagery for Instagram, Facebook, LinkedIn and X",
   "visual_direction": {
-    "primary_style": "premium realistic conceptual editorial still-life",
-    "realism": "photographic realism or believable real-world color is allowed and encouraged when stronger than a dark set",
+    "primary_style": "luminous fine-line illustration or cinematic single object on pure black deep space",
     "backgrounds": [
-      "dark navy",
-      "black",
-      "natural real-photo environments and realistic color when appropriate"
+      "pure black #0B0B0E with faint sparse starfield and soft vignette"
     ],
     "accents": [
-      "restrained electric cyan glow",
-      "subtle metallic or GOLIDE gold only when useful"
+      "exactly one glowing element: gold, cyan or white"
     ],
     "composition": [
-      "sparse composition",
-      "one strong physical or visual metaphor",
-      "single dominant focal idea",
-      "no clutter"
+      "one subject",
+      "one metaphor readable in one second",
+      "subject in upper two thirds",
+      "bottom third empty and dark for the code-set hook",
+      "subject inside central square for 4:5 and 1:1"
     ]
   },
   "typography": {
-    "hook_required": true,
-    "hook_style": "short clean white curiosity hook",
-    "hook_case": "uppercase preferred",
-    "hook_length": "minimal, readable at a glance",
-    "cyan_underline": "optional restrained accent",
+    "set_by": "code (engine/typeset.py); the image model never draws text",
+    "hook_length_words": [
+      4,
+      9
+    ],
+    "hook_style": "Poppins Light, white, centered in lower third",
+    "emphasis": "one 1-3 word phrase in Poppins SemiBold with soft white glow",
+    "watermark": "small muted GOLIDE wordmark, centered bottom",
     "em_dash_allowed": false
   },
   "branding": {
-    "wordmark": "small understated GOLIDE branding",
-    "preferred_position": "bottom-right",
+    "wordmark": "small muted GOLIDE, centered bottom",
     "dominant_logo_forbidden": true
   },
   "people": {
@@ -42,16 +41,13 @@
     "random_stock_people_forbidden": true
   },
   "forbidden": [
+    "any text, letters or numbers in the generated image",
     "busy collage",
+    "more than one subject",
+    "more than one glowing element",
     "generic stock-photo look",
-    "forced dark background when a realistic natural scene is stronger",
-    "excessive glow",
-    "excessive gold",
-    "large branding",
-    "long blocks of text",
-    "multiple competing metaphors",
-    "fake interface unless the subject specifically requires an interface",
     "light-skinned hands when a hand is intentionally featured",
+    "large branding",
     "em dash typography"
   ],
   "formats": {
@@ -77,10 +73,12 @@
     "preserve_same_concept_across_ratios": true,
     "regenerate_only_when_crop_breaks_metaphor_or_hook": true,
     "temporary_media_only": true,
-    "approval_required_before_publish": true,
+    "approval_required_before_publish": false,
     "provider": "openai",
     "model": "gpt-image-2",
     "quality": "medium",
-    "strategy": "generate one master concept, derive platform ratios without a second paid generation unless crop or composition fails QA"
-  }
+    "strategy": "one paid master image per post; 4:5 and 1:1 are crops of the same master with the hook typeset by code",
+    "approval_note": "Studio 'Start automation' is the only owner approval. Automated posts publish unattended."
+  },
+  "reference": "innertune.affirmations, black theme only (locked 2026-10-04)"
 }
