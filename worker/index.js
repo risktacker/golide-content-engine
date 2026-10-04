@@ -55,7 +55,7 @@ const POLICY = {
       {day:"saturday",time:"19:30",platforms:ROUTES.long},
     ],
   },
-  social_image:{profile_name:"GOLIDE Social Post Editorial",generation:{temporary_media_only:true,approval_required_before_publish:true,provider:"openai",model:"gpt-image-2",quality:"medium"}},
+  social_image:{profile_name:"GOLIDE Social Post Editorial",generation:{temporary_media_only:true,approval_required_before_publish:false,provider:"openai",model:"gpt-image-2",quality:"medium"}},
   video:{style_name:"GOLIDE Reference Editorial Motion",voice:{source:"owner_recording_only",ai_voice_allowed:false,cloned_voice_allowed:false}},
   product_registry:{version:1,products:FALLBACK_PRODUCTS},
   budget:{
@@ -488,8 +488,13 @@ async function updateProductionStatus(db,jobId,payload){
   let spec=JSON.parse(current.spec_json);
   if(title) spec.title=title;
   if(topic) spec.brief=topic;
+  // A rejected recording (wrong length) sends the job back to the owner with
+  // the voice slot cleared, so the next upload is a clean replacement.
+  const clearVoice=payload.clearVoice===true&&status==="waiting_owner_voice";
+  if(clearVoice) delete spec.owner_voice_media_ref;
   await db.prepare(`UPDATE production_jobs SET
     spec_json=?,status=?,stage=?,
+    owner_voice_media_ref=CASE WHEN ?=1 THEN NULL ELSE owner_voice_media_ref END,
     title=CASE WHEN ?<>'' THEN ? ELSE title END,
     selected_topic=CASE WHEN ?<>'' THEN ? ELSE selected_topic END,
     script=CASE WHEN ?<>'' THEN ? ELSE script END,
@@ -497,7 +502,7 @@ async function updateProductionStatus(db,jobId,payload){
     run_url=?,release_url=?,error=?,updated_at=?
     WHERE job_id=?`)
     .bind(
-      JSON.stringify(spec),status,stage,
+      JSON.stringify(spec),status,stage,clearVoice?1:0,
       title,title,topic,topic,script,script,
       Number(payload.actualCostUsd||0),Number(payload.providerUsage?.openAiCostUsd||0),
       safeText(payload.runUrl)||null,safeText(payload.releaseUrl)||null,safeText(payload.error)||null,

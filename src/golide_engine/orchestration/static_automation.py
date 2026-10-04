@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
 
+from golide_engine.engine.content_rules import static_post_instructions
 from golide_engine.engine.products import ProductRegistry
 from golide_engine.engine.social_image import SocialImageProfile
 from golide_engine.providers.registry import ProviderRegistry
@@ -47,7 +48,9 @@ STATIC_DRAFT_SCHEMA: dict[str, Any] = {
             "required": ["instagram", "facebook", "linkedin", "x"],
         },
         "image_hook": {"type": "string"},
+        "image_hook_emphasis": {"type": "string"},
         "image_concept": {"type": "string"},
+        "glow_color": {"type": "string", "enum": ["gold", "cyan", "white"]},
         "use_product": {"type": "boolean"},
         "product_bridge_position": {
             "type": "integer",
@@ -56,7 +59,8 @@ STATIC_DRAFT_SCHEMA: dict[str, Any] = {
     },
     "required": [
         "title", "weekly_theme", "content_lane", "value_units",
-        "platform_copy", "image_hook", "image_concept",
+        "platform_copy", "image_hook", "image_hook_emphasis",
+        "image_concept", "glow_color",
         "use_product", "product_bridge_position",
     ],
 }
@@ -159,23 +163,7 @@ class StaticAutomation:
     ) -> dict[str, Any]:
         product_packet = self._product_packet(product)
         live_signal = slot == "post-a"
-        instructions = (
-            "Create one original GOLIDE static social post for the locked content system. "
-            "The operator should not need to supply a topic. Find a useful current angle "
-            "from credible technology, software, work, career, business, productivity or "
-            "digital-behavior signals, while keeping the claim evidence-safe and practical. "
-            "The post must contain 3 to 4 related value units that solve one clear problem, "
-            "not a list of unrelated tips. Adapt the same truth natively for Instagram, "
-            "Facebook, LinkedIn and X. LinkedIn should use professional framing; X should "
-            "be compressed and thread-friendly; Meta can be more conversational. "
-            "Return one short curiosity hook and one concrete visual metaphor for the "
-            "locked GOLIDE editorial still-image system. Never promise jobs, income, trading "
-            "results, guaranteed outcomes or invented evidence. Never use em-dash typography. "
-            "A candidate GOLIDE product is supplied. Use it only when it genuinely extends "
-            "the value of the post. If it is relevant, set use_product=true and bridge at "
-            "unit 2 or 3. Otherwise keep the post brand/value-led and set bridge to 0. "
-            "Do not force a product mention."
-        )
+        instructions = static_post_instructions(slot)
         body = (
             f"DATE_UTC={datetime.now(timezone.utc).date().isoformat()}\n"
             f"SLOT={slot}\n"
@@ -198,13 +186,11 @@ class StaticAutomation:
         self,
         draft: dict[str, Any],
     ) -> tuple[dict[str, Any], dict[str, Any]]:
-        hook = str(draft["image_hook"]).replace("—", "-").replace("–", "-").strip()
-        if len(hook) > 90:
-            hook = hook[:87].rstrip() + "..."
+        hook = str(draft["image_hook"]).replace("\u2014", ",").replace("\u2013", ",").strip()
+        emphasis = str(draft.get("image_hook_emphasis", "")).strip()
         prompt = self.image_profile.build_prompt(
-            hook=hook,
             concept=str(draft["image_concept"]),
-            context=" ".join(str(item) for item in draft["value_units"]),
+            glow_color=str(draft.get("glow_color", "gold")),
         )
         provider = self.providers.images("hero", live=True)
 
@@ -214,7 +200,7 @@ class StaticAutomation:
             meta = root / "meta-4x5.jpg"
             square = root / "square-1x1.jpg"
             provider.create_image(prompt, master, "1024x1536")
-            self.image_profile.adapt(master, meta, square)
+            self.image_profile.adapt(master, meta, square, hook=hook, emphasis=emphasis)
 
             meta_upload = self.media_store.upload_bytes(
                 filename="golide-auto-meta-4x5.jpg",
@@ -288,9 +274,11 @@ class StaticAutomation:
                 })
                 break
 
+            # Locked split: post-a is a pure trend post (no product), post-b is
+            # always about one GOLIDE Marketplace product.
             product = (
                 registry.choose_auto(seed=content_id)
-                if active_products
+                if slot["slot"] == "post-b" and active_products
                 else None
             )
             draft = self._draft(
@@ -298,7 +286,7 @@ class StaticAutomation:
                 slot=slot["slot"],
                 product=product,
             )
-            use_product = bool(draft["use_product"] and product)
+            use_product = product is not None
             bridge_position = (
                 int(draft["product_bridge_position"])
                 if use_product

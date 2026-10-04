@@ -30,6 +30,8 @@ from ..storage.database import Database
 from ..youtube.demand import TopicDemandRejected, YouTubeDemandGate
 from ..youtube_metadata import load_metadata_policy, validate_upload_metadata
 from .schemas import METADATA_SCHEMA, RESEARCH_SCHEMA, STORYBOARD_SCHEMA, TREND_CANDIDATES_SCHEMA
+from ..engine.content_rules import SCRIPT_SCHEMA, script_instructions, script_text
+from .recording import RecordingLengthError, check_recording_length
 from .stage_runner import StageRunner
 
 
@@ -462,22 +464,24 @@ class ProductionService:
         self._budget(spec)
 
         script_path = work / "script.txt"
+        scene_plan_path = work / "scene-plan.json"
         def script_stage():
             self._require_absent(script_path, "script")
-            target_words = "130-170" if spec["format"] == "short" else "650-780"
-            script_brief = (
-                f"FORMAT={spec['format']} TARGET_WORDS={target_words}. "
-                "Stay inside the word range and end with a circular question. "
-                + spec["brief"]
-            )
-            script_input = script_brief + json.dumps(research)
+            script_input = spec["brief"] + json.dumps(research)
             self._reserve(
                 spec, text_model,
                 Usage(input_tokens=max(1, len(script_input) // 4), output_tokens=6000),
                 stage="script",
             )
-            output = text.write_script(script_brief, json.dumps(research))
-            script_path.write_text(output.value.strip() + "\n", encoding="utf-8")
+            output = text.generate_json(
+                script_instructions(str(spec["format"])),
+                f"TOPIC BRIEF\n{spec['brief']}\n\nVERIFIED RESEARCH\n{json.dumps(research)}",
+                SCRIPT_SCHEMA,
+                max_output_tokens=6000,
+            )
+            plan = dict(output.value)
+            scene_plan_path.write_text(json.dumps(plan, indent=2) + "\n", encoding="utf-8")
+            script_path.write_text(script_text(plan) + "\n", encoding="utf-8")
             self._record_text(production_id, "script", output)
         self.runner.run(production_id, "script", script_stage)
         script = script_path.read_text(encoding="utf-8").strip()
@@ -526,6 +530,13 @@ class ProductionService:
                 ],
                 capture_output=True, text=True, check=True,
             )
+            # Reject a wrong-length recording before paying for transcription.
+            try:
+                check_recording_length(str(spec["format"]), self._duration(narration))
+            except RecordingLengthError:
+                narration.unlink(missing_ok=True)
+                source.unlink(missing_ok=True)
+                raise
 
             captioner = self.providers.captions(live=True)
             output = captioner.transcribe_words(narration)
@@ -551,43 +562,8 @@ class ProductionService:
         self.runner.run(production_id, "owner-voice", voice_stage)
         self._budget(spec)
         narration_seconds = self._duration(narration)
-        maximum = 90 if spec["format"] == "short" else 300
-        if narration_seconds > maximum:
-            if narration_seconds > maximum * 1.08:
-                raise RuntimeError(
-                    f"narration is {narration_seconds:.1f}s and exceeds the "
-                    f"{maximum}s format limit by more than the safe 8% correction"
-                )
-            target_seconds = maximum - 2
-            tempo = narration_seconds / target_seconds
-            corrected = narration.with_name(
-                f"{narration.stem}.duration-corrected{narration.suffix}"
-            )
-            subprocess.run(
-                [
-                    "ffmpeg", "-y", "-i", str(narration),
-                    "-filter:a", f"atempo={tempo:.8f}",
-                    "-vn", str(corrected),
-                ],
-                capture_output=True, text=True, check=True,
-            )
-            corrected.replace(narration)
-            adjusted_words = json.loads(
-                timed_words_path.read_text(encoding="utf-8")
-            )
-            for word in adjusted_words:
-                word["start"] = round(float(word["start"]) / tempo, 4)
-                word["end"] = round(float(word["end"]) / tempo, 4)
-            timed_words_path.write_text(
-                json.dumps(adjusted_words, indent=2) + "\n",
-                encoding="utf-8",
-            )
-            narration_seconds = self._duration(narration)
-            if narration_seconds > maximum:
-                raise RuntimeError(
-                    f"duration correction left narration at "
-                    f"{narration_seconds:.1f}s"
-                )
+        # The owner recording is the master timeline: never retime the voice.
+        check_recording_length(str(spec["format"]), narration_seconds)
 
         raw_timed_words = json.loads(timed_words_path.read_text(encoding="utf-8"))
         authoritative_words_path = work / "timed-words-authoritative-v3.json"
