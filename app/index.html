@@ -1,188 +1,190 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>GOLIDE Content Engine</title>
-  <meta name="theme-color" content="#071017">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>GOLIDE Studio</title>
+  <meta name="theme-color" content="#0b0c10">
   <link rel="icon" href="/favicon.ico?v=20260922" sizes="any">
   <link rel="icon" href="/favicon.png?v=20260922" type="image/png">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20260922">
-  <link rel="stylesheet" href="/styles.css?v=20260923-2">
+  <link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <script>
+    // Theme before first paint: dark by default, the owner's choice remembered per device.
+    try { var t = localStorage.getItem("golide-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+  <link rel="stylesheet" href="/styles.css?v=20261005">
 </head>
 <body>
-  <div class="ambient ambient-a"></div>
-  <div class="ambient ambient-b"></div>
+  <div class="splash" id="splash" role="status" aria-live="polite">
+    <canvas class="splash-canvas" id="splash-canvas" aria-hidden="true"></canvas>
+    <span class="splash-word" aria-hidden="true">GOLIDE</span>
+    <span class="sr-only">Loading GOLIDE Studio</span>
+  </div>
+
   <div class="shell">
     <aside class="sidebar">
-      <a class="brand" href="#" data-view-link="dashboard">
-        <span class="brand-beam"></span>
-        <div><strong>GOLIDE</strong><small>Content Engine</small></div>
+      <a class="brand" href="#dashboard" data-view-link="dashboard" aria-label="GOLIDE Studio home">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-text">GOLIDE <span>Studio</span></span>
       </a>
-      <nav>
-        <button class="nav active" data-view="dashboard"><span>01</span>Dashboard</button>
-        <button class="nav" data-view="create"><span>02</span>Automation</button>
-        <button class="nav" data-view="schedule"><span>03</span>Schedule</button>
-        <button class="nav" data-view="inbox"><span>04</span>Inbox</button>
-        <button class="nav" data-view="connections"><span>05</span>Connections</button>
+      <nav aria-label="Studio">
+        <button class="nav active" data-view="dashboard">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13h7V4H4zm9 7h7v-9h-7zM4 20h7v-5H4zm9-11h7V4h-7z"/></svg>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav" data-view="create">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1m-8.6 8.6-2.1 2.1"/><circle cx="12" cy="12" r="3.2"/></svg>
+          <span>Automation</span>
+        </button>
+        <button class="nav" data-view="schedule">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4m8-4v4"/></svg>
+          <span>Schedule</span>
+        </button>
+        <button class="nav" data-view="inbox">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H14l-2 3-2-3H4z"/></svg>
+          <span>Inbox</span>
+        </button>
+        <button class="nav" data-view="connections">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 15 15 9M10.5 6.5l1.6-1.6a4 4 0 0 1 5.7 5.7l-1.6 1.6m-8.4 1.6-1.6 1.6a4 4 0 0 0 5.7 5.7l1.6-1.6"/></svg>
+          <span>Connections</span>
+        </button>
       </nav>
       <div class="workspace-links">
         <a href="https://golidee.com/">Main site</a>
         <a href="https://marketplace.golidee.com/">Marketplace</a>
         <a href="https://marketplace.golidee.com/partners">Partner Engine</a>
       </div>
-      <div class="sidebar-foot"><span class="live-dot"></span><span>Private admin workspace</span></div>
     </aside>
 
     <main>
       <header class="topbar">
-        <div>
-          <p class="eyebrow">GOLIDE / OWNED DISTRIBUTION</p>
-          <h1 id="view-title">Dashboard</h1>
-        </div>
+        <h1 id="view-title">Dashboard</h1>
         <div class="top-actions">
-          <span id="health" class="health">Checking engine...</span>
-          <button class="primary" data-open-automation>Open automation</button>
+          <span id="health" class="health">Checking engine…</span>
+          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to light theme">
+            <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4m0-14.2-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>
+            <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+          </button>
         </div>
       </header>
 
       <section class="view active" id="dashboard">
-        <section class="hero-panel">
-          <div class="hero-glow"></div>
+        <section class="hero">
           <div class="hero-copy">
-            <p class="kicker">AUTONOMOUS CONTENT SYSTEM</p>
-            <h2>The engine does the hunting.<br><span>You add the human voice.</span></h2>
-            <p>Research, topic scoring, writing, visuals, rendering, routing and scheduling run behind Studio. Your intervention appears only when a locked gate genuinely needs you.</p>
+            <h2>The engine finds the story. You give it a voice.</h2>
+            <p>Research, writing, illustration, rendering and publishing run on their own. Studio only asks for you when a recording is needed.</p>
           </div>
-          <div class="hero-orbit" aria-hidden="true"><span></span><i></i></div>
+          <canvas class="hero-mark" id="hero-mark" aria-hidden="true"></canvas>
         </section>
 
-        <div class="stats" id="stats"></div>
-
-        <article class="automation-control paused" id="automation-control">
+        <article class="control paused" id="automation-control">
           <div class="control-status">
             <span class="control-light" aria-hidden="true"></span>
             <div>
-              <span class="kicker gold">MASTER CONTROL</span>
               <h3 id="automation-control-title">Automation paused</h3>
-              <p id="automation-control-copy">Deployment is safe: scheduled runners can wake, but paid generation and publishing stay blocked until you start automation.</p>
-              <small id="automation-control-meta">Default after deployment: paused.</small>
+              <p id="automation-control-copy">Nothing paid runs and nothing publishes until you start automation.</p>
+              <small id="automation-control-meta">Paused by default.</small>
             </div>
           </div>
-          <button class="control-button" id="automation-toggle" type="button">Start automation</button>
+          <button class="btn btn-gold" id="automation-toggle" type="button">Start automation</button>
         </article>
 
-        <div class="grid two dashboard-grid">
-          <article class="panel attention-panel">
-            <div class="panel-head">
-              <div><span class="kicker gold">YOUR QUEUE</span><h3>Needs you</h3></div>
-              <span class="micro">Only real intervention gates</span>
-            </div>
-            <div id="dashboard-actions" class="stack empty-state">Nothing needs you right now.</div>
+        <div class="stats" id="stats" aria-label="Engine status">
+          <div class="stat skeleton"></div><div class="stat skeleton"></div><div class="stat skeleton"></div>
+          <div class="stat skeleton"></div><div class="stat skeleton"></div><div class="stat skeleton"></div>
+        </div>
+
+        <div class="grid two">
+          <article class="panel panel-attention">
+            <div class="panel-head"><h3>Needs you</h3><span class="micro">Recordings the engine is waiting for</span></div>
+            <div id="dashboard-actions" class="stack empty-state"><span class="line-skeleton"></span><span class="line-skeleton short"></span></div>
           </article>
           <article class="panel">
-            <div class="panel-head">
-              <div><span class="kicker">DISTRIBUTION</span><h3>Next scheduled</h3></div>
-            </div>
-            <div id="upcoming" class="stack empty-state">No scheduled content yet.</div>
+            <div class="panel-head"><h3>Coming up</h3><span class="micro">Next scheduled posts</span></div>
+            <div id="upcoming" class="stack empty-state"><span class="line-skeleton"></span><span class="line-skeleton short"></span></div>
           </article>
         </div>
 
-        <article class="panel budget-panel">
-          <div class="panel-head">
-            <div><span class="kicker gold">FIRST-SCALE GUARD</span><h3>Spend stays bounded</h3></div>
-            <span class="micro">API billing · not ChatGPT subscription</span>
-          </div>
+        <article class="panel">
+          <div class="panel-head"><h3>Spend this month</h3><span class="micro">OpenAI and X API billing</span></div>
           <div id="budget-strip" class="budget-strip"></div>
         </article>
       </section>
 
       <section class="view" id="create">
-        <section class="automation-hero">
+        <section class="lede">
           <div>
-            <p class="kicker">MINIMAL-INPUT OPERATING MODEL</p>
-            <h2>Autopilot, with one human checkpoint.</h2>
-            <p>No topic box. No manual script writing. No final-video upload. The engine discovers demand and builds the asset; video pauses only for your recorded narration.</p>
+            <h2>Autopilot with one human step.</h2>
+            <p>No topic box and no script writing. The engine picks trending topics, writes and illustrates. Videos wait only for your recorded voice.</p>
           </div>
-          <div class="autopilot-state" id="autopilot-state"><span class="live-dot"></span><strong id="autopilot-label">Automation paused</strong><small id="autopilot-window">Owner-controlled · scheduled windows only</small></div>
+          <div class="autopilot-state" id="autopilot-state">
+            <span class="live-dot" aria-hidden="true"></span>
+            <strong id="autopilot-label">Automation paused</strong>
+            <small id="autopilot-window">Runs only in the scheduled windows</small>
+          </div>
         </section>
 
         <div class="lane-grid">
-          <article class="lane post-lane">
-            <div class="lane-icon">P</div>
-            <div class="lane-count"><strong>2</strong><span>every day</span></div>
-            <h3>Static posts</h3>
-            <p>Signal + product registry → 3–4 value units → platform copy → one GOLIDE master image → 4:5 + 1:1 → schedule.</p>
-            <div class="lane-route">IG · FB · LINKEDIN · X</div>
-            <ol><li>Find angle</li><li>Write</li><li>Generate image</li><li>Engine approval</li><li>Publish</li></ol>
+          <article class="lane">
+            <div class="lane-top"><h3>Posts</h3><p class="lane-count"><strong>2</strong> a day</p></div>
+            <p>08:30 a trending idea, 17:30 a GOLIDE Marketplace product. One image each.</p>
+            <p class="lane-route">Instagram, Facebook, LinkedIn, X</p>
+            <ol><li>Find the angle</li><li>Write</li><li>Draw the image</li><li>Publish</li></ol>
           </article>
-
-          <article class="lane short-lane">
-            <div class="lane-icon">S</div>
-            <div class="lane-count"><strong>4</strong><span>every week</span></div>
-            <h3>Short videos</h3>
-            <p>Current YouTube signals → demand scoring → research → script → your voice → visual plan → render → QA → route.</p>
-            <div class="lane-route">IG REELS · FB REELS · YT SHORTS</div>
-            <ol><li>Trend scout</li><li>Research + script</li><li class="human-step">Your voice</li><li>Render + QA</li><li>Publish</li></ol>
+          <article class="lane">
+            <div class="lane-top"><h3>Shorts</h3><p class="lane-count"><strong>4</strong> a week</p></div>
+            <p>A trending tech topic, scripted for 30–90 seconds, illustrated scene by scene over your voice.</p>
+            <p class="lane-route">YouTube Shorts, Instagram and Facebook Reels</p>
+            <ol><li>Find the topic</li><li>Research and script</li><li class="human-step">Your recording</li><li>Illustrate and check</li><li>Publish</li></ol>
           </article>
-
-          <article class="lane long-lane">
-            <div class="lane-icon gold-icon">L</div>
-            <div class="lane-count"><strong>2</strong><span>every week</span></div>
-            <h3>Long-form</h3>
-            <p>Fresh demand → evidence packet → long script → your voice → 16:9 editorial render → metadata + thumbnail → private-first release.</p>
-            <div class="lane-route gold">YOUTUBE ONLY</div>
-            <ol><li>Trend scout</li><li>Research + script</li><li class="human-step">Your voice</li><li>Render + QA</li><li>Schedule</li></ol>
+          <article class="lane lane-long">
+            <div class="lane-top"><h3>Long videos</h3><p class="lane-count"><strong>2</strong> a week</p></div>
+            <p>Tuesday and Saturday. A 3:30–5:00 explainer in 16:9, published on YouTube at 19:30.</p>
+            <p class="lane-route">YouTube</p>
+            <ol><li>Find the topic</li><li>Research and script</li><li class="human-step">Your recording</li><li>Illustrate and check</li><li>Publish</li></ol>
           </article>
         </div>
 
-        <article class="panel action-room">
-          <div class="panel-head">
-            <div><span class="kicker gold">ACTION ROOM</span><h3>Waiting on you</h3></div>
-            <span class="micro">Record only from the script the engine selected</span>
-          </div>
-          <div id="action-queue" class="action-queue empty-state">No voice recordings required right now.</div>
+        <article class="panel panel-attention">
+          <div class="panel-head"><h3>Waiting on you</h3><span class="micro">Record the script exactly as written</span></div>
+          <div id="action-queue" class="action-queue empty-state"><span class="line-skeleton"></span></div>
         </article>
 
         <article class="panel">
-          <div class="panel-head">
-            <div><span class="kicker">ENGINE PIPELINE</span><h3>Production jobs</h3></div>
-            <button class="ghost" id="refresh-jobs">Refresh</button>
-          </div>
-          <div id="job-list" class="job-list empty-state">No production jobs yet.</div>
+          <div class="panel-head"><h3>Production</h3><button class="btn btn-quiet" id="refresh-jobs" type="button">Refresh</button></div>
+          <div id="job-list" class="job-list empty-state"><span class="line-skeleton"></span><span class="line-skeleton"></span></div>
         </article>
       </section>
 
       <section class="view" id="schedule">
-        <article class="panel cadence-panel">
-          <div class="panel-head"><div><span class="kicker">LOCKED WEEK</span><h3>Operating cadence</h3></div><span class="micro">Africa/Lusaka</span></div>
+        <article class="panel">
+          <div class="panel-head"><h3>Weekly rhythm</h3><span class="micro">Lusaka time</span></div>
           <div id="cadence-grid" class="cadence-grid"></div>
         </article>
-        <article class="panel schedule-panel">
-          <div class="panel-head"><div><span class="kicker gold">CALENDAR QUEUE</span><h3>Scheduled content</h3></div></div>
-          <div id="schedule-list" class="stack empty-state">Nothing scheduled.</div>
+        <article class="panel">
+          <div class="panel-head"><h3>Scheduled</h3></div>
+          <div id="schedule-list" class="stack empty-state"><span class="line-skeleton"></span></div>
         </article>
       </section>
 
       <section class="view" id="inbox">
         <article class="panel">
-          <div class="panel-head"><div><span class="kicker">UNIFIED INBOX</span><h3>Responses</h3></div><span class="micro">Draft assistance, never silent auto-replies</span></div>
-          <div id="inbox-list" class="stack empty-state">No open conversations.</div>
+          <div class="panel-head"><h3>Conversations</h3><span class="micro">Drafts only, nothing is sent automatically</span></div>
+          <div id="inbox-list" class="stack empty-state"><span class="line-skeleton"></span></div>
         </article>
       </section>
 
       <section class="view" id="connections">
-        <article class="panel connection-panel">
-          <div class="panel-head">
-            <div><span class="kicker">LIVE ROUTES</span><h3>Connections</h3></div>
-            <span class="micro">Studio-owned OAuth · encrypted credentials · tokens never displayed</span>
-          </div>
-          <div class="connection-grid" id="connection-grid"><p class="micro">Loading connections…</p></div>
-          <p class="note">Connect each provider here. Studio verifies the account, encrypts the OAuth credential in D1, and becomes the source of truth. The execution engine requests a usable credential only when publishing. Pinterest remains manual from Instagram.</p>
+        <article class="panel">
+          <div class="panel-head"><h3>Accounts</h3><span class="micro">Tokens are encrypted and never shown</span></div>
+          <div class="connection-grid" id="connection-grid"><span class="line-skeleton"></span></div>
+          <p class="note">Connect each account here. Studio checks the account, keeps the credential encrypted, and hands it to the engine only at the moment of publishing.</p>
         </article>
       </section>
     </main>
   </div>
-  <script src="/app.js?v=20260923-2"></script>
+  <script src="/loader.js?v=20261005"></script>
+  <script src="/app.js?v=20261005"></script>
 </body>
 </html>

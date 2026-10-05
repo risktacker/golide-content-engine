@@ -52,6 +52,31 @@ function money(value) {
   }).format(Number(value || 0));
 }
 
+// Dates read like "Tue 6 Oct, 13:00" in the viewer's time zone.
+function when(value) {
+  const d = new Date(value);
+  if (Number.isNaN(d.valueOf())) return "";
+  return d.toLocaleString("en-GB", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hour12: false });
+}
+
+const STATUS_LABELS = {
+  waiting_owner_voice: "Needs your recording",
+  queued: "Queued",
+  claimed: "Starting",
+  running: "In production",
+  paused_funds: "Paused: add API credit",
+  failed: "Failed",
+  release_ready: "Ready",
+  scheduled: "Scheduled",
+  completed: "Done",
+  published: "Published",
+  partial: "Partly published",
+  publishing: "Publishing",
+  draft: "Draft",
+  topic_rejected: "Topic skipped",
+};
+function statusLabel(value) { return STATUS_LABELS[value] || pretty(value); }
+
 const VIEWS = ["dashboard", "create", "schedule", "inbox", "connections"];
 
 function switchView(name) {
@@ -122,16 +147,14 @@ function renderAutomationControl() {
   }
   if ($("#automation-control-copy")) {
     $("#automation-control-copy").textContent = enabled
-      ? "The engine is armed. It will generate and resume work only at the locked schedule windows."
-      : "Deployment is safe: scheduled runners can wake, but paid generation and publishing stay blocked until you start automation.";
+      ? "Posts and videos are made and published at their scheduled times."
+      : "Nothing paid runs and nothing publishes until you start automation.";
   }
   if ($("#automation-control-meta")) {
-    const stamp = automationControl?.updated_at
-      ? new Date(automationControl.updated_at).toLocaleString()
-      : "not changed yet";
+    const stamp = automationControl?.updated_at ? when(automationControl.updated_at) : "not changed yet";
     $("#automation-control-meta").textContent = enabled
-      ? "Started " + stamp + ". Pause blocks new automated work."
-      : "Paused " + stamp + ". Existing Studio data and schedules are preserved.";
+      ? "Running since " + stamp + "."
+      : "Paused since " + stamp + ". Your schedule and content are kept.";
   }
   if (button) {
     button.disabled = automationBusy;
@@ -180,11 +203,11 @@ async function loadOverview() {
 
   const stats = [
     ["Waiting on you", overview.waiting_voice],
-    ["Engine running", overview.production_running],
+    ["In production", overview.production_running],
     ["Scheduled", overview.scheduled],
     ["Published", overview.published],
-    ["Failed / partial", overview.failed],
-    ["Temp media", overview.temporary_media],
+    ["Need attention", overview.failed],
+    ["Temporary files", overview.temporary_media],
   ];
   $("#stats").innerHTML = stats.map(([label, value]) =>
     '<div class="stat"><b>' + esc(value) + '</b><span>' + esc(label) + '</span></div>'
@@ -220,19 +243,19 @@ function renderBudget() {
 
 function renderPosts(root, posts) {
   if (!posts.length) {
-    root.innerHTML = "No scheduled content yet.";
+    root.innerHTML = "Nothing scheduled yet. Posts appear here as soon as the engine writes them.";
     root.className = "stack empty-state";
     return;
   }
   root.className = "stack";
   root.innerHTML = posts.map((post) => {
     const platforms = (post.variants || []).map((variant) => labels[variant.platform] || variant.platform).join(", ");
-    const when = post.scheduled_at ? new Date(post.scheduled_at).toLocaleString() : "Unscheduled";
+    const at = post.scheduled_at ? when(post.scheduled_at) : "Not scheduled";
     return '<div class="item"><div class="item-main"><strong>' +
       esc(post.title || post.master_text || "Scheduled content") +
-      '</strong><small>' + esc(String(post.content_class || "").toUpperCase()) +
-      " · " + esc(when) + " · " + esc(platforms) +
-      '</small></div><span class="pill">' + esc(post.status) + '</span></div>';
+      '</strong><small>' + esc(pretty(post.content_class || "post")) +
+      ", " + esc(at) + (platforms ? ", " + esc(platforms) : "") +
+      '</small></div><span class="pill">' + esc(statusLabel(post.status)) + '</span></div>';
   }).join("");
 }
 
@@ -248,7 +271,7 @@ function renderThreads(root, threads) {
     return '<div class="item"><div class="item-main"><strong>' +
       esc(thread.participant_ref || thread.subject || "Conversation") +
       '</strong><small>' + esc(labels[thread.platform] || thread.platform) +
-      " · " + (last ? esc(last.body) : "No messages") +
+      ": " + (last ? esc(last.body) : "No messages") +
       '</small></div><span class="pill">open</span></div>';
   }).join("");
 }
@@ -292,17 +315,17 @@ function stageBars(job) {
 
 function jobSecondary(job) {
   const pieces = [];
-  if (job.format) pieces.push(String(job.format).toUpperCase());
+  if (job.format) pieces.push(job.format === "long" ? "Long video" : "Short");
   if (job.stage) pieces.push(pretty(job.stage));
-  if (job.scheduled_at) pieces.push(new Date(job.scheduled_at).toLocaleString());
-  return pieces.join(" · ");
+  if (job.scheduled_at) pieces.push(when(job.scheduled_at));
+  return pieces.join(", ");
 }
 
 function renderJobList() {
   const root = $("#job-list");
   if (!productionJobs.length) {
     root.className = "job-list empty-state";
-    root.innerHTML = "No production jobs yet. Scheduled automation will populate this pipeline.";
+    root.innerHTML = "No videos in production. New jobs appear here at the scheduled times.";
     return;
   }
   root.className = "job-list";
@@ -315,7 +338,7 @@ function renderJobList() {
       esc(jobSecondary(job)) + '</small></div>' +
       stageBars(job) +
       '<div><span class="status-pill ' + escAttr(job.status) + '">' +
-      esc(pretty(job.status)) + '</span>' + retry + '</div></div>';
+      esc(statusLabel(job.status)) + '</span>' + retry + '</div></div>';
   }).join("");
 
   $$(".retry-job").forEach((button) => {
@@ -365,9 +388,9 @@ function actionCard(job) {
   const rejected = job.stage === "recording-rejected" && job.error
     ? '<p class="voice-rejected">Last upload was rejected: ' + esc(job.error) + '</p>'
     : "";
-  return '<article class="action-card" id="job-' + escAttr(job.job_id) + '"><div><span class="kicker gold">VOICE NEEDED · ' +
-    esc(String(job.format || "video").toUpperCase()) + '</span><h4>' +
-    esc(job.title || "Script ready") + '</h4><p>The topic was selected from current demand and researched by the engine. Record this script in your own voice (' + clock(windowRange[0]) + ' to ' + clock(windowRange[1]) + '); the pipeline resumes automatically after upload.</p>' + rejected +
+  return '<article class="action-card" id="job-' + escAttr(job.job_id) + '"><div><span class="kicker">' +
+    (job.format === "long" ? "Long video" : "Short") + ', record ' + clock(windowRange[0]) + ' to ' + clock(windowRange[1]) + '</span><h4>' +
+    esc(job.title || "Script ready") + '</h4><p>Read the script below in your own voice. The engine picks it up automatically after you upload.</p>' + rejected +
     '<div class="script-box">' + esc(script) + '</div></div>' +
     '<div class="action-controls">' +
       '<label class="upload-button">Upload my recording<input class="voice-input" type="file" accept="audio/*,video/*,.m4a,.mp3,.wav,.aac,.caf,.ogg,.opus,.webm,.mp4,.mov" data-job="' + escAttr(job.job_id) + '"></label>' +
@@ -383,7 +406,7 @@ function renderActionQueues() {
 
   if (!waiting.length) {
     root.className = "action-queue empty-state";
-    root.innerHTML = "No voice recordings required right now.";
+    root.innerHTML = "No recordings needed right now. You'll get an email when a script is ready.";
     dashboard.className = "stack empty-state";
     dashboard.innerHTML = "Nothing needs you right now.";
     return;
@@ -395,8 +418,8 @@ function renderActionQueues() {
   dashboard.innerHTML = waiting.slice(0, 4).map((job) =>
     '<div class="item"><div class="item-main"><strong>' +
     esc(job.title || "Video script ready") + '</strong><small>' +
-    esc(String(job.format || "video").toUpperCase()) +
-    ' · owner recording required</small></div><span class="pill">voice needed</span></div>'
+    (job.format === "long" ? "Long video" : "Short") +
+    ', waiting for your recording</small></div><span class="pill">Record</span></div>'
   ).join("");
 
   $$(".voice-input").forEach((input) => {
@@ -540,7 +563,7 @@ async function loadConnections() {
       ? "Authorize this account directly from Studio"
       : "Add this provider's OAuth Client ID and Secret to Studio");
     const verified = item.synced_at
-      ? "Verified " + new Date(item.synced_at).toLocaleString()
+      ? "Checked " + when(item.synced_at)
       : (configured ? "Not connected yet" : "OAuth app not configured");
     const action = configured
       ? '<a class="connection-action" href="/api/' + platform + '/connect">' +
@@ -598,4 +621,25 @@ async function boot() {
   }
 }
 
-boot();
+// Theme: dark by default; the choice is remembered on this device.
+function applyThemeLabel() {
+  const dark = document.documentElement.dataset.theme !== "light";
+  const toggle = $("#theme-toggle");
+  if (toggle) toggle.setAttribute("aria-label", dark ? "Switch to light theme" : "Switch to dark theme");
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute("content", dark ? "#0b0c10" : "#f3f4f6");
+}
+$("#theme-toggle").onclick = () => {
+  const next = document.documentElement.dataset.theme === "light" ? "dark" : "light";
+  document.documentElement.dataset.theme = next;
+  try { localStorage.setItem("golide-theme", next); } catch {}
+  applyThemeLabel();
+};
+applyThemeLabel();
+
+boot().finally(() => {
+  if (window.GolideLoader) {
+    window.GolideLoader.finish();
+    setTimeout(() => window.GolideLoader.formOnce($("#hero-mark")), 900);
+  }
+});
