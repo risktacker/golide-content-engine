@@ -1,16 +1,28 @@
 {
   "production_id": "golide-short-2026-10-05",
-  "status": "published",
-  "media_ref": "r2://temp/2026/10/05/9ebb2c7d644549f68e319ac804f18987-golide-short-2026-10-05-rebuild.mp4",
-  "built_at": "2026-10-05T12:52:35.686118+00:00",
-  "preview_expires_at": "2026-10-07T12:52:35.686131+00:00",
+  "previous": {
+    "production_id": "golide-short-2026-10-05",
+    "status": "published",
+    "media_ref": "r2://temp/2026/10/05/9ebb2c7d644549f68e319ac804f18987-golide-short-2026-10-05-rebuild.mp4",
+    "built_at": "2026-10-05T12:52:35.686118+00:00",
+    "preview_expires_at": "2026-10-07T12:52:35.686131+00:00",
+    "redone_stages": [
+      "render-vector-v1",
+      "qa",
+      "release"
+    ],
+    "youtube_video_id": "zzPJvIyA-DM",
+    "social_post_id": "golide-short-2026-10-05-reels",
+    "reels_status": "published",
+    "published_at": "2026-10-05T14:07:23.924541+00:00"
+  },
+  "status": "awaiting_approval",
+  "media_ref": "r2://temp/2026/10/05/79204ed3021949d9ab269577a8228e08-golide-short-2026-10-05-rebuild.mp4",
+  "built_at": "2026-10-05T14:42:43.466288+00:00",
+  "preview_expires_at": "2026-10-07T14:42:43.466300+00:00",
   "redone_stages": [
     "render-vector-v1",
     "qa",
     "release"
-  ],
-  "youtube_video_id": "zzPJvIyA-DM",
-  "social_post_id": "golide-short-2026-10-05-reels",
-  "reels_status": "published",
-  "published_at": "2026-10-05T14:07:23.924541+00:00"
+  ]
 }
