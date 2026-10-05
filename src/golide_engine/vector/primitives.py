@@ -44,6 +44,12 @@ class Draw:
     unit_px: float  # pixels per unit at full resolution
     colors: dict[str, tuple[float, float, float]]
     icons: tuple[str, ...] = ()  # topic drawings for this scene (see vector.icons)
+    # Continuity between scenes: drawings already on screen are not redrawn.
+    # carry maps a drawing name to the position it glides from (x, y, size),
+    # or None once it has arrived; hide lists drawings this scene must skip.
+    carry: dict | None = None
+    hide: frozenset = frozenset()
+    visual: str = ""
 
     def px(self, value: float) -> float:
         return value / self.unit_px
@@ -431,8 +437,13 @@ def logo_end(d: Draw) -> None:
 # ------------------------------------------------------------ topic drawings
 
 def draw_icon(d: Draw, name: str, cx: float, cy: float, size: float, p: float,
-              color: str = "line", hot: bool = False, width: float = 2.4, alpha: float = 1.0) -> None:
-    """Draw a topic drawing (24x24 line icon) centred at cx,cy, revealed to p."""
+              color: str = "line", hot: bool = False, width: float = 2.4, alpha: float = 1.0,
+              pen: bool = False) -> None:
+    """Draw a topic drawing (24x24 line icon) centred at cx,cy, revealed to p.
+
+    ``pen`` adds the travelling light at the tip of the stroke while it draws,
+    like the reference: a bright point leads every line onto the screen.
+    """
     from .icons import polylines
 
     if p <= 0:
@@ -445,6 +456,7 @@ def draw_icon(d: Draw, name: str, cx: float, cy: float, size: float, p: float,
     total = sum(lengths) or 1.0
     target = total * min(1.0, p)
     walked = 0.0
+    tip = None
     for pts, length in zip(lines, lengths):
         if walked >= target:
             break
@@ -452,6 +464,17 @@ def draw_icon(d: Draw, name: str, cx: float, cy: float, size: float, p: float,
         walked += length
         mapped = [(cx + (x - 12) * scale, cy + (y - 12) * scale) for x, y in pts]
         d.stroke(_partial_polyline(mapped, local), color, width, alpha=alpha, hot=hot)
+        if local < 1.0:
+            tip = _point_at(mapped, local)
+    if pen and tip is not None and p < 1.0:
+        pen_light(d, tip[0], tip[1], alpha)
+
+
+def pen_light(d: Draw, x: float, y: float, alpha: float = 1.0, color: str = "white_glow") -> None:
+    """The bright travelling point that leads a stroke."""
+    r = d.px(3.2)
+    d.fill(lambda c: c.arc(x, y, r, 0, TAU), color, alpha=alpha)
+    d.fill(lambda c: c.arc(x, y, r * 2.6, 0, TAU), "gold", alpha=0.9 * alpha, hot=True)
 
 
 def _arrow(d: Draw, x1, y1, x2, y2, p, color="line_dim"):
@@ -480,73 +503,157 @@ def _icons(d: Draw, minimum: int = 1) -> list[str]:
     return names
 
 
+@dataclass(frozen=True)
+class Slot:
+    """Where one drawing sits in a scene and when it is drawn (gp range)."""
+    name: str
+    x: float
+    y: float
+    size: float
+    accent: str
+    start: float
+    end: float
+    width: float = 2.4
+
+
+def icon_slots(visual: str, icons: tuple[str, ...] | list[str]) -> list[Slot]:
+    """The drawings of an icon scene and their places, in drawing order.
+
+    Shared by the scene itself and by the transitions, so a drawing that
+    appears in two consecutive scenes can glide from one place to the other
+    instead of being wiped and redrawn.
+    """
+    names = list(icons) or ["sparkles"]
+    if visual == "icon_hero":
+        return [Slot(names[0], 0, 0, 1.15, "gold", 0.0, 0.75, 2.6)]
+    if visual == "icon_pair":
+        a, b = (names + names)[:2]
+        return [Slot(a, -0.48, 0, 0.62, "cyan", 0.0, 0.45), Slot(b, 0.48, 0, 0.62, "gold", 0.45, 0.95)]
+    if visual == "icon_flow":
+        while len(names) < 3:
+            names.append(names[-1])
+        names = names[:4]
+        count = len(names)
+        out = []
+        for i, name in enumerate(names):
+            y = -0.62 + 1.24 * i / max(1, count - 1)
+            out.append(Slot(name, 0, y, 0.42, "gold" if i == count - 1 else "cyan",
+                            i / count, (i + 0.8) / count, 2.2))
+        return out
+    if visual == "icon_orbit":
+        if len(names) < 2:
+            names.append(names[0])
+        center, around = names[0], names[1:5]
+        out = [Slot(center, 0, 0, 0.6, "gold", 0.0, 0.4)]
+        for i, name in enumerate(around):
+            a = -TAU / 4 + TAU * i / len(around)
+            out.append(Slot(name, 0.72 * math.cos(a), 0.72 * math.sin(a), 0.3, "cyan",
+                            0.3 + 0.15 * i, 0.6 + 0.15 * i, 2.0))
+        return out
+    if visual == "icon_grid":
+        cols, rows = 5, 6
+        out = []
+        for j in range(rows):
+            for i in range(cols):
+                idx = j * cols + i
+                start = idx / (cols * rows) * 0.6
+                out.append(Slot(names[0], -0.72 + 1.44 * i / (cols - 1), -0.8 + 1.6 * j / (rows - 1),
+                                0.2, "line_dim", start, start + 0.2, 1.8))
+        return out
+    return []
+
+
+def lead_slots(visual: str, icons) -> dict[str, Slot]:
+    """The first slot of each distinct drawing: the ones that can carry over."""
+    out: dict[str, Slot] = {}
+    for slot in icon_slots(visual, icons):
+        out.setdefault(slot.name, slot)
+    return out
+
+
+def _place(d: Draw, slot: Slot) -> tuple[float, float, float, float]:
+    """Position, size and reveal of a slot, honouring carried drawings."""
+    carry = d.carry or {}
+    if slot.name in carry and lead_slots_cache(d).get(slot.name) == slot:
+        start = carry[slot.name]
+        if start is None:
+            return slot.x, slot.y, slot.size, 1.0
+        return start[0], start[1], start[2], 1.0
+    return slot.x, slot.y, slot.size, seg(d.gp, slot.start, slot.end)
+
+
+def lead_slots_cache(d: Draw) -> dict[str, Slot]:
+    return lead_slots(_layout_name(d), d.icons)
+
+
+def _layout_name(d: Draw) -> str:
+    return d.visual or "icon_hero"
+
+
+def _draw_slot(d: Draw, slot: Slot, accent_alpha: float = 0.55, breathe: float = 1.0) -> tuple[float, float, float, float]:
+    x, y, size, p = _place(d, slot)
+    if slot.name in d.hide and lead_slots_cache(d).get(slot.name) == slot:
+        return x, y, size, p
+    size *= breathe
+    draw_icon(d, slot.name, x, y, size, p, "line", width=slot.width, pen=True)
+    draw_icon(d, slot.name, x, y, size, p, slot.accent, hot=True, width=slot.width, alpha=accent_alpha)
+    return x, y, size, p
+
+
 def icon_hero(d: Draw) -> None:
     """One subject, large, drawn on, with a slow breathing glow."""
-    name = _icons(d)[0]
-    breathe = 1 + 0.015 * math.sin(d.t * 1.6)
-    p = seg(d.gp, 0.0, 0.75)
+    d.visual = "icon_hero"
+    slot = icon_slots("icon_hero", d.icons)[0]
     _halo(d, 0, 0, 0.78, seg(d.gp, 0, 0.5))
-    draw_icon(d, name, 0, 0, 1.15 * breathe, p, "line", width=2.6)
-    draw_icon(d, name, 0, 0, 1.15 * breathe, p, "gold", hot=True, width=2.6, alpha=0.55)
+    _draw_slot(d, slot, breathe=1 + 0.015 * math.sin(d.t * 1.6))
 
 
 def icon_pair(d: Draw) -> None:
     """Two subjects compared or connected: A on the left, B on the right."""
-    a, b = _icons(d, 2)[:2]
-    pa, pb = seg(d.gp, 0.0, 0.45), seg(d.gp, 0.45, 0.95)
-    draw_icon(d, a, -0.48, 0, 0.62, pa, "line", width=2.4)
-    draw_icon(d, a, -0.48, 0, 0.62, pa, "cyan", hot=True, width=2.4, alpha=0.45)
+    d.visual = "icon_pair"
+    a, b = icon_slots("icon_pair", d.icons)
+    _draw_slot(d, a, 0.45)
     _arrow(d, -0.12, 0, 0.12, 0, seg(d.gp, 0.35, 0.55))
-    draw_icon(d, b, 0.48, 0, 0.62, pb, "line", width=2.4)
-    draw_icon(d, b, 0.48, 0, 0.62, pb, "gold", hot=True, width=2.4, alpha=0.6)
+    _draw_slot(d, b, 0.6)
 
 
 def icon_flow(d: Draw) -> None:
     """A process: each subject appears in turn, linked by arrows."""
-    names = _icons(d, 3)[:4] if len(d.icons) >= 3 else _icons(d, 3)[:3]
-    count = len(names)
-    reveal = d.gp * count
-    for i, name in enumerate(names):
-        y = -0.62 + 1.24 * i / max(1, count - 1)
-        p = seg(reveal, i, i + 0.8)
-        last = i == count - 1
-        draw_icon(d, name, 0, y, 0.42, p, "line", width=2.2)
-        draw_icon(d, name, 0, y, 0.42, p, "gold" if last else "cyan", hot=True, width=2.2, alpha=0.5)
+    d.visual = "icon_flow"
+    slots = icon_slots("icon_flow", d.icons)
+    count = len(slots)
+    for i, slot in enumerate(slots):
+        _draw_slot(d, slot, 0.5)
         if i < count - 1:
-            y2 = -0.62 + 1.24 * (i + 1) / max(1, count - 1)
-            _arrow(d, 0, y + 0.25, 0, y2 - 0.25, seg(reveal, i + 0.7, i + 1.0))
+            nxt = slots[i + 1]
+            _arrow(d, 0, slot.y + 0.25, 0, nxt.y - 0.25, seg(d.gp, slot.end - 0.1 / count, nxt.start + 0.05))
 
 
 def icon_orbit(d: Draw) -> None:
     """A central subject with related subjects around it, connected."""
-    names = _icons(d, 2)
-    center, around = names[0], names[1:5] or [names[0]]
-    pc = seg(d.gp, 0, 0.4)
-    draw_icon(d, center, 0, 0, 0.6, pc, "line", width=2.4)
-    draw_icon(d, center, 0, 0, 0.6, pc, "gold", hot=True, width=2.4, alpha=0.6)
-    for i, name in enumerate(around):
-        a = -TAU / 4 + TAU * i / len(around) + 0.05 * math.sin(d.t * 0.5)
-        x, y = 0.72 * math.cos(a), 0.72 * math.sin(a)
-        p = seg(d.gp, 0.3 + 0.15 * i, 0.6 + 0.15 * i)
-        d.stroke(_line(0.38 * math.cos(a), 0.38 * math.sin(a), 0.38 * math.cos(a) + (x - 0.38 * math.cos(a)) * p * 0.8,
-                       0.38 * math.sin(a) + (y - 0.38 * math.sin(a)) * p * 0.8), "line_dim", 1.2, dash=(3, 6))
-        draw_icon(d, name, x, y, 0.3, p, "line", width=2.0)
-        draw_icon(d, name, x, y, 0.3, p, "cyan", hot=True, width=2.0, alpha=0.45)
+    d.visual = "icon_orbit"
+    slots = icon_slots("icon_orbit", d.icons)
+    _draw_slot(d, slots[0], 0.6)
+    for slot in slots[1:]:
+        x, y, size, p = _place(d, slot)
+        a = math.atan2(slot.y, slot.x)
+        r0 = 0.38
+        d.stroke(_line(r0 * math.cos(a), r0 * math.sin(a), r0 * math.cos(a) + (x - r0 * math.cos(a)) * p * 0.8,
+                       r0 * math.sin(a) + (y - r0 * math.sin(a)) * p * 0.8), "line_dim", 1.2, dash=(3, 6))
+        _draw_slot(d, slot, 0.45)
 
 
 def icon_grid(d: Draw) -> None:
     """Scale: many copies of one subject; a few light up."""
-    name = _icons(d)[0]
-    cols, rows = 5, 6
-    rng = d.rng(9)
-    lit = set(rng.sample(range(cols * rows), 5))
-    for j in range(rows):
-        for i in range(cols):
-            idx = j * cols + i
-            x, y = -0.72 + 1.44 * i / (cols - 1), -0.8 + 1.6 * j / (rows - 1)
-            p = seg(d.gp, idx / (cols * rows) * 0.6, idx / (cols * rows) * 0.6 + 0.2)
-            on = idx in lit and d.gp > 0.6
-            draw_icon(d, name, x, y, 0.2, p, "gold" if on else "line_dim", hot=on, width=1.8)
+    d.visual = "icon_grid"
+    slots = icon_slots("icon_grid", d.icons)
+    lit = set(d.rng(9).sample(range(len(slots)), 5))
+    for idx, slot in enumerate(slots):
+        x, y, size, p = _place(d, slot)
+        if slot.name in d.hide and lead_slots_cache(d).get(slot.name) == slot:
+            continue
+        on = idx in lit and d.gp > 0.6
+        draw_icon(d, slot.name, x, y, size, p, "gold" if on else "line_dim", hot=on, width=slot.width)
 
 
 ICON_LAYOUTS = {"icon_hero", "icon_pair", "icon_flow", "icon_orbit", "icon_grid"}

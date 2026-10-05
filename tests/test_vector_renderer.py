@@ -72,5 +72,49 @@ class RenderTests(unittest.TestCase):
             self.assertAlmostEqual(float(probe[1]), 2.0, delta=0.15)
 
 
+class FlowTests(unittest.TestCase):
+    def test_a_drawing_in_two_scenes_glides_instead_of_redrawing(self):
+        from golide_engine.vector.render import Transition, VectorRenderer
+
+        plan = {"title": "t", "lines": [
+            {"section": "claim", "text": "More chips everywhere.", "emphasis": "chips",
+             "visual": "icon_grid", "subjects": ["chip"], "label": "A"},
+            {"section": "proof", "text": "Water meets the chip.", "emphasis": "Water",
+             "visual": "icon_pair", "subjects": ["water drop", "chip"], "label": "B"},
+        ]}
+        words, t = [], 0.2
+        for line in plan["lines"]:
+            for w in line["text"].split():
+                words.append({"word": w, "start": t, "end": t + 0.3})
+                t += 0.4
+            t += 0.6
+        groups = group_lines(align_lines(plan, words, t + 0.5))
+        self.assertEqual(len(groups), 2)
+        transition = Transition.between(VectorRenderer("short", fps=24), groups[0], groups[1], 1)
+        self.assertEqual(transition.shared, {"cpu"})
+        self.assertGreater(len(transition.src), 0)  # the other chips turn into light
+
+    def test_ambient_bed_is_quiet_and_exact_length(self):
+        import numpy as np
+        from golide_engine.vector.ambient import LEVEL_DB, ambient_bed
+
+        bed = ambient_bed(6.0, "title")
+        self.assertEqual(len(bed), 6 * 48000)
+        middle = bed[48000 * 2: 48000 * 4]
+        level = 20 * np.log10(np.sqrt(np.mean(middle ** 2)))
+        self.assertLess(level, LEVEL_DB + 6)
+        self.assertLess(abs(bed[0]), 1e-3)  # fades in, no click
+
+    def test_stars_twinkle_and_drift(self):
+        import numpy as np
+        from golide_engine.vector.render import StarField
+
+        stars = StarField(200, 300)
+        a = stars.add(np.zeros((300, 200, 3), np.float32), 0.0)
+        b = stars.add(np.zeros((300, 200, 3), np.float32), 1.0)
+        self.assertGreater(a.sum(), 0)
+        self.assertFalse(np.allclose(a, b))
+
+
 if __name__ == "__main__":
     unittest.main()
