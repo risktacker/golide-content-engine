@@ -104,7 +104,17 @@ def _emphasis_time(line: TimedLine) -> float | None:
     return None
 
 
+# Owner review 2026-10-05: the whooshes, ticks and swells on every change were
+# distracting ("making noise"); only the ambient bed stays. Sounds listed here
+# are the only ones rendered; empty means the effects track is silent.
+ENABLED: frozenset[str] = frozenset()
+
+
 def plan_events(groups: list[Group]) -> list[tuple[float, str]]:
+    return [(at, kind) for at, kind in _all_events(groups) if kind in ENABLED]
+
+
+def _all_events(groups: list[Group]) -> list[tuple[float, str]]:
     events: list[tuple[float, str]] = []
     for index, group in enumerate(groups):
         if index > 0:
