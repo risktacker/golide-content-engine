@@ -1,0 +1,319 @@
+{
+  "production_id": "golide-short-2026-10-05",
+  "youtube_video_id": "MW_cRJ_I8EM",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "MW_cRJ_I8EM",
+    "upload_status": "published",
+    "privacy_status": "public",
+    "scheduled_at": null,
+    "uploaded_at": "2026-10-05T11:01:19.727377+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "Why AI Data Centers Are Replacing Air With Liquid",
+    "status": "published",
+    "scheduled_at": "2026-10-05T11:00:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-shorts-mon-wed-fri-sun\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "Modern AI is limited by heat, not just computing power.\nNVIDIA's GB200 rack needs about one hundred twenty kilowatts.\nAbout eighty five percent of its cooling is liquid.\nThe remaining cooling still uses air.\nConventional room air cannot carry away enough heat alone.\nThis reveals the rule behind dense AI systems.\nMore chips create more heat in less space.\nDirect liquid cooling captures heat at the chip.\nSealed loops can recirculate coolant without evaporating water.\nWater free often means no evaporative water use.\nDry coolers can reject heat with little water.\nIgnore heat, and chips can throttle to protect themselves.\nAir cooling then demands more fans and power.\nThat turns a computing challenge into a building challenge.\nLike a laptop, a hot chip slows down.\nAI progress is now a cooling design problem.\nWhen you hear AI claims, ask how it is cooled.\nLook for direct liquid cooling and closed loops.\nModern AI is limited by heat, not just computing power.\n",
+  "research": {
+    "summary": "The physical bottleneck behind modern AI is heat density. Nearly all electrical power consumed by GPUs becomes heat, and as more high-power accelerators are packed into each rack, air must move faster and in greater volume to carry that heat away. At current AI rack densities, operators are shifting heat capture from room air to liquid at the chip or server level. “Water-free” usually means zero evaporative water use—not necessarily that no liquid circulates: sealed loops can reuse water or coolant while rejecting heat through dry coolers.",
+    "claims": [
+      {
+        "claim": "The U.S. Department of Energy says direct liquid cooling transfers heat from IT equipment directly into a recirculating liquid loop, avoiding the intermediate step of transferring heat to room air first.",
+        "source_title": "Cooling Water Efficiency Opportunities for Federal Data Centers",
+        "source_url": "https://www.energy.gov/cmei/femp/cooling-water-efficiency-opportunities-federal-data-centers",
+        "published_or_updated": "Accessed October 5, 2026"
+      },
+      {
+        "claim": "The DOE’s data-center design guide reports that high-performance-computing racks have moved from roughly 60 kW in earlier deployments to more than 125 kW per compute rack, a density that has driven early adoption of direct liquid cooling.",
+        "source_title": "Best Practices Guide for Energy-Efficient Data Center Design",
+        "source_url": "https://www.energy.gov/sites/default/files/2024-07/best-practice-guide-data-center-design_0.pdf",
+        "published_or_updated": "July 2024"
+      },
+      {
+        "claim": "NVIDIA documents its GB200 NVL72 as an approximately 120 kW rack using a hybrid design that is about 85% liquid-cooled and 15% air-cooled, illustrating why the newest rack-scale AI systems cannot rely on conventional room-air cooling alone.",
+        "source_title": "GB200 NVL72 Partition User’s Guide",
+        "source_url": "https://docs.nvidia.com/multi-node-nvlink-systems/partition-guide-v1-2.pdf",
+        "published_or_updated": "Accessed October 5, 2026"
+      },
+      {
+        "claim": "NVIDIA’s technical description states that direct liquid cooling is used to manage the 120 kW cooling requirement of the GB200 NVL72 rack.",
+        "source_title": "NVIDIA Contributes NVIDIA GB200 NVL72 Designs to Open Compute Project",
+        "source_url": "https://developer.nvidia.com/blog/?p=90182",
+        "published_or_updated": "October 15, 2024"
+      },
+      {
+        "claim": "ASHRAE identifies air cooling as having reached practical limits for high-density AI deployments and describes direct-to-chip liquid cooling as the dominant approach for AI and HPC, while noting that warm-water systems can reject heat through dry coolers with little or no evaporative water use.",
+        "source_title": "Integrated Design Principles: AI Data Center Energy Performance Framework",
+        "source_url": "https://www.ashrae.org/technical-resources/ai-data-center-framework/integrated-design-principles",
+        "published_or_updated": "Accessed October 5, 2026"
+      },
+      {
+        "claim": "Microsoft’s zero-water-evaporation design uses chip-level liquid cooling in a closed loop: the system is filled initially, then recirculates the liquid without requiring a continuing fresh-water supply for cooling.",
+        "source_title": "Sustainable by design: Next-generation datacenters consume zero water for cooling",
+        "source_url": "https://www.microsoft.com/en-us/microsoft-cloud/blog/2024/12/09/sustainable-by-design-next-generation-datacenters-consume-zero-water-for-cooling/",
+        "published_or_updated": "December 9, 2024"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "AI's Next Limit Is Cooling, Not Computing",
+    "description": "Modern AI systems are hitting a thermal limit. NVIDIA’s GB200 rack requires about 120 kilowatts, with roughly 85% of its cooling handled by liquid while the rest still relies on air. Direct liquid cooling, sealed loops, and dry coolers help manage dense AI hardware while reducing or avoiding evaporative water use.\n\nAs chips get hotter and more tightly packed, cooling becomes a building-scale engineering challenge. #AI #LiquidCooling #DataCenters",
+    "tags": [
+      "AI cooling",
+      "NVIDIA GB200",
+      "liquid cooling",
+      "data center infrastructure",
+      "AI hardware",
+      "direct liquid cooling"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "format": "short",
+    "title_description_language": "en"
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "The U.S. Department of Energy says direct liquid cooling transfers heat from IT equipment directly into a recirculating liquid loop, avoiding the intermediate step of transferring heat to room air first.",
+        "source_title": "Cooling Water Efficiency Opportunities for Federal Data Centers",
+        "source_url": "https://www.energy.gov/cmei/femp/cooling-water-efficiency-opportunities-federal-data-centers",
+        "published_or_updated": "Accessed October 5, 2026"
+      },
+      {
+        "claim": "The DOE’s data-center design guide reports that high-performance-computing racks have moved from roughly 60 kW in earlier deployments to more than 125 kW per compute rack, a density that has driven early adoption of direct liquid cooling.",
+        "source_title": "Best Practices Guide for Energy-Efficient Data Center Design",
+        "source_url": "https://www.energy.gov/sites/default/files/2024-07/best-practice-guide-data-center-design_0.pdf",
+        "published_or_updated": "July 2024"
+      },
+      {
+        "claim": "NVIDIA documents its GB200 NVL72 as an approximately 120 kW rack using a hybrid design that is about 85% liquid-cooled and 15% air-cooled, illustrating why the newest rack-scale AI systems cannot rely on conventional room-air cooling alone.",
+        "source_title": "GB200 NVL72 Partition User’s Guide",
+        "source_url": "https://docs.nvidia.com/multi-node-nvlink-systems/partition-guide-v1-2.pdf",
+        "published_or_updated": "Accessed October 5, 2026"
+      },
+      {
+        "claim": "NVIDIA’s technical description states that direct liquid cooling is used to manage the 120 kW cooling requirement of the GB200 NVL72 rack.",
+        "source_title": "NVIDIA Contributes NVIDIA GB200 NVL72 Designs to Open Compute Project",
+        "source_url": "https://developer.nvidia.com/blog/?p=90182",
+        "published_or_updated": "October 15, 2024"
+      },
+      {
+        "claim": "ASHRAE identifies air cooling as having reached practical limits for high-density AI deployments and describes direct-to-chip liquid cooling as the dominant approach for AI and HPC, while noting that warm-water systems can reject heat through dry coolers with little or no evaporative water use.",
+        "source_title": "Integrated Design Principles: AI Data Center Energy Performance Framework",
+        "source_url": "https://www.ashrae.org/technical-resources/ai-data-center-framework/integrated-design-principles",
+        "published_or_updated": "Accessed October 5, 2026"
+      },
+      {
+        "claim": "Microsoft’s zero-water-evaporation design uses chip-level liquid cooling in a closed loop: the system is filled initially, then recirculates the liquid without requiring a continuing fresh-water supply for cooling.",
+        "source_title": "Sustainable by design: Next-generation datacenters consume zero water for cooling",
+        "source_url": "https://www.microsoft.com/en-us/microsoft-cloud/blog/2024/12/09/sustainable-by-design-next-generation-datacenters-consume-zero-water-for-cooling/",
+        "published_or_updated": "December 9, 2024"
+      }
+    ],
+    "platform_demand": {
+      "query": "DOE COOLERCHIPS 1 megawatt per rack liquid cooling AI data centers",
+      "score": 88.3,
+      "verdict": "pass",
+      "recent_videos": 63,
+      "median_views_per_day": 531108.18,
+      "top_views_per_day": 5851648.48,
+      "market_coverage": 4,
+      "title_query_overlap": 0.2222,
+      "measured_at": "2026-10-05T07:02:55.509926+00:00",
+      "signal_type": "youtube-most-popular-seed-proxy"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.58,
+      "true_peak_dbtp": -1.48,
+      "loudness_range": 2.8
+    },
+    "editorial": {
+      "beats": 19,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-10-05T11:01:14.334167+00:00"
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri-sun"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-short-2026-10-05",
+    "created_at": "2026-10-05T11:01:15.427500+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-10-05T11:00:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "2dc8a84cd5f5aebf85b09d0616225f26bd2457a2a6903dfc513c907c89d25761",
+        "bytes": 8304652
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "d019089ef1f7e00adb90d571c140e1a5e4bdd203146bd24725194aa453848b76",
+        "bytes": 1174946
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "5ebe1d55a2233b2a1b3e65574b4f73b7663c9a36e5a97a49637b0a24fcdaa483",
+        "bytes": 909
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "78806a3cd06536ce217c316381c5fd36cee5143e037c99808dd3c11563d59607",
+        "bytes": 1998
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "ce6a149dac140d67af970bb0dc2edff500791d99d6bb5c4e33e3295f37402c8a",
+        "bytes": 520
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "a09dd95ce782245be5c33dc4c3575382f6a682514f4133d29f3e4faba776ec30",
+        "bytes": 3807
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "678140779bba2e91fcb33a95de33aea71f2cbbed4011049fbe64e353d1870954",
+        "bytes": 394
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "277966ac3e35f9cc7eaf05b7b481c63d344d7f5e62cc357fcb418a389d6472da",
+        "bytes": 259
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 24525.0,
+      "cached_input_units": 0.0,
+      "output_units": 2468.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007867,
+      "created_at": "2026-10-05T07:02:55.511526+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-05T07:02:55.512976+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 21042.0,
+      "cached_input_units": 0.0,
+      "output_units": 1591.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006118,
+      "created_at": "2026-10-05T07:03:21.427781+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-05T07:03:21.429330+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1671.0,
+      "cached_input_units": 0.0,
+      "output_units": 2645.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.003508,
+      "created_at": "2026-10-05T07:03:46.320577+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 355.0,
+      "cached_input_units": 0.0,
+      "output_units": 300.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000431,
+      "created_at": "2026-10-05T11:00:38.995760+00:00"
+    },
+    {
+      "stage": "thumbnail",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-10-05T11:01:06.011379+00:00"
+    }
+  ],
+  "recorded_at": "2026-10-05T11:01:19.731575+00:00"
+}
