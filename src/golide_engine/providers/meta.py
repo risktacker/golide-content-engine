@@ -169,6 +169,8 @@ class InstagramProvider(SocialProvider):
                     "share_to_feed": "true",
                 }
             )
+            if request.cover_url:
+                payload["cover_url"] = request.cover_url
         else:
             payload["image_url"] = media_url
 

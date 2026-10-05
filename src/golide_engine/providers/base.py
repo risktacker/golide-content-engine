@@ -48,6 +48,7 @@ class PublishRequest:
     title: str = ""
     media_ref: str | None = None
     parts: tuple[str, ...] = ()
+    cover_url: str | None = None  # Reels cover image (signed HTTPS URL)
 
 
 @dataclass(frozen=True)

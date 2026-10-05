@@ -164,3 +164,44 @@ class ShortYouTubeLegTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class CoverTests(unittest.TestCase):
+    def test_cover_is_a_drawn_frame_not_the_black_start(self):
+        import subprocess
+        from PIL import Image
+        from golide_engine.orchestration.reels import pick_cover
+
+        with tempfile.TemporaryDirectory() as tmp:
+            video = Path(tmp) / "v.mp4"
+            # black for 2 s, then a white box (the "drawing") until 6 s
+            subprocess.run(["ffmpeg", "-v", "error", "-f", "lavfi", "-i", "color=black:s=270x480:d=6:r=10",
+                            "-vf", "drawbox=x=60:y=80:w=150:h=150:color=white:t=fill:enable='gte(t,2)'",
+                            "-pix_fmt", "yuv420p", str(video)], check=True)
+            cover = pick_cover(video, Path(tmp) / "cover.jpg")
+            pixels = Image.open(cover).convert("L")
+            self.assertGreater(pixels.getpixel((135, 155)), 200)
+
+    def test_instagram_reel_carries_the_cover(self):
+        import os
+        from unittest.mock import patch
+        from golide_engine.providers.base import PublishRequest
+        from golide_engine.providers.http import JsonResponse
+        from golide_engine.providers.meta import InstagramProvider
+
+        calls = []
+
+        class Http:
+            def post(self, url, *, data=None, headers=None):
+                calls.append(data)
+                return JsonResponse(200, {"id": "c1"} if len(calls) == 1 else {"id": "m1"})
+
+            def get(self, url, *, params=None):
+                return JsonResponse(200, {"status_code": "FINISHED"})
+
+        provider = InstagramProvider(api_version="v1", access_token="t", instagram_user_id="ig", http=Http())
+        with patch.dict(os.environ, {"GOLIDE_ENABLE_SOCIAL_PUBLISH": "1"}):
+            provider.publish(PublishRequest("p", "v", "instagram", "body",
+                                            media_ref="https://x/clip.mp4", cover_url="https://x/cover.jpg"))
+        self.assertEqual(calls[0]["cover_url"], "https://x/cover.jpg")
+        self.assertEqual(calls[0]["media_type"], "REELS")

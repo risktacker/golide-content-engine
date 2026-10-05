@@ -254,6 +254,7 @@ def main() -> int:
             uploader=YouTubeUploader(youtube, database, "UCqaXVBSBz7iQsRHOupKt-3w"),
             bridge=bridge,
             publisher_factory=lambda: StudioSocialPublisher(bridge=bridge),
+            store=r2_store_from_environment(),
             register_upload=lambda video_id: register_successful_upload(Path.cwd(), database, args.id, video_id),
         )
         print(json.dumps({"status": "rebuild_published", **state}, indent=2))
@@ -654,10 +655,31 @@ def main() -> int:
         release = package["release"]
         video_id = uploader.upload_private(spec["id"], package_root / files["video"]["file"], package_root / files["thumbnail"]["file"], metadata, release)
         retention = register_successful_upload(Path.cwd(), database, spec["id"], video_id)
+        reels = None
+        if spec.get("format") == "short" and bridge:
+            # Shorts also go out as Instagram and Facebook Reels (with a cover
+            # frame). Best effort: YouTube is already live, and a failed Reel
+            # is retried by the distribution runs.
+            try:
+                from .orchestration.reels import publish_reels
+                from .orchestration.studio_social import StudioSocialPublisher
+                from .storage.r2 import r2_store_from_environment
+
+                reels = publish_reels(
+                    bridge=bridge, store=r2_store_from_environment(),
+                    publisher_factory=lambda: StudioSocialPublisher(bridge=bridge),
+                    production_id=spec["id"], video=package_root / files["video"]["file"],
+                    metadata=metadata, youtube_video_id=video_id,
+                    owner_voice_ref=str(spec.get("owner_voice_media_ref", "")),
+                )
+            except Exception as exc:
+                reels = {"reels_status": "failed", "error": str(exc)[:500]}
+                print(f"::warning title=Reels not published::{str(exc)[:300]}")
         done = spec_path.with_suffix(".completed.json")
         spec_path.rename(done)
         report_studio("scheduled", "youtube-scheduled")
-        print(json.dumps({"status": "scheduled", "production_id": spec["id"], "youtube_video_id": video_id, "retention": retention}))
+        print(json.dumps({"status": "scheduled", "production_id": spec["id"], "youtube_video_id": video_id,
+                          "retention": retention, "reels": reels}))
         return 0
 
     if args.command == "animatic":

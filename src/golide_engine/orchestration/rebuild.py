@@ -172,7 +172,7 @@ class Rebuild:
         return state | {"preview_url": preview}
 
     # --------------------------------------------------------------- step 2
-    def publish(self, *, uploader, bridge, publisher_factory, register_upload=None) -> dict[str, Any]:
+    def publish(self, *, uploader, bridge, publisher_factory, store=None, register_upload=None) -> dict[str, Any]:
         state = self.state()
         if state.get("status") not in {"awaiting_approval", "youtube_published", "reels_queued"}:
             raise RebuildError(f"nothing approved to publish for {self.id} (status {state.get('status')})")
@@ -200,33 +200,22 @@ class Rebuild:
                 register_upload(video_id)
 
         if not state.get("social_post_id"):
-            caption = (str(metadata.get("title", "")).strip() + "\n\n"
-                       + str(metadata.get("description", "")).strip())[:2100]
-            now = datetime.now(timezone.utc).isoformat()
-            payload = {
-                "id": f"{self.id}-reels",
-                "content_class": "short",
-                "title": metadata.get("title", ""),
-                "master_text": caption,
-                "owner_voice_media_ref": spec.get("owner_voice_media_ref", ""),
-                "media_approved": True,
-                "qa_approved": True,
-                "release_approved": True,
-                "scheduled_at": now,
-                "variants": [
-                    {"platform": "instagram", "title": "", "body": caption, "media_ref": state["media_ref"]},
-                    {"platform": "facebook", "title": "", "body": caption, "media_ref": state["media_ref"]},
-                    {"platform": "youtube", "title": metadata.get("title", ""), "body": "",
-                     "media_ref": state["media_ref"], "parts": [f"youtube:{state['youtube_video_id']}"]},
-                ],
-            }
-            created = bridge.create_content(payload)
-            state.update(status="reels_queued", social_post_id=created.get("id", payload["id"]))
-            self.save(state)
+            from .reels import publish_reels
 
-        results = publisher_factory().run_due()
-        mine = next((r for r in results if r.get("post_id") == state["social_post_id"]), None)
-        outcome = mine["status"] if mine else "not_claimed"
+            reels = publish_reels(
+                bridge=bridge, store=store, publisher_factory=publisher_factory,
+                production_id=self.id, video=root / files["video"]["file"], metadata=metadata,
+                youtube_video_id=state["youtube_video_id"],
+                owner_voice_ref=spec.get("owner_voice_media_ref", ""),
+                video_ref=state["media_ref"],
+            )
+            state.update(status="reels_queued", social_post_id=reels["social_post_id"])
+            self.save(state)
+            outcome = reels["reels_status"]
+        else:
+            results = publisher_factory().run_due()
+            mine = next((r for r in results if r.get("post_id") == state["social_post_id"]), None)
+            outcome = mine["status"] if mine else "not_claimed"
         state.update(reels_status=outcome, published_at=datetime.now(timezone.utc).isoformat())
         if outcome == "published":
             state["status"] = "published"
