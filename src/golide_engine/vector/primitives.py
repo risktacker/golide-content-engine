@@ -50,6 +50,8 @@ class Draw:
     carry: dict | None = None
     hide: frozenset = frozenset()
     visual: str = ""
+    span: float = 0.0  # length of the whole scene in seconds
+    region: tuple = (-1.0, -1.0, 1.0, 1.0)  # where an illustration may sit (unit coords)
 
     def px(self, value: float) -> float:
         return value / self.unit_px
@@ -659,7 +661,13 @@ def icon_grid(d: Draw) -> None:
 ICON_LAYOUTS = {"icon_hero", "icon_pair", "icon_flow", "icon_orbit", "icon_grid"}
 
 
+def _illustration(d: Draw) -> None:
+    from .illustrate import illustration
+    illustration(d)
+
+
 PRIMITIVES: dict[str, Callable[[Draw], None]] = {
+    "illustration": _illustration,
     "icon_hero": icon_hero, "icon_pair": icon_pair, "icon_flow": icon_flow,
     "icon_orbit": icon_orbit, "icon_grid": icon_grid,
     "dot_field": dot_field, "grid": grid, "ladder": ladder, "staircase": staircase,

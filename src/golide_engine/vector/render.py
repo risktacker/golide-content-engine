@@ -251,9 +251,11 @@ class VectorRenderer:
         auto_gp, k, n = self._draw_args(group, t)
         for ctx in (main_ctx, glow_ctx):
             ctx.push_group()
+        from .illustrate import REGIONS
         primitive(Draw(main_ctx, glow_ctx, auto_gp if gp is None else gp, k, n, t - group.start, seed,
                        self.layout.size / 2, self.colors, tuple(group.icons),
-                       carry=carry, hide=hide, visual=group.visual))
+                       carry=carry, hide=hide, visual=group.visual,
+                       span=group.end - group.start, region=REGIONS[self.format]))
         for ctx in (main_ctx, glow_ctx):
             ctx.pop_group_to_source()
             ctx.paint_with_alpha(alpha)
@@ -355,9 +357,35 @@ class VectorRenderer:
             image.paste(self.mark, (L.width - self.mark.width - margin, margin), self.mark)
         return np.asarray(image)
 
+    @staticmethod
+    def _use_illustrations(plan: dict[str, Any], lines, illustrations: dict[str, Path]):
+        """Every line shows its scene's drawing (the closing logo line stays)."""
+        from .illustrate import SCENES, vectorize
+
+        SCENES.clear()
+        owner: dict[int, str] = {}
+        for scene in plan.get("scenes", []):
+            path = illustrations.get(scene["id"])
+            if path is None or not Path(path).exists():
+                continue
+            SCENES[scene["id"]] = vectorize(Path(path))
+            for index in range(int(scene["first_line"]), int(scene["last_line"]) + 1):
+                owner[index] = scene["id"]
+        for line in lines:
+            if line.visual == "logo_end" and line.index == len(lines) - 1:
+                continue
+            scene_id = owner.get(line.index)
+            if scene_id:
+                line.visual = "illustration"
+                line.icons = (scene_id,)
+        return lines
+
     def render(self, plan: dict[str, Any], words: list[dict[str, Any]], narration: Path, output: Path,
-               duration: float, music: Path | None = None, music_volume: float = 0.03) -> Path:
+               duration: float, music: Path | None = None, music_volume: float = 0.03,
+               illustrations: dict[str, Path] | None = None) -> Path:
         lines = align_lines(plan, words, duration)
+        if illustrations:
+            lines = self._use_illustrations(plan, lines, illustrations)
         groups = group_lines(lines)
         chunks = caption_chunks(lines)
         output.parent.mkdir(parents=True, exist_ok=True)

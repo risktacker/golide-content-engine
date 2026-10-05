@@ -43,6 +43,8 @@ def render_hold_reason(root: Path, format_name: str) -> str | None:
     path = Path(root) / "config" / "render-hold.json"
     if not path.exists():
         return None
+    if os.getenv("GOLIDE_RENDER_HOLD_BYPASS") == "1":
+        return None  # private previews for the owner's approval only
     hold = json.loads(path.read_text(encoding="utf-8"))
     if format_name in hold.get("hold_formats", []):
         return str(hold.get("reason") or "rendering is on hold")
@@ -643,6 +645,63 @@ class ProductionService:
                 spec["music"]["mood"], spec["music"].get("track_id")
             )
             plan = json.loads(scene_plan_path.read_text(encoding="utf-8"))
+            held = render_hold_reason(self.root, str(spec["format"]))
+            already = self.database.rows(
+                "SELECT 1 FROM stage_runs WHERE production_id=? AND stage='render-vector-v1' AND status='completed' LIMIT 1",
+                (production_id,),
+            )
+            if held and not already:
+                raise RenderHeld(held)
+
+            # Owner direction 2026-10-05: each idea is one animated line
+            # illustration, not icons. The storyboard is planned from the
+            # final words (never changing them), then one picture per scene.
+            from ..providers.openai_media import OpenAILineArtProvider
+            from ..vector.illustrate import (
+                VISUAL_PLAN_SCHEMA, illustration_prompt, scene_plan_instructions, validate_scenes,
+            )
+
+            spoken_lines = [line for line in plan["lines"] if str(line.get("text", "")).strip()]
+            visual_plan_path = work / "visual-plan.json"
+            illustration_dir = work / "illustrations"
+
+            def visual_plan_stage():
+                self._require_absent(visual_plan_path, "visual-plan")
+                numbered = "\n".join(f"{i}: {line['text']}" for i, line in enumerate(spoken_lines))
+                self._reserve(spec, text_model, Usage(input_tokens=len(numbered) // 3 + 1500, output_tokens=6000))
+                output = text.generate_json(
+                    scene_plan_instructions(str(spec["format"])),
+                    f"TITLE={spec.get('title', '')}\nLINES\n{numbered}",
+                    VISUAL_PLAN_SCHEMA,
+                    max_output_tokens=6000,
+                )
+                scenes = validate_scenes(list(output.value["scenes"]), len(spoken_lines))
+                visual_plan_path.write_text(json.dumps({"scenes": scenes}, indent=2) + "\n", encoding="utf-8")
+                self._record_text(production_id, "visual-plan", output)
+
+            self.runner.run(production_id, "visual-plan-v1", visual_plan_stage)
+            scenes = json.loads(visual_plan_path.read_text(encoding="utf-8"))["scenes"]
+            line_art = OpenAILineArtProvider(
+                self.providers.config["assets"]["support_model"],
+                self.providers.config["assets"]["support_quality"],
+            )
+            art_size = "1024x1536" if spec["format"] == "short" else "1536x1024"
+
+            def illustrations_stage():
+                for scene in scenes:
+                    target = illustration_dir / f"{scene['id']}.png"
+                    if target.exists():
+                        continue  # already paid for and checkpointed
+                    self._reserve(spec, support_image_cost_model, Usage(images=1), stage="illustrations")
+                    output = line_art.create(
+                        illustration_prompt(scene["drawing"], scene["gold_element"], str(spec["format"])),
+                        target, art_size,
+                    )
+                    self._record_image(production_id, "illustrations", support_image_cost_model, output)
+
+            self.runner.run(production_id, "illustrations-v1", illustrations_stage)
+            illustrations = {scene["id"]: illustration_dir / f"{scene['id']}.png" for scene in scenes}
+            plan = plan | {"scenes": scenes}
             timed_lines = align_lines(plan, timed_words, narration_seconds)
             storyboard = {
                 "renderer": "vector",
@@ -663,18 +722,10 @@ class ProductionService:
                 for line in timed_lines
             ]), encoding="utf-8")
 
-            held = render_hold_reason(self.root, str(spec["format"]))
-            already = self.database.rows(
-                "SELECT 1 FROM stage_runs WHERE production_id=? AND stage='render-vector-v1' AND status='completed' LIMIT 1",
-                (production_id,),
-            )
-            if held and not already:
-                raise RenderHeld(held)
-
             def vector_render_stage():
                 VectorRenderer(str(spec["format"])).render(
                     plan, timed_words, narration, video_path, narration_seconds,
-                    music=None,
+                    music=None, illustrations=illustrations,
                 )
 
             self.runner.run(production_id, "render-vector-v1", vector_render_stage, attempts=1)

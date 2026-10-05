@@ -183,6 +183,24 @@ class OpenAIImageProvider:
         )
 
 
+class OpenAILineArtProvider:
+    """Scene illustrations for GOLIDE Black videos.
+
+    Deliberately bypasses the older paper-cut/navy identity wrapper: these
+    prompts already lock the black line-art style (see vector.illustrate).
+    """
+
+    def __init__(self, model: str = "gpt-image-1-mini", quality: str = "medium"):
+        self.model = model
+        self.quality = quality
+
+    def create(self, prompt: str, output: Path, size: str) -> ProviderOutput:
+        response = client().images.generate(model=self.model, prompt=prompt, size=size, quality=self.quality)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_bytes(base64.b64decode(response.data[0].b64_json))
+        return ProviderOutput(output, getattr(response, "id", None))
+
+
 class OpenAIVoiceProvider:
     def __init__(self, model: str = "gpt-4o-mini-tts", voice: str = "cedar", instructions: str = ""):
         self.model = model

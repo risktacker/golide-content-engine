@@ -28,6 +28,7 @@ from ..engine.content_rules import script_text
 from ..storage.database import Database
 
 REDO_ALWAYS = ("render-vector-v1", "qa", "release")
+REDO_ART = ("visual-plan-v1", "illustrations-v1")
 REDO_VOICE = ("owner-voice", "captions-authoritative-v3")
 PREVIEW_HOURS = 48
 
@@ -66,7 +67,7 @@ class Rebuild:
         return json.loads(self.spec_path.read_text(encoding="utf-8"))
 
     # ------------------------------------------------------------- preparing
-    def prepare(self, scene_plan: Path | None = None) -> list[str]:
+    def prepare(self, scene_plan: Path | None = None, new_art: bool = False) -> list[str]:
         """Restore free checkpoints and mark only the render onward for redo."""
         spec = self.spec()
         self.work.mkdir(parents=True, exist_ok=True)
@@ -96,6 +97,10 @@ class Rebuild:
             raise RebuildError("no scene plan; only videos made by the vector renderer can be rebuilt")
 
         redo = list(REDO_ALWAYS)
+        if new_art:
+            redo += list(REDO_ART)
+            (self.work / "visual-plan.json").unlink(missing_ok=True)
+            shutil.rmtree(self.work / "illustrations", ignore_errors=True)
         narration = self.work / "narration-owner.wav"
         timed = self.work / "timed-words-owner.json"
         if not narration.exists() or not timed.exists():
@@ -128,8 +133,9 @@ class Rebuild:
         return json.loads(manifest.read_text(encoding="utf-8")), root
 
     # --------------------------------------------------------------- step 1
-    def build(self, *, service, store, bridge=None, notify=None, scene_plan: Path | None = None) -> dict[str, Any]:
-        redo = self.prepare(scene_plan)
+    def build(self, *, service, store, bridge=None, notify=None, scene_plan: Path | None = None,
+              new_art: bool = False) -> dict[str, Any]:
+        redo = self.prepare(scene_plan, new_art)
         service.run(self.spec_path)
         package, root = self.package()
         video = root / package["files"]["video"]["file"]
@@ -150,8 +156,10 @@ class Rebuild:
             except Exception as exc:  # tracking only; the preview still works
                 print(json.dumps({"status": "media_register_failed", "error": str(exc)}))
         preview = store.resolve(upload.media_ref, expires_seconds=PREVIEW_HOURS * 3600)
+        earlier = self.state()
         state = {
             "production_id": self.id,
+            "previous": earlier if earlier.get("status") == "published" else earlier.get("previous"),
             "status": "awaiting_approval",
             "media_ref": upload.media_ref,
             "built_at": datetime.now(timezone.utc).isoformat(),

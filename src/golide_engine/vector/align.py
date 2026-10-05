@@ -154,7 +154,7 @@ def group_lines(lines: list[TimedLine]) -> list[Group]:
     groups: list[Group] = []
     for line in lines:
         same = groups and groups[-1].visual == line.visual
-        if same and line.visual in ICON_VISUALS:
+        if same and (line.visual in ICON_VISUALS or line.visual == "illustration"):
             same = groups[-1].icons == line.icons
         if same:
             groups[-1].lines.append(line)

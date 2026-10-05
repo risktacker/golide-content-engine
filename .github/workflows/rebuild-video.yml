@@ -19,6 +19,11 @@ on:
         description: "Optional replacement scene plan (same words), path in the repo"
         required: false
         default: ""
+      new_art:
+        description: "Re-plan scenes and draw new illustrations"
+        required: false
+        type: boolean
+        default: false
 
 concurrency:
   group: golide-state-writer
@@ -74,10 +79,15 @@ jobs:
           PRODUCTION_ID: ${{ inputs.production_id }}
           STEP: ${{ inputs.step }}
           SCENE_PLAN: ${{ inputs.scene_plan }}
+          NEW_ART: ${{ inputs.new_art }}
+          # Previews are private to the owner, so they may render during a
+          # style hold; publishing never re-renders.
+          GOLIDE_RENDER_HOLD_BYPASS: ${{ inputs.step == 'preview' && '1' || '0' }}
         run: |
           set -o pipefail
           args=(rebuild-video --id "$PRODUCTION_ID" --step "$STEP")
           if [ -n "$SCENE_PLAN" ]; then args+=(--scene-plan "$SCENE_PLAN"); fi
+          if [ "$NEW_ART" = "true" ]; then args+=(--new-art); fi
           if ! golide "${args[@]}" 2>&1 | tee engine-output.txt; then
             tail -c 1500 engine-output.txt | tr '\n' ' ' | sed 's/%/%25/g' > engine-error.txt
             echo "::error title=golide rebuild-video failed::$(cat engine-error.txt)"
