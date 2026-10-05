@@ -17,9 +17,9 @@
     "published_at": "2026-10-05T14:07:23.924541+00:00"
   },
   "status": "awaiting_approval",
-  "media_ref": "r2://temp/2026/10/05/79204ed3021949d9ab269577a8228e08-golide-short-2026-10-05-rebuild.mp4",
-  "built_at": "2026-10-05T14:42:43.466288+00:00",
-  "preview_expires_at": "2026-10-07T14:42:43.466300+00:00",
+  "media_ref": "r2://temp/2026/10/05/cc54f5c1e32545caae6991bbc6c9544f-golide-short-2026-10-05-rebuild.mp4",
+  "built_at": "2026-10-05T14:48:48.739635+00:00",
+  "preview_expires_at": "2026-10-07T14:48:48.739647+00:00",
   "redone_stages": [
     "render-vector-v1",
     "qa",
