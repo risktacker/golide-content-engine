@@ -502,6 +502,18 @@ class ProductionService:
             return " ".join(re.findall(r"[a-z0-9']+", value.lower()))
 
         def voice_stage():
+            # A failed attempt leaves only free-to-redo local files; clear them
+            # so a retry (for example after a fixed recording) can run again.
+            if not timed_words_path.exists():
+                narration.unlink(missing_ok=True)
+            try:
+                _voice_stage_body()
+            except Exception:
+                narration.unlink(missing_ok=True)
+                (work / "owner-voice-source").unlink(missing_ok=True)
+                raise
+
+        def _voice_stage_body():
             self._require_absent(narration, "owner-voice")
             self._require_absent(timed_words_path, "owner-voice")
             source = work / "owner-voice-source"
@@ -545,10 +557,14 @@ class ProductionService:
                 raise RuntimeError("owner voice transcription returned no word timing")
 
             transcript = " ".join(str(item.get("word", "")) for item in words)
+            # Compare words, not characters, and disable autojunk: on long
+            # strings difflib treats common letters and spaces as junk, which
+            # scored a faithful reading as 0.11.
             similarity = difflib.SequenceMatcher(
                 None,
-                _normalized_words(script),
-                _normalized_words(transcript),
+                _normalized_words(script).split(),
+                _normalized_words(transcript).split(),
+                autojunk=False,
             ).ratio()
             if similarity < 0.55:
                 raise RuntimeError(
