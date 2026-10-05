@@ -301,7 +301,7 @@ def vectorize(image_path: Path, max_side: int = 900) -> Drawing:
 SCENES: dict[str, Drawing] = {}
 
 # Region the illustration may occupy, in the renderer's unit coordinates.
-REGIONS = {"short": (-1.18, -1.42, 1.18, 1.22), "long": (-2.55, -1.25, 2.55, 1.28)}
+REGIONS = {"short": (-1.18, -1.42, 1.18, 1.22), "long": (-2.0, -0.95, 2.0, 1.12)}
 
 
 def fit(drawing: Drawing, region: tuple[float, float, float, float]):
@@ -367,6 +367,6 @@ def illustration(d) -> None:
     if drawing is None:
         return
     span = max(1.0, d.span)
-    reveal_time = min(max(0.72 * span, 2.5), 10.0, span)
+    reveal_time = min(max(0.72 * span, 2.5), 16.0, span)
     reveal = d.t / reveal_time
     draw_illustration(d, drawing, d.region, reveal, breathe=min(1.0, d.t / span))
