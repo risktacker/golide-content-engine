@@ -19,7 +19,7 @@ class ScriptRuleTests(unittest.TestCase):
     def test_every_visual_cue_has_a_renderer(self):
         line = SCRIPT_SCHEMA["properties"]["lines"]["items"]
         self.assertEqual(line["properties"]["visual"]["enum"], list(VISUAL_CUES))
-        self.assertEqual(set(VISUAL_CUES), set(PRIMITIVES))
+        self.assertTrue(set(VISUAL_CUES) <= set(PRIMITIVES))
 
     def test_owner_reads_only_spoken_words(self):
         plan = {"title": "t", "lines": [

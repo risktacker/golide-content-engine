@@ -43,7 +43,9 @@ class AlignmentTests(unittest.TestCase):
 
     def test_same_visual_lines_build_one_animation(self):
         groups = group_lines(align_lines(PLAN, _words(), 12.0))
-        self.assertEqual([g.visual for g in groups], ["dot_field", "grid", "checklist"])
+        # "AI ... hired" names subjects, so it shows them (brain + hire), not dots.
+        self.assertEqual([g.visual for g in groups], ["icon_pair", "grid", "checklist"])
+        self.assertEqual(groups[0].icons[0], "brain")
         self.assertEqual(len(groups[-1].lines), 2)
 
     def test_captions_cover_the_spoken_words(self):

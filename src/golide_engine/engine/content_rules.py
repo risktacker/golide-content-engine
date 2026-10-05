@@ -138,10 +138,22 @@ LINE RULES (the owner reads this out loud, so write for the mouth, not the eye)
 - Every line must be easy to say in one breath. No brackets, no abbreviations,
   no symbols, write numbers as they are spoken.
 - Each line names ONE emphasis word (the word that glows white in the captions).
-- Each line has a visual cue for the animation, chosen from this fixed list only:
-  dot_field, grid, ladder, staircase, bar_chart, line_chart, spike_vs_curve, gears,
-  ring_of_points, branching_tree, person_outline, clock, gauge, seed_to_plant,
-  cross_out, checklist, split_compare, single_glow, logo_end.
+- Each line names its SUBJECTS: 1 to 3 concrete, drawable things the line is about,
+  in plain words ("server rack", "water drop", "thermometer", "brain", "phone",
+  "laptop", "house", "sun", "rocket", "briefcase"). The video draws exactly these, so
+  the picture always matches the words. Never abstract nouns ("success", "future")
+  when a concrete thing exists; pick the object a viewer would picture.
+- Each line picks ONE visual layout:
+  * icon_hero: one subject, large. Use for a single idea.
+  * icon_pair: two subjects, A next to B (comparison, cause and effect, before/after).
+  * icon_flow: 3 subjects as steps of a process, top to bottom.
+  * icon_orbit: one central subject with 2 to 4 related subjects around it.
+  * icon_grid: one subject repeated many times (scale, "millions of", "every").
+  * Data diagrams, ONLY when the line states a number, trend or list:
+    bar_chart, line_chart, spike_vs_curve (one-off vs compounding), gauge (a level),
+    checklist (steps), ladder or staircase (levels/progress), clock (time),
+    cross_out (a wrong belief), split_compare (two amounts).
+  * logo_end: the final line only.
 - Keep the same visual for consecutive lines that build one idea, so the animation
   grows instead of cutting.
 - Plain English for a global audience. No slang, no religion, no politics.
@@ -163,10 +175,9 @@ def script_instructions(format_name: str) -> str:
 
 
 VISUAL_CUES = (
-    "dot_field", "grid", "ladder", "staircase", "bar_chart", "line_chart",
-    "spike_vs_curve", "gears", "ring_of_points", "branching_tree",
-    "person_outline", "clock", "gauge", "seed_to_plant", "cross_out",
-    "checklist", "split_compare", "single_glow", "logo_end",
+    "icon_hero", "icon_pair", "icon_flow", "icon_orbit", "icon_grid",
+    "bar_chart", "line_chart", "spike_vs_curve", "gauge", "checklist",
+    "ladder", "staircase", "clock", "cross_out", "split_compare", "logo_end",
 )
 
 SCRIPT_SCHEMA: dict = {
@@ -188,9 +199,10 @@ SCRIPT_SCHEMA: dict = {
                     "text": {"type": "string"},
                     "emphasis": {"type": "string"},
                     "visual": {"type": "string", "enum": list(VISUAL_CUES)},
+                    "subjects": {"type": "array", "maxItems": 4, "items": {"type": "string"}},
                     "label": {"type": "string"},
                 },
-                "required": ["section", "text", "emphasis", "visual", "label"],
+                "required": ["section", "text", "emphasis", "visual", "subjects", "label"],
             },
         },
     },

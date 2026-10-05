@@ -43,6 +43,7 @@ class Draw:
     seed: int
     unit_px: float  # pixels per unit at full resolution
     colors: dict[str, tuple[float, float, float]]
+    icons: tuple[str, ...] = ()  # topic drawings for this scene (see vector.icons)
 
     def px(self, value: float) -> float:
         return value / self.unit_px
@@ -427,7 +428,133 @@ def logo_end(d: Draw) -> None:
     single_glow(d)
 
 
+# ------------------------------------------------------------ topic drawings
+
+def draw_icon(d: Draw, name: str, cx: float, cy: float, size: float, p: float,
+              color: str = "line", hot: bool = False, width: float = 2.4, alpha: float = 1.0) -> None:
+    """Draw a topic drawing (24x24 line icon) centred at cx,cy, revealed to p."""
+    from .icons import polylines
+
+    if p <= 0:
+        return
+    lines = polylines(name)
+    if not lines:
+        return
+    scale = size / 24.0
+    lengths = [sum(math.dist(a, b) for a, b in zip(pts, pts[1:])) for pts in lines]
+    total = sum(lengths) or 1.0
+    target = total * min(1.0, p)
+    walked = 0.0
+    for pts, length in zip(lines, lengths):
+        if walked >= target:
+            break
+        local = min(1.0, (target - walked) / length) if length else 1.0
+        walked += length
+        mapped = [(cx + (x - 12) * scale, cy + (y - 12) * scale) for x, y in pts]
+        d.stroke(_partial_polyline(mapped, local), color, width, alpha=alpha, hot=hot)
+
+
+def _arrow(d: Draw, x1, y1, x2, y2, p, color="line_dim"):
+    if p <= 0:
+        return
+    xe, ye = x1 + (x2 - x1) * p, y1 + (y2 - y1) * p
+    d.stroke(_line(x1, y1, xe, ye), color, 1.6, alpha=0.9, dash=(5, 6))
+    if p > 0.95:
+        ang = math.atan2(y2 - y1, x2 - x1)
+        for side in (-1, 1):
+            a = ang + math.pi + side * 0.5
+            d.stroke(_line(x2, y2, x2 + 0.06 * math.cos(a), y2 + 0.06 * math.sin(a)), color, 1.6)
+
+
+def _halo(d: Draw, cx, cy, r, p, color="gold"):
+    d.stroke(lambda c: c.arc(cx, cy, r, 0, TAU * min(1.0, p)), "line_dim", 1.2, alpha=0.7, dash=(4, 7))
+    pulse = 0.5 + 0.5 * math.sin(d.t * 2.0)
+    d.stroke(lambda c: c.arc(cx, cy, r * (1.08 + 0.03 * pulse), -TAU / 4, -TAU / 4 + TAU * 0.18 * p),
+             color, 1.8, hot=True, alpha=0.9)
+
+
+def _icons(d: Draw, minimum: int = 1) -> list[str]:
+    names = list(d.icons) or ["sparkles"]
+    while len(names) < minimum:
+        names.append(names[-1])
+    return names
+
+
+def icon_hero(d: Draw) -> None:
+    """One subject, large, drawn on, with a slow breathing glow."""
+    name = _icons(d)[0]
+    breathe = 1 + 0.015 * math.sin(d.t * 1.6)
+    p = seg(d.gp, 0.0, 0.75)
+    _halo(d, 0, 0, 0.78, seg(d.gp, 0, 0.5))
+    draw_icon(d, name, 0, 0, 1.15 * breathe, p, "line", width=2.6)
+    draw_icon(d, name, 0, 0, 1.15 * breathe, p, "gold", hot=True, width=2.6, alpha=0.55)
+
+
+def icon_pair(d: Draw) -> None:
+    """Two subjects compared or connected: A on the left, B on the right."""
+    a, b = _icons(d, 2)[:2]
+    pa, pb = seg(d.gp, 0.0, 0.45), seg(d.gp, 0.45, 0.95)
+    draw_icon(d, a, -0.48, 0, 0.62, pa, "line", width=2.4)
+    draw_icon(d, a, -0.48, 0, 0.62, pa, "cyan", hot=True, width=2.4, alpha=0.45)
+    _arrow(d, -0.12, 0, 0.12, 0, seg(d.gp, 0.35, 0.55))
+    draw_icon(d, b, 0.48, 0, 0.62, pb, "line", width=2.4)
+    draw_icon(d, b, 0.48, 0, 0.62, pb, "gold", hot=True, width=2.4, alpha=0.6)
+
+
+def icon_flow(d: Draw) -> None:
+    """A process: each subject appears in turn, linked by arrows."""
+    names = _icons(d, 3)[:4] if len(d.icons) >= 3 else _icons(d, 3)[:3]
+    count = len(names)
+    reveal = d.gp * count
+    for i, name in enumerate(names):
+        y = -0.62 + 1.24 * i / max(1, count - 1)
+        p = seg(reveal, i, i + 0.8)
+        last = i == count - 1
+        draw_icon(d, name, 0, y, 0.42, p, "line", width=2.2)
+        draw_icon(d, name, 0, y, 0.42, p, "gold" if last else "cyan", hot=True, width=2.2, alpha=0.5)
+        if i < count - 1:
+            y2 = -0.62 + 1.24 * (i + 1) / max(1, count - 1)
+            _arrow(d, 0, y + 0.25, 0, y2 - 0.25, seg(reveal, i + 0.7, i + 1.0))
+
+
+def icon_orbit(d: Draw) -> None:
+    """A central subject with related subjects around it, connected."""
+    names = _icons(d, 2)
+    center, around = names[0], names[1:5] or [names[0]]
+    pc = seg(d.gp, 0, 0.4)
+    draw_icon(d, center, 0, 0, 0.6, pc, "line", width=2.4)
+    draw_icon(d, center, 0, 0, 0.6, pc, "gold", hot=True, width=2.4, alpha=0.6)
+    for i, name in enumerate(around):
+        a = -TAU / 4 + TAU * i / len(around) + 0.05 * math.sin(d.t * 0.5)
+        x, y = 0.72 * math.cos(a), 0.72 * math.sin(a)
+        p = seg(d.gp, 0.3 + 0.15 * i, 0.6 + 0.15 * i)
+        d.stroke(_line(0.38 * math.cos(a), 0.38 * math.sin(a), 0.38 * math.cos(a) + (x - 0.38 * math.cos(a)) * p * 0.8,
+                       0.38 * math.sin(a) + (y - 0.38 * math.sin(a)) * p * 0.8), "line_dim", 1.2, dash=(3, 6))
+        draw_icon(d, name, x, y, 0.3, p, "line", width=2.0)
+        draw_icon(d, name, x, y, 0.3, p, "cyan", hot=True, width=2.0, alpha=0.45)
+
+
+def icon_grid(d: Draw) -> None:
+    """Scale: many copies of one subject; a few light up."""
+    name = _icons(d)[0]
+    cols, rows = 5, 6
+    rng = d.rng(9)
+    lit = set(rng.sample(range(cols * rows), 5))
+    for j in range(rows):
+        for i in range(cols):
+            idx = j * cols + i
+            x, y = -0.72 + 1.44 * i / (cols - 1), -0.8 + 1.6 * j / (rows - 1)
+            p = seg(d.gp, idx / (cols * rows) * 0.6, idx / (cols * rows) * 0.6 + 0.2)
+            on = idx in lit and d.gp > 0.6
+            draw_icon(d, name, x, y, 0.2, p, "gold" if on else "line_dim", hot=on, width=1.8)
+
+
+ICON_LAYOUTS = {"icon_hero", "icon_pair", "icon_flow", "icon_orbit", "icon_grid"}
+
+
 PRIMITIVES: dict[str, Callable[[Draw], None]] = {
+    "icon_hero": icon_hero, "icon_pair": icon_pair, "icon_flow": icon_flow,
+    "icon_orbit": icon_orbit, "icon_grid": icon_grid,
     "dot_field": dot_field, "grid": grid, "ladder": ladder, "staircase": staircase,
     "bar_chart": bar_chart, "line_chart": line_chart, "spike_vs_curve": spike_vs_curve,
     "gears": gears, "ring_of_points": ring_of_points, "branching_tree": branching_tree,

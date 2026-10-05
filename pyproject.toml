@@ -22,6 +22,7 @@ production = [
 video = [
   "numpy>=2,<3",
   "pycairo>=1.26,<2",
+  "svgelements>=1.9,<2",
 ]
 test = []
 

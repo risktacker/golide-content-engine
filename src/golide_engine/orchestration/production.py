@@ -652,8 +652,7 @@ class ProductionService:
             def vector_render_stage():
                 VectorRenderer(str(spec["format"])).render(
                     plan, timed_words, narration, video_path, narration_seconds,
-                    music=Path(music.path) if Path(music.path).exists() else None,
-                    music_volume=0.03,
+                    music=None,
                 )
 
             self.runner.run(production_id, "render-vector-v1", vector_render_stage, attempts=1)

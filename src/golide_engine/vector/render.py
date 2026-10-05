@@ -191,7 +191,7 @@ class VectorRenderer:
         for ctx in (main_ctx, glow_ctx):
             ctx.push_group()
         primitive(Draw(main_ctx, glow_ctx, gp, k, n, t - group.start, seed,
-                       self.layout.size / 2, self.colors))
+                       self.layout.size / 2, self.colors, tuple(group.icons)))
         for ctx in (main_ctx, glow_ctx):
             ctx.pop_group_to_source()
             ctx.paint_with_alpha(alpha)
@@ -268,15 +268,15 @@ class VectorRenderer:
         chunks = caption_chunks(lines)
         output.parent.mkdir(parents=True, exist_ok=True)
         L = self.layout
+        # No music: the owner's voice plus small effects timed to the visuals.
+        from .sfx import render_sfx
+
+        sfx_path = render_sfx(groups, duration, output.with_name(output.stem + "-sfx.wav"))
         inputs = ["-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{L.width}x{L.height}",
-                  "-r", str(self.fps), "-i", "-", "-i", str(narration)]
-        if music:
-            inputs += ["-stream_loop", "-1", "-i", str(music)]
-            audio = (f"[2:a]volume={music_volume}[m];[m][1:a]sidechaincompress=threshold=0.012:ratio=12:"
-                     "attack=20:release=400[ducked];[1:a][ducked]amix=inputs=2:duration=first:normalize=0,"
-                     "loudnorm=I=-16:TP=-1.5:LRA=11[a]")
-        else:
-            audio = "[1:a]loudnorm=I=-16:TP=-1.5:LRA=11[a]"
+                  "-r", str(self.fps), "-i", "-", "-i", str(narration), "-i", str(sfx_path)]
+        audio = ("[1:a]loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000[v];"
+                 "[2:a]aresample=48000[s];"
+                 "[v][s]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.89[a]")
         command = ["ffmpeg", "-y", "-loglevel", "error", *inputs, "-filter_complex", audio,
                    "-map", "0:v", "-map", "[a]", "-c:v", "libx264", "-preset", "medium", "-crf", "19",
                    "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
@@ -289,6 +289,8 @@ class VectorRenderer:
                 process.stdin.write(self.frame(index / self.fps, groups, chunks, duration).tobytes())
         finally:
             process.stdin.close()
-        if process.wait() != 0:
+        code = process.wait()
+        sfx_path.unlink(missing_ok=True)
+        if code != 0:
             raise RuntimeError("FFmpeg failed while encoding the vector video")
         return output

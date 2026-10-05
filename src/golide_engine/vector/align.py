@@ -38,6 +38,30 @@ class TimedLine:
     start: float
     end: float
     words: list[Word] = field(default_factory=list)
+    icons: tuple[str, ...] = ()
+
+
+# Visuals that show data or a process stay as drawn diagrams; every other
+# line shows what it is about (the topic drawings).
+DATA_VISUALS = {"bar_chart", "line_chart", "spike_vs_curve", "gauge", "checklist",
+                "ladder", "staircase", "clock", "cross_out", "split_compare", "logo_end"}
+ICON_VISUALS = {"icon_hero", "icon_pair", "icon_flow", "icon_orbit", "icon_grid"}
+
+
+def choose_visual(requested: str, icons: tuple[str, ...], named: bool) -> str:
+    if requested in ICON_VISUALS:
+        if not icons:
+            return "single_glow"
+        if requested == "icon_pair" and len(icons) < 2:
+            return "icon_hero"
+        if requested in {"icon_flow", "icon_orbit"} and len(icons) < 2:
+            return "icon_hero"
+        return requested
+    if requested in DATA_VISUALS:
+        return requested
+    if icons:
+        return "icon_hero" if len(icons) == 1 else ("icon_pair" if len(icons) == 2 else "icon_orbit")
+    return requested or "single_glow"
 
 
 def align_lines(plan: dict[str, Any], words: list[dict[str, Any]], duration: float) -> list[TimedLine]:
@@ -79,19 +103,25 @@ def align_lines(plan: dict[str, Any], words: list[dict[str, Any]], duration: flo
             value = fixed[-1] + 0.6
         fixed.append(min(value, max(0.0, duration - 0.6)))
 
+    from .icons import icons_for
+
     timed: list[TimedLine] = []
     for index, line in enumerate(lines):
         start = fixed[index]
         end = fixed[index + 1] if index + 1 < len(lines) else duration
+        subjects = [str(item) for item in line.get("subjects", []) if str(item).strip()]
+        icons = tuple(icons_for(subjects, str(line.get("text", ""))))
+        visual = choose_visual(str(line.get("visual", "")).strip(), icons, bool(subjects))
         timed.append(TimedLine(
             index=index,
             text=str(line["text"]).strip(),
             emphasis=str(line.get("emphasis", "")).strip(),
-            visual=str(line.get("visual", "single_glow")).strip(),
+            visual=visual,
             label=str(line.get("label", "")).strip().upper()[:28],
             section=str(line.get("section", "")),
             start=start,
             end=max(end, start + 0.1),
+            icons=icons,
         ))
     for word in spoken:
         for line in timed:
@@ -107,6 +137,10 @@ class Group:
     lines: list[TimedLine]
 
     @property
+    def icons(self) -> tuple[str, ...]:
+        return self.lines[0].icons
+
+    @property
     def start(self) -> float:
         return self.lines[0].start
 
@@ -119,7 +153,10 @@ def group_lines(lines: list[TimedLine]) -> list[Group]:
     """Consecutive lines with the same visual share one growing animation."""
     groups: list[Group] = []
     for line in lines:
-        if groups and groups[-1].visual == line.visual:
+        same = groups and groups[-1].visual == line.visual
+        if same and line.visual in ICON_VISUALS:
+            same = groups[-1].icons == line.icons
+        if same:
             groups[-1].lines.append(line)
         else:
             groups.append(Group(line.visual, [line]))
