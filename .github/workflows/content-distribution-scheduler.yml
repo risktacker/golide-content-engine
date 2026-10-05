@@ -74,10 +74,22 @@ jobs:
         if: steps.automation.outputs.enabled == 'true'
       - name: Create due static content
         if: steps.automation.outputs.enabled == 'true'
-        run: golide static-automation-run
+        run: |
+          set -o pipefail
+          if ! golide static-automation-run 2>&1 | tee engine-output.txt; then
+            tail -c 1500 engine-output.txt | tr '\n' ' ' | sed 's/%/%25/g' > engine-error.txt
+            echo "::error title=golide static-automation-run failed::$(cat engine-error.txt)"
+            exit 1
+          fi
       - name: Publish due static content
         if: steps.automation.outputs.enabled == 'true'
-        run: golide studio-social-publish
+        run: |
+          set -o pipefail
+          if ! golide studio-social-publish 2>&1 | tee engine-output.txt; then
+            tail -c 1500 engine-output.txt | tr '\n' ' ' | sed 's/%/%25/g' > engine-error.txt
+            echo "::error title=golide studio-social-publish failed::$(cat engine-error.txt)"
+            exit 1
+          fi
       - name: Remind owner before LinkedIn access expires
         if: steps.automation.outputs.enabled == 'true' && always()
         continue-on-error: true

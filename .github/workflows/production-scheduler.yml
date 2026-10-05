@@ -104,7 +104,13 @@ jobs:
           GOLIDE_SMTP_USER: ${{ secrets.GOLIDE_SMTP_USER }}
           GOLIDE_SMTP_APP_PASSWORD: ${{ secrets.GOLIDE_SMTP_APP_PASSWORD }}
           GOLIDE_NOTIFY_EMAIL: ${{ secrets.GOLIDE_NOTIFY_EMAIL }}
-        run: golide automation-run
+        run: |
+          set -o pipefail
+          if ! golide automation-run 2>&1 | tee engine-output.txt; then
+            tail -c 1500 engine-output.txt | tr '\n' ' ' | sed 's/%/%25/g' > engine-error.txt
+            echo "::error title=golide automation-run failed::$(cat engine-error.txt)"
+            exit 1
+          fi
       - name: Save resumable media checkpoint
         id: checkpoint_save
         if: steps.automation.outputs.enabled == 'true' && always()
