@@ -23,6 +23,8 @@ video = [
   "numpy>=2,<3",
   "pycairo>=1.26,<2",
   "svgelements>=1.9,<2",
+  "scipy>=1.11,<2",
+  "scikit-image>=0.22,<1",
 ]
 test = []
 
