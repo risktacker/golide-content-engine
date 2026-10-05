@@ -1,0 +1,170 @@
+{
+  "id": "golide-short-2026-10-05",
+  "studio_managed": true,
+  "format": "short",
+  "title": "Why AI Data Centers Are Replacing Air With Liquid",
+  "brief": "Reveal the physical bottleneck behind modern AI: high-density racks produce so much heat that conventional air cooling is no longer enough, driving direct-liquid and water-free cooling systems.",
+  "demand_query": "current technology software business trends",
+  "demand_validation_required": true,
+  "budget_class": "scheduled",
+  "purpose": "channel-automation",
+  "generate_at": "2026-10-05T07:00:00Z",
+  "max_cost_usd": 6,
+  "production_authorized": true,
+  "output_destination": "render-and-upload",
+  "owner_voice_required": true,
+  "concept": {
+    "family": "technology-software-business",
+    "promise": "A high-interest current niche topic explained with authoritative evidence and a useful GOLIDE angle",
+    "scores": {
+      "scroll_stop": 9,
+      "visual_payoff": 9,
+      "curiosity_gap": 9,
+      "retention_design": 9,
+      "broad_relevance": 8,
+      "evidence_strength": 8,
+      "novelty": 8,
+      "replay_or_loop": 8,
+      "revenue_fit": 6
+    }
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri-sun"
+  },
+  "music": {
+    "mood": "curious-tension"
+  },
+  "avatar_reference_images": [],
+  "release": {
+    "approved": true,
+    "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+    "scheduled_at": "2026-10-05T11:00:00Z"
+  },
+  "_studio_job_id": "golide-short-2026-10-05",
+  "topic_candidates": [
+    {
+      "title": "The Protocol That Lets AI Use Your Apps",
+      "query": "Model Context Protocol tools resources AI agents official specification",
+      "brief": "Explain how an AI model can move beyond chat by discovering data, calling tools, and completing multi-step workflows through an open protocol\u2014without centering any one company or product.",
+      "evidence_summary": "Best overall candidate. Demand: 5/5, driven by the supplied \u201cWhich AI is smartest?\u201d signal at 5.85M views/day and broader AI-agent interest. Visual explanation: 5/5\u2014animate an AI moving through a permissioned chain of files, APIs, databases, and tools. Evidence: 5/5\u2014the official MCP specification defines prompts, resources, and model-controlled tools; the project also published a July 28, 2026 specification release. Broad curiosity: 5/5. Novelty: 4/5 because the mechanism is still unfamiliar to general viewers. Strong product-independent workflow angle. ([modelcontextprotocol.io](https://modelcontextprotocol.io/specification/draft/server/index?utm_source=openai))",
+      "authoritative_source_url": "https://modelcontextprotocol.io/specification/draft/server/index",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Model Context Protocol tools resources AI agents official specification",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 63,
+        "median_views_per_day": 531108.18,
+        "top_views_per_day": 5851648.48,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-10-05T07:02:55.509450+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "Why AI Data Centers Are Replacing Air With Liquid",
+      "query": "DOE COOLERCHIPS 1 megawatt per rack liquid cooling AI data centers",
+      "brief": "Reveal the physical bottleneck behind modern AI: high-density racks produce so much heat that conventional air cooling is no longer enough, driving direct-liquid and water-free cooling systems.",
+      "evidence_summary": "Demand: 4/5, supported by the supplied \u201cData Centers Need To Stop\u201d signal and the much larger AI interest cluster. Visual explanation: 5/5\u2014compare a room-scale air-cooled rack with coolant loops running directly beside hot chips. Evidence: 5/5\u2014the U.S. Department of Energy\u2019s COOLERCHIPS 1.5 program specifically targets systems capable of managing 1 megawatt per rack for AI applications. Broad curiosity: 4/5. Novelty: 4/5. Timely industry-shift angle with strong physical stakes, while avoiding unsupported claims about environmental catastrophe. ([energy.gov](https://www.energy.gov/nepa/articles/cx-271071-cooling-operations-optimized-leaps-energy-reliability-and-carbon?utm_source=openai))",
+      "authoritative_source_url": "https://www.energy.gov/nepa/articles/cx-271071-cooling-operations-optimized-leaps-energy-reliability-and-carbon",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "DOE COOLERCHIPS 1 megawatt per rack liquid cooling AI data centers",
+        "score": 88.3,
+        "verdict": "pass",
+        "recent_videos": 63,
+        "median_views_per_day": 531108.18,
+        "top_views_per_day": 5851648.48,
+        "market_coverage": 4,
+        "title_query_overlap": 0.2222,
+        "measured_at": "2026-10-05T07:02:55.509926+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "The Digital Passport That Follows an AI Image",
+      "query": "C2PA Content Credentials cryptographic provenance AI-generated media official specification",
+      "brief": "Explain how Content Credentials attach a cryptographically signed history to images, video, audio, and documents\u2014and why provenance is different from proving that something is true.",
+      "evidence_summary": "Demand: 4/5, connected to the supplied AI-intelligence signal and the growing need to distinguish generated, edited, and original media. Visual explanation: 5/5\u2014show a media file accumulating signed \u201cingredients\u201d as it moves through cameras, editors, and AI tools. Evidence: 5/5\u2014the C2PA specification defines manifests, assertions, signatures, provenance, and validation; its 2025 revision added timestamps, revocation information, and improved soft-binding support. Broad curiosity: 5/5. Novelty: 5/5. Particularly strong for a premium explainer because it can clarify both the mechanism and its limitation: a valid credential does not automatically mean the underlying claim is true. ([spec.c2pa.org](https://spec.c2pa.org/specifications/specifications/2.2/specs/ContentCredentials.html?utm_source=openai))",
+      "authoritative_source_url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/ContentCredentials.html",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "C2PA Content Credentials cryptographic provenance AI-generated media official specification",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 63,
+        "median_views_per_day": 531108.18,
+        "top_views_per_day": 5851648.48,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-10-05T07:02:55.510358+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "How Foldable Phones Bend Glass Without Breaking It",
+      "query": "Corning ultra-thin bendable glass ion exchange foldable displays official",
+      "brief": "Break down the materials-science stack inside foldables: ultra-thin glass, variable thickness, surface compression, bend radius, and the tension-versus-compression problem at the hinge.",
+      "evidence_summary": "Demand: 4/5, based on the supplied Xiaomi Fold signal at 3.12M views/day and multiple foldable-phone signals. Visual explanation: 5/5\u2014use macro footage, stress diagrams, and an animated cross-section of the display stack. Evidence: 5/5\u2014Corning documents ultra-thin bendable glass, ion-exchange strengthening, variable thickness, and repeated bending under mechanical stress. Broad curiosity: 5/5. Novelty: 4/5. Keep the story about the underlying material mechanism rather than reviewing or promoting a particular phone. ([corning.com](https://www.corning.com/worldwide/en/innovation/materials-science/glass/bendable-glass.html?utm_source=openai))",
+      "authoritative_source_url": "https://www.corning.com/worldwide/en/innovation/materials-science/glass/bendable-glass.html",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Corning ultra-thin bendable glass ion exchange foldable displays official",
+        "score": 86.5,
+        "verdict": "pass",
+        "recent_videos": 63,
+        "median_views_per_day": 531108.18,
+        "top_views_per_day": 5851648.48,
+        "market_coverage": 4,
+        "title_query_overlap": 0.1,
+        "measured_at": "2026-10-05T07:02:55.510789+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "Why Passkeys Feel Like Magic\u2014and What Replaces the Password",
+      "query": "FIDO Alliance passkeys public key cryptography device sign in official",
+      "brief": "Show the practical workflow behind passkeys: a device creates a key pair, a service stores only the public key, and authentication proves possession without sending a reusable password.",
+      "evidence_summary": "Demand: 3/5, lower than the AI and foldable clusters but strongly useful and supported by the supplied software/tool interest pattern. Visual explanation: 4/5\u2014animate the private-key/public-key exchange and contrast it with phishing a password. Evidence: 5/5\u2014the FIDO Alliance reports that most surveyed enterprises were deploying or preparing passkeys, with security, usability, and cost-reduction goals. Broad curiosity: 4/5. Novelty: 4/5. Strong evergreen utility, though less visually spectacular than the top four candidates. ([fidoalliance.org](https://fidoalliance.org/research-state-of-passkey-deployment-in-the-enterprise-a-snapshot-of-deployments-employee-sign-ins-us-uk/?cst=&query-cdbd12d0-page=4&utm_source=openai))",
+      "authoritative_source_url": "https://fidoalliance.org/research-state-of-passkey-deployment-in-the-enterprise-a-snapshot-of-deployments-employee-sign-ins-us-uk/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "FIDO Alliance passkeys public key cryptography device sign in official",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 63,
+        "median_views_per_day": 531108.18,
+        "top_views_per_day": 5851648.48,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-10-05T07:02:55.511216+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    }
+  ],
+  "platform_demand": {
+    "query": "DOE COOLERCHIPS 1 megawatt per rack liquid cooling AI data centers",
+    "score": 88.3,
+    "verdict": "pass",
+    "recent_videos": 63,
+    "median_views_per_day": 531108.18,
+    "top_views_per_day": 5851648.48,
+    "market_coverage": 4,
+    "title_query_overlap": 0.2222,
+    "measured_at": "2026-10-05T07:02:55.509926+00:00",
+    "signal_type": "youtube-most-popular-seed-proxy"
+  },
+  "selected_topic_source": "https://www.energy.gov/nepa/articles/cx-271071-cooling-operations-optimized-leaps-energy-reliability-and-carbon"
+}
