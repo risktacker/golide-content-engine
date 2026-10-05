@@ -370,7 +370,7 @@ function actionCard(job) {
     esc(job.title || "Script ready") + '</h4><p>The topic was selected from current demand and researched by the engine. Record this script in your own voice (' + clock(windowRange[0]) + ' to ' + clock(windowRange[1]) + '); the pipeline resumes automatically after upload.</p>' + rejected +
     '<div class="script-box">' + esc(script) + '</div></div>' +
     '<div class="action-controls">' +
-      '<label class="upload-button">Upload my recording<input class="voice-input" type="file" accept="audio/*" data-job="' + escAttr(job.job_id) + '"></label>' +
+      '<label class="upload-button">Upload my recording<input class="voice-input" type="file" accept="audio/*,video/*,.m4a,.mp3,.wav,.aac,.caf,.ogg,.opus,.webm,.mp4,.mov" data-job="' + escAttr(job.job_id) + '"></label>' +
       '<button class="action-button copy-script" data-job="' + escAttr(job.job_id) + '">Copy script</button>' +
       '<span class="voice-status" id="voice-status-' + escAttr(job.job_id) + '"></span>' +
     '</div></article>';
@@ -423,15 +423,22 @@ async function prepareUpload(file) {
     method: "POST",
     body: JSON.stringify({
       filename: file.name,
-      media_kind: file.type.startsWith("audio/") ? "audio" : "render_asset",
+      // iPhone voice notes often arrive as video/mp4 or with no type; the
+      // engine extracts the sound track either way.
+      media_kind: "audio",
     }),
   });
-  const uploaded = await fetch(prepared.upload_url, {
+  // Upload through Studio itself (same origin), not straight to the bucket.
+  const uploaded = await fetch("/api/media/upload?ref=" + encodeURIComponent(prepared.media_ref), {
     method: "PUT",
     headers: { "Content-Type": file.type || "application/octet-stream" },
     body: file,
   });
-  if (!uploaded.ok) throw new Error("Temporary upload failed (" + uploaded.status + ")");
+  if (!uploaded.ok) {
+    let reason = "";
+    try { reason = (await uploaded.json()).error || ""; } catch {}
+    throw new Error("Upload failed (" + uploaded.status + ")" + (reason ? ": " + reason : ""));
+  }
   return prepared.media_ref;
 }
 
@@ -449,9 +456,9 @@ async function uploadVoice(jobId, file) {
       return;
     }
   } catch (error) {
-    if (status) status.textContent = error.message;
-    alert(error.message);
-    return;
+    // Some phone formats hide their length from the browser. Upload anyway;
+    // the engine measures it and emails you if it is outside the window.
+    if (status) status.textContent = "Couldn't read the length here; the engine will check it.";
   }
   uploadCount += 1;
   if (status) status.textContent = "Uploading " + file.name + "...";

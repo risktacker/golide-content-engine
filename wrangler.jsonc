@@ -23,6 +23,12 @@
     }
   ],
 
+  // R2 temporary media. Studio uploads go through the Worker (same origin),
+  // so the browser never needs CORS access to the bucket.
+  "r2_buckets": [
+    { "binding": "MEDIA", "bucket_name": "golide-content-temp" }
+  ],
+
   // Secrets (set once, survive every deploy, never in git):
   //   npx wrangler secret put R2_ACCOUNT_ID
   //   npx wrangler secret put R2_ACCESS_KEY_ID

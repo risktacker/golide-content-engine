@@ -1040,6 +1040,19 @@ async function prepareMedia(env,payload){
   return {media_ref:ref,upload_url:await presign(env,"PUT",key,900,at),expires_at:expiresAt};
 }
 
+async function receiveUpload(env,request,refValue){
+  const ref=safeText(refValue);
+  if(!ref.startsWith("r2://temp/")) throw new Error("invalid media reference");
+  if(!env.MEDIA) throw new Error("R2 media binding is not configured");
+  const row=await env.DB.prepare(`SELECT status FROM temporary_media WHERE object_key=?`).bind(ref).first();
+  if(!row||row.status!=="active") throw new Error("upload slot is not active; prepare the upload again");
+  if(!request.body) throw new Error("empty upload");
+  await env.MEDIA.put(ref.slice(5),request.body,{
+    httpMetadata:{contentType:safeText(request.headers.get("content-type"))||"application/octet-stream"},
+  });
+  return {media_ref:ref,status:"uploaded"};
+}
+
 async function handleApi(request,env,url){
   await ensureSchema(env.DB);
   if(url.pathname==="/api/health"&&request.method==="GET") return json({status:"ok"});
@@ -1085,6 +1098,10 @@ async function handleApi(request,env,url){
     const ref=safeText(url.searchParams.get("ref"));
     if(!ref.startsWith("r2://")) return err("invalid media reference",400);
     try{return json({preview_url:await presign(env,"GET",ref.slice(5),900)});}catch(e){return err(e?.message||String(e),503);}
+  }
+  if(url.pathname==="/api/media/upload"&&request.method==="PUT"){
+    try{return json(await receiveUpload(env,request,url.searchParams.get("ref")));}
+    catch(e){return err(e?.message||String(e),400);}
   }
   if(url.pathname==="/api/media/prepare"&&request.method==="POST"){
     try{return json(await prepareMedia(env,await request.json()),201);}catch(e){return err(e?.message||String(e),503);}
