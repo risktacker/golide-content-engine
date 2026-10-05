@@ -91,6 +91,33 @@ def build_reconnect_reminder(*, platform: str, days_left: int, account: str = ""
     return message
 
 
+def build_rebuild_preview(*, title: str, preview_url: str, production_id: str) -> EmailMessage:
+    message = EmailMessage()
+    message["Subject"] = f"Preview ready: {title}"[:180]
+    message.set_content(
+        f"The rebuilt video for \"{title}\" is ready. Nothing has been published yet.\n\n"
+        f"Watch it (link works for 48 hours):\n{preview_url}\n\n"
+        "If it is good, tell Claude to publish it. It will go to YouTube as a new video and to "
+        "Instagram and Facebook as Reels. Delete the old YouTube video yourself afterwards.\n\n"
+        f"Job: {production_id}\n"
+    )
+    message.add_alternative(
+        f"""<div style="background:#0b0b0e;color:#f4f4f5;font-family:Arial,sans-serif;padding:24px">
+  <p style="color:#e9c46a;letter-spacing:2px;font-size:12px;margin:0 0 8px">PREVIEW &middot; NOT PUBLISHED YET</p>
+  <h2 style="margin:0 0 16px;font-weight:600">{html.escape(title)}</h2>
+  <p style="margin:0 0 24px;line-height:1.5">Watch it with sound. If it is good, tell Claude to publish it to YouTube, Instagram and Facebook.</p>
+  <a href="{html.escape(preview_url)}" style="display:inline-block;background:#e9c46a;color:#0b0b0e;padding:12px 22px;border-radius:999px;font-weight:700;text-decoration:none">Watch preview</a>
+  <p style="color:#7a7a84;font-size:12px;margin:24px 0 0">Link works for 48 hours. Job {html.escape(production_id)}</p>
+</div>""",
+        subtype="html",
+    )
+    return message
+
+
+def send_rebuild_preview(**kwargs) -> bool:
+    return _send(build_rebuild_preview(**kwargs))
+
+
 def _send(message: EmailMessage) -> bool:
     user = os.getenv("GOLIDE_SMTP_USER", "").strip()
     password = os.getenv("GOLIDE_SMTP_APP_PASSWORD", "").strip()

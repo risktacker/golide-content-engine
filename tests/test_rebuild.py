@@ -1,0 +1,166 @@
+import json
+import tempfile
+import unittest
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
+from golide_engine.orchestration.rebuild import Rebuild, RebuildError
+from golide_engine.orchestration.studio_social import StudioSocialPublisher
+from golide_engine.storage.database import Database
+
+PLAN = {"title": "t", "lines": [
+    {"section": "claim", "text": "Heat is the limit.", "emphasis": "Heat", "visual": "icon_hero",
+     "subjects": ["flame"], "label": "A"},
+    {"section": "cta", "text": "Watch the heat.", "emphasis": "heat", "visual": "logo_end",
+     "subjects": [], "label": ""},
+]}
+ID = "golide-short-2026-10-05"
+
+
+class FakeStore:
+    def __init__(self):
+        self.uploads = []
+
+    def upload_bytes(self, **kwargs):
+        self.uploads.append(kwargs)
+        return type("U", (), {"media_ref": "r2://temp/x/clip.mp4",
+                              "expires_at": datetime.now(timezone.utc) + timedelta(hours=72)})()
+
+    def resolve(self, ref, expires_seconds=3600):
+        return f"https://signed.example/{ref[5:]}?ttl={expires_seconds}"
+
+
+class FakeService:
+    """Stands in for ProductionService.run: writes the release package."""
+
+    def __init__(self, root: Path):
+        self.root = root
+        self.runs = 0
+
+    def run(self, spec_path):
+        self.runs += 1
+        pkg = self.root / "release-packages" / ID
+        pkg.mkdir(parents=True)
+        (pkg / "video.mp4").write_bytes(b"video")
+        (pkg / "thumbnail.png").write_bytes(b"png")
+        (pkg / "upload-metadata.json").write_text(json.dumps({"title": "Cooling", "description": "Why."}))
+        (pkg / "package-manifest.json").write_text(json.dumps({
+            "release": {"approved": True, "scheduled_at": "2026-10-05T11:00:00Z"},
+            "files": {"video": {"file": "video.mp4"}, "thumbnail": {"file": "thumbnail.png"},
+                      "metadata": {"file": "upload-metadata.json"}},
+        }))
+
+
+class RebuildTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = Path(self.tmp.name)
+        (self.root / "production-queue").mkdir()
+        (self.root / "production-queue" / f"{ID}.completed.json").write_text(json.dumps({
+            "id": ID, "title": "Cooling", "format": "short",
+            "owner_voice_media_ref": "r2://temp/voice.wav"}))
+        work = self.root / "productions" / ID
+        work.mkdir(parents=True)
+        (work / "script.txt").write_text("Heat is the limit.\nWatch the heat.\n")
+        (work / "narration-owner.wav").write_bytes(b"wav")
+        (work / "timed-words-owner.json").write_text("[]")
+        (work / "thumbnail.png").write_bytes(b"png")
+        self.db = Database(self.root / "golide.sqlite3")
+        self.db.initialize()
+        self.db.upsert_production({"id": ID, "format": "short", "title": "Cooling"}, "uploaded")
+        for stage in ("script", "owner-voice", "render-vector-v1", "qa", "release"):
+            self.db.execute("INSERT INTO stage_runs(production_id, stage, attempt, status, started_at) "
+                            "VALUES (?, ?, 1, 'completed', '2026-10-05')", (ID, stage))
+        self.plan = self.root / "plan.json"
+        self.plan.write_text(json.dumps(PLAN))
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def stages(self):
+        return {r["stage"] for r in self.db.rows("SELECT stage FROM stage_runs WHERE production_id=?", (ID,))}
+
+    def test_only_render_onward_is_redone_and_voice_is_kept(self):
+        redo = Rebuild(self.root, self.db, ID).prepare(self.plan)
+        self.assertEqual(redo, ["render-vector-v1", "qa", "release"])
+        self.assertEqual(self.stages(), {"script", "owner-voice"})
+        self.assertTrue((self.root / "productions" / ID / "narration-owner.wav").exists())
+
+    def test_plan_with_different_words_is_refused(self):
+        bad = json.loads(json.dumps(PLAN))
+        bad["lines"][0]["text"] = "Cold is the limit."
+        self.plan.write_text(json.dumps(bad))
+        with self.assertRaises(RebuildError):
+            Rebuild(self.root, self.db, ID).prepare(self.plan)
+
+    def test_preview_then_publish(self):
+        rebuild = Rebuild(self.root, self.db, ID)
+        store, service, emails = FakeStore(), FakeService(self.root), []
+        state = rebuild.build(service=service, store=store, notify=lambda **kw: emails.append(kw),
+                              scene_plan=self.plan)
+        self.assertEqual(state["status"], "awaiting_approval")
+        self.assertEqual(store.uploads[0]["content_type"], "video/mp4")
+        self.assertIn("signed.example", emails[0]["preview_url"])
+
+        uploads, created = [], []
+
+        class Uploader:
+            def upload_private(self, *args):
+                uploads.append(args)
+                return "NEWVID"
+
+        class Bridge:
+            def create_content(self, payload):
+                created.append(payload)
+                return {"id": payload["id"]}
+
+        class Publisher:
+            def run_due(self):
+                return [{"post_id": f"{ID}-reels", "status": "published"}]
+
+        result = rebuild.publish(uploader=Uploader(), bridge=Bridge(), publisher_factory=Publisher)
+        self.assertEqual(result["status"], "published")
+        self.assertEqual(result["youtube_video_id"], "NEWVID")
+        platforms = {v["platform"]: v for v in created[0]["variants"]}
+        self.assertEqual(set(platforms), {"instagram", "facebook", "youtube"})
+        self.assertEqual(platforms["youtube"]["parts"], ["youtube:NEWVID"])
+        self.assertEqual(created[0]["content_class"], "short")
+        # A second publish does not upload to YouTube again.
+        with self.assertRaises(RebuildError):
+            rebuild.publish(uploader=Uploader(), bridge=Bridge(), publisher_factory=Publisher)
+        self.assertEqual(len(uploads), 1)
+
+
+class ShortYouTubeLegTests(unittest.TestCase):
+    def test_youtube_variant_is_recorded_from_its_video_id(self):
+        reports = []
+
+        class Bridge:
+            def __init__(self):
+                self.posts = [{"id": "p1", "status": "publishing", "variants": [
+                    {"id": "v1", "platform": "youtube", "media_ref": "", "parts": ["youtube:ABC"]}]}]
+
+            def social_credentials(self, platform):
+                raise RuntimeError("not connected")
+
+            def claim_due_social(self, now):
+                return self.posts.pop(0) if self.posts else None
+
+            def report_social_variant(self, post_id, variant_id, **kw):
+                reports.append(kw)
+                return {"status": "published"}
+
+        import golide_engine.orchestration.studio_social as module
+        original = module.r2_store_from_environment
+        module.r2_store_from_environment = lambda: object()
+        try:
+            results = StudioSocialPublisher(bridge=Bridge()).run_due()
+        finally:
+            module.r2_store_from_environment = original
+        self.assertEqual(reports[0]["remote_id"], "ABC")
+        self.assertEqual(reports[0]["status"], "published")
+        self.assertEqual(results[0]["status"], "published")
+
+
+if __name__ == "__main__":
+    unittest.main()

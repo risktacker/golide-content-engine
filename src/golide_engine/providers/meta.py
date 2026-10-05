@@ -177,7 +177,12 @@ class InstagramProvider(SocialProvider):
         if not container_id:
             raise RuntimeError("Instagram did not return a media container id")
 
-        self._wait_until_ready(container_id)
+        # Reels need server-side processing (often 30 to 90 seconds); images
+        # are ready almost at once.
+        if "video_url" in payload:
+            self._wait_until_ready(container_id, attempts=max(self.poll_attempts, 60), seconds=max(self.poll_seconds, 5.0))
+        else:
+            self._wait_until_ready(container_id)
         published = self.graph.post(
             f"{self.instagram_user_id}/media_publish",
             creation_id=container_id,
@@ -187,8 +192,11 @@ class InstagramProvider(SocialProvider):
             raise RuntimeError("Instagram did not return a published media id")
         return PublishResult(content_id=media_id, url=None)
 
-    def _wait_until_ready(self, container_id: str) -> None:
-        for attempt in range(self.poll_attempts):
+    def _wait_until_ready(self, container_id: str, *, attempts: int | None = None,
+                          seconds: float | None = None) -> None:
+        attempts = attempts or self.poll_attempts
+        seconds = self.poll_seconds if seconds is None else seconds
+        for attempt in range(attempts):
             status = self.graph.get(container_id, fields="status_code,status")
             code = str(status.get("status_code", "")).upper()
             if code == "FINISHED":
@@ -197,8 +205,8 @@ class InstagramProvider(SocialProvider):
                 raise RuntimeError(
                     f"Instagram media container failed: {status.get('status') or code}"
                 )
-            if attempt + 1 < self.poll_attempts:
-                self.sleeper(self.poll_seconds)
+            if attempt + 1 < attempts:
+                self.sleeper(seconds)
         raise RuntimeError("Instagram media container did not finish before timeout")
 
 
@@ -230,9 +238,7 @@ class FacebookPageProvider(SocialProvider):
         else:
             media_url = _require_https_media(request.media_ref)
             if _looks_like_video(media_url):
-                raise NotImplementedError(
-                    "Facebook video/reel upload is handled by the dedicated video adapter, not the photo/text publisher"
-                )
+                return self._publish_reel(media_url, body)
             result = self.graph.post(
                 f"{self.page_id}/photos",
                 url=media_url,
@@ -242,3 +248,33 @@ class FacebookPageProvider(SocialProvider):
         if not content_id:
             raise RuntimeError("Facebook did not return a post id")
         return PublishResult(content_id=content_id, url=None)
+
+    def _publish_reel(self, video_url: str, description: str) -> PublishResult:
+        """Facebook Reels: start an upload, let Facebook fetch the hosted file, publish.
+
+        Uses the Page Reels API (video_reels) with a hosted file URL, so the
+        video never passes through this process.
+        """
+        started = self.graph.post(f"{self.page_id}/video_reels", upload_phase="start")
+        video_id = str(started.get("video_id", ""))
+        if not video_id:
+            raise RuntimeError("Facebook did not return a reel video id")
+        upload_url = str(started.get("upload_url") or
+                         f"https://rupload.facebook.com/video-upload/{self.graph.api_version}/{video_id}")
+        uploaded = self.graph.http.post(
+            upload_url,
+            data={},
+            headers={"Authorization": f"OAuth {self.graph.access_token}", "file_url": video_url},
+        ).data
+        if not uploaded.get("success"):
+            raise RuntimeError(f"Facebook reel upload failed: {uploaded}")
+        finished = self.graph.post(
+            f"{self.page_id}/video_reels",
+            upload_phase="finish",
+            video_id=video_id,
+            video_state="PUBLISHED",
+            description=description,
+        )
+        if not finished.get("success", True):
+            raise RuntimeError(f"Facebook reel publish failed: {finished}")
+        return PublishResult(content_id=str(finished.get("post_id") or video_id), url=None)

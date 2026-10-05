@@ -52,6 +52,24 @@ class StudioSocialPublisher:
 
             for variant in post.get("variants", []):
                 platform = str(variant.get("platform", "")).strip().lower()
+                if platform == "youtube":
+                    # Shorts reach YouTube through the production upload; the
+                    # variant only records that video id ("youtube:<id>").
+                    video_id = next(
+                        (str(part)[8:] for part in variant.get("parts") or ()
+                         if str(part).startswith("youtube:")),
+                        "",
+                    )
+                    updated = self.bridge.report_social_variant(
+                        post["id"],
+                        variant["id"],
+                        status="published" if video_id else "failed",
+                        remote_id=video_id or None,
+                        url=f"https://youtu.be/{video_id}" if video_id else None,
+                        error=None if video_id else "YouTube is uploaded by the production run",
+                    )
+                    last_status = updated["status"]
+                    continue
                 provider = self.providers.get(platform)
                 if provider is None:
                     updated = self.bridge.report_social_variant(

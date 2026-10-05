@@ -16,7 +16,8 @@ class JsonResponse:
 
 class JsonHttpClient(Protocol):
     def get(self, url: str, *, params: dict[str, Any] | None = None) -> JsonResponse: ...
-    def post(self, url: str, *, data: dict[str, Any] | None = None) -> JsonResponse: ...
+    def post(self, url: str, *, data: dict[str, Any] | None = None,
+             headers: dict[str, str] | None = None) -> JsonResponse: ...
 
 
 class UrlLibJsonClient:
@@ -32,7 +33,13 @@ class UrlLibJsonClient:
         request = urllib.request.Request(url, method="GET")
         return self._send(request)
 
-    def post(self, url: str, *, data: dict[str, Any] | None = None) -> JsonResponse:
+    def post(
+        self,
+        url: str,
+        *,
+        data: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
+    ) -> JsonResponse:
         body = urllib.parse.urlencode(
             {k: v for k, v in (data or {}).items() if v is not None}
         ).encode("utf-8")
@@ -40,7 +47,7 @@ class UrlLibJsonClient:
             url,
             data=body,
             method="POST",
-            headers={"Content-Type": "application/x-www-form-urlencoded"},
+            headers={"Content-Type": "application/x-www-form-urlencoded", **(headers or {})},
         )
         return self._send(request)
 

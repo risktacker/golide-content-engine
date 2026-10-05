@@ -26,8 +26,8 @@ class FakeHttp:
             raise AssertionError("unexpected GET")
         return JsonResponse(200, self.gets.pop(0))
 
-    def post(self, url, *, data=None):
-        self.calls.append(("POST", url, data or {}))
+    def post(self, url, *, data=None, headers=None):
+        self.calls.append(("POST", url, dict(data or {}, **({"_headers": headers} if headers else {}))))
         if not self.posts:
             raise AssertionError("unexpected POST")
         return JsonResponse(200, self.posts.pop(0))
@@ -190,6 +190,27 @@ class MetaProviderTests(unittest.TestCase):
         self.assertEqual(payload["media_type"], "REELS")
         self.assertEqual(payload["video_url"], "https://cdn.example.com/reel.mp4")
         self.assertEqual(payload["share_to_feed"], "true")
+
+    def test_facebook_reel_uses_hosted_file_upload(self) -> None:
+        http = FakeHttp(posts=[
+            {"video_id": "vid-9", "upload_url": "https://rupload.facebook.com/video-upload/v99.0/vid-9"},
+            {"success": True},
+            {"success": True, "post_id": "page-1_post-9"},
+        ])
+        provider = FacebookPageProvider(api_version="v99.0", page_access_token="page-token",
+                                        page_id="page-1", http=http)
+        with patch.dict(os.environ, {"GOLIDE_ENABLE_SOCIAL_PUBLISH": "1"}):
+            result = provider.publish(self.request("facebook", "https://r2.example.com/clip.mp4?sig=1"))
+        self.assertEqual(result.content_id, "page-1_post-9")
+        start, upload, finish = http.calls
+        self.assertTrue(start[1].endswith("/page-1/video_reels"))
+        self.assertEqual(start[2]["upload_phase"], "start")
+        self.assertEqual(upload[1], "https://rupload.facebook.com/video-upload/v99.0/vid-9")
+        self.assertEqual(upload[2]["_headers"]["file_url"], "https://r2.example.com/clip.mp4?sig=1")
+        self.assertEqual(upload[2]["_headers"]["Authorization"], "OAuth page-token")
+        self.assertEqual(finish[2]["upload_phase"], "finish")
+        self.assertEqual(finish[2]["video_state"], "PUBLISHED")
+        self.assertEqual(finish[2]["description"], "GOLIDE test copy")
 
     def test_meta_rejects_non_https_media(self) -> None:
         provider = InstagramProvider(

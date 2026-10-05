@@ -640,7 +640,7 @@ async function registerEngineMedia(db,payload){
 async function claimDueSocial(db,nowValue){
   const moment=safeText(nowValue)||nowIso();
   const row=await db.prepare(`SELECT id FROM content_posts
-    WHERE content_class='post' AND status IN ('scheduled','partial','failed')
+    WHERE content_class IN ('post','short') AND status IN ('scheduled','partial','failed')
       AND scheduled_at IS NOT NULL AND scheduled_at<=?
     ORDER BY scheduled_at ASC,created_at ASC LIMIT 1`).bind(moment).first();
   if(!row) return null;

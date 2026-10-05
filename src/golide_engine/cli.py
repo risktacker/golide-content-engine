@@ -88,6 +88,12 @@ def main() -> int:
         action="store_true",
         help="Return a failure exit code when any selected provider is not connected.",
     )
+    rebuild_parser = sub.add_parser("rebuild-video")
+    rebuild_parser.add_argument("--id", required=True)
+    rebuild_parser.add_argument("--step", choices=("preview", "publish"), required=True)
+    rebuild_parser.add_argument("--scene-plan", default="")
+    rebuild_parser.add_argument("--database", default="data/golide.sqlite3")
+    rebuild_parser.add_argument("--token", default=".secrets/youtube-token.json")
     sub.add_parser("static-automation-run")
     sub.add_parser("connection-reminders")
     sub.add_parser("studio-social-publish")
@@ -208,6 +214,47 @@ def main() -> int:
         sent = [item for item in due if send_reconnect_reminder(**item)]
         print(json.dumps({"status": "connection_reminders", "due": due, "sent": len(sent)}, indent=2))
         return 0
+
+    if args.command == "rebuild-video":
+        from .orchestration.rebuild import Rebuild
+        from .storage.r2 import r2_store_from_environment
+        from .studio_bridge import StudioBridge
+
+        database = _database(args.database)
+        rebuild = Rebuild(Path.cwd(), database, args.id)
+        bridge = StudioBridge(os.getenv("GOLIDE_STUDIO_BASE_URL", "https://studio.golidee.com"))
+        if args.step == "preview":
+            from .operations.email import send_rebuild_preview
+            from .orchestration.production import ProductionService
+
+            store = r2_store_from_environment()
+            if store is None:
+                raise RuntimeError("R2 is required to hold the preview")
+            # youtube=None: the topic was validated when the job first ran;
+            # a rebuild must not re-run (or fail) demand checks.
+            service = ProductionService(Path.cwd(), database, youtube=None)
+            state = rebuild.build(
+                service=service, store=store, bridge=bridge, notify=send_rebuild_preview,
+                scene_plan=Path(args.scene_plan) if args.scene_plan else None,
+            )
+            state.pop("preview_url", None)  # never print a signed link into run logs
+            print(json.dumps({"status": "rebuild_preview_ready", **state}, indent=2))
+            return 0
+        from .orchestration.studio_social import StudioSocialPublisher
+        from .storage.retention import register_successful_upload
+        from .youtube.auth import assert_channel, credentials, services
+        from .youtube.uploader import YouTubeUploader
+
+        youtube, _ = services(credentials(args.token))
+        assert_channel(youtube, "UCqaXVBSBz7iQsRHOupKt-3w")
+        state = rebuild.publish(
+            uploader=YouTubeUploader(youtube, database, "UCqaXVBSBz7iQsRHOupKt-3w"),
+            bridge=bridge,
+            publisher_factory=lambda: StudioSocialPublisher(bridge=bridge),
+            register_upload=lambda video_id: register_successful_upload(Path.cwd(), database, args.id, video_id),
+        )
+        print(json.dumps({"status": "rebuild_published", **state}, indent=2))
+        return 0 if state.get("status") == "published" else 1
 
     if args.command == "static-automation-run":
         from .orchestration.static_automation import StaticAutomation
