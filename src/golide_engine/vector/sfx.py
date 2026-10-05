@@ -92,8 +92,8 @@ def hit(seconds: float = 1.0) -> np.ndarray:
 
 # Peak level of each sound relative to full scale (the voice sits near 0 dB
 # after loudness normalisation, so these stay well underneath it).
-LEVELS = {"whoosh": 0.16, "tick": 0.07, "pop": 0.11, "rise": 0.07,
-          "shimmer": 0.05, "scratch": 0.12, "hit": 0.22}
+LEVELS = {"whoosh": 0.07, "tick": 0.07, "pop": 0.11, "rise": 0.07,
+          "shimmer": 0.05, "scratch": 0.12, "hit": 0.12}
 
 
 def _emphasis_time(line: TimedLine) -> float | None:
@@ -107,7 +107,10 @@ def _emphasis_time(line: TimedLine) -> float | None:
 # Owner review 2026-10-05: the whooshes, ticks and swells on every change were
 # distracting ("making noise"); only the ambient bed stays. Sounds listed here
 # are the only ones rendered; empty means the effects track is silent.
-ENABLED: frozenset[str] = frozenset()
+# Second review: keep only sounds that mark a real moment, soft, under the
+# bed: a gentle whoosh when a new illustration scene begins and the closing
+# hit. No ticks, pops, swells or scratches.
+ENABLED: frozenset[str] = frozenset({"whoosh", "hit"})
 
 
 def plan_events(groups: list[Group]) -> list[tuple[float, str]]:
@@ -117,7 +120,8 @@ def plan_events(groups: list[Group]) -> list[tuple[float, str]]:
 def _all_events(groups: list[Group]) -> list[tuple[float, str]]:
     events: list[tuple[float, str]] = []
     for index, group in enumerate(groups):
-        if index > 0:
+        # Only real scene changes (a new illustration), not every line.
+        if index > 0 and group.visual in {"illustration", "logo_end"}:
             events.append((max(0.0, group.start - 0.18), "whoosh"))
         if group.visual.startswith("icon_"):
             events.append((group.start + 0.1, "shimmer"))

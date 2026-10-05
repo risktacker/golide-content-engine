@@ -16,7 +16,10 @@ from pathlib import Path
 import numpy as np
 
 RATE = 48000
-LEVEL_DB = -29.0  # RMS of the bed before ducking; the voice sits near -19 dB RMS
+# Owner review 2026-10-05: the bed is what makes the narration listenable, but
+# at -29 dB (and mostly bass) it vanished on phone speakers. Now ~9 dB under
+# the voice, voiced in the range phones actually play.
+LEVEL_DB = -16.0  # bed RMS before ducking; lands ~9 dB under the voice on a phone speaker
 
 # Calm open voicings (Hz). Each video picks one pair from its title, so videos
 # do not all sound identical but always stay soft and unresolved.
@@ -50,14 +53,16 @@ def ambient_bed(duration: float, seed_text: str = "golide") -> np.ndarray:
     bed = np.zeros(n)
     rng = np.random.default_rng(len(seed_text))
     for chord, weight in ((chord_a, mix), (chord_b, 1 - mix)):
-        for i, freq in enumerate(chord):
-            amp = 1.0 / (1 + i * 0.7)
+        # One octave up from the written voicing: phone speakers roll off
+        # below ~150 Hz, so the old bass-heavy pad was simply not heard.
+        for i, freq in enumerate(f * 2 for f in chord):
+            amp = 1.0 / (1 + i * 0.35)
             lfo = 0.75 + 0.25 * np.sin(math.tau * rng.uniform(0.03, 0.09) * t + rng.uniform(0, math.tau))
             for detune in (-0.0018, 0.0018):
                 bed += weight * amp * lfo * np.sin(math.tau * freq * (1 + detune) * t + rng.uniform(0, math.tau))
     # Thin "air" on top, the way the reference has a faint high shimmer.
     air = _band_noise(n, 3500, 7500, 5) * (0.5 + 0.5 * np.sin(math.tau * 0.05 * t))
-    bed = bed / (np.sqrt(np.mean(bed ** 2)) or 1.0) + 0.12 * air
+    bed = bed / (np.sqrt(np.mean(bed ** 2)) or 1.0) + 0.18 * air
     # Gentle fade in and out.
     fade_in = np.clip(t / 2.5, 0, 1)
     fade_out = np.clip((duration - t) / 3.0, 0, 1)

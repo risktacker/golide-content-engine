@@ -404,7 +404,7 @@ class VectorRenderer:
         audio = ("[1:a]loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000,asplit=2[v][key];"
                  "[2:a]aresample=48000[s];"
                  "[3:a]aresample=48000[b0];"
-                 "[b0][key]sidechaincompress=threshold=0.03:ratio=3:attack=80:release=900[b];"
+                 "[b0][key]sidechaincompress=threshold=0.05:ratio=1.8:attack=120:release=1200[b];"
                  "[v][s][b]amix=inputs=3:duration=first:normalize=0,alimiter=limit=0.79:level=0:attack=2:release=60[a]")
         command = ["ffmpeg", "-y", "-loglevel", "error", *inputs, "-filter_complex", audio,
                    "-map", "0:v", "-map", "[a]", "-c:v", "libx264", "-preset", "medium", "-crf", "19",
