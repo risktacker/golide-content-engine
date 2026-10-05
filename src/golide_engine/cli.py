@@ -494,7 +494,7 @@ def main() -> int:
         assert_channel(youtube, "UCqaXVBSBz7iQsRHOupKt-3w")
         from .operations.budget import BudgetPaused
         from .youtube.demand import TopicDemandRejected
-        from .orchestration.production import WaitingOwnerVoice
+        from .orchestration.production import RenderHeld, WaitingOwnerVoice
         from .orchestration.recording import RecordingLengthError
         service = None
 
@@ -584,6 +584,10 @@ def main() -> int:
                 "required_field": "owner_voice_media_ref",
                 "message": "Topic research and script are ready. Upload the owner recording in Studio to resume from checkpoints.",
             }))
+            return 0
+        except RenderHeld as exc:
+            report_studio("queued", "held-for-new-look", str(exc))
+            print(json.dumps({"status": "render_held", "production_id": spec["id"], "reason": str(exc)}))
             return 0
         except RecordingLengthError as exc:
             refreshed = json.loads(spec_path.read_text(encoding="utf-8"))

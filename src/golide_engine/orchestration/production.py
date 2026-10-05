@@ -35,6 +35,20 @@ from .recording import RecordingLengthError, check_recording_length
 from .stage_runner import StageRunner
 
 
+class RenderHeld(RuntimeError):
+    """The owner has paused rendering until a new visual style is approved."""
+
+
+def render_hold_reason(root: Path, format_name: str) -> str | None:
+    path = Path(root) / "config" / "render-hold.json"
+    if not path.exists():
+        return None
+    hold = json.loads(path.read_text(encoding="utf-8"))
+    if format_name in hold.get("hold_formats", []):
+        return str(hold.get("reason") or "rendering is on hold")
+    return None
+
+
 class WaitingOwnerVoice(RuntimeError):
     """Checkpointed pause after topic research and script generation."""
 
@@ -648,6 +662,14 @@ class ProductionService:
                  "start": line.start, "end": line.end}
                 for line in timed_lines
             ]), encoding="utf-8")
+
+            held = render_hold_reason(self.root, str(spec["format"]))
+            already = self.database.rows(
+                "SELECT 1 FROM stage_runs WHERE production_id=? AND stage='render-vector-v1' AND status='completed' LIMIT 1",
+                (production_id,),
+            )
+            if held and not already:
+                raise RenderHeld(held)
 
             def vector_render_stage():
                 VectorRenderer(str(spec["format"])).render(

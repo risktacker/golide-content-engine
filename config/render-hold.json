@@ -1,0 +1,4 @@
+{
+  "hold_formats": ["short", "long"],
+  "reason": "Owner review 2026-10-05: videos move to the illustration style. Nothing renders until the owner approves the new look; recordings wait safely and render on the first run after approval."
+}
