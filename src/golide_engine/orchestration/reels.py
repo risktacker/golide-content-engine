@@ -83,7 +83,7 @@ def reels_payload(*, content_id: str, metadata: dict[str, Any], video_ref: str, 
 
 def publish_reels(*, bridge, store, publisher_factory, production_id: str, video: Path,
                   metadata: dict[str, Any], youtube_video_id: str, owner_voice_ref: str,
-                  video_ref: str | None = None) -> dict[str, Any]:
+                  video_ref: str | None = None, content_id: str | None = None) -> dict[str, Any]:
     """Upload (if needed), queue and publish the IG/FB Reels for one short."""
     if video_ref is None:
         video_ref = upload_media(store, video, f"{production_id}.mp4", "video/mp4", bridge)
@@ -93,7 +93,7 @@ def publish_reels(*, bridge, store, publisher_factory, production_id: str, video
         cover_ref = upload_media(store, cover, f"{production_id}-cover.jpg", "image/jpeg", bridge, "image")
     except Exception as exc:  # a missing cover must not block the Reel
         print({"status": "cover_failed", "error": str(exc)})
-    content_id = f"{production_id}-reels"
+    content_id = content_id or f"{production_id}-reels"
     bridge.create_content(reels_payload(
         content_id=content_id, metadata=metadata, video_ref=video_ref, cover_ref=cover_ref,
         youtube_video_id=youtube_video_id, owner_voice_ref=owner_voice_ref,

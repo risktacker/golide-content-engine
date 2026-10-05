@@ -116,7 +116,7 @@ class RebuildTests(unittest.TestCase):
 
         class Publisher:
             def run_due(self):
-                return [{"post_id": f"{ID}-reels", "status": "published"}]
+                return [{"post_id": created[-1]["id"], "status": "published"}]
 
         result = rebuild.publish(uploader=Uploader(), bridge=Bridge(), publisher_factory=Publisher)
         self.assertEqual(result["status"], "published")
@@ -125,6 +125,7 @@ class RebuildTests(unittest.TestCase):
         self.assertEqual(set(platforms), {"instagram", "facebook", "youtube"})
         self.assertEqual(platforms["youtube"]["parts"], ["youtube:NEWVID"])
         self.assertEqual(created[0]["content_class"], "short")
+        self.assertTrue(created[0]["id"].startswith(f"{ID}-reels-2"))
         # A second publish does not upload to YouTube again.
         with self.assertRaises(RebuildError):
             rebuild.publish(uploader=Uploader(), bridge=Bridge(), publisher_factory=Publisher)
