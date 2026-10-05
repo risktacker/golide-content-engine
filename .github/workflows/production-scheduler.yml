@@ -31,6 +31,11 @@ jobs:
     timeout-minutes: 180
     env:
       GOLIDE_STUDIO_BASE_URL: "https://studio.golidee.com"
+      # Owner recordings and rendered media live in temporary R2 storage.
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
     steps:
       - name: Check Studio automation control
         id: automation
