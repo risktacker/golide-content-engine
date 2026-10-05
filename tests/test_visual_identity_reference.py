@@ -17,17 +17,14 @@ class VisualIdentityReferenceTests(unittest.TestCase):
         actual = hashlib.sha256(reference.read_bytes()).hexdigest()
         self.assertEqual(expected, actual)
 
-    def test_thumbnail_always_receives_canonical_avatar_reference(self):
+    def test_black_theme_thumbnail_has_no_avatar_unless_asked(self):
+        # Locked 2026-10-04: GOLIDE Black thumbnails are single-subject line art.
         refs = OpenAIImageProvider._references_for(
             "Chicken vision stability explainer thumbnail",
             None,
             thumbnail=True,
         )
-        self.assertEqual(1, len(refs))
-        self.assertEqual(
-            self.identity.canonical_avatar_reference().resolve(),
-            refs[0].resolve(),
-        )
+        self.assertEqual([], refs)
 
     def test_explicit_avatar_scene_receives_reference_but_topic_scene_does_not(self):
         avatar_refs = OpenAIImageProvider._references_for(

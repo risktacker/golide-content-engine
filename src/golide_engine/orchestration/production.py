@@ -11,7 +11,7 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
-from ..captions import words_to_beats, words_to_srt
+from ..captions import clean_timed_words, words_to_beats, words_to_srt
 from ..feedback.engine import FeedbackEngine
 from ..manifest import load_project
 from ..music.registry import MusicRegistry
@@ -599,6 +599,10 @@ class ProductionService:
             authoritative_words_path.write_text(
                 json.dumps(timed_words, indent=2) + "\n", encoding="utf-8"
             )
+
+        timed_words = clean_timed_words(timed_words)
+        if not timed_words:
+            raise RuntimeError("owner-voice transcription produced no usable words")
 
         spoken_srt = work / "spoken-captions-authoritative-v3.srt"
 

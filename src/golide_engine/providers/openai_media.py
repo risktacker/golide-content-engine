@@ -46,7 +46,9 @@ class OpenAIImageProvider:
         # person. Explicit avatar scenes get the same treatment. Ordinary subject
         # visuals do not receive the avatar reference, so the model is not encouraged
         # to insert a person where the story calls for a mechanism/object/diagram.
-        if thumbnail or identity.requests_avatar(prompt):
+        # GOLIDE Black (2026-10-04): thumbnails are single-subject line art, not
+        # the paper-cut avatar, so the avatar is attached only when asked for.
+        if identity.requests_avatar(prompt):
             canonical = identity.canonical_avatar_reference()
             canonical_resolved = canonical.resolve()
             references = [

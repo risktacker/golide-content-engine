@@ -11,6 +11,25 @@ def _timestamp(seconds: float) -> str:
     return f"{hours:02}:{minutes:02}:{whole_seconds:02},{milliseconds:03}"
 
 
+def clean_timed_words(words: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Drop the blank or zero-length entries Whisper sometimes returns."""
+    cleaned: list[dict[str, Any]] = []
+    for raw in words:
+        word = str(raw.get("word", "")).strip()
+        try:
+            start, end = float(raw["start"]), float(raw["end"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        if not word or start < 0:
+            continue
+        if cleaned and start < cleaned[-1]["start"]:
+            start = cleaned[-1]["start"]
+        if end <= start:
+            end = start + 0.05
+        cleaned.append({**raw, "word": word, "start": start, "end": end})
+    return cleaned
+
+
 def _normalize_words(words: list[dict[str, Any]]) -> list[dict[str, Any]]:
     normalized = []
     for raw in words:

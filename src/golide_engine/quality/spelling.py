@@ -23,10 +23,13 @@ def _spellcheck_words(text: str) -> set[str]:
     cleaned = re.sub(r"#[A-Za-z0-9_]+", " ", cleaned)
     cleaned = re.sub(r"(?<=[a-z])(?=[A-Z])", " ", cleaned)
     tokens = re.findall(r"[A-Za-z]+(?:['-][A-Za-z]+)*", cleaned)
+    # Capitalised tokens (NVIDIA, Kubernetes, Lusaka) are names, not
+    # misspellings; trending tech topics are full of them.
     return {
         token.lower()
         for token in tokens
         if len(token) > 2 and "'" not in token and "-" not in token
+        and not token[0].isupper()
     }
 
 
