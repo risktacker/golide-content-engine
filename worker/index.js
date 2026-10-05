@@ -1113,7 +1113,47 @@ async function handleApi(request,env,url){
   return err("not found",404);
 }
 
+// ---------------------------------------------------------------------------
+// On-time automation. GitHub's own cron can start hours late, so Cloudflare's
+// cron (accurate to the minute) asks GitHub to start the workflow instead.
+// Needs the Worker secret GITHUB_DISPATCH_TOKEN: a fine-grained token for
+// risktacker/golide-content-engine with only "Actions: Read and write".
+// Without the secret this does nothing and GitHub's own cron stays the backup.
+// Times are UTC (Lusaka is UTC+2).
+// ---------------------------------------------------------------------------
+const ENGINE_REPO="risktacker/golide-content-engine";
+const CRON_WORKFLOWS={
+  "30 6 * * *":"content-distribution-scheduler.yml",      // 08:30 Post A
+  "30 15 * * *":"content-distribution-scheduler.yml",     // 17:30 Post B
+  "0 4 * * TUE,SAT":"production-scheduler.yml",           // 06:00 long script
+  "0 7 * * SUN,MON,WED,FRI":"production-scheduler.yml",   // 09:00 short script
+  "0 12,18 * * *":"production-scheduler.yml"              // 14:00/20:00 build from voice
+};
+
+async function dispatchWorkflow(env,workflow){
+  const token=env.GITHUB_DISPATCH_TOKEN;
+  if(!token){console.log(JSON.stringify({dispatch:"skipped",workflow,reason:"GITHUB_DISPATCH_TOKEN not set"}));return;}
+  const response=await fetch(`https://api.github.com/repos/${ENGINE_REPO}/actions/workflows/${workflow}/dispatches`,{
+    method:"POST",
+    headers:{
+      "Authorization":`Bearer ${token}`,
+      "Accept":"application/vnd.github+json",
+      "X-GitHub-Api-Version":"2022-11-28",
+      "User-Agent":"golide-studio-cron"
+    },
+    body:JSON.stringify({ref:"main"})
+  });
+  const detail=response.ok?"":(await response.text()).slice(0,300);
+  console.log(JSON.stringify({dispatch:response.ok?"ok":"failed",workflow,status:response.status,detail}));
+  if(!response.ok) throw new Error(`dispatch ${workflow} failed: ${response.status}`);
+}
+
 export default {
+  async scheduled(controller,env,ctx){
+    const workflow=CRON_WORKFLOWS[controller.cron];
+    if(!workflow){console.log(JSON.stringify({dispatch:"unknown_cron",cron:controller.cron}));return;}
+    ctx.waitUntil(dispatchWorkflow(env,workflow));
+  },
   async fetch(request,env){
     const url=new URL(request.url);
     if(["/favicon.ico","/favicon.png","/apple-touch-icon.png"].includes(url.pathname)){

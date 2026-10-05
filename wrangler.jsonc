@@ -44,5 +44,18 @@
   // Custom domain — enable once golidee.com DNS is on Cloudflare:
   // "routes": [{ "pattern": "studio.golidee.com", "custom_domain": true }],
 
+  // On-time automation: Cloudflare starts the GitHub workflows (see
+  // CRON_WORKFLOWS in worker/index.js; keep the two lists identical).
+  // Needs secret GITHUB_DISPATCH_TOKEN. Times are UTC.
+  "triggers": {
+    "crons": [
+      "30 6 * * *",
+      "30 15 * * *",
+      "0 4 * * TUE,SAT",
+      "0 7 * * SUN,MON,WED,FRI",
+      "0 12,18 * * *"
+    ]
+  },
+
   "workers_dev": true
 }
