@@ -1,0 +1,12 @@
+{
+  "production_id": "golide-short-2026-10-05",
+  "status": "awaiting_approval",
+  "media_ref": "r2://temp/2026/10/05/9ebb2c7d644549f68e319ac804f18987-golide-short-2026-10-05-rebuild.mp4",
+  "built_at": "2026-10-05T12:52:35.686118+00:00",
+  "preview_expires_at": "2026-10-07T12:52:35.686131+00:00",
+  "redone_stages": [
+    "render-vector-v1",
+    "qa",
+    "release"
+  ]
+}
