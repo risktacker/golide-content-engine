@@ -13,6 +13,18 @@ from .meta import (
 from .x import XProvider
 
 
+def active_linkedin_version(now: datetime | None = None) -> str:
+    """Previous month's LinkedIn API version (YYYYMM).
+
+    LinkedIn publishes each monthly version partway into that month, so the
+    current month is often "not active" early on. Versions stay supported for
+    about a year, so last month is always safe.
+    """
+    now = now or datetime.now(timezone.utc)
+    year, month = (now.year, now.month - 1) if now.month > 1 else (now.year - 1, 12)
+    return f"{year}{month:02d}"
+
+
 def providers_from_environment() -> list[SocialProvider]:
     """Create only providers whose required environment settings are complete."""
     providers: list[SocialProvider] = []
@@ -104,7 +116,7 @@ def provider_from_studio_credentials(platform: str, payload: dict) -> SocialProv
         return LinkedInProvider(
             access_token=str(payload["access_token"]),
             author_urn=str(payload["author_urn"]),
-            linkedin_version=datetime.now(timezone.utc).strftime("%Y%m"),
+            linkedin_version=active_linkedin_version(),
         )
     if platform == "x":
         return XProvider(user_access_token=str(payload["access_token"]))
