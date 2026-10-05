@@ -5,16 +5,26 @@ import os
 from datetime import datetime, timezone
 from typing import Any, Callable
 from urllib.parse import quote
+from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
 
 Transport = Callable[[str, str, dict[str, str], bytes | None], tuple[int, bytes]]
 
+# Studio sits behind Cloudflare, whose Browser Integrity Check rejects the
+# default "Python-urllib" user agent with 403 before the Worker ever runs.
+USER_AGENT = "GOLIDE-Engine/2.0 (+https://studio.golidee.com)"
+
 
 def _transport(method: str, url: str, headers: dict[str, str], body: bytes | None) -> tuple[int, bytes]:
+    headers = {"User-Agent": USER_AGENT, "Accept": "application/json", **headers}
     request = Request(url, data=body, headers=headers, method=method)
-    with urlopen(request, timeout=30) as response:
-        return int(response.status), response.read()
+    try:
+        with urlopen(request, timeout=30) as response:
+            return int(response.status), response.read()
+    except HTTPError as error:
+        # Hand the status back to the caller so it can report a clear reason.
+        return int(error.code), error.read() or b""
 
 
 class StudioBridge:
