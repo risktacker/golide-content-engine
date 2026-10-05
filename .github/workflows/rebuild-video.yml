@@ -121,5 +121,5 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add data production-queue
           git diff --cached --quiet || git commit -m "ops: rebuild ${{ inputs.production_id }} (${{ inputs.step }})"
-          git pull --rebase
+          git pull --rebase --autostash
           git push

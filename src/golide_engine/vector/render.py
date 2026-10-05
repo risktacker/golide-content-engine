@@ -377,7 +377,7 @@ class VectorRenderer:
                  "[2:a]aresample=48000[s];"
                  "[3:a]aresample=48000[b0];"
                  "[b0][key]sidechaincompress=threshold=0.03:ratio=3:attack=80:release=900[b];"
-                 "[v][s][b]amix=inputs=3:duration=first:normalize=0,alimiter=limit=0.89[a]")
+                 "[v][s][b]amix=inputs=3:duration=first:normalize=0,alimiter=limit=0.79:level=0:attack=2:release=60[a]")
         command = ["ffmpeg", "-y", "-loglevel", "error", *inputs, "-filter_complex", audio,
                    "-map", "0:v", "-map", "[a]", "-c:v", "libx264", "-preset", "medium", "-crf", "19",
                    "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
