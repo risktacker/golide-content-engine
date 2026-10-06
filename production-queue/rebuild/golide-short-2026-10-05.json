@@ -16,7 +16,7 @@
     "reels_status": "published",
     "published_at": "2026-10-05T14:07:23.924541+00:00"
   },
-  "status": "awaiting_approval",
+  "status": "reels_queued",
   "media_ref": "r2://temp/2026/10/05/cc54f5c1e32545caae6991bbc6c9544f-golide-short-2026-10-05-rebuild.mp4",
   "built_at": "2026-10-05T14:48:48.739635+00:00",
   "preview_expires_at": "2026-10-07T14:48:48.739647+00:00",
@@ -24,5 +24,9 @@
     "render-vector-v1",
     "qa",
     "release"
-  ]
+  ],
+  "youtube_video_id": "NeHdciARHG0",
+  "social_post_id": "golide-short-2026-10-05-reels-20261005144848",
+  "reels_status": "not_claimed",
+  "published_at": "2026-10-06T11:02:10.038729+00:00"
 }
