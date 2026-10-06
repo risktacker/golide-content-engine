@@ -260,19 +260,44 @@ function renderBudget() {
 
 function renderThreads(root, threads) {
   if (!threads.length) {
-    root.innerHTML = "No open conversations.";
+    root.innerHTML = "No conversations yet. Emails you send, and replies to hello@golidee.com, appear here.";
     root.className = "stack empty-state";
     return;
   }
   root.className = "stack";
   root.innerHTML = threads.map((thread) => {
-    const last = thread.messages?.[thread.messages.length - 1];
-    return '<div class="item"><div class="item-main"><strong>' +
-      esc(thread.participant_ref || thread.subject || "Conversation") +
-      '</strong><small>' + esc(labels[thread.platform] || thread.platform) +
-      ": " + (last ? esc(last.body) : "No messages") +
-      '</small></div><span class="pill">open</span></div>';
+    const messages = (thread.messages || []).map((m) =>
+      '<div class="mail-msg ' + (m.direction === "outbound" ? "out" : "in") + '"><small>' +
+      (m.direction === "outbound" ? "GOLIDE" : esc(thread.participant_ref)) + " · " + esc(when(m.created_at)) +
+      '</small><p>' + esc(m.body) + '</p></div>').join("");
+    const subject = thread.subject || "";
+    const re = /^re:/i.test(subject) ? subject : "Re: " + subject;
+    return '<details class="mail-thread"><summary><div class="item-main"><strong>' +
+      esc(thread.participant_ref || "Conversation") + '</strong><small>' + esc(subject) +
+      '</small></div><span class="micro">' + esc(when(thread.last_message_at)) + '</span></summary>' +
+      '<div class="mail-msgs">' + messages + '</div>' +
+      (thread.platform === "email"
+        ? '<form class="mail-reply" data-to="' + escAttr(thread.participant_ref) + '" data-subject="' + escAttr(re) + '">' +
+          '<textarea rows="4" placeholder="Write a reply" required></textarea>' +
+          '<div class="mail-actions"><button type="button" class="btn btn-quiet mail-close" data-id="' + escAttr(thread.id) + '">Close</button>' +
+          '<button class="btn btn-gold" type="submit">Reply</button></div></form>'
+        : '') + '</details>';
   }).join("");
+  $$(".mail-reply").forEach((form) => {
+    form.onsubmit = async (event) => {
+      event.preventDefault();
+      const button = form.querySelector("button[type=submit]");
+      button.disabled = true; button.textContent = "Sending…";
+      try {
+        await api("/api/inbox/send", { method: "POST", body: JSON.stringify({
+          to: form.dataset.to, subject: form.dataset.subject, body: form.querySelector("textarea").value }) });
+        await loadInbox();
+      } catch (error) { alert(error.message); button.disabled = false; button.textContent = "Reply"; }
+    };
+  });
+  $$(".mail-close").forEach((button) => {
+    button.onclick = async () => { await api("/api/inbox/" + encodeURIComponent(button.dataset.id) + "/close", { method: "POST" }); await loadInbox(); };
+  });
 }
 
 function renderCadence() {
@@ -394,6 +419,7 @@ function actionCard(job) {
     '<div class="action-controls">' +
       '<label class="upload-button">Upload my recording<input class="voice-input" type="file" accept="audio/*,video/*,.m4a,.mp3,.wav,.aac,.caf,.ogg,.opus,.webm,.mp4,.mov" data-job="' + escAttr(job.job_id) + '"></label>' +
       '<button class="action-button copy-script" data-job="' + escAttr(job.job_id) + '">Copy script</button>' +
+      '<button class="action-button email-script" data-job="' + escAttr(job.job_id) + '">Email me the script</button>' +
       '<span class="voice-status" id="voice-status-' + escAttr(job.job_id) + '"></span>' +
     '</div></article>';
 }
@@ -425,6 +451,16 @@ function renderActionQueues() {
     input.onchange = () => {
       uploadVoice(input.dataset.job, input.files?.[0]);
       input.value = "";
+    };
+  });
+  $$(".email-script").forEach((button) => {
+    button.onclick = async () => {
+      button.disabled = true; button.textContent = "Sending…";
+      try {
+        const sent = await api("/api/production-jobs/" + encodeURIComponent(button.dataset.job) + "/email-script", { method: "POST" });
+        button.textContent = "Sent to " + sent.to;
+      } catch (error) { button.textContent = error.message; }
+      setTimeout(() => { button.disabled = false; button.textContent = "Email me the script"; }, 4000);
     };
   });
   $$(".copy-script").forEach((button) => {
@@ -617,9 +653,30 @@ async function loadSchedule() {
 }
 
 async function loadInbox() {
-  const data = await api("/api/inbox");
+  const [data, mail] = await Promise.all([api("/api/inbox"), api("/api/inbox/status").catch(() => ({}))]);
   renderThreads($("#inbox-list"), data.threads || []);
+  if (!mail.sending) {
+    $("#mail-status").textContent = "Sending switches on once the GOLIDE email setup is finished.";
+  }
 }
+
+document.addEventListener("submit", async (event) => {
+  if (event.target.id !== "mail-form") return;
+  event.preventDefault();
+  const button = $("#mail-send");
+  button.disabled = true; button.textContent = "Sending…";
+  try {
+    const sent = await api("/api/inbox/send", { method: "POST", body: JSON.stringify({
+      to: $("#mail-to").value, subject: $("#mail-subject").value, body: $("#mail-body").value }) });
+    $("#mail-status").textContent = "Sent to " + sent.to + ".";
+    event.target.reset();
+    await loadInbox();
+  } catch (error) {
+    $("#mail-status").textContent = error.message;
+  } finally {
+    button.disabled = false; button.textContent = "Send";
+  }
+});
 
 async function loadConnections() {
   let connections = [];

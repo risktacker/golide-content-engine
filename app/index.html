@@ -13,7 +13,7 @@
     // Theme before first paint: dark by default, the owner's choice remembered per device.
     try { var t = localStorage.getItem("golide-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
-  <link rel="stylesheet" href="/styles.css?v=20261006c">
+  <link rel="stylesheet" href="/styles.css?v=20261006e">
 </head>
 <body>
   <div class="splash" id="splash" role="status" aria-live="polite">
@@ -170,7 +170,19 @@
 
       <section class="view" id="inbox">
         <article class="panel">
-          <div class="panel-head"><h3>Conversations</h3><span class="micro">Drafts only, nothing is sent automatically</span></div>
+          <div class="panel-head"><h3>New email</h3><span class="micro" id="mail-from">From GOLIDE &lt;hello@golidee.com&gt;</span></div>
+          <form class="mail-form" id="mail-form" autocomplete="off">
+            <label>To<input type="email" id="mail-to" placeholder="name@company.com" required></label>
+            <label>Subject<input type="text" id="mail-subject" placeholder="What it is about" required></label>
+            <label>Message<textarea id="mail-body" rows="8" placeholder="Write the email. Leave a blank line between paragraphs." required></textarea></label>
+            <div class="mail-actions">
+              <small id="mail-status" class="micro">Sent in the GOLIDE email design. Replies come back here.</small>
+              <button class="btn btn-gold" id="mail-send" type="submit">Send</button>
+            </div>
+          </form>
+        </article>
+        <article class="panel">
+          <div class="panel-head"><h3>Conversations</h3><span class="micro">hello@golidee.com</span></div>
           <div id="inbox-list" class="stack empty-state"><span class="line-skeleton"></span></div>
         </article>
       </section>
@@ -185,6 +197,6 @@
     </main>
   </div>
   <script src="/loader.js?v=20261006"></script>
-  <script src="/app.js?v=20261006c"></script>
+  <script src="/app.js?v=20261006d"></script>
 </body>
 </html>

@@ -76,6 +76,7 @@ jobs:
           GOLIDE_SMTP_USER: ${{ secrets.GOLIDE_SMTP_USER }}
           GOLIDE_SMTP_APP_PASSWORD: ${{ secrets.GOLIDE_SMTP_APP_PASSWORD }}
           GOLIDE_NOTIFY_EMAIL: ${{ secrets.GOLIDE_NOTIFY_EMAIL }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           PRODUCTION_ID: ${{ inputs.production_id }}
           STEP: ${{ inputs.step }}
           SCENE_PLAN: ${{ inputs.scene_plan }}

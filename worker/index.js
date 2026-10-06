@@ -1,3 +1,4 @@
+import { closeThread, emailScript, receiveMail, sendAndRecord } from "./mail.js";
 import {
   ensureSocialOauthSchema,
   handleSocialOauthCallback,
@@ -1088,6 +1089,18 @@ async function handleApi(request,env,url){
     try{return json(await createPost(env,await request.json()),201);}catch(e){return err(e?.message||String(e),400);}
   }
   if(url.pathname==="/api/inbox"&&request.method==="GET") return json({threads:await inbox(env.DB)});
+  if(url.pathname==="/api/inbox/send"&&request.method==="POST"){
+    try{return json(await sendAndRecord(env,await request.json()));}catch(e){return err(e?.message||String(e),400);}
+  }
+  const closeMatch=url.pathname.match(/^\/api\/inbox\/([^/]+)\/close$/);
+  if(closeMatch&&request.method==="POST"){await closeThread(env.DB,decodeURIComponent(closeMatch[1]));return json({status:"closed"});}
+  const scriptMailMatch=url.pathname.match(/^\/api\/production-jobs\/([^/]+)\/email-script$/);
+  if(scriptMailMatch&&request.method==="POST"){
+    const job=await env.DB.prepare(`SELECT job_id,format,title,script FROM production_jobs WHERE job_id=?`).bind(decodeURIComponent(scriptMailMatch[1])).first();
+    if(!job) return err("job not found",404);
+    try{return json(await emailScript(env,job));}catch(e){return err(e?.message||String(e),400);}
+  }
+  if(url.pathname==="/api/inbox/status"&&request.method==="GET") return json({sending:Boolean(env.RESEND_API_KEY),address:"hello@golidee.com"});
   if(url.pathname==="/api/connections"&&request.method==="GET") return json({connections:await connectionRows(env.DB,env)});
   if(url.pathname==="/api/x/connect"&&request.method==="GET"){
     try{return Response.redirect(await xStartOauth(env),302);}catch(e){return err(e?.message||String(e),503);}
@@ -1173,6 +1186,10 @@ async function dispatchWorkflow(env,workflow){
 }
 
 export default {
+  async email(message,env,ctx){
+    await ensureSchema(env.DB);
+    await receiveMail(message,env);
+  },
   async scheduled(controller,env,ctx){
     const workflow=CRON_WORKFLOWS[controller.cron];
     if(!workflow){console.log(JSON.stringify({dispatch:"unknown_cron",cron:controller.cron}));return;}

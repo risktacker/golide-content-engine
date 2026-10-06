@@ -343,3 +343,22 @@ main{width:100%;max-width:1320px;margin:0 auto;padding:28px clamp(16px,3.5vw,48p
   .item.upcoming .status-pill{grid-column:2;justify-self:start;padding:2px 9px;font-size:.75rem}
 }
 .script-chapter{display:block;margin:10px 0 2px;color:var(--gold);font-size:.75rem;font-weight:500;letter-spacing:.14em}
+
+/* ---------- Inbox (hello@golidee.com) ---------- */
+.mail-form{display:grid;gap:12px}
+.mail-form label{display:grid;gap:6px;font-size:.8125rem;color:var(--muted)}
+.mail-form input,.mail-form textarea,.mail-reply textarea{width:100%;box-sizing:border-box;padding:11px 12px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface);color:var(--text);font:inherit;font-size:.9375rem;resize:vertical}
+.mail-form input:focus,.mail-form textarea:focus,.mail-reply textarea:focus{outline:none;border-color:var(--gold)}
+.mail-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.mail-thread{border:1px solid var(--line);border-radius:12px;background:var(--raised)}
+.mail-thread summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;cursor:pointer;list-style:none}
+.mail-thread summary::-webkit-details-marker{display:none}
+.mail-thread .item-main{min-width:0}
+.mail-thread strong{display:block;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mail-thread small{display:block;color:var(--muted);font-size:.8125rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mail-msgs{display:grid;gap:8px;padding:0 14px 12px}
+.mail-msg{max-width:88%;padding:10px 12px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.mail-msg.out{justify-self:end;border-color:color-mix(in srgb,var(--gold) 35%,transparent)}
+.mail-msg small{display:block;margin-bottom:4px;color:var(--muted);font-size:.75rem}
+.mail-msg p{margin:0;white-space:pre-wrap;line-height:1.55;font-size:.9375rem}
+.mail-reply{display:grid;gap:10px;padding:0 14px 14px}

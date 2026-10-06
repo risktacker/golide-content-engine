@@ -72,13 +72,13 @@ def build_record_needed(
         if rejection else ""
     )
     message.add_alternative(
-        f"""<div style="background:#0b0b0e;color:#f4f4f5;font-family:Arial,sans-serif;padding:24px">
+        _frame(f"""<div style="color:#f4f4f5;font-family:Arial,sans-serif">
   <p style="color:#e9c46a;letter-spacing:2px;font-size:12px;margin:0 0 8px">{label.upper()} &middot; RECORD {window}</p>
   <h2 style="margin:0 0 16px;font-weight:600">{html.escape(title)}</h2>
   {rejected_html}
   <div style="border-left:3px solid #e9c46a;padding:4px 0 4px 16px;margin:0 0 24px">{script_html}</div>
   <a href="{link}" style="display:inline-block;background:#e9c46a;color:#0b0b0e;padding:12px 22px;border-radius:999px;font-weight:700;text-decoration:none">Upload recording</a>
-</div>""",
+</div>"""),
         subtype="html",
     )
     return message
@@ -109,13 +109,13 @@ def build_rebuild_preview(*, title: str, preview_url: str, production_id: str) -
         f"Job: {production_id}\n"
     )
     message.add_alternative(
-        f"""<div style="background:#0b0b0e;color:#f4f4f5;font-family:Arial,sans-serif;padding:24px">
+        _frame(f"""<div style="color:#f4f4f5;font-family:Arial,sans-serif">
   <p style="color:#e9c46a;letter-spacing:2px;font-size:12px;margin:0 0 8px">PREVIEW &middot; NOT PUBLISHED YET</p>
   <h2 style="margin:0 0 16px;font-weight:600">{html.escape(title)}</h2>
   <p style="margin:0 0 24px;line-height:1.5">Watch it with sound. If it is good, tell Claude to publish it to YouTube, Instagram and Facebook.</p>
   <a href="{html.escape(preview_url)}" style="display:inline-block;background:#e9c46a;color:#0b0b0e;padding:12px 22px;border-radius:999px;font-weight:700;text-decoration:none">Watch preview</a>
   <p style="color:#7a7a84;font-size:12px;margin:24px 0 0">Link works for 48 hours. Job {html.escape(production_id)}</p>
-</div>""",
+</div>"""),
         subtype="html",
     )
     return message
@@ -125,7 +125,56 @@ def send_rebuild_preview(**kwargs) -> bool:
     return _send(build_rebuild_preview(**kwargs))
 
 
+def _frame(inner: str) -> str:
+    """Table + bgcolor layout: mail apps that drop <div> backgrounds keep table
+    colours, so the light text never ends up on a white page."""
+    return (
+        '<!doctype html><html><head><meta charset="utf-8">'
+        '<meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"></head>'
+        '<body style="margin:0;padding:0;background:#0b0c10" bgcolor="#0b0c10">'
+        '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0b0c10" style="background:#0b0c10">'
+        '<tr><td align="center" style="padding:24px 12px">'
+        '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#121419" '
+        'style="max-width:600px;background:#121419;border:1px solid #23262e;border-radius:14px">'
+        f'<tr><td style="padding:26px">{inner}</td></tr></table></td></tr></table></body></html>'
+    )
+
+
+GOLIDE_FROM = "GOLIDE <hello@golidee.com>"
+
+
+def _send_resend(message: EmailMessage, key: str, to: str) -> bool:
+    """Send from GOLIDE <hello@golidee.com> through Resend."""
+    import json
+    import urllib.request
+
+    text = html_body = ""
+    for part in message.walk():
+        if part.get_content_type() == "text/plain" and not text:
+            text = part.get_content()
+        elif part.get_content_type() == "text/html" and not html_body:
+            html_body = part.get_content()
+    payload = {"from": GOLIDE_FROM, "to": [to], "subject": str(message["Subject"]), "text": text}
+    if html_body:
+        payload["html"] = html_body
+    request = urllib.request.Request(
+        "https://api.resend.com/emails", data=json.dumps(payload).encode("utf-8"), method="POST",
+        headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=30) as response:
+            return 200 <= response.status < 300
+    except Exception as exc:  # an email must never break production
+        print(f'{{"status": "email_failed", "via": "resend", "error": {str(exc)!r}}}')
+        return False
+
+
 def _send(message: EmailMessage) -> bool:
+    resend_key = os.getenv("RESEND_API_KEY", "").strip()
+    notify = os.getenv("GOLIDE_NOTIFY_EMAIL", "").strip() or os.getenv("GOLIDE_SMTP_USER", "").strip()
+    if resend_key and notify:
+        if _send_resend(message, resend_key, notify):
+            return True
     user = os.getenv("GOLIDE_SMTP_USER", "").strip()
     password = os.getenv("GOLIDE_SMTP_APP_PASSWORD", "").strip()
     to = os.getenv("GOLIDE_NOTIFY_EMAIL", "").strip() or user

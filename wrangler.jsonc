@@ -6,6 +6,9 @@
   "compatibility_date": "2026-05-15",
   "observability": { "enabled": true },
 
+  // Where copies of hello@golidee.com mail and Studio's "email me the script" go.
+  "vars": { "OWNER_EMAIL": "esiahkapinga@gmail.com", "EMAIL_FORWARD_TO": "esiahkapinga@gmail.com" },
+
   // Static UI. run_worker_first keeps every page behind the admin check in
   // worker/index.js — without it Cloudflare would serve app/ files publicly.
   "assets": {
