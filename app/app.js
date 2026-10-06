@@ -77,6 +77,13 @@ const STATUS_LABELS = {
 };
 function statusLabel(value) { return STATUS_LABELS[value] || pretty(value); }
 
+// A video handed to YouTube as "scheduled" goes live on its own at that time;
+// nothing reports back, so after the time passes it is shown as published.
+function jobStatus(job) {
+  if (job.status === "scheduled" && job.scheduled_at && new Date(job.scheduled_at) <= new Date()) return "published";
+  return job.status;
+}
+
 const VIEWS = ["dashboard", "create", "schedule", "inbox", "connections"];
 
 function switchView(name) {
@@ -213,8 +220,9 @@ async function loadOverview() {
     '<div class="stat"><b>' + esc(value) + '</b><span>' + esc(label) + '</span></div>'
   ).join("");
 
-  const scheduled = await api("/api/posts?status=scheduled");
-  renderPosts($("#upcoming"), scheduled.posts.slice(0, 6));
+  const upcoming = await loadUpcoming();
+  const now = new Date();
+  renderUpcoming($("#upcoming"), upcoming.filter((item) => item.at >= now).slice(0, 4), { grouped: false });
 
   renderBudget();
 }
@@ -239,24 +247,6 @@ function renderBudget() {
     '<div class="budget-card"><strong>' + esc(amount) + '</strong><span>' +
     esc(label) + '</span><small>' + esc(note) + '</small></div>'
   ).join("");
-}
-
-function renderPosts(root, posts) {
-  if (!posts.length) {
-    root.innerHTML = "Nothing scheduled yet. Posts appear here as soon as the engine writes them.";
-    root.className = "stack empty-state";
-    return;
-  }
-  root.className = "stack";
-  root.innerHTML = posts.map((post) => {
-    const platforms = (post.variants || []).map((variant) => labels[variant.platform] || variant.platform).join(", ");
-    const at = post.scheduled_at ? when(post.scheduled_at) : "Not scheduled";
-    return '<div class="item"><div class="item-main"><strong>' +
-      esc(post.title || post.master_text || "Scheduled content") +
-      '</strong><small>' + esc(pretty(post.content_class || "post")) +
-      ", " + esc(at) + (platforms ? ", " + esc(platforms) : "") +
-      '</small></div><span class="pill">' + esc(statusLabel(post.status)) + '</span></div>';
-  }).join("");
 }
 
 function renderThreads(root, threads) {
@@ -285,7 +275,7 @@ function renderCadence() {
   $("#cadence-grid").innerHTML =
     '<div class="cadence-head"><span>Day</span><span>08:30</span><span>13:00</span><span>17:30</span><span>19:30</span></div>' +
     days.map((day) =>
-      '<div class="cadence-row"><strong>' + day[0].toUpperCase() + day.slice(1) + '</strong>' +
+      '<div class="cadence-row"><strong>' + day[0].toUpperCase() + day.slice(1, 3) + '</strong>' +
       '<span class="slot post">Post A</span>' +
       '<span class="slot ' + (shorts[day] ? "short" : "") + '">' + (shorts[day] ? "Short" : "") + '</span>' +
       '<span class="slot post">Post B</span>' +
@@ -337,8 +327,8 @@ function renderJobList() {
       esc(job.title || "Engine planning job") + '</strong><small>' +
       esc(jobSecondary(job)) + '</small></div>' +
       stageBars(job) +
-      '<div><span class="status-pill ' + escAttr(job.status) + '">' +
-      esc(statusLabel(job.status)) + '</span>' + retry + '</div></div>';
+      '<div><span class="status-pill ' + escAttr(jobStatus(job)) + '">' +
+      esc(statusLabel(jobStatus(job))) + '</span>' + retry + '</div></div>';
   }).join("");
 
   $$(".retry-job").forEach((button) => {
@@ -525,11 +515,96 @@ async function loadProductionJobs() {
   renderActionQueues();
 }
 
+// Lusaka is UTC+2 all year (no daylight saving).
+const LUSAKA_OFFSET_MS = 2 * 3600 * 1000;
+const DAY_NAMES = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+
+function lusakaDayStart(now) {
+  const local = new Date(now.getTime() + LUSAKA_OFFSET_MS);
+  return Date.UTC(local.getUTCFullYear(), local.getUTCMonth(), local.getUTCDate()) - LUSAKA_OFFSET_MS;
+}
+
+function slotsForWeek(calendar, now) {
+  const start = lusakaDayStart(now), slots = [];
+  const at = (dayStart, time) => { const [h, m] = time.split(":").map(Number); return new Date(dayStart + (h * 60 + m) * 60000); };
+  for (let i = 0; i < 7; i++) {
+    const dayStart = start + i * 86400000;
+    const day = DAY_NAMES[new Date(dayStart + LUSAKA_OFFSET_MS).getUTCDay()];
+    for (const post of calendar.daily_posts || []) if (post.days.includes(day))
+      slots.push({ kind: "post", label: post.slot === "post-a" ? "Post A" : "Post B", note: post.slot === "post-a" ? "Trending idea" : "Marketplace product", at: at(dayStart, post.time) });
+    for (const s of calendar.shorts || []) if (s.day === day) slots.push({ kind: "short", label: "Short", note: "YouTube, Instagram, Facebook", at: at(dayStart, s.time) });
+    for (const l of calendar.long_videos || []) if (l.day === day) slots.push({ kind: "long", label: "Long video", note: "YouTube", at: at(dayStart, l.time) });
+  }
+  return slots;
+}
+
+function buildUpcoming(calendar, posts, jobs, now = new Date()) {
+  const near = (a, b, hours) => a && Math.abs(new Date(a) - b) < hours * 3600000;
+  const used = new Set();
+  const items = slotsForWeek(calendar, now).map((slot) => {
+    let record = null;
+    if (slot.kind === "post") record = posts.find((p) => !used.has(p.id) && (p.content_class || "post") === "post" && near(p.scheduled_at, slot.at, 3));
+    else {
+      const job = jobs.find((j) => !used.has(j.job_id) && (j.format === "long") === (slot.kind === "long") && near(j.scheduled_at, slot.at, 6));
+      if (job) record = { id: job.job_id, title: job.title || job.selected_topic, status: jobStatus(job), job: true };
+    }
+    if (record) used.add(record.id);
+    const status = record ? record.status : (slot.at < now ? "not_run" : "planned");
+    return { ...slot, title: record?.title || "", status, platforms: (record?.variants || []).map((v) => labels[v.platform] || v.platform) };
+  });
+  // Anything scheduled this week outside the rhythm (a one-off release) still shows.
+  const start = lusakaDayStart(now), end = start + 7 * 86400000;
+  const inWeek = (value) => { const t = new Date(value).getTime(); return t >= start && t < end; };
+  for (const p of posts) if (!used.has(p.id) && p.scheduled_at && inWeek(p.scheduled_at))
+    items.push({ kind: p.content_class === "short" ? "short" : "post", label: p.content_class === "short" ? "Reels" : "Post", at: new Date(p.scheduled_at), title: p.title || "", status: p.status, platforms: (p.variants || []).map((v) => labels[v.platform] || v.platform) });
+  for (const j of jobs) if (!used.has(j.job_id) && j.scheduled_at && inWeek(j.scheduled_at))
+    items.push({ kind: j.format === "long" ? "long" : "short", label: j.format === "long" ? "Long video" : "Short", at: new Date(j.scheduled_at), title: j.title || "", status: jobStatus(j), platforms: [] });
+  return items.sort((a, b) => a.at - b.at);
+}
+
+const UPCOMING_LABELS = { planned: "Planned", not_run: "Did not run" };
+
+function dayHeading(date, now) {
+  const diff = Math.round((lusakaDayStart(date) - lusakaDayStart(now)) / 86400000);
+  if (diff === 0) return "Today";
+  if (diff === 1) return "Tomorrow";
+  return date.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "short", timeZone: "Africa/Lusaka" });
+}
+
+function renderUpcoming(root, items, { grouped = true } = {}) {
+  if (!items.length) {
+    root.className = "stack empty-state";
+    root.innerHTML = "Nothing coming up this week.";
+    return;
+  }
+  const now = new Date();
+  let lastDay = "", html = "";
+  for (const item of items) {
+    const day = dayHeading(item.at, now);
+    if (grouped && day !== lastDay) { html += '<h4 class="day-head">' + esc(day) + '</h4>'; lastDay = day; }
+    const time = item.at.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Africa/Lusaka" });
+    const label = UPCOMING_LABELS[item.status] || statusLabel(item.status);
+    const sub = [grouped ? "" : day, item.title ? item.label : "", item.platforms.length ? item.platforms.join(", ") : (item.note || "")].filter(Boolean).join(", ");
+    html += '<div class="item upcoming ' + escAttr(item.kind) + (item.at < now ? " past" : "") + '">' +
+      '<span class="up-time">' + esc(time) + '</span>' +
+      '<div class="item-main"><strong>' + esc(item.title || item.label) + '</strong>' +
+      (sub ? '<small>' + esc(sub) + '</small>' : '') + '</div>' +
+      '<span class="pill status-pill ' + escAttr(item.status) + '">' + esc(label) + '</span></div>';
+  }
+  root.className = "stack";
+  root.innerHTML = html;
+}
+
+async function loadUpcoming() {
+  if (!policy) await loadPolicy();
+  const [postData, jobData] = await Promise.all([api("/api/posts"), api("/api/production-jobs").catch(() => ({ jobs: [] }))]);
+  return buildUpcoming(policy?.calendar || {}, postData.posts || [], jobData.jobs || []);
+}
+
 async function loadSchedule() {
-  const data = await api("/api/posts?status=scheduled");
-  renderPosts($("#schedule-list"), data.posts || []);
   if (!policy) await loadPolicy();
   renderCadence();
+  renderUpcoming($("#schedule-list"), await loadUpcoming());
 }
 
 async function loadInbox() {
