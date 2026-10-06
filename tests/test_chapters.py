@@ -66,3 +66,19 @@ class ChapterTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class QueueTests(unittest.TestCase):
+    def test_script_plan_is_not_a_production_spec(self):
+        import tempfile
+        from datetime import datetime, timezone
+
+        from golide_engine.orchestration.queue import due_specs
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "job.json").write_text(json.dumps({"generate_at": "2026-10-06T04:00:00Z", "production_authorized": True}))
+            (root / "job.script-plan.json").write_text(json.dumps({"lines": []}))
+            (root / "odd.json").write_text(json.dumps({"note": "no schedule"}))
+            due = due_specs(root, datetime(2026, 10, 6, 12, tzinfo=timezone.utc))
+        self.assertEqual([p.name for p in due], ["job.json"])
