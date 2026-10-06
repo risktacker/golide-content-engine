@@ -642,10 +642,15 @@ async function registerEngineMedia(db,payload){
 
 async function claimDueSocial(db,nowValue){
   const moment=safeText(nowValue)||nowIso();
-  const row=await db.prepare(`SELECT id FROM content_posts
+  // A post that failed is retried at most 3 times, never sooner than 30 minutes after
+  // its last failure, so one broken network cannot loop or block newer posts.
+  const cooldown=new Date(Date.now()-30*60*1000).toISOString();
+  const row=await db.prepare(`SELECT id FROM content_posts p
     WHERE content_class IN ('post','short') AND status IN ('scheduled','partial','failed')
       AND scheduled_at IS NOT NULL AND scheduled_at<=?
-    ORDER BY scheduled_at ASC,created_at ASC LIMIT 1`).bind(moment).first();
+      AND (SELECT COUNT(*) FROM publish_attempts a WHERE a.post_id=p.id AND a.status='failed')<3
+      AND NOT EXISTS (SELECT 1 FROM publish_attempts a WHERE a.post_id=p.id AND a.status='failed' AND a.created_at>?)
+    ORDER BY scheduled_at ASC,created_at ASC LIMIT 1`).bind(moment,cooldown).first();
   if(!row) return null;
   await db.prepare(`UPDATE content_posts SET status='publishing',updated_at=? WHERE id=?`).bind(nowIso(),row.id).run();
   const posts=await listPosts(db,null);
