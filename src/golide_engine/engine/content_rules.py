@@ -138,18 +138,26 @@ LONG VIDEO STRUCTURE: A LESSON IN CHAPTERS
 The viewer must always know where they are: "now we're on this, next we're on that".
 - "chapters" lists the parts in order. Each has "number" and "title":
   * INTRO first: number "" and title "Intro".
-  * Then 4 or 5 numbered chapters, number "01", "02", ... Each chapter has ONE job
-    (for example: the real threat, where it hides, how to map it, how to switch,
-    the cost of waiting). Title: 2 to 4 plain words, no punctuation.
+  * Then 3 to 5 numbered chapters, number "01", "02", ... Each chapter has ONE job.
+    Title: 2 to 4 plain words, no punctuation, specific to THIS topic.
+- Choose the chapter shape that fits the topic; do not reuse a fixed template:
+  * a how-to or skill: the stages a viewer would actually go through, in order;
+  * an explainer of something new: what it is, how it works, why it matters now,
+    what changes for you;
+  * a comparison or decision: the options, what each costs you, how to choose;
+  * a trend or news shift: what happened, why now, who it affects, what to do;
+  * a mistake or myth: the belief, why it fails, what works instead.
+  These are shapes, not titles. Name each chapter after its real content.
   * CLOSE last: number "" and title "Close".
 - Every line sets "chapter" to the index (from 0) of the chapter it belongs to, in order.
 - INTRO: the blunt opening claim that flips a common belief, then ONE sentence that
   tells the viewer the route in plain words ("In the next few minutes, we'll cover
   ..., ..., and ..."), naming the numbered chapters in order.
-- Each numbered chapter OPENS with a spoken signpost that makes the new stage
-  obvious, often a question ("So first, what are we actually worried about?",
-  "Which brings us to the work itself.") and ENDS with a one-line takeaway before
-  the next chapter starts. The chapter title is never read aloud as a label.
+- Each numbered chapter OPENS with a spoken signpost, written for this topic, that
+  makes the new stage obvious (often a question the viewer would ask next, or a
+  bridge from the last chapter) and ENDS with a one-line takeaway before the next
+  chapter starts. Vary the signposts; never open two chapters the same way. The
+  chapter title is never read aloud as a label.
 - Keep chapters balanced: none longer than a third of the script.
 - Use concrete, true examples inside the chapters; the CLOSE gives the one sentence
   to remember, one small action for this week, and a last line that loops back to
@@ -260,8 +268,8 @@ def chapter_problems(plan: dict, format_name: str) -> list[str]:
     numbered = [c for c in chapters if str(c.get("number", "")).strip()]
     lines = [line for line in plan.get("lines", []) if str(line.get("text", "")).strip()]
     problems: list[str] = []
-    if not 4 <= len(numbered) <= 5:
-        problems.append(f"use 4 or 5 numbered chapters between the intro and the close (found {len(numbered)})")
+    if not 3 <= len(numbered) <= 5:
+        problems.append(f"use 3 to 5 numbered chapters between the intro and the close (found {len(numbered)})")
     owners = [line.get("chapter") for line in lines]
     if any(not isinstance(o, int) or not 0 <= o < len(chapters) for o in owners):
         problems.append("every line needs a valid chapter index")
