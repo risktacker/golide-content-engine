@@ -66,12 +66,30 @@ STATIC_STRUCTURE_RULES = """\
 POST STRUCTURE
 - value_units: 3 or 4 short points that solve ONE clear problem in order. Each point is
   1 or 2 sentences and stands on its own. Not a list of unrelated tips.
-- platform_copy, same truth adapted natively:
-  * instagram / facebook: hook as first line, a blank line, the points as short lines,
-    end with one question that invites a comment.
-  * linkedin: professional framing, first line is the hook, points as short paragraphs,
-    end with a question for professionals.
-  * x: under 270 characters. Hook plus the single sharpest point. No thread markers.
+- carousel (Instagram slides 2 to 5; slide 1 is the image with the hook): exactly 4
+  slides. Slides 1 to 3 each carry one point in order; slide 4 is the takeaway.
+  * heading: 3 to 7 words, the point itself, readable at a glance.
+  * emphasis: 1 to 3 words copied exactly from the heading (they glow).
+  * text: one supporting sentence, at most 22 words, concrete.
+- platform_copy, same truth adapted natively. Never put a URL in any copy; the engine
+  adds links only where they belong.
+  * instagram: the hook as the first line, a blank line, two or three short lines
+    that make people swipe ("Swipe through the 4 steps."), then one question that
+    invites a comment.
+  * facebook: TWO paragraphs of about five lines each. Paragraph one is a concrete,
+    everyday scenario the reader recognises from their own life ("You've sent forty
+    applications this month and heard back from two."). Paragraph two explains what is
+    really going on and what to do about it, using the points. End with one question.
+  * linkedin: the same two-paragraph shape for professionals. Paragraph one is a
+    workplace scenario a manager, engineer or job seeker has lived; paragraph two gives
+    the insight and the practical move. End with a question professionals can answer
+    from experience. LinkedIn readers read, so the copy must carry real weight.
+  * x: under 260 characters, no links, no hashtags. The hook plus the sharpest point.
+- x_replies: exactly two replies posted under the X post, each under 260 characters,
+  no links, no hashtags. Reply one adds the most practical step. Reply two asks a
+  specific question that invites people to answer in the comments.
+- source_url: for a trend post, the single most credible source page you used (the
+  article itself, https). For a product post, an empty string.
 - title: a plain internal label for the post (not shown publicly).
 """
 
@@ -96,7 +114,8 @@ THIS IS POST B: THE GOLIDE MARKETPLACE PRODUCT POST.
   can take today.
 - Use only facts present in CANDIDATE_PRODUCT. Do not invent features, prices,
   testimonials, numbers of users or results.
-- Do not paste the URL; the engine appends the product link itself.
+- Do not paste the URL; the engine appends the product link itself where links belong
+  (Facebook, LinkedIn). On Instagram and X it says the link is in the bio.
 """
 
 

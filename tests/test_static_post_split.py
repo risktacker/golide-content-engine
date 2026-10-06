@@ -67,7 +67,13 @@ class StaticPostSplitTests(unittest.TestCase):
         post_a, post_b = auto.bridge.created
         self.assertEqual(post_a["resolved_product_id"], "")
         self.assertEqual(post_b["resolved_product_id"], seen["post-b"].id)
-        self.assertIn(seen["post-b"].marketplace_url, post_b["variants"][0]["body"])
+        bodies = {v["platform"]: v["body"] for v in post_b["variants"]}
+        url = seen["post-b"].marketplace_url
+        self.assertIn(url, bodies["facebook"])
+        self.assertIn(url, bodies["linkedin"])
+        self.assertNotIn("http", bodies["instagram"])  # links in bio there
+        self.assertNotIn("http", bodies["x"])          # X bills link posts ~13x
+        self.assertIn("Link in bio", bodies["x"])
 
     def test_rulebook_differs_per_slot(self):
         a = static_post_instructions("post-a")

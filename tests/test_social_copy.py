@@ -32,3 +32,86 @@ class SocialCopyTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PostShapeTests(unittest.TestCase):
+    def test_x_posts_body_then_two_replies(self):
+        import os
+        from unittest.mock import patch
+
+        from golide_engine.providers.base import PublishRequest
+        from golide_engine.providers.http import JsonResponse
+        from golide_engine.providers.x import XProvider
+
+        class Api:
+            def __init__(self):
+                self.calls = []
+
+            def post(self, url, *, bearer_token, json_body=None, headers=None):
+                self.calls.append(json_body)
+                return JsonResponse(201, {"data": {"id": f"t{len(self.calls)}"}})
+
+        api = Api()
+        provider = XProvider(user_access_token="s", http=api)
+        request = PublishRequest(post_id="p", variant_id="v", platform="x", body="Main post.",
+                                 parts=("Reply one.", "Reply two?"))
+        with patch.dict(os.environ, {"GOLIDE_ENABLE_SOCIAL_PUBLISH": "1"}):
+            result = provider.publish(request)
+        self.assertEqual(result.content_id, "t1")
+        self.assertEqual([c["text"] for c in api.calls], ["Main post.", "Reply one.", "Reply two?"])
+        self.assertEqual(api.calls[1]["reply"], {"in_reply_to_tweet_id": "t1"})
+        self.assertEqual(api.calls[2]["reply"], {"in_reply_to_tweet_id": "t2"})
+
+    def test_x_refuses_before_posting_anything_too_long(self):
+        import os
+        from unittest.mock import patch
+
+        from golide_engine.providers.base import PublishRequest
+        from golide_engine.providers.x import XProvider
+
+        class Api:
+            def post(self, *a, **k):
+                raise AssertionError("nothing may be posted")
+
+        provider = XProvider(user_access_token="s", http=Api())
+        request = PublishRequest(post_id="p", variant_id="v", platform="x", body="ok", parts=("x" * 300,))
+        with patch.dict(os.environ, {"GOLIDE_ENABLE_SOCIAL_PUBLISH": "1"}):
+            with self.assertRaises(ValueError):
+                provider.publish(request)
+
+    def test_instagram_carousel_cover_first_then_slides(self):
+        import os
+        from unittest.mock import patch
+
+        from golide_engine.providers.base import PublishRequest
+        from golide_engine.providers.http import JsonResponse
+        from golide_engine.providers.meta import InstagramProvider
+
+        class Http:
+            def __init__(self):
+                self.posts = []
+                self.n = 0
+
+            def get(self, url, *, params=None):
+                return JsonResponse(200, {"status_code": "FINISHED"})
+
+            def post(self, url, *, data=None, headers=None):
+                self.posts.append((url, dict(data or {})))
+                self.n += 1
+                return JsonResponse(200, {"id": f"c{self.n}"})
+
+        http = Http()
+        provider = InstagramProvider(api_version="v99.0", access_token="t", instagram_user_id="ig",
+                                     http=http, sleeper=lambda _: None)
+        request = PublishRequest(post_id="p", variant_id="v", platform="instagram", body="Caption",
+                                 media_ref="https://m.example/cover.jpg",
+                                 extra_media=tuple(f"https://m.example/s{i}.jpg" for i in range(2, 6)))
+        with patch.dict(os.environ, {"GOLIDE_ENABLE_SOCIAL_PUBLISH": "1"}):
+            provider.publish(request)
+        items = [d for _, d in http.posts if d.get("is_carousel_item")]
+        self.assertEqual([d["image_url"] for d in items][0], "https://m.example/cover.jpg")
+        self.assertEqual(len(items), 5)
+        parent = next(d for _, d in http.posts if d.get("media_type") == "CAROUSEL")
+        self.assertEqual(parent["children"], "c1,c2,c3,c4,c5")
+        self.assertEqual(parent["caption"], "Caption")
+        self.assertTrue(http.posts[-1][0].endswith("media_publish"))

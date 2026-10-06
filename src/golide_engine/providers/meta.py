@@ -160,6 +160,11 @@ class InstagramProvider(SocialProvider):
         _require_publish_enabled()
         media_url = _require_https_media(request.media_ref)
         body = request.body.strip() or "\n\n".join(request.parts)
+        if request.extra_media and not _looks_like_video(media_url):
+            try:
+                return self._publish_carousel(media_url, request.extra_media, body)
+            except Exception as exc:  # never lose the post: fall back to the cover alone
+                print({"status": "carousel_fallback_single_image", "error": str(exc)})
         payload: dict[str, object] = {"caption": body}
         if _looks_like_video(media_url):
             payload.update(
@@ -189,6 +194,31 @@ class InstagramProvider(SocialProvider):
             f"{self.instagram_user_id}/media_publish",
             creation_id=container_id,
         )
+        media_id = str(published.get("id", ""))
+        if not media_id:
+            raise RuntimeError("Instagram did not return a published media id")
+        return PublishResult(content_id=media_id, url=None)
+
+    def _publish_carousel(self, cover_url: str, extra: tuple[str, ...], caption: str) -> PublishResult:
+        """Cover image first, then the text slides (Instagram allows up to 10)."""
+        urls = [cover_url, *(_require_https_media(u) for u in extra)][:10]
+        children: list[str] = []
+        for url in urls:
+            child = self.graph.post(f"{self.instagram_user_id}/media", image_url=url, is_carousel_item="true")
+            child_id = str(child.get("id", ""))
+            if not child_id:
+                raise RuntimeError("Instagram did not return a carousel item id")
+            self._wait_until_ready(child_id)
+            children.append(child_id)
+        parent = self.graph.post(
+            f"{self.instagram_user_id}/media",
+            media_type="CAROUSEL", children=",".join(children), caption=caption,
+        )
+        container_id = str(parent.get("id", ""))
+        if not container_id:
+            raise RuntimeError("Instagram did not return a carousel container id")
+        self._wait_until_ready(container_id)
+        published = self.graph.post(f"{self.instagram_user_id}/media_publish", creation_id=container_id)
         media_id = str(published.get("id", ""))
         if not media_id:
             raise RuntimeError("Instagram did not return a published media id")

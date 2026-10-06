@@ -10,7 +10,7 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 from golide_engine.engine.content_rules import static_post_instructions
-from golide_engine.engine.social_copy import fit_x, strip_citations
+from golide_engine.engine.social_copy import clean_url, fit_x, strip_citations
 from golide_engine.engine.products import ProductRegistry
 from golide_engine.engine.social_image import SocialImageProfile
 from golide_engine.providers.registry import ProviderRegistry
@@ -48,6 +48,28 @@ STATIC_DRAFT_SCHEMA: dict[str, Any] = {
             },
             "required": ["instagram", "facebook", "linkedin", "x"],
         },
+        "carousel": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "items": {
+                "type": "object",
+                "additionalProperties": False,
+                "properties": {
+                    "heading": {"type": "string"},
+                    "emphasis": {"type": "string"},
+                    "text": {"type": "string"},
+                },
+                "required": ["heading", "emphasis", "text"],
+            },
+        },
+        "x_replies": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {"type": "string"},
+        },
+        "source_url": {"type": "string"},
         "image_hook": {"type": "string"},
         "image_hook_emphasis": {"type": "string"},
         "image_concept": {"type": "string"},
@@ -60,7 +82,8 @@ STATIC_DRAFT_SCHEMA: dict[str, Any] = {
     },
     "required": [
         "title", "weekly_theme", "content_lane", "value_units",
-        "platform_copy", "image_hook", "image_hook_emphasis",
+        "platform_copy", "carousel", "x_replies", "source_url",
+        "image_hook", "image_hook_emphasis",
         "image_concept", "glow_color",
         "use_product", "product_bridge_position",
     ],
@@ -177,11 +200,46 @@ class StaticAutomation:
             body,
             STATIC_DRAFT_SCHEMA,
             web_search=live_signal,
-            max_output_tokens=2600,
+            max_output_tokens=4500,
         )
         draft = dict(output.value)
         draft["_request_id"] = output.request_id
         return draft
+
+    def _carousel(self, draft: dict[str, Any]) -> list[str]:
+        """Render and upload the four text slides; a failure leaves a single image."""
+        from golide_engine.engine.carousel import Slide, render_slide
+
+        items = [s for s in draft.get("carousel", []) if str(s.get("heading", "")).strip()][:4]
+        if len(items) != 4:
+            return []
+        refs: list[dict[str, Any]] = []
+        try:
+            with tempfile.TemporaryDirectory(prefix="golide-carousel-") as tmp:
+                for index, item in enumerate(items):
+                    path = render_slide(
+                        Slide(
+                            heading=strip_citations(str(item["heading"])),
+                            text=strip_citations(str(item.get("text", ""))),
+                            emphasis=str(item.get("emphasis", "")),
+                            final=index == 3,
+                        ),
+                        index + 2, 5, Path(tmp) / f"slide-{index + 2}.jpg",
+                    )
+                    upload = self.media_store.upload_bytes(
+                        filename=f"golide-auto-slide-{index + 2}.jpg",
+                        media_kind="image",
+                        data=path.read_bytes(),
+                        content_type="image/jpeg",
+                        retention_hours=48,
+                    )
+                    refs.append({"media_ref": upload.media_ref, "media_kind": "image",
+                                 "expires_at": upload.expires_at.isoformat()})
+        except Exception as exc:  # the post still goes out as one image
+            print(json.dumps({"status": "carousel_skipped", "error": str(exc)}))
+            return []
+        self.bridge.register_media(refs)
+        return [r["media_ref"] for r in refs]
 
     def _generate_image(
         self,
@@ -302,12 +360,21 @@ class StaticAutomation:
                 key: strip_citations(str(value))
                 for key, value in draft["platform_copy"].items()
             }
-            if use_product:
-                url = product.marketplace_url
-                for platform in copies:
-                    if url and url not in copies[platform]:
-                        copies[platform] = copies[platform].rstrip() + "\n\n" + url
+            # Links live where readers can click them: Facebook and LinkedIn get the
+            # product link (Post B) or the source (Post A); Instagram and X point to
+            # the link in bio, and X never carries a URL (X bills a link post ~13x).
+            link = product.marketplace_url if use_product else clean_url(str(draft.get("source_url", "")))
+            for platform in ("facebook", "linkedin"):
+                if link and link not in copies[platform]:
+                    label = "" if use_product else "Source: "
+                    copies[platform] = copies[platform].rstrip() + "\n\n" + label + link
+            for platform in ("instagram", "x"):
+                copies[platform] = _drop_urls(copies[platform])
+                if use_product and "bio" not in copies[platform].lower():
+                    copies[platform] = copies[platform].rstrip() + "\n\nLink in bio."
             copies["x"] = fit_x(copies["x"])
+            replies = [fit_x(_drop_urls(strip_citations(str(r)))) for r in draft.get("x_replies", []) if str(r).strip()][:2]
+            slides = self._carousel(draft)
 
             scheduled_utc = slot["scheduled_at"].astimezone(timezone.utc).isoformat()
             payload = {
@@ -338,6 +405,10 @@ class StaticAutomation:
                             if platform in {"instagram", "facebook"}
                             else square["media_ref"]
                         ),
+                        "parts": (
+                            [f"slide:{ref}" for ref in slides] if platform == "instagram"
+                            else replies if platform == "x" else []
+                        ),
                     }
                     for platform in ("instagram", "facebook", "linkedin", "x")
                 ],
@@ -354,3 +425,10 @@ class StaticAutomation:
             })
 
         return results
+
+
+def _drop_urls(text: str) -> str:
+    import re
+
+    cleaned = re.sub(r"\s*https?://\S+", "", text)
+    return re.sub(r"\n{3,}", "\n\n", cleaned).strip()

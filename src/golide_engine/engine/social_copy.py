@@ -56,3 +56,12 @@ def fit_x(text: str, limit: int = X_LIMIT) -> str:
     if not kept:  # a single very long sentence: cut on a word boundary
         kept = body[: budget - 1].rsplit(" ", 1)[0].rstrip(",;:") + "…"
     return kept + ("\n\n" + link if link else "")
+
+
+def clean_url(url: str) -> str:
+    """A shareable https link with tracking tags removed, or "" if unusable."""
+    url = url.strip().strip("()[]<>")
+    if not url.startswith("https://") or " " in url:
+        return ""
+    url = _TRACKING.sub(lambda m: m.group(1), url).replace("?&", "?")
+    return url.rstrip("?&")

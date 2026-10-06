@@ -46,53 +46,48 @@ class XProvider(SocialProvider):
             else:
                 raise ValueError(f"X media type is not supported: {probe.content_type}")
 
+        from golide_engine.engine.social_copy import X_LIMIT, x_length
+
+        # The post is the body; parts are replies under it (GOLIDE posts two).
+        # Older records without a body post their parts as a thread.
         parts = tuple(item.strip() for item in request.parts if item.strip())
-        if parts:
-            if len(parts) > 4:
-                raise ValueError("locked GOLIDE X post sequence supports at most four parts")
-            root_id = ""
-            previous_id = ""
-            for index, text in enumerate(parts):
-                payload: dict = {"text": text}
-                if index == 0 and media_id:
-                    payload["media"] = {"media_ids": [media_id]}
-                if previous_id:
-                    payload["reply"] = {"in_reply_to_tweet_id": previous_id}
+        texts = (request.body.strip(), *parts) if request.body.strip() else parts
+        if not texts:
+            raise ValueError("X post has no text")
+        if len(texts) > 4:
+            raise ValueError("an X post carries at most three replies")
+        for text in texts:  # check everything before anything is posted (and billed)
+            if x_length(text) > X_LIMIT:
+                raise ValueError(f"X post is {x_length(text)} characters; X allows {X_LIMIT}")
+        root_id = ""
+        previous_id = ""
+        for index, text in enumerate(texts):
+            payload: dict = {"text": text}
+            if index == 0 and media_id:
+                payload["media"] = {"media_ids": [media_id]}
+            if previous_id:
+                payload["reply"] = {"in_reply_to_tweet_id": previous_id}
+            try:
                 response = self.http.post(
                     "https://api.x.com/2/tweets",
                     bearer_token=self.user_access_token,
                     json_body=payload,
                 )
-                data = response.data.get("data") or {}
-                post_id = str(data.get("id", ""))
-                if not post_id:
-                    raise RuntimeError("X did not return a post id for thread part")
-                if not root_id:
-                    root_id = post_id
-                previous_id = post_id
-            return PublishResult(
-                content_id=root_id,
-                url=f"https://x.com/i/web/status/{root_id}",
-            )
-
-        from golide_engine.engine.social_copy import X_LIMIT, x_length
-        if x_length(request.body) > X_LIMIT:
-            raise ValueError(f"X post is {x_length(request.body)} characters; X allows {X_LIMIT}")
-        payload: dict = {"text": request.body}
-        if media_id:
-            payload["media"] = {"media_ids": [media_id]}
-        response = self.http.post(
-            "https://api.x.com/2/tweets",
-            bearer_token=self.user_access_token,
-            json_body=payload,
-        )
-        data = response.data.get("data") or {}
-        post_id = str(data.get("id", ""))
-        if not post_id:
-            raise RuntimeError("X did not return a post id")
+            except Exception:
+                if root_id:  # the post is live; a failed reply must not repost it
+                    break
+                raise
+            data = response.data.get("data") or {}
+            post_id = str(data.get("id", ""))
+            if not post_id:
+                if root_id:
+                    break
+                raise RuntimeError("X did not return a post id")
+            root_id = root_id or post_id
+            previous_id = post_id
         return PublishResult(
-            content_id=post_id,
-            url=f"https://x.com/i/web/status/{post_id}",
+            content_id=root_id,
+            url=f"https://x.com/i/web/status/{root_id}",
         )
 
     def _upload_image(self, source_url: str) -> str:

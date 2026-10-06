@@ -49,10 +49,10 @@ class StudioSocialPublisher:
                 for item in post.get("variants", [])
                 if item.get("media_ref")
             } | {
-                str(part)[6:]
+                str(part).split(":", 1)[1]
                 for item in post.get("variants", [])
                 for part in item.get("parts") or ()
-                if str(part).startswith("cover:r2://")
+                if str(part).startswith(("cover:r2://", "slide:r2://"))
             }
 
             for variant in post.get("variants", []):
@@ -102,6 +102,11 @@ class StudioSocialPublisher:
                         self.media_store.resolve(cover_ref, expires_seconds=3600)
                         if cover_ref.startswith("r2://") else None
                     )
+                    extra_media = tuple(
+                        self.media_store.resolve(str(part)[6:], expires_seconds=3600)
+                        for part in variant.get("parts") or ()
+                        if str(part).startswith("slide:r2://")
+                    )
                     request = PublishRequest(
                         post_id=post["id"],
                         variant_id=variant["id"],
@@ -110,8 +115,9 @@ class StudioSocialPublisher:
                         title=str(variant.get("title") or ""),
                         media_ref=media_url,
                         parts=tuple(p for p in (variant.get("parts") or ())
-                                    if not str(p).startswith("cover:")),
+                                    if not str(p).startswith(("cover:", "slide:"))),
                         cover_url=cover_url,
+                        extra_media=extra_media,
                     )
                     published = provider.publish(request)
                 except Exception as exc:

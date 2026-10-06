@@ -49,6 +49,7 @@ class PublishRequest:
     media_ref: str | None = None
     parts: tuple[str, ...] = ()
     cover_url: str | None = None  # Reels cover image (signed HTTPS URL)
+    extra_media: tuple[str, ...] = ()  # further carousel images (signed HTTPS URLs)
 
 
 @dataclass(frozen=True)

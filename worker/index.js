@@ -407,7 +407,12 @@ async function createPost(env,payload){
     media_ref:safeText(v.media_ref)||null,
     // X gets its own single post (written under 280 characters); the value units would
     // become a paid four-post thread. Other networks only fall back to units when body is empty.
-    parts:klass==="post"?(safeText(v.platform).toLowerCase()==="x"?[]:units):(Array.isArray(v.parts)?v.parts.map(safeText).filter(Boolean):[])
+    // Posts may carry their own parts: Instagram carousel slides ("slide:r2://...") and
+    // the two X replies.
+    parts:(()=>{const own=Array.isArray(v.parts)?v.parts.map(safeText).filter(Boolean):[];
+      if(klass!=="post") return own;
+      if(own.length) return own;
+      return safeText(v.platform).toLowerCase()==="x"?[]:units;})()
   })):[];
   const unsupported=variants.map((v)=>v.platform).filter((p)=>!ROUTES[klass].includes(p));
   if(unsupported.length) throw new Error(`${klass} cannot route to: ${[...new Set(unsupported)].join(", ")}`);
