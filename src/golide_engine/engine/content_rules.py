@@ -280,6 +280,29 @@ OUTPUT
 """
 
 
+def script_display(plan: dict) -> str:
+    """The script as the owner reads it: chapter headings (not spoken) above each block."""
+    chapters = plan.get("chapters") or []
+    if not chapters:
+        return script_text(plan)
+    out: list[str] = []
+    current = None
+    for line in plan["lines"]:
+        text = str(line.get("text", "")).strip()
+        if not text:
+            continue
+        index = line.get("chapter")
+        if index != current and isinstance(index, int) and 0 <= index < len(chapters):
+            current = index
+            chapter = chapters[index]
+            heading = " · ".join(x for x in (str(chapter.get("number", "")).strip(), str(chapter.get("title", "")).strip()) if x)
+            if out:
+                out.append("")
+            out.append(f"[{heading.upper()}]")
+        out.append(text)
+    return "\n".join(out)
+
+
 def script_text(plan: dict) -> str:
     """The plain words the owner reads, one spoken line per row."""
     return "\n".join(str(line["text"]).strip() for line in plan["lines"] if str(line["text"]).strip())
