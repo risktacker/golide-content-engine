@@ -23,6 +23,8 @@ class QualityReport:
 class QualityRunner:
     def __init__(self, policy_path: str | Path):
         self.policy = json.loads(Path(policy_path).read_text(encoding="utf-8"))
+        # config/qa-policy.json -> project root, where data/dictionary.txt lives
+        self.root = Path(policy_path).resolve().parent.parent
 
     def run(self, video: Path, format_name: str, storyboard: dict, texts: list[str], output: Path | None = None, thumbnail: Path | None = None, editorial: bool = True) -> QualityReport:
         failures = check_audio(video, self.policy)
@@ -37,7 +39,8 @@ class QualityRunner:
             editorial_metrics = {"beats": len(storyboard.get("scenes", [])), "renderer": "vector"}
         if thumbnail:
             failures.extend(check_thumbnail(thumbnail))
-        failures.extend(check_spelling(texts, self.policy))
+        from .spelling import load_dictionary
+        failures.extend(check_spelling(texts, self.policy, load_dictionary(self.root)))
         report = QualityReport(
             not failures,
             tuple(failures),

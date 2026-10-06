@@ -1352,6 +1352,21 @@ class ProductionService:
         params_path.write_text(json.dumps(spec.get("generation_parameters", {}), indent=2) + "\n", encoding="utf-8")
         qa_path = work / "qa-report.json"
         def qa_stage():
+            # "Add to dictionary": a word the dictionary does not know is accepted
+            # (and remembered) when the speech-to-text of the owner's recording
+            # spelled it the same way, or the research sources contain it.
+            from ..quality.spelling import accept_with_evidence, load_dictionary, unknown_words
+            policy = json.loads((self.root / "config/qa-policy.json").read_text(encoding="utf-8"))
+            texts = [script, metadata["title"], metadata["description"]]
+            flagged = unknown_words(texts, policy, load_dictionary(self.root))
+            if flagged:
+                heard = " ".join(str(w.get("word", "")) for w in timed_words)
+                accepted = accept_with_evidence(self.root, flagged, {
+                    "your recording": heard,
+                    "the research sources": json.dumps(research),
+                })
+                if accepted:
+                    print(json.dumps({"status": "dictionary_added", "words": accepted}))
             result = QualityRunner(self.root / "config/qa-policy.json").run(video_path, spec["format"], storyboard, [script, metadata["title"], metadata["description"]], qa_path, thumbnail, editorial=not vector_mode)
             if not result.passed:
                 raise RuntimeError("automatic QA failed: " + "; ".join(result.failures))

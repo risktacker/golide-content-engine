@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from pathlib import Path
 
 
 _APOSTROPHE_TRANSLATION = str.maketrans({
@@ -33,12 +34,54 @@ def _spellcheck_words(text: str) -> set[str]:
     }
 
 
-def check_spelling(texts: list[str], policy: dict) -> list[str]:
+DICTIONARY = "data/dictionary.txt"  # the GOLIDE dictionary: "add to dictionary", kept for good
+
+
+def load_dictionary(root: str | Path | None = None) -> set[str]:
+    path = Path(root or ".") / DICTIONARY
+    if not path.exists():
+        return set()
+    return {line.split("#", 1)[0].strip().lower() for line in path.read_text(encoding="utf-8").splitlines()
+            if line.split("#", 1)[0].strip()}
+
+
+def add_to_dictionary(root: str | Path, word: str, reason: str) -> None:
+    path = Path(root) / DICTIONARY
+    path.parent.mkdir(parents=True, exist_ok=True)
+    known = load_dictionary(root)
+    if word.lower() in known:
+        return
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write(f"{word.lower()}  # {reason}\n")
+
+
+def unknown_words(texts: list[str], policy: dict, known: set[str] | None = None) -> list[str]:
     try:
         from spellchecker import SpellChecker
     except ImportError as exc:
         raise RuntimeError("pyspellchecker is required for production QA") from exc
-    ignore = {value.lower() for value in policy["spelling"].get("ignore", [])}
+    ignore = {value.lower() for value in policy["spelling"].get("ignore", [])} | set(known or ())
     words = {word for text in texts for word in _spellcheck_words(text)}
-    unknown = sorted(SpellChecker().unknown(words) - ignore)
-    return [f"possible misspelling: {word}" for word in unknown]
+    return sorted(SpellChecker().unknown(words) - ignore)
+
+
+def accept_with_evidence(root: str | Path, flagged: list[str], evidence: dict[str, str]) -> dict[str, str]:
+    """Add flagged words that independent evidence shows are real; return word -> reason.
+
+    Evidence is free text keyed by where it came from: the speech-to-text of the
+    owner's recording (a separate system that independently heard and spelled
+    the word) and the research sources the script was written from.
+    """
+    accepted: dict[str, str] = {}
+    tokens = {name: set(re.findall(r"[a-z]+", text.lower())) for name, text in evidence.items()}
+    for word in flagged:
+        found = [name for name, seen in tokens.items() if word in seen]
+        if found:
+            reason = "seen in " + " and ".join(found)
+            add_to_dictionary(root, word, reason)
+            accepted[word] = reason
+    return accepted
+
+
+def check_spelling(texts: list[str], policy: dict, known: set[str] | None = None) -> list[str]:
+    return [f"possible misspelling: {word}" for word in unknown_words(texts, policy, known)]
