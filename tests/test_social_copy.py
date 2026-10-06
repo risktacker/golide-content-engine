@@ -159,3 +159,28 @@ class LongVideoRouteTests(unittest.TestCase):
         self.assertTrue(http.posts[0][0].endswith("pg/videos"))
         self.assertEqual(http.posts[0][1]["file_url"], "https://m.example/video.mp4")
         self.assertEqual(result.content_id, "vid1")
+
+
+class QuestionMarkTests(unittest.TestCase):
+    def test_questions_keep_their_question_mark(self):
+        self.assertEqual(strip_citations("Which part feels scattered?"), "Which part feels scattered?")
+        self.assertEqual(strip_citations("Ready?\n\nGo"), "Ready?\n\nGo")
+
+    def test_slides_render_without_numpy(self):
+        import builtins
+        import tempfile
+        from pathlib import Path
+        from unittest.mock import patch
+
+        from golide_engine.engine.carousel import Slide, render_slide
+
+        real = builtins.__import__
+
+        def no_numpy(name, *a, **k):
+            if name == "numpy" or name.startswith("numpy."):
+                raise ImportError("numpy is not installed in the posts job")
+            return real(name, *a, **k)
+
+        with tempfile.TemporaryDirectory() as tmp, patch("builtins.__import__", no_numpy):
+            out = render_slide(Slide("A clear heading", "One supporting line.", "clear"), 2, 5, Path(tmp) / "s.jpg")
+            self.assertTrue(out.exists())

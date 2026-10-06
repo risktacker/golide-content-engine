@@ -26,8 +26,8 @@ _URL = re.compile(r"https?://\S+")
 def strip_citations(text: str) -> str:
     text = _MD_CITATION.sub("", text)
     text = _MD_LINK.sub(lambda m: m.group(1) or m.group(2), text)
-    text = _TRACKING.sub(lambda m: m.group(1), text).replace("?&", "?")
-    text = re.sub(r"\?(\s|$)", r"\1", text)
+    # Remove tracking tags inside links only; a "?" ending a question must stay.
+    text = _URL.sub(lambda m: clean_url(m.group(0)) or m.group(0), text)
     text = re.sub(r"[ \t]+([.,;:!?])", r"\1", text)
     text = re.sub(r"[ \t]{2,}", " ", text)
     return "\n".join(row.rstrip() for row in text.splitlines()).strip()

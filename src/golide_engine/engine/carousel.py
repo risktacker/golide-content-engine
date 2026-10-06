@@ -26,18 +26,16 @@ class Slide:
 
 
 def _background(theme: Theme, size: tuple[int, int]):
-    import numpy as np
-    from PIL import Image
+    """Near-black with a faint warm haze high on the slide (pure Pillow, no numpy)."""
+    from PIL import Image, ImageDraw, ImageFilter
 
     w, h = size
-    base = np.array(theme.rgb("background"), np.float32)
-    y, x = np.mgrid[0:h, 0:w].astype(np.float32)
-    # A soft warm haze high on the slide, fading to the edges.
-    d = np.sqrt(((x - w * 0.5) / (w * 0.75)) ** 2 + ((y - h * 0.32) / (h * 0.55)) ** 2)
-    haze = np.clip(1.0 - d, 0, 1)[..., None] ** 2
-    gold = np.array(theme.rgb("gold"), np.float32)
-    img = base + (gold - base) * haze * 0.05
-    return Image.fromarray(np.clip(img, 0, 255).astype(np.uint8), "RGB").convert("RGBA")
+    base = Image.new("RGB", size, theme.rgb("background"))
+    glow = Image.new("L", size, 0)
+    ImageDraw.Draw(glow).ellipse((w * -0.25, h * -0.23, w * 1.25, h * 0.87), fill=255)
+    glow = glow.filter(ImageFilter.GaussianBlur(w * 0.22)).point(lambda v: int(v * 0.05))
+    tint = Image.new("RGB", size, theme.rgb("gold"))
+    return Image.composite(tint, base, glow).convert("RGBA")
 
 
 def _block(draw, lines, fonts, top, width, line_height, theme, glow_draw=None, color="text"):

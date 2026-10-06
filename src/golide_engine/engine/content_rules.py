@@ -76,11 +76,13 @@ POST STRUCTURE
   * instagram: the hook as the first line, a blank line, two or three short lines
     that make people swipe ("Swipe through the 4 steps."), then one question that
     invites a comment.
-  * facebook: TWO paragraphs of about five lines each. Paragraph one is a concrete,
+  * facebook: TWO paragraphs of about five lines each (4 to 6 sentences, 60 to 90 words
+    per paragraph; shorter paragraphs are not acceptable). Paragraph one is a concrete,
     everyday scenario the reader recognises from their own life ("You've sent forty
     applications this month and heard back from two."). Paragraph two explains what is
     really going on and what to do about it, using the points. End with one question.
-  * linkedin: the same two-paragraph shape for professionals. Paragraph one is a
+  * linkedin: the same two-paragraph shape and length (60 to 90 words per paragraph)
+    for professionals. Paragraph one is a
     workplace scenario a manager, engineer or job seeker has lived; paragraph two gives
     the insight and the practical move. End with a question professionals can answer
     from experience. LinkedIn readers read, so the copy must carry real weight.
