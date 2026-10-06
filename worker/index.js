@@ -404,7 +404,10 @@ async function createPost(env,payload){
 
   const variants=Array.isArray(payload.variants)?payload.variants.map((v)=>({
     platform:safeText(v.platform).toLowerCase(),title:safeText(v.title),body:safeText(v.body),
-    media_ref:safeText(v.media_ref)||null,parts:klass==="post"?units:(Array.isArray(v.parts)?v.parts.map(safeText).filter(Boolean):[])
+    media_ref:safeText(v.media_ref)||null,
+    // X gets its own single post (written under 280 characters); the value units would
+    // become a paid four-post thread. Other networks only fall back to units when body is empty.
+    parts:klass==="post"?(safeText(v.platform).toLowerCase()==="x"?[]:units):(Array.isArray(v.parts)?v.parts.map(safeText).filter(Boolean):[])
   })):[];
   const unsupported=variants.map((v)=>v.platform).filter((p)=>!ROUTES[klass].includes(p));
   if(unsupported.length) throw new Error(`${klass} cannot route to: ${[...new Set(unsupported)].join(", ")}`);

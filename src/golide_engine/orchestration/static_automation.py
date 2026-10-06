@@ -10,6 +10,7 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 from golide_engine.engine.content_rules import static_post_instructions
+from golide_engine.engine.social_copy import fit_x, strip_citations
 from golide_engine.engine.products import ProductRegistry
 from golide_engine.engine.social_image import SocialImageProfile
 from golide_engine.providers.registry import ProviderRegistry
@@ -296,9 +297,9 @@ class StaticAutomation:
                 bridge_position = 2
 
             meta, square = self._generate_image(draft)
-            units = [str(item).strip() for item in draft["value_units"] if str(item).strip()]
+            units = [strip_citations(str(item)) for item in draft["value_units"] if str(item).strip()]
             copies = {
-                key: str(value).strip()
+                key: strip_citations(str(value))
                 for key, value in draft["platform_copy"].items()
             }
             if use_product:
@@ -306,6 +307,7 @@ class StaticAutomation:
                 for platform in copies:
                     if url and url not in copies[platform]:
                         copies[platform] = copies[platform].rstrip() + "\n\n" + url
+            copies["x"] = fit_x(copies["x"])
 
             scheduled_utc = slot["scheduled_at"].astimezone(timezone.utc).isoformat()
             payload = {

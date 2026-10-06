@@ -75,6 +75,9 @@ class XProvider(SocialProvider):
                 url=f"https://x.com/i/web/status/{root_id}",
             )
 
+        from golide_engine.engine.social_copy import X_LIMIT, x_length
+        if x_length(request.body) > X_LIMIT:
+            raise ValueError(f"X post is {x_length(request.body)} characters; X allows {X_LIMIT}")
         payload: dict = {"text": request.body}
         if media_id:
             payload["media"] = {"media_ids": [media_id]}
