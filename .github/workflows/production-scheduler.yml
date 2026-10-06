@@ -117,6 +117,13 @@ jobs:
             echo "::error title=golide automation-run failed::$(cat engine-error.txt)"
             exit 1
           fi
+      - name: Publish due social posts (long videos to Facebook and LinkedIn)
+        if: steps.automation.outputs.enabled == 'true' && always()
+        continue-on-error: true
+        env:
+          GOLIDE_ENABLE_SOCIAL_PUBLISH: "1"
+          GOLIDE_STUDIO_BASE_URL: "https://studio.golidee.com"
+        run: golide studio-social-publish
       - name: Save resumable media checkpoint
         id: checkpoint_save
         if: steps.automation.outputs.enabled == 'true' && always()

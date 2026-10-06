@@ -1137,7 +1137,7 @@ async function handleApi(request,env,url){
 const ENGINE_REPO="risktacker/golide-content-engine";
 const CRON_WORKFLOWS={
   "30 6 * * *":"content-distribution-scheduler.yml",      // 08:30 Post A
-  "30 15,17 * * *":"content-distribution-scheduler.yml",  // 17:30 Post B, 19:30 long video to Facebook/LinkedIn
+  "30 15 * * *":"content-distribution-scheduler.yml",     // 17:30 Post B
   "0 4 * * TUE,SAT":"production-scheduler.yml",           // 06:00 long script
   "0 7 * * SUN,MON,WED,FRI":"production-scheduler.yml",   // 09:00 short script
   "0 12,18 * * *":"production-scheduler.yml"              // 14:00/20:00 build from voice
