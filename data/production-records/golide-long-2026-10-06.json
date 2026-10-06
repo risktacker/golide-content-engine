@@ -1,0 +1,516 @@
+{
+  "production_id": "golide-long-2026-10-06",
+  "youtube_video_id": "UaZecDRBs-U",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "UaZecDRBs-U",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-10-06T13:49:13.801829+00:00"
+  },
+  "production": {
+    "format": "long",
+    "title": "The Internet’s Encryption Is Being Rewired Before Quantum Computers Arrive",
+    "status": "scheduled",
+    "scheduled_at": "2026-10-06T17:30:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-long-tuesday-saturday\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "Post quantum security isn't really a cipher problem.\nIt's an inventory problem, and that changes where you start.\nIn the next few minutes, we'll cover what the real threat is,\nwhere your encryption is hiding,\nhow to map it, how to switch safely,\nand what it costs to wait.\nSo first, what are we actually worried about?\nFuture quantum computers could weaken the public key systems we rely on,\nthe systems that let your browser trust a website,\nand let a device check that an update is genuine.\nThat's why post quantum algorithms were designed to resist them,\nand the standards for the main replacements already exist.\nBut here's the catch.\nAn algorithm can't protect a system nobody can find.\nSo where does this encryption actually live?\nThink about the lock on an ordinary shopping website.\nBefore your browser trusts that site, it checks a certificate,\nand that certificate leans on public key encryption underneath.\nBut it's rarely just one certificate.\nThe site might use several, and the payment service behind it\ncan connect through another dependency you never see.\nA private network tunnel can rely on the same technology,\na software update can carry a signature from another system,\nand the device receiving that update might be years old.\nSo the takeaway here is simple.\nEvery connection is one more place to inspect,\nand swapping out one library will never finish the job.\nWhich brings us to the work itself, making the map.\nStart by writing down every place public key encryption appears.\nFor each one, note which algorithm sits behind it,\nwhich software calls it,\nwhat data it's protecting,\nand which vendors stand between your systems and your users.\nThen rank everything by how sensitive it is\nand how hard it would be to replace.\nSecrets that need to last for years come before short lived messages,\nand critical services come before convenient internal tools.\nIf that sounds like ordinary software maintenance, it is.\nThe difference is that this time, the locks are hidden.\nOnce you know what you have, the next question is how to change it safely.\nAnd here, compatibility matters as much as encryption.\nThe new algorithm has to work on real devices,\nin real browsers and servers,\nwith certificates issued by real vendors,\nand it has to survive normal business traffic.\nBecause a replacement that breaks your customers isn't ready.\nSo you test before you touch production,\nyou keep a record after every replacement,\nand you avoid hard coding one algorithm forever.\nThat ability has a name, crypto agility.\nIt means you can change algorithms again without rebuilding everything.\nNow, what happens if you skip all of this?\nHidden systems turn into blockers right when you need to move.\nA certificate expires before anyone finds its owner.\nA vendor needs changes before your team can even respond.\nAn old device rejects the new connection,\nand suddenly updates stop reaching your customers.\nAn emergency replacement means rushed testing and expensive outages,\nand when one dependency serves many products, the damage spreads.\nCustomers feel it the only way they can, as broken trust.\nSo the real cost isn't stronger encryption.\nIt's people, testing, vendors and downtime,\nand every month you wait makes each hidden dependency harder to schedule.\nSo remember this. Quantum readiness begins with knowing your locks.\nHere's something you can do this week.\nPick one important service and map it.\nList its certificates, libraries, vendors and data flows,\nand mark the one dependency nobody has tested yet.\nGive that gap an owner and a test plan.\nThat small map turns a distant threat into real work.\nBecause post quantum security was never a cipher problem.\n",
+  "research": {
+    "summary": "Headline: The Quantum Upgrade Is an Inventory Problem. A practical G$LIDE explainer should frame post-quantum cryptography not as a hunt for one magical new cipher, but as an enterprise migration: find every public-key dependency, rank the data and systems at risk, replace vulnerable algorithms with approved alternatives, test the changes across real-world protocols and certificates, and build crypto-agility so the next replacement does not require another infrastructure rewrite. The visual hook: a city of hidden digital locks—TLS endpoints, certificates, VPNs, code-signing systems, devices, software libraries and vendor services—many of which organizations do not fully see.",
+    "claims": [
+      {
+        "claim": "A sufficiently capable quantum computer could undermine widely used public-key systems, including RSA and elliptic-curve cryptography; PQC is designed to resist attacks from both classical and quantum computers. ([pages.nist.gov](https://pages.nist.gov/nccoe-migration-post-quantum-cryptography/?utm_source=openai))",
+        "source_title": "Frequently Asked Questions about Post-Quantum Cryptography — NIST NCCoE",
+        "source_url": "https://pages.nist.gov/nccoe-migration-post-quantum-cryptography/",
+        "published_or_updated": "Updated June 30, 2026"
+      },
+      {
+        "claim": "The standards work is no longer purely theoretical: on August 13, 2024, NIST finalized FIPS 203 for ML-KEM, FIPS 204 for ML-DSA and FIPS 205 for SLH-DSA, and said the standards were ready for use. ([nist.gov](https://www.nist.gov/news-events/news/2024/08/nist-releases-first-3-finalized-post-quantum-encryption-standards?utm_source=openai))",
+        "source_title": "NIST Releases First 3 Finalized Post-Quantum Encryption Standards",
+        "source_url": "https://www.nist.gov/news-events/news/2024/08/nist-releases-first-3-finalized-post-quantum-encryption-standards",
+        "published_or_updated": "Published August 13, 2024; updated August 29, 2025"
+      },
+      {
+        "claim": "The first operational task is discovery: a cryptographic inventory should record algorithms, protocols, keys, certificates and certificate chains, applications, dependencies, data flows and the data being protected. ([pages.nist.gov](https://pages.nist.gov/nccoe-migration-post-quantum-cryptography/?utm_source=openai))",
+        "source_title": "Frequently Asked Questions about Post-Quantum Cryptography — NIST NCCoE",
+        "source_url": "https://pages.nist.gov/nccoe-migration-post-quantum-cryptography/",
+        "published_or_updated": "Updated June 30, 2026"
+      },
+      {
+        "claim": "The hidden-lock visual is grounded in an acknowledged engineering problem: organizations may be unaware of the breadth of application and functional dependencies on public-key cryptography across products, applications and operational environments. ([nccoe.nist.gov](https://www.nccoe.nist.gov/sites/default/files/2023-08/quantum-readiness-fact-sheet.pdf?utm_source=openai))",
+        "source_title": "Quantum-Readiness: Migration to Post-Quantum Cryptography — NIST NCCoE",
+        "source_url": "https://www.nccoe.nist.gov/sites/default/files/2023-08/quantum-readiness-fact-sheet.pdf",
+        "published_or_updated": "Published August 2023"
+      },
+      {
+        "claim": "Migration is a compatibility project as well as an algorithm project: NIST identifies interoperability and benchmarking as a dedicated workstream, while its migration material includes internet protocols, digital trust and issuing and managing identity certificates for devices, users and code signatures. ([pages.nist.gov](https://pages.nist.gov/nccoe-migration-post-quantum-cryptography/?utm_source=openai))",
+        "source_title": "Migration to Post-Quantum Cryptography — NIST NCCoE",
+        "source_url": "https://www.nccoe.nist.gov/applied-cryptography/migration-to-pqc",
+        "published_or_updated": "Accessed October 6, 2026"
+      },
+      {
+        "claim": "Crypto-agility means designing systems so algorithms can be selected, added and retired without major architectural changes; an IETF engineering draft identifies maintaining an inventory and avoiding hard-coded cryptographic choices as key parts of that capability. ([datatracker.ietf.org](https://datatracker.ietf.org/doc/draft-ietf-pquip-pqc-engineers/12/?utm_source=openai))",
+        "source_title": "Post-Quantum Cryptography for Engineers — IETF Internet-Draft",
+        "source_url": "https://datatracker.ietf.org/doc/draft-ietf-pquip-pqc-engineers/12/",
+        "published_or_updated": "Internet-Draft version 12; accessed October 6, 2026"
+      },
+      {
+        "claim": "NIST’s current PQC project guidance says organizations should begin migrating now and describes a transition in which quantum-vulnerable algorithms are deprecated and ultimately removed from its standards by 2035, with high-risk systems moving earlier. ([csrc.nist.gov](https://csrc.nist.gov/Projects/Post-Quantum-Cryptography?source=post_page---------------------------&utm_source=openai))",
+        "source_title": "Post-Quantum Cryptography — NIST CSRC",
+        "source_url": "https://csrc.nist.gov/Projects/Post-Quantum-Cryptography",
+        "published_or_updated": "Accessed October 6, 2026"
+      },
+      {
+        "claim": "The business framing is therefore a multi-year resilience program: first discover and prioritize long-lived sensitive data and critical systems, then coordinate vendors, software, certificates, protocols and testing rather than treating PQC as a single product replacement. This is an editorial inference from NIST’s inventory, dependency, interoperability and migration guidance. ([pages.nist.gov](https://pages.nist.gov/nccoe-migration-post-quantum-cryptography/?utm_source=openai))",
+        "source_title": "Migration to Post-Quantum Cryptography — NIST NCCoE",
+        "source_url": "https://www.nccoe.nist.gov/applied-cryptography/migration-to-pqc",
+        "published_or_updated": "Accessed October 6, 2026"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Post-Quantum Security Starts with an Inventory, Not a Cipher",
+    "description": "Post-quantum security is often presented as an encryption algorithm problem. In practice, the first challenge is knowing where public-key cryptography is used across your systems, software, devices, certificates, vendors, and data flows.\n\nThis video explains what future quantum computers could threaten, why replacing a single cryptographic library is not enough, and how to build an inventory of the systems that depend on public-key encryption. It covers certificates, secure websites, private network tunnels, software-update signatures, legacy devices, third-party dependencies, and the data that needs long-term protection.\n\nYou’ll also learn how to prioritize a post-quantum migration, test new algorithms safely, maintain compatibility across real-world infrastructure, and use crypto agility to make future algorithm changes easier. The video closes with a practical first step: map one important service, identify its untested dependency, and assign it an owner and test plan.\n\nPost-quantum readiness begins with knowing where your locks are—and what it will take to replace them without disrupting customers or critical services.\n\nChapters\n0:00 Intro\n0:16 The real threat\n0:44 Where it hides\n1:30 Map it\n2:16 Switch safely\n3:01 The cost of waiting\n3:51 Close\n\n#PostQuantumSecurity #Cybersecurity #Cryptography",
+    "tags": [
+      "post-quantum security",
+      "post-quantum cryptography",
+      "PQC",
+      "quantum computing",
+      "cybersecurity",
+      "cryptography",
+      "crypto agility",
+      "cryptographic inventory",
+      "encryption migration",
+      "public key encryption",
+      "certificate management",
+      "digital signatures",
+      "software security",
+      "quantum readiness",
+      "IT security"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [
+      "0:00 Intro",
+      "0:16 The real threat",
+      "0:44 Where it hides",
+      "1:30 Map it",
+      "2:16 Switch safely",
+      "3:01 The cost of waiting",
+      "3:51 Close"
+    ],
+    "format": "long",
+    "title_description_language": "en"
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "A sufficiently capable quantum computer could undermine widely used public-key systems, including RSA and elliptic-curve cryptography; PQC is designed to resist attacks from both classical and quantum computers. ([pages.nist.gov](https://pages.nist.gov/nccoe-migration-post-quantum-cryptography/?utm_source=openai))",
+        "source_title": "Frequently Asked Questions about Post-Quantum Cryptography — NIST NCCoE",
+        "source_url": "https://pages.nist.gov/nccoe-migration-post-quantum-cryptography/",
+        "published_or_updated": "Updated June 30, 2026"
+      },
+      {
+        "claim": "The standards work is no longer purely theoretical: on August 13, 2024, NIST finalized FIPS 203 for ML-KEM, FIPS 204 for ML-DSA and FIPS 205 for SLH-DSA, and said the standards were ready for use. ([nist.gov](https://www.nist.gov/news-events/news/2024/08/nist-releases-first-3-finalized-post-quantum-encryption-standards?utm_source=openai))",
+        "source_title": "NIST Releases First 3 Finalized Post-Quantum Encryption Standards",
+        "source_url": "https://www.nist.gov/news-events/news/2024/08/nist-releases-first-3-finalized-post-quantum-encryption-standards",
+        "published_or_updated": "Published August 13, 2024; updated August 29, 2025"
+      },
+      {
+        "claim": "The first operational task is discovery: a cryptographic inventory should record algorithms, protocols, keys, certificates and certificate chains, applications, dependencies, data flows and the data being protected. ([pages.nist.gov](https://pages.nist.gov/nccoe-migration-post-quantum-cryptography/?utm_source=openai))",
+        "source_title": "Frequently Asked Questions about Post-Quantum Cryptography — NIST NCCoE",
+        "source_url": "https://pages.nist.gov/nccoe-migration-post-quantum-cryptography/",
+        "published_or_updated": "Updated June 30, 2026"
+      },
+      {
+        "claim": "The hidden-lock visual is grounded in an acknowledged engineering problem: organizations may be unaware of the breadth of application and functional dependencies on public-key cryptography across products, applications and operational environments. ([nccoe.nist.gov](https://www.nccoe.nist.gov/sites/default/files/2023-08/quantum-readiness-fact-sheet.pdf?utm_source=openai))",
+        "source_title": "Quantum-Readiness: Migration to Post-Quantum Cryptography — NIST NCCoE",
+        "source_url": "https://www.nccoe.nist.gov/sites/default/files/2023-08/quantum-readiness-fact-sheet.pdf",
+        "published_or_updated": "Published August 2023"
+      },
+      {
+        "claim": "Migration is a compatibility project as well as an algorithm project: NIST identifies interoperability and benchmarking as a dedicated workstream, while its migration material includes internet protocols, digital trust and issuing and managing identity certificates for devices, users and code signatures. ([pages.nist.gov](https://pages.nist.gov/nccoe-migration-post-quantum-cryptography/?utm_source=openai))",
+        "source_title": "Migration to Post-Quantum Cryptography — NIST NCCoE",
+        "source_url": "https://www.nccoe.nist.gov/applied-cryptography/migration-to-pqc",
+        "published_or_updated": "Accessed October 6, 2026"
+      },
+      {
+        "claim": "Crypto-agility means designing systems so algorithms can be selected, added and retired without major architectural changes; an IETF engineering draft identifies maintaining an inventory and avoiding hard-coded cryptographic choices as key parts of that capability. ([datatracker.ietf.org](https://datatracker.ietf.org/doc/draft-ietf-pquip-pqc-engineers/12/?utm_source=openai))",
+        "source_title": "Post-Quantum Cryptography for Engineers — IETF Internet-Draft",
+        "source_url": "https://datatracker.ietf.org/doc/draft-ietf-pquip-pqc-engineers/12/",
+        "published_or_updated": "Internet-Draft version 12; accessed October 6, 2026"
+      },
+      {
+        "claim": "NIST’s current PQC project guidance says organizations should begin migrating now and describes a transition in which quantum-vulnerable algorithms are deprecated and ultimately removed from its standards by 2035, with high-risk systems moving earlier. ([csrc.nist.gov](https://csrc.nist.gov/Projects/Post-Quantum-Cryptography?source=post_page---------------------------&utm_source=openai))",
+        "source_title": "Post-Quantum Cryptography — NIST CSRC",
+        "source_url": "https://csrc.nist.gov/Projects/Post-Quantum-Cryptography",
+        "published_or_updated": "Accessed October 6, 2026"
+      },
+      {
+        "claim": "The business framing is therefore a multi-year resilience program: first discover and prioritize long-lived sensitive data and critical systems, then coordinate vendors, software, certificates, protocols and testing rather than treating PQC as a single product replacement. This is an editorial inference from NIST’s inventory, dependency, interoperability and migration guidance. ([pages.nist.gov](https://pages.nist.gov/nccoe-migration-post-quantum-cryptography/?utm_source=openai))",
+        "source_title": "Migration to Post-Quantum Cryptography — NIST NCCoE",
+        "source_url": "https://www.nccoe.nist.gov/applied-cryptography/migration-to-pqc",
+        "published_or_updated": "Accessed October 6, 2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "NIST post quantum cryptography migration standards 2026 official",
+      "score": 86.9,
+      "verdict": "pass",
+      "recent_videos": 64,
+      "median_views_per_day": 403268.69,
+      "top_views_per_day": 5738985.45,
+      "market_coverage": 4,
+      "title_query_overlap": 0.125,
+      "measured_at": "2026-10-06T04:02:13.549580+00:00",
+      "signal_type": "youtube-most-popular-seed-proxy"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.37,
+      "true_peak_dbtp": -1.94,
+      "loudness_range": 2.7
+    },
+    "editorial": {
+      "beats": 71,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-10-06T13:49:04.914983+00:00"
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-long-tuesday-saturday"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-long-2026-10-06",
+    "created_at": "2026-10-06T13:49:06.348910+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-10-06T17:30:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "a8e9afdf67a40b6cecdf5c50e965733440aa406c5577dc2e78d0584a6a63c68f",
+        "bytes": 49463683
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "84c0e77a4ab77efa6f4d41181ddaa18d21c594f1e491360c88b01a976ca8752e",
+        "bytes": 1001557
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "ce11df7279a0e0617f7b80658cfbaa1966242cfc49e534509d5a72aed289c7e1",
+        "bytes": 2220
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "2be1297e84af9a6377ce33688647769201604fab0e921030ce1ea1469ee21938",
+        "bytes": 8061
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "1b2c57097af64045a10c67505b999f276d2437ec7135b2f2943070016a3596be",
+        "bytes": 2079
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "7171727d1539538c331d9e680a881daece54fa6b92c07812675e12f6ccf971aa",
+        "bytes": 5994
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "2285146bd1cb5c5175084453be62fcf08d91eb1c0244651b8393a075fcd49fde",
+        "bytes": 393
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "b40fef43e259b8e5750db9539a90d748e9537aca29b38d3ce5f51793432f8d54",
+        "bytes": 259
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 24304.0,
+      "cached_input_units": 0.0,
+      "output_units": 2223.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007528,
+      "created_at": "2026-10-06T04:02:13.549895+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-06T04:02:13.554019+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 21811.0,
+      "cached_input_units": 0.0,
+      "output_units": 2235.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007044,
+      "created_at": "2026-10-06T04:02:41.150008+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-06T04:02:41.151753+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2495.0,
+      "cached_input_units": 0.0,
+      "output_units": 3310.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004471,
+      "created_at": "2026-10-06T04:03:11.087304+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1330.0,
+      "cached_input_units": 0.0,
+      "output_units": 1123.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001614,
+      "created_at": "2026-10-06T12:02:21.432184+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-06T12:02:39.408567+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-06T12:02:56.033025+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-06T12:03:10.964620+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-06T12:03:25.851733+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-06T12:03:41.330271+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-06T12:03:55.518387+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-06T12:04:10.974451+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-06T12:04:25.536596+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-06T12:04:40.391335+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-06T12:04:55.106205+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-06T12:05:12.634726+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 881.0,
+      "cached_input_units": 0.0,
+      "output_units": 492.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000767,
+      "created_at": "2026-10-06T12:15:15.147908+00:00"
+    },
+    {
+      "stage": "thumbnail",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-10-06T12:15:56.887936+00:00"
+    }
+  ],
+  "recorded_at": "2026-10-06T13:49:13.807212+00:00"
+}
