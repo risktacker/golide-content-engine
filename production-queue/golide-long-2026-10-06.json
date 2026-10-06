@@ -146,5 +146,6 @@
     "measured_at": "2026-10-06T04:02:13.549580+00:00",
     "signal_type": "youtube-most-popular-seed-proxy"
   },
-  "selected_topic_source": "https://pages.nist.gov/nccoe-migration-post-quantum-cryptography/"
+  "selected_topic_source": "https://pages.nist.gov/nccoe-migration-post-quantum-cryptography/",
+  "owner_voice_media_ref": "r2://temp/2026/10/06/4206fec2c24c4713ab5bbf3168a1ee95-Quantum-threat-.wav"
 }
