@@ -30,7 +30,7 @@ from ..storage.database import Database
 from ..youtube.demand import TopicDemandRejected, YouTubeDemandGate
 from ..youtube_metadata import load_metadata_policy, validate_upload_metadata
 from .schemas import METADATA_SCHEMA, RESEARCH_SCHEMA, STORYBOARD_SCHEMA, TREND_CANDIDATES_SCHEMA
-from ..engine.content_rules import SCRIPT_SCHEMA, flow_problems, script_instructions, script_text
+from ..engine.content_rules import SCRIPT_SCHEMA, chapter_problems, flow_problems, script_display, script_instructions, script_text
 from .recording import RecordingLengthError, check_recording_length
 from .stage_runner import StageRunner
 
@@ -496,7 +496,7 @@ class ProductionService:
                 max_output_tokens=6000,
             )
             plan = dict(output.value)
-            problems = flow_problems(plan)
+            problems = flow_problems(plan) + chapter_problems(plan, str(spec["format"]))
             if problems:
                 # One rewrite when the script reads like a list of separate statements.
                 self._record_text(production_id, "script-draft", output)
@@ -504,7 +504,7 @@ class ProductionService:
                     script_instructions(str(spec["format"])),
                     f"TOPIC BRIEF\n{spec['brief']}\n\nVERIFIED RESEARCH\n{json.dumps(research)}"
                     f"\n\nYOUR PREVIOUS DRAFT\n{json.dumps(plan)}\n\nREWRITE IT. It sounds choppy when spoken: "
-                    + "; ".join(problems) + ". Keep the facts, structure and length; make it flow as natural speech.",
+                    + "; ".join(problems) + ". Keep the facts and length; fix these problems so it flows as natural speech in clear stages.",
                     SCRIPT_SCHEMA,
                     max_output_tokens=6000,
                 )
@@ -527,10 +527,11 @@ class ProductionService:
 
         owner_voice_ref = str(spec.get("owner_voice_media_ref", "")).strip()
         if not owner_voice_ref:
+            plan_for_display = json.loads(scene_plan_path.read_text(encoding="utf-8")) if scene_plan_path.exists() else None
             raise WaitingOwnerVoice(
                 production_id,
                 str(spec.get("title", production_id)),
-                script,
+                script_display(plan_for_display) if plan_for_display else script,
             )
 
         narration = work / "narration-owner.wav"
@@ -689,7 +690,15 @@ class ProductionService:
 
             def visual_plan_stage():
                 self._require_absent(visual_plan_path, "visual-plan")
-                numbered = "\n".join(f"{i}: {line['text']}" for i, line in enumerate(spoken_lines))
+                from ..vector.chapters import line_chapters
+                owners = line_chapters(plan)
+                rows = []
+                for i, line in enumerate(spoken_lines):
+                    if owners[i] is not None and (i == 0 or owners[i] != owners[i - 1]):
+                        chapter = plan["chapters"][owners[i]]
+                        rows.append(f"== CHAPTER {chapter.get('number', '')} {chapter.get('title', '')} ==".replace("  ", " "))
+                    rows.append(f"{i}: {line['text']}")
+                numbered = "\n".join(rows)
                 self._reserve(spec, text_model, Usage(input_tokens=len(numbered) // 3 + 1500, output_tokens=6000))
                 output = text.generate_json(
                     scene_plan_instructions(str(spec["format"])),
@@ -697,7 +706,8 @@ class ProductionService:
                     VISUAL_PLAN_SCHEMA,
                     max_output_tokens=6000,
                 )
-                scenes = validate_scenes(list(output.value["scenes"]), len(spoken_lines))
+                breaks = {i for i in range(1, len(owners)) if owners[i] is not None and owners[i] != owners[i - 1]}
+                scenes = validate_scenes(list(output.value["scenes"]), len(spoken_lines), breaks)
                 visual_plan_path.write_text(json.dumps({"scenes": scenes}, indent=2) + "\n", encoding="utf-8")
                 self._record_text(production_id, "visual-plan", output)
 
@@ -725,6 +735,10 @@ class ProductionService:
             illustrations = {scene["id"]: illustration_dir / f"{scene['id']}.png" for scene in scenes}
             plan = plan | {"scenes": scenes}
             timed_lines = align_lines(plan, timed_words, narration_seconds)
+            from ..vector.chapters import chapter_marks
+            (work / "chapters.json").write_text(json.dumps(
+                [{"start": m.start, "number": m.number, "title": m.title}
+                 for m in chapter_marks(plan, timed_lines)], indent=2) + "\n", encoding="utf-8")
             storyboard = {
                 "renderer": "vector",
                 "scenes": [
@@ -1276,12 +1290,20 @@ class ProductionService:
             self._require_absent(metadata_path, "metadata")
             self._reserve(spec, text_model, Usage(input_tokens=max(1, len(script) // 4), output_tokens=12000))
             output = text.generate_json(
-                "Create accurate YouTube metadata for G$LIDE. No hashtags in title. Describe the actual video, place only a few relevant hashtags at the description end, and use chapters only for long videos.",
+                "Create accurate YouTube metadata for GOLIDE. No hashtags in title. Describe the actual video and place only a few relevant hashtags at the description end. Do not write any timestamps or a chapter list in the description; real chapters are added from the recording. Return chapters as an empty list.",
                 f"FORMAT={spec['format']}\nSCRIPT\n{script}", METADATA_SCHEMA,
             )
             metadata = apply_locked_upload_defaults(
                 output.value | {"format": spec["format"]}, policy
             )
+            chapters_path = work / "chapters.json"
+            if spec["format"] == "long" and chapters_path.exists():
+                # Real chapter times from the recording replace anything guessed.
+                from ..vector.chapters import ChapterMark, with_chapters, youtube_chapters
+                marks = [ChapterMark(float(m["start"]), str(m["number"]), str(m["title"]))
+                         for m in json.loads(chapters_path.read_text(encoding="utf-8"))]
+                metadata["chapters"] = youtube_chapters(marks, narration_seconds)
+                metadata["description"] = with_chapters(str(metadata["description"]), metadata["chapters"])
             if music.attribution and music.attribution not in metadata["description"]:
                 metadata["description"] = metadata["description"].rstrip() + f"\n\nMusic: {music.attribution}"
             validate_upload_metadata(metadata, policy)

@@ -56,10 +56,17 @@ def build_record_needed(
     )
     message.set_content(plain)
 
-    script_html = "".join(
-        f'<p style="margin:0 0 10px;font-size:17px;line-height:1.5">{html.escape(row)}</p>'
-        for row in script.strip().splitlines() if row.strip()
-    )
+    def _row(row: str) -> str:
+        text = row.strip()
+        if text.startswith("[") and text.endswith("]"):  # chapter heading, not read aloud
+            return (f'<p style="margin:18px 0 6px;color:#e9c46a;font-size:12px;letter-spacing:2px">'
+                    f'{html.escape(text[1:-1])}</p>')
+        return f'<p style="margin:0 0 10px;font-size:17px;line-height:1.5">{html.escape(text)}</p>'
+
+    script_html = "".join(_row(row) for row in script.strip().splitlines() if row.strip())
+    if "\n[" in "\n" + script:
+        script_html = ('<p style="margin:0 0 12px;color:#9a9ea8;font-size:13px">Gold headings are not read aloud. '
+                       'Pause briefly at each one.</p>' + script_html)
     rejected_html = (
         f'<p style="color:#d0605e;margin:0 0 16px">Your last upload was rejected: {html.escape(rejection)}</p>'
         if rejection else ""

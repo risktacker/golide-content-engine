@@ -75,6 +75,15 @@ const STATUS_LABELS = {
   draft: "Draft",
   topic_rejected: "Topic skipped",
 };
+// Chapter headings ("[02 · WHERE IT HIDES]") are shown, not read aloud.
+function scriptHtml(script) {
+  return String(script).split("\n").map((row) => {
+    const text = row.trim();
+    if (/^\[.+\]$/.test(text)) return '<span class="script-chapter">' + esc(text.slice(1, -1)) + '</span>';
+    return esc(row);
+  }).join("\n");
+}
+
 function statusLabel(value) { return STATUS_LABELS[value] || pretty(value); }
 
 // A video handed to YouTube as "scheduled" goes live on its own at that time;
@@ -381,7 +390,7 @@ function actionCard(job) {
   return '<article class="action-card" id="job-' + escAttr(job.job_id) + '"><div><span class="kicker">' +
     (job.format === "long" ? "Long video" : "Short") + ', record ' + clock(windowRange[0]) + ' to ' + clock(windowRange[1]) + '</span><h4>' +
     esc(job.title || "Script ready") + '</h4><p>Read the script below in your own voice. The engine picks it up automatically after you upload.</p>' + rejected +
-    '<div class="script-box">' + esc(script) + '</div></div>' +
+    '<div class="script-box">' + scriptHtml(script) + '</div></div>' +
     '<div class="action-controls">' +
       '<label class="upload-button">Upload my recording<input class="voice-input" type="file" accept="audio/*,video/*,.m4a,.mp3,.wav,.aac,.caf,.ogg,.opus,.webm,.mp4,.mov" data-job="' + escAttr(job.job_id) + '"></label>' +
       '<button class="action-button copy-script" data-job="' + escAttr(job.job_id) + '">Copy script</button>' +

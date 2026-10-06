@@ -33,6 +33,7 @@ FORMATS = {"short": (1080, 1920), "long": (1920, 1080)}
 GLOW_SCALE = 3  # glow layer is rendered at 1/3 size, then blurred and upscaled
 TRANSITION_BEFORE = 0.40  # seconds of hand-over before the next line starts
 TRANSITION_AFTER = 0.90   # ... and after it starts
+CHAPTER_CARD_SECONDS = 2.8  # how long a chapter card stays at the start of a chapter
 PARTICLES = 170
 
 
@@ -198,6 +199,38 @@ class CaptionRenderer:
         ImageDraw.Draw(img).text((2, 0), spaced, font=self.mono, fill=color + (int(255 * alpha),))
         return img
 
+    def chapter_card(self, number: str, title: str) -> Image.Image:
+        """'02  WHERE IT HIDES': gold number, spaced white title, soft gold glow."""
+        key = ("chapter", number, title)
+        if key in self._cache:
+            return self._cache[key]
+        size = self.layout.caption_size
+        num_font = ImageFont.truetype(str(self.theme.font("mono")), int(size * 1.9))
+        title_font = ImageFont.truetype(str(self.theme.font("regular")), int(size * 0.95))
+        title_text = "  ".join(title.upper().split())
+        title_text = " ".join(title_text)  # letter-spaced, the way the wordmark is
+        probe = ImageDraw.Draw(Image.new("RGBA", (1, 1)))
+        nw = probe.textlength(number, font=num_font)
+        tw = probe.textlength(title_text, font=title_font)
+        gap = size * 0.7
+        pad = int(size * 0.8)
+        width = int(nw + gap + tw) + pad * 2
+        height = int(size * 2.6) + pad
+        layer = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(layer)
+        mid = height / 2
+        gold = self.theme.rgb("gold")
+        draw.text((pad, mid), number, font=num_font, fill=gold + (255,), anchor="lm")
+        line_x = pad + nw + gap * 0.5
+        draw.line([(line_x, mid - size * 0.42), (line_x, mid + size * 0.42)], fill=gold + (150,), width=2)
+        draw.text((pad + nw + gap, mid), title_text, font=title_font, fill=self.theme.rgb("text") + (255,), anchor="lm")
+        glow = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+        ImageDraw.Draw(glow).text((pad, mid), number, font=num_font, fill=gold + (170,), anchor="lm")
+        glow = glow.filter(ImageFilter.GaussianBlur(size * 0.35))
+        result = Image.alpha_composite(glow, layer)
+        self._cache[key] = result
+        return result
+
     def wordmark(self, size: int | None = None, color: str = "text_muted", alpha: int = 200) -> Image.Image:
         font = self.mark if size is None else ImageFont.truetype(str(self.theme.font("regular")), size)
         text = "  ".join(self.theme.watermark["text"])
@@ -230,6 +263,7 @@ class VectorRenderer:
         self.background = _background(self.layout, self.theme)
         self.stars = StarField(self.layout.width, self.layout.height)
         self._transitions: dict[int, "Transition"] = {}
+        self.chapters: list = []
         self.captions = CaptionRenderer(self.layout, self.theme)
         self.colors = _colors(self.theme)
         self.mark = self.captions.wordmark()
@@ -339,11 +373,28 @@ class VectorRenderer:
             cap = self.captions.caption(chunk, t, fade)
             image.paste(cap, (0, int(L.caption_y)), cap)
 
-        # Label tag for the active line.
+        # Chapter card at the start of each numbered chapter.
+        card = None
+        for mark in getattr(self, "chapters", ()):
+            if mark.number and mark.start - 0.2 <= t < mark.start + CHAPTER_CARD_SECONDS:
+                card = mark
+        if card is not None:
+            u = t - (card.start - 0.2)
+            a = min(1.0, u / 0.45) * min(1.0, max(0.0, (card.start + CHAPTER_CARD_SECONDS - t) / 0.6))
+            a = ease(max(0.0, min(1.0, a)))
+            tile = self.captions.chapter_card(card.number, card.title)
+            if a < 1.0:
+                tile = tile.copy()
+                tile.putalpha(tile.getchannel("A").point(lambda v: int(v * a)))
+            rise = int((1 - a) * L.caption_size * 0.25)
+            top = L.label_y - tile.height * 0.30 if self.format == "short" else L.height * 0.015
+            image.paste(tile, (int(L.cx - tile.width / 2), int(top) + rise), tile)
+
+        # Label tag for the active line (hidden while a chapter card shows).
         line_index = _active(group.lines, t, lambda l: l.start, lambda l: l.end)
         label = group.lines[line_index].label
-        if label:
-            color = self.theme.rgb("gold" if gi % 2 == 0 else "cyan")
+        if label and card is None:
+            color = self.theme.rgb("gold" if (gi % 2 == 0 or self.chapters) else "cyan")
             tag = self.captions.label(label, color, min(1.0, (t - group.lines[line_index].start) / 0.3))
             image.paste(tag, (int(L.cx - tag.width / 2), int(L.label_y)), tag)
 
@@ -384,6 +435,17 @@ class VectorRenderer:
                duration: float, music: Path | None = None, music_volume: float = 0.03,
                illustrations: dict[str, Path] | None = None) -> Path:
         lines = align_lines(plan, words, duration)
+        from .chapters import chapter_marks, line_chapters
+        self.chapters = chapter_marks(plan, lines) if plan.get("chapters") else []
+        if self.chapters:
+            # The small tag under the card names the chapter the viewer is in.
+            owner = line_chapters(plan)
+            chapters = plan["chapters"]
+            for line in lines:
+                key = owner[line.index] if line.index < len(owner) else None
+                if key is not None:
+                    number = str(chapters[key].get("number", "")).strip()
+                    line.label = f"{number}  {chapters[key].get('title', '')}".upper() if number else ""
         if illustrations:
             lines = self._use_illustrations(plan, lines, illustrations)
         groups = group_lines(lines)

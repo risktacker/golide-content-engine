@@ -605,6 +605,12 @@ def main() -> int:
             )
             from .operations.email import send_record_needed
             script_file = Path("productions") / spec["id"] / "script.txt"
+            plan_file = Path("productions") / spec["id"] / "scene-plan.json"
+            if plan_file.exists():
+                from .engine.content_rules import script_display
+                display = script_display(json.loads(plan_file.read_text(encoding="utf-8")))
+                script_file = Path("productions") / spec["id"] / "script-display.txt"
+                script_file.write_text(display + "\n", encoding="utf-8")
             send_record_needed(
                 job_id=str(studio_job_id or spec["id"]),
                 title=str(refreshed.get("title") or spec["id"]),

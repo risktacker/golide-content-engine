@@ -11,9 +11,10 @@ class ScriptRuleTests(unittest.TestCase):
         short, long = script_instructions("short"), script_instructions("long")
         self.assertIn("150 to 185 spoken words", short)
         self.assertIn("600 to 680 spoken words", long)
+        self.assertIn("CLAIM", short)
+        self.assertIn("CALL TO ACTION", short)
+        self.assertIn("LESSON IN CHAPTERS", long)
         for rules in (short, long):
-            self.assertIn("CLAIM", rules)
-            self.assertIn("CALL TO ACTION", rules)
             self.assertNotIn("ElevenLabs", rules)
 
     def test_every_visual_cue_has_a_renderer(self):

@@ -133,6 +133,37 @@ The sections are the shape of the argument; the viewer should never hear the joi
 6. CALL TO ACTION: one small action, then a line that loops back to the claim.
 """
 
+LONG_STRUCTURE_RULES = """\
+LONG VIDEO STRUCTURE: A LESSON IN CHAPTERS
+The viewer must always know where they are: "now we're on this, next we're on that".
+- "chapters" lists the parts in order. Each has "number" and "title":
+  * INTRO first: number "" and title "Intro".
+  * Then 4 or 5 numbered chapters, number "01", "02", ... Each chapter has ONE job
+    (for example: the real threat, where it hides, how to map it, how to switch,
+    the cost of waiting). Title: 2 to 4 plain words, no punctuation.
+  * CLOSE last: number "" and title "Close".
+- Every line sets "chapter" to the index (from 0) of the chapter it belongs to, in order.
+- INTRO: the blunt opening claim that flips a common belief, then ONE sentence that
+  tells the viewer the route in plain words ("In the next few minutes, we'll cover
+  ..., ..., and ..."), naming the numbered chapters in order.
+- Each numbered chapter OPENS with a spoken signpost that makes the new stage
+  obvious, often a question ("So first, what are we actually worried about?",
+  "Which brings us to the work itself.") and ENDS with a one-line takeaway before
+  the next chapter starts. The chapter title is never read aloud as a label.
+- Keep chapters balanced: none longer than a third of the script.
+- Use concrete, true examples inside the chapters; the CLOSE gives the one sentence
+  to remember, one small action for this week, and a last line that loops back to
+  the opening claim.
+- "section" still tags each line: intro lines "claim", explanation and examples
+  "proof" or "pattern", consequences "cost", the line to remember "reframe",
+  the action and final line "cta".
+"""
+
+SHORT_CHAPTER_RULE = """\
+CHAPTERS: a short is one idea. "chapters" must be an empty list and every line's
+"chapter" is 0.
+"""
+
 SCRIPT_LINE_RULES = """\
 FLOW (the most important rule: this is one person talking, not a list of facts)
 - Write connected speech. Each sentence must grow out of the one before it, the way a
@@ -221,6 +252,31 @@ def flow_problems(plan: dict) -> list[str]:
     return problems
 
 
+def chapter_problems(plan: dict, format_name: str) -> list[str]:
+    """A long video must read as a lesson in clear stages."""
+    if format_name != "long":
+        return []
+    chapters = plan.get("chapters") or []
+    numbered = [c for c in chapters if str(c.get("number", "")).strip()]
+    lines = [line for line in plan.get("lines", []) if str(line.get("text", "")).strip()]
+    problems: list[str] = []
+    if not 4 <= len(numbered) <= 5:
+        problems.append(f"use 4 or 5 numbered chapters between the intro and the close (found {len(numbered)})")
+    owners = [line.get("chapter") for line in lines]
+    if any(not isinstance(o, int) or not 0 <= o < len(chapters) for o in owners):
+        problems.append("every line needs a valid chapter index")
+    elif owners != sorted(owners) or set(owners) != set(range(len(chapters))):
+        problems.append("chapters must run in order and every chapter needs lines")
+    else:
+        words = [len(str(line["text"]).split()) for line in lines]
+        total = sum(words) or 1
+        for index, chapter in enumerate(chapters):
+            share = sum(w for w, o in zip(words, owners) if o == index) / total
+            if str(chapter.get("number", "")).strip() and share > 0.36:
+                problems.append(f"chapter {chapter.get('number')} {chapter.get('title')} is too long; balance the chapters")
+    return problems
+
+
 def script_instructions(format_name: str) -> str:
     target = SCRIPT_LENGTH_TARGETS.get(format_name, SCRIPT_LENGTH_TARGETS["short"])
     return (
@@ -230,7 +286,8 @@ def script_instructions(format_name: str) -> str:
         "in his own voice; the visuals are animated line diagrams on black, synced to his words.\n\n"
         f"LENGTH: {target['words_min']} to {target['words_max']} spoken words "
         f"(about {target['seconds']} seconds). Do not go over.\n\n"
-        + SCRIPT_STRUCTURE_RULES + "\n" + SCRIPT_LINE_RULES + "\n" + SCRIPT_VOICE_RULES
+        + (LONG_STRUCTURE_RULES if format_name == "long" else SCRIPT_STRUCTURE_RULES + "\n" + SHORT_CHAPTER_RULE)
+        + "\n" + SCRIPT_LINE_RULES + "\n" + SCRIPT_VOICE_RULES
         + "\n" + SCRIPT_OUTPUT_RULES
     )
 
@@ -246,6 +303,16 @@ SCRIPT_SCHEMA: dict = {
     "additionalProperties": False,
     "properties": {
         "title": {"type": "string"},
+        "chapters": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+                "type": "object",
+                "additionalProperties": False,
+                "properties": {"number": {"type": "string"}, "title": {"type": "string"}},
+                "required": ["number", "title"],
+            },
+        },
         "lines": {
             "type": "array",
             "minItems": 8,
@@ -253,6 +320,7 @@ SCRIPT_SCHEMA: dict = {
                 "type": "object",
                 "additionalProperties": False,
                 "properties": {
+                    "chapter": {"type": "integer"},
                     "section": {
                         "type": "string",
                         "enum": ["claim", "proof", "pattern", "cost", "reframe", "cta"],
@@ -263,11 +331,11 @@ SCRIPT_SCHEMA: dict = {
                     "subjects": {"type": "array", "maxItems": 4, "items": {"type": "string"}},
                     "label": {"type": "string"},
                 },
-                "required": ["section", "text", "emphasis", "visual", "subjects", "label"],
+                "required": ["chapter", "section", "text", "emphasis", "visual", "subjects", "label"],
             },
         },
     },
-    "required": ["title", "lines"],
+    "required": ["title", "chapters", "lines"],
 }
 
 SCRIPT_OUTPUT_RULES = """\

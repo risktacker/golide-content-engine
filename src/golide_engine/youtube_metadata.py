@@ -73,6 +73,7 @@ def validate_upload_metadata(metadata: dict[str, Any], policy: dict[str, Any]) -
         raise YouTubeMetadataError("altered_content must be explicitly reviewed")
     chapters = metadata.get("chapters", [])
     if fmt == "long":
-        validate_chapters(chapters)
+        if chapters:  # chapters come from the real recording; none is allowed, wrong ones are not
+            validate_chapters(chapters)
     elif chapters:
         raise YouTubeMetadataError("Shorts do not use manual chapters")

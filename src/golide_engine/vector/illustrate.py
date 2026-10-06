@@ -76,11 +76,18 @@ focal point. No text, labels, numbers, logos or screens with readable content.
 
 "gold_element": the single part of the drawing that should glow gold because
 it carries the meaning of the scene (for example: "the heat lines").
+
+If the lines are divided into chapters (marked "== CHAPTER ... =="), a scene
+never runs across a chapter mark: every chapter starts with a new scene.
 """
 
 
-def validate_scenes(scenes: list[dict], line_count: int) -> list[dict]:
-    """Make the model's grouping cover every line exactly once, in order."""
+def validate_scenes(scenes: list[dict], line_count: int, breaks: set[int] | frozenset[int] = frozenset()) -> list[dict]:
+    """Make the model's grouping cover every line exactly once, in order.
+
+    ``breaks`` are line indices where a chapter starts: a scene never runs
+    across one, so every chapter opens on a fresh drawing.
+    """
     ordered = sorted(scenes, key=lambda s: int(s["first_line"]))
     fixed: list[dict] = []
     cursor = 0
@@ -96,6 +103,13 @@ def validate_scenes(scenes: list[dict], line_count: int) -> list[dict]:
         raise ValueError("visual plan produced no usable scenes")
     if cursor < line_count:
         fixed[-1]["last_line"] = line_count - 1
+    split: list[dict] = []
+    for scene in fixed:
+        first, last = scene["first_line"], scene["last_line"]
+        cuts = sorted(i for i in breaks if first < i <= last)
+        for start, end in zip([first, *cuts], [c - 1 for c in cuts] + [last]):
+            split.append({**scene, "first_line": start, "last_line": end})
+    fixed = split
     for index, scene in enumerate(fixed):
         scene["id"] = f"scene-{index + 1:02d}"
     return fixed
