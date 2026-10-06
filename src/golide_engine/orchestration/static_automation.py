@@ -188,11 +188,16 @@ class StaticAutomation:
         product_packet = self._product_packet(product)
         live_signal = slot == "post-a"
         instructions = static_post_instructions(slot)
+        try:
+            recent = self.bridge.recent_posts(21)
+        except Exception:  # history helps; it must never stop a post
+            recent = []
         body = (
             f"DATE_UTC={datetime.now(timezone.utc).date().isoformat()}\n"
             f"SLOT={slot}\n"
             f"CONTENT_ID={content_id}\n"
-            f"CANDIDATE_PRODUCT={json.dumps(product_packet, ensure_ascii=False)}"
+            f"CANDIDATE_PRODUCT={json.dumps(product_packet, ensure_ascii=False)}\n"
+            f"RECENT_POSTS={json.dumps(recent, ensure_ascii=False)}"
         )
         text = self.providers.text(live=True)
         output = text.generate_json(

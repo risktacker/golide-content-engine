@@ -87,3 +87,21 @@ class StaticPostSplitTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_draft_sees_recent_posts():
+    from types import SimpleNamespace
+
+    seen = {}
+
+    class Text:
+        def generate_json(self, instructions, body, schema, **kw):
+            seen["instructions"], seen["body"] = instructions, body
+            return SimpleNamespace(value={}, request_id="r")
+
+    auto = StaticAutomation.__new__(StaticAutomation)
+    auto.bridge = SimpleNamespace(recent_posts=lambda days: [{"hook": "More applications aren't the fix. A scattered search is."}])
+    auto.providers = SimpleNamespace(text=lambda live: Text())
+    auto._draft(content_id="c", slot="post-b", product=None)
+    assert "RECENT_POSTS=" in seen["body"] and "scattered search" in seen["body"]
+    assert "NEVER REPEAT YOURSELF" in seen["instructions"]

@@ -195,6 +195,12 @@ class StudioBridge:
             raise RuntimeError(f"Studio static count failed with HTTP {status}")
         return int(json.loads(body.decode("utf-8")).get("count", 0))
 
+    def recent_posts(self, days: int = 21) -> list[dict[str, Any]]:
+        status, body = self._request("GET", f"/api/engine/recent-posts?days={int(days)}")
+        if status != 200:
+            raise RuntimeError(f"Studio recent posts failed with HTTP {status}")
+        return list(json.loads(body.decode("utf-8")).get("posts", []))
+
     def register_media(self, records: list[dict[str, Any]]) -> None:
         status, _ = self._request(
             "POST", "/api/engine/media/register", {"records": records}

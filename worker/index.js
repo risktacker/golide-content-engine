@@ -979,6 +979,17 @@ async function handleMachineApi(request,env,url){
     const row=await env.DB.prepare(`SELECT COUNT(*) count FROM content_posts WHERE id LIKE ?`).bind(`golide-post-${month}-%`).first();
     return json({month,count:Number(row?.count||0)});
   }
+  if(url.pathname==="/api/engine/recent-posts"&&request.method==="GET"){
+    // What the engine already said, so new posts never repeat a hook or angle.
+    const days=Math.min(60,Math.max(1,Number(url.searchParams.get("days")||21)));
+    const since=new Date(Date.now()-days*86400000).toISOString();
+    const {results=[]}=await env.DB.prepare(`SELECT p.id,p.title,p.product_id,p.master_text,
+        (SELECT body FROM social_variants v WHERE v.post_id=p.id AND v.platform='x') AS x_body
+      FROM content_posts p WHERE p.content_class='post' AND COALESCE(p.scheduled_at,p.created_at)>=?
+      ORDER BY COALESCE(p.scheduled_at,p.created_at) DESC LIMIT 60`).bind(since).all();
+    return json({posts:results.map((r)=>({id:r.id,title:r.title,product_id:r.product_id||"",
+      hook:String(r.x_body||"").split("\n")[0].slice(0,200),points:String(r.master_text||"").slice(0,400)}))});
+  }
   if(url.pathname==="/api/engine/media/register"&&request.method==="POST"){
     try{return json(await registerEngineMedia(env.DB,await request.json()));}catch(e){return err(e?.message||String(e),400);}
   }

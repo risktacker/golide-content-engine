@@ -93,6 +93,17 @@ POST STRUCTURE
 - source_url: for a trend post, the single most credible source page you used (the
   article itself, https). For a product post, an empty string.
 - title: a plain internal label for the post (not shown publicly).
+
+NEVER REPEAT YOURSELF
+- RECENT_POSTS lists what GOLIDE already published in the last three weeks.
+- Do not reuse any hook, hook shape ("X isn't the problem, Y is"), opening line,
+  scenario or point from it, and do not paraphrase one.
+- When the product is the same as a recent post, choose a NEW angle: a different
+  reader moment (before applying, after a rejection, during interview prep, when
+  switching careers), a different pain or benefit, a different proof. Name the
+  angle you chose in "weekly_theme".
+- The image concept must use a different object and metaphor from the one a recent
+  hook would suggest (no second funnel, staircase or door in a row).
 """
 
 POST_A_TREND_RULES = """\
