@@ -9,8 +9,8 @@ import {
 const ADMIN_EMAILS = new Set(["esiahkapinga@gmail.com", "esiahsbusiness@gmail.com"]);
 const ROUTES = {
   post: ["instagram", "facebook", "linkedin", "x"],
-  short: ["instagram", "facebook", "youtube"],
-  long: ["youtube"],
+  short: ["instagram", "facebook", "linkedin", "youtube"],
+  long: ["youtube", "facebook", "linkedin"],
 };
 const LANES = new Set(["awareness","authority","proof","story","conversion","education","flexible"]);
 const LIFECYCLE_WEIGHT = { IDEA:20, PRE_LAUNCH:75, NEW:100, ACTIVE:55, MATURE:20, PAUSED:0 };
@@ -651,7 +651,7 @@ async function claimDueSocial(db,nowValue){
   // its last failure, so one broken network cannot loop or block newer posts.
   const cooldown=new Date(Date.now()-30*60*1000).toISOString();
   const row=await db.prepare(`SELECT id FROM content_posts p
-    WHERE content_class IN ('post','short') AND status IN ('scheduled','partial','failed')
+    WHERE content_class IN ('post','short','long') AND status IN ('scheduled','partial','failed')
       AND scheduled_at IS NOT NULL AND scheduled_at<=?
       AND (SELECT COUNT(*) FROM publish_attempts a WHERE a.post_id=p.id AND a.status='failed')<3
       AND NOT EXISTS (SELECT 1 FROM publish_attempts a WHERE a.post_id=p.id AND a.status='failed' AND a.created_at>?)
@@ -1137,7 +1137,7 @@ async function handleApi(request,env,url){
 const ENGINE_REPO="risktacker/golide-content-engine";
 const CRON_WORKFLOWS={
   "30 6 * * *":"content-distribution-scheduler.yml",      // 08:30 Post A
-  "30 15 * * *":"content-distribution-scheduler.yml",     // 17:30 Post B
+  "30 15,17 * * *":"content-distribution-scheduler.yml",  // 17:30 Post B, 19:30 long video to Facebook/LinkedIn
   "0 4 * * TUE,SAT":"production-scheduler.yml",           // 06:00 long script
   "0 7 * * SUN,MON,WED,FRI":"production-scheduler.yml",   // 09:00 short script
   "0 12,18 * * *":"production-scheduler.yml"              // 14:00/20:00 build from voice

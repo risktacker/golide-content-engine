@@ -11,6 +11,11 @@ from .scoring import score_concept
 from .animatic import render_animatic
 
 
+
+# Long videos reach Facebook and LinkedIn from this generate date on (owner, 2026-10-06);
+# the 6 Oct video runs unattended on the YouTube-only path it was started with.
+LONG_SOCIAL_FROM = "2026-10-07"
+
 def _database(path: str):
     from .storage.database import Database
     database = Database(path)
@@ -681,11 +686,28 @@ def main() -> int:
             except Exception as exc:
                 reels = {"reels_status": "failed", "error": str(exc)[:500]}
                 print(f"::warning title=Reels not published::{str(exc)[:300]}")
+        long_social = None
+        if spec.get("format") == "long" and bridge and str(spec.get("generate_at", "")) >= LONG_SOCIAL_FROM:
+            # Long videos also go to Facebook (native video) and LinkedIn at the
+            # YouTube release time; the 19:30 distribution run publishes them.
+            try:
+                from .orchestration.reels import queue_long_social
+                from .storage.r2 import r2_store_from_environment
+
+                long_social = queue_long_social(
+                    bridge=bridge, store=r2_store_from_environment(), production_id=spec["id"],
+                    video=package_root / files["video"]["file"], metadata=metadata,
+                    youtube_video_id=video_id, owner_voice_ref=str(spec.get("owner_voice_media_ref", "")),
+                    publish_at=str(release.get("scheduled_at") or spec.get("release", {}).get("scheduled_at", "")),
+                )
+            except Exception as exc:
+                long_social = {"status": "failed", "error": str(exc)[:500]}
+                print(f"::warning title=Long video not queued for Facebook/LinkedIn::{str(exc)[:300]}")
         done = spec_path.with_suffix(".completed.json")
         spec_path.rename(done)
         report_studio("scheduled", "youtube-scheduled")
         print(json.dumps({"status": "scheduled", "production_id": spec["id"], "youtube_video_id": video_id,
-                          "retention": retention, "reels": reels}))
+                          "retention": retention, "reels": reels, "long_social": long_social}))
         return 0
 
     if args.command == "animatic":

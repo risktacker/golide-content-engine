@@ -122,7 +122,7 @@ class RebuildTests(unittest.TestCase):
         self.assertEqual(result["status"], "published")
         self.assertEqual(result["youtube_video_id"], "NEWVID")
         platforms = {v["platform"]: v for v in created[0]["variants"]}
-        self.assertEqual(set(platforms), {"instagram", "facebook", "youtube"})
+        self.assertEqual(set(platforms), {"instagram", "facebook", "linkedin", "youtube"})
         self.assertEqual(platforms["youtube"]["parts"], ["youtube:NEWVID"])
         self.assertEqual(created[0]["content_class"], "short")
         self.assertTrue(created[0]["id"].startswith(f"{ID}-reels-2"))

@@ -270,6 +270,8 @@ class FacebookPageProvider(SocialProvider):
         else:
             media_url = _require_https_media(request.media_ref)
             if _looks_like_video(media_url):
+                if request.title.strip():  # a long landscape video, not a Reel
+                    return self._publish_video(media_url, request.title.strip(), body)
                 return self._publish_reel(media_url, body)
             result = self.graph.post(
                 f"{self.page_id}/photos",
@@ -280,6 +282,17 @@ class FacebookPageProvider(SocialProvider):
         if not content_id:
             raise RuntimeError("Facebook did not return a post id")
         return PublishResult(content_id=content_id, url=None)
+
+    def _publish_video(self, video_url: str, title: str, description: str) -> PublishResult:
+        """A normal Page video (keeps 16:9); Facebook fetches the hosted file itself."""
+        result = self.graph.post(
+            f"{self.page_id}/videos", file_url=video_url, title=title[:255], description=description,
+            published="true",
+        )
+        video_id = str(result.get("id", ""))
+        if not video_id:
+            raise RuntimeError("Facebook did not return a video id")
+        return PublishResult(content_id=video_id, url=f"https://www.facebook.com/{self.page_id}/videos/{video_id}")
 
     def _publish_reel(self, video_url: str, description: str) -> PublishResult:
         """Facebook Reels: start an upload, let Facebook fetch the hosted file, publish.

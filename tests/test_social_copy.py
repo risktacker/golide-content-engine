@@ -115,3 +115,47 @@ class PostShapeTests(unittest.TestCase):
         self.assertEqual(parent["children"], "c1,c2,c3,c4,c5")
         self.assertEqual(parent["caption"], "Caption")
         self.assertTrue(http.posts[-1][0].endswith("media_publish"))
+
+
+class LongVideoRouteTests(unittest.TestCase):
+    def test_long_video_goes_to_facebook_as_video_and_linkedin_at_release(self):
+        from golide_engine.orchestration.reels import long_social_payload
+
+        payload = long_social_payload(content_id="L-social", metadata={"title": "T", "description": "D\n\nChapters\n0:00 Intro"},
+                                      video_ref="r2://v.mp4", youtube_video_id="YT", owner_voice_ref="r2://voice",
+                                      publish_at="2026-10-10T17:30:00Z")
+        self.assertEqual(payload["content_class"], "long")
+        self.assertEqual(payload["scheduled_at"], "2026-10-10T17:30:00Z")
+        by = {v["platform"]: v for v in payload["variants"]}
+        self.assertEqual(set(by), {"youtube", "facebook", "linkedin"})
+        self.assertEqual(by["facebook"]["title"], "T")  # titled = normal video, not a Reel
+        self.assertEqual(by["youtube"]["parts"], ["youtube:YT"])
+
+    def test_facebook_titled_video_uses_videos_endpoint(self):
+        import os
+        from unittest.mock import patch
+
+        from golide_engine.providers.base import PublishRequest
+        from golide_engine.providers.http import JsonResponse
+        from golide_engine.providers.meta import FacebookPageProvider
+
+        class Http:
+            def __init__(self):
+                self.posts = []
+
+            def get(self, url, *, params=None):
+                raise AssertionError
+
+            def post(self, url, *, data=None, headers=None):
+                self.posts.append((url, dict(data or {})))
+                return JsonResponse(200, {"id": "vid1"})
+
+        http = Http()
+        provider = FacebookPageProvider(api_version="v99.0", page_access_token="t", page_id="pg", http=http)
+        request = PublishRequest(post_id="p", variant_id="v", platform="facebook", body="Desc", title="Title",
+                                 media_ref="https://m.example/video.mp4")
+        with patch.dict(os.environ, {"GOLIDE_ENABLE_SOCIAL_PUBLISH": "1"}):
+            result = provider.publish(request)
+        self.assertTrue(http.posts[0][0].endswith("pg/videos"))
+        self.assertEqual(http.posts[0][1]["file_url"], "https://m.example/video.mp4")
+        self.assertEqual(result.content_id, "vid1")
