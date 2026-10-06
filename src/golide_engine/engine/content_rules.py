@@ -123,6 +123,7 @@ SCRIPT_LENGTH_TARGETS = {
 
 SCRIPT_STRUCTURE_RULES = """\
 SCRIPT STRUCTURE (in this order)
+The sections are the shape of the argument; the viewer should never hear the joins.
 1. CLAIM: one blunt sentence that flips a common belief. Example shape:
    "AI doesn't decide who gets hired. Systems do."
 2. PROOF: one concrete, true example anyone already understands.
@@ -133,10 +134,27 @@ SCRIPT STRUCTURE (in this order)
 """
 
 SCRIPT_LINE_RULES = """\
-LINE RULES (the owner reads this out loud, so write for the mouth, not the eye)
-- One spoken line = one idea = 4 to 12 words. Never two ideas in one line.
-- Every line must be easy to say in one breath. No brackets, no abbreviations,
-  no symbols, write numbers as they are spoken.
+FLOW (the most important rule: this is one person talking, not a list of facts)
+- Write connected speech. Each sentence must grow out of the one before it, the way a
+  good teacher explains something across a table.
+- Link ideas with spoken connectives: and, but, so, because, which means, that's why,
+  then, now, here's the thing, the problem is, in other words, for example, think about,
+  if, when, until, instead. Roughly every second sentence should lean on the one before.
+- Mix sentence lengths: some short and punchy, most medium (10 to 22 words), the odd
+  longer one that builds. Never more than two short stand-alone sentences in a row.
+- Lists of examples are said as one flowing sentence ("a payment service, a private
+  network tunnel, even the update on an old phone"), not as separate statements.
+- Each section opens with a bridge from the last one ("So where do you start?",
+  "And this isn't only about websites.", "Here's what that costs.").
+- Never repeat the same sentence opening on consecutive sentences (no runs of
+  "Record...", "It must...", "A ... is ...").
+
+LINE RULES (lines are how the speech is split for the screen; they are NOT sentences)
+- A line is a breath-sized phrase of 4 to 14 words. A sentence may run across two or
+  three lines, so a line can end on a comma or with no punctuation, and the next line
+  can begin with "and", "but", "because", "which" and so on.
+- Split at natural pauses, never in the middle of a name or number.
+- No brackets, no abbreviations, no symbols, write numbers as they are spoken.
 - Each line names ONE emphasis word (the word that glows white in the captions).
 - Each line names its SUBJECTS: 1 to 3 concrete, drawable things the line is about,
   in plain words ("server rack", "water drop", "thermometer", "brain", "phone",
@@ -160,6 +178,49 @@ LINE RULES (the owner reads this out loud, so write for the mouth, not the eye)
 """
 
 
+SCRIPT_VOICE_RULES = """\
+VOICE
+- Speak to the viewer as "you". Plain words a smart 16-year-old understands. Confident,
+  calm, warm and direct. Never hype, never preachy, never a lecture of bullet points.
+- Use contractions the way people talk (it's, you're, don't, that's).
+- Every claim must be true and checkable. No invented statistics, studies, quotes or names.
+  If a number is not from a credible current source, do not use a number.
+- Never promise jobs, income, trading results, health outcomes or guaranteed results.
+- No em dashes or en dashes. Use commas, full stops and questions.
+"""
+
+CONNECTIVES = (
+    "and", "but", "so", "because", "which", "then", "now", "if", "when", "until",
+    "instead", "that's", "thats", "here's", "heres", "or", "while", "though", "yet",
+    "also", "even", "think", "for", "in", "this", "that", "it's", "its", "after",
+    "before", "once", "unless", "since", "as",
+)
+
+
+def flow_problems(plan: dict) -> list[str]:
+    """Catch the staccato failure: every line a separate full-stop statement."""
+    lines = [str(line.get("text", "")).strip() for line in plan.get("lines", []) if str(line.get("text", "")).strip()]
+    if len(lines) < 8:
+        return []
+    problems: list[str] = []
+    ended = sum(1 for text in lines if text.endswith((".", "!", "?")))
+    linked = sum(1 for text in lines if text.split()[0].lower().strip(",.") in CONNECTIVES)
+    continued = len(lines) - ended
+    if ended / len(lines) > 0.8:
+        problems.append(
+            f"{ended} of {len(lines)} lines are complete stand-alone sentences; let sentences run "
+            "across two or three lines so the speech flows")
+    if (linked + continued) / len(lines) < 0.35:
+        problems.append(
+            "too few lines connect to the previous one; link ideas with and, but, so, because, "
+            "which means, that's why, for example")
+    openings = [" ".join(text.lower().split()[:2]) for text in lines]
+    repeats = sum(1 for a, b in zip(openings, openings[1:]) if a == b)
+    if repeats >= 2:
+        problems.append("several consecutive lines start with the same words; vary the openings")
+    return problems
+
+
 def script_instructions(format_name: str) -> str:
     target = SCRIPT_LENGTH_TARGETS.get(format_name, SCRIPT_LENGTH_TARGETS["short"])
     return (
@@ -169,7 +230,7 @@ def script_instructions(format_name: str) -> str:
         "in his own voice; the visuals are animated line diagrams on black, synced to his words.\n\n"
         f"LENGTH: {target['words_min']} to {target['words_max']} spoken words "
         f"(about {target['seconds']} seconds). Do not go over.\n\n"
-        + SCRIPT_STRUCTURE_RULES + "\n" + SCRIPT_LINE_RULES + "\n" + VOICE_RULES
+        + SCRIPT_STRUCTURE_RULES + "\n" + SCRIPT_LINE_RULES + "\n" + SCRIPT_VOICE_RULES
         + "\n" + SCRIPT_OUTPUT_RULES
     )
 

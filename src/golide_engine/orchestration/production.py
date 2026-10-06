@@ -30,7 +30,7 @@ from ..storage.database import Database
 from ..youtube.demand import TopicDemandRejected, YouTubeDemandGate
 from ..youtube_metadata import load_metadata_policy, validate_upload_metadata
 from .schemas import METADATA_SCHEMA, RESEARCH_SCHEMA, STORYBOARD_SCHEMA, TREND_CANDIDATES_SCHEMA
-from ..engine.content_rules import SCRIPT_SCHEMA, script_instructions, script_text
+from ..engine.content_rules import SCRIPT_SCHEMA, flow_problems, script_instructions, script_text
 from .recording import RecordingLengthError, check_recording_length
 from .stage_runner import StageRunner
 
@@ -496,10 +496,32 @@ class ProductionService:
                 max_output_tokens=6000,
             )
             plan = dict(output.value)
+            problems = flow_problems(plan)
+            if problems:
+                # One rewrite when the script reads like a list of separate statements.
+                self._record_text(production_id, "script-draft", output)
+                output = text.generate_json(
+                    script_instructions(str(spec["format"])),
+                    f"TOPIC BRIEF\n{spec['brief']}\n\nVERIFIED RESEARCH\n{json.dumps(research)}"
+                    f"\n\nYOUR PREVIOUS DRAFT\n{json.dumps(plan)}\n\nREWRITE IT. It sounds choppy when spoken: "
+                    + "; ".join(problems) + ". Keep the facts, structure and length; make it flow as natural speech.",
+                    SCRIPT_SCHEMA,
+                    max_output_tokens=6000,
+                )
+                plan = dict(output.value)
             scene_plan_path.write_text(json.dumps(plan, indent=2) + "\n", encoding="utf-8")
             script_path.write_text(script_text(plan) + "\n", encoding="utf-8")
             self._record_text(production_id, "script", output)
         self.runner.run(production_id, "script", script_stage)
+        # An owner-approved rewrite committed as production-queue/<id>.script-plan.json
+        # replaces the generated script until the recording has been processed; the
+        # owner reads the rewrite shown in Studio, so words and voice stay matched.
+        override = self.root / "production-queue" / f"{production_id}.script-plan.json"
+        if override.exists() and not (work / "timed-words-owner.json").exists():
+            plan = json.loads(override.read_text(encoding="utf-8"))
+            if script_text(plan) != script_path.read_text(encoding="utf-8").strip():
+                scene_plan_path.write_text(json.dumps(plan, indent=2) + "\n", encoding="utf-8")
+                script_path.write_text(script_text(plan) + "\n", encoding="utf-8")
         script = script_path.read_text(encoding="utf-8").strip()
         self._budget(spec)
 

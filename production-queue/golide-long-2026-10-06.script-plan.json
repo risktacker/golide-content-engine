@@ -1,0 +1,741 @@
+{
+  "title": "The Internet’s Encryption Is Being Rewired Before Quantum Computers Arrive",
+  "lines": [
+    {
+      "section": "claim",
+      "text": "Post quantum security isn't really a cipher problem.",
+      "emphasis": "cipher",
+      "visual": "icon_hero",
+      "subjects": [
+        "lock"
+      ],
+      "label": "CLAIM"
+    },
+    {
+      "section": "claim",
+      "text": "It's an inventory problem, and that changes where you start.",
+      "emphasis": "inventory",
+      "visual": "icon_hero",
+      "subjects": [
+        "clipboard"
+      ],
+      "label": "CLAIM"
+    },
+    {
+      "section": "proof",
+      "text": "Think about the lock on an ordinary shopping website.",
+      "emphasis": "lock",
+      "visual": "icon_hero",
+      "subjects": [
+        "padlock",
+        "shopping cart"
+      ],
+      "label": "PROOF"
+    },
+    {
+      "section": "proof",
+      "text": "Before your browser trusts that site, it checks a certificate,",
+      "emphasis": "certificate",
+      "visual": "icon_hero",
+      "subjects": [
+        "browser",
+        "certificate"
+      ],
+      "label": "PROOF"
+    },
+    {
+      "section": "proof",
+      "text": "and that certificate leans on public key encryption underneath.",
+      "emphasis": "underneath",
+      "visual": "icon_hero",
+      "subjects": [
+        "certificate",
+        "key"
+      ],
+      "label": "PROOF"
+    },
+    {
+      "section": "proof",
+      "text": "But it's rarely just one certificate.",
+      "emphasis": "one",
+      "visual": "icon_hero",
+      "subjects": [
+        "certificate"
+      ],
+      "label": "PROOF"
+    },
+    {
+      "section": "proof",
+      "text": "The site might use several, and the payment service behind it",
+      "emphasis": "several",
+      "visual": "icon_hero",
+      "subjects": [
+        "payment card"
+      ],
+      "label": "PROOF"
+    },
+    {
+      "section": "proof",
+      "text": "can connect through another dependency you never see.",
+      "emphasis": "never see",
+      "visual": "icon_hero",
+      "subjects": [
+        "chain"
+      ],
+      "label": "PROOF"
+    },
+    {
+      "section": "proof",
+      "text": "A private network tunnel can rely on the same technology,",
+      "emphasis": "tunnel",
+      "visual": "icon_hero",
+      "subjects": [
+        "tunnel"
+      ],
+      "label": "PROOF"
+    },
+    {
+      "section": "proof",
+      "text": "a software update can carry a signature from another system,",
+      "emphasis": "signature",
+      "visual": "icon_hero",
+      "subjects": [
+        "download arrow",
+        "seal"
+      ],
+      "label": "PROOF"
+    },
+    {
+      "section": "proof",
+      "text": "and the device receiving that update might be years old.",
+      "emphasis": "years old",
+      "visual": "icon_hero",
+      "subjects": [
+        "old phone"
+      ],
+      "label": "PROOF"
+    },
+    {
+      "section": "proof",
+      "text": "So every connection becomes one more place to inspect.",
+      "emphasis": "inspect",
+      "visual": "icon_hero",
+      "subjects": [
+        "magnifying glass"
+      ],
+      "label": "PROOF"
+    },
+    {
+      "section": "pattern",
+      "text": "That's why swapping out one library can't finish the job.",
+      "emphasis": "one library",
+      "visual": "icon_hero",
+      "subjects": [
+        "book"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "The hard part isn't the new math, it's finding the whole chain.",
+      "emphasis": "whole chain",
+      "visual": "icon_hero",
+      "subjects": [
+        "chain"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "Now, here's the threat itself.",
+      "emphasis": "threat",
+      "visual": "icon_hero",
+      "subjects": [
+        "warning sign"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "Future quantum computers could weaken the public key systems we rely on,",
+      "emphasis": "weaken",
+      "visual": "icon_hero",
+      "subjects": [
+        "quantum chip"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "which is why post quantum algorithms were designed to resist them.",
+      "emphasis": "resist",
+      "visual": "icon_hero",
+      "subjects": [
+        "shield"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "The standards for the main replacements already exist.",
+      "emphasis": "already exist",
+      "visual": "icon_hero",
+      "subjects": [
+        "document"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "But an algorithm can't protect a system nobody can find.",
+      "emphasis": "nobody can find",
+      "visual": "icon_hero",
+      "subjects": [
+        "magnifying glass"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "So where do you start? With a list.",
+      "emphasis": "list",
+      "visual": "icon_hero",
+      "subjects": [
+        "clipboard"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "Write down every place public key encryption appears,",
+      "emphasis": "every place",
+      "visual": "icon_hero",
+      "subjects": [
+        "map"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "which algorithm sits behind each lock and certificate,",
+      "emphasis": "algorithm",
+      "visual": "icon_hero",
+      "subjects": [
+        "padlock"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "which software calls each cryptographic function,",
+      "emphasis": "software",
+      "visual": "icon_hero",
+      "subjects": [
+        "laptop"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "what data each system is protecting,",
+      "emphasis": "data",
+      "visual": "icon_hero",
+      "subjects": [
+        "database"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "and which vendors stand between your systems and your users.",
+      "emphasis": "vendors",
+      "visual": "icon_hero",
+      "subjects": [
+        "handshake"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "Then rank everything by how sensitive it is",
+      "emphasis": "sensitive",
+      "visual": "icon_hero",
+      "subjects": [
+        "ladder"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "and how hard it would be to replace.",
+      "emphasis": "hard",
+      "visual": "icon_hero",
+      "subjects": [
+        "wrench"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "Secrets that need to last for years come before short lived messages,",
+      "emphasis": "years",
+      "visual": "icon_hero",
+      "subjects": [
+        "hourglass"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "and critical services come before convenient internal tools.",
+      "emphasis": "critical",
+      "visual": "icon_hero",
+      "subjects": [
+        "server rack"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "If that sounds familiar, it should.",
+      "emphasis": "familiar",
+      "visual": "icon_hero",
+      "subjects": [
+        "gear"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "It's the same rule behind ordinary software maintenance.",
+      "emphasis": "maintenance",
+      "visual": "icon_hero",
+      "subjects": [
+        "wrench"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "A web certificate is one place cryptography hides.",
+      "emphasis": "certificate",
+      "visual": "icon_hero",
+      "subjects": [
+        "certificate"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "A network tunnel is another, a device update signature is a third,",
+      "emphasis": "another",
+      "visual": "icon_hero",
+      "subjects": [
+        "tunnel",
+        "seal"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "and a software library can quietly hide a fourth.",
+      "emphasis": "library",
+      "visual": "icon_hero",
+      "subjects": [
+        "book"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "In every case, compatibility matters as much as encryption.",
+      "emphasis": "compatibility",
+      "visual": "icon_hero",
+      "subjects": [
+        "puzzle pieces"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "The new algorithm has to work on real devices,",
+      "emphasis": "real devices",
+      "visual": "icon_hero",
+      "subjects": [
+        "phone"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "in real browsers and servers,",
+      "emphasis": "browsers",
+      "visual": "icon_hero",
+      "subjects": [
+        "browser",
+        "server rack"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "with certificates issued by real vendors,",
+      "emphasis": "vendors",
+      "visual": "icon_hero",
+      "subjects": [
+        "certificate"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "and it has to survive testing under normal business traffic.",
+      "emphasis": "testing",
+      "visual": "icon_hero",
+      "subjects": [
+        "checklist"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "Because a replacement that breaks your customers isn't ready.",
+      "emphasis": "isn't ready",
+      "visual": "icon_hero",
+      "subjects": [
+        "broken link"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "In other words, migration is a software and business project.",
+      "emphasis": "business",
+      "visual": "icon_hero",
+      "subjects": [
+        "briefcase"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "Security, engineering, purchasing and your vendors all have to coordinate.",
+      "emphasis": "coordinate",
+      "visual": "icon_hero",
+      "subjects": [
+        "people"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "You test before you touch production,",
+      "emphasis": "test",
+      "visual": "icon_hero",
+      "subjects": [
+        "checklist"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "you keep a record after every replacement,",
+      "emphasis": "record",
+      "visual": "icon_hero",
+      "subjects": [
+        "notebook"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "and you avoid hard coding one algorithm forever.",
+      "emphasis": "forever",
+      "visual": "icon_hero",
+      "subjects": [
+        "lock"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "That ability has a name, crypto agility.",
+      "emphasis": "crypto agility",
+      "visual": "icon_hero",
+      "subjects": [
+        "gear"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "pattern",
+      "text": "It means you can change algorithms without rebuilding everything.",
+      "emphasis": "without rebuilding",
+      "visual": "icon_hero",
+      "subjects": [
+        "swap arrows"
+      ],
+      "label": "PATTERN"
+    },
+    {
+      "section": "cost",
+      "text": "Now here's what happens if you skip the inventory.",
+      "emphasis": "skip",
+      "visual": "icon_hero",
+      "subjects": [
+        "warning sign"
+      ],
+      "label": "COST"
+    },
+    {
+      "section": "cost",
+      "text": "Hidden systems turn into blockers right when you need to move.",
+      "emphasis": "blockers",
+      "visual": "icon_hero",
+      "subjects": [
+        "wall"
+      ],
+      "label": "COST"
+    },
+    {
+      "section": "cost",
+      "text": "A certificate expires before anyone finds its owner.",
+      "emphasis": "expires",
+      "visual": "icon_hero",
+      "subjects": [
+        "clock"
+      ],
+      "label": "COST"
+    },
+    {
+      "section": "cost",
+      "text": "A vendor needs changes before your team can even respond.",
+      "emphasis": "vendor",
+      "visual": "icon_hero",
+      "subjects": [
+        "handshake"
+      ],
+      "label": "COST"
+    },
+    {
+      "section": "cost",
+      "text": "An old device rejects the new connection,",
+      "emphasis": "rejects",
+      "visual": "icon_hero",
+      "subjects": [
+        "old phone"
+      ],
+      "label": "COST"
+    },
+    {
+      "section": "cost",
+      "text": "and suddenly software updates stop reaching your customers.",
+      "emphasis": "stop reaching",
+      "visual": "icon_hero",
+      "subjects": [
+        "download arrow"
+      ],
+      "label": "COST"
+    },
+    {
+      "section": "cost",
+      "text": "An emergency replacement means rushed testing and expensive outages,",
+      "emphasis": "outages",
+      "visual": "icon_hero",
+      "subjects": [
+        "lightning"
+      ],
+      "label": "COST"
+    },
+    {
+      "section": "cost",
+      "text": "and when one dependency serves many products, the damage spreads.",
+      "emphasis": "spreads",
+      "visual": "icon_hero",
+      "subjects": [
+        "network"
+      ],
+      "label": "COST"
+    },
+    {
+      "section": "cost",
+      "text": "Security teams end up searching in the middle of the crisis,",
+      "emphasis": "crisis",
+      "visual": "icon_hero",
+      "subjects": [
+        "siren"
+      ],
+      "label": "COST"
+    },
+    {
+      "section": "cost",
+      "text": "business leaders find the risk buried in ordinary contracts,",
+      "emphasis": "contracts",
+      "visual": "icon_hero",
+      "subjects": [
+        "document"
+      ],
+      "label": "COST"
+    },
+    {
+      "section": "cost",
+      "text": "and customers feel it the only way they can, as broken trust.",
+      "emphasis": "broken trust",
+      "visual": "icon_hero",
+      "subjects": [
+        "broken heart"
+      ],
+      "label": "COST"
+    },
+    {
+      "section": "cost",
+      "text": "So the cost isn't just stronger encryption.",
+      "emphasis": "cost",
+      "visual": "icon_hero",
+      "subjects": [
+        "coins"
+      ],
+      "label": "COST"
+    },
+    {
+      "section": "cost",
+      "text": "It's people, testing, vendors and downtime,",
+      "emphasis": "downtime",
+      "visual": "icon_hero",
+      "subjects": [
+        "clock"
+      ],
+      "label": "COST"
+    },
+    {
+      "section": "cost",
+      "text": "and every month you wait makes each hidden dependency harder to schedule.",
+      "emphasis": "harder",
+      "visual": "icon_hero",
+      "subjects": [
+        "calendar"
+      ],
+      "label": "COST"
+    },
+    {
+      "section": "reframe",
+      "text": "So remember this. Quantum readiness begins with knowing your locks.",
+      "emphasis": "knowing your locks",
+      "visual": "icon_hero",
+      "subjects": [
+        "padlock"
+      ],
+      "label": "REFRAME"
+    },
+    {
+      "section": "reframe",
+      "text": "Then you replace vulnerable algorithms one dependency at a time,",
+      "emphasis": "one dependency",
+      "visual": "icon_hero",
+      "subjects": [
+        "chain"
+      ],
+      "label": "REFRAME"
+    },
+    {
+      "section": "reframe",
+      "text": "test every connection before you call it done,",
+      "emphasis": "test",
+      "visual": "icon_hero",
+      "subjects": [
+        "checklist"
+      ],
+      "label": "REFRAME"
+    },
+    {
+      "section": "reframe",
+      "text": "and build systems that can change again without panic.",
+      "emphasis": "without panic",
+      "visual": "icon_hero",
+      "subjects": [
+        "gear"
+      ],
+      "label": "REFRAME"
+    },
+    {
+      "section": "cta",
+      "text": "Here's something you can do this week.",
+      "emphasis": "this week",
+      "visual": "icon_hero",
+      "subjects": [
+        "calendar"
+      ],
+      "label": "CTA"
+    },
+    {
+      "section": "cta",
+      "text": "Pick one important service and map it.",
+      "emphasis": "map",
+      "visual": "icon_hero",
+      "subjects": [
+        "map"
+      ],
+      "label": "CTA"
+    },
+    {
+      "section": "cta",
+      "text": "List its certificates, libraries, vendors and data flows,",
+      "emphasis": "list",
+      "visual": "icon_hero",
+      "subjects": [
+        "clipboard"
+      ],
+      "label": "CTA"
+    },
+    {
+      "section": "cta",
+      "text": "ask which public key algorithm each connection uses,",
+      "emphasis": "algorithm",
+      "visual": "icon_hero",
+      "subjects": [
+        "key"
+      ],
+      "label": "CTA"
+    },
+    {
+      "section": "cta",
+      "text": "and mark the one dependency nobody has tested yet.",
+      "emphasis": "nobody has tested",
+      "visual": "icon_hero",
+      "subjects": [
+        "flag"
+      ],
+      "label": "CTA"
+    },
+    {
+      "section": "cta",
+      "text": "Give that gap an owner and a test plan.",
+      "emphasis": "owner",
+      "visual": "icon_hero",
+      "subjects": [
+        "person"
+      ],
+      "label": "CTA"
+    },
+    {
+      "section": "cta",
+      "text": "That small map turns a distant threat into real work.",
+      "emphasis": "real work",
+      "visual": "icon_hero",
+      "subjects": [
+        "map"
+      ],
+      "label": "CTA"
+    },
+    {
+      "section": "cta",
+      "text": "Because post quantum security was never a cipher problem.",
+      "emphasis": "never",
+      "visual": "logo_end",
+      "subjects": [
+        "lock"
+      ],
+      "label": "CTA"
+    }
+  ]
+}
