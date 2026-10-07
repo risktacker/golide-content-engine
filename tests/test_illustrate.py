@@ -40,7 +40,7 @@ class IllustrationTests(unittest.TestCase):
 
     def test_prompt_locks_the_style(self):
         prompt = illustration_prompt("a server rack with heat rising", "the heat lines", "short")
-        for phrase in ("pure flat black", "No text", "warm gold", "server rack", "bottom third"):
+        for phrase in ("pure flat black", "No text", "warm gold", "server rack", "margins on the left and right"):
             self.assertIn(phrase, prompt)
 
 

@@ -19,19 +19,18 @@ class FollowCalloutTests(unittest.TestCase):
             self.assertIn("FOLLOW CALL-OUT", rules)
             self.assertIn("NEVER ask people to comment", rules)
 
-    def test_early_short_follow_passes(self):
-        self.assertEqual(follow_problems(_plan(), "short"), [])
+    def test_closing_follow_passes(self):
+        self.assertEqual(follow_problems(_plan(follow_at=(10, 11)), "short"), [])
+        self.assertEqual(follow_problems(_plan(follow_at=(11,)), "long"), [])
 
     def test_missing_late_or_comment_bait_is_caught(self):
         self.assertTrue(follow_problems(_plan(follow_at=()), "short"))
-        self.assertTrue(follow_problems(_plan(follow_at=(9,)), "short"))
-        bait = _plan(text="Follow and comment AI to receive the guide.")
+        self.assertTrue(follow_problems(_plan(follow_at=(1,)), "short"))  # before the value
+        self.assertTrue(follow_problems(_plan(follow_at=(2, 11)), "long"))  # also mid-script
+        bait = _plan(follow_at=(11,), text="Follow and comment AI to receive the guide.")
         self.assertTrue(any("comments" in p for p in follow_problems(bait, "short")))
 
-    def test_long_needs_a_closing_follow(self):
-        self.assertTrue(follow_problems(_plan(follow_at=(2,)), "long"))
-        self.assertEqual(follow_problems(_plan(follow_at=(2, 10)), "long"), [])
 
     def test_brand_name_is_never_said_aloud(self):
-        plan = _plan(text="Follow GOLIDE, because the feed won't show us to you again.")
+        plan = _plan(follow_at=(11,), text="Follow GOLIDE, because the feed won't show us to you again.")
         self.assertTrue(any("brand name" in p for p in follow_problems(plan, "short")))

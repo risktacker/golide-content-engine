@@ -118,3 +118,11 @@ class FlowTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class KeyTermTests(unittest.TestCase):
+    def test_key_term_lights_only_its_own_phrase(self):
+        from golide_engine.vector.align import key_positions
+        words = "Follow the channel, because the feed won't show us".split()
+        self.assertEqual(key_positions(words, "Follow the channel"), {0, 1, 2})
+        self.assertEqual(key_positions("the cloud and the cloud".split(), "cloud"), {1})

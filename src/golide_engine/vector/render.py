@@ -52,7 +52,7 @@ class Layout:
     def for_format(cls, format_name: str) -> "Layout":
         width, height = FORMATS[format_name]
         if format_name == "short":
-            return cls(width, height, width / 2, height * 0.40, width * 0.74, height * 0.70, 46, height * 0.165)
+            return cls(width, height, width / 2, height * 0.40, width * 0.74, height * 0.635, 46, height * 0.115)
         return cls(width, height, width / 2, height * 0.42, height * 0.60, height * 0.86, 44, height * 0.07)
 
 
@@ -141,7 +141,6 @@ class CaptionRenderer:
         for i, word in enumerate(chunk.words):
             if word.start <= t:
                 current = i
-        emphasis = {w.lower().strip(".,!?;:'\"") for w in chunk.emphasis.split()}
         key = (id(chunk), current, round(fade, 2))
         if key in self._cache:
             return self._cache[key]
@@ -155,10 +154,10 @@ class CaptionRenderer:
         draw, gdraw = ImageDraw.Draw(layer), ImageDraw.Draw(glow)
         words = [self._clean(word.text) for word in chunk.words]
         fonts = []
-        for word in words:
-            fonts.append(self.bold if word.lower().strip(".,!?;:'\"") in emphasis else self.light)
+        for i, word in enumerate(words):
+            fonts.append(self.bold if i in chunk.keys else self.light)
         space = draw.textlength(" ", font=self.light)
-        max_w = w * (0.80 if self.layout.width < self.layout.height else 0.62)
+        max_w = w * (0.72 if self.layout.width < self.layout.height else 0.62)  # tall phones crop the sides
         rows: list[list[int]] = [[]]
         width = 0.0
         for i, word in enumerate(words):
@@ -470,8 +469,9 @@ class VectorRenderer:
             mark.putalpha(mark.getchannel("A").point(lambda v: int(v * a)))
             image.paste(mark, (int(L.cx - mark.width / 2), int(L.cy + L.size * 0.36)), mark)
         else:
-            margin = int(L.width * 0.05)
-            image.paste(self.mark, (L.width - self.mark.width - margin, margin), self.mark)
+            # Shorts are cropped at the sides on tall phones; keep the mark inside.
+            margin = int(L.width * (0.12 if self.format == "short" else 0.05))
+            image.paste(self.mark, (L.width - self.mark.width - margin, int(L.width * 0.05)), self.mark)
         return np.asarray(image)
 
     @staticmethod

@@ -19,7 +19,7 @@ This is the standard for every Short and long video. Don't change any of it with
 - **Follow call-out (7 Oct):**
   - One natural spoken sentence asking viewers to follow GOLIDE and come back, with a reason, never a plea.
   - Spoken as "follow us" or "follow the channel". The brand name is never said aloud in any script (a Bantu word for gold, easily misheard); the screen pill shows it.
-  - Shorts: once, right after the opening claim. Long videos: once after the intro roadmap, once just before the last line.
+  - Asked once, as the final sentence, after the value has been given (owner review 7 Oct: never mid-script).
   - Fresh wording every video. Never "comment to receive", likes, shares, links or the bio.
   - A check rewrites the draft once if the call-out is missing, late, too long or asks for comments.
 
@@ -36,6 +36,11 @@ This is the standard for every Short and long video. Don't change any of it with
   - The spoken words appear as they're said.
   - **Key terms light up gold, stay gold with a gold underline once said (7 Oct).**
   - The GOLIDE wordmark, and the logo at the end.
+- **Safe layout per format (7 Oct, after the Muse short ran off the sides):**
+  - 9:16: drawings stay in the middle 68% of the width (tall phones crop Shorts at the sides), between 17% and 58% of the height. The tag and follow pill sit above at 11.5%, captions start at 63.5% and wrap at 72% of the width, and the wordmark is inset 12%.
+  - 16:9: drawings sit between 19% and 76% of the height, below the chapter card, with captions at 86%.
+  - The image prompt asks for a compact, centred scene with empty margins and no edge-to-edge ground line.
+  - A multi-word key term lights up only where it is said, not every repeat of its words.
 - **Follow pill (7 Oct):** while the follow sentence is spoken, a gold "+ FOLLOW GOLIDE" pill eases in where the line tag sits.
 - **Thumbnails and covers:** a black-theme line-art YouTube thumbnail. The Reel cover is the most fully drawn early frame.
 

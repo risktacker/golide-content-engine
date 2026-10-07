@@ -169,6 +169,30 @@ class CaptionChunk:
     emphasis: str
     start: float
     end: float
+    keys: frozenset = frozenset()  # positions (in this chunk) of the line's key term
+
+
+def _norm(word: str) -> str:
+    return word.lower().strip(".,!?;:'\"")
+
+
+def key_positions(words: list[str], emphasis: str) -> set[int]:
+    """Where the key term sits in a line: its first whole-phrase match, so a
+    common word inside it ("the" in "Follow the channel") is not lit elsewhere."""
+    target = [_norm(w) for w in emphasis.split() if _norm(w)]
+    tokens = [_norm(w) for w in words]
+    if not target:
+        return set()
+    for i in range(len(tokens) - len(target) + 1):
+        if tokens[i:i + len(target)] == target:
+            return set(range(i, i + len(target)))
+    found: set[int] = set()  # not contiguous: first occurrence of each word
+    for word in target:
+        for i, token in enumerate(tokens):
+            if token == word and i not in found:
+                found.add(i)
+                break
+    return found
 
 
 def caption_chunks(lines: list[TimedLine], max_words: int = 7) -> list[CaptionChunk]:
@@ -177,9 +201,12 @@ def caption_chunks(lines: list[TimedLine], max_words: int = 7) -> list[CaptionCh
         words = line.words or [Word(t, line.start, line.end) for t in line.text.split()]
         size = max(1, -(-len(words) // max(1, -(-len(words) // max_words))))
         parts = [words[i:i + size] for i in range(0, len(words), size)]
+        keys = key_positions([w.text for w in words], line.emphasis)
         for position, part in enumerate(parts):
             start = line.start if position == 0 else part[0].start
-            chunks.append(CaptionChunk(part, line.emphasis, start, line.end))
+            offset = position * size
+            local = frozenset(k - offset for k in keys if offset <= k < offset + len(part))
+            chunks.append(CaptionChunk(part, line.emphasis, start, line.end, local))
         # Each chunk ends when the next one starts.
     for current, following in zip(chunks, chunks[1:]):
         current.end = following.start

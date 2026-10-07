@@ -116,9 +116,11 @@ def validate_scenes(scenes: list[dict], line_count: int, breaks: set[int] | froz
 
 
 def illustration_prompt(drawing: str, gold: str, format_name: str) -> str:
-    area = ("Keep the whole drawing in the upper two thirds of the tall frame; "
-            "the bottom third stays empty black." if format_name == "short" else
-            "Keep the drawing centred with empty black margins; the bottom fifth stays empty black.")
+    area = ("Portrait composition: one compact scene in the centre with wide empty black "
+            "margins on the left and right; nothing touches the edges, and any ground line is "
+            "short, not edge to edge." if format_name == "short" else
+            "Landscape composition: the scene centred with empty black margins on every side; "
+            "nothing touches the edges, and any ground line stays inside the margins.")
     return (
         "Minimal elegant line illustration: thin, clean white lines on a pure flat black "
         "background, like a confident hand-drawn ink sketch made with a fine glowing pen. "
@@ -320,7 +322,13 @@ def vectorize(image_path: Path, max_side: int = 900) -> Drawing:
 SCENES: dict[str, Drawing] = {}
 
 # Region the illustration may occupy, in the renderer's unit coordinates.
-REGIONS = {"short": (-1.18, -1.42, 1.18, 1.22), "long": (-2.0, -0.95, 2.0, 1.12)}
+# Where an illustration may sit, in drawing units around the layout centre.
+# Owner review 2026-10-07: drawings ran off the sides on tall phones (Shorts
+# are cropped left and right) and collided with the tag above them.
+# short: x within the middle 68% of the width, y from 17% to 58% of the height,
+#        below the tag/pill zone and above the captions.
+# long:  y from 19% to 76% of the height, below the chapter card.
+REGIONS = {"short": (-0.92, -1.10, 0.92, 0.87), "long": (-2.0, -0.77, 2.0, 1.12)}
 
 
 def fit(drawing: Drawing, region: tuple[float, float, float, float]):
