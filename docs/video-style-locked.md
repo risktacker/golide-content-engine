@@ -18,6 +18,7 @@ This is the standard for every Short and long video. Don't change any of it with
 - **Emphasis (7 Oct):** each line's emphasis is its key term: a name, a number or the key idea.
 - **Follow call-out (7 Oct):**
   - One natural spoken sentence asking viewers to follow GOLIDE and come back, with a reason, never a plea.
+  - Spoken as "follow us" or "follow the channel". The brand name is never said aloud in any script (a Bantu word for gold, easily misheard); the screen pill shows it.
   - Shorts: once, right after the opening claim. Long videos: once after the intro roadmap, once just before the last line.
   - Fresh wording every video. Never "comment to receive", likes, shares, links or the bio.
   - A check rewrites the draft once if the call-out is missing, late, too long or asks for comments.

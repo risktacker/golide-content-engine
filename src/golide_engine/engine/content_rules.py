@@ -227,8 +227,11 @@ CHAPTERS: a short is one idea. "chapters" must be an empty list and every line's
 
 FOLLOW_RULES = """\
 FOLLOW CALL-OUT (owner direction 2026-10-07: viewers should follow and come back)
-- Ask the viewer to follow GOLIDE in one natural spoken sentence, said in the
-  owner's voice as part of the talk, never read like an advert.
+- Ask the viewer to follow in one natural spoken sentence, said in the owner's
+  voice as part of the talk, never read like an advert.
+- Say "follow us" or "follow the channel". NEVER say the brand name aloud anywhere
+  in the script (owner direction 2026-10-07: it is a Bantu word for gold and is
+  easily mispronounced and misheard). The screen shows "FOLLOW GOLIDE" for you.
 - Give the reason to follow, not a plea: what they will miss or keep getting
   ("the feed won't show us to you again unless you follow", "we break down one
   of these every day", "the next one picks up exactly where this ends").
@@ -382,6 +385,8 @@ def follow_problems(plan: dict, format_name: str) -> list[str]:
     if format_name == "long" and marked[-1] < len(lines) * 0.75:
         problems.append("the close needs a follow call-out just before the final line")
     said = " ".join(str(lines[i]["text"]).lower() for i in marked)
+    if any("golide" in str(line.get("text", "")).lower() for line in lines):
+        problems.append('never say the brand name aloud; say "follow us" or "follow the channel"')
     if "follow" not in said and "subscribe" not in said:
         problems.append("the follow call-out must actually say follow or subscribe")
     if any(word in said for word in FOLLOW_ASKS):

@@ -3,7 +3,7 @@ import unittest
 from golide_engine.engine.content_rules import SCRIPT_SCHEMA, follow_problems, script_instructions
 
 
-def _plan(follow_at=(1,), text="Follow GOLIDE, because the feed won't show us to you again.", n=12):
+def _plan(follow_at=(1,), text="Follow the channel, because the feed won't show us to you again.", n=12):
     lines = [{"text": f"line {i} about the idea", "follow": False} for i in range(n)]
     for i in follow_at:
         lines[i] = {"text": text, "follow": True}
@@ -31,3 +31,7 @@ class FollowCalloutTests(unittest.TestCase):
     def test_long_needs_a_closing_follow(self):
         self.assertTrue(follow_problems(_plan(follow_at=(2,)), "long"))
         self.assertEqual(follow_problems(_plan(follow_at=(2, 10)), "long"), [])
+
+    def test_brand_name_is_never_said_aloud(self):
+        plan = _plan(text="Follow GOLIDE, because the feed won't show us to you again.")
+        self.assertTrue(any("brand name" in p for p in follow_problems(plan, "short")))
