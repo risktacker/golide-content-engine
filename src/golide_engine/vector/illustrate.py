@@ -49,6 +49,17 @@ VISUAL_PLAN_SCHEMA: dict = {
     "type": "object",
     "additionalProperties": False,
     "properties": {
+        "cover": {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "text": {"type": "string"},
+                "gold": {"type": "string"},
+                "scene": {"type": "integer"},
+                "thumbnail_moment": {"type": "string"},
+            },
+            "required": ["text", "gold", "scene", "thumbnail_moment"],
+        },
         "scenes": {
             "type": "array",
             "minItems": 2,
@@ -68,7 +79,7 @@ VISUAL_PLAN_SCHEMA: dict = {
             },
         },
     },
-    "required": ["scenes"],
+    "required": ["cover", "scenes"],
 }
 
 
@@ -121,6 +132,18 @@ buying, money), typing (writing, prompting), clock (time, waiting, deadlines),
 camera (a photo, being watched). Otherwise "none". At most every other scene has
 a sound; most explainer scenes need none. "sound_word": the exact word from the
 scene's lines when the sound should play (for example "blocked"), or "" for none.
+
+COVER (the picture people see before they press play; owner direction 2026-10-07):
+- "text": a 3 to 7 word hook for the cover, the most curious way to say what the
+  video is about. Not the title word for word. Plain words, no hashtags, no emoji.
+  Example: "Meta's AI shops for you. Amazon said no."
+- "gold": the 1 to 3 words of that hook that carry the punch, copied exactly.
+- "scene": the number (1 = first scene) of the scene whose drawing best stands for
+  the whole video.
+- "thumbnail_moment": one vivid sentence for the YouTube thumbnail artist: the
+  decisive, slightly playful moment of the story, not the topic (for example "a
+  robot hand reaching for a shopping cart just as a store shutter slams down on
+  it"). One hero subject, a clear action, a little irony or surprise.
 
 If the lines are divided into chapters (marked "== CHAPTER ... =="), a scene
 never runs across a chapter mark: every chapter starts with a new scene.

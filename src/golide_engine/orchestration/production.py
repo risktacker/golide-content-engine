@@ -64,6 +64,28 @@ def render_hold_reason(root: Path, format_name: str) -> str | None:
     return None
 
 
+def youtube_thumbnail_prompt(title: str, moment: str = "", accent: str = "warm gold") -> str:
+    """The YouTube thumbnail brief (owner direction 2026-10-07: keep it generated,
+    keep the GOLIDE Black look, make it more fun and more clickable)."""
+    scene = moment.strip() or f"the most surprising, decisive moment of the story behind: {title}"
+    return (
+        "Create a scroll-stopping 16:9 YouTube thumbnail, the kind people click on a phone "
+        "without thinking. Show the decisive moment of the story, not the topic: "
+        f"{scene}. "
+        "Make it fun and a little playful: one hero subject caught mid-action, with a clear "
+        "sense of surprise, irony or tension, and bold scale contrast (something tiny next to "
+        "something huge, or very close to the camera). The hero fills the right 55% of the "
+        "frame, large, sharp and lit with a bright rim light; the left side stays calm and "
+        "dark. Locked GOLIDE Black style: deep black background with a faint starfield, "
+        "luminous fine-line illustration blended with cinematic real objects, exactly one "
+        f"glowing accent in {accent}, soft volumetric glow, crisp edges, rich contrast that "
+        "still reads at the size of a thumbnail on a phone. If a person or hand appears they "
+        "are dark-skinned/Black, natural and expressive (a real reaction, not a cartoon). "
+        "No words, letters, numbers, captions, labels, logos or user-interface elements "
+        f"anywhere in the image. Video title for context only: {title}"
+    )
+
+
 class WaitingOwnerVoice(RuntimeError):
     """Checkpointed pause after topic research and script generation."""
 
@@ -112,6 +134,14 @@ class ProductionService:
         voice_cfg = self.providers.config.get("voice", {})
         if voice_cfg.get("provider") != "owner_recording":
             raise RuntimeError("production narration must use the owner's recorded voice")
+
+    @staticmethod
+    def _thumbnail_moment(work: Path) -> str:
+        try:
+            plan = json.loads((work / "visual-plan.json").read_text(encoding="utf-8"))
+            return str((plan.get("cover") or {}).get("thumbnail_moment") or "")
+        except (OSError, ValueError):
+            return ""
 
     def _record_text(self, production_id: str, stage: str, output: ProviderOutput) -> None:
         model = self.providers.config["text"]["model"]
@@ -732,11 +762,19 @@ class ProductionService:
                 )
                 breaks = {i for i in range(1, len(owners)) if owners[i] is not None and owners[i] != owners[i - 1]}
                 scenes = validate_scenes(list(output.value["scenes"]), len(spoken_lines), breaks)
-                visual_plan_path.write_text(json.dumps({"scenes": scenes}, indent=2) + "\n", encoding="utf-8")
+                cover = dict(output.value.get("cover") or {})
+                number = cover.get("scene")
+                if isinstance(number, int) and 1 <= number <= len(scenes):
+                    cover["scene"] = scenes[number - 1]["id"]
+                else:
+                    cover["scene"] = ""
+                visual_plan_path.write_text(json.dumps({"scenes": scenes, "cover": cover}, indent=2) + "\n",
+                                            encoding="utf-8")
                 self._record_text(production_id, "visual-plan", output)
 
             self.runner.run(production_id, "visual-plan-v1", visual_plan_stage)
-            scenes = json.loads(visual_plan_path.read_text(encoding="utf-8"))["scenes"]
+            visual_plan = json.loads(visual_plan_path.read_text(encoding="utf-8"))
+            scenes = visual_plan["scenes"]
             line_art = OpenAILineArtProvider(
                 self.providers.config["assets"]["support_model"],
                 self.providers.config["assets"]["support_quality"],
@@ -757,7 +795,7 @@ class ProductionService:
 
             self.runner.run(production_id, "illustrations-v1", illustrations_stage)
             illustrations = {scene["id"]: illustration_dir / f"{scene['id']}.png" for scene in scenes}
-            plan = plan | {"scenes": scenes}
+            plan = plan | {"scenes": scenes, "cover": visual_plan.get("cover") or {}}
             timed_lines = align_lines(plan, timed_words, narration_seconds)
             from ..vector.chapters import chapter_marks
             (work / "chapters.json").write_text(json.dumps(
@@ -1352,16 +1390,7 @@ class ProductionService:
             self._reserve(
                 spec, thumbnail_cost_model, Usage(images=1), stage="thumbnail"
             )
-            prompt = (
-                "Cinematic 16:9 YouTube thumbnail in the locked GOLIDE Black style. Pure black "
-                "deep-space background with a faint starfield. One single subject that stands "
-                "for the topic, drawn as luminous fine-line illustration or a cinematic real object, "
-                "with exactly one element glowing warm gold or soft cyan. Strong contrast, readable "
-                "at small size, one focal point, generous empty black space on one side. If a person "
-                "or hand appears they are dark-skinned/Black. No words, letters, numbers, captions, "
-                "labels, logos or user-interface elements anywhere in the image. "
-                f"Topic: {metadata['title']}"
-            )
+            prompt = youtube_thumbnail_prompt(metadata["title"], self._thumbnail_moment(work))
             output = thumbnail_provider.create_thumbnail(prompt, raw_thumbnail, self.providers.config["thumbnail"]["size"], None)
             normalize_thumbnail(raw_thumbnail, thumbnail)
             self._record_image(production_id, "thumbnail", thumbnail_cost_model, output)

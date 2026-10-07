@@ -61,7 +61,7 @@ class LinkedInProvider(SocialProvider):
             if probe.content_type.startswith("image/"):
                 media_urn = self._upload_image(request.media_ref)
             elif probe.content_type == "video/mp4" or _suffix(request.media_ref) == ".mp4":
-                media_urn = self._upload_video(request.media_ref, probe.size_bytes)
+                media_urn = self._upload_video(request.media_ref, probe.size_bytes, request.cover_url)
             else:
                 raise ValueError(
                     f"LinkedIn media type is not supported: {probe.content_type}"
@@ -88,7 +88,7 @@ class LinkedInProvider(SocialProvider):
         )
         return image_urn
 
-    def _upload_video(self, source_url: str, size_bytes: int) -> str:
+    def _upload_video(self, source_url: str, size_bytes: int, cover_url: str | None = None) -> str:
         if size_bytes < 75 * 1024 or size_bytes > 500 * 1024 * 1024:
             raise ValueError("LinkedIn feed video must be between 75 KB and 500 MB")
         initialized = self.http.post(
@@ -100,7 +100,7 @@ class LinkedInProvider(SocialProvider):
                     "owner": self.author_urn,
                     "fileSizeBytes": size_bytes,
                     "uploadCaptions": False,
-                    "uploadThumbnail": False,
+                    "uploadThumbnail": bool(cover_url),
                 }
             },
         )
@@ -126,6 +126,14 @@ class LinkedInProvider(SocialProvider):
             if not etag:
                 raise RuntimeError("LinkedIn video part upload did not return an ETag")
             etags.append(etag)
+
+        thumbnail_url = str(value.get("thumbnailUploadUrl", ""))
+        if cover_url and thumbnail_url:
+            try:  # the designed cover instead of LinkedIn's first-frame guess
+                cover = self.binary_http.get(cover_url)
+                self.binary_http.put(thumbnail_url, cover.data, content_type="image/jpeg")
+            except Exception as exc:
+                print(json.dumps({"status": "linkedin_thumbnail_skipped", "error": str(exc)[:200]}))
 
         self.http.post(
             "https://api.linkedin.com/rest/videos?action=finalizeUpload",

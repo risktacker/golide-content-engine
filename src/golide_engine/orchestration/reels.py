@@ -75,7 +75,7 @@ def reels_payload(*, content_id: str, metadata: dict[str, Any], video_ref: str, 
         "variants": [
             {"platform": "instagram", "title": "", "body": caption, "media_ref": video_ref, "parts": cover},
             {"platform": "facebook", "title": "", "body": caption, "media_ref": video_ref, "parts": cover},
-            {"platform": "linkedin", "title": "", "body": caption, "media_ref": video_ref, "parts": []},
+            {"platform": "linkedin", "title": "", "body": caption, "media_ref": video_ref, "parts": cover},
             {"platform": "youtube", "title": metadata.get("title", ""), "body": "",
              "media_ref": video_ref, "parts": [f"youtube:{youtube_video_id}"]},
         ],
@@ -90,7 +90,9 @@ def publish_reels(*, bridge, store, publisher_factory, production_id: str, video
         video_ref = upload_media(store, video, f"{production_id}.mp4", "video/mp4", bridge)
     cover_ref = None
     try:
-        cover = pick_cover(video, video.with_name(video.stem + "-cover.jpg"))
+        cover = video.with_name(video.stem + "-cover.jpg")
+        if not cover.exists():  # older renders have no designed cover
+            cover = pick_cover(video, cover)
         cover_ref = upload_media(store, cover, f"{production_id}-cover.jpg", "image/jpeg", bridge, "image")
     except Exception as exc:  # a missing cover must not block the Reel
         print({"status": "cover_failed", "error": str(exc)})
@@ -106,7 +108,8 @@ def publish_reels(*, bridge, store, publisher_factory, production_id: str, video
 
 
 def long_social_payload(*, content_id: str, metadata: dict[str, Any], video_ref: str,
-                        youtube_video_id: str, owner_voice_ref: str, publish_at: str) -> dict[str, Any]:
+                        youtube_video_id: str, owner_voice_ref: str, publish_at: str,
+                        cover_ref: str | None = None) -> dict[str, Any]:
     """A long video as a native Facebook video and LinkedIn video at YouTube's release time."""
     title = str(metadata.get("title", "")).strip()
     caption = (title + "\n\n" + str(metadata.get("description", "")).strip())[:2900]
@@ -124,8 +127,10 @@ def long_social_payload(*, content_id: str, metadata: dict[str, Any], video_ref:
             {"platform": "youtube", "title": title, "body": "", "media_ref": video_ref,
              "parts": [f"youtube:{youtube_video_id}"]},
             # A title marks a normal (landscape) Facebook video rather than a Reel.
-            {"platform": "facebook", "title": title, "body": caption, "media_ref": video_ref, "parts": []},
-            {"platform": "linkedin", "title": "", "body": caption, "media_ref": video_ref, "parts": []},
+            {"platform": "facebook", "title": title, "body": caption, "media_ref": video_ref,
+             "parts": [f"cover:{cover_ref}"] if cover_ref else []},
+            {"platform": "linkedin", "title": "", "body": caption, "media_ref": video_ref,
+             "parts": [f"cover:{cover_ref}"] if cover_ref else []},
         ],
     }
 
@@ -134,9 +139,17 @@ def queue_long_social(*, bridge, store, production_id: str, video: Path, metadat
                       youtube_video_id: str, owner_voice_ref: str, publish_at: str) -> dict[str, Any]:
     """Upload the long video and queue Facebook + LinkedIn for the release time."""
     video_ref = upload_media(store, video, f"{production_id}.mp4", "video/mp4", bridge)
+    cover_ref = None
+    cover = video.with_name(video.stem + "-cover.jpg")
+    if cover.exists():
+        try:
+            cover_ref = upload_media(store, cover, f"{production_id}-cover.jpg", "image/jpeg", bridge, "image")
+        except Exception as exc:  # the video still goes out
+            print({"status": "cover_failed", "error": str(exc)})
     content_id = f"{production_id}-social"
     bridge.create_content(long_social_payload(
         content_id=content_id, metadata=metadata, video_ref=video_ref,
         youtube_video_id=youtube_video_id, owner_voice_ref=owner_voice_ref, publish_at=publish_at,
+        cover_ref=cover_ref,
     ))
     return {"social_post_id": content_id, "status": "queued", "publish_at": publish_at}

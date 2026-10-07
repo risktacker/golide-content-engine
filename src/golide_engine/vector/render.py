@@ -330,6 +330,22 @@ class VectorRenderer:
         self.mark = self.captions.wordmark()
         self.end_mark = self.captions.wordmark(size=int(self.layout.caption_size * 1.1), color="text", alpha=255)
 
+    def _cover(self, plan: dict[str, Any], output: Path) -> np.ndarray | None:
+        """Build the cover card, save it beside the video, and return it as a frame."""
+        from .cover import cover_spec, pick_scene, render_cover
+        from .illustrate import SCENES
+
+        try:
+            spec = cover_spec(plan)
+            ids = [str(scene.get("id")) for scene in plan.get("scenes") or []]
+            scene = pick_scene(ids, SCENES, spec["scene"])
+            image = render_cover(self, SCENES.get(scene) if scene else None, spec["text"], spec["gold"])
+            image.save(output.with_name(output.stem + "-cover.jpg"), quality=93)
+            return np.asarray(image, np.float32)
+        except Exception as exc:  # a cover must never stop a video
+            print({"status": "cover_failed", "error": str(exc)})
+            return None
+
     def _action_cues(self, plan: dict[str, Any], lines, groups) -> list[tuple[float, str]]:
         from .illustrate import ACCENT_DELAY, SCENES
         from .sfx import action_cues
@@ -567,6 +583,7 @@ class VectorRenderer:
         groups = group_lines(lines)
         chunks = caption_chunks(lines)
         output.parent.mkdir(parents=True, exist_ok=True)
+        cover = self._cover(plan, output)
         L = self.layout
         # The owner's voice, small effects timed to the visuals, and a quiet
         # synthesised atmosphere that dips a little more while he speaks.
@@ -593,8 +610,15 @@ class VectorRenderer:
         assert process.stdin is not None
         total = int(math.ceil(duration * self.fps))
         try:
+            from .cover import COVER_FADE, COVER_HOLD
             for index in range(total):
-                process.stdin.write(self.frame(index / self.fps, groups, chunks, duration).tobytes())
+                t = index / self.fps
+                frame = self.frame(t, groups, chunks, duration)
+                if cover is not None and t < COVER_HOLD + COVER_FADE:
+                    # The video opens on its cover, so the first frame is the thumbnail.
+                    k = 1.0 if t < COVER_HOLD else 1.0 - ease((t - COVER_HOLD) / COVER_FADE)
+                    frame = (cover * k + frame.astype(np.float32) * (1 - k)).astype(np.uint8)
+                process.stdin.write(frame.tobytes())
         finally:
             process.stdin.close()
         code = process.wait()
