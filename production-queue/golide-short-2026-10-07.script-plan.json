@@ -1,37 +1,37 @@
 {
-  "title": "The AI in Your Next PC May Never Need the Internet",
+  "title": "Meta's New AI Shops for You. Amazon Said No.",
   "chapters": [],
   "lines": [
     {
       "section": "claim",
       "chapter": 0,
-      "text": "The smartest AI isn't always in the cloud,",
-      "emphasis": "cloud",
+      "text": "Your next shopping trip might not be done by you,",
+      "emphasis": "by you",
       "visual": "icon_pair",
       "subjects": [
-        "cloud",
-        "laptop"
+        "shopping cart",
+        "robot"
       ],
-      "label": "THE CLOUD",
+      "label": "WHO SHOPS",
       "follow": false
     },
     {
       "section": "claim",
       "chapter": 0,
-      "text": "because the best system chooses where each task runs.",
-      "emphasis": "chooses",
+      "text": "because Meta just built an AI that buys things for you.",
+      "emphasis": "buys",
       "visual": "icon_pair",
       "subjects": [
-        "cloud",
-        "laptop"
+        "phone",
+        "shopping bag"
       ],
-      "label": "WHERE IT RUNS",
+      "label": "META",
       "follow": false
     },
     {
       "section": "claim",
       "chapter": 0,
-      "text": "Follow GOLIDE now, because the feed won't show us to you twice,",
+      "text": "Follow GOLIDE, because the feed won't show us to you twice,",
       "emphasis": "Follow GOLIDE",
       "visual": "icon_hero",
       "subjects": [
@@ -43,7 +43,7 @@
     {
       "section": "claim",
       "chapter": 0,
-      "text": "and every day we break down one AI story like this.",
+      "text": "and we unpack one AI story like this every day.",
       "emphasis": "every day",
       "visual": "icon_hero",
       "subjects": [
@@ -55,113 +55,104 @@
     {
       "section": "proof",
       "chapter": 0,
-      "text": "Think about live captions on a new laptop.",
-      "emphasis": "live captions",
+      "text": "It's called Muse, launched in September in the US.",
+      "emphasis": "Muse",
       "visual": "icon_hero",
       "subjects": [
-        "laptop"
+        "phone"
       ],
-      "label": "LIVE CAPTIONS",
+      "label": "MUSE",
       "follow": false
     },
     {
       "section": "proof",
       "chapter": 0,
-      "text": "They can run right on the device,",
-      "emphasis": "on the device",
-      "visual": "icon_hero",
+      "text": "You tell it what you need, a gift, a jacket, a new charger,",
+      "emphasis": "what you need",
+      "visual": "icon_flow",
       "subjects": [
-        "laptop"
+        "gift box",
+        "jacket",
+        "phone charger"
       ],
-      "label": "ON DEVICE",
+      "label": "YOU ASK",
       "follow": false
     },
     {
       "section": "proof",
       "chapter": 0,
-      "text": "using a small AI chip called a neural processing unit,",
-      "emphasis": "neural processing unit",
-      "visual": "icon_hero",
-      "subjects": [
-        "computer chip"
-      ],
-      "label": "NPU",
-      "follow": false
-    },
-    {
-      "section": "proof",
-      "chapter": 0,
-      "text": "while harder questions still go out to the cloud.",
-      "emphasis": "cloud",
-      "visual": "icon_pair",
-      "subjects": [
-        "computer chip",
-        "cloud"
-      ],
-      "label": "CLOUD",
-      "follow": false
-    },
-    {
-      "section": "pattern",
-      "chapter": 0,
-      "text": "So the operating system acts like a traffic controller,",
-      "emphasis": "traffic controller",
+      "text": "and it searches stores like Walmart, Best Buy and Gap,",
+      "emphasis": "Walmart",
       "visual": "icon_orbit",
       "subjects": [
-        "traffic light",
-        "laptop",
-        "cloud"
+        "robot",
+        "shop",
+        "shopping bag"
       ],
-      "label": "TRAFFIC CONTROL",
+      "label": "IT SEARCHES",
       "follow": false
     },
     {
-      "section": "pattern",
+      "section": "proof",
       "chapter": 0,
-      "text": "sending each request to the right chip.",
-      "emphasis": "right chip",
-      "visual": "icon_orbit",
-      "subjects": [
-        "traffic light",
-        "computer chip",
-        "cloud"
-      ],
-      "label": "ROUTING",
-      "follow": false
-    },
-    {
-      "section": "pattern",
-      "chapter": 0,
-      "text": "Small models stay nearby for speed, privacy and offline use,",
-      "emphasis": "privacy",
-      "visual": "icon_hero",
-      "subjects": [
-        "padlock"
-      ],
-      "label": "LOCAL",
-      "follow": false
-    },
-    {
-      "section": "pattern",
-      "chapter": 0,
-      "text": "and the heavy thinking moves to big cloud models.",
-      "emphasis": "heavy thinking",
+      "text": "fills the cart, then asks you to approve before it pays.",
+      "emphasis": "approve",
       "visual": "icon_pair",
       "subjects": [
-        "brain",
-        "cloud"
+        "shopping cart",
+        "check mark"
       ],
-      "label": "CLOUD",
+      "label": "YOU APPROVE",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 0,
+      "text": "And now every store has to decide whether to let AI shoppers in.",
+      "emphasis": "AI shoppers",
+      "visual": "icon_pair",
+      "subjects": [
+        "shop",
+        "robot"
+      ],
+      "label": "THE SHIFT",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 0,
+      "text": "Shopify is building checkouts for them,",
+      "emphasis": "Shopify",
+      "visual": "icon_pair",
+      "subjects": [
+        "shopping cart",
+        "robot"
+      ],
+      "label": "OPEN DOOR",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 0,
+      "text": "but Amazon has blocked Muse from its site.",
+      "emphasis": "Amazon",
+      "visual": "icon_pair",
+      "subjects": [
+        "robot",
+        "closed door"
+      ],
+      "label": "BLOCKED",
       "follow": false
     },
     {
       "section": "cost",
       "chapter": 0,
-      "text": "Ignore that difference, and here's what happens.",
-      "emphasis": "ignore",
-      "visual": "icon_hero",
+      "text": "So a store that shuts the door could lose your sale,",
+      "emphasis": "lose",
+      "visual": "icon_pair",
       "subjects": [
-        "warning sign"
+        "shop",
+        "shopping bag"
       ],
       "label": "THE COST",
       "follow": false
@@ -169,98 +160,72 @@
     {
       "section": "cost",
       "chapter": 0,
-      "text": "You chase the highest benchmark, then wait for a connection,",
-      "emphasis": "benchmark",
+      "text": "because your AI buys from one that lets it in.",
+      "emphasis": "lets it in",
       "visual": "icon_pair",
       "subjects": [
-        "trophy",
-        "wifi signal"
+        "robot",
+        "shop"
       ],
-      "label": "WAITING",
-      "follow": false
-    },
-    {
-      "section": "cost",
-      "chapter": 0,
-      "text": "or send private notes away for work your laptop could finish.",
-      "emphasis": "private notes",
-      "visual": "icon_pair",
-      "subjects": [
-        "notebook",
-        "laptop"
-      ],
-      "label": "PRIVACY",
+      "label": "THE COST",
       "follow": false
     },
     {
       "section": "reframe",
       "chapter": 0,
-      "text": "So which AI is smartest? It depends on the task.",
-      "emphasis": "the task",
+      "text": "In other words, a store's next customer may be an AI.",
+      "emphasis": "an AI",
+      "visual": "icon_hero",
+      "subjects": [
+        "robot"
+      ],
+      "label": "NEW CUSTOMER",
+      "follow": false
+    },
+    {
+      "section": "cta",
+      "chapter": 0,
+      "text": "Before you hand it your card, check two things,",
+      "emphasis": "two things",
+      "visual": "checklist",
+      "subjects": [
+        "credit card"
+      ],
+      "label": "CHECK FIRST",
+      "follow": false
+    },
+    {
+      "section": "cta",
+      "chapter": 0,
+      "text": "what it can buy without asking, and where it's allowed to shop.",
+      "emphasis": "without asking",
+      "visual": "checklist",
+      "subjects": [
+        "checklist"
+      ],
+      "label": "CHECK FIRST",
+      "follow": false
+    },
+    {
+      "section": "cta",
+      "chapter": 0,
+      "text": "Would you let an AI do your shopping?",
+      "emphasis": "your shopping",
       "visual": "icon_hero",
       "subjects": [
         "question mark"
       ],
-      "label": "IT DEPENDS",
+      "label": "YOUR CALL",
       "follow": false
     },
     {
       "section": "cta",
       "chapter": 0,
-      "text": "Before you pick a tool, ask what matters most,",
-      "emphasis": "matters most",
-      "visual": "checklist",
-      "subjects": [
-        "checklist"
-      ],
-      "label": "ASK FIRST",
-      "follow": false
-    },
-    {
-      "section": "cta",
-      "chapter": 0,
-      "text": "speed, privacy, working offline or deep reasoning,",
-      "emphasis": "offline",
-      "visual": "checklist",
-      "subjects": [
-        "checklist"
-      ],
-      "label": "ASK FIRST",
-      "follow": false
-    },
-    {
-      "section": "cta",
-      "chapter": 0,
-      "text": "then choose local, cloud, or a mix.",
-      "emphasis": "a mix",
-      "visual": "icon_pair",
-      "subjects": [
-        "laptop",
-        "cloud"
-      ],
-      "label": "CHOOSE",
-      "follow": false
-    },
-    {
-      "section": "cta",
-      "chapter": 0,
-      "text": "AI isn't just living in the cloud anymore,",
-      "emphasis": "cloud",
-      "visual": "icon_hero",
-      "subjects": [
-        "cloud"
-      ],
-      "label": "",
-      "follow": false
-    },
-    {
-      "section": "cta",
-      "chapter": 0,
-      "text": "it's becoming the brain inside your computer.",
-      "emphasis": "brain",
+      "text": "Because your next shopping trip might not be done by you.",
+      "emphasis": "by you",
       "visual": "logo_end",
       "subjects": [
-        "brain"
+        "shopping cart"
       ],
       "label": "",
       "follow": false

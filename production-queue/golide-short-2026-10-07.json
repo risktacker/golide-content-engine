@@ -2,8 +2,8 @@
   "id": "golide-short-2026-10-07",
   "studio_managed": true,
   "format": "short",
-  "title": "The AI in Your Next PC May Never Need the Internet",
-  "brief": "A timely explainer on how AI is moving from cloud services into operating systems through NPUs, local language models and hardware-accelerated inference. It directly answers the strong \u201cWhich AI is smartest?\u201d and PC-demand signals without becoming a product review or advertisement.",
+  "title": "Meta's New AI Shops for You. Amazon Said No.",
+  "brief": "Meta's Muse is a personal AI agent that searches stores, fills your cart and buys after you approve. Walmart, Best Buy, Gap and Shopify are letting it in; Amazon blocked it. What it means when a store's next customer is an AI, explained for everyone.",
   "demand_query": "current technology software business trends",
   "demand_validation_required": true,
   "budget_class": "scheduled",
@@ -54,14 +54,14 @@
   "_studio_job_id": "golide-short-2026-10-07",
   "topic_candidates": [
     {
-      "title": "The AI in Your Next PC May Never Need the Internet",
-      "query": "on-device AI NPU local inference Windows 2026",
-      "brief": "A timely explainer on how AI is moving from cloud services into operating systems through NPUs, local language models and hardware-accelerated inference. It directly answers the strong \u201cWhich AI is smartest?\u201d and PC-demand signals without becoming a product review or advertisement.",
-      "evidence_summary": "Current demand: Very high, supported by the strong AI and PC trend seeds. Visual potential: Excellent\u2014animate a prompt moving through cloud, CPU, GPU and NPU paths, then show latency, privacy and battery trade-offs. Evidence strength: High; Microsoft documents local Phi Silica models, Windows AI APIs, Foundry Local and Windows ML across supported hardware. Broad curiosity: High because it changes what ordinary computers can do offline. Novelty: Strong if framed around the hidden software stack that makes an AI PC different, rather than around laptop buying advice. ([support.microsoft.com](https://support.microsoft.com/en-us/servicing/os/windows/ai-components/2026/01/windows-copilot-ai-components?utm_source=openai))",
-      "authoritative_source_url": "https://learn.microsoft.com/en-us/windows/ai/new-windows-ml/overview",
+      "title": "Meta's New AI Shops for You. Amazon Said No.",
+      "query": "Meta Muse AI shopping agent Amazon blocked",
+      "brief": "Meta's Muse is a personal AI agent that searches stores, fills your cart and buys after you approve. Walmart, Best Buy, Gap and Shopify are letting it in; Amazon blocked it. What it means when a store's next customer is an AI, explained for everyone.",
+      "evidence_summary": "Owner-selected 7 Oct: the mainstream AI story of AI agents shopping for people (Meta Muse with Walmart, Best Buy, Gap, Shopify; Amazon blocked it).",
+      "authoritative_source_url": "https://www.thestar.com.my/tech/tech-news/2026/09/22/amazon-blocks-metas-muse-ai-agent-from-its-retail-site",
       "evidence_valid": true,
       "platform_seed_demand": {
-        "query": "on-device AI NPU local inference Windows 2026",
+        "query": "Meta Muse AI shopping agent Amazon blocked",
         "score": 87.5,
         "verdict": "pass",
         "recent_videos": 65,
@@ -72,70 +72,10 @@
         "measured_at": "2026-10-07T07:02:24.871008+00:00",
         "signal_type": "youtube-most-popular-seed-proxy"
       }
-    },
-    {
-      "title": "When an AI Agent Gets Permission to Touch Your Files",
-      "query": "NIST AI agents tool use permissions security 2025",
-      "brief": "An evidence-backed look at the shift from chatbots that generate text to agents that browse, edit files, call APIs and take actions. The useful angle is how permissions, tool boundaries and audit trails become the new software workflow problem.",
-      "evidence_summary": "Current demand: High, closely connected to the strongest AI trend seed and growing developer interest in agentic workflows. Visual potential: Excellent\u2014show the difference between a model producing an answer and an agent executing a chain of tools. Evidence strength: High; NIST describes agents as systems that perceive environments and manipulate tools, while documenting the need for clearer capability and limitation taxonomies. Broad curiosity: High because the mechanism affects work, security and personal data. Novelty: Stronger than a generic \u201cAI agents explained\u201d video if centered on the permission layer and failure points. ([nist.gov](https://www.nist.gov/news-events/news/2025/08/lessons-learned-consortium-tool-use-agent-systems?utm_source=openai))",
-      "authoritative_source_url": "https://www.nist.gov/news-events/news/2025/08/lessons-learned-consortium-tool-use-agent-systems",
-      "evidence_valid": true,
-      "platform_seed_demand": {
-        "query": "NIST AI agents tool use permissions security 2025",
-        "score": 85.0,
-        "verdict": "pass",
-        "recent_videos": 65,
-        "median_views_per_day": 405274.2,
-        "top_views_per_day": 5376693.69,
-        "market_coverage": 4,
-        "title_query_overlap": 0.0,
-        "measured_at": "2026-10-07T07:02:24.871501+00:00",
-        "signal_type": "youtube-most-popular-seed-proxy"
-      }
-    },
-    {
-      "title": "Your Phone Could Become a Satellite Phone Without a Dish",
-      "query": "FCC direct to device satellite smartphone 2026 official",
-      "brief": "A visual explanation of direct-to-device satellite connectivity: how ordinary phones can exchange signals with satellites, what spectrum and link-budget constraints remain, and why the service is likely to begin with messaging before broadband.",
-      "evidence_summary": "Current demand: High, based on smartphone novelty, connectivity anxiety and strong technology-hardware curiosity signals. Visual potential: Excellent\u2014animate the phone-to-satellite geometry, spectrum link, obstruction problem and store-and-forward workflow. Evidence strength: High; the FCC describes direct-to-device services as connectivity delivered directly from next-generation satellite constellations to smartphones and other devices. Broad curiosity: Very high because the promise sounds impossible but is technically real. Novelty: Strong and product-independent when focused on the radio mechanism and deployment constraints, not a carrier announcement. ([docs.fcc.gov](https://docs.fcc.gov/public/attachments/DOC-420983A1.pdf?utm_source=openai))",
-      "authoritative_source_url": "https://docs.fcc.gov/public/attachments/DOC-420983A1.pdf",
-      "evidence_valid": true,
-      "platform_seed_demand": {
-        "query": "FCC direct to device satellite smartphone 2026 official",
-        "score": 87.1,
-        "verdict": "pass",
-        "recent_videos": 65,
-        "median_views_per_day": 405274.2,
-        "top_views_per_day": 5376693.69,
-        "market_coverage": 4,
-        "title_query_overlap": 0.1429,
-        "measured_at": "2026-10-07T07:02:24.871966+00:00",
-        "signal_type": "youtube-most-popular-seed-proxy"
-      }
-    },
-    {
-      "title": "The Power Grid Is Learning to Schedule AI Work",
-      "query": "Department of Energy flexible AI data center load grid 2026",
-      "brief": "A timely industry-shift explainer about AI data centers becoming controllable electrical loads. Instead of revisiting cooling, it examines how batch inference, workload scheduling, batteries and power contracts could help data centers respond to grid conditions.",
-      "evidence_summary": "Current demand: High, building on the supplied data-center concern signal while avoiding the previously used air-versus-liquid premise. Visual potential: Excellent\u2014show an AI workload queue shifting in time, batteries smoothing peaks and a grid operator balancing demand. Evidence strength: High; U.S. Department of Energy materials describe AI loads as unusually flexible because many tasks can be batched, scheduled and orchestrated, and identify batteries as a potential flexibility resource. Broad curiosity: High because it connects invisible software scheduling to electricity bills, new power plants and local grid stress. Novelty: Very strong for a technology audience because the central mechanism is software-controlled electricity demand rather than data-center hardware. ([energy.gov](https://www.energy.gov/documents/pios202-25-11exhibits41to60?utm_source=openai))",
-      "authoritative_source_url": "https://www.energy.gov/sites/default/files/2024-11/Powering%20AI%20and%20Data%20Center%20Infrastructure%20Recommendations%20July%202024.pdf",
-      "evidence_valid": true,
-      "platform_seed_demand": {
-        "query": "Department of Energy flexible AI data center load grid 2026",
-        "score": 86.9,
-        "verdict": "pass",
-        "recent_videos": 65,
-        "median_views_per_day": 405274.2,
-        "top_views_per_day": 5376693.69,
-        "market_coverage": 4,
-        "title_query_overlap": 0.125,
-        "measured_at": "2026-10-07T07:02:24.872412+00:00",
-        "signal_type": "youtube-most-popular-seed-proxy"
-      }
     }
   ],
   "platform_demand": {
-    "query": "on-device AI NPU local inference Windows 2026",
+    "query": "Meta Muse AI shopping agent Amazon blocked",
     "score": 87.5,
     "verdict": "pass",
     "recent_videos": 65,
@@ -146,5 +86,6 @@
     "measured_at": "2026-10-07T07:02:24.871008+00:00",
     "signal_type": "youtube-most-popular-seed-proxy"
   },
-  "selected_topic_source": "https://learn.microsoft.com/en-us/windows/ai/new-windows-ml/overview"
+  "selected_topic_source": "https://www.thestar.com.my/tech/tech-news/2026/09/22/amazon-blocks-metas-muse-ai-agent-from-its-retail-site",
+  "owner_topic_override": "2026-10-07: topic replaced by owner request (AI gist everyone talks about); the NPU topic was picked minutes before the trend rules shipped."
 }

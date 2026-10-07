@@ -491,6 +491,11 @@ class ProductionService:
             self._record_text(production_id, "research", output)
             self.costs.record(production_id, "research-search", "openai", "web-search", Usage(tool_calls=1))
         self.runner.run(production_id, "research", research_stage)
+        # An owner-approved topic change ships its own research next to the
+        # script override (production-queue/<id>.research.json).
+        research_override = self.root / "production-queue" / f"{production_id}.research.json"
+        if research_override.exists():
+            research_path.write_text(research_override.read_text(encoding="utf-8"), encoding="utf-8")
         research = json.loads(research_path.read_text(encoding="utf-8"))
         self._budget(spec)
 

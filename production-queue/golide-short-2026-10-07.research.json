@@ -1,0 +1,35 @@
+{
+  "summary": "Meta launched Muse, a standalone personal AI agent, in the US in September 2026. It can search stores, fill a cart and make purchases after the user approves. Meta added Walmart, Gap and Best Buy, and Shopify is building agent checkouts with Shop Pay. Amazon blocked Muse from Amazon.com.",
+  "claims": [
+    {
+      "claim": "Meta launched Muse, its first standalone personal AI agent, on 8 September 2026, for US adults; it can send emails, book reservations, fill out forms and make purchases.",
+      "source_title": "Meta integrates Walmart, Gap, and Best Buy into Muse AI agent",
+      "source_url": "https://cryptobriefing.com/meta-muse-walmart-gap-best-buy-integration/",
+      "published_or_updated": "2026-09-23"
+    },
+    {
+      "claim": "Muse now works with Walmart, Gap and Best Buy for groceries, electronics and apparel.",
+      "source_title": "Meta integrates Walmart, Gap, and Best Buy into Muse AI agent",
+      "source_url": "https://cryptobriefing.com/meta-muse-walmart-gap-best-buy-integration/",
+      "published_or_updated": "2026-09-23"
+    },
+    {
+      "claim": "Shopify and Meta announced agentic checkout with Shop Pay across Shopify stores; approval is required for sensitive actions such as making a purchase.",
+      "source_title": "Shopify Teams Up With Meta to Let AI Agents Complete Online Purchases",
+      "source_url": "https://www.channelnews.com.au/shopify-teams-up-with-meta-to-let-ai-agents-complete-online-purchases/",
+      "published_or_updated": "2026-09-23"
+    },
+    {
+      "claim": "Amazon blocked Meta's Muse AI agent from shopping on Amazon.com.",
+      "source_title": "Amazon blocks Meta's Muse AI agent from its retail site",
+      "source_url": "https://www.thestar.com.my/tech/tech-news/2026/09/22/amazon-blocks-metas-muse-ai-agent-from-its-retail-site",
+      "published_or_updated": "2026-09-22"
+    },
+    {
+      "claim": "Amazon blocked Meta's Muse AI agent from Amazon.com over bot access.",
+      "source_title": "Amazon Blocks Meta's Muse AI Agent From Shopping on Amazon.com Over Bot Access",
+      "source_url": "https://techrepublic.com/article/news-amazon-blocks-meta-muse",
+      "published_or_updated": "2026-09"
+    }
+  ]
+}
