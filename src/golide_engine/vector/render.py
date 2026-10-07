@@ -214,6 +214,41 @@ class CaptionRenderer:
         ImageDraw.Draw(img).text((2, 0), spaced, font=self.mono, fill=color + (int(255 * alpha),))
         return img
 
+    def follow_pill(self) -> Image.Image:
+        """'+ FOLLOW GOLIDE': a gold outlined pill shown while the owner asks for the follow."""
+        key = ("follow",)
+        if key in self._cache:
+            return self._cache[key]
+        size = self.layout.caption_size
+        font = ImageFont.truetype(str(self.theme.font("mono")), max(18, int(size * 0.62)))
+        text = " ".join("FOLLOW GOLIDE")
+        probe = ImageDraw.Draw(Image.new("RGBA", (1, 1)))
+        tw = probe.textlength(text, font=font)
+        plus = size * 0.62
+        pad_x, pad_y = int(size * 0.75), int(size * 0.42)
+        gap = size * 0.45
+        width = int(plus + gap + tw) + pad_x * 2
+        height = int(font.size * 1.25) + pad_y * 2
+        margin = int(size * 0.5)  # room for the glow
+        layer = Image.new("RGBA", (width + margin * 2, height + margin * 2), (0, 0, 0, 0))
+        glow = Image.new("RGBA", layer.size, (0, 0, 0, 0))
+        gold = self.theme.rgb("gold")
+        box = (margin, margin, margin + width, margin + height)
+        for target, w in ((glow, 6), (layer, 3)):
+            draw = ImageDraw.Draw(target)
+            draw.rounded_rectangle(box, radius=height // 2, outline=gold + (255,), width=w)
+            # the plus sign
+            px, py, half = margin + pad_x + plus / 2, margin + height / 2, plus * 0.38
+            draw.line([(px - half, py), (px + half, py)], fill=gold + (255,), width=w)
+            draw.line([(px, py - half), (px, py + half)], fill=gold + (255,), width=w)
+        ImageDraw.Draw(layer).text((margin + pad_x + plus + gap, margin + height / 2), text, font=font,
+                                   fill=gold + (255,), anchor="lm")
+        glow = glow.filter(ImageFilter.GaussianBlur(size * 0.28))
+        glow.putalpha(glow.getchannel("A").point(lambda v: int(v * 0.55)))
+        pill = Image.alpha_composite(glow, layer)
+        self._cache[key] = pill
+        return pill
+
     def chapter_card(self, number: str, title: str) -> Image.Image:
         """'02  WHERE IT HIDES': gold number, spaced white title, soft gold glow."""
         key = ("chapter", number, title)
@@ -279,6 +314,7 @@ class VectorRenderer:
         self.stars = StarField(self.layout.width, self.layout.height)
         self._transitions: dict[int, "Transition"] = {}
         self.chapters: list = []
+        self.follow: set[int] = set()  # spoken line indexes of the follow call-out
         self.captions = CaptionRenderer(self.layout, self.theme)
         self.colors = _colors(self.theme)
         self.mark = self.captions.wordmark()
@@ -408,6 +444,21 @@ class VectorRenderer:
         # Label tag for the active line (hidden while a chapter card shows).
         line_index = _active(group.lines, t, lambda l: l.start, lambda l: l.end)
         label = group.lines[line_index].label
+        active = group.lines[line_index]
+        if active.index in self.follow and card is None:
+            # The follow call-out: a gold pill that eases in and breathes while it is said.
+            a = ease(min(1.0, max(0.0, (t - active.start) / 0.35)))
+            a *= min(1.0, max(0.0, (active.end + 0.25 - t) / 0.3))
+            pill = self.captions.follow_pill()
+            scale = 0.94 + 0.06 * a + 0.015 * math.sin(t * 4.0)
+            if abs(scale - 1.0) > 1e-3:
+                pill = pill.resize((max(1, int(pill.width * scale)), max(1, int(pill.height * scale))), Image.Resampling.LANCZOS)
+            if a < 1.0:
+                pill = pill.copy()
+                pill.putalpha(pill.getchannel("A").point(lambda v: int(v * a)))
+            top = L.label_y - pill.height * 0.30 if self.format == "short" else L.height * 0.02
+            image.paste(pill, (int(L.cx - pill.width / 2), int(top)), pill)
+            label = ""
         if label and card is None:
             color = self.theme.rgb("gold" if (gi % 2 == 0 or self.chapters) else "cyan")
             tag = self.captions.label(label, color, min(1.0, (t - group.lines[line_index].start) / 0.3))
@@ -461,6 +512,8 @@ class VectorRenderer:
                 if key is not None:
                     number = str(chapters[key].get("number", "")).strip()
                     line.label = f"{number}  {chapters[key].get('title', '')}".upper() if number else ""
+        spoken = [line for line in plan.get("lines", []) if str(line.get("text", "")).strip()]
+        self.follow = {i for i, line in enumerate(spoken) if line.get("follow") is True}
         if illustrations:
             lines = self._use_illustrations(plan, lines, illustrations)
         groups = group_lines(lines)

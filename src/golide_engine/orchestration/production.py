@@ -30,7 +30,7 @@ from ..storage.database import Database
 from ..youtube.demand import TopicDemandRejected, YouTubeDemandGate
 from ..youtube_metadata import load_metadata_policy, validate_upload_metadata
 from .schemas import METADATA_SCHEMA, RESEARCH_SCHEMA, STORYBOARD_SCHEMA, TREND_CANDIDATES_SCHEMA
-from ..engine.content_rules import TREND_TASTE_RULES, SCRIPT_SCHEMA, chapter_problems, flow_problems, script_display, script_instructions, script_text
+from ..engine.content_rules import TREND_TASTE_RULES, SCRIPT_SCHEMA, chapter_problems, flow_problems, follow_problems, script_display, script_instructions, script_text
 from .recording import RecordingLengthError, check_recording_length
 from .stage_runner import StageRunner
 
@@ -511,15 +511,16 @@ class ProductionService:
                 max_output_tokens=6000,
             )
             plan = dict(output.value)
-            problems = flow_problems(plan) + chapter_problems(plan, str(spec["format"]))
+            problems = (flow_problems(plan) + chapter_problems(plan, str(spec["format"]))
+                        + follow_problems(plan, str(spec["format"])))
             if problems:
                 # One rewrite when the script reads like a list of separate statements.
                 self._record_text(production_id, "script-draft", output)
                 output = text.generate_json(
                     script_instructions(str(spec["format"])),
                     f"TOPIC BRIEF\n{spec['brief']}\n\nVERIFIED RESEARCH\n{json.dumps(research)}"
-                    f"\n\nYOUR PREVIOUS DRAFT\n{json.dumps(plan)}\n\nREWRITE IT. It sounds choppy when spoken: "
-                    + "; ".join(problems) + ". Keep the facts and length; fix these problems so it flows as natural speech in clear stages.",
+                    f"\n\nYOUR PREVIOUS DRAFT\n{json.dumps(plan)}\n\nREWRITE IT. Fix these problems: "
+                    + "; ".join(problems) + ". Keep the facts and length, and keep it flowing as natural speech in clear stages.",
                     SCRIPT_SCHEMA,
                     max_output_tokens=6000,
                 )

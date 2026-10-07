@@ -16,6 +16,11 @@ This is the standard for every Short and long video. Don't change any of it with
   - Chapter titles and shapes come from the topic, never a fixed template.
   - The script email and Studio show chapter headings, which are not read aloud.
 - **Emphasis (7 Oct):** each line's emphasis is its key term: a name, a number or the key idea.
+- **Follow call-out (7 Oct):**
+  - One natural spoken sentence asking viewers to follow GOLIDE and come back, with a reason, never a plea.
+  - Shorts: once, right after the opening claim. Long videos: once after the intro roadmap, once just before the last line.
+  - Fresh wording every video. Never "comment to receive", likes, shares, links or the bio.
+  - A check rewrites the draft once if the call-out is missing, late, too long or asks for comments.
 
 ## Visuals
 - Black theme only: a charcoal vignette, a faint blue-violet haze, and three depths of slowly drifting, twinkling stars.
@@ -23,12 +28,14 @@ This is the standard for every Short and long video. Don't change any of it with
   - Shorts have 4–6 scenes; long videos have 8–14. A scene never crosses a chapter.
   - Each scene is one gpt-image-1-mini picture: thin white lines on black, exactly one gold element, no text.
   - The picture is traced into ordered pen strokes that draw on with a glowing pen light.
+  - **Detail pass (7 Oct):** the picture asks for a few fine inner details, a ground line and one focal point, with no stray lines. Strokes are drawn as smooth curves, main contours slightly heavier than details, and the pen eases in and settles.
 - **Scene changes never cut.** The drawing dissolves into points of light that land on the next drawing.
 - **Chapter cards (long videos, 6 Oct):** a gold number and title at the start of each chapter. The chapter then stays as the small top tag.
 - **Captions:**
   - The spoken words appear as they're said.
   - **Key terms light up gold, stay gold with a gold underline once said (7 Oct).**
   - The GOLIDE wordmark, and the logo at the end.
+- **Follow pill (7 Oct):** while the follow sentence is spoken, a gold "+ FOLLOW GOLIDE" pill eases in where the line tag sits.
 - **Thumbnails and covers:** a black-theme line-art YouTube thumbnail. The Reel cover is the most fully drawn early frame.
 
 ## Sound
@@ -47,5 +54,5 @@ This is the standard for every Short and long video. Don't change any of it with
 
 ## Distribution
 - **Shorts:** YouTube, then Instagram and Facebook Reels (with the cover frame) and a LinkedIn video.
-- **Long videos:** YouTube at 19:30, with real chapter timestamps in the description. From 10 Oct they also go to Facebook (as a native 16:9 video) and LinkedIn in the 20:00 run.
+- **Long videos:** YouTube at 19:30, with real chapter timestamps in the description. From 7 Oct they also go to Facebook (as a native 16:9 video) and LinkedIn in the 20:00 run.
 - **Rebuilds:** `rebuild-video` makes a preview, emails it for approval, then publishes.

@@ -225,6 +225,26 @@ CHAPTERS: a short is one idea. "chapters" must be an empty list and every line's
 "chapter" is 0.
 """
 
+FOLLOW_RULES = """\
+FOLLOW CALL-OUT (owner direction 2026-10-07: viewers should follow and come back)
+- Ask the viewer to follow GOLIDE in one natural spoken sentence, said in the
+  owner's voice as part of the talk, never read like an advert.
+- Give the reason to follow, not a plea: what they will miss or keep getting
+  ("the feed won't show us to you again unless you follow", "we break down one
+  of these every day", "the next one picks up exactly where this ends").
+  A little urgency is good; guilt, begging and hype are not.
+- NEVER ask people to comment, like, share, type a word, or "comment X to receive"
+  anything. NEVER mention links or the bio. Only follow (or subscribe) and come back.
+- Write it fresh for this topic every time. Never reuse the example wording above.
+- Set "follow": true on the line or lines of that sentence; every other line false.
+- Placement:
+  * short: exactly ONE follow sentence, right after the opening claim (within the
+    first quarter of the lines), then straight back into the proof.
+  * long: one follow sentence in the INTRO right after the route sentence, and one
+    in the CLOSE just before the final line that loops back to the opening claim
+    ("follow, and come back for the next one").
+"""
+
 SCRIPT_LINE_RULES = """\
 FLOW (the most important rule: this is one person talking, not a list of facts)
 - Write connected speech. Each sentence must grow out of the one before it, the way a
@@ -341,6 +361,34 @@ def chapter_problems(plan: dict, format_name: str) -> list[str]:
     return problems
 
 
+FOLLOW_ASKS = ("comment", "like this", "share this", "link in", "bio", "type ")
+
+
+def follow_problems(plan: dict, format_name: str) -> list[str]:
+    """The follow call-out is present, early, short, and never asks for comments."""
+    lines = [line for line in plan.get("lines", []) if str(line.get("text", "")).strip()]
+    if len(lines) < 8:
+        return []
+    marked = [i for i, line in enumerate(lines) if line.get("follow") is True]
+    problems: list[str] = []
+    if not marked:
+        return ["add the follow call-out sentence and mark its lines with \"follow\": true"]
+    if marked[0] > max(3, len(lines) * 0.3):
+        problems.append("the first follow call-out must come right after the opening claim")
+    limit = 3 if format_name == "short" else 6
+    if len(marked) > limit:
+        problems.append(f"the follow call-out is too long ({len(marked)} lines); keep it to one sentence"
+                        + ("" if format_name == "short" else " in the intro and one in the close"))
+    if format_name == "long" and marked[-1] < len(lines) * 0.75:
+        problems.append("the close needs a follow call-out just before the final line")
+    said = " ".join(str(lines[i]["text"]).lower() for i in marked)
+    if "follow" not in said and "subscribe" not in said:
+        problems.append("the follow call-out must actually say follow or subscribe")
+    if any(word in said for word in FOLLOW_ASKS):
+        problems.append("the follow call-out must not ask for comments, likes, shares or links")
+    return problems
+
+
 def script_instructions(format_name: str) -> str:
     target = SCRIPT_LENGTH_TARGETS.get(format_name, SCRIPT_LENGTH_TARGETS["short"])
     return (
@@ -351,7 +399,7 @@ def script_instructions(format_name: str) -> str:
         f"LENGTH: {target['words_min']} to {target['words_max']} spoken words "
         f"(about {target['seconds']} seconds). Do not go over.\n\n"
         + (LONG_STRUCTURE_RULES if format_name == "long" else SCRIPT_STRUCTURE_RULES + "\n" + SHORT_CHAPTER_RULE)
-        + "\n" + SCRIPT_LINE_RULES + "\n" + SCRIPT_VOICE_RULES
+        + "\n" + FOLLOW_RULES + "\n" + SCRIPT_LINE_RULES + "\n" + SCRIPT_VOICE_RULES
         + "\n" + SCRIPT_OUTPUT_RULES
     )
 
@@ -394,8 +442,9 @@ SCRIPT_SCHEMA: dict = {
                     "visual": {"type": "string", "enum": list(VISUAL_CUES)},
                     "subjects": {"type": "array", "maxItems": 4, "items": {"type": "string"}},
                     "label": {"type": "string"},
+                    "follow": {"type": "boolean"},
                 },
-                "required": ["chapter", "section", "text", "emphasis", "visual", "subjects", "label"],
+                "required": ["chapter", "section", "text", "emphasis", "visual", "subjects", "label", "follow"],
             },
         },
     },
