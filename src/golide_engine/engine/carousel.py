@@ -76,7 +76,7 @@ def render_slide(slide: Slide, number: int, total: int, output: Path, theme: The
 
     # Heading: large, light, key words bold and glowing.
     tokens = tokenize(" ".join(slide.heading.split()), slide.emphasis or "")
-    size = int(width * (0.084 if slide.final else 0.074))
+    size = int(width * (0.078 if slide.final else 0.074))
     while True:
         fonts = _fonts(theme, size)
         lines = _wrap(tokens, fonts, width - 2 * margin, draw)
@@ -85,15 +85,20 @@ def render_slide(slide: Slide, number: int, total: int, output: Path, theme: The
         size -= 2
     heading_lh = int(size * 1.22)
 
-    # Body: smaller, muted, plain.
-    body_size = int(width * 0.038)
+    # Body: plain and readable. The short line that pulls the reader to the next
+    # slide ("But there's a catch.") gets its own line in gold, so the story leads.
+    body_size = int(width * 0.041)
     body_fonts = (ImageFont.truetype(str(theme.font("light")), body_size),) * 2
-    body_lines = _wrap([t for t in tokenize(" ".join(slide.text.split()), "")], body_fonts, width - 2 * margin, draw)
+    main_text, pull = _split_pull(" ".join(slide.text.split()), slide.final or slide.product)
+    body_lines = _wrap([t for t in tokenize(main_text, "")], body_fonts, width - 2 * margin, draw)
+    pull_fonts = (ImageFont.truetype(str(theme.font("regular")), body_size),) * 2
+    pull_lines = _wrap([t for t in tokenize(pull, "")], pull_fonts, width - 2 * margin, draw) if pull else []
     body_lh = int(body_size * 1.5)
+    pull_gap = int(body_lh * 0.6) if pull_lines else 0
 
     gap = int(height * 0.045)
     rule = int(height * 0.03)
-    block = heading_lh * len(lines) + gap + rule + body_lh * len(body_lines)
+    block = heading_lh * len(lines) + gap + rule + body_lh * len(body_lines) + pull_gap + body_lh * len(pull_lines)
     top = int(height * 0.47) - block // 2
     _block(draw, lines, fonts, top, width, heading_lh, theme, glow_draw=glow)
 
@@ -101,7 +106,9 @@ def render_slide(slide: Slide, number: int, total: int, output: Path, theme: The
     gold = theme.rgb("gold")
     draw.line([(width / 2 - width * 0.04, y), (width / 2 + width * 0.04, y)], fill=gold + (200,), width=3)
     y += rule
-    _block(draw, body_lines, body_fonts, y, width, body_lh, theme, color="text_muted")
+    _block(draw, body_lines, body_fonts, y, width, body_lh, theme, color="text")
+    if pull_lines:
+        _block(draw, pull_lines, pull_fonts, y + body_lh * len(body_lines) + pull_gap, width, body_lh, theme, color="gold")
 
     if slide.final or slide.product:
         # The closing slide asks for the follow; the product slide points to the bio link.
@@ -136,3 +143,18 @@ def render_slide(slide: Slide, number: int, total: int, output: Path, theme: The
     output.parent.mkdir(parents=True, exist_ok=True)
     base.convert("RGB").save(output, "JPEG", quality=94, optimize=True)
     return output
+
+
+def _split_pull(text: str, closing: bool) -> tuple[str, str]:
+    """Separate a short last sentence that leads into the next slide."""
+    import re
+
+    if closing:
+        return text, ""
+    sentences = re.findall(r"[^.!?]+[.!?]+", text)
+    if len(sentences) < 2:
+        return text, ""
+    last = sentences[-1].strip()
+    if len(last.split()) > 8:
+        return text, ""
+    return text[: len(text) - len(sentences[-1])].strip(), last

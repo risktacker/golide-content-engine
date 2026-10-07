@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+
 import re
 from pathlib import PurePosixPath
 
@@ -50,6 +52,12 @@ class LinkedInProvider(SocialProvider):
         media_urn = None
         if request.media_ref:
             probe = probe_media(self.binary_http, request.media_ref)
+            if probe.content_type.startswith("image/") and request.extra_media:
+                try:
+                    images = [self._upload_image(url) for url in (request.media_ref, *request.extra_media)][:20]
+                    return self._create_post(request, None, images=images)
+                except Exception as exc:  # the post still goes out with the cover image
+                    print(json.dumps({"status": "linkedin_multi_image_fallback", "error": str(exc)[:300]}))
             if probe.content_type.startswith("image/"):
                 media_urn = self._upload_image(request.media_ref)
             elif probe.content_type == "video/mp4" or _suffix(request.media_ref) == ".mp4":
@@ -137,6 +145,7 @@ class LinkedInProvider(SocialProvider):
         self,
         request: PublishRequest,
         media_urn: str | None,
+        images: list[str] | None = None,
     ) -> PublishResult:
         payload: dict = {
             "author": self.author_urn,
@@ -150,7 +159,9 @@ class LinkedInProvider(SocialProvider):
             "lifecycleState": "PUBLISHED",
             "isReshareDisabledByAuthor": False,
         }
-        if media_urn:
+        if images and len(images) >= 2:
+            payload["content"] = {"multiImage": {"images": [{"id": urn, "altText": ""} for urn in images]}}
+        elif media_urn:
             payload["content"] = {
                 "media": {
                     "title": request.title or "GOLIDE",

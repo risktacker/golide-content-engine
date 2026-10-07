@@ -64,21 +64,35 @@ IMAGE CONCEPT (describes the picture only; the image model never draws text)
 
 STATIC_STRUCTURE_RULES = """\
 POST STRUCTURE
-- value_units: 3 or 4 short points that solve ONE clear problem in order. Each point is
-  1 or 2 sentences and stands on its own. Not a list of unrelated tips.
-- carousel (Instagram; slide 1 is the image with the hook):
-  * points: one slide per value unit, the SAME number and order as value_units.
-  * takeaway: the closing slide, the one idea to remember.
-  * Each slide: heading 3 to 7 words (the point itself, readable at a glance),
-    emphasis 1 to 3 words copied exactly from the heading, text one supporting
-    sentence of at most 22 words.
-  * CONSISTENCY: if the hook promises a number ("3 levels", "four signs"), there must be
-    exactly that many points, and every caption must use that same number. If there
-    is no number in the hook, do not mention a count anywhere.
+- value_units: exactly 5, the same five ideas as the five story slides, in order.
+- carousel (owner direction 2026-10-07). The post is 8 images: slide 1 is the image
+  with the hook, then the 5 story slides, then the marketplace slide (when there is
+  one), then the call-out slide. The 5 story slides are the solution, so they must be
+  the clearest thing GOLIDE publishes.
+  * points: exactly 5 slides that tell ONE story in order, like a short film the reader
+    cannot stop swiping:
+      1. WHAT HAPPENED: the news in one plain sentence (who did what, when).
+      2. WHY IT MATTERS TO YOU: what it changes in an ordinary person's day.
+      3. THE CATCH: the problem or risk most people miss.
+      4. THE SMART MOVE: the one thing that solves it.
+      5. DO THIS TODAY: one concrete step anyone can take in a few minutes.
+    Each slide grows out of the one before and ends with a short pull to the next
+    ("But there's a catch.", "So what do you do?", "Here's how to start.") so the
+    reader keeps swiping before being told to. Slide 5 ends with the result they get.
+  * Words a 12-year-old knows. No jargon, no abstract phrases ("separate help from
+    permission"), no riddles. Say the thing plainly.
+  * Each slide: heading 3 to 8 words that states the point, emphasis 1 to 3 words
+    copied exactly from the heading, text one or two short sentences, at most 22 words.
+  * callout: the last slide asks the reader to follow. heading 3 to 8 words giving the
+    reason ("Want one clear AI update every day?"), emphasis copied from it, text one
+    short line ("Follow GOLIDE so the next one finds you."). Written text may say
+    GOLIDE. No "comment", "like", "share" or "link". The engine adds the follow pill.
+  * CONSISTENCY: if the hook promises a number, it must be 5 and every caption uses 5.
+    If the hook has no number, do not mention a count anywhere.
 - platform_copy, same truth adapted natively. Never put a URL in any copy; the engine
   adds links only where they belong.
   * instagram: the hook as the first line, a blank line, two or three short lines
-    that make people swipe ("Swipe through."), then one question that
+    that make people swipe ("Swipe through the story."), then one question that
     invites a comment.
   * facebook: TWO paragraphs of about five lines each (4 to 6 sentences, 60 to 90 words
     per paragraph; shorter paragraphs are not acceptable). Paragraph one is a concrete,
@@ -129,32 +143,36 @@ WHAT TO TALK ABOUT: THE AI AND TECH GIST EVERYONE IS DISCUSSING
   watch for. Then end with a question people want to answer ("Would you trust it?",
   "Is this a good move?"), because the goal is conversation.
 - Do not mention or promote any GOLIDE product in the copy. use_product must be false
-  and product_bridge_position must be 0.
+  and product_bridge_position must be 0. The product only appears on its own slide.
 """
 
 POST_A_TREND_RULES = """\
 THIS IS POST A: THE MORNING TREND POST.
 """ + TREND_TASTE_RULES
 
+PRODUCT_SLIDE_RULES = """\
+- product_slide: ONE marketplace slide, second to last (after the 5 story slides,
+  before the call-out). It introduces CANDIDATE_PRODUCT to the same reader as the next
+  step: heading 3 to 8 words naming the result it gives, emphasis copied from the
+  heading, text one sentence using only facts in CANDIDATE_PRODUCT (no invented
+  features, prices, users or results). The engine adds "Link in bio". Bridge it
+  naturally from the story where you can ("Want to go further?").
+"""
+
 POST_B_PRODUCT_RULES = """\
 THIS IS POST B: THE EVENING TREND POST.
 - A DIFFERENT story from this morning's post (it is in RECENT_POSTS): another company,
   another kind of story.
-""" + TREND_TASTE_RULES + """\
-- product_slide: ONE extra Instagram slide that sits in the middle of the carousel and
-  introduces CANDIDATE_PRODUCT to the same reader: heading 3 to 7 words naming the
-  result it gives, emphasis copied from the heading, text one sentence using only facts
-  in CANDIDATE_PRODUCT (no invented features, prices, users or results). The engine
-  adds "Link in bio". Bridge it naturally from the topic where you can.
-"""
+""" + TREND_TASTE_RULES
 
 PRODUCT_SLIDE_EMPTY = """\
 - product_slide: leave heading, emphasis and text as empty strings.
 """
 
 
-def static_post_instructions(slot: str) -> str:
-    lane = POST_A_TREND_RULES + PRODUCT_SLIDE_EMPTY if slot == "post-a" else POST_B_PRODUCT_RULES
+def static_post_instructions(slot: str, has_product: bool = True) -> str:
+    lane = (POST_A_TREND_RULES if slot == "post-a" else POST_B_PRODUCT_RULES) + (
+        PRODUCT_SLIDE_RULES if has_product else PRODUCT_SLIDE_EMPTY)
     return (
         "You write one static social post for GOLIDE, a marketplace for digital products, "
         "software and tools. The operator supplies no topic.\n\n"

@@ -44,8 +44,8 @@ STATIC_DRAFT_SCHEMA: dict[str, Any] = {
         },
         "value_units": {
             "type": "array",
-            "minItems": 3,
-            "maxItems": 4,
+            "minItems": 5,
+            "maxItems": 5,
             "items": {"type": "string"},
         },
         "platform_copy": {
@@ -63,10 +63,10 @@ STATIC_DRAFT_SCHEMA: dict[str, Any] = {
             "type": "object",
             "additionalProperties": False,
             "properties": {
-                "points": {"type": "array", "minItems": 3, "maxItems": 4, "items": _SLIDE},
-                "takeaway": _SLIDE,
+                "points": {"type": "array", "minItems": 5, "maxItems": 5, "items": _SLIDE},
+                "callout": _SLIDE,
             },
-            "required": ["points", "takeaway"],
+            "required": ["points", "callout"],
         },
         "product_slide": _SLIDE,
         "x_replies": {
@@ -193,7 +193,7 @@ class StaticAutomation:
     ) -> dict[str, Any]:
         product_packet = self._product_packet(product)
         live_signal = slot == "post-a"
-        instructions = static_post_instructions(slot)
+        instructions = static_post_instructions(slot, has_product=product is not None)
         try:
             recent = self.bridge.recent_posts(21)
         except Exception:  # history helps; it must never stop a post
@@ -220,8 +220,9 @@ class StaticAutomation:
     def _carousel(self, draft: dict[str, Any], product=None) -> list[str]:
         """Render and upload the text slides; a failure leaves a single image.
 
-        Order: the points (as many as the hook promises), the marketplace slide in
-        the middle of the evening post, then the takeaway with "Follow GOLIDE".
+        Order (owner direction 2026-10-07): the 5 story slides, the marketplace
+        slide second to last, then the follow call-out. With the image first,
+        that is 8 images.
         """
         from golide_engine.engine.carousel import Slide, render_slide
 
@@ -231,18 +232,15 @@ class StaticAutomation:
                          emphasis=str(item.get("emphasis", "")), **kind)
 
         carousel = draft.get("carousel") or {}
-        points = [p for p in carousel.get("points", []) if str(p.get("heading", "")).strip()]
-        takeaway = carousel.get("takeaway") or {}
-        if len(points) < 2 or not str(takeaway.get("heading", "")).strip():
+        points = [p for p in carousel.get("points", []) if str(p.get("heading", "")).strip()][:5]
+        callout = carousel.get("callout") or carousel.get("takeaway") or {}
+        if len(points) < 2 or not str(callout.get("heading", "")).strip():
             return []
-        promised = hook_count(str(draft.get("image_hook", "")))
-        if promised and 2 <= promised < len(points):
-            points = points[:promised]  # the hook's number wins
         slides = [slide(p) for p in points]
         product_item = draft.get("product_slide") or {}
         if product is not None and str(product_item.get("heading", "")).strip():
-            slides.insert((len(slides) + 1) // 2, slide(product_item, product=True))
-        slides.append(slide(takeaway, final=True))
+            slides.append(slide(product_item, product=True))
+        slides.append(slide(callout, final=True))
         total = len(slides) + 1
         refs: list[dict[str, Any]] = []
         try:
@@ -358,11 +356,9 @@ class StaticAutomation:
 
             # Locked split: post-a is a pure trend post (no product), post-b is
             # always about one GOLIDE Marketplace product.
-            product = (
-                registry.choose_auto(seed=content_id)
-                if slot["slot"] == "post-b" and active_products
-                else None
-            )
+            # Every carousel carries one marketplace slide when a product is live
+            # (owner direction 2026-10-07: second to last, before the call-out).
+            product = registry.choose_auto(seed=content_id) if active_products else None
             draft = self._draft(
                 content_id=content_id,
                 slot=slot["slot"],
@@ -390,8 +386,9 @@ class StaticAutomation:
             replies = [fit_x(_drop_urls(strip_citations(str(r)))) for r in draft.get("x_replies", []) if str(r).strip()][:2]
             slides = self._carousel(draft, product)
             if slides:
-                points = len(slides) - 1 - (1 if product is not None and str((draft.get("product_slide") or {}).get("heading", "")).strip() else 0)
-                copies["instagram"] = match_counts(copies["instagram"], points)
+                points = min(5, len([p for p in (draft.get("carousel") or {}).get("points", []) if str(p.get("heading", "")).strip()]))
+                for platform in ("instagram", "facebook", "linkedin"):
+                    copies[platform] = match_counts(copies[platform], points)
                 if product is not None and "bio" not in copies["instagram"].lower():
                     copies["instagram"] = copies["instagram"].rstrip() + "\n\nLink in bio."
 
@@ -419,13 +416,15 @@ class StaticAutomation:
                         "platform": platform,
                         "title": "",
                         "body": copies[platform],
+                        # The same 8 images go to Instagram, Facebook and LinkedIn
+                        # (owner direction 2026-10-07); X stays one image (cost).
                         "media_ref": (
                             meta["media_ref"]
-                            if platform in {"instagram", "facebook"}
+                            if platform in {"instagram", "facebook"} or (slides and platform == "linkedin")
                             else square["media_ref"]
                         ),
                         "parts": (
-                            [f"slide:{ref}" for ref in slides] if platform == "instagram"
+                            [f"slide:{ref}" for ref in slides] if platform in {"instagram", "facebook", "linkedin"}
                             else replies if platform == "x" else []
                         ),
                     }

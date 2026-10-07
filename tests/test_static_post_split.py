@@ -57,13 +57,13 @@ def _automation():
 
 
 class StaticPostSplitTests(unittest.TestCase):
-    def test_both_posts_are_trend_posts_and_post_b_gets_a_product_slide(self):
+    def test_both_posts_are_trend_posts_with_a_product_slide(self):
         auto, seen = _automation()
         sunday_evening = datetime(2026, 10, 4, 18, 0, tzinfo=timezone.utc)
         results = auto.run_due(sunday_evening)
         self.assertEqual([r["slot"] for r in results], ["post-a", "post-b"])
-        self.assertIsNone(seen["post-a"])
-        self.assertIsNotNone(seen["post-b"])  # the product is offered to the evening carousel only
+        self.assertIsNotNone(seen["post-a"])  # every carousel gets one marketplace slide
+        self.assertIsNotNone(seen["post-b"])
         post_a, post_b = auto.bridge.created
         for post in (post_a, post_b):
             self.assertEqual(post["product_mode"], "brand")
@@ -79,8 +79,10 @@ class StaticPostSplitTests(unittest.TestCase):
         self.assertIn("Use web search", a)
         self.assertIn("Do not mention or promote", a)
         self.assertIn("EVENING TREND POST", b)
-        self.assertIn("product_slide", b)
+        self.assertIn("second to last", b)
         self.assertIn("CANDIDATE_PRODUCT", b)
+        self.assertIn("THE CATCH", a)
+        self.assertIn("leave heading", static_post_instructions("post-a", has_product=False))
 
 
 if __name__ == "__main__":
@@ -105,7 +107,7 @@ def test_draft_sees_recent_posts():
     assert "NEVER REPEAT YOURSELF" in seen["instructions"]
 
 
-def test_carousel_follows_the_hook_and_puts_the_product_in_the_middle():
+def test_carousel_is_five_story_slides_then_marketplace_then_callout():
     from types import SimpleNamespace
 
     from golide_engine.orchestration.static_automation import StaticAutomation
@@ -126,12 +128,12 @@ def test_carousel_follows_the_hook_and_puts_the_product_in_the_middle():
     carousel.render_slide = fake_render
     try:
         point = lambda h: {"heading": h, "emphasis": "", "text": "t"}
-        draft = {"image_hook": "Three levels of AI work. Most stop at 1.",
-                 "carousel": {"points": [point("One"), point("Two"), point("Three"), point("Four")], "takeaway": point("End")},
+        draft = {"image_hook": "AI glasses are here.",
+                 "carousel": {"points": [point(x) for x in ("1", "2", "3", "4", "5")], "callout": point("Follow")},
                  "product_slide": point("Buy")}
         refs = auto._carousel(draft, product=object())
     finally:
         carousel.render_slide = real
-    assert [r[0] for r in rendered] == ["One", "Two", "Buy", "Three", "End"]  # hook says three
-    assert rendered[2][1] and rendered[-1][2] and rendered[0][4] == 6
-    assert len(refs) == 5
+    assert [r[0] for r in rendered] == ["1", "2", "3", "4", "5", "Buy", "Follow"]
+    assert rendered[5][1] and rendered[-1][2] and rendered[0][4] == 8  # 8 images with the cover
+    assert len(refs) == 7

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+
 import os
 import time
 from dataclasses import dataclass
@@ -273,12 +275,34 @@ class FacebookPageProvider(SocialProvider):
                 if request.title.strip():  # a long landscape video, not a Reel
                     return self._publish_video(media_url, request.title.strip(), body)
                 return self._publish_reel(media_url, body)
+            if request.extra_media:
+                try:
+                    return self._publish_album(media_url, request.extra_media, body)
+                except Exception as exc:  # the post still goes out with the cover image
+                    print(json.dumps({"status": "facebook_album_fallback", "error": str(exc)[:300]}))
             result = self.graph.post(
                 f"{self.page_id}/photos",
                 url=media_url,
                 caption=body,
             )
         content_id = str(result.get("post_id") or result.get("id") or "")
+        if not content_id:
+            raise RuntimeError("Facebook did not return a post id")
+        return PublishResult(content_id=content_id, url=None)
+
+    def _publish_album(self, cover_url: str, extra: tuple[str, ...], message: str) -> PublishResult:
+        """All carousel images in one Page post: upload each unpublished, then attach."""
+        urls = [cover_url, *(_require_https_media(u) for u in extra)][:10]
+        attached = []
+        for url in urls:
+            photo = self.graph.post(f"{self.page_id}/photos", url=url, published="false")
+            photo_id = str(photo.get("id", ""))
+            if not photo_id:
+                raise RuntimeError("Facebook did not return a photo id")
+            attached.append({"media_fbid": photo_id})
+        result = self.graph.post(f"{self.page_id}/feed", message=message,
+                                 attached_media=json.dumps(attached))
+        content_id = str(result.get("id") or "")
         if not content_id:
             raise RuntimeError("Facebook did not return a post id")
         return PublishResult(content_id=content_id, url=None)
