@@ -68,3 +68,10 @@ This is the standard for every Short and long video. Don't change any of it with
 - **Shorts:** YouTube, then Instagram and Facebook Reels (with the cover frame) and a LinkedIn video.
 - **Long videos:** YouTube at 19:30, with real chapter timestamps in the description. From 7 Oct they also go to Facebook (as a native 16:9 video) and LinkedIn in the 20:00 run.
 - **Rebuilds:** `rebuild-video` makes a preview, emails it for approval, then publishes.
+
+## Static post carousel (locked 7 Oct 2026, owner approved)
+- 8 images on Instagram, Facebook and LinkedIn (X stays one image, for cost): the generated image with the hook, 5 story slides, the marketplace slide, the follow call-out.
+- The 5 story slides tell one story: what happened, why it matters to you, the catch, the smart move, do this today. Words a 12-year-old knows.
+- No titles: a big gold number, the sentence itself (key words bold), then one gold curiosity line that the next slide answers. Slide 5 ends on the payoff.
+- Marketplace slide second to last ("Link in bio"); call-out last with the "FOLLOW GOLIDE" pill.
+

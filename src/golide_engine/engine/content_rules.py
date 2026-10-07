@@ -76,9 +76,13 @@ POST STRUCTURE
       3. THE CATCH: the problem or risk most people miss.
       4. THE SMART MOVE: the one thing that solves it.
       5. DO THIS TODAY: one concrete step anyone can take in a few minutes.
-    Each slide grows out of the one before and ends with a short pull to the next
-    ("But there's a catch.", "So what do you do?", "Here's how to start.") so the
-    reader keeps swiping before being told to. Slide 5 ends with the result they get.
+    Each slide grows out of the one before and ends with ONE short curiosity line
+    (shown in gold) that opens a gap the VERY NEXT slide closes (owner direction
+    2026-10-07). It can be a question ("So what do you do?") or a teaser that is not
+    a question ("But there's a catch.", "Here's the part most people miss."); mix the
+    two, never the same line twice. The next slide must answer it directly in its
+    first sentence. Slide 5's last line is the payoff: the result the reader gets, no
+    new gap.
   * Words a 12-year-old knows. No jargon, no abstract phrases ("separate help from
     permission"), no riddles. Say the thing plainly.
   * NO TITLES (owner direction 2026-10-07): a slide is only its text, shown large
