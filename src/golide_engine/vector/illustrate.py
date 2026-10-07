@@ -94,6 +94,15 @@ room, a technician's silhouette beside it holding a clipboard"). Real objects,
 people and places drawn simply. If people appear they are Black. One clear
 focal point. No text, labels, numbers, logos or screens with readable content.
 
+VARIETY (owner direction 2026-10-07: the visuals must feel vast, never repeated):
+every scene uses a different kind of shot from the one before, mixing across
+the video: a wide scene with people in a place, a close-up of one object, a
+visual metaphor (a key, a bridge, a scale, a maze, a seed growing), a before
+and after side by side, a network or constellation of connected dots, a
+symbol drawn large (an eye, a clock, a lock), an overhead or cross-section
+view. Never draw the same main object in two scenes in a row, and never use
+the same composition twice in a short.
+
 "gold_element": the single part of the drawing that should glow because it
 carries the meaning of the scene (for example: "the heat lines").
 

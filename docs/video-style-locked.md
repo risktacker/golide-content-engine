@@ -19,7 +19,7 @@ This is the standard for every Short and long video. Don't change any of it with
 - **Follow call-out (7 Oct):**
   - One natural spoken sentence asking viewers to follow GOLIDE and come back, with a reason, never a plea.
   - Spoken as "follow us" or "follow the channel". The brand name is never said aloud in any script (a Bantu word for gold, easily misheard); the screen pill shows it.
-  - Asked once, as the final sentence, after the value has been given (owner review 7 Oct: never mid-script).
+  - Asked once at the end, after the value, followed by one short closing sentence (reference endings).
   - Fresh wording every video. Never "comment to receive", likes, shares, links or the bio.
   - A check rewrites the draft once if the call-out is missing, late, too long or asks for comments.
 
@@ -41,7 +41,13 @@ This is the standard for every Short and long video. Don't change any of it with
   - 16:9: drawings sit between 19% and 76% of the height, below the chapter card, with captions at 86%.
   - The image prompt asks for a compact, centred scene with empty margins and no edge-to-edge ground line.
   - A multi-word key term lights up only where it is said, not every repeat of its words.
-- **Follow pill (7 Oct):** while the follow sentence is spoken, a gold "+ FOLLOW GOLIDE" pill eases in where the line tag sits.
+- **Reference-style update (7 Oct, approved by the owner at 18:24):**
+  - Ending: value first, then "So follow the channel, …" with a white **+ FOLLOW GOLIDE** pill under the captions (top in 16:9), then one closing line as it turns to **✓ MORE ON ITS WAY**.
+  - Accent colour per scene by meaning: gold, rose, teal, ivory or copper; never the same three scenes running. Softer accent glow; closed shapes get a faint pencil-shaded fill.
+  - Shorts 7–10 scenes, long videos 12–18, each a different kind of shot (wide scene, close-up, metaphor, before/after, network, large symbol, cross-section).
+  - The first picture is drawn by the pen; later pictures fade in already drawn while the old one drifts and fades, then the accent lights up.
+  - Action sounds, only when a line describes the action and timed to the word: bling, chime, phone ring, notification, door open/shut, car, computer blips, coin, typing, clock, camera. At least 3 s apart. A bling as an accent lights up; a bling and chime on the follow pill.
+- **Follow pill:** superseded by the white call-out pill above.
 - **Thumbnails and covers:** a black-theme line-art YouTube thumbnail. The Reel cover is the most fully drawn early frame.
 
 ## Sound
