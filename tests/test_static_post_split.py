@@ -57,23 +57,20 @@ def _automation():
 
 
 class StaticPostSplitTests(unittest.TestCase):
-    def test_post_a_has_no_product_and_post_b_always_has_one(self):
+    def test_both_posts_are_trend_posts_and_post_b_gets_a_product_slide(self):
         auto, seen = _automation()
         sunday_evening = datetime(2026, 10, 4, 18, 0, tzinfo=timezone.utc)
         results = auto.run_due(sunday_evening)
         self.assertEqual([r["slot"] for r in results], ["post-a", "post-b"])
         self.assertIsNone(seen["post-a"])
-        self.assertIsNotNone(seen["post-b"])
+        self.assertIsNotNone(seen["post-b"])  # the product is offered to the evening carousel only
         post_a, post_b = auto.bridge.created
-        self.assertEqual(post_a["resolved_product_id"], "")
-        self.assertEqual(post_b["resolved_product_id"], seen["post-b"].id)
-        bodies = {v["platform"]: v["body"] for v in post_b["variants"]}
-        url = seen["post-b"].marketplace_url
-        self.assertIn(url, bodies["facebook"])
-        self.assertIn(url, bodies["linkedin"])
-        self.assertNotIn("http", bodies["instagram"])  # links in bio there
-        self.assertNotIn("http", bodies["x"])          # X bills link posts ~13x
-        self.assertIn("Link in bio", bodies["x"])
+        for post in (post_a, post_b):
+            self.assertEqual(post["product_mode"], "brand")
+            self.assertEqual(post["resolved_product_id"], "")
+            bodies = {v["platform"]: v["body"] for v in post["variants"]}
+            self.assertNotIn(seen["post-b"].marketplace_url, " ".join(bodies.values()))
+            self.assertNotIn("http", bodies["x"])
 
     def test_rulebook_differs_per_slot(self):
         a = static_post_instructions("post-a")
@@ -81,8 +78,9 @@ class StaticPostSplitTests(unittest.TestCase):
         self.assertIn("TREND POST", a)
         self.assertIn("Use web search", a)
         self.assertIn("Do not mention or promote", a)
-        self.assertIn("PRODUCT POST", b)
-        self.assertIn("subject of this post", b)
+        self.assertIn("EVENING TREND POST", b)
+        self.assertIn("product_slide", b)
+        self.assertIn("CANDIDATE_PRODUCT", b)
 
 
 if __name__ == "__main__":
@@ -105,3 +103,35 @@ def test_draft_sees_recent_posts():
     auto._draft(content_id="c", slot="post-b", product=None)
     assert "RECENT_POSTS=" in seen["body"] and "scattered search" in seen["body"]
     assert "NEVER REPEAT YOURSELF" in seen["instructions"]
+
+
+def test_carousel_follows_the_hook_and_puts_the_product_in_the_middle():
+    from types import SimpleNamespace
+
+    from golide_engine.orchestration.static_automation import StaticAutomation
+
+    rendered = []
+    auto = StaticAutomation.__new__(StaticAutomation)
+    auto.media_store = SimpleNamespace(upload_bytes=lambda **kw: SimpleNamespace(
+        media_ref="r2://s/" + kw["filename"], expires_at=datetime(2026, 10, 8, tzinfo=timezone.utc)))
+    auto.bridge = SimpleNamespace(register_media=lambda refs: None)
+    import golide_engine.engine.carousel as carousel
+    real = carousel.render_slide
+
+    def fake_render(slide, number, total, output, theme=None):
+        rendered.append((slide.heading, slide.product, slide.final, number, total))
+        output.write_bytes(b"x")
+        return output
+
+    carousel.render_slide = fake_render
+    try:
+        point = lambda h: {"heading": h, "emphasis": "", "text": "t"}
+        draft = {"image_hook": "Three levels of AI work. Most stop at 1.",
+                 "carousel": {"points": [point("One"), point("Two"), point("Three"), point("Four")], "takeaway": point("End")},
+                 "product_slide": point("Buy")}
+        refs = auto._carousel(draft, product=object())
+    finally:
+        carousel.render_slide = real
+    assert [r[0] for r in rendered] == ["One", "Two", "Buy", "Three", "End"]  # hook says three
+    assert rendered[2][1] and rendered[-1][2] and rendered[0][4] == 6
+    assert len(refs) == 5

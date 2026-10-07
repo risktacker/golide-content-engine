@@ -23,6 +23,7 @@ class Slide:
     text: str
     emphasis: str = ""
     final: bool = False
+    product: bool = False  # the marketplace slide in the evening carousel
 
 
 def _background(theme: Theme, size: tuple[int, int]):
@@ -68,6 +69,10 @@ def render_slide(slide: Slide, number: int, total: int, output: Path, theme: The
     # Counter, top left: "02 / 05" in gold mono.
     mono = ImageFont.truetype(str(theme.font("mono")), int(width * 0.026))
     draw.text((margin, int(height * 0.075)), f"{number:02d} / {total:02d}", font=mono, fill=theme.rgb("gold") + (255,))
+    if slide.product:
+        tag = "F R O M   T H E   G O L I D E   M A R K E T P L A C E"
+        tw = draw.textlength(tag, font=mono)
+        draw.text(((width - tw) / 2, int(height * 0.22)), tag, font=mono, fill=theme.rgb("gold") + (255,))
 
     # Heading: large, light, key words bold and glowing.
     tokens = tokenize(" ".join(slide.heading.split()), slide.emphasis or "")
@@ -98,11 +103,16 @@ def render_slide(slide: Slide, number: int, total: int, output: Path, theme: The
     y += rule
     _block(draw, body_lines, body_fonts, y, width, body_lh, theme, color="text_muted")
 
-    if slide.final:
+    if slide.final or slide.product:
+        # The closing slide asks for the follow; the product slide points to the bio link.
+        cta = "F O L L O W   G O L I D E   F O R   M O R E" if slide.final else "L I N K   I N   B I O"
         cta_font = ImageFont.truetype(str(theme.font("mono")), int(width * 0.028))
-        cta = "S A V E   T H I S   F O R   L A T E R"
         tw = draw.textlength(cta, font=cta_font)
-        draw.text(((width - tw) / 2, int(height * 0.84)), cta, font=cta_font, fill=gold + (255,))
+        pad_x, pad_y = int(width * 0.05), int(height * 0.022)
+        box = (int((width - tw) / 2) - pad_x, int(height * 0.83) - pad_y,
+               int((width + tw) / 2) + pad_x, int(height * 0.83) + int(cta_font.size * 1.2) + pad_y)
+        draw.rounded_rectangle(box, radius=(box[3] - box[1]) // 2, outline=gold + (230,), width=2)
+        draw.text(((width - tw) / 2, int(height * 0.83)), cta, font=cta_font, fill=gold + (255,))
 
     blur = theme.glow["text_blur_radius"] * width / 1080
     glow_img = glow_layer.filter(ImageFilter.GaussianBlur(blur))

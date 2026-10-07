@@ -66,15 +66,19 @@ STATIC_STRUCTURE_RULES = """\
 POST STRUCTURE
 - value_units: 3 or 4 short points that solve ONE clear problem in order. Each point is
   1 or 2 sentences and stands on its own. Not a list of unrelated tips.
-- carousel (Instagram slides 2 to 5; slide 1 is the image with the hook): exactly 4
-  slides. Slides 1 to 3 each carry one point in order; slide 4 is the takeaway.
-  * heading: 3 to 7 words, the point itself, readable at a glance.
-  * emphasis: 1 to 3 words copied exactly from the heading (they glow).
-  * text: one supporting sentence, at most 22 words, concrete.
+- carousel (Instagram; slide 1 is the image with the hook):
+  * points: one slide per value unit, the SAME number and order as value_units.
+  * takeaway: the closing slide, the one idea to remember.
+  * Each slide: heading 3 to 7 words (the point itself, readable at a glance),
+    emphasis 1 to 3 words copied exactly from the heading, text one supporting
+    sentence of at most 22 words.
+  * CONSISTENCY: if the hook promises a number ("3 levels", "four signs"), there must be
+    exactly that many points, and every caption must use that same number. If there
+    is no number in the hook, do not mention a count anywhere.
 - platform_copy, same truth adapted natively. Never put a URL in any copy; the engine
   adds links only where they belong.
   * instagram: the hook as the first line, a blank line, two or three short lines
-    that make people swipe ("Swipe through the 4 steps."), then one question that
+    that make people swipe ("Swipe through."), then one question that
     invites a comment.
   * facebook: TWO paragraphs of about five lines each (4 to 6 sentences, 60 to 90 words
     per paragraph; shorter paragraphs are not acceptable). Paragraph one is a concrete,
@@ -90,50 +94,67 @@ POST STRUCTURE
 - x_replies: exactly two replies posted under the X post, each under 260 characters,
   no links, no hashtags. Reply one adds the most practical step. Reply two asks a
   specific question that invites people to answer in the comments.
-- source_url: for a trend post, the single most credible source page you used (the
-  article itself, https). For a product post, an empty string.
+- source_url: the single most credible source page you used (the article itself, https).
 - title: a plain internal label for the post (not shown publicly).
 
 NEVER REPEAT YOURSELF
 - RECENT_POSTS lists what GOLIDE already published in the last three weeks.
 - Do not reuse any hook, hook shape ("X isn't the problem, Y is"), opening line,
   scenario or point from it, and do not paraphrase one.
-- When the product is the same as a recent post, choose a NEW angle: a different
-  reader moment (before applying, after a rejection, during interview prep, when
-  switching careers), a different pain or benefit, a different proof. Name the
-  angle you chose in "weekly_theme".
+- Never cover the same story or announcement as a recent post; if the same company is
+  in the news again, take a clearly different story. Name the story in "weekly_theme".
 - The image concept must use a different object and metaphor from the one a recent
   hook would suggest (no second funnel, staircase or door in a row).
 """
 
-POST_A_TREND_RULES = """\
-THIS IS POST A: THE TREND POST.
-- Use web search. Find what is being talked about RIGHT NOW (last 7 days) in technology,
-  AI, software, careers in tech, the future of work, digital productivity or online
-  business. Prefer topics with visible public momentum: a launch, a shift, a debate, a
-  number that changed.
-- Turn the news into a lesson the reader can use. Do not write a news report.
-- Do not mention or promote any GOLIDE product. No links. use_product must be false and
-  product_bridge_position must be 0.
+TREND_TASTE_RULES = """\
+WHAT TO TALK ABOUT: THE AI AND TECH GIST EVERYONE IS DISCUSSING
+- Use web search. Pick the story people are actually talking about RIGHT NOW (last 7
+  days): a launch, a viral demo, a big move or statement from a company or leader
+  everyone knows (OpenAI, Google, Meta, Apple, Microsoft, Nvidia, Tesla, xAI, Amazon,
+  Samsung; Sam Altman, Mark Zuckerberg, Elon Musk, Jensen Huang, Sundar Pichai), a
+  change that reaches ordinary people's phones, jobs, money, school or daily life, or a
+  debate where people have opinions.
+- The test: would a curious person who is NOT in tech stop scrolling, understand it in
+  one read, and want to say what they think in the comments? Write for the AI
+  enthusiast, the student, the parent, the small business owner.
+- Avoid deep technical topics that need special background (cryptography internals,
+  chip architecture, research papers) unless the story itself is mainstream news, and
+  then explain it in everyday words with zero jargon. Never assume the reader knows a
+  term; if a term is unavoidable, say what it means in plain words.
+- What leaders said or did is fair game when credible outlets report it; quote or
+  describe it accurately and say who said it. No rumours, no private life, no party
+  politics.
+- Turn the story into something useful: what it means for the reader, what to do or
+  watch for. Then end with a question people want to answer ("Would you trust it?",
+  "Is this a good move?"), because the goal is conversation.
+- Do not mention or promote any GOLIDE product in the copy. use_product must be false
+  and product_bridge_position must be 0.
 """
 
+POST_A_TREND_RULES = """\
+THIS IS POST A: THE MORNING TREND POST.
+""" + TREND_TASTE_RULES
+
 POST_B_PRODUCT_RULES = """\
-THIS IS POST B: THE GOLIDE MARKETPLACE PRODUCT POST.
-- The supplied CANDIDATE_PRODUCT is the subject of this post. use_product must be true.
-- Lead with the reader's problem the product solves, never with the product name.
-  The hook names the problem or the result, not the brand.
-- value_units: point 1 sharpens the problem, point 2 or 3 shows how the product solves it
-  (set product_bridge_position to that point), the last point gives one action the reader
-  can take today.
-- Use only facts present in CANDIDATE_PRODUCT. Do not invent features, prices,
-  testimonials, numbers of users or results.
-- Do not paste the URL; the engine appends the product link itself where links belong
-  (Facebook, LinkedIn). On Instagram and X it says the link is in the bio.
+THIS IS POST B: THE EVENING TREND POST.
+- A DIFFERENT story from this morning's post (it is in RECENT_POSTS): another company,
+  another kind of story.
+""" + TREND_TASTE_RULES + """\
+- product_slide: ONE extra Instagram slide that sits in the middle of the carousel and
+  introduces CANDIDATE_PRODUCT to the same reader: heading 3 to 7 words naming the
+  result it gives, emphasis copied from the heading, text one sentence using only facts
+  in CANDIDATE_PRODUCT (no invented features, prices, users or results). The engine
+  adds "Link in bio". Bridge it naturally from the topic where you can.
+"""
+
+PRODUCT_SLIDE_EMPTY = """\
+- product_slide: leave heading, emphasis and text as empty strings.
 """
 
 
 def static_post_instructions(slot: str) -> str:
-    lane = POST_A_TREND_RULES if slot == "post-a" else POST_B_PRODUCT_RULES
+    lane = POST_A_TREND_RULES + PRODUCT_SLIDE_EMPTY if slot == "post-a" else POST_B_PRODUCT_RULES
     return (
         "You write one static social post for GOLIDE, a marketplace for digital products, "
         "software and tools. The operator supplies no topic.\n\n"

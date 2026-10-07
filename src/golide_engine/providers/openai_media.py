@@ -221,11 +221,14 @@ class OpenAICaptionProvider:
     def __init__(self, model: str = "whisper-1"):
         self.model = model
 
-    def transcribe_words(self, audio: Path) -> ProviderOutput:
+    def transcribe_words(self, audio: Path, prompt: str = "") -> ProviderOutput:
+        # The prompt teaches the transcriber how to spell names it would otherwise
+        # guess (GOLIDE, product and company names from the script).
+        extra = {"prompt": prompt[:900]} if prompt.strip() else {}
         with audio.open("rb") as handle:
             response = client().audio.transcriptions.create(
                 model=self.model, file=handle, response_format="verbose_json",
-                timestamp_granularities=["word"],
+                timestamp_granularities=["word"], **extra,
             )
         words = [
             {"word": item.word, "start": float(item.start), "end": float(item.end)}

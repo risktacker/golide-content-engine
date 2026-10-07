@@ -30,13 +30,26 @@ from ..storage.database import Database
 from ..youtube.demand import TopicDemandRejected, YouTubeDemandGate
 from ..youtube_metadata import load_metadata_policy, validate_upload_metadata
 from .schemas import METADATA_SCHEMA, RESEARCH_SCHEMA, STORYBOARD_SCHEMA, TREND_CANDIDATES_SCHEMA
-from ..engine.content_rules import SCRIPT_SCHEMA, chapter_problems, flow_problems, script_display, script_instructions, script_text
+from ..engine.content_rules import TREND_TASTE_RULES, SCRIPT_SCHEMA, chapter_problems, flow_problems, script_display, script_instructions, script_text
 from .recording import RecordingLengthError, check_recording_length
 from .stage_runner import StageRunner
 
 
 class RenderHeld(RuntimeError):
     """The owner has paused rendering until a new visual style is approved."""
+
+
+def transcription_prompt(script: str) -> str:
+    """Spelling hints for speech-to-text: the brand plus the script's names.
+
+    Whisper-style models copy the spelling of words they see in the prompt, so
+    "GOLIDE" (said "GO-lide") is written correctly instead of a sound-alike.
+    """
+    names: list[str] = []
+    for word in re.findall(r"\b[A-Z][A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)?\b", script):
+        if word not in names and word.lower() not in {"i", "the", "a", "an", "and", "but", "so", "you", "it", "this", "that"}:
+            names.append(word)
+    return "GOLIDE, golidee.com. " + ", ".join(names[:60]) + "."
 
 
 def render_hold_reason(root: Path, format_name: str) -> str | None:
@@ -378,8 +391,10 @@ class ProductionService:
                         stage="trend-candidates",
                     )
                     output = text.generate_json(
-                        "Create 3 to 5 original G$LIDE science, technology, unusual-true-event or impossible-but-real explainer candidates from current YouTube platform signals. Compare the candidates for current demand, visual explanation potential, evidence strength, broad curiosity and novelty. Do not copy video titles or premises. Do not reuse or lightly reword any recently produced/trial topic supplied in RECENT G$LIDE TOPICS. Each candidate must have a concise search query and one direct authoritative primary or institutional source URL found through web search. Reject gossip, celebrity news, politics, unsupported claims and topics that cannot support a premium visual explanation.",
-                        f"CURRENT BRIEF\n{spec['brief']}\n\nRECENT G$LIDE TOPICS\n{json.dumps(recent_titles)}\n\nPLATFORM TREND SEEDS\n{seed_packet}",
+                        "Create 3 to 5 original GOLIDE video topic candidates from current YouTube platform signals and this week's AI and tech news.\n\n"
+                        + TREND_TASTE_RULES.split("- Do not mention or promote")[0]
+                        + "\nCompare the candidates for how much people are talking about it right now, how easy it is for a non-technical viewer to follow, how much it invites comments and opinions, visual explanation potential and evidence strength. Prefer the story everyone is discussing over an academic or specialist subject. Do not copy video titles or premises. Do not reuse or lightly reword any recently produced topic supplied in RECENT GOLIDE TOPICS. Each candidate must have a concise search query and one direct credible source URL (the company, the original report or a major outlet) found through web search. Reject rumours, private-life gossip, party politics and unsupported claims.",
+                        f"CURRENT BRIEF\n{spec['brief']}\n\nRECENT GOLIDE TOPICS\n{json.dumps(recent_titles)}\n\nPLATFORM TREND SEEDS\n{seed_packet}",
                         TREND_CANDIDATES_SCHEMA,
                         web_search=True,
                         max_output_tokens=3000,
@@ -590,7 +605,10 @@ class ProductionService:
                 raise
 
             captioner = self.providers.captions(live=True)
-            output = captioner.transcribe_words(narration)
+            try:
+                output = captioner.transcribe_words(narration, prompt=transcription_prompt(script))
+            except TypeError:  # providers without spelling hints
+                output = captioner.transcribe_words(narration)
             words = output.value
             if not words:
                 raise RuntimeError("owner voice transcription returned no word timing")

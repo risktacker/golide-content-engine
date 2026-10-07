@@ -54,13 +54,14 @@ def build_spec(rule: dict[str, Any], day, timezone_name: str, channel_id: str) -
         "format": format,
         "title": f"GOLIDE {format.title()} · {day.isoformat()}",
         "brief": (
-            "Choose an original evidence-backed GOLIDE technology, software or business topic "
-            "with strong current niche demand and a timely angle. Prioritize useful changes, tools, "
-            "workflows, industry shifts or surprising real mechanisms. Keep Shorts and long-form "
+            "Choose the AI or tech story people are talking about this week (a launch, a viral demo, "
+            "a big company move or what a well-known tech leader said or did) and explain what it "
+            "means for ordinary people in plain words, so a curious non-technical viewer follows it "
+            "and wants to comment. Evidence-backed only. Keep Shorts and long-form "
             "product-independent; never turn scheduled video into a GOLIDE product advertisement "
             "and never copy an existing video."
         ),
-        "demand_query": "current technology software business trends",
+        "demand_query": "AI tech news everyone is talking about this week",
         "demand_validation_required": True,
         "budget_class": "scheduled",
         "purpose": "channel-automation",

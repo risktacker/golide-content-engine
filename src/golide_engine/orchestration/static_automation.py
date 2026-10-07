@@ -18,6 +18,17 @@ from golide_engine.storage.r2 import r2_store_from_environment
 from golide_engine.studio_bridge import StudioBridge
 
 
+_SLIDE: dict[str, Any] = {
+    "type": "object",
+    "additionalProperties": False,
+    "properties": {
+        "heading": {"type": "string"},
+        "emphasis": {"type": "string"},
+        "text": {"type": "string"},
+    },
+    "required": ["heading", "emphasis", "text"],
+}
+
 STATIC_DRAFT_SCHEMA: dict[str, Any] = {
     "type": "object",
     "additionalProperties": False,
@@ -49,20 +60,15 @@ STATIC_DRAFT_SCHEMA: dict[str, Any] = {
             "required": ["instagram", "facebook", "linkedin", "x"],
         },
         "carousel": {
-            "type": "array",
-            "minItems": 4,
-            "maxItems": 4,
-            "items": {
-                "type": "object",
-                "additionalProperties": False,
-                "properties": {
-                    "heading": {"type": "string"},
-                    "emphasis": {"type": "string"},
-                    "text": {"type": "string"},
-                },
-                "required": ["heading", "emphasis", "text"],
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "points": {"type": "array", "minItems": 3, "maxItems": 4, "items": _SLIDE},
+                "takeaway": _SLIDE,
             },
+            "required": ["points", "takeaway"],
         },
+        "product_slide": _SLIDE,
         "x_replies": {
             "type": "array",
             "minItems": 2,
@@ -82,7 +88,7 @@ STATIC_DRAFT_SCHEMA: dict[str, Any] = {
     },
     "required": [
         "title", "weekly_theme", "content_lane", "value_units",
-        "platform_copy", "carousel", "x_replies", "source_url",
+        "platform_copy", "carousel", "product_slide", "x_replies", "source_url",
         "image_hook", "image_hook_emphasis",
         "image_concept", "glow_color",
         "use_product", "product_bridge_position",
@@ -211,26 +217,38 @@ class StaticAutomation:
         draft["_request_id"] = output.request_id
         return draft
 
-    def _carousel(self, draft: dict[str, Any]) -> list[str]:
-        """Render and upload the four text slides; a failure leaves a single image."""
+    def _carousel(self, draft: dict[str, Any], product=None) -> list[str]:
+        """Render and upload the text slides; a failure leaves a single image.
+
+        Order: the points (as many as the hook promises), the marketplace slide in
+        the middle of the evening post, then the takeaway with "Follow GOLIDE".
+        """
         from golide_engine.engine.carousel import Slide, render_slide
 
-        items = [s for s in draft.get("carousel", []) if str(s.get("heading", "")).strip()][:4]
-        if len(items) != 4:
+        def slide(item, **kind):
+            return Slide(heading=strip_citations(str(item.get("heading", ""))),
+                         text=strip_citations(str(item.get("text", ""))),
+                         emphasis=str(item.get("emphasis", "")), **kind)
+
+        carousel = draft.get("carousel") or {}
+        points = [p for p in carousel.get("points", []) if str(p.get("heading", "")).strip()]
+        takeaway = carousel.get("takeaway") or {}
+        if len(points) < 2 or not str(takeaway.get("heading", "")).strip():
             return []
+        promised = hook_count(str(draft.get("image_hook", "")))
+        if promised and 2 <= promised < len(points):
+            points = points[:promised]  # the hook's number wins
+        slides = [slide(p) for p in points]
+        product_item = draft.get("product_slide") or {}
+        if product is not None and str(product_item.get("heading", "")).strip():
+            slides.insert((len(slides) + 1) // 2, slide(product_item, product=True))
+        slides.append(slide(takeaway, final=True))
+        total = len(slides) + 1
         refs: list[dict[str, Any]] = []
         try:
             with tempfile.TemporaryDirectory(prefix="golide-carousel-") as tmp:
-                for index, item in enumerate(items):
-                    path = render_slide(
-                        Slide(
-                            heading=strip_citations(str(item["heading"])),
-                            text=strip_citations(str(item.get("text", ""))),
-                            emphasis=str(item.get("emphasis", "")),
-                            final=index == 3,
-                        ),
-                        index + 2, 5, Path(tmp) / f"slide-{index + 2}.jpg",
-                    )
+                for index, item in enumerate(slides):
+                    path = render_slide(item, index + 2, total, Path(tmp) / f"slide-{index + 2}.jpg")
                     upload = self.media_store.upload_bytes(
                         filename=f"golide-auto-slide-{index + 2}.jpg",
                         media_kind="image",
@@ -350,14 +368,10 @@ class StaticAutomation:
                 slot=slot["slot"],
                 product=product,
             )
-            use_product = product is not None
-            bridge_position = (
-                int(draft["product_bridge_position"])
-                if use_product
-                else 0
-            )
-            if use_product and bridge_position not in {2, 3}:
-                bridge_position = 2
+            # Both daily posts are trend posts; the product only appears as one
+            # Instagram slide in the evening carousel (owner direction 2026-10-07).
+            use_product = False
+            bridge_position = 0
 
             meta, square = self._generate_image(draft)
             units = [strip_citations(str(item)) for item in draft["value_units"] if str(item).strip()]
@@ -365,21 +379,21 @@ class StaticAutomation:
                 key: strip_citations(str(value))
                 for key, value in draft["platform_copy"].items()
             }
-            # Links live where readers can click them: Facebook and LinkedIn get the
-            # product link (Post B) or the source (Post A); Instagram and X point to
-            # the link in bio, and X never carries a URL (X bills a link post ~13x).
-            link = product.marketplace_url if use_product else clean_url(str(draft.get("source_url", "")))
+            link = clean_url(str(draft.get("source_url", "")))
             for platform in ("facebook", "linkedin"):
-                if link and link not in copies[platform]:
-                    label = "" if use_product else "Source: "
-                    copies[platform] = copies[platform].rstrip() + "\n\n" + label + link
+                copies[platform] = _drop_urls(copies[platform])
+                if link:
+                    copies[platform] = copies[platform].rstrip() + "\n\nSource: " + link
             for platform in ("instagram", "x"):
                 copies[platform] = _drop_urls(copies[platform])
-                if use_product and "bio" not in copies[platform].lower():
-                    copies[platform] = copies[platform].rstrip() + "\n\nLink in bio."
             copies["x"] = fit_x(copies["x"])
             replies = [fit_x(_drop_urls(strip_citations(str(r)))) for r in draft.get("x_replies", []) if str(r).strip()][:2]
-            slides = self._carousel(draft)
+            slides = self._carousel(draft, product)
+            if slides:
+                points = len(slides) - 1 - (1 if product is not None and str((draft.get("product_slide") or {}).get("heading", "")).strip() else 0)
+                copies["instagram"] = match_counts(copies["instagram"], points)
+                if product is not None and "bio" not in copies["instagram"].lower():
+                    copies["instagram"] = copies["instagram"].rstrip() + "\n\nLink in bio."
 
             scheduled_utc = slot["scheduled_at"].astimezone(timezone.utc).isoformat()
             payload = {
@@ -437,3 +451,35 @@ def _drop_urls(text: str) -> str:
 
     cleaned = re.sub(r"\s*https?://\S+", "", text)
     return re.sub(r"\n{3,}", "\n\n", cleaned).strip()
+
+
+_NUMBER_WORDS = {"two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10}
+_COUNT_NOUNS = r"(steps?|levels?|ways?|signs?|things?|lessons?|mistakes?|rules?|tips?|ideas?|points?|reasons?|moves?|questions?|habits?|stages?)"
+
+
+def hook_count(hook: str) -> int | None:
+    """The number of items a hook promises ("3 levels", "Three signs"), if any."""
+    import re
+
+    match = re.search(r"\b(\d{1,2}|" + "|".join(_NUMBER_WORDS) + r")\b\s+(?:\w+\s+)?" + _COUNT_NOUNS, hook, re.I)
+    if not match:
+        return None
+    value = match.group(1).lower()
+    return int(value) if value.isdigit() else _NUMBER_WORDS[value]
+
+
+def match_counts(caption: str, points: int) -> str:
+    """Make every "N steps/levels/..." in a caption agree with the slides."""
+    import re
+
+    words = {v: k for k, v in _NUMBER_WORDS.items()}
+
+    def fix(match):
+        value = match.group(1)
+        new = str(points) if value.isdigit() else words.get(points, str(points))
+        if value[:1].isupper():
+            new = new.capitalize()
+        return new + match.group(2)
+
+    return re.sub(r"\b(\d{1,2}|" + "|".join(_NUMBER_WORDS) + r"|" + "|".join(w.capitalize() for w in _NUMBER_WORDS) + r")(\s+(?:\w+\s+)?" + _COUNT_NOUNS + r")",
+                  fix, caption)

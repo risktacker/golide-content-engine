@@ -32,7 +32,7 @@ class VoiceProvider(Protocol):
 
 
 class CaptionProvider(Protocol):
-    def transcribe_words(self, audio: Path) -> ProviderOutput: ...
+    def transcribe_words(self, audio: Path, prompt: str = "") -> ProviderOutput: ...
 
 
 class ThumbnailProvider(Protocol):
