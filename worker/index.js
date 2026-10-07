@@ -1,4 +1,4 @@
-import { closeThread, emailScript, receiveMail, sendAndRecord } from "./mail.js";
+import { closeThread, deleteThread, emailScript, markRead, receiveMail, sendAndRecord, unreadCount } from "./mail.js";
 import {
   ensureSocialOauthSchema,
   handleSocialOauthCallback,
@@ -227,6 +227,8 @@ async function ensureSchema(db){
   for(const sql of statements) await db.prepare(sql).run();
   try{await db.prepare(`ALTER TABLE engine_connections ADD COLUMN verification_status TEXT NOT NULL DEFAULT 'unknown'`).run();}catch{}
   try{await db.prepare(`ALTER TABLE engine_connections ADD COLUMN verification_note TEXT NOT NULL DEFAULT ''`).run();}catch{}
+  try{await db.prepare(`ALTER TABLE inbox_threads ADD COLUMN unread INTEGER NOT NULL DEFAULT 0`).run();}catch{}
+  try{await db.prepare(`ALTER TABLE production_jobs ADD COLUMN archived_at TEXT`).run();}catch{}
   await ensureSocialOauthSchema(db);
   await db.prepare(`INSERT OR IGNORE INTO automation_control(id,enabled,updated_at,updated_by) VALUES(1,0,?,'deployment-default')`)
     .bind(nowIso()).run();
@@ -279,7 +281,7 @@ async function listPosts(db,status){
 }
 
 async function inbox(db){
-  const threads=(await db.prepare(`SELECT id,platform,participant_ref,subject,status,last_message_at FROM inbox_threads WHERE status='open' ORDER BY COALESCE(last_message_at,created_at) DESC`).all()).results||[];
+  const threads=(await db.prepare(`SELECT id,platform,participant_ref,subject,status,last_message_at,unread FROM inbox_threads WHERE status='open' ORDER BY COALESCE(last_message_at,created_at) DESC`).all()).results||[];
   for(const thread of threads){
     thread.messages=(await db.prepare(`SELECT direction,body,created_at FROM inbox_messages WHERE thread_id=? ORDER BY created_at ASC`).bind(thread.id).all()).results||[];
   }
@@ -456,7 +458,12 @@ async function createPost(env,payload){
 async function listProductionJobs(db){
   const {results=[]}=await db.prepare(`SELECT job_id,format,status,stage,title,selected_topic,script,owner_voice_media_ref,
     generate_at,scheduled_at,actual_cost_usd,openai_cost_usd,run_url,release_url,error,claimed_at,created_at,updated_at
-    FROM production_jobs ORDER BY COALESCE(scheduled_at,generate_at,created_at) DESC LIMIT 100`).all();
+    FROM production_jobs
+    WHERE archived_at IS NULL
+      -- finished videos leave the list on their own three days after release
+      AND NOT (status IN ('scheduled','completed','published','topic_rejected')
+               AND COALESCE(scheduled_at,updated_at) < datetime('now','-3 days'))
+    ORDER BY COALESCE(scheduled_at,generate_at,created_at) DESC LIMIT 100`).all();
   return results;
 }
 
@@ -1094,12 +1101,46 @@ async function handleApi(request,env,url){
   }
   const closeMatch=url.pathname.match(/^\/api\/inbox\/([^/]+)\/close$/);
   if(closeMatch&&request.method==="POST"){await closeThread(env.DB,decodeURIComponent(closeMatch[1]));return json({status:"closed"});}
+  const archiveMatch=url.pathname.match(/^\/api\/production-jobs\/([^/]+)\/archive$/);
+  if(archiveMatch&&request.method==="POST"){
+    await env.DB.prepare(`UPDATE production_jobs SET archived_at=? WHERE job_id=? AND status NOT IN ('claimed','running','waiting_owner_voice','queued')`)
+      .bind(nowIso(),decodeURIComponent(archiveMatch[1])).run();
+    return json({status:"archived"});
+  }
+  if(url.pathname==="/api/attention"&&request.method==="GET"){
+    const {results=[]}=await env.DB.prepare(`SELECT p.id,p.title,p.content_class,p.status,p.scheduled_at,
+        v.platform,v.status vstatus,v.last_error FROM content_posts p JOIN social_variants v ON v.post_id=p.id
+      WHERE p.status IN ('failed','partial') ORDER BY p.scheduled_at DESC`).all();
+    const items={};
+    for(const r of results){
+      const item=items[r.id]||(items[r.id]={id:r.id,title:r.title,content_class:r.content_class,status:r.status,scheduled_at:r.scheduled_at,failed:[],published:[]});
+      if(r.vstatus==="published") item.published.push(r.platform); else item.failed.push({platform:r.platform,error:r.last_error||""});
+    }
+    return json({items:Object.values(items)});
+  }
+  const postActionMatch=url.pathname.match(/^\/api\/posts\/([^/]+)\/(retry|dismiss)$/);
+  if(postActionMatch&&request.method==="POST"){
+    const id=decodeURIComponent(postActionMatch[1]);
+    if(postActionMatch[2]==="retry"){
+      // Clear the failed attempts so the next publishing run tries the failed networks once more.
+      await env.DB.prepare(`DELETE FROM publish_attempts WHERE post_id=? AND status='failed'`).bind(id).run();
+      await env.DB.prepare(`UPDATE content_posts SET status='partial',updated_at=? WHERE id=? AND status IN ('failed','partial')`).bind(nowIso(),id).run();
+      return json({status:"retry_queued"});
+    }
+    await env.DB.prepare(`UPDATE content_posts SET status='dismissed',updated_at=? WHERE id=? AND status IN ('failed','partial')`).bind(nowIso(),id).run();
+    return json({status:"dismissed"});
+  }
   const scriptMailMatch=url.pathname.match(/^\/api\/production-jobs\/([^/]+)\/email-script$/);
   if(scriptMailMatch&&request.method==="POST"){
     const job=await env.DB.prepare(`SELECT job_id,format,title,script FROM production_jobs WHERE job_id=?`).bind(decodeURIComponent(scriptMailMatch[1])).first();
     if(!job) return err("job not found",404);
     try{return json(await emailScript(env,job));}catch(e){return err(e?.message||String(e),400);}
   }
+  const readMatch=url.pathname.match(/^\/api\/inbox\/([^/]+)\/read$/);
+  if(readMatch&&request.method==="POST"){await markRead(env.DB,decodeURIComponent(readMatch[1]));return json({status:"read"});}
+  const deleteMatch=url.pathname.match(/^\/api\/inbox\/([^/]+)\/delete$/);
+  if(deleteMatch&&request.method==="POST"){await deleteThread(env.DB,decodeURIComponent(deleteMatch[1]));return json({status:"deleted"});}
+  if(url.pathname==="/api/inbox/unread"&&request.method==="GET") return json({count:await unreadCount(env.DB)});
   if(url.pathname==="/api/inbox/status"&&request.method==="GET") return json({sending:Boolean(env.RESEND_API_KEY),address:"hello@golidee.com"});
   if(url.pathname==="/api/connections"&&request.method==="GET") return json({connections:await connectionRows(env.DB,env)});
   if(url.pathname==="/api/x/connect"&&request.method==="GET"){

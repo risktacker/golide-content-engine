@@ -345,20 +345,73 @@ main{width:100%;max-width:1320px;margin:0 auto;padding:28px clamp(16px,3.5vw,48p
 .script-chapter{display:block;margin:10px 0 2px;color:var(--gold);font-size:.75rem;font-weight:500;letter-spacing:.14em}
 
 /* ---------- Inbox (hello@golidee.com) ---------- */
-.mail-form{display:grid;gap:12px}
-.mail-form label{display:grid;gap:6px;font-size:.8125rem;color:var(--muted)}
-.mail-form input,.mail-form textarea,.mail-reply textarea{width:100%;box-sizing:border-box;padding:11px 12px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface);color:var(--text);font:inherit;font-size:.9375rem;resize:vertical}
-.mail-form input:focus,.mail-form textarea:focus,.mail-reply textarea:focus{outline:none;border-color:var(--gold)}
-.mail-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.mail-thread{border:1px solid var(--line);border-radius:12px;background:var(--raised)}
-.mail-thread summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;cursor:pointer;list-style:none}
+.nav{position:relative}
+.nav-badge{margin-left:auto;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--gold);color:var(--gold-ink);font-size:.6875rem;font-weight:500;display:inline-grid;place-items:center;line-height:1}
+.nav-badge[hidden]{display:none}
+@media (max-width:900px){.nav-badge{position:absolute;top:4px;right:calc(50% - 22px);min-width:16px;height:16px;padding:0 4px;font-size:.625rem}}
+.inbox-head{align-items:center}
+.inbox-head .micro{display:block;margin-top:2px}
+.inbox-head .btn{display:inline-flex;align-items:center;gap:6px}
+.inbox-head .btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+
+.mail-list{display:grid;gap:6px}
+.mail-thread{border:1px solid var(--line);border-radius:12px;background:var(--surface);transition:opacity .25s ease,transform .25s ease,background .2s ease}
+.mail-thread.leaving{opacity:0;transform:translateX(16px)}
+.mail-thread summary{display:grid;grid-template-columns:10px minmax(0,1fr) auto;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;list-style:none}
 .mail-thread summary::-webkit-details-marker{display:none}
+.mail-thread summary:hover{background:var(--raised);border-radius:12px}
 .mail-thread .item-main{min-width:0}
-.mail-thread strong{display:block;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mail-thread small{display:block;color:var(--muted);font-size:.8125rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mail-msgs{display:grid;gap:8px;padding:0 14px 12px}
+.mail-thread strong,.mail-thread .mail-subject,.mail-thread summary small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mail-thread strong{font-weight:400;color:var(--muted)}
+.mail-thread .mail-subject{font-size:.875rem;color:var(--muted)}
+.mail-thread summary small{color:var(--faint,var(--muted));font-size:.8125rem;opacity:.85}
+.mail-dot{width:8px;height:8px;border-radius:50%;background:transparent}
+.mail-time{color:var(--muted)}
+/* New conversation: highlighted until it is opened, then it reads as grey like the rest. */
+.mail-thread.unread{background:color-mix(in srgb,var(--gold) 9%,var(--surface));border-color:color-mix(in srgb,var(--gold) 38%,transparent)}
+.mail-thread.unread .mail-dot{background:var(--gold);box-shadow:0 0 8px color-mix(in srgb,var(--gold) 70%,transparent)}
+.mail-thread.unread strong,.mail-thread.unread .mail-subject{color:var(--text);font-weight:500}
+.mail-thread.unread .mail-time{color:var(--gold)}
+.mail-thread[open]{background:var(--raised)}
+.mail-msgs{display:grid;gap:8px;padding:4px 14px 12px}
 .mail-msg{max-width:88%;padding:10px 12px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
 .mail-msg.out{justify-self:end;border-color:color-mix(in srgb,var(--gold) 35%,transparent)}
 .mail-msg small{display:block;margin-bottom:4px;color:var(--muted);font-size:.75rem}
 .mail-msg p{margin:0;white-space:pre-wrap;line-height:1.55;font-size:.9375rem}
 .mail-reply{display:grid;gap:10px;padding:0 14px 14px}
+.mail-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.btn.danger{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 45%,transparent)}
+.mail-form{display:grid;gap:12px}
+.mail-form label{display:grid;gap:6px;font-size:.8125rem;color:var(--muted)}
+.mail-form input,.mail-form textarea,.mail-reply textarea{width:100%;box-sizing:border-box;padding:11px 12px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface);color:var(--text);font:inherit;font-size:.9375rem;resize:vertical}
+.mail-form input:focus,.mail-form textarea:focus,.mail-reply textarea:focus{outline:none;border-color:var(--gold)}
+
+/* Compose: a sheet that slides in from the right (from the bottom on phones). */
+.sheet{position:fixed;inset:0;z-index:60;pointer-events:none}
+.sheet-scrim{position:absolute;inset:0;background:rgba(5,6,8,.55);opacity:0;transition:opacity .28s ease}
+.sheet-panel{position:absolute;top:0;right:0;bottom:0;width:min(560px,100%);box-sizing:border-box;padding:22px;background:var(--surface);border-left:1px solid var(--line);
+  box-shadow:-24px 0 60px rgba(0,0,0,.35);transform:translateX(104%);transition:transform .34s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;gap:14px;overflow:auto}
+.sheet-panel .grow{flex:1;display:flex;flex-direction:column}
+.sheet-panel .grow textarea{flex:1;min-height:200px}
+.sheet.open{pointer-events:auto}
+.sheet.open .sheet-scrim{opacity:1}
+.sheet.open .sheet-panel{transform:none}
+.sheet-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.sheet-head h3{font-size:1.125rem}
+.icon-button{width:36px;height:36px;display:grid;place-items:center;border:1px solid var(--line);border-radius:10px;background:var(--raised);color:var(--text);cursor:pointer}
+.icon-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+body.sheet-open{overflow:hidden}
+@media (max-width:640px){
+  .sheet-panel{top:auto;left:0;width:100%;max-height:92dvh;border-left:0;border-top:1px solid var(--line);border-radius:18px 18px 0 0;transform:translateY(104%);padding-bottom:max(22px,env(safe-area-inset-bottom))}
+}
+@media (prefers-reduced-motion:reduce){.sheet-panel,.sheet-scrim,.mail-thread{transition:none}}
+
+/* Needs attention */
+.stat-alert{text-decoration:none;color:inherit;background:color-mix(in srgb,var(--danger) 8%,var(--surface))}
+.stat-alert b{color:var(--danger)}
+.attention-item{align-items:flex-start}
+.attention-item small{white-space:normal}
+.attention-error{color:var(--danger)!important}
+.attention-actions{display:flex;gap:8px;flex:none}
+@media (max-width:640px){.attention-item{flex-direction:column}.attention-actions{width:100%}.attention-actions .btn{flex:1}}
+.archive-job{margin-left:6px}

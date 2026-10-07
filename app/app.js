@@ -74,6 +74,7 @@ const STATUS_LABELS = {
   publishing: "Publishing",
   draft: "Draft",
   topic_rejected: "Topic skipped",
+  dismissed: "Dismissed",
 };
 // Chapter headings ("[02 · WHERE IT HIDES]") are shown, not read aloud.
 function scriptHtml(script) {
@@ -82,6 +83,29 @@ function scriptHtml(script) {
     if (/^\[.+\]$/.test(text)) return '<span class="script-chapter">' + esc(text.slice(1, -1)) + '</span>';
     return esc(row);
   }).join("\n");
+}
+
+async function loadAttention() {
+  const panel = $("#attention-panel");
+  let items = [];
+  try { items = (await api("/api/attention")).items || []; } catch {}
+  panel.hidden = !items.length;
+  $("#attention-list").innerHTML = items.map((item) => {
+    const failed = item.failed.map((f) => (labels[f.platform] || f.platform) + (f.error ? ": " + f.error : "")).join(" · ");
+    const ok = item.published.map((p) => labels[p] || p).join(", ");
+    return '<div class="item attention-item"><div class="item-main"><strong>' + esc(item.title || item.id) + '</strong>' +
+      '<small>' + esc(pretty(item.content_class)) + (item.scheduled_at ? ", " + esc(when(item.scheduled_at)) : "") +
+      (ok ? ". Reached " + esc(ok) : "") + '</small><small class="attention-error">Did not reach ' + esc(failed) + '</small></div>' +
+      '<div class="attention-actions"><button class="btn btn-quiet" data-attention="retry" data-id="' + escAttr(item.id) + '">Try again</button>' +
+      '<button class="btn btn-quiet" data-attention="dismiss" data-id="' + escAttr(item.id) + '">Dismiss</button></div></div>';
+  }).join("");
+  $$("[data-attention]").forEach((button) => {
+    button.onclick = async () => {
+      button.disabled = true;
+      await api("/api/posts/" + encodeURIComponent(button.dataset.id) + "/" + button.dataset.attention, { method: "POST" });
+      await loadOverview();
+    };
+  });
 }
 
 function statusLabel(value) { return STATUS_LABELS[value] || pretty(value); }
@@ -226,8 +250,11 @@ async function loadOverview() {
     ["Temporary files", overview.temporary_media],
   ];
   $("#stats").innerHTML = stats.map(([label, value]) =>
-    '<div class="stat"><b>' + esc(value) + '</b><span>' + esc(label) + '</span></div>'
+    label === "Need attention" && Number(value) > 0
+      ? '<a class="stat stat-alert" href="#attention-panel"><b>' + esc(value) + '</b><span>' + esc(label) + '</span></a>'
+      : '<div class="stat"><b>' + esc(value) + '</b><span>' + esc(label) + '</span></div>'
   ).join("");
+  loadAttention();
 
   const upcoming = await loadUpcoming();
   const now = new Date();
@@ -264,25 +291,39 @@ function renderThreads(root, threads) {
     root.className = "stack empty-state";
     return;
   }
-  root.className = "stack";
+  root.className = "mail-list";
   root.innerHTML = threads.map((thread) => {
-    const messages = (thread.messages || []).map((m) =>
+    const messages = thread.messages || [];
+    const last = messages[messages.length - 1];
+    const unread = Number(thread.unread) === 1;
+    const bubbles = messages.map((m) =>
       '<div class="mail-msg ' + (m.direction === "outbound" ? "out" : "in") + '"><small>' +
       (m.direction === "outbound" ? "GOLIDE" : esc(thread.participant_ref)) + " · " + esc(when(m.created_at)) +
       '</small><p>' + esc(m.body) + '</p></div>').join("");
     const subject = thread.subject || "";
     const re = /^re:/i.test(subject) ? subject : "Re: " + subject;
-    return '<details class="mail-thread"><summary><div class="item-main"><strong>' +
-      esc(thread.participant_ref || "Conversation") + '</strong><small>' + esc(subject) +
-      '</small></div><span class="micro">' + esc(when(thread.last_message_at)) + '</span></summary>' +
-      '<div class="mail-msgs">' + messages + '</div>' +
+    const preview = last ? (last.direction === "outbound" ? "You: " : "") + last.body.replace(/\s+/g, " ").slice(0, 110) : "";
+    return '<details class="mail-thread' + (unread ? " unread" : "") + '" data-id="' + escAttr(thread.id) + '">' +
+      '<summary><span class="mail-dot" aria-hidden="true"></span><div class="item-main"><strong>' +
+      esc(thread.participant_ref || "Conversation") + '</strong><span class="mail-subject">' + esc(subject) +
+      '</span><small>' + esc(preview) + '</small></div><span class="micro mail-time">' + esc(when(thread.last_message_at)) +
+      '</span></summary>' +
+      '<div class="mail-msgs">' + bubbles + '</div>' +
       (thread.platform === "email"
         ? '<form class="mail-reply" data-to="' + escAttr(thread.participant_ref) + '" data-subject="' + escAttr(re) + '">' +
           '<textarea rows="4" placeholder="Write a reply" required></textarea>' +
-          '<div class="mail-actions"><button type="button" class="btn btn-quiet mail-close" data-id="' + escAttr(thread.id) + '">Close</button>' +
+          '<div class="mail-actions"><button type="button" class="btn btn-quiet mail-delete" data-id="' + escAttr(thread.id) + '">Delete</button>' +
           '<button class="btn btn-gold" type="submit">Reply</button></div></form>'
         : '') + '</details>';
   }).join("");
+  $$(".mail-thread").forEach((item) => {
+    item.addEventListener("toggle", async () => {
+      if (!item.open || !item.classList.contains("unread")) return;
+      item.classList.remove("unread");
+      try { await api("/api/inbox/" + encodeURIComponent(item.dataset.id) + "/read", { method: "POST" }); } catch {}
+      refreshInboxBadge();
+    });
+  });
   $$(".mail-reply").forEach((form) => {
     form.onsubmit = async (event) => {
       event.preventDefault();
@@ -295,9 +336,37 @@ function renderThreads(root, threads) {
       } catch (error) { alert(error.message); button.disabled = false; button.textContent = "Reply"; }
     };
   });
-  $$(".mail-close").forEach((button) => {
-    button.onclick = async () => { await api("/api/inbox/" + encodeURIComponent(button.dataset.id) + "/close", { method: "POST" }); await loadInbox(); };
+  $$(".mail-delete").forEach((button) => {
+    button.onclick = async () => {
+      if (button.dataset.confirm !== "1") {  // two taps: no accidental deletes
+        button.dataset.confirm = "1"; button.textContent = "Tap again to delete"; button.classList.add("danger");
+        setTimeout(() => { button.dataset.confirm = ""; button.textContent = "Delete"; button.classList.remove("danger"); }, 3500);
+        return;
+      }
+      button.disabled = true;
+      await api("/api/inbox/" + encodeURIComponent(button.dataset.id) + "/delete", { method: "POST" });
+      const row = button.closest(".mail-thread");
+      row.classList.add("leaving");
+      setTimeout(() => { loadInbox(); refreshInboxBadge(); }, 260);
+    };
   });
+}
+
+async function refreshInboxBadge() {
+  try {
+    const { count } = await api("/api/inbox/unread");
+    const badge = $("#inbox-badge");
+    badge.hidden = !count;
+    badge.textContent = count > 9 ? "9+" : String(count);
+  } catch {}
+}
+
+function openCompose(open) {
+  const sheet = $("#compose");
+  sheet.classList.toggle("open", open);
+  sheet.setAttribute("aria-hidden", open ? "false" : "true");
+  document.body.classList.toggle("sheet-open", open);
+  if (open) setTimeout(() => $("#mail-to").focus(), 260);
 }
 
 function renderCadence() {
@@ -357,14 +426,25 @@ function renderJobList() {
     const retry = ["failed", "paused_funds"].includes(job.status)
       ? '<button class="ghost retry-job" data-job="' + escAttr(job.job_id) + '">Retry</button>'
       : "";
+    const finished = ["published", "failed", "topic_rejected", "completed"].includes(jobStatus(job));
+    const remove = finished
+      ? '<button class="ghost archive-job" data-job="' + escAttr(job.job_id) + '" title="Remove from this list">Remove</button>'
+      : "";
     return '<div class="job-card"><div class="job-title"><strong>' +
       esc(job.title || "Engine planning job") + '</strong><small>' +
       esc(jobSecondary(job)) + '</small></div>' +
       stageBars(job) +
       '<div><span class="status-pill ' + escAttr(jobStatus(job)) + '">' +
-      esc(statusLabel(jobStatus(job))) + '</span>' + retry + '</div></div>';
+      esc(statusLabel(jobStatus(job))) + '</span>' + retry + remove + '</div></div>';
   }).join("");
 
+  $$(".archive-job").forEach((button) => {
+    button.onclick = async () => {
+      button.disabled = true;
+      await api("/api/production-jobs/" + encodeURIComponent(button.dataset.job) + "/archive", { method: "POST" });
+      await loadProductionJobs();
+    };
+  });
   $$(".retry-job").forEach((button) => {
     button.onclick = () => retryJob(button.dataset.job);
   });
@@ -655,10 +735,19 @@ async function loadSchedule() {
 async function loadInbox() {
   const [data, mail] = await Promise.all([api("/api/inbox"), api("/api/inbox/status").catch(() => ({}))]);
   renderThreads($("#inbox-list"), data.threads || []);
-  if (!mail.sending) {
+  if (mail && mail.sending === false) {
     $("#mail-status").textContent = "Sending switches on once the GOLIDE email setup is finished.";
   }
+  refreshInboxBadge();
 }
+
+document.addEventListener("click", (event) => {
+  if (event.target.closest("#compose-open")) openCompose(true);
+  if (event.target.closest("[data-close-compose]")) openCompose(false);
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && $("#compose")?.classList.contains("open")) openCompose(false);
+});
 
 document.addEventListener("submit", async (event) => {
   if (event.target.id !== "mail-form") return;
@@ -670,6 +759,7 @@ document.addEventListener("submit", async (event) => {
       to: $("#mail-to").value, subject: $("#mail-subject").value, body: $("#mail-body").value }) });
     $("#mail-status").textContent = "Sent to " + sent.to + ".";
     event.target.reset();
+    setTimeout(() => openCompose(false), 700);
     await loadInbox();
   } catch (error) {
     $("#mail-status").textContent = error.message;
@@ -732,7 +822,7 @@ async function boot() {
   }
   // Load everything at once; the page you are on fills in as soon as its own data arrives.
   await Promise.allSettled([
-    loadHealth(), loadPolicy(), loadAutomationControl(),
+    loadHealth(), loadPolicy(), loadAutomationControl(), refreshInboxBadge(),
     loadOverview(), loadProductionJobs(), loadConnections(),
   ]);
   renderBudget();
@@ -784,3 +874,7 @@ boot().finally(() => {
     setTimeout(() => window.GolideLoader.formOnce($("#hero-mark")), 900);
   }
 });
+
+// New mail shows on the Inbox button without reloading Studio.
+setInterval(() => { if (!document.hidden) refreshInboxBadge(); }, 60000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) refreshInboxBadge(); });

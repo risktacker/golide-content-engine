@@ -59,25 +59,25 @@ def build_record_needed(
     def _row(row: str) -> str:
         text = row.strip()
         if text.startswith("[") and text.endswith("]"):  # chapter heading, not read aloud
-            return (f'<p style="margin:18px 0 6px;color:#e9c46a;font-size:12px;letter-spacing:2px">'
+            return (f'<p style="margin:18px 0 6px;color:#9a6f12;font-size:12px;letter-spacing:2px;font-weight:600">'
                     f'{html.escape(text[1:-1])}</p>')
-        return f'<p style="margin:0 0 10px;font-size:17px;line-height:1.5">{html.escape(text)}</p>'
+        return f'<p style="margin:0 0 10px;font-size:17px;line-height:1.55;color:#1b1d22">{html.escape(text)}</p>'
 
     script_html = "".join(_row(row) for row in script.strip().splitlines() if row.strip())
     if "\n[" in "\n" + script:
-        script_html = ('<p style="margin:0 0 12px;color:#9a9ea8;font-size:13px">Gold headings are not read aloud. '
+        script_html = ('<p style="margin:0 0 14px;color:#5f6470;font-size:14px">Gold headings are not read aloud. '
                        'Pause briefly at each one.</p>' + script_html)
     rejected_html = (
-        f'<p style="color:#d0605e;margin:0 0 16px">Your last upload was rejected: {html.escape(rejection)}</p>'
+        f'<p style="color:#b4413b;margin:0 0 16px">Your last upload was rejected: {html.escape(rejection)}</p>'
         if rejection else ""
     )
     message.add_alternative(
-        _frame(f"""<div style="color:#f4f4f5;font-family:Arial,sans-serif">
-  <p style="color:#e9c46a;letter-spacing:2px;font-size:12px;margin:0 0 8px">{label.upper()} &middot; RECORD {window}</p>
-  <h2 style="margin:0 0 16px;font-weight:600">{html.escape(title)}</h2>
+        _frame(f"""<div style="color:#1b1d22;font-family:Arial,sans-serif">
+  <p style="color:#9a6f12;letter-spacing:2px;font-size:12px;margin:0 0 8px;font-weight:600">{label.upper()} &middot; RECORD {window}</p>
+  <h2 style="margin:0 0 16px;font-weight:600;color:#1b1d22;font-size:22px;line-height:1.3">{html.escape(title)}</h2>
   {rejected_html}
-  <div style="border-left:3px solid #e9c46a;padding:4px 0 4px 16px;margin:0 0 24px">{script_html}</div>
-  <a href="{link}" style="display:inline-block;background:#e9c46a;color:#0b0b0e;padding:12px 22px;border-radius:999px;font-weight:700;text-decoration:none">Upload recording</a>
+  <div style="border-left:3px solid #e9c46a;padding:2px 0 2px 18px;margin:0 0 24px">{script_html}</div>
+  <a href="{link}" style="display:inline-block;background:#0b0c10;color:#ffffff;padding:13px 24px;border-radius:999px;font-weight:600;text-decoration:none">Upload recording</a>
 </div>"""),
         subtype="html",
     )
@@ -109,12 +109,12 @@ def build_rebuild_preview(*, title: str, preview_url: str, production_id: str) -
         f"Job: {production_id}\n"
     )
     message.add_alternative(
-        _frame(f"""<div style="color:#f4f4f5;font-family:Arial,sans-serif">
-  <p style="color:#e9c46a;letter-spacing:2px;font-size:12px;margin:0 0 8px">PREVIEW &middot; NOT PUBLISHED YET</p>
-  <h2 style="margin:0 0 16px;font-weight:600">{html.escape(title)}</h2>
-  <p style="margin:0 0 24px;line-height:1.5">Watch it with sound. If it is good, tell Claude to publish it to YouTube, Instagram and Facebook.</p>
-  <a href="{html.escape(preview_url)}" style="display:inline-block;background:#e9c46a;color:#0b0b0e;padding:12px 22px;border-radius:999px;font-weight:700;text-decoration:none">Watch preview</a>
-  <p style="color:#7a7a84;font-size:12px;margin:24px 0 0">Link works for 48 hours. Job {html.escape(production_id)}</p>
+        _frame(f"""<div style="color:#1b1d22;font-family:Arial,sans-serif">
+  <p style="color:#9a6f12;letter-spacing:2px;font-size:12px;margin:0 0 8px;font-weight:600">PREVIEW &middot; NOT PUBLISHED YET</p>
+  <h2 style="margin:0 0 16px;font-weight:600;color:#1b1d22;font-size:22px;line-height:1.3">{html.escape(title)}</h2>
+  <p style="margin:0 0 24px;line-height:1.6;color:#1b1d22">Watch it with sound. If it is good, tell Claude to publish it to YouTube, Instagram and Facebook.</p>
+  <a href="{html.escape(preview_url)}" style="display:inline-block;background:#0b0c10;color:#ffffff;padding:13px 24px;border-radius:999px;font-weight:600;text-decoration:none">Watch preview</a>
+  <p style="color:#5f6470;font-size:12px;margin:24px 0 0">Link works for 48 hours. Job {html.escape(production_id)}</p>
 </div>"""),
         subtype="html",
     )
@@ -126,17 +126,30 @@ def send_rebuild_preview(**kwargs) -> bool:
 
 
 def _frame(inner: str) -> str:
-    """Table + bgcolor layout: mail apps that drop <div> backgrounds keep table
-    colours, so the light text never ends up on a white page."""
+    """The GOLIDE email shell, identical to Studio's (worker/mail.js brandShell):
+    dark branded header with the logo, gold rule, white body with dark readable
+    text, GOLIDE signature and footer. Tables + bgcolor so every app keeps it."""
+    logo = "https://golidee.com/brand/wordmark.png"
+    mark = "https://golidee.com/brand/favicon.png"
     return (
-        '<!doctype html><html><head><meta charset="utf-8">'
-        '<meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"></head>'
-        '<body style="margin:0;padding:0;background:#0b0c10" bgcolor="#0b0c10">'
-        '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0b0c10" style="background:#0b0c10">'
-        '<tr><td align="center" style="padding:24px 12px">'
-        '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#121419" '
-        'style="max-width:600px;background:#121419;border:1px solid #23262e;border-radius:14px">'
-        f'<tr><td style="padding:26px">{inner}</td></tr></table></td></tr></table></body></html>'
+        '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+        '<meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light"></head>'
+        '<body style="margin:0;padding:0;background:#f2f2ef" bgcolor="#f2f2ef">'
+        '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f2f2ef" style="background:#f2f2ef"><tr><td align="center" style="padding:28px 12px">'
+        '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;border-radius:14px;overflow:hidden;border:1px solid #e3e2dc">'
+        f'<tr><td bgcolor="#0b0c10" style="background:#0b0c10;padding:22px 30px"><a href="https://golidee.com" style="text-decoration:none">'
+        f'<img src="{logo}" width="132" alt="GOLIDE" style="display:block;border:0;height:auto;width:132px;color:#ecedef;font:600 18px Arial,sans-serif;letter-spacing:4px"></a></td></tr>'
+        '<tr><td bgcolor="#e9c46a" style="background:#e9c46a;height:3px;line-height:3px;font-size:0">&nbsp;</td></tr>'
+        f'<tr><td bgcolor="#ffffff" style="background:#ffffff;padding:32px 30px 8px;font-family:Arial,Helvetica,sans-serif;color:#1b1d22">{inner}</td></tr>'
+        '<tr><td bgcolor="#ffffff" style="background:#ffffff;padding:8px 30px 28px;font-family:Arial,Helvetica,sans-serif">'
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #ecebe6;width:100%"><tr>'
+        f'<td width="44" valign="top" style="padding-top:18px"><img src="{mark}" width="36" height="36" alt="" style="display:block;border:0;border-radius:9px"></td>'
+        '<td valign="top" style="padding:18px 0 0 12px;font-size:14px;line-height:1.45;color:#1b1d22"><strong style="font-weight:600">GOLIDE</strong><br>'
+        '<span style="color:#5f6470">Software, markets and research &middot; Lusaka</span><br>'
+        '<a href="https://golidee.com" style="color:#9a6f12;text-decoration:none">golidee.com</a></td></tr></table></td></tr>'
+        '<tr><td bgcolor="#f7f7f4" style="background:#f7f7f4;padding:16px 30px;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.5;color:#8a8e98">'
+        'Sent by GOLIDE Studio from hello@golidee.com.</td></tr>'
+        '</table></td></tr></table></body></html>'
     )
 
 

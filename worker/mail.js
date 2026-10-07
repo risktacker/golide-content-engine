@@ -18,25 +18,44 @@ function esc(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
-// Table-based with bgcolor attributes: mail apps that drop <div> backgrounds
-// keep table colours, so light text never lands on a white page.
-export function emailHtml({ subject, body, eyebrow = "GOLIDE" }) {
-  const paragraphs = clean(body).split(/\n{2,}/).map((p) =>
-    `<p style="margin:0 0 16px;font-size:16px;line-height:1.6;color:#ecedef">${esc(p).replace(/\n/g, "<br>")}</p>`).join("");
+// The GOLIDE email shell. Branded dark header with the logo, white body with
+// dark, readable text, a GOLIDE signature and footer. Tables + bgcolor so every
+// mail app keeps the colours.
+const LOGO = "https://golidee.com/brand/wordmark.png";
+const MARK = "https://golidee.com/brand/favicon.png";
+export const INK = "#1b1d22", MUTED = "#5f6470", GOLD_TEXT = "#9a6f12", GOLD = "#e9c46a";
+
+export function brandShell({ subject, preheader = "", inner }) {
   return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"><title>${esc(subject)}</title></head>
-<body style="margin:0;padding:0;background:#0b0c10" bgcolor="#0b0c10">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0b0c10" style="background:#0b0c10">
-<tr><td align="center" style="padding:28px 14px">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#121419" style="max-width:560px;background:#121419;border:1px solid #23262e;border-radius:14px">
-<tr><td style="padding:28px 28px 8px;font-family:Arial,Helvetica,sans-serif">
-<p style="margin:0 0 18px;font-size:12px;letter-spacing:3px;color:#e9c46a">${esc(eyebrow)}</p>
-${paragraphs}
+<meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light"><title>${esc(subject)}</title></head>
+<body style="margin:0;padding:0;background:#f2f2ef" bgcolor="#f2f2ef">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0">${esc(preheader)}</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f2f2ef" style="background:#f2f2ef"><tr><td align="center" style="padding:28px 12px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;border-radius:14px;overflow:hidden;border:1px solid #e3e2dc">
+<tr><td bgcolor="#0b0c10" style="background:#0b0c10;padding:22px 30px">
+<a href="https://golidee.com" style="text-decoration:none"><img src="${LOGO}" width="132" alt="GOLIDE" style="display:block;border:0;height:auto;width:132px;color:#ecedef;font:600 18px Arial,sans-serif;letter-spacing:4px"></a>
 </td></tr>
-<tr><td style="padding:8px 28px 26px;font-family:Arial,Helvetica,sans-serif;border-top:1px solid #23262e">
-<p style="margin:16px 0 0;font-size:13px;line-height:1.5;color:#9a9ea8">GOLIDE &middot; <a href="https://golidee.com" style="color:#e9c46a;text-decoration:none">golidee.com</a><br>Reply to this email to reach us.</p>
-</td></tr></table>
-</td></tr></table></body></html>`;
+<tr><td bgcolor="${GOLD}" style="background:${GOLD};height:3px;line-height:3px;font-size:0">&nbsp;</td></tr>
+<tr><td bgcolor="#ffffff" style="background:#ffffff;padding:32px 30px 8px;font-family:Arial,Helvetica,sans-serif;color:${INK}">
+${inner}
+</td></tr>
+<tr><td bgcolor="#ffffff" style="background:#ffffff;padding:8px 30px 28px;font-family:Arial,Helvetica,sans-serif">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #ecebe6;padding-top:18px;width:100%"><tr>
+<td width="44" valign="top" style="padding-top:18px"><img src="${MARK}" width="36" height="36" alt="" style="display:block;border:0;border-radius:9px"></td>
+<td valign="top" style="padding:18px 0 0 12px;font-size:14px;line-height:1.45;color:${INK}"><strong style="font-weight:600">GOLIDE</strong><br>
+<span style="color:${MUTED}">Software, markets and research &middot; Lusaka</span><br>
+<a href="https://golidee.com" style="color:${GOLD_TEXT};text-decoration:none">golidee.com</a></td></tr></table>
+</td></tr>
+<tr><td bgcolor="#f7f7f4" style="background:#f7f7f4;padding:16px 30px;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.5;color:#8a8e98">
+Sent by GOLIDE from hello@golidee.com. Reply to this email to reach us.
+</td></tr>
+</table></td></tr></table></body></html>`;
+}
+
+export function emailHtml({ subject, body }) {
+  const paragraphs = clean(body).split(/\n{2,}/).map((p) =>
+    `<p style="margin:0 0 16px;font-size:16px;line-height:1.65;color:${INK}">${esc(p).replace(/\n/g, "<br>")}</p>`).join("");
+  return brandShell({ subject, preheader: clean(body).slice(0, 120), inner: paragraphs });
 }
 
 // ----------------------------------------------------------------- send ----
@@ -62,18 +81,33 @@ export async function sendMail(env, { to, subject, body }) {
 
 // -------------------------------------------------------------- storage ----
 
-async function threadFor(db, address, subject) {
+// unread: 1 when the latest message came in and has not been opened in Studio.
+async function threadFor(db, address, subject, unread) {
   const existing = await db.prepare(`SELECT id FROM inbox_threads WHERE platform='email' AND external_thread_id=?`).bind(address).first();
   const stamp = now();
   if (existing) {
-    await db.prepare(`UPDATE inbox_threads SET status='open', subject=?, last_message_at=?, updated_at=? WHERE id=?`)
-      .bind(subject, stamp, stamp, existing.id).run();
+    await db.prepare(`UPDATE inbox_threads SET status='open', subject=?, last_message_at=?, updated_at=?, unread=? WHERE id=?`)
+      .bind(subject, stamp, stamp, unread ? 1 : 0, existing.id).run();
     return existing.id;
   }
   const id = crypto.randomUUID();
-  await db.prepare(`INSERT INTO inbox_threads (id,platform,external_thread_id,account_id,participant_ref,subject,status,last_message_at,created_at,updated_at)
-    VALUES (?, 'email', ?, ?, ?, ?, 'open', ?, ?, ?)`).bind(id, address, MAIL_ADDRESS, address, subject, stamp, stamp, stamp).run();
+  await db.prepare(`INSERT INTO inbox_threads (id,platform,external_thread_id,account_id,participant_ref,subject,status,last_message_at,created_at,updated_at,unread)
+    VALUES (?, 'email', ?, ?, ?, ?, 'open', ?, ?, ?, ?)`).bind(id, address, MAIL_ADDRESS, address, subject, stamp, stamp, stamp, unread ? 1 : 0).run();
   return id;
+}
+
+export async function markRead(db, id) {
+  await db.prepare(`UPDATE inbox_threads SET unread=0 WHERE id=?`).bind(id).run();
+}
+
+export async function deleteThread(db, id) {
+  await db.prepare(`DELETE FROM inbox_messages WHERE thread_id=?`).bind(id).run();
+  await db.prepare(`DELETE FROM inbox_threads WHERE id=?`).bind(id).run();
+}
+
+export async function unreadCount(db) {
+  const row = await db.prepare(`SELECT COUNT(*) count FROM inbox_threads WHERE status='open' AND unread=1`).first();
+  return Number(row?.count || 0);
 }
 
 async function addMessage(db, threadId, direction, body, externalId) {
@@ -83,7 +117,7 @@ async function addMessage(db, threadId, direction, body, externalId) {
 
 export async function sendAndRecord(env, payload) {
   const sent = await sendMail(env, payload);
-  const threadId = await threadFor(env.DB, sent.to, clean(payload.subject));
+  const threadId = await threadFor(env.DB, sent.to, clean(payload.subject), false);
   await addMessage(env.DB, threadId, "outbound", clean(payload.body), sent.id);
   return { status: "sent", thread_id: threadId, ...sent };
 }
@@ -166,7 +200,7 @@ export async function receiveMail(message, env) {
   const raw = await new Response(message.raw).text();
   const parsed = parseEmail(raw);
   const from = clean(/<([^>]+)>/.exec(message.from)?.[1] || message.from).toLowerCase();
-  const threadId = await threadFor(env.DB, from, decodeHeader(parsed.subject));
+  const threadId = await threadFor(env.DB, from, decodeHeader(parsed.subject), true);
   await addMessage(env.DB, threadId, "inbound", parsed.text || "(no text)", parsed.messageId);
   if (env.EMAIL_FORWARD_TO) {
     try { await message.forward(env.EMAIL_FORWARD_TO); } catch (e) { console.log(JSON.stringify({ forward: "failed", error: String(e) })); }
@@ -183,17 +217,14 @@ function decodeHeader(value) {
 export function scriptEmailHtml({ title, label, window, script, link }) {
   const rows = String(script).split("\n").map((row) => row.trim()).filter(Boolean).map((row) =>
     /^\[.+\]$/.test(row)
-      ? `<p style="margin:18px 0 6px;font-size:12px;letter-spacing:2px;color:#e9c46a">${esc(row.slice(1, -1))}</p>`
-      : `<p style="margin:0 0 10px;font-size:17px;line-height:1.5;color:#ecedef">${esc(row)}</p>`).join("");
-  return `<!doctype html><html><head><meta charset="utf-8"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"></head>
-<body style="margin:0;padding:0;background:#0b0c10" bgcolor="#0b0c10">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0b0c10" style="background:#0b0c10"><tr><td align="center" style="padding:24px 12px">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#121419" style="max-width:600px;background:#121419;border:1px solid #23262e;border-radius:14px"><tr><td style="padding:26px;font-family:Arial,Helvetica,sans-serif">
-<p style="margin:0 0 8px;font-size:12px;letter-spacing:2px;color:#e9c46a">${esc(label.toUpperCase())} &middot; RECORD ${esc(window)}</p>
-<h2 style="margin:0 0 16px;font-weight:600;color:#ecedef">${esc(title)}</h2>
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td width="3" bgcolor="#e9c46a" style="background:#e9c46a"></td><td style="padding:4px 0 4px 16px">${rows}</td></tr></table>
-<p style="margin:24px 0 0"><a href="${esc(link)}" style="display:inline-block;background:#e9c46a;color:#0b0c10;padding:12px 22px;border-radius:999px;font-weight:700;text-decoration:none">Upload recording</a></p>
-</td></tr></table></td></tr></table></body></html>`;
+      ? `<p style="margin:20px 0 6px;font-size:12px;letter-spacing:2px;color:${GOLD_TEXT};font-weight:600">${esc(row.slice(1, -1))}</p>`
+      : `<p style="margin:0 0 10px;font-size:17px;line-height:1.55;color:${INK}">${esc(row)}</p>`).join("");
+  const inner = `<p style="margin:0 0 8px;font-size:12px;letter-spacing:2px;color:${GOLD_TEXT};font-weight:600">${esc(label.toUpperCase())} &middot; RECORD ${esc(window)}</p>
+<h1 style="margin:0 0 18px;font-size:22px;line-height:1.3;font-weight:600;color:${INK}">${esc(title)}</h1>
+<p style="margin:0 0 18px;font-size:14px;color:${MUTED}">Headings in gold are not read aloud. Pause briefly at each one.</p>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td width="3" bgcolor="${GOLD}" style="background:${GOLD}"></td><td style="padding:2px 0 2px 18px">${rows}</td></tr></table>
+<p style="margin:26px 0 8px"><a href="${esc(link)}" style="display:inline-block;background:#0b0c10;color:#ffffff;padding:13px 24px;border-radius:999px;font-weight:600;text-decoration:none;font-size:15px">Upload recording</a></p>`;
+  return brandShell({ subject: title, preheader: `${label} script ready: record ${window}`, inner });
 }
 
 export async function emailScript(env, job) {

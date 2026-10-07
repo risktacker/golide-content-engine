@@ -13,7 +13,7 @@
     // Theme before first paint: dark by default, the owner's choice remembered per device.
     try { var t = localStorage.getItem("golide-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
-  <link rel="stylesheet" href="/styles.css?v=20261006e">
+  <link rel="stylesheet" href="/styles.css?v=20261007a">
 </head>
 <body>
   <div class="splash" id="splash" role="status" aria-live="polite">
@@ -44,6 +44,7 @@
         <button class="nav" data-view="inbox">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H14l-2 3-2-3H4z"/></svg>
           <span>Inbox</span>
+          <b class="nav-badge" id="inbox-badge" hidden></b>
         </button>
         <button class="nav" data-view="connections">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 15 15 9M10.5 6.5l1.6-1.6a4 4 0 0 1 5.7 5.7l-1.6 1.6m-8.4 1.6-1.6 1.6a4 4 0 0 0 5.7 5.7l1.6-1.6"/></svg>
@@ -94,6 +95,11 @@
           <div class="stat skeleton"></div><div class="stat skeleton"></div><div class="stat skeleton"></div>
           <div class="stat skeleton"></div><div class="stat skeleton"></div><div class="stat skeleton"></div>
         </div>
+
+        <article class="panel panel-attention" id="attention-panel" hidden>
+          <div class="panel-head"><h3>Needs attention</h3><span class="micro">Posts that did not reach every network</span></div>
+          <div id="attention-list" class="stack"></div>
+        </article>
 
         <div class="grid two">
           <article class="panel panel-attention">
@@ -170,19 +176,12 @@
 
       <section class="view" id="inbox">
         <article class="panel">
-          <div class="panel-head"><h3>New email</h3><span class="micro" id="mail-from">From GOLIDE &lt;hello@golidee.com&gt;</span></div>
-          <form class="mail-form" id="mail-form" autocomplete="off">
-            <label>To<input type="email" id="mail-to" placeholder="name@company.com" required></label>
-            <label>Subject<input type="text" id="mail-subject" placeholder="What it is about" required></label>
-            <label>Message<textarea id="mail-body" rows="8" placeholder="Write the email. Leave a blank line between paragraphs." required></textarea></label>
-            <div class="mail-actions">
-              <small id="mail-status" class="micro">Sent in the GOLIDE email design. Replies come back here.</small>
-              <button class="btn btn-gold" id="mail-send" type="submit">Send</button>
-            </div>
-          </form>
-        </article>
-        <article class="panel">
-          <div class="panel-head"><h3>Conversations</h3><span class="micro">hello@golidee.com</span></div>
+          <div class="panel-head inbox-head">
+            <div><h3>Conversations</h3><span class="micro">hello@golidee.com</span></div>
+            <button class="btn btn-gold" id="compose-open" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Compose
+            </button>
+          </div>
           <div id="inbox-list" class="stack empty-state"><span class="line-skeleton"></span></div>
         </article>
       </section>
@@ -196,7 +195,25 @@
       </section>
     </main>
   </div>
+  <div class="sheet" id="compose" aria-hidden="true">
+    <div class="sheet-scrim" data-close-compose></div>
+    <form class="sheet-panel mail-form" id="mail-form" autocomplete="off" role="dialog" aria-label="New email">
+      <div class="sheet-head">
+        <div><h3>New email</h3><span class="micro">From GOLIDE &lt;hello@golidee.com&gt;</span></div>
+        <button class="icon-button" type="button" data-close-compose aria-label="Close">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <label>To<input type="email" id="mail-to" placeholder="name@company.com" required></label>
+      <label>Subject<input type="text" id="mail-subject" placeholder="What it is about" required></label>
+      <label class="grow">Message<textarea id="mail-body" rows="10" placeholder="Write the email. Leave a blank line between paragraphs." required></textarea></label>
+      <div class="mail-actions">
+        <small id="mail-status" class="micro">Sent in the GOLIDE email design. Replies come back here.</small>
+        <button class="btn btn-gold" id="mail-send" type="submit">Send</button>
+      </div>
+    </form>
+  </div>
   <script src="/loader.js?v=20261006"></script>
-  <script src="/app.js?v=20261006d"></script>
+  <script src="/app.js?v=20261007a"></script>
 </body>
 </html>
