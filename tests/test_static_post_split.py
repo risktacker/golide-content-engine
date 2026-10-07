@@ -82,7 +82,8 @@ class StaticPostSplitTests(unittest.TestCase):
         self.assertIn("second to last", b)
         self.assertIn("CANDIDATE_PRODUCT", b)
         self.assertIn("THE CATCH", a)
-        self.assertIn("leave heading", static_post_instructions("post-a", has_product=False))
+        self.assertIn("leave emphasis and text", static_post_instructions("post-a", has_product=False))
+        self.assertIn("NO TITLES", a)
 
 
 if __name__ == "__main__":
@@ -121,13 +122,13 @@ def test_carousel_is_five_story_slides_then_marketplace_then_callout():
     real = carousel.render_slide
 
     def fake_render(slide, number, total, output, theme=None):
-        rendered.append((slide.heading, slide.product, slide.final, number, total))
+        rendered.append((slide.text, slide.product, slide.final, number, total, slide.marker))
         output.write_bytes(b"x")
         return output
 
     carousel.render_slide = fake_render
     try:
-        point = lambda h: {"heading": h, "emphasis": "", "text": "t"}
+        point = lambda h: {"emphasis": "", "text": h}
         draft = {"image_hook": "AI glasses are here.",
                  "carousel": {"points": [point(x) for x in ("1", "2", "3", "4", "5")], "callout": point("Follow")},
                  "product_slide": point("Buy")}
@@ -137,3 +138,4 @@ def test_carousel_is_five_story_slides_then_marketplace_then_callout():
     assert [r[0] for r in rendered] == ["1", "2", "3", "4", "5", "Buy", "Follow"]
     assert rendered[5][1] and rendered[-1][2] and rendered[0][4] == 8  # 8 images with the cover
     assert len(refs) == 7
+    assert [r[5] for r in rendered] == ['1', '2', '3', '4', '5', '', '']

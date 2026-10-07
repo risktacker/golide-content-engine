@@ -23,7 +23,8 @@ class Slide:
     text: str
     emphasis: str = ""
     final: bool = False
-    product: bool = False  # the marketplace slide in the evening carousel
+    product: bool = False  # the marketplace slide
+    marker: str = ""  # a story slide's number ("1".."5"); with no heading the text leads
 
 
 def _background(theme: Theme, size: tuple[int, int]):
@@ -74,6 +75,9 @@ def render_slide(slide: Slide, number: int, total: int, output: Path, theme: The
         tw = draw.textlength(tag, font=mono)
         draw.text(((width - tw) / 2, int(height * 0.22)), tag, font=mono, fill=theme.rgb("gold") + (255,))
 
+    if not slide.heading.strip():
+        return _render_story(slide, number, total, output, theme, base, text_layer, glow_layer, draw, glow, margin)
+
     # Heading: large, light, key words bold and glowing.
     tokens = tokenize(" ".join(slide.heading.split()), slide.emphasis or "")
     size = int(width * (0.078 if slide.final else 0.074))
@@ -112,7 +116,7 @@ def render_slide(slide: Slide, number: int, total: int, output: Path, theme: The
 
     if slide.final or slide.product:
         # The closing slide asks for the follow; the product slide points to the bio link.
-        cta = "F O L L O W   G O L I D E   F O R   M O R E" if slide.final else "L I N K   I N   B I O"
+        cta = "F O L L O W   G O L I D E" if slide.final else "L I N K   I N   B I O"
         cta_font = ImageFont.truetype(str(theme.font("mono")), int(width * 0.028))
         tw = draw.textlength(cta, font=cta_font)
         pad_x, pad_y = int(width * 0.05), int(height * 0.022)
@@ -121,6 +125,13 @@ def render_slide(slide: Slide, number: int, total: int, output: Path, theme: The
         draw.rounded_rectangle(box, radius=(box[3] - box[1]) // 2, outline=gold + (230,), width=2)
         draw.text(((width - tw) / 2, int(height * 0.83)), cta, font=cta_font, fill=gold + (255,))
 
+    return _finish(base, text_layer, glow_layer, theme, output)
+
+
+def _finish(base, text_layer, glow_layer, theme, output):
+    from PIL import Image, ImageDraw, ImageFilter, ImageFont
+
+    width, height = SIZE
     blur = theme.glow["text_blur_radius"] * width / 1080
     glow_img = glow_layer.filter(ImageFilter.GaussianBlur(blur))
     strength = theme.glow["text_glow_strength"]
@@ -143,6 +154,64 @@ def render_slide(slide: Slide, number: int, total: int, output: Path, theme: The
     output.parent.mkdir(parents=True, exist_ok=True)
     base.convert("RGB").save(output, "JPEG", quality=94, optimize=True)
     return output
+
+
+
+
+def _pill(draw, text: str, theme, width: int, height: int) -> None:
+    from PIL import ImageFont
+
+    gold = theme.rgb("gold")
+    font = ImageFont.truetype(str(theme.font("mono")), int(width * 0.028))
+    tw = draw.textlength(text, font=font)
+    pad_x, pad_y = int(width * 0.05), int(height * 0.022)
+    y = int(height * 0.83)
+    box = (int((width - tw) / 2) - pad_x, y - pad_y, int((width + tw) / 2) + pad_x, y + int(font.size * 1.2) + pad_y)
+    draw.rounded_rectangle(box, radius=(box[3] - box[1]) // 2, outline=gold + (230,), width=2)
+    draw.text(((width - tw) / 2, y), text, font=font, fill=gold + (255,))
+
+
+def _render_story(slide: Slide, number: int, total: int, output: Path, theme, base, text_layer, glow_layer,
+                  draw, glow, margin: int) -> Path:
+    """No title: a gold number, then the sentence itself carries the slide (owner
+    direction 2026-10-07: titles were repetitive and confusing)."""
+    from PIL import ImageFont
+
+    width, height = SIZE
+    gold = theme.rgb("gold")
+    main_text, pull = _split_pull(" ".join(slide.text.split()), slide.final or slide.product)
+    size = int(width * 0.062)
+    while True:
+        fonts = _fonts(theme, size)
+        lines = _wrap(tokenize(main_text, slide.emphasis or ""), fonts, width - 2 * margin, draw)
+        if len(lines) <= 6 or size <= int(width * 0.045):
+            break
+        size -= 2
+    lh = int(size * 1.32)
+    pull_fonts = (ImageFont.truetype(str(theme.font("regular")), int(size * 0.82)),) * 2
+    pull_lines = _wrap(tokenize(pull, ""), pull_fonts, width - 2 * margin, draw) if pull else []
+    pull_lh = int(size * 0.82 * 1.4)
+    marker_size = int(width * 0.13)
+    marker_h = int(marker_size * 1.25) if slide.marker else 0
+    gap = int(height * 0.04)
+    block = marker_h + (gap if slide.marker else 0) + lh * len(lines) + (gap + pull_lh * len(pull_lines) if pull_lines else 0)
+    top = int(height * 0.47) - block // 2
+    if slide.product:
+        top = max(top, int(height * 0.29))  # clear of the marketplace tag
+    if slide.marker:
+        mfont = ImageFont.truetype(str(theme.font("bold")), marker_size)
+        mw = draw.textlength(slide.marker, font=mfont)
+        draw.text(((width - mw) / 2, top), slide.marker, font=mfont, fill=gold + (255,))
+        glow.text(((width - mw) / 2, top), slide.marker, font=mfont, fill=gold + (255,))
+        top += marker_h + gap
+    _block(draw, lines, fonts, top, width, lh, theme, glow_draw=glow)
+    if pull_lines:
+        _block(draw, pull_lines, pull_fonts, top + lh * len(lines) + gap, width, pull_lh, theme, color="gold")
+    if slide.final:
+        _pill(draw, "F O L L O W   G O L I D E", theme, width, height)
+    elif slide.product:
+        _pill(draw, "L I N K   I N   B I O", theme, width, height)
+    return _finish(base, text_layer, glow_layer, theme, output)
 
 
 def _split_pull(text: str, closing: bool) -> tuple[str, str]:

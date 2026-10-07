@@ -81,12 +81,14 @@ POST STRUCTURE
     reader keeps swiping before being told to. Slide 5 ends with the result they get.
   * Words a 12-year-old knows. No jargon, no abstract phrases ("separate help from
     permission"), no riddles. Say the thing plainly.
-  * Each slide: heading 3 to 8 words that states the point, emphasis 1 to 3 words
-    copied exactly from the heading, text one or two short sentences, at most 22 words.
-  * callout: the last slide asks the reader to follow. heading 3 to 8 words giving the
-    reason ("Want one clear AI update every day?"), emphasis copied from it, text one
-    short line ("Follow GOLIDE so the next one finds you."). Written text may say
-    GOLIDE. No "comment", "like", "share" or "link". The engine adds the follow pill.
+  * NO TITLES (owner direction 2026-10-07): a slide is only its text, shown large
+    under a small number. text: two or three short sentences, at most 30 words, that
+    say the point plainly and end with the short pull to the next slide. emphasis: the
+    1 to 3 key words, copied exactly from the text, shown in bold.
+  * callout: the last slide asks the reader to follow. text: one or two short
+    sentences with the reason ("Want one clear AI update every day? Follow GOLIDE so
+    the next one finds you."). emphasis copied from it. Written text may say GOLIDE.
+    No "comment", "like", "share" or "link". The engine adds the follow pill.
   * CONSISTENCY: if the hook promises a number, it must be 5 and every caption uses 5.
     If the hook has no number, do not mention a count anywhere.
 - platform_copy, same truth adapted natively. Never put a URL in any copy; the engine
@@ -153,9 +155,9 @@ THIS IS POST A: THE MORNING TREND POST.
 PRODUCT_SLIDE_RULES = """\
 - product_slide: ONE marketplace slide, second to last (after the 5 story slides,
   before the call-out). It introduces CANDIDATE_PRODUCT to the same reader as the next
-  step: heading 3 to 8 words naming the result it gives, emphasis copied from the
-  heading, text one sentence using only facts in CANDIDATE_PRODUCT (no invented
-  features, prices, users or results). The engine adds "Link in bio". Bridge it
+  step. No title: text is one or two short sentences naming the result it gives,
+  using only facts in CANDIDATE_PRODUCT (no invented features, prices, users or
+  results); emphasis copied from the text. The engine adds "Link in bio". Bridge it
   naturally from the story where you can ("Want to go further?").
 """
 
@@ -166,7 +168,7 @@ THIS IS POST B: THE EVENING TREND POST.
 """ + TREND_TASTE_RULES
 
 PRODUCT_SLIDE_EMPTY = """\
-- product_slide: leave heading, emphasis and text as empty strings.
+- product_slide: leave emphasis and text as empty strings.
 """
 
 

@@ -29,6 +29,17 @@ _SLIDE: dict[str, Any] = {
     "required": ["heading", "emphasis", "text"],
 }
 
+# Story slides have no title (owner direction 2026-10-07): the sentence is the slide.
+_STORY: dict[str, Any] = {
+    "type": "object",
+    "additionalProperties": False,
+    "properties": {
+        "text": {"type": "string"},
+        "emphasis": {"type": "string"},
+    },
+    "required": ["text", "emphasis"],
+}
+
 STATIC_DRAFT_SCHEMA: dict[str, Any] = {
     "type": "object",
     "additionalProperties": False,
@@ -63,12 +74,12 @@ STATIC_DRAFT_SCHEMA: dict[str, Any] = {
             "type": "object",
             "additionalProperties": False,
             "properties": {
-                "points": {"type": "array", "minItems": 5, "maxItems": 5, "items": _SLIDE},
-                "callout": _SLIDE,
+                "points": {"type": "array", "minItems": 5, "maxItems": 5, "items": _STORY},
+                "callout": _STORY,
             },
             "required": ["points", "callout"],
         },
-        "product_slide": _SLIDE,
+        "product_slide": _STORY,
         "x_replies": {
             "type": "array",
             "minItems": 2,
@@ -231,14 +242,17 @@ class StaticAutomation:
                          text=strip_citations(str(item.get("text", ""))),
                          emphasis=str(item.get("emphasis", "")), **kind)
 
+        def filled(item) -> bool:
+            return bool(str(item.get("text", "")).strip() or str(item.get("heading", "")).strip())
+
         carousel = draft.get("carousel") or {}
-        points = [p for p in carousel.get("points", []) if str(p.get("heading", "")).strip()][:5]
+        points = [p for p in carousel.get("points", []) if filled(p)][:5]
         callout = carousel.get("callout") or carousel.get("takeaway") or {}
-        if len(points) < 2 or not str(callout.get("heading", "")).strip():
+        if len(points) < 2 or not filled(callout):
             return []
-        slides = [slide(p) for p in points]
+        slides = [slide(p, marker=str(i + 1)) for i, p in enumerate(points)]
         product_item = draft.get("product_slide") or {}
-        if product is not None and str(product_item.get("heading", "")).strip():
+        if product is not None and filled(product_item):
             slides.append(slide(product_item, product=True))
         slides.append(slide(callout, final=True))
         total = len(slides) + 1
@@ -386,7 +400,8 @@ class StaticAutomation:
             replies = [fit_x(_drop_urls(strip_citations(str(r)))) for r in draft.get("x_replies", []) if str(r).strip()][:2]
             slides = self._carousel(draft, product)
             if slides:
-                points = min(5, len([p for p in (draft.get("carousel") or {}).get("points", []) if str(p.get("heading", "")).strip()]))
+                points = min(5, len([p for p in (draft.get("carousel") or {}).get("points", [])
+                                     if str(p.get("text", "") or p.get("heading", "")).strip()]))
                 for platform in ("instagram", "facebook", "linkedin"):
                     copies[platform] = match_counts(copies[platform], points)
                 if product is not None and "bio" not in copies["instagram"].lower():
