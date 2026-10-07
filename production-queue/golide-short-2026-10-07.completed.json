@@ -87,5 +87,6 @@
     "signal_type": "youtube-most-popular-seed-proxy"
   },
   "selected_topic_source": "https://www.thestar.com.my/tech/tech-news/2026/09/22/amazon-blocks-metas-muse-ai-agent-from-its-retail-site",
-  "owner_topic_override": "2026-10-07: topic replaced by owner request (AI gist everyone talks about); the NPU topic was picked minutes before the trend rules shipped."
+  "owner_topic_override": "2026-10-07: topic replaced by owner request (AI gist everyone talks about); the NPU topic was picked minutes before the trend rules shipped.",
+  "owner_voice_media_ref": "r2://temp/2026/10/07/37cb2522115d4b6c863f7b215cbef104-Muse-final.wav"
 }

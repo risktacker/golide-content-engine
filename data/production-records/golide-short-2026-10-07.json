@@ -1,0 +1,405 @@
+{
+  "production_id": "golide-short-2026-10-07",
+  "youtube_video_id": "jqQIxq71nN8",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "jqQIxq71nN8",
+    "upload_status": "published",
+    "privacy_status": "public",
+    "scheduled_at": null,
+    "uploaded_at": "2026-10-07T12:09:09.335087+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "Meta's New AI Shops for You. Amazon Said No.",
+    "status": "published",
+    "scheduled_at": "2026-10-07T11:00:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-shorts-mon-wed-fri-sun\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "Your next shopping trip might not be done by you,\nbecause Meta just built an AI that buys things for you.\nFollow the channel, because the feed won't show us to you twice,\nand we unpack one AI update like this every day.\nIt's called Muse, launched in September in the US.\nYou tell it what you need, a gift, a jacket, a new charger,\nand it searches stores like Walmart, Best Buy and Gap,\nfills the cart, then asks you to approve before it pays.\nAnd now every store has to decide whether to let AI shoppers in.\nShopify is building checkouts for them,\nbut Amazon has blocked Muse from its site.\nSo a store that shuts the door could lose your sale,\nbecause your AI buys from one that lets it in.\nIn other words, a store's next customer may be an AI.\nBefore you hand it your card, check two things,\nwhat it can buy without asking, and where it's allowed to shop.\nWould you let an AI do your shopping?\nBecause your next shopping trip might not be done by you.\n",
+  "research": {
+    "summary": "Meta launched Muse, a standalone personal AI agent, in the US in September 2026. It can search stores, fill a cart and make purchases after the user approves. Meta added Walmart, Gap and Best Buy, and Shopify is building agent checkouts with Shop Pay. Amazon blocked Muse from Amazon.com.",
+    "claims": [
+      {
+        "claim": "Meta launched Muse, its first standalone personal AI agent, on 8 September 2026, for US adults; it can send emails, book reservations, fill out forms and make purchases.",
+        "source_title": "Meta integrates Walmart, Gap, and Best Buy into Muse AI agent",
+        "source_url": "https://cryptobriefing.com/meta-muse-walmart-gap-best-buy-integration/",
+        "published_or_updated": "2026-09-23"
+      },
+      {
+        "claim": "Muse now works with Walmart, Gap and Best Buy for groceries, electronics and apparel.",
+        "source_title": "Meta integrates Walmart, Gap, and Best Buy into Muse AI agent",
+        "source_url": "https://cryptobriefing.com/meta-muse-walmart-gap-best-buy-integration/",
+        "published_or_updated": "2026-09-23"
+      },
+      {
+        "claim": "Shopify and Meta announced agentic checkout with Shop Pay across Shopify stores; approval is required for sensitive actions such as making a purchase.",
+        "source_title": "Shopify Teams Up With Meta to Let AI Agents Complete Online Purchases",
+        "source_url": "https://www.channelnews.com.au/shopify-teams-up-with-meta-to-let-ai-agents-complete-online-purchases/",
+        "published_or_updated": "2026-09-23"
+      },
+      {
+        "claim": "Amazon blocked Meta's Muse AI agent from shopping on Amazon.com.",
+        "source_title": "Amazon blocks Meta's Muse AI agent from its retail site",
+        "source_url": "https://www.thestar.com.my/tech/tech-news/2026/09/22/amazon-blocks-metas-muse-ai-agent-from-its-retail-site",
+        "published_or_updated": "2026-09-22"
+      },
+      {
+        "claim": "Amazon blocked Meta's Muse AI agent from Amazon.com over bot access.",
+        "source_title": "Amazon Blocks Meta's Muse AI Agent From Shopping on Amazon.com Over Bot Access",
+        "source_url": "https://techrepublic.com/article/news-amazon-blocks-meta-muse",
+        "published_or_updated": "2026-09"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Meta's Muse AI Could Do Your Shopping",
+    "description": "Meta's Muse is an AI shopping assistant launched in the US that can search retailers such as Walmart, Best Buy, and Gap, fill your cart, and ask for approval before payment. As Shopify builds AI-friendly checkouts and Amazon blocks Muse, retailers are deciding whether to welcome AI shoppers. Would you let an AI shop for you?\n\n#ArtificialIntelligence #Meta #Shopping",
+    "tags": [
+      "Meta Muse",
+      "Meta AI",
+      "AI shopping assistant",
+      "artificial intelligence",
+      "AI shopping",
+      "online shopping",
+      "Walmart",
+      "Best Buy",
+      "Gap",
+      "Shopify",
+      "Amazon",
+      "AI agents",
+      "shopping technology"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "format": "short",
+    "title_description_language": "en"
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "Meta launched Muse, its first standalone personal AI agent, on 8 September 2026, for US adults; it can send emails, book reservations, fill out forms and make purchases.",
+        "source_title": "Meta integrates Walmart, Gap, and Best Buy into Muse AI agent",
+        "source_url": "https://cryptobriefing.com/meta-muse-walmart-gap-best-buy-integration/",
+        "published_or_updated": "2026-09-23"
+      },
+      {
+        "claim": "Muse now works with Walmart, Gap and Best Buy for groceries, electronics and apparel.",
+        "source_title": "Meta integrates Walmart, Gap, and Best Buy into Muse AI agent",
+        "source_url": "https://cryptobriefing.com/meta-muse-walmart-gap-best-buy-integration/",
+        "published_or_updated": "2026-09-23"
+      },
+      {
+        "claim": "Shopify and Meta announced agentic checkout with Shop Pay across Shopify stores; approval is required for sensitive actions such as making a purchase.",
+        "source_title": "Shopify Teams Up With Meta to Let AI Agents Complete Online Purchases",
+        "source_url": "https://www.channelnews.com.au/shopify-teams-up-with-meta-to-let-ai-agents-complete-online-purchases/",
+        "published_or_updated": "2026-09-23"
+      },
+      {
+        "claim": "Amazon blocked Meta's Muse AI agent from shopping on Amazon.com.",
+        "source_title": "Amazon blocks Meta's Muse AI agent from its retail site",
+        "source_url": "https://www.thestar.com.my/tech/tech-news/2026/09/22/amazon-blocks-metas-muse-ai-agent-from-its-retail-site",
+        "published_or_updated": "2026-09-22"
+      },
+      {
+        "claim": "Amazon blocked Meta's Muse AI agent from Amazon.com over bot access.",
+        "source_title": "Amazon Blocks Meta's Muse AI Agent From Shopping on Amazon.com Over Bot Access",
+        "source_url": "https://techrepublic.com/article/news-amazon-blocks-meta-muse",
+        "published_or_updated": "2026-09"
+      }
+    ],
+    "platform_demand": {
+      "query": "Meta Muse AI shopping agent Amazon blocked",
+      "score": 87.5,
+      "verdict": "pass",
+      "recent_videos": 65,
+      "median_views_per_day": 405274.2,
+      "top_views_per_day": 5376693.69,
+      "market_coverage": 4,
+      "title_query_overlap": 0.1667,
+      "measured_at": "2026-10-07T07:02:24.871008+00:00",
+      "signal_type": "youtube-most-popular-seed-proxy"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -17.11,
+      "true_peak_dbtp": -1.92,
+      "loudness_range": 2.6
+    },
+    "editorial": {
+      "beats": 18,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-10-07T12:09:00.721266+00:00"
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri-sun"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-short-2026-10-07",
+    "created_at": "2026-10-07T12:09:01.678574+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-10-07T11:00:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "77127c43df485bdeb7f5361696535f31cbcdec04f8bf51ee962da2ec35389119",
+        "bytes": 14732626
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "f89fddf6a422958476cb289c8a08e2095798ee9655a84129b4892775cbd8aad9",
+        "bytes": 1080030
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "d290d5e30670c51751957c711803d8d587832cb1715e36623a5ea0a1abc7b423",
+        "bytes": 925
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "2df54185355e5571d983c582124ef86749a94a0479ad131cb6776d7c396acfd1",
+        "bytes": 2306
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "5fb826ba4f8c1bc4a944bc5b17372a0bc1c0fe46b233d91dadc3439f09a15b02",
+        "bytes": 470
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "8331ee95e6521dbc6ea9e4e7707fb41ea79475506a0cf1d5bd3d41f9fe7699d3",
+        "bytes": 2598
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "678140779bba2e91fcb33a95de33aea71f2cbbed4011049fbe64e353d1870954",
+        "bytes": 394
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "c7914ec69c1b51479b23e75cb18e0bff38f091dd27081709cde35804b8cb24e5",
+        "bytes": 259
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 24200.0,
+      "cached_input_units": 0.0,
+      "output_units": 1731.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006917,
+      "created_at": "2026-10-07T07:02:24.872733+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-07T07:02:24.879391+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 30167.0,
+      "cached_input_units": 0.0,
+      "output_units": 2432.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008952,
+      "created_at": "2026-10-07T07:03:02.552182+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-07T07:03:02.553677+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2866.0,
+      "cached_input_units": 0.0,
+      "output_units": 4108.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005503,
+      "created_at": "2026-10-07T07:03:43.092358+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 4218.0,
+      "cached_input_units": 1408.0,
+      "output_units": 3696.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005025,
+      "created_at": "2026-10-07T07:04:17.178872+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 679.0,
+      "cached_input_units": 0.0,
+      "output_units": 596.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000851,
+      "created_at": "2026-10-07T12:02:16.620937+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-07T12:02:33.368601+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-07T12:02:49.512427+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-07T12:03:04.308178+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-07T12:03:19.791962+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-07T12:03:34.164049+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 393.0,
+      "cached_input_units": 0.0,
+      "output_units": 325.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000469,
+      "created_at": "2026-10-07T12:08:15.233323+00:00"
+    },
+    {
+      "stage": "thumbnail",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-10-07T12:08:45.658558+00:00"
+    }
+  ],
+  "recorded_at": "2026-10-07T12:09:09.340087+00:00"
+}
