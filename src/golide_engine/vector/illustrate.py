@@ -120,10 +120,15 @@ def illustration_prompt(drawing: str, gold: str, format_name: str) -> str:
             "the bottom third stays empty black." if format_name == "short" else
             "Keep the drawing centred with empty black margins; the bottom fifth stays empty black.")
     return (
-        "Minimal elegant line illustration: thin, clean, single-weight white lines on a pure "
-        "flat black background, like a confident hand-drawn ink sketch made with a fine glowing "
-        "pen. Outlines only: no fills, no shading, no hatching, no gradients, no textures, no "
-        "glow halos, no colour except one part. Draw the following as one composed scene: "
+        "Minimal elegant line illustration: thin, clean white lines on a pure flat black "
+        "background, like a confident hand-drawn ink sketch made with a fine glowing pen. "
+        "Main shapes in a steady line; a few small inner details (a seam, a button, a window, "
+        "a fold, a texture mark) in finer, shorter lines so the drawing has depth without "
+        "clutter. Give the scene a simple ground line or soft horizon so objects sit somewhere, "
+        "one clear focal point, and generous empty space around it. Every line closed and "
+        "deliberate; no sketchy double lines, no stray dots. Outlines only: no fills, no solid "
+        "shapes, no shading, no gradients, no glow halos, no colour except one part. Draw the "
+        "following as one composed scene: "
         f"{drawing.strip()} Draw only this part in warm gold lines: {gold.strip()}. "
         "No text, letters, numbers, labels, logos, watermarks or user-interface elements anywhere. "
         f"{area}"
@@ -337,7 +342,12 @@ def draw_illustration(d, drawing: Drawing, region, reveal: float, breathe: float
     def tx(points):
         return [((x - cx) * s + ox, (y - cy) * s + oy) for x, y in points]
 
-    target = drawing.total * max(0.0, min(1.0, reveal))
+    # Ease the pen: it starts gently, travels, and settles, instead of a flat speed.
+    r = max(0.0, min(1.0, reveal))
+    target = drawing.total * (r * r * (3 - 2 * r) * 0.35 + r * 0.65)
+    lengths = sorted(st.length for st in drawing.strokes) or [1.0]
+    long_cut = lengths[int(len(lengths) * 0.6)]
+    short_cut = lengths[int(len(lengths) * 0.25)]
     walked = 0.0
     tip = None
     pulse = 0.5 + 0.5 * math.sin(d.t * 1.8)
@@ -360,11 +370,27 @@ def draw_illustration(d, drawing: Drawing, region, reveal: float, breathe: float
             tip = tx([end])[0]
         mapped = tx(pts)
         width_px = max(1.6, min(3.4, stroke.width * s * d.unit_px * 0.9))
+        # Line hierarchy: main contours a touch heavier, small details finer.
+        if stroke.length >= long_cut:
+            width_px = min(3.8, width_px * 1.15)
+        elif stroke.length <= short_cut:
+            width_px = max(1.2, width_px * 0.75)
 
         def path(c, mapped=mapped):
+            # Smooth curves through the traced points (midpoint quadratic splines),
+            # so lines read as ink, not as joined segments.
             c.move_to(*mapped[0])
-            for p in mapped[1:]:
-                c.line_to(*p)
+            if len(mapped) < 3:
+                for p in mapped[1:]:
+                    c.line_to(*p)
+                return
+            x0, y0 = mapped[0]
+            for (x1, y1), (x2, y2) in zip(mapped[1:-1], mapped[2:]):
+                mx, my = (x1 + x2) / 2, (y1 + y2) / 2
+                cx0, cy0 = c.get_current_point()
+                c.curve_to(cx0 + 2 / 3 * (x1 - cx0), cy0 + 2 / 3 * (y1 - cy0),
+                           mx + 2 / 3 * (x1 - mx), my + 2 / 3 * (y1 - my), mx, my)
+            c.line_to(*mapped[-1])
 
         if stroke.gold:
             d.stroke(path, "gold", width_px, alpha=0.85 + 0.15 * pulse, hot=True)
