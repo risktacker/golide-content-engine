@@ -361,7 +361,7 @@ def chapter_problems(plan: dict, format_name: str) -> list[str]:
     return problems
 
 
-FOLLOW_ASKS = ("comment", "like this", "share this", "link in", "bio", "type ")
+FOLLOW_ASKS = ("comment", "hit like", "like the video", "like this video", "leave a like", "share", "link", " bio", "type ")
 
 
 def follow_problems(plan: dict, format_name: str) -> list[str]:

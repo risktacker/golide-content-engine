@@ -1,0 +1,269 @@
+{
+  "title": "The AI in Your Next PC May Never Need the Internet",
+  "chapters": [],
+  "lines": [
+    {
+      "section": "claim",
+      "chapter": 0,
+      "text": "The smartest AI isn't always in the cloud,",
+      "emphasis": "cloud",
+      "visual": "icon_pair",
+      "subjects": [
+        "cloud",
+        "laptop"
+      ],
+      "label": "THE CLOUD",
+      "follow": false
+    },
+    {
+      "section": "claim",
+      "chapter": 0,
+      "text": "because the best system chooses where each task runs.",
+      "emphasis": "chooses",
+      "visual": "icon_pair",
+      "subjects": [
+        "cloud",
+        "laptop"
+      ],
+      "label": "WHERE IT RUNS",
+      "follow": false
+    },
+    {
+      "section": "claim",
+      "chapter": 0,
+      "text": "Follow GOLIDE now, because the feed won't show us to you twice,",
+      "emphasis": "Follow GOLIDE",
+      "visual": "icon_hero",
+      "subjects": [
+        "phone"
+      ],
+      "label": "",
+      "follow": true
+    },
+    {
+      "section": "claim",
+      "chapter": 0,
+      "text": "and every day we break down one AI story like this.",
+      "emphasis": "every day",
+      "visual": "icon_hero",
+      "subjects": [
+        "phone"
+      ],
+      "label": "",
+      "follow": true
+    },
+    {
+      "section": "proof",
+      "chapter": 0,
+      "text": "Think about live captions on a new laptop.",
+      "emphasis": "live captions",
+      "visual": "icon_hero",
+      "subjects": [
+        "laptop"
+      ],
+      "label": "LIVE CAPTIONS",
+      "follow": false
+    },
+    {
+      "section": "proof",
+      "chapter": 0,
+      "text": "They can run right on the device,",
+      "emphasis": "on the device",
+      "visual": "icon_hero",
+      "subjects": [
+        "laptop"
+      ],
+      "label": "ON DEVICE",
+      "follow": false
+    },
+    {
+      "section": "proof",
+      "chapter": 0,
+      "text": "using a small AI chip called a neural processing unit,",
+      "emphasis": "neural processing unit",
+      "visual": "icon_hero",
+      "subjects": [
+        "computer chip"
+      ],
+      "label": "NPU",
+      "follow": false
+    },
+    {
+      "section": "proof",
+      "chapter": 0,
+      "text": "while harder questions still go out to the cloud.",
+      "emphasis": "cloud",
+      "visual": "icon_pair",
+      "subjects": [
+        "computer chip",
+        "cloud"
+      ],
+      "label": "CLOUD",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 0,
+      "text": "So the operating system acts like a traffic controller,",
+      "emphasis": "traffic controller",
+      "visual": "icon_orbit",
+      "subjects": [
+        "traffic light",
+        "laptop",
+        "cloud"
+      ],
+      "label": "TRAFFIC CONTROL",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 0,
+      "text": "sending each request to the right chip.",
+      "emphasis": "right chip",
+      "visual": "icon_orbit",
+      "subjects": [
+        "traffic light",
+        "computer chip",
+        "cloud"
+      ],
+      "label": "ROUTING",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 0,
+      "text": "Small models stay nearby for speed, privacy and offline use,",
+      "emphasis": "privacy",
+      "visual": "icon_hero",
+      "subjects": [
+        "padlock"
+      ],
+      "label": "LOCAL",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 0,
+      "text": "and the heavy thinking moves to big cloud models.",
+      "emphasis": "heavy thinking",
+      "visual": "icon_pair",
+      "subjects": [
+        "brain",
+        "cloud"
+      ],
+      "label": "CLOUD",
+      "follow": false
+    },
+    {
+      "section": "cost",
+      "chapter": 0,
+      "text": "Ignore that difference, and here's what happens.",
+      "emphasis": "ignore",
+      "visual": "icon_hero",
+      "subjects": [
+        "warning sign"
+      ],
+      "label": "THE COST",
+      "follow": false
+    },
+    {
+      "section": "cost",
+      "chapter": 0,
+      "text": "You chase the highest benchmark, then wait for a connection,",
+      "emphasis": "benchmark",
+      "visual": "icon_pair",
+      "subjects": [
+        "trophy",
+        "wifi signal"
+      ],
+      "label": "WAITING",
+      "follow": false
+    },
+    {
+      "section": "cost",
+      "chapter": 0,
+      "text": "or send private notes away for work your laptop could finish.",
+      "emphasis": "private notes",
+      "visual": "icon_pair",
+      "subjects": [
+        "notebook",
+        "laptop"
+      ],
+      "label": "PRIVACY",
+      "follow": false
+    },
+    {
+      "section": "reframe",
+      "chapter": 0,
+      "text": "So which AI is smartest? It depends on the task.",
+      "emphasis": "the task",
+      "visual": "icon_hero",
+      "subjects": [
+        "question mark"
+      ],
+      "label": "IT DEPENDS",
+      "follow": false
+    },
+    {
+      "section": "cta",
+      "chapter": 0,
+      "text": "Before you pick a tool, ask what matters most,",
+      "emphasis": "matters most",
+      "visual": "checklist",
+      "subjects": [
+        "checklist"
+      ],
+      "label": "ASK FIRST",
+      "follow": false
+    },
+    {
+      "section": "cta",
+      "chapter": 0,
+      "text": "speed, privacy, working offline or deep reasoning,",
+      "emphasis": "offline",
+      "visual": "checklist",
+      "subjects": [
+        "checklist"
+      ],
+      "label": "ASK FIRST",
+      "follow": false
+    },
+    {
+      "section": "cta",
+      "chapter": 0,
+      "text": "then choose local, cloud, or a mix.",
+      "emphasis": "a mix",
+      "visual": "icon_pair",
+      "subjects": [
+        "laptop",
+        "cloud"
+      ],
+      "label": "CHOOSE",
+      "follow": false
+    },
+    {
+      "section": "cta",
+      "chapter": 0,
+      "text": "AI isn't just living in the cloud anymore,",
+      "emphasis": "cloud",
+      "visual": "icon_hero",
+      "subjects": [
+        "cloud"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "cta",
+      "chapter": 0,
+      "text": "it's becoming the brain inside your computer.",
+      "emphasis": "brain",
+      "visual": "logo_end",
+      "subjects": [
+        "brain"
+      ],
+      "label": "",
+      "follow": false
+    }
+  ]
+}
