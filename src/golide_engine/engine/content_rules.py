@@ -247,7 +247,10 @@ LINE RULES (lines are how the speech is split for the screen; they are NOT sente
   can begin with "and", "but", "because", "which" and so on.
 - Split at natural pauses, never in the middle of a name or number.
 - No brackets, no abbreviations, no symbols, write numbers as they are spoken.
-- Each line names ONE emphasis word (the word that glows white in the captions).
+- Each line names ONE emphasis: the key term of that line, shown in gold in the captions.
+  Pick what the viewer must remember: a name ("Nvidia", "Sam Altman"), a number
+  ("25 percent"), or the key idea or term ("crypto agility", "inventory"). Never a
+  filler word ("really", "just", "the"). One or two words, copied exactly from the line.
 - Each line names its SUBJECTS: 1 to 3 concrete, drawable things the line is about,
   in plain words ("server rack", "water drop", "thermometer", "brain", "phone",
   "laptop", "house", "sun", "rocket", "briefcase"). The video draws exactly these, so

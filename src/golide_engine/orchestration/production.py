@@ -777,9 +777,15 @@ class ProductionService:
             ]), encoding="utf-8")
 
             def vector_render_stage():
+                # Rotate the four atmosphere beds in order across videos.
+                rendered_before = self.database.rows(
+                    "SELECT COUNT(DISTINCT production_id) n FROM stage_runs WHERE stage='render-vector-v1' "
+                    "AND status='completed' AND production_id<>?", (production_id,),
+                )
                 VectorRenderer(str(spec["format"])).render(
                     plan, timed_words, narration, video_path, narration_seconds,
                     music=None, illustrations=illustrations,
+                    bed_variant=int(rendered_before[0]["n"]) if rendered_before else None,
                 )
 
             self.runner.run(production_id, "render-vector-v1", vector_render_stage, attempts=1)

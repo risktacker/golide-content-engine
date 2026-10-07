@@ -172,6 +172,8 @@ class CaptionRenderer:
                 width += add
         text_rgb = self.theme.rgb("text")
         muted = self.theme.rgb("text_muted")
+        gold = self.theme.rgb("gold")
+        dim_gold = tuple(int(c * 0.62) for c in gold)
         for r, row in enumerate(rows[:3]):
             row_w = sum(draw.textlength(words[i], font=fonts[i]) for i in row) + space * (len(row) - 1)
             x = (w - row_w) / 2
@@ -179,12 +181,25 @@ class CaptionRenderer:
             for i in row:
                 spoken = i <= current
                 is_now = i == current
-                color = text_rgb if spoken else muted
+                key_term = fonts[i] is self.bold
+                ww = draw.textlength(words[i], font=fonts[i])
+                # Key terms ("crypto agility", "Nvidia", "25%") light up in gold and
+                # stay gold once said, with a gold underline, so the idea sticks.
+                if key_term:
+                    color = gold if spoken else dim_gold
+                else:
+                    color = text_rgb if spoken else muted
                 alpha = int(255 * fade * (1.0 if spoken else 0.75))
                 draw.text((x, y), words[i], font=fonts[i], fill=color + (alpha,))
-                if is_now and fonts[i] is self.bold:
-                    gdraw.text((x, y), words[i], font=fonts[i], fill=(255, 255, 255, int(220 * fade)))
-                x += draw.textlength(words[i], font=fonts[i]) + space
+                if key_term and spoken:
+                    gdraw.text((x, y), words[i], font=fonts[i],
+                               fill=gold + (int((230 if is_now else 120) * fade),))
+                    uy = y + int(size * 1.18)
+                    pos = row.index(i)
+                    joined = pos + 1 < len(row) and fonts[row[pos + 1]] is self.bold and row[pos + 1] <= current
+                    draw.line([(x, uy), (x + ww + (space if joined else 0), uy)],
+                              fill=gold + (int(200 * fade),), width=max(2, size // 16))
+                x += ww + space
         glow = glow.filter(ImageFilter.GaussianBlur(size * 0.28))
         result = Image.alpha_composite(glow, layer)
         self._cache[key] = result
@@ -433,7 +448,7 @@ class VectorRenderer:
 
     def render(self, plan: dict[str, Any], words: list[dict[str, Any]], narration: Path, output: Path,
                duration: float, music: Path | None = None, music_volume: float = 0.03,
-               illustrations: dict[str, Path] | None = None) -> Path:
+               illustrations: dict[str, Path] | None = None, bed_variant: int | None = None) -> Path:
         lines = align_lines(plan, words, duration)
         from .chapters import chapter_marks, line_chapters
         self.chapters = chapter_marks(plan, lines) if plan.get("chapters") else []
@@ -459,7 +474,7 @@ class VectorRenderer:
 
         sfx_path = render_sfx(groups, duration, output.with_name(output.stem + "-sfx.wav"))
         bed_path = render_ambient(duration, output.with_name(output.stem + "-bed.wav"),
-                                  seed_text=str(plan.get("title", "")))
+                                  seed_text=str(plan.get("title", "")), variant=bed_variant)
         inputs = ["-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{L.width}x{L.height}",
                   "-r", str(self.fps), "-i", "-", "-i", str(narration), "-i", str(sfx_path),
                   "-i", str(bed_path)]
