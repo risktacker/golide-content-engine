@@ -75,3 +75,8 @@ This is the standard for every Short and long video. Don't change any of it with
 - No titles: a big gold number, the sentence itself (key words bold), then one gold curiosity line that the next slide answers. Slide 5 ends on the payoff.
 - Marketplace slide second to last ("Link in bio"); call-out last with the "FOLLOW GOLIDE" pill.
 
+## Covers and thumbnails (locked 7 Oct 2026, owner approved)
+- Every video opens on a designed cover: its best illustration fully drawn and coloured, a 3 to 7 word hook with the punch in gold, and the wordmark. It is the whole first frame for 0.12 s, then fades into the opening scene over 0.35 s. 9:16 has the drawing above and the hook below inside the phone-safe area; 16:9 has the hook left and the drawing right.
+- The same cover is uploaded as the cover on Instagram Reels, Facebook and LinkedIn videos. Downloads, shares and platforms that use the first frame show it too.
+- YouTube keeps an AI-generated thumbnail (gpt-image-2, 16:9, normalised to 1280x720), now briefed on the story's decisive moment written by the storyboard: playful, one hero subject mid-action, bold scale contrast, GOLIDE Black, one glowing accent, no text.
+
