@@ -26,7 +26,24 @@ import numpy as np
 # Planning (text model)
 # --------------------------------------------------------------------------
 
-SCENE_COUNTS = {"short": (4, 6), "long": (8, 14)}
+# Owner review 2026-10-07 (reference channel): many visual ideas per video,
+# a new picture every line or two.
+SCENE_COUNTS = {"short": (7, 10), "long": (12, 18)}
+
+# Accent colours, taken from the reference channel's palette. The picture is
+# always generated with the accent part in gold (so tracing can find it); the
+# renderer draws that part in the scene's accent colour.
+ACCENTS = {
+    "gold": (233, 196, 106),
+    "rose": (240, 138, 128),
+    "teal": (127, 224, 210),
+    "ivory": (246, 238, 222),
+    "copper": (217, 140, 85),
+}
+
+# Action sounds a scene may ask for (see vector.sfx).
+SCENE_SOUNDS = ("none", "bling", "chime", "phone_ring", "notify", "door_open", "door_shut",
+                "car", "blips", "coin", "typing", "clock", "camera")
 
 VISUAL_PLAN_SCHEMA: dict = {
     "type": "object",
@@ -43,8 +60,11 @@ VISUAL_PLAN_SCHEMA: dict = {
                     "last_line": {"type": "integer"},
                     "drawing": {"type": "string"},
                     "gold_element": {"type": "string"},
+                    "accent": {"type": "string", "enum": list(ACCENTS)},
+                    "sound": {"type": "string", "enum": list(SCENE_SOUNDS)},
+                    "sound_word": {"type": "string"},
                 },
-                "required": ["first_line", "last_line", "drawing", "gold_element"],
+                "required": ["first_line", "last_line", "drawing", "gold_element", "accent", "sound", "sound_word"],
             },
         },
     },
@@ -57,8 +77,8 @@ def scene_plan_instructions(format_name: str) -> str:
     return f"""\
 You are the storyboard artist for a narrated explainer video in the style of
 animated line-illustration channels: on a black screen, one hand-drawn white
-line illustration builds while the narrator speaks, then dissolves into the
-next. You receive the spoken lines, numbered from 0. Do not change any words.
+line illustration builds while the narrator speaks, then fades into the
+next. Show many different visual ideas: a new picture for every new thought. You receive the spoken lines, numbered from 0. Do not change any words.
 
 Group consecutive lines into {low} to {high} scenes. Every line belongs to
 exactly one scene, in order, with no gaps or overlaps (scene 1 starts at line
@@ -74,8 +94,24 @@ room, a technician's silhouette beside it holding a clipboard"). Real objects,
 people and places drawn simply. If people appear they are Black. One clear
 focal point. No text, labels, numbers, logos or screens with readable content.
 
-"gold_element": the single part of the drawing that should glow gold because
-it carries the meaning of the scene (for example: "the heat lines").
+"gold_element": the single part of the drawing that should glow because it
+carries the meaning of the scene (for example: "the heat lines").
+
+"accent": the colour that glowing part is shown in, chosen by meaning:
+gold (value, money, success, the key idea), rose (risk, warning, emotion, a
+problem), teal (technology, AI, data, calm), ivory (soft light, neutral, hope),
+copper (warm everyday things, wood, home, people at work). Vary it: never the
+same accent more than two scenes in a row.
+
+"sound": one short sound for the main action you drew, ONLY when the lines
+describe that action: bling (something lights up or a key idea lands), chime
+(a gentle reveal), phone_ring (a call), notify (a message or alert), door_open,
+door_shut (blocked, closed, rejected), car (driving, travel, moving fast),
+blips (AI, a computer or robot working, scanning, searching), coin (paying,
+buying, money), typing (writing, prompting), clock (time, waiting, deadlines),
+camera (a photo, being watched). Otherwise "none". At most every other scene has
+a sound; most explainer scenes need none. "sound_word": the exact word from the
+scene's lines when the sound should play (for example "blocked"), or "" for none.
 
 If the lines are divided into chapters (marked "== CHAPTER ... =="), a scene
 never runs across a chapter mark: every chapter starts with a new scene.
@@ -158,6 +194,12 @@ class Drawing:
     width: int
     height: int
     bbox: tuple[float, float, float, float]  # x0, y0, x1, y1 of the ink
+    # Closed shapes, filled softly like the reference (0..1 per pixel): one
+    # mask for the white parts and one for the accent part.
+    fill: np.ndarray | None = None
+    accent_fill: np.ndarray | None = None
+    accent: str = "gold"
+    entrance: str = "pen"  # "pen": drawn line by line; "fade": appears drawn, accent lights up
 
     @property
     def total(self) -> float:
@@ -311,7 +353,40 @@ def vectorize(image_path: Path, max_side: int = 900) -> Drawing:
     allpts = np.vstack([s.points for s in strokes])
     x0, y0 = allpts.min(axis=0)
     x1, y1 = allpts.max(axis=0)
-    return Drawing(_order(strokes), image.width, image.height, (float(x0), float(y0), float(x1), float(y1)))
+    fill, accent_fill = _fills(mask, goldness)
+    return Drawing(_order(strokes), image.width, image.height, (float(x0), float(y0), float(x1), float(y1)),
+                   fill, accent_fill)
+
+
+def _fills(mask: np.ndarray, goldness: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Enclosed areas of the line art (a body, a door, a screen), not the background.
+
+    Very small pockets and very large areas (a room outline) stay empty so the
+    fill reads as shading, never as a solid block.
+    """
+    from scipy import ndimage
+
+    h, w = mask.shape
+    holes, count = ndimage.label(~mask)
+    fill = np.zeros((h, w), np.float32)
+    accent = np.zeros((h, w), np.float32)
+    if not count:
+        return fill, accent
+    border = set(np.unique(np.concatenate([holes[0], holes[-1], holes[:, 0], holes[:, -1]])))
+    sizes = ndimage.sum(np.ones_like(holes), holes, range(1, count + 1))
+    area = float(h * w)
+    ring_gold = goldness > 0.28
+    for label in range(1, count + 1):
+        if label in border:
+            continue
+        share = sizes[label - 1] / area
+        if share < 0.0006 or share > 0.12:
+            continue
+        region = holes == label
+        ring = ndimage.binary_dilation(region, iterations=3) & mask
+        warm = ring_gold[ring].mean() if ring.any() else 0.0
+        (accent if warm > 0.5 else fill)[region] = 1.0
+    return fill, accent
 
 
 # --------------------------------------------------------------------------
@@ -341,18 +416,21 @@ def fit(drawing: Drawing, region: tuple[float, float, float, float]):
     return s, cx, cy, ox, oy
 
 
-def draw_illustration(d, drawing: Drawing, region, reveal: float, breathe: float = 0.0) -> None:
+def draw_illustration(d, drawing: Drawing, region, reveal: float, breathe: float = 0.0, zoom: float = 1.0,
+                      linear: bool = False) -> None:
     from .primitives import pen_light
 
     s, cx, cy, ox, oy = fit(drawing, region)
-    s *= 1.0 + 0.025 * breathe  # slow push-in over the scene
+    s *= (1.0 + 0.025 * breathe) * zoom  # slow push-in over the scene
+    accent = "accent_" + drawing.accent if ("accent_" + drawing.accent) in d.colors else "gold"
+    _paint_fills(d, drawing, accent, s, cx, cy, ox, oy, reveal)
 
     def tx(points):
         return [((x - cx) * s + ox, (y - cy) * s + oy) for x, y in points]
 
     # Ease the pen: it starts gently, travels, and settles, instead of a flat speed.
     r = max(0.0, min(1.0, reveal))
-    target = drawing.total * (r * r * (3 - 2 * r) * 0.35 + r * 0.65)
+    target = drawing.total * (r if linear else (r * r * (3 - 2 * r) * 0.35 + r * 0.65))
     lengths = sorted(st.length for st in drawing.strokes) or [1.0]
     long_cut = lengths[int(len(lengths) * 0.6)]
     short_cut = lengths[int(len(lengths) * 0.25)]
@@ -401,12 +479,57 @@ def draw_illustration(d, drawing: Drawing, region, reveal: float, breathe: float
             c.line_to(*mapped[-1])
 
         if stroke.gold:
-            d.stroke(path, "gold", width_px, alpha=0.85 + 0.15 * pulse, hot=True)
+            # Accent in the scene's colour; a softer glow so it never covers the drawing.
+            d.stroke(path, accent, width_px, alpha=0.88 + 0.12 * pulse)
+            d.stroke(path, accent, width_px * 0.8, alpha=0.45 + 0.1 * pulse, hot=True)
         else:
             d.stroke(path, "line", width_px, alpha=0.92)
             d.stroke(path, "line", width_px, alpha=0.18, hot=True)
     if tip is not None and reveal < 1.0:
         pen_light(d, tip[0], tip[1])
+
+
+_FILL_CACHE: dict[tuple[int, str], object] = {}
+
+
+def _fill_surface(mask: np.ndarray, rgb: tuple[float, float, float], key: tuple[int, str]):
+    """A cairo surface of a fill mask with a light diagonal sketch texture."""
+    import cairo
+
+    if key in _FILL_CACHE:
+        return _FILL_CACHE[key]
+    h, w = mask.shape
+    yy, xx = np.mgrid[0:h, 0:w]
+    hatch = 0.55 + 0.45 * (np.sin((xx + yy) * 0.9) > 0.6)  # soft pencil strokes
+    alpha = (mask * hatch * 255).astype(np.uint8)
+    data = np.zeros((h, w, 4), np.uint8)
+    for i, c in enumerate((rgb[2], rgb[1], rgb[0])):  # cairo is premultiplied BGRA
+        data[..., i] = (alpha * c).astype(np.uint8)
+    data[..., 3] = alpha
+    surface = cairo.ImageSurface.create_for_data(bytearray(data.tobytes()), cairo.FORMAT_ARGB32, w, h, w * 4)
+    if len(_FILL_CACHE) > 64:
+        _FILL_CACHE.clear()
+    _FILL_CACHE[key] = surface
+    return surface
+
+
+def _paint_fills(d, drawing: Drawing, accent: str, s, cx, cy, ox, oy, reveal: float) -> None:
+    """Fill closed shapes softly once most of the drawing is on screen."""
+    a = max(0.0, min(1.0, (reveal - 0.55) / 0.35))
+    if a <= 0.0:
+        return
+    for mask, color, strength in ((drawing.fill, "line", 0.13), (drawing.accent_fill, accent, 0.26)):
+        if mask is None or not mask.any():
+            continue
+        surface = _fill_surface(mask, d.colors[color], (id(mask), color))
+        ctx = d.main
+        ctx.save()
+        ctx.translate(ox, oy)
+        ctx.scale(s, s)
+        ctx.translate(-cx, -cy)
+        ctx.set_source_surface(surface, 0, 0)
+        ctx.paint_with_alpha(strength * a * a * (3 - 2 * a))
+        ctx.restore()
 
 
 def illustration(d) -> None:
@@ -415,6 +538,20 @@ def illustration(d) -> None:
     if drawing is None:
         return
     span = max(1.0, d.span)
+    breathe = min(1.0, d.t / span)
+    if drawing.entrance == "fade":
+        # Already drawn as it fades in; the accent part then lights up, drawn by
+        # the pen light, a moment after the scene starts (the "bling" moment).
+        gold = sum(s.length for s in drawing.strokes if s.gold)
+        lit = max(0.0, min(1.0, (d.t - ACCENT_DELAY) / ACCENT_DRAW))
+        reveal = (drawing.total - gold + gold * lit) / drawing.total
+        draw_illustration(d, drawing, d.region, reveal, breathe=breathe, zoom=d.zoom, linear=True)
+        return
     reveal_time = min(max(0.72 * span, 2.5), 16.0, span)
     reveal = d.t / reveal_time
-    draw_illustration(d, drawing, d.region, reveal, breathe=min(1.0, d.t / span))
+    draw_illustration(d, drawing, d.region, reveal, breathe=breathe, zoom=d.zoom)
+
+
+# When the accent of a faded-in scene lights up (seconds after the scene starts).
+ACCENT_DELAY = 0.45
+ACCENT_DRAW = 1.1

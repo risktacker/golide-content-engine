@@ -213,37 +213,44 @@ class CaptionRenderer:
         ImageDraw.Draw(img).text((2, 0), spaced, font=self.mono, fill=color + (int(255 * alpha),))
         return img
 
-    def follow_pill(self) -> Image.Image:
-        """'+ FOLLOW GOLIDE': a gold outlined pill shown while the owner asks for the follow."""
-        key = ("follow",)
+    def follow_pill(self, done: bool = False) -> Image.Image:
+        """The call-out pill from the reference endings: a soft white pill with dark
+        text, '+ FOLLOW GOLIDE' while the owner asks, then '✓ MORE ON ITS WAY'."""
+        key = ("follow", done)
         if key in self._cache:
             return self._cache[key]
         size = self.layout.caption_size
-        font = ImageFont.truetype(str(self.theme.font("mono")), max(18, int(size * 0.62)))
-        text = " ".join("FOLLOW GOLIDE")
+        font = ImageFont.truetype(str(self.theme.font("bold")), max(18, int(size * 0.6)))
+        text = "MORE ON ITS WAY" if done else "FOLLOW GOLIDE"
         probe = ImageDraw.Draw(Image.new("RGBA", (1, 1)))
-        tw = probe.textlength(text, font=font)
-        plus = size * 0.62
-        pad_x, pad_y = int(size * 0.75), int(size * 0.42)
-        gap = size * 0.45
-        width = int(plus + gap + tw) + pad_x * 2
-        height = int(font.size * 1.25) + pad_y * 2
-        margin = int(size * 0.5)  # room for the glow
+        spacing = size * 0.06
+        tw = sum(probe.textlength(ch, font=font) for ch in text) + spacing * (len(text) - 1)
+        icon = size * 0.5
+        pad_x, pad_y = int(size * 0.85), int(size * 0.4)
+        gap = size * 0.4
+        width = int(icon + gap + tw) + pad_x * 2
+        height = int(font.size * 1.3) + pad_y * 2
+        margin = int(size * 0.6)  # room for the glow
         layer = Image.new("RGBA", (width + margin * 2, height + margin * 2), (0, 0, 0, 0))
         glow = Image.new("RGBA", layer.size, (0, 0, 0, 0))
-        gold = self.theme.rgb("gold")
         box = (margin, margin, margin + width, margin + height)
-        for target, w in ((glow, 6), (layer, 3)):
-            draw = ImageDraw.Draw(target)
-            draw.rounded_rectangle(box, radius=height // 2, outline=gold + (255,), width=w)
-            # the plus sign
-            px, py, half = margin + pad_x + plus / 2, margin + height / 2, plus * 0.38
-            draw.line([(px - half, py), (px + half, py)], fill=gold + (255,), width=w)
-            draw.line([(px, py - half), (px, py + half)], fill=gold + (255,), width=w)
-        ImageDraw.Draw(layer).text((margin + pad_x + plus + gap, margin + height / 2), text, font=font,
-                                   fill=gold + (255,), anchor="lm")
-        glow = glow.filter(ImageFilter.GaussianBlur(size * 0.28))
-        glow.putalpha(glow.getchannel("A").point(lambda v: int(v * 0.55)))
+        ImageDraw.Draw(glow).rounded_rectangle(box, radius=height // 2, fill=(255, 255, 255, 150))
+        draw = ImageDraw.Draw(layer)
+        draw.rounded_rectangle(box, radius=height // 2, fill=(244, 241, 236, 255))
+        ink = (22, 22, 26, 255)
+        cx, cy, half = margin + pad_x + icon / 2, margin + height / 2, icon * 0.42
+        w = max(3, int(size * 0.075))
+        if done:  # check mark
+            draw.line([(cx - half, cy), (cx - half * 0.25, cy + half * 0.7), (cx + half, cy - half * 0.7)],
+                      fill=ink, width=w, joint="curve")
+        else:  # plus
+            draw.line([(cx - half, cy), (cx + half, cy)], fill=ink, width=w)
+            draw.line([(cx, cy - half), (cx, cy + half)], fill=ink, width=w)
+        x = margin + pad_x + icon + gap
+        for ch in text:
+            draw.text((x, cy), ch, font=font, fill=ink, anchor="lm")
+            x += probe.textlength(ch, font=font) + spacing
+        glow = glow.filter(ImageFilter.GaussianBlur(size * 0.35))
         pill = Image.alpha_composite(glow, layer)
         self._cache[key] = pill
         return pill
@@ -291,7 +298,11 @@ class CaptionRenderer:
 
 
 def _colors(theme: Theme) -> dict[str, tuple[float, float, float]]:
-    return {name: tuple(v / 255 for v in theme.rgb(name)) for name in theme.raw["colors"]}
+    from .illustrate import ACCENTS
+
+    colors = {name: tuple(v / 255 for v in theme.rgb(name)) for name in theme.raw["colors"]}
+    colors.update({f"accent_{name}": tuple(v / 255 for v in rgb) for name, rgb in ACCENTS.items()})
+    return colors
 
 
 def _active(items, t, key_start, key_end):
@@ -319,6 +330,35 @@ class VectorRenderer:
         self.mark = self.captions.wordmark()
         self.end_mark = self.captions.wordmark(size=int(self.layout.caption_size * 1.1), color="text", alpha=255)
 
+    def _action_cues(self, plan: dict[str, Any], lines, groups) -> list[tuple[float, str]]:
+        from .illustrate import ACCENT_DELAY, SCENES
+        from .sfx import action_cues
+
+        lights = [g.start + ACCENT_DELAY for g in groups
+                  if g.visual == "illustration" and g.icons and g.icons[0] in SCENES
+                  and SCENES[g.icons[0]].entrance == "fade"]
+        asked = [line for line in lines if line.index in self.follow]
+        follow = (asked[0].start, asked[-1].end) if asked else None
+        return action_cues(lines, plan.get("scenes") or [], lights, follow)
+
+    def _follow_state(self, groups, t: float):
+        """(done, alpha) while the call-out pill shows: from the follow sentence to the end."""
+        if not self.follow:
+            return None
+        lines = [line for group in groups for line in group.lines]
+        asked = [line for line in lines if line.index in self.follow]
+        if not asked:
+            return None
+        start, end = asked[0].start, asked[-1].end
+        if t < start:
+            return None
+        finale = lines[-1].end
+        a = min(1.0, (t - start) / 0.3) * min(1.0, max(0.0, (finale - t) / 0.5))
+        done = t >= end - 0.05
+        if done:
+            a *= min(1.0, 0.35 + (t - end) / 0.25)  # quick swap to the check
+        return done, max(0.0, a)
+
     def _draw_args(self, group: Group, t: float):
         n = len(group.lines)
         k = _active(group.lines, t, lambda l: l.start, lambda l: l.end)
@@ -330,7 +370,8 @@ class VectorRenderer:
         return gp, k, n
 
     def _group_draw(self, main_ctx, glow_ctx, group: Group, t: float, seed: int, alpha: float,
-                    carry: dict | None = None, hide: frozenset = frozenset(), gp: float | None = None) -> None:
+                    carry: dict | None = None, hide: frozenset = frozenset(), gp: float | None = None,
+                    zoom: float = 1.0) -> None:
         primitive = PRIMITIVES.get(group.visual, PRIMITIVES["single_glow"])
         auto_gp, k, n = self._draw_args(group, t)
         for ctx in (main_ctx, glow_ctx):
@@ -339,7 +380,7 @@ class VectorRenderer:
         primitive(Draw(main_ctx, glow_ctx, auto_gp if gp is None else gp, k, n, t - group.start, seed,
                        self.layout.size / 2, self.colors, tuple(group.icons),
                        carry=carry, hide=hide, visual=group.visual,
-                       span=group.end - group.start, region=REGIONS[self.format]))
+                       span=group.end - group.start, region=REGIONS[self.format], zoom=zoom))
         for ctx in (main_ctx, glow_ctx):
             ctx.pop_group_to_source()
             ctx.paint_with_alpha(alpha)
@@ -444,20 +485,24 @@ class VectorRenderer:
         line_index = _active(group.lines, t, lambda l: l.start, lambda l: l.end)
         label = group.lines[line_index].label
         active = group.lines[line_index]
-        if active.index in self.follow and card is None:
-            # The follow call-out: a gold pill that eases in and breathes while it is said.
-            a = ease(min(1.0, max(0.0, (t - active.start) / 0.35)))
-            a *= min(1.0, max(0.0, (active.end + 0.25 - t) / 0.3))
-            pill = self.captions.follow_pill()
-            scale = 0.94 + 0.06 * a + 0.015 * math.sin(t * 4.0)
-            if abs(scale - 1.0) > 1e-3:
-                pill = pill.resize((max(1, int(pill.width * scale)), max(1, int(pill.height * scale))), Image.Resampling.LANCZOS)
+        if active.index in self.follow:
+            label = ""  # the pill speaks for this line
+        pill_state = self._follow_state(groups, t)
+        if pill_state is not None:
+            done, a = pill_state
+            pill = self.captions.follow_pill(done)
+            pop = 0.92 + 0.08 * ease(min(1.0, a * 1.4))
+            if abs(pop - 1.0) > 1e-3:
+                pill = pill.resize((max(1, int(pill.width * pop)), max(1, int(pill.height * pop))), Image.Resampling.LANCZOS)
             if a < 1.0:
                 pill = pill.copy()
                 pill.putalpha(pill.getchannel("A").point(lambda v: int(v * a)))
-            top = L.label_y - pill.height * 0.30 if self.format == "short" else L.height * 0.02
+            if self.format == "short":
+                # Below the captions, as in the reference endings.
+                top = L.caption_y + L.caption_size * 1.35 * 2 + L.caption_size * 0.2
+            else:
+                top = L.height * 0.02
             image.paste(pill, (int(L.cx - pill.width / 2), int(top)), pill)
-            label = ""
         if label and card is None:
             color = self.theme.rgb("gold" if (gi % 2 == 0 or self.chapters) else "cyan")
             tag = self.captions.label(label, color, min(1.0, (t - group.lines[line_index].start) / 0.3))
@@ -486,6 +531,9 @@ class VectorRenderer:
             if path is None or not Path(path).exists():
                 continue
             SCENES[scene["id"]] = vectorize(Path(path))
+            SCENES[scene["id"]].accent = str(scene.get("accent") or "gold")
+            # The first picture is drawn by the pen; the rest fade in (reference style).
+            SCENES[scene["id"]].entrance = "pen" if len(SCENES) == 1 else "fade"
             for index in range(int(scene["first_line"]), int(scene["last_line"]) + 1):
                 owner[index] = scene["id"]
         for line in lines:
@@ -525,7 +573,8 @@ class VectorRenderer:
         from .ambient import render_ambient
         from .sfx import render_sfx
 
-        sfx_path = render_sfx(groups, duration, output.with_name(output.stem + "-sfx.wav"))
+        sfx_path = render_sfx(groups, duration, output.with_name(output.stem + "-sfx.wav"),
+                              self._action_cues(plan, lines, groups))
         bed_path = render_ambient(duration, output.with_name(output.stem + "-bed.wav"),
                                   seed_text=str(plan.get("title", "")), variant=bed_variant)
         inputs = ["-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{L.width}x{L.height}",
@@ -598,9 +647,29 @@ class Transition:
         start = self.new.start - TRANSITION_BEFORE
         return min(1.0, max(0.0, (t - start) / (TRANSITION_BEFORE + TRANSITION_AFTER)))
 
+    def _fades(self) -> bool:
+        """Illustration to illustration: the reference channel's soft fade."""
+        from .illustrate import SCENES
+
+        if self.old.visual != "illustration" or self.new.visual != "illustration":
+            return False
+        drawing = SCENES.get(self.new.icons[0]) if self.new.icons else None
+        return drawing is not None and drawing.entrance == "fade"
+
     def draw(self, main, glow, t: float) -> None:
         r = self.renderer
         u = self._u(t)
+        if self._fades():
+            # The old picture drifts forward and fades while the next one fades
+            # in, already drawn, settling into place. No cut, no particles.
+            out = ease(min(1.0, u / 0.6))
+            r._group_draw(main, glow, self.old, self.old.end - 1e-3, self.index - 1, 1 - out,
+                          zoom=1.0 + 0.04 * ease(u))
+            arrive = ease(min(1.0, max(0.0, (u - 0.12) / 0.6)))
+            if arrive > 0.01:
+                r._group_draw(main, glow, self.new, max(t, self.new.start), self.index, arrive,
+                              zoom=1.04 - 0.04 * ease(u))
+            return
         # Shared drawings glide over the first half of the window.
         g = ease(min(1.0, u / 0.55))
         carry = {}

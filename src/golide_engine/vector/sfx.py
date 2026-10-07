@@ -90,6 +90,215 @@ def hit(seconds: float = 1.0) -> np.ndarray:
     return body + 0.4 * air
 
 
+# --------------------------------------------------------------------------
+# Action sounds (owner request 2026-10-07): a sound only when the line
+# describes that action, timed to the word. All synthesised here.
+# --------------------------------------------------------------------------
+
+def _t(seconds: float) -> np.ndarray:
+    return np.arange(int(RATE * seconds)) / RATE
+
+
+def _bell(freq: float, seconds: float, decay: float, partials=((1, 1.0), (2.76, 0.45), (5.4, 0.22))) -> np.ndarray:
+    t = _t(seconds)
+    tone = sum(a * np.sin(2 * np.pi * freq * m * t) * np.exp(-t * decay * (1 + 0.6 * i))
+               for i, (m, a) in enumerate(partials))
+    return tone * np.clip(t / 0.004, 0, 1)
+
+
+def _place(track: np.ndarray, sound: np.ndarray, at: float) -> None:
+    start = int(max(0.0, at) * RATE)
+    end = min(len(track), start + len(sound))
+    if end > start:
+        track[start:end] += sound[: end - start]
+
+
+def bling(seconds: float = 0.9) -> np.ndarray:
+    """Something lights up: two bright bell notes and a little sparkle."""
+    out = np.zeros(int(RATE * seconds))
+    _place(out, _bell(1568, seconds, 5.5), 0.0)
+    _place(out, _bell(2349, seconds - 0.06, 6.5) * 0.8, 0.06)
+    sparkle = _lowpass(_noise(int(RATE * 0.35), 11), 0.9) * np.exp(-_t(0.35) * 14) * 0.12
+    _place(out, sparkle * np.sin(2 * np.pi * 7000 * _t(0.35)), 0.02)
+    return out
+
+
+def chime(seconds: float = 1.4) -> np.ndarray:
+    return _bell(1046.5, seconds, 2.6) + 0.5 * _bell(1568, seconds, 3.2)
+
+
+def phone_ring(seconds: float = 1.3) -> np.ndarray:
+    """A phone ringing: two short trilled bursts."""
+    out = np.zeros(int(RATE * seconds))
+    for at in (0.0, 0.55):
+        t = _t(0.42)
+        trill = 0.5 + 0.5 * np.sign(np.sin(2 * np.pi * 18 * t))
+        tone = (np.sin(2 * np.pi * 1250 * t) + 0.6 * np.sin(2 * np.pi * 1560 * t)) * trill
+        _place(out, tone * np.clip(t / 0.01, 0, 1) * np.clip((0.42 - t) / 0.03, 0, 1), at)
+    return out
+
+
+def notify(seconds: float = 0.7) -> np.ndarray:
+    out = np.zeros(int(RATE * seconds))
+    _place(out, _bell(1318.5, 0.5, 9, ((1, 1.0), (3.0, 0.2))), 0.0)
+    _place(out, _bell(1975.5, 0.55, 8, ((1, 1.0), (3.0, 0.2))), 0.11)
+    return out
+
+
+def door_open(seconds: float = 0.9) -> np.ndarray:
+    """Latch click, then a short soft creak."""
+    t = _t(seconds)
+    jitter = _lowpass(_noise(len(t), 21), 0.002) * 40
+    pitch = 150 + 110 * (t / seconds) + jitter
+    saw = 2 * ((np.cumsum(pitch) / RATE) % 1.0) - 1
+    creak = _lowpass(saw * (0.6 + 0.4 * np.abs(np.sin(2 * np.pi * 23 * t))), 0.25)
+    creak *= np.clip((t - 0.08) / 0.1, 0, 1) * np.clip((seconds - t) / 0.3, 0, 1) * 0.5
+    click = np.zeros_like(t)
+    _place(click, _lowpass(_noise(int(RATE * 0.03), 4), 0.6) * np.exp(-_t(0.03) * 120), 0.0)
+    return creak + click
+
+
+def door_shut(seconds: float = 0.7) -> np.ndarray:
+    """A low thump with a latch: something closed or blocked."""
+    t = _t(seconds)
+    body = np.sin(2 * np.pi * (48 + 30 * np.exp(-t * 20)) * t) * np.exp(-t * 9)
+    knock = _lowpass(_noise(len(t), 5), 0.15) * np.exp(-t * 30) * 0.8
+    latch = np.zeros_like(t)
+    _place(latch, _noise(int(RATE * 0.02), 6) * np.exp(-_t(0.02) * 200) * 0.4, 0.05)
+    return body + knock + latch
+
+
+def car(seconds: float = 1.8) -> np.ndarray:
+    """A car passing by: engine and road noise swelling, then the pitch drops."""
+    t = _t(seconds)
+    x = (t / seconds - 0.5) * 2  # -1 .. 1, closest at the middle
+    pitch = 95 * (1 + 0.12 * np.tanh(-x * 3))
+    phase = np.cumsum(pitch) / RATE
+    engine = sum(np.sin(2 * np.pi * phase * h) / h for h in range(1, 6))
+    road = _lowpass(_noise(len(t), 9), 0.08) * 1.5
+    level = 1 / (1 + 6 * x * x)
+    return (0.6 * engine + road) * level
+
+
+def blips(seconds: float = 0.6) -> np.ndarray:
+    """'tu-tu-tu-tu': a computer or AI at work."""
+    out = np.zeros(int(RATE * seconds))
+    rng = np.random.default_rng(3)
+    for k in range(6):
+        t = _t(0.045)
+        freq = float(rng.choice((1100, 1320, 1480, 1760)))
+        tone = np.sign(np.sin(2 * np.pi * freq * t)) * 0.5 + 0.5 * np.sin(2 * np.pi * freq * t)
+        _place(out, _lowpass(tone, 0.35) * np.clip((0.045 - t) / 0.01, 0, 1), k * 0.085)
+    return out
+
+
+def coin(seconds: float = 0.6) -> np.ndarray:
+    out = np.zeros(int(RATE * seconds))
+    _place(out, _bell(987.8, 0.12, 25, ((1, 1.0), (2, 0.3))), 0.0)
+    _place(out, _bell(1318.5, 0.5, 7, ((1, 1.0), (2, 0.3), (3, 0.1))), 0.08)
+    return out
+
+
+def typing(seconds: float = 0.9) -> np.ndarray:
+    out = np.zeros(int(RATE * seconds))
+    rng = np.random.default_rng(8)
+    at = 0.0
+    while at < seconds - 0.05:
+        n = int(RATE * 0.025)
+        click = _lowpass(_noise(n, int(at * 1000)), 0.5) * np.exp(-_t(0.025) * 160)
+        _place(out, click * rng.uniform(0.6, 1.0), at)
+        at += float(rng.uniform(0.06, 0.13))
+    return out
+
+
+def clock(seconds: float = 2.0) -> np.ndarray:
+    out = np.zeros(int(RATE * seconds))
+    for k, at in enumerate(np.arange(0.0, seconds - 0.1, 0.5)):
+        _place(out, _bell(2600 if k % 2 == 0 else 2000, 0.05, 90, ((1, 1.0),)), float(at))
+    return out
+
+
+def camera(seconds: float = 0.25) -> np.ndarray:
+    out = np.zeros(int(RATE * seconds))
+    for at in (0.0, 0.07):
+        _place(out, _lowpass(_noise(int(RATE * 0.03), 2), 0.5) * np.exp(-_t(0.03) * 110), at)
+    return out
+
+
+ACTION_SOUNDS = {"bling": bling, "chime": chime, "phone_ring": phone_ring, "notify": notify,
+                 "door_open": door_open, "door_shut": door_shut, "car": car, "blips": blips,
+                 "coin": coin, "typing": typing, "clock": clock, "camera": camera}
+ACTION_LEVELS = {"bling": 0.07, "chime": 0.06, "phone_ring": 0.07, "notify": 0.07, "door_open": 0.08,
+                 "door_shut": 0.10, "car": 0.08, "blips": 0.06, "coin": 0.07, "typing": 0.07,
+                 "clock": 0.06, "camera": 0.08}
+
+# Fallback when a plan carries no sound cues: words that name an action.
+ACTION_WORDS = {
+    "phone_ring": ("call", "calls", "calling", "ring", "rings", "ringing"),
+    "notify": ("notification", "notifications", "message", "messages", "text", "alert", "email", "ping"),
+    "door_shut": ("blocked", "blocks", "shut", "shuts", "closed", "locked", "banned", "rejected"),
+    "door_open": ("open", "opens", "opened", "unlock", "unlocks", "enter", "enters", "door"),
+    "car": ("car", "cars", "drive", "drives", "driving", "road", "truck", "traffic"),
+    "coin": ("pay", "pays", "paid", "money", "price", "cash", "dollars", "buy", "buys", "sale", "checkout"),
+    "blips": ("ai", "robot", "agent", "algorithm", "computer", "scan", "scans", "searches", "loading"),
+    "typing": ("type", "types", "typing", "keyboard", "prompt", "prompts"),
+    "clock": ("clock", "minutes", "hours", "deadline", "waiting", "wait"),
+    "camera": ("photo", "photos", "camera", "picture", "selfie"),
+    "bling": ("lights", "light", "idea", "shine", "shines", "glow", "spark", "wins", "win"),
+}
+COOLDOWN = 3.0  # seconds between action sounds, so they stay special
+
+
+def _word(text: str) -> str:
+    return text.lower().strip(".,!?;:'\"")
+
+
+def action_cues(lines: list[TimedLine], scenes: list[dict], fade_lights: list[float] | None = None,
+                follow: tuple[float, float] | None = None) -> list[tuple[float, str]]:
+    """When each action sound plays.
+
+    * Scene cues from the storyboard ("sound" + "sound_word"), timed to that word.
+    * Plans without cues: the first word in a scene that names an action.
+    * A soft bling when a faded-in picture's accent lights up, if that scene has
+      no other sound.
+    * The follow pill: a bling as it appears and a chime when it turns to the check.
+    """
+    cues: list[tuple[float, str]] = []
+    by_index = {line.index: line for line in lines}
+    for scene in scenes:
+        first, last = int(scene.get("first_line", 0)), int(scene.get("last_line", -1))
+        words = [w for i in range(first, last + 1) if i in by_index for w in by_index[i].words]
+        kind = scene.get("sound")
+        at = None
+        if kind and kind != "none" and kind in ACTION_SOUNDS:
+            target = _word(str(scene.get("sound_word", "")))
+            at = next((w.start for w in words if target and _word(w.text) == target), None)
+            if at is None and first in by_index:
+                at = by_index[first].start + 0.4
+        elif "sound" not in scene:
+            for w in words:
+                hit = next((name for name, keys in ACTION_WORDS.items() if _word(w.text) in keys), None)
+                if hit:
+                    kind, at = hit, w.start
+                    break
+        if at is not None and kind:
+            cues.append((at, kind))
+    taken = [at for at, _ in cues]
+    for at in fade_lights or []:
+        if all(abs(at - other) > COOLDOWN for other in taken):
+            cues.append((at, "bling"))
+    cues.sort()
+    kept: list[tuple[float, str]] = []
+    for at, kind in cues:
+        if kept and at - kept[-1][0] < COOLDOWN:
+            continue
+        kept.append((at, kind))
+    if follow is not None:
+        kept = [c for c in kept if not (follow[0] - 0.5 <= c[0] <= follow[1] + 1.0)]
+        kept += [(follow[0], "bling"), (follow[1], "chime")]
+    return sorted(kept)
+
+
 # Peak level of each sound relative to full scale (the voice sits near 0 dB
 # after loudness normalisation, so these stay well underneath it).
 LEVELS = {"whoosh": 0.07, "tick": 0.07, "pop": 0.11, "rise": 0.07,
@@ -144,8 +353,12 @@ SOUNDS = {"whoosh": whoosh, "tick": tick, "pop": pop, "rise": rise,
           "shimmer": shimmer, "scratch": scratch, "hit": hit}
 
 
-def render_sfx(groups: list[Group], duration: float, output: Path) -> Path:
-    track = np.zeros(int(RATE * (duration + 1.5)), dtype=np.float64)
+def render_sfx(groups: list[Group], duration: float, output: Path,
+               cues: list[tuple[float, str]] | None = None) -> Path:
+    track = np.zeros(int(RATE * (duration + 2.5)), dtype=np.float64)
+    for at, kind in cues or []:
+        sound = ACTION_SOUNDS[kind]()
+        _place(track, sound / (np.max(np.abs(sound)) or 1.0) * ACTION_LEVELS[kind], at)
     last: dict[str, float] = {}
     for at, kind in plan_events(groups):
         if kind in {"tick", "pop"} and at - last.get("tick", -9) < 1.2:

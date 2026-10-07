@@ -184,7 +184,7 @@ The sections are the shape of the argument; the viewer should never hear the joi
 4. COST: what happens to people who ignore the rule. Make it specific and familiar.
 5. REFRAME: the one sentence the viewer should remember.
 6. CALL TO ACTION: one small action, then a line that loops back to the claim,
-   then the follow call-out as the final sentence.
+   then the follow call-out, then one short closing sentence.
 """
 
 LONG_STRUCTURE_RULES = """\
@@ -215,7 +215,7 @@ The viewer must always know where they are: "now we're on this, next we're on th
 - Keep chapters balanced: none longer than a third of the script.
 - Use concrete, true examples inside the chapters; the CLOSE gives the one sentence
   to remember, one small action for this week, a line that loops back to the
-  opening claim, and then the follow call-out as the final sentence.
+  opening claim, then the follow call-out, then one short closing sentence.
 - "section" still tags each line: intro lines "claim", explanation and examples
   "proof" or "pattern", consequences "cost", the line to remember "reframe",
   the action and final line "cta".
@@ -241,9 +241,13 @@ FOLLOW CALL-OUT (owner direction 2026-10-07: viewers should follow and come back
   anything. NEVER mention links or the bio. Only follow (or subscribe) and come back.
 - Write it fresh for this topic every time. Never reuse the example wording above.
 - Set "follow": true on the line or lines of that sentence; every other line false.
-- Placement (owner direction 2026-10-07: ask only after you have given the value):
-  * the follow sentence is the LAST sentence of the script, after the takeaway,
-    the action and the line that loops back to the opening claim. Never earlier.
+- Placement and shape (owner direction 2026-10-07, from the reference channel's
+  endings): the call-out comes at the END, only after the value is given.
+  1. the takeaway and the small action come first;
+  2. then the follow sentence, starting with "So" ("So follow the channel, ...");
+  3. then ONE short closing sentence (one or two lines) that pays off the follow
+     or loops back to the opening idea ("...because tomorrow there is a new one
+     waiting for you"). Nothing else after it.
   * short and long alike: exactly ONE follow sentence, one or two lines.
 """
 
@@ -375,9 +379,12 @@ def follow_problems(plan: dict, format_name: str) -> list[str]:
     problems: list[str] = []
     if not marked:
         return ["add the follow call-out sentence and mark its lines with \"follow\": true"]
-    if marked[-1] != len(lines) - 1 or marked[0] < len(lines) - 2:
-        problems.append("the follow call-out must be the final sentence, after the value; "
-                        "move it to the end and remove it from anywhere earlier")
+    after = len(lines) - 1 - marked[-1]
+    if marked[0] < len(lines) - 4 or marked != list(range(marked[0], marked[-1] + 1)):
+        problems.append("the follow call-out must come at the end, after the value; "
+                        "move it there and remove it from anywhere earlier")
+    elif not 1 <= after <= 2:
+        problems.append("after the follow sentence, end with ONE short closing sentence (one or two lines)")
     if len(marked) > 2:
         problems.append(f"the follow call-out is too long ({len(marked)} lines); keep it to one sentence")
     said = " ".join(str(lines[i]["text"]).lower() for i in marked)

@@ -52,6 +52,7 @@ class Draw:
     visual: str = ""
     span: float = 0.0  # length of the whole scene in seconds
     region: tuple = (-1.0, -1.0, 1.0, 1.0)  # where an illustration may sit (unit coords)
+    zoom: float = 1.0  # extra scale used by the fade transition (drift in / out)
 
     def px(self, value: float) -> float:
         return value / self.unit_px
