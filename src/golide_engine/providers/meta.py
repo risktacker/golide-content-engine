@@ -199,10 +199,7 @@ class InstagramProvider(SocialProvider):
             self._wait_until_ready(container_id, attempts=max(self.poll_attempts, 60), seconds=max(self.poll_seconds, 5.0))
         else:
             self._wait_until_ready(container_id)
-        published = self.graph.post(
-            f"{self.instagram_user_id}/media_publish",
-            creation_id=container_id,
-        )
+        published = self._publish_container(container_id)
         media_id = str(published.get("id", ""))
         if not media_id:
             raise RuntimeError("Instagram did not return a published media id")
@@ -227,11 +224,24 @@ class InstagramProvider(SocialProvider):
         if not container_id:
             raise RuntimeError("Instagram did not return a carousel container id")
         self._wait_until_ready(container_id)
-        published = self.graph.post(f"{self.instagram_user_id}/media_publish", creation_id=container_id)
+        published = self._publish_container(container_id)
         media_id = str(published.get("id", ""))
         if not media_id:
             raise RuntimeError("Instagram did not return a published media id")
         return PublishResult(content_id=media_id, url=None)
+
+    def _publish_container(self, container_id: str) -> dict:
+        """Publish a ready container. Instagram can report FINISHED a moment before
+        the media can actually be published and then answers "Media ID is not
+        available" (2026-10-08, the evening carousel). Wait and press publish again."""
+        for attempt in range(6):
+            try:
+                return self.graph.post(f"{self.instagram_user_id}/media_publish", creation_id=container_id)
+            except Exception as exc:
+                if "not available" not in str(exc).lower() or attempt == 5:
+                    raise
+                self.sleeper(5.0 + 5.0 * attempt)
+        raise RuntimeError("Instagram media could not be published")
 
     def _wait_until_ready(self, container_id: str, *, attempts: int | None = None,
                           seconds: float | None = None) -> None:

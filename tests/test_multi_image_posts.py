@@ -76,3 +76,35 @@ class InstagramCarouselRetryTests(unittest.TestCase):
             result = provider.publish(request)
         self.assertEqual(result.content_id, "media-2")
         self.assertIn("carousel fell back", result.warning)
+
+
+class InstagramPublishTooEarlyTests(unittest.TestCase):
+    def test_media_id_not_available_is_retried(self):
+        """2026-10-08: Instagram said FINISHED, then refused publish with
+        'Media ID is not available'; the evening carousel became one image."""
+        from golide_engine.providers.meta import InstagramProvider
+
+        class Flaky(FakeHttp):
+            def post(self, url, *, data=None, headers=None):
+                item = self.posts[0] if self.posts else None
+                if isinstance(item, Exception):
+                    self.posts.pop(0)
+                    self.calls.append(("POST", url, dict(data or {})))
+                    raise item
+                return super().post(url, data=data, headers=headers)
+
+        ready = {"status_code": "FINISHED"}
+        http = Flaky(posts=[{"id": "c1"}, {"id": "c2"}, {"id": "parent"},
+                            RuntimeError("social API request failed: Media ID is not available"),
+                            {"id": "carousel-post"}],
+                     gets=[ready, ready, ready])
+        slept = []
+        provider = InstagramProvider(api_version="v99.0", access_token="t", instagram_user_id="ig",
+                                     http=http, sleeper=slept.append)
+        request = PublishRequest(post_id="p", variant_id="v", platform="instagram", body="b",
+                                 media_ref="https://m/cover.jpg", extra_media=("https://m/s2.jpg",))
+        with patch.dict(os.environ, {"GOLIDE_ENABLE_SOCIAL_PUBLISH": "1"}):
+            result = provider.publish(request)
+        self.assertEqual(result.content_id, "carousel-post")  # still a carousel
+        self.assertIsNone(result.warning)
+        self.assertEqual(slept, [5.0])
