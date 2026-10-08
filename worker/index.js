@@ -1,3 +1,4 @@
+import { collectHealth, renderHealth, sendHealthEmail } from "./health.js";
 import { closeThread, deleteThread, emailScript, markRead, receiveMail, sendAndRecord, unreadCount } from "./mail.js";
 import {
   ensureSocialOauthSchema,
@@ -217,6 +218,7 @@ async function ensureSchema(db){
       metadata_json TEXT NOT NULL DEFAULT '{}',
       updated_at TEXT NOT NULL
     )`,
+    `CREATE TABLE IF NOT EXISTS cron_runs (id INTEGER PRIMARY KEY AUTOINCREMENT, workflow TEXT NOT NULL, ok INTEGER NOT NULL, detail TEXT NOT NULL DEFAULT '', at TEXT NOT NULL)`,
     `CREATE INDEX IF NOT EXISTS idx_content_posts_due ON content_posts(status, scheduled_at)`,
     `CREATE INDEX IF NOT EXISTS idx_social_variants_post ON social_variants(post_id, status)`,
     `CREATE INDEX IF NOT EXISTS idx_inbox_threads_open ON inbox_threads(status, last_message_at)`,
@@ -1119,6 +1121,12 @@ async function handleApi(request,env,url){
       .bind(nowIso(),decodeURIComponent(archiveMatch[1])).run();
     return json({status:"archived"});
   }
+  if(url.pathname==="/api/health-report"){
+    if(request.method==="POST") return json(await sendHealthEmail(env));
+    const report=await collectHealth(env.DB,new Date());
+    if(url.searchParams.get("format")==="json") return json(report);
+    return new Response(renderHealth(report).html,{headers:{"content-type":"text/html; charset=utf-8"}});
+  }
   if(url.pathname==="/api/attention"&&request.method==="GET"){
     const {results=[]}=await env.DB.prepare(`SELECT p.id,p.title,p.content_class,p.status,p.scheduled_at,
         v.platform,v.status vstatus,v.last_error FROM content_posts p JOIN social_variants v ON v.post_id=p.id
@@ -1244,6 +1252,10 @@ async function dispatchWorkflow(env,workflow){
   });
   const detail=response.ok?"":(await response.text()).slice(0,300);
   console.log(JSON.stringify({dispatch:response.ok?"ok":"failed",workflow,status:response.status,detail}));
+  try{
+    await env.DB.prepare(`INSERT INTO cron_runs(workflow,ok,detail,at) VALUES(?,?,?,?)`).bind(workflow,response.ok?1:0,detail||String(response.status),nowIso()).run();
+    await env.DB.prepare(`DELETE FROM cron_runs WHERE at<?`).bind(new Date(Date.now()-14*86400e3).toISOString()).run();
+  }catch{}
   if(!response.ok) throw new Error(`dispatch ${workflow} failed: ${response.status}`);
 }
 
@@ -1253,9 +1265,18 @@ export default {
     await receiveMail(message,env);
   },
   async scheduled(controller,env,ctx){
+    await ensureSchema(env.DB);
     const workflow=CRON_WORKFLOWS[controller.cron];
     if(!workflow){console.log(JSON.stringify({dispatch:"unknown_cron",cron:controller.cron}));return;}
-    ctx.waitUntil(dispatchWorkflow(env,workflow));
+    ctx.waitUntil(dispatchWorkflow(env,workflow).catch(async(e)=>{
+      // Network failure before GitHub answered: record it so the health email reports it.
+      if(!String(e?.message||"").startsWith("dispatch ")) try{await env.DB.prepare(`INSERT INTO cron_runs(workflow,ok,detail,at) VALUES(?,0,?,?)`).bind(workflow,String(e?.message||e).slice(0,300),nowIso()).run();}catch{}
+      throw e;
+    }));
+    // 20:00 Lusaka: the daily health email (rides the existing 18:00 UTC trigger).
+    if(controller.cron==="0 12,18 * * *"&&new Date(controller.scheduledTime||Date.now()).getUTCHours()===18){
+      ctx.waitUntil(sendHealthEmail(env).catch((e)=>console.log(JSON.stringify({health_email:"error",error:String(e?.message||e)}))));
+    }
   },
   async fetch(request,env){
     const url=new URL(request.url);
