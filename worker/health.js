@@ -4,6 +4,7 @@
 // what needs the owner. Built inside the Worker from D1, so it still arrives
 // when GitHub Actions never started (a failed dispatch is itself reported).
 
+import { sizeLabel } from "./storage.js";
 import { brandShell, MAIL_FROM, INK, MUTED, GOLD_TEXT } from "./mail.js";
 
 const LUSAKA_OFFSET_H = 2;
@@ -42,7 +43,7 @@ function variantLine(v) {
 }
 
 // Gather everything for the report. Pure data, no formatting.
-export async function collectHealth(db, now = new Date()) {
+export async function collectHealth(db, now = new Date(), storage = null) {
   const day = lusakaDay(now);
   const issues = [];
   const sections = [];
@@ -118,6 +119,12 @@ export async function collectHealth(db, now = new Date()) {
     else if (days <= 7) issues.push(`${NAMES[t.platform] || t.platform} login expires in ${days} day${days === 1 ? "" : "s"}. Reconnect it in Studio.`);
   }
 
+  if (storage && storage.status === "ok") {
+    sections.push({ title: "Storage", subtitle: `${storage.files} temporary file${storage.files === 1 ? "" : "s"}, ${sizeLabel(storage.bytes)}`, lines: [
+      { mark: "ok", text: storage.deleted ? `Cleaned ${storage.deleted} file${storage.deleted === 1 ? "" : "s"} older than 72 hours (${sizeLabel(storage.freed_bytes)} freed)` : "Nothing older than 72 hours" },
+    ] });
+    if (storage.bytes > 5 * 1024 ** 3) issues.push(`Temporary storage is at ${sizeLabel(storage.bytes)}, over half the free 10 GB.`);
+  }
   return { date: day.date, enabled, issues, sections };
 }
 
@@ -154,9 +161,9 @@ ${issueHtml}${sectionHtml || `<p style="color:${MUTED};font-size:14px">Nothing w
   return { subject, html: brandShell({ subject, preheader: n ? report.issues[0] : "Everything went out today.", inner }), text };
 }
 
-export async function sendHealthEmail(env, now = new Date()) {
+export async function sendHealthEmail(env, now = new Date(), storage = null) {
   if (!env.RESEND_API_KEY || !env.OWNER_EMAIL) return { status: "skipped", reason: "email not set up" };
-  const { subject, html, text } = renderHealth(await collectHealth(env.DB, now));
+  const { subject, html, text } = renderHealth(await collectHealth(env.DB, now, storage));
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { authorization: `Bearer ${env.RESEND_API_KEY}`, "content-type": "application/json" },

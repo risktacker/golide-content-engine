@@ -1,3 +1,4 @@
+import { sweepMedia } from "./storage.js";
 import { collectHealth, renderHealth, sendHealthEmail } from "./health.js";
 import { closeThread, deleteThread, emailScript, markRead, receiveMail, sendAndRecord, unreadCount } from "./mail.js";
 import {
@@ -1121,6 +1122,7 @@ async function handleApi(request,env,url){
       .bind(nowIso(),decodeURIComponent(archiveMatch[1])).run();
     return json({status:"archived"});
   }
+  if(url.pathname==="/api/storage/sweep"&&request.method==="POST") return json(await sweepMedia(env));
   if(url.pathname==="/api/health-report"){
     if(request.method==="POST") return json(await sendHealthEmail(env));
     const report=await collectHealth(env.DB,new Date());
@@ -1274,9 +1276,12 @@ export default {
       throw e;
     }));
     // 20:00 Lusaka: the daily health email (rides the existing 18:00 UTC trigger).
+    // Every trigger also clears temporary media older than 72 hours; the
+    // 20:00 Lusaka trigger then sends the daily health email with the result.
+    const sweep=sweepMedia(env).catch((e)=>{console.log(JSON.stringify({media_sweep:"error",error:String(e?.message||e)}));return null;});
     if(controller.cron==="0 12,18 * * *"&&new Date(controller.scheduledTime||Date.now()).getUTCHours()===18){
-      ctx.waitUntil(sendHealthEmail(env).catch((e)=>console.log(JSON.stringify({health_email:"error",error:String(e?.message||e)}))));
-    }
+      ctx.waitUntil(sweep.then((storage)=>sendHealthEmail(env,new Date(),storage)).catch((e)=>console.log(JSON.stringify({health_email:"error",error:String(e?.message||e)}))));
+    }else ctx.waitUntil(sweep);
   },
   async fetch(request,env){
     const url=new URL(request.url);
