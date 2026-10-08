@@ -82,7 +82,8 @@ jobs:
             exit 1
           fi
       - name: Publish due static content
-        if: steps.automation.outputs.enabled == 'true'
+        # Runs even when creating a post failed, so retries of earlier posts still go out.
+        if: always() && steps.automation.outputs.enabled == 'true'
         run: |
           set -o pipefail
           if ! golide studio-social-publish 2>&1 | tee engine-output.txt; then

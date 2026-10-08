@@ -84,15 +84,17 @@ def reels_payload(*, content_id: str, metadata: dict[str, Any], video_ref: str, 
 
 def publish_reels(*, bridge, store, publisher_factory, production_id: str, video: Path,
                   metadata: dict[str, Any], youtube_video_id: str, owner_voice_ref: str,
-                  video_ref: str | None = None, content_id: str | None = None) -> dict[str, Any]:
+                  video_ref: str | None = None, content_id: str | None = None,
+                  cover: Path | None = None) -> dict[str, Any]:
     """Upload (if needed), queue and publish the IG/FB Reels for one short."""
     if video_ref is None:
         video_ref = upload_media(store, video, f"{production_id}.mp4", "video/mp4", bridge)
     cover_ref = None
     try:
-        cover = video.with_name(video.stem + "-cover.jpg")
-        if not cover.exists():  # older renders have no designed cover
-            cover = pick_cover(video, cover)
+        # The designed cover the renderer wrote (2026-10-08 audit: it lives next to the
+        # build video, not in the release package); older renders fall back to a frame.
+        if cover is None or not Path(cover).exists():
+            cover = pick_cover(video, video.with_name(video.stem + "-cover.jpg"))
         cover_ref = upload_media(store, cover, f"{production_id}-cover.jpg", "image/jpeg", bridge, "image")
     except Exception as exc:  # a missing cover must not block the Reel
         print({"status": "cover_failed", "error": str(exc)})
@@ -136,12 +138,12 @@ def long_social_payload(*, content_id: str, metadata: dict[str, Any], video_ref:
 
 
 def queue_long_social(*, bridge, store, production_id: str, video: Path, metadata: dict[str, Any],
-                      youtube_video_id: str, owner_voice_ref: str, publish_at: str) -> dict[str, Any]:
+                      youtube_video_id: str, owner_voice_ref: str, publish_at: str,
+                      cover: Path | None = None) -> dict[str, Any]:
     """Upload the long video and queue Facebook + LinkedIn for the release time."""
     video_ref = upload_media(store, video, f"{production_id}.mp4", "video/mp4", bridge)
     cover_ref = None
-    cover = video.with_name(video.stem + "-cover.jpg")
-    if cover.exists():
+    if cover is not None and Path(cover).exists():
         try:
             cover_ref = upload_media(store, cover, f"{production_id}-cover.jpg", "image/jpeg", bridge, "image")
         except Exception as exc:  # the video still goes out

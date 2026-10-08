@@ -655,21 +655,32 @@ async function registerEngineMedia(db,payload){
 
 async function claimDueSocial(db,nowValue){
   const moment=safeText(nowValue)||nowIso();
-  // A post that failed is retried at most 3 times, never sooner than 30 minutes after
-  // its last failure, so one broken network cannot loop or block newer posts.
+  // Each network of a post is retried at most 3 times, never sooner than 30 minutes after
+  // its last failure, so one broken network cannot loop or block newer posts. A post left
+  // in 'publishing' for 45 minutes (a run that died mid-way) is picked up again
+  // (2026-10-08 audit).
   const cooldown=new Date(Date.now()-30*60*1000).toISOString();
+  const stale=new Date(Date.now()-45*60*1000).toISOString();
+  const claimable=`(p.status IN ('scheduled','partial','failed') OR (p.status='publishing' AND p.updated_at<?))`;
   const row=await db.prepare(`SELECT id FROM content_posts p
-    WHERE content_class IN ('post','short','long') AND status IN ('scheduled','partial','failed')
+    WHERE content_class IN ('post','short','long') AND ${claimable}
       AND scheduled_at IS NOT NULL AND scheduled_at<=?
-      AND (SELECT COUNT(*) FROM publish_attempts a WHERE a.post_id=p.id AND a.status='failed')<3
+      AND EXISTS (SELECT 1 FROM social_variants v WHERE v.post_id=p.id AND v.status<>'published'
+        AND (SELECT COUNT(*) FROM publish_attempts a WHERE a.variant_id=v.id AND a.status='failed')<3)
       AND NOT EXISTS (SELECT 1 FROM publish_attempts a WHERE a.post_id=p.id AND a.status='failed' AND a.created_at>?)
-    ORDER BY scheduled_at ASC,created_at ASC LIMIT 1`).bind(moment,cooldown).first();
+    ORDER BY scheduled_at ASC,created_at ASC LIMIT 1`).bind(stale,moment,cooldown).first();
   if(!row) return null;
-  await db.prepare(`UPDATE content_posts SET status='publishing',updated_at=? WHERE id=?`).bind(nowIso(),row.id).run();
+  // Claim atomically: if another run took it in between, nothing changes and we stop.
+  const claim=await db.prepare(`UPDATE content_posts SET status='publishing',updated_at=?
+    WHERE id=? AND (status IN ('scheduled','partial','failed') OR (status='publishing' AND updated_at<?))`)
+    .bind(nowIso(),row.id,stale).run();
+  if(!claim.meta||!claim.meta.changes) return null;
+  const tries=await db.prepare(`SELECT variant_id,COUNT(*) n FROM publish_attempts WHERE post_id=? AND status='failed' GROUP BY variant_id`).bind(row.id).all();
+  const exhausted=new Set((tries.results||[]).filter((r)=>Number(r.n)>=3).map((r)=>r.variant_id));
   const posts=await listPosts(db,null);
   const post=posts.find((item)=>item.id===row.id);
   if(!post) return null;
-  post.variants=post.variants.filter((v)=>v.status!=="published");
+  post.variants=post.variants.filter((v)=>v.status!=="published"&&!exhausted.has(v.id));
   return post;
 }
 
@@ -1112,8 +1123,9 @@ async function handleApi(request,env,url){
     const {results=[]}=await env.DB.prepare(`SELECT p.id,p.title,p.content_class,p.status,p.scheduled_at,
         v.platform,v.status vstatus,v.last_error FROM content_posts p JOIN social_variants v ON v.post_id=p.id
       WHERE p.status IN ('failed','partial')
+         OR (p.status='publishing' AND p.updated_at<strftime('%Y-%m-%dT%H:%M:%fZ','now','-45 minutes'))
          OR (p.status<>'dismissed' AND p.id IN (SELECT post_id FROM social_variants
-             WHERE status='published' AND last_error IS NOT NULL AND published_at>=datetime('now','-3 days')))
+             WHERE status='published' AND last_error IS NOT NULL AND published_at>=strftime('%Y-%m-%dT%H:%M:%fZ','now','-3 days')))
       ORDER BY p.scheduled_at DESC`).all();
     const items={};
     for(const r of results){

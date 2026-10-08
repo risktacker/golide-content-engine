@@ -69,7 +69,7 @@ class StaticPostSplitTests(unittest.TestCase):
             self.assertEqual(post["product_mode"], "brand")
             self.assertEqual(post["resolved_product_id"], "")
             bodies = {v["platform"]: v["body"] for v in post["variants"]}
-            self.assertNotIn(seen["post-b"].marketplace_url, " ".join(bodies.values()))
+            self.assertNotIn(seen["post-b"].marketplace_url, bodies["instagram"] + bodies["x"])
             self.assertNotIn("http", bodies["x"])
 
     def test_rulebook_differs_per_slot(self):

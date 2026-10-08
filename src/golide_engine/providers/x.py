@@ -61,6 +61,7 @@ class XProvider(SocialProvider):
                 raise ValueError(f"X post is {x_length(text)} characters; X allows {X_LIMIT}")
         root_id = ""
         previous_id = ""
+        warning = None
         for index, text in enumerate(texts):
             payload: dict = {"text": text}
             if index == 0 and media_id:
@@ -73,14 +74,16 @@ class XProvider(SocialProvider):
                     bearer_token=self.user_access_token,
                     json_body=payload,
                 )
-            except Exception:
+            except Exception as exc:
                 if root_id:  # the post is live; a failed reply must not repost it
+                    warning = f"reply {index} of {len(texts) - 1} was not posted: {str(exc)[:200]}"
                     break
                 raise
             data = response.data.get("data") or {}
             post_id = str(data.get("id", ""))
             if not post_id:
                 if root_id:
+                    warning = f"reply {index} of {len(texts) - 1} was not posted"
                     break
                 raise RuntimeError("X did not return a post id")
             root_id = root_id or post_id
@@ -88,6 +91,7 @@ class XProvider(SocialProvider):
         return PublishResult(
             content_id=root_id,
             url=f"https://x.com/i/web/status/{root_id}",
+            warning=warning,
         )
 
     def _upload_image(self, source_url: str) -> str:

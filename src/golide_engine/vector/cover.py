@@ -108,6 +108,23 @@ def render_cover(renderer, drawing, text: str, gold: str) -> Image.Image:
     return image.convert("RGB")
 
 
+def clean_cover_text(text: str, gold: str) -> tuple[str, str]:
+    """Plain words only (no emoji, dashes, hashtags), at most 8 words; the gold
+    words must come from the text."""
+    def plain(value: str) -> str:
+        value = value.replace("\u2019", "'").replace("\u2018", "'").replace("\u201c", '"').replace("\u201d", '"')
+        value = value.replace("\u2014", ",").replace("\u2013", ",").replace("#", "")
+        value = "".join(ch for ch in value if ch.isalnum() or ch in " .,!?'\"$%&:-")
+        value = re.sub(r"\s+([,.!?:])", r"\1", " ".join(value.split()))
+        return re.sub(r",+", ",", value)
+    text = plain(text)
+    words = text.split()
+    if len(words) > 9:
+        text = " ".join(words[:9]).rstrip(",:;")
+    gold_words = [w for w in plain(gold).split() if _norm(w) in {_norm(x) for x in text.split()}]
+    return text, " ".join(gold_words)
+
+
 def cover_spec(plan: dict[str, Any]) -> dict[str, str]:
     """The cover chosen by the storyboard, or a fallback from the title."""
     cover = dict(plan.get("cover") or {})

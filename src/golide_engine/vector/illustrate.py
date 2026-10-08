@@ -150,7 +150,8 @@ never runs across a chapter mark: every chapter starts with a new scene.
 """
 
 
-def validate_scenes(scenes: list[dict], line_count: int, breaks: set[int] | frozenset[int] = frozenset()) -> list[dict]:
+def validate_scenes(scenes: list[dict], line_count: int, breaks: set[int] | frozenset[int] = frozenset(),
+                    max_scenes: int | None = None) -> list[dict]:
     """Make the model's grouping cover every line exactly once, in order.
 
     ``breaks`` are line indices where a chapter starts: a scene never runs
@@ -178,6 +179,17 @@ def validate_scenes(scenes: list[dict], line_count: int, breaks: set[int] | froz
         for start, end in zip([first, *cuts], [c - 1 for c in cuts] + [last]):
             split.append({**scene, "first_line": start, "last_line": end})
     fixed = split
+    # Never more pictures than the budget plans for (2026-10-08 audit): merge
+    # the shortest neighbouring scenes until the count fits.
+    limit = max_scenes or len(fixed)
+    while len(fixed) > limit:
+        sizes = [s["last_line"] - s["first_line"] for s in fixed]
+        i = min(range(len(fixed) - 1), key=lambda k: sizes[k] + sizes[k + 1]
+                if not (breaks and fixed[k + 1]["first_line"] in breaks) else 10 ** 6)
+        if breaks and fixed[i + 1]["first_line"] in breaks:
+            break  # every remaining join would cross a chapter
+        fixed[i] = {**fixed[i], "last_line": fixed[i + 1]["last_line"]}
+        del fixed[i + 1]
     for index, scene in enumerate(fixed):
         scene["id"] = f"scene-{index + 1:02d}"
     return fixed

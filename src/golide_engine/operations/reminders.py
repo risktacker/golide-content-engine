@@ -23,7 +23,9 @@ def due_reminders(connections: list[dict[str, Any]], now: datetime) -> list[dict
     due = []
     for item in connections:
         left = days_left(str(item.get("expires_at") or ""), now)
-        if left is not None and left in REMIND_ON_DAYS:
+        # On the set days before expiry, then every morning once it has expired, until
+        # the owner reconnects (2026-10-08 audit: it used to go quiet after expiry).
+        if left is not None and (left in REMIND_ON_DAYS or left < 0):
             due.append({"platform": item.get("platform", ""), "days_left": left,
                         "account": item.get("account", "")})
     return due

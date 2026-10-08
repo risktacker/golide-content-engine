@@ -87,12 +87,18 @@ def build_record_needed(
 def build_reconnect_reminder(*, platform: str, days_left: int, account: str = "") -> EmailMessage:
     name = {"linkedin": "LinkedIn"}.get(platform, platform.title())
     link = f"{STUDIO_URL}/#connections"
-    when = "today" if days_left <= 0 else ("tomorrow" if days_left == 1 else f"in {days_left} days")
+    when = "today" if days_left == 0 else ("tomorrow" if days_left == 1 else f"in {days_left} days")
     message = EmailMessage()
-    message["Subject"] = f"Reconnect {name}: access expires {when}"
+    if days_left < 0:
+        message["Subject"] = f"Reconnect {name}: access has expired, posts are stopped"
+        intro = (f"{name}{' (' + account + ')' if account else ''} access has expired, so {name} "
+                 f"posts are not going out until you reconnect.\n\n")
+    else:
+        message["Subject"] = f"Reconnect {name}: access expires {when}"
+        intro = (f"{name}{' (' + account + ')' if account else ''} only allows 60-day access, "
+                 f"and it runs out {when}. After that, {name} posts stop until you reconnect.\n\n")
     message.set_content(
-        f"{name}{' (' + account + ')' if account else ''} only allows 60-day access, "
-        f"and it runs out {when}. After that, {name} posts stop until you reconnect.\n\n"
+        intro +
         f"Takes 20 seconds: open Studio, Connections, Reconnect {name}, Allow.\n\n{link}\n"
     )
     return message

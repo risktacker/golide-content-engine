@@ -215,15 +215,21 @@ def _render_story(slide: Slide, number: int, total: int, output: Path, theme, ba
 
 
 def _split_pull(text: str, closing: bool) -> tuple[str, str]:
-    """Separate a short last sentence that leads into the next slide."""
+    """Separate a short last sentence that leads into the next slide.
+
+    Splits only at a real sentence end: punctuation followed by a space and a
+    capital letter, never after "Inc." or inside "5.5" (2026-10-08 audit).
+    """
     import re
 
-    if closing:
+    text = text.strip()
+    if closing or not text or text[-1] not in ".!?":
         return text, ""
-    sentences = re.findall(r"[^.!?]+[.!?]+", text)
-    if len(sentences) < 2:
+    ends = [m.end() for m in re.finditer(r"(?<!\b[A-Z][a-z])(?<!\b[A-Z][a-z][a-z])(?<!\b[A-Z])[.!?](?=\s+[A-Z\"'])", text)]
+    if not ends:
         return text, ""
-    last = sentences[-1].strip()
-    if len(last.split()) > 8:
+    cut = ends[-1]
+    head, last = text[:cut].strip(), text[cut:].strip()
+    if not head or len(last.split()) > 8:
         return text, ""
-    return text[: len(text) - len(sentences[-1])].strip(), last
+    return head, last

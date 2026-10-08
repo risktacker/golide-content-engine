@@ -487,7 +487,12 @@ def main() -> int:
         if not due:
             print(json.dumps({"status": "no_due_production"}))
             return 0
-        spec_path = due[0]
+        from .orchestration.queue import pick_due_spec, record_failure
+        spec_path = pick_due_spec(due, Path.cwd())
+        if spec_path is None:
+            print(json.dumps({"status": "all_due_productions_waiting_owner_voice",
+                              "waiting": [p.stem for p in due]}))
+            return 0
         spec = json.loads(spec_path.read_text(encoding="utf-8"))
         studio_job_id = spec.get("_studio_job_id")
         if bridge and studio_job_id:
@@ -657,6 +662,9 @@ def main() -> int:
             return 0
         except Exception as exc:
             report_studio("failed", "production-failed", str(exc))
+            if spec_path.exists() and record_failure(spec_path):
+                # Set aside after repeated failures so the queue keeps moving.
+                print(f"::warning title=Production set aside::{spec['id']} failed {3} runs in a row: {str(exc)[:300]}")
             raise
         package_root = Path("release-packages") / spec["id"]
         package = json.loads((package_root / "package-manifest.json").read_text(encoding="utf-8"))
@@ -682,6 +690,7 @@ def main() -> int:
                     production_id=spec["id"], video=package_root / files["video"]["file"],
                     metadata=metadata, youtube_video_id=video_id,
                     owner_voice_ref=str(spec.get("owner_voice_media_ref", "")),
+                    cover=Path("build") / spec["id"] / "video-cover.jpg",
                 )
             except Exception as exc:
                 reels = {"reels_status": "failed", "error": str(exc)[:500]}
@@ -699,6 +708,7 @@ def main() -> int:
                     video=package_root / files["video"]["file"], metadata=metadata,
                     youtube_video_id=video_id, owner_voice_ref=str(spec.get("owner_voice_media_ref", "")),
                     publish_at=str(release.get("scheduled_at") or spec.get("release", {}).get("scheduled_at", "")),
+                    cover=Path("build") / spec["id"] / "video-cover.jpg",
                 )
             except Exception as exc:
                 long_social = {"status": "failed", "error": str(exc)[:500]}

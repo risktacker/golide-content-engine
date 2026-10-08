@@ -548,9 +548,13 @@ class ProductionService:
             plan = dict(output.value)
             problems = (flow_problems(plan) + chapter_problems(plan, str(spec["format"]))
                         + follow_problems(plan, str(spec["format"])))
-            if problems:
-                # One rewrite when the script reads like a list of separate statements.
+            for _round in range(2):
+                if not problems:
+                    break
+                # Rewrite when the script is choppy or breaks a structure rule; checked again after.
                 self._record_text(production_id, "script-draft", output)
+                self._reserve(spec, text_model, Usage(input_tokens=max(1, len(json.dumps(plan)) // 3 + 3000),
+                                                      output_tokens=6000))
                 output = text.generate_json(
                     script_instructions(str(spec["format"])),
                     f"TOPIC BRIEF\n{spec['brief']}\n\nVERIFIED RESEARCH\n{json.dumps(research)}"
@@ -560,6 +564,10 @@ class ProductionService:
                     max_output_tokens=6000,
                 )
                 plan = dict(output.value)
+                problems = (flow_problems(plan) + chapter_problems(plan, str(spec["format"]))
+                            + follow_problems(plan, str(spec["format"])))
+            if problems:
+                print(json.dumps({"status": "script_rules_unmet_after_rewrites", "problems": problems}))
             scene_plan_path.write_text(json.dumps(plan, indent=2) + "\n", encoding="utf-8")
             script_path.write_text(script_text(plan) + "\n", encoding="utf-8")
             self._record_text(production_id, "script", output)
@@ -761,13 +769,21 @@ class ProductionService:
                     max_output_tokens=6000,
                 )
                 breaks = {i for i in range(1, len(owners)) if owners[i] is not None and owners[i] != owners[i - 1]}
-                scenes = validate_scenes(list(output.value["scenes"]), len(spoken_lines), breaks)
+                from ..vector.illustrate import SCENE_COUNTS
+                raw_scenes = list(output.value["scenes"])
+                scenes = validate_scenes(raw_scenes, len(spoken_lines), breaks,
+                                         max_scenes=SCENE_COUNTS.get(str(spec["format"]), (0, 18))[1] + 2)
                 cover = dict(output.value.get("cover") or {})
                 number = cover.get("scene")
-                if isinstance(number, int) and 1 <= number <= len(scenes):
-                    cover["scene"] = scenes[number - 1]["id"]
-                else:
-                    cover["scene"] = ""
+                cover["scene"] = ""
+                if isinstance(number, int) and 1 <= number <= len(raw_scenes):
+                    # Map through a line of the chosen scene: validation may re-order,
+                    # merge or split scenes, so positions shift but lines do not.
+                    line = int(raw_scenes[number - 1].get("first_line", 0))
+                    cover["scene"] = next((sc["id"] for sc in scenes
+                                           if sc["first_line"] <= line <= sc["last_line"]), "")
+                from ..vector.cover import clean_cover_text
+                cover["text"], cover["gold"] = clean_cover_text(str(cover.get("text", "")), str(cover.get("gold", "")))
                 visual_plan_path.write_text(json.dumps({"scenes": scenes, "cover": cover}, indent=2) + "\n",
                                             encoding="utf-8")
                 self._record_text(production_id, "visual-plan", output)
@@ -1385,6 +1401,10 @@ class ProductionService:
         thumbnail = work / "thumbnail.png"
         thumbnail_provider = self.providers.thumbnails(live=True)
         def thumbnail_stage():
+            if raw_thumbnail.exists() and not thumbnail.exists():
+                # Paid for but not normalised (a crash between the two steps): finish it.
+                normalize_thumbnail(raw_thumbnail, thumbnail)
+                return
             self._require_absent(raw_thumbnail, "thumbnail")
             self._require_absent(thumbnail, "thumbnail")
             self._reserve(
@@ -1416,7 +1436,9 @@ class ProductionService:
             # spelled it the same way, or the research sources contain it.
             from ..quality.spelling import accept_with_evidence, load_dictionary, unknown_words
             policy = json.loads((self.root / "config/qa-policy.json").read_text(encoding="utf-8"))
-            texts = [script, metadata["title"], metadata["description"]]
+            cover_text = str(((json.loads((work / "visual-plan.json").read_text(encoding="utf-8"))
+                               if (work / "visual-plan.json").exists() else {}).get("cover") or {}).get("text", ""))
+            texts = [script, metadata["title"], metadata["description"], cover_text]
             flagged = unknown_words(texts, policy, load_dictionary(self.root))
             if flagged:
                 heard = " ".join(str(w.get("word", "")) for w in timed_words)

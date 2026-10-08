@@ -16,6 +16,11 @@ class ConnectionReminderTests(unittest.TestCase):
             now, rows = self._at(6, days)
             self.assertEqual(due_reminders(rows, now)[0]["days_left"], days)
 
+    def test_keeps_reminding_every_morning_after_expiry(self):
+        now, rows = self._at(6, -3)
+        self.assertEqual(due_reminders(rows, now)[0]["days_left"], -3)
+        self.assertIn("expired", build_reconnect_reminder(platform="linkedin", days_left=-3)["Subject"])
+
     def test_quiet_on_other_days_and_on_evening_run(self):
         now, rows = self._at(6, 5)
         self.assertEqual(due_reminders(rows, now), [])

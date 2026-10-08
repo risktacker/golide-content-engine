@@ -348,6 +348,7 @@ class StaticAutomation:
         month = moment.strftime("%Y-%m")
         current_count = self.bridge.static_month_count(month)
         results: list[dict[str, Any]] = []
+        failures: list[str] = []
 
         for slot in self.due_slots(now):
             content_id = (
@@ -368,95 +369,109 @@ class StaticAutomation:
                 })
                 break
 
-            # Locked split: post-a is a pure trend post (no product), post-b is
-            # always about one GOLIDE Marketplace product.
-            # Every carousel carries one marketplace slide when a product is live
-            # (owner direction 2026-10-07: second to last, before the call-out).
-            product = registry.choose_auto(seed=content_id) if active_products else None
-            draft = self._draft(
-                content_id=content_id,
-                slot=slot["slot"],
-                product=product,
-            )
-            # Both daily posts are trend posts; the product only appears as one
-            # Instagram slide in the evening carousel (owner direction 2026-10-07).
-            use_product = False
-            bridge_position = 0
+            try:
+                # Locked split: post-a is a pure trend post (no product), post-b is
+                # always about one GOLIDE Marketplace product.
+                # Every carousel carries one marketplace slide when a product is live
+                # (owner direction 2026-10-07: second to last, before the call-out).
+                product = registry.choose_auto(seed=content_id) if active_products else None
+                draft = self._draft(
+                    content_id=content_id,
+                    slot=slot["slot"],
+                    product=product,
+                )
+                # Both daily posts are trend posts; the product only appears as one
+                # Instagram slide in the evening carousel (owner direction 2026-10-07).
+                use_product = False
+                bridge_position = 0
 
-            meta, square = self._generate_image(draft)
-            units = [strip_citations(str(item)) for item in draft["value_units"] if str(item).strip()]
-            copies = {
-                key: strip_citations(str(value))
-                for key, value in draft["platform_copy"].items()
-            }
-            link = clean_url(str(draft.get("source_url", "")))
-            for platform in ("facebook", "linkedin"):
-                copies[platform] = _drop_urls(copies[platform])
-                if link:
-                    copies[platform] = copies[platform].rstrip() + "\n\nSource: " + link
-            for platform in ("instagram", "x"):
-                copies[platform] = _drop_urls(copies[platform])
-            copies["x"] = fit_x(copies["x"])
-            replies = [fit_x(_drop_urls(strip_citations(str(r)))) for r in draft.get("x_replies", []) if str(r).strip()][:2]
-            slides = self._carousel(draft, product)
-            if slides:
-                points = min(5, len([p for p in (draft.get("carousel") or {}).get("points", [])
-                                     if str(p.get("text", "") or p.get("heading", "")).strip()]))
-                for platform in ("instagram", "facebook", "linkedin"):
-                    copies[platform] = match_counts(copies[platform], points)
-                if product is not None and "bio" not in copies["instagram"].lower():
-                    copies["instagram"] = copies["instagram"].rstrip() + "\n\nLink in bio."
+                meta, square = self._generate_image(draft)
+                units = [strip_citations(str(item)) for item in draft["value_units"] if str(item).strip()]
+                copies = {
+                    key: strip_citations(str(value))
+                    for key, value in draft["platform_copy"].items()
+                }
+                link = clean_url(str(draft.get("source_url", "")))
+                for platform in ("facebook", "linkedin"):
+                    copies[platform] = _drop_urls(copies[platform])
+                    if link:
+                        copies[platform] = copies[platform].rstrip() + "\n\nSource: " + link
+                for platform in ("instagram", "x"):
+                    copies[platform] = _drop_urls(copies[platform])
+                copies["x"] = fit_x(copies["x"])
+                replies = [fit_x(_drop_urls(strip_citations(str(r)))) for r in draft.get("x_replies", []) if str(r).strip()][:2]
+                slides = self._carousel(draft, product)
+                if slides:
+                    points = min(5, len([p for p in (draft.get("carousel") or {}).get("points", [])
+                                         if str(p.get("text", "") or p.get("heading", "")).strip()]))
+                    for platform in ("instagram", "facebook", "linkedin"):
+                        copies[platform] = match_counts(copies[platform], points)
+                    if product is not None and "bio" not in copies["instagram"].lower():
+                        copies["instagram"] = copies["instagram"].rstrip() + "\n\nLink in bio."
+                    url = clean_url(str(getattr(product, "marketplace_url", "") or "")) if product is not None else ""
+                    if url:
+                        # The marketplace slide also goes to Facebook and LinkedIn, where links
+                        # work in the post itself (2026-10-08 audit).
+                        for platform in ("facebook", "linkedin"):
+                            copies[platform] = copies[platform].rstrip() + "\n\nFrom the GOLIDE Marketplace: " + url
 
-            scheduled_utc = slot["scheduled_at"].astimezone(timezone.utc).isoformat()
-            payload = {
-                "id": content_id,
-                "content_class": "post",
-                "content_lane": draft["content_lane"],
-                "weekly_theme": draft["weekly_theme"],
-                "title": draft["title"],
-                "master_text": "\n\n".join(units),
-                "value_units": units,
-                "product_bridge_position": bridge_position or None,
-                "product_mode": "auto_product" if use_product else "brand",
-                "product_id": "",
-                "resolved_product_id": product.id if use_product else "",
-                "selection_seed": content_id,
-                "registry_products": registry.snapshot()["products"],
-                "media_approved": True,
-                "qa_approved": False,
-                "release_approved": True,
-                "scheduled_at": scheduled_utc,
-                "variants": [
-                    {
-                        "platform": platform,
-                        "title": "",
-                        "body": copies[platform],
-                        # The same 8 images go to Instagram, Facebook and LinkedIn
-                        # (owner direction 2026-10-07); X stays one image (cost).
-                        "media_ref": (
-                            meta["media_ref"]
-                            if platform in {"instagram", "facebook"} or (slides and platform == "linkedin")
-                            else square["media_ref"]
-                        ),
-                        "parts": (
-                            [f"slide:{ref}" for ref in slides] if platform in {"instagram", "facebook", "linkedin"}
-                            else replies if platform == "x" else []
-                        ),
-                    }
-                    for platform in ("instagram", "facebook", "linkedin", "x")
-                ],
-            }
-            created = self.bridge.create_content(payload)
-            current_count += 1
-            results.append({
-                "id": content_id,
-                "status": created.get("status", "scheduled"),
-                "title": draft["title"],
-                "slot": slot["slot"],
-                "product": product.name if use_product else None,
-                "estimated_usd": self.ESTIMATED_POST_USD,
-            })
+                scheduled_utc = slot["scheduled_at"].astimezone(timezone.utc).isoformat()
+                payload = {
+                    "id": content_id,
+                    "content_class": "post",
+                    "content_lane": draft["content_lane"],
+                    "weekly_theme": draft["weekly_theme"],
+                    "title": draft["title"],
+                    "master_text": "\n\n".join(units),
+                    "value_units": units,
+                    "product_bridge_position": bridge_position or None,
+                    "product_mode": "auto_product" if use_product else "brand",
+                    "product_id": "",
+                    "resolved_product_id": product.id if use_product else "",
+                    "selection_seed": content_id,
+                    "registry_products": registry.snapshot()["products"],
+                    "media_approved": True,
+                    "qa_approved": False,
+                    "release_approved": True,
+                    "scheduled_at": scheduled_utc,
+                    "variants": [
+                        {
+                            "platform": platform,
+                            "title": "",
+                            "body": copies[platform],
+                            # The same 8 images go to Instagram, Facebook and LinkedIn
+                            # (owner direction 2026-10-07); X stays one image (cost).
+                            "media_ref": (
+                                meta["media_ref"]
+                                if platform in {"instagram", "facebook"} or (slides and platform == "linkedin")
+                                else square["media_ref"]
+                            ),
+                            "parts": (
+                                [f"slide:{ref}" for ref in slides] if platform in {"instagram", "facebook", "linkedin"}
+                                else replies if platform == "x" else []
+                            ),
+                        }
+                        for platform in ("instagram", "facebook", "linkedin", "x")
+                    ],
+                }
+                created = self.bridge.create_content(payload)
+                current_count += 1
+                results.append({
+                    "id": content_id,
+                    "status": created.get("status", "scheduled"),
+                    "title": draft["title"],
+                    "slot": slot["slot"],
+                    "product": product.name if use_product else None,
+                    "estimated_usd": self.ESTIMATED_POST_USD,
+                })
+            except Exception as exc:
+                # One slot failing must never stop the other (2026-10-08 audit).
+                failures.append(f"{content_id}: {str(exc)[:300]}")
+                results.append({"id": content_id, "status": "failed", "error": str(exc)[:300]})
 
+        if failures:
+            print(json.dumps({"status": "static_slots_failed", "results": results}))
+            raise RuntimeError("static post failed: " + " | ".join(failures))
         return results
 
 

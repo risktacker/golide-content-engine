@@ -284,6 +284,7 @@ class FacebookPageProvider(SocialProvider):
     def publish(self, request: PublishRequest) -> PublishResult:
         _require_publish_enabled()
         body = request.body.strip() or "\n\n".join(request.parts)
+        warning = None
         if not request.media_ref:
             result = self.graph.post(f"{self.page_id}/feed", message=body)
         else:
@@ -296,6 +297,7 @@ class FacebookPageProvider(SocialProvider):
                 try:
                     return self._publish_album(media_url, request.extra_media, body)
                 except Exception as exc:  # the post still goes out with the cover image
+                    warning = f"slides fell back to one image: {str(exc)[:300]}"
                     print(json.dumps({"status": "facebook_album_fallback", "error": str(exc)[:300]}))
             result = self.graph.post(
                 f"{self.page_id}/photos",
@@ -305,7 +307,7 @@ class FacebookPageProvider(SocialProvider):
         content_id = str(result.get("post_id") or result.get("id") or "")
         if not content_id:
             raise RuntimeError("Facebook did not return a post id")
-        return PublishResult(content_id=content_id, url=None)
+        return PublishResult(content_id=content_id, url=None, warning=warning)
 
     def _publish_album(self, cover_url: str, extra: tuple[str, ...], message: str) -> PublishResult:
         """All carousel images in one Page post: upload each unpublished, then attach."""

@@ -50,6 +50,7 @@ class LinkedInProvider(SocialProvider):
     def publish(self, request: PublishRequest) -> PublishResult:
         _require_publish_enabled()
         media_urn = None
+        warning = None
         if request.media_ref:
             probe = probe_media(self.binary_http, request.media_ref)
             if probe.content_type.startswith("image/") and request.extra_media:
@@ -57,6 +58,7 @@ class LinkedInProvider(SocialProvider):
                     images = [self._upload_image(url) for url in (request.media_ref, *request.extra_media)][:20]
                     return self._create_post(request, None, images=images)
                 except Exception as exc:  # the post still goes out with the cover image
+                    warning = f"slides fell back to one image: {str(exc)[:300]}"
                     print(json.dumps({"status": "linkedin_multi_image_fallback", "error": str(exc)[:300]}))
             if probe.content_type.startswith("image/"):
                 media_urn = self._upload_image(request.media_ref)
@@ -66,7 +68,10 @@ class LinkedInProvider(SocialProvider):
                 raise ValueError(
                     f"LinkedIn media type is not supported: {probe.content_type}"
                 )
-        return self._create_post(request, media_urn)
+        result = self._create_post(request, media_urn)
+        if warning:
+            result = PublishResult(content_id=result.content_id, url=result.url, warning=warning)
+        return result
 
     def _upload_image(self, source_url: str) -> str:
         initialized = self.http.post(

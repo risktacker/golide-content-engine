@@ -210,6 +210,7 @@ class Rebuild:
                 video_ref=state["media_ref"],
                 # A rebuild is a new post: never collide with an earlier Reel.
                 content_id=f"{self.id}-reels-" + "".join(ch for ch in str(state.get("built_at", ""))[:19] if ch.isdigit()),
+                cover=Path("build") / self.id / "video-cover.jpg",
             )
             state.update(status="reels_queued", social_post_id=reels["social_post_id"])
             self.save(state)

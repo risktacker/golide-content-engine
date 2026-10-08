@@ -17,12 +17,15 @@ class StudioSocialPublisher:
             os.getenv("GOLIDE_STUDIO_BASE_URL", "https://studio.golidee.com")
         )
         self.providers = {}
+        self.provider_errors: dict[str, str] = {}
         for platform in ("instagram", "facebook", "linkedin", "x"):
             try:
                 credential = self.bridge.social_credentials(platform)
                 provider = provider_from_studio_credentials(platform, credential)
-            except Exception:
-                # A disconnected provider must not block the other routes.
+            except Exception as exc:
+                # A disconnected provider must not block the other routes, but the real
+                # reason (expired token, reconnect needed) is kept for Studio.
+                self.provider_errors[platform] = str(exc)[:300] or exc.__class__.__name__
                 continue
             self.providers[provider.platform] = provider
         self.media_store = r2_store_from_environment()
@@ -81,7 +84,9 @@ class StudioSocialPublisher:
                         post["id"],
                         variant["id"],
                         status="failed",
-                        error=f"no connected provider for {platform}",
+                        error=f"{platform} is not connected: "
+                              + self.provider_errors.get(platform, "no saved login in Studio")
+                              + " (reconnect it in Studio)",
                     )
                     last_status = updated["status"]
                     continue
