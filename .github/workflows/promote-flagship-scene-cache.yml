@@ -141,7 +141,13 @@ jobs:
           git add assets/brand/golide-canonical-avatar-v1.jpg.b64 config/visual-identity.json
           git commit -m "fix: restore verified canonical avatar bytes"
           git pull --rebase origin main
-          git push
+          # Another push may have landed meanwhile: rebase onto it and retry.
+          for attempt in 1 2 3 4 5; do
+            git push && break
+            [ "$attempt" = 5 ] && exit 1
+            sleep $((attempt * 5))
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME:-main}"
+          done
           echo "AVATAR_REPO_REPAIR=committed"
 
       - name: Promote corrected cache as newest correction checkpoint
@@ -164,4 +170,10 @@ jobs:
           git add .github/production-correction-kick
           git commit -m "ops: resume flagship from corrected scene checkpoint"
           git pull --rebase origin main
-          git push
+          # Another push may have landed meanwhile: rebase onto it and retry.
+          for attempt in 1 2 3 4 5; do
+            git push && break
+            [ "$attempt" = 5 ] && exit 1
+            sleep $((attempt * 5))
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME:-main}"
+          done

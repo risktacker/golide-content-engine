@@ -357,4 +357,10 @@ jobs:
           git add data
           git diff --cached --quiet || git commit -m "ops: record corrected flagship private preview"
           git pull --rebase origin main
-          git push
+          # Another push may have landed meanwhile: rebase onto it and retry.
+          for attempt in 1 2 3 4 5; do
+            git push && break
+            [ "$attempt" = 5 ] && exit 1
+            sleep $((attempt * 5))
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME:-main}"
+          done

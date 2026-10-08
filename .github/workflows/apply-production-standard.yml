@@ -29,4 +29,10 @@ jobs:
           git add src/golide_engine/orchestration/production.py
           git diff --cached --quiet && exit 0
           git commit -m "feat: force fresh trending topic discovery for scheduled production"
-          git push
+          # Another push may have landed meanwhile: rebase onto it and retry.
+          for attempt in 1 2 3 4 5; do
+            git push && break
+            [ "$attempt" = 5 ] && exit 1
+            sleep $((attempt * 5))
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME:-main}"
+          done
