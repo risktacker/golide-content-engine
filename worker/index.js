@@ -372,7 +372,7 @@ function validateSchedule(payload,klass,variants,units){
   if(actual.length!==expected.length||expected.some((p)=>!actual.includes(p))) throw new Error(`${klass} route is locked; all destination platforms are required`);
   if(!payload.release_approved) throw new Error("release approval is required before scheduling");
   if(klass==="post"){
-    if(units.length<3||units.length>4) throw new Error("static posts require 3 to 4 related value units");
+    if(units.length<3||units.length>5) throw new Error("static posts require 3 to 5 related value units");
     if(!payload.media_approved) throw new Error("static image approval is required before scheduling");
     if(variants.some((v)=>!safeText(v.media_ref))) throw new Error("every static platform variant requires approved media");
   }else{
@@ -402,7 +402,7 @@ async function createPost(env,payload){
       if(!productUrl.startsWith("https://")) throw new Error("a product bridge requires an HTTPS product URL");
       if(!units[bridge-1].includes(productUrl)) units[bridge-1]=units[bridge-1].replace(/\s+$/,"")+"\n"+productUrl;
     }
-    if(units.length&& (units.length<3||units.length>4)) throw new Error("static posts require 3 to 4 related value units");
+    if(units.length&& (units.length<3||units.length>5)) throw new Error("static posts require 3 to 5 related value units");
   }else{bridge=null;}
 
   const variants=Array.isArray(payload.variants)?payload.variants.map((v)=>({

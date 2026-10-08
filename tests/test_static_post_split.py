@@ -139,3 +139,17 @@ def test_carousel_is_five_story_slides_then_marketplace_then_callout():
     assert rendered[5][1] and rendered[-1][2] and rendered[0][4] == 8  # 8 images with the cover
     assert len(refs) == 7
     assert [r[5] for r in rendered] == ['1', '2', '3', '4', '5', '', '']
+
+
+def test_studio_accepts_as_many_value_units_as_the_engine_sends():
+    """2026-10-08: the engine sent 5 units while Studio still capped posts at 4, so
+    both posts were rejected. The worker's limit must cover the schema's."""
+    import re
+    from pathlib import Path
+
+    from golide_engine.orchestration.static_automation import STATIC_DRAFT_SCHEMA
+
+    sent = STATIC_DRAFT_SCHEMA["properties"]["value_units"]["maxItems"]
+    worker = (Path(__file__).resolve().parents[1] / "worker" / "index.js").read_text(encoding="utf-8")
+    limits = [int(n) for n in re.findall(r"units\.length>(\d+)\) throw", worker)]
+    assert limits and all(limit >= sent for limit in limits)
