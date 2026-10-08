@@ -134,6 +134,7 @@ class StudioSocialPublisher:
                         status="published",
                         remote_id=published.content_id,
                         url=published.url,
+                        error=getattr(published, "warning", None),
                     )
                 last_status = updated["status"]
 

@@ -43,3 +43,36 @@ class MultiImageTests(unittest.TestCase):
         content = http.calls[-1]["json_body"]["content"]
         self.assertEqual([i["id"] for i in content["multiImage"]["images"]],
                          ["urn:li:image:0", "urn:li:image:1", "urn:li:image:2"])
+
+
+class InstagramCarouselRetryTests(unittest.TestCase):
+    def _provider(self, posts, gets):
+        from golide_engine.providers.meta import InstagramProvider
+        http = FakeHttp(posts=posts, gets=gets)
+        slept = []
+        provider = InstagramProvider(api_version="v99.0", access_token="t", instagram_user_id="ig",
+                                     http=http, sleeper=slept.append)
+        return provider, http, slept
+
+    def test_carousel_is_retried_once_before_falling_back(self):
+        ready = {"status_code": "FINISHED"}
+        posts = [{}, {"id": "c1"}, {"id": "c2"}, {"id": "parent"}, {"id": "media-1"}]
+        provider, http, slept = self._provider(posts, [ready, ready, ready])
+        request = PublishRequest(post_id="p", variant_id="v", platform="instagram", body="b",
+                                 media_ref="https://m/cover.jpg", extra_media=("https://m/s2.jpg",))
+        with patch.dict(os.environ, {"GOLIDE_ENABLE_SOCIAL_PUBLISH": "1"}):
+            result = provider.publish(request)
+        self.assertEqual(result.content_id, "media-1")
+        self.assertIsNone(result.warning)
+        self.assertEqual(slept[:1], [20.0])  # one pause, then the second try worked
+
+    def test_fallback_is_reported_as_a_warning(self):
+        ready = {"status_code": "FINISHED"}
+        posts = [{}, {}, {"id": "single"}, {"id": "media-2"}]  # both carousel tries fail
+        provider, http, slept = self._provider(posts, [ready])
+        request = PublishRequest(post_id="p", variant_id="v", platform="instagram", body="b",
+                                 media_ref="https://m/cover.jpg", extra_media=("https://m/s2.jpg",))
+        with patch.dict(os.environ, {"GOLIDE_ENABLE_SOCIAL_PUBLISH": "1"}):
+            result = provider.publish(request)
+        self.assertEqual(result.content_id, "media-2")
+        self.assertIn("carousel fell back", result.warning)

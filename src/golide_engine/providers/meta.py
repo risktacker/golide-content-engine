@@ -162,11 +162,18 @@ class InstagramProvider(SocialProvider):
         _require_publish_enabled()
         media_url = _require_https_media(request.media_ref)
         body = request.body.strip() or "\n\n".join(request.parts)
+        warning = None
         if request.extra_media and not _looks_like_video(media_url):
-            try:
-                return self._publish_carousel(media_url, request.extra_media, body)
-            except Exception as exc:  # never lose the post: fall back to the cover alone
-                print({"status": "carousel_fallback_single_image", "error": str(exc)})
+            # Two tries: Instagram's image fetch and processing fail now and then for
+            # a moment (2026-10-08: the evening carousel went out as one image).
+            for attempt in (1, 2):
+                try:
+                    return self._publish_carousel(media_url, request.extra_media, body)
+                except Exception as exc:
+                    warning = f"carousel fell back to one image: {str(exc)[:300]}"
+                    print({"status": "carousel_attempt_failed", "attempt": attempt, "error": str(exc)})
+                    if attempt == 1:
+                        self.sleeper(20.0)
         payload: dict[str, object] = {"caption": body}
         if _looks_like_video(media_url):
             payload.update(
@@ -199,7 +206,7 @@ class InstagramProvider(SocialProvider):
         media_id = str(published.get("id", ""))
         if not media_id:
             raise RuntimeError("Instagram did not return a published media id")
-        return PublishResult(content_id=media_id, url=None)
+        return PublishResult(content_id=media_id, url=None, warning=warning)
 
     def _publish_carousel(self, cover_url: str, extra: tuple[str, ...], caption: str) -> PublishResult:
         """Cover image first, then the text slides (Instagram allows up to 10)."""

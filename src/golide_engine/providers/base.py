@@ -56,6 +56,7 @@ class PublishRequest:
 class PublishResult:
     content_id: str
     url: str | None = None
+    warning: str | None = None  # published, but not as intended (e.g. carousel fell back to one image)
 
 
 class SocialProvider(Protocol):

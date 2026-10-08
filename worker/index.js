@@ -682,8 +682,9 @@ async function recordSocialResult(db,postId,variantId,payload){
   await db.prepare(`INSERT INTO publish_attempts(post_id,variant_id,platform,status,remote_id,error,created_at)
     VALUES(?,?,?,?,?,?,?)`).bind(postId,variantId,variant.platform,status,safeText(payload.remote_id)||null,safeText(payload.error)||null,now).run();
   if(status==="published"){
-    await db.prepare(`UPDATE social_variants SET status='published',platform_content_id=?,published_url=?,last_error=NULL,published_at=?,updated_at=? WHERE id=?`)
-      .bind(safeText(payload.remote_id),safeText(payload.url)||null,now,now,variantId).run();
+    // A warning (e.g. "carousel fell back to one image") stays visible on a published variant.
+    await db.prepare(`UPDATE social_variants SET status='published',platform_content_id=?,published_url=?,last_error=?,published_at=?,updated_at=? WHERE id=?`)
+      .bind(safeText(payload.remote_id),safeText(payload.url)||null,safeText(payload.error)||null,now,now,variantId).run();
   }else{
     await db.prepare(`UPDATE social_variants SET status='failed',last_error=?,updated_at=? WHERE id=?`)
       .bind(safeText(payload.error)||"publish failed",now,variantId).run();
@@ -1110,11 +1111,18 @@ async function handleApi(request,env,url){
   if(url.pathname==="/api/attention"&&request.method==="GET"){
     const {results=[]}=await env.DB.prepare(`SELECT p.id,p.title,p.content_class,p.status,p.scheduled_at,
         v.platform,v.status vstatus,v.last_error FROM content_posts p JOIN social_variants v ON v.post_id=p.id
-      WHERE p.status IN ('failed','partial') ORDER BY p.scheduled_at DESC`).all();
+      WHERE p.status IN ('failed','partial')
+         OR (p.status<>'dismissed' AND p.id IN (SELECT post_id FROM social_variants
+             WHERE status='published' AND last_error IS NOT NULL AND published_at>=datetime('now','-3 days')))
+      ORDER BY p.scheduled_at DESC`).all();
     const items={};
     for(const r of results){
       const item=items[r.id]||(items[r.id]={id:r.id,title:r.title,content_class:r.content_class,status:r.status,scheduled_at:r.scheduled_at,failed:[],published:[]});
-      if(r.vstatus==="published") item.published.push(r.platform); else item.failed.push({platform:r.platform,error:r.last_error||""});
+      if(r.vstatus==="published"){
+        item.published.push(r.platform);
+        // Published, but not as intended (e.g. the carousel went out as one image).
+        if(r.last_error) item.failed.push({platform:r.platform,error:"Published, but "+r.last_error});
+      }else item.failed.push({platform:r.platform,error:r.last_error||""});
     }
     return json({items:Object.values(items)});
   }
@@ -1128,6 +1136,7 @@ async function handleApi(request,env,url){
       return json({status:"retry_queued"});
     }
     await env.DB.prepare(`UPDATE content_posts SET status='dismissed',updated_at=? WHERE id=? AND status IN ('failed','partial')`).bind(nowIso(),id).run();
+    await env.DB.prepare(`UPDATE social_variants SET last_error=NULL WHERE post_id=? AND status='published'`).bind(id).run();
     return json({status:"dismissed"});
   }
   const scriptMailMatch=url.pathname.match(/^\/api\/production-jobs\/([^/]+)\/email-script$/);
