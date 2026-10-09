@@ -199,34 +199,29 @@ SCRIPT_LENGTH_TARGETS = {
 }
 
 SCRIPT_STRUCTURE_RULES = """\
-SCRIPT STRUCTURE: A STORY TOLD BY A TEACHER (owner direction 2026-10-09)
-This is NARRATION. One person explains one thing to a friend who has never heard of
-it, from start to finish. It is never a list of points, a briefing or a summary.
-Every sentence answers the question the sentence before it raises in the listener's
-head ("what does that mean?", "how?", "so what?", "what do I do?"), and the
-listener always knows where the story is going.
-Tell it in these stages, in order, joined by spoken bridges:
-1. HOOK (2 to 3 lines): put the viewer inside a situation they recognise, in the
-   second person ("Imagine...", "You know when...", "What if..."), then say what
-   just changed.
-2. WHAT'S HAPPENING: explain the news in plain words, as if the listener has never
-   heard of it. Say how things worked until now, then what is different
-   ("Until now..., but this...").
-3. WALK-THROUGH: ONE concrete example told step by step as a little story
-   ("Say you ask it for... First it..., then..., and by the time..."). One example
-   told well, never a list of several.
-4. THE CATCH: the turn, opened with a bridge ("But here's the catch...",
-   "The problem is..."), told as a consequence for the viewer, with a familiar
-   picture of what could go wrong.
-5. WHAT TO DO: answer "so what do I do?" with one small, practical step, said the way
-   you'd advise a friend.
-6. CLOSE: the follow call-out, then one short closing sentence.
-Never compress ideas into noun piles ("identity, limits and an audit trail"):
-say what each thing means for the viewer in a normal sentence. Explain every
-technical word the first time it appears. No colons, no "X: a, b, c" lists.
-"section" tags each line: hook "claim", what's happening "proof", walk-through
-"pattern", the catch "cost", the one line to remember "reframe", what to do and
-the close "cta".
+SCRIPT STRUCTURE (in this order)
+The sections are the shape of the argument; the viewer should never hear the joins.
+1. CLAIM: open straight on the topic with one blunt sentence that flips a common
+   belief. Example shape: "AI doesn't decide who gets hired. Systems do."
+   Never open with "Imagine", "What if", "Picture this" or a question.
+2. PROOF: one concrete, true example anyone already understands.
+3. PATTERN: show the rule behind the proof, with 2 to 4 cases of the same rule said
+   as ONE flowing sentence, never as separate statements.
+4. COST: what happens to people who ignore the rule. Make it specific and familiar.
+5. REFRAME: the one sentence the viewer should remember.
+6. CALL TO ACTION: one small action, then the follow call-out, then one short
+   closing sentence.
+
+NARRATION (owner direction 2026-10-09): the structure above is the order of the
+ideas, but it is SPOKEN AS ONE CONNECTED EXPLANATION, like a teacher talking a friend
+through it. It must never sound like a list of points read out one by one.
+- Every sentence grows out of the one before it and is joined to it with a spoken
+  connective: and, but, so, because, that means, that's why, in other words, for
+  example, then, which is why, here's the catch, and that's not all.
+- Each section is entered with a bridge from the last ("And it doesn't stop there.",
+  "But here's the risk.", "That's why...", "So what do you do?").
+- Never compress ideas into noun piles ("identity, limits and an audit trail"): say
+  what each thing means for the viewer. No colons, no "X: a, b, c" lists.
 """
 
 LONG_STRUCTURE_RULES = """\
@@ -407,9 +402,9 @@ def flow_problems(plan: dict) -> list[str]:
             "catch, say you...): " + " | ".join(loose[:5]))
     if any(":" in text for text in lines):
         problems.append("no colons or 'X: a, b, c' lists; say it as a normal spoken sentence")
-    opening = " ".join(sentences[:2]).lower()
-    if not any(w in opening.replace("\u2019", "'").split() for w in ("you", "your", "you're", "imagine", "you've")):
-        problems.append("the hook must put the viewer in the story (talk to 'you' in the first two sentences)")
+    first = lines[0].lower().replace(",", " ").split()
+    if first and (first[0] in ("imagine", "picture") or first[:2] == ["what", "if"]):
+        problems.append("open straight on the topic with a blunt claim, never with Imagine or What if")
     openings = [" ".join(text.lower().split()[:2]) for text in lines]
     repeats = sum(1 for a, b in zip(openings, openings[1:]) if a == b)
     if repeats >= 2:

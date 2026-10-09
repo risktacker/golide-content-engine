@@ -36,7 +36,6 @@ class NarrationFlowTests(unittest.TestCase):
         problems = " ".join(flow_problems(plan(POINTS)))
         self.assertIn("list of points", problems)
         self.assertIn("colons", problems)
-        self.assertIn("hook", problems)
 
     def test_approved_narration_passes(self):
         approved = json.loads(Path("production-queue/golide-short-2026-10-07.script-plan.json").read_text())
@@ -45,8 +44,12 @@ class NarrationFlowTests(unittest.TestCase):
     def test_short_template_asks_for_a_story_not_points(self):
         rules = script_instructions("short")
         self.assertIn("NARRATION", rules)
-        self.assertIn("WALK-THROUGH", rules)
-        self.assertNotIn("Name 2 to 4 cases", rules)
+        self.assertIn("ONE CONNECTED EXPLANATION", rules)
+        self.assertIn("Never open with", rules)
+
+    def test_imagine_opening_is_rejected(self):
+        text = "Imagine telling your computer to write a report,\n" + POINTS
+        self.assertTrue(any("Imagine" in p for p in flow_problems(plan(text))))
 
 
 if __name__ == "__main__":
