@@ -146,5 +146,7 @@
     "measured_at": "2026-10-09T07:03:25.701009+00:00",
     "signal_type": "youtube-most-popular-seed-proxy"
   },
-  "selected_topic_source": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/gemini-at-work/"
+  "selected_topic_source": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/gemini-at-work/",
+  "owner_voice_media_ref": "r2://temp/2026/10/09/19f0e73e33434b2790b02641fa34d597-Ai-at-work-v2.wav",
+  "_failed_runs": 1
 }
