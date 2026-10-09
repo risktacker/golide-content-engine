@@ -18,6 +18,7 @@ class QualityReport:
     audio: dict[str, float]
     editorial: dict[str, float | int]
     checked_at: str
+    warnings: tuple[str, ...] = ()
 
 
 class QualityRunner:
@@ -40,13 +41,16 @@ class QualityRunner:
         if thumbnail:
             failures.extend(check_thumbnail(thumbnail))
         from .spelling import load_dictionary
-        failures.extend(check_spelling(texts, self.policy, load_dictionary(self.root)))
+        # Owner direction 2026-10-09: a spelling doubt is reported, never a reason
+        # to stop a finished video.
+        warnings = check_spelling(texts, self.policy, load_dictionary(self.root))
         report = QualityReport(
             not failures,
             tuple(failures),
             measure_loudness(video),
             editorial_metrics,
             datetime.now(timezone.utc).isoformat(),
+            tuple(warnings),
         )
         if output:
             output.parent.mkdir(parents=True, exist_ok=True)

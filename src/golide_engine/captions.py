@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import difflib
+import re
 from typing import Any
 
 
@@ -120,3 +122,32 @@ def words_to_beats(
             "text": " ".join(item["word"] for item in group),
         })
     return beats
+
+
+def _norm(token: str) -> str:
+    return re.sub(r"[^a-z0-9']", "", token.lower().replace("\u2019", "'"))
+
+
+def respell_from_script(words: list[dict[str, Any]], script: str) -> list[dict[str, Any]]:
+    """Owner direction 2026-10-09: when speech-to-text mishears a word, the
+    words around it still line up with the script, so the gap is filled with
+    the script's own words, keeping the timing of what was heard."""
+    script_words = [w for w in script.split() if _norm(w)]
+    if not words or not script_words:
+        return words
+    heard = [_norm(str(w.get("word", ""))) for w in words]
+    wanted = [_norm(w) for w in script_words]
+    out: list[dict[str, Any]] = []
+    matcher = difflib.SequenceMatcher(None, heard, wanted, autojunk=False)
+    for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+        if tag == "equal" or tag == "delete":
+            out.extend(words[i1:i2])
+        elif tag == "replace" and (j2 - j1) <= 2 * (i2 - i1) + 2:
+            start, end = float(words[i1]["start"]), float(words[i2 - 1]["end"])
+            step = (end - start) / (j2 - j1)
+            for k, token in enumerate(script_words[j1:j2]):
+                out.append({"word": token.strip(".,!?;:\"").strip(), "start": round(start + k * step, 4),
+                            "end": round(start + (k + 1) * step, 4)})
+        elif tag == "replace":
+            out.extend(words[i1:i2])  # too different to be a mishearing: keep what was said
+    return out

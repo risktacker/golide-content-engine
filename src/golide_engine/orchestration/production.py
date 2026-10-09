@@ -11,7 +11,7 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
-from ..captions import clean_timed_words, words_to_beats, words_to_srt
+from ..captions import respell_from_script, clean_timed_words, words_to_beats, words_to_srt
 from ..feedback.engine import FeedbackEngine
 from ..manifest import load_project
 from ..music.registry import MusicRegistry
@@ -701,7 +701,7 @@ class ProductionService:
                 json.dumps(timed_words, indent=2) + "\n", encoding="utf-8"
             )
 
-        timed_words = clean_timed_words(timed_words)
+        timed_words = clean_timed_words(respell_from_script(clean_timed_words(timed_words), script))
         if not timed_words:
             raise RuntimeError("owner-voice transcription produced no usable words")
 
@@ -1453,6 +1453,8 @@ class ProductionService:
             result = QualityRunner(self.root / "config/qa-policy.json").run(video_path, spec["format"], storyboard, [script, metadata["title"], metadata["description"]], qa_path, thumbnail, editorial=not vector_mode)
             if not result.passed:
                 raise RuntimeError("automatic QA failed: " + "; ".join(result.failures))
+            if result.warnings:
+                print("::warning title=Spelling to look at::" + "; ".join(result.warnings))
             return result
         qa_result = self.runner.run(production_id, "qa", qa_stage, attempts=1)
         qa = qa_result or QualityRunner(self.root / "config/qa-policy.json").run(video_path, spec["format"], storyboard, [script, metadata["title"], metadata["description"]], None, thumbnail, editorial=not vector_mode)

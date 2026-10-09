@@ -715,7 +715,14 @@ def main() -> int:
                 print(f"::warning title=Long video not queued for Facebook/LinkedIn::{str(exc)[:300]}")
         done = spec_path.with_suffix(".completed.json")
         spec_path.rename(done)
-        report_studio("scheduled", "youtube-scheduled")
+        qa_warnings = []
+        try:
+            qa_warnings = json.loads((Path("productions") / spec["id"] / "qa-report.json").read_text(encoding="utf-8")).get("warnings", [])
+        except Exception:
+            pass
+        report_studio("scheduled", "youtube-scheduled",
+                      ("Published, but check the spelling of: " + ", ".join(w.split(": ", 1)[-1] for w in qa_warnings))
+                      if qa_warnings else None)
         print(json.dumps({"status": "scheduled", "production_id": spec["id"], "youtube_video_id": video_id,
                           "retention": retention, "reels": reels, "long_social": long_social}))
         return 0

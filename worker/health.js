@@ -83,7 +83,10 @@ export async function collectHealth(db, now = new Date(), storage = null) {
     const lines = [];
     if (job.status === "waiting_owner_voice") { lines.push({ mark: "wait", text: "Script is ready. Waiting for your recording." }); issues.push(`Record today's ${label.toLowerCase()}: ${job.title || job.job_id}.`); }
     else if (job.status === "failed") { lines.push({ mark: "bad", text: `Failed at ${job.stage}. ${short(job.error || "")}` }); issues.push(`${label} failed at ${job.stage}.`); }
-    else if (["scheduled", "completed", "published"].includes(job.status)) lines.push({ mark: "ok", text: `YouTube: ${job.status === "scheduled" ? "uploaded and scheduled" : "published"}` });
+    else if (["scheduled", "completed", "published"].includes(job.status)) {
+      lines.push({ mark: "ok", text: `YouTube: ${job.status === "scheduled" ? "uploaded and scheduled" : "published"}` });
+      if (job.error) { lines.push({ mark: "warn", text: short(job.error) }); issues.push(`${label}: ${short(job.error)}`); }
+    }
     else lines.push({ mark: "wait", text: `In progress (${job.status}, ${job.stage})` });
     const social = await all(db, `SELECT v.platform,v.status,v.last_error FROM content_posts p JOIN social_variants v ON v.post_id=p.id
       WHERE p.id LIKE ? AND v.platform<>'youtube' ORDER BY v.platform`, `${job.job_id}%`);
