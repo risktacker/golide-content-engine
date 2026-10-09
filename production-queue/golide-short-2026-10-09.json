@@ -1,0 +1,150 @@
+{
+  "id": "golide-short-2026-10-09",
+  "studio_managed": true,
+  "format": "short",
+  "title": "Google\u2019s New AI Agent Wants to Do the Work, Not Just Answer You",
+  "brief": "Google announced a Gemini agent for work that can plan tasks, use company tools, create documents, write code, and return a finished result instead of merely replying in chat. Translate that into everyday examples: preparing a report, organizing an inbox, or handling a small-business workflow. The useful angle is not \u201cGoogle launched another AI,\u201d but whether people will trust an assistant that can take actions on their behalf. End with: would you let an AI complete a task, or only suggest the steps?",
+  "demand_query": "AI tech news everyone is talking about this week",
+  "demand_validation_required": true,
+  "budget_class": "scheduled",
+  "purpose": "channel-automation",
+  "generate_at": "2026-10-09T07:00:00Z",
+  "max_cost_usd": 6,
+  "production_authorized": true,
+  "output_destination": "render-and-upload",
+  "owner_voice_required": true,
+  "concept": {
+    "family": "technology-software-business",
+    "promise": "A high-interest current niche topic explained with authoritative evidence and a useful GOLIDE angle",
+    "scores": {
+      "scroll_stop": 9,
+      "visual_payoff": 9,
+      "curiosity_gap": 9,
+      "retention_design": 9,
+      "broad_relevance": 8,
+      "evidence_strength": 8,
+      "novelty": 8,
+      "replay_or_loop": 8,
+      "revenue_fit": 6
+    }
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri-sun"
+  },
+  "music": {
+    "mood": "curious-tension"
+  },
+  "avatar_reference_images": [],
+  "release": {
+    "approved": true,
+    "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+    "scheduled_at": "2026-10-09T11:00:00Z"
+  },
+  "_studio_job_id": "golide-short-2026-10-09",
+  "topic_candidates": [
+    {
+      "title": "Google Just Made Free Gemini Less Powerful \u2014 Is the AI Honeymoon Over?",
+      "query": "Google Gemini free users Flash Lite October 9 2026",
+      "brief": "Google is changing who gets access to its stronger Gemini models. Starting October 9, 2026, users without a Google AI subscription are expected to be limited to Flash-Lite, while stronger Flash and Pro access moves behind paid plans. Explain what that could mean for students, parents, and small-business owners who use AI for homework, research, coding, or writing. Show a simple before-and-after test using the same prompt on different model tiers, then ask: should powerful AI stay free with limits, or is paid access reasonable?",
+      "evidence_summary": "Best overall candidate. Talking-about-it: 5/5, driven by a major change affecting ordinary users and strong debate signals in the supplied AI-comparison trends. Non-technical clarity: 5/5. Comment potential: 5/5 because viewers can argue about free access, subscriptions, and whether the cheaper model is \u201cgood enough.\u201d Visual potential: 4/5 through model-picker screenshots and side-by-side answers. Evidence strength: 4/5; the change is reported by major tech outlets and referenced in Google\u2019s support documentation, but exact rollout behavior may vary by account and region. ([tomsguide.com](https://www.tomsguide.com/ai/google-is-taking-away-free-access-to-these-gemini-models-try-these-7-free-alternatives-instead?utm_source=openai))",
+      "authoritative_source_url": "https://support.google.com/gemini/answer/17004136",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Google Gemini free users Flash Lite October 9 2026",
+        "score": 88.8,
+        "verdict": "pass",
+        "recent_videos": 69,
+        "median_views_per_day": 420897.81,
+        "top_views_per_day": 4448132.34,
+        "market_coverage": 4,
+        "title_query_overlap": 0.25,
+        "measured_at": "2026-10-09T07:03:25.700507+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "Google\u2019s New AI Agent Wants to Do the Work, Not Just Answer You",
+      "query": "Google Gemini agent universal agent work October 8 2026",
+      "brief": "Google announced a Gemini agent for work that can plan tasks, use company tools, create documents, write code, and return a finished result instead of merely replying in chat. Translate that into everyday examples: preparing a report, organizing an inbox, or handling a small-business workflow. The useful angle is not \u201cGoogle launched another AI,\u201d but whether people will trust an assistant that can take actions on their behalf. End with: would you let an AI complete a task, or only suggest the steps?",
+      "evidence_summary": "Strongest fresh launch story. Talking-about-it: 5/5 because it arrived October 8, 2026 and fits the supplied interest in \u201cWhich AI is smartest?\u201d Non-technical clarity: 4/5; explain \u201cagent\u201d simply as AI that can take steps and use tools. Comment potential: 5/5 around trust, jobs, mistakes, and workplace control. Visual potential: 5/5 through workflow diagrams and a simple task demonstration. Evidence strength: 5/5 from Google\u2019s announcement and independent coverage by TechCrunch. ([blog.google](https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/gemini-at-work/?utm_source=openai))",
+      "authoritative_source_url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/gemini-at-work/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Google Gemini agent universal agent work October 8 2026",
+        "score": 89.3,
+        "verdict": "pass",
+        "recent_videos": 69,
+        "median_views_per_day": 420897.81,
+        "top_views_per_day": 4448132.34,
+        "market_coverage": 4,
+        "title_query_overlap": 0.2857,
+        "measured_at": "2026-10-09T07:03:25.701009+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "ChatGPT Can Now Show You Wearing Clothes Before You Buy Them",
+      "query": "ChatGPT virtual try on clothing October 2026 OpenAI",
+      "brief": "OpenAI added virtual try-on shopping features that let users upload a selfie or clothing image and generate a preview of how an outfit might look. Make the story useful by explaining the limits: the image may not show the true fit, size, fabric, or color, so buyers still need measurements and return policies. The bigger question is whether people want an AI assistant to become a shopping adviser\u2014or whether that makes online shopping more persuasive and less trustworthy.",
+      "evidence_summary": "Best visual and consumer-focused candidate. Talking-about-it: 4/5, supported by a fresh October 1 launch and the strong phone, shopping, and AI-assistant interest in the supplied seeds. Non-technical clarity: 5/5. Comment potential: 4/5 around privacy, body-image concerns, shopping convenience, and misleading previews. Visual potential: 5/5 with before/after examples. Evidence strength: 5/5 because OpenAI documents the feature and TechCrunch independently reported the launch. ([help.openai.com](https://help.openai.com/en/articles/11128490-shopping-with-chatgpt-search?utm_source=openai))",
+      "authoritative_source_url": "https://help.openai.com/en/articles/11128490-shopping-with-chatgpt-search",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "ChatGPT virtual try on clothing October 2026 OpenAI",
+        "score": 89.3,
+        "verdict": "pass",
+        "recent_videos": 69,
+        "median_views_per_day": 420897.81,
+        "top_views_per_day": 4448132.34,
+        "market_coverage": 4,
+        "title_query_overlap": 0.2857,
+        "measured_at": "2026-10-09T07:03:25.701689+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "OpenAI\u2019s Safety Team Shake-Up Is Raising a Bigger Question: Who Gets to Challenge AI Companies?",
+      "query": "OpenAI safety researchers fired October 2026 safety culture",
+      "brief": "OpenAI parted ways with three safety researchers after the company said they mishandled sensitive information, while a former safety employee publicly criticized the company\u2019s fast-development culture. Keep the explanation balanced: distinguish what OpenAI confirmed from what former employees allege, and avoid calling anyone a whistleblower unless the evidence supports that label. The ordinary-person takeaway is why independent checks matter before AI systems are trusted with schoolwork, money, private data, or workplace decisions. Ask: should AI safety staff be allowed to raise concerns outside the company?",
+      "evidence_summary": "Best debate-driven candidate. Talking-about-it: 4/5, with coverage from October 1\u20137 and continued discussion about AI safety culture. Non-technical clarity: 4/5 if the story focuses on trust and oversight rather than internal company details. Comment potential: 5/5 because viewers will have strong opinions about confidentiality, accountability, and employee dissent. Visual potential: 3/5; rely on timelines, statements, and simple \u201ccompany claim versus former employee criticism\u201d cards. Evidence strength: 4/5; OpenAI confirmed the separations, while the broader cultural criticism comes from named former employees and major outlets. ([techcrunch.com](https://techcrunch.com/2026/10/01/openai-cuts-ties-with-three-safety-researchers-wsj-reports/?utm_source=openai))",
+      "authoritative_source_url": "https://techcrunch.com/2026/10/01/openai-cuts-ties-with-three-safety-researchers-wsj-reports/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "OpenAI safety researchers fired October 2026 safety culture",
+        "score": 89.3,
+        "verdict": "pass",
+        "recent_videos": 69,
+        "median_views_per_day": 420897.81,
+        "top_views_per_day": 4448132.34,
+        "market_coverage": 4,
+        "title_query_overlap": 0.2857,
+        "measured_at": "2026-10-09T07:03:25.702142+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    }
+  ],
+  "platform_demand": {
+    "query": "Google Gemini agent universal agent work October 8 2026",
+    "score": 89.3,
+    "verdict": "pass",
+    "recent_videos": 69,
+    "median_views_per_day": 420897.81,
+    "top_views_per_day": 4448132.34,
+    "market_coverage": 4,
+    "title_query_overlap": 0.2857,
+    "measured_at": "2026-10-09T07:03:25.701009+00:00",
+    "signal_type": "youtube-most-popular-seed-proxy"
+  },
+  "selected_topic_source": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/gemini-at-work/"
+}
