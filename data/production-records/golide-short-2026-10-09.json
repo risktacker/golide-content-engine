@@ -1,0 +1,440 @@
+{
+  "production_id": "golide-short-2026-10-09",
+  "youtube_video_id": "P3D5Uq2tCRw",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "P3D5Uq2tCRw",
+    "upload_status": "published",
+    "privacy_status": "public",
+    "scheduled_at": null,
+    "uploaded_at": "2026-10-09T12:23:49.986530+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "Google’s New AI Agent Wants to Do the Work, Not Just Answer You",
+    "status": "published",
+    "scheduled_at": "2026-10-09T11:00:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-shorts-mon-wed-fri-sun\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "AI at work is moving from answering questions\nto actually doing the job.\nThink of the difference between a friend\nwho tells you how to bake a cake,\nand a friend who walks into your kitchen and bakes it.\nUntil now, AI was the first friend,\nbut Google's Gemini agent is trying to be the second one,\nbecause it can plan a task, open your company's tools,\nwrite documents and run code, then hand back finished work.\nSo if you ask it for a report,\nit reads your emails, finds the files in your Drive,\ndoes the maths, and writes the draft.\nThat's what people mean by an AI agent,\na helper that takes action instead of just giving advice.\nBut here's the catch,\nbecause a friend in your kitchen can also burn the cake,\nand an agent can open the wrong file or send the wrong email.\nThat's why the real question isn't how clever it is,\nit's what you let it touch, and whether you can see what it did.\nSo start it on one small task, and check the result.\nSo follow the channel, because we explain these tools\nbefore you hand them your work.\nWould you let an AI bake the cake, or only read you the recipe?\n",
+  "research": {
+    "summary": "Google’s October 8, 2026 announcement frames Gemini less as a chatbot and more as a delegated coworker. Instead of asking, “How do I prepare this report?” a user could assign an outcome: “Review the latest project emails, pull the relevant files from Drive, analyze the numbers, and create a leadership-ready report.” Google says Gemini can plan the work, use connected tools, create documents, write and run code, and continue working in the cloud until it returns a finished result. ([blog.google](https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/gemini-at-work/))\n\nIn everyday terms, preparing a report might mean Gemini gathers information from Gmail, Drive and Chat, builds a spreadsheet or presentation, and leaves the draft in the relevant Workspace app for review. Organizing an inbox could mean identifying the messages that require action, summarizing long threads, creating follow-up tasks and drafting replies. Google’s Workspace examples include turning email threads into structured briefs, creating presentations from project updates, generating spreadsheets from Drive folders and handling scheduling or task lists. ([cloud.google.com](https://cloud.google.com/blog/products/ai-machine-learning/welcome-to-gemini-at-work-2026))\n\nFor a small business, the workflow could be: review new customer inquiries, identify which ones need a response, check a shared pricing document, draft personalized replies, update a tracking sheet and prepare a weekly sales summary. That example is an application of the announced tool connections and workflows—not evidence that Gemini will perform every step reliably without supervision. Google says the agent can connect to systems such as Workspace, Slack, Salesforce, Jira and databases, while administrators can restrict permissions and audit its actions. ([cloud.google.com](https://cloud.google.com/blog/products/ai-machine-learning/welcome-to-gemini-at-work-2026))\n\nThat is the real issue: delegation requires more than fluent answers. People need confidence that the assistant understood the goal, accessed only the right information, made changes under the right identity and can explain what it did. Google describes controls including least-privilege permissions, audit trails, policy management and sandboxing, but the announcement itself is a product description rather than independent proof of accuracy or reliability. ([cloud.google.com](https://cloud.google.com/blog/products/ai-machine-learning/welcome-to-gemini-at-work-2026))\n\nWould you let an AI complete a task, or only suggest the steps?",
+    "claims": [
+      {
+        "claim": "Google Cloud announced the Gemini agent for work on October 8, 2026, describing it as a universal agent that can plan work, use tools, connect to business systems and return finished work.",
+        "source_title": "Google Cloud launches the Gemini agent",
+        "source_url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/gemini-at-work/",
+        "published_or_updated": "October 8, 2026"
+      },
+      {
+        "claim": "Google says Gemini can answer questions, handle knowledge work, create media, and write and run code from a single agent and interface.",
+        "source_title": "Gemini at Work 2026: Introducing Gemini agent",
+        "source_url": "https://cloud.google.com/blog/products/ai-machine-learning/welcome-to-gemini-at-work-2026",
+        "published_or_updated": "October 8, 2026"
+      },
+      {
+        "claim": "Google describes Gemini as capable of working directly inside Gmail, Drive, Docs, Slides, Sheets, Chat and Calendar, with shared memory, skills and controls.",
+        "source_title": "Gemini at Work 2026: Introducing Gemini agent",
+        "source_url": "https://cloud.google.com/blog/products/ai-machine-learning/welcome-to-gemini-at-work-2026",
+        "published_or_updated": "October 8, 2026"
+      },
+      {
+        "claim": "Google’s Workspace examples include creating presentations from project information, building spreadsheets from Drive data, turning email threads into structured briefs, drafting emails from Docs and managing scheduling and tasks.",
+        "source_title": "Less switching, more flow: 5 new agentic capabilities across Google Workspace apps",
+        "source_url": "https://workspace.google.com/blog/product-announcements/less-switching-more-flow-5-new-agentic-capabilities-across-google-workspace-apps",
+        "published_or_updated": "September 9, 2026"
+      },
+      {
+        "claim": "Google says Gemini can connect to business tools and systems including Workspace, Microsoft Office, Teams, Slack, Git, Jira, Salesforce, ServiceNow, BigQuery, Databricks, PostgreSQL and Snowflake.",
+        "source_title": "Gemini at Work 2026: Introducing Gemini agent",
+        "source_url": "https://cloud.google.com/blog/products/ai-machine-learning/welcome-to-gemini-at-work-2026",
+        "published_or_updated": "October 8, 2026"
+      },
+      {
+        "claim": "Google says each agent can have its own identity, permissions and audit trail, with policy controls and sandboxing for enterprise governance.",
+        "source_title": "Gemini at Work 2026: Introducing Gemini agent",
+        "source_url": "https://cloud.google.com/blog/products/ai-machine-learning/welcome-to-gemini-at-work-2026",
+        "published_or_updated": "October 8, 2026"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Google's Gemini Agent: AI That Actually Does the Work",
+    "description": "AI is moving beyond answering questions to completing tasks. This short explains how Google’s Gemini agent can plan work, use company tools, read emails and files, write documents, run code, and return finished results. It also covers the risks of giving an AI access to sensitive files and email—and why you should start small and check its work.\n\nWould you let an AI bake the cake, or only read you the recipe?\n\n#AI #GoogleGemini #AIAgents",
+    "tags": [
+      "AI",
+      "artificial intelligence",
+      "Google Gemini",
+      "Gemini agent",
+      "AI agents",
+      "agentic AI",
+      "AI automation",
+      "AI productivity",
+      "AI safety",
+      "Google AI"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "format": "short",
+    "title_description_language": "en"
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "Google Cloud announced the Gemini agent for work on October 8, 2026, describing it as a universal agent that can plan work, use tools, connect to business systems and return finished work.",
+        "source_title": "Google Cloud launches the Gemini agent",
+        "source_url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/gemini-at-work/",
+        "published_or_updated": "October 8, 2026"
+      },
+      {
+        "claim": "Google says Gemini can answer questions, handle knowledge work, create media, and write and run code from a single agent and interface.",
+        "source_title": "Gemini at Work 2026: Introducing Gemini agent",
+        "source_url": "https://cloud.google.com/blog/products/ai-machine-learning/welcome-to-gemini-at-work-2026",
+        "published_or_updated": "October 8, 2026"
+      },
+      {
+        "claim": "Google describes Gemini as capable of working directly inside Gmail, Drive, Docs, Slides, Sheets, Chat and Calendar, with shared memory, skills and controls.",
+        "source_title": "Gemini at Work 2026: Introducing Gemini agent",
+        "source_url": "https://cloud.google.com/blog/products/ai-machine-learning/welcome-to-gemini-at-work-2026",
+        "published_or_updated": "October 8, 2026"
+      },
+      {
+        "claim": "Google’s Workspace examples include creating presentations from project information, building spreadsheets from Drive data, turning email threads into structured briefs, drafting emails from Docs and managing scheduling and tasks.",
+        "source_title": "Less switching, more flow: 5 new agentic capabilities across Google Workspace apps",
+        "source_url": "https://workspace.google.com/blog/product-announcements/less-switching-more-flow-5-new-agentic-capabilities-across-google-workspace-apps",
+        "published_or_updated": "September 9, 2026"
+      },
+      {
+        "claim": "Google says Gemini can connect to business tools and systems including Workspace, Microsoft Office, Teams, Slack, Git, Jira, Salesforce, ServiceNow, BigQuery, Databricks, PostgreSQL and Snowflake.",
+        "source_title": "Gemini at Work 2026: Introducing Gemini agent",
+        "source_url": "https://cloud.google.com/blog/products/ai-machine-learning/welcome-to-gemini-at-work-2026",
+        "published_or_updated": "October 8, 2026"
+      },
+      {
+        "claim": "Google says each agent can have its own identity, permissions and audit trail, with policy controls and sandboxing for enterprise governance.",
+        "source_title": "Gemini at Work 2026: Introducing Gemini agent",
+        "source_url": "https://cloud.google.com/blog/products/ai-machine-learning/welcome-to-gemini-at-work-2026",
+        "published_or_updated": "October 8, 2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "Google Gemini agent universal agent work October 8 2026",
+      "score": 89.3,
+      "verdict": "pass",
+      "recent_videos": 69,
+      "median_views_per_day": 420897.81,
+      "top_views_per_day": 4448132.34,
+      "market_coverage": 4,
+      "title_query_overlap": 0.2857,
+      "measured_at": "2026-10-09T07:03:25.701009+00:00",
+      "signal_type": "youtube-most-popular-seed-proxy"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.29,
+      "true_peak_dbtp": -1.98,
+      "loudness_range": 3.4
+    },
+    "editorial": {
+      "beats": 23,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-10-09T12:23:37.956273+00:00"
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri-sun"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-short-2026-10-09",
+    "created_at": "2026-10-09T12:23:38.737580+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-10-09T11:00:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "1a8248a8e46cac1f92f52e4fd51a6f5fbd060681d0a6ccf392836d2c05cdda31",
+        "bytes": 16142273
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "77f86491be2fbf977170765744ccb68ba0993fec363c8adaa68fdb5a1a619802",
+        "bytes": 1883876
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "8c795c83ea4a50284ae4ddb7603349cd310a0634377dfcf67af3c1f446f7651b",
+        "bytes": 973
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "3ac4358502dd4fa74862e44c28ae240be1dd5d5d4a27dc76a49f96d7bb683b47",
+        "bytes": 2604
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "e924624c93cedeb6fa67457570e6a247fac6b195d10e36c1bb98799132d788fa",
+        "bytes": 583
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "a685eba74d8a9534a6528d9b75f4b2f4081496430d490c9e3042227664139f54",
+        "bytes": 3438
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "678140779bba2e91fcb33a95de33aea71f2cbbed4011049fbe64e353d1870954",
+        "bytes": 394
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "3201e99c800efdb3b1dbed3c414e12cf6979866bb4c6e4b92d7092ae8c1dfbe5",
+        "bytes": 259
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 39634.0,
+      "cached_input_units": 0.0,
+      "output_units": 2338.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.010732,
+      "created_at": "2026-10-09T07:03:25.702477+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-09T07:03:25.704012+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 22120.0,
+      "cached_input_units": 0.0,
+      "output_units": 1458.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006174,
+      "created_at": "2026-10-09T07:03:51.944106+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-09T07:03:51.945675+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 3140.0,
+      "cached_input_units": 0.0,
+      "output_units": 5053.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006692,
+      "created_at": "2026-10-09T07:04:53.855146+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1457.0,
+      "cached_input_units": 0.0,
+      "output_units": 1859.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002522,
+      "created_at": "2026-10-09T12:02:46.393873+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-09T12:03:11.412684+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-09T12:03:26.402958+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-09T12:03:42.512245+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-09T12:03:56.919750+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-09T12:04:11.464320+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-09T12:04:35.090347+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-09T12:04:49.836313+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-09T12:05:04.850076+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 422.0,
+      "cached_input_units": 0.0,
+      "output_units": 319.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000467,
+      "created_at": "2026-10-09T12:10:42.055118+00:00"
+    },
+    {
+      "stage": "thumbnail",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-10-09T12:11:17.138980+00:00"
+    }
+  ],
+  "recorded_at": "2026-10-09T12:23:49.992005+00:00"
+}
