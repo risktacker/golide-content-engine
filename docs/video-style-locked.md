@@ -80,3 +80,9 @@ This is the standard for every Short and long video. Don't change any of it with
 - The same cover is uploaded as the cover on Instagram Reels, Facebook and LinkedIn videos. Downloads, shares and platforms that use the first frame show it too.
 - YouTube keeps an AI-generated thumbnail (gpt-image-2, 16:9, normalised to 1280x720), now briefed on the story's decisive moment written by the storyboard: playful, one hero subject mid-action, bold scale contrast, GOLIDE Black, one glowing accent, no text.
 
+
+## Script teaching style (locked 2026-10-09)
+- Structure unchanged: open straight on the topic with a blunt claim (never "Imagine" or "What if"), then proof, pattern, cost, reframe, action, follow call-out, closing line.
+- Narration, not points: every sentence joined to the last with a spoken connective; no colon lists, no noun piles.
+- The Feynman way: ONE everyday picture (kitchen, cake, shop, bus) brought in within the first three sentences, used again at the catch, and returned to in the final sentence. Real names and facts in simple words; example before the name; every technical term explained the moment it appears.
+- Reference script: production-queue/golide-short-2026-10-09.script-plan.json (the "bake the cake" short).
