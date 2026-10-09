@@ -86,3 +86,7 @@ This is the standard for every Short and long video. Don't change any of it with
 - Narration, not points: every sentence joined to the last with a spoken connective; no colon lists, no noun piles.
 - The Feynman way: ONE everyday picture (kitchen, cake, shop, bus) brought in within the first three sentences, used again at the catch, and returned to in the final sentence. Real names and facts in simple words; example before the name; every technical term explained the moment it appears.
 - Reference script: production-queue/golide-short-2026-10-09.script-plan.json (the "bake the cake" short).
+
+## Light transition and dot background (locked 2026-10-09, owner approved)
+- Picture to picture: the old drawing breaks into points of light that travel in a soft arc and land as the next drawing, which forms as they arrive. On the way the points change colour from the current scene's accent to the next scene's accent. The first picture of a video is still drawn by the pen.
+- Background: the charcoal vignette, haze and stars, plus a faint grey dot grid (one dot every 1/27 of the short side, about 20 levels above black, dimmer toward the edges), just strong enough to survive phone compression and barely noticed.

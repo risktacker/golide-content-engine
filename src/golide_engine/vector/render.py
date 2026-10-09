@@ -35,6 +35,7 @@ TRANSITION_BEFORE = 0.40  # seconds of hand-over before the next line starts
 TRANSITION_AFTER = 0.90   # ... and after it starts
 CHAPTER_CARD_SECONDS = 2.8  # how long a chapter card stays at the start of a chapter
 PARTICLES = 170
+DOT_GRID_LIFT = 20.0  # grey dots this much above the background (0-255)
 
 
 @dataclass
@@ -72,6 +73,14 @@ def _background(layout: Layout, theme: Theme) -> np.ndarray:
         cloud = cloud.filter(ImageFilter.GaussianBlur(w / scale / 2))
         c = (np.asarray(cloud, np.float32) / 255.0) ** 2.2
         image = image + c[..., None] * np.array(tint, np.float32)
+    # Owner direction 2026-10-09: a faint grey dot grid, almost unnoticed, so the
+    # black is never plain. Dimmer toward the edges with the vignette.
+    step = max(18, round(min(w, h) / 27))
+    gy, gx = np.mgrid[step // 2:h:step, step // 2:w:step]
+    soft = np.clip(1.15 - dist[gy, gx], 0.35, 1.0)
+    for dy, dx, weight in ((0, 0, 1.0), (0, 1, 1.0), (1, 0, 1.0), (1, 1, 1.0), (-1, 0, 0.35), (0, -1, 0.35), (2, 0, 0.35), (0, 2, 0.35)):
+        yy2, xx2 = np.clip(gy + dy, 0, h - 1), np.clip(gx + dx, 0, w - 1)
+        image[yy2, xx2] += (DOT_GRID_LIFT * weight * soft)[..., None] * np.array((1.0, 1.0, 1.06), np.float32)
     # Fine static grain hides 8-bit banding in the dark vignette.
     image = image + np.random.default_rng(7).uniform(-1.6, 1.6, image.shape).astype(np.float32)
     return np.clip(image, 0, 255)
@@ -684,15 +693,18 @@ class Transition:
         r = self.renderer
         u = self._u(t)
         if self._fades():
-            # The old picture drifts forward and fades while the next one fades
-            # in, already drawn, settling into place. No cut, no particles.
-            out = ease(min(1.0, u / 0.6))
-            r._group_draw(main, glow, self.old, self.old.end - 1e-3, self.index - 1, 1 - out,
-                          zoom=1.0 + 0.04 * ease(u))
-            arrive = ease(min(1.0, max(0.0, (u - 0.12) / 0.6)))
+            # Owner direction 2026-10-09: the old picture breaks into points of
+            # light that travel and land as the next picture, changing colour on
+            # the way to the next picture's accent; the new picture forms as they land.
+            out = 1 - ease(min(1.0, u / 0.35))
+            if out > 0.01:
+                r._group_draw(main, glow, self.old, self.old.end - 1e-3, self.index - 1, out,
+                              zoom=1.0 + 0.03 * ease(u))
+            arrive = ease(min(1.0, max(0.0, (u - 0.45) / 0.45)))
             if arrive > 0.01:
                 r._group_draw(main, glow, self.new, max(t, self.new.start), self.index, arrive,
-                              zoom=1.04 - 0.04 * ease(u))
+                              zoom=1.03 - 0.03 * arrive)
+            self._particles(main, glow, u, accents=(self._accent(self.old), self._accent(self.new)))
             return
         # Shared drawings glide over the first half of the window.
         g = ease(min(1.0, u / 0.55))
@@ -711,7 +723,14 @@ class Transition:
             r._group_draw(main, glow, self.new, max(t, self.new.start), self.index, 1.0, carry=carry or None)
         self._particles(main, glow, u)
 
-    def _particles(self, main, glow, u: float) -> None:
+    def _accent(self, group: Group):
+        from .illustrate import SCENES
+
+        drawing = SCENES.get(group.icons[0]) if group.icons else None
+        name = getattr(drawing, "accent", "gold") if drawing is not None else "gold"
+        return self.renderer.colors.get(f"accent_{name}", self.renderer.colors["gold"])
+
+    def _particles(self, main, glow, u: float, accents=None) -> None:
         if not len(self.src) and not len(self.dst):
             return
         src = self.src if len(self.src) else self.dst * 0.15
@@ -730,6 +749,10 @@ class Transition:
         unit = self.renderer.layout.size / 2
         gold = self.renderer.colors["gold"]
         white = self.renderer.colors["white_glow"]
+        if accents:
+            a, b = accents
+            gold = tuple(x + (y - x) * travel for x, y in zip(a, b))
+            white = tuple(0.55 * w + 0.45 * g for w, g in zip(white, gold))
         for ctx, radius, color, a in ((main, 2.0 / unit, white, 0.9 * alpha), (glow, 5.0 / unit, gold, alpha)):
             ctx.save()
             ctx.set_source_rgba(*color, a)
