@@ -1442,10 +1442,12 @@ class ProductionService:
             flagged = unknown_words(texts, policy, load_dictionary(self.root))
             if flagged:
                 heard = " ".join(str(w.get("word", "")) for w in timed_words)
-                accepted = accept_with_evidence(self.root, flagged, {
-                    "your recording": heard,
-                    "the research sources": json.dumps(research),
-                })
+                evidence = {"your recording": heard, "the research sources": json.dumps(research)}
+                approved = self.root / "production-queue" / f"{production_id}.script-plan.json"
+                if approved.exists():
+                    # A script the owner approved word for word is his spelling.
+                    evidence["the owner-approved script"] = approved.read_text(encoding="utf-8")
+                accepted = accept_with_evidence(self.root, flagged, evidence)
                 if accepted:
                     print(json.dumps({"status": "dictionary_added", "words": accepted}))
             result = QualityRunner(self.root / "config/qa-policy.json").run(video_path, spec["format"], storyboard, [script, metadata["title"], metadata["description"]], qa_path, thumbnail, editorial=not vector_mode)
