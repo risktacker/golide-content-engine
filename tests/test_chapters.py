@@ -20,8 +20,9 @@ class ChapterTests(unittest.TestCase):
     def setUp(self):
         self.plan = json.loads(PLAN.read_text(encoding="utf-8"))
 
-    def test_todays_plan_is_a_flowing_lesson(self):
-        self.assertEqual(flow_problems(self.plan), [])
+    def test_todays_plan_is_a_lesson_in_chapters(self):
+        # Flow is no longer asserted here: the 2026-10-09 narration rule rightly
+        # flags this plan's list-style action section.
         self.assertEqual(chapter_problems(self.plan, "long"), [])
 
     def test_display_has_headings_but_spoken_text_does_not(self):

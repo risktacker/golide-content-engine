@@ -199,16 +199,34 @@ SCRIPT_LENGTH_TARGETS = {
 }
 
 SCRIPT_STRUCTURE_RULES = """\
-SCRIPT STRUCTURE (in this order)
-The sections are the shape of the argument; the viewer should never hear the joins.
-1. CLAIM: one blunt sentence that flips a common belief. Example shape:
-   "AI doesn't decide who gets hired. Systems do."
-2. PROOF: one concrete, true example anyone already understands.
-3. PATTERN: show the rule behind the proof. Name 2 to 4 cases of the same rule.
-4. COST: what happens to people who ignore the rule. Make it specific and familiar.
-5. REFRAME: the one sentence the viewer should remember.
-6. CALL TO ACTION: one small action, then a line that loops back to the claim,
-   then the follow call-out, then one short closing sentence.
+SCRIPT STRUCTURE: A STORY TOLD BY A TEACHER (owner direction 2026-10-09)
+This is NARRATION. One person explains one thing to a friend who has never heard of
+it, from start to finish. It is never a list of points, a briefing or a summary.
+Every sentence answers the question the sentence before it raises in the listener's
+head ("what does that mean?", "how?", "so what?", "what do I do?"), and the
+listener always knows where the story is going.
+Tell it in these stages, in order, joined by spoken bridges:
+1. HOOK (2 to 3 lines): put the viewer inside a situation they recognise, in the
+   second person ("Imagine...", "You know when...", "What if..."), then say what
+   just changed.
+2. WHAT'S HAPPENING: explain the news in plain words, as if the listener has never
+   heard of it. Say how things worked until now, then what is different
+   ("Until now..., but this...").
+3. WALK-THROUGH: ONE concrete example told step by step as a little story
+   ("Say you ask it for... First it..., then..., and by the time..."). One example
+   told well, never a list of several.
+4. THE CATCH: the turn, opened with a bridge ("But here's the catch...",
+   "The problem is..."), told as a consequence for the viewer, with a familiar
+   picture of what could go wrong.
+5. WHAT TO DO: answer "so what do I do?" with one small, practical step, said the way
+   you'd advise a friend.
+6. CLOSE: the follow call-out, then one short closing sentence.
+Never compress ideas into noun piles ("identity, limits and an audit trail"):
+say what each thing means for the viewer in a normal sentence. Explain every
+technical word the first time it appears. No colons, no "X: a, b, c" lists.
+"section" tags each line: hook "claim", what's happening "proof", walk-through
+"pattern", the catch "cost", the one line to remember "reframe", what to do and
+the close "cta".
 """
 
 LONG_STRUCTURE_RULES = """\
@@ -341,24 +359,57 @@ CONNECTIVES = (
     "before", "once", "unless", "since", "as",
 )
 
+# Words that, near the start of a sentence, show it grows out of the one before
+# (2026-10-09: sentence-level check, because comma-split lines hid a list of claims).
+BRIDGES = (
+    "and", "but", "so", "because", "which", "then", "now", "if", "when", "until",
+    "instead", "that's", "here's", "first", "next", "after", "say", "imagine",
+    "picture", "think", "for example", "in other words", "that means", "which means",
+    "the problem", "the catch", "worse", "still", "once", "by the time", "even",
+    "only", "what if", "you know", "or", "yet", "this means", "that way", "otherwise",
+    "until now", "from there", "it means", "for each", "within", "before", "while", "meanwhile", "suddenly",
+)
+
+def _sentences(lines: list[str]) -> list[str]:
+    sentences, current = [], []
+    for text in lines:
+        current.append(text)
+        if text.endswith((".", "!", "?")):
+            sentences.append(" ".join(current)); current = []
+    if current:
+        sentences.append(" ".join(current))
+    return sentences
+
+
+def _bridged(sentence: str) -> bool:
+    head = " ".join(sentence.lower().replace("\u2019", "'").replace(",", " ").split()[:4])
+    return any(head == b or head.startswith(b + " ") or (" " + b + " ") in (" " + head + " ") for b in BRIDGES)
+
 
 def flow_problems(plan: dict) -> list[str]:
-    """Catch the staccato failure: every line a separate full-stop statement."""
+    """Catch a script that reads as a list of points instead of narration."""
     lines = [str(line.get("text", "")).strip() for line in plan.get("lines", []) if str(line.get("text", "")).strip()]
     if len(lines) < 8:
         return []
     problems: list[str] = []
     ended = sum(1 for text in lines if text.endswith((".", "!", "?")))
-    linked = sum(1 for text in lines if text.split()[0].lower().strip(",.") in CONNECTIVES)
-    continued = len(lines) - ended
     if ended / len(lines) > 0.8:
         problems.append(
             f"{ended} of {len(lines)} lines are complete stand-alone sentences; let sentences run "
             "across two or three lines so the speech flows")
-    if (linked + continued) / len(lines) < 0.35:
+    sentences = _sentences(lines)
+    body = sentences[1:]
+    loose = [s for s in body if not _bridged(s)]
+    if body and len(loose) / len(body) > 0.45:
         problems.append(
-            "too few lines connect to the previous one; link ideas with and, but, so, because, "
-            "which means, that's why, for example")
+            "it reads as a list of points, not narration: these sentences do not grow out of the one "
+            "before (open them with a bridge such as so, but, because, then, that means, here's the "
+            "catch, say you...): " + " | ".join(loose[:5]))
+    if any(":" in text for text in lines):
+        problems.append("no colons or 'X: a, b, c' lists; say it as a normal spoken sentence")
+    opening = " ".join(sentences[:2]).lower()
+    if not any(w in opening.replace("\u2019", "'").split() for w in ("you", "your", "you're", "imagine", "you've")):
+        problems.append("the hook must put the viewer in the story (talk to 'you' in the first two sentences)")
     openings = [" ".join(text.lower().split()[:2]) for text in lines]
     repeats = sum(1 for a, b in zip(openings, openings[1:]) if a == b)
     if repeats >= 2:
