@@ -54,3 +54,16 @@ class NarrationFlowTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TeachingStyleTests(unittest.TestCase):
+    def test_approved_cake_script_passes_and_rules_are_locked(self):
+        approved = json.loads(Path("production-queue/golide-short-2026-10-09.script-plan.json").read_text())
+        self.assertEqual(flow_problems(approved), [])
+        for fmt in ("short", "long"):
+            self.assertIn("ONE everyday picture", script_instructions(fmt))
+
+    def test_ending_must_return_to_the_opening_picture(self):
+        approved = json.loads(Path("production-queue/golide-short-2026-10-09.script-plan.json").read_text())
+        approved["lines"][-1]["text"] = "Would you trust a robot with your job, yes or no?"
+        self.assertTrue(any("final sentence" in p for p in flow_problems(approved)))

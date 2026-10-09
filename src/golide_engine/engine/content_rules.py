@@ -288,6 +288,20 @@ FOLLOW CALL-OUT (owner direction 2026-10-07: viewers should follow and come back
   * short and long alike: exactly ONE follow sentence, one or two lines.
 """
 
+TEACHING_STYLE_RULES = """\
+TEACHING STYLE (owner direction 2026-10-09, locked): explain it so a child follows
+it and an expert finds nothing wrong or watered down (the Feynman way).
+- ONE everyday picture carries the whole script: a comparison everybody already
+  knows from home life (a kitchen, a cake, a shop, a bus, a locked door). Bring it
+  in within the first three sentences, use it again at the catch, and let the final
+  sentence return to it. One picture only, never a new one every line.
+- Keep the real substance: real names, real facts, the real mechanism. Simple words,
+  never simplified facts.
+- Example before the name: say what happens first, then what it's called
+  ("That's what people mean by an AI agent, a helper that takes action...").
+- Explain every technical word the moment it appears, in the same sentence.
+"""
+
 SCRIPT_LINE_RULES = """\
 FLOW (the most important rule: this is one person talking, not a list of facts)
 - Write connected speech. Each sentence must grow out of the one before it, the way a
@@ -405,6 +419,14 @@ def flow_problems(plan: dict) -> list[str]:
     first = lines[0].lower().replace(",", " ").split()
     if first and (first[0] in ("imagine", "picture") or first[:2] == ["what", "if"]):
         problems.append("open straight on the topic with a blunt claim, never with Imagine or What if")
+    # The everyday picture opened early must come back in the final sentence.
+    stop = {"that", "this", "with", "your", "from", "what", "have", "they", "their", "would",
+            "only", "just", "about", "there", "when", "will", "into", "than", "then", "because",
+            "these", "those", "which", "were", "been", "does", "could", "should", "follow", "channel"}
+    words = lambda t: {w.strip(".,?!'\u2019").lower() for w in t.split()} - stop
+    early = set().union(*(words(x) for x in sentences[:3])) if sentences else set()
+    if len(sentences) >= 6 and not {w for w in words(sentences[-1]) & early if len(w) > 3}:
+        problems.append("the final sentence must return to the everyday picture or idea from the opening")
     openings = [" ".join(text.lower().split()[:2]) for text in lines]
     repeats = sum(1 for a, b in zip(openings, openings[1:]) if a == b)
     if repeats >= 2:
@@ -477,7 +499,7 @@ def script_instructions(format_name: str) -> str:
         f"LENGTH: {target['words_min']} to {target['words_max']} spoken words "
         f"(about {target['seconds']} seconds). Do not go over.\n\n"
         + (LONG_STRUCTURE_RULES if format_name == "long" else SCRIPT_STRUCTURE_RULES + "\n" + SHORT_CHAPTER_RULE)
-        + "\n" + FOLLOW_RULES + "\n" + SCRIPT_LINE_RULES + "\n" + SCRIPT_VOICE_RULES
+        + "\n" + TEACHING_STYLE_RULES + "\n" + FOLLOW_RULES + "\n" + SCRIPT_LINE_RULES + "\n" + SCRIPT_VOICE_RULES
         + "\n" + SCRIPT_OUTPUT_RULES
     )
 

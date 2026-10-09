@@ -1,0 +1,295 @@
+{
+  "title": "Google’s New AI Agent Wants to Do the Work, Not Just Answer You",
+  "chapters": [],
+  "lines": [
+    {
+      "section": "claim",
+      "chapter": 0,
+      "text": "AI at work is moving from answering questions",
+      "emphasis": "answering questions",
+      "visual": "icon_pair",
+      "subjects": [
+        "chat bubble",
+        "laptop"
+      ],
+      "label": "AI AT WORK",
+      "follow": false
+    },
+    {
+      "section": "claim",
+      "chapter": 0,
+      "text": "to actually doing the job.",
+      "emphasis": "doing the job",
+      "visual": "icon_hero",
+      "subjects": [
+        "check mark"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "proof",
+      "chapter": 0,
+      "text": "Think of the difference between a friend",
+      "emphasis": "a friend",
+      "visual": "icon_pair",
+      "subjects": [
+        "person",
+        "cake"
+      ],
+      "label": "ADVICE",
+      "follow": false
+    },
+    {
+      "section": "proof",
+      "chapter": 0,
+      "text": "who tells you how to bake a cake,",
+      "emphasis": "bake a cake",
+      "visual": "icon_pair",
+      "subjects": [
+        "person",
+        "cake"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "proof",
+      "chapter": 0,
+      "text": "and a friend who walks into your kitchen and bakes it.",
+      "emphasis": "bakes it",
+      "visual": "icon_pair",
+      "subjects": [
+        "oven",
+        "cake"
+      ],
+      "label": "ACTION",
+      "follow": false
+    },
+    {
+      "section": "proof",
+      "chapter": 0,
+      "text": "Until now, AI was the first friend,",
+      "emphasis": "first friend",
+      "visual": "icon_hero",
+      "subjects": [
+        "chat bubble"
+      ],
+      "label": "UNTIL NOW",
+      "follow": false
+    },
+    {
+      "section": "proof",
+      "chapter": 0,
+      "text": "but Google's Gemini agent is trying to be the second one,",
+      "emphasis": "Gemini agent",
+      "visual": "icon_hero",
+      "subjects": [
+        "robot"
+      ],
+      "label": "GOOGLE",
+      "follow": false
+    },
+    {
+      "section": "proof",
+      "chapter": 0,
+      "text": "because it can plan a task, open your company's tools,",
+      "emphasis": "plan a task",
+      "visual": "icon_orbit",
+      "subjects": [
+        "robot",
+        "gear",
+        "folder"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "proof",
+      "chapter": 0,
+      "text": "write documents and run code, then hand back finished work.",
+      "emphasis": "finished work",
+      "visual": "icon_flow",
+      "subjects": [
+        "document",
+        "laptop",
+        "check mark"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 0,
+      "text": "So if you ask it for a report,",
+      "emphasis": "a report",
+      "visual": "icon_hero",
+      "subjects": [
+        "document"
+      ],
+      "label": "EXAMPLE",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 0,
+      "text": "it reads your emails, finds the files in your Drive,",
+      "emphasis": "Drive",
+      "visual": "icon_flow",
+      "subjects": [
+        "envelope",
+        "folder"
+      ],
+      "label": "STEP 1",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 0,
+      "text": "does the maths, and writes the draft.",
+      "emphasis": "writes the draft",
+      "visual": "bar_chart",
+      "subjects": [
+        "chart",
+        "document"
+      ],
+      "label": "STEP 2",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 0,
+      "text": "That's what people mean by an AI agent,",
+      "emphasis": "AI agent",
+      "visual": "icon_hero",
+      "subjects": [
+        "robot"
+      ],
+      "label": "AI AGENT",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 0,
+      "text": "a helper that takes action instead of just giving advice.",
+      "emphasis": "takes action",
+      "visual": "split_compare",
+      "subjects": [
+        "chat bubble",
+        "robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "cost",
+      "chapter": 0,
+      "text": "But here's the catch,",
+      "emphasis": "the catch",
+      "visual": "icon_hero",
+      "subjects": [
+        "warning sign"
+      ],
+      "label": "THE CATCH",
+      "follow": false
+    },
+    {
+      "section": "cost",
+      "chapter": 0,
+      "text": "because a friend in your kitchen can also burn the cake,",
+      "emphasis": "burn the cake",
+      "visual": "cross_out",
+      "subjects": [
+        "cake",
+        "fire"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "cost",
+      "chapter": 0,
+      "text": "and an agent can open the wrong file or send the wrong email.",
+      "emphasis": "wrong email",
+      "visual": "cross_out",
+      "subjects": [
+        "folder",
+        "envelope"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "reframe",
+      "chapter": 0,
+      "text": "That's why the real question isn't how clever it is,",
+      "emphasis": "how clever",
+      "visual": "split_compare",
+      "subjects": [
+        "brain",
+        "lock"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "reframe",
+      "chapter": 0,
+      "text": "it's what you let it touch, and whether you can see what it did.",
+      "emphasis": "see what it did",
+      "visual": "gauge",
+      "subjects": [
+        "lock",
+        "eye"
+      ],
+      "label": "TRUST",
+      "follow": false
+    },
+    {
+      "section": "cta",
+      "chapter": 0,
+      "text": "So start it on one small task, and check the result.",
+      "emphasis": "one small task",
+      "visual": "checklist",
+      "subjects": [
+        "check mark"
+      ],
+      "label": "START SMALL",
+      "follow": false
+    },
+    {
+      "section": "cta",
+      "chapter": 0,
+      "text": "So follow the channel, because we explain these tools",
+      "emphasis": "follow the channel",
+      "visual": "icon_hero",
+      "subjects": [
+        "phone"
+      ],
+      "label": "",
+      "follow": true
+    },
+    {
+      "section": "cta",
+      "chapter": 0,
+      "text": "before you hand them your work.",
+      "emphasis": "hand them your work",
+      "visual": "icon_hero",
+      "subjects": [
+        "phone"
+      ],
+      "label": "",
+      "follow": true
+    },
+    {
+      "section": "cta",
+      "chapter": 0,
+      "text": "Would you let an AI bake the cake, or only read you the recipe?",
+      "emphasis": "bake the cake",
+      "visual": "logo_end",
+      "subjects": [],
+      "label": "",
+      "follow": false
+    }
+  ]
+}
