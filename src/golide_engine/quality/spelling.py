@@ -62,7 +62,37 @@ def unknown_words(texts: list[str], policy: dict, known: set[str] | None = None)
         raise RuntimeError("pyspellchecker is required for production QA") from exc
     ignore = {value.lower() for value in policy["spelling"].get("ignore", [])} | set(known or ())
     words = {word for text in texts for word in _spellcheck_words(text)}
-    return sorted(SpellChecker().unknown(words) - ignore)
+    checker = SpellChecker()
+    unknown = checker.unknown(words) - ignore
+    # British spellings are correct (2026-10-09: "maths" stopped a finished short).
+    return sorted(word for word in unknown if not checker.known(_american_forms(word)))
+
+
+_BRITISH_WORDS = {"maths": "math", "programme": "program", "programmes": "programs", "cheque": "check",
+                  "tyre": "tire", "tyres": "tires", "kerb": "curb", "aluminium": "aluminum", "grey": "gray",
+                  "storey": "story", "plough": "plow", "mum": "mom", "learnt": "learned", "spelt": "spelled"}
+
+
+def _american_forms(word: str) -> list[str]:
+    """American spellings a British word may correspond to."""
+    import re
+    w = word.lower()
+    forms = [_BRITISH_WORDS[w]] if w in _BRITISH_WORDS else []
+    rules = (
+        (r"our(s|ed|ing|ful|ite|ites|able)?$", r"or\1"),          # colour, favourite, honourable
+        (r"is(e|es|ed|ing|ation|ations|er|ers)$", r"iz\1"),       # organise, organisation
+        (r"ys(e|es|ed|ing)$", r"yz\1"),                            # analyse
+        (r"tre(s)?$", r"ter\1"),                                   # centre, metre
+        (r"ogue(s)?$", r"og\1"),                                   # catalogue, dialogue
+        (r"ence(s)?$", r"ense\1"),                                 # defence, licence
+        (r"ll(ed|ing|er|ers)$", r"l\1"),                           # travelled, labelling
+        (r"ae", "e"), (r"oe", "e"),                                  # paediatric, manoeuvre
+    )
+    for pattern, repl in rules:
+        alt = re.sub(pattern, repl, w)
+        if alt != w:
+            forms.append(alt)
+    return forms
 
 
 def accept_with_evidence(root: str | Path, flagged: list[str], evidence: dict[str, str]) -> dict[str, str]:
