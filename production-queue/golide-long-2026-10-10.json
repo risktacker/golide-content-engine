@@ -1,0 +1,150 @@
+{
+  "id": "golide-long-2026-10-10",
+  "studio_managed": true,
+  "format": "long",
+  "title": "OpenAI Fired Safety Researchers. What Happened Inside the AI Race?",
+  "brief": "The debate is no longer only about what AI can do, but whether companies are willing to slow down when researchers raise concerns. AP reported on October 9, 2026 that OpenAI fired three safety researchers after they raised concerns about how the company handled AI risks. Keep the explanation factual and avoid guessing about motives: show what was reported, what OpenAI said, and why safety staffing matters to people who use AI for school, work or money. End with: \u201cShould AI companies be allowed to move this fast if their own safety experts object?\u201d",
+  "demand_query": "AI tech news everyone is talking about this week",
+  "demand_validation_required": true,
+  "budget_class": "scheduled",
+  "purpose": "channel-automation",
+  "generate_at": "2026-10-10T04:00:00Z",
+  "max_cost_usd": 6,
+  "production_authorized": true,
+  "output_destination": "render-and-upload",
+  "owner_voice_required": true,
+  "concept": {
+    "family": "technology-software-business",
+    "promise": "A high-interest current niche topic explained with authoritative evidence and a useful GOLIDE angle",
+    "scores": {
+      "click_promise": 9,
+      "thumbnail_title_fit": 9,
+      "narrative_engine": 9,
+      "visual_depth": 9,
+      "evidence_strength": 8,
+      "retention_design": 9,
+      "broad_relevance": 8,
+      "novelty": 8,
+      "revenue_fit": 7
+    }
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-long-tuesday-saturday"
+  },
+  "music": {
+    "mood": "curious-tension"
+  },
+  "avatar_reference_images": [],
+  "release": {
+    "approved": true,
+    "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+    "scheduled_at": "2026-10-10T17:30:00Z"
+  },
+  "_studio_job_id": "golide-long-2026-10-10",
+  "topic_candidates": [
+    {
+      "title": "Google Just Made Free Gemini Feel Smaller",
+      "query": "Google Gemini free users Flash-Lite October 9 2026 model access changes",
+      "brief": "Google has changed Gemini access for personal accounts: from October 9, 2026, people without a Google AI subscription are limited to the lighter Flash-Lite model. The everyday question is simple: is a free AI assistant still useful if its strongest answers are reserved for paying users? Explain what users may notice in schoolwork, research, writing and coding, then show how to check which model is answering. End with: \u201cWould you pay for better AI, or switch to another free option?\u201d",
+      "evidence_summary": "High conversation potential because the change affects ordinary users directly and has already triggered active discussion around free access. Very easy for non-technical viewers to understand, with strong screen-recording potential: compare the model picker before and after October 9, explain \u201clighter model\u201d as a faster but generally less capable option, and show the subscription boundary. Evidence strength: strong, based on Google\u2019s support documentation and multiple reports published October 4\u20139, 2026. Platform fit: \u201cWhich AI is smartest?\u201d is the strongest supplied AI trend seed at 3.78M views per day, making an AI-comparison framing especially promising. ([9to5google.com](https://9to5google.com/2026/10/09/gemini-auto-free-users/?utm_source=openai))",
+      "authoritative_source_url": "https://support.google.com/gemini/answer/17004136",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Google Gemini free users Flash-Lite October 9 2026 model access changes",
+        "score": 87.7,
+        "verdict": "pass",
+        "recent_videos": 70,
+        "median_views_per_day": 361734.67,
+        "top_views_per_day": 3976656.27,
+        "market_coverage": 4,
+        "title_query_overlap": 0.1818,
+        "measured_at": "2026-10-10T04:02:42.314981+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "OpenAI Fired Safety Researchers. What Happened Inside the AI Race?",
+      "query": "OpenAI fires three safety researchers October 9 2026 AI risks AP News",
+      "brief": "The debate is no longer only about what AI can do, but whether companies are willing to slow down when researchers raise concerns. AP reported on October 9, 2026 that OpenAI fired three safety researchers after they raised concerns about how the company handled AI risks. Keep the explanation factual and avoid guessing about motives: show what was reported, what OpenAI said, and why safety staffing matters to people who use AI for school, work or money. End with: \u201cShould AI companies be allowed to move this fast if their own safety experts object?\u201d",
+      "evidence_summary": "Strong comment potential because it combines a famous company, human workplace consequences and a clear public-interest question. Easy to follow if framed as \u201cwho checks the companies building powerful AI?\u201d Visuals could include a simple timeline, the researchers\u2019 public letter, and a split-screen showing innovation speed versus safety checks. Evidence strength: strong for the reported firings and researchers\u2019 concerns, but avoid presenting disputed interpretations as fact. Platform fit: pairs well with the supplied \u201cWhich AI is smartest?\u201d signal while adding a trust-and-accountability angle rather than another product comparison. ([apnews.com](https://apnews.com/article/789d4f5293fba45a22fcb62ebfbc2a41?utm_source=openai))",
+      "authoritative_source_url": "https://apnews.com/article/789d4f5293fba45a22fcb62ebfbc2a41",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "OpenAI fires three safety researchers October 9 2026 AI risks AP News",
+        "score": 88.3,
+        "verdict": "pass",
+        "recent_videos": 70,
+        "median_views_per_day": 361734.67,
+        "top_views_per_day": 3976656.27,
+        "market_coverage": 4,
+        "title_query_overlap": 0.2222,
+        "measured_at": "2026-10-10T04:02:42.315505+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "The AI Model Race May Be Getting Cheaper\u2014and Harder to Control",
+      "query": "Nvidia-backed Reflection open-weight AI model October 4 2026 Axios",
+      "brief": "Axios reported on October 4, 2026 that Nvidia-backed startup Reflection is preparing a powerful open-weight AI model\u2014meaning a model whose underlying weights can be downloaded and used more freely than a typical closed chatbot. The useful question for viewers is what this could mean: cheaper AI for small businesses and creators, but potentially fewer controls over how the model is used. Explain the trade-off without deep technical language. End with: \u201cWould you rather have a cheaper AI you can run yourself, or a more restricted AI from a big company?\u201d",
+      "evidence_summary": "Good originality and strong visual explanation potential: compare a locked vending machine with a downloadable recipe that anyone can modify. It is less immediately accessible than the Google story, but it connects to money, competition, American versus Chinese AI leadership and access for small companies. Evidence strength: moderate-to-strong because the report is from Axios, but the model was described as preparing for release rather than already publicly available, so the script must clearly say \u201creported\u201d and avoid claiming performance that has not been independently tested. Platform fit: aligns with the supplied \u201cWhich AI is smartest?\u201d and \u201cWTF is a Googlebook?\u201d curiosity signals. ([axios.com](https://www.axios.com/2026/10/04/reflection-open-weight-ai?trk=public_post_comment-text&utm_source=openai))",
+      "authoritative_source_url": "https://www.axios.com/2026/10/04/reflection-open-weight-ai",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Nvidia-backed Reflection open-weight AI model October 4 2026 Axios",
+        "score": 88.3,
+        "verdict": "pass",
+        "recent_videos": 70,
+        "median_views_per_day": 361734.67,
+        "top_views_per_day": 3976656.27,
+        "market_coverage": 4,
+        "title_query_overlap": 0.2222,
+        "measured_at": "2026-10-10T04:02:42.316025+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "Meta Wants AI to Run a Small Business While the Owner Does the Real Work",
+      "query": "Meta Muse for Small Business October 8 2026 official announcement",
+      "brief": "Meta has expanded Muse for Small Business, an AI agent that can connect to tools such as QuickBooks, Shopify, Slack, Canva and Zoom, then help with tasks like finding customers, organizing work and preparing business activity for approval. The ordinary-person angle is not \u201cMeta launched another AI product\u201d; it is whether a one-person business can now operate with an AI assistant\u2014or whether handing an AI access to business tools creates new risks. End with: \u201cWould you let an AI manage part of your business if it still needed your approval before sending or spending?\u201d",
+      "evidence_summary": "Very strong usefulness and comment potential for freelancers, parents running side businesses and small-business owners. The story is easy to demonstrate visually through a fictional bakery, repair shop or online seller, showing how one goal could connect several everyday tools. Evidence strength: strong because Meta itself announced the expansion and specified that publishing, sending and spending still require approval. It is less broadly viral than the Google access change, but the supplied trend seeds show strong interest in AI comparisons and practical consumer tech, making a concrete \u201cAI employee\u201d framing more accessible than a technical product demo. ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-small-business/?trk=article-ssr-frontend-pulse_little-text-block&utm_source=openai))",
+      "authoritative_source_url": "https://about.fb.com/news/2026/09/introducing-muse-small-business/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Meta Muse for Small Business October 8 2026 official announcement",
+        "score": 88.3,
+        "verdict": "pass",
+        "recent_videos": 70,
+        "median_views_per_day": 361734.67,
+        "top_views_per_day": 3976656.27,
+        "market_coverage": 4,
+        "title_query_overlap": 0.2222,
+        "measured_at": "2026-10-10T04:02:42.316504+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    }
+  ],
+  "platform_demand": {
+    "query": "OpenAI fires three safety researchers October 9 2026 AI risks AP News",
+    "score": 88.3,
+    "verdict": "pass",
+    "recent_videos": 70,
+    "median_views_per_day": 361734.67,
+    "top_views_per_day": 3976656.27,
+    "market_coverage": 4,
+    "title_query_overlap": 0.2222,
+    "measured_at": "2026-10-10T04:02:42.315505+00:00",
+    "signal_type": "youtube-most-popular-seed-proxy"
+  },
+  "selected_topic_source": "https://apnews.com/article/789d4f5293fba45a22fcb62ebfbc2a41"
+}
