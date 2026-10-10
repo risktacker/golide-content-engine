@@ -233,7 +233,7 @@ export async function emailScript(env, job) {
   if (!clean(job.script)) throw new Error("this job has no script yet");
   const long = job.format === "long";
   const label = long ? "Long video" : "Short";
-  const window = long ? "3:30 to 5:00" : "0:30 to 1:30";
+  const window = long ? "3:30 to 10:00" : "0:30 to 1:30";
   const link = `https://studio.golidee.com/#job-${job.job_id}`;
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
