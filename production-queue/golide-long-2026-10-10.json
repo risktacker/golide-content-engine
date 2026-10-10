@@ -146,5 +146,7 @@
     "measured_at": "2026-10-10T04:02:42.315505+00:00",
     "signal_type": "youtube-most-popular-seed-proxy"
   },
-  "selected_topic_source": "https://apnews.com/article/789d4f5293fba45a22fcb62ebfbc2a41"
+  "selected_topic_source": "https://apnews.com/article/789d4f5293fba45a22fcb62ebfbc2a41",
+  "owner_voice_media_ref": "r2://temp/2026/10/10/a5d0e49f89cb45498908c03ac774b9da-Policy-breach-v2.wav",
+  "_failed_runs": 1
 }
