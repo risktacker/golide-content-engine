@@ -146,5 +146,6 @@
     "measured_at": "2026-10-11T07:02:22.639657+00:00",
     "signal_type": "youtube-most-popular-seed-proxy"
   },
-  "selected_topic_source": "https://about.fb.com/news/2026/04/helping-parents-understand-conversations-their-teens-are-having-with-ai/"
+  "selected_topic_source": "https://about.fb.com/news/2026/04/helping-parents-understand-conversations-their-teens-are-having-with-ai/",
+  "owner_voice_media_ref": "r2://temp/2026/10/11/ccbf5817818c450bbcc94b58ee0f0737-Parental-ai.wav"
 }

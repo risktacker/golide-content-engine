@@ -1,0 +1,454 @@
+{
+  "production_id": "golide-short-2026-10-11",
+  "youtube_video_id": "D7wjm6ZVpcw",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "D7wjm6ZVpcw",
+    "upload_status": "published",
+    "privacy_status": "public",
+    "scheduled_at": null,
+    "uploaded_at": "2026-10-11T12:09:52.526935+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "Meta Will Let Parents See What Teens Ask Its AI",
+    "status": "published",
+    "scheduled_at": "2026-10-11T11:00:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-shorts-mon-wed-fri-sun\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "Parental supervision in the AI app can show a parent the topic,\nbut not the chat.\nThink of a kitchen with a locked door,\nyou can see the menu, but not what's cooking.\nAnd that feature is now available globally,\nso parents can see broad areas from the previous seven days,\nwhile actual questions and replies stay behind the door.\nThose areas can cover school, travel, writing, or health and wellbeing,\nand parents can choose Limited Content,\na setting that allows fewer kinds of conversations.\nBut here's the catch, a menu only gives a signal,\nso health might mean exercise, illness, or mental distress,\nwhile school might mean homework, bullying, or danger.\nSo a parent gets a reason to knock,\nbut not enough context to know what happened inside,\nand that can mean panic over a harmless question,\nor missing a serious problem.\nAt the same time, privacy may help a teenager\nask an embarrassing question honestly.\nThat's why topics should open a calm conversation,\nnot the chat.\nSo check the setting together and agree when an adult must step in.\nSo follow the channel, because we break down the next safety question clearly.\nThe kitchen stays private, but the menu starts the conversation.\nShould parents be allowed to see AI topics but not the chats?\n",
+  "research": {
+    "summary": "## Meta’s new AI supervision tool gives parents topics—not chats\n\nMeta says parental supervision is now available globally in the Meta AI app as of October 5, 2026. When supervision is enabled, parents and guardians can see broad categories their teenager asked Meta AI about during the previous seven days, but they cannot read the underlying conversations. ([about.fb.com](https://about.fb.com/news/2026/04/helping-parents-understand-conversations-their-teens-are-having-with-ai/?utm_source=openai))\n\nThe summaries may include areas such as school, entertainment, lifestyle, travel, writing, and health and wellbeing. Meta says parents can tap into broader categories—for example, fitness, physical health, or mental health—but the feature is designed to show general topics rather than exact questions or replies. ([about.fb.com](https://about.fb.com/news/2026/04/helping-parents-understand-conversations-their-teens-are-having-with-ai/?utm_source=openai))\n\nParents can also choose Meta’s more restrictive “Limited Content” setting instead of the default 13+ experience. Meta says that setting limits the types of conversations a teenager can have with Meta AI, although it does not turn the topic-summary feature into full conversation access. ([about.fb.com](https://about.fb.com/news/2026/04/helping-parents-understand-conversations-their-teens-are-having-with-ai/?utm_source=openai))\n\nThat creates a useful dividing line in the safety debate. Topic summaries could help a parent notice that a teenager is asking about mental health, self-harm, relationships, or another sensitive subject without exposing every private exchange. But broad labels can lack context: “health and wellbeing,” for example, might describe a routine fitness question—or something much more serious. The topic list may start a conversation, but it may not explain what prompted it or whether the AI gave a safe and appropriate response.\n\nThe privacy question runs in the other direction. Keeping chats private may give teenagers space to ask embarrassing or sensitive questions and could make them more willing to seek information. Full parental access, however, might help adults respond faster when a teenager appears to be in danger. Meta separately says it is developing or rolling out additional protections for conversations involving suicide and self-harm, including parent alerts in some supervision settings. ([about.fb.com](https://about.fb.com/news/2026/07/keeping-parents-informed-teens-distress-conversations-meta-ai/?trk=article-ssr-frontend-pulse_little-text-block&utm_source=openai))\n\nMeta’s system therefore offers neither complete parental visibility nor complete teen privacy. It gives parents a limited signal and leaves them to decide when a topic deserves a conversation, a stricter setting, or additional support. Whether that balance works may depend on the teenager’s age, the seriousness of the topic, and how clearly Meta explains what its summaries do—and do not—capture.\n\n**Should parents be allowed to see AI topics but not the chats?**",
+    "claims": [
+      {
+        "claim": "Meta says parental supervision became available globally in the Meta AI app on October 5, 2026.",
+        "source_title": "Helping Parents Understand the Conversations Their Teens Are Having With AI",
+        "source_url": "https://about.fb.com/news/2026/04/helping-parents-understand-conversations-their-teens-are-having-with-ai/",
+        "published_or_updated": "Updated October 5, 2026"
+      },
+      {
+        "claim": "Supervising parents can see topics their teenagers asked Meta AI about during the previous seven days, but not the conversations themselves.",
+        "source_title": "Helping Parents Understand the Conversations Their Teens Are Having With AI",
+        "source_url": "https://about.fb.com/news/2026/04/helping-parents-understand-conversations-their-teens-are-having-with-ai/",
+        "published_or_updated": "Updated October 5, 2026"
+      },
+      {
+        "claim": "Meta lists topic areas including school, entertainment, lifestyle, travel, writing, and health and wellbeing.",
+        "source_title": "Helping Parents Understand the Conversations Their Teens Are Having With AI",
+        "source_url": "https://about.fb.com/news/2026/04/helping-parents-understand-conversations-their-teens-are-having-with-ai/",
+        "published_or_updated": "April 23, 2026"
+      },
+      {
+        "claim": "Parents can switch from the default 13+ setting to a more restrictive Limited Content setting.",
+        "source_title": "Helping Parents Understand the Conversations Their Teens Are Having With AI",
+        "source_url": "https://about.fb.com/news/2026/04/helping-parents-understand-conversations-their-teens-are-having-with-ai/",
+        "published_or_updated": "Updated October 5, 2026"
+      },
+      {
+        "claim": "Meta says parent alerts related to teen conversations about suicide or self-harm are live in some countries and are being expanded globally.",
+        "source_title": "Alerting Parents if Teens Show Signs of Distress in Conversations With Meta AI",
+        "source_url": "https://about.fb.com/news/2026/07/keeping-parents-informed-teens-distress-conversations-meta-ai/",
+        "published_or_updated": "July 16, 2026"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Should Parents See AI Topics but Not Chats?",
+    "description": "AI parental supervision can show broad conversation topics from the previous seven days without revealing the actual chat. This video explains how topic signals, Limited Content settings, privacy, and safety can help—or create confusion—and why topics should start a calm conversation rather than replace it.\n\n#AI safety #Parenting #DigitalPrivacy",
+    "tags": [
+      "AI safety",
+      "parental supervision",
+      "AI privacy",
+      "teen privacy",
+      "digital parenting",
+      "online safety",
+      "AI chat privacy",
+      "content controls",
+      "parenting technology"
+    ],
+    "category_id": 27,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "format": "short",
+    "title_description_language": "en"
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "Meta says parental supervision became available globally in the Meta AI app on October 5, 2026.",
+        "source_title": "Helping Parents Understand the Conversations Their Teens Are Having With AI",
+        "source_url": "https://about.fb.com/news/2026/04/helping-parents-understand-conversations-their-teens-are-having-with-ai/",
+        "published_or_updated": "Updated October 5, 2026"
+      },
+      {
+        "claim": "Supervising parents can see topics their teenagers asked Meta AI about during the previous seven days, but not the conversations themselves.",
+        "source_title": "Helping Parents Understand the Conversations Their Teens Are Having With AI",
+        "source_url": "https://about.fb.com/news/2026/04/helping-parents-understand-conversations-their-teens-are-having-with-ai/",
+        "published_or_updated": "Updated October 5, 2026"
+      },
+      {
+        "claim": "Meta lists topic areas including school, entertainment, lifestyle, travel, writing, and health and wellbeing.",
+        "source_title": "Helping Parents Understand the Conversations Their Teens Are Having With AI",
+        "source_url": "https://about.fb.com/news/2026/04/helping-parents-understand-conversations-their-teens-are-having-with-ai/",
+        "published_or_updated": "April 23, 2026"
+      },
+      {
+        "claim": "Parents can switch from the default 13+ setting to a more restrictive Limited Content setting.",
+        "source_title": "Helping Parents Understand the Conversations Their Teens Are Having With AI",
+        "source_url": "https://about.fb.com/news/2026/04/helping-parents-understand-conversations-their-teens-are-having-with-ai/",
+        "published_or_updated": "Updated October 5, 2026"
+      },
+      {
+        "claim": "Meta says parent alerts related to teen conversations about suicide or self-harm are live in some countries and are being expanded globally.",
+        "source_title": "Alerting Parents if Teens Show Signs of Distress in Conversations With Meta AI",
+        "source_url": "https://about.fb.com/news/2026/07/keeping-parents-informed-teens-distress-conversations-meta-ai/",
+        "published_or_updated": "July 16, 2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "Meta AI parental supervision app globally October 5 2026",
+      "score": 87.1,
+      "verdict": "pass",
+      "recent_videos": 67,
+      "median_views_per_day": 342879.92,
+      "top_views_per_day": 3682347.82,
+      "market_coverage": 4,
+      "title_query_overlap": 0.1429,
+      "measured_at": "2026-10-11T07:02:22.639657+00:00",
+      "signal_type": "youtube-most-popular-seed-proxy"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.55,
+      "true_peak_dbtp": -1.87,
+      "loudness_range": 2.6
+    },
+    "editorial": {
+      "beats": 25,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-10-11T12:09:44.078285+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri-sun"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-short-2026-10-11",
+    "created_at": "2026-10-11T12:09:45.316947+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-10-11T11:00:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "5181ee94fa7a11f39bc77e5b6cf914cadc8c361b08c46a0ba7cdbad6d3b0da30",
+        "bytes": 18273618
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "0956e0133c35ed8067fe04ed2e01aa90e3119bfeff33329f65a33076a78106ab",
+        "bytes": 2028554
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "56776a8bfb3d45f99d8237e0441558a866f54d7d369286eea1049d16f8394b6b",
+        "bytes": 876
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "ec76fbb6ea1a57b30d70fdcd81227bd1a107283a2cdb0ea0252f15fea7c94de9",
+        "bytes": 2800
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "1f4505bb819291131645954b20eb5d79c3eb43c3a2963a47ae19ebe3880718d7",
+        "bytes": 691
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "6a70f8c1c787336b7a86a1c493fa7ffa844295a9d08ebcf17f23084cb75a1b60",
+        "bytes": 2869
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "678140779bba2e91fcb33a95de33aea71f2cbbed4011049fbe64e353d1870954",
+        "bytes": 394
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "e77c577fdce27357c868ba566f8641ad9425e38124a8065a6a1a460b6ae444d6",
+        "bytes": 277
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 24902.0,
+      "cached_input_units": 0.0,
+      "output_units": 1661.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006974,
+      "created_at": "2026-10-11T07:02:22.641209+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-11T07:02:22.647359+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 12928.0,
+      "cached_input_units": 0.0,
+      "output_units": 1385.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004248,
+      "created_at": "2026-10-11T07:02:45.167174+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-11T07:02:45.169108+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 3564.0,
+      "cached_input_units": 0.0,
+      "output_units": 2946.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004248,
+      "created_at": "2026-10-11T07:03:11.571271+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 4858.0,
+      "cached_input_units": 2329.0,
+      "output_units": 3070.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004236,
+      "created_at": "2026-10-11T07:03:37.271450+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 5024.0,
+      "cached_input_units": 2329.0,
+      "output_units": 2627.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.003738,
+      "created_at": "2026-10-11T07:03:58.359194+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1465.0,
+      "cached_input_units": 0.0,
+      "output_units": 1354.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001918,
+      "created_at": "2026-10-11T12:02:42.441334+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-11T12:02:57.843128+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-11T12:03:11.073805+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-11T12:03:24.134003+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-11T12:03:39.531059+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-11T12:03:54.024126+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-11T12:04:17.972502+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-11T12:05:27.565060+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-11T12:05:42.590826+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 431.0,
+      "cached_input_units": 0.0,
+      "output_units": 305.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000452,
+      "created_at": "2026-10-11T12:09:02.181865+00:00"
+    },
+    {
+      "stage": "thumbnail",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-10-11T12:09:33.502040+00:00"
+    }
+  ],
+  "recorded_at": "2026-10-11T12:09:52.530794+00:00"
+}
