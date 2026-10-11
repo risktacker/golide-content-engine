@@ -1,0 +1,150 @@
+{
+  "id": "golide-short-2026-10-11",
+  "studio_managed": true,
+  "format": "short",
+  "title": "Meta Will Let Parents See What Teens Ask Its AI",
+  "brief": "Meta has made parental supervision available globally in its Meta AI app. Parents can see broad topics their teenagers asked about during the previous seven days, but not the actual conversations, and can choose a more restrictive setting. The story gives parents and students a clear question about safety, privacy and whether topic summaries are enough. End with: Should parents be allowed to see AI topics but not the chats?",
+  "demand_query": "AI tech news everyone is talking about this week",
+  "demand_validation_required": true,
+  "budget_class": "scheduled",
+  "purpose": "channel-automation",
+  "generate_at": "2026-10-11T07:00:00Z",
+  "max_cost_usd": 6,
+  "production_authorized": true,
+  "output_destination": "render-and-upload",
+  "owner_voice_required": true,
+  "concept": {
+    "family": "technology-software-business",
+    "promise": "A high-interest current niche topic explained with authoritative evidence and a useful GOLIDE angle",
+    "scores": {
+      "scroll_stop": 9,
+      "visual_payoff": 9,
+      "curiosity_gap": 9,
+      "retention_design": 9,
+      "broad_relevance": 8,
+      "evidence_strength": 8,
+      "novelty": 8,
+      "replay_or_loop": 8,
+      "revenue_fit": 6
+    }
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri-sun"
+  },
+  "music": {
+    "mood": "curious-tension"
+  },
+  "avatar_reference_images": [],
+  "release": {
+    "approved": true,
+    "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+    "scheduled_at": "2026-10-11T11:00:00Z"
+  },
+  "_studio_job_id": "golide-short-2026-10-11",
+  "topic_candidates": [
+    {
+      "title": "ChatGPT Is Getting Ads Inside the Pictures It Makes",
+      "query": "OpenAI visual ads ChatGPT image generation October 2026",
+      "brief": "OpenAI plans to place clearly labeled visual ads beside some ChatGPT image-generation results in the United States later this month. The useful angle is not simply \u201cChatGPT has ads,\u201d but whether people can still trust an AI answer when a sponsored product appears next to it. Explain how this could affect free users, small businesses and anyone asking AI for shopping or design help. End with: Would you trust an AI answer with an ad beside it?",
+      "evidence_summary": "Talk-about-it-now: 9/10; non-technical clarity: 10/10; comment potential: 10/10; visual potential: 9/10; evidence strength: 9/10. This is the strongest candidate because it changes a familiar everyday product and naturally creates a trust-versus-free-access debate. OpenAI\u2019s timing, U.S.-only launch plan, labeling and claim that ads will not affect answers were reported by TechCrunch. ([techcrunch.com](https://techcrunch.com/2026/10/05/openai-launches-visual-ads-that-appear-alongside-image-generation-results/?trk=article-ssr-frontend-pulse_little-text-block&utm_source=openai))",
+      "authoritative_source_url": "https://techcrunch.com/2026/10/05/openai-launches-visual-ads-that-appear-alongside-image-generation-results/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "OpenAI visual ads ChatGPT image generation October 2026",
+        "score": 86.9,
+        "verdict": "pass",
+        "recent_videos": 67,
+        "median_views_per_day": 342879.92,
+        "top_views_per_day": 3682347.82,
+        "market_coverage": 4,
+        "title_query_overlap": 0.125,
+        "measured_at": "2026-10-11T07:02:22.639016+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "Meta Will Let Parents See What Teens Ask Its AI",
+      "query": "Meta AI parental supervision app globally October 5 2026",
+      "brief": "Meta has made parental supervision available globally in its Meta AI app. Parents can see broad topics their teenagers asked about during the previous seven days, but not the actual conversations, and can choose a more restrictive setting. The story gives parents and students a clear question about safety, privacy and whether topic summaries are enough. End with: Should parents be allowed to see AI topics but not the chats?",
+      "evidence_summary": "Talk-about-it-now: 8/10; non-technical clarity: 10/10; comment potential: 9/10; visual potential: 8/10; evidence strength: 10/10. It connects directly to family life, school and privacy, and the platform seeds show strong interest in phones and everyday AI. Meta\u2019s newsroom gives the exact rollout date, global availability and limits of what parents can see. ([about.fb.com](https://about.fb.com/news/2026/04/helping-parents-understand-conversations-their-teens-are-having-with-ai/?utm_source=openai))",
+      "authoritative_source_url": "https://about.fb.com/news/2026/04/helping-parents-understand-conversations-their-teens-are-having-with-ai/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Meta AI parental supervision app globally October 5 2026",
+        "score": 87.1,
+        "verdict": "pass",
+        "recent_videos": 67,
+        "median_views_per_day": 342879.92,
+        "top_views_per_day": 3682347.82,
+        "market_coverage": 4,
+        "title_query_overlap": 0.1429,
+        "measured_at": "2026-10-11T07:02:22.639657+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "The AI Race Just Got a Cheaper, Faster Competitor",
+      "query": "Anthropic Claude Haiku 5.5 launch October 7 2026 fastest cheapest AI model",
+      "brief": "Anthropic launched Claude Haiku 5.5, describing it as its fastest and most capable small model, with availability on the web, iOS and Android. Explain the everyday idea: AI companies are trying to make useful assistants cheaper and quicker, which could bring more AI features into customer service, school tools and apps. Avoid benchmark jargon; demonstrate speed, cost and what \u201csmall model\u201d means in ordinary language. End with: Is faster and cheaper more important than having the smartest AI?",
+      "evidence_summary": "Talk-about-it-now: 8/10; non-technical clarity: 7/10; comment potential: 8/10; visual potential: 8/10; evidence strength: 10/10. The launch is fresh and backed by Anthropic\u2019s official announcement, but the subject is more product-and-industry focused than the ad or parenting stories. Anthropic confirms the October 7 launch, consumer availability and positioning around speed and lower operating cost. ([anthropic.com](https://www.anthropic.com/claude/haiku?utm_source=openai))",
+      "authoritative_source_url": "https://www.anthropic.com/claude/haiku",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Anthropic Claude Haiku 5.5 launch October 7 2026 fastest cheapest AI model",
+        "score": 86.7,
+        "verdict": "pass",
+        "recent_videos": 67,
+        "median_views_per_day": 342879.92,
+        "top_views_per_day": 3682347.82,
+        "market_coverage": 4,
+        "title_query_overlap": 0.1111,
+        "measured_at": "2026-10-11T07:02:22.640269+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "Satya Nadella Wants an Emergency Brake for AI",
+      "query": "Satya Nadella AI emergency brake October 10 2026 Microsoft",
+      "brief": "Microsoft CEO Satya Nadella said advanced AI systems should have outside controls, records of important actions and a human-controlled way to pause or shut them down mid-task. Translate that into a familiar comparison: an AI assistant that can book, buy or send things should have a stop button that a person\u2014not the AI\u2014controls. End with: Should every powerful AI tool have a human emergency brake?",
+      "evidence_summary": "Talk-about-it-now: 8/10; non-technical clarity: 9/10; comment potential: 9/10; visual potential: 9/10; evidence strength: 9/10. Nadella\u2019s statement is highly current and comes from a major tech leader, while the \u201cstop button\u201d metaphor makes an abstract safety debate easy to understand. TechCrunch reported his October 10 comments and the specific safeguards he proposed. ([techcrunch.com](https://techcrunch.com/2026/10/10/microsofts-satya-nadella-says-ai-models-need-an-emergency-brake/?utm_source=openai))",
+      "authoritative_source_url": "https://techcrunch.com/2026/10/10/microsofts-satya-nadella-says-ai-models-need-an-emergency-brake/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Satya Nadella AI emergency brake October 10 2026 Microsoft",
+        "score": 87.1,
+        "verdict": "pass",
+        "recent_videos": 67,
+        "median_views_per_day": 342879.92,
+        "top_views_per_day": 3682347.82,
+        "market_coverage": 4,
+        "title_query_overlap": 0.1429,
+        "measured_at": "2026-10-11T07:02:22.640866+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    }
+  ],
+  "platform_demand": {
+    "query": "Meta AI parental supervision app globally October 5 2026",
+    "score": 87.1,
+    "verdict": "pass",
+    "recent_videos": 67,
+    "median_views_per_day": 342879.92,
+    "top_views_per_day": 3682347.82,
+    "market_coverage": 4,
+    "title_query_overlap": 0.1429,
+    "measured_at": "2026-10-11T07:02:22.639657+00:00",
+    "signal_type": "youtube-most-popular-seed-proxy"
+  },
+  "selected_topic_source": "https://about.fb.com/news/2026/04/helping-parents-understand-conversations-their-teens-are-having-with-ai/"
+}
