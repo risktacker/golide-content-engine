@@ -1,0 +1,594 @@
+{
+  "production_id": "golide-long-2026-10-10",
+  "youtube_video_id": "ftQ8HRqYSIg",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "ftQ8HRqYSIg",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-10-12T22:58:19.278165+00:00"
+  },
+  "production": {
+    "format": "long",
+    "title": "OpenAI Fired Safety Researchers. What Happened Inside the AI Race?",
+    "status": "scheduled",
+    "scheduled_at": "2026-10-13T04:00:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-long-tuesday-saturday\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "The biggest AI question is no longer only what it can do,\nbut whether companies slow down when their own experts object.\nThink of one kitchen preparing meals for millions of homes.\nIf its food tester finds danger, the kitchen has a choice,\nit can pause the meal, investigate, or keep sending it out.\nIn the next few minutes, we'll follow what was reported,\nthe two accounts, the user risks, and the process that matters.\nSo first, what exactly happened inside this AI kitchen?\nOn October ninth, twenty twenty-six, the Associated Press reported\nthat OpenAI fired three safety researchers after concerns about AI risks.\nThose three were Tomek Korbak, Jasmine Wang and Mikita Balesni,\nand AP presented the dismissals as part of a dispute\nover how the company handled risks from artificial intelligence.\nThat matters because the researchers said the episode could chill\nopen disagreement, making others hesitate before raising warnings.\nBut none of that means every safety objection must stop a launch,\nbecause a warning still needs evidence, review and a fair response.\nSo the first takeaway is simple, AP reported three firings\nin a dispute involving AI safety concerns.\nNow, because one report is not the whole record,\nwhat does OpenAI say happened?\nThe company said it had parted ways with the researchers\nafter an investigation found what it called a policy breach,\nand that breach concerned rules for sensitive information.\nOpenAI also said the dismissals were not caused by safety concerns,\nand not by the researchers speaking out.\nSo we have two accounts describing the same event differently,\nwhile the available reporting does not establish which account is correct.\nThat means assigning a hidden motive would go beyond the evidence,\nbut refusing to guess does not mean refusing to inspect the process.\nThe second takeaway is this, the facts establish a dispute,\nnot a proven motive.\nBut why should a workplace dispute matter outside an AI lab?\nReturn to the kitchen, where one team cooks and another tests.\nThat second team checks before food reaches your table,\nthen keeps watching, because some problems appear only in real use.\nIn AI, that work is called safety work, meaning testing,\nmonitoring, accountability and human intervention when automation fails.\nHuman intervention means a person can step in\nwhen a system cannot detect or correct its own error.\nNIST, the United States standards agency, says those roles need\nclear responsibility, authority and enough resources to do the job.\nFor school, that can catch an invented source before submission,\nwhile at work, it can expose a private file before damage spreads.\nAnd with money, an inaccurate chatbot answer can send you in circles,\nbecause the Consumer Financial Protection Bureau warned about failed support\nwhen financial chatbots cannot handle complex problems.\nSo safety staffing protects people downstream from the model.\nSo what should a credible process do when qualified experts disagree?\nFirst, it gives staff a protected route to raise concerns,\nthen tests those concerns against evidence, not somebody's status.\nIf a policy violation is alleged, an independent review examines it,\nwhile keeping two questions separate: was information mishandled,\nand was a safety concern raised responsibly?\nFinally, leaders record who decided, why, and what users may face.\nOpenAI's published policy says raising AI safety concerns is appropriate and encouraged,\nso this difficult case tests how that principle works under pressure.\nThe fourth takeaway is that speed needs a safety process people can trust.\nRemember this, capable AI still needs people empowered to challenge it.\nThis week, before trusting an AI answer, check its source\nand keep human judgment involved, especially with money or private information.\nSo follow the channel, because we keep tracing technology debates\nfrom the headline to the people affected.\nShould AI companies be allowed to move this fast if their own safety experts object?\n",
+  "research": {
+    "summary": "On October 9, 2026, The Associated Press reported that OpenAI fired three safety researchers: Tomek Korbak, Jasmine Wang and Mikita Balesni. AP said the researchers had raised concerns about AI risks and later described their dismissals as threatening a workplace culture where employees could disagree openly about safety. ([apnews.com](https://apnews.com/article/789d4f5293fba45a22fcb62ebfbc2a41?utm_source=openai))\n\nOpenAI gave a different explanation. The company said it had “parted ways” with the researchers after an investigation found what it called a breach of policies governing sensitive information. OpenAI also said the dismissals were not because the researchers had raised safety concerns or spoken out. The available reporting does not establish which account is correct, so it would be speculative to assign a motive. ([ny1.com](https://ny1.com/nyc/all-boroughs/ap-top-news/2026/10/09/openai-fires-3-safety-researchers-in-dispute-over-ai-risks?utm_source=openai))\n\nThe staffing question matters because safety work is not only about a model’s technical capabilities. NIST’s AI Risk Management Framework says trustworthy systems require testing, monitoring, accountability, clear responsibilities and human intervention when systems cannot detect or correct errors. It also says risk-management teams should be appropriately empowered and resourced. ([airc.nist.gov](https://airc.nist.gov/airmf-resources/airmf/3-sec-characteristics/?utm_source=openai))\n\nFor people using AI in school, work or financial decisions, that can affect whether inaccurate, biased, insecure or privacy-sensitive outputs are detected before they cause harm. The Consumer Financial Protection Bureau has warned that chatbots can provide inaccurate information, trap customers in unhelpful loops and contribute to financial harm when they cannot handle complex problems. ([consumerfinance.gov](https://www.consumerfinance.gov/data-research/research-reports/chatbots-in-consumer-finance/chatbots-in-consumer-finance/?utm_source=openai))\n\nThe core issue is therefore not whether every safety objection should automatically stop a product. It is whether companies have credible processes that let qualified safety staff raise concerns, investigate disagreements and protect users without treating disagreement itself as disloyalty. OpenAI’s own published policy says raising AI safety concerns is appropriate and encouraged, while its account of this episode focuses on alleged handling of sensitive information. ([cdn.openai.com](https://cdn.openai.com/policies/openai-raising-concerns-policy.pdf?utm_source=openai))\n\nShould AI companies be allowed to move this fast if their own safety experts object?",
+    "claims": [
+      {
+        "claim": "The Associated Press reported on October 9, 2026, that OpenAI fired three safety researchers—Tomek Korbak, Jasmine Wang and Mikita Balesni—in a dispute involving AI-risk concerns.",
+        "source_title": "OpenAI fires 3 safety researchers in dispute over AI risks",
+        "source_url": "https://apnews.com/article/789d4f5293fba45a22fcb62ebfbc2a41",
+        "published_or_updated": "October 9, 2026"
+      },
+      {
+        "claim": "OpenAI said the researchers were dismissed after an investigation found violations of policies concerning sensitive information, and said the decision was not about raising safety concerns or speaking out.",
+        "source_title": "OpenAI denies researchers were fired for speaking out about AI concerns",
+        "source_url": "https://www.cnbc.com/2026/10/09/openai-fired-researchers-ai-concerns.html",
+        "published_or_updated": "October 9, 2026"
+      },
+      {
+        "claim": "The researchers said the dismissals and related communications could chill a culture of open disagreement about safety issues.",
+        "source_title": "OpenAI fires 3 safety researchers in dispute over AI risks",
+        "source_url": "https://apnews.com/article/789d4f5293fba45a22fcb62ebfbc2a41",
+        "published_or_updated": "October 9, 2026"
+      },
+      {
+        "claim": "NIST identifies ongoing testing, monitoring, human intervention, accountability and clearly empowered risk-management roles as parts of trustworthy AI governance.",
+        "source_title": "AI Risks and Trustworthiness; AI RMF Core",
+        "source_url": "https://airc.nist.gov/airmf-resources/airmf/3-sec-characteristics/",
+        "published_or_updated": "Accessed October 10, 2026"
+      },
+      {
+        "claim": "The Consumer Financial Protection Bureau reported that financial chatbots can provide inaccurate information, fail to resolve complex problems and cause consumer harm when they are used without effective human support.",
+        "source_title": "Chatbots in consumer finance",
+        "source_url": "https://www.consumerfinance.gov/data-research/research-reports/chatbots-in-consumer-finance/chatbots-in-consumer-finance/",
+        "published_or_updated": "June 6, 2023"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "OpenAI Safety Dispute: What Reported Firings Mean for AI Oversight",
+    "description": "This video examines an Associated Press report that OpenAI fired three safety researchers—Tomek Korbak, Jasmine Wang, and Mikita Balesni—after concerns about artificial intelligence risks. It also presents OpenAI’s account that the researchers were dismissed after an investigation into an alleged policy breach involving sensitive information, and that the decision was unrelated to safety concerns or speaking out.\n\nBecause the available reporting does not establish which account is correct, the video separates confirmed facts from unproven motives. It explains why protected channels for safety concerns, independent review, clear responsibility, and human oversight matter to users who rely on AI for schoolwork, financial support, and private information.\n\nThe central question is whether AI companies can move quickly while still giving qualified experts a trusted way to challenge risky decisions.\n\nChapters\n0:00 Intro\n0:24 Reported Firings\n1:14 Conflicting Accounts\n2:15 Safety Downstream\n3:57 Credible Process\n4:42 Close\n\n#AI #OpenAI #AISafety",
+    "tags": [
+      "OpenAI",
+      "AI safety",
+      "artificial intelligence",
+      "AI oversight",
+      "AI risk",
+      "safety researchers",
+      "AI governance",
+      "technology news",
+      "workplace dispute",
+      "human oversight",
+      "NIST",
+      "Consumer Financial Protection Bureau"
+    ],
+    "category_id": 25,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [
+      "0:00 Intro",
+      "0:24 Reported Firings",
+      "1:14 Conflicting Accounts",
+      "2:15 Safety Downstream",
+      "3:57 Credible Process",
+      "4:42 Close"
+    ],
+    "format": "long",
+    "title_description_language": "en"
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "The Associated Press reported on October 9, 2026, that OpenAI fired three safety researchers—Tomek Korbak, Jasmine Wang and Mikita Balesni—in a dispute involving AI-risk concerns.",
+        "source_title": "OpenAI fires 3 safety researchers in dispute over AI risks",
+        "source_url": "https://apnews.com/article/789d4f5293fba45a22fcb62ebfbc2a41",
+        "published_or_updated": "October 9, 2026"
+      },
+      {
+        "claim": "OpenAI said the researchers were dismissed after an investigation found violations of policies concerning sensitive information, and said the decision was not about raising safety concerns or speaking out.",
+        "source_title": "OpenAI denies researchers were fired for speaking out about AI concerns",
+        "source_url": "https://www.cnbc.com/2026/10/09/openai-fired-researchers-ai-concerns.html",
+        "published_or_updated": "October 9, 2026"
+      },
+      {
+        "claim": "The researchers said the dismissals and related communications could chill a culture of open disagreement about safety issues.",
+        "source_title": "OpenAI fires 3 safety researchers in dispute over AI risks",
+        "source_url": "https://apnews.com/article/789d4f5293fba45a22fcb62ebfbc2a41",
+        "published_or_updated": "October 9, 2026"
+      },
+      {
+        "claim": "NIST identifies ongoing testing, monitoring, human intervention, accountability and clearly empowered risk-management roles as parts of trustworthy AI governance.",
+        "source_title": "AI Risks and Trustworthiness; AI RMF Core",
+        "source_url": "https://airc.nist.gov/airmf-resources/airmf/3-sec-characteristics/",
+        "published_or_updated": "Accessed October 10, 2026"
+      },
+      {
+        "claim": "The Consumer Financial Protection Bureau reported that financial chatbots can provide inaccurate information, fail to resolve complex problems and cause consumer harm when they are used without effective human support.",
+        "source_title": "Chatbots in consumer finance",
+        "source_url": "https://www.consumerfinance.gov/data-research/research-reports/chatbots-in-consumer-finance/chatbots-in-consumer-finance/",
+        "published_or_updated": "June 6, 2023"
+      }
+    ],
+    "platform_demand": {
+      "query": "OpenAI fires three safety researchers October 9 2026 AI risks AP News",
+      "score": 88.3,
+      "verdict": "pass",
+      "recent_videos": 70,
+      "median_views_per_day": 361734.67,
+      "top_views_per_day": 3976656.27,
+      "market_coverage": 4,
+      "title_query_overlap": 0.2222,
+      "measured_at": "2026-10-10T04:02:42.315505+00:00",
+      "signal_type": "youtube-most-popular-seed-proxy"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.99,
+      "true_peak_dbtp": -1.82,
+      "loudness_range": 3.8
+    },
+    "editorial": {
+      "beats": 64,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-10-12T22:58:11.480648+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-long-tuesday-saturday"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-long-2026-10-10",
+    "created_at": "2026-10-12T22:58:12.356380+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-10-13T04:00:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "612333b1509e931dddbcb515629b8c3793165f1555d5496ddbc95ef42f8c2fb7",
+        "bytes": 68380981
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "8c3d8d366367e3f74ee26d4bfe64fd6411b92108e5942af6103a2c0a4da4503d",
+        "bytes": 1968160
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "81cd098dd8d58409bd7457d3f890de486283db94238ed50886191885bb72aac0",
+        "bytes": 1848
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "521e31832b662f4b047fb67a7266c31b9ac6beb152f3ebd5b849d63ecfa87691",
+        "bytes": 8550
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "d3c9b45074b799958f1c27fbe5d573c3618e1ef003a539ab05c0ec750fca8648",
+        "bytes": 1865
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "bcd96f5e6ce1a45005c95a2c38047bc0d1d20d8644af0188773f13d1873df5ef",
+        "bytes": 2926
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "2285146bd1cb5c5175084453be62fcf08d91eb1c0244651b8393a075fcd49fde",
+        "bytes": 393
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "7de388197d3ffe4f64625a515f194d7f84ca7a6674df858142db09ad6cbd361e",
+        "bytes": 277
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 32596.0,
+      "cached_input_units": 0.0,
+      "output_units": 2192.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00915,
+      "created_at": "2026-10-10T04:02:42.316815+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-10T04:02:42.318638+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 21439.0,
+      "cached_input_units": 0.0,
+      "output_units": 1728.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006361,
+      "created_at": "2026-10-10T04:03:13.261887+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-10T04:03:13.263692+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 3645.0,
+      "cached_input_units": 0.0,
+      "output_units": 3185.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004551,
+      "created_at": "2026-10-10T04:03:40.201940+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 7459.0,
+      "cached_input_units": 2444.0,
+      "output_units": 3369.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005095,
+      "created_at": "2026-10-10T04:04:05.211768+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 7717.0,
+      "cached_input_units": 2444.0,
+      "output_units": 3694.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005536,
+      "created_at": "2026-10-10T04:04:31.133342+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2094.0,
+      "cached_input_units": 0.0,
+      "output_units": 2583.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.003518,
+      "created_at": "2026-10-12T22:26:09.514254+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T22:26:25.814978+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T22:29:07.117722+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T22:29:21.433739+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T22:29:35.798303+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T22:29:50.196221+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T22:30:04.071153+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T22:30:18.521466+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T22:30:34.153874+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T22:30:47.219957+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T22:31:00.212180+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T22:31:14.512737+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T22:31:29.879234+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T22:31:43.584804+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T22:31:56.462989+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T22:32:09.837513+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T22:32:27.139886+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T22:32:41.696802+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T22:32:55.750265+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 933.0,
+      "cached_input_units": 0.0,
+      "output_units": 533.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000826,
+      "created_at": "2026-10-12T22:56:36.057259+00:00"
+    },
+    {
+      "stage": "thumbnail",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-10-12T22:57:11.113195+00:00"
+    }
+  ],
+  "recorded_at": "2026-10-12T22:58:19.283921+00:00"
+}
