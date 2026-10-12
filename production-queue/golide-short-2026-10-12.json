@@ -1,0 +1,150 @@
+{
+  "id": "golide-short-2026-10-12",
+  "studio_managed": true,
+  "format": "short",
+  "title": "Amazon\u2019s Delivery Drivers Are Getting AI Eyes \u2014 Who Is Really Being Watched?",
+  "brief": "Amazon is expanding AI-powered glasses that show delivery directions, identify packages, flag hazards and capture proof of delivery. The story turns a futuristic gadget into a workplace question ordinary viewers understand: does hands-free help make a job safer, or does it make workers more monitored? It offers strong visuals, a clear human impact and an easy debate for parents, workers and privacy-conscious viewers. End with: Would you wear them on the job?",
+  "demand_query": "AI tech news everyone is talking about this week",
+  "demand_validation_required": true,
+  "budget_class": "scheduled",
+  "purpose": "channel-automation",
+  "generate_at": "2026-10-12T07:00:00Z",
+  "max_cost_usd": 6,
+  "production_authorized": true,
+  "output_destination": "render-and-upload",
+  "owner_voice_required": true,
+  "concept": {
+    "family": "technology-software-business",
+    "promise": "A high-interest current niche topic explained with authoritative evidence and a useful GOLIDE angle",
+    "scores": {
+      "scroll_stop": 9,
+      "visual_payoff": 9,
+      "curiosity_gap": 9,
+      "retention_design": 9,
+      "broad_relevance": 8,
+      "evidence_strength": 8,
+      "novelty": 8,
+      "replay_or_loop": 8,
+      "revenue_fit": 6
+    }
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri-sun"
+  },
+  "music": {
+    "mood": "curious-tension"
+  },
+  "avatar_reference_images": [],
+  "release": {
+    "approved": true,
+    "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+    "scheduled_at": "2026-10-12T11:00:00Z"
+  },
+  "_studio_job_id": "golide-short-2026-10-12",
+  "topic_candidates": [
+    {
+      "title": "ChatGPT Just Became a Mini App Builder \u2014 Is This the End of Ordinary Answers?",
+      "query": "ChatGPT GPT-6 Intelligent UI October 2026 interactive answers",
+      "brief": "OpenAI\u2019s October 7 rollout lets ChatGPT answer with diagrams, charts, buttons, calculators, bill splitters and other interactive tools instead of plain text. It is the strongest candidate: the story is easy to demonstrate visually, directly affects students, families and small businesses, and connects with platform signals showing strong interest in AI comparisons and visual phone features. The useful angle is not \u201cwhich model wins,\u201d but whether people want an AI that creates a tool for every question\u2014and whether they will trust the result. End with: Would you rather get a normal answer or an interactive tool?",
+      "evidence_summary": "OpenAI says GPT-6\u2019s Intelligent UI can combine text, visuals and interactive elements, with rollout expanding from paid plans on October 7, 2026 to Free and Go users on October 8. Major coverage from TechCrunch described the change as a move beyond text-only chatbot replies. The story has very strong evidence, very high visual potential, high public relevance and the strongest comment potential of the candidates. ([openai.com](https://openai.com/index/gpt-6-for-everyone/?trk=public_post_comment-text&utm_source=openai))",
+      "authoritative_source_url": "https://openai.com/index/gpt-6-for-everyone/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "ChatGPT GPT-6 Intelligent UI October 2026 interactive answers",
+        "score": 87.1,
+        "verdict": "pass",
+        "recent_videos": 67,
+        "median_views_per_day": 358709.53,
+        "top_views_per_day": 4485716.48,
+        "market_coverage": 4,
+        "title_query_overlap": 0.1429,
+        "measured_at": "2026-10-12T07:03:04.128495+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "Amazon\u2019s Delivery Drivers Are Getting AI Eyes \u2014 Who Is Really Being Watched?",
+      "query": "Amazon AI smart glasses delivery drivers 20,000 2027 October 2026",
+      "brief": "Amazon is expanding AI-powered glasses that show delivery directions, identify packages, flag hazards and capture proof of delivery. The story turns a futuristic gadget into a workplace question ordinary viewers understand: does hands-free help make a job safer, or does it make workers more monitored? It offers strong visuals, a clear human impact and an easy debate for parents, workers and privacy-conscious viewers. End with: Would you wear them on the job?",
+      "evidence_summary": "Amazon says delivery associates have completed more than 275,000 deliveries using the glasses, that use is voluntary, and that 5,000 additional devices are being deployed in 2026 with more than 20,000 planned by the end of 2027. The company describes navigation, package scanning, pet alerts, hazard awareness and a privacy switch. Coverage also highlights unanswered questions about workplace monitoring and data retention. Evidence is strong for the rollout, while the privacy debate should be presented as an open question rather than a proven harm. ([aboutamazon.com](https://www.aboutamazon.com/news/transportation/smart-glasses-amazon-delivery-drivers?utm_source=openai))",
+      "authoritative_source_url": "https://www.aboutamazon.com/news/transportation/smart-glasses-amazon-delivery-drivers",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Amazon AI smart glasses delivery drivers 20,000 2027 October 2026",
+        "score": 88.3,
+        "verdict": "pass",
+        "recent_videos": 67,
+        "median_views_per_day": 358709.53,
+        "top_views_per_day": 4485716.48,
+        "market_coverage": 4,
+        "title_query_overlap": 0.2222,
+        "measured_at": "2026-10-12T07:03:04.129148+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "Satya Nadella Wants an Emergency Brake for AI \u2014 But Who Gets to Pull It?",
+      "query": "Satya Nadella AI emergency brake October 10 2026",
+      "brief": "Microsoft CEO Satya Nadella argued that advanced AI systems should have an outside control that can pause or shut them down mid-task, with a readable record of what they did. Explain it like cruise control with a physical brake: useful when software is acting on your behalf, but only if a real person can intervene. The story is less visual than the top two but has excellent debate potential around trust, jobs and AI agents making decisions. End with: Should every AI agent have a kill switch?",
+      "evidence_summary": "TechCrunch reported Nadella\u2019s October 10, 2026 statement that AI systems should be separated from the controls supervising them, document meaningful actions and allow an authorized person to pause or shut down a model mid-task. This is a credible, attributable statement\u2014not evidence that a specific consumer product has failed. Evidence strength is high for what Nadella said, medium for immediate everyday impact, and high for comment potential. ([techcrunch.com](https://techcrunch.com/2026/10/10/microsofts-satya-nadella-says-ai-models-need-an-emergency-brake/?utm_source=openai))",
+      "authoritative_source_url": "https://techcrunch.com/2026/10/10/microsofts-satya-nadella-says-ai-models-need-an-emergency-brake/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Satya Nadella AI emergency brake October 10 2026",
+        "score": 87.5,
+        "verdict": "pass",
+        "recent_videos": 67,
+        "median_views_per_day": 358709.53,
+        "top_views_per_day": 4485716.48,
+        "market_coverage": 4,
+        "title_query_overlap": 0.1667,
+        "measured_at": "2026-10-12T07:03:04.129767+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "Tesla Is Building Humanoid Robots Faster \u2014 So Why Can\u2019t They Do Every Job Yet?",
+      "query": "Tesla Optimus hundreds robots per week production October 2026",
+      "brief": "Reports say Tesla\u2019s Optimus production has reached several hundred robots per week, while the machines still struggle with reliability and adapting to unfamiliar tasks. The strongest everyday angle is the gap between a dramatic factory count and a genuinely useful robot: making robots is not the same as giving them judgment. The topic is highly visual and invites workers, parents and business owners to debate whether humanoid robots will replace jobs or remain expensive tools. End with: Would you trust one to work beside you?",
+      "evidence_summary": "Electrek reported that Tesla was building several hundred Optimus robots per week, up from a few dozen in the second quarter, while citing continuing problems with generalizing to new tasks, hands and production quality. The report attributes the figures to a separate report and should be framed as reported production, not independently verified consumer availability. The candidate has high visual potential and comment appeal, but weaker evidence and lower last-seven-days freshness than the ChatGPT and Nadella stories. ([electrek.co](https://electrek.co/2026/09/25/tesla-optimus-production-ramp-hands-ai-generalization-problems/?aff_unique2=unknown&code=unknown&utm_source=openai))",
+      "authoritative_source_url": "https://electrek.co/2026/09/25/tesla-optimus-production-ramp-hands-ai-generalization-problems/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Tesla Optimus hundreds robots per week production October 2026",
+        "score": 86.7,
+        "verdict": "pass",
+        "recent_videos": 67,
+        "median_views_per_day": 358709.53,
+        "top_views_per_day": 4485716.48,
+        "market_coverage": 4,
+        "title_query_overlap": 0.1111,
+        "measured_at": "2026-10-12T07:03:04.130367+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    }
+  ],
+  "platform_demand": {
+    "query": "Amazon AI smart glasses delivery drivers 20,000 2027 October 2026",
+    "score": 88.3,
+    "verdict": "pass",
+    "recent_videos": 67,
+    "median_views_per_day": 358709.53,
+    "top_views_per_day": 4485716.48,
+    "market_coverage": 4,
+    "title_query_overlap": 0.2222,
+    "measured_at": "2026-10-12T07:03:04.129148+00:00",
+    "signal_type": "youtube-most-popular-seed-proxy"
+  },
+  "selected_topic_source": "https://www.aboutamazon.com/news/transportation/smart-glasses-amazon-delivery-drivers"
+}
