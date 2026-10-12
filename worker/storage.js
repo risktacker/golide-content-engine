@@ -26,6 +26,10 @@ export async function sweepMedia(env, now = new Date()) {
   const { results: pending = [] } = await env.DB.prepare(`SELECT v.media_ref, v.parts_json FROM social_variants v
     JOIN content_posts p ON p.id=v.post_id WHERE p.status IN ('draft','scheduled','publishing')`).all();
   const keep = new Set(pending.flatMap(refsIn));
+  // 2026-10-13: the owner's recording stays until its video is finished, however long that takes.
+  const { results: voices = [] } = await env.DB.prepare(`SELECT owner_voice_media_ref ref FROM production_jobs
+    WHERE owner_voice_media_ref IS NOT NULL AND status NOT IN ('scheduled','completed','published')`).all();
+  for (const v of voices) keep.add(String(v.ref));
 
   const doomed = [];
   let files = 0, bytes = 0, freed = 0, cursor;

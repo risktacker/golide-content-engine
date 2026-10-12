@@ -225,11 +225,20 @@ class OpenAICaptionProvider:
         # The prompt teaches the transcriber how to spell names it would otherwise
         # guess (GOLIDE, product and company names from the script).
         extra = {"prompt": prompt[:900]} if prompt.strip() else {}
-        with audio.open("rb") as handle:
-            response = client().audio.transcriptions.create(
-                model=self.model, file=handle, response_format="verbose_json",
-                timestamp_granularities=["word"], **extra,
-            )
+        # The API refuses files over 25 MB (2026-10-10: a 5:09 WAV was 26.2 MB and
+        # the long video failed). Speech-to-text only needs a small mono copy;
+        # timing is identical, and the original is still what the video uses.
+        import subprocess
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            small = Path(tmp) / "speech.mp3"
+            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(audio), "-vn", "-ac", "1",
+                            "-ar", "16000", "-b:a", "48k", str(small)], check=True)
+            with small.open("rb") as handle:
+                response = client().audio.transcriptions.create(
+                    model=self.model, file=handle, response_format="verbose_json",
+                    timestamp_granularities=["word"], **extra,
+                )
         words = [
             {"word": item.word, "start": float(item.start), "end": float(item.end)}
             for item in response.words
