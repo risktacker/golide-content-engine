@@ -1,0 +1,477 @@
+{
+  "production_id": "golide-short-2026-10-12",
+  "youtube_video_id": "lRSKTDmvspM",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "lRSKTDmvspM",
+    "upload_status": "published",
+    "privacy_status": "public",
+    "scheduled_at": null,
+    "uploaded_at": "2026-10-12T18:10:14.545954+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "Amazon’s Delivery Drivers Are Getting AI Eyes — Who Is Really Being Watched?",
+    "status": "published",
+    "scheduled_at": "2026-10-12T11:00:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-shorts-mon-wed-fri-sun\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "Amazon's delivery glasses don't just free your hands;\nthey can make your workday visible.\nThink of a shopping list floating before your eyes,\nbut one that can see too.\nThat's what smart glasses are, eyewear with cameras and a display.\nIn demonstrations, they scan packages, guide you to doors, warn about dogs,\nand capture delivery photos without a phone.\nBecause the display turns off while the van moves,\nAmazon says drivers keep attention on the road.\nBut those sensors also collect route scenes,\nlike parking places, entrances, and walking paths for mapping.\nAnd Amazon's van cameras already flag speed, seat belts,\nroad signs, and driver focus.\nSo a worker may feel safer crossing a yard,\nbut watched between doors.\nAmazon says use is voluntary, with a privacy switch,\nand faces and plates can be blurred.\nThat means privacy is deciding who controls your day's record.\nBefore using them, check what is collected, who accesses it, and when it's deleted.\nSo follow the channel, because we explain workplace technology changing ordinary routines.\nA shopping list can guide you, but it should not quietly become your supervisor.\nWould you wear them on the job?\n",
+  "research": {
+    "summary": "G$LIDE explainer script:\n\nAmazon is testing smart glasses that put delivery instructions directly in a driver’s field of view.\n\nThe glasses can help identify the right package, show walking directions to a customer’s door, warn about possible pets or hazards, and take proof-of-delivery photos without reaching for a phone.\n\nAmazon says the goal is safety: fewer glances down at a handheld device, more awareness of what’s happening around the driver. In demonstrations, the glasses automatically turned off their display while the van was moving.\n\nBut the same cameras and sensors raise a workplace question: when technology sees more of a worker’s day, who controls that information—and how might it be used?\n\nAmazon says use of the glasses is voluntary, includes a hardware privacy switch, and that imagery can be processed to blur or remove faces and license plates. The company also says some imagery and sensor data can help improve maps, parking locations and walking routes.\n\nAnd this isn’t happening in isolation. Amazon already uses camera-based systems in branded vans to monitor behaviors such as speed, seat-belt use and driver focus, with unsafe-behavior alerts potentially sent to the driver’s employer.\n\nSo the debate is not simply whether the glasses look futuristic. It’s whether hands-free technology gives workers more safety—or gives employers more ways to watch them.\n\nWould you wear them on the job?",
+    "claims": [
+      {
+        "claim": "Amazon says its smart delivery glasses can scan packages, display heads-up walking directions, capture proof-of-delivery photos and provide pet or hazard alerts.",
+        "source_title": "Amazon’s delivery glasses: The newest innovation designed to enhance the delivery experience",
+        "source_url": "https://www.aboutamazon.com/news/transportation/smart-glasses-amazon-delivery-drivers",
+        "published_or_updated": "Updated September 21, 2026"
+      },
+      {
+        "claim": "Amazon says use of the glasses is voluntary for Delivery Service Partners and their drivers, and the system includes a hardware privacy switch.",
+        "source_title": "Amazon’s delivery glasses: The newest innovation designed to enhance the delivery experience",
+        "source_url": "https://www.aboutamazon.com/news/transportation/smart-glasses-amazon-delivery-drivers",
+        "published_or_updated": "Updated September 21, 2026"
+      },
+      {
+        "claim": "Amazon says it plans to deploy 5,000 additional devices in 2026 and expand to more than 20,000 devices by the end of 2027.",
+        "source_title": "Amazon’s delivery glasses: The newest innovation designed to enhance the delivery experience",
+        "source_url": "https://www.aboutamazon.com/news/transportation/smart-glasses-amazon-delivery-drivers",
+        "published_or_updated": "Updated September 21, 2026"
+      },
+      {
+        "claim": "In a hands-on demonstration, GeekWire reported that the glasses scanned package labels, issued a “Dog on property” alert, showed walking directions and captured a delivery photo through a wearable controller.",
+        "source_title": "What it’s like to wear Amazon’s new smart glasses for delivery drivers",
+        "source_url": "https://www.geekwire.com/2025/what-its-like-to-wear-amazons-new-smart-glasses-for-delivery-drivers/",
+        "published_or_updated": "October 26, 2025"
+      },
+      {
+        "claim": "Amazon’s glasses display turns off when the delivery van is moving, according to GeekWire’s report on the system.",
+        "source_title": "What it’s like to wear Amazon’s new smart glasses for delivery drivers",
+        "source_url": "https://www.geekwire.com/2025/what-its-like-to-wear-amazons-new-smart-glasses-for-delivery-drivers/",
+        "published_or_updated": "October 26, 2025"
+      },
+      {
+        "claim": "GeekWire reported that imagery and sensor data from the glasses can contribute to Amazon’s mapping efforts, including identifying parking spots, building entrances and walking routes; Amazon said personally identifiable information such as faces and license plates is blurred or removed before storage or use.",
+        "source_title": "What it’s like to wear Amazon’s new smart glasses for delivery drivers",
+        "source_url": "https://www.geekwire.com/2025/what-its-like-to-wear-amazons-new-smart-glasses-for-delivery-drivers/",
+        "published_or_updated": "October 26, 2025"
+      },
+      {
+        "claim": "Amazon says camera-based technology in its branded vans monitors behaviors including speed control, driver focus, seat-belt use and adherence to road signs; if unsafe behaviors continue, the driver’s Delivery Service Partner may be notified.",
+        "source_title": "Amazon’s 2024 workplace safety performance shows annual improvement",
+        "source_url": "https://www.aboutamazon.com/news/workplace/amazon-workplace-safety-performance-2024",
+        "published_or_updated": "Published 2025"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Amazon’s Delivery Smart Glasses Could Turn Work Into a Live Map",
+    "description": "Amazon’s delivery smart glasses are designed to help drivers scan packages, navigate to doors, capture delivery photos, and identify hazards without using a phone. This video examines how their cameras and displays could improve safety while also recording routes, entrances, parking areas, and walking paths. It also explores privacy questions around Amazon’s vehicle cameras, voluntary use, face and license-plate blurring, data access, and deletion. Would you wear smart glasses on the job?\n\n#SmartGlasses #WorkplaceTechnology #Privacy",
+    "tags": [
+      "Amazon",
+      "smart glasses",
+      "delivery drivers",
+      "workplace technology",
+      "privacy",
+      "wearable technology",
+      "delivery technology",
+      "Amazon delivery"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "format": "short",
+    "title_description_language": "en"
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "Amazon says its smart delivery glasses can scan packages, display heads-up walking directions, capture proof-of-delivery photos and provide pet or hazard alerts.",
+        "source_title": "Amazon’s delivery glasses: The newest innovation designed to enhance the delivery experience",
+        "source_url": "https://www.aboutamazon.com/news/transportation/smart-glasses-amazon-delivery-drivers",
+        "published_or_updated": "Updated September 21, 2026"
+      },
+      {
+        "claim": "Amazon says use of the glasses is voluntary for Delivery Service Partners and their drivers, and the system includes a hardware privacy switch.",
+        "source_title": "Amazon’s delivery glasses: The newest innovation designed to enhance the delivery experience",
+        "source_url": "https://www.aboutamazon.com/news/transportation/smart-glasses-amazon-delivery-drivers",
+        "published_or_updated": "Updated September 21, 2026"
+      },
+      {
+        "claim": "Amazon says it plans to deploy 5,000 additional devices in 2026 and expand to more than 20,000 devices by the end of 2027.",
+        "source_title": "Amazon’s delivery glasses: The newest innovation designed to enhance the delivery experience",
+        "source_url": "https://www.aboutamazon.com/news/transportation/smart-glasses-amazon-delivery-drivers",
+        "published_or_updated": "Updated September 21, 2026"
+      },
+      {
+        "claim": "In a hands-on demonstration, GeekWire reported that the glasses scanned package labels, issued a “Dog on property” alert, showed walking directions and captured a delivery photo through a wearable controller.",
+        "source_title": "What it’s like to wear Amazon’s new smart glasses for delivery drivers",
+        "source_url": "https://www.geekwire.com/2025/what-its-like-to-wear-amazons-new-smart-glasses-for-delivery-drivers/",
+        "published_or_updated": "October 26, 2025"
+      },
+      {
+        "claim": "Amazon’s glasses display turns off when the delivery van is moving, according to GeekWire’s report on the system.",
+        "source_title": "What it’s like to wear Amazon’s new smart glasses for delivery drivers",
+        "source_url": "https://www.geekwire.com/2025/what-its-like-to-wear-amazons-new-smart-glasses-for-delivery-drivers/",
+        "published_or_updated": "October 26, 2025"
+      },
+      {
+        "claim": "GeekWire reported that imagery and sensor data from the glasses can contribute to Amazon’s mapping efforts, including identifying parking spots, building entrances and walking routes; Amazon said personally identifiable information such as faces and license plates is blurred or removed before storage or use.",
+        "source_title": "What it’s like to wear Amazon’s new smart glasses for delivery drivers",
+        "source_url": "https://www.geekwire.com/2025/what-its-like-to-wear-amazons-new-smart-glasses-for-delivery-drivers/",
+        "published_or_updated": "October 26, 2025"
+      },
+      {
+        "claim": "Amazon says camera-based technology in its branded vans monitors behaviors including speed control, driver focus, seat-belt use and adherence to road signs; if unsafe behaviors continue, the driver’s Delivery Service Partner may be notified.",
+        "source_title": "Amazon’s 2024 workplace safety performance shows annual improvement",
+        "source_url": "https://www.aboutamazon.com/news/workplace/amazon-workplace-safety-performance-2024",
+        "published_or_updated": "Published 2025"
+      }
+    ],
+    "platform_demand": {
+      "query": "Amazon AI smart glasses delivery drivers 20,000 2027 October 2026",
+      "score": 88.3,
+      "verdict": "pass",
+      "recent_videos": 67,
+      "median_views_per_day": 358709.53,
+      "top_views_per_day": 4485716.48,
+      "market_coverage": 4,
+      "title_query_overlap": 0.2222,
+      "measured_at": "2026-10-12T07:03:04.129148+00:00",
+      "signal_type": "youtube-most-popular-seed-proxy"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.83,
+      "true_peak_dbtp": -1.7,
+      "loudness_range": 2.1
+    },
+    "editorial": {
+      "beats": 22,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-10-12T18:10:07.299325+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri-sun"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-short-2026-10-12",
+    "created_at": "2026-10-12T18:10:08.503213+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-10-12T11:00:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "b38e5abaee980ee0fd1aa5c18544d6b9f1c84e15bb07dad31ee7d12e69611fd0",
+        "bytes": 15357161
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "3c732b9367bba019342dae524b41f0070bc78186732327e8fbca881940029b47",
+        "bytes": 1789941
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "be928881a9dd3c050a7676752ff8cb8520ea24e5b2050c7810cd2cdaccfdf7a3",
+        "bytes": 1067
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "7bffb39ea8d48cc2f37d6a912385ed3e141c83c3cbed38b575d7a4561923c74a",
+        "bytes": 2503
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "a8f3aab9528e8b4bf679a2ab1e1d3cbfcd647e43436238232faf12fa6e7e864d",
+        "bytes": 635
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "0095185e24ca476140e543c6f9a1a56d1436b1be1eae9afa537377cf3b721a95",
+        "bytes": 4241
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "678140779bba2e91fcb33a95de33aea71f2cbbed4011049fbe64e353d1870954",
+        "bytes": 394
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "28391a7f65c1de461f8b95c5ae468e14daed5c2325804777a148b4f6d43514fb",
+        "bytes": 276
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 33261.0,
+      "cached_input_units": 0.0,
+      "output_units": 1876.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008903,
+      "created_at": "2026-10-12T07:03:04.130702+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-12T07:03:04.132583+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 21948.0,
+      "cached_input_units": 0.0,
+      "output_units": 1721.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006455,
+      "created_at": "2026-10-12T07:03:40.853863+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-12T07:03:40.855527+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 3519.0,
+      "cached_input_units": 0.0,
+      "output_units": 3168.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004505,
+      "created_at": "2026-10-12T07:04:09.939583+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 5133.0,
+      "cached_input_units": 2329.0,
+      "output_units": 3932.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005326,
+      "created_at": "2026-10-12T07:04:43.032624+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 5285.0,
+      "cached_input_units": 2329.0,
+      "output_units": 4359.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005869,
+      "created_at": "2026-10-12T07:05:21.665363+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1442.0,
+      "cached_input_units": 0.0,
+      "output_units": 1780.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002424,
+      "created_at": "2026-10-12T18:02:42.625866+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T18:02:57.050080+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T18:03:11.443720+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T18:03:26.292375+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T18:03:40.016824+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T18:03:55.164098+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T18:04:09.259874+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T18:04:23.954523+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-12T18:04:37.209185+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 409.0,
+      "cached_input_units": 0.0,
+      "output_units": 381.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000539,
+      "created_at": "2026-10-12T18:09:23.760690+00:00"
+    },
+    {
+      "stage": "thumbnail",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-10-12T18:09:52.912916+00:00"
+    }
+  ],
+  "recorded_at": "2026-10-12T18:10:14.551036+00:00"
+}

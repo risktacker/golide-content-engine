@@ -3,3 +3,4 @@
 crypto  # owner, 2026-10-06: "crypto agility" (said in the recording)
 app  # seen in your recording and the research sources
 wellbeing  # seen in your recording and the research sources
+eyewear  # seen in your recording

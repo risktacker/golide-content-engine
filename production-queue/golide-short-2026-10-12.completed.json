@@ -146,5 +146,6 @@
     "measured_at": "2026-10-12T07:03:04.129148+00:00",
     "signal_type": "youtube-most-popular-seed-proxy"
   },
-  "selected_topic_source": "https://www.aboutamazon.com/news/transportation/smart-glasses-amazon-delivery-drivers"
+  "selected_topic_source": "https://www.aboutamazon.com/news/transportation/smart-glasses-amazon-delivery-drivers",
+  "owner_voice_media_ref": "r2://temp/2026/10/12/0a756ec496f0456eb580c5983dffe5f4-Mapping-v2.wav"
 }
