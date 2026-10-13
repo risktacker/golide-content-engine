@@ -90,3 +90,13 @@ This is the standard for every Short and long video. Don't change any of it with
 ## Light transition and dot background (locked 2026-10-09, owner approved)
 - Picture to picture: the old drawing breaks into points of light that travel in a soft arc and land as the next drawing, which forms as they arrive. On the way the points change colour from the current scene's accent to the next scene's accent. The first picture of a video is still drawn by the pen.
 - Background: the charcoal vignette, haze and stars, plus a faint grey dot grid (one dot every 1/27 of the short side, about 20 levels above black, dimmer toward the edges), just strong enough to survive phone compression and barely noticed.
+
+## Owner review 2026-10-13 (locked)
+- Scripts sound human: never two sentences in a row opening with the same word, "So" at most twice, follow line and closing line both bridged, no AI phrases.
+- Long videos give the viewer something to do: one chapter of 3 to 5 concrete steps ("First, ... Second, ..."); takeaways are actions.
+- Topics: AI and automation across the whole industry, trending first; never the same company as main subject twice in five.
+- YouTube thumbnails: IG-cover style, one bright, sharply defined hero object on black, no people, avatars or paper-cut figures; 2 to 4 big words typeset on the left, the punch in gold.
+- SEO on every platform: summary, 12 to 15 trending keywords comma separated, chapters, 5 to 8 hashtags; YouTube 21+ tags.
+- Static hooks: no formula hooks ("Most people never notice...", "You're treating..."), never opening like a recent hook.
+- Drawings never sit still: after the pen, a steady push-in, slow drift and a soft light running along the lines every few seconds.
+- Long videos also go to Instagram.
