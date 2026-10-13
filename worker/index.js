@@ -13,7 +13,7 @@ const ADMIN_EMAILS = new Set(["esiahkapinga@gmail.com", "esiahsbusiness@gmail.co
 const ROUTES = {
   post: ["instagram", "facebook", "linkedin", "x"],
   short: ["instagram", "facebook", "linkedin", "youtube"],
-  long: ["youtube", "facebook", "linkedin"],
+  long: ["youtube", "instagram", "facebook", "linkedin"],
 };
 const LANES = new Set(["awareness","authority","proof","story","conversion","education","flexible"]);
 const LIFECYCLE_WEIGHT = { IDEA:20, PRE_LAUNCH:75, NEW:100, ACTIVE:55, MATURE:20, PAUSED:0 };

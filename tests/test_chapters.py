@@ -23,7 +23,10 @@ class ChapterTests(unittest.TestCase):
     def test_todays_plan_is_a_lesson_in_chapters(self):
         # Flow is no longer asserted here: the 2026-10-09 narration rule rightly
         # flags this plan's list-style action section.
-        self.assertEqual(chapter_problems(self.plan, "long"), [])
+        # 2026-10-13: the only remaining gap in this older plan is the practical steps chapter.
+        problems = chapter_problems(self.plan, "long")
+        self.assertEqual(len(problems), 1)
+        self.assertIn("3 to 5 concrete steps", problems[0])
 
     def test_display_has_headings_but_spoken_text_does_not(self):
         display, spoken = script_display(self.plan), script_text(self.plan)

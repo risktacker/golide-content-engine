@@ -59,8 +59,8 @@ def upload_media(store, path: Path, name: str, content_type: str, bridge=None, k
 
 def reels_payload(*, content_id: str, metadata: dict[str, Any], video_ref: str, cover_ref: str | None,
                   youtube_video_id: str, owner_voice_ref: str) -> dict[str, Any]:
-    caption = (str(metadata.get("title", "")).strip() + "\n\n"
-               + str(metadata.get("description", "")).strip())[:2100]
+    from ..youtube_metadata import social_caption
+    caption = social_caption(str(metadata.get("title", "")), metadata, 2100)
     cover = [f"cover:{cover_ref}"] if cover_ref else []
     return {
         "id": content_id,
@@ -112,9 +112,11 @@ def publish_reels(*, bridge, store, publisher_factory, production_id: str, video
 def long_social_payload(*, content_id: str, metadata: dict[str, Any], video_ref: str,
                         youtube_video_id: str, owner_voice_ref: str, publish_at: str,
                         cover_ref: str | None = None) -> dict[str, Any]:
-    """A long video as a native Facebook video and LinkedIn video at YouTube's release time."""
+    """A long video at YouTube's release time as a native Facebook video, a LinkedIn
+    video and (owner direction 2026-10-13) an Instagram Reel."""
     title = str(metadata.get("title", "")).strip()
-    caption = (title + "\n\n" + str(metadata.get("description", "")).strip())[:2900]
+    from ..youtube_metadata import social_caption
+    caption = social_caption(title, metadata, 2900)
     return {
         "id": content_id,
         "content_class": "long",
@@ -133,6 +135,9 @@ def long_social_payload(*, content_id: str, metadata: dict[str, Any], video_ref:
              "parts": [f"cover:{cover_ref}"] if cover_ref else []},
             {"platform": "linkedin", "title": "", "body": caption, "media_ref": video_ref,
              "parts": [f"cover:{cover_ref}"] if cover_ref else []},
+            # Instagram captions stop at 2,200 characters.
+            {"platform": "instagram", "title": "", "body": social_caption(title, metadata, 2200), "media_ref": video_ref,
+             "parts": [f"cover:{cover_ref}"] if cover_ref else []},
         ],
     }
 
@@ -140,7 +145,7 @@ def long_social_payload(*, content_id: str, metadata: dict[str, Any], video_ref:
 def queue_long_social(*, bridge, store, production_id: str, video: Path, metadata: dict[str, Any],
                       youtube_video_id: str, owner_voice_ref: str, publish_at: str,
                       cover: Path | None = None) -> dict[str, Any]:
-    """Upload the long video and queue Facebook + LinkedIn for the release time."""
+    """Upload the long video and queue Instagram, Facebook and LinkedIn for the release time."""
     video_ref = upload_media(store, video, f"{production_id}.mp4", "video/mp4", bridge)
     cover_ref = None
     if cover is not None and Path(cover).exists():

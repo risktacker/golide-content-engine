@@ -127,7 +127,8 @@ class LongVideoRouteTests(unittest.TestCase):
         self.assertEqual(payload["content_class"], "long")
         self.assertEqual(payload["scheduled_at"], "2026-10-10T17:30:00Z")
         by = {v["platform"]: v for v in payload["variants"]}
-        self.assertEqual(set(by), {"youtube", "facebook", "linkedin"})
+        self.assertEqual(set(by), {"youtube", "instagram", "facebook", "linkedin"})
+        self.assertLessEqual(len(by["instagram"]["body"]), 2200)
         self.assertEqual(by["facebook"]["title"], "T")  # titled = normal video, not a Reel
         self.assertEqual(by["youtube"]["parts"], ["youtube:YT"])
 

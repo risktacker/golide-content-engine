@@ -196,7 +196,8 @@ class InstagramProvider(SocialProvider):
         # Reels need server-side processing (often 30 to 90 seconds); images
         # are ready almost at once.
         if "video_url" in payload:
-            self._wait_until_ready(container_id, attempts=max(self.poll_attempts, 60), seconds=max(self.poll_seconds, 5.0))
+            # A long video can take several minutes to process.
+            self._wait_until_ready(container_id, attempts=max(self.poll_attempts, 150), seconds=max(self.poll_seconds, 5.0))
         else:
             self._wait_until_ready(container_id)
         published = self._publish_container(container_id)

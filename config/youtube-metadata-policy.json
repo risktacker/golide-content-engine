@@ -16,14 +16,20 @@
   },
   "titles": {
     "short": {
-      "target_characters": [38, 60],
+      "target_characters": [
+        38,
+        60
+      ],
       "maximum_characters": 100,
       "emoji_default": false,
       "hashtags_in_title": false,
       "formula": "specific subject + surprising consequence or unanswered question"
     },
     "long": {
-      "target_characters": [45, 70],
+      "target_characters": [
+        45,
+        70
+      ],
       "maximum_characters": 100,
       "emoji_default": false,
       "hashtags_in_title": false,
@@ -33,15 +39,31 @@
   "descriptions": {
     "maximum_characters": 5000,
     "short": {
-      "structure": ["one-sentence promise", "one-sentence context", "sources-or-attribution", "hashtags"],
+      "structure": [
+        "two-paragraph summary",
+        "10+ comma-separated trending keywords",
+        "hashtags"
+      ],
       "paste_full_script": false,
-      "hashtags": [0, 3],
+      "hashtags": [
+        5,
+        8
+      ],
       "chapters": false
     },
     "long": {
-      "structure": ["two-sentence hook-and-summary", "chapters", "sources", "music-and-asset-attribution", "hashtags"],
+      "structure": [
+        "two-to-three paragraph summary",
+        "10+ comma-separated trending keywords",
+        "chapters",
+        "music-and-asset-attribution",
+        "hashtags"
+      ],
       "paste_full_script": false,
-      "hashtags": [0, 3],
+      "hashtags": [
+        5,
+        8
+      ],
       "chapters": true,
       "chapter_first_timestamp": "00:00",
       "chapter_minimum_count": 3,
@@ -49,11 +71,24 @@
     }
   },
   "tags": {
-    "role": "misspellings-and-topic-clarity-not-primary-discovery",
-    "target_count": [5, 12],
+    "role": "discovery-and-topic-clarity (owner direction 2026-10-13: more than 20 tags)",
+    "target_count": [
+      22,
+      30
+    ],
     "maximum_characters_total": 500,
-    "include": ["exact topic", "named entities", "common synonym", "common misspelling when relevant", "GOLIDE"],
-    "forbidden": ["unrelated trending terms", "competitor names used only for traffic", "repeated keyword variants"]
+    "include": [
+      "exact topic",
+      "named entities",
+      "common synonym",
+      "common misspelling when relevant",
+      "GOLIDE"
+    ],
+    "forbidden": [
+      "unrelated trending terms",
+      "competitor names used only for traffic",
+      "repeated keyword variants"
+    ]
   },
   "upload_defaults": {
     "audience": "not-made-for-kids",

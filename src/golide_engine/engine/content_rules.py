@@ -15,6 +15,8 @@ whole voice of the engine can be reviewed in one file.
 
 from __future__ import annotations
 
+import re
+
 # ---------------------------------------------------------------------------
 # Shared voice
 # ---------------------------------------------------------------------------
@@ -33,13 +35,20 @@ VOICE
 
 HOOK_RULES = """\
 HOOK (the line on the image and the first line of every caption)
-- 4 to 9 words. Must stop the scroll on its own, with no context.
-- Use one of these proven shapes:
-  1. Hidden truth: "Most people never notice this about [X]."
-  2. Reframe: "[Common belief] isn't the problem. [Real cause] is."
-  3. Ladder: "The [N] levels of [skill]. Most stop at 1."
-  4. Too late: "[N] [things] most people learn too late."
-  5. Direct call-out: "You're training yourself to [bad outcome]."
+Owner direction 2026-10-13: no formula hooks. "Most people never notice this about
+X" and "You're treating X like Y" were used so often they read as AI. Every hook is
+written fresh for THIS story.
+- 4 to 10 words. It must stop the scroll on its own and sound like a person said it.
+- Lead with the news itself when there is news: name the company, product or person
+  and what happened ("Apple just put an AI doctor in your watch.", "Nvidia is now
+  worth more than most countries."). A surprising true number, a sharp consequence
+  ("Your next job interview may be with a bot."), a clean contrast, or a question
+  people will argue about are all good. Choose whichever fits the story best.
+- Never use these worn shapes: "Most people never notice...", "You're treating...",
+  "You're trusting...", "...people learn too late", "The N levels of...", "Here's
+  why...", "Nobody is talking about...", "This changes everything".
+- Never start with the same two words as any hook in RECENT_POSTS, and never reuse a
+  recent hook's sentence shape.
 - Pick the ONE phrase in the hook that carries the meaning (1 to 3 words). This is the
   emphasis phrase: it is rendered bold with a soft glow. It must appear in the hook exactly.
 """
@@ -130,9 +139,21 @@ NEVER REPEAT YOURSELF
 TREND_TASTE_RULES = """\
 WHAT TO TALK ABOUT: THE AI AND TECH GIST EVERYONE IS DISCUSSING
 - Use web search. Pick the story people are actually talking about RIGHT NOW (last 7
-  days): a launch, a viral demo, a big move or statement from a company or leader
-  everyone knows (OpenAI, Google, Meta, Apple, Microsoft, Nvidia, Tesla, xAI, Amazon,
-  Samsung; Sam Altman, Mark Zuckerberg, Elon Musk, Jensen Huang, Sundar Pichai), a
+  days). The lane is AI and automation, seen across the WHOLE tech industry, not one
+  company (owner direction 2026-10-13: "the companies are not just OpenAI"). Look wide:
+  AI labs (OpenAI, Anthropic, Google DeepMind, Meta, xAI, Mistral, DeepSeek, Alibaba
+  Qwen), big tech (Apple, Microsoft, Amazon, Google, Samsung), chips (Nvidia, AMD,
+  Intel, TSMC, Qualcomm), automation and work tools (Zapier, UiPath, Salesforce,
+  ServiceNow, Notion, Canva, Adobe, Figma), robots and self-driving (Tesla Optimus,
+  Figure, Boston Dynamics, Unitree, Waymo), apps people use daily (TikTok, YouTube,
+  WhatsApp, Spotify, Netflix, Uber), money and shopping tech (Stripe, Shopify, PayPal),
+  phones, wearables and smart glasses, and what known leaders said or did.
+- Check what is actually trending before choosing: tech news front pages, Google
+  Trends, YouTube and X tech conversations, Hacker News, Product Hunt.
+- Spread it out: never make the same company the main subject twice in the last five
+  RECENT topics, and never repeat a recent angle. If OpenAI was recent, look elsewhere
+  unless their story is clearly the biggest one this week.
+- Pick the story with the widest reach: a launch, a viral demo, a big company move, a
   change that reaches ordinary people's phones, jobs, money, school or daily life, or a
   debate where people have opinions.
 - The test: would a curious person who is NOT in tech stop scrolling, understand it in
@@ -176,13 +197,23 @@ PRODUCT_SLIDE_EMPTY = """\
 """
 
 
+STATIC_HUMAN_RULES = """\
+SOUND HUMAN (owner direction 2026-10-13)
+- Captions and slides must read like a sharp person wrote them today, not a template.
+  Vary sentence openings; never start two slides or two caption sentences with the same
+  word. No "Here's the thing", "Let's dive in", "game-changer", "unlock", "landscape",
+  "delve", "in today's world", "seamless", "revolutionize".
+- Name real companies, products and people from the story instead of generic "AI".
+"""
+
+
 def static_post_instructions(slot: str, has_product: bool = True) -> str:
     lane = (POST_A_TREND_RULES if slot == "post-a" else POST_B_PRODUCT_RULES) + (
         PRODUCT_SLIDE_RULES if has_product else PRODUCT_SLIDE_EMPTY)
     return (
         "You write one static social post for GOLIDE, a marketplace for digital products, "
         "software and tools. The operator supplies no topic.\n\n"
-        + lane + "\n" + VOICE_RULES + "\n" + HOOK_RULES + "\n"
+        + lane + "\n" + VOICE_RULES + "\n" + HOOK_RULES + "\n" + STATIC_HUMAN_RULES + "\n"
         + IMAGE_CONCEPT_RULES + "\n" + STATIC_STRUCTURE_RULES
     )
 
@@ -249,6 +280,14 @@ The viewer must always know where they are: "now we're on this, next we're on th
   bridge from the last chapter) and ENDS with a one-line takeaway before the next
   chapter starts. Vary the signposts; never open two chapters the same way. The
   chapter title is never read aloud as a label.
+- THE VIEWER LEAVES WITH SOMETHING (owner direction 2026-10-13): a long video is not
+  just something to watch. Make one numbered chapter a practical chapter: 3 to 5
+  concrete steps the viewer can actually do this week, said aloud in order ("First,
+  ... Second, ... Third, ..." or "Step one, ..."). Each step is specific: what to open,
+  check, ask, switch on or switch off, and why, in one or two sentences. Other chapters
+  may also give directions where the topic allows. Every chapter's closing takeaway is
+  phrased as something to do or to check, not only a fact to know. The CLOSE recaps the
+  steps in one sentence before the follow call-out.
 - Keep chapters balanced: none longer than a third of the script.
 - Use concrete, true examples inside the chapters; the CLOSE gives the one sentence
   to remember, one small action for this week, a line that loops back to the
@@ -281,10 +320,15 @@ FOLLOW CALL-OUT (owner direction 2026-10-07: viewers should follow and come back
 - Placement and shape (owner direction 2026-10-07, from the reference channel's
   endings): the call-out comes at the END, only after the value is given.
   1. the takeaway and the small action come first;
-  2. then the follow sentence, starting with "So" ("So follow the channel, ...");
-  3. then ONE short closing sentence (one or two lines) that pays off the follow
-     or loops back to the opening idea ("...because tomorrow there is a new one
-     waiting for you"). Nothing else after it.
+  2. then the follow sentence, joined to the action before it with a connective
+     that the sentence before it did NOT start with (owner direction 2026-10-13:
+     never two "So" sentences in a row). Vary it from video to video, for example
+     "And if this helped, follow the channel...", "That's exactly why you should
+     follow us...", "If you want the next one, follow the channel...";
+  3. then ONE short closing sentence (one or two lines) that is also joined to the
+     follow sentence with a connective ("Because...", "And until then...", "Which
+     leaves one question...") and pays off the follow or loops back to the opening
+     picture. Never a cold question with no bridge. Nothing else after it.
   * short and long alike: exactly ONE follow sentence, one or two lines.
 """
 
@@ -350,6 +394,27 @@ LINE RULES (lines are how the speech is split for the screen; they are NOT sente
 """
 
 
+HUMANIZER_RULES = """\
+SOUND HUMAN, NOT AI (owner direction 2026-10-13)
+- Read it aloud in your head: it must sound like one real person talking, not a
+  generated script.
+- Never start two sentences in a row with the same word. Use "So" to open a
+  sentence at most twice in the whole script, and never back to back. Rotate the
+  bridges: and, but, because, that's why, which means, then, now, instead, until,
+  in other words, here's the catch, think about it, the thing is, even so, still.
+- Every sentence, including the follow call-out and the closing line, is joined to
+  the one before it. No sentence just starts cold.
+- Vary sentence length and rhythm; a short punch now and then, never a metronome.
+- Banned AI phrases: "in today's world", "let's dive in", "dive into", "delve",
+  "game-changer", "game changer", "revolutionize", "unlock", "landscape", "navigate
+  the", "it's important to note", "in conclusion", "buckle up", "the future is here",
+  "stay tuned", "at the end of the day", "seamless", "harness the power".
+- No stacked rule-of-three lists, no "It's not X, it's Y" more than once, no
+  rhetorical question followed by its own answer more than once.
+- Concrete and specific beats abstract: names, numbers from the research, what a
+  person actually sees or does.
+"""
+
 SCRIPT_VOICE_RULES = """\
 VOICE
 - Speak to the viewer as "you". Plain words a smart 16-year-old understands. Confident,
@@ -378,6 +443,37 @@ BRIDGES = (
     "only", "what if", "you know", "or", "yet", "this means", "that way", "otherwise",
     "until now", "from there", "it means", "for each", "within", "before", "while", "meanwhile", "suddenly",
 )
+
+AI_PHRASES = (
+    "in today's world", "let's dive in", "dive into", "delve", "game-changer", "game changer",
+    "revolutionize", "revolutionise", "unlock", "landscape", "navigate the", "it's important to note",
+    "in conclusion", "buckle up", "the future is here", "stay tuned", "at the end of the day",
+    "seamless", "harness the power",
+)
+
+
+WORN_HOOKS = (
+    "most people never notice", "most people don't notice", "you're treating", "you are treating",
+    "you're trusting", "you are trusting", "learn too late", "the levels of", "here's why",
+    "nobody is talking about", "this changes everything",
+)
+
+
+def hook_problems(hook: str, recent_hooks: list[str]) -> list[str]:
+    """A fresh hook: no worn formula, and not opening like a recent one."""
+    text = " ".join(hook.lower().replace("\u2019", "'").split())
+    problems = [f'the hook uses a worn formula ("{w}"); write a fresh hook for this story'
+                for w in WORN_HOOKS if w in text]
+    if re.search(r"\bthe \d+ levels\b", text):
+        problems.append("the hook uses the worn 'levels' formula; write a fresh hook")
+    head = " ".join(text.split()[:2])
+    for old in recent_hooks:
+        old_head = " ".join(" ".join(str(old).lower().replace("\u2019", "'").split()).split()[:2])
+        if head and head == old_head:
+            problems.append(f'the hook opens like a recent one ("{old}"); open it differently')
+            break
+    return problems
+
 
 def _sentences(lines: list[str]) -> list[str]:
     sentences, current = [], []
@@ -427,6 +523,25 @@ def flow_problems(plan: dict) -> list[str]:
     early = set().union(*(words(x) for x in sentences[:3])) if sentences else set()
     if len(sentences) >= 6 and not {w for w in words(sentences[-1]) & early if len(w) > 3}:
         problems.append("the final sentence must return to the everyday picture or idea from the opening")
+    # 2026-10-13 humanizer checks: same opener twice in a row, "So" overuse,
+    # a cold (unbridged) closing line, and AI-sounding phrases.
+    first_words = [sent.lower().replace(",", " ").split()[0] for sent in sentences if sent.split()]
+    twins = sorted({a for a, b in zip(first_words, first_words[1:]) if a == b})
+    if twins:
+        problems.append("two sentences in a row start with the same word (" + ", ".join(twins)
+                        + "); change one opener so each sentence is bridged differently")
+    if first_words.count("so") > 2:
+        problems.append(f'{first_words.count("so")} sentences start with "So"; use it at most twice and rotate the bridges')
+    follow_idx = [i for i, line in enumerate(plan.get("lines", [])) if line.get("follow") is True]
+    if follow_idx and len(sentences) >= 2:
+        last = sentences[-1]
+        if not _bridged(last) and not last.lower().startswith(("because", "and", "which", "until", "then")):
+            problems.append("the closing sentence after the follow call-out starts cold; join it with a bridge "
+                            "(Because..., And until then..., Which leaves...)")
+    text_all = " ".join(lines).lower().replace("\u2019", "'")
+    used = [phrase for phrase in AI_PHRASES if phrase in text_all]
+    if used:
+        problems.append("these phrases sound machine-written, rewrite them: " + ", ".join(used))
     openings = [" ".join(text.lower().split()[:2]) for text in lines]
     repeats = sum(1 for a, b in zip(openings, openings[1:]) if a == b)
     if repeats >= 2:
@@ -434,10 +549,15 @@ def flow_problems(plan: dict) -> list[str]:
     return problems
 
 
+STEP_MARKERS = re.compile(r"\b(step (one|two|three|four|five|1|2|3|4|5)|first,|second,|third,|fourth,|fifth,|finally,)", re.I)
+
+
 def chapter_problems(plan: dict, format_name: str) -> list[str]:
     """A long video must read as a lesson in clear stages."""
     if format_name != "long":
         return []
+    spoken = " ".join(str(line.get("text", "")) for line in plan.get("lines", []))
+    steps_missing = len(STEP_MARKERS.findall(spoken)) < 3
     chapters = plan.get("chapters") or []
     numbered = [c for c in chapters if str(c.get("number", "")).strip()]
     lines = [line for line in plan.get("lines", []) if str(line.get("text", "")).strip()]
@@ -456,6 +576,9 @@ def chapter_problems(plan: dict, format_name: str) -> list[str]:
             share = sum(w for w, o in zip(words, owners) if o == index) / total
             if str(chapter.get("number", "")).strip() and share > 0.36:
                 problems.append(f"chapter {chapter.get('number')} {chapter.get('title')} is too long; balance the chapters")
+    if steps_missing:
+        problems.append("give the viewer something to do: one chapter with 3 to 5 concrete steps said in order "
+                        "(First, ... Second, ... Third, ...)")
     return problems
 
 
@@ -499,7 +622,7 @@ def script_instructions(format_name: str) -> str:
         f"LENGTH: {target['words_min']} to {target['words_max']} spoken words "
         f"(about {target['seconds']} seconds). Do not go over.\n\n"
         + (LONG_STRUCTURE_RULES if format_name == "long" else SCRIPT_STRUCTURE_RULES + "\n" + SHORT_CHAPTER_RULE)
-        + "\n" + TEACHING_STYLE_RULES + "\n" + FOLLOW_RULES + "\n" + SCRIPT_LINE_RULES + "\n" + SCRIPT_VOICE_RULES
+        + "\n" + TEACHING_STYLE_RULES + "\n" + FOLLOW_RULES + "\n" + SCRIPT_LINE_RULES + "\n" + HUMANIZER_RULES + "\n" + SCRIPT_VOICE_RULES
         + "\n" + SCRIPT_OUTPUT_RULES
     )
 

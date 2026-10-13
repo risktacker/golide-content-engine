@@ -225,6 +225,25 @@ class StaticAutomation:
             max_output_tokens=4500,
         )
         draft = dict(output.value)
+        # 2026-10-13: a worn or repeated hook gets one rewrite with the reason.
+        from ..engine.content_rules import hook_problems
+        recent_hooks = [str(item.get("hook") or item.get("title") or "") for item in recent]
+        problems = hook_problems(str(draft.get("image_hook", "")), recent_hooks)
+        if problems:
+            print(json.dumps({"status": "hook_rewrite", "hook": draft.get("image_hook"), "problems": problems}))
+            try:
+                output = text.generate_json(
+                    instructions,
+                    body + "\n\nYOUR PREVIOUS DRAFT\n" + json.dumps(draft, ensure_ascii=False)
+                    + "\n\nREWRITE IT with a fresh hook. Fix: " + "; ".join(problems)
+                    + ". Keep the story, facts and slides unless they repeat the same formula.",
+                    STATIC_DRAFT_SCHEMA,
+                    web_search=False,
+                    max_output_tokens=4500,
+                )
+                draft = dict(output.value)
+            except Exception as exc:  # the first draft still goes out
+                print(json.dumps({"status": "hook_rewrite_failed", "error": str(exc)[:300]}))
         draft["_request_id"] = output.request_id
         return draft
 

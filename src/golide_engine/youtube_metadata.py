@@ -77,3 +77,79 @@ def validate_upload_metadata(metadata: dict[str, Any], policy: dict[str, Any]) -
             validate_chapters(chapters)
     elif chapters:
         raise YouTubeMetadataError("Shorts do not use manual chapters")
+
+
+# ---------------------------------------------------------------------------
+# SEO layout (owner direction 2026-10-13), the same on every platform:
+#   summary paragraphs
+#   10+ trending keywords, comma separated
+#   chapters (long videos, added from the real recording)
+#   hashtags
+# YouTube also gets more than 20 tags.
+# ---------------------------------------------------------------------------
+
+def _clean_hashtags(items: list[str]) -> list[str]:
+    out: list[str] = []
+    for item in items:
+        word = "".join(ch for ch in str(item) if ch.isalnum())
+        if word and ("#" + word).casefold() not in {h.casefold() for h in out}:
+            out.append("#" + word)
+    return out[:8]  # YouTube ignores every hashtag when there are more than 15
+
+
+def _clean_keywords(items: list[str], limit: int = 20) -> list[str]:
+    seen: set[str] = set()
+    out: list[str] = []
+    for item in items:
+        word = " ".join(str(item).replace(",", " ").replace("#", "").split())
+        if word and word.casefold() not in seen:
+            seen.add(word.casefold())
+            out.append(word)
+    return out[:limit]
+
+
+def seo_body(description: str) -> str:
+    """The summary paragraphs only: no hashtag lines, no keyword or chapter lines."""
+    rows = [r for r in description.splitlines() if not r.strip().startswith("#")]
+    return "\n".join(rows).strip()
+
+
+def compose_description(body: str, keywords: list[str], hashtags: list[str]) -> str:
+    parts = [seo_body(body)]
+    keys = _clean_keywords(keywords)
+    if keys:
+        parts.append(", ".join(keys))
+    tags = _clean_hashtags(hashtags)
+    if tags:
+        parts.append(" ".join(tags))
+    return "\n\n".join(p for p in parts if p)
+
+
+def fit_tags(tags: list[str], keywords: list[str], limit_chars: int = 500, minimum: int = 21) -> list[str]:
+    """More than 20 unique tags, inside YouTube's 500-character total."""
+    pool = _clean_keywords(list(tags) + list(keywords) + ["GOLIDE", "AI news", "tech news", "artificial intelligence",
+                                                          "AI explained", "automation", "technology", "AI tools",
+                                                          "AI trends", "future of AI", "tech explained",
+                                                          "machine learning", "AI update", "AI technology",
+                                                          "new technology", "AI for beginners"], limit=60)
+    pool = [t for t in pool if len(t) <= 60]
+    out: list[str] = []
+    for tag in pool:
+        if sum(len(t) for t in out + [tag]) + len(out) <= limit_chars:
+            out.append(tag)
+    return out
+
+
+def social_caption(title: str, metadata: dict, limit: int) -> str:
+    """Title, summary, keywords, chapters and hashtags, trimming only the summary to fit."""
+    keys = ", ".join(_clean_keywords(metadata.get("keywords") or []))
+    tags = " ".join(_clean_hashtags(metadata.get("hashtags") or []))
+    chapters = "\n".join(metadata.get("chapters") or [])
+    body = seo_body(str(metadata.get("seo_body") or metadata.get("description", "")))
+    if not keys and not tags:  # older metadata: keep the full description as it was
+        return (title.strip() + "\n\n" + str(metadata.get("description", "")).strip())[:limit]
+    tail = "\n\n".join(p for p in (keys, ("Chapters\n" + chapters) if chapters else "", tags) if p)
+    room = max(0, limit - len(title) - len(tail) - 6)
+    if len(body) > room:
+        body = body[:room].rsplit(" ", 1)[0].rstrip(",.;:") + "..."
+    return "\n\n".join(p for p in (title.strip(), body, tail) if p)[:limit]

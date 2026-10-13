@@ -140,10 +140,10 @@ COVER (the picture people see before they press play; owner direction 2026-10-07
 - "gold": the 1 to 3 words of that hook that carry the punch, copied exactly.
 - "scene": the number (1 = first scene) of the scene whose drawing best stands for
   the whole video.
-- "thumbnail_moment": one vivid sentence for the YouTube thumbnail artist: the
-  decisive, slightly playful moment of the story, not the topic (for example "a
-  robot hand reaching for a shopping cart just as a store shutter slams down on
-  it"). One hero subject, a clear action, a little irony or surprise.
+- "thumbnail_moment": one sentence for the YouTube thumbnail artist naming ONE
+  iconic object that stands for the whole story and what it is doing (for example
+  "a glowing shopping cart rolling itself through a store door that is slamming
+  shut"). An object or machine, never a person, face, avatar or character.
 
 If the lines are divided into chapters (marked "== CHAPTER ... =="), a scene
 never runs across a chapter mark: every chapter starts with a new scene.
@@ -461,11 +461,19 @@ def fit(drawing: Drawing, region: tuple[float, float, float, float]):
 
 
 def draw_illustration(d, drawing: Drawing, region, reveal: float, breathe: float = 0.0, zoom: float = 1.0,
-                      linear: bool = False) -> None:
+                      linear: bool = False, settled: float = -1.0) -> None:
+    """settled: seconds since the drawing finished (-1 while it is still drawing)."""
     from .primitives import pen_light
 
     s, cx, cy, ox, oy = fit(drawing, region)
-    s *= (1.0 + 0.025 * breathe) * zoom  # slow push-in over the scene
+    # Owner direction 2026-10-13: a finished drawing never sits still. A steady
+    # push-in over the scene plus a slow, small drift keeps it alive.
+    s *= (1.0 + LIFE_PUSH * breathe) * zoom
+    if settled > 0:
+        ease_in = min(1.0, settled / 1.5)
+        span_x, span_y = (region[2] - region[0]), (region[3] - region[1])
+        ox += LIFE_DRIFT * span_x * ease_in * math.sin(d.t * 0.33 + 0.7)
+        oy += LIFE_DRIFT * 0.7 * span_y * ease_in * math.sin(d.t * 0.27 + 2.1)
     accent = "accent_" + drawing.accent if ("accent_" + drawing.accent) in d.colors else "gold"
     _paint_fills(d, drawing, accent, s, cx, cy, ox, oy, reveal)
 
@@ -531,6 +539,45 @@ def draw_illustration(d, drawing: Drawing, region, reveal: float, breathe: float
             d.stroke(path, "line", width_px, alpha=0.18, hot=True)
     if tip is not None and reveal < 1.0:
         pen_light(d, tip[0], tip[1])
+    if settled > SHIMMER_START:
+        _shimmer(d, drawing, accent, tx, s, settled - SHIMMER_START)
+
+
+# Life after the drawing is finished (owner direction 2026-10-13).
+LIFE_PUSH = 0.06        # push-in across the scene (was 0.025)
+LIFE_DRIFT = 0.012      # drift, as a share of the drawing region
+SHIMMER_START = 0.8     # seconds after the drawing settles
+SHIMMER_PERIOD = 3.6    # a light runs through the drawing this often
+SHIMMER_RUN = 1.8       # ... taking this long, end to end
+
+
+def _shimmer(d, drawing: Drawing, accent: str, tx, s: float, t: float) -> None:
+    """A soft light that runs along the finished drawing's strokes, again and again."""
+    phase = (t % SHIMMER_PERIOD) / SHIMMER_RUN
+    if phase >= 1.0 or not drawing.strokes:
+        return
+    head = phase * drawing.total
+    tail = head - drawing.total * 0.18
+    walked = 0.0
+    for stroke in drawing.strokes:
+        start, end = walked, walked + (stroke.length or 1.0)
+        walked = end
+        if end < tail or start > head:
+            continue
+        mid = (start + end) / 2
+        k = max(0.0, 1.0 - abs(head - mid) / (drawing.total * 0.18 + 1e-6))
+        if k <= 0.02:
+            continue
+        mapped = tx(stroke.points)
+        width_px = max(1.6, min(3.4, stroke.width * s * d.unit_px * 0.9))
+
+        def path(c, mapped=mapped):
+            c.move_to(*mapped[0])
+            for p in mapped[1:]:
+                c.line_to(*p)
+
+        color = accent if stroke.gold else "line"
+        d.stroke(path, color, width_px * 1.1, alpha=0.55 * k, hot=True)
 
 
 _FILL_CACHE: dict[tuple[int, str], object] = {}
@@ -589,11 +636,14 @@ def illustration(d) -> None:
         gold = sum(s.length for s in drawing.strokes if s.gold)
         lit = max(0.0, min(1.0, (d.t - ACCENT_DELAY) / ACCENT_DRAW))
         reveal = (drawing.total - gold + gold * lit) / drawing.total
-        draw_illustration(d, drawing, d.region, reveal, breathe=breathe, zoom=d.zoom, linear=True)
+        settled = d.t - (ACCENT_DELAY + ACCENT_DRAW) if lit >= 1.0 else -1.0
+        draw_illustration(d, drawing, d.region, reveal, breathe=breathe, zoom=d.zoom, linear=True,
+                          settled=settled)
         return
     reveal_time = min(max(0.72 * span, 2.5), 16.0, span)
     reveal = d.t / reveal_time
-    draw_illustration(d, drawing, d.region, reveal, breathe=breathe, zoom=d.zoom)
+    settled = d.t - reveal_time if reveal >= 1.0 else -1.0
+    draw_illustration(d, drawing, d.region, reveal, breathe=breathe, zoom=d.zoom, settled=settled)
 
 
 # When the accent of a faded-in scene lights up (seconds after the scene starts).

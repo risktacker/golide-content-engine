@@ -31,5 +31,5 @@ class CoverTests(unittest.TestCase):
     def test_youtube_prompt_uses_the_moment_and_never_text(self):
         prompt = youtube_thumbnail_prompt("Title", "a robot hand reaching for a cart as a shutter slams")
         self.assertIn("shutter slams", prompt)
-        self.assertIn("No words, letters", prompt)
-        self.assertIn("decisive moment", prompt)
+        self.assertIn("NO text, letters", prompt)
+        self.assertIn("No people", prompt)

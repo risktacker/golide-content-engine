@@ -80,8 +80,10 @@ METADATA_SCHEMA = {
         "category_id": {"type": "integer"}, "video_language": {"type": "string"},
         "recording_location": {"type": ["string", "null"]}, "location_is_material": {"type": "boolean"},
         "altered_content": {"type": "boolean"}, "chapters": {"type": "array", "items": {"type": "string"}},
+        "keywords": {"type": "array", "items": {"type": "string"}},
+        "hashtags": {"type": "array", "items": {"type": "string"}},
     },
-    "required": ["title", "description", "tags", "category_id", "video_language", "recording_location", "location_is_material", "altered_content", "chapters"],
+    "required": ["title", "description", "tags", "category_id", "video_language", "recording_location", "location_is_material", "altered_content", "chapters", "keywords", "hashtags"],
     "additionalProperties": False,
 }
 

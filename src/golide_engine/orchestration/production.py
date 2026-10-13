@@ -65,24 +65,25 @@ def render_hold_reason(root: Path, format_name: str) -> str | None:
 
 
 def youtube_thumbnail_prompt(title: str, moment: str = "", accent: str = "warm gold") -> str:
-    """The YouTube thumbnail brief (owner direction 2026-10-07: keep it generated,
-    keep the GOLIDE Black look, make it more fun and more clickable)."""
-    scene = moment.strip() or f"the most surprising, decisive moment of the story behind: {title}"
+    """The YouTube thumbnail brief. Owner direction 2026-10-13: the same art as the
+    Instagram covers (one luminous hero object on black), but bigger, brighter and
+    more defined. No people, avatars or paper-cut figures. The short hook is
+    typeset afterwards by code, so the image itself has no text."""
+    subject = moment.strip() or f"one iconic object that stands for the story behind: {title}"
     return (
-        "Create a scroll-stopping 16:9 YouTube thumbnail, the kind people click on a phone "
-        "without thinking. Show the decisive moment of the story, not the topic: "
-        f"{scene}. "
-        "Make it fun and a little playful: one hero subject caught mid-action, with a clear "
-        "sense of surprise, irony or tension, and bold scale contrast (something tiny next to "
-        "something huge, or very close to the camera). The hero fills the right 55% of the "
-        "frame, large, sharp and lit with a bright rim light; the left side stays calm and "
-        "dark. Locked GOLIDE Black style: deep black background with a faint starfield, "
-        "luminous fine-line illustration blended with cinematic real objects, exactly one "
-        f"glowing accent in {accent}, soft volumetric glow, crisp edges, rich contrast that "
-        "still reads at the size of a thumbnail on a phone. If a person or hand appears they "
-        "are dark-skinned/Black, natural and expressive (a real reaction, not a cartoon). "
-        "No words, letters, numbers, captions, labels, logos or user-interface elements "
-        f"anywhere in the image. Video title for context only: {title}"
+        "16:9 YouTube thumbnail artwork in the GOLIDE Black style. Pure deep black background "
+        "with a very faint starfield. ONE hero object, nothing else: "
+        f"{subject}. "
+        "Render it as luminous neon fine-line illustration fused with a cinematic, polished "
+        "real object: razor-sharp edges, strong rim light, bright saturated glow, glossy "
+        f"highlights, one dominant glowing accent in {accent} with brilliant light bloom and "
+        "a few sparks, so it shines like jewellery against the black. The object is big and "
+        "bold, filling the right 55 percent of the frame, slightly angled toward the camera, "
+        "crisp and readable at phone-thumbnail size. Keep the left 40 percent clean, dark "
+        "and empty for a title. No people, no faces, no hands, no avatars, no characters, "
+        "no paper-cut, low-poly or origami figures, no collage. ABSOLUTELY NO text, letters, "
+        "numbers, labels, logos, watermarks or user-interface elements anywhere in the image. "
+        f"Video title for context only: {title}"
     )
 
 
@@ -134,6 +135,16 @@ class ProductionService:
         voice_cfg = self.providers.config.get("voice", {})
         if voice_cfg.get("provider") != "owner_recording":
             raise RuntimeError("production narration must use the owner's recorded voice")
+
+    @staticmethod
+    def _stamp_thumbnail(work: Path, thumbnail: Path) -> None:
+        """Typeset the cover's punch words (2 to 4) big and bold on the left."""
+        try:
+            from ..vector.thumb_text import stamp_thumbnail
+            cover = (json.loads((work / "visual-plan.json").read_text(encoding="utf-8")).get("cover") or {})
+            stamp_thumbnail(thumbnail, str(cover.get("text", "")), str(cover.get("gold", "")))
+        except Exception as exc:  # the plain artwork still works as a thumbnail
+            print(json.dumps({"status": "thumbnail_text_skipped", "error": str(exc)[:300]}))
 
     @staticmethod
     def _thumbnail_moment(work: Path) -> str:
@@ -1374,12 +1385,28 @@ class ProductionService:
             self._require_absent(metadata_path, "metadata")
             self._reserve(spec, text_model, Usage(input_tokens=max(1, len(script) // 4), output_tokens=12000))
             output = text.generate_json(
-                "Create accurate YouTube metadata for GOLIDE. No hashtags in title. Describe the actual video and place only a few relevant hashtags at the description end. Do not write any timestamps or a chapter list in the description; real chapters are added from the recording. Return chapters as an empty list.",
+                "Create accurate, search-optimised YouTube metadata for GOLIDE. No hashtags in the title. "
+                "description: two or three short paragraphs that describe the actual video in plain, human words "
+                "(no hashtags, no keyword list, no timestamps; those are added separately). "
+                "keywords: 12 to 15 search phrases people are typing right now about this topic (use web search for "
+                "what is trending), most specific first, each 1 to 4 words. "
+                "hashtags: 5 to 8 relevant hashtags without spaces. "
+                "tags: 25 to 30 unique YouTube tags (exact topic, named companies, products and people, common "
+                "synonyms and searches, GOLIDE), each under 30 characters. "
+                "Do not write any timestamps or a chapter list; real chapters are added from the recording. "
+                "Return chapters as an empty list.",
                 f"FORMAT={spec['format']}\nSCRIPT\n{script}", METADATA_SCHEMA,
+                web_search=True,
             )
             metadata = apply_locked_upload_defaults(
                 output.value | {"format": spec["format"]}, policy
             )
+            # 2026-10-13 SEO layout: summary, keywords, (chapters), hashtags; 20+ tags.
+            from ..youtube_metadata import compose_description, fit_tags, seo_body
+            metadata["seo_body"] = seo_body(str(metadata["description"]))
+            metadata["description"] = compose_description(
+                metadata["seo_body"], metadata.get("keywords") or [], metadata.get("hashtags") or [])
+            metadata["tags"] = fit_tags(metadata.get("tags") or [], metadata.get("keywords") or [])
             chapters_path = work / "chapters.json"
             if spec["format"] == "long" and chapters_path.exists():
                 # Real chapter times from the recording replace anything guessed.
@@ -1404,6 +1431,7 @@ class ProductionService:
             if raw_thumbnail.exists() and not thumbnail.exists():
                 # Paid for but not normalised (a crash between the two steps): finish it.
                 normalize_thumbnail(raw_thumbnail, thumbnail)
+                self._stamp_thumbnail(work, thumbnail)
                 return
             self._require_absent(raw_thumbnail, "thumbnail")
             self._require_absent(thumbnail, "thumbnail")
@@ -1413,6 +1441,7 @@ class ProductionService:
             prompt = youtube_thumbnail_prompt(metadata["title"], self._thumbnail_moment(work))
             output = thumbnail_provider.create_thumbnail(prompt, raw_thumbnail, self.providers.config["thumbnail"]["size"], None)
             normalize_thumbnail(raw_thumbnail, thumbnail)
+            self._stamp_thumbnail(work, thumbnail)
             self._record_image(production_id, "thumbnail", thumbnail_cost_model, output)
         self.runner.run(production_id, "thumbnail", thumbnail_stage)
         self._budget(spec)

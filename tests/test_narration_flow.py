@@ -57,11 +57,22 @@ if __name__ == "__main__":
 
 
 class TeachingStyleTests(unittest.TestCase):
-    def test_approved_cake_script_passes_and_rules_are_locked(self):
+    def test_cake_script_teaching_style_holds_but_repeated_so_is_caught(self):
+        # 2026-10-13: the owner flagged "So start..." then "So follow..." and a cold closing question.
         approved = json.loads(Path("production-queue/golide-short-2026-10-09.script-plan.json").read_text())
-        self.assertEqual(flow_problems(approved), [])
+        problems = " ".join(flow_problems(approved))
+        self.assertNotIn("list of points", problems)
+        self.assertNotIn("final sentence must return", problems)
+        self.assertIn("same word (so)", problems)
+        self.assertIn("starts cold", problems)
         for fmt in ("short", "long"):
             self.assertIn("ONE everyday picture", script_instructions(fmt))
+            self.assertIn("SOUND HUMAN", script_instructions(fmt))
+
+    def test_ai_phrases_are_caught(self):
+        approved = json.loads(Path("production-queue/golide-short-2026-10-07.script-plan.json").read_text())
+        approved["lines"][4]["text"] = "Let's dive in, because this is a game-changer for shoppers."
+        self.assertTrue(any("machine-written" in p for p in flow_problems(approved)))
 
     def test_ending_must_return_to_the_opening_picture(self):
         approved = json.loads(Path("production-queue/golide-short-2026-10-09.script-plan.json").read_text())
