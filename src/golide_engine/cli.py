@@ -484,6 +484,19 @@ def main() -> int:
                     json.dumps(claimed_spec, indent=2) + "\n", encoding="utf-8"
                 )
         due = due_specs(args.queue)
+        # 2026-10-13: a job written into the queue by hand (not by the schedule) must
+        # still appear in Studio, or the owner has nowhere to upload the recording.
+        for due_path in due:
+            due_spec = json.loads(due_path.read_text(encoding="utf-8"))
+            if due_spec.get("studio_managed") and not due_spec.get("_studio_job_id"):
+                due_spec["_studio_job_id"] = due_spec["id"]
+                due_path.write_text(json.dumps(due_spec, indent=2) + "\n", encoding="utf-8")
+                if bridge:
+                    try:
+                        bridge.register(due_spec)
+                    except Exception as exc:
+                        print(json.dumps({"status": "studio_telemetry_unavailable",
+                                          "operation": "register", "error": str(exc)}))
         if not due:
             print(json.dumps({"status": "no_due_production"}))
             return 0
