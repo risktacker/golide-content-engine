@@ -28,3 +28,13 @@ def test_social_caption_keeps_keywords_and_hashtags_when_trimmed():
     meta = {"seo_body": "word " * 1000, "keywords": KEYS, "hashtags": ["AI", "Tech"], "chapters": []}
     cap = social_caption("Title", meta, 2200)
     assert len(cap) <= 2200 and cap.endswith("#AI #Tech") and "AI agents, Gemini agent" in cap
+
+
+def test_static_posts_get_keywords_and_hashtags():
+    from golide_engine.orchestration.static_automation import add_seo
+    copies = {"instagram": "Hook.\n\nBody.", "facebook": "Hook.", "linkedin": "Hook.", "x": "Short post."}
+    out = add_seo(copies, KEYS, ["CanvaAI", "AI", "TechNews", "Design", "Automation"])
+    for p in ("instagram", "facebook", "linkedin"):
+        assert out[p].endswith("#CanvaAI #AI #TechNews #Design #Automation")
+        assert "AI agents, Gemini agent" in out[p]
+    assert out["x"].endswith("#CanvaAI #AI")

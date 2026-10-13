@@ -197,6 +197,16 @@ PRODUCT_SLIDE_EMPTY = """\
 """
 
 
+STATIC_SEO_RULES = """\
+SEO (owner direction 2026-10-13, every platform)
+- keywords: 12 to 15 search phrases people are typing right now about this story (use
+  web search for what is trending), most specific first, each 1 to 4 words. Code adds
+  them to the captions as one comma-separated line; never put them in platform_copy.
+- hashtags: 5 to 8 relevant hashtags (no spaces), mixing the specific story (#CanvaAI)
+  with the wider lane (#AI, #TechNews). Code adds them at the very end; never write
+  hashtags inside platform_copy.
+"""
+
 STATIC_HUMAN_RULES = """\
 SOUND HUMAN (owner direction 2026-10-13)
 - Captions and slides must read like a sharp person wrote them today, not a template.
@@ -213,7 +223,7 @@ def static_post_instructions(slot: str, has_product: bool = True) -> str:
     return (
         "You write one static social post for GOLIDE, a marketplace for digital products, "
         "software and tools. The operator supplies no topic.\n\n"
-        + lane + "\n" + VOICE_RULES + "\n" + HOOK_RULES + "\n" + STATIC_HUMAN_RULES + "\n"
+        + lane + "\n" + VOICE_RULES + "\n" + HOOK_RULES + "\n" + STATIC_HUMAN_RULES + "\n" + STATIC_SEO_RULES + "\n"
         + IMAGE_CONCEPT_RULES + "\n" + STATIC_STRUCTURE_RULES
     )
 

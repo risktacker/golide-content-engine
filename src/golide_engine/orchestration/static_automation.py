@@ -87,6 +87,8 @@ STATIC_DRAFT_SCHEMA: dict[str, Any] = {
             "items": {"type": "string"},
         },
         "source_url": {"type": "string"},
+        "keywords": {"type": "array", "items": {"type": "string"}},
+        "hashtags": {"type": "array", "items": {"type": "string"}},
         "image_hook": {"type": "string"},
         "image_hook_emphasis": {"type": "string"},
         "image_concept": {"type": "string"},
@@ -99,7 +101,7 @@ STATIC_DRAFT_SCHEMA: dict[str, Any] = {
     },
     "required": [
         "title", "weekly_theme", "content_lane", "value_units",
-        "platform_copy", "carousel", "product_slide", "x_replies", "source_url",
+        "platform_copy", "carousel", "product_slide", "x_replies", "source_url", "keywords", "hashtags",
         "image_hook", "image_hook_emphasis",
         "image_concept", "glow_color",
         "use_product", "product_bridge_position",
@@ -434,6 +436,9 @@ class StaticAutomation:
                         for platform in ("facebook", "linkedin"):
                             copies[platform] = copies[platform].rstrip() + "\n\nFrom the GOLIDE Marketplace: " + url
 
+                # SEO on every platform (owner direction 2026-10-13): keywords line, then hashtags.
+                copies = add_seo(copies, draft.get("keywords") or [], draft.get("hashtags") or [])
+
                 scheduled_utc = slot["scheduled_at"].astimezone(timezone.utc).isoformat()
                 payload = {
                     "id": content_id,
@@ -514,6 +519,30 @@ def hook_count(hook: str) -> int | None:
         return None
     value = match.group(1).lower()
     return int(value) if value.isdigit() else _NUMBER_WORDS[value]
+
+
+def add_seo(copies: dict[str, str], keywords: list, hashtags: list) -> dict[str, str]:
+    """Append 10+ comma-separated keywords and 5-8 hashtags to Instagram, Facebook
+    and LinkedIn; X gets the two strongest hashtags when they fit."""
+    from ..youtube_metadata import _clean_hashtags, _clean_keywords
+
+    keys = ", ".join(_clean_keywords(keywords, 15))
+    tags = _clean_hashtags(hashtags)
+    out = dict(copies)
+    for platform in ("instagram", "facebook", "linkedin"):
+        if platform not in out:
+            continue
+        body = out[platform].rstrip()
+        tail = "\n\n".join(p for p in (keys, " ".join(tags)) if p)
+        if tail:
+            limit = 2200 if platform == "instagram" else 2900
+            body = body[: max(0, limit - len(tail) - 2)].rstrip()
+            out[platform] = body + "\n\n" + tail
+    if "x" in out and tags:
+        extra = " " + " ".join(tags[:2])
+        if len(out["x"]) + len(extra) <= 280:
+            out["x"] = out["x"].rstrip() + extra
+    return out
 
 
 def match_counts(caption: str, points: int) -> str:
