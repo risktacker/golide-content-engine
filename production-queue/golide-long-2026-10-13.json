@@ -2,8 +2,8 @@
   "id": "golide-long-2026-10-13",
   "studio_managed": true,
   "format": "long",
-  "title": "GOLIDE Long \u00b7 2026-10-13",
-  "brief": "Choose the AI or tech story people are talking about this week (a launch, a viral demo, a big company move or what a well-known tech leader said or did) and explain what it means for ordinary people in plain words, so a curious non-technical viewer follows it and wants to comment. Evidence-backed only. Keep Shorts and long-form product-independent; never turn scheduled video into a GOLIDE product advertisement and never copy an existing video.",
+  "title": "Amazon Just Gave Its Tablets the Apps Fire Tablet Owners Wanted",
+  "brief": "Amazon has introduced a new Alexa Tablet line that runs Android and includes the Google Play Store, ending the biggest practical limitation of its older Fire tablets. The useful angle is not a product review: it is why Amazon abandoned its more closed tablet software and whether access to familiar apps makes the devices more competitive. Show the difference between a limited app store and Google Play in plain language, then discuss the trade-off: wider app access, but higher starting prices. End with: \u201cWould you buy an Amazon tablet now that it has the apps you already use?\u201d Strong second choice because the change is instantly understandable to parents, students and budget buyers, with excellent visual explanation potential.",
   "demand_query": "AI tech news everyone is talking about this week",
   "demand_validation_required": true,
   "budget_class": "scheduled",
@@ -50,5 +50,100 @@
     "approved": true,
     "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
     "scheduled_at": "2026-10-15T17:30:00Z"
-  }
+  },
+  "topic_candidates": [
+    {
+      "title": "Meta\u2019s AI Now Wants to Remember You for Months \u2014 Helpful or Creepy?",
+      "query": "Meta Muse Wonder active memory launch October 12 2026",
+      "brief": "Meta has launched Muse Wonder and Muse Wonder Full, new AI models designed to remember and connect information about a user over longer periods. The everyday question is simple: does an assistant become genuinely useful when it remembers your preferences, projects and past conversations\u2014or does that create a privacy problem? Explain \u201cactive memory\u201d as an AI keeping useful details over time, then show what users should check before trusting any AI with personal information. Strongest candidate overall: very fresh, high mainstream AI interest, easy to explain, visually demonstrable with a timeline of remembered details, and likely to trigger debate. End with: \u201cWould you want an AI that remembers you this well?\u201d",
+      "evidence_summary": "Meta announced the models on October 12, 2026, and TechCrunch reported that Meta emphasized long-term memory as a central capability. The story is evidence-backed, current within the last seven days, and avoids claiming that the model is universally superior\u2014only that Meta says it is competing with leading AI systems. Talkability: very high. Non-technical clarity: very high. Comment potential: very high. Visual potential: high. Evidence strength: high. ([techcrunch.com](https://techcrunch.com/2026/10/12/meta-releases-its-first-frontier-model-muse-wonder/?utm_source=openai))",
+      "authoritative_source_url": "https://techcrunch.com/2026/10/12/meta-releases-its-first-frontier-model-muse-wonder/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Meta Muse Wonder active memory launch October 12 2026",
+        "score": 86.9,
+        "verdict": "pass",
+        "recent_videos": 67,
+        "median_views_per_day": 355504.78,
+        "top_views_per_day": 3289474.33,
+        "market_coverage": 4,
+        "title_query_overlap": 0.125,
+        "measured_at": "2026-10-13T04:02:08.180385+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "Amazon Just Gave Its Tablets the Apps Fire Tablet Owners Wanted",
+      "query": "Amazon Alexa tablets Android Google Play Store October 8 2026 Reuters",
+      "brief": "Amazon has introduced a new Alexa Tablet line that runs Android and includes the Google Play Store, ending the biggest practical limitation of its older Fire tablets. The useful angle is not a product review: it is why Amazon abandoned its more closed tablet software and whether access to familiar apps makes the devices more competitive. Show the difference between a limited app store and Google Play in plain language, then discuss the trade-off: wider app access, but higher starting prices. End with: \u201cWould you buy an Amazon tablet now that it has the apps you already use?\u201d Strong second choice because the change is instantly understandable to parents, students and budget buyers, with excellent visual explanation potential.",
+      "evidence_summary": "Reuters reported on October 8, 2026, that Amazon\u2019s new tablets use Android, include Alexa+, and provide access to Google Play. TechCrunch separately confirmed the lineup and launch details. Talkability: high. Non-technical clarity: excellent. Comment potential: high because viewers can debate price, app access and Amazon\u2019s strategy. Visual potential: very high. Evidence strength: very high. ([techcrunch.com](https://techcrunch.com/2026/10/08/amazon-unveils-new-alexa-tablets-with-alexa-and-google-play-store-access/?utm_source=openai))",
+      "authoritative_source_url": "https://www.reuters.com/technology/amazon-launches-first-android-tablets-raising-prices-incorporating-alexa-2026-10-08/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Amazon Alexa tablets Android Google Play Store October 8 2026 Reuters",
+        "score": 88.0,
+        "verdict": "pass",
+        "recent_videos": 67,
+        "median_views_per_day": 355504.78,
+        "top_views_per_day": 3289474.33,
+        "market_coverage": 4,
+        "title_query_overlap": 0.2,
+        "measured_at": "2026-10-13T04:02:08.181012+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "Microsoft Is Building Its Own AI Engines to Power Copilot \u2014 What Changes for You?",
+      "query": "Microsoft Azure Maia 200 Copilot October 12 2026 official blog",
+      "brief": "Microsoft says its Maia 200 AI system is now handling production workloads, including Copilot, while a larger Maia 300 is planned for 2027. Explain this as Microsoft building more of the machinery behind its AI instead of relying entirely on outside chip suppliers. For ordinary users, the practical questions are whether this could make AI features faster, cheaper to run or more widely available\u2014and whether companies are spending too much on infrastructure before people know what they actually want. Use simple server-room visuals and avoid deep chip terminology. End with: \u201cDo you care what powers an AI assistant if it works well?\u201d This is a credible, timely infrastructure story, but it ranks below the first two because the direct consumer impact is less immediate.",
+      "evidence_summary": "Microsoft announced on October 12, 2026, that Azure Maia 200 is in production and supports Microsoft Copilot, with Maia 300 planned for 2027. The consumer impact is partly an inference: Microsoft\u2019s infrastructure choices could affect the speed, scale and cost of future AI services, but the company did not promise a specific change for users. Talkability: medium-high. Non-technical clarity: medium. Comment potential: medium-high. Visual potential: high. Evidence strength: very high for the announcement, moderate for direct consumer effects. ([blogs.microsoft.com](https://blogs.microsoft.com/blog/2026/10/12/microsoft-to-expand-azure-maia-system-to-multi-gigawatt-deployments/?utm_source=openai))",
+      "authoritative_source_url": "https://blogs.microsoft.com/blog/2026/10/12/microsoft-to-expand-azure-maia-system-to-multi-gigawatt-deployments/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Microsoft Azure Maia 200 Copilot October 12 2026 official blog",
+        "score": 86.7,
+        "verdict": "pass",
+        "recent_videos": 67,
+        "median_views_per_day": 355504.78,
+        "top_views_per_day": 3289474.33,
+        "market_coverage": 4,
+        "title_query_overlap": 0.1111,
+        "measured_at": "2026-10-13T04:02:08.181578+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "Apple\u2019s \u201cWelcome Home\u201d Push: Is Siri Finally Moving Into the House?",
+      "query": "Apple Welcome Home October 13 2026 Siri smart home event",
+      "brief": "Apple\u2019s October 13 \u201cWelcome Home\u201d push puts renewed attention on Siri, Apple\u2019s smart-home ambitions and the idea of controlling a home through a more capable AI assistant. The safest angle is to separate confirmed facts from expected announcements: Apple has publicly promoted its latest Siri AI rollout, while major Apple reporting has connected the event with new home-focused hardware. The video can ask whether people actually want an AI coordinating lights, music, screens and household routines\u2014or whether a smart home becomes too dependent on one company. End with: \u201cWould you let Siri run your home?\u201d This has strong visual and comment potential, but it should be scheduled only after confirming what Apple officially reveals on October 13.",
+      "evidence_summary": "Apple\u2019s newsroom confirms that Siri AI is rolling out with personal context, broader knowledge and systemwide actions. Apple also published a current \u201cWelcome home\u201d newsroom update, while MacRumors reported the expected timing and home-product context. Because product details around the event were not all officially confirmed before publication, this candidate has weaker evidence than the first three and should not present speculation as fact. Talkability: high. Non-technical clarity: very high. Comment potential: very high. Visual potential: very high. Evidence strength: medium until Apple\u2019s official announcement is complete. ([apple.com](https://www.apple.com/newsroom/in-the-loop/2026/10/welcome-home/?utm_source=openai))",
+      "authoritative_source_url": "https://www.apple.com/newsroom/in-the-loop/2026/10/welcome-home/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Apple Welcome Home October 13 2026 Siri smart home event",
+        "score": 86.9,
+        "verdict": "pass",
+        "recent_videos": 67,
+        "median_views_per_day": 355504.78,
+        "top_views_per_day": 3289474.33,
+        "market_coverage": 4,
+        "title_query_overlap": 0.125,
+        "measured_at": "2026-10-13T04:02:08.182185+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    }
+  ],
+  "platform_demand": {
+    "query": "Amazon Alexa tablets Android Google Play Store October 8 2026 Reuters",
+    "score": 88.0,
+    "verdict": "pass",
+    "recent_videos": 67,
+    "median_views_per_day": 355504.78,
+    "top_views_per_day": 3289474.33,
+    "market_coverage": 4,
+    "title_query_overlap": 0.2,
+    "measured_at": "2026-10-13T04:02:08.181012+00:00",
+    "signal_type": "youtube-most-popular-seed-proxy"
+  },
+  "selected_topic_source": "https://www.reuters.com/technology/amazon-launches-first-android-tablets-raising-prices-incorporating-alexa-2026-10-08/"
 }
