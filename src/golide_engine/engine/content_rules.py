@@ -441,7 +441,7 @@ BRIDGES = (
     "picture", "think", "for example", "in other words", "that means", "which means",
     "the problem", "the catch", "worse", "still", "once", "by the time", "even",
     "only", "what if", "you know", "or", "yet", "this means", "that way", "otherwise",
-    "until now", "from there", "it means", "for each", "within", "before", "while", "meanwhile", "suddenly",
+    "until now", "from there", "it means", "for each", "second", "third", "fourth", "finally", "within", "before", "while", "meanwhile", "suddenly",
 )
 
 AI_PHRASES = (

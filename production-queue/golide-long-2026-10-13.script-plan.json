@@ -1,0 +1,707 @@
+{
+  "title": "Amazon Just Gave Its Tablets the Apps Fire Tablet Owners Wanted",
+  "chapters": [
+    {
+      "number": "",
+      "title": "Intro"
+    },
+    {
+      "number": "01",
+      "title": "The Old Shop"
+    },
+    {
+      "number": "02",
+      "title": "Why Amazon Changed"
+    },
+    {
+      "number": "03",
+      "title": "What You Gain"
+    },
+    {
+      "number": "04",
+      "title": "Before You Buy"
+    },
+    {
+      "number": "",
+      "title": "Close"
+    }
+  ],
+  "lines": [
+    {
+      "section": "claim",
+      "chapter": 0,
+      "text": "Amazon's new tablets finally fix the biggest weakness of old Fire tablets.",
+      "emphasis": "Fire tablets",
+      "visual": "icon_hero",
+      "subjects": [
+        "tablet"
+      ],
+      "label": "AMAZON",
+      "follow": false
+    },
+    {
+      "section": "claim",
+      "chapter": 0,
+      "text": "Think of the apps on a tablet like the shop in your town,",
+      "emphasis": "shop",
+      "visual": "icon_pair",
+      "subjects": [
+        "tablet",
+        "shop"
+      ],
+      "label": "THE SHOP",
+      "follow": false
+    },
+    {
+      "section": "claim",
+      "chapter": 0,
+      "text": "because for years Amazon only gave you a small corner shop.",
+      "emphasis": "small corner shop",
+      "visual": "icon_hero",
+      "subjects": [
+        "shop"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "claim",
+      "chapter": 0,
+      "text": "Now it has opened the door to the big one.",
+      "emphasis": "the big one",
+      "visual": "icon_hero",
+      "subjects": [
+        "door"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "claim",
+      "chapter": 0,
+      "text": "In the next few minutes, we'll walk through the old limit,",
+      "emphasis": "old limit",
+      "visual": "checklist",
+      "subjects": [
+        "check mark"
+      ],
+      "label": "ROUTE",
+      "follow": false
+    },
+    {
+      "section": "claim",
+      "chapter": 0,
+      "text": "why Amazon changed, what you gain, and how to decide if it's for you.",
+      "emphasis": "how to decide",
+      "visual": "checklist",
+      "subjects": [
+        "check mark"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "proof",
+      "chapter": 1,
+      "text": "First, why did that small shop matter so much?",
+      "emphasis": "small shop",
+      "visual": "icon_hero",
+      "subjects": [
+        "shop"
+      ],
+      "label": "01",
+      "follow": false
+    },
+    {
+      "section": "proof",
+      "chapter": 1,
+      "text": "Back then, Fire tablets ran Fire OS,",
+      "emphasis": "Fire OS",
+      "visual": "icon_hero",
+      "subjects": [
+        "tablet"
+      ],
+      "label": "FIRE OS",
+      "follow": false
+    },
+    {
+      "section": "proof",
+      "chapter": 1,
+      "text": "which is Amazon's own version of Android underneath.",
+      "emphasis": "Android",
+      "visual": "icon_pair",
+      "subjects": [
+        "tablet",
+        "gear"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "proof",
+      "chapter": 1,
+      "text": "Now, Android is the basic software that lets apps run,",
+      "emphasis": "basic software",
+      "visual": "icon_flow",
+      "subjects": [
+        "gear",
+        "phone",
+        "check mark"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "proof",
+      "chapter": 1,
+      "text": "but Amazon pointed you to its own app store instead of Google's.",
+      "emphasis": "its own app store",
+      "visual": "split_compare",
+      "subjects": [
+        "shop",
+        "shop"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "proof",
+      "chapter": 1,
+      "text": "That meant useful apps, yet fewer shelves and more gaps.",
+      "emphasis": "fewer shelves",
+      "visual": "icon_grid",
+      "subjects": [
+        "box"
+      ],
+      "label": "GAPS",
+      "follow": false
+    },
+    {
+      "section": "proof",
+      "chapter": 1,
+      "text": "So an app you wanted might be missing or out of date,",
+      "emphasis": "missing",
+      "visual": "cross_out",
+      "subjects": [
+        "phone"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "proof",
+      "chapter": 1,
+      "text": "and getting it often meant a workaround,",
+      "emphasis": "workaround",
+      "visual": "icon_flow",
+      "subjects": [
+        "wrench",
+        "phone"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "proof",
+      "chapter": 1,
+      "text": "which is a less familiar, riskier way of installing software.",
+      "emphasis": "riskier",
+      "visual": "gauge",
+      "subjects": [
+        "warning sign"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "proof",
+      "chapter": 1,
+      "text": "And developers felt it too, with one more version to look after.",
+      "emphasis": "one more version",
+      "visual": "icon_pair",
+      "subjects": [
+        "laptop",
+        "tablet"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "proof",
+      "chapter": 1,
+      "text": "In other words, the old Fire deal was simple, less money for less choice.",
+      "emphasis": "less choice",
+      "visual": "split_compare",
+      "subjects": [
+        "coin",
+        "box"
+      ],
+      "label": "THE DEAL",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 2,
+      "text": "But if the small shop helped keep prices low,",
+      "emphasis": "prices low",
+      "visual": "icon_hero",
+      "subjects": [
+        "coin"
+      ],
+      "label": "02",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 2,
+      "text": "why would Amazon give that up now?",
+      "emphasis": "give that up",
+      "visual": "icon_hero",
+      "subjects": [
+        "question mark"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 2,
+      "text": "The answer starts with what people expect from a tablet today.",
+      "emphasis": "expect",
+      "visual": "icon_hero",
+      "subjects": [
+        "tablet"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 2,
+      "text": "On October eighth, twenty twenty-six, Amazon announced three new tablets,",
+      "emphasis": "three new tablets",
+      "visual": "icon_grid",
+      "subjects": [
+        "tablet"
+      ],
+      "label": "OCT 8",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 2,
+      "text": "the Alexa Tablet 8, the Tablet 11, and the Tablet 12 Pro,",
+      "emphasis": "Tablet 12 Pro",
+      "visual": "icon_grid",
+      "subjects": [
+        "tablet"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 2,
+      "text": "and all three run Android with Google Play.",
+      "emphasis": "Google Play",
+      "visual": "icon_pair",
+      "subjects": [
+        "tablet",
+        "shop"
+      ],
+      "label": "GOOGLE PLAY",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 2,
+      "text": "Google Play is Google's big shop for Android apps,",
+      "emphasis": "big shop",
+      "visual": "icon_hero",
+      "subjects": [
+        "shop"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 2,
+      "text": "which means Amazon no longer asks you to stay inside its own shelves.",
+      "emphasis": "its own shelves",
+      "visual": "icon_hero",
+      "subjects": [
+        "door"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 2,
+      "text": "That makes these tablets easy to compare with any other Android tablet,",
+      "emphasis": "easy to compare",
+      "visual": "split_compare",
+      "subjects": [
+        "tablet",
+        "tablet"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 2,
+      "text": "and that matters, because most people choose their apps before their hardware.",
+      "emphasis": "apps before",
+      "visual": "icon_flow",
+      "subjects": [
+        "phone",
+        "tablet"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 2,
+      "text": "Amazon is also moving upmarket, with aluminum bodies and Alexa Plus,",
+      "emphasis": "Alexa Plus",
+      "visual": "icon_pair",
+      "subjects": [
+        "tablet",
+        "speaker"
+      ],
+      "label": "UPMARKET",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 2,
+      "text": "so this isn't just a new name on an old tablet.",
+      "emphasis": "new name",
+      "visual": "icon_hero",
+      "subjects": [
+        "tablet"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 3,
+      "text": "Now take that change into an ordinary day.",
+      "emphasis": "ordinary day",
+      "visual": "clock",
+      "subjects": [
+        "clock"
+      ],
+      "label": "03",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 3,
+      "text": "Say you already use YouTube, Netflix, Gmail and Google Docs.",
+      "emphasis": "Google Docs",
+      "visual": "icon_grid",
+      "subjects": [
+        "phone"
+      ],
+      "label": "YOUR APPS",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 3,
+      "text": "With Google Play built in, those apps are a normal download,",
+      "emphasis": "normal download",
+      "visual": "icon_flow",
+      "subjects": [
+        "shop",
+        "tablet",
+        "check mark"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 3,
+      "text": "so a student can open class documents directly,",
+      "emphasis": "class documents",
+      "visual": "icon_pair",
+      "subjects": [
+        "book",
+        "tablet"
+      ],
+      "label": "STUDENT",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 3,
+      "text": "instead of hunting for a substitute and learning new menus.",
+      "emphasis": "substitute",
+      "visual": "cross_out",
+      "subjects": [
+        "phone"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 3,
+      "text": "And a parent can use the streaming service the family already pays for,",
+      "emphasis": "streaming service",
+      "visual": "icon_hero",
+      "subjects": [
+        "television"
+      ],
+      "label": "PARENT",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 3,
+      "text": "and nobody has to rebuild their routine from scratch.",
+      "emphasis": "routine",
+      "visual": "icon_hero",
+      "subjects": [
+        "calendar"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 3,
+      "text": "Still, a bigger shop doesn't make every item perfect,",
+      "emphasis": "every item perfect",
+      "visual": "icon_hero",
+      "subjects": [
+        "shop"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "pattern",
+      "chapter": 3,
+      "text": "because some Android apps aren't designed well for tablet screens.",
+      "emphasis": "tablet screens",
+      "visual": "icon_pair",
+      "subjects": [
+        "phone",
+        "tablet"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "reframe",
+      "chapter": 3,
+      "text": "The real win is wider access without technical workarounds.",
+      "emphasis": "wider access",
+      "visual": "icon_hero",
+      "subjects": [
+        "key"
+      ],
+      "label": "THE WIN",
+      "follow": false
+    },
+    {
+      "section": "cost",
+      "chapter": 4,
+      "text": "Here's the catch, though, the bigger shop comes with bigger prices.",
+      "emphasis": "bigger prices",
+      "visual": "bar_chart",
+      "subjects": [
+        "coin"
+      ],
+      "label": "04",
+      "follow": false
+    },
+    {
+      "section": "cost",
+      "chapter": 4,
+      "text": "The Alexa Tablet 8 starts at two hundred twenty-nine dollars and ninety-nine cents,",
+      "emphasis": "Alexa Tablet 8",
+      "visual": "bar_chart",
+      "subjects": [
+        "coin"
+      ],
+      "label": "$229.99",
+      "follow": false
+    },
+    {
+      "section": "cost",
+      "chapter": 4,
+      "text": "the Tablet 11 at three hundred twenty-nine ninety-nine,",
+      "emphasis": "Tablet 11",
+      "visual": "bar_chart",
+      "subjects": [
+        "coin"
+      ],
+      "label": "$329.99",
+      "follow": false
+    },
+    {
+      "section": "cost",
+      "chapter": 4,
+      "text": "and the Tablet 12 Pro at four hundred ninety-nine ninety-nine.",
+      "emphasis": "Tablet 12 Pro",
+      "visual": "bar_chart",
+      "subjects": [
+        "coin"
+      ],
+      "label": "$499.99",
+      "follow": false
+    },
+    {
+      "section": "cost",
+      "chapter": 4,
+      "text": "For comparison, the recent Fire HD 10 topped out",
+      "emphasis": "Fire HD 10",
+      "visual": "split_compare",
+      "subjects": [
+        "tablet",
+        "coin"
+      ],
+      "label": "FIRE HD 10",
+      "follow": false
+    },
+    {
+      "section": "cost",
+      "chapter": 4,
+      "text": "around one hundred eighty dollars before discounts.",
+      "emphasis": "one hundred eighty dollars",
+      "visual": "split_compare",
+      "subjects": [
+        "coin"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "cta",
+      "chapter": 4,
+      "text": "That's why it's worth deciding carefully, and it only takes four steps.",
+      "emphasis": "four steps",
+      "visual": "checklist",
+      "subjects": [
+        "check mark"
+      ],
+      "label": "4 STEPS",
+      "follow": false
+    },
+    {
+      "section": "cta",
+      "chapter": 4,
+      "text": "First, write down the three apps you use every single day.",
+      "emphasis": "three apps",
+      "visual": "checklist",
+      "subjects": [
+        "notebook"
+      ],
+      "label": "STEP 1",
+      "follow": false
+    },
+    {
+      "section": "cta",
+      "chapter": 4,
+      "text": "Second, search for each one in Google Play and check it supports tablets.",
+      "emphasis": "supports tablets",
+      "visual": "checklist",
+      "subjects": [
+        "magnifying glass"
+      ],
+      "label": "STEP 2",
+      "follow": false
+    },
+    {
+      "section": "cta",
+      "chapter": 4,
+      "text": "Third, compare the price with an older Fire tablet plus the workarounds you'd need.",
+      "emphasis": "compare the price",
+      "visual": "checklist",
+      "subjects": [
+        "coin",
+        "wrench"
+      ],
+      "label": "STEP 3",
+      "follow": false
+    },
+    {
+      "section": "cta",
+      "chapter": 4,
+      "text": "Finally, ask whether you'd actually use Alexa Plus, or just pay for it.",
+      "emphasis": "Alexa Plus",
+      "visual": "checklist",
+      "subjects": [
+        "speaker"
+      ],
+      "label": "STEP 4",
+      "follow": false
+    },
+    {
+      "section": "reframe",
+      "chapter": 5,
+      "text": "Remember this, Amazon swapped some of the cheapness for app freedom.",
+      "emphasis": "app freedom",
+      "visual": "icon_hero",
+      "subjects": [
+        "key"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "cta",
+      "chapter": 5,
+      "text": "Your three apps tell you whether the bigger shop is worth the bigger price.",
+      "emphasis": "worth the bigger price",
+      "visual": "gauge",
+      "subjects": [
+        "gauge"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "section": "cta",
+      "chapter": 5,
+      "text": "And if this helped, follow the channel,",
+      "emphasis": "follow the channel",
+      "visual": "icon_hero",
+      "subjects": [
+        "phone"
+      ],
+      "label": "",
+      "follow": true
+    },
+    {
+      "section": "cta",
+      "chapter": 5,
+      "text": "because the next breakdown picks up from choices like this.",
+      "emphasis": "next breakdown",
+      "visual": "icon_hero",
+      "subjects": [
+        "phone"
+      ],
+      "label": "",
+      "follow": true
+    },
+    {
+      "section": "cta",
+      "chapter": 5,
+      "text": "Which leaves one question, would you pay more for the bigger shop?",
+      "emphasis": "bigger shop",
+      "visual": "logo_end",
+      "subjects": [],
+      "label": "",
+      "follow": false
+    }
+  ]
+}
