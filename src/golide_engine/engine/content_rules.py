@@ -248,9 +248,9 @@ ideas, but it is SPOKEN AS ONE CONNECTED EXPLANATION, like a teacher talking a f
 through it. It must never sound like a list of points read out one by one.
 - Every sentence grows out of the one before it and is joined to it with a spoken
   connective: and, but, so, because, that means, that's why, in other words, for
-  example, then, which is why, here's the catch, and that's not all.
-- Each section is entered with a bridge from the last ("And it doesn't stop there.",
-  "But here's the risk.", "That's why...", "So what do you do?").
+  example, then, which is why, and that's not all.
+- Each section is entered with a bridge from the last, written fresh for this
+  topic, never a stock phrase (see VARIETY).
 - Never compress ideas into noun piles ("identity, limits and an audit trail"): say
   what each thing means for the viewer. No colons, no "X: a, b, c" lists.
 """
@@ -335,16 +335,68 @@ FOLLOW CALL-OUT (owner direction 2026-10-07: viewers should follow and come back
 TEACHING_STYLE_RULES = """\
 TEACHING STYLE (owner direction 2026-10-09, locked): explain it so a child follows
 it and an expert finds nothing wrong or watered down (the Feynman way).
-- ONE everyday picture carries the whole script: a comparison everybody already
-  knows from home life (a kitchen, a cake, a shop, a bus, a locked door). Bring it
-  in within the first three sentences, use it again at the catch, and let the final
-  sentence return to it. One picture only, never a new one every line.
+- ONE everyday picture carries the whole script, taken from the world named in
+  VARIETY below (owner direction 2026-10-13: not the same kitchen, cake or shop
+  every time). Weave it in naturally within the first third, in your own words;
+  never introduce it with "Think of", "Imagine", "Picture this" or "It's like".
+  Use it again at the turn, and let the final sentence return to it. One picture
+  only, never a new one every line.
 - Keep the real substance: real names, real facts, the real mechanism. Simple words,
   never simplified facts.
-- Example before the name: say what happens first, then what it's called
-  ("That's what people mean by an AI agent, a helper that takes action...").
+- Example before the name: say what happens first, then what it's called.
 - Explain every technical word the moment it appears, in the same sentence.
 """
+
+# Owner direction 2026-10-13: scripts must not all follow one template. Each
+# production gets its own world for the picture, its own way in and its own turn,
+# chosen from its id, so two scripts in a row never share a pattern.
+PICTURE_WORLDS = (
+    "football and other sport", "a bus, taxi or minibus ride", "a busy open market stall",
+    "farming and the seasons", "a school classroom and exams", "a bank or mobile-money queue",
+    "a phone's contact list and call log", "a music playlist", "a road trip with a map or GPS",
+    "a library", "a hospital or clinic waiting room", "a building site and its foreman",
+    "planning a wedding or a big family event", "the weather forecast", "a gym and a training plan",
+    "a security guard at a gate", "the post office and parcels", "a game of chess or draughts",
+    "a TV remote and its channels", "a city's traffic lights", "a restaurant waiter taking orders",
+    "a pharmacy counter", "an airport check-in", "a referee and the rules of a match",
+)
+OPENING_STYLES = (
+    "a blunt claim that flips what most people believe",
+    "one surprising true number from the research, said plainly",
+    "the news itself in one sharp sentence: who did what, and when",
+    "a then-and-now contrast in one breath (how it used to work, how it works now)",
+    "the consequence first: what is about to change for the viewer, then why",
+)
+TURN_STYLES = (
+    "a plain 'The problem is...'",
+    "'That sounds great, until...'",
+    "'Except there's a cost nobody puts on the box...'",
+    "'Now the uncomfortable part...'",
+    "'There's a trade-off, though...'",
+    "'And that's where it can go wrong...'",
+)
+
+
+def script_variety(seed: str) -> str:
+    import hashlib
+    from datetime import date
+    match = re.search(r"(\d{4})-(\d{2})-(\d{2})", seed)
+    if match:  # rotate by day, so scripts on neighbouring days never share a pattern
+        n = date(*map(int, match.groups())).toordinal() * 2 + (1 if "long" in seed else 0)
+    else:
+        n = int(hashlib.sha256(seed.encode("utf-8")).hexdigest(), 16)
+    world = PICTURE_WORLDS[(n * 7) % len(PICTURE_WORLDS)]
+    opening = OPENING_STYLES[n % len(OPENING_STYLES)]
+    turn = TURN_STYLES[(n * 5) % len(TURN_STYLES)]
+    return (
+        "VARIETY (this script only; every script is different)\n"
+        f"- The everyday picture comes from this world: {world}.\n"
+        f"- Open with {opening}.\n"
+        f"- Bring in the turn (the risk or cost) with {turn}, in your own words.\n"
+        "- Never use these stock phrases: \"here's the catch\", \"think of\", \"picture this\",\n"
+        "  \"here's the thing\", \"but here's the risk\", \"the catch is\".\n"
+    )
+
 
 SCRIPT_LINE_RULES = """\
 FLOW (the most important rule: this is one person talking, not a list of facts)
@@ -401,7 +453,7 @@ SOUND HUMAN, NOT AI (owner direction 2026-10-13)
 - Never start two sentences in a row with the same word. Use "So" to open a
   sentence at most twice in the whole script, and never back to back. Rotate the
   bridges: and, but, because, that's why, which means, then, now, instead, until,
-  in other words, here's the catch, think about it, the thing is, even so, still.
+  in other words, the problem is, the thing nobody says, even so, still.
 - Every sentence, including the follow call-out and the closing line, is joined to
   the one before it. No sentence just starts cold.
 - Vary sentence length and rhythm; a short punch now and then, never a metronome.
@@ -443,6 +495,9 @@ BRIDGES = (
     "only", "what if", "you know", "or", "yet", "this means", "that way", "otherwise",
     "until now", "from there", "it means", "for each", "second", "third", "fourth", "finally", "within", "before", "while", "meanwhile", "suddenly",
 )
+
+STOCK_PHRASES = ("here's the catch", "think of", "picture this", "here's the thing", "but here's the risk",
+                 "the catch is", "imagine ")
 
 AI_PHRASES = (
     "in today's world", "let's dive in", "dive into", "delve", "game-changer", "game changer",
@@ -539,7 +594,7 @@ def flow_problems(plan: dict) -> list[str]:
             problems.append("the closing sentence after the follow call-out starts cold; join it with a bridge "
                             "(Because..., And until then..., Which leaves...)")
     text_all = " ".join(lines).lower().replace("\u2019", "'")
-    used = [phrase for phrase in AI_PHRASES if phrase in text_all]
+    used = [phrase for phrase in AI_PHRASES + STOCK_PHRASES if phrase in text_all]
     if used:
         problems.append("these phrases sound machine-written, rewrite them: " + ", ".join(used))
     openings = [" ".join(text.lower().split()[:2]) for text in lines]
@@ -612,7 +667,7 @@ def follow_problems(plan: dict, format_name: str) -> list[str]:
     return problems
 
 
-def script_instructions(format_name: str) -> str:
+def script_instructions(format_name: str, seed: str = "") -> str:
     target = SCRIPT_LENGTH_TARGETS.get(format_name, SCRIPT_LENGTH_TARGETS["short"])
     return (
         "You write a narration script for a GOLIDE "
@@ -622,7 +677,7 @@ def script_instructions(format_name: str) -> str:
         f"LENGTH: {target['words_min']} to {target['words_max']} spoken words "
         f"(about {target['seconds']} seconds). Do not go over.\n\n"
         + (LONG_STRUCTURE_RULES if format_name == "long" else SCRIPT_STRUCTURE_RULES + "\n" + SHORT_CHAPTER_RULE)
-        + "\n" + TEACHING_STYLE_RULES + "\n" + FOLLOW_RULES + "\n" + SCRIPT_LINE_RULES + "\n" + HUMANIZER_RULES + "\n" + SCRIPT_VOICE_RULES
+        + "\n" + TEACHING_STYLE_RULES + "\n" + script_variety(seed or format_name) + "\n" + FOLLOW_RULES + "\n" + SCRIPT_LINE_RULES + "\n" + HUMANIZER_RULES + "\n" + SCRIPT_VOICE_RULES
         + "\n" + SCRIPT_OUTPUT_RULES
     )
 

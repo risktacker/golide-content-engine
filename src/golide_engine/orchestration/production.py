@@ -551,7 +551,7 @@ class ProductionService:
                 stage="script",
             )
             output = text.generate_json(
-                script_instructions(str(spec["format"])),
+                script_instructions(str(spec["format"]), str(spec["id"])),
                 f"TOPIC BRIEF\n{spec['brief']}\n\nVERIFIED RESEARCH\n{json.dumps(research)}",
                 SCRIPT_SCHEMA,
                 max_output_tokens=6000,
@@ -567,7 +567,7 @@ class ProductionService:
                 self._reserve(spec, text_model, Usage(input_tokens=max(1, len(json.dumps(plan)) // 3 + 3000),
                                                       output_tokens=6000))
                 output = text.generate_json(
-                    script_instructions(str(spec["format"])),
+                    script_instructions(str(spec["format"]), str(spec["id"])),
                     f"TOPIC BRIEF\n{spec['brief']}\n\nVERIFIED RESEARCH\n{json.dumps(research)}"
                     f"\n\nYOUR PREVIOUS DRAFT\n{json.dumps(plan)}\n\nREWRITE IT. Fix these problems: "
                     + "; ".join(problems) + ". Keep the facts and length, and keep it flowing as natural speech in clear stages.",
