@@ -100,3 +100,4 @@ This is the standard for every Short and long video. Don't change any of it with
 - Static hooks: no formula hooks ("Most people never notice...", "You're treating..."), never opening like a recent hook.
 - Drawings never sit still: after the pen, a steady push-in, slow drift and a soft light running along the lines every few seconds.
 - Long videos also go to Instagram.
+- No template (2026-10-13): each script gets its own picture world (24 rotate by date: sport, transport, market, farming, classroom, music, traffic, chess, TV channels...), its own way in (5) and its own turn (6). Stock phrases ("here's the catch", "think of", "picture this") are rejected. The kitchen/cake/shop picture is no longer the default.
