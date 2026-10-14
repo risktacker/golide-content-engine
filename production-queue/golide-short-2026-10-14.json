@@ -147,5 +147,6 @@
     "signal_type": "youtube-most-popular-seed-proxy"
   },
   "selected_topic_source": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/synth-id-ai-content/",
-  "_failed_runs": 1
+  "_failed_runs": 1,
+  "owner_voice_media_ref": "r2://temp/2026/10/14/99d340a6453d4dc9862e45e33ebe62fd-SymthID-v2.wav"
 }
