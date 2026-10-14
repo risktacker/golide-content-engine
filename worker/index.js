@@ -1194,7 +1194,11 @@ async function handleApi(request,env,url){
   if(voiceMatch&&request.method==="POST"){
     try{
       const payload=await request.json();
-      return json(await attachOwnerVoice(env.DB,decodeURIComponent(voiceMatch[1]),payload.media_ref));
+      const attached=await attachOwnerVoice(env.DB,decodeURIComponent(voiceMatch[1]),payload.media_ref);
+      // 2026-10-14: a recording starts its build straight away instead of waiting
+      // for the next scheduled run (a 20:37 upload waited until 14:00 the next day).
+      try{await dispatchWorkflow(env,"production-scheduler.yml");}catch(e){console.log(JSON.stringify({dispatch:"after_voice_failed",error:String(e?.message||e)}));}
+      return json(attached);
     }catch(e){return err(e?.message||String(e),400);}
   }
   const retryMatch=url.pathname.match(/^\/api\/production-jobs\/([^/]+)\/retry$/);
