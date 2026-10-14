@@ -236,7 +236,7 @@ SCRIPT_LENGTH_TARGETS = {
     # Spoken words at ~150 wpm, set below the recording window so the owner
     # has room to breathe. Windows: short 0:30-1:30, long 3:30-5:00.
     "short": {"words_min": 150, "words_max": 185, "seconds": "60 to 75"},
-    "long": {"words_min": 600, "words_max": 680, "seconds": "240 to 270"},
+    "long": {"words_min": 700, "words_max": 800, "seconds": "250 to 290"},  # owner reads fast (2026-10-14)
 }
 
 SCRIPT_STRUCTURE_RULES = """\

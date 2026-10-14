@@ -10,7 +10,7 @@ class ScriptRuleTests(unittest.TestCase):
     def test_targets_sit_inside_recording_windows(self):
         short, long = script_instructions("short"), script_instructions("long")
         self.assertIn("150 to 185 spoken words", short)
-        self.assertIn("600 to 680 spoken words", long)
+        self.assertIn("700 to 800 spoken words", long)
         self.assertIn("CLAIM", short)
         self.assertIn("CALL TO ACTION", short)
         self.assertIn("LESSON IN CHAPTERS", long)

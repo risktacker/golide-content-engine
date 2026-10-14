@@ -10,7 +10,7 @@ from __future__ import annotations
 
 RECORDING_WINDOWS: dict[str, tuple[float, float]] = {
     "short": (30.0, 90.0),
-    "long": (210.0, 600.0),  # owner 2026-10-10: 3:30 to 10:00
+    "long": (150.0, 600.0),  # owner 2026-10-10 max 10:00; 2026-10-14 min 2:30 (a fast reading must not be refused)
 }
 
 

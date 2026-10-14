@@ -21,7 +21,7 @@ class RecordEmailTests(unittest.TestCase):
         message = build_record_needed(job_id="j", title="t", format_name="long", script="x",
                                       rejection="too long")
         self.assertTrue(message["Subject"].startswith("Re-record: [Long video]"))
-        self.assertIn("3:30 to 10:00", message.get_body(("plain",)).get_content())
+        self.assertIn("2:30 to 10:00", message.get_body(("plain",)).get_content())
 
     def test_missing_secrets_never_breaks_production(self):
         clean = {k: v for k, v in os.environ.items() if not k.startswith("GOLIDE_SMTP")
