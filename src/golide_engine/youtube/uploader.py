@@ -78,7 +78,17 @@ class YouTubeUploader:
             "status": status,
         }
         request = self.youtube.videos().insert(part="snippet,status", body=body, media_body=MediaFileUpload(str(video), chunksize=-1, resumable=True))
-        response = with_retry(request.execute)
+        try:
+            response = with_retry(request.execute)
+        except Exception as exc:
+            # Tags must never stop a video (2026-10-14): retry once with a short safe set.
+            if "invalidTags" not in str(exc) and "invalid video keywords" not in str(exc):
+                raise
+            from ..youtube_metadata import clean_tag
+            body["snippet"]["tags"] = [t for t in (clean_tag(x) for x in metadata.get("tags", [])) if t and " " not in t][:12]
+            print(f"::warning title=YouTube tags trimmed::retrying with {len(body['snippet']['tags'])} simple tags")
+            request = self.youtube.videos().insert(part="snippet,status", body=body, media_body=MediaFileUpload(str(video), chunksize=-1, resumable=True))
+            response = with_retry(request.execute)
         video_id = response["id"]
         with_retry(lambda: self.youtube.thumbnails().set(videoId=video_id, media_body=MediaFileUpload(str(thumbnail))).execute())
         uploaded_at = utc_now()

@@ -21,7 +21,7 @@ def test_description_order_with_chapters():
 def test_more_than_twenty_tags_within_limit():
     tags = fit_tags(TAGS, KEYS)
     assert len(tags) > 20
-    assert sum(map(len, tags)) + len(tags) - 1 <= 500
+    assert sum(len(t) + (2 if " " in t else 0) for t in tags) + len(tags) - 1 <= 500
 
 
 def test_social_caption_keeps_keywords_and_hashtags_when_trimmed():

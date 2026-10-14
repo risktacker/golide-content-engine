@@ -60,7 +60,7 @@ def validate_upload_metadata(metadata: dict[str, Any], policy: dict[str, Any]) -
     if len(description) > 5000:
         raise YouTubeMetadataError("description cannot exceed 5,000 characters")
     tags = [str(tag).strip() for tag in metadata.get("tags", []) if str(tag).strip()]
-    if sum(len(tag) for tag in tags) + max(0, len(tags) - 1) > 500:
+    if sum(len(tag) + (2 if " " in tag else 0) for tag in tags) + max(0, len(tags) - 1) > 500:
         raise YouTubeMetadataError("tags exceed YouTube's 500-character total")
     if len(tags) != len({tag.casefold() for tag in tags}):
         raise YouTubeMetadataError("tags must be unique")
@@ -125,18 +125,35 @@ def compose_description(body: str, keywords: list[str], hashtags: list[str]) -> 
     return "\n\n".join(p for p in parts if p)
 
 
-def fit_tags(tags: list[str], keywords: list[str], limit_chars: int = 500, minimum: int = 21) -> list[str]:
-    """More than 20 unique tags, inside YouTube's 500-character total."""
+def youtube_tag_cost(tag: str) -> int:
+    """YouTube counts a tag with a space as if it were quoted (+2 characters)."""
+    return len(tag) + (2 if " " in tag else 0)
+
+
+def clean_tag(tag: str) -> str:
+    """Only characters YouTube accepts in a tag (2026-10-14: an upload failed with invalidTags)."""
+    text = "".join(ch for ch in str(tag) if ch.isalnum() or ch in " -&.'")
+    return " ".join(text.replace("'", "").split())[:30].strip()
+
+
+def fit_tags(tags: list[str], keywords: list[str], limit_chars: int = 460, minimum: int = 21) -> list[str]:
+    """More than 20 unique tags, safely inside YouTube's 500-character budget,
+    counted the way YouTube counts them (quotes around multi-word tags, commas)."""
     pool = _clean_keywords(list(tags) + list(keywords) + ["GOLIDE", "AI news", "tech news", "artificial intelligence",
                                                           "AI explained", "automation", "technology", "AI tools",
                                                           "AI trends", "future of AI", "tech explained",
                                                           "machine learning", "AI update", "AI technology",
                                                           "new technology", "AI for beginners"], limit=60)
-    pool = [t for t in pool if len(t) <= 60]
     out: list[str] = []
-    for tag in pool:
-        if sum(len(t) for t in out + [tag]) + len(out) <= limit_chars:
+    seen: set[str] = set()
+    for raw in pool:
+        tag = clean_tag(raw)
+        if len(tag) < 2 or tag.casefold() in seen:
+            continue
+        cost = sum(youtube_tag_cost(t) for t in out) + max(0, len(out) - 1)
+        if cost + youtube_tag_cost(tag) + (1 if out else 0) <= limit_chars:
             out.append(tag)
+            seen.add(tag.casefold())
     return out
 
 
