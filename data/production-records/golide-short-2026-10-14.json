@@ -1,0 +1,512 @@
+{
+  "production_id": "golide-short-2026-10-14",
+  "youtube_video_id": "mtpYTtQgitc",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "mtpYTtQgitc",
+    "upload_status": "published",
+    "privacy_status": "public",
+    "scheduled_at": null,
+    "uploaded_at": "2026-10-14T20:18:26.424748+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "Can We Still Trust What We See Online? Google Opens Its AI Reality Check",
+    "status": "published",
+    "scheduled_at": "2026-10-14T11:00:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-shorts-mon-wed-fri-sun\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "Three media types can now be checked,\nbut this tool can't tell you what's human.\nGoogle opened SynthID Detector globally in English,\nso upload an image, video, or audio file\nand check SynthID, an invisible watermark\nused by Google and partner tools.\nAt a busy market stall, that's like checking a seller's stamp\nbefore trusting a dramatic clip on your phone.\nUpload the clip, and it may say\n“SynthID detected,” or highlight the marked section.\nA positive result means Google or a partner system,\nincluding OpenAI, NVIDIA, or Kakao, created or edited part of the file.\nSo it's evidence, not proof about every second,\nand the same check can inspect an image, video, or recording.\nThere's a trade-off, though, because “not detected”\ndoesn't prove human-made; another system may have created it,\nor heavy editing may have hidden the mark.\nSo pause before sharing, run the check,\nand treat it as a clue, not a verdict.\nIf you want more clear evidence checks like this, follow the channel,\nbecause the next breakdown picks up here.\nAnd until then, a market stall stamp helps, but it isn't the whole story.\n",
+  "research": {
+    "summary": "Verified G$LIDE explainer brief: “Google’s AI detector has a catch.”\n\nHook: Show a dramatic, suspicious-looking video. Upload it to SynthID Detector. The result appears: “SynthID detected” or “not detected.” Then explain the crucial limitation: this is a watermark check, not a universal test for whether something was made by a human.\n\nSuggested 30-second script: “Google is opening SynthID Detector worldwide in English. It can scan an image, video or audio file for an invisible SynthID watermark—used by Google and participating partners to label some AI-generated content. A positive result is a strong signal that Google or a partner AI system created or edited at least part of the file. But a negative result does not prove the content is real: it may have been made by another AI tool, or the watermark may no longer be detectable after extensive edits. So before you share a shocking clip, treat the detector as one clue—not a final verdict.”\n\nVisual sequence: 1) Freeze-frame on the suspicious clip. 2) Upload animation. 3) Highlight the detected segment or “no watermark detected” result. 4) Split-screen: “AI watermark found” versus “not proven human-made.” 5) End card: “Would you trust an AI detector before sharing a shocking video?”\n\nEditorial note: Avoid calling SynthID a definitive “AI detector.” The strongest accurate framing is “a detector for SynthID watermarks from Google and participating partners.”",
+    "claims": [
+      {
+        "claim": "Google announced on October 7, 2026 that SynthID Detector would be available globally in English to everyone.",
+        "source_title": "Google expands SynthID Detector for AI content",
+        "source_url": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/synth-id-ai-content/",
+        "published_or_updated": "October 7, 2026"
+      },
+      {
+        "claim": "The detector can check image, video and audio files for SynthID watermarks.",
+        "source_title": "Google expands SynthID Detector for AI content",
+        "source_url": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/synth-id-ai-content/",
+        "published_or_updated": "October 7, 2026"
+      },
+      {
+        "claim": "Google says SynthID Detector can identify content made with Google AI or participating partner tools, including OpenAI, NVIDIA and Kakao; Apple is described as coming soon.",
+        "source_title": "Google expands SynthID Detector for AI content",
+        "source_url": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/synth-id-ai-content/",
+        "published_or_updated": "October 7, 2026"
+      },
+      {
+        "claim": "A detected SynthID watermark indicates that all or part of the media was created or edited by a compatible Google or partner AI system; it does not establish that the entire file was generated by AI.",
+        "source_title": "Verify AI-generated images, videos and audio",
+        "source_url": "https://support.google.com/gemini/answer/16722517?hl=en-gw",
+        "published_or_updated": "Accessed October 14, 2026"
+      },
+      {
+        "claim": "A result showing no SynthID watermark does not prove that a file was made by a human, because it may have been created by another AI system or may not contain a detectable watermark.",
+        "source_title": "Verify AI-generated images, videos and audio",
+        "source_url": "https://support.google.com/gemini/answer/16722517?hl=en-gw",
+        "published_or_updated": "Accessed October 14, 2026"
+      },
+      {
+        "claim": "Google says SynthID watermarks are designed to remain detectable after some common transformations, but extensive alterations can prevent detection.",
+        "source_title": "Verify AI-generated images, videos and audio",
+        "source_url": "https://support.google.com/gemini/answer/16722517?hl=en-gw",
+        "published_or_updated": "Accessed October 14, 2026"
+      },
+      {
+        "claim": "Google previously described SynthID Detector as a portal that can highlight portions of media more likely to contain a watermark, including specific audio segments and image areas.",
+        "source_title": "SynthID Detector: Identify content made with Google’s AI tools",
+        "source_url": "https://blog.google/innovation-and-ai/products/google-synthid-ai-content-detector/",
+        "published_or_updated": "May 20, 2025"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Google SynthID Detector Explained: Check AI Images, Video and Audio",
+    "description": "Google’s SynthID Detector lets you upload an image, video, or audio file and check for an invisible watermark linked to AI-generated or AI-edited content. A detected mark may highlight part of the file and can involve Google or partner systems such as OpenAI, NVIDIA, or Kakao.\n\nBut SynthID is a clue, not a final verdict. A positive result does not explain every second of a file, while “not detected” does not prove something was made by a person. Here’s how to use the check before sharing dramatic clips online.\n\nSynthID Detector, Google SynthID Detector, AI content detector, AI video detector, AI image detector, AI audio detector, AI watermark detector, detect AI generated video, detect AI generated image, AI deepfake detection, Google AI detector, AI content verification, invisible AI watermark, content provenance\n\n#SynthID #GoogleAI #AIDetector #AIWatermark #DeepfakeDetection #ContentProvenance #GOLIDE",
+    "tags": [
+      "SynthID Detector",
+      "Google SynthID",
+      "AI content detector",
+      "AI image detector",
+      "AI video detector",
+      "AI audio detector",
+      "AI watermark detector",
+      "Google AI detector",
+      "detect AI generated video",
+      "detect AI generated image",
+      "detect AI audio",
+      "AI deepfake detection",
+      "AI content verification",
+      "AI media verification",
+      "Google DeepMind",
+      "OpenAI SynthID",
+      "NVIDIA AI",
+      "Kakao AI",
+      "invisible watermark",
+      "AI watermarking",
+      "AI generated content",
+      "AI edited video",
+      "fake video check",
+      "deepfake checker",
+      "media authenticity",
+      "content provenance",
+      "GOLIDE",
+      "AI news"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "keywords": [
+      "SynthID Detector",
+      "Google SynthID Detector",
+      "AI content detector",
+      "AI video detector",
+      "AI image detector",
+      "AI audio detector",
+      "AI watermark detector",
+      "detect AI generated video",
+      "detect AI generated image",
+      "AI deepfake detection",
+      "Google AI detector",
+      "AI content verification",
+      "invisible AI watermark",
+      "content provenance"
+    ],
+    "hashtags": [
+      "#SynthID",
+      "#GoogleAI",
+      "#AIDetector",
+      "#AIWatermark",
+      "#DeepfakeDetection",
+      "#ContentProvenance",
+      "#GOLIDE"
+    ],
+    "format": "short",
+    "title_description_language": "en",
+    "seo_body": "Google’s SynthID Detector lets you upload an image, video, or audio file and check for an invisible watermark linked to AI-generated or AI-edited content. A detected mark may highlight part of the file and can involve Google or partner systems such as OpenAI, NVIDIA, or Kakao.\n\nBut SynthID is a clue, not a final verdict. A positive result does not explain every second of a file, while “not detected” does not prove something was made by a person. Here’s how to use the check before sharing dramatic clips online."
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "Google announced on October 7, 2026 that SynthID Detector would be available globally in English to everyone.",
+        "source_title": "Google expands SynthID Detector for AI content",
+        "source_url": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/synth-id-ai-content/",
+        "published_or_updated": "October 7, 2026"
+      },
+      {
+        "claim": "The detector can check image, video and audio files for SynthID watermarks.",
+        "source_title": "Google expands SynthID Detector for AI content",
+        "source_url": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/synth-id-ai-content/",
+        "published_or_updated": "October 7, 2026"
+      },
+      {
+        "claim": "Google says SynthID Detector can identify content made with Google AI or participating partner tools, including OpenAI, NVIDIA and Kakao; Apple is described as coming soon.",
+        "source_title": "Google expands SynthID Detector for AI content",
+        "source_url": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/synth-id-ai-content/",
+        "published_or_updated": "October 7, 2026"
+      },
+      {
+        "claim": "A detected SynthID watermark indicates that all or part of the media was created or edited by a compatible Google or partner AI system; it does not establish that the entire file was generated by AI.",
+        "source_title": "Verify AI-generated images, videos and audio",
+        "source_url": "https://support.google.com/gemini/answer/16722517?hl=en-gw",
+        "published_or_updated": "Accessed October 14, 2026"
+      },
+      {
+        "claim": "A result showing no SynthID watermark does not prove that a file was made by a human, because it may have been created by another AI system or may not contain a detectable watermark.",
+        "source_title": "Verify AI-generated images, videos and audio",
+        "source_url": "https://support.google.com/gemini/answer/16722517?hl=en-gw",
+        "published_or_updated": "Accessed October 14, 2026"
+      },
+      {
+        "claim": "Google says SynthID watermarks are designed to remain detectable after some common transformations, but extensive alterations can prevent detection.",
+        "source_title": "Verify AI-generated images, videos and audio",
+        "source_url": "https://support.google.com/gemini/answer/16722517?hl=en-gw",
+        "published_or_updated": "Accessed October 14, 2026"
+      },
+      {
+        "claim": "Google previously described SynthID Detector as a portal that can highlight portions of media more likely to contain a watermark, including specific audio segments and image areas.",
+        "source_title": "SynthID Detector: Identify content made with Google’s AI tools",
+        "source_url": "https://blog.google/innovation-and-ai/products/google-synthid-ai-content-detector/",
+        "published_or_updated": "May 20, 2025"
+      }
+    ],
+    "platform_demand": {
+      "query": "Google SynthID Detector October 2026 AI-generated media verification",
+      "score": 86.9,
+      "verdict": "pass",
+      "recent_videos": 66,
+      "median_views_per_day": 456680.17,
+      "top_views_per_day": 4445709.73,
+      "market_coverage": 4,
+      "title_query_overlap": 0.125,
+      "measured_at": "2026-10-14T07:02:46.022099+00:00",
+      "signal_type": "youtube-most-popular-seed-proxy"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.8,
+      "true_peak_dbtp": -1.93,
+      "loudness_range": 3.0
+    },
+    "editorial": {
+      "beats": 22,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-10-14T20:07:33.050402+00:00",
+    "warnings": [
+      "possible misspelling: deepfake"
+    ]
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri-sun"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-short-2026-10-14",
+    "created_at": "2026-10-14T20:07:35.348017+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-10-14T11:00:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "88746534615b991c67a48bcaefbb930b9134f4802a2ae69627938a8a2fd2fac2",
+        "bytes": 16920315
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "2f412d98df791084eb31c8cc0b7a8e6c4b8875d866cdd7284ad1e3659bb42597",
+        "bytes": 1114901
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "dd44476f2a3832b9ab17713ae9f0a69f0a3a5ea1c9609235a1f50a8b37420a2a",
+        "bytes": 3096
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "a66e12c4d7ecb406efd1df0e47bbd7d84ecccc720b0a98334a5e0efbbf2cdb88",
+        "bytes": 2361
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "04ddeed6383d0f1a87a58565c79cdf9f0c755caf940df3efb5342d19e0f0f5c2",
+        "bytes": 653
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "387e8ef71afa75de621d5a4b7fb2b8da94e304faab7454dc0a7b29f2c4388a0f",
+        "bytes": 3610
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "678140779bba2e91fcb33a95de33aea71f2cbbed4011049fbe64e353d1870954",
+        "bytes": 394
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "ae15db40252757cc926999323c6b28292b9803353fb34c041c518d195d4ef57b",
+        "bytes": 316
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 32897.0,
+      "cached_input_units": 0.0,
+      "output_units": 2348.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.009397,
+      "created_at": "2026-10-14T07:02:46.023885+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-14T07:02:46.026010+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 12979.0,
+      "cached_input_units": 0.0,
+      "output_units": 1450.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004336,
+      "created_at": "2026-10-14T07:03:07.061368+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-14T07:03:07.064226+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 4060.0,
+      "cached_input_units": 0.0,
+      "output_units": 4294.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005965,
+      "created_at": "2026-10-14T12:03:46.589074+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 5347.0,
+      "cached_input_units": 2871.0,
+      "output_units": 4539.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005999,
+      "created_at": "2026-10-14T12:04:32.313456+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1448.0,
+      "cached_input_units": 0.0,
+      "output_units": 1166.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001689,
+      "created_at": "2026-10-14T19:59:27.754437+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-14T19:59:41.889440+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-14T19:59:55.913721+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-14T20:00:08.920045+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-14T20:00:23.256068+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-14T20:00:37.705297+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-14T20:00:52.342014+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-14T20:01:05.143942+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-14T20:01:19.554977+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9237.0,
+      "cached_input_units": 0.0,
+      "output_units": 838.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002853,
+      "created_at": "2026-10-14T20:06:50.259317+00:00"
+    },
+    {
+      "stage": "thumbnail",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-10-14T20:07:18.490677+00:00"
+    }
+  ],
+  "recorded_at": "2026-10-14T20:18:26.429992+00:00"
+}
