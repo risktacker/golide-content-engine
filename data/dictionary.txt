@@ -6,3 +6,7 @@ wellbeing  # seen in your recording and the research sources
 eyewear  # seen in your recording
 chatbot  # seen in your recording
 chatbots  # seen in your recording and the research sources
+deepfake  # real tech word (2026-10-15)
+deepfakes  # real tech word (2026-10-15)
+livestream  # real tech word (2026-10-15)
+smartglasses  # real tech word (2026-10-15)
