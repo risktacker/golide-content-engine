@@ -146,5 +146,6 @@
     "signal_type": "youtube-most-popular-seed-proxy"
   },
   "selected_topic_source": "https://www.reuters.com/technology/amazon-launches-first-android-tablets-raising-prices-incorporating-alexa-2026-10-08/",
-  "_studio_job_id": "golide-long-2026-10-13"
+  "_studio_job_id": "golide-long-2026-10-13",
+  "owner_voice_media_ref": "r2://temp/2026/10/15/85706d3546444dbda98a7dcd22a90a73-Amazon-s-v2.wav"
 }

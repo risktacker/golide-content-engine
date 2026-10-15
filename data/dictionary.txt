@@ -10,3 +10,10 @@ deepfake  # real tech word (2026-10-15)
 deepfakes  # real tech word (2026-10-15)
 livestream  # real tech word (2026-10-15)
 smartglasses  # real tech word (2026-10-15)
+aboutamazon  # seen in the research sources
+apps  # seen in your recording and the research sources and the owner-approved script
+https  # seen in the research sources
+tech  # seen in your recording and the owner-approved script
+workaround  # seen in your recording and the owner-approved script
+workarounds  # seen in your recording and the research sources and the owner-approved script
+www  # seen in the research sources

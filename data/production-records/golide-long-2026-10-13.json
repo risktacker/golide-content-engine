@@ -1,0 +1,629 @@
+{
+  "production_id": "golide-long-2026-10-13",
+  "youtube_video_id": "7ashjjhFDZ4",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "7ashjjhFDZ4",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-10-15T04:03:30.004416+00:00"
+  },
+  "production": {
+    "format": "long",
+    "title": "Amazon Just Gave Its Tablets the Apps Fire Tablet Owners Wanted",
+    "status": "scheduled",
+    "scheduled_at": "2026-10-15T17:30:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-long-tuesday-saturday\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "A cheap tablet was never really cheap if it couldn't run your apps.\nAnd for years, that was the deal with Amazon's Fire tablets,\nlike a TV that only picked up a handful of channels\nwhile everyone else had the full list.\nThis month, Amazon finally switched on the rest.\nOver the next few minutes, we'll see why the old tablets felt limited,\nwhat made Amazon change, what you gain, and how to decide before you buy.\nSo start with what was going on inside the old Fire tablets.\nBack then, they ran Fire OS, Amazon's own version of Android,\nand Android is simply what lets apps run on most tablets and phones.\nBut instead of Google's app store, Amazon gave you its own,\nwhich meant fewer apps, and some that arrived late or not at all.\nSo if your bank, your school or your favourite streaming app was missing,\nyou either went without it or used a workaround,\nmeaning a riskier, unofficial way of installing it yourself.\nAnd developers felt it too, with an extra version to build and fix.\nIn other words, you saved money and paid for it in missing channels.\nWhich raises a fair question, why give up a setup that kept prices low?\nBecause people don't buy a tablet for itself, they buy it for the apps.\nOn October eighth, twenty twenty-six, Amazon announced three new tablets,\nthe Alexa Tablet 8, the Tablet 11, and the Tablet 12 Pro,\nand all three run Android with Google Play built in.\nGoogle Play is Google's full app store, the whole channel list,\nwhich puts these tablets on equal footing with any other Android tablet.\nAmazon is also aiming higher, with aluminum bodies and Alexa Plus,\nits newer, smarter assistant, so these aren't just old tablets with new names.\nNow bring that into an ordinary day.\nSay your family already uses YouTube, Netflix, Gmail and Google Docs.\nWith Google Play there, each one is a normal download,\nwhich means a student can open class documents straight away,\ninstead of hunting for a substitute and learning new menus.\nA parent gets the same streaming service the family already pays for,\nand nobody has to rebuild their routine from scratch.\nStill, more channels don't make every programme good,\nbecause some Android apps are built for phones and look stretched on a tablet.\nThe real win is choice without technical workarounds.\nAnd that's where it can go wrong for your wallet,\nbecause the full list costs more.\nThe Alexa Tablet 8 starts at two hundred twenty-nine ninety-nine,\nthe Tablet 11 at three hundred twenty-nine ninety-nine,\nand the Tablet 12 Pro at four hundred ninety-nine ninety-nine.\nBy comparison, the recent Fire HD 10 topped out\naround one hundred eighty dollars before discounts.\nThat's why a little homework before you pay is worth it, in four steps.\nFirst, write down the three apps you open every single day.\nSecond, search for each one in Google Play and check it supports tablets.\nThird, compare the new price with an older Fire tablet plus workarounds.\nFinally, ask whether you'd really use Alexa Plus, or just pay for it.\nRemember this, Amazon traded some low price for the full channel list.\nYour three apps tell you whether those extra channels are worth it to you.\nAnd if this helped, follow the channel,\nbecause every week we break down tech decisions like this one.\nWhich brings us back to that old TV,\nwould you pay more for all the channels?\n",
+  "research": {
+    "summary": "Original explainer draft: Amazon’s big tablet change is not just a new name—it is a change in the software bargain. On October 8, 2026, Amazon announced three Alexa Tablets running Android with built-in Google Play access. That means buyers can download familiar apps such as YouTube, Netflix, Gmail and Google Docs without relying on Amazon’s smaller app catalog. ([aboutamazon.com](https://www.aboutamazon.com/news/devices/new-amazon-alexa-tablets-alexa-plus))\n\nThe old Fire-tablet experience was more limited. Fire OS was an Android-based fork, but Amazon supplied its own app store instead of Google Play. In plain language: Android was the underlying language, but Amazon controlled the store where users went to get apps. If an app was missing, outdated or poorly supported there, installing it could require workarounds—or simply was not practical for an ordinary buyer. Reuters reported that consumers and developers had complained about those limitations, including the need for developers to maintain another version of their apps. ([investing.com](https://www.investing.com/news/stock-market-news/amazon-launches-first-android-tablets-raising-prices-and-incorporating-alexa-4939121))\n\nSo why make the switch? The move gives Amazon a better chance of being considered a normal Android-tablet maker rather than a low-cost device with a restricted app ecosystem. It also supports Amazon’s attempt to move upmarket: the new tablets use aluminum designs and include more capable hardware, while Alexa+ becomes a central feature. ([investing.com](https://www.investing.com/news/stock-market-news/amazon-launches-first-android-tablets-raising-prices-and-incorporating-alexa-4939121))\n\nThe trade-off is price. The new Alexa Tablet 8 starts at $229.99, the Tablet 11 at $329.99 and the Tablet 12 Pro at $499.99. Amazon’s previous Fire HD 10 line topped out around $180 before discounts, according to Reuters. Wider app access makes the new tablets more useful, but it also removes some of the old Fire line’s strongest appeal: being extremely cheap. ([aboutamazon.com](https://www.aboutamazon.com/news/devices/new-amazon-alexa-tablets-alexa-plus))\n\nThere is one remaining caveat: access to Google Play means more apps, not necessarily that every Android app is perfectly designed for a large screen. The real question is whether familiar apps plus Amazon’s hardware and Alexa features are worth paying more for. ([arstechnica.com](https://arstechnica.com/gadgets/2026/10/amazons-new-alexa-tablets-drop-the-fire-branding-but-are-more-android-than-ever/))\n\nWould you buy an Amazon tablet now that it has the apps you already use?",
+    "claims": [
+      {
+        "claim": "Amazon announced the Alexa Tablet 8, Alexa Tablet 11 and Alexa Tablet 12 Pro on October 8, 2026; the tablets run Android and include Google Play Store access.",
+        "source_title": "Amazon unveils new Alexa tablets with Alexa+ and Google Play Store access",
+        "source_url": "https://techcrunch.com/2026/10/08/amazon-unveils-new-alexa-tablets-with-alexa-and-google-play-store-access/",
+        "published_or_updated": "October 8, 2026"
+      },
+      {
+        "claim": "Amazon’s official announcement says the new tablets provide built-in access to Google Play and lists the three models.",
+        "source_title": "New Amazon Alexa Tablets with Alexa+ built in: details, availability, and pricing",
+        "source_url": "https://www.aboutamazon.com/news/devices/new-amazon-alexa-tablets-alexa-plus",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "The new tablets support familiar apps including YouTube, Netflix and Gmail through Google Play.",
+        "source_title": "Amazon unveils new Alexa tablets with Alexa+ and Google Play Store access",
+        "source_url": "https://techcrunch.com/2026/10/08/amazon-unveils-new-alexa-tablets-with-alexa-and-google-play-store-access/",
+        "published_or_updated": "October 8, 2026"
+      },
+      {
+        "claim": "Earlier Fire tablets used Fire OS, a modified or forked version of Android, and relied on Amazon’s own app store rather than Google integration.",
+        "source_title": "Amazon launches first Android tablets, raising prices and incorporating Alexa",
+        "source_url": "https://www.investing.com/news/stock-market-news/amazon-launches-first-android-tablets-raising-prices-and-incorporating-alexa-4939121",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "Reuters reported that Amazon’s move away from Fire OS followed complaints from consumers and app developers about the more limited software environment.",
+        "source_title": "Amazon launches first Android tablets, raising prices and incorporating Alexa",
+        "source_url": "https://www.investing.com/news/stock-market-news/amazon-launches-first-android-tablets-raising-prices-and-incorporating-alexa-4939121",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "Amazon is positioning the new line at higher prices and with aluminum bodies, marking a move away from the inexpensive Fire-tablet strategy.",
+        "source_title": "Amazon launches first Android tablets, raising prices and incorporating Alexa",
+        "source_url": "https://www.investing.com/news/stock-market-news/amazon-launches-first-android-tablets-raising-prices-and-incorporating-alexa-4939121",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "The Alexa Tablet 8 starts at $229.99, the Alexa Tablet 11 at $329.99 and the Alexa Tablet 12 Pro at $499.99; the Nanomatte Pro version starts at $549.99.",
+        "source_title": "New Amazon Alexa Tablets with Alexa+ built in: details, availability, and pricing",
+        "source_url": "https://www.aboutamazon.com/news/devices/new-amazon-alexa-tablets-alexa-plus",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "Reuters reported that Amazon’s recent top-of-the-line Fire HD 10 cost upwards of $180 before the new price increase.",
+        "source_title": "Amazon launches first Android tablets, raising prices and incorporating Alexa",
+        "source_url": "https://www.investing.com/news/stock-market-news/amazon-launches-first-android-tablets-raising-prices-and-incorporating-alexa-4939121",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "Access to Google Play expands app availability, but not every Android app is necessarily optimized for tablet screens.",
+        "source_title": "Amazon’s new Alexa Tablets drop the Fire branding but are more Android than ever",
+        "source_url": "https://arstechnica.com/gadgets/2026/10/amazons-new-alexa-tablets-drop-the-fire-branding-but-are-more-android-than-ever/",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "The new tablets were scheduled to ship in the United States, Mexico and Canada on October 14, 2026.",
+        "source_title": "New Amazon Alexa Tablets with Alexa+ built in: details, availability, and pricing",
+        "source_url": "https://www.aboutamazon.com/news/devices/new-amazon-alexa-tablets-alexa-plus",
+        "published_or_updated": "October 2026"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Amazon Alexa Tablets Get Google Play: Are They Worth It?",
+    "description": "Amazon is replacing its budget-focused Fire tablet approach with the new Alexa Tablet 8, Alexa Tablet 11, and Alexa Tablet 12 Pro. All three run Android with Google Play built in, giving users access to apps that were often missing or difficult to install on older Fire tablets. ([aboutamazon.com](https://www.aboutamazon.com/news/devices/new-amazon-alexa-tablets-alexa-plus?utm_source=openai))\n\nThis video explains what changed, why the new tablets cost more, and whether Google Play, Alexa Plus, and the upgraded hardware make them worth buying. We also compare the prices with older Fire tablets and share a simple checklist to use before choosing one. ([aboutamazon.com](https://www.aboutamazon.com/news/devices/new-amazon-alexa-tablets-alexa-plus?utm_source=openai))\n\nAlexa Tablet Google Play, Amazon Alexa Tablet, Alexa Tablet 12 Pro, Alexa Tablet 11, Alexa Tablet 8, Amazon tablet Android, Amazon tablet review, Fire tablet replacement, Amazon tablet comparison, Google Play tablet, Alexa Plus tablet, best Amazon tablet, Amazon tablet 2026, Fire OS alternative, cheap Android tablet\n\nChapters\n0:00 Intro\n0:23 The Few Channels\n1:03 Why Amazon Changed\n1:42 What You Gain\n2:15 Before You Buy\n3:00 Close\n\n#AmazonAlexaTablet #AlexaTablet12Pro #AlexaTablet11 #AlexaTablet8 #GooglePlay #AndroidTablet #AmazonTablet #GOLIDE",
+    "tags": [
+      "Amazon Alexa Tablet",
+      "Alexa Tablet 8",
+      "Alexa Tablet 11",
+      "Alexa Tablet 12 Pro",
+      "Amazon tablet Google Play",
+      "Amazon tablet Android",
+      "new Amazon tablet",
+      "Alexa tablet review",
+      "Amazon tablet review",
+      "Fire tablet replacement",
+      "Amazon Fire tablet",
+      "Fire HD 10",
+      "Google Play tablet",
+      "Android tablet",
+      "best Amazon tablet",
+      "cheap Android tablet",
+      "Alexa Plus tablet",
+      "Amazon tablet comparison",
+      "Alexa Tablet 8 price",
+      "Alexa Tablet 11 price",
+      "Alexa Tablet 12 Pro price"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [
+      "0:00 Intro",
+      "0:23 The Few Channels",
+      "1:03 Why Amazon Changed",
+      "1:42 What You Gain",
+      "2:15 Before You Buy",
+      "3:00 Close"
+    ],
+    "keywords": [
+      "Alexa Tablet Google Play",
+      "Amazon Alexa Tablet",
+      "Alexa Tablet 12 Pro",
+      "Alexa Tablet 11",
+      "Alexa Tablet 8",
+      "Amazon tablet Android",
+      "Amazon tablet review",
+      "Fire tablet replacement",
+      "Amazon tablet comparison",
+      "Google Play tablet",
+      "Alexa Plus tablet",
+      "best Amazon tablet",
+      "Amazon tablet 2026",
+      "Fire OS alternative",
+      "cheap Android tablet"
+    ],
+    "hashtags": [
+      "#AmazonAlexaTablet",
+      "#AlexaTablet12Pro",
+      "#AlexaTablet11",
+      "#AlexaTablet8",
+      "#GooglePlay",
+      "#AndroidTablet",
+      "#AmazonTablet",
+      "#GOLIDE"
+    ],
+    "format": "long",
+    "title_description_language": "en",
+    "seo_body": "Amazon is replacing its budget-focused Fire tablet approach with the new Alexa Tablet 8, Alexa Tablet 11, and Alexa Tablet 12 Pro. All three run Android with Google Play built in, giving users access to apps that were often missing or difficult to install on older Fire tablets. ([aboutamazon.com](https://www.aboutamazon.com/news/devices/new-amazon-alexa-tablets-alexa-plus?utm_source=openai))\n\nThis video explains what changed, why the new tablets cost more, and whether Google Play, Alexa Plus, and the upgraded hardware make them worth buying. We also compare the prices with older Fire tablets and share a simple checklist to use before choosing one. ([aboutamazon.com](https://www.aboutamazon.com/news/devices/new-amazon-alexa-tablets-alexa-plus?utm_source=openai))"
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "Amazon announced the Alexa Tablet 8, Alexa Tablet 11 and Alexa Tablet 12 Pro on October 8, 2026; the tablets run Android and include Google Play Store access.",
+        "source_title": "Amazon unveils new Alexa tablets with Alexa+ and Google Play Store access",
+        "source_url": "https://techcrunch.com/2026/10/08/amazon-unveils-new-alexa-tablets-with-alexa-and-google-play-store-access/",
+        "published_or_updated": "October 8, 2026"
+      },
+      {
+        "claim": "Amazon’s official announcement says the new tablets provide built-in access to Google Play and lists the three models.",
+        "source_title": "New Amazon Alexa Tablets with Alexa+ built in: details, availability, and pricing",
+        "source_url": "https://www.aboutamazon.com/news/devices/new-amazon-alexa-tablets-alexa-plus",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "The new tablets support familiar apps including YouTube, Netflix and Gmail through Google Play.",
+        "source_title": "Amazon unveils new Alexa tablets with Alexa+ and Google Play Store access",
+        "source_url": "https://techcrunch.com/2026/10/08/amazon-unveils-new-alexa-tablets-with-alexa-and-google-play-store-access/",
+        "published_or_updated": "October 8, 2026"
+      },
+      {
+        "claim": "Earlier Fire tablets used Fire OS, a modified or forked version of Android, and relied on Amazon’s own app store rather than Google integration.",
+        "source_title": "Amazon launches first Android tablets, raising prices and incorporating Alexa",
+        "source_url": "https://www.investing.com/news/stock-market-news/amazon-launches-first-android-tablets-raising-prices-and-incorporating-alexa-4939121",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "Reuters reported that Amazon’s move away from Fire OS followed complaints from consumers and app developers about the more limited software environment.",
+        "source_title": "Amazon launches first Android tablets, raising prices and incorporating Alexa",
+        "source_url": "https://www.investing.com/news/stock-market-news/amazon-launches-first-android-tablets-raising-prices-and-incorporating-alexa-4939121",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "Amazon is positioning the new line at higher prices and with aluminum bodies, marking a move away from the inexpensive Fire-tablet strategy.",
+        "source_title": "Amazon launches first Android tablets, raising prices and incorporating Alexa",
+        "source_url": "https://www.investing.com/news/stock-market-news/amazon-launches-first-android-tablets-raising-prices-and-incorporating-alexa-4939121",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "The Alexa Tablet 8 starts at $229.99, the Alexa Tablet 11 at $329.99 and the Alexa Tablet 12 Pro at $499.99; the Nanomatte Pro version starts at $549.99.",
+        "source_title": "New Amazon Alexa Tablets with Alexa+ built in: details, availability, and pricing",
+        "source_url": "https://www.aboutamazon.com/news/devices/new-amazon-alexa-tablets-alexa-plus",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "Reuters reported that Amazon’s recent top-of-the-line Fire HD 10 cost upwards of $180 before the new price increase.",
+        "source_title": "Amazon launches first Android tablets, raising prices and incorporating Alexa",
+        "source_url": "https://www.investing.com/news/stock-market-news/amazon-launches-first-android-tablets-raising-prices-and-incorporating-alexa-4939121",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "Access to Google Play expands app availability, but not every Android app is necessarily optimized for tablet screens.",
+        "source_title": "Amazon’s new Alexa Tablets drop the Fire branding but are more Android than ever",
+        "source_url": "https://arstechnica.com/gadgets/2026/10/amazons-new-alexa-tablets-drop-the-fire-branding-but-are-more-android-than-ever/",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "The new tablets were scheduled to ship in the United States, Mexico and Canada on October 14, 2026.",
+        "source_title": "New Amazon Alexa Tablets with Alexa+ built in: details, availability, and pricing",
+        "source_url": "https://www.aboutamazon.com/news/devices/new-amazon-alexa-tablets-alexa-plus",
+        "published_or_updated": "October 2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "Amazon Alexa tablets Android Google Play Store October 8 2026 Reuters",
+      "score": 88.0,
+      "verdict": "pass",
+      "recent_videos": 67,
+      "median_views_per_day": 355504.78,
+      "top_views_per_day": 3289474.33,
+      "market_coverage": 4,
+      "title_query_overlap": 0.2,
+      "measured_at": "2026-10-13T04:02:08.181012+00:00",
+      "signal_type": "youtube-most-popular-seed-proxy"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.65,
+      "true_peak_dbtp": -1.88,
+      "loudness_range": 1.9
+    },
+    "editorial": {
+      "beats": 54,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-10-15T04:03:19.917969+00:00",
+    "warnings": [
+      "possible misspelling: openai",
+      "possible misspelling: utm"
+    ]
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-long-tuesday-saturday"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-long-2026-10-13",
+    "created_at": "2026-10-15T04:03:21.305251+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-10-15T17:30:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "c831c7ef79b24b14bc18e1735b8d1ee15073a062ba5e9fdf1e5efaf9ca2f9d32",
+        "bytes": 56804013
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "822930bfd25421321bae1dc928aecf01ea68ced9f192a3741971ca4ed057275f",
+        "bytes": 1000299
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "547d822ea0e1fdac13a844bd8d007a713d58bf78860240c67143302626f4a2c2",
+        "bytes": 3789
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "62814ee5481cff48b6956da243dca90019412df6058ea92f80f14916844c790d",
+        "bytes": 7091
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "1f8439fb16f4a97c8e066d125fdc2d82d2f513c54a14da32b0d9d6e8ce0cf06d",
+        "bytes": 1386
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "d25e32f7557e066baeb60ac6d2d544fa3a4b763e68e55c496914cc8be49f413c",
+        "bytes": 5197
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "2285146bd1cb5c5175084453be62fcf08d91eb1c0244651b8393a075fcd49fde",
+        "bytes": 393
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "a9edaab640c2facaa06d2aa96888ab6e204a4319c220f214ff8e4b59bf0e6f06",
+        "bytes": 348
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 35470.0,
+      "cached_input_units": 0.0,
+      "output_units": 2531.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.010131,
+      "created_at": "2026-10-13T04:02:08.182547+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-13T04:02:08.185005+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 22486.0,
+      "cached_input_units": 0.0,
+      "output_units": 2177.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00711,
+      "created_at": "2026-10-13T04:02:34.451665+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-13T04:02:34.453322+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 4201.0,
+      "cached_input_units": 0.0,
+      "output_units": 3189.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004667,
+      "created_at": "2026-10-13T04:03:01.809101+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 7856.0,
+      "cached_input_units": 2444.0,
+      "output_units": 3582.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00543,
+      "created_at": "2026-10-13T04:03:40.194153+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 8435.0,
+      "cached_input_units": 2444.0,
+      "output_units": 3472.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005413,
+      "created_at": "2026-10-13T04:04:08.563628+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2010.0,
+      "cached_input_units": 0.0,
+      "output_units": 1865.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00264,
+      "created_at": "2026-10-15T03:46:10.634569+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-15T03:46:27.195064+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-15T03:46:41.758857+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-15T03:46:55.719502+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-15T03:47:08.756665+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-15T03:47:22.450134+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-15T03:47:35.745388+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-15T03:47:50.093645+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-15T03:48:04.312134+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-15T03:48:18.469834+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-15T03:48:32.887505+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-15T03:48:47.126337+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-15T03:49:00.067817+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-15T03:49:13.571744+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 13959.0,
+      "cached_input_units": 0.0,
+      "output_units": 914.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.003889,
+      "created_at": "2026-10-15T04:02:12.654680+00:00"
+    },
+    {
+      "stage": "thumbnail",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-10-15T04:02:40.536582+00:00"
+    }
+  ],
+  "recorded_at": "2026-10-15T04:03:30.008721+00:00"
+}
