@@ -101,3 +101,9 @@ This is the standard for every Short and long video. Don't change any of it with
 - Drawings never sit still: after the pen, a steady push-in, slow drift and a soft light running along the lines every few seconds.
 - Long videos also go to Instagram.
 - No template (2026-10-13): each script gets its own picture world (24 rotate by date: sport, transport, market, farming, classroom, music, traffic, chess, TV channels...), its own way in (5) and its own turn (6). Stock phrases ("here's the catch", "think of", "picture this") are rejected. The kitchen/cake/shop picture is no longer the default.
+
+## Math layer (locked 2026-10-16, owner approved "Go")
+- News and story scenes stay as they are: one image-model line drawing per scene.
+- Any scene whose words teach exact maths, physics or engineering with real numbers gets an exact figure drawn in code instead of a sketch: vectors (tip to tail, sum), right triangle (true right angle, computed hypotenuse and angle, a² + b² = c²), function (exact curve, tangent with its slope, shaded area with its value), unit circle (sin and cos, synced sine wave), projectile (exact parabola, range, peak), beam (supports, load, computed reactions), forces (free-body arrows, computed net force).
+- Same house style: white lines on black, the key part in gold, guide lines (axes, ticks) dim and drawn quickly, labels in the brand font that appear as the pen reaches what they name. Always drawn by the pen. No image cost.
+- The storyboard writes the figure in one line (for example `right_triangle: a=3; b=4; angle=yes`) using only numbers the narration says. A spec the engine cannot draw falls back to the sketch, never a failed video.

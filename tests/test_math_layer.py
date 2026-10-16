@@ -1,0 +1,136 @@
+"""Math layer (owner direction 2026-10-16): exact figures drawn in code."""
+
+import json
+import math
+import tempfile
+import unittest
+from pathlib import Path
+
+from golide_engine.vector.figures import FigureError, check_figure, parse_figure, render_figure, sidecar_path
+
+
+def _render(spec: str, size=(1024, 1536)):
+    tmp = tempfile.TemporaryDirectory()
+    path = render_figure(spec, Path(tmp.name) / "scene-01.png", size)
+    meta = json.loads(sidecar_path(path).read_text())
+    return tmp, path, meta
+
+
+def _texts(meta) -> list[str]:
+    return [label["text"] for label in meta["labels"]]
+
+
+class SpecTests(unittest.TestCase):
+    def test_parses_kind_params_and_items(self):
+        kind, params, items = parse_figure("Forces: 20@0; 15@120; unit=kN")
+        self.assertEqual(kind, "forces")
+        self.assertEqual(params, {"unit": "kN"})
+        self.assertEqual(items, ["20@0", "15@120"])
+
+    def test_unknown_or_bad_specs_are_refused_not_crashed(self):
+        for spec in ["", "spaceship: a=1", "right_triangle: a=-3; b=4", "function: f=__import__('os')",
+                     "projectile: speed=10; angle=95", "vectors: a=1"]:
+            self.assertTrue(check_figure(spec), spec)
+
+
+class AccuracyTests(unittest.TestCase):
+    def test_pythagoras_hypotenuse_and_angle_are_computed(self):
+        tmp, _, meta = _render("right_triangle: a=3; b=4; angle=yes; formula=yes")
+        with tmp:
+            texts = _texts(meta)
+            self.assertIn("5", texts)
+            self.assertIn("53.1°", texts)
+            self.assertIn("a² + b² = c²", texts)
+
+    def test_right_angle_is_square_on_screen(self):
+        tmp, _, meta = _render("right_triangle: a=5; b=2")
+        with tmp:
+            base, side = meta["strokes"][0]["points"], meta["strokes"][1]["points"]
+            v1 = (base[-1][0] - base[0][0], base[-1][1] - base[0][1])
+            v2 = (side[-1][0] - side[0][0], side[-1][1] - side[0][1])
+            self.assertAlmostEqual(v1[0] * v2[0] + v1[1] * v2[1], 0.0, delta=1e-6)
+            ratio = math.hypot(*v1) / math.hypot(*v2)
+            self.assertAlmostEqual(ratio, 5 / 2, places=3)
+
+    def test_vector_sum(self):
+        tmp, _, meta = _render("vectors: a=3,1; b=1,2; sum=yes")
+        with tmp:
+            self.assertIn("(4, 3)", _texts(meta))
+            self.assertTrue(any(s["gold"] for s in meta["strokes"]))
+
+    def test_tangent_slope_and_area(self):
+        tmp, _, meta = _render("function: f=x^2; x=-2,2; tangent=1", (1536, 1024))
+        with tmp:
+            self.assertIn("slope = 2", _texts(meta))
+        tmp, _, meta = _render("function: f=sin(x); x=0,6.28; area=0,pi", (1536, 1024))
+        with tmp:
+            self.assertIn("area ≈ 2", _texts(meta))
+
+    def test_unit_circle_keeps_precision(self):
+        tmp, _, meta = _render("unit_circle: angle=30; wave=yes", (1536, 1024))
+        with tmp:
+            self.assertIn("sin 0.5", _texts(meta))
+            self.assertIn("cos 0.87", _texts(meta))
+
+    def test_projectile_range_and_peak(self):
+        tmp, _, meta = _render("projectile: speed=20; angle=45", (1536, 1024))
+        with tmp:
+            reach = 20 ** 2 * math.sin(math.radians(90)) / 9.8
+            self.assertIn(f"{reach:.1f} m", _texts(meta))
+            self.assertIn("peak 10.2 m", _texts(meta))
+
+    def test_beam_reactions_balance(self):
+        tmp, _, meta = _render("beam: length=6; load=10; at=2", (1536, 1024))
+        with tmp:
+            texts = _texts(meta)
+            self.assertIn("6.67 kN", texts)
+            self.assertIn("3.33 kN", texts)
+
+    def test_net_force(self):
+        tmp, _, meta = _render("forces: 20@0; 15@120")
+        with tmp:
+            rx, ry = 20 + 15 * math.cos(math.radians(120)), 15 * math.sin(math.radians(120))
+            self.assertIn(f"net {math.hypot(rx, ry):.0f} N at {math.degrees(math.atan2(ry, rx)):.1f}°", _texts(meta))
+
+
+class RenderPathTests(unittest.TestCase):
+    def test_figure_loads_as_a_pen_drawn_scene_with_labels(self):
+        from golide_engine.vector.illustrate import load_figure
+
+        tmp, path, meta = _render("right_triangle: a=3; b=4")
+        with tmp:
+            drawing = load_figure(path)
+            self.assertIsNotNone(drawing)
+            self.assertEqual(drawing.entrance, "pen")
+            self.assertEqual(len(drawing.labels), len(meta["labels"]))
+            self.assertTrue(all(0.0 <= label[3] <= 1.0 for label in drawing.labels))
+            # Construction order is kept: the hypotenuse (gold) is drawn last.
+            self.assertTrue(drawing.strokes[-1].gold or any(s.gold for s in drawing.strokes[-3:]))
+
+    def test_ordinary_picture_has_no_figure(self):
+        from PIL import Image
+
+        from golide_engine.vector.illustrate import load_figure
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "scene-01.png"
+            Image.new("RGB", (10, 10)).save(path)
+            self.assertIsNone(load_figure(path))
+
+    def test_storyboard_offers_the_figure_field(self):
+        from golide_engine.vector.illustrate import VISUAL_PLAN_SCHEMA, scene_plan_instructions
+
+        item = VISUAL_PLAN_SCHEMA["properties"]["scenes"]["items"]
+        self.assertIn("figure", item["required"])
+        text = scene_plan_instructions("long")
+        for kind in ("vectors:", "right_triangle:", "function:", "unit_circle:", "projectile:", "beam:", "forces:"):
+            self.assertIn(kind, text)
+
+    def test_bad_figure_raises_figure_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(FigureError):
+                render_figure("function: f=1/0*x; x=1,2", Path(tmp) / "x.png", (512, 512))
+
+
+if __name__ == "__main__":
+    unittest.main()

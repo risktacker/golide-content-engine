@@ -547,7 +547,7 @@ class VectorRenderer:
     @staticmethod
     def _use_illustrations(plan: dict[str, Any], lines, illustrations: dict[str, Path]):
         """Every line shows its scene's drawing (the closing logo line stays)."""
-        from .illustrate import SCENES, vectorize
+        from .illustrate import SCENES, load_figure, vectorize
 
         SCENES.clear()
         owner: dict[int, str] = {}
@@ -555,10 +555,16 @@ class VectorRenderer:
             path = illustrations.get(scene["id"])
             if path is None or not Path(path).exists():
                 continue
-            SCENES[scene["id"]] = vectorize(Path(path))
-            SCENES[scene["id"]].accent = str(scene.get("accent") or "gold")
-            # The first picture is drawn by the pen; the rest fade in (reference style).
-            SCENES[scene["id"]].entrance = "pen" if len(SCENES) == 1 else "fade"
+            figure = load_figure(Path(path))
+            if figure is not None:
+                # Exact figures (math layer) are always drawn by the pen, in gold,
+                # so the construction itself is the explanation.
+                SCENES[scene["id"]] = figure
+            else:
+                SCENES[scene["id"]] = vectorize(Path(path))
+                SCENES[scene["id"]].accent = str(scene.get("accent") or "gold")
+                # The first picture is drawn by the pen; the rest fade in (reference style).
+                SCENES[scene["id"]].entrance = "pen" if len(SCENES) == 1 else "fade"
             for index in range(int(scene["first_line"]), int(scene["last_line"]) + 1):
                 owner[index] = scene["id"]
         for line in lines:

@@ -17,7 +17,7 @@ This module provides that:
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import numpy as np
@@ -74,8 +74,10 @@ VISUAL_PLAN_SCHEMA: dict = {
                     "accent": {"type": "string", "enum": list(ACCENTS)},
                     "sound": {"type": "string", "enum": list(SCENE_SOUNDS)},
                     "sound_word": {"type": "string"},
+                    "figure": {"type": "string"},
                 },
-                "required": ["first_line", "last_line", "drawing", "gold_element", "accent", "sound", "sound_word"],
+                "required": ["first_line", "last_line", "drawing", "gold_element", "accent", "sound", "sound_word",
+                             "figure"],
             },
         },
     },
@@ -147,6 +149,24 @@ COVER (the picture people see before they press play; owner direction 2026-10-07
 
 If the lines are divided into chapters (marked "== CHAPTER ... =="), a scene
 never runs across a chapter mark: every chapter starts with a new scene.
+
+EXACT FIGURES (the math layer, owner direction 2026-10-16): a drawn sketch
+guesses angles and lengths. When a scene's lines teach exact maths, physics or
+engineering with real numbers (vectors, Pythagoras, trigonometry, a graph,
+slope or area in calculus, a projectile, forces, a loaded beam), set "figure"
+to ONE line in this form, using the numbers spoken in those lines, and the
+engine draws it precisely instead of the sketch:
+  vectors: a=3,1; b=1,2; sum=yes          (names=u,v to rename; length=yes)
+  right_triangle: a=3; b=4; angle=yes     (formula=yes adds a² + b² = c²; letters=yes for a, b, c)
+  function: f=x^2; x=-2,2; tangent=1      (tangent=<x> shows the slope there)
+  function: f=sin(x); x=0,6.28; area=0,3.14   (area under the curve between two x values)
+  unit_circle: angle=30; wave=yes         (sin and cos of the angle, with the sine wave)
+  projectile: speed=20; angle=45          (metres, m/s; g=9.8 unless stated)
+  beam: length=6; load=10; at=2           (metres and kN; support reactions are computed)
+  forces: 20@0; 15@120                    (newtons at angles in degrees; the net force is computed)
+Never invent numbers the lines do not give. Everywhere else, and in every
+news or story scene, "figure" is "" and the drawing is used. Still write
+"drawing" and "gold_element" for a figure scene (they are the fallback).
 """
 
 
@@ -221,15 +241,21 @@ def illustration_prompt(drawing: str, gold: str, format_name: str) -> str:
 # Vectorising a line drawing into ordered pen strokes
 # --------------------------------------------------------------------------
 
+DIM_PACE = 0.35
+
+
 @dataclass
 class Stroke:
     points: np.ndarray  # (n, 2) in image pixels
     gold: bool
     width: float  # in image pixels
+    dim: bool = False  # secondary lines (axes, ticks, guides) drawn softer
 
     @property
     def length(self) -> float:
-        return float(np.sum(np.linalg.norm(np.diff(self.points, axis=0), axis=1)))
+        # Pen time: guide lines (axes, ticks) are drawn quickly so the pen spends
+        # its time on what the scene is about.
+        return float(np.sum(np.linalg.norm(np.diff(self.points, axis=0), axis=1))) * (DIM_PACE if self.dim else 1.0)
 
 
 @dataclass
@@ -244,6 +270,10 @@ class Drawing:
     accent_fill: np.ndarray | None = None
     accent: str = "gold"
     entrance: str = "pen"  # "pen": drawn line by line; "fade": appears drawn, accent lights up
+    # Exact figures (vector.figures): crisp labels, each shown once the pen has
+    # drawn this share of the figure: (cairo surface, x, y, after).
+    labels: list = field(default_factory=list)
+    keep_order: bool = False
 
     @property
     def total(self) -> float:
@@ -402,6 +432,44 @@ def vectorize(image_path: Path, max_side: int = 900) -> Drawing:
                    fill, accent_fill)
 
 
+def load_figure(image_path: Path) -> Drawing | None:
+    """The exact strokes and labels of a code-drawn figure, or None for a normal picture."""
+    import json
+
+    import cairo
+
+    from .figures import sidecar_path
+
+    meta_path = sidecar_path(Path(image_path))
+    if not meta_path.exists():
+        return None
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    strokes = [Stroke(np.array(item["points"], np.float64), bool(item["gold"]), float(item["width"]),
+                      bool(item.get("dim")))
+               for item in meta["strokes"] if len(item["points"]) >= 2]
+    if not strokes:
+        return None
+    labels = []
+    xs = [p[0] for st in strokes for p in st.points]
+    ys = [p[1] for st in strokes for p in st.points]
+    for item in meta.get("labels", []):
+        from PIL import Image
+
+        crop = Image.open(meta_path.parent / item["file"]).convert("RGBA")
+        rgba = np.asarray(crop, np.float32) / 255.0
+        alpha = rgba[..., 3:4]
+        bgra = np.concatenate([rgba[..., 2:3] * alpha, rgba[..., 1:2] * alpha, rgba[..., 0:1] * alpha, alpha], axis=2)
+        data = bytearray((bgra * 255).astype(np.uint8).tobytes())
+        surface = cairo.ImageSurface.create_for_data(data, cairo.FORMAT_ARGB32, crop.width, crop.height,
+                                                     crop.width * 4)
+        labels.append((surface, float(item["x"]), float(item["y"]), float(item["after"]), data))
+        xs += [float(item["x"]), float(item["x"]) + crop.width]
+        ys += [float(item["y"]), float(item["y"]) + crop.height]
+    bbox = (min(xs), min(ys), max(xs), max(ys))
+    return Drawing(strokes, int(meta["width"]), int(meta["height"]), bbox, None, None,
+                   accent="gold", entrance="pen", labels=labels, keep_order=True)
+
+
 def _fills(mask: np.ndarray, goldness: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """Enclosed areas of the line art (a body, a door, a screen), not the background.
 
@@ -534,9 +602,25 @@ def draw_illustration(d, drawing: Drawing, region, reveal: float, breathe: float
             # Accent in the scene's colour; a softer glow so it never covers the drawing.
             d.stroke(path, accent, width_px, alpha=0.88 + 0.12 * pulse)
             d.stroke(path, accent, width_px * 0.8, alpha=0.45 + 0.1 * pulse, hot=True)
+        elif stroke.dim:
+            d.stroke(path, "line", width_px * 0.8, alpha=0.42)
         else:
             d.stroke(path, "line", width_px, alpha=0.92)
             d.stroke(path, "line", width_px, alpha=0.18, hot=True)
+    if drawing.labels:
+        done = target / drawing.total
+        for surface, lx, ly, after, _keep in drawing.labels:
+            a = max(0.0, min(1.0, (done - after) / 0.06 + 1.0)) if done < 1.0 else 1.0
+            if a <= 0.0:
+                continue
+            ctx = d.main
+            ctx.save()
+            ctx.translate(ox, oy)
+            ctx.scale(s, s)
+            ctx.translate(-cx, -cy)
+            ctx.set_source_surface(surface, lx, ly)
+            ctx.paint_with_alpha(a)
+            ctx.restore()
     if tip is not None and reveal < 1.0:
         pen_light(d, tip[0], tip[1])
     if settled > SHIMMER_START:

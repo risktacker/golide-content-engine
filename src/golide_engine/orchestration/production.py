@@ -813,6 +813,16 @@ class ProductionService:
                     target = illustration_dir / f"{scene['id']}.png"
                     if target.exists():
                         continue  # already paid for and checkpointed
+                    if str(scene.get("figure") or "").strip():
+                        # Math layer: exact figures are drawn in code, at no cost.
+                        from ..vector.figures import FigureError, render_figure
+                        try:
+                            render_figure(str(scene["figure"]), target, tuple(int(v) for v in art_size.split("x")))
+                            print(json.dumps({"status": "figure_drawn", "scene": scene["id"], "figure": scene["figure"]}))
+                            continue
+                        except FigureError as exc:
+                            # A spec the engine cannot draw falls back to the sketch; never a failed video.
+                            print(f"::warning title=Figure fell back to a sketch::{scene['id']}: {exc}")
                     self._reserve(spec, support_image_cost_model, Usage(images=1), stage="illustrations")
                     output = line_art.create(
                         illustration_prompt(scene["drawing"], scene["gold_element"], str(spec["format"])),
