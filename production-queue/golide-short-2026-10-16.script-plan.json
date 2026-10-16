@@ -1,0 +1,246 @@
+{
+ "title": "Tesla's Flying Roadster Is Really a Balloon Trick",
+ "chapters": [],
+ "lines": [
+  {
+   "section": "claim",
+   "chapter": 0,
+   "text": "Tesla says its new Roadster can fly,",
+   "emphasis": "can fly",
+   "visual": "icon_hero",
+   "subjects": [
+    "sports car"
+   ],
+   "label": "TESLA ROADSTER",
+   "follow": false
+  },
+  {
+   "section": "claim",
+   "chapter": 0,
+   "text": "and this week it showed something closer to a jump.",
+   "emphasis": "a jump",
+   "visual": "icon_pair",
+   "subjects": [
+    "sports car",
+    "arrow up"
+   ],
+   "label": "FLY OR JUMP?",
+   "follow": false
+  },
+  {
+   "section": "proof",
+   "chapter": 0,
+   "text": "That jump works like a balloon you blow up and let go,",
+   "emphasis": "balloon",
+   "visual": "icon_hero",
+   "subjects": [
+    "balloon"
+   ],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "proof",
+   "chapter": 0,
+   "text": "which shoots across the room because the air rushing out the back pushes it forward.",
+   "emphasis": "pushes it forward",
+   "visual": "icon_flow",
+   "subjects": [
+    "balloon",
+    "wind",
+    "arrow right"
+   ],
+   "label": "PUSH",
+   "follow": false
+  },
+  {
+   "section": "proof",
+   "chapter": 0,
+   "text": "So the Roadster carries ten small jets",
+   "emphasis": "ten small jets",
+   "visual": "icon_orbit",
+   "subjects": [
+    "sports car",
+    "wind",
+    "rocket"
+   ],
+   "label": "10 JETS",
+   "follow": false
+  },
+  {
+   "section": "proof",
+   "chapter": 0,
+   "text": "fed by six hundred litres of compressed air.",
+   "emphasis": "compressed air",
+   "visual": "icon_hero",
+   "subjects": [
+    "gas tank"
+   ],
+   "label": "600 LITRES",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 0,
+   "text": "Then at the reveal near Waco, Texas, that push lifted it up a ramp,",
+   "emphasis": "lifted it",
+   "visual": "icon_pair",
+   "subjects": [
+    "sports car",
+    "ramp"
+   ],
+   "label": "WACO, TEXAS",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 0,
+   "text": "spun it, and carried it over a row of Tesla cars.",
+   "emphasis": "over a row",
+   "visual": "icon_flow",
+   "subjects": [
+    "sports car",
+    "truck",
+    "car"
+   ],
+   "label": "THE HOP",
+   "follow": false
+  },
+  {
+   "section": "cost",
+   "chapter": 0,
+   "text": "But a balloon empties in seconds,",
+   "emphasis": "empties in seconds",
+   "visual": "icon_pair",
+   "subjects": [
+    "balloon",
+    "clock"
+   ],
+   "label": "SECONDS",
+   "follow": false
+  },
+  {
+   "section": "cost",
+   "chapter": 0,
+   "text": "and a heavy car burns through its air just as fast,",
+   "emphasis": "just as fast",
+   "visual": "gauge",
+   "subjects": [
+    "gas tank"
+   ],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "cost",
+   "chapter": 0,
+   "text": "so you get a hop, not a trip across town.",
+   "emphasis": "a hop",
+   "visual": "icon_pair",
+   "subjects": [
+    "sports car",
+    "city"
+   ],
+   "label": "HOP, NOT FLIGHT",
+   "follow": false
+  },
+  {
+   "section": "cost",
+   "chapter": 0,
+   "text": "That's why engineers use cold-gas jets to nudge spacecraft, not to carry cars,",
+   "emphasis": "nudge spacecraft",
+   "visual": "icon_pair",
+   "subjects": [
+    "satellite",
+    "sports car"
+   ],
+   "label": "COLD GAS",
+   "follow": false
+  },
+  {
+   "section": "cost",
+   "chapter": 0,
+   "text": "and nobody has reported any aviation approval yet.",
+   "emphasis": "aviation approval",
+   "visual": "icon_hero",
+   "subjects": [
+    "airplane"
+   ],
+   "label": "NO APPROVAL",
+   "follow": false
+  },
+  {
+   "section": "reframe",
+   "chapter": 0,
+   "text": "Still, Tesla wants a fifty-thousand-dollar deposit for a car first promised in 2017,",
+   "emphasis": "deposit",
+   "visual": "icon_pair",
+   "subjects": [
+    "dollar",
+    "calendar"
+   ],
+   "label": "$50,000",
+   "follow": false
+  },
+  {
+   "section": "reframe",
+   "chapter": 0,
+   "text": "now due in 2028, and Musk said safety is not the main goal.",
+   "emphasis": "not the main goal",
+   "visual": "icon_pair",
+   "subjects": [
+    "calendar",
+    "warning sign"
+   ],
+   "label": "SAFETY?",
+   "follow": false
+  },
+  {
+   "section": "cta",
+   "chapter": 0,
+   "text": "Before you believe the word flying, ask how long the air lasts.",
+   "emphasis": "how long",
+   "visual": "checklist",
+   "subjects": [
+    "clock",
+    "question mark"
+   ],
+   "label": "ASK THIS",
+   "follow": false
+  },
+  {
+   "section": "cta",
+   "chapter": 0,
+   "text": "If that question helps with the next big headline, follow us,",
+   "emphasis": "follow us",
+   "visual": "icon_hero",
+   "subjects": [
+    "smartphone"
+   ],
+   "label": "",
+   "follow": true
+  },
+  {
+   "section": "cta",
+   "chapter": 0,
+   "text": "because we break down one tech story every day.",
+   "emphasis": "every day",
+   "visual": "icon_hero",
+   "subjects": [
+    "smartphone"
+   ],
+   "label": "",
+   "follow": true
+  },
+  {
+   "section": "cta",
+   "chapter": 0,
+   "text": "And the next time a balloon zips across your room, you'll know how Tesla's Roadster flies.",
+   "emphasis": "balloon",
+   "visual": "logo_end",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  }
+ ]
+}

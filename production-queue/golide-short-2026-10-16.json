@@ -2,8 +2,8 @@
   "id": "golide-short-2026-10-16",
   "studio_managed": true,
   "format": "short",
-  "title": "Apple Put an AI Screen in the Kitchen. Would You Actually Use It?",
-  "brief": "Apple has entered the smart-home screen race with HomeView, a $299 device that combines a display, speaker, camera and Siri AI. It can show calendars, answer questions, control lights and cameras, identify family members and help with everyday tasks. The useful angle is not the gadget itself but whether families want an always-present AI in the home\u2014or whether it is just another expensive screen. End with: Would you trust a camera and AI assistant in the middle of your home?",
+  "title": "Tesla's Flying Roadster Is Really a Balloon Trick",
+  "brief": "Tesla revealed the new Roadster this week: ten cold-gas jets fed by 600 litres of compressed air lifted it up a ramp, spun it and hopped it over other Tesla cars. Explained with one picture, a balloon let go across a room: why that push lasts seconds, so it is a hop, not flight; no aviation approval yet; $50,000 deposit, production promised for 2028, first promised in 2017.",
   "demand_query": "AI tech news everyone is talking about this week",
   "demand_validation_required": true,
   "budget_class": "scheduled",
@@ -53,6 +53,26 @@
   },
   "_studio_job_id": "golide-short-2026-10-16",
   "topic_candidates": [
+    {
+      "title": "Tesla's Flying Roadster Is Really a Balloon Trick",
+      "query": "Tesla Roadster flying reveal",
+      "brief": "Tesla revealed the new Roadster this week: ten cold-gas jets fed by 600 litres of compressed air lifted it up a ramp, spun it and hopped it over other Tesla cars. Explained with one picture, a balloon let go across a room: why that push lasts seconds, so it is a hop, not flight; no aviation approval yet; $50,000 deposit, production promised for 2028, first promised in 2017.",
+      "evidence_summary": "Owner-selected 16 Oct: Tesla's flying Roadster reveal (15 Oct), trending on every platform.",
+      "authoritative_source_url": "https://techcrunch.com/2026/10/15/tesla-reveals-spacex-powered-roadster-that-flies-and-falls-with-style/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Tesla Roadster flying reveal",
+        "score": 90.0,
+        "verdict": "pass",
+        "recent_videos": 65,
+        "median_views_per_day": 503374.24,
+        "top_views_per_day": 3771538.1,
+        "market_coverage": 4,
+        "title_query_overlap": 0.3333,
+        "measured_at": "2026-10-16T07:03:23.811530+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
     {
       "title": "Apple Put an AI Screen in the Kitchen. Would You Actually Use It?",
       "query": "Apple HomeView AI smart display October 2026",
@@ -155,7 +175,7 @@
     }
   ],
   "platform_demand": {
-    "query": "Apple HomeView AI smart display October 2026",
+    "query": "Tesla Roadster flying reveal",
     "score": 90.0,
     "verdict": "pass",
     "recent_videos": 65,
@@ -166,5 +186,5 @@
     "measured_at": "2026-10-16T07:03:23.811530+00:00",
     "signal_type": "youtube-most-popular-seed-proxy"
   },
-  "selected_topic_source": "https://www.apple.com/gq/newsroom/2026/10/meet-apple-homeview-a-new-way-to-enjoy-entertainment-and-manage-the-home/"
+  "selected_topic_source": "https://techcrunch.com/2026/10/15/tesla-reveals-spacex-powered-roadster-that-flies-and-falls-with-style/"
 }
