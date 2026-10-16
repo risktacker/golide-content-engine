@@ -1,0 +1,540 @@
+{
+  "production_id": "golide-short-2026-10-16",
+  "youtube_video_id": "cX9ToHlvOFQ",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "cX9ToHlvOFQ",
+    "upload_status": "published",
+    "privacy_status": "public",
+    "scheduled_at": null,
+    "uploaded_at": "2026-10-16T18:37:49.993089+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "Tesla's Flying Roadster Is Really a Balloon Trick",
+    "status": "published",
+    "scheduled_at": "2026-10-16T11:00:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-shorts-mon-wed-fri-sun\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "Tesla says its new Roadster can fly,\nand this week it showed something closer to a jump.\nThat jump works like a balloon you blow up and let go,\nwhich shoots off because the air rushing out the back pushes it forward.\nSo the Roadster carries ten small jets\nfed by six hundred litres of compressed air.\nThen at the reveal in Texas, that push lifted it up a ramp,\nspun it, and carried it over a row of Tesla cars.\nThe physics behind it is Newton's third law,\nwhich says every push comes with an equal push back.\nInside, the air is squeezed into carbon-fibre tanks at very high pressure,\nand when a valve opens it blasts out of the jets,\nshoving the car the opposite way, just like the balloon.\nPoint the jets at the ground and the car rises.\nBut a balloon empties in seconds,\nand a heavy car burns through its air just as fast,\nso you get a hop, not a trip across town.\nBefore you believe the word flying, ask how long the air lasts.\nIf that helped, follow us,\nbecause we break down one tech story every day.\nAnd the next time a balloon zips across your room, you'll know how Tesla's Roadster flies.\n",
+  "research": {
+    "summary": "Tesla revealed the second-generation Roadster on 15 October 2026 near Waco, Texas. Ten cold-gas thrusters fed by 600 litres of compressed air lifted it up an inverted ramp, spun it and hopped it over other Tesla vehicles. Production is promised for 2028; reservations cost $50,000 (Performance) and $250,000 (Thrust). Physics analysts say cold-gas thrust lasts seconds, so it is a hop, not sustained flight; no FAA approval has been reported. Musk said safety 'is not the main goal'.",
+    "claims": [
+      {
+        "claim": "Tesla revealed the second-generation Roadster on 15 October 2026 near Waco, Texas.",
+        "source_title": "Tesla reveals SpaceX-powered Roadster that flies and falls with style",
+        "source_url": "https://techcrunch.com/2026/10/15/tesla-reveals-spacex-powered-roadster-that-flies-and-falls-with-style/",
+        "published_or_updated": "2026-10-15"
+      },
+      {
+        "claim": "Ten thrusters drawing on 600 litres of compressed air lifted the car up an inverted ramp, spun it and landed it, and hopped it over a Cybercab, Cybertruck, Semi, Model Y and Model 3.",
+        "source_title": "Tesla reveals SpaceX-powered Roadster that flies and falls with style",
+        "source_url": "https://techcrunch.com/2026/10/15/tesla-reveals-spacex-powered-roadster-that-flies-and-falls-with-style/",
+        "published_or_updated": "2026-10-15"
+      },
+      {
+        "claim": "Musk says production starts in 2028; reservations are $50,000 for Performance and $250,000 for Thrust.",
+        "source_title": "Tesla reveals SpaceX-powered Roadster that flies and falls with style",
+        "source_url": "https://techcrunch.com/2026/10/15/tesla-reveals-spacex-powered-roadster-that-flies-and-falls-with-style/",
+        "published_or_updated": "2026-10-15"
+      },
+      {
+        "claim": "The Roadster was first revealed in 2017 with $50,000 deposits and repeatedly delayed.",
+        "source_title": "Tesla reveals SpaceX-powered Roadster that flies and falls with style",
+        "source_url": "https://techcrunch.com/2026/10/15/tesla-reveals-spacex-powered-roadster-that-flies-and-falls-with-style/",
+        "published_or_updated": "2026-10-15"
+      },
+      {
+        "claim": "Musk said safety 'is not the main goal'.",
+        "source_title": "Tesla reveals SpaceX-powered Roadster that flies and falls with style",
+        "source_url": "https://techcrunch.com/2026/10/15/tesla-reveals-spacex-powered-roadster-that-flies-and-falls-with-style/",
+        "published_or_updated": "2026-10-15"
+      },
+      {
+        "claim": "Cold-gas thrusters are normally used for fine attitude control on spacecraft; compressed gas gives lift for only seconds, so the realistic result is a brief hop, and no FAA certification has been reported.",
+        "source_title": "Tesla Roadster's 1.1-Second Claim Meets Flight Doubt",
+        "source_url": "https://tech-insider.org/tesla-roadster-flying-claim-physics-doubt-2026/",
+        "published_or_updated": "2026-10-15"
+      },
+      {
+        "claim": "Tesla's new Roadster took flight during its unveiling at a SpaceX facility.",
+        "source_title": "Tesla's new Roadster takes flight during dramatic unveiling at SpaceX facility",
+        "source_url": "https://www.foxbusiness.com/technology/teslas-new-roadster-makes-flying-debut-hitting-60-mph-under-second",
+        "published_or_updated": "2026-10-15"
+      },
+      {
+        "claim": "Tesla says every usable void in the car is filled with carbon-fibre overwrapped pressure vessels holding the compressed air that feeds the thrusters.",
+        "source_title": "Tesla reveals SpaceX-powered Roadster that flies and falls with style",
+        "source_url": "https://techcrunch.com/2026/10/15/tesla-reveals-spacex-powered-roadster-that-flies-and-falls-with-style/",
+        "published_or_updated": "2026-10-15"
+      },
+      {
+        "claim": "Newton's third law: for every action there is an equal and opposite reaction; gas expelled from a thruster pushes the vehicle the opposite way.",
+        "source_title": "Newton's Third Law (NASA Glenn Research Center)",
+        "source_url": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/newtons-laws-of-motion/",
+        "published_or_updated": "2023"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "How Tesla’s Flying Roadster Actually Works",
+    "description": "Tesla’s new Roadster used compressed-air thrusters to jump, spin and fly over a row of Tesla cars. But how does a heavy electric car lift off like a balloon?\n\nThis short explainer breaks down the ten air jets, carbon-fibre tanks and Newton’s third law behind Tesla’s flying car demo—and why it is more of a short hop than a practical flight.\n\nTesla flying Roadster, how Tesla Roadster flies, Tesla Roadster thrusters, Tesla flying car, Tesla Roadster jump, Tesla compressed air, Roadster flight explained, cold gas thrusters, Tesla Roadster reveal, SpaceX Roadster tech, Newton's third law, compressed air propulsion, flying car physics, Tesla Roadster demo\n\n#Tesla #TeslaRoadster #FlyingCar #TechExplained #SpaceX #Physics #ElectricCars",
+    "tags": [
+      "Tesla Roadster",
+      "flying Tesla Roadster",
+      "Tesla flying car",
+      "Tesla Roadster flight",
+      "Tesla Roadster jump",
+      "Tesla Roadster reveal",
+      "Tesla Roadster 2026",
+      "Tesla compressed air",
+      "cold gas thrusters",
+      "compressed air thrusters",
+      "SpaceX thrusters",
+      "Tesla Roadster jets",
+      "how flying cars work",
+      "Newtons third law",
+      "rocket car technology",
+      "Tesla tech explained",
+      "Tesla Roadster physics",
+      "flying car explained",
+      "Tesla Roadster demo",
+      "Tesla Roadster stunt",
+      "car physics"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": "Texas",
+    "location_is_material": true,
+    "altered_content": false,
+    "chapters": [],
+    "keywords": [
+      "Tesla flying Roadster",
+      "how Tesla Roadster flies",
+      "Tesla Roadster thrusters",
+      "Tesla flying car",
+      "Tesla Roadster jump",
+      "Tesla compressed air",
+      "Roadster flight explained",
+      "cold gas thrusters",
+      "Tesla Roadster reveal",
+      "SpaceX Roadster tech",
+      "Newton's third law",
+      "compressed air propulsion",
+      "flying car physics",
+      "Tesla Roadster demo"
+    ],
+    "hashtags": [
+      "#Tesla",
+      "#TeslaRoadster",
+      "#FlyingCar",
+      "#TechExplained",
+      "#SpaceX",
+      "#Physics",
+      "#ElectricCars"
+    ],
+    "format": "short",
+    "title_description_language": "en",
+    "seo_body": "Tesla’s new Roadster used compressed-air thrusters to jump, spin and fly over a row of Tesla cars. But how does a heavy electric car lift off like a balloon?\n\nThis short explainer breaks down the ten air jets, carbon-fibre tanks and Newton’s third law behind Tesla’s flying car demo—and why it is more of a short hop than a practical flight."
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "Tesla revealed the second-generation Roadster on 15 October 2026 near Waco, Texas.",
+        "source_title": "Tesla reveals SpaceX-powered Roadster that flies and falls with style",
+        "source_url": "https://techcrunch.com/2026/10/15/tesla-reveals-spacex-powered-roadster-that-flies-and-falls-with-style/",
+        "published_or_updated": "2026-10-15"
+      },
+      {
+        "claim": "Ten thrusters drawing on 600 litres of compressed air lifted the car up an inverted ramp, spun it and landed it, and hopped it over a Cybercab, Cybertruck, Semi, Model Y and Model 3.",
+        "source_title": "Tesla reveals SpaceX-powered Roadster that flies and falls with style",
+        "source_url": "https://techcrunch.com/2026/10/15/tesla-reveals-spacex-powered-roadster-that-flies-and-falls-with-style/",
+        "published_or_updated": "2026-10-15"
+      },
+      {
+        "claim": "Musk says production starts in 2028; reservations are $50,000 for Performance and $250,000 for Thrust.",
+        "source_title": "Tesla reveals SpaceX-powered Roadster that flies and falls with style",
+        "source_url": "https://techcrunch.com/2026/10/15/tesla-reveals-spacex-powered-roadster-that-flies-and-falls-with-style/",
+        "published_or_updated": "2026-10-15"
+      },
+      {
+        "claim": "The Roadster was first revealed in 2017 with $50,000 deposits and repeatedly delayed.",
+        "source_title": "Tesla reveals SpaceX-powered Roadster that flies and falls with style",
+        "source_url": "https://techcrunch.com/2026/10/15/tesla-reveals-spacex-powered-roadster-that-flies-and-falls-with-style/",
+        "published_or_updated": "2026-10-15"
+      },
+      {
+        "claim": "Musk said safety 'is not the main goal'.",
+        "source_title": "Tesla reveals SpaceX-powered Roadster that flies and falls with style",
+        "source_url": "https://techcrunch.com/2026/10/15/tesla-reveals-spacex-powered-roadster-that-flies-and-falls-with-style/",
+        "published_or_updated": "2026-10-15"
+      },
+      {
+        "claim": "Cold-gas thrusters are normally used for fine attitude control on spacecraft; compressed gas gives lift for only seconds, so the realistic result is a brief hop, and no FAA certification has been reported.",
+        "source_title": "Tesla Roadster's 1.1-Second Claim Meets Flight Doubt",
+        "source_url": "https://tech-insider.org/tesla-roadster-flying-claim-physics-doubt-2026/",
+        "published_or_updated": "2026-10-15"
+      },
+      {
+        "claim": "Tesla's new Roadster took flight during its unveiling at a SpaceX facility.",
+        "source_title": "Tesla's new Roadster takes flight during dramatic unveiling at SpaceX facility",
+        "source_url": "https://www.foxbusiness.com/technology/teslas-new-roadster-makes-flying-debut-hitting-60-mph-under-second",
+        "published_or_updated": "2026-10-15"
+      },
+      {
+        "claim": "Tesla says every usable void in the car is filled with carbon-fibre overwrapped pressure vessels holding the compressed air that feeds the thrusters.",
+        "source_title": "Tesla reveals SpaceX-powered Roadster that flies and falls with style",
+        "source_url": "https://techcrunch.com/2026/10/15/tesla-reveals-spacex-powered-roadster-that-flies-and-falls-with-style/",
+        "published_or_updated": "2026-10-15"
+      },
+      {
+        "claim": "Newton's third law: for every action there is an equal and opposite reaction; gas expelled from a thruster pushes the vehicle the opposite way.",
+        "source_title": "Newton's Third Law (NASA Glenn Research Center)",
+        "source_url": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/newtons-laws-of-motion/",
+        "published_or_updated": "2023"
+      }
+    ],
+    "platform_demand": {
+      "query": "Tesla Roadster flying reveal",
+      "score": 90,
+      "verdict": "pass",
+      "recent_videos": 65,
+      "median_views_per_day": 503374.24,
+      "top_views_per_day": 3771538.1,
+      "market_coverage": 4,
+      "title_query_overlap": 0.3333,
+      "measured_at": "2026-10-16T07:03:23.811530+00:00",
+      "signal_type": "youtube-most-popular-seed-proxy"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.79,
+      "true_peak_dbtp": -1.91,
+      "loudness_range": 2.5
+    },
+    "editorial": {
+      "beats": 21,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-10-16T18:37:34.639948+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri-sun"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-short-2026-10-16",
+    "created_at": "2026-10-16T18:37:36.145692+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-10-16T11:00:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "8f71b4a5fcaa1568df1cca8d07f23cda2966b83ffd0690b1b3b3499d50d2a8c9",
+        "bytes": 16389187
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "2ab3ce93b620134189e9b39e29c678d3514fad37e2dd54241dd8bcefc4084aa6",
+        "bytes": 1080544
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "1fa12d0053372cea7a4c8e40d6bd1a1e09d037924bbe96189190562d16497c63",
+        "bytes": 2597
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "b8fdf1ab2b4ed615bbd52d81140c133287a00edee113d7cce0a2d53184876e9e",
+        "bytes": 2557
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "b68a9addb90be6cda2db3861b8f9ec7ba36903a0a1ada9a10ce2899ca2f70538",
+        "bytes": 553
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "4fa20f7dedbcf93d13432f68d0435e810c37bbc3f6eaa8e3da8fa69a34a7768a",
+        "bytes": 4345
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "678140779bba2e91fcb33a95de33aea71f2cbbed4011049fbe64e353d1870954",
+        "bytes": 394
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "55780e4016d2845ca5471b02de1d9a5637344fe3bea5a20fdfc22758f186adcf",
+        "bytes": 277
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 40403.0,
+      "cached_input_units": 0.0,
+      "output_units": 2969.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.011643,
+      "created_at": "2026-10-16T07:03:23.813731+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-16T07:03:23.815428+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 22618.0,
+      "cached_input_units": 0.0,
+      "output_units": 1788.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006669,
+      "created_at": "2026-10-16T07:03:52.883262+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-16T07:03:52.885055+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 4296.0,
+      "cached_input_units": 0.0,
+      "output_units": 4637.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006424,
+      "created_at": "2026-10-16T07:04:39.303996+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 6128.0,
+      "cached_input_units": 2872.0,
+      "output_units": 5631.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007466,
+      "created_at": "2026-10-16T07:05:32.357062+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 5786.0,
+      "cached_input_units": 2872.0,
+      "output_units": 3860.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005272,
+      "created_at": "2026-10-16T07:06:08.525641+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2566.0,
+      "cached_input_units": 0.0,
+      "output_units": 1467.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002274,
+      "created_at": "2026-10-16T18:18:44.935417+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-16T18:19:00.695142+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-16T18:19:15.345375+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-16T18:28:45.946316+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-16T18:29:00.710707+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-16T18:29:13.866603+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-16T18:29:28.507590+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-16T18:29:42.608184+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-16T18:30:00.959161+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9310.0,
+      "cached_input_units": 0.0,
+      "output_units": 846.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002877,
+      "created_at": "2026-10-16T18:36:50.348685+00:00"
+    },
+    {
+      "stage": "thumbnail",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-10-16T18:37:17.826327+00:00"
+    }
+  ],
+  "recorded_at": "2026-10-16T18:37:49.998296+00:00"
+}

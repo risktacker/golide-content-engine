@@ -62,7 +62,7 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "Tesla Roadster flying reveal",
-        "score": 90.0,
+        "score": 90,
         "verdict": "pass",
         "recent_videos": 65,
         "median_views_per_day": 503374.24,
@@ -82,7 +82,7 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "Apple HomeView AI smart display October 2026",
-        "score": 90.0,
+        "score": 90,
         "verdict": "pass",
         "recent_videos": 65,
         "median_views_per_day": 503374.24,
@@ -102,13 +102,13 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "Meta Muse Spark Open desktop AI model October 15 2026",
-        "score": 85.0,
+        "score": 85,
         "verdict": "pass",
         "recent_videos": 65,
         "median_views_per_day": 503374.24,
         "top_views_per_day": 3771538.1,
         "market_coverage": 4,
-        "title_query_overlap": 0.0,
+        "title_query_overlap": 0,
         "measured_at": "2026-10-16T07:03:23.812026+00:00",
         "signal_type": "youtube-most-popular-seed-proxy"
       }
@@ -142,13 +142,13 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "Waymo $5 billion debt financing October 2026 robotaxis",
-        "score": 85.0,
+        "score": 85,
         "verdict": "pass",
         "recent_videos": 65,
         "median_views_per_day": 503374.24,
         "top_views_per_day": 3771538.1,
         "market_coverage": 4,
-        "title_query_overlap": 0.0,
+        "title_query_overlap": 0,
         "measured_at": "2026-10-16T07:03:23.812975+00:00",
         "signal_type": "youtube-most-popular-seed-proxy"
       }
@@ -162,13 +162,13 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "Boston Dynamics appoints Rohit Prasad CEO October 2026 physical AI",
-        "score": 85.0,
+        "score": 85,
         "verdict": "pass",
         "recent_videos": 65,
         "median_views_per_day": 503374.24,
         "top_views_per_day": 3771538.1,
         "market_coverage": 4,
-        "title_query_overlap": 0.0,
+        "title_query_overlap": 0,
         "measured_at": "2026-10-16T07:03:23.813433+00:00",
         "signal_type": "youtube-most-popular-seed-proxy"
       }
@@ -176,7 +176,7 @@
   ],
   "platform_demand": {
     "query": "Tesla Roadster flying reveal",
-    "score": 90.0,
+    "score": 90,
     "verdict": "pass",
     "recent_videos": 65,
     "median_views_per_day": 503374.24,
