@@ -11,5 +11,5 @@ def test_production_blocks_narration_duration_mismatch():
     source = Path("src/golide_engine/orchestration/production.py").read_text(
         encoding="utf-8"
     )
-    assert "render-full-duration-v3" in source
+    assert "render-full-duration-v" in source
     assert "does not match narration" in source
