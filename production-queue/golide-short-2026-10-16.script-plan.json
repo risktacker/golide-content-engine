@@ -42,7 +42,7 @@
   {
    "section": "proof",
    "chapter": 0,
-   "text": "which shoots across the room because the air rushing out the back pushes it forward.",
+   "text": "which shoots off because the air rushing out the back pushes it forward.",
    "emphasis": "pushes it forward",
    "visual": "icon_flow",
    "subjects": [
@@ -82,7 +82,7 @@
   {
    "section": "pattern",
    "chapter": 0,
-   "text": "Then at the reveal near Waco, Texas, that push lifted it up a ramp,",
+   "text": "Then at the reveal in Texas, that push lifted it up a ramp,",
    "emphasis": "lifted it",
    "visual": "icon_pair",
    "subjects": [
@@ -104,6 +104,82 @@
     "car"
    ],
    "label": "THE HOP",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 0,
+   "text": "The physics behind it is Newton's third law,",
+   "emphasis": "third law",
+   "visual": "icon_hero",
+   "subjects": [
+    "arrow left"
+   ],
+   "label": "NEWTON'S 3RD LAW",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 0,
+   "text": "which says every push comes with an equal push back.",
+   "emphasis": "equal push back",
+   "visual": "icon_pair",
+   "subjects": [
+    "arrow right",
+    "arrow left"
+   ],
+   "label": "PUSH = PUSH BACK",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 0,
+   "text": "Inside, the air is squeezed into carbon-fibre tanks at very high pressure,",
+   "emphasis": "high pressure",
+   "visual": "icon_hero",
+   "subjects": [
+    "gas tank"
+   ],
+   "label": "HIGH PRESSURE",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 0,
+   "text": "and when a valve opens it blasts out of the jets,",
+   "emphasis": "blasts out",
+   "visual": "icon_flow",
+   "subjects": [
+    "gas tank",
+    "wind"
+   ],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 0,
+   "text": "shoving the car the opposite way, just like the balloon.",
+   "emphasis": "opposite way",
+   "visual": "icon_pair",
+   "subjects": [
+    "sports car",
+    "balloon"
+   ],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 0,
+   "text": "Point the jets at the ground and the car rises.",
+   "emphasis": "car rises",
+   "visual": "icon_pair",
+   "subjects": [
+    "sports car",
+    "arrow up"
+   ],
+   "label": "LIFT",
    "follow": false
   },
   {
@@ -145,57 +221,6 @@
    "follow": false
   },
   {
-   "section": "cost",
-   "chapter": 0,
-   "text": "That's why engineers use cold-gas jets to nudge spacecraft, not to carry cars,",
-   "emphasis": "nudge spacecraft",
-   "visual": "icon_pair",
-   "subjects": [
-    "satellite",
-    "sports car"
-   ],
-   "label": "COLD GAS",
-   "follow": false
-  },
-  {
-   "section": "cost",
-   "chapter": 0,
-   "text": "and nobody has reported any aviation approval yet.",
-   "emphasis": "aviation approval",
-   "visual": "icon_hero",
-   "subjects": [
-    "airplane"
-   ],
-   "label": "NO APPROVAL",
-   "follow": false
-  },
-  {
-   "section": "reframe",
-   "chapter": 0,
-   "text": "Still, Tesla wants a fifty-thousand-dollar deposit for a car first promised in 2017,",
-   "emphasis": "deposit",
-   "visual": "icon_pair",
-   "subjects": [
-    "dollar",
-    "calendar"
-   ],
-   "label": "$50,000",
-   "follow": false
-  },
-  {
-   "section": "reframe",
-   "chapter": 0,
-   "text": "now due in 2028, and Musk said safety is not the main goal.",
-   "emphasis": "not the main goal",
-   "visual": "icon_pair",
-   "subjects": [
-    "calendar",
-    "warning sign"
-   ],
-   "label": "SAFETY?",
-   "follow": false
-  },
-  {
    "section": "cta",
    "chapter": 0,
    "text": "Before you believe the word flying, ask how long the air lasts.",
@@ -211,7 +236,7 @@
   {
    "section": "cta",
    "chapter": 0,
-   "text": "If that question helps with the next big headline, follow us,",
+   "text": "If that helped, follow us,",
    "emphasis": "follow us",
    "visual": "icon_hero",
    "subjects": [
