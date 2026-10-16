@@ -801,37 +801,34 @@ class ProductionService:
 
             self.runner.run(production_id, "visual-plan-v1", visual_plan_stage)
             visual_plan = json.loads(visual_plan_path.read_text(encoding="utf-8"))
-            scenes = visual_plan["scenes"]
+            from ..vector.layouts import normalize as normalize_layouts
+            from ..vector.scene_art import parts as scene_parts
+            from ..vector.scene_art import picture_size, try_figure
+
+            scenes = normalize_layouts(visual_plan["scenes"], str(spec["format"]))
             line_art = OpenAILineArtProvider(
                 self.providers.config["assets"]["support_model"],
                 self.providers.config["assets"]["support_quality"],
             )
-            art_size = "1024x1536" if spec["format"] == "short" else "1536x1024"
 
             def illustrations_stage():
                 for scene in scenes:
-                    target = illustration_dir / f"{scene['id']}.png"
-                    if target.exists():
-                        continue  # already paid for and checkpointed
-                    if str(scene.get("figure") or "").strip():
-                        # Math layer: exact figures are drawn in code, at no cost.
-                        from ..vector.figures import FigureError, render_figure
-                        try:
-                            render_figure(str(scene["figure"]), target, tuple(int(v) for v in art_size.split("x")))
-                            print(json.dumps({"status": "figure_drawn", "scene": scene["id"], "figure": scene["figure"]}))
-                            continue
-                        except FigureError as exc:
-                            # A spec the engine cannot draw falls back to the sketch; never a failed video.
-                            print(f"::warning title=Figure fell back to a sketch::{scene['id']}: {exc}")
-                    self._reserve(spec, support_image_cost_model, Usage(images=1), stage="illustrations")
-                    output = line_art.create(
-                        illustration_prompt(scene["drawing"], scene["gold_element"], str(spec["format"])),
-                        target, art_size,
-                    )
-                    self._record_image(production_id, "illustrations", support_image_cost_model, output)
+                    for part in scene_parts(scene):
+                        target = illustration_dir / f"{part.picture_id}.png"
+                        if target.exists():
+                            continue  # already paid for and checkpointed
+                        if try_figure(part, target, str(spec["format"])):
+                            continue  # math and physics layer: drawn in code, at no cost
+                        self._reserve(spec, support_image_cost_model, Usage(images=1), stage="illustrations")
+                        output = line_art.create(
+                            illustration_prompt(part.drawing, part.gold, str(spec["format"]), part.layout),
+                            target, picture_size(str(spec["format"]), part),
+                        )
+                        self._record_image(production_id, "illustrations", support_image_cost_model, output)
 
             self.runner.run(production_id, "illustrations-v1", illustrations_stage)
-            illustrations = {scene["id"]: illustration_dir / f"{scene['id']}.png" for scene in scenes}
+            illustrations = {part.picture_id: illustration_dir / f"{part.picture_id}.png"
+                             for scene in scenes for part in scene_parts(scene)}
             plan = plan | {"scenes": scenes, "cover": visual_plan.get("cover") or {}}
             timed_lines = align_lines(plan, timed_words, narration_seconds)
             from ..vector.chapters import chapter_marks

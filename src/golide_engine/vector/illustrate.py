@@ -75,9 +75,13 @@ VISUAL_PLAN_SCHEMA: dict = {
                     "sound": {"type": "string", "enum": list(SCENE_SOUNDS)},
                     "sound_word": {"type": "string"},
                     "figure": {"type": "string"},
+                    "layout": {"type": "string", "enum": ["single", "wide", "duo"]},
+                    "drawing_b": {"type": "string"},
+                    "gold_element_b": {"type": "string"},
+                    "figure_b": {"type": "string"},
                 },
                 "required": ["first_line", "last_line", "drawing", "gold_element", "accent", "sound", "sound_word",
-                             "figure"],
+                             "figure", "layout", "drawing_b", "gold_element_b", "figure_b"],
             },
         },
     },
@@ -86,7 +90,13 @@ VISUAL_PLAN_SCHEMA: dict = {
 
 
 def scene_plan_instructions(format_name: str) -> str:
+    from .figures import EXAMPLES
+
     low, high = SCENE_COUNTS.get(format_name, SCENE_COUNTS["short"])
+    from .layouts import STORYBOARD_RULES
+
+    figure_menu = "\n".join("  " + example for example in EXAMPLES.values())
+    layout_rules = STORYBOARD_RULES
     return f"""\
 You are the storyboard artist for a narrated explainer video in the style of
 animated line-illustration channels: on a black screen, one hand-drawn white
@@ -150,24 +160,20 @@ COVER (the picture people see before they press play; owner direction 2026-10-07
 If the lines are divided into chapters (marked "== CHAPTER ... =="), a scene
 never runs across a chapter mark: every chapter starts with a new scene.
 
-EXACT FIGURES (the math layer, owner direction 2026-10-16): a drawn sketch
-guesses angles and lengths. When a scene's lines teach exact maths, physics or
-engineering with real numbers (vectors, Pythagoras, trigonometry, a graph,
-slope or area in calculus, a projectile, forces, a loaded beam), set "figure"
-to ONE line in this form, using the numbers spoken in those lines, and the
-engine draws it precisely instead of the sketch:
-  vectors: a=3,1; b=1,2; sum=yes          (names=u,v to rename; length=yes)
-  right_triangle: a=3; b=4; angle=yes     (formula=yes adds a² + b² = c²; letters=yes for a, b, c)
-  function: f=x^2; x=-2,2; tangent=1      (tangent=<x> shows the slope there)
-  function: f=sin(x); x=0,6.28; area=0,3.14   (area under the curve between two x values)
-  unit_circle: angle=30; wave=yes         (sin and cos of the angle, with the sine wave)
-  projectile: speed=20; angle=45          (metres, m/s; g=9.8 unless stated)
-  beam: length=6; load=10; at=2           (metres and kN; support reactions are computed)
-  forces: 20@0; 15@120                    (newtons at angles in degrees; the net force is computed)
+EXACT FIGURES (the math and physics layer, owner direction 2026-10-16): a
+drawn sketch guesses angles and lengths. When a scene's lines teach exact
+maths, physics or engineering with real numbers (vectors, Pythagoras,
+trigonometry, graphs, slope or area, motion and Newton's laws, forces, beams,
+lenses, reflection, refraction, prisms, waves, the electromagnetic spectrum,
+gas laws, heat engines, relativity), set "figure" to ONE line in one of these
+forms, using the numbers spoken in those lines, and the engine draws it
+precisely instead of the sketch:
+{figure_menu}
 Never invent numbers the lines do not give. Everywhere else, and in every
 news or story scene, "figure" is "" and the drawing is used. Still write
 "drawing" and "gold_element" for a figure scene (they are the fallback).
-"""
+
+{layout_rules}"""
 
 
 def validate_scenes(scenes: list[dict], line_count: int, breaks: set[int] | frozenset[int] = frozenset(),
@@ -215,12 +221,10 @@ def validate_scenes(scenes: list[dict], line_count: int, breaks: set[int] | froz
     return fixed
 
 
-def illustration_prompt(drawing: str, gold: str, format_name: str) -> str:
-    area = ("Portrait composition: one compact scene in the centre with wide empty black "
-            "margins on the left and right; nothing touches the edges, and any ground line is "
-            "short, not edge to edge." if format_name == "short" else
-            "Landscape composition: the scene centred with empty black margins on every side; "
-            "nothing touches the edges, and any ground line stays inside the margins.")
+def illustration_prompt(drawing: str, gold: str, format_name: str, layout: str = "single") -> str:
+    from .layouts import composition
+
+    area = composition(format_name, layout)
     return (
         "Minimal elegant line illustration: thin, clean white lines on a pure flat black "
         "background, like a confident hand-drawn ink sketch made with a fine glowing pen. "
@@ -250,6 +254,7 @@ class Stroke:
     gold: bool
     width: float  # in image pixels
     dim: bool = False  # secondary lines (axes, ticks, guides) drawn softer
+    rgb: tuple | None = None  # a true colour (a spectrum), 0-255
 
     @property
     def length(self) -> float:
@@ -274,6 +279,8 @@ class Drawing:
     # drawn this share of the figure: (cairo surface, x, y, after).
     labels: list = field(default_factory=list)
     keep_order: bool = False
+    # Duo layout (long videos): the right-hand drawing, drawn after this one.
+    companion: "Drawing | None" = None
 
     @property
     def total(self) -> float:
@@ -445,7 +452,7 @@ def load_figure(image_path: Path) -> Drawing | None:
         return None
     meta = json.loads(meta_path.read_text(encoding="utf-8"))
     strokes = [Stroke(np.array(item["points"], np.float64), bool(item["gold"]), float(item["width"]),
-                      bool(item.get("dim")))
+                      bool(item.get("dim")), tuple(item["rgb"]) if item.get("rgb") else None)
                for item in meta["strokes"] if len(item["points"]) >= 2]
     if not strokes:
         return None
@@ -602,6 +609,12 @@ def draw_illustration(d, drawing: Drawing, region, reveal: float, breathe: float
             # Accent in the scene's colour; a softer glow so it never covers the drawing.
             d.stroke(path, accent, width_px, alpha=0.88 + 0.12 * pulse)
             d.stroke(path, accent, width_px * 0.8, alpha=0.45 + 0.1 * pulse, hot=True)
+        elif stroke.rgb:
+            key = "rgb_%d_%d_%d" % stroke.rgb
+            if key not in d.colors:
+                d.colors[key] = tuple(v / 255 for v in stroke.rgb)
+            d.stroke(path, key, width_px, alpha=0.95)
+            d.stroke(path, key, width_px * 0.8, alpha=0.4, hot=True)
         elif stroke.dim:
             d.stroke(path, "line", width_px * 0.8, alpha=0.42)
         else:
@@ -708,26 +721,48 @@ def _paint_fills(d, drawing: Drawing, accent: str, s, cx, cy, ox, oy, reveal: fl
 
 
 def illustration(d) -> None:
-    """Primitive: the scene's drawing, revealed over most of the scene."""
+    """Primitive: the scene's drawing (or its duo pair), revealed over the scene."""
     drawing = SCENES.get(d.icons[0]) if d.icons else None
     if drawing is None:
         return
+    if drawing.companion is None:
+        _reveal(d, drawing, d.region, d.t, max(1.0, d.span))
+        return
+    from .layouts import DUO_SECOND_REVEAL, DUO_SECOND_START, duo_regions
+
     span = max(1.0, d.span)
-    breathe = min(1.0, d.t / span)
-    if drawing.entrance == "fade":
+    left, right = duo_regions(d.region)
+    # The left idea is drawn first, in the first part of the scene ...
+    _reveal(d, drawing, left, d.t, span * DUO_SECOND_START + 1.0, breathe_span=span)
+    # ... then the right one is drawn by the pen while the left one breathes.
+    start = span * DUO_SECOND_START
+    if d.t > start:
+        _reveal(d, drawing.companion, right, d.t - start, span * DUO_SECOND_REVEAL / 0.72,
+                breathe_span=span, pen=True)
+    mid = (d.region[0] + d.region[2]) / 2
+    a = min(1.0, d.t / 1.2) * 0.22
+    d.stroke(lambda c: (c.move_to(mid, d.region[1] + 0.2), c.line_to(mid, d.region[3] - 0.2)),
+             "line_dim", 1.0, alpha=a)
+
+
+def _reveal(d, drawing: Drawing, region, t: float, span: float, breathe_span: float | None = None,
+            pen: bool = False) -> None:
+    """One drawing in one region: faded in with its accent lighting up, or drawn by the pen."""
+    breathe = min(1.0, t / (breathe_span or span))
+    if drawing.entrance == "fade" and not pen:
         # Already drawn as it fades in; the accent part then lights up, drawn by
         # the pen light, a moment after the scene starts (the "bling" moment).
         gold = sum(s.length for s in drawing.strokes if s.gold)
-        lit = max(0.0, min(1.0, (d.t - ACCENT_DELAY) / ACCENT_DRAW))
+        lit = max(0.0, min(1.0, (t - ACCENT_DELAY) / ACCENT_DRAW))
         reveal = (drawing.total - gold + gold * lit) / drawing.total
-        settled = d.t - (ACCENT_DELAY + ACCENT_DRAW) if lit >= 1.0 else -1.0
-        draw_illustration(d, drawing, d.region, reveal, breathe=breathe, zoom=d.zoom, linear=True,
+        settled = t - (ACCENT_DELAY + ACCENT_DRAW) if lit >= 1.0 else -1.0
+        draw_illustration(d, drawing, region, reveal, breathe=breathe, zoom=d.zoom, linear=True,
                           settled=settled)
         return
     reveal_time = min(max(0.72 * span, 2.5), 16.0, span)
-    reveal = d.t / reveal_time
-    settled = d.t - reveal_time if reveal >= 1.0 else -1.0
-    draw_illustration(d, drawing, d.region, reveal, breathe=breathe, zoom=d.zoom, settled=settled)
+    reveal = t / reveal_time
+    settled = t - reveal_time if reveal >= 1.0 else -1.0
+    draw_illustration(d, drawing, region, reveal, breathe=breathe, zoom=d.zoom, settled=settled)
 
 
 # When the accent of a faded-in scene lights up (seconds after the scene starts).

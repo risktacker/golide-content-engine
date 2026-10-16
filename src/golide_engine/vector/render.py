@@ -412,19 +412,23 @@ class VectorRenderer:
 
     def _points(self, group: Group, seed: int, hide: frozenset) -> np.ndarray:
         """Points on the finished drawing of a scene (unit coordinates)."""
+        # The whole drawing area: long videos reach far to the sides (wide and duo layouts).
         side, span = 200, 2.5
-        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, side, side)
+        wide = 4.6 if self.format == "long" else span
+        cols = int(side * wide / span)
+        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, cols, side)
         scratch = cairo.ImageSurface(cairo.FORMAT_ARGB32, 4, 4)
         main, glow = cairo.Context(surface), cairo.Context(scratch)
         for ctx in (main, glow):
-            ctx.translate(side / 2, side / 2)
+            ctx.translate(cols / 2, side / 2)
             ctx.scale(side / span, side / span)
         self._group_draw(main, glow, group, group.end - 1e-3, seed, 1.0, hide=hide, gp=1.0)
-        alpha = np.ndarray((side, side, 4), np.uint8, surface.get_data())[..., 3]
+        stride = surface.get_stride() // 4
+        alpha = np.ndarray((side, stride, 4), np.uint8, surface.get_data())[:, :cols, 3]
         ys, xs = np.nonzero(alpha > 70)
         if len(xs) == 0:
             return np.zeros((0, 2))
-        pts = np.stack([xs, ys], 1).astype(np.float64) / side * span - span / 2
+        pts = np.stack([xs - cols / 2, ys - side / 2], 1).astype(np.float64) / side * span
         rng = np.random.default_rng(seed + 101)
         pick = rng.choice(len(pts), PARTICLES, replace=len(pts) < PARTICLES)
         return pts[pick]
@@ -547,24 +551,24 @@ class VectorRenderer:
     @staticmethod
     def _use_illustrations(plan: dict[str, Any], lines, illustrations: dict[str, Path]):
         """Every line shows its scene's drawing (the closing logo line stays)."""
-        from .illustrate import SCENES, load_figure, vectorize
+        from .illustrate import SCENES
+        from .layouts import second_id
 
         SCENES.clear()
         owner: dict[int, str] = {}
         for scene in plan.get("scenes", []):
-            path = illustrations.get(scene["id"])
-            if path is None or not Path(path).exists():
+            drawing = _load_drawing(illustrations.get(scene["id"]), scene)
+            if drawing is None:
                 continue
-            figure = load_figure(Path(path))
-            if figure is not None:
-                # Exact figures (math layer) are always drawn by the pen, in gold,
-                # so the construction itself is the explanation.
-                SCENES[scene["id"]] = figure
-            else:
-                SCENES[scene["id"]] = vectorize(Path(path))
-                SCENES[scene["id"]].accent = str(scene.get("accent") or "gold")
+            if not drawing.keep_order:  # traced pictures (figures are always pen-drawn)
                 # The first picture is drawn by the pen; the rest fade in (reference style).
-                SCENES[scene["id"]].entrance = "pen" if len(SCENES) == 1 else "fade"
+                drawing.entrance = "pen" if not SCENES else "fade"
+            if scene.get("layout") == "duo":
+                # Duo layout: the right-hand drawing is always drawn by the pen.
+                drawing.companion = _load_drawing(illustrations.get(second_id(scene["id"])), scene)
+                if drawing.companion is not None:
+                    drawing.companion.entrance = "pen"
+            SCENES[scene["id"]] = drawing
             for index in range(int(scene["first_line"]), int(scene["last_line"]) + 1):
                 owner[index] = scene["id"]
         for line in lines:
@@ -767,3 +771,18 @@ class Transition:
                 ctx.arc(float(x), float(y), radius, 0, math.tau)
             ctx.fill()
             ctx.restore()
+
+
+def _load_drawing(path, scene: dict):
+    """A scene picture as pen strokes: an exact figure (math layer) or a traced drawing."""
+    from .illustrate import load_figure, vectorize
+
+    if path is None or not Path(path).exists():
+        return None
+    figure = load_figure(Path(path))
+    if figure is not None:
+        # Exact figures are always drawn by the pen, in gold: the construction is the explanation.
+        return figure
+    drawing = vectorize(Path(path))
+    drawing.accent = str(scene.get("accent") or "gold")
+    return drawing

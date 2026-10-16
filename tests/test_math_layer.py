@@ -134,3 +134,74 @@ class RenderPathTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PhysicsTests(unittest.TestCase):
+    def test_every_kind_in_the_menu_draws(self):
+        from golide_engine.vector.figures import EXAMPLES
+
+        for kind, example in EXAMPLES.items():
+            spec = example.split("  (")[0].strip()
+            self.assertEqual(check_figure(spec), "", kind)
+
+    def test_newton_second_law(self):
+        tmp, _, meta = _render("newton: force=10; mass=2; friction=4", (1536, 1024))
+        with tmp:
+            self.assertIn("a = 6 ÷ 2 = 3 m/s²", _texts(meta))
+
+    def test_motion_graph_distance_and_slopes(self):
+        tmp, _, meta = _render("motion: points=0,0 4,20 10,20 12,0", (1536, 1024))
+        with tmp:
+            texts = _texts(meta)
+            self.assertIn("distance = 180 m", texts)
+            self.assertIn("a = 5 m/s²", texts)
+            self.assertIn("a = -10 m/s²", texts)
+
+    def test_thin_lens_equation(self):
+        tmp, _, meta = _render("lens: focal=10; object=25", (1536, 1024))
+        with tmp:
+            self.assertIn("image 16.67 from the lens", _texts(meta))
+            self.assertIn("real, upside down, ×0.67", _texts(meta))
+        tmp, _, meta = _render("lens: focal=10; object=6", (1536, 1024))
+        with tmp:
+            self.assertIn("virtual, upright, ×2.5", _texts(meta))
+
+    def test_snell_and_total_internal_reflection(self):
+        tmp, _, meta = _render("refraction: n1=1; n2=1.5; angle=40", (1024, 1024))
+        with tmp:
+            th2 = math.degrees(math.asin(math.sin(math.radians(40)) / 1.5))
+            self.assertIn(f"{th2:.1f}°", _texts(meta))
+        tmp, _, meta = _render("refraction: n1=1.5; n2=1; angle=50", (1024, 1024))
+        with tmp:
+            self.assertIn("total internal reflection", _texts(meta))
+            self.assertIn("critical angle 41.8°", _texts(meta))
+
+    def test_prism_uses_true_colours_in_order(self):
+        tmp, _, meta = _render("prism: spread=8", (1536, 1024))
+        with tmp:
+            colours = [tuple(s["rgb"]) for s in meta["strokes"] if s.get("rgb") and s["width"] > 1.5]
+            self.assertGreaterEqual(len(colours), 7)
+
+    def test_gas_work_and_carnot(self):
+        tmp, _, meta = _render("pv: process=isothermal; p1=200; v1=1; v2=3", (1536, 1024))
+        with tmp:
+            self.assertIn(f"work = {200 * math.log(3):.1f} J", _texts(meta))
+        tmp, _, meta = _render("heat_engine: hot=500; cold=300; heat=1000", (1536, 1024))
+        with tmp:
+            self.assertIn("max efficiency 40%", _texts(meta))
+            self.assertIn("work 400 J", _texts(meta))
+
+    def test_time_dilation(self):
+        tmp, _, meta = _render("light_clock: speed=0.8", (1536, 1024))
+        with tmp:
+            self.assertIn("1 tick takes 1.67× longer", _texts(meta))
+
+    def test_wave_speed(self):
+        tmp, _, meta = _render("wave: wavelength=2; amplitude=1; frequency=5", (1536, 1024))
+        with tmp:
+            self.assertIn("speed = 5 Hz × 2 m = 10 m/s", _texts(meta))
+
+    def test_missing_greek_letters_are_spelled_out(self):
+        tmp, _, meta = _render("function: f=x^2; x=-2,2; label=γ curve", (1536, 1024))
+        with tmp:
+            self.assertTrue(all("γ" not in t for t in _texts(meta)))
