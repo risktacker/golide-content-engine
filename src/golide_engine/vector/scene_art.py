@@ -51,3 +51,30 @@ def try_figure(part: Part, target: Path, format_name: str) -> bool:
 
 def picture_size(format_name: str, part: Part) -> str:
     return art_size(format_name, part.layout)
+
+
+def calm_prompt(prompt: str, part: Part) -> str:
+    """The retry after a safety refusal: the same scene told as a plain symbol."""
+    from ..providers.openai_media import SAFE_RETRY
+
+    focus = part.gold or part.drawing
+    return prompt.replace(part.drawing.strip(), f"a simple, friendly symbolic drawing of {focus}") + SAFE_RETRY
+
+
+def fill_from_neighbours(pictures: list[Path], missing: set[Path]) -> None:
+    """Give each picture the image model refused the nearest picture that exists, so
+    one refused drawing never stops a video (owner rule: unattended, never blocked)."""
+    import shutil
+
+    have = [p for p in pictures if p not in missing and p.exists()]
+    if not have:
+        raise RuntimeError("every picture for this video was refused by the image safety filter")
+    for target in missing:
+        index = pictures.index(target)
+        nearest = min(have, key=lambda p: (abs(pictures.index(p) - index), pictures.index(p) > index))
+        shutil.copyfile(nearest, target)
+        sidecar = nearest.with_suffix(".figure.json")
+        if sidecar.exists():  # a copied figure keeps its exact strokes and labels
+            shutil.copyfile(sidecar, target.with_suffix(".figure.json"))
+        print(f"::warning title=Picture reused::{target.stem} was refused by the image safety filter; "
+              f"it shows {nearest.stem} instead")

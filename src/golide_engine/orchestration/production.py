@@ -812,19 +812,35 @@ class ProductionService:
             )
 
             def illustrations_stage():
+                from ..providers.openai_media import is_moderation_block
+                from ..vector.scene_art import calm_prompt, fill_from_neighbours
+
+                ordered: list[Path] = []
+                refused: set[Path] = set()
                 for scene in scenes:
                     for part in scene_parts(scene):
                         target = illustration_dir / f"{part.picture_id}.png"
+                        ordered.append(target)
                         if target.exists():
                             continue  # already paid for and checkpointed
                         if try_figure(part, target, str(spec["format"])):
                             continue  # math and physics layer: drawn in code, at no cost
-                        self._reserve(spec, support_image_cost_model, Usage(images=1), stage="illustrations")
-                        output = line_art.create(
-                            illustration_prompt(part.drawing, part.gold, str(spec["format"]), part.layout),
-                            target, picture_size(str(spec["format"]), part),
-                        )
-                        self._record_image(production_id, "illustrations", support_image_cost_model, output)
+                        prompt = illustration_prompt(part.drawing, part.gold, str(spec["format"]), part.layout)
+                        for attempt in (prompt, calm_prompt(prompt, part)):
+                            self._reserve(spec, support_image_cost_model, Usage(images=1), stage="illustrations")
+                            try:
+                                output = line_art.create(attempt, target, picture_size(str(spec["format"]), part))
+                            except Exception as exc:
+                                if not is_moderation_block(exc):
+                                    raise
+                                print(f"::warning title=Picture refused by the safety filter::{part.picture_id}")
+                                continue
+                            self._record_image(production_id, "illustrations", support_image_cost_model, output)
+                            break
+                        else:
+                            refused.add(target)
+                if refused:
+                    fill_from_neighbours(ordered, refused)
 
             self.runner.run(production_id, "illustrations-v1", illustrations_stage)
             illustrations = {part.picture_id: illustration_dir / f"{part.picture_id}.png"
@@ -1445,8 +1461,28 @@ class ProductionService:
             self._reserve(
                 spec, thumbnail_cost_model, Usage(images=1), stage="thumbnail"
             )
+            from ..providers.openai_media import SAFE_RETRY, is_moderation_block
+
             prompt = youtube_thumbnail_prompt(metadata["title"], self._thumbnail_moment(work))
-            output = thumbnail_provider.create_thumbnail(prompt, raw_thumbnail, self.providers.config["thumbnail"]["size"], None)
+            output = None
+            for attempt in (prompt, youtube_thumbnail_prompt(metadata["title"], "one simple glowing symbol of the topic")
+                            + SAFE_RETRY):
+                try:
+                    output = thumbnail_provider.create_thumbnail(attempt, raw_thumbnail,
+                                                                 self.providers.config["thumbnail"]["size"], None)
+                    break
+                except Exception as exc:
+                    if not is_moderation_block(exc):
+                        raise
+                    print("::warning title=Thumbnail refused by the safety filter::retrying with a calmer prompt")
+            if output is None:
+                # Both refused: the video's own designed cover becomes the thumbnail.
+                cover = video_path.with_name(video_path.stem + "-cover.jpg")
+                if not cover.exists():
+                    raise RuntimeError("thumbnail refused by the safety filter and no cover to fall back on")
+                normalize_thumbnail(cover, thumbnail)
+                print("::warning title=Thumbnail from cover::the image model refused the thumbnail twice")
+                return
             normalize_thumbnail(raw_thumbnail, thumbnail)
             self._stamp_thumbnail(work, thumbnail)
             self._record_image(production_id, "thumbnail", thumbnail_cost_model, output)

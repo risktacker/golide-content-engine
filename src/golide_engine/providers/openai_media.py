@@ -183,6 +183,18 @@ class OpenAIImageProvider:
         )
 
 
+def is_moderation_block(exc: BaseException) -> bool:
+    """True when the image API refused a picture on safety grounds (not a real failure:
+    the prompt or the drawn result touched a safety filter, e.g. pressurised tanks
+    read as a weapon). Callers retry with a calmer prompt, then fall back."""
+    text = str(exc).lower()
+    return "moderation_blocked" in text or "rejected by the safety system" in text
+
+
+SAFE_RETRY = (" Keep it calm and everyday: ordinary objects only, no weapons, no explosions, no fire, "
+              "no smoke, no tanks, no gas cylinders, no blasts, no damage, no people in danger.")
+
+
 class OpenAILineArtProvider:
     """Scene illustrations for GOLIDE Black videos.
 
