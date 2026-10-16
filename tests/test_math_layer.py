@@ -205,3 +205,37 @@ class PhysicsTests(unittest.TestCase):
         tmp, _, meta = _render("function: f=x^2; x=-2,2; label=γ curve", (1536, 1024))
         with tmp:
             self.assertTrue(all("γ" not in t for t in _texts(meta)))
+
+
+class RoadmapKindTests(unittest.TestCase):
+    def test_ohms_law_series_and_parallel(self):
+        tmp, _, meta = _render("circuit: voltage=12; resistors=4,2", (1536, 1024))
+        with tmp:
+            self.assertIn("current = 12 V ÷ 6 ohms = 2 A", _texts(meta))
+            self.assertIn("8 V", _texts(meta))
+        tmp, _, meta = _render("circuit: voltage=12; resistors=4,6,12; layout=parallel", (1536, 1024))
+        with tmp:
+            self.assertIn("total 6 A (combined 2 ohms)", _texts(meta))
+
+    def test_molecule_angles(self):
+        tmp, _, meta = _render("molecule: name=H2O", (1024, 1024))
+        with tmp:
+            self.assertIn("bond angle 104.5°", _texts(meta))
+        self.assertTrue(check_figure("molecule: name=unobtainium"))
+
+    def test_truss_is_symmetric_and_balanced(self):
+        tmp, _, meta = _render("truss: span=6; height=2; load=10; panels=4", (1536, 1024))
+        with tmp:
+            texts = _texts(meta)
+            self.assertEqual(texts.count("5 kN"), 2)                 # reactions share a central load
+            self.assertEqual(texts.count("3.8 push"), 2)             # symmetric members read the same
+            self.assertIn("7.5 push", texts)
+
+    def test_solid_volumes(self):
+        cases = {"solid: shape=cylinder; radius=3; height=5": f"volume {math.pi * 45:.2f} cm³",
+                 "solid: shape=sphere; radius=2": f"volume {4 / 3 * math.pi * 8:.2f} cm³",
+                 "solid: shape=cube; a=3": "volume 27 cm³"}
+        for spec, expected in cases.items():
+            tmp, _, meta = _render(spec, (1536, 1024))
+            with tmp:
+                self.assertIn(expected, _texts(meta), spec)

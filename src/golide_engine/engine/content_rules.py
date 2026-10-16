@@ -355,6 +355,13 @@ it and an expert finds nothing wrong or watered down (the Feynman way).
   never simplified facts.
 - Example before the name: say what happens first, then what it's called.
 - Explain every technical word the moment it appears, in the same sentence.
+- HOW IT WORKS (owner direction 2026-10-16, this is the value of the channel):
+  after the news, give a short plain-words passage on the science or engineering
+  underneath it (a short: 3 to 5 lines; a long video: a full stretch inside the
+  chapters). Name the real principle (for example Newton's third law, pressure,
+  a neural network's training, a battery's chemistry), say what it does in one
+  sentence, then show it working in this story and tie it back to the picture.
+  Simple and fast, never a lecture, never a list.
 """
 
 # Owner direction 2026-10-13: scripts must not all follow one template. Each

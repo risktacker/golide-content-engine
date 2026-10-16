@@ -99,7 +99,10 @@ def fmt(value: float, places: int = 2) -> str:
     """Up to ``places`` decimals, no trailing zeros: 5, 0.5, 0.87, 40.82."""
     if abs(value - round(value)) < 1e-9:
         return str(int(round(value)))
-    return f"{value:.{places}f}".rstrip("0").rstrip(".")
+    # Round halves away from zero, so equal members of a symmetric structure read
+    # the same (3.75 -> 3.8 both times, never 3.8 and 3.7 from float noise).
+    nudged = value + math.copysign(1e-9 * max(1.0, abs(value)), value)
+    return f"{nudged:.{places}f}".rstrip("0").rstrip(".")
 
 
 # ------------------------------------------------------------------ canvas

@@ -7,7 +7,7 @@ storyboard gives the scene a ``figure`` in a one-line spec instead::
     right_triangle: a=3; b=4; angle=yes
 
 Each kind lives with its family (maths, mechanics, optics, waves, heat,
-relativity). Every number on screen is computed here, drawn in the house style
+relativity, circuits, chemistry, structures, solids). Every number on screen is computed here, drawn in the house style
 and saved as a PNG plus a sidecar of exact pen strokes and labels that the
 renderer animates (see ``vector.illustrate.load_figure``). No image model,
 no cost, and the geometry is true.
@@ -17,7 +17,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from . import heat, maths, mechanics, optics, relativity, waves
+from . import chemistry, circuits, heat, maths, mechanics, optics, relativity, solids, structures, waves
 from .core import FigureError, parse_figure, save, sidecar_path
 
 BUILDERS = {
@@ -34,6 +34,9 @@ BUILDERS = {
     "pv": heat.pv, "heat_engine": heat.heat_engine,
     # relativity
     "light_clock": relativity.light_clock, "lorentz": relativity.lorentz,
+    # electricity, chemistry, structures, 3D geometry
+    "circuit": circuits.circuit, "molecule": chemistry.molecule, "truss": structures.truss,
+    "solid": solids.solid,
 }
 KINDS = tuple(BUILDERS)
 
@@ -58,7 +61,11 @@ EXAMPLES = {
     "pv": "pv: process=isothermal; p1=200; v1=1; v2=3   (kPa and L; isobaric, isochoric, adiabatic too; work computed)",
     "heat_engine": "heat_engine: hot=500; cold=300; heat=1000   (kelvin and joules; best efficiency computed)",
     "light_clock": "light_clock: speed=0.8                  (fraction of light speed; time stretch computed)",
-    "lorentz": "lorentz: speed=0.8                      (γ against speed, the speed marked)",
+    "lorentz": "lorentz: speed=0.8                      (time stretch against speed, the speed marked)",
+    "circuit": "circuit: voltage=12; resistors=4,2; layout=series   (or parallel; Ohm's law worked out)",
+    "molecule": "molecule: name=water                    (water, carbon dioxide, methane, ammonia, oxygen, nitrogen, hydrogen, ethanol, benzene)",
+    "truss": "truss: span=6; height=2; load=10; panels=4   (bridge truss; pull and push in every member computed)",
+    "solid": "solid: shape=cylinder; radius=3; height=5   (cube a=, cuboid length/width/height, cone, sphere, pyramid a= height=; volume and surface)",
 }
 
 
