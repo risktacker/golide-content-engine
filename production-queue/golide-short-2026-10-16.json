@@ -186,5 +186,7 @@
     "measured_at": "2026-10-16T07:03:23.811530+00:00",
     "signal_type": "youtube-most-popular-seed-proxy"
   },
-  "selected_topic_source": "https://techcrunch.com/2026/10/15/tesla-reveals-spacex-powered-roadster-that-flies-and-falls-with-style/"
+  "selected_topic_source": "https://techcrunch.com/2026/10/15/tesla-reveals-spacex-powered-roadster-that-flies-and-falls-with-style/",
+  "owner_voice_media_ref": "r2://temp/2026/10/16/85b5968ce7d84b46bc0715776b3f1359-Roadster-v2.wav",
+  "_failed_runs": 1
 }
