@@ -1,0 +1,170 @@
+{
+  "id": "golide-short-2026-10-16",
+  "studio_managed": true,
+  "format": "short",
+  "title": "Apple Put an AI Screen in the Kitchen. Would You Actually Use It?",
+  "brief": "Apple has entered the smart-home screen race with HomeView, a $299 device that combines a display, speaker, camera and Siri AI. It can show calendars, answer questions, control lights and cameras, identify family members and help with everyday tasks. The useful angle is not the gadget itself but whether families want an always-present AI in the home\u2014or whether it is just another expensive screen. End with: Would you trust a camera and AI assistant in the middle of your home?",
+  "demand_query": "AI tech news everyone is talking about this week",
+  "demand_validation_required": true,
+  "budget_class": "scheduled",
+  "purpose": "channel-automation",
+  "generate_at": "2026-10-16T07:00:00Z",
+  "max_cost_usd": 6,
+  "production_authorized": true,
+  "output_destination": "render-and-upload",
+  "owner_voice_required": true,
+  "concept": {
+    "family": "technology-software-business",
+    "promise": "A high-interest current niche topic explained with authoritative evidence and a useful GOLIDE angle",
+    "scores": {
+      "scroll_stop": 9,
+      "visual_payoff": 9,
+      "curiosity_gap": 9,
+      "retention_design": 9,
+      "broad_relevance": 8,
+      "evidence_strength": 8,
+      "novelty": 8,
+      "replay_or_loop": 8,
+      "revenue_fit": 6
+    }
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri-sun"
+  },
+  "music": {
+    "mood": "curious-tension"
+  },
+  "avatar_reference_images": [],
+  "release": {
+    "approved": true,
+    "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+    "scheduled_at": "2026-10-16T11:00:00Z"
+  },
+  "_studio_job_id": "golide-short-2026-10-16",
+  "topic_candidates": [
+    {
+      "title": "Apple Put an AI Screen in the Kitchen. Would You Actually Use It?",
+      "query": "Apple HomeView AI smart display October 2026",
+      "brief": "Apple has entered the smart-home screen race with HomeView, a $299 device that combines a display, speaker, camera and Siri AI. It can show calendars, answer questions, control lights and cameras, identify family members and help with everyday tasks. The useful angle is not the gadget itself but whether families want an always-present AI in the home\u2014or whether it is just another expensive screen. End with: Would you trust a camera and AI assistant in the middle of your home?",
+      "evidence_summary": "Best overall candidate for reach and comments. It is a fresh October 13 launch, easy for non-technical viewers to understand, highly visual, and strongly aligned with the supplied HomeView trend signals. Apple says HomeView costs $299, supports personalized household experiences and begins shipping November 13; mainstream coverage is already debating whether it duplicates devices people already own. Evidence strength: very high. ([apple.com](https://www.apple.com/gq/newsroom/2026/10/meet-apple-homeview-a-new-way-to-enjoy-entertainment-and-manage-the-home/?utm_source=openai))",
+      "authoritative_source_url": "https://www.apple.com/gq/newsroom/2026/10/meet-apple-homeview-a-new-way-to-enjoy-entertainment-and-manage-the-home/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Apple HomeView AI smart display October 2026",
+        "score": 90.0,
+        "verdict": "pass",
+        "recent_videos": 65,
+        "median_views_per_day": 503374.24,
+        "top_views_per_day": 3771538.1,
+        "market_coverage": 4,
+        "title_query_overlap": 0.3333,
+        "measured_at": "2026-10-16T07:03:23.811530+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "The AI Model You Can Run at Home\u2014If You Own Two Mac Studios",
+      "query": "Meta Muse Spark Open desktop AI model October 15 2026",
+      "brief": "Meta released Muse Spark Open, an open-weight AI model designed to perform coding and multi-step computer work locally on powerful desktop Macs. In plain English: some advanced AI may no longer need to live only in a company's cloud, but running it at home currently requires extreme hardware. The debate is whether local AI means more privacy and control, or simply a new advantage for people who can afford expensive computers. End with: Should powerful AI run on your computer or stay in the cloud?",
+      "evidence_summary": "Strong AI-industry story with high comment potential because it connects privacy, cost, open models and the future of work. Meta announced the release October 15 and says the model can run on two Apple M5 Ultra Mac Studios; TechCrunch reports the local setup requires roughly 1TB of RAM, making the contrast between \u2018AI for everyone\u2019 and the real cost especially clear. Visual potential: desktop AI demos, privacy-versus-cloud graphics and ordinary-work examples. Evidence strength: high, though the hardware requirement limits mass adoption. ([research.meta.ai](https://research.meta.ai/blog/muse-spark-open?utm_source=openai))",
+      "authoritative_source_url": "https://research.meta.ai/blog/muse-spark-open",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Meta Muse Spark Open desktop AI model October 15 2026",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 65,
+        "median_views_per_day": 503374.24,
+        "top_views_per_day": 3771538.1,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-10-16T07:03:23.812026+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "Nvidia Wants Your Next Windows Laptop to Think Locally",
+      "query": "NVIDIA RTX Spark laptops October 16 2026 launch AI agents",
+      "brief": "Nvidia's RTX Spark laptops are launching across several PC brands with chips designed to handle graphics and AI tasks on the device. The everyday question is whether this creates a new kind of laptop that can run AI assistants without sending every request to the internet\u2014or whether the price and software limitations make it mainly a premium experiment. Explain \u2018local AI\u2019 as AI that works on the computer itself. End with: Would you pay more for an AI laptop that works offline?",
+      "evidence_summary": "High visual and product-interest potential, matching supplied signals around Nvidia, futuristic tech and AI comparisons. The launch is dated October 16, with systems from multiple manufacturers and reported starting prices around $2,599. Nvidia is positioning RTX Spark for creators, gamers and AI agents, while early discussion is already focused on price, compatibility and whether ordinary Windows software works properly. Evidence strength: high for the launch, medium for claims about real-world usefulness because independent reviews are still emerging. ([nvidia.com](https://www.nvidia.com/en-gb/geforce/news/rtx-spark-dlss-reflex-ray-tracing-games/?utm_source=openai))",
+      "authoritative_source_url": "https://nvidianews.nvidia.com/helper-search-news?ct=releases&page=1&q=SPARK..",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "NVIDIA RTX Spark laptops October 16 2026 launch AI agents",
+        "score": 86.9,
+        "verdict": "pass",
+        "recent_videos": 65,
+        "median_views_per_day": 503374.24,
+        "top_views_per_day": 3771538.1,
+        "market_coverage": 4,
+        "title_query_overlap": 0.125,
+        "measured_at": "2026-10-16T07:03:23.812491+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "Waymo Borrowed $5 Billion. Does That Make Robotaxis More Real\u2014or More Risky?",
+      "query": "Waymo $5 billion debt financing October 2026 robotaxis",
+      "brief": "Waymo closed a $5 billion loan to expand its commercial robotaxi business. For ordinary people, the story is bigger than one company's financing: lenders are now placing a huge bet on driverless rides becoming a normal transport service. Explain debt in plain language as borrowed money that must be repaid, then ask whether this signals confidence or pressure to grow quickly. End with: Would you ride in a driverless taxi tomorrow?",
+      "evidence_summary": "Strong money-and-daily-life angle with clear relevance to transport, jobs and safety. Waymo announced the financing October 8 and described it as its first debt financing to support expansion. The story invites opposing opinions without relying on rumours: some viewers will see institutional confidence, while others will question whether robotaxis can generate enough revenue to justify major borrowing. Visual potential: robotaxi footage, simple loan graphics and a \u2018human driver versus autonomous ride\u2019 comparison. Evidence strength: high for the financing; avoid claiming profitability. ([waymo.com](https://waymo.com/blog/2026/10/waymo-closes-5-billion-debt-financing/?trk=article-ssr-frontend-pulse_little-text-block&utm_source=openai))",
+      "authoritative_source_url": "https://waymo.com/blog/2026/10/waymo-closes-5-billion-debt-financing/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Waymo $5 billion debt financing October 2026 robotaxis",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 65,
+        "median_views_per_day": 503374.24,
+        "top_views_per_day": 3771538.1,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-10-16T07:03:23.812975+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "Boston Dynamics Put an Alexa Veteran in Charge of Its Robots",
+      "query": "Boston Dynamics appoints Rohit Prasad CEO October 2026 physical AI",
+      "brief": "Boston Dynamics appointed Rohit Prasad, the former Amazon AI leader associated with Alexa, as its CEO. The important story is the attempted merger of two worlds: conversational AI that understands instructions and robots that physically act on them. Explain why that could matter in warehouses, factories and eventually homes, while stressing that a leadership change is not proof that household robots are ready. End with: Is the next breakthrough in AI going to talk\u2014or move?",
+      "evidence_summary": "Good secondary candidate for a long-form episode because it connects a familiar consumer technology name, Alexa, with humanoid and industrial robots. Boston Dynamics says Prasad's appointment took effect October 7 and is intended to accelerate its Physical AI and commercialization strategy. It is less immediately mainstream than Apple HomeView or RTX Spark, but offers strong visuals and a useful industry-wide explanation of why AI companies are moving from chatbots toward machines that act in the real world. Evidence strength: high for the appointment and stated strategy; medium for future consumer impact. ([bostondynamics.com](https://bostondynamics.com/news/boston-dynamics-appoints-rohit-prasad-as-chief-executive-officer/?utm_source=openai))",
+      "authoritative_source_url": "https://bostondynamics.com/news/boston-dynamics-appoints-rohit-prasad-as-chief-executive-officer/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Boston Dynamics appoints Rohit Prasad CEO October 2026 physical AI",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 65,
+        "median_views_per_day": 503374.24,
+        "top_views_per_day": 3771538.1,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-10-16T07:03:23.813433+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    }
+  ],
+  "platform_demand": {
+    "query": "Apple HomeView AI smart display October 2026",
+    "score": 90.0,
+    "verdict": "pass",
+    "recent_videos": 65,
+    "median_views_per_day": 503374.24,
+    "top_views_per_day": 3771538.1,
+    "market_coverage": 4,
+    "title_query_overlap": 0.3333,
+    "measured_at": "2026-10-16T07:03:23.811530+00:00",
+    "signal_type": "youtube-most-popular-seed-proxy"
+  },
+  "selected_topic_source": "https://www.apple.com/gq/newsroom/2026/10/meet-apple-homeview-a-new-way-to-enjoy-entertainment-and-manage-the-home/"
+}
