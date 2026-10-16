@@ -109,9 +109,17 @@ def _clean_keywords(items: list[str], limit: int = 20) -> list[str]:
 
 
 def seo_body(description: str) -> str:
-    """The summary paragraphs only: no hashtag lines, no keyword or chapter lines."""
+    """The summary paragraphs only: no hashtag lines, no keyword or chapter lines,
+    and no web-search citations or links (2026-10-16: "([site](url?utm_source=openai))"
+    leaked into a description once the metadata writer could search the web)."""
+    import re
+    from .engine.social_copy import strip_citations
     rows = [r for r in description.splitlines() if not r.strip().startswith("#")]
-    return "\n".join(rows).strip()
+    text = strip_citations("\n".join(rows))
+    text = re.sub(r"\(\s*\[?[\w.-]+\.[a-z]{2,}\]?\s*\)", "", text)   # leftover "(site.com)"
+    text = re.sub(r"\s*https?://\S+", "", text)
+    text = re.sub(r"[ \t]+([.,;:!?])", r"\1", text)
+    return re.sub(r"\n{3,}", "\n\n", text).strip()
 
 
 def compose_description(body: str, keywords: list[str], hashtags: list[str]) -> str:

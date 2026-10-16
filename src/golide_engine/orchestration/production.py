@@ -1387,7 +1387,7 @@ class ProductionService:
             output = text.generate_json(
                 "Create accurate, search-optimised YouTube metadata for GOLIDE. No hashtags in the title. "
                 "description: two or three short paragraphs that describe the actual video in plain, human words "
-                "(no hashtags, no keyword list, no timestamps; those are added separately). "
+                "(no hashtags, no keyword list, no timestamps, no links, no source citations; those are added separately or not at all). "
                 "keywords: 12 to 15 search phrases people are typing right now about this topic (use web search for "
                 "what is trending), most specific first, each 1 to 4 words. "
                 "hashtags: 5 to 8 relevant hashtags without spaces. "

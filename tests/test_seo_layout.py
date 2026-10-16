@@ -38,3 +38,10 @@ def test_static_posts_get_keywords_and_hashtags():
         assert out[p].endswith("#CanvaAI #AI #TechNews #Design #Automation")
         assert "AI agents, Gemini agent" in out[p]
     assert out["x"].endswith("#CanvaAI #AI")
+
+
+def test_citations_never_reach_descriptions():
+    from golide_engine.youtube_metadata import seo_body
+    body = seo_body("They run Android. ([aboutamazon.com](https://www.aboutamazon.com/x?utm_source=openai))\n\nMore. https://t.co/x")
+    assert "utm" not in body and "aboutamazon" not in body and "http" not in body
+    assert body == "They run Android.\n\nMore."

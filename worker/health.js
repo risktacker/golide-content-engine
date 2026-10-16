@@ -88,9 +88,19 @@ export async function collectHealth(db, now = new Date(), storage = null) {
       if (job.error) { lines.push({ mark: "warn", text: short(job.error) }); issues.push(`${label}: ${short(job.error)}`); }
     }
     else lines.push({ mark: "wait", text: `In progress (${job.status}, ${job.stage})` });
-    const social = await all(db, `SELECT v.platform,v.status,v.last_error FROM content_posts p JOIN social_variants v ON v.post_id=p.id
+    const social = await all(db, `SELECT v.platform,v.status,v.last_error,p.scheduled_at FROM content_posts p JOIN social_variants v ON v.post_id=p.id
       WHERE p.id LIKE ? AND v.platform<>'youtube' ORDER BY v.platform`, `${job.job_id}%`);
-    for (const v of social) { const l = variantLine(v); lines.push(l); if (l.mark !== "ok") issues.push(`${label}, ${l.text}`); }
+    for (const v of social) {
+      const l = variantLine(v);
+      // 2026-10-16: the 19:30 long video reaches Facebook, Instagram and LinkedIn in the
+      // 20:00 run, minutes after this email. Not out yet within 90 minutes of release
+      // is "on its way", not a problem.
+      const fresh = v.status !== "published" && v.status !== "failed" && v.scheduled_at
+        && now.getTime() - Date.parse(v.scheduled_at) < 90 * 60e3;
+      if (fresh) { lines.push({ mark: "wait", text: `${NAMES[v.platform] || v.platform}: going out in the next run` }); continue; }
+      lines.push(l);
+      if (l.mark !== "ok") issues.push(`${label}, ${l.text}`);
+    }
     sections.push({ title: label, subtitle: job.title || job.job_id, lines });
   }
 

@@ -72,3 +72,12 @@ test("expiring login without refresh and automation off", async () => {
   assert.match(r.issues.join("\n"), /LinkedIn login expires in 1 day/);
   assert.doesNotMatch(r.issues.join("\n"), /never created/);   // automation off: no false alarms
 });
+
+test("a long video's socials minutes after release are 'going out', not a problem", async () => {
+  const db = seed();
+  db.prepare(`INSERT INTO production_jobs VALUES(?,?,?,?,?,?,?,?,?,?)`).run("golide-long-2026-10-07", "long", "Tablets", "scheduled", "youtube-scheduled", null, "2026-10-07T17:30:00Z", null, null, "2026-10-07T13:00:00Z");
+  db.prepare(`INSERT INTO content_posts VALUES(?,?,?,?,?,?,?)`).run("golide-long-2026-10-07-social", "Tablets", "scheduled", "2026-10-07T17:30:00Z", "", "", "long");
+  for (const p of ["facebook", "instagram", "linkedin"]) db.prepare(`INSERT INTO social_variants VALUES(?,?,?,?)`).run("golide-long-2026-10-07-social", p, "pending", null);
+  const r = await collectHealth(d1(db), new Date("2026-10-07T18:00:00Z"));
+  assert.ok(!r.issues.some((i) => i.startsWith("Long video,")));
+});
