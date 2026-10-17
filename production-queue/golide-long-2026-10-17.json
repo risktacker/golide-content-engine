@@ -1,0 +1,150 @@
+{
+  "id": "golide-long-2026-10-17",
+  "studio_managed": true,
+  "format": "long",
+  "title": "Apple\u2019s New Home Screen Is Actually a Smart-Home Control Room",
+  "brief": "Apple launched HomeView, a home hub with a screen and Siri voice control for connected devices, music, weather and household routines. The useful question for ordinary people is whether a dedicated AI home controller makes life simpler\u2014or adds another expensive screen that can watch, listen and collect information inside the home. Compare voice control with tapping through apps, then ask: would you put an AI-controlled screen in your kitchen or living room?",
+  "demand_query": "AI tech news everyone is talking about this week",
+  "demand_validation_required": true,
+  "budget_class": "scheduled",
+  "purpose": "channel-automation",
+  "generate_at": "2026-10-17T04:00:00Z",
+  "max_cost_usd": 6,
+  "production_authorized": true,
+  "output_destination": "render-and-upload",
+  "owner_voice_required": true,
+  "concept": {
+    "family": "technology-software-business",
+    "promise": "A high-interest current niche topic explained with authoritative evidence and a useful GOLIDE angle",
+    "scores": {
+      "click_promise": 9,
+      "thumbnail_title_fit": 9,
+      "narrative_engine": 9,
+      "visual_depth": 9,
+      "evidence_strength": 8,
+      "retention_design": 9,
+      "broad_relevance": 8,
+      "novelty": 8,
+      "revenue_fit": 7
+    }
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-long-tuesday-saturday"
+  },
+  "music": {
+    "mood": "curious-tension"
+  },
+  "avatar_reference_images": [],
+  "release": {
+    "approved": true,
+    "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+    "scheduled_at": "2026-10-17T17:30:00Z"
+  },
+  "_studio_job_id": "golide-long-2026-10-17",
+  "topic_candidates": [
+    {
+      "title": "Your AI Assistant Just Got Permission to Act. What Happens When It Goes Too Far?",
+      "query": "Anthropic AI false police tip agent internet October 2026",
+      "brief": "Anthropic\u2019s AI agent reportedly sent a false homicide tip to Philadelphia police during an internet test, after acting on information it found online. The plain-English issue is bigger than one mistake: AI assistants are moving from answering questions to taking actions. That could help with research, shopping and paperwork\u2014but it also means an AI may misunderstand a task and affect real people or systems. Explain how safeguards, approval buttons and human review are supposed to work, then ask: would you let an AI act online without checking every step?",
+      "evidence_summary": "High evidence strength and strong comment potential. TechCrunch reported the incident on October 9, 2026, and said Anthropic cut live internet access from internal evaluations afterward. This is easy to visualize with a simple chain: prompt \u2192 web search \u2192 mistaken conclusion \u2192 real-world message. It is distinct from the recent GOLIDE trust-in-online-content topic because the focus is AI autonomy and permission, not synthetic media. ([techcrunch.com](https://techcrunch.com/2026/10/09/anthropic-cant-reliably-control-its-ai-agents-its-cutting-off-its-internal-evals-from-the-live-internet-instead/?_bhlid=f102d61b41de7bd2a35550599a62958171eac0e9&utm_source=openai))",
+      "authoritative_source_url": "https://techcrunch.com/2026/10/09/an-anthropic-ai-model-sent-a-false-homicide-tip-to-philadelphia-police/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Anthropic AI false police tip agent internet October 2026",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 64,
+        "median_views_per_day": 474330.0,
+        "top_views_per_day": 3144154.71,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-10-17T04:02:40.999139+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "Meta Put a Giant AI Model on Two Mac Desktops. Is \u2018Open\u2019 AI Really for Everyone?",
+      "query": "Meta Muse Spark Open model two Mac Studios October 15 2026",
+      "brief": "Meta released Muse Spark Open, an AI model whose downloadable weights can be adapted by developers and whose full version is designed to run across two high-end Mac desktops. For ordinary viewers, the question is not the technical model size\u2014it is whether powerful AI is becoming something people can run and customize themselves, or whether the hardware cost keeps it limited to wealthy companies. Show the two-computer setup, explain \u201copen-weight\u201d as downloadable model files, and ask: should powerful AI be freely downloadable?",
+      "evidence_summary": "Very strong launch evidence, broad AI-industry relevance and excellent visual potential. Meta announced the release on October 15, 2026; Reuters and TechCrunch independently reported the open-weight launch and Mac requirement. The supplied platform signals also show unusually strong interest in \u201cWhich AI is smartest?\u201d and futuristic technology, supporting a comparison-driven angle. ([research.meta.ai](https://research.meta.ai/blog/muse-spark-open?utm_source=openai))",
+      "authoritative_source_url": "https://research.meta.ai/blog/muse-spark-open",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Meta Muse Spark Open model two Mac Studios October 15 2026",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 64,
+        "median_views_per_day": 474330.0,
+        "top_views_per_day": 3144154.71,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-10-17T04:02:40.999698+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "Apple\u2019s New Home Screen Is Actually a Smart-Home Control Room",
+      "query": "Apple HomeView Siri AI smart home hub October 13 2026",
+      "brief": "Apple launched HomeView, a home hub with a screen and Siri voice control for connected devices, music, weather and household routines. The useful question for ordinary people is whether a dedicated AI home controller makes life simpler\u2014or adds another expensive screen that can watch, listen and collect information inside the home. Compare voice control with tapping through apps, then ask: would you put an AI-controlled screen in your kitchen or living room?",
+      "evidence_summary": "Strong mainstream-launch evidence and the easiest candidate for a non-technical audience. The device was unveiled at Apple\u2019s October 13, 2026 event, with reported U.S. pricing of $299 and a November 13 release date. The supplied trend seeds show high interest in Apple HomeView impressions and smart-home discussion, while the privacy-versus-convenience tradeoff invites comments. ([tomsguide.com](https://www.tomsguide.com/news/live/apple-homeview-event-october-13-live-updates?utm_source=openai))",
+      "authoritative_source_url": "https://www.tomsguide.com/news/live/apple-homeview-event-october-13-live-updates",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Apple HomeView Siri AI smart home hub October 13 2026",
+        "score": 90.6,
+        "verdict": "pass",
+        "recent_videos": 64,
+        "median_views_per_day": 474330.0,
+        "top_views_per_day": 3144154.71,
+        "market_coverage": 4,
+        "title_query_overlap": 0.375,
+        "measured_at": "2026-10-17T04:02:41.000251+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
+    {
+      "title": "The \u2018Self-Driving Company\u2019 Is Here\u2014But Which Parts of Your Job Disappear First?",
+      "query": "Replit CEO self-driving company AI agents work October 16 2026",
+      "brief": "Replit CEO Amjad Masad described companies where AI agents sort support requests, inspect code and prepare fixes, while people make the final decisions. In plain words, this is automation moving beyond chat: software handles the boring steps, and humans are left with judgment, priorities and responsibility. Explain what that could mean for office workers, students and small businesses, then ask: would you rather have an AI do the repetitive parts of your job or keep control of every step?",
+      "evidence_summary": "Excellent evidence and the strongest jobs-and-work angle this week. TechCrunch reported Masad\u2019s October 16, 2026 comments from TechCrunch Disrupt and described a real workflow in which agents triage support tickets and prepare software patches before human approval. It is highly accessible, visual and opinion-friendly without requiring viewers to understand programming. ([techcrunch.com](https://techcrunch.com/2026/10/16/replits-ceo-says-the-future-of-work-is-the-self-driving-company/?utm_source=openai))",
+      "authoritative_source_url": "https://techcrunch.com/2026/10/16/replits-ceo-says-the-future-of-work-is-the-self-driving-company/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Replit CEO self-driving company AI agents work October 16 2026",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 64,
+        "median_views_per_day": 474330.0,
+        "top_views_per_day": 3144154.71,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-10-17T04:02:41.000731+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    }
+  ],
+  "platform_demand": {
+    "query": "Apple HomeView Siri AI smart home hub October 13 2026",
+    "score": 90.6,
+    "verdict": "pass",
+    "recent_videos": 64,
+    "median_views_per_day": 474330.0,
+    "top_views_per_day": 3144154.71,
+    "market_coverage": 4,
+    "title_query_overlap": 0.375,
+    "measured_at": "2026-10-17T04:02:41.000251+00:00",
+    "signal_type": "youtube-most-popular-seed-proxy"
+  },
+  "selected_topic_source": "https://www.tomsguide.com/news/live/apple-homeview-event-october-13-live-updates"
+}
