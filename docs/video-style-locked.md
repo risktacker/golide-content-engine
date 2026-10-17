@@ -116,3 +116,12 @@ This is the standard for every Short and long video. Don't change any of it with
 - No wide empty bands at the sides of the 16:9 frame. Each long scene is "wide" (one panoramic drawing composed left to right, most scenes), "duo" (two drawings side by side, the right one drawn after the left, a faint divider between; for before/after, cause/effect, two sides; at most one scene in three) or "single" (a close-up or a large symbol).
 - Captions stay centred. Shorts are always single.
 - Wide pictures are asked for as panoramic strips; duo halves as square pictures; code-drawn wide figures use the drawing area's own 2.1:1 shape.
+
+## Topics: the trend pulse (locked 2026-10-17, owner direction)
+- A trend for GOLIDE is FRESH (broke in the last 48 hours), RISING (new videos on it gaining views fast, measured as views per hour on videos under 48 hours old), has an OPEN QUESTION WITH SCIENCE UNDERNEATH, and is BROAD. Big-company updates only count when they pass these.
+- The topic planner sees the last 48 hours of Hacker News and Reddit technology front pages beside the YouTube seeds, gives each candidate a "broke_on" date and a "science_angle", and each candidate's pulse is measured on YouTube. A live trend (pulse 60+, 3+ fresh videos, a science angle) that also passes the demand gate is chosen first; otherwise the usual demand ranking decides. A missing signal never blocks a video.
+- Reference: the 16 Oct Tesla Roadster short (tagged trending on YouTube).
+
+## Learning, not shopping (locked 2026-10-17)
+- No buying chapters. The practical chapter is "what this means for you". Buying lines only when the product is affordable, widely available and the decision is the point, a few lines inside the practical chapter.
+- Science first: when the topic has science underneath, one or two full paragraphs with the real numbers turned into something a viewer can feel, before any practical part; claims are named as claims.

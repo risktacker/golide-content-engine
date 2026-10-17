@@ -298,6 +298,20 @@ The viewer must always know where they are: "now we're on this, next we're on th
   may also give directions where the topic allows. Every chapter's closing takeaway is
   phrased as something to do or to check, not only a fact to know. The CLOSE recaps the
   steps in one sentence before the follow call-out.
+- LEARNING, NOT SHOPPING (owner direction 2026-10-17): these are tech news and
+  learning videos, never adverts or reviews. The practical chapter is "what this
+  means for you" (how to judge the claim, what to check or switch off, how to try
+  the idea free, what to watch next), not a buying test. Buying advice appears only
+  when the product is affordable, widely available and the decision is the point of
+  the story, and then as a few lines inside the practical chapter, never a chapter
+  of its own, and never prices repeated as a sales line.
+- SCIENCE FIRST (owner direction 2026-10-17): when the topic has science or
+  engineering underneath it, give it one or two full paragraphs (its own chapter
+  or most of one) with the real numbers from the research turned into something a
+  viewer can feel (a speed into metres every second, a force into a weight, a
+  pressure into "times the air around you"). This comes BEFORE any practical or
+  buying part. Use only numbers the research gives or simple arithmetic on them,
+  and say when a number is the company's claim.
 - Keep chapters balanced: none longer than a third of the script.
 - Use concrete, true examples inside the chapters; the CLOSE gives the one sentence
   to remember, one small action for this week, a line that loops back to the
@@ -651,7 +665,14 @@ def chapter_problems(plan: dict, format_name: str) -> list[str]:
     if steps_missing:
         problems.append("give the viewer something to do: one chapter with 3 to 5 concrete steps said in order "
                         "(First, ... Second, ... Third, ...)")
+    shopping = [c.get("title", "") for c in chapters if SHOPPING_TITLE.search(str(c.get("title", "")))]
+    if shopping:
+        problems.append("learning, not shopping: no buying chapter (" + ", ".join(shopping) + "); make the practical "
+                        "chapter what this means for the viewer, with at most a few buying lines inside it")
     return problems
+
+
+SHOPPING_TITLE = re.compile(r"\b(buy|buying|buyer|purchase|shopping|worth (it|buying)|price check|deal)\b", re.I)
 
 
 FOLLOW_ASKS = ("comment", "hit like", "like the video", "like this video", "leave a like", "share", "link", " bio", "type ")

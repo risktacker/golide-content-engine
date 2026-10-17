@@ -431,11 +431,16 @@ class ProductionService:
                         ),
                         stage="trend-candidates",
                     )
+                    from ..youtube.pulse import PULSE_RULES, fresh_headlines
+
+                    headlines = json.dumps(fresh_headlines(), separators=(",", ":"))
                     output = text.generate_json(
                         "Create 3 to 5 original GOLIDE video topic candidates from current YouTube platform signals and this week's AI and tech news.\n\n"
+                        + PULSE_RULES + "\n"
                         + TREND_TASTE_RULES.split("- Do not mention or promote")[0]
                         + "\nCompare the candidates for how much people are talking about it right now, how easy it is for a non-technical viewer to follow, how much it invites comments and opinions, visual explanation potential and evidence strength. Prefer the story everyone is discussing over an academic or specialist subject. Do not copy video titles or premises. Do not reuse or lightly reword any recently produced topic supplied in RECENT GOLIDE TOPICS. Each candidate must have a concise search query and one direct credible source URL (the company, the original report or a major outlet) found through web search. Reject rumours, private-life gossip, party politics and unsupported claims.",
-                        f"CURRENT BRIEF\n{spec['brief']}\n\nRECENT GOLIDE TOPICS\n{json.dumps(recent_titles)}\n\nPLATFORM TREND SEEDS\n{seed_packet}",
+                        f"CURRENT BRIEF\n{spec['brief']}\n\nRECENT GOLIDE TOPICS\n{json.dumps(recent_titles)}\n\nPLATFORM TREND SEEDS\n{seed_packet}"
+                        f"\n\nFRESH HEADLINES (last 48 hours, what people are discussing)\n{headlines}",
                         TREND_CANDIDATES_SCHEMA,
                         web_search=True,
                         max_output_tokens=3000,
@@ -459,6 +464,8 @@ class ProductionService:
                         raise TopicDemandRejected(
                             "trend planning did not return three evidence-backed candidates"
                         )
+                    from ..youtube.pulse import attach as attach_pulse
+                    attach_pulse(self.youtube, candidates)
                     candidate_path.write_text(
                         json.dumps({"candidates": candidates}, indent=2) + "\n",
                         encoding="utf-8",
@@ -495,7 +502,8 @@ class ProductionService:
                         encoding="utf-8",
                     )
                 spec["topic_candidates"] = candidates
-                candidate, demand = gate.select(spec)
+                from ..youtube.pulse import choose as choose_with_pulse
+                candidate, demand = choose_with_pulse(gate, spec)
 
             spec["brief"] = candidate["brief"]
             spec["title"] = candidate.get("title", spec.get("title", production_id))

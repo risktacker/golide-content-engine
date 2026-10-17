@@ -92,3 +92,23 @@ class VarietyTests(unittest.TestCase):
         approved = json.loads(Path("production-queue/golide-short-2026-10-07.script-plan.json").read_text())
         approved["lines"][5]["text"] = "But here's the catch, think of it like a kitchen."
         self.assertTrue(any("here's the catch" in p for p in flow_problems(approved)))
+
+
+class LearningNotShoppingTests(unittest.TestCase):
+    def test_buying_chapter_is_refused(self):
+        from golide_engine.engine.content_rules import chapter_problems
+
+        plan = {"chapters": [{"number": "", "title": "Intro"}, {"number": "01", "title": "What It Does"},
+                             {"number": "02", "title": "How It Works"}, {"number": "03", "title": "Your Buying Test"},
+                             {"number": "", "title": "Close"}],
+                "lines": [{"text": t, "chapter": c} for c, t in
+                          [(0, "Intro line here."), (1, "What it does."), (2, "How it works."),
+                           (3, "First, check this. Second, check that. Third, decide."), (4, "Close.")]]}
+        self.assertTrue(any("learning, not shopping" in p for p in chapter_problems(plan, "long")))
+
+    def test_rules_put_science_before_buying(self):
+        from golide_engine.engine.content_rules import script_instructions
+
+        text = script_instructions("long", "golide-long-2026-10-17")
+        self.assertIn("SCIENCE FIRST", text)
+        self.assertIn("LEARNING, NOT SHOPPING", text)

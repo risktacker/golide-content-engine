@@ -102,10 +102,12 @@ TREND_CANDIDATES_SCHEMA = {
                     "brief": {"type": "string"},
                     "evidence_summary": {"type": "string"},
                     "authoritative_source_url": {"type": "string"},
+                    "broke_on": {"type": "string"},
+                    "science_angle": {"type": "string"},
                 },
                 "required": [
                     "title", "query", "brief", "evidence_summary",
-                    "authoritative_source_url",
+                    "authoritative_source_url", "broke_on", "science_angle",
                 ],
                 "additionalProperties": False,
             },
