@@ -1,0 +1,47 @@
+{
+  "summary": "Tesla revealed the next-generation Roadster on 15 October 2026 near Waco, Texas, in three versions: Performance (suction fans and active aero, no thrusters), Thrust (rear cold-gas thrusters) and Rocket (one seat, invite only, ten cold-gas thrusters, not approved for public roads). The demo car drove itself up an inverted ramp, flipped, landed and hopped over Tesla cars. Claims: suction up to 2 g, rear thrust 80 kN, 0-60 mph in about 1 s, 600 litres (about 250 kg) of air in carbon-fibre overwrapped tanks. Burn time, weight and refill time not stated. Production promised for 2028; first shown in 2017. Musk said safety is not the main goal.",
+  "claims": [
+    {
+      "claim": "Tesla revealed the second-generation Roadster on 15 October 2026 near Waco, Texas; it climbed an inverted ramp, spun, landed and hopped over a Cybercab, Cybertruck, Semi, Model Y and Model 3.",
+      "source_title": "Tesla reveals SpaceX-powered Roadster that flies and falls with style",
+      "source_url": "https://techcrunch.com/2026/10/15/tesla-reveals-spacex-powered-roadster-that-flies-and-falls-with-style/",
+      "published_or_updated": "2026-10-15"
+    },
+    {
+      "claim": "Three trims: Performance (two seats, active aero, suction system), Thrust (rear cold-gas thrusters) and Rocket (one seat, ten cold-gas thrusters, invite only).",
+      "source_title": "Tesla reveals SpaceX-powered Roadster that flies and falls with style",
+      "source_url": "https://techcrunch.com/2026/10/15/tesla-reveals-spacex-powered-roadster-that-flies-and-falls-with-style/",
+      "published_or_updated": "2026-10-15"
+    },
+    {
+      "claim": "Tesla says 600 litres of compressed air feed the thrusters from carbon-fibre overwrapped pressure vessels; production starts 2028; reservations $50,000 and $250,000; Musk said safety is not the main goal.",
+      "source_title": "Tesla reveals SpaceX-powered Roadster that flies and falls with style",
+      "source_url": "https://techcrunch.com/2026/10/15/tesla-reveals-spacex-powered-roadster-that-flies-and-falls-with-style/",
+      "published_or_updated": "2026-10-15"
+    },
+    {
+      "claim": "Tesla claims rear thrust of 80 kN, 0-60 mph in 1.0 s (0.81 s in the live demo), suction downforce, and that the Rocket trim is not approved for public road use.",
+      "source_title": "Are Tesla's claims for its new 'flying' Roadster real, or is it just full of cold gas?",
+      "source_url": "https://electrek.co/2026/10/15/an-updated-technical-look-at-teslas-kick-flipping-0-60-in-1s-next-gen-roadster/",
+      "published_or_updated": "2026-10-15"
+    },
+    {
+      "claim": "About 600 litres, roughly 250 kg of air, in two carbon-fibre tanks feed ten nozzles; Tesla quotes suction of up to 2 g, enough to hold the car upside down when stationary; the demo car drove itself with no one on board; burn time and refill time are not stated.",
+      "source_title": "How Tesla's Roadster flips: 250kg of compressed air, 10 SpaceX-style thrusters",
+      "source_url": "https://dealroom.co/news/163238-how-teslas-roadster-flips-250kg-of-compressed-air-10-spacex-style-thrust/",
+      "published_or_updated": "2026-10-15"
+    },
+    {
+      "claim": "Cold-gas thrusters are normally used for fine attitude control on spacecraft; compressed gas gives lift for only seconds; no FAA approval has been reported.",
+      "source_title": "Tesla Roadster's 1.1-Second Claim Meets Flight Doubt",
+      "source_url": "https://tech-insider.org/tesla-roadster-flying-claim-physics-doubt-2026/",
+      "published_or_updated": "2026-10-15"
+    },
+    {
+      "claim": "Newton's third law: every action has an equal and opposite reaction.",
+      "source_title": "Newton's Laws of Motion (NASA Glenn)",
+      "source_url": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/newtons-laws-of-motion/",
+      "published_or_updated": "2026-10-15"
+    }
+  ]
+}

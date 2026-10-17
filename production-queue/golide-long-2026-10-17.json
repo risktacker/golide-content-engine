@@ -2,8 +2,8 @@
   "id": "golide-long-2026-10-17",
   "studio_managed": true,
   "format": "long",
-  "title": "Apple\u2019s New Home Screen Is Actually a Smart-Home Control Room",
-  "brief": "Apple launched HomeView, a home hub with a screen and Siri voice control for connected devices, music, weather and household routines. The useful question for ordinary people is whether a dedicated AI home controller makes life simpler\u2014or adds another expensive screen that can watch, listen and collect information inside the home. Compare voice control with tapping through apps, then ask: would you put an AI-controlled screen in your kitchen or living room?",
+  "title": "How Tesla's Flying Roadster Really Works: Fans, Jets and a Tank of Air",
+  "brief": "The physics behind Tesla's new Roadster reveal (15 Oct 2026): suction fans that hold it to the road (up to 2 g), cold-gas jets that push past tyre grip (80 kN, 0-60 in about 1 s, about 2.7 g), and 600 litres (about 250 kg) of compressed air in carbon-fibre tanks, which is why it hops rather than flies. What was shown versus claimed, and three questions to ask any viral demo.",
   "demand_query": "AI tech news everyone is talking about this week",
   "demand_validation_required": true,
   "budget_class": "scheduled",
@@ -53,6 +53,26 @@
   },
   "_studio_job_id": "golide-long-2026-10-17",
   "topic_candidates": [
+    {
+      "title": "How Tesla's Flying Roadster Really Works: Fans, Jets and a Tank of Air",
+      "query": "Tesla Roadster thrusters physics",
+      "brief": "The physics behind Tesla's new Roadster reveal (15 Oct 2026): suction fans that hold it to the road (up to 2 g), cold-gas jets that push past tyre grip (80 kN, 0-60 in about 1 s, about 2.7 g), and 600 litres (about 250 kg) of compressed air in carbon-fibre tanks, which is why it hops rather than flies. What was shown versus claimed, and three questions to ask any viral demo.",
+      "evidence_summary": "Owner-selected 17 Oct: Tesla Roadster reveal, trending on every platform; the technical view.",
+      "authoritative_source_url": "https://techcrunch.com/2026/10/15/tesla-reveals-spacex-powered-roadster-that-flies-and-falls-with-style/",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Tesla Roadster thrusters physics",
+        "score": 90.6,
+        "verdict": "pass",
+        "recent_videos": 64,
+        "median_views_per_day": 474330.0,
+        "top_views_per_day": 3144154.71,
+        "market_coverage": 4,
+        "title_query_overlap": 0.375,
+        "measured_at": "2026-10-17T04:02:41.000251+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      }
+    },
     {
       "title": "Your AI Assistant Just Got Permission to Act. What Happens When It Goes Too Far?",
       "query": "Anthropic AI false police tip agent internet October 2026",
@@ -135,7 +155,7 @@
     }
   ],
   "platform_demand": {
-    "query": "Apple HomeView Siri AI smart home hub October 13 2026",
+    "query": "Tesla Roadster thrusters physics",
     "score": 90.6,
     "verdict": "pass",
     "recent_videos": 64,
@@ -146,5 +166,5 @@
     "measured_at": "2026-10-17T04:02:41.000251+00:00",
     "signal_type": "youtube-most-popular-seed-proxy"
   },
-  "selected_topic_source": "https://www.tomsguide.com/news/live/apple-homeview-event-october-13-live-updates"
+  "selected_topic_source": "https://techcrunch.com/2026/10/15/tesla-reveals-spacex-powered-roadster-that-flies-and-falls-with-style/"
 }

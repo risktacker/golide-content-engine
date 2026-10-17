@@ -1,0 +1,675 @@
+{
+ "title": "How Tesla's Flying Roadster Really Works: Fans, Jets and a Tank of Air",
+ "chapters": [
+  {
+   "number": "",
+   "title": "Intro"
+  },
+  {
+   "number": "01",
+   "title": "What Tesla Showed"
+  },
+  {
+   "number": "02",
+   "title": "Glued To The Road"
+  },
+  {
+   "number": "03",
+   "title": "Jets Past The Tyres"
+  },
+  {
+   "number": "04",
+   "title": "The Air Tank"
+  },
+  {
+   "number": "05",
+   "title": "Three Questions"
+  },
+  {
+   "number": "",
+   "title": "Close"
+  }
+ ],
+ "lines": [
+  {
+   "section": "claim",
+   "chapter": 0,
+   "text": "A car that climbs a curved wall, flips and lands on its wheels sounds like a cartoon,",
+   "emphasis": "cartoon",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "claim",
+   "chapter": 0,
+   "text": "but on the fifteenth of October Tesla showed one near Waco, Texas.",
+   "emphasis": "Waco, Texas",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "TESLA ROADSTER",
+   "follow": false
+  },
+  {
+   "section": "claim",
+   "chapter": 0,
+   "text": "Yet most people called it a flying car, and the honest name is stranger than that.",
+   "emphasis": "flying car",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "claim",
+   "chapter": 0,
+   "text": "That's because it is three different tricks built into one Roadster,",
+   "emphasis": "three different tricks",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "3 TRICKS",
+   "follow": false
+  },
+  {
+   "section": "claim",
+   "chapter": 0,
+   "text": "and each one is physics you already feel on a minibus ride.",
+   "emphasis": "minibus ride",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "proof",
+   "chapter": 0,
+   "text": "When the driver pulls off hard, your back sinks into the seat,",
+   "emphasis": "back sinks",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "proof",
+   "chapter": 0,
+   "text": "when he takes a corner fast, you slide toward the window,",
+   "emphasis": "corner fast",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "proof",
+   "chapter": 0,
+   "text": "and on a wet road the wheels can spin without moving you at all.",
+   "emphasis": "wheels can spin",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "proof",
+   "chapter": 0,
+   "text": "In the next few minutes we'll see what was really shown,",
+   "emphasis": "really shown",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "proof",
+   "chapter": 0,
+   "text": "how fans hold the car to the road, how air jets push it past its tyres,",
+   "emphasis": "air jets",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "proof",
+   "chapter": 0,
+   "text": "what the air tank holds, and three questions to ask before you believe the word flying.",
+   "emphasis": "three questions",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "proof",
+   "chapter": 1,
+   "text": "So start with what actually happened on that stage,",
+   "emphasis": "actually happened",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "proof",
+   "chapter": 1,
+   "text": "where Tesla showed three versions of the new Roadster.",
+   "emphasis": "three versions",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "proof",
+   "chapter": 1,
+   "text": "Even the basic Performance car has fans and moving wings, though no jets,",
+   "emphasis": "Performance",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "PERFORMANCE",
+   "follow": false
+  },
+  {
+   "section": "proof",
+   "chapter": 1,
+   "text": "the Thrust car adds jets at the back for launches,",
+   "emphasis": "Thrust",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "THRUST",
+   "follow": false
+  },
+  {
+   "section": "proof",
+   "chapter": 1,
+   "text": "and the Rocket, a one-seater Tesla calls invite only, carries ten jets all round.",
+   "emphasis": "ten jets",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "ROCKET",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 1,
+   "text": "Then the Rocket climbed a ramp that curved upside down,",
+   "emphasis": "upside down",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 1,
+   "text": "spun in the air, landed, and hopped over a row of Tesla cars.",
+   "emphasis": "hopped",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 1,
+   "text": "But nobody was sitting inside, because the demo car drove itself,",
+   "emphasis": "drove itself",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "NO DRIVER",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 1,
+   "text": "and Tesla says the Rocket is not approved for public roads.",
+   "emphasis": "not approved",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 2,
+   "text": "And every trick starts with grip, the thing a wet road takes away from the minibus.",
+   "emphasis": "grip",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "GRIP",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 2,
+   "text": "A tyre can only push on the road as hard as the car presses down on it,",
+   "emphasis": "presses down",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 2,
+   "text": "so a light car on a slippery road spins its wheels instead of moving.",
+   "emphasis": "spins its wheels",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 2,
+   "text": "So Tesla's answer is a set of fans under the car that suck the air out from beneath it,",
+   "emphasis": "fans",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "SUCTION FANS",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 2,
+   "text": "with skirts that seal the gap like a lid on a pot.",
+   "emphasis": "seal the gap",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 2,
+   "text": "That way, with less air pushing up from below, the air above presses the car down,",
+   "emphasis": "presses the car down",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 2,
+   "text": "and Tesla claims that suction reaches twice the car's own weight.",
+   "emphasis": "twice",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "2 G",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 2,
+   "text": "That's how it held on through the curved ramp,",
+   "emphasis": "curved ramp",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 2,
+   "text": "because a pull of two times its weight beats the one times its weight that gravity puts on it,",
+   "emphasis": "beats",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 2,
+   "text": "leaving a net hold of one weight, even upside down, as long as it keeps still.",
+   "emphasis": "net hold",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 2,
+   "text": "Even racing fan cars have done this before, so the idea itself is real.",
+   "emphasis": "still need checking",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 3,
+   "text": "Grip still has a ceiling, and that is where the jets come in.",
+   "emphasis": "jets",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "THRUST",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 3,
+   "text": "Throw air backwards and the car is pushed forwards, which is Newton's third law at work.",
+   "emphasis": "Newton's third law",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "3RD LAW",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 3,
+   "text": "But this push does not travel through the tyres,",
+   "emphasis": "not through the tyres",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 3,
+   "text": "so it keeps working after the wheels have given all the grip they have.",
+   "emphasis": "keeps working",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 3,
+   "text": "Now, Tesla claims nought to sixty miles an hour in about one second,",
+   "emphasis": "one second",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "0-60 IN 1 S",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 3,
+   "text": "and sixty miles an hour is almost twenty-seven metres every second.",
+   "emphasis": "twenty-seven metres",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 3,
+   "text": "Gaining all of that in one second is an acceleration of about two point seven g,",
+   "emphasis": "two point seven g",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "2.7 G",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 3,
+   "text": "which means your body would be pressed back with nearly three times its own weight.",
+   "emphasis": "three times",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 3,
+   "text": "Yet a minibus pulling off hard gives you only a small fraction of one g,",
+   "emphasis": "small fraction",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 3,
+   "text": "so this launch is that same feeling turned up many times over.",
+   "emphasis": "many times over",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 3,
+   "text": "Tesla says the rear jets give eighty kilonewtons of push,",
+   "emphasis": "eighty kilonewtons",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "80 kN",
+   "follow": false
+  },
+  {
+   "section": "pattern",
+   "chapter": 3,
+   "text": "about the weight of eight tonnes pressing on the back of the car.",
+   "emphasis": "eight tonnes",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "cost",
+   "chapter": 4,
+   "text": "All of that push comes from air carried on board.",
+   "emphasis": "air carried on board",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "THE TANK",
+   "follow": false
+  },
+  {
+   "section": "cost",
+   "chapter": 4,
+   "text": "Tesla says the car holds six hundred litres, and reports put that at about two hundred and fifty kilograms of air.",
+   "emphasis": "two hundred and fifty kilograms",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "600 L",
+   "follow": false
+  },
+  {
+   "section": "cost",
+   "chapter": 4,
+   "text": "Ordinary air filling six hundred litres weighs less than one kilogram,",
+   "emphasis": "less than one kilogram",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "cost",
+   "chapter": 4,
+   "text": "which means that tank squeezes in about three hundred and fifty times more air than the space around you.",
+   "emphasis": "three hundred and fifty times",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "350\u00d7",
+   "follow": false
+  },
+  {
+   "section": "cost",
+   "chapter": 4,
+   "text": "Holding that pressure takes tanks wrapped in carbon fibre,",
+   "emphasis": "carbon fibre",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "cost",
+   "chapter": 4,
+   "text": "as strong as steel for their job but far lighter, the same family of tanks SpaceX uses on its rockets.",
+   "emphasis": "far lighter",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "cost",
+   "chapter": 4,
+   "text": "What Tesla did not say is how long that air lasts.",
+   "emphasis": "how long",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "cost",
+   "chapter": 4,
+   "text": "Jets that strong drink through a tank fast,",
+   "emphasis": "drink through",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "cost",
+   "chapter": 4,
+   "text": "which is why spacecraft use cold-gas jets only for small nudges,",
+   "emphasis": "small nudges",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "COLD GAS",
+   "follow": false
+  },
+  {
+   "section": "cost",
+   "chapter": 4,
+   "text": "and why the honest word for the demo is a hop, not a flight.",
+   "emphasis": "a hop",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "HOP, NOT FLIGHT",
+   "follow": false
+  },
+  {
+   "section": "reframe",
+   "chapter": 5,
+   "text": "Now, before the next viral clip convinces you, ask three questions.",
+   "emphasis": "three questions",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "reframe",
+   "chapter": 5,
+   "text": "First, was anyone inside, because a car that drives itself on a closed site proves nothing yet about people.",
+   "emphasis": "anyone inside",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "QUESTION 1",
+   "follow": false
+  },
+  {
+   "section": "reframe",
+   "chapter": 5,
+   "text": "Second, how long does the air last, because a jet that runs for seconds lifts a car without flying it.",
+   "emphasis": "how long",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "QUESTION 2",
+   "follow": false
+  },
+  {
+   "section": "reframe",
+   "chapter": 5,
+   "text": "Third, when can anyone actually drive it, because Tesla first showed this Roadster in twenty seventeen and now says twenty twenty-eight.",
+   "emphasis": "twenty twenty-eight",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "QUESTION 3",
+   "follow": false
+  },
+  {
+   "section": "reframe",
+   "chapter": 5,
+   "text": "Musk himself said safety is not the main goal of this car,",
+   "emphasis": "not the main goal",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "reframe",
+   "chapter": 5,
+   "text": "and those three questions work on any car, robot or gadget that goes viral.",
+   "emphasis": "goes viral",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "cta",
+   "chapter": 6,
+   "text": "The Roadster is real engineering, but it is three tricks, not one flying car.",
+   "emphasis": "three tricks",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "cta",
+   "chapter": 6,
+   "text": "Fans make the grip, jets push past it, and a tank of squeezed air pays for every second.",
+   "emphasis": "squeezed air",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  },
+  {
+   "section": "cta",
+   "chapter": 6,
+   "text": "If that changed how you watch the next demo, follow the channel,",
+   "emphasis": "follow the channel",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": true
+  },
+  {
+   "section": "cta",
+   "chapter": 6,
+   "text": "because we break down the science behind one big tech story every day.",
+   "emphasis": "science",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": true
+  },
+  {
+   "section": "cta",
+   "chapter": 6,
+   "text": "And the next time a minibus pulls off hard and your back sinks into the seat, you'll know what Tesla is selling, that feeling turned up many times over.",
+   "emphasis": "that feeling",
+   "visual": "icon_hero",
+   "subjects": [],
+   "label": "",
+   "follow": false
+  }
+ ]
+}
