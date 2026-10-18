@@ -12,3 +12,6 @@ assets/generated/
 assets/downloads/
 release-packages/
 failure-events/
+
+# Local Studio build output (deploys build it themselves)
+dist/
