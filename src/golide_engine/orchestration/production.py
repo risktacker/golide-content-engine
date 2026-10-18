@@ -612,6 +612,9 @@ class ProductionService:
                 script_display(plan_for_display) if plan_for_display else script,
             )
 
+        from .voice_reset import reset_if_recording_changed
+        reset_if_recording_changed(self.database, self.root, production_id, work, owner_voice_ref)
+
         narration = work / "narration-owner.wav"
         timed_words_path = work / "timed-words-owner.json"
 

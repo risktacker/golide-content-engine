@@ -504,12 +504,28 @@ function actionCard(job) {
     '</div></article>';
 }
 
+// 2026-10-18: a recording can be replaced until the video is released (a wrong
+// file was uploaded and there was no way to swap it).
+const REPLACEABLE = new Set(["queued", "claimed", "running", "failed", "paused_funds"]);
+
+function replaceCard(job) {
+  return '<article class="action-card" id="job-' + escAttr(job.job_id) + '"><div><span class="kicker">' +
+    (job.format === "long" ? "Long video" : "Short") + ', recording received</span><h4>' +
+    esc(job.title || "Video in production") + '</h4><p>Your recording is being built into the video. ' +
+    'Uploaded the wrong file? Replace it: the build restarts with the new recording.</p></div>' +
+    '<div class="action-controls">' +
+      '<label class="upload-button">Replace recording<input class="voice-input" type="file" accept="audio/*,video/*,.m4a,.mp3,.wav,.aac,.caf,.ogg,.opus,.webm,.mp4,.mov" data-job="' + escAttr(job.job_id) + '"></label>' +
+      '<span class="voice-status" id="voice-status-' + escAttr(job.job_id) + '"></span>' +
+    '</div></article>';
+}
+
 function renderActionQueues() {
   const waiting = productionJobs.filter((job) => job.status === "waiting_owner_voice");
+  const replaceable = productionJobs.filter((job) => job.owner_voice_media_ref && REPLACEABLE.has(job.status));
   const root = $("#action-queue");
   const dashboard = $("#dashboard-actions");
 
-  if (!waiting.length) {
+  if (!waiting.length && !replaceable.length) {
     root.className = "action-queue empty-state";
     root.innerHTML = "No recordings needed right now. You'll get an email when a script is ready.";
     dashboard.className = "stack empty-state";
@@ -518,9 +534,10 @@ function renderActionQueues() {
   }
 
   root.className = "action-queue";
-  root.innerHTML = waiting.map(actionCard).join("");
-  dashboard.className = "stack";
-  dashboard.innerHTML = waiting.slice(0, 4).map((job) =>
+  root.innerHTML = waiting.map(actionCard).join("") + replaceable.map(replaceCard).join("");
+  dashboard.className = waiting.length ? "stack" : "stack empty-state";
+  dashboard.innerHTML = waiting.length ? "" : "Nothing needs you right now.";
+  if (waiting.length) dashboard.innerHTML = waiting.slice(0, 4).map((job) =>
     '<div class="item"><div class="item-main"><strong>' +
     esc(job.title || "Video script ready") + '</strong><small>' +
     (job.format === "long" ? "Long video" : "Short") +
@@ -606,7 +623,7 @@ async function uploadVoice(jobId, file) {
       method: "POST",
       body: JSON.stringify({ media_ref: mediaRef }),
     });
-    if (status) status.textContent = "Uploaded. Engine will resume on the next cycle.";
+    if (status) status.textContent = "Uploaded. Production has started; the video is ready in about 20 to 30 minutes.";
     await loadProductionJobs();
     await loadOverview();
   } catch (error) {

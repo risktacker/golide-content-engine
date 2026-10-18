@@ -564,7 +564,7 @@ async function attachOwnerVoice(db,jobId,mediaRef){
   }
   await db.prepare(`UPDATE production_jobs SET spec_json=?,owner_voice_media_ref=?,status='queued',stage='owner-voice-ready',error=NULL,updated_at=? WHERE job_id=?`)
     .bind(JSON.stringify(spec),ref,nowIso(),jobId).run();
-  return {jobId,status:"queued",stage:"owner-voice-ready"};
+  return {jobId,status:"queued",stage:"owner-voice-ready",mediaRef:ref};
 }
 
 async function syncEngineConnections(db,payload){
@@ -1194,7 +1194,14 @@ async function handleApi(request,env,url){
   if(voiceMatch&&request.method==="POST"){
     try{
       const payload=await request.json();
-      const attached=await attachOwnerVoice(env.DB,decodeURIComponent(voiceMatch[1]),payload.media_ref);
+      const jobId=decodeURIComponent(voiceMatch[1]);
+      const before=await env.DB.prepare(`SELECT owner_voice_media_ref FROM production_jobs WHERE job_id=?`).bind(jobId).first();
+      const attached=await attachOwnerVoice(env.DB,jobId,payload.media_ref);
+      // 2026-10-18: replacing a recording stops any build still using the old one;
+      // the next run resets the voice-built checkpoints (see voice_reset.py).
+      if(before?.owner_voice_media_ref&&before.owner_voice_media_ref!==attached.mediaRef){
+        try{await cancelProductionRuns(env);}catch(e){console.log(JSON.stringify({cancel:"failed",error:String(e?.message||e)}));}
+      }
       // 2026-10-14: a recording starts its build straight away instead of waiting
       // for the next scheduled run (a 20:37 upload waited until 14:00 the next day).
       try{await dispatchWorkflow(env,"production-scheduler.yml");}catch(e){console.log(JSON.stringify({dispatch:"after_voice_failed",error:String(e?.message||e)}));}
@@ -1242,6 +1249,25 @@ const CRON_WORKFLOWS={
   "0 7 * * SUN,MON,WED,FRI":"production-scheduler.yml",   // 09:00 short script
   "0 12,18 * * *":"production-scheduler.yml"              // 14:00/20:00 build from voice
 };
+
+async function cancelProductionRuns(env){
+  const token=env.GITHUB_DISPATCH_TOKEN;
+  if(!token) return 0;
+  const headers={"Authorization":`Bearer ${token}`,"Accept":"application/vnd.github+json",
+    "X-GitHub-Api-Version":"2022-11-28","User-Agent":"golide-studio"};
+  let cancelled=0;
+  for(const status of ["in_progress","queued"]){
+    const res=await fetch(`https://api.github.com/repos/${ENGINE_REPO}/actions/workflows/production-scheduler.yml/runs?status=${status}&per_page=10`,{headers});
+    if(!res.ok) continue;
+    const {workflow_runs=[]}=await res.json();
+    for(const run of workflow_runs){
+      const r=await fetch(`https://api.github.com/repos/${ENGINE_REPO}/actions/runs/${run.id}/cancel`,{method:"POST",headers});
+      if(r.ok||r.status===202) cancelled+=1;
+    }
+  }
+  console.log(JSON.stringify({cancelled_production_runs:cancelled}));
+  return cancelled;
+}
 
 async function dispatchWorkflow(env,workflow){
   const token=env.GITHUB_DISPATCH_TOKEN;
