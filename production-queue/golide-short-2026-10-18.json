@@ -2,8 +2,8 @@
   "id": "golide-short-2026-10-18",
   "studio_managed": true,
   "format": "short",
-  "title": "DeepSeek Quietly Changed the Model Behind the Button\u2014What Actually Improved?",
-  "brief": "DeepSeek\u2019s newly updated V4.1 Flash checkpoint is drawing attention because users report a faster, more capable model without changing the public API name or price. That creates a simple question ordinary users can understand: when an AI service updates the model behind the same button, are we using the same tool anymore? Explain why a smaller active model can reduce cost and memory needs without claiming that benchmark wins automatically equal better everyday answers.",
+  "title": "Claude Just Solved a 25-Year Cryptography Mystery. Should We Trust the Method?",
+  "brief": "Anthropic says Claude traced the mysterious numbers behind widely used ECDSA security curves to an old random-number generator seeded by timestamps. In plain English: an AI found the recipe behind a locked mathematical box, but it did not break the encryption protecting people\u2019s accounts. The useful takeaway is how AI can search millions of patterns quickly\u2014while humans still need to verify the result. Would you trust an AI discovery before experts checked every step?",
   "demand_query": "AI tech news everyone is talking about this week",
   "demand_validation_required": true,
   "budget_class": "scheduled",
@@ -179,7 +179,7 @@
     }
   ],
   "platform_demand": {
-    "query": "DeepSeek V4.1 Flash 1017 update October 17 2026",
+    "query": "Anthropic Claude ECDSA curve origins October 16 2026",
     "score": 85.0,
     "verdict": "pass",
     "recent_videos": 68,
@@ -187,8 +187,9 @@
     "top_views_per_day": 7262653.0,
     "market_coverage": 4,
     "title_query_overlap": 0.0,
-    "measured_at": "2026-10-18T07:02:16.793433+00:00",
+    "measured_at": "2026-10-18T07:02:16.792380+00:00",
     "signal_type": "youtube-most-popular-seed-proxy"
   },
-  "selected_topic_source": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017"
+  "selected_topic_source": "https://www.anthropic.com/research/ecdsa-curve-origins",
+  "owner_voice_media_ref": "r2://temp/2026/10/18/15692a3a66af4e8bbe0c595869fe7706-V4.1Flash.m4a"
 }
