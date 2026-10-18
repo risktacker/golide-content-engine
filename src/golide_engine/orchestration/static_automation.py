@@ -112,7 +112,9 @@ STATIC_DRAFT_SCHEMA: dict[str, Any] = {
 class StaticAutomation:
     """Generate the two locked daily static posts with near-zero operator input."""
 
-    ESTIMATED_POST_USD = 0.049
+    # 0.049 per post plus web search on the evening post too (2026-10-18: both posts
+    # search; about 0.012 more on half the posts).
+    ESTIMATED_POST_USD = 0.055
 
     def __init__(
         self,
@@ -121,6 +123,7 @@ class StaticAutomation:
         bridge: StudioBridge | None = None,
     ):
         self.root = Path(root).resolve()
+        self._fresh: list[dict[str, Any]] | None = None
         self.bridge = bridge or StudioBridge(
             os.getenv("GOLIDE_STUDIO_BASE_URL", "https://studio.golidee.com")
         )
@@ -180,6 +183,18 @@ class StaticAutomation:
             })
         return due
 
+    def _headlines(self) -> list[dict[str, Any]]:
+        """The same 48-hour headlines the video topic finder reads, fetched once per
+        run. Best effort: an outage gives an empty list and the post still goes out."""
+        if getattr(self, "_fresh", None) is None:
+            from ..youtube.pulse import fresh_headlines
+
+            try:
+                self._fresh = fresh_headlines(limit=20)
+            except Exception:  # noqa: BLE001
+                self._fresh = []
+        return self._fresh
+
     @staticmethod
     def _product_packet(product) -> dict[str, Any]:
         if product is None:
@@ -205,7 +220,6 @@ class StaticAutomation:
         product,
     ) -> dict[str, Any]:
         product_packet = self._product_packet(product)
-        live_signal = slot == "post-a"
         instructions = static_post_instructions(slot, has_product=product is not None)
         try:
             recent = self.bridge.recent_posts(21)
@@ -216,14 +230,17 @@ class StaticAutomation:
             f"SLOT={slot}\n"
             f"CONTENT_ID={content_id}\n"
             f"CANDIDATE_PRODUCT={json.dumps(product_packet, ensure_ascii=False)}\n"
-            f"RECENT_POSTS={json.dumps(recent, ensure_ascii=False)}"
+            f"RECENT_POSTS={json.dumps(recent, ensure_ascii=False)}\n"
+            f"FRESH_HEADLINES={json.dumps(self._headlines(), ensure_ascii=False)}"
         )
         text = self.providers.text(live=True)
         output = text.generate_json(
             instructions,
             body,
             STATIC_DRAFT_SCHEMA,
-            web_search=live_signal,
+            # Both posts search the live web (2026-10-18): the evening post used to
+            # pick its "trend" from model memory, which can be weeks old.
+            web_search=True,
             max_output_tokens=4500,
         )
         draft = dict(output.value)

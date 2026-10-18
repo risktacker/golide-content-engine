@@ -66,7 +66,7 @@ const POLICY = {
     currency:"USD",
     openai_deposit_target_usd:10,
     scheduled_video_guard_usd:7,
-    static_post_guard_usd:3,
+    static_post_guard_usd:3.5,
     x_opening_credit_usd:5,
   },
 };

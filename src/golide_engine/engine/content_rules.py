@@ -217,8 +217,18 @@ SOUND HUMAN (owner direction 2026-10-13)
 """
 
 
+STATIC_PULSE_RULES = """\
+FRESH_HEADLINES (owner direction 2026-10-18: posts use the same trend signal as videos)
+- FRESH_HEADLINES lists what people discussed in the last 48 hours on Hacker News and
+  Reddit, most-discussed first. Prefer a story from it that is broad and AI or tech,
+  then confirm it with web search and cite the original source. Ignore niche,
+  political or gossip items. If it is empty or nothing fits, use web search alone.
+- Never call a story trending, new or "this week" unless web search shows it is.
+"""
+
+
 def static_post_instructions(slot: str, has_product: bool = True) -> str:
-    lane = (POST_A_TREND_RULES if slot == "post-a" else POST_B_PRODUCT_RULES) + (
+    lane = (POST_A_TREND_RULES if slot == "post-a" else POST_B_PRODUCT_RULES) + STATIC_PULSE_RULES + (
         PRODUCT_SLIDE_RULES if has_product else PRODUCT_SLIDE_EMPTY)
     return (
         "You write one static social post for GOLIDE, a marketplace for digital products, "

@@ -103,6 +103,7 @@ def test_draft_sees_recent_posts():
     auto = StaticAutomation.__new__(StaticAutomation)
     auto.bridge = SimpleNamespace(recent_posts=lambda days: [{"hook": "More applications aren't the fix. A scattered search is."}])
     auto.providers = SimpleNamespace(text=lambda live: Text())
+    auto._fresh = []
     auto._draft(content_id="c", slot="post-b", product=None)
     assert "RECENT_POSTS=" in seen["body"] and "scattered search" in seen["body"]
     assert "NEVER REPEAT YOURSELF" in seen["instructions"]

@@ -17,7 +17,7 @@
     "resume_after_recharge": true,
     "static_post_allocation_usd": 0.07,
     "scheduled_video_cap_usd": 7,
-    "static_post_cap_usd": 3.05
+    "static_post_cap_usd": 3.5
   },
   "independent_production": {
     "requires_explicit_openai_budget_usd": true,

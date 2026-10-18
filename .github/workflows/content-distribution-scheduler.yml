@@ -23,7 +23,7 @@ jobs:
     env:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       GOLIDE_ENABLE_PAID_PRODUCTION: "1"
-      GOLIDE_STATIC_OPENAI_MONTHLY_CAP_USD: "3.00"
+      GOLIDE_STATIC_OPENAI_MONTHLY_CAP_USD: "3.50"
       GOLIDE_STUDIO_BASE_URL: "https://studio.golidee.com"
       GOLIDE_PRODUCT_REGISTRY_URL: "https://marketplace.golidee.com/api/product-registry"
       R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}

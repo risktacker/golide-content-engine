@@ -268,7 +268,7 @@ function renderBudget() {
   const budget = policy?.budget || {
     openai_deposit_target_usd: 10,
     scheduled_video_guard_usd: 7,
-    static_post_guard_usd: 3,
+    static_post_guard_usd: 3.5,
     x_opening_credit_usd: 5,
   };
   const video = Number(overview.video_openai_spend_usd || 0);
