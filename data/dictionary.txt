@@ -17,3 +17,5 @@ tech  # seen in your recording and the owner-approved script
 workaround  # seen in your recording and the owner-approved script
 workarounds  # seen in your recording and the research sources and the owner-approved script
 www  # seen in the research sources
+fibre  # seen in your recording and the research sources and the owner-approved script
+kilonewtons  # seen in your recording and the owner-approved script
