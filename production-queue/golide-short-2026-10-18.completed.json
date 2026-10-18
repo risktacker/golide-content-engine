@@ -64,13 +64,13 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "Anthropic Claude ECDSA curve origins October 16 2026",
-        "score": 85.0,
+        "score": 85,
         "verdict": "pass",
         "recent_videos": 68,
         "median_views_per_day": 394065.41,
-        "top_views_per_day": 7262653.0,
+        "top_views_per_day": 7262653,
         "market_coverage": 4,
-        "title_query_overlap": 0.0,
+        "title_query_overlap": 0,
         "measured_at": "2026-10-18T07:02:16.792380+00:00",
         "signal_type": "youtube-most-popular-seed-proxy"
       },
@@ -95,13 +95,13 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "OpenCode breach API keys leaked October 17 2026",
-        "score": 85.0,
+        "score": 85,
         "verdict": "pass",
         "recent_videos": 68,
         "median_views_per_day": 394065.41,
-        "top_views_per_day": 7262653.0,
+        "top_views_per_day": 7262653,
         "market_coverage": 4,
-        "title_query_overlap": 0.0,
+        "title_query_overlap": 0,
         "measured_at": "2026-10-18T07:02:16.792916+00:00",
         "signal_type": "youtube-most-popular-seed-proxy"
       },
@@ -126,13 +126,13 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "DeepSeek V4.1 Flash 1017 update October 17 2026",
-        "score": 85.0,
+        "score": 85,
         "verdict": "pass",
         "recent_videos": 68,
         "median_views_per_day": 394065.41,
-        "top_views_per_day": 7262653.0,
+        "top_views_per_day": 7262653,
         "market_coverage": 4,
-        "title_query_overlap": 0.0,
+        "title_query_overlap": 0,
         "measured_at": "2026-10-18T07:02:16.793433+00:00",
         "signal_type": "youtube-most-popular-seed-proxy"
       },
@@ -157,22 +157,22 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "Mercor benchmark map 90 percent US working hours October 16 2026",
-        "score": 85.0,
+        "score": 85,
         "verdict": "pass",
         "recent_videos": 68,
         "median_views_per_day": 394065.41,
-        "top_views_per_day": 7262653.0,
+        "top_views_per_day": 7262653,
         "market_coverage": 4,
-        "title_query_overlap": 0.0,
+        "title_query_overlap": 0,
         "measured_at": "2026-10-18T07:02:16.793940+00:00",
         "signal_type": "youtube-most-popular-seed-proxy"
       },
       "trend_pulse": {
         "query": "Mercor benchmark map 90 percent US working hours October 16 2026",
         "fresh_videos": 0,
-        "median_views_per_hour": 0.0,
-        "top_views_per_hour": 0.0,
-        "score": 15.0,
+        "median_views_per_hour": 0,
+        "top_views_per_hour": 0,
+        "score": 15,
         "hot": false,
         "measured_at": "2026-10-18T07:02:17.717456+00:00"
       }
@@ -180,16 +180,16 @@
   ],
   "platform_demand": {
     "query": "Anthropic Claude ECDSA curve origins October 16 2026",
-    "score": 85.0,
+    "score": 85,
     "verdict": "pass",
     "recent_videos": 68,
     "median_views_per_day": 394065.41,
-    "top_views_per_day": 7262653.0,
+    "top_views_per_day": 7262653,
     "market_coverage": 4,
-    "title_query_overlap": 0.0,
+    "title_query_overlap": 0,
     "measured_at": "2026-10-18T07:02:16.792380+00:00",
     "signal_type": "youtube-most-popular-seed-proxy"
   },
   "selected_topic_source": "https://www.anthropic.com/research/ecdsa-curve-origins",
-  "owner_voice_media_ref": "r2://temp/2026/10/18/15692a3a66af4e8bbe0c595869fe7706-V4.1Flash.m4a"
+  "owner_voice_media_ref": "r2://temp/2026/10/18/03f2756840ea4f589ec2f2dad8732241-V4.1Flash-v2.wav"
 }

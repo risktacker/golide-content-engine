@@ -1,0 +1,495 @@
+{
+  "production_id": "golide-short-2026-10-18",
+  "youtube_video_id": "oX7nJ296VgA",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "oX7nJ296VgA",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-10-18T08:50:46.217598+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "Claude Just Solved a 25-Year Cryptography Mystery. Should We Trust the Method?",
+    "status": "scheduled",
+    "scheduled_at": "2026-10-18T11:00:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-shorts-mon-wed-fri-sun\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "Your AI answers can change while its button and price stay fixed.\nThat happened October seventeenth, when DeepSeek replaced V4.1 Flash\nwith V4.1-Flash-1017, but kept deepseek-flash and the same API method.\nSo one clinic check-in desk may lead to a different doctor.\nUnderneath, V4.1 Flash uses mixture-of-experts, routing text to selected parts.\nThat lets 552 billion parameters activate 8 billion reading text and 16 billion writing answers.\nBecause selected parts work each step, compute can fall,\nwhile the KV cache holds your conversation as it answers,\nand DeepSeek reports one-quarter as much high-bandwidth memory\nand one-eighth as much solid-state storage.\nExcept there's a cost nobody puts on the box, speed isn't better care.\nThat is because benchmarks measure tests, not your messy question or tone.\nSo a coding score can rise while an answer misses what you meant.\nThat means the new model is a different instrument behind the same controls.\nInstead, test both versions on one task you care about, then compare.\nAnd if this helps, follow the channel for model changes,\nbecause we track them as they happen.\nBecause the clinic desk stays familiar while the doctor changes.\n",
+  "research": {
+    "summary": "**Short answer: same button, different instrument.** DeepSeek’s October 17, 2026 update says V4.1 Flash was replaced by the `DeepSeek-V4.1-Flash-1017` checkpoint while the API method, public model name (`deepseek-flash`), and pricing stayed the same. So users are still using the same service interface, but not necessarily the same underlying model behavior. A useful analogy is a car receiving a new engine through the same controls: the dashboard and price may be unchanged, while speed, fuel use, and handling change.\n\nThe efficiency story comes from two separate ideas. First, V4.1 Flash is a mixture-of-experts model with 552 billion total parameters, but DeepSeek reports only 8 billion active parameters for input processing and 16 billion for output generation. In an MoE system, a routing mechanism selects only some expert components for each token, so each step can require substantially less computation than running every parameter. That can improve throughput and reduce serving cost even though the complete model remains much larger than the active portion.\n\nSecond, memory use is not determined only by active parameters. The model’s KV cache stores information about the conversation while it generates an answer; DeepSeek reports that V4.1 Flash reduces this cache requirement to one-quarter of the previous generation’s HBM and one-eighth of its SSD storage. That matters especially for long contexts and multi-step agents, where many users’ cached conversations compete for memory. The careful wording is therefore: fewer active parameters can reduce per-token compute, while cache compression can reduce memory pressure. “Smaller active model” does not mean the entire 552-billion-parameter model fits into a small computer’s memory.\n\nFinally, benchmark victories should be treated as evidence about particular tests, not a guarantee of better everyday answers. DeepSeek reports strong results on selected benchmarks, but independent research documents problems such as benchmark contamination, narrow task coverage, evaluation bias, and the gap between static tests and real-world use. A model may be faster or better at coding-agent tasks yet still be less reliable for a user’s writing style, factual research, tone, refusal behavior, or ambiguous questions. The practical test is repeated side-by-side use on the tasks that matter to you—not the assumption that a higher benchmark score automatically means a universally better assistant.",
+    "claims": [
+      {
+        "claim": "DeepSeek says the V4.1 Flash checkpoint was upgraded to V4.1-Flash-1017 on October 17, 2026, while the API calling method and pricing remained unchanged; users continue to call the latest model with `deepseek-flash`.",
+        "source_title": "Change Log | DeepSeek API Docs",
+        "source_url": "https://api-docs.deepseek.com/updates/",
+        "published_or_updated": "October 17, 2026"
+      },
+      {
+        "claim": "DeepSeek describes V4.1 Flash as a 552-billion-parameter mixture-of-experts model with 8 billion active parameters for input and 16 billion for output.",
+        "source_title": "DeepSeek-V4.1-Flash: Smarter, Faster, More Efficient | DeepSeek API Docs",
+        "source_url": "https://api-docs.deepseek.com/news/news260910/",
+        "published_or_updated": "September 10, 2026"
+      },
+      {
+        "claim": "Mixture-of-experts architectures can increase total model capacity while keeping the number of parameters activated for an individual token comparatively small, reducing inference computation relative to using the full model on every token.",
+        "source_title": "MM1: Methods, Analysis & Insights from Multimodal LLM Pre-training",
+        "source_url": "https://arxiv.org/abs/2403.09611",
+        "published_or_updated": "March 2024"
+      },
+      {
+        "claim": "DeepSeek reports that V4.1 Flash’s KV cache requires one-quarter as much HBM and one-eighth as much SSD storage as the previous generation.",
+        "source_title": "DeepSeek-V4.1-Flash: Pushing the Limits of KV Cache Compression",
+        "source_url": "https://arxiv.org/abs/2609.19969",
+        "published_or_updated": "September 2026"
+      },
+      {
+        "claim": "Benchmark results do not by themselves establish universal real-world superiority because language-model evaluations can be affected by benchmark contamination, dataset limitations, evaluation bias, and differences between test tasks and actual use.",
+        "source_title": "The Vulnerability of Language Model Benchmarks: Do They Accurately Reflect True LLM Performance?",
+        "source_url": "https://arxiv.org/abs/2412.03597",
+        "published_or_updated": "December 2024"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "DeepSeek V4.1 Flash 1017: Same API, Different Model",
+    "description": "DeepSeek replaced V4.1 Flash with V4.1-Flash-1017 while keeping the deepseek-flash model name and API method. That means the controls can look unchanged even when the model answering your questions has changed.\n\nThis short explanation covers mixture-of-experts routing, active parameters, KV cache savings, and why better benchmark scores do not always mean better answers. Test both versions on a task you actually care about before deciding which performs best.\n\nDeepSeek V4.1 Flash 1017, DeepSeek Flash update, DeepSeek model update, DeepSeek API update, deepseek-flash model, DeepSeek V4.1 review, DeepSeek MoE explained, mixture of experts AI, KV cache explained, AI model benchmarks, LLM version changes, AI model routing, DeepSeek API model, DeepSeek 1017, AI model comparison\n\n#DeepSeek #DeepSeekAI #AIModels #LLM #MachineLearning #AIExplained #TechNews",
+    "tags": [
+      "DeepSeek V4.1 Flash",
+      "DeepSeek Flash 1017",
+      "DeepSeek V4.1-Flash-1017",
+      "DeepSeek model update",
+      "DeepSeek API update",
+      "deepseek-flash",
+      "DeepSeek API",
+      "DeepSeek models",
+      "DeepSeek MoE",
+      "DeepSeek mixture experts",
+      "mixture of experts",
+      "MoE explained",
+      "KV cache explained",
+      "AI model update",
+      "LLM model update",
+      "AI benchmark limits",
+      "AI model comparison",
+      "AI model routing",
+      "large language models",
+      "language model update",
+      "AI inference",
+      "AI API models",
+      "AI explained"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "keywords": [
+      "DeepSeek V4.1 Flash 1017",
+      "DeepSeek Flash update",
+      "DeepSeek model update",
+      "DeepSeek API update",
+      "deepseek-flash model",
+      "DeepSeek V4.1 review",
+      "DeepSeek MoE explained",
+      "mixture of experts AI",
+      "KV cache explained",
+      "AI model benchmarks",
+      "LLM version changes",
+      "AI model routing",
+      "DeepSeek API model",
+      "DeepSeek 1017",
+      "AI model comparison"
+    ],
+    "hashtags": [
+      "#DeepSeek",
+      "#DeepSeekAI",
+      "#AIModels",
+      "#LLM",
+      "#MachineLearning",
+      "#AIExplained",
+      "#TechNews"
+    ],
+    "format": "short",
+    "title_description_language": "en",
+    "seo_body": "DeepSeek replaced V4.1 Flash with V4.1-Flash-1017 while keeping the deepseek-flash model name and API method. That means the controls can look unchanged even when the model answering your questions has changed.\n\nThis short explanation covers mixture-of-experts routing, active parameters, KV cache savings, and why better benchmark scores do not always mean better answers. Test both versions on a task you actually care about before deciding which performs best."
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "DeepSeek says the V4.1 Flash checkpoint was upgraded to V4.1-Flash-1017 on October 17, 2026, while the API calling method and pricing remained unchanged; users continue to call the latest model with `deepseek-flash`.",
+        "source_title": "Change Log | DeepSeek API Docs",
+        "source_url": "https://api-docs.deepseek.com/updates/",
+        "published_or_updated": "October 17, 2026"
+      },
+      {
+        "claim": "DeepSeek describes V4.1 Flash as a 552-billion-parameter mixture-of-experts model with 8 billion active parameters for input and 16 billion for output.",
+        "source_title": "DeepSeek-V4.1-Flash: Smarter, Faster, More Efficient | DeepSeek API Docs",
+        "source_url": "https://api-docs.deepseek.com/news/news260910/",
+        "published_or_updated": "September 10, 2026"
+      },
+      {
+        "claim": "Mixture-of-experts architectures can increase total model capacity while keeping the number of parameters activated for an individual token comparatively small, reducing inference computation relative to using the full model on every token.",
+        "source_title": "MM1: Methods, Analysis & Insights from Multimodal LLM Pre-training",
+        "source_url": "https://arxiv.org/abs/2403.09611",
+        "published_or_updated": "March 2024"
+      },
+      {
+        "claim": "DeepSeek reports that V4.1 Flash’s KV cache requires one-quarter as much HBM and one-eighth as much SSD storage as the previous generation.",
+        "source_title": "DeepSeek-V4.1-Flash: Pushing the Limits of KV Cache Compression",
+        "source_url": "https://arxiv.org/abs/2609.19969",
+        "published_or_updated": "September 2026"
+      },
+      {
+        "claim": "Benchmark results do not by themselves establish universal real-world superiority because language-model evaluations can be affected by benchmark contamination, dataset limitations, evaluation bias, and differences between test tasks and actual use.",
+        "source_title": "The Vulnerability of Language Model Benchmarks: Do They Accurately Reflect True LLM Performance?",
+        "source_url": "https://arxiv.org/abs/2412.03597",
+        "published_or_updated": "December 2024"
+      }
+    ],
+    "platform_demand": {
+      "query": "Anthropic Claude ECDSA curve origins October 16 2026",
+      "score": 85,
+      "verdict": "pass",
+      "recent_videos": 68,
+      "median_views_per_day": 394065.41,
+      "top_views_per_day": 7262653,
+      "market_coverage": 4,
+      "title_query_overlap": 0,
+      "measured_at": "2026-10-18T07:02:16.792380+00:00",
+      "signal_type": "youtube-most-popular-seed-proxy"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.23,
+      "true_peak_dbtp": -1.82,
+      "loudness_range": 2.7
+    },
+    "editorial": {
+      "beats": 18,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-10-18T08:50:37.772633+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri-sun"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-short-2026-10-18",
+    "created_at": "2026-10-18T08:50:38.531315+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-10-18T11:00:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "33d055591ce57593aa9b42df09781c9a5cb7a9818bbb7eba6b1ff72f90f4df38",
+        "bytes": 18344817
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "d8ff003395b7c915255d64d7d5d8cfcbeeca4633ccb79ecef756caac3c6b6d8d",
+        "bytes": 942708
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "53825c0cec14582251dbddef1ee18611d578d25e67452a4cf8d063ce031ce8d7",
+        "bytes": 2823
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "00d4f3181a569200f24da99270f2f5eb68809d1ffb48098a2f95c4def360d959",
+        "bytes": 2551
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "a122033ab19cf807bb2fbee9f985da1b2204a48176ce9cc7d0a3328e93e7c786",
+        "bytes": 543
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "3512d754a8ec8594c37638e21b46aa900e30e1d265273e131ae96192ead7c7b3",
+        "bytes": 2861
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "678140779bba2e91fcb33a95de33aea71f2cbbed4011049fbe64e353d1870954",
+        "bytes": 394
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "ea70b5783c0896c07e0919fc8c8156b546c7347a2eaf4c2cf0e32b9e9c6a5781",
+        "bytes": 277
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 30670.0,
+      "cached_input_units": 0.0,
+      "output_units": 2470.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.009098,
+      "created_at": "2026-10-18T07:02:17.907671+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-18T07:02:17.909711+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 21767.0,
+      "cached_input_units": 0.0,
+      "output_units": 1873.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006601,
+      "created_at": "2026-10-18T07:02:42.299952+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-18T07:02:42.301474+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 4111.0,
+      "cached_input_units": 0.0,
+      "output_units": 3894.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005495,
+      "created_at": "2026-10-18T07:03:15.810308+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 5722.0,
+      "cached_input_units": 3013.0,
+      "output_units": 4180.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005618,
+      "created_at": "2026-10-18T07:03:48.748773+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 5684.0,
+      "cached_input_units": 3013.0,
+      "output_units": 4926.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006506,
+      "created_at": "2026-10-18T07:04:28.127333+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2570.0,
+      "cached_input_units": 0.0,
+      "output_units": 1319.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002097,
+      "created_at": "2026-10-18T08:33:44.217309+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-18T08:33:58.052803+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-18T08:34:10.714476+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-18T08:42:54.918924+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-18T08:43:08.092180+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-18T08:43:21.044283+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-18T08:43:35.935844+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-18T08:43:48.953883+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-18T08:44:01.568030+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 13420.0,
+      "cached_input_units": 0.0,
+      "output_units": 1038.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00393,
+      "created_at": "2026-10-18T08:49:55.547171+00:00"
+    },
+    {
+      "stage": "thumbnail",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-10-18T08:50:21.580453+00:00"
+    }
+  ],
+  "recorded_at": "2026-10-18T08:50:46.223086+00:00"
+}
