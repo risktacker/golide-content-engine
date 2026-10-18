@@ -33,8 +33,10 @@ def thumbnail_words(text: str, gold: str) -> tuple[list[str], set[str]]:
     return upper, gold_set
 
 
-def stamp_thumbnail(path: Path, text: str, gold: str) -> None:
+def stamp_thumbnail(path: Path, text: str, gold: str, palette: list | None = None) -> None:
+    """palette: accent colours (RGB) for the punch words, in order (2026-10-18: several colours)."""
     words, gold_set = thumbnail_words(text, gold)
+    colors = [tuple(c) for c in (palette or [GOLD])]
     if not words:
         return
     image = Image.open(path).convert("RGB")
@@ -75,10 +77,15 @@ def stamp_thumbnail(path: Path, text: str, gold: str) -> None:
     space = dt.textlength(" ", font=font)
     total = len(lines) * size * 1.05
     y = (h - total) / 2
+    punch = 0
     for line in lines:
         x = w * 0.06
         for word in line:
-            color = GOLD if word.strip(".,!?") in gold_set else WHITE
+            if word.strip(".,!?") in gold_set:
+                color = colors[punch % len(colors)]
+                punch += 1
+            else:
+                color = WHITE
             dg.text((x, y), word, font=font, fill=color + (200,))
             dt.text((x, y), word, font=font, fill=color + (255,), stroke_width=2, stroke_fill=(0, 0, 0, 180))
             x += dt.textlength(word, font=font) + space

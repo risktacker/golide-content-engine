@@ -24,6 +24,8 @@ class Part:
 
 
 def parts(scene: dict) -> list[Part]:
+    if scene.get("picture_of"):
+        return []  # a pacing shot reuses its parent scene's picture (no extra image)
     layout = str(scene.get("layout") or "single")
     out = [Part(scene["id"], str(scene.get("drawing", "")), str(scene.get("gold_element", "")),
                 str(scene.get("figure") or "").strip(), layout)]

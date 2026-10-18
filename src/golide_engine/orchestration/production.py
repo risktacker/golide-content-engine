@@ -64,27 +64,13 @@ def render_hold_reason(root: Path, format_name: str) -> str | None:
     return None
 
 
-def youtube_thumbnail_prompt(title: str, moment: str = "", accent: str = "warm gold") -> str:
-    """The YouTube thumbnail brief. Owner direction 2026-10-13: the same art as the
-    Instagram covers (one luminous hero object on black), but bigger, brighter and
-    more defined. No people, avatars or paper-cut figures. The short hook is
-    typeset afterwards by code, so the image itself has no text."""
-    subject = moment.strip() or f"one iconic object that stands for the story behind: {title}"
-    return (
-        "16:9 YouTube thumbnail artwork in the GOLIDE Black style. Pure deep black background "
-        "with a very faint starfield. ONE hero object, nothing else: "
-        f"{subject}. "
-        "Render it as luminous neon fine-line illustration fused with a cinematic, polished "
-        "real object: razor-sharp edges, strong rim light, bright saturated glow, glossy "
-        f"highlights, one dominant glowing accent in {accent} with brilliant light bloom and "
-        "a few sparks, so it shines like jewellery against the black. The object is big and "
-        "bold, filling the right 55 percent of the frame, slightly angled toward the camera, "
-        "crisp and readable at phone-thumbnail size. Keep the left 40 percent clean, dark "
-        "and empty for a title. No people, no faces, no hands, no avatars, no characters, "
-        "no paper-cut, low-poly or origami figures, no collage. ABSOLUTELY NO text, letters, "
-        "numbers, labels, logos, watermarks or user-interface elements anywhere in the image. "
-        f"Video title for context only: {title}"
-    )
+def youtube_thumbnail_prompt(title: str, moment: str = "", colors: list[str] | None = None) -> str:
+    """The YouTube thumbnail brief: the static-post look in two or three meaning colours
+    (owner direction 2026-10-18; see vector.thumbnail_style). No people; the short hook
+    is typeset afterwards by code, so the image itself has no text."""
+    from ..vector.thumbnail_style import DEFAULT, thumbnail_prompt
+
+    return thumbnail_prompt(title, moment, list(colors or DEFAULT))
 
 
 class WaitingOwnerVoice(RuntimeError):
@@ -141,8 +127,11 @@ class ProductionService:
         """Typeset the cover's punch words (2 to 4) big and bold on the left."""
         try:
             from ..vector.thumb_text import stamp_thumbnail
-            cover = (json.loads((work / "visual-plan.json").read_text(encoding="utf-8")).get("cover") or {})
-            stamp_thumbnail(thumbnail, str(cover.get("text", "")), str(cover.get("gold", "")))
+            from ..vector.thumbnail_style import palette_rgb, thumbnail_colors
+            plan = json.loads((work / "visual-plan.json").read_text(encoding="utf-8"))
+            cover = plan.get("cover") or {}
+            colors = thumbnail_colors(cover, plan.get("scenes") or [])
+            stamp_thumbnail(thumbnail, str(cover.get("text", "")), str(cover.get("gold", "")), palette_rgb(colors))
         except Exception as exc:  # the plain artwork still works as a thumbnail
             print(json.dumps({"status": "thumbnail_text_skipped", "error": str(exc)[:300]}))
 
@@ -772,29 +761,34 @@ class ProductionService:
             visual_plan_path = work / "visual-plan.json"
             illustration_dir = work / "illustrations"
 
+            def spoken_line_times() -> list[tuple[float, float]]:
+                timed = align_lines(plan, timed_words, narration_seconds)
+                return [(line.start, line.end) for line in timed][:len(spoken_lines)]
+
             def visual_plan_stage():
                 self._require_absent(visual_plan_path, "visual-plan")
                 from ..vector.chapters import line_chapters
                 owners = line_chapters(plan)
                 rows = []
+                times = spoken_line_times()
                 for i, line in enumerate(spoken_lines):
                     if owners[i] is not None and (i == 0 or owners[i] != owners[i - 1]):
                         chapter = plan["chapters"][owners[i]]
                         rows.append(f"== CHAPTER {chapter.get('number', '')} {chapter.get('title', '')} ==".replace("  ", " "))
-                    rows.append(f"{i}: {line['text']}")
+                    rows.append(f"{i}: [{times[i][0]:.1f}s] {line['text']}")
                 numbered = "\n".join(rows)
-                self._reserve(spec, text_model, Usage(input_tokens=len(numbered) // 3 + 1500, output_tokens=6000))
+                self._reserve(spec, text_model, Usage(input_tokens=len(numbered) // 3 + 1500, output_tokens=8000))
                 output = text.generate_json(
-                    scene_plan_instructions(str(spec["format"])),
+                    scene_plan_instructions(str(spec["format"]), narration_seconds),
                     f"TITLE={spec.get('title', '')}\nLINES\n{numbered}",
                     VISUAL_PLAN_SCHEMA,
                     max_output_tokens=6000,
                 )
                 breaks = {i for i in range(1, len(owners)) if owners[i] is not None and owners[i] != owners[i - 1]}
-                from ..vector.illustrate import SCENE_COUNTS
+                from ..vector.pacing import scene_range
                 raw_scenes = list(output.value["scenes"])
                 scenes = validate_scenes(raw_scenes, len(spoken_lines), breaks,
-                                         max_scenes=SCENE_COUNTS.get(str(spec["format"]), (0, 18))[1] + 2)
+                                         max_scenes=scene_range(str(spec["format"]), narration_seconds)[1] + 2)
                 cover = dict(output.value.get("cover") or {})
                 number = cover.get("scene")
                 cover["scene"] = ""
@@ -816,7 +810,10 @@ class ProductionService:
             from ..vector.scene_art import parts as scene_parts
             from ..vector.scene_art import picture_size, try_figure
 
-            scenes = normalize_layouts(visual_plan["scenes"], str(spec["format"]))
+            from ..vector.pacing import pace_scenes
+            # Pacing applies to plans made before it existed too (idempotent).
+            scenes = pace_scenes(normalize_layouts(visual_plan["scenes"], str(spec["format"])),
+                                 spoken_line_times(), str(spec["format"]))
             line_art = OpenAILineArtProvider(
                 self.providers.config["assets"]["support_model"],
                 self.providers.config["assets"]["support_quality"],
@@ -1474,9 +1471,16 @@ class ProductionService:
             )
             from ..providers.openai_media import SAFE_RETRY, is_moderation_block
 
-            prompt = youtube_thumbnail_prompt(metadata["title"], self._thumbnail_moment(work))
+            from ..vector.thumbnail_style import thumbnail_colors, thumbnail_prompt
+            try:
+                plan_json = json.loads((work / "visual-plan.json").read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                plan_json = {}
+            colors = thumbnail_colors(plan_json.get("cover") or {}, plan_json.get("scenes") or [])
+            # 2026-10-18: the static-post look, glowing in two or three meaning colours.
+            prompt = thumbnail_prompt(metadata["title"], self._thumbnail_moment(work), colors)
             output = None
-            for attempt in (prompt, youtube_thumbnail_prompt(metadata["title"], "one simple glowing symbol of the topic")
+            for attempt in (prompt, thumbnail_prompt(metadata["title"], "one simple glowing symbol of the topic", colors)
                             + SAFE_RETRY):
                 try:
                     output = thumbnail_provider.create_thumbnail(attempt, raw_thumbnail,

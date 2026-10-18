@@ -145,12 +145,12 @@ class CaptionRenderer:
     def _clean(text: str) -> str:
         return text.strip()
 
-    def caption(self, chunk: CaptionChunk, t: float, fade: float) -> Image.Image:
+    def caption(self, chunk: CaptionChunk, t: float, fade: float, accent: tuple | None = None) -> Image.Image:
         current = -1
         for i, word in enumerate(chunk.words):
             if word.start <= t:
                 current = i
-        key = (id(chunk), current, round(fade, 2))
+        key = (id(chunk), current, round(fade, 2), accent)
         if key in self._cache:
             return self._cache[key]
         if len(self._cache) > 64:
@@ -180,7 +180,9 @@ class CaptionRenderer:
                 width += add
         text_rgb = self.theme.rgb("text")
         muted = self.theme.rgb("text_muted")
-        gold = self.theme.rgb("gold")
+        # 2026-10-18: key terms light up in the scene's accent (gold, rose, teal, ivory,
+        # copper by meaning), not always gold.
+        gold = tuple(accent) if accent else self.theme.rgb("gold")
         dim_gold = tuple(int(c * 0.62) for c in gold)
         for r, row in enumerate(rows[:3]):
             row_w = sum(draw.textlength(words[i], font=fonts[i]) for i in row) + space * (len(row) - 1)
@@ -212,6 +214,23 @@ class CaptionRenderer:
         result = Image.alpha_composite(glow, layer)
         self._cache[key] = result
         return result
+
+    def number_card(self, text: str, accent: tuple, a: float, pop: float) -> Image.Image:
+        """A spoken number, big, in the scene's accent with a soft glow (2026-10-18)."""
+        vertical = self.layout.width < self.layout.height
+        size = int(self.layout.width * (0.13 if vertical else 0.075) * pop)
+        font = ImageFont.truetype(str(self.theme.font("bold")), max(12, size))
+        probe = ImageDraw.Draw(Image.new("RGBA", (4, 4)))
+        x0, y0, x1, y1 = probe.textbbox((0, 0), text, font=font)
+        pad = int(size * 0.5)
+        w, h = x1 - x0 + 2 * pad, y1 - y0 + 2 * pad
+        layer = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+        glow = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+        ImageDraw.Draw(glow).text((pad - x0, pad - y0), text, font=font, fill=tuple(accent) + (int(220 * a),))
+        ImageDraw.Draw(layer).text((pad - x0, pad - y0), text, font=font, fill=tuple(accent) + (int(255 * a),),
+                                   stroke_width=max(1, size // 40), stroke_fill=(10, 10, 12, int(160 * a)))
+        glow = glow.filter(ImageFilter.GaussianBlur(size * 0.18))
+        return Image.alpha_composite(glow, layer)
 
     def label(self, text: str, color: tuple[int, int, int], alpha: float) -> Image.Image:
         spaced = "  ".join(text.split())
@@ -348,7 +367,10 @@ class VectorRenderer:
             spec = cover_spec(plan)
             ids = [str(scene.get("id")) for scene in plan.get("scenes") or []]
             scene = pick_scene(ids, SCENES, spec["scene"])
-            image = render_cover(self, SCENES.get(scene) if scene else None, spec["text"], spec["gold"])
+            from .thumbnail_style import palette_rgb, thumbnail_colors
+            # 2026-10-18: the punch words take the video's first meaning colour.
+            punch = palette_rgb(thumbnail_colors(plan.get("cover") or {}, plan.get("scenes") or []))[0]
+            image = render_cover(self, SCENES.get(scene) if scene else None, spec["text"], spec["gold"], punch)
             image.save(output.with_name(output.stem + "-cover.jpg"), quality=93)
             return np.asarray(image, np.float32)
         except Exception as exc:  # a cover must never stop a video
@@ -402,13 +424,33 @@ class VectorRenderer:
         for ctx in (main_ctx, glow_ctx):
             ctx.push_group()
         from .illustrate import REGIONS
+        from .pacing import HOOK_SECONDS
+        words = sum(len(str(line.text).split()) for line in group.lines)
         primitive(Draw(main_ctx, glow_ctx, auto_gp if gp is None else gp, k, n, t - group.start, seed,
                        self.layout.size / 2, self.colors, tuple(group.icons),
                        carry=carry, hide=hide, visual=group.visual,
-                       span=group.end - group.start, region=REGIONS[self.format], zoom=zoom))
+                       span=group.end - group.start, region=REGIONS[self.format], zoom=zoom,
+                       words=words, hook=group.start < HOOK_SECONDS.get(self.format, 30.0),
+                       marking=self._marking(group, t)))
         for ctx in (main_ctx, glow_ctx):
             ctx.pop_group_to_source()
             ctx.paint_with_alpha(alpha)
+
+    def _accent_rgb(self, group: Group) -> tuple:
+        """The active scene's accent colour (0-255 RGB), gold when it has none."""
+        from .illustrate import SCENES
+
+        drawing = SCENES.get(group.icons[0]) if group.icons else None
+        name = getattr(drawing, "accent", "gold") if drawing is not None else "gold"
+        rgb = self.colors.get(f"accent_{name}", self.colors["gold"])
+        return tuple(int(round(c * 255)) for c in rgb)
+
+    def _marking(self, group: Group, t: float) -> float:
+        """0..1 while a spoken-number card belonging to this scene is on screen."""
+        for card in getattr(self, "cards", ()):
+            if group.start <= card.start < group.end and card.start <= t < card.end:
+                return card.progress(t)
+        return 0.0
 
     def _points(self, group: Group, seed: int, hide: frozenset) -> np.ndarray:
         """Points on the finished drawing of a scene (unit coordinates)."""
@@ -483,6 +525,21 @@ class VectorRenderer:
         frame = rgb + frame * (1 - alpha)
         image = Image.fromarray(np.clip(frame, 0, 255).astype(np.uint8), "RGB")
 
+        accent = self._accent_rgb(group)
+
+        # Spoken numbers (2026-10-18): big, in the scene's accent, at the moment they are said.
+        card_on = False
+        for card in getattr(self, "cards", ()):
+            if card.start <= t < card.end:
+                u = card.progress(t)
+                a = min(1.0, u / 0.12) * min(1.0, (1.0 - u) / 0.18)
+                pop = 0.86 + 0.14 * ease(min(1.0, u / 0.18))
+                tile = self.captions.number_card(card.text, accent, max(0.0, a), pop)
+                top = (L.height * 0.165) if self.format == "short" else (L.height * 0.11)
+                image.paste(tile, (int(L.cx - tile.width / 2), int(top - tile.height * 0.25)), tile)
+                card_on = True
+                break
+
         # Captions.
         ci = _active(chunks, t, lambda c: c.start, lambda c: c.end)
         if chunks:
@@ -490,7 +547,7 @@ class VectorRenderer:
             fade = min(1.0, (t - chunk.start) / 0.18 + 0.2) if t >= chunk.start else 0.0
             if t > duration - 0.5:
                 fade *= max(0.0, (duration - t) / 0.5)
-            cap = self.captions.caption(chunk, t, fade)
+            cap = self.captions.caption(chunk, t, fade, accent)
             image.paste(cap, (0, int(L.caption_y)), cap)
 
         # Chapter card at the start of each numbered chapter.
@@ -532,7 +589,7 @@ class VectorRenderer:
             else:
                 top = L.height * 0.02
             image.paste(pill, (int(L.cx - pill.width / 2), int(top)), pill)
-        if label and card is None:
+        if label and card is None and not card_on:
             color = self.theme.rgb("gold" if (gi % 2 == 0 or self.chapters) else "cyan")
             tag = self.captions.label(label, color, min(1.0, (t - group.lines[line_index].start) / 0.3))
             image.paste(tag, (int(L.cx - tag.width / 2), int(L.label_y)), tag)
@@ -557,6 +614,16 @@ class VectorRenderer:
         SCENES.clear()
         owner: dict[int, str] = {}
         for scene in plan.get("scenes", []):
+            if scene.get("picture_of"):
+                # A pacing shot: the same picture, framed on another part of it.
+                from .illustrate import shot_of
+                parent = SCENES.get(str(scene["picture_of"]))
+                if parent is None:
+                    continue
+                SCENES[scene["id"]] = shot_of(parent, int(scene.get("shot") or 1))
+                for index in range(int(scene["first_line"]), int(scene["last_line"]) + 1):
+                    owner[index] = scene["id"]
+                continue
             drawing = _load_drawing(illustrations.get(scene["id"]), scene)
             if drawing is None:
                 continue
@@ -584,6 +651,8 @@ class VectorRenderer:
                duration: float, music: Path | None = None, music_volume: float = 0.03,
                illustrations: dict[str, Path] | None = None, bed_variant: int | None = None) -> Path:
         lines = align_lines(plan, words, duration)
+        from .number_cards import find_cards
+        self.cards = find_cards(lines)
         from .chapters import chapter_marks, line_chapters
         self.chapters = chapter_marks(plan, lines) if plan.get("chapters") else []
         if self.chapters:

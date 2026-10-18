@@ -29,7 +29,7 @@ def _norm(word: str) -> str:
     return re.sub(r"[^\w']", "", word.lower())
 
 
-def render_cover(renderer, drawing, text: str, gold: str) -> Image.Image:
+def render_cover(renderer, drawing, text: str, gold: str, punch_rgb: tuple | None = None) -> Image.Image:
     """Compose the cover for this renderer's format (RGB, full frame size)."""
     from .illustrate import draw_illustration
     from .primitives import Draw
@@ -94,7 +94,7 @@ def render_cover(renderer, drawing, text: str, gold: str) -> Image.Image:
             width = sum(probe.textlength(w, font=font) for w in line) + space * (len(line) - 1)
             x = (W - width) / 2 if vertical else W * 0.07
             for word in line:
-                color = theme.rgb("gold") if _norm(word) in gold_words else (246, 246, 246)
+                color = (tuple(punch_rgb) if punch_rgb else theme.rgb("gold")) if _norm(word) in gold_words else (246, 246, 246)
                 dt.text((x, y), word, font=font, fill=color + (255,))
                 dg.text((x, y), word, font=font, fill=color + (160,))
                 x += probe.textlength(word, font=font) + space

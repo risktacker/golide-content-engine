@@ -53,6 +53,9 @@ class Draw:
     span: float = 0.0  # length of the whole scene in seconds
     region: tuple = (-1.0, -1.0, 1.0, 1.0)  # where an illustration may sit (unit coords)
     zoom: float = 1.0  # extra scale used by the fade transition (drift in / out)
+    words: int = 0      # spoken words in this scene (the pen keeps the voice's pace)
+    hook: bool = False  # inside the opening hook window: quick pictures
+    marking: float = 0.0  # 0..1 while a spoken number is on screen (zoom and ring on the accent)
 
     def px(self, value: float) -> float:
         return value / self.unit_px

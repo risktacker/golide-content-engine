@@ -125,3 +125,11 @@ This is the standard for every Short and long video. Don't change any of it with
 ## Learning, not shopping (locked 2026-10-17)
 - No buying chapters. The practical chapter is "what this means for you". Buying lines only when the product is affordable, widely available and the decision is the point, a few lines inside the practical chapter.
 - Science first: when the topic has science underneath, one or two full paragraphs with the real numbers turned into something a viewer can feel, before any practical part; claims are named as claims.
+
+## Fast openings, spoken numbers, colour by meaning (locked 2026-10-18, owner direction)
+- Hook window: shorts' first 30 s and long videos' first 60 s get a new picture about every 3 s (shorts) or 4 s (long), close to one per line, never more than 3.6 s / 5 s on one picture. After the hook: about 6.5 s / 11 s per picture, never more than 8 s / 14 s. The scene count comes from the recording's real length (up to 16 pictures in a short, 34 in a long video).
+- The pen still draws every picture, at the voice's pace: about a second in the hook, faster when the speech is fast.
+- When the storyboard leaves a picture on too long, it is split at line boundaries into extra shots of the same picture (the glowing part, then other halves), clipped to the drawing area. No extra image cost.
+- Spoken numbers (digits or words: "552 billion", "two point seven g", "fifty-thousand-dollar", "twenty twenty-eight") appear big in the scene's colour at the moment they are said, while the camera pushes toward the drawing's glowing part and a ring is drawn around it (when that part is small). At least 3.5 s apart; small bare numbers ("three questions") are left out.
+- Colour follows meaning everywhere: caption key terms and number cards take the scene's accent (gold, rose, teal, ivory, copper), not always gold.
+- YouTube thumbnails use the static-post look (luminous fine line or softly lit object alone on deep-space black with a faint starfield, calm white and grey lines), glowing in two or three meaning colours chosen by the storyboard; the typeset punch words and the video cover take the same colours.

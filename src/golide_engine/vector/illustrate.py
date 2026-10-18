@@ -57,8 +57,9 @@ VISUAL_PLAN_SCHEMA: dict = {
                 "gold": {"type": "string"},
                 "scene": {"type": "integer"},
                 "thumbnail_moment": {"type": "string"},
+                "colors": {"type": "array", "items": {"type": "string", "enum": list(ACCENTS)}},
             },
-            "required": ["text", "gold", "scene", "thumbnail_moment"],
+            "required": ["text", "gold", "scene", "thumbnail_moment", "colors"],
         },
         "scenes": {
             "type": "array",
@@ -89,10 +90,15 @@ VISUAL_PLAN_SCHEMA: dict = {
 }
 
 
-def scene_plan_instructions(format_name: str) -> str:
+def scene_plan_instructions(format_name: str, duration: float | None = None) -> str:
     from .figures import EXAMPLES
+    from .pacing import scene_range, storyboard_rules
 
     low, high = SCENE_COUNTS.get(format_name, SCENE_COUNTS["short"])
+    pacing = ""
+    if duration:  # the recording's real length decides how many pictures (2026-10-18)
+        low, high = scene_range(format_name, duration)
+        pacing = storyboard_rules(format_name, duration)
     from .layouts import STORYBOARD_RULES
 
     figure_menu = "\n".join("  " + example for example in EXAMPLES.values())
@@ -156,6 +162,9 @@ COVER (the picture people see before they press play; owner direction 2026-10-07
   iconic object that stands for the whole story and what it is doing (for example
   "a glowing shopping cart rolling itself through a store door that is slamming
   shut"). An object or machine, never a person, face, avatar or character.
+- "colors": two or three accent colours for the cover and thumbnail, chosen by
+  meaning from gold, rose, teal, ivory and copper (owner direction 2026-10-18:
+  not always gold). The first colours the punch words.
 
 If the lines are divided into chapters (marked "== CHAPTER ... =="), a scene
 never runs across a chapter mark: every chapter starts with a new scene.
@@ -173,7 +182,8 @@ Never invent numbers the lines do not give. Everywhere else, and in every
 news or story scene, "figure" is "" and the drawing is used. Still write
 "drawing" and "gold_element" for a figure scene (they are the fallback).
 
-{layout_rules}"""
+{layout_rules}
+{pacing}"""
 
 
 def validate_scenes(scenes: list[dict], line_count: int, breaks: set[int] | frozenset[int] = frozenset(),
@@ -281,6 +291,7 @@ class Drawing:
     keep_order: bool = False
     # Duo layout (long videos): the right-hand drawing, drawn after this one.
     companion: "Drawing | None" = None
+    clip: bool = False  # a pacing shot: framed on part of the picture, clipped to the drawing area
 
     @property
     def total(self) -> float:
@@ -439,6 +450,38 @@ def vectorize(image_path: Path, max_side: int = 900) -> Drawing:
                    fill, accent_fill)
 
 
+def accent_box(drawing: Drawing) -> tuple[float, float, float, float] | None:
+    """Bounding box of the drawing's accent (gold) strokes, in image pixels."""
+    pts = [s.points for s in drawing.strokes if s.gold]
+    if not pts:
+        return None
+    allpts = np.vstack(pts)
+    (x0, y0), (x1, y1) = allpts.min(axis=0), allpts.max(axis=0)
+    return float(x0), float(y0), float(x1), float(y1)
+
+
+def shot_of(drawing: Drawing, shot: int) -> Drawing:
+    """Another shot of the same picture (owner direction 2026-10-18, more flips in the
+    hook for free): odd shots frame the glowing accent, even shots the other half."""
+    import dataclasses
+
+    x0, y0, x1, y1 = drawing.bbox
+    w, h = x1 - x0, y1 - y0
+    focus = accent_box(drawing) if shot % 2 == 1 else None
+    if focus is None:
+        # Alternate halves of the drawing: right, left, top...
+        half = (shot // 2) % 3
+        focus = ((x0 + w * 0.45, y0, x1, y1) if half == 0 else
+                 (x0, y0, x1 - w * 0.45, y1) if half == 1 else (x0, y0, x1, y1 - h * 0.4))
+    fx0, fy0, fx1, fy1 = focus
+    # Never zoom closer than about 2.2x, so the shot still reads as a picture.
+    min_w, min_h = w * 0.45, h * 0.45
+    cx, cy = (fx0 + fx1) / 2, (fy0 + fy1) / 2
+    fw, fh = max(fx1 - fx0, min_w) * 1.25, max(fy1 - fy0, min_h) * 1.25
+    box = (cx - fw / 2, cy - fh / 2, cx + fw / 2, cy + fh / 2)
+    return dataclasses.replace(drawing, bbox=box, entrance="fade", companion=None, clip=True)
+
+
 def load_figure(image_path: Path) -> Drawing | None:
     """The exact strokes and labels of a code-drawn figure, or None for a normal picture."""
     import json
@@ -550,6 +593,21 @@ def draw_illustration(d, drawing: Drawing, region, reveal: float, breathe: float
         ox += LIFE_DRIFT * span_x * ease_in * math.sin(d.t * 0.33 + 0.7)
         oy += LIFE_DRIFT * 0.7 * span_y * ease_in * math.sin(d.t * 0.27 + 2.1)
     accent = "accent_" + drawing.accent if ("accent_" + drawing.accent) in d.colors else "gold"
+    if d.marking > 0 and not drawing.clip:
+        # A spoken number: push in toward the accent while its card is on screen.
+        box = accent_box(drawing)
+        if box is not None:
+            push = 0.14 * math.sin(math.pi * min(1.0, d.marking)) ** 0.6
+            ax, ay = (box[0] + box[2]) / 2, (box[1] + box[3]) / 2
+            s *= 1 + push
+            ox -= (ax - cx) * s * push / (1 + push)
+            oy -= (ay - cy) * s * push / (1 + push)
+    clipped = drawing.clip
+    if clipped:
+        for ctx in (d.main, d.glow):
+            ctx.save()
+            ctx.rectangle(region[0], region[1], region[2] - region[0], region[3] - region[1])
+            ctx.clip()
     _paint_fills(d, drawing, accent, s, cx, cy, ox, oy, reveal)
 
     def tx(points):
@@ -638,6 +696,35 @@ def draw_illustration(d, drawing: Drawing, region, reveal: float, breathe: float
         pen_light(d, tip[0], tip[1])
     if settled > SHIMMER_START:
         _shimmer(d, drawing, accent, tx, s, settled - SHIMMER_START)
+    if d.marking > 0:
+        _mark_ring(d, drawing, accent, tx)
+    if clipped:
+        for ctx in (d.main, d.glow):
+            ctx.restore()
+
+
+def _mark_ring(d, drawing: Drawing, accent: str, tx) -> None:
+    """A highlight ring drawn around the accent while a spoken number is on screen."""
+    box = accent_box(drawing)
+    if box is None:
+        return
+    bx0, by0, bx1, by1 = drawing.bbox
+    share = ((box[2] - box[0]) * (box[3] - box[1])) / max(1.0, (bx1 - bx0) * (by1 - by0))
+    if share > 0.35:
+        return  # the accent is most of the picture: a ring would just circle everything
+    (x0, y0), (x1, y1) = tx([(box[0], box[1]), (box[2], box[3])])
+    cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
+    rx, ry = max(0.07, abs(x1 - x0) * 0.62), max(0.07, abs(y1 - y0) * 0.62)
+    sweep = min(1.0, d.marking * 2.2)                 # drawn on quickly, then held
+    fade = min(1.0, (1.0 - d.marking) * 5.0)          # gone as the card leaves
+
+    def path(c):
+        c.save()
+        c.translate(cx, cy)
+        c.scale(rx, ry)
+        c.arc(0, 0, 1.0, -math.pi / 2, -math.pi / 2 + math.tau * sweep)
+        c.restore()
+    d.stroke(path, accent, 3.2, alpha=0.95 * fade, hot=True)
 
 
 # Life after the drawing is finished (owner direction 2026-10-13).
@@ -759,7 +846,10 @@ def _reveal(d, drawing: Drawing, region, t: float, span: float, breathe_span: fl
         draw_illustration(d, drawing, region, reveal, breathe=breathe, zoom=d.zoom, linear=True,
                           settled=settled)
         return
-    reveal_time = min(max(0.72 * span, 2.5), 16.0, span)
+    from .pacing import reveal_seconds
+
+    # 2026-10-18: the pen keeps the voice's pace (fast speech, fast pen; quick in the hook).
+    reveal_time = reveal_seconds(span, d.words, d.hook)
     reveal = t / reveal_time
     settled = t - reveal_time if reveal >= 1.0 else -1.0
     draw_illustration(d, drawing, region, reveal, breathe=breathe, zoom=d.zoom, settled=settled)

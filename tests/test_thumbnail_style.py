@@ -26,3 +26,21 @@ def test_stamp_keeps_size(tmp_path):
     Image.new("RGB", (1280, 720), (10, 10, 12)).save(p)
     stamp_thumbnail(p, "Nvidia just passed Apple", "passed Apple")
     assert Image.open(p).size == (1280, 720)
+
+
+def test_static_post_look_in_several_colours():
+    from golide_engine.vector.thumbnail_style import thumbnail_colors, thumbnail_prompt
+
+    prompt = thumbnail_prompt("Tesla Roadster", "a car on a ramp", ["rose", "teal"])
+    assert "deep-space background" in prompt and "soft rose red" in prompt and "electric teal" in prompt
+    colors = thumbnail_colors({"scene": "scene-02"}, [{"id": "scene-01", "accent": "teal"},
+                                                      {"id": "scene-02", "accent": "rose"},
+                                                      {"id": "scene-03", "accent": "teal"}])
+    assert colors[0] == "rose" and "teal" in colors
+
+
+def test_punch_words_take_the_palette(tmp_path):
+    p = tmp_path / "t.png"
+    Image.new("RGB", (1280, 720), (10, 10, 12)).save(p)
+    stamp_thumbnail(p, "Tesla jets beat grip", "jets grip", [(240, 138, 128), (127, 224, 210)])
+    assert Image.open(p).size == (1280, 720)
