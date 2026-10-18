@@ -52,3 +52,17 @@ class AutomationScheduleTests(unittest.TestCase):
         queue = self.root / "queue"
         now = datetime(2026, 9, 1, 16, 1, tzinfo=timezone.utc)
         self.assertEqual([], materialize_due(queue, self.config, now))
+
+
+class LockedScheduleTests(unittest.TestCase):
+    """The real schedule: long videos Tue, Thu and Sat (owner direction 2026-10-18)."""
+
+    def test_thursday_long_materializes_from_locked_config(self):
+        config = Path(__file__).resolve().parents[1] / "config" / "automation-schedule.json"
+        with tempfile.TemporaryDirectory() as temp:
+            thursday = datetime(2026, 10, 22, 5, tzinfo=timezone.utc)   # 07:00 Lusaka
+            created = materialize_due(Path(temp), config, thursday)
+            self.assertEqual(["golide-long-2026-10-22.json"], [p.name for p in created])
+            spec = json.loads(created[0].read_text())
+            self.assertEqual("2026-10-22T17:30:00Z", spec["release"]["scheduled_at"])
+            self.assertEqual("owner-recording-only", spec["generation_parameters"]["voice"])

@@ -37,7 +37,7 @@ const POLICY = {
     content_types:{
       post:{platforms:ROUTES.post,daily_core_items:2,weekly_core_items:14,product_context:{modes:["brand","specific_product","auto_product"],default_mode:"auto_product"}},
       short:{platforms:ROUTES.short,weekly_items:4,voice:"owner_recording_only",product_centered:false},
-      long_video:{platforms:ROUTES.long,weekly_items:2,voice:"owner_recording_only",product_centered:false},
+      long_video:{platforms:ROUTES.long,weekly_items:3,voice:"owner_recording_only",product_centered:false},
     },
     pinterest:{native_engine_integration:false,workflow:"manual reconnect and Instagram-derived distribution"},
   },
@@ -55,6 +55,7 @@ const POLICY = {
     ],
     long_videos:[
       {day:"tuesday",time:"19:30",platforms:ROUTES.long},
+      {day:"thursday",time:"19:30",platforms:ROUTES.long},
       {day:"saturday",time:"19:30",platforms:ROUTES.long},
     ],
   },

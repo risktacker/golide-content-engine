@@ -29,9 +29,9 @@ class LockedContentPolicyTests(unittest.TestCase):
         calendar = json.loads((ROOT / "config/content-calendar.json").read_text())
         self.assertEqual(14, calendar["weekly_totals"]["core_posts"])
         self.assertEqual(4, calendar["weekly_totals"]["shorts"])
-        self.assertEqual(2, calendar["weekly_totals"]["long_videos"])
+        self.assertEqual(3, calendar["weekly_totals"]["long_videos"])
         self.assertEqual(["monday", "wednesday", "friday", "sunday"], [x["day"] for x in calendar["shorts"]])
-        self.assertEqual(["tuesday", "saturday"], [x["day"] for x in calendar["long_videos"]])
+        self.assertEqual(["tuesday", "thursday", "saturday"], [x["day"] for x in calendar["long_videos"]])
 
     def test_social_image_identity_is_locked(self):
         profile = json.loads((ROOT / "config/social-image-profile.json").read_text())

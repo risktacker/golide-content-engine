@@ -11,7 +11,7 @@ const LUSAKA_OFFSET_H = 2;
 const PLATFORMS = ["instagram", "facebook", "linkedin", "x", "youtube"];
 const NAMES = { instagram: "Instagram", facebook: "Facebook", linkedin: "LinkedIn", x: "X", youtube: "YouTube" };
 const SHORT_DAYS = [0, 1, 3, 5];   // Sun, Mon, Wed, Fri (Lusaka)
-const LONG_DAYS = [2, 6];          // Tue, Sat
+const LONG_DAYS = [2, 4, 6];       // Tue, Thu, Sat
 const GREEN = "#2e7d4f", RED = "#b4413b", AMBER = "#b07a12";
 
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));

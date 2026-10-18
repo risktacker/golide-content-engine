@@ -4,11 +4,12 @@
   "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
   "rules": [
     {
-      "id": "golide-long-tuesday-saturday",
+      "id": "golide-long-tue-thu-sat",
       "format": "long",
       "start_date": "2026-09-01",
       "weekdays": [
         "tuesday",
+        "thursday",
         "saturday"
       ],
       "generate_time": "06:00",

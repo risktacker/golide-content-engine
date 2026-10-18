@@ -60,7 +60,7 @@
         "youtube"
       ],
       "aspect_ratio": "16:9",
-      "weekly_items": 2,
+      "weekly_items": 3,
       "video_profile": "config/video-profile.json",
       "voice": "owner_recording_only",
       "product_centered": false,
