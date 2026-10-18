@@ -48,13 +48,16 @@ class Layout:
     caption_y: float
     caption_size: int
     label_y: float
+    card_zone: tuple = (0.0, 0.0)  # (top, bottom) in px: where spoken numbers sit, clear of the drawing
 
     @classmethod
     def for_format(cls, format_name: str) -> "Layout":
         width, height = FORMATS[format_name]
         if format_name == "short":
-            return cls(width, height, width / 2, height * 0.40, width * 0.74, height * 0.635, 46, height * 0.115)
-        return cls(width, height, width / 2, height * 0.42, height * 0.60, height * 0.86, 44, height * 0.07)
+            return cls(width, height, width / 2, height * 0.40, width * 0.74, height * 0.635, 46, height * 0.115,
+                       (height * 0.070, height * 0.165))
+        return cls(width, height, width / 2, height * 0.42, height * 0.60, height * 0.86, 44, height * 0.07,
+                   (height * 0.030, height * 0.180))
 
 
 def _background(layout: Layout, theme: Theme) -> np.ndarray:
@@ -216,11 +219,20 @@ class CaptionRenderer:
         return result
 
     def number_card(self, text: str, accent: tuple, a: float, pop: float) -> Image.Image:
-        """A spoken number, big, in the scene's accent with a soft glow (2026-10-18)."""
-        vertical = self.layout.width < self.layout.height
-        size = int(self.layout.width * (0.13 if vertical else 0.075) * pop)
-        font = ImageFont.truetype(str(self.theme.font("bold")), max(12, size))
+        """A spoken number, big, in the scene's accent with a soft glow (2026-10-18).
+        Sized to fit its own zone above the drawing, so it never covers anything."""
+        top, bottom = self.layout.card_zone
+        max_h, max_w = (bottom - top) * 0.62, self.layout.width * 0.84
         probe = ImageDraw.Draw(Image.new("RGBA", (4, 4)))
+        size = int(max_h * 1.3)
+        while size > 16:
+            font = ImageFont.truetype(str(self.theme.font("bold")), size)
+            x0, y0, x1, y1 = probe.textbbox((0, 0), text, font=font)
+            if x1 - x0 <= max_w and y1 - y0 <= max_h:
+                break
+            size -= 4
+        size = max(12, int(size * pop))
+        font = ImageFont.truetype(str(self.theme.font("bold")), size)
         x0, y0, x1, y1 = probe.textbbox((0, 0), text, font=font)
         pad = int(size * 0.5)
         w, h = x1 - x0 + 2 * pad, y1 - y0 + 2 * pad
@@ -527,18 +539,7 @@ class VectorRenderer:
 
         accent = self._accent_rgb(group)
 
-        # Spoken numbers (2026-10-18): big, in the scene's accent, at the moment they are said.
         card_on = False
-        for card in getattr(self, "cards", ()):
-            if card.start <= t < card.end:
-                u = card.progress(t)
-                a = min(1.0, u / 0.12) * min(1.0, (1.0 - u) / 0.18)
-                pop = 0.86 + 0.14 * ease(min(1.0, u / 0.18))
-                tile = self.captions.number_card(card.text, accent, max(0.0, a), pop)
-                top = (L.height * 0.165) if self.format == "short" else (L.height * 0.11)
-                image.paste(tile, (int(L.cx - tile.width / 2), int(top - tile.height * 0.25)), tile)
-                card_on = True
-                break
 
         # Captions.
         ci = _active(chunks, t, lambda c: c.start, lambda c: c.end)
@@ -589,6 +590,20 @@ class VectorRenderer:
             else:
                 top = L.height * 0.02
             image.paste(pill, (int(L.cx - pill.width / 2), int(top)), pill)
+        # Spoken numbers (2026-10-18): big, in the scene's accent, in their own zone above
+        # the drawing, never while a chapter card or the follow pill holds that space.
+        top_busy = card is not None or (pill_state is not None and self.format == "long")
+        for number in getattr(self, "cards", ()):
+            if number.start <= t < number.end and not top_busy:
+                u = number.progress(t)
+                a = min(1.0, u / 0.12) * min(1.0, (1.0 - u) / 0.18)
+                pop = 0.86 + 0.14 * ease(min(1.0, u / 0.18))
+                tile = self.captions.number_card(number.text, accent, max(0.0, a), pop)
+                zone_top, zone_bottom = L.card_zone
+                y = (zone_top + zone_bottom) / 2 - tile.height / 2
+                image.paste(tile, (int(L.cx - tile.width / 2), int(y)), tile)
+                card_on = True
+                break
         if label and card is None and not card_on:
             color = self.theme.rgb("gold" if (gi % 2 == 0 or self.chapters) else "cyan")
             tag = self.captions.label(label, color, min(1.0, (t - group.lines[line_index].start) / 0.3))

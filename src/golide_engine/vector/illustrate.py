@@ -465,6 +465,10 @@ def shot_of(drawing: Drawing, shot: int) -> Drawing:
     hook for free): odd shots frame the glowing accent, even shots the other half."""
     import dataclasses
 
+    if drawing.keep_order:
+        # An exact figure is never cropped: its labels would be cut. The shot shows
+        # the whole figure again, already drawn, with its accent lighting up.
+        return dataclasses.replace(drawing, entrance="fade", companion=None)
     x0, y0, x1, y1 = drawing.bbox
     w, h = x1 - x0, y1 - y0
     focus = accent_box(drawing) if shot % 2 == 1 else None
@@ -568,6 +572,15 @@ SCENES: dict[str, Drawing] = {}
 REGIONS = {"short": (-0.92, -1.10, 0.92, 0.87), "long": (-2.0, -0.77, 2.0, 1.12)}
 
 
+FIT_INSET = 0.05  # share of the area kept free on each side for the push-in and drift
+
+
+def inset(region: tuple[float, float, float, float], share: float) -> tuple[float, float, float, float]:
+    x0, y0, x1, y1 = region
+    dx, dy = (x1 - x0) * share, (y1 - y0) * share
+    return x0 + dx, y0 + dy, x1 - dx, y1 - dy
+
+
 def fit(drawing: Drawing, region: tuple[float, float, float, float]):
     x0, y0, x1, y1 = drawing.bbox
     rx0, ry0, rx1, ry1 = region
@@ -583,7 +596,9 @@ def draw_illustration(d, drawing: Drawing, region, reveal: float, breathe: float
     """settled: seconds since the drawing finished (-1 while it is still drawing)."""
     from .primitives import pen_light
 
-    s, cx, cy, ox, oy = fit(drawing, region)
+    # Fit inside a slightly smaller area so the push-in, drift and transitions grow the
+    # drawing back to its area without ever crossing the edge (2026-10-18: no cut labels).
+    s, cx, cy, ox, oy = fit(drawing, region if drawing.clip else inset(region, FIT_INSET))
     # Owner direction 2026-10-13: a finished drawing never sits still. A steady
     # push-in over the scene plus a slow, small drift keeps it alive.
     s *= (1.0 + LIFE_PUSH * breathe) * zoom
@@ -593,7 +608,7 @@ def draw_illustration(d, drawing: Drawing, region, reveal: float, breathe: float
         ox += LIFE_DRIFT * span_x * ease_in * math.sin(d.t * 0.33 + 0.7)
         oy += LIFE_DRIFT * 0.7 * span_y * ease_in * math.sin(d.t * 0.27 + 2.1)
     accent = "accent_" + drawing.accent if ("accent_" + drawing.accent) in d.colors else "gold"
-    if d.marking > 0 and not drawing.clip:
+    if d.marking > 0 and not drawing.clip and not drawing.keep_order:
         # A spoken number: push in toward the accent while its card is on screen.
         box = accent_box(drawing)
         if box is not None:
@@ -602,12 +617,17 @@ def draw_illustration(d, drawing: Drawing, region, reveal: float, breathe: float
             s *= 1 + push
             ox -= (ax - cx) * s * push / (1 + push)
             oy -= (ay - cy) * s * push / (1 + push)
-    clipped = drawing.clip
-    if clipped:
-        for ctx in (d.main, d.glow):
-            ctx.save()
-            ctx.rectangle(region[0], region[1], region[2] - region[0], region[3] - region[1])
-            ctx.clip()
+    # 2026-10-18: a drawing never leaves its area (push-ins, drift and zooms included), so it
+    # can never run into the captions, the tag or the spoken-number zone. Shots are cut
+    # exactly at the area's edge; whole drawings get a little room to breathe.
+    clipped = True
+    room = 0.0 if drawing.clip else 0.04
+    w_r, h_r = region[2] - region[0], region[3] - region[1]
+    for ctx in (d.main, d.glow):
+        ctx.save()
+        # No room above: the spoken-number zone sits right over the drawing area.
+        ctx.rectangle(region[0] - w_r * room, region[1], w_r * (1 + 2 * room), h_r * (1 + room))
+        ctx.clip()
     _paint_fills(d, drawing, accent, s, cx, cy, ox, oy, reveal)
 
     def tx(points):
@@ -696,7 +716,7 @@ def draw_illustration(d, drawing: Drawing, region, reveal: float, breathe: float
         pen_light(d, tip[0], tip[1])
     if settled > SHIMMER_START:
         _shimmer(d, drawing, accent, tx, s, settled - SHIMMER_START)
-    if d.marking > 0:
+    if d.marking > 0 and not drawing.keep_order:
         _mark_ring(d, drawing, accent, tx)
     if clipped:
         for ctx in (d.main, d.glow):

@@ -197,18 +197,12 @@ class Canvas:
         self.pxline([left, (bx, by), right], color, width)
 
     def _text(self, px: float, py: float, text: str, color, small: bool, anchor: str) -> None:
+        """Record a label; it is placed (clear of every line and label) and drawn in ``save``."""
         for glyph, word in MISSING_GLYPHS.items():  # the brand font has no Greek letters
             text = text.replace(glyph, word)
         font = self.tiny if small == "tiny" else self.small if small else self.font
-        self.draw.text((px, py), text, fill=color, font=font, anchor=anchor)
-        x0, y0, x1, y1 = self.draw.textbbox((px, py), text, font=font, anchor=anchor)
-        pad = 4 * SUPER
-        x0, y0 = int(x0 - pad) // SUPER * SUPER, int(y0 - pad) // SUPER * SUPER
-        x1, y1 = int(x1 + pad), int(y1 + pad)
-        crop = Image.new("RGBA", (x1 - x0, y1 - y0), (0, 0, 0, 0))
-        ImageDraw.Draw(crop).text((px - x0, py - y0), text, fill=color + (255,), font=font, anchor=anchor)
-        crop = crop.resize((max(1, crop.width // SUPER), max(1, crop.height // SUPER)), Image.Resampling.LANCZOS)
-        self.labels.append({"text": text, "image": crop, "x": x0 / SUPER, "y": y0 / SUPER, "after": self.drawn})
+        self.labels.append({"text": text, "px": px, "py": py, "color": tuple(color), "font": font,
+                            "anchor": anchor, "after": self.drawn})
 
     def label(self, x: float, y: float, text: str, color=WHITE, small: bool = False,
               anchor: str = "mm", dx: float = 0, dy: float = 0) -> None:
@@ -265,19 +259,40 @@ def sidecar_path(target: Path) -> Path:
 
 
 def save(c: Canvas, target: Path) -> Path:
-    """The PNG (a preview, and what the cover uses) plus the exact strokes and labels."""
+    """The PNG (a preview, and what the cover uses) plus the exact strokes and labels.
+
+    Labels are placed here, once every stroke is known, so no text touches a line
+    or another text (see ``placement``).
+    """
     import json
 
-    out = c.image.resize((c.image.width // SUPER, c.image.height // SUPER), Image.Resampling.LANCZOS)
-    target.parent.mkdir(parents=True, exist_ok=True)
-    out.save(target)
+    from .placement import MARGIN, occupancy, place
+
+    size = (c.image.width, c.image.height)
+    mask = occupancy(size, c.strokes, SUPER, c.line)
     total = c.drawn or 1.0
     labels = []
+    target.parent.mkdir(parents=True, exist_ok=True)
     for i, item in enumerate(c.labels):
+        font, text, anchor = item["font"], item["text"], item["anchor"]
+        x0, y0, x1, y1 = c.draw.textbbox((item["px"], item["py"]), text, font=font, anchor=anchor)
+        gap = c.line * MARGIN
+        dx, dy = place(mask, (x0 - gap, y0 - gap, x1 + gap, y1 + gap), size, step=max(c.line * 3, (y1 - y0) * 0.35))
+        px, py = item["px"] + dx, item["py"] + dy
+        c.draw.text((px, py), text, fill=item["color"], font=font, anchor=anchor)
+        pad = 4 * SUPER
+        bx0, by0, bx1, by1 = c.draw.textbbox((px, py), text, font=font, anchor=anchor)
+        bx0, by0 = int(bx0 - pad) // SUPER * SUPER, int(by0 - pad) // SUPER * SUPER
+        bx1, by1 = int(bx1 + pad), int(by1 + pad)
+        crop = Image.new("RGBA", (bx1 - bx0, by1 - by0), (0, 0, 0, 0))
+        ImageDraw.Draw(crop).text((px - bx0, py - by0), text, fill=item["color"] + (255,), font=font, anchor=anchor)
+        crop = crop.resize((max(1, crop.width // SUPER), max(1, crop.height // SUPER)), Image.Resampling.LANCZOS)
         name = f"{target.stem}.label-{i:02d}.png"
-        item["image"].save(target.parent / name)
-        labels.append({"text": item["text"], "file": name, "x": item["x"], "y": item["y"],
+        crop.save(target.parent / name)
+        labels.append({"text": text, "file": name, "x": bx0 / SUPER, "y": by0 / SUPER,
                        "after": round(min(1.0, item["after"] / total), 4)})
+    out = c.image.resize((c.image.width // SUPER, c.image.height // SUPER), Image.Resampling.LANCZOS)
+    out.save(target)
     sidecar_path(target).write_text(json.dumps({
         "width": out.width, "height": out.height, "strokes": c.strokes, "labels": labels,
     }) + "\n", encoding="utf-8")
