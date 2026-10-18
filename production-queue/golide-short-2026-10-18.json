@@ -1,0 +1,194 @@
+{
+  "id": "golide-short-2026-10-18",
+  "studio_managed": true,
+  "format": "short",
+  "title": "DeepSeek Quietly Changed the Model Behind the Button\u2014What Actually Improved?",
+  "brief": "DeepSeek\u2019s newly updated V4.1 Flash checkpoint is drawing attention because users report a faster, more capable model without changing the public API name or price. That creates a simple question ordinary users can understand: when an AI service updates the model behind the same button, are we using the same tool anymore? Explain why a smaller active model can reduce cost and memory needs without claiming that benchmark wins automatically equal better everyday answers.",
+  "demand_query": "AI tech news everyone is talking about this week",
+  "demand_validation_required": true,
+  "budget_class": "scheduled",
+  "purpose": "channel-automation",
+  "generate_at": "2026-10-18T07:00:00Z",
+  "max_cost_usd": 6,
+  "production_authorized": true,
+  "output_destination": "render-and-upload",
+  "owner_voice_required": true,
+  "concept": {
+    "family": "technology-software-business",
+    "promise": "A high-interest current niche topic explained with authoritative evidence and a useful GOLIDE angle",
+    "scores": {
+      "scroll_stop": 9,
+      "visual_payoff": 9,
+      "curiosity_gap": 9,
+      "retention_design": 9,
+      "broad_relevance": 8,
+      "evidence_strength": 8,
+      "novelty": 8,
+      "replay_or_loop": 8,
+      "revenue_fit": 6
+    }
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri-sun"
+  },
+  "music": {
+    "mood": "curious-tension"
+  },
+  "avatar_reference_images": [],
+  "release": {
+    "approved": true,
+    "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+    "scheduled_at": "2026-10-18T11:00:00Z"
+  },
+  "_studio_job_id": "golide-short-2026-10-18",
+  "topic_candidates": [
+    {
+      "title": "Claude Just Solved a 25-Year Cryptography Mystery. Should We Trust the Method?",
+      "query": "Anthropic Claude ECDSA curve origins October 16 2026",
+      "brief": "Anthropic says Claude traced the mysterious numbers behind widely used ECDSA security curves to an old random-number generator seeded by timestamps. In plain English: an AI found the recipe behind a locked mathematical box, but it did not break the encryption protecting people\u2019s accounts. The useful takeaway is how AI can search millions of patterns quickly\u2014while humans still need to verify the result. Would you trust an AI discovery before experts checked every step?",
+      "evidence_summary": "Strongest fresh discussion signal in the supplied headlines: Hacker News ranked it at 1,034 points with 380 comments. Anthropic published the finding on October 16, 2026 and says the result makes a deliberate backdoor less likely, not more likely. Visual potential is excellent: show a locked box, a clock seed, a simple random-number machine and the AI\u2019s pattern search. The science angle is real but explainable: pseudorandom generators, timestamps and how repeated mathematical patterns can reveal an old recipe. ([anthropic.com](https://www.anthropic.com/research/ecdsa-curve-origins?utm_source=openai))",
+      "authoritative_source_url": "https://www.anthropic.com/research/ecdsa-curve-origins",
+      "broke_on": "2026-10-16",
+      "science_angle": "How a weak old random-number generator, seeded by a clock, can leave a recognizable mathematical fingerprint.",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Anthropic Claude ECDSA curve origins October 16 2026",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 68,
+        "median_views_per_day": 394065.41,
+        "top_views_per_day": 7262653.0,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-10-18T07:02:16.792380+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      },
+      "trend_pulse": {
+        "query": "Anthropic Claude ECDSA curve origins October 16 2026",
+        "fresh_videos": 10,
+        "median_views_per_hour": 13.8,
+        "top_views_per_hour": 362.9,
+        "score": 61.8,
+        "hot": true,
+        "measured_at": "2026-10-18T07:02:16.793963+00:00"
+      }
+    },
+    {
+      "title": "The AI Coding Tool Breach That Could Turn Into a Surprise Bill",
+      "query": "OpenCode breach API keys leaked October 17 2026",
+      "brief": "OpenCode warned that some third-party AI provider keys stored in its service may have been exposed after an intrusion. Those keys can act like prepaid access cards to AI accounts, so the risk is not just stolen data\u2014it can be unauthorized model usage and unexpected charges. This gives viewers a practical question: should AI tools ever store the keys that connect them to other services?",
+      "evidence_summary": "Very strong rising signal: the supplied Hacker News list shows 836 points and 156 comments, while mainstream reporting says OpenCode confirmed the incident and urged users to revoke affected keys. It is broad because ordinary users increasingly connect AI tools to paid accounts, documents and work systems. Visual potential is high: animate an API key as a house key, then show how one compromised key can open several AI accounts. Evidence is good but the exact scope remains limited, so the video should clearly separate confirmed facts from user reports. ([notebookcheck.net](https://www.notebookcheck.net/OpenCode-hacked-users-urged-to-revoke-their-API-keys.1426957.0.html?utm_source=openai))",
+      "authoritative_source_url": "https://www.notebookcheck.net/OpenCode-hacked-users-urged-to-revoke-their-API-keys.1426957.0.html",
+      "broke_on": "2026-10-17",
+      "science_angle": "How authentication tokens work, why a leaked key can authorize automated spending, and why rate limits do not equal security.",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "OpenCode breach API keys leaked October 17 2026",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 68,
+        "median_views_per_day": 394065.41,
+        "top_views_per_day": 7262653.0,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-10-18T07:02:16.792916+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      },
+      "trend_pulse": {
+        "query": "OpenCode breach API keys leaked October 17 2026",
+        "fresh_videos": 6,
+        "median_views_per_hour": 0.4,
+        "top_views_per_hour": 42.1,
+        "score": 36.9,
+        "hot": false,
+        "measured_at": "2026-10-18T07:02:17.105395+00:00"
+      }
+    },
+    {
+      "title": "DeepSeek Quietly Changed the Model Behind the Button\u2014What Actually Improved?",
+      "query": "DeepSeek V4.1 Flash 1017 update October 17 2026",
+      "brief": "DeepSeek\u2019s newly updated V4.1 Flash checkpoint is drawing attention because users report a faster, more capable model without changing the public API name or price. That creates a simple question ordinary users can understand: when an AI service updates the model behind the same button, are we using the same tool anymore? Explain why a smaller active model can reduce cost and memory needs without claiming that benchmark wins automatically equal better everyday answers.",
+      "evidence_summary": "Strong fresh platform signal: the supplied Hacker News list shows 809 points and 633 comments, making it one of the most actively discussed stories of the period. The official model repository identifies the 1017 checkpoint, while DeepSeek\u2019s release material explains its efficiency-focused architecture and reduced memory requirements. Visual potential is strong: compare a huge warehouse with only the needed workers switched on, then show memory and response-speed tradeoffs. Evidence strength is good for the release itself; independent real-world testing should be presented as ongoing rather than settled. ([huggingface.co](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017/blob/main/config.json?utm_source=openai))",
+      "authoritative_source_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017",
+      "broke_on": "2026-10-17",
+      "science_angle": "How routing only part of a large model can cut memory use, energy demand and response cost.",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "DeepSeek V4.1 Flash 1017 update October 17 2026",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 68,
+        "median_views_per_day": 394065.41,
+        "top_views_per_day": 7262653.0,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-10-18T07:02:16.793433+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      },
+      "trend_pulse": {
+        "query": "DeepSeek V4.1 Flash 1017 update October 17 2026",
+        "fresh_videos": 10,
+        "median_views_per_hour": 662.1,
+        "top_views_per_hour": 2305.3,
+        "score": 85.7,
+        "hot": true,
+        "measured_at": "2026-10-18T07:02:17.378128+00:00"
+      }
+    },
+    {
+      "title": "AI Passed the Tests\u2014but Are We Testing the Jobs People Actually Do?",
+      "query": "Mercor benchmark map 90 percent US working hours October 16 2026",
+      "brief": "A new Mercor benchmark map estimates that about 90% of US working hours involve tasks with little or no coverage in today\u2019s common AI tests. That does not mean AI fails at 90% of work; it means impressive scores may describe only a narrow slice of real jobs. The story turns a technical debate into an everyday one: can a system ace an exam and still struggle with your actual workday?",
+      "evidence_summary": "The supplied Hacker News headline reached 603 points and 551 comments, showing unusually strong discussion for a work-and-AI story. Mercor\u2019s own map explains that it matched AI benchmarks against thousands of occupational tasks and estimates how much working time those tests cover. This is highly comment-friendly for students, parents, employees and small-business owners. Visual potential is excellent: contrast a neat multiple-choice test with interruptions, judgment calls, messy files and customer conversations. Evidence is strongest when phrased as Mercor\u2019s estimate rather than an objective measurement of all AI capability. ([mercor.com](https://www.mercor.com/research/labor-index/benchmark-map/?utm_source=openai))",
+      "authoritative_source_url": "https://www.mercor.com/research/labor-index/benchmark-map/",
+      "broke_on": "2026-10-16",
+      "science_angle": "Why measuring AI requires representative tasks, not just clean test questions, and how sampling changes what a score means.",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Mercor benchmark map 90 percent US working hours October 16 2026",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 68,
+        "median_views_per_day": 394065.41,
+        "top_views_per_day": 7262653.0,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-10-18T07:02:16.793940+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      },
+      "trend_pulse": {
+        "query": "Mercor benchmark map 90 percent US working hours October 16 2026",
+        "fresh_videos": 0,
+        "median_views_per_hour": 0.0,
+        "top_views_per_hour": 0.0,
+        "score": 15.0,
+        "hot": false,
+        "measured_at": "2026-10-18T07:02:17.717456+00:00"
+      }
+    }
+  ],
+  "platform_demand": {
+    "query": "DeepSeek V4.1 Flash 1017 update October 17 2026",
+    "score": 85.0,
+    "verdict": "pass",
+    "recent_videos": 68,
+    "median_views_per_day": 394065.41,
+    "top_views_per_day": 7262653.0,
+    "market_coverage": 4,
+    "title_query_overlap": 0.0,
+    "measured_at": "2026-10-18T07:02:16.793433+00:00",
+    "signal_type": "youtube-most-popular-seed-proxy"
+  },
+  "selected_topic_source": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017"
+}
