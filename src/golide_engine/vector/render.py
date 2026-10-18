@@ -27,6 +27,7 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 from golide_engine.theme import Theme, load_theme
 
 from .align import CaptionChunk, Group, align_lines, caption_chunks, group_lines
+from .ambience import Ambience, AmbientState, StarField, crossfade, mix  # noqa: F401 (StarField re-exported)
 from .primitives import ICON_LAYOUTS, PRIMITIVES, Draw, ease, lead_slots
 
 FORMATS = {"short": (1080, 1920), "long": (1920, 1080)}
@@ -35,7 +36,6 @@ TRANSITION_BEFORE = 0.40  # seconds of hand-over before the next line starts
 TRANSITION_AFTER = 0.90   # ... and after it starts
 CHAPTER_CARD_SECONDS = 2.8  # how long a chapter card stays at the start of a chapter
 PARTICLES = 170
-DOT_GRID_LIFT = 20.0  # grey dots this much above the background (0-255)
 
 
 @dataclass
@@ -58,79 +58,6 @@ class Layout:
                        (height * 0.070, height * 0.165))
         return cls(width, height, width / 2, height * 0.42, height * 0.60, height * 0.86, 44, height * 0.07,
                    (height * 0.030, height * 0.180))
-
-
-def _background(layout: Layout, theme: Theme) -> np.ndarray:
-    """Charcoal vignette with a very faint blue-violet haze (no stars here)."""
-    w, h = layout.width, layout.height
-    yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
-    dist = np.sqrt(((xx - w / 2) / (w * 0.75)) ** 2 + ((yy - h * 0.42) / (h * 0.75)) ** 2)
-    base = np.array(theme.rgb("background"), np.float32)
-    lift = np.array(theme.rgb("background_vignette"), np.float32) - base
-    image = base + lift * np.clip(1 - dist, 0, 1)[..., None]
-    # Haze: low-frequency clouds, a few levels at most, so it reads as depth.
-    rng = np.random.default_rng(21)
-    for scale, tint in ((9, (5.0, 4.0, 11.0)), (17, (2.0, 4.0, 7.0))):
-        cells = rng.random((max(2, h * scale // w), scale)).astype(np.float32)
-        cloud = Image.fromarray((cells * 255).astype(np.uint8)).resize((w, h), Image.Resampling.BICUBIC)
-        cloud = cloud.filter(ImageFilter.GaussianBlur(w / scale / 2))
-        c = (np.asarray(cloud, np.float32) / 255.0) ** 2.2
-        image = image + c[..., None] * np.array(tint, np.float32)
-    # Owner direction 2026-10-09: a faint grey dot grid, almost unnoticed, so the
-    # black is never plain. Dimmer toward the edges with the vignette.
-    step = max(18, round(min(w, h) / 27))
-    gy, gx = np.mgrid[step // 2:h:step, step // 2:w:step]
-    soft = np.clip(1.15 - dist[gy, gx], 0.35, 1.0)
-    for dy, dx, weight in ((0, 0, 1.0), (0, 1, 1.0), (1, 0, 1.0), (1, 1, 1.0), (-1, 0, 0.35), (0, -1, 0.35), (2, 0, 0.35), (0, 2, 0.35)):
-        yy2, xx2 = np.clip(gy + dy, 0, h - 1), np.clip(gx + dx, 0, w - 1)
-        image[yy2, xx2] += (DOT_GRID_LIFT * weight * soft)[..., None] * np.array((1.0, 1.0, 1.06), np.float32)
-    # Fine static grain hides 8-bit banding in the dark vignette.
-    image = image + np.random.default_rng(7).uniform(-1.6, 1.6, image.shape).astype(np.float32)
-    return np.clip(image, 0, 255)
-
-
-class StarField:
-    """Three depths of small stars that twinkle and drift very slowly."""
-
-    LAYERS = (  # (stars per megapixel, brightness range, drift px/s, twinkle depth)
-        (220, (30, 70), 2.0, 0.35),
-        (70, (80, 150), 4.5, 0.45),
-        (12, (170, 235), 8.0, 0.30),
-    )
-
-    def __init__(self, width: int, height: int, seed: int = 11):
-        self.w, self.h = width, height
-        rng = np.random.default_rng(seed)
-        mp = width * height / 1e6
-        self.layers = []
-        for density, (lo, hi), drift, depth in self.LAYERS:
-            n = int(density * mp)
-            self.layers.append({
-                "x": rng.uniform(0, width, n), "y": rng.uniform(0, height, n),
-                "b": rng.uniform(lo, hi, n), "f": rng.uniform(0.15, 0.8, n),
-                "ph": rng.uniform(0, math.tau, n), "drift": drift, "depth": depth,
-                "tint": rng.choice([0, 1, 2], n, p=[0.75, 0.15, 0.10]),
-            })
-        self.tints = np.array([[1.0, 1.0, 1.0], [0.85, 0.92, 1.0], [1.0, 0.92, 0.78]], np.float32)
-
-    def add(self, frame: np.ndarray, t: float) -> np.ndarray:
-        for layer in self.layers:
-            x = (layer["x"] + layer["drift"] * 0.35 * t) % (self.w - 1)
-            y = (layer["y"] - layer["drift"] * t) % (self.h - 1)
-            b = layer["b"] * (1 - layer["depth"] * (0.5 + 0.5 * np.sin(math.tau * layer["f"] * t + layer["ph"])))
-            x0, y0 = x.astype(np.int64), y.astype(np.int64)
-            fx, fy = x - x0, y - y0
-            rgb = (b[:, None] * self.tints[layer["tint"]]).astype(np.float32)
-            # Bilinear splat: sub-pixel drift without shimmering.
-            for dx, dy, wgt in ((0, 0, (1 - fx) * (1 - fy)), (1, 0, fx * (1 - fy)),
-                                (0, 1, (1 - fx) * fy), (1, 1, fx * fy)):
-                np.add.at(frame, (y0 + dy, x0 + dx), rgb * wgt[:, None].astype(np.float32))
-            if layer["depth"] == self.LAYERS[-1][3]:
-                halo = rgb * 0.18
-                for dx, dy in ((-1, 0), (2, 0), (0, -1), (0, 2), (-1, -1), (2, 2), (-1, 2), (2, -1)):
-                    np.add.at(frame, (np.clip(y0 + dy, 0, self.h - 1), np.clip(x0 + dx, 0, self.w - 1)),
-                              halo * (0.55 if abs(dx - 0.5) + abs(dy - 0.5) > 2 else 1.0))
-        return frame
 
 
 class CaptionRenderer:
@@ -360,8 +287,7 @@ class VectorRenderer:
         self.theme = theme or load_theme()
         self.fps = fps
         self.layout = Layout.for_format(format_name)
-        self.background = _background(self.layout, self.theme)
-        self.stars = StarField(self.layout.width, self.layout.height)
+        self.ambience = Ambience(self.layout, self.theme, format_name)
         self._transitions: dict[int, "Transition"] = {}
         self.chapters: list = []
         self.follow: set[int] = set()  # spoken line indexes of the follow call-out
@@ -457,6 +383,31 @@ class VectorRenderer:
         rgb = self.colors.get(f"accent_{name}", self.colors["gold"])
         return tuple(int(round(c * 255)) for c in rgb)
 
+    def _look(self, group: Group, t: float) -> AmbientState:
+        """What the background shows for one scene at time ``t`` (see vector.ambience)."""
+        from .illustrate import LIFE_PUSH, SCENES
+
+        drawing = SCENES.get(group.icons[0]) if group.icons else None
+        lesson = bool(drawing is not None and (drawing.figure or (drawing.companion is not None
+                                                                   and drawing.companion.figure)))
+        breathe = min(1.0, max(0.0, (t - group.start) / max(0.5, group.end - group.start)))
+        marking = self._marking(group, t)
+        push = LIFE_PUSH * breathe + 0.14 * math.sin(math.pi * min(1.0, marking)) ** 0.6
+        light = 0.0 if group.visual == "logo_end" else 1.0
+        return AmbientState(self._accent_rgb(group), 1.0 if lesson else 0.0, push, light)
+
+    def _ambient(self, groups: list[Group], gi: int, t: float) -> AmbientState:
+        """The background state, cross-faded over the same hand-over window as the drawings."""
+        group = groups[gi]
+        if gi + 1 < len(groups) and t >= groups[gi + 1].start - TRANSITION_BEFORE:
+            old, new = group, groups[gi + 1]
+        elif gi > 0 and t < group.start + TRANSITION_AFTER:
+            old, new = groups[gi - 1], group
+        else:
+            return self._look(group, t)
+        w = crossfade(t, new.start, TRANSITION_BEFORE, TRANSITION_AFTER)
+        return mix(self._look(old, min(t, old.end)), self._look(new, max(t, new.start)), w)
+
     def _marking(self, group: Group, t: float) -> float:
         """0..1 while a spoken-number card belonging to this scene is on screen."""
         for card in getattr(self, "cards", ()):
@@ -529,7 +480,7 @@ class VectorRenderer:
         glow_img = Image.fromarray(g[..., [2, 1, 0]], "RGB")
         glow_img = glow_img.filter(ImageFilter.GaussianBlur(self.theme.glow["line_blur_radius"] / GLOW_SCALE))
         glow_img = glow_img.resize((L.width, L.height), Image.Resampling.BILINEAR)
-        frame = self.stars.add(self.background.copy(), t) + np.asarray(glow_img, np.float32) * 1.35
+        frame = self.ambience.frame(t, self._ambient(groups, gi, t)) + np.asarray(glow_img, np.float32) * 1.35
 
         m = np.ndarray((L.height, L.width, 4), np.uint8, main_surface.get_data())
         alpha = m[..., 3:4].astype(np.float32) / 255.0

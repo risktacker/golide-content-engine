@@ -58,7 +58,8 @@ def render_cover(renderer, drawing, text: str, gold: str, punch_rgb: tuple | Non
     g = np.ndarray((H // GLOW_SCALE, W // GLOW_SCALE, 4), np.uint8, glow_s.get_data()).copy()
     glow_img = Image.fromarray(g[..., [2, 1, 0]], "RGB").filter(
         ImageFilter.GaussianBlur(theme.glow["line_blur_radius"] / GLOW_SCALE)).resize((W, H), Image.Resampling.BILINEAR)
-    frame = renderer.stars.add(renderer.background.copy(), 2.0) + np.asarray(glow_img, np.float32) * 1.35
+    # The cover keeps the plain night sky: the title sits where the scene light would be.
+    frame = renderer.ambience.stars.add(renderer.ambience.base.copy(), 2.0) + np.asarray(glow_img, np.float32) * 1.35
     m = np.ndarray((H, W, 4), np.uint8, main_s.get_data())
     alpha = m[..., 3:4].astype(np.float32) / 255.0
     frame = frame * (1 - alpha) + m[..., [2, 1, 0]].astype(np.float32)

@@ -292,6 +292,7 @@ class Drawing:
     # Duo layout (long videos): the right-hand drawing, drawn after this one.
     companion: "Drawing | None" = None
     clip: bool = False  # a pacing shot: framed on part of the picture, clipped to the drawing area
+    figure: bool = False  # an exact figure (maths, physics): the background shows the lesson grid
 
     @property
     def total(self) -> float:
@@ -521,7 +522,7 @@ def load_figure(image_path: Path) -> Drawing | None:
         ys += [float(item["y"]), float(item["y"]) + crop.height]
     bbox = (min(xs), min(ys), max(xs), max(ys))
     return Drawing(strokes, int(meta["width"]), int(meta["height"]), bbox, None, None,
-                   accent="gold", entrance="pen", labels=labels, keep_order=True)
+                   accent="gold", entrance="pen", labels=labels, keep_order=True, figure=True)
 
 
 def _fills(mask: np.ndarray, goldness: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
