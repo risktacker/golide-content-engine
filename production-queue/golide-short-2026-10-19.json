@@ -2,8 +2,8 @@
   "id": "golide-short-2026-10-19",
   "studio_managed": true,
   "format": "short",
-  "title": "GOLIDE Short \u00b7 2026-10-19",
-  "brief": "Choose the AI or tech story people are talking about this week (a launch, a viral demo, a big company move or what a well-known tech leader said or did) and explain what it means for ordinary people in plain words, so a curious non-technical viewer follows it and wants to comment. Evidence-backed only. Keep Shorts and long-form product-independent; never turn scheduled video into a GOLIDE product advertisement and never copy an existing video.",
+  "title": "The AI Coding Tool Breach That Could Empty Your API Account",
+  "brief": "OpenCode says a breach may have exposed saved OpenAI, Anthropic, and Google API keys for 1.4% of its Console users. Explain why an AI tool can become a credit-card risk, how API keys work like digital spending keys, and what ordinary users should do: revoke them, replace them, and set spending limits. End with: Would you trust an AI coding tool with your payment credentials?",
   "demand_query": "AI tech news everyone is talking about this week",
   "demand_validation_required": true,
   "budget_class": "scheduled",
@@ -52,5 +52,175 @@
     "scheduled_at": "2026-10-19T11:00:00Z"
   },
   "_studio_job_id": "golide-short-2026-10-19",
-  "_failed_runs": 1
+  "_failed_runs": 1,
+  "topic_candidates": [
+    {
+      "title": "The AI Coding Tool Breach That Could Empty Your API Account",
+      "query": "OpenCode Console breach API keys exposed October 2026",
+      "brief": "OpenCode says a breach may have exposed saved OpenAI, Anthropic, and Google API keys for 1.4% of its Console users. Explain why an AI tool can become a credit-card risk, how API keys work like digital spending keys, and what ordinary users should do: revoke them, replace them, and set spending limits. End with: Would you trust an AI coding tool with your payment credentials?",
+      "evidence_summary": "Broke on October 17, 2026, with the incident still generating discussion on October 19: Hacker News listed \u201cOpenCode Hacked: User credentials leaked\u201d at 950 points, while The Hacker News reported the 1.4% exposure figure and key-rotation advice. Strong evidence, high comment potential, clear visual explanation, and broad relevance to anyone connecting AI tools to paid services. Estimated scores: discussion 9/10, accessibility 8/10, comments 9/10, visuals 8/10, evidence 9/10.",
+      "authoritative_source_url": "https://thehackernews.com/2026/10/opencode-console-breach-may-have.html",
+      "broke_on": "October 17, 2026",
+      "science_angle": "Explain authentication, bearer credentials, and why a leaked API key can let software spend money or access another service without knowing the owner\u2019s password.",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "OpenCode Console breach API keys exposed October 2026",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 62,
+        "median_views_per_day": 405542.66,
+        "top_views_per_day": 5826122.42,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-10-19T08:42:52.988172+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      },
+      "trend_pulse": {
+        "query": "OpenCode Console breach API keys exposed October 2026",
+        "fresh_videos": 10,
+        "median_views_per_hour": 12.4,
+        "top_views_per_hour": 5238.7,
+        "score": 67.1,
+        "hot": true,
+        "measured_at": "2026-10-19T08:42:52.989733+00:00"
+      }
+    },
+    {
+      "title": "Meta Tried to Give AI Permission to Read the Web. Then It Backed Down.",
+      "query": "Meta removes AI training scraping language business terms October 17 2026",
+      "brief": "Meta changed commercial terms in wording that experts said could allow websites linked to business accounts to be crawled and used for AI training, then removed or clarified the language after public criticism. Make the ordinary-person question simple: if a business posts something online, who gets to use it to train an AI? Explain what web scraping and training data mean without legal jargon. End with: Should public information be free training material?",
+      "evidence_summary": "Broke on October 16\u201317, 2026. Hacker News showed strong debate around Meta\u2019s related scraping and legal-terms stories, and TechCrunch reported that Meta removed the language after concerns from legal experts and publishers. High opinion value and strong visuals using a website-to-AI training-data flow; evidence is solid, though the story is more policy-driven than product-driven. Estimated scores: discussion 8/10, accessibility 9/10, comments 9/10, visuals 7/10, evidence 9/10.",
+      "authoritative_source_url": "https://techcrunch.com/2026/10/17/meta-removes-language-that-raised-scraping-and-ai-training-concerns/",
+      "broke_on": "October 17, 2026",
+      "science_angle": "Show how training data is copied, cleaned, converted into numerical patterns, and used to adjust a model\u2019s internal predictions.",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Meta removes AI training scraping language business terms October 17 2026",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 62,
+        "median_views_per_day": 405542.66,
+        "top_views_per_day": 5826122.42,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-10-19T08:42:52.988597+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      },
+      "trend_pulse": {
+        "query": "Meta removes AI training scraping language business terms October 17 2026",
+        "fresh_videos": 10,
+        "median_views_per_hour": 0.2,
+        "top_views_per_hour": 2.3,
+        "score": 38.7,
+        "hot": false,
+        "measured_at": "2026-10-19T08:42:53.300511+00:00"
+      }
+    },
+    {
+      "title": "DeepSeek Just Put a Price on the AI Agent\u2019s Eyes and Ears",
+      "query": "DeepSeek Search Fetch API $0.75 per 1000 successful requests October 2026",
+      "brief": "DeepSeek opened Search and Fetch tools at $0.75 per 1,000 successful requests. The useful story is not the low price alone: AI agents may search, open pages, retry failed requests, and quietly run up a bill while completing a task. Explain how an agent turns a question into many behind-the-scenes web calls, then ask: Should AI agents need a spending limit before they can browse for us?",
+      "evidence_summary": "Broke on October 17, 2026, and appeared among the most-discussed fresh AI items in the supplied Hacker News feed at 570 points and 268 comments. The official DeepSeek documentation confirms the per-request pricing and billing conditions. Strong evidence and excellent animation potential, but slightly less immediate for non-technical viewers than the breach or robot stories. Estimated scores: discussion 8/10, accessibility 7/10, comments 8/10, visuals 9/10, evidence 10/10.",
+      "authoritative_source_url": "https://api-docs.deepseek.com/guides/search/",
+      "broke_on": "October 17, 2026",
+      "science_angle": "Explain the agent loop: model decides to search, a tool sends a request, results return, and the model may repeat the cycle until it believes the task is complete.",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "DeepSeek Search Fetch API $0.75 per 1000 successful requests October 2026",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 62,
+        "median_views_per_day": 405542.66,
+        "top_views_per_day": 5826122.42,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-10-19T08:42:52.988977+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      },
+      "trend_pulse": {
+        "query": "DeepSeek Search Fetch API $0.75 per 1000 successful requests October 2026",
+        "fresh_videos": 10,
+        "median_views_per_hour": 1.6,
+        "top_views_per_hour": 9.6,
+        "score": 45.2,
+        "hot": false,
+        "measured_at": "2026-10-19T08:42:53.704293+00:00"
+      }
+    },
+    {
+      "title": "OpenAI Says Its First Humanoid Robot Demo Could Arrive in 2027",
+      "query": "Sam Altman OpenAI humanoid robot cool demo 2027 October 2026",
+      "brief": "Sam Altman confirmed that OpenAI plans to build a humanoid robot and said a \u201ccool demo\u201d could arrive in 2027, while suggesting useful robots walking around publicly are still farther away. The video should separate a promise from a product: a robot needs motors, balance, cameras, touch sensing, and software that turns perception into safe movement. End with: Is an AI lab building its own body the next big breakthrough\u2014or just another demo race?",
+      "evidence_summary": "Fresh coverage broke October 17\u201318, 2026, with AI Weekly reporting the confirmation and Fortune providing the underlying interview context. Robotics was also a strong current industry lane, while the supplied platform seeds favored futuristic technology and robots. This is likely the widest-reach story because it connects AI to homes, jobs, and physical machines, but it carries some hype risk because no robot has been shown. Estimated scores: discussion 9/10, accessibility 10/10, comments 9/10, visuals 10/10, evidence 8/10.",
+      "authoritative_source_url": "https://aiweekly.co/alerts/altman-confirms-openai-will-build-humanoid-demo-in-2027",
+      "broke_on": "October 18, 2026",
+      "science_angle": "Explain the control problem: cameras estimate the world, software predicts what will happen, and motors constantly correct balance against gravity and changing surfaces.",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Sam Altman OpenAI humanoid robot cool demo 2027 October 2026",
+        "score": 86.5,
+        "verdict": "pass",
+        "recent_videos": 62,
+        "median_views_per_day": 405542.66,
+        "top_views_per_day": 5826122.42,
+        "market_coverage": 4,
+        "title_query_overlap": 0.1,
+        "measured_at": "2026-10-19T08:42:52.989344+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      },
+      "trend_pulse": {
+        "query": "Sam Altman OpenAI humanoid robot cool demo 2027 October 2026",
+        "fresh_videos": 10,
+        "median_views_per_hour": 0.3,
+        "top_views_per_hour": 4.7,
+        "score": 40.3,
+        "hot": false,
+        "measured_at": "2026-10-19T08:42:54.014283+00:00"
+      }
+    },
+    {
+      "title": "A $2,490 Humanoid Robot Could Put Physical AI in Classrooms",
+      "query": "Faraday Future FF Nova $2490 humanoid robot October 15 2026 launch",
+      "brief": "Faraday Future launched the compact FF Nova for developers and schools at a listed price below $2,500, alongside a smaller education-focused model. The real question is whether low-cost robots can create enough training data and experimentation to make physical AI improve faster\u2014or whether the machines are still mostly impressive demonstrations. Explain the detachable wheels, sensors, simulation training, and the gap between walking and actually doing useful work. End with: Would you let a small humanoid robot learn in your classroom or home?",
+      "evidence_summary": "Broke on October 15, 2026, with continuing coverage during the week and strong alignment with the supplied platform signals around futuristic tech, phones, gadgets, and robots. The company\u2019s official site provides detailed specifications and the official investor release confirms the launch. Visual potential is excellent, but public discussion appears narrower than the OpenCode, Meta, DeepSeek, and OpenAI stories. Estimated scores: discussion 7/10, accessibility 9/10, comments 8/10, visuals 10/10, evidence 8/10.",
+      "authoritative_source_url": "https://robotics.ff.com/us/nova/",
+      "broke_on": "October 15, 2026",
+      "science_angle": "Explain sim-to-real learning: the robot practices in a virtual world, then transfers the learned movement policy to motors, cameras, lidar, and real surfaces.",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Faraday Future FF Nova $2490 humanoid robot October 15 2026 launch",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 62,
+        "median_views_per_day": 405542.66,
+        "top_views_per_day": 5826122.42,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-10-19T08:42:52.989715+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      },
+      "trend_pulse": {
+        "query": "Faraday Future FF Nova $2490 humanoid robot October 15 2026 launch",
+        "fresh_videos": 1,
+        "median_views_per_hour": 0.8,
+        "top_views_per_hour": 0.8,
+        "score": 21.2,
+        "hot": false,
+        "measured_at": "2026-10-19T08:42:54.287334+00:00"
+      }
+    }
+  ],
+  "platform_demand": {
+    "query": "OpenCode Console breach API keys exposed October 2026",
+    "score": 85.0,
+    "verdict": "pass",
+    "recent_videos": 62,
+    "median_views_per_day": 405542.66,
+    "top_views_per_day": 5826122.42,
+    "market_coverage": 4,
+    "title_query_overlap": 0.0,
+    "measured_at": "2026-10-19T08:42:52.988172+00:00",
+    "signal_type": "youtube-most-popular-seed-proxy"
+  },
+  "selected_topic_source": "https://thehackernews.com/2026/10/opencode-console-breach-may-have.html"
 }
