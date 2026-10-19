@@ -2,8 +2,8 @@
   "id": "golide-short-2026-10-19",
   "studio_managed": true,
   "format": "short",
-  "title": "The AI Coding Tool Breach That Could Empty Your API Account",
-  "brief": "OpenCode says a breach may have exposed saved OpenAI, Anthropic, and Google API keys for 1.4% of its Console users. Explain why an AI tool can become a credit-card risk, how API keys work like digital spending keys, and what ordinary users should do: revoke them, replace them, and set spending limits. End with: Would you trust an AI coding tool with your payment credentials?",
+  "title": "OpenAI Says Its First Humanoid Robot Demo Could Arrive in 2027",
+  "brief": "Sam Altman confirmed that OpenAI plans to build a humanoid robot and said a \u201ccool demo\u201d could arrive in 2027, while suggesting useful robots walking around publicly are still farther away. The video should separate a promise from a product: a robot needs motors, balance, cameras, touch sensing, and software that turns perception into safe movement. End with: Is an AI lab building its own body the next big breakthrough\u2014or just another demo race?",
   "demand_query": "AI tech news everyone is talking about this week",
   "demand_validation_required": true,
   "budget_class": "scheduled",
@@ -211,16 +211,17 @@
     }
   ],
   "platform_demand": {
-    "query": "OpenCode Console breach API keys exposed October 2026",
-    "score": 85.0,
+    "query": "Sam Altman OpenAI humanoid robot cool demo 2027 October 2026",
+    "score": 86.5,
     "verdict": "pass",
     "recent_videos": 62,
     "median_views_per_day": 405542.66,
     "top_views_per_day": 5826122.42,
     "market_coverage": 4,
-    "title_query_overlap": 0.0,
-    "measured_at": "2026-10-19T08:42:52.988172+00:00",
+    "title_query_overlap": 0.1,
+    "measured_at": "2026-10-19T08:42:52.989344+00:00",
     "signal_type": "youtube-most-popular-seed-proxy"
   },
-  "selected_topic_source": "https://thehackernews.com/2026/10/opencode-console-breach-may-have.html"
+  "selected_topic_source": "https://aiweekly.co/alerts/altman-confirms-openai-will-build-humanoid-demo-in-2027",
+  "owner_voice_media_ref": "r2://temp/2026/10/19/f4719c8545b349df8517df4df8ce3575-Open-code-v2.wav"
 }
