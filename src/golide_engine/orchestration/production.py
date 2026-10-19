@@ -432,7 +432,9 @@ class ProductionService:
                         f"\n\nFRESH HEADLINES (last 48 hours, what people are discussing)\n{headlines}",
                         TREND_CANDIDATES_SCHEMA,
                         web_search=True,
-                        max_output_tokens=3000,
+                        # 2026-10-19: 3,000 cut the answer off once trend fields and
+                        # headlines were added (the budget includes reasoning).
+                        max_output_tokens=12000,
                     )
                     candidates = []
                     for item in output.value["candidates"]:

@@ -6,6 +6,34 @@ from .base import ProviderOutput
 from .openai_client import client, usage_from_response
 
 
+# The output budget includes the model's hidden reasoning, so a busy prompt (web search,
+# headlines, long schemas) can run out mid-answer. 2026-10-19: the topic finder was cut
+# off at 3,000 tokens and the short failed. A cut-off answer is now retried with a
+# bigger budget instead of failing.
+MAX_OUTPUT_CAP = 32000
+BUDGET_RETRIES = 2
+
+
+def _cut_off(response) -> bool:
+    if getattr(response, "status", None) != "incomplete":
+        return False
+    details = getattr(response, "incomplete_details", None)
+    reason = getattr(details, "reason", None) if details is not None else None
+    return reason in (None, "max_output_tokens")
+
+
+def _create(kwargs: dict):
+    """One Responses call; a cut-off answer is retried with double the output budget."""
+    response = client().responses.create(**kwargs)
+    for _ in range(BUDGET_RETRIES):
+        if not _cut_off(response) or kwargs["max_output_tokens"] >= MAX_OUTPUT_CAP:
+            break
+        kwargs = {**kwargs, "max_output_tokens": min(MAX_OUTPUT_CAP, kwargs["max_output_tokens"] * 2)}
+        print(json.dumps({"status": "output_budget_raised", "max_output_tokens": kwargs["max_output_tokens"]}))
+        response = client().responses.create(**kwargs)
+    return response
+
+
 class OpenAITextProvider:
     def __init__(self, model: str = "gpt-5.6-sol", reasoning_effort: str = "high"):
         self.model = model
@@ -21,7 +49,7 @@ class OpenAITextProvider:
         }
         if web_search:
             kwargs["tools"] = [{"type": "web_search"}]
-        response = client().responses.create(**kwargs)
+        response = _create(kwargs)
         input_tokens, cached, output_tokens = usage_from_response(response)
         return ProviderOutput(response.output_text, response.id, input_tokens, cached, output_tokens)
 
@@ -36,7 +64,7 @@ class OpenAITextProvider:
         }
         if web_search:
             kwargs["tools"] = [{"type": "web_search"}]
-        response = client().responses.create(**kwargs)
+        response = _create(kwargs)
         input_tokens, cached, output_tokens = usage_from_response(response)
         return ProviderOutput(json.loads(response.output_text), response.id, input_tokens, cached, output_tokens)
 

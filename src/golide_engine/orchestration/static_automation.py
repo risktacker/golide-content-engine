@@ -241,7 +241,7 @@ class StaticAutomation:
             # Both posts search the live web (2026-10-18): the evening post used to
             # pick its "trend" from model memory, which can be weeks old.
             web_search=True,
-            max_output_tokens=4500,
+            max_output_tokens=9000,
         )
         draft = dict(output.value)
         # 2026-10-13: a worn or repeated hook gets one rewrite with the reason.
@@ -258,7 +258,7 @@ class StaticAutomation:
                     + ". Keep the story, facts and slides unless they repeat the same formula.",
                     STATIC_DRAFT_SCHEMA,
                     web_search=False,
-                    max_output_tokens=4500,
+                    max_output_tokens=9000,
                 )
                 draft = dict(output.value)
             except Exception as exc:  # the first draft still goes out
