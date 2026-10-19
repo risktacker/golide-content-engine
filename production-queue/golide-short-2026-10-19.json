@@ -1,0 +1,56 @@
+{
+  "id": "golide-short-2026-10-19",
+  "studio_managed": true,
+  "format": "short",
+  "title": "GOLIDE Short \u00b7 2026-10-19",
+  "brief": "Choose the AI or tech story people are talking about this week (a launch, a viral demo, a big company move or what a well-known tech leader said or did) and explain what it means for ordinary people in plain words, so a curious non-technical viewer follows it and wants to comment. Evidence-backed only. Keep Shorts and long-form product-independent; never turn scheduled video into a GOLIDE product advertisement and never copy an existing video.",
+  "demand_query": "AI tech news everyone is talking about this week",
+  "demand_validation_required": true,
+  "budget_class": "scheduled",
+  "purpose": "channel-automation",
+  "generate_at": "2026-10-19T07:00:00Z",
+  "max_cost_usd": 6,
+  "production_authorized": true,
+  "output_destination": "render-and-upload",
+  "owner_voice_required": true,
+  "concept": {
+    "family": "technology-software-business",
+    "promise": "A high-interest current niche topic explained with authoritative evidence and a useful GOLIDE angle",
+    "scores": {
+      "scroll_stop": 9,
+      "visual_payoff": 9,
+      "curiosity_gap": 9,
+      "retention_design": 9,
+      "broad_relevance": 8,
+      "evidence_strength": 8,
+      "novelty": 8,
+      "replay_or_loop": 8,
+      "revenue_fit": 6
+    }
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri-sun"
+  },
+  "music": {
+    "mood": "curious-tension"
+  },
+  "avatar_reference_images": [],
+  "release": {
+    "approved": true,
+    "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+    "scheduled_at": "2026-10-19T11:00:00Z"
+  },
+  "_studio_job_id": "golide-short-2026-10-19",
+  "_failed_runs": 1
+}
