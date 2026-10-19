@@ -10,8 +10,8 @@
       "static_post": 61
     },
     "scheduled_allocations_usd": {
-      "long": 0.7,
-      "short": 0.3
+      "long": 0.9,
+      "short": 0.45
     },
     "allocation_note": "First-scale OpenAI deposit: $10/month. Internal guard splits approximately $7 to scheduled video production and $3 to automated static-post generation; either lane pauses before its guard and resumes after a deliberate budget change.",
     "resume_after_recharge": true,
