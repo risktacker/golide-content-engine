@@ -65,13 +65,13 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "OpenCode Console breach API keys exposed October 2026",
-        "score": 85.0,
+        "score": 85,
         "verdict": "pass",
         "recent_videos": 62,
         "median_views_per_day": 405542.66,
         "top_views_per_day": 5826122.42,
         "market_coverage": 4,
-        "title_query_overlap": 0.0,
+        "title_query_overlap": 0,
         "measured_at": "2026-10-19T08:42:52.988172+00:00",
         "signal_type": "youtube-most-popular-seed-proxy"
       },
@@ -96,13 +96,13 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "Meta removes AI training scraping language business terms October 17 2026",
-        "score": 85.0,
+        "score": 85,
         "verdict": "pass",
         "recent_videos": 62,
         "median_views_per_day": 405542.66,
         "top_views_per_day": 5826122.42,
         "market_coverage": 4,
-        "title_query_overlap": 0.0,
+        "title_query_overlap": 0,
         "measured_at": "2026-10-19T08:42:52.988597+00:00",
         "signal_type": "youtube-most-popular-seed-proxy"
       },
@@ -127,13 +127,13 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "DeepSeek Search Fetch API $0.75 per 1000 successful requests October 2026",
-        "score": 85.0,
+        "score": 85,
         "verdict": "pass",
         "recent_videos": 62,
         "median_views_per_day": 405542.66,
         "top_views_per_day": 5826122.42,
         "market_coverage": 4,
-        "title_query_overlap": 0.0,
+        "title_query_overlap": 0,
         "measured_at": "2026-10-19T08:42:52.988977+00:00",
         "signal_type": "youtube-most-popular-seed-proxy"
       },
@@ -189,13 +189,13 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "Faraday Future FF Nova $2490 humanoid robot October 15 2026 launch",
-        "score": 85.0,
+        "score": 85,
         "verdict": "pass",
         "recent_videos": 62,
         "median_views_per_day": 405542.66,
         "top_views_per_day": 5826122.42,
         "market_coverage": 4,
-        "title_query_overlap": 0.0,
+        "title_query_overlap": 0,
         "measured_at": "2026-10-19T08:42:52.989715+00:00",
         "signal_type": "youtube-most-popular-seed-proxy"
       },
