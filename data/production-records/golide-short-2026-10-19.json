@@ -1,0 +1,637 @@
+{
+  "production_id": "golide-short-2026-10-19",
+  "youtube_video_id": "HVXv6PGsMAA",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "HVXv6PGsMAA",
+    "upload_status": "published",
+    "privacy_status": "public",
+    "scheduled_at": null,
+    "uploaded_at": "2026-10-19T13:11:15.770122+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "OpenAI Says Its First Humanoid Robot Demo Could Arrive in 2027",
+    "status": "published",
+    "scheduled_at": "2026-10-19T11:00:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-shorts-mon-wed-fri-sun\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "One point four percent of Console users who linked providers may have had keys exposed.\nSo an AI coding tool can become a credit-card risk without seeing your card.\nOpenCode said an intruder reached a legacy system,\nwhere OpenAI, Anthropic, and Google keys may have been exposed.\nIn football, whoever holds the equipment-room key can enter,\nso a digital key carries real authority.\nAn API key is a digital spending key sent with each request.\nIt identifies the project and attaches usage to billing.\nThat means it usually cannot open your whole account,\nbut it can spend through the project it controls.\nThe problem is, a thief can run requests,\ndrain quotas, interrupt your code, or create charges.\nSo treat an exposed key as compromised, and revoke it\nthen check billing, replace it, and update the tool.\nAfter that, test the old key, set low limits,\nseparate tools, restrict Google keys.\nAnd follow the channel, because we explain security problems before they reach your bill.\nBecause one football key should never open the whole stadium,\nwould you trust an AI coding tool with your payment credentials?\n",
+  "research": {
+    "summary": "An AI coding tool can become a credit-card risk when it stores a user’s third-party API key. In the reported OpenCode Console incident, an intruder accessed a legacy system and provider keys saved by some users may have been exposed; the reported affected group was 1.4% of Console users who had linked outside providers. ([thehackernews.com](https://thehackernews.com/2026/10/opencode-console-breach-may-have.html?utm_source=openai))\n\nAn API key is best understood as a digital spending key: software sends it with requests, and the provider uses it to identify the project or account, apply quotas, and—when billing is enabled—charge usage to the associated account. A stolen key may let someone run large numbers of model requests, exhaust quotas, generate unexpected charges, or interrupt legitimate access. It usually is not the same as a password granting access to your entire account; its danger is the authority and billing attached to the specific API project or workspace. ([help.openai.com](https://help.openai.com/en/articles/5112595-best-practices-for-api-key-safet?utm_source=openai))\n\nOrdinary users should treat a potentially exposed key as compromised: revoke or disable it immediately, inspect provider usage and billing for suspicious activity, create a replacement, update the coding tool or environment with the new key, and then verify that the old key no longer works. OpenAI, Anthropic, and Google all document key rotation or deletion procedures. ([help.openai.com](https://help.openai.com/en/articles/5112595-best-practices-for-api-key-safet?utm_source=openai))\n\nAlso reduce the blast radius. Use separate keys or projects for separate tools, restrict Google keys to the required APIs and applications or IPs, and set the lowest practical spend, quota, or usage caps. OpenAI provides project and organization spend limits; Google provides project spend caps and quotas, though Google warns that billing data and long-running tasks can create delays or overages. ([developers.openai.com](https://developers.openai.com/api/docs/guides/spend-limits?utm_source=openai))\n\nWould you trust an AI coding tool with your payment credentials?",
+    "claims": [
+      {
+        "claim": "OpenCode’s reported incident involved a legacy system, and provider API keys saved in Console workspaces may have been exposed; the reported affected population was 1.4% of Console users who had linked an outside provider.",
+        "source_title": "OpenCode Console Breach May Have Exposed OpenAI, Anthropic, and Google API Keys",
+        "source_url": "https://thehackernews.com/2026/10/opencode-console-breach-may-have.html",
+        "published_or_updated": "Published October 19, 2026"
+      },
+      {
+        "claim": "A compromised OpenAI API key can cause unexpected charges, quota depletion, data loss, and interruption of API access.",
+        "source_title": "Best Practices for API Key Safety",
+        "source_url": "https://help.openai.com/en/articles/5112595-best-practices-for-api-key-safet",
+        "published_or_updated": "Crawled last month"
+      },
+      {
+        "claim": "OpenAI recommends immediately rotating a key believed to have leaked and updating production applications to use the replacement.",
+        "source_title": "Best Practices for API Key Safety",
+        "source_url": "https://help.openai.com/en/articles/5112595-best-practices-for-api-key-safet",
+        "published_or_updated": "Crawled last month"
+      },
+      {
+        "claim": "Anthropic describes API keys as bearer credentials used in request authorization and recommends storing them securely and disabling or deleting keys suspected of being leaked.",
+        "source_title": "Authentication - Claude Platform Docs",
+        "source_url": "https://platform.claude.com/docs/en/manage-claude/authentication",
+        "published_or_updated": "Crawled last week"
+      },
+      {
+        "claim": "Google standard API keys associate requests with a project for billing and quota purposes, while Google recommends restricting keys by API and by application, IP address, or other permitted client type.",
+        "source_title": "Manage API keys; Best practices for securely using API keys",
+        "source_url": "https://docs.cloud.google.com/docs/authentication/api-keys",
+        "published_or_updated": "Crawled last week"
+      },
+      {
+        "claim": "OpenAI has organization- and project-level spend limits that can cause requests to fail once a configured hard limit is reached.",
+        "source_title": "Spend limits | OpenAI API",
+        "source_url": "https://developers.openai.com/api/docs/guides/spend-limits",
+        "published_or_updated": "Crawled today"
+      },
+      {
+        "claim": "Google AI Studio supports project-level and billing-account spend caps for the Gemini API, but Google warns that billing data may be delayed and some long-running tasks can create overages beyond a project cap.",
+        "source_title": "Billing | Gemini API",
+        "source_url": "https://ai.google.dev/gemini-api/docs/billing/",
+        "published_or_updated": "Crawled last month"
+      },
+      {
+        "claim": "Google recommends creating a replacement key, updating applications and deployment configurations, testing the replacement, and then deleting or revoking the old key.",
+        "source_title": "Using Gemini API keys",
+        "source_url": "https://ai.google.dev/gemini-api/docs/api-key?hl=en",
+        "published_or_updated": "Crawled last month"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "OpenCode Breach: AI API Keys Could Drain Your Budget",
+    "description": "A security breach involving OpenCode Console may have exposed OpenAI, Anthropic, and Google API keys linked by about 1.4% of users. This short explains why an API key can create usage charges without giving someone access to your full account.\n\nIf you stored a provider key in OpenCode Console, revoke and replace it, review billing, set spending limits, and update connected tools. One digital key should never unlock the whole stadium.\n\nOpenCode breach, OpenCode Console, AI API key leak, API key exposure, OpenAI API key, Anthropic API key, Google API key, AI coding security, API key security, API billing risk, cybersecurity breach, revoke API key, rotate API keys, developer security\n\n#OpenCode #Cybersecurity #APIKeys #AISecurity #OpenAI #Anthropic #GoogleCloud #GOLIDE",
+    "tags": [
+      "OpenCode breach",
+      "OpenCode security",
+      "OpenCode Console",
+      "API key security",
+      "AI API key leak",
+      "OpenAI API key",
+      "Anthropic API key",
+      "Google API key",
+      "AI coding tool",
+      "AI coding security",
+      "API key exposed",
+      "API key theft",
+      "API billing risk",
+      "cloud security",
+      "developer security",
+      "cybersecurity news",
+      "AI security news",
+      "security breach",
+      "legacy system breach",
+      "API spending limits",
+      "revoke API key",
+      "rotate API keys",
+      "OpenAI security",
+      "Anthropic security",
+      "GOLIDE"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "keywords": [
+      "OpenCode breach",
+      "OpenCode Console",
+      "AI API key leak",
+      "API key exposure",
+      "OpenAI API key",
+      "Anthropic API key",
+      "Google API key",
+      "AI coding security",
+      "API key security",
+      "API billing risk",
+      "cybersecurity breach",
+      "revoke API key",
+      "rotate API keys",
+      "developer security"
+    ],
+    "hashtags": [
+      "#OpenCode",
+      "#Cybersecurity",
+      "#APIKeys",
+      "#AISecurity",
+      "#OpenAI",
+      "#Anthropic",
+      "#GoogleCloud",
+      "#GOLIDE"
+    ],
+    "format": "short",
+    "title_description_language": "en",
+    "seo_body": "A security breach involving OpenCode Console may have exposed OpenAI, Anthropic, and Google API keys linked by about 1.4% of users. This short explains why an API key can create usage charges without giving someone access to your full account.\n\nIf you stored a provider key in OpenCode Console, revoke and replace it, review billing, set spending limits, and update connected tools. One digital key should never unlock the whole stadium."
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "OpenCode’s reported incident involved a legacy system, and provider API keys saved in Console workspaces may have been exposed; the reported affected population was 1.4% of Console users who had linked an outside provider.",
+        "source_title": "OpenCode Console Breach May Have Exposed OpenAI, Anthropic, and Google API Keys",
+        "source_url": "https://thehackernews.com/2026/10/opencode-console-breach-may-have.html",
+        "published_or_updated": "Published October 19, 2026"
+      },
+      {
+        "claim": "A compromised OpenAI API key can cause unexpected charges, quota depletion, data loss, and interruption of API access.",
+        "source_title": "Best Practices for API Key Safety",
+        "source_url": "https://help.openai.com/en/articles/5112595-best-practices-for-api-key-safet",
+        "published_or_updated": "Crawled last month"
+      },
+      {
+        "claim": "OpenAI recommends immediately rotating a key believed to have leaked and updating production applications to use the replacement.",
+        "source_title": "Best Practices for API Key Safety",
+        "source_url": "https://help.openai.com/en/articles/5112595-best-practices-for-api-key-safet",
+        "published_or_updated": "Crawled last month"
+      },
+      {
+        "claim": "Anthropic describes API keys as bearer credentials used in request authorization and recommends storing them securely and disabling or deleting keys suspected of being leaked.",
+        "source_title": "Authentication - Claude Platform Docs",
+        "source_url": "https://platform.claude.com/docs/en/manage-claude/authentication",
+        "published_or_updated": "Crawled last week"
+      },
+      {
+        "claim": "Google standard API keys associate requests with a project for billing and quota purposes, while Google recommends restricting keys by API and by application, IP address, or other permitted client type.",
+        "source_title": "Manage API keys; Best practices for securely using API keys",
+        "source_url": "https://docs.cloud.google.com/docs/authentication/api-keys",
+        "published_or_updated": "Crawled last week"
+      },
+      {
+        "claim": "OpenAI has organization- and project-level spend limits that can cause requests to fail once a configured hard limit is reached.",
+        "source_title": "Spend limits | OpenAI API",
+        "source_url": "https://developers.openai.com/api/docs/guides/spend-limits",
+        "published_or_updated": "Crawled today"
+      },
+      {
+        "claim": "Google AI Studio supports project-level and billing-account spend caps for the Gemini API, but Google warns that billing data may be delayed and some long-running tasks can create overages beyond a project cap.",
+        "source_title": "Billing | Gemini API",
+        "source_url": "https://ai.google.dev/gemini-api/docs/billing/",
+        "published_or_updated": "Crawled last month"
+      },
+      {
+        "claim": "Google recommends creating a replacement key, updating applications and deployment configurations, testing the replacement, and then deleting or revoking the old key.",
+        "source_title": "Using Gemini API keys",
+        "source_url": "https://ai.google.dev/gemini-api/docs/api-key?hl=en",
+        "published_or_updated": "Crawled last month"
+      }
+    ],
+    "platform_demand": {
+      "query": "Sam Altman OpenAI humanoid robot cool demo 2027 October 2026",
+      "score": 86.5,
+      "verdict": "pass",
+      "recent_videos": 62,
+      "median_views_per_day": 405542.66,
+      "top_views_per_day": 5826122.42,
+      "market_coverage": 4,
+      "title_query_overlap": 0.1,
+      "measured_at": "2026-10-19T08:42:52.989344+00:00",
+      "signal_type": "youtube-most-popular-seed-proxy"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.66,
+      "true_peak_dbtp": -1.93,
+      "loudness_range": 1.9
+    },
+    "editorial": {
+      "beats": 19,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-10-19T13:11:09.274554+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri-sun"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-short-2026-10-19",
+    "created_at": "2026-10-19T13:11:10.354086+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-10-19T11:00:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "e2f3804d4a86c1f9f00cf0661f5c3afc4b5e7ecf4d3076e51773f41481ce543e",
+        "bytes": 18446411
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "2e4853e14b77344521d3eb0dcd2d3f3478ac1d2807adb337cc16dfa6cb231478",
+        "bytes": 996682
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "a37be64ef3a3c2936564008d5ba0ce90045e12e4a39627f91ff8efc6b4fb94b1",
+        "bytes": 2667
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "4fbb4ba4e2d3f62939f547ddfd36472b0dfeb600ece2e7009eec2d196bd72680",
+        "bytes": 2418
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "2ed9bbeaa2124b325aca307a647451d72b3feec6c6a6d8e7f4a5c70ff1c50c5e",
+        "bytes": 554
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "34f54b4ea8c7df21eb62d6508ccb440ba0f1fbad62a531162d1bddbe003aec6f",
+        "bytes": 3950
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "678140779bba2e91fcb33a95de33aea71f2cbbed4011049fbe64e353d1870954",
+        "bytes": 394
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "3548a22795576be9e7e5a7e6225bc6c5de12bee46a8f1570bfe2c09f7473e507",
+        "bytes": 277
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 55986.0,
+      "cached_input_units": 0.0,
+      "output_units": 3401.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015278,
+      "created_at": "2026-10-19T08:42:54.570220+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-19T08:42:54.571689+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 21600.0,
+      "cached_input_units": 0.0,
+      "output_units": 1727.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006392,
+      "created_at": "2026-10-19T08:43:19.610153+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-19T08:43:19.611961+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 4245.0,
+      "cached_input_units": 0.0,
+      "output_units": 5537.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007493,
+      "created_at": "2026-10-19T08:44:10.812775+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 5665.0,
+      "cached_input_units": 3002.0,
+      "output_units": 3626.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004944,
+      "created_at": "2026-10-19T08:44:42.714646+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 5588.0,
+      "cached_input_units": 5585.0,
+      "output_units": 5359.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006543,
+      "created_at": "2026-10-19T08:46:12.296594+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2887.0,
+      "cached_input_units": 0.0,
+      "output_units": 2893.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004049,
+      "created_at": "2026-10-19T09:20:20.746540+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-19T09:20:37.735460+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-19T09:20:52.657015+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-19T09:21:06.362845+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-19T09:21:21.600735+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-19T09:21:35.649163+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-19T09:21:50.211524+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-19T09:22:03.764865+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-19T09:22:17.771573+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-19T09:22:31.026970+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-19T09:22:45.274993+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-19T09:22:59.258224+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-19T09:23:12.524169+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-19T09:23:25.714900+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-19T09:23:39.131163+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-19T09:23:52.962527+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-19T13:05:01.302590+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9221.0,
+      "cached_input_units": 0.0,
+      "output_units": 729.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002719,
+      "created_at": "2026-10-19T13:10:21.142490+00:00"
+    },
+    {
+      "stage": "thumbnail",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-10-19T13:10:48.639730+00:00"
+    }
+  ],
+  "recorded_at": "2026-10-19T13:11:15.775255+00:00"
+}
