@@ -107,22 +107,21 @@ POST STRUCTURE
 - platform_copy, same truth adapted natively. Never put a URL in any copy; the engine
   adds links only where they belong.
   * instagram: the hook as the first line, a blank line, two or three short lines
-    that make people swipe ("Swipe through the story."), then one question that
-    invites a comment.
+    that make people swipe ("Swipe through the story."), then the debate question.
   * facebook: TWO paragraphs of about five lines each (4 to 6 sentences, 60 to 90 words
     per paragraph; shorter paragraphs are not acceptable). Paragraph one is a concrete,
     everyday scenario the reader recognises from their own life ("You've sent forty
     applications this month and heard back from two."). Paragraph two explains what is
-    really going on and what to do about it, using the points. End with one question.
+    really going on and what to do about it, using the points. End with the debate question.
   * linkedin: the same two-paragraph shape and length (60 to 90 words per paragraph)
     for professionals. Paragraph one is a
     workplace scenario a manager, engineer or job seeker has lived; paragraph two gives
-    the insight and the practical move. End with a question professionals can answer
-    from experience. LinkedIn readers read, so the copy must carry real weight.
+    the insight and the practical move. End with a debate question professionals can
+    answer from experience (the same two-sides rule). LinkedIn readers read, so the copy must carry real weight.
   * x: under 260 characters, no links, no hashtags. The hook plus the sharpest point.
 - x_replies: exactly two replies posted under the X post, each under 260 characters,
-  no links, no hashtags. Reply one adds the most practical step. Reply two asks a
-  specific question that invites people to answer in the comments.
+  no links, no hashtags. Reply one adds the most practical step. Reply two is the
+  debate question.
 - source_url: the single most credible source page you used (the article itself, https).
 - title: a plain internal label for the post (not shown publicly).
 
@@ -167,8 +166,8 @@ WHAT TO TALK ABOUT: THE AI AND TECH GIST EVERYONE IS DISCUSSING
   describe it accurately and say who said it. No rumours, no private life, no party
   politics.
 - Turn the story into something useful: what it means for the reader, what to do or
-  watch for. Then end with a question people want to answer ("Would you trust it?",
-  "Is this a good move?"), because the goal is conversation.
+  watch for. Then end with a question that splits people into two sides (see THE
+  QUESTION THAT STARTS THE COMMENTS), because the goal is conversation.
 - Do not mention or promote any GOLIDE product in the copy. use_product must be false
   and product_bridge_position must be 0. The product only appears on its own slide.
 """
@@ -234,7 +233,7 @@ def static_post_instructions(slot: str, has_product: bool = True) -> str:
         "You write one static social post for GOLIDE, a marketplace for digital products, "
         "software and tools. The operator supplies no topic.\n\n"
         + lane + "\n" + VOICE_RULES + "\n" + HOOK_RULES + "\n" + STATIC_HUMAN_RULES + "\n" + STATIC_SEO_RULES + "\n"
-        + IMAGE_CONCEPT_RULES + "\n" + STATIC_STRUCTURE_RULES
+        + IMAGE_CONCEPT_RULES + "\n" + STATIC_STRUCTURE_RULES + "\n" + DEBATE_QUESTION_RULES
     )
 
 
@@ -359,12 +358,29 @@ FOLLOW CALL-OUT (owner direction 2026-10-07: viewers should follow and come back
      never two "So" sentences in a row). Vary it from video to video, for example
      "And if this helped, follow the channel...", "That's exactly why you should
      follow us...", "If you want the next one, follow the channel...";
-  3. then ONE short closing sentence (one or two lines) that is also joined to the
-     follow sentence with a connective ("Because...", "And until then...", "Which
-     leaves one question...") and pays off the follow or loops back to the opening
-     picture. Never a cold question with no bridge. Nothing else after it.
+  3. then ONE short closing QUESTION (one or two lines) that is joined to the follow
+     sentence with a connective ("Which leaves one question...", "So here's the real
+     question...", "And that leaves you with this...") and is written by THE QUESTION
+     THAT STARTS THE COMMENTS rules below; it may loop back to the opening picture.
+     Never a cold question with no bridge. Nothing else after it.
   * short and long alike: exactly ONE follow sentence, one or two lines.
 """
+
+DEBATE_QUESTION_RULES = """\
+THE QUESTION THAT STARTS THE COMMENTS (owner direction 2026-10-20: views without
+comments plateau, and polite questions get scrolled past)
+- End on ONE question that splits people into two reasonable sides, so a viewer
+  feels they must pick one and say why. Put the two sides in the question when it
+  helps: "Should OpenCode pay back everyone who lost money, or is a leaked key the
+  user's own fault?", "Would you let an AI agent spend your money, yes or no?",
+  "Is a fifty-thousand-dollar flying car a breakthrough or a toy?"
+- About THIS story and specific: name the company, product, number or choice. Short
+  (under 20 words) and answerable in a word or two plus a reason.
+- Never polite, empty or rhetorical: not "What do you think?", "Would you trust it?",
+  "Let me know", "Interesting, right?", "Is this a good move?". Never ask people to
+  comment or type anything; the question itself makes them want to answer.
+"""
+
 
 TEACHING_STYLE_RULES = """\
 TEACHING STYLE (owner direction 2026-10-09, locked): explain it so a child follows
@@ -712,7 +728,28 @@ def follow_problems(plan: dict, format_name: str) -> list[str]:
         problems.append("the follow call-out must actually say follow or subscribe")
     if any(word in said for word in FOLLOW_ASKS):
         problems.append("the follow call-out must not ask for comments, likes, shares or links")
+    if 1 <= after <= 2:
+        problems += closing_question_problems(" ".join(str(line["text"]) for line in lines[marked[-1] + 1:]))
     return problems
+
+
+WEAK_QUESTION = re.compile(
+    r"\b(what do you think|what are your thoughts|let me know|would you trust (it|this|them)\b\s*\?|"
+    r"is this a good (move|idea)|interesting,? right|right\s*\?$|agree\s*\?$)", re.I)
+
+
+def closing_question_problems(closing: str) -> list[str]:
+    """The last sentence is a two-sided debate question, not a polite one (2026-10-20)."""
+    text = closing.strip()
+    if not text.endswith("?"):
+        return ["end the video on ONE debate question (it must end with a question mark); see THE "
+                "QUESTION THAT STARTS THE COMMENTS"]
+    if WEAK_QUESTION.search(text):
+        return ["the closing question is too polite to answer; make it split people into two sides about "
+                "this story (for example: \"...yes or no?\", \"...a breakthrough or a toy?\")"]
+    if len(text.split()) > 26:
+        return ["the closing question is too long; keep it under 20 words"]
+    return []
 
 
 def script_instructions(format_name: str, seed: str = "") -> str:
@@ -725,7 +762,7 @@ def script_instructions(format_name: str, seed: str = "") -> str:
         f"LENGTH: {target['words_min']} to {target['words_max']} spoken words "
         f"(about {target['seconds']} seconds). Do not go over.\n\n"
         + (LONG_STRUCTURE_RULES if format_name == "long" else SCRIPT_STRUCTURE_RULES + "\n" + SHORT_CHAPTER_RULE)
-        + "\n" + TEACHING_STYLE_RULES + "\n" + script_variety(seed or format_name) + "\n" + FOLLOW_RULES + "\n" + SCRIPT_LINE_RULES + "\n" + HUMANIZER_RULES + "\n" + SCRIPT_VOICE_RULES
+        + "\n" + TEACHING_STYLE_RULES + "\n" + script_variety(seed or format_name) + "\n" + FOLLOW_RULES + "\n" + DEBATE_QUESTION_RULES + "\n" + SCRIPT_LINE_RULES + "\n" + HUMANIZER_RULES + "\n" + SCRIPT_VOICE_RULES
         + "\n" + SCRIPT_OUTPUT_RULES
     )
 
