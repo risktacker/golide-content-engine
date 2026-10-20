@@ -158,13 +158,19 @@ COVER (the picture people see before they press play; owner direction 2026-10-07
 - "gold": the 1 to 3 words of that hook that carry the punch, copied exactly.
 - "scene": the number (1 = first scene) of the scene whose drawing best stands for
   the whole video.
-- "thumbnail_moment": one sentence for the YouTube thumbnail artist naming ONE
-  iconic object that stands for the whole story and what it is doing (for example
-  "a glowing shopping cart rolling itself through a store door that is slamming
-  shut"). An object or machine, never a person, face, avatar or character.
+- "thumbnail_moment": one sentence for the YouTube thumbnail artist (owner
+  direction 2026-10-20: the same kind of picture as our static posts). ONE object
+  or ONE visual metaphor that captures the story's tension, chosen by the topic,
+  understood in one second, and name the ONE part of it that glows. Examples: "a
+  house key on a ring whose teeth glow" (leaked API keys); "an old balance scale,
+  a glowing chip in one pan outweighing a lump of coal in the other" (a market
+  record); "a glass padlock with a crack running through its glowing keyhole" (an
+  attack path); "a film reel whose single glowing frame unspools" (AI in video
+  editing). Never a face, avatar or character; a hand only if the metaphor needs it.
 - "colors": two or three accent colours for the cover and thumbnail, chosen by
   meaning from gold, rose, teal, ivory and copper (owner direction 2026-10-18:
-  not always gold). The first colours the punch words.
+  not always gold; 2026-10-20: not always teal either). The first is the glow of
+  the thumbnail's key element and colours the punch words.
 
 If the lines are divided into chapters (marked "== CHAPTER ... =="), a scene
 never runs across a chapter mark: every chapter starts with a new scene.

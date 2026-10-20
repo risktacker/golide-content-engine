@@ -32,4 +32,4 @@ class CoverTests(unittest.TestCase):
         prompt = youtube_thumbnail_prompt("Title", "a robot hand reaching for a cart as a shutter slams")
         self.assertIn("shutter slams", prompt)
         self.assertIn("NO text, letters", prompt)
-        self.assertIn("No people", prompt)
+        self.assertIn("No faces", prompt)

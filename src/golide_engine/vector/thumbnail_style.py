@@ -1,11 +1,18 @@
-"""YouTube thumbnails in the static-post look, in several colours (owner direction 2026-10-18).
+"""YouTube thumbnails in the static-post look (owner direction 2026-10-18 and 2026-10-20).
 
-"Our static posts have the best image generation of Studio ever... use that now
-with multiple colours per thumbnail and adding simple text like we do." So the
-thumbnail art follows the static-post prompt (luminous fine line or a softly lit
-real object alone on deep-space black with a faint starfield, calm white and grey
-lines) but glows in two or three colours chosen by meaning, and the typeset words
-take the same colours.
+"Look at this image... even if you can't be hooked, like how? This is the type I was
+talking about for thumbs too." What makes the posts work, and what every thumbnail
+now does:
+
+* ONE subject: an object or a visual metaphor of the story's tension, chosen by the
+  topic (a key with glowing teeth for leaked keys, a scale weighing a chip against
+  coal, a cracked padlock with a glowing keyhole). Understood in one second.
+* ONE element glows, in the story's meaning colour (not always blue), with premium
+  lighting: a soft gradient halo of that colour fading out behind the subject, rim
+  light on its edges and a faint spill below. Everything else is calm white or grey
+  line on deep-space black.
+* Big and centred in the upper part; the bottom stays dark for one short line of
+  text, set like the posts: light words, the punch in bold in the glow colour.
 """
 
 from __future__ import annotations
@@ -47,21 +54,25 @@ def thumbnail_colors(cover: dict, scenes: list[dict]) -> list[str]:
 
 
 def thumbnail_prompt(title: str, moment: str, colors: list[str]) -> str:
-    subject = moment.strip() or f"one iconic object that stands for the story behind: {title}"
+    subject = moment.strip() or f"one object or visual metaphor that captures the tension of the story: {title}"
     names = [GLOW_WORDS.get(c, c) for c in colors] or [GLOW_WORDS["gold"]]
-    glow = names[0] if len(names) == 1 else ", ".join(names[:-1]) + " and " + names[-1]
+    glow, rim = names[0], (names[1] if len(names) > 1 else names[0])
     return (
-        "16:9 YouTube thumbnail artwork. Pure black deep-space background (#0B0B0E) with a very faint, "
-        "sparse starfield and a subtle dark vignette. "
-        f"ONE hero object, nothing else: {subject}. "
-        "Render the subject as luminous fine-line illustration or a cinematic, softly lit real object, "
-        "alone in the black space, big and bold in the right 55 percent of the frame, slightly angled "
-        "toward the camera, crisp and readable at phone-thumbnail size. "
-        f"Its key parts glow, each in its own colour: {glow}; everything else is rendered in thin, calm "
-        "white or grey lines. High contrast, minimal, premium, instantly readable in one second. "
-        "One subject only, no clutter, no busy background, no collage. Keep the left 40 percent clean, "
-        "dark and empty for a title. No people, no faces, no hands, no avatars, no characters, "
-        "no paper-cut, low-poly or origami figures. "
+        "16:9 YouTube thumbnail artwork in a premium editorial poster style. Pure black deep-space "
+        "background (#0B0B0E) with a very faint, sparse starfield. "
+        f"ONE hero subject, nothing else: {subject}. "
+        "Render it as luminous fine-line illustration or a cinematic, softly lit real object, alone in "
+        "the black space, large, centred horizontally and placed in the upper 70 percent of the frame, "
+        "slightly angled toward the camera, crisp and readable at phone-thumbnail size. "
+        f"Exactly ONE key element of it glows bright {glow} (a neon-like inner light); everything else is "
+        "drawn in thin, calm white and grey lines. "
+        f"Premium lighting: a soft {glow} gradient halo fades outward behind the subject like an outer "
+        f"glow, a subtle {rim} rim light traces its edges, and a faint pool of the same light spills "
+        "beneath it. The glow colours are clean and saturated, never muddy; the black stays deep. "
+        "High contrast, minimal, instantly readable in one second. One subject only: no clutter, no "
+        "collage, no busy background. Keep the bottom 28 percent of the frame dark and empty for a title. "
+        "No faces, no full people, no avatars, no characters, no paper-cut, low-poly or origami figures; "
+        "a single dark-skinned hand may appear only if the metaphor needs it. "
         "ABSOLUTELY NO text, letters, words, numbers, captions, labels, logos, watermarks, signatures, "
         f"user-interface elements or borders anywhere in the image. Video title for context only: {title}"
     )

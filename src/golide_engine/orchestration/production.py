@@ -124,7 +124,7 @@ class ProductionService:
 
     @staticmethod
     def _stamp_thumbnail(work: Path, thumbnail: Path) -> None:
-        """Typeset the cover's punch words (2 to 4) big and bold on the left."""
+        """Typeset the cover hook under the picture, like the static posts (2026-10-20)."""
         try:
             from ..vector.thumb_text import stamp_thumbnail
             from ..vector.thumbnail_style import palette_rgb, thumbnail_colors
