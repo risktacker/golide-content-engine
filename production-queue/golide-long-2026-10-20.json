@@ -1,0 +1,194 @@
+{
+  "id": "golide-long-2026-10-20",
+  "studio_managed": true,
+  "format": "long",
+  "title": "Anthropic Wants to Give Away 5% of Its AI Company. Who Decides What \u2018Public Benefit\u2019 Means?",
+  "brief": "Freshness: 5/5 \u2014 announced October 18, 2026. Talkability: 5/5 \u2014 major AI-company move already drawing debate over whether AI profits should benefit workers and the public. Viewer fit: 5/5. Comments: 5/5 \u2014 philanthropy, accountability and AI job disruption invite strong opinions. Visuals: 4/5 \u2014 animate ownership shares, valuation growth and where donations could go. Evidence: 5/5 \u2014 Anthropic\u2019s own announcement and AP coverage. Explain that this is not a cash giveaway today: it is a proposed ownership stake, subject to shareholder approval, held by a fund that could grow as Anthropic\u2019s value rises. Useful takeaway: watch the fund\u2019s governance, recipients and labor-market programs. End with: Is giving away company shares enough to earn public trust?",
+  "demand_query": "AI tech news everyone is talking about this week",
+  "demand_validation_required": true,
+  "budget_class": "scheduled",
+  "purpose": "channel-automation",
+  "generate_at": "2026-10-20T04:00:00Z",
+  "max_cost_usd": 6,
+  "production_authorized": true,
+  "output_destination": "render-and-upload",
+  "owner_voice_required": true,
+  "concept": {
+    "family": "technology-software-business",
+    "promise": "A high-interest current niche topic explained with authoritative evidence and a useful GOLIDE angle",
+    "scores": {
+      "click_promise": 9,
+      "thumbnail_title_fit": 9,
+      "narrative_engine": 9,
+      "visual_depth": 9,
+      "evidence_strength": 8,
+      "retention_design": 9,
+      "broad_relevance": 8,
+      "novelty": 8,
+      "revenue_fit": 7
+    }
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-long-tue-thu-sat"
+  },
+  "music": {
+    "mood": "curious-tension"
+  },
+  "avatar_reference_images": [],
+  "release": {
+    "approved": true,
+    "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+    "scheduled_at": "2026-10-20T17:30:00Z"
+  },
+  "_studio_job_id": "golide-long-2026-10-20",
+  "topic_candidates": [
+    {
+      "title": "Anthropic Wants to Give Away 5% of Its AI Company. Who Decides What \u2018Public Benefit\u2019 Means?",
+      "query": "Anthropic 5% shares public benefit fund October 2026",
+      "brief": "Freshness: 5/5 \u2014 announced October 18, 2026. Talkability: 5/5 \u2014 major AI-company move already drawing debate over whether AI profits should benefit workers and the public. Viewer fit: 5/5. Comments: 5/5 \u2014 philanthropy, accountability and AI job disruption invite strong opinions. Visuals: 4/5 \u2014 animate ownership shares, valuation growth and where donations could go. Evidence: 5/5 \u2014 Anthropic\u2019s own announcement and AP coverage. Explain that this is not a cash giveaway today: it is a proposed ownership stake, subject to shareholder approval, held by a fund that could grow as Anthropic\u2019s value rises. Useful takeaway: watch the fund\u2019s governance, recipients and labor-market programs. End with: Is giving away company shares enough to earn public trust?",
+      "evidence_summary": "Anthropic announced that, subject to shareholder approval, 5% of its shares would be committed to a new public-benefit fund, with possible increases as the company grows. The story is broad, current and directly connected to the social consequences of AI. Source reporting also describes the pledge as potentially worth tens of billions of dollars on paper, but that valuation is not guaranteed.",
+      "authoritative_source_url": "https://www.anthropic.com/news/public-benefit-fund",
+      "broke_on": "2026-10-18",
+      "science_angle": "None: the strongest explanation is financial and governance mechanics rather than physical science.",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Anthropic 5% shares public benefit fund October 2026",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 65,
+        "median_views_per_day": 371025.78,
+        "top_views_per_day": 4361259.97,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-10-20T04:02:46.184457+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      },
+      "trend_pulse": {
+        "query": "Anthropic 5% shares public benefit fund October 2026",
+        "fresh_videos": 10,
+        "median_views_per_hour": 140.9,
+        "top_views_per_hour": 1760.6,
+        "score": 77.1,
+        "hot": true,
+        "measured_at": "2026-10-20T04:02:46.185403+00:00"
+      }
+    },
+    {
+      "title": "Nvidia Is Putting AI Agents on Ordinary PCs\u2014Could Your Computer Work Without the Cloud?",
+      "query": "Nvidia open models local AI agents PCs Nemotron Bolt October 19 2026",
+      "brief": "Freshness: 5/5 \u2014 announced October 19, 2026. Talkability: 4/5 \u2014 Nvidia\u2019s move lands amid intense interest in AI PCs and agents that can act for users. Viewer fit: 5/5. Comments: 4/5 \u2014 viewers can debate privacy, speed, cost and whether local AI is actually better. Visuals: 5/5 \u2014 compare cloud AI with a model running inside a laptop, show memory, heat and response time. Evidence: 4/5 \u2014 Nvidia\u2019s claims are reported by TechCrunch and should be presented as company claims. Explain that smaller models can be optimized to run locally, avoiding some internet trips but demanding enough memory and processing power. Useful takeaway: local AI may improve privacy and offline access, but powerful models still need substantial hardware. End with: Would you trade some capability for an AI that keeps more of your data on your own computer?",
+      "evidence_summary": "Nvidia launched a large open-weight model for enterprise agents and smaller Bolt models intended for local AI PCs and workstations. Nvidia says the models are optimized for tool use and faster deployment, while independent reporting cautions that benchmark claims come from the company. This is the clearest fresh story with an accessible engineering explanation.",
+      "authoritative_source_url": "https://techcrunch.com/2026/10/19/nvidia-launches-new-open-models-to-run-agents-in-the-enterprise-and-on-pcs/",
+      "broke_on": "2026-10-19",
+      "science_angle": "Running AI locally depends on model compression, memory bandwidth and heat: the smaller the model, the easier it is to fit inside a PC, but reducing size can affect accuracy and capabilities.",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Nvidia open models local AI agents PCs Nemotron Bolt October 19 2026",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 65,
+        "median_views_per_day": 371025.78,
+        "top_views_per_day": 4361259.97,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-10-20T04:02:46.184811+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      },
+      "trend_pulse": {
+        "query": "Nvidia open models local AI agents PCs Nemotron Bolt October 19 2026",
+        "fresh_videos": 8,
+        "median_views_per_hour": 1.1,
+        "top_views_per_hour": 4.2,
+        "score": 38.4,
+        "hot": false,
+        "measured_at": "2026-10-20T04:02:46.557309+00:00"
+      }
+    },
+    {
+      "title": "An AI Coding Tool Breach Turned Users\u2019 Model Keys Into Attackers\u2019 Spending Accounts",
+      "query": "OpenCode breach API keys unauthorized AI charges October 2026",
+      "brief": "Freshness: 5/5 \u2014 the breach was disclosed October 17, 2026 and remained a major discussion through October 19\u201320. Talkability: 4/5 \u2014 Hacker News discussion around AI-written code, model access and security makes this more than a niche breach. Viewer fit: 4/5 \u2014 explain an API key as a password that can also spend money. Comments: 5/5 \u2014 users can debate whether open AI tools are worth the risk and who should pay for unauthorized usage. Visuals: 5/5 \u2014 animate a stolen key being used to send thousands of model requests. Evidence: 5/5 \u2014 TechCrunch and The Hacker News report the incident; avoid unverified individual loss claims. Useful takeaway: revoke exposed keys, create separate keys for each tool, set spending limits and review usage logs. End with: Would you trust an AI coding tool with a key linked to your credit card?",
+      "evidence_summary": "OpenCode said a breach affected 1.4% of users of its hosted Console service, where some users stored third-party AI-provider keys. Major security reporting said exposed keys could enable unauthorized model usage and charges. The local coding application and hosted Console should be clearly distinguished so viewers do not assume every installation was compromised.",
+      "authoritative_source_url": "https://techcrunch.com/2026/10/19/hackers-hit-ai-coding-tool-opencode-running-up-charges-on-users-ai-accounts/",
+      "broke_on": "2026-10-17",
+      "science_angle": "The technical core is access control: an API key is a secret token that authenticates requests, so whoever obtains it can make the provider\u2019s servers perform work and bill the account until the key is revoked.",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "OpenCode breach API keys unauthorized AI charges October 2026",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 65,
+        "median_views_per_day": 371025.78,
+        "top_views_per_day": 4361259.97,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-10-20T04:02:46.185103+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      },
+      "trend_pulse": {
+        "query": "OpenCode breach API keys unauthorized AI charges October 2026",
+        "fresh_videos": 10,
+        "median_views_per_hour": 0.6,
+        "top_views_per_hour": 28.2,
+        "score": 44.8,
+        "hot": false,
+        "measured_at": "2026-10-20T04:02:46.842928+00:00"
+      }
+    },
+    {
+      "title": "Microsoft Says AI Agents Should Be Treated Like New Employees\u2014Would You Give One Access to Your Accounts?",
+      "query": "Microsoft AI agents insider threats frontier models cannot be trusted October 19 2026",
+      "brief": "Freshness: 5/5 \u2014 Microsoft introduced the security move on October 19, 2026. Talkability: 4/5 \u2014 it connects an abstract AI debate to familiar workplace risks such as permissions, mistakes and insider access. Viewer fit: 5/5. Comments: 5/5 \u2014 ordinary users can immediately debate whether agents should read email, edit files or spend money. Visuals: 4/5 \u2014 show an agent moving through apps with permissions that can be narrowed or revoked. Evidence: 4/5 \u2014 based on Microsoft\u2019s reported security features and its stated warning that frontier models cannot yet be fully trusted. Useful takeaway: treat agents as untrusted assistants, give them the least access possible and require approval for irreversible actions. End with: Should an AI agent ever be allowed to act without asking first?",
+      "evidence_summary": "Microsoft introduced security features aimed at protecting organizations from AI agents and compared the risk of agents with insider threats. The useful angle is not that agents are malicious, but that an agent with broad permissions can make mistakes, follow manipulated instructions or access more information than intended. Frame Microsoft\u2019s warning as a security position, not proof that every agent is unsafe.",
+      "authoritative_source_url": "https://techcrunch.com/2026/10/19/microsoft-says-ai-agents-are-like-insider-threats-as-frontier-models-cant-be-trusted/",
+      "broke_on": "2026-10-19",
+      "science_angle": "The engineering issue is permission design and prompt injection: software must decide which actions an agent may take, while untrusted text can sometimes manipulate the agent into treating data as instructions.",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Microsoft AI agents insider threats frontier models cannot be trusted October 19 2026",
+        "score": 86.5,
+        "verdict": "pass",
+        "recent_videos": 65,
+        "median_views_per_day": 371025.78,
+        "top_views_per_day": 4361259.97,
+        "market_coverage": 4,
+        "title_query_overlap": 0.1,
+        "measured_at": "2026-10-20T04:02:46.185388+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      },
+      "trend_pulse": {
+        "query": "Microsoft AI agents insider threats frontier models cannot be trusted October 19 2026",
+        "fresh_videos": 6,
+        "median_views_per_hour": 0.0,
+        "top_views_per_hour": 8.4,
+        "score": 31.9,
+        "hot": false,
+        "measured_at": "2026-10-20T04:02:47.173379+00:00"
+      }
+    }
+  ],
+  "platform_demand": {
+    "query": "Anthropic 5% shares public benefit fund October 2026",
+    "score": 85.0,
+    "verdict": "pass",
+    "recent_videos": 65,
+    "median_views_per_day": 371025.78,
+    "top_views_per_day": 4361259.97,
+    "market_coverage": 4,
+    "title_query_overlap": 0.0,
+    "measured_at": "2026-10-20T04:02:46.184457+00:00",
+    "signal_type": "youtube-most-popular-seed-proxy"
+  },
+  "selected_topic_source": "https://www.anthropic.com/news/public-benefit-fund"
+}
