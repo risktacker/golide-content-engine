@@ -123,13 +123,22 @@ room, a technician's silhouette beside it holding a clipboard"). Real objects,
 people and places drawn simply. If people appear they are Black. One clear
 focal point. No text, labels, numbers, logos or screens with readable content.
 
+CLEAR AT A GLANCE (owner direction 2026-10-20: "failure blocks, undefined, can't be
+explained"). Every drawing must be something a child names in one second: a real,
+everyday object or a simple scene with a clear outline. When the idea is abstract
+(a fund, shares, a vote, control, a policy, trust), pick a CONCRETE object that
+stands for it: a jar of coins, a pie with one slice lifted out, a balance scale, a
+ballot box, a vault door, a key on a ring, a signed paper with a pen, a steering
+wheel. Never a network of lines, a web, roots, a map, a cloud of dots, a texture, a
+pattern or an abstract shape. Jars, signs, boxes, papers and screens are BLANK:
+nothing written on them.
+
 VARIETY (owner direction 2026-10-07: the visuals must feel vast, never repeated):
 every scene uses a different kind of shot from the one before, mixing across
 the video: a wide scene with people in a place, a close-up of one object, a
-visual metaphor (a key, a bridge, a scale, a maze, a seed growing), a before
-and after side by side, a network or constellation of connected dots, a
-symbol drawn large (an eye, a clock, a lock), an overhead or cross-section
-view. Never draw the same main object in two scenes in a row, and never use
+visual metaphor (a key, a bridge, a scale, a jar, a seed growing), a before
+and after side by side, a symbol drawn large (an eye, a clock, a lock), an
+object seen from above. Never draw the same main object in two scenes in a row, and never use
 the same composition twice in a short.
 
 "gold_element": the single part of the drawing that should glow because it
@@ -244,15 +253,17 @@ def illustration_prompt(drawing: str, gold: str, format_name: str, layout: str =
     return (
         "Minimal elegant line illustration: thin, clean white lines on a pure flat black "
         "background, like a confident hand-drawn ink sketch made with a fine glowing pen. "
-        "Main shapes in a steady line; a few small inner details (a seam, a button, a window, "
-        "a fold, a texture mark) in finer, shorter lines so the drawing has depth without "
-        "clutter. Give the scene a simple ground line or soft horizon so objects sit somewhere, "
+        "Main shapes in a steady line with a bold, instantly recognisable outline; a few small "
+        "inner details (a seam, a button, a window, a fold) in finer lines so the drawing has "
+        "depth without clutter. No textures, hatching, cracks, patterns, mosaics, maps or "
+        "networks of lines. Give the scene a simple ground line or soft horizon so objects sit somewhere, "
         "one clear focal point, and generous empty space around it. Every line closed and "
         "deliberate; no sketchy double lines, no stray dots. Outlines only: no fills, no solid "
         "shapes, no shading, no gradients, no glow halos, no colour except one part. Draw the "
         "following as one composed scene: "
         f"{drawing.strip()} Draw only this part in warm gold lines: {gold.strip()}. "
-        "No text, letters, numbers, labels, logos, watermarks or user-interface elements anywhere. "
+        "No text, letters, numbers, labels, logos, watermarks or user-interface elements anywhere: "
+        "jars, signs, boxes, papers and screens are blank. "
         f"{area}"
     )
 
@@ -406,6 +417,29 @@ def _order(strokes: list[Stroke]) -> list[Stroke]:
     return chain([s for s in strokes if not s.gold]) + chain([s for s in strokes if s.gold])
 
 
+CLUTTER_STROKES = 110     # above this many traced strokes, a picture is cluttered
+MAX_STROKES = 170         # never draw more than this many
+SHORT_SHARE = 0.03        # in a cluttered picture, white strokes shorter than this share of
+                          # the drawing's diagonal are texture, not shape
+
+
+def declutter(strokes: list[Stroke]) -> list[Stroke]:
+    """Drop traced texture (hatching, cracks, mosaics) so the shape reads (2026-10-20).
+
+    A clean line drawing traces into a few dozen strokes; texture traces into
+    hundreds of tiny ones. When a picture is cluttered, short white strokes go and
+    only the longest strokes are kept; the glowing (gold) strokes always stay.
+    """
+    if len(strokes) <= CLUTTER_STROKES:
+        return strokes
+    pts = np.vstack([s.points for s in strokes])
+    diag = float(np.hypot(*(pts.max(axis=0) - pts.min(axis=0)))) or 1.0
+    gold = [s for s in strokes if s.gold]
+    white = [s for s in strokes if not s.gold and s.length >= SHORT_SHARE * diag]
+    white.sort(key=lambda s: -s.length)
+    return gold + white[:max(0, MAX_STROKES - len(gold))]
+
+
 def vectorize(image_path: Path, max_side: int = 900) -> Drawing:
     from PIL import Image
     from scipy import ndimage
@@ -449,6 +483,7 @@ def vectorize(image_path: Path, max_side: int = 900) -> Drawing:
             strokes.append(stroke)
     if not strokes:
         raise ValueError(f"no line art found in {image_path}")
+    strokes = declutter(strokes)
     allpts = np.vstack([s.points for s in strokes])
     x0, y0 = allpts.min(axis=0)
     x1, y1 = allpts.max(axis=0)
@@ -485,8 +520,9 @@ def shot_of(drawing: Drawing, shot: int) -> Drawing:
         focus = ((x0 + w * 0.45, y0, x1, y1) if half == 0 else
                  (x0, y0, x1 - w * 0.45, y1) if half == 1 else (x0, y0, x1, y1 - h * 0.4))
     fx0, fy0, fx1, fy1 = focus
-    # Never zoom closer than about 2.2x, so the shot still reads as a picture.
-    min_w, min_h = w * 0.45, h * 0.45
+    # 2026-10-20: never closer than about 1.5x, so a shot always still shows the object
+    # (2.2x cut vague pictures into meaningless fragments).
+    min_w, min_h = w * 0.68, h * 0.68
     cx, cy = (fx0 + fx1) / 2, (fy0 + fy1) / 2
     fw, fh = max(fx1 - fx0, min_w) * 1.25, max(fy1 - fy0, min_h) * 1.25
     box = (cx - fw / 2, cy - fh / 2, cx + fw / 2, cy + fh / 2)
