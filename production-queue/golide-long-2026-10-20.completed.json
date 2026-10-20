@@ -2,8 +2,8 @@
   "id": "golide-long-2026-10-20",
   "studio_managed": true,
   "format": "long",
-  "title": "Anthropic Wants to Give Away 5% of Its AI Company. Who Decides What \u2018Public Benefit\u2019 Means?",
-  "brief": "Freshness: 5/5 \u2014 announced October 18, 2026. Talkability: 5/5 \u2014 major AI-company move already drawing debate over whether AI profits should benefit workers and the public. Viewer fit: 5/5. Comments: 5/5 \u2014 philanthropy, accountability and AI job disruption invite strong opinions. Visuals: 4/5 \u2014 animate ownership shares, valuation growth and where donations could go. Evidence: 5/5 \u2014 Anthropic\u2019s own announcement and AP coverage. Explain that this is not a cash giveaway today: it is a proposed ownership stake, subject to shareholder approval, held by a fund that could grow as Anthropic\u2019s value rises. Useful takeaway: watch the fund\u2019s governance, recipients and labor-market programs. End with: Is giving away company shares enough to earn public trust?",
+  "title": "Microsoft Says AI Agents Should Be Treated Like New Employees\u2014Would You Give One Access to Your Accounts?",
+  "brief": "Freshness: 5/5 \u2014 Microsoft introduced the security move on October 19, 2026. Talkability: 4/5 \u2014 it connects an abstract AI debate to familiar workplace risks such as permissions, mistakes and insider access. Viewer fit: 5/5. Comments: 5/5 \u2014 ordinary users can immediately debate whether agents should read email, edit files or spend money. Visuals: 4/5 \u2014 show an agent moving through apps with permissions that can be narrowed or revoked. Evidence: 4/5 \u2014 based on Microsoft\u2019s reported security features and its stated warning that frontier models cannot yet be fully trusted. Useful takeaway: treat agents as untrusted assistants, give them the least access possible and require approval for irreversible actions. End with: Should an AI agent ever be allowed to act without asking first?",
   "demand_query": "AI tech news everyone is talking about this week",
   "demand_validation_required": true,
   "budget_class": "scheduled",
@@ -179,16 +179,17 @@
     }
   ],
   "platform_demand": {
-    "query": "Anthropic 5% shares public benefit fund October 2026",
-    "score": 85.0,
+    "query": "Microsoft AI agents insider threats frontier models cannot be trusted October 19 2026",
+    "score": 86.5,
     "verdict": "pass",
     "recent_videos": 65,
     "median_views_per_day": 371025.78,
     "top_views_per_day": 4361259.97,
     "market_coverage": 4,
-    "title_query_overlap": 0.0,
-    "measured_at": "2026-10-20T04:02:46.184457+00:00",
+    "title_query_overlap": 0.1,
+    "measured_at": "2026-10-20T04:02:46.185388+00:00",
     "signal_type": "youtube-most-popular-seed-proxy"
   },
-  "selected_topic_source": "https://www.anthropic.com/news/public-benefit-fund"
+  "selected_topic_source": "https://techcrunch.com/2026/10/19/microsoft-says-ai-agents-are-like-insider-threats-as-frontier-models-cant-be-trusted/",
+  "owner_voice_media_ref": "r2://temp/2026/10/20/0711f126088046f58b40e2f431175723-Ai-profits-v2.wav"
 }

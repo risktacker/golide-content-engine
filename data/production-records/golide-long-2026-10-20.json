@@ -1,0 +1,925 @@
+{
+  "production_id": "golide-long-2026-10-20",
+  "youtube_video_id": "efJEGMM49Os",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "efJEGMM49Os",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-10-20T12:52:24.596700+00:00"
+  },
+  "production": {
+    "format": "long",
+    "title": "Microsoft Says AI Agents Should Be Treated Like New Employees—Would You Give One Access to Your Accounts?",
+    "status": "scheduled",
+    "scheduled_at": "2026-10-20T17:30:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-long-tue-thu-sat\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "AI profits may soon be tied to public benefit,\nbut that does not mean people receive cash today.\nOn October 18, 2026, Anthropic proposed placing\nfive percent of its shares into a public benefit fund,\nbut stockholders must approve that proposal first.\nIn the next few minutes, we'll follow the proposal,\ntrace how the stake could grow, examine who controls it,\nand finish with four checks you can make this week.\nSo what exactly has Anthropic proposed, and what changes first?\nThe answer starts with a new Anthropic Public Benefit Fund,\nbecause the company says it would receive five percent\nof Anthropic's shares if stockholders approve the allocation.\nThat sounds like money for the public,\nbut the difference becomes clearer at a pharmacy counter.\nA pharmacist can place a labelled bottle behind the counter,\nand the patient still has not received the medicine.\nIn the same way, the fund would hold the shares,\nrather than handing small pieces of Anthropic directly\nto every person affected by artificial intelligence.\nThat leaves three things between the announcement and help,\napproval, decisions inside the fund, and the shares' value.\nCheck the shareholder vote first, because a proposed share\nis not public money until the proposal becomes real.\nOnce that approval question is clear, the next question follows,\nhow can an ownership stake change in value?\nA share means a small ownership claim on a company,\nso its worth can move, unlike cash in a bank account.\nIf Anthropic becomes more valuable, the fund's stake could rise,\nwhile a fall in company value could reduce it.\nThat is the same bottle behind the pharmacy counter,\nbecause its usefulness can change before anyone decides\nwho receives it or how it should be dispensed.\nAnthropic also says its board could add two percentage points\nfor every fifty percent increase above a set baseline,\nalthough that extra allocation would remain at the board's discretion.\nThe company says roughly twenty percent of its shares\nwould count toward public-good efforts, including other commitments.\nTreat five percent as a changing ownership stake, not a cheque,\nand check both its value and the decisions around it.\nNow the uncomfortable part is control, because ownership alone\ndoesn't tell you who gets help or who sets the rules.\nAnthropic says the fund will be a wholly owned LLC,\nwhich means a legal company structure holding its own assets,\nrather than a traditional five-oh-one-c-three charity.\nThe company also says those shares cannot fund lobbying\nor political giving in the United States or abroad.\nEven with that restriction, the central question stays open,\nhow transparent will the choices be, and how much reaches workers?\nAnthropic says it has already committed two hundred million dollars\nto studying and addressing AI's effects on the labor market,\nbut studying disruption is different from supporting displaced workers.\nBefore trusting the promise, trace both the decision-makers and the money.\nThat brings us to the useful part, what can you check this week?\nFirst, open the next fund update and find its governance rules,\nthen look for named decision-makers, conflict rules, and public reporting.\nSecond, check whether shareholders approve the initial allocation,\nbecause until that vote happens, five percent remains a proposal.\nThird, follow the valuation milestones and any extra allocations,\nand check whether the board explains each discretionary decision.\nFourth, look for named recipients and concrete labor-market programs,\nthen ask whether workers receive support directly, or only reports.\nThose checks separate public benefit from public relations,\nso save the announcement and revisit it when the details arrive.\nThe sentence to remember is simple, shares can grow in value,\nbut public trust grows only through control, transparency, and results.\nThis week, check approval, governance, valuation, recipients, and worker programs.\nAnd if you want the next AI policy shift explained this clearly, follow the channel so you can see what happens when the details arrive.\nBecause the bottle behind the counter still leaves one question, is giving away company shares enough to earn public trust?\n",
+  "research": {
+    "summary": "Anthropic says it plans to commit 5% of its shares to a new Anthropic Public Benefit Fund—but this is not a cash giveaway happening today. The proposal still needs stockholder approval, and the fund would hold an ownership stake whose value could rise with Anthropic’s valuation. The company says its board could add another 2% for every 50% increase in value above a set baseline. The fund could support nonprofits, direct payments to specific populations, and programs addressing AI’s effects on workers. Anthropic says the fund would be a wholly owned LLC, not a traditional 501(c)(3), and that its shares could not be used for lobbying or political giving. The unanswered questions are about governance: Who controls the fund? Who receives support? How transparent will its decisions be? And how much will reach workers affected by AI? Is giving away company shares enough to earn public trust?",
+    "claims": [
+      {
+        "claim": "On October 18, 2026, Anthropic announced a proposed commitment of 5% of its shares to the Anthropic Public Benefit Fund, subject to stockholder approval.",
+        "source_title": "Investing in the public benefit",
+        "source_url": "https://www.anthropic.com/news/public-benefit-fund",
+        "published_or_updated": "October 18, 2026"
+      },
+      {
+        "claim": "This is an ownership commitment—not an immediate cash distribution to the public. The shares would be held by a fund, and the initial allocation remains subject to approval.",
+        "source_title": "Investing in the public benefit",
+        "source_url": "https://www.anthropic.com/news/public-benefit-fund",
+        "published_or_updated": "October 18, 2026"
+      },
+      {
+        "claim": "Anthropic says the fund’s stake could increase by 2 percentage points for every 50% increase in the company’s value above a set baseline, at the board’s discretion.",
+        "source_title": "Investing in the public benefit",
+        "source_url": "https://www.anthropic.com/news/public-benefit-fund",
+        "published_or_updated": "October 18, 2026"
+      },
+      {
+        "claim": "The fund could pursue large donations to nonprofits or direct distributions to specific populations, including possible responses to AI-related labor-market disruption.",
+        "source_title": "Anthropic commits 5% of its stock to a new ‘public benefit’ fund",
+        "source_url": "https://apnews.com/article/anthropic-shares-public-benefit-8181332fbbc48f2ef9447cef096f14de",
+        "published_or_updated": "October 18, 2026"
+      },
+      {
+        "claim": "Anthropic says it has already committed $200 million to studying and addressing AI’s effects on the labor market.",
+        "source_title": "Investing in the public benefit",
+        "source_url": "https://www.anthropic.com/news/public-benefit-fund",
+        "published_or_updated": "October 18, 2026"
+      },
+      {
+        "claim": "The proposed fund would be a wholly owned LLC rather than a 501(c)(3), and Anthropic says the equity held by the LLC would not be used for lobbying or political giving in the United States or abroad.",
+        "source_title": "Investing in the public benefit",
+        "source_url": "https://www.anthropic.com/news/public-benefit-fund",
+        "published_or_updated": "October 18, 2026"
+      },
+      {
+        "claim": "Anthropic says that, including founders’ equity donations and its employee equity-matching program, roughly 20% of its shares would be dedicated to the public good, with the possibility of additional allocations tied to valuation milestones.",
+        "source_title": "Investing in the public benefit",
+        "source_url": "https://www.anthropic.com/news/public-benefit-fund",
+        "published_or_updated": "October 18, 2026"
+      },
+      {
+        "claim": "Anthropic says it will provide more information about the fund’s structure, governance and valuation milestones in the coming months, making those details key accountability measures to watch.",
+        "source_title": "Investing in the public benefit",
+        "source_url": "https://www.anthropic.com/news/public-benefit-fund",
+        "published_or_updated": "October 18, 2026"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Anthropic’s 5% Public Benefit Fund: Who Gets Help?",
+    "description": "Anthropic has proposed putting 5% of its shares into a new Public Benefit Fund, but the plan still requires stockholder approval. This video explains what the proposal means, how the fund’s value could grow, and why shares are not the same as direct cash payments to the public.\n\nWe also examine the fund’s LLC structure, possible additional allocations, limits on political spending, and Anthropic’s $200 million labor-market research commitment. Finally, you’ll get four practical checks for tracking governance, approval, valuation, recipients, and worker programs.\n\nAnthropic public benefit fund, Anthropic 5 percent shares, Anthropic shareholder approval, Anthropic stock proposal, Anthropic public benefit, AI public benefit fund, Anthropic fund governance, Anthropic shares explained, AI labor market fund, AI worker support, AI company philanthropy, AI governance explained, Anthropic valuation, AI public good\n\nChapters\n0:00 Intro\n0:23 The Proposed Fund\n1:06 How Shares Grow\n1:59 Who Controls It\n2:47 What To Watch\n3:27 Close\n\n#Anthropic #AI #AIPolicy #AIGovernance #PublicBenefit #TechNews #FutureOfWork #GOLIDE",
+    "tags": [
+      "Anthropic public benefit fund",
+      "Anthropic 5 percent shares",
+      "Anthropic stock proposal",
+      "Anthropic shareholder approval",
+      "Anthropic public benefit",
+      "Anthropic shares",
+      "Anthropic AI policy",
+      "AI public benefit fund",
+      "AI stock donation",
+      "AI labor market",
+      "AI worker support",
+      "AI governance",
+      "AI philanthropy",
+      "AI public good",
+      "Anthropic valuation",
+      "Anthropic LLC",
+      "Anthropic fund governance",
+      "Anthropic political spending",
+      "AI economic impact",
+      "AI company shares"
+    ],
+    "category_id": 25,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [
+      "0:00 Intro",
+      "0:23 The Proposed Fund",
+      "1:06 How Shares Grow",
+      "1:59 Who Controls It",
+      "2:47 What To Watch",
+      "3:27 Close"
+    ],
+    "keywords": [
+      "Anthropic public benefit fund",
+      "Anthropic 5 percent shares",
+      "Anthropic shareholder approval",
+      "Anthropic stock proposal",
+      "Anthropic public benefit",
+      "AI public benefit fund",
+      "Anthropic fund governance",
+      "Anthropic shares explained",
+      "AI labor market fund",
+      "AI worker support",
+      "AI company philanthropy",
+      "AI governance explained",
+      "Anthropic valuation",
+      "AI public good"
+    ],
+    "hashtags": [
+      "#Anthropic",
+      "#AI",
+      "#AIPolicy",
+      "#AIGovernance",
+      "#PublicBenefit",
+      "#TechNews",
+      "#FutureOfWork",
+      "#GOLIDE"
+    ],
+    "format": "long",
+    "title_description_language": "en",
+    "seo_body": "Anthropic has proposed putting 5% of its shares into a new Public Benefit Fund, but the plan still requires stockholder approval. This video explains what the proposal means, how the fund’s value could grow, and why shares are not the same as direct cash payments to the public.\n\nWe also examine the fund’s LLC structure, possible additional allocations, limits on political spending, and Anthropic’s $200 million labor-market research commitment. Finally, you’ll get four practical checks for tracking governance, approval, valuation, recipients, and worker programs."
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "On October 18, 2026, Anthropic announced a proposed commitment of 5% of its shares to the Anthropic Public Benefit Fund, subject to stockholder approval.",
+        "source_title": "Investing in the public benefit",
+        "source_url": "https://www.anthropic.com/news/public-benefit-fund",
+        "published_or_updated": "October 18, 2026"
+      },
+      {
+        "claim": "This is an ownership commitment—not an immediate cash distribution to the public. The shares would be held by a fund, and the initial allocation remains subject to approval.",
+        "source_title": "Investing in the public benefit",
+        "source_url": "https://www.anthropic.com/news/public-benefit-fund",
+        "published_or_updated": "October 18, 2026"
+      },
+      {
+        "claim": "Anthropic says the fund’s stake could increase by 2 percentage points for every 50% increase in the company’s value above a set baseline, at the board’s discretion.",
+        "source_title": "Investing in the public benefit",
+        "source_url": "https://www.anthropic.com/news/public-benefit-fund",
+        "published_or_updated": "October 18, 2026"
+      },
+      {
+        "claim": "The fund could pursue large donations to nonprofits or direct distributions to specific populations, including possible responses to AI-related labor-market disruption.",
+        "source_title": "Anthropic commits 5% of its stock to a new ‘public benefit’ fund",
+        "source_url": "https://apnews.com/article/anthropic-shares-public-benefit-8181332fbbc48f2ef9447cef096f14de",
+        "published_or_updated": "October 18, 2026"
+      },
+      {
+        "claim": "Anthropic says it has already committed $200 million to studying and addressing AI’s effects on the labor market.",
+        "source_title": "Investing in the public benefit",
+        "source_url": "https://www.anthropic.com/news/public-benefit-fund",
+        "published_or_updated": "October 18, 2026"
+      },
+      {
+        "claim": "The proposed fund would be a wholly owned LLC rather than a 501(c)(3), and Anthropic says the equity held by the LLC would not be used for lobbying or political giving in the United States or abroad.",
+        "source_title": "Investing in the public benefit",
+        "source_url": "https://www.anthropic.com/news/public-benefit-fund",
+        "published_or_updated": "October 18, 2026"
+      },
+      {
+        "claim": "Anthropic says that, including founders’ equity donations and its employee equity-matching program, roughly 20% of its shares would be dedicated to the public good, with the possibility of additional allocations tied to valuation milestones.",
+        "source_title": "Investing in the public benefit",
+        "source_url": "https://www.anthropic.com/news/public-benefit-fund",
+        "published_or_updated": "October 18, 2026"
+      },
+      {
+        "claim": "Anthropic says it will provide more information about the fund’s structure, governance and valuation milestones in the coming months, making those details key accountability measures to watch.",
+        "source_title": "Investing in the public benefit",
+        "source_url": "https://www.anthropic.com/news/public-benefit-fund",
+        "published_or_updated": "October 18, 2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "Microsoft AI agents insider threats frontier models cannot be trusted October 19 2026",
+      "score": 86.5,
+      "verdict": "pass",
+      "recent_videos": 65,
+      "median_views_per_day": 371025.78,
+      "top_views_per_day": 4361259.97,
+      "market_coverage": 4,
+      "title_query_overlap": 0.1,
+      "measured_at": "2026-10-20T04:02:46.185388+00:00",
+      "signal_type": "youtube-most-popular-seed-proxy"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.58,
+      "true_peak_dbtp": -1.85,
+      "loudness_range": 2.1
+    },
+    "editorial": {
+      "beats": 68,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-10-20T12:52:14.441756+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-long-tue-thu-sat"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-long-2026-10-20",
+    "created_at": "2026-10-20T12:52:15.678134+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-10-20T17:30:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "fc0a94cb535390aeb831495b4f66692f11b3ac0680c171ef3ae6ef9c3e0d1ebd",
+        "bytes": 69296353
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "3ab6e95856fe89d68a748062c2730cd385ef68f4095efe438bfb6aebb25d86cf",
+        "bytes": 957960
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "2de29f35ca96f96f0298782640ff50a241e401276c9069deef243832cc53cf0a",
+        "bytes": 3414
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "a5e2bff38a75d446b18f024879767856adda164cd2b8db16f3ad7b81a33307db",
+        "bytes": 8622
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "f7ad212b0f0c1d536661ee54cba47c8d447648cd4025e2cef0d95d542dd694fd",
+        "bytes": 2043
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "61dd0a2a9f6a1c6e8a338a03f6e0c0473959a08ccbb14d5570e9a916dee3b899",
+        "bytes": 3966
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "5466316572f8a9e44214cb77b8db5f1888152120d266c69f8ed26a588091ceac",
+        "bytes": 388
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "af17f597fd40dad7b4c51df8eeab3e2fcb4f41841773f620dc03862a3fe38e27",
+        "bytes": 277
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 34857.0,
+      "cached_input_units": 0.0,
+      "output_units": 2477.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.009944,
+      "created_at": "2026-10-20T04:02:47.563133+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-20T04:02:47.564635+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 21555.0,
+      "cached_input_units": 0.0,
+      "output_units": 1454.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006056,
+      "created_at": "2026-10-20T04:03:05.963869+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-20T04:03:05.965267+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 4654.0,
+      "cached_input_units": 0.0,
+      "output_units": 3430.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005047,
+      "created_at": "2026-10-20T04:03:42.590857+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 8844.0,
+      "cached_input_units": 3551.0,
+      "output_units": 3674.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005538,
+      "created_at": "2026-10-20T04:04:07.779023+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9189.0,
+      "cached_input_units": 3551.0,
+      "output_units": 4031.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006036,
+      "created_at": "2026-10-20T04:04:43.269853+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 4040.0,
+      "cached_input_units": 0.0,
+      "output_units": 3535.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00505,
+      "created_at": "2026-10-20T12:21:18.251859+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:21:34.743014+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:21:48.747764+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:22:06.113429+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:22:18.819713+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:22:31.714700+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:22:45.699752+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:23:01.920668+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:23:13.303740+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:23:24.193436+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:23:38.789454+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:23:53.006389+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:24:06.421855+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:24:20.146727+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:24:33.524242+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:24:47.369150+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:24:58.703284+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:25:09.618484+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:25:24.617373+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:25:38.705491+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:25:51.687962+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:26:06.512678+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:26:16.721737+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:26:26.559132+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:26:41.507693+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:26:57.480947+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:27:07.940411+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:27:18.889117+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:27:32.280889+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:27:45.438094+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:27:56.338154+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:28:06.370732+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:28:19.383272+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:28:31.751577+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:28:41.367830+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:28:55.068743+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:29:07.890823+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:29:20.990061+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-20T12:29:34.145235+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 14179.0,
+      "cached_input_units": 0.0,
+      "output_units": 741.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.003725,
+      "created_at": "2026-10-20T12:50:56.485458+00:00"
+    },
+    {
+      "stage": "thumbnail",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-10-20T12:51:22.966772+00:00"
+    }
+  ],
+  "recorded_at": "2026-10-20T12:52:24.601939+00:00"
+}
