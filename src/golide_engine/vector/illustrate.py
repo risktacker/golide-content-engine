@@ -527,6 +527,28 @@ def accent_box(drawing: Drawing) -> tuple[float, float, float, float] | None:
     return float(x0), float(y0), float(x1), float(y1)
 
 
+COMPACT = 0.45   # a part smaller than this share of the drawing (each way) is an object, kept whole
+
+
+def _whole_objects(drawing: Drawing, box: tuple) -> tuple:
+    x0, y0, x1, y1 = drawing.bbox
+    w, h = max(1.0, x1 - x0), max(1.0, y1 - y0)
+    for _round in range(3):  # widening can touch a neighbour; settle in a few passes
+        grown = box
+        for s in drawing.strokes:
+            (sx0, sy0), (sx1, sy1) = s.points.min(axis=0), s.points.max(axis=0)
+            if sx1 - sx0 > w * COMPACT or sy1 - sy0 > h * COMPACT:
+                continue
+            inside = sx0 >= grown[0] and sx1 <= grown[2] and sy0 >= grown[1] and sy1 <= grown[3]
+            touches = sx0 < grown[2] and sx1 > grown[0] and sy0 < grown[3] and sy1 > grown[1]
+            if touches and not inside:
+                grown = (min(grown[0], sx0), min(grown[1], sy0), max(grown[2], sx1), max(grown[3], sy1))
+        if grown == box:
+            break
+        box = grown
+    return box
+
+
 def shot_of(drawing: Drawing, shot: int) -> Drawing:
     """Another shot of the same picture (owner direction 2026-10-18, more flips in the
     hook for free): odd shots frame the glowing accent, even shots the other half."""
@@ -551,6 +573,15 @@ def shot_of(drawing: Drawing, shot: int) -> Drawing:
     cx, cy = (fx0 + fx1) / 2, (fy0 + fy1) / 2
     fw, fh = max(fx1 - fx0, min_w) * 1.25, max(fy1 - fy0, min_h) * 1.25
     box = (cx - fw / 2, cy - fh / 2, cx + fw / 2, cy + fh / 2)
+    # 2026-10-20: a zoom never slices an object. Any compact part the shot cuts through
+    # (a tree, a window, a coin) is taken in whole; long lines (a ground line, a wall)
+    # may still run off the edge, as they would in any close-up.
+    box = _whole_objects(drawing, box)
+    # A printed label the shot touches is kept whole: the shot widens to include it.
+    for surface, lx, ly, _after, _keep in drawing.labels:
+        lx1, ly1 = lx + surface.get_width(), ly + surface.get_height()
+        if lx < box[2] and lx1 > box[0] and ly < box[3] and ly1 > box[1]:
+            box = (min(box[0], lx), min(box[1], ly), max(box[2], lx1), max(box[3], ly1))
     return dataclasses.replace(drawing, bbox=box, entrance="fade", companion=None, clip=True)
 
 

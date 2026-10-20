@@ -72,5 +72,10 @@ def attach_label(drawing, text: str, rgb: tuple[int, int, int]) -> bool:
     crop = Image.new("RGBA", (int(w + pad * 2), int(h + pad * 2)), (0, 0, 0, 0))
     ImageDraw.Draw(crop).text((pad - bx0, pad - by0), word, font=font, fill=tuple(rgb) + (255,))
     surface, data = _surface(crop)
-    drawing.labels.append((surface, box[0] + dx, box[1] + dy, SHOW_AFTER, data))
+    lx, ly = box[0] + dx, box[1] + dy
+    drawing.labels.append((surface, lx, ly, SHOW_AFTER, data))
+    # The label is part of the picture: push-ins, zooms and the fit to the drawing area
+    # keep it whole, exactly like the drawing's own lines (2026-10-20: "FUND" was cut).
+    bx0, by0, bx1, by1 = drawing.bbox
+    drawing.bbox = (min(bx0, lx), min(by0, ly), max(bx1, lx + crop.width), max(by1, ly + crop.height))
     return True
