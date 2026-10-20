@@ -35,7 +35,7 @@ class Box:
     w: float = 0.0
     h: float = 0.0
     lines: tuple = ()
-    small: bool = False
+    font: object = None
     glow: bool = False
 
     def overlaps(self, other: "Box") -> bool:
@@ -60,18 +60,30 @@ def _wrap(text: str) -> tuple[str, ...]:
     return " ".join(words[:best]), " ".join(words[best:])
 
 
-def _measure(c: Canvas, box: Box, style: int) -> None:
-    """style 0: normal, 1: small, 2: small on two lines."""
-    box.small = style >= 1
-    box.lines = _wrap(box.text) if style == 2 else (box.text,)
-    font = c.small if box.small else c.font
+# (text height in diagram units, two lines?) tried in order until the layout fits.
+# The frame is 2 units tall, so sizes adapt to every frame shape (wide, tall, square duo).
+STYLES = ((0.16, False), (0.125, False), (0.125, True), (0.1, True), (0.08, True))
+
+
+def _font(c: Canvas, units: float):
+    from PIL import ImageFont
+
+    from ...theme import load_theme
+
+    return ImageFont.truetype(str(load_theme().font("bold")), max(10, round(c.scale * units)))
+
+
+def _measure(c: Canvas, box: Box, style: tuple) -> None:
+    units, two = style
+    box.font = _font(c, units)
+    box.lines = _wrap(box.text) if two else (box.text,)
     widths, height = [], 0.0
     for line in box.lines:
-        x0, y0, x1, y1 = c.draw.textbbox((0, 0), line, font=font)
+        x0, y0, x1, y1 = c.draw.textbbox((0, 0), line, font=box.font)
         widths.append((x1 - x0) / c.scale)
         height = max(height, (y1 - y0) / c.scale)
-    box.w = max(widths) + 0.16
-    box.h = height * len(box.lines) * 1.25 + 0.12
+    box.w = max(widths) + units * 1.1
+    box.h = height * len(box.lines) * 1.25 + units * 0.8
 
 
 def _fits(boxes: list[Box], aspect: float) -> bool:
@@ -100,7 +112,7 @@ def _solve(c: Canvas, aspect: float, boxes: list[Box], arrangements):
     no box overlaps another or leaves the frame, and no straight link runs through a box.
 
     arrangements: (arrange(boxes), links) pairs; returns the arrange function used."""
-    for style in (0, 1, 2):
+    for style in STYLES:
         for box in boxes:
             _measure(c, box, style)
         for arrange, links in arrangements:
@@ -127,9 +139,10 @@ def _rounded(c: Canvas, b: Box, color, width: float) -> None:
 def _draw_box(c: Canvas, b: Box) -> None:
     color = GOLD if b.glow else WHITE
     _rounded(c, b, color, 1.4 if b.glow else 1.1)
-    step = (b.h - 0.12) / len(b.lines)
+    step = (b.h - b.h * 0.25) / len(b.lines)
     for i, line in enumerate(b.lines):
-        c.label(b.x, b.y + (len(b.lines) - 1) / 2 * step - i * step, line, color, small=b.small)
+        c.label(b.x, b.y + (len(b.lines) - 1) / 2 * step - i * step, line, color)
+        c.labels[-1]["font"] = b.font
 
 
 def _edge_point(b: Box, tx: float, ty: float) -> tuple[float, float]:
@@ -181,10 +194,13 @@ def network(size, params, items) -> Canvas:
     def outline(boxes):
         """Tall frames: the hub on top, the nodes listed below it off one spine."""
         hub.x, hub.y = -aspect + EDGE * 2 + hub.w / 2, 1 - EDGE * 2 - hub.h / 2
-        step = (hub.y - hub.h / 2 - (-1 + EDGE * 2)) / len(nodes)
+        h = max(b.h for b in nodes)
+        first = hub.y - hub.h / 2 - GAP * 2.5 - h / 2
+        last = -1 + EDGE * 2 + h / 2
+        step = (first - last) / max(1, len(nodes) - 1)
         for i, b in enumerate(nodes):
             b.x = -aspect + EDGE * 2 + 0.22 + b.w / 2
-            b.y = hub.y - hub.h / 2 - step * (i + 0.5)
+            b.y = first - step * i
 
     used = _solve(c, aspect, [hub] + nodes, [(ring, [(hub, b) for b in nodes]), (outline, [])])
     if used is outline:
