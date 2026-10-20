@@ -21,6 +21,7 @@ class Part:
     gold: str
     figure: str
     layout: str
+    label: str = ""   # a word printed on the glowing part (2026-10-20)
 
 
 def parts(scene: dict) -> list[Part]:
@@ -28,10 +29,11 @@ def parts(scene: dict) -> list[Part]:
         return []  # a pacing shot reuses its parent scene's picture (no extra image)
     layout = str(scene.get("layout") or "single")
     out = [Part(scene["id"], str(scene.get("drawing", "")), str(scene.get("gold_element", "")),
-                str(scene.get("figure") or "").strip(), layout)]
+                str(scene.get("figure") or "").strip(), layout, str(scene.get("label") or "").strip())]
     if layout == "duo":
         out.append(Part(second_id(scene["id"]), str(scene.get("drawing_b", "")),
-                        str(scene.get("gold_element_b", "")), str(scene.get("figure_b") or "").strip(), layout))
+                        str(scene.get("gold_element_b", "")), str(scene.get("figure_b") or "").strip(), layout,
+                        str(scene.get("label_b") or "").strip()))
     return out
 
 

@@ -835,7 +835,8 @@ class ProductionService:
                             continue  # already paid for and checkpointed
                         if try_figure(part, target, str(spec["format"])):
                             continue  # math and physics layer: drawn in code, at no cost
-                        prompt = illustration_prompt(part.drawing, part.gold, str(spec["format"]), part.layout)
+                        prompt = illustration_prompt(part.drawing, part.gold, str(spec["format"]), part.layout,
+                                                     part.label)
                         for attempt in (prompt, calm_prompt(prompt, part)):
                             self._reserve(spec, support_image_cost_model, Usage(images=1), stage="illustrations")
                             try:

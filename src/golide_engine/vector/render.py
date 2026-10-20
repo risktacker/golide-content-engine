@@ -598,7 +598,7 @@ class VectorRenderer:
                 drawing.entrance = "pen" if not SCENES else "fade"
             if scene.get("layout") == "duo":
                 # Duo layout: the right-hand drawing is always drawn by the pen.
-                drawing.companion = _load_drawing(illustrations.get(second_id(scene["id"])), scene)
+                drawing.companion = _load_drawing(illustrations.get(second_id(scene["id"])), scene, "label_b")
                 if drawing.companion is not None:
                     drawing.companion.entrance = "pen"
             SCENES[scene["id"]] = drawing
@@ -808,9 +808,10 @@ class Transition:
             ctx.restore()
 
 
-def _load_drawing(path, scene: dict):
+def _load_drawing(path, scene: dict, label_key: str = "label"):
     """A scene picture as pen strokes: an exact figure (math layer) or a traced drawing."""
-    from .illustrate import load_figure, vectorize
+    from .illustrate import ACCENTS, load_figure, vectorize
+    from .scene_labels import attach_label
 
     if path is None or not Path(path).exists():
         return None
@@ -820,4 +821,6 @@ def _load_drawing(path, scene: dict):
         return figure
     drawing = vectorize(Path(path))
     drawing.accent = str(scene.get("accent") or "gold")
+    # 2026-10-20: a word on the glowing part (a jar's label), typeset sharp, never traced.
+    attach_label(drawing, str(scene.get(label_key) or ""), ACCENTS.get(drawing.accent, ACCENTS["gold"]))
     return drawing

@@ -17,7 +17,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from . import chemistry, circuits, heat, maths, mechanics, optics, relativity, solids, structures, waves
+from . import chemistry, circuits, diagrams, heat, maths, mechanics, optics, relativity, solids, structures, waves
 from .core import FigureError, parse_figure, save, sidecar_path
 
 BUILDERS = {
@@ -37,6 +37,8 @@ BUILDERS = {
     # electricity, chemistry, structures, 3D geometry
     "circuit": circuits.circuit, "molecule": chemistry.molecule, "truss": structures.truss,
     "solid": solids.solid,
+    # diagrams (2026-10-20): who connects to whom, step-by-step flows, hierarchies
+    "network": diagrams.network, "flow": diagrams.flow, "tree": diagrams.tree,
 }
 KINDS = tuple(BUILDERS)
 
@@ -66,6 +68,9 @@ EXAMPLES = {
     "molecule": "molecule: name=water                    (water, carbon dioxide, methane, ammonia, oxygen, nitrogen, hydrogen, ethanol, benzene)",
     "truss": "truss: span=6; height=2; load=10; panels=4   (bridge truss; pull and push in every member computed)",
     "solid": "solid: shape=cylinder; radius=3; height=5   (cube a=, cuboid length/width/height, cone, sphere, pyramid a= height=; volume and surface)",
+    "network": "network: hub=Benefit Fund; nodes=Stockholders, Board, Researchers, Public; glow=hub   (up to 7 nodes; glow= a node's name instead)",
+    "flow": "flow: steps=Shares, Fund, Grants, Public; glow=Fund   (2 to 6 steps, drawn with arrows)",
+    "tree": "tree: root=Anthropic; children=Fund, Board, Stockholders; glow=Fund   (an extra line 'Fund > Research, Safety' adds a level)",
 }
 
 

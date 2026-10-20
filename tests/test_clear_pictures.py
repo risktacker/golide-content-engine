@@ -34,9 +34,24 @@ def test_shots_never_zoom_into_fragments():
         assert x1 - x0 >= 1000 * 0.68 and y1 - y0 >= 1000 * 0.68
 
 
-def test_rules_ask_for_concrete_blank_objects():
+def test_rules_ask_for_definition_not_bans():
     rules = scene_plan_instructions("long")
-    assert "CLEAR AT A GLANCE" in rules and "BLANK" in rules
-    assert "constellation of connected dots" not in rules
-    prompt = illustration_prompt("a jar of coins", "the coins", "long")
-    assert "texture mark" not in prompt and "No textures" in prompt and "blank" in prompt
+    assert "DEFINED, NEVER VAGUE" in rules and "a network: a few clear nodes" in rules
+    assert "clearly built network or constellation" in rules and "LABELS" in rules and "DIAGRAMS" in rules
+    prompt = illustration_prompt("a jar of coins", "the label panel on the jar", "long", label="BONDS")
+    assert "texture mark" not in prompt and "No textures" in prompt and "empty label panel" in prompt
+    assert "BONDS" not in prompt                      # the word is typeset by us, never drawn by the model
+    assert "empty label panel" not in illustration_prompt("a jar", "the lid", "long")
+
+
+def test_label_is_printed_on_the_glowing_part_clear_of_lines():
+    from golide_engine.vector.scene_labels import attach_label
+
+    jar = [_line(200, 200, 200, 800), _line(200, 800, 600, 800), _line(600, 800, 600, 200)]
+    panel = [_line(280, 420, 520, 420, gold=True), _line(520, 420, 520, 580, gold=True),
+             _line(520, 580, 280, 580, gold=True), _line(280, 580, 280, 420, gold=True)]
+    d = Drawing(jar + panel, 900, 900, (200.0, 200.0, 600.0, 800.0), None, None)
+    assert attach_label(d, "bonds", (233, 196, 106))
+    surface, x, y, after, _ = d.labels[0]
+    assert 280 <= x and x + surface.get_width() <= 520 and 420 <= y and y + surface.get_height() <= 580
+    assert after > 0.8 and not attach_label(d, "  ", (1, 2, 3))

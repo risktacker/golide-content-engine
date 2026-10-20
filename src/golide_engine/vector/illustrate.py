@@ -80,9 +80,11 @@ VISUAL_PLAN_SCHEMA: dict = {
                     "drawing_b": {"type": "string"},
                     "gold_element_b": {"type": "string"},
                     "figure_b": {"type": "string"},
+                    "label": {"type": "string"},
+                    "label_b": {"type": "string"},
                 },
                 "required": ["first_line", "last_line", "drawing", "gold_element", "accent", "sound", "sound_word",
-                             "figure", "layout", "drawing_b", "gold_element_b", "figure_b"],
+                             "figure", "layout", "drawing_b", "gold_element_b", "figure_b", "label", "label_b"],
             },
         },
     },
@@ -123,22 +125,34 @@ room, a technician's silhouette beside it holding a clipboard"). Real objects,
 people and places drawn simply. If people appear they are Black. One clear
 focal point. No text, labels, numbers, logos or screens with readable content.
 
-CLEAR AT A GLANCE (owner direction 2026-10-20: "failure blocks, undefined, can't be
-explained"). Every drawing must be something a child names in one second: a real,
-everyday object or a simple scene with a clear outline. When the idea is abstract
-(a fund, shares, a vote, control, a policy, trust), pick a CONCRETE object that
-stands for it: a jar of coins, a pie with one slice lifted out, a balance scale, a
-ballot box, a vault door, a key on a ring, a signed paper with a pen, a steering
-wheel. Never a network of lines, a web, roots, a map, a cloud of dots, a texture, a
-pattern or an abstract shape. Jars, signs, boxes, papers and screens are BLANK:
-nothing written on them.
+DEFINED, NEVER VAGUE (owner direction 2026-10-20: "we need definition"; this is
+industry-level illustration). Any kind of picture is welcome, but every one is
+built with clear structure so a viewer reads it instantly:
+- an object or scene: a bold, clean outline of a real thing, its key parts clear;
+- a network: a few clear nodes (circles or boxes) joined by clean straight lines,
+  one node clearly the centre;
+- roots, a tree or branches: one trunk and a few deliberate branches, each ending
+  in something you can name;
+- a map: the clean outline of a real, recognisable place with a few clear marks;
+- dots or a constellation: dots that form a recognisable shape or pattern.
+Never vague blobs, tangles, random branches, textures or clutter. When an
+abstract idea (a fund, shares, a vote, control) needs a picture, give it a
+concrete form: a jar of coins, a pie with one slice lifted out, a balance scale,
+a ballot box, a vault door, or an exact diagram (see DIAGRAMS below).
+
+LABELS (owner direction 2026-10-20: a label must be clean and sit on the thing it
+names). "label": one or two short words printed on the glowing part, like a word
+on a jar ("BONDS"), a sign or a box, or "" for none. The engine prints it in sharp
+type on that part, so "gold_element" must be the part that carries the label (for
+example "the label panel on the jar"). Most scenes need no label; use one only
+when the word makes the picture clearer. "label_b": the same for "drawing_b".
 
 VARIETY (owner direction 2026-10-07: the visuals must feel vast, never repeated):
 every scene uses a different kind of shot from the one before, mixing across
 the video: a wide scene with people in a place, a close-up of one object, a
 visual metaphor (a key, a bridge, a scale, a jar, a seed growing), a before
-and after side by side, a symbol drawn large (an eye, a clock, a lock), an
-object seen from above. Never draw the same main object in two scenes in a row, and never use
+and after side by side, a clearly built network or constellation, a symbol
+drawn large (an eye, a clock, a lock), an overhead or cross-section view. Never draw the same main object in two scenes in a row, and never use
 the same composition twice in a short.
 
 "gold_element": the single part of the drawing that should glow because it
@@ -193,8 +207,15 @@ gas laws, heat engines, relativity), set "figure" to ONE line in one of these
 forms, using the numbers spoken in those lines, and the engine draws it
 precisely instead of the sketch:
 {figure_menu}
-Never invent numbers the lines do not give. Everywhere else, and in every
-news or story scene, "figure" is "" and the drawing is used. Still write
+Never invent numbers the lines do not give.
+
+DIAGRAMS (owner direction 2026-10-20): when a scene explains who connects to
+whom, how something flows step by step, or who sits above whom (a fund and the
+people it serves, money moving from shares to grants, a company and its
+board), use the "network", "flow" or "tree" figure above with the real names
+from the lines. The engine draws it exactly, with clean labels.
+
+Everywhere else, and in every plain story scene, "figure" is "" and the drawing is used. Still write
 "drawing" and "gold_element" for a figure scene (they are the fallback).
 
 {layout_rules}
@@ -246,7 +267,8 @@ def validate_scenes(scenes: list[dict], line_count: int, breaks: set[int] | froz
     return fixed
 
 
-def illustration_prompt(drawing: str, gold: str, format_name: str, layout: str = "single") -> str:
+def illustration_prompt(drawing: str, gold: str, format_name: str, layout: str = "single",
+                        label: str = "") -> str:
     from .layouts import composition
 
     area = composition(format_name, layout)
@@ -255,15 +277,18 @@ def illustration_prompt(drawing: str, gold: str, format_name: str, layout: str =
         "background, like a confident hand-drawn ink sketch made with a fine glowing pen. "
         "Main shapes in a steady line with a bold, instantly recognisable outline; a few small "
         "inner details (a seam, a button, a window, a fold) in finer lines so the drawing has "
-        "depth without clutter. No textures, hatching, cracks, patterns, mosaics, maps or "
-        "networks of lines. Give the scene a simple ground line or soft horizon so objects sit somewhere, "
+        "depth without clutter. Networks, branches, maps and dot patterns are welcome when "
+        "asked for, but always clearly structured. No textures, hatching, cracks, mosaics or "
+        "random scribbles. Give the scene a simple ground line or soft horizon so objects sit somewhere, "
         "one clear focal point, and generous empty space around it. Every line closed and "
         "deliberate; no sketchy double lines, no stray dots. Outlines only: no fills, no solid "
         "shapes, no shading, no gradients, no glow halos, no colour except one part. Draw the "
         "following as one composed scene: "
         f"{drawing.strip()} Draw only this part in warm gold lines: {gold.strip()}. "
-        "No text, letters, numbers, labels, logos, watermarks or user-interface elements anywhere: "
-        "jars, signs, boxes, papers and screens are blank. "
+        + (f"Give {gold.strip()} a clean, empty label panel (a plain outlined rectangle) where a "
+           "word will be printed later. " if label.strip() else "")
+        + "No text, letters, numbers, labels, logos, watermarks or user-interface elements anywhere; "
+        "any sign, label or screen is left empty. "
         f"{area}"
     )
 
