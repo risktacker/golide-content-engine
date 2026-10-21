@@ -1,0 +1,194 @@
+{
+  "id": "golide-short-2026-10-21",
+  "studio_managed": true,
+  "format": "short",
+  "title": "AI Hackers Just Let Software Attack 100+ Websites\u2014Could Your Next Security Breach Be Fully Automated?",
+  "brief": "Top pick. A security investigation found autonomous AI agents were pointed at more than 1,200 websites and reached more than 100 companies, with very little human involvement. The story is fresh, alarming and easy to visualize: an agent searches for weak spots, writes attack code, tests it and keeps going. Explain what this means for ordinary people, small businesses and the security of everyday websites\u2014and whether AI will make hacking cheaper than defending against it.",
+  "demand_query": "AI tech news everyone is talking about this week",
+  "demand_validation_required": true,
+  "budget_class": "scheduled",
+  "purpose": "channel-automation",
+  "generate_at": "2026-10-21T07:00:00Z",
+  "max_cost_usd": 6,
+  "production_authorized": true,
+  "output_destination": "render-and-upload",
+  "owner_voice_required": true,
+  "concept": {
+    "family": "technology-software-business",
+    "promise": "A high-interest current niche topic explained with authoritative evidence and a useful GOLIDE angle",
+    "scores": {
+      "scroll_stop": 9,
+      "visual_payoff": 9,
+      "curiosity_gap": 9,
+      "retention_design": 9,
+      "broad_relevance": 8,
+      "evidence_strength": 8,
+      "novelty": 8,
+      "replay_or_loop": 8,
+      "revenue_fit": 6
+    }
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri-sun"
+  },
+  "music": {
+    "mood": "curious-tension"
+  },
+  "avatar_reference_images": [],
+  "release": {
+    "approved": true,
+    "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+    "scheduled_at": "2026-10-21T11:00:00Z"
+  },
+  "_studio_job_id": "golide-short-2026-10-21",
+  "topic_candidates": [
+    {
+      "title": "AI Hackers Just Let Software Attack 100+ Websites\u2014Could Your Next Security Breach Be Fully Automated?",
+      "query": "AI agents hacked more than 100 company websites October 2026 Reuters",
+      "brief": "Top pick. A security investigation found autonomous AI agents were pointed at more than 1,200 websites and reached more than 100 companies, with very little human involvement. The story is fresh, alarming and easy to visualize: an agent searches for weak spots, writes attack code, tests it and keeps going. Explain what this means for ordinary people, small businesses and the security of everyday websites\u2014and whether AI will make hacking cheaper than defending against it.",
+      "evidence_summary": "The Hacker News reported on October 20, 2026, citing attacker records reviewed by Reuters, that the agents attempted attacks against more than 1,200 sites and reached over 100 companies. This is also the strongest fresh science-and-engineering story in the supplied discussion signals: it has 663 HN points and 148 comments, while the wider AI-agent debate is highly active. ([tomshardware.com](https://www.tomshardware.com/tech-industry/artificial-intelligence/a-chinese-hacker-used-ai-agents-to-break-into-more-than-100-company-websites-deere-and-sharkninja-among-websites-hit-by-open-source-ai-powered-problem-solving-platform-demo?utm_source=openai))",
+      "authoritative_source_url": "https://thehackernews.com/2026/10/hackers-use-autonomous-ai-agents-to.html",
+      "broke_on": "2026-10-20",
+      "science_angle": "How an AI agent combines web reconnaissance, code generation, trial-and-error and feedback loops to automate parts of a cyberattack.",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "AI agents hacked more than 100 company websites October 2026 Reuters",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 66,
+        "median_views_per_day": 342769.79,
+        "top_views_per_day": 3701570.84,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-10-21T07:02:54.702164+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      },
+      "trend_pulse": {
+        "query": "AI agents hacked more than 100 company websites October 2026 Reuters",
+        "fresh_videos": 10,
+        "median_views_per_hour": 6.4,
+        "top_views_per_hour": 71.3,
+        "score": 54.7,
+        "hot": false,
+        "measured_at": "2026-10-21T07:02:54.703821+00:00"
+      }
+    },
+    {
+      "title": "The U.S. Just Ordered DeepSeek Out of Federal Systems\u2014What Does an AI Ban Actually Remove?",
+      "query": "US federal agencies remove DeepSeek October 20 2026 DHS order",
+      "brief": "The U.S. Department of Homeland Security formally ordered civilian federal agencies to stop buying DeepSeek products and remove DeepSeek and related implementations from their systems. The ordinary-person question is simple: does this affect only government computers, or could it change which AI tools schools, contractors and businesses are willing to use? The video can separate a government supply-chain ban from a ban on personal use.",
+      "evidence_summary": "The Federal Register notice says the order excludes DeepSeek products from civilian-agency procurement and removes them from civilian executive-branch IT systems. TechCrunch reported the action on October 20 and described the stated concern as possible access to sensitive user data under Chinese law. ([govinfo.gov](https://www.govinfo.gov/content/pkg/FR-2026-10-20/html/2026-21447.htm?utm_source=openai))",
+      "authoritative_source_url": "https://techcrunch.com/2026/10/20/us-orders-federal-agencies-to-remove-chinas-deepseek-ai-from-their-systems/",
+      "broke_on": "2026-10-20",
+      "science_angle": "How AI supply chains work: model weights, hosted services, third-party software and data access can create different security risks even when the chatbot looks the same to a user.",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "US federal agencies remove DeepSeek October 20 2026 DHS order",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 66,
+        "median_views_per_day": 342769.79,
+        "top_views_per_day": 3701570.84,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-10-21T07:02:54.702749+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      },
+      "trend_pulse": {
+        "query": "US federal agencies remove DeepSeek October 20 2026 DHS order",
+        "fresh_videos": 10,
+        "median_views_per_hour": 8.4,
+        "top_views_per_hour": 175.5,
+        "score": 57.9,
+        "hot": false,
+        "measured_at": "2026-10-21T07:02:55.042073+00:00"
+      }
+    },
+    {
+      "title": "WhatsApp Hid Instructions From Its AI\u2014Can a Chatbot Be Told to Keep You Away From a Regulator?",
+      "query": "WhatsApp hidden AI instructions regulator October 20 2026 Redact",
+      "brief": "Researchers found hidden instructions in WhatsApp help-page code telling its support chatbot not to recommend a privacy regulator and not to discuss certain legal rights. WhatsApp said the text came from a bug and was removed, and there is no evidence the chatbot actually followed every instruction. That uncertainty is the hook: viewers can see how invisible instructions shape AI answers and debate whether companies should disclose them.",
+      "evidence_summary": "The Hacker News investigation reported that the hidden text appeared in page source, was not visible to normal users, and was removed by October 18. It also clearly distinguishes what was found\u2014the instructions\u2014from what remains unknown\u2014whether the chatbot acted on them. The story received 724 HN points and 208 comments in the supplied fresh-headline signals. ([thehackernews.com](https://thehackernews.com/2026/10/whatsapp-hid-instructions-in-help-pages.html?utm_source=openai))",
+      "authoritative_source_url": "https://thehackernews.com/2026/10/whatsapp-hid-instructions-in-help-pages.html",
+      "broke_on": "2026-10-20",
+      "science_angle": "How prompt injection and instruction hierarchy work: language models weigh hidden system rules, page content and user requests, but can be steered by text they receive from the web.",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "WhatsApp hidden AI instructions regulator October 20 2026 Redact",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 66,
+        "median_views_per_day": 342769.79,
+        "top_views_per_day": 3701570.84,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-10-21T07:02:54.703276+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      },
+      "trend_pulse": {
+        "query": "WhatsApp hidden AI instructions regulator October 20 2026 Redact",
+        "fresh_videos": 10,
+        "median_views_per_hour": 0.4,
+        "top_views_per_hour": 4.9,
+        "score": 40.7,
+        "hot": false,
+        "measured_at": "2026-10-21T07:02:55.368240+00:00"
+      }
+    },
+    {
+      "title": "One Cloud Power Failure Disrupted Banks\u2014Why Does a Single Data Center Matter So Much?",
+      "query": "Google Cloud outage UK banks power event October 20 2026",
+      "brief": "A disruption in Google Cloud\u2019s London region affected banking and public-service apps, including reported problems with Revolut. The story turns an invisible technology dependency into something everyone understands: payments, transfers and websites can fail even when a bank\u2019s own app appears normal. The useful angle is what ordinary users should do\u2014keep a backup payment method\u2014and whether critical services should rely so heavily on a few cloud providers.",
+      "evidence_summary": "Google\u2019s service-health page confirmed multiple services were affected in the europe-west2 region, while AP and Reuters reports described disruptions affecting UK banks and other services. This is a strong visual explainer about redundancy, regional failover and the difference between one data-center zone and the wider internet. ([status.cloud.google.com](https://status.cloud.google.com/?hl=EN&utm_source=openai))",
+      "authoritative_source_url": "https://status.cloud.google.com/?hl=EN",
+      "broke_on": "2026-10-20",
+      "science_angle": "How electricity, cooling, network routing, regional redundancy and automatic failover determine whether a cloud service keeps working during a local failure.",
+      "evidence_valid": true,
+      "platform_seed_demand": {
+        "query": "Google Cloud outage UK banks power event October 20 2026",
+        "score": 85.0,
+        "verdict": "pass",
+        "recent_videos": 66,
+        "median_views_per_day": 342769.79,
+        "top_views_per_day": 3701570.84,
+        "market_coverage": 4,
+        "title_query_overlap": 0.0,
+        "measured_at": "2026-10-21T07:02:54.703791+00:00",
+        "signal_type": "youtube-most-popular-seed-proxy"
+      },
+      "trend_pulse": {
+        "query": "Google Cloud outage UK banks power event October 20 2026",
+        "fresh_videos": 10,
+        "median_views_per_hour": 1.7,
+        "top_views_per_hour": 23.0,
+        "score": 47.2,
+        "hot": false,
+        "measured_at": "2026-10-21T07:02:55.691829+00:00"
+      }
+    }
+  ],
+  "platform_demand": {
+    "query": "AI agents hacked more than 100 company websites October 2026 Reuters",
+    "score": 85.0,
+    "verdict": "pass",
+    "recent_videos": 66,
+    "median_views_per_day": 342769.79,
+    "top_views_per_day": 3701570.84,
+    "market_coverage": 4,
+    "title_query_overlap": 0.0,
+    "measured_at": "2026-10-21T07:02:54.702164+00:00",
+    "signal_type": "youtube-most-popular-seed-proxy"
+  },
+  "selected_topic_source": "https://thehackernews.com/2026/10/hackers-use-autonomous-ai-agents-to.html"
+}
