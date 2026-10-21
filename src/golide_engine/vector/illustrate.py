@@ -342,6 +342,7 @@ class Drawing:
     companion: "Drawing | None" = None
     clip: bool = False  # a pacing shot: framed on part of the picture, clipped to the drawing area
     figure: bool = False  # an exact figure (maths, physics): the background shows the lesson grid
+    traced: int = 0       # strokes found by the tracer before clean-up (a clutter measure)
 
     @property
     def total(self) -> float:
@@ -451,6 +452,7 @@ def _order(strokes: list[Stroke]) -> list[Stroke]:
 
 CLUTTER_STROKES = 110     # above this many traced strokes, a picture is cluttered
 MAX_STROKES = 170         # never draw more than this many
+MAX_GOLD = 60             # glowing strokes kept at most, so the outline always has room
 SHORT_SHARE = 0.03        # in a cluttered picture, white strokes shorter than this share of
                           # the drawing's diagonal are texture, not shape
 
@@ -459,17 +461,38 @@ def declutter(strokes: list[Stroke]) -> list[Stroke]:
     """Drop traced texture (hatching, cracks, mosaics) so the shape reads (2026-10-20).
 
     A clean line drawing traces into a few dozen strokes; texture traces into
-    hundreds of tiny ones. When a picture is cluttered, short white strokes go and
-    only the longest strokes are kept; the glowing (gold) strokes always stay.
+    hundreds of tiny ones. When a picture is cluttered, short strokes go and only
+    the longest are kept. The glow is capped too (2026-10-21: a mostly-gold picture
+    lost its whole white outline and became a gold tangle), so the outline that
+    says what the object is always survives.
     """
     if len(strokes) <= CLUTTER_STROKES:
         return strokes
     pts = np.vstack([s.points for s in strokes])
     diag = float(np.hypot(*(pts.max(axis=0) - pts.min(axis=0)))) or 1.0
-    gold = [s for s in strokes if s.gold]
+    gold = sorted((s for s in strokes if s.gold), key=lambda s: -s.length)[:MAX_GOLD]
     white = [s for s in strokes if not s.gold and s.length >= SHORT_SHARE * diag]
     white.sort(key=lambda s: -s.length)
-    return gold + white[:max(0, MAX_STROKES - len(gold))]
+    return gold + white[:MAX_STROKES - len(gold)]
+
+
+GOLD_SHARE_MAX = 0.5      # more glowing line than this and the picture has no clear focus
+MIN_STROKES = 5
+
+
+def picture_problems(drawing: "Drawing") -> list[str]:
+    """Why a traced picture would read as an undefined block on screen ([] when it is fine)."""
+    total = sum(s.length for s in drawing.strokes) or 1.0
+    gold = sum(s.length for s in drawing.strokes if s.gold)
+    problems = []
+    if gold / total > GOLD_SHARE_MAX:
+        problems.append("almost everything glows; draw the object in thin white lines and make only ONE "
+                        "small part glow gold")
+    if len(drawing.strokes) < MIN_STROKES:
+        problems.append("the drawing is nearly empty; draw the whole object with a clear outline")
+    if drawing.traced > CLUTTER_STROKES * 2:
+        problems.append("the drawing is a tangle of tiny lines; use fewer, longer, cleaner lines and no texture")
+    return problems
 
 
 def vectorize(image_path: Path, max_side: int = 900) -> Drawing:
@@ -515,13 +538,14 @@ def vectorize(image_path: Path, max_side: int = 900) -> Drawing:
             strokes.append(stroke)
     if not strokes:
         raise ValueError(f"no line art found in {image_path}")
+    traced = len(strokes)
     strokes = declutter(strokes)
     allpts = np.vstack([s.points for s in strokes])
     x0, y0 = allpts.min(axis=0)
     x1, y1 = allpts.max(axis=0)
     fill, accent_fill = _fills(mask, goldness)
     return Drawing(_order(strokes), image.width, image.height, (float(x0), float(y0), float(x1), float(y1)),
-                   fill, accent_fill)
+                   fill, accent_fill, traced=traced)
 
 
 def accent_box(drawing: Drawing) -> tuple[float, float, float, float] | None:

@@ -122,6 +122,34 @@ class ProductionService:
         if voice_cfg.get("provider") != "owner_recording":
             raise RuntimeError("production narration must use the owner's recorded voice")
 
+    def _redraw_if_unclear(self, spec, part, prompt: str, target: Path, line_art, cost_model: str,
+                           production_id: str) -> None:
+        """2026-10-21: a picture that would read as an undefined block (all glow, empty, a
+        tangle) is drawn once more with the problem named; the better of the two is kept."""
+        from ..vector.illustrate import picture_problems, vectorize
+        from ..vector.scene_art import picture_size
+
+        try:
+            problems = picture_problems(vectorize(target))
+        except Exception:  # a picture the tracer cannot read at all
+            problems = ["the drawing has no clear lines; draw the object with a clean white outline"]
+        if not problems:
+            return
+        print(json.dumps({"status": "picture_redrawn", "picture": part.picture_id, "problems": problems}))
+        retry = target.with_name(target.stem + "-retry.png")
+        try:
+            self._reserve(spec, cost_model, Usage(images=1), stage="illustrations")
+            output = line_art.create(prompt + " FIX THESE: " + "; ".join(problems) + ".", retry,
+                                     picture_size(str(spec["format"]), part))
+            self._record_image(production_id, "illustrations", cost_model, output)
+            if len(picture_problems(vectorize(retry))) <= len(problems):
+                retry.replace(target)
+        except Exception as exc:  # the first picture still stands
+            print(json.dumps({"status": "picture_redraw_failed", "picture": part.picture_id,
+                              "error": str(exc)[:200]}))
+        finally:
+            retry.unlink(missing_ok=True)
+
     @staticmethod
     def _stamp_thumbnail(work: Path, thumbnail: Path) -> None:
         """Typeset 1 to 3 huge curiosity words on the left (2026-10-21)."""
@@ -849,6 +877,8 @@ class ProductionService:
                                 print(f"::warning title=Picture refused by the safety filter::{part.picture_id}")
                                 continue
                             self._record_image(production_id, "illustrations", support_image_cost_model, output)
+                            self._redraw_if_unclear(spec, part, attempt, target, line_art, support_image_cost_model,
+                                                    production_id)
                             break
                         else:
                             refused.add(target)

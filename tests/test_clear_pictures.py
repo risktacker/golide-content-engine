@@ -96,3 +96,28 @@ class LabelStaysInViewTests(unittest.TestCase):
             cut = 850 < x1 < 950 or 850 < x0 < 950
             if x1 > 850 and x0 < 950:      # the shot reaches the tree
                 self.assertFalse(cut, shot)
+
+
+class UnclearPictureTests(unittest.TestCase):
+    """2026-10-21: an all-gold tangle reached a short; the outline must survive and unclear art is redrawn."""
+
+    def test_a_mostly_gold_cluttered_picture_keeps_its_white_outline(self):
+        outline = [_line(0, 0, 900, 0), _line(900, 0, 900, 900), _line(900, 900, 0, 900), _line(0, 900, 0, 0)]
+        glow = [_line(100 + i % 20 * 30, 100 + i // 20 * 30, 300 + i % 20 * 30, 300 + i // 20 * 30, gold=True)
+                for i in range(200)]
+        out = declutter(outline + glow)
+        kept = {id(s) for s in out}
+        self.assertTrue(all(id(s) in kept for s in outline))
+        self.assertLessEqual(sum(1 for s in out if s.gold), 60)
+
+    def test_problems_are_named_for_an_all_gold_or_empty_picture(self):
+        from golide_engine.vector.illustrate import picture_problems
+
+        gold = Drawing([_line(0, 0, 900, 900, gold=True)] * 6 + [_line(0, 0, 10, 10)], 900, 900,
+                       (0.0, 0.0, 900.0, 900.0), None, None)
+        self.assertTrue(any("glows" in p for p in picture_problems(gold)))
+        empty = Drawing([_line(0, 0, 900, 0)], 900, 900, (0.0, 0.0, 900.0, 0.0), None, None)
+        self.assertTrue(any("empty" in p for p in picture_problems(empty)))
+        good = Drawing([_line(0, i * 100, 900, i * 100) for i in range(8)] + [_line(400, 400, 500, 450, gold=True)],
+                       900, 900, (0.0, 0.0, 900.0, 900.0), None, None)
+        self.assertEqual([], picture_problems(good))
