@@ -11,8 +11,10 @@ now does:
   lighting: a soft gradient halo of that colour fading out behind the subject, rim
   light on its edges and a faint spill below. Everything else is calm white or grey
   line on deep-space black.
-* Big and centred in the upper part; the bottom stays dark for one short line of
-  text, set like the posts: light words, the punch in bold in the glow colour.
+* The subject fills the right of the frame; the left stays dark for one to three
+  huge words (2026-10-21: "simple 1 to 3 words of catch and curiosity, not caption
+  text"), the punch word in the glow colour. The bottom-right corner, where YouTube
+  prints the duration, never carries text.
 """
 
 from __future__ import annotations
@@ -62,15 +64,16 @@ def thumbnail_prompt(title: str, moment: str, colors: list[str]) -> str:
         "background (#0B0B0E) with a very faint, sparse starfield. "
         f"ONE hero subject, nothing else: {subject}. "
         "Render it as luminous fine-line illustration or a cinematic, softly lit real object, alone in "
-        "the black space, large, centred horizontally and placed in the upper 70 percent of the frame, "
-        "slightly angled toward the camera, crisp and readable at phone-thumbnail size. "
+        "the black space, large, filling the right 55 percent of the frame top to bottom, slightly "
+        "angled toward the camera, crisp and readable at phone-thumbnail size. "
         f"Exactly ONE key element of it glows bright {glow} (a neon-like inner light); everything else is "
         "drawn in thin, calm white and grey lines. "
         f"Premium lighting: a soft {glow} gradient halo fades outward behind the subject like an outer "
         f"glow, a subtle {rim} rim light traces its edges, and a faint pool of the same light spills "
         "beneath it. The glow colours are clean and saturated, never muddy; the black stays deep. "
         "High contrast, minimal, instantly readable in one second. One subject only: no clutter, no "
-        "collage, no busy background. Keep the bottom 28 percent of the frame dark and empty for a title. "
+        "collage, no busy background. Keep the left 42 percent of the frame dark and empty for big title "
+        "words. "
         "No faces, no full people, no avatars, no characters, no paper-cut, low-poly or origami figures; "
         "a single dark-skinned hand may appear only if the metaphor needs it. "
         "ABSOLUTELY NO text, letters, words, numbers, captions, labels, logos, watermarks, signatures, "

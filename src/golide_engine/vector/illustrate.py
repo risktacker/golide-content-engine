@@ -58,8 +58,11 @@ VISUAL_PLAN_SCHEMA: dict = {
                 "scene": {"type": "integer"},
                 "thumbnail_moment": {"type": "string"},
                 "colors": {"type": "array", "items": {"type": "string", "enum": list(ACCENTS)}},
+                "thumbnail_text": {"type": "string"},
+                "thumbnail_punch": {"type": "string"},
             },
-            "required": ["text", "gold", "scene", "thumbnail_moment", "colors"],
+            "required": ["text", "gold", "scene", "thumbnail_moment", "colors", "thumbnail_text",
+                         "thumbnail_punch"],
         },
         "scenes": {
             "type": "array",
@@ -190,6 +193,10 @@ COVER (the picture people see before they press play; owner direction 2026-10-07
   record); "a glass padlock with a crack running through its glowing keyhole" (an
   attack path); "a film reel whose single glowing frame unspools" (AI in video
   editing). Never a face, avatar or character; a hand only if the metaphor needs it.
+- "thumbnail_text": ONE TO THREE words printed huge on the YouTube thumbnail (owner
+  direction 2026-10-21). A curiosity gap the title does NOT answer, never a summary
+  and never the title's words: "WHO GETS IT?", "KEYS LEAKED", "NOT FLYING", "OUTWEIGHED".
+  "thumbnail_punch": the one word of it shown in the glow colour, copied exactly.
 - "colors": two or three accent colours for the cover and thumbnail, chosen by
   meaning from gold, rose, teal, ivory and copper (owner direction 2026-10-18:
   not always gold; 2026-10-20: not always teal either). The first is the glow of

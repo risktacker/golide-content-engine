@@ -124,14 +124,16 @@ class ProductionService:
 
     @staticmethod
     def _stamp_thumbnail(work: Path, thumbnail: Path) -> None:
-        """Typeset the cover hook under the picture, like the static posts (2026-10-20)."""
+        """Typeset 1 to 3 huge curiosity words on the left (2026-10-21)."""
         try:
             from ..vector.thumb_text import stamp_thumbnail
             from ..vector.thumbnail_style import palette_rgb, thumbnail_colors
             plan = json.loads((work / "visual-plan.json").read_text(encoding="utf-8"))
             cover = plan.get("cover") or {}
             colors = thumbnail_colors(cover, plan.get("scenes") or [])
-            stamp_thumbnail(thumbnail, str(cover.get("text", "")), str(cover.get("gold", "")), palette_rgb(colors))
+            words = str(cover.get("thumbnail_text") or cover.get("gold") or cover.get("text", ""))
+            punch = str(cover.get("thumbnail_punch") or cover.get("gold") or "")
+            stamp_thumbnail(thumbnail, words, punch, palette_rgb(colors))
         except Exception as exc:  # the plain artwork still works as a thumbnail
             print(json.dumps({"status": "thumbnail_text_skipped", "error": str(exc)[:300]}))
 
