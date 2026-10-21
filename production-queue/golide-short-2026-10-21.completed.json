@@ -190,5 +190,6 @@
     "measured_at": "2026-10-21T07:02:54.702164+00:00",
     "signal_type": "youtube-most-popular-seed-proxy"
   },
-  "selected_topic_source": "https://thehackernews.com/2026/10/hackers-use-autonomous-ai-agents-to.html"
+  "selected_topic_source": "https://thehackernews.com/2026/10/hackers-use-autonomous-ai-agents-to.html",
+  "owner_voice_media_ref": "r2://temp/2026/10/21/b255abc0276549d9875e46f0eb5fe992-Ai-hackers-v2.wav"
 }

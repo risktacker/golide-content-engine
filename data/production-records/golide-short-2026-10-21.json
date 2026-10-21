@@ -1,0 +1,605 @@
+{
+  "production_id": "golide-short-2026-10-21",
+  "youtube_video_id": "boYNSweUHYU",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "boYNSweUHYU",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-10-21T09:58:46.057114+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "AI Hackers Just Let Software Attack 100+ Websites—Could Your Next Security Breach Be Fully Automated?",
+    "status": "scheduled",
+    "scheduled_at": "2026-10-21T11:00:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-shorts-mon-wed-fri-sun\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "AI hasn't made hacking magic, it has made trying again almost free.\nBecause Reuters found one operator whose AI agents did most of the work,\nreaching more than one thousand two hundred websites\nat over one hundred companies, with little human help.\nNow, reaching a site isn't breaking in, and the report doesn't say what was stolen.\nBut the agents hunted for weak points, wrote code and tested it.\nThat works through a feedback loop,\nwhich means the agent tries a login, reads the error, changes one thing and tries again,\nfar more often than any person could.\nSo forgotten support pages and old control panels become the target,\nand one weak page can steal your login or change what you pay at checkout.\nStill, nobody can show that AI attackers always win,\nbecause defenders can run the same loop and patch old software every day.\nAnd follow the channel, because the next one shows how defenders keep up.\nWhich leaves one question, should small businesses let AI guard their websites, yes or no?\n",
+  "research": {
+    "summary": "The important shift is not that AI has invented a new class of vulnerability. It is that one operator can now delegate reconnaissance, troubleshooting, exploit development and repeated attempts to software agents that work for hours with little supervision. The October 19, 2026 investigation is alarming, but its evidence should be described precisely: more than 1,200 websites were targeted and websites associated with more than 100 companies were reportedly reached; the investigation does not establish that every site was fully compromised or that sensitive customer data was stolen. For ordinary users, the likely consequence is more frequent abuse of familiar weak points—outdated plugins, exposed admin panels, unsafe upload functions, stolen sessions and poorly isolated vendor sites. AI appears likely to lower the cost of trying attacks, but there is not enough evidence to conclude that hacking will universally become cheaper than defense. The more defensible conclusion is that organizations will need continuous, automated monitoring and patching because occasional manual security reviews will not match automated attack volume.",
+    "claims": [
+      {
+        "claim": "A Reuters investigation published October 19, 2026 reported that an operator used autonomous AI agents to attempt intrusions against more than 1,200 websites and reach websites belonging to more than 100 companies, with little direct human involvement. The reporting identified Deere, SharkNinja and Cummins among the companies connected to the activity.",
+        "source_title": "Exclusive—How one hacker used AI agents and a few thousand dollars to break into scores of sites",
+        "source_url": "https://www.reuters.com/legal/government/how-one-hacker-used-ai-agents-few-thousand-dollars-break-into-scores-sites-2026-10-19/",
+        "published_or_updated": "October 19, 2026"
+      },
+      {
+        "claim": "The evidence does not mean that all 1,200 websites were breached, that every reported access reached a company's main production environment, or that customer data was stolen. Reuters reported that Deere saw no indication that sensitive information was accessed, SharkNinja described the affected site as a standalone product-support website, and Cummins was investigating a possible incident involving a vendor-operated site.",
+        "source_title": "Hackers Use Autonomous AI Agents to Breach Company Websites, Target Over 1,200 Sites",
+        "source_url": "https://thehackernews.com/2026/10/hackers-use-autonomous-ai-agents-to.html?hl=en_US",
+        "published_or_updated": "October 20, 2026"
+      },
+      {
+        "claim": "The operational change is automation across the whole attack loop: agents can inspect a target, search for related infrastructure, identify a weakness, write or adapt code, test whether it works and continue when an approach fails. This is consistent with published research showing that language-model agents can autonomously find vulnerabilities and perform tasks such as SQL injection and database-schema extraction in real websites.",
+        "source_title": "LLM Agents can Autonomously Hack Websites",
+        "source_url": "https://arxiv.org/abs/2402.06664",
+        "published_or_updated": "February 2024"
+      },
+      {
+        "claim": "For ordinary people, the immediate risk is usually indirect. A compromised website can be used to redirect visitors, alter pages, distribute malware, harvest login details or tamper with an online checkout—but the investigation itself does not prove that each of those outcomes occurred in this campaign. The documented activity included unauthorized access paths involving a session store, unsafe PHP-object handling and old Zend Framework code, showing how apparently ordinary web infrastructure can become an entry point.",
+        "source_title": "Hackers Use Autonomous AI Agents to Breach Company Websites, Target Over 1,200 Sites",
+        "source_url": "https://thehackernews.com/2026/10/hackers-use-autonomous-ai-agents-to.html?hl=en_US",
+        "published_or_updated": "October 20, 2026"
+      },
+      {
+        "claim": "Small businesses are exposed because attackers do not need to defeat a major company's strongest systems if they can find a forgotten support site, vendor-managed application, public control panel, outdated framework or misconfigured cloud service. CISA warns that organizations often leave internet-accessible assets exposed through misconfigurations, default credentials and outdated software, and recommends mapping and reducing that exposure.",
+        "source_title": "Internet Exposure Reduction Guidance",
+        "source_url": "https://www.cisa.gov/resources-tools/resources/exposure-reduction",
+        "published_or_updated": "June 4, 2025"
+      },
+      {
+        "claim": "The security lesson is less about buying an AI product than about basic controls applied continuously: maintain an inventory of internet-facing assets, remove unnecessary exposure, patch known exploited vulnerabilities, use strong authentication, separate public websites from internal systems, centralize logs and alert on unusual activity. CISA's web-application guidance specifically emphasizes scanning public applications, monitoring logs and prioritizing internet-facing applications with login functionality.",
+        "source_title": "Cyber Hygiene Services; Preventing Web Application Access Control Abuse",
+        "source_url": "https://www.cisa.gov/cyber-hygiene-services",
+        "published_or_updated": "Current CISA guidance; accessed October 21, 2026"
+      },
+      {
+        "claim": "AI can lower the cost of offensive experimentation because one person can launch many more attempts without personally performing every step. Reuters characterized the campaign as costing only a few thousand dollars in AI usage, but that is a reported cost for one operation—not a universal price for successful hacking, and it excludes infrastructure, access, cleanup and criminal risk.",
+        "source_title": "Exclusive—How one hacker used AI agents and a few thousand dollars to break into scores of sites",
+        "source_url": "https://www.reuters.com/legal/government/how-one-hacker-used-ai-agents-few-thousand-dollars-break-into-scores-sites-2026-10-19/",
+        "published_or_updated": "October 19, 2026"
+      },
+      {
+        "claim": "It is not yet justified to say that AI will make hacking cheaper than defending in every case. AI also helps defenders scan public applications, analyze large volumes of logs, prioritize vulnerabilities and accelerate incident response. The likely economic effect is asymmetric pressure on organizations with small security teams: attacks can be launched at machine speed, while remediation still requires accurate diagnosis, testing, deployment and ongoing accountability.",
+        "source_title": "NSTAC Report to the President—Measuring and Incentivizing the Adoption of Cybersecurity",
+        "source_url": "https://www.cisa.gov/sites/default/files/2024-04/2024.03.07_NSTAC_M%26I_Report.pdf",
+        "published_or_updated": "March 7, 2024"
+      },
+      {
+        "claim": "The strongest bottom line is that AI makes vulnerability management a race against volume and time. A benchmark of 898 real-world vulnerabilities found that frontier agents could produce working exploits for a non-trivial subset, while still failing on many others. That supports concern about accelerating attacks, but not the sensational claim that autonomous systems can reliably break into anything.",
+        "source_title": "ExploitGym: Can AI Agents Turn Security Vulnerabilities into Real Attacks?",
+        "source_url": "https://arxiv.org/abs/2605.11086",
+        "published_or_updated": "2026"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "AI Agents Are Making Hacking Attempts Almost Free",
+    "description": "AI has not made hacking magic, but it has made repeated attempts far cheaper and faster. This short explains how AI agents probed more than 1,200 websites, searched for weak points, wrote code, and tested attacks with limited human help.\n\nThe video also looks at why old support pages and forgotten control panels matter, and why defenders can use the same feedback loop to find and fix vulnerabilities. Should small businesses let AI guard their websites?\n\nAI agent hacking, autonomous AI hacking, AI cyber attack, AI website hacking, AI hacking news, AI cybersecurity, AI hacker agents, automated cyber attacks, website security flaws, small business security, AI threat actors, Cairn AI agents, Reuters AI report, AI penetration testing\n\n#AICybersecurity #Cybersecurity #AIHacking #CyberAttacks #WebsiteSecurity #TechNews #SmallBusiness",
+    "tags": [
+      "AI agent hacking",
+      "AI cyber attacks",
+      "autonomous hacking agents",
+      "AI website attacks",
+      "AI cybersecurity",
+      "AI hackers",
+      "cybersecurity news",
+      "website vulnerabilities",
+      "small business cybersecurity",
+      "AI threat actors",
+      "Cairn AI agents",
+      "Reuters AI hacking",
+      "automated penetration testing",
+      "AI website security",
+      "autonomous AI hacking",
+      "AI cyber attack",
+      "AI website hacking",
+      "AI hacking news",
+      "AI hacker agents",
+      "automated cyber attacks",
+      "website security flaws"
+    ],
+    "category_id": 25,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "keywords": [
+      "AI agent hacking",
+      "autonomous AI hacking",
+      "AI cyber attack",
+      "AI website hacking",
+      "AI hacking news",
+      "AI cybersecurity",
+      "AI hacker agents",
+      "automated cyber attacks",
+      "website security flaws",
+      "small business security",
+      "AI threat actors",
+      "Cairn AI agents",
+      "Reuters AI report",
+      "AI penetration testing"
+    ],
+    "hashtags": [
+      "#AICybersecurity",
+      "#Cybersecurity",
+      "#AIHacking",
+      "#CyberAttacks",
+      "#WebsiteSecurity",
+      "#TechNews",
+      "#SmallBusiness"
+    ],
+    "format": "short",
+    "title_description_language": "en",
+    "seo_body": "AI has not made hacking magic, but it has made repeated attempts far cheaper and faster. This short explains how AI agents probed more than 1,200 websites, searched for weak points, wrote code, and tested attacks with limited human help.\n\nThe video also looks at why old support pages and forgotten control panels matter, and why defenders can use the same feedback loop to find and fix vulnerabilities. Should small businesses let AI guard their websites?"
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "A Reuters investigation published October 19, 2026 reported that an operator used autonomous AI agents to attempt intrusions against more than 1,200 websites and reach websites belonging to more than 100 companies, with little direct human involvement. The reporting identified Deere, SharkNinja and Cummins among the companies connected to the activity.",
+        "source_title": "Exclusive—How one hacker used AI agents and a few thousand dollars to break into scores of sites",
+        "source_url": "https://www.reuters.com/legal/government/how-one-hacker-used-ai-agents-few-thousand-dollars-break-into-scores-sites-2026-10-19/",
+        "published_or_updated": "October 19, 2026"
+      },
+      {
+        "claim": "The evidence does not mean that all 1,200 websites were breached, that every reported access reached a company's main production environment, or that customer data was stolen. Reuters reported that Deere saw no indication that sensitive information was accessed, SharkNinja described the affected site as a standalone product-support website, and Cummins was investigating a possible incident involving a vendor-operated site.",
+        "source_title": "Hackers Use Autonomous AI Agents to Breach Company Websites, Target Over 1,200 Sites",
+        "source_url": "https://thehackernews.com/2026/10/hackers-use-autonomous-ai-agents-to.html?hl=en_US",
+        "published_or_updated": "October 20, 2026"
+      },
+      {
+        "claim": "The operational change is automation across the whole attack loop: agents can inspect a target, search for related infrastructure, identify a weakness, write or adapt code, test whether it works and continue when an approach fails. This is consistent with published research showing that language-model agents can autonomously find vulnerabilities and perform tasks such as SQL injection and database-schema extraction in real websites.",
+        "source_title": "LLM Agents can Autonomously Hack Websites",
+        "source_url": "https://arxiv.org/abs/2402.06664",
+        "published_or_updated": "February 2024"
+      },
+      {
+        "claim": "For ordinary people, the immediate risk is usually indirect. A compromised website can be used to redirect visitors, alter pages, distribute malware, harvest login details or tamper with an online checkout—but the investigation itself does not prove that each of those outcomes occurred in this campaign. The documented activity included unauthorized access paths involving a session store, unsafe PHP-object handling and old Zend Framework code, showing how apparently ordinary web infrastructure can become an entry point.",
+        "source_title": "Hackers Use Autonomous AI Agents to Breach Company Websites, Target Over 1,200 Sites",
+        "source_url": "https://thehackernews.com/2026/10/hackers-use-autonomous-ai-agents-to.html?hl=en_US",
+        "published_or_updated": "October 20, 2026"
+      },
+      {
+        "claim": "Small businesses are exposed because attackers do not need to defeat a major company's strongest systems if they can find a forgotten support site, vendor-managed application, public control panel, outdated framework or misconfigured cloud service. CISA warns that organizations often leave internet-accessible assets exposed through misconfigurations, default credentials and outdated software, and recommends mapping and reducing that exposure.",
+        "source_title": "Internet Exposure Reduction Guidance",
+        "source_url": "https://www.cisa.gov/resources-tools/resources/exposure-reduction",
+        "published_or_updated": "June 4, 2025"
+      },
+      {
+        "claim": "The security lesson is less about buying an AI product than about basic controls applied continuously: maintain an inventory of internet-facing assets, remove unnecessary exposure, patch known exploited vulnerabilities, use strong authentication, separate public websites from internal systems, centralize logs and alert on unusual activity. CISA's web-application guidance specifically emphasizes scanning public applications, monitoring logs and prioritizing internet-facing applications with login functionality.",
+        "source_title": "Cyber Hygiene Services; Preventing Web Application Access Control Abuse",
+        "source_url": "https://www.cisa.gov/cyber-hygiene-services",
+        "published_or_updated": "Current CISA guidance; accessed October 21, 2026"
+      },
+      {
+        "claim": "AI can lower the cost of offensive experimentation because one person can launch many more attempts without personally performing every step. Reuters characterized the campaign as costing only a few thousand dollars in AI usage, but that is a reported cost for one operation—not a universal price for successful hacking, and it excludes infrastructure, access, cleanup and criminal risk.",
+        "source_title": "Exclusive—How one hacker used AI agents and a few thousand dollars to break into scores of sites",
+        "source_url": "https://www.reuters.com/legal/government/how-one-hacker-used-ai-agents-few-thousand-dollars-break-into-scores-sites-2026-10-19/",
+        "published_or_updated": "October 19, 2026"
+      },
+      {
+        "claim": "It is not yet justified to say that AI will make hacking cheaper than defending in every case. AI also helps defenders scan public applications, analyze large volumes of logs, prioritize vulnerabilities and accelerate incident response. The likely economic effect is asymmetric pressure on organizations with small security teams: attacks can be launched at machine speed, while remediation still requires accurate diagnosis, testing, deployment and ongoing accountability.",
+        "source_title": "NSTAC Report to the President—Measuring and Incentivizing the Adoption of Cybersecurity",
+        "source_url": "https://www.cisa.gov/sites/default/files/2024-04/2024.03.07_NSTAC_M%26I_Report.pdf",
+        "published_or_updated": "March 7, 2024"
+      },
+      {
+        "claim": "The strongest bottom line is that AI makes vulnerability management a race against volume and time. A benchmark of 898 real-world vulnerabilities found that frontier agents could produce working exploits for a non-trivial subset, while still failing on many others. That supports concern about accelerating attacks, but not the sensational claim that autonomous systems can reliably break into anything.",
+        "source_title": "ExploitGym: Can AI Agents Turn Security Vulnerabilities into Real Attacks?",
+        "source_url": "https://arxiv.org/abs/2605.11086",
+        "published_or_updated": "2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "AI agents hacked more than 100 company websites October 2026 Reuters",
+      "score": 85.0,
+      "verdict": "pass",
+      "recent_videos": 66,
+      "median_views_per_day": 342769.79,
+      "top_views_per_day": 3701570.84,
+      "market_coverage": 4,
+      "title_query_overlap": 0.0,
+      "measured_at": "2026-10-21T07:02:54.702164+00:00",
+      "signal_type": "youtube-most-popular-seed-proxy"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.72,
+      "true_peak_dbtp": -1.86,
+      "loudness_range": 3.2
+    },
+    "editorial": {
+      "beats": 15,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-10-21T09:58:32.638665+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri-sun"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-short-2026-10-21",
+    "created_at": "2026-10-21T09:58:33.984208+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-10-21T11:00:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "10651ce0c15d0cdde8c874e6d7ba2146d81b0e0c28b20f8568725a17438eac4e",
+        "bytes": 15364937
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "d7961b1a9f39a7cd6265d3a5556c22afb7a7a5933ab645b500c0c02da1ece6c0",
+        "bytes": 1075156
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "c172b54e134a5713ef63606966ae9d2f3c371dc8eb81c55b8bd60075694b4e5d",
+        "bytes": 2760
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "c42406342916ba49deb2a8e2293446c955c2edad4ffac1e6a2f5e3b5103cc4b9",
+        "bytes": 2188
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "3ca040c31e7efff6a2f13d26ce5a3b831d8e2c724b7abc97f86f4014b53349d7",
+        "bytes": 420
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "9ecf5c2bb914c7424c105187bcbb18387d7156c0505a4a06d7fa8f7e985edf70",
+        "bytes": 7252
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "678140779bba2e91fcb33a95de33aea71f2cbbed4011049fbe64e353d1870954",
+        "bytes": 394
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "d7a6c0036d31d432638d8187d1907dfc2279d94c2943b0e664e839d013b1d9e5",
+        "bytes": 277
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 61581.0,
+      "cached_input_units": 0.0,
+      "output_units": 3729.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.016791,
+      "created_at": "2026-10-21T07:02:56.027923+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-21T07:02:56.029946+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 36628.0,
+      "cached_input_units": 0.0,
+      "output_units": 2404.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01021,
+      "created_at": "2026-10-21T07:03:38.243766+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-21T07:03:38.245310+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 4842.0,
+      "cached_input_units": 0.0,
+      "output_units": 5206.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007216,
+      "created_at": "2026-10-21T07:04:29.356866+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 6373.0,
+      "cached_input_units": 3246.0,
+      "output_units": 4825.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00648,
+      "created_at": "2026-10-21T07:05:18.501898+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 6740.0,
+      "cached_input_units": 3246.0,
+      "output_units": 5631.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007521,
+      "created_at": "2026-10-21T07:06:09.529388+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 3664.0,
+      "cached_input_units": 0.0,
+      "output_units": 1914.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00303,
+      "created_at": "2026-10-21T09:52:00.244201+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-21T09:52:16.576155+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-21T09:52:30.804190+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-21T09:52:45.222185+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-21T09:52:59.216084+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-21T09:53:13.840726+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-21T09:53:27.633836+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-21T09:53:41.928479+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-21T09:53:56.113249+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-21T09:54:09.788993+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-21T09:54:27.258782+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-21T09:54:41.757746+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-21T09:54:54.220713+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-21T09:55:10.056052+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9356.0,
+      "cached_input_units": 0.0,
+      "output_units": 847.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002888,
+      "created_at": "2026-10-21T09:57:55.350445+00:00"
+    },
+    {
+      "stage": "thumbnail",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-10-21T09:58:23.718331+00:00"
+    }
+  ],
+  "recorded_at": "2026-10-21T09:58:46.061301+00:00"
+}
