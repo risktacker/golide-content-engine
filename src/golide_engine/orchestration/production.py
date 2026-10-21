@@ -450,16 +450,45 @@ class ProductionService:
                         ),
                         stage="trend-candidates",
                     )
+                    from ..youtube.breakouts import BREAKOUT_RULES, find_breakouts
                     from ..youtube.pulse import PULSE_RULES, fresh_headlines
 
                     headlines = json.dumps(fresh_headlines(), separators=(",", ":"))
+                    # 2026-10-21: YouTube decides the topic. The breakout list is the base;
+                    # the news only supplies facts. The old news-first prompt is the fallback.
+                    try:
+                        breakouts = find_breakouts(self.youtube)
+                    except Exception as exc:  # noqa: BLE001
+                        print(json.dumps({"status": "breakouts_unavailable", "error": str(exc)[:200]}))
+                        breakouts = []
+                    (work / "breakouts.json").write_text(json.dumps(breakouts, indent=2) + "\n", encoding="utf-8")
+                    if breakouts:
+                        instructions = (
+                            "Create 3 to 5 GOLIDE video topic candidates built on the YouTube BREAKOUTS below.\n\n"
+                            + BREAKOUT_RULES
+                            + "\nEach candidate needs a concise search query, a brief (what the video explains in "
+                            "plain words and the science or engineering underneath), an evidence summary, one direct "
+                            "credible source URL found through web search (the company, the original report or a "
+                            "major outlet), broke_on and science_angle. Reject rumours and unsupported claims."
+                        )
+                        packet = (f"CURRENT BRIEF\n{spec['brief']}\n\nBREAKOUTS\n"
+                                  + json.dumps([{k: b[k] for k in ("title", "channel", "views", "views_per_hour",
+                                                                    "breakout", "hours_old", "description")}
+                                                for b in breakouts], separators=(",", ":"))
+                                  + f"\n\nRECENT GOLIDE TOPICS (repeats are fine with a new narrative)\n"
+                                  f"{json.dumps(recent_titles)}\n\nFRESH HEADLINES (facts only)\n{headlines}")
+                    else:
+                        instructions = (
+                            "Create 3 to 5 original GOLIDE video topic candidates from current YouTube platform signals and this week's AI and tech news.\n\n"
+                            + PULSE_RULES + "\n"
+                            + TREND_TASTE_RULES.split("- Do not mention or promote")[0]
+                            + "\nCompare the candidates for how much people are talking about it right now, how easy it is for a non-technical viewer to follow, how much it invites comments and opinions, visual explanation potential and evidence strength. Prefer the story everyone is discussing over an academic or specialist subject. Each candidate must have a concise search query and one direct credible source URL (the company, the original report or a major outlet) found through web search. Reject rumours, private-life gossip, party politics and unsupported claims. There are no breakouts today: set source_breakout to -1 and model_title to the title."
+                        )
+                        packet = (f"CURRENT BRIEF\n{spec['brief']}\n\nRECENT GOLIDE TOPICS\n{json.dumps(recent_titles)}\n\nPLATFORM TREND SEEDS\n{seed_packet}"
+                                  f"\n\nFRESH HEADLINES (last 48 hours, what people are discussing)\n{headlines}")
                     output = text.generate_json(
-                        "Create 3 to 5 original GOLIDE video topic candidates from current YouTube platform signals and this week's AI and tech news.\n\n"
-                        + PULSE_RULES + "\n"
-                        + TREND_TASTE_RULES.split("- Do not mention or promote")[0]
-                        + "\nCompare the candidates for how much people are talking about it right now, how easy it is for a non-technical viewer to follow, how much it invites comments and opinions, visual explanation potential and evidence strength. Prefer the story everyone is discussing over an academic or specialist subject. Do not copy video titles or premises. Do not reuse or lightly reword any recently produced topic supplied in RECENT GOLIDE TOPICS. Each candidate must have a concise search query and one direct credible source URL (the company, the original report or a major outlet) found through web search. Reject rumours, private-life gossip, party politics and unsupported claims.",
-                        f"CURRENT BRIEF\n{spec['brief']}\n\nRECENT GOLIDE TOPICS\n{json.dumps(recent_titles)}\n\nPLATFORM TREND SEEDS\n{seed_packet}"
-                        f"\n\nFRESH HEADLINES (last 48 hours, what people are discussing)\n{headlines}",
+                        instructions,
+                        packet,
                         TREND_CANDIDATES_SCHEMA,
                         web_search=True,
                         # 2026-10-19: 3,000 cut the answer off once trend fields and
@@ -476,10 +505,12 @@ class ProductionService:
                             spec["format"],
                             seeds,
                         )
+                        source = int(item.get("source_breakout", -1))
                         candidates.append({
                             **item,
                             "evidence_valid": True,
                             "platform_seed_demand": asdict(seed_demand),
+                            **({"breakout": breakouts[source]} if 0 <= source < len(breakouts) else {}),
                         })
                     if len(candidates) < 3:
                         raise TopicDemandRejected(
@@ -527,7 +558,11 @@ class ProductionService:
                 candidate, demand = choose_with_pulse(gate, spec)
 
             spec["brief"] = candidate["brief"]
-            spec["title"] = candidate.get("title", spec.get("title", production_id))
+            spec["title"] = candidate.get("model_title") or candidate.get("title", spec.get("title", production_id))
+            if candidate.get("breakout"):
+                # The YouTube title is modelled on the winning video's title (2026-10-21).
+                spec["model_title"] = str(candidate.get("model_title") or candidate["title"]).strip()
+                spec["source_breakout"] = candidate["breakout"]
             spec["platform_demand"] = asdict(demand)
             spec["selected_topic_source"] = candidate.get("authoritative_source_url")
             Path(spec_path).write_text(
@@ -1467,6 +1502,9 @@ class ProductionService:
             metadata = apply_locked_upload_defaults(
                 output.value | {"format": spec["format"]}, policy
             )
+            if spec.get("model_title"):
+                # 2026-10-21: the title rides the breakout it was modelled on.
+                metadata["title"] = str(spec["model_title"])[:100]
             # 2026-10-13 SEO layout: summary, keywords, (chapters), hashtags; 20+ tags.
             from ..youtube_metadata import compose_description, fit_tags, seo_body
             metadata["seo_body"] = seo_body(str(metadata["description"]))

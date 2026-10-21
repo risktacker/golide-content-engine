@@ -117,9 +117,26 @@ def hot_first(candidates: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 def choose(gate: Any, spec: dict[str, Any]):
-    """Pick the topic: a live trend that also passes the demand gate wins; otherwise
-    the usual demand ranking decides, exactly as before."""
-    from .demand import TopicDemandRejected
+    """Pick the topic. 2026-10-21: a candidate built on a YouTube breakout wins outright,
+    the strongest breakout first; the breakout itself is the demand proof. Without one,
+    a live trend that passes the demand gate wins; otherwise the demand ranking decides."""
+    from .demand import DemandResult, TopicDemandRejected
+
+    riding = [c for c in spec.get("topic_candidates") or [] if c.get("breakout") and c.get("evidence_valid")]
+    if riding:
+        best = max(riding, key=lambda c: float(c["breakout"].get("score", 0)))
+        b = best["breakout"]
+        demand = DemandResult(
+            query=best.get("query") or best["title"], score=float(b.get("score", 0)), verdict="pass",
+            recent_videos=1, median_views_per_day=float(b.get("views_per_hour", 0)) * 24,
+            top_views_per_day=float(b.get("views_per_hour", 0)) * 24, market_coverage=1,
+            title_query_overlap=1.0, measured_at=datetime.now(timezone.utc).isoformat(),
+            signal_type="youtube-breakout-v1",
+        )
+        print(json.dumps({"status": "breakout_selected", "title": best.get("model_title"),
+                          "source": b.get("title"), "views_per_hour": b.get("views_per_hour"),
+                          "breakout": b.get("breakout")}))
+        return best, demand
 
     hot = hot_first(spec.get("topic_candidates") or [])
     if hot:
