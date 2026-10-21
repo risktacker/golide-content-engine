@@ -66,7 +66,8 @@ class TeachingStyleTests(unittest.TestCase):
         self.assertIn("same word (so)", problems)
         self.assertIn("starts cold", problems)
         for fmt in ("short", "long"):
-            self.assertIn("ONE everyday picture", script_instructions(fmt))
+            self.assertIn("THE REAL THING FIRST", script_instructions(fmt))
+            self.assertNotIn("comes from this world", script_instructions(fmt))
             self.assertIn("SOUND HUMAN", script_instructions(fmt))
 
     def test_ai_phrases_are_caught(self):

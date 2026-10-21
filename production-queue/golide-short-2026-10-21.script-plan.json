@@ -1,0 +1,203 @@
+{
+ "title": "AI Hackers Just Let Software Attack 100+ Websites—Could Your Next Security Breach Be Fully Automated?",
+ "chapters": [],
+ "lines": [
+  {
+   "chapter": 0,
+   "section": "claim",
+   "text": "AI hasn't made hacking magic, it has made trying again almost free.",
+   "emphasis": "trying again",
+   "visual": "icon_hero",
+   "subjects": [
+    "robot",
+    "key"
+   ],
+   "label": "TRY AGAIN",
+   "follow": false
+  },
+  {
+   "chapter": 0,
+   "section": "claim",
+   "text": "Because Reuters found one operator whose AI agents did most of the work,",
+   "emphasis": "AI agents",
+   "visual": "icon_pair",
+   "subjects": [
+    "newspaper",
+    "robot"
+   ],
+   "label": "REUTERS",
+   "follow": false
+  },
+  {
+   "chapter": 0,
+   "section": "proof",
+   "text": "reaching more than one thousand two hundred websites",
+   "emphasis": "websites",
+   "visual": "icon_grid",
+   "subjects": [
+    "website",
+    "globe"
+   ],
+   "label": "1,200+ SITES",
+   "follow": false
+  },
+  {
+   "chapter": 0,
+   "section": "proof",
+   "text": "at over one hundred companies, with little human help.",
+   "emphasis": "little human help",
+   "visual": "icon_orbit",
+   "subjects": [
+    "building",
+    "robot"
+   ],
+   "label": "100+ COMPANIES",
+   "follow": false
+  },
+  {
+   "chapter": 0,
+   "section": "proof",
+   "text": "Now, reaching a site isn't breaking in, and the report doesn't say what was stolen.",
+   "emphasis": "breaking in",
+   "visual": "split_compare",
+   "subjects": [
+    "door",
+    "lock"
+   ],
+   "label": "",
+   "follow": false
+  },
+  {
+   "chapter": 0,
+   "section": "pattern",
+   "text": "But the agents hunted for weak points, wrote code and tested it.",
+   "emphasis": "tested it",
+   "visual": "icon_flow",
+   "subjects": [
+    "magnifier",
+    "code",
+    "check"
+   ],
+   "label": "HUNT, WRITE, TEST",
+   "follow": false
+  },
+  {
+   "chapter": 0,
+   "section": "pattern",
+   "text": "That works through a feedback loop,",
+   "emphasis": "feedback loop",
+   "visual": "icon_orbit",
+   "subjects": [
+    "loop arrow"
+   ],
+   "label": "FEEDBACK LOOP",
+   "follow": false
+  },
+  {
+   "chapter": 0,
+   "section": "pattern",
+   "text": "which means the agent tries a login, reads the error, changes one thing and tries again,",
+   "emphasis": "tries again",
+   "visual": "staircase",
+   "subjects": [
+    "login screen",
+    "error",
+    "arrow"
+   ],
+   "label": "",
+   "follow": false
+  },
+  {
+   "chapter": 0,
+   "section": "pattern",
+   "text": "far more often than any person could.",
+   "emphasis": "any person",
+   "visual": "spike_vs_curve",
+   "subjects": [
+    "robot",
+    "person"
+   ],
+   "label": "",
+   "follow": false
+  },
+  {
+   "chapter": 0,
+   "section": "cost",
+   "text": "So forgotten support pages and old control panels become the target,",
+   "emphasis": "forgotten",
+   "visual": "icon_grid",
+   "subjects": [
+    "website",
+    "target"
+   ],
+   "label": "FORGOTTEN PAGES",
+   "follow": false
+  },
+  {
+   "chapter": 0,
+   "section": "cost",
+   "text": "and one weak page can steal your login or change what you pay at checkout.",
+   "emphasis": "steal your login",
+   "visual": "icon_flow",
+   "subjects": [
+    "shopping cart",
+    "key",
+    "warning"
+   ],
+   "label": "",
+   "follow": false
+  },
+  {
+   "chapter": 0,
+   "section": "reframe",
+   "text": "Still, nobody can show that AI attackers always win,",
+   "emphasis": "always win",
+   "visual": "split_compare",
+   "subjects": [
+    "shield",
+    "robot"
+   ],
+   "label": "",
+   "follow": false
+  },
+  {
+   "chapter": 0,
+   "section": "reframe",
+   "text": "because defenders can run the same loop and patch old software every day.",
+   "emphasis": "same loop",
+   "visual": "checklist",
+   "subjects": [
+    "shield",
+    "loop arrow",
+    "check"
+   ],
+   "label": "SAME LOOP",
+   "follow": false
+  },
+  {
+   "chapter": 0,
+   "section": "cta",
+   "text": "And follow the channel, because the next one shows how defenders keep up.",
+   "emphasis": "follow",
+   "visual": "logo_end",
+   "subjects": [
+    "logo"
+   ],
+   "label": "",
+   "follow": true
+  },
+  {
+   "chapter": 0,
+   "section": "cta",
+   "text": "Which leaves one question, should small businesses let AI guard their websites, yes or no?",
+   "emphasis": "yes or no",
+   "visual": "split_compare",
+   "subjects": [
+    "shield",
+    "question mark"
+   ],
+   "label": "",
+   "follow": false
+  }
+ ]
+}

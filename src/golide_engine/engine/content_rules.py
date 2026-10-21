@@ -361,7 +361,7 @@ FOLLOW CALL-OUT (owner direction 2026-10-07: viewers should follow and come back
   3. then ONE short closing QUESTION (one or two lines) that is joined to the follow
      sentence with a connective ("Which leaves one question...", "So here's the real
      question...", "And that leaves you with this...") and is written by THE QUESTION
-     THAT STARTS THE COMMENTS rules below; it may loop back to the opening picture.
+     THAT STARTS THE COMMENTS rules below; it may loop back to the opening idea.
      Never a cold question with no bridge. Nothing else after it.
   * short and long alike: exactly ONE follow sentence, one or two lines.
 """
@@ -385,12 +385,17 @@ comments plateau, and polite questions get scrolled past)
 TEACHING_STYLE_RULES = """\
 TEACHING STYLE (owner direction 2026-10-09, locked): explain it so a child follows
 it and an expert finds nothing wrong or watered down (the Feynman way).
-- ONE everyday picture carries the whole script, taken from the world named in
-  VARIETY below (owner direction 2026-10-13: not the same kitchen, cake or shop
-  every time). Weave it in naturally within the first third, in your own words;
-  never introduce it with "Think of", "Imagine", "Picture this" or "It's like".
-  Use it again at the turn, and let the final sentence return to it. One picture
-  only, never a new one every line.
+- THE REAL THING FIRST (owner direction 2026-10-21: "our way of giving examples is
+  a distraction amid someone trying to understand"). Explain with the story's own
+  concrete facts: what actually happens, step by step, with the real names and
+  numbers ("the agent tries a login, reads the error, changes one thing and tries
+  again, a thousand times an hour"). That is the example.
+- A COMPARISON ONLY IF IT HELPS: use one only where the real mechanism is hard to see,
+  and then exactly ONE, chosen because it fits this mechanism closely (a feedback loop
+  is like adjusting a shower until the water is right), never a world unrelated to the
+  topic. Bridge into it in a few plain words ("it works the way..."), say it in one or
+  two sentences right where the hard idea is, then go straight back to the real story
+  and never return to it. Many scripts need no comparison at all.
 - Keep the real substance: real names, real facts, the real mechanism. Simple words,
   never simplified facts.
 - Example before the name: say what happens first, then what it's called.
@@ -405,18 +410,9 @@ it and an expert finds nothing wrong or watered down (the Feynman way).
 """
 
 # Owner direction 2026-10-13: scripts must not all follow one template. Each
-# production gets its own world for the picture, its own way in and its own turn,
+# production gets its own way in and its own turn (2026-10-21: no assigned
+# comparison world any more; a comparison is chosen only when it fits),
 # chosen from its id, so two scripts in a row never share a pattern.
-PICTURE_WORLDS = (
-    "football and other sport", "a bus, taxi or minibus ride", "a busy open market stall",
-    "farming and the seasons", "a school classroom and exams", "a bank or mobile-money queue",
-    "a phone's contact list and call log", "a music playlist", "a road trip with a map or GPS",
-    "a library", "a hospital or clinic waiting room", "a building site and its foreman",
-    "planning a wedding or a big family event", "the weather forecast", "a gym and a training plan",
-    "a security guard at a gate", "the post office and parcels", "a game of chess or draughts",
-    "a TV remote and its channels", "a city's traffic lights", "a restaurant waiter taking orders",
-    "a pharmacy counter", "an airport check-in", "a referee and the rules of a match",
-)
 OPENING_STYLES = (
     "a blunt claim that flips what most people believe",
     "one surprising true number from the research, said plainly",
@@ -442,12 +438,10 @@ def script_variety(seed: str) -> str:
         n = date(*map(int, match.groups())).toordinal() * 2 + (1 if "long" in seed else 0)
     else:
         n = int(hashlib.sha256(seed.encode("utf-8")).hexdigest(), 16)
-    world = PICTURE_WORLDS[(n * 7) % len(PICTURE_WORLDS)]
     opening = OPENING_STYLES[n % len(OPENING_STYLES)]
     turn = TURN_STYLES[(n * 5) % len(TURN_STYLES)]
     return (
         "VARIETY (this script only; every script is different)\n"
-        f"- The everyday picture comes from this world: {world}.\n"
         f"- Open with {opening}.\n"
         f"- Bring in the turn (the risk or cost) with {turn}, in your own words.\n"
         "- Never use these stock phrases: \"here's the catch\", \"think of\", \"picture this\",\n"
@@ -627,14 +621,14 @@ def flow_problems(plan: dict) -> list[str]:
     first = lines[0].lower().replace(",", " ").split()
     if first and (first[0] in ("imagine", "picture") or first[:2] == ["what", "if"]):
         problems.append("open straight on the topic with a blunt claim, never with Imagine or What if")
-    # The everyday picture opened early must come back in the final sentence.
+    # The ending comes back to the idea the script opened on.
     stop = {"that", "this", "with", "your", "from", "what", "have", "they", "their", "would",
             "only", "just", "about", "there", "when", "will", "into", "than", "then", "because",
             "these", "those", "which", "were", "been", "does", "could", "should", "follow", "channel"}
     words = lambda t: {w.strip(".,?!'\u2019").lower() for w in t.split()} - stop
     early = set().union(*(words(x) for x in sentences[:3])) if sentences else set()
     if len(sentences) >= 6 and not {w for w in words(sentences[-1]) & early if len(w) > 3}:
-        problems.append("the final sentence must return to the everyday picture or idea from the opening")
+        problems.append("the final sentence must come back to the idea the script opened on")
     # 2026-10-13 humanizer checks: same opener twice in a row, "So" overuse,
     # a cold (unbridged) closing line, and AI-sounding phrases.
     first_words = [sent.lower().replace(",", " ").split()[0] for sent in sentences if sent.split()]
