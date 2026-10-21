@@ -80,9 +80,9 @@ def validate_upload_metadata(metadata: dict[str, Any], policy: dict[str, Any]) -
 
 
 # ---------------------------------------------------------------------------
-# SEO layout (owner direction 2026-10-13), the same on every platform:
+# SEO layout (owner direction 2026-10-13; keyword line dropped from YouTube
+# descriptions 2026-10-21, the keywords live in the tags):
 #   summary paragraphs
-#   10+ trending keywords, comma separated
 #   chapters (long videos, added from the real recording)
 #   hashtags
 # YouTube also gets more than 20 tags.
@@ -123,10 +123,11 @@ def seo_body(description: str) -> str:
 
 
 def compose_description(body: str, keywords: list[str], hashtags: list[str]) -> str:
+    """Summary, then hashtags. The keywords go into the tags only (2026-10-21): a
+    comma-separated keyword list in a description is keyword stuffing under YouTube's
+    spam policy and can get a video demoted."""
+    del keywords  # kept in the signature: the tags still use them
     parts = [seo_body(body)]
-    keys = _clean_keywords(keywords)
-    if keys:
-        parts.append(", ".join(keys))
     tags = _clean_hashtags(hashtags)
     if tags:
         parts.append(" ".join(tags))

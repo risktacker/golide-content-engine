@@ -35,6 +35,16 @@ from .recording import RecordingLengthError, check_recording_length
 from .stage_runner import StageRunner
 
 
+MAX_REDRAWS = 2                    # extra pictures per video for unclear drawings
+REDRAW_COUNTER = ".redraws"        # lives in the video's illustration folder
+
+
+def redraws_used(counter: Path) -> int:
+    try:
+        return int(counter.read_text(encoding="utf-8").strip() or 0)
+    except (OSError, ValueError):
+        return 0
+
 class RenderHeld(RuntimeError):
     """The owner has paused rendering until a new visual style is approved."""
 
@@ -125,20 +135,28 @@ class ProductionService:
     def _redraw_if_unclear(self, spec, part, prompt: str, target: Path, line_art, cost_model: str,
                            production_id: str) -> None:
         """2026-10-21: a picture that would read as an undefined block (all glow, empty, a
-        tangle) is drawn once more with the problem named; the better of the two is kept."""
+        tangle) is drawn once more with the problem named; the better of the two is kept.
+        At most MAX_REDRAWS per video (owner: "cap it 2 per video"), counted on disk so a
+        resumed run never starts the count again."""
         from ..vector.illustrate import picture_problems, vectorize
         from ..vector.scene_art import picture_size
 
+        counter = target.parent / REDRAW_COUNTER
+        used = redraws_used(counter)
+        if used >= MAX_REDRAWS:
+            return
         try:
             problems = picture_problems(vectorize(target))
         except Exception:  # a picture the tracer cannot read at all
             problems = ["the drawing has no clear lines; draw the object with a clean white outline"]
         if not problems:
             return
-        print(json.dumps({"status": "picture_redrawn", "picture": part.picture_id, "problems": problems}))
+        print(json.dumps({"status": "picture_redrawn", "picture": part.picture_id, "problems": problems,
+                          "redraw": used + 1, "of": MAX_REDRAWS}))
         retry = target.with_name(target.stem + "-retry.png")
         try:
             self._reserve(spec, cost_model, Usage(images=1), stage="illustrations")
+            counter.write_text(str(used + 1), encoding="utf-8")  # counted before the paid call
             output = line_art.create(prompt + " FIX THESE: " + "; ".join(problems) + ".", retry,
                                      picture_size(str(spec["format"]), part))
             self._record_image(production_id, "illustrations", cost_model, output)

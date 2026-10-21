@@ -41,7 +41,6 @@
     "short": {
       "structure": [
         "two-paragraph summary",
-        "10+ comma-separated trending keywords",
         "hashtags"
       ],
       "paste_full_script": false,
@@ -54,7 +53,6 @@
     "long": {
       "structure": [
         "two-to-three paragraph summary",
-        "10+ comma-separated trending keywords",
         "chapters",
         "music-and-asset-attribution",
         "hashtags"
