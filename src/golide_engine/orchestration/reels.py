@@ -57,8 +57,20 @@ def upload_media(store, path: Path, name: str, content_type: str, bridge=None, k
     return upload.media_ref
 
 
+def release_time(publish_at: str | None, now: datetime | None = None) -> str:
+    """When the social copies go out: YouTube's release time, or now if that has passed
+    (2026-10-21: a short recorded early went to Instagram and Facebook an hour before
+    YouTube published it)."""
+    now = now or datetime.now(timezone.utc)
+    try:
+        at = datetime.fromisoformat(str(publish_at).replace("Z", "+00:00"))
+    except ValueError:
+        return now.isoformat()
+    return max(at, now).astimezone(timezone.utc).isoformat()
+
+
 def reels_payload(*, content_id: str, metadata: dict[str, Any], video_ref: str, cover_ref: str | None,
-                  youtube_video_id: str, owner_voice_ref: str) -> dict[str, Any]:
+                  youtube_video_id: str, owner_voice_ref: str, publish_at: str | None = None) -> dict[str, Any]:
     from ..youtube_metadata import social_caption
     caption = social_caption(str(metadata.get("title", "")), metadata, 2100)
     cover = [f"cover:{cover_ref}"] if cover_ref else []
@@ -71,7 +83,7 @@ def reels_payload(*, content_id: str, metadata: dict[str, Any], video_ref: str, 
         "media_approved": True,
         "qa_approved": True,
         "release_approved": True,
-        "scheduled_at": datetime.now(timezone.utc).isoformat(),
+        "scheduled_at": release_time(publish_at),
         "variants": [
             {"platform": "instagram", "title": "", "body": caption, "media_ref": video_ref, "parts": cover},
             {"platform": "facebook", "title": "", "body": caption, "media_ref": video_ref, "parts": cover},
@@ -85,8 +97,9 @@ def reels_payload(*, content_id: str, metadata: dict[str, Any], video_ref: str, 
 def publish_reels(*, bridge, store, publisher_factory, production_id: str, video: Path,
                   metadata: dict[str, Any], youtube_video_id: str, owner_voice_ref: str,
                   video_ref: str | None = None, content_id: str | None = None,
-                  cover: Path | None = None) -> dict[str, Any]:
-    """Upload (if needed), queue and publish the IG/FB Reels for one short."""
+                  cover: Path | None = None, publish_at: str | None = None) -> dict[str, Any]:
+    """Upload (if needed), queue the IG/FB/LinkedIn Reels for one short at YouTube's
+    release time, and publish them now if that time has already come."""
     if video_ref is None:
         video_ref = upload_media(store, video, f"{production_id}.mp4", "video/mp4", bridge)
     cover_ref = None
@@ -101,7 +114,7 @@ def publish_reels(*, bridge, store, publisher_factory, production_id: str, video
     content_id = content_id or f"{production_id}-reels"
     bridge.create_content(reels_payload(
         content_id=content_id, metadata=metadata, video_ref=video_ref, cover_ref=cover_ref,
-        youtube_video_id=youtube_video_id, owner_voice_ref=owner_voice_ref,
+        youtube_video_id=youtube_video_id, owner_voice_ref=owner_voice_ref, publish_at=publish_at,
     ))
     results = publisher_factory().run_due()
     mine = next((r for r in results if r.get("post_id") == content_id), None)

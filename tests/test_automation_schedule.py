@@ -66,3 +66,28 @@ class LockedScheduleTests(unittest.TestCase):
             spec = json.loads(created[0].read_text())
             self.assertEqual("2026-10-22T17:30:00Z", spec["release"]["scheduled_at"])
             self.assertEqual("owner-recording-only", spec["generation_parameters"]["voice"])
+
+
+class ShortSocialTimingTests(unittest.TestCase):
+    """2026-10-21: a short recorded early waits for YouTube's release time on every platform."""
+
+    def test_reels_wait_for_the_release_time(self):
+        from golide_engine.orchestration.reels import release_time, reels_payload
+
+        now = datetime(2026, 10, 21, 9, 58, tzinfo=timezone.utc)
+        self.assertEqual("2026-10-21T11:00:00+00:00", release_time("2026-10-21T11:00:00Z", now))
+        self.assertEqual(now.isoformat(), release_time("2026-10-21T08:00:00Z", now))   # late recording: now
+        self.assertEqual(now.isoformat(), release_time("", now))
+        payload = reels_payload(content_id="c", metadata={"title": "t"}, video_ref="r2://v", cover_ref=None,
+                                youtube_video_id="y", owner_voice_ref="r2://o", publish_at="2099-01-01T11:00:00Z")
+        self.assertTrue(payload["scheduled_at"].startswith("2099-01-01T11:00"))
+
+    def test_morning_triggers_cover_every_long_day_and_the_short_release(self):
+        import re
+        root = Path(__file__).resolve().parents[1]
+        wrangler = (root / "wrangler.jsonc").read_text()
+        worker = (root / "worker" / "index.js").read_text()
+        self.assertIn('"0 4 * * TUE,THU,SAT"', wrangler)
+        self.assertIn('"0 11,12,18 * * *"', wrangler)
+        for cron in re.findall(r'"([0-9*,/ A-Z]+)"', wrangler.split('"crons"')[1].split("]")[0]):
+            self.assertIn(f'"{cron}":', worker)   # the two lists stay identical

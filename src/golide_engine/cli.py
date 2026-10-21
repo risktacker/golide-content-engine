@@ -704,6 +704,7 @@ def main() -> int:
                     metadata=metadata, youtube_video_id=video_id,
                     owner_voice_ref=str(spec.get("owner_voice_media_ref", "")),
                     cover=Path("build") / spec["id"] / "video-cover.jpg",
+                    publish_at=str(release.get("scheduled_at") or spec.get("release", {}).get("scheduled_at", "")),
                 )
             except Exception as exc:
                 reels = {"reels_status": "failed", "error": str(exc)[:500]}

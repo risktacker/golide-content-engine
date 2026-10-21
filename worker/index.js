@@ -1246,9 +1246,10 @@ const ENGINE_REPO="risktacker/golide-content-engine";
 const CRON_WORKFLOWS={
   "30 6 * * *":"content-distribution-scheduler.yml",      // 08:30 Post A
   "30 15 * * *":"content-distribution-scheduler.yml",     // 17:30 Post B
-  "0 4 * * TUE,SAT":"production-scheduler.yml",           // 06:00 long script
+  "0 4 * * TUE,THU,SAT":"production-scheduler.yml",       // 06:00 long script
   "0 7 * * SUN,MON,WED,FRI":"production-scheduler.yml",   // 09:00 short script
-  "0 12,18 * * *":"production-scheduler.yml"              // 14:00/20:00 build from voice
+  // 13:00 releases the short's social copies on time; 14:00/20:00 build from voice.
+  "0 11,12,18 * * *":"production-scheduler.yml"
 };
 
 async function cancelProductionRuns(env){
@@ -1310,7 +1311,7 @@ export default {
     // Every trigger also clears temporary media older than 72 hours; the
     // 20:00 Lusaka trigger then sends the daily health email with the result.
     const sweep=sweepMedia(env).catch((e)=>{console.log(JSON.stringify({media_sweep:"error",error:String(e?.message||e)}));return null;});
-    if(controller.cron==="0 12,18 * * *"&&new Date(controller.scheduledTime||Date.now()).getUTCHours()===18){
+    if(controller.cron==="0 11,12,18 * * *"&&new Date(controller.scheduledTime||Date.now()).getUTCHours()===18){
       ctx.waitUntil(sweep.then((storage)=>sendHealthEmail(env,new Date(),storage)).catch((e)=>console.log(JSON.stringify({health_email:"error",error:String(e?.message||e)}))));
     }else ctx.waitUntil(sweep);
   },

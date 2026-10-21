@@ -6,13 +6,13 @@ on:
     paths:
       - ".github/production-kick"
   schedule:
-    # Long-form generation: Tuesday/Saturday 06:00 Africa/Lusaka.
-    - cron: "0 4 * * 2,6"
+    # Long-form generation: Tuesday/Thursday/Saturday 06:00 Africa/Lusaka.
+    - cron: "0 4 * * 2,4,6"
     # Short generation: Sunday/Monday/Wednesday/Friday 09:00 Africa/Lusaka.
     - cron: "0 7 * * 0,1,3,5"
-    # Lightweight automatic resume windows for jobs waiting on owner voice.
-    # 14:00 and 20:00 Africa/Lusaka.
-    - cron: "0 12,18 * * *"
+    # 13:00 Africa/Lusaka releases due social posts (a short's Reels) on time;
+    # 14:00 and 20:00 are the resume windows for jobs waiting on owner voice.
+    - cron: "0 11,12,18 * * *"
   workflow_dispatch:
 
 concurrency:

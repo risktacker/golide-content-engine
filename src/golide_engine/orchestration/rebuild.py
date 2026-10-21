@@ -211,6 +211,7 @@ class Rebuild:
                 # A rebuild is a new post: never collide with an earlier Reel.
                 content_id=f"{self.id}-reels-" + "".join(ch for ch in str(state.get("built_at", ""))[:19] if ch.isdigit()),
                 cover=Path("build") / self.id / "video-cover.jpg",
+                publish_at=str((spec.get("release") or {}).get("scheduled_at", "")),
             )
             state.update(status="reels_queued", social_post_id=reels["social_post_id"])
             self.save(state)
