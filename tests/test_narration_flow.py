@@ -85,8 +85,9 @@ class VarietyTests(unittest.TestCase):
     def test_neighbouring_scripts_get_different_patterns(self):
         from golide_engine.engine.content_rules import script_variety
         a, b = script_variety("golide-short-2026-10-14"), script_variety("golide-short-2026-10-16")
-        self.assertNotEqual(a.splitlines()[1], b.splitlines()[1])   # picture world
-        self.assertNotEqual(a.splitlines()[2], b.splitlines()[2])   # opening style
+        self.assertNotEqual(a.splitlines()[1], b.splitlines()[1])   # opening style
+        # 2026-10-22: no rotating stock turn phrase any more; the turn is written fresh.
+        self.assertIn("never a stock bridge", a)
         self.assertIn("VARIETY", script_instructions("short", "golide-short-2026-10-14"))
 
     def test_stock_phrases_are_caught(self):

@@ -259,15 +259,16 @@ The sections are the shape of the argument; the viewer should never hear the joi
    as ONE flowing sentence, never as separate statements.
 4. COST: what happens to people who ignore the rule. Make it specific and familiar.
 5. REFRAME: the one sentence the viewer should remember.
-6. CALL TO ACTION: one small action, then the follow call-out, then one short
-   closing sentence.
+6. CLOSE: the verdict in one line (what it means), then the follow call-out, then
+   one short closing sentence. No homework: never tell the viewer to go and check,
+   open or do something unless the topic itself is a how-to.
 
 NARRATION (owner direction 2026-10-09): the structure above is the order of the
 ideas, but it is SPOKEN AS ONE CONNECTED EXPLANATION, like a teacher talking a friend
 through it. It must never sound like a list of points read out one by one.
-- Every sentence grows out of the one before it and is joined to it with a spoken
-  connective: and, but, so, because, that means, that's why, in other words, for
-  example, then, which is why, and that's not all.
+- Every sentence grows out of the one before it. Join them with a spoken word (and,
+  but, because, then, for example) only where the meaning connects; never chain
+  "which is why" and "that means" by rule (2026-10-22: that reads as AI).
 - Each section is entered with a bridge from the last, written fresh for this
   topic, never a stock phrase (see VARIETY).
 - Never compress ideas into noun piles ("identity, limits and an audit trail"): say
@@ -281,53 +282,51 @@ The viewer must always know where they are: "now we're on this, next we're on th
   * INTRO first: number "" and title "Intro".
   * Then 3 to 5 numbered chapters, number "01", "02", ... Each chapter has ONE job.
     Title: 2 to 4 plain words, no punctuation, specific to THIS topic.
-- Choose the chapter shape that fits the topic; do not reuse a fixed template:
+- MODEL THE SOURCE (owner direction 2026-10-22): when a SOURCE VIDEO is given, the
+  chapters follow its angle and the order it tells the story in (a reveal stays a
+  reveal, a breakdown of models stays a breakdown, "is it real?" ends in a verdict),
+  told more clearly and with our facts. Otherwise choose the shape that fits:
   * a how-to or skill: the stages a viewer would actually go through, in order;
-  * an explainer of something new: what it is, how it works, why it matters now,
-    what changes for you;
-  * a comparison or decision: the options, what each costs you, how to choose;
-  * a trend or news shift: what happened, why now, who it affects, what to do;
-  * a mistake or myth: the belief, why it fails, what works instead.
+  * an explainer of something new: what it is, how it works, why it matters now;
+  * a comparison or decision: the options and what each one really gives you;
+  * a trend or news shift: what happened, why now, who it affects, what it means;
+  * a mistake or myth: the belief, why it fails, what is actually true.
   These are shapes, not titles. Name each chapter after its real content.
   * CLOSE last: number "" and title "Close".
 - Every line sets "chapter" to the index (from 0) of the chapter it belongs to, in order.
 - INTRO: the blunt opening claim that flips a common belief, then ONE sentence that
-  tells the viewer the route in plain words ("In the next few minutes, we'll cover
-  ..., ..., and ..."), naming the numbered chapters in order.
+  tells the viewer the route in plain words, naming the numbered chapters in order,
+  worded fresh every time (never a stock "In the next few minutes" line).
 - Each numbered chapter OPENS with a spoken signpost, written for this topic, that
   makes the new stage obvious (often a question the viewer would ask next, or a
-  bridge from the last chapter) and ENDS with a one-line takeaway before the next
-  chapter starts. Vary the signposts; never open two chapters the same way. The
+  bridge from the last chapter) and ENDS on what it means: a verdict, a reveal or a
+  consequence in one line (never homework) before the next chapter starts. Vary the signposts; never open two chapters the same way. The
   chapter title is never read aloud as a label.
-- THE VIEWER LEAVES WITH SOMETHING (owner direction 2026-10-13): a long video is not
-  just something to watch. Make one numbered chapter a practical chapter: 3 to 5
-  concrete steps the viewer can actually do this week, said aloud in order ("First,
-  ... Second, ... Third, ..." or "Step one, ..."). Each step is specific: what to open,
-  check, ask, switch on or switch off, and why, in one or two sentences. Other chapters
-  may also give directions where the topic allows. Every chapter's closing takeaway is
-  phrased as something to do or to check, not only a fact to know. The CLOSE recaps the
-  steps in one sentence before the follow call-out.
+- THE VIEWER LEAVES KNOWING (owner direction 2026-10-22, replaces the 2026-10-13
+  steps rule: "things you should do... what are the people going to do about it? It's
+  just the verdict"): the payoff is understanding and a clear verdict, not a to-do
+  list. Never end a chapter or the video with "check this", "open that", "this week,
+  try...", "use these checks". Numbered steps appear ONLY when the topic itself is a
+  how-to the viewer will really do (the source video is a tutorial).
 - LEARNING, NOT SHOPPING (owner direction 2026-10-17): these are tech news and
-  learning videos, never adverts or reviews. The practical chapter is "what this
-  means for you" (how to judge the claim, what to check or switch off, how to try
-  the idea free, what to watch next), not a buying test. Buying advice appears only
-  when the product is affordable, widely available and the decision is the point of
-  the story, and then as a few lines inside the practical chapter, never a chapter
-  of its own, and never prices repeated as a sales line.
+  learning videos, never adverts or reviews. Buying advice appears only when the
+  product is affordable, widely available and the decision is the point of the
+  story, and then as a few lines inside a chapter, never a chapter of its own, and
+  never prices repeated as a sales line.
 - SCIENCE FIRST (owner direction 2026-10-17): when the topic has science or
   engineering underneath it, give it one or two full paragraphs (its own chapter
   or most of one) with the real numbers from the research turned into something a
   viewer can feel (a speed into metres every second, a force into a weight, a
-  pressure into "times the air around you"). This comes BEFORE any practical or
+  pressure into "times the air around you"). This comes BEFORE any verdict or
   buying part. Use only numbers the research gives or simple arithmetic on them,
   and say when a number is the company's claim.
 - Keep chapters balanced: none longer than a third of the script.
 - Use concrete, true examples inside the chapters; the CLOSE gives the one sentence
-  to remember, one small action for this week, a line that loops back to the
-  opening claim, then the follow call-out, then one short closing sentence.
+  to remember (the verdict), a line that loops back to the opening claim, then the
+  follow call-out, then one short closing sentence.
 - "section" still tags each line: intro lines "claim", explanation and examples
   "proof" or "pattern", consequences "cost", the line to remember "reframe",
-  the action and final line "cta".
+  the follow call-out and final line "cta".
 """
 
 SHORT_CHAPTER_RULE = """\
@@ -352,8 +351,8 @@ FOLLOW CALL-OUT (owner direction 2026-10-07: viewers should follow and come back
 - Set "follow": true on the line or lines of that sentence; every other line false.
 - Placement and shape (owner direction 2026-10-07, from the reference channel's
   endings): the call-out comes at the END, only after the value is given.
-  1. the takeaway and the small action come first;
-  2. then the follow sentence, joined to the action before it with a connective
+  1. the takeaway (what it means, never homework) comes first;
+  2. then the follow sentence, joined to the takeaway before it with a connective
      that the sentence before it did NOT start with (owner direction 2026-10-13:
      never two "So" sentences in a row). Vary it from video to video, for example
      "And if this helped, follow the channel...", "That's exactly why you should
@@ -420,14 +419,6 @@ OPENING_STYLES = (
     "a then-and-now contrast in one breath (how it used to work, how it works now)",
     "the consequence first: what is about to change for the viewer, then why",
 )
-TURN_STYLES = (
-    "a plain 'The problem is...'",
-    "'That sounds great, until...'",
-    "'Except there's a cost nobody puts on the box...'",
-    "'Now the uncomfortable part...'",
-    "'There's a trade-off, though...'",
-    "'And that's where it can go wrong...'",
-)
 
 
 def script_variety(seed: str) -> str:
@@ -439,11 +430,11 @@ def script_variety(seed: str) -> str:
     else:
         n = int(hashlib.sha256(seed.encode("utf-8")).hexdigest(), 16)
     opening = OPENING_STYLES[n % len(OPENING_STYLES)]
-    turn = TURN_STYLES[(n * 5) % len(TURN_STYLES)]
     return (
         "VARIETY (this script only; every script is different)\n"
         f"- Open with {opening}.\n"
-        f"- Bring in the turn (the risk or cost) with {turn}, in your own words.\n"
+        "- Bring in the turn (the risk, the cost, the catch) in fresh words written for\n"
+        "  this topic; never a stock bridge (2026-10-22: rotating stock turns read as a template).\n"
         "- Never use these stock phrases: \"here's the catch\", \"think of\", \"picture this\",\n"
         "  \"here's the thing\", \"but here's the risk\", \"the catch is\".\n"
     )
@@ -453,9 +444,9 @@ SCRIPT_LINE_RULES = """\
 FLOW (the most important rule: this is one person talking, not a list of facts)
 - Write connected speech. Each sentence must grow out of the one before it, the way a
   good teacher explains something across a table.
-- Link ideas with spoken connectives: and, but, so, because, which means, that's why,
-  then, now, here's the thing, the problem is, in other words, for example, think about,
-  if, when, until, instead. Roughly every second sentence should lean on the one before.
+- Link ideas the way people talk (and, but, because, then, now, the problem is, for
+  example, if, when, until, instead) where the meaning really connects. Plenty of
+  sentences simply follow on without a connective; never chain them by rule.
 - Mix sentence lengths: some short and punchy, most medium (10 to 22 words), the odd
   longer one that builds. Never more than two short stand-alone sentences in a row.
 - Lists of examples are said as one flowing sentence ("a payment service, a private
@@ -505,15 +496,20 @@ SOUND HUMAN, NOT AI (owner direction 2026-10-13)
   sentence at most twice in the whole script, and never back to back. Rotate the
   bridges: and, but, because, that's why, which means, then, now, instead, until,
   in other words, the problem is, the thing nobody says, even so, still.
-- Every sentence, including the follow call-out and the closing line, is joined to
-  the one before it. No sentence just starts cold.
+- Talk like the owner talks: short plain sentences, direct, sometimes blunt ("That's
+  the fans.", "Anyone calling that flying is wrong."). Connect ideas where the
+  meaning connects; do not chain every sentence with "which is why", "so" or
+  "that means" (2026-10-22: chained connectives read as AI).
 - Vary sentence length and rhythm; a short punch now and then, never a metronome.
 - Banned AI phrases: "in today's world", "let's dive in", "dive into", "delve",
   "game-changer", "game changer", "revolutionize", "unlock", "landscape", "navigate
   the", "it's important to note", "in conclusion", "buckle up", "the future is here",
   "stay tuned", "at the end of the day", "seamless", "harness the power".
-- No stacked rule-of-three lists, no "It's not X, it's Y" more than once, no
-  rhetorical question followed by its own answer more than once.
+- No stacked rule-of-three lists, no "It's not X, it's Y" or "the question is not X,
+  but Y" more than once, no rhetorical question followed by its own answer more
+  than once.
+- Never narrate the structure ("That distinction brings us to...", "That leads us
+  to...", "Now the useful question is..."); just move to the next thing.
 - Concrete and specific beats abstract: names, numbers from the research, what a
   person actually sees or does.
 """
@@ -555,6 +551,11 @@ AI_PHRASES = (
     "revolutionize", "revolutionise", "unlock", "landscape", "navigate the", "it's important to note",
     "in conclusion", "buckle up", "the future is here", "stay tuned", "at the end of the day",
     "seamless", "harness the power",
+    # 2026-10-22, from the owner's marked script: structure narration and homework lines.
+    "that distinction brings us", "brings us to", "leads us to", "the useful question",
+    "the simple version is this", "which is why the", "and that's where it can go wrong",
+    "this week, use", "use those", "before calling any", "when you replay the clip",
+    "you can make this week", "checks you can make",
 )
 
 
@@ -592,6 +593,43 @@ def _sentences(lines: list[str]) -> list[str]:
     return sentences
 
 
+def _words(text: str) -> list[str]:
+    return re.findall(r"[a-z0-9']+", text.lower().replace("\u2019", "'"))
+
+
+def repeat_problems(plan: dict, previous: list[str], opener_words: int = 3, phrase_words: int = 5) -> list[str]:
+    """Openings and phrases already used in recent scripts (owner direction 2026-10-22:
+    "after 3, 4 or 5 scripts... it feels like the same thing, just different titles")."""
+    lines = [str(line.get("text", "")).strip() for line in plan.get("lines", []) if str(line.get("text", "")).strip()]
+    if not lines or not previous:
+        return []
+    old_openers: set[tuple] = set()
+    old_phrases: set[tuple] = set()
+    for script in previous:
+        for sentence in _sentences([r.strip() for r in str(script).splitlines() if r.strip() and not r.startswith("[")]):
+            words = _words(sentence)
+            if len(words) >= opener_words:
+                old_openers.add(tuple(words[:opener_words]))
+            old_phrases.update(tuple(words[i:i + phrase_words]) for i in range(len(words) - phrase_words + 1))
+    reused_openers, reused_phrases = [], []
+    for sentence in _sentences(lines):
+        words = _words(sentence)
+        if len(words) >= opener_words and tuple(words[:opener_words]) in old_openers:
+            reused_openers.append(" ".join(words[:opener_words]))
+        for i in range(len(words) - phrase_words + 1):
+            gram = tuple(words[i:i + phrase_words])
+            if gram in old_phrases:
+                reused_phrases.append(" ".join(gram))
+    problems = []
+    if reused_openers:
+        problems.append("these sentence openings were already used in recent scripts, write new ones: "
+                        + ", ".join(f'"{o}..."' for o in dict.fromkeys(reused_openers)))
+    if len(set(reused_phrases)) >= 2:
+        problems.append("these phrases were already used in recent scripts, say it fresh: "
+                        + ", ".join(f'"{x}"' for x in list(dict.fromkeys(reused_phrases))[:6]))
+    return problems
+
+
 def _bridged(sentence: str) -> bool:
     head = " ".join(sentence.lower().replace("\u2019", "'").replace(",", " ").split()[:4])
     return any(head == b or head.startswith(b + " ") or (" " + b + " ") in (" " + head + " ") for b in BRIDGES)
@@ -611,7 +649,9 @@ def flow_problems(plan: dict) -> list[str]:
     sentences = _sentences(lines)
     body = sentences[1:]
     loose = [s for s in body if not _bridged(s)]
-    if body and len(loose) / len(body) > 0.45:
+    # 2026-10-22: 0.45 forced a connective onto most sentences, which read as AI. The
+    # owner-approved Roadster rewrite sits at 0.58; a real list of points at 0.67.
+    if body and len(loose) / len(body) > 0.62:
         problems.append(
             "it reads as a list of points, not narration: these sentences do not grow out of the one "
             "before (open them with a bridge such as so, but, because, then, that means, here's the "
@@ -655,15 +695,10 @@ def flow_problems(plan: dict) -> list[str]:
     return problems
 
 
-STEP_MARKERS = re.compile(r"\b(step (one|two|three|four|five|1|2|3|4|5)|first,|second,|third,|fourth,|fifth,|finally,)", re.I)
-
-
 def chapter_problems(plan: dict, format_name: str) -> list[str]:
     """A long video must read as a lesson in clear stages."""
     if format_name != "long":
         return []
-    spoken = " ".join(str(line.get("text", "")) for line in plan.get("lines", []))
-    steps_missing = len(STEP_MARKERS.findall(spoken)) < 3
     chapters = plan.get("chapters") or []
     numbered = [c for c in chapters if str(c.get("number", "")).strip()]
     lines = [line for line in plan.get("lines", []) if str(line.get("text", "")).strip()]
@@ -682,12 +717,9 @@ def chapter_problems(plan: dict, format_name: str) -> list[str]:
             share = sum(w for w, o in zip(words, owners) if o == index) / total
             if str(chapter.get("number", "")).strip() and share > 0.36:
                 problems.append(f"chapter {chapter.get('number')} {chapter.get('title')} is too long; balance the chapters")
-    if steps_missing:
-        problems.append("give the viewer something to do: one chapter with 3 to 5 concrete steps said in order "
-                        "(First, ... Second, ... Third, ...)")
     shopping = [c.get("title", "") for c in chapters if SHOPPING_TITLE.search(str(c.get("title", "")))]
     if shopping:
-        problems.append("learning, not shopping: no buying chapter (" + ", ".join(shopping) + "); make the practical "
+        problems.append("learning, not shopping: no buying chapter (" + ", ".join(shopping) + "); make that "
                         "chapter what this means for the viewer, with at most a few buying lines inside it")
     return problems
 

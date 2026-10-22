@@ -31,6 +31,33 @@ def _clock(seconds: float) -> str:
     return f"{whole // 60}:{whole % 60:02d}"
 
 
+def _views(n) -> str:
+    n = float(n or 0)
+    return f"{n / 1e6:.1f}M" if n >= 1e6 else (f"{n / 1e3:.0f}K" if n >= 1e3 else f"{n:.0f}")
+
+
+def source_lines(model: dict | None, our_title: str = "", alternatives: list | None = None) -> list[str]:
+    """The video we modelled, in plain words, so the owner checks it before recording
+    (owner direction 2026-10-22: "which video did we model it from, and how much numbers?")."""
+    if not model or not model.get("title"):
+        return ["MODELLED ON: nothing. No trending video was found for this script; do not record it."]
+    secs = int(model.get("duration_seconds") or 0)
+    out = [
+        f"MODELLED ON: {model['title']}",
+        f"Channel: {model.get('channel', '')} ({_views(model.get('subscribers'))} subscribers)"
+        + (f", length {_clock(secs)}" if secs else ""),
+        f"Numbers: {_views(model.get('views'))} views in {float(model.get('hours_old') or 0):.0f} hours, "
+        f"{_views(model.get('views_per_hour'))} views an hour, {float(model.get('breakout') or 0):.0f}x its channel's normal",
+        f"Watch: {model.get('url', '')}",
+    ]
+    if our_title:
+        out.append(f"Our title: {our_title}")
+    for alt in (alternatives or [])[:2]:
+        out.append(f"Also trending: {alt.get('title', '')} ({_views(alt.get('views'))} views, "
+                   f"{_views(alt.get('views_per_hour'))}/hour) {alt.get('url', '')}")
+    return out
+
+
 def build_record_needed(
     *,
     job_id: str,
@@ -38,6 +65,8 @@ def build_record_needed(
     format_name: str,
     script: str,
     rejection: str = "",
+    model: dict | None = None,
+    alternatives: list | None = None,
 ) -> EmailMessage:
     low, high = RECORDING_WINDOWS.get(format_name, RECORDING_WINDOWS["short"])
     label = "Short" if format_name == "short" else "Long video"
@@ -48,8 +77,10 @@ def build_record_needed(
     message["Subject"] = f"{subject_prefix}: [{label}] {title}"[:180]
 
     lines = [script.strip()]
+    sources = source_lines(model, title, alternatives) if model is not None else []
     plain = (
         (f"Your last upload was rejected: {rejection}\n\n" if rejection else "")
+        + ("\n".join(sources) + "\n\n" if sources else "")
         + f"{label} script ready. Record it in your own voice, {window}.\n\n"
         + "\n".join(lines)
         + f"\n\nUpload your recording: {link}\n"
@@ -67,6 +98,17 @@ def build_record_needed(
     if "\n[" in "\n" + script:
         script_html = ('<p style="margin:0 0 14px;color:#5f6470;font-size:14px">Gold headings are not read aloud. '
                        'Pause briefly at each one.</p>' + script_html)
+    source_html = ""
+    if sources:
+        def _src(row: str) -> str:
+            text = html.escape(row)
+            if row.startswith(("Watch: ", "Also trending: ")) and "http" in row:
+                url = row[row.index("http"):].split()[0]
+                text = text.replace(html.escape(url), f'<a href="{html.escape(url)}" style="color:#9a6f12">{html.escape(url)}</a>')
+            weight = "600" if row.startswith(("MODELLED ON", "Our title")) else "400"
+            return f'<p style="margin:0 0 6px;font-size:14px;line-height:1.5;color:#1b1d22;font-weight:{weight}">{text}</p>'
+        source_html = ('<div style="background:#f6f1e3;border-radius:10px;padding:14px 16px;margin:0 0 20px">'
+                       + "".join(_src(r) for r in sources) + "</div>")
     rejected_html = (
         f'<p style="color:#b4413b;margin:0 0 16px">Your last upload was rejected: {html.escape(rejection)}</p>'
         if rejection else ""
@@ -76,12 +118,30 @@ def build_record_needed(
   <p style="color:#9a6f12;letter-spacing:2px;font-size:12px;margin:0 0 8px;font-weight:600">{label.upper()} &middot; RECORD {window}</p>
   <h2 style="margin:0 0 16px;font-weight:600;color:#1b1d22;font-size:22px;line-height:1.3">{html.escape(title)}</h2>
   {rejected_html}
+  {source_html}
   <div style="border-left:3px solid #e9c46a;padding:2px 0 2px 18px;margin:0 0 24px">{script_html}</div>
   <a href="{link}" style="display:inline-block;background:#0b0c10;color:#ffffff;padding:13px 24px;border-radius:999px;font-weight:600;text-decoration:none">Upload recording</a>
 </div>"""),
         subtype="html",
     )
     return message
+
+
+def build_nothing_to_model(*, job_id: str, format_name: str, reason: str) -> EmailMessage:
+    """No trending video cleared the bar, so no script today (no news fallback, 2026-10-22)."""
+    label = "Short" if format_name == "short" else "Long video"
+    message = EmailMessage()
+    message["Subject"] = f"No {label.lower()} today: nothing trending to model"
+    message.set_content(
+        f"No script today for the {label.lower()} ({job_id}).\n\n{reason}.\n\n"
+        "The engine only makes a video when it can model one that is taking numbers right now, "
+        "so nothing was made and nothing was spent on a script. The next scheduled run tries again.\n"
+    )
+    return message
+
+
+def send_nothing_to_model(**kwargs) -> bool:
+    return _send(build_nothing_to_model(**kwargs))
 
 
 def build_reconnect_reminder(*, platform: str, days_left: int, account: str = "") -> EmailMessage:

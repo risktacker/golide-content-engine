@@ -12,7 +12,7 @@ class ScriptRuleTests(unittest.TestCase):
         self.assertIn("150 to 185 spoken words", short)
         self.assertIn("700 to 800 spoken words", long)
         self.assertIn("CLAIM", short)
-        self.assertIn("CALL TO ACTION", short)
+        self.assertIn("CLOSE: the verdict", short)   # 2026-10-22: verdict, not homework
         self.assertIn("LESSON IN CHAPTERS", long)
         for rules in (short, long):
             self.assertNotIn("ElevenLabs", rules)

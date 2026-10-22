@@ -16,7 +16,7 @@ class TrendingFallbackContractTests(unittest.TestCase):
         self.assertIn('self.runner.run(\n                    production_id, "trend-candidates"', source)
         self.assertIn('stage="trend-candidates"', source)
         # 2026-10-21: YouTube decides the topic; titles are modelled on the breakout.
-        self.assertIn("find_breakouts(self.youtube)", source)
+        self.assertIn("find_breakouts(self.youtube, fmt)", source)
         self.assertIn("BREAKOUT_RULES", source)
         self.assertIn("candidate, demand = gate.select(spec)", source)
         self.assertIn('"platform_seed_demand" not in item', source)
@@ -32,12 +32,13 @@ class BreakoutTests(unittest.TestCase):
         videos = {
             "a": {"id": "a", "snippet": {"title": "The NEW Tesla Roadster: My Honest Reaction", "channelId": "big",
                                          "channelTitle": "Big", "publishedAt": now, "categoryId": "28"},
-                  "statistics": {"viewCount": "1100000"}},
+                  "statistics": {"viewCount": "1100000"}, "contentDetails": {"duration": "PT12M"}},
             "b": {"id": "b", "snippet": {"title": "Tiny Vehicles Smarter Than Your Bike", "channelId": "small",
                                          "channelTitle": "Small", "publishedAt": now, "categoryId": "28"},
-                  "statistics": {"viewCount": "170000"}},
+                  "statistics": {"viewCount": "170000"}, "contentDetails": {"duration": "PT8M30S"}},
             "c": {"id": "c", "snippet": {"title": "Top 10 songs", "channelId": "big", "channelTitle": "Big",
-                                         "publishedAt": now, "categoryId": "10"}, "statistics": {"viewCount": "9000000"}},
+                                         "publishedAt": now, "categoryId": "10"}, "statistics": {"viewCount": "9000000"},
+                  "contentDetails": {"duration": "PT3M"}},
         }
         channels = {"big": {"id": "big", "statistics": {"viewCount": "5000000000", "videoCount": "1000",
                                                         "subscriberCount": "20000000"}},

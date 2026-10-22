@@ -598,11 +598,16 @@ def main() -> int:
                 selected_topic=refreshed.get("brief") or refreshed.get("title"),
             )
             from .operations.email import send_record_needed
+            model = refreshed.get("source_breakout") or {}
+            alternatives = [c["breakout"] for c in refreshed.get("topic_candidates") or []
+                            if c.get("breakout") and c["breakout"].get("url") != model.get("url")]
             send_record_needed(
                 job_id=str(studio_job_id or spec["id"]),
                 title=str(refreshed.get("title") or exc.title),
                 format_name=str(spec.get("format", "short")),
                 script=exc.script,
+                model=model,
+                alternatives=list({a.get("url"): a for a in alternatives}.values()),
             )
             print(json.dumps({
                 "status": "waiting_owner_voice",
@@ -660,6 +665,9 @@ def main() -> int:
             return 0
         except TopicDemandRejected as exc:
             report_studio("topic_rejected", "platform-demand", str(exc))
+            from .operations.email import send_nothing_to_model
+            send_nothing_to_model(job_id=str(studio_job_id or spec["id"]),
+                                  format_name=str(spec.get("format", "short")), reason=str(exc))
             database.execute(
                 "UPDATE productions SET status='topic_rejected', updated_at=datetime('now') WHERE production_id=?",
                 (spec["id"],),

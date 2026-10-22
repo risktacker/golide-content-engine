@@ -30,10 +30,16 @@ from ..storage.database import Database
 from ..youtube.demand import TopicDemandRejected, YouTubeDemandGate
 from ..youtube_metadata import load_metadata_policy, validate_upload_metadata
 from .schemas import METADATA_SCHEMA, RESEARCH_SCHEMA, STORYBOARD_SCHEMA, TREND_CANDIDATES_SCHEMA
-from ..engine.content_rules import TREND_TASTE_RULES, SCRIPT_SCHEMA, chapter_problems, flow_problems, follow_problems, script_display, script_instructions, script_text
+from ..engine.content_rules import TREND_TASTE_RULES, SCRIPT_SCHEMA, chapter_problems, flow_problems, follow_problems, repeat_problems, script_display, script_instructions, script_text
 from .recording import RecordingLengthError, check_recording_length
 from .stage_runner import StageRunner
 
+
+TITLE_FIX_SCHEMA = {
+    "type": "object", "additionalProperties": False,
+    "properties": {"titles": {"type": "array", "items": {"type": "string"}}},
+    "required": ["titles"],
+}
 
 MAX_REDRAWS = 2                    # extra pictures per video for unclear drawings
 REDRAW_COUNTER = ".redraws"        # lives in the video's illustration folder
@@ -131,6 +137,64 @@ class ProductionService:
         voice_cfg = self.providers.config.get("voice", {})
         if voice_cfg.get("provider") != "owner_recording":
             raise RuntimeError("production narration must use the owner's recorded voice")
+
+    @staticmethod
+    def _source_video_block(spec: dict) -> str:
+        """The trending video this script models (2026-10-22: model it, not just reference it)."""
+        b = spec.get("source_breakout") or {}
+        if not b.get("title"):
+            return ""
+        return ("\n\nSOURCE VIDEO (the trending video we are modelling: follow its angle and the order "
+                "it tells the story in, our facts and our words)\n"
+                + json.dumps({k: b.get(k) for k in ("title", "channel", "views", "views_per_hour",
+                                                     "duration_seconds", "description")}))
+
+    def _recent_scripts(self, production_id: str, limit: int = 6) -> list[str]:
+        """The last few published scripts, so a new one never reuses their openings."""
+        records = []
+        for path in (self.root / "data" / "production-records").glob("*.json"):
+            try:
+                record = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                continue
+            if record.get("production_id") != production_id and record.get("narration"):
+                records.append((str(record.get("recorded_at", "")), str(record["narration"])))
+        return [text for _, text in sorted(records, reverse=True)[:limit]]
+
+    def _modelled_titles(self, spec, production_id: str, text, text_model: str,
+                         candidates: list[dict]) -> list[dict]:
+        """Keep candidates whose title is the source title with 1 to 3 words changed.
+        Titles that fail get one cheap fix; a title still failing falls back to the
+        source title plus "Explained" (one word, the channel's own word)."""
+        from ..youtube.breakouts import title_changes, title_tweak_problem
+
+        bad = [c for c in candidates
+               if title_tweak_problem(c["breakout"]["title"], str(c.get("model_title", "")))]
+        if bad:
+            ask = [{"source_title": c["breakout"]["title"], "our_title": c.get("model_title", ""),
+                    "problem": title_tweak_problem(c["breakout"]["title"], str(c.get("model_title", "")))}
+                   for c in bad]
+            self._reserve(spec, text_model, Usage(input_tokens=300 + 60 * len(ask), output_tokens=1500),
+                          stage="trend-candidates")
+            try:
+                fixed = text.generate_json(
+                    "Each item has a trending video's exact title (source_title). Write our_title: that "
+                    "exact title with ONE to THREE words changed so it is ours. Keep its order, hook, "
+                    "keywords and capitals; drop hashtags. Return the titles in the same order.",
+                    json.dumps(ask), TITLE_FIX_SCHEMA, max_output_tokens=1500,
+                )
+                self._record_text(production_id, "trend-titles", fixed)
+                for c, title in zip(bad, fixed.value.get("titles", [])):
+                    c["model_title"] = str(title).strip()
+            except Exception as exc:  # noqa: BLE001 - the fallback below still applies
+                print(json.dumps({"status": "title_fix_failed", "error": str(exc)[:200]}))
+        for c in candidates:
+            source = c["breakout"]["title"]
+            if title_tweak_problem(source, str(c.get("model_title", ""))):
+                clean = " ".join(re.sub(r"#\w+", " ", source).split())
+                c["model_title"] = (clean + " Explained")[:100]
+            c["title_changes"] = title_changes(source, c["model_title"])
+        return [c for c in candidates if not title_tweak_problem(c["breakout"]["title"], c["model_title"])]
 
     def _redraw_if_unclear(self, spec, part, prompt: str, target: Path, line_art, cost_model: str,
                            production_id: str) -> None:
@@ -469,41 +533,39 @@ class ProductionService:
                         stage="trend-candidates",
                     )
                     from ..youtube.breakouts import BREAKOUT_RULES, find_breakouts
-                    from ..youtube.pulse import PULSE_RULES, fresh_headlines
+                    from ..youtube.pulse import fresh_headlines
 
                     headlines = json.dumps(fresh_headlines(), separators=(",", ":"))
-                    # 2026-10-21: YouTube decides the topic. The breakout list is the base;
-                    # the news only supplies facts. The old news-first prompt is the fallback.
+                    # 2026-10-21: YouTube decides the topic; the news only supplies facts.
+                    # 2026-10-22: same format only, numbers bar, and NO news fallback: with
+                    # no trending video to model there is no script that day.
+                    fmt = str(spec["format"])
                     try:
-                        breakouts = find_breakouts(self.youtube)
+                        breakouts = find_breakouts(self.youtube, fmt)
                     except Exception as exc:  # noqa: BLE001
                         print(json.dumps({"status": "breakouts_unavailable", "error": str(exc)[:200]}))
                         breakouts = []
                     (work / "breakouts.json").write_text(json.dumps(breakouts, indent=2) + "\n", encoding="utf-8")
-                    if breakouts:
-                        instructions = (
-                            "Create 3 to 5 GOLIDE video topic candidates built on the YouTube BREAKOUTS below.\n\n"
-                            + BREAKOUT_RULES
-                            + "\nEach candidate needs a concise search query, a brief (what the video explains in "
-                            "plain words and the science or engineering underneath), an evidence summary, one direct "
-                            "credible source URL found through web search (the company, the original report or a "
-                            "major outlet), broke_on and science_angle. Reject rumours and unsupported claims."
+                    if not breakouts:
+                        raise TopicDemandRejected(
+                            f"no trending {fmt} video cleared the numbers bar in the last 96 hours, "
+                            "so there is nothing to model today"
                         )
-                        packet = (f"CURRENT BRIEF\n{spec['brief']}\n\nBREAKOUTS\n"
-                                  + json.dumps([{k: b[k] for k in ("title", "channel", "views", "views_per_hour",
-                                                                    "breakout", "hours_old", "description")}
-                                                for b in breakouts], separators=(",", ":"))
-                                  + f"\n\nRECENT GOLIDE TOPICS (repeats are fine with a new narrative)\n"
-                                  f"{json.dumps(recent_titles)}\n\nFRESH HEADLINES (facts only)\n{headlines}")
-                    else:
-                        instructions = (
-                            "Create 3 to 5 original GOLIDE video topic candidates from current YouTube platform signals and this week's AI and tech news.\n\n"
-                            + PULSE_RULES + "\n"
-                            + TREND_TASTE_RULES.split("- Do not mention or promote")[0]
-                            + "\nCompare the candidates for how much people are talking about it right now, how easy it is for a non-technical viewer to follow, how much it invites comments and opinions, visual explanation potential and evidence strength. Prefer the story everyone is discussing over an academic or specialist subject. Each candidate must have a concise search query and one direct credible source URL (the company, the original report or a major outlet) found through web search. Reject rumours, private-life gossip, party politics and unsupported claims. There are no breakouts today: set source_breakout to -1 and model_title to the title."
-                        )
-                        packet = (f"CURRENT BRIEF\n{spec['brief']}\n\nRECENT GOLIDE TOPICS\n{json.dumps(recent_titles)}\n\nPLATFORM TREND SEEDS\n{seed_packet}"
-                                  f"\n\nFRESH HEADLINES (last 48 hours, what people are discussing)\n{headlines}")
+                    instructions = (
+                        "Create 3 to 5 GOLIDE video topic candidates built on the YouTube BREAKOUTS below.\n\n"
+                        + BREAKOUT_RULES
+                        + "\nEach candidate needs a concise search query, a brief (what the video explains in "
+                        "plain words and the science or engineering underneath), an evidence summary, one direct "
+                        "credible source URL found through web search (the company, the original report or a "
+                        "major outlet), broke_on and science_angle. Reject rumours and unsupported claims."
+                    )
+                    packet = (f"CURRENT BRIEF\n{spec['brief']}\n\nBREAKOUTS\n"
+                              + json.dumps([{k: b.get(k) for k in ("title", "channel", "views", "views_per_hour",
+                                                                    "breakout", "hours_old", "duration_seconds",
+                                                                    "description")}
+                                            for b in breakouts], separators=(",", ":"))
+                              + f"\n\nRECENT GOLIDE TOPICS (repeats are fine with a new narrative)\n"
+                              f"{json.dumps(recent_titles)}\n\nFRESH HEADLINES (facts only)\n{headlines}")
                     output = text.generate_json(
                         instructions,
                         packet,
@@ -530,9 +592,13 @@ class ProductionService:
                             "platform_seed_demand": asdict(seed_demand),
                             **({"breakout": breakouts[source]} if 0 <= source < len(breakouts) else {}),
                         })
-                    if len(candidates) < 3:
+                    # Every candidate models a trending video, and its title is that video's
+                    # title with one to three words changed (checked here, not trusted).
+                    candidates = self._modelled_titles(spec, production_id, text, text_model,
+                                                       [c for c in candidates if c.get("breakout")])
+                    if not candidates:
                         raise TopicDemandRejected(
-                            "trend planning did not return three evidence-backed candidates"
+                            "no candidate modelled a trending video with a properly tweaked title"
                         )
                     from ..youtube.pulse import attach as attach_pulse
                     attach_pulse(self.youtube, candidates)
@@ -624,9 +690,16 @@ class ProductionService:
 
         script_path = work / "script.txt"
         scene_plan_path = work / "scene-plan.json"
+        source_video = self._source_video_block(spec)
+        recent_scripts = self._recent_scripts(production_id)
+
+        def script_problems(plan: dict) -> list[str]:
+            return (flow_problems(plan) + chapter_problems(plan, str(spec["format"]))
+                    + follow_problems(plan, str(spec["format"])) + repeat_problems(plan, recent_scripts))
+
         def script_stage():
             self._require_absent(script_path, "script")
-            script_input = spec["brief"] + json.dumps(research)
+            script_input = spec["brief"] + json.dumps(research) + source_video
             self._reserve(
                 spec, text_model,
                 Usage(input_tokens=max(1, len(script_input) // 4), output_tokens=6000),
@@ -634,13 +707,12 @@ class ProductionService:
             )
             output = text.generate_json(
                 script_instructions(str(spec["format"]), str(spec["id"])),
-                f"TOPIC BRIEF\n{spec['brief']}\n\nVERIFIED RESEARCH\n{json.dumps(research)}",
+                f"TOPIC BRIEF\n{spec['brief']}{source_video}\n\nVERIFIED RESEARCH\n{json.dumps(research)}",
                 SCRIPT_SCHEMA,
                 max_output_tokens=6000,
             )
             plan = dict(output.value)
-            problems = (flow_problems(plan) + chapter_problems(plan, str(spec["format"]))
-                        + follow_problems(plan, str(spec["format"])))
+            problems = script_problems(plan)
             for _round in range(2):
                 if not problems:
                     break
@@ -650,15 +722,14 @@ class ProductionService:
                                                       output_tokens=6000))
                 output = text.generate_json(
                     script_instructions(str(spec["format"]), str(spec["id"])),
-                    f"TOPIC BRIEF\n{spec['brief']}\n\nVERIFIED RESEARCH\n{json.dumps(research)}"
+                    f"TOPIC BRIEF\n{spec['brief']}{source_video}\n\nVERIFIED RESEARCH\n{json.dumps(research)}"
                     f"\n\nYOUR PREVIOUS DRAFT\n{json.dumps(plan)}\n\nREWRITE IT. Fix these problems: "
                     + "; ".join(problems) + ". Keep the facts and length, and keep it flowing as natural speech in clear stages.",
                     SCRIPT_SCHEMA,
                     max_output_tokens=6000,
                 )
                 plan = dict(output.value)
-                problems = (flow_problems(plan) + chapter_problems(plan, str(spec["format"]))
-                            + follow_problems(plan, str(spec["format"])))
+                problems = script_problems(plan)
             if problems:
                 print(json.dumps({"status": "script_rules_unmet_after_rewrites", "problems": problems}))
             scene_plan_path.write_text(json.dumps(plan, indent=2) + "\n", encoding="utf-8")
