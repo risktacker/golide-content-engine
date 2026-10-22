@@ -2,8 +2,8 @@
   "id": "golide-long-2026-10-22",
   "studio_managed": true,
   "format": "long",
-  "title": "Elon Musk\u2019s Flying Roadster: How the Rocket Car Really Works",
-  "brief": "Explain what Tesla demonstrated, separating the road-legal car from the limited rocket-assisted version. Show how electric motors move the car on the ground, while fans can create suction for extra grip and compressed-gas thrusters can briefly push it upward. The central question is whether a spectacular demo can become a practical, safe vehicle.",
+  "title": "Apple CEO John Ternus on the iPhone Duo and Siri\u2019s AI Gamble",
+  "brief": "Use the interview as a way to explain Apple\u2019s larger AI strategy in ordinary language: should an assistant run more tasks locally on a device, or depend on powerful cloud computers? Cover the trade-offs between privacy, speed, battery life, model capability and personal context, without turning the episode into a phone review or advertisement.",
   "demand_query": "AI tech news everyone is talking about this week",
   "demand_validation_required": true,
   "budget_class": "scheduled",
@@ -189,30 +189,31 @@
       }
     }
   ],
-  "model_title": "Elon Musk\u2019s Flying Roadster: How the Rocket Car Really Works",
+  "model_title": "Apple CEO John Ternus on the iPhone Duo and Siri\u2019s AI Gamble",
   "source_breakout": {
-    "title": "Elon Musk New Flying Car",
-    "channel": "RICHY INFO!! ",
-    "subscribers": 8630,
-    "views": 317612,
-    "views_per_hour": 8025.7,
-    "breakout": 20.0,
-    "hours_old": 39.6,
-    "description": "Elon Musk's rocket-powered Tesla Roadster has taken over the internet! In this video, we break down its real features and pricing.\n\ud83d\ude80 There are three Roadster models, and the SpaceX rocket version is the wildest. It has 10 cold-gas thrusters that push out compressed gas for extra thrust, helping it g",
-    "url": "https://www.youtube.com/watch?v=bnIhbmEDJ84",
-    "score": 85.0
+    "title": "Apple CEO John Ternus on the iPhone Duo, Apple Intelligence AI, and Apple's Next Big Thing",
+    "channel": "TIME",
+    "subscribers": 1590000,
+    "views": 495242,
+    "views_per_hour": 12371.9,
+    "breakout": 10.8,
+    "hours_old": 40.0,
+    "description": "Read More: https://time.com/collection/best-inventions/2026/apple-iphone-duo/\n\nApple CEO John Ternus discusses the new foldable iPhone Duo, Apple Intelligence AI, Siri's future, and Apple's next era of innovation following Tim Cook's departure in an exclusive interview with TIME.\n\nSubscribe to TIME\u2019",
+    "url": "https://www.youtube.com/watch?v=tNK0lRgi6_w",
+    "score": 81.4
   },
   "platform_demand": {
-    "query": "Tesla 2026 Roadster cold gas thrusters suction system how it works",
-    "score": 85.0,
+    "query": "Apple John Ternus iPhone Duo Apple Intelligence Siri future TIME interview October 2026",
+    "score": 87.5,
     "verdict": "pass",
-    "recent_videos": 1,
-    "median_views_per_day": 192616.8,
-    "top_views_per_day": 192616.8,
-    "market_coverage": 1,
-    "title_query_overlap": 1.0,
-    "measured_at": "2026-10-22T04:02:46.297513+00:00",
-    "signal_type": "youtube-breakout-v1"
+    "recent_videos": 61,
+    "median_views_per_day": 391342.57,
+    "top_views_per_day": 5801920.0,
+    "market_coverage": 4,
+    "title_query_overlap": 0.1667,
+    "measured_at": "2026-10-22T04:02:44.459871+00:00",
+    "signal_type": "youtube-most-popular-seed-proxy"
   },
-  "selected_topic_source": "https://www.tesla.com/roadster"
+  "selected_topic_source": "https://www.apple.com/newsroom/2026/09/apple-unveils-iphone-duo/",
+  "owner_voice_media_ref": "r2://temp/2026/10/22/01589fe0dd3d4c5e8ad9beedfe811879-Roadster-v2.wav"
 }

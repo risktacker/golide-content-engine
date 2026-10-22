@@ -1,0 +1,913 @@
+{
+  "production_id": "golide-long-2026-10-22",
+  "youtube_video_id": "zCf9vIqf1rY",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "zCf9vIqf1rY",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-10-22T11:36:22.624537+00:00"
+  },
+  "production": {
+    "format": "long",
+    "title": "Apple CEO John Ternus on the iPhone Duo and Siri’s AI Gamble",
+    "status": "scheduled",
+    "scheduled_at": "2026-10-22T17:30:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-long-tue-thu-sat\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "Cars are supposed to stay on the road, but Tesla just made one leave it.\nAnd that one viral clip is mixing different machines and different tricks.\nIn the next few minutes, we'll go through how it drives, how it sticks to a wall upside down,\nhow the rocket version gets into the air, and whether any of this is a real car or just a show.\nLet's start with the boring part, because that's where the whole thing begins.\nThe battery stores the energy, and the power electronics decide how much goes to the motors.\nThe motors turn the wheels, and the tires push against the road.\nThere's no petrol and no rocket in this part, it's a normal electric car doing what electric cars do.\nEvery crazy moment in that video starts with plain driving.\nHow does a car hold on when it's upside down?\nThat's the fans.\nThey suck the air out from under the car, and a seal around the bottom stops new air rushing back in.\nThe pressure under the car drops, and the normal air above pushes the whole car down onto the surface.\nThat presses the tires harder into the surface, so they grip more and the car can take corners faster.\nThat's how Tesla drove it up a curved wall and held it upside down with the fans running.\nBut understand this, the fans don't lift anything, they glue the car down.\nAnyone calling that part flying is wrong, that's grip.\nThe part where it really goes into the air is a different car.\nTesla lists three versions, Performance, Thrust and Rocket, and each one has different hardware.\nThe Performance one keeps two seats and the fans.\nThe Rocket one has one seat and extra thrusters for lift and rotation.\nInside it, high pressure tanks feed what's called cold gas thrusters.\nThe gas shoots out of nozzles around the car one way, and the car gets pushed the other way.\nThat's Newton's third law, the same cold gas idea NASA uses for short moves in space.\nBut the tanks only hold so much gas, so the push only lasts a moment.\nThat moment is enough to lift it, flip it or roll it, and bring it back down on its wheels.\nThat one really does leave the ground, but it's a one seat prototype, not the car you'd drive to work.\nNow, is this a real flying car or a show?\nTesla itself lists the Rocket model as not approved for public roads.\nIndependent reporting called the car at the event a one off demonstration.\nAnd we've seen one good jump, nothing yet like repeated launches and landings that prove the fans, seals and tanks hold up.\nThen there's everything a real car has to survive, a crash, a hard landing, noise, servicing and the extra weight.\nSo the driving is real, the grip is real, and the flying is a prototype.\nUntil Tesla shows repeat flights and gets it certified for safety, that's all it is.\nThe simple version is, motors move the car, fans keep it stuck down, and gas thrusters push one special version into the air for a moment.\nThe car left the road, but whether it ever becomes a flying car you can own is still decided on the ground.\nAnd if you want the next big tech clip broken down like this, follow the channel.\nSo here's the question, should Tesla certify the Rocket Roadster, or keep it as a prototype?\n",
+  "research": {
+    "summary": "Tesla’s demonstration combined three different ideas that should not be treated as one ordinary road car. The Roadster’s basic motion comes from its battery-powered electric motors: power electronics send electricity from the traction battery to the motors, which turn the wheels and propel the car on the ground. That is the conventional electric-vehicle part of the story. [Source: https://afdc.energy.gov/vehicles/how-do-all-electric-cars-work]\n\nA second system uses electrically driven fans and a ground-sealing arrangement to pull air from beneath the car. The resulting pressure difference pushes the vehicle toward the surface, increasing tire load and therefore available grip. It is not a substitute for the motors and it does not make the car fly; it is an aerodynamic traction system. Tesla demonstrated the concept by driving a prototype up a curved structure and holding it upside down. Tesla says the system is intended to improve traction and high-speed cornering. [Source: https://www.caranddriver.com/news/a74165059/tesla-roadster-thrusters-fan-system-explained/]\n\nThe spectacular airborne maneuvers came from a separate, limited configuration. Tesla’s Rocket version uses high-pressure tanks and cold-gas thrusters. When compressed gas is expelled through nozzles, the reaction force pushes the car in the opposite direction. NASA describes cold-gas propulsion as a system in which compressed gas is expelled through a nozzle to generate thrust; it is useful for short, controlled maneuvers but has limited total impulse. In Tesla’s demonstration, the thrusters briefly pushed the car upward and forward and provided rotational control for a flip or barrel roll. [Sources: https://www.nasa.gov/wp-content/uploads/2026/05/4-in-space-propulsion-chapter-2026-final.pdf?emrc=6a22e4bcb0da2; https://www.caranddriver.com/news/a74145531/tesla-roadster-revealed/]\n\nThe distinction matters. Tesla has described Performance, Thrust, and Rocket configurations: Performance has two seats and the fan system; Thrust adds rear cold-gas thrusters; Rocket is a one-seat configuration with additional thrusters around the vehicle for upward and rotational movement. The flying demonstration therefore should be understood as a limited, specialized prototype—not evidence that a normal, fully certified passenger car can routinely fly on public roads. Tesla’s website says the Rocket model is not approved for public-road use, while the Associated Press reported that the event featured a one-off car and that production and regulatory approval remain unresolved. [Sources: https://www.tesla.com/roadster?redirect=no; https://www.caranddriver.com/news/a74145531/tesla-roadster-revealed/; https://apnews.com/article/tesla-musk-roadster-rocket-7d5f19665435b7408025bfb7a2f2f0b7]\n\nThe central practical question is not whether the stunt obeyed physics—it appears to have used real electric drive, fan-generated downforce, and compressed-gas thrust—but whether those systems can be made durable, affordable, crashworthy, quiet, serviceable, and compliant with vehicle regulations. In the United States, manufacturers must certify vehicles against applicable Federal Motor Vehicle Safety Standards before sale. Until Tesla publishes final specifications, demonstrates repeatable operation, and certifies a production version, the jump and flip are best treated as an engineering demonstration rather than a proven consumer-vehicle capability. [Sources: https://www.nhtsa.gov/laws-regulations; https://www.nhtsa.gov/document/mission-office-vehicle-safety-compliance-ovsc; https://apnews.com/article/tesla-musk-roadster-rocket-7d5f19665435b7408025bfb7a2f2f0b7]",
+    "claims": [
+      {
+        "claim": "An all-electric vehicle uses energy stored in a traction battery to power electric motors that drive the wheels.",
+        "source_title": "How Do All-Electric Cars Work?",
+        "source_url": "https://afdc.energy.gov/vehicles/how-do-all-electric-cars-work",
+        "published_or_updated": "Accessed October 22, 2026"
+      },
+      {
+        "claim": "Tesla’s Roadster fan system pulls air from beneath the vehicle to generate additional downforce and can hold the car to an inverted surface in a demonstration.",
+        "source_title": "Explained: Here’s How the Tesla Roadster Flies, Flips, and Sucks",
+        "source_url": "https://www.caranddriver.com/news/a74165059/tesla-roadster-thrusters-fan-system-explained/",
+        "published_or_updated": "Accessed October 22, 2026"
+      },
+      {
+        "claim": "Tesla demonstrated a Roadster prototype driving upside down and then using SpaceX-supplied thrusters to fly forward, rotate, and land.",
+        "source_title": "Revealed! New Tesla Roadster Takes Flight with SpaceX Thrusters",
+        "source_url": "https://www.caranddriver.com/news/a74145531/tesla-roadster-revealed/",
+        "published_or_updated": "Updated October 16, 2026"
+      },
+      {
+        "claim": "Tesla’s Rocket configuration uses high-pressure air tanks and cold-gas thrusters, while the company describes Performance, Thrust, and Rocket configurations with different hardware and seating arrangements.",
+        "source_title": "Revealed! New Tesla Roadster Takes Flight with SpaceX Thrusters",
+        "source_url": "https://www.caranddriver.com/news/a74145531/tesla-roadster-revealed/",
+        "published_or_updated": "Updated October 16, 2026"
+      },
+      {
+        "claim": "Cold-gas propulsion produces thrust by expelling compressed gas through a nozzle and generally offers limited total impulse.",
+        "source_title": "State-of-the-Art: In-Space Propulsion",
+        "source_url": "https://www.nasa.gov/wp-content/uploads/2026/05/4-in-space-propulsion-chapter-2026-final.pdf?emrc=6a22e4bcb0da2",
+        "published_or_updated": "Accessed October 22, 2026"
+      },
+      {
+        "claim": "Tesla’s Rocket Roadster is listed as not approved for public-road use, and independent reporting described the event vehicle as a one-off demonstration whose production and regulatory status remain uncertain.",
+        "source_title": "Tesla’s new Roadster car can thrust itself in the air. But don’t expect to drive it anytime soon",
+        "source_url": "https://apnews.com/article/tesla-musk-roadster-rocket-7d5f19665435b7408025bfb7a2f2f0b7",
+        "published_or_updated": "Accessed October 22, 2026"
+      },
+      {
+        "claim": "U.S. manufacturers are responsible for certifying that new vehicles comply with applicable Federal Motor Vehicle Safety Standards before offering them for sale.",
+        "source_title": "Office of Vehicle Safety Compliance",
+        "source_url": "https://www.nhtsa.gov/document/mission-office-vehicle-safety-compliance-ovsc",
+        "published_or_updated": "Accessed October 22, 2026"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Apple CEO John Ternus on the iPhone Duo and Siri’s AI Gamble",
+    "description": "Tesla’s new Roadster appears to drive up a wall, hold itself upside down, and briefly fly. But the viral footage combines several different systems and Roadster versions, so the details matter.\n\nThis video explains how the electric motors move the car, how fans create suction to increase grip, and how cold-gas thrusters lift and rotate the one-seat Rocket version. We also look at whether this is a real flying car or an impressive prototype that is not approved for public roads.\n\nChapters\n0:00 Intro\n0:21 Ground Motion\n0:46 Added Grip\n1:25 Rocket Version\n2:20 Real Or Show\n3:00 Close\n\n#Tesla #TeslaRoadster #FlyingCar #ElectricCars #SpaceX #CarTechnology #TechExplained",
+    "tags": [
+      "Tesla Roadster",
+      "Tesla flying car",
+      "flying Tesla Roadster",
+      "Tesla Roadster explained",
+      "Tesla Roadster Rocket",
+      "Tesla Roadster thrusters",
+      "Tesla Roadster flying",
+      "Tesla Roadster wall drive",
+      "Tesla Roadster upside down",
+      "Tesla Roadster demo",
+      "Tesla Rocket Roadster",
+      "Tesla Performance Roadster",
+      "Tesla Thrust Roadster",
+      "SpaceX thrusters",
+      "Elon Musk Tesla",
+      "cold gas thrusters",
+      "car suction fans",
+      "fan downforce car",
+      "flying car explained",
+      "electric supercar"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [
+      "0:00 Intro",
+      "0:21 Ground Motion",
+      "0:46 Added Grip",
+      "1:25 Rocket Version",
+      "2:20 Real Or Show",
+      "3:00 Close"
+    ],
+    "keywords": [
+      "Tesla flying car",
+      "flying Tesla Roadster",
+      "Tesla Roadster explained",
+      "Tesla Roadster Rocket",
+      "Tesla Roadster thrusters",
+      "Tesla Roadster flying",
+      "Tesla Roadster demo",
+      "Tesla wall driving",
+      "Tesla upside down car",
+      "Tesla suction fans",
+      "cold gas thrusters",
+      "rocket powered car",
+      "flying car prototype",
+      "Tesla car physics",
+      "Tesla Roadster 2026"
+    ],
+    "hashtags": [
+      "#Tesla",
+      "#TeslaRoadster",
+      "#FlyingCar",
+      "#ElectricCars",
+      "#SpaceX",
+      "#CarTechnology",
+      "#TechExplained"
+    ],
+    "format": "long",
+    "title_description_language": "en",
+    "seo_body": "Tesla’s new Roadster appears to drive up a wall, hold itself upside down, and briefly fly. But the viral footage combines several different systems and Roadster versions, so the details matter.\n\nThis video explains how the electric motors move the car, how fans create suction to increase grip, and how cold-gas thrusters lift and rotate the one-seat Rocket version. We also look at whether this is a real flying car or an impressive prototype that is not approved for public roads."
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "An all-electric vehicle uses energy stored in a traction battery to power electric motors that drive the wheels.",
+        "source_title": "How Do All-Electric Cars Work?",
+        "source_url": "https://afdc.energy.gov/vehicles/how-do-all-electric-cars-work",
+        "published_or_updated": "Accessed October 22, 2026"
+      },
+      {
+        "claim": "Tesla’s Roadster fan system pulls air from beneath the vehicle to generate additional downforce and can hold the car to an inverted surface in a demonstration.",
+        "source_title": "Explained: Here’s How the Tesla Roadster Flies, Flips, and Sucks",
+        "source_url": "https://www.caranddriver.com/news/a74165059/tesla-roadster-thrusters-fan-system-explained/",
+        "published_or_updated": "Accessed October 22, 2026"
+      },
+      {
+        "claim": "Tesla demonstrated a Roadster prototype driving upside down and then using SpaceX-supplied thrusters to fly forward, rotate, and land.",
+        "source_title": "Revealed! New Tesla Roadster Takes Flight with SpaceX Thrusters",
+        "source_url": "https://www.caranddriver.com/news/a74145531/tesla-roadster-revealed/",
+        "published_or_updated": "Updated October 16, 2026"
+      },
+      {
+        "claim": "Tesla’s Rocket configuration uses high-pressure air tanks and cold-gas thrusters, while the company describes Performance, Thrust, and Rocket configurations with different hardware and seating arrangements.",
+        "source_title": "Revealed! New Tesla Roadster Takes Flight with SpaceX Thrusters",
+        "source_url": "https://www.caranddriver.com/news/a74145531/tesla-roadster-revealed/",
+        "published_or_updated": "Updated October 16, 2026"
+      },
+      {
+        "claim": "Cold-gas propulsion produces thrust by expelling compressed gas through a nozzle and generally offers limited total impulse.",
+        "source_title": "State-of-the-Art: In-Space Propulsion",
+        "source_url": "https://www.nasa.gov/wp-content/uploads/2026/05/4-in-space-propulsion-chapter-2026-final.pdf?emrc=6a22e4bcb0da2",
+        "published_or_updated": "Accessed October 22, 2026"
+      },
+      {
+        "claim": "Tesla’s Rocket Roadster is listed as not approved for public-road use, and independent reporting described the event vehicle as a one-off demonstration whose production and regulatory status remain uncertain.",
+        "source_title": "Tesla’s new Roadster car can thrust itself in the air. But don’t expect to drive it anytime soon",
+        "source_url": "https://apnews.com/article/tesla-musk-roadster-rocket-7d5f19665435b7408025bfb7a2f2f0b7",
+        "published_or_updated": "Accessed October 22, 2026"
+      },
+      {
+        "claim": "U.S. manufacturers are responsible for certifying that new vehicles comply with applicable Federal Motor Vehicle Safety Standards before offering them for sale.",
+        "source_title": "Office of Vehicle Safety Compliance",
+        "source_url": "https://www.nhtsa.gov/document/mission-office-vehicle-safety-compliance-ovsc",
+        "published_or_updated": "Accessed October 22, 2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "Apple John Ternus iPhone Duo Apple Intelligence Siri future TIME interview October 2026",
+      "score": 87.5,
+      "verdict": "pass",
+      "recent_videos": 61,
+      "median_views_per_day": 391342.57,
+      "top_views_per_day": 5801920.0,
+      "market_coverage": 4,
+      "title_query_overlap": 0.1667,
+      "measured_at": "2026-10-22T04:02:44.459871+00:00",
+      "signal_type": "youtube-most-popular-seed-proxy"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.58,
+      "true_peak_dbtp": -1.83,
+      "loudness_range": 3.6
+    },
+    "editorial": {
+      "beats": 38,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-10-22T11:36:12.044145+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-long-tue-thu-sat"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-long-2026-10-22",
+    "created_at": "2026-10-22T11:36:13.462407+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-10-22T17:30:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "2a81c4ee86a7cb29e88b9d393e1528cc331c823a630955570ed002584152218d",
+        "bytes": 55197151
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "4defaef866cb55579b7c1a222dcef78f8f087f0e9ce8194217dde2a8f66e2e75",
+        "bytes": 1055379
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "ea8bc5f5ccbe1840c16f2858b495b82ae9be5f65d3f380d5b6699d4da63e4bcb",
+        "bytes": 2817
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "43c5c50931b7155edcfc114a73980f944759a615a150c241f72ff9aae3ccf425",
+        "bytes": 7203
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "66f8aced2ef3f7f75c4a801187585ee3d042373ca9e6fe83f5369533beac2fe0",
+        "bytes": 1039
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "05a9375f52d7d0a3eed51e4bb886fe410499b16b85fa314d7c574e039b6a3b55",
+        "bytes": 3812
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "5466316572f8a9e44214cb77b8db5f1888152120d266c69f8ed26a588091ceac",
+        "bytes": 388
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "abc784a45b00bbc16149eca357340887fdfa8c5240c3d64e2a5b7ad3659883e5",
+        "bytes": 277
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 26788.0,
+      "cached_input_units": 0.0,
+      "output_units": 2020.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007782,
+      "created_at": "2026-10-22T04:02:45.779130+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-22T04:02:45.780567+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 30117.0,
+      "cached_input_units": 0.0,
+      "output_units": 2326.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008815,
+      "created_at": "2026-10-22T04:03:22.379679+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-22T04:03:22.385354+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 5499.0,
+      "cached_input_units": 0.0,
+      "output_units": 3242.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00499,
+      "created_at": "2026-10-22T04:03:55.109861+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9517.0,
+      "cached_input_units": 3884.0,
+      "output_units": 4200.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006244,
+      "created_at": "2026-10-22T04:04:38.695394+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 10719.0,
+      "cached_input_units": 3884.0,
+      "output_units": 3729.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005919,
+      "created_at": "2026-10-22T04:05:10.853725+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 4360.0,
+      "cached_input_units": 0.0,
+      "output_units": 3955.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005618,
+      "created_at": "2026-10-22T11:10:04.177249+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:10:20.806308+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:10:38.962846+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:10:52.883662+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:11:10.255223+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:11:25.327314+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:11:39.294190+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:11:53.625102+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:12:06.615406+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:12:21.308580+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:12:34.696643+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:12:48.873049+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:13:03.254321+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:13:18.129473+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:13:31.954883+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:13:45.165625+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:13:54.975991+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:14:07.694200+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:14:18.083935+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:14:29.169715+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:14:46.548856+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:15:00.415685+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:15:19.214751+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:15:33.047576+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:15:50.456707+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:16:01.460283+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:16:12.188186+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:16:29.365943+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:16:46.458628+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:17:00.132137+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:17:10.933289+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:17:21.184049+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:17:34.320473+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:17:52.051141+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:18:07.389194+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:18:21.238373+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:18:35.241134+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:18:48.402573+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-22T11:19:01.822547+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 14003.0,
+      "cached_input_units": 0.0,
+      "output_units": 981.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.003978,
+      "created_at": "2026-10-22T11:35:07.451516+00:00"
+    },
+    {
+      "stage": "thumbnail",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-10-22T11:35:33.733023+00:00"
+    }
+  ],
+  "recorded_at": "2026-10-22T11:36:22.631397+00:00"
+}
