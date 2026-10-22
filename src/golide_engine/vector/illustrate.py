@@ -143,6 +143,18 @@ abstract idea (a fund, shares, a vote, control) needs a picture, give it a
 concrete form: a jar of coins, a pie with one slice lifted out, a balance scale,
 a ballot box, a vault door, or an exact diagram (see DIAGRAMS below).
 
+THE REAL THING, NOT A GENERIC ONE (owner direction 2026-10-22: "we are talking about a
+Tesla Roadster, not a Honda Fit"). When the story is about a real, named product,
+vehicle, device, machine or place, every drawing of it describes ITS real,
+recognisable design in our line style, from the research and what you know: its
+body shape and proportions, its signature features (for the Tesla Roadster: a low,
+wide two-door supercar, long sloping nose, short tail, glass roof, wide rear
+haunches). Its mechanisms are drawn the way they really work and look, never
+sci-fi: cold-gas thrusters are small compressed-air nozzles and vents with faint
+air streaks, not rocket flames; underbody fans are flat fans behind grilles in the
+floor, not glowing discs. Never a generic stand-in (a hatchback for a supercar, a
+cartoon rocket for a nozzle). Name the product in "drawing" so the artist draws it.
+
 LABELS (owner direction 2026-10-20: a label must be clean and sit on the thing it
 names). "label": one or two short words printed on the glowing part, like a word
 on a jar ("BONDS"), a sign or a box, or "" for none. The engine prints it in sharp
@@ -193,6 +205,8 @@ COVER (the picture people see before they press play; owner direction 2026-10-07
   record); "a glass padlock with a crack running through its glowing keyhole" (an
   attack path); "a film reel whose single glowing frame unspools" (AI in video
   editing). Never a face, avatar or character; a hand only if the metaphor needs it.
+  When the story is about a real, named product, the thumbnail shows THAT product
+  with its real, recognisable design (the rule above), named in the sentence.
 - "thumbnail_text": ONE TO THREE words printed huge on the YouTube thumbnail (owner
   direction 2026-10-21). A curiosity gap the title does NOT answer, never a summary
   and never the title's words: "WHO GETS IT?", "KEYS LEAKED", "NOT FLYING", "OUTWEIGHED".

@@ -99,6 +99,7 @@ def main() -> int:
     rebuild_parser.add_argument("--scene-plan", default="")
     rebuild_parser.add_argument("--new-art", action="store_true",
                                 help="re-plan the scenes and draw new illustrations (small image cost)")
+    rebuild_parser.add_argument("--title", default="", help="replace the YouTube title")
     rebuild_parser.add_argument("--database", default="data/golide.sqlite3")
     rebuild_parser.add_argument("--token", default=".secrets/youtube-token.json")
     sub.add_parser("static-automation-run")
@@ -243,7 +244,7 @@ def main() -> int:
             state = rebuild.build(
                 service=service, store=store, bridge=bridge, notify=send_rebuild_preview,
                 scene_plan=Path(args.scene_plan) if args.scene_plan else None,
-                new_art=args.new_art,
+                new_art=args.new_art, title=args.title,
             )
             state.pop("preview_url", None)  # never print a signed link into run logs
             print(json.dumps({"status": "rebuild_preview_ready", **state}, indent=2))

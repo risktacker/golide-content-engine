@@ -116,6 +116,17 @@ class PromptTests(unittest.TestCase):
         self.assertIn("No glow, no blur", prompt)
         self.assertIn("Nothing else is gold", prompt)
 
+    def test_real_products_are_drawn_as_themselves(self):
+        # 22 Oct: "we are talking about a Tesla Roadster, not a Honda Fit"; thrusters are air vents.
+        from golide_engine.vector.illustrate import scene_plan_instructions
+        from golide_engine.vector.thumbnail_style import thumbnail_prompt
+
+        rules = scene_plan_instructions("long", 300.0)
+        self.assertIn("THE REAL THING, NOT A GENERIC ONE", rules)
+        self.assertIn("not rocket flames", rules)
+        thumb = thumbnail_prompt("Elon Musk New Flying Car Explained", "a Tesla Roadster lifting off", ["rose"])
+        self.assertIn("real, recognisable design", thumb)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -86,6 +86,28 @@ class RebuildTests(unittest.TestCase):
         self.assertEqual(self.stages(), {"script", "owner-voice"})
         self.assertTrue((self.root / "productions" / ID / "narration-owner.wav").exists())
 
+    def test_new_art_redraws_the_thumbnail_retitles_and_funds_the_pictures(self):
+        # 22 Oct: the Roadster video is redrawn with real-product art under the owner's title.
+        work = self.root / "productions" / ID
+        (work / "upload-metadata.json").write_text(json.dumps({"title": "Apple CEO John Ternus"}))
+        (work / "visual-plan.json").write_text("{}")
+        self.db.execute("INSERT INTO budget_allocations(production_id, provider, month, budget_class, "
+                        "allocated_usd, created_at) VALUES (?, 'openai', '2026-10', 'scheduled', 0.9, 'x')", (ID,))
+        self.db.execute("INSERT INTO cost_events(production_id, stage, provider, model, cost_usd, created_at) "
+                        "VALUES (?, 'illustrations', 'openai', 'img', 0.67, 'x')", (ID,))
+        redo = Rebuild(self.root, self.db, ID).prepare(self.plan, new_art=True,
+                                                       title="Elon Musk New Flying Car Explained")
+        self.assertIn("thumbnail", redo)
+        self.assertIn("illustrations-v1", redo)
+        self.assertFalse((work / "thumbnail.png").exists())
+        self.assertFalse((work / "visual-plan.json").exists())
+        self.assertEqual("Elon Musk New Flying Car Explained",
+                         json.loads((work / "upload-metadata.json").read_text())["title"])
+        spec = json.loads((self.root / "production-queue" / f"{ID}.completed.json").read_text())
+        self.assertEqual("Elon Musk New Flying Car Explained", spec["model_title"])
+        allocated = self.db.rows("SELECT allocated_usd FROM budget_allocations WHERE production_id=?", (ID,))
+        self.assertAlmostEqual(1.47, float(allocated[0]["allocated_usd"]), places=2)
+
     def test_plan_with_different_words_is_refused(self):
         bad = json.loads(json.dumps(PLAN))
         bad["lines"][0]["text"] = "Cold is the limit."

@@ -31,6 +31,9 @@ REDO_ALWAYS = ("render-vector-v1", "qa", "release")
 REDO_ART = ("visual-plan-v1", "illustrations-v1")
 REDO_VOICE = ("owner-voice", "captions-authoritative-v3")
 PREVIEW_HOURS = 48
+# New pictures and a thumbnail cost about $0.60 on a long video (22 Oct: 38 pictures at
+# ~$0.015, thumbnail $0.04); the job's budget is raised by this much so it is not paused.
+REBUILD_ART_USD = 0.8
 
 
 def _words(text: str) -> list[str]:
@@ -67,7 +70,7 @@ class Rebuild:
         return json.loads(self.spec_path.read_text(encoding="utf-8"))
 
     # ------------------------------------------------------------- preparing
-    def prepare(self, scene_plan: Path | None = None, new_art: bool = False) -> list[str]:
+    def prepare(self, scene_plan: Path | None = None, new_art: bool = False, title: str = "") -> list[str]:
         """Restore free checkpoints and mark only the render onward for redo."""
         spec = self.spec()
         self.work.mkdir(parents=True, exist_ok=True)
@@ -80,6 +83,9 @@ class Rebuild:
             path = self.work / name
             if not path.exists() and value:
                 path.write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
+        if title.strip():
+            # 2026-10-22: the owner's corrected YouTube title (the resumed run had swapped it).
+            self.retitle(title.strip())
         script_path = self.work / "script.txt"
         if not script_path.exists() and record.get("narration"):
             script_path.write_text(str(record["narration"]).strip() + "\n", encoding="utf-8")
@@ -101,6 +107,10 @@ class Rebuild:
             redo += list(REDO_ART)
             (self.work / "visual-plan.json").unlink(missing_ok=True)
             shutil.rmtree(self.work / "illustrations", ignore_errors=True)
+            # New art means a new thumbnail too, drawn from the new cover plan.
+            redo.append("thumbnail")
+            for name in ("thumbnail.png", "thumbnail-source.png"):
+                (self.work / name).unlink(missing_ok=True)
         narration = self.work / "narration-owner.wav"
         timed = self.work / "timed-words-owner.json"
         if not narration.exists() or not timed.exists():
@@ -110,11 +120,13 @@ class Rebuild:
             for name in ("narration-owner.wav", "timed-words-owner.json", "timed-words-authoritative-v3.json",
                          "spoken-captions-authoritative-v3.srt", "owner-voice-source"):
                 (self.work / name).unlink(missing_ok=True)
-        if not (self.work / "thumbnail.png").exists():
+        if not (self.work / "thumbnail.png").exists() and "thumbnail" not in redo:
             redo.append("thumbnail")
             (self.work / "thumbnail-source.png").unlink(missing_ok=True)
 
         self.database.initialize()
+        if new_art:
+            self._fund_new_art()
         marks = ",".join("?" for _ in redo)
         self.database.execute(
             f"DELETE FROM stage_runs WHERE production_id=? AND stage IN ({marks})", (self.id, *redo)
@@ -125,6 +137,26 @@ class Rebuild:
         (self.root / "release-packages" / f"{self.id}.zip").unlink(missing_ok=True)
         return redo
 
+    def _fund_new_art(self) -> None:
+        """Raise this job's OpenAI allocation to what it has spent plus the new art."""
+        spent = self.database.rows(
+            "SELECT COALESCE(SUM(cost_usd), 0) AS usd FROM cost_events WHERE production_id=?", (self.id,))
+        need = round(float(spent[0]["usd"] if spent else 0.0) + REBUILD_ART_USD, 2)
+        self.database.execute(
+            "UPDATE budget_allocations SET allocated_usd=MAX(allocated_usd, ?) WHERE production_id=? AND provider='openai'",
+            (need, self.id))
+
+    def retitle(self, title: str) -> None:
+        """Set the YouTube title in the job and its saved metadata."""
+        spec = self.spec()
+        spec["title"] = spec["model_title"] = title[:100]
+        self.spec_path.write_text(json.dumps(spec, indent=2) + "\n", encoding="utf-8")
+        path = self.work / "upload-metadata.json"
+        if path.exists():
+            metadata = json.loads(path.read_text(encoding="utf-8"))
+            metadata["title"] = title[:100]
+            path.write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
+
     def package(self) -> tuple[dict[str, Any], Path]:
         root = self.root / "release-packages" / self.id
         manifest = root / "package-manifest.json"
@@ -134,8 +166,8 @@ class Rebuild:
 
     # --------------------------------------------------------------- step 1
     def build(self, *, service, store, bridge=None, notify=None, scene_plan: Path | None = None,
-              new_art: bool = False) -> dict[str, Any]:
-        redo = self.prepare(scene_plan, new_art)
+              new_art: bool = False, title: str = "") -> dict[str, Any]:
+        redo = self.prepare(scene_plan, new_art, title)
         service.run(self.spec_path)
         package, root = self.package()
         video = root / package["files"]["video"]["file"]
