@@ -215,3 +215,87 @@ class NoRepeatTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class WholeIndustryTests(unittest.TestCase):
+    """2026-10-22: the sources are YouTube's charts, the tech channels and a rotating
+    watchlist, not 12 fixed phrases."""
+
+    def test_hot_terms_come_from_several_channels(self):
+        items = [("Introducing Claude Duet", "anthropic"),
+                 ("Anthropic Just Dropped Claude Duet (Full Breakdown)", "brock"),
+                 ("Galaxy S26 Ultra Review", "mkbhd"),
+                 ("iPhone 18 leak", "solo")]
+        self.assertEqual(["Claude Duet"], bo.hot_terms(items, 4))
+
+    def test_watchlist_rotates_through_everyone(self):
+        names = [f"n{i}" for i in range(32)]
+        seen = set()
+        for day in range(4):
+            seen.update(bo.rotation(names, 8, day))
+        self.assertEqual(set(names), seen)
+        self.assertNotEqual(bo.rotation(names, 8, 1), bo.rotation(names, 8, 2))
+
+    def test_config_covers_the_big_ai_labs(self):
+        sources = bo.load_sources()
+        text = " ".join(sources["watchlist"] + sources["channels"]).lower()
+        for name in ("anthropic", "openai", "gemini", "meta", "grok", "copilot", "deepseek", "samsung", "nvidia"):
+            self.assertIn(name, text)
+        self.assertGreaterEqual(len(sources["channels"]), 40)
+
+    def test_full_discovery_uses_chart_channels_and_hot_term_searches(self):
+        searches = []
+        vids = {
+            "chart1": video("chart1", "Introducing Claude Duet", 600000, "PT6M", channel="anthropic", hours_ago=20),
+            "up1": video("up1", "Anthropic Just Dropped Claude Duet (Full Breakdown)", 171000, "PT7M39S",
+                         channel="brock", hours_ago=18),
+            "s1": video("s1", "Claude Duet hands on", 90000, "PT9M", channel="c", hours_ago=10),
+        }
+        chans = dict(CHANNELS, anthropic={"id": "anthropic", "statistics": {"viewCount": "1000", "videoCount": "10"}},
+                     brock={"id": "brock", "statistics": {"viewCount": "1000", "videoCount": "10"}})
+        run = lambda value: NS(execute=lambda: value)  # noqa: E731
+
+        def videos_list(**kw):
+            if kw.get("chart"):
+                return run({"items": [vids["chart1"]] if kw["regionCode"] == "US" else []})
+            return run({"items": [vids[i] for i in kw["id"].split(",") if i in vids]})
+
+        def channels_list(**kw):
+            if "forHandle" in kw:
+                if kw["forHandle"] == "BrockMesarich":
+                    return run({"items": [{"contentDetails": {"relatedPlaylists": {"uploads": "UUbrock"}}}]})
+                return run({"items": []})
+            return run({"items": [chans[i] for i in kw["id"].split(",") if i in chans]})
+
+        def search_list(**kw):
+            searches.append(kw["q"])
+            return run({"items": [{"id": {"videoId": "s1"}}] if kw["q"] == "Claude Duet" else []})
+
+        yt = NS(videos=lambda: NS(list=videos_list), channels=lambda: NS(list=channels_list),
+                search=lambda: NS(list=search_list),
+                playlistItems=lambda: NS(list=lambda **kw: run({"items": [
+                    {"contentDetails": {"videoId": "up1", "videoPublishedAt": "2026-10-21T16:00:00Z"}}]})))
+        sources = {"chart_regions": ["US", "GB"], "chart_category": "28", "channels": ["@BrockMesarich", "@nobody"],
+                   "watchlist": ["Samsung Galaxy", "Waymo"], "searches_per_run": 2, "hot_terms_per_run": 4}
+        with mock.patch("builtins.print"):
+            found = bo.find_breakouts(yt, "long", now=NOW, sources=sources)
+        self.assertEqual("Claude Duet", searches[0])                 # found without anyone listing it
+        self.assertIn("Samsung Galaxy", searches)
+        by = {b["title"]: b["found_by"] for b in found}
+        self.assertEqual("chart US", by["Introducing Claude Duet"])
+        self.assertEqual("channel @BrockMesarich", by["Anthropic Just Dropped Claude Duet (Full Breakdown)"])
+        self.assertEqual("search Claude Duet", by["Claude Duet hands on"])
+
+    def test_long_videos_get_a_72_hour_window(self):
+        self.assertEqual(72, bo.FRESH_HOURS["long"])
+        self.assertEqual(48, bo.FRESH_HOURS["short"])
+
+
+class LongLengthTests(unittest.TestCase):
+    def test_short_long_script_is_sent_back(self):
+        from golide_engine.engine.content_rules import length_problems
+
+        plan = {"lines": [{"text": "word " * 600}]}
+        self.assertIn("too short", " ".join(length_problems(plan, "long")))
+        plan = {"lines": [{"text": "word " * 1350}]}
+        self.assertEqual([], length_problems(plan, "long"))

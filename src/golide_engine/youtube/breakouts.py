@@ -25,15 +25,21 @@ import json
 import math
 import re
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from typing import Any
 
-FRESH_HOURS = 48
-WIDER_HOURS = 96          # when the last 48 hours are thin, look a little further back
+# Long videos build views more slowly than shorts, so they get a longer fresh window
+# (2026-10-22: a 7-minute breakdown 54 hours old must still count on Saturday).
+FRESH_HOURS = {"long": 72, "short": 48}
+WIDER_HOURS = 96          # when the fresh window is thin, look a little further back
 MIN_RESULTS = 6
+# Safety net only, when config/trend-sources.json is missing (2026-10-22: the sources
+# are YouTube's own charts, the tech channels and a rotating industry watchlist).
 SEED_QUERIES = (
     "AI", "Tesla", "Elon Musk", "iPhone Apple", "robot", "ChatGPT OpenAI", "Nvidia",
     "new technology", "gadget", "Google AI", "SpaceX", "hacker cybersecurity",
 )
+SOURCES_FILE = Path(__file__).resolve().parents[3] / "config" / "trend-sources.json"
 SKIP_CATEGORIES = {"10", "17", "20"}   # music, sport, gaming: not our lane
 
 # Same format only. YouTube's search filter: "medium" is 4 to 20 minutes, "short" under 4.
@@ -105,39 +111,150 @@ def score(vph: float, breakout: float) -> float:
     return round(min(60.0, math.log10(1 + vph) * 15) + min(40.0, math.log10(1 + breakout) * 20), 1)
 
 
-def find_breakouts(youtube: Any, fmt: str = "long", now: datetime | None = None, hours: int = FRESH_HOURS,
-                   queries: tuple = SEED_QUERIES, per_query: int = 15, limit: int = 25) -> list[dict[str, Any]]:
-    """The tech videos in our format taking the most numbers right now, best first. Only
-    videos that clear the numbers bar are returned. Best effort per query."""
-    now = now or datetime.now(timezone.utc)
-    after = (now - timedelta(hours=hours)).isoformat().replace("+00:00", "Z")
-    ids: list[str] = []
-    for query in queries:
-        try:
-            response = youtube.search().list(
-                part="id", q=query, type="video", order="viewCount", publishedAfter=after,
-                videoDuration=SEARCH_DURATION.get(fmt, "medium"), maxResults=per_query, regionCode="US", relevanceLanguage="en", safeSearch="moderate",
-            ).execute()
-        except Exception as exc:  # noqa: BLE001 - one failed query never stops the search
-            print(json.dumps({"status": "breakout_query_failed", "query": query, "error": str(exc)[:160]}))
+def load_sources(path: Path | None = None) -> dict[str, Any]:
+    try:
+        return json.loads((path or SOURCES_FILE).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {"chart_regions": ["US"], "chart_category": "28", "channels": [],
+                "watchlist": list(SEED_QUERIES), "searches_per_run": len(SEED_QUERIES), "hot_terms_per_run": 0}
+
+
+def rotation(items: list[str], count: int, day: int, offset: int = 0) -> list[str]:
+    """A different slice of the watchlist each run, so every name is searched every few days."""
+    if not items or count <= 0:
+        return []
+    start = (day * count + offset) % len(items)
+    return [items[(start + i) % len(items)] for i in range(min(count, len(items)))]
+
+
+TITLE_STOP = {
+    "the", "this", "that", "these", "new", "how", "why", "what", "when", "who", "you", "your", "just", "full",
+    "review", "best", "official", "first", "look", "here", "its", "it's", "all", "and", "for", "with", "now",
+    "finally", "really", "every", "everything", "nobody", "everyone", "why", "is", "are", "was", "will", "can",
+    "my", "i", "we", "our", "they", "breakdown", "explained", "update", "news", "video", "watch", "today",
+    "introducing", "announcing", "vs", "top", "big", "huge", "insane", "crazy", "shorts", "short", "ai",
+}
+
+
+def hot_terms(items: list[tuple[str, str]], count: int) -> list[str]:
+    """Names in the titles of several different channels right now ("Claude Duet",
+    "Galaxy S26"): what the industry is talking about today, found without a list."""
+    if count <= 0:
+        return []
+    seen: dict[str, set[str]] = {}
+    for title, channel in items:
+        words = re.findall(r"[A-Za-z0-9][A-Za-z0-9+.'-]*", re.sub(r"#\w+", " ", title))
+        caps = [w.strip(".'") for w in words]
+        run: list[str] = []
+        terms: set[str] = set()
+        for word in caps + [""]:
+            keep = word and (word[0].isupper() or any(ch.isdigit() for ch in word)) and word.lower() not in TITLE_STOP
+            if keep and len(word) >= 2:
+                run.append(word)
+                continue
+            for size in (2, 1):
+                for i in range(len(run) - size + 1):
+                    term = " ".join(run[i:i + size])
+                    if len(term) >= 3 and not term.isdigit():
+                        terms.add(term)
+            run = []
+        for term in terms:
+            seen.setdefault(term, set()).add(channel)
+    ranked = sorted((t for t, ch in seen.items() if len(ch) >= 2), key=lambda t: (-len(seen[t]), -len(t.split()), t))
+    picked: list[str] = []
+    for term in ranked:
+        if any(term.lower() in p.lower() or p.lower() in term.lower() for p in picked):
             continue
+        picked.append(term)
+        if len(picked) == count:
+            break
+    return picked
+
+
+def _call(label: str, fn):
+    try:
+        return fn().execute()
+    except Exception as exc:  # noqa: BLE001 - one failed source never stops the search
+        print(json.dumps({"status": "breakout_source_failed", "source": label, "error": str(exc)[:160]}))
+        return {}
+
+
+def _chart_videos(youtube: Any, sources: dict) -> list[dict]:
+    """YouTube's own Science & Technology trending charts (1 quota unit per region)."""
+    out: list[dict] = []
+    for region in sources.get("chart_regions", []):
+        response = _call(f"chart:{region}", lambda r=region: youtube.videos().list(
+            part="snippet,statistics,contentDetails", chart="mostPopular",
+            videoCategoryId=str(sources.get("chart_category", "28")), regionCode=r, maxResults=50))
+        out += [dict(v, found_by=f"chart {region}") for v in response.get("items", [])]
+    return out
+
+
+def _channel_upload_ids(youtube: Any, handles: list[str], after: datetime) -> dict[str, str]:
+    """Latest uploads of the tech channels that cover everything (2 quota units each)."""
+    found: dict[str, str] = {}
+    for handle in handles:
+        channel = _call(f"channel:{handle}", lambda h=handle: youtube.channels().list(
+            part="contentDetails", forHandle=h.lstrip("@")))
+        items = channel.get("items") or []
+        if not items:
+            print(json.dumps({"status": "channel_handle_unknown", "handle": handle}))
+            continue
+        uploads = ((items[0].get("contentDetails") or {}).get("relatedPlaylists") or {}).get("uploads")
+        if not uploads:
+            continue
+        latest = _call(f"uploads:{handle}", lambda u=uploads: youtube.playlistItems().list(
+            part="contentDetails", playlistId=u, maxResults=10))
+        for item in latest.get("items", []):
+            details = item.get("contentDetails") or {}
+            published = details.get("videoPublishedAt", "")
+            try:
+                fresh = datetime.fromisoformat(published.replace("Z", "+00:00")) >= after
+            except ValueError:
+                fresh = False
+            if fresh and details.get("videoId"):
+                found.setdefault(details["videoId"], f"channel {handle}")
+    return found
+
+
+def _search_ids(youtube: Any, queries: list[str], fmt: str, after: datetime, per_query: int) -> dict[str, str]:
+    """YouTube search, the expensive source (100 quota units each), so it is used sparingly."""
+    stamp = after.isoformat().replace("+00:00", "Z")
+    found: dict[str, str] = {}
+    for query in queries:
+        response = _call(f"search:{query}", lambda q=query: youtube.search().list(
+            part="id", q=q, type="video", order="viewCount", publishedAfter=stamp,
+            videoDuration=SEARCH_DURATION.get(fmt, "medium"), maxResults=per_query,
+            regionCode="US", relevanceLanguage="en", safeSearch="moderate"))
         for item in response.get("items", []):
             vid = item.get("id", {}).get("videoId")
-            if vid and vid not in ids:
-                ids.append(vid)
-    videos: list[dict[str, Any]] = []
+            if vid:
+                found.setdefault(vid, f"search {query}")
+    return found
+
+
+def _fetch(youtube: Any, found: dict[str, str]) -> list[dict]:
+    ids = list(found)
+    videos: list[dict] = []
     for start in range(0, len(ids), 50):
-        batch = youtube.videos().list(part="snippet,statistics,contentDetails", id=",".join(ids[start:start + 50]),
-                                      maxResults=50).execute()
-        videos += batch.get("items", [])
-    channel_ids = sorted({v["snippet"]["channelId"] for v in videos if v.get("snippet")})
+        batch = _call("videos", lambda chunk=ids[start:start + 50]: youtube.videos().list(
+            part="snippet,statistics,contentDetails", id=",".join(chunk), maxResults=50))
+        videos += [dict(v, found_by=found.get(v.get("id", ""), "")) for v in batch.get("items", [])]
+    return videos
+
+
+def _measure(youtube: Any, videos: list[dict], fmt: str, now: datetime) -> list[dict[str, Any]]:
+    channel_ids = sorted({v["snippet"]["channelId"] for v in videos if v.get("snippet", {}).get("channelId")})
     channels: dict[str, dict] = {}
     for start in range(0, len(channel_ids), 50):
-        batch = youtube.channels().list(part="statistics,snippet", id=",".join(channel_ids[start:start + 50]),
-                                        maxResults=50).execute()
+        batch = _call("channels", lambda chunk=channel_ids[start:start + 50]: youtube.channels().list(
+            part="statistics,snippet", id=",".join(chunk), maxResults=50))
         channels.update({c["id"]: c for c in batch.get("items", [])})
-    out = []
+    out, seen = [], set()
     for v in videos:
+        if v.get("id") in seen:
+            continue
+        seen.add(v.get("id"))
         snippet, stats = v.get("snippet", {}), v.get("statistics", {})
         if str(snippet.get("categoryId", "")) in SKIP_CATEGORIES:
             continue
@@ -145,11 +262,10 @@ def find_breakouts(youtube: Any, fmt: str = "long", now: datetime | None = None,
         if not fits_format(seconds, fmt):
             continue
         views = int(stats.get("viewCount", 0) or 0)
-        channel = channels.get(snippet.get("channelId", ""), {})
-        cstats = channel.get("statistics", {})
+        cstats = channels.get(snippet.get("channelId", ""), {}).get("statistics", {})
         per_video = int(cstats.get("viewCount", 0) or 0) / max(1, int(cstats.get("videoCount", 0) or 1))
-        vph = views / _age_hours(snippet.get("publishedAt", now.isoformat()), now)
-        breakout = views / max(1.0, per_video)
+        age = _age_hours(snippet.get("publishedAt", now.isoformat()), now)
+        vph, breakout = views / age, views / max(1.0, per_video)
         out.append({
             "title": snippet.get("title", ""),
             "channel": snippet.get("channelTitle", ""),
@@ -157,24 +273,59 @@ def find_breakouts(youtube: Any, fmt: str = "long", now: datetime | None = None,
             "views": views,
             "views_per_hour": round(vph, 1),
             "breakout": round(breakout, 1),
-            "hours_old": round(_age_hours(snippet.get("publishedAt", now.isoformat()), now), 1),
+            "hours_old": round(age, 1),
             "duration_seconds": seconds,
             "format": fmt,
+            "found_by": v.get("found_by", ""),
             "description": str(snippet.get("description", ""))[:300],
             "url": f"https://www.youtube.com/watch?v={v.get('id', '')}",
             "score": score(vph, breakout),
         })
-    out = [b for b in out if passes_bar(b)]
+    return out
+
+
+def find_breakouts(youtube: Any, fmt: str = "long", now: datetime | None = None, hours: int | None = None,
+                   queries: tuple | None = None, per_query: int = 15, limit: int = 25,
+                   sources: dict | None = None) -> list[dict[str, Any]]:
+    """Videos in our format taking the most numbers right now, best first; only those
+    clearing the numbers bar. Sources (2026-10-22, the whole industry, not 12 phrases):
+    YouTube's trending charts, the uploads of the big tech channels, searches for the
+    names several channels are talking about today, and a rotating industry watchlist.
+    Passing ``queries`` searches only those (used by tests and manual checks)."""
+    now = now or datetime.now(timezone.utc)
+    fresh_hours = hours or FRESH_HOURS.get(fmt, 48)
+    wide = now - timedelta(hours=max(WIDER_HOURS, fresh_hours))
+    videos: list[dict] = []
+    if queries is None:
+        sources = sources or load_sources()
+        videos = _chart_videos(youtube, sources)
+        videos += _fetch(youtube, _channel_upload_ids(youtube, list(sources.get("channels", [])), wide))
+        talked = [(v.get("snippet", {}).get("title", ""), v.get("snippet", {}).get("channelId", ""))
+                  for v in videos]
+        hot = hot_terms(talked, int(sources.get("hot_terms_per_run", 4)))
+        day = now.date().toordinal()
+        searches = hot + [q for q in rotation(list(sources.get("watchlist", [])),
+                                              int(sources.get("searches_per_run", 8)), day,
+                                              0 if fmt == "long" else 3)
+                          if q.lower() not in {h.lower() for h in hot}]
+        print(json.dumps({"status": "breakout_sources", "format": fmt, "chart_and_channel_videos": len(videos),
+                          "hot_terms": hot, "searches": searches}))
+    else:
+        searches = list(queries)
+    have = {v.get("id") for v in videos}
+    videos += _fetch(youtube, {k: v for k, v in _search_ids(youtube, searches, fmt, wide, per_query).items()
+                               if k not in have})
+    measured = [b for b in _measure(youtube, videos, fmt, now) if passes_bar(b)]
+    fresh = [b for b in measured if b["hours_old"] <= fresh_hours]
+    out = fresh if len(fresh) >= MIN_RESULTS else measured
     out.sort(key=lambda b: -b["score"])
-    if len(out) < MIN_RESULTS and hours < WIDER_HOURS:
-        return find_breakouts(youtube, fmt, now, WIDER_HOURS, queries, per_query, limit)
     return out[:limit]
 
 
 BREAKOUT_RULES = """\
 YOUTUBE DECIDES THE TOPIC (owner direction 2026-10-21: "you don't go against the
 trend, you join it"). BREAKOUTS lists videos in OUR format (long models long, short
-models short) from the last 48 hours that are taking numbers right now, best first:
+models short) from the last few days that are taking numbers right now, best first:
 views per hour, and "breakout" = views against that channel's own average (50
 means 50 times its normal). Every one has already cleared the numbers bar.
 - Every candidate MUST be built on one breakout: set "source_breakout" to its

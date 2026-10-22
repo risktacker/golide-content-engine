@@ -1,0 +1,27 @@
+{
+  "_about": "Where the engine looks for videos to model (owner direction 2026-10-22: be inclusive of the whole tech industry). Edit freely: add a channel handle or a watchlist name and the next run uses it. Unknown handles are skipped and logged.",
+  "chart_regions": ["US", "GB", "IN", "CA", "AU"],
+  "chart_category": "28",
+  "channels": [
+    "@mkbhd", "@Mrwhosetheboss", "@LinusTechTips", "@UnboxTherapy", "@JerryRigEverything",
+    "@Dave2D", "@austinevans", "@SuperSaf", "@SnazzyLabs", "@iJustine",
+    "@TechLinked", "@TheVerge", "@CNET", "@engadget", "@HardwareCanucks",
+    "@MattWolfe", "@aiexplained-official", "@TwoMinutePapers", "@Fireship", "@matthew_berman",
+    "@WesRoth", "@TheAiGrid", "@mreflow", "@AllAboutAI", "@DavidOndrej",
+    "@ColdFusion", "@veritasium", "@kurzgesagt", "@Vsauce", "@RealEngineering",
+    "@NASA", "@SpaceX", "@Tesla", "@OpenAI", "@anthropic-ai",
+    "@Google", "@GoogleDeepMind", "@Apple", "@Samsung", "@NVIDIA",
+    "@Microsoft", "@Meta", "@BrockMesarich", "@TechChap"
+  ],
+  "watchlist": [
+    "OpenAI ChatGPT", "Anthropic Claude", "Google Gemini", "Meta AI", "xAI Grok",
+    "Microsoft Copilot", "DeepSeek", "Perplexity AI", "Mistral AI", "Nvidia",
+    "Apple iPhone", "Samsung Galaxy", "Google Pixel", "Nothing Phone", "Xiaomi",
+    "Tesla", "SpaceX Starship", "BYD", "Waymo", "Neuralink",
+    "WhatsApp", "Instagram", "TikTok", "YouTube update", "X Twitter",
+    "humanoid robot", "quantum computer", "cybersecurity hack", "AI agents", "new technology",
+    "Elon Musk", "gadget"
+  ],
+  "searches_per_run": 8,
+  "hot_terms_per_run": 4
+}

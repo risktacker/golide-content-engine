@@ -245,8 +245,25 @@ SCRIPT_LENGTH_TARGETS = {
     # Spoken words at ~150 wpm, set below the recording window so the owner
     # has room to breathe. Windows: short 0:30-1:30, long 3:30-5:00.
     "short": {"words_min": 150, "words_max": 185, "seconds": "60 to 75"},
-    "long": {"words_min": 700, "words_max": 800, "seconds": "250 to 290"},  # owner reads fast (2026-10-14)
+    # 2026-10-22: the owner reads fast (about 170 words a minute: 885 words took 5:07),
+    # so 700 to 800 words came out under 5 minutes. 1,300 to 1,450 words is about 8
+    # minutes at his pace, past the 8-minute mark where YouTube allows mid-roll ads.
+    "long": {"words_min": 1300, "words_max": 1450, "seconds": "450 to 510"},
 }
+
+
+def length_problems(plan: dict, format_name: str) -> list[str]:
+    """The model writes short when nothing checks it (scripts came in at 580 to 660 words)."""
+    target = SCRIPT_LENGTH_TARGETS.get(format_name)
+    if not target:
+        return []
+    words = sum(len(str(line.get("text", "")).split()) for line in plan.get("lines", []))
+    if words < target["words_min"] * 0.92:
+        return [f"too short: {words} spoken words, write {target['words_min']} to {target['words_max']} "
+                "(go deeper inside the chapters with real facts and the how-it-works, never padding)"]
+    if words > target["words_max"] * 1.1:
+        return [f"too long: {words} spoken words, cut to {target['words_min']} to {target['words_max']}"]
+    return []
 
 SCRIPT_STRUCTURE_RULES = """\
 SCRIPT STRUCTURE (in this order)
@@ -280,7 +297,7 @@ LONG VIDEO STRUCTURE: A LESSON IN CHAPTERS
 The viewer must always know where they are: "now we're on this, next we're on that".
 - "chapters" lists the parts in order. Each has "number" and "title":
   * INTRO first: number "" and title "Intro".
-  * Then 3 to 5 numbered chapters, number "01", "02", ... Each chapter has ONE job.
+  * Then 4 to 6 numbered chapters, number "01", "02", ... Each chapter has ONE job.
     Title: 2 to 4 plain words, no punctuation, specific to THIS topic.
 - MODEL THE SOURCE (owner direction 2026-10-22): when a SOURCE VIDEO is given, the
   chapters follow its angle and the order it tells the story in (a reveal stays a
@@ -703,8 +720,8 @@ def chapter_problems(plan: dict, format_name: str) -> list[str]:
     numbered = [c for c in chapters if str(c.get("number", "")).strip()]
     lines = [line for line in plan.get("lines", []) if str(line.get("text", "")).strip()]
     problems: list[str] = []
-    if not 3 <= len(numbered) <= 5:
-        problems.append(f"use 3 to 5 numbered chapters between the intro and the close (found {len(numbered)})")
+    if not 3 <= len(numbered) <= 6:  # 2026-10-22: 4 to 6 asked for an 8-minute video, 3 still accepted
+        problems.append(f"use 4 to 6 numbered chapters between the intro and the close (found {len(numbered)})")
     owners = [line.get("chapter") for line in lines]
     if any(not isinstance(o, int) or not 0 <= o < len(chapters) for o in owners):
         problems.append("every line needs a valid chapter index")

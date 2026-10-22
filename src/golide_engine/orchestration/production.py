@@ -30,7 +30,7 @@ from ..storage.database import Database
 from ..youtube.demand import TopicDemandRejected, YouTubeDemandGate
 from ..youtube_metadata import load_metadata_policy, validate_upload_metadata
 from .schemas import METADATA_SCHEMA, RESEARCH_SCHEMA, STORYBOARD_SCHEMA, TREND_CANDIDATES_SCHEMA
-from ..engine.content_rules import TREND_TASTE_RULES, SCRIPT_SCHEMA, chapter_problems, flow_problems, follow_problems, repeat_problems, script_display, script_instructions, script_text
+from ..engine.content_rules import TREND_TASTE_RULES, SCRIPT_SCHEMA, chapter_problems, flow_problems, follow_problems, length_problems, repeat_problems, script_display, script_instructions, script_text
 from .recording import RecordingLengthError, check_recording_length
 from .stage_runner import StageRunner
 
@@ -694,22 +694,26 @@ class ProductionService:
         recent_scripts = self._recent_scripts(production_id)
 
         def script_problems(plan: dict) -> list[str]:
-            return (flow_problems(plan) + chapter_problems(plan, str(spec["format"]))
-                    + follow_problems(plan, str(spec["format"])) + repeat_problems(plan, recent_scripts))
+            return (length_problems(plan, str(spec["format"])) + flow_problems(plan)
+                    + chapter_problems(plan, str(spec["format"])) + follow_problems(plan, str(spec["format"]))
+                    + repeat_problems(plan, recent_scripts))
+
+        # 2026-10-22: an 8-minute script plus its visual fields needs a bigger budget.
+        script_tokens = 16000 if str(spec["format"]) == "long" else 6000
 
         def script_stage():
             self._require_absent(script_path, "script")
             script_input = spec["brief"] + json.dumps(research) + source_video
             self._reserve(
                 spec, text_model,
-                Usage(input_tokens=max(1, len(script_input) // 4), output_tokens=6000),
+                Usage(input_tokens=max(1, len(script_input) // 4), output_tokens=script_tokens),
                 stage="script",
             )
             output = text.generate_json(
                 script_instructions(str(spec["format"]), str(spec["id"])),
                 f"TOPIC BRIEF\n{spec['brief']}{source_video}\n\nVERIFIED RESEARCH\n{json.dumps(research)}",
                 SCRIPT_SCHEMA,
-                max_output_tokens=6000,
+                max_output_tokens=script_tokens,
             )
             plan = dict(output.value)
             problems = script_problems(plan)
@@ -719,14 +723,14 @@ class ProductionService:
                 # Rewrite when the script is choppy or breaks a structure rule; checked again after.
                 self._record_text(production_id, "script-draft", output)
                 self._reserve(spec, text_model, Usage(input_tokens=max(1, len(json.dumps(plan)) // 3 + 3000),
-                                                      output_tokens=6000))
+                                                      output_tokens=script_tokens))
                 output = text.generate_json(
                     script_instructions(str(spec["format"]), str(spec["id"])),
                     f"TOPIC BRIEF\n{spec['brief']}{source_video}\n\nVERIFIED RESEARCH\n{json.dumps(research)}"
                     f"\n\nYOUR PREVIOUS DRAFT\n{json.dumps(plan)}\n\nREWRITE IT. Fix these problems: "
                     + "; ".join(problems) + ". Keep the facts and length, and keep it flowing as natural speech in clear stages.",
                     SCRIPT_SCHEMA,
-                    max_output_tokens=6000,
+                    max_output_tokens=script_tokens,
                 )
                 plan = dict(output.value)
                 problems = script_problems(plan)
