@@ -1,0 +1,56 @@
+# Branch-only lab (owner request 2026-10-22): hand the real illustrations of a
+# production to a temporary branch so the drawing fix is built and previewed on
+# real pictures. No OpenAI calls, nothing published. Lives on the
+# illustration-quality branch only.
+name: Illustration lab
+
+on:
+  push:
+    branches: [illustration-quality]
+    paths: [".github/workflows/illustration-lab.yml"]
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore the production checkpoint
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            productions
+            build
+            release-packages
+            generated
+          key: golide-production-checkpoint-none
+          restore-keys: |
+            golide-production-checkpoint-
+      - name: Hand the pictures over
+        run: |
+          set -euo pipefail
+          ID=golide-long-2026-10-22
+          mkdir -p /tmp/out
+          { echo "== tree"; find productions build release-packages generated -maxdepth 3 2>/dev/null | head -400; } > /tmp/out/tree.txt
+          find . -path ./.git -prune -o -type d -name illustrations -print > /tmp/out/illustration-dirs.txt
+          SRC=$(find . -path "*$ID*" -type d -name illustrations | head -1)
+          echo "source: $SRC" >> /tmp/out/tree.txt
+          [ -n "$SRC" ] && cp -r "$SRC" /tmp/out/illustrations || true
+          WORK=$(dirname "${SRC:-./none/x}")
+          for f in visual-plan.json storyboard.json scene-plan.json timed-words-owner.json chapters.json; do
+            cp "$WORK/$f" /tmp/out/ 2>/dev/null || true
+          done
+          ls -la "$WORK" > /tmp/out/files.txt 2>&1 || true
+          git config user.name "golide-engine"
+          git config user.email "engine@golidee.com"
+          git checkout --orphan illustration-lab-out
+          git rm -rf --cached . > /dev/null
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -r /tmp/out/* .
+          git add -A
+          git commit -m "Illustration lab export (temporary)"
+          git push -f origin illustration-lab-out
