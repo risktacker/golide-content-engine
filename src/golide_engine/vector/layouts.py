@@ -74,21 +74,31 @@ def figure_size(format_name: str, layout: str) -> tuple[int, int]:
     return int(width), int(height)
 
 
+# 2026-10-22: pictures came back with cars cut by the image border (a bumper or a rear
+# outside the canvas); the real picture is now shown, so a cut edge shows on screen.
+WHOLE_IN_FRAME = ("Every object is drawn WHOLE and fully inside the picture, with clear empty black "
+                  "space between it and all four borders: no car, vehicle, person or object is cut "
+                  "off or cropped by the edge, and the leftmost and rightmost objects end well before "
+                  "the borders.")
+
+
 def composition(format_name: str, layout: str) -> str:
     """The composition sentence of the image prompt for this layout."""
     if format_name == "short":
         return ("Portrait composition: one compact scene in the centre with wide empty black "
                 "margins on the left and right; nothing touches the edges, and any ground line is "
-                "short, not edge to edge.")
+                "short, not edge to edge. " + WHOLE_IN_FRAME)
     if layout == "wide":
         return ("Panoramic composition: a wide horizontal scene arranged from left to right across "
                 "the whole width, like a long strip; the top and bottom quarters stay empty black, "
-                "the left and right ends carry part of the scene, and nothing touches the edges.")
+                "the left and right ends carry part of the scene, and nothing touches the edges. "
+                + WHOLE_IN_FRAME)
     if layout == "duo":
         return ("Square composition: one compact scene in the centre with empty black margins on "
-                "every side; nothing touches the edges, and any ground line stays inside the margins.")
+                "every side; nothing touches the edges, and any ground line stays inside the margins. "
+                + WHOLE_IN_FRAME)
     return ("Landscape composition: the scene centred with empty black margins on every side; "
-            "nothing touches the edges, and any ground line stays inside the margins.")
+            "nothing touches the edges, and any ground line stays inside the margins. " + WHOLE_IN_FRAME)
 
 
 STORYBOARD_RULES = """\

@@ -734,7 +734,9 @@ SCENES: dict[str, Drawing] = {}
 # short: x within the middle 68% of the width, y from 17% to 58% of the height,
 #        below the tag/pill zone and above the captions.
 # long:  y from 19% to 76% of the height, below the chapter card.
-REGIONS = {"short": (-0.92, -1.10, 0.92, 0.87), "long": (-2.0, -0.77, 2.0, 1.12)}
+# 2026-10-22: long videos use more of the 16:9 frame (the frame is +-2.96 units wide);
+# the old +-2.0 left a third of the width empty and pushed big pictures against the box.
+REGIONS = {"short": (-0.92, -1.10, 0.92, 0.87), "long": (-2.55, -0.77, 2.55, 1.12)}
 
 
 FIT_INSET = 0.05  # share of the area kept free on each side for the push-in and drift

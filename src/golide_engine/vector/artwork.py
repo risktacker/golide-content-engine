@@ -38,6 +38,7 @@ REVEAL_SOFT = 0.012        # share of the pen's work over which a pixel fades in
 GOLD_HUE = 0.28            # warm hue threshold, same as the tracer
 ALL_ACCENT = 0.6           # above this share of gold ink the whole picture was drawn gold
 HAZE_LEVEL = 25.0          # brightness above the background that counts as "lit"
+EDGE_FADE = 0.06           # share of each side over which the art fades out at the picture border
 
 
 @dataclass
@@ -105,7 +106,21 @@ def load_artwork(image, drawing_width: int) -> Artwork:
         image = image.resize((round(image.width * scale), round(image.height * scale)), Image.Resampling.LANCZOS)
     rgb = np.asarray(image, np.float32)
     alpha, accent, haze, all_accent = line_layer(rgb)
-    return Artwork(alpha, accent, image.width / max(1, drawing_width), haze, all_accent)
+    return Artwork(edge_fade(alpha), accent, image.width / max(1, drawing_width), haze, all_accent)
+
+
+def edge_fade(alpha: np.ndarray, share: float = EDGE_FADE) -> np.ndarray:
+    """Fade the art out towards the picture border (2026-10-22): when the image model cuts an
+    object with the border, the cut ends in a soft fade instead of a hard chop on screen."""
+    h, w = alpha.shape
+    def ramp(n: int) -> np.ndarray:
+        band = max(1, int(round(n * share)))
+        r = np.ones(n, np.float32)
+        t = np.linspace(0.0, 1.0, band, dtype=np.float32)
+        r[:band] = t * t * (3 - 2 * t)
+        r[n - band:] = np.minimum(r[n - band:], r[:band][::-1])
+        return r
+    return (alpha * ramp(h)[:, None] * ramp(w)[None, :]).astype(np.float32)
 
 
 def time_map(art: Artwork, strokes) -> np.ndarray:
