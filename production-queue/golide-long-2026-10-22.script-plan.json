@@ -1,0 +1,524 @@
+{
+  "title": "Elon Musk’s Flying Roadster: How the Rocket Car Really Works",
+  "chapters": [
+    {
+      "number": "",
+      "title": "Intro"
+    },
+    {
+      "number": "01",
+      "title": "Ground Motion"
+    },
+    {
+      "number": "02",
+      "title": "Added Grip"
+    },
+    {
+      "number": "03",
+      "title": "Rocket Version"
+    },
+    {
+      "number": "04",
+      "title": "Real Or Show"
+    },
+    {
+      "number": "",
+      "title": "Close"
+    }
+  ],
+  "lines": [
+    {
+      "chapter": 0,
+      "section": "claim",
+      "text": "Cars are supposed to stay on the road, but Tesla just made one leave it.",
+      "emphasis": "leave it",
+      "visual": "icon_hero",
+      "subjects": [
+        "sports car",
+        "road"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "claim",
+      "text": "And that one viral clip is mixing different machines and different tricks.",
+      "emphasis": "different tricks",
+      "visual": "icon_pair",
+      "subjects": [
+        "sports car",
+        "rocket"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "claim",
+      "text": "In the next few minutes, we'll go through how it drives, how it sticks to a wall upside down,",
+      "emphasis": "upside down",
+      "visual": "icon_flow",
+      "subjects": [
+        "wheel",
+        "fan"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "claim",
+      "text": "how the rocket version gets into the air, and whether any of this is a real car or just a show.",
+      "emphasis": "real car",
+      "visual": "split_compare",
+      "subjects": [
+        "sports car",
+        "stage"
+      ],
+      "label": "REAL OR SHOW?",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Let's start with the boring part, because that's where the whole thing begins.",
+      "emphasis": "boring part",
+      "visual": "icon_hero",
+      "subjects": [
+        "battery"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "The battery stores the energy, and the power electronics decide how much goes to the motors.",
+      "emphasis": "motors",
+      "visual": "icon_flow",
+      "subjects": [
+        "battery",
+        "chip",
+        "motor"
+      ],
+      "label": "BATTERY TO MOTOR",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "The motors turn the wheels, and the tires push against the road.",
+      "emphasis": "push",
+      "visual": "icon_pair",
+      "subjects": [
+        "wheel",
+        "road"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "There's no petrol and no rocket in this part, it's a normal electric car doing what electric cars do.",
+      "emphasis": "normal electric car",
+      "visual": "icon_hero",
+      "subjects": [
+        "electric car"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "reframe",
+      "text": "Every crazy moment in that video starts with plain driving.",
+      "emphasis": "plain driving",
+      "visual": "icon_hero",
+      "subjects": [
+        "sports car",
+        "road"
+      ],
+      "label": "PLAIN DRIVING",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "How does a car hold on when it's upside down?",
+      "emphasis": "upside down",
+      "visual": "icon_hero",
+      "subjects": [
+        "sports car",
+        "curved wall"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "That's the fans.",
+      "emphasis": "fans",
+      "visual": "icon_hero",
+      "subjects": [
+        "fan"
+      ],
+      "label": "FANS",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "They suck the air out from under the car, and a seal around the bottom stops new air rushing back in.",
+      "emphasis": "seal",
+      "visual": "icon_flow",
+      "subjects": [
+        "fan",
+        "arrow",
+        "seal"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "The pressure under the car drops, and the normal air above pushes the whole car down onto the surface.",
+      "emphasis": "pushes",
+      "visual": "spike_vs_curve",
+      "subjects": [
+        "arrow",
+        "sports car"
+      ],
+      "label": "LOW PRESSURE",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "That presses the tires harder into the surface, so they grip more and the car can take corners faster.",
+      "emphasis": "grip more",
+      "visual": "gauge",
+      "subjects": [
+        "tire"
+      ],
+      "label": "GRIP",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "That's how Tesla drove it up a curved wall and held it upside down with the fans running.",
+      "emphasis": "curved wall",
+      "visual": "icon_hero",
+      "subjects": [
+        "sports car",
+        "curved wall"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "reframe",
+      "text": "But understand this, the fans don't lift anything, they glue the car down.",
+      "emphasis": "glue the car down",
+      "visual": "cross_out",
+      "subjects": [
+        "fan",
+        "arrow up"
+      ],
+      "label": "NO LIFT",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "reframe",
+      "text": "Anyone calling that part flying is wrong, that's grip.",
+      "emphasis": "that's grip",
+      "visual": "icon_hero",
+      "subjects": [
+        "tire",
+        "road"
+      ],
+      "label": "GRIP, NOT FLIGHT",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "The part where it really goes into the air is a different car.",
+      "emphasis": "different car",
+      "visual": "split_compare",
+      "subjects": [
+        "sports car",
+        "rocket car"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Tesla lists three versions, Performance, Thrust and Rocket, and each one has different hardware.",
+      "emphasis": "three versions",
+      "visual": "icon_grid",
+      "subjects": [
+        "sports car",
+        "fan",
+        "rocket"
+      ],
+      "label": "3 VERSIONS",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "The Performance one keeps two seats and the fans.",
+      "emphasis": "two seats",
+      "visual": "icon_pair",
+      "subjects": [
+        "seat",
+        "fan"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "The Rocket one has one seat and extra thrusters for lift and rotation.",
+      "emphasis": "one seat",
+      "visual": "icon_pair",
+      "subjects": [
+        "seat",
+        "thruster"
+      ],
+      "label": "ROCKET",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "pattern",
+      "text": "Inside it, high pressure tanks feed what's called cold gas thrusters.",
+      "emphasis": "cold gas thrusters",
+      "visual": "icon_flow",
+      "subjects": [
+        "gas tank",
+        "nozzle"
+      ],
+      "label": "COLD GAS",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "pattern",
+      "text": "The gas shoots out of nozzles around the car one way, and the car gets pushed the other way.",
+      "emphasis": "pushed",
+      "visual": "icon_pair",
+      "subjects": [
+        "nozzle",
+        "arrow"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "pattern",
+      "text": "That's Newton's third law, the same cold gas idea NASA uses for short moves in space.",
+      "emphasis": "Newton's third law",
+      "visual": "icon_orbit",
+      "subjects": [
+        "satellite",
+        "arrow"
+      ],
+      "label": "NEWTON'S 3RD LAW",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "cost",
+      "text": "But the tanks only hold so much gas, so the push only lasts a moment.",
+      "emphasis": "a moment",
+      "visual": "clock",
+      "subjects": [
+        "gas tank",
+        "clock"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "That moment is enough to lift it, flip it or roll it, and bring it back down on its wheels.",
+      "emphasis": "flip it",
+      "visual": "staircase",
+      "subjects": [
+        "sports car",
+        "arrow"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "reframe",
+      "text": "That one really does leave the ground, but it's a one seat prototype, not the car you'd drive to work.",
+      "emphasis": "prototype",
+      "visual": "icon_hero",
+      "subjects": [
+        "rocket car"
+      ],
+      "label": "PROTOTYPE",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "Now, is this a real flying car or a show?",
+      "emphasis": "show",
+      "visual": "split_compare",
+      "subjects": [
+        "sports car",
+        "stage"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "Tesla itself lists the Rocket model as not approved for public roads.",
+      "emphasis": "not approved",
+      "visual": "cross_out",
+      "subjects": [
+        "road sign"
+      ],
+      "label": "NOT ROAD LEGAL",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "Independent reporting called the car at the event a one off demonstration.",
+      "emphasis": "one off",
+      "visual": "icon_hero",
+      "subjects": [
+        "camera",
+        "sports car"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "And we've seen one good jump, nothing yet like repeated launches and landings that prove the fans, seals and tanks hold up.",
+      "emphasis": "one good jump",
+      "visual": "checklist",
+      "subjects": [
+        "fan",
+        "seal",
+        "gas tank"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "Then there's everything a real car has to survive, a crash, a hard landing, noise, servicing and the extra weight.",
+      "emphasis": "crash",
+      "visual": "icon_grid",
+      "subjects": [
+        "crash",
+        "wrench",
+        "weight"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "reframe",
+      "text": "So the driving is real, the grip is real, and the flying is a prototype.",
+      "emphasis": "flying is a prototype",
+      "visual": "checklist",
+      "subjects": [
+        "wheel",
+        "fan",
+        "rocket"
+      ],
+      "label": "VERDICT",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "reframe",
+      "text": "Until Tesla shows repeat flights and gets it certified for safety, that's all it is.",
+      "emphasis": "certified",
+      "visual": "gauge",
+      "subjects": [
+        "shield"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "reframe",
+      "text": "The simple version is, motors move the car, fans keep it stuck down, and gas thrusters push one special version into the air for a moment.",
+      "emphasis": "for a moment",
+      "visual": "icon_flow",
+      "subjects": [
+        "motor",
+        "fan",
+        "thruster"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "reframe",
+      "text": "The car left the road, but whether it ever becomes a flying car you can own is still decided on the ground.",
+      "emphasis": "on the ground",
+      "visual": "icon_hero",
+      "subjects": [
+        "sports car",
+        "road"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "cta",
+      "text": "And if you want the next big tech clip broken down like this, follow the channel.",
+      "emphasis": "follow the channel",
+      "visual": "logo_end",
+      "subjects": [
+        "logo"
+      ],
+      "label": "",
+      "follow": true
+    },
+    {
+      "chapter": 5,
+      "section": "cta",
+      "text": "So here's the question, should Tesla certify the Rocket Roadster, or keep it as a prototype?",
+      "emphasis": "certify",
+      "visual": "split_compare",
+      "subjects": [
+        "shield",
+        "rocket car"
+      ],
+      "label": "",
+      "follow": false
+    }
+  ]
+}
