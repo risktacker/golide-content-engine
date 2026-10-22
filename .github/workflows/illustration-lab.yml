@@ -35,13 +35,16 @@ jobs:
           set -euo pipefail
           ID=golide-long-2026-10-22
           mkdir -p /tmp/out
-          ls build || true
-          ls "build/$ID" || true
-          cp -r "build/$ID/illustrations" /tmp/out/ 2>/dev/null || echo "no illustrations"
+          { echo "== tree"; find productions build release-packages generated -maxdepth 3 2>/dev/null | head -400; } > /tmp/out/tree.txt
+          find . -path ./.git -prune -o -type d -name illustrations -print > /tmp/out/illustration-dirs.txt
+          SRC=$(find . -path "*$ID*" -type d -name illustrations | head -1)
+          echo "source: $SRC" >> /tmp/out/tree.txt
+          [ -n "$SRC" ] && cp -r "$SRC" /tmp/out/illustrations || true
+          WORK=$(dirname "${SRC:-./none/x}")
           for f in visual-plan.json storyboard.json scene-plan.json timed-words-owner.json chapters.json; do
-            cp "build/$ID/$f" /tmp/out/ 2>/dev/null || true
+            cp "$WORK/$f" /tmp/out/ 2>/dev/null || true
           done
-          find build/$ID -maxdepth 1 -type f -name '*.json' | head -40 > /tmp/out/files.txt || true
+          ls -la "$WORK" > /tmp/out/files.txt 2>&1 || true
           git config user.name "golide-engine"
           git config user.email "engine@golidee.com"
           git checkout --orphan illustration-lab-out
