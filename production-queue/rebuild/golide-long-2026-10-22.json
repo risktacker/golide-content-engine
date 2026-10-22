@@ -1,0 +1,16 @@
+{
+  "production_id": "golide-long-2026-10-22",
+  "previous": null,
+  "status": "awaiting_approval",
+  "media_ref": "r2://temp/2026/10/22/1b1fda96e2e545999a7ec6d2b9194cb8-golide-long-2026-10-22-rebuild.mp4",
+  "built_at": "2026-10-22T18:20:37.645283+00:00",
+  "preview_expires_at": "2026-10-24T18:20:37.645294+00:00",
+  "redone_stages": [
+    "render-vector-v1",
+    "qa",
+    "release",
+    "visual-plan-v1",
+    "illustrations-v1",
+    "thumbnail"
+  ]
+}
