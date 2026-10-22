@@ -279,19 +279,28 @@ def illustration_prompt(drawing: str, gold: str, format_name: str, layout: str =
     from .layouts import composition
 
     area = composition(format_name, layout)
+    # 2026-10-22: the picture itself is now shown on screen (vector.artwork), so the
+    # prompt asks for accurate, real-looking technical line art. "Glowing pen" was
+    # dropped: the model answered it with blurred halos (9 of 32 pictures on 22 Oct),
+    # and the renderer adds its own glow.
     return (
-        "Minimal elegant line illustration: thin, clean white lines on a pure flat black "
-        "background, like a confident hand-drawn ink sketch made with a fine glowing pen. "
-        "Main shapes in a steady line with a bold, instantly recognisable outline; a few small "
+        "Precise, elegant technical line illustration, like a product designer's or an "
+        "engineer's ink drawing: crisp, sharp, thin pure white lines of even weight on a pure "
+        "flat black background (#000000), no vignette. Real objects drawn accurately with correct "
+        "proportions and their real parts in the right places (a car has its true body shape, "
+        "wheels, wheel arches, windows and doors; a machine its real components), in a clear "
+        "three-quarter or side view that shows what the thing is at a glance. Main shapes in a "
+        "steady line with a bold, instantly recognisable outline; a few small "
         "inner details (a seam, a button, a window, a fold) in finer lines so the drawing has "
-        "depth without clutter. Networks, branches, maps and dot patterns are welcome when "
+        "depth without clutter. No glow, no blur, no soft or fuzzy lines. Networks, branches, maps and dot patterns are welcome when "
         "asked for, but always clearly structured. No textures, hatching, cracks, mosaics or "
         "random scribbles. Give the scene a simple ground line or soft horizon so objects sit somewhere, "
         "one clear focal point, and generous empty space around it. Every line closed and "
         "deliberate; no sketchy double lines, no stray dots. Outlines only: no fills, no solid "
         "shapes, no shading, no gradients, no glow halos, no colour except one part. Draw the "
         "following as one composed scene: "
-        f"{drawing.strip()} Draw only this part in warm gold lines: {gold.strip()}. "
+        f"{drawing.strip()} Every line is pure white EXCEPT this one part, drawn in warm gold "
+        f"lines: {gold.strip()}. Nothing else is gold. "
         + (f"Give {gold.strip()} a clean, empty label panel (a plain outlined rectangle) where a "
            "word will be printed later. " if label.strip() else "")
         + "No text, letters, numbers, labels, logos, watermarks or user-interface elements anywhere; "
@@ -343,6 +352,9 @@ class Drawing:
     clip: bool = False  # a pacing shot: framed on part of the picture, clipped to the drawing area
     figure: bool = False  # an exact figure (maths, physics): the background shows the lesson grid
     traced: int = 0       # strokes found by the tracer before clean-up (a clutter measure)
+    # 2026-10-22: the real illustration, shown on screen and revealed along the strokes
+    # (vector.artwork). None for exact figures, which are drawn as strokes.
+    art: "object | None" = None
 
     @property
     def total(self) -> float:
@@ -477,6 +489,7 @@ def declutter(strokes: list[Stroke]) -> list[Stroke]:
 
 
 GOLD_SHARE_MAX = 0.5      # more glowing line than this and the picture has no clear focus
+HAZE_MAX = 0.6            # 22 Oct: blurred pictures measured 0.8 to 0.94, crisp ones under 0.15
 MIN_STROKES = 5
 
 
@@ -490,28 +503,63 @@ def picture_problems(drawing: "Drawing") -> list[str]:
                         "small part glow gold")
     if len(drawing.strokes) < MIN_STROKES:
         problems.append("the drawing is nearly empty; draw the whole object with a clear outline")
+    art = getattr(drawing, "art", None)
+    if art is not None and art.haze > HAZE_MAX:
+        problems.append("the lines are blurred by glow halos; draw crisp, sharp, thin lines with no glow or blur")
+    # An all-gold picture is not redrawn: the renderer tints it in the scene's colour
+    # (vector.artwork), so the two redraws per video go to blurred pictures.
     if drawing.traced > CLUTTER_STROKES * 2:
         problems.append("the drawing is a tangle of tiny lines; use fewer, longer, cleaner lines and no texture")
     return problems
 
 
+SPUR_PX = 14              # skeleton branches shorter than this that end in the air are spurs
+TRACE_ALPHA = 0.3         # line strength that counts as ink for the tracer
+
+
+def _degrees(skeleton: np.ndarray) -> np.ndarray:
+    from scipy import ndimage
+
+    kernel = np.ones((3, 3), int)
+    kernel[1, 1] = 0
+    return ndimage.convolve(skeleton.astype(int), kernel, mode="constant") * skeleton
+
+
+def _without_spurs(paths: list, degree: np.ndarray) -> list:
+    """Drop short branches that run from a junction to a dead end (the hairs a
+    skeleton grows at corners and on thick lines)."""
+    kept = []
+    for path in paths:
+        if len(path) < SPUR_PX:
+            ends = sorted((int(degree[path[0]]), int(degree[path[-1]])))
+            if ends[0] == 1 and ends[1] >= 3:
+                continue
+        kept.append(path)
+    return kept
+
+
 def vectorize(image_path: Path, max_side: int = 900) -> Drawing:
+    """The picture as ordered pen strokes plus the real art they reveal (2026-10-22).
+
+    The strokes are traced from the LINE LAYER (vector.artwork.line_layer), not from
+    every bright pixel: glow halos, haze and filled panels are removed first, so a
+    shaded car body no longer turns into a stick figure. The strokes decide the
+    order of the reveal; the screen shows the illustration itself.
+    """
     from PIL import Image
     from scipy import ndimage
     from skimage.morphology import skeletonize
 
-    image = Image.open(image_path).convert("RGB")
+    from .artwork import line_layer, load_artwork, time_map
+
+    original = Image.open(image_path).convert("RGB")
+    image = original
     scale = min(1.0, max_side / max(image.size))
     if scale < 1.0:
         image = image.resize((round(image.width * scale), round(image.height * scale)), Image.Resampling.LANCZOS)
     rgb = np.asarray(image, np.float32)
-    lum = rgb.max(axis=2)
-    # Lines are bright on black: threshold relative to the background and the
-    # brightest ink, so both crisp white and softer grey line art trace.
-    background = float(np.median(lum))
-    ink = float(np.percentile(lum, 99.5))
-    threshold = background + max(30.0, 0.35 * (ink - background))
-    mask = lum > threshold
+    alpha, accent, _haze, _all = line_layer(rgb)
+    mask = alpha > TRACE_ALPHA
     mask = ndimage.binary_closing(mask, iterations=1)
     labels, count = ndimage.label(mask)
     if count:
@@ -520,17 +568,15 @@ def vectorize(image_path: Path, max_side: int = 900) -> Drawing:
         mask = mask & keep
     distance = ndimage.distance_transform_edt(mask)
     skeleton = skeletonize(mask)
-
-    r, g, b = rgb[..., 0], rgb[..., 1], rgb[..., 2]
-    goldness = (r - b) / (lum + 1)  # warm hue: red/green high, blue low
+    degree = _degrees(skeleton)
 
     strokes: list[Stroke] = []
-    for path in _trace(skeleton):
+    for path in _without_spurs(_trace(skeleton), degree):
         if len(path) < 6:
             continue
         pts = np.array([(x, y) for y, x in path], np.float64)
         ys, xs = np.array([p[0] for p in path]), np.array([p[1] for p in path])
-        gold = float(np.median(goldness[ys, xs])) > 0.28
+        gold = float(accent[ys, xs].mean()) > 0.5
         width = float(np.clip(np.median(distance[ys, xs]) * 2.0, 1.2, 6.0))
         pts = _simplify(_smooth(pts, 3), 0.6)
         stroke = Stroke(pts, gold, width)
@@ -539,13 +585,19 @@ def vectorize(image_path: Path, max_side: int = 900) -> Drawing:
     if not strokes:
         raise ValueError(f"no line art found in {image_path}")
     traced = len(strokes)
-    strokes = declutter(strokes)
+    strokes = _order(declutter(strokes))
     allpts = np.vstack([s.points for s in strokes])
     x0, y0 = allpts.min(axis=0)
     x1, y1 = allpts.max(axis=0)
-    fill, accent_fill = _fills(mask, goldness)
-    return Drawing(_order(strokes), image.width, image.height, (float(x0), float(y0), float(x1), float(y1)),
-                   fill, accent_fill, traced=traced)
+    art = load_artwork(original, image.width)
+    art.tmap = time_map(art, strokes)
+    # The bbox covers the art too, so nothing the trace missed is ever cut by a zoom.
+    ys_a, xs_a = np.nonzero(art.alpha > 0.2)
+    if len(xs_a):
+        x0, x1 = min(x0, xs_a.min() / art.scale), max(x1, xs_a.max() / art.scale)
+        y0, y1 = min(y0, ys_a.min() / art.scale), max(y1, ys_a.max() / art.scale)
+    return Drawing(strokes, image.width, image.height, (float(x0), float(y0), float(x1), float(y1)),
+                   None, None, traced=traced, art=art)
 
 
 def accent_box(drawing: Drawing) -> tuple[float, float, float, float] | None:
@@ -654,37 +706,6 @@ def load_figure(image_path: Path) -> Drawing | None:
                    accent="gold", entrance="pen", labels=labels, keep_order=True, figure=True)
 
 
-def _fills(mask: np.ndarray, goldness: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-    """Enclosed areas of the line art (a body, a door, a screen), not the background.
-
-    Very small pockets and very large areas (a room outline) stay empty so the
-    fill reads as shading, never as a solid block.
-    """
-    from scipy import ndimage
-
-    h, w = mask.shape
-    holes, count = ndimage.label(~mask)
-    fill = np.zeros((h, w), np.float32)
-    accent = np.zeros((h, w), np.float32)
-    if not count:
-        return fill, accent
-    border = set(np.unique(np.concatenate([holes[0], holes[-1], holes[:, 0], holes[:, -1]])))
-    sizes = ndimage.sum(np.ones_like(holes), holes, range(1, count + 1))
-    area = float(h * w)
-    ring_gold = goldness > 0.28
-    for label in range(1, count + 1):
-        if label in border:
-            continue
-        share = sizes[label - 1] / area
-        if share < 0.0006 or share > 0.12:
-            continue
-        region = holes == label
-        ring = ndimage.binary_dilation(region, iterations=3) & mask
-        warm = ring_gold[ring].mean() if ring.any() else 0.0
-        (accent if warm > 0.5 else fill)[region] = 1.0
-    return fill, accent
-
-
 # --------------------------------------------------------------------------
 # Drawing on screen
 # --------------------------------------------------------------------------
@@ -789,6 +810,8 @@ def draw_illustration(d, drawing: Drawing, region, reveal: float, breathe: float
             end = pts[j] + (pts[j + 1] - pts[j]) * f
             pts = np.vstack([pts[: j + 1], end])
             tip = tx([end])[0]
+        if drawing.art is not None:
+            continue  # the real art is painted below; the strokes only lead the pen
         mapped = tx(pts)
         width_px = max(1.6, min(3.4, stroke.width * s * d.unit_px * 0.9))
         # Line hierarchy: main contours a touch heavier, small details finer.
@@ -828,6 +851,8 @@ def draw_illustration(d, drawing: Drawing, region, reveal: float, breathe: float
         else:
             d.stroke(path, "line", width_px, alpha=0.92)
             d.stroke(path, "line", width_px, alpha=0.18, hot=True)
+    if drawing.art is not None:
+        _paint_art(d, drawing, accent, s, cx, cy, ox, oy, target / drawing.total, pulse)
     if drawing.labels:
         done = target / drawing.total
         for surface, lx, ly, after, _keep in drawing.labels:
@@ -851,6 +876,27 @@ def draw_illustration(d, drawing: Drawing, region, reveal: float, breathe: float
     if clipped:
         for ctx in (d.main, d.glow):
             ctx.restore()
+
+
+def _paint_art(d, drawing: Drawing, accent: str, s, cx, cy, ox, oy, done: float, pulse: float) -> None:
+    """The real illustration, revealed up to the pen (vector.artwork, 2026-10-22)."""
+    import cairo
+
+    from .artwork import frame_surfaces
+
+    art = drawing.art
+    line_rgb = tuple(d.colors["line"])[:3]
+    accent_rgb = tuple(d.colors.get(accent, d.colors["gold"]))[:3]
+    main, glow = frame_surfaces(art, done, line_rgb, accent_rgb)
+    for ctx, surface, alpha in ((d.main, main, 0.96), (d.glow, glow, 0.8 + 0.2 * pulse)):
+        ctx.save()
+        ctx.translate(ox, oy)
+        ctx.scale(s / art.scale, s / art.scale)
+        ctx.translate(-cx * art.scale, -cy * art.scale)
+        ctx.set_source_surface(surface, 0, 0)
+        ctx.get_source().set_filter(cairo.FILTER_GOOD)
+        ctx.paint_with_alpha(alpha)
+        ctx.restore()
 
 
 def _mark_ring(d, drawing: Drawing, accent: str, tx) -> None:
