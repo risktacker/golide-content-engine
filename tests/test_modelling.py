@@ -299,3 +299,18 @@ class LongLengthTests(unittest.TestCase):
         self.assertIn("too short", " ".join(length_problems(plan, "long")))
         plan = {"lines": [{"text": "word " * 1350}]}
         self.assertEqual([], length_problems(plan, "long"))
+
+
+class TopicLockTests(unittest.TestCase):
+    def test_a_chosen_topic_is_never_chosen_again_on_resume(self):
+        # 22 Oct: the resumed Roadster run re-chose and uploaded under the Apple candidate's title.
+        from golide_engine.orchestration import production
+
+        source = inspect.getsource(production.ProductionService.run)
+        self.assertIn("topic_locked", source)
+        self.assertIn("if self.youtube is not None and not topic_locked:", source)
+
+    def test_music_bed_is_a_little_lower(self):
+        from golide_engine.vector.ambient import LEVEL_DB
+
+        self.assertEqual(-19.0, LEVEL_DB)

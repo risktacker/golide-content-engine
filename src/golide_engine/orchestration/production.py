@@ -485,7 +485,12 @@ class ProductionService:
         text = self.providers.text(live=True)
 
         demand_path = work / "platform-demand.json"
-        if self.youtube is not None:
+        # 2026-10-22: once a topic is chosen it is locked. A resumed run (after the owner's
+        # recording) used to choose again and swapped the Roadster video's title for another
+        # candidate's ("Apple CEO John Ternus..."), while the script and visuals stayed.
+        topic_locked = bool(spec.get("selected_topic_source")) and \
+            spec.get("platform_demand", {}).get("verdict") == "pass"
+        if self.youtube is not None and not topic_locked:
             gate = YouTubeDemandGate(self.youtube, self.database)
             # Scheduled automation specs are deliberately generic. They must always
             # discover and compare fresh niche topics rather than allowing the generic
@@ -497,7 +502,9 @@ class ProductionService:
             try:
                 if requires_fresh_topic:
                     raise TopicDemandRejected("scheduled automation requires fresh topic discovery")
-                candidate, demand = gate.select(spec)
+                # A breakout candidate always wins, here as in the fresh-discovery path.
+                from ..youtube.pulse import choose as choose_breakout_first
+                candidate, demand = choose_breakout_first(gate, spec)
             except TopicDemandRejected:
                 candidate_path = work / "trend-candidates.json"
 

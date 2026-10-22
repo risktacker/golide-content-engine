@@ -18,7 +18,7 @@ class TrendingFallbackContractTests(unittest.TestCase):
         # 2026-10-21: YouTube decides the topic; titles are modelled on the breakout.
         self.assertIn("find_breakouts(self.youtube, fmt)", source)
         self.assertIn("BREAKOUT_RULES", source)
-        self.assertIn("candidate, demand = gate.select(spec)", source)
+        self.assertIn("candidate, demand = choose_breakout_first(gate, spec)", source)
         self.assertIn('"platform_seed_demand" not in item', source)
 
 
