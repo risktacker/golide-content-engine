@@ -87,6 +87,7 @@ function scriptHtml(script) {
 
 // ---- YouTube numbers (2026-10-24): what the engine collects each morning. ----
 let ytDays = 28;
+let ytOpen = false;
 const fmtNum = (n) => Number(n || 0) >= 1e6 ? (n / 1e6).toFixed(1) + "M" : Number(n || 0) >= 1e4 ? Math.round(n / 1e3) + "K"
   : Number(n || 0).toLocaleString();
 
@@ -142,10 +143,20 @@ async function loadYouTube() {
   body.innerHTML = '<div class="yt-kpis">' + kpis.map(([label, value, change]) =>
       '<div class="yt-kpi"><b>' + esc(value) + change + "</b><span>" + esc(label) + "</span></div>").join("") + "</div>"
     + ytChart(report.daily)
-    + (rows ? '<div class="yt-scroll"><table class="yt-table"><thead><tr><th>Video</th><th class="n">Views</th>'
+    + (rows ? '<button type="button" class="btn btn-quiet yt-toggle" aria-expanded="' + ytOpen + '">'
+      + (ytOpen ? "Hide videos" : "Show videos (" + report.videos.length + ")") + "</button>"
+      + '<div class="yt-scroll"' + (ytOpen ? "" : " hidden") + '><table class="yt-table"><thead><tr><th>Video</th><th class="n">Views</th>'
       + '<th class="n hide-s">Watched</th><th class="n hide-s">Likes</th><th class="n hide-s">Comments</th>'
       + '<th class="n hide-s">Subs</th></tr></thead><tbody>' + rows + "</tbody></table></div>"
       : '<p class="empty-state">No video had views in this period.</p>');
+  // 2026-10-24: the numbers show at a glance; the video list opens only when asked for.
+  const toggle = body.querySelector(".yt-toggle");
+  if (toggle) toggle.onclick = () => {
+    ytOpen = !ytOpen;
+    toggle.setAttribute("aria-expanded", String(ytOpen));
+    toggle.textContent = ytOpen ? "Hide videos" : "Show videos (" + report.videos.length + ")";
+    body.querySelector(".yt-scroll").hidden = !ytOpen;
+  };
 }
 
 $$(".yt-span button").forEach((button) => {
