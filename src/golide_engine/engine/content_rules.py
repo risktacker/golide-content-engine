@@ -694,8 +694,10 @@ def flow_problems(plan: dict) -> list[str]:
     if twins:
         problems.append("two sentences in a row start with the same word (" + ", ".join(twins)
                         + "); change one opener so each sentence is bridged differently")
-    if first_words.count("so") > 2:
-        problems.append(f'{first_words.count("so")} sentences start with "So"; use it at most twice and rotate the bridges')
+    # 2026-10-23: the owner's recorded robot short opens three sentences with "So"; that
+    # is how he talks. More than three still reads as a tic.
+    if first_words.count("so") > 3:
+        problems.append(f'{first_words.count("so")} sentences start with "So"; vary how the ideas join')
     follow_idx = [i for i, line in enumerate(plan.get("lines", [])) if line.get("follow") is True]
     if follow_idx and len(sentences) >= 2:
         last = sentences[-1]
