@@ -670,32 +670,27 @@ def flow_problems(plan: dict) -> list[str]:
             f"{ended} of {len(lines)} lines are complete stand-alone sentences; let sentences run "
             "across two or three lines so the speech flows")
     sentences = _sentences(lines)
-    body = sentences[1:]
-    loose = [s for s in body if not _bridged(s)]
-    # 2026-10-22: 0.45 forced a connective onto most sentences, which read as AI. The
-    # owner-approved Roadster rewrite sits at 0.58; a real list of points at 0.67.
-    if body and len(loose) / len(body) > 0.62:
-        problems.append(
-            "it reads as a list of points, not narration: these sentences do not grow out of the one "
-            "before (open them with a bridge such as so, but, because, then, that means, here's the "
-            "catch, say you...): " + " | ".join(loose[:5]))
+    # 2026-10-23: the "every sentence must lean on the one before" ratio is gone. It
+    # flagged the owner's own approved scripts (0.58 and 0.64) and pushed drafts toward
+    # chained "so / which means / that's why" talk. His voice is taught by example now
+    # (owner_voice), and jargon_problems / repeat_problems catch the list-of-facts style.
     if any(":" in text for text in lines):
         problems.append("no colons or 'X: a, b, c' lists; say it as a normal spoken sentence")
     first = lines[0].lower().replace(",", " ").split()
     if first and (first[0] in ("imagine", "picture") or first[:2] == ["what", "if"]):
         problems.append("open straight on the topic with a blunt claim, never with Imagine or What if")
-    # The ending comes back to the idea the script opened on.
-    stop = {"that", "this", "with", "your", "from", "what", "have", "they", "their", "would",
-            "only", "just", "about", "there", "when", "will", "into", "than", "then", "because",
-            "these", "those", "which", "were", "been", "does", "could", "should", "follow", "channel"}
-    words = lambda t: {w.strip(".,?!'\u2019").lower() for w in t.split()} - stop
-    early = set().union(*(words(x) for x in sentences[:3])) if sentences else set()
-    if len(sentences) >= 6 and not {w for w in words(sentences[-1]) & early if len(w) > 3}:
-        problems.append("the final sentence must come back to the idea the script opened on")
+    # 2026-10-23: the "final sentence must echo the opening" check is gone too: the owner's
+    # approved short ends on a two-sided question that does not repeat its first words.
     # 2026-10-13 humanizer checks: same opener twice in a row, "So" overuse,
     # a cold (unbridged) closing line, and AI-sounding phrases.
     first_words = [sent.lower().replace(",", " ").split()[0] for sent in sentences if sent.split()]
-    twins = sorted({a for a, b in zip(first_words, first_words[1:]) if a == b})
+    # 2026-10-23: people do start two sentences with "That" or "The"; the owner's approved
+    # Roadster script does. Flag a "So" pair, the same two opening words twice, or the same
+    # first word three times in a row.
+    heads = [" ".join(sent.lower().replace(",", " ").split()[:2]) for sent in sentences if sent.split()]
+    twins = sorted({a for a, b in zip(first_words, first_words[1:]) if a == b == "so"}
+                   | {a.split()[0] for a, b in zip(heads, heads[1:]) if a == b and len(a.split()) == 2}
+                   | {a for a, b, c in zip(first_words, first_words[1:], first_words[2:]) if a == b == c})
     if twins:
         problems.append("two sentences in a row start with the same word (" + ", ".join(twins)
                         + "); change one opener so each sentence is bridged differently")

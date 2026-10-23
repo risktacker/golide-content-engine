@@ -1,0 +1,160 @@
+{
+  "title": "NVIDIA CEO Jensen Huang Reveals Tiny AI Robots at GTC Berlin 2026",
+  "chapters": [],
+  "lines": [
+    {
+      "chapter": 0,
+      "section": "claim",
+      "text": "These tiny robots can walk, fall and get back up, and nobody programmed those moves step by step.",
+      "emphasis": "get back up",
+      "visual": "icon_hero",
+      "subjects": [
+        "small robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "At NVIDIA's keynote in Berlin, Jensen Huang brought out four little two-legged robots, about twenty-five centimetres tall.",
+      "emphasis": "twenty-five centimetres",
+      "visual": "icon_grid",
+      "subjects": [
+        "small robot",
+        "stage"
+      ],
+      "label": "25 CM",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "They walked, they tumbled, and when he told them to sit, stand or lie down, they did it.",
+      "emphasis": "sit, stand or lie down",
+      "visual": "icon_flow",
+      "subjects": [
+        "small robot",
+        "arrow"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "pattern",
+      "text": "Each one has a camera, a laser that measures distance, motion sensors that feel every tilt, and fifteen small motors.",
+      "emphasis": "fifteen small motors",
+      "visual": "icon_orbit",
+      "subjects": [
+        "camera",
+        "laser",
+        "motor"
+      ],
+      "label": "15 MOTORS",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "pattern",
+      "text": "But the clever part is how they learned to move.",
+      "emphasis": "learned to move",
+      "visual": "icon_hero",
+      "subjects": [
+        "small robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "pattern",
+      "text": "Engineers let them practise thousands of times inside a simulation, and every step closer to the goal earned a reward.",
+      "emphasis": "earned a reward",
+      "visual": "staircase",
+      "subjects": [
+        "computer",
+        "small robot",
+        "star"
+      ],
+      "label": "PRACTICE",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "pattern",
+      "text": "That practice becomes one skill the robot carries over to the real world, for walking, kicking, grabbing, even getting up after a fall.",
+      "emphasis": "one skill",
+      "visual": "icon_pair",
+      "subjects": [
+        "computer",
+        "small robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "cost",
+      "text": "Now, this was a stage demo.",
+      "emphasis": "stage demo",
+      "visual": "icon_hero",
+      "subjects": [
+        "stage"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "cost",
+      "text": "Change the floor or the task, and it can still lose its balance.",
+      "emphasis": "lose its balance",
+      "visual": "cross_out",
+      "subjects": [
+        "small robot",
+        "floor"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "reframe",
+      "text": "What it really shows is that robot experiments just got a lot cheaper, not that robots got a human brain.",
+      "emphasis": "a lot cheaper",
+      "visual": "split_compare",
+      "subjects": [
+        "coin",
+        "brain"
+      ],
+      "label": "CHEAPER",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "cta",
+      "text": "Follow the channel for the engineering behind every robot demo.",
+      "emphasis": "Follow the channel",
+      "visual": "logo_end",
+      "subjects": [
+        "logo"
+      ],
+      "label": "",
+      "follow": true
+    },
+    {
+      "chapter": 0,
+      "section": "cta",
+      "text": "So, would you trust one of these in your home, or is it just a lab toy?",
+      "emphasis": "lab toy",
+      "visual": "split_compare",
+      "subjects": [
+        "house",
+        "small robot"
+      ],
+      "label": "",
+      "follow": false
+    }
+  ]
+}

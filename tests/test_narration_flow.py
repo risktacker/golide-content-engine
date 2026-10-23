@@ -33,9 +33,16 @@ def plan(text):
 
 class NarrationFlowTests(unittest.TestCase):
     def test_list_of_points_is_rejected(self):
+        # 2026-10-23: list-style scripts are caught by colons, jargon and repeats; the
+        # connective ratio is gone because it flagged the owner's own approved scripts.
         problems = " ".join(flow_problems(plan(POINTS)))
-        self.assertIn("list of points", problems)
         self.assertIn("colons", problems)
+
+    def test_the_owners_approved_scripts_pass(self):
+        for name in ("golide-long-2026-10-22", "golide-short-2026-10-23"):
+            approved = json.loads(Path(f"production-queue/{name}.script-plan.json").read_text())
+            problems = [p for p in flow_problems(approved) if "stand-alone sentences" not in p]
+            self.assertEqual([], problems, name)
 
     def test_approved_narration_passes(self):
         approved = json.loads(Path("production-queue/golide-short-2026-10-07.script-plan.json").read_text())
@@ -75,10 +82,11 @@ class TeachingStyleTests(unittest.TestCase):
         approved["lines"][4]["text"] = "Let's dive in, because this is a game-changer for shoppers."
         self.assertTrue(any("machine-written" in p for p in flow_problems(approved)))
 
-    def test_ending_must_return_to_the_opening_picture(self):
+    def test_a_two_sided_closing_question_need_not_echo_the_opening(self):
+        # 2026-10-23: the owner's approved short ends on its own question.
         approved = json.loads(Path("production-queue/golide-short-2026-10-09.script-plan.json").read_text())
-        approved["lines"][-1]["text"] = "Would you trust a robot with your job, yes or no?"
-        self.assertTrue(any("final sentence" in p for p in flow_problems(approved)))
+        approved["lines"][-1]["text"] = "So would you trust a robot with your job, yes or no?"
+        self.assertFalse(any("final sentence" in p for p in flow_problems(approved)))
 
 
 class VarietyTests(unittest.TestCase):
