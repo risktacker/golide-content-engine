@@ -30,7 +30,7 @@ from ..storage.database import Database
 from ..youtube.demand import TopicDemandRejected, YouTubeDemandGate
 from ..youtube_metadata import load_metadata_policy, validate_upload_metadata
 from .schemas import METADATA_SCHEMA, RESEARCH_SCHEMA, STORYBOARD_SCHEMA, TREND_CANDIDATES_SCHEMA
-from ..engine.content_rules import TREND_TASTE_RULES, SCRIPT_SCHEMA, chapter_problems, flow_problems, follow_problems, length_problems, repeat_problems, script_display, script_instructions, script_text
+from ..engine.content_rules import TREND_TASTE_RULES, SCRIPT_SCHEMA, chapter_problems, flow_problems, follow_problems, jargon_problems, length_problems, repeat_problems, script_display, script_instructions, script_text
 from .recording import RecordingLengthError, check_recording_length
 from .stage_runner import StageRunner
 
@@ -137,6 +137,32 @@ class ProductionService:
         voice_cfg = self.providers.config.get("voice", {})
         if voice_cfg.get("provider") != "owner_recording":
             raise RuntimeError("production narration must use the owner's recorded voice")
+
+    @staticmethod
+    def _storyboard_facts(spec: dict, work: Path) -> str:
+        """What the storyboard artist needs to draw the real things (2026-10-23)."""
+        parts = []
+        source = spec.get("source_breakout") or {}
+        if source.get("title"):
+            parts.append("TRENDING VIDEO THIS MODELS: " + str(source["title"]) + " | "
+                         + str(source.get("description", ""))[:300])
+        try:
+            research = json.loads((work / "research.json").read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            research = {}
+        claims = research.get("claims") or research.get("facts") or []
+        lines = []
+        for item in claims[:12]:
+            text = item.get("claim") or item.get("text") or item.get("fact") if isinstance(item, dict) else item
+            if text:
+                lines.append("- " + str(text)[:220])
+        if research.get("summary"):
+            parts.append("STORY: " + str(research["summary"])[:600])
+        if lines:
+            parts.append("RESEARCH FACTS:\n" + "\n".join(lines))
+        parts.append("LOOK IT UP: before describing any real, named product, vehicle, robot or device, "
+                     "use web search to see what it actually looks like, and describe that real design.")
+        return "\n".join(parts) + "\n"
 
     @staticmethod
     def _source_video_block(spec: dict) -> str:
@@ -703,7 +729,8 @@ class ProductionService:
         def script_problems(plan: dict) -> list[str]:
             return (length_problems(plan, str(spec["format"])) + flow_problems(plan)
                     + chapter_problems(plan, str(spec["format"])) + follow_problems(plan, str(spec["format"]))
-                    + repeat_problems(plan, recent_scripts))
+                    + repeat_problems(plan, recent_scripts)
+                    + jargon_problems(plan, str(spec.get("title", "")), str(spec["format"])))
 
         # 2026-10-22: an 8-minute script plus its visual fields needs a bigger budget.
         script_tokens = 16000 if str(spec["format"]) == "long" else 6000
@@ -945,12 +972,19 @@ class ProductionService:
                     rows.append(f"{i}: [{times[i][0]:.1f}s] {line['text']}")
                 numbered = "\n".join(rows)
                 self._reserve(spec, text_model, Usage(input_tokens=len(numbered) // 3 + 1500, output_tokens=8000))
+                # 2026-10-23: the storyboard knows what the real things look like: the
+                # research, the trending video it models, and one web search for the look of
+                # any named product (a brand-new robot is otherwise drawn as a generic one).
+                facts = self._storyboard_facts(spec, work)
                 output = text.generate_json(
                     scene_plan_instructions(str(spec["format"]), narration_seconds),
-                    f"TITLE={spec.get('title', '')}\nLINES\n{numbered}",
+                    f"TITLE={spec.get('title', '')}\n{facts}LINES\n{numbered}",
                     VISUAL_PLAN_SCHEMA,
-                    max_output_tokens=6000,
+                    max_output_tokens=10000,
+                    web_search=True,
                 )
+                self.costs.record(production_id, "visual-plan-search", "openai", "web-search",
+                                  Usage(tool_calls=1))
                 breaks = {i for i in range(1, len(owners)) if owners[i] is not None and owners[i] != owners[i - 1]}
                 from ..vector.pacing import scene_range
                 raw_scenes = list(output.value["scenes"])

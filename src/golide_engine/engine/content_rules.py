@@ -16,6 +16,7 @@ whole voice of the engine can be reviewed in one file.
 from __future__ import annotations
 
 import re
+from pathlib import Path
 
 # ---------------------------------------------------------------------------
 # Shared voice
@@ -415,7 +416,12 @@ it and an expert finds nothing wrong or watered down (the Feynman way).
 - Keep the real substance: real names, real facts, the real mechanism. Simple words,
   never simplified facts.
 - Example before the name: say what happens first, then what it's called.
-- Explain every technical word the moment it appears, in the same sentence.
+- PLAIN WORDS FIRST (owner direction 2026-10-23: "LiDAR, two IMUs... export an ONNX
+  model" read like a spec sheet). Say what a thing DOES ("a laser that measures
+  distance", "motion sensors that feel every tilt") and use its technical name only
+  when the viewer needs that name to follow or search the story, then explain it in
+  the same breath. Never list specifications, never stack definitions ("X, a Y that
+  Z"), at most two technical names in a short.
 - HOW IT WORKS (owner direction 2026-10-16, this is the value of the channel):
   after the news, give a short plain-words passage on the science or engineering
   underneath it (a short: 3 to 5 lines; a long video: a full stretch inside the
@@ -795,6 +801,40 @@ def closing_question_problems(closing: str) -> list[str]:
     return []
 
 
+OWNER_VOICE_FILE = Path(__file__).resolve().parents[3] / "config" / "owner-voice.txt"
+
+
+def owner_voice() -> str:
+    """The owner's approved scripts (2026-10-23): the model matches how they sound, which
+    rules alone never achieved ("the paragraphs just end and start, only AI does that")."""
+    try:
+        sample = OWNER_VOICE_FILE.read_text(encoding="utf-8").strip()
+    except OSError:
+        return ""
+    return ("THE OWNER'S VOICE (the most important reference: write so it sounds like these "
+            "approved scripts read aloud, one idea growing out of the last like someone talking, "
+            "real things said simply, never a list of facts; never copy their words, facts or "
+            "openings):\n" + sample + "\n")
+
+
+JARGON_ALLOWED = {"AI", "US", "UK", "EU", "UN", "TV", "CEO", "EV", "EVS", "GPS", "USB", "PC", "OK"}
+
+
+def jargon_problems(plan: dict, title: str = "", format_name: str = "short") -> list[str]:
+    """Acronyms and mixed-case tech names beyond what the viewer needs (2026-10-23)."""
+    text = " ".join(str(line.get("text", "")) for line in plan.get("lines", []))
+    names = set(re.findall(r"\b[A-Za-z]*[A-Z][a-z]*[A-Z][A-Za-z]*s?\b", text))
+    known = {w.upper() for w in re.findall(r"[A-Za-z]+", title)}
+    jargon = sorted(n for n in names if n.upper().rstrip("S") not in JARGON_ALLOWED
+                    and n.upper() not in JARGON_ALLOWED and n.upper() not in known
+                    and n.upper().rstrip("S") not in known)
+    limit = 2 if format_name == "short" else 5
+    if len(jargon) > limit:
+        return ["too much jargon (" + ", ".join(jargon) + "); say what each thing does in plain words and "
+                f"keep at most {limit} technical names"]
+    return []
+
+
 def script_instructions(format_name: str, seed: str = "") -> str:
     target = SCRIPT_LENGTH_TARGETS.get(format_name, SCRIPT_LENGTH_TARGETS["short"])
     return (
@@ -806,7 +846,7 @@ def script_instructions(format_name: str, seed: str = "") -> str:
         f"(about {target['seconds']} seconds). Do not go over.\n\n"
         + (LONG_STRUCTURE_RULES if format_name == "long" else SCRIPT_STRUCTURE_RULES + "\n" + SHORT_CHAPTER_RULE)
         + "\n" + TEACHING_STYLE_RULES + "\n" + script_variety(seed or format_name) + "\n" + FOLLOW_RULES + "\n" + DEBATE_QUESTION_RULES + "\n" + SCRIPT_LINE_RULES + "\n" + HUMANIZER_RULES + "\n" + SCRIPT_VOICE_RULES
-        + "\n" + SCRIPT_OUTPUT_RULES
+        + "\n" + owner_voice() + "\n" + SCRIPT_OUTPUT_RULES
     )
 
 

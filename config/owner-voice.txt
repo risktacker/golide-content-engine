@@ -1,0 +1,63 @@
+# The owner's voice (approved scripts). The script writer matches how these SOUND:
+# short plain sentences, one idea growing into the next, real things said simply,
+# a verdict at the end of each part. Never copy their words or facts.
+
+== LONG VIDEO, approved 2026-10-22 (Tesla Roadster) ==
+[INTRO]
+Cars are supposed to stay on the road, but Tesla just made one leave it.
+And that one viral clip is mixing different machines and different tricks.
+In the next few minutes, we'll go through how it drives, how it sticks to a wall upside down,
+how the rocket version gets into the air, and whether any of this is a real car or just a show.
+[01 GROUND MOTION]
+Let's start with the boring part, because that's where the whole thing begins.
+The battery stores the energy, and the power electronics decide how much goes to the motors.
+The motors turn the wheels, and the tires push against the road.
+There's no petrol and no rocket in this part, it's a normal electric car doing what electric cars do.
+Every crazy moment in that video starts with plain driving.
+[02 ADDED GRIP]
+How does a car hold on when it's upside down?
+That's the fans.
+They suck the air out from under the car, and a seal around the bottom stops new air rushing back in.
+The pressure under the car drops, and the normal air above pushes the whole car down onto the surface.
+That presses the tires harder into the surface, so they grip more and the car can take corners faster.
+That's how Tesla drove it up a curved wall and held it upside down with the fans running.
+But understand this, the fans don't lift anything, they glue the car down.
+Anyone calling that part flying is wrong, that's grip.
+[03 ROCKET VERSION]
+The part where it really goes into the air is a different car.
+Tesla lists three versions, Performance, Thrust and Rocket, and each one has different hardware.
+The Performance one keeps two seats and the fans.
+The Rocket one has one seat and extra thrusters for lift and rotation.
+Inside it, high pressure tanks feed what's called cold gas thrusters.
+The gas shoots out of nozzles around the car one way, and the car gets pushed the other way.
+That's Newton's third law, the same cold gas idea NASA uses for short moves in space.
+But the tanks only hold so much gas, so the push only lasts a moment.
+That moment is enough to lift it, flip it or roll it, and bring it back down on its wheels.
+That one really does leave the ground, but it's a one seat prototype, not the car you'd drive to work.
+[04 REAL OR SHOW]
+Now, is this a real flying car or a show?
+Tesla itself lists the Rocket model as not approved for public roads.
+Independent reporting called the car at the event a one off demonstration.
+And we've seen one good jump, nothing yet like repeated launches and landings that prove the fans, seals and tanks hold up.
+Then there's everything a real car has to survive, a crash, a hard landing, noise, servicing and the extra weight.
+So the driving is real, the grip is real, and the flying is a prototype.
+Until Tesla shows repeat flights and gets it certified for safety, that's all it is.
+[CLOSE]
+The simple version is, motors move the car, fans keep it stuck down, and gas thrusters push one special version into the air for a moment.
+The car left the road, but whether it ever becomes a flying car you can own is still decided on the ground.
+And if you want the next big tech clip broken down like this, follow the channel.
+So here's the question, should Tesla certify the Rocket Roadster, or keep it as a prototype?
+
+== SHORT, approved 2026-10-23 (NVIDIA Microduck robots) ==
+These tiny robots can walk, fall and get back up, and nobody programmed those moves step by step.
+At NVIDIA's keynote in Berlin, Jensen Huang brought out four little two-legged robots, about twenty-five centimetres tall.
+They walked, they tumbled, and when he told them to sit, stand or lie down, they did it.
+Each one has a camera, a laser that measures distance, motion sensors that feel every tilt, and fifteen small motors.
+But the clever part is how they learned to move.
+Engineers let them practise thousands of times inside a simulation, and every step closer to the goal earned a reward.
+That practice becomes one skill the robot carries over to the real world, for walking, kicking, grabbing, even getting up after a fall.
+Now, this was a stage demo.
+Change the floor or the task, and it can still lose its balance.
+What it really shows is that robot experiments just got a lot cheaper, not that robots got a human brain.
+Follow the channel for the engineering behind every robot demo.
+So, would you trust one of these in your home, or is it just a lab toy?
