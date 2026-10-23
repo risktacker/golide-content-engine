@@ -1,0 +1,537 @@
+{
+  "production_id": "golide-short-2026-10-23",
+  "youtube_video_id": "juLRwDz3RdY",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "juLRwDz3RdY",
+    "upload_status": "published",
+    "privacy_status": "public",
+    "scheduled_at": null,
+    "uploaded_at": "2026-10-23T11:47:44.973582+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "NVIDIA CEO Jensen Huang Reveals Tiny AI Robots at GTC Berlin 2026",
+    "status": "published",
+    "scheduled_at": "2026-10-23T11:00:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-shorts-mon-wed-fri-sun\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "So these tiny robots can walk, fall over and get right back up, and nobody programmed those moves step by step.\nAt NVIDIA's keynote in Berlin, Jensen Huang brought out four of them, little two-legged robots about twenty-five centimetres tall, and they walked, they tumbled, and when he told them to sit, stand or lie down, they actually did it.\nNow each one has a camera, a laser that measures distance, motion sensors that feel every tilt and fifteen small motors, but that's not the clever part, the clever part is how they learned to move.\nEngineers let them practise thousands of times inside a simulation, and every time a robot got a step closer to the goal, it got a reward, so all that practice turns into one skill, and they carry that skill over to the real robot, and now it can walk, kick, grab, even pick itself up after a fall.\nBut let's be honest, this was a stage demo, and if you change the floor or change the task, it can still lose its balance.\nSo what this really shows you is that experimenting with robots just got a lot cheaper, it doesn't mean robots got a human brain.\nAnd if you want the engineering behind every robot demo like this, follow the channel.\nSo would you trust one of these in your home, or is it just a lab toy?\n",
+  "research": {
+    "summary": "Jensen Huang’s Microduck demonstration was less about four entertaining robot ducks than about the stack underneath them. The small bipeds combine cameras and other sensors, onboard computing, motor control and reinforcement-learned movement. Their behaviors can be trained in simulation, exported as policies and deployed to physical hardware. That sim-to-real workflow suggests a path toward making useful physical skills easier and cheaper to develop for small robots—not proof that inexpensive machines are already broadly capable in the real world.",
+    "claims": [
+      {
+        "claim": "At NVIDIA’s GTC Berlin keynote on October 21, 2026, Jensen Huang demonstrated four Microduck robots walking and responding to commands, including sitting, standing and lying down.",
+        "source_title": "Huang’s Microduck demonstration at GTC Berlin",
+        "source_url": "https://www.jiemian.com/video/AGUCMQhvB2IBP1Vq.html",
+        "published_or_updated": "October 21, 2026"
+      },
+      {
+        "claim": "Microduck is a roughly 25-centimeter biped with 15 motors, a camera, LiDAR, two IMUs and an onboard policy loop; its advertised behaviors include walking, sitting, kicking, grabbing and recovering from falls.",
+        "source_title": "Microduck — Pollen Robotics",
+        "source_url": "https://pollen-robotics.com/microduck/",
+        "published_or_updated": "Updated 2026"
+      },
+      {
+        "claim": "Microduck movement policies can be trained in simulation, exported to ONNX and deployed to the robot’s onboard runtime, creating a documented simulation-to-real workflow.",
+        "source_title": "Train in Simulation, Deploy on a Real Robot: Microduck with Isaac Lab 3.0",
+        "source_url": "https://huggingface.co/blog/nvidia/microduck-isaac-lab-sim-to-real",
+        "published_or_updated": "October 21, 2026"
+      },
+      {
+        "claim": "NVIDIA says the GTC demonstration used AI agents, Isaac Lab and RTX Spark computing to train Hugging Face’s Microduck robot, linking agent software, simulation and physical-robot deployment.",
+        "source_title": "Bringing the Spark to Europe: Local Intelligence Powers Next Wave of Agents",
+        "source_url": "https://blogs.nvidia.com/blog/local-ai-gtc-rtx-dgx-spark-station-sync/",
+        "published_or_updated": "October 21, 2026"
+      },
+      {
+        "claim": "The strongest defensible takeaway is that small, open-source robots may make physical-AI experimentation more accessible; it is not evidence that low-cost robots can already perform general-purpose work without supervision.",
+        "source_title": "Meet Microduck",
+        "source_url": "https://pollen-robotics.com/microduck/blog/introducing-microduck/",
+        "published_or_updated": "August 27, 2026"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "NVIDIA CEO Jensen Huang Reveals Tiny AI Robots at GTC Berlin 2026",
+    "description": "NVIDIA CEO Jensen Huang showed four tiny two-legged robots walking, tumbling, sitting and standing during a keynote in Berlin. These robots were not programmed with every movement step by step—they learned through thousands of simulated attempts and rewards.\n\nThe demo shows how simulation and reinforcement learning can make robot training faster and cheaper. But changing the floor or task can still make the robots lose balance. Would you trust one in your home, or is it still a lab toy?\n\n#NVIDIA #AI #Robotics #HumanoidRobots #PhysicalAI #RobotLearning #GTCBerlin #GOLIDE",
+    "tags": [
+      "NVIDIA",
+      "NVIDIA robots",
+      "tiny AI robots",
+      "Microduck robot",
+      "Jensen Huang",
+      "AI robotics",
+      "humanoid robots",
+      "robot learning",
+      "robot reinforcement learning",
+      "robot simulation",
+      "robotics demo",
+      "physical AI",
+      "NVIDIA GTC Berlin",
+      "GTC Berlin 2026",
+      "Hugging Face robot",
+      "Pollen Robotics",
+      "bipedal robot",
+      "robot falls and recovers",
+      "robot walking demo",
+      "robot balance",
+      "robot training",
+      "AI robot demo",
+      "future of robotics",
+      "robotics technology",
+      "machine learning robots"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "keywords": [
+      "NVIDIA tiny robots",
+      "Microduck robot",
+      "Jensen Huang robots",
+      "tiny AI robot",
+      "NVIDIA robot demo",
+      "GTC Berlin robots",
+      "AI humanoid robots",
+      "robot reinforcement learning",
+      "robot simulation training",
+      "robot learns to walk",
+      "bipedal robot demo",
+      "physical AI robotics",
+      "robot fall recovery",
+      "small humanoid robot",
+      "future of robotics"
+    ],
+    "hashtags": [
+      "#NVIDIA",
+      "#AI",
+      "#Robotics",
+      "#HumanoidRobots",
+      "#PhysicalAI",
+      "#RobotLearning",
+      "#GTCBerlin",
+      "#GOLIDE"
+    ],
+    "format": "short",
+    "title_description_language": "en",
+    "seo_body": "NVIDIA CEO Jensen Huang showed four tiny two-legged robots walking, tumbling, sitting and standing during a keynote in Berlin. These robots were not programmed with every movement step by step—they learned through thousands of simulated attempts and rewards.\n\nThe demo shows how simulation and reinforcement learning can make robot training faster and cheaper. But changing the floor or task can still make the robots lose balance. Would you trust one in your home, or is it still a lab toy?"
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "At NVIDIA’s GTC Berlin keynote on October 21, 2026, Jensen Huang demonstrated four Microduck robots walking and responding to commands, including sitting, standing and lying down.",
+        "source_title": "Huang’s Microduck demonstration at GTC Berlin",
+        "source_url": "https://www.jiemian.com/video/AGUCMQhvB2IBP1Vq.html",
+        "published_or_updated": "October 21, 2026"
+      },
+      {
+        "claim": "Microduck is a roughly 25-centimeter biped with 15 motors, a camera, LiDAR, two IMUs and an onboard policy loop; its advertised behaviors include walking, sitting, kicking, grabbing and recovering from falls.",
+        "source_title": "Microduck — Pollen Robotics",
+        "source_url": "https://pollen-robotics.com/microduck/",
+        "published_or_updated": "Updated 2026"
+      },
+      {
+        "claim": "Microduck movement policies can be trained in simulation, exported to ONNX and deployed to the robot’s onboard runtime, creating a documented simulation-to-real workflow.",
+        "source_title": "Train in Simulation, Deploy on a Real Robot: Microduck with Isaac Lab 3.0",
+        "source_url": "https://huggingface.co/blog/nvidia/microduck-isaac-lab-sim-to-real",
+        "published_or_updated": "October 21, 2026"
+      },
+      {
+        "claim": "NVIDIA says the GTC demonstration used AI agents, Isaac Lab and RTX Spark computing to train Hugging Face’s Microduck robot, linking agent software, simulation and physical-robot deployment.",
+        "source_title": "Bringing the Spark to Europe: Local Intelligence Powers Next Wave of Agents",
+        "source_url": "https://blogs.nvidia.com/blog/local-ai-gtc-rtx-dgx-spark-station-sync/",
+        "published_or_updated": "October 21, 2026"
+      },
+      {
+        "claim": "The strongest defensible takeaway is that small, open-source robots may make physical-AI experimentation more accessible; it is not evidence that low-cost robots can already perform general-purpose work without supervision.",
+        "source_title": "Meet Microduck",
+        "source_url": "https://pollen-robotics.com/microduck/blog/introducing-microduck/",
+        "published_or_updated": "August 27, 2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "NVIDIA GTC Berlin 2026 Microducks Hugging Face biped robots Jensen Huang",
+      "score": 89.7,
+      "verdict": "pass",
+      "recent_videos": 1,
+      "median_views_per_day": 280003.19999999995,
+      "top_views_per_day": 280003.19999999995,
+      "market_coverage": 1,
+      "title_query_overlap": 1.0,
+      "measured_at": "2026-10-23T07:02:41.897250+00:00",
+      "signal_type": "youtube-breakout-v1"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.89,
+      "true_peak_dbtp": -1.7,
+      "loudness_range": 2.4
+    },
+    "editorial": {
+      "beats": 8,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-10-23T11:47:36.370044+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri-sun"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-short-2026-10-23",
+    "created_at": "2026-10-23T11:47:37.717756+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-10-23T11:00:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "d853130f131d2c842a771bd0a6b2115fa04e5298421680aebdfbd50faa07bdad",
+        "bytes": 18490658
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "6d7d90e21514c454de0d0cc562c79e7afbe559b03adcc43551b0f6f4b8791bb8",
+        "bytes": 961050
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "c95cfffab0e3555779bea3e4a54eb0186c383e3755253c006dfa3ee10ab32d3a",
+        "bytes": 2609
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "a3ed21084954d110c3db97e8be1c335576fb68d7a6054852fb69c49caddacb72",
+        "bytes": 2840
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "ad3d3eb894f1eeebd75cbce3f8fa40ab3ff50331d455ecb186459fc24978a7f1",
+        "bytes": 207
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "b037a6b6da7bd8155187dbfdba0abe4516a305f4e91c9b72e7c8f67cc447a814",
+        "bytes": 2908
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "678140779bba2e91fcb33a95de33aea71f2cbbed4011049fbe64e353d1870954",
+        "bytes": 394
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "57ab5ed1fb044dd9f8e7e62030375fa30df374d4f0fd356653aad5841a0cc70b",
+        "bytes": 275
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 35307.0,
+      "cached_input_units": 0.0,
+      "output_units": 2375.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.009911,
+      "created_at": "2026-10-23T07:02:41.502972+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-23T07:02:41.505127+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 27689.0,
+      "cached_input_units": 0.0,
+      "output_units": 1292.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007088,
+      "created_at": "2026-10-23T07:03:03.465358+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-23T07:03:03.467281+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 4322.0,
+      "cached_input_units": 0.0,
+      "output_units": 4152.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005847,
+      "created_at": "2026-10-23T07:03:46.181599+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 6180.0,
+      "cached_input_units": 3483.0,
+      "output_units": 3948.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005347,
+      "created_at": "2026-10-23T07:04:21.096283+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 6120.0,
+      "cached_input_units": 3483.0,
+      "output_units": 4647.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006173,
+      "created_at": "2026-10-23T07:05:03.547683+00:00"
+    },
+    {
+      "stage": "visual-plan-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-23T11:37:10.554167+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 17244.0,
+      "cached_input_units": 0.0,
+      "output_units": 1736.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005532,
+      "created_at": "2026-10-23T11:37:10.558934+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-23T11:37:25.428604+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-23T11:37:39.728766+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-23T11:37:54.104711+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-23T11:38:08.341021+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-23T11:38:21.960275+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-23T11:38:37.127413+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-23T11:38:51.110233+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-23T11:39:04.773652+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-23T11:39:20.786619+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-23T11:39:34.844577+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9385.0,
+      "cached_input_units": 0.0,
+      "output_units": 913.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002973,
+      "created_at": "2026-10-23T11:46:51.302188+00:00"
+    },
+    {
+      "stage": "thumbnail",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-10-23T11:47:18.667890+00:00"
+    }
+  ],
+  "recorded_at": "2026-10-23T11:47:44.979182+00:00"
+}
