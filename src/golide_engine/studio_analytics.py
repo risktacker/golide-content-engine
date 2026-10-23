@@ -56,7 +56,7 @@ def build_studio_analytics_payload(
              ON p.production_id=a.production_id OR p.youtube_video_id=a.youtube_video_id
            WHERE a.day >= ?
            ORDER BY a.day DESC, a.views DESC
-           LIMIT 250""",
+           LIMIT 6000""",
         (since,),
     )
     video_ids = list(dict.fromkeys(str(row["youtube_video_id"]) for row in rows))
@@ -132,4 +132,6 @@ def build_studio_analytics_payload(
             **({"generationParameters": parameters} if parameters is not None else {}),
         })
 
-    return {"channelId": channel_id, "daily": daily[-100:], "videos": videos[:250]}
+    # 2026-10-24: every video-day of the window, so Studio's dashboard has the full picture
+    # (it used to be cut to the 250 most recent rows).
+    return {"channelId": channel_id, "daily": daily[-100:], "videos": videos}

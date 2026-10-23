@@ -1,3 +1,4 @@
+import { ANALYTICS_SCHEMA, analyticsReport, storeAnalytics } from "./analytics.js";
 import { sweepMedia } from "./storage.js";
 import { collectHealth, renderHealth, sendHealthEmail } from "./health.js";
 import { closeThread, deleteThread, emailScript, markRead, receiveMail, sendAndRecord, unreadCount } from "./mail.js";
@@ -228,7 +229,7 @@ async function ensureSchema(db){
     `CREATE INDEX IF NOT EXISTS idx_temporary_media_cleanup ON temporary_media(status, expires_at)`,
     `CREATE INDEX IF NOT EXISTS idx_production_jobs_queue ON production_jobs(status, generate_at, updated_at)`,
   ];
-  for(const sql of statements) await db.prepare(sql).run();
+  for(const sql of [...statements, ...ANALYTICS_SCHEMA]) await db.prepare(sql).run();
   try{await db.prepare(`ALTER TABLE engine_connections ADD COLUMN verification_status TEXT NOT NULL DEFAULT 'unknown'`).run();}catch{}
   try{await db.prepare(`ALTER TABLE engine_connections ADD COLUMN verification_note TEXT NOT NULL DEFAULT ''`).run();}catch{}
   try{await db.prepare(`ALTER TABLE inbox_threads ADD COLUMN unread INTEGER NOT NULL DEFAULT 0`).run();}catch{}
@@ -1030,7 +1031,8 @@ async function handleMachineApi(request,env,url){
     try{return json(await markMediaDeleted(env.DB,await request.json()));}catch(e){return err(e?.message||String(e),400);}
   }
   if(url.pathname==="/api/engine/analytics"&&request.method==="POST"){
-    return json({status:"accepted"});
+    // 2026-10-24: stored for the dashboard (it used to be dropped).
+    try{return json(await storeAnalytics(env.DB,await request.json()));}catch(e){return err(e?.message||String(e),400);}
   }
   return err("not found",404);
 }
@@ -1106,6 +1108,7 @@ async function handleApi(request,env,url){
   if(url.pathname==="/api/health"&&request.method==="GET") return json({status:"ok"});
   if(url.pathname==="/api/overview"&&request.method==="GET") return json(await overview(env));
   if(url.pathname==="/api/policy"&&request.method==="GET") return json(POLICY);
+  if(url.pathname==="/api/youtube-analytics"&&request.method==="GET") return json(await analyticsReport(env.DB,url.searchParams.get("days")));
   if(url.pathname==="/api/product-registry"&&request.method==="GET") return json(await liveRegistry(request));
   if(url.pathname==="/api/posts"&&request.method==="GET") return json({posts:await listPosts(env.DB,url.searchParams.get("status"))});
   if(url.pathname==="/api/posts"&&request.method==="POST"){

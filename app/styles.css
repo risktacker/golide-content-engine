@@ -415,3 +415,26 @@ body.sheet-open{overflow:hidden}
 .attention-actions{display:flex;gap:8px;flex:none}
 @media (max-width:640px){.attention-item{flex-direction:column}.attention-actions{width:100%}.attention-actions .btn{flex:1}}
 .archive-job{margin-left:6px}
+
+/* YouTube numbers on the dashboard (2026-10-24) */
+.yt-span{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.yt-span button{padding:5px 12px;border:0;background:transparent;color:var(--muted);font:inherit;font-size:.8125rem;cursor:pointer}
+.yt-span button.on{background:var(--gold-soft);color:var(--gold)}
+.yt-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--line);margin-bottom:14px}
+.yt-kpi{padding:12px 14px;background:var(--surface)}
+.yt-kpi b{display:block;font-size:1.25rem;font-weight:500;font-variant-numeric:tabular-nums}
+.yt-kpi span{display:block;color:var(--muted);font-size:.75rem;margin-top:2px}
+.yt-kpi em{font-style:normal;font-size:.75rem;margin-left:6px}
+.yt-kpi em.up{color:var(--ok)}.yt-kpi em.down{color:var(--danger)}
+.yt-chart{display:block;width:100%;height:84px;margin-bottom:14px}
+.yt-chart rect{fill:var(--gold);opacity:.75}
+.yt-chart rect:hover{opacity:1}
+.yt-table{width:100%;border-collapse:collapse;font-size:.875rem}
+.yt-table th{text-align:left;font-weight:500;color:var(--muted);font-size:.75rem;padding:6px 8px;border-bottom:1px solid var(--line)}
+.yt-table td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+.yt-table td.n,.yt-table th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.yt-table a{color:var(--text);text-decoration:none}.yt-table a:hover{color:var(--gold)}
+.yt-tag{display:inline-block;margin-left:6px;padding:1px 7px;border:1px solid var(--line-strong);border-radius:999px;color:var(--muted);font-size:.6875rem}
+.yt-tag.g{border-color:color-mix(in srgb,var(--gold) 40%,var(--line));color:var(--gold)}
+.yt-scroll{overflow-x:auto}
+@media (max-width:720px){.yt-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.yt-table .hide-s{display:none}}

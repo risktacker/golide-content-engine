@@ -85,6 +85,77 @@ function scriptHtml(script) {
   }).join("\n");
 }
 
+// ---- YouTube numbers (2026-10-24): what the engine collects each morning. ----
+let ytDays = 28;
+const fmtNum = (n) => Number(n || 0) >= 1e6 ? (n / 1e6).toFixed(1) + "M" : Number(n || 0) >= 1e4 ? Math.round(n / 1e3) + "K"
+  : Number(n || 0).toLocaleString();
+
+function ytChange(now, before) {
+  if (!before) return "";
+  const pct = Math.round(((now - before) / Math.abs(before)) * 100);
+  if (!isFinite(pct) || pct === 0) return "";
+  return '<em class="' + (pct > 0 ? "up" : "down") + '">' + (pct > 0 ? "+" : "") + pct + "%</em>";
+}
+
+function ytChart(daily) {
+  if (!daily.length) return "";
+  const max = Math.max(1, ...daily.map((d) => d.views));
+  const w = 100 / daily.length;
+  const bars = daily.map((d, i) => {
+    const h = Math.max(1.5, (d.views / max) * 80);
+    return '<rect x="' + (i * w + w * 0.12).toFixed(2) + '" y="' + (82 - h).toFixed(2) + '" width="' + (w * 0.76).toFixed(2)
+      + '" height="' + h.toFixed(2) + '" rx="0.6"><title>' + esc(d.day) + ": " + esc(Number(d.views).toLocaleString()) + " views</title></rect>";
+  }).join("");
+  return '<svg class="yt-chart" viewBox="0 0 100 84" preserveAspectRatio="none" role="img" aria-label="Daily views">' + bars + "</svg>";
+}
+
+async function loadYouTube() {
+  const body = $("#yt-body");
+  if (!body) return;
+  let report;
+  try { report = await api("/api/youtube-analytics?days=" + ytDays); }
+  catch (error) { body.className = "empty-state"; body.textContent = "Could not load YouTube numbers: " + error.message; return; }
+  if (report.status !== "ok") {
+    body.className = "empty-state";
+    body.textContent = "No YouTube numbers yet. They arrive with the morning analytics sync.";
+    return;
+  }
+  const t = report.totals, p = report.previous || {};
+  $("#yt-range").textContent = report.from + " to " + report.to + " (YouTube reports 2 to 3 days late)";
+  const kpis = [
+    ["Views", fmtNum(t.views), ytChange(t.views, p.views)],
+    ["Watch hours", fmtNum(t.watch_hours), ytChange(t.watch_hours, p.watch_hours)],
+    ["Subscribers", (t.subscribers_net > 0 ? "+" : "") + fmtNum(t.subscribers_net), ""],
+    ["Likes", fmtNum(t.likes), ytChange(t.likes, p.likes)],
+    ["Comments", fmtNum(t.comments), ytChange(t.comments, p.comments)],
+  ];
+  const rows = report.videos.map((v) => '<tr><td><a href="https://www.youtube.com/watch?v=' + escAttr(v.video_id)
+    + '" target="_blank" rel="noopener">' + esc(v.title || v.video_id) + "</a>"
+    + '<span class="yt-tag">' + esc(v.format === "short" ? "Short" : "Long") + "</span>"
+    + (v.is_golide ? '<span class="yt-tag g">Engine</span>' : "") + "</td>"
+    + '<td class="n">' + esc(Number(v.views).toLocaleString()) + "</td>"
+    + '<td class="n hide-s">' + esc(v.avg_pct) + "%</td>"
+    + '<td class="n hide-s">' + esc(v.likes) + "</td>"
+    + '<td class="n hide-s">' + esc(v.comments) + "</td>"
+    + '<td class="n hide-s">' + esc(v.subs) + "</td></tr>").join("");
+  body.className = "";
+  body.innerHTML = '<div class="yt-kpis">' + kpis.map(([label, value, change]) =>
+      '<div class="yt-kpi"><b>' + esc(value) + change + "</b><span>" + esc(label) + "</span></div>").join("") + "</div>"
+    + ytChart(report.daily)
+    + (rows ? '<div class="yt-scroll"><table class="yt-table"><thead><tr><th>Video</th><th class="n">Views</th>'
+      + '<th class="n hide-s">Watched</th><th class="n hide-s">Likes</th><th class="n hide-s">Comments</th>'
+      + '<th class="n hide-s">Subs</th></tr></thead><tbody>' + rows + "</tbody></table></div>"
+      : '<p class="empty-state">No video had views in this period.</p>');
+}
+
+$$(".yt-span button").forEach((button) => {
+  button.onclick = () => {
+    ytDays = Number(button.dataset.days);
+    $$(".yt-span button").forEach((b) => b.classList.toggle("on", b === button));
+    loadYouTube();
+  };
+});
+
 async function loadAttention() {
   const panel = $("#attention-panel");
   let items = [];
@@ -840,7 +911,7 @@ async function boot() {
   // Load everything at once; the page you are on fills in as soon as its own data arrives.
   await Promise.allSettled([
     loadHealth(), loadPolicy(), loadAutomationControl(), refreshInboxBadge(),
-    loadOverview(), loadProductionJobs(), loadConnections(),
+    loadOverview(), loadProductionJobs(), loadConnections(), loadYouTube(),
   ]);
   renderBudget();
 
