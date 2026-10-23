@@ -1,15 +1,37 @@
 name: CI
 
+# Runs only when code changes, only on main and pull requests.
+# Data-only commits (production records, analytics, queue files) skip it.
 on:
   push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "worker/**"
+      - "config/**"
+      - "pyproject.toml"
+      - ".github/workflows/ci.yml"
   pull_request:
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "worker/**"
+      - "config/**"
+      - "pyproject.toml"
+      - ".github/workflows/ci.yml"
 
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
