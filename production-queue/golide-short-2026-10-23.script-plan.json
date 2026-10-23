@@ -5,8 +5,8 @@
     {
       "chapter": 0,
       "section": "claim",
-      "text": "These tiny robots can walk, fall and get back up, and nobody programmed those moves step by step.",
-      "emphasis": "get back up",
+      "text": "So these tiny robots can walk, fall over and get right back up, and nobody programmed those moves step by step.",
+      "emphasis": "get right back up",
       "visual": "icon_hero",
       "subjects": [
         "small robot"
@@ -17,7 +17,7 @@
     {
       "chapter": 0,
       "section": "proof",
-      "text": "At NVIDIA's keynote in Berlin, Jensen Huang brought out four little two-legged robots, about twenty-five centimetres tall.",
+      "text": "At NVIDIA's keynote in Berlin, Jensen Huang brought out four of them, little two-legged robots about twenty-five centimetres tall, and they walked, they tumbled, and when he told them to sit, stand or lie down, they actually did it.",
       "emphasis": "twenty-five centimetres",
       "visual": "icon_grid",
       "subjects": [
@@ -29,22 +29,9 @@
     },
     {
       "chapter": 0,
-      "section": "proof",
-      "text": "They walked, they tumbled, and when he told them to sit, stand or lie down, they did it.",
-      "emphasis": "sit, stand or lie down",
-      "visual": "icon_flow",
-      "subjects": [
-        "small robot",
-        "arrow"
-      ],
-      "label": "",
-      "follow": false
-    },
-    {
-      "chapter": 0,
       "section": "pattern",
-      "text": "Each one has a camera, a laser that measures distance, motion sensors that feel every tilt, and fifteen small motors.",
-      "emphasis": "fifteen small motors",
+      "text": "Now each one has a camera, a laser that measures distance, motion sensors that feel every tilt and fifteen small motors, but that's not the clever part, the clever part is how they learned to move.",
+      "emphasis": "learned to move",
       "visual": "icon_orbit",
       "subjects": [
         "camera",
@@ -57,20 +44,8 @@
     {
       "chapter": 0,
       "section": "pattern",
-      "text": "But the clever part is how they learned to move.",
-      "emphasis": "learned to move",
-      "visual": "icon_hero",
-      "subjects": [
-        "small robot"
-      ],
-      "label": "",
-      "follow": false
-    },
-    {
-      "chapter": 0,
-      "section": "pattern",
-      "text": "Engineers let them practise thousands of times inside a simulation, and every step closer to the goal earned a reward.",
-      "emphasis": "earned a reward",
+      "text": "Engineers let them practise thousands of times inside a simulation, and every time a robot got a step closer to the goal, it got a reward, so all that practice turns into one skill, and they carry that skill over to the real robot, and now it can walk, kick, grab, even pick itself up after a fall.",
+      "emphasis": "one skill",
       "visual": "staircase",
       "subjects": [
         "computer",
@@ -82,24 +57,12 @@
     },
     {
       "chapter": 0,
-      "section": "pattern",
-      "text": "That practice becomes one skill the robot carries over to the real world, for walking, kicking, grabbing, even getting up after a fall.",
-      "emphasis": "one skill",
-      "visual": "icon_pair",
-      "subjects": [
-        "computer",
-        "small robot"
-      ],
-      "label": "",
-      "follow": false
-    },
-    {
-      "chapter": 0,
       "section": "cost",
-      "text": "Now, this was a stage demo.",
-      "emphasis": "stage demo",
-      "visual": "icon_hero",
+      "text": "But let's be honest, this was a stage demo, and if you change the floor or change the task, it can still lose its balance.",
+      "emphasis": "lose its balance",
+      "visual": "cross_out",
       "subjects": [
+        "small robot",
         "stage"
       ],
       "label": "",
@@ -107,21 +70,8 @@
     },
     {
       "chapter": 0,
-      "section": "cost",
-      "text": "Change the floor or the task, and it can still lose its balance.",
-      "emphasis": "lose its balance",
-      "visual": "cross_out",
-      "subjects": [
-        "small robot",
-        "floor"
-      ],
-      "label": "",
-      "follow": false
-    },
-    {
-      "chapter": 0,
       "section": "reframe",
-      "text": "What it really shows is that robot experiments just got a lot cheaper, not that robots got a human brain.",
+      "text": "So what this really shows you is that experimenting with robots just got a lot cheaper, it doesn't mean robots got a human brain.",
       "emphasis": "a lot cheaper",
       "visual": "split_compare",
       "subjects": [
@@ -134,8 +84,8 @@
     {
       "chapter": 0,
       "section": "cta",
-      "text": "Follow the channel for the engineering behind every robot demo.",
-      "emphasis": "Follow the channel",
+      "text": "And if you want the engineering behind every robot demo like this, follow the channel.",
+      "emphasis": "follow the channel",
       "visual": "logo_end",
       "subjects": [
         "logo"
@@ -146,7 +96,7 @@
     {
       "chapter": 0,
       "section": "cta",
-      "text": "So, would you trust one of these in your home, or is it just a lab toy?",
+      "text": "So would you trust one of these in your home, or is it just a lab toy?",
       "emphasis": "lab toy",
       "visual": "split_compare",
       "subjects": [
