@@ -1,4 +1,5 @@
 import { ANALYTICS_SCHEMA, analyticsReport, storeAnalytics } from "./analytics.js";
+import { handleContact } from "./contact.js";
 import { sweepMedia } from "./storage.js";
 import { collectHealth, renderHealth, sendHealthEmail } from "./health.js";
 import { closeThread, deleteThread, emailScript, markRead, receiveMail, sendAndRecord, unreadCount } from "./mail.js";
@@ -1323,6 +1324,11 @@ export default {
     if(["/favicon.ico","/favicon.png","/apple-touch-icon.png"].includes(url.pathname)){
       if(!env.ASSETS) return new Response("Not found",{status:404});
       return env.ASSETS.fetch(request);
+    }
+    // 2026-10-24: the public contact panel on golidee.com (no login; checks in contact.js).
+    if(url.pathname==="/api/public/contact"){
+      await ensureSchema(env.DB);
+      return handleContact(request,env);
     }
     if(url.pathname==="/api/x/callback"&&request.method==="GET"){
       try{return await xHandleCallback(env,url);}catch{return xCallbackRedirect("error");}

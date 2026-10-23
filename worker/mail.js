@@ -115,6 +115,13 @@ async function addMessage(db, threadId, direction, body, externalId) {
     .bind(crypto.randomUUID(), threadId, externalId || crypto.randomUUID(), direction, body.slice(0, 20000), now()).run();
 }
 
+/** A message that arrived another way (the website contact panel) lands in the Inbox. */
+export async function recordInbound(db, address, subject, body) {
+  const threadId = await threadFor(db, clean(address).toLowerCase(), clean(subject), true);
+  await addMessage(db, threadId, "inbound", clean(body));
+  return threadId;
+}
+
 export async function sendAndRecord(env, payload) {
   const sent = await sendMail(env, payload);
   const threadId = await threadFor(env.DB, sent.to, clean(payload.subject), false);
