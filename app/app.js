@@ -963,6 +963,7 @@ $("#theme-toggle").onclick = () => {
   const next = document.documentElement.dataset.theme === "light" ? "dark" : "light";
   document.documentElement.dataset.theme = next;
   try { localStorage.setItem("golide-theme", next); } catch {}
+  if (window.GolideLoader && window.GolideLoader.retheme) window.GolideLoader.retheme();
   applyThemeLabel();
 };
 applyThemeLabel();

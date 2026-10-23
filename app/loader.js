@@ -171,12 +171,25 @@
     else splashField.onHold = function () { setTimeout(close, 450); };
   }
 
+  var heroField = null;
+
   function formOnce(canvas) {
     if (!canvas || reduce) return null;
-    return new Field(canvas, { loop: false, scale: 0.62, word: false });
+    heroField = new Field(canvas, { loop: false, scale: 0.62, word: false });
+    return heroField;
   }
 
-  window.GolideLoader = { finish: finishSplash, formOnce: formOnce };
+  // 2026-10-24: the mark read its colours once, so after a theme switch the light-theme
+  // dashboard kept the dark theme's near-white dots. Re-read and redraw the formed mark.
+  function retheme() {
+    if (!heroField || heroField.running) { if (heroField) { heroField.ink = rgb("--text", "#ecedef"); heroField.gold = rgb("--gold", "#e9c46a"); } return; }
+    heroField.ink = rgb("--text", "#ecedef");
+    heroField.gold = rgb("--gold", "#e9c46a");
+    heroField.ctx.clearRect(0, 0, heroField.w, heroField.h);
+    heroField.drawMark(1);
+  }
+
+  window.GolideLoader = { finish: finishSplash, formOnce: formOnce, retheme: retheme };
 
   var fontReady = document.fonts && document.fonts.load ? document.fonts.load("500 40px Geist") : Promise.resolve();
   var started = false;
