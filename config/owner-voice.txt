@@ -61,3 +61,112 @@ Change the floor or the task, and it can still lose its balance.
 What it really shows is that robot experiments just got a lot cheaper, not that robots got a human brain.
 Follow the channel for the engineering behind every robot demo.
 So, would you trust one of these in your home, or is it just a lab toy?
+
+== LONG VIDEO, recorded 2026-10-24 (NVIDIA Microduck robots; owner: best tone and explanation so far) ==
+[INTRO]
+Four tiny robots just stole the show at Jensen Huang's keynote in Berlin.
+They walked, they fell over, they got back up, and they listened when someone talked to them.
+Everybody was looking at the robots, but the robots weren't the real story here.
+The real story is how they learned to move, before any of them took a single real step.
+In the next few minutes we'll go through what actually happened on that stage, how the training works in a computer,
+what's inside each robot that keeps it standing, why moving from the computer to a real floor is the hard part,
+and what this whole thing really proves.
+
+[01 THE BERLIN DEMO]
+Let's start with the stage, because that's the part everyone saw.
+Jensen brought out four small two legged robots called Microducks during NVIDIA's keynote.
+And before they came out, the video showed an AI agent setting up their task for them,
+building a little course and sending the training jobs off to computers in the cloud.
+What came back was a learned behaviour, they tested it on a local computer first,
+and only then did they put it into the real robots on stage.
+And you could see it working, the four of them moved together, made mistakes, and most of the time they recovered.
+They walked, tumbled, sat down, stood up and followed spoken instructions,
+so it looks like somebody programmed a bunch of clever tricks.
+But nobody wrote an instruction for every step and every stumble.
+What's running in there is called a trained policy, and all it does is look at what the robot senses and pick the next motor move.
+That matters because walking never repeats the same way twice.
+One foot lands a bit off, the body tilts, and the other foot has to fix it,
+even when the engineers never saw that exact wobble coming.
+The show was real, but what you saw was the robots doing the homework, not the lesson that taught them.
+
+[02 PRACTICE IN SIMULATION]
+The lesson happened before a single real motor turned, inside a computer.
+Engineers built a digital copy of the robot and everything around it,
+the joints, how far each one can bend, the sensors, the floor, the walls and the obstacles.
+NVIDIA does this with its own tools, Isaac Lab and Newton, and the agent turns the goal into an experiment the computer can run.
+Say the goal is to cross a course without falling or bumping into anything.
+The digital robot feels where it is, how fast it's going and how much it's leaning,
+it sends commands to its joints, and then it sees what happened.
+If it does well, the system gives it a reward, and if it falls, misses the route or hits something, it gets a worse score.
+That's called reinforcement learning, and the idea is simple, you try, you get scored, and over millions of tries the good moves stick.
+What you end up with is the policy, the thing that links what the robot senses to what its motors should do.
+And here's where the computer wins big.
+When a digital robot falls, it resets in a split second and tries again, nothing to repair, nobody to pick it up.
+NVIDIA says hundreds or even thousands of these robots can practise at the same time,
+with cloud GPUs doing the heavy work while the real machines just sit there.
+Think about doing that with real robots, you'd need charging, people watching, repairs, space and somebody resetting them all day.
+In the computer, a robot can fail a thousand times before lunch and nothing breaks.
+But understand this, if the digital world is built wrong, the robot learns the wrong lesson really well.
+So simulation gives you more practice and less risk, but it doesn't make the practice right on its own.
+
+[03 INSIDE THE ROBOT]
+Now, once that policy is inside the real robot, it turns into a speed problem.
+Microduck has a camera to see what's ahead of it,
+and a distance sensor that bounces light off things to measure how far away they are.
+That one's called LiDAR, but all it really does is measure distance.
+It's got two motion sensors that feel how the body is tilting and moving,
+and fifteen small motors that move the joints in its legs and body.
+The policy takes everything those sensors report and turns it into positions for each joint.
+And it doesn't do that once, it does it over and over, many times every second.
+The robot moves, checks what happened, and corrects, and that loop is called feedback control.
+The sensors say where the body is, the software compares that with where it should be,
+and the motors fix the difference before the next moment comes.
+If the body starts leaning, the joints are already changing before the fall can finish.
+If something is blocking the path, the camera has to spot it first,
+and then the software has to pick a way around it,
+which is why a walking policy on its own isn't enough if the robot can't see the course.
+Seeing, balancing and moving all have to run together, all the time,
+and if that loop is even a little late, a small wobble becomes a full fall.
+It looks like a cute little duck, but the control problem inside it is serious.
+
+[04 CROSSING REALITY]
+The hardest part is when that digital robot meets a real floor.
+In the computer, a motor reacts the exact moment the software tells it to,
+but a real motor has friction, a small delay and a bit of looseness in the parts.
+Those tiny differences change where the foot lands and how the body reacts,
+and a policy that never saw them might only work inside the computer.
+That's why engineers keep changing things during training, the floor, the grip, the timing,
+so the robot practises in lots of slightly different worlds instead of one perfect one.
+That's what helps the behaviour survive the move from the computer to the real thing.
+Once training is done, the policy gets saved as a file in a format called ONNX,
+which lets it run right on the robot instead of needing the cloud.
+But that file is just a behaviour, it doesn't prove the robot is ready.
+The engineers still test it on the real hardware and watch it fail,
+feet slipping, late reactions, bad landings, missed obstacles,
+and then they fix the model, the controller or the hardware and test it again.
+That means the real robot ends up being part of the training too.
+Going from the computer to reality isn't one jump, it's a handover, and then real testing has to back it up.
+
+[05 WHAT IT PROVES]
+Now put the whole process next to that short clip from the stage.
+The walking and tumbling you saw is only the very end of it.
+Before that, an agent set up the task, NVIDIA's tools built the world,
+cloud GPUs ran loads of training at the same time, and the best policy got tested before it ever touched a robot.
+That means way more practice without risking expensive machines,
+and you can test dangerous situations before a person is anywhere near.
+But faster practice in a computer doesn't make the hard parts of robotics go away.
+The robot still needs sensors it can trust, balance that holds and motors that react on time,
+plus a body that survives falling over again and again.
+One good walk on stage proves one trained behaviour worked in one demo.
+It doesn't prove the same robot can handle every floor, every delay and every obstacle out there.
+What NVIDIA has really shown is a faster way to make and test movement for robots.
+It's not a tiny robot that suddenly got smart by magic,
+it's a pipeline you can repeat, from software into hardware,
+and real world testing is still what decides if the movement holds up off the screen.
+
+[CLOSE]
+The simple version is, the robots practise thousands of times in a computer, and then the good behaviour gets moved into the real body.
+But every one of them still has to see, balance, move its motors and survive the real world.
+The demo was real, but the bigger thing was the system behind it.
+And if you want more breakdowns of the tech behind these big demos, follow the channel.
+So here's the question, what matters more, NVIDIA's training system or the Microduck robot itself?

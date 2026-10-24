@@ -42,6 +42,12 @@ class SpokenPassTests(unittest.TestCase):
         merged = merge_spoken(plan, {"lines": [{"text": "the motors push the car", "emphasis": "rocket"}]})
         self.assertIn(merged["lines"][0]["emphasis"].lower(), "the motors push the car")
 
+    def test_opening_line_must_be_easy_to_say_cold(self):
+        # 2026-10-24: "At GTC Berlin, Jensen Huang walked out..." was hard to enter.
+        self.assertIn("hard to say cold", spoken_pass_instructions("short"))
+        self.assertIn("said cold", script_instructions("long", "golide-long-2026-10-25"))
+        self.assertIn("Microduck", spoken_pass_instructions("long"))
+
 
 if __name__ == "__main__":
     unittest.main()

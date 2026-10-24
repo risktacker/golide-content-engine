@@ -529,6 +529,8 @@ VOICE
 - Speak to the viewer as "you". Plain words a smart 16-year-old understands. Confident,
   calm, warm and direct. Never hype, never preachy, never a lecture of bullet points.
 - Use contractions the way people talk (it's, you're, don't, that's).
+- The first sentence is said cold, with no run-up: start it on what happened or the
+  thing itself, never on a place, a date or a stack of names (2026-10-24).
 - Every claim must be true and checkable. No invented statistics, studies, quotes or names.
   If a number is not from a credible current source, do not use a number.
 - Never promise jobs, income, trading results, health outcomes or guaranteed results.
@@ -890,6 +892,10 @@ def spoken_pass_instructions(format_name: str) -> str:
         "\"a repeatable pipeline moving from software into hardware\"). Say it in everyday words, "
         "the way you would explain it to a friend, keeping it exactly as true.\n"
         "- Lists of nouns. Say what each thing does.\n"
+        "- A first sentence that is hard to say cold. The opening line is said with no run-up, so "
+        "it starts on what happened or the thing itself, never on a place, a date or a stack of "
+        "names (2026-10-24: \"At GTC Berlin, Jensen Huang walked out...\" was hard to enter; "
+        "\"Four tiny robots just stole the show at Jensen Huang's keynote\" is easy).\n"
         "- Joining words stuck on the front of sentences by habit. Do not add a connective to "
         "every line; most joins come from the meaning. Never start two sentences in a row the "
         "same way, and don't lean on \"So\".\n\n"
