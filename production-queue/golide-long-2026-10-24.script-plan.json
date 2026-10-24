@@ -1,0 +1,1244 @@
+{
+  "title": "Jensen Huang's Tiny Microduck Robots Steal the Spotlight at NVIDIA GTC 2026",
+  "chapters": [
+    {
+      "number": "",
+      "title": "Intro"
+    },
+    {
+      "number": "01",
+      "title": "The Berlin Demo"
+    },
+    {
+      "number": "02",
+      "title": "Practice In Simulation"
+    },
+    {
+      "number": "03",
+      "title": "Inside The Robot"
+    },
+    {
+      "number": "04",
+      "title": "Crossing Reality"
+    },
+    {
+      "number": "05",
+      "title": "What It Proves"
+    },
+    {
+      "number": "",
+      "title": "Close"
+    }
+  ],
+  "lines": [
+    {
+      "chapter": 0,
+      "section": "claim",
+      "text": "At GTC Berlin, Jensen Huang walked out four tiny robots, and they stole the show.",
+      "emphasis": "stole the show",
+      "visual": "icon_hero",
+      "subjects": [
+        "robot",
+        "stage"
+      ],
+      "label": "FOUR TINY ROBOTS",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "claim",
+      "text": "They walked, they fell over, they got back up, and they listened when someone talked to them.",
+      "emphasis": "got back up",
+      "visual": "icon_hero",
+      "subjects": [
+        "robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "claim",
+      "text": "Everybody was looking at the robots, but the robots weren't the real story here.",
+      "emphasis": "real story",
+      "visual": "cross_out",
+      "subjects": [
+        "robot",
+        "magnifying glass"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "claim",
+      "text": "The real story is how they learned to move, before any of them took a single real step.",
+      "emphasis": "learned to move",
+      "visual": "icon_pair",
+      "subjects": [
+        "computer",
+        "robot"
+      ],
+      "label": "LEARNED FIRST",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "claim",
+      "text": "In the next few minutes we'll go through what actually happened on that stage, how the training works in a computer,",
+      "emphasis": "training",
+      "visual": "icon_flow",
+      "subjects": [
+        "stage",
+        "computer"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "claim",
+      "text": "what's inside each robot that keeps it standing, why moving from the computer to a real floor is the hard part,",
+      "emphasis": "hard part",
+      "visual": "icon_flow",
+      "subjects": [
+        "robot",
+        "sensor"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "claim",
+      "text": "and what this whole thing really proves.",
+      "emphasis": "really proves",
+      "visual": "checklist",
+      "subjects": [
+        "checkmark"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Let's start with the stage, because that's the part everyone saw.",
+      "emphasis": "everyone saw",
+      "visual": "icon_hero",
+      "subjects": [
+        "stage"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Jensen brought out four small two legged robots called Microducks during NVIDIA's keynote.",
+      "emphasis": "Microducks",
+      "visual": "icon_hero",
+      "subjects": [
+        "robot",
+        "stage"
+      ],
+      "label": "MICRODUCK",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "And before they came out, the video showed an AI agent setting up their task for them,",
+      "emphasis": "AI agent",
+      "visual": "icon_pair",
+      "subjects": [
+        "ai agent",
+        "computer"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "building a little course and sending the training jobs off to computers in the cloud.",
+      "emphasis": "cloud",
+      "visual": "icon_flow",
+      "subjects": [
+        "cloud",
+        "server"
+      ],
+      "label": "TRAINING IN THE CLOUD",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "What came back was a learned behaviour, they tested it on a local computer first,",
+      "emphasis": "tested",
+      "visual": "icon_flow",
+      "subjects": [
+        "cloud",
+        "laptop"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "and only then did they put it into the real robots on stage.",
+      "emphasis": "real robots",
+      "visual": "icon_flow",
+      "subjects": [
+        "laptop",
+        "robot"
+      ],
+      "label": "CLOUD TO ROBOT",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "And you could see it working, the four of them moved together, made mistakes, and most of the time they recovered.",
+      "emphasis": "recovered",
+      "visual": "icon_grid",
+      "subjects": [
+        "robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "They walked, tumbled, sat down, stood up and followed spoken instructions,",
+      "emphasis": "spoken instructions",
+      "visual": "icon_pair",
+      "subjects": [
+        "robot",
+        "microphone"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "so it looks like somebody programmed a bunch of clever tricks.",
+      "emphasis": "clever tricks",
+      "visual": "icon_hero",
+      "subjects": [
+        "code"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "But nobody wrote an instruction for every step and every stumble.",
+      "emphasis": "every stumble",
+      "visual": "cross_out",
+      "subjects": [
+        "code"
+      ],
+      "label": "NO SCRIPT PER STEP",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "What's running in there is called a trained policy, and all it does is look at what the robot senses and pick the next motor move.",
+      "emphasis": "trained policy",
+      "visual": "icon_flow",
+      "subjects": [
+        "sensor",
+        "brain",
+        "motor"
+      ],
+      "label": "TRAINED POLICY",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "That matters because walking never repeats the same way twice.",
+      "emphasis": "never repeats",
+      "visual": "icon_hero",
+      "subjects": [
+        "footprint"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "One foot lands a bit off, the body tilts, and the other foot has to fix it,",
+      "emphasis": "fix it",
+      "visual": "icon_pair",
+      "subjects": [
+        "footprint",
+        "robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "even when the engineers never saw that exact wobble coming.",
+      "emphasis": "wobble",
+      "visual": "icon_hero",
+      "subjects": [
+        "engineer"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "The show was real, but what you saw was the robots doing the homework, not the lesson that taught them.",
+      "emphasis": "the lesson",
+      "visual": "split_compare",
+      "subjects": [
+        "robot",
+        "book"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "The lesson happened before a single real motor turned, inside a computer.",
+      "emphasis": "inside a computer",
+      "visual": "icon_hero",
+      "subjects": [
+        "computer"
+      ],
+      "label": "PRACTICE FIRST",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "Engineers built a digital copy of the robot and everything around it,",
+      "emphasis": "digital copy",
+      "visual": "icon_pair",
+      "subjects": [
+        "robot",
+        "computer"
+      ],
+      "label": "DIGITAL TWIN",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "the joints, how far each one can bend, the sensors, the floor, the walls and the obstacles.",
+      "emphasis": "obstacles",
+      "visual": "icon_grid",
+      "subjects": [
+        "gear",
+        "sensor",
+        "wall"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "NVIDIA does this with its own tools, Isaac Lab and Newton, and the agent turns the goal into an experiment the computer can run.",
+      "emphasis": "experiment",
+      "visual": "icon_pair",
+      "subjects": [
+        "computer",
+        "flask"
+      ],
+      "label": "ISAAC LAB + NEWTON",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "Say the goal is to cross a course without falling or bumping into anything.",
+      "emphasis": "without falling",
+      "visual": "icon_pair",
+      "subjects": [
+        "flag",
+        "robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "The digital robot feels where it is, how fast it's going and how much it's leaning,",
+      "emphasis": "leaning",
+      "visual": "gauge",
+      "subjects": [
+        "robot",
+        "gauge"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "it sends commands to its joints, and then it sees what happened.",
+      "emphasis": "sees what happened",
+      "visual": "icon_flow",
+      "subjects": [
+        "gear",
+        "eye"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "If it does well, the system gives it a reward, and if it falls, misses the route or hits something, it gets a worse score.",
+      "emphasis": "reward",
+      "visual": "split_compare",
+      "subjects": [
+        "trophy",
+        "warning"
+      ],
+      "label": "REWARD VS PENALTY",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "That's called reinforcement learning, and the idea is simple, you try, you get scored, and over millions of tries the good moves stick.",
+      "emphasis": "good moves stick",
+      "visual": "staircase",
+      "subjects": [
+        "brain",
+        "trophy"
+      ],
+      "label": "REINFORCEMENT LEARNING",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "What you end up with is the policy, the thing that links what the robot senses to what its motors should do.",
+      "emphasis": "the policy",
+      "visual": "icon_flow",
+      "subjects": [
+        "sensor",
+        "brain",
+        "motor"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "And here's where the computer wins big.",
+      "emphasis": "wins big",
+      "visual": "icon_hero",
+      "subjects": [
+        "computer"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "When a digital robot falls, it resets in a split second and tries again, nothing to repair, nobody to pick it up.",
+      "emphasis": "split second",
+      "visual": "clock",
+      "subjects": [
+        "robot",
+        "reset"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "NVIDIA says hundreds or even thousands of these robots can practise at the same time,",
+      "emphasis": "thousands",
+      "visual": "icon_grid",
+      "subjects": [
+        "robot"
+      ],
+      "label": "THOUSANDS AT ONCE",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "with cloud GPUs doing the heavy work while the real machines just sit there.",
+      "emphasis": "cloud GPUs",
+      "visual": "icon_pair",
+      "subjects": [
+        "cloud",
+        "chip"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "Think about doing that with real robots, you'd need charging, people watching, repairs, space and somebody resetting them all day.",
+      "emphasis": "all day",
+      "visual": "icon_grid",
+      "subjects": [
+        "battery",
+        "wrench",
+        "robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "In the computer, a robot can fail a thousand times before lunch and nothing breaks.",
+      "emphasis": "nothing breaks",
+      "visual": "icon_pair",
+      "subjects": [
+        "computer",
+        "robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "But understand this, if the digital world is built wrong, the robot learns the wrong lesson really well.",
+      "emphasis": "wrong lesson",
+      "visual": "icon_pair",
+      "subjects": [
+        "computer",
+        "warning"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "So simulation gives you more practice and less risk, but it doesn't make the practice right on its own.",
+      "emphasis": "right on its own",
+      "visual": "split_compare",
+      "subjects": [
+        "computer",
+        "shield"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Now, once that policy is inside the real robot, it turns into a speed problem.",
+      "emphasis": "speed problem",
+      "visual": "icon_pair",
+      "subjects": [
+        "robot",
+        "clock"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Microduck has a camera to see what's ahead of it,",
+      "emphasis": "camera",
+      "visual": "icon_hero",
+      "subjects": [
+        "camera",
+        "robot"
+      ],
+      "label": "CAMERA",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "and a distance sensor that bounces light off things to measure how far away they are.",
+      "emphasis": "distance",
+      "visual": "icon_pair",
+      "subjects": [
+        "sensor",
+        "laser"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "That one's called LiDAR, but all it really does is measure distance.",
+      "emphasis": "measure distance",
+      "visual": "icon_hero",
+      "subjects": [
+        "lidar"
+      ],
+      "label": "LIDAR",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "It's got two motion sensors that feel how the body is tilting and moving,",
+      "emphasis": "tilting",
+      "visual": "icon_pair",
+      "subjects": [
+        "sensor",
+        "robot"
+      ],
+      "label": "MOTION SENSORS",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "and fifteen small motors that move the joints in its legs and body.",
+      "emphasis": "fifteen",
+      "visual": "icon_hero",
+      "subjects": [
+        "motor"
+      ],
+      "label": "15 MOTORS",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "The policy takes everything those sensors report and turns it into positions for each joint.",
+      "emphasis": "each joint",
+      "visual": "icon_flow",
+      "subjects": [
+        "sensor",
+        "brain",
+        "gear"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "And it doesn't do that once, it does it over and over, many times every second.",
+      "emphasis": "every second",
+      "visual": "clock",
+      "subjects": [
+        "clock"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "The robot moves, checks what happened, and corrects, and that loop is called feedback control.",
+      "emphasis": "feedback control",
+      "visual": "icon_orbit",
+      "subjects": [
+        "robot",
+        "loop"
+      ],
+      "label": "FEEDBACK LOOP",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "The sensors say where the body is, the software compares that with where it should be,",
+      "emphasis": "compares",
+      "visual": "icon_flow",
+      "subjects": [
+        "sensor",
+        "chip"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "and the motors fix the difference before the next moment comes.",
+      "emphasis": "fix the difference",
+      "visual": "icon_hero",
+      "subjects": [
+        "motor"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "If the body starts leaning, the joints are already changing before the fall can finish.",
+      "emphasis": "before the fall",
+      "visual": "icon_pair",
+      "subjects": [
+        "robot",
+        "gear"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "If something is blocking the path, the camera has to spot it first,",
+      "emphasis": "spot it first",
+      "visual": "icon_pair",
+      "subjects": [
+        "camera",
+        "wall"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "and then the software has to pick a way around it,",
+      "emphasis": "way around",
+      "visual": "icon_pair",
+      "subjects": [
+        "chip",
+        "route"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "which is why a walking policy on its own isn't enough if the robot can't see the course.",
+      "emphasis": "isn't enough",
+      "visual": "cross_out",
+      "subjects": [
+        "robot",
+        "eye"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Seeing, balancing and moving all have to run together, all the time,",
+      "emphasis": "together",
+      "visual": "icon_orbit",
+      "subjects": [
+        "eye",
+        "scale",
+        "motor"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "and if that loop is even a little late, a small wobble becomes a full fall.",
+      "emphasis": "full fall",
+      "visual": "spike_vs_curve",
+      "subjects": [
+        "clock",
+        "robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "It looks like a cute little duck, but the control problem inside it is serious.",
+      "emphasis": "serious",
+      "visual": "icon_pair",
+      "subjects": [
+        "duck",
+        "chip"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "The hardest part is when that digital robot meets a real floor.",
+      "emphasis": "real floor",
+      "visual": "split_compare",
+      "subjects": [
+        "computer",
+        "robot"
+      ],
+      "label": "SIM TO REAL",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "In the computer, a motor reacts the exact moment the software tells it to,",
+      "emphasis": "exact moment",
+      "visual": "icon_pair",
+      "subjects": [
+        "computer",
+        "motor"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "but a real motor has friction, a small delay and a bit of looseness in the parts.",
+      "emphasis": "friction",
+      "visual": "icon_hero",
+      "subjects": [
+        "motor",
+        "gear"
+      ],
+      "label": "FRICTION + DELAY",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "Those tiny differences change where the foot lands and how the body reacts,",
+      "emphasis": "tiny differences",
+      "visual": "icon_hero",
+      "subjects": [
+        "footprint"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "and a policy that never saw them might only work inside the computer.",
+      "emphasis": "only work",
+      "visual": "cross_out",
+      "subjects": [
+        "computer"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "That's why engineers keep changing things during training, the floor, the grip, the timing,",
+      "emphasis": "keep changing",
+      "visual": "icon_grid",
+      "subjects": [
+        "engineer",
+        "gear"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "so the robot practises in lots of slightly different worlds instead of one perfect one.",
+      "emphasis": "different worlds",
+      "visual": "icon_grid",
+      "subjects": [
+        "globe"
+      ],
+      "label": "MANY WORLDS",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "That's what helps the behaviour survive the move from the computer to the real thing.",
+      "emphasis": "survive",
+      "visual": "icon_flow",
+      "subjects": [
+        "computer",
+        "robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "Once training is done, the policy gets saved as a file in a format called ONNX,",
+      "emphasis": "ONNX",
+      "visual": "icon_hero",
+      "subjects": [
+        "file"
+      ],
+      "label": "ONNX FILE",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "which lets it run right on the robot instead of needing the cloud.",
+      "emphasis": "right on the robot",
+      "visual": "split_compare",
+      "subjects": [
+        "robot",
+        "cloud"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "But that file is just a behaviour, it doesn't prove the robot is ready.",
+      "emphasis": "doesn't prove",
+      "visual": "cross_out",
+      "subjects": [
+        "file",
+        "robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "The engineers still test it on the real hardware and watch it fail,",
+      "emphasis": "watch it fail",
+      "visual": "icon_pair",
+      "subjects": [
+        "engineer",
+        "robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "feet slipping, late reactions, bad landings, missed obstacles,",
+      "emphasis": "bad landings",
+      "visual": "checklist",
+      "subjects": [
+        "footprint",
+        "clock",
+        "wall"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "and then they fix the model, the controller or the hardware and test it again.",
+      "emphasis": "test it again",
+      "visual": "icon_flow",
+      "subjects": [
+        "wrench",
+        "chip"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "That means the real robot ends up being part of the training too.",
+      "emphasis": "part of the training",
+      "visual": "icon_hero",
+      "subjects": [
+        "robot",
+        "loop"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "Going from the computer to reality isn't one jump, it's a handover, and then real testing has to back it up.",
+      "emphasis": "handover",
+      "visual": "icon_flow",
+      "subjects": [
+        "computer",
+        "robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "reframe",
+      "text": "Now put the whole process next to that short clip from the stage.",
+      "emphasis": "whole process",
+      "visual": "split_compare",
+      "subjects": [
+        "stage",
+        "computer"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "reframe",
+      "text": "The walking and tumbling you saw is only the very end of it.",
+      "emphasis": "very end",
+      "visual": "icon_hero",
+      "subjects": [
+        "robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "reframe",
+      "text": "Before that, an agent set up the task, NVIDIA's tools built the world,",
+      "emphasis": "built the world",
+      "visual": "icon_flow",
+      "subjects": [
+        "ai agent",
+        "globe"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "reframe",
+      "text": "cloud GPUs ran loads of training at the same time, and the best policy got tested before it ever touched a robot.",
+      "emphasis": "best policy",
+      "visual": "icon_flow",
+      "subjects": [
+        "cloud",
+        "chip",
+        "robot"
+      ],
+      "label": "THE PIPELINE",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "reframe",
+      "text": "That means way more practice without risking expensive machines,",
+      "emphasis": "more practice",
+      "visual": "icon_pair",
+      "subjects": [
+        "robot",
+        "shield"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "reframe",
+      "text": "and you can test dangerous situations before a person is anywhere near.",
+      "emphasis": "dangerous",
+      "visual": "icon_pair",
+      "subjects": [
+        "warning",
+        "person"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "reframe",
+      "text": "But faster practice in a computer doesn't make the hard parts of robotics go away.",
+      "emphasis": "hard parts",
+      "visual": "icon_pair",
+      "subjects": [
+        "computer",
+        "robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "reframe",
+      "text": "The robot still needs sensors it can trust, balance that holds and motors that react on time,",
+      "emphasis": "react on time",
+      "visual": "checklist",
+      "subjects": [
+        "sensor",
+        "scale",
+        "motor"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "reframe",
+      "text": "plus a body that survives falling over again and again.",
+      "emphasis": "again and again",
+      "visual": "icon_hero",
+      "subjects": [
+        "robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "reframe",
+      "text": "One good walk on stage proves one trained behaviour worked in one demo.",
+      "emphasis": "one demo",
+      "visual": "icon_hero",
+      "subjects": [
+        "stage",
+        "robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "reframe",
+      "text": "It doesn't prove the same robot can handle every floor, every delay and every obstacle out there.",
+      "emphasis": "every floor",
+      "visual": "cross_out",
+      "subjects": [
+        "robot",
+        "wall"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "reframe",
+      "text": "What NVIDIA has really shown is a faster way to make and test movement for robots.",
+      "emphasis": "faster way",
+      "visual": "icon_pair",
+      "subjects": [
+        "chip",
+        "robot"
+      ],
+      "label": "FASTER, NOT MAGIC",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "reframe",
+      "text": "It's not a tiny robot that suddenly got smart by magic,",
+      "emphasis": "magic",
+      "visual": "cross_out",
+      "subjects": [
+        "robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "reframe",
+      "text": "it's a pipeline you can repeat, from software into hardware,",
+      "emphasis": "pipeline",
+      "visual": "icon_flow",
+      "subjects": [
+        "code",
+        "robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "reframe",
+      "text": "and real world testing is still what decides if the movement holds up off the screen.",
+      "emphasis": "holds up",
+      "visual": "icon_pair",
+      "subjects": [
+        "robot",
+        "checkmark"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 6,
+      "section": "reframe",
+      "text": "The simple version is, the robots practise thousands of times in a computer, and then the good behaviour gets moved into the real body.",
+      "emphasis": "real body",
+      "visual": "icon_flow",
+      "subjects": [
+        "computer",
+        "robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 6,
+      "section": "reframe",
+      "text": "But every one of them still has to see, balance, move its motors and survive the real world.",
+      "emphasis": "real world",
+      "visual": "checklist",
+      "subjects": [
+        "eye",
+        "scale",
+        "motor"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 6,
+      "section": "reframe",
+      "text": "The demo was real, but the bigger thing was the system behind it.",
+      "emphasis": "system behind it",
+      "visual": "split_compare",
+      "subjects": [
+        "stage",
+        "server"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 6,
+      "section": "cta",
+      "text": "And if you want more breakdowns of the tech behind these big demos, follow the channel.",
+      "emphasis": "follow the channel",
+      "visual": "logo_end",
+      "subjects": [
+        "logo"
+      ],
+      "label": "",
+      "follow": true
+    },
+    {
+      "chapter": 6,
+      "section": "cta",
+      "text": "So here's the question, what matters more, NVIDIA's training system or the Microduck robot itself?",
+      "emphasis": "what matters more",
+      "visual": "split_compare",
+      "subjects": [
+        "server",
+        "robot"
+      ],
+      "label": "",
+      "follow": false
+    }
+  ]
+}
