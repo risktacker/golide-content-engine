@@ -278,5 +278,6 @@
     "measured_at": "2026-10-24T04:03:30.815139+00:00",
     "signal_type": "youtube-breakout-v1"
   },
-  "selected_topic_source": "https://nvidianews.nvidia.com/news/nvidia-advances-isaac-platform-for-general-purpose-robotics-with-new-reference-humanoid-frameworks-simulation-pipelines-and-data"
+  "selected_topic_source": "https://nvidianews.nvidia.com/news/nvidia-advances-isaac-platform-for-general-purpose-robotics-with-new-reference-humanoid-frameworks-simulation-pipelines-and-data",
+  "owner_voice_media_ref": "r2://temp/2026/10/24/59f980052d4f4e4e991730437255e124-Microducks-v2.wav"
 }
