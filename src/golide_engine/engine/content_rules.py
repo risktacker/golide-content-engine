@@ -284,11 +284,9 @@ The sections are the shape of the argument; the viewer should never hear the joi
 NARRATION (owner direction 2026-10-09): the structure above is the order of the
 ideas, but it is SPOKEN AS ONE CONNECTED EXPLANATION, like a teacher talking a friend
 through it. It must never sound like a list of points read out one by one.
-- Every sentence grows out of the one before it. Join them with a spoken word (and,
-  but, because, then, for example) only where the meaning connects; never chain
-  "which is why" and "that means" by rule (2026-10-22: that reads as AI).
-- Each section is entered with a bridge from the last, written fresh for this
-  topic, never a stock phrase (see VARIETY).
+- Every sentence grows out of the one before it, because the speaker is carrying on
+  his own thought, not because a joining word was inserted. Most joins come from the
+  meaning; no word is required at the start of any sentence or section.
 - Never compress ideas into noun piles ("identity, limits and an audit trail"): say
   what each thing means for the viewer. No colons, no "X: a, b, c" lists.
 """
@@ -315,11 +313,11 @@ The viewer must always know where they are: "now we're on this, next we're on th
 - INTRO: the blunt opening claim that flips a common belief, then ONE sentence that
   tells the viewer the route in plain words, naming the numbered chapters in order,
   worded fresh every time (never a stock "In the next few minutes" line).
-- Each numbered chapter OPENS with a spoken signpost, written for this topic, that
-  makes the new stage obvious (often a question the viewer would ask next, or a
-  bridge from the last chapter) and ENDS on what it means: a verdict, a reveal or a
-  consequence in one line (never homework) before the next chapter starts. Vary the signposts; never open two chapters the same way. The
-  chapter title is never read aloud as a label.
+- The chapter card on screen already shows the new stage, so a chapter starts the
+  way a person carries on talking about the next thing, never with an announcement
+  ("First, stay with...", "Now ask what...", "Let's turn to..."; 2026-10-24: those
+  read as AI). Each chapter ENDS on what it means: a verdict, a reveal or a
+  consequence (never homework). The chapter title is never read aloud as a label.
 - THE VIEWER LEAVES KNOWING (owner direction 2026-10-22, replaces the 2026-10-13
   steps rule: "things you should do... what are the people going to do about it? It's
   just the verdict"): the payoff is understanding and a clear verdict, not a to-do
@@ -370,16 +368,10 @@ FOLLOW CALL-OUT (owner direction 2026-10-07: viewers should follow and come back
 - Placement and shape (owner direction 2026-10-07, from the reference channel's
   endings): the call-out comes at the END, only after the value is given.
   1. the takeaway (what it means, never homework) comes first;
-  2. then the follow sentence, joined to the takeaway before it with a connective
-     that the sentence before it did NOT start with (owner direction 2026-10-13:
-     never two "So" sentences in a row). Vary it from video to video, for example
-     "And if this helped, follow the channel...", "That's exactly why you should
-     follow us...", "If you want the next one, follow the channel...";
-  3. then ONE short closing QUESTION (one or two lines) that is joined to the follow
-     sentence with a connective ("Which leaves one question...", "So here's the real
-     question...", "And that leaves you with this...") and is written by THE QUESTION
-     THAT STARTS THE COMMENTS rules below; it may loop back to the opening idea.
-     Never a cold question with no bridge. Nothing else after it.
+  2. then the follow sentence, said the way the speaker would naturally say it right
+     after that takeaway, worded fresh for this video;
+  3. then ONE short closing QUESTION (one or two lines), written by THE QUESTION
+     THAT STARTS THE COMMENTS rules below. Nothing else after it.
   * short and long alike: exactly ONE follow sentence, one or two lines.
 """
 
@@ -467,15 +459,13 @@ SCRIPT_LINE_RULES = """\
 FLOW (the most important rule: this is one person talking, not a list of facts)
 - Write connected speech. Each sentence must grow out of the one before it, the way a
   good teacher explains something across a table.
-- Link ideas the way people talk (and, but, because, then, now, the problem is, for
-  example, if, when, until, instead) where the meaning really connects. Plenty of
-  sentences simply follow on without a connective; never chain them by rule.
+- Ideas link because the meaning connects, the way a person talking does it; there is
+  no list of joining words to use and none is required (2026-10-24: lists of
+  connectives stamped every script the same way).
 - Mix sentence lengths: some short and punchy, most medium (10 to 22 words), the odd
   longer one that builds. Never more than two short stand-alone sentences in a row.
 - Lists of examples are said as one flowing sentence ("a payment service, a private
   network tunnel, even the update on an old phone"), not as separate statements.
-- Each section opens with a bridge from the last one ("So where do you start?",
-  "And this isn't only about websites.", "Here's what that costs.").
 - Never repeat the same sentence opening on consecutive sentences (no runs of
   "Record...", "It must...", "A ... is ...").
 
@@ -515,10 +505,7 @@ HUMANIZER_RULES = """\
 SOUND HUMAN, NOT AI (owner direction 2026-10-13)
 - Read it aloud in your head: it must sound like one real person talking, not a
   generated script.
-- Never start two sentences in a row with the same word. Use "So" to open a
-  sentence at most twice in the whole script, and never back to back. Rotate the
-  bridges: and, but, because, that's why, which means, then, now, instead, until,
-  in other words, the problem is, the thing nobody says, even so, still.
+- Never start two sentences in a row with the same word, and don't lean on "So".
 - Talk like the owner talks: short plain sentences, direct, sometimes blunt ("That's
   the fans.", "Anyone calling that flying is wrong."). Connect ideas where the
   meaning connects; do not chain every sentence with "which is why", "so" or
@@ -547,24 +534,6 @@ VOICE
 - Never promise jobs, income, trading results, health outcomes or guaranteed results.
 - No em dashes or en dashes. Use commas, full stops and questions.
 """
-
-CONNECTIVES = (
-    "and", "but", "so", "because", "which", "then", "now", "if", "when", "until",
-    "instead", "that's", "thats", "here's", "heres", "or", "while", "though", "yet",
-    "also", "even", "think", "for", "in", "this", "that", "it's", "its", "after",
-    "before", "once", "unless", "since", "as",
-)
-
-# Words that, near the start of a sentence, show it grows out of the one before
-# (2026-10-09: sentence-level check, because comma-split lines hid a list of claims).
-BRIDGES = (
-    "and", "but", "so", "because", "which", "then", "now", "if", "when", "until",
-    "instead", "that's", "here's", "first", "next", "after", "say", "imagine",
-    "picture", "think", "for example", "in other words", "that means", "which means",
-    "the problem", "the catch", "worse", "still", "once", "by the time", "even",
-    "only", "what if", "you know", "or", "yet", "this means", "that way", "otherwise",
-    "until now", "from there", "it means", "for each", "second", "third", "fourth", "finally", "within", "before", "while", "meanwhile", "suddenly",
-)
 
 STOCK_PHRASES = ("here's the catch", "think of", "picture this", "here's the thing", "but here's the risk",
                  "the catch is", "imagine ")
@@ -653,11 +622,6 @@ def repeat_problems(plan: dict, previous: list[str], opener_words: int = 3, phra
     return problems
 
 
-def _bridged(sentence: str) -> bool:
-    head = " ".join(sentence.lower().replace("\u2019", "'").replace(",", " ").split()[:4])
-    return any(head == b or head.startswith(b + " ") or (" " + b + " ") in (" " + head + " ") for b in BRIDGES)
-
-
 def flow_problems(plan: dict) -> list[str]:
     """Catch a script that reads as a list of points instead of narration."""
     lines = [str(line.get("text", "")).strip() for line in plan.get("lines", []) if str(line.get("text", "")).strip()]
@@ -693,17 +657,13 @@ def flow_problems(plan: dict) -> list[str]:
                    | {a for a, b, c in zip(first_words, first_words[1:], first_words[2:]) if a == b == c})
     if twins:
         problems.append("two sentences in a row start with the same word (" + ", ".join(twins)
-                        + "); change one opener so each sentence is bridged differently")
+                        + "); change one opener")
     # 2026-10-23: the owner's recorded robot short opens three sentences with "So"; that
     # is how he talks. More than three still reads as a tic.
     if first_words.count("so") > 3:
         problems.append(f'{first_words.count("so")} sentences start with "So"; vary how the ideas join')
-    follow_idx = [i for i, line in enumerate(plan.get("lines", [])) if line.get("follow") is True]
-    if follow_idx and len(sentences) >= 2:
-        last = sentences[-1]
-        if not _bridged(last) and not last.lower().startswith(("because", "and", "which", "until", "then")):
-            problems.append("the closing sentence after the follow call-out starts cold; join it with a bridge "
-                            "(Because..., And until then..., Which leaves...)")
+    # 2026-10-24: the "closing question must start with a bridge word" check is gone; it
+    # forced "Which leaves one question..." templates onto every ending.
     text_all = " ".join(lines).lower().replace("\u2019", "'")
     used = [phrase for phrase in AI_PHRASES + STOCK_PHRASES if phrase in text_all]
     if used:
@@ -893,6 +853,82 @@ SCRIPT_SCHEMA: dict = {
     },
     "required": ["title", "chapters", "lines"],
 }
+
+SPOKEN_SCHEMA: dict = {
+    "type": "object",
+    "additionalProperties": False,
+    "properties": {
+        "lines": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": False,
+                "properties": {"text": {"type": "string"}, "emphasis": {"type": "string"}},
+                "required": ["text", "emphasis"],
+            },
+        },
+    },
+    "required": ["lines"],
+}
+
+
+def spoken_pass_instructions(format_name: str) -> str:
+    """The second pass (owner direction 2026-10-23/24): the draft is rewritten as the owner
+    would say it. Rules about joining words made every script sound the same; this pass
+    learns the joins from his approved scripts instead."""
+    target = SCRIPT_LENGTH_TARGETS.get(format_name, SCRIPT_LENGTH_TARGETS["short"])
+    return (
+        "You are the owner of the channel, reading your own script aloud before you record it, "
+        "and rewriting every line that you would never actually say.\n\n"
+        "WHAT TO FIX\n"
+        "- Sentences that stop dead and the next one starts cold as a fresh point. A person "
+        "explaining something keeps carrying the same thought forward: the next sentence picks "
+        "up what was just said, or the two become one sentence across two lines.\n"
+        "- Announcements of structure (\"First, stay with...\", \"Now ask what...\", \"Let's turn "
+        "to...\", \"This brings us to...\"). Just carry on talking about the next thing.\n"
+        "- Written phrasing nobody says out loud (\"produces a worse result\", \"observations\", "
+        "\"a repeatable pipeline moving from software into hardware\"). Say it in everyday words, "
+        "the way you would explain it to a friend, keeping it exactly as true.\n"
+        "- Lists of nouns. Say what each thing does.\n"
+        "- Joining words stuck on the front of sentences by habit. Do not add a connective to "
+        "every line; most joins come from the meaning. Never start two sentences in a row the "
+        "same way, and don't lean on \"So\".\n\n"
+        "WHAT MUST NOT CHANGE\n"
+        "- Every fact, name, number and claim, and their order. Add no new facts.\n"
+        "- The same number of lines, in the same order: line N of your answer replaces line N of "
+        "the draft and covers the same idea, so the pictures stay matched to the words. A line is "
+        "a breath-sized phrase (4 to 14 words); a sentence may run across two or three lines.\n"
+        f"- About the same length ({target['words_min']} to {target['words_max']} words in total).\n"
+        "- The follow call-out still says follow the channel (never the brand name, never "
+        "comments, likes or links), and the last line is still the two-sided question.\n"
+        "- No colons, no dashes, numbers written as spoken. \"emphasis\" is one or two words "
+        "copied exactly from that line's text.\n\n"
+        + owner_voice()
+        + "\nReturn JSON: {\"lines\": [{\"text\", \"emphasis\"}, ...]} with one entry per draft line."
+    )
+
+
+def merge_spoken(plan: dict, spoken: dict) -> dict | None:
+    """The draft with each line's words replaced by the spoken pass; None if the pass broke
+    the line-for-line match (then the draft is kept)."""
+    old = plan.get("lines", [])
+    new = spoken.get("lines", []) if isinstance(spoken, dict) else []
+    if len(new) != len(old) or not old:
+        return None
+    lines = []
+    for line, said in zip(old, new):
+        text = " ".join(str(said.get("text", "")).split())
+        if not text:
+            return None
+        emphasis = str(said.get("emphasis", "")).strip()
+        if not emphasis or emphasis.lower() not in text.lower():
+            emphasis = line.get("emphasis", "") if str(line.get("emphasis", "")).lower() in text.lower() else ""
+            if not emphasis:
+                words = [w.strip(".,?!") for w in text.split() if len(w.strip(".,?!")) > 3]
+                emphasis = max(words, key=len) if words else text.split()[-1].strip(".,?!")
+        lines.append(dict(line, text=text, emphasis=emphasis))
+    return dict(plan, lines=lines)
+
 
 SCRIPT_OUTPUT_RULES = """\
 OUTPUT

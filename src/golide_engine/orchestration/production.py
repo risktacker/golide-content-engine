@@ -30,7 +30,7 @@ from ..storage.database import Database
 from ..youtube.demand import TopicDemandRejected, YouTubeDemandGate
 from ..youtube_metadata import load_metadata_policy, validate_upload_metadata
 from .schemas import METADATA_SCHEMA, RESEARCH_SCHEMA, STORYBOARD_SCHEMA, TREND_CANDIDATES_SCHEMA
-from ..engine.content_rules import TREND_TASTE_RULES, SCRIPT_SCHEMA, chapter_problems, flow_problems, follow_problems, jargon_problems, length_problems, repeat_problems, script_display, script_instructions, script_text
+from ..engine.content_rules import TREND_TASTE_RULES, SCRIPT_SCHEMA, chapter_problems, flow_problems, follow_problems, jargon_problems, length_problems, repeat_problems, script_display, script_instructions, script_text, SPOKEN_SCHEMA, spoken_pass_instructions, merge_spoken
 from .recording import RecordingLengthError, check_recording_length
 from .stage_runner import StageRunner
 
@@ -768,6 +768,34 @@ class ProductionService:
                 )
                 plan = dict(output.value)
                 problems = script_problems(plan)
+            # 2026-10-24 spoken pass: the draft is rewritten the way the owner says things
+            # (his approved scripts are the reference), line for line so the visuals still
+            # match. Kept only when it breaks no more rules than the draft.
+            draft_lines = [{"text": line.get("text", ""), "emphasis": line.get("emphasis", "")}
+                           for line in plan.get("lines", [])]
+            self._reserve(spec, text_model, Usage(input_tokens=max(1, len(json.dumps(draft_lines)) // 3 + 3000),
+                                                  output_tokens=script_tokens // 2))
+            try:
+                spoken_out = text.generate_json(
+                    spoken_pass_instructions(str(spec["format"])),
+                    "DRAFT LINES\n" + json.dumps({"lines": draft_lines}, ensure_ascii=False),
+                    SPOKEN_SCHEMA,
+                    max_output_tokens=script_tokens // 2,
+                )
+                self._record_text(production_id, "script-spoken", spoken_out)
+                spoken = merge_spoken(plan, dict(spoken_out.value))
+            except Exception as error:  # the draft still stands if this pass fails
+                print(json.dumps({"status": "spoken_pass_failed", "error": str(error)[:300]}))
+                spoken = None
+            if spoken is not None:
+                spoken_problems = script_problems(spoken)
+                if len(spoken_problems) <= len(problems):
+                    plan, problems = spoken, spoken_problems
+                    print(json.dumps({"status": "spoken_pass_applied"}))
+                else:
+                    print(json.dumps({"status": "spoken_pass_rejected", "problems": spoken_problems}))
+            else:
+                print(json.dumps({"status": "spoken_pass_unmatched"}))
             if problems:
                 print(json.dumps({"status": "script_rules_unmet_after_rewrites", "problems": problems}))
             scene_plan_path.write_text(json.dumps(plan, indent=2) + "\n", encoding="utf-8")

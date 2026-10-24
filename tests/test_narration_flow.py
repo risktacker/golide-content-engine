@@ -71,7 +71,8 @@ class TeachingStyleTests(unittest.TestCase):
         self.assertNotIn("list of points", problems)
         self.assertNotIn("final sentence must return", problems)
         self.assertIn("same word (so)", problems)
-        self.assertIn("starts cold", problems)
+        # 2026-10-24: no "closing line must start with a bridge word" rule any more.
+        self.assertNotIn("starts cold", problems)
         for fmt in ("short", "long"):
             self.assertIn("THE REAL THING FIRST", script_instructions(fmt))
             self.assertNotIn("comes from this world", script_instructions(fmt))
