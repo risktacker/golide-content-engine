@@ -1,0 +1,51 @@
+# One-off (owner request 2026-10-25): preview thumbnails drawn from the real product.
+# Removed with tools/thumbnail_preview.py once the owner approves the look.
+name: Thumbnail preview (one-off)
+
+on:
+  workflow_dispatch:
+    inputs:
+      items:
+        description: "Items: 'production id|source url|line|punch|colour', separated by ;"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
+          timeout 480 sudo apt-get update
+          timeout 480 sudo apt-get install -y ffmpeg libcairo2-dev pkg-config fonts-dejavu-core
+          python -m pip install -e '.[production,video]'
+      - name: Make the previews
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GOLIDE_ENABLE_PAID_PRODUCTION: "1"
+          ITEMS: ${{ inputs.items }}
+        run: |
+          IFS=';' read -ra parts <<< "$ITEMS"
+          python tools/thumbnail_preview.py "${parts[@]}"
+      - name: Put them on main through the contents API
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for f in thumbnail-preview/*.jpg thumbnail-preview/made.json; do
+            name=$(basename "$f")
+            sha=$(gh api "repos/${GITHUB_REPOSITORY}/contents/thumbnail-preview/${name}" -q .sha 2>/dev/null || true)
+            args=(-X PUT "repos/${GITHUB_REPOSITORY}/contents/thumbnail-preview/${name}"
+                  -f message="Thumbnail preview ${name} (temporary)" -f content="$(base64 -w0 "$f")")
+            [ -n "$sha" ] && args+=(-f sha="$sha")
+            gh api "${args[@]}" > /dev/null
+            echo "put ${name}"
+          done
