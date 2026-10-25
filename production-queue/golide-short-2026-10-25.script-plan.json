@@ -1,0 +1,237 @@
+{
+  "title": "Indian construction has a robotics problem",
+  "chapters": [],
+  "lines": [
+    {
+      "chapter": 0,
+      "section": "claim",
+      "text": "A robot is painting walls in India now, and it doesn't even need a floor plan.",
+      "emphasis": "floor plan",
+      "visual": "icon_pair",
+      "subjects": [
+        "robot",
+        "paint roller"
+      ],
+      "label": "PAINTING ROBOT",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "claim",
+      "text": "Finishing a wall there is all hand work,",
+      "emphasis": "hand work",
+      "visual": "icon_pair",
+      "subjects": [
+        "hand",
+        "wall"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "putty, sanding, primer and paint, done by people.",
+      "emphasis": "done by people",
+      "visual": "icon_flow",
+      "subjects": [
+        "paint bucket",
+        "sandpaper",
+        "brush"
+      ],
+      "label": "PUTTY > SAND > PAINT",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "Centa Painter takes over the big repetitive part.",
+      "emphasis": "Centa Painter",
+      "visual": "icon_hero",
+      "subjects": [
+        "robot"
+      ],
+      "label": "CENTA PAINTER",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "It rolls around carrying a spray tool,",
+      "emphasis": "spray tool",
+      "visual": "icon_pair",
+      "subjects": [
+        "wheel",
+        "spray gun"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "then swaps to a spinning sander for walls and ceilings.",
+      "emphasis": "spinning sander",
+      "visual": "icon_pair",
+      "subjects": [
+        "sander",
+        "wall"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "pattern",
+      "text": "It finds its way with a laser that measures distance,",
+      "emphasis": "measures distance",
+      "visual": "icon_hero",
+      "subjects": [
+        "laser"
+      ],
+      "label": "LIDAR",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "pattern",
+      "text": "and cameras that spot windows and switchboards so it works around them.",
+      "emphasis": "works around them",
+      "visual": "icon_orbit",
+      "subjects": [
+        "camera",
+        "window",
+        "switch"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "pattern",
+      "text": "From that it maps the room itself and plans how to cover every wall,",
+      "emphasis": "maps the room",
+      "visual": "icon_pair",
+      "subjects": [
+        "map",
+        "robot"
+      ],
+      "label": "OWN MAP",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "pattern",
+      "text": "and it keeps checking, it sprays, looks at the pass and adjusts.",
+      "emphasis": "adjusts",
+      "visual": "icon_orbit",
+      "subjects": [
+        "spray gun",
+        "eye"
+      ],
+      "label": "FEEDBACK LOOP",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "cost",
+      "text": "But it's not doing the whole job.",
+      "emphasis": "whole job",
+      "visual": "cross_out",
+      "subjects": [
+        "robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "cost",
+      "text": "People still prepare the material, clean the pump and move it into place,",
+      "emphasis": "move it into place",
+      "visual": "checklist",
+      "subjects": [
+        "person",
+        "bucket",
+        "pump"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "cost",
+      "text": "and the last ten centimetres near the edges are still done by hand.",
+      "emphasis": "ten centimetres",
+      "visual": "icon_pair",
+      "subjects": [
+        "ruler",
+        "hand"
+      ],
+      "label": "LAST 10 CM",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "reframe",
+      "text": "So this isn't a robot builder taking over,",
+      "emphasis": "taking over",
+      "visual": "cross_out",
+      "subjects": [
+        "robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "reframe",
+      "text": "it's a machine that does the big flat walls the same way every time,",
+      "emphasis": "same way every time",
+      "visual": "icon_grid",
+      "subjects": [
+        "robot",
+        "wall"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "reframe",
+      "text": "while people handle the parts that keep changing.",
+      "emphasis": "keep changing",
+      "visual": "icon_hero",
+      "subjects": [
+        "person"
+      ],
+      "label": "SHARED WORK",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "cta",
+      "text": "Follow the channel for the engineering behind robots in the real world.",
+      "emphasis": "Follow the channel",
+      "visual": "logo_end",
+      "subjects": [
+        "logo"
+      ],
+      "label": "",
+      "follow": true
+    },
+    {
+      "chapter": 0,
+      "section": "cta",
+      "text": "Would you hand this robot more of the work, or should people keep the hard edges?",
+      "emphasis": "hard edges",
+      "visual": "split_compare",
+      "subjects": [
+        "robot",
+        "person"
+      ],
+      "label": "",
+      "follow": false
+    }
+  ]
+}
