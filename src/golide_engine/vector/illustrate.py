@@ -190,10 +190,15 @@ a sound; most explainer scenes need none. "sound_word": the exact word from the
 scene's lines when the sound should play (for example "blocked"), or "" for none.
 
 COVER (the picture people see before they press play; owner direction 2026-10-07):
-- "text": a 3 to 7 word hook for the cover, the most curious way to say what the
-  video is about. Not the title word for word. Plain words, no hashtags, no emoji.
-  Example: "Meta's AI shops for you. Amazon said no."
-- "gold": the 1 to 3 words of that hook that carry the punch, copied exactly.
+- "text": THE line that sells the video (owner direction 2026-10-25). It opens the
+  video AND is printed on the thumbnail. 3 to 6 words: a claim or a sharp question
+  about THIS story that the title sets up but does not say, so title and line read
+  together make people need to click. Examples of the strength wanted: "The Robot
+  Wasn't the Story", "Five Percent Is Not Public Money", "Can Tesla's Roadster Really
+  Fly?". Never repeat the title's words, never the worn "Who ...?" shape, never open
+  the way a recent line opened (see RECENT THUMBNAIL LINES). Title Case, plain words,
+  no hashtags, no emoji.
+- "gold": the 1 to 3 words of that line that carry the punch, copied exactly.
 - "scene": the number (1 = first scene) of the scene whose drawing best stands for
   the whole video.
 - "thumbnail_moment": one sentence for the YouTube thumbnail artist (owner
@@ -207,10 +212,8 @@ COVER (the picture people see before they press play; owner direction 2026-10-07
   editing). Never a face, avatar or character; a hand only if the metaphor needs it.
   When the story is about a real, named product, the thumbnail shows THAT product
   with its real, recognisable design (the rule above), named in the sentence.
-- "thumbnail_text": ONE TO THREE words printed huge on the YouTube thumbnail (owner
-  direction 2026-10-21). A curiosity gap the title does NOT answer, never a summary
-  and never the title's words: "WHO GETS IT?", "KEYS LEAKED", "NOT FLYING", "OUTWEIGHED".
-  "thumbnail_punch": the one word of it shown in the glow colour, copied exactly.
+- "thumbnail_text" and "thumbnail_punch": copy "text" and "gold" exactly (the
+  thumbnail carries the same line as the opening card).
 - "colors": two or three accent colours for the cover and thumbnail, chosen by
   meaning from gold, rose, teal, ivory and copper (owner direction 2026-10-18:
   not always gold; 2026-10-20: not always teal either). The first is the glow of

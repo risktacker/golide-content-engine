@@ -260,18 +260,53 @@ class ProductionService:
 
     @staticmethod
     def _stamp_thumbnail(work: Path, thumbnail: Path) -> None:
-        """Typeset 1 to 3 huge curiosity words on the left (2026-10-21)."""
+        """Typeset the opening card's line large on the left (2026-10-21, 2026-10-25)."""
         try:
             from ..vector.thumb_text import stamp_thumbnail
             from ..vector.thumbnail_style import palette_rgb, thumbnail_colors
             plan = json.loads((work / "visual-plan.json").read_text(encoding="utf-8"))
             cover = plan.get("cover") or {}
             colors = thumbnail_colors(cover, plan.get("scenes") or [])
-            words = str(cover.get("thumbnail_text") or cover.get("gold") or cover.get("text", ""))
-            punch = str(cover.get("thumbnail_punch") or cover.get("gold") or "")
+            # 2026-10-25: the thumbnail carries the opening card's line, not 1 to 3 words.
+            words = str(cover.get("text") or cover.get("thumbnail_text") or "")
+            punch = str(cover.get("gold") or cover.get("thumbnail_punch") or "")
             stamp_thumbnail(thumbnail, words, punch, palette_rgb(colors))
         except Exception as exc:  # the plain artwork still works as a thumbnail
             print(json.dumps({"status": "thumbnail_text_skipped", "error": str(exc)[:300]}))
+
+    def _sharpen_cover_line(self, spec, production_id: str, text, text_model: str, cover: dict,
+                            recent: list[dict]) -> dict:
+        """The opening-card line is also the thumbnail (2026-10-25): one cheap fix when it
+        repeats the title, uses the worn "Who ...?" shape or opens like a recent line."""
+        from ..vector.cover import clean_cover_text
+        from ..vector.cover_line import line_problems, record_line
+        title = str(spec.get("title", ""))
+        topic = str((spec.get("source_breakout") or {}).get("url") or spec.get("selected_topic_source") or "")
+        problems = line_problems(str(cover.get("text", "")), title, recent, topic)
+        if problems:
+            schema = {"type": "object", "additionalProperties": False,
+                      "properties": {"text": {"type": "string"}, "gold": {"type": "string"}},
+                      "required": ["text", "gold"]}
+            try:
+                self._reserve(spec, text_model, Usage(input_tokens=1500, output_tokens=1500))
+                fixed = text.generate_json(
+                    "Rewrite the line that opens a GOLIDE video and is printed on its thumbnail. 3 to 6 "
+                    "words, Title Case: a claim or a sharp question about this story that the title sets up "
+                    "but does not say. Never repeat the title's words, never start with \"Who\", never open "
+                    "like a recent line. \"gold\" is the 1 to 3 punch words copied exactly from the line.",
+                    f"TITLE: {title}\nBRIEF: {str(spec.get('brief', ''))[:800]}\nLINE: {cover.get('text', '')}\n"
+                    f"PROBLEMS: {'; '.join(problems)}\nRECENT LINES: "
+                    + "; ".join(r.get("text", "") for r in recent),
+                    schema, max_output_tokens=1500)
+                self._record_text(production_id, "cover-line", fixed)
+                new_text, new_gold = clean_cover_text(str(fixed.value.get("text", "")), str(fixed.value.get("gold", "")))
+                if new_text and len(line_problems(new_text, title, recent, topic)) < len(problems):
+                    cover["text"], cover["gold"] = new_text, new_gold
+            except Exception as exc:  # the first line still stands
+                print(json.dumps({"status": "cover_line_fix_failed", "error": str(exc)[:200]}))
+        cover["thumbnail_text"], cover["thumbnail_punch"] = cover.get("text", ""), cover.get("gold", "")
+        record_line(self.root, production_id, str(spec.get("format", "")), title, str(cover.get("text", "")), topic)
+        return cover
 
     @staticmethod
     def _thumbnail_moment(work: Path) -> str:
@@ -1007,9 +1042,11 @@ class ProductionService:
                 # research, the trending video it models, and one web search for the look of
                 # any named product (a brand-new robot is otherwise drawn as a generic one).
                 facts = self._storyboard_facts(spec, work)
+                from ..vector.cover_line import recent_block, recent_lines
+                recent = recent_lines(self.root, production_id)
                 output = text.generate_json(
                     scene_plan_instructions(str(spec["format"]), narration_seconds),
-                    f"TITLE={spec.get('title', '')}\n{facts}LINES\n{numbered}",
+                    f"TITLE={spec.get('title', '')}\n{facts}{recent_block(recent)}LINES\n{numbered}",
                     VISUAL_PLAN_SCHEMA,
                     max_output_tokens=10000,
                     web_search=True,
@@ -1032,6 +1069,7 @@ class ProductionService:
                                            if sc["first_line"] <= line <= sc["last_line"]), "")
                 from ..vector.cover import clean_cover_text
                 cover["text"], cover["gold"] = clean_cover_text(str(cover.get("text", "")), str(cover.get("gold", "")))
+                cover = self._sharpen_cover_line(spec, production_id, text, text_model, cover, recent)
                 visual_plan_path.write_text(json.dumps({"scenes": scenes, "cover": cover}, indent=2) + "\n",
                                             encoding="utf-8")
                 self._record_text(production_id, "visual-plan", output)

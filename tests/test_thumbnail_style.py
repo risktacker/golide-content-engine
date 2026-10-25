@@ -31,9 +31,11 @@ class ThumbnailStyleTests(unittest.TestCase):
         assert colors[0] == "rose" and "teal" in colors
         assert "warm soft gold" in thumbnail_prompt("t", "a scale", ["gold"])
 
-    def test_one_to_three_words_with_a_punch(self):
-        self.assertEqual([("WHO", False), ("GETS", False), ("IT?", True)], thumbnail_words("Who gets it?", "it?"))
-        self.assertEqual(3, len(thumbnail_words("one two three four five", "")))
+    def test_the_opening_card_line_with_a_punch(self):
+        # 2026-10-25: the thumbnail carries the opening card's full line, as written.
+        self.assertEqual([("The", False), ("Robot", True), ("Wasn't", False), ("the", False), ("Story", False)],
+                         thumbnail_words("The Robot Wasn't the Story", "Robot"))
+        self.assertEqual(7, len(thumbnail_words("one two three four five six seven eight", "")))
         self.assertTrue(thumbnail_words("Keys leaked", "")[-1][1])
 
     def test_words_sit_left_and_never_in_the_duration_corner(self):
@@ -42,10 +44,10 @@ class ThumbnailStyleTests(unittest.TestCase):
         self.addCleanup(tmp.cleanup)
         p = Path(tmp.name) / "t.png"
         Image.new("RGB", (1536, 1024), (10, 10, 12)).save(p)
-        stamp_thumbnail(p, "Who gets it?", "it?", [(240, 138, 128)])
+        stamp_thumbnail(p, "Five Percent Is Not Public Money", "Not Public Money", [(240, 138, 128)])
         img = np.asarray(Image.open(p).convert("RGB")).astype(int)
         bright = np.argwhere(img.max(axis=2) > 120)
-        assert len(bright) and bright[:, 1].max() < 1536 * 0.46          # left side only
+        assert len(bright) and bright[:, 1].max() < 1536 * 0.49          # left side only
         assert not ((bright[:, 0] > 1024 * 0.82) & (bright[:, 1] > 1536 * 0.7)).any()
         rose = (np.abs(img - np.array((240, 138, 128))).sum(axis=2) < 60).sum()
         assert rose > 2000                                                # punch in the glow colour
