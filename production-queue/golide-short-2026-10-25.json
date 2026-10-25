@@ -229,5 +229,6 @@
     "measured_at": "2026-10-25T07:02:54.490035+00:00",
     "signal_type": "youtube-breakout-v1"
   },
-  "selected_topic_source": "https://www.pacerobotics.net/centa-painter"
+  "selected_topic_source": "https://www.pacerobotics.net/centa-painter",
+  "owner_voice_media_ref": "r2://temp/2026/10/25/ae0dbdcf870541eaaa3b252e2a1afab3-Centa-penta-enhanced-v2.wav"
 }
