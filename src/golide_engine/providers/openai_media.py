@@ -206,8 +206,21 @@ class OpenAILineArtProvider:
         self.model = model
         self.quality = quality
 
-    def create(self, prompt: str, output: Path, size: str) -> ProviderOutput:
-        response = client().images.generate(model=self.model, prompt=prompt, size=size, quality=self.quality)
+    STRUCTURE_RULE = (" REFERENCE IMAGE: it shows the real product. Copy ONLY its structure: the "
+                      "silhouette, proportions, number of legs, wheels or arms, and its distinctive "
+                      "parts, so the drawing is unmistakably THIS product. Ignore its colours, lighting, "
+                      "materials, background, people, text and logos; draw it entirely in the line-art "
+                      "style above.")
+
+    def create(self, prompt: str, output: Path, size: str, reference: Path | None = None) -> ProviderOutput:
+        """reference (2026-10-25): a picture of the real product, used for its shape only."""
+        if reference is not None and Path(reference).is_file():
+            with Path(reference).open("rb") as handle:
+                response = client().images.edit(model=self.model, image=[handle],
+                                                prompt=prompt + self.STRUCTURE_RULE, size=size,
+                                                quality=self.quality)
+        else:
+            response = client().images.generate(model=self.model, prompt=prompt, size=size, quality=self.quality)
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_bytes(base64.b64decode(response.data[0].b64_json))
         return ProviderOutput(output, getattr(response, "id", None))

@@ -36,3 +36,17 @@ class ThumbnailV2Tests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ProductStructureTests(unittest.TestCase):
+    """2026-10-25: scene drawings of the video's real product follow a picture of it."""
+
+    def test_storyboard_names_the_product(self):
+        from golide_engine.vector.illustrate import VISUAL_PLAN_SCHEMA, scene_plan_instructions
+        self.assertIn("product_name", VISUAL_PLAN_SCHEMA["properties"]["cover"]["required"])
+        self.assertIn("product_name", scene_plan_instructions("short", 60.0))
+
+    def test_line_art_copies_structure_not_colour(self):
+        from golide_engine.providers.openai_media import OpenAILineArtProvider
+        self.assertIn("Copy ONLY its structure", OpenAILineArtProvider.STRUCTURE_RULE)
+        self.assertIn("Ignore its colours", OpenAILineArtProvider.STRUCTURE_RULE)

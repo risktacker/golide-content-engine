@@ -223,7 +223,7 @@ class ProductionService:
         return [c for c in candidates if not title_tweak_problem(c["breakout"]["title"], c["model_title"])]
 
     def _redraw_if_unclear(self, spec, part, prompt: str, target: Path, line_art, cost_model: str,
-                           production_id: str) -> None:
+                           production_id: str, reference: Path | None = None) -> None:
         """2026-10-21: a picture that would read as an undefined block (all glow, empty, a
         tangle) is drawn once more with the problem named; the better of the two is kept.
         At most MAX_REDRAWS per video (owner: "cap it 2 per video"), counted on disk so a
@@ -248,7 +248,8 @@ class ProductionService:
             self._reserve(spec, cost_model, Usage(images=1), stage="illustrations")
             counter.write_text(str(used + 1), encoding="utf-8")  # counted before the paid call
             output = line_art.create(prompt + " FIX THESE: " + "; ".join(problems) + ".", retry,
-                                     picture_size(str(spec["format"]), part))
+                                     picture_size(str(spec["format"]), part),
+                                     **({"reference": reference} if reference else {}))
             self._record_image(production_id, "illustrations", cost_model, output)
             if len(picture_problems(vectorize(retry))) <= len(problems):
                 retry.replace(target)
@@ -1092,6 +1093,19 @@ class ProductionService:
             def illustrations_stage():
                 from ..providers.openai_media import is_moderation_block
                 from ..vector.scene_art import calm_prompt, fill_from_neighbours
+                from ..vector.thumbnail_v2 import fetch_reference
+                # 2026-10-25: scenes that draw the video's real product get a picture of it
+                # (the modelled video's thumbnail) for its structure, so a Tesla Roadster or a
+                # Centa Painter is drawn as itself, never as a generic car or robot.
+                product = str((visual_plan.get("cover") or {}).get("product_name") or "").strip()
+                product_ref = None
+                if product:
+                    product_ref = fetch_reference(str((spec.get("source_breakout") or {}).get("url") or ""),
+                                                  work / "product-reference.jpg")
+                print(json.dumps({"status": "product_reference", "product": product, "used": product_ref is not None}))
+
+                def reference_for(part):
+                    return product_ref if product_ref and product.lower() in str(part.drawing).lower() else None
 
                 ordered: list[Path] = []
                 refused: set[Path] = set()
@@ -1108,7 +1122,9 @@ class ProductionService:
                         for attempt in (prompt, calm_prompt(prompt, part)):
                             self._reserve(spec, support_image_cost_model, Usage(images=1), stage="illustrations")
                             try:
-                                output = line_art.create(attempt, target, picture_size(str(spec["format"]), part))
+                                ref = reference_for(part)
+                                output = line_art.create(attempt, target, picture_size(str(spec["format"]), part),
+                                                         **({"reference": ref} if ref else {}))
                             except Exception as exc:
                                 if not is_moderation_block(exc):
                                     raise
@@ -1116,7 +1132,7 @@ class ProductionService:
                                 continue
                             self._record_image(production_id, "illustrations", support_image_cost_model, output)
                             self._redraw_if_unclear(spec, part, attempt, target, line_art, support_image_cost_model,
-                                                    production_id)
+                                                    production_id, reference_for(part))
                             break
                         else:
                             refused.add(target)

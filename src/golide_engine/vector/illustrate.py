@@ -60,9 +60,10 @@ VISUAL_PLAN_SCHEMA: dict = {
                 "colors": {"type": "array", "items": {"type": "string", "enum": list(ACCENTS)}},
                 "thumbnail_text": {"type": "string"},
                 "thumbnail_punch": {"type": "string"},
+                "product_name": {"type": "string"},
             },
             "required": ["text", "gold", "scene", "thumbnail_moment", "colors", "thumbnail_text",
-                         "thumbnail_punch"],
+                         "thumbnail_punch", "product_name"],
         },
         "scenes": {
             "type": "array",
@@ -216,6 +217,11 @@ COVER (the picture people see before they press play; owner direction 2026-10-07
   robot; the engine hands the image model a picture of the real product instead).
 - "thumbnail_text" and "thumbnail_punch": copy "text" and "gold" exactly (the
   thumbnail carries the same line as the opening card).
+- "product_name": the ONE real, physical product the video is about, exactly as
+  named in the lines ("Centa Painter", "Tesla Roadster", "Microduck"), or "" when
+  the subject is not a tangible thing (an AI model, an app, a law). Every drawing
+  of that product names it with exactly these words (owner direction 2026-10-25:
+  its scenes are drawn from a picture of the real product).
 - "colors": two or three accent colours for the cover and thumbnail, chosen by
   meaning from gold, rose, teal, ivory and copper (owner direction 2026-10-18:
   not always gold; 2026-10-20: not always teal either). The first is the glow of
