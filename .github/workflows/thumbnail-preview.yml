@@ -1,0 +1,69 @@
+# One-off (owner request 2026-10-25): preview thumbnails drawn from the real product.
+# Removed with tools/thumbnail_preview.py once the owner approves the look.
+name: Thumbnail preview (one-off)
+
+on:
+  workflow_dispatch:
+    inputs:
+      items:
+        description: "Items: 'production id|source url|line|punch|colour', separated by ;"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
+          timeout 480 sudo apt-get update
+          timeout 480 sudo apt-get install -y ffmpeg libcairo2-dev pkg-config fonts-dejavu-core
+          python -m pip install -e '.[production,video]'
+      - name: Make the previews
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GOLIDE_ENABLE_PAID_PRODUCTION: "1"
+          ITEMS: ${{ inputs.items }}
+        run: |
+          IFS=';' read -ra parts <<< "$ITEMS"
+          python tools/thumbnail_preview.py "${parts[@]}"
+      - name: Email them to the owner
+        env:
+          GOLIDE_SMTP_USER: ${{ secrets.GOLIDE_SMTP_USER }}
+          GOLIDE_SMTP_APP_PASSWORD: ${{ secrets.GOLIDE_SMTP_APP_PASSWORD }}
+          GOLIDE_NOTIFY_EMAIL: ${{ secrets.GOLIDE_NOTIFY_EMAIL }}
+        run: |
+          python - <<'PY'
+          import json, os, smtplib
+          from email.message import EmailMessage
+          from pathlib import Path
+          made = json.loads(Path("thumbnail-preview/made.json").read_text())
+          user = os.environ["GOLIDE_SMTP_USER"]
+          msg = EmailMessage()
+          msg["Subject"] = "Thumbnail preview (real product): " + ", ".join(m["line"] for m in made)
+          msg["From"], msg["To"] = user, os.environ.get("GOLIDE_NOTIFY_EMAIL") or user
+          msg.set_content("\n".join(f'{m["line"]} -> {m["file"]} (reference used: {m["reference"]})' for m in made))
+          for m in made:
+              msg.add_attachment(Path("thumbnail-preview", m["file"]).read_bytes(), maintype="image", subtype="jpeg", filename=m["file"])
+          with smtplib.SMTP_SSL("smtp.gmail.com", 465) as s:
+              s.login(user, os.environ["GOLIDE_SMTP_APP_PASSWORD"]); s.send_message(msg)
+          PY
+      - name: Put them where the engine commits its state
+        run: |
+          set -euxo pipefail
+          mkdir -p production-queue/preview
+          cp thumbnail-preview/*.jpg thumbnail-preview/made.json production-queue/preview/
+          git config user.name "golide-production-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add production-queue/preview
+          git commit -m "ops: thumbnail preview (temporary)"
+          for i in 1 2 3 4 5; do git push && exit 0; git pull --rebase; sleep $((i*5)); done
+          exit 1
