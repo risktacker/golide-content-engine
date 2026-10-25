@@ -210,8 +210,10 @@ COVER (the picture people see before they press play; owner direction 2026-10-07
   record); "a glass padlock with a crack running through its glowing keyhole" (an
   attack path); "a film reel whose single glowing frame unspools" (AI in video
   editing). Never a face, avatar or character; a hand only if the metaphor needs it.
-  When the story is about a real, named product, the thumbnail shows THAT product
-  with its real, recognisable design (the rule above), named in the sentence.
+  When the story is about a real, named product, the thumbnail shows THAT product:
+  name it and its glowing part only, never describe its shape, legs, wheels or
+  colours (2026-10-25: a guessed description drew a four-legged dog for a two-legged
+  robot; the engine hands the image model a picture of the real product instead).
 - "thumbnail_text" and "thumbnail_punch": copy "text" and "gold" exactly (the
   thumbnail carries the same line as the opening card).
 - "colors": two or three accent colours for the cover and thumbnail, chosen by

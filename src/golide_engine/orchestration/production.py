@@ -260,10 +260,10 @@ class ProductionService:
 
     @staticmethod
     def _stamp_thumbnail(work: Path, thumbnail: Path) -> None:
-        """Typeset the opening card's line large on the left (2026-10-21, 2026-10-25)."""
+        """Typeset the opening card's line on the dark left, ending before the art (2026-10-25)."""
         try:
-            from ..vector.thumb_text import stamp_thumbnail
             from ..vector.thumbnail_style import palette_rgb, thumbnail_colors
+            from ..vector.thumbnail_v2 import stamp_overlap as stamp_thumbnail
             plan = json.loads((work / "visual-plan.json").read_text(encoding="utf-8"))
             cover = plan.get("cover") or {}
             colors = thumbnail_colors(cover, plan.get("scenes") or [])
@@ -1748,19 +1748,26 @@ class ProductionService:
             from ..providers.openai_media import SAFE_RETRY, is_moderation_block
 
             from ..vector.thumbnail_style import thumbnail_colors, thumbnail_prompt
+            from ..vector.thumbnail_v2 import fetch_reference, thumbnail_prompt_v2
             try:
                 plan_json = json.loads((work / "visual-plan.json").read_text(encoding="utf-8"))
             except (OSError, ValueError):
                 plan_json = {}
             colors = thumbnail_colors(plan_json.get("cover") or {}, plan_json.get("scenes") or [])
             # 2026-10-18: the static-post look, glowing in two or three meaning colours.
-            prompt = thumbnail_prompt(metadata["title"], self._thumbnail_moment(work), colors)
+            # 2026-10-25: the modelled video's thumbnail shows the real product; the image
+            # model draws THAT product in our style instead of guessing a brand-new one.
+            source_url = str((spec.get("source_breakout") or {}).get("url") or "")
+            reference = fetch_reference(source_url, work / "thumbnail-reference.jpg")
+            prompt = thumbnail_prompt_v2(metadata["title"], self._thumbnail_moment(work), colors, reference is not None)
+            print(json.dumps({"status": "thumbnail_reference", "used": reference is not None, "source": source_url}))
             output = None
-            for attempt in (prompt, thumbnail_prompt(metadata["title"], "one simple glowing symbol of the topic", colors)
-                            + SAFE_RETRY):
+            for attempt, refs in ((prompt, [reference] if reference else None),
+                                  (thumbnail_prompt(metadata["title"], "one simple glowing symbol of the topic", colors)
+                                   + SAFE_RETRY, None)):
                 try:
                     output = thumbnail_provider.create_thumbnail(attempt, raw_thumbnail,
-                                                                 self.providers.config["thumbnail"]["size"], None)
+                                                                 self.providers.config["thumbnail"]["size"], refs)
                     break
                 except Exception as exc:
                     if not is_moderation_block(exc):

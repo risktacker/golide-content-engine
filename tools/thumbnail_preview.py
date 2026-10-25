@@ -24,8 +24,8 @@ OUT = ROOT / "thumbnail-preview"
 SCHEMA = {"type": "object", "additionalProperties": False,
           "properties": {"moment": {"type": "string"}}, "required": ["moment"]}
 RULES = ("Name the ONE hero subject for a YouTube thumbnail in one sentence: the real, named product "
-         "the video is about, described by its real look (shape, legs or wheels, distinctive parts), "
-         "and the ONE part of it that glows. It must fit the thumbnail line printed beside it.")
+         "the video is about, by name only (a reference image shows its real look, so never describe "
+         "its shape, legs, wheels or colours), and the ONE part of it that glows.")
 
 
 def make(arg: str, providers: ProviderRegistry) -> dict:
@@ -49,6 +49,8 @@ def make(arg: str, providers: ProviderRegistry) -> dict:
             if not is_moderation_block(exc):
                 raise
     normalize_thumbnail(raw, final)
+    import shutil
+    shutil.copy(final, OUT / f"{production_id}-art.jpg")   # the art without words, for re-layout
     stamp_overlap(final, line, punch, palette_rgb(colors))
     raw.unlink(missing_ok=True)
     return {"production_id": production_id, "youtube_video_id": record["youtube_video_id"],

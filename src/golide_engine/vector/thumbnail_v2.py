@@ -67,39 +67,52 @@ def thumbnail_prompt_v2(title: str, moment: str, colors: list[str], has_referenc
         "background (#0B0B0E) with a very faint, sparse starfield. "
         f"ONE hero subject: {subject}. " + reference +
         "Render it as a cinematic, softly lit real object with fine luminous edge lines (real, but in "
-        "a calm night style, not a cartoon), large and slightly angled toward the camera, occupying the "
-        "right 60 percent of the frame and reaching toward the centre, crisp at phone size. "
+        "a calm night style, not a cartoon), large and slightly angled toward the camera, filling the right "
+        "55 percent of the frame top to bottom, crisp at phone size. "
         "Draw its mechanisms as they really look (compressed-air nozzles or fans, not rocket flames). "
         f"Exactly ONE key part glows {glow} with a neon-like inner light; a soft {glow} halo fades "
         f"behind it, a subtle {rim} rim light traces its edges, a faint pool of light beneath it. "
-        "The left third of the frame stays dark and calm (the subject's shadowed edge may reach into "
-        "it) because big words will be set there over the image. One subject only, no clutter. "
+        "The left 42 percent of the frame stays completely dark and empty: big words go there and "
+        "nothing of the subject may reach into it. One subject only, no clutter. "
         "No faces, no people, no avatars, no characters. "
         "ABSOLUTELY NO text, letters, words, numbers, logos, watermarks, user-interface elements or "
         f"borders anywhere in the image. Video title for context only: {title}"
     )
 
 
+def art_left_edge(image: Image.Image, top: float = 0.12, bottom: float = 0.88) -> float:
+    """Share of the width where the subject begins (2026-10-25: "text is overlapping and
+    hiding the art"): the first column, from the left, with real bright detail."""
+    import numpy as np
+    gray = np.asarray(image.convert("L"), np.float32)
+    h, w = gray.shape
+    band = gray[int(h * top):int(h * bottom)]
+    lit = (band > 70).sum(axis=0) > band.shape[0] * 0.02
+    cols = np.nonzero(lit[int(w * 0.25):])[0]
+    return (cols[0] + int(w * 0.25)) / w if len(cols) else 0.6
+
+
 def stamp_overlap(path: Path, text: str, punch: str = "", palette: list | None = None) -> None:
-    """Set the line large over the dark left edge of the art, with a soft shadow so it reads
-    even where it crosses the subject (words and picture as one design)."""
+    """Set the line large on the dark left, sized so it ends before the art begins, with a
+    soft shadow and glow so words and picture read as one design without hiding it."""
     pairs = thumbnail_words(text, punch)
     if not pairs:
         return
     accent = tuple((palette or [GOLD])[0])
     image = Image.open(path).convert("RGB")
     w, h = image.size
-    # A soft dark fall-off from the left, gentler than a block, so the art shows through.
+    edge = max(0.34, min(0.56, art_left_edge(image)))
     shade = Image.new("L", (w, h), 0)
     ds = ImageDraw.Draw(shade)
-    for x in range(int(w * 0.55)):
-        ds.line([(x, 0), (x, h)], fill=int(150 * (1 - x / (w * 0.55)) ** 1.6))
+    for x in range(int(w * edge)):
+        ds.line([(x, 0), (x, h)], fill=int(150 * (1 - x / (w * edge)) ** 1.6))
     image = Image.composite(Image.new("RGB", (w, h), (6, 6, 9)), image, shade)
 
     font_path = str(load_theme().font("bold"))
     probe = ImageDraw.Draw(image)
-    max_w = w * 0.52
-    size = int(h * 0.27)
+    left = w * 0.055
+    max_w = w * edge - left - w * 0.035      # a clear gap before the art
+    size = int(h * 0.25)
     while True:
         font = ImageFont.truetype(font_path, size)
         lines: list[list[tuple[str, bool]]] = [[]]
@@ -110,7 +123,7 @@ def stamp_overlap(path: Path, text: str, punch: str = "", palette: list | None =
             else:
                 lines[-1].append(pair)
         widest = max(probe.textlength(" ".join(word for word, _ in line), font=font) for line in lines)
-        if (len(lines) <= 3 and widest <= max_w and len(lines) * size * 1.06 <= h * 0.74) or size <= h * 0.08:
+        if (len(lines) <= 3 and widest <= max_w and len(lines) * size * 1.06 <= h * 0.74) or size <= h * 0.07:
             break
         size -= 3
 
@@ -121,11 +134,11 @@ def stamp_overlap(path: Path, text: str, punch: str = "", palette: list | None =
     space = dw.textlength(" ", font=font)
     y = (h - len(lines) * size * 1.06) / 2 - h * 0.02
     for line in lines:
-        x = w * 0.055
+        x = left
         for word, bold in line:
             color = accent if bold else WHITE
-            dsh.text((x + size * 0.03, y + size * 0.05), word, font=font, fill=(0, 0, 0, 235),
-                     stroke_width=max(4, size // 14), stroke_fill=(0, 0, 0, 235))
+            dsh.text((x + size * 0.03, y + size * 0.05), word, font=font, fill=(0, 0, 0, 220),
+                     stroke_width=max(4, size // 14), stroke_fill=(0, 0, 0, 220))
             if bold:
                 dg.text((x, y), word, font=font, fill=accent + (210,))
             dw.text((x, y), word, font=font, fill=color + (255,))
