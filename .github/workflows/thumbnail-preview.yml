@@ -35,17 +35,35 @@ jobs:
         run: |
           IFS=';' read -ra parts <<< "$ITEMS"
           python tools/thumbnail_preview.py "${parts[@]}"
-      - name: Put them on main through the contents API
+      - name: Email them to the owner
         env:
-          GH_TOKEN: ${{ github.token }}
+          GOLIDE_SMTP_USER: ${{ secrets.GOLIDE_SMTP_USER }}
+          GOLIDE_SMTP_APP_PASSWORD: ${{ secrets.GOLIDE_SMTP_APP_PASSWORD }}
+          GOLIDE_NOTIFY_EMAIL: ${{ secrets.GOLIDE_NOTIFY_EMAIL }}
         run: |
-          set -euo pipefail
-          for f in thumbnail-preview/*.jpg thumbnail-preview/made.json; do
-            name=$(basename "$f")
-            sha=$(gh api "repos/${GITHUB_REPOSITORY}/contents/thumbnail-preview/${name}" -q .sha 2>/dev/null || true)
-            args=(-X PUT "repos/${GITHUB_REPOSITORY}/contents/thumbnail-preview/${name}"
-                  -f message="Thumbnail preview ${name} (temporary)" -f content="$(base64 -w0 "$f")")
-            [ -n "$sha" ] && args+=(-f sha="$sha")
-            gh api "${args[@]}" > /dev/null
-            echo "put ${name}"
-          done
+          python - <<'PY'
+          import json, os, smtplib
+          from email.message import EmailMessage
+          from pathlib import Path
+          made = json.loads(Path("thumbnail-preview/made.json").read_text())
+          user = os.environ["GOLIDE_SMTP_USER"]
+          msg = EmailMessage()
+          msg["Subject"] = "Thumbnail preview (real product): " + ", ".join(m["line"] for m in made)
+          msg["From"], msg["To"] = user, os.environ.get("GOLIDE_NOTIFY_EMAIL") or user
+          msg.set_content("\n".join(f'{m["line"]} -> {m["file"]} (reference used: {m["reference"]})' for m in made))
+          for m in made:
+              msg.add_attachment(Path("thumbnail-preview", m["file"]).read_bytes(), maintype="image", subtype="jpeg", filename=m["file"])
+          with smtplib.SMTP_SSL("smtp.gmail.com", 465) as s:
+              s.login(user, os.environ["GOLIDE_SMTP_APP_PASSWORD"]); s.send_message(msg)
+          PY
+      - name: Put them where the engine commits its state
+        run: |
+          set -euxo pipefail
+          mkdir -p production-queue/preview
+          cp thumbnail-preview/*.jpg thumbnail-preview/made.json production-queue/preview/
+          git config user.name "golide-production-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add production-queue/preview
+          git commit -m "ops: thumbnail preview (temporary)"
+          for i in 1 2 3 4 5; do git push && exit 0; git pull --rebase; sleep $((i*5)); done
+          exit 1
