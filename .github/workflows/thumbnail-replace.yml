@@ -1,0 +1,45 @@
+# One-off (owner request 2026-10-25): thumbnails carrying the opening-card line for two
+# published long videos. The images are committed to main under thumbnail-refresh/ and
+# removed again (with this workflow and tools/thumbnail_replace.py) once delivered.
+name: Thumbnail replace (one-off)
+
+on:
+  workflow_dispatch:
+    inputs:
+      items:
+        description: "Items: 'production id|line|punch|colour', separated by ;"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  replace:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
+          timeout 480 sudo apt-get update
+          timeout 480 sudo apt-get install -y ffmpeg libcairo2-dev pkg-config fonts-dejavu-core
+          python -m pip install -e '.[production,video]'
+      - name: Make the thumbnails
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GOLIDE_ENABLE_PAID_PRODUCTION: "1"
+          ITEMS: ${{ inputs.items }}
+        run: |
+          IFS=';' read -ra parts <<< "$ITEMS"
+          python tools/thumbnail_replace.py "${parts[@]}"
+      - name: Hand them over on main
+        run: |
+          git config user.name "golide-engine"
+          git config user.email "engine@golidee.com"
+          git add thumbnail-refresh
+          git commit -m "Thumbnail replacements (temporary, removed once delivered)"
+          for i in 1 2 3 4 5; do git pull --rebase -q && git push && break; sleep $((i*5)); done
