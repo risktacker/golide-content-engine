@@ -95,9 +95,9 @@
       "trend_pulse": {
         "query": "Pace Robotics Centa Painter robot putty sanding painting India construction official",
         "fresh_videos": 0,
-        "median_views_per_hour": 0.0,
-        "top_views_per_hour": 0.0,
-        "score": 15.0,
+        "median_views_per_hour": 0,
+        "top_views_per_hour": 0,
+        "score": 15,
         "hot": false,
         "measured_at": "2026-10-25T07:02:53.298103+00:00"
       }
@@ -132,7 +132,7 @@
         "views": 1874875,
         "views_per_hour": 44651.2,
         "breakout": 4.4,
-        "hours_old": 42.0,
+        "hours_old": 42,
         "duration_seconds": 37,
         "format": "short",
         "found_by": "search Unboxing",
@@ -144,9 +144,9 @@
       "trend_pulse": {
         "query": "Apple iPhone Duo precision hinge foldable display official specifications October 2026",
         "fresh_videos": 0,
-        "median_views_per_hour": 0.0,
-        "top_views_per_hour": 0.0,
-        "score": 15.0,
+        "median_views_per_hour": 0,
+        "top_views_per_hour": 0,
+        "score": 15,
         "hot": false,
         "measured_at": "2026-10-25T07:02:53.496311+00:00"
       }
@@ -164,13 +164,13 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "Neuralink Blindsight FDA Breakthrough Device designation visual cortex stimulation official",
-        "score": 85.0,
+        "score": 85,
         "verdict": "pass",
         "recent_videos": 53,
         "median_views_per_day": 495726.56,
         "top_views_per_day": 7177664.22,
         "market_coverage": 4,
-        "title_query_overlap": 0.0,
+        "title_query_overlap": 0,
         "measured_at": "2026-10-25T07:02:51.066783+00:00",
         "signal_type": "youtube-most-popular-seed-proxy"
       },
@@ -187,15 +187,15 @@
         "found_by": "search Neuralink",
         "description": "Elon Musk v\u00e0 Neuralink \u0111ang m\u1edf ra m\u1ed9t h\u01b0\u1edbng \u0111i m\u1edbi cho t\u01b0\u01a1ng lai c\u00f4ng ngh\u1ec7 v\u1edbi chip n\u00e3o Blindsight \u2013 thi\u1ebft b\u1ecb \u0111\u01b0\u1ee3c ph\u00e1t tri\u1ec3n nh\u1eb1m kh\u00f4i ph\u1ee5c th\u1ecb gi\u00e1c cho ng\u01b0\u1eddi m\u00f9. Li\u1ec7u tr\u00ed tu\u1ec7 nh\u00e2n t\u1ea1o (AI) c\u00f3 th\u1ec3 gi\u00fap con ng\u01b0\u1eddi nh\u00ecn th\u1ea5y th\u00f4ng qua n\u00e3o b\u1ed9, ngay c\u1ea3 khi m\u1eaft v\u00e0 d\u00e2y th\u1ea7n kinh th\u1ecb gi\u00e1c kh\u00f4ng c\u00f2n \u0111\u1ea3m nhi",
         "url": "https://www.youtube.com/watch?v=nJxvcPGTm7I",
-        "score": 70.0
+        "score": 70
       },
       "title_changes": 1,
       "trend_pulse": {
         "query": "Neuralink Blindsight FDA Breakthrough Device designation visual cortex stimulation official",
         "fresh_videos": 0,
-        "median_views_per_hour": 0.0,
-        "top_views_per_hour": 0.0,
-        "score": 15.0,
+        "median_views_per_hour": 0,
+        "top_views_per_hour": 0,
+        "score": 15,
         "hot": false,
         "measured_at": "2026-10-25T07:02:53.699303+00:00"
       }
@@ -222,10 +222,10 @@
     "score": 78.2,
     "verdict": "pass",
     "recent_videos": 1,
-    "median_views_per_day": 679884.0,
-    "top_views_per_day": 679884.0,
+    "median_views_per_day": 679884,
+    "top_views_per_day": 679884,
     "market_coverage": 1,
-    "title_query_overlap": 1.0,
+    "title_query_overlap": 1,
     "measured_at": "2026-10-25T07:02:54.490035+00:00",
     "signal_type": "youtube-breakout-v1"
   },

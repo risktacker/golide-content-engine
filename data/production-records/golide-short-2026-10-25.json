@@ -1,0 +1,686 @@
+{
+  "production_id": "golide-short-2026-10-25",
+  "youtube_video_id": "hrq6bLITqHA",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "hrq6bLITqHA",
+    "upload_status": "published",
+    "privacy_status": "public",
+    "scheduled_at": null,
+    "uploaded_at": "2026-10-25T20:24:17.218816+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "Indian construction has a robotics problem",
+    "status": "published",
+    "scheduled_at": "2026-10-25T11:00:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-shorts-mon-wed-fri-sun\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "A robot is painting walls in India now, and it doesn't even need a floor plan.\nFinishing a wall there is all hand work,\nputty, sanding, primer and paint, done by people.\nCenta Painter takes over the big repetitive part.\nIt rolls around carrying a spray tool,\nthen swaps to a spinning sander for walls and ceilings.\nIt finds its way with a laser that measures distance,\nand cameras that spot windows and switchboards so it works around them.\nFrom that it maps the room itself and plans how to cover every wall,\nand it keeps checking, it sprays, looks at the pass and adjusts.\nBut it's not doing the whole job.\nPeople still prepare the material, clean the pump and move it into place,\nand the last ten centimetres near the edges are still done by hand.\nSo this isn't a robot builder taking over,\nit's a machine that does the big flat walls the same way every time,\nwhile people handle the parts that keep changing.\nFollow the channel for the engineering behind robots in the real world.\nWould you hand this robot more of the work, or should people keep the hard edges?\n",
+  "research": {
+    "summary": "G$LIDE explainer draft:\n\nOn an Indian construction site, finishing a room still means repeated, physical work: applying putty, sanding, priming and spraying paint. Centa Painter is built for that narrow but important part of the job—not for general construction. It is a wheeled platform that uses interchangeable tools for interior walls and ceilings. ([pacerobotics.net](https://www.pacerobotics.net/centa-painter?utm_source=openai))\n\nThe engineering idea is modularity. One base carries different finishing systems: a spray tool for putty, primer and paint, and a separate sanding module. That lets the same machine work through several stages of the finishing process instead of being limited to one task. ([robotsinconstruction.com](https://www.robotsinconstruction.com/robots/pace-centa/?utm_source=openai))\n\nIts autonomy comes from perception and navigation. Reporting from a live-site demonstration says the robot uses LiDAR, cameras and onboard computing to build a local map, locate itself, identify openings such as windows and switchboards, and plan coverage around them. The company says it is designed to work without a pre-fed floor plan or a predefined path. ([circuitdigest.com](https://circuitdigest.com/interview/pace-robotics-autonomous-construction-robots?utm_source=openai))\n\nThat matters because a construction site is not a factory. Floors, walls, obstacles and unfinished work can change from room to room. Centa Painter is intended to adapt its route and coverage, while applying material in controlled passes. The company describes the goal as more consistent coverage, not human-like judgment on every construction decision. ([estrade.in](https://estrade.in/technology/pace-robotics-centa-painter-india-momentum/?utm_source=openai))\n\nBut the robot is not an autonomous replacement for an entire finishing crew. People still position the system, prepare and feed materials, clean pumps, supervise operations and deal with parts of the job the machine does not cover. The product material also identifies areas near edges as manual work. ([robotsinconstruction.com](https://www.robotsinconstruction.com/robots/pace-centa/?utm_source=openai))\n\nSo the more accurate story is human-machine collaboration. Painters and masons can operate or supervise the robot, while the machine handles large, repetitive surface areas. Its value depends on whether it can maintain quality on real sites—not whether it can replace every builder overnight. ([estrade.in](https://estrade.in/technology/pace-robotics-centa-painter-india-momentum/?utm_source=openai))\n\nCenta Painter is therefore best understood as a specialized construction tool: machine vision to understand the room, navigation to move through it, interchangeable tools to perform different finishing jobs, and controlled coverage to reduce variation. The future it points to is not a humanoid workforce. It is a construction crew with machines taking on more repetitive and physically demanding work.",
+    "claims": [
+      {
+        "claim": "Pace Robotics describes Centa Painter as a modular robot for painting, putty application and sanding on interior walls and ceilings.",
+        "source_title": "Centa Painter — Pace Robotics",
+        "source_url": "https://www.pacerobotics.net/centa-painter",
+        "published_or_updated": "Accessed October 25, 2026"
+      },
+      {
+        "claim": "The manufacturer’s product material lists paint, primer, fine cement putty and acrylic putty as supported materials, and describes high-pressure spraying and rotary sanding.",
+        "source_title": "Centa Painter product brochure — Pace Robotics",
+        "source_url": "https://f230ed96-e75a-45f8-9e8c-193285e3028c.filesusr.com/ugd/0eabe0_7f4622e6af5047bc899672481c543eee.pdf",
+        "published_or_updated": "Published within the previous year; accessed October 25, 2026"
+      },
+      {
+        "claim": "A live-site report says the robot uses LiDAR, cameras and onboard computing to map and localize itself, while recognizing openings and planning work around them.",
+        "source_title": "The Indian Startup Making Robots Do Construction Work — Circuit Digest",
+        "source_url": "https://circuitdigest.com/interview/pace-robotics-autonomous-construction-robots",
+        "published_or_updated": "March 24, 2026"
+      },
+      {
+        "claim": "Pace Robotics says Centa Painter does not require a pre-fed CAD model or predefined path and can identify work surfaces, obstacles and openings dynamically.",
+        "source_title": "Centa Painter’s Real-Time Sanding Intelligence — Pace Robotics",
+        "source_url": "https://www.linkedin.com/posts/pacerobotics_technology-construction-robots-activity-7498333434474352640-ek9m",
+        "published_or_updated": "Accessed October 25, 2026"
+      },
+      {
+        "claim": "The company’s product material says material preparation, pump feeding, pump cleaning and some positioning remain manual crew responsibilities.",
+        "source_title": "Centa Painter product profile — Robots in Construction",
+        "source_url": "https://www.robotsinconstruction.com/robots/pace-centa/",
+        "published_or_updated": "Accessed October 25, 2026"
+      },
+      {
+        "claim": "Pace Robotics states that the robot is intended to be operated and supervised by existing construction workers rather than specialized robotics engineers.",
+        "source_title": "Pace Robotics: Centa Painter Gains Commercial Momentum in India — PR Newswire republication",
+        "source_url": "https://estrade.in/technology/pace-robotics-centa-painter-india-momentum/",
+        "published_or_updated": "September 21, 2026"
+      },
+      {
+        "claim": "The manufacturer’s brochure specifies a maximum working height of 2.90 metres and notes that the final 10 centimetres near edges must be completed manually.",
+        "source_title": "Centa Painter product brochure — Pace Robotics",
+        "source_url": "https://f230ed96-e75a-45f8-9e8c-193285e3028c.filesusr.com/ugd/0eabe0_7f4622e6af5047bc899672481c543eee.pdf",
+        "published_or_updated": "Published within the previous year; accessed October 25, 2026"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Indian construction has a robotics problem",
+    "description": "Centa Painter is a construction robot from India that can spray paint, sand walls and ceilings, and work around windows and switchboards without being given a floor plan. It uses lasers and cameras to map the room and adjust its movements as it works.\n\nPeople still prepare materials, move the robot, clean the equipment, and finish the edges by hand. This is not a robot replacing the whole painting crew—it is a machine handling the repetitive flat-wall work.\n\n#CentaPainter #PaceRobotics #ConstructionRobotics #WallPaintingRobot #Robotics #ConstructionTech #MadeInIndia",
+    "tags": [
+      "Centa Painter",
+      "Centa Painter robot",
+      "Pace Robotics",
+      "wall painting robot",
+      "India wall painting robot",
+      "construction robot India",
+      "robot paints walls",
+      "robotic wall painting",
+      "autonomous painting robot",
+      "robotic construction",
+      "construction automation",
+      "wall sanding robot",
+      "ceiling painting robot",
+      "robot painter India",
+      "AI construction robot",
+      "laser mapping robot",
+      "robot floor plan",
+      "painting robot technology",
+      "wall finishing robot",
+      "India robotics",
+      "GOLIDE"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "keywords": [
+      "Centa Painter robot",
+      "wall painting robot",
+      "India painting robot",
+      "robot paints walls",
+      "Pace Robotics robot",
+      "construction robot India",
+      "autonomous painting robot",
+      "robotic wall painting",
+      "wall sanding robot",
+      "ceiling painting robot",
+      "AI construction robot",
+      "robot construction work",
+      "laser mapping robot",
+      "interior finishing robot",
+      "future of construction"
+    ],
+    "hashtags": [
+      "#CentaPainter",
+      "#PaceRobotics",
+      "#ConstructionRobotics",
+      "#WallPaintingRobot",
+      "#Robotics",
+      "#ConstructionTech",
+      "#MadeInIndia"
+    ],
+    "format": "short",
+    "title_description_language": "en",
+    "seo_body": "Centa Painter is a construction robot from India that can spray paint, sand walls and ceilings, and work around windows and switchboards without being given a floor plan. It uses lasers and cameras to map the room and adjust its movements as it works.\n\nPeople still prepare materials, move the robot, clean the equipment, and finish the edges by hand. This is not a robot replacing the whole painting crew—it is a machine handling the repetitive flat-wall work."
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "Pace Robotics describes Centa Painter as a modular robot for painting, putty application and sanding on interior walls and ceilings.",
+        "source_title": "Centa Painter — Pace Robotics",
+        "source_url": "https://www.pacerobotics.net/centa-painter",
+        "published_or_updated": "Accessed October 25, 2026"
+      },
+      {
+        "claim": "The manufacturer’s product material lists paint, primer, fine cement putty and acrylic putty as supported materials, and describes high-pressure spraying and rotary sanding.",
+        "source_title": "Centa Painter product brochure — Pace Robotics",
+        "source_url": "https://f230ed96-e75a-45f8-9e8c-193285e3028c.filesusr.com/ugd/0eabe0_7f4622e6af5047bc899672481c543eee.pdf",
+        "published_or_updated": "Published within the previous year; accessed October 25, 2026"
+      },
+      {
+        "claim": "A live-site report says the robot uses LiDAR, cameras and onboard computing to map and localize itself, while recognizing openings and planning work around them.",
+        "source_title": "The Indian Startup Making Robots Do Construction Work — Circuit Digest",
+        "source_url": "https://circuitdigest.com/interview/pace-robotics-autonomous-construction-robots",
+        "published_or_updated": "March 24, 2026"
+      },
+      {
+        "claim": "Pace Robotics says Centa Painter does not require a pre-fed CAD model or predefined path and can identify work surfaces, obstacles and openings dynamically.",
+        "source_title": "Centa Painter’s Real-Time Sanding Intelligence — Pace Robotics",
+        "source_url": "https://www.linkedin.com/posts/pacerobotics_technology-construction-robots-activity-7498333434474352640-ek9m",
+        "published_or_updated": "Accessed October 25, 2026"
+      },
+      {
+        "claim": "The company’s product material says material preparation, pump feeding, pump cleaning and some positioning remain manual crew responsibilities.",
+        "source_title": "Centa Painter product profile — Robots in Construction",
+        "source_url": "https://www.robotsinconstruction.com/robots/pace-centa/",
+        "published_or_updated": "Accessed October 25, 2026"
+      },
+      {
+        "claim": "Pace Robotics states that the robot is intended to be operated and supervised by existing construction workers rather than specialized robotics engineers.",
+        "source_title": "Pace Robotics: Centa Painter Gains Commercial Momentum in India — PR Newswire republication",
+        "source_url": "https://estrade.in/technology/pace-robotics-centa-painter-india-momentum/",
+        "published_or_updated": "September 21, 2026"
+      },
+      {
+        "claim": "The manufacturer’s brochure specifies a maximum working height of 2.90 metres and notes that the final 10 centimetres near edges must be completed manually.",
+        "source_title": "Centa Painter product brochure — Pace Robotics",
+        "source_url": "https://f230ed96-e75a-45f8-9e8c-193285e3028c.filesusr.com/ugd/0eabe0_7f4622e6af5047bc899672481c543eee.pdf",
+        "published_or_updated": "Published within the previous year; accessed October 25, 2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "Pace Robotics Centa Painter robot putty sanding painting India construction official",
+      "score": 78.2,
+      "verdict": "pass",
+      "recent_videos": 1,
+      "median_views_per_day": 679884,
+      "top_views_per_day": 679884,
+      "market_coverage": 1,
+      "title_query_overlap": 1,
+      "measured_at": "2026-10-25T07:02:54.490035+00:00",
+      "signal_type": "youtube-breakout-v1"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -17.04,
+      "true_peak_dbtp": -1.82,
+      "loudness_range": 2.9
+    },
+    "editorial": {
+      "beats": 18,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-10-25T20:24:11.285425+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri-sun"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-short-2026-10-25",
+    "created_at": "2026-10-25T20:24:12.767948+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-10-25T11:00:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "a9b0a45352c838de3adfdd723b6075aec821f5d61766f45153e1b9a45a1cf5ee",
+        "bytes": 19309340
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "1eb7d5ea0a109eb9f9523bc6bf2720d75f3b1e24673989415182d2b9a1f0fe95",
+        "bytes": 906936
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "bdd995517eb1af10a6c1eb7f06e470e19b71cf2e146ed0fbea82632637701b3a",
+        "bytes": 2580
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "e4a5014514967b7c501d2197b714582257f1807c5cc533f6f1072c8a6d6bbd66",
+        "bytes": 2450
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "598ba542395b492c41d61d50053fff6296bbdc302c819fad9c44ed0720218cd8",
+        "bytes": 501
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "2dfa912d2f4d192e0805846ecc3224cf18ba481f51ee7d5799538492c1d486b6",
+        "bytes": 3855
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "678140779bba2e91fcb33a95de33aea71f2cbbed4011049fbe64e353d1870954",
+        "bytes": 394
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "5df225098ad7734cefe4d81f3511576886e5e9679b1e7277a82c74450d15adbb",
+        "bytes": 277
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-titles",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 291.0,
+      "cached_input_units": 0.0,
+      "output_units": 87.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000163,
+      "created_at": "2026-10-25T07:02:53.295605+00:00"
+    },
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 26595.0,
+      "cached_input_units": 0.0,
+      "output_units": 2679.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008534,
+      "created_at": "2026-10-25T07:02:53.878255+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-25T07:02:53.880320+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 21463.0,
+      "cached_input_units": 0.0,
+      "output_units": 2011.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006706,
+      "created_at": "2026-10-25T07:03:17.752711+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-25T07:03:17.754706+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 7746.0,
+      "cached_input_units": 0.0,
+      "output_units": 4173.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006557,
+      "created_at": "2026-10-25T07:03:55.617902+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9155.0,
+      "cached_input_units": 6148.0,
+      "output_units": 3029.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004359,
+      "created_at": "2026-10-25T07:04:21.340569+00:00"
+    },
+    {
+      "stage": "script-spoken",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 3840.0,
+      "cached_input_units": 0.0,
+      "output_units": 2112.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.003302,
+      "created_at": "2026-10-25T07:05:05.493254+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9250.0,
+      "cached_input_units": 6148.0,
+      "output_units": 3114.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00448,
+      "created_at": "2026-10-25T07:05:05.499565+00:00"
+    },
+    {
+      "stage": "visual-plan-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-25T20:14:40.820458+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 19902.0,
+      "cached_input_units": 0.0,
+      "output_units": 2751.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007282,
+      "created_at": "2026-10-25T20:14:40.826072+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-25T20:14:57.204039+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-25T20:15:12.595372+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-25T20:15:27.710877+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-25T20:15:42.466988+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-25T20:15:56.642623+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-25T20:16:11.456656+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-25T20:16:25.674790+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-25T20:16:40.235140+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-25T20:16:54.588225+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-25T20:17:09.605988+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-25T20:17:24.574625+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-25T20:17:39.022041+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-25T20:17:55.940820+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-25T20:18:10.943689+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-25T20:18:24.488178+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-25T20:18:38.160936+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-25T20:18:52.009347+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-25T20:19:06.705674+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9197.0,
+      "cached_input_units": 0.0,
+      "output_units": 689.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002666,
+      "created_at": "2026-10-25T20:23:32.999972+00:00"
+    },
+    {
+      "stage": "thumbnail",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-10-25T20:24:01.102020+00:00"
+    }
+  ],
+  "recorded_at": "2026-10-25T20:24:17.223795+00:00"
+}
