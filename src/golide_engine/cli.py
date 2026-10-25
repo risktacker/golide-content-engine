@@ -602,6 +602,10 @@ def main() -> int:
             model = refreshed.get("source_breakout") or {}
             alternatives = [c["breakout"] for c in refreshed.get("topic_candidates") or []
                             if c.get("breakout") and c["breakout"].get("url") != model.get("url")]
+            pass_file = Path("productions") / spec["id"] / "spoken-pass.json"
+            spoken_pass = json.loads(pass_file.read_text(encoding="utf-8")) if pass_file.exists() else None
+            if (Path("production-queue") / f"{spec['id']}.script-plan.json").exists():
+                spoken_pass = {"status": "approved"}
             send_record_needed(
                 job_id=str(studio_job_id or spec["id"]),
                 title=str(refreshed.get("title") or exc.title),
@@ -609,6 +613,7 @@ def main() -> int:
                 script=exc.script,
                 model=model,
                 alternatives=list({a.get("url"): a for a in alternatives}.values()),
+                spoken_pass=spoken_pass,
             )
             print(json.dumps({
                 "status": "waiting_owner_voice",

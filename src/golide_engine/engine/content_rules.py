@@ -909,9 +909,26 @@ def spoken_pass_instructions(format_name: str) -> str:
         "comments, likes or links), and the last line is still the two-sided question.\n"
         "- No colons, no dashes, numbers written as spoken. \"emphasis\" is one or two words "
         "copied exactly from that line's text.\n\n"
+        + voice_pairs()
         + owner_voice()
         + "\nReturn JSON: {\"lines\": [{\"text\", \"emphasis\"}, ...]} with one entry per draft line."
     )
+
+
+VOICE_PAIRS_FILE = Path(__file__).resolve().parents[3] / "config" / "voice-pairs.txt"
+SPOKEN_PASS_EFFORT = "high"  # 2026-10-25: at medium the pass came back too timid to change anything
+
+
+def voice_pairs() -> str:
+    """Engine drafts next to the owner's versions (2026-10-25): showing what changes teaches
+    the spoken pass more than any rule ("telling a model 'sound human' doesn't work")."""
+    try:
+        pairs = VOICE_PAIRS_FILE.read_text(encoding="utf-8").strip()
+    except OSError:
+        return ""
+    return ("BEFORE AND AFTER (study what changes from each DRAFT to the OWNER'S VERSION and make "
+            "the same kind of changes to the draft you are given; never copy these words or facts):\n"
+            + pairs + "\n\n")
 
 
 def merge_spoken(plan: dict, spoken: dict) -> dict | None:

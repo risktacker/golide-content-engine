@@ -53,10 +53,11 @@ class OpenAITextProvider:
         input_tokens, cached, output_tokens = usage_from_response(response)
         return ProviderOutput(response.output_text, response.id, input_tokens, cached, output_tokens)
 
-    def generate_json(self, instructions: str, content: str, schema: dict, web_search: bool = False, max_output_tokens: int = 12000) -> ProviderOutput:
+    def generate_json(self, instructions: str, content: str, schema: dict, web_search: bool = False,
+                      max_output_tokens: int = 12000, reasoning_effort: str | None = None) -> ProviderOutput:
         kwargs = {
             "model": self.model,
-            "reasoning": {"effort": self.reasoning_effort},
+            "reasoning": {"effort": reasoning_effort or self.reasoning_effort},
             "instructions": instructions,
             "input": content,
             "max_output_tokens": max_output_tokens,

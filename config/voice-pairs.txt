@@ -1,0 +1,84 @@
+# Engine drafts next to the versions the owner actually recorded (owner direction 2026-10-25).
+# The spoken pass studies what changes between them: the facts stay, the way it is SAID changes.
+# Never copy these words or facts into another script.
+
+== PAIR 1: long video opening (NVIDIA Microduck, 2026-10-24) ==
+DRAFT (written, never recorded):
+At GTC Berlin in October 2026, NVIDIA showed four tiny robots learning physical behaviors.
+They walked, fell, recovered, and followed commands on a real stage,
+but the important machine was nowhere near the spotlight.
+It was the training system teaching movement before hardware moved.
+We will follow the Berlin demonstration, simulated practice,
+then the sensors and control software inside each robot,
+the gap between simulation and hardware, and the final verdict.
+OWNER'S VERSION (how he says it):
+Four tiny robots just stole the show at Jensen Huang's keynote in Berlin.
+They walked, they fell over, they got back up, and they listened when someone talked to them.
+Everybody was looking at the robots, but the robots weren't the real story here.
+The real story is how they learned to move, before any of them took a single real step.
+In the next few minutes we'll go through what actually happened on that stage, how the training works in a computer,
+what's inside each robot that keeps it standing, why moving from the computer to a real floor is the hard part,
+and what this whole thing really proves.
+
+== PAIR 2: long video, middle of a chapter (same video) ==
+DRAFT:
+Now ask what happened before a real motor turned.
+Engineers built a digital version of the robot and its surroundings,
+including joints, limits, sensors, surfaces, walls, and obstacles.
+Each simulated robot observes its position, speed, tilt, and surroundings.
+It then sends commands to its joints and watches the result.
+A better result earns a stronger reward from the training system.
+Falling, missing the route, or hitting an obstacle produces a worse result.
+When a simulated robot falls, the system resets it immediately,
+then sends the same task through another attempt without repairs.
+A simulated fall cannot damage a motor, injure a person, or stop training.
+OWNER'S VERSION:
+The lesson happened before a single real motor turned, inside a computer.
+Engineers built a digital copy of the robot and everything around it,
+the joints, how far each one can bend, the sensors, the floor, the walls and the obstacles.
+The digital robot feels where it is, how fast it's going and how much it's leaning,
+it sends commands to its joints, and then it sees what happened.
+If it does well, the system gives it a reward, and if it falls, misses the route or hits something, it gets a worse score.
+And here's where the computer wins big.
+When a digital robot falls, it resets in a split second and tries again, nothing to repair, nobody to pick it up.
+In the computer, a robot can fail a thousand times before lunch and nothing breaks.
+
+== PAIR 3: a whole short (Centa Painter, 2026-10-25) ==
+DRAFT:
+Indian wall finishing used to depend on people for every pass,
+but Centa Painter now handles broad repetitive surfaces.
+Workers spread putty, sand it smooth, apply primer and paint.
+Centa's wheeled base carries a spray tool,
+then swaps to a rotary sanding module for walls and ceilings.
+A laser measures distance, called LiDAR, while cameras spot windows and switchboards.
+Onboard computing builds a local map, so the robot locates itself
+and plans coverage without a pre-fed floor plan or fixed path.
+The engineering principle is feedback control.
+Sensors read the room, the robot moves, checks the pass and adjusts.
+People still prepare material, clean the pump and position the machine,
+while the final ten centimetres near edges stay manual.
+Centa Painter is a modular finishing machine, not a humanoid builder.
+The real story is shared work, not builders disappearing overnight.
+OWNER'S VERSION:
+A robot is painting walls in India now, and it doesn't even need a floor plan.
+Finishing a wall there is all hand work,
+putty, sanding, primer and paint, done by people.
+Centa Painter takes over the big repetitive part.
+It rolls around carrying a spray tool,
+then swaps to a spinning sander for walls and ceilings.
+It finds its way with a laser that measures distance,
+and cameras that spot windows and switchboards so it works around them.
+From that it maps the room itself and plans how to cover every wall,
+and it keeps checking, it sprays, looks at the pass and adjusts.
+But it's not doing the whole job.
+People still prepare the material, clean the pump and move it into place,
+and the last ten centimetres near the edges are still done by hand.
+So this isn't a robot builder taking over,
+it's a machine that does the big flat walls the same way every time,
+while people handle the parts that keep changing.
+
+WHAT CHANGED, every time: the first line starts on what happened; jargon becomes what the
+thing does ("rotary sanding module" -> "spinning sander", "observes its position" -> "feels
+where it is"); labels and principles said as a lecture ("The engineering principle is feedback
+control.") become the thing happening; lines that stop dead become one thought carried across
+lines; each part ends on what it means for a person, in everyday words.

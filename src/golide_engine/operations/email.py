@@ -58,6 +58,20 @@ def source_lines(model: dict | None, our_title: str = "", alternatives: list | N
     return out
 
 
+def spoken_pass_line(report: dict | None) -> str:
+    """What happened to the spoken rewrite (owner direction 2026-10-25: no more guessing)."""
+    if not report:
+        return ""
+    status = report.get("status", "")
+    if status == "applied":
+        return "Spoken rewrite: applied. This script was rewritten the way you talk."
+    if status == "approved":
+        return "Spoken rewrite: replaced by the rewrite approved for you."
+    reason = str(report.get("reason", "")).strip()
+    word = {"discarded": "discarded", "unmatched": "not used", "failed": "failed"}.get(status, status)
+    return f"Spoken rewrite: {word}, so this is the first draft" + (f" ({reason})" if reason else "") + "."
+
+
 def build_record_needed(
     *,
     job_id: str,
@@ -67,6 +81,7 @@ def build_record_needed(
     rejection: str = "",
     model: dict | None = None,
     alternatives: list | None = None,
+    spoken_pass: dict | None = None,
 ) -> EmailMessage:
     low, high = RECORDING_WINDOWS.get(format_name, RECORDING_WINDOWS["short"])
     label = "Short" if format_name == "short" else "Long video"
@@ -78,6 +93,9 @@ def build_record_needed(
 
     lines = [script.strip()]
     sources = source_lines(model, title, alternatives) if model is not None else []
+    note = spoken_pass_line(spoken_pass)
+    if note:
+        sources = sources + [note]
     plain = (
         (f"Your last upload was rejected: {rejection}\n\n" if rejection else "")
         + ("\n".join(sources) + "\n\n" if sources else "")
