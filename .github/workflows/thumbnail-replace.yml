@@ -36,10 +36,34 @@ jobs:
         run: |
           IFS=';' read -ra parts <<< "$ITEMS"
           python tools/thumbnail_replace.py "${parts[@]}"
+      - name: Email them to the owner
+        env:
+          GOLIDE_SMTP_USER: ${{ secrets.GOLIDE_SMTP_USER }}
+          GOLIDE_SMTP_APP_PASSWORD: ${{ secrets.GOLIDE_SMTP_APP_PASSWORD }}
+          GOLIDE_NOTIFY_EMAIL: ${{ secrets.GOLIDE_NOTIFY_EMAIL }}
+        run: |
+          python - <<'PY'
+          import json, os, smtplib
+          from email.message import EmailMessage
+          from pathlib import Path
+          made = json.loads(Path("thumbnail-refresh/made.json").read_text())
+          user, pw = os.environ["GOLIDE_SMTP_USER"], os.environ["GOLIDE_SMTP_APP_PASSWORD"]
+          msg = EmailMessage()
+          msg["Subject"] = "New thumbnails: " + ", ".join(m["line"] for m in made)
+          msg["From"], msg["To"] = user, os.environ.get("GOLIDE_NOTIFY_EMAIL") or user
+          msg.set_content("\n".join(f'{m["title"]} (youtube.com/watch?v={m["youtube_video_id"]}): "{m["line"]}" -> {m["file"]}' for m in made))
+          for m in made:
+              msg.add_attachment(Path("thumbnail-refresh", m["file"]).read_bytes(), maintype="image", subtype="jpeg", filename=m["file"])
+          with smtplib.SMTP_SSL("smtp.gmail.com", 465) as s:
+              s.login(user, pw); s.send_message(msg)
+          print("emailed", [m["file"] for m in made])
+          PY
       - name: Hand them over on main
         run: |
+          set -euxo pipefail
           git config user.name "golide-engine"
           git config user.email "engine@golidee.com"
-          git add thumbnail-refresh
+          git add -f thumbnail-refresh
           git commit -m "Thumbnail replacements (temporary, removed once delivered)"
-          for i in 1 2 3 4 5; do git pull --rebase -q && git push && break; sleep $((i*5)); done
+          for i in 1 2 3 4 5; do git pull --rebase origin main && git push origin HEAD:main && exit 0; sleep $((i*5)); done
+          exit 1
