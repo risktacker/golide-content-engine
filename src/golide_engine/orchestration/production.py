@@ -875,13 +875,16 @@ class ProductionService:
             # 2026-10-27: the timed words are written only after every check passed, so
             # both files on disk mean the stage finished and only its checkpoint record
             # was lost (a run stopped right after). Reconcile instead of failing forever.
-            if narration.exists() and timed_words_path.exists():
+            if timed_words_path.exists():
                 try:
-                    if json.loads(timed_words_path.read_text(encoding="utf-8")):
-                        print(json.dumps({"status": "owner_voice_reconciled", "production_id": production_id}))
-                        return
+                    finished = bool(json.loads(timed_words_path.read_text(encoding="utf-8")))
                 except ValueError:
-                    pass
+                    finished = False
+                if finished:
+                    if not narration.exists():
+                        fetch_narration()  # free: the paid transcription is kept
+                    print(json.dumps({"status": "owner_voice_reconciled", "production_id": production_id}))
+                    return
                 timed_words_path.unlink(missing_ok=True)
             # A failed attempt leaves only free-to-redo local files; clear them
             # so a retry (for example after a fixed recording) can run again.
@@ -894,11 +897,10 @@ class ProductionService:
                 (work / "owner-voice-source").unlink(missing_ok=True)
                 raise
 
-        def _voice_stage_body():
-            self._require_absent(narration, "owner-voice")
-            self._require_absent(timed_words_path, "owner-voice")
+        def fetch_narration():
+            """Download the owner's recording and convert it (free; 2026-10-27: also used to
+            restore a narration file a failed retry removed after the stage had finished)."""
             source = work / "owner-voice-source"
-
             if owner_voice_ref.startswith("r2://"):
                 from ..storage.r2 import r2_store_from_environment
                 store = r2_store_from_environment()
@@ -923,6 +925,12 @@ class ProductionService:
                 ],
                 capture_output=True, text=True, check=True,
             )
+
+        def _voice_stage_body():
+            self._require_absent(narration, "owner-voice")
+            self._require_absent(timed_words_path, "owner-voice")
+            source = work / "owner-voice-source"
+            fetch_narration()
             # Reject a wrong-length recording before paying for transcription.
             try:
                 check_recording_length(str(spec["format"]), self._duration(narration))
@@ -960,6 +968,9 @@ class ProductionService:
             )
 
         self.runner.run(production_id, "owner-voice", voice_stage)
+        if not narration.exists() and timed_words_path.exists():
+            fetch_narration()
+            print(json.dumps({"status": "owner_voice_restored", "production_id": production_id}))
         self._budget(spec)
         narration_seconds = self._duration(narration)
         # The owner recording is the master timeline: never retime the voice.
