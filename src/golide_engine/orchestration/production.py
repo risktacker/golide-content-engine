@@ -1780,6 +1780,20 @@ class ProductionService:
                 return
             self._require_absent(raw_thumbnail, "thumbnail")
             self._require_absent(thumbnail, "thumbnail")
+            if str(spec["format"]) == "short":
+                # 2026-10-27 owner: "the video first block itself is enough" for a short.
+                # No paid image: the short's own opening card becomes its thumbnail.
+                cover = video_path.with_name(video_path.stem + "-cover.jpg")
+                if cover.exists():
+                    from PIL import Image
+                    card = Image.open(cover).convert("RGB")
+                    card.thumbnail((1280, 720))
+                    canvas = Image.new("RGB", (1280, 720), (11, 11, 14))
+                    canvas.paste(card, ((1280 - card.width) // 2, (720 - card.height) // 2))
+                    thumbnail.parent.mkdir(parents=True, exist_ok=True)
+                    canvas.save(thumbnail)
+                    print(json.dumps({"status": "short_thumbnail_from_cover"}))
+                    return
             self._reserve(
                 spec, thumbnail_cost_model, Usage(images=1), stage="thumbnail"
             )
