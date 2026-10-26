@@ -872,6 +872,17 @@ class ProductionService:
             return " ".join(re.findall(r"[a-z0-9']+", value.lower()))
 
         def voice_stage():
+            # 2026-10-27: the timed words are written only after every check passed, so
+            # both files on disk mean the stage finished and only its checkpoint record
+            # was lost (a run stopped right after). Reconcile instead of failing forever.
+            if narration.exists() and timed_words_path.exists():
+                try:
+                    if json.loads(timed_words_path.read_text(encoding="utf-8")):
+                        print(json.dumps({"status": "owner_voice_reconciled", "production_id": production_id}))
+                        return
+                except ValueError:
+                    pass
+                timed_words_path.unlink(missing_ok=True)
             # A failed attempt leaves only free-to-redo local files; clear them
             # so a retry (for example after a fixed recording) can run again.
             if not timed_words_path.exists():
