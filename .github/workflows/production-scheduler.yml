@@ -104,7 +104,6 @@ jobs:
           GOLIDE_ENABLE_PAID_PRODUCTION: "1"
           GOLIDE_ENABLE_YOUTUBE_UPLOAD: "1"
           GOLIDE_ENABLE_SOCIAL_PUBLISH: "1"
-          GOLIDE_OPENAI_MONTHLY_CAP_USD: "7.00"
           GOLIDE_STUDIO_BASE_URL: "https://studio.golidee.com"
           GOLIDE_FAILURE_WEBHOOK: ${{ secrets.GOLIDE_FAILURE_WEBHOOK }}
           GOLIDE_SMTP_USER: ${{ secrets.GOLIDE_SMTP_USER }}
