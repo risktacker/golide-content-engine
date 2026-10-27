@@ -13,6 +13,8 @@ object; behind it, each scene now gets a set that frames and contains it, drawn 
 * horizon   the glowing curve of a planet below (space, launches, scale)
 * space     a nebula band, a distant sun and a bending space grid (gravity, physics, cosmos)
 * factory   roof trusses, hanging lamps and a floor grid (industry, machines, tanks)
+* market    a faint chart wall and a ticker strip on the floor (prices, stocks, the economy)
+* storefront a shop front with windows and an awning (selling, retail, small business)
 * none      the plain sky (exact maths figures keep their lesson grid)
 
 Colour rule (owner review of fills, 2026-10-27): sets are drawn in a cool colour (teal,
@@ -28,7 +30,8 @@ import math
 
 import numpy as np
 
-KINDS = ("grid", "pedestal", "studio", "wall", "orbit", "horizon", "space", "factory", "none")
+KINDS = ("grid", "pedestal", "studio", "wall", "orbit", "horizon", "space", "factory", "market", "storefront",
+         "none")
 COOL = {"teal": (110, 220, 200), "blue": (115, 165, 250), "violet": (168, 140, 242), "ivory": (236, 230, 210)}
 WARM = (233, 196, 106)
 UNDER_TEXT = 0.15         # share of the set kept behind captions and number cards
@@ -277,3 +280,68 @@ class Stages:
         grey = np.array((150, 160, 175), np.float32)
         return self._lines(trusses)[..., None] * grey * 0.18 + lamps[..., None] * np.array(WARM, np.float32) * 0.22 \
             + air[..., None] * col + self._floor_grid(col, 0.85) + self._horizon_glow(col, 0.25)
+
+    def _market(self, col):
+        """A chart wall behind (faint candles and a trend) and a ticker strip on the floor."""
+        h, w, fy = self.h, self.w, self.floor
+        rng = np.random.default_rng(4)
+        closes = np.cumsum(rng.normal(0.4, 1.0, 34))
+        closes = (closes - closes.min()) / max(1e-6, np.ptp(closes))
+        top = max(h * 0.08, self.top)
+        span = (fy - top) * 0.75
+
+        def candles(c):
+            c.set_line_width(max(1.0, h / 900))
+            step = w / 36
+            prev = closes[0]
+            for i, cl in enumerate(closes):
+                x = step * (i + 1)
+                y0, y1 = fy - h * 0.06 - prev * span, fy - h * 0.06 - cl * span
+                c.move_to(x, min(y0, y1) - h * 0.012)
+                c.line_to(x, max(y0, y1) + h * 0.012)
+                c.rectangle(x - step * 0.22, min(y0, y1), step * 0.44, max(2.0, abs(y1 - y0)))
+                prev = cl
+            c.stroke()
+
+        def ticker(c):
+            c.set_line_width(max(1.0, h / 900))
+            c.rectangle(w * 0.04, fy + h * 0.015, w * 0.92, h * 0.035)
+            x = w * 0.06
+            while x < w * 0.94:
+                c.move_to(x, fy + h * 0.032)
+                c.line_to(x + w * 0.03, fy + h * 0.032)
+                x += w * 0.06
+            c.stroke()
+        yy, xx = self._grid_xy()
+        m = np.exp(-((xx - self.cx) / (w * 0.5)) ** 2)
+        return (self._lines(candles) * m * 0.30)[..., None] * col + self._lines(ticker)[..., None] * col * 0.35 \
+            + self._horizon_glow(col, 0.3)
+
+    def _storefront(self, col):
+        """A shop front behind the object: windows, a door, an awning and a pavement line."""
+        h, w, fy = self.h, self.w, self.floor
+        top = max(h * 0.1, self.top - h * 0.05)
+        left, right = w * 0.08, w * 0.92
+
+        def front(c):
+            c.set_line_width(max(1.0, h / 800))
+            c.rectangle(left, top, right - left, fy - top)                 # the building face
+            aw = top + (fy - top) * 0.18
+            n = 10
+            for i in range(n):                                             # scalloped awning
+                x0 = left + (right - left) * i / n
+                x1 = left + (right - left) * (i + 1) / n
+                c.move_to(x0, aw)
+                c.curve_to(x0, aw + h * 0.03, x1, aw + h * 0.03, x1, aw)
+            c.move_to(left, aw)
+            c.line_to(right, aw)
+            win_top = aw + h * 0.06
+            for x0, x1 in ((left + w * 0.03, w * 0.40), (w * 0.60, right - w * 0.03)):
+                c.rectangle(x0, win_top, x1 - x0, fy - win_top - h * 0.06)
+            c.rectangle(w * 0.44, win_top, w * 0.12, fy - win_top)          # the door
+            c.move_to(0, fy)
+            c.line_to(w, fy)
+            c.stroke()
+        yy, xx = self._grid_xy()
+        glow = np.exp(-((xx - self.cx) / (w * 0.4)) ** 2) * ((yy > top) & (yy < fy)) * 0.12
+        return self._lines(front)[..., None] * col * 0.30 + glow[..., None] * col + self._horizon_glow(col, 0.25)

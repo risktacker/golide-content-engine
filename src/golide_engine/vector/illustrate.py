@@ -87,7 +87,7 @@ VISUAL_PLAN_SCHEMA: dict = {
                     "label": {"type": "string"},
                     "label_b": {"type": "string"},
                     "stage": {"type": "string", "enum": ["grid", "pedestal", "studio", "wall", "orbit", "horizon",
-                                                        "space", "factory"]},
+                                                        "space", "factory", "market", "storefront"]},
                 },
                 "required": ["first_line", "last_line", "drawing", "gold_element", "accent", "sound", "sound_word",
                              "figure", "layout", "drawing_b", "gold_element_b", "figure_b", "label", "label_b",
@@ -123,6 +123,28 @@ exactly one scene, in order, with no gaps or overlaps (scene 1 starts at line
 0, each next scene starts right after the previous one ends, the last scene
 ends at the last line). Start a new scene only when the idea changes.
 
+MONEY AND BUSINESS (owner direction 2026-10-27: "when it comes to money... our drawings
+are fumbling"). Draw every money or business object with the parts that make it read
+at once, named in "drawing":
+- coin: a ridged (reeded) edge, a raised inner rim, visible thickness, its number in the
+  middle; savings are a short stack of coins, never a pile of discs.
+- banknote: a border, an oval portrait window, the amount in a corner, two or three notes
+  fanned so it reads as cash.
+- bank: a triangular roof (pediment), evenly spaced columns, steps at the bottom.
+- shop shelf: shelves in rows with real product shapes (bottles, boxes, cans) and one
+  price tag; a shop is a front with windows, a door and an awning.
+- card: rounded corners, the gold chip, the contactless mark, the last four digits.
+- cart, cash register, wallet, briefcase, receipt, contract (text lines, a signature, a
+  seal), a handshake for a deal, a warehouse with racks and boxes, a delivery truck.
+Prices, growth, sales and market moves with real numbers are an exact "chart" figure
+(below), never a drawn graph. Colour by meaning: gold is value and money, teal is growth,
+rose is a loss, a fall or a risk.
+
+ALIGNMENT (owner direction 2026-10-27): parts line up and never collide. Rows and columns
+are evenly spaced, text on an object follows its angle, a label never sits on another
+object, two objects never overlap unless one is inside the other on purpose, and an
+object sits fully on its floor.
+
 STAGE (owner direction 2026-10-27: no drawing floats in empty black). Each scene
 names the set it stands in, drawn behind it by the engine:
 - "grid": a floor grid to a glowing horizon. Cars, robots, vehicles, anything on the ground.
@@ -134,6 +156,8 @@ names the set it stands in, drawn behind it by the engine:
 - "horizon": the glowing curve of a planet. Space, rockets, satellites, global scale.
 - "space": a nebula, a distant sun and a bending grid. Gravity, physics, the cosmos.
 - "factory": roof trusses, hanging lamps, a floor. Industry, machines, tanks, building sites.
+- "market": a faint chart wall and a ticker. Stocks, prices, investing, the economy.
+- "storefront": a shop front. Selling, shops, retail, customers, small business.
 Vary it with the story: consecutive scenes about the same thing keep the same set;
 a new place or idea gets a new one. Exact maths figures ignore it.
 
@@ -256,6 +280,11 @@ gas laws, heat engines, relativity), set "figure" to ONE line in one of these
 forms, using the numbers spoken in those lines, and the engine draws it
 precisely instead of the sketch:
 {figure_menu}
+Never invent numbers the lines do not give.
+
+CHARTS (owner direction 2026-10-27): when a scene's lines give prices, growth, sales,
+shares or a market move with real numbers, set "figure" to a "chart" line with those
+numbers (type=candles for a stock or market, bar for amounts per year, line for a trend).
 Never invent numbers the lines do not give.
 
 DIAGRAMS (owner direction 2026-10-20): when a scene explains who connects to

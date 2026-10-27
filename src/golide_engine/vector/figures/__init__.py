@@ -17,7 +17,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from . import chemistry, circuits, diagrams, heat, maths, mechanics, optics, relativity, solids, structures, waves
+from . import chemistry, circuits, diagrams, economics, heat, maths, mechanics, optics, relativity, solids, structures, waves
 from .core import FigureError, parse_figure, save, sidecar_path
 
 BUILDERS = {
@@ -39,6 +39,8 @@ BUILDERS = {
     "solid": solids.solid,
     # diagrams (2026-10-20): who connects to whom, step-by-step flows, hierarchies
     "network": diagrams.network, "flow": diagrams.flow, "tree": diagrams.tree,
+    # money and markets (2026-10-27): exact prices, growth and market moves
+    "chart": economics.chart,
 }
 KINDS = tuple(BUILDERS)
 
@@ -70,6 +72,7 @@ EXAMPLES = {
     "solid": "solid: shape=cylinder; radius=3; height=5   (cube a=, cuboid length/width/height, cone, sphere, pyramid a= height=; volume and surface)",
     "network": "network: hub=Benefit Fund; nodes=Stockholders, Board, Researchers, Public; glow=hub   (up to 7 nodes; glow= a node's name instead)",
     "flow": "flow: steps=Shares, Fund, Grants, Public; glow=Fund   (2 to 6 steps, drawn with arrows)",
+    "chart": "chart: type=candles; values=100,104,101,108,115; unit=$; label=NVDA   (type=line or bar; labels=2024,2025,... under bars or points)",
     "tree": "tree: root=Anthropic; children=Fund, Board, Stockholders; glow=Fund   (an extra line 'Fund > Research, Safety' adds a level)",
 }
 

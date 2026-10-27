@@ -38,3 +38,24 @@ class StageTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class MoneyTests(unittest.TestCase):
+    """2026-10-27: money and markets are drawn exactly, with their real structure."""
+
+    def test_chart_figure_draws_all_three_kinds(self):
+        import tempfile
+        from pathlib import Path
+        from golide_engine.vector.figures import render_figure
+        with tempfile.TemporaryDirectory() as tmp:
+            for spec in ("chart: type=candles; values=100,104,101,108; unit=$; label=NVDA",
+                         "chart: type=bar; values=12,18,25,40; labels=2023,2024,2025,2026",
+                         "chart: type=line; values=9,7,6,4; unit=%"):
+                out = render_figure(spec, Path(tmp) / "c.png", (1536, 1024))
+                self.assertTrue(Path(out).exists())
+
+    def test_storyboard_knows_money_objects_and_alignment(self):
+        from golide_engine.vector.illustrate import scene_plan_instructions
+        text = scene_plan_instructions("long", 400.0)
+        for word in ("reeded", "pediment", "MONEY AND BUSINESS", "ALIGNMENT", "chart: type=candles"):
+            self.assertIn(word, text)
