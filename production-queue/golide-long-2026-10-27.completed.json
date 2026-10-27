@@ -278,5 +278,6 @@
     "measured_at": "2026-10-27T04:02:59.248351+00:00",
     "signal_type": "youtube-breakout-v1"
   },
-  "selected_topic_source": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm"
+  "selected_topic_source": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm",
+  "owner_voice_media_ref": "r2://temp/2026/10/27/4ad1f566a3a84157b0bd482f7ea77c44-Anthropic--enhanced-v2.wav"
 }

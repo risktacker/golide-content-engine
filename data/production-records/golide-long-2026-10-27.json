@@ -1,0 +1,958 @@
+{
+  "production_id": "golide-long-2026-10-27",
+  "youtube_video_id": "QCQDPJop-jk",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "QCQDPJop-jk",
+    "upload_status": "published",
+    "privacy_status": "public",
+    "scheduled_at": null,
+    "uploaded_at": "2026-10-27T19:59:16.182203+00:00"
+  },
+  "production": {
+    "format": "long",
+    "title": "Anthropic Lost $80B, And That's Not The Biggest Risk of IPO S-1",
+    "status": "published",
+    "scheduled_at": "2026-10-27T17:30:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-long-tue-thu-sat\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "Software companies used to sell copies and collect money as customers arrived,\nbut Anthropic sells answers while reserving the machines needed to produce them later.\nThat is why its IPO filing looks like a stock-market story,\nuntil you notice the real story is the cost of making AI.\nWe’ll follow the reported revenue and loss, the future compute commitments, the cloud power struggle,\nthen see how those pressures could reach users through prices, limits, or faster automation.\nAnthropic filed a public registration statement with the SEC on October 26th, 2026,\nfor a proposed initial public offering, which is a request to sell shares to public investors.\nThat filing does not say the company is already profitable,\nbut it does show a business growing at remarkable speed.\nDuring the first half of 2026, Anthropic reported about 16.3 billion dollars in revenue,\nmoney paid for Claude and related services by the people and companies using them.\nThat number was sharply higher than the same period a year earlier,\nwhich makes the company look like a software business finding customers quickly.\nThe same filing also reported an 80.7 billion dollar net loss.\nThat headline needs careful handling, because about 72.4 billion dollars came\nfrom a one-time accounting charge connected to financing agreements.\nThe operating loss was substantially smaller than the net loss shown on that headline line.\nThat correction matters, but it does not turn the business into a cheap one to run.\nEvery answer Claude gives needs hardware somewhere, electricity moving through it,\nand chips performing the calculations while you wait for the text to appear.\nA normal software copy can reach another customer with very little extra physical equipment,\nwhereas a powerful AI response keeps using computing time every time you ask again.\nThe revenue is real, and the loss is distorted by financing,\nbut neither number makes the machinery behind the service disappear.\nThat machinery has to be arranged before every future customer walks through the door.\nTraining a model sends huge amounts of data through chips built to perform many calculations together,\nuntil the network learns which pieces of language tend to fit together.\nAfter that training, the model still needs chips whenever it writes an answer for a user.\nThe system calculates the response piece by piece, a process called inference,\nand it repeats that work across every conversation, image, code request, and business task.\nMore customers therefore require more capacity waiting in the background,\nbecause a busy service cannot build a new server after each person sends a question.\nCloud contracts reserve that capacity before all the future customer money exists.\nAnthropic’s disclosed plans involve hundreds of billions of dollars in future compute, cloud,\nand related infrastructure commitments, showing how far ahead the company is buying capacity.\nOne reported figure puts the wider arrangement around 518 billion dollars,\nalthough the exact accounting treatment and timing matter when reading that figure.\nThe practical risk is easier to see than the accounting language.\nIf a contract requires payment for capacity, the bill can keep arriving when demand slows.\nAnthropic earns money from each customer, but it may owe money for machines that customer is not using.\nA variable cost rises with usage and falls when usage falls,\nwhile a fixed commitment keeps running because the contract was signed earlier.\nUnderused capacity spreads the same bill across fewer paid answers,\nwhich makes Anthropic less like a lightweight software seller and more like an industrial operation reserving its supply chain.\nMuch of that supply chain leads back to companies that are not neutral landlords.\nAmazon is a minority investor in Anthropic and its primary cloud and training partner.\nAnthropic says the relationship includes a commitment to use AWS as its primary training and cloud provider,\nwhile Amazon provides access to custom chips called Trainium for that computing work.\nGoogle has also arranged major cloud access using its own tensor processing units,\nspecialized chips designed to handle the repeated calculations AI models need.\nThat gives Anthropic powerful suppliers, but it also creates a tight dependency.\nA cloud company can invest in Anthropic, rent it computing power, distribute Claude,\nand build its own competing AI products at the same time.\nThe same company can help Anthropic grow and collect money whenever Anthropic needs more capacity.\nIt can also compete for the customer while controlling part of the infrastructure behind the service.\nCalling these companies landlords is a metaphor, but the rent-like pressure is real.\nThe buildings, chips, networks, and electricity have to be in place before one answer reaches your phone.\nThat makes it harder to walk away from a supplier, even if another provider offers better terms.\nAnthropic is growing inside an ecosystem where its investors can also be suppliers, distributors, and rivals.\nNone of those contracts is a consumer price list, and Anthropic has not said it will charge you more.\nThe effect on users is an inference from the economics, not a promise written into the filing.\nStill, a company carrying large fixed bills has only a few broad ways to create more room.\nIt can earn more from existing users by raising prices or charging extra for heavier use,\nor limit expensive requests, reduce access to powerful models, and slow the service at busy times.\nAnother route is selling more automation to businesses, hoping each contract brings enough revenue to cover the machines.\nThat choice creates a second pressure for ordinary workers.\nCompanies may adopt AI faster because they want more output from infrastructure they are already paying for.\nThat could change tasks and staffing, but the filing does not disclose a plan to replace specific jobs.\nThe narrower conclusion is that expensive capacity can push companies toward higher prices and faster monetization.\nUsers could feel that through subscription changes, usage limits, or more AI inside everyday software.\nNone of those outcomes is guaranteed, but the pressure does not require Anthropic to collapse first.\nPut the filing together and the stock-market story becomes a business-model story.\nAnthropic has real, rapidly growing revenue, with 16.3 billion dollars reported for the first half of 2026.\nIt also reported a huge net loss, heavily distorted by a one-time financing charge.\nThe deeper exposure sits in future infrastructure commitments measured in hundreds of billions.\nAnd the company depends on cloud providers that can finance it, host it, distribute it, and compete with it.\nThat structure can work if demand keeps expanding quickly enough to fill the reserved machines.\nIt becomes dangerous when the commitments grow faster than the revenue supporting them.\nThe filing is therefore a warning about AI economics, not just a record-breaking market event.\nAnthropic is growing revenue while prepaying for an enormous machine that must keep running.\nIts cloud partners can be investors, landlords, distributors, and competitors at the same time.\nThat does not prove failure, but it explains why growing AI revenue can still carry enormous financial risk.\nThe AI bill is being built before the final customer has agreed to pay it.\nFollow us if you want the next AI filing explained through the machines and money behind it.\nShould Anthropic raise prices, limit Claude, or sell automation faster to cover its compute commitments?\n",
+  "research": {
+    "summary": "Strong, evidence-based angle: Anthropic’s IPO filing is less about a conventional software company than about financing an extremely capital-intensive AI infrastructure business. The explainer should separate disclosed facts from interpretation: revenue is growing rapidly, but the company is also making very large future compute commitments and depending on cloud companies that can simultaneously finance Anthropic, sell it infrastructure, distribute Claude, and compete with it. The consumer impact—higher prices, tighter service limits, or faster automation—is best presented as a possible consequence, not a disclosed company plan.",
+    "claims": [
+      {
+        "claim": "Anthropic filed a public Form S-1 registration statement with the SEC on October 26, 2026, for a proposed initial public offering.",
+        "source_title": "Anthropic PBC Form S-1 filing",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm",
+        "published_or_updated": "Filed October 26, 2026"
+      },
+      {
+        "claim": "Anthropic reported approximately $16.3 billion in revenue during the first half of 2026, up sharply from the same period of 2025.",
+        "source_title": "Anthropic files for potentially the biggest IPO ever",
+        "source_url": "https://apnews.com/article/ca2f4c282bef3201a392e59e3df2300c",
+        "published_or_updated": "October 26, 2026"
+      },
+      {
+        "claim": "Anthropic reported an $80.7 billion first-half net loss for 2026, although the filing included a one-time accounting charge of roughly $72.4 billion related to financing agreements; the operating loss was substantially smaller.",
+        "source_title": "Anthropic files for potentially the biggest IPO ever",
+        "source_url": "https://apnews.com/article/ca2f4c282bef3201a392e59e3df2300c",
+        "published_or_updated": "October 26, 2026"
+      },
+      {
+        "claim": "Anthropic’s disclosed and reported infrastructure plans involve hundreds of billions of dollars in future compute, cloud, and related commitments, illustrating the mismatch between near-term revenue and long-term capacity obligations.",
+        "source_title": "Anthropic’s $518 billion AI buildout hinges largely on deals that cannot be canceled",
+        "source_url": "https://www.fidelity.com/news/article/company-news/202609290607TRSNEWSCOMBINED_KBN3VF0YX-OUSBS_1",
+        "published_or_updated": "September 29, 2026"
+      },
+      {
+        "claim": "Amazon is both a minority investor in Anthropic and Anthropic’s primary cloud and training partner; Anthropic has also announced major Google Cloud TPU arrangements. This supports describing cloud companies as occupying multiple roles in Anthropic’s business, though “landlords” is a metaphor rather than a filing term.",
+        "source_title": "Powering the next generation of AI development with AWS",
+        "source_url": "https://www.anthropic.com/news/anthropic-amazon-trainium",
+        "published_or_updated": "November 22, 2024"
+      },
+      {
+        "claim": "Anthropic says its Amazon relationship includes a commitment to use AWS as its primary training and cloud provider, while Amazon has continued investing in the company and providing access to custom AI chips.",
+        "source_title": "Anthropic and Amazon expand compute collaboration",
+        "source_url": "https://www.anthropic.com/news/anthropic-amazon-compute",
+        "published_or_updated": "April 20, 2026"
+      },
+      {
+        "claim": "The video may reasonably explore whether these economics could eventually affect users through higher prices, usage limits, or pressure to monetize automation faster, but those outcomes are inferences and should not be presented as facts disclosed by Anthropic.",
+        "source_title": "Anthropic PBC Form S-1 filing",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm",
+        "published_or_updated": "Filed October 26, 2026"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Anthropic Lost $80B, And That's Not The Biggest Risk of IPO S-1",
+    "description": "Anthropic’s October 26, 2026 IPO filing shows explosive revenue growth, but also an $80.7 billion reported net loss and enormous future commitments for cloud computing, chips, and infrastructure. Much of the loss came from a one-time financing charge, but the cost of running Claude remains the deeper business issue.\n\nThis video explains how Anthropic depends on AWS, Google Cloud, and other infrastructure partners that can also invest in, distribute, and compete with Claude. We look at how these fixed compute commitments could affect AI prices, usage limits, service capacity, and the speed of workplace automation.\n\nChapters\n0:00 Intro\n0:26 Revenue And Losses\n1:48 The Compute Bill\n3:27 Cloud Investor Landlords\n4:50 The User Pays\n6:04 What The Filing Proves\n6:54 Close\n\n#Anthropic #AnthropicIPO #ClaudeAI #AIInfrastructure #AIEconomics #CloudComputing #TechIPO #GOLIDE",
+    "tags": [
+      "Anthropic IPO",
+      "Anthropic IPO filing",
+      "Claude AI",
+      "Claude IPO",
+      "AI compute costs",
+      "Anthropic revenue",
+      "Anthropic net loss",
+      "Anthropic S-1",
+      "AI infrastructure",
+      "AI cloud costs",
+      "AWS Anthropic",
+      "Google Cloud Anthropic",
+      "Amazon Anthropic",
+      "Google TPU",
+      "AWS Trainium",
+      "Claude pricing",
+      "AI business model",
+      "AI economics",
+      "AI industry",
+      "AI startup IPO",
+      "AI infrastructure costs",
+      "cloud computing AI",
+      "AI capital spending",
+      "AI financial risk",
+      "Anthropic stock"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [
+      "0:00 Intro",
+      "0:26 Revenue And Losses",
+      "1:48 The Compute Bill",
+      "3:27 Cloud Investor Landlords",
+      "4:50 The User Pays",
+      "6:04 What The Filing Proves",
+      "6:54 Close"
+    ],
+    "keywords": [
+      "Anthropic IPO",
+      "Anthropic S-1",
+      "Anthropic filing",
+      "Claude AI IPO",
+      "Anthropic compute costs",
+      "Anthropic revenue",
+      "Anthropic net loss",
+      "AI infrastructure costs",
+      "AI compute commitments",
+      "AWS Anthropic",
+      "Google Cloud Anthropic",
+      "Claude pricing",
+      "AI IPO 2026",
+      "AI economics"
+    ],
+    "hashtags": [
+      "#Anthropic",
+      "#AnthropicIPO",
+      "#ClaudeAI",
+      "#AIInfrastructure",
+      "#AIEconomics",
+      "#CloudComputing",
+      "#TechIPO",
+      "#GOLIDE"
+    ],
+    "format": "long",
+    "title_description_language": "en",
+    "seo_body": "Anthropic’s October 26, 2026 IPO filing shows explosive revenue growth, but also an $80.7 billion reported net loss and enormous future commitments for cloud computing, chips, and infrastructure. Much of the loss came from a one-time financing charge, but the cost of running Claude remains the deeper business issue.\n\nThis video explains how Anthropic depends on AWS, Google Cloud, and other infrastructure partners that can also invest in, distribute, and compete with Claude. We look at how these fixed compute commitments could affect AI prices, usage limits, service capacity, and the speed of workplace automation."
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "Anthropic filed a public Form S-1 registration statement with the SEC on October 26, 2026, for a proposed initial public offering.",
+        "source_title": "Anthropic PBC Form S-1 filing",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm",
+        "published_or_updated": "Filed October 26, 2026"
+      },
+      {
+        "claim": "Anthropic reported approximately $16.3 billion in revenue during the first half of 2026, up sharply from the same period of 2025.",
+        "source_title": "Anthropic files for potentially the biggest IPO ever",
+        "source_url": "https://apnews.com/article/ca2f4c282bef3201a392e59e3df2300c",
+        "published_or_updated": "October 26, 2026"
+      },
+      {
+        "claim": "Anthropic reported an $80.7 billion first-half net loss for 2026, although the filing included a one-time accounting charge of roughly $72.4 billion related to financing agreements; the operating loss was substantially smaller.",
+        "source_title": "Anthropic files for potentially the biggest IPO ever",
+        "source_url": "https://apnews.com/article/ca2f4c282bef3201a392e59e3df2300c",
+        "published_or_updated": "October 26, 2026"
+      },
+      {
+        "claim": "Anthropic’s disclosed and reported infrastructure plans involve hundreds of billions of dollars in future compute, cloud, and related commitments, illustrating the mismatch between near-term revenue and long-term capacity obligations.",
+        "source_title": "Anthropic’s $518 billion AI buildout hinges largely on deals that cannot be canceled",
+        "source_url": "https://www.fidelity.com/news/article/company-news/202609290607TRSNEWSCOMBINED_KBN3VF0YX-OUSBS_1",
+        "published_or_updated": "September 29, 2026"
+      },
+      {
+        "claim": "Amazon is both a minority investor in Anthropic and Anthropic’s primary cloud and training partner; Anthropic has also announced major Google Cloud TPU arrangements. This supports describing cloud companies as occupying multiple roles in Anthropic’s business, though “landlords” is a metaphor rather than a filing term.",
+        "source_title": "Powering the next generation of AI development with AWS",
+        "source_url": "https://www.anthropic.com/news/anthropic-amazon-trainium",
+        "published_or_updated": "November 22, 2024"
+      },
+      {
+        "claim": "Anthropic says its Amazon relationship includes a commitment to use AWS as its primary training and cloud provider, while Amazon has continued investing in the company and providing access to custom AI chips.",
+        "source_title": "Anthropic and Amazon expand compute collaboration",
+        "source_url": "https://www.anthropic.com/news/anthropic-amazon-compute",
+        "published_or_updated": "April 20, 2026"
+      },
+      {
+        "claim": "The video may reasonably explore whether these economics could eventually affect users through higher prices, usage limits, or pressure to monetize automation faster, but those outcomes are inferences and should not be presented as facts disclosed by Anthropic.",
+        "source_title": "Anthropic PBC Form S-1 filing",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm",
+        "published_or_updated": "Filed October 26, 2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "Anthropic S-1 IPO compute commitments losses Amazon Google infrastructure October 2026",
+      "score": 82.3,
+      "verdict": "pass",
+      "recent_videos": 1,
+      "median_views_per_day": 74323.20000000001,
+      "top_views_per_day": 74323.20000000001,
+      "market_coverage": 1,
+      "title_query_overlap": 1.0,
+      "measured_at": "2026-10-27T04:02:59.248351+00:00",
+      "signal_type": "youtube-breakout-v1"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.74,
+      "true_peak_dbtp": -1.79,
+      "loudness_range": 2.5
+    },
+    "editorial": {
+      "beats": 86,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-10-27T19:59:01.343291+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-long-tue-thu-sat"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-long-2026-10-27",
+    "created_at": "2026-10-27T19:59:02.466385+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-10-27T17:30:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "c131db05667e192bff812ba0381489f23c3f841dc201ca9f2fedee0ba5f5f2c1",
+        "bytes": 143806159
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "0fa31c81588da326281a61a32f1575121df621c60c6c1be283de05e16095545a",
+        "bytes": 1033235
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "b97290914fa92a547c8921e57d164423843e34e270788e33293b0b87c30700b2",
+        "bytes": 3183
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "be6cfcffc7bc091547b73238d2234225a14234975561fba830b3480905ade942",
+        "bytes": 15958
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "1511ff39073a77c29d6043a3ec5fa9b97f1c28d47289c0bcab391fc09cb56553",
+        "bytes": 2473
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "81aa2961b5df91d4419b5bd86112b0835d7c5093cd0abd7293c11f8bea9e5dad",
+        "bytes": 4068
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "5466316572f8a9e44214cb77b8db5f1888152120d266c69f8ed26a588091ceac",
+        "bytes": 388
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "bfdeb2959236fcafba4ce015346a92fbf88f23d3c33996599af230e9ec123d47",
+        "bytes": 277
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-titles",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 145.0,
+      "cached_input_units": 0.0,
+      "output_units": 88.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000135,
+      "created_at": "2026-10-27T04:02:57.403653+00:00"
+    },
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 41015.0,
+      "cached_input_units": 0.0,
+      "output_units": 2661.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.011396,
+      "created_at": "2026-10-27T04:02:58.744485+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-27T04:02:58.746170+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 22331.0,
+      "cached_input_units": 0.0,
+      "output_units": 1606.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006393,
+      "created_at": "2026-10-27T04:03:24.919185+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-27T04:03:24.923608+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 7833.0,
+      "cached_input_units": 0.0,
+      "output_units": 5042.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007617,
+      "created_at": "2026-10-27T04:04:10.374020+00:00"
+    },
+    {
+      "stage": "script-spoken",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 7006.0,
+      "cached_input_units": 0.0,
+      "output_units": 12062.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015876,
+      "created_at": "2026-10-27T04:06:41.691993+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 13876.0,
+      "cached_input_units": 6689.0,
+      "output_units": 5309.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007942,
+      "created_at": "2026-10-27T04:06:41.696307+00:00"
+    },
+    {
+      "stage": "visual-plan-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-27T19:19:49.847576+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 15866.0,
+      "cached_input_units": 0.0,
+      "output_units": 4467.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008534,
+      "created_at": "2026-10-27T19:19:49.853585+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:20:04.653615+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:20:18.705822+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:20:32.808983+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:20:47.475374+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:21:01.980074+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:21:18.497875+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:21:34.088013+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:21:48.680154+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:22:05.319840+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:22:15.434709+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:22:27.007210+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:22:42.067900+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:22:52.295991+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:23:04.032428+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:23:14.956097+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:23:25.664364+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:23:38.852618+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:23:51.881302+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:24:04.734615+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:24:19.949266+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:24:32.895997+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:24:44.196536+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:24:56.113334+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:25:05.791583+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:25:16.522557+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:25:30.008329+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:25:42.772906+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:25:57.346251+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:26:10.814427+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:26:24.319744+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:26:36.216631+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:26:47.340974+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:27:02.390511+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:27:15.907139+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:27:30.592686+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:27:40.879361+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:27:51.754649+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:28:05.134981+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-27T19:28:18.607201+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 14785.0,
+      "cached_input_units": 0.0,
+      "output_units": 806.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.003924,
+      "created_at": "2026-10-27T19:57:32.229450+00:00"
+    },
+    {
+      "stage": "thumbnail",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-10-27T19:58:03.569489+00:00"
+    }
+  ],
+  "recorded_at": "2026-10-27T19:59:16.188049+00:00"
+}
