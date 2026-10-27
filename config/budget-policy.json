@@ -2,21 +2,21 @@
   "version": 1,
   "currency": "USD",
   "openai": {
-    "monthly_cap_usd": 12,
-    "monthly_reserve_usd": 1,
+    "monthly_cap_usd": 20,
+    "monthly_reserve_usd": 0,
     "scheduled_plan": {
       "long": 9,
       "short": 18,
       "static_post": 61
     },
     "scheduled_allocations_usd": {
-      "long": 0.9,
-      "short": 0.45
+      "long": 2.5,
+      "short": 0.8
     },
-    "allocation_note": "First-scale OpenAI deposit: $10/month. Internal guard splits approximately $7 to scheduled video production and $3 to automated static-post generation; either lane pauses before its guard and resumes after a deliberate budget change. 2026-10-27: video lane raised from $7 to $9 (cap $12) after the owner topped up; October's thumbnail work used the lane early.",
+    "allocation_note": "Owner direction 2026-10-27: the engine runs unattended on schedule and must not pause itself on tight internal guards. Video lane and monthly guard $20; per video $2.50 for a long (8-9 minute scripts, ~$0.6-1.2 so far) and $0.80 for a short. The real limit is the OpenAI balance.",
     "resume_after_recharge": true,
     "static_post_allocation_usd": 0.07,
-    "scheduled_video_cap_usd": 9,
+    "scheduled_video_cap_usd": 20,
     "static_post_cap_usd": 3.5
   },
   "independent_production": {
