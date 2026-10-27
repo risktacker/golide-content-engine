@@ -850,6 +850,15 @@ class ProductionService:
             if script_text(plan) != script_path.read_text(encoding="utf-8").strip():
                 scene_plan_path.write_text(json.dumps(plan, indent=2) + "\n", encoding="utf-8")
                 script_path.write_text(script_text(plan) + "\n", encoding="utf-8")
+        # 2026-10-27: every number in the script is written as digits (also fixes a plan
+        # written before the rule, until the recording has been processed).
+        if scene_plan_path.exists() and not (work / "timed-words-owner.json").exists():
+            from ..engine.numerals import plan_digits
+            current = json.loads(scene_plan_path.read_text(encoding="utf-8"))
+            fixed = plan_digits(current)
+            if fixed != current:
+                scene_plan_path.write_text(json.dumps(fixed, indent=2) + "\n", encoding="utf-8")
+                script_path.write_text(script_text(fixed) + "\n", encoding="utf-8")
         script = script_path.read_text(encoding="utf-8").strip()
         self._budget(spec)
 

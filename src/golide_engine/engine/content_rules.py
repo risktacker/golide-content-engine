@@ -474,7 +474,9 @@ LINE RULES (lines are how the speech is split for the screen; they are NOT sente
   three lines, so a line can end on a comma or with no punctuation, and the next line
   can begin with "and", "but", "because", "which" and so on.
 - Split at natural pauses, never in the middle of a name or number.
-- No brackets, no abbreviations, no symbols, write numbers as they are spoken.
+- No brackets, no abbreviations, no symbols. Write every number as digits (16.3 billion, 2026,
+  October 26th, 85 percent, 4 robots): the owner reads digits faster than spelled-out numbers
+  (2026-10-27). Only "one" on its own stays a word ("one of them").
 - Each line names ONE emphasis: the key term of that line, shown in gold in the captions.
   Pick what the viewer must remember: a name ("Nvidia", "Sam Altman"), a number
   ("25 percent"), or the key idea or term ("crypto agility", "inventory"). Never a
@@ -907,7 +909,7 @@ def spoken_pass_instructions(format_name: str) -> str:
         f"- About the same length ({target['words_min']} to {target['words_max']} words in total).\n"
         "- The follow call-out still says follow the channel (never the brand name, never "
         "comments, likes or links), and the last line is still the two-sided question.\n"
-        "- No colons, no dashes, numbers written as spoken. \"emphasis\" is one or two words "
+        "- No colons, no dashes, every number written as digits (16.3 billion, 2026). \"emphasis\" is one or two words "
         "copied exactly from that line's text.\n\n"
         + voice_pairs()
         + owner_voice()
