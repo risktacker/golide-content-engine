@@ -1,0 +1,627 @@
+{
+  "production_id": "golide-short-2026-10-26",
+  "youtube_video_id": "BEJLqMkvvjo",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "BEJLqMkvvjo",
+    "upload_status": "published",
+    "privacy_status": "public",
+    "scheduled_at": null,
+    "uploaded_at": "2026-10-27T03:48:46.414921+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "Introducing Growit o1 Agents | Meet Your New Personal AI - Reality Check",
+    "status": "published",
+    "scheduled_at": "2026-10-26T11:00:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-shorts-mon-wed-fri-sun\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "A personal AI agent doesn't just answer questions,\nit carries work forward.\nGive it a website project, and it can research the subject,\noutline pages, draft copy, and prepare steps to publish.\nThe model chooses the next move, uses tools,\nreads results, revises plans, and keeps your goal in context.\nThe same loop can organize footage, suggest a cut,\nor prepare a message without sending it.\nDanger starts when preparation becomes execution.\nA browser agent could publish wrong copy, share a private file,\nchange an account, send a message, or delete data.\nA proposed action can be inspected and rejected,\nwhile a silent action spends your authority before you see it.\nKeep human approval before it publishes, buys, sends,\nchanges an account, or deletes something.\nRoutine work can run with narrow permissions and a stop button.\nThe rule is simple, let the agent plan,\nbut keep consequential actions behind your approval.\nPersonal agents are controlled action loops, not invisible employees.\nFollow us for plain explanations of agent behaviour.\nWould you let an agent publish your website, yes or no?\n",
+  "research": {
+    "summary": "A personal agent is best understood as a language model placed inside a controlled action loop. Instead of answering one question, it can break a goal into steps, use tools, inspect the results, revise its plan and return for guidance when it reaches a decision point. In practice, those tools might include web search, a browser, files, calendars, code environments or creative software.\n\nThat changes the user’s role. The person is no longer typing every instruction, but neither should the agent become an invisible operator. The user still needs to define the objective, supply relevant context and decide what authority to delegate. The system should make its proposed plan visible, limit it to narrowly scoped permissions and pause before actions that create meaningful consequences.\n\nA useful example is a small website project. The agent might research the subject, outline pages, draft copy, generate a first version and prepare the browser steps needed to publish it. A video task might involve organizing footage, suggesting a cut and preparing an edit. Those examples describe a possible workflow—not a guarantee that every agent can perform each task reliably today.\n\nThe important distinction is between proposing and executing. A proposed action can be inspected, corrected or rejected. A silently executed action may send a message, expose private information, alter an account, publish incorrect material or delete something before the user has a chance to intervene. Current agent designs therefore use tools, permissions, approval checkpoints and activity records to keep the person in control.\n\nHuman approval should generally remain necessary for actions that are external, irreversible, financially consequential, privacy-sensitive or publicly attributable: sending messages, making purchases, changing account settings, publishing material, deleting data, sharing confidential files or accepting a legal or professional commitment. Routine, reversible work can be delegated more freely, provided the scope is explicit and the agent can be stopped.\n\nThe unresolved problem is not simply whether agents can act. It is whether people can understand what they are about to do, grant only the authority required, and remain attentive when approval requests arrive. Too little oversight creates risk; too much can turn approval into a reflex. The practical goal is therefore not a human approving every click, but a human approving the plan, the permissions and the consequential moments.",
+    "claims": [
+      {
+        "claim": "An agent differs from a fixed workflow because the model can dynamically direct its own process and tool use rather than follow only predetermined code paths.",
+        "source_title": "Building Effective AI Agents",
+        "source_url": "https://www.anthropic.com/engineering/building-effective-agents",
+        "published_or_updated": "Published 2024; page crawled recently"
+      },
+      {
+        "claim": "Agent systems commonly operate in a loop that plans, acts, observes results, adjusts and sometimes pauses for human input.",
+        "source_title": "Trustworthy agents in practice",
+        "source_url": "https://www.anthropic.com/research/trustworthy-agents",
+        "published_or_updated": "Published approximately April 2026; page crawled recently"
+      },
+      {
+        "claim": "Tools can extend an agent beyond text generation to activities such as web access, browser interaction, applications and other external systems.",
+        "source_title": "Computer use",
+        "source_url": "https://developers.openai.com/api/docs/guides/agents-api/tools/computer-use",
+        "published_or_updated": "Current documentation; page crawled recently"
+      },
+      {
+        "claim": "Agent systems can use permissions that distinguish between actions that are always allowed, actions requiring approval and blocked actions.",
+        "source_title": "Trustworthy agents in practice",
+        "source_url": "https://www.anthropic.com/research/trustworthy-agents",
+        "published_or_updated": "Published approximately April 2026; page crawled recently"
+      },
+      {
+        "claim": "Browser-based agent systems can require approval before accessing a new website origin and can request confirmation for sensitive activities such as sharing personal information, making purchases, deleting data, changing account permissions or sending messages.",
+        "source_title": "Computer use",
+        "source_url": "https://developers.openai.com/api/docs/guides/agents-api/tools/computer-use",
+        "published_or_updated": "Current documentation; page crawled recently"
+      },
+      {
+        "claim": "OpenAI’s site-tool documentation warns that browser agents create risks including data exfiltration and prompt injection, and says website instructions cannot authorize sensitive actions on the user’s behalf.",
+        "source_title": "Using site tools in the ChatGPT desktop app",
+        "source_url": "https://help.openai.com/en/articles/20001423-using-site-tools-in-the-chatgpt-desktop-app",
+        "published_or_updated": "Current help documentation; crawled recently"
+      },
+      {
+        "claim": "NIST identifies agent identity, authorization, auditing, non-repudiation and prompt-injection mitigation as open governance and security concerns for software and AI agents.",
+        "source_title": "Accelerating the Adoption of Software and AI Agent Identity and Authorization",
+        "source_url": "https://www.nccoe.nist.gov/sites/default/files/2026-02/accelerating-the-adoption-of-software-and-ai-agent-identity-and-authorization-concept-paper.pdf",
+        "published_or_updated": "February 2026"
+      },
+      {
+        "claim": "NIST has warned that asking humans to approve too many agent actions can create consent fatigue, making users more likely to approve requests without adequate scrutiny.",
+        "source_title": "Back to the Future: Why Agentic AI Needs a Strong Identity Foundation",
+        "source_url": "https://www.nist.gov/blogs/cybersecurity-insights/back-future-why-agentic-ai-needs-strong-identity-foundation",
+        "published_or_updated": "Published approximately August 2026; crawled recently"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Introducing Growit o1 Agents | Meet Your New Personal AI - Reality Check",
+    "description": "Personal AI agents can research, plan, write, organize files, and prepare work across different tools. But there is a major difference between preparing an action and taking one.\n\nThis short explains why agents should require human approval before publishing, buying, sending messages, changing accounts, or deleting data. Would you let an AI agent publish your website?\n\n#AIAgents #AgenticAI #AISafety #HumanInTheLoop #AIAutomation #FutureOfWork #GOLIDE",
+    "tags": [
+      "AI agents",
+      "personal AI agent",
+      "agentic AI",
+      "AI agent safety",
+      "human in the loop",
+      "browser agents",
+      "autonomous AI",
+      "AI automation",
+      "AI workflow",
+      "AI assistant",
+      "AI agent approval",
+      "AI safety",
+      "AI website builder",
+      "AI productivity",
+      "AI tools",
+      "AI risks",
+      "AI decision making",
+      "AI action loop",
+      "AI permissions",
+      "AI oversight",
+      "AI governance",
+      "website automation",
+      "AI publishing",
+      "AI browser automation",
+      "agent behavior",
+      "controlled AI",
+      "GOLIDE",
+      "human approval AI"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "keywords": [
+      "personal AI agent",
+      "AI agent safety",
+      "human approval AI",
+      "agentic AI safety",
+      "browser agent risks",
+      "AI agent permissions",
+      "human in the loop",
+      "autonomous AI agents",
+      "AI website publishing",
+      "AI action approval",
+      "AI agent workflow",
+      "AI automation risks",
+      "personal AI assistant",
+      "AI agent explained",
+      "controlled AI agents"
+    ],
+    "hashtags": [
+      "#AIAgents",
+      "#AgenticAI",
+      "#AISafety",
+      "#HumanInTheLoop",
+      "#AIAutomation",
+      "#FutureOfWork",
+      "#GOLIDE"
+    ],
+    "format": "short",
+    "title_description_language": "en",
+    "seo_body": "Personal AI agents can research, plan, write, organize files, and prepare work across different tools. But there is a major difference between preparing an action and taking one.\n\nThis short explains why agents should require human approval before publishing, buying, sending messages, changing accounts, or deleting data. Would you let an AI agent publish your website?"
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "An agent differs from a fixed workflow because the model can dynamically direct its own process and tool use rather than follow only predetermined code paths.",
+        "source_title": "Building Effective AI Agents",
+        "source_url": "https://www.anthropic.com/engineering/building-effective-agents",
+        "published_or_updated": "Published 2024; page crawled recently"
+      },
+      {
+        "claim": "Agent systems commonly operate in a loop that plans, acts, observes results, adjusts and sometimes pauses for human input.",
+        "source_title": "Trustworthy agents in practice",
+        "source_url": "https://www.anthropic.com/research/trustworthy-agents",
+        "published_or_updated": "Published approximately April 2026; page crawled recently"
+      },
+      {
+        "claim": "Tools can extend an agent beyond text generation to activities such as web access, browser interaction, applications and other external systems.",
+        "source_title": "Computer use",
+        "source_url": "https://developers.openai.com/api/docs/guides/agents-api/tools/computer-use",
+        "published_or_updated": "Current documentation; page crawled recently"
+      },
+      {
+        "claim": "Agent systems can use permissions that distinguish between actions that are always allowed, actions requiring approval and blocked actions.",
+        "source_title": "Trustworthy agents in practice",
+        "source_url": "https://www.anthropic.com/research/trustworthy-agents",
+        "published_or_updated": "Published approximately April 2026; page crawled recently"
+      },
+      {
+        "claim": "Browser-based agent systems can require approval before accessing a new website origin and can request confirmation for sensitive activities such as sharing personal information, making purchases, deleting data, changing account permissions or sending messages.",
+        "source_title": "Computer use",
+        "source_url": "https://developers.openai.com/api/docs/guides/agents-api/tools/computer-use",
+        "published_or_updated": "Current documentation; page crawled recently"
+      },
+      {
+        "claim": "OpenAI’s site-tool documentation warns that browser agents create risks including data exfiltration and prompt injection, and says website instructions cannot authorize sensitive actions on the user’s behalf.",
+        "source_title": "Using site tools in the ChatGPT desktop app",
+        "source_url": "https://help.openai.com/en/articles/20001423-using-site-tools-in-the-chatgpt-desktop-app",
+        "published_or_updated": "Current help documentation; crawled recently"
+      },
+      {
+        "claim": "NIST identifies agent identity, authorization, auditing, non-repudiation and prompt-injection mitigation as open governance and security concerns for software and AI agents.",
+        "source_title": "Accelerating the Adoption of Software and AI Agent Identity and Authorization",
+        "source_url": "https://www.nccoe.nist.gov/sites/default/files/2026-02/accelerating-the-adoption-of-software-and-ai-agent-identity-and-authorization-concept-paper.pdf",
+        "published_or_updated": "February 2026"
+      },
+      {
+        "claim": "NIST has warned that asking humans to approve too many agent actions can create consent fatigue, making users more likely to approve requests without adequate scrutiny.",
+        "source_title": "Back to the Future: Why Agentic AI Needs a Strong Identity Foundation",
+        "source_url": "https://www.nist.gov/blogs/cybersecurity-insights/back-future-why-agentic-ai-needs-strong-identity-foundation",
+        "published_or_updated": "Published approximately August 2026; crawled recently"
+      }
+    ],
+    "platform_demand": {
+      "query": "Growit o1 Agents official AI workspace browser tasks research building video editing",
+      "score": 77.9,
+      "verdict": "pass",
+      "recent_videos": 1,
+      "median_views_per_day": 102667.20000000001,
+      "top_views_per_day": 102667.20000000001,
+      "market_coverage": 1,
+      "title_query_overlap": 1,
+      "measured_at": "2026-10-26T07:03:11.167110+00:00",
+      "signal_type": "youtube-breakout-v1"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.7,
+      "true_peak_dbtp": -1.92,
+      "loudness_range": 2.9
+    },
+    "editorial": {
+      "beats": 21,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-10-27T03:48:39.120291+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri-sun"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-short-2026-10-26",
+    "created_at": "2026-10-27T03:48:40.496264+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-10-26T11:00:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "fbc6849cf6b6a088735e2d57a3fc2998206a86c86c6fa0dec2919563a66119a6",
+        "bytes": 16819643
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "4c7af084f2e92cf1eb203c45dc8c3e7429b38f0de9d22451330759da5392ffa0",
+        "bytes": 190296
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "8ef45b055aafa2a5505b758bcbaecec9f5ed0e3e9a74e76cc3c66a6effc81881",
+        "bytes": 2361
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "a12a6f69f3dcf3b4dfe877a0cb04083ddd4780ab7bcf3f623b1420d11b103d9c",
+        "bytes": 2364
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "2ab5cd19a99e86b141b372f6dbf591c1c7a2ac09d8e6e3bfd8d3718d61a2e45b",
+        "bytes": 605
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "a11b9d22c1d6ccc34742bcdbc186cc70191fd0ff8f6d650db2da1eb336b51879",
+        "bytes": 4368
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "678140779bba2e91fcb33a95de33aea71f2cbbed4011049fbe64e353d1870954",
+        "bytes": 394
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "b8fd7f87952e9bb3d075d31c74e4e2ccca0617aa5b62da969250aa61fbc817f8",
+        "bytes": 276
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 26987.0,
+      "cached_input_units": 0.0,
+      "output_units": 3080.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.009093,
+      "created_at": "2026-10-26T07:03:10.350016+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-26T07:03:10.351439+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 13050.0,
+      "cached_input_units": 0.0,
+      "output_units": 1740.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004698,
+      "created_at": "2026-10-26T07:03:33.267966+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-26T07:03:33.269515+00:00"
+    },
+    {
+      "stage": "script-spoken",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 4987.0,
+      "cached_input_units": 0.0,
+      "output_units": 7148.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.009575,
+      "created_at": "2026-10-26T07:05:22.014456+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 7578.0,
+      "cached_input_units": 0.0,
+      "output_units": 4460.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006868,
+      "created_at": "2026-10-26T07:05:22.019757+00:00"
+    },
+    {
+      "stage": "visual-plan-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-26T17:52:10.497245+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 13420.0,
+      "cached_input_units": 0.0,
+      "output_units": 2604.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005809,
+      "created_at": "2026-10-26T17:52:10.503058+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-26T17:52:26.078523+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-26T17:52:41.976522+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-26T17:52:56.619051+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-26T17:53:10.062247+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-26T17:53:25.509214+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-26T17:53:38.953215+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-26T17:53:53.075747+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-26T17:54:06.942879+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-26T17:54:19.712209+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-26T17:54:32.313764+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-26T17:54:46.247768+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-26T17:55:01.129385+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-26T17:55:16.809302+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-26T17:55:33.465841+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-26T17:55:51.937744+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-26T17:56:06.620027+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9256.0,
+      "cached_input_units": 0.0,
+      "output_units": 619.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002594,
+      "created_at": "2026-10-26T18:00:07.338157+00:00"
+    }
+  ],
+  "recorded_at": "2026-10-27T03:48:46.420130+00:00"
+}
