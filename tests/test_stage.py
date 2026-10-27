@@ -23,7 +23,7 @@ class StageTests(unittest.TestCase):
         layout = Layout.for_format("long")
         image = Stages(layout, "long").image("grid", (110, 220, 200))
         row = int(layout.caption_y + layout.caption_size * 0.5)
-        self.assertLess(float(image[row].max()), 0.45 * float(image.max()))
+        self.assertLess(float(image[row].max()), 45.0)   # a faint lift (0-255) under the words
 
     def test_warm_accents_never_fill_a_set(self):
         self.assertEqual(tuple(set_colour((233, 196, 106))), (110.0, 220.0, 200.0))

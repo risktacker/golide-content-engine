@@ -126,10 +126,11 @@ ends at the last line). Start a new scene only when the idea changes.
 MONEY AND BUSINESS (owner direction 2026-10-27: "when it comes to money... our drawings
 are fumbling"). Draw every money or business object with the parts that make it read
 at once, named in "drawing":
-- coin: a ridged (reeded) edge, a raised inner rim, visible thickness, its number in the
-  middle; savings are a short stack of coins, never a pile of discs.
-- banknote: a border, an oval portrait window, the amount in a corner, two or three notes
-  fanned so it reads as cash.
+- coin: a ridged (reeded) edge, a raised inner rim, visible thickness, the middle left
+  clear (its number goes in "label", typeset sharp, never painted: painted numbers trace
+  as blobs); savings are a short stack of coins drawn in outline, never a pile of discs.
+- banknote: a border, an oval portrait window, two or three notes fanned so it reads as
+  cash; the amount goes in "label". Every part in thin outline, never solid filled areas.
 - bank: a triangular roof (pediment), evenly spaced columns, steps at the bottom.
 - shop shelf: shelves in rows with real product shapes (bottles, boxes, cans) and one
   price tag; a shop is a front with windows, a door and an awning.

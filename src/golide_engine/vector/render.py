@@ -421,7 +421,7 @@ class VectorRenderer:
         if drawing is None:
             return "none"
         if drawing.figure:
-            return "none"
+            return drawing.stage or "none"   # maths figures keep the lesson grid; charts carry "market"
         return drawing.stage or "grid"
 
     def _with_stage(self, frame: np.ndarray, groups: list[Group], gi: int, t: float) -> np.ndarray:
@@ -639,6 +639,9 @@ class VectorRenderer:
                 if drawing.companion is not None:
                     drawing.companion.entrance = "pen"
             drawing.stage = str(scene.get("stage") or "")
+            if drawing.figure and str(scene.get("figure") or "").strip().lower().startswith("chart"):
+                # 2026-10-27: money charts stand on the market set, not in empty black.
+                drawing.stage = drawing.stage or "market"
             SCENES[scene["id"]] = drawing
             for index in range(int(scene["first_line"]), int(scene["last_line"]) + 1):
                 owner[index] = scene["id"]

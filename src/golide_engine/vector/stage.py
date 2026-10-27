@@ -36,6 +36,7 @@ COOL = {"teal": (110, 220, 200), "blue": (115, 165, 250), "violet": (168, 140, 2
 WARM = (233, 196, 106)
 UNDER_TEXT = 0.15         # share of the set kept behind captions and number cards
 STRENGTH = 1.0
+HOLD_OUT = 0.8           # share of the set held back behind the object
 
 
 def set_colour(accent_rgb: tuple) -> np.ndarray:
@@ -64,6 +65,14 @@ class Stages:
         self.top = layout.cy + top * layout.size / 2
         self.cx = layout.cx
         self.mask = (UNDER_TEXT + (1 - UNDER_TEXT) * text_safe(layout, 0.06))[..., None].astype(np.float32)
+        # 2026-10-27 (owner: candles showed through a coin): the set stays behind the object.
+        # Line art is see-through, so the set is held back where the drawing sits.
+        yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+        ocy = (self.top + self.floor) / 2
+        rx = layout.size * (0.55 if format_name == "short" else 0.62)
+        ry = (self.floor - self.top) * 0.42
+        hold = 1 - HOLD_OUT * np.exp(-(((xx - layout.cx) / rx) ** 2 + ((yy - ocy) / ry) ** 2) ** 1.6)
+        self.mask = (self.mask * hold[..., None]).astype(np.float32)
         self._cache: dict[tuple, np.ndarray] = {}
 
     # ------------------------------------------------------------- public
