@@ -86,9 +86,12 @@ VISUAL_PLAN_SCHEMA: dict = {
                     "figure_b": {"type": "string"},
                     "label": {"type": "string"},
                     "label_b": {"type": "string"},
+                    "stage": {"type": "string", "enum": ["grid", "pedestal", "studio", "wall", "orbit", "horizon",
+                                                        "space", "factory"]},
                 },
                 "required": ["first_line", "last_line", "drawing", "gold_element", "accent", "sound", "sound_word",
-                             "figure", "layout", "drawing_b", "gold_element_b", "figure_b", "label", "label_b"],
+                             "figure", "layout", "drawing_b", "gold_element_b", "figure_b", "label", "label_b",
+                             "stage"],
             },
         },
     },
@@ -119,6 +122,20 @@ Group consecutive lines into {low} to {high} scenes. Every line belongs to
 exactly one scene, in order, with no gaps or overlaps (scene 1 starts at line
 0, each next scene starts right after the previous one ends, the last scene
 ends at the last line). Start a new scene only when the idea changes.
+
+STAGE (owner direction 2026-10-27: no drawing floats in empty black). Each scene
+names the set it stands in, drawn behind it by the engine:
+- "grid": a floor grid to a glowing horizon. Cars, robots, vehicles, anything on the ground.
+- "pedestal": glowing rings under a soft beam. A product or gadget being revealed.
+- "studio": a curved studio backdrop with two lights. A small object shown up close
+  (a bottle, a phone, glasses, a device in the hand).
+- "wall": a blueprint wall. How something works inside, parts, specs, a process.
+- "orbit": rings and a halo. Things you cannot hold: AI, data, networks, money flows.
+- "horizon": the glowing curve of a planet. Space, rockets, satellites, global scale.
+- "space": a nebula, a distant sun and a bending grid. Gravity, physics, the cosmos.
+- "factory": roof trusses, hanging lamps, a floor. Industry, machines, tanks, building sites.
+Vary it with the story: consecutive scenes about the same thing keep the same set;
+a new place or idea gets a new one. Exact maths figures ignore it.
 
 For each scene write "drawing": one composed illustration that SHOWS the idea
 of those lines as a small visual story or metaphor, the way an illustrator
@@ -376,6 +393,7 @@ class Drawing:
     companion: "Drawing | None" = None
     clip: bool = False  # a pacing shot: framed on part of the picture, clipped to the drawing area
     figure: bool = False  # an exact figure (maths, physics): the background shows the lesson grid
+    stage: str = ""       # the set behind it (vector.stage), chosen by the storyboard (2026-10-27)
     traced: int = 0       # strokes found by the tracer before clean-up (a clutter measure)
     # 2026-10-22: the real illustration, shown on screen and revealed along the strokes
     # (vector.artwork). None for exact figures, which are drawn as strokes.

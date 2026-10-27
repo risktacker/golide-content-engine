@@ -288,6 +288,8 @@ class VectorRenderer:
         self.fps = fps
         self.layout = Layout.for_format(format_name)
         self.ambience = Ambience(self.layout, self.theme, format_name)
+        from .stage import Stages
+        self.stages = Stages(self.layout, format_name)
         self._transitions: dict[int, "Transition"] = {}
         self.chapters: list = []
         self.follow: set[int] = set()  # spoken line indexes of the follow call-out
@@ -408,6 +410,39 @@ class VectorRenderer:
         w = crossfade(t, new.start, TRANSITION_BEFORE, TRANSITION_AFTER)
         return mix(self._look(old, min(t, old.end)), self._look(new, max(t, new.start)), w)
 
+    def _stage_of(self, group: Group) -> str:
+        """The set behind a scene (vector.stage): the storyboard's choice, the plain sky for
+        exact figures and the closing logo, the floor grid otherwise."""
+        from .illustrate import SCENES
+
+        if group.visual == "logo_end":
+            return "none"
+        drawing = SCENES.get(group.icons[0]) if group.icons else None
+        if drawing is None:
+            return "none"
+        if drawing.figure:
+            return "none"
+        return drawing.stage or "grid"
+
+    def _with_stage(self, frame: np.ndarray, groups: list[Group], gi: int, t: float) -> np.ndarray:
+        """Add the scene's set under the drawing, cross-faded with the next one at a scene change."""
+        group = groups[gi]
+        pairs = [(group, 1.0)]
+        if gi + 1 < len(groups) and t >= groups[gi + 1].start - TRANSITION_BEFORE:
+            w = crossfade(t, groups[gi + 1].start, TRANSITION_BEFORE, TRANSITION_AFTER)
+            pairs = [(group, 1 - w), (groups[gi + 1], w)]
+        elif gi > 0 and t < group.start + TRANSITION_AFTER:
+            w = crossfade(t, group.start, TRANSITION_BEFORE, TRANSITION_AFTER)
+            pairs = [(groups[gi - 1], 1 - w), (group, w)]
+        breathe = 0.92 + 0.08 * math.sin(t * 0.9)
+        for g, weight in pairs:
+            if weight <= 0.001:
+                continue
+            image = self.stages.image(self._stage_of(g), self._accent_rgb(g))
+            if image is not None:
+                frame = frame + image * (weight * breathe)
+        return frame
+
     def _marking(self, group: Group, t: float) -> float:
         """0..1 while a spoken-number card belonging to this scene is on screen."""
         for card in getattr(self, "cards", ()):
@@ -481,6 +516,7 @@ class VectorRenderer:
         glow_img = glow_img.filter(ImageFilter.GaussianBlur(self.theme.glow["line_blur_radius"] / GLOW_SCALE))
         glow_img = glow_img.resize((L.width, L.height), Image.Resampling.BILINEAR)
         frame = self.ambience.frame(t, self._ambient(groups, gi, t)) + np.asarray(glow_img, np.float32) * 1.35
+        frame = self._with_stage(frame, groups, gi, t)
 
         m = np.ndarray((L.height, L.width, 4), np.uint8, main_surface.get_data())
         alpha = m[..., 3:4].astype(np.float32) / 255.0
@@ -587,6 +623,7 @@ class VectorRenderer:
                 if parent is None:
                     continue
                 SCENES[scene["id"]] = shot_of(parent, int(scene.get("shot") or 1))
+                SCENES[scene["id"]].stage = parent.stage
                 for index in range(int(scene["first_line"]), int(scene["last_line"]) + 1):
                     owner[index] = scene["id"]
                 continue
@@ -601,6 +638,7 @@ class VectorRenderer:
                 drawing.companion = _load_drawing(illustrations.get(second_id(scene["id"])), scene, "label_b")
                 if drawing.companion is not None:
                     drawing.companion.entrance = "pen"
+            drawing.stage = str(scene.get("stage") or "")
             SCENES[scene["id"]] = drawing
             for index in range(int(scene["first_line"]), int(scene["last_line"]) + 1):
                 owner[index] = scene["id"]
