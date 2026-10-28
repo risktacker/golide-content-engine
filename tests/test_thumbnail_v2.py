@@ -48,5 +48,18 @@ class ProductStructureTests(unittest.TestCase):
 
     def test_line_art_copies_structure_not_colour(self):
         from golide_engine.providers.openai_media import OpenAILineArtProvider
-        self.assertIn("Copy ONLY its structure", OpenAILineArtProvider.STRUCTURE_RULE)
+        self.assertIn("Copy ONLY the structure", OpenAILineArtProvider.STRUCTURE_RULE)
         self.assertIn("Ignore its colours", OpenAILineArtProvider.STRUCTURE_RULE)
+
+
+class MoneyStructureTests(unittest.TestCase):
+    """2026-10-28: money and business objects are drawn from code-made structure sketches."""
+
+    def test_named_objects_get_their_sketch_and_others_none(self):
+        import tempfile
+        from golide_engine.vector.structures import structures_for
+        with tempfile.TemporaryDirectory() as tmp:
+            refs = structures_for("A hand holds a signed contract next to a price tag", Path(tmp))
+            self.assertEqual([p.name for p in refs], ["structure-contract.png", "structure-tag.png"])
+            self.assertTrue(all(p.exists() for p in refs))
+            self.assertEqual(structures_for("a robot arm on a conveyor", Path(tmp)), [])

@@ -1135,8 +1135,14 @@ class ProductionService:
                                                   work / "product-reference.jpg")
                 print(json.dumps({"status": "product_reference", "product": product, "used": product_ref is not None}))
 
+                from ..vector.structures import structures_for
+
                 def reference_for(part):
-                    return product_ref if product_ref and product.lower() in str(part.drawing).lower() else None
+                    """The real product's picture, else (2026-10-28) code-drawn sketches of the money
+                    and business objects the drawing names, so they come out properly built."""
+                    if product_ref and product.lower() in str(part.drawing).lower():
+                        return product_ref
+                    return structures_for(str(part.drawing), work / "structures") or None
 
                 ordered: list[Path] = []
                 refused: set[Path] = set()

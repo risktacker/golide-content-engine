@@ -206,17 +206,24 @@ class OpenAILineArtProvider:
         self.model = model
         self.quality = quality
 
-    STRUCTURE_RULE = (" REFERENCE IMAGE: it shows the real product. Copy ONLY its structure: the "
+    STRUCTURE_RULE = (" REFERENCE IMAGES: they show how the objects are really built (a real product, or a "
+                      "sketch of how a coin, banknote, bank, shelf, card or contract is made). Copy ONLY the "
+                      "structure: the "
                       "silhouette, proportions, number of legs, wheels or arms, and its distinctive "
                       "parts, so the drawing is unmistakably THIS product. Ignore its colours, lighting, "
                       "materials, background, people, text and logos; draw it entirely in the line-art "
                       "style above.")
 
-    def create(self, prompt: str, output: Path, size: str, reference: Path | None = None) -> ProviderOutput:
-        """reference (2026-10-25): a picture of the real product, used for its shape only."""
-        if reference is not None and Path(reference).is_file():
-            with Path(reference).open("rb") as handle:
-                response = client().images.edit(model=self.model, image=[handle],
+    def create(self, prompt: str, output: Path, size: str, reference=None) -> ProviderOutput:
+        """reference (2026-10-25): a picture of the real product, or (2026-10-28) a list of code-drawn
+        structure sketches of money and business objects; used for shape only."""
+        refs = [Path(r) for r in (reference if isinstance(reference, (list, tuple)) else [reference])
+                if r is not None and Path(r).is_file()]
+        if refs:
+            from contextlib import ExitStack
+            with ExitStack() as stack:
+                handles = [stack.enter_context(r.open("rb")) for r in refs[:3]]
+                response = client().images.edit(model=self.model, image=handles,
                                                 prompt=prompt + self.STRUCTURE_RULE, size=size,
                                                 quality=self.quality)
         else:
