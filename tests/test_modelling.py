@@ -314,3 +314,19 @@ class TopicLockTests(unittest.TestCase):
         from golide_engine.vector.ambient import LEVEL_DB
 
         self.assertEqual(-19.0, LEVEL_DB)
+
+
+class SpeedAndLanguageTests(unittest.TestCase):
+    """2026-10-28: speed leads the pick, and only English videos are modelled."""
+
+    def test_speed_beats_a_small_channel_spike(self):
+        from golide_engine.youtube.breakouts import score
+        self.assertGreater(score(117818, 2.7), score(32400, 24.8))
+
+    def test_non_english_titles_are_skipped(self):
+        from golide_engine.youtube.breakouts import is_english
+        self.assertFalse(is_english("L'écran de leur iPhone Duo est déjà cassé !"))
+        self.assertFalse(is_english("Elon Musk Sắp Cấy Chip Não Blindsight"))
+        self.assertFalse(is_english("Tesla Roadster", {"defaultAudioLanguage": "fr"}))
+        self.assertTrue(is_english("Is the Duo Actually a Worse Z Fold 8??"))
+        self.assertTrue(is_english("Microsoft Buying Out 60,000 Employees"))

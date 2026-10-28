@@ -220,7 +220,10 @@ class ProductionService:
                 clean = " ".join(re.sub(r"#\w+", " ", source).split())
                 c["model_title"] = (clean + " Explained")[:100]
             c["title_changes"] = title_changes(source, c["model_title"])
-        return [c for c in candidates if not title_tweak_problem(c["breakout"]["title"], c["model_title"])]
+        from ..youtube.breakouts import is_english
+        # 2026-10-28: an English channel never publishes a title in another language.
+        return [c for c in candidates if not title_tweak_problem(c["breakout"]["title"], c["model_title"])
+                and is_english(c["model_title"]) and is_english(c["breakout"]["title"])]
 
     def _redraw_if_unclear(self, spec, part, prompt: str, target: Path, line_art, cost_model: str,
                            production_id: str, reference: Path | None = None) -> None:

@@ -107,8 +107,38 @@ def _age_hours(published: str, now: datetime) -> float:
 
 
 def score(vph: float, breakout: float) -> float:
-    """0 to about 100: momentum and breakout both count (log-scaled)."""
-    return round(min(60.0, math.log10(1 + vph) * 15) + min(40.0, math.log10(1 + breakout) * 20), 1)
+    """0 to 100. Owner direction 2026-10-28: speed leads. Views per hour is the proof that people
+    want the topic now (up to 85 points); beating its own channel's normal only breaks ties (up to
+    15). Before, a 25x breakout at 32K/hour beat a video doing 118K/hour."""
+    return round(min(85.0, math.log10(1 + vph) * 17) + min(15.0, math.log10(1 + breakout) * 7), 1)
+
+
+NON_ENGLISH_WORDS = {
+    "le", "la", "les", "des", "est", "une", "du", "pour", "avec", "sur", "dans", "leur", "déjà", "très", "pas",
+    "el", "los", "las", "una", "por", "para", "con", "que", "del", "es", "muy", "der", "die", "das", "und", "ist",
+    "nicht", "mit", "auf", "ein", "eine", "il", "di", "che", "della", "um", "uma", "não", "com", "ao", "nos",
+    "và", "của", "có", "không", "này", "là", "những",
+}
+
+
+def is_english(title: str, snippet: dict | None = None) -> bool:
+    """Owner direction 2026-10-28: the channel is English, so only English videos are modelled
+    (a French source gave us a French title). Uses YouTube's language tags when present, then
+    the title: non-Latin scripts, accented letters, or common non-English words fail."""
+    snippet = snippet or {}
+    for key in ("defaultAudioLanguage", "defaultLanguage"):
+        lang = str(snippet.get(key) or "").lower()
+        if lang and not lang.startswith("en"):
+            return False
+    text = re.sub(r"#\w+", " ", str(title))
+    letters = [ch for ch in text if ch.isalpha()]
+    if not letters:
+        return True
+    if sum(1 for ch in letters if ord(ch) > 127) > max(1, len(letters) * 0.03):
+        return False
+    words = re.findall(r"[a-zà-ÿ']+", text.lower())
+    hits = sum(1 for w in words if w in NON_ENGLISH_WORDS)
+    return hits < 2 and not (len(words) <= 5 and hits >= 1 and not any(w in {"the", "and", "is", "of", "to"} for w in words))
 
 
 def load_sources(path: Path | None = None) -> dict[str, Any]:
@@ -258,6 +288,8 @@ def _measure(youtube: Any, videos: list[dict], fmt: str, now: datetime) -> list[
         snippet, stats = v.get("snippet", {}), v.get("statistics", {})
         if str(snippet.get("categoryId", "")) in SKIP_CATEGORIES:
             continue
+        if not is_english(snippet.get("title", ""), snippet):
+            continue  # 2026-10-28: an English channel models English videos only
         seconds = duration_seconds((v.get("contentDetails") or {}).get("duration", ""))
         if not fits_format(seconds, fmt):
             continue
