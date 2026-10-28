@@ -1,0 +1,636 @@
+{
+  "production_id": "golide-short-2026-10-28",
+  "youtube_video_id": "UzsgYNJczz0",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "UzsgYNJczz0",
+    "upload_status": "published",
+    "privacy_status": "public",
+    "scheduled_at": null,
+    "uploaded_at": "2026-10-28T18:59:21.033655+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "iPhone Duo Hinge Failure",
+    "status": "published",
+    "scheduled_at": "2026-10-28T11:00:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-shorts-mon-wed-fri-sun\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "Cracks on the first iPhone Duo don't prove foldables are fragile.\nThey show one hinge can put stress in one place.\nOwners report bright lines, crunching sounds, and stiff hinges.\nApple acknowledged limited reports and directed owners to AppleCare.\niFixit found more than 10 thin layers inside.\nEach must bend together without separating.\nGears and springs guide metal joints around curved tracks.\nEvery fold creates mechanical stress, and the hinge spreads it.\nReports cluster near the flex cable opening and hinge support.\niFixit's model suggests a support bar may stay too high.\nThe display can press against it, creating a stress hotspot.\nThat could explain cracks, but it's still a hypothesis.\nDust can enter hinge gaps and change how parts move.\nRepeated bending can turn tiny pressure into a bright line.\nThe outer cover costs 49 dollars to replace.\nInner OLED damage was reported at 999 dollars out of warranty.\nThe easier layer to repair isn't the expensive screen.\niPhone Duo shows a hinge risk, not proof foldables fail.\nFollow the channel as we break down hardware failures like this.\nIs the iPhone Duo hinge flawed, or is dust the bigger problem?\n",
+  "research": {
+    "summary": "A defensible G$LIDE explainer should treat the iPhone Duo failures as an early, limited field issue—not proof that every foldable is inherently fragile. The strongest story is mechanical: a flexible OLED is a multi-layer stack engineered to distribute strain, while the hinge controls how that stack bends. Current teardown evidence suggests that a localized hinge-support problem could create a stress hotspot, but the cause is not yet conclusively established. The repair angle is clearer: the replaceable outer cover layer is relatively accessible, while damage to the inner OLED is the expensive repair.",
+    "claims": [
+      {
+        "claim": "Apple acknowledged reports affecting a small number of iPhone Duo units and directed affected owners to AppleCare for replacement; reports describe cracks, bright lines, crunching sounds, and unusually stiff hinges.",
+        "source_title": "Apple’s new foldable iPhone is cracking after hours or days of use",
+        "source_url": "https://www.latimes.com/business/story/2026-10-27/apples-new-foldable-iphone-is-cracking-after-hours-or-days-of-use",
+        "published_or_updated": "October 27, 2026"
+      },
+      {
+        "claim": "A foldable OLED is not a single flexible sheet: it uses multiple layers, including optical adhesive, the OLED panel, touch and polarizer layers, and a cover window. Engineers position brittle layers and tune adhesive thickness to manage strain and reduce cracking or delamination.",
+        "source_title": "Fabrication of practical deformable displays: advances and challenges",
+        "source_url": "https://www.nature.com/articles/s41377-023-01089-3",
+        "published_or_updated": "March 4, 2023"
+      },
+      {
+        "claim": "The iPhone Duo teardown identified more than ten thin display layers and described a hinge using gears, springs, metal joints, and curved guides to control the bend and reduce stretching or compression of the display.",
+        "source_title": "iPhone Duo Teardown: The Most Repairable Foldable Has a Huge Screen Problem",
+        "source_url": "https://www.ifixit.com/News/119895/iphone-duo-teardown",
+        "published_or_updated": "October 25, 2026"
+      },
+      {
+        "claim": "iFixit’s model and CT comparison found that reported breaks cluster near the transition between the flex-cable opening and central hinge support. Its simulation proposes that a support bar may fail to drop far enough, allowing the folded display to press against it and create a localized stress hotspot; this remains a hypothesis, not a confirmed root cause.",
+        "source_title": "iPhone Duo Teardown: The Most Repairable Foldable Has a Huge Screen Problem",
+        "source_url": "https://www.ifixit.com/News/119895/iphone-duo-teardown",
+        "published_or_updated": "October 25, 2026"
+      },
+      {
+        "claim": "Dust and sand are relevant mechanical risks because folding-phone hinges contain small moving gaps. The Associated Press cites manufacturer guidance warning that debris can enter those gaps, while iFixit reported that fluorescent powder reached moving parts of the Duo hinge during its teardown experiment.",
+        "source_title": "One Tech Tip: As Apple’s Duo phone is released, here are dos and don’ts for folding phones",
+        "source_url": "https://apnews.com/article/apple-duo-folding-iphone-samsung-de76f4a330b4301d1a6bda1033981af3",
+        "published_or_updated": "October 21, 2026"
+      },
+      {
+        "claim": "The outer flexible cover layer can be replaced without replacing the OLED, according to iFixit’s teardown. iFixit reported a $49 cover-layer service price without AppleCare, while inner-display damage was reported at $999 out of warranty.",
+        "source_title": "iPhone Duo Teardown: The Most Repairable Foldable Has a Huge Screen Problem",
+        "source_url": "https://www.ifixit.com/News/119895/iphone-duo-teardown",
+        "published_or_updated": "October 25, 2026"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "iPhone Duo Hinge Failure",
+    "description": "Cracks, bright lines, crunching sounds, and stiff hinges are raising questions about the first iPhone Duo. iFixit’s teardown points to a possible stress hotspot near the hinge and flex cable opening, but the exact cause is still unconfirmed.\n\nThis short breaks down how the iPhone Duo hinge works, how dust may affect its moving parts, and why inner OLED repairs could cost far more than replacing the outer cover. Is the hinge flawed, or is dust the bigger problem?\n\n#iPhoneDuo #Apple #FoldableiPhone #iFixit #TechNews #PhoneRepair #GOLIDE",
+    "tags": [
+      "iPhone Duo",
+      "iPhone Duo crack",
+      "iPhone Duo hinge",
+      "iPhone Duo screen crack",
+      "iPhone Duo durability",
+      "iPhone Duo teardown",
+      "iPhone Duo dust",
+      "iPhone Duo repair",
+      "iPhone Duo OLED",
+      "iPhone Duo AppleCare",
+      "Apple foldable iPhone",
+      "Apple foldable",
+      "foldable iPhone",
+      "foldable phone hinge",
+      "foldable screen crack",
+      "foldable phone repair",
+      "iPhone hinge problem",
+      "iPhone crackgate",
+      "iFixit iPhone Duo",
+      "iFixit teardown",
+      "Apple hardware failure",
+      "phone hinge damage"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "keywords": [
+      "iPhone Duo hinge",
+      "iPhone Duo crack",
+      "iPhone Duo screen crack",
+      "iPhone Duo teardown",
+      "iPhone Duo dust",
+      "iPhone Duo durability",
+      "iPhone Duo repair",
+      "iPhone Duo crackgate",
+      "iPhone Duo OLED",
+      "Apple foldable iPhone",
+      "foldable phone hinge",
+      "foldable screen damage",
+      "iFixit iPhone Duo",
+      "AppleCare iPhone Duo",
+      "foldable phone dust"
+    ],
+    "hashtags": [
+      "#iPhoneDuo",
+      "#Apple",
+      "#FoldableiPhone",
+      "#iFixit",
+      "#TechNews",
+      "#PhoneRepair",
+      "#GOLIDE"
+    ],
+    "format": "short",
+    "title_description_language": "en",
+    "seo_body": "Cracks, bright lines, crunching sounds, and stiff hinges are raising questions about the first iPhone Duo. iFixit’s teardown points to a possible stress hotspot near the hinge and flex cable opening, but the exact cause is still unconfirmed.\n\nThis short breaks down how the iPhone Duo hinge works, how dust may affect its moving parts, and why inner OLED repairs could cost far more than replacing the outer cover. Is the hinge flawed, or is dust the bigger problem?"
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "Apple acknowledged reports affecting a small number of iPhone Duo units and directed affected owners to AppleCare for replacement; reports describe cracks, bright lines, crunching sounds, and unusually stiff hinges.",
+        "source_title": "Apple’s new foldable iPhone is cracking after hours or days of use",
+        "source_url": "https://www.latimes.com/business/story/2026-10-27/apples-new-foldable-iphone-is-cracking-after-hours-or-days-of-use",
+        "published_or_updated": "October 27, 2026"
+      },
+      {
+        "claim": "A foldable OLED is not a single flexible sheet: it uses multiple layers, including optical adhesive, the OLED panel, touch and polarizer layers, and a cover window. Engineers position brittle layers and tune adhesive thickness to manage strain and reduce cracking or delamination.",
+        "source_title": "Fabrication of practical deformable displays: advances and challenges",
+        "source_url": "https://www.nature.com/articles/s41377-023-01089-3",
+        "published_or_updated": "March 4, 2023"
+      },
+      {
+        "claim": "The iPhone Duo teardown identified more than ten thin display layers and described a hinge using gears, springs, metal joints, and curved guides to control the bend and reduce stretching or compression of the display.",
+        "source_title": "iPhone Duo Teardown: The Most Repairable Foldable Has a Huge Screen Problem",
+        "source_url": "https://www.ifixit.com/News/119895/iphone-duo-teardown",
+        "published_or_updated": "October 25, 2026"
+      },
+      {
+        "claim": "iFixit’s model and CT comparison found that reported breaks cluster near the transition between the flex-cable opening and central hinge support. Its simulation proposes that a support bar may fail to drop far enough, allowing the folded display to press against it and create a localized stress hotspot; this remains a hypothesis, not a confirmed root cause.",
+        "source_title": "iPhone Duo Teardown: The Most Repairable Foldable Has a Huge Screen Problem",
+        "source_url": "https://www.ifixit.com/News/119895/iphone-duo-teardown",
+        "published_or_updated": "October 25, 2026"
+      },
+      {
+        "claim": "Dust and sand are relevant mechanical risks because folding-phone hinges contain small moving gaps. The Associated Press cites manufacturer guidance warning that debris can enter those gaps, while iFixit reported that fluorescent powder reached moving parts of the Duo hinge during its teardown experiment.",
+        "source_title": "One Tech Tip: As Apple’s Duo phone is released, here are dos and don’ts for folding phones",
+        "source_url": "https://apnews.com/article/apple-duo-folding-iphone-samsung-de76f4a330b4301d1a6bda1033981af3",
+        "published_or_updated": "October 21, 2026"
+      },
+      {
+        "claim": "The outer flexible cover layer can be replaced without replacing the OLED, according to iFixit’s teardown. iFixit reported a $49 cover-layer service price without AppleCare, while inner-display damage was reported at $999 out of warranty.",
+        "source_title": "iPhone Duo Teardown: The Most Repairable Foldable Has a Huge Screen Problem",
+        "source_url": "https://www.ifixit.com/News/119895/iphone-duo-teardown",
+        "published_or_updated": "October 25, 2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "iPhone Duo screen cracks iFixit teardown hinge support bar October 2026",
+      "score": 88.2,
+      "verdict": "pass",
+      "recent_videos": 1,
+      "median_views_per_day": 777619.2,
+      "top_views_per_day": 777619.2,
+      "market_coverage": 1,
+      "title_query_overlap": 1,
+      "measured_at": "2026-10-28T07:03:13.679789+00:00",
+      "signal_type": "youtube-breakout-v1"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.82,
+      "true_peak_dbtp": -1.94,
+      "loudness_range": 2.4
+    },
+    "editorial": {
+      "beats": 20,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-10-28T18:59:14.051649+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri-sun"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-short-2026-10-28",
+    "created_at": "2026-10-28T18:59:15.151835+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-10-28T11:00:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "0d86e753a250b6d03208f2cbd46119d9d86aace7479ca5ea09a2195f3a4fabfd",
+        "bytes": 26111043
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "40e49e55bb728c462d536d71c76a49d1c5dd6f5648bd9244b92b43855a132e66",
+        "bytes": 198164
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "23988b4b14b4d559c9048fde5bc45a0d3c91f6069b45cc005c65d000019af854",
+        "bytes": 2465
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "94622fcc9548c298647fdd400719c60af980aaba7eafbfd7eec8161a1f1cfe80",
+        "bytes": 2530
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "dee788a56e827b62a6ca3ab7c59d01fece44f4978118b29c7b2ec4a507b60b47",
+        "bytes": 601
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "7d4e57b94b5f08b130aa3394a14a452585ea63edee3191eba28ad25b3ca9d67c",
+        "bytes": 4008
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "678140779bba2e91fcb33a95de33aea71f2cbbed4011049fbe64e353d1870954",
+        "bytes": 394
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "b3755012b5dbed0ca7cf703bdef8217e8f35ed8c332262a4d134c53be07d4758",
+        "bytes": 277
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 18462.0,
+      "cached_input_units": 0.0,
+      "output_units": 2380.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006548,
+      "created_at": "2026-10-28T07:03:12.990372+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-28T07:03:12.992222+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 25951.0,
+      "cached_input_units": 0.0,
+      "output_units": 1764.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007307,
+      "created_at": "2026-10-28T07:03:40.787445+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-28T07:03:40.789384+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 7395.0,
+      "cached_input_units": 0.0,
+      "output_units": 3307.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005447,
+      "created_at": "2026-10-28T07:04:11.637820+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 8619.0,
+      "cached_input_units": 6200.0,
+      "output_units": 3311.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004581,
+      "created_at": "2026-10-28T07:04:42.275463+00:00"
+    },
+    {
+      "stage": "script-spoken",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 5002.0,
+      "cached_input_units": 0.0,
+      "output_units": 4389.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006267,
+      "created_at": "2026-10-28T07:05:53.467247+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9039.0,
+      "cached_input_units": 6200.0,
+      "output_units": 3453.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004835,
+      "created_at": "2026-10-28T07:05:53.473235+00:00"
+    },
+    {
+      "stage": "visual-plan-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-28T18:50:07.315035+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 18587.0,
+      "cached_input_units": 0.0,
+      "output_units": 2585.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006819,
+      "created_at": "2026-10-28T18:50:07.344527+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-28T18:50:25.830750+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-28T18:50:40.276838+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-28T18:50:54.097361+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-28T18:51:08.502082+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-28T18:51:22.955134+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-28T18:51:47.954803+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-28T18:52:01.575201+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-28T18:52:15.716920+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-28T18:52:31.860698+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-28T18:52:48.797677+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-28T18:53:03.639225+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-28T18:53:17.637576+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-28T18:53:31.537870+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-28T18:53:45.298654+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-28T18:53:59.875887+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-28T18:54:13.548145+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-28T18:54:34.525577+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 13458.0,
+      "cached_input_units": 0.0,
+      "output_units": 738.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.003577,
+      "created_at": "2026-10-28T18:59:02.796428+00:00"
+    }
+  ],
+  "recorded_at": "2026-10-28T18:59:21.038316+00:00"
+}
