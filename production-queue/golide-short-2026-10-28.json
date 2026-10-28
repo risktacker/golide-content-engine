@@ -2,7 +2,7 @@
   "id": "golide-short-2026-10-28",
   "studio_managed": true,
   "format": "short",
-  "title": "L'\u00e9cran de leur iPhone Duo est d\u00e9j\u00e0 fissur\u00e9 !",
+  "title": "iPhone Duo Hinge Failure",
   "brief": "The first wave of iPhone Duo owners is reporting cracks and bright lines along the fold. Rather than simply calling the phone fragile, the video shows how a folding OLED is built, why repeated bending creates mechanical stress, how dust and hinge movement can affect a thin display stack, and why the easiest part of the phone to repair may not be the expensive inner screen.",
   "demand_query": "AI tech news everyone is talking about this week",
   "demand_validation_required": true,
@@ -54,9 +54,9 @@
   "_studio_job_id": "golide-short-2026-10-28",
   "topic_candidates": [
     {
-      "title": "Microsoft\u2019s AI workforce reset: what 60,000 buyouts mean for ordinary workers",
+      "title": "Microsoft’s AI workforce reset: what 60,000 buyouts mean for ordinary workers",
       "query": "Microsoft offers voluntary buyouts to 60,000 employees AI spending October 2026 AP News",
-      "brief": "Microsoft is offering voluntary buyouts to roughly 60,000 employees\u2014about a quarter of its workforce\u2014as it reshapes spending around AI. The video explains why AI investment can lead to both more hiring in specialized areas and fewer traditional roles, and why a buyout is not the same as a layoff. It connects corporate headcount, automation, cloud computing and the cost of training AI systems to the jobs people actually do.",
+      "brief": "Microsoft is offering voluntary buyouts to roughly 60,000 employees—about a quarter of its workforce—as it reshapes spending around AI. The video explains why AI investment can lead to both more hiring in specialized areas and fewer traditional roles, and why a buyout is not the same as a layoff. It connects corporate headcount, automation, cloud computing and the cost of training AI systems to the jobs people actually do.",
       "evidence_summary": "The Associated Press reports that Microsoft offered voluntary buyouts to about 60,000 employees, or roughly 27% of its global workforce, while spending heavily on artificial intelligence. The story should clearly distinguish eligible buyouts from confirmed departures and avoid claiming that AI alone caused every job change. ([apnews.com](https://apnews.com/article/c5a639f53615be198db1799adf6837e1?utm_source=openai))",
       "authoritative_source_url": "https://apnews.com/article/c5a639f53615be198db1799adf6837e1",
       "broke_on": "October 26, 2026",
@@ -87,7 +87,7 @@
         "duration_seconds": 76,
         "format": "short",
         "found_by": "chart US",
-        "description": "The tech world is in a panic after Microsoft announced buyout offers for 60,000 employees -- 25% of its workforce. It\u2019s to make room in the budget for risky AI gambles which many fear won\u2019t pay off.\n\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014    \nEdited by: James Girardier\nWriting: Brian Espinoza, Philip DeFranco\n\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\n#Phil",
+        "description": "The tech world is in a panic after Microsoft announced buyout offers for 60,000 employees -- 25% of its workforce. It’s to make room in the budget for risky AI gambles which many fear won’t pay off.\n——————————    \nEdited by: James Girardier\nWriting: Brian Espinoza, Philip DeFranco\n————————————\n#Phil",
         "url": "https://www.youtube.com/watch?v=OzjdhunvU9s",
         "score": 67.8
       },
@@ -106,12 +106,12 @@
       "title": "Why iPhone Duo Screens Are Already Cracking",
       "query": "iPhone Duo screen cracks iFixit teardown hinge support bar October 2026",
       "brief": "The first wave of iPhone Duo owners is reporting cracks and bright lines along the fold. Rather than simply calling the phone fragile, the video shows how a folding OLED is built, why repeated bending creates mechanical stress, how dust and hinge movement can affect a thin display stack, and why the easiest part of the phone to repair may not be the expensive inner screen.",
-      "evidence_summary": "iFixit\u2019s October 25 teardown documents early screen failures, examines the hinge and inner display, and gives the phone a provisional 5/10 repairability score. It also says replacing the inner screen and hinge remains difficult and expensive. These are reported early failures, not proof that every iPhone Duo is defective. ([ifixit.com](https://www.ifixit.com/News/119895/iphone-duo-teardown?utm_source=openai))",
+      "evidence_summary": "iFixit’s October 25 teardown documents early screen failures, examines the hinge and inner display, and gives the phone a provisional 5/10 repairability score. It also says replacing the inner screen and hinge remains difficult and expensive. These are reported early failures, not proof that every iPhone Duo is defective. ([ifixit.com](https://www.ifixit.com/News/119895/iphone-duo-teardown?utm_source=openai))",
       "authoritative_source_url": "https://www.ifixit.com/News/119895/iphone-duo-teardown",
       "broke_on": "October 25, 2026",
       "science_angle": "Materials engineering: flexible OLED layers must survive repeated bending while remaining thin, sealed and optically smooth.",
       "source_breakout": 1,
-      "model_title": "L'\u00e9cran de leur iPhone Duo est d\u00e9j\u00e0 fissur\u00e9 !",
+      "model_title": "L'écran de leur iPhone Duo est déjà fissuré !",
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "iPhone Duo screen cracks iFixit teardown hinge support bar October 2026",
@@ -126,7 +126,7 @@
         "signal_type": "youtube-most-popular-seed-proxy"
       },
       "breakout": {
-        "title": "L'\u00e9cran de leur iPhone Duo est d\u00e9j\u00e0 cass\u00e9 !",
+        "title": "L'écran de leur iPhone Duo est déjà cassé !",
         "channel": "M6 Info",
         "subscribers": 310000,
         "views": 1336505,
@@ -136,7 +136,7 @@
         "duration_seconds": 47,
         "format": "short",
         "found_by": "chart CA",
-        "description": "Certains propri\u00e9taires du tout nouveau iPhone Duo ont d\u00e9j\u00e0 signal\u00e9 des fissures sur l'\u00e9cran. Le youtubeur iFixit a d\u00e9mont\u00e9 le smartphone et a fait une d\u00e9couverte inqui\u00e9tante.\n\n\ud83d\udd14 Abonnez-vous \u00e0 notre cha\u00eene https://youtube.com/@M6Info/?sub_confirmation=\n\n\ud83d\udca1 L\u2019actualit\u00e9 avec #M6info sur vos r\u00e9seaux soc",
+        "description": "Certains propriétaires du tout nouveau iPhone Duo ont déjà signalé des fissures sur l'écran. Le youtubeur iFixit a démonté le smartphone et a fait une découverte inquiétante.\n\n🔔 Abonnez-vous à notre chaîne https://youtube.com/@M6Info/?sub_confirmation=\n\n💡 L’actualité avec #M6info sur vos réseaux soc",
         "url": "https://www.youtube.com/watch?v=aTfh2R2FX-E",
         "score": 88.2
       },
@@ -155,7 +155,7 @@
       "title": "Duo Hinge Failure: The Tiny Mechanism Behind the Big Screen Problem",
       "query": "iFixit iPhone Duo hinge support bar screen failures teardown October 2026",
       "brief": "This short-form explanation zooms in on the hinge instead of treating the cracked screen as random bad luck. It follows the folding motion step by step: the display bends, the center support moves, and tiny alignment errors can concentrate force on a fragile area. The payoff is a simple answer to the viewer question: can a phone be highly repairable overall while its most important part is still a repair nightmare?",
-      "evidence_summary": "iFixit found that the Duo\u2019s outer screen and batteries are comparatively accessible, but the inner display and hinge account for the biggest repairability penalty. Its teardown discusses possible mechanical causes of early failures while presenting them as a possible explanation rather than a confirmed manufacturing defect. ([ifixit.com](https://www.ifixit.com/News/119895/iphone-duo-teardown?utm_source=openai))",
+      "evidence_summary": "iFixit found that the Duo’s outer screen and batteries are comparatively accessible, but the inner display and hinge account for the biggest repairability penalty. Its teardown discusses possible mechanical causes of early failures while presenting them as a possible explanation rather than a confirmed manufacturing defect. ([ifixit.com](https://www.ifixit.com/News/119895/iphone-duo-teardown?utm_source=openai))",
       "authoritative_source_url": "https://www.ifixit.com/News/119895/iphone-duo-teardown",
       "broke_on": "October 25, 2026",
       "science_angle": "Mechanics of fatigue and stress concentration: repeated flexing can turn a small alignment or clearance problem into visible damage over time.",
@@ -185,7 +185,7 @@
         "duration_seconds": 46,
         "format": "short",
         "found_by": "chart US",
-        "description": "Writer: Brett Stelmaszek\nEditor: Jayson van Kerckhoven\nMusic by: @UFD-Music\n\nLooks like we have the answers about why Apple\u2019s folding phones are snapping their screens.\niFixIt finally dropped their teardown review of the Duo, and it\u2019s shocking just how positive it is. They regard it as the most repa",
+        "description": "Writer: Brett Stelmaszek\nEditor: Jayson van Kerckhoven\nMusic by: @UFD-Music\n\nLooks like we have the answers about why Apple’s folding phones are snapping their screens.\niFixIt finally dropped their teardown review of the Duo, and it’s shocking just how positive it is. They regard it as the most repa",
         "url": "https://www.youtube.com/watch?v=VPOC47eTE-E",
         "score": 74.6
       },
@@ -203,7 +203,7 @@
     {
       "title": "Is the Duo Actually a Worse Z Fold 8??",
       "query": "iPhone Duo versus Galaxy Z Fold 8 durability repairability hinge screen comparison October 2026",
-      "brief": "Instead of declaring a winner from a spec sheet, the video compares what ordinary owners feel: opening the phone, using two apps, carrying it near dust, and paying for a repair. The central question is whether Apple\u2019s first foldable improves the everyday experience enough to justify the risks of a flexible inner display. The story uses the recent teardown to separate design advantages from first-generation compromises.",
+      "brief": "Instead of declaring a winner from a spec sheet, the video compares what ordinary owners feel: opening the phone, using two apps, carrying it near dust, and paying for a repair. The central question is whether Apple’s first foldable improves the everyday experience enough to justify the risks of a flexible inner display. The story uses the recent teardown to separate design advantages from first-generation compromises.",
       "evidence_summary": "Apple describes the Duo as its first foldable iPhone with a larger inner display and fold-oriented software experiences. iFixit reports that the Duo is the most repairable foldable it has tested so far, but still highlights serious difficulty around the inner display and hinge. The comparison should present tradeoffs rather than claim one phone is universally better. ([apple.com](https://www.apple.com/newsroom/2026/10/iphone-duo-arrives-at-apple-store-locations-worldwide/?utm_source=openai))",
       "authoritative_source_url": "https://www.ifixit.com/News/119895/iphone-duo-teardown",
       "broke_on": "October 25, 2026",
@@ -262,7 +262,7 @@
     "duration_seconds": 46,
     "format": "short",
     "found_by": "chart US",
-    "description": "Writer: Brett Stelmaszek\nEditor: Jayson van Kerckhoven\nMusic by: @UFD-Music\n\nLooks like we have the answers about why Apple\u2019s folding phones are snapping their screens.\niFixIt finally dropped their teardown review of the Duo, and it\u2019s shocking just how positive it is. They regard it as the most repa",
+    "description": "Writer: Brett Stelmaszek\nEditor: Jayson van Kerckhoven\nMusic by: @UFD-Music\n\nLooks like we have the answers about why Apple’s folding phones are snapping their screens.\niFixIt finally dropped their teardown review of the Duo, and it’s shocking just how positive it is. They regard it as the most repa",
     "url": "https://www.youtube.com/watch?v=VPOC47eTE-E",
     "score": 74.6
   },
@@ -278,7 +278,5 @@
     "measured_at": "2026-10-28T07:03:13.679789+00:00",
     "signal_type": "youtube-breakout-v1"
   },
-  "selected_topic_source": "https://www.ifixit.com/News/119895/iphone-duo-teardown",
-  "owner_voice_media_ref": "r2://temp/2026/10/28/38a6d95c47964566a8cb69d3e48fff93-Duo-enhanced-v2.wav",
-  "_failed_runs": 1
+  "selected_topic_source": "https://www.ifixit.com/News/119895/iphone-duo-teardown"
 }
