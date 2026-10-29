@@ -237,7 +237,7 @@ def _frame(inner: str) -> str:
     )
 
 
-GOLIDE_FROM = "GOLIDE <hello@golidee.com>"
+GOLIDE_FROM = "GOLIDE Studio <hello@golidee.com>"
 
 
 def _send_resend(message: EmailMessage, key: str, to: str) -> bool:
@@ -278,7 +278,7 @@ def _send(message: EmailMessage) -> bool:
     if not user or not password or not to:
         print('{"status": "email_skipped", "reason": "SMTP secrets are not configured"}')
         return False
-    message["From"] = f"GOLIDE Engine <{user}>"
+    message["From"] = f"GOLIDE Studio <{user}>"
     message["To"] = to
     try:
         with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=30) as smtp:

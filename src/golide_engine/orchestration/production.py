@@ -771,6 +771,19 @@ class ProductionService:
                     + chapter_problems(plan, str(spec["format"])) + follow_problems(plan, str(spec["format"])))
 
         models_path = work / "model-scripts.json"
+        # 2026-10-29: production-queue/<id>.rescript asks for a fresh script (new token, new
+        # script), only while the recording has not been made.
+        rescript = self.root / "production-queue" / f"{production_id}.rescript"
+        if rescript.exists() and not (work / "timed-words-owner.json").exists():
+            token = rescript.read_text(encoding="utf-8").strip()
+            done = work / "rescript-done.txt"
+            if not done.exists() or done.read_text(encoding="utf-8").strip() != token:
+                for name in ("script.txt", "scene-plan.json", "model-scripts.json", "spoken-pass.json"):
+                    (work / name).unlink(missing_ok=True)
+                self.database.execute("DELETE FROM stage_runs WHERE production_id=? AND stage='script'",
+                                      (production_id,))
+                done.write_text(token + "\n", encoding="utf-8")
+                print(json.dumps({"status": "rescript", "production_id": production_id, "token": token}))
 
         def model_scripts_block() -> str:
             """Transcripts of the videos this script models (fetched once, kept for a resume)."""
