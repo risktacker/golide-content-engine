@@ -279,6 +279,11 @@ def _active(items, t, key_start, key_end):
     return len(items) - 1 if items and t >= key_start(items[-1]) else 0
 
 
+BODY_CUT = 0.85  # how much of the background and set is replaced inside the object's shape
+BODY_FILL = np.array((17, 19, 26), np.float32)   # the object's own dark body, a shade above black
+BODY_TINT = 0.07  # and a touch of its accent, so it reads as a solid thing, not a hole
+
+
 class VectorRenderer:
     def __init__(self, format_name: str, theme: Theme | None = None, fps: int = 30):
         if format_name not in FORMATS:
@@ -438,10 +443,56 @@ class VectorRenderer:
         for g, weight in pairs:
             if weight <= 0.001:
                 continue
-            image = self.stages.image(self._stage_of(g), self._accent_rgb(g))
+            image = self.stages.image(self._stage_of(g), self._accent_rgb(g), self._footprint(groups.index(g), g))
             if image is not None:
                 frame = frame + image * (weight * breathe)
         return frame
+
+    def _footprint(self, gi: int, group: Group):
+        """(left, right, bottom, top) in px of a scene's finished drawing, measured once by drawing
+        it off screen: the stage floor starts where the object stands (owner review 2026-10-29)."""
+        cache = self.__dict__.setdefault("_footprints", {})
+        key = (gi, group.start, group.icons)
+        if key not in cache:
+            L = self.layout
+            surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, L.width // 2, L.height // 2)
+            glow = cairo.ImageSurface(cairo.FORMAT_ARGB32, 8, 8)
+            ctxs = (cairo.Context(surface), cairo.Context(glow))
+            for ctx, scale in zip(ctxs, (0.5, 0.5)):
+                ctx.scale(scale, scale)
+                ctx.translate(L.cx, L.cy)
+                ctx.scale(L.size / 2, L.size / 2)
+            try:
+                self._group_draw(ctxs[0], ctxs[1], group, max(group.start, group.end - 0.05), gi, 1.0, gp=1.0)
+            except Exception:  # noqa: BLE001 - a failed measure just keeps the default floor
+                cache[key] = None
+                return None
+            a = np.ndarray((L.height // 2, surface.get_stride() // 4, 4), np.uint8, surface.get_data())[:, :L.width // 2, 3]
+            rows = np.where((a > 60).sum(axis=1) >= 3)[0]
+            cols = np.where((a > 60).sum(axis=0) >= 2)[0]
+            cache[key] = None if len(rows) == 0 else (float(cols[0] * 2), float(cols[-1] * 2), float(rows[-1] * 2),
+                                                       float(rows[0] * 2))
+        return cache[key]
+
+    def _body(self, alpha: np.ndarray) -> np.ndarray:
+        """The drawing's solid shape (H x W x 1, 0..1): its outline closed and filled, so the set
+        and the background stay behind the object instead of showing through it."""
+        from scipy import ndimage
+
+        a = alpha[..., 0] if alpha.ndim == 3 else alpha
+        if a.dtype != np.uint8:
+            a = (np.clip(a, 0, 1) * 255).astype(np.uint8)
+        h, w = a.shape
+        k = 4
+        a = a[: h // k * k, : w // k * k]
+        small = np.maximum.reduce([a[i::k, j::k] for i in range(k) for j in range(k)]) > 50
+        if not small.any():
+            return np.zeros((h, w, 1), np.float32)
+        closed = ndimage.binary_dilation(small, iterations=3)
+        filled = ndimage.binary_fill_holes(closed)
+        body = ndimage.binary_erosion(filled, iterations=2) | small
+        soft = Image.fromarray((body * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.2))
+        return (np.asarray(soft.resize((w, h), Image.Resampling.BILINEAR), np.float32) / 255)[..., None]
 
     def _marking(self, group: Group, t: float) -> float:
         """0..1 while a spoken-number card belonging to this scene is on screen."""
@@ -515,11 +566,14 @@ class VectorRenderer:
         glow_img = Image.fromarray(g[..., [2, 1, 0]], "RGB")
         glow_img = glow_img.filter(ImageFilter.GaussianBlur(self.theme.glow["line_blur_radius"] / GLOW_SCALE))
         glow_img = glow_img.resize((L.width, L.height), Image.Resampling.BILINEAR)
-        frame = self.ambience.frame(t, self._ambient(groups, gi, t)) + np.asarray(glow_img, np.float32) * 1.35
-        frame = self._with_stage(frame, groups, gi, t)
-
         m = np.ndarray((L.height, L.width, 4), np.uint8, main_surface.get_data())
         alpha = m[..., 3:4].astype(np.float32) / 255.0
+        # Layers (owner review 2026-10-29): background and stage behind, the object in front.
+        # The object's solid shape is cut out of both, then its own glow goes on top.
+        frame = self._with_stage(self.ambience.frame(t, self._ambient(groups, gi, t)), groups, gi, t)
+        body = self._body(m[..., 3])
+        fill = BODY_FILL + np.array(self._accent_rgb(group), np.float32) * BODY_TINT
+        frame = frame * (1 - BODY_CUT * body) + body * (BODY_CUT * fill) + np.asarray(glow_img, np.float32) * 1.35
         rgb = m[..., [2, 1, 0]].astype(np.float32)  # premultiplied
         frame = rgb + frame * (1 - alpha)
         image = Image.fromarray(np.clip(frame, 0, 255).astype(np.uint8), "RGB")
@@ -695,7 +749,7 @@ class VectorRenderer:
         audio = ("[1:a]loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000,asplit=2[v][key];"
                  "[2:a]aresample=48000[s];"
                  "[3:a]aresample=48000[b0];"
-                 "[b0][key]sidechaincompress=threshold=0.05:ratio=1.8:attack=120:release=1200[b];"
+                 "[b0][key]sidechaincompress=threshold=0.05:ratio=2.4:attack=120:release=1200[b];"
                  "[v][s][b]amix=inputs=3:duration=first:normalize=0,alimiter=limit=0.79:level=0:attack=2:release=60[a]")
         command = ["ffmpeg", "-y", "-loglevel", "error", *inputs, "-filter_complex", audio,
                    "-map", "0:v", "-map", "[a]", "-c:v", "libx264", "-preset", "medium", "-crf", "19",

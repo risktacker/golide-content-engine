@@ -59,3 +59,46 @@ class MoneyTests(unittest.TestCase):
         text = scene_plan_instructions("long", 400.0)
         for word in ("reeded", "pediment", "MONEY AND BUSINESS", "ALIGNMENT", "chart: type=candles"):
             self.assertIn(word, text)
+
+
+class LayerTests(unittest.TestCase):
+    """2026-10-29: background behind, stage below, the object in front, colours apart."""
+
+    def test_floor_starts_where_the_object_stands(self):
+        layout = Layout.for_format("long")
+        stages = Stages(layout, "long")
+        bottom = layout.height * 0.62
+        image = stages.image("grid", (115, 165, 250), (layout.width * 0.3, layout.width * 0.7, bottom))
+        shadow_row = int(np.unravel_index(np.argmin(image.sum(axis=2)), image.shape[:2])[0])
+        self.assertLess(abs(shadow_row - bottom), layout.height * 0.02)   # the contact shadow sits under it
+        other = stages.image("grid", (115, 165, 250), (layout.width * 0.3, layout.width * 0.7, layout.height * 0.5))
+        self.assertFalse(np.array_equal(image, other))                     # and the floor moves with it
+
+    def test_wall_is_dimmer_than_the_stage(self):
+        layout = Layout.for_format("long")
+        stages = Stages(layout, "long")
+        from golide_engine.vector.stage import WALL
+        col = np.array((115, 165, 250), np.float32)
+        raw = stages._studio(col)
+        layered = stages._planes(raw, col, None, floor_set=True)
+        fy = int(stages.floor)
+        wall_rows = slice(fy - 300, fy - 40)
+        self.assertLessEqual(float(layered[wall_rows].sum()), float(raw[wall_rows].sum()) * (WALL + 0.05))
+
+    def test_set_never_takes_the_objects_colour(self):
+        from golide_engine.vector.stage import SAME_COLOUR, separate
+        teal = np.array((110, 220, 200), np.float32)
+        moved = separate(teal, (110, 220, 200))
+        self.assertGreater(float(np.linalg.norm(moved - teal)), SAME_COLOUR)
+
+    def test_object_shape_is_cut_out_of_the_set(self):
+        from golide_engine.vector.render import VectorRenderer
+        r = VectorRenderer("long")
+        h, w = r.layout.height, r.layout.width
+        alpha = np.zeros((h, w, 1), np.float32)
+        yy, xx = np.mgrid[0:h, 0:w]
+        ring = np.abs(np.hypot(xx - w / 2, yy - h / 2) - 200) < 3
+        alpha[ring] = 1.0
+        body = r._body(alpha)
+        self.assertGreater(float(body[h // 2, w // 2, 0]), 0.9)   # the inside of a closed outline
+        self.assertLess(float(body[h // 2, w // 2 + 400, 0]), 0.05)

@@ -313,7 +313,7 @@ class TopicLockTests(unittest.TestCase):
     def test_music_bed_is_a_little_lower(self):
         from golide_engine.vector.ambient import LEVEL_DB
 
-        self.assertEqual(-19.0, LEVEL_DB)
+        self.assertEqual(-22.0, LEVEL_DB)
 
 
 class SpeedAndLanguageTests(unittest.TestCase):

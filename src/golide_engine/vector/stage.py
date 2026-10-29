@@ -22,6 +22,19 @@ blue, violet, ivory); warm colours (gold, copper, rose) never fill a set, they o
 small parts (lamps, a sun). Nothing strong sits behind the captions or number cards: the
 set fades to a sixth there. Each set is built once per colour and cached; the renderer adds
 it under the drawing and cross-fades it at scene changes.
+
+Layers (owner review 2026-10-29: "the objects and base stage + background is colliding...
+stage below, background behind, then the objects in front... even the color is mattering"):
+
+* background  everything above the floor line is the back wall: dimmed and greyed, so it
+              recedes and never competes with the object
+* stage       the floor starts exactly where the object stands (its footprint, measured from
+              the drawing), lit a little brighter than the wall, with a clean horizon line, a
+              pool of light and a contact shadow under the object
+* object      the renderer cuts the drawing's solid shape out of both (vector.render), so no
+              set line ever runs through it
+* colour      the set never takes the object's own colour: when they are close, the set moves
+              to the cool colour farthest from it
 """
 
 from __future__ import annotations
@@ -36,7 +49,24 @@ COOL = {"teal": (110, 220, 200), "blue": (115, 165, 250), "violet": (168, 140, 2
 WARM = (233, 196, 106)
 UNDER_TEXT = 0.15         # share of the set kept behind captions and number cards
 STRENGTH = 1.0
-HOLD_OUT = 0.8           # share of the set held back behind the object
+HOLD_OUT = 0.55          # share of the set held back around the object (its solid shape is cut out in render)
+WALL = 0.65              # brightness of the back wall relative to the stage floor
+WALL_GREY = 0.35         # how far the back wall is pulled toward grey
+FLOOR_LIFT = 0.075       # the floor plane's own light, so stage and wall read as two planes
+BEHIND_CLEAR = 0.75      # share of the back wall removed in the object's own box
+SAME_COLOUR = 95.0       # RGB distance under which the set would blend with the object
+
+
+def separate(col: np.ndarray, object_rgb: tuple | None) -> np.ndarray:
+    """The set colour, moved to the cool colour farthest from the object when the two are close."""
+    if object_rgb is None:
+        return col
+    obj = np.array(object_rgb, np.float32)
+    if float(np.linalg.norm(col - obj)) >= SAME_COLOUR:
+        return col
+    far = max((np.array(c, np.float32) for k, c in COOL.items() if k != "ivory"),
+              key=lambda c: float(np.linalg.norm(c - obj)))
+    return far
 
 
 def set_colour(accent_rgb: tuple) -> np.ndarray:
@@ -73,18 +103,78 @@ class Stages:
         ry = (self.floor - self.top) * 0.42
         hold = 1 - HOLD_OUT * np.exp(-(((xx - layout.cx) / rx) ** 2 + ((yy - ocy) / ry) ** 2) ** 1.6)
         self.mask = (self.mask * hold[..., None]).astype(np.float32)
+        self.base_floor = self.floor
+        self.caption_top = caption_top
         self._cache: dict[tuple, np.ndarray] = {}
 
     # ------------------------------------------------------------- public
-    def image(self, kind: str, accent_rgb: tuple) -> np.ndarray | None:
+    def image(self, kind: str, accent_rgb: tuple, footprint: tuple | None = None) -> np.ndarray | None:
+        """The set for one scene. footprint: (left, right, bottom) of the object in px; the
+        floor starts where the object stands and the light pool and shadow sit under it."""
         kind = kind if kind in KINDS else "grid"
         if kind == "none":
             return None
-        col = set_colour(accent_rgb)
-        key = (kind, tuple(int(c) for c in col))
+        col = separate(set_colour(accent_rgb), accent_rgb)
+        floor = self.base_floor
+        if footprint is not None:
+            low = self.top + (self.base_floor - self.top) * 0.35
+            floor = float(np.clip(footprint[2] + self.h * 0.004, low, self.caption_top - self.h * 0.02))
+            floor = round(floor / 6) * 6
+            top = footprint[3] if len(footprint) > 3 else self.top
+            footprint = (round(footprint[0] / 24) * 24, round(footprint[1] / 24) * 24, floor, round(top / 24) * 24)
+        key = (kind, tuple(int(c) for c in col), floor, footprint)
         if key not in self._cache:
-            self._cache[key] = (getattr(self, "_" + kind)(col) * self.mask * STRENGTH).astype(np.float32)
+            if len(self._cache) > 48:
+                self._cache.pop(next(iter(self._cache)))
+            self.floor = floor
+            try:
+                art = getattr(self, "_" + kind)(col)
+                art = self._planes(art, col, footprint, floor_set=kind not in ("orbit", "space", "horizon"),
+                                   near_fade=kind != "pedestal")
+            finally:
+                self.floor = self.base_floor
+            self._cache[key] = (art * self.mask * STRENGTH).astype(np.float32)
         return self._cache[key]
+
+    def _planes(self, art: np.ndarray, col: np.ndarray, footprint, floor_set: bool,
+                near_fade: bool = True) -> np.ndarray:
+        """Background behind, stage below: dim and grey the wall, light the floor, draw the horizon."""
+        h, w, fy = self.h, self.w, self.floor
+        yy, xx = self._grid_xy()
+        if not floor_set:
+            grey = art.mean(axis=2, keepdims=True)
+            return (art * (1 - WALL_GREY) + grey * WALL_GREY) * 0.8
+        soft = np.clip((yy - fy) / (h * 0.006) + 0.5, 0, 1)[..., None]       # 0 on the wall, 1 on the floor
+        grey = art.mean(axis=2, keepdims=True)
+        wall_k = WALL
+        wall = (art * (1 - WALL_GREY) + grey * WALL_GREY) * wall_k
+        if footprint is not None:
+            # The wall frames the object from the sides; right behind it the wall is cleared, so a
+            # drawing that brings its own setting (people at a counter) never sits on a second one.
+            x0, x1, _, top = footprint
+            pad = w * 0.08
+            inside = (np.clip((xx - (x0 - pad)) / pad, 0, 1) * np.clip(((x1 + pad) - xx) / pad, 0, 1)
+                      * np.clip((yy - (top - pad)) / pad, 0, 1)
+                      * np.clip((fy - h * 0.05 - yy) / (h * 0.06), 0, 1))   # the horizon glow stays whole
+            wall = wall * (1 - BEHIND_CLEAR * inside)[..., None]
+        # Right under the horizon the floor lines bunch up into a bright band that fights the
+        # object's base: they fade in over the first stretch of floor instead.
+        near = 1.0 if not near_fade else (0.2 + 0.8 * np.clip((yy - fy) / max(h * 0.09, (h - fy) * 0.4), 0, 1) ** 1.3)[..., None]
+        out = wall * (1 - soft) + art * soft * near
+        depth = max(1.0, h - fy)
+        sides = np.exp(-((xx - self.cx) / (w * 0.55)) ** 2)
+        lift = np.clip(1 - (yy - fy) / depth, 0, 1) ** 0.7 * (yy >= fy) * (0.55 + 0.45 * sides)
+        line = np.exp(-((yy - fy) / (h * 0.0022)) ** 2) * (0.25 + 0.75 * sides)
+        out = out + (lift * FLOOR_LIFT + line * 0.42)[..., None] * col
+        if footprint is not None:
+            x0, x1 = footprint[0], footprint[1]
+            mid, half = (x0 + x1) / 2, max(w * 0.04, (x1 - x0) / 2)
+            pool = np.exp(-(((xx - mid) / (half * 1.25)) ** 2 + ((yy - fy) / (h * 0.05)) ** 2)) * (yy >= fy)
+            shadow = np.exp(-(((xx - mid) / (half * 0.95)) ** 2 + ((yy - fy - h * 0.006) / (h * 0.012)) ** 2))
+            out = out + (pool * 0.16)[..., None] * col
+            # Negative values darken the ambience under the object's base (the frame is clipped later).
+            out = out * (1 - 0.85 * shadow)[..., None] - (shadow * 16)[..., None]
+        return np.clip(out, -16, None)
 
     # ------------------------------------------------------------- helpers
     def _grid_xy(self):

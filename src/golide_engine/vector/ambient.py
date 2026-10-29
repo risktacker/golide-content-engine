@@ -30,7 +30,10 @@ RATE = 48000
 # under the voice) was right. Owner review 2026-10-07: "just a little back off",
 # so 1.5 dB lower (~10.5 dB under the voice). Owner review 2026-10-22: "just a
 # little bit" again, music only (the pops and effects stay as they are): 1.5 dB lower.
-LEVEL_DB = -19.0
+# Owner review 2026-10-29: "reduce it a bit more, these are explanation videos, the sound
+# and music don't need to be colliding... just make sure it's audible": 3 dB lower (about
+# 13.5 dB under the voice), and the dip under the voice is a little deeper (render.py).
+LEVEL_DB = -22.0
 
 BEDS = ("drift", "pulse", "glass", "tide")
 # Roots (Hz) a bed can be played in; picked per video so two videos on the same
