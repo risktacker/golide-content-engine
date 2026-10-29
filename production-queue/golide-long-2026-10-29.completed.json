@@ -66,7 +66,7 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "Apple iPhone Duo hinge screen cracks defect AppleCare replacement teardown October 2026",
-        "score": 90.0,
+        "score": 90,
         "verdict": "pass",
         "recent_videos": 62,
         "median_views_per_day": 607591.02,
@@ -81,7 +81,7 @@
         "channel": "JerryRigEverything",
         "subscribers": 10200000,
         "views": 9215784,
-        "views_per_hour": 172841.0,
+        "views_per_hour": 172841,
         "breakout": 4.8,
         "hours_old": 53.3,
         "duration_seconds": 1044,
@@ -95,7 +95,7 @@
       "trend_pulse": {
         "query": "Apple iPhone Duo hinge screen cracks defect AppleCare replacement teardown October 2026",
         "fresh_videos": 10,
-        "median_views_per_hour": 52.0,
+        "median_views_per_hour": 52,
         "top_views_per_hour": 6018.6,
         "score": 74.6,
         "hot": true,
@@ -115,13 +115,13 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "2026 AI bubble investment spending data centers revenue profitability analysis",
-        "score": 85.0,
+        "score": 85,
         "verdict": "pass",
         "recent_videos": 62,
         "median_views_per_day": 607591.02,
         "top_views_per_day": 6522680.14,
         "market_coverage": 4,
-        "title_query_overlap": 0.0,
+        "title_query_overlap": 0,
         "measured_at": "2026-10-29T04:04:09.315440+00:00",
         "signal_type": "youtube-most-popular-seed-proxy"
       },
@@ -164,13 +164,13 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "Kimi K3 open weights 2.8 trillion parameters million token context window official",
-        "score": 85.0,
+        "score": 85,
         "verdict": "pass",
         "recent_videos": 62,
         "median_views_per_day": 607591.02,
         "top_views_per_day": 6522680.14,
         "market_coverage": 4,
-        "title_query_overlap": 0.0,
+        "title_query_overlap": 0,
         "measured_at": "2026-10-29T04:04:09.315977+00:00",
         "signal_type": "youtube-most-popular-seed-proxy"
       },
@@ -228,7 +228,7 @@
         "channel": "fpt.",
         "subscribers": 606000,
         "views": 742828,
-        "views_per_hour": 13520.0,
+        "views_per_hour": 13520,
         "breakout": 5.1,
         "hours_old": 54.9,
         "duration_seconds": 601,
@@ -244,7 +244,7 @@
         "fresh_videos": 10,
         "median_views_per_hour": 11222.4,
         "top_views_per_hour": 360936.6,
-        "score": 100.0,
+        "score": 100,
         "hot": true,
         "measured_at": "2026-10-29T04:04:12.814199+00:00"
       }
@@ -262,13 +262,13 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "OpenAI Exponential Time Hypothesis false Lean proof October 2026 P versus NP explanation",
-        "score": 85.0,
+        "score": 85,
         "verdict": "pass",
         "recent_videos": 62,
         "median_views_per_day": 607591.02,
         "top_views_per_day": 6522680.14,
         "market_coverage": 4,
-        "title_query_overlap": 0.0,
+        "title_query_overlap": 0,
         "measured_at": "2026-10-29T04:04:09.317027+00:00",
         "signal_type": "youtube-most-popular-seed-proxy"
       },
@@ -292,7 +292,7 @@
         "query": "OpenAI Exponential Time Hypothesis false Lean proof October 2026 P versus NP explanation",
         "fresh_videos": 10,
         "median_views_per_hour": 18.1,
-        "top_views_per_hour": 119.0,
+        "top_views_per_hour": 119,
         "score": 60.8,
         "hot": true,
         "measured_at": "2026-10-29T04:04:13.226150+00:00"
@@ -305,7 +305,7 @@
     "channel": "JerryRigEverything",
     "subscribers": 10200000,
     "views": 9215784,
-    "views_per_hour": 172841.0,
+    "views_per_hour": 172841,
     "breakout": 4.8,
     "hours_old": 53.3,
     "duration_seconds": 1044,
@@ -320,12 +320,13 @@
     "score": 90.3,
     "verdict": "pass",
     "recent_videos": 1,
-    "median_views_per_day": 4148184.0,
-    "top_views_per_day": 4148184.0,
+    "median_views_per_day": 4148184,
+    "top_views_per_day": 4148184,
     "market_coverage": 1,
-    "title_query_overlap": 1.0,
+    "title_query_overlap": 1,
     "measured_at": "2026-10-29T04:04:14.240035+00:00",
     "signal_type": "youtube-breakout-v1"
   },
-  "selected_topic_source": "https://9to5mac.com/2026/10/26/apple-responds-to-reports-of-iphone-duos-inner-display-cracking/"
+  "selected_topic_source": "https://9to5mac.com/2026/10/26/apple-responds-to-reports-of-iphone-duos-inner-display-cracking/",
+  "owner_voice_media_ref": "r2://temp/2026/10/29/3c5890f9a46045c7ac1249efe8a21b99-Hinge-enhanced-v2.wav"
 }

@@ -1,0 +1,746 @@
+{
+  "production_id": "golide-long-2026-10-29",
+  "youtube_video_id": "PAt1Y8-TSDE",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "PAt1Y8-TSDE",
+    "upload_status": "published",
+    "privacy_status": "public",
+    "scheduled_at": null,
+    "uploaded_at": "2026-10-29T22:51:09.944277+00:00"
+  },
+  "production": {
+    "format": "long",
+    "title": "iPhone Duo Teardown – APPLE SHOULD EXPLAIN",
+    "status": "published",
+    "scheduled_at": "2026-10-29T17:30:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-long-tue-thu-sat\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "The new Duo has a problem that is a lot more worrying than a few scratches on the outside. Several owners say the inner display cracked, developed dead pixels, or started showing bright lines right beside the hinge, sometimes after only hours or days. When a $1,999 phone fails at the exact place where it is meant to fold, the question is whether the mechanism behind that fold is pressing on the screen.\nThis does not prove that every Duo is defective, and it cannot be brushed off as 1 unlucky owner. Independent reporting has verified more than 6 customer cases. Some owners heard crunching or popping, felt new resistance in the hinge, or saw a mark near the center before the display failed. So we need to separate what has actually been reported from what people are guessing, then turn that into a buying checklist before anyone pays the price of a very capable laptop for a 1st-generation folding phone.\nStart with the part that makes this phone special and vulnerable at the same time. The inner screen is a folding OLED assembly, not a normal rigid glass panel. It is a very thin stack of layers built to flex along a controlled curve. The hinge has more than 100 components, and custom adhesive layers are designed to let the display layers glide as the phone opens and closes.\nThat sounds like plenty of protection, but thin and flexible still does not mean indestructible. Picture bending paper smoothly around a wide bottle. The force spreads across the curve. Now press 1 fingernail into the back while you bend it. The paper still moves, but the force piles up at 1 tiny point. That is the mechanical problem: a flexible display can handle repeated motion when the movement stays smooth, but a hard point can turn that curve into a crease.\nA hinge can create that hard point in a few different ways. A guide or support might not move fully into place. A component could be slightly out of position, or a bit of grit could reduce the available clearance. The phone could also close around something hard on the display. Then the opening force that normally spreads across the hinge can press into 1 narrow line behind the OLED.\nEngineers call this stress concentration. In plain terms, the smaller the contact area, the more intense the pressure becomes in that spot. The screen does not have to be weak everywhere. It only needs 1 place where bending, compression, and repeated folding meet. Every fold can add a little damage until the display shows a dark bruise, dead pixels, a bright line, or a crack along that same vulnerable path.\nThe hinge area is already the hardest part for the display, because its shape changes there every time the phone moves. The device is thin, the screen has to stay electrically connected while it flexes, and the layers have to slide without separating. That leaves very little tolerance for a component that moves the wrong way. A defect smaller than the width of a fingernail could matter if it presses straight against the display during every fold.\nThat also explains why the reports can seem contradictory. 1 person may fold the phone over and over with no problem, while another sees it fail almost immediately. If the cause is a particular part, alignment, or piece of debris, that risk would not have to affect every unit equally. A phone can be broadly well engineered and still have a narrow failure mode that appears only when several small conditions line up.\nHere is what has been confirmed. Owners have reported inner-screen failures near the center hinge, including cracks, display lines, dead pixels, and malfunction. A major newspaper reported that Bloomberg independently verified more than 6 customer cases through photographs or support evidence. Some incidents happened after hours or days, and some included unusual sounds or more resistance before the failure. The company has replaced affected units in at least some cases.\nThe company's own handling guidance confirms that sand and grit matter too. Owners are told to keep debris away from the hinge, check that the hinge is clean before opening, and remove hard objects before closing the phone. That shows debris or trapped objects can damage the mechanism or display. It does not prove that debris caused the early failures reported online. Those are 2 different claims.\nThe leading hardware explanation comes from teardown analysis. It suggests that a central support bar, or a related hinge guide, might fail to move into position. The folded display could then touch a hard edge, creating exactly the localized stress hotspot that can damage a thin OLED. But this is still a plausible hypothesis, not a confirmed diagnosis for every broken retail phone.\nWe still have no published failure-rate data, no confirmed production-batch pattern, and no public finding that identifies 1 defective component in every case. Different phones could be failing for different reasons: manufacturing variation, hinge damage, debris, accidental pressure, or a component that does not move as intended. You cannot conclude that every Duo will break. The pattern is real enough to change how carefully you buy and inspect the phone.\nBefore spending $1,999, start with the return policy. A direct purchase in the United States can be returned within 14 calendar days of receipt, while a carrier or another retailer may use different rules. That window gives you the cheapest form of protection, because it gives you time to test the hinge before you have used the phone long enough for a small problem to become an expensive repair.\nOn day 1, open and close the phone slowly several times in bright, even light. Listen for a click, crunch, or pop. Feel for a hinge that suddenly gets tighter, catches, or moves unevenly. Check whether the phone opens flat and closes symmetrically. Then look over the inner display for a line, dark spot, bright pixel cluster, bubbling, a ridge, or any bump near the crease. Photograph the screen and hinge right away, before heavy use.\nKeep sand and grit away from the hinge, and do not try to clean inside it with paper, tools, swabs, or compressed air. Before closing the phone, check that nothing is sitting on the inner display. Leave the integral inner cover layer in place, and do not add an ordinary screen protector unless the manufacturer specifically supports it. A protector that changes how the display moves can create a new problem while trying to prevent another one.\nIf this kind of practical technology breakdown is useful, follow the channel. The goal is to make the expensive failure points understandable before they become your problem, without defending or attacking the product.\nAnd the repair risk is substantial. Independent reporting puts an out-of-warranty inner-display repair at approximately $999, or about 50% of the phone's $1,999 starting price. Confirm the current repair terms and coverage for your exact model before buying. A repair plan may change the calculation, but it does not change the inconvenience of losing the phone or sending it in after a failure.\nSo what should you believe right now? Believe the owner reports that have been independently checked. Believe that the hinge can concentrate force at the crease. Believe that grit and trapped objects are real hazards. Treat the support-bar explanation as a strong mechanical possibility, not a proven universal cause. And do not take the absence of failure on 1 phone as proof that every phone is safe.\nThe safest buying strategy is pretty simple: buy where the return window is usable, test the hinge right away, document the device on day 1, keep the crease clean, and stop folding if you hear new resistance or cracking. Contact support while the evidence is fresh. The Duo may still be an impressive piece of engineering. At $1,999, impressive does not mean risk-free, and the smartest feature may be the option to return it before the hinge writes the final review.\n",
+  "research": {
+    "summary": "## Why the hinge area is the likely stress point\n\nA foldable phone’s inner screen is not a conventional glass panel. It is a very thin, multilayer OLED assembly designed to flex repeatedly along a controlled bend radius. Apple says iPhone Duo’s hinge has more than 100 components, supports the center of the display, and uses adhesive layers intended to let the display layers glide as the phone folds. That design leaves very little tolerance for a hinge part that moves incorrectly, debris that changes the hinge’s geometry, or pressure applied at a small point.\n\nMechanically, the failure can be understood as a **stress-concentration problem**. If the screen normally bends smoothly across a broad curve, the force is distributed. If a metal support, guide, hinge component, or trapped particle presses against the display in one narrow location, the same opening force is concentrated there. Repeated folding can then turn a small defect into a visible crack, dead pixels, bright lines, or a dark “bruise” in the OLED.\n\n## What is confirmed\n\nEarly buyers have reported inner-screen failures near the center hinge, sometimes after only hours or days. Accounts commonly describe a crunching or popping sound, unusual hinge resistance, a visible line or crack, and display malfunction. The Los Angeles Times reported that Bloomberg independently verified the issue with more than half a dozen customers who supplied photographs or Apple-support evidence. Apple has replaced affected units in at least some cases.\n\nApple’s own handling guidance confirms that sand and grit should be kept away from the hinge and that the hinge should be clean before opening. Apple also warns users to remove hard objects from the inner display before closing the phone. Those instructions establish that debris or trapped objects can damage the mechanism or screen; they do not prove that debris caused the reported early failures.\n\n## What remains speculation\n\nThe leading hardware explanation comes from iFixit’s teardown analysis, as reported by The Verge: a central support bar or related hinge guide may fail to move into its intended position, allowing the folded display to contact a hard edge and creating a localized stress hotspot. That explanation is mechanically plausible and matches the reported location of some failures, but it has not been proven as the cause of every damaged retail phone.\n\nIt is also too early to call this a widespread design defect. The public evidence consists largely of early owner reports and a limited number of independently verified cases; there is no published failure-rate data, no confirmed production-batch pattern, and no public finding from Apple identifying a single defective component. Different failures may have different causes, including manufacturing variation, debris, accidental pressure, or hinge damage.\n\n## What buyers should check before spending $1,999\n\n1. **Buy where the return policy is clear.** Apple’s U.S. policy allows returns within 14 calendar days for products bought directly from Apple. Purchases from carriers or other retailers follow their own policies.\n2. **Test the hinge immediately.** Open and close the phone slowly several times in good lighting. Stop if the hinge suddenly tightens, catches, clicks, crunches, or feels uneven.\n3. **Inspect the inner display before heavy use.** Look for a line, dark spot, bright pixels, bubbling, a ridge, or any localized bump near the crease. Photograph the screen and hinge on the first day.\n4. **Check that it opens and closes symmetrically.** A phone that does not lie flat, closes unevenly, or develops a new gap deserves prompt inspection or replacement.\n5. **Keep grit away from the hinge.** Apple specifically says to keep sand and grit away and to ensure the hinge is clean before opening. Do not insert paper, tools, swabs, or other objects into the mechanism, and do not use compressed air.\n6. **Do not remove the inner cover layer or add an ordinary screen protector.** Apple says the nano-texture cover layer is integral to the inner display and warns that an external protector can affect display performance.\n7. **Price the risk before buying.** Independent reporting puts an out-of-warranty inner-display repair at about $999, roughly half the phone’s $1,999 starting price. Confirm the current repair terms and AppleCare+ coverage for the exact model before purchase.\n\nThe responsible conclusion is neither “every iPhone Duo will fail” nor “there is nothing to see.” The reports are real, the hinge is mechanically capable of concentrating force at the crease, and iFixit has identified a plausible stress point. But the precise failure mechanism and the scope of the problem remain unconfirmed. For a $1,999 purchase, the safest strategy is to buy with a usable return window, test the hinge on day one, document the device immediately, and treat any new resistance or cracking sound as a reason to stop folding it and contact Apple.",
+    "claims": [
+      {
+        "claim": "Apple lists iPhone Duo’s U.S. starting price as $1,999 and describes a hinge with more than 100 components that supports the center of the display.",
+        "source_title": "Apple unveils iPhone Duo",
+        "source_url": "https://www.apple.com/newsroom/2026/09/apple-unveils-iphone-duo/",
+        "published_or_updated": "September 2026"
+      },
+      {
+        "claim": "Apple says the inner display uses a folding OLED design, custom adhesives, and layers intended to glide as the phone folds, reducing bend stress.",
+        "source_title": "Apple unveils iPhone Duo",
+        "source_url": "https://www.apple.com/newsroom/2026/09/apple-unveils-iphone-duo/",
+        "published_or_updated": "September 2026"
+      },
+      {
+        "claim": "Bloomberg independently verified reports from more than half a dozen customers whose inner screens cracked or malfunctioned, with some incidents occurring after hours or days and some involving crunching sounds or increased hinge resistance.",
+        "source_title": "Apple’s new foldable iPhone is cracking after hours or days of use",
+        "source_url": "https://www.latimes.com/business/story/2026-10-27/apples-new-foldable-iphone-is-cracking-after-hours-or-days-of-use",
+        "published_or_updated": "October 27, 2026"
+      },
+      {
+        "claim": "iFixit’s teardown analysis identified a possible stress hotspot involving the hinge’s central support and display movement, but the proposed mechanism remains a hypothesis rather than a confirmed cause.",
+        "source_title": "Here’s why the iPhone Duo’s hinge could be cracking the screen",
+        "source_url": "https://thevergenews.pages.dev/tech/1020145/iphone-duo-crackgate-broken-screen-hinge/",
+        "published_or_updated": "October 27, 2026"
+      },
+      {
+        "claim": "Apple instructs iPhone Duo owners to keep sand and grit away from the hinge, make sure the hinge is clean before opening, and remove hard objects before closing the phone.",
+        "source_title": "Important handling information for iPhone",
+        "source_url": "https://support.apple.com/guide/iphone/important-handling-information-iphbbe12ba1/ios",
+        "published_or_updated": "Accessed October 2026"
+      },
+      {
+        "claim": "Apple’s U.S. direct-purchase return policy allows a product to be returned within 14 calendar days of receipt, while purchases from other retailers follow those retailers’ policies.",
+        "source_title": "Returns & Refunds - Shopping Help",
+        "source_url": "https://www.apple.com/us/shop/help/returns_refund",
+        "published_or_updated": "Accessed October 2026"
+      },
+      {
+        "claim": "Independent reporting lists the out-of-warranty inner-display repair at approximately $999 and says the issue’s overall prevalence remains unclear.",
+        "source_title": "After day-one screen failures, iPhone Duo faces more durability questions",
+        "source_url": "https://www.androidauthority.com/iphone-duo-durability-3727717/",
+        "published_or_updated": "October 25, 2026"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "iPhone Duo Teardown – APPLE SHOULD EXPLAIN",
+    "description": "The $1,999 iPhone Duo is facing reports of inner-screen cracks, dead pixels, bright lines, and hinge problems after only hours or days of use. This video separates independently checked owner reports from unproven theories about what may be happening inside the folding mechanism.\n\nWe explain how a folding OLED can be damaged by stress near the hinge, why grit or a trapped object matters, and what teardown analysis suggests about the center support bar. The evidence does not prove that every iPhone Duo is defective, but the pattern is serious enough to consider before buying.\n\nYou’ll also get a practical inspection checklist covering the return window, hinge sounds, display marks, cleaning, screen protectors, repair costs, and what to do if the phone develops new resistance or cracking.\n\nChapters\n0:00 Intro\n1:02 Hinge Reports\n2:24 Stress Line\n3:52 Confirmed Versus Theory\n5:39 Buyer Checks\n7:16 Repair Risk\n8:10 Close\n\n#iPhoneDuo #Apple #FoldableiPhone #FoldablePhones #TechNews #PhoneRepair #GOLIDE",
+    "tags": [
+      "iPhone Duo",
+      "Apple iPhone Duo",
+      "iPhone Duo screen crack",
+      "iPhone Duo hinge",
+      "iPhone Duo crackgate",
+      "iPhone Duo screen issue",
+      "iPhone Duo durability",
+      "iPhone Duo review",
+      "iPhone Duo teardown",
+      "iPhone Duo repair cost",
+      "iPhone Duo buying guide",
+      "foldable iPhone",
+      "foldable phone screen",
+      "foldable phone hinge",
+      "inner display crack",
+      "OLED screen failure",
+      "hinge stress",
+      "stress concentration",
+      "dead pixels",
+      "bright line screen",
+      "phone hinge damage",
+      "tech news"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [
+      "0:00 Intro",
+      "1:02 Hinge Reports",
+      "2:24 Stress Line",
+      "3:52 Confirmed Versus Theory",
+      "5:39 Buyer Checks",
+      "7:16 Repair Risk",
+      "8:10 Close"
+    ],
+    "keywords": [
+      "iPhone Duo screen crack",
+      "iPhone Duo hinge problem",
+      "iPhone Duo crackgate",
+      "iPhone Duo screen issue",
+      "iPhone Duo durability",
+      "iPhone Duo repair cost",
+      "foldable iPhone screen crack",
+      "iPhone Duo buying guide",
+      "iPhone Duo teardown",
+      "foldable phone hinge failure",
+      "iPhone Duo return policy",
+      "iPhone Duo dead pixels",
+      "iPhone Duo bright line",
+      "iPhone Duo dust damage"
+    ],
+    "hashtags": [
+      "#iPhoneDuo",
+      "#Apple",
+      "#FoldableiPhone",
+      "#FoldablePhones",
+      "#TechNews",
+      "#PhoneRepair",
+      "#GOLIDE"
+    ],
+    "format": "long",
+    "title_description_language": "en",
+    "seo_body": "The $1,999 iPhone Duo is facing reports of inner-screen cracks, dead pixels, bright lines, and hinge problems after only hours or days of use. This video separates independently checked owner reports from unproven theories about what may be happening inside the folding mechanism.\n\nWe explain how a folding OLED can be damaged by stress near the hinge, why grit or a trapped object matters, and what teardown analysis suggests about the center support bar. The evidence does not prove that every iPhone Duo is defective, but the pattern is serious enough to consider before buying.\n\nYou’ll also get a practical inspection checklist covering the return window, hinge sounds, display marks, cleaning, screen protectors, repair costs, and what to do if the phone develops new resistance or cracking."
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "Apple lists iPhone Duo’s U.S. starting price as $1,999 and describes a hinge with more than 100 components that supports the center of the display.",
+        "source_title": "Apple unveils iPhone Duo",
+        "source_url": "https://www.apple.com/newsroom/2026/09/apple-unveils-iphone-duo/",
+        "published_or_updated": "September 2026"
+      },
+      {
+        "claim": "Apple says the inner display uses a folding OLED design, custom adhesives, and layers intended to glide as the phone folds, reducing bend stress.",
+        "source_title": "Apple unveils iPhone Duo",
+        "source_url": "https://www.apple.com/newsroom/2026/09/apple-unveils-iphone-duo/",
+        "published_or_updated": "September 2026"
+      },
+      {
+        "claim": "Bloomberg independently verified reports from more than half a dozen customers whose inner screens cracked or malfunctioned, with some incidents occurring after hours or days and some involving crunching sounds or increased hinge resistance.",
+        "source_title": "Apple’s new foldable iPhone is cracking after hours or days of use",
+        "source_url": "https://www.latimes.com/business/story/2026-10-27/apples-new-foldable-iphone-is-cracking-after-hours-or-days-of-use",
+        "published_or_updated": "October 27, 2026"
+      },
+      {
+        "claim": "iFixit’s teardown analysis identified a possible stress hotspot involving the hinge’s central support and display movement, but the proposed mechanism remains a hypothesis rather than a confirmed cause.",
+        "source_title": "Here’s why the iPhone Duo’s hinge could be cracking the screen",
+        "source_url": "https://thevergenews.pages.dev/tech/1020145/iphone-duo-crackgate-broken-screen-hinge/",
+        "published_or_updated": "October 27, 2026"
+      },
+      {
+        "claim": "Apple instructs iPhone Duo owners to keep sand and grit away from the hinge, make sure the hinge is clean before opening, and remove hard objects before closing the phone.",
+        "source_title": "Important handling information for iPhone",
+        "source_url": "https://support.apple.com/guide/iphone/important-handling-information-iphbbe12ba1/ios",
+        "published_or_updated": "Accessed October 2026"
+      },
+      {
+        "claim": "Apple’s U.S. direct-purchase return policy allows a product to be returned within 14 calendar days of receipt, while purchases from other retailers follow those retailers’ policies.",
+        "source_title": "Returns & Refunds - Shopping Help",
+        "source_url": "https://www.apple.com/us/shop/help/returns_refund",
+        "published_or_updated": "Accessed October 2026"
+      },
+      {
+        "claim": "Independent reporting lists the out-of-warranty inner-display repair at approximately $999 and says the issue’s overall prevalence remains unclear.",
+        "source_title": "After day-one screen failures, iPhone Duo faces more durability questions",
+        "source_url": "https://www.androidauthority.com/iphone-duo-durability-3727717/",
+        "published_or_updated": "October 25, 2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "Apple iPhone Duo hinge screen cracks defect AppleCare replacement teardown October 2026",
+      "score": 90.3,
+      "verdict": "pass",
+      "recent_videos": 1,
+      "median_views_per_day": 4148184,
+      "top_views_per_day": 4148184,
+      "market_coverage": 1,
+      "title_query_overlap": 1,
+      "measured_at": "2026-10-29T04:04:14.240035+00:00",
+      "signal_type": "youtube-breakout-v1"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.88,
+      "true_peak_dbtp": -1.89,
+      "loudness_range": 2.9
+    },
+    "editorial": {
+      "beats": 19,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-10-29T22:50:53.898645+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-long-tue-thu-sat"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-long-2026-10-29",
+    "created_at": "2026-10-29T22:50:55.437897+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-10-29T17:30:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "2509d4a00731b4975d7effd365bd7525c86d10eae876336c51008d6c6102ab1c",
+        "bytes": 134277270
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "78c5551bb4bc627923ae97faade267e5f738fe62236008ff4986b847bd88e757",
+        "bytes": 893846
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "e5bcae61b13475d2d3ca1d6023a6399140eee2443646f0638a48d8e6e112afe7",
+        "bytes": 3513
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "5ce65f0d1fd6d48ea87e5d5520f04435df01df8daf9484d57ebf9218d0c20619",
+        "bytes": 18088
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "dd966e430b47444a95671faa47bee5e1501fca8d421ad33574700b7af5c52e80",
+        "bytes": 546
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "f0efc648dca20465255091cd08241ee9b82644a18619c3742326f57089407899",
+        "bytes": 3780
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "5466316572f8a9e44214cb77b8db5f1888152120d266c69f8ed26a588091ceac",
+        "bytes": 388
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "20f36de90359bd383349b1b2e2a0601c056373620f60ab162aeace92d53680d7",
+        "bytes": 277
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-titles",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 144.0,
+      "cached_input_units": 0.0,
+      "output_units": 133.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000188,
+      "created_at": "2026-10-29T04:04:11.705969+00:00"
+    },
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 27376.0,
+      "cached_input_units": 0.0,
+      "output_units": 2695.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008709,
+      "created_at": "2026-10-29T04:04:13.562255+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-29T04:04:13.564107+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 29714.0,
+      "cached_input_units": 0.0,
+      "output_units": 2388.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008808,
+      "created_at": "2026-10-29T04:04:52.286557+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-29T04:04:52.288295+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 8701.0,
+      "cached_input_units": 0.0,
+      "output_units": 5572.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008427,
+      "created_at": "2026-10-29T04:05:45.429705+00:00"
+    },
+    {
+      "stage": "script-spoken",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 7561.0,
+      "cached_input_units": 0.0,
+      "output_units": 9862.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.013347,
+      "created_at": "2026-10-29T04:08:17.703515+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 15629.0,
+      "cached_input_units": 6740.0,
+      "output_units": 7073.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.0104,
+      "created_at": "2026-10-29T04:08:17.706617+00:00"
+    },
+    {
+      "stage": "script-spoken",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 13065.0,
+      "cached_input_units": 0.0,
+      "output_units": 6623.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.010561,
+      "created_at": "2026-10-29T08:10:18.102134+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 8241.0,
+      "cached_input_units": 0.0,
+      "output_units": 2813.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005024,
+      "created_at": "2026-10-29T08:10:18.104359+00:00"
+    },
+    {
+      "stage": "visual-plan-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-29T22:08:35.087046+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 15684.0,
+      "cached_input_units": 0.0,
+      "output_units": 5091.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.009246,
+      "created_at": "2026-10-29T22:08:35.092248+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-29T22:08:51.043315+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-29T22:09:05.476602+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-29T22:09:21.337565+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-29T22:09:32.658114+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-29T22:09:43.580577+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-29T22:09:58.003099+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-29T22:10:11.784083+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-29T22:10:26.000011+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-29T22:10:37.047173+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-29T22:10:48.128253+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-29T22:11:02.216034+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-29T22:11:16.261019+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-29T22:11:30.293481+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-29T22:11:44.423570+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-29T22:11:59.034999+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-29T22:12:13.848352+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-29T22:12:27.915834+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-29T22:12:43.257427+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-29T22:12:58.345665+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-29T22:13:12.247568+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-29T22:13:26.225278+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 14884.0,
+      "cached_input_units": 0.0,
+      "output_units": 1187.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004401,
+      "created_at": "2026-10-29T22:49:22.893953+00:00"
+    },
+    {
+      "stage": "thumbnail",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-10-29T22:49:59.717125+00:00"
+    }
+  ],
+  "recorded_at": "2026-10-29T22:51:09.948771+00:00"
+}
