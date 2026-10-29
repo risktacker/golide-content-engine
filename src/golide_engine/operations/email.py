@@ -64,12 +64,12 @@ def spoken_pass_line(report: dict | None) -> str:
         return ""
     status = report.get("status", "")
     if status == "applied":
-        return "Spoken rewrite: applied. This script was rewritten the way you talk."
+        return "Humanizer pass: applied. AI tells were taken out, matched to how you talk."
     if status == "approved":
-        return "Spoken rewrite: replaced by the rewrite approved for you."
+        return "Humanizer pass: replaced by the rewrite approved for you."
     reason = str(report.get("reason", "")).strip()
     word = {"discarded": "discarded", "unmatched": "not used", "failed": "failed"}.get(status, status)
-    return f"Spoken rewrite: {word}, so this is the first draft" + (f" ({reason})" if reason else "") + "."
+    return f"Humanizer pass: {word}, so this is the first draft" + (f" ({reason})" if reason else "") + "."
 
 
 def build_record_needed(

@@ -30,7 +30,7 @@ from ..storage.database import Database
 from ..youtube.demand import TopicDemandRejected, YouTubeDemandGate
 from ..youtube_metadata import load_metadata_policy, validate_upload_metadata
 from .schemas import METADATA_SCHEMA, RESEARCH_SCHEMA, STORYBOARD_SCHEMA, TREND_CANDIDATES_SCHEMA
-from ..engine.content_rules import TREND_TASTE_RULES, SCRIPT_SCHEMA, chapter_problems, flow_problems, follow_problems, jargon_problems, length_problems, repeat_problems, script_display, script_instructions, script_text, SPOKEN_SCHEMA, SPOKEN_PASS_EFFORT, spoken_pass_instructions, merge_spoken
+from ..engine.content_rules import SCRIPT_SCHEMA, chapter_problems, follow_problems, length_problems, script_display, script_instructions, script_text, SPOKEN_SCHEMA, SPOKEN_PASS_EFFORT, spoken_pass_instructions, merge_spoken
 from .recording import RecordingLengthError, check_recording_length
 from .stage_runner import StageRunner
 
@@ -763,20 +763,42 @@ class ProductionService:
         script_path = work / "script.txt"
         scene_plan_path = work / "scene-plan.json"
         source_video = self._source_video_block(spec)
-        recent_scripts = self._recent_scripts(production_id)
 
         def script_problems(plan: dict) -> list[str]:
-            return (length_problems(plan, str(spec["format"])) + flow_problems(plan)
-                    + chapter_problems(plan, str(spec["format"])) + follow_problems(plan, str(spec["format"]))
-                    + repeat_problems(plan, recent_scripts)
-                    + jargon_problems(plan, str(spec.get("title", "")), str(spec["format"])))
+            # 2026-10-29: only what the engine needs (length, chapters, the follow line);
+            # the style comes from the modelled videos, not from rules.
+            return (length_problems(plan, str(spec["format"]))
+                    + chapter_problems(plan, str(spec["format"])) + follow_problems(plan, str(spec["format"])))
+
+        models_path = work / "model-scripts.json"
+
+        def model_scripts_block() -> str:
+            """Transcripts of the videos this script models (fetched once, kept for a resume)."""
+            if models_path.exists():
+                models = json.loads(models_path.read_text(encoding="utf-8"))
+            else:
+                from ..youtube.transcripts import choose_models
+                try:
+                    breakouts = json.loads((work / "breakouts.json").read_text(encoding="utf-8"))
+                except (OSError, ValueError):
+                    breakouts = []
+                models = choose_models(spec.get("source_breakout"), breakouts if isinstance(breakouts, list) else [],
+                                       str(spec["format"]))
+                models_path.write_text(json.dumps(models, indent=2) + "\n", encoding="utf-8")
+                print(json.dumps({"status": "model_scripts", "count": len(models),
+                                  "videos": [m["url"] for m in models]}))
+            if not models:
+                return ""
+            return "\n\nMODEL SCRIPTS (videos working on YouTube now; study how they talk to the viewer)\n" + "\n\n".join(
+                f"--- {m.get('title') or m['url']} ({m.get('channel', '')}) ---\n{m['transcript']}" for m in models)
 
         # 2026-10-22: an 8-minute script plus its visual fields needs a bigger budget.
         script_tokens = 16000 if str(spec["format"]) == "long" else 6000
 
         def script_stage():
             self._require_absent(script_path, "script")
-            script_input = spec["brief"] + json.dumps(research) + source_video
+            models_block = model_scripts_block()
+            script_input = spec["brief"] + json.dumps(research) + source_video + models_block
             self._reserve(
                 spec, text_model,
                 Usage(input_tokens=max(1, len(script_input) // 4), output_tokens=script_tokens),
@@ -784,7 +806,7 @@ class ProductionService:
             )
             output = text.generate_json(
                 script_instructions(str(spec["format"]), str(spec["id"])),
-                f"TOPIC BRIEF\n{spec['brief']}{source_video}\n\nVERIFIED RESEARCH\n{json.dumps(research)}",
+                f"TOPIC BRIEF\n{spec['brief']}{source_video}{models_block}\n\nVERIFIED RESEARCH\n{json.dumps(research)}",
                 SCRIPT_SCHEMA,
                 max_output_tokens=script_tokens,
             )
@@ -799,9 +821,9 @@ class ProductionService:
                                                       output_tokens=script_tokens))
                 output = text.generate_json(
                     script_instructions(str(spec["format"]), str(spec["id"])),
-                    f"TOPIC BRIEF\n{spec['brief']}{source_video}\n\nVERIFIED RESEARCH\n{json.dumps(research)}"
+                    f"TOPIC BRIEF\n{spec['brief']}{source_video}{models_block}\n\nVERIFIED RESEARCH\n{json.dumps(research)}"
                     f"\n\nYOUR PREVIOUS DRAFT\n{json.dumps(plan)}\n\nREWRITE IT. Fix these problems: "
-                    + "; ".join(problems) + ". Keep the facts and length, and keep it flowing as natural speech in clear stages.",
+                    + "; ".join(problems) + ". Keep the facts, the length and the way it talks to the viewer.",
                     SCRIPT_SCHEMA,
                     max_output_tokens=script_tokens,
                 )

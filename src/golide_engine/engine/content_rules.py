@@ -701,10 +701,6 @@ def chapter_problems(plan: dict, format_name: str) -> list[str]:
             share = sum(w for w, o in zip(words, owners) if o == index) / total
             if str(chapter.get("number", "")).strip() and share > 0.36:
                 problems.append(f"chapter {chapter.get('number')} {chapter.get('title')} is too long; balance the chapters")
-    shopping = [c.get("title", "") for c in chapters if SHOPPING_TITLE.search(str(c.get("title", "")))]
-    if shopping:
-        problems.append("learning, not shopping: no buying chapter (" + ", ".join(shopping) + "); make that "
-                        "chapter what this means for the viewer, with at most a few buying lines inside it")
     return problems
 
 
@@ -715,7 +711,8 @@ FOLLOW_ASKS = ("comment", "hit like", "like the video", "like this video", "leav
 
 
 def follow_problems(plan: dict, format_name: str) -> list[str]:
-    """The follow call-out is present, early, short, and never asks for comments."""
+    """The follow sentence is there, short, and never asks for comments (2026-10-29: where it
+    goes and how the video ends now come from the modelled videos)."""
     lines = [line for line in plan.get("lines", []) if str(line.get("text", "")).strip()]
     if len(lines) < 8:
         return []
@@ -723,12 +720,6 @@ def follow_problems(plan: dict, format_name: str) -> list[str]:
     problems: list[str] = []
     if not marked:
         return ["add the follow call-out sentence and mark its lines with \"follow\": true"]
-    after = len(lines) - 1 - marked[-1]
-    if marked[0] < len(lines) - 4 or marked != list(range(marked[0], marked[-1] + 1)):
-        problems.append("the follow call-out must come at the end, after the value; "
-                        "move it there and remove it from anywhere earlier")
-    elif not 1 <= after <= 2:
-        problems.append("after the follow sentence, end with ONE short closing sentence (one or two lines)")
     if len(marked) > 2:
         problems.append(f"the follow call-out is too long ({len(marked)} lines); keep it to one sentence")
     said = " ".join(str(lines[i]["text"]).lower() for i in marked)
@@ -738,8 +729,6 @@ def follow_problems(plan: dict, format_name: str) -> list[str]:
         problems.append("the follow call-out must actually say follow or subscribe")
     if any(word in said for word in FOLLOW_ASKS):
         problems.append("the follow call-out must not ask for comments, likes, shares or links")
-    if 1 <= after <= 2:
-        problems += closing_question_problems(" ".join(str(line["text"]) for line in lines[marked[-1] + 1:]))
     return problems
 
 
@@ -796,18 +785,56 @@ def jargon_problems(plan: dict, title: str = "", format_name: str = "short") -> 
     return []
 
 
+MODEL_SCRIPT_RULES = """\
+MODEL WHAT WORKS (owner direction 2026-10-29: "a video is meant for the people... we
+don't address anybody, we just speak... those successful videos are like that because it
+works, so why not model them"). MODEL SCRIPTS below are the words of videos that are
+working on YouTube right now. Before you write, study them:
+- who they are talking to, and how they make the topic that person's business in the
+  first seconds (their money, their phone, their job, their plans, their curiosity);
+- how the first 10 seconds earn the next minute;
+- how they keep that person through the middle: what they promise, what they hold back,
+  when and how they turn back to the viewer;
+- how they end.
+Then write ours the way they do it, for the person who would watch this topic. Their way
+of talking to the viewer, their pacing and their shape are the template. Their words and
+their facts are not: never copy a sentence or a fact from them.
+"""
+
+SCRIPT_MECHANICS = """\
+WHAT THE ENGINE NEEDS (format, not style)
+- Facts only from VERIFIED RESEARCH. A company's own figure is said as their claim.
+- Every number written as digits (16.3 billion, 2026, October 26th, 85 percent, 4 robots).
+- One sentence asks the viewer to follow, in your own words, wherever it fits naturally:
+  "follow us" or "follow the channel". Never say the brand name aloud. Never ask for
+  comments, likes, shares or links. Set "follow": true on its line or lines (at most 2).
+- "section" tags each line with the closest of: claim, proof, pattern, cost, reframe, cta.
+"""
+
+LONG_CHAPTER_MECHANICS = """\
+CHAPTERS (the chapter card on screen shows each stage):
+- "chapters": INTRO first (number "", title "Intro"), then 4 to 6 numbered chapters
+  ("01", "02", ...; title 2 to 4 plain words about THIS topic), then CLOSE (number "",
+  title "Close"). Every line sets "chapter" to the index (from 0) of its chapter, in order.
+- Chapter titles are never read aloud as labels.
+"""
+
+
 def script_instructions(format_name: str, seed: str = "") -> str:
+    """The script writer (2026-10-29): it models the transcripts of videos that worked, with
+    only the engine's format needs as rules. The old style rules are gone ("those rules
+    override the API effort of research")."""
     target = SCRIPT_LENGTH_TARGETS.get(format_name, SCRIPT_LENGTH_TARGETS["short"])
     return (
-        "You write a narration script for a GOLIDE "
+        "You write a narration script for a "
         + ("YouTube/Instagram/Facebook short" if format_name == "short" else "long YouTube video")
-        + " on a trending technology, AI, career or digital-work topic. The owner records it "
-        "in his own voice; the visuals are animated line diagrams on black, synced to his words.\n\n"
+        + " on a trending technology, AI or science topic. The owner records it in his own voice; "
+        "the visuals are animated line drawings synced to his words.\n\n"
         f"LENGTH: {target['words_min']} to {target['words_max']} spoken words "
-        f"(about {target['seconds']} seconds). Do not go over.\n\n"
-        + (LONG_STRUCTURE_RULES if format_name == "long" else SCRIPT_STRUCTURE_RULES + "\n" + SHORT_CHAPTER_RULE)
-        + "\n" + TEACHING_STYLE_RULES + "\n" + script_variety(seed or format_name) + "\n" + FOLLOW_RULES + "\n" + DEBATE_QUESTION_RULES + "\n" + SCRIPT_LINE_RULES + "\n" + HUMANIZER_RULES + "\n" + SCRIPT_VOICE_RULES
-        + "\n" + owner_voice() + "\n" + SCRIPT_OUTPUT_RULES
+        f"(about {target['seconds']} seconds).\n\n"
+        + MODEL_SCRIPT_RULES + "\n"
+        + (LONG_CHAPTER_MECHANICS if format_name == "long" else SHORT_CHAPTER_RULE)
+        + "\n" + SCRIPT_MECHANICS + "\n" + SCRIPT_OUTPUT_RULES
     )
 
 
@@ -876,41 +903,32 @@ SPOKEN_SCHEMA: dict = {
 }
 
 
+HUMANIZER_FILE = Path(__file__).resolve().parents[3] / "config" / "humanizer.md"
+
+
 def spoken_pass_instructions(format_name: str) -> str:
-    """The second pass (owner direction 2026-10-23/24): the draft is rewritten as the owner
-    would say it. Rules about joining words made every script sound the same; this pass
-    learns the joins from his approved scripts instead."""
+    """The last pass before the owner sees the script (2026-10-29): the humanizer skill,
+    with the owner's recorded scripts as the voice sample, rewrites the draft line for line."""
     target = SCRIPT_LENGTH_TARGETS.get(format_name, SCRIPT_LENGTH_TARGETS["short"])
+    try:
+        humanizer = HUMANIZER_FILE.read_text(encoding="utf-8")
+    except OSError:
+        humanizer = ""
     return (
-        "You are the owner of the channel, reading your own script aloud before you record it, "
-        "and rewriting every line that you would never actually say.\n\n"
-        "WHAT TO FIX\n"
-        "- Sentences that stop dead and the next one starts cold as a fresh point. A person "
-        "explaining something keeps carrying the same thought forward: the next sentence picks "
-        "up what was just said, or the two become one sentence across two lines.\n"
-        "- Announcements of structure (\"First, stay with...\", \"Now ask what...\", \"Let's turn "
-        "to...\", \"This brings us to...\"). Just carry on talking about the next thing.\n"
-        "- Written phrasing nobody says out loud (\"produces a worse result\", \"observations\", "
-        "\"a repeatable pipeline moving from software into hardware\"). Say it in everyday words, "
-        "the way you would explain it to a friend, keeping it exactly as true.\n"
-        "- Lists of nouns. Say what each thing does.\n"
-        "- A first sentence that is hard to say cold. The opening line is said with no run-up, so "
-        "it starts on what happened or the thing itself, never on a place, a date or a stack of "
-        "names (2026-10-24: \"At GTC Berlin, Jensen Huang walked out...\" was hard to enter; "
-        "\"Four tiny robots just stole the show at Jensen Huang's keynote\" is easy).\n"
-        "- Joining words stuck on the front of sentences by habit. Do not add a connective to "
-        "every line; most joins come from the meaning. Never start two sentences in a row the "
-        "same way, and don't lean on \"So\".\n\n"
+        "You are humanizing a narration script the owner will read aloud and record. Use the "
+        "guide below. The text is SPOKEN, so read every line aloud in your head; the voice "
+        "sample is how the owner actually talks, and it overrides the guide where they differ.\n\n"
         "WHAT MUST NOT CHANGE\n"
-        "- Every fact, name, number and claim, and their order. Add no new facts.\n"
+        "- Who the script talks to and how it pulls them in; keep every line that speaks to the viewer.\n"
+        "- Every fact, name, number and claim. Add no new facts.\n"
         "- The same number of lines, in the same order: line N of your answer replaces line N of "
-        "the draft and covers the same idea, so the pictures stay matched to the words. A line is "
-        "a breath-sized phrase (4 to 14 words); a sentence may run across two or three lines.\n"
+        "the draft and covers the same idea, so the pictures stay matched to the words.\n"
         f"- About the same length ({target['words_min']} to {target['words_max']} words in total).\n"
-        "- The follow call-out still says follow the channel (never the brand name, never "
-        "comments, likes or links), and the last line is still the two-sided question.\n"
-        "- No colons, no dashes, every number written as digits (16.3 billion, 2026). \"emphasis\" is one or two words "
-        "copied exactly from that line's text.\n\n"
+        "- The follow sentence still asks to follow us or the channel (never the brand name).\n"
+        "- Every number written as digits. \"emphasis\" is one or two words copied exactly from "
+        "that line's text.\n\n"
+        "HUMANIZER GUIDE\n" + humanizer + "\n\n"
+        "VOICE SAMPLE\n"
         + voice_pairs()
         + owner_voice()
         + "\nReturn JSON: {\"lines\": [{\"text\", \"emphasis\"}, ...]} with one entry per draft line."

@@ -48,12 +48,6 @@ class NarrationFlowTests(unittest.TestCase):
         approved = json.loads(Path("production-queue/golide-short-2026-10-07.script-plan.json").read_text())
         self.assertEqual(flow_problems(approved), [])
 
-    def test_short_template_asks_for_a_story_not_points(self):
-        rules = script_instructions("short")
-        self.assertIn("NARRATION", rules)
-        self.assertIn("ONE CONNECTED EXPLANATION", rules)
-        self.assertIn("Never open with", rules)
-
     def test_imagine_opening_is_rejected(self):
         text = "Imagine telling your computer to write a report,\n" + POINTS
         self.assertTrue(any("Imagine" in p for p in flow_problems(plan(text))))
@@ -64,20 +58,6 @@ if __name__ == "__main__":
 
 
 class TeachingStyleTests(unittest.TestCase):
-    def test_cake_script_teaching_style_holds_but_repeated_so_is_caught(self):
-        # 2026-10-13: the owner flagged "So start..." then "So follow..." and a cold closing question.
-        approved = json.loads(Path("production-queue/golide-short-2026-10-09.script-plan.json").read_text())
-        problems = " ".join(flow_problems(approved))
-        self.assertNotIn("list of points", problems)
-        self.assertNotIn("final sentence must return", problems)
-        self.assertIn("same word (so)", problems)
-        # 2026-10-24: no "closing line must start with a bridge word" rule any more.
-        self.assertNotIn("starts cold", problems)
-        for fmt in ("short", "long"):
-            self.assertIn("THE REAL THING FIRST", script_instructions(fmt))
-            self.assertNotIn("comes from this world", script_instructions(fmt))
-            self.assertIn("SOUND HUMAN", script_instructions(fmt))
-
     def test_ai_phrases_are_caught(self):
         approved = json.loads(Path("production-queue/golide-short-2026-10-07.script-plan.json").read_text())
         approved["lines"][4]["text"] = "Let's dive in, because this is a game-changer for shoppers."
@@ -91,35 +71,7 @@ class TeachingStyleTests(unittest.TestCase):
 
 
 class VarietyTests(unittest.TestCase):
-    def test_neighbouring_scripts_get_different_patterns(self):
-        from golide_engine.engine.content_rules import script_variety
-        a, b = script_variety("golide-short-2026-10-14"), script_variety("golide-short-2026-10-16")
-        self.assertNotEqual(a.splitlines()[1], b.splitlines()[1])   # opening style
-        # 2026-10-22: no rotating stock turn phrase any more; the turn is written fresh.
-        self.assertIn("never a stock bridge", a)
-        self.assertIn("VARIETY", script_instructions("short", "golide-short-2026-10-14"))
-
     def test_stock_phrases_are_caught(self):
         approved = json.loads(Path("production-queue/golide-short-2026-10-07.script-plan.json").read_text())
         approved["lines"][5]["text"] = "But here's the catch, think of it like a kitchen."
         self.assertTrue(any("here's the catch" in p for p in flow_problems(approved)))
-
-
-class LearningNotShoppingTests(unittest.TestCase):
-    def test_buying_chapter_is_refused(self):
-        from golide_engine.engine.content_rules import chapter_problems
-
-        plan = {"chapters": [{"number": "", "title": "Intro"}, {"number": "01", "title": "What It Does"},
-                             {"number": "02", "title": "How It Works"}, {"number": "03", "title": "Your Buying Test"},
-                             {"number": "", "title": "Close"}],
-                "lines": [{"text": t, "chapter": c} for c, t in
-                          [(0, "Intro line here."), (1, "What it does."), (2, "How it works."),
-                           (3, "First, check this. Second, check that. Third, decide."), (4, "Close.")]]}
-        self.assertTrue(any("learning, not shopping" in p for p in chapter_problems(plan, "long")))
-
-    def test_rules_put_science_before_buying(self):
-        from golide_engine.engine.content_rules import script_instructions
-
-        text = script_instructions("long", "golide-long-2026-10-17")
-        self.assertIn("SCIENCE FIRST", text)
-        self.assertIn("LEARNING, NOT SHOPPING", text)

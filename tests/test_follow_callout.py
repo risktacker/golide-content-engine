@@ -18,27 +18,6 @@ def _plan(follow_at=(1,), text="Follow the channel, because the feed won't show 
 
 
 class FollowCalloutTests(unittest.TestCase):
-    def test_schema_and_instructions_carry_the_follow(self):
-        item = SCRIPT_SCHEMA["properties"]["lines"]["items"]
-        self.assertIn("follow", item["required"])
-        for fmt in ("short", "long"):
-            rules = script_instructions(fmt)
-            self.assertIn("FOLLOW CALL-OUT", rules)
-            self.assertIn("NEVER ask people to comment", rules)
-
-    def test_closing_follow_passes(self):
-        self.assertEqual(follow_problems(_plan(follow_at=(9, 10)), "short"), [])  # then one closing line
-        self.assertEqual(follow_problems(_plan(follow_at=(9,)), "long"), [])  # then two closing lines
-        self.assertTrue(follow_problems(_plan(follow_at=(11,)), "short"))  # no closing line
-
-    def test_missing_late_or_comment_bait_is_caught(self):
-        self.assertTrue(follow_problems(_plan(follow_at=()), "short"))
-        self.assertTrue(follow_problems(_plan(follow_at=(1,)), "short"))  # before the value
-        self.assertTrue(follow_problems(_plan(follow_at=(2, 10)), "long"))  # also mid-script
-        bait = _plan(follow_at=(10,), text="Follow and comment AI to receive the guide.")
-        self.assertTrue(any("comments" in p for p in follow_problems(bait, "short")))
-
-
     def test_brand_name_is_never_said_aloud(self):
         plan = _plan(follow_at=(10,), text="Follow GOLIDE, because the feed won't show us to you again.")
         self.assertTrue(any("brand name" in p for p in follow_problems(plan, "short")))
@@ -54,7 +33,3 @@ class DebateQuestionTests(unittest.TestCase):
         self.assertTrue(closing_question_problems("Would you trust it?"))
         self.assertTrue(closing_question_problems("So what do you think about all this?"))
         self.assertTrue(closing_question_problems("And that is why it matters."))
-
-    def test_rules_reach_videos_and_posts(self):
-        for text in (script_instructions("short"), script_instructions("long"), static_post_instructions("post-a")):
-            self.assertIn("THE QUESTION THAT STARTS THE COMMENTS", text)

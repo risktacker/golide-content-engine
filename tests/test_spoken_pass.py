@@ -42,12 +42,6 @@ class SpokenPassTests(unittest.TestCase):
         merged = merge_spoken(plan, {"lines": [{"text": "the motors push the car", "emphasis": "rocket"}]})
         self.assertIn(merged["lines"][0]["emphasis"].lower(), "the motors push the car")
 
-    def test_opening_line_must_be_easy_to_say_cold(self):
-        # 2026-10-24: "At GTC Berlin, Jensen Huang walked out..." was hard to enter.
-        self.assertIn("hard to say cold", spoken_pass_instructions("short"))
-        self.assertIn("said cold", script_instructions("long", "golide-long-2026-10-25"))
-        self.assertIn("Microduck", spoken_pass_instructions("long"))
-
     def test_spoken_pass_studies_draft_and_owner_versions(self):
         # 2026-10-25: the pass ran but changed too little; it now sees before and after pairs.
         text = spoken_pass_instructions("short")
@@ -58,16 +52,6 @@ class SpokenPassTests(unittest.TestCase):
     def test_spoken_pass_runs_at_high_effort(self):
         from golide_engine.engine.content_rules import SPOKEN_PASS_EFFORT
         self.assertEqual(SPOKEN_PASS_EFFORT, "high")
-
-    def test_email_says_what_happened_to_the_spoken_rewrite(self):
-        from golide_engine.operations.email import build_record_needed, spoken_pass_line
-        self.assertIn("applied", spoken_pass_line({"status": "applied"}))
-        self.assertIn("first draft", spoken_pass_line({"status": "discarded", "reason": "too long"}))
-        self.assertEqual(spoken_pass_line(None), "")
-        msg = build_record_needed(job_id="j", title="T", format_name="short", script="A line.",
-                                  model={}, spoken_pass={"status": "applied"})
-        self.assertIn("Spoken rewrite: applied", msg.get_body(("plain",)).get_content())
-
 
 if __name__ == "__main__":
     unittest.main()

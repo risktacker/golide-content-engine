@@ -7,16 +7,6 @@ from golide_engine.vector.primitives import PRIMITIVES
 
 
 class ScriptRuleTests(unittest.TestCase):
-    def test_targets_sit_inside_recording_windows(self):
-        short, long = script_instructions("short"), script_instructions("long")
-        self.assertIn("150 to 185 spoken words", short)
-        self.assertIn("1300 to 1450 spoken words", long)   # about 8 minutes at the owner's pace
-        self.assertIn("CLAIM", short)
-        self.assertIn("CLOSE: the verdict", short)   # 2026-10-22: verdict, not homework
-        self.assertIn("LESSON IN CHAPTERS", long)
-        for rules in (short, long):
-            self.assertNotIn("ElevenLabs", rules)
-
     def test_every_visual_cue_has_a_renderer(self):
         line = SCRIPT_SCHEMA["properties"]["lines"]["items"]
         self.assertEqual(line["properties"]["visual"]["enum"], list(VISUAL_CUES))

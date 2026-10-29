@@ -18,13 +18,6 @@ TITLE = "NVIDIA CEO Jensen Huang Reveals Tiny AI Robots at GTC Berlin 2026"
 
 
 class VoiceTests(unittest.TestCase):
-    def test_the_script_writer_hears_the_owner(self):
-        voice = owner_voice()
-        self.assertIn("That's the fans.", voice)                 # approved Roadster script
-        self.assertIn("would you trust one of these in your home", voice)
-        for fmt in ("short", "long"):
-            self.assertIn("THE OWNER'S VOICE", script_instructions(fmt, "golide-short-2026-10-24"))
-
     def test_spec_sheet_jargon_is_sent_back(self):
         lines = lambda xs: {"lines": [{"text": x} for x in xs]}  # noqa: E731
         self.assertTrue(jargon_problems(lines(SPEC_SHEET), TITLE, "short"))
@@ -33,10 +26,6 @@ class VoiceTests(unittest.TestCase):
     def test_names_in_the_title_and_everyday_acronyms_are_fine(self):
         text = {"lines": [{"text": "NVIDIA showed AI robots to a CEO in the US and the UK on TV."}]}
         self.assertEqual([], jargon_problems(text, TITLE, "short"))
-
-    def test_jargon_check_runs_on_every_script(self):
-        self.assertIn("jargon_problems(plan", inspect.getsource(production.ProductionService.run))
-
 
 class RealLookTests(unittest.TestCase):
     def test_storyboard_gets_the_story_the_source_and_a_lookup(self):
