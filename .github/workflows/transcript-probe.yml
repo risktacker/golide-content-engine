@@ -1,0 +1,41 @@
+name: Transcript probe
+
+on:
+  workflow_dispatch:
+    inputs:
+      videos:
+        description: "Space-separated YouTube video IDs"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: golide-state-writer
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e . youtube-transcript-api yt-dlp
+      - name: Probe transcripts
+        env:
+          GOLIDE_SMTP_USER: ${{ secrets.GOLIDE_SMTP_USER }}
+          GOLIDE_SMTP_APP_PASSWORD: ${{ secrets.GOLIDE_SMTP_APP_PASSWORD }}
+          GOLIDE_NOTIFY_EMAIL: ${{ secrets.GOLIDE_NOTIFY_EMAIL }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: python tools/transcript_probe.py ${{ inputs.videos }}
+      - name: Save the result
+        run: |
+          git config user.name "golide-production-bot"
+          git config user.email "golide-production-bot@users.noreply.github.com"
+          git add production-queue/transcript-probe.json
+          git commit -m "ops: transcript probe result" || exit 0
+          git pull --rebase && git push
