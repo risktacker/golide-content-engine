@@ -28,6 +28,12 @@ def waiting_for_voice(spec: dict, root: str | Path = ".") -> bool:
     if not spec.get("owner_voice_required", True) or str(spec.get("owner_voice_media_ref") or "").strip():
         return False
     work = Path(root) / "productions" / str(spec.get("id", ""))
+    rescript = Path(root) / "production-queue" / f"{spec.get('id', '')}.rescript"
+    if rescript.exists():
+        done = work / "rescript-done.txt"
+        token = rescript.read_text(encoding="utf-8").strip()
+        if not done.exists() or done.read_text(encoding="utf-8").strip() != token:
+            return False   # a fresh script was asked for (2026-10-29)
     return (work / "script.txt").exists()
 
 
