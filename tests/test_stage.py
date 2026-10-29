@@ -79,7 +79,7 @@ class LayerTests(unittest.TestCase):
         stages = Stages(layout, "long")
         from golide_engine.vector.stage import WALL
         col = np.array((115, 165, 250), np.float32)
-        raw = stages._studio(col)
+        raw = stages._factory(col)
         layered = stages._planes(raw, col, None, floor_set=True)
         fy = int(stages.floor)
         wall_rows = slice(fy - 300, fy - 40)
@@ -102,3 +102,30 @@ class LayerTests(unittest.TestCase):
         body = r._body(alpha)
         self.assertGreater(float(body[h // 2, w // 2, 0]), 0.9)   # the inside of a closed outline
         self.assertLess(float(body[h // 2, w // 2 + 400, 0]), 0.05)
+
+
+class NoCollisionTests(unittest.TestCase):
+    """2026-10-29: "never collide objects with background and stage"."""
+
+    def test_sets_that_drew_around_the_object_are_gone(self):
+        from golide_engine.vector.stage import ALIASES
+        for old in ("orbit", "horizon", "wall", "studio", "storefront"):
+            self.assertNotIn(old, KINDS)
+            self.assertIn(ALIASES[old], KINDS)
+        stages = Stages(Layout.for_format("short"), "short")
+        self.assertIsNotNone(stages.image("orbit", (115, 165, 250)))   # old plans still render
+
+    def test_a_set_that_lights_the_object_box_falls_back_to_grid(self):
+        layout = Layout.for_format("long")
+        stages = Stages(layout, "long")
+        foot = (layout.width * 0.3, layout.width * 0.7, layout.height * 0.62, layout.height * 0.2)
+        bright = np.full((layout.height, layout.width, 3), 40.0, np.float32)
+        self.assertTrue(stages.collides(bright, (576, 1344, 672, 216)))
+        stages._market = lambda col: bright           # a set that floods the object's box
+        stages.image("market", (115, 165, 250), foot)
+        self.assertEqual(stages.fallbacks, 1)
+
+    def test_storyboard_offers_only_the_new_sets(self):
+        from golide_engine.vector.illustrate import VISUAL_PLAN_SCHEMA
+        enum = VISUAL_PLAN_SCHEMA["properties"]["scenes"]["items"]["properties"]["stage"]["enum"]
+        self.assertEqual(set(enum), {"grid", "pedestal", "factory", "market", "space"})

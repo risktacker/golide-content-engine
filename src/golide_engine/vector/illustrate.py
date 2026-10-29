@@ -86,8 +86,7 @@ VISUAL_PLAN_SCHEMA: dict = {
                     "figure_b": {"type": "string"},
                     "label": {"type": "string"},
                     "label_b": {"type": "string"},
-                    "stage": {"type": "string", "enum": ["grid", "pedestal", "studio", "wall", "orbit", "horizon",
-                                                        "space", "factory", "market", "storefront"]},
+                    "stage": {"type": "string", "enum": ["grid", "pedestal", "factory", "market", "space"]},
                 },
                 "required": ["first_line", "last_line", "drawing", "gold_element", "accent", "sound", "sound_word",
                              "figure", "layout", "drawing_b", "gold_element_b", "figure_b", "label", "label_b",
@@ -146,21 +145,17 @@ are evenly spaced, text on an object follows its angle, a label never sits on an
 object, two objects never overlap unless one is inside the other on purpose, and an
 object sits fully on its floor.
 
-STAGE (owner direction 2026-10-27: no drawing floats in empty black). Each scene
-names the set it stands in, drawn behind it by the engine:
-- "grid": a floor grid to a glowing horizon. Cars, robots, vehicles, anything on the ground.
-- "pedestal": glowing rings under a soft beam. A product or gadget being revealed.
-- "studio": a curved studio backdrop with two lights. A small object shown up close
-  (a bottle, a phone, glasses, a device in the hand).
-- "wall": a blueprint wall. How something works inside, parts, specs, a process.
-- "orbit": rings and a halo. Things you cannot hold: AI, data, networks, money flows.
-- "horizon": the glowing curve of a planet. Space, rockets, satellites, global scale.
-- "space": a nebula, a distant sun and a bending grid. Gravity, physics, the cosmos.
-- "factory": roof trusses, hanging lamps, a floor. Industry, machines, tanks, building sites.
-- "market": a faint chart wall and a ticker. Stocks, prices, investing, the economy.
-- "storefront": a shop front. Selling, shops, retail, customers, small business.
-Vary it with the story: consecutive scenes about the same thing keep the same set;
-a new place or idea gets a new one. Exact maths figures ignore it.
+STAGE (owner direction 2026-10-27: no drawing floats in empty black; 2026-10-29: the
+object never collides with the set). Every scene stands on the same floor grid with a
+glowing horizon and a shadow under the object; the engine draws it. Each scene names one
+extra, which only ever sits at the sides, above or under the base, never behind the object:
+- "grid": the floor and glow alone. The default; most scenes.
+- "pedestal": glowing rings on the floor under the object. A product or gadget being revealed.
+- "factory": lamps hanging above the floor. Industry, machines, tanks, building sites.
+- "market": faint chart bands at the far left and right. Stocks, prices, money, the economy.
+- "space": a planet curve far behind the horizon and a faint nebula above. Space, rockets,
+  physics, global scale.
+Consecutive scenes about the same thing keep the same one. Exact maths figures ignore it.
 
 For each scene write "drawing": one composed illustration that SHOWS the idea
 of those lines as a small visual story or metaphor, the way an illustrator
