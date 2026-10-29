@@ -31,6 +31,7 @@ jobs:
           GOLIDE_SMTP_APP_PASSWORD: ${{ secrets.GOLIDE_SMTP_APP_PASSWORD }}
           GOLIDE_NOTIFY_EMAIL: ${{ secrets.GOLIDE_NOTIFY_EMAIL }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          SUPADATA_API_KEY: ${{ secrets.SUPADATA_API_KEY }}
         run: python tools/transcript_probe.py ${{ inputs.videos }}
       - name: Save the result
         run: |

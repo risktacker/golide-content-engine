@@ -42,8 +42,15 @@ def via_ytdlp(video_id: str) -> dict:
         return {"ok": bool(text.strip()), "words": len(text.split()), "start": text[:300]}
 
 
+def via_engine(video_id: str) -> dict:
+    """What the engine itself gets (Supadata when SUPADATA_API_KEY is set)."""
+    from golide_engine.youtube.transcripts import fetch
+    text = fetch(f"https://www.youtube.com/watch?v={video_id}")
+    return {"ok": bool(text), "words": len(text.split()), "start": text[:300]} if text else {"ok": False, "error": "no transcript"}
+
+
 def main() -> None:
-    results = {v: {"api": via_api(v), "yt_dlp": via_ytdlp(v)} for v in VIDEOS}
+    results = {v: {"engine": via_engine(v)} for v in VIDEOS}
     out = Path("production-queue/transcript-probe.json")
     out.write_text(json.dumps(results, indent=2))
     print(json.dumps(results, indent=2))
