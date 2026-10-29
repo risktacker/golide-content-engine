@@ -5,7 +5,12 @@ rest is black, almost showing nothing happening in background." The pen still dr
 object; behind it, each scene now gets a set that frames and contains it, drawn in code
 (no image cost), chosen by the storyboard per scene:
 
-* grid      the floor grid running to a glowing horizon (the base of every set)
+* grid       the floor grid running to a glowing horizon (the base of every set)
+* studio     the grid plus two lights on stands at the sides, aimed at the object
+* wall       the grid plus two blueprint panels at the sides
+* orbit      the grid plus an orbit ring on the floor and network nodes at the sides
+* horizon    the grid plus a planet curve rising behind the horizon beside the object
+* storefront the grid plus two shop fronts framing the object
 * pedestal  the grid plus glowing rings lying on the floor under the object
 * factory   the grid plus lamps hanging at the sides
 * market    the grid plus faint candle bands at the far left and right
@@ -41,18 +46,20 @@ import numpy as np
 # 2026-10-29 (owner: "the main goal here is to never collide objects with background and
 # stage... grid and glow fits better"): every set is the grid floor with its glow and the
 # object's shadow; the others only add an extra at the sides, above or under the base.
-# Orbit, horizon, wall, studio and storefront drew lines behind or around the object and are
-# gone; old plans that still name them get the nearest set that cannot collide.
-KINDS = ("grid", "pedestal", "factory", "market", "space", "none")
-ALIASES = {"orbit": "grid", "wall": "grid", "studio": "pedestal", "storefront": "grid", "horizon": "space"}
+# Owner 2026-10-29: "I hate the idea of dropping... modify those which are looking as if they
+# are wrong": orbit, horizon, wall, studio and storefront are redrawn the same way, their
+# pieces moved to the sides, above the object or flat on the floor, never behind it.
+KINDS = ("grid", "pedestal", "studio", "wall", "orbit", "horizon", "space", "factory", "market", "storefront",
+         "none")
+ALIASES: dict[str, str] = {}
 COLLISION = 7.0          # mean set light (0-255) allowed inside the object's box before falling back to grid
 COOL = {"teal": (110, 220, 200), "blue": (115, 165, 250), "violet": (168, 140, 242), "ivory": (236, 230, 210)}
 WARM = (233, 196, 106)
 UNDER_TEXT = 0.15         # share of the set kept behind captions and number cards
 STRENGTH = 1.0
 HOLD_OUT = 0.55          # share of the set held back around the object (its solid shape is cut out in render)
-WALL = 0.65              # brightness of the back wall relative to the stage floor
-WALL_GREY = 0.35         # how far the back wall is pulled toward grey
+WALL = 0.9               # brightness of the back wall relative to the stage floor
+WALL_GREY = 0.2          # how far the back wall is pulled toward grey
 FLOOR_LIFT = 0.075       # the floor plane's own light, so stage and wall read as two planes
 BEHIND_CLEAR = 0.75      # share of the back wall removed in the object's own box
 SAME_COLOUR = 95.0       # RGB distance under which the set would blend with the object
@@ -106,7 +113,7 @@ class Stages:
         self.mask = (self.mask * hold[..., None]).astype(np.float32)
         self.base_floor = self.floor
         self.caption_top = caption_top
-        self.mid, self.span, self.fallbacks = self.cx, w * 0.3, 0
+        self.mid, self.span, self.otop, self.fallbacks = self.cx, w * 0.3, self.top, 0
         self._cache: dict[tuple, np.ndarray] = {}
 
     # ------------------------------------------------------------- public
@@ -131,13 +138,15 @@ class Stages:
                 self._cache.pop(next(iter(self._cache)))
             self.floor, self.mid = floor, (self.cx if footprint is None else (footprint[0] + footprint[1]) / 2)
             self.span = self.w * 0.3 if footprint is None else max(self.w * 0.12, (footprint[1] - footprint[0]) / 2)
+            self.otop = self.top if footprint is None else footprint[3]
             try:
                 art = self._planes(getattr(self, "_" + kind)(col), col, footprint, floor_set=True)
-                if kind != "grid" and self.collides(art, footprint):
+                base = self._planes(self._grid(col), col, footprint, floor_set=True) if kind != "grid" else None
+                if base is not None and self.collides(art - base, footprint):
                     self.fallbacks += 1
-                    art = self._planes(self._grid(col), col, footprint, floor_set=True)
+                    art = base
             finally:
-                self.floor, self.mid = self.base_floor, self.cx
+                self.floor, self.mid, self.otop = self.base_floor, self.cx, self.top
             self._cache[key] = (art * self.mask * STRENGTH).astype(np.float32)
         return self._cache[key]
 
@@ -228,7 +237,7 @@ class Stages:
         return self._floor_grid(col, 0.95 * strength) + self._horizon_glow(col, 0.5)
 
     def collides(self, art: np.ndarray, footprint) -> bool:
-        """True when the set puts light inside the object's own box (above its floor)."""
+        """True when the set (its extra over the plain grid) puts light inside the object's own box."""
         if footprint is None:
             return False
         x0, x1, fy, top = (int(v) for v in footprint)
@@ -303,16 +312,173 @@ class Stages:
             c.stroke()
         return self._grid(col) + self._lines(candles)[..., None] * col * 0.32
 
-    def _space(self, col):
-        """The grid floor, a planet curve far behind the horizon and a faint nebula above."""
+    def _side(self, xx, gap: float = 1.1) -> np.ndarray:
+        """1 beside the object, 0 over it (soft edge)."""
+        return np.clip((np.abs(xx - self.mid) - self.span * gap) / (self.w * 0.05), 0, 1)
+
+    def _horizon(self, col):
+        """The grid floor and a planet's glowing curve rising behind the horizon beside the object."""
         h, w, fy = self.h, self.w, self.floor
         yy, xx = self._grid_xy()
         R = w * 1.6
-        pcy = fy + R - h * 0.05                                    # the planet's top just clears the horizon
+        pcy = fy + R - h * 0.07                                    # the planet's top just clears the horizon
         d = np.sqrt((xx - self.cx) ** 2 + (yy - pcy) ** 2)
-        limb = (np.exp(-((d - R) / (h * 0.003)) ** 2) * 0.6 + np.clip(1 - np.abs(d - R) / (h * 0.05), 0, 1) ** 2
-                * (d > R) * 0.25) * (yy < fy)
-        limb = limb * np.clip((np.abs(xx - self.mid) - self.span * 1.1) / (w * 0.06), 0, 1)   # only beside the object
-        sky = np.exp(-((yy - h * 0.12) / (h * 0.08)) ** 2) * (0.6 + 0.4 * np.sin(xx / w * 7.0)) * 0.10
+        limb = (np.exp(-((d - R) / (h * 0.003)) ** 2) * 0.9 + np.clip(1 - np.abs(d - R) / (h * 0.06), 0, 1) ** 2
+                * (d > R) * 0.4) * (yy < fy) * self._side(xx)
+        return self._grid(col, 0.9) + limb[..., None] * col
+
+    def _space(self, col):
+        """The grid floor, a nebula band and stars above the object and a distant sun in a corner."""
+        h, w = self.h, self.w
+        yy, xx = self._grid_xy()
+        sky_bottom = max(h * 0.06, self.otop - h * 0.04)
+        above = np.clip((sky_bottom - yy) / (h * 0.04), 0, 1)
+        band = np.exp(-((yy - sky_bottom * 0.55 - 0.08 * (xx - self.cx)) / (h * 0.06)) ** 2)
+        wave = 0.55 + 0.45 * np.sin(xx / w * 9.0 + yy / h * 5.0)
+        rng = np.random.default_rng(11)
+        stars = np.zeros((h, w), np.float32)
+        sx, sy = rng.integers(0, w, 160), rng.integers(0, max(2, int(sky_bottom)), 160)
+        stars[sy, sx] = rng.uniform(0.4, 1.0, 160)
+        from PIL import Image, ImageFilter
+        stars = np.asarray(Image.fromarray((stars * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.2)),
+                           np.float32) / 255 * 3
+        sun_x = w * (0.86 if self.mid <= self.cx else 0.14)
+        sun = np.exp(-(((xx - sun_x) ** 2 + (yy - sky_bottom * 0.4) ** 2) / (h * 0.05) ** 2))
         violet = np.array(COOL["violet"], np.float32)
-        return self._grid(col, 0.85) + limb[..., None] * col + sky[..., None] * (violet * 0.6 + col * 0.4)
+        nebula = (band * wave * 0.30 + stars)[..., None] * (violet * 0.6 + col * 0.4) * above[..., None]
+        return self._grid(col, 0.85) + nebula + (sun * above * self._side(xx, 0.9))[..., None] * np.array(WARM, np.float32) * 0.45
+
+    def _orbit(self, col):
+        """The grid floor, one wide orbit ring lying on the floor around the base, and network
+        nodes floating at the sides joined by thin lines."""
+        h, w, fy, mid, span = self.h, self.w, self.floor, self.mid, self.span
+        rng = np.random.default_rng(3)
+
+        def ring(c):
+            c.set_line_width(max(1.5, h / 600))
+            for k in (1.35, 1.6):
+                c.save()
+                c.translate(mid, fy + h * 0.01)
+                c.scale(1, 0.12)
+                c.arc(0, 0, span * k, 0, 2 * math.pi)
+                c.restore()
+                c.stroke()
+
+        nodes = []
+        for side in (-1, 1):
+            for _ in range(4):
+                x = mid + side * (span * 1.25 + rng.uniform(0.02, 0.12) * w)
+                y = rng.uniform(self.otop, fy - h * 0.08)
+                nodes.append((float(np.clip(x, w * 0.03, w * 0.97)), float(y), side))
+
+        def net(c):
+            c.set_line_width(max(1.0, h / 900))
+            for side in (-1, 1):
+                pts = sorted([n for n in nodes if n[2] == side], key=lambda n: n[1])
+                for a, b in zip(pts, pts[1:]):
+                    c.move_to(a[0], a[1])
+                    c.line_to(b[0], b[1])
+            c.stroke()
+            for x, y, _ in nodes:
+                c.new_sub_path()
+                c.arc(x, y, h / 220, 0, 2 * math.pi)
+                c.fill()
+        yy, xx = self._grid_xy()
+        rings = self._lines(ring) * (yy >= fy - h * 0.004)
+        return self._grid(col) * 0.85 + rings[..., None] * col * 0.8 + (self._lines(net) * self._side(xx, 1.05))[..., None] * col * 0.55
+
+    def _wall(self, col):
+        """The grid floor and two blueprint panels standing at the sides with dimension marks."""
+        h, w, fy, mid, span = self.h, self.w, self.floor, self.mid, self.span
+        top = max(h * 0.08, self.otop)
+        panels = [(w * 0.02, mid - span * 1.15), (mid + span * 1.15, w * 0.98)]
+
+        def paint(c):
+            c.set_line_width(max(1.0, h / 900))
+            for x0, x1 in panels:
+                if x1 - x0 < w * 0.04:
+                    continue
+                c.rectangle(x0, top, x1 - x0, fy - top - h * 0.01)
+                step = h / 40
+                y = top + step
+                while y < fy - h * 0.01:
+                    c.move_to(x0, y)
+                    c.line_to(x1, y)
+                    y += step
+                x = x0 + step
+                while x < x1:
+                    c.move_to(x, top)
+                    c.line_to(x, fy - h * 0.01)
+                    x += step
+                c.stroke()
+                c.set_line_width(max(1.5, h / 600))                  # a dimension arrow on each panel
+                ym = top + (fy - top) * 0.3
+                c.move_to(x0 + (x1 - x0) * 0.15, ym)
+                c.line_to(x0 + (x1 - x0) * 0.85, ym)
+                for xe in (x0 + (x1 - x0) * 0.15, x0 + (x1 - x0) * 0.85):
+                    c.move_to(xe, ym - h * 0.01)
+                    c.line_to(xe, ym + h * 0.01)
+                c.stroke()
+                c.set_line_width(max(1.0, h / 900))
+        return self._grid(col) + self._lines(paint)[..., None] * col * 0.28
+
+    def _studio(self, col):
+        """The grid floor, two lights on stands at the sides aimed at the object, and the soft
+        pool their light makes on the floor."""
+        h, w, fy, mid, span = self.h, self.w, self.floor, self.mid, self.span
+        tall = (fy - max(h * 0.1, self.otop)) * 0.8
+        stands = [(max(w * 0.05, mid - span * 1.3), 1), (min(w * 0.95, mid + span * 1.3), -1)]
+
+        def paint(c):
+            c.set_line_width(max(1.5, h / 540))
+            for sx, d in stands:
+                c.move_to(sx, fy)
+                c.line_to(sx, fy - tall)
+                c.move_to(sx - h * 0.03, fy)
+                c.line_to(sx, fy - h * 0.045)
+                c.line_to(sx + h * 0.03, fy)
+                c.save()
+                c.translate(sx, fy - tall - h * 0.02)
+                c.rotate(d * 0.6)
+                c.rectangle(-h * 0.035, -h * 0.026, h * 0.07, h * 0.052)
+                c.restore()
+            c.stroke()
+        yy, xx = self._grid_xy()
+        pool = np.exp(-(((xx - mid) / (span * 1.3)) ** 2 + ((yy - fy - h * 0.02) / (h * 0.035)) ** 2)) * (yy >= fy)
+        heads = np.zeros((h, w), np.float32)
+        for sx, d in stands:
+            heads += np.exp(-(((xx - sx - d * h * 0.02) ** 2 + (yy - (fy - tall - h * 0.02)) ** 2) / (h * 0.03) ** 2))
+        grey = np.array((170, 178, 190), np.float32)
+        return self._grid(col) + self._lines(paint)[..., None] * grey * 0.45 + pool[..., None] * col * 0.3 \
+            + heads[..., None] * np.array(WARM, np.float32) * 0.35
+
+    def _storefront(self, col):
+        """The grid floor as a street, and two shop fronts with awnings framing the object."""
+        h, w, fy, mid, span = self.h, self.w, self.floor, self.mid, self.span
+        top = max(h * 0.08, self.otop + h * 0.02)
+        fronts = [(w * 0.01, mid - span * 1.12), (mid + span * 1.12, w * 0.99)]
+
+        def paint(c):
+            c.set_line_width(max(1.0, h / 800))
+            for x0, x1 in fronts:
+                if x1 - x0 < w * 0.05:
+                    continue
+                c.rectangle(x0, top, x1 - x0, fy - top)
+                aw = top + (fy - top) * 0.2
+                n = max(2, int((x1 - x0) / (w * 0.04)))
+                for i in range(n):
+                    a, b = x0 + (x1 - x0) * i / n, x0 + (x1 - x0) * (i + 1) / n
+                    c.move_to(a, aw)
+                    c.curve_to(a, aw + h * 0.025, b, aw + h * 0.025, b, aw)
+                c.move_to(x0, aw)
+                c.line_to(x1, aw)
+                c.rectangle(x0 + (x1 - x0) * 0.12, aw + h * 0.05, (x1 - x0) * 0.76, (fy - aw) * 0.45)   # the window
+            c.stroke()
+        yy, xx = self._grid_xy()
+        windows = np.zeros((h, w), np.float32)
+        for x0, x1 in fronts:
+            if x1 - x0 >= w * 0.05:
+                aw = top + (fy - top) * 0.2
+                windows += ((xx > x0 + (x1 - x0) * 0.12) & (xx < x0 + (x1 - x0) * 0.88)
+                            & (yy > aw + h * 0.05) & (yy < aw + h * 0.05 + (fy - aw) * 0.45)).astype(np.float32)
+        return self._grid(col) + self._lines(paint)[..., None] * col * 0.4 + windows[..., None] * np.array(WARM, np.float32) * 0.06

@@ -86,7 +86,8 @@ VISUAL_PLAN_SCHEMA: dict = {
                     "figure_b": {"type": "string"},
                     "label": {"type": "string"},
                     "label_b": {"type": "string"},
-                    "stage": {"type": "string", "enum": ["grid", "pedestal", "factory", "market", "space"]},
+                    "stage": {"type": "string", "enum": ["grid", "pedestal", "studio", "wall", "orbit", "horizon",
+                                                        "space", "factory", "market", "storefront"]},
                 },
                 "required": ["first_line", "last_line", "drawing", "gold_element", "accent", "sound", "sound_word",
                              "figure", "layout", "drawing_b", "gold_element_b", "figure_b", "label", "label_b",
@@ -149,12 +150,16 @@ STAGE (owner direction 2026-10-27: no drawing floats in empty black; 2026-10-29:
 object never collides with the set). Every scene stands on the same floor grid with a
 glowing horizon and a shadow under the object; the engine draws it. Each scene names one
 extra, which only ever sits at the sides, above or under the base, never behind the object:
-- "grid": the floor and glow alone. The default; most scenes.
+- "grid": the floor and glow alone. Cars, robots, vehicles, anything on the ground.
 - "pedestal": glowing rings on the floor under the object. A product or gadget being revealed.
-- "factory": lamps hanging above the floor. Industry, machines, tanks, building sites.
-- "market": faint chart bands at the far left and right. Stocks, prices, money, the economy.
-- "space": a planet curve far behind the horizon and a faint nebula above. Space, rockets,
-  physics, global scale.
+- "studio": two lights on stands at the sides aimed at the object. A small object up close.
+- "wall": two blueprint panels at the sides. How something works inside, parts, specs.
+- "orbit": an orbit ring on the floor and network nodes at the sides. AI, data, networks.
+- "horizon": a planet's curve rising behind the horizon. Rockets, satellites, global scale.
+- "space": a nebula, stars and a distant sun above. Gravity, physics, the cosmos.
+- "factory": lamps hanging at the sides. Industry, machines, tanks, building sites.
+- "market": faint candle bands at the far left and right. Stocks, prices, money, the economy.
+- "storefront": two shop fronts framing the object. Selling, shops, retail, customers.
 Consecutive scenes about the same thing keep the same one. Exact maths figures ignore it.
 
 For each scene write "drawing": one composed illustration that SHOWS the idea

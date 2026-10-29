@@ -107,13 +107,13 @@ class LayerTests(unittest.TestCase):
 class NoCollisionTests(unittest.TestCase):
     """2026-10-29: "never collide objects with background and stage"."""
 
-    def test_sets_that_drew_around_the_object_are_gone(self):
-        from golide_engine.vector.stage import ALIASES
-        for old in ("orbit", "horizon", "wall", "studio", "storefront"):
-            self.assertNotIn(old, KINDS)
-            self.assertIn(ALIASES[old], KINDS)
-        stages = Stages(Layout.for_format("short"), "short")
-        self.assertIsNotNone(stages.image("orbit", (115, 165, 250)))   # old plans still render
+    def test_every_set_keeps_the_object_box_clear(self):
+        layout = Layout.for_format("short")
+        stages = Stages(layout, "short")
+        foot = (layout.width * 0.22, layout.width * 0.78, layout.height * 0.55, layout.height * 0.22)
+        for kind in KINDS[:-1]:
+            stages.image(kind, (115, 165, 250), foot)
+        self.assertEqual(stages.fallbacks, 0)
 
     def test_a_set_that_lights_the_object_box_falls_back_to_grid(self):
         layout = Layout.for_format("long")
@@ -128,4 +128,4 @@ class NoCollisionTests(unittest.TestCase):
     def test_storyboard_offers_only_the_new_sets(self):
         from golide_engine.vector.illustrate import VISUAL_PLAN_SCHEMA
         enum = VISUAL_PLAN_SCHEMA["properties"]["scenes"]["items"]["properties"]["stage"]["enum"]
-        self.assertEqual(set(enum), {"grid", "pedestal", "factory", "market", "space"})
+        self.assertEqual(set(enum), set(KINDS) - {"none"})
