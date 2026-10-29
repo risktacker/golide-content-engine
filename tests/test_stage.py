@@ -119,7 +119,7 @@ class NoCollisionTests(unittest.TestCase):
         layout = Layout.for_format("long")
         stages = Stages(layout, "long")
         foot = (layout.width * 0.3, layout.width * 0.7, layout.height * 0.62, layout.height * 0.2)
-        bright = np.full((layout.height, layout.width, 3), 40.0, np.float32)
+        bright = np.full((layout.height, layout.width, 3), 120.0, np.float32)
         self.assertTrue(stages.collides(bright, (576, 1344, 672, 216)))
         stages._market = lambda col: bright           # a set that floods the object's box
         stages.image("market", (115, 165, 250), foot)
