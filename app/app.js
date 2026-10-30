@@ -387,7 +387,7 @@ function renderThreads(root, threads) {
     const preview = last ? (last.direction === "outbound" ? "You: " : "") + last.body.replace(/\s+/g, " ").slice(0, 110) : "";
     return '<details class="mail-thread' + (unread ? " unread" : "") + '" data-id="' + escAttr(thread.id) + '">' +
       '<summary><span class="mail-dot" aria-hidden="true"></span><div class="item-main"><strong>' +
-      esc(thread.participant_ref || "Conversation") + '</strong><span class="mail-subject">' + esc(subject) +
+      esc(thread.participant_ref || "Conversation") + '</strong>' + triageChip(thread) + '<span class="mail-subject">' + esc(subject) +
       '</span><small>' + esc(preview) + '</small></div><span class="micro mail-time">' + esc(when(thread.last_message_at)) +
       '</span></summary>' +
       '<div class="mail-msgs">' + bubbles + '</div>' +
@@ -432,6 +432,15 @@ function renderThreads(root, threads) {
       setTimeout(() => { loadInbox(); refreshInboxBadge(); }, 260);
     };
   });
+}
+
+// 2026-10-31: every thread carries a label so garbage sinks and real offers rise.
+const TRIAGE = { opportunity: "Opportunity", message: "Message", pitch: "Pitch", spam: "Spam" };
+function triageChip(thread) {
+  const label = TRIAGE[thread.label];
+  if (!label) return "";
+  return '<span class="triage triage-' + escAttr(thread.label) + '" title="' + escAttr(thread.label_reason || "") + '">' +
+    esc(label) + '</span>' + (thread.label_reason ? '<span class="triage-why">' + esc(thread.label_reason) + '</span>' : "");
 }
 
 async function refreshInboxBadge() {

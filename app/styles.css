@@ -439,3 +439,10 @@ body.sheet-open{overflow:hidden}
 .yt-scroll{overflow-x:auto;margin-top:12px}
 .yt-scroll[hidden]{display:none}
 @media (max-width:720px){.yt-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.yt-table .hide-s{display:none}}
+
+/* Inbox triage labels (2026-10-31) */
+.triage{display:inline-block;margin:3px 0 2px;padding:1px 8px;border-radius:999px;font-size:.6875rem;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line);color:var(--muted)}
+.triage-opportunity{color:#e9c46a;border-color:rgba(233,196,106,.5);background:rgba(233,196,106,.08)}
+.triage-message{color:#7fe0d2;border-color:rgba(127,224,210,.4)}
+.triage-pitch,.triage-spam{opacity:.7}
+.mail-thread .triage-why{display:block;font-size:.75rem;color:var(--muted);opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

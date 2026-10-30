@@ -1,3 +1,4 @@
+import { labelThread } from "./triage.js";
 // GOLIDE email: hello@golidee.com in Studio's Inbox.
 //
 // Receive: Cloudflare Email Routing hands each message for hello@ to the
@@ -106,7 +107,7 @@ export async function deleteThread(db, id) {
 }
 
 export async function unreadCount(db) {
-  const row = await db.prepare(`SELECT COUNT(*) count FROM inbox_threads WHERE status='open' AND unread=1`).first();
+  const row = await db.prepare(`SELECT COUNT(*) count FROM inbox_threads WHERE status='open' AND unread=1 AND COALESCE(label,'') NOT IN ('pitch','spam')`).first();
   return Number(row?.count || 0);
 }
 
@@ -209,6 +210,7 @@ export async function receiveMail(message, env) {
   const from = clean(/<([^>]+)>/.exec(message.from)?.[1] || message.from).toLowerCase();
   const threadId = await threadFor(env.DB, from, decodeHeader(parsed.subject), true);
   await addMessage(env.DB, threadId, "inbound", parsed.text || "(no text)", parsed.messageId);
+  try { await labelThread(env, threadId); } catch (e) { console.log(JSON.stringify({ triage: "failed", error: String(e) })); }
   if (env.EMAIL_FORWARD_TO) {
     try { await message.forward(env.EMAIL_FORWARD_TO); } catch (e) { console.log(JSON.stringify({ forward: "failed", error: String(e) })); }
   }

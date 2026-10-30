@@ -108,6 +108,15 @@ export async function collectHealth(db, now = new Date(), storage = null) {
   const owed = await all(db, `SELECT job_id,format,title FROM production_jobs WHERE archived_at IS NULL AND status='waiting_owner_voice' AND job_id NOT LIKE ?`, `%-${day.date}`);
   for (const job of owed) issues.push(`Still waiting for your recording: ${job.title || job.job_id}.`);
 
+  // 3b. Inbox (2026-10-31): only real opportunities and real people need you; pitches and spam don't.
+  const mail = await all(db, `SELECT participant_ref,subject,label FROM inbox_threads
+    WHERE status='open' AND unread=1 AND label IN ('opportunity','message')`).catch(() => []);
+  for (const m of mail) {
+    issues.push(m.label === "opportunity"
+      ? `Opportunity in the inbox: ${m.subject || m.participant_ref}.`
+      : `Unanswered message from ${m.participant_ref}.`);
+  }
+
   // 4. Anything from the last 3 days still failed, partial or stuck.
   const stuck = await all(db, `SELECT id,title,status FROM content_posts
     WHERE COALESCE(scheduled_at,created_at)>=? AND COALESCE(scheduled_at,created_at)<?

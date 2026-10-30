@@ -1,4 +1,5 @@
 import { ANALYTICS_SCHEMA, analyticsReport, storeAnalytics } from "./analytics.js";
+import { labelMissing } from "./triage.js";
 import { handleContact } from "./contact.js";
 import { sweepMedia } from "./storage.js";
 import { collectHealth, renderHealth, sendHealthEmail } from "./health.js";
@@ -234,6 +235,8 @@ async function ensureSchema(db){
   try{await db.prepare(`ALTER TABLE engine_connections ADD COLUMN verification_status TEXT NOT NULL DEFAULT 'unknown'`).run();}catch{}
   try{await db.prepare(`ALTER TABLE engine_connections ADD COLUMN verification_note TEXT NOT NULL DEFAULT ''`).run();}catch{}
   try{await db.prepare(`ALTER TABLE inbox_threads ADD COLUMN unread INTEGER NOT NULL DEFAULT 0`).run();}catch{}
+  try{await db.prepare(`ALTER TABLE inbox_threads ADD COLUMN label TEXT NOT NULL DEFAULT ''`).run();}catch{}
+  try{await db.prepare(`ALTER TABLE inbox_threads ADD COLUMN label_reason TEXT NOT NULL DEFAULT ''`).run();}catch{}
   try{await db.prepare(`ALTER TABLE production_jobs ADD COLUMN archived_at TEXT`).run();}catch{}
   await ensureSocialOauthSchema(db);
   await db.prepare(`INSERT OR IGNORE INTO automation_control(id,enabled,updated_at,updated_by) VALUES(1,0,?,'deployment-default')`)
@@ -287,7 +290,7 @@ async function listPosts(db,status){
 }
 
 async function inbox(db){
-  const threads=(await db.prepare(`SELECT id,platform,participant_ref,subject,status,last_message_at,unread FROM inbox_threads WHERE status='open' ORDER BY COALESCE(last_message_at,created_at) DESC`).all()).results||[];
+  const threads=(await db.prepare(`SELECT id,platform,participant_ref,subject,status,last_message_at,unread,label,label_reason FROM inbox_threads WHERE status='open' ORDER BY CASE label WHEN 'opportunity' THEN 0 WHEN 'message' THEN 1 WHEN '' THEN 1 WHEN 'pitch' THEN 2 ELSE 3 END, COALESCE(last_message_at,created_at) DESC`).all()).results||[];
   for(const thread of threads){
     thread.messages=(await db.prepare(`SELECT direction,body,created_at FROM inbox_messages WHERE thread_id=? ORDER BY created_at ASC`).bind(thread.id).all()).results||[];
   }
@@ -1115,7 +1118,7 @@ async function handleApi(request,env,url){
   if(url.pathname==="/api/posts"&&request.method==="POST"){
     try{return json(await createPost(env,await request.json()),201);}catch(e){return err(e?.message||String(e),400);}
   }
-  if(url.pathname==="/api/inbox"&&request.method==="GET") return json({threads:await inbox(env.DB)});
+  if(url.pathname==="/api/inbox"&&request.method==="GET"){ await labelMissing(env); return json({threads:await inbox(env.DB)}); }
   if(url.pathname==="/api/inbox/send"&&request.method==="POST"){
     try{return json(await sendAndRecord(env,await request.json()));}catch(e){return err(e?.message||String(e),400);}
   }
