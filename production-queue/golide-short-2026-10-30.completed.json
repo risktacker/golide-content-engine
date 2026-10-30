@@ -262,13 +262,13 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "Android Studio Rabbit 2 over 40 ACP coding agents Claude Codex Antigravity 2026",
-        "score": 85.0,
+        "score": 85,
         "verdict": "pass",
         "recent_videos": 61,
         "median_views_per_day": 725916.19,
         "top_views_per_day": 10727657.41,
         "market_coverage": 4,
-        "title_query_overlap": 0.0,
+        "title_query_overlap": 0,
         "measured_at": "2026-10-30T07:02:40.419116+00:00",
         "signal_type": "youtube-most-popular-seed-proxy"
       },
@@ -323,9 +323,10 @@
     "median_views_per_day": 5096500.800000001,
     "top_views_per_day": 5096500.800000001,
     "market_coverage": 1,
-    "title_query_overlap": 1.0,
+    "title_query_overlap": 1,
     "measured_at": "2026-10-30T07:02:42.319691+00:00",
     "signal_type": "youtube-breakout-v1"
   },
-  "selected_topic_source": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/"
+  "selected_topic_source": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+  "owner_voice_media_ref": "r2://temp/2026/10/30/c94548cf2d3d42ecb1ee35ac52bf6ce7-MacBook-enhanced-v2.wav"
 }

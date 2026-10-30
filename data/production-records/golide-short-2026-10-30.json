@@ -1,0 +1,608 @@
+{
+  "production_id": "golide-short-2026-10-30",
+  "youtube_video_id": "r6fK4OxcNrU",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "r6fK4OxcNrU",
+    "upload_status": "published",
+    "privacy_status": "public",
+    "scheduled_at": null,
+    "uploaded_at": "2026-10-30T19:28:31.939792+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "I tested Apple’s new touchscreen MacBook Pro..",
+    "status": "published",
+    "scheduled_at": "2026-10-30T11:00:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-shorts-mon-wed-fri-sun\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "The first surprise is how quickly\nthe MacBook screen feels normal.\nEarly hands-on testers swiped between desktops,\npinched to zoom in on photos, dragged windows,\nand scrubbed through video without learning new gestures.\nIt feels direct at first, but the question is whether\ntouch actually saves time,\nor just gives the trackpad another route\nto the same controls.\nArs Technica found most system gestures already worked\nwith trackpad movements, while dragging files\nand pinch to zoom felt smooth on the display.\nSmall window controls were awkward to tap,\nwhich shows where this feature fits.\nDrawing directly on a canvas feels right,\nand photo work benefits from quick zooming, rotating,\nand making selections with your finger.\nApple is adding touch workflows to Pixelmator Pro,\nLogic Pro, and Final Cut Pro.\nThe MacBook doesn't fold into a tablet,\nand it doesn't support Apple Pencil.\nFor typing, coding, spreadsheets and long sessions,\nthe keyboard and trackpad make more sense.\nAt 2,899 dollars, touch is more than a novelty\nfor visual work, but it's expensive for typing.\nFollow us for clear explanations of technology that affects your work.\n",
+  "research": {
+    "summary": "## G$LIDE explainer draft: Is the touchscreen MacBook actually better?\n\nThe first surprise is how quickly the screen stops feeling strange. Put a finger on the MacBook Pro, swipe through desktops, pinch into a photo, drag a window across the display—and the gestures work immediately. In early hands-on testing, reviewers reported that scrolling, zooming, window management, file dragging, video scrubbing and drawing all behaved as expected. ([arstechnica.com](https://arstechnica.com/apple/2026/10/touchscreen-macbook-pro-hands-on-oled-looks-great-on-a-mac/))\n\nThat instant familiarity is the strongest argument for the feature. Apple has not redesigned macOS into an iPad interface. The keyboard and trackpad remain central, while touch adds a second route to the same controls. Existing Mac apps can receive basic touch input because macOS translates touches into clicks, and Apple is adding more specific touch support to apps such as Pixelmator Pro, Logic Pro and Final Cut Pro. ([apple.com](https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/))\n\n### The hands-on test\n\nStart with simple actions: scroll a webpage, pinch to zoom a photograph, swipe between desktop spaces and move a window to the side of the screen. Touch feels direct because the target is visible under your finger. For a quick adjustment or a large visual object, that can be more immediate than moving a cursor across the trackpad.\n\nThen repeat each task with the trackpad. This is where the touchscreen becomes less revolutionary. Ars Technica found that most of the operating-system gestures it tried could already be performed with trackpad gestures. Another hands-on report found pinch-to-zoom and drag-and-drop smooth, but described the small window controls as awkward to tap. ([arstechnica.com](https://arstechnica.com/apple/2026/10/touchscreen-macbook-pro-hands-on-oled-looks-great-on-a-mac/))\n\nSo the meaningful test is not whether touch works. It does. The test is whether it saves time. For a fair comparison, run the same tasks ten times with touch and ten times with the trackpad: zoom and crop an image, move a window, select a video range, drag a file between apps and switch desktops. Record completion time, mis-taps and how often the user switches back to the trackpad. Without that controlled comparison, “faster” is only an impression—not an established result.\n\n### Where touch makes sense\n\nTouch is most convincing when the object being manipulated is already on the screen. Drawing directly on a canvas, rotating a 3D model, scrubbing video or moving a clip into place all benefit from direct manipulation. Apple is explicitly building touch workflows into Pixelmator Pro, Logic Pro and Final Cut Pro, while reviewers have tested finger painting, 3D-model manipulation, video scrubbing and onscreen instruments. ([apple.com](https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/))\n\nPhoto work is a more conditional win. Pinching, rotating, zooming and making quick selections can feel natural because the hand goes straight to the image. But precision work still benefits from a cursor, trackpad or dedicated tablet. This MacBook does not fold into a tablet, and Ars Technica reports that it does not support Apple Pencil, which limits its appeal as a serious drawing-tablet replacement. ([arstechnica.com](https://arstechnica.com/apple/2026/10/touchscreen-macbook-pro-hands-on-oled-looks-great-on-a-mac/))\n\n### Where it does not help\n\nTyping-heavy work is unlikely to be transformed. Touch does not replace the physical keyboard, and reaching up to the display is unnecessary when the hands are already positioned over the keys or trackpad. Apple presents touch as working alongside—not instead of—the keyboard and trackpad. ([apple.com](https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/))\n\nThe same is true for precise desktop navigation. Touch can be quicker when the target is large and obvious, but small controls remain less comfortable to hit with a finger. The early hands-on reports suggest that touch is best treated as an occasional shortcut or creative input method rather than the default way to operate macOS. ([arstechnica.com](https://arstechnica.com/apple/2026/10/touchscreen-macbook-pro-hands-on-oled-looks-great-on-a-mac/))\n\n### The payoff\n\nThe touchscreen MacBook Pro is a meaningful interface change, but not a wholesale replacement for the Mac interaction model. It adds a useful direct-manipulation layer for drawing, image work, music, video and quick visual adjustments. For writing, coding, spreadsheets and long sessions of window-heavy desktop work, the keyboard and trackpad still make more sense.\n\nThe difficult question is price. Apple’s touchscreen 14-inch MacBook Pro starts at $2,899 in the United States, while the 16-inch model starts at $3,399. The machines were announced on October 28, 2026, and are scheduled to begin arriving November 6, 2026. ([apple.com](https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/))\n\nThat makes the verdict straightforward: if you already work directly on visual canvases, touch could be more than a novelty. If your day is mostly typing and pointer-based desktop work, it looks like an expensive convenience—natural, occasionally useful and surprisingly pleasant, but not a reason by itself to replace a working MacBook.",
+    "claims": [
+      {
+        "claim": "Apple’s first touchscreen MacBook Pro supports touch gestures including scrolling, pinch-to-zoom, window movement, file dragging and desktop switching.",
+        "source_title": "Apple unveils groundbreaking MacBook Pro with PROLED XDR Display and Touch",
+        "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+        "published_or_updated": "October 28, 2026"
+      },
+      {
+        "claim": "Hands-on testing found that the touchscreen could be used for desktop spaces, Maps, window resizing, file movement, app launching, drawing, 3D-model manipulation and video scrubbing.",
+        "source_title": "Touchscreen MacBook Pro hands-on: OLED looks great on a Mac",
+        "source_url": "https://arstechnica.com/apple/2026/10/touchscreen-macbook-pro-hands-on-oled-looks-great-on-a-mac/",
+        "published_or_updated": "October 28, 2026"
+      },
+      {
+        "claim": "The touchscreen does not turn the MacBook into a tablet; it does not fold into tablet mode and does not support Apple Pencil according to the cited hands-on report.",
+        "source_title": "Touchscreen MacBook Pro hands-on: OLED looks great on a Mac",
+        "source_url": "https://arstechnica.com/apple/2026/10/touchscreen-macbook-pro-hands-on-oled-looks-great-on-a-mac/",
+        "published_or_updated": "October 28, 2026"
+      },
+      {
+        "claim": "Apple is positioning touch alongside the keyboard and trackpad, with touch-enabled workflows in Pixelmator Pro, Logic Pro and Final Cut Pro.",
+        "source_title": "Apple unveils groundbreaking MacBook Pro with PROLED XDR Display and Touch",
+        "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+        "published_or_updated": "October 28, 2026"
+      },
+      {
+        "claim": "A hands-on report found pinch-to-zoom and drag-and-drop smooth, while small window controls were awkward to tap.",
+        "source_title": "Apple’s touchscreen MacBook Pro keeps macOS familiar, Bloomberg finds",
+        "source_url": "https://thenextweb.com/news/apple-touch-macbook-pro-hands-on-macos",
+        "published_or_updated": "October 29, 2026"
+      },
+      {
+        "claim": "The touchscreen MacBook Pro starts at $2,899 for the 14-inch model and $3,399 for the 16-inch model in the United States, with customer availability beginning November 6, 2026.",
+        "source_title": "Apple unveils groundbreaking MacBook Pro with PROLED XDR Display and Touch",
+        "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+        "published_or_updated": "October 28, 2026"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "I tested Apple’s new touchscreen MacBook Pro..",
+    "description": "Apple’s first touchscreen MacBook Pro makes swiping, zooming, dragging windows, and scrubbing video feel natural. Touch is most useful for creative work in apps like Pixelmator Pro, Logic Pro, and Final Cut Pro.\n\nBut the MacBook still does not fold into a tablet or support Apple Pencil, and small controls can be awkward to tap. At $2,899, touch looks more like a helpful creative shortcut than a replacement for the keyboard and trackpad.\n\n#MacBookPro #TouchscreenMacBook #Apple #MacBook #FinalCutPro #LogicPro #PixelmatorPro #GOLIDE",
+    "tags": [
+      "touchscreen MacBook Pro",
+      "MacBook Pro touch screen",
+      "touch MacBook Pro",
+      "Apple touchscreen Mac",
+      "MacBook touchscreen",
+      "touchscreen MacBook review",
+      "MacBook Pro hands on",
+      "MacBook Pro first look",
+      "MacBook Pro gestures",
+      "MacBook trackpad vs touch",
+      "MacBook for creatives",
+      "Final Cut Pro touch",
+      "Logic Pro touch",
+      "Pixelmator Pro touch",
+      "MacBook photo editing",
+      "MacBook video editing",
+      "Apple MacBook review",
+      "new MacBook Pro",
+      "MacBook Pro 2026",
+      "2899 MacBook Pro"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "keywords": [
+      "touchscreen MacBook Pro",
+      "MacBook Pro touchscreen",
+      "Apple touch MacBook",
+      "touchscreen MacBook review",
+      "MacBook Pro hands on",
+      "MacBook touch gestures",
+      "MacBook touch screen useful",
+      "MacBook creative workflow",
+      "MacBook Pro Apple Pencil",
+      "MacBook Pro Final Cut Pro",
+      "MacBook Pro Logic Pro",
+      "Pixelmator Pro MacBook",
+      "MacBook Pro touch price",
+      "touchscreen Mac laptop"
+    ],
+    "hashtags": [
+      "#MacBookPro",
+      "#TouchscreenMacBook",
+      "#Apple",
+      "#MacBook",
+      "#FinalCutPro",
+      "#LogicPro",
+      "#PixelmatorPro",
+      "#GOLIDE"
+    ],
+    "format": "short",
+    "title_description_language": "en",
+    "seo_body": "Apple’s first touchscreen MacBook Pro makes swiping, zooming, dragging windows, and scrubbing video feel natural. Touch is most useful for creative work in apps like Pixelmator Pro, Logic Pro, and Final Cut Pro.\n\nBut the MacBook still does not fold into a tablet or support Apple Pencil, and small controls can be awkward to tap. At $2,899, touch looks more like a helpful creative shortcut than a replacement for the keyboard and trackpad."
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "Apple’s first touchscreen MacBook Pro supports touch gestures including scrolling, pinch-to-zoom, window movement, file dragging and desktop switching.",
+        "source_title": "Apple unveils groundbreaking MacBook Pro with PROLED XDR Display and Touch",
+        "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+        "published_or_updated": "October 28, 2026"
+      },
+      {
+        "claim": "Hands-on testing found that the touchscreen could be used for desktop spaces, Maps, window resizing, file movement, app launching, drawing, 3D-model manipulation and video scrubbing.",
+        "source_title": "Touchscreen MacBook Pro hands-on: OLED looks great on a Mac",
+        "source_url": "https://arstechnica.com/apple/2026/10/touchscreen-macbook-pro-hands-on-oled-looks-great-on-a-mac/",
+        "published_or_updated": "October 28, 2026"
+      },
+      {
+        "claim": "The touchscreen does not turn the MacBook into a tablet; it does not fold into tablet mode and does not support Apple Pencil according to the cited hands-on report.",
+        "source_title": "Touchscreen MacBook Pro hands-on: OLED looks great on a Mac",
+        "source_url": "https://arstechnica.com/apple/2026/10/touchscreen-macbook-pro-hands-on-oled-looks-great-on-a-mac/",
+        "published_or_updated": "October 28, 2026"
+      },
+      {
+        "claim": "Apple is positioning touch alongside the keyboard and trackpad, with touch-enabled workflows in Pixelmator Pro, Logic Pro and Final Cut Pro.",
+        "source_title": "Apple unveils groundbreaking MacBook Pro with PROLED XDR Display and Touch",
+        "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+        "published_or_updated": "October 28, 2026"
+      },
+      {
+        "claim": "A hands-on report found pinch-to-zoom and drag-and-drop smooth, while small window controls were awkward to tap.",
+        "source_title": "Apple’s touchscreen MacBook Pro keeps macOS familiar, Bloomberg finds",
+        "source_url": "https://thenextweb.com/news/apple-touch-macbook-pro-hands-on-macos",
+        "published_or_updated": "October 29, 2026"
+      },
+      {
+        "claim": "The touchscreen MacBook Pro starts at $2,899 for the 14-inch model and $3,399 for the 16-inch model in the United States, with customer availability beginning November 6, 2026.",
+        "source_title": "Apple unveils groundbreaking MacBook Pro with PROLED XDR Display and Touch",
+        "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+        "published_or_updated": "October 28, 2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "Apple new touchscreen MacBook Pro hands-on touch display real world use 2026",
+      "score": 89.7,
+      "verdict": "pass",
+      "recent_videos": 1,
+      "median_views_per_day": 5096500.800000001,
+      "top_views_per_day": 5096500.800000001,
+      "market_coverage": 1,
+      "title_query_overlap": 1,
+      "measured_at": "2026-10-30T07:02:42.319691+00:00",
+      "signal_type": "youtube-breakout-v1"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -17.19,
+      "true_peak_dbtp": -1.9,
+      "loudness_range": 2.9
+    },
+    "editorial": {
+      "beats": 26,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-10-30T19:28:22.922958+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri-sun"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-short-2026-10-30",
+    "created_at": "2026-10-30T19:28:23.879437+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-10-30T11:00:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "0254dc6cbee5e4eb07ff74addb5ba19b8f6e26cbbf27b92f4bbb929da32d50e3",
+        "bytes": 25307242
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "a78d98a03c00c0de9c4b7a690f9401dda2fba874edb559824d7d83141269a2ae",
+        "bytes": 175308
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "782ecd9acf880fbbac7b7e9467591a7b8251873a1a597b045b6a0f3d3af335e8",
+        "bytes": 2515
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "1ad5bf5a1b79b31d1f5407f827ad679fd5cc39b134c07245e8eaa432f74cb479",
+        "bytes": 2402
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "bdb7242e1b2ca259e0482c37ba00e4212e56c87d9dc7a5994ec8402a89d97073",
+        "bytes": 760
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "9ed8301f6861925c9b6e52eca25ccca85bd227e06615c091a1fd0ede3d05ae7d",
+        "bytes": 3441
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "678140779bba2e91fcb33a95de33aea71f2cbbed4011049fbe64e353d1870954",
+        "bytes": 394
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "aa486ccaf94ce9c2db25506891962179a0371336475a8cb40882cf184538d405",
+        "bytes": 276
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 24465.0,
+      "cached_input_units": 0.0,
+      "output_units": 2957.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008441,
+      "created_at": "2026-10-30T07:02:41.843133+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-30T07:02:41.844948+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 21542.0,
+      "cached_input_units": 0.0,
+      "output_units": 2504.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007313,
+      "created_at": "2026-10-30T07:03:21.533645+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-30T07:03:21.535000+00:00"
+    },
+    {
+      "stage": "script-spoken",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 11758.0,
+      "cached_input_units": 0.0,
+      "output_units": 2511.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005365,
+      "created_at": "2026-10-30T07:04:47.314022+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 4414.0,
+      "cached_input_units": 0.0,
+      "output_units": 3775.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005413,
+      "created_at": "2026-10-30T07:04:47.316251+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 4648.0,
+      "cached_input_units": 0.0,
+      "output_units": 1594.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002842,
+      "created_at": "2026-10-30T17:28:52.312989+00:00"
+    },
+    {
+      "stage": "script-spoken",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 11870.0,
+      "cached_input_units": 0.0,
+      "output_units": 5757.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.009282,
+      "created_at": "2026-10-30T17:30:23.874200+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 6290.0,
+      "cached_input_units": 1599.0,
+      "output_units": 3229.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004845,
+      "created_at": "2026-10-30T17:30:23.876285+00:00"
+    },
+    {
+      "stage": "visual-plan-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-30T19:18:05.447658+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 18532.0,
+      "cached_input_units": 0.0,
+      "output_units": 2829.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007101,
+      "created_at": "2026-10-30T19:18:05.453287+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-30T19:18:20.635435+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-30T19:18:34.426665+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-30T19:18:48.110198+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-30T19:19:02.372732+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-30T19:19:17.042311+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-30T19:19:30.837924+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-30T19:19:44.239630+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-30T19:20:03.475389+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-30T19:20:17.479551+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-30T19:20:31.034756+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-30T19:20:44.392242+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-30T19:20:57.977460+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-30T19:21:12.621034+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-30T19:21:27.476976+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 13505.0,
+      "cached_input_units": 0.0,
+      "output_units": 1071.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.003986,
+      "created_at": "2026-10-30T19:28:11.148000+00:00"
+    }
+  ],
+  "recorded_at": "2026-10-30T19:28:31.945174+00:00"
+}

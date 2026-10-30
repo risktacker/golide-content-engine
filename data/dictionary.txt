@@ -23,3 +23,5 @@ attaches  # seen in your recording
 cyber  # seen in the research sources
 foldables  # seen in your recording
 teardown  # seen in the research sources
+trackpad  # seen in your recording and the research sources
+workflows  # seen in your recording and the research sources
