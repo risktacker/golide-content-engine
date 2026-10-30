@@ -91,3 +91,29 @@ class TranscriptTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class SpokenFlowTests(unittest.TestCase):
+    """2026-10-30: "What kind of human speaks like this?" """
+
+    ROBOT = ["Touching a laptop screen feels wrong for about 3rd.", "Then your finger swipes between desktops.",
+             "Scroll a page, pinch a photo, or drag a window.", "The touchscreen MacBook Pro handles all 3.",
+             "But does touch make work faster?", "Run the same jobs with touch.", "Zooming feels immediate.",
+             "The maker is adding touch to creative apps."]
+
+    def test_a_list_of_short_sentences_is_sent_back(self):
+        from golide_engine.engine.content_rules import line_problems
+        self.assertTrue(any("bullet points" in p for p in line_problems({"lines": [{"text": t} for t in self.ROBOT]})))
+        talk = ["Touching a laptop screen feels wrong for about a third of a second,",
+                "and then your finger swipes between desktops and it just works,",
+                "which is exactly what Apple wants you to feel the first time",
+                "you pick up the new MacBook Pro in a store."] * 2
+        self.assertEqual(line_problems({"lines": [{"text": t} for t in talk]}), [])
+
+    def test_no_fake_tests_and_fractions_stay_words(self):
+        from golide_engine.engine.numerals import digits
+        text = script_instructions("short")
+        self.assertIn("WE EXPLAIN, WE DID NOT TEST", text)
+        self.assertIn("a third of a second", text)
+        self.assertEqual(digits("two thirds of owners"), "two thirds of owners")
+        self.assertIn("one short sentence per line", spoken_pass_instructions("short"))

@@ -799,12 +799,19 @@ working on YouTube right now. Before you write, study them:
 Then write ours the way they do it, for the person who would watch this topic. Their way
 of talking to the viewer, their pacing and their shape are the template. Their words and
 their facts are not: never copy a sentence or a fact from them.
+WE EXPLAIN, WE DID NOT TEST (2026-10-30). A model may be a hands-on review ("I tested...",
+"run the same jobs..."). We never held the product, so never write as if we did, and never
+give the viewer commands to carry out ("Run the same jobs...", "Scroll a page..."). Take
+their pull and their pace, and tell what the testers and the research found.
+Say real names: the company, the product, the person. Never a vague stand-in ("the maker").
 """
 
 SCRIPT_MECHANICS = """\
 WHAT THE ENGINE NEEDS (format, not style)
 - Facts only from VERIFIED RESEARCH. A company's own figure is said as their claim.
 - Every number written as digits (16.3 billion, 2026, October 26th, 85 percent, 4 robots).
+  Fractions and ordinals in ordinary speech stay words ("a third of a second", "half",
+  "the first time").
 - One sentence asks the viewer to follow, in your own words, wherever it fits naturally:
   "follow us" or "follow the channel". Never say the brand name aloud. Never ask for
   comments, likes, shares or links. Set "follow": true on its line or lines (at most 2).
@@ -854,17 +861,35 @@ LINE RULES (lines are how the speech is split for the screen; they are NOT sente
 - Plain English for a global audience. No slang, no religion, no politics.
 """
 
+SPOKEN_FLOW = """\
+SPEECH, NOT A LIST (2026-10-30: "What kind of human speaks like this?" A script of one
+short sentence per line, each standing alone, sounded like a robot reading bullet points.)
+- A person explaining something talks in sentences that run across 2 or 3 lines and carry
+  one thought into the next. Most lines end in the middle of a sentence.
+- Never a run of short stand-alone sentences or fragments.
+"""
+
 LINE_WORDS_MAX = 16       # 2026-10-30: a 70-word "line" left one picture on screen for 20 seconds
+
+
+CHOPPY_SENTENCE_WORDS = 12   # 2026-10-30: the robot-sounding short averaged 8; the owner's own scripts about 16
 
 
 def line_problems(plan: dict) -> list[str]:
     """Lines are breath-sized, because every line is a beat of the picture."""
     long = [i for i, line in enumerate(plan.get("lines", []))
             if len(str(line.get("text", "")).split()) > LINE_WORDS_MAX]
+    problems = []
     if long:
-        return [f"{len(long)} lines are longer than {LINE_WORDS_MAX} words; split every line into breath-sized "
-                "phrases of 4 to 14 words (a sentence runs across several lines)"]
-    return []
+        problems.append(f"{len(long)} lines are longer than {LINE_WORDS_MAX} words; split every line into "
+                        "breath-sized phrases of 4 to 14 words (a sentence runs across several lines)")
+    texts = [str(line.get("text", "")).strip() for line in plan.get("lines", []) if str(line.get("text", "")).strip()]
+    sentences = [x for x in re.split(r"[.?!]+", " ".join(texts)) if x.split()]
+    average = sum(len(x.split()) for x in sentences) / max(1, len(sentences))
+    if len(texts) >= 8 and average < CHOPPY_SENTENCE_WORDS:
+        problems.append(f"the sentences average {average:.0f} words, so it reads like a list of bullet points; "
+                        "let sentences run across 2 or 3 lines and carry one thought into the next")
+    return problems
 
 
 def script_instructions(format_name: str, seed: str = "") -> str:
@@ -881,7 +906,7 @@ def script_instructions(format_name: str, seed: str = "") -> str:
         f"(about {target['seconds']} seconds).\n\n"
         + MODEL_SCRIPT_RULES + "\n"
         + (LONG_CHAPTER_MECHANICS if format_name == "long" else SHORT_CHAPTER_RULE)
-        + "\n" + SCRIPT_MECHANICS + "\n" + SCRIPT_LINE_FORMAT + "\n" + SCRIPT_OUTPUT_RULES
+        + "\n" + SPOKEN_FLOW + "\n" + SCRIPT_MECHANICS + "\n" + SCRIPT_LINE_FORMAT + "\n" + SCRIPT_OUTPUT_RULES
     )
 
 
@@ -971,6 +996,9 @@ def spoken_pass_instructions(format_name: str) -> str:
         "- The same number of lines, in the same order: line N of your answer replaces line N of "
         "the draft and covers the same idea, so the pictures stay matched to the words.\n"
         f"- About the same length ({target['words_min']} to {target['words_max']} words in total).\n"
+        "- Sentences keep running across 2 or 3 lines; never break the script into one short "
+        "sentence per line (the guide's advice on short sentences is for written text, not this).\n"
+        "- Real names stay (the company, the product); never a vague stand-in.\n"
         "- The follow sentence still asks to follow us or the channel (never the brand name).\n"
         "- Every number written as digits. \"emphasis\" is one or two words copied exactly from "
         "that line's text.\n\n"

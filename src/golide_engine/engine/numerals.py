@@ -89,6 +89,9 @@ def _convert(match: re.Match, text: str) -> str:
     year = _year(words)
     if year is not None and 1900 <= year <= 2099:
         return str(year)
+    after = text[match.end():].lstrip().split(" ")[0].lower().strip(",.") if match.end() < len(text) else ""
+    if after in ("thirds", "quarters", "halves", "fifths", "tenths"):
+        return raw      # 2026-10-30: fractions are said as words ("two thirds")
     parsed = _parse_int(words)
     if parsed is None:
         return raw
