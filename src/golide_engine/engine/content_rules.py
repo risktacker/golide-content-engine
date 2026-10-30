@@ -820,6 +820,53 @@ CHAPTERS (the chapter card on screen shows each stage):
 """
 
 
+SCRIPT_LINE_FORMAT = """\
+LINE RULES (lines are how the speech is split for the screen; they are NOT sentences)
+- A line is a breath-sized phrase of 4 to 14 words. A sentence may run across two or
+  three lines, so a line can end on a comma or with no punctuation, and the next line
+  can begin with "and", "but", "because", "which" and so on.
+- Split at natural pauses, never in the middle of a name or number.
+- No brackets, no abbreviations, no symbols. Write every number as digits (16.3 billion, 2026,
+  October 26th, 85 percent, 4 robots): the owner reads digits faster than spelled-out numbers
+  (2026-10-27). Only "one" on its own stays a word ("one of them").
+- Each line names ONE emphasis: the key term of that line, shown in gold in the captions.
+  Pick what the viewer must remember: a name ("Nvidia", "Sam Altman"), a number
+  ("25 percent"), or the key idea or term ("crypto agility", "inventory"). Never a
+  filler word ("really", "just", "the"). One or two words, copied exactly from the line.
+- Each line names its SUBJECTS: 1 to 3 concrete, drawable things the line is about,
+  in plain words ("server rack", "water drop", "thermometer", "brain", "phone",
+  "laptop", "house", "sun", "rocket", "briefcase"). The video draws exactly these, so
+  the picture always matches the words. Never abstract nouns ("success", "future")
+  when a concrete thing exists; pick the object a viewer would picture.
+- Each line picks ONE visual layout:
+  * icon_hero: one subject, large. Use for a single idea.
+  * icon_pair: two subjects, A next to B (comparison, cause and effect, before/after).
+  * icon_flow: 3 subjects as steps of a process, top to bottom.
+  * icon_orbit: one central subject with 2 to 4 related subjects around it.
+  * icon_grid: one subject repeated many times (scale, "millions of", "every").
+  * Data diagrams, ONLY when the line states a number, trend or list:
+    bar_chart, line_chart, spike_vs_curve (one-off vs compounding), gauge (a level),
+    checklist (steps), ladder or staircase (levels/progress), clock (time),
+    cross_out (a wrong belief), split_compare (two amounts).
+  * logo_end: the final line only.
+- Keep the same visual for consecutive lines that build one idea, so the animation
+  grows instead of cutting.
+- Plain English for a global audience. No slang, no religion, no politics.
+"""
+
+LINE_WORDS_MAX = 16       # 2026-10-30: a 70-word "line" left one picture on screen for 20 seconds
+
+
+def line_problems(plan: dict) -> list[str]:
+    """Lines are breath-sized, because every line is a beat of the picture."""
+    long = [i for i, line in enumerate(plan.get("lines", []))
+            if len(str(line.get("text", "")).split()) > LINE_WORDS_MAX]
+    if long:
+        return [f"{len(long)} lines are longer than {LINE_WORDS_MAX} words; split every line into breath-sized "
+                "phrases of 4 to 14 words (a sentence runs across several lines)"]
+    return []
+
+
 def script_instructions(format_name: str, seed: str = "") -> str:
     """The script writer (2026-10-29): it models the transcripts of videos that worked, with
     only the engine's format needs as rules. The old style rules are gone ("those rules
@@ -834,7 +881,7 @@ def script_instructions(format_name: str, seed: str = "") -> str:
         f"(about {target['seconds']} seconds).\n\n"
         + MODEL_SCRIPT_RULES + "\n"
         + (LONG_CHAPTER_MECHANICS if format_name == "long" else SHORT_CHAPTER_RULE)
-        + "\n" + SCRIPT_MECHANICS + "\n" + SCRIPT_OUTPUT_RULES
+        + "\n" + SCRIPT_MECHANICS + "\n" + SCRIPT_LINE_FORMAT + "\n" + SCRIPT_OUTPUT_RULES
     )
 
 

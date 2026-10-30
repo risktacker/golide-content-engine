@@ -43,6 +43,17 @@ class ModelledScriptTests(unittest.TestCase):
         self.assertIn("Humanizer pass: applied", spoken_pass_line({"status": "applied"}))
 
 
+class LineBeatTests(unittest.TestCase):
+    """2026-10-30: 19 lines of 70 words made an 8-minute video with slow, few blocks."""
+
+    def test_lines_stay_breath_sized(self):
+        from golide_engine.engine.content_rules import line_problems
+        self.assertIn("breath-sized phrase of 4 to 14 words", script_instructions("long"))
+        self.assertIn("SUBJECTS", script_instructions("short"))
+        self.assertEqual(line_problems({"lines": [{"text": "a short line of words"}]}), [])
+        self.assertTrue(line_problems({"lines": [{"text": " ".join(["word"] * 70)}]}))
+
+
 class TranscriptTests(unittest.TestCase):
     def test_video_ids_and_trimming(self):
         self.assertEqual(transcripts.video_id("https://www.youtube.com/watch?v=mhFozOsKZLU"), "mhFozOsKZLU")

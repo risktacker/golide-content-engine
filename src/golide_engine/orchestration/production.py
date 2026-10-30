@@ -30,7 +30,7 @@ from ..storage.database import Database
 from ..youtube.demand import TopicDemandRejected, YouTubeDemandGate
 from ..youtube_metadata import load_metadata_policy, validate_upload_metadata
 from .schemas import METADATA_SCHEMA, RESEARCH_SCHEMA, STORYBOARD_SCHEMA, TREND_CANDIDATES_SCHEMA
-from ..engine.content_rules import SCRIPT_SCHEMA, chapter_problems, follow_problems, length_problems, script_display, script_instructions, script_text, SPOKEN_SCHEMA, SPOKEN_PASS_EFFORT, spoken_pass_instructions, merge_spoken
+from ..engine.content_rules import SCRIPT_SCHEMA, chapter_problems, follow_problems, length_problems, line_problems, script_display, script_instructions, script_text, SPOKEN_SCHEMA, SPOKEN_PASS_EFFORT, spoken_pass_instructions, merge_spoken
 from .recording import RecordingLengthError, check_recording_length
 from .stage_runner import StageRunner
 
@@ -767,7 +767,7 @@ class ProductionService:
         def script_problems(plan: dict) -> list[str]:
             # 2026-10-29: only what the engine needs (length, chapters, the follow line);
             # the style comes from the modelled videos, not from rules.
-            return (length_problems(plan, str(spec["format"]))
+            return (length_problems(plan, str(spec["format"])) + line_problems(plan)
                     + chapter_problems(plan, str(spec["format"])) + follow_problems(plan, str(spec["format"])))
 
         models_path = work / "model-scripts.json"
