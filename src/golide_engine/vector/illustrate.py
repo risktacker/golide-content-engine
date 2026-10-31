@@ -882,37 +882,85 @@ def load_plate(image_path: Path) -> "Drawing | None":
     data = bytearray((bgra * 255).astype(np.uint8).tobytes())
     surface = cairo.ImageSurface.create_for_data(data, cairo.FORMAT_ARGB32, img.width, img.height, img.width * 4)
     w, h = img.width, img.height
+    # The product's outline, for the pen to trace (owner 2026-10-31: "what you did with the
+    # layers and the fold": the gold pen draws it, then the real product fills in).
+    from skimage import measure
+    k = 4
+    px = np.asarray(img, np.float32)[::k, ::k]
+    # the object itself: opaque and not a black floor shadow
+    small = ((px[..., 3] > 60) & (px[..., :3].max(axis=2) > 24)).astype(np.float32)
+    from scipy import ndimage
+    small = ndimage.binary_fill_holes(ndimage.binary_closing(small > 0, iterations=2)).astype(np.float32)
+    contours = measure.find_contours(np.pad(small, 1), 0.5)
+    outline = None
+    if contours:
+        c = max(contours, key=len)
+        c = (c - 1) * k
+        step = max(1, len(c) // 400)
+        outline = np.ascontiguousarray(c[::step][:, ::-1], dtype=np.float64)   # (x, y)
     edge = Stroke(np.array([[0, 0], [w, 0], [w, h], [0, h], [0, 0]], np.float64), False, 1.0)
-    return Drawing([edge], w, h, (0, 0, w, h), None, None, entrance="fade", plate=(surface, data))
+    return Drawing([edge], w, h, (0, 0, w, h), None, None, entrance="pen", plate=(surface, data, outline),
+                   keep_order=True)
 
 
-def _draw_plate(d, drawing: Drawing, s, cx, cy, ox, oy) -> None:
-    """The real product appears (a short rise and fade), then a soft light sweeps across it."""
+PLATE_TRACE = 0.6     # share of the reveal the pen spends tracing the outline
+PLATE_FILL = 0.35     # then the real product fills in over this share
+
+
+def _draw_plate(d, drawing: Drawing, s, cx, cy, ox, oy, reveal: float = 1.0, settled: float = -1.0) -> None:
+    """The real product, drawn like the architecture figures: the gold pen traces its outline
+    in time with the voice, then the real picture fills in inside it and the line steps back."""
     import cairo
 
-    surface = drawing.plate[0]
-    a = max(0.0, min(1.0, d.t / 0.55))
-    a = a * a * (3 - 2 * a)
-    rise = (1 - a) * 0.06
-    ctx = d.main
-    ctx.save()
-    ctx.translate(ox, oy + rise)
-    ctx.scale(s, s)
-    ctx.translate(-cx, -cy)
-    ctx.set_source_surface(surface, 0, 0)
-    ctx.get_source().set_filter(cairo.FILTER_GOOD)
-    ctx.paint_with_alpha(a)
-    u = (d.t - 0.6) / 1.4                     # the light sweep, once, after it lands
+    from .primitives import pen_light
+
+    surface, _data, outline = drawing.plate
+    r = max(0.0, min(1.0, reveal))
+    trace = min(1.0, r / PLATE_TRACE)
+    fill = max(0.0, min(1.0, (r - PLATE_TRACE) / PLATE_FILL))
+    fill = fill * fill * (3 - 2 * fill)
+    tx = lambda x, y: ((x - cx) * s + ox, (y - cy) * s + oy)   # noqa: E731
+    if fill > 0:
+        ctx = d.main
+        ctx.save()
+        ctx.translate(ox, oy)
+        ctx.scale(s, s)
+        ctx.translate(-cx, -cy)
+        ctx.set_source_surface(surface, 0, 0)
+        ctx.get_source().set_filter(cairo.FILTER_GOOD)
+        ctx.paint_with_alpha(fill)
+        ctx.restore()
+    if outline is not None and len(outline) > 2:
+        n = max(2, int(len(outline) * trace))
+        pts = [tx(x, y) for x, y in outline[:n]]
+        line_a = 0.92 * (1 - 0.85 * fill)            # the traced line steps back once filled
+
+        def path(c, pts=pts):
+            c.move_to(*pts[0])
+            for p in pts[1:]:
+                c.line_to(*p)
+        if line_a > 0.02:
+            d.stroke(path, "line", 2.0, alpha=line_a)
+            d.stroke(path, "line", 2.0, alpha=0.2 * line_a, hot=True)
+        if trace < 1.0:
+            pen_light(d, *pts[-1])
+    u = (settled - 0.2) / 1.4 if settled > 0 else -1     # one light sweep once it is complete
     if 0 < u < 1:
+        settled_u = u
         w, h = drawing.width, drawing.height
-        x = -0.3 * w + u * 1.6 * w
+        ctx = d.main
+        ctx.save()
+        ctx.translate(ox, oy)
+        ctx.scale(s, s)
+        ctx.translate(-cx, -cy)
+        x = -0.3 * w + settled_u * 1.6 * w
         grad = cairo.LinearGradient(x - 0.18 * w, 0, x + 0.18 * w, h * 0.25)
         grad.add_color_stop_rgba(0, 1, 1, 1, 0)
-        grad.add_color_stop_rgba(0.5, 1, 1, 1, 0.16 * math.sin(math.pi * u))
+        grad.add_color_stop_rgba(0.5, 1, 1, 1, 0.14 * math.sin(math.pi * settled_u))
         grad.add_color_stop_rgba(1, 1, 1, 1, 0)
         ctx.set_source(grad)
         ctx.mask_surface(surface, 0, 0)
-    ctx.restore()
+        ctx.restore()
 
 
 def draw_illustration(d, drawing: Drawing, region, reveal: float, breathe: float = 0.0, zoom: float = 1.0,
@@ -932,7 +980,9 @@ def draw_illustration(d, drawing: Drawing, region, reveal: float, breathe: float
         ox += LIFE_DRIFT * span_x * ease_in * math.sin(d.t * 0.33 + 0.7)
         oy += LIFE_DRIFT * 0.7 * span_y * ease_in * math.sin(d.t * 0.27 + 2.1)
     if drawing.plate is not None:
-        _draw_plate(d, drawing, s, cx, cy, ox, oy)
+        r = max(0.0, min(1.0, reveal))
+        _draw_plate(d, drawing, s, cx, cy, ox, oy, r if linear else (r * r * (3 - 2 * r) * 0.35 + r * 0.65),
+                    settled)
         return
     accent = "accent_" + drawing.accent if ("accent_" + drawing.accent) in d.colors else "gold"
     if d.marking > 0 and not drawing.clip and not drawing.keep_order:
