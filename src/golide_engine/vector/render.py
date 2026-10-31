@@ -1111,11 +1111,15 @@ class Transition:
 
 def _load_drawing(path, scene: dict, label_key: str = "label"):
     """A scene picture as pen strokes: an exact figure (math layer) or a traced drawing."""
-    from .illustrate import ACCENTS, load_figure, vectorize
+    from .illustrate import ACCENTS, load_figure, load_plate, vectorize
     from .scene_labels import attach_label
 
     if path is None or not Path(path).exists():
         return None
+    plate = load_plate(Path(path))
+    if plate is not None:
+        plate.accent = str(scene.get("accent") or "gold")
+        return plate
     figure = load_figure(Path(path))
     if figure is not None:
         # Exact figures are always drawn by the pen, in gold: the construction is the explanation.

@@ -457,6 +457,9 @@ class Drawing:
     people: bool = False  # people in the picture are painted in neutral tones
     # 2026-10-31: solid coloured parts of an architecture figure: (points, rgb, shade, after).
     panels: list = field(default_factory=list)
+    # 2026-10-31: a finished, full-colour picture of the REAL product (cut out on a clear
+    # background), shown whole instead of traced: (cairo surface, keep-alive buffer).
+    plate: tuple | None = None
     traced: int = 0       # strokes found by the tracer before clean-up (a clutter measure)
     # 2026-10-22: the real illustration, shown on screen and revealed along the strokes
     # (vector.artwork). None for exact figures, which are drawn as strokes.
@@ -856,6 +859,56 @@ def fit(drawing: Drawing, region: tuple[float, float, float, float]):
     return s, cx, cy, ox, oy
 
 
+def load_plate(image_path: Path) -> "Drawing | None":
+    """A real-product picture (image_path + '.plate.json' beside it): shown whole, in colour."""
+    import cairo
+    from PIL import Image
+
+    if not image_path.with_suffix(".plate.json").exists():
+        return None
+    img = Image.open(image_path).convert("RGBA")
+    box = img.getchannel("A").getbbox()
+    if box:
+        img = img.crop(box)
+    rgba = np.asarray(img, np.float32) / 255.0
+    alpha = rgba[..., 3:4]
+    bgra = np.concatenate([rgba[..., 2:3] * alpha, rgba[..., 1:2] * alpha, rgba[..., 0:1] * alpha, alpha], axis=2)
+    data = bytearray((bgra * 255).astype(np.uint8).tobytes())
+    surface = cairo.ImageSurface.create_for_data(data, cairo.FORMAT_ARGB32, img.width, img.height, img.width * 4)
+    w, h = img.width, img.height
+    edge = Stroke(np.array([[0, 0], [w, 0], [w, h], [0, h], [0, 0]], np.float64), False, 1.0)
+    return Drawing([edge], w, h, (0, 0, w, h), None, None, entrance="fade", plate=(surface, data))
+
+
+def _draw_plate(d, drawing: Drawing, s, cx, cy, ox, oy) -> None:
+    """The real product appears (a short rise and fade), then a soft light sweeps across it."""
+    import cairo
+
+    surface = drawing.plate[0]
+    a = max(0.0, min(1.0, d.t / 0.55))
+    a = a * a * (3 - 2 * a)
+    rise = (1 - a) * 0.06
+    ctx = d.main
+    ctx.save()
+    ctx.translate(ox, oy + rise)
+    ctx.scale(s, s)
+    ctx.translate(-cx, -cy)
+    ctx.set_source_surface(surface, 0, 0)
+    ctx.get_source().set_filter(cairo.FILTER_GOOD)
+    ctx.paint_with_alpha(a)
+    u = (d.t - 0.6) / 1.4                     # the light sweep, once, after it lands
+    if 0 < u < 1:
+        w, h = drawing.width, drawing.height
+        x = -0.3 * w + u * 1.6 * w
+        grad = cairo.LinearGradient(x - 0.18 * w, 0, x + 0.18 * w, h * 0.25)
+        grad.add_color_stop_rgba(0, 1, 1, 1, 0)
+        grad.add_color_stop_rgba(0.5, 1, 1, 1, 0.16 * math.sin(math.pi * u))
+        grad.add_color_stop_rgba(1, 1, 1, 1, 0)
+        ctx.set_source(grad)
+        ctx.mask_surface(surface, 0, 0)
+    ctx.restore()
+
+
 def draw_illustration(d, drawing: Drawing, region, reveal: float, breathe: float = 0.0, zoom: float = 1.0,
                       linear: bool = False, settled: float = -1.0) -> None:
     """settled: seconds since the drawing finished (-1 while it is still drawing)."""
@@ -872,6 +925,9 @@ def draw_illustration(d, drawing: Drawing, region, reveal: float, breathe: float
         span_x, span_y = (region[2] - region[0]), (region[3] - region[1])
         ox += LIFE_DRIFT * span_x * ease_in * math.sin(d.t * 0.33 + 0.7)
         oy += LIFE_DRIFT * 0.7 * span_y * ease_in * math.sin(d.t * 0.27 + 2.1)
+    if drawing.plate is not None:
+        _draw_plate(d, drawing, s, cx, cy, ox, oy)
+        return
     accent = "accent_" + drawing.accent if ("accent_" + drawing.accent) in d.colors else "gold"
     if d.marking > 0 and not drawing.clip and not drawing.keep_order:
         # A spoken number: push in toward the accent while its card is on screen.
