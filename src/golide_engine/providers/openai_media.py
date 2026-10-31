@@ -247,13 +247,13 @@ PRODUCT_SHOT_RULES = (
 def cut_out(path: Path) -> None:
     """Make sure the product sits on a clear background: when the model returned an opaque
     picture, the flat background colour seen at the corners is keyed out."""
+    img = Image.open(path).convert("RGBA")
+    if img.getchannel("A").getextrema()[0] < 10:
+        return                                  # already transparent (the usual case)
     import numpy as np
     from scipy import ndimage
 
-    img = Image.open(path).convert("RGBA")
     a = np.asarray(img).astype(np.int32)
-    if (a[..., 3] < 250).mean() > 0.05:
-        return                                  # already transparent
     rgb = a[..., :3]
     corners = np.concatenate([rgb[:8, :8].reshape(-1, 3), rgb[:8, -8:].reshape(-1, 3),
                               rgb[-8:, :8].reshape(-1, 3), rgb[-8:, -8:].reshape(-1, 3)])

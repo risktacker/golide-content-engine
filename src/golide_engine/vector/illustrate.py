@@ -873,7 +873,7 @@ def load_plate(image_path: Path) -> "Drawing | None":
     if not image_path.with_suffix(".plate.json").exists():
         return None
     img = Image.open(image_path).convert("RGBA")
-    box = img.getchannel("A").getbbox()
+    box = img.getchannel("A").point(lambda v: 255 if v > 24 else 0).getbbox()   # ignore faint haze
     if box:
         img = img.crop(box)
     rgba = np.asarray(img, np.float32) / 255.0
