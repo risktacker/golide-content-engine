@@ -252,6 +252,13 @@ def _send_resend(message: EmailMessage, key: str, to: str) -> bool:
         elif part.get_content_type() == "text/html" and not html_body:
             html_body = part.get_content()
     payload = {"from": GOLIDE_FROM, "to": [to], "subject": str(message["Subject"]), "text": text}
+    files = []
+    for part in message.iter_attachments():
+        import base64
+        files.append({"filename": part.get_filename() or "file",
+                      "content": base64.b64encode(part.get_content()).decode("ascii")})
+    if files:
+        payload["attachments"] = files
     if html_body:
         payload["html"] = html_body
     request = urllib.request.Request(

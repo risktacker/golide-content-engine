@@ -519,6 +519,8 @@ class VectorRenderer:
             # One colour family per scene (the accent in several depths) and ONE contrast colour
             # on the second biggest part, like a screen or a window; never a random mix.
             partner = np.array((95, 150, 245) if accent[0] > accent[2] else (233, 170, 90), np.float32)
+            if max(accent) - min(accent) < 40:      # a neutral scene (people): no contrast colour
+                partner = acc * 0.8
             depths = (0.34, 0.0, 0.24, 0.29, 0.19, 0.26, 0.21)
             tones = np.zeros((count + 1, 3), np.float32)
             for rank, index in enumerate(order):

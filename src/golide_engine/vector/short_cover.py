@@ -122,3 +122,111 @@ def save(image: Image.Image, path: Path) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     image.save(path, quality=92)
     return path
+
+
+# ------------------------------------------------------------------ canvas covers ----
+# Owner 2026-10-31 ("Perfect"): a designed picture, not a frame from the video. A colour
+# field fills the whole canvas, the real object (coloured, cut out along its own outline)
+# sits large on it with a soft shadow, and a few words. Every cover is different: its own
+# two background colours and one of several layouts.
+
+LAYOUTS = ("words-bottom", "words-top", "words-left-bottom", "words-top-left")
+
+
+def drawing_cutout(art_path: Path, accent_name: str = "gold", people: bool = False):
+    """The drawing rendered finished and painted, as (RGB image, 0..1 mask) cropped to it."""
+    import cairo
+    from . import render as R
+    from .align import TimedLine, Word, group_lines
+    from .illustrate import SCENES
+
+    saved = R.PAINT
+    R.PAINT = True
+    try:
+        renderer = R.VectorRenderer("short")
+        SCENES.clear()
+        drawing = R._load_drawing(art_path, {"id": "cover", "accent": "ivory" if people else accent_name, "label": ""})
+        drawing.stage = "none"
+        SCENES["cover"] = drawing
+        groups = group_lines([TimedLine(0, "x", "x", "illustration", "", "proof", 0.0, 3.0,
+                                        [Word("x", 0.2, 0.5)], ("cover",))])
+        frame = np.asarray(renderer.frame(2.9, groups, [], 3.0))
+        L = renderer.layout
+        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, L.width, L.height)
+        glow = cairo.ImageSurface(cairo.FORMAT_ARGB32, 8, 8)
+        ctxs = (cairo.Context(surface), cairo.Context(glow))
+        for ctx in ctxs:
+            ctx.translate(L.cx, L.cy)
+            ctx.scale(L.size / 2, L.size / 2)
+        renderer._group_draw(ctxs[0], ctxs[1], groups[0], 2.9, 0, 1.0, gp=1.0)
+        a8 = np.ndarray((L.height, surface.get_stride() // 4, 4), np.uint8, surface.get_data())[:, :L.width, 3]
+        mask = np.maximum(renderer._body(a8)[..., 0], a8 / 255.0)
+    finally:
+        R.PAINT = saved
+    ys, xs = np.nonzero(mask > 0.3)
+    if not len(ys):
+        return Image.fromarray(frame), mask
+    pad = int(0.04 * L.width)
+    y0, y1 = max(0, ys.min() - pad), min(L.height, ys.max() + pad)
+    x0, x1 = max(0, xs.min() - pad), min(L.width, xs.max() + pad)
+    return Image.fromarray(frame[y0:y1, x0:x1]), mask[y0:y1, x0:x1]
+
+
+def _hex(value: str, default) -> np.ndarray:
+    value = str(value or "").lstrip("#")
+    try:
+        return np.array([int(value[i:i + 2], 16) for i in (0, 2, 4)], np.float32)
+    except ValueError:
+        return np.array(default, np.float32)
+
+
+def canvas_cover(cut: Image.Image, mask: np.ndarray, words: str, sub: str, accent=GOLD,
+                 bg_top="#16304a", bg_bottom="#3a1830", layout: str = "words-bottom",
+                 size=(1080, 1920)) -> Image.Image:
+    from scipy import ndimage
+
+    w, h = size
+    top, bottom = _hex(bg_top, (22, 48, 74)), _hex(bg_bottom, (58, 24, 48))
+    yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+    t = (yy / h)[..., None]
+    words_top = layout in ("words-top", "words-top-left")
+    obj_cy = 0.58 if words_top else 0.44
+    light = np.exp(-(((xx - w / 2) / (w * 0.6)) ** 2 + ((yy - h * obj_cy) / (h * 0.32)) ** 2))[..., None]
+    canvas = top * (1 - t) + bottom * t + light * (top + bottom) * 0.55
+    # the object, as large as the space allows
+    scale = min(w * 0.9 / cut.width, h * 0.58 / cut.height)
+    obj = cut.resize((max(1, int(cut.width * scale)), max(1, int(cut.height * scale))), Image.Resampling.LANCZOS)
+    m = Image.fromarray((np.clip(mask, 0, 1) * 255).astype(np.uint8)).resize(obj.size, Image.Resampling.LANCZOS)
+    alpha = np.clip(ndimage.grey_dilation(ndimage.gaussian_filter(np.asarray(m, np.float32) / 255, 1.5), size=(9, 9)), 0, 1)
+    ox, oy = (w - obj.width) // 2, int(h * obj_cy - obj.height / 2)
+    oy = max(0, min(h - obj.height, oy))
+    shadow = np.zeros((h, w), np.float32)
+    shadow[oy:oy + obj.height, ox:ox + obj.width] = alpha
+    shadow = ndimage.shift(ndimage.gaussian_filter(shadow, 28), (40, 18))
+    canvas = canvas * (1 - 0.55 * shadow[..., None])
+    region = canvas[oy:oy + obj.height, ox:ox + obj.width]
+    a = alpha[..., None]
+    canvas[oy:oy + obj.height, ox:ox + obj.width] = region * (1 - a) + np.asarray(obj, np.float32) * a * 1.15
+    image = Image.fromarray(np.clip(canvas, 0, 255).astype(np.uint8))
+
+    draw = ImageDraw.Draw(image)
+    font_path = str(load_theme().font("bold"))
+    left_aligned = layout in ("words-left-bottom", "words-top-left")
+    max_w = w * 0.86
+    size_big = int(w * 0.13)
+    while size_big > w * 0.06:
+        big = ImageFont.truetype(font_path, size_big)
+        if draw.textlength(words.upper(), font=big) <= max_w:
+            break
+        size_big -= 4
+    small = ImageFont.truetype(font_path, int(size_big * 0.4))
+    y = h * (0.07 if words_top else 0.80)
+    for text, font, colour in ((words.upper(), big, tuple(accent)), (sub, small, WHITE)):
+        if not text:
+            continue
+        width = draw.textlength(text, font=font)
+        x = w * 0.07 if left_aligned else (w - width) / 2
+        draw.text((x + 4, y + 5), text, font=font, fill=(0, 0, 0))
+        draw.text((x, y), text, font=font, fill=colour)
+        y += font.size * 1.18
+    return image

@@ -1,0 +1,29 @@
+name: Shorts covers
+
+# 2026-10-31: one designed cover for every Short published so far, emailed to the owner.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  covers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core libcairo2-dev pkg-config >/dev/null
+      - run: python -m pip install -q -e '.[production,video]'
+      - name: Draw and email the covers
+        env:
+          GOLIDE_ENABLE_PAID_PRODUCTION: "1"
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GOLIDE_SMTP_USER: ${{ secrets.GOLIDE_SMTP_USER }}
+          GOLIDE_SMTP_APP_PASSWORD: ${{ secrets.GOLIDE_SMTP_APP_PASSWORD }}
+          GOLIDE_NOTIFY_EMAIL: ${{ secrets.GOLIDE_NOTIFY_EMAIL }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: python tools/short_covers.py
