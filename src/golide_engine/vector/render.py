@@ -282,6 +282,11 @@ def _active(items, t, key_start, key_end):
 BODY_CUT = 0.85  # how much of the background and set is replaced inside the object's shape
 BODY_FILL = np.array((17, 19, 26), np.float32)   # the object's own dark body, a shade above black
 BODY_TINT = 0.07  # and a touch of its accent, so it reads as a solid thing, not a hole
+# 2026-10-31 (owner: "the shorts look like covers... skeletons... we can build images based on
+# code and good colouring, so there is canvas in looking"): the parts of a drawing are painted,
+# each enclosed region its own tone from the scene's palette, lit from above.
+PAINT = False   # preview only until the owner approves the look
+PAINT_LIGHT = (0.20, 0.42)    # darkest and lightest share of a palette colour a region gets
 
 
 class VectorRenderer:
@@ -494,6 +499,48 @@ class VectorRenderer:
         soft = Image.fromarray((body * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.2))
         return (np.asarray(soft.resize((w, h), Image.Resampling.BILINEAR), np.float32) / 255)[..., None]
 
+    def _paint(self, alpha: np.ndarray, body: np.ndarray, accent: tuple) -> np.ndarray:
+        """Colour for inside the drawing: every region the lines enclose gets its own tone
+        (accent, a cool partner, a warm ivory), lit from the top, darker toward the floor."""
+        from scipy import ndimage
+
+        h, w = alpha.shape[:2]
+        k = 4
+        a = alpha[: h // k * k, : w // k * k]
+        small = np.maximum.reduce([a[i::k, j::k] for i in range(k) for j in range(k)]) > 50
+        b = body[: h // k * k: k, : w // k * k: k, 0] > 0.5
+        regions, count = ndimage.label(b & ~ndimage.binary_dilation(small, iterations=1))
+        sh, sw = regions.shape
+        out = np.zeros((sh, sw, 3), np.float32)
+        if count:
+            sizes = ndimage.sum(np.ones_like(regions), regions, range(1, count + 1))
+            order = np.argsort(-sizes)                     # biggest region first
+            acc = np.array(accent, np.float32)
+            # One colour family per scene (the accent in several depths) and ONE contrast colour
+            # on the second biggest part, like a screen or a window; never a random mix.
+            partner = np.array((95, 150, 245) if accent[0] > accent[2] else (233, 170, 90), np.float32)
+            depths = (0.34, 0.0, 0.24, 0.29, 0.19, 0.26, 0.21)
+            tones = np.zeros((count + 1, 3), np.float32)
+            for rank, index in enumerate(order):
+                tones[index + 1] = partner * 0.30 if rank == 1 else acc * depths[rank % len(depths)]
+            out = tones[regions]
+            ys = np.nonzero(b.any(axis=1))[0]
+            xs = np.nonzero(b.any(axis=0))[0]
+            if len(ys):
+                top, bottom = ys[0], ys[-1] + 1
+                left, right = xs[0], xs[-1] + 1
+                yy, xx = np.mgrid[0:sh, 0:sw].astype(np.float32)
+                v = np.clip((yy - top) / max(1, bottom - top), 0, 1)
+                u = np.clip((xx - left) / max(1, right - left), 0, 1)
+                light = 1.35 - 0.75 * v                                   # lit from above
+                sheen = 0.18 * np.exp(-(((u - 0.3) * 3) ** 2 + ((v - 0.25) * 4) ** 2))   # a soft highlight
+                out = out * light[..., None] + (sheen[..., None] * 255) * (out.sum(axis=2, keepdims=True) > 0)
+        img = Image.fromarray(np.clip(out, 0, 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.0))
+        img = img.resize((w, h), Image.Resampling.BILINEAR)
+        painted = np.asarray(img, np.float32)
+        base = BODY_FILL + np.array(accent, np.float32) * BODY_TINT
+        return np.maximum(painted, base)
+
     def _marking(self, group: Group, t: float) -> float:
         """0..1 while a spoken-number card belonging to this scene is on screen."""
         for card in getattr(self, "cards", ()):
@@ -572,7 +619,8 @@ class VectorRenderer:
         # The object's solid shape is cut out of both, then its own glow goes on top.
         frame = self._with_stage(self.ambience.frame(t, self._ambient(groups, gi, t)), groups, gi, t)
         body = self._body(m[..., 3])
-        fill = BODY_FILL + np.array(self._accent_rgb(group), np.float32) * BODY_TINT
+        fill = self._paint(m[..., 3], body, self._accent_rgb(group)) if PAINT else \
+            BODY_FILL + np.array(self._accent_rgb(group), np.float32) * BODY_TINT
         frame = frame * (1 - BODY_CUT * body) + body * (BODY_CUT * fill) + np.asarray(glow_img, np.float32) * 1.35
         rgb = m[..., [2, 1, 0]].astype(np.float32)  # premultiplied
         frame = rgb + frame * (1 - alpha)
