@@ -4,11 +4,11 @@
 YouTube shows a frame grabbed from the middle of a Short, usually a drawing half drawn. A
 Short now opens on a designed cover made from its own drawing, in code (no paid image):
 
-* the short's strongest drawing, finished and painted, filling the middle and bottom;
-* the opening line in big bold type in the top third (where top Shorts channels put it:
-  the bottom of a grid tile carries YouTube's view count and the feed's caption), the
-  key word in the accent colour;
-* every edge fading into black, so it reads as a poster, not a frame from a video.
+* the short's strongest drawing, finished and painted, large and centred;
+* every edge fading into black, so it reads as a poster, not a frame from a video;
+* NO words (owner 2026-10-31: "the moment you repeat a thing 3 times it becomes obvious...
+  just remove them so the art takes over, because it is already different"). The text
+  option stays in the code but the engine passes no text.
 
 The same picture is the video's first block, saved as cover.png and attached to the email
 after the upload, ready to set as the thumbnail.
@@ -52,11 +52,13 @@ def compose(art: Image.Image, text: str, punch: str = "", accent=GOLD, size=(108
         pad_x, pad_y = (x1 - x0) * 0.10, (y1 - y0) * 0.10
         art = art.crop((int(max(0, x0 - pad_x)), int(max(0, y0 - pad_y)),
                         int(min(art.width, x1 + pad_x)), int(min(art.height, y1 + (y1 - y0) * 0.22))))
-    space_h = h * (1 - ART_TOP) * 0.92
+    words_on = bool(str(text).strip())
+    art_top = ART_TOP if words_on else 0.0
+    space_h = h * (1 - art_top) * (0.92 if words_on else 0.72)
     aw, ah = art.size
-    scale = min(w * 1.0 / aw, space_h / ah)
+    scale = min(w * (1.0 if words_on else 0.96) / aw, space_h / ah)
     art = art.resize((max(1, int(aw * scale)), max(1, int(ah * scale))), Image.Resampling.LANCZOS)
-    top = int(h * ART_TOP + (space_h - art.height) * 0.45)
+    top = int(h * art_top + (space_h - art.height) * 0.45) if words_on else int((h - art.height) / 2)
     # The cut-out art melts into the black: its own edges fade, so no rectangle shows.
     yy, xx = np.mgrid[0:art.height, 0:art.width].astype(np.float32)
     fx = np.clip(np.minimum(xx, art.width - 1 - xx) / (art.width * 0.14), 0, 1)
@@ -66,7 +68,8 @@ def compose(art: Image.Image, text: str, punch: str = "", accent=GOLD, size=(108
     # Soft shading at the top so the words always read, then every edge fades out.
     rgb = np.asarray(canvas, np.float32)
     yy = np.arange(h, dtype=np.float32)[:, None, None] / h
-    rgb = rgb * (0.25 + 0.75 * np.clip((yy - ART_TOP + 0.04) / 0.10, 0, 1))
+    if words_on:
+        rgb = rgb * (0.25 + 0.75 * np.clip((yy - ART_TOP + 0.04) / 0.10, 0, 1))
     rgb = rgb * _vignette(w, h)[..., None] + np.array((8, 8, 11), np.float32) * (1 - _vignette(w, h)[..., None])
     canvas = Image.fromarray(np.clip(rgb, 0, 255).astype(np.uint8))
 
