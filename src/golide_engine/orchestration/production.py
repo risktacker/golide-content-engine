@@ -1107,7 +1107,7 @@ class ProductionService:
                         rows.append(f"== CHAPTER {chapter.get('number', '')} {chapter.get('title', '')} ==".replace("  ", " "))
                     rows.append(f"{i}: [{times[i][0]:.1f}s] {line['text']}")
                 numbered = "\n".join(rows)
-                self._reserve(spec, text_model, Usage(input_tokens=len(numbered) // 3 + 1500, output_tokens=8000))
+                self._reserve(spec, text_model, Usage(input_tokens=len(numbered) // 3 + 1500, output_tokens=16000))
                 # 2026-10-23: the storyboard knows what the real things look like: the
                 # research, the trending video it models, and one web search for the look of
                 # any named product (a brand-new robot is otherwise drawn as a generic one).
@@ -1118,7 +1118,7 @@ class ProductionService:
                     scene_plan_instructions(str(spec["format"]), narration_seconds),
                     f"TITLE={spec.get('title', '')}\n{facts}{recent_block(recent)}LINES\n{numbered}",
                     VISUAL_PLAN_SCHEMA,
-                    max_output_tokens=10000,
+                    max_output_tokens=16000,  # up to 48 scenes on a long video (2026-10-31)
                     web_search=True,
                 )
                 self.costs.record(production_id, "visual-plan-search", "openai", "web-search",
@@ -1150,9 +1150,10 @@ class ProductionService:
             from ..vector.scene_art import parts as scene_parts
             from ..vector.scene_art import picture_size, try_figure
 
-            from ..vector.pacing import pace_scenes
+            from ..vector.pacing import limit_products, pace_scenes
             # Pacing applies to plans made before it existed too (idempotent).
-            scenes = pace_scenes(normalize_layouts(visual_plan["scenes"], str(spec["format"])),
+            scenes = pace_scenes(limit_products(normalize_layouts(visual_plan["scenes"], str(spec["format"])),
+                                                spoken_line_times(), str(spec["format"])),
                                  spoken_line_times(), str(spec["format"]))
             line_art = OpenAILineArtProvider(
                 self.providers.config["assets"]["support_model"],

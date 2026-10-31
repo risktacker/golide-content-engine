@@ -109,7 +109,7 @@ VISUAL_PLAN_SCHEMA: dict = {
 
 def scene_plan_instructions(format_name: str, duration: float | None = None) -> str:
     from .figures import EXAMPLES
-    from .pacing import scene_range, storyboard_rules
+    from .pacing import MAX_PRODUCT_SCENES, scene_range, storyboard_rules
 
     low, high = SCENE_COUNTS.get(format_name, SCENE_COUNTS["short"])
     pacing = ""
@@ -118,6 +118,7 @@ def scene_plan_instructions(format_name: str, duration: float | None = None) -> 
         pacing = storyboard_rules(format_name, duration)
     from .layouts import STORYBOARD_RULES
 
+    products = MAX_PRODUCT_SCENES.get(format_name, 1)
     figure_menu = "\n".join("  " + example for example in EXAMPLES.values())
     layout_rules = STORYBOARD_RULES
     return f"""\
@@ -298,15 +299,34 @@ precisely instead of the sketch:
 {figure_menu}
 Never invent numbers the lines do not give.
 
+ILLUSTRATE WHAT IS SAID (owner direction 2026-10-31: "our script has to be illustrated...
+let what I'm saying be illustrated"). Every scene draws what its lines SAY is happening,
+not the subject sitting there:
+- an action: the person doing it (a hand drawing on the screen, an editor scrubbing a
+  timeline, someone squinting at a laptop at arm's length, a wrist resting on a palm rest);
+- a comparison: two things side by side (layout "duo"): before and after, old and new,
+  this model and that one, tablet versus laptop;
+- a cause and its result: the arm getting tired, the fingerprint smudge, the battery
+  draining, the price tag, the queue of buyers;
+- a metaphor for an idea you cannot photograph: a wall coming down for "they finally gave
+  in", a crossroads for a choice, scales for a trade-off.
+- Each new thought gets a new picture with a different main object, composition or
+  person. Never the same drawing twice, never the product alone at rest twice running.
+  People are drawn as in the reference channels: simple, clean figures with real hands.
+
 REAL PRODUCT OR REAL ARCHITECTURE (owner direction 2026-10-31: "if you are showing the real
 product it has to be the real product; if you are showing the mechanics behind it, it has to
 be the architecture behind it... the level we have reached now is not to fake things").
-- When the lines show WHAT a product is, "drawing" is that exact product as it really is,
-  from the research and its references (a book-style foldable is two tall halves joined by
-  a hinge with one inner screen across them; never a generic box or a different model).
-  Set "product": true on such a scene (the drawing names ONE real product, shown on its own):
-  it is made as a full-colour, photorealistic picture of that exact model instead of line art.
-  "product" is false for people, places, metaphors, scenes with several objects and figures.
+- Whenever a real product is drawn, it is that exact product as it really is, from the
+  research and its references (a book-style foldable is two tall halves joined by a hinge
+  with one inner screen across them; never a generic box or a different model).
+- "product": true makes the scene a full-colour, photorealistic picture of that exact model,
+  shown on its own. It is a REVEAL, used sparingly (owner direction 2026-10-31: "85% of
+  blocks just showcasing it without it being illustrated"): at most {products} in the whole
+  video, never two scenes in a row, each covering one or two lines only (the moment the
+  product is named or first seen). Every other scene, even one about the product, is a
+  line illustration of what the lines say. "product" is false for people, places,
+  metaphors, scenes with several objects and figures.
 - When the lines explain HOW it is built or why it fails, use an architecture figure drawn
   in code: "layers" for anything built in layers (a screen, a battery, a chip package),
   naming the real layers from the research in order, top first; "fold" for the hinge of a

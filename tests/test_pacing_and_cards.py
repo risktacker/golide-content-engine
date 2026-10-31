@@ -50,8 +50,8 @@ class PacingTests(unittest.TestCase):
         self.assertEqual(paced[1]["shot"], 1)
 
     def test_body_allows_longer_scenes(self):
-        times = [(70 + i * 3.0, 70 + i * 3.0 + 2.9) for i in range(4)]
-        paced = pace_scenes([{"id": "s", "first_line": 0, "last_line": 3}], times, "long")
+        times = [(70 + i * 3.0, 70 + i * 3.0 + 2.9) for i in range(3)]
+        paced = pace_scenes([{"id": "s", "first_line": 0, "last_line": 2}], times, "long")
         self.assertEqual(len(paced), 1)
 
     def test_scene_count_grows_with_length(self):

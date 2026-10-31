@@ -19,9 +19,16 @@ from __future__ import annotations
 
 HOOK_SECONDS = {"short": 30.0, "long": 60.0}
 HOOK_MAX = {"short": 3.6, "long": 5.0}     # longest a picture may hold in the hook
-BODY_MAX = {"short": 8.0, "long": 14.0}    # ... and after it
-TARGET = {"short": (3.0, 6.5), "long": (4.0, 11.0)}  # seconds per picture: hook, body
-MAX_PICTURES = {"short": 16, "long": 34}   # image budget (about $0.015 each)
+# 2026-10-31: "we only have 3-4 blocks... the same block repeated in a row... let what I'm
+# saying be illustrated... fast block moves." Long videos get more, shorter pictures.
+BODY_MAX = {"short": 8.0, "long": 10.0}    # ... and after it
+TARGET = {"short": (3.0, 6.5), "long": (4.0, 8.0)}  # seconds per picture: hook, body
+MAX_PICTURES = {"short": 16, "long": 48}   # image budget (about $0.015 each)
+
+# Full-colour product photos (owner direction 2026-10-31: 85% of the video was the product
+# shown again and again, not illustrated). A few reveals per video, never two in a row, and
+# a photo is one short block: it is never split into repeated shots of the same image.
+MAX_PRODUCT_SCENES = {"short": 1, "long": 3}
 
 
 def scene_range(format_name: str, duration: float) -> tuple[int, int]:
@@ -30,7 +37,7 @@ def scene_range(format_name: str, duration: float) -> tuple[int, int]:
     per_hook, per_body = TARGET.get(format_name, TARGET["short"])
     ideal = hook / per_hook + max(0.0, duration - hook) / per_body
     high = min(MAX_PICTURES.get(format_name, 16), max(4, round(ideal * 1.15)))
-    low = max(3, min(high, round(ideal * 0.85)))
+    low = max(3, min(round(high * 0.85), round(ideal * 0.85)))
     return low, high
 
 
@@ -64,6 +71,29 @@ def pace_scenes(scenes: list[dict], line_times: list[tuple[float, float]], forma
                 piece["picture_of"] = scene["id"]
                 piece["shot"] = k
             out.append(piece)
+    return out
+
+
+def limit_products(scenes: list[dict], line_times: list[tuple[float, float]], format_name: str) -> list[dict]:
+    """Keep only the few product-photo scenes the video can carry; the rest are drawn as
+    line art like every other scene. A product scene is dropped to line art when the one
+    before it was a product photo, when it holds longer than one picture may, or when the
+    video already has its quota."""
+    cap = MAX_PRODUCT_SCENES.get(format_name, 1)
+    used, previous = 0, False
+    out = []
+    for scene in scenes:
+        scene = dict(scene)
+        if scene.get("product"):
+            first, last = int(scene["first_line"]), int(scene["last_line"])
+            start = line_times[first][0]
+            span = line_times[last][1] - start
+            if used >= cap or previous or span > limit_for(format_name, start):
+                scene["product"] = False
+            else:
+                used += 1
+        previous = bool(scene.get("product"))
+        out.append(scene)
     return out
 
 
