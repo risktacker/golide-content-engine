@@ -375,7 +375,9 @@ def illustration_prompt(drawing: str, gold: str, format_name: str, layout: str =
         "flat black background (#000000), no vignette. Real objects drawn accurately with correct "
         "proportions and their real parts in the right places (a car has its true body shape, "
         "wheels, wheel arches, windows and doors; a machine its real components), in a clear "
-        "three-quarter or side view that shows what the thing is at a glance. Main shapes in a "
+        "three-quarter or side view that shows what the thing is at a glance. Solid objects: "
+        "whatever stands in front hides what is behind it, so no line of a back object ever "
+        "runs through a front one, and every part's outline is fully closed. Main shapes in a "
         "steady line with a bold, instantly recognisable outline; a few small "
         "inner details (a seam, a button, a window, a fold) in finer lines so the drawing has "
         "depth without clutter. No glow, no blur, no soft or fuzzy lines. Networks, branches, maps and dot patterns are welcome when "
@@ -961,7 +963,7 @@ def draw_illustration(d, drawing: Drawing, region, reveal: float, breathe: float
             ctx.restore()
     if tip is not None and reveal < 1.0:
         pen_light(d, tip[0], tip[1])
-    if settled > SHIMMER_START:
+    if settled > SHIMMER_START and not EDGE_LIGHT:
         _shimmer(d, drawing, accent, tx, s, settled - SHIMMER_START)
     if d.marking > 0 and not drawing.keep_order:
         _mark_ring(d, drawing, accent, tx)
@@ -1019,6 +1021,10 @@ def _mark_ring(d, drawing: Drawing, accent: str, tx) -> None:
 LIFE_PUSH = 0.06        # push-in across the scene (was 0.025)
 LIFE_DRIFT = 0.012      # drift, as a share of the drawing region
 SHIMMER_START = 0.8     # seconds after the drawing settles
+# 2026-10-31 (owner): with coloured drawings the pen must stop once the drawing is done; the
+# shimmer re-drew every line and cut through the colour. The renderer then runs a gold light
+# around the outside edge instead (vector.render), and sets this.
+EDGE_LIGHT = False
 SHIMMER_PERIOD = 3.6    # a light runs through the drawing this often
 SHIMMER_RUN = 1.8       # ... taking this long, end to end
 

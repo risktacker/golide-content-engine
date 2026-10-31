@@ -296,6 +296,9 @@ MATERIALS = {
     "glass": ((30, 44, 60), 2, 0.70), "screen": ((18, 24, 38), 2, 0.95), "wood": ((116, 78, 48), 0, 0.92),
     "concrete": ((112, 112, 108), 0, 0.9), "paper": ((222, 216, 200), 0, 0.88), "fabric": ((84, 86, 96), 0, 0.9),
 }
+EDGE_PERIOD = 3.6         # the gold edge light goes round this often (seconds) ...
+EDGE_RUN = 2.2            # ... taking this long
+EDGE_GOLD = (233, 196, 106)
 PAINT_IN = (0.55, 0.95)   # the colour fades in as the pen finishes the drawing (share of the reveal)
 
 
@@ -310,6 +313,8 @@ class VectorRenderer:
         self.ambience = Ambience(self.layout, self.theme, format_name)
         from .stage import Stages
         self.stages = Stages(self.layout, format_name)
+        from . import illustrate as _illustrate
+        _illustrate.EDGE_LIGHT = PAINT
         self._transitions: dict[int, "Transition"] = {}
         self.chapters: list = []
         self.follow: set[int] = set()  # spoken line indexes of the follow call-out
@@ -509,6 +514,75 @@ class VectorRenderer:
         soft = Image.fromarray((body * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.2))
         return (np.asarray(soft.resize((w, h), Image.Resampling.BILINEAR), np.float32) / 255)[..., None]
 
+    def _edge_light(self, body: np.ndarray, t: float) -> np.ndarray:
+        """A gold light travelling around the OUTSIDE edge of the finished object (owner
+        2026-10-31: "like a pointer going through what it drew without cutting the edges"):
+        it is light added on top, it never redraws a line and never goes inside."""
+        from skimage import measure
+
+        h, w = body.shape[:2]
+        k = 2
+        small = body[::k, ::k, 0]
+        contours = measure.find_contours(small, 0.5)
+        if not contours:
+            return 0.0
+        path = max(contours, key=len) * k                          # the outline, in pixels (y, x)
+        seg = np.linalg.norm(np.diff(path, axis=0), axis=1)
+        cum = np.concatenate([[0.0], np.cumsum(seg)])
+        total = cum[-1]
+        if total < 50:
+            return 0.0
+        phase = (t % EDGE_PERIOD) / EDGE_RUN
+        if phase >= 1.0:
+            return 0.0
+        head = phase * total
+        tail_len = total * 0.16
+        keep = (cum <= head) & (cum >= head - tail_len)
+        if keep.sum() < 2:
+            return 0.0
+        pts = path[keep][:, ::-1]
+        weights = 1 - (head - cum[keep]) / tail_len                # brightest at the head
+        layer = Image.new("L", (w // k, h // k), 0)
+        draw = ImageDraw.Draw(layer)
+        for (x0, y0), (x1, y1), wgt in zip(pts[:-1] / k, pts[1:] / k, weights[1:]):
+            draw.line([(x0, y0), (x1, y1)], fill=int(255 * wgt), width=4)
+        layer = layer.filter(ImageFilter.GaussianBlur(5)).resize((w, h), Image.Resampling.BILINEAR)
+        fade = min(1.0, phase / 0.1, (1.0 - phase) / 0.1)
+        return (np.asarray(layer, np.float32) / 255 * fade * 1.8)[..., None] * np.array(EDGE_GOLD, np.float32)
+
+    def _steady_paint(self, group: Group, gi: int, full: np.ndarray, drawing):
+        """The colour worked out ONCE per scene, then moved with the drawing's slow push-in and
+        drift (found from its outline's box). Working it out every frame let a thin part flip
+        between two materials as the drawing moved by a pixel: the 'weak TV signal' flashes."""
+        cache = self.__dict__.setdefault("_paint_cache", {})
+        key = (gi, group.start)
+        if key not in cache:
+            ref_t = max(group.start, group.end - TRANSITION_BEFORE - 0.05)
+            ref = self._finished_alpha(group, ref_t, gi)
+            colour, cover = self._paint(ref, self._body(ref), drawing)
+            ys, xs = np.nonzero(ref > 60)
+            box = (xs.min(), ys.min(), xs.max(), ys.max()) if len(xs) else None
+            cache[key] = (box, colour, cover)
+        box0, colour, cover = cache[key]
+        ys, xs = np.nonzero(full > 60)
+        if box0 is None or not len(xs):
+            return colour, cover
+        bx = (xs.min(), ys.min(), xs.max(), ys.max())
+        sx = (bx[2] - bx[0]) / max(1, box0[2] - box0[0])
+        sy = (bx[3] - bx[1]) / max(1, box0[3] - box0[1])
+        scale = (sx + sy) / 2
+        if abs(scale - 1) < 1e-3 and bx[:2] == box0[:2]:
+            return colour, cover
+        # where each output pixel comes from in the reference picture
+        a, c = 1 / scale, box0[0] - bx[0] / scale
+        e, f = 1 / scale, box0[1] - bx[1] / scale
+        h, w = full.shape[:2]
+        warp = lambda img: np.asarray(Image.fromarray(img).transform(            # noqa: E731
+            (w, h), Image.Transform.AFFINE, (a, 0, c, 0, e, f), resample=Image.Resampling.BILINEAR))
+        moved_colour = warp(np.clip(colour, 0, 255).astype(np.uint8)).astype(np.float32)
+        moved_cover = warp((np.clip(cover[..., 0], 0, 1) * 255).astype(np.uint8)).astype(np.float32)[..., None] / 255
+        return moved_colour, moved_cover
+
     def _finished_alpha(self, group: Group, t: float, gi: int) -> np.ndarray:
         """The scene's drawing as it will look when finished, at this moment's position."""
         L = self.layout
@@ -664,6 +738,7 @@ class VectorRenderer:
         body = self._body(m[..., 3])
         fill = BODY_FILL + np.array(self._accent_rgb(group), np.float32) * BODY_TINT
         frame = frame * (1 - BODY_CUT * body) + body * (BODY_CUT * fill)
+        edge_light = None
         if PAINT:
             from .illustrate import SCENES
             drawing = SCENES.get(group.icons[0]) if group.icons else None
@@ -678,12 +753,17 @@ class VectorRenderer:
                     # areas are found on the FINISHED drawing, drawn off screen at this moment, so
                     # they never change while the pen is still working.
                     full = self._finished_alpha(group, t, gi)
-                    colour, cover = self._paint(full, self._body(full), drawing)
-                    cover = cover * body * strength
+                    full_body = self._body(full)
+                    colour, cover = self._steady_paint(group, gi, full, drawing)
+                    cover = cover * full_body * strength
                     frame = frame * (1 - cover) + colour * cover
+                    if strength >= 0.999:
+                        edge_light = (full_body, t)
         frame = frame + np.asarray(glow_img, np.float32) * 1.35
         rgb = m[..., [2, 1, 0]].astype(np.float32)  # premultiplied
         frame = rgb + frame * (1 - alpha)
+        if edge_light is not None:
+            frame = frame + self._edge_light(*edge_light)
         image = Image.fromarray(np.clip(frame, 0, 255).astype(np.uint8), "RGB")
 
         accent = self._accent_rgb(group)
