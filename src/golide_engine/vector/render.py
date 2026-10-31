@@ -509,6 +509,18 @@ class VectorRenderer:
         soft = Image.fromarray((body * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.2))
         return (np.asarray(soft.resize((w, h), Image.Resampling.BILINEAR), np.float32) / 255)[..., None]
 
+    def _finished_alpha(self, group: Group, t: float, gi: int) -> np.ndarray:
+        """The scene's drawing as it will look when finished, at this moment's position."""
+        L = self.layout
+        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, L.width, L.height)
+        glow = cairo.ImageSurface(cairo.FORMAT_ARGB32, 8, 8)
+        ctxs = (cairo.Context(surface), cairo.Context(glow))
+        for ctx in ctxs:
+            ctx.translate(L.cx, L.cy)
+            ctx.scale(L.size / 2, L.size / 2)
+        self._group_draw(ctxs[0], ctxs[1], group, t, gi, 1.0, gp=1.0)
+        return np.ndarray((L.height, surface.get_stride() // 4, 4), np.uint8, surface.get_data())[:, :L.width, 3].copy()
+
     def _paint(self, alpha: np.ndarray, body: np.ndarray, drawing) -> tuple[np.ndarray, np.ndarray]:
         """Real materials inside the drawing (2026-10-31: "make the colour look real").
 
@@ -658,9 +670,15 @@ class VectorRenderer:
             if drawing is not None and not drawing.figure:
                 gp = self._draw_args(group, t)[0]
                 strength = float(np.clip((gp - PAINT_IN[0]) / (PAINT_IN[1] - PAINT_IN[0]), 0, 1))
+                if gi + 1 < len(groups):   # gone before the hand-over turns the drawing into dots
+                    strength *= float(np.clip((groups[gi + 1].start - TRANSITION_BEFORE - t) / 0.3, 0, 1))
                 strength = strength * strength * (3 - 2 * strength)
                 if strength > 0.01:
-                    colour, cover = self._paint(m[..., 3], body, drawing)
+                    # 2026-10-31 (owner: the colour flickered "like a TV with a weak signal"): the
+                    # areas are found on the FINISHED drawing, drawn off screen at this moment, so
+                    # they never change while the pen is still working.
+                    full = self._finished_alpha(group, t, gi)
+                    colour, cover = self._paint(full, self._body(full), drawing)
                     cover = cover * body * strength
                     frame = frame * (1 - cover) + colour * cover
         frame = frame + np.asarray(glow_img, np.float32) * 1.35
