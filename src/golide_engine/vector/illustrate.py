@@ -297,6 +297,18 @@ precisely instead of the sketch:
 {figure_menu}
 Never invent numbers the lines do not give.
 
+REAL PRODUCT OR REAL ARCHITECTURE (owner direction 2026-10-31: "if you are showing the real
+product it has to be the real product; if you are showing the mechanics behind it, it has to
+be the architecture behind it... the level we have reached now is not to fake things").
+- When the lines show WHAT a product is, "drawing" is that exact product as it really is,
+  from the research and its references (a book-style foldable is two tall halves joined by
+  a hinge with one inner screen across them; never a generic box or a different model).
+- When the lines explain HOW it is built or why it fails, use an architecture figure drawn
+  in code: "layers" for anything built in layers (a screen, a battery, a chip package),
+  naming the real layers from the research in order, top first; "fold" for the hinge of a
+  folding device (bar=stuck when the lines are about the support pressing on the screen).
+  Name only parts the research names; never invent a part.
+
 CHARTS (owner direction 2026-10-27): when a scene's lines give prices, growth, sales,
 shares or a market move with real numbers, set "figure" to a "chart" line with those
 numbers (type=candles for a stock or market, bar for amounts per year, line for a trend).
@@ -443,6 +455,8 @@ class Drawing:
     body: str = ""        # 2026-10-31: the real material of the object's shell (vector.render MATERIALS)
     inner: str = ""       # and of the surfaces inside it (a screen, a window, a door panel)
     people: bool = False  # people in the picture are painted in neutral tones
+    # 2026-10-31: solid coloured parts of an architecture figure: (points, rgb, shade, after).
+    panels: list = field(default_factory=list)
     traced: int = 0       # strokes found by the tracer before clean-up (a clutter measure)
     # 2026-10-22: the real illustration, shown on screen and revealed along the strokes
     # (vector.artwork). None for exact figures, which are drawn as strokes.
@@ -793,9 +807,15 @@ def load_figure(image_path: Path) -> Drawing | None:
         labels.append((surface, float(item["x"]), float(item["y"]), float(item["after"]), data))
         xs += [float(item["x"]), float(item["x"]) + crop.width]
         ys += [float(item["y"]), float(item["y"]) + crop.height]
+    panels = [(np.array(item["points"], np.float64), tuple(item["rgb"]), float(item.get("shade", 0.35)),
+               float(item["after"])) for item in meta.get("panels", []) if len(item["points"]) >= 3]
+    for pts, _rgb, _shade, _after in panels:
+        xs += list(pts[:, 0])
+        ys += list(pts[:, 1])
     bbox = (min(xs), min(ys), max(xs), max(ys))
     return Drawing(strokes, int(meta["width"]), int(meta["height"]), bbox, None, None,
-                   accent="gold", entrance="pen", labels=labels, keep_order=True, figure=True)
+                   accent="gold", entrance="pen", labels=labels, keep_order=True, figure=True,
+                   panels=panels)
 
 
 # --------------------------------------------------------------------------
@@ -874,6 +894,8 @@ def draw_illustration(d, drawing: Drawing, region, reveal: float, breathe: float
         ctx.rectangle(region[0] - w_r * room, region[1], w_r * (1 + 2 * room), h_r * (1 + room))
         ctx.clip()
     _paint_fills(d, drawing, accent, s, cx, cy, ox, oy, reveal)
+    if drawing.panels:
+        _paint_panels(d, drawing, s, cx, cy, ox, oy, reveal, linear)
 
     def tx(points):
         return [((x - cx) * s + ox, (y - cy) * s + oy) for x, y in points]
@@ -1080,6 +1102,36 @@ def _fill_surface(mask: np.ndarray, rgb: tuple[float, float, float], key: tuple[
         _FILL_CACHE.clear()
     _FILL_CACHE[key] = surface
     return surface
+
+
+def _paint_panels(d, drawing: Drawing, s, cx, cy, ox, oy, reveal: float, linear: bool) -> None:
+    """Solid parts of an architecture figure, each fading in as the pen reaches it, lit from
+    above (a soft vertical gradient), drawn under the outlines so every edge stays clean."""
+    import cairo
+
+    r = max(0.0, min(1.0, reveal))
+    done = r if linear else (r * r * (3 - 2 * r) * 0.35 + r * 0.65)
+    for pts, rgb, shade, after in drawing.panels:
+        a = max(0.0, min(1.0, (done - after) / 0.05 + 1.0)) if done < 1.0 else 1.0
+        if a <= 0.0:
+            continue
+        mapped = [((x - cx) * s + ox, (y - cy) * s + oy) for x, y in pts]
+        y0 = min(p[1] for p in mapped)
+        y1 = max(p[1] for p in mapped)
+        ctx = d.main
+        ctx.save()
+        ctx.move_to(*mapped[0])
+        for p in mapped[1:]:
+            ctx.line_to(*p)
+        ctx.close_path()
+        grad = cairo.LinearGradient(0, y0, 0, y1 if y1 > y0 else y0 + 1e-3)
+        r0, g0, b0 = (v / 255 for v in rgb)
+        lift = 1 + shade * 0.6
+        grad.add_color_stop_rgba(0, min(1, r0 * lift), min(1, g0 * lift), min(1, b0 * lift), a)
+        grad.add_color_stop_rgba(1, r0 * (1 - shade * 0.5), g0 * (1 - shade * 0.5), b0 * (1 - shade * 0.5), a)
+        ctx.set_source(grad)
+        ctx.fill()
+        ctx.restore()
 
 
 def _paint_fills(d, drawing: Drawing, accent: str, s, cx, cy, ox, oy, reveal: float) -> None:

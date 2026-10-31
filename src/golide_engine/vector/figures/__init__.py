@@ -17,7 +17,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from . import chemistry, circuits, diagrams, economics, heat, maths, mechanics, optics, relativity, solids, structures, waves
+from . import chemistry, circuits, devices, diagrams, economics, heat, maths, mechanics, optics, relativity, solids, structures, waves
 from .core import FigureError, parse_figure, save, sidecar_path
 
 BUILDERS = {
@@ -41,11 +41,15 @@ BUILDERS = {
     "network": diagrams.network, "flow": diagrams.flow, "tree": diagrams.tree,
     # money and markets (2026-10-27): exact prices, growth and market moves
     "chart": economics.chart,
+    # how real devices are built (2026-10-31): exploded layers, a folding hinge
+    "layers": devices.layers, "fold": devices.fold,
 }
 KINDS = tuple(BUILDERS)
 
 # One example per kind: the storyboard's menu (see illustrate.scene_plan_instructions).
 EXAMPLES = {
+    "layers": "layers: names=cover glass,polarizer,touch sensor,OLED,backplane; title=10+ layers   (how a real thing is built, layer by layer, from the research)",
+    "fold": "fold: layers=6; bar=stuck              (a folding device's hinge, end view; bar=dropped when it works)",
     "vectors": "vectors: a=3,1; b=1,2; sum=yes          (names=u,v to rename; length=yes)",
     "right_triangle": "right_triangle: a=3; b=4; angle=yes     (formula=yes adds a² + b² = c²; letters=yes)",
     "function": "function: f=x^2; x=-2,2; tangent=1      (or area=0,3.14 for the area under the curve)",

@@ -121,6 +121,9 @@ class Canvas:
     # labels, each appearing once the pen has drawn what it names.
     strokes: list = field(default_factory=list)
     labels: list = field(default_factory=list)
+    # 2026-10-31: solid coloured parts (a screen layer, a metal plate), each shown once the
+    # pen reaches it, so architecture drawings are real coloured parts, not wireframes.
+    panels: list = field(default_factory=list)
     drawn: float = 0.0
     yscale: float | None = None
     tiny: ImageFont.FreeTypeFont | None = None  # dense scales (the spectrum); label(small="tiny")  # graphs: pixels per math unit (y), when x and y units differ
@@ -159,6 +162,14 @@ class Canvas:
             if color not in (WHITE, GOLD, DIM):
                 stroke["rgb"] = list(color)  # true colours where colour is the physics (a spectrum)
             self.strokes.append(stroke)
+
+    def panel(self, pts, rgb, outline=None, width: float = 1.0, shade: float = 0.35) -> None:
+        """A solid part in maths coordinates: filled in ``rgb`` (lit from above), then outlined."""
+        px = [self.p(*q) for q in pts]
+        self.panels.append({"points": [[x / SUPER, y / SUPER] for x, y in px], "rgb": list(rgb),
+                            "shade": shade, "after": self.drawn})
+        self.draw.polygon(px, fill=tuple(int(v) for v in rgb))
+        self.pxline(px + [px[0]], outline or WHITE, width)
 
     def dashed(self, a, b, color=DIM, width: float = 0.8, dash: float = 0.05) -> None:
         """A dashed line (virtual rays, extensions); dash is a share of the segment."""
@@ -295,6 +306,7 @@ def save(c: Canvas, target: Path) -> Path:
     out.save(target)
     sidecar_path(target).write_text(json.dumps({
         "width": out.width, "height": out.height, "strokes": c.strokes, "labels": labels,
+        "panels": [dict(item, after=round(min(1.0, item["after"] / total), 4)) for item in c.panels],
     }) + "\n", encoding="utf-8")
     return target
 
