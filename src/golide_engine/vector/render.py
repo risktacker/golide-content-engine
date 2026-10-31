@@ -299,6 +299,8 @@ MATERIALS = {
 EDGE_PERIOD = 3.6         # the gold edge light goes round this often (seconds) ...
 EDGE_RUN = 2.2            # ... taking this long
 EDGE_GOLD = (233, 196, 106)
+PAINT_GAP = 2             # px of dark kept between the colour and every line
+PAINT_MIN_THICK = 7       # px: thinner strips are left dark
 PAINT_IN = (0.55, 0.95)   # the colour fades in as the pen finishes the drawing (share of the reveal)
 
 
@@ -606,14 +608,14 @@ class VectorRenderer:
         from scipy import ndimage
 
         h, w = alpha.shape[:2]
-        k = 2
-        a = alpha[: h // k * k, : w // k * k]
-        lines = np.maximum.reduce([a[i::k, j::k] for i in range(k) for j in range(k)]) > 60
-        solid = body[: h // k * k: k, : w // k * k: k, 0] > 0.5
+        k = 1                       # full resolution (worked out once per scene, so it is cheap)
+        lines = alpha > 25
+        solid = body[..., 0] > 0.5
         sh, sw = solid.shape
         colour = np.zeros((sh, sw, 3), np.float32)
         cover = np.zeros((sh, sw), np.float32)
-        regions, count = ndimage.label(solid & ~ndimage.binary_dilation(lines, iterations=1))
+        # 2026-10-31: the colour stops a hair before every line, so each line stands clean.
+        regions, count = ndimage.label(solid & ~ndimage.binary_dilation(lines, iterations=PAINT_GAP))
         if count:
             people = bool(getattr(drawing, "people", False))
             body_name = "white" if people else (getattr(drawing, "body", "") or "aluminium")
@@ -629,9 +631,12 @@ class VectorRenderer:
             lut_base = np.zeros((count + 1, 3), np.float32)
             lut_finish = np.zeros(count + 1, np.int32)
             lut_cover = np.zeros(count + 1, np.float32)
+            # How thick each area is: thin strips between close lines (hinge layers, a phone's
+            # double edge, a bezel) stay dark so the lines beside them never disappear.
+            thick = ndimage.maximum(ndimage.distance_transform_edt(regions > 0), regions, idx)
             for n in range(count):
-                if sizes[n] < 30:
-                    continue        # specks between lines stay dark
+                if sizes[n] < 120 or thick[n] < PAINT_MIN_THICK:
+                    continue
                 name = body_name if touches[n] else inner_name
                 if name == "none":
                     continue
@@ -739,6 +744,7 @@ class VectorRenderer:
         fill = BODY_FILL + np.array(self._accent_rgb(group), np.float32) * BODY_TINT
         frame = frame * (1 - BODY_CUT * body) + body * (BODY_CUT * fill)
         edge_light = None
+        painted = None
         if PAINT:
             from .illustrate import SCENES
             drawing = SCENES.get(group.icons[0]) if group.icons else None
@@ -757,10 +763,19 @@ class VectorRenderer:
                     colour, cover = self._steady_paint(group, gi, full, drawing)
                     cover = cover * full_body * strength
                     frame = frame * (1 - cover) + colour * cover
+                    painted = np.clip(full_body * strength, 0, 1)
                     if strength >= 0.999:
                         edge_light = (full_body, t)
         frame = frame + np.asarray(glow_img, np.float32) * 1.35
         rgb = m[..., [2, 1, 0]].astype(np.float32)  # premultiplied
+        if painted is not None:
+            # Lines always win over colour: inside the coloured object a line is drawn solid,
+            # so a faint or thin line can never let the colour through.
+            solid_a = np.clip(alpha * 2.2, 0, 1)
+            boost = np.where(alpha > 1e-3, solid_a / np.maximum(alpha, 1e-3), 0)
+            mix = painted
+            alpha = alpha + (solid_a - alpha) * mix
+            rgb = rgb * (1 + (boost - 1) * mix)
         frame = rgb + frame * (1 - alpha)
         if edge_light is not None:
             frame = frame + self._edge_light(*edge_light)
