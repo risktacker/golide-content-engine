@@ -26,6 +26,7 @@ jobs:
         run: |
           git config user.name "golide-production-bot"
           git config user.email "golide-production-bot@users.noreply.github.com"
+          git checkout -b probe-output
           git add -f production-queue/preview/
           git commit -m "ops: product picture probe" || exit 0
-          git pull --rebase && git push
+          git push -f origin probe-output
