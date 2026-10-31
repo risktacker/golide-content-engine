@@ -286,7 +286,17 @@ BODY_TINT = 0.07  # and a touch of its accent, so it reads as a solid thing, not
 # code and good colouring, so there is canvas in looking"): the parts of a drawing are painted,
 # each enclosed region its own tone from the scene's palette, lit from above.
 PAINT = False   # preview only until the owner approves the look
-PAINT_LIGHT = (0.20, 0.42)    # darkest and lightest share of a palette colour a region gets
+# name: (base colour, finish 0 matte / 1 metal / 2 gloss, coverage). Real colours, darkened a
+# little so the white lines stay the brightest thing in the frame.
+MATERIALS = {
+    "aluminium": ((150, 156, 165), 1, 0.92), "dark-metal": ((62, 66, 74), 1, 0.95),
+    "black": ((26, 28, 32), 2, 0.96), "white": ((205, 205, 200), 0, 0.85),
+    "gold": ((190, 148, 62), 1, 0.95), "copper": ((176, 98, 60), 1, 0.95),
+    "red": ((158, 30, 36), 2, 0.95), "blue": ((36, 72, 160), 2, 0.95), "green": ((34, 110, 72), 2, 0.95),
+    "glass": ((30, 44, 60), 2, 0.70), "screen": ((18, 24, 38), 2, 0.95), "wood": ((116, 78, 48), 0, 0.92),
+    "concrete": ((112, 112, 108), 0, 0.9), "paper": ((222, 216, 200), 0, 0.88), "fabric": ((84, 86, 96), 0, 0.9),
+}
+PAINT_IN = (0.55, 0.95)   # the colour fades in as the pen finishes the drawing (share of the reveal)
 
 
 class VectorRenderer:
@@ -499,49 +509,68 @@ class VectorRenderer:
         soft = Image.fromarray((body * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.2))
         return (np.asarray(soft.resize((w, h), Image.Resampling.BILINEAR), np.float32) / 255)[..., None]
 
-    def _paint(self, alpha: np.ndarray, body: np.ndarray, accent: tuple) -> np.ndarray:
-        """Colour for inside the drawing: every region the lines enclose gets its own tone
-        (accent, a cool partner, a warm ivory), lit from the top, darker toward the floor."""
+    def _paint(self, alpha: np.ndarray, body: np.ndarray, drawing) -> tuple[np.ndarray, np.ndarray]:
+        """Real materials inside the drawing (2026-10-31: "make the colour look real").
+
+        Every area the lines enclose is painted. Areas on the outside of the object (its shell)
+        get the storyboard's "body" material, areas inside it (a screen, a window) the "inner"
+        one; people are neutral. Each area is lit from its own top, metals get a soft band of
+        light and glossy surfaces a diagonal reflection. Worked out at half resolution with
+        no blur, so the colour sits inside the lines. Returns (colour, coverage)."""
         from scipy import ndimage
 
         h, w = alpha.shape[:2]
-        k = 4
+        k = 2
         a = alpha[: h // k * k, : w // k * k]
-        small = np.maximum.reduce([a[i::k, j::k] for i in range(k) for j in range(k)]) > 50
-        b = body[: h // k * k: k, : w // k * k: k, 0] > 0.5
-        regions, count = ndimage.label(b & ~ndimage.binary_dilation(small, iterations=1))
-        sh, sw = regions.shape
-        out = np.zeros((sh, sw, 3), np.float32)
+        lines = np.maximum.reduce([a[i::k, j::k] for i in range(k) for j in range(k)]) > 60
+        solid = body[: h // k * k: k, : w // k * k: k, 0] > 0.5
+        sh, sw = solid.shape
+        colour = np.zeros((sh, sw, 3), np.float32)
+        cover = np.zeros((sh, sw), np.float32)
+        regions, count = ndimage.label(solid & ~ndimage.binary_dilation(lines, iterations=1))
         if count:
-            sizes = ndimage.sum(np.ones_like(regions), regions, range(1, count + 1))
-            order = np.argsort(-sizes)                     # biggest region first
-            acc = np.array(accent, np.float32)
-            # One colour family per scene (the accent in several depths) and ONE contrast colour
-            # on the second biggest part, like a screen or a window; never a random mix.
-            partner = np.array((95, 150, 245) if accent[0] > accent[2] else (233, 170, 90), np.float32)
-            if max(accent) - min(accent) < 40:      # a neutral scene (people): no contrast colour
-                partner = acc * 0.8
-            depths = (0.34, 0.0, 0.24, 0.29, 0.19, 0.26, 0.21)
-            tones = np.zeros((count + 1, 3), np.float32)
-            for rank, index in enumerate(order):
-                tones[index + 1] = partner * 0.30 if rank == 1 else acc * depths[rank % len(depths)]
-            out = tones[regions]
-            ys = np.nonzero(b.any(axis=1))[0]
-            xs = np.nonzero(b.any(axis=0))[0]
-            if len(ys):
-                top, bottom = ys[0], ys[-1] + 1
-                left, right = xs[0], xs[-1] + 1
-                yy, xx = np.mgrid[0:sh, 0:sw].astype(np.float32)
-                v = np.clip((yy - top) / max(1, bottom - top), 0, 1)
-                u = np.clip((xx - left) / max(1, right - left), 0, 1)
-                light = 1.35 - 0.75 * v                                   # lit from above
-                sheen = 0.18 * np.exp(-(((u - 0.3) * 3) ** 2 + ((v - 0.25) * 4) ** 2))   # a soft highlight
-                out = out * light[..., None] + (sheen[..., None] * 255) * (out.sum(axis=2, keepdims=True) > 0)
-        img = Image.fromarray(np.clip(out, 0, 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.0))
-        img = img.resize((w, h), Image.Resampling.BILINEAR)
-        painted = np.asarray(img, np.float32)
-        base = BODY_FILL + np.array(accent, np.float32) * BODY_TINT
-        return np.maximum(painted, base)
+            people = bool(getattr(drawing, "people", False))
+            body_name = "white" if people else (getattr(drawing, "body", "") or "aluminium")
+            inner_name = "white" if people else (getattr(drawing, "inner", "") or "glass")
+            outside = ~ndimage.binary_dilation(solid, iterations=2)
+            near_out = ndimage.binary_dilation(outside, iterations=4)
+            idx = np.arange(1, count + 1)
+            touches = ndimage.maximum(near_out, regions, idx) > 0
+            sizes = ndimage.sum(np.ones_like(regions), regions, idx)
+            yy, xx = np.mgrid[0:sh, 0:sw].astype(np.float32)
+            y0, y1 = ndimage.minimum(yy, regions, idx), ndimage.maximum(yy, regions, idx)
+            x0, x1 = ndimage.minimum(xx, regions, idx), ndimage.maximum(xx, regions, idx)
+            lut_base = np.zeros((count + 1, 3), np.float32)
+            lut_finish = np.zeros(count + 1, np.int32)
+            lut_cover = np.zeros(count + 1, np.float32)
+            for n in range(count):
+                if sizes[n] < 30:
+                    continue        # specks between lines stay dark
+                name = body_name if touches[n] else inner_name
+                if name == "none":
+                    continue
+                base, finish, opacity = MATERIALS.get(name, MATERIALS["aluminium"])
+                if people:
+                    base = np.array(base, np.float32) * (0.75 + 0.25 * ((n * 7) % 3) / 2)
+                lut_base[n + 1], lut_finish[n + 1], lut_cover[n + 1] = base, finish, opacity
+            reg_y0, reg_y1 = np.concatenate([[0], y0]), np.concatenate([[1], y1])
+            reg_x0, reg_x1 = np.concatenate([[0], x0]), np.concatenate([[1], x1])
+            v = np.clip((yy - reg_y0[regions]) / np.maximum(1, reg_y1[regions] - reg_y0[regions]), 0, 1)
+            u = np.clip((xx - reg_x0[regions]) / np.maximum(1, reg_x1[regions] - reg_x0[regions]), 0, 1)
+            base = lut_base[regions]
+            finish = lut_finish[regions]
+            light = 1.18 - 0.42 * v
+            band = 0.22 * np.exp(-((v - 0.22) / 0.07) ** 2)                       # metal: a band of light
+            streak = 0.20 * np.exp(-(((u - 0.55 * v) - 0.30) / 0.05) ** 2)        # gloss: a reflection
+            colour = base * light[..., None]
+            colour += (np.where(finish == 1, band, 0) + np.where(finish == 2, streak, 0))[..., None] * 255
+            cover = lut_cover[regions]
+        up = lambda x: np.repeat(np.repeat(x, k, axis=0), k, axis=1)          # noqa: E731 - nearest, crisp
+        full_c = np.zeros((h, w, 3), np.float32)
+        full_a = np.zeros((h, w), np.float32)
+        full_c[: sh * k, : sw * k] = up(colour)
+        full_a[: sh * k, : sw * k] = up(cover)
+        return full_c, full_a[..., None]
 
     def _marking(self, group: Group, t: float) -> float:
         """0..1 while a spoken-number card belonging to this scene is on screen."""
@@ -621,9 +650,20 @@ class VectorRenderer:
         # The object's solid shape is cut out of both, then its own glow goes on top.
         frame = self._with_stage(self.ambience.frame(t, self._ambient(groups, gi, t)), groups, gi, t)
         body = self._body(m[..., 3])
-        fill = self._paint(m[..., 3], body, self._accent_rgb(group)) if PAINT else \
-            BODY_FILL + np.array(self._accent_rgb(group), np.float32) * BODY_TINT
-        frame = frame * (1 - BODY_CUT * body) + body * (BODY_CUT * fill) + np.asarray(glow_img, np.float32) * 1.35
+        fill = BODY_FILL + np.array(self._accent_rgb(group), np.float32) * BODY_TINT
+        frame = frame * (1 - BODY_CUT * body) + body * (BODY_CUT * fill)
+        if PAINT:
+            from .illustrate import SCENES
+            drawing = SCENES.get(group.icons[0]) if group.icons else None
+            if drawing is not None and not drawing.figure:
+                gp = self._draw_args(group, t)[0]
+                strength = float(np.clip((gp - PAINT_IN[0]) / (PAINT_IN[1] - PAINT_IN[0]), 0, 1))
+                strength = strength * strength * (3 - 2 * strength)
+                if strength > 0.01:
+                    colour, cover = self._paint(m[..., 3], body, drawing)
+                    cover = cover * body * strength
+                    frame = frame * (1 - cover) + colour * cover
+        frame = frame + np.asarray(glow_img, np.float32) * 1.35
         rgb = m[..., [2, 1, 0]].astype(np.float32)  # premultiplied
         frame = rgb + frame * (1 - alpha)
         image = Image.fromarray(np.clip(frame, 0, 255).astype(np.uint8), "RGB")
@@ -743,6 +783,9 @@ class VectorRenderer:
                 if drawing.companion is not None:
                     drawing.companion.entrance = "pen"
             drawing.stage = str(scene.get("stage") or "")
+            drawing.body = str(scene.get("body") or "")
+            drawing.inner = str(scene.get("inner") or "")
+            drawing.people = bool(scene.get("people"))
             if drawing.figure and str(scene.get("figure") or "").strip().lower().startswith("chart"):
                 # 2026-10-27: money charts stand on the market set, not in empty black.
                 drawing.stage = drawing.stage or "market"

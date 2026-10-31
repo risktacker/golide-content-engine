@@ -45,6 +45,10 @@ ACCENTS = {
 SCENE_SOUNDS = ("none", "bling", "chime", "phone_ring", "notify", "door_open", "door_shut",
                 "car", "blips", "coin", "typing", "clock", "camera")
 
+# 2026-10-31: the materials a drawing is painted in (vector.render.MATERIALS).
+MATERIAL_NAMES = ["aluminium", "dark-metal", "black", "white", "gold", "copper", "red", "blue", "green",
+                  "glass", "screen", "wood", "concrete", "paper", "fabric", "none"]
+
 VISUAL_PLAN_SCHEMA: dict = {
     "type": "object",
     "additionalProperties": False,
@@ -86,12 +90,15 @@ VISUAL_PLAN_SCHEMA: dict = {
                     "figure_b": {"type": "string"},
                     "label": {"type": "string"},
                     "label_b": {"type": "string"},
+                    "body": {"type": "string", "enum": MATERIAL_NAMES},
+                    "inner": {"type": "string", "enum": MATERIAL_NAMES},
+                    "people": {"type": "boolean"},
                     "stage": {"type": "string", "enum": ["grid", "pedestal", "studio", "wall", "orbit", "horizon",
                                                         "space", "factory", "market", "storefront"]},
                 },
                 "required": ["first_line", "last_line", "drawing", "gold_element", "accent", "sound", "sound_word",
                              "figure", "layout", "drawing_b", "gold_element_b", "figure_b", "label", "label_b",
-                             "stage"],
+                             "stage", "body", "inner", "people"],
             },
         },
     },
@@ -161,6 +168,13 @@ extra, which only ever sits at the sides, above or under the base, never behind 
 - "market": faint candle bands at the far left and right. Stocks, prices, money, the economy.
 - "storefront": two shop fronts framing the object. Selling, shops, retail, customers.
 Consecutive scenes about the same thing keep the same one. Exact maths figures ignore it.
+
+MATERIALS (2026-10-31: the drawings are coloured like the real thing). "body" is what the
+object's outer shell is really made of, "inner" is what the surfaces inside its outline are
+(a phone's screen, a car's windows, a building's windows). Real colours: an iPhone body is
+"aluminium" with an inner "screen"; a Tesla Roadster is "red" with "glass"; a coin is "gold";
+a server rack is "dark-metal" with "black". "people": true when a person is in the picture
+(they are painted in neutral tones). "none" leaves that part unpainted.
 
 For each scene write "drawing": one composed illustration that SHOWS the idea
 of those lines as a small visual story or metaphor, the way an illustrator
@@ -424,6 +438,9 @@ class Drawing:
     clip: bool = False  # a pacing shot: framed on part of the picture, clipped to the drawing area
     figure: bool = False  # an exact figure (maths, physics): the background shows the lesson grid
     stage: str = ""       # the set behind it (vector.stage), chosen by the storyboard (2026-10-27)
+    body: str = ""        # 2026-10-31: the real material of the object's shell (vector.render MATERIALS)
+    inner: str = ""       # and of the surfaces inside it (a screen, a window, a door panel)
+    people: bool = False  # people in the picture are painted in neutral tones
     traced: int = 0       # strokes found by the tracer before clean-up (a clutter measure)
     # 2026-10-22: the real illustration, shown on screen and revealed along the strokes
     # (vector.artwork). None for exact figures, which are drawn as strokes.
