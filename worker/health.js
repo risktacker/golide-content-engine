@@ -10,7 +10,7 @@ import { brandShell, MAIL_FROM, INK, MUTED, GOLD_TEXT } from "./mail.js";
 const LUSAKA_OFFSET_H = 2;
 const PLATFORMS = ["instagram", "facebook", "linkedin", "x", "youtube"];
 const NAMES = { instagram: "Instagram", facebook: "Facebook", linkedin: "LinkedIn", x: "X", youtube: "YouTube" };
-const SHORT_DAYS = [0, 1, 3, 5];   // Sun, Mon, Wed, Fri (Lusaka)
+const SHORT_DAYS = [1, 3, 5];      // Mon, Wed, Fri (Lusaka); Sunday has no video
 const LONG_DAYS = [2, 4, 6];       // Tue, Thu, Sat
 const GREEN = "#2e7d4f", RED = "#b4413b", AMBER = "#b07a12";
 
@@ -51,8 +51,8 @@ export async function collectHealth(db, now = new Date(), storage = null) {
   const enabled = Number(automation?.enabled || 0) === 1;
   if (!enabled) issues.push("Automation is switched OFF in Studio, so nothing is posting on its own.");
 
-  // 1. Static posts: 08:30 (post-a) and 17:30 (post-b).
-  for (const [slot, label, hour] of [["a", "08:30 post", 8.5], ["b", "17:30 post", 17.5]]) {
+  // 1. Static post: one a day at 08:30 (owner direction 2026-10-31).
+  for (const [slot, label, hour] of [["a", "08:30 post", 8.5]]) {
     const id = `golide-post-${day.date}-post-${slot}`;
     const post = await first(db, `SELECT id,title,status FROM content_posts WHERE id=?`, id);
     const due = now.getTime() >= day.start.getTime() + (hour + 0.75) * 3600e3;

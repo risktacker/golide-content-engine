@@ -39,29 +39,35 @@ test("Lusaka day boundaries", () => {
 test("a clean day says all good", async () => {
   const db = seed();
   post(db, "golide-post-2026-10-07-post-a", "From Apps to Outcomes", ALL_OK);
-  post(db, "golide-post-2026-10-07-post-b", "AI Glasses and Everyday Trust", ALL_OK);
   db.prepare(`INSERT INTO production_jobs VALUES(?,?,?,?,?,?,?,?,?,?)`).run("golide-short-2026-10-07", "short", "Meta's New AI Shops for You.", "scheduled", "youtube-scheduled", null, "2026-10-07T11:00:00Z", null, null, "2026-10-07T12:10:39Z");
   post(db, "golide-short-2026-10-07-reels", "Meta", [["facebook", "published"], ["instagram", "published"], ["linkedin", "published"], ["youtube", "published"]]);
   const r = await collectHealth(d1(db), new Date("2026-10-07T18:00:00Z"));
   assert.deepEqual(r.issues, []);
   assert.equal(renderHealth(r).subject, "GOLIDE daily: all good");
-  assert.equal(r.sections.length, 3);
+  assert.equal(r.sections.length, 2);   // one static post a day since 2026-10-31
 });
 
 test("missing post, failure, fallback, waiting voice and failed dispatch are all reported", async () => {
   const db = seed();
-  post(db, "golide-post-2026-10-07-post-b", "AI Glasses", [["facebook", "published"], ["instagram", "published", "the carousel went out as one image"], ["linkedin", "failed", "token expired"], ["x", "published"]]);
+  post(db, "golide-post-2026-10-07-post-a", "AI Glasses", [["facebook", "published"], ["instagram", "published", "the carousel went out as one image"], ["linkedin", "failed", "token expired"], ["x", "published"]]);
   db.prepare(`INSERT INTO production_jobs VALUES(?,?,?,?,?,?,?,?,?,?)`).run("golide-short-2026-10-07", "short", "Meta shops", "waiting_owner_voice", "owner-voice", null, null, null, null, "2026-10-07T07:05:00Z");
   db.prepare(`INSERT INTO cron_runs VALUES(?,?,?,?)`).run("content-distribution-scheduler.yml", 0, "401 Bad credentials", "2026-10-07T06:30:01Z");
   const r = await collectHealth(d1(db), new Date("2026-10-07T18:00:00Z"));
   const all = r.issues.join("\n");
-  assert.match(all, /08:30 post was never created/);
   assert.match(all, /Instagram: published, but the carousel/);
   assert.match(all, /LinkedIn: failed\. token expired/);
   assert.match(all, /Record today's short/);
   assert.match(all, /content-distribution-scheduler\.yml run could not be started/);
-  assert.equal(r.issues.length, 5);
-  assert.match(renderHealth(r).subject, /5 things need you/);
+  assert.equal(r.issues.length, 4);
+  assert.match(renderHealth(r).subject, /4 things need you/);
+});
+
+test("a missing 08:30 post is reported and there is no 17:30 check", async () => {
+  const db = seed();
+  const r = await collectHealth(d1(db), new Date("2026-10-07T18:00:00Z"));
+  const all = r.issues.join("\n");
+  assert.match(all, /08:30 post was never created/);
+  assert.doesNotMatch(all, /17:30/);
 });
 
 test("expiring login without refresh and automation off", async () => {

@@ -38,8 +38,8 @@ const POLICY = {
   routing:{
     version:1,locked:true,timezone:"Africa/Lusaka",
     content_types:{
-      post:{platforms:ROUTES.post,daily_core_items:2,weekly_core_items:14,product_context:{modes:["brand","specific_product","auto_product"],default_mode:"auto_product"}},
-      short:{platforms:ROUTES.short,weekly_items:4,voice:"owner_recording_only",product_centered:false},
+      post:{platforms:ROUTES.post,daily_core_items:1,weekly_core_items:7,product_context:{modes:["brand","specific_product","auto_product"],default_mode:"auto_product"}},
+      short:{platforms:ROUTES.short,weekly_items:3,voice:"owner_recording_only",product_centered:false},
       long_video:{platforms:ROUTES.long,weekly_items:3,voice:"owner_recording_only",product_centered:false},
     },
     pinterest:{native_engine_integration:false,workflow:"manual reconnect and Instagram-derived distribution"},
@@ -47,14 +47,13 @@ const POLICY = {
   calendar:{
     version:1,locked:true,timezone:"Africa/Lusaka",
     daily_posts:[
-      {slot:"post-a",time:"08:30",days:["monday","tuesday","wednesday","thursday","friday","saturday","sunday"],platforms:ROUTES.post},
-      {slot:"post-b",time:"17:30",days:["monday","tuesday","wednesday","thursday","friday","saturday","sunday"],platforms:ROUTES.post},
+      {slot:"post-a",time:"08:30",days:["monday","tuesday","thursday","friday","saturday","sunday"],platforms:ROUTES.post},
+      {slot:"post-a",time:"08:30",days:["wednesday"],theme:"professional",platforms:ROUTES.post},
     ],
     shorts:[
       {day:"monday",time:"13:00",platforms:ROUTES.short},
       {day:"wednesday",time:"13:00",platforms:ROUTES.short},
       {day:"friday",time:"13:00",platforms:ROUTES.short},
-      {day:"sunday",time:"13:00",platforms:ROUTES.short},
     ],
     long_videos:[
       {day:"tuesday",time:"19:30",platforms:ROUTES.long},
@@ -1252,9 +1251,8 @@ async function handleApi(request,env,url){
 const ENGINE_REPO="risktacker/golide-content-engine";
 const CRON_WORKFLOWS={
   "30 6 * * *":"content-distribution-scheduler.yml",      // 08:30 Post A
-  "30 15 * * *":"content-distribution-scheduler.yml",     // 17:30 Post B
   "0 4 * * TUE,THU,SAT":"production-scheduler.yml",       // 06:00 long script
-  "0 7 * * SUN,MON,WED,FRI":"production-scheduler.yml",   // 09:00 short script
+  "0 7 * * MON,WED,FRI":"production-scheduler.yml",       // 09:00 short script
   // 13:00 releases the short's social copies on time; 14:00/20:00 build from voice.
   "0 11,12,18 * * *":"production-scheduler.yml"
 };

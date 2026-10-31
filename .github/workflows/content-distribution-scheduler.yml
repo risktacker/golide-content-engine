@@ -2,10 +2,9 @@ name: Content distribution scheduler
 
 on:
   schedule:
-    # 08:30 and 17:30 Africa/Lusaka (UTC+2). These are the two locked
-    # daily static-post windows; do not poll every 15 minutes.
+    # 08:30 Africa/Lusaka (UTC+2): the one daily static post
+    # (owner direction 2026-10-31). Do not poll every 15 minutes.
     - cron: "30 6 * * *"
-    - cron: "30 15 * * *"
   workflow_dispatch:
 
 concurrency:

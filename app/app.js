@@ -467,12 +467,11 @@ function renderCadence() {
   const shorts = Object.fromEntries(calendar.shorts.map((item) => [item.day, item.time]));
   const longs = Object.fromEntries(calendar.long_videos.map((item) => [item.day, item.time]));
   $("#cadence-grid").innerHTML =
-    '<div class="cadence-head"><span>Day</span><span>08:30</span><span>13:00</span><span>17:30</span><span>19:30</span></div>' +
+    '<div class="cadence-head"><span>Day</span><span>08:30</span><span>13:00</span><span>19:30</span></div>' +
     days.map((day) =>
       '<div class="cadence-row"><strong>' + day[0].toUpperCase() + day.slice(1, 3) + '</strong>' +
-      '<span class="slot post">Post A</span>' +
+      '<span class="slot post">' + (day === "wednesday" ? "Pro post" : "Post") + '</span>' +
       '<span class="slot ' + (shorts[day] ? "short" : "") + '">' + (shorts[day] ? "Short" : "") + '</span>' +
-      '<span class="slot post">Post B</span>' +
       '<span class="slot ' + (longs[day] ? "long" : "") + '">' + (longs[day] ? "Long" : "") + '</span></div>'
     ).join("");
 }

@@ -27,10 +27,17 @@ class LockedContentPolicyTests(unittest.TestCase):
 
     def test_weekly_cadence_is_locked(self):
         calendar = json.loads((ROOT / "config/content-calendar.json").read_text())
-        self.assertEqual(14, calendar["weekly_totals"]["core_posts"])
-        self.assertEqual(4, calendar["weekly_totals"]["shorts"])
+        # Owner direction 2026-10-31: one static post a day, shorts Mon/Wed/Fri.
+        self.assertEqual(7, calendar["weekly_totals"]["core_posts"])
+        self.assertEqual(3, calendar["weekly_totals"]["shorts"])
         self.assertEqual(3, calendar["weekly_totals"]["long_videos"])
-        self.assertEqual(["monday", "wednesday", "friday", "sunday"], [x["day"] for x in calendar["shorts"]])
+        self.assertEqual(["monday", "wednesday", "friday"], [x["day"] for x in calendar["shorts"]])
+        self.assertEqual({"08:30"}, {x["time"] for x in calendar["daily_posts"]})
+        days = [d for x in calendar["daily_posts"] for d in x["days"]]
+        self.assertEqual(7, len(days))
+        self.assertEqual(7, len(set(days)))
+        pro = [x for x in calendar["daily_posts"] if x.get("theme") == "professional"]
+        self.assertEqual([["wednesday"]], [x["days"] for x in pro])
         self.assertEqual(["tuesday", "thursday", "saturday"], [x["day"] for x in calendar["long_videos"]])
 
     def test_social_image_identity_is_locked(self):

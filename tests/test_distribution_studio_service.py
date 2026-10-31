@@ -58,7 +58,7 @@ class StudioServiceTests(unittest.TestCase):
 
     def test_policy_snapshot_exposes_locked_calendar(self) -> None:
         snapshot = self.service.policy_snapshot()
-        self.assertEqual(snapshot["calendar"]["weekly_totals"]["core_posts"], 14)
+        self.assertEqual(snapshot["calendar"]["weekly_totals"]["core_posts"], 7)   # one post a day since 2026-10-31
         self.assertEqual(snapshot["routing"]["content_types"]["long_video"]["platforms"], ["youtube"])
 
     def test_connections_and_inbox_are_normalized_for_ui(self) -> None:

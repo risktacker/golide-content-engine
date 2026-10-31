@@ -17,14 +17,13 @@
       "openai_allocation_usd": 0.5
     },
     {
-      "id": "golide-shorts-mon-wed-fri-sun",
+      "id": "golide-shorts-mon-wed-fri",
       "format": "short",
       "start_date": "2026-09-21",
       "weekdays": [
         "monday",
         "wednesday",
-        "friday",
-        "sunday"
+        "friday"
       ],
       "generate_time": "09:00",
       "publish_time": "13:00",

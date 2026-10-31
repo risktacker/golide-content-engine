@@ -192,6 +192,26 @@ THIS IS POST B: THE EVENING TREND POST.
   another kind of story.
 """ + TREND_TASTE_RULES
 
+PROFESSIONAL_RULES = """\
+THIS IS THE WEDNESDAY PROFESSIONAL POST (owner direction 2026-10-31).
+- The owner is a microbiologist and QA officer in FMCG beverages. This post comes from
+  that world and ties it to tech and AI: how AI, sensors, data, automation or new tools
+  are changing food and beverage quality, safety, microbiology labs and production.
+  Examples of the lane: AI vision catching fill-level or label faults on a bottling
+  line, rapid microbial testing, predictive maintenance on CIP systems, digital HACCP
+  records, shelf-life prediction, traceability, LIMS, regulators using data.
+- Pick one real, recent development and confirm it with web search (a named company,
+  plant, study, regulator or tool). Cite the original source. No invented cases,
+  numbers or results.
+- Speak as a working QA professional to other professionals: concrete, practical,
+  what it means on the factory floor and in the lab. LinkedIn is the main reader, so
+  the LinkedIn copy can run longer and more reflective. No medical claims, no advice
+  that replaces a food-safety standard.
+- Never claim the owner tested or ran anything. He explains; he did not test.
+- FRESH_HEADLINES is the general tech feed: use an item only if it is about food,
+  beverage, lab or manufacturing quality. Otherwise find the story with web search.
+"""
+
 PRODUCT_SLIDE_EMPTY = """\
 - product_slide: leave emphasis and text as empty strings.
 """
@@ -227,9 +247,12 @@ FRESH_HEADLINES (owner direction 2026-10-18: posts use the same trend signal as 
 """
 
 
-def static_post_instructions(slot: str, has_product: bool = True) -> str:
-    lane = (POST_A_TREND_RULES if slot == "post-a" else POST_B_PRODUCT_RULES) + STATIC_PULSE_RULES + (
-        PRODUCT_SLIDE_RULES if has_product else PRODUCT_SLIDE_EMPTY)
+def static_post_instructions(slot: str, has_product: bool = True, theme: str = "") -> str:
+    if theme == "professional":
+        lane = PROFESSIONAL_RULES + PRODUCT_SLIDE_EMPTY
+    else:
+        lane = (POST_A_TREND_RULES if slot == "post-a" else POST_B_PRODUCT_RULES) + STATIC_PULSE_RULES + (
+            PRODUCT_SLIDE_RULES if has_product else PRODUCT_SLIDE_EMPTY)
     return (
         "You write one static social post for GOLIDE, a marketplace for digital products, "
         "software and tools. The operator supplies no topic.\n\n"

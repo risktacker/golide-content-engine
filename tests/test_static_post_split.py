@@ -40,8 +40,9 @@ def _automation():
     auto._live_registry = lambda: ProductRegistry("config/product-registry.json")
     seen = {}
 
-    def fake_draft(*, content_id, slot, product):
+    def fake_draft(*, content_id, slot, product, theme=""):
         seen[slot] = product
+        seen[slot + ":theme"] = theme
         return {
             "title": "t", "weekly_theme": "w", "content_lane": "education",
             "value_units": ["one", "two", "three"],
@@ -71,6 +72,25 @@ class StaticPostSplitTests(unittest.TestCase):
             bodies = {v["platform"]: v["body"] for v in post["variants"]}
             self.assertNotIn(seen["post-b"].marketplace_url, bodies["instagram"] + bodies["x"])
             self.assertNotIn("http", bodies["x"])
+
+    def test_wednesday_is_the_professional_post(self):
+        auto, seen = _automation()
+        auto.calendar["daily_posts"] = [
+            {"slot": "post-a", "time": "08:30", "days": ["tuesday"], "platforms": ["x"]},
+            {"slot": "post-a", "time": "08:30", "days": ["wednesday"], "theme": "professional", "platforms": ["x"]},
+        ]
+        wednesday_morning = datetime(2026, 11, 4, 7, 0, tzinfo=timezone.utc)
+        results = auto.run_due(wednesday_morning)
+        self.assertEqual([r["slot"] for r in results], ["post-a"])
+        self.assertEqual(seen["post-a:theme"], "professional")
+        self.assertIsNone(seen["post-a"])  # no marketplace slide on the professional post
+
+    def test_professional_rulebook(self):
+        pro = static_post_instructions("post-a", has_product=False, theme="professional")
+        self.assertIn("microbiologist", pro)
+        self.assertIn("FMCG beverages", pro)
+        self.assertIn("leave emphasis and text", pro)
+        self.assertNotIn("TREND POST", pro)
 
     def test_rulebook_differs_per_slot(self):
         a = static_post_instructions("post-a")

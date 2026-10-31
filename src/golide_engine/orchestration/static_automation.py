@@ -180,6 +180,7 @@ class StaticAutomation:
                 "slot": rule["slot"],
                 "scheduled_at": scheduled,
                 "platforms": tuple(rule["platforms"]),
+                "theme": rule.get("theme", ""),
             })
         return due
 
@@ -218,9 +219,10 @@ class StaticAutomation:
         content_id: str,
         slot: str,
         product,
+        theme: str = "",
     ) -> dict[str, Any]:
         product_packet = self._product_packet(product)
-        instructions = static_post_instructions(slot, has_product=product is not None)
+        instructions = static_post_instructions(slot, has_product=product is not None, theme=theme)
         try:
             recent = self.bridge.recent_posts(21)
         except Exception:  # history helps; it must never stop a post
@@ -412,11 +414,15 @@ class StaticAutomation:
                 # always about one GOLIDE Marketplace product.
                 # Every carousel carries one marketplace slide when a product is live
                 # (owner direction 2026-10-07: second to last, before the call-out).
-                product = registry.choose_auto(seed=content_id) if active_products else None
+                theme = slot.get("theme", "")
+                # The Wednesday professional post carries no marketplace slide.
+                product = (registry.choose_auto(seed=content_id)
+                           if active_products and theme != "professional" else None)
                 draft = self._draft(
                     content_id=content_id,
                     slot=slot["slot"],
                     product=product,
+                    theme=theme,
                 )
                 # Both daily posts are trend posts; the product only appears as one
                 # Instagram slide in the evening carousel (owner direction 2026-10-07).

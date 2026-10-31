@@ -237,7 +237,7 @@ main{width:100%;max-width:1320px;margin:0 auto;padding:28px clamp(16px,3.5vw,48p
 
 /* ---------- Schedule ---------- */
 .cadence-grid{display:grid;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.cadence-head,.cadence-row{display:grid;grid-template-columns:minmax(40px,.8fr) repeat(4,minmax(0,1fr));gap:6px;align-items:center}
+.cadence-head,.cadence-row{display:grid;grid-template-columns:minmax(40px,.8fr) repeat(3,minmax(0,1fr));gap:6px;align-items:center}
 .cadence-head{padding:0 6px 6px;color:var(--muted);font-size:.8125rem;font-variant-numeric:tabular-nums}
 .cadence-row{padding:4px 6px;font-size:.9375rem}
 .cadence-row strong{font-weight:500}
