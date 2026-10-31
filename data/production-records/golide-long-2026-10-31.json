@@ -1,0 +1,976 @@
+{
+  "production_id": "golide-long-2026-10-31",
+  "youtube_video_id": "tiqSq7x_OYs",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "tiqSq7x_OYs",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-10-31T16:51:00.729980+00:00"
+  },
+  "production": {
+    "format": "long",
+    "title": "Macbook PROLED XDR Reality: They Said They Wouldn't!",
+    "status": "scheduled",
+    "scheduled_at": "2026-10-31T17:30:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-long-tue-thu-sat\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "The first touchscreen MacBook Pro is finally real,\nand the strange part is not that Apple built one.\nThe strange part is that Apple built it this way,\nwithout turning the MacBook into a giant iPad.\nThis is still a 14-inch or 16-inch clamshell laptop,\nwith a keyboard, a trackpad, and ordinary macOS underneath.\nSo the question is not whether touch works.\nApple says scrolling, zooming, dragging and drawing work,\nbut whether reaching across a laptop is better than pointing beside it.\nThat tension explains almost everything about this computer,\nfrom the display glass to the hinge holding it steady.\nAnd it may decide whether this becomes useful or merely expensive.\nApple announced the new MacBook Pro on October 28th, 2026,\nwith preorders beginning immediately and shipping scheduled for November 6th.\nThere are 2 familiar sizes, 14-inch and 16-inch,\nbut both now use Apple's new PROLED XDR display.\nThe screen is the headline, but touch is the headline inside it.\nApple says the touch sensor sits directly inside the display panel,\nrather than being added as a separate layer on top.\nThat reduces the distance between your finger and the pixels,\nwhich Apple says helps lower latency during interaction.\nIn practical terms, the Mac can understand familiar gestures,\nwhile the keyboard and trackpad remain the main controls.\nThat distinction matters because this is not a touch-first operating system.\nExisting Mac applications can receive many touches as ordinary clicks,\nwhile developers can add more specific touch behavior through gesture APIs.\nSo the first impression is not a transformed Mac,\nbut a familiar Mac with one more way to reach the software.\nThat sounds modest, and for everyday work, modest may be exactly right.\nThe clearest benefit appears when the thing on screen is visual.\nApple specifically points to drawing directly across the display,\nbecause placing a line under your fingertip can feel more natural,\nthan moving a pointer through an abstract trackpad surface.\nThat does not make the MacBook a graphics tablet,\nand Apple has not announced Apple Pencil support for this MacBook Pro.\nBut quick marks, rough sketches, signatures, and direct selections\ncan benefit from the pointer disappearing for a moment.\nMusic is another place where touch has an obvious visual connection.\nSoftware instruments can place keys, pads, and controls under your fingers,\ninstead of making every adjustment pass through a mouse pointer.\nFor serious performance, physical hardware may still feel better,\nbut touch can make a virtual instrument feel less virtual.\nVideo editing is more complicated, because the software has many tiny controls.\nA finger could select a clip, scrub a timeline, or move a panel,\nespecially when the editor wants direct contact with the image.\nBut that is a possible workflow benefit, not an Apple promise\nthat professional editing has been redesigned around touch.\nThe strongest case may be switching between input methods,\nusing touch for the occasional direct action, then returning to keys.\nBrowsing and everyday use are simpler still.\nScrolling a long page, zooming a photo, or dragging a window\ncan be faster when your hand is already near the display.\nThe important word is occasional, because touch is not automatically faster.\nA phone is designed around touch because your hand supports the device.\nA tablet is also easy to bring toward your body or rest in your lap.\nA laptop display usually stands farther away, nearly vertical,\nwhile your hands stay low on the keyboard and trackpad.\nThat creates a physical gap between your normal posture and touch.\nTo touch the top of the screen, your arm has to travel forward and up,\nand repeating that motion can become tiring over time.\nApple executives described this problem years before the touchscreen Mac arrived,\narguing that the Mac was built for indirect input through keyboard and trackpad.\nNow Apple is not denying that argument; it is adding an exception.\nThe display can accept your finger, but the whole computer still expects a desk.\nThat is why touch may feel perfect for one action,\nthen awkward when the next action requires reaching again.\nThere is a second problem: the display moves when you press it.\nA tablet is supported by your hand or a flat surface,\nbut a laptop screen is held upright by a hinge.\nPress too hard, and the panel can wobble instead of staying still.\nThat is not a software problem, and no gesture can remove it.\nIt is the basic tradeoff of putting touch on a clamshell computer.\nYou gain direct control, but you pay with reach, posture, and movement.\nSo a touchscreen MacBook should not replace the trackpad for everything.\nIt should give the right action one more suitable surface.\nThat physical problem explains why the hardware matters so much.\nApple redesigned the hinge to provide greater stability while pressing the display.\nThe hinge has to open smoothly, close safely, and resist forward force.\nThose goals pull in different directions, because a hinge cannot be infinitely stiff.\nThe touch sensor creates another engineering challenge inside the display.\nApple placed it into the panel instead of simply stacking it above the pixels.\nThe display itself uses tandem OLED technology,\nwhich allows Apple to pursue high brightness without making the laptop thicker or heavier.\nApple advertises up to 2,000 nits of peak SDR brightness,\nalong with an antireflective coating across the cover glass.\nThere is also an optional nano-texture finish etched into that glass,\ndesigned to reduce reflections and glare in bright surroundings.\nThose details matter more on a touchscreen than they first appear.\nEvery reflection hides content that your finger is supposed to target.\nEvery extra display layer can affect brightness, clarity, or response.\nAnd every press puts mechanical stress on the screen and hinge together.\nApple's answer is to integrate the sensor, strengthen the hinge,\nand treat brightness and glare as part of the touch experience.\nSo who should actually care about this MacBook Pro?\nIf most of your day is typing, coding, or moving between windows,\nthe touchscreen may remain a convenience rather than a reason to upgrade.\nThe trackpad already handles those indirect movements extremely well.\nBut artists, musicians, editors, and visual workers have more reasons to look twice.\nThey may value direct contact with a canvas, timeline, or onscreen instrument.\nThe word may is doing important work here, because software decides the details.\nApple has enabled touch interactions, but it has not rebuilt every Mac application.\nSome controls will feel natural, while others will still feel designed for a pointer.\nThere is also the practical cost of fingerprints, arm movement, and glare.\nThose problems do not make touch pointless; they make it selective.\nThe best version of this MacBook is not touch everywhere,\nbut touch exactly where touching is more direct than pointing.\nIf this kind of technology story is useful, follow the channel,\nbecause the interesting question is always what changes after the headline.\nApple did not solve the laptop touchscreen problem by pretending it was not there.\nIt built around the problem with a stronger hinge and integrated sensor,\nthen paired that touch system with a bright, low-glare tandem OLED display.\nThe result is not a replacement for the iPad, keyboard, or trackpad.\nIt is a MacBook that finally lets your hand reach the pixels,\nwhen that is the fastest or most natural way to work.\nFor some people, that will change drawing, music, editing, and browsing.\nFor everyone else, it may simply be an option that stays available.\nAnd that may be Apple's most careful touchscreen decision of all.\nThat is the first touchscreen Mac, and the real story is restraint.\n",
+  "research": {
+    "summary": "Source-backed explainer angle: Apple’s first touchscreen MacBook Pro is not a replacement for the iPad or a touch-first redesign of macOS. It is a conventional 14- or 16-inch clamshell Mac that adds touch as a secondary input method. The meaningful story is selective utility—direct manipulation for drawing, browsing, timelines and onscreen instruments—balanced against laptop ergonomics, where reaching toward a mostly vertical display can be less comfortable than using the trackpad. Apple’s hardware response centers on a display-integrated touch sensor, tandem OLED, antireflective cover glass and a reinforced hinge. Video editing should be framed as a potential workflow benefit rather than a claim that Apple has redesigned professional editing around touch.",
+    "claims": [
+      {
+        "claim": "Apple announced the first touchscreen MacBook Pro on October 28, 2026, with 14-inch and 16-inch models using the new PROLED XDR display. Apple says the models are available for preorder immediately and begin shipping November 6, 2026.",
+        "source_title": "Apple unveils groundbreaking MacBook Pro with PROLED XDR Display",
+        "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+        "published_or_updated": "October 28, 2026"
+      },
+      {
+        "claim": "The touch sensor is built directly into the display panel rather than being layered on top, which Apple says reduces latency and makes interaction feel closer to touching the content itself.",
+        "source_title": "Apple unveils groundbreaking MacBook Pro with PROLED XDR Display",
+        "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+        "published_or_updated": "October 28, 2026"
+      },
+      {
+        "claim": "Apple lists ordinary touch interactions including scrolling, pinch-to-zoom, dragging objects and rearranging windows. Existing Mac applications can work with touch because macOS translates many touches into clicks, while updated gesture APIs allow developers to build more touch-specific behavior.",
+        "source_title": "Apple unveils groundbreaking MacBook Pro with PROLED XDR Display",
+        "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+        "published_or_updated": "October 28, 2026"
+      },
+      {
+        "claim": "For creative work, Apple specifically describes drawing directly across the display and playing software instruments onscreen. That supports a strong drawing-and-music segment; claims about touch transforming video editing should be presented as an inference or workflow experiment, not as an Apple promise.",
+        "source_title": "Apple unveils groundbreaking MacBook Pro with PROLED XDR Display",
+        "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+        "published_or_updated": "October 28, 2026"
+      },
+      {
+        "claim": "The new display uses tandem OLED technology. Apple also advertises up to 2,000 nits of peak SDR brightness, an antireflective coating and an optional nano-texture finish etched into the cover glass to reduce reflections and glare.",
+        "source_title": "Apple unveils groundbreaking MacBook Pro with PROLED XDR Display",
+        "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+        "published_or_updated": "October 28, 2026"
+      },
+      {
+        "claim": "Apple says the touch sensor, OLED display and related engineering were integrated without making the product heavier or thicker, according to comments from Apple executives reported after the launch.",
+        "source_title": "Apple Executives Explain Why the MacBook Pro Finally Has a Touch Screen",
+        "source_url": "https://www.macrumors.com/2026/10/28/apple-executives-touch-screen-macbook-pro/",
+        "published_or_updated": "October 28, 2026"
+      },
+      {
+        "claim": "Apple redesigned the hinge to provide greater stability while users press the display. This is an engineering response to a problem specific to touch laptops: touching the screen applies force to a display that is held upright by a hinge rather than supported like a tablet.",
+        "source_title": "Apple unveils groundbreaking MacBook Pro with PROLED XDR Display",
+        "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+        "published_or_updated": "October 28, 2026"
+      },
+      {
+        "claim": "The ergonomic tension is part of the historical context. In 2021, Apple hardware chief John Ternus said the Mac was optimized for indirect input through the keyboard and trackpad, while the iPad was optimized for touch.",
+        "source_title": "Apple explains why it hasn’t added a touchscreen or Face ID to the Mac",
+        "source_url": "https://9to5mac.com/2021/10/29/apple-touchscreen-mac-interview-ipad/",
+        "published_or_updated": "October 29, 2021"
+      },
+      {
+        "claim": "Apple had also publicly argued that reaching toward a laptop display could be fatiguing. In 2014, Craig Federighi contrasted the relaxed posture of using an iPad or iPhone with continuously reaching forward to touch a computer screen.",
+        "source_title": "Apple exec: Apple is ‘not that interested’ in building a touchscreen Mac",
+        "source_url": "https://www.cnet.com/tech/computing/apple-exec-apple-is-not-that-interested-in-building-a-touchscreen-mac/",
+        "published_or_updated": "October 17, 2014"
+      },
+      {
+        "claim": "The clearest thesis for the video is therefore not that touch replaces the trackpad. Apple’s own positioning is that the Mac remains primarily an indirect-input computer, with touch available when direct manipulation is more convenient; keyboard shortcuts, the trackpad and touch are intended to work together.",
+        "source_title": "Apple Executives Explain Why the MacBook Pro Finally Has a Touch Screen",
+        "source_url": "https://www.macrumors.com/2026/10/28/apple-executives-touch-screen-macbook-pro/",
+        "published_or_updated": "October 28, 2026"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Macbook PROLED XDR Reality: They Said They Wouldn't!",
+    "description": "Apple’s first touchscreen MacBook Pro is finally here, with 14-inch and 16-inch models, a tandem OLED PROLED XDR display, an integrated touch sensor, and a redesigned hinge. But this is still a traditional clamshell Mac running macOS with a keyboard and trackpad—not a giant iPad.\n\nThis video looks at where touch could actually help, including drawing, music, video editing, browsing, and direct onscreen controls. It also examines the real tradeoffs: reaching across the display, arm fatigue, fingerprints, glare, and screen movement when you press on the panel.\n\nChapters\n0:00 Intro\n0:40 The Big Change\n1:50 Where Touch Helps\n3:26 The Laptop Problem\n4:52 Engineering Touch\n6:10 Who Should Care\n7:15 Close\n\n#TouchscreenMacBook #MacBookPro #Apple #OLED #MacBookPro2026 #AppleSilicon #GOLIDE",
+    "tags": [
+      "touchscreen MacBook Pro",
+      "MacBook Pro 2026",
+      "OLED MacBook Pro",
+      "Apple touchscreen laptop",
+      "MacBook Pro touch screen",
+      "MacBook Pro PROLED XDR",
+      "touchscreen Mac review",
+      "Apple MacBook 2026",
+      "tandem OLED MacBook",
+      "14 inch MacBook Pro",
+      "16 inch MacBook Pro",
+      "MacBook Pro display",
+      "MacBook Pro hinge",
+      "macOS touch gestures",
+      "Apple laptop review",
+      "new MacBook Pro",
+      "MacBook Pro analysis",
+      "MacBook Pro features",
+      "MacBook Pro touchscreen",
+      "Apple laptop touchscreen"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [
+      "0:00 Intro",
+      "0:40 The Big Change",
+      "1:50 Where Touch Helps",
+      "3:26 The Laptop Problem",
+      "4:52 Engineering Touch",
+      "6:10 Who Should Care",
+      "7:15 Close"
+    ],
+    "keywords": [
+      "touchscreen MacBook Pro",
+      "2026 MacBook Pro",
+      "OLED MacBook Pro",
+      "MacBook Pro touch screen",
+      "Apple touchscreen laptop",
+      "MacBook Pro PROLED XDR",
+      "tandem OLED MacBook",
+      "14 inch MacBook Pro",
+      "16 inch MacBook Pro",
+      "MacBook Pro review",
+      "touchscreen Mac review",
+      "macOS touch gestures",
+      "MacBook Pro hinge",
+      "Apple MacBook 2026",
+      "touchscreen laptop"
+    ],
+    "hashtags": [
+      "#TouchscreenMacBook",
+      "#MacBookPro",
+      "#Apple",
+      "#OLED",
+      "#MacBookPro2026",
+      "#AppleSilicon",
+      "#GOLIDE"
+    ],
+    "format": "long",
+    "title_description_language": "en",
+    "seo_body": "Apple’s first touchscreen MacBook Pro is finally here, with 14-inch and 16-inch models, a tandem OLED PROLED XDR display, an integrated touch sensor, and a redesigned hinge. But this is still a traditional clamshell Mac running macOS with a keyboard and trackpad—not a giant iPad.\n\nThis video looks at where touch could actually help, including drawing, music, video editing, browsing, and direct onscreen controls. It also examines the real tradeoffs: reaching across the display, arm fatigue, fingerprints, glare, and screen movement when you press on the panel."
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "Apple announced the first touchscreen MacBook Pro on October 28, 2026, with 14-inch and 16-inch models using the new PROLED XDR display. Apple says the models are available for preorder immediately and begin shipping November 6, 2026.",
+        "source_title": "Apple unveils groundbreaking MacBook Pro with PROLED XDR Display",
+        "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+        "published_or_updated": "October 28, 2026"
+      },
+      {
+        "claim": "The touch sensor is built directly into the display panel rather than being layered on top, which Apple says reduces latency and makes interaction feel closer to touching the content itself.",
+        "source_title": "Apple unveils groundbreaking MacBook Pro with PROLED XDR Display",
+        "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+        "published_or_updated": "October 28, 2026"
+      },
+      {
+        "claim": "Apple lists ordinary touch interactions including scrolling, pinch-to-zoom, dragging objects and rearranging windows. Existing Mac applications can work with touch because macOS translates many touches into clicks, while updated gesture APIs allow developers to build more touch-specific behavior.",
+        "source_title": "Apple unveils groundbreaking MacBook Pro with PROLED XDR Display",
+        "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+        "published_or_updated": "October 28, 2026"
+      },
+      {
+        "claim": "For creative work, Apple specifically describes drawing directly across the display and playing software instruments onscreen. That supports a strong drawing-and-music segment; claims about touch transforming video editing should be presented as an inference or workflow experiment, not as an Apple promise.",
+        "source_title": "Apple unveils groundbreaking MacBook Pro with PROLED XDR Display",
+        "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+        "published_or_updated": "October 28, 2026"
+      },
+      {
+        "claim": "The new display uses tandem OLED technology. Apple also advertises up to 2,000 nits of peak SDR brightness, an antireflective coating and an optional nano-texture finish etched into the cover glass to reduce reflections and glare.",
+        "source_title": "Apple unveils groundbreaking MacBook Pro with PROLED XDR Display",
+        "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+        "published_or_updated": "October 28, 2026"
+      },
+      {
+        "claim": "Apple says the touch sensor, OLED display and related engineering were integrated without making the product heavier or thicker, according to comments from Apple executives reported after the launch.",
+        "source_title": "Apple Executives Explain Why the MacBook Pro Finally Has a Touch Screen",
+        "source_url": "https://www.macrumors.com/2026/10/28/apple-executives-touch-screen-macbook-pro/",
+        "published_or_updated": "October 28, 2026"
+      },
+      {
+        "claim": "Apple redesigned the hinge to provide greater stability while users press the display. This is an engineering response to a problem specific to touch laptops: touching the screen applies force to a display that is held upright by a hinge rather than supported like a tablet.",
+        "source_title": "Apple unveils groundbreaking MacBook Pro with PROLED XDR Display",
+        "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+        "published_or_updated": "October 28, 2026"
+      },
+      {
+        "claim": "The ergonomic tension is part of the historical context. In 2021, Apple hardware chief John Ternus said the Mac was optimized for indirect input through the keyboard and trackpad, while the iPad was optimized for touch.",
+        "source_title": "Apple explains why it hasn’t added a touchscreen or Face ID to the Mac",
+        "source_url": "https://9to5mac.com/2021/10/29/apple-touchscreen-mac-interview-ipad/",
+        "published_or_updated": "October 29, 2021"
+      },
+      {
+        "claim": "Apple had also publicly argued that reaching toward a laptop display could be fatiguing. In 2014, Craig Federighi contrasted the relaxed posture of using an iPad or iPhone with continuously reaching forward to touch a computer screen.",
+        "source_title": "Apple exec: Apple is ‘not that interested’ in building a touchscreen Mac",
+        "source_url": "https://www.cnet.com/tech/computing/apple-exec-apple-is-not-that-interested-in-building-a-touchscreen-mac/",
+        "published_or_updated": "October 17, 2014"
+      },
+      {
+        "claim": "The clearest thesis for the video is therefore not that touch replaces the trackpad. Apple’s own positioning is that the Mac remains primarily an indirect-input computer, with touch available when direct manipulation is more convenient; keyboard shortcuts, the trackpad and touch are intended to work together.",
+        "source_title": "Apple Executives Explain Why the MacBook Pro Finally Has a Touch Screen",
+        "source_url": "https://www.macrumors.com/2026/10/28/apple-executives-touch-screen-macbook-pro/",
+        "published_or_updated": "October 28, 2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "Apple 2026 touchscreen MacBook Pro PROLED XDR Touch macOS 27 display technology",
+      "score": 89.2,
+      "verdict": "pass",
+      "recent_videos": 1,
+      "median_views_per_day": 4615615.199999999,
+      "top_views_per_day": 4615615.199999999,
+      "market_coverage": 1,
+      "title_query_overlap": 1.0,
+      "measured_at": "2026-10-31T04:02:46.998867+00:00",
+      "signal_type": "youtube-breakout-v1"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.68,
+      "true_peak_dbtp": -1.91,
+      "loudness_range": 2.9
+    },
+    "editorial": {
+      "beats": 118,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-10-31T16:50:46.862486+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-long-tue-thu-sat"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-long-2026-10-31",
+    "created_at": "2026-10-31T16:50:48.282446+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-10-31T17:30:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "490a1314c29c16afa91bd041574831f2e80651ef61ae4f0d6bba9c56ca349fcd",
+        "bytes": 133808312
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "0c1d8f46b7755af516a471cc0a8ed0d0ae7abd1dd4b1f151bddc56131653c832",
+        "bytes": 779242
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "ebc1ffa6d19de639c4bce780154879bd303825175963e651254b9270670295b4",
+        "bytes": 3059
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "ba9215f284ac4b91b48e1607a3386a0685733c7d9562f237825245aaf5618188",
+        "bytes": 16951
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "b049310a5121a5d8e285d6f246f1eec492bc0cc1da785292d59e4948dac55f81",
+        "bytes": 3706
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "4f428c92374ed076dee6fccd1104c77b489914c57a460c060cb9a88a3dd9c49b",
+        "bytes": 6192
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "5466316572f8a9e44214cb77b8db5f1888152120d266c69f8ed26a588091ceac",
+        "bytes": 388
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "4d28c8f7833e195cf27d9726a8722e5720c188d9fd05b099e96dad7b5b531472",
+        "bytes": 278
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 27055.0,
+      "cached_input_units": 0.0,
+      "output_units": 2396.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008286,
+      "created_at": "2026-10-31T04:02:46.336155+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-31T04:02:46.337482+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 21875.0,
+      "cached_input_units": 0.0,
+      "output_units": 2283.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007115,
+      "created_at": "2026-10-31T04:03:12.375806+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-31T04:03:12.404920+00:00"
+    },
+    {
+      "stage": "script-spoken",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 14303.0,
+      "cached_input_units": 0.0,
+      "output_units": 10607.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015589,
+      "created_at": "2026-10-31T04:05:38.881459+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 10039.0,
+      "cached_input_units": 0.0,
+      "output_units": 6768.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.010129,
+      "created_at": "2026-10-31T04:05:38.884619+00:00"
+    },
+    {
+      "stage": "visual-plan-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-10-31T15:58:37.339186+00:00"
+    },
+    {
+      "stage": "cover-line",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 291.0,
+      "cached_input_units": 0.0,
+      "output_units": 507.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000667,
+      "created_at": "2026-10-31T15:58:44.132493+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 17242.0,
+      "cached_input_units": 0.0,
+      "output_units": 5734.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.010329,
+      "created_at": "2026-10-31T15:58:44.135477+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T15:59:02.192688+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T15:59:16.041088+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T15:59:28.110910+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T15:59:47.521988+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:00:03.729514+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:00:20.214257+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:00:39.414551+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:00:57.628749+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:01:14.027658+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:01:29.505240+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:01:48.652134+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:01:59.386668+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:02:11.012607+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:02:28.050093+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:02:44.147018+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:03:00.770308+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:03:17.338828+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:03:32.790311+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:03:49.466889+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:04:02.774776+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:04:16.718600+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:04:26.472844+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:04:39.932092+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:04:50.502836+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:05:09.252809+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:05:30.775047+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:05:44.784735+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:05:58.292824+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:06:08.980622+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:06:25.391043+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:06:43.351690+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:06:58.693119+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:07:15.453264+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:07:31.665209+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:07:44.596025+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:08:03.468799+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:08:20.948568+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:08:38.091685+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-10-31T16:08:55.129102+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 14669.0,
+      "cached_input_units": 0.0,
+      "output_units": 1007.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004142,
+      "created_at": "2026-10-31T16:49:13.050507+00:00"
+    },
+    {
+      "stage": "thumbnail",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-10-31T16:49:48.494717+00:00"
+    }
+  ],
+  "recorded_at": "2026-10-31T16:51:00.735462+00:00"
+}
