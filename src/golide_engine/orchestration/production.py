@@ -1184,6 +1184,9 @@ class ProductionService:
 
                 ordered: list[Path] = []
                 refused: set[Path] = set()
+                from ..providers.openai_media import OpenAIProductProvider
+                product_art = OpenAIProductProvider(self.providers.config["assets"]["support_model"],
+                                                    self.providers.config["assets"]["support_quality"])
                 for scene in scenes:
                     for part in scene_parts(scene):
                         target = illustration_dir / f"{part.picture_id}.png"
@@ -1192,6 +1195,20 @@ class ProductionService:
                             continue  # already paid for and checkpointed
                         if try_figure(part, target, str(spec["format"])):
                             continue  # math and physics layer: drawn in code, at no cost
+                        if scene.get("product") and not part.figure and part.picture_id == scene["id"]:
+                            # 2026-10-31: the real product, in full colour, shown whole (a plate).
+                            self._reserve(spec, support_image_cost_model, Usage(images=1), stage="illustrations")
+                            try:
+                                ref = reference_for(part)
+                                output = product_art.create(part.drawing, target,
+                                                            picture_size(str(spec["format"]), part),
+                                                            **({"reference": ref} if ref else {}))
+                                self._record_image(production_id, "illustrations", support_image_cost_model, output)
+                                continue
+                            except Exception as exc:  # the line-art picture below is the fallback
+                                print(f"::warning title=Product picture failed, using line art::{part.picture_id}: {str(exc)[:200]}")
+                                target.unlink(missing_ok=True)
+                                target.with_suffix(".plate.json").unlink(missing_ok=True)
                         prompt = illustration_prompt(part.drawing, part.gold, str(spec["format"]), part.layout,
                                                      part.label)
                         for attempt in (prompt, calm_prompt(prompt, part)):

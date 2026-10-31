@@ -93,12 +93,13 @@ VISUAL_PLAN_SCHEMA: dict = {
                     "body": {"type": "string", "enum": MATERIAL_NAMES},
                     "inner": {"type": "string", "enum": MATERIAL_NAMES},
                     "people": {"type": "boolean"},
+                    "product": {"type": "boolean"},
                     "stage": {"type": "string", "enum": ["grid", "pedestal", "studio", "wall", "orbit", "horizon",
                                                         "space", "factory", "market", "storefront"]},
                 },
                 "required": ["first_line", "last_line", "drawing", "gold_element", "accent", "sound", "sound_word",
                              "figure", "layout", "drawing_b", "gold_element_b", "figure_b", "label", "label_b",
-                             "stage", "body", "inner", "people"],
+                             "stage", "body", "inner", "people", "product"],
             },
         },
     },
@@ -303,6 +304,9 @@ be the architecture behind it... the level we have reached now is not to fake th
 - When the lines show WHAT a product is, "drawing" is that exact product as it really is,
   from the research and its references (a book-style foldable is two tall halves joined by
   a hinge with one inner screen across them; never a generic box or a different model).
+  Set "product": true on such a scene (the drawing names ONE real product, shown on its own):
+  it is made as a full-colour, photorealistic picture of that exact model instead of line art.
+  "product" is false for people, places, metaphors, scenes with several objects and figures.
 - When the lines explain HOW it is built or why it fails, use an architecture figure drawn
   in code: "layers" for anything built in layers (a screen, a battery, a chip package),
   naming the real layers from the research in order, top first; "fold" for the hinge of a
@@ -746,6 +750,8 @@ def shot_of(drawing: Drawing, shot: int) -> Drawing:
     hook for free): odd shots frame the glowing accent, even shots the other half."""
     import dataclasses
 
+    if drawing.plate is not None:
+        return dataclasses.replace(drawing, entrance="fade", companion=None)
     if drawing.keep_order:
         # An exact figure is never cropped: its labels would be cut. The shot shows
         # the whole figure again, already drawn, with its accent lighting up.

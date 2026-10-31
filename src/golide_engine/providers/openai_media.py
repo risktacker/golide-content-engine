@@ -233,6 +233,73 @@ class OpenAILineArtProvider:
         return ProviderOutput(output, getattr(response, "id", None))
 
 
+PRODUCT_SHOT_RULES = (
+    "A photorealistic product render of the REAL product, like the maker's own launch "
+    "pictures: exact shape, proportions, materials, colours, buttons, cameras and seams of "
+    "THIS model (use the reference image for its true structure). One product only, whole and "
+    "centred, a clear three-quarter view, soft studio light with gentle reflections, crisp "
+    "edges. If it has a screen, the screen is on and shows a plain colourful wallpaper. No "
+    "text, no words, no logos, no hands, no people, no props, no floor, no shadow, nothing "
+    "else in the picture: a fully transparent background."
+)
+
+
+def cut_out(path: Path) -> None:
+    """Make sure the product sits on a clear background: when the model returned an opaque
+    picture, the flat background colour seen at the corners is keyed out."""
+    import numpy as np
+    from scipy import ndimage
+
+    img = Image.open(path).convert("RGBA")
+    a = np.asarray(img).astype(np.int32)
+    if (a[..., 3] < 250).mean() > 0.05:
+        return                                  # already transparent
+    rgb = a[..., :3]
+    corners = np.concatenate([rgb[:8, :8].reshape(-1, 3), rgb[:8, -8:].reshape(-1, 3),
+                              rgb[-8:, :8].reshape(-1, 3), rgb[-8:, -8:].reshape(-1, 3)])
+    bg = np.median(corners, axis=0)
+    near = np.abs(rgb - bg).sum(axis=2) < 40
+    labels, _ = ndimage.label(near)
+    edge = set(np.unique(np.concatenate([labels[0], labels[-1], labels[:, 0], labels[:, -1]]))) - {0}
+    background = np.isin(labels, list(edge))
+    alpha = np.where(background, 0, 255).astype(np.float32)
+    alpha = ndimage.gaussian_filter(alpha, 1.0)
+    out = np.dstack([rgb, alpha]).clip(0, 255).astype(np.uint8)
+    Image.fromarray(out, "RGBA").save(path)
+
+
+class OpenAIProductProvider:
+    """Full-colour real-product pictures (owner direction 2026-10-31: "the real product
+    showing its action"), shown whole by the renderer as plates (vector.illustrate.load_plate)."""
+
+    def __init__(self, model: str = "gpt-image-1-mini", quality: str = "medium"):
+        self.model = model
+        self.quality = quality
+
+    def create(self, prompt: str, output: Path, size: str, reference=None) -> ProviderOutput:
+        import json
+
+        full = prompt.strip() + " " + PRODUCT_SHOT_RULES
+        refs = [Path(r) for r in (reference if isinstance(reference, (list, tuple)) else [reference])
+                if r is not None and Path(r).is_file()]
+        kwargs = dict(model=self.model, prompt=full, size=size, quality=self.quality)
+        with ExitStack() as stack:
+            if refs:
+                kwargs["image"] = [stack.enter_context(r.open("rb")) for r in refs[:3]]
+            call = client().images.edit if refs else client().images.generate
+            try:
+                response = call(**kwargs, background="transparent", output_format="png")
+            except Exception as exc:  # a model without transparent output: cut it out ourselves
+                if "background" not in str(exc) and "output_format" not in str(exc):
+                    raise
+                response = call(**kwargs)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_bytes(base64.b64decode(response.data[0].b64_json))
+        cut_out(output)
+        output.with_suffix(".plate.json").write_text(json.dumps({"kind": "product"}) + "\n", encoding="utf-8")
+        return ProviderOutput(output, getattr(response, "id", None))
+
+
 class OpenAIVoiceProvider:
     def __init__(self, model: str = "gpt-4o-mini-tts", voice: str = "cedar", instructions: str = ""):
         self.model = model

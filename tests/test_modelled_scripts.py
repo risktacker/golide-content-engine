@@ -117,3 +117,33 @@ class SpokenFlowTests(unittest.TestCase):
         self.assertIn("a third of a second", text)
         self.assertEqual(digits("two thirds of owners"), "two thirds of owners")
         self.assertIn("one short sentence per line", spoken_pass_instructions("short"))
+
+
+class ProductPlateTests(unittest.TestCase):
+    """2026-10-31: real products are full-colour plates, cut out and shown whole."""
+
+    def test_opaque_product_picture_is_cut_out_and_loads_as_a_plate(self):
+        import tempfile
+        from pathlib import Path
+        from PIL import Image, ImageDraw
+        from golide_engine.providers.openai_media import cut_out
+        from golide_engine.vector.render import _load_drawing
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "scene-01.png"
+            img = Image.new("RGB", (400, 600), (240, 240, 240))
+            ImageDraw.Draw(img).rounded_rectangle((120, 100, 280, 500), 30, fill=(60, 60, 70))
+            img.save(path)
+            cut_out(path)
+            out = Image.open(path)
+            self.assertEqual(out.mode, "RGBA")
+            self.assertEqual(out.getpixel((5, 5))[3], 0)
+            self.assertEqual(out.getpixel((200, 300))[3], 255)
+            path.with_suffix(".plate.json").write_text("{}")
+            drawing = _load_drawing(path, {"id": "scene-01", "accent": "gold"})
+            self.assertIsNotNone(drawing.plate)
+
+    def test_storyboard_marks_product_scenes(self):
+        from golide_engine.vector.illustrate import VISUAL_PLAN_SCHEMA, scene_plan_instructions
+        scene = VISUAL_PLAN_SCHEMA["properties"]["scenes"]["items"]
+        self.assertIn("product", scene["required"])
+        self.assertIn('"product": true', scene_plan_instructions("long", 400.0))
