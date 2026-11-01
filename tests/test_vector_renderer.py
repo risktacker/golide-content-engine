@@ -126,3 +126,13 @@ class KeyTermTests(unittest.TestCase):
         words = "Follow the channel, because the feed won't show us".split()
         self.assertEqual(key_positions(words, "Follow the channel"), {0, 1, 2})
         self.assertEqual(key_positions("the cloud and the cloud".split(), "cloud"), {1})
+
+
+def test_audio_levels_are_separate_per_format():
+    """Owner review 2026-11-01: long-video music almost silent under the voice, shorts a bit lower."""
+    from golide_engine.vector.ambient import LEVELS_DB
+    from golide_engine.vector.render import AUDIO_MIX
+
+    assert LEVELS_DB["long"] < LEVELS_DB["short"] < -22.0
+    assert "ratio=20" in AUDIO_MIX["long"]["duck"] and "threshold=0.002" in AUDIO_MIX["long"]["duck"]
+    assert AUDIO_MIX["long"]["sfx"] < 1 and AUDIO_MIX["short"]["sfx"] < 1

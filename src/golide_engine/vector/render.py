@@ -942,20 +942,22 @@ class VectorRenderer:
         L = self.layout
         # The owner's voice, small effects timed to the visuals, and a quiet
         # synthesised atmosphere that dips a little more while he speaks.
-        from .ambient import render_ambient
+        from .ambient import LEVEL_DB, LEVELS_DB, render_ambient
         from .sfx import render_sfx
 
         sfx_path = render_sfx(groups, duration, output.with_name(output.stem + "-sfx.wav"),
                               self._action_cues(plan, lines, groups))
         bed_path = render_ambient(duration, output.with_name(output.stem + "-bed.wav"),
-                                  seed_text=str(plan.get("title", "")), variant=bed_variant)
+                                  seed_text=str(plan.get("title", "")), variant=bed_variant,
+                                  level_db=LEVELS_DB.get(self.format, LEVEL_DB))
+        mix = AUDIO_MIX.get(self.format, AUDIO_MIX["short"])
         inputs = ["-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{L.width}x{L.height}",
                   "-r", str(self.fps), "-i", "-", "-i", str(narration), "-i", str(sfx_path),
                   "-i", str(bed_path)]
         audio = ("[1:a]loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000,asplit=2[v][key];"
-                 "[2:a]aresample=48000[s];"
+                 f"[2:a]aresample=48000,volume={mix['sfx']}[s];"
                  "[3:a]aresample=48000[b0];"
-                 "[b0][key]sidechaincompress=threshold=0.05:ratio=2.4:attack=120:release=1200[b];"
+                 f"[b0][key]sidechaincompress={mix['duck']}[b];"
                  "[v][s][b]amix=inputs=3:duration=first:normalize=0,alimiter=limit=0.79:level=0:attack=2:release=60[a]")
         command = ["ffmpeg", "-y", "-loglevel", "error", *inputs, "-filter_complex", audio,
                    "-map", "0:v", "-map", "[a]", "-c:v", "libx264", "-preset", "medium", "-crf", "19",
@@ -982,6 +984,15 @@ class VectorRenderer:
         if code != 0:
             raise RuntimeError("FFmpeg failed while encoding the vector video")
         return output
+
+
+# Owner review 2026-11-01, separate per format. Long: the music drops to almost nothing
+# while he speaks (measured about 25 dB down) and comes back only in the pauses; the effects come
+# down a bit (-2 dB). Shorts: the effects come down a bit (-1.5 dB); the dip stays.
+AUDIO_MIX = {
+    "long": {"sfx": 0.79, "duck": "threshold=0.002:ratio=20:attack=20:release=700"},
+    "short": {"sfx": 0.84, "duck": "threshold=0.05:ratio=2.4:attack=120:release=1200"},
+}
 
 
 @dataclass

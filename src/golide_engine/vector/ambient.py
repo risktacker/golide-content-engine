@@ -34,6 +34,11 @@ RATE = 48000
 # and music don't need to be colliding... just make sure it's audible": 3 dB lower (about
 # 13.5 dB under the voice), and the dip under the voice is a little deeper (render.py).
 LEVEL_DB = -22.0
+# Owner review 2026-11-01: levels are separate for shorts and long videos. Long videos
+# are for listening ("it needs hearability"): the bed sits a little lower and render.py
+# ducks it to almost nothing under the voice, so it is heard only in the pauses. Shorts:
+# "just reduce a bit", 1.5 dB.
+LEVELS_DB = {"long": -24.0, "short": -23.5}
 
 BEDS = ("drift", "pulse", "glass", "tide")
 # Roots (Hz) a bed can be played in; picked per video so two videos on the same
@@ -150,7 +155,8 @@ def _tide(t, root, rng):
 _BUILDERS = {"drift": _drift, "pulse": _pulse, "glass": _glass, "tide": _tide}
 
 
-def ambient_bed(duration: float, seed_text: str = "golide", variant: int | None = None) -> np.ndarray:
+def ambient_bed(duration: float, seed_text: str = "golide", variant: int | None = None,
+                level_db: float = LEVEL_DB) -> np.ndarray:
     n = int(RATE * (duration + 0.5))
     t = np.arange(n, dtype=np.float64) / RATE
     name, root = choose_bed(seed_text, variant)
@@ -163,12 +169,13 @@ def ambient_bed(duration: float, seed_text: str = "golide", variant: int | None 
     fade_out = np.clip((duration - t) / 3.0, 0, 1)
     bed *= (fade_in * fade_out) ** 2
     rms = np.sqrt(np.mean(bed[: int(RATE * duration)] ** 2)) or 1.0
-    bed *= 10 ** (LEVEL_DB / 20) / rms
+    bed *= 10 ** (level_db / 20) / rms
     return bed[: int(RATE * duration)]
 
 
-def render_ambient(duration: float, output: Path, seed_text: str = "golide", variant: int | None = None) -> Path:
-    pcm = np.clip(ambient_bed(duration, seed_text, variant), -1, 1)
+def render_ambient(duration: float, output: Path, seed_text: str = "golide", variant: int | None = None,
+                   level_db: float = LEVEL_DB) -> Path:
+    pcm = np.clip(ambient_bed(duration, seed_text, variant, level_db), -1, 1)
     output.parent.mkdir(parents=True, exist_ok=True)
     with wave.open(str(output), "wb") as wav:
         wav.setnchannels(1)
