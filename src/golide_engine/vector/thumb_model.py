@@ -100,8 +100,15 @@ def read_layout(text, thumbnail: Path, our_title: str) -> dict:
     return clean_layout(dict(output.value))
 
 
+# Owner direction 2026-11-01: "we can't lose our brand... just a bit." Everything else is
+# modelled; these stay ours on every thumbnail and cover: our typeface, the highlight word
+# in GOLIDE gold, a thin gold rim light on the subject, and the small GOLIDE mark.
+BRAND_GOLD = "#E9C46A"
+
+
 def clean_layout(layout: dict) -> dict:
     layout = dict(layout)
+    layout["highlight_color"] = BRAND_GOLD
     layout["text_lines"] = max(0, min(3, int(layout.get("text_lines") or 0)))
     if not str(layout.get("our_text", "")).strip():
         layout["text_zone"] = "none"
@@ -168,6 +175,7 @@ def modelled_prompt(title: str, subject: str, layout: dict, has_reference: bool)
         f"{_SIZE_WORDS[layout['subject_size']]}, seen {layout['subject_angle'] or 'three-quarter'}. "
         f"Background: {background}. Colours lean to {layout['bg_colors'][0]} and {layout['bg_colors'][1]}. "
         f"Mood: {layout['mood']}. " + extras + space + reference +
+        f"A thin, warm gold ({BRAND_GOLD}) rim light traces the subject's edges. "
         "No people, no faces, no hands. ABSOLUTELY NO text, letters, numbers, logos or watermarks anywhere. "
         f"Video title for context only: {title}"
     )
@@ -267,6 +275,25 @@ def place_text(image: Image.Image, layout: dict, text: str | None = None,
     return out.convert("RGB")
 
 
+def add_mark(image: Image.Image, layout: dict) -> Image.Image:
+    """The small GOLIDE mark, in the corner away from the words."""
+    image = image.convert("RGBA")
+    w, h = image.size
+    font = ImageFont.truetype(str(load_theme().font("bold")), max(14, int(min(w, h) * 0.032)))
+    text = "  ".join("GOLIDE")
+    draw = ImageDraw.Draw(image)
+    tw = draw.textlength(text, font=font)
+    zone = layout.get("text_zone", "none")
+    right = not (zone.endswith("right") or zone == "right")
+    top = zone.startswith("bottom") or zone in ("bottom", "none", "left", "right", "center")
+    x = w - tw - w * 0.035 if right else w * 0.035
+    y = h * 0.035 if top else h - font.size * 1.6 - h * 0.035
+    layer = Image.new("RGBA", image.size, (0, 0, 0, 0))
+    ImageDraw.Draw(layer).text((x + 2, y + 2), text, font=font, fill=(0, 0, 0, 140))
+    ImageDraw.Draw(layer).text((x, y), text, font=font, fill=(246, 244, 238, 215))
+    return Image.alpha_composite(image, layer).convert("RGB")
+
+
 def layout_json(layout: dict) -> str:
     return json.dumps(layout, indent=2, ensure_ascii=False)
 
@@ -332,4 +359,4 @@ def canvas_from_layout(cut: Image.Image, mask, layout: dict, size=(1080, 1920)) 
         tail = (tip[0] - w * 0.12, tip[1] - h * 0.07)
         draw.line([tail, tip], fill=accent, width=stroke)
         draw.polygon([tip, (tip[0] - stroke * 4, tip[1] - stroke), (tip[0] - stroke, tip[1] - stroke * 4)], fill=accent)
-    return place_text(image, layout)
+    return add_mark(place_text(image, layout), layout)

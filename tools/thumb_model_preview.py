@@ -18,8 +18,8 @@ from golide_engine.quality.visual import normalize_thumbnail  # noqa: E402
 from golide_engine.vector.illustrate import illustration_prompt  # noqa: E402
 from golide_engine.vector.layouts import art_size  # noqa: E402
 from golide_engine.vector.short_cover import drawing_cutout  # noqa: E402
-from golide_engine.vector.thumb_model import (canvas_from_layout, layout_json, modelled_prompt,  # noqa: E402
-                                              place_text, read_layout)
+from golide_engine.vector.thumb_model import (add_mark, canvas_from_layout, layout_json,  # noqa: E402
+                                              modelled_prompt, place_text, read_layout)
 from golide_engine.vector.thumbnail_v2 import fetch_reference  # noqa: E402
 
 OUT = ROOT / "production-queue" / "preview"
@@ -38,14 +38,19 @@ def picks(fmt: str, count: int) -> list[dict]:
 
 
 def pair(source: Path, ours: Image.Image, label: str, out: Path) -> None:
-    src = Image.open(source).convert("RGB")
-    height = 720
-    src = src.resize((int(src.width * height / src.height), height))
+    """Ours, large. Their thumbnail only as a small labelled inset: it is read for its
+    structure and never used in ours."""
+    height = 900
     ours = ours.resize((int(ours.width * height / ours.height), height))
-    sheet = Image.new("RGB", (src.width + ours.width + 60, height + 70), (24, 24, 28))
-    sheet.paste(src, (20, 50))
-    sheet.paste(ours, (src.width + 40, 50))
-    ImageDraw.Draw(sheet).text((20, 14), f"SOURCE  |  OURS   {label}", fill=(235, 235, 235))
+    src = Image.open(source).convert("RGB")
+    inset_h = 170
+    src = src.resize((int(src.width * inset_h / src.height), inset_h))
+    sheet = Image.new("RGB", (ours.width + 40, height + inset_h + 110), (24, 24, 28))
+    draw = ImageDraw.Draw(sheet)
+    draw.text((20, 12), f"OURS   {label}", fill=(235, 235, 235))
+    sheet.paste(ours, (20, 40))
+    draw.text((20, height + 58), "Their thumbnail, structure reference only (nothing from it is used):", fill=(150, 150, 150))
+    sheet.paste(src, (20, height + 82))
     sheet.save(out, quality=90)
 
 
@@ -67,7 +72,7 @@ def main() -> None:
                                     providers.config["thumbnail"]["size"], None)
             final = work / "ours.jpg"
             normalize_thumbnail(raw, final)
-            image = place_text(Image.open(final), layout)
+            image = add_mark(place_text(Image.open(final), layout), layout)
             image.save(final, quality=92)
             pair(ref, image, item["title"], OUT / f"long-{item['id']}.jpg")
             print(json.dumps({"long": item["id"], "their_text": layout["their_text"], "our_text": layout["our_text"]}))
