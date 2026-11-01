@@ -54,12 +54,18 @@ class OpenAITextProvider:
         return ProviderOutput(response.output_text, response.id, input_tokens, cached, output_tokens)
 
     def generate_json(self, instructions: str, content: str, schema: dict, web_search: bool = False,
-                      max_output_tokens: int = 12000, reasoning_effort: str | None = None) -> ProviderOutput:
+                      max_output_tokens: int = 12000, reasoning_effort: str | None = None,
+                      images: list[str] | None = None) -> ProviderOutput:
+        """``images``: image URLs or data URLs the model looks at with the text (2026-11-01)."""
+        payload = content
+        if images:
+            payload = [{"role": "user", "content": [{"type": "input_text", "text": content}]
+                        + [{"type": "input_image", "image_url": url} for url in images]}]
         kwargs = {
             "model": self.model,
             "reasoning": {"effort": reasoning_effort or self.reasoning_effort},
             "instructions": instructions,
-            "input": content,
+            "input": payload,
             "max_output_tokens": max_output_tokens,
             "text": {"format": {"type": "json_schema", "name": "golide_output", "strict": True, "schema": schema}},
         }

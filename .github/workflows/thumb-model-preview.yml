@@ -1,0 +1,36 @@
+name: Modelled thumbnail preview
+
+# 2026-11-01: preview of thumbnails and Shorts covers modelled on their source thumbnails.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [".github/thumb-model-request.txt"]
+
+permissions:
+  contents: write
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core libcairo2-dev pkg-config >/dev/null
+      - run: python -m pip install -q -e '.[production,video]'
+      - name: Make the preview
+        env:
+          GOLIDE_ENABLE_PAID_PRODUCTION: "1"
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python tools/thumb_model_preview.py
+      - name: Save it
+        run: |
+          git config user.name "golide-production-bot"
+          git config user.email "golide-production-bot@users.noreply.github.com"
+          git checkout -b probe-output
+          git add -f production-queue/preview/
+          git commit -m "ops: modelled thumbnail preview" || exit 0
+          git push -f origin probe-output
