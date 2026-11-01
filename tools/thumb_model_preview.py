@@ -63,8 +63,8 @@ def main() -> None:
             layout = read_layout(text, ref, item["title"])
             (work / "layout.json").write_text(layout_json(layout), encoding="utf-8")
             raw = work / "raw.png"
-            thumbs.create_thumbnail(modelled_prompt(item["title"], "", layout, True), raw,
-                                    providers.config["thumbnail"]["size"], [ref])
+            thumbs.create_thumbnail(modelled_prompt(item["title"], "", layout, False), raw,
+                                    providers.config["thumbnail"]["size"], None)
             final = work / "ours.jpg"
             normalize_thumbnail(raw, final)
             image = place_text(Image.open(final), layout)
@@ -86,7 +86,7 @@ def main() -> None:
             art = work / "art.png"
             prompt = illustration_prompt(f"{layout['subject']}, seen {layout['subject_angle']}. "
                                          f"It is unmistakably the real {layout['subject']}.", "its key part", "short")
-            line_art.create(prompt, art, art_size("short", "single"), reference=ref)
+            line_art.create(prompt, art, art_size("short", "single"))
             cut, mask = drawing_cutout(art, "gold")
             image = canvas_from_layout(cut, mask, layout)
             image.save(work / "ours.jpg", quality=92)

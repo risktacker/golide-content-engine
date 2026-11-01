@@ -69,8 +69,12 @@ Describe exactly what you see:
   small under 10%, medium 10-18%, large 18-28%, huge more), text_color and highlight_color
   (hex; highlight is the colour of the one word set apart, or the same as text_color),
   box_color (hex, or "" when there is no box).
-- subject: what the main subject is, in a few words. subject_zone, subject_size (how much of
-  the frame it fills), subject_angle (front, three-quarter, side, top-down, close-up...).
+- subject: OUR subject, not theirs: the real object OUR_TITLE is about, named exactly (the
+  iPhone Duo foldable phone, the touchscreen MacBook Pro, a stack of 100 dollar bills for a
+  loss). When their subject is a person or the creator's face, ours is still that object,
+  placed where the person was at the same size. Never a person, never a face.
+- subject_zone, subject_size (how much of the frame THEIR main subject fills),
+  subject_angle (front, three-quarter, side, top-down, close-up...).
 - background: dark, light, gradient, scene (a real place) or split (two halves);
   bg_colors: its two main colours as hex; background_note: a few words (white studio sweep,
   blurred desk, black with a red glow...).
@@ -153,16 +157,18 @@ def modelled_prompt(title: str, subject: str, layout: dict, has_reference: bool)
     free = _FREE.get(layout["text_zone"])
     space = (f"Keep {free} clear and quiet for big words added later; the subject never reaches into it. "
              if free else "")
-    reference = ("The reference image shows the real product: draw THAT exact product with its real shape, "
-                 "proportions and details. Take the product and the composition only; never copy its "
-                 "text, logos, faces or people. " if has_reference else "")
+    # 2026-11-01 preview: given the source thumbnail as a reference, the image model redrew the
+    # source photo itself (the creator's face, his hands and desk). The source is only ever READ
+    # for its structure; a reference here is our own picture of the product.
+    reference = ("The reference image is our own picture of the product: draw THAT exact product. "
+                 if has_reference else "")
     return (
         "16:9 YouTube thumbnail, photo-real, crisp at phone size. "
         f"Main subject: {subject or layout['subject']}, {_ZONE_WORDS[layout['subject_zone']]}, filling "
         f"{_SIZE_WORDS[layout['subject_size']]}, seen {layout['subject_angle'] or 'three-quarter'}. "
         f"Background: {background}. Colours lean to {layout['bg_colors'][0]} and {layout['bg_colors'][1]}. "
         f"Mood: {layout['mood']}. " + extras + space + reference +
-        "No faces of real people. ABSOLUTELY NO text, letters, numbers, logos or watermarks anywhere. "
+        "No people, no faces, no hands. ABSOLUTELY NO text, letters, numbers, logos or watermarks anywhere. "
         f"Video title for context only: {title}"
     )
 
