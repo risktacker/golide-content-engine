@@ -764,11 +764,15 @@ class ProductionService:
         scene_plan_path = work / "scene-plan.json"
         source_video = self._source_video_block(spec)
 
+        # 2026-11-01: the length follows the modelled video (long videos, 3 to 8 minutes).
+        model_seconds = (spec.get("source_breakout") or {}).get("duration_seconds")
+
         def script_problems(plan: dict) -> list[str]:
             # 2026-10-29: only what the engine needs (length, chapters, the follow line);
             # the style comes from the modelled videos, not from rules.
-            return (length_problems(plan, str(spec["format"])) + line_problems(plan)
-                    + chapter_problems(plan, str(spec["format"])) + follow_problems(plan, str(spec["format"])))
+            return (length_problems(plan, str(spec["format"]), model_seconds) + line_problems(plan)
+                    + chapter_problems(plan, str(spec["format"]), model_seconds)
+                    + follow_problems(plan, str(spec["format"])))
 
         models_path = work / "model-scripts.json"
         # 2026-10-29: production-queue/<id>.rescript asks for a fresh script (new token, new
@@ -818,7 +822,7 @@ class ProductionService:
                 stage="script",
             )
             output = text.generate_json(
-                script_instructions(str(spec["format"]), str(spec["id"])),
+                script_instructions(str(spec["format"]), str(spec["id"]), model_seconds),
                 f"TOPIC BRIEF\n{spec['brief']}{source_video}{models_block}\n\nVERIFIED RESEARCH\n{json.dumps(research)}",
                 SCRIPT_SCHEMA,
                 max_output_tokens=script_tokens,
@@ -833,7 +837,7 @@ class ProductionService:
                 self._reserve(spec, text_model, Usage(input_tokens=max(1, len(json.dumps(plan)) // 3 + 3000),
                                                       output_tokens=script_tokens))
                 output = text.generate_json(
-                    script_instructions(str(spec["format"]), str(spec["id"])),
+                    script_instructions(str(spec["format"]), str(spec["id"]), model_seconds),
                     f"TOPIC BRIEF\n{spec['brief']}{source_video}{models_block}\n\nVERIFIED RESEARCH\n{json.dumps(research)}"
                     f"\n\nYOUR PREVIOUS DRAFT\n{json.dumps(plan)}\n\nREWRITE IT. Fix these problems: "
                     + "; ".join(problems) + ". Keep the facts, the length and the way it talks to the viewer.",
@@ -851,7 +855,7 @@ class ProductionService:
                                                   output_tokens=script_tokens * 2))
             try:
                 spoken_out = text.generate_json(
-                    spoken_pass_instructions(str(spec["format"])),
+                    spoken_pass_instructions(str(spec["format"]), model_seconds),
                     "DRAFT LINES\n" + json.dumps({"lines": draft_lines}, ensure_ascii=False),
                     SPOKEN_SCHEMA,
                     max_output_tokens=script_tokens * 2,  # high effort spends tokens thinking first

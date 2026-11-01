@@ -276,11 +276,43 @@ SCRIPT_LENGTH_TARGETS = {
 }
 
 
-def length_problems(plan: dict, format_name: str) -> list[str]:
+# 2026-11-01: a long video is as long as the video it models ("not all 7-8 minutes, some
+# 3, some 4, some 5... not 8-9"), between 3 and 8 minutes, at the owner's ~170 words a minute.
+LONG_MODEL_SECONDS = (180, 480)
+OWNER_WORDS_PER_MINUTE = 170
+
+
+def length_target(format_name: str, model_seconds: float | None = None) -> dict:
+    """Words and seconds for this script. Long videos follow the modelled video's length."""
+    base = SCRIPT_LENGTH_TARGETS.get(format_name, SCRIPT_LENGTH_TARGETS["short"])
+    try:
+        model = float(model_seconds or 0)
+    except (TypeError, ValueError):
+        model = 0.0
+    if format_name != "long" or model <= 0:
+        return dict(base)
+    low, high = LONG_MODEL_SECONDS
+    seconds = min(high, max(low, model))
+    words = seconds / 60 * OWNER_WORDS_PER_MINUTE
+    return {"words_min": int(round(words * 0.94 / 10) * 10), "words_max": int(round(words * 1.04 / 10) * 10),
+            "seconds": f"{int(seconds * 0.94)} to {int(seconds * 1.04)}"}
+
+
+def chapter_range(format_name: str, model_seconds: float | None = None) -> tuple[int, int]:
+    """Numbered chapters for a long video: fewer for a short one."""
+    words = length_target(format_name, model_seconds)["words_max"]
+    if words <= 720:      # up to about 4 minutes
+        return 2, 3
+    if words <= 1100:     # up to about 6 minutes
+        return 3, 4
+    return 4, 6
+
+
+def length_problems(plan: dict, format_name: str, model_seconds: float | None = None) -> list[str]:
     """The model writes short when nothing checks it (scripts came in at 580 to 660 words)."""
-    target = SCRIPT_LENGTH_TARGETS.get(format_name)
-    if not target:
+    if format_name not in SCRIPT_LENGTH_TARGETS:
         return []
+    target = length_target(format_name, model_seconds)
     words = sum(len(str(line.get("text", "")).split()) for line in plan.get("lines", []))
     if words < target["words_min"] * 0.92:
         return [f"too short: {words} spoken words, write {target['words_min']} to {target['words_max']} "
@@ -702,16 +734,17 @@ def flow_problems(plan: dict) -> list[str]:
     return problems
 
 
-def chapter_problems(plan: dict, format_name: str) -> list[str]:
+def chapter_problems(plan: dict, format_name: str, model_seconds: float | None = None) -> list[str]:
     """A long video must read as a lesson in clear stages."""
     if format_name != "long":
         return []
+    low, high = chapter_range(format_name, model_seconds)
     chapters = plan.get("chapters") or []
     numbered = [c for c in chapters if str(c.get("number", "")).strip()]
     lines = [line for line in plan.get("lines", []) if str(line.get("text", "")).strip()]
     problems: list[str] = []
-    if not 3 <= len(numbered) <= 6:  # 2026-10-22: 4 to 6 asked for an 8-minute video, 3 still accepted
-        problems.append(f"use 4 to 6 numbered chapters between the intro and the close (found {len(numbered)})")
+    if not max(2, low - 1) <= len(numbered) <= high:  # one fewer than asked is still accepted
+        problems.append(f"use {low} to {high} numbered chapters between the intro and the close (found {len(numbered)})")
     owners = [line.get("chapter") for line in lines]
     if any(not isinstance(o, int) or not 0 <= o < len(chapters) for o in owners):
         problems.append("every line needs a valid chapter index")
@@ -722,7 +755,7 @@ def chapter_problems(plan: dict, format_name: str) -> list[str]:
         total = sum(words) or 1
         for index, chapter in enumerate(chapters):
             share = sum(w for w, o in zip(words, owners) if o == index) / total
-            if str(chapter.get("number", "")).strip() and share > 0.36:
+            if str(chapter.get("number", "")).strip() and share > (0.5 if high <= 3 else 0.36):
                 problems.append(f"chapter {chapter.get('number')} {chapter.get('title')} is too long; balance the chapters")
     return problems
 
@@ -843,7 +876,7 @@ WHAT THE ENGINE NEEDS (format, not style)
 
 LONG_CHAPTER_MECHANICS = """\
 CHAPTERS (the chapter card on screen shows each stage):
-- "chapters": INTRO first (number "", title "Intro"), then 4 to 6 numbered chapters
+- "chapters": INTRO first (number "", title "Intro"), then {chapters} numbered chapters
   ("01", "02", ...; title 2 to 4 plain words about THIS topic), then CLOSE (number "",
   title "Close"). Every line sets "chapter" to the index (from 0) of its chapter, in order.
 - Chapter titles are never read aloud as labels.
@@ -915,11 +948,12 @@ def line_problems(plan: dict) -> list[str]:
     return problems
 
 
-def script_instructions(format_name: str, seed: str = "") -> str:
+def script_instructions(format_name: str, seed: str = "", model_seconds: float | None = None) -> str:
     """The script writer (2026-10-29): it models the transcripts of videos that worked, with
     only the engine's format needs as rules. The old style rules are gone ("those rules
     override the API effort of research")."""
-    target = SCRIPT_LENGTH_TARGETS.get(format_name, SCRIPT_LENGTH_TARGETS["short"])
+    target = length_target(format_name, model_seconds)
+    low, high = chapter_range(format_name, model_seconds)
     return (
         "You write a narration script for a "
         + ("YouTube/Instagram/Facebook short" if format_name == "short" else "long YouTube video")
@@ -928,7 +962,8 @@ def script_instructions(format_name: str, seed: str = "") -> str:
         f"LENGTH: {target['words_min']} to {target['words_max']} spoken words "
         f"(about {target['seconds']} seconds).\n\n"
         + MODEL_SCRIPT_RULES + "\n"
-        + (LONG_CHAPTER_MECHANICS if format_name == "long" else SHORT_CHAPTER_RULE)
+        + (LONG_CHAPTER_MECHANICS.replace("{chapters}", f"{low} to {high}")
+           if format_name == "long" else SHORT_CHAPTER_RULE)
         + "\n" + SPOKEN_FLOW + "\n" + SCRIPT_MECHANICS + "\n" + SCRIPT_LINE_FORMAT + "\n" + SCRIPT_OUTPUT_RULES
     )
 
@@ -1001,10 +1036,10 @@ SPOKEN_SCHEMA: dict = {
 HUMANIZER_FILE = Path(__file__).resolve().parents[3] / "config" / "humanizer.md"
 
 
-def spoken_pass_instructions(format_name: str) -> str:
+def spoken_pass_instructions(format_name: str, model_seconds: float | None = None) -> str:
     """The last pass before the owner sees the script (2026-10-29): the humanizer skill,
     with the owner's recorded scripts as the voice sample, rewrites the draft line for line."""
-    target = SCRIPT_LENGTH_TARGETS.get(format_name, SCRIPT_LENGTH_TARGETS["short"])
+    target = length_target(format_name, model_seconds)
     try:
         humanizer = HUMANIZER_FILE.read_text(encoding="utf-8")
     except OSError:
