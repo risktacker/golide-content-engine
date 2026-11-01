@@ -34,7 +34,7 @@ LAYOUT_SCHEMA = {
     "type": "object", "additionalProperties": False,
     "required": ["their_text", "our_text", "highlight", "text_zone", "text_lines", "text_case",
                  "text_style", "text_size", "text_color", "highlight_color", "box_color",
-                 "subject", "subject_zone", "subject_size", "subject_angle", "background",
+                 "subject", "action", "subject_zone", "subject_size", "subject_angle", "background",
                  "bg_colors", "background_note", "extras", "mood"],
     "properties": {
         "their_text": {"type": "string"},
@@ -49,6 +49,7 @@ LAYOUT_SCHEMA = {
         "highlight_color": {"type": "string"},
         "box_color": {"type": "string"},
         "subject": {"type": "string"},
+        "action": {"type": "string"},
         "subject_zone": {"type": "string", "enum": list(SUBJECT_ZONES)},
         "subject_size": {"type": "string", "enum": list(SIZES)},
         "subject_angle": {"type": "string"},
@@ -73,6 +74,10 @@ Describe exactly what you see:
   iPhone Duo foldable phone, the touchscreen MacBook Pro, a stack of 100 dollar bills for a
   loss). When their subject is a person or the creator's face, ours is still that object,
   placed where the person was at the same size. Never a person, never a face.
+- action: the ONE thing happening in OUR picture that tells OUR story at a glance (a hand
+  touching the laptop screen, a hand folding the phone open, a red arrow at the cracked hinge).
+  A hand and forearm may appear; never a face, a head or a whole person (owner direction
+  2026-11-01: "the hand and or an arrow, those things will be needful").
 - subject_zone, subject_size (how much of the frame THEIR main subject fills),
   subject_angle (front, three-quarter, side, top-down, close-up...).
 - background: dark, light, gradient, scene (a real place) or split (two halves);
@@ -93,11 +98,20 @@ def _data_url(path: Path) -> str:
     return f"data:image/{kind};base64," + base64.b64encode(path.read_bytes()).decode()
 
 
-def read_layout(text, thumbnail: Path, our_title: str) -> dict:
-    """One small vision call: the source thumbnail's structure plus our words for it."""
+def read_layout(text, thumbnail: Path, our_title: str, on_output=None) -> dict:
+    """One small vision call: the source thumbnail's structure plus our words for it.
+    ``on_output`` receives the provider output (for the cost ledger)."""
     output = text.generate_json(READ_RULES, f"OUR_TITLE={our_title}", LAYOUT_SCHEMA,
                                 max_output_tokens=3000, images=[_data_url(thumbnail)])
+    if on_output is not None:
+        on_output(output)
     return clean_layout(dict(output.value))
+
+
+def stamp_modelled(path: Path, layout: dict) -> None:
+    """Our words where theirs were, plus the GOLIDE mark, on a finished 16:9 thumbnail."""
+    image = add_mark(place_text(Image.open(path), layout), layout)
+    image.save(path)
 
 
 # Owner direction 2026-11-01: "we can't lose our brand... just a bit." Everything else is
@@ -174,9 +188,11 @@ def modelled_prompt(title: str, subject: str, layout: dict, has_reference: bool)
         f"Main subject: {subject or layout['subject']}, {_ZONE_WORDS[layout['subject_zone']]}, filling "
         f"{_SIZE_WORDS[layout['subject_size']]}, seen {layout['subject_angle'] or 'three-quarter'}. "
         f"Background: {background}. Colours lean to {layout['bg_colors'][0]} and {layout['bg_colors'][1]}. "
-        f"Mood: {layout['mood']}. " + extras + space + reference +
+        f"Mood: {layout['mood']}. "
+        + (f"The action that tells the story: {layout['action']}. " if layout.get("action") else "")
+        + extras + space + reference +
         f"A thin, warm gold ({BRAND_GOLD}) rim light traces the subject's edges. "
-        "No people, no faces, no hands. ABSOLUTELY NO text, letters, numbers, logos or watermarks anywhere. "
+        "No faces, no heads, no whole people: at most a hand and forearm. ABSOLUTELY NO text, letters, numbers, logos or watermarks anywhere. "
         f"Video title for context only: {title}"
     )
 

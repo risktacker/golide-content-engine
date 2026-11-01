@@ -1847,11 +1847,25 @@ class ProductionService:
         raw_thumbnail = work / "thumbnail-source.png"
         thumbnail = work / "thumbnail.png"
         thumbnail_provider = self.providers.thumbnails(live=True)
+        layout_path = work / "thumbnail-layout.json"
+
+        def stamp(target: Path) -> None:
+            # 2026-11-01: a modelled thumbnail gets our words where the source had its words,
+            # plus the brand; the older template keeps its own stamp.
+            if layout_path.exists():
+                try:
+                    from ..vector.thumb_model import stamp_modelled
+                    stamp_modelled(target, json.loads(layout_path.read_text(encoding="utf-8")))
+                    return
+                except Exception as exc:  # noqa: BLE001 - fall back to the template stamp
+                    print(json.dumps({"status": "modelled_stamp_failed", "error": str(exc)[:300]}))
+            self._stamp_thumbnail(work, target)
+
         def thumbnail_stage():
             if raw_thumbnail.exists() and not thumbnail.exists():
                 # Paid for but not normalised (a crash between the two steps): finish it.
                 normalize_thumbnail(raw_thumbnail, thumbnail)
-                self._stamp_thumbnail(work, thumbnail)
+                stamp(thumbnail)
                 return
             self._require_absent(raw_thumbnail, "thumbnail")
             self._require_absent(thumbnail, "thumbnail")
@@ -1887,9 +1901,24 @@ class ProductionService:
             source_url = str((spec.get("source_breakout") or {}).get("url") or "")
             reference = fetch_reference(source_url, work / "thumbnail-reference.jpg")
             prompt = thumbnail_prompt_v2(metadata["title"], self._thumbnail_moment(work), colors, reference is not None)
-            print(json.dumps({"status": "thumbnail_reference", "used": reference is not None, "source": source_url}))
+            first_refs = [reference] if reference else None
+            if reference is not None:
+                # 2026-11-01 (owner approved): the thumbnail is modelled on the source's own
+                # thumbnail. It is only READ for its structure (never handed to the image
+                # model, which would redraw the creator); ours carries a little of our brand.
+                try:
+                    from ..vector.thumb_model import layout_json, modelled_prompt, read_layout
+                    layout = read_layout(self.providers.text(live=True), reference, metadata["title"],
+                                         on_output=lambda out: self._record_text(production_id, "thumbnail-layout", out))
+                    layout_path.write_text(layout_json(layout), encoding="utf-8")
+                    prompt, first_refs = modelled_prompt(metadata["title"], "", layout, False), None
+                except Exception as exc:  # noqa: BLE001 - the older thumbnail still works
+                    layout_path.unlink(missing_ok=True)
+                    print(json.dumps({"status": "thumbnail_layout_failed", "error": str(exc)[:300]}))
+            print(json.dumps({"status": "thumbnail_reference", "used": reference is not None,
+                              "modelled": layout_path.exists(), "source": source_url}))
             output = None
-            for attempt, refs in ((prompt, [reference] if reference else None),
+            for attempt, refs in ((prompt, first_refs),
                                   (thumbnail_prompt(metadata["title"], "one simple glowing symbol of the topic", colors)
                                    + SAFE_RETRY, None)):
                 try:
@@ -1909,7 +1938,9 @@ class ProductionService:
                 print("::warning title=Thumbnail from cover::the image model refused the thumbnail twice")
                 return
             normalize_thumbnail(raw_thumbnail, thumbnail)
-            self._stamp_thumbnail(work, thumbnail)
+            if attempt is not prompt:
+                layout_path.unlink(missing_ok=True)   # the calm retry is not the modelled picture
+            stamp(thumbnail)
             self._record_image(production_id, "thumbnail", thumbnail_cost_model, output)
         self.runner.run(production_id, "thumbnail", thumbnail_stage)
         self._budget(spec)

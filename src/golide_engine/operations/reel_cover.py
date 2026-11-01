@@ -1,4 +1,4 @@
-"""A reel cover for every long video (owner direction 2026-10-31).
+"""A reel cover for every long video and Short (owner direction 2026-10-31, Shorts 2026-11-01).
 
 "For every long form video I receive an email after upload with the thumbnail for the
 Short or Instagram Reel: the same image you send for short videos, same format and frame,
@@ -84,11 +84,12 @@ def draw_cover(cover: dict, work: Path, line_art, reference: Path | None = None)
                         cover["bg_top"], cover["bg_bottom"], cover["layout"])
 
 
-def build_reel_cover_email(*, title: str, youtube_video_id: str, image_path: Path, words: str) -> EmailMessage:
+def build_reel_cover_email(*, title: str, youtube_video_id: str, image_path: Path, words: str,
+                           kind: str = "long video") -> EmailMessage:
     msg = EmailMessage()
     msg["Subject"] = f"GOLIDE: reel cover for \"{title}\""
     msg.set_content("\n".join([
-        f"The reel cover for today's long video: {title}",
+        f"The reel cover for today's {kind}: {title}",
         f"https://youtu.be/{youtube_video_id}" if youtube_video_id else "",
         "",
         f"Cover words: {words}",
@@ -106,23 +107,47 @@ def make_reel_cover(*, production_id: str, title: str, story: str, youtube_video
     """Plan, draw and email one reel cover. Best effort: the caller catches failures."""
     from ..providers.openai_media import OpenAILineArtProvider
 
-    layout = layout_for(production_id)
     text = providers.text(live=True)
+    line_art = OpenAILineArtProvider(providers.config["assets"]["support_model"],
+                                     providers.config["assets"]["support_quality"])
+    work = out_dir / production_id
+    work.mkdir(parents=True, exist_ok=True)
+    path = out_dir / f"{production_id}-reel-cover.jpg"
+    kind = "short" if "-short-" in production_id else "long video"
+    source = fetch_reference(source_url, work / "source.jpg") if source_url else None
+    if source is not None:
+        # 2026-11-01 (owner approved): modelled on the source video's own thumbnail. It is read
+        # for its structure only (never drawn from); ours is our object with a little of our
+        # brand (gold highlight word, the GOLIDE mark). A hand may show the action, never a face.
+        try:
+            from ..vector.thumb_model import canvas_from_layout, read_layout
+            layout = read_layout(text, source, title)
+            art = work / "art.png"
+            action = f" {layout['action']}." if layout.get("action") else ""
+            prompt = illustration_prompt(
+                f"{layout['subject']}, seen {layout['subject_angle'] or 'three-quarter'}.{action} "
+                f"It is unmistakably the real {layout['subject']}. A hand may appear; never a face or a person.",
+                "the part that tells the story", "short")
+            line_art.create(prompt, art, art_size("short", "single"))
+            cut, mask = drawing_cutout(art, "gold")
+            canvas_from_layout(cut, mask, layout).convert("RGB").save(path, quality=92)
+            words = layout.get("our_text", "")
+            sent = _send(build_reel_cover_email(title=title, youtube_video_id=youtube_video_id,
+                                                image_path=path, words=words, kind=kind)) if send else False
+            return {"status": "sent" if sent else "made", "path": str(path), "object": layout["subject"],
+                    "words": words, "layout": "modelled"}
+        except Exception as exc:  # noqa: BLE001 - the planned cover below still works
+            print(json.dumps({"status": "modelled_cover_failed", "error": str(exc)[:300]}))
+    layout = layout_for(production_id)
     body = json.dumps({"PRODUCTION_ID": production_id, "LAYOUT": layout, "title": title, "story": story[:900]},
                       ensure_ascii=False)
     cover = dict(text.generate_json(REEL_RULES, body, COVER_SCHEMA, max_output_tokens=4000).value)
     cover["layout"] = layout
     if cover.get("accent") not in ACCENTS:
         cover["accent"] = "gold"
-    line_art = OpenAILineArtProvider(providers.config["assets"]["support_model"],
-                                     providers.config["assets"]["support_quality"])
-    work = out_dir / production_id
-    work.mkdir(parents=True, exist_ok=True)
-    reference = fetch_reference(source_url, work / "reference.jpg") if source_url else None
-    image = draw_cover(cover, work, line_art, reference)
-    path = out_dir / f"{production_id}-reel-cover.jpg"
+    image = draw_cover(cover, work, line_art, None)
     image.convert("RGB").save(path, quality=92)
     sent = _send(build_reel_cover_email(title=title, youtube_video_id=youtube_video_id,
-                                        image_path=path, words=cover["words"])) if send else False
+                                        image_path=path, words=cover["words"], kind=kind)) if send else False
     return {"status": "sent" if sent else "made", "path": str(path), "object": cover["object"],
             "words": cover["words"], "layout": layout}

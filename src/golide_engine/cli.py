@@ -742,8 +742,8 @@ def main() -> int:
                 long_social = {"status": "failed", "error": str(exc)[:500]}
                 print(f"::warning title=Long video not queued for Facebook/LinkedIn::{str(exc)[:300]}")
         reel_cover = None
-        if spec.get("format") == "long":
-            # Owner direction 2026-10-31: after every long upload, email a 1080x1920 cover
+        if spec.get("format") in ("long", "short"):
+            # Owner direction 2026-10-31 (Shorts too, 2026-11-01): after every upload, email a 1080x1920 cover
             # for the reel or Short cut from it, in the Shorts-cover style. Best effort.
             try:
                 from .operations.reel_cover import make_reel_cover
