@@ -175,7 +175,10 @@ def social_caption(title: str, metadata: dict, limit: int) -> str:
     if not keys and not tags:  # older metadata: keep the full description as it was
         return (title.strip() + "\n\n" + str(metadata.get("description", "")).strip())[:limit]
     tail = "\n\n".join(p for p in (keys, ("Chapters\n" + chapters) if chapters else "", tags) if p)
-    room = max(0, limit - len(title) - len(tail) - 6)
+    # 2026-11-03: a sales video carries its buy link right under the title.
+    link = str(metadata.get("buy_link") or "").strip()
+    lead = f"Get it here: {link}" if link else ""
+    room = max(0, limit - len(title) - len(tail) - len(lead) - 8)
     if len(body) > room:
         body = body[:room].rsplit(" ", 1)[0].rstrip(",.;:") + "..."
-    return "\n\n".join(p for p in (title.strip(), body, tail) if p)[:limit]
+    return "\n\n".join(p for p in (title.strip(), lead, body, tail) if p)[:limit]

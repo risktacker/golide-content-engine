@@ -145,24 +145,46 @@
 
         <div class="lane-grid">
           <article class="lane">
-            <div class="lane-top"><h3>Posts</h3><p class="lane-count"><strong>2</strong> a day</p></div>
-            <p>08:30 a trending idea, 17:30 a GOLIDE Marketplace product. One image each.</p>
+            <div class="lane-top"><h3>Posts</h3><p class="lane-count"><strong>1</strong> a day</p></div>
+            <p>08:30 every day: a trending idea, and on Wednesday your professional post (QA and FMCG with tech and AI).</p>
             <p class="lane-route">Instagram, Facebook, LinkedIn, X</p>
             <ol><li>Find the angle</li><li>Write</li><li>Draw the image</li><li>Publish</li></ol>
           </article>
           <article class="lane">
-            <div class="lane-top"><h3>Shorts</h3><p class="lane-count"><strong>4</strong> a week</p></div>
-            <p>A trending tech topic, scripted for 30–90 seconds, illustrated scene by scene over your voice.</p>
+            <div class="lane-top"><h3>Shorts</h3><p class="lane-count"><strong>3</strong> a week</p></div>
+            <p>Monday, Wednesday and Friday. A trending tech topic, scripted for 30–90 seconds, illustrated scene by scene over your voice.</p>
             <p class="lane-route">YouTube Shorts, Instagram and Facebook Reels, LinkedIn</p>
             <ol><li>Find the topic</li><li>Research and script</li><li class="human-step">Your recording</li><li>Illustrate and check</li><li>Publish</li></ol>
           </article>
           <article class="lane lane-long">
             <div class="lane-top"><h3>Long videos</h3><p class="lane-count"><strong>3</strong> a week</p></div>
-            <p>Tuesday, Thursday and Saturday. An explainer of about 8 minutes in 16:9, modelled on a trending video, published on YouTube at 19:30.</p>
+            <p>Tuesday, Thursday and Saturday. An explainer of 3 to 8 minutes in 16:9, as long as the trending video it models, published on YouTube at 19:30.</p>
             <p class="lane-route">YouTube, Facebook, LinkedIn</p>
             <ol><li>Find the topic</li><li>Research and script</li><li class="human-step">Your recording</li><li>Illustrate and check</li><li>Publish</li></ol>
           </article>
         </div>
+
+        <article class="panel" id="sales-panel">
+          <div class="panel-head"><h3>Sales video</h3><span class="micro">Your own script, built into a Short and posted everywhere</span></div>
+          <form id="sales-form" class="sales-form" novalidate>
+            <div class="sales-grid">
+              <label>Title<input id="sale-title" maxlength="100" placeholder="The Job Search Conversion System" required></label>
+              <label>Product name<input id="sale-product" maxlength="120" placeholder="Book title as it appears on Amazon"></label>
+              <label class="wide">Buy link<input id="sale-link" type="url" inputmode="url" placeholder="https://www.amazon.com/dp/..."></label>
+              <label class="wide">Script, exactly as you recorded it<textarea id="sale-script" rows="7" placeholder="Paste the words you read in the recording." required></textarea></label>
+            </div>
+            <div class="sales-files">
+              <label class="file-pick"><span class="file-title">Your recording</span><span class="file-name" id="sale-voice-name">No file yet</span><input id="sale-voice" type="file" accept="audio/*,video/*,.m4a,.mp3,.wav,.aac,.caf,.ogg,.opus,.webm,.mp4,.mov"></label>
+              <label class="file-pick"><span class="file-title">Book cover <em>(shown as the real product)</em></span><span class="file-name" id="sale-cover-name">No file yet</span><input id="sale-cover" type="file" accept="image/*"></label>
+              <label class="file-pick plain"><span class="file-title">Publish <em>(earliest about 45 minutes from now)</em></span><input id="sale-publish" type="datetime-local"></label>
+            </div>
+            <div class="sales-foot">
+              <p class="micro">Goes to YouTube Shorts, Instagram and Facebook Reels, and LinkedIn. The buy link leads every description and caption.</p>
+              <button class="btn btn-gold" id="sale-submit" type="submit">Make the video</button>
+            </div>
+            <p class="sale-status" id="sale-status" role="status"></p>
+          </form>
+        </article>
 
         <article class="panel panel-attention">
           <div class="panel-head"><h3>Waiting on you</h3><span class="micro">Record the script exactly as written</span></div>
