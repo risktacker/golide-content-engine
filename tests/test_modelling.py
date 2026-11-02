@@ -308,7 +308,7 @@ class TopicLockTests(unittest.TestCase):
 
         source = inspect.getsource(production.ProductionService.run)
         self.assertIn("topic_locked", source)
-        self.assertIn("if self.youtube is not None and not topic_locked and not sale:", source)
+        self.assertIn("if self.youtube is not None and not topic_locked and not external:", source)
 
     def test_music_bed_is_a_little_lower(self):
         from golide_engine.vector.ambient import LEVEL_DB

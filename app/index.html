@@ -164,25 +164,24 @@
           </article>
         </div>
 
-        <article class="panel" id="sales-panel">
-          <div class="panel-head"><h3>Sales video</h3><span class="micro">Your own script, built into a Short and posted everywhere</span></div>
-          <form id="sales-form" class="sales-form" novalidate>
+        <article class="panel" id="external-panel">
+          <div class="panel-head"><h3>Your own video</h3><span class="micro">Any time, outside the schedule</span></div>
+          <form id="external-form" class="sales-form" novalidate>
             <div class="sales-grid">
-              <label>Title<input id="sale-title" maxlength="100" placeholder="The Job Search Conversion System" required></label>
-              <label>Product name<input id="sale-product" maxlength="120" placeholder="Book title as it appears on Amazon"></label>
-              <label class="wide">Buy link<input id="sale-link" type="url" inputmode="url" placeholder="https://www.amazon.com/dp/..."></label>
-              <label class="wide">Script, exactly as you recorded it<textarea id="sale-script" rows="7" placeholder="Paste the words you read in the recording." required></textarea></label>
+              <label class="wide"><span>Title <em class="opt">(optional, the engine writes one if empty)</em></span><input id="ext-title" maxlength="100"></label>
+              <label class="wide">Script you recorded<textarea id="ext-script" rows="7" placeholder="Paste the words you read, so the engine can check them against the audio." required></textarea></label>
+              <label><span>Link <em class="opt">(optional, for the description)</em></span><input id="ext-link" type="url" inputmode="url" placeholder="https://"></label>
+              <label><span>Reference link <em class="opt">(optional, what the video is about)</em></span><input id="ext-ref-link" type="url" inputmode="url" placeholder="https://"></label>
             </div>
-            <div class="sales-files">
-              <label class="file-pick"><span class="file-title">Your recording</span><span class="file-name" id="sale-voice-name">No file yet</span><input id="sale-voice" type="file" accept="audio/*,video/*,.m4a,.mp3,.wav,.aac,.caf,.ogg,.opus,.webm,.mp4,.mov"></label>
-              <label class="file-pick"><span class="file-title">Book cover <em>(shown as the real product)</em></span><span class="file-name" id="sale-cover-name">No file yet</span><input id="sale-cover" type="file" accept="image/*"></label>
-              <label class="file-pick plain"><span class="file-title">Publish <em>(earliest about 45 minutes from now)</em></span><input id="sale-publish" type="datetime-local"></label>
+            <div class="sales-files two">
+              <label class="file-pick"><span class="file-title">Your recording</span><span class="file-name" id="ext-voice-name">No file yet</span><input id="ext-voice" type="file" accept="audio/*,video/*,.m4a,.mp3,.wav,.aac,.caf,.ogg,.opus,.webm,.mp4,.mov"></label>
+              <label class="file-pick"><span class="file-title">Reference picture <em>(optional, shown as the real thing)</em></span><span class="file-name" id="ext-ref-name">No file yet</span><input id="ext-ref" type="file" accept="image/*"></label>
             </div>
             <div class="sales-foot">
-              <p class="micro">Goes to YouTube Shorts, Instagram and Facebook Reels, and LinkedIn. The buy link leads every description and caption.</p>
-              <button class="btn btn-gold" id="sale-submit" type="submit">Make the video</button>
+              <p class="micro">Publishes as soon as it is built, about 30 minutes.</p>
+              <button class="btn btn-gold" id="ext-submit" type="submit">Make the video</button>
             </div>
-            <p class="sale-status" id="sale-status" role="status"></p>
+            <p class="sale-status" id="ext-status" role="status"></p>
           </form>
         </article>
 

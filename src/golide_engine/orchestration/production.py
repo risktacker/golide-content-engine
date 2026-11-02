@@ -548,10 +548,10 @@ class ProductionService:
         self.costs.require_rate("gpt-image-2-image-output", "output_per_million_tokens")
         self.costs.require_rate("web-search", "per_tool_call")
         text = self.providers.text(live=True)
-        # 2026-11-03: a sales video started by hand in Studio skips topic discovery,
+        # 2026-11-03: an external video started by hand in Studio skips topic discovery,
         # research and script writing; the owner's script and recording drive it.
-        from .sales import is_sale, owner_script_plan, sale_info, sale_research
-        sale = is_sale(spec)
+        from .external import is_external, owner_script_plan, external_info, external_research
+        external = is_external(spec)
 
         demand_path = work / "platform-demand.json"
         # 2026-10-22: once a topic is chosen it is locked. A resumed run (after the owner's
@@ -559,7 +559,7 @@ class ProductionService:
         # candidate's ("Apple CEO John Ternus..."), while the script and visuals stayed.
         topic_locked = bool(spec.get("selected_topic_source")) and \
             spec.get("platform_demand", {}).get("verdict") == "pass"
-        if self.youtube is not None and not topic_locked and not sale:
+        if self.youtube is not None and not topic_locked and not external:
             gate = YouTubeDemandGate(self.youtube, self.database)
             # Scheduled automation specs are deliberately generic. They must always
             # discover and compare fresh niche topics rather than allowing the generic
@@ -733,14 +733,14 @@ class ProductionService:
                 encoding="utf-8",
             )
             self.database.upsert_production(spec, "running")
-        elif not sale and spec.get("platform_demand", {}).get("verdict") != "pass":
+        elif not external and spec.get("platform_demand", {}).get("verdict") != "pass":
             raise TopicDemandRejected(
                 "platform-wide YouTube demand validation is required before production"
             )
 
         adjustment = FeedbackEngine(self.database).adjustment(spec["format"], spec.get("generation_parameters", {}))
         score = score_concept(spec["format"], spec["concept"]["scores"], adjustment)
-        if score.verdict != "produce" and not sale:
+        if score.verdict != "produce" and not external:
             raise RuntimeError(f"concept is not production-ready: {score.verdict} {score.blockers}")
         (work / "concept-score.json").write_text(json.dumps({"total": score.total, "verdict": score.verdict, "feedback_adjustment": adjustment}, indent=2) + "\n", encoding="utf-8")
 
@@ -755,9 +755,9 @@ class ProductionService:
             research_path.write_text(json.dumps(output.value, indent=2) + "\n", encoding="utf-8")
             self._record_text(production_id, "research", output)
             self.costs.record(production_id, "research-search", "openai", "web-search", Usage(tool_calls=1))
-        if sale:
+        if external:
             if not research_path.exists():
-                research_path.write_text(json.dumps(sale_research(spec), indent=2) + "\n", encoding="utf-8")
+                research_path.write_text(json.dumps(external_research(spec), indent=2) + "\n", encoding="utf-8")
         else:
             self.runner.run(production_id, "research", research_stage)
         # An owner-approved topic change ships its own research next to the
@@ -890,10 +890,10 @@ class ProductionService:
             scene_plan_path.write_text(json.dumps(plan, indent=2) + "\n", encoding="utf-8")
             script_path.write_text(script_text(plan) + "\n", encoding="utf-8")
             self._record_text(production_id, "script", output)
-        if sale:
+        if external:
             # The owner's own words, exactly as recorded, split into screen lines.
             if not script_path.exists():
-                plan = owner_script_plan(str(sale_info(spec).get("script", "")), str(spec.get("title", "")))
+                plan = owner_script_plan(str(external_info(spec).get("script", "")), "")
                 scene_plan_path.write_text(json.dumps(plan, indent=2) + "\n", encoding="utf-8")
                 script_path.write_text(script_text(plan) + "\n", encoding="utf-8")
         else:
@@ -909,7 +909,7 @@ class ProductionService:
                 script_path.write_text(script_text(plan) + "\n", encoding="utf-8")
         # 2026-10-27: every number in the script is written as digits (also fixes a plan
         # written before the rule, until the recording has been processed).
-        if scene_plan_path.exists() and not sale and not (work / "timed-words-owner.json").exists():
+        if scene_plan_path.exists() and not external and not (work / "timed-words-owner.json").exists():
             from ..engine.numerals import plan_digits
             current = json.loads(scene_plan_path.read_text(encoding="utf-8"))
             fixed = plan_digits(current)
@@ -1131,9 +1131,9 @@ class ProductionService:
                 # research, the trending video it models, and one web search for the look of
                 # any named product (a brand-new robot is otherwise drawn as a generic one).
                 facts = self._storyboard_facts(spec, work)
-                if sale:
-                    from .sales import storyboard_note
-                    facts += storyboard_note(spec)
+                if external:
+                    from .external import reference_note
+                    facts += reference_note(spec)
                 from ..vector.cover_line import recent_block, recent_lines
                 recent = recent_lines(self.root, production_id)
                 output = text.generate_json(
@@ -1218,19 +1218,18 @@ class ProductionService:
                             continue  # already paid for and checkpointed
                         if try_figure(part, target, str(spec["format"])):
                             continue  # math and physics layer: drawn in code, at no cost
-                        cover_ref = str(sale_info(spec).get("cover_ref") or "") if sale else ""
-                        if cover_ref and scene.get("product") and not part.figure and part.picture_id == scene["id"]:
-                            # 2026-11-03: a sales video shows the owner's real product picture
-                            # (the book cover), never one drawn by the image model.
+                        reference_ref = str(external_info(spec).get("reference_ref") or "") if external else ""
+                        if reference_ref and scene.get("product") and not part.figure and part.picture_id == scene["id"]:
+                            # 2026-11-03: the owner's own picture of the real thing, shown as it is.
                             try:
-                                from .sales import cover_plate, fetch_media
-                                source_cover = work / "sale-cover-source"
-                                if not source_cover.exists():
-                                    fetch_media(cover_ref, source_cover)
-                                cover_plate(source_cover, target)
+                                from .external import fetch_media, reference_plate
+                                source_picture = work / "owner-reference"
+                                if not source_picture.exists():
+                                    fetch_media(reference_ref, source_picture)
+                                reference_plate(source_picture, target)
                                 continue
                             except Exception as exc:  # the usual product picture below is the fallback
-                                print(f"::warning title=Owner product picture failed::{str(exc)[:200]}")
+                                print(f"::warning title=Owner reference picture failed::{str(exc)[:200]}")
                         if scene.get("product") and not part.figure and part.picture_id == scene["id"]:
                             # 2026-10-31: the real product, in full colour, shown whole (a plate).
                             self._reserve(spec, support_image_cost_model, Usage(images=1), stage="illustrations")
@@ -1852,8 +1851,6 @@ class ProductionService:
             if spec.get("model_title"):
                 # 2026-10-21: the title rides the breakout it was modelled on.
                 metadata["title"] = str(spec["model_title"])[:100]
-            if sale and str(spec.get("title", "")).strip():
-                metadata["title"] = str(spec["title"]).strip()[:100]   # the owner's own title
             # 2026-10-13 SEO layout: summary, keywords, (chapters), hashtags; 20+ tags.
             from ..youtube_metadata import compose_description, fit_tags, seo_body
             metadata["seo_body"] = seo_body(str(metadata["description"]))
@@ -1868,11 +1865,13 @@ class ProductionService:
                          for m in json.loads(chapters_path.read_text(encoding="utf-8"))]
                 metadata["chapters"] = youtube_chapters(marks, narration_seconds)
                 metadata["description"] = with_chapters(str(metadata["description"]), metadata["chapters"])
-            if sale:
-                # 2026-11-03: the buy link leads the description.
-                from .sales import with_link
-                metadata["description"] = with_link(str(metadata["description"]), str(sale_info(spec).get("link", "")))
-                metadata["buy_link"] = str(sale_info(spec).get("link", "")).strip()
+            if external and str(external_info(spec).get("title", "")).strip():
+                metadata["title"] = str(external_info(spec)["title"]).strip()[:100]   # the owner's own title
+            if external:
+                # 2026-11-03: the owner's optional link leads the description.
+                from .external import with_link
+                metadata["description"] = with_link(str(metadata["description"]), str(external_info(spec).get("link", "")))
+                metadata["link"] = str(external_info(spec).get("link", "")).strip()
             if music.attribution and music.attribution not in metadata["description"]:
                 metadata["description"] = metadata["description"].rstrip() + f"\n\nMusic: {music.attribution}"
             validate_upload_metadata(metadata, policy)

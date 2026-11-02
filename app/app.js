@@ -917,8 +917,7 @@ async function loadConnections() {
 
 $("#refresh-jobs").onclick = loadProductionJobs;
 
-// 2026-11-03: a sales video the owner starts by hand. Upload the recording and the cover,
-// then the engine builds the Short from his own script and posts it everywhere.
+// 2026-11-03: the owner's own video, any time: his recording and the script he read.
 async function prepareImageUpload(file) {
   const prepared = await api("/api/media/prepare", {
     method: "POST",
@@ -929,7 +928,7 @@ async function prepareImageUpload(file) {
     headers: { "Content-Type": file.type || "application/octet-stream" },
     body: file,
   });
-  if (!uploaded.ok) throw new Error("Cover upload failed (" + uploaded.status + ")");
+  if (!uploaded.ok) throw new Error("Picture upload failed (" + uploaded.status + ")");
   return prepared.media_ref;
 }
 
@@ -939,47 +938,41 @@ function showPicked(input, nameId) {
   input.closest(".file-pick").classList.toggle("has-file", !!file);
 }
 
-$("#sale-voice").onchange = (e) => showPicked(e.target, "#sale-voice-name");
-$("#sale-cover").onchange = (e) => showPicked(e.target, "#sale-cover-name");
+$("#ext-voice").onchange = (e) => showPicked(e.target, "#ext-voice-name");
+$("#ext-ref").onchange = (e) => showPicked(e.target, "#ext-ref-name");
 
-$("#sales-form").onsubmit = async (event) => {
+$("#external-form").onsubmit = async (event) => {
   event.preventDefault();
-  const status = $("#sale-status");
-  const button = $("#sale-submit");
+  const status = $("#ext-status");
+  const button = $("#ext-submit");
   const say = (text, bad = false) => { status.textContent = text; status.classList.toggle("bad", bad); };
-  const title = $("#sale-title").value.trim();
-  const script = $("#sale-script").value.trim();
-  const voice = $("#sale-voice").files?.[0];
-  const cover = $("#sale-cover").files?.[0];
-  if (!title) return say("Give the video a title.", true);
-  if (script.split(/\s+/).filter(Boolean).length < 8) return say("Paste the full script you recorded.", true);
+  const script = $("#ext-script").value.trim();
+  const voice = $("#ext-voice").files?.[0];
+  const picture = $("#ext-ref").files?.[0];
+  if (script.split(/\s+/).filter(Boolean).length < 8) return say("Paste the script you recorded.", true);
   if (!voice) return say("Choose your recording.", true);
   try {
-    const seconds = await audioDuration(voice);
-    const problem = recordingLengthProblem("short", seconds);
+    const problem = recordingLengthProblem("short", await audioDuration(voice));
     if (problem) return say(problem, true);
   } catch {}
   button.disabled = true;
   try {
     say("Uploading your recording...");
     const voiceRef = await prepareUpload(voice);
-    let coverRef = "";
-    if (cover) { say("Uploading the cover..."); coverRef = await prepareImageUpload(cover); }
-    const publish = $("#sale-publish").value;
+    let referenceRef = "";
+    if (picture) { say("Uploading the picture..."); referenceRef = await prepareImageUpload(picture); }
     say("Starting the build...");
-    const made = await api("/api/sales-videos", {
+    await api("/api/external-videos", {
       method: "POST",
       body: JSON.stringify({
-        title, script, voice_ref: voiceRef, cover_ref: coverRef,
-        product_name: $("#sale-product").value.trim(), link: $("#sale-link").value.trim(),
-        publish_at: publish ? new Date(publish).toISOString() : "",
+        title: $("#ext-title").value.trim(), script, voice_ref: voiceRef, reference_ref: referenceRef,
+        link: $("#ext-link").value.trim(), reference_link: $("#ext-ref-link").value.trim(),
       }),
     });
-    const when = new Date(made.scheduled_at).toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
-    say("Building now. It publishes " + when + " on every platform; it shows under Production below.");
-    $("#sales-form").reset();
-    showPicked($("#sale-voice"), "#sale-voice-name");
-    showPicked($("#sale-cover"), "#sale-cover-name");
+    say("Building now. It publishes when it is ready; follow it under Production below.");
+    $("#external-form").reset();
+    showPicked($("#ext-voice"), "#ext-voice-name");
+    showPicked($("#ext-ref"), "#ext-ref-name");
     await loadProductionJobs();
   } catch (error) {
     say(error.message, true);

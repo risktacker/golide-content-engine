@@ -1,6 +1,6 @@
 import { ANALYTICS_SCHEMA, analyticsReport, storeAnalytics } from "./analytics.js";
 import { labelMissing } from "./triage.js";
-import { buildSaleSpec } from "./sales.js";
+import { buildExternalSpec } from "./external.js";
 import { handleContact } from "./contact.js";
 import { sweepMedia } from "./storage.js";
 import { collectHealth, renderHealth, sendHealthEmail } from "./health.js";
@@ -1198,15 +1198,15 @@ async function handleApi(request,env,url){
     }catch(e){return err(e?.message||String(e),400);}
   }
   if(url.pathname==="/api/production-jobs"&&request.method==="GET") return json({jobs:await listProductionJobs(env.DB)});
-  // 2026-11-03: a sales video the owner starts by hand (script + recording + buy link + cover).
-  if(url.pathname==="/api/sales-videos"&&request.method==="POST"){
+  // 2026-11-03: an external video, started by hand: the owner's own script and recording.
+  if(url.pathname==="/api/external-videos"&&request.method==="POST"){
     try{
-      const spec=buildSaleSpec(await request.json());
+      const spec=buildExternalSpec(await request.json());
       const saved=await registerProductionJob(env.DB,{jobId:spec.id,spec});
-      await env.DB.prepare(`UPDATE production_jobs SET script=?,stage='sales-video-queued' WHERE job_id=?`)
-        .bind(spec.sale.script,spec.id).run();
-      try{await dispatchWorkflow(env,"production-scheduler.yml");}catch(e){console.log(JSON.stringify({dispatch:"sales_video_failed",error:String(e?.message||e)}));}
-      return json({...saved,scheduled_at:spec.release.scheduled_at},201);
+      await env.DB.prepare(`UPDATE production_jobs SET script=?,stage='external-video-queued' WHERE job_id=?`)
+        .bind(spec.external.script,spec.id).run();
+      try{await dispatchWorkflow(env,"production-scheduler.yml");}catch(e){console.log(JSON.stringify({dispatch:"external_video_failed",error:String(e?.message||e)}));}
+      return json(saved,201);
     }catch(e){return err(e?.message||String(e),400);}
   }
   const voiceMatch=url.pathname.match(/^\/api\/production-jobs\/([^/]+)\/voice$/);

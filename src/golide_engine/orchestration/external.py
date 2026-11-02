@@ -1,35 +1,31 @@
-"""Sales videos made from Studio (owner direction 2026-11-03).
+"""External videos (owner direction 2026-11-03).
 
-"A placeholder for sales videos, not the one scheduled by the engine... where I can paste the
-script that I've used for the audio, then you run it and you produce the video for me. And the
-video goes into all those platforms."
+"An option just for external video creation: upload my own audio, with a placeholder for the
+script that was used so it can be cross-checked. It creates the video from that instead of the
+engine's own script. Any day, any time, nothing to do with the schedule."
 
-A sales video is a Short the owner starts by hand in Studio: his script (exactly as he recorded
-it), his recording, a title, the buy link and a picture of the product (a book cover). The
-engine skips topic discovery, research and script writing, and builds everything else exactly
-as for any video: storyboard, illustrations, render, thumbnail, upload, Reels and posts. The
-product itself is never redrawn by an image model: its reveal scenes use the real picture.
+The engine skips topic discovery, research and script writing, and builds the video from the
+owner's script and recording exactly as for any other video. An optional link goes into the
+YouTube description and the Facebook and LinkedIn captions.
 """
 
 from __future__ import annotations
 
 import json
 import re
-import shutil
-import urllib.request
 from pathlib import Path
 from typing import Any
 
-PURPOSE = "sales-video"
+PURPOSE = "external-video"
 MAX_LINE_WORDS = 14
 
 
-def is_sale(spec: dict[str, Any]) -> bool:
+def is_external(spec: dict[str, Any]) -> bool:
     return spec.get("purpose") == PURPOSE
 
 
-def sale_info(spec: dict[str, Any]) -> dict[str, Any]:
-    return dict(spec.get("sale") or {})
+def external_info(spec: dict[str, Any]) -> dict[str, Any]:
+    return dict(spec.get("external") or {})
 
 
 # ---------------------------------------------------------------------------
@@ -66,7 +62,7 @@ def owner_script_plan(script: str, title: str) -> dict[str, Any]:
     """The scene plan the rest of the engine expects, built from the owner's own words."""
     text = " ".join(str(script or "").split())
     if len(text.split()) < 8:
-        raise ValueError("the sales script is too short (fewer than 8 words)")
+        raise ValueError("the script is too short (fewer than 8 words)")
     sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", text) if s.strip()]
     texts = [line for sentence in sentences for line in _chunks(sentence)]
     lines = []
@@ -79,36 +75,44 @@ def owner_script_plan(script: str, title: str) -> dict[str, Any]:
     return {"title": title, "chapters": [], "lines": lines}
 
 
-def sale_research(spec: dict[str, Any]) -> dict[str, Any]:
-    """What the video may claim: only what the owner wrote about his own product."""
-    info = sale_info(spec)
-    link = str(info.get("link", ""))
-    name = str(info.get("product_name") or spec.get("title", ""))
-    return {
-        "summary": f"Sales video for {name}, the owner's own product, in the owner's own words.",
-        "claims": [{
-            "claim": f"{name} is available at {link}" if link else name,
-            "source_title": name, "source_url": link, "published_or_updated": "",
-        }],
-    }
-
-
-def storyboard_note(spec: dict[str, Any]) -> str:
-    info = sale_info(spec)
-    name = str(info.get("product_name") or spec.get("title", ""))
-    return (
-        f"\nSALES VIDEO: this Short sells the owner's own product, {name}. The product is shown as "
-        "itself in its reveal scenes (set \"product\": true there; its real picture is used, never "
-        "drawn). Every other scene illustrates what the line says: the reader's problem, the result "
-        "they get, the moment of buying, the steps the product walks them through.\n"
-    )
+def external_research(spec: dict[str, Any]) -> dict[str, Any]:
+    """Nothing to research: the facts are the owner's own words."""
+    link = str(external_info(spec).get("link", ""))
+    return {"summary": "Video built from the owner's own script and recording.",
+            "claims": [{"claim": "The owner's own script.", "source_title": "Owner",
+                        "source_url": link, "published_or_updated": ""}]}
 
 
 # ---------------------------------------------------------------------------
-# Media from Studio (R2 refs, https or a local path)
+# The optional link
 # ---------------------------------------------------------------------------
+
+def with_link(text: str, link: str, lead: str = "Link") -> str:
+    """The link at the top of a description or caption (once)."""
+    text = str(text or "").strip()
+    link = str(link or "").strip()
+    if not link or link in text:
+        return text
+    return f"{lead}: {link}\n\n{text}" if text else f"{lead}: {link}"
+
+
+# ---------------------------------------------------------------------------
+# The owner's optional reference: a picture of the real thing, or a link to it
+# ---------------------------------------------------------------------------
+
+def reference_note(spec: dict[str, Any]) -> str:
+    """For the storyboard: the owner says what the real thing is (look it up, draw it as it is)."""
+    url = str(external_info(spec).get("reference_link", "")).strip()
+    if not url:
+        return ""
+    return (f"\nREFERENCE FROM THE OWNER: {url}\nThis is the real thing the video is about. Use web search "
+            "to see exactly what it is and what it looks like, and draw it as it really is.\n")
+
 
 def fetch_media(ref: str, dest: Path) -> Path:
+    import shutil
+    import urllib.request
+
     dest.parent.mkdir(parents=True, exist_ok=True)
     if ref.startswith("r2://"):
         from ..storage.r2 import r2_store_from_environment
@@ -121,16 +125,12 @@ def fetch_media(ref: str, dest: Path) -> Path:
         with urllib.request.urlopen(ref, timeout=90) as response:
             dest.write_bytes(response.read())
     else:
-        local = Path(ref).expanduser()
-        if not local.is_file():
-            raise RuntimeError(f"media not found: {ref}")
-        shutil.copyfile(local, dest)
+        shutil.copyfile(Path(ref).expanduser(), dest)
     return dest
 
 
-def cover_plate(source: Path, target: Path) -> Path:
-    """The real product picture as a plate (the engine's full-colour product picture: the
-    pen traces its outline, then the picture fills in)."""
+def reference_plate(source: Path, target: Path) -> Path:
+    """The owner's real picture as the product picture (the pen traces its outline, then it fills in)."""
     from PIL import Image
 
     image = Image.open(source).convert("RGBA")
@@ -143,16 +143,3 @@ def cover_plate(source: Path, target: Path) -> Path:
     target.with_suffix(".plate.json").write_text(json.dumps({"kind": "product", "source": "owner"}) + "\n",
                                                  encoding="utf-8")
     return target
-
-
-# ---------------------------------------------------------------------------
-# The buy link everywhere the video goes
-# ---------------------------------------------------------------------------
-
-def with_link(text: str, link: str, lead: str = "Get it here") -> str:
-    """The buy link at the top of a description or caption (once)."""
-    text = str(text or "").strip()
-    link = str(link or "").strip()
-    if not link or link in text:
-        return text
-    return f"{lead}: {link}\n\n{text}" if text else f"{lead}: {link}"

@@ -73,6 +73,7 @@ def reels_payload(*, content_id: str, metadata: dict[str, Any], video_ref: str, 
                   youtube_video_id: str, owner_voice_ref: str, publish_at: str | None = None) -> dict[str, Any]:
     from ..youtube_metadata import social_caption
     caption = social_caption(str(metadata.get("title", "")), metadata, 2100)
+    instagram_caption = social_caption(str(metadata.get("title", "")), metadata, 2100, include_link=False)
     cover = [f"cover:{cover_ref}"] if cover_ref else []
     return {
         "id": content_id,
@@ -85,7 +86,7 @@ def reels_payload(*, content_id: str, metadata: dict[str, Any], video_ref: str, 
         "release_approved": True,
         "scheduled_at": release_time(publish_at),
         "variants": [
-            {"platform": "instagram", "title": "", "body": caption, "media_ref": video_ref, "parts": cover},
+            {"platform": "instagram", "title": "", "body": instagram_caption, "media_ref": video_ref, "parts": cover},
             {"platform": "facebook", "title": "", "body": caption, "media_ref": video_ref, "parts": cover},
             {"platform": "linkedin", "title": "", "body": caption, "media_ref": video_ref, "parts": cover},
             {"platform": "youtube", "title": metadata.get("title", ""), "body": "",

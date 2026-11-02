@@ -447,11 +447,13 @@ body.sheet-open{overflow:hidden}
 .triage-pitch,.triage-spam{opacity:.7}
 .mail-thread .triage-why{display:block;font-size:.75rem;color:var(--muted);opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-/* Sales video (2026-11-03) */
+/* Your own video (2026-11-03) */
 .sales-form{display:flex;flex-direction:column;gap:14px}
 .sales-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .sales-grid label{display:flex;flex-direction:column;gap:6px;font-size:.875rem;color:var(--muted)}
 .sales-grid .wide{grid-column:1/-1}
+.sales-grid .opt{font-style:normal;opacity:.75}
+.sales-files.two{grid-template-columns:repeat(2,minmax(0,1fr))}
 .sales-grid input,.sales-grid textarea,.file-pick input[type=datetime-local]{width:100%;box-sizing:border-box;padding:11px 12px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface);color:var(--text);font:inherit;font-size:.9375rem;resize:vertical}
 .sales-grid input:focus,.sales-grid textarea:focus,.file-pick input:focus{outline:none;border-color:var(--gold)}
 .sales-files{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
@@ -466,4 +468,4 @@ body.sheet-open{overflow:hidden}
 .sales-foot{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .sale-status{font-size:.875rem;color:var(--muted);min-height:1.2em}
 .sale-status.bad{color:var(--danger)}
-@media (max-width:720px){.sales-grid,.sales-files{grid-template-columns:1fr}.sales-foot{flex-direction:column;align-items:stretch}}
+@media (max-width:720px){.sales-grid,.sales-files,.sales-files.two{grid-template-columns:1fr}.sales-foot{flex-direction:column;align-items:stretch}}
