@@ -1,0 +1,541 @@
+{
+  "production_id": "golide-short-2026-11-02",
+  "youtube_video_id": "7Gk3zGZEA4U",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "7Gk3zGZEA4U",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-11-02T07:43:29.463721+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "A credit card size battery that actually charges your phone??",
+    "status": "scheduled",
+    "scheduled_at": "2026-11-02T11:00:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-shorts-mon-wed-fri\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "A wallet-sized battery that instantly charges your phone\nsounds like an emergency trick,\nbut before that charge reaches your phone, it has to fit somewhere.\nA standard card footprint is 85.6 by 53.98 millimeters,\nand at 1 millimeter thick, its volume is about 4.6 cubic centimeters.\nUsing the Department of Energy's 450 watt-hours per liter benchmark,\nthat gives roughly 2 watt-hours before casing and electronics.\nMake it 3 millimeters thick, and it reaches 6 watt-hours,\nstill below Google's 16.48 watt-hour Pixel 7 battery.\nSo the card could provide a quick emergency boost,\nbut not a full recharge, especially after conversion losses.\nAnd charging speed is not controlled by the battery alone,\nbecause the charger, cable, temperature, and phone chips matter.\nPower-management chips share incoming power with the phone,\nthen reduce current when the phone demands more.\nLithium-ion charging moves through pre-charge, constant-current, and constant-voltage stages,\nwhich is why charging slows near full.\nSo instant charging usually means a fast top-up,\nnot a power bank.\nFollow the channel for reality checks.\nWould you trade capacity\nfor a battery thin enough for your wallet?\n",
+  "research": {
+    "summary": "**Reality-check video concept: “Can a Battery Really Fit in Your Wallet?”**\n\n**Hook:** “A battery the size of a credit card that can instantly charge your phone? The physics says: maybe useful—but not magic.”\n\n**Scene 1 — The energy limit**\nA standard ID-1 payment card is about 85.6 by 54 millimeters. If a battery occupied that footprint and were 1 millimeter thick, its volume would be roughly 4.6 cubic centimeters. Using 450 watt-hours per liter as a benchmark for lithium-ion cell volumetric energy density, that works out to about **2 watt-hours before subtracting casing, electronics, connectors, and safety space**. A 3-millimeter-thick version would be about **6 watt-hours before losses**.\n\n**Scene 2 — Put that beside a phone**\nFor comparison, Google lists the Pixel 7 battery at 16.48 watt-hours. So a genuinely card-thin battery could not physically contain a full phone battery’s worth of energy. A 1-millimeter version might represent roughly an eighth of that energy; a thicker 3-millimeter version might approach a third—before conversion losses.\n\n**Scene 3 — Why charging speed is not just about the battery**\nCharging speed depends on the charger, cable, battery chemistry, temperature, and the phone’s charging and power-management hardware. Battery-management chips regulate current and voltage, power the phone while charging, and can reduce charging current when the phone itself is drawing more power. Lithium-ion charging also normally moves through pre-charge, constant-current, and constant-voltage stages, so charging usually slows near full capacity.\n\n**Scene 4 — What “instant charging” usually means**\nA small battery can deliver a noticeable top-up quickly because it has less energy to transfer. But “instant” should not be interpreted as “full phone recharge.” If the wallet battery stores only a few watt-hours, it may provide a short emergency boost or a partial charge—not replace a conventional power bank.\n\n**Ending:** “The real product question is not whether a wallet-sized battery can exist. It can. The question is whether people would trade capacity—and probably charging cycles—for something thin enough to carry like a card.”\n\n**Verdict:** A wallet-sized lithium battery is physically plausible as a small emergency charger. Claims that it can instantly and fully recharge a modern phone are not supported by the energy budget unless the device is substantially thicker, uses an external energy source, or the claim refers only to a brief top-up.",
+    "claims": [
+      {
+        "claim": "The ISO/IEC 7810 ID-1 card format is nominally 85.60 mm by 53.98 mm by 0.76 mm.",
+        "source_title": "ISO/IEC 7810:2019 — Identification cards: Physical characteristics",
+        "source_url": "https://www.iso.org/obp/ui?_escaped_fragment_=iso%3Astd%3Aiso-iec%3A7810%3Aed-3%3Av1%3Aen",
+        "published_or_updated": "2019 edition; page accessed 2026-11-02"
+      },
+      {
+        "claim": "The U.S. Department of Energy reports lithium-ion volumetric energy density rising from about 55 Wh/L in 2008 to about 450 Wh/L in 2020.",
+        "source_title": "DOE Fact of the Week #1234: Volumetric Energy Density of Lithium-ion Batteries",
+        "source_url": "https://www.energy.gov/cmei/vehicles/articles/fotw-1234-april-18-2022-volumetric-energy-density-lithium-ion-batteries",
+        "published_or_updated": "April 18, 2022"
+      },
+      {
+        "claim": "Google lists the Pixel 7 battery at 16.48 Wh, while several recent Pixel batteries listed by Google fall in the roughly 12–19 Wh range.",
+        "source_title": "Google Pixel lithium battery test summary",
+        "source_url": "https://support.google.com/product-documentation/answer/9682653?hl=en",
+        "published_or_updated": "Updated within the past year; page accessed 2026-11-02"
+      },
+      {
+        "claim": "Battery charger and power-path-management ICs can share input power between the phone and the battery, and reduce charge current when system load rises.",
+        "source_title": "Texas Instruments bq24075-Q1 Li-ion charger datasheet",
+        "source_url": "https://www.ti.com/lit/ds/symlink/bq24075-q1.pdf",
+        "published_or_updated": "Revised datasheet; page accessed 2026-11-02"
+      },
+      {
+        "claim": "A conventional lithium-ion charging profile includes pre-charge, constant-current, and constant-voltage regulation, with charging typically controlled by dedicated charger circuitry.",
+        "source_title": "Texas Instruments BQ25150 product documentation",
+        "source_url": "https://www.ti.com/product/BQ25150/part-details/BQ25150YFPT",
+        "published_or_updated": "Page accessed 2026-11-02"
+      },
+      {
+        "claim": "The approximate energy figures in the script are calculations: 85.6 mm × 53.98 mm × 1 mm equals about 4.62 cm³, which at 450 Wh/L equals about 2.08 Wh; at 3 mm thickness, the result is about 6.24 Wh.",
+        "source_title": "Calculation based on ISO card dimensions and DOE volumetric-energy benchmark",
+        "source_url": "https://www.energy.gov/cmei/vehicles/articles/fotw-1234-april-18-2022-volumetric-energy-density-lithium-ion-batteries",
+        "published_or_updated": "Calculation performed 2026-11-02"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "A credit card size battery that actually charges your phone??",
+    "description": "Could a battery the size of a credit card really give your phone an instant charge? This video breaks down how much energy can fit inside a wallet-sized battery and why it would provide an emergency boost—not a full recharge.\n\nWe also explain why charging speed depends on the charger, cable, temperature, phone chips, and lithium-ion charging stages. Would you trade battery capacity for a charger thin enough to carry in your wallet?\n\n#BatteryTech #PowerBank #PhoneCharging #BatteryScience #TechExplained #GOLIDE",
+    "tags": [
+      "wallet battery",
+      "card size battery",
+      "wallet phone charger",
+      "credit card power bank",
+      "thin phone charger",
+      "emergency phone charger",
+      "instant phone charge",
+      "fast phone charging",
+      "portable phone battery",
+      "slim power bank",
+      "ultra thin power bank",
+      "card power bank",
+      "phone battery explained",
+      "battery capacity explained",
+      "lithium ion charging",
+      "phone charging speed",
+      "charging conversion losses",
+      "battery energy density",
+      "power management chip",
+      "wallet power bank"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "keywords": [
+      "wallet sized battery",
+      "card size power bank",
+      "wallet phone charger",
+      "credit card power bank",
+      "thin phone charger",
+      "emergency phone charger",
+      "instant phone charge",
+      "fast phone charging",
+      "slim power bank",
+      "portable phone battery",
+      "battery capacity",
+      "lithium ion charging",
+      "charging speed",
+      "phone battery science"
+    ],
+    "hashtags": [
+      "#BatteryTech",
+      "#PowerBank",
+      "#PhoneCharging",
+      "#BatteryScience",
+      "#TechExplained",
+      "#GOLIDE"
+    ],
+    "format": "short",
+    "title_description_language": "en",
+    "seo_body": "Could a battery the size of a credit card really give your phone an instant charge? This video breaks down how much energy can fit inside a wallet-sized battery and why it would provide an emergency boost—not a full recharge.\n\nWe also explain why charging speed depends on the charger, cable, temperature, phone chips, and lithium-ion charging stages. Would you trade battery capacity for a charger thin enough to carry in your wallet?"
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "The ISO/IEC 7810 ID-1 card format is nominally 85.60 mm by 53.98 mm by 0.76 mm.",
+        "source_title": "ISO/IEC 7810:2019 — Identification cards: Physical characteristics",
+        "source_url": "https://www.iso.org/obp/ui?_escaped_fragment_=iso%3Astd%3Aiso-iec%3A7810%3Aed-3%3Av1%3Aen",
+        "published_or_updated": "2019 edition; page accessed 2026-11-02"
+      },
+      {
+        "claim": "The U.S. Department of Energy reports lithium-ion volumetric energy density rising from about 55 Wh/L in 2008 to about 450 Wh/L in 2020.",
+        "source_title": "DOE Fact of the Week #1234: Volumetric Energy Density of Lithium-ion Batteries",
+        "source_url": "https://www.energy.gov/cmei/vehicles/articles/fotw-1234-april-18-2022-volumetric-energy-density-lithium-ion-batteries",
+        "published_or_updated": "April 18, 2022"
+      },
+      {
+        "claim": "Google lists the Pixel 7 battery at 16.48 Wh, while several recent Pixel batteries listed by Google fall in the roughly 12–19 Wh range.",
+        "source_title": "Google Pixel lithium battery test summary",
+        "source_url": "https://support.google.com/product-documentation/answer/9682653?hl=en",
+        "published_or_updated": "Updated within the past year; page accessed 2026-11-02"
+      },
+      {
+        "claim": "Battery charger and power-path-management ICs can share input power between the phone and the battery, and reduce charge current when system load rises.",
+        "source_title": "Texas Instruments bq24075-Q1 Li-ion charger datasheet",
+        "source_url": "https://www.ti.com/lit/ds/symlink/bq24075-q1.pdf",
+        "published_or_updated": "Revised datasheet; page accessed 2026-11-02"
+      },
+      {
+        "claim": "A conventional lithium-ion charging profile includes pre-charge, constant-current, and constant-voltage regulation, with charging typically controlled by dedicated charger circuitry.",
+        "source_title": "Texas Instruments BQ25150 product documentation",
+        "source_url": "https://www.ti.com/product/BQ25150/part-details/BQ25150YFPT",
+        "published_or_updated": "Page accessed 2026-11-02"
+      },
+      {
+        "claim": "The approximate energy figures in the script are calculations: 85.6 mm × 53.98 mm × 1 mm equals about 4.62 cm³, which at 450 Wh/L equals about 2.08 Wh; at 3 mm thickness, the result is about 6.24 Wh.",
+        "source_title": "Calculation based on ISO card dimensions and DOE volumetric-energy benchmark",
+        "source_url": "https://www.energy.gov/cmei/vehicles/articles/fotw-1234-april-18-2022-volumetric-energy-density-lithium-ion-batteries",
+        "published_or_updated": "Calculation performed 2026-11-02"
+      }
+    ],
+    "platform_demand": {
+      "query": "credit card size battery phone charger energy density fast charging limits",
+      "score": 88.2,
+      "verdict": "pass",
+      "recent_videos": 1,
+      "median_views_per_day": 3651216.0,
+      "top_views_per_day": 3651216.0,
+      "market_coverage": 1,
+      "title_query_overlap": 1.0,
+      "measured_at": "2026-11-02T07:03:13.967795+00:00",
+      "signal_type": "youtube-breakout-v1"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.59,
+      "true_peak_dbtp": -1.98,
+      "loudness_range": 2.5
+    },
+    "editorial": {
+      "beats": 22,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-11-02T07:43:20.673527+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-short-2026-11-02",
+    "created_at": "2026-11-02T07:43:21.892462+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-11-02T11:00:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "85f3c7a155b701a2f7640c8924263b24ba8fb69f2d89ab65c52732aa28b54b9d",
+        "bytes": 21865164
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "ca5c814ff8b946a200d015fce6b56da2ada92a69eca169672e9bbe298b8a76d3",
+        "bytes": 186772
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "8ecf4f8a61e80c2b6f4b061ac6cea03d01cc26b8deff1de297344c52c1bd4801",
+        "bytes": 2417
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "67208b7c07b306566089d0d3cf954f9a1330f6006e42762e72fdcef0a1df652e",
+        "bytes": 2482
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "f18ccac462107cdcb6be83472be186d176449b1c95bd44da1c7d86848bceec28",
+        "bytes": 636
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "cbf43d4ea2af7b8621d27565d186b56ac07f4b9d129c12e689a6f32277a7a6c4",
+        "bytes": 3386
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "dd482252d52a124e807e99a4422dffe7a9561e07ec88e59ca1c3f75ab7bda498",
+        "bytes": 390
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "22265840f3fcb284266c19414b652d6f7b536e14639d00ae29a11544728d1d6f",
+        "bytes": 277
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 34829.0,
+      "cached_input_units": 0.0,
+      "output_units": 2861.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.010399,
+      "created_at": "2026-11-02T07:03:13.476493+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-02T07:03:13.478631+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 21669.0,
+      "cached_input_units": 0.0,
+      "output_units": 2311.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007107,
+      "created_at": "2026-11-02T07:03:43.962468+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-02T07:03:43.964163+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 4055.0,
+      "cached_input_units": 0.0,
+      "output_units": 4241.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.0059,
+      "created_at": "2026-11-02T07:04:51.168385+00:00"
+    },
+    {
+      "stage": "script-spoken",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 11831.0,
+      "cached_input_units": 0.0,
+      "output_units": 2623.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005514,
+      "created_at": "2026-11-02T07:05:55.930374+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 5555.0,
+      "cached_input_units": 1599.0,
+      "output_units": 4030.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005659,
+      "created_at": "2026-11-02T07:05:55.932432+00:00"
+    },
+    {
+      "stage": "visual-plan-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-02T07:33:27.072091+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 15264.0,
+      "cached_input_units": 0.0,
+      "output_units": 3159.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006844,
+      "created_at": "2026-11-02T07:33:27.078329+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-02T07:33:45.478746+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-02T07:34:01.582690+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-02T07:34:15.781651+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-02T07:34:29.414451+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-02T07:34:44.175976+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-02T07:34:59.828314+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-02T07:35:13.337864+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-02T07:35:27.022346+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-02T07:35:40.587099+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-02T07:35:53.383714+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-02T07:36:07.861826+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9455.0,
+      "cached_input_units": 0.0,
+      "output_units": 769.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002814,
+      "created_at": "2026-11-02T07:43:03.638313+00:00"
+    }
+  ],
+  "recorded_at": "2026-11-02T07:43:29.470033+00:00"
+}
