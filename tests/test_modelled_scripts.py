@@ -36,10 +36,13 @@ class ModelledScriptTests(unittest.TestCase):
 
     def test_humanizer_is_the_last_pass_with_the_owner_as_voice_sample(self):
         text = spoken_pass_instructions("short")
-        self.assertIn("HUMANIZER GUIDE", text)
-        self.assertIn("Staging instead of stating", text)
+        # 2026-11-04: the owner's own script-voice guide; each chapter rewritten as free speech
+        self.assertIn("SCRIPT VOICE GUIDE", text)
+        self.assertIn("Write for the ear, not the eye", text)
         self.assertIn("VOICE SAMPLE", text)
-        self.assertIn("same number of lines", text)
+        self.assertIn("ONE continuous talk", text)
+        self.assertIn("BRIDGES", text)
+        self.assertIn("TALK TO THE VIEWER", text)
         self.assertIn("Humanizer pass: applied", spoken_pass_line({"status": "applied"}))
 
 
@@ -116,7 +119,8 @@ class SpokenFlowTests(unittest.TestCase):
         self.assertIn("WE EXPLAIN, WE DID NOT TEST", text)
         self.assertIn("a third of a second", text)
         self.assertEqual(digits("two thirds of owners"), "two thirds of owners")
-        self.assertIn("one short sentence per line", spoken_pass_instructions("short"))
+        self.assertIn("he did not test anything himself", spoken_pass_instructions("short"))
+        self.assertIn("fractions and everyday ordinals stay words", spoken_pass_instructions("short"))
 
 
 class ProductPlateTests(unittest.TestCase):

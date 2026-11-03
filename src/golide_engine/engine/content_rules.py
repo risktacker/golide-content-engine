@@ -1033,7 +1033,120 @@ SPOKEN_SCHEMA: dict = {
 }
 
 
-HUMANIZER_FILE = Path(__file__).resolve().parents[3] / "config" / "humanizer.md"
+# 2026-11-04: the owner's own script-voice guide replaces the generic humanizer.
+HUMANIZER_FILE = Path(__file__).resolve().parents[3] / "config" / "script-voice.md"
+
+# 2026-11-04: the spoken pass rewrites each chapter as free speech (it may add, merge or drop
+# sentences: "Think about it.", "Because you'd be surprised..."), and the code splits the result
+# into screen lines afterwards. A line-for-line swap could only change words, never the flow.
+SPOKEN_CHAPTERS_SCHEMA: dict = {
+    "type": "object",
+    "additionalProperties": False,
+    "properties": {"script": {"type": "string"}},
+    "required": ["script"],
+}
+
+# 2026-11-04 (second pass): the whole script goes in and comes back as ONE continuous talk, with
+# a marker where each chapter starts. Rewritten as separate chapter blocks, every chapter began
+# cold ("no bridges"); one continuous text lets each paragraph pick up from the last one.
+CHAPTER_MARK = re.compile(r"\[\[(\d+)\]\]")
+
+
+SCREEN_LINE_WORDS = 14
+
+
+def split_spoken(text: str, max_words: int = SCREEN_LINE_WORDS) -> list[str]:
+    """Speech into screen lines: sentence by sentence, long sentences at their commas, never
+    a word changed or reordered."""
+    sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", " ".join(str(text or "").split())) if s.strip()]
+    lines: list[str] = []
+    for sentence in sentences:
+        words = sentence.split()
+        if len(words) <= max_words:
+            lines.append(sentence)
+            continue
+        current: list[str] = []
+        for piece in [p for p in re.split(r"(?<=[,;:])\s+", sentence) if p.strip()]:
+            piece_words = piece.split()
+            if current and len(current) + len(piece_words) > max_words:
+                lines.append(" ".join(current))
+                current = []
+            current.extend(piece_words)
+            while len(current) > max_words:
+                parts = -(-len(current) // max_words)
+                size = -(-len(current) // parts)
+                lines.append(" ".join(current[:size]))
+                current = current[size:]
+        if current:
+            lines.append(" ".join(current))
+    return lines
+
+
+def draft_chapters(plan: dict) -> str:
+    """The draft as one continuous script, a [[n]] marker where chapter n starts."""
+    out: list[str] = []
+    current = None
+    for line in plan.get("lines", []):
+        index = int(line.get("chapter") or 0)
+        if index != current:
+            out.append(f"\n\n[[{index}]] ")
+            current = index
+        out.append(str(line.get("text", "")).strip() + " ")
+    return "".join(out).strip()
+
+
+def spoken_blocks(script: str) -> list[dict]:
+    """Split the rewritten script back into chapters at its [[n]] markers."""
+    parts = CHAPTER_MARK.split(str(script or ""))
+    blocks = []
+    lead = " ".join(parts[0].split())
+    if lead:  # text before the first marker belongs to the opening chapter
+        blocks.append({"chapter": -1, "text": lead})
+    for i in range(1, len(parts) - 1, 2):
+        text = " ".join(parts[i + 1].split())
+        if text:
+            blocks.append({"chapter": int(parts[i]), "text": text})
+    return blocks
+
+
+def merge_spoken_chapters(plan: dict, spoken: dict) -> dict | None:
+    """The draft rebuilt from the rewritten chapters. Each new line takes the picture fields of
+    the draft line at the same point of its chapter, so the visuals still follow the words.
+    None (the draft is kept) if a chapter is missing or empty."""
+    groups: list[list[dict]] = []
+    for line in plan.get("lines", []):
+        if groups and int(groups[-1][0].get("chapter") or 0) == int(line.get("chapter") or 0):
+            groups[-1].append(line)
+        else:
+            groups.append([line])
+    new = spoken_blocks(spoken.get("script", "")) if isinstance(spoken, dict) else []
+    if new and new[0]["chapter"] == -1 and groups:
+        if len(new) > 1 and new[1]["chapter"] == int(groups[0][0].get("chapter") or 0):
+            new = [dict(new[1], text=new[0]["text"] + " " + new[1]["text"])] + new[2:]
+        else:
+            new = [dict(new[0], chapter=int(groups[0][0].get("chapter") or 0))] + new[1:]
+    if len(new) != len(groups) or not groups:
+        return None
+    lines: list[dict] = []
+    for group, block in zip(groups, new):
+        if int(block.get("chapter", -1)) != int(group[0].get("chapter") or 0):
+            return None
+        texts = split_spoken(str(block.get("text", "")))
+        if not texts:
+            return None
+        used_labels: set[int] = set()
+        for i, text in enumerate(texts):
+            source_index = min(len(group) - 1, int((i + 0.5) / len(texts) * len(group)))
+            source = group[source_index]
+            emphasis = str(source.get("emphasis", ""))
+            if not emphasis or emphasis.lower() not in text.lower():
+                words = [w.strip(".,?!:;'\"") for w in text.split() if len(w.strip(".,?!:;'\"")) > 3]
+                emphasis = max(words, key=len) if words else text.split()[-1].strip(".,?!")
+            label = source.get("label", "") if source_index not in used_labels else ""
+            used_labels.add(source_index)
+            lines.append(dict(source, text=text, emphasis=emphasis, label=label,
+                              follow="follow" in text.lower()))
+    return dict(plan, lines=lines)
 
 
 def spoken_pass_instructions(format_name: str, model_seconds: float | None = None) -> str:
@@ -1045,26 +1158,38 @@ def spoken_pass_instructions(format_name: str, model_seconds: float | None = Non
     except OSError:
         humanizer = ""
     return (
-        "You are humanizing a narration script the owner will read aloud and record. Use the "
-        "guide below. The text is SPOKEN, so read every line aloud in your head; the voice "
-        "sample is how the owner actually talks, and it overrides the guide where they differ.\n\n"
+        "You rewrite a narration script so it sounds like the owner talking; he reads it aloud and "
+        "records it. Follow the guide below. The voice sample is how he actually talks: study what "
+        "changes from each draft to his version and make the same kind of changes.\n\n"
+        "HOW TO REWRITE\n"
+        "- You get the whole draft as one script. Rewrite it as ONE continuous talk, the way the "
+        "owner would explain it to a curious friend: you may add, merge, split or reorder sentences.\n"
+        "- BRIDGES: every paragraph and every chapter opens by picking up from the one before, so the "
+        "viewer never feels a cold restart (\"And that brings us to...\", \"But that's not the only...\", "
+        "\"Now, there's a reason...\", \"That's why...\", \"So...\"). Vary them; never the same "
+        "opener twice in a row and never a stock line like \"here's the thing\" or \"here's where "
+        "things get interesting\".\n"
+        "- TALK TO THE VIEWER: bring them in with a few real questions and moments to picture "
+        "(\"Have you ever stopped to think...?\", \"Think about what happens when...\", \"Imagine...\"), "
+        "spread through the script, not one per paragraph.\n"
+        "- Turn written attributions into speech (\"Apple says\" instead of \"Apple's guidance "
+        "describes\"); keep who said it when it matters.\n"
+        "- Keep every [[n]] chapter marker exactly once, in the same order, at the start of that "
+        "chapter's part of your rewrite.\n\n"
         "WHAT MUST NOT CHANGE\n"
-        "- Who the script talks to and how it pulls them in; keep every line that speaks to the viewer.\n"
-        "- Every fact, name, number and claim. Add no new facts.\n"
-        "- The same number of lines, in the same order: line N of your answer replaces line N of "
-        "the draft and covers the same idea, so the pictures stay matched to the words.\n"
+        "- Who the script talks to and how it pulls them in.\n"
+        "- Every fact, name, number and claim. Add no new facts, experiences or results; the owner "
+        "explains, he did not test anything himself.\n"
         f"- About the same length ({target['words_min']} to {target['words_max']} words in total).\n"
-        "- Sentences keep running across 2 or 3 lines; never break the script into one short "
-        "sentence per line (the guide's advice on short sentences is for written text, not this).\n"
         "- Real names stay (the company, the product); never a vague stand-in.\n"
         "- The follow sentence still asks to follow us or the channel (never the brand name).\n"
-        "- Every number written as digits. \"emphasis\" is one or two words copied exactly from "
-        "that line's text.\n\n"
-        "HUMANIZER GUIDE\n" + humanizer + "\n\n"
+        "- Every number written as digits (50 applications, 14-day, 2 lines); fractions and everyday "
+        "ordinals stay words (a third, first), and \"one\" on its own stays a word (one reason, one GPU).\n\n"
+        "SCRIPT VOICE GUIDE\n" + humanizer + "\n\n"
         "VOICE SAMPLE\n"
         + voice_pairs()
         + owner_voice()
-        + "\nReturn JSON: {\"lines\": [{\"text\", \"emphasis\"}, ...]} with one entry per draft line."
+        + "\nReturn JSON: {\"script\": \"...\"}: the whole rewritten talk, with every [[n]] marker kept."
     )
 
 

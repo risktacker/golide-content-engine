@@ -10,4 +10,11 @@ Requires-Dist: google-auth-oauthlib<2,>=1.2; extra == "production"
 Requires-Dist: openai<3,>=2; extra == "production"
 Requires-Dist: pillow<13,>=11; extra == "production"
 Requires-Dist: pyspellchecker<1,>=0.8; extra == "production"
+Provides-Extra: video
+Requires-Dist: numpy<3,>=2; extra == "video"
+Requires-Dist: pycairo<2,>=1.26; extra == "video"
+Requires-Dist: svgelements<2,>=1.9; extra == "video"
+Requires-Dist: scipy<2,>=1.11; extra == "video"
+Requires-Dist: youtube-transcript-api<2,>=1.0; extra == "video"
+Requires-Dist: scikit-image<1,>=0.22; extra == "video"
 Provides-Extra: test

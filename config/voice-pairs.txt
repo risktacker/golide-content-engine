@@ -82,3 +82,90 @@ thing does ("rotary sanding module" -> "spinning sander", "observes its position
 where it is"); labels and principles said as a lecture ("The engineering principle is feedback
 control.") become the thing happening; lines that stop dead become one thought carried across
 lines; each part ends on what it means for a person, in everyday words.
+
+== PAIR: short, promoting the owner's own book (2026-11-04) ==
+DRAFT (written, never recorded):
+You sent 50 applications this month, and not one of them wrote back.
+That's not bad luck. It's the way most of us apply.
+One CV, sent to every job, hoping something lands.
+Recruiters can tell it wasn't written for them, so they move on.
+So flip it.
+Only go for the roles you can actually win, and score the job before you apply.
+Show them you fit in the first 2 lines, in their words, with proof.
+Then track every application and follow up, because most people never do.
+Fewer applications, more interviews.
+OWNER'S VERSION (how he says it):
+You know what's frustrating?
+Sending out 50 job applications in a month and not hearing back from a single one.
+And honestly, sometimes it's not even about how many jobs you're applying for. It's how you're applying.
+Think about it. You're taking the same CV, sending it to 50 different companies, and hoping someone notices you.
+But recruiters can tell when an application hasn't really been tailored to the role.
+So here's what I'd do differently.
+First, stop applying for every job you come across. Focus on the ones where you actually have a chance.
+Before applying, understand what the employer is looking for. Then make sure your CV shows that fit right from the beginning, with actual evidence of what you can do.
+And don't just send the application and forget about it. Keep track of where you've applied and follow up.
+Because you'd be surprised how many people never do that.
+The idea is simple: fewer applications, but better chances of getting interviews.
+
+== STYLE REFERENCE: long video, cloud AI vs local AI (2026-11-04) ==
+This one shows the bridges and the viewer engagement the owner wants: every paragraph picks up from
+the one before ("And that brings us to another issue", "But speed and connectivity aren't the only
+things", "Now, there's a reason..."), and it talks to the viewer ("Have you ever stopped to think...",
+"Think about what happens when...", "But imagine..."). Its length is shorter than a long video needs;
+keep the draft's length and facts, copy only the way it talks.
+DRAFT (opening of the engine's script):
+Cloud AI feels like magic because the hard part happens somewhere else, you type into a phone or laptop, and something powerful answers. But the answer depends on more than the model itself. It depends on a subscription, an account, and a network, along with a company deciding how your information gets processed. Cloud AI can still be useful, and sometimes it is a good deal. You are usually renting intelligence instead of owning it. And local AI is becoming practical for a surprisingly large middle ground. The question is where in your life you want to depend on it. That is the part you have to decide for yourself. Start with the easiest part to miss, the payment. A cloud provider pays for GPUs, storage, networks, and security, before your prompt ever reaches the model. Those costs keep coming every time the service generates an answer. That is why many products use subscriptions or usage-based pricing. Some application programming interfaces charge for the input and output tokens, while consumer plans may keep stronger models for paying users. The exact price changes, but the relationship stays similar. The tool stays on someone else's machine, so you keep paying for access to it. That can make complete sense for occasional, difficult work, especially when buying and maintaining that hardware would be pointless. But the economics change when AI becomes part of ...
+OWNER'S VERSION (how it should sound):
+Cloud AI feels almost like magic.
+You open your laptop, type a question, and a few seconds later, there's an answer waiting for you.
+But have you ever stopped to think about what's actually happening behind that screen?
+Because that intelligence isn't necessarily running on your device. In most cases, you're connecting to someone else's computers, using their infrastructure, and depending on their services to get an answer.
+And that comes with a few things worth thinking about.
+Let's start with money.
+Every time you use a cloud AI service, there's infrastructure working behind the scenes. Powerful GPUs, storage, networking, security... all of that costs money.
+And somebody has to pay for it.
+That's why you have subscriptions, usage limits and APIs that charge based on how much you use them.
+Now, there's nothing inherently wrong with that. If you occasionally need a powerful AI model for complicated work, paying for access can actually make a lot of sense.
+But imagine using AI every single day.
+Summarising documents, sorting information, answering routine questions, automating small tasks.
+Suddenly, you're paying for access to intelligence that you keep reaching for.
+And that brings us to another issue: dependence.
+Think about what happens when your internet connection drops.
+You can have the best cloud AI model in the world, but if your device can't reach the server, you can't get an answer.
+Every prompt has to travel somewhere, get processed, and come back to you.
+That takes time. And when the network is slow or the service goes down, you feel it.
+This is one area where local AI becomes interesting.
+If the model is running directly on your device, it doesn't need to make that trip to a remote server.
+It can respond without an internet connection, and in some situations, much faster.
+But speed and connectivity aren't the only things worth considering.
+What about your data?
+When you use cloud AI, your prompts and the information you provide are sent to another organisation for processing.
+Exactly what happens to that information depends on the provider, the product and your settings.
+Some services have options for how your data is used. Business accounts may also have different privacy protections from ordinary consumer accounts.
+And encryption helps protect information, but it doesn't change the fact that another organisation is handling it.
+With local AI, things can work differently.
+If the model runs entirely on your device, your prompts can stay there too.
+Of course, local doesn't automatically mean completely private. Some applications still communicate with external servers for updates, analytics or optional cloud features.
+But you have a different level of control over where your information goes.
+Now, there's a reason we didn't all start running powerful AI models on our laptops in the first place.
+These models need memory and a lot of computing power.
+The bigger the model, the more resources it generally needs to generate an answer.
+And when millions of people are using the same model, you can imagine how much hardware is required.
+That's why companies build enormous data centres filled with powerful GPUs. Sometimes, a single model's calculations have to be distributed across multiple GPUs working together.
+That's a lot of computing power to fit into one service.
+But here's where things get interesting.
+Not every task needs the biggest AI model available.
+Smaller models can be designed to handle specific jobs using far fewer resources.
+Techniques like quantization make this even more practical by reducing the memory needed to store a model.
+So you can now run useful AI models on ordinary computers, laptops and even some phones.
+They might not match the capabilities of the biggest cloud models, but they don't have to.
+If all you need is to summarise notes, organise files or handle routine tasks, a smaller local model might be more than enough.
+And that's really where I think the future is heading.
+Not necessarily cloud versus local, but knowing when to use each.
+You could send a complicated research question to a powerful cloud model, while keeping private notes and everyday tasks on your own device.
+One gives you access to enormous computing power. The other gives you more control, independence and the ability to work offline.
+So the real question isn't simply which AI is more powerful.
+It's this: How much of your everyday work actually needs someone else's computers to get done?
+Because sometimes, the smartest technology isn't the biggest one.
+It's the one that gives you exactly what you need, when you need it, without making you depend on more than necessary.
+

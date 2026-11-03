@@ -857,24 +857,24 @@ class ProductionService:
             # 2026-10-24 spoken pass: the draft is rewritten the way the owner says things
             # (his approved scripts are the reference), line for line so the visuals still
             # match. Kept only when it breaks no more rules than the draft.
-            draft_lines = [{"text": line.get("text", ""), "emphasis": line.get("emphasis", "")}
-                           for line in plan.get("lines", [])]
+            from ..engine.content_rules import SPOKEN_CHAPTERS_SCHEMA, draft_chapters, merge_spoken_chapters
+            draft_lines = draft_chapters(plan)
             self._reserve(spec, text_model, Usage(input_tokens=max(1, len(json.dumps(draft_lines)) // 3 + 6000),
                                                   output_tokens=script_tokens * 2))
             try:
                 spoken_out = text.generate_json(
                     spoken_pass_instructions(str(spec["format"]), model_seconds),
-                    "DRAFT LINES\n" + json.dumps({"lines": draft_lines}, ensure_ascii=False),
-                    SPOKEN_SCHEMA,
+                    "DRAFT SCRIPT\n" + draft_lines,
+                    SPOKEN_CHAPTERS_SCHEMA,
                     max_output_tokens=script_tokens * 2,  # high effort spends tokens thinking first
                     reasoning_effort=SPOKEN_PASS_EFFORT,
                 )
                 self._record_text(production_id, "script-spoken", spoken_out)
-                spoken = merge_spoken(plan, dict(spoken_out.value))
+                spoken = merge_spoken_chapters(plan, dict(spoken_out.value))
             except Exception as error:  # the draft still stands if this pass fails
                 spoken, report = None, {"status": "failed", "reason": str(error)[:300]}
             else:
-                report = {"status": "unmatched", "reason": "the rewrite changed the number of lines"}
+                report = {"status": "unmatched", "reason": "the rewrite lost or renumbered a chapter"}
             if spoken is not None:
                 spoken_problems = script_problems(spoken)
                 if len(spoken_problems) <= len(problems):
