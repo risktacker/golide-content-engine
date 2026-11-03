@@ -1,0 +1,284 @@
+BEFORE (engine script as recorded)
+
+Cloud AI feels like magic because the hard part happens somewhere else,
+you type into a phone or laptop, and something powerful answers.
+But the answer depends on more than the model itself.
+It depends on a subscription, an account, and a network,
+along with a company deciding how your information gets processed.
+Cloud AI can still be useful, and sometimes it is a good deal.
+You are usually renting intelligence instead of owning it.
+And local AI is becoming practical for a surprisingly large middle ground.
+The question is where in your life you want to depend on it.
+That is the part you have to decide for yourself.
+Start with the easiest part to miss, the payment.
+A cloud provider pays for GPUs, storage, networks, and security,
+before your prompt ever reaches the model.
+Those costs keep coming every time the service generates an answer.
+That is why many products use subscriptions or usage-based pricing.
+Some application programming interfaces charge for the input and output tokens,
+while consumer plans may keep stronger models for paying users.
+The exact price changes, but the relationship stays similar.
+The tool stays on someone else's machine,
+so you keep paying for access to it.
+That can make complete sense for occasional, difficult work,
+especially when buying and maintaining that hardware would be pointless.
+But the economics change when AI becomes part of your daily routines.
+A summary here, a classification there, and an automated decision later,
+means every small request can become another remote transaction.
+The subscription pays for more than one answer.
+It keeps the whole pipeline available whenever you need it.
+That is convenient, but convenience can quietly turn into dependence.
+The next dependency is easiest to feel when the network fails.
+A remote model has to receive your prompt somewhere else,
+then send the result back before you can use it.
+That round trip adds time, even when everything is working.
+A weak signal can make the answer feel slow or interrupted.
+An outage can make the feature unavailable altogether.
+Provider status pages regularly separate chat, login, files, and application programming interfaces,
+because one broken service can affect the experience differently from another.
+Internet access is part of how cloud AI works,
+almost like part of the tool's operating system.
+That matters for work inside a basement, a factory, or an airplane,
+and for devices that have to respond before a server can answer.
+An on-device model can avoid that network round trip entirely.
+Apple describes this as one reason local models can respond quickly and work offline.
+That does not mean local hardware will be faster at everything.
+It means the network is one less thing that can interrupt it.
+If this distinction matters to your plans, follow the channel for more clear explanations.
+Then there is the question people often ask too late: where is the data?
+Cloud AI usually means information leaves your device for processing.
+The provider receives it, processes it, and sends back a result.
+The exact handling depends on the product and its settings.
+OpenAI says consumer content may be used to improve model performance,
+depending on the choices attached to that service.
+Its business offerings can have different default treatment and contractual protections.
+Encryption can protect information while it moves and while it is stored,
+but that protection does not erase the fact that another organization handles it.
+Cloud products can also involve infrastructure and processing partners.
+That is not automatically suspicious, because large services need specialized infrastructure.
+But it means privacy is a policy question, not a feeling.
+A private folder on your laptop and a private cloud account are different things.
+Local processing changes the default path that information takes.
+When the model stays on the device, prompts can stay there too.
+But local does not mean every part of the application is local.
+An app may still send telemetry, updates, or optional cloud requests.
+The important word here is control, not perfection.
+To see why the cloud became necessary, look at the model itself.
+A model is not a small file that somehow knows everything.
+Its learned parameters have to fit into memory while the computation runs.
+Larger models require more memory and more calculation for each answer.
+And a popular service has to do that work for many people simultaneously.
+That is why providers put powerful GPUs together inside data centers.
+For some large models, one GPU is not enough.
+NVIDIA describes tensor parallelism, where the calculations are divided across GPUs,
+with high-bandwidth connections moving intermediate results between them.
+The network inside the data center becomes part of the computation.
+This is distributed computing, with one answer assembled from several machines.
+It is powerful because the provider can pool expensive hardware.
+It is also why the service cannot simply live inside every phone.
+Still, useful models do not all need the largest possible brain.
+A specialized model can trade broad knowledge for a focused job.
+That tradeoff is where consumer hardware starts to matter.
+Local AI does not mean putting a data center in your pocket.
+It means choosing a smaller engine for a narrower, useful job.
+Smaller models use less memory and require less computation.
+Quantization can reduce the number of bits used to store model weights.
+That makes some models realistic on laptops, phones, and edge devices.
+The result may be less capable than a frontier cloud model,
+but it can answer without waiting for a remote server.
+It can keep working when the internet is unavailable.
+And it can keep sensitive prompts closer to the person creating them.
+Apple's guidance makes the same basic comparison between device and server models.
+On-device models can offer privacy, speed, and offline operation,
+while server models can offer more processing power and larger context.
+So local AI is not replacing the cloud in one dramatic moment.
+It is taking routine, private, and time-sensitive jobs away from it.
+A local assistant could sort files, summarize notes, or control devices,
+without sending every small request into a paid service.
+But the hardware still costs money, uses electricity, and needs updates.
+You also take responsibility for installation, storage, and maintenance.
+The subscription goes away, but ownership brings its own work.
+The practical future probably is not cloud versus local.
+It is cloud and local, each handling the work it suits.
+A difficult question can go to a large remote model,
+while a private reminder can stay on the device.
+A factory sensor may need an immediate local response,
+while a research team may need the cloud's larger context.
+The important decision is not how impressive AI looks.
+It is what you are willing to depend on it for.
+Ask whether the task needs frontier capability, constant connectivity,
+or a company handling the information outside your device.
+If the answer is no, a smaller local model may be enough.
+And that changes AI from a service you constantly reach,
+into a tool that can remain available when the service cannot.
+Cloud AI offers reach, scale, and capability on demand.
+Local AI offers control, responsiveness, and fewer outside dependencies.
+The smartest setup may be the one that knows when to use both.
+Because practical AI is not only about bigger models.
+It is also about keeping useful intelligence available on your terms.
+
+
+AFTER (new spoken pass)
+
+[[0]] Cloud AI feels almost like magic. You type into a phone or laptop, and something powerful answers a few seconds later. But have you ever stopped to think about what that answer depends on? It isn't just the model. There's a subscription, an account, a network, and a company deciding how your information gets processed. Cloud AI can still be useful, and sometimes it's a very good deal. But most of the time, you're renting intelligence instead of owning it. Local AI is becoming practical for a surprisingly large middle ground, so the real question is where in your life you want to depend on the cloud. That's something you have to decide for yourself.
+
+Let's start with the easiest part to miss: the payment. A cloud provider pays for GPUs, storage, networks and security before your prompt ever reaches the model. Those costs come back every time the service generates an answer. That's why so many products use subscriptions or charge based on usage. Some APIs charge for the input and output tokens, while consumer plans may keep stronger models for paying users. The exact price changes, but the relationship stays the same. The tool lives on somebody else's machine, so you keep paying for access to it.
+
+That arrangement can make complete sense for occasional, difficult work, especially when buying and maintaining that hardware yourself would be pointless. But think about what happens when AI becomes part of your daily routine. You get a summary here, a classification there, and an automated decision later. Every small request becomes another transaction with a remote service. The subscription isn't only paying for one answer. It's keeping the whole pipeline available whenever you reach for it. That's convenient, but convenience can quietly turn into dependence. And the next dependency is the one you notice when the network fails.
+
+[[1]] And that dependence begins with a round trip. A remote model has to receive your prompt somewhere else, process it, and send the result back before you can use it. That takes time even when everything is working. A weak signal can make the answer feel slow or interrupted, and an outage can make the feature unavailable altogether. If you look at provider status pages, they regularly separate chat, login, files and APIs, because one broken service can affect your experience differently from another. Internet access is part of how cloud AI works, almost like part of the tool's operating system.
+
+That matters whether you're working in a basement, a factory or an airplane, and it matters for devices that need to respond before a server can answer. An on-device model can avoid that network trip entirely. Apple says that's one reason local models can respond quickly and work offline. That doesn't mean local hardware will be faster at everything. It means the network is one less thing that can interrupt it. If this distinction matters to your plans, follow the channel for more clear explanations.
+
+But speed and connectivity aren't the only concerns. There's the question people often ask too late: where is the data? Cloud AI usually means information leaves your device for processing. The provider receives it, processes it, and sends a result back. Exactly what happens to that information depends on the product and its settings. OpenAI says consumer content may be used to improve model performance, depending on the choices attached to that service. Its business offerings can have different default treatment and contractual protections.
+
+And encryption helps protect information while it moves and while it's stored, but it doesn't erase the fact that another organisation is handling it. Cloud products can also involve infrastructure and processing partners. That isn't automatically suspicious, because large services need specialised infrastructure. But it does mean privacy is a policy question, not a feeling. A private folder on your laptop and a private cloud account are different things.
+
+[[2]] That question about control brings us to local processing. When the model stays on your device, prompts can stay there too. But local doesn't mean every part of the application is local. An app may still send telemetry, updates or optional cloud requests. The important word here is control, not perfection.
+
+To see why the cloud became necessary, look at the model itself. A model isn't a small file that somehow knows everything. Its learned parameters have to fit into memory while the computation runs. Larger models require more memory and more calculation for each answer. And a popular service has to do that work for many people at the same time. That's why providers put powerful GPUs together inside data centres.
+
+For some large models, one GPU isn't enough. NVIDIA describes tensor parallelism, where the calculations are divided across GPUs, with high-bandwidth connections moving intermediate results between them. The network inside the data centre becomes part of the computation. It's distributed computing: one answer assembled from several machines. That is powerful because the provider can pool expensive hardware, but it's also why the service can't simply live inside every phone.
+
+Still, useful models don't all need the largest possible brain. A specialised model can trade broad knowledge for a focused job, and that's where consumer hardware starts to matter. Local AI doesn't mean putting a data centre in your pocket. It means choosing a smaller engine for a narrower, useful task. Smaller models use less memory and require less computation. Quantisation can reduce the number of bits used to store model weights, making some models realistic on laptops, phones and edge devices.
+
+The result may be less capable than a frontier cloud model, but it can answer without waiting for a remote server and keep working when the internet is unavailable. And it can keep sensitive prompts closer to the person creating them.
+
+[[3]] And that brings us to the practical comparison. Apple's guidance makes the basic tradeoff clear: on-device models can offer privacy, speed and offline operation, while server models can offer more processing power and larger context. So local AI isn't replacing the cloud in one dramatic moment. It's taking routine, private and time-sensitive jobs away from it.
+
+A local assistant could sort files, summarise notes or control devices without sending every small request into a paid service. But the hardware still costs money, uses electricity and needs updates. You also take responsibility for installation, storage and maintenance. The subscription goes away, but ownership brings its own work.
+
+So the practical future probably isn't cloud versus local. It's cloud and local, with each handling the work it suits. A difficult question can go to a large remote model, while a private reminder stays on the device. A factory sensor may need an immediate local response, while a research team may need the cloud's larger context.
+
+The important decision isn't how impressive AI looks. It's what you're willing to depend on it for. Does the task need frontier capability, constant connectivity, or a company handling the information outside your device? If the answer is no, a smaller local model may be enough. And that changes AI from a service you constantly reach for into a tool that stays available when the service cannot.
+
+Cloud AI offers reach, scale and capability on demand. Local AI offers control, responsiveness and fewer outside dependencies. The smartest setup may be the one that knows when to use both. Because practical AI isn't only about bigger models. It's also about keeping useful intelligence available on your terms.
+
+
+SCREEN LINES
+
+Cloud AI feels almost like magic.
+You type into a phone or laptop,
+and something powerful answers a few seconds later.
+But have you ever stopped to think about what that answer depends on?
+It isn't just the model.
+There's a subscription, an account, a network,
+and a company deciding how your information gets processed.
+Cloud AI can still be useful, and sometimes it's a very good deal.
+But most of the time, you're renting intelligence instead of owning it.
+Local AI is becoming practical for a surprisingly large middle ground,
+so the real question is where in your
+life you want to depend on the cloud.
+That's something you have to decide for yourself.
+Let's start with the easiest part to miss: the payment.
+A cloud provider pays for GPUs, storage,
+networks and security before your prompt ever reaches the model.
+Those costs come back every time the service generates an answer.
+That's why so many products use subscriptions or charge based on usage.
+Some APIs charge for the input and output tokens,
+while consumer plans may keep stronger models for paying users.
+The exact price changes, but the relationship stays the same.
+The tool lives on somebody else's machine,
+so you keep paying for access to it.
+That arrangement can make complete sense for occasional, difficult work,
+especially when buying and maintaining that hardware yourself would be pointless.
+But think about what happens when AI becomes part of your daily routine.
+You get a summary here, a classification there, and an automated decision later.
+Every small request becomes another transaction with a remote service.
+The subscription isn't only paying for one answer.
+It's keeping the whole pipeline available whenever you reach for it.
+That's convenient, but convenience can quietly turn into dependence.
+And the next dependency is the one you notice when the network fails.
+And that dependence begins with a round trip.
+A remote model has to receive your prompt somewhere else, process it,
+and send the result back before you can use it.
+That takes time even when everything is working.
+A weak signal can make the answer feel slow or interrupted,
+and an outage can make the feature unavailable altogether.
+If you look at provider status pages, they regularly separate chat, login,
+files and APIs, because one broken service can affect your experience differently from another.
+Internet access is part of how cloud AI works,
+almost like part of the tool's operating system.
+That matters whether you're working in a basement, a factory or an airplane,
+and it matters for devices that need to respond before a server can answer.
+An on-device model can avoid that network trip entirely.
+Apple says that's one reason local models can respond quickly and work offline.
+That doesn't mean local hardware will be faster at everything.
+It means the network is one less thing that can interrupt it.
+If this distinction matters to your plans, follow the channel for more clear explanations.
+But speed and connectivity aren't the only concerns.
+There's the question people often ask too late: where is the data?
+Cloud AI usually means information leaves your device for processing.
+The provider receives it, processes it, and sends a result back.
+Exactly what happens to that information depends on the product and its settings.
+OpenAI says consumer content may be used to improve model performance,
+depending on the choices attached to that service.
+Its business offerings can have different default treatment and contractual protections.
+And encryption helps protect information while it moves and while it's stored,
+but it doesn't erase the fact that another organisation is handling it.
+Cloud products can also involve infrastructure and processing partners.
+That isn't automatically suspicious, because large services need specialised infrastructure.
+But it does mean privacy is a policy question, not a feeling.
+A private folder on your laptop and a private cloud account are different things.
+That question about control brings us to local processing.
+When the model stays on your device, prompts can stay there too.
+But local doesn't mean every part of the application is local.
+An app may still send telemetry, updates or optional cloud requests.
+The important word here is control, not perfection.
+To see why the cloud became necessary, look at the model itself.
+A model isn't a small file that somehow knows everything.
+Its learned parameters have to fit into memory while the computation runs.
+Larger models require more memory and more calculation for each answer.
+And a popular service has to do that
+work for many people at the same time.
+That's why providers put powerful GPUs together inside data centres.
+For some large models, one GPU isn't enough.
+NVIDIA describes tensor parallelism, where the calculations are divided across GPUs,
+with high-bandwidth connections moving intermediate results between them.
+The network inside the data centre becomes part of the computation.
+It's distributed computing: one answer assembled from several machines.
+That is powerful because the provider can pool expensive hardware,
+but it's also why the service can't simply live inside every phone.
+Still, useful models don't all need the largest possible brain.
+A specialised model can trade broad knowledge for a focused job,
+and that's where consumer hardware starts to matter.
+Local AI doesn't mean putting a data centre in your pocket.
+It means choosing a smaller engine for a narrower, useful task.
+Smaller models use less memory and require less computation.
+Quantisation can reduce the number of bits used to store model weights,
+making some models realistic on laptops, phones and edge devices.
+The result may be less capable than a frontier cloud model,
+but it can answer without waiting for a remote
+server and keep working when the internet is unavailable.
+And it can keep sensitive prompts closer to the person creating them.
+And that brings us to the practical comparison.
+Apple's guidance makes the basic tradeoff clear: on-device models can offer privacy,
+speed and offline operation,
+while server models can offer more processing power and larger context.
+So local AI isn't replacing the cloud in one dramatic moment.
+It's taking routine, private and time-sensitive jobs away from it.
+A local assistant could sort files,
+summarise notes or control devices without sending every small request into a paid service.
+But the hardware still costs money, uses electricity and needs updates.
+You also take responsibility for installation, storage and maintenance.
+The subscription goes away, but ownership brings its own work.
+So the practical future probably isn't cloud versus local.
+It's cloud and local, with each handling the work it suits.
+A difficult question can go to a large remote model,
+while a private reminder stays on the device.
+A factory sensor may need an immediate local response,
+while a research team may need the cloud's larger context.
+The important decision isn't how impressive AI looks.
+It's what you're willing to depend on it for.
+Does the task need frontier capability, constant connectivity,
+or a company handling the information outside your device?
+If the answer is no, a smaller local model may be enough.
+And that changes AI from a service you constantly reach for
+into a tool that stays available when the service cannot.
+Cloud AI offers reach, scale and capability on demand.
+Local AI offers control, responsiveness and fewer outside dependencies.
+The smartest setup may be the one that knows when to use both.
+Because practical AI isn't only about bigger models.
+It's also about keeping useful intelligence available on your terms.
+
+tokens in 8320, out 4408
