@@ -134,5 +134,17 @@ def test_audio_levels_are_separate_per_format():
     from golide_engine.vector.render import AUDIO_MIX
 
     assert LEVELS_DB["long"] < LEVELS_DB["short"] < -22.0
-    assert "ratio=20" in AUDIO_MIX["long"]["duck"] and "threshold=0.002" in AUDIO_MIX["long"]["duck"]
+    assert "ratio=3" in AUDIO_MIX["long"]["duck"] and "threshold=0.005" in AUDIO_MIX["long"]["duck"]
     assert AUDIO_MIX["long"]["sfx"] < 1 and AUDIO_MIX["short"]["sfx"] < 1
+
+
+def test_long_video_music_changes_each_chapter_with_a_crossfade():
+    """Owner review 2026-11-04: a different bed per chapter, blended, with a short dip."""
+    import numpy as np
+    from golide_engine.vector.ambient import RATE, sectioned_bed
+
+    bed = sectioned_bed(40.0, [0.0, 20.0], "t", 0, -24.0)
+    assert len(bed) == int(40 * RATE)
+    level = lambda a, b: 20 * np.log10(np.sqrt(np.mean(bed[int(a * RATE):int(b * RATE)] ** 2)))
+    assert level(19.8, 20.2) < level(25, 30) - 3          # it breathes in at the chapter card
+    assert abs(level(5, 15) - level(25, 35)) < 4          # each chapter at about the same loudness

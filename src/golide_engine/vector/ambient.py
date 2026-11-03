@@ -34,6 +34,8 @@ RATE = 48000
 # and music don't need to be colliding... just make sure it's audible": 3 dB lower (about
 # 13.5 dB under the voice), and the dip under the voice is a little deeper (render.py).
 LEVEL_DB = -22.0
+# Owner review 2026-11-04: "bring back a bit of music" on long videos: the dip under the voice
+# is now about 12 dB (render.py), so the bed is heard softly all the way through.
 # Owner review 2026-11-01: levels are separate for shorts and long videos. Long videos
 # are for listening ("it needs hearability"): the bed sits a little lower and render.py
 # ducks it to almost nothing under the voice, so it is heard only in the pauses. Shorts:
@@ -173,9 +175,46 @@ def ambient_bed(duration: float, seed_text: str = "golide", variant: int | None 
     return bed[: int(RATE * duration)]
 
 
+CROSSFADE_SECONDS = 2.0     # 2026-11-04: the music changes at each chapter, blended over 2 s
+DIP_DB, DIP_SECONDS = -8.0, 1.0   # ... and breathes in for a moment at the chapter card
+
+
+def sectioned_bed(duration: float, starts: list[float], seed_text: str = "golide",
+                  variant: int | None = None, level_db: float = LEVEL_DB) -> np.ndarray:
+    """A different bed for each section (owner 2026-11-04: "one music sound the whole 7 minutes
+    is boring"). Section k plays bed (first + k), each at the same loudness, crossfaded over
+    CROSSFADE_SECONDS, with a short dip where each new section starts."""
+    n = int(RATE * duration)
+    bounds = sorted({0.0, *[float(s) for s in starts if 0.5 < float(s) < duration - 1.0]})
+    if len(bounds) < 2:
+        return ambient_bed(duration, seed_text, variant, level_db)
+    first = variant if variant is not None else _digest(seed_text)[0]
+    beds: dict[int, np.ndarray] = {}
+    t = np.arange(n, dtype=np.float64) / RATE
+    gains = []
+    for k, start in enumerate(bounds):
+        end = bounds[k + 1] if k + 1 < len(bounds) else duration
+        idx = (first + k) % len(BEDS)
+        if idx not in beds:
+            beds[idx] = ambient_bed(duration, f"{seed_text}#{idx}", idx, level_db)
+        rise = np.clip((t - start + CROSSFADE_SECONDS / 2) / CROSSFADE_SECONDS, 0, 1) if k else np.ones(n)
+        fall = np.clip((end + CROSSFADE_SECONDS / 2 - t) / CROSSFADE_SECONDS, 0, 1) if k + 1 < len(bounds) else np.ones(n)
+        gains.append((idx, np.sqrt(np.minimum(rise, fall))))   # equal-power crossfade
+    out = np.zeros(n)
+    for idx, g in gains:
+        out += beds[idx][:n] * g
+    dip = np.ones(n)
+    for start in bounds[1:]:
+        d = np.clip(1 - np.abs(t - start) / (DIP_SECONDS / 2), 0, 1)
+        dip *= 1 - (1 - 10 ** (DIP_DB / 20)) * d
+    return out * dip
+
+
 def render_ambient(duration: float, output: Path, seed_text: str = "golide", variant: int | None = None,
-                   level_db: float = LEVEL_DB) -> Path:
-    pcm = np.clip(ambient_bed(duration, seed_text, variant, level_db), -1, 1)
+                   level_db: float = LEVEL_DB, starts: list[float] | None = None) -> Path:
+    bed = (sectioned_bed(duration, starts, seed_text, variant, level_db) if starts
+           else ambient_bed(duration, seed_text, variant, level_db))
+    pcm = np.clip(bed, -1, 1)
     output.parent.mkdir(parents=True, exist_ok=True)
     with wave.open(str(output), "wb") as wav:
         wav.setnchannels(1)

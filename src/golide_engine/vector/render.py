@@ -949,7 +949,9 @@ class VectorRenderer:
                               self._action_cues(plan, lines, groups))
         bed_path = render_ambient(duration, output.with_name(output.stem + "-bed.wav"),
                                   seed_text=str(plan.get("title", "")), variant=bed_variant,
-                                  level_db=LEVELS_DB.get(self.format, LEVEL_DB))
+                                  level_db=LEVELS_DB.get(self.format, LEVEL_DB),
+                                  # long videos: a different bed each chapter (2026-11-04)
+                                  starts=[m.start for m in self.chapters] if self.format == "long" else None)
         mix = AUDIO_MIX.get(self.format, AUDIO_MIX["short"])
         inputs = ["-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{L.width}x{L.height}",
                   "-r", str(self.fps), "-i", "-", "-i", str(narration), "-i", str(sfx_path),
@@ -990,7 +992,8 @@ class VectorRenderer:
 # while he speaks (measured about 25 dB down) and comes back only in the pauses; the effects come
 # down a bit (-2 dB). Shorts: the effects come down a bit (-1.5 dB); the dip stays.
 AUDIO_MIX = {
-    "long": {"sfx": 0.79, "duck": "threshold=0.002:ratio=20:attack=20:release=700"},
+    # 2026-11-04: "bring back a bit of music": about 12 dB under the voice (was 25, near silent)
+    "long": {"sfx": 0.79, "duck": "threshold=0.005:ratio=3:attack=60:release=900"},
     "short": {"sfx": 0.84, "duck": "threshold=0.05:ratio=2.4:attack=120:release=1200"},
 }
 
