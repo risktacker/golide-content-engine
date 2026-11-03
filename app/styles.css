@@ -446,3 +446,26 @@ body.sheet-open{overflow:hidden}
 .triage-message{color:#7fe0d2;border-color:rgba(127,224,210,.4)}
 .triage-pitch,.triage-spam{opacity:.7}
 .mail-thread .triage-why{display:block;font-size:.75rem;color:var(--muted);opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Your own video (2026-11-03) */
+.sales-form{display:flex;flex-direction:column;gap:14px}
+.sales-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.sales-grid label{display:flex;flex-direction:column;gap:6px;font-size:.875rem;color:var(--muted)}
+.sales-grid .wide{grid-column:1/-1}
+.sales-grid .opt{font-style:normal;opacity:.75}
+.sales-files.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.sales-grid input,.sales-grid textarea,.file-pick input[type=datetime-local]{width:100%;box-sizing:border-box;padding:11px 12px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface);color:var(--text);font:inherit;font-size:.9375rem;resize:vertical}
+.sales-grid input:focus,.sales-grid textarea:focus,.file-pick input:focus{outline:none;border-color:var(--gold)}
+.sales-files{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.file-pick{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border:1px dashed var(--line-strong);border-radius:12px;background:var(--raised);cursor:pointer;min-height:64px;justify-content:center}
+.file-pick.plain{border-style:solid;cursor:default}
+.file-pick input[type=file]{display:none}
+.file-title{font-size:.875rem;font-weight:500}
+.file-title em{font-style:normal;color:var(--muted);font-weight:400}
+.file-name{font-size:.8125rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-pick.has-file{border-color:var(--gold)}
+.file-pick.has-file .file-name{color:var(--gold)}
+.sales-foot{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.sale-status{font-size:.875rem;color:var(--muted);min-height:1.2em}
+.sale-status.bad{color:var(--danger)}
+@media (max-width:720px){.sales-grid,.sales-files,.sales-files.two{grid-template-columns:1fr}.sales-foot{flex-direction:column;align-items:stretch}}

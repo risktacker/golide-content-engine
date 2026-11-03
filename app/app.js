@@ -916,6 +916,70 @@ async function loadConnections() {
 }
 
 $("#refresh-jobs").onclick = loadProductionJobs;
+
+// 2026-11-03: the owner's own video, any time: his recording and the script he read.
+async function prepareImageUpload(file) {
+  const prepared = await api("/api/media/prepare", {
+    method: "POST",
+    body: JSON.stringify({ filename: file.name, media_kind: "image" }),
+  });
+  const uploaded = await fetch("/api/media/upload?ref=" + encodeURIComponent(prepared.media_ref), {
+    method: "PUT",
+    headers: { "Content-Type": file.type || "application/octet-stream" },
+    body: file,
+  });
+  if (!uploaded.ok) throw new Error("Picture upload failed (" + uploaded.status + ")");
+  return prepared.media_ref;
+}
+
+function showPicked(input, nameId) {
+  const file = input.files?.[0];
+  $(nameId).textContent = file ? file.name : "No file yet";
+  input.closest(".file-pick").classList.toggle("has-file", !!file);
+}
+
+$("#ext-voice").onchange = (e) => showPicked(e.target, "#ext-voice-name");
+$("#ext-ref").onchange = (e) => showPicked(e.target, "#ext-ref-name");
+
+$("#external-form").onsubmit = async (event) => {
+  event.preventDefault();
+  const status = $("#ext-status");
+  const button = $("#ext-submit");
+  const say = (text, bad = false) => { status.textContent = text; status.classList.toggle("bad", bad); };
+  const script = $("#ext-script").value.trim();
+  const voice = $("#ext-voice").files?.[0];
+  const picture = $("#ext-ref").files?.[0];
+  if (script.split(/\s+/).filter(Boolean).length < 8) return say("Paste the script you recorded.", true);
+  if (!voice) return say("Choose your recording.", true);
+  try {
+    const problem = recordingLengthProblem("short", await audioDuration(voice));
+    if (problem) return say(problem, true);
+  } catch {}
+  button.disabled = true;
+  try {
+    say("Uploading your recording...");
+    const voiceRef = await prepareUpload(voice);
+    let referenceRef = "";
+    if (picture) { say("Uploading the picture..."); referenceRef = await prepareImageUpload(picture); }
+    say("Starting the build...");
+    await api("/api/external-videos", {
+      method: "POST",
+      body: JSON.stringify({
+        title: $("#ext-title").value.trim(), script, voice_ref: voiceRef, reference_ref: referenceRef,
+        link: $("#ext-link").value.trim(), reference_link: $("#ext-ref-link").value.trim(),
+      }),
+    });
+    say("Building now. It publishes when it is ready; follow it under Production below.");
+    $("#external-form").reset();
+    showPicked($("#ext-voice"), "#ext-voice-name");
+    showPicked($("#ext-ref"), "#ext-ref-name");
+    await loadProductionJobs();
+  } catch (error) {
+    say(error.message, true);
+  } finally {
+    button.disabled = false;
+  }
+};
 $("#automation-toggle").onclick = toggleAutomation;
 
 async function boot() {

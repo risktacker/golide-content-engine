@@ -113,7 +113,7 @@ def make_reel_cover(*, production_id: str, title: str, story: str, youtube_video
     work = out_dir / production_id
     work.mkdir(parents=True, exist_ok=True)
     path = out_dir / f"{production_id}-reel-cover.jpg"
-    kind = "short" if "-short-" in production_id else "long video"
+    kind = "short" if ("-short-" in production_id or "-external-" in production_id) else "long video"
     source = fetch_reference(source_url, work / "source.jpg") if source_url else None
     if source is not None:
         # 2026-11-01 (owner approved): modelled on the source video's own thumbnail. It is read

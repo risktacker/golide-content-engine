@@ -166,7 +166,7 @@ def fit_tags(tags: list[str], keywords: list[str], limit_chars: int = 460, minim
     return out
 
 
-def social_caption(title: str, metadata: dict, limit: int) -> str:
+def social_caption(title: str, metadata: dict, limit: int, include_link: bool = True) -> str:
     """Title, summary, keywords, chapters and hashtags, trimming only the summary to fit."""
     keys = ", ".join(_clean_keywords(metadata.get("keywords") or []))
     tags = " ".join(_clean_hashtags(metadata.get("hashtags") or []))
@@ -175,7 +175,11 @@ def social_caption(title: str, metadata: dict, limit: int) -> str:
     if not keys and not tags:  # older metadata: keep the full description as it was
         return (title.strip() + "\n\n" + str(metadata.get("description", "")).strip())[:limit]
     tail = "\n\n".join(p for p in (keys, ("Chapters\n" + chapters) if chapters else "", tags) if p)
-    room = max(0, limit - len(title) - len(tail) - 6)
+    # 2026-11-03: an external video's link sits under the title (Instagram leaves it out:
+    # links in its captions cannot be tapped).
+    link = str(metadata.get("link") or "").strip() if include_link else ""
+    lead = f"Link: {link}" if link else ""
+    room = max(0, limit - len(title) - len(tail) - len(lead) - 8)
     if len(body) > room:
         body = body[:room].rsplit(" ", 1)[0].rstrip(",.;:") + "..."
-    return "\n\n".join(p for p in (title.strip(), body, tail) if p)[:limit]
+    return "\n\n".join(p for p in (title.strip(), lead, body, tail) if p)[:limit]
