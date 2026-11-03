@@ -1,0 +1,60 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>html,body{margin:0;background:#07080b;overflow:hidden}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script>
+</head><body>
+<script type="module">
+// GOLIDE 3D stage (2026-11-03): one shared studio (lights, floor, camera, renderer).
+// A scene module builds a real 3D object and says where everything is at time t.
+import * as THREE from "three";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+const params = new URLSearchParams(location.search);
+const W = +params.get("w") || 1280, H = +params.get("h") || 720;
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1);
+renderer.setSize(W, H);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x07080b);
+scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+scene.environmentIntensity = 0.55;
+
+const key = new THREE.DirectionalLight(0xffffff, 2.2);
+key.position.set(4, 7, 5); key.castShadow = true;
+key.shadow.mapSize.set(1024, 1024);
+Object.assign(key.shadow.camera, { left: -5, right: 5, top: 5, bottom: -5 });
+scene.add(key);
+const rim = new THREE.DirectionalLight(0xe9c46a, 1.6);   // GOLIDE gold rim light
+rim.position.set(-5, 3, -6); scene.add(rim);
+scene.add(new THREE.HemisphereLight(0x8aa0b8, 0x101014, 0.35));
+
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.ShadowMaterial({ opacity: 0.45 }));
+floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+// A soft pool of light under the object that fades to nothing: no hard edge, no grid.
+const pool = document.createElement("canvas"); pool.width = pool.height = 256;
+const pg = pool.getContext("2d"), rg = pg.createRadialGradient(128, 128, 0, 128, 128, 128);
+rg.addColorStop(0, "rgba(34,46,60,0.55)"); rg.addColorStop(0.55, "rgba(18,24,32,0.18)"); rg.addColorStop(1, "rgba(7,8,11,0)");
+pg.fillStyle = rg; pg.fillRect(0, 0, 256, 256);
+const glow = new THREE.Mesh(new THREE.PlaneGeometry(7, 7),
+  new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(pool), transparent: true, depthWrite: false }));
+glow.rotation.x = -Math.PI / 2; glow.position.y = -0.002; scene.add(glow);
+
+const camera = new THREE.PerspectiveCamera(35, W / H, 0.05, 100);
+const mod = await import("./scenes/" + params.get("scene") + ".js");
+const actor = mod.build(THREE, scene);
+actor.traverse?.((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+
+window.DURATION = mod.DURATION;
+window.renderAt = (t) => {
+  mod.pose(t, actor, camera, THREE);
+  renderer.render(scene, camera);
+  return true;
+};
+window.READY = true;
+</script></body></html>
