@@ -11,7 +11,7 @@ page.on("pageerror", (e) => console.error("page error:", e.message));
 page.on("console", (m) => { if (m.type() === "error") console.error("page:", m.text()); });
 await page.route("http://golide.3d/**", async (route) => {
   const rel = decodeURIComponent(new URL(route.request().url()).pathname).replace(/^\//, "");
-  const type = rel.endsWith(".js") ? "text/javascript" : "text/html";
+  const type = rel.endsWith(".js") ? "text/javascript" : rel.endsWith(".wasm") ? "application/wasm" : rel.endsWith(".glb") ? "model/gltf-binary" : "text/html";
   try { route.fulfill({ body: await readFile(path.join(here, rel)), contentType: type }); } catch { route.fulfill({ status: 404, body: "" }); }
 });
 await page.goto(`http://golide.3d/stage.html?scene=${scene}`);

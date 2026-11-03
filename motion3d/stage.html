@@ -47,12 +47,13 @@ glow.rotation.x = -Math.PI / 2; glow.position.y = -0.002; scene.add(glow);
 
 const camera = new THREE.PerspectiveCamera(35, W / H, 0.05, 100);
 const mod = await import("./scenes/" + params.get("scene") + ".js");
-const actor = mod.build(THREE, scene);
+const actor = await mod.build(THREE, scene);
 actor.traverse?.((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
 
 window.DURATION = mod.DURATION;
 window.renderAt = (t) => {
   mod.pose(t, actor, camera, THREE);
+  glow.position.x = actor.position.x; glow.position.z = actor.position.z;   // the light pool follows the object
   renderer.render(scene, camera);
   return true;
 };
