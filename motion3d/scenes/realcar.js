@@ -21,6 +21,21 @@ export async function build(THREE, scene) {
   car.getObjectByName("body").material = paint;
   for (const n of ["rim_fl", "rim_fr", "rim_rr", "rim_rl"]) { const o = car.getObjectByName(n); if (o) o.material = detail; }
   const g = car.getObjectByName("glass"); if (g) g.material = glass;
+  // a road, so leaving the ground reads: dark asphalt, edge lines and dashed centre line
+  const road = new THREE.Group();
+  const asphalt = new THREE.Mesh(new THREE.PlaneGeometry(6, 140),
+    new THREE.MeshStandardMaterial({ color: 0x1b1d21, roughness: 0.95 }));
+  asphalt.rotation.x = -Math.PI / 2; asphalt.position.set(0, 0.001, 30); asphalt.receiveShadow = true; road.add(asphalt);
+  const paintLine = new THREE.MeshStandardMaterial({ color: 0xd8d8d0, roughness: 0.6 });
+  for (const x of [-2.8, 2.8]) {
+    const e = new THREE.Mesh(new THREE.PlaneGeometry(0.12, 140), paintLine);
+    e.rotation.x = -Math.PI / 2; e.position.set(x, 0.002, 30); road.add(e);
+  }
+  for (let z = -40; z < 100; z += 4) {
+    const d = new THREE.Mesh(new THREE.PlaneGeometry(0.14, 2), new THREE.MeshStandardMaterial({ color: 0xe9c46a, roughness: 0.6 }));
+    d.rotation.x = -Math.PI / 2; d.position.set(0, 0.002, z); road.add(d);
+  }
+  scene.add(road);
   const root = new THREE.Group(); root.add(car); scene.add(root);
   // centre the model on its own middle so the camera frames the whole car
   const box = new THREE.Box3().setFromObject(car), mid = box.getCenter(new THREE.Vector3());
@@ -43,7 +58,7 @@ export function pose(t, root, camera, THREE) {
   const sink = Math.sin(Math.PI * span(t, 3.1, 3.6)) * 0.06;
   const height = rise * 2.2 + fly * 0.8;
   root.position.set(1.4 * Math.sin(fly * 1.3), height - sink, z);
-  root.rotation.x = -0.25 * Math.sin(Math.PI * span(t, 3.5, 5.6)) + 0.04 * fly;   // nose up as it climbs
+  root.rotation.x = 0.25 * Math.sin(Math.PI * span(t, 3.5, 5.6)) - 0.04 * fly;    // nose up as it climbs
   root.rotation.z = 0.2 * Math.sin(Math.PI * fly);                                 // banks into the turn
   root.rotation.y = 0.4 * smooth(fly);
   car.position.y = 0.008 * Math.sin(t * 17) * (1 - rise);                          // road buzz until airborne
