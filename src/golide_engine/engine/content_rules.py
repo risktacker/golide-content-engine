@@ -1042,19 +1042,15 @@ HUMANIZER_FILE = Path(__file__).resolve().parents[3] / "config" / "script-voice.
 SPOKEN_CHAPTERS_SCHEMA: dict = {
     "type": "object",
     "additionalProperties": False,
-    "properties": {
-        "chapters": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "additionalProperties": False,
-                "properties": {"chapter": {"type": "integer"}, "text": {"type": "string"}},
-                "required": ["chapter", "text"],
-            },
-        },
-    },
-    "required": ["chapters"],
+    "properties": {"script": {"type": "string"}},
+    "required": ["script"],
 }
+
+# 2026-11-04 (second pass): the whole script goes in and comes back as ONE continuous talk, with
+# a marker where each chapter starts. Rewritten as separate chapter blocks, every chapter began
+# cold ("no bridges"); one continuous text lets each paragraph pick up from the last one.
+CHAPTER_MARK = re.compile(r"\[\[(\d+)\]\]")
+
 
 SCREEN_LINE_WORDS = 14
 
@@ -1086,16 +1082,30 @@ def split_spoken(text: str, max_words: int = SCREEN_LINE_WORDS) -> list[str]:
     return lines
 
 
-def draft_chapters(plan: dict) -> list[dict]:
-    """The draft as one block of speech per chapter (in order), for the spoken pass."""
-    blocks: list[dict] = []
+def draft_chapters(plan: dict) -> str:
+    """The draft as one continuous script, a [[n]] marker where chapter n starts."""
+    out: list[str] = []
+    current = None
     for line in plan.get("lines", []):
         index = int(line.get("chapter") or 0)
-        text = str(line.get("text", "")).strip()
-        if blocks and blocks[-1]["chapter"] == index:
-            blocks[-1]["text"] += " " + text
-        else:
-            blocks.append({"chapter": index, "text": text})
+        if index != current:
+            out.append(f"\n\n[[{index}]] ")
+            current = index
+        out.append(str(line.get("text", "")).strip() + " ")
+    return "".join(out).strip()
+
+
+def spoken_blocks(script: str) -> list[dict]:
+    """Split the rewritten script back into chapters at its [[n]] markers."""
+    parts = CHAPTER_MARK.split(str(script or ""))
+    blocks = []
+    lead = " ".join(parts[0].split())
+    if lead:  # text before the first marker belongs to the opening chapter
+        blocks.append({"chapter": -1, "text": lead})
+    for i in range(1, len(parts) - 1, 2):
+        text = " ".join(parts[i + 1].split())
+        if text:
+            blocks.append({"chapter": int(parts[i]), "text": text})
     return blocks
 
 
@@ -1109,7 +1119,12 @@ def merge_spoken_chapters(plan: dict, spoken: dict) -> dict | None:
             groups[-1].append(line)
         else:
             groups.append([line])
-    new = spoken.get("chapters", []) if isinstance(spoken, dict) else []
+    new = spoken_blocks(spoken.get("script", "")) if isinstance(spoken, dict) else []
+    if new and new[0]["chapter"] == -1 and groups:
+        if len(new) > 1 and new[1]["chapter"] == int(groups[0][0].get("chapter") or 0):
+            new = [dict(new[1], text=new[0]["text"] + " " + new[1]["text"])] + new[2:]
+        else:
+            new = [dict(new[0], chapter=int(groups[0][0].get("chapter") or 0))] + new[1:]
     if len(new) != len(groups) or not groups:
         return None
     lines: list[dict] = []
@@ -1147,10 +1162,20 @@ def spoken_pass_instructions(format_name: str, model_seconds: float | None = Non
         "records it. Follow the guide below. The voice sample is how he actually talks: study what "
         "changes from each draft to his version and make the same kind of changes.\n\n"
         "HOW TO REWRITE\n"
-        "- You get the draft one chapter at a time. Rewrite each chapter as natural speech: you may "
-        "add, merge, split or drop sentences, add the little bridges a person uses between "
-        "thoughts, and change the order inside a chapter if it flows better.\n"
-        "- Return one entry per chapter, same chapter numbers, same order.\n\n"
+        "- You get the whole draft as one script. Rewrite it as ONE continuous talk, the way the "
+        "owner would explain it to a curious friend: you may add, merge, split or reorder sentences.\n"
+        "- BRIDGES: every paragraph and every chapter opens by picking up from the one before, so the "
+        "viewer never feels a cold restart (\"And that brings us to...\", \"But that's not the only...\", "
+        "\"Now, there's a reason...\", \"That's why...\", \"So...\"). Vary them; never the same "
+        "opener twice in a row and never a stock line like \"here's the thing\" or \"here's where "
+        "things get interesting\".\n"
+        "- TALK TO THE VIEWER: bring them in with a few real questions and moments to picture "
+        "(\"Have you ever stopped to think...?\", \"Think about what happens when...\", \"Imagine...\"), "
+        "spread through the script, not one per paragraph.\n"
+        "- Turn written attributions into speech (\"Apple says\" instead of \"Apple's guidance "
+        "describes\"); keep who said it when it matters.\n"
+        "- Keep every [[n]] chapter marker exactly once, in the same order, at the start of that "
+        "chapter's part of your rewrite.\n\n"
         "WHAT MUST NOT CHANGE\n"
         "- Who the script talks to and how it pulls them in.\n"
         "- Every fact, name, number and claim. Add no new facts, experiences or results; the owner "
@@ -1164,7 +1189,7 @@ def spoken_pass_instructions(format_name: str, model_seconds: float | None = Non
         "VOICE SAMPLE\n"
         + voice_pairs()
         + owner_voice()
-        + "\nReturn JSON: {\"chapters\": [{\"chapter\", \"text\"}, ...]} with one entry per draft chapter."
+        + "\nReturn JSON: {\"script\": \"...\"}: the whole rewritten talk, with every [[n]] marker kept."
     )
 
 

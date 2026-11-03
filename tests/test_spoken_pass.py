@@ -19,7 +19,7 @@ class SpokenPassTests(unittest.TestCase):
 
     def test_spoken_pass_keeps_facts_and_learns_from_the_owner(self):
         text = spoken_pass_instructions("long")
-        self.assertIn("one entry per chapter", text)
+        self.assertIn("ONE continuous talk", text)
         self.assertIn("Add no new facts", text)
         self.assertIn("THE OWNER'S VOICE", text)
 
@@ -58,14 +58,15 @@ if __name__ == "__main__":
 
 
 def test_chapters_are_rewritten_freely_and_split_back_into_screen_lines():
-    from golide_engine.engine.content_rules import draft_chapters, merge_spoken_chapters, script_text
+    from golide_engine.engine.content_rules import CHAPTER_MARK, draft_chapters, merge_spoken_chapters, script_text
     plan = json.loads(Path("production-queue/golide-long-2026-10-22.script-plan.json").read_text())
-    blocks = draft_chapters(plan)
-    rewritten = {"chapters": [{"chapter": b["chapter"], "text": "Think about it. " + b["text"]} for b in blocks]}
-    merged = merge_spoken_chapters(plan, rewritten)
+    draft = draft_chapters(plan)
+    rewritten = CHAPTER_MARK.sub(lambda m: f"[[{m.group(1)}]] And that brings us here.", draft)
+    merged = merge_spoken_chapters(plan, {"script": rewritten})
     assert merged is not None
-    assert script_text(merged).split() == " ".join(["Think about it. " + b["text"] for b in blocks]).split()
+    assert script_text(merged).split() == CHAPTER_MARK.sub("", rewritten).split()
     assert all(len(line["text"].split()) <= 14 for line in merged["lines"])
     chapters = [line["chapter"] for line in merged["lines"]]
     assert chapters == sorted(chapters)                       # chapter order is kept
-    assert merge_spoken_chapters(plan, {"chapters": rewritten["chapters"][:-1]}) is None   # a lost chapter keeps the draft
+    lost = rewritten.replace("[[1]]", "")
+    assert merge_spoken_chapters(plan, {"script": lost}) is None   # a lost marker keeps the draft

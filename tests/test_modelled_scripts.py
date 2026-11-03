@@ -40,7 +40,9 @@ class ModelledScriptTests(unittest.TestCase):
         self.assertIn("SCRIPT VOICE GUIDE", text)
         self.assertIn("Write for the ear, not the eye", text)
         self.assertIn("VOICE SAMPLE", text)
-        self.assertIn("one entry per chapter", text)
+        self.assertIn("ONE continuous talk", text)
+        self.assertIn("BRIDGES", text)
+        self.assertIn("TALK TO THE VIEWER", text)
         self.assertIn("Humanizer pass: applied", spoken_pass_line({"status": "applied"}))
 
 

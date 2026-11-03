@@ -864,7 +864,7 @@ class ProductionService:
             try:
                 spoken_out = text.generate_json(
                     spoken_pass_instructions(str(spec["format"]), model_seconds),
-                    "DRAFT CHAPTERS\n" + json.dumps({"chapters": draft_lines}, ensure_ascii=False),
+                    "DRAFT SCRIPT\n" + draft_lines,
                     SPOKEN_CHAPTERS_SCHEMA,
                     max_output_tokens=script_tokens * 2,  # high effort spends tokens thinking first
                     reasoning_effort=SPOKEN_PASS_EFFORT,

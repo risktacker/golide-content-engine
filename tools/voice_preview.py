@@ -29,11 +29,10 @@ def main(production_id: str) -> None:
     fmt = "long" if "-long-" in production_id else "short"
     plan = plan_from_record(record, 4 if fmt == "long" else 1)
     text = ProviderRegistry(ROOT / "config" / "providers.json").text(live=True)
-    out = text.generate_json(spoken_pass_instructions(fmt), "DRAFT CHAPTERS\n" + json.dumps(
-        {"chapters": draft_chapters(plan)}, ensure_ascii=False), SPOKEN_CHAPTERS_SCHEMA,
+    out = text.generate_json(spoken_pass_instructions(fmt), "DRAFT SCRIPT\n" + draft_chapters(plan), SPOKEN_CHAPTERS_SCHEMA,
         max_output_tokens=32000, reasoning_effort=SPOKEN_PASS_EFFORT)
     merged = merge_spoken_chapters(plan, dict(out.value))
-    after = "\n".join(b["text"] for b in out.value["chapters"])
+    after = str(out.value["script"])
     path = ROOT / "production-queue" / "preview" / f"voice-{production_id}.txt"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("BEFORE (engine script as recorded)\n\n" + script_text(plan) + "\n\n\nAFTER (new spoken pass)\n\n"
