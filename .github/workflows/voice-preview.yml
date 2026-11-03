@@ -1,0 +1,42 @@
+name: Script voice preview
+
+# 2026-11-04: one engine script before and after the owner's script-voice pass. Text only.
+on:
+  workflow_dispatch:
+    inputs:
+      production_id:
+        description: "A recorded video id, e.g. golide-long-2026-10-31"
+        required: true
+      ref:
+        description: "Branch with the new pass"
+        required: false
+        default: "script-voice"
+
+permissions:
+  contents: write
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -q -e .
+      - name: Rewrite one script
+        env:
+          GOLIDE_ENABLE_PAID_PRODUCTION: "1"
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python tools/voice_preview.py "${{ inputs.production_id }}"
+      - name: Save it
+        run: |
+          git config user.name "golide-production-bot"
+          git config user.email "golide-production-bot@users.noreply.github.com"
+          git checkout -b probe-output
+          git add -f production-queue/preview/
+          git commit -m "ops: script voice preview" || exit 0
+          git push -f origin probe-output
