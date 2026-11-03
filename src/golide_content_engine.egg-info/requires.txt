@@ -8,3 +8,11 @@ pillow<13,>=11
 pyspellchecker<1,>=0.8
 
 [test]
+
+[video]
+numpy<3,>=2
+pycairo<2,>=1.26
+svgelements<2,>=1.9
+scipy<2,>=1.11
+youtube-transcript-api<2,>=1.0
+scikit-image<1,>=0.22
