@@ -1159,7 +1159,7 @@ def spoken_pass_instructions(format_name: str, model_seconds: float | None = Non
         "- Real names stay (the company, the product); never a vague stand-in.\n"
         "- The follow sentence still asks to follow us or the channel (never the brand name).\n"
         "- Every number written as digits (50 applications, 14-day, 2 lines); fractions and everyday "
-        "ordinals stay words (a third, first).\n\n"
+        "ordinals stay words (a third, first), and \"one\" on its own stays a word (one reason, one GPU).\n\n"
         "SCRIPT VOICE GUIDE\n" + humanizer + "\n\n"
         "VOICE SAMPLE\n"
         + voice_pairs()
