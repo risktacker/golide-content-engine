@@ -278,5 +278,6 @@
     "measured_at": "2026-11-03T04:02:58.206455+00:00",
     "signal_type": "youtube-breakout-v1"
   },
-  "selected_topic_source": "https://www.nist.gov/itl/applied-cybersecurity/cybersecurity-privacy-and-ai"
+  "selected_topic_source": "https://www.nist.gov/itl/applied-cybersecurity/cybersecurity-privacy-and-ai",
+  "owner_voice_media_ref": "r2://temp/2026/11/03/c5035da652314a498ea834509b65f6da-Cloud-and-local-ai-v2.wav"
 }
