@@ -2,7 +2,7 @@
 // keyboard, trackpad, ports, rubber feet and vents underneath, so every side is real.
 // Motion: a full orbit (front, side, back, from below), then the lid closes and snaps shut.
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
-import { inOut, orbit, screenTexture, smooth, snap, span, wallpaper } from "./common.js";
+import { drift, inOut, orbit, screenTexture, smooth, snap, span, wallpaper } from "./common.js";
 
 export const DURATION = 9;
 const W = 3.1, D = 2.2, BASE = 0.09, LID = 0.06;
@@ -17,15 +17,15 @@ export function build(THREE, scene) {
   base.position.y = BASE / 2 + 0.03; root.add(base);
   // keyboard: 6 rows of keys in a recessed well
   const well = new THREE.Mesh(new THREE.BoxGeometry(W * 0.86, 0.005, D * 0.42), dark);
-  well.position.set(0, BASE + 0.033, -D * 0.12); root.add(well);
-  const keyGeo = new RoundedBoxGeometry(0.17, 0.02, 0.15, 2, 0.02);
+  well.position.set(0, BASE + 0.028, -D * 0.12); root.add(well);
+  const keyGeo = new RoundedBoxGeometry(0.17, 0.012, 0.15, 2, 0.006);
   for (let r = 0; r < 6; r++) for (let c = 0; c < 14; c++) {
     const k = new THREE.Mesh(keyGeo, keyMat);
-    k.position.set(-W * 0.4 + c * 0.191, BASE + 0.04, -D * 0.31 + r * 0.157); root.add(k);
+    k.position.set(-W * 0.4 + c * 0.191, BASE + 0.034 - 0.012, -D * 0.31 + r * 0.157); root.add(k);
   }
   const pad = new THREE.Mesh(new RoundedBoxGeometry(1.25, 0.006, 0.78, 2, 0.04),
     new THREE.MeshStandardMaterial({ color: 0x8d9096, metalness: 0.6, roughness: 0.25 }));
-  pad.position.set(0, BASE + 0.032, D * 0.27); root.add(pad);
+  pad.position.set(0, BASE + 0.029, D * 0.27); root.add(pad);
   // ports on the left and right edges
   for (const [x, z] of [[-W / 2, -0.4], [-W / 2, -0.15], [W / 2, -0.3]]) {
     const p = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.03, 0.12), dark);
@@ -42,7 +42,7 @@ export function build(THREE, scene) {
   }
 
   // lid: pivots on the back edge of the base
-  const hinge = new THREE.Group(); hinge.position.set(0, BASE + 0.03, -D / 2 + 0.02); root.add(hinge);
+  const hinge = new THREE.Group(); hinge.position.set(0, BASE + 0.034, -D / 2 + 0.02); root.add(hinge);
   const lid = new THREE.Mesh(new RoundedBoxGeometry(W, LID, D, 4, 0.05), alu);
   lid.position.set(0, LID / 2, D / 2 - 0.02); hinge.add(lid);
   const screen = new THREE.Mesh(new THREE.PlaneGeometry(W * 0.92, D * 0.86),
@@ -55,14 +55,20 @@ export function build(THREE, scene) {
 }
 
 export function pose(t, root, camera, THREE) {
-  // lid: open at 110 degrees, closes 5.2 to 6.4 s with a snap, then a short pause
-  const close = snap(span(t, 5.2, 6.4));
-  const open = THREE.MathUtils.degToRad(110);
-  root.userData.hinge.rotation.x = -(open * (1 - close));
-  // camera: one full turn around (back at ~2.5 s), dipping below to show the underside
+  // lid: open at 110 degrees; closes 5.2 to 6.6 s, hits shut, bounces up a touch and settles
+  const close = snap(span(t, 5.2, 6.6));
+  root.userData.hinge.rotation.x = -THREE.MathUtils.degToRad(110) * (1 - close);
+  // the laptop itself moves freely: it drifts across the frame, tilts and turns on all axes,
+  // rolling over to show its underside, never locked to one straight axis
   const turn = inOut(span(t, 0.2, 4.8));
-  const yaw = -0.5 + turn * Math.PI * 2;
-  const pitch = 0.42 - 0.62 * Math.sin(Math.PI * span(t, 2.4, 4.4)) + 0.15 * smooth(span(t, 5, 6));
-  const dist = 7.6 - 1.4 * smooth(span(t, 4.8, 6.0));
-  orbit(camera, new THREE.Vector3(0, 0.55 - 0.3 * smooth(span(t, 5, 6.2)), 0), yaw, pitch, dist);
+  root.rotation.y = -0.5 + turn * Math.PI * 2 + 0.15 * drift(t, 1);
+  root.rotation.x = -0.9 * Math.sin(Math.PI * span(t, 2.4, 4.4)) + 0.06 * drift(t, 2);
+  root.rotation.z = 0.12 * drift(t, 3) * (1 - smooth(span(t, 4.8, 5.4)));
+  root.position.set(0.9 * drift(t * 0.8, 4), 0.35 + 0.25 * drift(t, 5) + 0.6 * Math.sin(Math.PI * span(t, 2.4, 4.4)),
+                    0.5 * drift(t, 6));
+  // the camera breathes a little too, then settles in for the close
+  const dist = 7.4 - 1.5 * smooth(span(t, 4.8, 6.0));
+  // the camera keeps the laptop in frame wherever it drifts (it trails a little, like a hand)
+  orbit(camera, new THREE.Vector3(root.position.x * 0.75, root.position.y + 0.45, root.position.z * 0.6),
+        0.15 * drift(t, 7), 0.36 + 0.05 * drift(t, 8), dist + 0.6);
 }

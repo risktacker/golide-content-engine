@@ -2,12 +2,19 @@
 export const clamp01 = (x) => Math.min(1, Math.max(0, x));
 export const smooth = (x) => { x = clamp01(x); return x * x * (3 - 2 * x); };
 export const inOut = (x) => { x = clamp01(x); return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
-// Fast at the end with a small overshoot and settle: a lid or a fold that snaps shut.
+// A real snap shut: it accelerates into the stop, hits it, bounces back a little and settles.
+// Never goes past 1 (a lid or a fold cannot pass through the body it closes on).
 export const snap = (x) => {
   x = clamp01(x);
-  const c = 2.2;
-  return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2);
+  const hit = 0.62;                       // reaches the stop 62% of the way through
+  if (x < hit) { const u = x / hit; return u * u * u; }
+  const u = (x - hit) / (1 - hit);        // then a damped rebound below 1
+  return 1 - 0.09 * Math.sin(Math.PI * u) * Math.exp(-2.2 * u);
 };
+// Free, unforced drift: several slow waves added together, so the motion never runs straight
+// along one axis (owner 2026-11-03: "it has to move free in the screen").
+export const drift = (t, seed = 0) =>
+  Math.sin(t * 0.47 + seed) * 0.6 + Math.sin(t * 0.83 + seed * 2.1) * 0.3 + Math.sin(t * 1.31 + seed * 3.7) * 0.1;
 export const span = (t, a, b) => clamp01((t - a) / (b - a));
 // Camera on a sphere around a target: yaw (around), pitch (up/down, negative = from below).
 export function orbit(camera, target, yaw, pitch, dist) {
