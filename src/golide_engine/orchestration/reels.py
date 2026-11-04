@@ -45,6 +45,29 @@ def pick_cover(video: Path, output: Path, *, search_fraction: float = 0.4) -> Pa
     return output
 
 
+# 2026-11-04 (owner): every video, engine or his own, can go to only some platforms. He picks
+# them in Studio when he uploads the recording; no choice means everywhere. ["none"] means
+# nowhere: the video is emailed to him to post himself.
+PLATFORMS = ("youtube", "instagram", "facebook", "linkedin")
+
+
+def chosen_platforms(spec: dict[str, Any]) -> set[str]:
+    chosen = spec.get("platforms")
+    if not isinstance(chosen, list):
+        return set(PLATFORMS)
+    return {str(p).strip().lower() for p in chosen} & set(PLATFORMS)
+
+
+def keep_variants(payload: dict[str, Any], platforms: set[str] | None, youtube_video_id: str) -> dict[str, Any]:
+    """Drop the platforms not chosen; YouTube is only recorded when it was uploaded."""
+    payload["variants"] = [
+        v for v in payload["variants"]
+        if (platforms is None or v["platform"] in platforms)
+        and (v["platform"] != "youtube" or youtube_video_id)
+    ]
+    return payload
+
+
 def upload_media(store, path: Path, name: str, content_type: str, bridge=None, kind: str = "video"):
     upload = store.upload_bytes(filename=name, media_kind=kind, data=path.read_bytes(),
                                 content_type=content_type, retention_hours=72)
@@ -98,9 +121,12 @@ def reels_payload(*, content_id: str, metadata: dict[str, Any], video_ref: str, 
 def publish_reels(*, bridge, store, publisher_factory, production_id: str, video: Path,
                   metadata: dict[str, Any], youtube_video_id: str, owner_voice_ref: str,
                   video_ref: str | None = None, content_id: str | None = None,
-                  cover: Path | None = None, publish_at: str | None = None) -> dict[str, Any]:
+                  cover: Path | None = None, publish_at: str | None = None,
+                  platforms: set[str] | None = None) -> dict[str, Any]:
     """Upload (if needed), queue the IG/FB/LinkedIn Reels for one short at YouTube's
     release time, and publish them now if that time has already come."""
+    if platforms is not None and not (platforms - {"youtube"}):
+        return {"social_post_id": None, "reels_status": "skipped_by_owner", "cover_ref": None}
     if video_ref is None:
         video_ref = upload_media(store, video, f"{production_id}.mp4", "video/mp4", bridge)
     cover_ref = None
@@ -113,10 +139,10 @@ def publish_reels(*, bridge, store, publisher_factory, production_id: str, video
     except Exception as exc:  # a missing cover must not block the Reel
         print({"status": "cover_failed", "error": str(exc)})
     content_id = content_id or f"{production_id}-reels"
-    bridge.create_content(reels_payload(
+    bridge.create_content(keep_variants(reels_payload(
         content_id=content_id, metadata=metadata, video_ref=video_ref, cover_ref=cover_ref,
         youtube_video_id=youtube_video_id, owner_voice_ref=owner_voice_ref, publish_at=publish_at,
-    ))
+    ), platforms, youtube_video_id))
     results = publisher_factory().run_due()
     mine = next((r for r in results if r.get("post_id") == content_id), None)
     return {"social_post_id": content_id, "reels_status": mine["status"] if mine else "not_claimed",
@@ -158,8 +184,10 @@ def long_social_payload(*, content_id: str, metadata: dict[str, Any], video_ref:
 
 def queue_long_social(*, bridge, store, production_id: str, video: Path, metadata: dict[str, Any],
                       youtube_video_id: str, owner_voice_ref: str, publish_at: str,
-                      cover: Path | None = None) -> dict[str, Any]:
+                      cover: Path | None = None, platforms: set[str] | None = None) -> dict[str, Any]:
     """Upload the long video and queue Instagram, Facebook and LinkedIn for the release time."""
+    if platforms is not None and not (platforms - {"youtube"}):
+        return {"social_post_id": None, "status": "skipped_by_owner", "publish_at": publish_at}
     video_ref = upload_media(store, video, f"{production_id}.mp4", "video/mp4", bridge)
     cover_ref = None
     if cover is not None and Path(cover).exists():
@@ -168,9 +196,9 @@ def queue_long_social(*, bridge, store, production_id: str, video: Path, metadat
         except Exception as exc:  # the video still goes out
             print({"status": "cover_failed", "error": str(exc)})
     content_id = f"{production_id}-social"
-    bridge.create_content(long_social_payload(
+    bridge.create_content(keep_variants(long_social_payload(
         content_id=content_id, metadata=metadata, video_ref=video_ref,
         youtube_video_id=youtube_video_id, owner_voice_ref=owner_voice_ref, publish_at=publish_at,
         cover_ref=cover_ref,
-    ))
+    ), platforms, youtube_video_id))
     return {"social_post_id": content_id, "status": "queued", "publish_at": publish_at}

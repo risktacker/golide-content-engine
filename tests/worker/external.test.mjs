@@ -23,3 +23,10 @@ test("the optional pieces are carried, bad links refused", () => {
   assert.throws(() => buildExternalSpec({ ...base, script: "too short" }), /script/);
   assert.throws(() => buildExternalSpec({ ...base, voice_ref: "" }), /recording/);
 });
+
+import { normalizePlatforms } from "../../worker/index.js";
+test("platform choice: missing means everywhere, nothing ticked means none", () => {
+  assert.equal(normalizePlatforms(undefined), null);
+  assert.deepEqual(normalizePlatforms([]), ["none"]);
+  assert.deepEqual(normalizePlatforms(["LinkedIn", "youtube", "tiktok"]), ["youtube", "linkedin"]);
+});

@@ -209,6 +209,31 @@ def send_rebuild_preview(**kwargs) -> bool:
     return _send(build_rebuild_preview(**kwargs))
 
 
+def build_video_ready(*, title: str, video_url: str, production_id: str) -> EmailMessage:
+    """2026-11-04: a video the owner chose to post nowhere himself; here is the file."""
+    message = EmailMessage()
+    message["Subject"] = f"Your video is ready: {title}"[:180]
+    message.set_content(
+        f"\"{title}\" is built. You chose not to post it anywhere automatically, so nothing was published.\n\n"
+        f"Download it (link works for 72 hours):\n{video_url}\n\nJob: {production_id}\n"
+    )
+    message.add_alternative(
+        _frame(f"""<div style="color:#1b1d22;font-family:Arial,sans-serif">
+  <p style="color:#9a6f12;letter-spacing:2px;font-size:12px;margin:0 0 8px;font-weight:600">VIDEO READY &middot; NOT POSTED</p>
+  <h2 style="margin:0 0 16px;font-weight:600;color:#1b1d22;font-size:22px;line-height:1.3">{html.escape(title)}</h2>
+  <p style="margin:0 0 24px;line-height:1.6;color:#1b1d22">You chose not to post it anywhere automatically. Download it and post it yourself.</p>
+  <a href="{html.escape(video_url)}" style="display:inline-block;background:#0b0c10;color:#ffffff;padding:13px 24px;border-radius:999px;font-weight:600;text-decoration:none">Download the video</a>
+  <p style="color:#5f6470;font-size:12px;margin:24px 0 0">Link works for 72 hours. Job {html.escape(production_id)}</p>
+</div>"""),
+        subtype="html",
+    )
+    return message
+
+
+def send_video_ready(**kwargs) -> bool:
+    return _send(build_video_ready(**kwargs))
+
+
 def _frame(inner: str) -> str:
     """The GOLIDE email shell, identical to Studio's (worker/mail.js brandShell):
     dark branded header with the logo, gold rule, white body with dark readable

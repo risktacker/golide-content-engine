@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>GOLIDE Studio</title>
   <meta name="theme-color" content="#0b0c10">
-  <link rel="icon" href="/favicon.ico?v=20261014b" sizes="any">
-  <link rel="icon" href="/favicon.png?v=20261014b" type="image/png">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20261014b">
+  <link rel="icon" href="/favicon.ico?v=20261104a" sizes="any">
+  <link rel="icon" href="/favicon.png?v=20261104a" type="image/png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20261104a">
   <link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
   <script>
     // Theme before first paint: dark by default, the owner's choice remembered per device.
     try { var t = localStorage.getItem("golide-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
-  <link rel="stylesheet" href="/styles.css?v=20261014b">
+  <link rel="stylesheet" href="/styles.css?v=20261104a">
 </head>
 <body>
   <div class="splash" id="splash" role="status" aria-live="polite">
@@ -165,8 +165,8 @@
         </div>
 
         <article class="panel" id="external-panel">
-          <div class="panel-head"><h3>Your own video</h3><span class="micro">Any time, outside the schedule</span></div>
-          <form id="external-form" class="sales-form" novalidate>
+          <button class="panel-head fold-head" id="external-toggle" type="button" aria-expanded="false" aria-controls="external-form"><h3>Your own video</h3><span class="micro">Any time, outside the schedule <span class="fold-chev" aria-hidden="true"></span></span></button>
+          <form id="external-form" hidden class="sales-form" novalidate>
             <div class="sales-grid">
               <label class="wide"><span>Title <em class="opt">(optional, the engine writes one if empty)</em></span><input id="ext-title" maxlength="100"></label>
               <label class="wide">Script you recorded<textarea id="ext-script" rows="7" placeholder="Paste the words you read, so the engine can check them against the audio." required></textarea></label>
@@ -177,8 +177,9 @@
               <label class="file-pick"><span class="file-title">Your recording</span><span class="file-name" id="ext-voice-name">No file yet</span><input id="ext-voice" type="file" accept="audio/*,video/*,.m4a,.mp3,.wav,.aac,.caf,.ogg,.opus,.webm,.mp4,.mov"></label>
               <label class="file-pick"><span class="file-title">Reference picture <em>(optional, shown as the real thing)</em></span><span class="file-name" id="ext-ref-name">No file yet</span><input id="ext-ref" type="file" accept="image/*"></label>
             </div>
+            <div class="post-to"><span class="post-to-label">Post to</span><label class="post-chip"><input type="checkbox" value="youtube" checked><span>YouTube</span></label><label class="post-chip"><input type="checkbox" value="instagram" checked><span>Instagram</span></label><label class="post-chip"><input type="checkbox" value="facebook" checked><span>Facebook</span></label><label class="post-chip"><input type="checkbox" value="linkedin" checked><span>LinkedIn</span></label></div>
             <div class="sales-foot">
-              <p class="micro">Publishes as soon as it is built, about 30 minutes.</p>
+              <p class="micro">Publishes as soon as it is built, about 30 minutes. Nothing ticked: it is emailed to you instead.</p>
               <button class="btn btn-gold" id="ext-submit" type="submit">Make the video</button>
             </div>
             <p class="sale-status" id="ext-status" role="status"></p>
@@ -246,7 +247,7 @@
       </div>
     </form>
   </div>
-  <script src="/loader.js?v=20261014b"></script>
-  <script src="/app.js?v=20261014b"></script>
+  <script src="/loader.js?v=20261104a"></script>
+  <script src="/app.js?v=20261104a"></script>
 </body>
 </html>

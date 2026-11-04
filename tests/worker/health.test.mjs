@@ -98,3 +98,17 @@ test("a short the owner skipped shows as skipped and needs nothing", async () =>
   assert.equal(short.lines[0].text, "Skipped by you. Nothing was made or posted.");
   assert.match(renderHealth(r).text, /-- Skipped by you/);
 });
+
+test("platforms the owner turned off show as skipped by you, not as problems", async () => {
+  const db = seed();
+  db.exec(`ALTER TABLE production_jobs ADD COLUMN spec_json TEXT`);
+  post(db, "golide-post-2026-10-07-post-a", "From Apps to Outcomes", ALL_OK);
+  db.prepare(`INSERT INTO production_jobs VALUES(?,?,?,?,?,?,?,?,?,?,?)`).run("golide-short-2026-10-07", "short", "Meta shops", "scheduled", "released", null, "2026-10-07T11:00:00Z", null, null, "2026-10-07T12:10:39Z", JSON.stringify({ platforms: ["instagram", "linkedin"] }));
+  post(db, "golide-short-2026-10-07-reels", "Meta", [["instagram", "published"], ["linkedin", "published"]]);
+  const r = await collectHealth(d1(db), new Date("2026-10-07T18:00:00Z"));
+  assert.deepEqual(r.issues, []);
+  const texts = r.sections.find((s) => s.title === "Short").lines.map((l) => l.text);
+  assert.ok(texts.includes("YouTube: skipped by you"));
+  assert.ok(texts.includes("Facebook: skipped by you"));
+  assert.ok(!texts.includes("LinkedIn: skipped by you"));
+});
