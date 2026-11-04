@@ -1,0 +1,65 @@
+{
+  "id": "golide-external-2026-11-04-1204",
+  "studio_managed": true,
+  "format": "short",
+  "purpose": "external-video",
+  "title": "Why Your Job Applications Get Ignored (Free Book)",
+  "brief": "A video built from the owner's own script and recording.",
+  "external": {
+    "title": "Why Your Job Applications Get Ignored (Free Book)",
+    "script": "You know what's frustrating?\n\nSending out 50 job applications in a month and not hearing back from a single one.\n\nAnd honestly, sometimes it's not even about how many jobs you're applying for. It's *how* you're applying.\n\nThink about it. You're taking the same CV, sending it to 50 different companies, and hoping someone notices you.\n\nBut recruiters can tell when an application hasn't really been tailored to the role.\n\nSo here's what I'd do differently.\n\nFirst, stop applying for every job you come across. Focus on the ones where you actually have a chance.\n\nBefore applying, understand what the employer is looking for. Then make sure your CV shows that fit right from the beginning, with actual evidence of what you can do.\n\nAnd don't just send the application and forget about it. Keep track of where you've applied and follow up.\n\nBecause you'd be surprised how many people never do that.\n\nThe idea is simple: fewer applications, but better chances of getting interviews.\n\nI've actually put this entire approach into a short book called **The Job Search Conversion System**.\n\nIt's a 14-day system, and the Kindle version is currently free until Thursday.\n\nYou don't even need a Kindle. You can read it using the free Kindle app on your phone.\n\nI've left the link in the description. Go grab your copy while it's still free.",
+    "link": "https://www.amazon.com/dp/B0HNZCWJVR",
+    "reference_ref": "r2://temp/2026/11/04/4d564b9192e7404a88963eadedc4d1c5-IMG_7027.png",
+    "reference_link": ""
+  },
+  "owner_voice_media_ref": "r2://temp/2026/11/04/6ae4edb4a5e64141b61391113723e07e-Job-enhanced-v2.wav",
+  "owner_voice_required": true,
+  "budget_class": "manual",
+  "generate_at": "2026-11-04T10:04:58.400Z",
+  "max_cost_usd": 6,
+  "production_authorized": true,
+  "output_destination": "render-and-upload",
+  "concept": {
+    "family": "owner-video",
+    "promise": "The owner's own script, illustrated",
+    "scores": {
+      "scroll_stop": 9,
+      "visual_payoff": 9,
+      "curiosity_gap": 9,
+      "retention_design": 9,
+      "broad_relevance": 8,
+      "evidence_strength": 8,
+      "novelty": 8,
+      "replay_or_loop": 8,
+      "revenue_fit": 6
+    }
+  },
+  "platform_demand": {
+    "verdict": "pass",
+    "reason": "owner-started external video"
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "schedule_rule": "studio-external-video"
+  },
+  "music": {
+    "mood": "curious-tension"
+  },
+  "avatar_reference_images": [],
+  "release": {
+    "approved": true,
+    "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+    "scheduled_at": "2026-11-04T10:04:58Z"
+  },
+  "_studio_job_id": "golide-external-2026-11-04-1204",
+  "_failed_runs": 1
+}
