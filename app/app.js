@@ -74,6 +74,7 @@ const STATUS_LABELS = {
   publishing: "Publishing",
   draft: "Draft",
   topic_rejected: "Topic skipped",
+  skipped: "Skipped",
   dismissed: "Dismissed",
 };
 // Chapter headings ("[02 · WHERE IT HIDES]") are shown, not read aloud.
@@ -516,7 +517,10 @@ function renderJobList() {
     const retry = ["failed", "paused_funds"].includes(job.status)
       ? '<button class="ghost retry-job" data-job="' + escAttr(job.job_id) + '">Retry</button>'
       : "";
-    const finished = ["published", "failed", "topic_rejected", "completed"].includes(jobStatus(job));
+    const finished = ["published", "failed", "topic_rejected", "completed", "skipped"].includes(jobStatus(job));
+    const skip = job.status === "waiting_owner_voice"
+      ? '<button class="ghost skip-job" data-job="' + escAttr(job.job_id) + '" title="Not recording this one">Skip</button>'
+      : "";
     const remove = finished
       ? '<button class="ghost archive-job" data-job="' + escAttr(job.job_id) + '" title="Remove from this list">Remove</button>'
       : "";
@@ -525,13 +529,25 @@ function renderJobList() {
       esc(jobSecondary(job)) + '</small></div>' +
       stageBars(job) +
       '<div><span class="status-pill ' + escAttr(jobStatus(job)) + '">' +
-      esc(statusLabel(jobStatus(job))) + '</span>' + retry + remove + '</div></div>';
+      esc(statusLabel(jobStatus(job))) + '</span>' + retry + skip + remove + '</div></div>';
   }).join("");
 
   $$(".archive-job").forEach((button) => {
     button.onclick = async () => {
       button.disabled = true;
       await api("/api/production-jobs/" + encodeURIComponent(button.dataset.job) + "/archive", { method: "POST" });
+      await loadProductionJobs();
+    };
+  });
+  $$(".skip-job").forEach((button) => {
+    button.onclick = async () => {
+      if (button.dataset.confirm !== "1") {  // two taps: no accidental skips
+        button.dataset.confirm = "1"; button.textContent = "Tap again to skip"; button.classList.add("danger");
+        setTimeout(() => { button.dataset.confirm = ""; button.textContent = "Skip"; button.classList.remove("danger"); }, 3500);
+        return;
+      }
+      button.disabled = true;
+      await api("/api/production-jobs/" + encodeURIComponent(button.dataset.job) + "/skip", { method: "POST" });
       await loadProductionJobs();
     };
   });

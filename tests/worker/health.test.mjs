@@ -87,3 +87,14 @@ test("a long video's socials minutes after release are 'going out', not a proble
   const r = await collectHealth(d1(db), new Date("2026-10-07T18:00:00Z"));
   assert.ok(!r.issues.some((i) => i.startsWith("Long video,")));
 });
+
+test("a short the owner skipped shows as skipped and needs nothing", async () => {
+  const db = seed();
+  post(db, "golide-post-2026-10-07-post-a", "From Apps to Outcomes", ALL_OK);
+  db.prepare(`INSERT INTO production_jobs VALUES(?,?,?,?,?,?,?,?,?,?)`).run("golide-short-2026-10-07", "short", "Meta shops", "skipped", "skipped-by-owner", null, "2026-10-07T11:00:00Z", null, null, "2026-10-07T09:00:00Z");
+  const r = await collectHealth(d1(db), new Date("2026-10-07T18:00:00Z"));
+  assert.deepEqual(r.issues, []);
+  const short = r.sections.find((s) => s.title === "Short");
+  assert.equal(short.lines[0].text, "Skipped by you. Nothing was made or posted.");
+  assert.match(renderHealth(r).text, /-- Skipped by you/);
+});

@@ -470,7 +470,7 @@ async function listProductionJobs(db){
     FROM production_jobs
     WHERE archived_at IS NULL
       -- finished videos leave the list on their own three days after release
-      AND NOT (status IN ('scheduled','completed','published','topic_rejected')
+      AND NOT (status IN ('scheduled','completed','published','topic_rejected','skipped')
                AND COALESCE(scheduled_at,updated_at) < datetime('now','-3 days'))
     ORDER BY COALESCE(scheduled_at,generate_at,created_at) DESC LIMIT 100`).all();
   return results;
@@ -1129,6 +1129,13 @@ async function handleApi(request,env,url){
     await env.DB.prepare(`UPDATE production_jobs SET archived_at=? WHERE job_id=? AND status NOT IN ('claimed','running','waiting_owner_voice','queued')`)
       .bind(nowIso(),decodeURIComponent(archiveMatch[1])).run();
     return json({status:"archived"});
+  }
+  // 2026-11-04 (owner): a short he will not record is skipped, not left "Needs your recording".
+  const skipMatch=url.pathname.match(/^\/api\/production-jobs\/([^/]+)\/skip$/);
+  if(skipMatch&&request.method==="POST"){
+    const r=await env.DB.prepare(`UPDATE production_jobs SET status='skipped',stage='skipped-by-owner',updated_at=? WHERE job_id=? AND status='waiting_owner_voice'`)
+      .bind(nowIso(),decodeURIComponent(skipMatch[1])).run();
+    return json({status:r.meta?.changes?"skipped":"unchanged"});
   }
   if(url.pathname==="/api/storage/sweep"&&request.method==="POST") return json(await sweepMedia(env));
   if(url.pathname==="/api/health-report"){

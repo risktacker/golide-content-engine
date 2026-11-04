@@ -81,7 +81,8 @@ export async function collectHealth(db, now = new Date(), storage = null) {
   for (const job of jobs) {
     const label = job.format === "long" ? "Long video" : "Short";
     const lines = [];
-    if (job.status === "waiting_owner_voice") { lines.push({ mark: "wait", text: "Script is ready. Waiting for your recording." }); issues.push(`Record today's ${label.toLowerCase()}: ${job.title || job.job_id}.`); }
+    if (job.status === "skipped") lines.push({ mark: "skip", text: "Skipped by you. Nothing was made or posted." });
+    else if (job.status === "waiting_owner_voice") { lines.push({ mark: "wait", text: "Script is ready. Waiting for your recording." }); issues.push(`Record today's ${label.toLowerCase()}: ${job.title || job.job_id}.`); }
     else if (job.status === "failed") { lines.push({ mark: "bad", text: `Failed at ${job.stage}. ${short(job.error || "")}` }); issues.push(`${label} failed at ${job.stage}.`); }
     else if (["scheduled", "completed", "published"].includes(job.status)) {
       lines.push({ mark: "ok", text: `YouTube: ${job.status === "scheduled" ? "uploaded and scheduled" : "published"}` });
@@ -151,7 +152,7 @@ export async function collectHealth(db, now = new Date(), storage = null) {
 }
 
 const MARKS = {
-  ok: ["&#10003;", GREEN], warn: ["!", AMBER], bad: ["&#10007;", RED], wait: ["&#8230;", MUTED],
+  ok: ["&#10003;", GREEN], warn: ["!", AMBER], bad: ["&#10007;", RED], wait: ["&#8230;", MUTED], skip: ["&#8212;", MUTED],
 };
 
 export function renderHealth(report) {
@@ -177,7 +178,7 @@ ${issueHtml}${sectionHtml || `<p style="color:${MUTED};font-size:14px">Nothing w
 
   const text = [`${headline} (${pretty})`, ""]
     .concat(report.issues.map((i) => `- ${i}`), n ? [""] : [])
-    .concat(report.sections.flatMap((s) => [`${s.title}: ${s.subtitle}`, ...s.lines.map((l) => `  ${({ ok: "OK", warn: "!!", bad: "XX", wait: ".." })[l.mark]} ${l.text}`), ""]))
+    .concat(report.sections.flatMap((s) => [`${s.title}: ${s.subtitle}`, ...s.lines.map((l) => `  ${({ ok: "OK", warn: "!!", bad: "XX", wait: "..", skip: "--" })[l.mark]} ${l.text}`), ""]))
     .concat(["https://studio.golidee.com/"]).join("\n");
 
   return { subject, html: brandShell({ subject, preheader: n ? report.issues[0] : "Everything went out today.", inner }), text };
