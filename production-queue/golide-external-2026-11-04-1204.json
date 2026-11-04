@@ -14,7 +14,7 @@
   },
   "owner_voice_media_ref": "r2://temp/2026/11/04/6ae4edb4a5e64141b61391113723e07e-Job-enhanced-v2.wav",
   "owner_voice_required": true,
-  "budget_class": "manual",
+  "budget_class": "scheduled",
   "generate_at": "2026-11-04T10:04:58.400Z",
   "max_cost_usd": 6,
   "production_authorized": true,
@@ -60,6 +60,5 @@
     "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
     "scheduled_at": "2026-11-04T10:04:58Z"
   },
-  "_studio_job_id": "golide-external-2026-11-04-1204",
-  "_failed_runs": 1
+  "_studio_job_id": "golide-external-2026-11-04-1204"
 }
