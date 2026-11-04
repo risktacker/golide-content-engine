@@ -478,3 +478,10 @@ body.sheet-open{overflow:hidden}
 .post-chip span{display:inline-block;padding:7px 14px;border:1px solid var(--line-strong);border-radius:999px;font-size:.875rem;color:var(--muted);transition:all .15s}
 .post-chip input:checked+span{color:var(--gold);border-color:var(--gold);background:color-mix(in srgb,var(--gold) 12%,transparent)}
 .post-chip input:focus-visible+span{outline:2px solid var(--gold);outline-offset:2px}
+
+/* 2026-11-04: "Your own video" folds shut by default */
+.fold-head{width:100%;background:none;border:0;padding:0;margin:0;color:inherit;font:inherit;text-align:left;cursor:pointer}
+#external-panel.open .fold-head{margin-bottom:14px}
+.fold-chev{display:inline-block;width:8px;height:8px;margin-left:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .2s}
+#external-panel.open .fold-chev{transform:translateY(1px) rotate(-135deg)}
+#external-form[hidden]{display:none}

@@ -970,6 +970,13 @@ function showPicked(input, nameId) {
   input.closest(".file-pick").classList.toggle("has-file", !!file);
 }
 
+// 2026-11-04 (owner): folded by default so the page stays short; tap the heading to open.
+$("#external-toggle").onclick = () => {
+  const form = $("#external-form"), open = form.hidden;
+  form.hidden = !open;
+  $("#external-toggle").setAttribute("aria-expanded", String(open));
+  $("#external-panel").classList.toggle("open", open);
+};
 $("#ext-voice").onchange = (e) => showPicked(e.target, "#ext-voice-name");
 $("#ext-ref").onchange = (e) => showPicked(e.target, "#ext-ref-name");
 
