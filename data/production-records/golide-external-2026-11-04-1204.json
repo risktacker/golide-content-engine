@@ -1,0 +1,438 @@
+{
+  "production_id": "golide-external-2026-11-04-1204",
+  "youtube_video_id": "ZHJKm7XLG6U",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "ZHJKm7XLG6U",
+    "upload_status": "published",
+    "privacy_status": "public",
+    "scheduled_at": null,
+    "uploaded_at": "2026-11-04T10:23:16.710690+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "Why Your Job Applications Get Ignored (Free Book)",
+    "status": "published",
+    "scheduled_at": "2026-11-04T10:04:58Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"schedule_rule\": \"studio-external-video\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "You know what's frustrating?\nSending out 50 job applications in a month\nand not hearing back from a single one.\nAnd honestly, sometimes it's not even about how many jobs you're applying for.\nIt's *how* you're applying.\nThink about it.\nYou're taking the same CV, sending it to 50 different companies,\nand hoping someone notices you.\nBut recruiters can tell when an application hasn't really been tailored to the role.\nSo here's what I'd do differently.\nFirst, stop applying for every job you come across.\nFocus on the ones where you actually have a chance.\nBefore applying, understand what the employer is looking for.\nThen make sure your CV shows that fit right from the beginning,\nwith actual evidence of what you can do.\nAnd don't just send the application and forget about it.\nKeep track of where you've applied and follow up.\nBecause you'd be surprised how many people never do that.\nThe idea is simple: fewer applications, but better chances of getting interviews.\nI've actually put this entire approach into a\nshort book called **The Job Search Conversion System**.\nIt's a 14-day system, and the Kindle version is currently free until Thursday.\nYou don't even need a Kindle.\nYou can read it using the free Kindle app on your phone.\nI've left the link in the description.\nGo grab your copy while it's still free.\n",
+  "research": {
+    "summary": "Video built from the owner's own script and recording.",
+    "claims": [
+      {
+        "claim": "The owner's own script.",
+        "source_title": "Owner",
+        "source_url": "https://www.amazon.com/dp/B0HNZCWJVR",
+        "published_or_updated": ""
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Why Your Job Applications Get Ignored (Free Book)",
+    "description": "Link: https://www.amazon.com/dp/B0HNZCWJVR\n\nSending dozens of job applications without getting replies can be frustrating. The problem may not be how many jobs you apply for, but whether your CV is tailored to the role and shows clear evidence of your skills.\n\nThis short video shares a better job search strategy: target the right roles, match your CV to the employer’s needs, track your applications, and follow up. It also introduces The Job Search Conversion System, a 14-day book available free on Kindle until Thursday.\n\n#JobSearch #ResumeTips #CareerAdvice #JobApplications #CVTips #GetHired #GOLIDE",
+    "tags": [
+      "job search strategy",
+      "tailored CV",
+      "resume tips",
+      "job application tips",
+      "how to get interviews",
+      "job search advice",
+      "CV writing tips",
+      "resume tailoring",
+      "ATS resume tips",
+      "get more interviews",
+      "job hunting tips",
+      "career advice",
+      "follow up job application",
+      "targeted job applications",
+      "job search system",
+      "The Job Search Conversion Syst",
+      "Kindle career book",
+      "free Kindle book",
+      "recruiter resume tips",
+      "job application strategy",
+      "resume keywords",
+      "job seekers"
+    ],
+    "category_id": 27,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "keywords": [
+      "job search strategy",
+      "tailored CV tips",
+      "resume tailoring",
+      "get more interviews",
+      "job application strategy",
+      "how to get hired",
+      "ATS resume tips",
+      "targeted job applications",
+      "resume keywords",
+      "job search advice",
+      "follow up applications",
+      "career advice",
+      "CV writing tips",
+      "The Job Search Conversion System",
+      "free Kindle career book"
+    ],
+    "hashtags": [
+      "#JobSearch",
+      "#ResumeTips",
+      "#CareerAdvice",
+      "#JobApplications",
+      "#CVTips",
+      "#GetHired",
+      "#GOLIDE"
+    ],
+    "format": "short",
+    "title_description_language": "en",
+    "seo_body": "Sending dozens of job applications without getting replies can be frustrating. The problem may not be how many jobs you apply for, but whether your CV is tailored to the role and shows clear evidence of your skills.\n\nThis short video shares a better job search strategy: target the right roles, match your CV to the employer’s needs, track your applications, and follow up. It also introduces The Job Search Conversion System, a 14-day book available free on Kindle until Thursday.",
+    "link": "https://www.amazon.com/dp/B0HNZCWJVR"
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "The owner's own script.",
+        "source_title": "Owner",
+        "source_url": "https://www.amazon.com/dp/B0HNZCWJVR",
+        "published_or_updated": ""
+      }
+    ],
+    "platform_demand": {
+      "verdict": "pass",
+      "reason": "owner-started external video"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.98,
+      "true_peak_dbtp": -1.77,
+      "loudness_range": 2.5
+    },
+    "editorial": {
+      "beats": 26,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-11-04T10:23:09.807701+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "schedule_rule": "studio-external-video"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-external-2026-11-04-1204",
+    "created_at": "2026-11-04T10:23:11.243862+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-11-04T10:04:58Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "2159e816772b807dc72db6e0c3459b525b28d10b01a73ce792f19b970bb9147a",
+        "bytes": 25445007
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "b38bac509a096805f87f63a6801559e42d40409aca9530b15ca17d5d9ef373a3",
+        "bytes": 201348
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "8f862e7e9fb342a2341cf070da35ab410dacdc314731758207b969831b9bf1f4",
+        "bytes": 2639
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "2d63ef948f1799c2be779ea2b4aa820c8ae35cf2223c061c00de430ec42d4200",
+        "bytes": 2820
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "4d59d264f105850ca4a6131a474803e2aa11fd9c045133f1c3ef6dd9f1bbebad",
+        "bytes": 718
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "192612685f114fc9214a9bb8b5a8474e7b5fee51dbc43b2228af72e077c47e79",
+        "bytes": 584
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "0c7125f3bd11574c3f63fe318362c2c88afe13989b38396ca7741ab611430bb0",
+        "bytes": 335
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "cf57ee3564e904a4dbee3c93b9a5a8b23799b3a4c8e00d4538d924a52fa4b9a1",
+        "bytes": 277
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "visual-plan-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-04T10:12:25.514330+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 14912.0,
+      "cached_input_units": 0.0,
+      "output_units": 3096.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006698,
+      "created_at": "2026-11-04T10:12:25.520458+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-04T10:12:40.711215+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-04T10:12:55.329320+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-04T10:13:10.348497+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-04T10:13:24.713911+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-04T10:13:39.431857+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-04T10:13:52.705632+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-04T10:14:06.353751+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-04T10:14:20.231464+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-04T10:14:33.866607+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-04T10:14:47.911729+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-04T10:15:02.369186+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-04T10:15:17.636241+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-04T10:15:30.595814+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-04T10:15:44.449863+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-1-mini-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.015,
+      "created_at": "2026-11-04T10:15:59.152411+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9376.0,
+      "cached_input_units": 0.0,
+      "output_units": 700.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002715,
+      "created_at": "2026-11-04T10:22:51.117954+00:00"
+    }
+  ],
+  "recorded_at": "2026-11-04T10:23:16.715884+00:00"
+}
