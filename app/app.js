@@ -592,6 +592,20 @@ function recordingLengthProblem(format, seconds) {
   return "";
 }
 
+// 2026-11-04 (owner): pick where the video goes in the same step as the upload. All on by default.
+const POST_TO = [["youtube", "YouTube"], ["instagram", "Instagram"], ["facebook", "Facebook"], ["linkedin", "LinkedIn"]];
+
+function postToHtml(chosen) {
+  const on = Array.isArray(chosen) ? new Set(chosen) : null;
+  return '<div class="post-to"><span class="post-to-label">Post to</span>' + POST_TO.map(([key, name]) =>
+    '<label class="post-chip"><input type="checkbox" value="' + key + '"' + (!on || on.has(key) ? " checked" : "") + '><span>' + name + '</span></label>'
+  ).join("") + '</div>';
+}
+
+function pickedPlatforms(scope) {
+  return [...(scope?.querySelectorAll(".post-to input:checked") || [])].map((input) => input.value);
+}
+
 function actionCard(job) {
   const script = job.script || "The engine is finishing the approved script.";
   const windowRange = RECORDING_WINDOWS[job.format === "long" ? "long" : "short"];
@@ -602,7 +616,7 @@ function actionCard(job) {
     (job.format === "long" ? "Long video" : "Short") + ', record ' + clock(windowRange[0]) + ' to ' + clock(windowRange[1]) + '</span><h4>' +
     esc(job.title || "Script ready") + '</h4><p>Read the script below in your own voice. The engine picks it up automatically after you upload.</p>' + rejected +
     '<div class="script-box">' + scriptHtml(script) + '</div></div>' +
-    '<div class="action-controls">' +
+    '<div class="action-controls">' + postToHtml(null) +
       '<label class="upload-button">Upload my recording<input class="voice-input" type="file" accept="audio/*,video/*,.m4a,.mp3,.wav,.aac,.caf,.ogg,.opus,.webm,.mp4,.mov" data-job="' + escAttr(job.job_id) + '"></label>' +
       '<button class="action-button copy-script" data-job="' + escAttr(job.job_id) + '">Copy script</button>' +
       '<button class="action-button email-script" data-job="' + escAttr(job.job_id) + '">Email me the script</button>' +
@@ -707,6 +721,7 @@ async function uploadVoice(jobId, file) {
   if (!jobId || !file || uploadCount) return;
   const status = $("#voice-status-" + CSS.escape(jobId));
   const job = productionJobs.find((item) => item.job_id === jobId);
+  const card = document.getElementById("job-" + jobId);
   try {
     if (status) status.textContent = "Checking length...";
     const seconds = await audioDuration(file);
@@ -727,7 +742,8 @@ async function uploadVoice(jobId, file) {
     const mediaRef = await prepareUpload(file);
     await api("/api/production-jobs/" + encodeURIComponent(jobId) + "/voice", {
       method: "POST",
-      body: JSON.stringify({ media_ref: mediaRef }),
+      body: JSON.stringify(Object.assign({ media_ref: mediaRef },
+        card?.querySelector(".post-to") ? { platforms: pickedPlatforms(card) } : {})),
     });
     if (status) status.textContent = "Uploaded. Production has started; the video is ready in about 20 to 30 minutes.";
     await loadProductionJobs();
@@ -983,6 +999,7 @@ $("#external-form").onsubmit = async (event) => {
       body: JSON.stringify({
         title: $("#ext-title").value.trim(), script, voice_ref: voiceRef, reference_ref: referenceRef,
         link: $("#ext-link").value.trim(), reference_link: $("#ext-ref-link").value.trim(),
+        platforms: pickedPlatforms($("#external-form")),
       }),
     });
     say("Building now. It publishes when it is ready; follow it under Production below.");

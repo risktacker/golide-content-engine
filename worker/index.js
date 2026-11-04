@@ -552,13 +552,22 @@ async function updateProductionStatus(db,jobId,payload){
   return {jobId,status,stage};
 }
 
-async function attachOwnerVoice(db,jobId,mediaRef){
+// 2026-11-04 (owner): where a video goes, chosen with the recording. null = not given (everywhere).
+const VIDEO_PLATFORMS=["youtube","instagram","facebook","linkedin"];
+export function normalizePlatforms(value){
+  if(!Array.isArray(value)) return null;
+  const picked=VIDEO_PLATFORMS.filter((p)=>value.map((v)=>String(v).toLowerCase()).includes(p));
+  return picked.length?picked:["none"];
+}
+
+async function attachOwnerVoice(db,jobId,mediaRef,platforms=null){
   const ref=safeText(mediaRef);
   if(!ref.startsWith("r2://")) throw new Error("owner voice must be a temporary R2 media reference");
   const row=await db.prepare(`SELECT spec_json,scheduled_at FROM production_jobs WHERE job_id=?`).bind(jobId).first();
   if(!row) throw new Error("production job not found");
   const spec=JSON.parse(row.spec_json);
   spec.owner_voice_media_ref=ref;
+  if(platforms) spec.platforms=platforms;
   const scheduled=safeText(row.scheduled_at);
   if(scheduled){
     const d=new Date(scheduled);
@@ -1208,7 +1217,10 @@ async function handleApi(request,env,url){
   // 2026-11-03: an external video, started by hand: the owner's own script and recording.
   if(url.pathname==="/api/external-videos"&&request.method==="POST"){
     try{
-      const spec=buildExternalSpec(await request.json());
+      const body=await request.json();
+      const spec=buildExternalSpec(body);
+      const platforms=normalizePlatforms(body.platforms);
+      if(platforms) spec.platforms=platforms;
       const saved=await registerProductionJob(env.DB,{jobId:spec.id,spec});
       await env.DB.prepare(`UPDATE production_jobs SET script=?,stage='external-video-queued' WHERE job_id=?`)
         .bind(spec.external.script,spec.id).run();
@@ -1222,7 +1234,7 @@ async function handleApi(request,env,url){
       const payload=await request.json();
       const jobId=decodeURIComponent(voiceMatch[1]);
       const before=await env.DB.prepare(`SELECT owner_voice_media_ref FROM production_jobs WHERE job_id=?`).bind(jobId).first();
-      const attached=await attachOwnerVoice(env.DB,jobId,payload.media_ref);
+      const attached=await attachOwnerVoice(env.DB,jobId,payload.media_ref,normalizePlatforms(payload.platforms));
       // 2026-10-18: replacing a recording stops any build still using the old one;
       // the next run resets the voice-built checkpoints (see voice_reset.py).
       if(before?.owner_voice_media_ref&&before.owner_voice_media_ref!==attached.mediaRef){

@@ -81,11 +81,18 @@ export async function collectHealth(db, now = new Date(), storage = null) {
   for (const job of jobs) {
     const label = job.format === "long" ? "Long video" : "Short";
     const lines = [];
+    // 2026-11-04: platforms the owner turned off for this video are "skipped by you", never a problem.
+    const chosen = await first(db, `SELECT spec_json FROM production_jobs WHERE job_id=?`, job.job_id)
+      .then((r) => { const p = JSON.parse(r?.spec_json || "{}").platforms; return Array.isArray(p) ? new Set(p) : null; })
+      .catch(() => null);
+    const off = (p) => chosen && !chosen.has(p);
     if (job.status === "skipped") lines.push({ mark: "skip", text: "Skipped by you. Nothing was made or posted." });
     else if (job.status === "waiting_owner_voice") { lines.push({ mark: "wait", text: "Script is ready. Waiting for your recording." }); issues.push(`Record today's ${label.toLowerCase()}: ${job.title || job.job_id}.`); }
     else if (job.status === "failed") { lines.push({ mark: "bad", text: `Failed at ${job.stage}. ${short(job.error || "")}` }); issues.push(`${label} failed at ${job.stage}.`); }
     else if (["scheduled", "completed", "published"].includes(job.status)) {
-      lines.push({ mark: "ok", text: `YouTube: ${job.status === "scheduled" ? "uploaded and scheduled" : "published"}` });
+      if (chosen && chosen.has("none")) lines.push({ mark: "skip", text: "Posted nowhere (your choice). The video was emailed to you." });
+      else if (off("youtube")) lines.push({ mark: "skip", text: "YouTube: skipped by you" });
+      else lines.push({ mark: "ok", text: `YouTube: ${job.status === "scheduled" ? "uploaded and scheduled" : "published"}` });
       if (job.error) { lines.push({ mark: "warn", text: short(job.error) }); issues.push(`${label}: ${short(job.error)}`); }
     }
     else lines.push({ mark: "wait", text: `In progress (${job.status}, ${job.stage})` });
@@ -101,6 +108,9 @@ export async function collectHealth(db, now = new Date(), storage = null) {
       if (fresh) { lines.push({ mark: "wait", text: `${NAMES[v.platform] || v.platform}: going out in the next run` }); continue; }
       lines.push(l);
       if (l.mark !== "ok") issues.push(`${label}, ${l.text}`);
+    }
+    if (chosen && !chosen.has("none") && ["scheduled", "completed", "published"].includes(job.status)) {
+      for (const p of ["instagram", "facebook", "linkedin"]) if (off(p)) lines.push({ mark: "skip", text: `${NAMES[p]}: skipped by you` });
     }
     sections.push({ title: label, subtitle: job.title || job.job_id, lines });
   }

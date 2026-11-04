@@ -697,10 +697,29 @@ def main() -> int:
         package = json.loads((package_root / "package-manifest.json").read_text(encoding="utf-8"))
         files = package["files"]
         metadata = json.loads((package_root / files["metadata"]["file"]).read_text(encoding="utf-8"))
-        uploader = YouTubeUploader(youtube, database, "UCqaXVBSBz7iQsRHOupKt-3w")
         release = package["release"]
-        video_id = uploader.upload_private(spec["id"], package_root / files["video"]["file"], package_root / files["thumbnail"]["file"], metadata, release)
-        retention = register_successful_upload(Path.cwd(), database, spec["id"], video_id)
+        from .orchestration.reels import chosen_platforms
+        platforms = chosen_platforms(spec)
+        video_id, retention = "", None
+        if "youtube" in platforms:
+            uploader = YouTubeUploader(youtube, database, "UCqaXVBSBz7iQsRHOupKt-3w")
+            video_id = uploader.upload_private(spec["id"], package_root / files["video"]["file"], package_root / files["thumbnail"]["file"], metadata, release)
+            retention = register_successful_upload(Path.cwd(), database, spec["id"], video_id)
+        delivered = None
+        if not platforms:
+            # Posted nowhere (owner's choice): email him the file to post himself.
+            try:
+                from .operations.email import send_video_ready
+                from .orchestration.reels import upload_media
+                from .storage.r2 import r2_store_from_environment
+                store = r2_store_from_environment()
+                ref = upload_media(store, package_root / files["video"]["file"], f"{spec['id']}.mp4", "video/mp4", bridge)
+                delivered = send_video_ready(title=str(metadata.get("title") or spec.get("title", "")),
+                                             video_url=store.resolve(ref, expires_seconds=72 * 3600),
+                                             production_id=spec["id"])
+            except Exception as exc:
+                delivered = False
+                print(f"::warning title=Video email not sent::{str(exc)[:300]}")
         reels = None
         if spec.get("format") == "short" and bridge:
             # Shorts also go out as Instagram and Facebook Reels (with a cover
@@ -719,6 +738,7 @@ def main() -> int:
                     owner_voice_ref=str(spec.get("owner_voice_media_ref", "")),
                     cover=Path("build") / spec["id"] / "video-cover.jpg",
                     publish_at=str(release.get("scheduled_at") or spec.get("release", {}).get("scheduled_at", "")),
+                    platforms=platforms,
                 )
             except Exception as exc:
                 reels = {"reels_status": "failed", "error": str(exc)[:500]}
@@ -737,6 +757,7 @@ def main() -> int:
                     youtube_video_id=video_id, owner_voice_ref=str(spec.get("owner_voice_media_ref", "")),
                     publish_at=str(release.get("scheduled_at") or spec.get("release", {}).get("scheduled_at", "")),
                     cover=Path("build") / spec["id"] / "video-cover.jpg",
+                    platforms=platforms,
                 )
             except Exception as exc:
                 long_social = {"status": "failed", "error": str(exc)[:500]}
@@ -767,12 +788,12 @@ def main() -> int:
             qa_warnings = json.loads((Path("productions") / spec["id"] / "qa-report.json").read_text(encoding="utf-8")).get("warnings", [])
         except Exception:
             pass
-        report_studio("scheduled", "youtube-scheduled",
+        report_studio("scheduled", "youtube-scheduled" if video_id else ("released" if platforms else "emailed-to-owner"),
                       ("Published, but check the spelling of: " + ", ".join(w.split(": ", 1)[-1] for w in qa_warnings))
                       if qa_warnings else None)
         print(json.dumps({"status": "scheduled", "production_id": spec["id"], "youtube_video_id": video_id,
                           "retention": retention, "reels": reels, "long_social": long_social,
-                          "reel_cover": reel_cover}))
+                          "reel_cover": reel_cover, "platforms": sorted(platforms), "emailed": delivered}))
         return 0
 
     if args.command == "animatic":
