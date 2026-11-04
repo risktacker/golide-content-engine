@@ -1238,6 +1238,8 @@ async function handleApi(request,env,url){
   if(retryMatch&&request.method==="POST"){
     const id=decodeURIComponent(retryMatch[1]);
     await env.DB.prepare(`UPDATE production_jobs SET status='queued',stage='manual-retry',error=NULL,updated_at=? WHERE job_id=?`).bind(nowIso(),id).run();
+    // 2026-11-04: start a run now instead of waiting for the next scheduled one.
+    try{await dispatchWorkflow(env,"production-scheduler.yml");}catch(e){console.log(JSON.stringify({dispatch:"retry_failed",error:String(e?.message||e)}));}
     return json({jobId:id,status:"queued"});
   }
   if(url.pathname==="/api/media/preview"&&request.method==="GET"){

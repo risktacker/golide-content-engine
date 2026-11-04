@@ -10,6 +10,7 @@ test("an external video is a Short the engine builds and publishes at once", () 
   assert.equal(spec.id, "golide-external-2026-11-04-0000");
   assert.equal(spec.purpose, "external-video");
   assert.equal(spec.production_authorized, true);
+  assert.ok(["scheduled", "independent"].includes(spec.budget_class));  // the only classes the engine accepts
   assert.equal(spec.release.scheduled_at, "2026-11-03T22:00:00Z");
   assert.equal(spec.external.title, "");
 });

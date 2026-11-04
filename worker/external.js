@@ -45,7 +45,7 @@ export function buildExternalSpec(payload, now = new Date()) {
     external: { title, script, link, reference_ref: referenceRef, reference_link: referenceLink },
     owner_voice_media_ref: voice,
     owner_voice_required: true,
-    budget_class: "manual",
+    budget_class: "scheduled",   // the engine accepts scheduled or independent only; this uses the normal short allocation
     generate_at: now.toISOString(),
     max_cost_usd: 6.0,
     production_authorized: true,
