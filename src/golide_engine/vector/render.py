@@ -36,6 +36,9 @@ GLOW_SCALE = 3  # glow layer is rendered at 1/3 size, then blurred and upscaled
 TRANSITION_BEFORE = 0.40  # seconds of hand-over before the next line starts
 TRANSITION_AFTER = 0.90   # ... and after it starts
 MOTION_SIZE = 0.95        # a 3D object's size against the drawing area (vector.motion3d)
+# Where a 3D object may reach, through its whole move (top, bottom as a share of the height;
+# width share): the locked drawing areas (16:9 19%-76%, 9:16 17%-58% and the middle 68%).
+MOTION_ZONE = {"long": (0.19, 0.76, 0.80), "short": (0.17, 0.58, 0.68)}
 CHAPTER_CARD_SECONDS = 2.8  # how long a chapter card stays at the start of a chapter
 PARTICLES = 170
 
@@ -320,6 +323,7 @@ class VectorRenderer:
         from . import illustrate as _illustrate
         _illustrate.EDGE_LIGHT = PAINT
         self._transitions: dict[int, "Transition"] = {}
+        self._motion_places: dict = {}   # 3D scene -> (size, centre x, centre y)
         self.chapters: list = []
         self.follow: set[int] = set()  # spoken line indexes of the follow call-out
         self.captions = CaptionRenderer(self.layout, self.theme)
@@ -424,12 +428,25 @@ class VectorRenderer:
                     motion3d.trigger_time(group.lines, str(motion.get("on", "")), group.start + TRANSITION_AFTER + 0.2))
         return motion["object"], motion3d.move_progress(t, start), motion3d.turn(t, group.start, group.end)
 
+    def _motion_place(self, group: Group) -> tuple[float, float, float]:
+        """(size, centre x, centre y) of a 3D scene, fitted once to the drawing area over its whole
+        move: an opened lid or a stack coming apart never reaches the chapter card, the follow
+        pill or the captions."""
+        key = (group.start, group.icons)
+        if key not in self._motion_places:
+            L = self.layout
+            top, bottom, wide = MOTION_ZONE[self.format]
+            zone = (L.width * (1 - wide) / 2, L.height * top, L.width * (1 + wide) / 2, L.height * bottom)
+            self._motion_places[key] = motion3d.fit(self._motion(group)["object"], zone, L.size * MOTION_SIZE)
+        return self._motion_places[key]
+
     def _draw_motion(self, image: Image.Image, group: Group, t: float, alpha: float) -> None:
         if alpha <= 0.01:
             return
         L = self.layout
         name, u, yaw = self._motion_pose(group, t)
-        art = motion3d.layer((L.width, L.height), (L.cx, L.cy), L.size * MOTION_SIZE, name, u, yaw, alpha)
+        size, cx, cy = self._motion_place(group)
+        art = motion3d.layer((L.width, L.height), (cx, cy), size, name, u, yaw, alpha)
         image.paste(art, (0, 0), art)
 
     def _with_motion(self, image: Image.Image, groups: list[Group], gi: int, t: float) -> Image.Image:
@@ -722,8 +739,10 @@ class VectorRenderer:
         on its visible edges exactly as it looks at time ``at`` (2026-11-05: no jump)."""
         if self._motion(group) is not None:
             name, u, yaw = self._motion_pose(group, group.end if at is None else at)
-            pts = motion3d.edge_points(name, u, yaw, self.layout.size * MOTION_SIZE, PARTICLES, seed + 101)
-            return pts / (self.layout.size / 2)
+            size, cx, cy = self._motion_place(group)
+            pts = motion3d.edge_points(name, u, yaw, size, PARTICLES, seed + 101)
+            L = self.layout
+            return (pts + (cx - L.cx, cy - L.cy)) / (L.size / 2)
         # The whole drawing area: long videos reach far to the sides (wide and duo layouts).
         side, span = 200, 2.5
         wide = 4.6 if self.format == "long" else span

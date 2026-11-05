@@ -316,6 +316,29 @@ def outline(name: str, u: float, yaw: float, size: float, center) -> list[tuple[
     return out
 
 
+def extent(name: str, size: float) -> tuple[float, float, float, float]:
+    """The box the object fills (pixels from the centre) over its whole move and turn, so it
+    can be fitted once per scene and never grows past the drawing area."""
+    xs, ys = [], []
+    for u in (0.0, 0.25, 0.5, 0.75, 1.0):
+        for yaw in (-34, -23, -12):
+            for corners, _ in solids(name, u):
+                pts, _ = project(corners, math.radians(yaw), size)
+                xs += list(pts[:, 0])
+                ys += list(pts[:, 1])
+    return min(xs), min(ys), max(xs), max(ys)
+
+
+def fit(name: str, zone: tuple[float, float, float, float], base: float) -> tuple[float, float, float]:
+    """Size and centre that keep the object inside ``zone`` (x0, y0, x1, y1 in frame pixels)
+    through its whole move: (size, centre x, centre y)."""
+    x0, y0, x1, y1 = extent(name, base)
+    scale = min(1.0, (zone[2] - zone[0]) / max(1e-6, x1 - x0), (zone[3] - zone[1]) / max(1e-6, y1 - y0))
+    cx = (zone[0] + zone[2]) / 2 - (x0 + x1) / 2 * scale
+    cy = (zone[1] + zone[3]) / 2 - (y0 + y1) / 2 * scale
+    return base * scale, cx, cy
+
+
 def move_progress(t: float, start: float) -> float:
     return ease((t - start) / MOVE_SECONDS)
 
