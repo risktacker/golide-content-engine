@@ -126,6 +126,7 @@ class Canvas:
     panels: list = field(default_factory=list)
     drawn: float = 0.0
     yscale: float | None = None
+    motion: dict | None = None   # 2026-11-05: a live 3D scene (vector.motion3d), drawn moving by the renderer
     tiny: ImageFont.FreeTypeFont | None = None  # dense scales (the spectrum); label(small="tiny")  # graphs: pixels per math unit (y), when x and y units differ
 
     def p(self, x: float, y: float) -> tuple[float, float]:
@@ -307,6 +308,7 @@ def save(c: Canvas, target: Path) -> Path:
     sidecar_path(target).write_text(json.dumps({
         "width": out.width, "height": out.height, "strokes": c.strokes, "labels": labels,
         "panels": [dict(item, after=round(min(1.0, item["after"] / total), 4)) for item in c.panels],
+        **({"motion3d": c.motion} if c.motion else {}),
     }) + "\n", encoding="utf-8")
     return target
 

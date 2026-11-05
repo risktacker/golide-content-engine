@@ -119,6 +119,7 @@ def scene_plan_instructions(format_name: str, duration: float | None = None) -> 
     from .layouts import STORYBOARD_RULES
 
     products = MAX_PRODUCT_SCENES.get(format_name, 1)
+    three_d = 2 if format_name == "long" else 1   # simple 3D scenes (2026-11-05)
     figure_menu = "\n".join("  " + example for example in EXAMPLES.values())
     layout_rules = STORYBOARD_RULES
     return f"""\
@@ -332,6 +333,13 @@ be the architecture behind it... the level we have reached now is not to fake th
   naming the real layers from the research in order, top first; "fold" for the hinge of a
   folding device (bar=stuck when the lines are about the support pressing on the screen).
   Name only parts the research names; never invent a part.
+- SIMPLE 3D (owner direction 2026-11-05): when the lines describe one of these devices
+  physically moving or coming apart (a laptop's lid opening, a phone's layers, a server
+  sliding out of its rack, a chip's lid coming off, a battery's cells), set "figure" to
+  "3d: object=<laptop|phone|server|chip|battery>; on=<the spoken word the move lands on,
+  copied from the lines>" with layout "single". The device turns in 3D and its move lands
+  on that word. Only when the words describe that movement or what is inside; at most
+  {three_d} in the whole video, never two in a row.
 
 CHARTS (owner direction 2026-10-27): when a scene's lines give prices, growth, sales,
 shares or a market move with real numbers, set "figure" to a "chart" line with those
@@ -471,6 +479,7 @@ class Drawing:
     # drawn this share of the figure: (cairo surface, x, y, after).
     labels: list = field(default_factory=list)
     keep_order: bool = False
+    motion: dict | None = None   # 2026-11-05: live 3D (vector.motion3d)
     # Duo layout (long videos): the right-hand drawing, drawn after this one.
     companion: "Drawing | None" = None
     clip: bool = False  # a pacing shot: framed on part of the picture, clipped to the drawing area
@@ -844,7 +853,7 @@ def load_figure(image_path: Path) -> Drawing | None:
     bbox = (min(xs), min(ys), max(xs), max(ys))
     return Drawing(strokes, int(meta["width"]), int(meta["height"]), bbox, None, None,
                    accent="gold", entrance="pen", labels=labels, keep_order=True, figure=True,
-                   panels=panels)
+                   panels=panels, motion=meta.get("motion3d"))
 
 
 # --------------------------------------------------------------------------

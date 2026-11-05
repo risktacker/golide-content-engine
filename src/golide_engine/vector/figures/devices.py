@@ -114,3 +114,21 @@ def fold(size, params, items):
         c.dot(0.55, by + 0.05, ROSE, 4.0)
         c.label(1.6, by + 0.45, "PRESSES HERE", ROSE, small="tiny", anchor="lm")
     return c
+
+
+def model3d(size, params, items):
+    """3d: object=laptop; on=opens  (owner direction 2026-11-05). A real device in simple 3D whose
+    move lands on the spoken word. The still drawn here is the starting pose: the scene change's
+    points of light land on it, then the renderer takes over and moves it (vector.motion3d)."""
+    from .. import motion3d
+    from .core import SUPER
+
+    name = str(params.get("object", "")).strip().lower()
+    if name not in motion3d.OBJECTS:
+        raise FigureError(f"3d: object must be one of {', '.join(motion3d.OBJECTS)}")
+    c = new_canvas(size, (0, 0, 1, 1))
+    w, h = c.image.width, c.image.height
+    for poly, gold in motion3d.outline(name, 0.0, math.radians(-34), min(w, h) / SUPER * SUPER * 0.9, (w / 2, h / 2)):
+        c.pxline(poly, GOLD if gold else WHITE, 1.0)
+    c.motion = {"object": name, "on": str(params.get("on", "")).strip()}
+    return c

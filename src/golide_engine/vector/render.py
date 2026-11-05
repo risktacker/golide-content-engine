@@ -29,6 +29,7 @@ from golide_engine.theme import Theme, load_theme
 from .align import CaptionChunk, Group, align_lines, caption_chunks, group_lines
 from .ambience import Ambience, AmbientState, StarField, crossfade, mix  # noqa: F401 (StarField re-exported)
 from .primitives import ICON_LAYOUTS, PRIMITIVES, Draw, ease, lead_slots
+from . import motion3d
 
 FORMATS = {"short": (1080, 1920), "long": (1920, 1080)}
 GLOW_SCALE = 3  # glow layer is rendered at 1/3 size, then blurred and upscaled
@@ -403,6 +404,37 @@ class VectorRenderer:
             ctx.pop_group_to_source()
             ctx.paint_with_alpha(alpha)
 
+    @staticmethod
+    def _motion(group: Group) -> dict | None:
+        """The live 3D of a single-picture scene (2026-11-05), or None."""
+        from .illustrate import SCENES
+
+        if len(group.icons) != 1:
+            return None
+        drawing = SCENES.get(group.icons[0])
+        return getattr(drawing, "motion", None) if drawing is not None else None
+
+    def _with_motion(self, image: Image.Image, groups: list[Group], gi: int, t: float) -> Image.Image:
+        """Owner direction 2026-11-05: simple 3D, consistent with the voice. The points of light
+        land on the starting pose, the object takes over, its move lands on the spoken word and
+        it turns slowly until the next scene change."""
+        group = groups[gi]
+        motion = self._motion(group)
+        if motion is None or motion.get("object") not in motion3d.OBJECTS:
+            return image
+        shown = group.start + TRANSITION_AFTER - 0.3
+        end = groups[gi + 1].start - TRANSITION_BEFORE if gi + 1 < len(groups) else group.end + 1.0
+        alpha = min(1.0, max(0.0, (t - shown) / 0.3), max(0.0, (end - t) / 0.25))
+        if alpha <= 0.0:
+            return image
+        start = max(group.start + TRANSITION_AFTER - 0.1,
+                    motion3d.trigger_time(group.lines, str(motion.get("on", "")), group.start + TRANSITION_AFTER + 0.2))
+        L = self.layout
+        art = motion3d.layer((L.width, L.height), (L.cx, L.cy), L.size * 0.95, motion["object"],
+                             motion3d.move_progress(t, start), motion3d.turn(t, group.start, end), alpha)
+        image.paste(art, (0, 0), art)
+        return image
+
     def _accent_rgb(self, group: Group) -> tuple:
         """The active scene's accent colour (0-255 RGB), gold when it has none."""
         from .illustrate import SCENES
@@ -724,7 +756,7 @@ class VectorRenderer:
             self._transition(groups, nxt).draw(main, glow, t)
         elif gi > 0 and t < group.start + TRANSITION_AFTER:
             self._transition(groups, gi).draw(main, glow, t)
-        else:
+        elif self._motion(group) is None:
             carry = {name: None for name in self._carried_into(groups, gi)}
             self._group_draw(main, glow, group, t, gi, 1.0, carry=carry or None)
 
@@ -782,6 +814,7 @@ class VectorRenderer:
         image = Image.fromarray(np.clip(frame, 0, 255).astype(np.uint8), "RGB")
 
         accent = self._accent_rgb(group)
+        image = self._with_motion(image, groups, gi, t)
 
         card_on = False
 

@@ -43,6 +43,8 @@ BUILDERS = {
     "chart": economics.chart,
     # how real devices are built (2026-10-31): exploded layers, a folding hinge
     "layers": devices.layers, "fold": devices.fold,
+    # simple 3D of a real device, its move on the spoken word (2026-11-05)
+    "3d": devices.model3d,
 }
 KINDS = tuple(BUILDERS)
 
@@ -50,6 +52,7 @@ KINDS = tuple(BUILDERS)
 EXAMPLES = {
     "layers": "layers: names=cover glass,polarizer,touch sensor,OLED,backplane; title=10+ layers   (how a real thing is built, layer by layer, from the research)",
     "fold": "fold: layers=6; bar=stuck              (a folding device's hinge, end view; bar=dropped when it works)",
+    "3d": "3d: object=laptop; on=opens            (a real device in 3D, its move landing on the spoken word: laptop lid opens, phone layers come apart, server slides out, chip lid lifts, battery cells lift out)",
     "vectors": "vectors: a=3,1; b=1,2; sum=yes          (names=u,v to rename; length=yes)",
     "right_triangle": "right_triangle: a=3; b=4; angle=yes     (formula=yes adds a² + b² = c²; letters=yes)",
     "function": "function: f=x^2; x=-2,2; tangent=1      (or area=0,3.14 for the area under the curve)",
