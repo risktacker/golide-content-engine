@@ -19,8 +19,7 @@ class SpokenPassTests(unittest.TestCase):
 
     def test_spoken_pass_keeps_facts_and_learns_from_the_owner(self):
         text = spoken_pass_instructions("long")
-        self.assertIn("ONE continuous talk", text)
-        self.assertIn("Add no new facts", text)
+        self.assertIn("Do not change the central argument, facts", text)  # the owner's guide, section 4
         self.assertIn("THE OWNER'S VOICE", text)
 
     def test_merge_replaces_words_and_keeps_the_visual_fields(self):

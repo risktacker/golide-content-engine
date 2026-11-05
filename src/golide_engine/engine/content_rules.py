@@ -1157,39 +1157,21 @@ def spoken_pass_instructions(format_name: str, model_seconds: float | None = Non
         humanizer = HUMANIZER_FILE.read_text(encoding="utf-8")
     except OSError:
         humanizer = ""
+    # 2026-11-05 (owner): his guide IS the rules. Only what the pipeline needs is added: the
+    # chapter markers, the length, and his own standing rule on digits.
     return (
-        "You rewrite a narration script so it sounds like the owner talking; he reads it aloud and "
-        "records it. Follow the guide below. The voice sample is how he actually talks: study what "
-        "changes from each draft to his version and make the same kind of changes.\n\n"
-        "HOW TO REWRITE\n"
-        "- You get the whole draft as one script. Rewrite it as ONE continuous talk, the way the "
-        "owner would explain it to a curious friend: you may add, merge, split or reorder sentences.\n"
-        "- BRIDGES: every paragraph and every chapter opens by picking up from the one before, so the "
-        "viewer never feels a cold restart (\"And that brings us to...\", \"But that's not the only...\", "
-        "\"Now, there's a reason...\", \"That's why...\", \"So...\"). Vary them; never the same "
-        "opener twice in a row and never a stock line like \"here's the thing\" or \"here's where "
-        "things get interesting\".\n"
-        "- TALK TO THE VIEWER: bring them in with a few real questions and moments to picture "
-        "(\"Have you ever stopped to think...?\", \"Think about what happens when...\", \"Imagine...\"), "
-        "spread through the script, not one per paragraph.\n"
-        "- Turn written attributions into speech (\"Apple says\" instead of \"Apple's guidance "
-        "describes\"); keep who said it when it matters.\n"
-        "- Keep every [[n]] chapter marker exactly once, in the same order, at the start of that "
-        "chapter's part of your rewrite.\n\n"
-        "WHAT MUST NOT CHANGE\n"
-        "- Who the script talks to and how it pulls them in.\n"
-        "- Every fact, name, number and claim. Add no new facts, experiences or results; the owner "
-        "explains, he did not test anything himself.\n"
-        f"- About the same length ({target['words_min']} to {target['words_max']} words in total).\n"
-        "- Real names stay (the company, the product); never a vague stand-in.\n"
-        "- The follow sentence still asks to follow us or the channel (never the brand name).\n"
-        "- Every number written as digits (50 applications, 14-day, 2 lines); fractions and everyday "
-        "ordinals stay words (a third, first), and \"one\" on its own stays a word (one reason, one GPU).\n\n"
+        "Rewrite this narration script following the guide below. The owner reads it aloud and records it. "
+        "The voice sample shows how he actually talks.\n\n"
         "SCRIPT VOICE GUIDE\n" + humanizer + "\n\n"
         "VOICE SAMPLE\n"
         + voice_pairs()
         + owner_voice()
-        + "\nReturn JSON: {\"script\": \"...\"}: the whole rewritten talk, with every [[n]] marker kept."
+        + "\nTECHNICAL (the pipeline needs these)\n"
+        "- Keep every [[n]] chapter marker exactly once, in the same order, at the start of that chapter's part.\n"
+        f"- About {target['words_min']} to {target['words_max']} words in total.\n"
+        "- Numbers as digits (50 applications, 14-day, 2 risks); fractions and everyday ordinals stay words, and \"one\" "
+        "on its own stays a word.\n"
+        "Return JSON: {\"script\": \"...\"}: the whole rewritten script, with every [[n]] marker kept.\n"
     )
 
 
@@ -1242,25 +1224,33 @@ OUTPUT
 
 
 def script_display(plan: dict) -> str:
-    """The script as the owner reads it: chapter headings (not spoken) above each block."""
+    """The script as the owner reads it (2026-11-05): each chapter one flowing paragraph under its
+    heading (not spoken). The short screen lines are the engine's captions, never his reading copy:
+    a line break mid-sentence makes him stop and re-record."""
     chapters = plan.get("chapters") or []
-    if not chapters:
-        return script_text(plan)
     out: list[str] = []
-    current = None
-    for line in plan["lines"]:
-        text = str(line.get("text", "")).strip()
+    current, words = None, []
+
+    def flush():
+        if words:
+            out.append(" ".join(words))
+            words.clear()
+
+    for line in plan.get("lines", []):
+        text = " ".join(str(line.get("text", "")).split())
         if not text:
             continue
         index = line.get("chapter")
         if index != current and isinstance(index, int) and 0 <= index < len(chapters):
+            flush()
             current = index
             chapter = chapters[index]
             heading = " · ".join(x for x in (str(chapter.get("number", "")).strip(), str(chapter.get("title", "")).strip()) if x)
             if out:
                 out.append("")
             out.append(f"[{heading.upper()}]")
-        out.append(text)
+        words.append(text)
+    flush()
     return "\n".join(out)
 
 

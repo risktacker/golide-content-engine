@@ -40,9 +40,10 @@ class ModelledScriptTests(unittest.TestCase):
         self.assertIn("SCRIPT VOICE GUIDE", text)
         self.assertIn("Write for the ear, not the eye", text)
         self.assertIn("VOICE SAMPLE", text)
-        self.assertIn("ONE continuous talk", text)
-        self.assertIn("BRIDGES", text)
-        self.assertIn("TALK TO THE VIEWER", text)
+        # 2026-11-05: the owner's guide is the rules; none of the old extra rules are added
+        self.assertNotIn("BRIDGES", text)
+        self.assertNotIn("TALK TO THE VIEWER", text)
+        self.assertIn("[[n]]", text)
         self.assertIn("Humanizer pass: applied", spoken_pass_line({"status": "applied"}))
 
 
@@ -119,7 +120,7 @@ class SpokenFlowTests(unittest.TestCase):
         self.assertIn("WE EXPLAIN, WE DID NOT TEST", text)
         self.assertIn("a third of a second", text)
         self.assertEqual(digits("two thirds of owners"), "two thirds of owners")
-        self.assertIn("he did not test anything himself", spoken_pass_instructions("short"))
+        self.assertIn("Never invent evidence, experiences", spoken_pass_instructions("short"))  # from his guide
         self.assertIn("fractions and everyday ordinals stay words", spoken_pass_instructions("short"))
 
 

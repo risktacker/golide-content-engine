@@ -31,7 +31,10 @@ class ChapterTests(unittest.TestCase):
         display, spoken = script_display(self.plan), script_text(self.plan)
         self.assertIn("[02 · WHERE IT HIDES]", display)
         self.assertNotIn("[", spoken)
-        self.assertEqual([r for r in display.splitlines() if r and not r.startswith("[")], spoken.splitlines())
+        # 2026-11-05: the reading copy is one flowing paragraph per chapter, same words as the screen lines
+        paragraphs = [r for r in display.splitlines() if r and not r.startswith("[")]
+        self.assertEqual(len(paragraphs), len(self.plan["chapters"]))
+        self.assertEqual(" ".join(paragraphs).split(), " ".join(spoken.splitlines()).split())
 
     def test_marks_and_youtube_chapters_use_real_times(self):
         marks = chapter_marks(self.plan, timed(self.plan))
