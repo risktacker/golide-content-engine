@@ -271,9 +271,14 @@ class ProductionService:
             plan = json.loads((work / "visual-plan.json").read_text(encoding="utf-8"))
             cover = plan.get("cover") or {}
             colors = thumbnail_colors(cover, plan.get("scenes") or [])
-            # 2026-10-25: the thumbnail carries the opening card's line, not 1 to 3 words.
+            # 2026-10-25: the thumbnail carried the opening card's line; 2026-11-05 (owner): big
+            # words instead, 2 to 4 of them, written for the thumbnail (thumbnail-words.json).
             words = str(cover.get("text") or cover.get("thumbnail_text") or "")
             punch = str(cover.get("gold") or cover.get("thumbnail_punch") or "")
+            big = work / "thumbnail-words.json"
+            if big.exists():
+                chosen = json.loads(big.read_text(encoding="utf-8"))
+                words, punch = str(chosen.get("words") or words), str(chosen.get("punch") or "")
             stamp_thumbnail(thumbnail, words, punch, palette_rgb(colors))
         except Exception as exc:  # the plain artwork still works as a thumbnail
             print(json.dumps({"status": "thumbnail_text_skipped", "error": str(exc)[:300]}))
@@ -1894,18 +1899,22 @@ class ProductionService:
         raw_thumbnail = work / "thumbnail-source.png"
         thumbnail = work / "thumbnail.png"
         thumbnail_provider = self.providers.thumbnails(live=True)
-        layout_path = work / "thumbnail-layout.json"
 
         def stamp(target: Path) -> None:
-            # 2026-11-01: a modelled thumbnail gets our words where the source had its words,
-            # plus the brand; the older template keeps its own stamp.
-            if layout_path.exists():
-                try:
-                    from ..vector.thumb_model import stamp_modelled
-                    stamp_modelled(target, json.loads(layout_path.read_text(encoding="utf-8")))
-                    return
-                except Exception as exc:  # noqa: BLE001 - fall back to the template stamp
-                    print(json.dumps({"status": "modelled_stamp_failed", "error": str(exc)[:300]}))
+            # 2026-11-05 (owner): back to our own thumbnail with big words; the modelled
+            # layouts (2026-11-01) are reversed for thumbnails.
+            try:
+                from ..vector.thumbnail_v2 import big_words
+                words_path = work / "thumbnail-words.json"
+                if not words_path.exists():
+                    plan_cover = (json.loads((work / "visual-plan.json").read_text(encoding="utf-8")).get("cover") or {}) \
+                        if (work / "visual-plan.json").exists() else {}
+                    picked = big_words(self.providers.text(live=True), metadata["title"], str(plan_cover.get("text", "")),
+                                       str((spec.get("source_breakout") or {}).get("title") or ""))
+                    if picked:
+                        words_path.write_text(json.dumps({"words": picked[0][0], "punch": picked[0][1]}) + "\n", encoding="utf-8")
+            except Exception as exc:  # noqa: BLE001 - the opening line still works
+                print(json.dumps({"status": "big_words_failed", "error": str(exc)[:200]}))
             self._stamp_thumbnail(work, target)
 
         def thumbnail_stage():
@@ -1949,21 +1958,7 @@ class ProductionService:
             reference = fetch_reference(source_url, work / "thumbnail-reference.jpg")
             prompt = thumbnail_prompt_v2(metadata["title"], self._thumbnail_moment(work), colors, reference is not None)
             first_refs = [reference] if reference else None
-            if reference is not None:
-                # 2026-11-01 (owner approved): the thumbnail is modelled on the source's own
-                # thumbnail. It is only READ for its structure (never handed to the image
-                # model, which would redraw the creator); ours carries a little of our brand.
-                try:
-                    from ..vector.thumb_model import layout_json, modelled_prompt, read_layout
-                    layout = read_layout(self.providers.text(live=True), reference, metadata["title"],
-                                         on_output=lambda out: self._record_text(production_id, "thumbnail-layout", out))
-                    layout_path.write_text(layout_json(layout), encoding="utf-8")
-                    prompt, first_refs = modelled_prompt(metadata["title"], "", layout, False), None
-                except Exception as exc:  # noqa: BLE001 - the older thumbnail still works
-                    layout_path.unlink(missing_ok=True)
-                    print(json.dumps({"status": "thumbnail_layout_failed", "error": str(exc)[:300]}))
-            print(json.dumps({"status": "thumbnail_reference", "used": reference is not None,
-                              "modelled": layout_path.exists(), "source": source_url}))
+            print(json.dumps({"status": "thumbnail_reference", "used": reference is not None, "source": source_url}))
             output = None
             for attempt, refs in ((prompt, first_refs),
                                   (thumbnail_prompt(metadata["title"], "one simple glowing symbol of the topic", colors)
@@ -1985,8 +1980,6 @@ class ProductionService:
                 print("::warning title=Thumbnail from cover::the image model refused the thumbnail twice")
                 return
             normalize_thumbnail(raw_thumbnail, thumbnail)
-            if attempt is not prompt:
-                layout_path.unlink(missing_ok=True)   # the calm retry is not the modelled picture
             stamp(thumbnail)
             self._record_image(production_id, "thumbnail", thumbnail_cost_model, output)
         self.runner.run(production_id, "thumbnail", thumbnail_stage)
