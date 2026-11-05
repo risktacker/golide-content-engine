@@ -621,6 +621,11 @@ class ProductionService:
                     except Exception as exc:  # noqa: BLE001
                         print(json.dumps({"status": "breakouts_unavailable", "error": str(exc)[:200]}))
                         breakouts = []
+                    # 2026-11-05 (owner): never model the same video twice. The same channel is
+                    # fine, a different video of theirs; the "F-You" source was picked again 2 days on.
+                    from .history import used_source_videos, video_key
+                    used = used_source_videos(production_id)
+                    breakouts = [b for b in breakouts if video_key(b.get("url", "")) not in used]
                     (work / "breakouts.json").write_text(json.dumps(breakouts, indent=2) + "\n", encoding="utf-8")
                     if not breakouts:
                         raise TopicDemandRejected(
@@ -640,7 +645,8 @@ class ProductionService:
                                                                     "breakout", "hours_old", "duration_seconds",
                                                                     "description")}
                                             for b in breakouts], separators=(",", ":"))
-                              + f"\n\nRECENT GOLIDE TOPICS (repeats are fine with a new narrative)\n"
+                              + f"\n\nRECENT GOLIDE TITLES (never repeat one of these titles. The same subject may come back only "
+                              f"from a different video, told from a different angle under a different title)\n"
                               f"{json.dumps(recent_titles)}\n\nFRESH HEADLINES (facts only)\n{headlines}")
                     output = text.generate_json(
                         instructions,
@@ -672,9 +678,13 @@ class ProductionService:
                     # title with one to three words changed (checked here, not trusted).
                     candidates = self._modelled_titles(spec, production_id, text, text_model,
                                                        [c for c in candidates if c.get("breakout")])
+                    # 2026-11-05 (owner): never the same title on our channel twice.
+                    from .history import title_key, used_titles
+                    taken = used_titles(production_id) | {title_key(t) for t in recent_titles}
+                    candidates = [c for c in candidates if title_key(c.get("model_title") or c.get("title", "")) not in taken]
                     if not candidates:
                         raise TopicDemandRejected(
-                            "no candidate modelled a trending video with a properly tweaked title"
+                            "no candidate modelled a trending video with a properly tweaked, unused title"
                         )
                     from ..youtube.pulse import attach as attach_pulse
                     attach_pulse(self.youtube, candidates)
