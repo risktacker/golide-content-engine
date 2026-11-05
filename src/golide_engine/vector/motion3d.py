@@ -256,6 +256,7 @@ def _edges(ids: np.ndarray, golds: np.ndarray, width: int):
 
 def render(name: str, u: float, yaw: float, size: float):
     """The object as an RGBA image and the pixel offset of its top-left from the centre."""
+    size = float(size)
     ids, origin, colours, golds = _raster(name, u, yaw, size)
     width = max(1, round(size / 300))
     edge, gold = _edges(ids, golds, width)
@@ -336,7 +337,7 @@ def fit(name: str, zone: tuple[float, float, float, float], base: float) -> tupl
     scale = min(1.0, (zone[2] - zone[0]) / max(1e-6, x1 - x0), (zone[3] - zone[1]) / max(1e-6, y1 - y0))
     cx = (zone[0] + zone[2]) / 2 - (x0 + x1) / 2 * scale
     cy = (zone[1] + zone[3]) / 2 - (y0 + y1) / 2 * scale
-    return base * scale, cx, cy
+    return float(base * scale), float(cx), float(cy)
 
 
 def move_progress(t: float, start: float) -> float:

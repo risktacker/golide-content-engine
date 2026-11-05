@@ -45,3 +45,12 @@ def test_scene_change_light_lands_on_the_object_as_it_looks():
     assert pts.shape == (400, 2)
     open_pts = motion3d.edge_points("laptop", 1.0, -0.3, 600, 400)
     assert open_pts[:, 1].min() < pts[:, 1].min() - 50   # the open lid reaches higher: points follow the pose
+
+
+def test_fitted_scene_draws_inside_its_zone():
+    import numpy as np
+    size, cx, cy = motion3d.fit("phone", (100.0, 300.0, 980.0, 1100.0), np.float64(760.0))
+    assert isinstance(size, float)
+    x0, y0, x1, y1 = motion3d.extent("phone", size)
+    assert cy + y0 >= 299 and cy + y1 <= 1101
+    motion3d.layer((1080, 1920), (cx, cy), size, "phone", 1.0, -0.3)
