@@ -1,0 +1,47 @@
+{
+  "name": "Hubble Space Telescope",
+  "axis": "+X points out of the aperture (V1). Units are metres.",
+  "sources": [
+    "NASA HST Servicing Mission 3B Media Reference Guide, section 5: https://lhea.gsfc.nasa.gov/archive/sm3b/art/pdf/media-guide/sec5.pdf"
+  ],
+  "simplified": [
+    "High-gain dish diameter and boom length are not in the source; set by eye.",
+    "Solar wing mast position is approximate.",
+    "Mirror spacing inside the tube is approximate."
+  ],
+  "parts": [
+    {"id": "aft_shroud", "label": "Aft shroud", "builder": "barrel", "material": "foil_silver", "at": [-5.0, 0, 0],
+     "params": {"length": 3.5, "diameter": 4.3, "rings": 3, "rails": 8, "cap": true},
+     "explode": [-5.5, 0, 0], "anchor": [1.2, 0, 2.2]},
+    {"id": "equipment_section", "label": "Equipment bays", "builder": "bay_ring", "material": "panel_grey", "at": [-1.5, 0, 0],
+     "params": {"length": 1.5, "diameter": 4.4, "bays": 12},
+     "explode": [-3.0, 0, 0], "anchor": [0.7, 0, 2.2]},
+    {"id": "primary_mirror", "label": "Primary mirror", "builder": "disc", "material": "mirror", "at": [-0.6, 0, 0],
+     "params": {"diameter": 2.4, "thickness": 0.3, "hole": 0.6},
+     "explode": [0, 0, 0], "anchor": [0.3, 0, 1.1]},
+    {"id": "forward_shell", "label": "Forward shell", "builder": "barrel", "material": "blanket_white", "at": [0, 0, 0],
+     "params": {"length": 4.0, "diameter": 3.1, "rings": 4, "rails": 6},
+     "explode": [3.0, 0, 0], "anchor": [2.0, 0, 1.6]},
+    {"id": "secondary_mirror", "label": "Secondary mirror", "builder": "disc", "material": "mirror", "at": [4.2, 0, 0],
+     "params": {"diameter": 0.3, "thickness": 0.1},
+     "explode": [3.0, 0, 0], "anchor": [0, 0, 0.2]},
+    {"id": "light_shield", "label": "Light shield", "builder": "barrel", "material": "foil_silver", "at": [4.0, 0, 0],
+     "params": {"length": 4.0, "diameter": 3.1, "rings": 6, "rails": 4},
+     "explode": [6.0, 0, 0], "anchor": [2.0, 0, 1.6]},
+    {"id": "aperture_door", "label": "Aperture door", "builder": "hinged_door", "material": "blanket_white", "at": [8.0, 0, 0],
+     "params": {"diameter": 3.1, "open_deg": 105},
+     "explode": [6.0, 0, 0], "anchor": [0, 0, 1.5]},
+    {"id": "solar_wing_left", "label": "Solar array", "builder": "solar_wing", "material": "solar_cell", "at": [1.2, 0, 0],
+     "params": {"length": 7.1, "width": 2.6, "side": -1, "mast_base": 2.4, "tilt_deg": 22},
+     "explode": [3.0, -3.0, 0], "anchor": [0, -6.0, 0]},
+    {"id": "solar_wing_right", "label": "Solar array", "builder": "solar_wing", "material": "solar_cell", "at": [1.2, 0, 0],
+     "params": {"length": 7.1, "width": 2.6, "side": 1, "mast_base": 2.4, "tilt_deg": 22},
+     "explode": [3.0, 3.0, 0], "anchor": [0, 6.0, 0]},
+    {"id": "antenna_top", "label": "High-gain antenna", "builder": "dish_on_boom", "material": "panel_grey", "at": [1.2, 0, 1.55],
+     "params": {"diameter": 1.3, "boom": 3.0, "side": 1, "aim_deg": 30},
+     "explode": [3.0, 0, 2.2], "anchor": [0.25, 0, 3.3]},
+    {"id": "antenna_bottom", "label": "High-gain antenna", "builder": "dish_on_boom", "material": "panel_grey", "at": [1.2, 0, -1.55],
+     "params": {"diameter": 1.3, "boom": 3.0, "side": -1, "aim_deg": 30},
+     "explode": [3.0, 0, -2.2], "anchor": [0.25, 0, -3.3]}
+  ]
+}
