@@ -1,0 +1,1624 @@
+{
+  "title": "How a Coding Extension Becomes a Backdoor",
+  "chapters": [
+    {
+      "number": "",
+      "title": "Intro"
+    },
+    {
+      "number": "01",
+      "title": "The Marketplace Trap"
+    },
+    {
+      "number": "02",
+      "title": "Inside The Backdoor"
+    },
+    {
+      "number": "03",
+      "title": "Why AI Amplifies It"
+    },
+    {
+      "number": "04",
+      "title": "The Trust Problem"
+    },
+    {
+      "number": "",
+      "title": "Close"
+    }
+  ],
+  "lines": [
+    {
+      "chapter": 0,
+      "section": "claim",
+      "text": "Think about the software you trust most on your computer.",
+      "emphasis": "software",
+      "visual": "icon_hero",
+      "subjects": [
+        "laptop"
+      ],
+      "label": "TRUSTED TOOL",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "claim",
+      "text": "If you write code, there's a good chance it's your code editor.",
+      "emphasis": "there's",
+      "visual": "icon_flow",
+      "subjects": [
+        "laptop",
+        "door",
+        "key"
+      ],
+      "label": "ENTRY POINT",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "claim",
+      "text": "It sees your files, your projects, your passwords sitting in config files.",
+      "emphasis": "passwords",
+      "visual": "icon_flow",
+      "subjects": [
+        "laptop",
+        "door",
+        "key"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "pattern",
+      "text": "And that's exactly why attackers want to get inside it.",
+      "emphasis": "attackers",
+      "visual": "icon_pair",
+      "subjects": [
+        "marketplace",
+        "extension"
+      ],
+      "label": "LOOKS SAFE",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "pattern",
+      "text": "Picture an extension that looks completely normal in the marketplace.",
+      "emphasis": "marketplace",
+      "visual": "icon_flow",
+      "subjects": [
+        "extension",
+        "file",
+        "server"
+      ],
+      "label": "FIRST ACCESS",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "pattern",
+      "text": "You install it like you've installed a hundred others.",
+      "emphasis": "installed",
+      "visual": "icon_pair",
+      "subjects": [
+        "laptop",
+        "door"
+      ],
+      "label": "PERSISTENCE",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "reframe",
+      "text": "But in the background, it reads your files, talks to a server somewhere,",
+      "emphasis": "background",
+      "visual": "icon_hero",
+      "subjects": [
+        "laptop",
+        "desk"
+      ],
+      "label": "YOUR MACHINE",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "reframe",
+      "text": "and leaves a door open that stays open even after you remove it.",
+      "emphasis": "leaves",
+      "visual": "icon_hero",
+      "subjects": [
+        "laptop",
+        "desk"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "claim",
+      "text": "That's not a movie plot.",
+      "emphasis": "That's",
+      "visual": "clock",
+      "subjects": [
+        "laptop",
+        "clock"
+      ],
+      "label": "RECENT CASE",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "claim",
+      "text": "It starts with software you invited in yourself,",
+      "emphasis": "software",
+      "visual": "icon_pair",
+      "subjects": [
+        "laptop",
+        "warning"
+      ],
+      "label": "REAL RISK",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "cta",
+      "text": "and what just happened with Cursor shows how fast that invitation can go wrong.",
+      "emphasis": "invitation",
+      "visual": "icon_hero",
+      "subjects": [
+        "phone"
+      ],
+      "label": "FOLLOW",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "pattern",
+      "text": "If you like tech explained in plain English like this, follow the channel.",
+      "emphasis": "explained",
+      "visual": "icon_pair",
+      "subjects": [
+        "extension",
+        "checkmark"
+      ],
+      "label": "LOOKS USEFUL",
+      "follow": true
+    },
+    {
+      "chapter": 0,
+      "section": "pattern",
+      "text": "Because the real question here isn't whether an extension looks useful.",
+      "emphasis": "extension",
+      "visual": "icon_pair",
+      "subjects": [
+        "extension",
+        "checkmark"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "reframe",
+      "text": "It's what it can do once your editor trusts it.",
+      "emphasis": "editor",
+      "visual": "icon_flow",
+      "subjects": [
+        "editor",
+        "key",
+        "computer"
+      ],
+      "label": "REAL QUESTION",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "claim",
+      "text": "So what actually happened?",
+      "emphasis": "happened",
+      "visual": "clock",
+      "subjects": [
+        "calendar",
+        "marketplace"
+      ],
+      "label": "OCTOBER 29",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "claim",
+      "text": "On October 29th, 2026, Cursor reported a problem in its extension marketplace.",
+      "emphasis": "October",
+      "visual": "bar_chart",
+      "subjects": [
+        "version labels",
+        "marketplace"
+      ],
+      "label": "TWO VERSIONS",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "claim",
+      "text": "Versions 2.1.312 and 2.1.313 of a Claude Code extension, branded with Anthropic's name,",
+      "emphasis": "Anthropic's",
+      "visual": "icon_hero",
+      "subjects": [
+        "extension"
+      ],
+      "label": "FAMILIAR NAME",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "claim",
+      "text": "turned out to be malicious copies.",
+      "emphasis": "malicious",
+      "visual": "icon_hero",
+      "subjects": [
+        "extension"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Cursor said they came through its own VS Code Extension Marketplace,",
+      "emphasis": "Marketplace",
+      "visual": "icon_flow",
+      "subjects": [
+        "extension",
+        "marketplace",
+        "laptop"
+      ],
+      "label": "DISTRIBUTION",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "and they weren't real Anthropic builds.",
+      "emphasis": "Anthropic",
+      "visual": "split_compare",
+      "subjects": [
+        "marketplace",
+        "factory"
+      ],
+      "label": "WHO BUILT IT",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "pattern",
+      "text": "And that part matters.",
+      "emphasis": "matters",
+      "visual": "icon_pair",
+      "subjects": [
+        "logo",
+        "extension"
+      ],
+      "label": "FAMILIAR LABEL",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "pattern",
+      "text": "The name looked familiar,",
+      "emphasis": "familiar",
+      "visual": "icon_flow",
+      "subjects": [
+        "marketplace",
+        "package",
+        "laptop"
+      ],
+      "label": "DELIVERY ROUTE",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "pattern",
+      "text": "and the marketplace felt like a safe place to get it,",
+      "emphasis": "marketplace",
+      "visual": "icon_flow",
+      "subjects": [
+        "marketplace",
+        "package",
+        "laptop"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "claim",
+      "text": "so nobody had to download anything that looked like a virus.",
+      "emphasis": "download",
+      "visual": "cross_out",
+      "subjects": [
+        "laptop",
+        "virus"
+      ],
+      "label": "NO OBVIOUS FILE",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "pattern",
+      "text": "The dangerous code came in through a perfectly ordinary install.",
+      "emphasis": "dangerous",
+      "visual": "icon_flow",
+      "subjects": [
+        "button",
+        "extension",
+        "computer"
+      ],
+      "label": "ONE INSTALL",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Microsoft looked at the tampered extension and found JavaScript injected into it.",
+      "emphasis": "JavaScript",
+      "visual": "icon_hero",
+      "subjects": [
+        "code window"
+      ],
+      "label": "INJECTED CODE",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "That code tried to add an SSH key controlled by the attacker,",
+      "emphasis": "controlled",
+      "visual": "icon_pair",
+      "subjects": [
+        "key",
+        "laptop"
+      ],
+      "label": "NEW KEY",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "set up a reverse SSH tunnel that would keep running,",
+      "emphasis": "reverse",
+      "visual": "icon_flow",
+      "subjects": [
+        "laptop",
+        "tunnel",
+        "server"
+      ],
+      "label": "OPEN TUNNEL",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "and collect information about the machine.",
+      "emphasis": "information",
+      "visual": "icon_flow",
+      "subjects": [
+        "laptop",
+        "tunnel",
+        "server"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Now, an SSH key is basically a spare key to your computer.",
+      "emphasis": "basically",
+      "visual": "icon_flow",
+      "subjects": [
+        "laptop",
+        "tunnel",
+        "server"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "pattern",
+      "text": "And a reverse tunnel is a way for",
+      "emphasis": "reverse",
+      "visual": "icon_pair",
+      "subjects": [
+        "key",
+        "house"
+      ],
+      "label": "SPARE KEY",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "pattern",
+      "text": "an outside computer to call back into yours.",
+      "emphasis": "computer",
+      "visual": "icon_flow",
+      "subjects": [
+        "server",
+        "tunnel",
+        "laptop"
+      ],
+      "label": "CALL BACK",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "claim",
+      "text": "The clever bit is that your own machine opens",
+      "emphasis": "machine",
+      "visual": "icon_pair",
+      "subjects": [
+        "tunnel",
+        "laptop"
+      ],
+      "label": "STAYING OPEN",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "claim",
+      "text": "that connection by reaching out to the attacker's server,",
+      "emphasis": "connection",
+      "visual": "icon_flow",
+      "subjects": [
+        "laptop",
+        "network",
+        "server"
+      ],
+      "label": "OUTBOUND PATH",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "claim",
+      "text": "so it can keep working quietly.",
+      "emphasis": "working",
+      "visual": "icon_flow",
+      "subjects": [
+        "laptop",
+        "network",
+        "server"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "claim",
+      "text": "Cursor also warned that just uninstalling the extension might not be enough,",
+      "emphasis": "uninstalling",
+      "visual": "cross_out",
+      "subjects": [
+        "extension",
+        "trash bin",
+        "door"
+      ],
+      "label": "UNINSTALLING",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "reframe",
+      "text": "because it could leave changes elsewhere on the system.",
+      "emphasis": "elsewhere",
+      "visual": "icon_orbit",
+      "subjects": [
+        "laptop",
+        "key",
+        "folder",
+        "terminal"
+      ],
+      "label": "BEYOND THE FOLDER",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "pattern",
+      "text": "That's the whole supply-chain trick, really.",
+      "emphasis": "supply-chain",
+      "visual": "icon_pair",
+      "subjects": [
+        "badge",
+        "package"
+      ],
+      "label": "BORROWED TRUST",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "pattern",
+      "text": "You borrow someone else's good name,",
+      "emphasis": "someone",
+      "visual": "icon_flow",
+      "subjects": [
+        "badge",
+        "package",
+        "laptop"
+      ],
+      "label": "ACCEPTED",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "pattern",
+      "text": "and you use it to deliver something people will happily accept.",
+      "emphasis": "something",
+      "visual": "icon_flow",
+      "subjects": [
+        "badge",
+        "package",
+        "laptop"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "reframe",
+      "text": "The marketplace wasn't the final target.",
+      "emphasis": "final target",
+      "visual": "split_compare",
+      "subjects": [
+        "marketplace",
+        "laptop"
+      ],
+      "label": "DELIVERY POINT",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "reframe",
+      "text": "It just had to be the trusted road in.",
+      "emphasis": "trusted",
+      "visual": "icon_flow",
+      "subjects": [
+        "marketplace",
+        "door",
+        "laptop"
+      ],
+      "label": "PATH IN",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "claim",
+      "text": "But the extension on its own is only part of the story.",
+      "emphasis": "extension",
+      "visual": "cross_out",
+      "subjects": [
+        "editor",
+        "button"
+      ],
+      "label": "MORE THAN UI",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "claim",
+      "text": "An extension isn't just a button in your editor.",
+      "emphasis": "extension",
+      "visual": "icon_hero",
+      "subjects": [
+        "computer",
+        "key"
+      ],
+      "label": "RUNNING CODE",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "It's real software, running with the permissions of the extension host.",
+      "emphasis": "permissions",
+      "visual": "icon_pair",
+      "subjects": [
+        "file",
+        "computer"
+      ],
+      "label": "FILE ACCESS",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "VS Code's own documentation says extensions can read and write files, make network requests,",
+      "emphasis": "extensions",
+      "visual": "icon_flow",
+      "subjects": [
+        "computer",
+        "server",
+        "terminal"
+      ],
+      "label": "SYSTEM ACCESS",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "start other programs and change settings.",
+      "emphasis": "programs",
+      "visual": "icon_pair",
+      "subjects": [
+        "extension",
+        "checkmark"
+      ],
+      "label": "LEGITIMATE USE",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "That's all great when the code is honest.",
+      "emphasis": "That's",
+      "visual": "icon_pair",
+      "subjects": [
+        "extension",
+        "warning"
+      ],
+      "label": "MALICIOUS USE",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "When the code belongs to an attacker, it's a different picture.",
+      "emphasis": "different",
+      "visual": "icon_pair",
+      "subjects": [
+        "extension",
+        "warning"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "claim",
+      "text": "Think about what's sitting in a developer's project files and environment variables.",
+      "emphasis": "environment variables",
+      "visual": "icon_flow",
+      "subjects": [
+        "folder",
+        "file",
+        "terminal"
+      ],
+      "label": "SEARCHING",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "claim",
+      "text": "Tokens, configuration, credentials.",
+      "emphasis": "credentials",
+      "visual": "icon_orbit",
+      "subjects": [
+        "token",
+        "folder",
+        "key",
+        "laptop"
+      ],
+      "label": "VALUABLE FILES",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "A token can look like a random line of text,",
+      "emphasis": "token",
+      "visual": "icon_pair",
+      "subjects": [
+        "text file",
+        "key"
+      ],
+      "label": "HIDDEN VALUE",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "but it might be permission to get into another service.",
+      "emphasis": "permission",
+      "visual": "icon_flow",
+      "subjects": [
+        "key",
+        "server",
+        "cloud"
+      ],
+      "label": "REMOTE ACCESS",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "So the extension can look through those files,",
+      "emphasis": "extension",
+      "visual": "icon_flow",
+      "subjects": [
+        "laptop",
+        "network",
+        "server"
+      ],
+      "label": "OUTBOUND",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "reach out to a server without it looking like a download,",
+      "emphasis": "download",
+      "visual": "icon_flow",
+      "subjects": [
+        "laptop",
+        "network",
+        "server"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "pattern",
+      "text": "and send what it finds through the connection it already opened.",
+      "emphasis": "connection",
+      "visual": "icon_flow",
+      "subjects": [
+        "file",
+        "network",
+        "server"
+      ],
+      "label": "DATA PATH",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "claim",
+      "text": "It can also make sure it survives a restart.",
+      "emphasis": "survives",
+      "visual": "icon_pair",
+      "subjects": [
+        "laptop",
+        "restart arrow"
+      ],
+      "label": "PERSISTENCE",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "That's what people mean by persistence.",
+      "emphasis": "persistence",
+      "visual": "icon_pair",
+      "subjects": [
+        "laptop",
+        "gear"
+      ],
+      "label": "STARTUP",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "Maybe it's a startup task, maybe it's a changed setting,",
+      "emphasis": "startup",
+      "visual": "icon_pair",
+      "subjects": [
+        "key",
+        "trash bin"
+      ],
+      "label": "LEFT BEHIND",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "reframe",
+      "text": "or an SSH key that stays behind after the extension is gone.",
+      "emphasis": "extension",
+      "visual": "icon_hero",
+      "subjects": [
+        "laptop",
+        "boot"
+      ],
+      "label": "FOOTHOLD",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "reframe",
+      "text": "And now that laptop is the attacker's foothold.",
+      "emphasis": "foothold",
+      "visual": "icon_hero",
+      "subjects": [
+        "laptop",
+        "boot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "claim",
+      "text": "From there, they could go after source code, GitHub tokens, cloud credentials, package registries,",
+      "emphasis": "GitHub tokens",
+      "visual": "icon_pair",
+      "subjects": [
+        "code",
+        "token"
+      ],
+      "label": "NEXT TARGET",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "claim",
+      "text": "signing keys, even production systems.",
+      "emphasis": "signing keys",
+      "visual": "icon_orbit",
+      "subjects": [
+        "cloud",
+        "registry",
+        "key",
+        "server"
+      ],
+      "label": "WIDER REACH",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "reframe",
+      "text": "So a small extension can be the first link in a much bigger chain,",
+      "emphasis": "extension",
+      "visual": "icon_flow",
+      "subjects": [
+        "extension",
+        "laptop",
+        "server"
+      ],
+      "label": "CHAIN REACTION",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "reframe",
+      "text": "and the first secret it steals might not be what they're really after.",
+      "emphasis": "they're",
+      "visual": "icon_flow",
+      "subjects": [
+        "key",
+        "laptop",
+        "cloud"
+      ],
+      "label": "NEXT STEP",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "claim",
+      "text": "And this gets even more serious once you",
+      "emphasis": "serious",
+      "visual": "icon_hero",
+      "subjects": [
+        "robot",
+        "laptop"
+      ],
+      "label": "AMPLIFIER",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "add AI coding tools to the picture.",
+      "emphasis": "picture",
+      "visual": "icon_flow",
+      "subjects": [
+        "robot",
+        "folder",
+        "code"
+      ],
+      "label": "READING",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Cursor describes its agents as tools that search and read your codebase, edit files,",
+      "emphasis": "describes",
+      "visual": "icon_flow",
+      "subjects": [
+        "robot",
+        "terminal",
+        "package"
+      ],
+      "label": "ACTING",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "pattern",
+      "text": "run terminal commands and install dependencies.",
+      "emphasis": "dependencies",
+      "visual": "icon_pair",
+      "subjects": [
+        "robot",
+        "terminal"
+      ],
+      "label": "NOT JUST CHAT",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "pattern",
+      "text": "That's the whole point of an agent.",
+      "emphasis": "That's",
+      "visual": "icon_pair",
+      "subjects": [
+        "robot",
+        "terminal"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "pattern",
+      "text": "It doesn't just suggest things, it actually does them.",
+      "emphasis": "actually",
+      "visual": "split_compare",
+      "subjects": [
+        "robot",
+        "person"
+      ],
+      "label": "SUGGESTION VERSUS ACTION",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "reframe",
+      "text": "So a compromised extension isn't just sitting next to your AI assistant.",
+      "emphasis": "compromised extension",
+      "visual": "cross_out",
+      "subjects": [
+        "extension",
+        "robot"
+      ],
+      "label": "NOT SEPARATE",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "claim",
+      "text": "It might be in control of the environment the assistant works in.",
+      "emphasis": "control",
+      "visual": "icon_pair",
+      "subjects": [
+        "robot",
+        "computer"
+      ],
+      "label": "CONTROL",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "claim",
+      "text": "There are really 2 risks here, and they overlap.",
+      "emphasis": "overlap",
+      "visual": "icon_orbit",
+      "subjects": [
+        "laptop",
+        "warning",
+        "robot"
+      ],
+      "label": "TWO RISKS",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "First, the extension can attack your computer directly.",
+      "emphasis": "directly",
+      "visual": "icon_flow",
+      "subjects": [
+        "extension",
+        "laptop",
+        "warning"
+      ],
+      "label": "DIRECT ATTACK",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Second, a poisoned project can steer the AI agent.",
+      "emphasis": "poisoned",
+      "visual": "icon_pair",
+      "subjects": [
+        "repository",
+        "robot"
+      ],
+      "label": "INDIRECT ATTACK",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "A file in the project can carry instructions",
+      "emphasis": "instructions",
+      "visual": "icon_pair",
+      "subjects": [
+        "repository",
+        "robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "that the agent reads as normal context,",
+      "emphasis": "context",
+      "visual": "icon_pair",
+      "subjects": [
+        "repository",
+        "robot"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "pattern",
+      "text": "and the agent might use its legitimate permissions to carry them out.",
+      "emphasis": "permissions",
+      "visual": "icon_flow",
+      "subjects": [
+        "file",
+        "robot",
+        "speech bubble"
+      ],
+      "label": "HIDDEN INSTRUCTIONS",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "pattern",
+      "text": "Researchers showed this working on Cursor and Copilot in tested scenarios.",
+      "emphasis": "Researchers",
+      "visual": "icon_pair",
+      "subjects": [
+        "robot",
+        "key"
+      ],
+      "label": "REAL PERMISSIONS",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "That doesn't mean every session out there is compromised.",
+      "emphasis": "compromised",
+      "visual": "icon_hero",
+      "subjects": [
+        "research paper",
+        "laptop"
+      ],
+      "label": "RESEARCH",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "reframe",
+      "text": "The danger is simpler than that.",
+      "emphasis": "simpler",
+      "visual": "cross_out",
+      "subjects": [
+        "laptop",
+        "warning"
+      ],
+      "label": "IMPORTANT LIMIT",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "pattern",
+      "text": "The agent doesn't have to understand every instruction.",
+      "emphasis": "every instruction",
+      "visual": "icon_pair",
+      "subjects": [
+        "robot",
+        "file"
+      ],
+      "label": "NOT OMNISCIENT",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "pattern",
+      "text": "One instruction that gets through can be enough",
+      "emphasis": "instruction",
+      "visual": "icon_pair",
+      "subjects": [
+        "robot",
+        "file"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "pattern",
+      "text": "to make real things happen on your machine.",
+      "emphasis": "machine",
+      "visual": "icon_flow",
+      "subjects": [
+        "file",
+        "robot",
+        "terminal"
+      ],
+      "label": "TRIGGERED ACTION",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "claim",
+      "text": "And that's the bigger lesson.",
+      "emphasis": "that's",
+      "visual": "line_chart",
+      "subjects": [
+        "robot",
+        "network"
+      ],
+      "label": "AMPLIFIED VALUE",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "claim",
+      "text": "AI makes every trusted connection in your setup worth more to an attacker.",
+      "emphasis": "trusted connection",
+      "visual": "icon_flow",
+      "subjects": [
+        "laptop",
+        "key",
+        "server"
+      ],
+      "label": "CONNECTED SYSTEMS",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "reframe",
+      "text": "So how do you make this safer?",
+      "emphasis": "safer",
+      "visual": "gauge",
+      "subjects": [
+        "chain",
+        "scale"
+      ],
+      "label": "THE QUESTION",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "claim",
+      "text": "First, the problem isn't that AI is somehow evil.",
+      "emphasis": "problem",
+      "visual": "cross_out",
+      "subjects": [
+        "robot",
+        "warning"
+      ],
+      "label": "NOT MAGIC",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "claim",
+      "text": "The real issue is permission you can't see",
+      "emphasis": "permission",
+      "visual": "cross_out",
+      "subjects": [
+        "robot",
+        "warning"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "reframe",
+      "text": "turning into action that happens on its own.",
+      "emphasis": "turning",
+      "visual": "icon_flow",
+      "subjects": [
+        "key",
+        "robot",
+        "terminal"
+      ],
+      "label": "HIDDEN POWER",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "Start by getting extensions from verified sources,",
+      "emphasis": "extensions",
+      "visual": "checklist",
+      "subjects": [
+        "marketplace",
+        "checkmark"
+      ],
+      "label": "CHECK SOURCE",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "and keep a record of which versions you're running instead of updating blindly.",
+      "emphasis": "versions",
+      "visual": "checklist",
+      "subjects": [
+        "version label",
+        "notebook"
+      ],
+      "label": "PIN VERSIONS",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "Workspace trust and sandboxing can limit what software is able to reach.",
+      "emphasis": "sandboxing",
+      "visual": "icon_flow",
+      "subjects": [
+        "workspace",
+        "sandbox",
+        "key"
+      ],
+      "label": "LIMIT ACCESS",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "Accounts with only the access they need can",
+      "emphasis": "Accounts",
+      "visual": "icon_flow",
+      "subjects": [
+        "workspace",
+        "sandbox",
+        "key"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "limit the damage if one thing gets compromised.",
+      "emphasis": "compromised",
+      "visual": "gauge",
+      "subjects": [
+        "account",
+        "lock"
+      ],
+      "label": "SMALLER BLAST",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "Keep your secrets out of files an agent can read,",
+      "emphasis": "secrets",
+      "visual": "icon_pair",
+      "subjects": [
+        "key",
+        "file"
+      ],
+      "label": "HIDE SECRETS",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "and make terminal commands and outside tools ask for your approval first.",
+      "emphasis": "terminal",
+      "visual": "checklist",
+      "subjects": [
+        "terminal",
+        "approval button"
+      ],
+      "label": "APPROVE ACTIONS",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "Let me ask you something.",
+      "emphasis": "something",
+      "visual": "checklist",
+      "subjects": [
+        "terminal",
+        "approval button"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "Have you ever installed an extension and only checked its folder inside the editor?",
+      "emphasis": "installed",
+      "visual": "checklist",
+      "subjects": [
+        "terminal",
+        "approval button"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "That's not enough on its own.",
+      "emphasis": "That's",
+      "visual": "icon_flow",
+      "subjects": [
+        "folder",
+        "gear",
+        "laptop"
+      ],
+      "label": "CHECK AFTERWARD",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "Changes to your startup settings and other system settings",
+      "emphasis": "settings",
+      "visual": "icon_pair",
+      "subjects": [
+        "folder",
+        "editor"
+      ],
+      "label": "LOOK OUTSIDE",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "deserve a look after you install something too.",
+      "emphasis": "something",
+      "visual": "icon_pair",
+      "subjects": [
+        "laptop",
+        "isolation barrier"
+      ],
+      "label": "ISOLATE",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "And if you did install a compromised version, take that machine off the network,",
+      "emphasis": "machine",
+      "visual": "icon_pair",
+      "subjects": [
+        "laptop",
+        "isolation barrier"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cost",
+      "text": "then replace every credential it could have reached.",
+      "emphasis": "credential",
+      "visual": "icon_flow",
+      "subjects": [
+        "key",
+        "token",
+        "circular arrow"
+      ],
+      "label": "ROTATE KEYS",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "reframe",
+      "text": "Uninstalling the extension you can see doesn't prove the backdoor is gone,",
+      "emphasis": "Uninstalling",
+      "visual": "cross_out",
+      "subjects": [
+        "extension",
+        "backdoor"
+      ],
+      "label": "NOT ENOUGH",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "reframe",
+      "text": "because what you can see might not be the whole infection.",
+      "emphasis": "whole infection",
+      "visual": "icon_pair",
+      "subjects": [
+        "program",
+        "hidden door"
+      ],
+      "label": "LOOK DEEPER",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "claim",
+      "text": "Convenience is only safe when you can still",
+      "emphasis": "Convenience",
+      "visual": "icon_hero",
+      "subjects": [
+        "boundary line",
+        "laptop"
+      ],
+      "label": "VISIBLE BOUNDARY",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "claim",
+      "text": "see where the trust starts and stops, keep it narrow,",
+      "emphasis": "starts",
+      "visual": "icon_hero",
+      "subjects": [
+        "boundary line",
+        "laptop"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "claim",
+      "text": "and check it yourself before a tool gets that much power.",
+      "emphasis": "yourself",
+      "visual": "checklist",
+      "subjects": [
+        "software",
+        "lock",
+        "checkmark"
+      ],
+      "label": "CHECK FIRST",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "reframe",
+      "text": "So put it all together and it comes down to one simple fact.",
+      "emphasis": "together",
+      "visual": "icon_hero",
+      "subjects": [
+        "extension",
+        "door"
+      ],
+      "label": "CORE IDEA",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "claim",
+      "text": "Your code editor already sits right next to your files,",
+      "emphasis": "already",
+      "visual": "icon_orbit",
+      "subjects": [
+        "file",
+        "terminal",
+        "key"
+      ],
+      "label": "CLOSE ACCESS",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "claim",
+      "text": "your terminal and your credentials.",
+      "emphasis": "credentials",
+      "visual": "icon_flow",
+      "subjects": [
+        "robot",
+        "laptop",
+        "gear"
+      ],
+      "label": "AMPLIFIED ACCESS",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "reframe",
+      "text": "AI coding tools take that access and turn it into a workflow.",
+      "emphasis": "workflow",
+      "visual": "icon_flow",
+      "subjects": [
+        "marketplace",
+        "extension",
+        "laptop"
+      ],
+      "label": "THREE LINKS",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "reframe",
+      "text": "The marketplace gives the trust, the extension gives the access,",
+      "emphasis": "access",
+      "visual": "icon_flow",
+      "subjects": [
+        "marketplace",
+        "extension",
+        "laptop"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "reframe",
+      "text": "and the agent turns that access into action.",
+      "emphasis": "access",
+      "visual": "icon_flow",
+      "subjects": [
+        "marketplace",
+        "extension",
+        "laptop"
+      ],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "reframe",
+      "text": "The answer isn't giving up the convenience.",
+      "emphasis": "convenience",
+      "visual": "icon_flow",
+      "subjects": [
+        "laptop",
+        "robot",
+        "terminal"
+      ],
+      "label": "ACTION CHAIN",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "cta",
+      "text": "It's better boundaries,",
+      "emphasis": "better boundaries",
+      "visual": "split_compare",
+      "subjects": [
+        "convenience",
+        "boundary"
+      ],
+      "label": "BETTER BOUNDARIES",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "cta",
+      "text": "and trusting a tool only as far as you can actually check it.",
+      "emphasis": "trusting",
+      "visual": "logo_end",
+      "subjects": [
+        "laptop",
+        "checkmark"
+      ],
+      "label": "VERIFY TRUST",
+      "follow": false
+    }
+  ]
+}
