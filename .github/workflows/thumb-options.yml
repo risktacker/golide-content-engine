@@ -27,7 +27,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: sudo apt-get update -qq && sudo apt-get install -y -qq fonts-dejavu-core libcairo2-dev pkg-config >/dev/null
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core libcairo2-dev pkg-config >/dev/null
       - run: python -m pip install -q -e '.[production,video]'
       - name: Make and email
         env:

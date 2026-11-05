@@ -133,7 +133,8 @@ def test_audio_levels_are_separate_per_format():
     from golide_engine.vector.ambient import LEVELS_DB
     from golide_engine.vector.render import AUDIO_MIX
 
-    assert LEVELS_DB["long"] < LEVELS_DB["short"] < -22.0
+    # 2026-11-05 (owner): long-video music up a few bits (3 dB), ducked under the voice
+    assert LEVELS_DB["long"] == -21.0 and LEVELS_DB["short"] < -22.0
     assert "ratio=3" in AUDIO_MIX["long"]["duck"] and "threshold=0.005" in AUDIO_MIX["long"]["duck"]
     assert AUDIO_MIX["long"]["sfx"] < 1 and AUDIO_MIX["short"]["sfx"] < 1
 

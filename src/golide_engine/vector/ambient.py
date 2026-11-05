@@ -40,9 +40,11 @@ LEVEL_DB = -22.0
 # are for listening ("it needs hearability"): the bed sits a little lower and render.py
 # ducks it to almost nothing under the voice, so it is heard only in the pauses. Shorts:
 # "just reduce a bit", 1.5 dB.
-LEVELS_DB = {"long": -24.0, "short": -23.5}
+LEVELS_DB = {"long": -21.0, "short": -23.5}   # 2026-11-05 (owner): long up a few bits, 3 dB
 
-BEDS = ("drift", "pulse", "glass", "tide")
+# 2026-11-05 (owner): "multi symphony, not one throughout". Chapters rotate through instruments
+# that sound clearly different: synth pad, piano-like keys, arpeggio, strings, bells, plucks, swell.
+BEDS = ("drift", "keys", "pulse", "strings", "glass", "pluck", "tide")
 # Roots (Hz) a bed can be played in; picked per video so two videos on the same
 # bed still differ.
 ROOTS = (146.83, 155.56, 164.81, 174.61, 196.00, 220.00)  # D, Eb, E, F, G, A (one octave up for phones)
@@ -154,7 +156,63 @@ def _tide(t, root, rng):
     return bed * swell, 0.24
 
 
-_BUILDERS = {"drift": _drift, "pulse": _pulse, "glass": _glass, "tide": _tide}
+def _rich(freq: float, length: float, decay: float, harmonics, attack: float = 0.006) -> np.ndarray:
+    """A tone from a few harmonics, each fading at its own speed (higher ones faster)."""
+    n = int(RATE * length)
+    tt = np.arange(n) / RATE
+    out = np.zeros(n)
+    for k, amp in enumerate(harmonics, start=1):
+        out += amp * np.exp(-tt * k / decay) * np.sin(math.tau * freq * k * tt)
+    return out * np.clip(tt / attack, 0, 1)
+
+
+def _keys(t, root, rng):
+    """Piano-like chords, one every bar, through a calm minor progression."""
+    out = np.zeros_like(t)
+    progression = ((0, 3, 7, 12), (-4, 0, 3, 8), (-7, -3, 0, 5), (-2, 2, 5, 10))
+    bar, at, k = 3.6, 0.4, 0
+    duration = len(t) / RATE
+    while at < duration:
+        for j, s in enumerate(progression[k % len(progression)]):
+            _place(out, _rich(root * _ratio(s), 3.4, 2.6, (1, 0.5, 0.25, 0.12)), at + j * 0.03, 0.5)
+        if k % 2:   # a soft melody note on the off-bar
+            _place(out, _rich(root * 2 * _ratio((7, 10, 12, 15)[int(rng.integers(4))]), 2.0, 1.2, (1, 0.3)), at + bar / 2, 0.3)
+        at += bar
+        k += 1
+    return out, 0.05
+
+
+def _strings(t, root, rng):
+    """A bowed string section: rich harmonics, slow swell, gentle vibrato."""
+    out = np.zeros_like(t)
+    vibrato = 1 + 0.003 * np.sin(math.tau * 5.2 * t)
+    swell = 0.55 + 0.45 * np.sin(math.tau * t / 14.0 - 1.2)
+    for s in (0, 7, 12, 15):
+        f = root * 0.5 * _ratio(s)
+        for k in range(1, 7):
+            out += (1 / k) * np.sin(math.tau * f * k * t * vibrato + rng.uniform(0, math.tau))
+    return out * swell, 0.06
+
+
+def _pluck(t, root, rng):
+    """Plucked, guitar-like notes walking a pentatonic pattern over a low drone."""
+    drone = _pad(t, [root * 0.5, root * 0.5 * _ratio(7)], rng) * 0.25
+    out = np.zeros_like(t)
+    scale = (0, 3, 5, 7, 10, 12, 15)
+    at, step = 0.3, 0.46
+    duration = len(t) / RATE
+    k = 0
+    while at < duration:
+        if (k % 8) not in (3, 7):   # rests keep it from feeling mechanical
+            s = scale[int(rng.integers(len(scale)))]
+            _place(out, _rich(root * _ratio(s), 1.6, 0.35, (1, 0.6, 0.35, 0.2, 0.1), 0.002), at, 0.55)
+        at += step
+        k += 1
+    return drone + out, 0.07
+
+
+_BUILDERS = {"drift": _drift, "pulse": _pulse, "glass": _glass, "tide": _tide,
+             "keys": _keys, "strings": _strings, "pluck": _pluck}
 
 
 def ambient_bed(duration: float, seed_text: str = "golide", variant: int | None = None,
@@ -189,20 +247,20 @@ def sectioned_bed(duration: float, starts: list[float], seed_text: str = "golide
     if len(bounds) < 2:
         return ambient_bed(duration, seed_text, variant, level_db)
     first = variant if variant is not None else _digest(seed_text)[0]
-    beds: dict[int, np.ndarray] = {}
     t = np.arange(n, dtype=np.float64) / RATE
-    gains = []
+    out = np.zeros(n)
     for k, start in enumerate(bounds):
         end = bounds[k + 1] if k + 1 < len(bounds) else duration
         idx = (first + k) % len(BEDS)
-        if idx not in beds:
-            beds[idx] = ambient_bed(duration, f"{seed_text}#{idx}", idx, level_db)
-        rise = np.clip((t - start + CROSSFADE_SECONDS / 2) / CROSSFADE_SECONDS, 0, 1) if k else np.ones(n)
-        fall = np.clip((end + CROSSFADE_SECONDS / 2 - t) / CROSSFADE_SECONDS, 0, 1) if k + 1 < len(bounds) else np.ones(n)
-        gains.append((idx, np.sqrt(np.minimum(rise, fall))))   # equal-power crossfade
-    out = np.zeros(n)
-    for idx, g in gains:
-        out += beds[idx][:n] * g
+        # Each instrument is only made for its own section plus the crossfades (fast to render).
+        lo = max(0.0, start - CROSSFADE_SECONDS)
+        hi = min(duration, end + CROSSFADE_SECONDS)
+        part = ambient_bed(hi - lo, f"{seed_text}#{idx}", idx, level_db)
+        i0 = int(lo * RATE)
+        seg = t[i0:i0 + len(part)]
+        rise = np.clip((seg - start + CROSSFADE_SECONDS / 2) / CROSSFADE_SECONDS, 0, 1) if k else np.ones(len(seg))
+        fall = np.clip((end + CROSSFADE_SECONDS / 2 - seg) / CROSSFADE_SECONDS, 0, 1) if k + 1 < len(bounds) else np.ones(len(seg))
+        out[i0:i0 + len(seg)] += part[:len(seg)] * np.sqrt(np.minimum(rise, fall))   # equal-power crossfade
     dip = np.ones(n)
     for start in bounds[1:]:
         d = np.clip(1 - np.abs(t - start) / (DIP_SECONDS / 2), 0, 1)
