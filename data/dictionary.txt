@@ -28,3 +28,6 @@ workflows  # seen in your recording and the research sources
 antireflective  # seen in your recording and the research sources
 preorders  # seen in your recording
 workflow  # seen in your recording and the research sources
+codebase  # seen in your recording and the research sources and the owner-approved script
+config  # seen in your recording and the owner-approved script
+sandboxing  # seen in your recording and the research sources and the owner-approved script

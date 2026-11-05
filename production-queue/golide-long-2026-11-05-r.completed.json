@@ -229,5 +229,12 @@
     "measured_at": "2026-11-05T06:55:43.669899+00:00",
     "signal_type": "youtube-breakout-v1"
   },
-  "selected_topic_source": "https://www.microsoft.com/en-us/security/blog/2026/10/30/inside-malicious-claude-code-branded-cursor-extension-persistent-ssh-backdoor/"
+  "selected_topic_source": "https://www.microsoft.com/en-us/security/blog/2026/10/30/inside-malicious-claude-code-branded-cursor-extension-persistent-ssh-backdoor/",
+  "owner_voice_media_ref": "r2://temp/2026/11/05/c294db3909e34afe9b6e258a0e89f431-Code-enhanced-v2.wav",
+  "platforms": [
+    "youtube",
+    "instagram",
+    "facebook",
+    "linkedin"
+  ]
 }
