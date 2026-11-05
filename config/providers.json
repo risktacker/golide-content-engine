@@ -10,7 +10,7 @@
   },
   "assets": {
     "provider": "openai",
-    "support_model": "gpt-image-1-mini",
+    "support_model": "gpt-image-2",
     "support_quality": "medium",
     "hero_model": "gpt-image-2",
     "hero_quality": "medium",

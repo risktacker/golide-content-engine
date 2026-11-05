@@ -202,7 +202,7 @@ class OpenAILineArtProvider:
     prompts already lock the black line-art style (see vector.illustrate).
     """
 
-    def __init__(self, model: str = "gpt-image-1-mini", quality: str = "medium"):
+    def __init__(self, model: str = "gpt-image-2", quality: str = "medium"):
         self.model = model
         self.quality = quality
 
@@ -272,7 +272,7 @@ class OpenAIProductProvider:
     """Full-colour real-product pictures (owner direction 2026-10-31: "the real product
     showing its action"), shown whole by the renderer as plates (vector.illustrate.load_plate)."""
 
-    def __init__(self, model: str = "gpt-image-1-mini", quality: str = "medium"):
+    def __init__(self, model: str = "gpt-image-2", quality: str = "medium"):
         self.model = model
         self.quality = quality
 

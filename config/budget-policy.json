@@ -2,7 +2,7 @@
   "version": 1,
   "currency": "USD",
   "openai": {
-    "monthly_cap_usd": 20,
+    "monthly_cap_usd": 35,
     "monthly_reserve_usd": 0,
     "scheduled_plan": {
       "long": 9,
@@ -10,13 +10,13 @@
       "static_post": 61
     },
     "scheduled_allocations_usd": {
-      "long": 2.5,
-      "short": 0.8
+      "long": 4.0,
+      "short": 1.2
     },
-    "allocation_note": "Owner direction 2026-10-27: the engine runs unattended on schedule and must not pause itself on tight internal guards. Video lane and monthly guard $20; per video $2.50 for a long (8-9 minute scripts, ~$0.6-1.2 so far) and $0.80 for a short. The real limit is the OpenAI balance.",
+    "allocation_note": "Owner direction 2026-10-27: the engine runs unattended on schedule and must not pause itself on tight internal guards. Video lane and monthly guard $20; per video $2.50 for a long (8-9 minute scripts, ~$0.6-1.2 so far) and $0.80 for a short. The real limit is the OpenAI balance. 2026-11-05 (owner: quality first, models approved): gpt-image-1-mini retires 1 Dec 2026, every illustration moves to gpt-image-2 medium ($0.041 vs $0.015 a picture); ceilings raised to $4 a long, $1.20 a short, $35 a month.",
     "resume_after_recharge": true,
     "static_post_allocation_usd": 0.07,
-    "scheduled_video_cap_usd": 20,
+    "scheduled_video_cap_usd": 35,
     "static_post_cap_usd": 3.5
   },
   "independent_production": {

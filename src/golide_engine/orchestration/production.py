@@ -540,7 +540,7 @@ class ProductionService:
         # Validate every paid unit before the first API request.
         text_model = self.providers.config["text"]["model"]
         orientation = "portrait" if spec["format"] == "short" else "landscape"
-        support_image_cost_model = f"gpt-image-1-mini-medium-{orientation}"
+        support_image_cost_model = f"{self.providers.config['assets']['support_model']}-medium-{orientation}"  # 2026-11-05: gpt-image-1-mini retires 1 Dec
         hero_image_cost_model = f"gpt-image-2-medium-{orientation}"
         thumbnail_cost_model = "gpt-image-2-medium-landscape"
         self.costs.require_rate(text_model, "input_per_million_tokens")
