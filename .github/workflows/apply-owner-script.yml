@@ -38,5 +38,5 @@ jobs:
           git config user.email "golide-production-bot@users.noreply.github.com"
           git add production-queue/${{ inputs.production_id }}.script-plan.json production-queue/${{ inputs.production_id }}.owner-script-display.txt
           git commit -m "ops: owner script for ${{ inputs.production_id }}" || exit 0
-          for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin main && exit 0; sleep 5; done
+          for i in 1 2 3; do git pull --rebase --autostash -q origin main && git push -q origin main && exit 0; sleep 5; done
           exit 1
