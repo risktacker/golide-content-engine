@@ -118,8 +118,11 @@ def fold(size, params, items):
 
 def model3d(size, params, items):
     """3d: object=laptop; on=opens  (owner direction 2026-11-05). A real device in simple 3D whose
-    move lands on the spoken word. The still drawn here is the starting pose: the scene change's
-    points of light land on it, then the renderer takes over and moves it (vector.motion3d)."""
+    move lands on the spoken word. The picture saved here is the starting pose, drawn exactly as
+    the renderer draws it; the renderer then moves it (vector.motion3d)."""
+    import numpy as np
+    from PIL import Image
+
     from .. import motion3d
     from .core import SUPER
 
@@ -128,7 +131,18 @@ def model3d(size, params, items):
         raise FigureError(f"3d: object must be one of {', '.join(motion3d.OBJECTS)}")
     c = new_canvas(size, (0, 0, 1, 1))
     w, h = c.image.width, c.image.height
-    for poly, gold in motion3d.outline(name, 0.0, math.radians(-34), min(w, h) / SUPER * SUPER * 0.9, (w / 2, h / 2)):
-        c.pxline(poly, GOLD if gold else WHITE, 1.0)
+    yaw, scale = math.radians(-34), min(w, h) * 0.9
+    picture, (ox, oy) = motion3d.render(name, 0.0, yaw, scale)
+    c.image.paste(picture.convert("RGB"), (int(w / 2 + ox), int(h / 2 + oy)), picture)
+    # Stroke data (the outline of every part) so the file is a complete figure; the renderer
+    # draws the live object instead of these.
+    for corners, gold in motion3d.solids(name, 0.0):
+        pts, _ = motion3d.project(corners, yaw, scale)
+        for face in motion3d.FACES:
+            ring = [(float(w / 2 + x) / SUPER, float(h / 2 + y) / SUPER) for x, y in pts[list(face)]]
+            ring.append(ring[0])
+            c.strokes.append({"points": [list(p) for p in ring], "gold": bool(gold), "dim": False,
+                              "width": c.line / SUPER})
+            c.drawn += sum(math.dist(p, q) for p, q in zip(ring, ring[1:])) * SUPER
     c.motion = {"object": name, "on": str(params.get("on", "")).strip()}
     return c

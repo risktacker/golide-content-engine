@@ -35,6 +35,7 @@ FORMATS = {"short": (1080, 1920), "long": (1920, 1080)}
 GLOW_SCALE = 3  # glow layer is rendered at 1/3 size, then blurred and upscaled
 TRANSITION_BEFORE = 0.40  # seconds of hand-over before the next line starts
 TRANSITION_AFTER = 0.90   # ... and after it starts
+MOTION_SIZE = 0.95        # a 3D object's size against the drawing area (vector.motion3d)
 CHAPTER_CARD_SECONDS = 2.8  # how long a chapter card stays at the start of a chapter
 PARTICLES = 170
 
@@ -412,27 +413,41 @@ class VectorRenderer:
         if len(group.icons) != 1:
             return None
         drawing = SCENES.get(group.icons[0])
-        return getattr(drawing, "motion", None) if drawing is not None else None
+        motion = getattr(drawing, "motion", None) if drawing is not None else None
+        return motion if motion and motion.get("object") in motion3d.OBJECTS else None
+
+    def _motion_pose(self, group: Group, t: float):
+        """(object, how far its move has gone, turn) for a 3D scene at time t. The move lands on
+        the spoken word, never before the scene has fully arrived."""
+        motion = self._motion(group)
+        start = max(group.start + TRANSITION_AFTER,
+                    motion3d.trigger_time(group.lines, str(motion.get("on", "")), group.start + TRANSITION_AFTER + 0.2))
+        return motion["object"], motion3d.move_progress(t, start), motion3d.turn(t, group.start, group.end)
+
+    def _draw_motion(self, image: Image.Image, group: Group, t: float, alpha: float) -> None:
+        if alpha <= 0.01:
+            return
+        L = self.layout
+        name, u, yaw = self._motion_pose(group, t)
+        art = motion3d.layer((L.width, L.height), (L.cx, L.cy), L.size * MOTION_SIZE, name, u, yaw, alpha)
+        image.paste(art, (0, 0), art)
 
     def _with_motion(self, image: Image.Image, groups: list[Group], gi: int, t: float) -> Image.Image:
-        """Owner direction 2026-11-05: simple 3D, consistent with the voice. The points of light
-        land on the starting pose, the object takes over, its move lands on the spoken word and
-        it turns slowly until the next scene change."""
+        """Owner direction 2026-11-05: simple 3D, consistent with the voice and with the scene
+        changes. Arriving, the points of light land on the object's first look and it takes over;
+        leaving, it holds its last pose and dissolves into light taken from that look."""
         group = groups[gi]
-        motion = self._motion(group)
-        if motion is None or motion.get("object") not in motion3d.OBJECTS:
-            return image
-        shown = group.start + TRANSITION_AFTER - 0.3
-        end = groups[gi + 1].start - TRANSITION_BEFORE if gi + 1 < len(groups) else group.end + 1.0
-        alpha = min(1.0, max(0.0, (t - shown) / 0.3), max(0.0, (end - t) / 0.25))
-        if alpha <= 0.0:
-            return image
-        start = max(group.start + TRANSITION_AFTER - 0.1,
-                    motion3d.trigger_time(group.lines, str(motion.get("on", "")), group.start + TRANSITION_AFTER + 0.2))
-        L = self.layout
-        art = motion3d.layer((L.width, L.height), (L.cx, L.cy), L.size * 0.95, motion["object"],
-                             motion3d.move_progress(t, start), motion3d.turn(t, group.start, end), alpha)
-        image.paste(art, (0, 0), art)
+        nxt = gi + 1 if gi + 1 < len(groups) and t >= groups[gi + 1].start - TRANSITION_BEFORE else None
+        if nxt is not None or (gi > 0 and t < group.start + TRANSITION_AFTER):
+            k = nxt if nxt is not None else gi
+            old, new = groups[k - 1], groups[k]
+            out, arrive = self._transition(groups, k).motion_alphas(t)
+            if self._motion(old) is not None:
+                self._draw_motion(image, old, min(t, new.start - TRANSITION_BEFORE), out)
+            if self._motion(new) is not None:
+                self._draw_motion(image, new, t, arrive)
+        elif self._motion(group) is not None:
+            self._draw_motion(image, group, t, 1.0)
         return image
 
     def _accent_rgb(self, group: Group) -> tuple:
@@ -702,8 +717,13 @@ class VectorRenderer:
                 return card.progress(t)
         return 0.0
 
-    def _points(self, group: Group, seed: int, hide: frozenset) -> np.ndarray:
-        """Points on the finished drawing of a scene (unit coordinates)."""
+    def _points(self, group: Group, seed: int, hide: frozenset, at: float | None = None) -> np.ndarray:
+        """Points on the finished drawing of a scene (unit coordinates). A 3D scene gives points
+        on its visible edges exactly as it looks at time ``at`` (2026-11-05: no jump)."""
+        if self._motion(group) is not None:
+            name, u, yaw = self._motion_pose(group, group.end if at is None else at)
+            pts = motion3d.edge_points(name, u, yaw, self.layout.size * MOTION_SIZE, PARTICLES, seed + 101)
+            return pts / (self.layout.size / 2)
         # The whole drawing area: long videos reach far to the sides (wide and duo layouts).
         side, span = 200, 2.5
         wide = 4.6 if self.format == "long" else span
@@ -1058,8 +1078,8 @@ class Transition:
         new_slots = lead_slots(new.visual, new.icons) if new.visual in ICON_LAYOUTS else {}
         shared = set(old_slots) & set(new_slots)
         hide = frozenset(shared)
-        src = renderer._points(old, index - 1, hide)
-        dst = renderer._points(new, index, hide)
+        src = renderer._points(old, index - 1, hide, at=new.start - TRANSITION_BEFORE)
+        dst = renderer._points(new, index, hide, at=new.start + TRANSITION_AFTER)
         if len(src) and len(dst):
             # Pair points by angle around the centre: the cloud turns into the
             # new shape in one organised sweep instead of criss-crossing.
@@ -1090,11 +1110,11 @@ class Transition:
             # light that travel and land as the next picture, changing colour on
             # the way to the next picture's accent; the new picture forms as they land.
             out = 1 - ease(min(1.0, u / 0.35))
-            if out > 0.01:
+            if out > 0.01 and r._motion(self.old) is None:
                 r._group_draw(main, glow, self.old, self.old.end - 1e-3, self.index - 1, out,
                               zoom=1.0 + 0.03 * ease(u))
             arrive = ease(min(1.0, max(0.0, (u - 0.45) / 0.45)))
-            if arrive > 0.01:
+            if arrive > 0.01 and r._motion(self.new) is None:
                 r._group_draw(main, glow, self.new, max(t, self.new.start), self.index, arrive,
                               zoom=1.03 - 0.03 * arrive)
             self._particles(main, glow, u, accents=(self._accent(self.old), self._accent(self.new)))
@@ -1109,12 +1129,20 @@ class Transition:
         hide = frozenset(self.shared)
         # Old scene: fades as it turns to light (its shared drawings are drawn by the new scene).
         old_alpha = 1 - ease(u / 0.30)
-        if old_alpha > 0.01:
+        if old_alpha > 0.01 and r._motion(self.old) is None:
             r._group_draw(main, glow, self.old, self.old.end - 1e-3, self.index - 1, old_alpha, hide=hide)
         # New scene: draws on normally from the moment its words start.
-        if t >= self.new.start or self.shared:
+        if (t >= self.new.start or self.shared) and r._motion(self.new) is None:
             r._group_draw(main, glow, self.new, max(t, self.new.start), self.index, 1.0, carry=carry or None)
         self._particles(main, glow, u)
+
+    def motion_alphas(self, t: float) -> tuple[float, float]:
+        """How strongly the old and the new scene's 3D object show at ``t``: the same timing as
+        the pictures, so a 3D scene leaves and arrives exactly like every other scene."""
+        u = self._u(t)
+        out = 1 - ease(min(1.0, u / (0.35 if self._fades() else 0.30)))
+        arrive = ease(min(1.0, max(0.0, (u - 0.45) / 0.45)))
+        return out, arrive
 
     def _accent(self, group: Group):
         from .illustrate import SCENES
