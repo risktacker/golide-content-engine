@@ -11,6 +11,7 @@ from .registry import parts
 
 
 def _object(name, bm, material, smooth=True, bevel=0.0):
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
     me = bpy.data.meshes.new(name)
     bm.to_mesh(me)
     bm.free()
@@ -195,3 +196,55 @@ def dish_on_boom(p, material):
                           matrix=aim @ Matrix.Translation((0, 0, r * 0.38)))
     mast = _object("mast", bm, mats.get("panel_grey"))
     return [dish, mast]
+
+
+@parts.add("box")
+def box(p, material):
+    bm = bmesh.new()
+    L, W, H = p["length"], p["width"], p["height"]
+    _box(bm, (L / 2, 0, 0), (L, W, H))
+    return [_object("box", bm, material, smooth=False, bevel=min(L, W, H) * 0.03)]
+
+
+@parts.add("sphere")
+def sphere(p, material):
+    bm = bmesh.new()
+    r = p["diameter"] / 2
+    bmesh.ops.create_uvsphere(bm, u_segments=64, v_segments=32, radius=r, matrix=Matrix.Translation((r, 0, 0)))
+    return [_object("sphere", bm, material)]
+
+
+@parts.add("cone")
+def cone(p, material):
+    bm = bmesh.new()
+    _tube(bm, p["diameter"] / 2, p.get("tip_diameter", 0.0) / 2 + 1e-4, 0, p["length"], cap0=True, cap1=True)
+    return [_object("cone", bm, material)]
+
+
+@parts.add("gear")
+def gear(p, material):
+    """Toothed wheel in the YZ plane, so its axle runs along X."""
+    r, teeth, t = p["diameter"] / 2, int(p["teeth"]), p.get("thickness", p["diameter"] * 0.15)
+    depth = min(r * 0.14, 2.2 * r / teeth)
+    root, tip = r - depth, r
+    outline = []
+    for i in range(teeth):
+        for u, radius in ((0.0, root), (0.18, root), (0.30, tip), (0.70, tip), (0.82, root)):
+            a = 2 * math.pi * (i + u) / teeth
+            outline.append((radius * math.cos(a), radius * math.sin(a)))
+    bm = bmesh.new()
+    front = [bm.verts.new((0, y, z)) for y, z in outline]
+    back = [bm.verts.new((t, y, z)) for y, z in outline]
+    n = len(outline)
+    for i in range(n):
+        j = (i + 1) % n
+        bm.faces.new((front[i], back[i], back[j], front[j]))
+    bm.faces.new(front)
+    bm.faces.new(list(reversed(back)))
+    ob = [_object("gear", bm, material, smooth=False)]
+    hole = p.get("hole", 0)
+    if hole:
+        bm = bmesh.new()
+        _tube(bm, hole / 2, hole / 2, -0.01, t + 0.01, cap0=True, cap1=True)
+        ob.append(_object("axle", bm, mats.get("black_inner")))
+    return ob

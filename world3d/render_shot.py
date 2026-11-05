@@ -19,13 +19,14 @@ from kit.registry import actions, cameras as camera_moves, effects, lights, worl
 
 def compile_shot(shot, quality):
     fps, duration = shot.get("fps", 24), shot["duration"]
-    scene = stage.reset(quality, fps)
+    scene = stage.reset(quality, fps, shot.get("vertical", False))
     world = worlds.get(shot["world"]["name"])(scene, shot["world"])
-    model = objects.build(shot["object"]["blueprint"])
+    model = objects.build(shot["object"]["blueprint"], shot["object"].get("blueprint_dir"))
     lights.get(shot["light"]["rig"])(world, shot["light"], model.meshes())
+    model.fit(shot["object"].get("size", 10.0))
     _a.orient(model, shot["object"])
     cam = cameras.make(shot["camera"])
-    timeline = [camera_moves.get(shot["camera"]["move"])(cam, shot["camera"], duration)]
+    timeline = [camera_moves.get(shot["camera"]["move"])(cam, shot["camera"], duration, model)]
     for a in shot.get("actions", []):
         timeline.append(actions.get(a["type"])(model, a))
     bpy.context.view_layer.update()
@@ -41,7 +42,6 @@ def main():
     ap.add_argument("--quality", default="video", choices=stage.QUALITY)
     ap.add_argument("--frames", help="first-last frame")
     ap.add_argument("--stills", help="comma list of frames")
-    ap.add_argument("--blank", action="store_true", help="stop after one frame, for timing")
     a = ap.parse_args()
     shot = json.loads(Path(a.shot).read_text())
     out = Path(a.out)

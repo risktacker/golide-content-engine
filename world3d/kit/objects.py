@@ -24,8 +24,35 @@ class Part:
 
 
 class Model:
-    def __init__(self, blueprint, root, built):
-        self.blueprint, self.root, self.parts = blueprint, root, {p.id: p for p in built}
+    def __init__(self, blueprint, root, content, built):
+        self.blueprint, self.root, self.content = blueprint, root, content
+        self.parts = {p.id: p for p in built}
+        self.radius = 1.0
+
+    def _corners(self, exploded):
+        bpy.context.view_layer.update()
+        to_local = self.content.matrix_world.inverted()
+        for p in self.parts.values():
+            shift = p.explode if exploded else Vector((0, 0, 0))
+            for mesh in p.meshes:
+                for corner in mesh.bound_box:
+                    yield to_local @ (mesh.matrix_world @ Vector(corner)) + shift
+
+    def _extent(self, exploded):
+        pts = list(self._corners(exploded))
+        low = Vector((min(p[i] for p in pts) for i in range(3)))
+        high = Vector((max(p[i] for p in pts) for i in range(3)))
+        return (low + high) / 2, (high - low).length / 2
+
+    def fit(self, size):
+        """Any object, from a chip to a ship, is shown at one standard size, centred, so
+        worlds and cameras never need to know how big the real thing is."""
+        center, radius = self._extent(False)
+        self.content.location = -center
+        scale = size / radius
+        self.root.scale = (scale, scale, scale)
+        self.radius = radius * scale
+        self.exploded_radius = self._extent(True)[1] * scale
 
     def meshes(self):
         return [m for p in self.parts.values() for m in p.meshes]
@@ -36,27 +63,30 @@ class Model:
         return self.parts[pid]
 
 
-def load_blueprint(name):
-    path = ROOT / "blueprints" / f"{name}.json"
+def load_blueprint(name, folder=None):
+    path = Path(folder or ROOT / "blueprints") / f"{name}.json"
     if not path.exists():
         raise FileNotFoundError(f"No blueprint: {path}")
     return json.loads(path.read_text())
 
 
-def build(name):
-    bp = load_blueprint(name)
+def build(name, folder=None):
+    bp = load_blueprint(name, folder)
     scene = bpy.context.scene
     root = bpy.data.objects.new(name, None)
+    content = bpy.data.objects.new(name + "_content", None)
     scene.collection.objects.link(root)
+    scene.collection.objects.link(content)
+    content.parent = root
     built = []
     for spec in bp["parts"]:
         group = bpy.data.objects.new(spec["id"], None)
         scene.collection.objects.link(group)
-        group.parent = root
+        group.parent = content
         group.location = Vector(spec.get("at", (0, 0, 0)))
         material = mats.get(spec["material"])
         meshes = parts.get(spec["builder"])(spec.get("params", {}), material)
         for mesh in meshes:
             mesh.parent = group
         built.append(Part(spec, group, meshes))
-    return Model(bp, root, built)
+    return Model(bp, root, content, built)

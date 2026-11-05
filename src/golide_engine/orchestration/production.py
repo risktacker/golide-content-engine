@@ -1346,6 +1346,24 @@ class ProductionService:
                 for line in timed_lines
             ]), encoding="utf-8")
 
+            # Off until config/world3d.json says otherwise. It can only add shots: any failure
+            # inside leaves the illustrated video exactly as it was.
+            from ..explain3d.stage import enabled as world3d_enabled, run as run_world3d
+            clips_path = work / "world3d-clips.json"
+
+            def world3d_stage():
+                facts = self._storyboard_facts(spec, work)
+                self._reserve(spec, text_model, Usage(input_tokens=6000, output_tokens=20000))
+                clips = run_world3d(
+                    work / "world3d", str(spec["format"]), [str(line["text"]) for line in spoken_lines],
+                    spoken_line_times(), timed_words, facts, text,
+                    lambda name, output: self._record_text(production_id, name, output),
+                )
+                clips_path.write_text(json.dumps(clips, indent=2) + "\n", encoding="utf-8")
+
+            if world3d_enabled():
+                self.runner.run(production_id, "world3d-v1", world3d_stage, attempts=1)
+
             def vector_render_stage():
                 # Rotate the four atmosphere beds in order across videos.
                 rendered_before = self.database.rows(
@@ -1356,6 +1374,7 @@ class ProductionService:
                     plan, timed_words, narration, video_path, narration_seconds,
                     music=None, illustrations=illustrations,
                     bed_variant=int(rendered_before[0]["n"]) if rendered_before else None,
+                    clips=json.loads(clips_path.read_text(encoding="utf-8")) if clips_path.exists() else None,
                 )
 
             self.runner.run(production_id, "render-vector-v1", vector_render_stage, attempts=1)

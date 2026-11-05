@@ -168,3 +168,49 @@ def space(scene, cfg):
     for ob in (earth, clouds):
         ob.rotation_euler = (turn[1], 0, turn[0])
     return {"sun_dir": sun_dir, "earth": earth, "clouds": clouds}
+
+
+@worlds.add("studio")
+def studio(scene, cfg):
+    """Dark stage: a grid floor that fades into a soft horizon glow."""
+    # The camera sees a near-black stage, but reflections see a soft bright room. Without
+    # this every metal part mirrors the dark and turns black.
+    t = scene.world.node_tree
+    t.nodes.clear()
+    out = t.nodes.new("ShaderNodeOutputWorld")
+    seen = t.nodes.new("ShaderNodeBackground")
+    seen.inputs["Color"].default_value = (0.012, 0.014, 0.02, 1)
+    room = t.nodes.new("ShaderNodeBackground")
+    room.inputs["Color"].default_value = (0.72, 0.8, 0.95, 1)
+    room.inputs["Strength"].default_value = cfg.get("room", 0.55)
+    path = t.nodes.new("ShaderNodeLightPath")
+    mix = t.nodes.new("ShaderNodeMixShader")
+    t.links.new(path.outputs["Is Glossy Ray"], mix.inputs[0])
+    t.links.new(seen.outputs[0], mix.inputs[1])
+    t.links.new(room.outputs[0], mix.inputs[2])
+    t.links.new(mix.outputs[0], out.inputs["Surface"])
+    floor_z = cfg.get("floor", -11.5)
+    bpy.ops.mesh.primitive_plane_add(size=600, location=(0, 0, floor_z))
+    floor = bpy.context.object
+    m = bpy.data.materials.new("grid_floor")
+    m.use_nodes = True
+    n = m.node_tree
+    b = n.nodes["Principled BSDF"]
+    b.inputs["Roughness"].default_value = 0.55
+    b.inputs["Metallic"].default_value = 0.0
+    b.inputs["Specular IOR Level"].default_value = 0.12
+    tc = n.nodes.new("ShaderNodeTexCoord")
+    grid = n.nodes.new("ShaderNodeTexBrick")
+    grid.offset = 0.0
+    grid.squash = 1.0
+    grid.inputs["Color1"].default_value = (0.012, 0.014, 0.02, 1)
+    grid.inputs["Color2"].default_value = (0.012, 0.014, 0.02, 1)
+    grid.inputs["Mortar"].default_value = (0.09, 0.12, 0.18, 1)
+    grid.inputs["Scale"].default_value = 1.0
+    grid.inputs["Mortar Size"].default_value = 0.02
+    grid.inputs["Brick Width"].default_value = 4.0
+    grid.inputs["Row Height"].default_value = 4.0
+    n.links.new(tc.outputs["Object"], grid.inputs["Vector"])
+    n.links.new(grid.outputs["Color"], b.inputs["Base Color"])
+    floor.data.materials.append(m)
+    return {"floor": floor}

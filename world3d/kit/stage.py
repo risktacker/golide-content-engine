@@ -2,19 +2,20 @@
 import bpy
 
 QUALITY = {
+    "smoke": {"size": (480, 270), "samples": 4},
     "draft": {"size": (960, 540), "samples": 8},
     "video": {"size": (1280, 720), "samples": 12},
     "final": {"size": (1920, 1080), "samples": 64},
 }
 
 
-def reset(quality, fps):
+def reset(quality, fps, vertical=False):
     bpy.ops.wm.read_factory_settings(use_empty=True)
     scene = bpy.context.scene
     q = QUALITY[quality]
     r = scene.render
     r.engine = "CYCLES"
-    r.resolution_x, r.resolution_y = q["size"]
+    r.resolution_x, r.resolution_y = reversed(q["size"]) if vertical else q["size"]
     r.resolution_percentage = 100
     r.fps = fps
     r.image_settings.file_format = "PNG"

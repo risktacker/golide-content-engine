@@ -120,6 +120,32 @@ def solar_cell():
     return m
 
 
+def _plain(name, color, metallic, roughness):
+    @materials.add(name)
+    def make():
+        m, t, b = _new(name)
+        _set(b, color, metallic, roughness)
+        return m
+    return make
+
+
+_plain("copper", (0.86, 0.42, 0.22), 1.0, 0.3)
+_plain("steel", (0.62, 0.63, 0.65), 1.0, 0.34)
+_plain("plastic_white", (0.82, 0.82, 0.80), 0.0, 0.42)
+_plain("plastic_dark", (0.035, 0.037, 0.042), 0.0, 0.46)
+_plain("circuit_green", (0.02, 0.17, 0.09), 0.2, 0.38)
+_plain("tissue_red", (0.55, 0.09, 0.07), 0.0, 0.34)
+_plain("cell_blue", (0.08, 0.26, 0.55), 0.0, 0.32)
+
+
+@materials.add("glass")
+def glass():
+    m, t, b = _new("glass")
+    _set(b, (0.9, 0.95, 1.0), 0.0, 0.06)
+    b.inputs["Transmission Weight"].default_value = 1.0
+    return m
+
+
 @materials.add("beam")
 def beam():
     m = bpy.data.materials.new("beam")

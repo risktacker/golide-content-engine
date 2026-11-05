@@ -3,9 +3,9 @@
   "fps": 24,
   "world": {"name": "space", "altitude": 110, "lon": 195, "lat": 8, "sun_dir": [0.62, -0.5, 0.6]},
   "light": {"rig": "sun_space", "sun": 5.5, "earthshine": 0.8},
-  "object": {"blueprint": "hubble", "rotate": [8, 18, 28]},
+  "object": {"blueprint": "hubble-space-telescope", "rotate": [8, 18, 28]},
   "camera": {"move": "orbit", "lens": 38, "yaw_from": 18, "yaw_to": 58, "pitch_from": 31, "pitch_to": 26,
-             "dist_from": 30, "dist_to": 47, "aim_offset": [0, 0, -2.5], "roll": -9},
+             "fit_exploded": true, "aim_offset": [0, 0, -2.5], "roll": -9},
   "actions": [
     {"type": "drift", "deg_per_sec": 0.9},
     {"type": "explode", "start": 5.0, "end": 8.0},

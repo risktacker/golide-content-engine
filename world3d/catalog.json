@@ -1,0 +1,22 @@
+{
+  "builders": {
+    "barrel": {"use": "Round section of a body or tube, optional rings and handrails", "required": ["length", "diameter"], "optional": ["rings", "rails", "cap"]},
+    "bay_ring": {"use": "Flat-sided ring of compartments", "required": ["length", "diameter", "bays"], "optional": []},
+    "disc": {"use": "Flat disc, plate, mirror or wheel, optional centre hole", "required": ["diameter"], "optional": ["thickness", "hole"]},
+    "hinged_door": {"use": "Round door hinged at its edge", "required": ["diameter"], "optional": ["thickness", "open_deg"]},
+    "solar_wing": {"use": "Flat panel on a mast", "required": ["length", "width"], "optional": ["side", "mast_base", "tilt_deg"]},
+    "dish_on_boom": {"use": "Parabolic dish on a mast", "required": ["diameter", "boom"], "optional": ["side", "aim_deg"]},
+    "box": {"use": "Rectangular block, casing, board or chip", "required": ["length", "width", "height"], "optional": []},
+    "sphere": {"use": "Ball, tank, cell or molecule atom", "required": ["diameter"], "optional": []},
+    "cone": {"use": "Nose, nozzle or tapered section", "required": ["length", "diameter"], "optional": ["tip_diameter"]},
+    "gear": {"use": "Toothed wheel", "required": ["diameter", "teeth"], "optional": ["thickness", "hole"]}
+  },
+  "materials": ["foil_silver", "foil_gold", "blanket_white", "panel_grey", "metal_dark", "rail_yellow", "mirror", "black_inner", "solar_cell", "copper", "steel", "plastic_white", "plastic_dark", "circuit_green", "glass", "tissue_red", "cell_blue"],
+  "worlds": {
+    "space": "Earth, atmosphere and stars. For anything in orbit or seen from space.",
+    "studio": "Dark stage with a grid floor. For any machine, part, chip, cell or object."
+  },
+  "actions": ["explode", "glow"],
+  "effects": ["signal_beam"],
+  "moves": ["orbit_slow", "orbit_wide", "push_in", "pull_out"]
+}

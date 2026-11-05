@@ -1,0 +1,6 @@
+{
+  "enabled": false,
+  "max_shots": {"short": 2, "long": 5},
+  "max_seconds": {"short": 16, "long": 40},
+  "quality": "video"
+}

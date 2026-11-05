@@ -14,7 +14,7 @@ from .registry import effects
 def signal_beam(model, cfg):
     """Pulses of light travelling from a part's anchor out along a direction."""
     part = model.part(cfg["from"])
-    direction = Vector(cfg["direction"]).normalized()
+    direction = Vector(cfg.get("direction", (-0.8, 0.2, 0.56))).normalized()
     length, count = cfg.get("length", 60), cfg.get("pulses", 7)
     speed, a, b = cfg.get("speed", 14), cfg["start"], cfg["end"]
     width = cfg.get("width", 0.14)
@@ -55,7 +55,7 @@ def signal_beam(model, cfg):
         for i, (ob, em) in enumerate(rings):
             d = (speed * (t - a) + i * length / count) % length
             fade = (1 - d / length) * min(1.0, d / 2)
-            r = 0.16 + d * math.tan(math.radians(cfg.get("spread_deg", 1.1)))
+            r = 0.2 + d * math.tan(math.radians(cfg.get("spread_deg", 1.1)))
             ob.matrix_world = (Matrix.Translation(o + direction * d) @ align
                                @ Matrix.Diagonal((r, r, 1, 1)))
             em.inputs["Strength"].default_value = 10 * vis * fade if d < reach else 0

@@ -36,3 +36,11 @@ def sun_space(world, cfg, objects):
     _sun("sun_planet", world["sun_dir"], cfg.get("sun_planet", 1.5), color, 0.6, shadow=False, receivers=planet)
     _sun("sun", world["sun_dir"], cfg.get("sun", 5.5), color, 0.6, receivers=objects)
     _sun("earthshine", (0, 0, -1), cfg.get("earthshine", 0.7), (0.5, 0.68, 1.0), 40, receivers=objects)
+
+
+@lights.add("studio_soft")
+def studio_soft(world, cfg, objects):
+    """Key from the front side, cool rim behind, so any shape reads on a dark stage."""
+    _sun("key", (0.5, -0.65, 0.6), cfg.get("key", 3.0), (1.0, 0.97, 0.93), 8)
+    _sun("rim", (-0.6, 0.7, 0.35), cfg.get("rim", 2.2), (0.6, 0.76, 1.0), 4, receivers=objects)
+    _sun("fill", (-0.2, -0.6, -0.5), cfg.get("fill", 0.5), (0.8, 0.88, 1.0), 45, receivers=objects)
