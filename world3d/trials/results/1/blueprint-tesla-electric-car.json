@@ -1,0 +1,563 @@
+{
+  "name": "tesla_roadster_fan_and_rocket_layout",
+  "sources": [
+    "https://www.tesla.com/roadster?redirect=no",
+    "https://www.techradar.com/vehicle-tech/hybrid-electric-vehicles/how-does-the-new-tesla-roadster-fly-and-is-it-dangerous-to-be-around-its-thrusters",
+    "https://www.space.com/technology/spacex-thrusters-just-made-a-tesla-roadster-fly-and-elon-musks-car-is-still-out-there-in-space",
+    "https://autos.yahoo.com/ev-and-future-tech/articles/fact-check-real-videos-show-202800684.html"
+  ],
+  "simplified": [
+    "The model represents the Tesla Roadster-style electric prototype described in the research, not a confirmed production vehicle.",
+    "Overall car dimensions, battery size, motor size, fan size, tank size and internal positions are estimated for a clear explainer layout because Tesla has not published a complete engineering blueprint.",
+    "The car is shown about 4.7 metres long, 2.0 metres wide and 1.2 metres tall.",
+    "The battery, power electronics and electric motors are shown as separate simplified blocks.",
+    "The suction system is represented by four fan modules and a continuous underbody seal. The real system is described by Tesla as a multi-mode fan and ground-sealing system.",
+    "The Rocket version is represented with two pressure-tank blocks and four visible thruster groups. These stand for a larger distributed cold-gas-thruster array; the exact internal layout is not publicly documented here.",
+    "The fan system creates downforce by lowering pressure beneath the car. It does not provide free-flight lift.",
+    "The thruster sections show the general direction of cold gas leaving the vehicle. No manufacturing or nozzle-construction detail is included.",
+    "The Rocket version is treated as a one-seat prototype configuration, while the normal electric-car layout retains a conventional cabin.",
+    "Exact production status, certification, repeated-flight capability and final road equipment remain unresolved in the supplied research."
+  ],
+  "parts": [
+    {
+      "id": "body",
+      "label": "car body",
+      "builder": "box",
+      "material": "metal_dark",
+      "params": {
+        "length": 4.7,
+        "width": 1.95,
+        "height": 1.1
+      },
+      "at": [
+        0,
+        0,
+        0.55
+      ],
+      "explode": [
+        0,
+        0,
+        0
+      ],
+      "anchor": [
+        2.35,
+        0,
+        0.55
+      ]
+    },
+    {
+      "id": "cabin",
+      "label": "glass cabin",
+      "builder": "box",
+      "material": "glass",
+      "params": {
+        "length": 2.1,
+        "width": 1.65,
+        "height": 0.65
+      },
+      "at": [
+        1.25,
+        0,
+        1.12
+      ],
+      "explode": [
+        0,
+        0,
+        0.35
+      ],
+      "anchor": [
+        1.05,
+        0,
+        0.3
+      ]
+    },
+    {
+      "id": "battery",
+      "label": "underfloor battery",
+      "builder": "box",
+      "material": "cell_blue",
+      "params": {
+        "length": 3.6,
+        "width": 1.55,
+        "height": 0.18
+      },
+      "at": [
+        0.55,
+        0,
+        0.2
+      ],
+      "explode": [
+        0,
+        0,
+        -0.5
+      ],
+      "anchor": [
+        1.8,
+        0,
+        0.09
+      ]
+    },
+    {
+      "id": "power_electronics",
+      "label": "power electronics",
+      "builder": "box",
+      "material": "circuit_green",
+      "params": {
+        "length": 0.65,
+        "width": 0.85,
+        "height": 0.25
+      },
+      "at": [
+        3.35,
+        0,
+        0.72
+      ],
+      "explode": [
+        0,
+        0,
+        0.4
+      ],
+      "anchor": [
+        0.32,
+        0,
+        0.12
+      ]
+    },
+    {
+      "id": "motor_left",
+      "label": "left electric motor",
+      "builder": "box",
+      "material": "copper",
+      "params": {
+        "length": 0.55,
+        "width": 0.45,
+        "height": 0.4
+      },
+      "at": [
+        3.8,
+        -0.55,
+        0.48
+      ],
+      "explode": [
+        0.35,
+        -0.2,
+        0
+      ],
+      "anchor": [
+        0.28,
+        0,
+        0.2
+      ]
+    },
+    {
+      "id": "motor_right",
+      "label": "right electric motor",
+      "builder": "box",
+      "material": "copper",
+      "params": {
+        "length": 0.55,
+        "width": 0.45,
+        "height": 0.4
+      },
+      "at": [
+        3.8,
+        0.55,
+        0.48
+      ],
+      "explode": [
+        0.35,
+        0.2,
+        0
+      ],
+      "anchor": [
+        0.28,
+        0,
+        0.2
+      ]
+    },
+    {
+      "id": "wheel_fl",
+      "label": "front-left traction wheel",
+      "builder": "disc",
+      "material": "metal_dark",
+      "params": {
+        "diameter": 0.68,
+        "thickness": 0.24
+      },
+      "at": [
+        0.72,
+        -1.02,
+        0.45
+      ],
+      "explode": [
+        0,
+        -0.25,
+        0
+      ],
+      "anchor": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wheel_fr",
+      "label": "front-right traction wheel",
+      "builder": "disc",
+      "material": "metal_dark",
+      "params": {
+        "diameter": 0.68,
+        "thickness": 0.24
+      },
+      "at": [
+        0.72,
+        1.02,
+        0.45
+      ],
+      "explode": [
+        0,
+        0.25,
+        0
+      ],
+      "anchor": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wheel_rl",
+      "label": "rear-left traction wheel",
+      "builder": "disc",
+      "material": "metal_dark",
+      "params": {
+        "diameter": 0.68,
+        "thickness": 0.24
+      },
+      "at": [
+        3.82,
+        -1.02,
+        0.45
+      ],
+      "explode": [
+        0,
+        -0.25,
+        0
+      ],
+      "anchor": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wheel_rr",
+      "label": "rear-right traction wheel",
+      "builder": "disc",
+      "material": "metal_dark",
+      "params": {
+        "diameter": 0.68,
+        "thickness": 0.24
+      },
+      "at": [
+        3.82,
+        1.02,
+        0.45
+      ],
+      "explode": [
+        0,
+        0.25,
+        0
+      ],
+      "anchor": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "seal",
+      "label": "underbody air seal",
+      "builder": "box",
+      "material": "plastic_dark",
+      "params": {
+        "length": 4.2,
+        "width": 1.8,
+        "height": 0.1
+      },
+      "at": [
+        0.25,
+        0,
+        0.3
+      ],
+      "explode": [
+        0,
+        0,
+        -0.3
+      ],
+      "anchor": [
+        2.1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "fan_front",
+      "label": "front suction fans",
+      "builder": "box",
+      "material": "metal_dark",
+      "params": {
+        "length": 0.8,
+        "width": 1.25,
+        "height": 0.18
+      },
+      "at": [
+        0.8,
+        0,
+        0.36
+      ],
+      "explode": [
+        0,
+        0,
+        -0.45
+      ],
+      "anchor": [
+        0.4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "fan_rear",
+      "label": "rear suction fans",
+      "builder": "box",
+      "material": "metal_dark",
+      "params": {
+        "length": 0.8,
+        "width": 1.25,
+        "height": 0.18
+      },
+      "at": [
+        2.9,
+        0,
+        0.36
+      ],
+      "explode": [
+        0,
+        0,
+        -0.45
+      ],
+      "anchor": [
+        0.4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "tank_front",
+      "label": "high-pressure gas tank",
+      "builder": "barrel",
+      "material": "steel",
+      "params": {
+        "length": 1.35,
+        "diameter": 0.5
+      },
+      "at": [
+        1.3,
+        0,
+        0.82
+      ],
+      "explode": [
+        0,
+        0,
+        0.8
+      ],
+      "anchor": [
+        0.68,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "tank_rear",
+      "label": "rear gas tank",
+      "builder": "barrel",
+      "material": "steel",
+      "params": {
+        "length": 1.0,
+        "diameter": 0.45
+      },
+      "at": [
+        3.25,
+        0,
+        0.82
+      ],
+      "explode": [
+        0,
+        0,
+        0.8
+      ],
+      "anchor": [
+        0.5,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "seat",
+      "label": "single Rocket seat",
+      "builder": "box",
+      "material": "plastic_dark",
+      "params": {
+        "length": 0.9,
+        "width": 0.6,
+        "height": 0.5
+      },
+      "at": [
+        2.25,
+        0,
+        1.02
+      ],
+      "explode": [
+        0,
+        0,
+        0.45
+      ],
+      "anchor": [
+        0.45,
+        0,
+        0.25
+      ]
+    },
+    {
+      "id": "controller",
+      "label": "thruster controller",
+      "builder": "box",
+      "material": "circuit_green",
+      "params": {
+        "length": 0.4,
+        "width": 0.5,
+        "height": 0.2
+      },
+      "at": [
+        2.85,
+        0,
+        1.38
+      ],
+      "explode": [
+        0,
+        0,
+        0.65
+      ],
+      "anchor": [
+        0.2,
+        0,
+        0.1
+      ]
+    },
+    {
+      "id": "thruster_fl",
+      "label": "front-left cold-gas thruster",
+      "builder": "cone",
+      "material": "metal_dark",
+      "params": {
+        "length": 0.35,
+        "diameter": 0.2,
+        "tip_diameter": 0.08
+      },
+      "at": [
+        0.25,
+        -0.7,
+        0.72
+      ],
+      "explode": [
+        -0.15,
+        -0.3,
+        0.25
+      ],
+      "anchor": [
+        0.35,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "thruster_fr",
+      "label": "front-right cold-gas thruster",
+      "builder": "cone",
+      "material": "metal_dark",
+      "params": {
+        "length": 0.35,
+        "diameter": 0.2,
+        "tip_diameter": 0.08
+      },
+      "at": [
+        0.25,
+        0.7,
+        0.72
+      ],
+      "explode": [
+        -0.15,
+        0.3,
+        0.25
+      ],
+      "anchor": [
+        0.35,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "thruster_rl",
+      "label": "rear-left cold-gas thruster",
+      "builder": "cone",
+      "material": "metal_dark",
+      "params": {
+        "length": 0.35,
+        "diameter": 0.2,
+        "tip_diameter": 0.08
+      },
+      "at": [
+        4.15,
+        -0.7,
+        0.72
+      ],
+      "explode": [
+        0.25,
+        -0.3,
+        0.25
+      ],
+      "anchor": [
+        0.35,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "thruster_rr",
+      "label": "rear-right cold-gas thruster",
+      "builder": "cone",
+      "material": "metal_dark",
+      "params": {
+        "length": 0.35,
+        "diameter": 0.2,
+        "tip_diameter": 0.08
+      },
+      "at": [
+        4.15,
+        0.7,
+        0.72
+      ],
+      "explode": [
+        0.25,
+        0.3,
+        0.25
+      ],
+      "anchor": [
+        0.35,
+        0,
+        0
+      ]
+    }
+  ]
+}

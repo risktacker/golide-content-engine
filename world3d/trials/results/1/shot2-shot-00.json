@@ -1,0 +1,56 @@
+{
+  "duration": 7.61,
+  "fps": 24,
+  "vertical": false,
+  "world": {
+    "name": "studio"
+  },
+  "light": {
+    "rig": "studio_soft"
+  },
+  "object": {
+    "blueprint": "tesla-roadster",
+    "blueprint_dir": "out/3d/blueprints",
+    "rotate": [
+      9,
+      0,
+      18
+    ]
+  },
+  "camera": {
+    "move": "orbit",
+    "lens": 38,
+    "yaw_from": 13,
+    "yaw_to": -5.0,
+    "pitch_from": 12,
+    "pitch_to": 20,
+    "zoom_from": 0.85,
+    "zoom_to": 1.25,
+    "fit_exploded": false,
+    "aim_offset": [
+      0,
+      0,
+      0
+    ],
+    "roll": 0
+  },
+  "actions": [
+    {
+      "type": "drift",
+      "deg_per_sec": 0.9
+    }
+  ],
+  "effects": [],
+  "labels": [
+    {
+      "part": "chassis",
+      "text": "Low pressure",
+      "start": 1.9200000000000017,
+      "end": 7.510000000000001,
+      "dx": 0.09,
+      "dy": 0.1
+    }
+  ],
+  "start_time": 69.37,
+  "subject": "Tesla Roadster"
+}

@@ -1,0 +1,47 @@
+{
+  "duration": 8.38,
+  "fps": 24,
+  "vertical": false,
+  "world": {
+    "name": "studio"
+  },
+  "light": {
+    "rig": "studio_soft"
+  },
+  "object": {
+    "blueprint": "tesla-roadster",
+    "blueprint_dir": "out/3d/blueprints",
+    "rotate": [
+      7,
+      0,
+      14
+    ]
+  },
+  "camera": {
+    "move": "orbit",
+    "lens": 38,
+    "yaw_from": 191,
+    "yaw_to": 221.0,
+    "pitch_from": 20,
+    "pitch_to": 16,
+    "zoom_from": 1.0,
+    "zoom_to": 1.0,
+    "fit_exploded": false,
+    "aim_offset": [
+      0,
+      0,
+      0
+    ],
+    "roll": 0
+  },
+  "actions": [
+    {
+      "type": "drift",
+      "deg_per_sec": 0.9
+    }
+  ],
+  "effects": [],
+  "labels": [],
+  "start_time": 60.99,
+  "subject": "Tesla Roadster"
+}

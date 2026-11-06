@@ -1,0 +1,69 @@
+{
+  "duration": 4.53,
+  "fps": 24,
+  "vertical": false,
+  "world": {
+    "name": "studio"
+  },
+  "light": {
+    "rig": "studio_soft"
+  },
+  "object": {
+    "blueprint": "tesla-rocket-roadster",
+    "blueprint_dir": "out/3d/blueprints",
+    "rotate": [
+      -4,
+      0,
+      -8
+    ]
+  },
+  "camera": {
+    "move": "orbit",
+    "lens": 38,
+    "yaw_from": 55,
+    "yaw_to": 120.0,
+    "pitch_from": 14,
+    "pitch_to": 24,
+    "zoom_from": 1.15,
+    "zoom_to": 1.05,
+    "fit_exploded": true,
+    "aim_offset": [
+      0,
+      0,
+      0
+    ],
+    "roll": 0
+  },
+  "actions": [
+    {
+      "type": "drift",
+      "deg_per_sec": 0.9
+    },
+    {
+      "type": "explode",
+      "start": 0.0,
+      "end": 2.4
+    }
+  ],
+  "effects": [],
+  "labels": [
+    {
+      "part": "rear_tank",
+      "text": "Tanks",
+      "start": 1.5300000000000011,
+      "end": 4.430000000000001,
+      "dx": 0.09,
+      "dy": -0.1
+    },
+    {
+      "part": "rear_thrusters",
+      "text": "Cold gas thrusters",
+      "start": 3.8400000000000034,
+      "end": 4.430000000000001,
+      "dx": -0.09,
+      "dy": 0.1
+    }
+  ],
+  "start_time": 120.92,
+  "subject": "Tesla Rocket Roadster"
+}
