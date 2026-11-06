@@ -119,7 +119,6 @@ def scene_plan_instructions(format_name: str, duration: float | None = None) -> 
     from .layouts import STORYBOARD_RULES
 
     products = MAX_PRODUCT_SCENES.get(format_name, 1)
-    three_d = 2 if format_name == "long" else 1   # simple 3D scenes (2026-11-05)
     figure_menu = "\n".join("  " + example for example in EXAMPLES.values())
     layout_rules = STORYBOARD_RULES
     return f"""\
@@ -333,13 +332,17 @@ be the architecture behind it... the level we have reached now is not to fake th
   naming the real layers from the research in order, top first; "fold" for the hinge of a
   folding device (bar=stuck when the lines are about the support pressing on the screen).
   Name only parts the research names; never invent a part.
-- SIMPLE 3D (owner direction 2026-11-05): when the lines describe one of these devices
-  physically moving or coming apart (a laptop's lid opening, a phone's layers, a server
-  sliding out of its rack, a chip's lid coming off, a battery's cells), set "figure" to
-  "3d: object=<laptop|phone|server|chip|battery>; on=<the spoken word the move lands on,
-  copied from the lines>" with layout "single". The device turns in 3D and its move lands
-  on that word. Only when the words describe that movement or what is inside; at most
-  {three_d} in the whole video, never two in a row.
+- 3D FIRST (owner direction 2026-11-06: no limits, more 3D scenes than line drawings): for
+  every scene, first ask whether one of these 3D objects fits what the lines are about, and
+  use it whenever it does: laptop (a computer, an engineer, a hacked machine, software),
+  phone (an app, a user, a message), server (a company's systems, a data centre, a wallet
+  or exchange running on servers, the cloud), chip (AI, computing power, hardware), battery
+  (energy, power, charging). Set "figure" to "3d: object=<laptop|phone|server|chip|battery>;
+  on=<the spoken word the move lands on, copied from the lines>" with layout "single". The
+  object turns in 3D and its move (lid opens, layers part, a server slides out, the chip lid
+  lifts, cells rise) lands on that word. There is no cap: most scenes should be 3D. Use a line
+  drawing only when no object fits at all. When two 3D scenes follow each other, use a
+  different object when one fits.
 
 CHARTS (owner direction 2026-10-27): when a scene's lines give prices, growth, sales,
 shares or a market move with real numbers, set "figure" to a "chart" line with those
