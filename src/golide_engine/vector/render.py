@@ -449,8 +449,17 @@ class VectorRenderer:
         L = self.layout
         name, u, yaw = self._motion_pose(group, t)
         size, cx, cy = self._motion_place(group)
-        art = motion3d.layer((L.width, L.height), (cx, cy), size, name, u, yaw, alpha)
-        image.paste(art, (0, 0), art)
+        # The slow turn changes very little frame to frame: a pose is drawn once and reused until
+        # it has moved a visible amount (about every 2nd frame while turning, every frame while moving).
+        key = (group.start, round(u, 3), round(math.degrees(yaw) / 0.3))
+        last = self.__dict__.setdefault("_motion_last", {})
+        if last.get("key") != key:
+            last["key"], last["art"] = key, motion3d.render(name, u, yaw, size)
+        img, (ox, oy) = last["art"]
+        if alpha < 1.0:
+            img = img.copy()
+            img.putalpha(img.getchannel("A").point(lambda v: int(v * alpha)))
+        image.paste(img, (int(round(cx + ox)), int(round(cy + oy))), img)
 
     def _with_motion(self, image: Image.Image, groups: list[Group], gi: int, t: float) -> Image.Image:
         """Owner direction 2026-11-05: simple 3D, consistent with the voice and with the scene
@@ -514,6 +523,8 @@ class VectorRenderer:
         drawing = SCENES.get(group.icons[0]) if group.icons else None
         if drawing is None:
             return "none"
+        if getattr(drawing, "motion", None):
+            return drawing.stage or "grid"   # 2026-11-06 (owner): 3D stands on our floor grid and glow
         if drawing.figure:
             return drawing.stage or "none"   # maths figures keep the lesson grid; charts carry "market"
         return drawing.stage or "grid"
@@ -542,6 +553,13 @@ class VectorRenderer:
         it off screen: the stage floor starts where the object stands (owner review 2026-10-29)."""
         cache = self.__dict__.setdefault("_footprints", {})
         key = (gi, group.start, group.icons)
+        if key not in cache and self._motion(group) is not None:
+            # a 3D object stands where it is placed: its lowest point is the floor line
+            motion = self._motion(group)
+            model = motion if motion.get("parts") else motion["object"]
+            size, cx, cy = self._motion_place(group)
+            x0, y0, x1, y1 = motion3d.extent(model, size)
+            cache[key] = (cx + x0, cx + x1, cy + y1, cy + y0)
         if key not in cache:
             L = self.layout
             surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, L.width // 2, L.height // 2)
