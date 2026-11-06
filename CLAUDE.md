@@ -32,5 +32,9 @@ storyboard call picks gold words and pictures. Copy the method of model scripts,
   explanations, about half the scenes 3D, never more than 3 in a row.
 - Moves 0.6 s on the spoken word; slow turn through the scene; poses reused until visibly turned.
 
+## World 3D (`world3d/`, branch `world3d-separate`)
+Separate Blender system. Must never overlap the engine above: nothing in `src/` imports it, it imports
+nothing from `src/`. It connects later through one marked hand-off only. See `world3d/HANDOVER.md`.
+
 ## Checks
-`python3 -m pytest -q` must pass before every push (467 tests as of 2026-11-06).
+`python3 -m pytest -q` must pass before every push (476 on `world3d-separate`, 467 on `main`, as of 2026-11-06).

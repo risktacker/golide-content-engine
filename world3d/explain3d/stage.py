@@ -12,7 +12,7 @@ from typing import Any, Callable
 
 from . import blueprint, catalog, director
 
-CONFIG = Path(__file__).resolve().parents[3] / "config" / "world3d.json"
+CONFIG = Path(__file__).resolve().parents[1] / "config.json"
 
 
 def settings() -> dict[str, Any]:

@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: ["world3d-*"]
-    paths: ["world3d/**", "src/golide_engine/explain3d/**", "src/golide_engine/vector/clips.py"]
+    paths: ["world3d/**", ".github/workflows/world3d-check.yml"]
 jobs:
   end-to-end:
     runs-on: ubuntu-latest
@@ -20,9 +20,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg libcairo2-dev
-      - run: python -m pip install -q -e '.[production,video]'
-      - run: PYTHONPATH=src python world3d/smoke_test.py --blender-python "$RUNNER_TEMP/blender/bin/python" --out out
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - run: python -m pip install -q numpy pillow pytest
+      - run: python -m pytest -q world3d/tests
+      - run: python world3d/smoke_test.py --blender-python "$RUNNER_TEMP/blender/bin/python" --out out
       - uses: actions/upload-artifact@v4
         with:
           name: world3d-check

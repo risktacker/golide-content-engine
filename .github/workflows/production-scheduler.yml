@@ -80,20 +80,6 @@ jobs:
           key: golide-production-checkpoint-${{ github.run_id }}
           restore-keys: |
             golide-production-checkpoint-
-      # Only when config/world3d.json turns 3D on. Blender needs its own Python.
-      - uses: actions/setup-python@v5
-        id: blender_python
-        if: steps.automation.outputs.enabled == 'true' && hashFiles('config/world3d.json') != ''
-        with:
-          python-version: "3.13"
-      - name: Install Blender for 3D shots
-        if: steps.automation.outputs.enabled == 'true'
-        run: |
-          if [ "$(jq -r .enabled config/world3d.json)" = "true" ]; then
-            "${{ steps.blender_python.outputs.python-path }}" -m venv "$RUNNER_TEMP/blender"
-            "$RUNNER_TEMP/blender/bin/pip" install -q bpy numpy pillow
-            echo "WORLD3D_PYTHON=$RUNNER_TEMP/blender/bin/python" >> "$GITHUB_ENV"
-          fi
       - uses: actions/setup-python@v5
         if: steps.automation.outputs.enabled == 'true'
         with:

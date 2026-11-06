@@ -7,8 +7,8 @@ from types import SimpleNamespace
 import numpy as np
 from PIL import Image
 
-from golide_engine.explain3d import blueprint, catalog, director, stage
-from golide_engine.vector.clips import ClipTrack
+from world3d.explain3d import blueprint, catalog, director, stage
+from world3d.explain3d.clips import ClipTrack
 
 GEAR = {"name": "Two gears", "sources": ["https://example.org/gears"], "simplified": [], "parts": [
     {"id": "big", "label": "Drive gear", "builder": "gear", "material": "steel",

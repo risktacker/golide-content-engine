@@ -1,7 +1,9 @@
 # GOLIDE World 3D
 
 Compiles a shot list into realistic 3D video with code only. No paid API and no licensed assets.
-It is separate from the production engine until it is connected on purpose.
+It is a separate system from the production engine and its simple 3D (`src/golide_engine/vector/motion3d.py`).
+Everything lives in this folder. Nothing in `src/` imports it and it imports nothing from `src/`.
+It will connect through one marked hand-off (Studio picks 3D, the engine calls in here, gets clips back). Not built yet.
 
 ## How it fits together
 
@@ -24,15 +26,16 @@ names something missing stops at once and lists what exists.
 
 ## The whole path
 
-`src/golide_engine/explain3d/` is the planning side and needs no Blender:
+`explain3d/` is the planning side and needs no Blender:
 
 1. `director.py` reads the script and voice timing and picks the shots.
 2. `blueprint.py` turns research into a checked blueprint, saved so a subject is paid for once.
 3. `director.py` compiles each shot, landing every action on a spoken word.
 4. `stage.py` renders the shots. A failed shot is skipped and the video stays illustrated.
-5. `vector/clips.py` lays the shots into the video, under the captions.
+5. `explain3d/clips.py` holds the finished shots on the voice's clock, ready for the hand-off.
 
-`config/world3d.json` turns the path on. It is off by default.
+`config.json` holds shot limits and quality. `enabled` stays false until the hand-off exists.
+Tests: `python -m pytest -q world3d/tests`.
 `python world3d/smoke_test.py` proves the path on real Blender with no paid calls.
 
 ## Run one shot by hand

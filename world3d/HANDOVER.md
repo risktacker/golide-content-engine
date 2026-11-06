@@ -1,6 +1,6 @@
 # Handover: World 3D (Blender path), 2026-11-06
 
-Repo `risktacker/golide-content-engine`, branch **`world3d-space-kit`** (commit `9d09c5c`).
+Repo `risktacker/golide-content-engine`, branch **`world3d-separate`**.
 Not merged. Off by default. Live production is untouched.
 
 ## Read this first: there are now two 3D engines
@@ -14,16 +14,18 @@ They must not overlap (owner, 2026-11-06): main keeps its engine; this branch be
 The branch merges cleanly into `main` today (checked), but `main` is 47 commits ahead and also edits
 `production.py`, `vector/render.py` and `production-scheduler.yml`, so rebase and rerun tests first.
 
-## First job: make it one separate folder (owner direction 2026-11-06)
-This is a bigger, separate system from main's illustration engine and its simple 3D. The two must
-never overlap. It stays in this repo (same domain, keys, Actions), but lives in **one folder**.
-1. Move everything into `world3d/`: `src/golide_engine/explain3d/*`, `src/golide_engine/vector/clips.py`,
-   `tests/test_explain3d.py`, `config/world3d.json`.
-2. Remove all hooks from live files, so `orchestration/production.py`, `vector/render.py` and
-   `.github/workflows/production-scheduler.yml` are exactly as on `main`.
-3. Connect later through one small, marked hand-off: when 3D is chosen in Studio, the engine calls
-   `world3d/` and gets finished clips back. Nothing else shared.
-Talk this through with the owner before step 3.
+## Separate folder: steps 1 and 2 done (2026-11-06)
+- Rebased onto `main`, now on branch `world3d-separate` (old `world3d-space-kit` left as it was).
+  Everything is in `world3d/`: `explain3d/` (planning, plus `clips.py`), `tests/`, `config.json`,
+  `kit/`, `blueprints/`, `shots/`.
+- `production.py`, `vector/render.py` and `production-scheduler.yml` are byte-for-byte `main`.
+  Nothing in `src/` imports `world3d`; nothing in `world3d` imports `golide_engine`.
+- Smoke test now ends at a 3D clip video (no illustrated composite, that was the render.py hook).
+- Checks: `python3 -m pytest -q` 476 passed (main's 467 + 9 here); smoke test passed on real Blender.
+- **Step 3, the hand-off, is not built. Talk it through with the owner first.** Open questions:
+  where 3D clips sit (full frame or under captions), who calls whom (production calls
+  `world3d.explain3d.stage.run` behind the Studio toggle), and where compositing lives (it needs one
+  marked call in `vector/render.py`).
 
 ## What the owner wants (standing)
 - An engine that can explain anything (machines, chips, weapons at explainer level, biology) in GOLIDE's
@@ -42,10 +44,9 @@ Talk this through with the owner before step 3.
 | Blueprint | `explain3d/blueprint.py` | Research to checked blueprint, retries with errors, saves per run |
 | Director | `explain3d/director.py` | Script + word timing to shots; actions land on spoken words |
 | Render | `explain3d/stage.py`, `world3d/render_shot.py`, `world3d/post.py` | Renders; a failed shot is skipped |
-| Composer | `vector/clips.py`, hook in `vector/render.py` | 3D clips laid under captions |
-| Production hook | `orchestration/production.py` stage `world3d-v1` | Runs only if `config/world3d.json` enabled |
+| Clips | `explain3d/clips.py` | Holds shots on the voice clock; not wired into video yet |
 | CI | `.github/workflows/world3d-check.yml`, `world3d/smoke_test.py` | Passed on GitHub 2026-11-05 (2m10s) |
-| Tests | `tests/test_explain3d.py` | 9 new; 415 total passed on the branch |
+| Tests | `world3d/tests/test_explain3d.py` | 9; run with the main suite |
 
 ## Not done
 1. Real Luna run on one script (about $0.03 tokens + web search per new subject). Never run yet.
@@ -60,8 +61,8 @@ Talk this through with the owner before step 3.
 ## Run it
 ```bash
 python3 -m venv .venv-blender && .venv-blender/bin/pip install bpy numpy pillow   # Blender needs Python 3.13
-pip install -e '.[production,video]'
-PYTHONPATH=src python world3d/smoke_test.py --blender-python .venv-blender/bin/python --out out
+pip install numpy pillow pytest
+python world3d/smoke_test.py --blender-python .venv-blender/bin/python --out out
 .venv-blender/bin/python world3d/render_shot.py world3d/shots/space_hubble.json --out out/h --quality draft --stills 48
 ```
 Speed seen on 2 CPU cores: about 7 s per 720p studio frame, 14 s per 540p space frame.

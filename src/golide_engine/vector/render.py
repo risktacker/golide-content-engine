@@ -310,8 +310,6 @@ PAINT_IN = (0.55, 0.95)   # the colour fades in as the pen finishes the drawing 
 
 
 class VectorRenderer:
-    clip_track = None  # pre-rendered 3D shots laid over the picture, under the captions
-
     def __init__(self, format_name: str, theme: Theme | None = None, fps: int = 30):
         if format_name not in FORMATS:
             raise ValueError(f"unknown format {format_name}")
@@ -873,10 +871,6 @@ class VectorRenderer:
         frame = rgb + frame * (1 - alpha)
         if edge_light is not None:
             frame = frame + self._edge_light(*edge_light)
-        if self.clip_track is not None:
-            clip = self.clip_track.at(t, (L.width, L.height))
-            if clip is not None:
-                frame = frame * (1 - clip[1]) + clip[0] * clip[1]
         image = Image.fromarray(np.clip(frame, 0, 255).astype(np.uint8), "RGB")
 
         accent = self._accent_rgb(group)
@@ -1015,10 +1009,7 @@ class VectorRenderer:
 
     def render(self, plan: dict[str, Any], words: list[dict[str, Any]], narration: Path, output: Path,
                duration: float, music: Path | None = None, music_volume: float = 0.03,
-               illustrations: dict[str, Path] | None = None, bed_variant: int | None = None,
-               clips: list[dict] | None = None) -> Path:
-        from .clips import ClipTrack
-        self.clip_track = ClipTrack(clips) if clips else None
+               illustrations: dict[str, Path] | None = None, bed_variant: int | None = None) -> Path:
         lines = align_lines(plan, words, duration)
         from .number_cards import find_cards
         self.cards = find_cards(lines)

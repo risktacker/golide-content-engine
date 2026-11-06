@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-WORLD3D = Path(__file__).resolve().parents[3] / "world3d"
+WORLD3D = Path(__file__).resolve().parents[1]
 
 
 def load() -> dict:

@@ -1,20 +1,18 @@
-"""Proves the whole path on real Blender with no paid calls: a script goes in, a finished
-video comes out, and nobody writes a shot by hand. Uses a stand-in for the text model.
+"""Proves the whole path on real Blender with no paid calls: a script goes in, finished 3D
+clips come out, and nobody writes a shot by hand. Uses a stand-in for the text model.
+Touches nothing in src/: laying clips into the illustrated video is the later hand-off.
 python world3d/smoke_test.py --blender-python PATH --out DIR"""
 import argparse
 import json
 import subprocess
 import sys
-import wave
 from pathlib import Path
 from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT / "tests"))
-from test_explain3d import GEAR, SHOT, WORDS  # noqa: E402
-
-from golide_engine.explain3d import catalog, stage  # noqa: E402
-from golide_engine.vector.render import VectorRenderer  # noqa: E402
+sys.path.insert(0, str(ROOT))
+from world3d.explain3d import catalog, stage  # noqa: E402
+from world3d.tests.test_explain3d import GEAR, SHOT, WORDS  # noqa: E402
 
 LINES = ["inside the gearbox the drive gear turns the", "shaft and that shaft spins the wheels every time"]
 TIMES = [(0.0, 3.5), (3.5, 8.0)]
@@ -62,15 +60,10 @@ def main():
     clips = stage.run(out / "3d", "long", LINES, TIMES, WORDS, "facts", StandIn(), lambda *_: None, render=render)
     assert clips, "no clip came out"
     assert len(list(Path(clips[0]["frames"]).glob("f*.png"))) > 10, "clip has no frames"
-    narration = out / "voice.wav"
-    with wave.open(str(narration), "wb") as w:
-        w.setnchannels(1)
-        w.setsampwidth(2)
-        w.setframerate(16000)
-        w.writeframes(b"\0\0" * 16000 * 9)
-    plan = {"title": "Gearbox", "lines": [{"text": t, "visual": "title"} for t in LINES]}
     video = out / "video.mp4"
-    VectorRenderer("long", fps=12).render(plan, WORDS, narration, video, 9.0, clips=clips)
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-framerate", str(clips[0]["fps"]),
+                    "-i", str(Path(clips[0]["frames"]) / "f%05d.png"), "-c:v", "libx264",
+                    "-pix_fmt", "yuv420p", str(video)], check=True)
     assert video.stat().st_size > 10000, "no video"
     print("END TO END OK", video)
 
