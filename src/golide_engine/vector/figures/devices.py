@@ -116,33 +116,78 @@ def fold(size, params, items):
     return c
 
 
-def model3d(size, params, items):
-    """3d: object=laptop; on=opens  (owner direction 2026-11-05). A real device in simple 3D whose
-    move lands on the spoken word. The picture saved here is the starting pose, drawn exactly as
-    the renderer draws it; the renderer then moves it (vector.motion3d)."""
-    import numpy as np
-    from PIL import Image
+def parse_parts(items) -> list[dict]:
+    """Engine parts from figure items: 'box|cyl|sphere|cone x y z w d h [rx90] [ry0] [rz45] [gold] [mover]'
+    (owner direction 2026-11-06: the engine builds any object the script talks about)."""
+    from .. import motion3d
 
+    parts = []
+    for item in items:
+        words = str(item).replace(",", " ").split()
+        if not words or words[0].lower() not in motion3d.SHAPES:
+            continue
+        shape, rest = words[0].lower(), words[1:]
+        numbers, rot, gold, mover = [], [0.0, 0.0, 0.0], False, False
+        for w in rest:
+            low = w.lower()
+            if low == "gold":
+                gold = True
+            elif low in ("mover", "moves", "move"):
+                mover = True
+            elif low[:2] in ("rx", "ry", "rz"):
+                try:
+                    rot["xyz".index(low[1])] = float(low[2:].lstrip("="))
+                except ValueError:
+                    pass
+            else:
+                try:
+                    numbers.append(float(w))
+                except ValueError:
+                    pass
+        if len(numbers) < 6:
+            raise FigureError(f"3d part needs x y z w d h: {item!r}")
+        x, y, z, w, d, h = numbers[:6]
+        if max(abs(v) for v in numbers[:6]) > 100 or min(w, d, h) <= 0:
+            raise FigureError(f"3d part has impossible numbers: {item!r}")
+        parts.append({"shape": shape, "at": [x, y, z], "size": [w, d, h], "rot": rot, "gold": gold, "mover": mover})
+    if len(parts) > motion3d.MAX_PARTS:
+        raise FigureError(f"3d: at most {motion3d.MAX_PARTS} parts")
+    return parts
+
+
+def model3d(size, params, items):
+    """3d: object=laptop; on=opens, or ANY object built from parts:
+    3d: object=vault; move=swing; on=opened; box 0 0 0 3 3 3; cyl 0 -1.55 1.3 1.6 0.12 1.6 rx90 gold mover
+    The picture saved here is the starting pose, drawn exactly as the renderer draws it; the
+    renderer then moves it (vector.motion3d)."""
     from .. import motion3d
     from .core import SUPER
 
     name = str(params.get("object", "")).strip().lower()
-    if name not in motion3d.OBJECTS:
-        raise FigureError(f"3d: object must be one of {', '.join(motion3d.OBJECTS)}")
+    parts = parse_parts(items)
+    if parts:
+        move = str(params.get("move", "lift")).strip().lower()
+        model = {"object": name or "object", "move": move if move in motion3d.MOVES else "lift", "parts": parts}
+    elif name in motion3d.OBJECTS:
+        model = name
+    else:
+        raise FigureError("3d: describe the object as parts (box|cyl|sphere|cone x y z w d h ...) "
+                          f"or use one of {', '.join(motion3d.OBJECTS)}")
     c = new_canvas(size, (0, 0, 1, 1))
     w, h = c.image.width, c.image.height
     yaw, scale = math.radians(-34), min(w, h) * 0.9
-    picture, (ox, oy) = motion3d.render(name, 0.0, yaw, scale)
+    x0, y0, x1, y1 = motion3d.extent(model, scale)
+    scale *= min(1.0, w * 0.9 / max(1e-6, x1 - x0), h * 0.9 / max(1e-6, y1 - y0))
+    picture, (ox, oy) = motion3d.render(model, 0.0, yaw, scale)
     c.image.paste(picture.convert("RGB"), (int(w / 2 + ox), int(h / 2 + oy)), picture)
     # Stroke data (the outline of every part) so the file is a complete figure; the renderer
     # draws the live object instead of these.
-    for corners, gold in motion3d.solids(name, 0.0):
-        pts, _ = motion3d.project(corners, yaw, scale)
-        for face in motion3d.FACES:
-            ring = [(float(w / 2 + x) / SUPER, float(h / 2 + y) / SUPER) for x, y in pts[list(face)]]
-            ring.append(ring[0])
-            c.strokes.append({"points": [list(p) for p in ring], "gold": bool(gold), "dim": False,
-                              "width": c.line / SUPER})
-            c.drawn += sum(math.dist(p, q) for p, q in zip(ring, ring[1:])) * SUPER
+    for ring, gold in motion3d.outline(model, 0.0, yaw, scale, (w / 2, h / 2))[::4]:
+        ring = [(float(x) / SUPER, float(y) / SUPER) for x, y in ring]
+        c.strokes.append({"points": [list(p) for p in ring], "gold": bool(gold), "dim": False,
+                          "width": c.line / SUPER})
+        c.drawn += sum(math.dist(p, q) for p, q in zip(ring, ring[1:])) * SUPER
     c.motion = {"object": name, "on": str(params.get("on", "")).strip()}
+    if parts:
+        c.motion.update(move=model["move"], parts=parts)
     return c

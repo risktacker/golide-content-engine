@@ -1,3 +1,4 @@
+import unittest
 """Simple 3D (owner direction 2026-11-05): any real device, its move on the spoken word."""
 from types import SimpleNamespace
 
@@ -5,10 +6,14 @@ from golide_engine.vector import motion3d
 from golide_engine.vector.figures import check_figure
 
 
-def test_every_object_draws_and_a_car_does_not():
+def test_every_preset_draws_and_any_object_draws_from_parts():
     for name in motion3d.OBJECTS:
         assert check_figure(f"3d: object={name}; on=opens") == ""
-    assert "object must be one of" in check_figure("3d: object=car")
+    # 2026-11-06 (owner): no fixed list; a car with no parts says how to describe it, with parts it draws
+    assert "describe the object as parts" in check_figure("3d: object=car")
+    assert check_figure("3d: object=car; move=slide; on=drives; box 0 0 0.3 4 1.8 0.8 mover; "
+                        "box 0.2 0 1.1 2.2 1.6 0.7 mover; cyl -1.3 -0.95 0 0.8 0.3 0.8 rx90 mover; "
+                        "cyl 1.3 -0.95 0 0.8 0.3 0.8 rx90 gold mover") == ""
 
 
 def test_the_move_lands_on_the_spoken_word():
@@ -77,3 +82,35 @@ def test_ai_voice_choice_makes_a_waiting_video_ready(tmp_path):
     path = tmp_path / "a.json"
     path.write_text(_json.dumps(dict(spec, voice_choice="ai")))
     assert pick_due_spec([path], tmp_path) == path
+
+
+class EngineAnyObjectTest(unittest.TestCase):
+    """2026-11-06 (owner): the engine makes 3D for any object, built from parts."""
+
+    SPEC = ("3d: object=vault; move=swing; on=opened; box 0 0 0 3 3 3; "
+            "box 0 -1.56 0.25 2.4 0.12 2.5 mover; cyl 0 -1.66 1.2 1 0.1 1 rx90 gold mover")
+
+    def test_parts_build_render_and_move(self):
+        from golide_engine.vector.figures.core import parse_figure
+        from golide_engine.vector.figures.devices import parse_parts
+        _, params, items = parse_figure(self.SPEC)
+        model = {"object": "vault", "move": params["move"], "parts": parse_parts(items)}
+        self.assertTrue(motion3d.is_model(model))
+        start = [v.copy() for v, *_ in motion3d.solids(model, 0.0)]
+        end = [v for v, *_ in motion3d.solids(model, 1.0)]
+        self.assertTrue((start[0] == end[0]).all())          # the body stays
+        self.assertFalse((start[1] == end[1]).all())         # the door moves
+        img, _ = motion3d.render(model, 0.5, -0.5, 300)
+        self.assertGreater(img.getbbox()[2], 50)
+
+    def test_every_shape_and_move(self):
+        for move in motion3d.MOVES:
+            model = {"object": "x", "move": move, "parts": [
+                {"shape": shape, "at": [k * 1.2, 0, 0], "size": [1, 1, 1], "rot": [0, 0, 0],
+                 "gold": k == 0, "mover": k == 1} for k, shape in enumerate(motion3d.SHAPES)]}
+            for u in (0.0, 0.5, 1.0):
+                img, _ = motion3d.render(model, u, -0.4, 200)
+                self.assertIsNotNone(img.getbbox(), (move, u))
+
+    def test_figure_check_accepts_any_object(self):
+        check_figure(self.SPEC)

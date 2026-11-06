@@ -332,17 +332,28 @@ be the architecture behind it... the level we have reached now is not to fake th
   naming the real layers from the research in order, top first; "fold" for the hinge of a
   folding device (bar=stuck when the lines are about the support pressing on the screen).
   Name only parts the research names; never invent a part.
-- 3D FIRST (owner direction 2026-11-06: no limits, more 3D scenes than line drawings): for
-  every scene, first ask whether one of these 3D objects fits what the lines are about, and
-  use it whenever it does: laptop (a computer, an engineer, a hacked machine, software),
-  phone (an app, a user, a message), server (a company's systems, a data centre, a wallet
-  or exchange running on servers, the cloud), chip (AI, computing power, hardware), battery
-  (energy, power, charging). Set "figure" to "3d: object=<laptop|phone|server|chip|battery>;
-  on=<the spoken word the move lands on, copied from the lines>" with layout "single". The
-  object turns in 3D and its move (lid opens, layers part, a server slides out, the chip lid
-  lifts, cells rise) lands on that word. There is no cap: most scenes should be 3D. Use a line
-  drawing only when no object fits at all. When two 3D scenes follow each other, use a
-  different object when one fits.
+- 3D FIRST, ANY OBJECT (owner direction 2026-11-06: "the engine that can make 3D, no matter the
+  object"; no limits, more 3D scenes than line drawings). For every scene, first picture the real
+  thing the lines are about (a vault, a coin stack, a robot, a rocket, a padlock, a building, a
+  wallet, a car, a drone, a globe...) and build it in 3D from simple solid parts. Use a line
+  drawing only when the lines are about an idea no object can show. The figure line is:
+  "3d: object=<name>; move=<lift|slide|open|swing|spin|explode|rise>; on=<the spoken word the move
+  lands on, copied from the lines>; <part>; <part>; ..." with layout "single". Each part is
+  "<box|cyl|sphere|cone> x y z w d h [rx90] [ry0] [rz45] [gold] [mover]": x left/right, y depth
+  (negative y is the FRONT, facing the viewer), z up; x y is the part's centre and z its BOTTOM;
+  w d h its width, depth and height (any units: the engine scales the object to fit); cyl and cone
+  stand upright (turn with rx90 to face the viewer, like a coin or a dial); rxN/ryN/rzN turn a part
+  N degrees about its own middle. Parts sit on or against each other, never inside each other.
+  Mark the parts that move with "mover" and pick the move that tells the line: lift (rises up),
+  slide (pulls out toward the viewer), open (a lid hinged at the back opens), swing (a door hinged
+  on its left opens), spin (turns round), explode (every part spreads apart: what is inside),
+  rise (comes up into place). Make one part "gold": the part the line is about. Build it like a
+  product designer, 8 to 30 parts with the real details that make it read at a glance and look
+  finished (a vault: body, door, hinges, a handle wheel with spokes, bolts; a phone: body, screen,
+  camera bump with lenses, buttons), never a bare block. Example:
+  "3d: object=vault; move=swing; on=opened; box 0 0 0 3 3 3; box 0 -1.56 0.25 2.4 0.12 2.5 mover;
+  cyl 0 -1.66 1.2 1 0.1 1 rx90 gold mover". Ready-made shortcuts: "3d: object=<laptop|phone|
+  server|chip|battery>; on=<word>". When two 3D scenes follow each other, show a different object.
 
 CHARTS (owner direction 2026-10-27): when a scene's lines give prices, growth, sales,
 shares or a market move with real numbers, set "figure" to a "chart" line with those
