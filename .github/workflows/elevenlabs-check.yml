@@ -1,0 +1,23 @@
+name: ElevenLabs check
+
+# 2026-11-06: is the ElevenLabs key still saved, and which plan is it on? Free: reads the account,
+# makes no speech, spends no voice credits.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Key and plan
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: |
+          if [ -z "$ELEVENLABS_API_KEY" ]; then echo "KEY: missing"; exit 0; fi
+          echo "KEY: saved (${#ELEVENLABS_API_KEY} characters)"
+          curl -s -H "xi-api-key: $ELEVENLABS_API_KEY" https://api.elevenlabs.io/v1/user/subscription \
+            | python3 -c "import json,sys; d=json.load(sys.stdin); print('PLAN:', d.get('tier'), '| used', d.get('character_count'), 'of', d.get('character_limit'), '| status', d.get('status'), '| resets', d.get('next_character_count_reset_unix')) if 'tier' in d else print('PLAN: key rejected:', str(d)[:200])"
