@@ -278,5 +278,6 @@
     "measured_at": "2026-11-06T07:03:32.490954+00:00",
     "signal_type": "youtube-breakout-v1"
   },
-  "selected_topic_source": "https://www.apple.com/newsroom/2026/10/apple-announces-the-next-generation-of-homepod-mini/"
+  "selected_topic_source": "https://www.apple.com/newsroom/2026/10/apple-announces-the-next-generation-of-homepod-mini/",
+  "_failed_runs": 1
 }
