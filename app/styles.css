@@ -485,3 +485,8 @@ body.sheet-open{overflow:hidden}
 .fold-chev{display:inline-block;width:8px;height:8px;margin-left:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .2s}
 #external-panel.open .fold-chev{transform:translateY(1px) rotate(-135deg)}
 #external-form[hidden]{display:none}
+
+/* 2026-11-06: AI voice choice next to the upload */
+.ai-voice-button{display:block;width:100%;margin:0 0 10px;padding:14px 18px;border-radius:999px;border:1px solid var(--gold);background:transparent;color:var(--gold);font:inherit;font-weight:600;cursor:pointer}
+.ai-voice-button[data-confirm="1"]{background:var(--gold);color:#111}
+.ai-voice-button:disabled{opacity:.6}
