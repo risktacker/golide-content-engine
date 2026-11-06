@@ -901,12 +901,11 @@ class ProductionService:
             else:
                 report = {"status": "unmatched", "reason": "the rewrite lost or renumbered a chapter"}
             if spoken is not None:
-                spoken_problems = script_problems(spoken)
-                if len(spoken_problems) <= len(problems):
-                    plan, problems = spoken, spoken_problems
-                    report = {"status": "applied"}
-                else:
-                    report = {"status": "discarded", "reason": "; ".join(spoken_problems)[:300]}
+                # 2026-11-06 (owner): the rewrite in his voice guide always stands when it keeps
+                # every chapter; no rule of ours may throw it away (a sentence-length check
+                # discarded it and the stiff first draft went out as a list of points).
+                plan, problems = spoken, script_problems(spoken)
+                report = {"status": "applied"}
             # 2026-10-25: written down so the script email says what happened to the pass.
             (work / "spoken-pass.json").write_text(json.dumps(report) + "\n", encoding="utf-8")
             print(json.dumps({"status": "spoken_pass_" + report["status"], **report}))
