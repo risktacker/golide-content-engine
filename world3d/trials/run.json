@@ -1,0 +1,8 @@
+{
+  "trial": 1,
+  "title": "Elon Musk's Flying Roadster: How the Rocket Car Really Works",
+  "script": "trials/tesla-roadster.txt",
+  "format": "long",
+  "quality": "video",
+  "cap_dollars": 0.5
+}
