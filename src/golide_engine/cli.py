@@ -377,13 +377,17 @@ def main() -> int:
     if args.command == "voice-verify":
         from .providers.registry import ProviderRegistry
         voice = ProviderRegistry(args.config).config.get("voice", {})
-        if voice.get("provider") != "owner_recording":
-            raise RuntimeError("voice policy drifted from owner_recording")
-        if voice.get("ai_voice_allowed") or voice.get("cloned_voice_allowed"):
-            raise RuntimeError("AI or cloned narration must remain disabled")
+        # 2026-11-06 (owner): Bradford on ElevenLabs, or the owner's recording; never a clone.
+        if voice.get("provider") not in ("owner_recording", "elevenlabs"):
+            raise RuntimeError(f"unknown voice provider {voice.get('provider')!r}")
+        if voice.get("cloned_voice_allowed"):
+            raise RuntimeError("cloned narration must remain disabled")
+        if voice.get("provider") == "elevenlabs" and not voice.get("voice_id"):
+            raise RuntimeError("ElevenLabs needs a voice_id")
         print(json.dumps({
             "status": "locked",
-            "provider": "owner_recording",
+            "provider": voice.get("provider"),
+            "voice": voice.get("voice_name", ""),
             "required_spec_field": voice.get("required_spec_field", "owner_voice_media_ref"),
         }, indent=2))
         return 0
@@ -498,6 +502,23 @@ def main() -> int:
                     except Exception as exc:
                         print(json.dumps({"status": "studio_telemetry_unavailable",
                                           "operation": "register", "error": str(exc)}))
+        # 2026-11-06: with the AI voice a video no longer waits for the owner, so one he skipped
+        # or removed in Studio would be built anyway. Ask Studio first; a skipped one is set aside.
+        if bridge:
+            kept = []
+            for due_path in due:
+                due_spec = json.loads(due_path.read_text(encoding="utf-8"))
+                try:
+                    state = bridge.job_status(str(due_spec.get("_studio_job_id") or due_spec["id"]))
+                except Exception as exc:
+                    print(json.dumps({"status": "studio_status_unavailable", "error": str(exc)[:200]}))
+                    state = None
+                if state and (state.get("status") == "skipped" or state.get("archived")):
+                    due_path.rename(due_path.with_name(due_path.name[:-len(".json")] + ".skipped.json"))
+                    print(json.dumps({"status": "skipped_in_studio", "production_id": due_spec["id"]}))
+                    continue
+                kept.append(due_path)
+            due = kept
         if not due:
             print(json.dumps({"status": "no_due_production"}))
             return 0

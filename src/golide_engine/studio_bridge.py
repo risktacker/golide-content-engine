@@ -82,6 +82,15 @@ class StudioBridge:
         payload["spec"]["_studio_job_id"] = payload["jobId"]
         return payload
 
+    def job_status(self, job_id: str) -> dict[str, Any] | None:
+        """Studio's status for a job (2026-11-06): {"status": ..., "archived": bool}, None if unknown."""
+        status, body = self._request("GET", f"/api/engine/jobs/{quote(job_id, safe='')}/status")
+        if status == 404:
+            return None
+        if status != 200:
+            raise RuntimeError(f"Studio job status request failed with HTTP {status}")
+        return json.loads(body.decode("utf-8"))
+
     def register(self, spec: dict[str, Any]) -> None:
         job_id = str(spec["id"])
         status, _ = self._request(

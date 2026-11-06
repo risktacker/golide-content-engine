@@ -32,9 +32,15 @@ class ProviderRegistry:
         return OpenAIImageProvider(cfg[f"{tier}_model"], cfg[f"{tier}_quality"])
 
     def voice(self, *, live: bool = False):
-        raise RuntimeError(
-            "voice synthesis is disabled; GOLIDE video narration must come from the owner's recording"
-        )
+        """2026-11-06 (owner): Bradford on ElevenLabs reads scheduled videos."""
+        cfg = self.config["voice"]
+        if cfg.get("provider") != "elevenlabs" or not cfg.get("ai_voice_allowed"):
+            raise RuntimeError("AI narration is switched off; narration comes from the owner's recording")
+        if live:
+            self._require_live()
+        from .elevenlabs import ElevenLabsVoiceProvider
+        return ElevenLabsVoiceProvider(cfg["model"], cfg["voice_id"], voice_settings=cfg.get("voice_settings"),
+                                       monthly_character_limit=int(cfg.get("monthly_character_limit", 115000)))
 
     def captions(self, *, live: bool = False):
         cfg = self.config["captions"]

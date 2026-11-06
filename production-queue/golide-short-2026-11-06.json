@@ -12,7 +12,7 @@
   "max_cost_usd": 6,
   "production_authorized": true,
   "output_destination": "render-and-upload",
-  "owner_voice_required": true,
+  "owner_voice_required": false,
   "concept": {
     "family": "technology-software-business",
     "promise": "A high-interest current niche topic explained with authoritative evidence and a useful GOLIDE angle",
@@ -30,7 +30,7 @@
   },
   "generation_parameters": {
     "brand_preset": "golide-editorial",
-    "voice": "owner-recording-only",
+    "voice": "elevenlabs",
     "pacing": "fast",
     "visual_density": 4,
     "motion_intensity": 4,

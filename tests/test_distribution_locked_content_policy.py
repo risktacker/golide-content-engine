@@ -53,13 +53,16 @@ class LockedContentPolicyTests(unittest.TestCase):
         self.assertEqual("medium", profile["generation"]["quality"])
         self.assertEqual(1, profile["generation"]["master_concept_count"])
 
-    def test_owner_recording_is_the_only_narration_source(self):
+    def test_narration_is_bradford_or_the_owner_never_a_clone(self):
+        """2026-11-06 (owner): scheduled videos are read by Bradford (ElevenLabs); the owner's
+        upload always wins; a cloned voice stays off."""
         providers = json.loads((ROOT / "config/providers.json").read_text())
         voice = providers["voice"]
-        self.assertEqual("owner_recording", voice["provider"])
-        self.assertEqual("owner_recording_only", voice["source"])
-        self.assertFalse(voice["ai_voice_allowed"])
+        self.assertEqual("elevenlabs", voice["provider"])
+        self.assertEqual("NNl6r8mD7vthiJatiJt1", voice["voice_id"])
+        self.assertTrue(voice["voice_name"].startswith("Bradford"))
         self.assertFalse(voice["cloned_voice_allowed"])
+        self.assertLessEqual(voice["monthly_character_limit"], 121000)
         self.assertEqual("owner_voice_media_ref", voice["required_spec_field"])
 
     def test_policy_rejects_wrong_platform_route_and_bad_bridge(self):

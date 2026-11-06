@@ -935,7 +935,12 @@ class ProductionService:
         self._budget(spec)
 
         owner_voice_ref = str(spec.get("owner_voice_media_ref", "")).strip()
-        if not owner_voice_ref:
+        # 2026-11-06 (owner): scheduled videos are read by the AI voice (Bradford, ElevenLabs).
+        # An uploaded recording always wins; own (external) videos always need the recording.
+        voice_cfg = self.providers.config.get("voice", {})
+        ai_voice = (not owner_voice_ref and not external and not spec.get("owner_voice_required", True)
+                    and voice_cfg.get("provider") == "elevenlabs" and bool(voice_cfg.get("ai_voice_allowed")))
+        if not owner_voice_ref and not ai_voice:
             plan_for_display = json.loads(scene_plan_path.read_text(encoding="utf-8")) if scene_plan_path.exists() else None
             raise WaitingOwnerVoice(
                 production_id,
@@ -943,8 +948,9 @@ class ProductionService:
                 script_display(plan_for_display) if plan_for_display else script,
             )
 
-        from .voice_reset import reset_if_recording_changed
-        reset_if_recording_changed(self.database, self.root, production_id, work, owner_voice_ref)
+        if owner_voice_ref:
+            from .voice_reset import reset_if_recording_changed
+            reset_if_recording_changed(self.database, self.root, production_id, work, owner_voice_ref)
 
         narration = work / "narration-owner.wav"
         timed_words_path = work / "timed-words-owner.json"
@@ -978,7 +984,19 @@ class ProductionService:
                 (work / "owner-voice-source").unlink(missing_ok=True)
                 raise
 
+        ai_audio = work / "narration-ai.mp3"
+
         def fetch_narration():
+            if ai_voice:
+                # The AI read is kept with the checkpoints: converting it again is free.
+                if not ai_audio.exists():
+                    raise RuntimeError("the AI narration file is missing; the voice stage must run again")
+                subprocess.run(["ffmpeg", "-y", "-i", str(ai_audio), "-vn", "-ac", "1", "-ar", "44100", str(narration)],
+                               capture_output=True, text=True, check=True)
+                return
+            _fetch_owner_recording()
+
+        def _fetch_owner_recording():
             """Download the owner's recording and convert it (free; 2026-10-27: also used to
             restore a narration file a failed retry removed after the stage had finished)."""
             source = work / "owner-voice-source"
@@ -1007,7 +1025,37 @@ class ProductionService:
                 capture_output=True, text=True, check=True,
             )
 
+        def _ai_voice_body():
+            """Bradford reads the finished script once; the word timings come back with the audio,
+            so the captions follow the voice exactly (no transcription needed)."""
+            voice = self.providers.voice(live=True)
+            text = script.strip()
+            ai_words = work / "narration-ai-words.json"
+            if ai_audio.exists() and ai_words.exists():
+                # Already paid for (a retry after a later failure): never read it twice.
+                details = json.loads(ai_words.read_text(encoding="utf-8"))
+            else:
+                self.costs.require_monthly_character_capacity("elevenlabs", len(text), voice.monthly_character_limit)
+                out = voice.synthesize(text, ai_audio)
+                self.costs.record(production_id, "owner-voice", "elevenlabs", voice.model,
+                                  Usage(characters=int(out.details["characters"])), out.request_id)
+                details = {"characters": out.details["characters"], "words": out.details["words"]}
+                ai_words.write_text(json.dumps(details) + "\n", encoding="utf-8")
+            fetch_narration()
+            try:
+                check_recording_length(str(spec["format"]), self._duration(narration))
+            except RecordingLengthError as exc:
+                raise RuntimeError(f"the AI read is the wrong length for this format: {exc}") from exc
+            words = details["words"]
+            if not words:
+                raise RuntimeError("ElevenLabs returned no word timing")
+            timed_words_path.write_text(json.dumps(words, indent=2) + "\n", encoding="utf-8")
+            print(json.dumps({"status": "ai_voice", "production_id": production_id, "voice": voice.voice_id,
+                              "characters": details["characters"]}))
+
         def _voice_stage_body():
+            if ai_voice:
+                return _ai_voice_body()
             self._require_absent(narration, "owner-voice")
             self._require_absent(timed_words_path, "owner-voice")
             source = work / "owner-voice-source"

@@ -12,7 +12,7 @@ def due_specs(queue_directory: str | Path, now: datetime | None = None) -> list[
         # Only production specs live here as plain <id>.json; companion files such as an
         # owner-approved <id>.script-plan.json and <id>.research.json are read by the production itself.
         if path.name.endswith((".completed.json", ".topic-rejected.json", ".script-plan.json", ".research.json",
-                               ".failed.json")):
+                               ".failed.json", ".skipped.json")):
             continue
         spec = json.loads(path.read_text(encoding="utf-8"))
         if "generate_at" not in spec:

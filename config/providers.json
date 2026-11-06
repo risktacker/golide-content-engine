@@ -22,9 +22,19 @@
     "long_size": "1536x1024"
   },
   "voice": {
-    "provider": "owner_recording",
-    "source": "owner_recording_only",
-    "ai_voice_allowed": false,
+    "provider": "elevenlabs",
+    "note": "2026-11-06 (owner): scheduled Shorts and long videos are read by Bradford on ElevenLabs Creator (121k credits/month). An uploaded owner recording always wins; external (own) videos always use the owner's recording.",
+    "voice_id": "NNl6r8mD7vthiJatiJt1",
+    "voice_name": "Bradford - Expressive and Articulate",
+    "model": "eleven_multilingual_v2",
+    "voice_settings": {
+      "stability": 0.5,
+      "similarity_boost": 0.75,
+      "style": 0.0,
+      "use_speaker_boost": true
+    },
+    "monthly_character_limit": 115000,
+    "ai_voice_allowed": true,
     "cloned_voice_allowed": false,
     "required_spec_field": "owner_voice_media_ref"
   },

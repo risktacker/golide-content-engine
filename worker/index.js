@@ -999,6 +999,11 @@ async function handleMachineApi(request,env,url){
     try{return json(await registerProductionJob(env.DB,await request.json()),201);}catch(e){return err(e?.message||String(e),400);}
   }
   const statusMatch=url.pathname.match(/^\/api\/engine\/jobs\/([^/]+)\/status$/);
+  if(statusMatch&&request.method==="GET"){
+    // 2026-11-06: the engine asks before building a scheduled video, so a skipped or removed one is never made.
+    const row=await env.DB.prepare(`SELECT status,archived_at FROM production_jobs WHERE job_id=?`).bind(decodeURIComponent(statusMatch[1])).first();
+    return row?json({status:row.status,archived:Boolean(row.archived_at)}):err("not found",404);
+  }
   if(statusMatch&&request.method==="POST"){
     try{return json(await updateProductionStatus(env.DB,decodeURIComponent(statusMatch[1]),await request.json()));}catch(e){return err(e?.message||String(e),400);}
   }

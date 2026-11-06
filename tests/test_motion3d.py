@@ -54,3 +54,13 @@ def test_fitted_scene_draws_inside_its_zone():
     x0, y0, x1, y1 = motion3d.extent("phone", size)
     assert cy + y0 >= 299 and cy + y1 <= 1101
     motion3d.layer((1080, 1920), (cx, cy), size, "phone", 1.0, -0.3)
+
+
+def test_a_video_skipped_in_studio_is_never_due(tmp_path):
+    """2026-11-06: with the AI voice nothing waits for the owner, so a skipped video is set aside."""
+    import json as _json
+    from golide_engine.orchestration.queue import due_specs
+    spec = {"id": "golide-short-2026-11-04", "generate_at": "2026-11-04T04:00:00Z", "production_authorized": True}
+    (tmp_path / "golide-short-2026-11-04.skipped.json").write_text(_json.dumps(spec))
+    (tmp_path / "golide-short-2026-11-06.json").write_text(_json.dumps(dict(spec, id="golide-short-2026-11-06")))
+    assert [p.name for p in due_specs(tmp_path)] == ["golide-short-2026-11-06.json"]
