@@ -721,6 +721,11 @@ def main() -> int:
         release = package["release"]
         from .orchestration.reels import chosen_platforms
         platforms = chosen_platforms(spec)
+        from .providers.registry import ProviderRegistry as _Registry
+        # 2026-11-06: where the narration came from (Studio requires one for a video post):
+        # the owner's recording, or the approved ElevenLabs voice.
+        narration_ref = str(spec.get("owner_voice_media_ref") or "").strip() or \
+            f"elevenlabs:{_Registry(Path('config/providers.json')).config['voice'].get('voice_id', '')}"
         video_id, retention = "", None
         if "youtube" in platforms:
             uploader = YouTubeUploader(youtube, database, "UCqaXVBSBz7iQsRHOupKt-3w")
@@ -756,7 +761,7 @@ def main() -> int:
                     publisher_factory=lambda: StudioSocialPublisher(bridge=bridge),
                     production_id=spec["id"], video=package_root / files["video"]["file"],
                     metadata=metadata, youtube_video_id=video_id,
-                    owner_voice_ref=str(spec.get("owner_voice_media_ref", "")),
+                    owner_voice_ref=narration_ref,
                     cover=Path("build") / spec["id"] / "video-cover.jpg",
                     publish_at=str(release.get("scheduled_at") or spec.get("release", {}).get("scheduled_at", "")),
                     platforms=platforms,
@@ -775,7 +780,7 @@ def main() -> int:
                 long_social = queue_long_social(
                     bridge=bridge, store=r2_store_from_environment(), production_id=spec["id"],
                     video=package_root / files["video"]["file"], metadata=metadata,
-                    youtube_video_id=video_id, owner_voice_ref=str(spec.get("owner_voice_media_ref", "")),
+                    youtube_video_id=video_id, owner_voice_ref=narration_ref,
                     publish_at=str(release.get("scheduled_at") or spec.get("release", {}).get("scheduled_at", "")),
                     cover=Path("build") / spec["id"] / "video-cover.jpg",
                     platforms=platforms,

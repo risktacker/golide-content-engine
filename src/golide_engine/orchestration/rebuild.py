@@ -238,7 +238,7 @@ class Rebuild:
                 bridge=bridge, store=store, publisher_factory=publisher_factory,
                 production_id=self.id, video=root / files["video"]["file"], metadata=metadata,
                 youtube_video_id=state["youtube_video_id"],
-                owner_voice_ref=spec.get("owner_voice_media_ref", ""),
+                owner_voice_ref=spec.get("owner_voice_media_ref", "") or "elevenlabs:narration",
                 video_ref=state["media_ref"],
                 # A rebuild is a new post: never collide with an earlier Reel.
                 content_id=f"{self.id}-reels-" + "".join(ch for ch in str(state.get("built_at", ""))[:19] if ch.isdigit()),

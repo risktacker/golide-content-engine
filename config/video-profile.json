@@ -3,8 +3,8 @@
   "style_name": "GOLIDE Reference Editorial Motion",
   "model_reference_style": true,
   "voice": {
-    "source": "owner_recording_only",
-    "ai_voice_allowed": false,
+    "source": "elevenlabs_or_owner_recording",
+    "ai_voice_allowed": true,
     "cloned_voice_allowed": false,
     "audio_is_master_timeline": true,
     "trim_dead_air": true,

@@ -55,9 +55,9 @@ class VideoFoundationTests(unittest.TestCase):
     def test_locked_video_profile_enforces_owner_voice_and_one_render(self) -> None:
         profile = VideoProfile.load()
         profile.validate()
-        self.assertFalse(profile.raw["voice"]["ai_voice_allowed"])
+        # 2026-11-06 (owner): Bradford (ElevenLabs) or the owner's recording; never a clone
         self.assertFalse(profile.raw["voice"]["cloned_voice_allowed"])
-        self.assertEqual(profile.raw["voice"]["source"], "owner_recording_only")
+        self.assertEqual(profile.raw["voice"]["source"], "elevenlabs_or_owner_recording")
         self.assertEqual(profile.raw["render"]["final_render_count"], 1)
         self.assertFalse(profile.raw["render"]["intermediate_video_files"])
 

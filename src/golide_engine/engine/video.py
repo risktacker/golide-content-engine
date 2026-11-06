@@ -33,10 +33,11 @@ class VideoProfile:
         voice = self.raw["voice"]
         render = self.raw["render"]
         motion = self.raw["motion"]
-        if voice.get("source") != "owner_recording_only":
-            raise ValueError("video profile must use the owner's recorded voice")
-        if voice.get("ai_voice_allowed") or voice.get("cloned_voice_allowed"):
-            raise ValueError("AI/cloned voice is not allowed")
+        # 2026-11-06 (owner): Bradford (ElevenLabs) or the owner's recording; a clone stays off.
+        if voice.get("source") not in ("owner_recording_only", "elevenlabs_or_owner_recording"):
+            raise ValueError("video profile voice must be the owner's recording or the approved AI voice")
+        if voice.get("cloned_voice_allowed"):
+            raise ValueError("cloned voice is not allowed")
         if not voice.get("audio_is_master_timeline"):
             raise ValueError("audio must be the master timeline")
         if render.get("intermediate_video_files"):

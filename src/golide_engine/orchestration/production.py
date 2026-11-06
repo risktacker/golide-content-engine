@@ -135,8 +135,9 @@ class ProductionService:
         if spec.get("release", {}).get("channel_id") != "UCqaXVBSBz7iQsRHOupKt-3w":
             raise RuntimeError("production does not target the locked G$LIDE channel")
         voice_cfg = self.providers.config.get("voice", {})
-        if voice_cfg.get("provider") != "owner_recording":
-            raise RuntimeError("production narration must use the owner's recorded voice")
+        # 2026-11-06 (owner): Bradford on ElevenLabs or the owner's own recording; never a clone.
+        if voice_cfg.get("provider") not in ("owner_recording", "elevenlabs") or voice_cfg.get("cloned_voice_allowed"):
+            raise RuntimeError("narration must be the owner's recording or the approved ElevenLabs voice")
 
     @staticmethod
     def _storyboard_facts(spec: dict, work: Path) -> str:
