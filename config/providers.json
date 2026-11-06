@@ -23,9 +23,9 @@
   },
   "voice": {
     "provider": "elevenlabs",
-    "note": "2026-11-06 (owner): scheduled Shorts and long videos are read by Bradford on ElevenLabs Creator (121k credits/month). An uploaded owner recording always wins; external (own) videos always use the owner's recording.",
-    "voice_id": "NNl6r8mD7vthiJatiJt1",
-    "voice_name": "Bradford - Expressive and Articulate",
+    "note": "2026-11-06 (owner): scheduled Shorts and long videos are read by Mark (Natural Conversations; owner switched from Bradford 2026-11-06) on ElevenLabs Creator (121k credits/month). An uploaded owner recording always wins; external (own) videos always use the owner's recording.",
+    "voice_id": "UgBBYS2sOqTuMpoF3BR0",
+    "voice_name": "Mark - Natural Conversations",
     "model": "eleven_multilingual_v2",
     "voice_settings": {
       "stability": 0.5,

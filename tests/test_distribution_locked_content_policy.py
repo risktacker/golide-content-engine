@@ -59,8 +59,8 @@ class LockedContentPolicyTests(unittest.TestCase):
         providers = json.loads((ROOT / "config/providers.json").read_text())
         voice = providers["voice"]
         self.assertEqual("elevenlabs", voice["provider"])
-        self.assertEqual("NNl6r8mD7vthiJatiJt1", voice["voice_id"])
-        self.assertTrue(voice["voice_name"].startswith("Bradford"))
+        self.assertEqual("UgBBYS2sOqTuMpoF3BR0", voice["voice_id"])
+        self.assertTrue(voice["voice_name"].startswith("Mark"))
         self.assertFalse(voice["cloned_voice_allowed"])
         self.assertLessEqual(voice["monthly_character_limit"], 121000)
         self.assertEqual("owner_voice_media_ref", voice["required_spec_field"])
