@@ -10,10 +10,20 @@ Not merged. Off by default. Live production is untouched.
 - **On this branch, not live:** `world3d/` + `src/golide_engine/explain3d/`. Real Blender (Cycles),
   real lighting and materials, worlds (space with Earth, studio grid), researched blueprints.
 
-They overlap. Decide before more work: keep main's engine as the default and use this branch as the
-"realistic" toggle in Studio (the owner's original idea: switch visuals per video), or drop one.
+They must not overlap (owner, 2026-11-06): main keeps its engine; this branch becomes its own system in one folder. See "First job" below.
 The branch merges cleanly into `main` today (checked), but `main` is 47 commits ahead and also edits
 `production.py`, `vector/render.py` and `production-scheduler.yml`, so rebase and rerun tests first.
+
+## First job: make it one separate folder (owner direction 2026-11-06)
+This is a bigger, separate system from main's illustration engine and its simple 3D. The two must
+never overlap. It stays in this repo (same domain, keys, Actions), but lives in **one folder**.
+1. Move everything into `world3d/`: `src/golide_engine/explain3d/*`, `src/golide_engine/vector/clips.py`,
+   `tests/test_explain3d.py`, `config/world3d.json`.
+2. Remove all hooks from live files, so `orchestration/production.py`, `vector/render.py` and
+   `.github/workflows/production-scheduler.yml` are exactly as on `main`.
+3. Connect later through one small, marked hand-off: when 3D is chosen in Studio, the engine calls
+   `world3d/` and gets finished clips back. Nothing else shared.
+Talk this through with the owner before step 3.
 
 ## What the owner wants (standing)
 - An engine that can explain anything (machines, chips, weapons at explainer level, biology) in GOLIDE's
