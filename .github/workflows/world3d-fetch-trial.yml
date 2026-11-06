@@ -1,0 +1,35 @@
+name: World 3D fetch trial results
+# Copies a finished trial artifact onto the branch so it can be reviewed anywhere. No model calls.
+on:
+  push:
+    branches: ["world3d-*"]
+    paths: [".github/workflows/world3d-fetch-trial.yml"]
+permissions:
+  contents: write
+  actions: read
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    env:
+      RUN_ID: "42292805278"
+      TRIAL: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: world3d-trial
+          run-id: ${{ env.RUN_ID }}
+          github-token: ${{ github.token }}
+          path: incoming
+      - run: |
+          dest="world3d/trials/results/$TRIAL"
+          mkdir -p "$dest"
+          find incoming -name 'contact-sheet.jpg' -exec cp {} "$dest/" \;
+          find incoming \( -name 'report.json' -o -name 'blueprint-*.json' \) -exec cp {} "$dest/" \;
+          find incoming -name 'shot-*.json' | while read f; do cp "$f" "$dest/$(basename "$(dirname "$f")")-$(basename "$f")"; done
+          find incoming -type f | head -50
+          git config user.name "golide-bot"
+          git config user.email "golide-bot@users.noreply.github.com"
+          git add "$dest"
+          git commit -m "World 3D trial $TRIAL results (copied from run $RUN_ID)" || echo nothing
+          git push
