@@ -65,8 +65,8 @@ class LockedScheduleTests(unittest.TestCase):
             self.assertEqual(["golide-long-2026-10-22.json"], [p.name for p in created])
             spec = json.loads(created[0].read_text())
             self.assertEqual("2026-10-22T17:30:00Z", spec["release"]["scheduled_at"])
-            self.assertEqual("elevenlabs", spec["generation_parameters"]["voice"])   # 2026-11-06
-            self.assertFalse(spec["owner_voice_required"])
+            self.assertEqual("owner-choice", spec["generation_parameters"]["voice"])   # 2026-11-06
+            self.assertTrue(spec["owner_voice_required"])   # waits for his choice: recording or AI voice
 
 
 class ShortSocialTimingTests(unittest.TestCase):

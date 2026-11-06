@@ -69,7 +69,7 @@ def build_spec(rule: dict[str, Any], day, timezone_name: str, channel_id: str) -
         "max_cost_usd": 6.0,
         "production_authorized": True,
         "output_destination": "render-and-upload",
-        "owner_voice_required": False,   # 2026-11-06: read by the AI voice (config voice)
+        "owner_voice_required": True,   # 2026-11-06: waits for the owner's choice: his recording or the AI voice
         "concept": {
             "family": "technology-software-business",
             "promise": "A high-interest current niche topic explained with authoritative evidence and a useful GOLIDE angle",
@@ -77,7 +77,7 @@ def build_spec(rule: dict[str, Any], day, timezone_name: str, channel_id: str) -
         },
         "generation_parameters": {
             "brand_preset": "golide-editorial",
-            "voice": "elevenlabs",
+            "voice": "owner-choice",
             "pacing": "fast",
             "visual_density": 4,
             "motion_intensity": 4,

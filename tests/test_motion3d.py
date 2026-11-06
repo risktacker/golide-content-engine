@@ -64,3 +64,16 @@ def test_a_video_skipped_in_studio_is_never_due(tmp_path):
     (tmp_path / "golide-short-2026-11-04.skipped.json").write_text(_json.dumps(spec))
     (tmp_path / "golide-short-2026-11-06.json").write_text(_json.dumps(dict(spec, id="golide-short-2026-11-06")))
     assert [p.name for p in due_specs(tmp_path)] == ["golide-short-2026-11-06.json"]
+
+
+def test_ai_voice_choice_makes_a_waiting_video_ready(tmp_path):
+    from golide_engine.orchestration.queue import pick_due_spec, waiting_for_voice
+    import json as _json
+    spec = {"id": "golide-short-2026-11-06", "owner_voice_required": True}
+    (tmp_path / "productions" / spec["id"]).mkdir(parents=True)
+    (tmp_path / "productions" / spec["id"] / "script.txt").write_text("x")
+    assert waiting_for_voice(spec, tmp_path)
+    assert not waiting_for_voice(dict(spec, voice_choice="ai"), tmp_path)
+    path = tmp_path / "a.json"
+    path.write_text(_json.dumps(dict(spec, voice_choice="ai")))
+    assert pick_due_spec([path], tmp_path) == path

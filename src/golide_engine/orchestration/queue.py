@@ -25,8 +25,9 @@ def due_specs(queue_directory: str | Path, now: datetime | None = None) -> list[
 
 def waiting_for_voice(spec: dict, root: str | Path = ".") -> bool:
     """The script is written and only the owner's recording is missing."""
-    if not spec.get("owner_voice_required", True) or str(spec.get("owner_voice_media_ref") or "").strip():
-        return False
+    if (not spec.get("owner_voice_required", True) or str(spec.get("owner_voice_media_ref") or "").strip()
+            or spec.get("voice_choice") == "ai"):
+        return False   # 2026-11-06: the owner chose the AI voice in Studio
     work = Path(root) / "productions" / str(spec.get("id", ""))
     rescript = Path(root) / "production-queue" / f"{spec.get('id', '')}.rescript"
     if rescript.exists():
@@ -47,7 +48,7 @@ def pick_due_spec(due: list[Path], root: str | Path = ".") -> Path | None:
     first_free = None
     for path in due:
         spec = json.loads(path.read_text(encoding="utf-8"))
-        if str(spec.get("owner_voice_media_ref") or "").strip():
+        if str(spec.get("owner_voice_media_ref") or "").strip() or spec.get("voice_choice") == "ai":
             return path
         if first_free is None and not waiting_for_voice(spec, root):
             first_free = path

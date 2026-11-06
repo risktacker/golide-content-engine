@@ -939,7 +939,8 @@ class ProductionService:
         # 2026-11-06 (owner): scheduled videos are read by the AI voice (Bradford, ElevenLabs).
         # An uploaded recording always wins; own (external) videos always need the recording.
         voice_cfg = self.providers.config.get("voice", {})
-        ai_voice = (not owner_voice_ref and not external and not spec.get("owner_voice_required", True)
+        # Owner direction (same day): he chooses each video in Studio, "AI voice" or his recording.
+        ai_voice = (not owner_voice_ref and not external and spec.get("voice_choice") == "ai"
                     and voice_cfg.get("provider") == "elevenlabs" and bool(voice_cfg.get("ai_voice_allowed")))
         if not owner_voice_ref and not ai_voice:
             plan_for_display = json.loads(scene_plan_path.read_text(encoding="utf-8")) if scene_plan_path.exists() else None
@@ -1030,7 +1031,13 @@ class ProductionService:
             """Bradford reads the finished script once; the word timings come back with the audio,
             so the captions follow the voice exactly (no transcription needed)."""
             voice = self.providers.voice(live=True)
-            text = script.strip()
+            # The voice reads the flowing paragraphs (the owner's reading copy), never the short
+            # screen lines: a line break makes it pause mid-sentence. Captions and scenes then
+            # follow its audio, exactly as they follow his recording.
+            plan_now = json.loads(scene_plan_path.read_text(encoding="utf-8")) if scene_plan_path.exists() else None
+            text = ("\n\n".join(row for row in script_display(plan_now).splitlines()
+                                  if row.strip() and not row.startswith("["))
+                    if plan_now else " ".join(script.split()))
             ai_words = work / "narration-ai-words.json"
             if ai_audio.exists() and ai_words.exists():
                 # Already paid for (a retry after a later failure): never read it twice.

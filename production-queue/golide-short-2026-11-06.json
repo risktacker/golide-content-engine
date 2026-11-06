@@ -12,7 +12,7 @@
   "max_cost_usd": 6,
   "production_authorized": true,
   "output_destination": "render-and-upload",
-  "owner_voice_required": false,
+  "owner_voice_required": true,
   "concept": {
     "family": "technology-software-business",
     "promise": "A high-interest current niche topic explained with authoritative evidence and a useful GOLIDE angle",
@@ -30,7 +30,7 @@
   },
   "generation_parameters": {
     "brand_preset": "golide-editorial",
-    "voice": "elevenlabs",
+    "voice": "owner-choice",
     "pacing": "fast",
     "visual_density": 4,
     "motion_intensity": 4,
@@ -279,5 +279,5 @@
     "signal_type": "youtube-breakout-v1"
   },
   "selected_topic_source": "https://www.apple.com/newsroom/2026/10/apple-announces-the-next-generation-of-homepod-mini/",
-  "_failed_runs": 1
+  "voice_choice": "ai"
 }
