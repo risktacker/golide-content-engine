@@ -418,7 +418,7 @@ class VectorRenderer:
             return None
         drawing = SCENES.get(group.icons[0])
         motion = getattr(drawing, "motion", None) if drawing is not None else None
-        return motion if motion and motion.get("object") in motion3d.OBJECTS else None
+        return motion if motion and motion3d.is_model(motion) else None
 
     def _motion_pose(self, group: Group, t: float):
         """(object, how far its move has gone, turn) for a 3D scene at time t. The move lands on
@@ -426,7 +426,8 @@ class VectorRenderer:
         motion = self._motion(group)
         start = max(group.start + TRANSITION_AFTER,
                     motion3d.trigger_time(group.lines, str(motion.get("on", "")), group.start + TRANSITION_AFTER + 0.2))
-        return motion["object"], motion3d.move_progress(t, start), motion3d.turn(t, group.start, group.end)
+        model = motion if motion.get("parts") else motion["object"]
+        return model, motion3d.move_progress(t, start), motion3d.turn(t, group.start, group.end)
 
     def _motion_place(self, group: Group) -> tuple[float, float, float]:
         """(size, centre x, centre y) of a 3D scene, fitted once to the drawing area over its whole
@@ -437,7 +438,9 @@ class VectorRenderer:
             L = self.layout
             top, bottom, wide = MOTION_ZONE[self.format]
             zone = (L.width * (1 - wide) / 2, L.height * top, L.width * (1 + wide) / 2, L.height * bottom)
-            self._motion_places[key] = motion3d.fit(self._motion(group)["object"], zone, L.size * MOTION_SIZE)
+            motion = self._motion(group)
+            model = motion if motion.get("parts") else motion["object"]
+            self._motion_places[key] = motion3d.fit(model, zone, L.size * MOTION_SIZE)
         return self._motion_places[key]
 
     def _draw_motion(self, image: Image.Image, group: Group, t: float, alpha: float) -> None:
