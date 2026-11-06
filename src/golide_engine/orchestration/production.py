@@ -622,8 +622,17 @@ class ProductionService:
                     # 2026-10-22: same format only, numbers bar, and NO news fallback: with
                     # no trending video to model there is no script that day.
                     fmt = str(spec["format"])
+                    # 2026-11-06 (owner): a video can carry a topic focus (search terms and a
+                    # wider window), e.g. the Binance heist: the big story of the week can be
+                    # a week old and live outside the tech feeds. Same modelling after that.
+                    focus = spec.get("topic_focus") or {}
+                    focus_queries = tuple(str(q) for q in focus.get("queries", []) if str(q).strip())
                     try:
-                        breakouts = find_breakouts(self.youtube, fmt)
+                        if focus_queries:
+                            breakouts = find_breakouts(self.youtube, fmt, queries=focus_queries,
+                                                       hours=int(focus.get("hours", 240)))
+                        else:
+                            breakouts = find_breakouts(self.youtube, fmt)
                     except Exception as exc:  # noqa: BLE001
                         print(json.dumps({"status": "breakouts_unavailable", "error": str(exc)[:200]}))
                         breakouts = []
