@@ -29,7 +29,7 @@ EDGE = np.array((232, 234, 238), np.float32)
 BODY = np.array((34, 37, 44), np.float32)
 BODY_GOLD = np.array((70, 58, 30), np.float32)
 LIGHT = np.array([0.35, -0.55, 0.76]) / np.linalg.norm([0.35, -0.55, 0.76])
-MOVE_SECONDS = 1.0          # the move itself: quick, on the word
+MOVE_SECONDS = 0.6          # the move itself: snappy, on the word (owner 2026-11-06: "they need to be fast")
 PITCH = math.radians(26)
 SS = 2                      # drawn at 2x, then averaged down: smooth edges
 FACES = ((0, 1, 2, 3), (4, 7, 6, 5), (0, 4, 5, 1), (1, 5, 6, 2), (2, 6, 7, 3), (3, 7, 4, 0))
@@ -597,7 +597,7 @@ def move_progress(t: float, start: float) -> float:
 def turn(t: float, scene_start: float, scene_end: float) -> float:
     """A slow turn through the scene, so every side reads as real 3D."""
     span = max(1e-3, scene_end - scene_start)
-    return math.radians(-34 + 22 * ease((t - scene_start) / span))
+    return math.radians(-40 + 34 * ease((t - scene_start) / span))
 
 
 def trigger_time(lines, word: str, fallback: float) -> float:

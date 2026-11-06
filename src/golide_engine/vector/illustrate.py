@@ -332,11 +332,14 @@ be the architecture behind it... the level we have reached now is not to fake th
   naming the real layers from the research in order, top first; "fold" for the hinge of a
   folding device (bar=stuck when the lines are about the support pressing on the screen).
   Name only parts the research names; never invent a part.
-- 3D FIRST, ANY OBJECT (owner direction 2026-11-06: "the engine that can make 3D, no matter the
-  object"; no limits, more 3D scenes than line drawings). For every scene, first picture the real
-  thing the lines are about (a vault, a coin stack, a robot, a rocket, a padlock, a building, a
-  wallet, a car, a drone, a globe...) and build it in 3D from simple solid parts. Use a line
-  drawing only when the lines are about an idea no object can show. The figure line is:
+- 3D AND DRAWINGS, BALANCED (owner direction 2026-11-06: "we need more 3D, but not everything
+  is about it; a lot of explanation needs to be illustrated"). Use 3D when the lines are about a
+  real THING: an object, a device, a machine, a building, a place, money you can hold (a vault, a
+  server rack, a coin stack, a robot, a rocket, a padlock, a phone). Use line drawings, charts and
+  diagrams when the lines EXPLAIN: how something works step by step, cause and effect, a
+  comparison, numbers, a timeline, who connects to whom. Aim for about half the scenes in 3D,
+  never more than 3 3D scenes in a row, and never 3D for a line that is explaining a process. For
+  a 3D scene, picture the real thing and build it in 3D from simple solid parts. The figure line is:
   "3d: object=<name>; move=<lift|slide|open|swing|spin|explode|rise>; on=<the spoken word the move
   lands on, copied from the lines>; <part>; <part>; ..." with layout "single". Each part is
   "<box|cyl|sphere|cone> x y z w d h [rx90] [ry0] [rz45] [gold] [mover]": x left/right, y depth
