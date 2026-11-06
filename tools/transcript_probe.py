@@ -67,5 +67,20 @@ def main() -> None:
     _send(msg)
 
 
+
+
+def _print_full() -> None:
+    """2026-11-06: also print the full text (read from the run log)."""
+    data = json.loads(Path("production-queue/transcript-probe.json").read_text())
+    for vid, res in data.items():
+        text = res.get("engine", {}).get("text", "")
+        if text:
+            print(f"TRANSCRIPT-BEGIN {vid}")
+            for i in range(0, len(text), 900):
+                print(text[i:i + 900])
+            print("TRANSCRIPT-END")
+
+
 if __name__ == "__main__":
     main()
+    _print_full()
