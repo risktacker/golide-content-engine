@@ -144,118 +144,145 @@ def _rot(p: np.ndarray, axis: int, angle: float, pivot) -> np.ndarray:
     return out + pivot
 
 
-class Faces(list):
-    """Face polygons plus, per face, which surface it belongs to: a round side or a sphere is one
-    smooth surface, so no lines are drawn between its facets."""
-    def __init__(self, faces, groups=None):
-        super().__init__(faces)
-        self.groups = list(groups) if groups is not None else list(range(len(faces)))
+# ---------- geometry: every part is a rounded solid (owner 2026-11-06: "too primitive") ----------
+# A part is a cloud of points on its rounded surface; its convex hull gives the triangles. The
+# triangle list is worked out once at rest and kept, because every move is rigid.
+
+def _sphere_dirs(rings: int, n: int) -> np.ndarray:
+    out = [(0.0, 0.0, -1.0)]
+    for r in range(1, rings):
+        a = math.pi * r / rings
+        out += [(math.sin(a) * math.cos(2 * math.pi * k / n), math.sin(a) * math.sin(2 * math.pi * k / n), -math.cos(a))
+                for k in range(n)]
+    return np.array(out + [(0.0, 0.0, 1.0)])
 
 
-BOX_FACES = Faces([list(f) for f in FACES])
+CORNER = _sphere_dirs(4, 8)          # a rounded corner
+BALL = _sphere_dirs(14, 28)          # a sphere
 
 
-def mesh(shape: str, at, size, rot=(0.0, 0.0, 0.0)):
-    """Corners and faces (convex polygons) of one part: centre x, y, bottom z, size w, d, h,
-    turned by rot (degrees about x, y, z through its own middle)."""
+def rounded_box(corners: np.ndarray, radius: float | None = None) -> np.ndarray:
+    """Points of a box (8 corners in ``box`` order, any rotation) with rounded edges."""
+    c = np.asarray(corners, float)
+    axes = [c[1] - c[0], c[3] - c[0], c[4] - c[0]]
+    lengths = [float(np.linalg.norm(a)) for a in axes]
+    r = min(min(lengths) * 0.32, max(lengths) * 0.045) if radius is None else radius
+    units = [a / (l or 1) for a, l in zip(axes, lengths)]
+    frame = np.stack(units, 1)                                   # local -> world
+    middle = c.mean(0)
+    pts = []
+    for corner in c:
+        inner = corner - sum(np.sign((corner - middle) @ u) * r * u for u in units)
+        pts.append(inner + (CORNER @ frame.T) * r)
+    return np.concatenate(pts)
+
+
+def _round_points(shape: str, at, size, rot) -> np.ndarray:
     x, y, z = at
     w, d, h = (max(0.02, float(v)) for v in size)
     if shape == "box":
-        verts, faces = box(x, y, z, w, d, h), BOX_FACES
-    elif shape in ("cyl", "cone"):
-        n = 18
-        ring = [(x + w / 2 * math.cos(2 * math.pi * k / n), y + d / 2 * math.sin(2 * math.pi * k / n)) for k in range(n)]
-        bottom = [(a, b, z) for a, b in ring]
-        if shape == "cyl":
-            verts = np.array(bottom + [(a, b, z + h) for a, b in ring], float)
-            faces = [list(range(n - 1, -1, -1)), list(range(n, 2 * n))]
-            faces += [[k, (k + 1) % n, n + (k + 1) % n, n + k] for k in range(n)]
-            faces = Faces(faces, [0, 1] + [2] * n)
-        else:
-            verts = np.array(bottom + [(x, y, z + h)], float)
-            faces = Faces([list(range(n - 1, -1, -1))] + [[k, (k + 1) % n, n] for k in range(n)], [0] + [1] * n)
+        pts = rounded_box(box(x, y, z, w, d, h))
     elif shape == "sphere":
-        rings, n = 8, 16
-        verts = [(x, y, z)]
-        for r in range(1, rings):
-            a = math.pi * r / rings
-            for k in range(n):
-                b = 2 * math.pi * k / n
-                verts.append((x + w / 2 * math.sin(a) * math.cos(b), y + d / 2 * math.sin(a) * math.sin(b),
-                              z + h / 2 - h / 2 * math.cos(a)))
-        verts.append((x, y, z + h))
-        verts = np.array(verts, float)
-        top = len(verts) - 1
-        faces = [[0, 1 + (k + 1) % n, 1 + k] for k in range(n)]
-        for r in range(rings - 2):
-            o = 1 + r * n
-            faces += [[o + k, o + (k + 1) % n, o + n + (k + 1) % n, o + n + k] for k in range(n)]
-        o = 1 + (rings - 2) * n
-        faces += [[o + k, o + (k + 1) % n, top] for k in range(n)]
-        faces = Faces(faces, [0] * len(faces))
+        pts = BALL * (w / 2, d / 2, h / 2) + (x, y, z + h / 2)
+    elif shape in ("cyl", "cone"):
+        n = 48
+        r = min(w, d, h) * 0.08
+        rings = []
+        ring = np.array([(math.cos(2 * math.pi * k / n), math.sin(2 * math.pi * k / n)) for k in range(n)])
+        for zz, shrink in ((0.0, r), (r * 0.3, r * 0.3), (r, 0.0)):
+            rings.append(np.c_[x + ring[:, 0] * (w / 2 - shrink), y + ring[:, 1] * (d / 2 - shrink), np.full(n, z + zz)])
+        if shape == "cyl":
+            for zz, shrink in ((h - r, 0.0), (h - r * 0.3, r * 0.3), (h, r)):
+                rings.append(np.c_[x + ring[:, 0] * (w / 2 - shrink), y + ring[:, 1] * (d / 2 - shrink), np.full(n, z + zz)])
+        else:
+            rings.append(np.c_[x + ring[:, 0] * w * 0.04, y + ring[:, 1] * d * 0.04, np.full(n, z + h * 0.97)])
+            rings.append(np.array([[x, y, z + h]]))
+        pts = np.concatenate(rings)
     else:
         raise ValueError(f"shape must be one of {', '.join(SHAPES)}")
     middle = np.array([x, y, z + h / 2])
     for axis, deg in enumerate(rot):
-        verts = _rot(verts, axis, math.radians(float(deg)), middle)
-    return verts, faces
+        pts = _rot(pts, axis, math.radians(float(deg)), middle)
+    return pts
+
+
+_HULLS: dict = {}
+
+
+def _hull(key, pts: np.ndarray) -> np.ndarray:
+    """Triangles (index triples, wound outward) of the convex hull of the rest-pose points."""
+    if key not in _HULLS:
+        from scipy.spatial import ConvexHull
+
+        hull = ConvexHull(pts)
+        tris = hull.simplices.copy()
+        a, b, c = pts[tris[:, 0]], pts[tris[:, 1]], pts[tris[:, 2]]
+        flip = (np.cross(b - a, c - a) * hull.equations[:, :3]).sum(1) < 0
+        tris[flip] = tris[flip][:, [0, 2, 1]]
+        _HULLS[key] = tris
+    return _HULLS[key]
 
 
 _SPECS: dict[str, list] = {}
 
 
-def _normalised(spec: dict) -> list:
-    """The parts as meshes, scaled so the object's longest side is 3 units, centred, standing on
-    z = 0 (the storyboard may use any units)."""
+def _spec_key(spec: dict) -> str:
     import json
 
-    key = json.dumps(spec, sort_keys=True)
+    return json.dumps({"parts": spec.get("parts")}, sort_keys=True)
+
+
+def _normalised(spec: dict) -> list:
+    """The parts as rounded point clouds, scaled so the object's longest side is 3 units, centred,
+    standing on z = 0 (the storyboard may use any units)."""
+    key = _spec_key(spec)
     if key not in _SPECS:
         parts = []
         for part in (spec.get("parts") or [])[:MAX_PARTS]:
-            verts, faces = mesh(part["shape"], part["at"], part["size"], part.get("rot") or (0, 0, 0))
-            parts.append((verts, faces, bool(part.get("gold")), bool(part.get("mover"))))
+            pts = _round_points(part["shape"], part["at"], part["size"], part.get("rot") or (0, 0, 0))
+            parts.append((pts, bool(part.get("gold")), bool(part.get("mover"))))
         if not parts:
             raise ValueError("a 3D object needs at least one part")
-        every = np.concatenate([v for v, *_ in parts])
+        every = np.concatenate([p for p, *_ in parts])
         lo, hi = every.min(0), every.max(0)
         scale = 3.0 / max(1e-6, float((hi - lo).max()))
         shift = np.array([(lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, lo[2]])
-        _SPECS[key] = [((v - shift) * scale, f, g, m) for v, f, g, m in parts]
+        _SPECS[key] = [((p - shift) * scale, g, m) for p, g, m in parts]
     return _SPECS[key]
 
 
 def _built(spec: dict, u: float):
     """The object at move u: the movers (or, for explode, every part) moved."""
+    key = _spec_key(spec)
     parts = _normalised(spec)
     move = spec.get("move") if spec.get("move") in MOVES else "lift"
-    movers = [v for v, f, g, m in parts if m] or ([parts[-1][0]] if move != "explode" else [])
-    if movers:
-        pts = np.concatenate(movers)
-        lo, hi = pts.min(0), pts.max(0)
-    centre = np.concatenate([v for v, *_ in parts]).mean(0)
+    flagged = any(m for *_, m in parts)
+    movers = [p for p, g, m in parts if m] if flagged else [parts[-1][0]]
+    pts = np.concatenate(movers)
+    lo, hi = pts.min(0), pts.max(0)
+    centre = np.concatenate([p for p, *_ in parts]).mean(0)
     out = []
-    for verts, faces, gold, mover in parts:
-        mover = mover or (not any(m for *_, m in parts) and verts is parts[-1][0])
-        v = verts
+    for i, (rest, gold, mover) in enumerate(parts):
+        mover = mover if flagged else i == len(parts) - 1
+        v = rest
         if move == "explode":
-            away = verts.mean(0) - centre
-            away = away / (np.linalg.norm(away) or 1) if np.linalg.norm(away) > 1e-3 else np.array([0, 0, 1.0])
-            v = verts + away * 1.1 * u
+            away = rest.mean(0) - centre
+            away = away / np.linalg.norm(away) if np.linalg.norm(away) > 1e-3 else np.array([0, 0, 1.0])
+            v = rest + away * 1.1 * u
         elif mover:
             if move == "lift":
-                v = verts + (0, 0, 1.3 * u)
+                v = rest + (0, 0, 1.3 * u)
             elif move == "rise":
-                v = verts + (0, 0, -1.3 * (1 - u))
+                v = rest + (0, 0, -1.3 * (1 - u))
             elif move == "slide":
-                v = verts + (0, -1.5 * u, 0)
+                v = rest + (0, -1.5 * u, 0)
             elif move == "open":          # a lid: hinged on its back top edge, swings up and back
-                v = _rot(verts, 0, -math.radians(105) * u, np.array([0, hi[1], hi[2]]))
+                v = _rot(rest, 0, -math.radians(105) * u, np.array([0, hi[1], hi[2]]))
             elif move == "swing":         # a door: hinged on its left edge, swings toward the viewer
-                v = _rot(verts, 2, math.radians(100) * u, np.array([lo[0], lo[1], 0]))
+                v = _rot(rest, 2, math.radians(100) * u, np.array([lo[0], lo[1], 0]))
             elif move == "spin":
-                v = _rot(verts, 2, 2 * math.pi * u, np.array([(lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, 0]))
-        out.append((v, faces, gold))
+                v = _rot(rest, 2, 2 * math.pi * u, np.array([(lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, 0]))
+        out.append((v, _hull((key, i), rest), gold))
     return out
 
 
@@ -266,14 +293,37 @@ def is_model(model) -> bool:
     return model in OBJECTS
 
 
+def _preset_boxes(name: str, u: float):
+    builder, scale = OBJECTS[name]
+    return [(corners * scale, gold) for corners, gold in builder(u)]
+
+
+_LAST: list = [None, None]
+
+
 def solids(model, u: float):
-    """(corners, faces, gold) for every part at move u. ``model`` is a preset name or a spec."""
+    """(points, triangles, gold) for every part at move u. ``model``: a preset name or a spec."""
+    key = (_spec_key(model) if isinstance(model, dict) else model, float(u))
+    if _LAST[0] != key:
+        _LAST[0], _LAST[1] = key, _solids(model, u)
+    return _LAST[1]
+
+
+_REST: dict = {}
+
+
+def _solids(model, u: float):
     if isinstance(model, dict):
         if model.get("parts"):
             return _built(model, u)
         model = model.get("object")
-    builder, scale = OBJECTS[model]
-    return [(corners * scale, BOX_FACES, gold) for corners, gold in builder(u)]
+    out = []
+    for i, (corners, gold) in enumerate(_preset_boxes(model, u)):
+        pts = rounded_box(corners)
+        if ("preset", model, i) not in _HULLS:
+            _hull(("preset", model, i), rounded_box(_preset_boxes(model, 0.0)[i][0]))
+        out.append((pts, _HULLS[("preset", model, i)], gold))
+    return out
 
 
 # ---------- the no-overlap check (every pair of parts, through the whole move) ----------
@@ -297,11 +347,11 @@ def _intersect(a: np.ndarray, b: np.ndarray, tol: float) -> bool:
 
 
 def overlaps(name: str, steps: int = 41, tol: float = 1e-4) -> list[tuple[float, int, int]]:
-    """Every (u, part, part) where two parts pass through each other. Empty means clean."""
+    """Every (u, part, part) where two preset parts pass through each other. Empty means clean."""
     found = []
     for i in range(steps):
         u = i / (steps - 1)
-        parts = [c for c, *_ in solids(name, u)]
+        parts = [c for c, _ in _preset_boxes(name, u)]
         for p in range(len(parts)):
             for q in range(p + 1, len(parts)):
                 if _intersect(parts[p], parts[q], tol):
@@ -309,7 +359,7 @@ def overlaps(name: str, steps: int = 41, tol: float = 1e-4) -> list[tuple[float,
     return found
 
 
-# ---------- drawing: depth buffer, one surface per pixel ----------
+# ---------- drawing: a product render (depth buffer, smooth normals, real light) ----------
 def project(p, yaw, size, dist=8.0):
     """World z up; turn by yaw, look down by PITCH. Pixels relative to the centre, and depth."""
     cy_, sy_, cp, sp = math.cos(yaw), math.sin(yaw), math.cos(PITCH), math.sin(PITCH)
@@ -321,131 +371,165 @@ def project(p, yaw, size, dist=8.0):
     return np.stack([x1 * f, -up * f], -1), depth
 
 
-def _raster(name: str, u: float, yaw: float, size: float, ss: int = SS):
-    """Face id per pixel (at ss times the size) through a depth buffer, plus the face colours and
-    gold flags. Returns (ids, origin in pixels relative to the centre, colours, gold flags)."""
+KEY = np.array([-0.45, -0.55, 0.70]); KEY /= np.linalg.norm(KEY)
+FILL = np.array([0.75, -0.35, 0.25]); FILL /= np.linalg.norm(FILL)
+BODY_RGB = np.array((52, 57, 68), np.float32)
+GOLD_RGB = np.array((214, 168, 72), np.float32)
+RIM = np.array((150, 170, 235), np.float32)
+
+
+def _fill_python(scr, inv, vn, tris, tpart, zbuf, ids, nbuf):
+    h, w = zbuf.shape
+    for t in range(len(tris)):
+        a, b, c = tris[t]
+        ax, ay = scr[a]; bx, by = scr[b]; cx, cy = scr[c]
+        area = (bx - ax) * (cy - ay) - (cx - ax) * (by - ay)
+        if abs(area) < 1e-6:
+            continue
+        lx, hx = max(0, int(min(ax, bx, cx))), min(w, int(max(ax, bx, cx)) + 2)
+        ly, hy = max(0, int(min(ay, by, cy))), min(h, int(max(ay, by, cy)) + 2)
+        for yy in range(ly, hy):
+            py = yy + 0.5
+            for xx in range(lx, hx):
+                px = xx + 0.5
+                w0 = ((bx - px) * (cy - py) - (cx - px) * (by - py)) / area
+                w1 = ((cx - px) * (ay - py) - (ax - px) * (cy - py)) / area
+                w2 = 1.0 - w0 - w1
+                if w0 < -1e-4 or w1 < -1e-4 or w2 < -1e-4:
+                    continue
+                d = w0 * inv[a] + w1 * inv[b] + w2 * inv[c]
+                if d > zbuf[yy, xx]:
+                    zbuf[yy, xx] = d
+                    ids[yy, xx] = tpart[t]
+                    for k in range(3):
+                        nbuf[yy, xx, k] = w0 * vn[a, k] + w1 * vn[b, k] + w2 * vn[c, k]
+
+
+try:                                   # compiled when numba is there: ~100x faster
+    from numba import njit
+    _fill = njit(cache=True, nogil=True)(_fill_python)
+except Exception:                      # pragma: no cover
+    _fill = _fill_python
+
+
+def _raster(name, u: float, yaw: float, size: float, ss: int = SS):
+    """Per pixel (at ss times the size): part id, 1/depth, smooth normal. Returns
+    (part ids, origin in pixels from the centre, normals, gold flags, view direction)."""
     cy_, sy_, cp, sp = math.cos(yaw), math.sin(yaw), math.cos(PITCH), math.sin(PITCH)
     toward = np.array([sy_ * cp, cy_ * cp, -sp])     # how depth grows with x, y, z
-    faces, colours, golds, surfaces = [], [], [], []
-    for part, (corners, polys, gold) in enumerate(solids(name, u)):
-        groups = getattr(polys, "groups", None) or list(range(len(polys)))
-        pts, depth = project(corners, yaw, size * ss)
-        middle = corners.mean(0)
-        for fi, face in enumerate(polys):
-            p3 = corners[list(face)]
-            n = np.cross(p3[1] - p3[0], p3[2] - p3[0])
-            n = n / (np.linalg.norm(n) or 1)
-            if n @ (p3.mean(0) - middle) < 0:
-                n = -n
-            if n @ toward > 0.02:          # turned away from the camera: never visible on a solid
-                continue
-            lit = 0.45 + 0.55 * max(0.0, float(n @ LIGHT))
-            faces.append((pts[list(face)], depth[list(face)]))
-            colours.append((BODY_GOLD if gold else BODY) * lit)
-            golds.append(gold)
-            surfaces.append(part * 1000 + groups[fi])
-    every = np.concatenate([f[0] for f in faces])
+    parts = solids(name, u)
+    projected = []
+    for pts, tris, gold in parts:
+        scr, depth = project(pts, yaw, size * ss)
+        fn = np.cross(pts[tris[:, 1]] - pts[tris[:, 0]], pts[tris[:, 2]] - pts[tris[:, 0]])
+        vn = np.zeros_like(pts)
+        for k in range(3):
+            np.add.at(vn, tris[:, k], fn)
+        vn /= np.linalg.norm(vn, axis=1, keepdims=True) + 1e-9
+        projected.append((scr, depth, tris, fn, vn))
+    every = np.concatenate([p[0] for p in projected])
     x0, y0 = np.floor(every.min(0)) - 3 * ss
     x1, y1 = np.ceil(every.max(0)) + 3 * ss
     w, h = int(x1 - x0), int(y1 - y0)
-    zbuf = np.zeros((h, w), np.float32)   # 1/depth: exact on screen under perspective, 0 = nothing
+    zbuf = np.zeros((h, w), np.float32)
     ids = np.full((h, w), -1, np.int32)
-    for fid, (pts, depth) in enumerate(faces):
-        pts = pts - (x0, y0)
-        lx, hx = max(0, int(pts[:, 0].min())), min(w, int(pts[:, 0].max()) + 2)
-        ly, hy = max(0, int(pts[:, 1].min())), min(h, int(pts[:, 1].max()) + 2)
-        if lx >= hx or ly >= hy:
-            continue
-        gx = (np.arange(lx, hx, dtype=np.float32) + 0.5)[None, :]
-        gy = (np.arange(ly, hy, dtype=np.float32) + 0.5)[:, None]
-        # inside the (convex) face: on the same side of all four edges
-        nk = len(pts)
-        twice = sum(pts[k, 0] * pts[(k + 1) % nk, 1] - pts[(k + 1) % nk, 0] * pts[k, 1] for k in range(nk))
-        sign = np.sign(twice)
-        if abs(twice) < 1e-6:
-            continue
-        inside = None
-        for k in range(nk):
-            (ax, ay), (bx, by) = pts[k], pts[(k + 1) % nk]
-            e = (np.float32((bx - ax) * sign) * (gy - np.float32(ay))) - (np.float32((by - ay) * sign) * (gx - np.float32(ax)))
-            inside = (e >= -1e-3) if inside is None else (inside & (e >= -1e-3))
-        if not inside.any():
-            continue
-        # 1/depth over the face (straight on screen under perspective): the plane through three corners
-        depth = 1.0 / depth
-        # three corners spread well apart (a fan of a round face can start with a sliver)
-        k1 = max(range(1, nk), key=lambda k: float(np.hypot(*(pts[k] - pts[0]))))
-        k2 = max((k for k in range(1, nk) if k != k1),
-                 key=lambda k: abs(float((pts[k1, 0] - pts[0, 0]) * (pts[k, 1] - pts[0, 1]) - (pts[k, 0] - pts[0, 0]) * (pts[k1, 1] - pts[0, 1]))))
-        depth = depth[[0, k1, k2]]
-        (ax, ay), (bx, by), (cx, cy) = pts[0], pts[k1], pts[k2]
-        area = (bx - ax) * (cy - ay) - (cx - ax) * (by - ay)
-        if abs(area) < 1e-9:
-            continue
-        kx = np.float32(((cy - ay) * (depth[1] - depth[0]) - (by - ay) * (depth[2] - depth[0])) / area)
-        ky = np.float32(((bx - ax) * (depth[2] - depth[0]) - (cx - ax) * (depth[1] - depth[0])) / area)
-        d = np.float32(depth[0]) + kx * (gx - np.float32(ax)) + ky * (gy - np.float32(ay))
-        zone = zbuf[ly:hy, lx:hx]
-        nearer = inside & (d > zone)
-        zone[nearer] = d[nearer]
-        ids[ly:hy, lx:hx][nearer] = fid
-    surface = np.array(surfaces + [-1], np.int64)[ids]      # ids of -1 map to the last entry: empty
-    return ids, (x0 / ss, y0 / ss), np.array(colours, np.float32), np.array(golds, bool), surface
+    nbuf = np.zeros((h, w, 3), np.float32)
+    scrs, invs, vns, tris_all, tparts, offset = [], [], [], [], [], 0
+    for pid, (scr, depth, tris, fn, vn) in enumerate(projected):
+        visible = tris[(fn @ toward) < 0]
+        scrs.append(scr - (x0, y0)); invs.append(1.0 / depth); vns.append(vn)
+        tris_all.append(visible + offset); tparts.append(np.full(len(visible), pid, np.int32))
+        offset += len(scr)
+    _fill(np.ascontiguousarray(np.concatenate(scrs), np.float64), np.concatenate(invs).astype(np.float64),
+          np.ascontiguousarray(np.concatenate(vns), np.float64), np.ascontiguousarray(np.concatenate(tris_all), np.int64),
+          np.concatenate(tparts), zbuf, ids, nbuf)
+    hit = ids >= 0
+    nbuf[hit] /= np.linalg.norm(nbuf[hit], axis=1, keepdims=True) + 1e-9
+    golds = np.array([g for *_, g in parts], bool)
+    return ids, (x0 / ss, y0 / ss), nbuf, golds, toward
 
 
-def _edges(ids: np.ndarray, golds: np.ndarray, width: int, surface: np.ndarray | None = None):
-    """Lines where the visible surface changes (part edges, silhouettes); gold where a gold part is.
-    Facets of one round surface are one surface: no lines between them."""
+def _edges(ids: np.ndarray, width: int = 1):
+    """Where one part meets another or the background: the silhouettes."""
     edge = np.zeros(ids.shape, bool)
+    edge[:, 1:] |= ids[:, 1:] != ids[:, :-1]
+    edge[1:, :] |= ids[1:, :] != ids[:-1, :]
+    for _ in range(max(0, width - 1)):
+        grown = edge.copy()
+        grown[1:, :] |= edge[:-1, :]
+        grown[:-1, :] |= edge[1:, :]
+        grown[:, 1:] |= edge[:, :-1]
+        grown[:, :-1] |= edge[:, 1:]
+        edge = grown
+    return edge
+
+
+def _shade(ids, nbuf, golds, toward):
+    """Graphite with a soft key light, a cool fill, a sharp highlight and a blue rim; gold parts
+    are polished metal. Only the pixels the object covers are lit."""
+    view = (-toward).astype(np.float32)
+    half = (KEY + view) / np.linalg.norm(KEY + view)
+    filled = ids >= 0
+    n = nbuf[filled].astype(np.float32)
+    g = golds[ids[filled]]
+    diff = np.clip(n @ KEY.astype(np.float32), 0, 1)
+    fill = np.clip(n @ FILL.astype(np.float32), 0, 1)
+    facing = np.clip(n @ view, 0, 1)
+    spec = np.clip(n @ half.astype(np.float32), 0, 1)
+    rim = (1 - facing) ** 3
+    light = 0.30 + 0.85 * diff + 0.25 * fill
+    out = np.empty((len(n), 3), np.float32)
+    body, metal = ~g, g
+    out[body] = BODY_RGB * light[body, None] + 140.0 * (spec[body] ** 46)[:, None] + RIM * (0.55 * rim[body])[:, None]
+    out[metal] = (GOLD_RGB * light[metal, None] + GOLD_RGB * (spec[metal] ** 18 * 1.0)[:, None]
+                  + RIM * (0.25 * rim[metal])[:, None])
+    colour = np.zeros(ids.shape + (3,), np.float32)
+    colour[filled] = out
     gold = np.zeros(ids.shape, bool)
-    surface = ids if surface is None else surface
-    for (a, b), (sa, sb) in zip(((ids[:, 1:], ids[:, :-1]), (ids[1:, :], ids[:-1, :])),
-                                ((surface[:, 1:], surface[:, :-1]), (surface[1:, :], surface[:-1, :]))):
-        diff = sa != sb
-        sl = (slice(None), slice(1, None)) if a.shape[1] != ids.shape[1] else (slice(1, None), slice(None))
-        edge[sl] |= diff
-        is_gold = np.zeros(a.shape, bool)
-        for side in (a, b):
-            is_gold |= (side >= 0) & golds[np.clip(side, 0, None)]
-        gold[sl] |= diff & is_gold
-    for _ in range(max(0, width - 1)):   # thicken
-        for mask in (edge, gold):
-            grown = mask.copy()
-            grown[1:, :] |= mask[:-1, :]
-            grown[:-1, :] |= mask[1:, :]
-            grown[:, 1:] |= mask[:, :-1]
-            grown[:, :-1] |= mask[:, 1:]
-            mask[:] = grown
-    return edge, gold
+    gold[filled] = g
+    return colour, gold
 
 
-def render(name: str, u: float, yaw: float, size: float):
-    """The object as an RGBA image and the pixel offset of its top-left from the centre."""
+def render(name, u: float, yaw: float, size: float):
+    """The object as an RGBA image (a product render on the house black) and the pixel offset of
+    its top-left from the centre."""
     size = float(size)
-    ids, origin, colours, golds, surface = _raster(name, u, yaw, size)
-    width = max(1, round(size / 300))
-    edge, gold = _edges(ids, golds, width, surface)
-    # one colour index per pixel: 0 empty, 1.. faces, then edge and gold
-    n = len(colours)
-    index = (ids + 1).astype(np.int32)
-    index[edge] = n + 1
-    index[gold] = n + 2
-    palette = np.zeros((n + 3, 4), np.uint8)
-    palette[1:n + 1, :3] = colours.clip(0, 255).astype(np.uint8)
-    palette[1:, 3] = 255
-    palette[n + 1, :3] = EDGE.astype(np.uint8)
-    palette[n + 2, :3] = GOLD.astype(np.uint8)
-    big = Image.fromarray(palette[index], "RGBA")
+    ids, origin, nbuf, golds, toward = _raster(name, u, yaw, size)
+    colour, gold = _shade(ids, nbuf, golds, toward)
+    edge = _edges(ids, max(1, round(size / 500)))
+    filled = ids >= 0
+    colour[edge & filled] = colour[edge & filled] * 0.55 + np.float32(225) * 0.18   # a fine seam where parts meet
+    rgba = np.zeros(ids.shape + (4,), np.uint8)
+    rgba[..., :3] = colour.clip(0, 255).astype(np.uint8)
+    rgba[..., 3] = np.where(filled, 255, 0)
+    big = Image.fromarray(rgba, "RGBA")
     small = big.resize((max(1, big.width // SS), max(1, big.height // SS)), Image.Resampling.BOX)
-    # the gold part's soft glow, under the object
+    # a soft contact shadow under the object, and the gold part's glow
+    floor = np.zeros(ids.shape, np.uint8)
+    pts = np.concatenate([p for p, *_ in solids(name, u)])
+    low = pts[:, 2] <= pts[:, 2].min() + 0.25
+    if low.any():
+        ground = pts[low].copy()
+        ground[:, 2] = pts[:, 2].min()
+        scr, _ = project(ground, yaw, size * SS)
+        ox, oy = origin[0] * SS, origin[1] * SS
+        from PIL import ImageDraw
+        sh = Image.fromarray(floor)
+        lo, hi = scr.min(0) - (ox, oy), scr.max(0) - (ox, oy)
+        pad = (hi[0] - lo[0]) * 0.08
+        ImageDraw.Draw(sh).ellipse([lo[0] - pad, lo[1] + (hi[1] - lo[1]) * 0.15, hi[0] + pad, hi[1] + pad], fill=150)
+        floor = np.asarray(sh)
+    shadow = Image.fromarray(floor).resize(small.size, Image.Resampling.BOX).filter(ImageFilter.GaussianBlur(size / 40))
     glow_a = Image.fromarray((gold * 255).astype(np.uint8)).resize(small.size, Image.Resampling.BOX)
-    glow_a = glow_a.filter(ImageFilter.GaussianBlur(size / 90)).point(lambda v: min(255, int(v * 1.6)))
+    glow_a = glow_a.filter(ImageFilter.GaussianBlur(size / 70)).point(lambda v: min(255, int(v * 1.1)))
+    under = Image.new("RGBA", small.size, (0, 0, 0, 0))
+    under.putalpha(shadow)
     glow = Image.new("RGBA", small.size, tuple(int(c) for c in GOLD) + (0,))
     glow.putalpha(glow_a)
-    return Image.alpha_composite(glow, small), origin
+    return Image.alpha_composite(Image.alpha_composite(under, glow), small), origin
 
 
-def layer(frame_size: tuple[int, int], center, size: float, name: str, u: float, yaw: float,
+def layer(frame_size: tuple[int, int], center, size: float, name, u: float, yaw: float,
           alpha: float = 1.0) -> Image.Image:
     """The object at move ``u`` as an RGBA layer the size of the frame."""
     img, (ox, oy) = render(name, u, yaw, size)
@@ -456,11 +540,11 @@ def layer(frame_size: tuple[int, int], center, size: float, name: str, u: float,
     return out
 
 
-def edge_points(name: str, u: float, yaw: float, size: float, count: int, seed: int = 0) -> np.ndarray:
-    """Points on the visible edges (pixels from the centre): where the scene-change light lands
+def edge_points(name, u: float, yaw: float, size: float, count: int, seed: int = 0) -> np.ndarray:
+    """Points on the visible outline (pixels from the centre): where the scene-change light lands
     on, or leaves from, the object exactly as it looks at that moment."""
-    ids, (ox, oy), _, golds, surface = _raster(name, u, yaw, size, ss=1)
-    edge, _ = _edges(ids, golds, 1, surface)
+    ids, (ox, oy), *_ = _raster(name, u, yaw, size, ss=1)
+    edge = _edges(ids) & (ids >= 0)
     ys, xs = np.nonzero(edge)
     if len(xs) == 0:
         return np.zeros((0, 2))
@@ -469,10 +553,11 @@ def edge_points(name: str, u: float, yaw: float, size: float, count: int, seed: 
     return pts[pick]
 
 
-def outline(name: str, u: float, yaw: float, size: float, center) -> list[tuple[list, bool]]:
-    """The visible edges as short polylines in pixels (the still picture in the figure file)."""
-    ids, (ox, oy), _, golds, surface = _raster(name, u, yaw, size, ss=1)
-    edge, gold = _edges(ids, golds, 1, surface)
+def outline(name, u: float, yaw: float, size: float, center) -> list[tuple[list, bool]]:
+    """The visible outline as short polylines in pixels (the still picture in the figure file)."""
+    ids, (ox, oy), _, golds, _ = _raster(name, u, yaw, size, ss=1)
+    edge = _edges(ids) & (ids >= 0)
+    gold = edge & golds[np.clip(ids, 0, None)]
     out = []
     for mask, is_gold in ((edge & ~gold, False), (gold, True)):
         ys, xs = np.nonzero(mask)

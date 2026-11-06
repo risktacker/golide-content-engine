@@ -26,6 +26,7 @@ video = [
   "scipy>=1.11,<2",
   "youtube-transcript-api>=1.0,<2",
   "scikit-image>=0.22,<1",
+  "numba>=0.60,<1",   # 2026-11-06: compiled 3D rasterizer (vector.motion3d)
 ]
 test = []
 

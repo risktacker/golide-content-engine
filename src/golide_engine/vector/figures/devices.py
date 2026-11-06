@@ -182,14 +182,11 @@ def model3d(size, params, items):
     c.image.paste(picture.convert("RGB"), (int(w / 2 + ox), int(h / 2 + oy)), picture)
     # Stroke data (the outline of every part) so the file is a complete figure; the renderer
     # draws the live object instead of these.
-    for corners, polys, gold in motion3d.solids(model, 0.0):
-        pts, _ = motion3d.project(corners, yaw, scale)
-        for face in polys:
-            ring = [(float(w / 2 + x) / SUPER, float(h / 2 + y) / SUPER) for x, y in pts[list(face)]]
-            ring.append(ring[0])
-            c.strokes.append({"points": [list(p) for p in ring], "gold": bool(gold), "dim": False,
-                              "width": c.line / SUPER})
-            c.drawn += sum(math.dist(p, q) for p, q in zip(ring, ring[1:])) * SUPER
+    for ring, gold in motion3d.outline(model, 0.0, yaw, scale, (w / 2, h / 2))[::4]:
+        ring = [(float(x) / SUPER, float(y) / SUPER) for x, y in ring]
+        c.strokes.append({"points": [list(p) for p in ring], "gold": bool(gold), "dim": False,
+                          "width": c.line / SUPER})
+        c.drawn += sum(math.dist(p, q) for p, q in zip(ring, ring[1:])) * SUPER
     c.motion = {"object": name, "on": str(params.get("on", "")).strip()}
     if parts:
         c.motion.update(move=model["move"], parts=parts)

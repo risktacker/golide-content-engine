@@ -347,8 +347,10 @@ be the architecture behind it... the level we have reached now is not to fake th
   Mark the parts that move with "mover" and pick the move that tells the line: lift (rises up),
   slide (pulls out toward the viewer), open (a lid hinged at the back opens), swing (a door hinged
   on its left opens), spin (turns round), explode (every part spreads apart: what is inside),
-  rise (comes up into place). Make one part "gold": the part the line is about. 3 to 15 parts is
-  enough; make it recognisable at a glance. Example:
+  rise (comes up into place). Make one part "gold": the part the line is about. Build it like a
+  product designer, 8 to 30 parts with the real details that make it read at a glance and look
+  finished (a vault: body, door, hinges, a handle wheel with spokes, bolts; a phone: body, screen,
+  camera bump with lenses, buttons), never a bare block. Example:
   "3d: object=vault; move=swing; on=opened; box 0 0 0 3 3 3; box 0 -1.56 0.25 2.4 0.12 2.5 mover;
   cyl 0 -1.66 1.2 1 0.1 1 rx90 gold mover". Ready-made shortcuts: "3d: object=<laptop|phone|
   server|chip|battery>; on=<word>". When two 3D scenes follow each other, show a different object.
