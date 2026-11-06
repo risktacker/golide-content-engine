@@ -20,6 +20,7 @@ from .content_rules import (VISUAL_CUES, chapter_range, length_target, owner_voi
                             split_spoken, voice_pairs)
 
 EXAMPLE_FILE = Path(__file__).resolve().parents[3] / "config" / "story-example.txt"
+EXAMPLE_FILE_2 = Path(__file__).resolve().parents[3] / "config" / "story-example-2.txt"
 GUIDE_FILE = Path(__file__).resolve().parents[3] / "config" / "script-voice.md"
 
 STORY_SCHEMA: dict = {
@@ -71,6 +72,7 @@ def story_instructions(format_name: str, model_seconds: float | None = None) -> 
     else:
         chapters = "- Short: \"chapters\" is an empty list and \"script\" has no markers.\n"
     example = _read(EXAMPLE_FILE)
+    example_2 = _read(EXAMPLE_FILE_2)
     guide = _read(GUIDE_FILE)
     return (
         f"You write the narration for {kind} about a trending technology, AI or science story. "
@@ -85,6 +87,11 @@ def story_instructions(format_name: str, model_seconds: float | None = None) -> 
         "- Ask the question the viewer is asking at that point and answer it, or say honestly that nobody "
         "knows yet and why.\n"
         "- Use the turns and twists the facts give you.\n"
+        "- Keep it connected (owner 2026-11-06): one picture runs through the whole video and keeps coming back "
+        "(a body, a brain and hands; a vault and a robot). Every part ends on what is still missing or still "
+        "unanswered, and the next part starts by picking that up, so the viewer is always pulled forward. Say the "
+        "viewer's doubt out loud before they think it (\"you might be wondering why not just...\") and give the "
+        "honest answer, including the honest downside.\n"
         "- End by tying back to the opening moment, then one sentence asking the viewer to follow the channel, "
         "with a real reason to come back.\n"
         "- When the story is a product rather than an event, tell the story of it the same way: what happened, "
@@ -93,7 +100,8 @@ def story_instructions(format_name: str, model_seconds: float | None = None) -> 
         "from a model script or the method example: we copy how they tell it, not what they say.\n\n"
         + (f"SCRIPT VOICE GUIDE (the owner's)\n{guide}\n\n" if guide else "")
         + "HOW THE OWNER TALKS\n" + voice_pairs() + owner_voice() + "\n"
-        + (f"METHOD EXAMPLE (a script that works; how it tells the story, not its words)\n{example}\n\n" if example else "")
+        + (f"METHOD EXAMPLE 1, a news story (a script that works; how it tells the story, not its words)\n{example}\n\n" if example else "")
+        + (f"METHOD EXAMPLE 2, a tool or product (how it stays connected from start to end, not its words)\n{example_2}\n\n" if example_2 else "")
         + "TECHNICAL (the pipeline needs these)\n"
         f"- About {target['words_min']} to {target['words_max']} spoken words (about {target['seconds']} seconds).\n"
         + chapters
