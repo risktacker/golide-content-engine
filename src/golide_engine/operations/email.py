@@ -63,6 +63,8 @@ def spoken_pass_line(report: dict | None) -> str:
     if not report:
         return ""
     status = report.get("status", "")
+    if status == "story":
+        return "Script: written as a story, the way the videos that work tell theirs, in your voice guide."
     if status == "applied":
         return "Humanizer pass: applied. AI tells were taken out, matched to how you talk."
     if status == "approved":

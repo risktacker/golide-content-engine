@@ -846,71 +846,44 @@ class ProductionService:
         script_tokens = 16000 if str(spec["format"]) == "long" else 6000
 
         def script_stage():
+            """2026-11-06 (owner): "break every script rule... model what we have seen that is
+            working." The writer only writes the story, the way the videos that work tell theirs,
+            in the owner's voice guide; code cuts it into screen lines; a storyboard call picks
+            each line's gold word and pictures without touching the words. No rule-driven
+            rewrites, no second pass."""
+            from ..engine.story import (BOARD_SCHEMA, STORY_SCHEMA, apply_board, board_input, board_instructions,
+                                        plan_from_story, story_instructions)
             self._require_absent(script_path, "script")
             models_block = model_scripts_block()
+            fmt = str(spec["format"])
             script_input = spec["brief"] + json.dumps(research) + source_video + models_block
-            self._reserve(
-                spec, text_model,
-                Usage(input_tokens=max(1, len(script_input) // 4), output_tokens=script_tokens),
-                stage="script",
-            )
+            self._reserve(spec, text_model,
+                          Usage(input_tokens=max(1, len(script_input) // 4) + 9000, output_tokens=script_tokens * 2),
+                          stage="script")
             output = text.generate_json(
-                script_instructions(str(spec["format"]), str(spec["id"]), model_seconds),
+                story_instructions(fmt, model_seconds),
                 f"TOPIC BRIEF\n{spec['brief']}{source_video}{models_block}\n\nVERIFIED RESEARCH\n{json.dumps(research)}",
-                SCRIPT_SCHEMA,
-                max_output_tokens=script_tokens,
+                STORY_SCHEMA,
+                max_output_tokens=script_tokens * 2,   # high effort thinks first
+                reasoning_effort=SPOKEN_PASS_EFFORT,
             )
-            plan = dict(output.value)
-            problems = script_problems(plan)
-            for _round in range(2):
-                if not problems:
-                    break
-                # Rewrite when the script is choppy or breaks a structure rule; checked again after.
-                self._record_text(production_id, "script-draft", output)
-                self._reserve(spec, text_model, Usage(input_tokens=max(1, len(json.dumps(plan)) // 3 + 3000),
-                                                      output_tokens=script_tokens))
-                output = text.generate_json(
-                    script_instructions(str(spec["format"]), str(spec["id"]), model_seconds),
-                    f"TOPIC BRIEF\n{spec['brief']}{source_video}{models_block}\n\nVERIFIED RESEARCH\n{json.dumps(research)}"
-                    f"\n\nYOUR PREVIOUS DRAFT\n{json.dumps(plan)}\n\nREWRITE IT. Fix these problems: "
-                    + "; ".join(problems) + ". Keep the facts, the length and the way it talks to the viewer.",
-                    SCRIPT_SCHEMA,
-                    max_output_tokens=script_tokens,
-                )
-                plan = dict(output.value)
-                problems = script_problems(plan)
-            # 2026-10-24 spoken pass: the draft is rewritten the way the owner says things
-            # (his approved scripts are the reference), line for line so the visuals still
-            # match. Kept only when it breaks no more rules than the draft.
-            from ..engine.content_rules import SPOKEN_CHAPTERS_SCHEMA, draft_chapters, merge_spoken_chapters
-            draft_lines = draft_chapters(plan)
-            self._reserve(spec, text_model, Usage(input_tokens=max(1, len(json.dumps(draft_lines)) // 3 + 6000),
-                                                  output_tokens=script_tokens * 2))
+            self._record_text(production_id, "script-story", output)
+            plan = plan_from_story(dict(output.value), fmt)
+            if len(plan["lines"]) < 6:
+                raise RuntimeError("the story came back too short to make a video")
             try:
-                spoken_out = text.generate_json(
-                    spoken_pass_instructions(str(spec["format"]), model_seconds),
-                    "DRAFT SCRIPT\n" + draft_lines,
-                    SPOKEN_CHAPTERS_SCHEMA,
-                    max_output_tokens=script_tokens * 2,  # high effort spends tokens thinking first
-                    reasoning_effort=SPOKEN_PASS_EFFORT,
-                )
-                self._record_text(production_id, "script-spoken", spoken_out)
-                spoken = merge_spoken_chapters(plan, dict(spoken_out.value))
-            except Exception as error:  # the draft still stands if this pass fails
-                spoken, report = None, {"status": "failed", "reason": str(error)[:300]}
-            else:
-                report = {"status": "unmatched", "reason": "the rewrite lost or renumbered a chapter"}
-            if spoken is not None:
-                # 2026-11-06 (owner): the rewrite in his voice guide always stands when it keeps
-                # every chapter; no rule of ours may throw it away (a sentence-length check
-                # discarded it and the stiff first draft went out as a list of points).
-                plan, problems = spoken, script_problems(spoken)
-                report = {"status": "applied"}
-            # 2026-10-25: written down so the script email says what happened to the pass.
-            (work / "spoken-pass.json").write_text(json.dumps(report) + "\n", encoding="utf-8")
-            print(json.dumps({"status": "spoken_pass_" + report["status"], **report}))
-            if problems:
-                print(json.dumps({"status": "script_rules_unmet_after_rewrites", "problems": problems}))
+                self._reserve(spec, text_model, Usage(input_tokens=len(board_input(plan)) // 3 + 1500,
+                                                      output_tokens=6000))
+                board = text.generate_json(board_instructions(), board_input(plan), BOARD_SCHEMA,
+                                           max_output_tokens=8000)
+                self._record_text(production_id, "script-board", board)
+                plan = apply_board(plan, dict(board.value))
+            except Exception as error:  # the words stand; pictures fall back to defaults
+                print(json.dumps({"status": "storyboard_failed", "error": str(error)[:300]}))
+                plan = apply_board(plan, {})
+            (work / "spoken-pass.json").write_text(json.dumps({"status": "story"}) + "\n", encoding="utf-8")
+            info = length_problems(plan, fmt, model_seconds) + chapter_problems(plan, fmt, model_seconds)
+            print(json.dumps({"status": "script_story", "lines": len(plan["lines"]), "notes": info}))
             scene_plan_path.write_text(json.dumps(plan, indent=2) + "\n", encoding="utf-8")
             script_path.write_text(script_text(plan) + "\n", encoding="utf-8")
             self._record_text(production_id, "script", output)
