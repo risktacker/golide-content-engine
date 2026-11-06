@@ -46,14 +46,16 @@ def via_engine(video_id: str) -> dict:
     """What the engine itself gets (Supadata when SUPADATA_API_KEY is set)."""
     from golide_engine.youtube.transcripts import fetch
     text = fetch(f"https://www.youtube.com/watch?v={video_id}")
-    return {"ok": bool(text), "words": len(text.split()), "start": text[:300]} if text else {"ok": False, "error": "no transcript"}
+    return ({"ok": bool(text), "words": len(text.split()), "start": text[:300], "text": text} if text
+            else {"ok": False, "error": "no transcript"})
 
 
 def main() -> None:
     results = {v: {"engine": via_engine(v)} for v in VIDEOS}
     out = Path("production-queue/transcript-probe.json")
-    out.write_text(json.dumps(results, indent=2))
-    print(json.dumps(results, indent=2))
+    out.write_text(json.dumps(results, indent=2))   # full text kept in the file (2026-11-06)
+    print(json.dumps({v: {m: {k: x for k, x in r.items() if k != "text"} for m, r in res.items()}
+                      for v, res in results.items()}, indent=2))
     lines = []
     for v, r in results.items():
         for method, res in r.items():
