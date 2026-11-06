@@ -1,0 +1,565 @@
+{
+  "production_id": "golide-short-2026-11-06",
+  "youtube_video_id": "0QyR_0e-WiM",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "0QyR_0e-WiM",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-11-06T09:44:21.861565+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "Is Apple’s smart speaker SMART now?? HomePod Mini 2",
+    "status": "scheduled",
+    "scheduled_at": "2026-11-06T11:00:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-shorts-mon-wed-fri\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"elevenlabs\"}"
+  },
+  "narration": "Apple updated its smart speaker, but the speaker is not the whole story\nThe bigger question is whether voice assistants are becoming useful.\nHomePod mini puts that question inside your home.\nOlder assistants waited for commands, then returned an answer\nThe next phase connects 3 jobs that used to stay separate.\nGeneral knowledge answers what is happening in the world.\nPersonal context connects that answer with your routines\nDevice control turns words into changes around your home.\nThat sounds convenient, until useful context means more access.\nThe assistant may need voices, rooms, routines, and household data.\nSo smarter is not only about getting better answers\nIt is also about where each request gets processed\nInside the speaker, through your phone, or on remote servers.\nA simple request can reveal a daily routine.\nThat is the trade: less effort, but more information shared.\nFollow us for clear explanations of technology entering daily life.\nApple’s speaker is a preview of a larger decision.\nHow much of your home should become part of the interface?\nThe best assistant shows what it knows and where.\n",
+  "research": {
+    "summary": "What would you like me to do with this brief—polish it, turn it into a video script, develop an explainer outline, or research and verify the claims about Apple’s updated smart speaker?",
+    "claims": []
+  },
+  "metadata": {
+    "title": "Is Apple’s smart speaker SMART now?? HomePod Mini 2",
+    "description": "Apple’s updated HomePod mini points to a bigger shift in voice assistants. Instead of simply answering commands, the next generation could connect general knowledge, personal context, and smart home control.\n\nThat convenience also raises a harder question: how much of your home should an assistant know? This short explains the trade-off between useful automation, personal data, and where voice requests are processed.\n\n#Apple #HomePodMini #Siri #SmartHome #VoiceAssistants #Privacy #Technology #GOLIDE",
+    "tags": [
+      "Apple HomePod mini",
+      "HomePod mini 2",
+      "Siri AI",
+      "smart home privacy",
+      "voice assistant privacy",
+      "Apple smart speaker",
+      "Siri personal context",
+      "smart home assistant",
+      "Apple Home",
+      "HomeKit",
+      "Apple Intelligence",
+      "on device AI",
+      "private cloud compute",
+      "voice controlled home",
+      "smart speaker privacy",
+      "future of Siri",
+      "Siri smart home",
+      "home automation",
+      "AI voice assistant",
+      "smart home technology",
+      "Apple privacy",
+      "voice assistant data",
+      "connected home",
+      "home tech"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "keywords": [
+      "Apple HomePod mini",
+      "HomePod mini 2",
+      "Siri AI",
+      "smart home privacy",
+      "voice assistant privacy",
+      "Apple smart speaker",
+      "Siri personal context",
+      "smart home assistant",
+      "Apple Home",
+      "HomeKit",
+      "on device AI",
+      "private cloud compute",
+      "voice controlled home",
+      "AI voice assistant",
+      "connected home"
+    ],
+    "hashtags": [
+      "#Apple",
+      "#HomePodMini",
+      "#Siri",
+      "#SmartHome",
+      "#VoiceAssistants",
+      "#Privacy",
+      "#Technology",
+      "#GOLIDE"
+    ],
+    "format": "short",
+    "title_description_language": "en",
+    "seo_body": "Apple’s updated HomePod mini points to a bigger shift in voice assistants. Instead of simply answering commands, the next generation could connect general knowledge, personal context, and smart home control.\n\nThat convenience also raises a harder question: how much of your home should an assistant know? This short explains the trade-off between useful automation, personal data, and where voice requests are processed."
+  },
+  "source_ledger": {
+    "claims": [],
+    "platform_demand": {
+      "query": "Apple HomePod mini 2 Siri AI personal context official October 2026",
+      "score": 80.5,
+      "verdict": "pass",
+      "recent_videos": 1,
+      "median_views_per_day": 1085056.7999999998,
+      "top_views_per_day": 1085056.7999999998,
+      "market_coverage": 1,
+      "title_query_overlap": 1,
+      "measured_at": "2026-11-06T07:03:32.490954+00:00",
+      "signal_type": "youtube-breakout-v1"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -17.0,
+      "true_peak_dbtp": -1.95,
+      "loudness_range": 2.6
+    },
+    "editorial": {
+      "beats": 19,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-11-06T09:44:11.818505+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "elevenlabs",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-short-2026-11-06",
+    "created_at": "2026-11-06T09:44:13.026472+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-11-06T11:00:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "47549e2fa0b7c8a925e2dd6c791d35c9da91eb409105153584560c53f065029b",
+        "bytes": 26763022
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "92f83b631d062a0cac0bc77becd5008c65dba240ebacac850e15679c665312c7",
+        "bytes": 218814
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "6d2430ca2fc6e15ddec813c0ff3c1c48f8d2a34d60cec0a434ca37ec546ca449",
+        "bytes": 2407
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "58ded5724c6f533b723fba3ac7c4f6cbe0a265f7e906edebaee0064ffeecb988",
+        "bytes": 2568
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "1f1ec92608cc685852e591fc68a3bdfd68018d4abefbe9d7f2014baeb52e2451",
+        "bytes": 495
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "662b50557139118ff224920ecabf31c0fe148b2e7e7ce46431c569f2bac2f38e",
+        "bytes": 730
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "b937eede952fe84dd4eba830d62927f69d4876295b3336814d22686110912e02",
+        "bytes": 380
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "d348ead3925eb0ced92fc7a41f7996c657fad3cc455cc0e4f3419d24fa2bf5e3",
+        "bytes": 276
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-titles",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 140.0,
+      "cached_input_units": 0.0,
+      "output_units": 201.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000269,
+      "created_at": "2026-11-06T07:03:30.787794+00:00"
+    },
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 25870.0,
+      "cached_input_units": 0.0,
+      "output_units": 2910.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008666,
+      "created_at": "2026-11-06T07:03:31.821128+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-06T07:03:31.822599+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 4626.0,
+      "cached_input_units": 0.0,
+      "output_units": 180.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001141,
+      "created_at": "2026-11-06T07:03:36.447284+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-06T07:03:36.451992+00:00"
+    },
+    {
+      "stage": "script-draft",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2281.0,
+      "cached_input_units": 0.0,
+      "output_units": 2098.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002974,
+      "created_at": "2026-11-06T07:04:52.895077+00:00"
+    },
+    {
+      "stage": "script-spoken",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 6785.0,
+      "cached_input_units": 0.0,
+      "output_units": 4147.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006333,
+      "created_at": "2026-11-06T07:05:52.517104+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 3851.0,
+      "cached_input_units": 1599.0,
+      "output_units": 3318.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004464,
+      "created_at": "2026-11-06T07:05:52.519988+00:00"
+    },
+    {
+      "stage": "owner-voice",
+      "provider": "elevenlabs",
+      "model": "eleven_multilingual_v2",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 1115,
+      "cost_usd": 0.223,
+      "created_at": "2026-11-06T09:27:02.323715+00:00"
+    },
+    {
+      "stage": "visual-plan-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-06T09:27:41.175768+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 14706.0,
+      "cached_input_units": 0.0,
+      "output_units": 3355.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006967,
+      "created_at": "2026-11-06T09:27:41.181028+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-06T09:28:06.846468+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-06T09:28:33.499334+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-06T09:28:56.869131+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-06T09:29:20.713583+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-06T09:29:44.587453+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-06T09:30:07.589159+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-06T09:30:32.679394+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-06T09:30:55.634691+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-06T09:31:22.412483+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-06T09:31:53.584331+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-06T09:32:16.466816+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-06T09:35:10.716505+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-06T09:35:34.295292+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-06T09:35:58.717574+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-06T09:36:22.941364+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-06T09:36:51.601873+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9262.0,
+      "cached_input_units": 0.0,
+      "output_units": 893.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002924,
+      "created_at": "2026-11-06T09:43:58.697338+00:00"
+    }
+  ],
+  "recorded_at": "2026-11-06T09:44:21.867004+00:00"
+}

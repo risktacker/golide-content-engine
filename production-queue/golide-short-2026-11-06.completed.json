@@ -30,7 +30,7 @@
   },
   "generation_parameters": {
     "brand_preset": "golide-editorial",
-    "voice": "owner-choice",
+    "voice": "elevenlabs",
     "pacing": "fast",
     "visual_density": 4,
     "motion_intensity": 4,
@@ -81,9 +81,9 @@
         "channel": "UFD Tech",
         "subscribers": 1520000,
         "views": 669081,
-        "views_per_hour": 21582.0,
+        "views_per_hour": 21582,
         "breakout": 1.9,
-        "hours_old": 31.0,
+        "hours_old": 31,
         "duration_seconds": 46,
         "format": "short",
         "found_by": "chart GB",
@@ -95,9 +95,9 @@
       "trend_pulse": {
         "query": "AI demand PCB shortage circuit board materials 2026 TrendForce",
         "fresh_videos": 0,
-        "median_views_per_hour": 0.0,
-        "top_views_per_hour": 0.0,
-        "score": 15.0,
+        "median_views_per_hour": 0,
+        "top_views_per_hour": 0,
+        "score": 15,
         "hot": false,
         "measured_at": "2026-11-06T07:03:30.793932+00:00"
       }
@@ -115,7 +115,7 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "Sam Altman DRAM personal computer data center comments October 2026",
-        "score": 88.0,
+        "score": 88,
         "verdict": "pass",
         "recent_videos": 66,
         "median_views_per_day": 492473.01,
@@ -132,7 +132,7 @@
         "views": 274926,
         "views_per_hour": 27508.2,
         "breakout": 0.2,
-        "hours_old": 10.0,
+        "hours_old": 10,
         "duration_seconds": 66,
         "format": "short",
         "found_by": "channel @LinusTechTips",
@@ -164,13 +164,13 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "OpenAI GPT-Image-2.6 Flare Sunburst 50 percent faster official",
-        "score": 85.0,
+        "score": 85,
         "verdict": "pass",
         "recent_videos": 66,
         "median_views_per_day": 492473.01,
         "top_views_per_day": 3531186.3,
         "market_coverage": 4,
-        "title_query_overlap": 0.0,
+        "title_query_overlap": 0,
         "measured_at": "2026-11-06T07:03:26.323874+00:00",
         "signal_type": "youtube-most-popular-seed-proxy"
       },
@@ -179,7 +179,7 @@
         "channel": "OpenAI",
         "subscribers": 2110000,
         "views": 266594,
-        "views_per_hour": 8509.0,
+        "views_per_hour": 8509,
         "breakout": 0.8,
         "hours_old": 31.3,
         "duration_seconds": 88,
@@ -274,10 +274,11 @@
     "median_views_per_day": 1085056.7999999998,
     "top_views_per_day": 1085056.7999999998,
     "market_coverage": 1,
-    "title_query_overlap": 1.0,
+    "title_query_overlap": 1,
     "measured_at": "2026-11-06T07:03:32.490954+00:00",
     "signal_type": "youtube-breakout-v1"
   },
   "selected_topic_source": "https://www.apple.com/newsroom/2026/10/apple-announces-the-next-generation-of-homepod-mini/",
-  "voice_choice": "ai"
+  "voice_choice": "ai",
+  "_failed_runs": 1
 }
