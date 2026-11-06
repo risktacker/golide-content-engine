@@ -24,6 +24,6 @@ jobs:
           echo "MY VOICES:"
           curl -s -H "xi-api-key: $ELEVENLABS_API_KEY" "https://api.elevenlabs.io/v2/voices?page_size=100" \
             | python3 -c "import json,sys; d=json.load(sys.stdin); [print('  VOICE:', v.get('name'), '|', v.get('voice_id'), '|', v.get('category')) for v in d.get('voices',[])] if 'voices' in d else print('  not readable:', str(d)[:160])"
-          echo "LIBRARY SEARCH Bradford:"
-          curl -s -H "xi-api-key: $ELEVENLABS_API_KEY" "https://api.elevenlabs.io/v1/shared-voices?search=Bradford&page_size=10" \
+          echo "LIBRARY SEARCH Mark:"
+          curl -s -H "xi-api-key: $ELEVENLABS_API_KEY" "https://api.elevenlabs.io/v1/shared-voices?search=Mark&page_size=10" \
             | python3 -c "import json,sys; d=json.load(sys.stdin); [print('  LIB:', v.get('name'), '|', v.get('voice_id'), '|', v.get('public_owner_id'), '|', v.get('accent'), v.get('age'), '| used', v.get('usage_character_count_1y') or v.get('cloned_by_count')) for v in d.get('voices',[])] if 'voices' in d else print('  not readable:', str(d)[:160])"
