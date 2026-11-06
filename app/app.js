@@ -539,6 +539,22 @@ function renderJobList() {
       await loadProductionJobs();
     };
   });
+  // 2026-11-06 (owner): the AI voice reads this script instead of his recording. Two taps: it spends credits.
+  $$(".ai-voice-button").forEach((button) => {
+    button.onclick = async () => {
+      if (button.dataset.confirm !== "1") {
+        button.dataset.confirm = "1"; button.textContent = "Tap again: AI voice reads it";
+        setTimeout(() => { button.dataset.confirm = ""; button.textContent = "Use AI voice"; }, 3500);
+        return;
+      }
+      button.disabled = true; button.textContent = "Starting...";
+      const card = button.closest(".action-card");
+      const picked = card?.querySelector(".post-to") ? pickedPlatforms(card) : null;
+      await api("/api/production-jobs/" + encodeURIComponent(button.dataset.job) + "/ai-voice",
+        { method: "POST", body: JSON.stringify(picked ? { platforms: picked } : {}) });
+      await loadProductionJobs();
+    };
+  });
   $$(".skip-job").forEach((button) => {
     button.onclick = async () => {
       if (button.dataset.confirm !== "1") {  // two taps: no accidental skips
@@ -617,6 +633,7 @@ function actionCard(job) {
     esc(job.title || "Script ready") + '</h4><p>Read the script below in your own voice. The engine picks it up automatically after you upload.</p>' + rejected +
     '<div class="script-box">' + scriptHtml(script) + '</div></div>' +
     '<div class="action-controls">' + postToHtml(null) +
+      '<button class="ai-voice-button" data-job="' + escAttr(job.job_id) + '">Use AI voice</button>' +
       '<label class="upload-button">Upload my recording<input class="voice-input" type="file" accept="audio/*,video/*,.m4a,.mp3,.wav,.aac,.caf,.ogg,.opus,.webm,.mp4,.mov" data-job="' + escAttr(job.job_id) + '"></label>' +
       '<button class="action-button copy-script" data-job="' + escAttr(job.job_id) + '">Copy script</button>' +
       '<button class="action-button email-script" data-job="' + escAttr(job.job_id) + '">Email me the script</button>' +

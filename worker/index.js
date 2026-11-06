@@ -1144,6 +1144,18 @@ async function handleApi(request,env,url){
       .bind(nowIso(),decodeURIComponent(archiveMatch[1])).run();
     return json({status:"archived"});
   }
+  // 2026-11-06 (owner): each day he chooses: his recording, or the AI voice (Bradford) reads it.
+  const aiMatch=url.pathname.match(/^\/api\/production-jobs\/([^/]+)\/ai-voice$/);
+  if(aiMatch&&request.method==="POST"){
+    const id=decodeURIComponent(aiMatch[1]);
+    let body={}; try{body=await request.json();}catch{}
+    const platforms=normalizePlatforms(body.platforms);
+    const r=await env.DB.prepare(`UPDATE production_jobs SET spec_json=json_set(spec_json,'$.voice_choice','ai','$.platforms',json(?)),status='queued',stage='ai-voice',error=NULL,updated_at=? WHERE job_id=? AND status='waiting_owner_voice'`)
+      .bind(platforms?JSON.stringify(platforms):"null",nowIso(),id).run();
+    if(!r.meta?.changes) return json({status:"unchanged"});
+    try{await dispatchWorkflow(env,"production-scheduler.yml");}catch(e){console.log(JSON.stringify({dispatch:"ai_voice_failed",error:String(e?.message||e)}));}
+    return json({status:"queued"});
+  }
   // 2026-11-04 (owner): a short he will not record is skipped, not left "Needs your recording".
   const skipMatch=url.pathname.match(/^\/api\/production-jobs\/([^/]+)\/skip$/);
   if(skipMatch&&request.method==="POST"){
