@@ -34,10 +34,11 @@ def fit_distance(cam, radius, margin=0.92):
     return margin * radius / math.sin(half)
 
 
-def _corners(model):
-    """Every bounding-box corner of every part, where it is right now (moves and explodes included)."""
+def _corners(model, part=None):
+    """Every bounding-box corner of the object, or of one part, where it is right now."""
     bpy.context.view_layer.update()
-    return [m.matrix_world @ Vector(c) for m in model.meshes() for c in m.bound_box]
+    meshes = model.part(part).meshes if part else model.meshes()
+    return [m.matrix_world @ Vector(c) for m in meshes for c in m.bound_box]
 
 
 def _tangents(cam):
@@ -76,16 +77,19 @@ def orbit(cam, cfg, duration, model):
     z0, z1 = cfg.get("zoom_from", 1.0), cfg.get("zoom_to", 1.0)
     aim = Vector(cfg.get("aim_offset", (0, 0, 0)))
     roll = cfg.get("roll", 0)
+    focus = cfg.get("focus")
 
     def update(t):
         u = smooth(t / duration) * 0.6 + (t / duration) * 0.4
         yaw, pitch = a0 + (a1 - a0) * u, p0 + (p1 - p0) * u
         direction = Vector((math.cos(pitch) * math.sin(yaw), -math.cos(pitch) * math.cos(yaw), math.sin(pitch)))
-        pts = _corners(model)
+        pts = _corners(model, focus)
         low = Vector((min(p.x for p in pts), min(p.y for p in pts), min(p.z for p in pts)))
         high = Vector((max(p.x for p in pts), max(p.y for p in pts), max(p.z for p in pts)))
         target = (low + high) / 2
-        dist = frame_all(cam, pts, direction, target) * (z0 + (z1 - z0) * u)
+        # A focus shot frames its part with the object around it for context.
+        fill = 0.42 if focus else 0.78
+        dist = frame_all(cam, pts, direction, target, fill) * (z0 + (z1 - z0) * u)
         _look(cam, target + dist * direction, target + aim, roll)
 
     return update

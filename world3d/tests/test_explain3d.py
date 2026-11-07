@@ -21,7 +21,7 @@ GEAR = {"name": "Two gears", "sources": ["https://example.org/gears"], "simplifi
 WORDS = [{"word": w, "start": i * 0.5, "end": i * 0.5 + 0.4} for i, w in enumerate(
     "inside the gearbox the drive gear turns the shaft and that shaft spins the wheels every time".split())]
 TIMES = [(0.0, 4.0), (4.0, 8.0)]
-SHOT = {"first_line": 0, "last_line": 1, "subject": "Two gears", "world": "studio", "move": "orbit_slow", "beats": [
+SHOT = {"first_line": 0, "last_line": 1, "subject": "Two gears", "focus": "", "world": "studio", "move": "orbit_slow", "beats": [
     {"action": "explode", "part_hint": "", "label": "", "cue_word": "inside"},
     {"action": "glow", "part_hint": "drive gear", "label": "Drive gear", "cue_word": "drive"},
     {"action": "label", "part_hint": "shaft", "label": "Shaft", "cue_word": "shaft"},
@@ -145,12 +145,18 @@ class Directing(unittest.TestCase):
         self.assertEqual(shot["actions"][0]["axis"], "z")
         self.assertEqual(shot["object"]["rotate"][:2], [0, 0])
 
-    def test_no_subject_back_to_back_or_more_than_twice(self):
-        times = [(i * 6.0, i * 6.0 + 6.0) for i in range(6)]
-        plans = [{**SHOT, "first_line": i, "last_line": i, "subject": s}
-                 for i, s in enumerate(["Car", "Car", "Plane", "Car", "Plane", "Car"])]
-        kept = [k["subject"] for k in director.accepted(plans, times, 6, 60)]
-        self.assertEqual(kept, ["Car", "Plane", "Car", "Plane"])
+    def test_one_object_many_shots_but_never_the_same_view_twice(self):
+        times = [(i * 6.0, i * 6.0 + 6.0) for i in range(5)]
+        views = [("Car", ""), ("Car", "battery"), ("Car", "battery"), ("Car", "motor"), ("Car", "")]
+        plans = [{**SHOT, "first_line": i, "last_line": i, "subject": s, "focus": f} for i, (s, f) in enumerate(views)]
+        kept = [(k["subject"], k["focus"]) for k in director.accepted(plans, times, 5, 60)]
+        self.assertEqual(kept, [("Car", ""), ("Car", "battery"), ("Car", "motor")])
+
+    def test_focus_part_is_framed_and_lit(self):
+        bp = {"parts": blueprint.clean(GEAR)["parts"]}
+        shot = director.compile_shot({**SHOT, "beats": [], "focus": "shaft"}, bp, "g", "/tmp", 0, 8, WORDS)
+        self.assertEqual(shot["camera"]["focus"], "shaft")
+        self.assertTrue(any(a["type"] == "glow" and a["part"] == "shaft" for a in shot["actions"]))
 
 
 class Composer(unittest.TestCase):

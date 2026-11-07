@@ -17,14 +17,15 @@ PLAN_SCHEMA = {
     "type": "object",
     "properties": {"shots": {"type": "array", "items": {"type": "object", "properties": {
         "first_line": {"type": "integer"}, "last_line": {"type": "integer"},
-        "subject": {"type": "string"}, "world": {"type": "string"}, "move": {"type": "string"},
+        "subject": {"type": "string"}, "focus": {"type": "string"},
+        "world": {"type": "string"}, "move": {"type": "string"},
         "beats": {"type": "array", "items": {"type": "object", "properties": {
             "action": {"type": "string"},
             "part_hint": {"type": "string"},
             "label": {"type": "string"},
             "cue_word": {"type": "string"},
         }, "required": ["action", "part_hint", "label", "cue_word"], "additionalProperties": False}},
-    }, "required": ["first_line", "last_line", "subject", "world", "move", "beats"],
+    }, "required": ["first_line", "last_line", "subject", "focus", "world", "move", "beats"],
         "additionalProperties": False}}},
     "required": ["shots"], "additionalProperties": False,
 }
@@ -53,7 +54,10 @@ it, how its parts work together. Skip lines about opinions, people or money.
 
 Pick up to {max_shots} shots, {max_seconds:.0f} seconds in total, each {MIN_SHOT:.0f}-{MAX_SHOT:.0f} seconds, using
 the times given beside each line. Shots never overlap. first_line and last_line are line numbers.
-subject names one real thing exactly, like "Hubble Space Telescope" or "V8 engine piston".
+subject is the whole real object, named exactly, like "Hubble Space Telescope" or "Tesla Roadster".
+Never a part or system of it: the same object keeps the same subject name in every shot, so it is built
+once and looks the same all video. focus is the part or system that shot is about, in plain words
+("battery pack", "cold gas thrusters"), or empty when the shot shows the whole object.
 
 WORLDS
 {worlds}
@@ -64,8 +68,7 @@ action is explode (the object opens up), glow (a part lights up), signal (radio 
 dish, transmitter or laser; never anything else) or label
 (a part gets named). part_hint names the part in plain words. label is the short on-screen name, or empty.
 cue_word is copied exactly from the spoken line. Use 1-4 beats per shot.
-Variety: never two shots in a row of the same subject, and one subject at most twice per video.
-Shots of the same subject use different moves and different actions.
+Variety: two shots of the same object in a row need a different focus, move and action.
 If no line suits 3D, return no shots. A video with no 3D is fine."""
 
 
@@ -149,14 +152,17 @@ def compile_shot(plan: dict[str, Any], blueprint: dict[str, Any], blueprint_name
             side = 1 if len(labels) % 2 == 0 else -1
             labels.append({"part": part, "text": beat.get("label") or beat.get("part_hint"),
                            "start": at, "end": duration - 0.1, "dx": 0.09 * side, "dy": -0.1 if index % 2 else 0.1})
-    camera = {"move": "orbit", "lens": 38, "yaw_from": yaw, "yaw_to": yaw + turn * move["yaw"],
+    focus = match_part(plan.get("focus", ""), parts) if plan.get("focus") else None
+    if focus and not any(a["type"] == "glow" for a in actions):
+        actions.append({"type": "glow", "part": focus, "start": min(1.0, duration * 0.2), "end": duration, "strength": 0.6})
+    camera = {"move": "orbit", "focus": focus, "lens": 38, "yaw_from": yaw, "yaw_to": yaw + turn * move["yaw"],
               "pitch_from": pitch[0], "pitch_to": pitch[1], "zoom_from": move["zoom"][0], "zoom_to": move["zoom"][1],
               "fit_exploded": opens, "aim_offset": framing["camera"].get("aim_offset", [0, 0, 0]),
               "roll": framing["camera"].get("roll", 0)}
     return {"duration": duration, "fps": fps, "vertical": vertical, "world": framing["world"], "light": framing["light"],
             "object": {"blueprint": blueprint_name, "blueprint_dir": blueprint_dir, "rotate": [0, 0, tilt * 4] if grounded else [tilt, 0, tilt * 2]},
             "camera": camera, "actions": actions, "effects": effects, "labels": labels,
-            "start_time": start, "subject": plan["subject"]}
+            "start_time": start, "subject": plan["subject"], "focus": plan.get("focus", "")}
 
 
 def accepted(plan: list[dict[str, Any]], times: list[tuple[float, float]], max_shots: int,
@@ -168,7 +174,8 @@ def accepted(plan: list[dict[str, Any]], times: list[tuple[float, float]], max_s
     count: dict[str, int] = {}
     for shot in sorted(plan, key=lambda s: s["first_line"]):
         key = slug(shot["subject"])
-        if count.get(key, 0) >= 2 or (kept and kept[-1]["blueprint_name"] == key):
+        angle = (key, slug(shot.get("focus", "")))
+        if angle in count or (kept and (kept[-1]["blueprint_name"], slug(kept[-1].get("focus", ""))) == angle):
             continue
         first, last = shot["first_line"], shot["last_line"]
         if not (0 <= first <= last < len(times)) or shot["world"] not in catalog["worlds"]:
@@ -179,7 +186,7 @@ def accepted(plan: list[dict[str, Any]], times: list[tuple[float, float]], max_s
             continue
         used += length
         last_end = end
-        count[key] = count.get(key, 0) + 1
+        count[angle] = 1
         kept.append({**shot, "start": start, "end": end, "blueprint_name": slug(shot["subject"])})
     return kept
 

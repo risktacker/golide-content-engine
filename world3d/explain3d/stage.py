@@ -59,7 +59,7 @@ def run(folder: Path, format_name: str, lines: list[str], times: list[tuple[floa
             frames = folder / f"shot{index}" / "frames"
             render(shot_path, frames, cfg["quality"])
             clips.append({"start": plan["start"], "end": plan["end"], "frames": str(frames / "final"),
-                          "fps": shot["fps"], "subject": plan["subject"]})
+                          "fps": shot["fps"], "subject": plan["subject"], "focus": plan.get("focus", "")})
         except Exception as error:  # noqa: BLE001 - one shot must never stop a video
             print(json.dumps({"status": "world3d_shot_skipped", "subject": plan["subject"], "reason": str(error)[:300]}))
     return clips

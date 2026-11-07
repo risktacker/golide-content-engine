@@ -228,5 +228,8 @@ def studio(scene, cfg):
 def stand_on(world, model):
     """Put a world's floor under the object's lowest point."""
     floor = world.get("floor")
-    if floor is not None:  # under the lowest point the object reaches, opened or closed
-        floor.location.z = min(model.lowest(), model.lowest(exploded=True)) - 0.01
+    if floor is not None:
+        # On the ground nothing opens downward, so wheels and bases stay on the floor.
+        for p in model.parts.values():
+            p.explode.z = abs(p.explode.z)
+        floor.location.z = model.lowest() - 0.01

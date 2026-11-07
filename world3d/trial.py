@@ -91,13 +91,13 @@ def main():
         for f in still_frames.get(str(final.parent), []):
             png = final / f"f{f:05d}.png"
             if png.exists():
-                stills.append((f"{clip['subject']}  ·  {clip['start']:.0f}-{clip['end']:.0f}s  ·  frame {f}", png))
+                stills.append((f"{clip['subject']}{(' · ' + clip['focus']) if clip.get('focus') else ''}  ·  {clip['start']:.0f}-{clip['end']:.0f}s  ·  frame {f}", png))
     if stills:
         contact_sheet(stills, out / "contact-sheet.jpg", f"TRIAL · World 3D · {req['title']}")
     for bp in (out / "3d" / "blueprints").glob("*.json"):
         shutil.copy(bp, out / f"blueprint-{bp.name}")
     report = {"trial": True, "title": req["title"], "shots_rendered": len(clips),
-              "subjects": [c["subject"] for c in clips], "stills": len(stills),
+              "subjects": [" - ".join(x for x in (c["subject"], c.get("focus")) if x) for c in clips], "stills": len(stills),
               "spent_dollars": round(text.spent, 4), "calls": text.calls, "records": records}
     (out / "report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(json.dumps({k: report[k] for k in ("shots_rendered", "subjects", "stills", "spent_dollars")}))
