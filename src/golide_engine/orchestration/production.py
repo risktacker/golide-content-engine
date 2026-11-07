@@ -1346,6 +1346,14 @@ class ProductionService:
                 for line in timed_lines
             ]), encoding="utf-8")
 
+            # Real objects named in 3D scenes are built with CAD first (off until config/cad3d.json
+            # says otherwise). A failure only means that scene uses its drawing.
+            from ..vector import cad3d
+            if cad3d.settings().get("enabled") and cad3d.named_objects(scenes):
+                self._reserve(spec, text_model, Usage(input_tokens=8000, output_tokens=30000))
+                cad3d.prepare(scenes, self._storyboard_facts(spec, work), text,
+                              lambda name, output: self._record_text(production_id, name, output))
+
             def vector_render_stage():
                 # Rotate the four atmosphere beds in order across videos.
                 rendered_before = self.database.rows(

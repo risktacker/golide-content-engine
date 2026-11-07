@@ -226,9 +226,22 @@ def _hull(key, pts: np.ndarray) -> np.ndarray:
 _SPECS: dict[str, list] = {}
 
 
+_EXPLODE: dict = {}  # CAD objects: each part's own explode offset from its design
+
+
+def _cad(spec) -> str | None:
+    """The object's name when it is a built CAD object (vector/cad3d.py)."""
+    from . import cad3d
+
+    name = spec.get("object") if isinstance(spec, dict) else spec
+    return name if name and cad3d.available(name) else None
+
+
 def _spec_key(spec: dict) -> str:
     import json
 
+    if not spec.get("parts") and _cad(spec):
+        return json.dumps({"cad": _cad(spec).lower()})
     return json.dumps({"parts": spec.get("parts")}, sort_keys=True)
 
 
@@ -236,6 +249,14 @@ def _normalised(spec: dict) -> list:
     """The parts as rounded point clouds, scaled so the object's longest side is 3 units, centred,
     standing on z = 0 (the storyboard may use any units)."""
     key = _spec_key(spec)
+    if key not in _SPECS and not spec.get("parts") and _cad(spec):
+        from . import cad3d
+
+        loaded = cad3d.parts(_cad(spec))
+        for i, (pts, tris, *_rest) in enumerate(loaded):
+            _HULLS[(key, i)] = tris            # a CAD part keeps its own triangles, not a hull
+        _SPECS[key] = [(pts, gold, mover) for pts, _, gold, mover, _, _ in loaded]
+        _EXPLODE[key] = [ex for *_, ex, _ in loaded]
     if key not in _SPECS:
         parts = []
         for part in (spec.get("parts") or [])[:MAX_PARTS]:
@@ -265,7 +286,9 @@ def _built(spec: dict, u: float):
     for i, (rest, gold, mover) in enumerate(parts):
         mover = mover if flagged else i == len(parts) - 1
         v = rest
-        if move == "explode":
+        if move == "explode" and key in _EXPLODE:
+            v = rest + _EXPLODE[key][i] * u        # the design's own direction for each part
+        elif move == "explode":
             away = rest.mean(0) - centre
             away = away / np.linalg.norm(away) if np.linalg.norm(away) > 1e-3 else np.array([0, 0, 1.0])
             v = rest + away * 1.1 * u
@@ -289,8 +312,8 @@ def _built(spec: dict, u: float):
 def is_model(model) -> bool:
     """A preset name or an engine spec with parts."""
     if isinstance(model, dict):
-        return bool(model.get("parts")) or model.get("object") in OBJECTS
-    return model in OBJECTS
+        return bool(model.get("parts")) or model.get("object") in OBJECTS or bool(_cad(model))
+    return model in OBJECTS or bool(_cad(model))
 
 
 def _preset_boxes(name: str, u: float):
@@ -313,8 +336,10 @@ _REST: dict = {}
 
 
 def _solids(model, u: float):
+    if not isinstance(model, dict) and _cad(model):
+        model = {"object": model}
     if isinstance(model, dict):
-        if model.get("parts"):
+        if model.get("parts") or _cad(model):
             return _built(model, u)
         model = model.get("object")
     out = []
@@ -584,7 +609,8 @@ def fit(name: str, zone: tuple[float, float, float, float], base: float) -> tupl
     """Size and centre that keep the object inside ``zone`` (x0, y0, x1, y1 in frame pixels)
     through its whole move: (size, centre x, centre y)."""
     x0, y0, x1, y1 = extent(name, base)
-    scale = min(1.0, (zone[2] - zone[0]) / max(1e-6, x1 - x0), (zone[3] - zone[1]) / max(1e-6, y1 - y0))
+    grow = 1.7 if _cad(name) else 1.0    # CAD objects fill the zone; presets keep their approved size
+    scale = min(grow, (zone[2] - zone[0]) / max(1e-6, x1 - x0), (zone[3] - zone[1]) / max(1e-6, y1 - y0))
     cx = (zone[0] + zone[2]) / 2 - (x0 + x1) / 2 * scale
     cy = (zone[1] + zone[3]) / 2 - (y0 + y1) / 2 * scale
     return float(base * scale), float(cx), float(cy)

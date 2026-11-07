@@ -1,0 +1,5 @@
+{
+  "enabled": false,
+  "max_objects_per_video": 4,
+  "_about": "Any real object for the 3D engine, built with real CAD (build123d, Apache-2.0) from code the text model writes from research. Off until the owner approves the look."
+}

@@ -27,6 +27,8 @@ video = [
   "youtube-transcript-api>=1.0,<2",
   "scikit-image>=0.22,<1",
   "numba>=0.60,<1",   # 2026-11-06: compiled 3D rasterizer (vector.motion3d)
+  "build123d>=0.9,<1",  # 2026-11-07: real CAD for any object (vector.cad3d)
+  "trimesh>=4,<5",
 ]
 test = []
 

@@ -52,7 +52,7 @@ KINDS = tuple(BUILDERS)
 EXAMPLES = {
     "layers": "layers: names=cover glass,polarizer,touch sensor,OLED,backplane; title=10+ layers   (how a real thing is built, layer by layer, from the research)",
     "fold": "fold: layers=6; bar=stuck              (a folding device's hinge, end view; bar=dropped when it works)",
-    "3d": "3d: object=vault; move=swing; on=opened; box 0 0 0 3 3 3; box 0 -1.56 0.25 2.4 0.12 2.5 mover; cyl 0 -1.66 1.2 1 0.1 1 rx90 gold mover   (ANY object in 3D from parts, its move landing on the spoken word; presets: object=laptop|phone|server|chip|battery)",
+    "3d": "3d: object=vault; move=swing; on=opened; box 0 0 0 3 3 3; box 0 -1.56 0.25 2.4 0.12 2.5 mover; cyl 0 -1.66 1.2 1 0.1 1 rx90 gold mover   (ANY object in 3D from parts, its move landing on the spoken word; presets: object=laptop|phone|server|chip|battery; or ANY real object by its exact real name with NO parts, built with real CAD from research: 3d: object=Tesla Roadster; move=explode; on=inside)",
     "vectors": "vectors: a=3,1; b=1,2; sum=yes          (names=u,v to rename; length=yes)",
     "right_triangle": "right_triangle: a=3; b=4; angle=yes     (formula=yes adds a² + b² = c²; letters=yes)",
     "function": "function: f=x^2; x=-2,2; tangent=1      (or area=0,3.14 for the area under the curve)",
