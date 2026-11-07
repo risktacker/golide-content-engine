@@ -38,9 +38,9 @@ def build():
             "pinion": gear(14, 0.004, 0.012).moved(Location((0.1, 0, 0.09)))}
 """
 OBJECT = {"name": "Gear set", "sources": ["https://example.org"], "code": GEARS, "parts": [
-    {"id": "case", "label": "Case", "gold": False, "mover": False, "explode": [0, 0, 0]},
-    {"id": "drive_gear", "label": "Drive gear", "gold": True, "mover": True, "explode": [0, 0, 0.05]},
-    {"id": "pinion", "label": "Pinion", "gold": False, "mover": True, "explode": [0.03, 0, 0.05]}]}
+    {"id": "case", "label": "Case", "gold": False, "mover": False, "explode": [0, 0, 0], "color": [40, 42, 48]},
+    {"id": "drive_gear", "label": "Drive gear", "gold": True, "mover": True, "explode": [0, 0, 0.05], "color": [170, 174, 180]},
+    {"id": "pinion", "label": "Pinion", "gold": False, "mover": True, "explode": [0.03, 0, 0.05], "color": [184, 115, 51]}]}
 
 
 class FakeText:
@@ -86,6 +86,8 @@ class Cad(unittest.TestCase):
         opened, _ = motion3d.render({"object": "Gear set", "move": "explode"}, 1.0, math.radians(-30), 300)
         self.assertGreater(closed.getbbox()[2], 0)
         self.assertNotEqual(closed.tobytes(), opened.tobytes())
+        px = [p for p in closed.convert("RGBA").getdata() if p[3] == 255]
+        self.assertTrue(any(r > g + 25 for r, g, b, _ in px))   # the copper pinion shows in its real colour
 
     def test_off_by_default_and_failures_never_stop_a_video(self):
         self.assertFalse(cad3d.settings()["enabled"])

@@ -227,6 +227,7 @@ _SPECS: dict[str, list] = {}
 
 
 _EXPLODE: dict = {}  # CAD objects: each part's own explode offset from its design
+_COLOURS: dict = {}  # CAD objects: each part's real colour (presets keep the house graphite)
 
 
 def _cad(spec) -> str | None:
@@ -253,10 +254,11 @@ def _normalised(spec: dict) -> list:
         from . import cad3d
 
         loaded = cad3d.parts(_cad(spec))
-        for i, (pts, tris, *_rest) in enumerate(loaded):
+        for i, (pts, tris, *_rest) in enumerate(loaded):  # noqa: B007
             _HULLS[(key, i)] = tris            # a CAD part keeps its own triangles, not a hull
-        _SPECS[key] = [(pts, gold, mover) for pts, _, gold, mover, _, _ in loaded]
-        _EXPLODE[key] = [ex for *_, ex, _ in loaded]
+        _SPECS[key] = [(pts, gold, mover) for pts, _, gold, mover, *_ in loaded]
+        _EXPLODE[key] = [part[4] for part in loaded]
+        _COLOURS[key] = np.array([part[6] for part in loaded], np.float32)
     if key not in _SPECS:
         parts = []
         for part in (spec.get("parts") or [])[:MAX_PARTS]:
@@ -474,6 +476,14 @@ def _raster(name, u: float, yaw: float, size: float, ss: int = SS):
     return ids, (x0 / ss, y0 / ss), nbuf, golds, toward
 
 
+def _colours_of(name):
+    """Each part's own colour for a CAD object, else None (the house graphite and gold)."""
+    if isinstance(name, dict) or _cad(name):
+        spec = name if isinstance(name, dict) else {"object": name}
+        return _COLOURS.get(_spec_key(spec))
+    return None
+
+
 def _edges(ids: np.ndarray, width: int = 1):
     """Where one part meets another or the background: the silhouettes."""
     edge = np.zeros(ids.shape, bool)
@@ -489,7 +499,7 @@ def _edges(ids: np.ndarray, width: int = 1):
     return edge
 
 
-def _shade(ids, nbuf, golds, toward):
+def _shade(ids, nbuf, golds, toward, colours=None):
     """Graphite with a soft key light, a cool fill, a sharp highlight and a blue rim; gold parts
     are polished metal. Only the pixels the object covers are lit."""
     view = (-toward).astype(np.float32)
@@ -505,6 +515,14 @@ def _shade(ids, nbuf, golds, toward):
     light = 0.30 + 0.85 * diff + 0.25 * fill
     out = np.empty((len(n), 3), np.float32)
     body, metal = ~g, g
+    if colours is not None:   # real colours: each part lit in its own colour, a clear-coat highlight on top
+        base = colours[ids[filled]]
+        out = base * light[:, None] * 0.82 + 150.0 * (spec ** 40)[:, None] + RIM * (0.35 * rim)[:, None]
+        colour = np.zeros(ids.shape + (3,), np.float32)
+        colour[filled] = out
+        gold = np.zeros(ids.shape, bool)
+        gold[filled] = g
+        return colour, gold
     out[body] = BODY_RGB * light[body, None] + 140.0 * (spec[body] ** 46)[:, None] + RIM * (0.55 * rim[body])[:, None]
     out[metal] = (GOLD_RGB * light[metal, None] + GOLD_RGB * (spec[metal] ** 18 * 1.0)[:, None]
                   + RIM * (0.25 * rim[metal])[:, None])
@@ -520,7 +538,8 @@ def render(name, u: float, yaw: float, size: float):
     its top-left from the centre."""
     size = float(size)
     ids, origin, nbuf, golds, toward = _raster(name, u, yaw, size)
-    colour, gold = _shade(ids, nbuf, golds, toward)
+    colours = _colours_of(name)
+    colour, gold = _shade(ids, nbuf, golds, toward, colours)
     edge = _edges(ids, max(1, round(size / 500)))
     filled = ids >= 0
     colour[edge & filled] = colour[edge & filled] * 0.55 + np.float32(225) * 0.18   # a fine seam where parts meet
@@ -549,7 +568,10 @@ def render(name, u: float, yaw: float, size: float):
     glow_a = glow_a.filter(ImageFilter.GaussianBlur(size / 70)).point(lambda v: min(255, int(v * 1.1)))
     under = Image.new("RGBA", small.size, (0, 0, 0, 0))
     under.putalpha(shadow)
-    glow = Image.new("RGBA", small.size, tuple(int(c) for c in GOLD) + (0,))
+    tint = GOLD
+    if colours is not None and golds.any():      # the story part glows in its own colour
+        tint = np.clip(colours[int(np.argmax(golds))] * 1.25 + 30, 0, 255)
+    glow = Image.new("RGBA", small.size, tuple(int(c) for c in tint) + (0,))
     glow.putalpha(glow_a)
     return Image.alpha_composite(Image.alpha_composite(under, glow), small), origin
 

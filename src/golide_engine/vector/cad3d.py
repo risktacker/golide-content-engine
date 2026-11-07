@@ -40,7 +40,8 @@ SCHEMA = {
             "id": {"type": "string"}, "label": {"type": "string"},
             "gold": {"type": "boolean"}, "mover": {"type": "boolean"},
             "explode": {"type": "array", "items": {"type": "number"}},
-        }, "required": ["id", "label", "gold", "mover", "explode"], "additionalProperties": False}},
+            "color": {"type": "array", "items": {"type": "number"}},
+        }, "required": ["id", "label", "gold", "mover", "explode", "color"], "additionalProperties": False}},
     },
     "required": ["name", "sources", "code", "parts"], "additionalProperties": False,
 }
@@ -58,8 +59,10 @@ CODE RULES
   Curved bodies are lofts or revolves of real cross-sections, never stacks of boxes. Fillet visible edges.
 - {MAX_PARTS} parts or fewer, each a separate solid in place: the parts a viewer needs to see how it works.
 
-PARTS lists every id from build() with a viewer-facing label. Exactly one part has gold=true: the part
-the story is about. mover=true on the parts that move when it opens. explode is the offset in metres that
+PARTS lists every id from build() with a viewer-facing label. color is the part's real colour as the
+real object is made and painted, as [r, g, b] 0-255 (brushed steel, white fibreglass, red paint, black
+rubber, copper windings). Where the real colour is unknown or the part is hidden, pick the colour its story
+suggests. Exactly one part has gold=true: the part the story is about; it glows in its own colour. mover=true on the parts that move when it opens. explode is the offset in metres that
 moves the part out so the inside shows ([0,0,0] for parts that stay); open upward or outward."""
 
 RUNNER = r'''
@@ -160,6 +163,8 @@ def problems(obj: dict) -> list[str]:
         found.append("exactly one part must have gold=true")
     if any(len(p.get("explode", [])) != 3 for p in parts):
         found.append("every explode needs exactly 3 numbers")
+    if any(len(p.get("color", [])) != 3 or not all(0 <= c <= 255 for c in p.get("color", [])) for p in parts):
+        found.append("every color needs 3 numbers from 0 to 255")
     return found + unsafe(obj.get("code", ""))
 
 
@@ -227,7 +232,7 @@ def prepare(scenes: list[dict], research: str, text: Any, record: Callable[[str,
 
 @lru_cache(maxsize=32)
 def parts(name: str) -> tuple:
-    """((points, triangles, gold, mover, explode, label), ...) Z-up, longest side 3, centred, on z=0."""
+    """((points, triangles, gold, mover, explode, label, colour), ...) Z-up, longest side 3, centred, on z=0."""
     import trimesh
 
     obj = json.loads((folder(name) / "object.json").read_text(encoding="utf-8"))
@@ -240,4 +245,5 @@ def parts(name: str) -> tuple:
     scale = 3.0 / max(1e-9, float((hi - lo).max()))
     shift = np.array([(lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, lo[2]])
     return tuple(((v - shift) * scale, f, bool(p["gold"]), bool(p["mover"]),
-                  np.asarray(p["explode"], float) * scale, p["label"]) for v, f, p in loaded)
+                  np.asarray(p["explode"], float) * scale, p["label"],
+                  np.asarray(p.get("color") or (70, 74, 82), np.float32)) for v, f, p in loaded)
