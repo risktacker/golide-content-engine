@@ -16,12 +16,12 @@ jobs:
           python-version: "3.13"
       - run: |
           "${{ steps.blender_python.outputs.python-path }}" -m venv "$RUNNER_TEMP/blender"
-          "$RUNNER_TEMP/blender/bin/pip" install -q bpy numpy pillow
+          "$RUNNER_TEMP/blender/bin/pip" install -q bpy numpy pillow build123d
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
-      - run: python -m pip install -q numpy pillow pytest
+      - run: python -m pip install -q numpy pillow pytest build123d
       - run: python -m pytest -q world3d/tests
       - run: python world3d/smoke_test.py --blender-python "$RUNNER_TEMP/blender/bin/python" --out out
       - uses: actions/upload-artifact@v4

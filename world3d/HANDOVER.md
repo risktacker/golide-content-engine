@@ -1,4 +1,11 @@
-# Handover: World 3D (Blender path), 2026-11-06
+# Handover
+
+> 2026-11-07: objects are now real CAD. Luna writes build123d code (open source, Apache-2.0) from the
+> object's researched architecture; `explain3d/cad.py` checks it is plain CAD code, builds it in its own
+> process and exports each part; build errors go back to Luna to fix. The hand-made shape builders and the
+> NASA object catalogue were deleted on the owner's instruction. The `motion3d-library` branch is dead
+> (the proxy blocked deleting it; delete it on GitHub).
+: World 3D (Blender path), 2026-11-06
 
 Repo `risktacker/golide-content-engine`, branch **`world3d-separate`**.
 Not merged. Off by default. Live production is untouched.

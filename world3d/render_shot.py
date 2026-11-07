@@ -13,7 +13,7 @@ sys.path.insert(0, str(HERE))
 import bpy  # noqa: E402
 
 from kit import actions as _a, cameras, effects as _e, labels, lights as _l, materials as _m  # noqa: E402,F401
-from kit import objects, parts as _p, stage, worlds as _w  # noqa: E402,F401
+from kit import objects, stage, worlds as _w  # noqa: E402,F401
 from kit.registry import actions, cameras as camera_moves, effects, lights, worlds  # noqa: E402
 
 

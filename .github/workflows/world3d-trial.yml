@@ -19,7 +19,8 @@ jobs:
           python-version: "3.13"
       - run: |
           "${{ steps.blender_python.outputs.python-path }}" -m venv "$RUNNER_TEMP/blender"
-          "$RUNNER_TEMP/blender/bin/pip" install -q bpy numpy pillow
+          "$RUNNER_TEMP/blender/bin/pip" install -q bpy numpy pillow build123d
+          echo "WORLD3D_CAD_PYTHON=$RUNNER_TEMP/blender/bin/python" >> "$GITHUB_ENV"
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"

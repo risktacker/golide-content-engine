@@ -30,14 +30,13 @@ def check_catalog(python):
     code = """
 import sys, json
 sys.path.insert(0, 'world3d')
-from kit import actions, effects, materials, parts, worlds
-from kit.registry import actions as a, effects as e, materials as m, parts as p, worlds as w
-print(json.dumps({'builders': sorted(p.items), 'materials': sorted(m.items), 'worlds': sorted(w.items)}))
+from kit import actions, effects, materials, worlds
+from kit.registry import actions as a, effects as e, materials as m, worlds as w
+print(json.dumps({'materials': sorted(m.items), 'worlds': sorted(w.items)}))
 """
     out = subprocess.run([python, "-c", code], cwd=ROOT, capture_output=True, text=True, check=True).stdout
     real = json.loads(out.strip().splitlines()[-1])
     cat = catalog.load()
-    assert sorted(cat["builders"]) == real["builders"], "catalog builders differ from the kit"
     assert set(cat["materials"]) <= set(real["materials"]), "catalog offers a material the kit lacks"
     assert sorted(cat["worlds"]) == real["worlds"], "catalog worlds differ from the kit"
 

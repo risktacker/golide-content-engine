@@ -13,9 +13,4 @@ def load() -> dict:
 
 
 def menu(catalog: dict) -> str:
-    rows = ["PART BUILDERS (every part is built along +X from x=0; numbers are metres):"]
-    for name, b in catalog["builders"].items():
-        rows.append(f"- {name}: {b['use']}. Needs {', '.join(b['required'])}."
-                    + (f" May use {', '.join(b['optional'])}." if b["optional"] else ""))
-    rows.append("MATERIALS: " + ", ".join(catalog["materials"]))
-    return "\n".join(rows)
+    return "MATERIALS: " + ", ".join(catalog["materials"])

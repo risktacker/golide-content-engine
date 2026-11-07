@@ -7,7 +7,6 @@ import bpy
 from mathutils import Vector
 
 from . import materials as mats
-from .registry import parts
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -78,14 +77,33 @@ class Model:
 
 
 def load_blueprint(name, folder=None):
-    path = Path(folder or ROOT / "blueprints") / f"{name}.json"
+    folder = Path(folder or ROOT / "blueprints")
+    path = folder / name / "blueprint.json"
+    if not path.exists():
+        path = folder / "blueprint.json"
     if not path.exists():
         raise FileNotFoundError(f"No blueprint: {path}")
     return json.loads(path.read_text())
 
 
+def _import(path):
+    """One CAD part as a smooth Blender mesh: sharp where the design has an edge, smooth elsewhere."""
+    before = set(bpy.data.objects)
+    bpy.ops.wm.stl_import(filepath=str(path))
+    ob = next(o for o in bpy.data.objects if o not in before)
+    for poly in ob.data.polygons:
+        poly.use_smooth = True
+    smooth = ob.modifiers.new("smooth_by_angle", "EDGE_SPLIT")
+    smooth.split_angle = math.radians(32)
+    return ob
+
+
 def build(name, folder=None):
+    """Every part comes from the object's CAD build (explain3d/cad.py), in place, with a label anchor
+    on top of its own bounds, so any object works the same way."""
+    folder = Path(folder or ROOT / "blueprints")
     bp = load_blueprint(name, folder)
+    meshes_at = folder / name if (folder / name / "blueprint.json").exists() else folder
     scene = bpy.context.scene
     root = bpy.data.objects.new(name, None)
     content = bpy.data.objects.new(name + "_content", None)
@@ -97,13 +115,11 @@ def build(name, folder=None):
         group = bpy.data.objects.new(spec["id"], None)
         scene.collection.objects.link(group)
         group.parent = content
-        group.location = Vector(spec.get("at", (0, 0, 0)))
-        group.rotation_euler = [math.radians(v) for v in spec.get("turn", (0, 0, 0))]
-        material = mats.get(spec["material"])
-        builder = parts.get(spec["builder"])
-        params = spec.get("params", {})
-        meshes = builder(params, material, spec["profile"]) if spec.get("profile") else builder(params, material)
-        for mesh in meshes:
-            mesh.parent = group
-        built.append(Part(spec, group, meshes))
+        mesh = _import(meshes_at / spec["mesh"])
+        mesh.parent = group
+        mesh.data.materials.clear()
+        mesh.data.materials.append(mats.get(spec["material"]))
+        lo, hi = Vector(spec["min"]), Vector(spec["max"])
+        spec = {**spec, "anchor": [(lo.x + hi.x) / 2, (lo.y + hi.y) / 2, hi.z]}
+        built.append(Part(spec, group, [mesh]))
     return Model(bp, root, content, built)

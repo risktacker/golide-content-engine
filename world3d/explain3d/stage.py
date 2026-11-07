@@ -52,8 +52,8 @@ def run(folder: Path, format_name: str, lines: list[str], times: list[tuple[floa
             path, used = blueprint.obtain(plan["subject"], facts, text, blueprints)
             for item in used:
                 record("world3d-blueprint", item)
-            shot = director.compile_shot(plan, json.loads(path.read_text(encoding="utf-8")), path.stem,
-                                         str(path.parent), plan["start"], plan["end"], words,
+            shot = director.compile_shot(plan, json.loads(path.read_text(encoding="utf-8")), path.parent.name,
+                                         str(path.parent.parent), plan["start"], plan["end"], words,
                                          vertical=format_name == "short")
             shot_path = director.save_shots([shot], folder / f"shot{index}")[0]
             frames = folder / f"shot{index}" / "frames"

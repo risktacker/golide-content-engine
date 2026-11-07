@@ -9,15 +9,9 @@ from PIL import Image
 
 from world3d.explain3d import blueprint, catalog, director, stage
 from world3d.explain3d.clips import ClipTrack
+from world3d.tests.fixtures_cad import GEARBOX
 
-GEAR = {"name": "Two gears", "sources": ["https://example.org/gears"], "simplified": [], "parts": [
-    {"id": "big", "label": "Drive gear", "builder": "gear", "material": "steel",
-     "params": [{"name": "diameter", "value": 0.2}, {"name": "teeth", "value": 24}],
-     "at": [0, 0, 0], "explode": [0, 0, 0.1], "anchor": [0, 0, 0.1]},
-    {"id": "shaft", "label": "Shaft", "builder": "barrel", "material": "steel",
-     "params": [{"name": "length", "value": 0.3}, {"name": "diameter", "value": 0.03}],
-     "at": [-0.1, 0, 0], "explode": [-0.1, 0, 0], "anchor": [0.1, 0, 0.02]},
-]}
+GEAR = GEARBOX
 WORDS = [{"word": w, "start": i * 0.5, "end": i * 0.5 + 0.4} for i, w in enumerate(
     "inside the gearbox the drive gear turns the shaft and that shaft spins the wheels every time".split())]
 TIMES = [(0.0, 4.0), (4.0, 8.0)]
@@ -38,38 +32,42 @@ class FakeText:
 
 
 class Blueprints(unittest.TestCase):
-    def test_saved_hubble_is_valid(self):
-        bp = json.loads((catalog.WORLD3D / "blueprints" / "hubble-space-telescope.json").read_text())
-        self.assertEqual(blueprint.problems(bp), [])
-
     def test_problems_are_named(self):
         bad = json.loads(json.dumps(GEAR))
-        bad["parts"][0]["builder"] = "wing"
-        bad["parts"][1]["params"] = []
+        bad["parts"][0]["material"] = "unobtainium"
+        bad["code"] = "import os\n" + bad["code"]
         found = " ".join(blueprint.problems(bad))
-        self.assertIn("unknown builder", found)
-        self.assertIn("needs length", found)
+        self.assertIn("unknown material", found)
+        self.assertIn("import os is not allowed", found)
 
-    def test_retries_with_the_problems_then_saves_once(self):
-        bad = {**GEAR, "sources": []}
-        text = FakeText([bad, GEAR])
+    def test_code_must_be_plain_cad(self):
+        self.assertTrue(blueprint.cad.unsafe("def build():\n    return open('x')"))
+        self.assertTrue(blueprint.cad.unsafe("x = 1"))
+        self.assertEqual(blueprint.cad.unsafe(GEAR["code"]), [])
+
+    def test_build_errors_go_back_then_saves_once(self):
+        broken = {**GEAR, "code": GEAR["code"].replace("return {", "return {'ghost': None, ")}
+        text = FakeText([broken, json.loads(json.dumps(GEAR))])
         with tempfile.TemporaryDirectory() as tmp:
             path, used = blueprint.obtain("Two gears", "", text, Path(tmp))
             self.assertEqual(len(used), 2)
-            self.assertEqual(json.loads(path.read_text())["parts"][0]["params"]["teeth"], 24)
+            saved = json.loads(path.read_text())
+            self.assertTrue(all((path.parent / p["mesh"]).exists() for p in saved["parts"]))
             _, again = blueprint.obtain("Two gears", "", text, Path(tmp))
             self.assertEqual(again, [])
-            self.assertEqual(text.calls, 2)
+
+    def test_writer_is_told_to_use_real_cad(self):
+        self.assertIn("never stacks of boxes", blueprint.instructions())
 
 
 class Director(unittest.TestCase):
     def test_motion_lands_on_the_spoken_word(self):
-        bp = {"parts": blueprint.clean(GEAR)["parts"]}
+        bp = {"parts": GEAR["parts"]}
         shot = director.compile_shot(SHOT, bp, "two-gears", "/tmp", 0.0, 8.0, WORDS)
         explode = next(a for a in shot["actions"] if a["type"] == "explode")
         glow = next(a for a in shot["actions"] if a["type"] == "glow")
         self.assertEqual(explode["start"], 0.0)
-        self.assertEqual(glow["part"], "big")
+        self.assertEqual(glow["part"], "drive_gear")
         self.assertEqual(glow["start"], 2.0)
         self.assertEqual({lb["text"] for lb in shot["labels"]}, {"Drive gear", "Shaft"})
         self.assertTrue(shot["camera"]["fit_exploded"])
@@ -103,44 +101,14 @@ class WholePath(unittest.TestCase):
         self.assertEqual(self.run_path(broken), [])
 
 
-def shell_part(**over):
-    part = {"id": "body", "label": "Body", "builder": "shell", "material": "paint_red",
-            "params": [{"name": "length", "value": 4.4}, {"name": "width", "value": 1.9}, {"name": "height", "value": 1.0}],
-            "profile": {"top": [[0, .5], [1.5, .8], [2.6, .9], [4.4, .6]], "bottom": [[0, .2], [4.4, .2]],
-                        "width": [[0, 1.6], [2.2, 1.9], [4.4, 1.6]]},
-            "at": [0, 0, 0], "turn": [0, 0, 0], "explode": [0, 0, 1], "anchor": [2, 0, .8]}
-    part.update(over)
-    return {"name": "Any car", "sources": ["https://example.org"], "simplified": [], "parts": [part]}
-
-
-class Shapes(unittest.TestCase):
-    def test_curved_body_from_outlines_passes(self):
-        self.assertEqual(blueprint.problems(shell_part()), [])
-
-    def test_body_without_outlines_is_sent_back(self):
-        found = " ".join(blueprint.problems(shell_part(profile={"top": [], "bottom": [], "width": []})))
-        self.assertIn("top points", found)
-
-    def test_outline_outside_the_body_is_sent_back(self):
-        bad = shell_part(profile={"top": [[0, .5], [9, .8]], "bottom": [], "width": [[0, 1], [4.4, 1]]})
-        self.assertIn("between 0 and length", " ".join(blueprint.problems(bad)))
-
-    def test_empty_profile_is_dropped_for_plain_parts(self):
-        cleaned = blueprint.clean({**GEAR, "parts": [{**GEAR["parts"][0], "profile": {"top": [], "bottom": [], "width": []}}]})
-        self.assertNotIn("profile", cleaned["parts"][0])
-
-    def test_writer_is_told_to_use_real_outlines(self):
-        self.assertIn("Never build a curved", blueprint.instructions())
-
-
 class Directing(unittest.TestCase):
     def test_signal_only_leaves_things_that_send(self):
-        bp = {"parts": blueprint.clean(GEAR)["parts"]}
+        bp = {"parts": GEAR["parts"]}
         plan = {**SHOT, "beats": [{"action": "signal", "part_hint": "drive gear", "label": "", "cue_word": "drive"}]}
         self.assertEqual(director.compile_shot(plan, bp, "g", "/tmp", 0, 8, WORDS)["effects"], [])
 
     def test_objects_on_a_floor_turn_and_never_roll(self):
-        bp = {"parts": blueprint.clean(GEAR)["parts"]}
+        bp = {"parts": GEAR["parts"]}
         shot = director.compile_shot(SHOT, bp, "g", "/tmp", 0, 8, WORDS)
         self.assertEqual(shot["actions"][0]["axis"], "z")
         self.assertEqual(shot["object"]["rotate"][:2], [0, 0])
@@ -153,7 +121,7 @@ class Directing(unittest.TestCase):
         self.assertEqual(kept, [("Car", ""), ("Car", "battery"), ("Car", "motor")])
 
     def test_focus_part_is_framed_and_lit(self):
-        bp = {"parts": blueprint.clean(GEAR)["parts"]}
+        bp = {"parts": GEAR["parts"]}
         shot = director.compile_shot({**SHOT, "beats": [], "focus": "shaft"}, bp, "g", "/tmp", 0, 8, WORDS)
         self.assertEqual(shot["camera"]["focus"], "shaft")
         self.assertTrue(any(a["type"] == "glow" and a["part"] == "shaft" for a in shot["actions"]))
