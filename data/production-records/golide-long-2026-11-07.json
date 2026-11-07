@@ -1,0 +1,965 @@
+{
+  "production_id": "golide-long-2026-11-07",
+  "youtube_video_id": "hyj45sYExGU",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "hyj45sYExGU",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-11-07T15:32:06.350585+00:00"
+  },
+  "production": {
+    "format": "long",
+    "title": "$6.3B crypto heist: Experts explain to the biggest theft in history",
+    "status": "scheduled",
+    "scheduled_at": "2026-11-07T17:30:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-long-tue-thu-sat\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-choice\"}"
+  },
+  "narration": "The exchange had already stopped withdrawals,\nbut one of its wallets could still authorize more transactions.\nThat is the detail at the centre of the reported $6.3 billion Binance theft.\nThe attackers did not necessarily steal one master private\nkey and walk straight into a digital vault.\nAccording to Binance’s own investigation,\nthey got into the software and permissions surrounding the vault,\nthen used a trusted signing system to make unauthorized transactions look valid.\nIn the next few minutes, we’ll follow that attack from one compromised work computer,\nthrough stolen credentials and an internal signing service,\nto a permission written onto Ethereum that kept working even after withdrawals were paused.\nAnd we’ll answer the question that sounds simple but isn’t:\nif the exchange stopped withdrawals,\nwhy did it still need another blockchain transaction to take control back?\nLet’s start with the part that confused a lot of people.\nWhen an exchange says withdrawals are suspended,\nyou imagine the cash register being switched off.\nCustomers can no longer request money, so the payments should stop.\nThat is what happened to the normal withdrawal system.\nBut the wallet involved in this incident had\nalso been given another set of instructions, directly on the blockchain.\nThose instructions could operate outside the ordinary withdrawal process.\nA crypto transaction is not just a message saying,\n“please send these coins.” It is a signed instruction that\nthe blockchain accepts as coming from an authorized wallet.\nThe important question is not only who owns the wallet,\nbut which software is allowed to prepare and approve those instructions.\nBinance says the attack began on October 29, 2026,\nwith a compromised employee work computer.\nThe company’s November 3 initial findings say the attacker then moved through internal systems,\neventually reaching the machinery that handles wallet signing.\nSo the story is not a stranger guessing a password at the front door.\nIt is closer to someone getting into an employee’s office,\nfinding the tools used by the security team,\nand then persuading the official door system to approve the wrong person.\nBut how do you get from one work computer\nto a system connected to billions of dollars?\nThat path is where the attack becomes more complicated.\nAccording to Binance, the compromised computer was only the beginning.\nThe attacker used access to an internal AI tool\nto reach additional people who worked on wallet infrastructure.\nFrom there, the attacker discovered a token with permission to deploy containers.\nA container is a packaged piece of software\nthat can run inside an internal system.\nThink of it as a sealed workbench.\nIt contains the program and the parts that program needs,\nbut the workbench can still be connected to powerful tools outside it.\nThe attacker then used stolen credentials to access another engineer’s computer, deployed a container,\nand triggered a malicious script.\nBinance says that script reached the internal wallet-signing service.\nYou might be wondering why a signing service\nwould be able to do this at all.\nThe answer is that the service has a real job.\nIt must authorize legitimate transfers across the exchange’s wallets.\nIf it could only sign one narrow type of customer withdrawal,\nit would be less useful, but also easier to design.\nThe danger appears when the same service can be reached through a different route,\nwith credentials that were trusted but being used by the wrong person.\nThe normal withdrawal screen may say no.\nThe signing service may still receive a request that looks technically valid.\nThis is also why the phrase “the private key was\nnot stolen” does not automatically mean the money was safe.\nA key is one part of the lock.\nThe software deciding when to use that key is another part.\nBinance says the affected hot wallet used multi-party computation, or MPC.\nInstead of keeping one complete private key in one place,\nMPC spreads the signing process across multiple parties and systems.\nNo single person is supposed to hold a\ncomplete key that can immediately empty the wallet.\nThat is stronger than a single password, but it creates a different security boundary.\nIf an attacker gains enough access to the trusted\nsoftware and permissions around the distributed signing process,\nthey may be able to cause an authorized signature without extracting one master key.\nThe missing piece is what that service was authorized to sign.\nOn Ethereum, the answer included a powerful on-chain delegation.\nThe signing service was the hand that approved transactions,\nbut Ethereum had already given that hand a new instruction.\nThe instruction used EIP-7702, a feature described in the official Ethereum specification.\nIt allows an ordinary Ethereum account to point to contract code and say,\nin effect, “when this account is called,\nuse these instructions.” Picture the hot wallet as a vault.\nNormally, the vault follows its owner’s signed instructions.\nWith this delegation,\nthe owner signs a note that tells the\nvault to let a robot operate inside it.\nThe robot is not magic.\nIt is contract code.\nBut calls to the account can then run that code in the account’s context,\ngiving the code access to the account’s assets and capabilities.\nBinance says the attackers used the signing system to write this\nkind of delegation from the affected hot wallet to attacker-controlled code.\nThat meant the attackers did not have to\nkeep asking the normal withdrawal system for permission.\nThey had created another route for the wallet to act.\nThis is the point where the attack stops looking like\na stolen password and starts looking like a permissions failure.\nThe attacker got the official signing machinery to approve a change,\nand that change was then recorded on Ethereum.\nWhy does that matter?\nBecause blockchains do not forget an instruction simply because\na company shuts down one of its computers.\nOnce the delegation was written on-chain, it became part of the wallet’s current state.\nThe attacker’s code could now behave like a robot with a standing order.\nThe exchange could turn off the normal operator,\nbut the robot was no longer waiting for that operator’s dashboard.\nAnd that leaves us with the strange moment in this story: Binance paused withdrawals,\nyet the malicious authorization still had to be removed separately.\nStopping withdrawals closed the exchange’s ordinary payment route.\nIt did not erase the permission that had already been written to Ethereum.\nThat is why the pause was not enough.\nThe malicious delegation operated independently of the normal withdrawal infrastructure.\nIf new assets reached the affected wallet,\nthe attacker’s code could still be positioned to act on them.\nYou might be wondering why Binance could not simply\nchange a password or shut down the compromised container.\nThose steps could block the attacker from using the internal system again,\nbut they could not rewrite the blockchain by themselves.\nThe wallet had to authorize another blockchain transaction.\nUnder EIP-7702, delegating to the 0 address clears the delegation.\nIn everyday terms,\nthe vault had to sign a new note\nsaying that the robot no longer had control.\nBinance says it submitted additional transactions to revoke the malicious authorizations and eventually\nexecuted a new authorization from the affected hot wallet to the 0 address.\nNotice the order here.\nFirst, the company had to regain control of the signing process.\nThen it had to use that control on-chain.\nOnly after that could the old delegation be cleared.\nThis also explains why a distributed wallet system did not make recovery instant.\nMPC may prevent one complete private key from sitting on one laptop,\nbut the organization still needs secure software,\nsecure credentials and secure approval paths around it.\nIf those surrounding permissions are abused,\nthe strongest part of the system may be bypassed in practice.\nThe unanswered question is how much access the\nattacker had before the delegation was created,\nand whether every affected system has now been identified.\nSo what does this incident actually prove?\nFirst, it shows that crypto security is not only about protecting private keys.\nIt is also about protecting the computers, deployment tokens,\ncredentials and signing services that are allowed to use those keys.\nSecond,\n“no master key was stolen” is not the same as “the wallet could not\nbe moved.” Binance’s report describes an attack on the process around the key:\na work computer, internal access, a container-deployment permission,\nstolen credentials and a signing service that could authorize transactions outside the usual path.\nThird, a blockchain permission can outlive the system that created it.\nThe exchange could pause withdrawals in seconds,\nbut the delegation remained until another valid blockchain authorization removed it.\nAnd there is an honest limitation here.\nBinance’s initial findings explain the reported route and the response,\nbut they do not answer every question about how the first computer was compromised,\nhow the credentials were obtained, or why the signing service accepted the unauthorized request.\nThose details matter because the same failure could happen again if the\norganization fixes only the visible container and not the permissions around it.\nThe real lesson is simple: the vault was not protected by one lock.\nIt was protected by a chain of software and people,\nand the attackers found a way to make that chain approve them.\nAt the beginning, withdrawals had stopped,\nbut the wallet was still able to act because\na permission had already been written onto the blockchain.\nThe attackers may not have needed one master key.\nThey needed access to the hands that could make the wallet sign,\nand then they used Ethereum’s own rules to\nleave a robot standing inside the vault.\nBinance eventually had to sign its way back\nout by delegating to the 0 address.\nThat is why this was not just a stolen-key story.\nIt was a compromised computer becoming trusted software, trusted software reaching a signing service,\nand a valid permission becoming the hardest part to undo.\nFollow the channel for the next update,\nbecause the full post-mortem should tell us whether the real failure\nwas finally closed or only the first route into the vault.\n",
+  "research": {
+    "summary": "The incident illustrates a permissions-and-signing failure rather than a simple “the hackers stole the master private key” failure. Binance says attackers first compromised an employee’s work computer, used an internal AI tool to reach other wallet-infrastructure personnel, discovered a container-deployment token, and later used stolen credentials to access another engineer’s computer, deploy a container, and trigger a malicious script. That script reached the internal wallet-signing service, which could authorize transactions outside Binance’s ordinary withdrawal workflow. On Ethereum, the attackers used EIP-7702 to write an on-chain delegation from a hot wallet to attacker-controlled contract code. Because Binance’s wallet used multi-party computation, there was no single private key to extract or immediately use; the attackers instead abused trusted software, credentials, and signing permissions. Suspending withdrawals stopped the normal withdrawal pipeline, but it did not erase the delegation already recorded on-chain. Binance therefore had to submit additional blockchain transactions to revoke the authorization, ultimately clearing the delegation by authorizing the zero address.",
+    "claims": [
+      {
+        "claim": "Binance’s reported attack path began with a compromised work computer. The attacker used an internal AI tool to reach additional wallet-infrastructure employees, found a container-deployment permission token, then used stolen credentials to access another engineer’s computer, deploy a container, and trigger a malicious script.",
+        "source_title": "29 October 2026 Binance Security Incident: Initial Findings and Response Update",
+        "source_url": "https://www.binance.com/en/blog/community/3229153443759566763",
+        "published_or_updated": "November 3, 2026"
+      },
+      {
+        "claim": "The attackers obtained unauthorized access to an internal wallet-signing service and used it to initiate transactions outside Binance’s normal withdrawal process.",
+        "source_title": "29 October 2026 Binance Security Incident: Initial Findings and Response Update",
+        "source_url": "https://www.binance.com/en/blog/community/3229153443759566763",
+        "published_or_updated": "November 3, 2026"
+      },
+      {
+        "claim": "The key security boundary was the signing service and its permissions: access to the service allowed the attacker to cause valid-looking blockchain authorizations and transactions, even though the public report does not say that a single master private key was stolen.",
+        "source_title": "29 October 2026 Binance Security Incident: Initial Findings and Response Update",
+        "source_url": "https://www.binance.com/en/blog/community/3229153443759566763",
+        "published_or_updated": "November 3, 2026"
+      },
+      {
+        "claim": "Binance says the affected hot wallet used multi-party computation, meaning there was no single private key that could be used to immediately revoke the malicious authorization. This supports describing the incident as abuse of a distributed signing process and its surrounding permissions, rather than assuming extraction of one master key.",
+        "source_title": "29 October 2026 Binance Security Incident: Initial Findings and Response Update",
+        "source_url": "https://www.binance.com/en/blog/community/3229153443759566763",
+        "published_or_updated": "November 3, 2026"
+      },
+      {
+        "claim": "EIP-7702 allows an externally owned account to set a delegation pointer to contract code. Calls to the account can then execute the delegated code in the account’s context, allowing the account’s assets and capabilities to be controlled through that code.",
+        "source_title": "EIP-7702: Set Code for EOAs",
+        "source_url": "https://eips.ethereum.org/EIPS/eip-7702",
+        "published_or_updated": "May 7, 2024"
+      },
+      {
+        "claim": "The delegation is persistent on-chain until changed. EIP-7702 specifies that delegating to the zero address clears the delegation, which is why revocation requires a new blockchain authorization rather than merely shutting down an internal service.",
+        "source_title": "EIP-7702: Set Code for EOAs",
+        "source_url": "https://eips.ethereum.org/EIPS/eip-7702",
+        "published_or_updated": "May 7, 2024"
+      },
+      {
+        "claim": "Stopping withdrawals was not sufficient because the malicious EIP-7702 authorizations already existed on-chain and operated independently of Binance’s normal withdrawal infrastructure. Binance says it had to submit additional transactions to revoke them.",
+        "source_title": "29 October 2026 Binance Security Incident: Initial Findings and Response Update",
+        "source_url": "https://www.binance.com/en/blog/community/3229153443759566763",
+        "published_or_updated": "November 3, 2026"
+      },
+      {
+        "claim": "Binance reports that it eventually executed a new authorization from the affected hot wallet to the zero address, clearing the EIP-7702 delegation.",
+        "source_title": "29 October 2026 Binance Security Incident: Initial Findings and Response Update",
+        "source_url": "https://www.binance.com/en/blog/community/3229153443759566763",
+        "published_or_updated": "November 3, 2026"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "$6.3B crypto heist: Experts explain to the biggest theft in history",
+    "description": "This video explains the reported $6.3 billion Binance theft and how attackers moved from a compromised employee computer to stolen credentials, an internal wallet-signing service, and an Ethereum hot wallet delegation. The attack reportedly used trusted software and permissions rather than stealing one complete master private key.\n\nYou’ll see why pausing withdrawals was not enough, how EIP-7702 gave attacker-controlled code a route into the wallet, and why Binance needed to authorize another blockchain transaction to clear the malicious delegation. The incident shows how crypto security depends on the entire chain of computers, credentials, software, and signing systems around a private key.\n\nChapters\n0:00 Intro\n0:51 The Stopped Withdrawals\n2:13 The Compromised Computer\n4:21 The Signing Service\n6:05 The Blockchain Robot\n7:48 Why Stopping Failed\n9:13 Intro\n\n#BinanceHack #EIP7702 #CryptoSecurity #Ethereum #CryptoHack #BlockchainSecurity #Cybersecurity",
+    "tags": [
+      "Binance hack",
+      "Binance hack explained",
+      "6.3 billion Binance hack",
+      "EIP-7702 Binance hack",
+      "EIP-7702 explained",
+      "Binance hot wallet",
+      "Binance security breach",
+      "crypto hack explained",
+      "crypto exchange hack",
+      "Ethereum wallet hack",
+      "Ethereum delegation",
+      "hot wallet attack",
+      "MPC wallet security",
+      "MPC wallet hack",
+      "private key security",
+      "wallet signing service",
+      "crypto wallet exploit",
+      "smart contract exploit",
+      "Ethereum authorization",
+      "blockchain security"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [
+      "0:00 Intro",
+      "0:51 The Stopped Withdrawals",
+      "2:13 The Compromised Computer",
+      "4:21 The Signing Service",
+      "6:05 The Blockchain Robot",
+      "7:48 Why Stopping Failed",
+      "9:13 Intro"
+    ],
+    "keywords": [
+      "Binance hack explained",
+      "Binance $6.3 billion hack",
+      "EIP-7702 Binance hack",
+      "Binance hot wallet hack",
+      "EIP-7702 explained",
+      "crypto hack explained",
+      "Ethereum wallet delegation",
+      "MPC wallet security",
+      "Binance security breach",
+      "crypto exchange hack",
+      "hot wallet attack",
+      "smart contract wallet exploit",
+      "withdrawals paused Binance",
+      "Ethereum authorization",
+      "private key not stolen"
+    ],
+    "hashtags": [
+      "#BinanceHack",
+      "#EIP7702",
+      "#CryptoSecurity",
+      "#Ethereum",
+      "#CryptoHack",
+      "#BlockchainSecurity",
+      "#Cybersecurity"
+    ],
+    "format": "long",
+    "title_description_language": "en",
+    "seo_body": "This video explains the reported $6.3 billion Binance theft and how attackers moved from a compromised employee computer to stolen credentials, an internal wallet-signing service, and an Ethereum hot wallet delegation. The attack reportedly used trusted software and permissions rather than stealing one complete master private key.\n\nYou’ll see why pausing withdrawals was not enough, how EIP-7702 gave attacker-controlled code a route into the wallet, and why Binance needed to authorize another blockchain transaction to clear the malicious delegation. The incident shows how crypto security depends on the entire chain of computers, credentials, software, and signing systems around a private key."
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "Binance’s reported attack path began with a compromised work computer. The attacker used an internal AI tool to reach additional wallet-infrastructure employees, found a container-deployment permission token, then used stolen credentials to access another engineer’s computer, deploy a container, and trigger a malicious script.",
+        "source_title": "29 October 2026 Binance Security Incident: Initial Findings and Response Update",
+        "source_url": "https://www.binance.com/en/blog/community/3229153443759566763",
+        "published_or_updated": "November 3, 2026"
+      },
+      {
+        "claim": "The attackers obtained unauthorized access to an internal wallet-signing service and used it to initiate transactions outside Binance’s normal withdrawal process.",
+        "source_title": "29 October 2026 Binance Security Incident: Initial Findings and Response Update",
+        "source_url": "https://www.binance.com/en/blog/community/3229153443759566763",
+        "published_or_updated": "November 3, 2026"
+      },
+      {
+        "claim": "The key security boundary was the signing service and its permissions: access to the service allowed the attacker to cause valid-looking blockchain authorizations and transactions, even though the public report does not say that a single master private key was stolen.",
+        "source_title": "29 October 2026 Binance Security Incident: Initial Findings and Response Update",
+        "source_url": "https://www.binance.com/en/blog/community/3229153443759566763",
+        "published_or_updated": "November 3, 2026"
+      },
+      {
+        "claim": "Binance says the affected hot wallet used multi-party computation, meaning there was no single private key that could be used to immediately revoke the malicious authorization. This supports describing the incident as abuse of a distributed signing process and its surrounding permissions, rather than assuming extraction of one master key.",
+        "source_title": "29 October 2026 Binance Security Incident: Initial Findings and Response Update",
+        "source_url": "https://www.binance.com/en/blog/community/3229153443759566763",
+        "published_or_updated": "November 3, 2026"
+      },
+      {
+        "claim": "EIP-7702 allows an externally owned account to set a delegation pointer to contract code. Calls to the account can then execute the delegated code in the account’s context, allowing the account’s assets and capabilities to be controlled through that code.",
+        "source_title": "EIP-7702: Set Code for EOAs",
+        "source_url": "https://eips.ethereum.org/EIPS/eip-7702",
+        "published_or_updated": "May 7, 2024"
+      },
+      {
+        "claim": "The delegation is persistent on-chain until changed. EIP-7702 specifies that delegating to the zero address clears the delegation, which is why revocation requires a new blockchain authorization rather than merely shutting down an internal service.",
+        "source_title": "EIP-7702: Set Code for EOAs",
+        "source_url": "https://eips.ethereum.org/EIPS/eip-7702",
+        "published_or_updated": "May 7, 2024"
+      },
+      {
+        "claim": "Stopping withdrawals was not sufficient because the malicious EIP-7702 authorizations already existed on-chain and operated independently of Binance’s normal withdrawal infrastructure. Binance says it had to submit additional transactions to revoke them.",
+        "source_title": "29 October 2026 Binance Security Incident: Initial Findings and Response Update",
+        "source_url": "https://www.binance.com/en/blog/community/3229153443759566763",
+        "published_or_updated": "November 3, 2026"
+      },
+      {
+        "claim": "Binance reports that it eventually executed a new authorization from the affected hot wallet to the zero address, clearing the EIP-7702 delegation.",
+        "source_title": "29 October 2026 Binance Security Incident: Initial Findings and Response Update",
+        "source_url": "https://www.binance.com/en/blog/community/3229153443759566763",
+        "published_or_updated": "November 3, 2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "Binance October 29 2026 hack hot wallets compromised laptop service container EIP-7702 official investigation",
+      "score": 75.0,
+      "verdict": "pass",
+      "recent_videos": 1,
+      "median_views_per_day": 208363.19999999998,
+      "top_views_per_day": 208363.19999999998,
+      "market_coverage": 1,
+      "title_query_overlap": 1.0,
+      "measured_at": "2026-11-07T04:02:45.345063+00:00",
+      "signal_type": "youtube-breakout-v1"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.9,
+      "true_peak_dbtp": -1.21,
+      "loudness_range": 2.3
+    },
+    "editorial": {
+      "beats": 173,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-11-07T15:31:43.559051+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-choice",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-long-tue-thu-sat"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-long-2026-11-07",
+    "created_at": "2026-11-07T15:31:50.503829+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-11-07T17:30:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "8cf23edef39ef22703ce003ca5df5d36a8843bc40fcfd995fde2238b371543fb",
+        "bytes": 208741505
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "e816ad4eb1ac881eb46b4db7b35ee727751f9f22195bb92937432619d7d78c31",
+        "bytes": 1033166
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "63e223409a6e954475efdb5d7c5785153da7887854f56db66765927e78aa496c",
+        "bytes": 3443
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "56f042d0c96d09df6ebffd7443fe26fb69491a99b369ab83bef25f20b451cea7",
+        "bytes": 22119
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "ffb3d7e565b85d8060db5405e105d2aad34ec3ccb1458beb924d58e30d3c1fd8",
+        "bytes": 5559
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "e568695622564b56aeff742990f4d3a359ac089e24077188b65d6c9b82bf1816",
+        "bytes": 4818
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "ce5058101bc8e34bda859d2ec8e15958d4a8710f7c605360a60cc04042a47d76",
+        "bytes": 380
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "94607ffcf4c4cff9d88df555c75d33b5a411fe79074765634cbf98f2ed5b8cee",
+        "bytes": 277
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-titles",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 306.0,
+      "cached_input_units": 0.0,
+      "output_units": 186.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000284,
+      "created_at": "2026-11-07T04:02:37.796893+00:00"
+    },
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 23708.0,
+      "cached_input_units": 0.0,
+      "output_units": 2381.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007599,
+      "created_at": "2026-11-07T04:02:39.124534+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-07T04:02:39.126782+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 16829.0,
+      "cached_input_units": 0.0,
+      "output_units": 1879.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005621,
+      "created_at": "2026-11-07T04:03:07.864872+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-07T04:03:07.867180+00:00"
+    },
+    {
+      "stage": "script-story",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 20154.0,
+      "cached_input_units": 0.0,
+      "output_units": 3679.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008446,
+      "created_at": "2026-11-07T04:03:58.270941+00:00"
+    },
+    {
+      "stage": "script-board",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2636.0,
+      "cached_input_units": 0.0,
+      "output_units": 5313.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006903,
+      "created_at": "2026-11-07T04:04:35.131670+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 20154.0,
+      "cached_input_units": 0.0,
+      "output_units": 3679.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008446,
+      "created_at": "2026-11-07T04:04:35.136672+00:00"
+    },
+    {
+      "stage": "visual-plan-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-07T14:28:37.019821+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 23537.0,
+      "cached_input_units": 0.0,
+      "output_units": 6189.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.012134,
+      "created_at": "2026-11-07T14:28:37.025112+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:29:01.029933+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:29:23.408162+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:29:44.689383+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:30:05.677428+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:30:29.805453+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:30:51.816994+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:31:16.942480+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:31:39.400285+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:31:59.219141+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:32:23.931527+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:32:51.615233+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:33:16.088863+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:33:40.410131+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:34:04.235233+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:34:29.112354+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:34:58.915399+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:35:25.489342+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:35:52.671504+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:36:20.402851+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:37:07.666339+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:37:31.195115+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:37:54.060537+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:38:19.728665+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:38:48.789979+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:39:17.222059+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:39:41.276973+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:40:07.707951+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:40:30.748986+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:40:58.333040+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:41:28.355682+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:41:54.890559+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:42:15.179567+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:42:44.156088+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:43:06.184647+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:43:34.327839+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:44:00.276336+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:44:25.629874+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:44:46.736767+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T14:45:33.294325+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 15175.0,
+      "cached_input_units": 0.0,
+      "output_units": 1059.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004306,
+      "created_at": "2026-11-07T15:30:10.077365+00:00"
+    },
+    {
+      "stage": "thumbnail",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-07T15:30:38.857621+00:00"
+    }
+  ],
+  "recorded_at": "2026-11-07T15:32:06.355001+00:00"
+}

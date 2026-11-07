@@ -9,7 +9,7 @@
   "budget_class": "scheduled",
   "purpose": "channel-automation",
   "generate_at": "2026-11-07T04:00:00Z",
-  "max_cost_usd": 6.0,
+  "max_cost_usd": 6,
   "production_authorized": true,
   "output_destination": "render-and-upload",
   "owner_voice_required": true,
@@ -288,5 +288,12 @@
     "measured_at": "2026-11-07T04:02:45.345063+00:00",
     "signal_type": "youtube-breakout-v1"
   },
-  "selected_topic_source": "https://www.binance.com/en/blog/community/3229153443759566763"
+  "selected_topic_source": "https://www.binance.com/en/blog/community/3229153443759566763",
+  "owner_voice_media_ref": "r2://temp/2026/11/07/3a47d0eccf9d47b6b8a37238ab80d9d8-6.3-B-money-heist-.mp3",
+  "platforms": [
+    "youtube",
+    "instagram",
+    "facebook",
+    "linkedin"
+  ]
 }

@@ -31,3 +31,5 @@ workflow  # seen in your recording and the research sources
 codebase  # seen in your recording and the research sources and the owner-approved script
 config  # seen in your recording and the owner-approved script
 sandboxing  # seen in your recording and the research sources and the owner-approved script
+blockchain  # seen in your recording and the research sources
+blockchains  # seen in your recording
