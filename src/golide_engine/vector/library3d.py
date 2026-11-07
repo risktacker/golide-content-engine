@@ -22,6 +22,7 @@ ROOT = Path(__file__).resolve().parents[3]
 INDEX = ROOT / "config" / "library3d.json"
 CACHE = Path(os.environ.get("GOLIDE_LIBRARY3D", Path.home() / ".cache" / "golide-library3d"))
 FACE_BUDGET = 60000          # whole object, after simplifying; small pieces are never simplified
+MAX_GROUPS = 6              # parts kept when a model gives no part list (the rest join the body)
 KEEP_WHOLE = 1500           # a piece this small keeps every face (simplifying thin panels tears them)
 
 
@@ -44,8 +45,44 @@ def path(key: str) -> Path:
 
 
 def available(name: str) -> bool:
+    """True when the object is in the library and its file is (or can be made) local."""
     key = find(name)
-    return key is not None and path(key).exists()
+    return key is not None and (path(key).exists() or fetch(key))
+
+
+_FAILED: set = set()
+
+
+def fetch(key: str) -> bool:
+    """Bring one model file into the cache with a sparse git checkout (only that file). Any
+    failure just means the object is unavailable, so the scene falls back to its drawing."""
+    entry = index()[key]
+    repo = json.loads(INDEX.read_text(encoding="utf-8")).get("_sources", {}).get(entry["source"])
+    if not repo or key in _FAILED or os.environ.get("GOLIDE_LIBRARY3D_OFFLINE"):
+        return False
+    import subprocess
+    import tempfile
+
+    target = path(key)
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            run = lambda *a: subprocess.run(a, cwd=tmp, check=True, capture_output=True, timeout=300)
+            run("git", "clone", "-q", "--depth", "1", "--filter=blob:none", "--no-checkout", repo, "r")
+            r = Path(tmp) / "r"
+            subprocess.run(["git", "sparse-checkout", "set", "--no-cone", entry["repo_path"]], cwd=r,
+                           check=True, capture_output=True, timeout=300)
+            subprocess.run(["git", "checkout", "-q"], cwd=r, check=True, capture_output=True, timeout=300)
+            got = r / entry["repo_path"]
+            target.parent.mkdir(parents=True, exist_ok=True)
+            got.replace(target)
+        return target.exists()
+    except Exception:
+        _FAILED.add(key)
+        return False
+
+
+def names() -> list[str]:
+    return sorted(index())
 
 
 def _simplify(vertices: np.ndarray, faces: np.ndarray, target: int) -> tuple[np.ndarray, np.ndarray]:
@@ -70,6 +107,33 @@ def _two_sided(vertices: np.ndarray, faces: np.ndarray) -> tuple[np.ndarray, np.
     return np.vstack([vertices, back]), np.vstack([faces, back_faces])
 
 
+def _clusters(meshes: list) -> dict[str, list]:
+    """Split meshes into their connected pieces and gather the pieces into up to MAX_GROUPS
+    clusters by position (k-means on piece centres, weighted by size), so any model opens up."""
+    import trimesh
+
+    pieces = []
+    for v, f in meshes:
+        for piece in trimesh.Trimesh(v, f, process=False).split(only_watertight=False):
+            pieces.append((np.asarray(piece.vertices), np.asarray(piece.faces)))
+    if len(pieces) < 2:
+        return {"body": meshes}
+    centres = np.array([v.mean(0) for v, _ in pieces])
+    weight = np.array([len(f) for _, f in pieces], float)
+    k = min(MAX_GROUPS, len(pieces))
+    rng = np.random.default_rng(7)
+    seeds = centres[rng.choice(len(pieces), k, replace=False, p=weight / weight.sum())]
+    for _ in range(25):
+        label = np.argmin(((centres[:, None] - seeds[None]) ** 2).sum(-1), axis=1)
+        for j in range(k):
+            if (label == j).any():
+                seeds[j] = np.average(centres[label == j], axis=0, weights=weight[label == j])
+    out: dict[str, list] = {}
+    for piece, j in zip(pieces, label):
+        out.setdefault(f"section {j + 1}", []).append(piece)
+    return out
+
+
 @lru_cache(maxsize=16)
 def parts(key: str) -> tuple:
     """((points, triangles, gold, mover), ...): Z-up, longest side 3 units, centred, standing on
@@ -78,16 +142,34 @@ def parts(key: str) -> tuple:
 
     entry = index()[key]
     scene = trimesh.load(str(path(key)), force="scene")
-    rules = [(label, [re.compile(p) for p in pats]) for label, pats in entry["parts"].items()]
-    grouped: dict[str, list] = {label: [] for label, _ in rules}
+    meshes_by_node = []
     for node in scene.graph.nodes_geometry:
         transform, geometry = scene.graph[node]
         mesh = scene.geometry[geometry]
         if not hasattr(mesh, "faces") or len(mesh.faces) == 0:
             continue
-        label = next(label for label, pats in rules if any(p.search(node) for p in pats))
         verts = trimesh.transformations.transform_points(mesh.vertices, transform)
-        grouped[label].append((verts, np.asarray(mesh.faces)))
+        meshes_by_node.append((node, verts, np.asarray(mesh.faces)))
+    grouped: dict[str, list] = {}
+    if entry.get("parts"):                      # named parts from the index
+        rules = [(label, [re.compile(p) for p in pats]) for label, pats in entry["parts"].items()]
+        grouped = {label: [] for label, _ in rules}
+        for node, verts, faces in meshes_by_node:
+            label = next((label for label, pats in rules if any(p.search(node) for p in pats)), "body")
+            grouped.setdefault(label, []).append((verts, faces))
+    else:                                       # any model: its own node names, biggest groups kept
+        stems: dict[str, list] = {}
+        for node, verts, faces in meshes_by_node:
+            stem = re.sub(r"(\.\d+|_[0-9a-f]{6})+$", "", node)
+            stems.setdefault(stem, []).append((verts, faces))
+        ranked = sorted(stems, key=lambda k: -sum(len(f) for _, f in stems[k]))
+        for i, stem in enumerate(ranked):
+            grouped.setdefault(stem if i < MAX_GROUPS else "body", []).extend(stems[stem])
+        if len(ranked) < 3:                     # one-piece model: split it by where its pieces sit
+            grouped = _clusters([m for meshes in stems.values() for m in meshes])
+            ranked = sorted(grouped, key=lambda k: -sum(len(f) for _, f in grouped[k]))
+        if not entry.get("gold") and len(ranked) > 1:
+            entry = {**entry, "gold": ranked[1], "mover": ranked[1]}
     total = sum(len(f) for meshes in grouped.values() for _, f in meshes) or 1
     ratio = min(1.0, FACE_BUDGET / total)
     out = []

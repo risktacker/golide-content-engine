@@ -2,20 +2,117 @@
   "_about": "Ready-made 3D objects for vector/motion3d. Only licence-clear sources: CC0 (Kenney, Quaternius, Poly Haven, Smithsonian CC0-marked) or NASA (free under NASA media rules: no endorsement, NASA insignia never shown). Textures are never used, so printed logos and insignia never appear. Files are fetched into the cache by tools/library3d_fetch.py, never stored in git.",
   "objects": {
     "mars rover": {
-      "source": "nasa", "licence": "NASA media guidelines",
+      "source": "nasa",
+      "licence": "NASA media guidelines",
       "repo_path": "3D Models/Mars 2020 Perseverance Rover/Mars 2020 Perseverance Rover.glb",
-      "aliases": ["perseverance", "perseverance rover", "mars 2020 rover", "rover"],
+      "aliases": [
+        "perseverance",
+        "perseverance rover",
+        "mars 2020 rover",
+        "rover"
+      ],
       "parts": {
-        "wheels": ["^Wheels_objs"],
-        "suspension": ["^suspension", "^bottom"],
-        "power source": ["^rtg"],
-        "robotic arm": ["^arm", "^turret", "^PIXL", "^WATSON", "^probe"],
-        "mast cameras": ["^head", "^NavCams", "^Mastcam", "^lens"],
-        "antennas": ["^antenna"],
-        "body": [".*"]
+        "wheels": [
+          "^Wheels_objs"
+        ],
+        "suspension": [
+          "^suspension",
+          "^bottom"
+        ],
+        "power source": [
+          "^rtg"
+        ],
+        "robotic arm": [
+          "^arm",
+          "^turret",
+          "^PIXL",
+          "^WATSON",
+          "^probe"
+        ],
+        "mast cameras": [
+          "^head",
+          "^NavCams",
+          "^Mastcam",
+          "^lens"
+        ],
+        "antennas": [
+          "^antenna"
+        ],
+        "body": [
+          ".*"
+        ]
       },
       "gold": "robotic arm",
       "mover": "robotic arm"
+    },
+    "hubble space telescope": {
+      "source": "nasa",
+      "licence": "NASA media guidelines",
+      "repo_path": "3D Models/Hubble Space Telescope (A)/Hubble Space Telescope (A).glb",
+      "aliases": [
+        "hubble",
+        "hubble telescope"
+      ]
+    },
+    "james webb space telescope": {
+      "source": "nasa",
+      "licence": "NASA media guidelines",
+      "repo_path": "3D Models/James Webb Space Telescope (A)/James Webb Space Telescope (A).glb",
+      "aliases": [
+        "james webb",
+        "webb telescope",
+        "jwst"
+      ]
+    },
+    "international space station": {
+      "source": "nasa",
+      "licence": "NASA media guidelines",
+      "repo_path": "3D Models/International Space Station (ISS) (A)/International Space Station (ISS) (A).glb",
+      "aliases": [
+        "iss",
+        "space station"
+      ]
+    },
+    "voyager probe": {
+      "source": "nasa",
+      "licence": "NASA media guidelines",
+      "repo_path": "3D Models/Voyager Probe (A)/Voyager Probe (A).glb",
+      "aliases": [
+        "voyager",
+        "voyager 1",
+        "voyager 2"
+      ]
+    },
+    "apollo lunar module": {
+      "source": "nasa",
+      "licence": "NASA media guidelines",
+      "repo_path": "3D Models/Apollo Lunar Module/Apollo Lunar Module.glb",
+      "aliases": [
+        "lunar module",
+        "lunar lander",
+        "apollo lander"
+      ]
+    },
+    "crawler transporter": {
+      "source": "nasa",
+      "licence": "NASA media guidelines",
+      "repo_path": "3D Models/Crawler/Crawler.glb",
+      "aliases": [
+        "crawler",
+        "nasa crawler"
+      ]
+    },
+    "juno spacecraft": {
+      "source": "nasa",
+      "licence": "NASA media guidelines",
+      "repo_path": "3D Models/Juno (B)/Juno (B).glb",
+      "aliases": [
+        "juno",
+        "juno probe"
+      ]
     }
+  },
+  "_sources": {
+    "nasa": "https://github.com/nasa/NASA-3D-Resources"
   }
 }
