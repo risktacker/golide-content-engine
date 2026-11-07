@@ -1,0 +1,5016 @@
+{
+  "trial": true,
+  "title": "Elon Musk's Flying Roadster: How the Rocket Car Really Works",
+  "shots_rendered": 5,
+  "subjects": [
+    "Tesla Roadster electric drivetrain",
+    "Tesla Roadster fan system",
+    "Rocket Roadster",
+    "Rocket Roadster high-pressure tank",
+    "Rocket Roadster cold gas nozzle"
+  ],
+  "stills": 15,
+  "spent_dollars": 0.1309,
+  "calls": [
+    {
+      "input": 2286,
+      "cached": 0,
+      "output": 1960,
+      "searches": 0,
+      "dollars": 0.0028
+    },
+    {
+      "input": 25414,
+      "cached": 0,
+      "output": 2706,
+      "searches": 3,
+      "dollars": 0.0383
+    },
+    {
+      "input": 15063,
+      "cached": 5689,
+      "output": 4608,
+      "searches": 1,
+      "dollars": 0.0175
+    },
+    {
+      "input": 19137,
+      "cached": 5689,
+      "output": 4275,
+      "searches": 2,
+      "dollars": 0.0279
+    },
+    {
+      "input": 19514,
+      "cached": 5689,
+      "output": 3487,
+      "searches": 2,
+      "dollars": 0.0271
+    },
+    {
+      "input": 15017,
+      "cached": 5689,
+      "output": 4429,
+      "searches": 1,
+      "dollars": 0.0173
+    }
+  ],
+  "records": [
+    {
+      "stage": "world3d-director",
+      "value": {
+        "shots": [
+          {
+            "first_line": 5,
+            "last_line": 6,
+            "subject": "Tesla Roadster electric drivetrain",
+            "world": "studio",
+            "move": "orbit_slow",
+            "beats": [
+              {
+                "action": "label",
+                "part_hint": "battery",
+                "label": "Battery",
+                "cue_word": "battery"
+              },
+              {
+                "action": "label",
+                "part_hint": "power electronics",
+                "label": "Power electronics",
+                "cue_word": "power electronics"
+              },
+              {
+                "action": "label",
+                "part_hint": "motors",
+                "label": "Motors",
+                "cue_word": "motors"
+              }
+            ]
+          },
+          {
+            "first_line": 11,
+            "last_line": 11,
+            "subject": "Tesla Roadster fan system",
+            "world": "studio",
+            "move": "push_in",
+            "beats": [
+              {
+                "action": "explode",
+                "part_hint": "air channel beneath car",
+                "label": "",
+                "cue_word": "air"
+              },
+              {
+                "action": "label",
+                "part_hint": "bottom seal",
+                "label": "Seal",
+                "cue_word": "seal"
+              }
+            ]
+          },
+          {
+            "first_line": 20,
+            "last_line": 20,
+            "subject": "Rocket Roadster",
+            "world": "studio",
+            "move": "orbit_wide",
+            "beats": [
+              {
+                "action": "label",
+                "part_hint": "single seat",
+                "label": "One seat",
+                "cue_word": "one seat"
+              },
+              {
+                "action": "label",
+                "part_hint": "lift and rotation thrusters",
+                "label": "Thrusters",
+                "cue_word": "thrusters"
+              }
+            ]
+          },
+          {
+            "first_line": 21,
+            "last_line": 21,
+            "subject": "Rocket Roadster high-pressure tank",
+            "world": "studio",
+            "move": "pull_out",
+            "beats": [
+              {
+                "action": "explode",
+                "part_hint": "high-pressure tanks",
+                "label": "",
+                "cue_word": "tanks"
+              },
+              {
+                "action": "label",
+                "part_hint": "cold gas thrusters",
+                "label": "Cold gas thrusters",
+                "cue_word": "cold gas thrusters"
+              }
+            ]
+          },
+          {
+            "first_line": 22,
+            "last_line": 22,
+            "subject": "Rocket Roadster cold gas nozzle",
+            "world": "studio",
+            "move": "push_in",
+            "beats": [
+              {
+                "action": "label",
+                "part_hint": "gas",
+                "label": "Gas",
+                "cue_word": "gas"
+              },
+              {
+                "action": "label",
+                "part_hint": "nozzles",
+                "label": "Nozzles",
+                "cue_word": "nozzles"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "stage": "world3d-blueprint",
+      "value": {
+        "name": "Tesla Roadster electric drivetrain",
+        "sources": [
+          "https://service.tesla.com/docs/Public/Roadster/ServiceManual/en-us/GUID-4E037ADB-D0F4-48A0-9261-1083193D4C1B.html",
+          "https://www.sec.gov/Archives/edgar/data/1318605/000119312513096241/d452995d10k.htm",
+          "https://www.tesla.com/roadster"
+        ],
+        "simplified": [
+          "This blueprint uses the documented first-generation Tesla Roadster drivetrain architecture: a 53 kWh battery pack, power electronics, one three-phase induction motor, a single-speed gearbox and rear drive hardware.",
+          "The exact production dimensions of the newer Rocket Roadster drivetrain have not been published, so its thrusters, suction fans and any newer motor layout are omitted.",
+          "The battery-pack and component dimensions are simplified estimates for visual explanation; the overall first-generation Roadster dimensions are based on Tesla service data.",
+          "High-voltage cables, cooling pipes, software and internal battery cells are grouped into larger visible components."
+        ],
+        "parts": [
+          {
+            "id": "chassis",
+            "label": "aluminium vehicle floor",
+            "builder": "shell",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 3.95
+              },
+              {
+                "name": "width",
+                "value": 1.85
+              },
+              {
+                "name": "height",
+                "value": 0.35
+              },
+              {
+                "name": "roundness",
+                "value": 0.1
+              }
+            ],
+            "profile": {
+              "top": [
+                [
+                  0,
+                  0.35
+                ],
+                [
+                  0.3,
+                  0.38
+                ],
+                [
+                  0.8,
+                  0.4
+                ],
+                [
+                  1.4,
+                  0.42
+                ],
+                [
+                  2.2,
+                  0.42
+                ],
+                [
+                  3,
+                  0.4
+                ],
+                [
+                  3.6,
+                  0.38
+                ],
+                [
+                  3.95,
+                  0.35
+                ]
+              ],
+              "bottom": [
+                [
+                  0,
+                  0.13
+                ],
+                [
+                  0.4,
+                  0.13
+                ],
+                [
+                  1,
+                  0.12
+                ],
+                [
+                  1.8,
+                  0.12
+                ],
+                [
+                  2.7,
+                  0.12
+                ],
+                [
+                  3.4,
+                  0.13
+                ],
+                [
+                  3.95,
+                  0.16
+                ]
+              ],
+              "width": [
+                [
+                  0,
+                  1.25
+                ],
+                [
+                  0.35,
+                  1.55
+                ],
+                [
+                  0.8,
+                  1.78
+                ],
+                [
+                  1.5,
+                  1.85
+                ],
+                [
+                  2.5,
+                  1.85
+                ],
+                [
+                  3.2,
+                  1.8
+                ],
+                [
+                  3.95,
+                  1.55
+                ]
+              ]
+            },
+            "at": [
+              0,
+              0,
+              0.13
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              0
+            ],
+            "anchor": [
+              1.8,
+              0,
+              0.2
+            ]
+          },
+          {
+            "id": "battery",
+            "label": "53 kWh battery pack",
+            "builder": "box",
+            "material": "black_inner",
+            "params": [
+              {
+                "name": "length",
+                "value": 2.15
+              },
+              {
+                "name": "width",
+                "value": 1.42
+              },
+              {
+                "name": "height",
+                "value": 0.22
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              0.72,
+              0,
+              0.43
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              0.35
+            ],
+            "anchor": [
+              1.05,
+              0,
+              0.11
+            ]
+          },
+          {
+            "id": "pem",
+            "label": "power electronics module",
+            "builder": "box",
+            "material": "copper",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.55
+              },
+              {
+                "name": "width",
+                "value": 0.48
+              },
+              {
+                "name": "height",
+                "value": 0.22
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              2.55,
+              0,
+              0.48
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0.45,
+              0.25
+            ],
+            "anchor": [
+              0.28,
+              0,
+              0.11
+            ]
+          },
+          {
+            "id": "motor",
+            "label": "AC induction motor",
+            "builder": "barrel",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.48
+              },
+              {
+                "name": "diameter",
+                "value": 0.38
+              },
+              {
+                "name": "rings",
+                "value": 3
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              2.92,
+              0,
+              0.57
+            ],
+            "turn": [
+              0,
+              90,
+              0
+            ],
+            "explode": [
+              0,
+              0.42,
+              0.25
+            ],
+            "anchor": [
+              0.24,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "gearbox",
+            "label": "single-speed gearbox",
+            "builder": "box",
+            "material": "steel",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.48
+              },
+              {
+                "name": "width",
+                "value": 0.62
+              },
+              {
+                "name": "height",
+                "value": 0.32
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              3.32,
+              0,
+              0.43
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0.48,
+              0.25
+            ],
+            "anchor": [
+              0.24,
+              0,
+              0.16
+            ]
+          },
+          {
+            "id": "differential",
+            "label": "rear differential",
+            "builder": "sphere",
+            "material": "steel",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 0.42
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              3.62,
+              0,
+              0.55
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0.5,
+              0.3
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "front_left",
+            "label": "front left tire and wheel",
+            "builder": "wheel",
+            "material": "rubber",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 0.61
+              },
+              {
+                "name": "width",
+                "value": 0.23
+              },
+              {
+                "name": "rim_diameter",
+                "value": 0.43
+              },
+              {
+                "name": "spokes",
+                "value": 10
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              0.88,
+              -0.73,
+              0.305
+            ],
+            "turn": [
+              90,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              -0.35,
+              0
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "front_right",
+            "label": "front right tire and wheel",
+            "builder": "wheel",
+            "material": "rubber",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 0.61
+              },
+              {
+                "name": "width",
+                "value": 0.23
+              },
+              {
+                "name": "rim_diameter",
+                "value": 0.43
+              },
+              {
+                "name": "spokes",
+                "value": 10
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              0.88,
+              0.73,
+              0.305
+            ],
+            "turn": [
+              90,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0.35,
+              0
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "rear_left",
+            "label": "rear left driven tire and wheel",
+            "builder": "wheel",
+            "material": "rubber",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 0.61
+              },
+              {
+                "name": "width",
+                "value": 0.25
+              },
+              {
+                "name": "rim_diameter",
+                "value": 0.43
+              },
+              {
+                "name": "spokes",
+                "value": 10
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              3.24,
+              -0.74,
+              0.305
+            ],
+            "turn": [
+              90,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              -0.42,
+              0
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "rear_right",
+            "label": "rear right driven tire and wheel",
+            "builder": "wheel",
+            "material": "rubber",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 0.61
+              },
+              {
+                "name": "width",
+                "value": 0.25
+              },
+              {
+                "name": "rim_diameter",
+                "value": 0.43
+              },
+              {
+                "name": "spokes",
+                "value": 10
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              3.24,
+              0.74,
+              0.305
+            ],
+            "turn": [
+              90,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0.42,
+              0
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "rear_shafts",
+            "label": "half-shafts to rear wheels",
+            "builder": "barrel",
+            "material": "steel",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.74
+              },
+              {
+                "name": "diameter",
+                "value": 0.07
+              },
+              {
+                "name": "rings",
+                "value": 2
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              3.62,
+              0,
+              0.55
+            ],
+            "turn": [
+              0,
+              90,
+              0
+            ],
+            "explode": [
+              0,
+              0.65,
+              0.35
+            ],
+            "anchor": [
+              0.35,
+              0,
+              0
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "stage": "world3d-blueprint",
+      "value": {
+        "name": "Tesla Roadster fan-and-thruster system",
+        "sources": [
+          "https://www.tesla.com/roadster?redirect=no",
+          "https://apnews.com/article/7d5f19665435b7408025bfb7a2f2f0b7",
+          "https://www.caranddriver.com/news/a74165059/tesla-roadster-thruster-fan-system-explained/",
+          "https://www.motortrend.com/news/tesla-roadster-thrust-system-spacex-technology-explained"
+        ],
+        "simplified": [
+          "The body size is an estimate of a low sports car because Tesla has not published a complete final dimension sheet for this configuration.",
+          "The internal battery, motors, fans, tanks and thruster positions are shown as an explanatory layout, not a confirmed production drawing.",
+          "The suction system holds the car against a surface by lowering pressure beneath it; it is not a lift fan.",
+          "The Rocket version is described by Tesla as a one-seat configuration with cold-gas thrusters around the car and is not approved for public-road use.",
+          "Only the general thruster arrangement is shown. No manufacturing details, pressures, nozzle dimensions or control software are included.",
+          "The flying demonstration proves a short controlled jump, not repeated practical flight or a certified flying car."
+        ],
+        "parts": [
+          {
+            "id": "body",
+            "label": "roadster body",
+            "builder": "shell",
+            "material": "paint_red",
+            "params": [
+              {
+                "name": "length",
+                "value": 4.7
+              },
+              {
+                "name": "width",
+                "value": 2
+              },
+              {
+                "name": "height",
+                "value": 1.05
+              },
+              {
+                "name": "roundness",
+                "value": 0.25
+              }
+            ],
+            "profile": {
+              "top": [
+                [
+                  0,
+                  0.25
+                ],
+                [
+                  0.35,
+                  0.48
+                ],
+                [
+                  0.9,
+                  0.68
+                ],
+                [
+                  1.45,
+                  0.9
+                ],
+                [
+                  2.2,
+                  1.03
+                ],
+                [
+                  3,
+                  1.02
+                ],
+                [
+                  3.65,
+                  0.9
+                ],
+                [
+                  4.25,
+                  0.62
+                ],
+                [
+                  4.7,
+                  0.42
+                ]
+              ],
+              "bottom": [
+                [
+                  0,
+                  0.2
+                ],
+                [
+                  0.65,
+                  0.12
+                ],
+                [
+                  1.5,
+                  0.08
+                ],
+                [
+                  2.4,
+                  0.07
+                ],
+                [
+                  3.4,
+                  0.1
+                ],
+                [
+                  4.15,
+                  0.15
+                ],
+                [
+                  4.7,
+                  0.22
+                ]
+              ],
+              "width": [
+                [
+                  0,
+                  0.95
+                ],
+                [
+                  0.45,
+                  1.1
+                ],
+                [
+                  1.2,
+                  1
+                ],
+                [
+                  2.2,
+                  1.02
+                ],
+                [
+                  3.2,
+                  1.04
+                ],
+                [
+                  4.1,
+                  0.98
+                ],
+                [
+                  4.7,
+                  0.78
+                ]
+              ]
+            },
+            "at": [
+              0,
+              0,
+              0.35
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              0
+            ],
+            "anchor": [
+              2.35,
+              1,
+              0.7
+            ]
+          },
+          {
+            "id": "cabin",
+            "label": "glass cabin",
+            "builder": "shell",
+            "material": "glass_tint",
+            "params": [
+              {
+                "name": "length",
+                "value": 2.25
+              },
+              {
+                "name": "width",
+                "value": 1.6
+              },
+              {
+                "name": "height",
+                "value": 0.72
+              },
+              {
+                "name": "roundness",
+                "value": 0.35
+              }
+            ],
+            "profile": {
+              "top": [
+                [
+                  0,
+                  0.12
+                ],
+                [
+                  0.35,
+                  0.42
+                ],
+                [
+                  0.85,
+                  0.68
+                ],
+                [
+                  1.35,
+                  0.72
+                ],
+                [
+                  1.9,
+                  0.58
+                ],
+                [
+                  2.25,
+                  0.18
+                ]
+              ],
+              "bottom": [
+                [
+                  0,
+                  0.03
+                ],
+                [
+                  0.5,
+                  0.02
+                ],
+                [
+                  1.2,
+                  0.02
+                ],
+                [
+                  1.8,
+                  0.03
+                ],
+                [
+                  2.25,
+                  0.05
+                ]
+              ],
+              "width": [
+                [
+                  0,
+                  0.58
+                ],
+                [
+                  0.35,
+                  0.78
+                ],
+                [
+                  1.1,
+                  0.8
+                ],
+                [
+                  1.8,
+                  0.75
+                ],
+                [
+                  2.25,
+                  0.5
+                ]
+              ]
+            },
+            "at": [
+              1.25,
+              0,
+              0.93
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              0.45
+            ],
+            "anchor": [
+              1.05,
+              0,
+              0.5
+            ]
+          },
+          {
+            "id": "battery",
+            "label": "underfloor battery",
+            "builder": "box",
+            "material": "circuit_green",
+            "params": [
+              {
+                "name": "length",
+                "value": 2.8
+              },
+              {
+                "name": "width",
+                "value": 1.55
+              },
+              {
+                "name": "height",
+                "value": 0.18
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              0.85,
+              0,
+              0.48
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              0.32
+            ],
+            "anchor": [
+              1.4,
+              0,
+              0.1
+            ]
+          },
+          {
+            "id": "power",
+            "label": "power electronics",
+            "builder": "box",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.65
+              },
+              {
+                "name": "width",
+                "value": 0.8
+              },
+              {
+                "name": "height",
+                "value": 0.22
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              3.45,
+              0,
+              0.55
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0.15,
+              0,
+              0.45
+            ],
+            "anchor": [
+              0.3,
+              0,
+              0.1
+            ]
+          },
+          {
+            "id": "frontmotor",
+            "label": "front electric motor",
+            "builder": "barrel",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.5
+              },
+              {
+                "name": "diameter",
+                "value": 0.42
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              0.48,
+              0,
+              0.52
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              0.38
+            ],
+            "anchor": [
+              0.25,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "rearmotor",
+            "label": "rear electric motor",
+            "builder": "barrel",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.5
+              },
+              {
+                "name": "diameter",
+                "value": 0.42
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              3.78,
+              0,
+              0.52
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              0.38
+            ],
+            "anchor": [
+              0.25,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "wheel_fl",
+            "label": "front left tire",
+            "builder": "wheel",
+            "material": "rubber",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 0.68
+              },
+              {
+                "name": "width",
+                "value": 0.24
+              },
+              {
+                "name": "rim_diameter",
+                "value": 0.46
+              },
+              {
+                "name": "spokes",
+                "value": 5
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              0.82,
+              -1.02,
+              0.58
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              -0.18,
+              0
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "wheel_fr",
+            "label": "front right tire",
+            "builder": "wheel",
+            "material": "rubber",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 0.68
+              },
+              {
+                "name": "width",
+                "value": 0.24
+              },
+              {
+                "name": "rim_diameter",
+                "value": 0.46
+              },
+              {
+                "name": "spokes",
+                "value": 5
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              0.82,
+              1.02,
+              0.58
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0.18,
+              0
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "wheel_rl",
+            "label": "rear left tire",
+            "builder": "wheel",
+            "material": "rubber",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 0.68
+              },
+              {
+                "name": "width",
+                "value": 0.24
+              },
+              {
+                "name": "rim_diameter",
+                "value": 0.46
+              },
+              {
+                "name": "spokes",
+                "value": 5
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              3.82,
+              -1.02,
+              0.58
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              -0.18,
+              0
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "wheel_rr",
+            "label": "rear right tire",
+            "builder": "wheel",
+            "material": "rubber",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 0.68
+              },
+              {
+                "name": "width",
+                "value": 0.24
+              },
+              {
+                "name": "rim_diameter",
+                "value": 0.46
+              },
+              {
+                "name": "spokes",
+                "value": 5
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              3.82,
+              1.02,
+              0.58
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0.18,
+              0
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "fanplenum",
+            "label": "underbody suction plenum",
+            "builder": "box",
+            "material": "black_inner",
+            "params": [
+              {
+                "name": "length",
+                "value": 3.35
+              },
+              {
+                "name": "width",
+                "value": 1.65
+              },
+              {
+                "name": "height",
+                "value": 0.16
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              0.72,
+              0,
+              0.2
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              -0.1
+            ],
+            "anchor": [
+              1.65,
+              0,
+              0.08
+            ]
+          },
+          {
+            "id": "fan_left",
+            "label": "left suction fan",
+            "builder": "disc",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 0.55
+              },
+              {
+                "name": "thickness",
+                "value": 0.12
+              },
+              {
+                "name": "hole",
+                "value": 0.08
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              1.55,
+              -0.48,
+              0.1
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              -0.25,
+              0
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "fan_right",
+            "label": "right suction fan",
+            "builder": "disc",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 0.55
+              },
+              {
+                "name": "thickness",
+                "value": 0.12
+              },
+              {
+                "name": "hole",
+                "value": 0.08
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              1.55,
+              0.48,
+              0.1
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0.25,
+              0
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "seal",
+            "label": "flexible ground seal",
+            "builder": "shell",
+            "material": "rubber",
+            "params": [
+              {
+                "name": "length",
+                "value": 3.9
+              },
+              {
+                "name": "width",
+                "value": 1.8
+              },
+              {
+                "name": "height",
+                "value": 0.12
+              },
+              {
+                "name": "roundness",
+                "value": 0.7
+              }
+            ],
+            "profile": {
+              "top": [
+                [
+                  0,
+                  0.1
+                ],
+                [
+                  0.8,
+                  0.1
+                ],
+                [
+                  2,
+                  0.1
+                ],
+                [
+                  3.1,
+                  0.1
+                ],
+                [
+                  3.9,
+                  0.1
+                ]
+              ],
+              "bottom": [
+                [
+                  0,
+                  0.02
+                ],
+                [
+                  0.8,
+                  0.02
+                ],
+                [
+                  2,
+                  0.02
+                ],
+                [
+                  3.1,
+                  0.02
+                ],
+                [
+                  3.9,
+                  0.02
+                ]
+              ],
+              "width": [
+                [
+                  0,
+                  0.72
+                ],
+                [
+                  0.8,
+                  0.9
+                ],
+                [
+                  2,
+                  0.9
+                ],
+                [
+                  3.1,
+                  0.86
+                ],
+                [
+                  3.9,
+                  0.7
+                ]
+              ]
+            },
+            "at": [
+              0.45,
+              0,
+              0.08
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              -0.22
+            ],
+            "anchor": [
+              2,
+              0,
+              0.05
+            ]
+          },
+          {
+            "id": "tank_left",
+            "label": "compressed-gas tank left",
+            "builder": "barrel",
+            "material": "steel",
+            "params": [
+              {
+                "name": "length",
+                "value": 1.25
+              },
+              {
+                "name": "diameter",
+                "value": 0.34
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              1.45,
+              -0.48,
+              0.75
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              -0.35,
+              0.3
+            ],
+            "anchor": [
+              0.6,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "tank_right",
+            "label": "compressed-gas tank right",
+            "builder": "barrel",
+            "material": "steel",
+            "params": [
+              {
+                "name": "length",
+                "value": 1.25
+              },
+              {
+                "name": "diameter",
+                "value": 0.34
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              1.45,
+              0.48,
+              0.75
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0.35,
+              0.3
+            ],
+            "anchor": [
+              0.6,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "thruster_front",
+            "label": "front cold-gas thruster",
+            "builder": "cone",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.32
+              },
+              {
+                "name": "diameter",
+                "value": 0.18
+              },
+              {
+                "name": "tip_diameter",
+                "value": 0.07
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              0.18,
+              0,
+              0.62
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              -0.18,
+              0,
+              0.25
+            ],
+            "anchor": [
+              0.16,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "thruster_rear",
+            "label": "rear cold-gas thruster",
+            "builder": "cone",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.32
+              },
+              {
+                "name": "diameter",
+                "value": 0.18
+              },
+              {
+                "name": "tip_diameter",
+                "value": 0.07
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              4.38,
+              0,
+              0.62
+            ],
+            "turn": [
+              0,
+              0,
+              180
+            ],
+            "explode": [
+              0.18,
+              0,
+              0.25
+            ],
+            "anchor": [
+              0.16,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "thruster_left",
+            "label": "left rotation thruster",
+            "builder": "cone",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.28
+              },
+              {
+                "name": "diameter",
+                "value": 0.16
+              },
+              {
+                "name": "tip_diameter",
+                "value": 0.06
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              2.25,
+              -0.82,
+              0.48
+            ],
+            "turn": [
+              0,
+              0,
+              90
+            ],
+            "explode": [
+              0,
+              -0.28,
+              0.25
+            ],
+            "anchor": [
+              0.14,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "thruster_right",
+            "label": "right rotation thruster",
+            "builder": "cone",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.28
+              },
+              {
+                "name": "diameter",
+                "value": 0.16
+              },
+              {
+                "name": "tip_diameter",
+                "value": 0.06
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              2.25,
+              0.82,
+              0.48
+            ],
+            "turn": [
+              0,
+              0,
+              -90
+            ],
+            "explode": [
+              0,
+              0.28,
+              0.25
+            ],
+            "anchor": [
+              0.14,
+              0,
+              0
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "stage": "world3d-blueprint",
+      "value": {
+        "name": "Rocket Roadster",
+        "sources": [
+          "https://www.tesla.com/roadster?redirect=no",
+          "https://www.caranddriver.com/news/a74165059/tesla-roadster-thruster-fan-system-explained/",
+          "https://service.tesla.com/docs/Public/Roadster/Owner/Roadster_2_Owners_Manual.pdf"
+        ],
+        "simplified": [
+          "The current Rocket Roadster does not have a published full dimension drawing, so the 4.8 m length, 2.0 m width and 1.2 m height are proportional estimates based on Tesla's sports-car form and older Roadster dimensions.",
+          "The model shows the Rocket configuration in a simplified cutaway: one seat, suction fans, ground sealing, compressed-gas tanks and perimeter cold-gas thrusters.",
+          "Tesla describes the Rocket version as invite-only and not approved for public road use.",
+          "The exact number, shape and internal mounting of fans, tanks, motors and thruster hardware are not fully published; grouped parts represent those systems without manufacturing detail.",
+          "The thrusters are shown as general directional nozzles only. Their pressure plumbing, valve design and detailed construction are omitted."
+        ],
+        "parts": [
+          {
+            "id": "body",
+            "label": "roadster body",
+            "builder": "shell",
+            "material": "paint_white",
+            "params": [
+              {
+                "name": "length",
+                "value": 4.8
+              },
+              {
+                "name": "width",
+                "value": 2.0
+              },
+              {
+                "name": "height",
+                "value": 1.0
+              },
+              {
+                "name": "roundness",
+                "value": 0.55
+              }
+            ],
+            "profile": {
+              "top": [
+                [
+                  0,
+                  0.35
+                ],
+                [
+                  0.25,
+                  0.58
+                ],
+                [
+                  0.75,
+                  0.72
+                ],
+                [
+                  1.4,
+                  0.84
+                ],
+                [
+                  2.0,
+                  1.0
+                ],
+                [
+                  2.7,
+                  1.0
+                ],
+                [
+                  3.4,
+                  0.92
+                ],
+                [
+                  4.0,
+                  0.75
+                ],
+                [
+                  4.55,
+                  0.55
+                ],
+                [
+                  4.8,
+                  0.42
+                ]
+              ],
+              "bottom": [
+                [
+                  0,
+                  0.18
+                ],
+                [
+                  0.5,
+                  0.08
+                ],
+                [
+                  1.5,
+                  0.06
+                ],
+                [
+                  3.6,
+                  0.06
+                ],
+                [
+                  4.5,
+                  0.12
+                ],
+                [
+                  4.8,
+                  0.22
+                ]
+              ],
+              "width": [
+                [
+                  0,
+                  1.4
+                ],
+                [
+                  0.4,
+                  1.8
+                ],
+                [
+                  1.2,
+                  2.0
+                ],
+                [
+                  2.2,
+                  2.0
+                ],
+                [
+                  3.3,
+                  1.95
+                ],
+                [
+                  4.2,
+                  1.8
+                ],
+                [
+                  4.8,
+                  1.45
+                ]
+              ]
+            },
+            "at": [
+              0,
+              0,
+              0.22
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              0
+            ],
+            "anchor": [
+              2.4,
+              1.0,
+              0.55
+            ]
+          },
+          {
+            "id": "canopy",
+            "label": "single-seat glass canopy",
+            "builder": "shell",
+            "material": "glass_tint",
+            "params": [
+              {
+                "name": "length",
+                "value": 2.0
+              },
+              {
+                "name": "width",
+                "value": 1.55
+              },
+              {
+                "name": "height",
+                "value": 0.52
+              },
+              {
+                "name": "roundness",
+                "value": 0.7
+              }
+            ],
+            "profile": {
+              "top": [
+                [
+                  0,
+                  0.08
+                ],
+                [
+                  0.3,
+                  0.3
+                ],
+                [
+                  0.8,
+                  0.5
+                ],
+                [
+                  1.35,
+                  0.52
+                ],
+                [
+                  1.8,
+                  0.38
+                ],
+                [
+                  2.0,
+                  0.18
+                ]
+              ],
+              "bottom": [
+                [
+                  0,
+                  0.02
+                ],
+                [
+                  2.0,
+                  0.02
+                ]
+              ],
+              "width": [
+                [
+                  0,
+                  0.9
+                ],
+                [
+                  0.35,
+                  1.35
+                ],
+                [
+                  1.0,
+                  1.55
+                ],
+                [
+                  1.65,
+                  1.35
+                ],
+                [
+                  2.0,
+                  0.8
+                ]
+              ]
+            },
+            "at": [
+              1.35,
+              0,
+              0.83
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0.15,
+              0.35
+            ],
+            "anchor": [
+              1.0,
+              0,
+              0.3
+            ]
+          },
+          {
+            "id": "battery",
+            "label": "high-voltage battery pack",
+            "builder": "box",
+            "material": "black_inner",
+            "params": [
+              {
+                "name": "length",
+                "value": 2.5
+              },
+              {
+                "name": "width",
+                "value": 1.55
+              },
+              {
+                "name": "height",
+                "value": 0.22
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              1.05,
+              0,
+              0.24
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              -0.25
+            ],
+            "anchor": [
+              1.25,
+              0,
+              0.1
+            ]
+          },
+          {
+            "id": "power",
+            "label": "power electronics",
+            "builder": "box",
+            "material": "circuit_green",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.65
+              },
+              {
+                "name": "width",
+                "value": 0.7
+              },
+              {
+                "name": "height",
+                "value": 0.22
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              1.0,
+              0,
+              0.52
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0.35,
+              0.15
+            ],
+            "anchor": [
+              0.3,
+              0,
+              0.1
+            ]
+          },
+          {
+            "id": "frontmotor",
+            "label": "front electric motor",
+            "builder": "barrel",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.42
+              },
+              {
+                "name": "diameter",
+                "value": 0.38
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              0.88,
+              0,
+              0.47
+            ],
+            "turn": [
+              0,
+              90,
+              0
+            ],
+            "explode": [
+              -0.1,
+              0,
+              0.2
+            ],
+            "anchor": [
+              0.2,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "rearmotor",
+            "label": "rear electric motor",
+            "builder": "barrel",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.42
+              },
+              {
+                "name": "diameter",
+                "value": 0.38
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              3.5,
+              0,
+              0.47
+            ],
+            "turn": [
+              0,
+              90,
+              0
+            ],
+            "explode": [
+              0.1,
+              0,
+              0.2
+            ],
+            "anchor": [
+              0.2,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "wheel_fl",
+            "label": "front-left tire",
+            "builder": "wheel",
+            "material": "rubber",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 0.62
+              },
+              {
+                "name": "width",
+                "value": 0.24
+              },
+              {
+                "name": "rim_diameter",
+                "value": 0.43
+              },
+              {
+                "name": "spokes",
+                "value": 8
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              1.05,
+              -1.0,
+              0.42
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              -0.18,
+              0
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "wheel_fr",
+            "label": "front-right tire",
+            "builder": "wheel",
+            "material": "rubber",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 0.62
+              },
+              {
+                "name": "width",
+                "value": 0.24
+              },
+              {
+                "name": "rim_diameter",
+                "value": 0.43
+              },
+              {
+                "name": "spokes",
+                "value": 8
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              1.05,
+              1.0,
+              0.42
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0.18,
+              0
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "wheel_rl",
+            "label": "rear-left tire",
+            "builder": "wheel",
+            "material": "rubber",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 0.68
+              },
+              {
+                "name": "width",
+                "value": 0.27
+              },
+              {
+                "name": "rim_diameter",
+                "value": 0.48
+              },
+              {
+                "name": "spokes",
+                "value": 8
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              3.65,
+              -1.0,
+              0.44
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              -0.18,
+              0
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "wheel_rr",
+            "label": "rear-right tire",
+            "builder": "wheel",
+            "material": "rubber",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 0.68
+              },
+              {
+                "name": "width",
+                "value": 0.27
+              },
+              {
+                "name": "rim_diameter",
+                "value": 0.48
+              },
+              {
+                "name": "spokes",
+                "value": 8
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              3.65,
+              1.0,
+              0.44
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0.18,
+              0
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "fan",
+            "label": "underbody suction fan system",
+            "builder": "disc",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 1.35
+              },
+              {
+                "name": "thickness",
+                "value": 0.16
+              },
+              {
+                "name": "hole",
+                "value": 0.2
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              2.35,
+              0,
+              0.1
+            ],
+            "turn": [
+              90,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              -0.28
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "seal",
+            "label": "flexible ground seal",
+            "builder": "shell",
+            "material": "black_inner",
+            "params": [
+              {
+                "name": "length",
+                "value": 3.8
+              },
+              {
+                "name": "width",
+                "value": 1.82
+              },
+              {
+                "name": "height",
+                "value": 0.12
+              },
+              {
+                "name": "roundness",
+                "value": 0.1
+              }
+            ],
+            "profile": {
+              "top": [
+                [
+                  0,
+                  0.12
+                ],
+                [
+                  3.8,
+                  0.12
+                ]
+              ],
+              "bottom": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  3.8,
+                  0
+                ]
+              ],
+              "width": [
+                [
+                  0,
+                  1.55
+                ],
+                [
+                  0.5,
+                  1.82
+                ],
+                [
+                  3.3,
+                  1.82
+                ],
+                [
+                  3.8,
+                  1.5
+                ]
+              ]
+            },
+            "at": [
+              0.5,
+              0,
+              0.08
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              -0.35
+            ],
+            "anchor": [
+              2.0,
+              0,
+              0.06
+            ]
+          },
+          {
+            "id": "tank_a",
+            "label": "compressed-gas tank left",
+            "builder": "barrel",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 1.55
+              },
+              {
+                "name": "diameter",
+                "value": 0.43
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              2.15,
+              -0.5,
+              0.7
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              -0.3,
+              0.25
+            ],
+            "anchor": [
+              0.75,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "tank_b",
+            "label": "compressed-gas tank right",
+            "builder": "barrel",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 1.55
+              },
+              {
+                "name": "diameter",
+                "value": 0.43
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              2.15,
+              0.5,
+              0.7
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0.3,
+              0.25
+            ],
+            "anchor": [
+              0.75,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "rearjets",
+            "label": "rear acceleration thruster bank",
+            "builder": "cone",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.38
+              },
+              {
+                "name": "diameter",
+                "value": 0.22
+              },
+              {
+                "name": "tip_diameter",
+                "value": 0.08
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              4.48,
+              0,
+              0.62
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0.3,
+              0,
+              0.2
+            ],
+            "anchor": [
+              0.2,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "liftjet",
+            "label": "downward lift thrusters",
+            "builder": "cone",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.35
+              },
+              {
+                "name": "diameter",
+                "value": 0.22
+              },
+              {
+                "name": "tip_diameter",
+                "value": 0.08
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              2.4,
+              0,
+              0.28
+            ],
+            "turn": [
+              0,
+              90,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              -0.5
+            ],
+            "anchor": [
+              0.18,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "sidejets",
+            "label": "side rotation thrusters",
+            "builder": "cone",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.3
+              },
+              {
+                "name": "diameter",
+                "value": 0.18
+              },
+              {
+                "name": "tip_diameter",
+                "value": 0.06
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              2.5,
+              -0.92,
+              0.68
+            ],
+            "turn": [
+              0,
+              0,
+              90
+            ],
+            "explode": [
+              0,
+              -0.3,
+              0.25
+            ],
+            "anchor": [
+              0.15,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "control",
+            "label": "flight and traction controller",
+            "builder": "box",
+            "material": "circuit_green",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.55
+              },
+              {
+                "name": "width",
+                "value": 0.5
+              },
+              {
+                "name": "height",
+                "value": 0.18
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              2.25,
+              0,
+              1.0
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0.3,
+              0.35
+            ],
+            "anchor": [
+              0.25,
+              0,
+              0.1
+            ]
+          },
+          {
+            "id": "activewing",
+            "label": "active rear aero wing",
+            "builder": "solar_wing",
+            "material": "paint_black",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.85
+              },
+              {
+                "name": "width",
+                "value": 0.08
+              },
+              {
+                "name": "side",
+                "value": 0
+              },
+              {
+                "name": "mast_base",
+                "value": 0.24
+              },
+              {
+                "name": "tilt_deg",
+                "value": 12
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              3.55,
+              0,
+              1.02
+            ],
+            "turn": [
+              0,
+              0,
+              90
+            ],
+            "explode": [
+              0,
+              0,
+              0.35
+            ],
+            "anchor": [
+              0.42,
+              0,
+              0
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "stage": "world3d-blueprint",
+      "value": {
+        "name": "Rocket Roadster high-pressure tank",
+        "sources": [
+          "https://www.tesla.com/roadster?redirect=no",
+          "https://www.caranddriver.com/news/a74165059/tesla-roadster-thrusters-fan-system-explained/",
+          "https://insideevs.com/news/812205/tesla-roadster-replenishes-air-tanks/",
+          "https://www.motortrend.com/news/tesla-roadster-thrust-system-spacex-technology-explained/",
+          "https://ntrs.nasa.gov/api/citations/20240012767/downloads/STMD%20Tech%20Brief%2010-22-24b.pdf"
+        ],
+        "simplified": [
+          "The exact Rocket Roadster tank drawings, pressure rating, vessel wall construction, pipe routing, and nozzle dimensions are not publicly published.",
+          "The reported Rocket layout uses a 400 L tank replacing the passenger seat and a 200 L tank elsewhere in the car; these volumes are represented here as approximate explanatory geometry, not manufacturing dimensions.",
+          "The tank is shown as a black composite pressure vessel because the available material list has no dedicated carbon-fiber-composite option.",
+          "The vehicle body dimensions and the positions of the tank, valves, pipes, and thrusters are estimated from the published descriptions and public images.",
+          "Only the general propulsion layout is shown: stored high-pressure gas flows through a manifold to cold-gas nozzles, and the exhaust direction produces the opposite vehicle motion.",
+          "This is an explainer model, not a buildable pressure system or a safety-certified vehicle design."
+        ],
+        "parts": [
+          {
+            "id": "body",
+            "label": "roadster body",
+            "builder": "shell",
+            "material": "paint_silver",
+            "params": [
+              {
+                "name": "length",
+                "value": 4.6
+              },
+              {
+                "name": "width",
+                "value": 2
+              },
+              {
+                "name": "height",
+                "value": 1.2
+              },
+              {
+                "name": "roundness",
+                "value": 0.35
+              }
+            ],
+            "profile": {
+              "top": [
+                [
+                  0,
+                  0.35
+                ],
+                [
+                  0.35,
+                  0.48
+                ],
+                [
+                  1.25,
+                  0.7
+                ],
+                [
+                  2.05,
+                  1.05
+                ],
+                [
+                  3.1,
+                  1.18
+                ],
+                [
+                  3.75,
+                  1.02
+                ],
+                [
+                  4.3,
+                  0.72
+                ],
+                [
+                  4.6,
+                  0.48
+                ]
+              ],
+              "bottom": [
+                [
+                  0,
+                  0.28
+                ],
+                [
+                  0.5,
+                  0.22
+                ],
+                [
+                  1.4,
+                  0.2
+                ],
+                [
+                  2.4,
+                  0.18
+                ],
+                [
+                  3.4,
+                  0.2
+                ],
+                [
+                  4.1,
+                  0.24
+                ],
+                [
+                  4.6,
+                  0.3
+                ]
+              ],
+              "width": [
+                [
+                  0,
+                  0.7
+                ],
+                [
+                  0.45,
+                  1.45
+                ],
+                [
+                  1.2,
+                  1.9
+                ],
+                [
+                  2.1,
+                  2
+                ],
+                [
+                  3.2,
+                  1.95
+                ],
+                [
+                  4.1,
+                  1.75
+                ],
+                [
+                  4.6,
+                  1.35
+                ]
+              ]
+            },
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              0
+            ],
+            "anchor": [
+              2.3,
+              0,
+              1.1
+            ]
+          },
+          {
+            "id": "tank400",
+            "label": "400 litre high-pressure tank",
+            "builder": "barrel",
+            "material": "paint_black",
+            "params": [
+              {
+                "name": "length",
+                "value": 1.25
+              },
+              {
+                "name": "diameter",
+                "value": 0.65
+              },
+              {
+                "name": "rings",
+                "value": 3
+              },
+              {
+                "name": "cap",
+                "value": 1
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              1.95,
+              0.18,
+              0.53
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0.58,
+              0.05
+            ],
+            "anchor": [
+              0.62,
+              0,
+              0.33
+            ]
+          },
+          {
+            "id": "tank200",
+            "label": "200 litre high-pressure tank",
+            "builder": "barrel",
+            "material": "paint_black",
+            "params": [
+              {
+                "name": "length",
+                "value": 1.05
+              },
+              {
+                "name": "diameter",
+                "value": 0.5
+              },
+              {
+                "name": "rings",
+                "value": 2
+              },
+              {
+                "name": "cap",
+                "value": 1
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              3.15,
+              -0.1,
+              0.48
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              -0.58,
+              0.05
+            ],
+            "anchor": [
+              0.52,
+              0,
+              0.25
+            ]
+          },
+          {
+            "id": "manifold",
+            "label": "high-pressure gas manifold",
+            "builder": "box",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.42
+              },
+              {
+                "name": "width",
+                "value": 0.28
+              },
+              {
+                "name": "height",
+                "value": 0.2
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              3.98,
+              0,
+              0.55
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              0.12
+            ],
+            "anchor": [
+              0.21,
+              0,
+              0.1
+            ]
+          },
+          {
+            "id": "feedpipe",
+            "label": "tank feed line",
+            "builder": "barrel",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 1.35
+              },
+              {
+                "name": "diameter",
+                "value": 0.07
+              },
+              {
+                "name": "rings",
+                "value": 0
+              },
+              {
+                "name": "cap",
+                "value": 0
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              3.62,
+              0,
+              0.55
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              0
+            ],
+            "anchor": [
+              0.68,
+              0,
+              0.04
+            ]
+          },
+          {
+            "id": "rearnozzle",
+            "label": "rear cold-gas nozzle",
+            "builder": "cone",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.34
+              },
+              {
+                "name": "diameter",
+                "value": 0.18
+              },
+              {
+                "name": "tip_diameter",
+                "value": 0.06
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              4.38,
+              0,
+              0.56
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0.25,
+              0,
+              0
+            ],
+            "anchor": [
+              0.17,
+              0,
+              0.09
+            ]
+          },
+          {
+            "id": "upnozzle",
+            "label": "upward cold-gas nozzle",
+            "builder": "cone",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.3
+              },
+              {
+                "name": "diameter",
+                "value": 0.16
+              },
+              {
+                "name": "tip_diameter",
+                "value": 0.05
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              2.55,
+              0,
+              0.2
+            ],
+            "turn": [
+              0,
+              90,
+              0
+            ],
+            "explode": [
+              0,
+              0.25,
+              0.35
+            ],
+            "anchor": [
+              0.15,
+              0,
+              0.08
+            ]
+          },
+          {
+            "id": "sidenozzle",
+            "label": "rotation cold-gas nozzle",
+            "builder": "cone",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.28
+              },
+              {
+                "name": "diameter",
+                "value": 0.15
+              },
+              {
+                "name": "tip_diameter",
+                "value": 0.05
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              2.95,
+              0,
+              0.62
+            ],
+            "turn": [
+              0,
+              0,
+              90
+            ],
+            "explode": [
+              0,
+              0.35,
+              0.18
+            ],
+            "anchor": [
+              0.14,
+              0,
+              0.07
+            ]
+          },
+          {
+            "id": "battery",
+            "label": "traction battery",
+            "builder": "box",
+            "material": "circuit_green",
+            "params": [
+              {
+                "name": "length",
+                "value": 2.2
+              },
+              {
+                "name": "width",
+                "value": 1.35
+              },
+              {
+                "name": "height",
+                "value": 0.18
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              0.7,
+              0,
+              -0.02
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              0
+            ],
+            "anchor": [
+              1.1,
+              0,
+              0.09
+            ]
+          },
+          {
+            "id": "motor",
+            "label": "electric drive motor",
+            "builder": "barrel",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.45
+              },
+              {
+                "name": "diameter",
+                "value": 0.42
+              },
+              {
+                "name": "rings",
+                "value": 1
+              },
+              {
+                "name": "cap",
+                "value": 1
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              3.82,
+              0,
+              0.36
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              0
+            ],
+            "anchor": [
+              0.22,
+              0,
+              0.21
+            ]
+          },
+          {
+            "id": "fan",
+            "label": "underbody suction fan",
+            "builder": "disc",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 0.7
+              },
+              {
+                "name": "thickness",
+                "value": 0.16
+              },
+              {
+                "name": "hole",
+                "value": 0.18
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              1.15,
+              0,
+              -0.05
+            ],
+            "turn": [
+              90,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              -0.12
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "seal",
+            "label": "ground-sealing skirt",
+            "builder": "shell",
+            "material": "rubber",
+            "params": [
+              {
+                "name": "length",
+                "value": 3.5
+              },
+              {
+                "name": "width",
+                "value": 1.7
+              },
+              {
+                "name": "height",
+                "value": 0.16
+              },
+              {
+                "name": "roundness",
+                "value": 0.1
+              }
+            ],
+            "profile": {
+              "top": [
+                [
+                  0,
+                  0.12
+                ],
+                [
+                  0.6,
+                  0.14
+                ],
+                [
+                  1.5,
+                  0.15
+                ],
+                [
+                  2.4,
+                  0.15
+                ],
+                [
+                  3.5,
+                  0.12
+                ]
+              ],
+              "bottom": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0.6,
+                  0
+                ],
+                [
+                  1.5,
+                  0
+                ],
+                [
+                  2.4,
+                  0
+                ],
+                [
+                  3.5,
+                  0
+                ]
+              ],
+              "width": [
+                [
+                  0,
+                  0.8
+                ],
+                [
+                  0.6,
+                  1.55
+                ],
+                [
+                  1.5,
+                  1.7
+                ],
+                [
+                  2.4,
+                  1.65
+                ],
+                [
+                  3.5,
+                  1.35
+                ]
+              ]
+            },
+            "at": [
+              0.55,
+              0,
+              0.08
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              -0.18
+            ],
+            "anchor": [
+              1.75,
+              0,
+              0.08
+            ]
+          },
+          {
+            "id": "seat",
+            "label": "single pilot seat",
+            "builder": "box",
+            "material": "plastic_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.65
+              },
+              {
+                "name": "width",
+                "value": 0.5
+              },
+              {
+                "name": "height",
+                "value": 0.95
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              1.38,
+              0,
+              0.34
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              -0.35,
+              0
+            ],
+            "anchor": [
+              0.32,
+              0,
+              0.48
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "stage": "world3d-blueprint",
+      "value": {
+        "name": "Tesla Roadster Rocket cold-gas nozzle cutaway",
+        "sources": [
+          "https://www.tesla.com/roadster",
+          "https://www.motortrend.com/news/first-look-2028-tesla-roadster-performance-thrust-rocket",
+          "https://apnews.com/article/7d5f19665435b7408025bfb7a2f2f0b7",
+          "https://service.tesla.com/docs/Public/Roadster/Owner/Roadster_2_Owners_Manual.pdf"
+        ],
+        "simplified": [
+          "The Rocket Roadster\u2019s final production dimensions and exact nozzle layout are not publicly specified, so the car proportions are estimated from the shown prototype and typical electric sports-car proportions.",
+          "The model shows representative cold-gas nozzles rather than all ten perimeter thrusters described for the Rocket version.",
+          "The pressure vessel is shown as one large composite-wrapped sphere; public reports differ on the exact number and arrangement of tanks.",
+          "Internal valves, regulators, control electronics, suspension, and detailed plumbing are omitted.",
+          "The nozzles are shown only as general tapered outlets to explain thrust direction, not as manufacturing drawings.",
+          "The suction fans and sealing skirt are included to distinguish ground-holding suction from rocket-like thrust."
+        ],
+        "parts": [
+          {
+            "id": "body",
+            "label": "roadster body",
+            "builder": "shell",
+            "material": "paint_red",
+            "params": [
+              {
+                "name": "length",
+                "value": 4.6
+              },
+              {
+                "name": "width",
+                "value": 2
+              },
+              {
+                "name": "height",
+                "value": 1.15
+              },
+              {
+                "name": "roundness",
+                "value": 0.65
+              }
+            ],
+            "profile": {
+              "top": [
+                [
+                  0,
+                  0.35
+                ],
+                [
+                  0.25,
+                  0.65
+                ],
+                [
+                  0.8,
+                  0.92
+                ],
+                [
+                  1.5,
+                  1.12
+                ],
+                [
+                  2.3,
+                  1.15
+                ],
+                [
+                  3.2,
+                  1.1
+                ],
+                [
+                  3.8,
+                  0.95
+                ],
+                [
+                  4.3,
+                  0.7
+                ],
+                [
+                  4.6,
+                  0.45
+                ]
+              ],
+              "bottom": [
+                [
+                  0,
+                  0.22
+                ],
+                [
+                  0.5,
+                  0.16
+                ],
+                [
+                  1.4,
+                  0.14
+                ],
+                [
+                  2.5,
+                  0.14
+                ],
+                [
+                  3.5,
+                  0.15
+                ],
+                [
+                  4.2,
+                  0.2
+                ],
+                [
+                  4.6,
+                  0.32
+                ]
+              ],
+              "width": [
+                [
+                  0,
+                  1.45
+                ],
+                [
+                  0.5,
+                  1.75
+                ],
+                [
+                  1.2,
+                  1.95
+                ],
+                [
+                  2.2,
+                  2
+                ],
+                [
+                  3.2,
+                  1.95
+                ],
+                [
+                  4,
+                  1.8
+                ],
+                [
+                  4.6,
+                  1.5
+                ]
+              ]
+            },
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              0
+            ],
+            "anchor": [
+              2.3,
+              1,
+              0.8
+            ]
+          },
+          {
+            "id": "canopy",
+            "label": "glass canopy",
+            "builder": "shell",
+            "material": "glass_tint",
+            "params": [
+              {
+                "name": "length",
+                "value": 2
+              },
+              {
+                "name": "width",
+                "value": 1.45
+              },
+              {
+                "name": "height",
+                "value": 0.55
+              },
+              {
+                "name": "roundness",
+                "value": 0.8
+              }
+            ],
+            "profile": {
+              "top": [
+                [
+                  0,
+                  0.12
+                ],
+                [
+                  0.3,
+                  0.38
+                ],
+                [
+                  0.8,
+                  0.55
+                ],
+                [
+                  1.4,
+                  0.52
+                ],
+                [
+                  2,
+                  0.2
+                ]
+              ],
+              "bottom": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0.5,
+                  0
+                ],
+                [
+                  1.4,
+                  0
+                ],
+                [
+                  2,
+                  0
+                ]
+              ],
+              "width": [
+                [
+                  0,
+                  0.9
+                ],
+                [
+                  0.5,
+                  1.35
+                ],
+                [
+                  1.3,
+                  1.45
+                ],
+                [
+                  2,
+                  1.1
+                ]
+              ]
+            },
+            "at": [
+              1.1,
+              0,
+              0.62
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0.45,
+              0.15
+            ],
+            "anchor": [
+              1,
+              0,
+              0.35
+            ]
+          },
+          {
+            "id": "battery",
+            "label": "traction battery",
+            "builder": "box",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 2.8
+              },
+              {
+                "name": "width",
+                "value": 1.65
+              },
+              {
+                "name": "height",
+                "value": 0.18
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              0.85,
+              0,
+              0.2
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              -0.35,
+              -0.05
+            ],
+            "anchor": [
+              1.4,
+              0,
+              0.09
+            ]
+          },
+          {
+            "id": "front_motor",
+            "label": "front electric motor",
+            "builder": "box",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.45
+              },
+              {
+                "name": "width",
+                "value": 0.7
+              },
+              {
+                "name": "height",
+                "value": 0.35
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              0.35,
+              0,
+              0.48
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              -0.15,
+              0,
+              0.12
+            ],
+            "anchor": [
+              0.22,
+              0,
+              0.18
+            ]
+          },
+          {
+            "id": "rear_motor",
+            "label": "rear electric motor",
+            "builder": "box",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.5
+              },
+              {
+                "name": "width",
+                "value": 0.75
+              },
+              {
+                "name": "height",
+                "value": 0.38
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              3.65,
+              0,
+              0.48
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0.15,
+              0,
+              0.15
+            ],
+            "anchor": [
+              0.25,
+              0,
+              0.19
+            ]
+          },
+          {
+            "id": "wheel_fl",
+            "label": "front left wheel",
+            "builder": "wheel",
+            "material": "rubber",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 0.68
+              },
+              {
+                "name": "width",
+                "value": 0.24
+              },
+              {
+                "name": "rim_diameter",
+                "value": 0.5
+              },
+              {
+                "name": "spokes",
+                "value": 8
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              0.78,
+              -0.98,
+              0.38
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              -0.15,
+              0
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "wheel_fr",
+            "label": "front right wheel",
+            "builder": "wheel",
+            "material": "rubber",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 0.68
+              },
+              {
+                "name": "width",
+                "value": 0.24
+              },
+              {
+                "name": "rim_diameter",
+                "value": 0.5
+              },
+              {
+                "name": "spokes",
+                "value": 8
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              0.78,
+              0.98,
+              0.38
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0.15,
+              0
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "wheel_rl",
+            "label": "rear left wheel",
+            "builder": "wheel",
+            "material": "rubber",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 0.7
+              },
+              {
+                "name": "width",
+                "value": 0.25
+              },
+              {
+                "name": "rim_diameter",
+                "value": 0.52
+              },
+              {
+                "name": "spokes",
+                "value": 8
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              3.72,
+              -0.98,
+              0.39
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              -0.15,
+              0
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "wheel_rr",
+            "label": "rear right wheel",
+            "builder": "wheel",
+            "material": "rubber",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 0.7
+              },
+              {
+                "name": "width",
+                "value": 0.25
+              },
+              {
+                "name": "rim_diameter",
+                "value": 0.52
+              },
+              {
+                "name": "spokes",
+                "value": 8
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              3.72,
+              0.98,
+              0.39
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0.15,
+              0
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "pressure_tank",
+            "label": "compressed-gas tank",
+            "builder": "sphere",
+            "material": "black_inner",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 0.78
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              2.2,
+              0,
+              0.88
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              0.3
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "tank_wrap",
+            "label": "composite tank wrap",
+            "builder": "sphere",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 0.84
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              2.2,
+              0,
+              0.88
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              0.42
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "feed_left",
+            "label": "left gas feed line",
+            "builder": "barrel",
+            "material": "steel",
+            "params": [
+              {
+                "name": "length",
+                "value": 1.55
+              },
+              {
+                "name": "diameter",
+                "value": 0.06
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              2.45,
+              -0.28,
+              0.88
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              -0.25,
+              0.25
+            ],
+            "anchor": [
+              0.7,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "feed_right",
+            "label": "right gas feed line",
+            "builder": "barrel",
+            "material": "steel",
+            "params": [
+              {
+                "name": "length",
+                "value": 1.55
+              },
+              {
+                "name": "diameter",
+                "value": 0.06
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              2.45,
+              0.28,
+              0.88
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0.25,
+              0.25
+            ],
+            "anchor": [
+              0.7,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "rear_nozzle_l",
+            "label": "rear cold-gas nozzle",
+            "builder": "cone",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.28
+              },
+              {
+                "name": "diameter",
+                "value": 0.16
+              },
+              {
+                "name": "tip_diameter",
+                "value": 0.06
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              4.25,
+              -0.48,
+              0.58
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0.25,
+              -0.25,
+              0.2
+            ],
+            "anchor": [
+              0.28,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "rear_nozzle_r",
+            "label": "rear cold-gas nozzle",
+            "builder": "cone",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.28
+              },
+              {
+                "name": "diameter",
+                "value": 0.16
+              },
+              {
+                "name": "tip_diameter",
+                "value": 0.06
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              4.25,
+              0.48,
+              0.58
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0.25,
+              0.25,
+              0.2
+            ],
+            "anchor": [
+              0.28,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "lift_nozzle_front",
+            "label": "downward lift nozzle",
+            "builder": "cone",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.25
+              },
+              {
+                "name": "diameter",
+                "value": 0.15
+              },
+              {
+                "name": "tip_diameter",
+                "value": 0.05
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              1.35,
+              -0.6,
+              0.22
+            ],
+            "turn": [
+              0,
+              90,
+              0
+            ],
+            "explode": [
+              0,
+              -0.3,
+              -0.18
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "lift_nozzle_rear",
+            "label": "downward lift nozzle",
+            "builder": "cone",
+            "material": "metal_dark",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.25
+              },
+              {
+                "name": "diameter",
+                "value": 0.15
+              },
+              {
+                "name": "tip_diameter",
+                "value": 0.05
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              3.25,
+              0.6,
+              0.22
+            ],
+            "turn": [
+              0,
+              90,
+              0
+            ],
+            "explode": [
+              0,
+              0.3,
+              -0.18
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "fan_front",
+            "label": "front suction fan",
+            "builder": "disc",
+            "material": "black_inner",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 0.62
+              },
+              {
+                "name": "thickness",
+                "value": 0.12
+              },
+              {
+                "name": "hole",
+                "value": 0.08
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              1.05,
+              0,
+              0.12
+            ],
+            "turn": [
+              90,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              -0.2
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "fan_rear",
+            "label": "rear suction fan",
+            "builder": "disc",
+            "material": "black_inner",
+            "params": [
+              {
+                "name": "diameter",
+                "value": 0.62
+              },
+              {
+                "name": "thickness",
+                "value": 0.12
+              },
+              {
+                "name": "hole",
+                "value": 0.08
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              3.25,
+              0,
+              0.12
+            ],
+            "turn": [
+              90,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              -0.2
+            ],
+            "anchor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "seal_skirt",
+            "label": "ground-sealing skirt",
+            "builder": "shell",
+            "material": "rubber",
+            "params": [
+              {
+                "name": "length",
+                "value": 3.8
+              },
+              {
+                "name": "width",
+                "value": 1.7
+              },
+              {
+                "name": "height",
+                "value": 0.12
+              },
+              {
+                "name": "roundness",
+                "value": 0.2
+              }
+            ],
+            "profile": {
+              "top": [
+                [
+                  0,
+                  0.08
+                ],
+                [
+                  0.5,
+                  0.1
+                ],
+                [
+                  1.5,
+                  0.1
+                ],
+                [
+                  2.5,
+                  0.1
+                ],
+                [
+                  3.5,
+                  0.1
+                ],
+                [
+                  3.8,
+                  0.08
+                ]
+              ],
+              "bottom": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0.5,
+                  0
+                ],
+                [
+                  1.5,
+                  0
+                ],
+                [
+                  2.5,
+                  0
+                ],
+                [
+                  3.5,
+                  0
+                ],
+                [
+                  3.8,
+                  0
+                ]
+              ],
+              "width": [
+                [
+                  0,
+                  1.2
+                ],
+                [
+                  0.5,
+                  1.6
+                ],
+                [
+                  1.5,
+                  1.7
+                ],
+                [
+                  2.5,
+                  1.7
+                ],
+                [
+                  3.5,
+                  1.6
+                ],
+                [
+                  3.8,
+                  1.2
+                ]
+              ]
+            },
+            "at": [
+              0.4,
+              0,
+              0.09
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0,
+              0,
+              -0.28
+            ],
+            "anchor": [
+              2,
+              0,
+              0.05
+            ]
+          },
+          {
+            "id": "nozzle_plume",
+            "label": "cold-gas exhaust direction",
+            "builder": "cone",
+            "material": "tissue_red",
+            "params": [
+              {
+                "name": "length",
+                "value": 0.5
+              },
+              {
+                "name": "diameter",
+                "value": 0.22
+              },
+              {
+                "name": "tip_diameter",
+                "value": 0.03
+              }
+            ],
+            "profile": {
+              "top": [],
+              "bottom": [],
+              "width": []
+            },
+            "at": [
+              4.53,
+              -0.48,
+              0.58
+            ],
+            "turn": [
+              0,
+              0,
+              0
+            ],
+            "explode": [
+              0.45,
+              -0.25,
+              0.2
+            ],
+            "anchor": [
+              0.5,
+              0,
+              0
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

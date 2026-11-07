@@ -1,0 +1,593 @@
+{
+  "name": "Rocket Roadster high-pressure tank",
+  "sources": [
+    "https://www.tesla.com/roadster?redirect=no",
+    "https://www.caranddriver.com/news/a74165059/tesla-roadster-thrusters-fan-system-explained/",
+    "https://insideevs.com/news/812205/tesla-roadster-replenishes-air-tanks/",
+    "https://www.motortrend.com/news/tesla-roadster-thrust-system-spacex-technology-explained/",
+    "https://ntrs.nasa.gov/api/citations/20240012767/downloads/STMD%20Tech%20Brief%2010-22-24b.pdf"
+  ],
+  "simplified": [
+    "The exact Rocket Roadster tank drawings, pressure rating, vessel wall construction, pipe routing, and nozzle dimensions are not publicly published.",
+    "The reported Rocket layout uses a 400 L tank replacing the passenger seat and a 200 L tank elsewhere in the car; these volumes are represented here as approximate explanatory geometry, not manufacturing dimensions.",
+    "The tank is shown as a black composite pressure vessel because the available material list has no dedicated carbon-fiber-composite option.",
+    "The vehicle body dimensions and the positions of the tank, valves, pipes, and thrusters are estimated from the published descriptions and public images.",
+    "Only the general propulsion layout is shown: stored high-pressure gas flows through a manifold to cold-gas nozzles, and the exhaust direction produces the opposite vehicle motion.",
+    "This is an explainer model, not a buildable pressure system or a safety-certified vehicle design."
+  ],
+  "parts": [
+    {
+      "id": "body",
+      "label": "roadster body",
+      "builder": "shell",
+      "material": "paint_silver",
+      "params": {
+        "length": 4.6,
+        "width": 2,
+        "height": 1.2,
+        "roundness": 0.35
+      },
+      "profile": {
+        "top": [
+          [
+            0,
+            0.35
+          ],
+          [
+            0.35,
+            0.48
+          ],
+          [
+            1.25,
+            0.7
+          ],
+          [
+            2.05,
+            1.05
+          ],
+          [
+            3.1,
+            1.18
+          ],
+          [
+            3.75,
+            1.02
+          ],
+          [
+            4.3,
+            0.72
+          ],
+          [
+            4.6,
+            0.48
+          ]
+        ],
+        "bottom": [
+          [
+            0,
+            0.28
+          ],
+          [
+            0.5,
+            0.22
+          ],
+          [
+            1.4,
+            0.2
+          ],
+          [
+            2.4,
+            0.18
+          ],
+          [
+            3.4,
+            0.2
+          ],
+          [
+            4.1,
+            0.24
+          ],
+          [
+            4.6,
+            0.3
+          ]
+        ],
+        "width": [
+          [
+            0,
+            0.7
+          ],
+          [
+            0.45,
+            1.45
+          ],
+          [
+            1.2,
+            1.9
+          ],
+          [
+            2.1,
+            2
+          ],
+          [
+            3.2,
+            1.95
+          ],
+          [
+            4.1,
+            1.75
+          ],
+          [
+            4.6,
+            1.35
+          ]
+        ]
+      },
+      "at": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0,
+        0
+      ],
+      "anchor": [
+        2.3,
+        0,
+        1.1
+      ]
+    },
+    {
+      "id": "tank400",
+      "label": "400 litre high-pressure tank",
+      "builder": "barrel",
+      "material": "paint_black",
+      "params": {
+        "length": 1.25,
+        "diameter": 0.65,
+        "rings": 3,
+        "cap": 1
+      },
+      "at": [
+        1.95,
+        0.18,
+        0.53
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0.58,
+        0.05
+      ],
+      "anchor": [
+        0.62,
+        0,
+        0.33
+      ]
+    },
+    {
+      "id": "tank200",
+      "label": "200 litre high-pressure tank",
+      "builder": "barrel",
+      "material": "paint_black",
+      "params": {
+        "length": 1.05,
+        "diameter": 0.5,
+        "rings": 2,
+        "cap": 1
+      },
+      "at": [
+        3.15,
+        -0.1,
+        0.48
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        -0.58,
+        0.05
+      ],
+      "anchor": [
+        0.52,
+        0,
+        0.25
+      ]
+    },
+    {
+      "id": "manifold",
+      "label": "high-pressure gas manifold",
+      "builder": "box",
+      "material": "metal_dark",
+      "params": {
+        "length": 0.42,
+        "width": 0.28,
+        "height": 0.2
+      },
+      "at": [
+        3.98,
+        0,
+        0.55
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0,
+        0.12
+      ],
+      "anchor": [
+        0.21,
+        0,
+        0.1
+      ]
+    },
+    {
+      "id": "feedpipe",
+      "label": "tank feed line",
+      "builder": "barrel",
+      "material": "metal_dark",
+      "params": {
+        "length": 1.35,
+        "diameter": 0.07,
+        "rings": 0,
+        "cap": 0
+      },
+      "at": [
+        3.62,
+        0,
+        0.55
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0,
+        0
+      ],
+      "anchor": [
+        0.68,
+        0,
+        0.04
+      ]
+    },
+    {
+      "id": "rearnozzle",
+      "label": "rear cold-gas nozzle",
+      "builder": "cone",
+      "material": "metal_dark",
+      "params": {
+        "length": 0.34,
+        "diameter": 0.18,
+        "tip_diameter": 0.06
+      },
+      "at": [
+        4.38,
+        0,
+        0.56
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0.25,
+        0,
+        0
+      ],
+      "anchor": [
+        0.17,
+        0,
+        0.09
+      ]
+    },
+    {
+      "id": "upnozzle",
+      "label": "upward cold-gas nozzle",
+      "builder": "cone",
+      "material": "metal_dark",
+      "params": {
+        "length": 0.3,
+        "diameter": 0.16,
+        "tip_diameter": 0.05
+      },
+      "at": [
+        2.55,
+        0,
+        0.2
+      ],
+      "turn": [
+        0,
+        90,
+        0
+      ],
+      "explode": [
+        0,
+        0.25,
+        0.35
+      ],
+      "anchor": [
+        0.15,
+        0,
+        0.08
+      ]
+    },
+    {
+      "id": "sidenozzle",
+      "label": "rotation cold-gas nozzle",
+      "builder": "cone",
+      "material": "metal_dark",
+      "params": {
+        "length": 0.28,
+        "diameter": 0.15,
+        "tip_diameter": 0.05
+      },
+      "at": [
+        2.95,
+        0,
+        0.62
+      ],
+      "turn": [
+        0,
+        0,
+        90
+      ],
+      "explode": [
+        0,
+        0.35,
+        0.18
+      ],
+      "anchor": [
+        0.14,
+        0,
+        0.07
+      ]
+    },
+    {
+      "id": "battery",
+      "label": "traction battery",
+      "builder": "box",
+      "material": "circuit_green",
+      "params": {
+        "length": 2.2,
+        "width": 1.35,
+        "height": 0.18
+      },
+      "at": [
+        0.7,
+        0,
+        -0.02
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0,
+        0
+      ],
+      "anchor": [
+        1.1,
+        0,
+        0.09
+      ]
+    },
+    {
+      "id": "motor",
+      "label": "electric drive motor",
+      "builder": "barrel",
+      "material": "metal_dark",
+      "params": {
+        "length": 0.45,
+        "diameter": 0.42,
+        "rings": 1,
+        "cap": 1
+      },
+      "at": [
+        3.82,
+        0,
+        0.36
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0,
+        0
+      ],
+      "anchor": [
+        0.22,
+        0,
+        0.21
+      ]
+    },
+    {
+      "id": "fan",
+      "label": "underbody suction fan",
+      "builder": "disc",
+      "material": "metal_dark",
+      "params": {
+        "diameter": 0.7,
+        "thickness": 0.16,
+        "hole": 0.18
+      },
+      "at": [
+        1.15,
+        0,
+        -0.05
+      ],
+      "turn": [
+        90,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0,
+        -0.12
+      ],
+      "anchor": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "seal",
+      "label": "ground-sealing skirt",
+      "builder": "shell",
+      "material": "rubber",
+      "params": {
+        "length": 3.5,
+        "width": 1.7,
+        "height": 0.16,
+        "roundness": 0.1
+      },
+      "profile": {
+        "top": [
+          [
+            0,
+            0.12
+          ],
+          [
+            0.6,
+            0.14
+          ],
+          [
+            1.5,
+            0.15
+          ],
+          [
+            2.4,
+            0.15
+          ],
+          [
+            3.5,
+            0.12
+          ]
+        ],
+        "bottom": [
+          [
+            0,
+            0
+          ],
+          [
+            0.6,
+            0
+          ],
+          [
+            1.5,
+            0
+          ],
+          [
+            2.4,
+            0
+          ],
+          [
+            3.5,
+            0
+          ]
+        ],
+        "width": [
+          [
+            0,
+            0.8
+          ],
+          [
+            0.6,
+            1.55
+          ],
+          [
+            1.5,
+            1.7
+          ],
+          [
+            2.4,
+            1.65
+          ],
+          [
+            3.5,
+            1.35
+          ]
+        ]
+      },
+      "at": [
+        0.55,
+        0,
+        0.08
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0,
+        -0.18
+      ],
+      "anchor": [
+        1.75,
+        0,
+        0.08
+      ]
+    },
+    {
+      "id": "seat",
+      "label": "single pilot seat",
+      "builder": "box",
+      "material": "plastic_dark",
+      "params": {
+        "length": 0.65,
+        "width": 0.5,
+        "height": 0.95
+      },
+      "at": [
+        1.38,
+        0,
+        0.34
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        -0.35,
+        0
+      ],
+      "anchor": [
+        0.32,
+        0,
+        0.48
+      ]
+    }
+  ]
+}

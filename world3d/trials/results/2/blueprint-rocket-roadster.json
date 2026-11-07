@@ -1,0 +1,811 @@
+{
+  "name": "Rocket Roadster",
+  "sources": [
+    "https://www.tesla.com/roadster?redirect=no",
+    "https://www.caranddriver.com/news/a74165059/tesla-roadster-thruster-fan-system-explained/",
+    "https://service.tesla.com/docs/Public/Roadster/Owner/Roadster_2_Owners_Manual.pdf"
+  ],
+  "simplified": [
+    "The current Rocket Roadster does not have a published full dimension drawing, so the 4.8 m length, 2.0 m width and 1.2 m height are proportional estimates based on Tesla's sports-car form and older Roadster dimensions.",
+    "The model shows the Rocket configuration in a simplified cutaway: one seat, suction fans, ground sealing, compressed-gas tanks and perimeter cold-gas thrusters.",
+    "Tesla describes the Rocket version as invite-only and not approved for public road use.",
+    "The exact number, shape and internal mounting of fans, tanks, motors and thruster hardware are not fully published; grouped parts represent those systems without manufacturing detail.",
+    "The thrusters are shown as general directional nozzles only. Their pressure plumbing, valve design and detailed construction are omitted."
+  ],
+  "parts": [
+    {
+      "id": "body",
+      "label": "roadster body",
+      "builder": "shell",
+      "material": "paint_white",
+      "params": {
+        "length": 4.8,
+        "width": 2.0,
+        "height": 1.0,
+        "roundness": 0.55
+      },
+      "profile": {
+        "top": [
+          [
+            0,
+            0.35
+          ],
+          [
+            0.25,
+            0.58
+          ],
+          [
+            0.75,
+            0.72
+          ],
+          [
+            1.4,
+            0.84
+          ],
+          [
+            2.0,
+            1.0
+          ],
+          [
+            2.7,
+            1.0
+          ],
+          [
+            3.4,
+            0.92
+          ],
+          [
+            4.0,
+            0.75
+          ],
+          [
+            4.55,
+            0.55
+          ],
+          [
+            4.8,
+            0.42
+          ]
+        ],
+        "bottom": [
+          [
+            0,
+            0.18
+          ],
+          [
+            0.5,
+            0.08
+          ],
+          [
+            1.5,
+            0.06
+          ],
+          [
+            3.6,
+            0.06
+          ],
+          [
+            4.5,
+            0.12
+          ],
+          [
+            4.8,
+            0.22
+          ]
+        ],
+        "width": [
+          [
+            0,
+            1.4
+          ],
+          [
+            0.4,
+            1.8
+          ],
+          [
+            1.2,
+            2.0
+          ],
+          [
+            2.2,
+            2.0
+          ],
+          [
+            3.3,
+            1.95
+          ],
+          [
+            4.2,
+            1.8
+          ],
+          [
+            4.8,
+            1.45
+          ]
+        ]
+      },
+      "at": [
+        0,
+        0,
+        0.22
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0,
+        0
+      ],
+      "anchor": [
+        2.4,
+        1.0,
+        0.55
+      ]
+    },
+    {
+      "id": "canopy",
+      "label": "single-seat glass canopy",
+      "builder": "shell",
+      "material": "glass_tint",
+      "params": {
+        "length": 2.0,
+        "width": 1.55,
+        "height": 0.52,
+        "roundness": 0.7
+      },
+      "profile": {
+        "top": [
+          [
+            0,
+            0.08
+          ],
+          [
+            0.3,
+            0.3
+          ],
+          [
+            0.8,
+            0.5
+          ],
+          [
+            1.35,
+            0.52
+          ],
+          [
+            1.8,
+            0.38
+          ],
+          [
+            2.0,
+            0.18
+          ]
+        ],
+        "bottom": [
+          [
+            0,
+            0.02
+          ],
+          [
+            2.0,
+            0.02
+          ]
+        ],
+        "width": [
+          [
+            0,
+            0.9
+          ],
+          [
+            0.35,
+            1.35
+          ],
+          [
+            1.0,
+            1.55
+          ],
+          [
+            1.65,
+            1.35
+          ],
+          [
+            2.0,
+            0.8
+          ]
+        ]
+      },
+      "at": [
+        1.35,
+        0,
+        0.83
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0.15,
+        0.35
+      ],
+      "anchor": [
+        1.0,
+        0,
+        0.3
+      ]
+    },
+    {
+      "id": "battery",
+      "label": "high-voltage battery pack",
+      "builder": "box",
+      "material": "black_inner",
+      "params": {
+        "length": 2.5,
+        "width": 1.55,
+        "height": 0.22
+      },
+      "at": [
+        1.05,
+        0,
+        0.24
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0,
+        -0.25
+      ],
+      "anchor": [
+        1.25,
+        0,
+        0.1
+      ]
+    },
+    {
+      "id": "power",
+      "label": "power electronics",
+      "builder": "box",
+      "material": "circuit_green",
+      "params": {
+        "length": 0.65,
+        "width": 0.7,
+        "height": 0.22
+      },
+      "at": [
+        1.0,
+        0,
+        0.52
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0.35,
+        0.15
+      ],
+      "anchor": [
+        0.3,
+        0,
+        0.1
+      ]
+    },
+    {
+      "id": "frontmotor",
+      "label": "front electric motor",
+      "builder": "barrel",
+      "material": "metal_dark",
+      "params": {
+        "length": 0.42,
+        "diameter": 0.38
+      },
+      "at": [
+        0.88,
+        0,
+        0.47
+      ],
+      "turn": [
+        0,
+        90,
+        0
+      ],
+      "explode": [
+        -0.1,
+        0,
+        0.2
+      ],
+      "anchor": [
+        0.2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "rearmotor",
+      "label": "rear electric motor",
+      "builder": "barrel",
+      "material": "metal_dark",
+      "params": {
+        "length": 0.42,
+        "diameter": 0.38
+      },
+      "at": [
+        3.5,
+        0,
+        0.47
+      ],
+      "turn": [
+        0,
+        90,
+        0
+      ],
+      "explode": [
+        0.1,
+        0,
+        0.2
+      ],
+      "anchor": [
+        0.2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wheel_fl",
+      "label": "front-left tire",
+      "builder": "wheel",
+      "material": "rubber",
+      "params": {
+        "diameter": 0.62,
+        "width": 0.24,
+        "rim_diameter": 0.43,
+        "spokes": 8
+      },
+      "at": [
+        1.05,
+        -1.0,
+        0.42
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        -0.18,
+        0
+      ],
+      "anchor": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wheel_fr",
+      "label": "front-right tire",
+      "builder": "wheel",
+      "material": "rubber",
+      "params": {
+        "diameter": 0.62,
+        "width": 0.24,
+        "rim_diameter": 0.43,
+        "spokes": 8
+      },
+      "at": [
+        1.05,
+        1.0,
+        0.42
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0.18,
+        0
+      ],
+      "anchor": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wheel_rl",
+      "label": "rear-left tire",
+      "builder": "wheel",
+      "material": "rubber",
+      "params": {
+        "diameter": 0.68,
+        "width": 0.27,
+        "rim_diameter": 0.48,
+        "spokes": 8
+      },
+      "at": [
+        3.65,
+        -1.0,
+        0.44
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        -0.18,
+        0
+      ],
+      "anchor": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "wheel_rr",
+      "label": "rear-right tire",
+      "builder": "wheel",
+      "material": "rubber",
+      "params": {
+        "diameter": 0.68,
+        "width": 0.27,
+        "rim_diameter": 0.48,
+        "spokes": 8
+      },
+      "at": [
+        3.65,
+        1.0,
+        0.44
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0.18,
+        0
+      ],
+      "anchor": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "fan",
+      "label": "underbody suction fan system",
+      "builder": "disc",
+      "material": "metal_dark",
+      "params": {
+        "diameter": 1.35,
+        "thickness": 0.16,
+        "hole": 0.2
+      },
+      "at": [
+        2.35,
+        0,
+        0.1
+      ],
+      "turn": [
+        90,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0,
+        -0.28
+      ],
+      "anchor": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "seal",
+      "label": "flexible ground seal",
+      "builder": "shell",
+      "material": "black_inner",
+      "params": {
+        "length": 3.8,
+        "width": 1.82,
+        "height": 0.12,
+        "roundness": 0.1
+      },
+      "profile": {
+        "top": [
+          [
+            0,
+            0.12
+          ],
+          [
+            3.8,
+            0.12
+          ]
+        ],
+        "bottom": [
+          [
+            0,
+            0
+          ],
+          [
+            3.8,
+            0
+          ]
+        ],
+        "width": [
+          [
+            0,
+            1.55
+          ],
+          [
+            0.5,
+            1.82
+          ],
+          [
+            3.3,
+            1.82
+          ],
+          [
+            3.8,
+            1.5
+          ]
+        ]
+      },
+      "at": [
+        0.5,
+        0,
+        0.08
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0,
+        -0.35
+      ],
+      "anchor": [
+        2.0,
+        0,
+        0.06
+      ]
+    },
+    {
+      "id": "tank_a",
+      "label": "compressed-gas tank left",
+      "builder": "barrel",
+      "material": "metal_dark",
+      "params": {
+        "length": 1.55,
+        "diameter": 0.43
+      },
+      "at": [
+        2.15,
+        -0.5,
+        0.7
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        -0.3,
+        0.25
+      ],
+      "anchor": [
+        0.75,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "tank_b",
+      "label": "compressed-gas tank right",
+      "builder": "barrel",
+      "material": "metal_dark",
+      "params": {
+        "length": 1.55,
+        "diameter": 0.43
+      },
+      "at": [
+        2.15,
+        0.5,
+        0.7
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0.3,
+        0.25
+      ],
+      "anchor": [
+        0.75,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "rearjets",
+      "label": "rear acceleration thruster bank",
+      "builder": "cone",
+      "material": "metal_dark",
+      "params": {
+        "length": 0.38,
+        "diameter": 0.22,
+        "tip_diameter": 0.08
+      },
+      "at": [
+        4.48,
+        0,
+        0.62
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0.3,
+        0,
+        0.2
+      ],
+      "anchor": [
+        0.2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "liftjet",
+      "label": "downward lift thrusters",
+      "builder": "cone",
+      "material": "metal_dark",
+      "params": {
+        "length": 0.35,
+        "diameter": 0.22,
+        "tip_diameter": 0.08
+      },
+      "at": [
+        2.4,
+        0,
+        0.28
+      ],
+      "turn": [
+        0,
+        90,
+        0
+      ],
+      "explode": [
+        0,
+        0,
+        -0.5
+      ],
+      "anchor": [
+        0.18,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "sidejets",
+      "label": "side rotation thrusters",
+      "builder": "cone",
+      "material": "metal_dark",
+      "params": {
+        "length": 0.3,
+        "diameter": 0.18,
+        "tip_diameter": 0.06
+      },
+      "at": [
+        2.5,
+        -0.92,
+        0.68
+      ],
+      "turn": [
+        0,
+        0,
+        90
+      ],
+      "explode": [
+        0,
+        -0.3,
+        0.25
+      ],
+      "anchor": [
+        0.15,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "control",
+      "label": "flight and traction controller",
+      "builder": "box",
+      "material": "circuit_green",
+      "params": {
+        "length": 0.55,
+        "width": 0.5,
+        "height": 0.18
+      },
+      "at": [
+        2.25,
+        0,
+        1.0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0.3,
+        0.35
+      ],
+      "anchor": [
+        0.25,
+        0,
+        0.1
+      ]
+    },
+    {
+      "id": "activewing",
+      "label": "active rear aero wing",
+      "builder": "solar_wing",
+      "material": "paint_black",
+      "params": {
+        "length": 0.85,
+        "width": 0.08,
+        "side": 0,
+        "mast_base": 0.24,
+        "tilt_deg": 12
+      },
+      "at": [
+        3.55,
+        0,
+        1.02
+      ],
+      "turn": [
+        0,
+        0,
+        90
+      ],
+      "explode": [
+        0,
+        0,
+        0.35
+      ],
+      "anchor": [
+        0.42,
+        0,
+        0
+      ]
+    }
+  ]
+}

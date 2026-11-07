@@ -1,0 +1,456 @@
+{
+  "name": "Tesla Roadster electric drivetrain",
+  "sources": [
+    "https://service.tesla.com/docs/Public/Roadster/ServiceManual/en-us/GUID-4E037ADB-D0F4-48A0-9261-1083193D4C1B.html",
+    "https://www.sec.gov/Archives/edgar/data/1318605/000119312513096241/d452995d10k.htm",
+    "https://www.tesla.com/roadster"
+  ],
+  "simplified": [
+    "This blueprint uses the documented first-generation Tesla Roadster drivetrain architecture: a 53 kWh battery pack, power electronics, one three-phase induction motor, a single-speed gearbox and rear drive hardware.",
+    "The exact production dimensions of the newer Rocket Roadster drivetrain have not been published, so its thrusters, suction fans and any newer motor layout are omitted.",
+    "The battery-pack and component dimensions are simplified estimates for visual explanation; the overall first-generation Roadster dimensions are based on Tesla service data.",
+    "High-voltage cables, cooling pipes, software and internal battery cells are grouped into larger visible components."
+  ],
+  "parts": [
+    {
+      "id": "chassis",
+      "label": "aluminium vehicle floor",
+      "builder": "shell",
+      "material": "metal_dark",
+      "params": {
+        "length": 3.95,
+        "width": 1.85,
+        "height": 0.35,
+        "roundness": 0.1
+      },
+      "profile": {
+        "top": [
+          [
+            0,
+            0.35
+          ],
+          [
+            0.3,
+            0.38
+          ],
+          [
+            0.8,
+            0.4
+          ],
+          [
+            1.4,
+            0.42
+          ],
+          [
+            2.2,
+            0.42
+          ],
+          [
+            3,
+            0.4
+          ],
+          [
+            3.6,
+            0.38
+          ],
+          [
+            3.95,
+            0.35
+          ]
+        ],
+        "bottom": [
+          [
+            0,
+            0.13
+          ],
+          [
+            0.4,
+            0.13
+          ],
+          [
+            1,
+            0.12
+          ],
+          [
+            1.8,
+            0.12
+          ],
+          [
+            2.7,
+            0.12
+          ],
+          [
+            3.4,
+            0.13
+          ],
+          [
+            3.95,
+            0.16
+          ]
+        ],
+        "width": [
+          [
+            0,
+            1.25
+          ],
+          [
+            0.35,
+            1.55
+          ],
+          [
+            0.8,
+            1.78
+          ],
+          [
+            1.5,
+            1.85
+          ],
+          [
+            2.5,
+            1.85
+          ],
+          [
+            3.2,
+            1.8
+          ],
+          [
+            3.95,
+            1.55
+          ]
+        ]
+      },
+      "at": [
+        0,
+        0,
+        0.13
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0,
+        0
+      ],
+      "anchor": [
+        1.8,
+        0,
+        0.2
+      ]
+    },
+    {
+      "id": "battery",
+      "label": "53 kWh battery pack",
+      "builder": "box",
+      "material": "black_inner",
+      "params": {
+        "length": 2.15,
+        "width": 1.42,
+        "height": 0.22
+      },
+      "at": [
+        0.72,
+        0,
+        0.43
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0,
+        0.35
+      ],
+      "anchor": [
+        1.05,
+        0,
+        0.11
+      ]
+    },
+    {
+      "id": "pem",
+      "label": "power electronics module",
+      "builder": "box",
+      "material": "copper",
+      "params": {
+        "length": 0.55,
+        "width": 0.48,
+        "height": 0.22
+      },
+      "at": [
+        2.55,
+        0,
+        0.48
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0.45,
+        0.25
+      ],
+      "anchor": [
+        0.28,
+        0,
+        0.11
+      ]
+    },
+    {
+      "id": "motor",
+      "label": "AC induction motor",
+      "builder": "barrel",
+      "material": "metal_dark",
+      "params": {
+        "length": 0.48,
+        "diameter": 0.38,
+        "rings": 3
+      },
+      "at": [
+        2.92,
+        0,
+        0.57
+      ],
+      "turn": [
+        0,
+        90,
+        0
+      ],
+      "explode": [
+        0,
+        0.42,
+        0.25
+      ],
+      "anchor": [
+        0.24,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "gearbox",
+      "label": "single-speed gearbox",
+      "builder": "box",
+      "material": "steel",
+      "params": {
+        "length": 0.48,
+        "width": 0.62,
+        "height": 0.32
+      },
+      "at": [
+        3.32,
+        0,
+        0.43
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0.48,
+        0.25
+      ],
+      "anchor": [
+        0.24,
+        0,
+        0.16
+      ]
+    },
+    {
+      "id": "differential",
+      "label": "rear differential",
+      "builder": "sphere",
+      "material": "steel",
+      "params": {
+        "diameter": 0.42
+      },
+      "at": [
+        3.62,
+        0,
+        0.55
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0.5,
+        0.3
+      ],
+      "anchor": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "front_left",
+      "label": "front left tire and wheel",
+      "builder": "wheel",
+      "material": "rubber",
+      "params": {
+        "diameter": 0.61,
+        "width": 0.23,
+        "rim_diameter": 0.43,
+        "spokes": 10
+      },
+      "at": [
+        0.88,
+        -0.73,
+        0.305
+      ],
+      "turn": [
+        90,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        -0.35,
+        0
+      ],
+      "anchor": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "front_right",
+      "label": "front right tire and wheel",
+      "builder": "wheel",
+      "material": "rubber",
+      "params": {
+        "diameter": 0.61,
+        "width": 0.23,
+        "rim_diameter": 0.43,
+        "spokes": 10
+      },
+      "at": [
+        0.88,
+        0.73,
+        0.305
+      ],
+      "turn": [
+        90,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0.35,
+        0
+      ],
+      "anchor": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "rear_left",
+      "label": "rear left driven tire and wheel",
+      "builder": "wheel",
+      "material": "rubber",
+      "params": {
+        "diameter": 0.61,
+        "width": 0.25,
+        "rim_diameter": 0.43,
+        "spokes": 10
+      },
+      "at": [
+        3.24,
+        -0.74,
+        0.305
+      ],
+      "turn": [
+        90,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        -0.42,
+        0
+      ],
+      "anchor": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "rear_right",
+      "label": "rear right driven tire and wheel",
+      "builder": "wheel",
+      "material": "rubber",
+      "params": {
+        "diameter": 0.61,
+        "width": 0.25,
+        "rim_diameter": 0.43,
+        "spokes": 10
+      },
+      "at": [
+        3.24,
+        0.74,
+        0.305
+      ],
+      "turn": [
+        90,
+        0,
+        0
+      ],
+      "explode": [
+        0,
+        0.42,
+        0
+      ],
+      "anchor": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "rear_shafts",
+      "label": "half-shafts to rear wheels",
+      "builder": "barrel",
+      "material": "steel",
+      "params": {
+        "length": 0.74,
+        "diameter": 0.07,
+        "rings": 2
+      },
+      "at": [
+        3.62,
+        0,
+        0.55
+      ],
+      "turn": [
+        0,
+        90,
+        0
+      ],
+      "explode": [
+        0,
+        0.65,
+        0.35
+      ],
+      "anchor": [
+        0.35,
+        0,
+        0
+      ]
+    }
+  ]
+}
