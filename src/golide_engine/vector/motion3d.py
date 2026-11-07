@@ -706,7 +706,7 @@ def fit_range(name, zone, base):
 
     def at(moves):
         x0, y0, x1, y1 = extent(name, base, moves)
-        scale = min(1.8, (zone[2] - zone[0]) / max(1e-6, x1 - x0), (zone[3] - zone[1]) / max(1e-6, y1 - y0))
+        scale = min(2.6, (zone[2] - zone[0]) / max(1e-6, x1 - x0), (zone[3] - zone[1]) / max(1e-6, y1 - y0))
         # standing on the floor: the base stays put while the camera pulls back
         return (float(base * scale), (zone[0] + zone[2]) / 2 - (x0 + x1) / 2 * scale, zone[3] - y1 * scale)
 

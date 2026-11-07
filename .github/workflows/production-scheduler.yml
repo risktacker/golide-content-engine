@@ -103,6 +103,13 @@ jobs:
           fi
       - run: python -m pip install -e '.[production,video]'
         if: steps.automation.outputs.enabled == 'true'
+      - name: Keep built 3D objects between runs (an object is paid for once)
+        if: steps.automation.outputs.enabled == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/golide-cad3d
+          key: cad3d-${{ github.run_id }}
+          restore-keys: cad3d-
       - name: Produce, upload privately, then schedule
         if: steps.automation.outputs.enabled == 'true'
         env:

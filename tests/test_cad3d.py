@@ -89,8 +89,8 @@ class Cad(unittest.TestCase):
         px = [p for p in closed.convert("RGBA").getdata() if p[3] == 255]
         self.assertTrue(any(r > g + 25 for r, g, b, _ in px))   # the copper pinion shows in its real colour
 
-    def test_off_by_default_and_failures_never_stop_a_video(self):
-        self.assertFalse(cad3d.settings()["enabled"])
+    def test_live_since_owner_approval_and_failures_never_stop_a_video(self):
+        self.assertTrue(cad3d.settings()["enabled"])      # owner approved 2026-11-07
         with mock.patch.object(cad3d, "settings", return_value={"enabled": True, "max_objects_per_video": 4}):
             failed = cad3d.prepare([{"figure": "3d: object=Thing; move=lift"}], "", FakeText([{"parts": []}] * 4),
                                    lambda *_: None)

@@ -39,6 +39,8 @@ MOTION_SIZE = 0.95        # a 3D object's size against the drawing area (vector.
 # Where a 3D object may reach, through its whole move (top, bottom as a share of the height;
 # width share): the locked drawing areas (16:9 19%-76%, 9:16 17%-58% and the middle 68%).
 MOTION_ZONE = {"long": (0.19, 0.76, 0.80), "short": (0.17, 0.58, 0.68)}
+# CAD objects (owner 2026-11-07: more magnification): taller and wider, still clear of the captions
+MOTION_ZONE_CAD = {"long": (0.15, 0.79, 0.88), "short": (0.14, 0.60, 0.90)}
 CHAPTER_CARD_SECONDS = 2.8  # how long a chapter card stays at the start of a chapter
 PARTICLES = 170
 
@@ -444,9 +446,9 @@ class VectorRenderer:
         key = (group.start, group.icons)
         if key not in self._motion_places:
             L = self.layout
-            top, bottom, wide = MOTION_ZONE[self.format]
-            zone = (L.width * (1 - wide) / 2, L.height * top, L.width * (1 + wide) / 2, L.height * bottom)
             model = self._motion_model(self._motion(group))
+            top, bottom, wide = (MOTION_ZONE_CAD if motion3d._cad(model) else MOTION_ZONE)[self.format]
+            zone = (L.width * (1 - wide) / 2, L.height * top, L.width * (1 + wide) / 2, L.height * bottom)
             self._motion_places[key] = motion3d.fit_range(model, zone, L.size * MOTION_SIZE)
         closed, opened = self._motion_places[key]
         k = ease(max(0.0, min(1.0, u)))
@@ -497,7 +499,27 @@ class VectorRenderer:
         at = (int(round(cx + ox)), int(round(cy + oy)))
         image.paste(img, at, img)
         if marks:
+            self._zoom_source = (name, u, yaw, size, lit, tint, cx, cy, key)
             self._draw_marks(image, last["art"][0], last["geo"], at, marks, tint, alpha, group.start)
+
+    def _zoomed(self, px, py, bw, out, art, ax, ay) -> Image.Image:
+        """The magnified part, drawn again at the inset's own resolution so it is sharp, not an
+        enlarged crop (owner 2026-11-07: more magnification)."""
+        source = getattr(self, "_zoom_source", None)
+        if source is None:
+            return art.crop((int(px - ax - bw / 2), int(py - ay - bw / 2), int(px - ax + bw / 2), int(py - ay + bw / 2)))
+        name, u, yaw, size, lit, tint, cx, cy, key = source
+        k = max(1.0, min(4.0, out / max(1.0, bw)))
+        cache = self.__dict__.setdefault("_zoom_cache", {})
+        if cache.get("key") != (key, round(k, 2)):
+            geo = dict(motion3d.GEOMETRY)
+            cache["key"], cache["art"] = (key, round(k, 2)), motion3d.render(name, u, yaw, size * k, highlight=lit, tint=tint)
+            motion3d.GEOMETRY.clear()
+            motion3d.GEOMETRY.update(geo)
+        big, (bx, by) = cache["art"]
+        hx, hy = (px - cx) * k - bx, (py - cy) * k - by
+        half = bw * k / 2
+        return big.crop((int(hx - half), int(hy - half), int(hx + half), int(hy + half)))
 
     def _draw_marks(self, image: Image.Image, art: Image.Image, geo: list, at: tuple, marks, rgb, alpha,
                     scene: float = 0.0) -> None:
@@ -577,12 +599,11 @@ class VectorRenderer:
                     right = not right
                 side_used.append((mark["kind"], right))
                 if mark["kind"] == "zoom":
-                    r = L.size * 0.15
-                    zx = L.width * (0.84 if right else 0.16)
+                    r = L.size * 0.19
+                    zx = L.width * (0.80 if right else 0.20)
                     zy = min(L.height * 0.62, max(L.height * 0.30, py))
-                    bw = max(bx1 - bx0, by1 - by0, L.size * 0.05) * 1.25
-                    crop = art.crop((int(px - ax - bw / 2), int(py - ay - bw / 2),
-                                     int(px - ax + bw / 2), int(py - ay + bw / 2)))
+                    bw = max(bx1 - bx0, by1 - by0, L.size * 0.04) * 1.05
+                    crop = self._zoomed(px, py, bw, 2 * r, art, ax, ay)
                     s = max(2, int(2 * r * ease(come)))
                     crop = crop.resize((s, s), Image.LANCZOS)
                     disc = Image.new("L", (s, s), 0)
