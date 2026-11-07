@@ -99,3 +99,31 @@ class Cad(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class Marks(Cad):
+    """Owner 2026-11-07: what the narration names is measured, pointed at, lit or magnified."""
+
+    def test_marks_parse_from_the_storyboard_line(self):
+        from golide_engine.vector.figures.core import parse_figure
+        from golide_engine.vector.figures.devices import parse_marks
+
+        _, _, items = parse_figure("3d: object=Gear set; on=inside; mark drive gear|measure|2 m|metres; "
+                                   "mark pinion|zoom|Pinion|pinion; mark nothing|wave|x")
+        marks = parse_marks(items)
+        self.assertEqual([m["kind"] for m in marks], ["measure", "zoom"])
+        self.assertEqual((marks[0]["text"], marks[0]["on"]), ("2 m", "metres"))
+
+    def test_lit_part_changes_colour_and_parts_report_their_place(self):
+        cad3d.make("Gear set", "", FakeText([OBJECT]))
+        spec = {"object": "Gear set", "move": "explode"}
+        self.assertEqual(motion3d.labels(spec), ["Case", "Drive gear", "Pinion"])
+        self.assertEqual(motion3d.part_index(spec, "the pinion"), 2)
+        plain, _ = motion3d.render(spec, 0.0, math.radians(-30), 300)
+        geo = list(motion3d.GEOMETRY["parts"])
+        lit, _ = motion3d.render(spec, 0.0, math.radians(-30), 300, highlight=(1,), tint=(255, 0, 0))
+        x0, _, x1, _ = geo[1]["box"]
+        self.assertLess(x0, x1)
+        self.assertEqual(len(geo[1]["ends"]), 2)
+        red = lambda im: sum(1 for r, g, b, a in im.convert("RGBA").getdata() if a == 255 and r > g + 60)
+        self.assertGreater(red(lit), red(plain))

@@ -426,40 +426,191 @@ class VectorRenderer:
         motion = self._motion(group)
         start = max(group.start + TRANSITION_AFTER,
                     motion3d.trigger_time(group.lines, str(motion.get("on", "")), group.start + TRANSITION_AFTER + 0.2))
-        model = motion if motion.get("parts") else motion["object"]
-        return model, motion3d.move_progress(t, start), motion3d.turn(t, group.start, group.end)
+        return self._motion_model(motion), motion3d.move_progress(t, start), motion3d.turn(t, group.start, group.end)
 
-    def _motion_place(self, group: Group) -> tuple[float, float, float]:
-        """(size, centre x, centre y) of a 3D scene, fitted once to the drawing area over its whole
-        move: an opened lid or a stack coming apart never reaches the chapter card, the follow
-        pill or the captions."""
+    @staticmethod
+    def _motion_model(motion: dict):
+        """What motion3d draws: the storyboard's own parts, or a named object with its move."""
+        if motion.get("parts"):
+            return motion
+        if motion.get("move"):
+            return {"object": motion["object"], "move": motion["move"]}
+        return motion["object"]
+
+    def _motion_place(self, group: Group, u: float = 0.0) -> tuple[float, float, float]:
+        """(size, centre x, centre y) of a 3D scene. It fills the drawing area closed and the
+        camera pulls back as it opens (owner 2026-11-07: big enough to see), so an opened lid or
+        a stack coming apart never reaches the chapter card, the follow pill or the captions."""
         key = (group.start, group.icons)
         if key not in self._motion_places:
             L = self.layout
             top, bottom, wide = MOTION_ZONE[self.format]
             zone = (L.width * (1 - wide) / 2, L.height * top, L.width * (1 + wide) / 2, L.height * bottom)
-            motion = self._motion(group)
-            model = motion if motion.get("parts") else motion["object"]
-            self._motion_places[key] = motion3d.fit(model, zone, L.size * MOTION_SIZE)
-        return self._motion_places[key]
+            model = self._motion_model(self._motion(group))
+            self._motion_places[key] = motion3d.fit_range(model, zone, L.size * MOTION_SIZE)
+        closed, opened = self._motion_places[key]
+        k = ease(max(0.0, min(1.0, u)))
+        return tuple(a + (b - a) * k for a, b in zip(closed, opened))
+
+    def _marks(self, group: Group, t: float) -> list[tuple[dict, int, float]]:
+        """(mark, part, how far it has come in 0-1) for the marks already spoken in a 3D scene."""
+        motion = self._motion(group)
+        out = []
+        model = self._motion_model(motion)
+        names = motion3d.labels(model)
+        for mark in motion.get("marks") or ():
+            part = motion3d.part_index(model, mark["part"])
+            if part is None:
+                continue
+            if names:     # "each blade": every part with that name, the clearest one is measured
+                mark = dict(mark, same=[i for i, n in enumerate(names) if n == names[part]])
+            at = motion3d.trigger_time(group.lines, mark.get("on") or mark["part"].split()[-1],
+                                       group.start + TRANSITION_AFTER + 0.6)
+            # shown while its line is spoken, then it clears so the next mark has the stage
+            said = next((l for l in group.lines if l.start <= at <= l.end), group.lines[-1])
+            until = group.end if said is group.lines[-1] else max(said.end + 0.8, at + 2.5)
+            come = min((t - at) / 0.35, (until - t) / 0.4)
+            if come > 0:
+                out.append((mark, part, min(1.0, come)))
+        return out
 
     def _draw_motion(self, image: Image.Image, group: Group, t: float, alpha: float) -> None:
         if alpha <= 0.01:
             return
         L = self.layout
         name, u, yaw = self._motion_pose(group, t)
-        size, cx, cy = self._motion_place(group)
+        size, cx, cy = self._motion_place(group, u)
+        marks = self._marks(group, t)
+        lit = tuple(sorted({p for m, p, _ in marks if m["kind"] in ("highlight", "point", "zoom")}))
+        tint = self._accent_rgb(group)
         # The slow turn changes very little frame to frame: a pose is drawn once and reused until
         # it has moved a visible amount (about every 2nd frame while turning, every frame while moving).
-        key = (group.start, round(u, 3), round(math.degrees(yaw) / 0.3))
+        key = (group.start, round(u, 3), round(math.degrees(yaw) / 0.3), round(size), lit)
         last = self.__dict__.setdefault("_motion_last", {})
         if last.get("key") != key:
-            last["key"], last["art"] = key, motion3d.render(name, u, yaw, size)
+            art = motion3d.render(name, u, yaw, size, highlight=lit, tint=tint)
+            last["key"], last["art"], last["geo"] = key, art, list(motion3d.GEOMETRY.get("parts", []))
         img, (ox, oy) = last["art"]
         if alpha < 1.0:
             img = img.copy()
             img.putalpha(img.getchannel("A").point(lambda v: int(v * alpha)))
-        image.paste(img, (int(round(cx + ox)), int(round(cy + oy))), img)
+        at = (int(round(cx + ox)), int(round(cy + oy)))
+        image.paste(img, at, img)
+        if marks:
+            self._draw_marks(image, last["art"][0], last["geo"], at, marks, tint, alpha, group.start)
+
+    def _draw_marks(self, image: Image.Image, art: Image.Image, geo: list, at: tuple, marks, rgb, alpha,
+                    scene: float = 0.0) -> None:
+        """What the narration names, shown on the object (owner 2026-11-07): a size is measured
+        with a dimension line, a part is pointed at with a label, a small part is magnified in a
+        ring beside the object with a leader to it. Labels are large enough to read on a phone."""
+        from PIL import ImageDraw
+
+        L = self.layout
+        ax, ay = at
+        layer = Image.new("RGBA", image.size, (0, 0, 0, 0))
+        d = ImageDraw.Draw(layer)
+        font = ImageFont.truetype(str(self.theme.font("bold")), max(20, int(L.size * 0.044)))
+        line_w = max(2, int(L.size * 0.0035))
+        white = (245, 245, 240)
+        side_used = []
+        chosen = self.__dict__.setdefault("_measured", {})
+        placed: list = []
+        for mark, part, come in marks:
+            if mark["kind"] == "measure" and len(mark.get("same") or ()) > 1:
+                key = (scene, mark["part"], mark.get("text"))
+                if key not in chosen:     # picked once, so the line never jumps between parts
+                    def span(i):
+                        g = geo[i] if i < len(geo) else None
+                        return math.dist(*g["ends"]) if g else 0.0
+                    chosen[key] = max(mark["same"], key=span)
+                part = chosen[key]
+            g = geo[part] if part < len(geo) else None
+            if g is None:
+                continue
+            a = int(255 * come * alpha)
+            col = tuple(rgb) + (a,)
+            text = mark.get("text", "")
+            bx0, by0, bx1, by1 = (g["box"][0] + ax, g["box"][1] + ay, g["box"][2] + ax, g["box"][3] + ay)
+            px, py = g["centre"][0] + ax, g["centre"][1] + ay
+            if mark["kind"] == "measure":
+                (x0, y0), (x1, y1) = [(x + ax, y + ay) for x, y in g["ends"]]
+                vx, vy = x1 - x0, y1 - y0
+                n = math.hypot(vx, vy) or 1.0
+                nx, ny = -vy / n, vx / n
+                if nx * (px - L.cx) + ny * (py - L.cy) < 0:     # offset away from the middle
+                    nx, ny = -nx, -ny
+                off = L.size * 0.045
+                grow = ease(come)
+                mx, my = (x0 + x1) / 2, (y0 + y1) / 2
+                ex0, ey0 = mx + (x0 - mx) * grow + nx * off, my + (y0 - my) * grow + ny * off
+                ex1, ey1 = mx + (x1 - mx) * grow + nx * off, my + (y1 - my) * grow + ny * off
+                tick = L.size * 0.018
+                for (ex, ey), (sx, sy) in (((ex0, ey0), (x0, y0)), ((ex1, ey1), (x1, y1))):
+                    d.line([(sx + nx * off * 0.25, sy + ny * off * 0.25), (ex + nx * tick, ey + ny * tick)],
+                           fill=col[:3] + (a // 2,), width=max(1, line_w // 2))
+                d.line([(ex0, ey0), (ex1, ey1)], fill=col, width=line_w)
+                for ex, ey in ((ex0, ey0), (ex1, ey1)):          # arrow heads
+                    ux, uy = (ex1 - ex0) / n, (ey1 - ey0) / n
+                    sgn = 1 if (ex, ey) == (ex0, ey0) else -1
+                    hx, hy = ex + ux * sgn * tick, ey + uy * sgn * tick
+                    d.polygon([(ex, ey), (hx + nx * tick * 0.5, hy + ny * tick * 0.5),
+                               (hx - nx * tick * 0.5, hy - ny * tick * 0.5)], fill=col)
+                if text:
+                    tx, ty = mx + nx * off * 2.1, my + ny * off * 2.1
+                    w, h = d.textbbox((0, 0), text, font=font)[2:]
+                    pad = L.size * 0.012
+                    for _ in range(8):       # never on top of another label
+                        box = (tx - w / 2 - pad, ty - h / 2 - pad, tx + w / 2 + pad, ty + h / 2 + pad)
+                        if not any(box[0] < b[2] and b[0] < box[2] and box[1] < b[3] and b[1] < box[3] for b in placed):
+                            break
+                        tx, ty = tx + nx * (h + pad * 3), ty + ny * (h + pad * 3)
+                        if abs(nx) < 0.3:
+                            ty += h + pad * 3
+                    placed.append((tx - w / 2 - pad, ty - h / 2 - pad, tx + w / 2 + pad, ty + h / 2 + pad))
+                    d.rounded_rectangle([tx - w / 2 - pad, ty - h / 2 - pad, tx + w / 2 + pad, ty + h / 2 + pad],
+                                        radius=pad, fill=(10, 10, 12, int(a * 0.85)), outline=col, width=max(1, line_w // 2))
+                    d.text((tx - w / 2, ty - h / 2 - h * 0.08), text, font=font, fill=white + (a,))
+            elif mark["kind"] in ("point", "zoom"):
+                right = px < L.cx if mark["kind"] == "zoom" else px >= L.cx
+                if (mark["kind"], right) in side_used:
+                    right = not right
+                side_used.append((mark["kind"], right))
+                if mark["kind"] == "zoom":
+                    r = L.size * 0.15
+                    zx = L.width * (0.84 if right else 0.16)
+                    zy = min(L.height * 0.62, max(L.height * 0.30, py))
+                    bw = max(bx1 - bx0, by1 - by0, L.size * 0.05) * 1.25
+                    crop = art.crop((int(px - ax - bw / 2), int(py - ay - bw / 2),
+                                     int(px - ax + bw / 2), int(py - ay + bw / 2)))
+                    s = max(2, int(2 * r * ease(come)))
+                    crop = crop.resize((s, s), Image.LANCZOS)
+                    disc = Image.new("L", (s, s), 0)
+                    ImageDraw.Draw(disc).ellipse([0, 0, s - 1, s - 1], fill=int(235 * come * alpha))
+                    back = Image.new("RGBA", (s, s), (8, 8, 10, 255))
+                    back.alpha_composite(crop)
+                    back.putalpha(disc)
+                    d.line([(px, py), (zx + (-r if right else r) * 0.98, zy)], fill=col, width=line_w)
+                    d.ellipse([bx0 - 6, by0 - 6, bx1 + 6, by1 + 6], outline=col, width=line_w)
+                    layer.alpha_composite(back, (int(zx - s / 2), int(zy - s / 2)))
+                    d = ImageDraw.Draw(layer)
+                    d.ellipse([zx - s / 2, zy - s / 2, zx + s / 2, zy + s / 2], outline=col, width=line_w * 2)
+                    lx, ly, anchor = zx, zy + r + L.size * 0.035, "mt"
+                else:
+                    lx = max(bx1, px + L.size * 0.08) + L.size * 0.10 if right else min(bx0, px - L.size * 0.08) - L.size * 0.10
+                    ly = max(L.height * 0.22, by0 - L.size * 0.06)
+                    k = ease(come)
+                    elbow = (lx - (L.size * 0.04 if right else -L.size * 0.04), ly)
+                    d.ellipse([px - line_w * 3, py - line_w * 3, px + line_w * 3, py + line_w * 3], fill=col)
+                    d.line([(px, py), (px + (elbow[0] - px) * k, py + (elbow[1] - py) * k)], fill=col, width=line_w)
+                    if k > 0.6:
+                        d.line([elbow, (lx, ly)], fill=col, width=line_w)
+                    anchor = "lm" if right else "rm"
+                    lx += L.size * 0.012 if right else -L.size * 0.012
+                if text:
+                    d.text((lx, ly), text, font=font, fill=white + (a,), anchor=anchor,
+                           stroke_width=max(1, line_w // 2), stroke_fill=(0, 0, 0, a))
+        image.alpha_composite(layer) if image.mode == "RGBA" else image.paste(layer, (0, 0), layer)
 
     def _with_motion(self, image: Image.Image, groups: list[Group], gi: int, t: float) -> Image.Image:
         """Owner direction 2026-11-05: simple 3D, consistent with the voice and with the scene
@@ -555,10 +706,9 @@ class VectorRenderer:
         key = (gi, group.start, group.icons)
         if key not in cache and self._motion(group) is not None:
             # a 3D object stands where it is placed: its lowest point is the floor line
-            motion = self._motion(group)
-            model = motion if motion.get("parts") else motion["object"]
+            model = self._motion_model(self._motion(group))
             size, cx, cy = self._motion_place(group)
-            x0, y0, x1, y1 = motion3d.extent(model, size)
+            x0, y0, x1, y1 = motion3d.extent(model, size, (0.0,)) if motion3d._cad(model) else motion3d.extent(model, size)
             cache[key] = (cx + x0, cx + x1, cy + y1, cy + y0)
         if key not in cache:
             L = self.layout
@@ -760,7 +910,7 @@ class VectorRenderer:
         on its visible edges exactly as it looks at time ``at`` (2026-11-05: no jump)."""
         if self._motion(group) is not None:
             name, u, yaw = self._motion_pose(group, group.end if at is None else at)
-            size, cx, cy = self._motion_place(group)
+            size, cx, cy = self._motion_place(group, u)
             pts = motion3d.edge_points(name, u, yaw, size, PARTICLES, seed + 101)
             L = self.layout
             return (pts + (cx - L.cx, cy - L.cy)) / (L.size / 2)

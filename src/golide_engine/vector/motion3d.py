@@ -238,6 +238,28 @@ def _cad(spec) -> str | None:
     return name if name and cad3d.available(name) else None
 
 
+def labels(name) -> list[str]:
+    """Viewer-facing part names (CAD objects), in part order; empty for other objects."""
+    from . import cad3d
+
+    cad = _cad(name)
+    return [p[5] for p in cad3d.parts(cad)] if cad else []
+
+
+def part_index(name, words: str) -> int | None:
+    """The part a few spoken words refer to, matched on shared words with its label."""
+    import re as _re
+
+    want = {w for w in _re.findall(r"[a-z0-9]+", str(words).lower()) if len(w) > 2}
+    best, score = None, 0
+    for i, label in enumerate(labels(name)):
+        have = set(_re.findall(r"[a-z0-9]+", label.lower()))
+        hit = len(want & have) + sum(1 for w in want for h in have if w != h and (w in h or h in w)) * 0.5
+        if hit > score:
+            best, score = i, hit
+    return best
+
+
 def _spec_key(spec: dict) -> str:
     import json
 
@@ -328,7 +350,7 @@ _LAST: list = [None, None]
 
 def solids(model, u: float):
     """(points, triangles, gold) for every part at move u. ``model``: a preset name or a spec."""
-    key = (_spec_key(model) if isinstance(model, dict) else model, float(u))
+    key = ((_spec_key(model), model.get("move")) if isinstance(model, dict) else model, float(u))
     if _LAST[0] != key:
         _LAST[0], _LAST[1] = key, _solids(model, u)
     return _LAST[1]
@@ -339,7 +361,7 @@ _REST: dict = {}
 
 def _solids(model, u: float):
     if not isinstance(model, dict) and _cad(model):
-        model = {"object": model}
+        model = {"object": model, "move": "explode"}     # a named CAD object comes apart by default
     if isinstance(model, dict):
         if model.get("parts") or _cad(model):
             return _built(model, u)
@@ -533,12 +555,47 @@ def _shade(ids, nbuf, golds, toward, colours=None):
     return colour, gold
 
 
-def render(name, u: float, yaw: float, size: float):
+GEOMETRY: dict = {}   # the last render's parts on screen, for marks drawn over it (vector.render)
+
+
+def _geometry(name, u, yaw, size, ids, origin, ss=SS):
+    """Per part, in the render image's pixels: bounding box, centre and the two ends of its longest
+    axis (for a measurement line)."""
+    out = []
+    for i, (pts, _tris, _g) in enumerate(solids(name, u)):
+        ys, xs = np.nonzero(ids == i)
+        if not len(xs):
+            out.append(None)
+            continue
+        box = (xs.min() / ss, ys.min() / ss, xs.max() / ss, ys.max() / ss)
+        centred = pts - pts.mean(0)
+        axis = np.linalg.svd(centred, full_matrices=False)[2][0]
+        along = centred @ axis
+        ends = np.stack([pts.mean(0) + axis * along.min(), pts.mean(0) + axis * along.max()])
+        scr, _ = project(ends, yaw, size)
+        scr = scr - np.array(origin)
+        out.append({"box": box, "centre": ((box[0] + box[2]) / 2, (box[1] + box[3]) / 2), "ends": scr.tolist()})
+    return out
+
+
+def render(name, u: float, yaw: float, size: float, highlight: tuple = (), tint=None):
     """The object as an RGBA image (a product render on the house black) and the pixel offset of
-    its top-left from the centre."""
+    its top-left from the centre. highlight: part numbers lit in ``tint`` while they are talked about."""
     size = float(size)
     ids, origin, nbuf, golds, toward = _raster(name, u, yaw, size)
     colours = _colours_of(name)
+    if highlight:
+        base = colours if colours is not None else np.tile(BODY_RGB, (len(golds), 1)).astype(np.float32)
+        colours = base.copy()
+        tint = np.asarray(tint if tint is not None else GOLD, np.float32)
+        for i in highlight:
+            if 0 <= i < len(colours):
+                colours[i] = colours[i] * 0.35 + tint * 0.65
+        golds = golds.copy()
+        golds[:] = False
+        for i in highlight:
+            if 0 <= i < len(golds):
+                golds[i] = True
     colour, gold = _shade(ids, nbuf, golds, toward, colours)
     edge = _edges(ids, max(1, round(size / 500)))
     filled = ids >= 0
@@ -568,10 +625,12 @@ def render(name, u: float, yaw: float, size: float):
     glow_a = glow_a.filter(ImageFilter.GaussianBlur(size / 70)).point(lambda v: min(255, int(v * 1.1)))
     under = Image.new("RGBA", small.size, (0, 0, 0, 0))
     under.putalpha(shadow)
-    tint = GOLD
+    glow_rgb = GOLD
     if colours is not None and golds.any():      # the story part glows in its own colour
-        tint = np.clip(colours[int(np.argmax(golds))] * 1.25 + 30, 0, 255)
-    glow = Image.new("RGBA", small.size, tuple(int(c) for c in tint) + (0,))
+        glow_rgb = np.clip(colours[int(np.argmax(golds))] * 1.25 + 30, 0, 255)
+    GEOMETRY.clear()
+    GEOMETRY.update(parts=_geometry(name, u, yaw, size, ids, origin))
+    glow = Image.new("RGBA", small.size, tuple(int(c) for c in glow_rgb) + (0,))
     glow.putalpha(glow_a)
     return Image.alpha_composite(Image.alpha_composite(under, glow), small), origin
 
@@ -614,11 +673,11 @@ def outline(name, u: float, yaw: float, size: float, center) -> list[tuple[list,
     return out
 
 
-def extent(name: str, size: float) -> tuple[float, float, float, float]:
+def extent(name: str, size: float, moves=(0.0, 0.25, 0.5, 0.75, 1.0)) -> tuple[float, float, float, float]:
     """The box the object fills (pixels from the centre) over its whole move and turn, so it
     can be fitted once per scene and never grows past the drawing area."""
     xs, ys = [], []
-    for u in (0.0, 0.25, 0.5, 0.75, 1.0):
+    for u in moves:
         for yaw in (-34, -23, -12):
             for corners, *_ in solids(name, u):
                 pts, _ = project(corners, math.radians(yaw), size)
@@ -636,6 +695,22 @@ def fit(name: str, zone: tuple[float, float, float, float], base: float) -> tupl
     cx = (zone[0] + zone[2]) / 2 - (x0 + x1) / 2 * scale
     cy = (zone[1] + zone[3]) / 2 - (y0 + y1) / 2 * scale
     return float(base * scale), float(cx), float(cy)
+
+
+def fit_range(name, zone, base):
+    """(closed fit, opened fit). A CAD object fills the drawing area closed and the camera pulls
+    back as it opens, so it is always as big as the area allows; other objects keep one fit."""
+    if not _cad(name):
+        one = fit(name, zone, base)
+        return one, one
+
+    def at(moves):
+        x0, y0, x1, y1 = extent(name, base, moves)
+        scale = min(1.8, (zone[2] - zone[0]) / max(1e-6, x1 - x0), (zone[3] - zone[1]) / max(1e-6, y1 - y0))
+        # standing on the floor: the base stays put while the camera pulls back
+        return (float(base * scale), (zone[0] + zone[2]) / 2 - (x0 + x1) / 2 * scale, zone[3] - y1 * scale)
+
+    return at((0.0,)), at((1.0,))
 
 
 def move_progress(t: float, start: float) -> float:

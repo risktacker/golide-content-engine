@@ -58,8 +58,11 @@ CODE RULES
 - Real CAD: sketches, extrude, revolve, loft, sweep, fillet, chamfer, mirror, boolean cuts, arrays.
   Curved bodies are lofts or revolves of real cross-sections, never stacks of boxes. Fillet visible edges.
 - {MAX_PARTS} parts or fewer, each a separate solid in place: the parts a viewer needs to see how it works.
+- A repeated piece the story can count, point at or measure (a blade, a wheel, a cylinder, a leg) is
+  its own part with its own id (blade_1, blade_2, blade_3), never fused into one solid.
 
-PARTS lists every id from build() with a viewer-facing label. color is the part's real colour as the
+PARTS lists every id from build() with a viewer-facing label in the words a narrator would use
+("Blade", "Generator housing", "Rear wheel"). color is the part's real colour as the
 real object is made and painted, as [r, g, b] 0-255 (brushed steel, white fibreglass, red paint, black
 rubber, copper windings). Where the real colour is unknown or the part is hidden, pick the colour its story
 suggests. Exactly one part has gold=true: the part the story is about; it glows in its own colour. mover=true on the parts that move when it opens. explode is the offset in metres that

@@ -12,6 +12,7 @@ each part is a solid coloured block that appears as the narration reaches it.
 from __future__ import annotations
 
 import math
+import re
 
 from .core import DIM, GOLD, WHITE, FigureError, new_canvas
 
@@ -155,6 +156,26 @@ def parse_parts(items) -> list[dict]:
     return parts
 
 
+MARKS = ("measure", "point", "highlight", "zoom")
+
+
+def parse_marks(items) -> list[dict]:
+    """mark <part words>|<measure|point|highlight|zoom>|<text>|<spoken word>, as many as the line
+    needs. What the narration gives is shown on the object (owner 2026-11-07): a size is measured, a
+    named part is pointed at or lit, a small part is magnified beside it. Unreadable marks are
+    skipped, never a failed scene."""
+    marks = []
+    for item in items:
+        item = str(item).strip()
+        if not re.match(r"mark\b", item, re.I):
+            continue
+        bits = [b.strip() for b in item[4:].lstrip(" :").split("|")]
+        if len(bits) >= 2 and bits[1].lower() in MARKS:
+            marks.append({"part": bits[0], "kind": bits[1].lower(), "text": bits[2] if len(bits) > 2 else "",
+                          "on": bits[3] if len(bits) > 3 else ""})
+    return marks[:6]
+
+
 def model3d(size, params, items):
     """3d: object=laptop; on=opens, or ANY object built from parts:
     3d: object=vault; move=swing; on=opened; box 0 0 0 3 3 3; cyl 0 -1.55 1.3 1.6 0.12 1.6 rx90 gold mover
@@ -190,7 +211,9 @@ def model3d(size, params, items):
         c.strokes.append({"points": [list(p) for p in ring], "gold": bool(gold), "dim": False,
                           "width": c.line / SUPER})
         c.drawn += sum(math.dist(p, q) for p, q in zip(ring, ring[1:])) * SUPER
-    c.motion = {"object": name, "on": str(params.get("on", "")).strip()}
+    c.motion = {"object": name, "on": str(params.get("on", "")).strip(), "marks": parse_marks(items + ([f"mark {params['mark']}"] if params.get("mark") else []))}
     if parts:
         c.motion.update(move=model["move"], parts=parts)
+    elif isinstance(model, dict):                      # a CAD object keeps its move
+        c.motion.update(move=model["move"])
     return c

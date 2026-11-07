@@ -357,6 +357,16 @@ be the architecture behind it... the level we have reached now is not to fake th
   "3d: object=vault; move=swing; on=opened; box 0 0 0 3 3 3; box 0 -1.56 0.25 2.4 0.12 2.5 mover;
   cyl 0 -1.66 1.2 1 0.1 1 rx90 gold mover". Ready-made shortcuts: "3d: object=<laptop|phone|
   server|chip|battery>; on=<word>". When two 3D scenes follow each other, show a different object.
+  A real named object can also be given by its exact real name with no parts ("3d: object=Wind
+  turbine; move=explode; on=inside"): it is built with real CAD from research. On such an object,
+  SHOW what the lines say about it with marks, one per thing said, added to the figure line:
+  "mark <part name>|measure|<value with digits, e.g. 55 m>|<spoken word>" when a line gives a size;
+  "mark <part name>|point|<short label>|<spoken word>" when a line names a part;
+  "mark <part name>|highlight||<spoken word>" when a line is about a part's job;
+  "mark <part name>|zoom|<short label>|<spoken word>" for a small part that needs a closer look.
+  Use the narrator's words for the part (blade, generator, rear wheel); the mark appears on the
+  spoken word. Example: "3d: object=Wind turbine; move=explode; on=inside; mark blade|measure|55 m|long;
+  mark generator|zoom|Generator|generator".
 
 CHARTS (owner direction 2026-10-27): when a scene's lines give prices, growth, sales,
 shares or a market move with real numbers, set "figure" to a "chart" line with those
