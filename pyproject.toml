@@ -27,6 +27,9 @@ video = [
   "youtube-transcript-api>=1.0,<2",
   "scikit-image>=0.22,<1",
   "numba>=0.60,<1",   # 2026-11-06: compiled 3D rasterizer (vector.motion3d)
+  "trimesh>=4,<5",    # 2026-11-07: ready-made 3D models (vector.library3d)
+  "fast_simplification>=0.1,<1",
+  "DracoPy>=1.4,<3",  # NASA models are Draco-compressed
 ]
 test = []
 

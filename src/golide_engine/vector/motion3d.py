@@ -229,13 +229,30 @@ _SPECS: dict[str, list] = {}
 def _spec_key(spec: dict) -> str:
     import json
 
+    if not spec.get("parts") and _library(spec):
+        return json.dumps({"library": _library(spec)})
     return json.dumps({"parts": spec.get("parts")}, sort_keys=True)
+
+
+def _library(spec) -> str | None:
+    """The library key when the object is a ready-made model (config/library3d.json)."""
+    from . import library3d
+
+    name = spec.get("object") if isinstance(spec, dict) else spec
+    return library3d.find(name) if library3d.available(name) else None
 
 
 def _normalised(spec: dict) -> list:
     """The parts as rounded point clouds, scaled so the object's longest side is 3 units, centred,
     standing on z = 0 (the storyboard may use any units)."""
     key = _spec_key(spec)
+    if key not in _SPECS and _library(spec) and not spec.get("parts"):
+        from . import library3d
+
+        loaded = library3d.parts(_library(spec))
+        for i, (pts, tris, gold, mover, _) in enumerate(loaded):
+            _HULLS[(key, i)] = tris          # a real model keeps its own triangles, not a hull
+        _SPECS[key] = [(pts, gold, mover) for pts, _, gold, mover, _ in loaded]
     if key not in _SPECS:
         parts = []
         for part in (spec.get("parts") or [])[:MAX_PARTS]:
@@ -289,8 +306,8 @@ def _built(spec: dict, u: float):
 def is_model(model) -> bool:
     """A preset name or an engine spec with parts."""
     if isinstance(model, dict):
-        return bool(model.get("parts")) or model.get("object") in OBJECTS
-    return model in OBJECTS
+        return bool(model.get("parts")) or model.get("object") in OBJECTS or bool(_library(model))
+    return model in OBJECTS or bool(_library(model))
 
 
 def _preset_boxes(name: str, u: float):
@@ -313,8 +330,10 @@ _REST: dict = {}
 
 
 def _solids(model, u: float):
+    if not isinstance(model, dict) and _library(model):
+        model = {"object": model}
     if isinstance(model, dict):
-        if model.get("parts"):
+        if model.get("parts") or _library(model):
             return _built(model, u)
         model = model.get("object")
     out = []

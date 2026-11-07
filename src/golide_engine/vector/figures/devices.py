@@ -170,6 +170,9 @@ def model3d(size, params, items):
         model = {"object": name or "object", "move": move if move in motion3d.MOVES else "lift", "parts": parts}
     elif name in motion3d.OBJECTS:
         model = name
+    elif motion3d.is_model({"object": name}):        # a ready-made model from the library
+        move = str(params.get("move", "explode")).strip().lower()
+        model = {"object": name, "move": move if move in motion3d.MOVES else "explode"}
     else:
         raise FigureError("3d: describe the object as parts (box|cyl|sphere|cone x y z w d h ...) "
                           f"or use one of {', '.join(motion3d.OBJECTS)}")

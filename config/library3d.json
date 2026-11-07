@@ -1,0 +1,21 @@
+{
+  "_about": "Ready-made 3D objects for vector/motion3d. Only licence-clear sources: CC0 (Kenney, Quaternius, Poly Haven, Smithsonian CC0-marked) or NASA (free under NASA media rules: no endorsement, NASA insignia never shown). Textures are never used, so printed logos and insignia never appear. Files are fetched into the cache by tools/library3d_fetch.py, never stored in git.",
+  "objects": {
+    "mars rover": {
+      "source": "nasa", "licence": "NASA media guidelines",
+      "repo_path": "3D Models/Mars 2020 Perseverance Rover/Mars 2020 Perseverance Rover.glb",
+      "aliases": ["perseverance", "perseverance rover", "mars 2020 rover", "rover"],
+      "parts": {
+        "wheels": ["^Wheels_objs"],
+        "suspension": ["^suspension", "^bottom"],
+        "power source": ["^rtg"],
+        "robotic arm": ["^arm", "^turret", "^PIXL", "^WATSON", "^probe"],
+        "mast cameras": ["^head", "^NavCams", "^Mastcam", "^lens"],
+        "antennas": ["^antenna"],
+        "body": [".*"]
+      },
+      "gold": "robotic arm",
+      "mover": "robotic arm"
+    }
+  }
+}
