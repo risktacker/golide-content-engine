@@ -28,7 +28,7 @@ def draw_labels(img, labels):
     scale = w / 1920
     layer = Image.new("RGBA", (w * 2, h * 2), (0, 0, 0, 0))
     d = ImageDraw.Draw(layer)
-    font = ImageFont.truetype(str(FONT), int(58 * scale))
+    font = ImageFont.truetype(str(FONT), int(78 * scale))
     for lb in labels:
         if lb["alpha"] <= 0.01:
             continue
@@ -45,7 +45,8 @@ def draw_labels(img, labels):
         d.line((x, y, ex, ey), fill=(255, 255, 255, al), width=max(2, int(3 * scale * 2)))
         d.line((ex, ey, ex + sign * (tw + 26 * scale), ey), fill=(255, 255, 255, al), width=max(2, int(3 * scale * 2)))
         tx = ex + 10 * scale if sign > 0 else ex - tw - 10 * scale
-        d.text((tx, ey - 76 * scale), lb["text"], font=font, fill=(255, 255, 255, al))
+        d.text((tx, ey - 100 * scale), lb["text"], font=font, fill=(255, 255, 255, al),
+               stroke_width=max(1, int(3 * scale)), stroke_fill=(0, 0, 0, int(al * 0.55)))
     layer = layer.resize((w, h), Image.LANCZOS)
     out = img.convert("RGBA")
     out.alpha_composite(layer)

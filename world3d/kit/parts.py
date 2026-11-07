@@ -248,3 +248,88 @@ def gear(p, material):
         _tube(bm, hole / 2, hole / 2, -0.01, t + 0.01, cap0=True, cap1=True)
         ob.append(_object("axle", bm, mats.get("black_inner")))
     return ob
+
+
+def _interp(points, x, default):
+    """Linear read of an outline [[x, value], ...] at x."""
+    if not points:
+        return default
+    pts = sorted(points)
+    if x <= pts[0][0]:
+        return pts[0][1]
+    for (x0, v0), (x1, v1) in zip(pts, pts[1:]):
+        if x <= x1:
+            return v0 + (v1 - v0) * ((x - x0) / (x1 - x0) if x1 > x0 else 0)
+    return pts[-1][1]
+
+
+@parts.add("shell")
+def shell(p, material, profile=None):
+    """Any smooth body from its real outlines: side view top and bottom lines and the plan-view width,
+    all in metres from the part's start (x) and its base (z). Cars, aircraft, missiles, ships, bottles,
+    phones and organs all come from the same three lines. Sections are rounded squares, smoothed."""
+    profile = profile or {}
+    L, W, H = p["length"], p["width"], p["height"]
+    n = max(2.0, min(8.0, p.get("roundness", 3.0)))
+    top, bottom, width = profile.get("top"), profile.get("bottom"), profile.get("width")
+    stations, ring = 72, 56
+    bm = bmesh.new()
+    rings = []
+    for i in range(stations + 1):
+        u = i / stations
+        x = L * u
+        zt, zb = _interp(top, x, H), _interp(bottom, x, 0.0)
+        hw = max(_interp(width, x, W), 1e-3) / 2
+        if zt - zb < 1e-3:
+            zt = zb + 1e-3
+        end = min(u, 1 - u) * stations
+        squeeze = 1.0 if end >= 2 else 0.55 + 0.225 * end  # rounds the two ends
+        zc, hz = (zt + zb) / 2, (zt - zb) / 2 * squeeze
+        loop = []
+        for j in range(ring):
+            a = 2 * math.pi * j / ring
+            c, sn = math.cos(a), math.sin(a)
+            y = hw * squeeze * math.copysign(abs(c) ** (2 / n), c)
+            z = zc + hz * math.copysign(abs(sn) ** (2 / n), sn)
+            loop.append(bm.verts.new((x, y, z)))
+        rings.append(loop)
+    for a_, b_ in zip(rings, rings[1:]):
+        for j in range(ring):
+            k = (j + 1) % ring
+            bm.faces.new((a_[j], a_[k], b_[k], b_[j]))
+    bm.faces.new(list(reversed(rings[0])))
+    bm.faces.new(rings[-1])
+    ob = _object("shell", bm, material)
+    ob.modifiers.remove(ob.modifiers["split"])
+    sub = ob.modifiers.new("smooth", "SUBSURF")
+    sub.levels, sub.render_levels = 1, 2
+    return [ob]
+
+
+@parts.add("wheel")
+def wheel(p, material):
+    """Tyre on a spoked rim. The axle runs along Y and the wheel is centred on its at point,
+    so a part placed at axle height sits on the ground."""
+    r, w = p["diameter"] / 2, p["width"]
+    ri = p.get("rim_diameter", p["diameter"] * 0.66) / 2
+    spokes = int(p.get("spokes", 5))
+    turn = Matrix.Rotation(math.pi / 2, 4, "Z")
+    bm = bmesh.new()
+    _tube(bm, r, r, -w / 2, w / 2, segs=72)
+    _tube(bm, ri, r, -w / 2, -w / 2, segs=72)
+    _tube(bm, r, ri, w / 2, w / 2, segs=72)
+    _tube(bm, ri, ri, w / 2, -w / 2, segs=72)
+    bmesh.ops.transform(bm, matrix=turn, verts=bm.verts)
+    tyre = _object("tyre", bm, mats.get("rubber"), bevel=min(w, r - ri) * 0.35)
+    tyre.modifiers["bevel"].segments = 4
+    bm = bmesh.new()
+    face = w * 0.32
+    _tube(bm, ri, ri, -w * 0.45, face, segs=72)
+    _tube(bm, ri * 0.22, ri * 0.22, -w * 0.2, face + 0.02, cap1=True)
+    for k in range(spokes):
+        a = 2 * math.pi * k / spokes
+        rot = Matrix.Rotation(a, 4, "X")
+        _box(bm, (face - 0.01, 0, ri * 0.6), (w * 0.12, ri * 0.2, ri * 0.8), rot)
+    bmesh.ops.transform(bm, matrix=turn, verts=bm.verts)
+    rim = _object("rim", bm, material, smooth=False, bevel=ri * 0.02)
+    return [tyre, rim]

@@ -138,6 +138,34 @@ _plain("tissue_red", (0.55, 0.09, 0.07), 0.0, 0.34)
 _plain("cell_blue", (0.08, 0.26, 0.55), 0.0, 0.32)
 
 
+def _paint(name, color):
+    @materials.add(name)
+    def make():
+        m, t, b = _new(name)
+        _set(b, color, 0.35, 0.32)
+        b.inputs["Coat Weight"].default_value = 1.0
+        b.inputs["Coat Roughness"].default_value = 0.04
+        return m
+    return make
+
+
+for _name, _col in {"paint_red": (0.42, 0.015, 0.02), "paint_white": (0.78, 0.79, 0.8),
+                    "paint_black": (0.012, 0.013, 0.015), "paint_silver": (0.5, 0.52, 0.55),
+                    "paint_blue": (0.02, 0.07, 0.3), "paint_yellow": (0.75, 0.5, 0.02),
+                    "paint_green": (0.03, 0.18, 0.06), "paint_orange": (0.7, 0.18, 0.02)}.items():
+    _paint(_name, _col)
+_plain("rubber", (0.018, 0.018, 0.02), 0.0, 0.62)
+_plain("chrome", (0.9, 0.9, 0.92), 1.0, 0.08)
+
+
+@materials.add("glass_tint")
+def glass_tint():
+    m, t, b = _new("glass_tint")
+    _set(b, (0.02, 0.025, 0.03), 0.0, 0.03)
+    b.inputs["Coat Weight"].default_value = 1.0
+    return m
+
+
 @materials.add("glass")
 def glass():
     m, t, b = _new("glass")

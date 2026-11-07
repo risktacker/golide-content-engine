@@ -60,9 +60,12 @@ WORLDS
 CAMERA MOVES: {', '.join(catalog['moves'])}. Vary them.
 
 beats are what happens inside the shot, each landing on one word the narrator says in that shot.
-action is explode (the object opens up), glow (a part lights up), signal (a signal leaves a part) or label
+action is explode (the object opens up), glow (a part lights up), signal (radio or light leaving an antenna,
+dish, transmitter or laser; never anything else) or label
 (a part gets named). part_hint names the part in plain words. label is the short on-screen name, or empty.
 cue_word is copied exactly from the spoken line. Use 1-4 beats per shot.
+Variety: never two shots in a row of the same subject, and one subject at most twice per video.
+Shots of the same subject use different moves and different actions.
 If no line suits 3D, return no shots. A video with no 3D is fine."""
 
 
@@ -96,6 +99,14 @@ def match_part(hint: str, parts: list[dict[str, Any]]) -> str | None:
     return best
 
 
+SENDS = re.compile(r"antenna|dish|transmit|radio|laser|beacon|signal|emitter|radar", re.I)
+
+
+def part_text(parts: list[dict[str, Any]], pid: str) -> str:
+    part = next((p for p in parts if p["id"] == pid), {})
+    return f"{pid} {part.get('label', '')} {part.get('builder', '')}"
+
+
 def _variation(seed: str) -> tuple[float, float, float]:
     """Each shot gets its own angle, so no two videos open the same way."""
     h = hashlib.sha256(seed.encode()).digest()
@@ -112,7 +123,9 @@ def compile_shot(plan: dict[str, Any], blueprint: dict[str, Any], blueprint_name
     move = MOVES.get(plan["move"], MOVES["orbit_slow"])
     yaw, tilt, turn = _variation(f"{plan['subject']}|{start:.2f}")
     pitch = framing["camera"].get("pitch", move["pitch"])
-    actions: list[dict[str, Any]] = [{"type": "drift", "deg_per_sec": 0.9}]
+    grounded = "floor" in plan["world"] or plan["world"] == "studio"
+    actions: list[dict[str, Any]] = [{"type": "drift", "deg_per_sec": 4 if grounded else 0.9,
+                                       "axis": "z" if grounded else "free"}]
     effects: list[dict[str, Any]] = []
     labels: list[dict[str, Any]] = []
     opens = False
@@ -130,7 +143,7 @@ def compile_shot(plan: dict[str, Any], blueprint: dict[str, Any], blueprint_name
             actions.append({"type": "explode", "start": at, "end": min(duration, at + EXPLODE_SECONDS)})
         elif kind == "glow" and part:
             actions.append({"type": "glow", "part": part, "start": at, "end": max(next_at, at + 1.2)})
-        elif kind == "signal" and part:
+        elif kind == "signal" and part and SENDS.search(part_text(parts, part)):
             effects.append({"type": "signal_beam", "from": part, "start": at, "end": duration, "length": 70, "speed": 16})
         if part and (kind == "label" or beat.get("label")):
             side = 1 if len(labels) % 2 == 0 else -1
@@ -141,7 +154,7 @@ def compile_shot(plan: dict[str, Any], blueprint: dict[str, Any], blueprint_name
               "fit_exploded": opens, "aim_offset": framing["camera"].get("aim_offset", [0, 0, 0]),
               "roll": framing["camera"].get("roll", 0)}
     return {"duration": duration, "fps": fps, "vertical": vertical, "world": framing["world"], "light": framing["light"],
-            "object": {"blueprint": blueprint_name, "blueprint_dir": blueprint_dir, "rotate": [tilt, 0, tilt * 2]},
+            "object": {"blueprint": blueprint_name, "blueprint_dir": blueprint_dir, "rotate": [0, 0, tilt * 4] if grounded else [tilt, 0, tilt * 2]},
             "camera": camera, "actions": actions, "effects": effects, "labels": labels,
             "start_time": start, "subject": plan["subject"]}
 
@@ -152,7 +165,11 @@ def accepted(plan: list[dict[str, Any]], times: list[tuple[float, float]], max_s
     catalog = catalog or load()
     kept: list[dict[str, Any]] = []
     used, last_end = 0.0, -1.0
+    count: dict[str, int] = {}
     for shot in sorted(plan, key=lambda s: s["first_line"]):
+        key = slug(shot["subject"])
+        if count.get(key, 0) >= 2 or (kept and kept[-1]["blueprint_name"] == key):
+            continue
         first, last = shot["first_line"], shot["last_line"]
         if not (0 <= first <= last < len(times)) or shot["world"] not in catalog["worlds"]:
             continue
@@ -162,6 +179,7 @@ def accepted(plan: list[dict[str, Any]], times: list[tuple[float, float]], max_s
             continue
         used += length
         last_end = end
+        count[key] = count.get(key, 0) + 1
         kept.append({**shot, "start": start, "end": end, "blueprint_name": slug(shot["subject"])})
     return kept
 

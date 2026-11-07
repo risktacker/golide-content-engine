@@ -12,6 +12,9 @@ from .catalog import WORLD3D, load, menu
 
 MAX_PARTS = 24
 VECTOR = {"type": "array", "items": {"type": "number"}}
+OUTLINE = {"type": "array", "items": VECTOR}
+PROFILE = {"type": "object", "properties": {"top": OUTLINE, "bottom": OUTLINE, "width": OUTLINE},
+           "required": ["top", "bottom", "width"], "additionalProperties": False}
 BLUEPRINT_SCHEMA = {
     "type": "object",
     "properties": {
@@ -24,8 +27,9 @@ BLUEPRINT_SCHEMA = {
             "params": {"type": "array", "items": {"type": "object", "properties": {
                 "name": {"type": "string"}, "value": {"type": "number"},
             }, "required": ["name", "value"], "additionalProperties": False}},
-            "at": VECTOR, "explode": VECTOR, "anchor": VECTOR,
-        }, "required": ["id", "label", "builder", "material", "params", "at", "explode", "anchor"],
+            "profile": PROFILE,
+            "at": VECTOR, "turn": VECTOR, "explode": VECTOR, "anchor": VECTOR,
+        }, "required": ["id", "label", "builder", "material", "params", "profile", "at", "turn", "explode", "anchor"],
             "additionalProperties": False}},
     },
     "required": ["name", "sources", "simplified", "parts"], "additionalProperties": False,
@@ -46,9 +50,24 @@ For weapons, give only the general layout and how it works, never manufacturing 
 
 Use {MAX_PARTS} parts or fewer: the parts a viewer needs to understand how it works, not every screw.
 Each part has a short lowercase id, a viewer-facing label, one builder and one material.
-Parts are positioned with at (x, y, z). Keep the main axis along +X so stacked parts add up.
+Parts are positioned with at (x, y, z), z up. Keep the main axis along +X so stacked parts add up.
+turn is the part's rotation in degrees about x, y, z, applied at its at point; [0,0,0] for most parts.
+A wing or fin is a shell built along its span then turned (span across: [0,0,90]; fin upright: [90,0,0]).
+Something tall like a bottle or tower is built lying along +X and turned upright with [0,-90,0].
+turn spins a part about its own start point, so at is where that start ends up: a cap on an upright
+0.3 m bottle has at [0,0,0.3]. Explode upward or sideways; never through the ground.
 explode is the offset that moves the part away so the inside shows; use [0,0,0] for parts that stay.
 anchor is the point on the part, relative to its own at, where a label line lands.
+
+SHAPE MUST BE RECOGNISABLE. A viewer has to know what the thing is at a glance. Never build a curved
+object out of boxes. Its main body and any curved part use shell with profile, read from the real thing:
+- top: the side-view top line as [x, z] points from front (x=0) to back (x=length), z up from the base.
+  Follow the real silhouette: bumper, bonnet, windscreen, roof, tail; or nose cone, body, fins.
+- bottom: the side-view bottom line the same way (ground clearance, belly, keel).
+- width: the plan-view full width as [x, w] points along the length (narrow nose, wide middle).
+Use 6-14 points per line, from published dimensions and photos. Every other builder gets empty lists.
+For a round body (missile, bottle, fuselage) the top and bottom lines mirror each other about the centre.
+A glass canopy or cabin is its own shell. Wheels use wheel. Colours follow the real product.
 
 {menu(catalog or load())}"""
 
@@ -75,7 +94,7 @@ def problems(blueprint: dict[str, Any], catalog: dict | None = None) -> list[str
         if not pid or pid in seen:
             found.append(f"part id '{pid}' is empty or repeated")
         seen.add(pid)
-        for key in ("at", "explode", "anchor"):
+        for key in ("at", "turn", "explode", "anchor"):
             if key in part and len(part[key]) != 3:
                 found.append(f"{pid}: {key} needs exactly 3 numbers")
         builder = catalog["builders"].get(part.get("builder"))
@@ -96,12 +115,28 @@ def problems(blueprint: dict[str, Any], catalog: dict | None = None) -> list[str
                 found.append(f"{pid}: {name} must be a number")
             elif name in builder["required"] and value <= 0:
                 found.append(f"{pid}: {name} must be above zero")
+        if part["builder"] == "shell":
+            prof = part.get("profile") or {}
+            length = values.get("length", 0)
+            for line in ("top", "width"):
+                pts = prof.get(line) or []
+                if len(pts) < 2:
+                    found.append(f"{pid}: shell needs at least 2 {line} points")
+                elif any(len(pt) != 2 for pt in pts):
+                    found.append(f"{pid}: every {line} point is [x, value]")
+                elif any(not (-0.01 <= pt[0] <= length * 1.01) for pt in pts):
+                    found.append(f"{pid}: {line} x values must lie between 0 and length")
     return found
 
 
 def clean(blueprint: dict[str, Any]) -> dict[str, Any]:
     out = dict(blueprint)
-    out["parts"] = [{**p, "params": params_to_dict(p)} for p in blueprint["parts"]]
+    out["parts"] = []
+    for p in blueprint["parts"]:
+        part = {**p, "params": params_to_dict(p)}
+        if not any((p.get("profile") or {}).values()):
+            part.pop("profile", None)
+        out["parts"].append(part)
     return out
 
 

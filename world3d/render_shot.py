@@ -25,13 +25,16 @@ def compile_shot(shot, quality):
     lights.get(shot["light"]["rig"])(world, shot["light"], model.meshes())
     model.fit(shot["object"].get("size", 10.0))
     _a.orient(model, shot["object"])
+    _w.stand_on(world, model)
     cam = cameras.make(shot["camera"])
-    timeline = [camera_moves.get(shot["camera"]["move"])(cam, shot["camera"], duration, model)]
+    timeline = []
     for a in shot.get("actions", []):
         timeline.append(actions.get(a["type"])(model, a))
     bpy.context.view_layer.update()
     for e in shot.get("effects", []):
         timeline.append(effects.get(e["type"])(model, e))
+    # The camera moves last, so it frames the object after every part has moved this frame.
+    timeline.append(camera_moves.get(shot["camera"]["move"])(cam, shot["camera"], duration, model))
     return scene, model, timeline, fps, duration
 
 

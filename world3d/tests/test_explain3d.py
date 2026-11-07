@@ -103,6 +103,56 @@ class WholePath(unittest.TestCase):
         self.assertEqual(self.run_path(broken), [])
 
 
+def shell_part(**over):
+    part = {"id": "body", "label": "Body", "builder": "shell", "material": "paint_red",
+            "params": [{"name": "length", "value": 4.4}, {"name": "width", "value": 1.9}, {"name": "height", "value": 1.0}],
+            "profile": {"top": [[0, .5], [1.5, .8], [2.6, .9], [4.4, .6]], "bottom": [[0, .2], [4.4, .2]],
+                        "width": [[0, 1.6], [2.2, 1.9], [4.4, 1.6]]},
+            "at": [0, 0, 0], "turn": [0, 0, 0], "explode": [0, 0, 1], "anchor": [2, 0, .8]}
+    part.update(over)
+    return {"name": "Any car", "sources": ["https://example.org"], "simplified": [], "parts": [part]}
+
+
+class Shapes(unittest.TestCase):
+    def test_curved_body_from_outlines_passes(self):
+        self.assertEqual(blueprint.problems(shell_part()), [])
+
+    def test_body_without_outlines_is_sent_back(self):
+        found = " ".join(blueprint.problems(shell_part(profile={"top": [], "bottom": [], "width": []})))
+        self.assertIn("top points", found)
+
+    def test_outline_outside_the_body_is_sent_back(self):
+        bad = shell_part(profile={"top": [[0, .5], [9, .8]], "bottom": [], "width": [[0, 1], [4.4, 1]]})
+        self.assertIn("between 0 and length", " ".join(blueprint.problems(bad)))
+
+    def test_empty_profile_is_dropped_for_plain_parts(self):
+        cleaned = blueprint.clean({**GEAR, "parts": [{**GEAR["parts"][0], "profile": {"top": [], "bottom": [], "width": []}}]})
+        self.assertNotIn("profile", cleaned["parts"][0])
+
+    def test_writer_is_told_to_use_real_outlines(self):
+        self.assertIn("Never build a curved", blueprint.instructions())
+
+
+class Directing(unittest.TestCase):
+    def test_signal_only_leaves_things_that_send(self):
+        bp = {"parts": blueprint.clean(GEAR)["parts"]}
+        plan = {**SHOT, "beats": [{"action": "signal", "part_hint": "drive gear", "label": "", "cue_word": "drive"}]}
+        self.assertEqual(director.compile_shot(plan, bp, "g", "/tmp", 0, 8, WORDS)["effects"], [])
+
+    def test_objects_on_a_floor_turn_and_never_roll(self):
+        bp = {"parts": blueprint.clean(GEAR)["parts"]}
+        shot = director.compile_shot(SHOT, bp, "g", "/tmp", 0, 8, WORDS)
+        self.assertEqual(shot["actions"][0]["axis"], "z")
+        self.assertEqual(shot["object"]["rotate"][:2], [0, 0])
+
+    def test_no_subject_back_to_back_or_more_than_twice(self):
+        times = [(i * 6.0, i * 6.0 + 6.0) for i in range(6)]
+        plans = [{**SHOT, "first_line": i, "last_line": i, "subject": s}
+                 for i, s in enumerate(["Car", "Car", "Plane", "Car", "Plane", "Car"])]
+        kept = [k["subject"] for k in director.accepted(plans, times, 6, 60)]
+        self.assertEqual(kept, ["Car", "Plane", "Car", "Plane"])
+
+
 class Composer(unittest.TestCase):
     def test_clip_fades_in_and_is_absent_between_shots(self):
         with tempfile.TemporaryDirectory() as tmp:

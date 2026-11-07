@@ -1,5 +1,6 @@
 """Compiles a blueprint (JSON facts about a real object) into a 3D object made of parts."""
 import json
+import math
 from pathlib import Path
 
 import bpy
@@ -54,6 +55,19 @@ class Model:
         self.radius = radius * scale
         self.exploded_radius = self._extent(True)[1] * scale
 
+    def lowest(self, exploded=False):
+        """World height of the object's lowest point, so it can stand on the floor."""
+        if exploded:
+            for p in self.parts.values():
+                p.group.location = p.home + p.explode
+        bpy.context.view_layer.update()
+        low = min((m.matrix_world @ Vector(c)).z for m in self.meshes() for c in m.bound_box)
+        if exploded:
+            for p in self.parts.values():
+                p.group.location = p.home
+            bpy.context.view_layer.update()
+        return low
+
     def meshes(self):
         return [m for p in self.parts.values() for m in p.meshes]
 
@@ -84,8 +98,11 @@ def build(name, folder=None):
         scene.collection.objects.link(group)
         group.parent = content
         group.location = Vector(spec.get("at", (0, 0, 0)))
+        group.rotation_euler = [math.radians(v) for v in spec.get("turn", (0, 0, 0))]
         material = mats.get(spec["material"])
-        meshes = parts.get(spec["builder"])(spec.get("params", {}), material)
+        builder = parts.get(spec["builder"])
+        params = spec.get("params", {})
+        meshes = builder(params, material, spec["profile"]) if spec.get("profile") else builder(params, material)
         for mesh in meshes:
             mesh.parent = group
         built.append(Part(spec, group, meshes))

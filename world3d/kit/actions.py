@@ -29,8 +29,13 @@ def drift(model, cfg):
     base = model.root.rotation_euler.copy()
     rate = math.radians(cfg.get("deg_per_sec", 1.2))
 
+    spin_only = cfg.get("axis") == "z"
+
     def update(t):
-        model.root.rotation_euler = (base[0] + rate * t, base[1], base[2] + rate * 0.4 * t)
+        if spin_only:  # objects standing on a floor turn like a turntable, never roll
+            model.root.rotation_euler = (base[0], base[1], base[2] + rate * t)
+        else:
+            model.root.rotation_euler = (base[0] + rate * t, base[1], base[2] + rate * 0.4 * t)
 
     return update
 

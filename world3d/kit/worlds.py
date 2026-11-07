@@ -172,45 +172,61 @@ def space(scene, cfg):
 
 @worlds.add("studio")
 def studio(scene, cfg):
-    """Dark stage: a grid floor that fades into a soft horizon glow."""
-    # The camera sees a near-black stage, but reflections see a soft bright room. Without
-    # this every metal part mirrors the dark and turns black.
+    """Dark endless stage. The grid fades into the dark long before any edge, and the floor stands
+    exactly under the object (see stand_on)."""
+    bg = (0.010, 0.012, 0.017)
     t = scene.world.node_tree
     t.nodes.clear()
     out = t.nodes.new("ShaderNodeOutputWorld")
-    seen = t.nodes.new("ShaderNodeBackground")
-    seen.inputs["Color"].default_value = (0.012, 0.014, 0.02, 1)
-    room = t.nodes.new("ShaderNodeBackground")
-    room.inputs["Color"].default_value = (0.72, 0.8, 0.95, 1)
-    room.inputs["Strength"].default_value = cfg.get("room", 0.55)
-    path = t.nodes.new("ShaderNodeLightPath")
-    mix = t.nodes.new("ShaderNodeMixShader")
-    t.links.new(path.outputs["Is Glossy Ray"], mix.inputs[0])
-    t.links.new(seen.outputs[0], mix.inputs[1])
-    t.links.new(room.outputs[0], mix.inputs[2])
-    t.links.new(mix.outputs[0], out.inputs["Surface"])
-    floor_z = cfg.get("floor", -11.5)
-    bpy.ops.mesh.primitive_plane_add(size=600, location=(0, 0, floor_z))
+    back = t.nodes.new("ShaderNodeBackground")
+    back.inputs["Color"].default_value = (*bg, 1)
+    t.links.new(back.outputs[0], out.inputs["Surface"])
+    bpy.ops.mesh.primitive_plane_add(size=6000, location=(0, 0, 0))
     floor = bpy.context.object
+    floor.name = "floor"
     m = bpy.data.materials.new("grid_floor")
     m.use_nodes = True
     n = m.node_tree
     b = n.nodes["Principled BSDF"]
-    b.inputs["Roughness"].default_value = 0.55
-    b.inputs["Metallic"].default_value = 0.0
-    b.inputs["Specular IOR Level"].default_value = 0.12
+    b.inputs["Roughness"].default_value = 0.62
+    b.inputs["Specular IOR Level"].default_value = 0.08
     tc = n.nodes.new("ShaderNodeTexCoord")
     grid = n.nodes.new("ShaderNodeTexBrick")
-    grid.offset = 0.0
-    grid.squash = 1.0
-    grid.inputs["Color1"].default_value = (0.012, 0.014, 0.02, 1)
-    grid.inputs["Color2"].default_value = (0.012, 0.014, 0.02, 1)
-    grid.inputs["Mortar"].default_value = (0.09, 0.12, 0.18, 1)
+    grid.offset, grid.squash = 0.0, 1.0
+    grid.inputs["Color1"].default_value = (*bg, 1)
+    grid.inputs["Color2"].default_value = (*bg, 1)
+    grid.inputs["Mortar"].default_value = (0.07, 0.095, 0.15, 1)
     grid.inputs["Scale"].default_value = 1.0
-    grid.inputs["Mortar Size"].default_value = 0.02
-    grid.inputs["Brick Width"].default_value = 4.0
-    grid.inputs["Row Height"].default_value = 4.0
+    grid.inputs["Mortar Size"].default_value = 0.025
+    grid.inputs["Brick Width"].default_value = 2.5
+    grid.inputs["Row Height"].default_value = 2.5
     n.links.new(tc.outputs["Object"], grid.inputs["Vector"])
-    n.links.new(grid.outputs["Color"], b.inputs["Base Color"])
+    dist = n.nodes.new("ShaderNodeVectorMath")
+    dist.operation = "LENGTH"
+    n.links.new(tc.outputs["Object"], dist.inputs[0])
+    fade = n.nodes.new("ShaderNodeMapRange")
+    fade.inputs["From Min"].default_value = cfg.get("fade_from", 14)
+    fade.inputs["From Max"].default_value = cfg.get("fade_to", 60)
+    fade.inputs["To Min"].default_value = 1.0
+    fade.inputs["To Max"].default_value = 0.0
+    n.links.new(dist.outputs["Value"], fade.inputs["Value"])
+    mix = n.nodes.new("ShaderNodeMix")
+    mix.data_type = "RGBA"
+    mix.inputs["A"].default_value = (*bg, 1)
+    n.links.new(fade.outputs[0], mix.inputs["Factor"])
+    n.links.new(grid.outputs["Color"], mix.inputs["B"])
+    n.links.new(mix.outputs["Result"], b.inputs["Base Color"])
+    spec = n.nodes.new("ShaderNodeMath")
+    spec.operation = "MULTIPLY"
+    spec.inputs[1].default_value = 0.08
+    n.links.new(fade.outputs[0], spec.inputs[0])
+    n.links.new(spec.outputs[0], b.inputs["Specular IOR Level"])
     floor.data.materials.append(m)
     return {"floor": floor}
+
+
+def stand_on(world, model):
+    """Put a world's floor under the object's lowest point."""
+    floor = world.get("floor")
+    if floor is not None:  # under the lowest point the object reaches, opened or closed
+        floor.location.z = min(model.lowest(), model.lowest(exploded=True)) - 0.01
