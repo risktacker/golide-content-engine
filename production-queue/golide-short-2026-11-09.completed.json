@@ -229,5 +229,12 @@
     "measured_at": "2026-11-09T07:03:05.415716+00:00",
     "signal_type": "youtube-breakout-v1"
   },
-  "selected_topic_source": "https://www.spacex.com/launches/starship-flight-5"
+  "selected_topic_source": "https://www.spacex.com/launches/starship-flight-5",
+  "owner_voice_media_ref": "r2://temp/2026/11/09/7177417ba61a4253862f08b93a6240e5-Space-X.mp3",
+  "platforms": [
+    "youtube",
+    "instagram",
+    "facebook",
+    "linkedin"
+  ]
 }

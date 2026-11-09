@@ -1,0 +1,685 @@
+{
+  "production_id": "golide-short-2026-11-09",
+  "youtube_video_id": "Cy6LTZmdlI8",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "Cy6LTZmdlI8",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-11-09T09:44:47.746426+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "SpaceX Could Catch an Entire Rocket Booster With Giant Mechanical Arms! 🚀🤯",
+    "status": "scheduled",
+    "scheduled_at": "2026-11-09T11:00:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-shorts-mon-wed-fri\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-choice\"}"
+  },
+  "narration": "That rocket booster didn’t land on legs.\n2 giant arms caught it.\nOn October 13, 2024, at Starbase, Texas, Super Heavy separated, flipped,\nfired a boostback burn, and steered through the atmosphere.\nNear the tower, it fired its final landing burn.\nThe booster dropped between the arms, which closed around catch points near its top.\nWhy do that?\nLanding legs and their support structure add weight.\nAn AIAA study modelled landing gear as adding\n15% to a first stage’s empty mass.\nA tower catch moves those loads onto the ground.\nInstead of a ship recovery, the booster returns to the launch site.\nThe FAA says that could shorten turnaround,\nand the company says the tower can put\nit back on the mount for another flight.\nBut why isn’t this routine?\nThe catch worked again on Flights 7 and 8.\nFlight 9 lost the booster during its landing burn,\nand Flights 11 and 12 ended without a catch.\nEngine relights, guidance, structural loads,\nshutdown and inspection still have to work safely every time.\nSo the viral catch was real, but it was a doorway,\nnot the finished system.\nFollow the channel for the next test,\nbecause the breakthrough is when catching becomes boring.\n",
+  "research": {
+    "summary": "SpaceX’s viral “catch” on October 13, 2024 was not a crane operation. After stage separation, Super Heavy flipped around, fired a boostback burn to return toward Starbase, used aerodynamic control surfaces to steer through descent, then reignited 13 engines for its final landing burn. Near the tower, the booster was guided between two tower-mounted “chopstick” arms, which closed around structural catch points near the vehicle’s upper end and held it above the launch mount. SpaceX designed the same tower to integrate the vehicle before launch and, after recovery, place the booster back into position for another flight. [Source: https://www.spacex.com/launches/starship-flight-5] [Source: https://www.spacex.com/vehicles/starship/assets/media/Starbase%20Overview.pdf]\n\nThe payoff is architectural: instead of carrying landing legs, their deployment mechanisms, and the reinforced structure needed to land on them, the booster can transfer those loads into ground equipment. SpaceX says the catch approach reduces vehicle mass, moves complexity from the rocket to the pad, and is intended to support rapid reuse. Independent launch-vehicle research likewise models landing gear as a meaningful first-stage mass penalty. [Source: https://www.spacex.com/vehicles/starship/assets/media/Starbase%20Overview.pdf] [Source: https://doi.org/10.2514%2F1.A34944]\n\nIt can also shorten the physical recovery chain. A booster landing at sea must use a droneship or other recovery location before refurbishment; a tower catch returns the stage directly to the launch site. The FAA has specifically described a separate catch tower at Kennedy Space Center as a way to reduce pad refurbishment and shorten turnaround time. That does not prove a specific launch cadence, but it explains why the concept could move a very large booster from launch back toward relaunch faster than a ship-based recovery system. [Source: https://www.faa.gov/space/stakeholder_engagement/spacex_starship_ksc/SpaceX-SSH-at-LC-39A-Draft-EIS_Volume-I_Main-EIS.pdf] [Source: https://www.spacex.com/mission/]\n\nThe catch was a major demonstration, not a finished operating system. SpaceX repeated successful catches on Flights 7 and 8, but Flight 9 lost the booster during its landing-burn experiment, Flight 11 intentionally splashed the booster down offshore, and Flight 12 failed during the return sequence and ended in a hard splashdown. Those tests show what still has to become routine: reliable engine relights, stable boostback and descent, structural margins under aerodynamic loads, precise guidance into a narrow catch corridor, safe engine shutdown and propellant handling after capture, and a repeatable inspection-and-relaunch process. [Source: https://www.spacex.com/updates] [Source: https://www.spacex.com/launches/starship-flight-11] [Source: https://www.spacex.com/launches/starship-flight-12] [Source: https://www.faa.gov/newsroom/statements/general-statements]",
+    "claims": [
+      {
+        "claim": "On October 13, 2024, Super Heavy completed ascent, stage separation, boostback, a landing burn, and was caught by the launch tower’s arms at Starbase.",
+        "source_title": "SpaceX — Starship’s Fifth Flight Test",
+        "source_url": "https://www.spacex.com/launches/starship-flight-5",
+        "published_or_updated": "October 13, 2024"
+      },
+      {
+        "claim": "The booster’s return sequence uses a flip, boostback burn, controlled atmospheric descent, and a final powered landing burn.",
+        "source_title": "FAA — Final Environmental Impact Statement for Starship-Super Heavy at LC-39A",
+        "source_url": "https://www.faa.gov/space/stakeholder_engagement/spacex_starship_ksc/SpaceX-SSH-LC-39A-Final-EIS-Volume-I.pdf",
+        "published_or_updated": "January 2026"
+      },
+      {
+        "claim": "The tower’s arms are intended to catch the booster and place it back on the orbital launch mount for its next flight.",
+        "source_title": "SpaceX — Starbase Overview",
+        "source_url": "https://www.spacex.com/vehicles/starship/assets/media/Starbase%20Overview.pdf",
+        "published_or_updated": "Accessed November 9, 2026"
+      },
+      {
+        "claim": "SpaceX says the catch system reduces mass on the launch vehicle, moves hardware complexity to the ground, and enables rapid reuse.",
+        "source_title": "SpaceX — Starbase Overview",
+        "source_url": "https://www.spacex.com/vehicles/starship/assets/media/Starbase%20Overview.pdf",
+        "published_or_updated": "Accessed November 9, 2026"
+      },
+      {
+        "claim": "A reusable-launch-vehicle study estimated landing gear, including legs and grid fins, as a substantial first-stage mass penalty; its model increased dry mass by 15 percent to account for landing gear.",
+        "source_title": "AIAA — Multidisciplinary Design Optimization of Reusable Launch Vehicles",
+        "source_url": "https://doi.org/10.2514%2F1.A34944",
+        "published_or_updated": "2020"
+      },
+      {
+        "claim": "The FAA describes a proposed catch tower at Kennedy Space Center as a way to reduce launch-pad refurbishment, shorten turnaround time, and improve launch efficiency.",
+        "source_title": "FAA — Draft Environmental Impact Statement, Volume I",
+        "source_url": "https://www.faa.gov/space/stakeholder_engagement/spacex_starship_ksc/SpaceX-SSH-at-LC-39A-Draft-EIS_Volume-I_Main-EIS.pdf",
+        "published_or_updated": "August 2025"
+      },
+      {
+        "claim": "Traditional booster recovery can involve landing on an ocean droneship or at a terrestrial landing zone, adding a separate recovery location to the operation.",
+        "source_title": "SpaceX — Mission",
+        "source_url": "https://www.spacex.com/mission/",
+        "published_or_updated": "Accessed November 9, 2026"
+      },
+      {
+        "claim": "SpaceX reported the second and third successful Super Heavy catches on Flights 7 and 8.",
+        "source_title": "SpaceX — Updates",
+        "source_url": "https://www.spacex.com/updates",
+        "published_or_updated": "Accessed November 9, 2026"
+      },
+      {
+        "claim": "On Flight 9, SpaceX reported that Super Heavy was lost shortly after its landing burn began; the probable cause was structural failure associated with aerodynamic loads on the booster’s fuel-transfer tube.",
+        "source_title": "SpaceX — Flight 9 and Ship 36 Report",
+        "source_url": "https://www.spacex.com/updates",
+        "published_or_updated": "May 27, 2025"
+      },
+      {
+        "claim": "Flight 11 used an offshore splashdown for Super Heavy rather than a tower catch, while Flight 12 failed during boostback and ended in a hard splashdown.",
+        "source_title": "SpaceX — Starship’s Eleventh Flight Test and Twelfth Flight Test",
+        "source_url": "https://www.spacex.com/launches/starship-flight-11",
+        "published_or_updated": "October 13, 2025"
+      },
+      {
+        "claim": "The FAA reported that Flight 12’s booster anomaly occurred during its return over the Gulf and required a mishap investigation.",
+        "source_title": "FAA — General Statements",
+        "source_url": "https://www.faa.gov/newsroom/statements/general-statements",
+        "published_or_updated": "May 27, 2026"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "SpaceX Could Catch an Entire Rocket Booster With Giant Mechanical Arms! 🚀🤯",
+    "description": "SpaceX’s Super Heavy booster does not land on legs. After separation, it flips, flies back to Starbase, fires its landing burn, and is caught by two massive arms on the launch tower.\n\nThis short explains why tower catches could make Starship faster to reuse, why they save landing hardware, and why one successful catch is only the beginning of making the system routine.\n\n#SpaceX #Starship #SuperHeavy #Mechazilla #RocketScience #RocketReusability #Starbase",
+    "tags": [
+      "SpaceX",
+      "Super Heavy",
+      "Starship",
+      "Starship booster catch",
+      "Super Heavy catch",
+      "Mechazilla",
+      "rocket booster catch",
+      "SpaceX booster landing",
+      "Starship launch tower",
+      "rocket landing arms",
+      "Starbase Texas",
+      "reusable rocket",
+      "rocket reusability",
+      "boostback burn",
+      "landing burn",
+      "SpaceX Starship",
+      "Starship Flight 5",
+      "Starship Flight 7",
+      "Starship Flight 8",
+      "Starship Flight 9",
+      "Starship Flight 11",
+      "Starship Flight 12",
+      "rocket engineering",
+      "launch tower catch",
+      "GOLIDE"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": "Starbase, Texas, USA",
+    "location_is_material": true,
+    "altered_content": false,
+    "chapters": [],
+    "keywords": [
+      "Super Heavy booster catch",
+      "Starship booster catch",
+      "SpaceX booster catch",
+      "Mechazilla catch arms",
+      "rocket booster landing",
+      "Starship launch tower",
+      "SpaceX Starship",
+      "Super Heavy landing",
+      "rocket reusability",
+      "Starbase Texas",
+      "booster landing burn",
+      "boostback burn",
+      "reusable rocket",
+      "rocket engineering"
+    ],
+    "hashtags": [
+      "#SpaceX",
+      "#Starship",
+      "#SuperHeavy",
+      "#Mechazilla",
+      "#RocketScience",
+      "#RocketReusability",
+      "#Starbase"
+    ],
+    "format": "short",
+    "title_description_language": "en",
+    "seo_body": "SpaceX’s Super Heavy booster does not land on legs. After separation, it flips, flies back to Starbase, fires its landing burn, and is caught by two massive arms on the launch tower.\n\nThis short explains why tower catches could make Starship faster to reuse, why they save landing hardware, and why one successful catch is only the beginning of making the system routine."
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "On October 13, 2024, Super Heavy completed ascent, stage separation, boostback, a landing burn, and was caught by the launch tower’s arms at Starbase.",
+        "source_title": "SpaceX — Starship’s Fifth Flight Test",
+        "source_url": "https://www.spacex.com/launches/starship-flight-5",
+        "published_or_updated": "October 13, 2024"
+      },
+      {
+        "claim": "The booster’s return sequence uses a flip, boostback burn, controlled atmospheric descent, and a final powered landing burn.",
+        "source_title": "FAA — Final Environmental Impact Statement for Starship-Super Heavy at LC-39A",
+        "source_url": "https://www.faa.gov/space/stakeholder_engagement/spacex_starship_ksc/SpaceX-SSH-LC-39A-Final-EIS-Volume-I.pdf",
+        "published_or_updated": "January 2026"
+      },
+      {
+        "claim": "The tower’s arms are intended to catch the booster and place it back on the orbital launch mount for its next flight.",
+        "source_title": "SpaceX — Starbase Overview",
+        "source_url": "https://www.spacex.com/vehicles/starship/assets/media/Starbase%20Overview.pdf",
+        "published_or_updated": "Accessed November 9, 2026"
+      },
+      {
+        "claim": "SpaceX says the catch system reduces mass on the launch vehicle, moves hardware complexity to the ground, and enables rapid reuse.",
+        "source_title": "SpaceX — Starbase Overview",
+        "source_url": "https://www.spacex.com/vehicles/starship/assets/media/Starbase%20Overview.pdf",
+        "published_or_updated": "Accessed November 9, 2026"
+      },
+      {
+        "claim": "A reusable-launch-vehicle study estimated landing gear, including legs and grid fins, as a substantial first-stage mass penalty; its model increased dry mass by 15 percent to account for landing gear.",
+        "source_title": "AIAA — Multidisciplinary Design Optimization of Reusable Launch Vehicles",
+        "source_url": "https://doi.org/10.2514%2F1.A34944",
+        "published_or_updated": "2020"
+      },
+      {
+        "claim": "The FAA describes a proposed catch tower at Kennedy Space Center as a way to reduce launch-pad refurbishment, shorten turnaround time, and improve launch efficiency.",
+        "source_title": "FAA — Draft Environmental Impact Statement, Volume I",
+        "source_url": "https://www.faa.gov/space/stakeholder_engagement/spacex_starship_ksc/SpaceX-SSH-at-LC-39A-Draft-EIS_Volume-I_Main-EIS.pdf",
+        "published_or_updated": "August 2025"
+      },
+      {
+        "claim": "Traditional booster recovery can involve landing on an ocean droneship or at a terrestrial landing zone, adding a separate recovery location to the operation.",
+        "source_title": "SpaceX — Mission",
+        "source_url": "https://www.spacex.com/mission/",
+        "published_or_updated": "Accessed November 9, 2026"
+      },
+      {
+        "claim": "SpaceX reported the second and third successful Super Heavy catches on Flights 7 and 8.",
+        "source_title": "SpaceX — Updates",
+        "source_url": "https://www.spacex.com/updates",
+        "published_or_updated": "Accessed November 9, 2026"
+      },
+      {
+        "claim": "On Flight 9, SpaceX reported that Super Heavy was lost shortly after its landing burn began; the probable cause was structural failure associated with aerodynamic loads on the booster’s fuel-transfer tube.",
+        "source_title": "SpaceX — Flight 9 and Ship 36 Report",
+        "source_url": "https://www.spacex.com/updates",
+        "published_or_updated": "May 27, 2025"
+      },
+      {
+        "claim": "Flight 11 used an offshore splashdown for Super Heavy rather than a tower catch, while Flight 12 failed during boostback and ended in a hard splashdown.",
+        "source_title": "SpaceX — Starship’s Eleventh Flight Test and Twelfth Flight Test",
+        "source_url": "https://www.spacex.com/launches/starship-flight-11",
+        "published_or_updated": "October 13, 2025"
+      },
+      {
+        "claim": "The FAA reported that Flight 12’s booster anomaly occurred during its return over the Gulf and required a mishap investigation.",
+        "source_title": "FAA — General Statements",
+        "source_url": "https://www.faa.gov/newsroom/statements/general-statements",
+        "published_or_updated": "May 27, 2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "SpaceX Starship booster catch chopstick arms rapid reusability official",
+      "score": 92.4,
+      "verdict": "pass",
+      "recent_videos": 1,
+      "median_views_per_day": 1063468.7999999998,
+      "top_views_per_day": 1063468.7999999998,
+      "market_coverage": 1,
+      "title_query_overlap": 1.0,
+      "measured_at": "2026-11-09T07:03:05.415716+00:00",
+      "signal_type": "youtube-breakout-v1"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.87,
+      "true_peak_dbtp": -1.83,
+      "loudness_range": 1.8
+    },
+    "editorial": {
+      "beats": 25,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-11-09T09:44:38.296166+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-choice",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-short-2026-11-09",
+    "created_at": "2026-11-09T09:44:39.731000+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-11-09T11:00:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "409cc78b63a2c7b566ea13b4ec7984229f8b6101e4b60ad534d8b597169f8bd0",
+        "bytes": 26547374
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "e8f9f36d88c37cc83223a387445efa5d6ed370d5b74ebf0d5b819f402ed23896",
+        "bytes": 200229
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "3eeccb4e13452517ef6143bf24d48567baee9a68fe46ed4c164d014d1996a5b3",
+        "bytes": 2387
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "fd0296c86606b98103737f74378c971265c714d01236c15769fdc140080e5d26",
+        "bytes": 2573
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "ed766850873a932d9e9929943cdd5d5f9634d2e2e9b82e63e39e7c1bcc31f695",
+        "bytes": 720
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "b0aae150c7564c269c6d963b07c87f0ac760686c3c427e474cc79e1aed0c4a1e",
+        "bytes": 5003
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "a89ff2471888a87d484d27c42628bc73c1b69af0f55aa955038e7843c845f9ce",
+        "bytes": 382
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "3bf12a760f89edc339b594b8cb378f620d56fcef3f8a20b68ff632702d4b3c1b",
+        "bytes": 277
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 17684.0,
+      "cached_input_units": 0.0,
+      "output_units": 2114.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006074,
+      "created_at": "2026-11-09T07:03:05.042610+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-09T07:03:05.046666+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 44907.0,
+      "cached_input_units": 0.0,
+      "output_units": 2746.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.012277,
+      "created_at": "2026-11-09T07:03:45.035360+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-09T07:03:45.158218+00:00"
+    },
+    {
+      "stage": "script-story",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 15815.0,
+      "cached_input_units": 0.0,
+      "output_units": 4911.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.009056,
+      "created_at": "2026-11-09T07:05:18.126419+00:00"
+    },
+    {
+      "stage": "script-board",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 667.0,
+      "cached_input_units": 0.0,
+      "output_units": 1616.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002073,
+      "created_at": "2026-11-09T07:05:35.216329+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 15815.0,
+      "cached_input_units": 0.0,
+      "output_units": 4911.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.009056,
+      "created_at": "2026-11-09T07:05:35.284067+00:00"
+    },
+    {
+      "stage": "visual-plan-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-09T09:28:41.237981+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 20691.0,
+      "cached_input_units": 0.0,
+      "output_units": 4290.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.009286,
+      "created_at": "2026-11-09T09:28:41.244194+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-09T09:29:08.405815+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-09T09:29:33.562665+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-09T09:30:18.045012+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-09T09:30:40.059780+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-09T09:31:02.758677+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-09T09:31:26.807871+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-09T09:31:52.900651+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-09T09:32:15.856685+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-09T09:32:43.746898+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-09T09:33:06.482649+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-09T09:33:53.019912+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-09T09:34:18.074037+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-09T09:34:43.340929+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-09T09:35:09.480692+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-09T09:35:33.790219+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-portrait",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-09T09:35:57.525132+00:00"
+    },
+    {
+      "stage": "cad3d",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 21584.0,
+      "cached_input_units": 0.0,
+      "output_units": 4073.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.009204,
+      "created_at": "2026-11-09T09:36:55.007747+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 13525.0,
+      "cached_input_units": 0.0,
+      "output_units": 802.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.003667,
+      "created_at": "2026-11-09T09:44:19.505236+00:00"
+    }
+  ],
+  "recorded_at": "2026-11-09T09:44:47.751613+00:00"
+}
