@@ -504,3 +504,4 @@ body.sheet-open{overflow:hidden}
 .replace-note{flex-basis:100%;margin:0}
 .script-status{display:block;margin-top:8px}
 .script-box.editing + .script-tools{display:none}
+.replace-go.ready{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}

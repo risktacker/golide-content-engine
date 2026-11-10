@@ -622,7 +622,7 @@ function actionCard(job) {
       '<input class="replace-link" type="url" inputmode="url" placeholder="Paste the YouTube link to model" data-job="' + escAttr(job.job_id) + '">' +
       '<button class="action-button replace-go" data-job="' + escAttr(job.job_id) + '">Write a new script</button>' +
       '<button class="action-button replace-cancel" data-job="' + escAttr(job.job_id) + '">Cancel</button>' +
-      '<p class="replace-note">The engine treats that video as today\'s title: it researches the subject from other sources and writes a new script here. Costs one research and script run (a few cents).</p></div>' +
+      '<p class="replace-note">Paste the link, then tap <b>Write a new script</b>. The engine treats that video as today\'s title: it researches the subject from other sources and writes a new script here (a few cents).</p></div>' +
     '<span class="voice-status script-status" id="script-status-' + escAttr(job.job_id) + '"></span></div>' +
     '<div class="action-controls">' + postToHtml(null) +
       '<button class="ai-voice-button" data-job="' + escAttr(job.job_id) + '">Use AI voice</button>' +
@@ -650,6 +650,8 @@ function replaceCard(job) {
 
 // 2026-11-10 (owner): while he edits a script, the page never redraws over his typing.
 let scriptEditing = null;
+// a message that survives the cards being redrawn (e.g. after Replace script starts)
+let studioNotice = "";
 
 function renderActionQueues() {
   if (scriptEditing) return;
@@ -660,7 +662,7 @@ function renderActionQueues() {
 
   if (!waiting.length && !replaceable.length) {
     root.className = "action-queue empty-state";
-    root.innerHTML = "No recordings needed right now. You'll get an email when a script is ready.";
+    root.innerHTML = studioNotice ? esc(studioNotice) : "No recordings needed right now. You'll get an email when a script is ready.";
     dashboard.className = "stack empty-state";
     dashboard.innerHTML = "Nothing needs you right now.";
     return;
@@ -757,6 +759,12 @@ function renderActionQueues() {
   $$(".replace-cancel").forEach((button) => {
     button.onclick = () => { const row = document.getElementById("replace-row-" + button.dataset.job); if (row) row.hidden = true; };
   });
+  // a pasted link is ready to go: the button lights up, and Enter starts it
+  $$(".replace-link").forEach((input) => {
+    const go = () => input.closest(".replace-row")?.querySelector(".replace-go");
+    input.oninput = () => go()?.classList.toggle("ready", /youtu\.?be/.test(input.value));
+    input.onkeydown = (event) => { if (event.key === "Enter") { event.preventDefault(); go()?.click(); } };
+  });
   $$(".replace-go").forEach((button) => {
     button.onclick = async () => {
       const id = button.dataset.job;
@@ -768,7 +776,7 @@ function renderActionQueues() {
         await api(`/api/production-jobs/${encodeURIComponent(id)}/replace-script`, {
           method: "POST", body: JSON.stringify({ link }),
         });
-        if (status) status.textContent = "New script on its way. It appears here when it is ready.";
+        studioNotice = "New script on its way, modelled on the video you pasted. It appears in Automation when it is ready (a few minutes); you get the usual email.";
         await loadProductionJobs();
       } catch (error) {
         button.disabled = false; button.textContent = "Write a new script";
