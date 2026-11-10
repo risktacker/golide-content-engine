@@ -1,0 +1,1062 @@
+{
+  "production_id": "golide-long-2026-11-10",
+  "youtube_video_id": "DDLXa4uqU7s",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "DDLXa4uqU7s",
+    "upload_status": "published",
+    "privacy_status": "public",
+    "scheduled_at": null,
+    "uploaded_at": "2026-11-10T19:10:07.163630+00:00"
+  },
+  "production": {
+    "format": "long",
+    "title": "Claude Fable 5.2 vs Opus 5.5: 10 Real Builds (Opus Still Wins!!)",
+    "status": "published",
+    "scheduled_at": "2026-11-10T17:30:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-long-tue-thu-sat\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-choice\"}"
+  },
+  "narration": "On November 9, 2026, Anthropic released a model with a 1-million-token memory,\na maximum answer length of 128,000 tokens,\nand an API price of $8 for every million\ninput tokens and $40 for every million output tokens.\nThat model is Fable 5.2, and it isn't designed mainly for quick questions.\nIt's designed for the job you give an AI,\nthen leave running while it reads, plans, writes,\ntests and comes back with something finished.\nThe obvious comparison is Opus 5.5,\nthe model Anthropic still recommends for most everyday work.\nSo which one should you use, and what is Fable actually better at?\nBy the end of this video, you'll know what changed,\nwhy Fable and the restricted Mythos model are connected,\nhow to choose between Fable and Opus,\nand how to give Fable a long technical job\nwithout just throwing a vague prompt at it.\nThe story starts with a model most people weren't allowed to use.\nAlongside Fable 5.2, Anthropic announced Mythos 5.2.\nThe company describes them as having the same underlying model.\nThe difference is access and safeguards.\nFable is the generally available version, with stronger protections around cybersecurity and biology.\nMythos is reserved for organisations that pass Anthropic's verification programmes.\nSo this wasn't simply a new name for the normal chatbot.\nIt was a model built for work that can be useful,\nbut can also become risky if the instructions are wrong.\nIn its November 9 announcement,\nAnthropic said prerelease testing used Fable 5.2 on difficult software migrations,\nrobotics tasks and the design of 3 working electronic devices.\nIt also said the model made progress on 2 open problems in black-hole physics.\nThat sounds extraordinary, but keep the wording honest.\nThese are demonstrations reported by the company,\nnot independent proof that the model has solved\nphysics or can replace a research team.\nThe important part for you is not the black-hole headline.\nIt's the type of work being tested.\nLong codebases.\nTechnical research.\nEngineering constraints.\nTasks where the answer is only useful if\nthe model keeps track of the whole problem.\nThat is the gap Fable is meant to fill.\nBut to understand why,\nyou need to look at what happens inside a long job.\nA normal chat often works like this.\nYou ask a question, get an answer and decide what to ask next.\nA long-running model works more like a contractor.\nYou give it a brief, it keeps the brief in view,\nworks through several stages and produces a document,\na code change or another finished result at the end.\nFable 5.2 has a 1-million-token context window.\nTokens are small pieces of text, not exactly words,\nso this is not the same as memorising a million ordinary words.\nBut it is enough room for a large codebase, a long technical report,\na set of research papers or a detailed\nproject history to stay available during one task.\nThe model can also produce up to 128,000 tokens in one response.\nThat matters when the result is not a paragraph, but a migration plan,\na large code change, a spreadsheet or a presentation.\nAnd its thinking is adaptive.\nThe reasoning is always available,\nwhile an effort setting controls how much work the model spends before answering.\nA simple request does not need the same depth as a difficult engineering problem.\nHere's the practical tip:\ndon't use a long-context model by pasting in everything you own.\nGive it the files that define the job,\nexplain what a successful result looks like,\nand tell it how to check its work.\nFor example, instead of saying, “Improve this project,” say, “Read the repository,\nmap the current architecture, identify the files that need changing, make the migration,\nrun the existing tests,\nand report every test that still fails.” That turns the\nmodel from a text generator into a process with checkpoints.\nThe long memory helps, but the instructions still determine whether the work is useful.\nNow we can compare the 2 models properly.\nAnthropic's own evaluations put Fable 5.2 ahead of Opus 5.5 on several tested tasks,\nincluding FrontierSWE v2 for software work, AutomationBench for computer use, Terminal-Bench-Science, BenchCAD and Chartography.\nThose names cover different abilities: changing real software, operating tools,\nsolving technical problems through a terminal, working with computer-aided design and producing accurate charts.\nBut “ahead on several evaluations” is not the same\nas “wins every task.” Some comparisons were close,\nand results changed with the effort setting.\nAnthropic's own guidance is more measured than the online arguments.\nStart with Opus 5.5 for normal coding and knowledge work.\nMove to Fable 5.2 when Opus at higher effort still doesn't meet the requirement.\nFable also has 2 practical advantages, according to Anthropic.\nIt can generate answers up to 30% faster than Fable 5.1,\nand its input and output pricing is 20% lower than the previous version.\nThe listed API price is $8 per million\ninput tokens and $40 per million output tokens,\ncompared with $10 and $50 for Fable 5.1.\nBatch requests get a 50% discount.\nThe company also reports about 55% fewer unnecessary safeguard blocks than Fable 5.1.\nThat does not mean every request is allowed.\nHigh-risk cybersecurity and biology work can still be blocked or sent to another model.\nSo the verdict here is simple: Opus is the sensible default.\nFable is the expensive, heavier tool you bring in when the job is long,\ntechnical or costly to get wrong.\nWhat does that mean in practice?\nStart with a software migration.\nGive Fable the repository, the current version,\nthe target version and the tests that must continue passing.\nAsk it to inspect first, write a migration plan,\nmake the changes in stages and run the tests after each important step.\nThe useful part is not that it writes code quickly.\nThe useful part is that it can keep the old system,\nthe new requirements and the test results in the same working context.\nYou still review the changes,\nbut you spend less time copying the same background into 5 separate conversations.\nThe next use is deep research.\nGive it a focused question,\nthe source material and the format you need at the end.\nAsk it to separate facts from assumptions,\nshow where each important claim came from and mark anything it could not verify.\nThat last instruction matters.\nA large context window gives the model more material to work with.\nIt does not automatically make every source reliable.\nFor engineering work, describe the constraints before asking for a design.\nInclude dimensions, materials, power limits,\nsafety requirements and the tests the design has to pass.\nAnthropic says Fable was used to design 3 working electronic devices during testing.\nThat is a company-reported result,\nnot a reason to skip a qualified engineer or physical testing.\nFable can also produce finished artefacts: a document, spreadsheet or presentation.\nThe better workflow is to ask for an outline first, then the completed version,\nthen a quality check against the original brief.\nIf you need a financial spreadsheet, for example,\ntell it which totals must reconcile and which\ncells should contain formulas instead of typed numbers.\nAnd for robotics or other physical systems, use it to connect the pieces:\nsensor data, control logic, simulation and test results.\nThe model can help organise a workflow,\nbut a robot still has to be tested in the real world.\nA correct-looking plan is not the same as a safe machine.\nAcross all of these examples, the same pattern keeps coming back.\nGive Fable a large but relevant body of information, define the finished result,\nask for intermediate checks and make it show its evidence.\nIf you want to try Fable 5.2,\ndevelopers can call it through the model ID\n`claude-fable-5-2` in the API and supported cloud platforms.\nAccess through an ordinary application depends on the plan and service you are using.\nSet the effort level based on the job.\nUse a lighter setting for a short transformation.\nUse more effort when the model has to compare alternatives,\nreason through constraints or repair its own work.\nThen use a prompt with 4 parts: the goal, the material it can use,\nthe rules it must follow and the check it must perform before finishing.\nFor example: “Read these files.\nCreate a migration plan.\nApply the changes only after explaining the affected components.\nRun the test suite.\nDo not claim success unless the tests pass,\nand list every failure with the file and line involved.” That\nis much safer than asking for a miracle in one sentence.\nWatch the cost, too.\nA million input tokens and a million output\ntokens would cost $48 at the listed rates,\nalthough real jobs usually use different amounts.\nLong context is useful, but unnecessary files and repeated output still increase the bill.\nAnd don't confuse a completed response with a verified result.\nReview code.\nCheck calculations.\nOpen the generated presentation.\nTest the device.\nRead the sources.\nFable can shorten the path to a finished draft,\nbut the responsibility for accepting the result is still yours.\nSo, Fable 5.2 is not simply Opus with a louder launch video.\nIt is a model aimed at long technical jobs, with a 1-million-token context,\nadaptive effort, a 128,000-token output limit and lower listed pricing than Fable 5.1.\nUse Opus 5.5 for ordinary work.\nReach for Fable when the task has many connected parts,\nneeds sustained reasoning and ends in something you can inspect and use.\nThe free guide to this video and the link to our community\nfor updates and more stories like this are in the description.\nFollow the channel,\nbecause the next useful comparison is not which model wins a benchmark,\nbut which one actually saves you time on the work you do.\nThe question is, what would you give Fable first: a large codebase,\na research project or a finished document you normally build by hand?\n",
+  "research": {
+    "summary": "Claude Fable 5.2 launched on November 9, 2026, alongside the restricted Claude Mythos 5.2. Anthropic describes them as the same underlying model: Fable is the generally available version with strong safeguards for cybersecurity and biology, while Mythos is reserved for organizations approved through Anthropic’s verification programs. The release is aimed at difficult, long-running technical work rather than ordinary chat. It supports a 1-million-token context window, up to 128,000 output tokens, and always-on adaptive thinking whose depth can be controlled with an effort setting. Fable 5.2 costs $8 per million input tokens and $40 per million output tokens—20% less than Fable 5.1—and Anthropic says it produces outputs up to 30% faster. Anthropic reports that its safeguards generated about 55% fewer unnecessary blocks than Fable 5.1, although high-risk cyber and biology requests can still be blocked or routed to another model. The model can be used for long-running coding agents, deep research, large migrations, engineering design, robotics workflows, and producing finished documents, spreadsheets, or presentations. Anthropic’s own guidance is more measured than the video’s headline: use Opus 5.5 as the normal daily model, then move to Fable 5.2 when Opus at higher effort does not meet the requirements. Benchmark results show Fable 5.2 ahead of Opus 5.5 on many evaluated tasks, but not literally every task, so “Opus still loses at everything” would be an unsupported conclusion.",
+    "claims": [
+      {
+        "claim": "Anthropic announced Claude Fable 5.2 and Claude Mythos 5.2 on November 9, 2026, describing them as models for demanding technical work in coding, reasoning, vision, science, and engineering.",
+        "source_title": "Introducing Claude Fable 5.2 and Claude Mythos 5.2",
+        "source_url": "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+        "published_or_updated": "November 9, 2026"
+      },
+      {
+        "claim": "Fable 5.2 and Mythos 5.2 use the same underlying model; Fable is publicly available with stronger cyber and biology safeguards, while Mythos is limited to verified organizations.",
+        "source_title": "Introducing Claude Fable 5.2 and Claude Mythos 5.2",
+        "source_url": "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+        "published_or_updated": "November 9, 2026"
+      },
+      {
+        "claim": "Fable 5.2 has a 1-million-token context window, a maximum output of 128,000 tokens, always-on adaptive thinking, and a default high-effort setting.",
+        "source_title": "Claude Fable 5.2 — Claude Platform Docs",
+        "source_url": "https://platform.claude.com/docs/en/models/fable-5-2/overview",
+        "published_or_updated": "November 9, 2026"
+      },
+      {
+        "claim": "The API price is $8 per million input tokens and $40 per million output tokens, compared with $10 and $50 for Fable 5.1; batch requests receive a 50% discount.",
+        "source_title": "Claude Fable 5.2 — Claude Platform Docs",
+        "source_url": "https://platform.claude.com/docs/en/models/fable-5-2/overview",
+        "published_or_updated": "November 9, 2026"
+      },
+      {
+        "claim": "Anthropic says Fable 5.2 generates outputs up to 30% faster than Fable 5.1 and that its reduced false-positive safeguards resulted in about 55% fewer blocks overall, with separate reductions reported for cybersecurity and biology.",
+        "source_title": "Introducing Claude Fable 5.2 and Claude Mythos 5.2",
+        "source_url": "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+        "published_or_updated": "November 9, 2026"
+      },
+      {
+        "claim": "Anthropic’s reported evaluations put Fable 5.2 ahead of Opus 5.5 on several tested tasks, including FrontierSWE v2, AutomationBench, Terminal-Bench-Science, BenchCAD, and Chartography, while some comparisons were close or depended on the selected effort level.",
+        "source_title": "Introducing Claude Fable 5.2 and Claude Mythos 5.2",
+        "source_url": "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+        "published_or_updated": "November 9, 2026"
+      },
+      {
+        "claim": "Anthropic reports that prerelease testing used Fable 5.2 to complete otherwise difficult software migrations, design three working electronic devices, make progress on robotics tasks, and solve two open problems in black-hole physics. These are company-reported demonstrations, not independent proof that the model has solved broad scientific research.",
+        "source_title": "Introducing Claude Fable 5.2 and Claude Mythos 5.2",
+        "source_url": "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+        "published_or_updated": "November 9, 2026"
+      },
+      {
+        "claim": "The intended user workflow is to employ Fable 5.2 for demanding reasoning and long-horizon agentic tasks such as multistep research, large codebases, and work that must end in a finished document, spreadsheet, or presentation.",
+        "source_title": "Claude Fable 5.2 — Claude Platform Docs",
+        "source_url": "https://platform.claude.com/docs/en/models/fable-5-2/overview",
+        "published_or_updated": "November 9, 2026"
+      },
+      {
+        "claim": "Anthropic recommends starting most ordinary coding and knowledge-work tasks with Opus 5.5, then switching to Fable 5.2 when higher-effort Opus evaluations do not meet the required quality.",
+        "source_title": "What’s new in Claude Fable 5.2",
+        "source_url": "https://platform.claude.com/docs/en/models/fable-5-2/whats-new-fable-5-2",
+        "published_or_updated": "November 9, 2026"
+      },
+      {
+        "claim": "Developers can call Fable 5.2 with the model ID claude-fable-5-2 through the Claude API and supported cloud platforms; users can control reasoning depth with the effort parameter and use the model for long-running agentic workflows.",
+        "source_title": "What’s new in Claude Fable 5.2",
+        "source_url": "https://platform.claude.com/docs/en/models/fable-5-2/whats-new-fable-5-2",
+        "published_or_updated": "November 9, 2026"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "ONE PHONE TO POWER THEM ALL",
+    "description": "Free guide to this video (steps and every source): https://studio.golidee.com/guides/golide-long-2026-11-10.pdf\n\nAnthropic’s Claude Fable 5.2 is built for long, technical jobs that require sustained reasoning, large files, code changes, research, testing, and finished deliverables. This video explains its 1-million-token context window, 128,000-token output limit, adaptive effort, pricing, and connection to the restricted Mythos 5.2 model.\n\nWe compare Fable 5.2 with Opus 5.5 and explain when each model makes sense. You’ll also learn how to prompt Fable for software migrations, deep research, engineering work, spreadsheets, presentations, and other tasks where verification matters.\n\nThe video covers practical workflows, cost considerations, safety limits, benchmark claims, and a reusable prompt structure for giving Fable a complex job without relying on a vague instruction.\n\nChapters\n0:00 Intro\n0:57 The hidden model\n2:25 How it works\n4:18 Fable versus Opus\n6:03 What you can build\n8:25 How to use it\n10:01 Close\n\n#ClaudeFable #Fable52 #ClaudeOpus #Anthropic #AICoding #AIResearch #ArtificialIntelligence\n\nMusic: Frame-Dragging by The Grey Room / Density & Time",
+    "tags": [
+      "Claude Fable 5.2",
+      "Fable 5.2",
+      "Claude Fable",
+      "Fable vs Opus",
+      "Fable 5.2 vs Opus",
+      "Claude Opus 5.5",
+      "Opus 5.5",
+      "Anthropic AI",
+      "Anthropic Claude",
+      "Mythos 5.2",
+      "Claude AI models",
+      "AI model comparison",
+      "best Claude model",
+      "long context AI",
+      "1 million token AI",
+      "AI coding model",
+      "AI software migration",
+      "AI technical research",
+      "AI agent workflows",
+      "AI engineering tools",
+      "AI robotics model",
+      "AI spreadsheet maker",
+      "AI presentation maker",
+      "AI API pricing",
+      "GOLIDE"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [
+      "0:00 Intro",
+      "0:57 The hidden model",
+      "2:25 How it works",
+      "4:18 Fable versus Opus",
+      "6:03 What you can build",
+      "8:25 How to use it",
+      "10:01 Close"
+    ],
+    "keywords": [
+      "Claude Fable 5.2",
+      "Fable 5.2 vs Opus 5.5",
+      "Claude Opus 5.5 comparison",
+      "Fable 5.2 review",
+      "Anthropic Fable 5.2",
+      "Claude Mythos 5.2",
+      "best Claude model",
+      "1 million token context",
+      "long context AI model",
+      "AI coding model",
+      "Claude API pricing",
+      "AI software migration",
+      "AI technical research",
+      "Fable 5.2 prompts"
+    ],
+    "hashtags": [
+      "#ClaudeFable",
+      "#Fable52",
+      "#ClaudeOpus",
+      "#Anthropic",
+      "#AICoding",
+      "#AIResearch",
+      "#ArtificialIntelligence"
+    ],
+    "format": "long",
+    "title_description_language": "en",
+    "seo_body": "Anthropic’s Claude Fable 5.2 is built for long, technical jobs that require sustained reasoning, large files, code changes, research, testing, and finished deliverables. This video explains its 1-million-token context window, 128,000-token output limit, adaptive effort, pricing, and connection to the restricted Mythos 5.2 model.\n\nWe compare Fable 5.2 with Opus 5.5 and explain when each model makes sense. You’ll also learn how to prompt Fable for software migrations, deep research, engineering work, spreadsheets, presentations, and other tasks where verification matters.\n\nThe video covers practical workflows, cost considerations, safety limits, benchmark claims, and a reusable prompt structure for giving Fable a complex job without relying on a vague instruction."
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "Anthropic announced Claude Fable 5.2 and Claude Mythos 5.2 on November 9, 2026, describing them as models for demanding technical work in coding, reasoning, vision, science, and engineering.",
+        "source_title": "Introducing Claude Fable 5.2 and Claude Mythos 5.2",
+        "source_url": "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+        "published_or_updated": "November 9, 2026"
+      },
+      {
+        "claim": "Fable 5.2 and Mythos 5.2 use the same underlying model; Fable is publicly available with stronger cyber and biology safeguards, while Mythos is limited to verified organizations.",
+        "source_title": "Introducing Claude Fable 5.2 and Claude Mythos 5.2",
+        "source_url": "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+        "published_or_updated": "November 9, 2026"
+      },
+      {
+        "claim": "Fable 5.2 has a 1-million-token context window, a maximum output of 128,000 tokens, always-on adaptive thinking, and a default high-effort setting.",
+        "source_title": "Claude Fable 5.2 — Claude Platform Docs",
+        "source_url": "https://platform.claude.com/docs/en/models/fable-5-2/overview",
+        "published_or_updated": "November 9, 2026"
+      },
+      {
+        "claim": "The API price is $8 per million input tokens and $40 per million output tokens, compared with $10 and $50 for Fable 5.1; batch requests receive a 50% discount.",
+        "source_title": "Claude Fable 5.2 — Claude Platform Docs",
+        "source_url": "https://platform.claude.com/docs/en/models/fable-5-2/overview",
+        "published_or_updated": "November 9, 2026"
+      },
+      {
+        "claim": "Anthropic says Fable 5.2 generates outputs up to 30% faster than Fable 5.1 and that its reduced false-positive safeguards resulted in about 55% fewer blocks overall, with separate reductions reported for cybersecurity and biology.",
+        "source_title": "Introducing Claude Fable 5.2 and Claude Mythos 5.2",
+        "source_url": "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+        "published_or_updated": "November 9, 2026"
+      },
+      {
+        "claim": "Anthropic’s reported evaluations put Fable 5.2 ahead of Opus 5.5 on several tested tasks, including FrontierSWE v2, AutomationBench, Terminal-Bench-Science, BenchCAD, and Chartography, while some comparisons were close or depended on the selected effort level.",
+        "source_title": "Introducing Claude Fable 5.2 and Claude Mythos 5.2",
+        "source_url": "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+        "published_or_updated": "November 9, 2026"
+      },
+      {
+        "claim": "Anthropic reports that prerelease testing used Fable 5.2 to complete otherwise difficult software migrations, design three working electronic devices, make progress on robotics tasks, and solve two open problems in black-hole physics. These are company-reported demonstrations, not independent proof that the model has solved broad scientific research.",
+        "source_title": "Introducing Claude Fable 5.2 and Claude Mythos 5.2",
+        "source_url": "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+        "published_or_updated": "November 9, 2026"
+      },
+      {
+        "claim": "The intended user workflow is to employ Fable 5.2 for demanding reasoning and long-horizon agentic tasks such as multistep research, large codebases, and work that must end in a finished document, spreadsheet, or presentation.",
+        "source_title": "Claude Fable 5.2 — Claude Platform Docs",
+        "source_url": "https://platform.claude.com/docs/en/models/fable-5-2/overview",
+        "published_or_updated": "November 9, 2026"
+      },
+      {
+        "claim": "Anthropic recommends starting most ordinary coding and knowledge-work tasks with Opus 5.5, then switching to Fable 5.2 when higher-effort Opus evaluations do not meet the required quality.",
+        "source_title": "What’s new in Claude Fable 5.2",
+        "source_url": "https://platform.claude.com/docs/en/models/fable-5-2/whats-new-fable-5-2",
+        "published_or_updated": "November 9, 2026"
+      },
+      {
+        "claim": "Developers can call Fable 5.2 with the model ID claude-fable-5-2 through the Claude API and supported cloud platforms; users can control reasoning depth with the effort parameter and use the model for long-running agentic workflows.",
+        "source_title": "What’s new in Claude Fable 5.2",
+        "source_url": "https://platform.claude.com/docs/en/models/fable-5-2/whats-new-fable-5-2",
+        "published_or_updated": "November 9, 2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "REDMAGIC 12 Pro Snapdragon 8 Elite Extreme Gen 6 185Hz battery cooling review",
+      "score": 90.1,
+      "verdict": "pass",
+      "recent_videos": 1,
+      "median_views_per_day": 3667243.1999999997,
+      "top_views_per_day": 3667243.1999999997,
+      "market_coverage": 1,
+      "title_query_overlap": 1,
+      "measured_at": "2026-11-10T04:03:38.944090+00:00",
+      "signal_type": "youtube-breakout-v1"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.95,
+      "true_peak_dbtp": -1.51,
+      "loudness_range": 3.1
+    },
+    "editorial": {
+      "beats": 179,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-11-10T19:09:42.529884+00:00",
+    "warnings": [
+      "possible misspelling: deliverables",
+      "possible misspelling: golidee",
+      "possible misspelling: pdf"
+    ]
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-choice",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-long-tue-thu-sat"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-long-2026-11-10",
+    "created_at": "2026-11-10T19:09:44.106139+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-11-10T17:30:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "ab2b462a36fc9d3d61a5fd189eb287df12755b045553894add36603331af83b7",
+        "bytes": 226685762
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "bf159e7e741bed3d50ee2728f362feee3253a06e477d7f055f2168c41c2e6c35",
+        "bytes": 885263
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "6fecea7dddd6355f61fc499c4e1b64157c9fb347ec89304fddf3f64d79e5ac11",
+        "bytes": 3628
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "eadef10ac92d1bd3fc2325eed67865ba429018873d1f493ac1e78031f3a680e4",
+        "bytes": 23542
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "afc6581b8ea8d327c0a025fd7f0ac0060b1cc36b399760d37ffd3d3acd261298",
+        "bytes": 5536
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "aaeea2999b45ff955ec9a49706fbcd51bf8ca2e3810c3e2c9a435373d8b3e612",
+        "bytes": 5263
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "ce5058101bc8e34bda859d2ec8e15958d4a8710f7c605360a60cc04042a47d76",
+        "bytes": 380
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "c6e6abe05854a7a54a5a9278e1da98522997ff487e21b500610693bf45002add",
+        "bytes": 392
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-titles",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 156.0,
+      "cached_input_units": 0.0,
+      "output_units": 131.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000188,
+      "created_at": "2026-11-10T04:03:36.612200+00:00"
+    },
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 27158.0,
+      "cached_input_units": 0.0,
+      "output_units": 2458.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008381,
+      "created_at": "2026-11-10T04:03:38.281009+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-10T04:03:38.283558+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 23634.0,
+      "cached_input_units": 0.0,
+      "output_units": 1782.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006865,
+      "created_at": "2026-11-10T04:04:07.341710+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-10T04:04:07.343181+00:00"
+    },
+    {
+      "stage": "script-story",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 19480.0,
+      "cached_input_units": 0.0,
+      "output_units": 3953.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00864,
+      "created_at": "2026-11-10T04:05:02.879248+00:00"
+    },
+    {
+      "stage": "script-board",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2926.0,
+      "cached_input_units": 0.0,
+      "output_units": 5990.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007773,
+      "created_at": "2026-11-10T04:05:50.219291+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 19480.0,
+      "cached_input_units": 0.0,
+      "output_units": 3953.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00864,
+      "created_at": "2026-11-10T04:05:50.223613+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 30404.0,
+      "cached_input_units": 0.0,
+      "output_units": 2217.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008741,
+      "created_at": "2026-11-10T17:13:42.850805+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-10T17:13:42.853995+00:00"
+    },
+    {
+      "stage": "script-story",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 22420.0,
+      "cached_input_units": 0.0,
+      "output_units": 4029.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.009319,
+      "created_at": "2026-11-10T17:14:37.858498+00:00"
+    },
+    {
+      "stage": "script-board",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2777.0,
+      "cached_input_units": 0.0,
+      "output_units": 6147.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007932,
+      "created_at": "2026-11-10T17:15:29.443114+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 22420.0,
+      "cached_input_units": 0.0,
+      "output_units": 4029.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.009319,
+      "created_at": "2026-11-10T17:15:29.449455+00:00"
+    },
+    {
+      "stage": "owner-voice",
+      "provider": "elevenlabs",
+      "model": "eleven_multilingual_v2",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 9796,
+      "cost_usd": 1.9592,
+      "created_at": "2026-11-10T17:34:19.121726+00:00"
+    },
+    {
+      "stage": "visual-plan-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-10T17:54:56.505004+00:00"
+    },
+    {
+      "stage": "visual-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 19723.0,
+      "cached_input_units": 0.0,
+      "output_units": 6747.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.012041,
+      "created_at": "2026-11-10T17:54:56.510891+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T17:55:23.275234+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T17:55:47.821297+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T17:56:08.616720+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T17:56:35.095344+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T17:56:56.953077+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T17:57:23.017868+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T17:57:52.884438+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T17:58:25.490036+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T17:58:47.726894+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T17:59:16.810246+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T17:59:40.486030+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:00:14.756335+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:00:42.309025+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:01:08.340339+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:01:31.662930+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:02:00.316351+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:02:32.408849+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:02:58.549408+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:03:25.184515+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:03:51.704579+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:04:18.379485+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:04:43.244984+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:05:07.209911+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:05:31.710195+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:06:03.341851+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:06:33.817022+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:07:04.636003+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:07:34.834601+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:08:03.407875+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:08:32.154983+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:08:56.261358+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:09:19.685902+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:09:50.855024+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:10:15.947277+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:10:43.683232+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:11:08.862003+00:00"
+    },
+    {
+      "stage": "illustrations",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T18:11:33.543658+00:00"
+    },
+    {
+      "stage": "guide",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 3269.0,
+      "cached_input_units": 0.0,
+      "output_units": 1020.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001878,
+      "created_at": "2026-11-10T19:07:54.280157+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 11299.0,
+      "cached_input_units": 0.0,
+      "output_units": 925.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00337,
+      "created_at": "2026-11-10T19:07:55.828234+00:00"
+    },
+    {
+      "stage": "thumbnail",
+      "provider": "openai",
+      "model": "gpt-image-2-medium-landscape",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 1,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.041,
+      "created_at": "2026-11-10T19:08:23.070247+00:00"
+    }
+  ],
+  "recorded_at": "2026-11-10T19:10:07.169342+00:00"
+}
