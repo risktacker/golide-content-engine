@@ -2101,7 +2101,7 @@ class ProductionService:
                                                           "brands": list(LAST_BRANDS)}) + "\n", encoding="utf-8")
                 chosen = json.loads(words_path.read_text(encoding="utf-8"))
                 from ..vector.thumb_styles import make as styled
-                rows = self.database.execute("SELECT COUNT(DISTINCT production_id) AS n FROM stage_runs WHERE stage='thumbnail' AND status='completed'").fetchall()
+                rows = self.database.rows("SELECT COUNT(DISTINCT production_id) AS n FROM stage_runs WHERE stage='thumbnail' AND status='completed'")
                 n = int(rows[0]["n"]) if rows else 0
                 style = styled(metadata["title"], str(chosen.get("words", "")), str(chosen.get("punch", "")),
                                [str(b) for b in chosen.get("brands") or []], n, thumbnail)

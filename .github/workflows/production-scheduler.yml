@@ -68,6 +68,9 @@ jobs:
           fi
       - uses: actions/checkout@v4
         if: steps.automation.outputs.enabled == 'true'
+      - name: Start from the latest saved state (a run queued behind another must see its results)
+        if: steps.automation.outputs.enabled == 'true'
+        run: git pull --ff-only origin "${GITHUB_REF_NAME:-main}" || true
       - name: Restore resumable media checkpoint
         if: steps.automation.outputs.enabled == 'true'
         uses: actions/cache/restore@v4
