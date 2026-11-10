@@ -77,3 +77,15 @@ def test_approved_styles_pick_by_story_and_draw_without_the_image_model(tmp_path
 def test_alert_shorts_get_the_trailer_music():
     picked = music_bed.pick("short", 0, "Hackers breach a bank")
     assert picked is None or picked["title"] == "Motivational Trailer"
+
+
+def test_follow_button_shows_only_while_it_is_said():
+    from types import SimpleNamespace as N
+    from golide_engine.vector.render import VectorRenderer
+
+    r = VectorRenderer.__new__(VectorRenderer)
+    r.follow = {1}
+    groups = [N(lines=[N(index=0, start=0, end=5), N(index=1, start=5, end=8), N(index=2, start=8, end=300)])]
+    assert r._follow_state(groups, 3) is None
+    assert r._follow_state(groups, 6) is not None
+    assert r._follow_state(groups, 11) is None and r._follow_state(groups, 200) is None

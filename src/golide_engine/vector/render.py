@@ -364,7 +364,8 @@ class VectorRenderer:
         return action_cues(lines, plan.get("scenes") or [], lights, follow)
 
     def _follow_state(self, groups, t: float):
-        """(done, alpha) while the call-out pill shows: from the follow sentence to the end."""
+        """(done, alpha) while the call-out pill shows: only while the follow sentence is said, then
+        the check for a moment, then it is gone (owner 2026-11-10: never on screen the whole video)."""
         if not self.follow:
             return None
         lines = [line for group in groups for line in group.lines]
@@ -374,8 +375,10 @@ class VectorRenderer:
         start, end = asked[0].start, asked[-1].end
         if t < start:
             return None
-        finale = lines[-1].end
-        a = min(1.0, (t - start) / 0.3) * min(1.0, max(0.0, (finale - t) / 0.5))
+        finale = min(lines[-1].end, end + 2.0)
+        if t > finale:
+            return None
+        a = min(1.0, (t - start) / 0.3) * min(1.0, max(0.0, (finale - t) / 0.4))
         done = t >= end - 0.05
         if done:
             a *= min(1.0, 0.35 + (t - end) / 0.25)  # quick swap to the check
