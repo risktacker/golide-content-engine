@@ -35,6 +35,9 @@ def waiting_for_voice(spec: dict, root: str | Path = ".") -> bool:
         token = rescript.read_text(encoding="utf-8").strip()
         if not done.exists() or done.read_text(encoding="utf-8").strip() != token:
             return False   # a fresh script was asked for (2026-10-29)
+    from .owner_changes import replace_pending
+    if replace_pending(spec, work):
+        return False   # 2026-11-10: the owner pasted a video to model; a new script is due
     return (work / "script.txt").exists()
 
 

@@ -1,0 +1,6 @@
+# Videos the owner chose as script models (2026-11-10). "long <url>" or "short <url>".
+# The engine reads their transcripts next to the day's trending model: copy the method, never the sentences.
+long https://www.youtube.com/watch?v=v_XdN5-ya9A
+long https://www.youtube.com/watch?v=hgLI491ajG0
+short https://www.youtube.com/shorts/znWzWYHoLOg
+short https://www.youtube.com/shorts/_g0GKNrAzAU

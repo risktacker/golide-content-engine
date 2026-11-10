@@ -490,3 +490,17 @@ body.sheet-open{overflow:hidden}
 .ai-voice-button{display:block;width:100%;margin:0 0 10px;padding:14px 18px;border-radius:999px;border:1px solid var(--gold);background:transparent;color:var(--gold);font:inherit;font-weight:600;cursor:pointer}
 .ai-voice-button[data-confirm="1"]{background:var(--gold);color:#111}
 .ai-voice-button:disabled{opacity:.6}
+
+/* 2026-11-10: script editor and replace-script row */
+.script-tools{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.script-box.editing{max-height:none;padding:0;border:0;background:transparent}
+.script-editor{display:block;width:100%;min-height:340px;box-sizing:border-box;padding:14px;border:1px solid var(--gold);border-radius:10px;background:var(--surface);color:inherit;font:inherit;font-size:.9375rem;line-height:1.65;resize:vertical}
+.editor-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px}
+.editor-done{border-color:var(--gold);color:var(--gold)}
+.editor-hint,.replace-note{font-size:.8125rem;opacity:.7}
+.replace-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.replace-row[hidden]{display:none}
+.replace-link{flex:1 1 260px;min-width:0;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:inherit;font:inherit}
+.replace-note{flex-basis:100%;margin:0}
+.script-status{display:block;margin-top:8px}
+.script-box.editing + .script-tools{display:none}

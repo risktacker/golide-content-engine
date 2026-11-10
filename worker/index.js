@@ -1156,6 +1156,34 @@ async function handleApi(request,env,url){
     try{await dispatchWorkflow(env,"production-scheduler.yml");}catch(e){console.log(JSON.stringify({dispatch:"ai_voice_failed",error:String(e?.message||e)}));}
     return json({status:"queued"});
   }
+  // 2026-11-10 (owner): Studio's script editor. His words become the script (before any voice).
+  const editMatch=url.pathname.match(/^\/api\/production-jobs\/([^/]+)\/script$/);
+  if(editMatch&&request.method==="POST"){
+    const id=decodeURIComponent(editMatch[1]);
+    let body={}; try{body=await request.json();}catch{}
+    const script=String(body.script??"").replace(/\r\n/g,"\n").trim().slice(0,60000);
+    if(script.split(/\s+/).filter(Boolean).length<8) return err("The script is too short.",400);
+    const r=await env.DB.prepare(`UPDATE production_jobs SET spec_json=json_set(spec_json,'$.script_edit',?),script=?,updated_at=? WHERE job_id=? AND status='waiting_owner_voice'`)
+      .bind(script,script,nowIso(),id).run();
+    if(!r.meta?.changes) return err("This script can no longer be edited (its voice is already being made).",409);
+    return json({status:"saved",script});
+  }
+  // 2026-11-10 (owner): "Replace script": a pasted YouTube video becomes today's model and title;
+  // the engine researches it from other sources and writes a new script.
+  const replaceMatch=url.pathname.match(/^\/api\/production-jobs\/([^/]+)\/replace-script$/);
+  if(replaceMatch&&request.method==="POST"){
+    const id=decodeURIComponent(replaceMatch[1]);
+    let body={}; try{body=await request.json();}catch{}
+    const link=String(body.link??"").trim();
+    if(!/^https:\/\/(www\.|m\.)?(youtube\.com\/(watch\?v=|shorts\/)|youtu\.be\/)[A-Za-z0-9_-]{11}/.test(link))
+      return err("Paste a YouTube video link (youtube.com/watch?v=..., youtu.be/... or a Shorts link).",400);
+    const ask=JSON.stringify({url:link,requested_at:nowIso()});
+    const r=await env.DB.prepare(`UPDATE production_jobs SET spec_json=json_remove(json_set(spec_json,'$.replace_model',json(?)),'$.script_edit'),script=NULL,status='queued',stage='replace-script',error=NULL,updated_at=? WHERE job_id=? AND status='waiting_owner_voice'`)
+      .bind(ask,nowIso(),id).run();
+    if(!r.meta?.changes) return err("Only a script waiting for its voice can be replaced.",409);
+    try{await dispatchWorkflow(env,"production-scheduler.yml");}catch(e){console.log(JSON.stringify({dispatch:"replace_script_failed",error:String(e?.message||e)}));}
+    return json({status:"queued"});
+  }
   // 2026-11-04 (owner): a short he will not record is skipped, not left "Needs your recording".
   const skipMatch=url.pathname.match(/^\/api\/production-jobs\/([^/]+)\/skip$/);
   if(skipMatch&&request.method==="POST"){

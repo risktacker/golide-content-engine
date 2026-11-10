@@ -106,6 +106,15 @@ def _age_hours(published: str, now: datetime) -> float:
     return max(1.0, (now - at).total_seconds() / 3600)
 
 
+NEWS_WORDS = re.compile(r"\b(news|tv|television|times|post|journal|herald|tribune|reuters|bloomberg|cnbc)\b", re.I)
+
+
+def is_news_channel(channel: str, sources: dict | None = None) -> bool:
+    """Owner 2026-11-10: the channel is for explaining, so creators lead and news channels follow."""
+    named = {c.lower() for c in (sources or load_sources()).get("news_channels", [])}
+    return str(channel).strip().lower() in named or bool(NEWS_WORDS.search(str(channel)))
+
+
 def score(vph: float, breakout: float) -> float:
     """0 to 100. Owner direction 2026-10-28: speed leads. Views per hour is the proof that people
     want the topic now (up to 85 points); beating its own channel's normal only breaks ties (up to
@@ -274,6 +283,7 @@ def _fetch(youtube: Any, found: dict[str, str]) -> list[dict]:
 
 
 def _measure(youtube: Any, videos: list[dict], fmt: str, now: datetime) -> list[dict[str, Any]]:
+    news_sources = load_sources()
     channel_ids = sorted({v["snippet"]["channelId"] for v in videos if v.get("snippet", {}).get("channelId")})
     channels: dict[str, dict] = {}
     for start in range(0, len(channel_ids), 50):
@@ -311,7 +321,8 @@ def _measure(youtube: Any, videos: list[dict], fmt: str, now: datetime) -> list[
             "found_by": v.get("found_by", ""),
             "description": str(snippet.get("description", ""))[:300],
             "url": f"https://www.youtube.com/watch?v={v.get('id', '')}",
-            "score": score(vph, breakout),
+            "news": is_news_channel(snippet.get("channelTitle", ""), news_sources),
+            "score": score(vph, breakout) * (0.5 if is_news_channel(snippet.get("channelTitle", ""), news_sources) else 1.0),
         })
     return out
 
@@ -369,6 +380,17 @@ means 50 times its normal). Every one has already cleared the numbers bar.
   Keep their structure, hook, keywords and capitals. Never identical, never
   rewritten. Example: "The NEW Tesla Roadster: My Honest Reaction" becomes
   "The NEW Tesla Roadster: My Honest Breakdown". Drop hashtags.
+- EXCEPT a breakout marked "news": true (a news channel). Never copy a news title
+  (owner 2026-11-10: creator titles, not news titles). Write the title a top tech
+  creator would put on that story: direct to the viewer or in the first person, a
+  promise of what they will understand or be able to do, a curiosity gap, the same
+  keywords. Examples of the shape: "I Studied 10,000 AI Websites... Here's What I
+  Learned", "How One Developer Rebuilt Adobe For Free", "The $6.3B Crypto Heist,
+  Explained Step By Step". Under 70 characters.
+- THIS CHANNEL EXPLAINS, IT IS NOT NEWS (owner 2026-11-10). Prefer breakouts from
+  creators that teach (how something is made, how it happened, how to do it, the
+  steps, the fix) over news reports. Whatever the source, our angle is always the
+  explanation: the brief says what the viewer will understand or be able to do.
 - A topic GOLIDE already covered is fine when it is taking numbers again: give it a
   new narrative.
 - Skip a breakout that is music, sport, gaming, gossip, party politics or plain

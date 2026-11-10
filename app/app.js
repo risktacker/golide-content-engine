@@ -615,7 +615,15 @@ function actionCard(job) {
   return '<article class="action-card" id="job-' + escAttr(job.job_id) + '"><div><span class="kicker">' +
     (job.format === "long" ? "Long video" : "Short") + ', record ' + clock(windowRange[0]) + ' to ' + clock(windowRange[1]) + '</span><h4>' +
     esc(job.title || "Script ready") + '</h4><p>Read the script below in your own voice. The engine picks it up automatically after you upload.</p>' + rejected +
-    '<div class="script-box">' + scriptHtml(script) + '</div></div>' +
+    '<div class="script-box" id="script-box-' + escAttr(job.job_id) + '">' + scriptHtml(script) + '</div>' +
+    '<div class="script-tools"><button class="action-button edit-script" data-job="' + escAttr(job.job_id) + '">Edit script</button>' +
+      '<button class="action-button replace-script" data-job="' + escAttr(job.job_id) + '">Replace script</button></div>' +
+    '<div class="replace-row" id="replace-row-' + escAttr(job.job_id) + '" hidden>' +
+      '<input class="replace-link" type="url" inputmode="url" placeholder="Paste the YouTube link to model" data-job="' + escAttr(job.job_id) + '">' +
+      '<button class="action-button replace-go" data-job="' + escAttr(job.job_id) + '">Write a new script</button>' +
+      '<button class="action-button replace-cancel" data-job="' + escAttr(job.job_id) + '">Cancel</button>' +
+      '<p class="replace-note">The engine treats that video as today\'s title: it researches the subject from other sources and writes a new script here. Costs one research and script run (a few cents).</p></div>' +
+    '<span class="voice-status script-status" id="script-status-' + escAttr(job.job_id) + '"></span></div>' +
     '<div class="action-controls">' + postToHtml(null) +
       '<button class="ai-voice-button" data-job="' + escAttr(job.job_id) + '">Use AI voice</button>' +
       '<label class="upload-button">Upload my recording<input class="voice-input" type="file" accept="audio/*,video/*,.m4a,.mp3,.wav,.aac,.caf,.ogg,.opus,.webm,.mp4,.mov" data-job="' + escAttr(job.job_id) + '"></label>' +
@@ -640,7 +648,11 @@ function replaceCard(job) {
     '</div></article>';
 }
 
+// 2026-11-10 (owner): while he edits a script, the page never redraws over his typing.
+let scriptEditing = null;
+
 function renderActionQueues() {
+  if (scriptEditing) return;
   const waiting = productionJobs.filter((job) => job.status === "waiting_owner_voice");
   const replaceable = productionJobs.filter((job) => job.owner_voice_media_ref && REPLACEABLE.has(job.status));
   const root = $("#action-queue");
@@ -695,6 +707,73 @@ function renderActionQueues() {
         button.textContent = "Sent to " + sent.to;
       } catch (error) { button.textContent = error.message; }
       setTimeout(() => { button.disabled = false; button.textContent = "Email me the script"; }, 4000);
+    };
+  });
+  // 2026-11-10 (owner): edit the script in Studio and tap Done before the voice is made.
+  $$(".edit-script").forEach((button) => {
+    button.onclick = () => {
+      const job = productionJobs.find((item) => item.job_id === button.dataset.job);
+      const box = document.getElementById("script-box-" + button.dataset.job);
+      if (!job || !box || scriptEditing) return;
+      scriptEditing = job.job_id;
+      box.classList.add("editing");
+      box.innerHTML = '<textarea class="script-editor" spellcheck="true" aria-label="Edit the script"></textarea>' +
+        '<div class="editor-bar"><button class="action-button editor-done">Done</button>' +
+        '<button class="action-button editor-cancel">Cancel</button>' +
+        '<span class="editor-hint">Headings in [brackets] are chapters and are not read aloud.</span></div>';
+      const area = box.querySelector(".script-editor");
+      area.value = job.script || "";
+      area.focus();
+      const status = document.getElementById("script-status-" + job.job_id);
+      const close = () => { scriptEditing = null; renderActionQueues(); };
+      box.querySelector(".editor-cancel").onclick = close;
+      box.querySelector(".editor-done").onclick = async (event) => {
+        const done = event.currentTarget;
+        done.disabled = true; done.textContent = "Saving...";
+        try {
+          const saved = await api(`/api/production-jobs/${encodeURIComponent(job.job_id)}/script`, {
+            method: "POST", body: JSON.stringify({ script: area.value }),
+          });
+          job.script = saved.script;
+          close();
+          const after = document.getElementById("script-status-" + job.job_id);
+          if (after) after.textContent = "Saved. The voice will read your edited script.";
+        } catch (error) {
+          done.disabled = false; done.textContent = "Done";
+          if (status) status.textContent = error.message;
+        }
+      };
+    };
+  });
+  // 2026-11-10 (owner): replace the day's script with one modelled on a video he pastes.
+  $$(".replace-script").forEach((button) => {
+    button.onclick = () => {
+      const row = document.getElementById("replace-row-" + button.dataset.job);
+      if (!row) return;
+      row.hidden = !row.hidden;
+      if (!row.hidden) row.querySelector(".replace-link").focus();
+    };
+  });
+  $$(".replace-cancel").forEach((button) => {
+    button.onclick = () => { const row = document.getElementById("replace-row-" + button.dataset.job); if (row) row.hidden = true; };
+  });
+  $$(".replace-go").forEach((button) => {
+    button.onclick = async () => {
+      const id = button.dataset.job;
+      const row = document.getElementById("replace-row-" + id);
+      const link = row?.querySelector(".replace-link")?.value.trim() || "";
+      const status = document.getElementById("script-status-" + id);
+      button.disabled = true; button.textContent = "Starting...";
+      try {
+        await api(`/api/production-jobs/${encodeURIComponent(id)}/replace-script`, {
+          method: "POST", body: JSON.stringify({ link }),
+        });
+        if (status) status.textContent = "New script on its way. It appears here when it is ready.";
+        await loadProductionJobs();
+      } catch (error) {
+        button.disabled = false; button.textContent = "Write a new script";
+        if (status) status.textContent = error.message;
+      }
     };
   });
   $$(".copy-script").forEach((button) => {

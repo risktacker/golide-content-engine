@@ -110,10 +110,16 @@ def choose_models(source: dict | None, breakouts: list[dict], fmt: str, limit: i
     channel), then the owner's own picks; at most ``limit`` with a transcript."""
     chosen: list[dict] = []
     seen_channels: set[str] = set()
-    pool = ([source] if source and source.get("url") else []) + sorted(
+    # 2026-11-10 (owner): one of his chosen script models always comes second, rotating by day.
+    picks = [{"url": u, "title": "", "channel": "owner pick"} for u in owner_picks(fmt)]
+    if picks:
+        import datetime as _dt
+        k = _dt.date.today().toordinal() % len(picks)
+        picks = picks[k:] + picks[:k]
+    pool = ([source] if source and source.get("url") else []) + picks[:1] + sorted(
         (b for b in breakouts if b.get("format", fmt) == fmt and b.get("url")),
         key=lambda b: float(b.get("score", 0)), reverse=True)
-    pool += [{"url": u, "title": "", "channel": "owner pick"} for u in owner_picks(fmt)]
+    pool += picks[1:]
     for video in pool:
         if len(chosen) >= limit:
             break

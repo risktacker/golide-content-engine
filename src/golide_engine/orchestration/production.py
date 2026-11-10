@@ -195,11 +195,18 @@ class ProductionService:
         source title plus "Explained" (one word, the channel's own word)."""
         from ..youtube.breakouts import title_changes, title_tweak_problem
 
-        bad = [c for c in candidates
-               if title_tweak_problem(c["breakout"]["title"], str(c.get("model_title", "")))]
+        def problem(c: dict) -> str:
+            # 2026-11-10 (owner): a news channel's title is never copied; a creator-style title stands.
+            if c["breakout"].get("news"):
+                ours = str(c.get("model_title", "")).strip()
+                return "" if ours and len(ours) <= 100 and ours.lower() != str(c["breakout"]["title"]).lower() \
+                    else "write a creator-style title"
+            return title_tweak_problem(c["breakout"]["title"], str(c.get("model_title", "")))
+
+        bad = [c for c in candidates if problem(c)]
         if bad:
             ask = [{"source_title": c["breakout"]["title"], "our_title": c.get("model_title", ""),
-                    "problem": title_tweak_problem(c["breakout"]["title"], str(c.get("model_title", "")))}
+                    "problem": problem(c), "news_channel": bool(c["breakout"].get("news"))}
                    for c in bad]
             self._reserve(spec, text_model, Usage(input_tokens=300 + 60 * len(ask), output_tokens=1500),
                           stage="trend-candidates")
@@ -207,7 +214,10 @@ class ProductionService:
                 fixed = text.generate_json(
                     "Each item has a trending video's exact title (source_title). Write our_title: that "
                     "exact title with ONE to THREE words changed so it is ours. Keep its order, hook, "
-                    "keywords and capitals; drop hashtags. Return the titles in the same order.",
+                    "keywords and capitals; drop hashtags. When news_channel is true, do not copy it: write "
+                    "the title a top tech creator would use for that story (to the viewer or first person, a "
+                    "promise of what they will understand, the same keywords, under 70 characters). "
+                    "Return the titles in the same order.",
                     json.dumps(ask), TITLE_FIX_SCHEMA, max_output_tokens=1500,
                 )
                 self._record_text(production_id, "trend-titles", fixed)
@@ -217,13 +227,17 @@ class ProductionService:
                 print(json.dumps({"status": "title_fix_failed", "error": str(exc)[:200]}))
         for c in candidates:
             source = c["breakout"]["title"]
+            if c["breakout"].get("news") and not problem(c):
+                c["title_changes"] = title_changes(source, c["model_title"])
+                continue
             if title_tweak_problem(source, str(c.get("model_title", ""))):
                 clean = " ".join(re.sub(r"#\w+", " ", source).split())
                 c["model_title"] = (clean + " Explained")[:100]
             c["title_changes"] = title_changes(source, c["model_title"])
         from ..youtube.breakouts import is_english
         # 2026-10-28: an English channel never publishes a title in another language.
-        return [c for c in candidates if not title_tweak_problem(c["breakout"]["title"], c["model_title"])
+        return [c for c in candidates if not (problem(c) if c["breakout"].get("news")
+                                              else title_tweak_problem(c["breakout"]["title"], c["model_title"]))
                 and is_english(c["model_title"]) and is_english(c["breakout"]["title"])]
 
     def _redraw_if_unclear(self, spec, part, prompt: str, target: Path, line_art, cost_model: str,
@@ -558,6 +572,10 @@ class ProductionService:
         # research and script writing; the owner's script and recording drive it.
         from .external import is_external, owner_script_plan, external_info, external_research
         external = is_external(spec)
+        # 2026-11-10 (owner): "Replace script" in Studio: the pasted video becomes today's model.
+        from .owner_changes import apply_replace
+        if not external:
+            apply_replace(spec, Path(spec_path), work, self.database, production_id, self.youtube)
 
         demand_path = work / "platform-demand.json"
         # 2026-10-22: once a topic is chosen it is locked. A resumed run (after the owner's
@@ -656,7 +674,7 @@ class ProductionService:
                         "major outlet), broke_on and science_angle. Reject rumours and unsupported claims."
                     )
                     packet = (f"CURRENT BRIEF\n{spec['brief']}\n\nBREAKOUTS\n"
-                              + json.dumps([{k: b.get(k) for k in ("title", "channel", "views", "views_per_hour",
+                              + json.dumps([{k: b.get(k) for k in ("title", "channel", "news", "views", "views_per_hour",
                                                                     "breakout", "hours_old", "duration_seconds",
                                                                     "description")}
                                             for b in breakouts], separators=(",", ":"))
@@ -913,6 +931,32 @@ class ProductionService:
             if fixed != current:
                 scene_plan_path.write_text(json.dumps(fixed, indent=2) + "\n", encoding="utf-8")
                 script_path.write_text(script_text(fixed) + "\n", encoding="utf-8")
+        # 2026-11-10 (owner): his edits from Studio's script editor ("Done") are the script now;
+        # the gold words and pictures are picked again for his words.
+        if not external and scene_plan_path.exists():
+            from ..engine.story import BOARD_SCHEMA, apply_board, board_input, board_instructions, plan_from_story
+            from .owner_changes import edit_pending, mark_edit_done, story_from_reading
+            current = json.loads(scene_plan_path.read_text(encoding="utf-8"))
+            edited = edit_pending(spec, work, script_display(current))
+            if edited:
+                plan = plan_from_story(story_from_reading(edited, current.get("chapters") or []), str(spec["format"]))
+                plan["title"] = current.get("title", "")
+                try:
+                    self._reserve(spec, text_model, Usage(input_tokens=len(board_input(plan)) // 3 + 1500,
+                                                          output_tokens=6000))
+                    board = text.generate_json(board_instructions(), board_input(plan), BOARD_SCHEMA,
+                                               max_output_tokens=8000)
+                    self._record_text(production_id, "script-edit-board", board)
+                    plan = apply_board(plan, dict(board.value))
+                except Exception as error:  # his words stand; pictures fall back to defaults
+                    print(json.dumps({"status": "edit_storyboard_failed", "error": str(error)[:300]}))
+                    plan = apply_board(plan, {})
+                from ..engine.numerals import plan_digits
+                plan = plan_digits(plan)
+                scene_plan_path.write_text(json.dumps(plan, indent=2) + "\n", encoding="utf-8")
+                script_path.write_text(script_text(plan) + "\n", encoding="utf-8")
+                mark_edit_done(work, edited)
+                print(json.dumps({"status": "script_edited_by_owner", "lines": len(plan["lines"])}))
         script = script_path.read_text(encoding="utf-8").strip()
         self._budget(spec)
 
