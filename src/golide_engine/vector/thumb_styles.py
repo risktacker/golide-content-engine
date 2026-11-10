@@ -146,6 +146,19 @@ def _text(base, xy, s, f, fill=None, stroke=0, stroke_fill=None, shadow=None, an
     d.text(xy, s, font=f, fill=fill, anchor=anchor, stroke_width=stroke, stroke_fill=stroke_fill)
 
 
+def _place(base: Image.Image, tiles_img: Image.Image, xy: tuple[int, int], strength: float = 0.38) -> None:
+    """Tiles with a soft, close shadow under them (a studio product look), never hard blocks."""
+    a = tiles_img.getchannel("A")
+    shadow = Image.new("RGBA", tiles_img.size, (20, 20, 40, 0))
+    shadow.putalpha(a.point(lambda v: int(v * strength)))
+    pad = 60
+    canvas = Image.new("RGBA", (tiles_img.size[0] + pad * 2, tiles_img.size[1] + pad * 2), (0, 0, 0, 0))
+    canvas.alpha_composite(shadow, (pad + 6, pad + 26))
+    canvas = canvas.filter(ImageFilter.GaussianBlur(22))
+    base.alpha_composite(canvas, (xy[0] - pad, xy[1] - pad))
+    base.alpha_composite(tiles_img, xy)
+
+
 def _hex(h: str) -> tuple[int, int, int]:
     return tuple(int(h[k:k + 2], 16) for k in (0, 2, 4))
 
@@ -168,18 +181,16 @@ def compose(style: str, words: str, punch: str, names: list[str], icons: list[di
         b = _grad((244, 246, 255), (214, 224, 250))
         _grid(b, 44, (255, 255, 255, 120))
         _glow(b, (920, 360), 300, brand + (80,))
-        t = tiles({"w": 900, "h": 720, "fov": 30, "dist": 13, "shadow": 0.18, "items": [
-            _tile(icons[i], pos=p, rot=r, size=3.1 if len(icons) < 3 else 2.6)
-            for i, (p, r) in enumerate([([-1.5, 0.5, 0], [8, 22, -8]), ([1.7, -0.9, 0.6], [-6, -24, 7]),
-                                         ([0.6, 2.2, -0.6], [10, -10, 4])][:len(icons)])]})
-        f1 = fit(rest, ANTON, 560, 260, 300)
-        _text(b, (52, 60), rest, f1, (20, 20, 24), shadow=(0, 10, (40, 40, 120, 70), 12))
-        f2 = fit(punch, ANTON, 600, 220, 180)
-        _text(b, (52, 70 + f1.getbbox(rest)[3] + 10), punch, f2, grad=(brand, tuple(int(c * 0.62) for c in brand)),
-              shadow=(0, 8, (0, 0, 0, 70), 10))
-        sub = "WITH " + " + ".join(n.upper() for n in names[:3])
-        _text(b, (58, 640), sub, fit(sub, P9, 560, 50, 42), (24, 24, 30))
-        b.alpha_composite(t, (400, 0))
+        t = tiles({"w": 700, "h": 720, "fov": 30, "dist": 13.5, "items": [
+            _tile(icons[i], pos=p, rot=r, size=3.0 if len(icons) < 3 else 2.5)
+            for i, (p, r) in enumerate([([-1.1, 0.7, 0], [8, 22, -8]), ([1.2, -1.1, 0.6], [-6, -24, 7]),
+                                         ([0.9, 2.3, -0.6], [10, -10, 4])][:len(icons)])]})
+        f1 = fit(rest, ANTON, 520, 230, 260)
+        _text(b, (52, 70), rest, f1, (20, 20, 24), shadow=(0, 8, (40, 40, 120, 50), 12))
+        f2 = fit(punch, ANTON, 520, 230, 220)
+        _text(b, (52, 90 + f1.getbbox(rest)[3]), punch, f2, grad=(brand, tuple(int(c * 0.62) for c in brand)),
+              shadow=(0, 8, (0, 0, 0, 60), 10))
+        _place(b, t, (580, 0))
 
     elif style == "platter":
         b = _grad((252, 252, 252), (232, 232, 236))
@@ -197,19 +208,19 @@ def compose(style: str, words: str, punch: str, names: list[str], icons: list[di
                        rot=[4, x * -3, 0], size=size * (1.17 if i == mid else 1.0)) for i, x in enumerate(xs)]
         t = tiles({"w": 1280, "h": 520, "fov": 26, "dist": 17, "camY": 3.2, "items": items,
                    "platter": {"r": max(5.5, k * size * 0.62), "pos": [0, -0.75, -0.3]}})
-        b.alpha_composite(t, (0, 210))
+        _place(b, t, (0, 210), 0.25)
 
     elif style == "dark_drama":
         b = _grad((8, 26, 28), (4, 10, 12))
         _glow(b, (900, 420), 330, brand + (120,))
-        f1 = fit(rest, ANTON, 600, 200, 190)
+        f1 = fit(rest, ANTON, 560, 200, 190)
         _text(b, (60, 40), rest, f1, (245, 245, 245), shadow=(0, 8, (0, 0, 0, 200), 8))
-        f2 = fit(punch, ANTON, 640, 260, 240)
+        f2 = fit(punch, ANTON, 560, 260, 240)
         _text(b, (60, 60 + f1.getbbox(rest)[3]), punch, f2, (238, 46, 46), stroke=6, stroke_fill=(60, 0, 0),
               shadow=(0, 10, (0, 0, 0, 220), 10))
-        t = tiles({"w": 700, "h": 720, "fov": 30, "dist": 12,
-                   "items": [_tile(icons[0], pos=[0, 0, 0], rot=[18, -28, -14], size=3.6)]})
-        b.alpha_composite(t, (600, 0))
+        t = tiles({"w": 660, "h": 720, "fov": 30, "dist": 12.5,
+                   "items": [_tile(icons[0], pos=[0, 0, 0], rot=[18, -28, -14], size=3.4)]})
+        b.alpha_composite(t, (620, 0))
 
     elif style == "editorial":
         b = Image.new("RGBA", (W, H), (250, 250, 250, 255))
@@ -226,7 +237,7 @@ def compose(style: str, words: str, punch: str, names: list[str], icons: list[di
         t = tiles({"w": 700, "h": 520, "fov": 30, "dist": 11,
                    "items": [_tile(icons[0], pos=[0, 0, 0], rot=[10, -30, 12], size=3.3)],
                    "chrome": [{"kind": "star", "pos": [-2.2, -1.4, 1], "rot": [20, 30, -15], "size": 1.0}]})
-        b.alpha_composite(t, (min(W - 600, 70 + bw - 260), 230))
+        _place(b, t, (min(W - 600, 70 + bw - 260), 230))
 
     elif style == "grid_paper":
         b = Image.new("RGBA", (W, H), (244, 240, 230, 255))
@@ -240,9 +251,9 @@ def compose(style: str, words: str, punch: str, names: list[str], icons: list[di
             d.line([pts[k], pts[k + 1]], fill=(226, 24, 112), width=7)
         d.polygon([(468, 420), (430, 395), (432, 448)], fill=(226, 24, 112))
         spots = [([-2.6, 0.9, 0], [6, 20, -10]), ([2.5, 1.0, -0.4], [-4, -18, 9]), ([0.0, -1.4, 0.9], [-8, 4, -3])]
-        t = tiles({"w": 720, "h": 690, "fov": 30, "dist": 15, "shadow": 0.22, "items": [
+        t = tiles({"w": 720, "h": 690, "fov": 30, "dist": 15, "items": [
             _tile(icons[i], pos=p, rot=r, size=2.9, badge="e8197a") for i, (p, r) in enumerate(spots[:len(icons)])]})
-        b.alpha_composite(t, (560, 30))
+        _place(b, t, (560, 30))
     else:
         raise ValueError(f"unknown style {style}")
     out.parent.mkdir(parents=True, exist_ok=True)
