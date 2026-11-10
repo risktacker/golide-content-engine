@@ -1178,7 +1178,7 @@ async function handleApi(request,env,url){
     if(!/^https:\/\/(www\.|m\.)?(youtube\.com\/(watch\?v=|shorts\/)|youtu\.be\/)[A-Za-z0-9_-]{11}/.test(link))
       return err("Paste a YouTube video link (youtube.com/watch?v=..., youtu.be/... or a Shorts link).",400);
     const ask=JSON.stringify({url:link,requested_at:nowIso()});
-    const r=await env.DB.prepare(`UPDATE production_jobs SET spec_json=json_remove(json_set(spec_json,'$.replace_model',json(?)),'$.script_edit'),script=NULL,status='queued',stage='replace-script',error=NULL,updated_at=? WHERE job_id=? AND status='waiting_owner_voice'`)
+    const r=await env.DB.prepare(`UPDATE production_jobs SET spec_json=json_remove(json_set(spec_json,'$.replace_model',json(?)),'$.script_edit'),script='',status='queued',stage='replace-script',error=NULL,updated_at=? WHERE job_id=? AND status='waiting_owner_voice'`)
       .bind(ask,nowIso(),id).run();
     if(!r.meta?.changes) return err("Only a script waiting for its voice can be replaced.",409);
     try{await dispatchWorkflow(env,"production-scheduler.yml");}catch(e){console.log(JSON.stringify({dispatch:"replace_script_failed",error:String(e?.message||e)}));}
