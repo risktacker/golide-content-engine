@@ -272,14 +272,17 @@ SCRIPT_LENGTH_TARGETS = {
     # 2026-10-22: the owner reads fast (about 170 words a minute: 885 words took 5:07),
     # so 700 to 800 words came out under 5 minutes. 1,300 to 1,450 words is about 8
     # minutes at his pace, past the 8-minute mark where YouTube allows mid-roll ads.
-    "long": {"words_min": 1300, "words_max": 1450, "seconds": "450 to 510"},
+    # 2026-11-10 (owner): every long read lands at 8 to 9 minutes (past the mid-roll mark).
+    "long": {"words_min": 1210, "words_max": 1340, "seconds": "480 to 530"},
 }
 
 
 # 2026-11-01: a long video is as long as the video it models ("not all 7-8 minutes, some
 # 3, some 4, some 5... not 8-9"), between 3 and 8 minutes, at the owner's ~170 words a minute.
-LONG_MODEL_SECONDS = (180, 480)
-OWNER_WORDS_PER_MINUTE = 170
+LONG_MODEL_SECONDS = (495, 515)
+# 2026-11-10 (owner): long reads land at 8 to 9 minutes. Scripts are sized at the AI voice's pace
+# (152 words a minute: 1,656 words read in 10:53), so the owner's faster read stays above 7.
+OWNER_WORDS_PER_MINUTE = 152
 
 
 def length_target(format_name: str, model_seconds: float | None = None) -> dict:
@@ -317,7 +320,7 @@ def length_problems(plan: dict, format_name: str, model_seconds: float | None = 
     if words < target["words_min"] * 0.92:
         return [f"too short: {words} spoken words, write {target['words_min']} to {target['words_max']} "
                 "(go deeper inside the chapters with real facts and the how-it-works, never padding)"]
-    if words > target["words_max"] * 1.1:
+    if words > target["words_max"] * 1.05:
         return [f"too long: {words} spoken words, cut to {target['words_min']} to {target['words_max']}"]
     return []
 

@@ -18,7 +18,7 @@ def _plan(follow_at=(10,), text="Follow the channel so you see the next one."):
 
 class ModelledScriptTests(unittest.TestCase):
     def test_writer_models_the_videos_and_keeps_only_format_rules(self):
-        for fmt, words in (("short", "150 to 185 spoken words"), ("long", "1300 to 1450 spoken words")):
+        for fmt, words in (("short", "150 to 185 spoken words"), ("long", "1210 to 1340 spoken words")):
             text = script_instructions(fmt)
             self.assertIn(words, text)
             self.assertIn("MODEL SCRIPTS", text)
