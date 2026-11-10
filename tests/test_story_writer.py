@@ -35,3 +35,9 @@ def test_the_writer_models_what_works_and_carries_none_of_the_old_recipe():
     assert "METHOD EXAMPLE" in text and "SCRIPT VOICE GUIDE" in text
     for old in ("claim, proof, pattern", "breath-sized", "LINE RULES", "line to remember"):
         assert old not in text
+
+
+def test_short_has_its_own_shape_and_long_gives_the_viewer_something():
+    short, long = story_instructions("short", 50), story_instructions("long", 400)
+    assert "A SHORT HAS ITS OWN SHAPE" in short and "METHOD EXAMPLE" not in short
+    assert "THE ESSENCE" in long and "By the end of this video" in long

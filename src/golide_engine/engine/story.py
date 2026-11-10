@@ -59,6 +59,20 @@ def _read(path: Path) -> str:
         return ""
 
 
+OFFER_FILE = Path(__file__).resolve().parents[3] / "config" / "script-offer.json"
+
+
+def script_offer(format_name: str) -> str:
+    """What the viewer is given at the end (owner 2026-11-10: people click where they get something).
+    Empty until the owner sets it in config/script-offer.json."""
+    import json
+
+    try:
+        return str(json.loads(OFFER_FILE.read_text(encoding="utf-8")).get(format_name, "")).strip()
+    except (OSError, ValueError):
+        return ""
+
+
 def story_instructions(format_name: str, model_seconds: float | None = None) -> str:
     target = length_target(format_name, model_seconds)
     kind = "a YouTube Short (also posted as a Reel)" if format_name == "short" else "a long YouTube video"
@@ -71,33 +85,57 @@ def story_instructions(format_name: str, model_seconds: float | None = None) -> 
             "The talk flows straight across the markers; chapter titles are never read aloud.\n")
     else:
         chapters = "- Short: \"chapters\" is an empty list and \"script\" has no markers.\n"
-    example = _read(EXAMPLE_FILE)
-    example_2 = _read(EXAMPLE_FILE_2)
+    # the method examples are long-video stories; a Short follows its own shape (2026-11-10)
+    example = _read(EXAMPLE_FILE) if format_name == "long" else ""
+    example_2 = _read(EXAMPLE_FILE_2) if format_name == "long" else ""
     guide = _read(GUIDE_FILE)
+    offer = script_offer(format_name)
+    if format_name == "short":
+        shape = (
+            "A SHORT HAS ITS OWN SHAPE (owner 2026-11-10: never a cut-down long video). Do what the shorts that work "
+            "do (models: 29-million-view story shorts, the \"You're Elon Musk...\" chain, the \"too small, not too big\" "
+            "answer):\n"
+            "- The very first sentence is the hook, with no intro and no greeting: a contradiction (\"74 soldiers knocked "
+            "down an iron bridge just by walking across it\"), or put the viewer in someone's shoes (\"You're the boss "
+            "of...\"), or the question everyone has followed by the opposite of what they expect.\n"
+            "- Then escalate step by step, each sentence one move further (\"So... Then... Still not enough?\").\n"
+            "- Then the turn where the real reason comes out (\"Here's the thing.\" or \"You see,\"; vary it).\n"
+            "- Then the payoff: the one thing the viewer now knows or can do, said plainly.\n"
+            "- The last line lands a twist that ties back to the first sentence, so the Short loops.\n"
+            "- Relentless delivery: short sentences, no dead air, no recap, no \"in this video\".\n"
+            "- One sentence asking the viewer to follow the channel, with a real reason, just before the last line.\n")
+    else:
+        shape = (
+            "THE ESSENCE (owner 2026-11-10): this channel is not news. Every video explains how something is made, "
+            "how it happened, how to do it, the steps, or the solution. The viewer must leave with something they "
+            "can use. Do what the long videos that work do:\n"
+            "- Open on the most striking real moment (a date, a number, a person), then why it matters to the viewer, "
+            "then say plainly what they will have by the end (\"By the end of this video you'll know exactly how... "
+            "and how to...\").\n"
+            "- Tell it as a story in the order things happened: real moments, times, amounts, names, places, and who "
+            "said what (name the source). Explain a technical step at the moment it happens, with one simple everyday "
+            "picture when it is needed, and come back to that picture later.\n"
+            "- Give the viewer real things to use along the way: the steps, the tools, the setting, the number, the "
+            "check to make. Say them as tips (\"Here's the tip:...\") the moment they are useful.\n"
+            "- Ask the question the viewer is asking at that point and answer it; say the viewer's doubt out loud "
+            "(\"you might be wondering why not just...\") and give the honest answer, including what does not work "
+            "yet.\n"
+            "- Keep it connected: one picture runs through the whole video. Every part ends on what is still missing, "
+            "and the next part picks it up, so the viewer is pulled forward.\n"
+            "- Close: add up what the viewer now has in two or three sentences, tie back to the opening moment, then "
+            "one sentence asking them to follow the channel, with a real reason to come back.\n"
+            "- When the story is a product rather than an event, tell the story of it the same way and end on how the "
+            "viewer can use it or decide about it.\n")
     return (
-        f"You write the narration for {kind} about a trending technology, AI or science story. "
+        f"You write the narration for {kind} about a technology, AI or science story. "
         "It is read aloud, and animated pictures follow the words.\n\n"
         "WRITE IT THE WAY THE VIDEOS THAT WORK DO. Study the MODEL SCRIPTS you are given (videos working on "
-        "YouTube now) and the METHOD EXAMPLE below, and do what they do, with our research and our own words:\n"
-        "- Tell it as a story, in the order things happened: real moments, times, amounts, names, places, "
-        "and who said what (name the source).\n"
-        "- Open on the most striking real moment, then tell the viewer what they are about to find out.\n"
-        "- Every sentence moves the story on. Explain a technical step at the moment it happens, with one "
-        "simple everyday picture when it is needed, and come back to that picture later.\n"
-        "- Ask the question the viewer is asking at that point and answer it, or say honestly that nobody "
-        "knows yet and why.\n"
-        "- Use the turns and twists the facts give you.\n"
-        "- Keep it connected (owner 2026-11-06): one picture runs through the whole video and keeps coming back "
-        "(a body, a brain and hands; a vault and a robot). Every part ends on what is still missing or still "
-        "unanswered, and the next part starts by picking that up, so the viewer is always pulled forward. Say the "
-        "viewer's doubt out loud before they think it (\"you might be wondering why not just...\") and give the "
-        "honest answer, including the honest downside.\n"
-        "- End by tying back to the opening moment, then one sentence asking the viewer to follow the channel, "
-        "with a real reason to come back.\n"
-        "- When the story is a product rather than an event, tell the story of it the same way: what happened, "
-        "who made it, and a real moment of someone using it.\n"
-        "Facts only from VERIFIED RESEARCH. A company's own figure is said as their claim. Never reuse a sentence "
-        "from a model script or the method example: we copy how they tell it, not what they say.\n\n"
+        "YouTube now) and do what they do, with our research and our own words.\n"
+        + shape
+        + (f"- What the viewer gets (say it once, near the end, in one natural sentence, separate from the follow "
+           f"sentence): {offer}\n" if offer else "")
+        + "Facts only from VERIFIED RESEARCH. A company's own figure is said as their claim. Never reuse a sentence "
+        "from a model script or a method example: we copy how they tell it, not what they say.\n\n"
         + (f"SCRIPT VOICE GUIDE (the owner's)\n{guide}\n\n" if guide else "")
         + "HOW THE OWNER TALKS\n" + voice_pairs() + owner_voice() + "\n"
         + (f"METHOD EXAMPLE 1, a news story (a script that works; how it tells the story, not its words)\n{example}\n\n" if example else "")
