@@ -19,7 +19,10 @@ from typing import Any
 
 # What a new script makes stale: the research, the script, its model transcripts, and the pause.
 REPLACE_FILES = ("research.json", "script.txt", "scene-plan.json", "model-scripts.json", "spoken-pass.json",
-                 "rescript-done.txt", "script-edit.txt")
+                 "rescript-done.txt", "script-edit.txt", "thumbnail-words.json", "visual-plan.json", "metadata.json",
+                 "thumbnail.jpg", "thumbnail.png", "guide.pdf")
+REPLACE_KEEP = ("title", "model_title", "source_breakout", "brief", "platform_demand", "selected_topic_source")
+REPLACE_SPEC = "replace-spec.json"
 REPLACE_STAGES = ("research", "script")
 REPLACE_DONE = "replace-done.txt"
 EDIT_DONE = "script-edit.txt"
@@ -89,9 +92,27 @@ def apply_replace(spec: dict[str, Any], spec_path: Path, work: Path, database, p
         (work / name).unlink(missing_ok=True)
     for stage in REPLACE_STAGES:
         database.execute("DELETE FROM stage_runs WHERE production_id=? AND stage=?", (production_id, stage))
+    (work / REPLACE_SPEC).write_text(json.dumps({k: spec[k] for k in REPLACE_KEEP if k in spec}), encoding="utf-8")
     (work / REPLACE_DONE).write_text(str(ask.get("requested_at", "")) + "\n", encoding="utf-8")
     print(json.dumps({"status": "script_replaced", "production_id": production_id, "model": model["url"],
                       "title": spec["title"]}))
+    return True
+
+
+def keep_replaced(spec: dict[str, Any], spec_path: Path, work: Path) -> bool:
+    """Studio's copy of the job still has the old title and brief, and every claim merges it back.
+    Once a replace is applied its title, brief and model win (2026-11-10: a phone title and
+    thumbnail went out on a video about Claude models)."""
+    saved = work / REPLACE_SPEC
+    ask = spec.get("replace_model") or {}
+    done = work / REPLACE_DONE
+    if not (saved.exists() and done.exists() and done.read_text(encoding="utf-8").strip() == str(ask.get("requested_at", ""))):
+        return False
+    keep = json.loads(saved.read_text(encoding="utf-8"))
+    if all(spec.get(k) == v for k, v in keep.items()):
+        return False
+    spec.update(keep)
+    spec_path.write_text(json.dumps(spec, indent=2) + "\n", encoding="utf-8")
     return True
 
 

@@ -583,9 +583,10 @@ class ProductionService:
         from .external import is_external, owner_script_plan, external_info, external_research
         external = is_external(spec)
         # 2026-11-10 (owner): "Replace script" in Studio: the pasted video becomes today's model.
-        from .owner_changes import apply_replace
+        from .owner_changes import apply_replace, keep_replaced
         if not external:
-            apply_replace(spec, Path(spec_path), work, self.database, production_id, self.youtube)
+            if not apply_replace(spec, Path(spec_path), work, self.database, production_id, self.youtube):
+                keep_replaced(spec, Path(spec_path), work)
 
         demand_path = work / "platform-demand.json"
         # 2026-10-22: once a topic is chosen it is locked. A resumed run (after the owner's

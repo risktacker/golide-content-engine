@@ -11,6 +11,18 @@ on:
       video_id:
         description: "YouTube video id"
         required: true
+      title:
+        description: "New video title (empty keeps it)"
+        required: false
+      words:
+        description: "Thumbnail words, e.g. Fable vs Opus (empty: the run's words)"
+        required: false
+      punch:
+        description: "The accent word"
+        required: false
+      brands:
+        description: "Comma-separated brands for the logo tiles"
+        required: false
 
 permissions:
   contents: read
@@ -41,6 +53,10 @@ jobs:
           GOLIDE_STUDIO_BASE_URL: "https://studio.golidee.com"
           PID: ${{ inputs.production_id }}
           VID: ${{ inputs.video_id }}
+          NEW_TITLE: ${{ inputs.title }}
+          WORDS: ${{ inputs.words }}
+          PUNCH: ${{ inputs.punch }}
+          BRANDS: ${{ inputs.brands }}
         run: |
           python - <<'PY'
           import json, os
@@ -50,13 +66,24 @@ jobs:
           from googleapiclient.http import MediaFileUpload
           pid, vid = os.environ["PID"], os.environ["VID"]
           work = Path("productions") / pid
-          words = json.loads((work / "thumbnail-words.json").read_text())
-          title = json.loads((work / "metadata.json").read_text()).get("title", "") if (work / "metadata.json").exists() else words.get("words", "")
+          saved = work / "thumbnail-words.json"
+          words = json.loads(saved.read_text()) if saved.exists() else {}
+          if os.environ.get("WORDS"):
+              words = {"words": os.environ["WORDS"], "punch": os.environ.get("PUNCH", ""),
+                       "brands": [b.strip() for b in os.environ.get("BRANDS", "").split(",") if b.strip()]}
+          title = os.environ.get("NEW_TITLE") or words.get("words", "")
           out = work / "thumbnail-styled.jpg"
           style = make(title, words.get("words", ""), words.get("punch", ""), words.get("brands") or [], 0, out)
           if not style:
               raise SystemExit(f"no known logo in {words.get('brands')}: nothing to restyle")
           youtube, _ = services()
+          if os.environ.get("NEW_TITLE"):
+              item = youtube.videos().list(part="snippet", id=vid).execute()["items"][0]
+              snippet = item["snippet"]
+              snippet["title"] = os.environ["NEW_TITLE"][:100]
+              body = {"id": vid, "snippet": {k: snippet[k] for k in ("title", "description", "categoryId", "tags", "defaultLanguage") if k in snippet}}
+              youtube.videos().update(part="snippet", body=body).execute()
+              print(json.dumps({"status": "title_updated", "title": snippet["title"]}))
           youtube.thumbnails().set(videoId=vid, media_body=MediaFileUpload(str(out), mimetype="image/jpeg")).execute()
           print(json.dumps({"status": "thumbnail_restyled", "style": style, "brands": words.get("brands")}))
           PY

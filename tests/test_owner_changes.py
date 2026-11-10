@@ -66,3 +66,17 @@ def test_news_channels_rank_below_creators():
     from golide_engine.youtube.breakouts import is_news_channel
     assert is_news_channel("CNBC Television") and is_news_channel("The Verge")
     assert not is_news_channel("Nate Herk | AI Automation") and not is_news_channel("Fireship")
+
+
+def test_a_replaced_title_survives_studios_old_copy(tmp_path):
+    work = tmp_path / "productions" / "p1"
+    work.mkdir(parents=True)
+    spec = {"id": "p1", "title": "ONE PHONE", "brief": "phone",
+            "replace_model": {"url": "https://youtu.be/v_XdN5-ya9A", "requested_at": "t1"}}
+    spec_path = tmp_path / "p1.json"
+    (work / "thumbnail-words.json").write_text("{}")
+    oc.apply_replace(spec, spec_path, work, FakeDB(), "p1", FakeYouTube(), transcript=lambda u: "words " * 50)
+    assert not (work / "thumbnail-words.json").exists()
+    claimed = dict(spec, title="ONE PHONE", brief="phone")      # Studio's stale copy merged back
+    assert oc.keep_replaced(claimed, spec_path, work)
+    assert claimed["title"] == "How Compaq Cloned IBM" and "phone" not in claimed["brief"]
