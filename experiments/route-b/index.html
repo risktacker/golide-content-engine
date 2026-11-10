@@ -1,0 +1,163 @@
+<!doctype html><html><head><meta charset="utf-8">
+<style>@font-face{font-family:Geist;src:url(/fonts/Geist-Variable.woff2)}html,body{margin:0;background:#050507}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"/three/build/three.module.js","three/addons/":"/three/examples/jsm/"}}</script>
+</head><body>
+<script type="module">
+import * as THREE from 'three';
+import { STLLoader } from 'three/addons/loaders/STLLoader.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { Line2 } from 'three/addons/lines/Line2.js';
+import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
+import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+await document.fonts.load('700 64px Geist');
+
+const W = 1080, H = 1920, GOLD = 0xE8C268;
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setSize(W, H); renderer.setPixelRatio(1);
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.85;
+document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x050507);
+const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture; scene.environmentIntensity = 0.55;
+scene.fog = new THREE.Fog(0x050507, 300, 900);
+const camera = new THREE.PerspectiveCamera(32, W / H, 1, 2000);
+
+// --- house stage: floor grid fading to a horizon glow
+const floorMat = new THREE.ShaderMaterial({
+  transparent: true, uniforms: { gold: { value: new THREE.Color(GOLD) } },
+  vertexShader: 'varying vec3 p; void main(){ p=(modelMatrix*vec4(position,1.)).xyz; gl_Position=projectionMatrix*viewMatrix*vec4(p,1.);}',
+  fragmentShader: `varying vec3 p; uniform vec3 gold;
+    float line(float v,float w){ float d=abs(fract(v-.5)-.5)/fwidth(v); return 1.-min(d/w,1.); }
+    void main(){ float g=max(line(p.x/10.,1.),line(p.z/10.,1.)); float r=length(p.xz);
+      float fade=exp(-r/230.); vec3 c=mix(vec3(.16,.15,.13),gold,.55)*g*fade + gold*0.10*exp(-r/60.);
+      gl_FragColor=vec4(c, (g*.9+.25)*fade); }`,
+  extensions: { derivatives: true }
+});
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(3000, 3000), floorMat);
+floor.rotation.x = -Math.PI / 2; scene.add(floor);
+const shadowFloor = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), new THREE.ShadowMaterial({ opacity: 0.55 }));
+shadowFloor.rotation.x = -Math.PI / 2; shadowFloor.position.y = 0.05; shadowFloor.receiveShadow = true; scene.add(shadowFloor);
+const glow = new THREE.Mesh(new THREE.PlaneGeometry(1400, 260), new THREE.ShaderMaterial({ transparent: true, depthWrite: false,
+  uniforms: { c: { value: new THREE.Color(GOLD) } },
+  vertexShader: 'varying vec2 u; void main(){u=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+  fragmentShader: 'varying vec2 u; uniform vec3 c; void main(){ float a=exp(-pow((u.y-.02)*6.,2.))*.22*(1.-pow(abs(u.x-.5)*2.,2.)); gl_FragColor=vec4(c*a,a);}' }));
+glow.position.set(0, 40, -600); glow.scale.set(2.2, 1.6, 1); scene.add(glow);
+
+// --- light: key, fill, rim
+scene.add(new THREE.HemisphereLight(0x9fb4ff, 0x14110a, 0.45));
+const key = new THREE.DirectionalLight(0xfff2dd, 2.4); key.position.set(-60, 140, 90); key.castShadow = true;
+key.shadow.mapSize.set(2048, 2048); Object.assign(key.shadow.camera, { left: -120, right: 120, top: 160, bottom: -40, far: 500 });
+scene.add(key);
+const rim = new THREE.DirectionalLight(0xE8C268, 1.6); rim.position.set(80, 60, -120); scene.add(rim);
+
+// --- the CAD object (built by the engine from real dimensions) with ink outlines
+const obj = await (await fetch('object.json')).json();
+const turbine = new THREE.Group(); turbine.rotation.x = -Math.PI / 2; scene.add(turbine);   // CAD is z-up
+const rotor = new THREE.Group(); turbine.add(rotor);
+const parts = {};
+const loader = new STLLoader();
+for (const part of obj.parts) {
+  const geo = loader.parse(await (await fetch(part.mesh)).arrayBuffer());
+  geo.computeVertexNormals();
+  const color = new THREE.Color(...part.color.map((c) => c / 255));
+  const mat = new THREE.MeshPhysicalMaterial({ color, roughness: 0.38, metalness: 0.15, clearcoat: 0.6, clearcoatRoughness: 0.25 });
+  const mesh = new THREE.Mesh(geo, mat); mesh.castShadow = true; mesh.receiveShadow = true;
+  const ink = new THREE.LineSegments(new THREE.EdgesGeometry(geo, 28), new THREE.LineBasicMaterial({ color: 0x0a0a0c, transparent: true, opacity: 0.85 }));
+  mesh.add(ink);
+  const holder = new THREE.Group(); holder.add(mesh);
+  (part.id.startsWith('blade') || part.id === 'hub' ? rotor : turbine).add(holder);
+  parts[part.id] = { holder, mesh, mat, part };
+}
+// rotor spins about its own axis (hub centre, in CAD coordinates)
+parts.hub.mesh.geometry.computeBoundingBox();
+const hubLocal = parts.hub.mesh.geometry.boundingBox.getCenter(new THREE.Vector3());
+rotor.position.copy(hubLocal); for (const id of ['hub', 'blade_1', 'blade_2', 'blade_3']) parts[id].holder.position.sub(hubLocal);
+turbine.updateMatrixWorld(true);
+const hubC = turbine.localToWorld(hubLocal.clone());
+// --- labels as flat cards in the scene
+function label(text, { size = 64, color = '#F4F1EA', pad = 26, border = '#E8C268', bg = 'rgba(8,8,10,.86)' } = {}) {
+  const c = document.createElement('canvas'), g = c.getContext('2d');
+  g.font = `700 ${size}px Geist`; const w = g.measureText(text).width + pad * 2, h = size + pad * 1.6;
+  c.width = w; c.height = h; g.font = `700 ${size}px Geist`;
+  g.fillStyle = bg; g.strokeStyle = border; g.lineWidth = 5; const r = 18;
+  g.beginPath(); g.roundRect(3, 3, w - 6, h - 6, r); g.fill(); g.stroke();
+  g.fillStyle = color; g.textBaseline = 'middle'; g.fillText(text, pad, h / 2 + 2);
+  const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true }));
+  s.scale.set(w / 18, h / 18, 1); s.renderOrder = 10; return s;
+}
+function fat(points, width = 7) {
+  const g = new LineGeometry(); g.setPositions(points.flatMap((v) => [v.x, v.y, v.z]));
+  const m = new LineMaterial({ color: GOLD, linewidth: width, transparent: true, depthTest: false, resolution: new THREE.Vector2(W, H) });
+  const l = new Line2(g, m); l.renderOrder = 9; return l;
+}
+function dimension(a, b, text, side) {     // measured line with end ticks and the value
+  const g = new THREE.Group();
+  g.add(fat([a, b]));
+  const dir = b.clone().sub(a).normalize(), n = new THREE.Vector3(-dir.y, dir.x, 0).multiplyScalar(3.5);
+  for (const p of [a, b]) g.add(fat([p.clone().add(n), p.clone().sub(n)]));
+  const s = label(text, { size: 84 }); s.position.copy(a.clone().add(b).multiplyScalar(0.5).add(side)); g.add(s);
+  scene.add(g); return g;
+}
+const towerTop = new THREE.Box3().setFromObject(parts.tower.mesh).max.y;
+const towerDim = dimension(new THREE.Vector3(-14, 0, 6), new THREE.Vector3(-14, towerTop, 6), '80 m', new THREE.Vector3(-16, 0, 0));
+// blade length: hold the rotor with blade 1 pointing straight up, then measure hub to tip
+parts.blade_1.mesh.geometry.computeBoundingBox();
+let tipL = new THREE.Vector3(); { const p = parts.blade_1.mesh.geometry.attributes.position, v = new THREE.Vector3(); let best = 0;
+  for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i).sub(hubLocal); if (v.length() > best) { best = v.length(); tipL.copy(v); } } }
+const HOLD = Math.atan2(-tipL.x, tipL.z);
+rotor.rotation.y = HOLD; turbine.updateMatrixWorld(true);
+const tip = parts.blade_1.holder.localToWorld(tipL.clone().add(hubLocal).sub(hubLocal));
+const tipW = rotor.localToWorld(tipL.clone());
+const bladeDim = dimension(hubC.clone().add(new THREE.Vector3(0, 0, 8)), tipW.clone().add(new THREE.Vector3(0, 0, 8)), '55 m', new THREE.Vector3(-18, 0, 0));
+rotor.rotation.y = 0;
+const genLabel = label('Generator', { size: 70 }); scene.add(genLabel);
+const trial = label('TRIAL  ·  Route B example', { size: 40, border: 'rgba(232,194,104,.5)' }); scene.add(trial);
+
+// --- composer: bloom for the gold glow
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const bloom = new UnrealBloomPass(new THREE.Vector2(W, H), 0.22, 0.5, 0.93); composer.addPass(bloom);
+composer.addPass(new OutputPass());
+
+const ease = (x) => x < 0 ? 0 : x > 1 ? 1 : x * x * (3 - 2 * x);
+const nacelleBox = new THREE.Box3().setFromObject(parts.nacelle.mesh); const nacC = nacelleBox.getCenter(new THREE.Vector3());
+
+window.renderAt = (t) => {
+  // camera: slow orbit and push-in (the reference look: always moving, slowly)
+  const push = ease(t / 11), orbit = -0.55 + t * 0.045;
+  const focus = new THREE.Vector3(0, 66 + push * 6, 0).lerp(nacC, ease((t - 6) / 2.5) * 0.7);
+  const dist = 300 - push * 50 - ease((t - 6) / 2.5) * 150;
+  camera.position.set(focus.x + Math.sin(orbit) * dist, focus.y + 8 - ease((t - 6) / 2.5) * 6, focus.z + Math.cos(orbit) * dist);
+  camera.lookAt(focus);
+  
+  // explode on "inside" (t=6): housing lifts away, rotor slides forward
+  const open = ease((t - 6) / 0.8);
+  
+  // marks on their spoken words
+  const m1 = ease((t - 1.0) / 0.5) * (1 - ease((t - 3.6) / 0.4)), m2 = ease((t - 3.6) / 0.5) * (1 - ease((t - 6.0) / 0.4));
+  towerDim.visible = m1 > 0.01; towerDim.children.forEach((c) => c.material.opacity = m1);
+  bladeDim.visible = m2 > 0.01; bladeDim.children.forEach((c) => c.material.opacity = m2);
+  if (t >= 3.0 && t < 6.4) rotor.rotation.y = HOLD + (t < 3.6 ? (1 - ease((t - 3.0) / 0.6)) * (-3.0 * 0.55 - HOLD) : 0);
+  else if (t >= 6.4) rotor.rotation.y = HOLD - (t - 6.4) * 0.55;
+  else rotor.rotation.y = -t * 0.55;  // hold the rotor still while a blade is measured
+  const lit = ease((t - 6.6) / 0.5);
+  parts.nacelle.mat.emissive.set(GOLD); parts.nacelle.mat.emissiveIntensity = lit * 0.9;
+  parts.nacelle.mat.color.set(new THREE.Color(...parts.nacelle.part.color.map((c) => c / 255)).lerp(new THREE.Color(GOLD), lit * 0.6));
+  turbine.updateMatrixWorld(true);
+  const nb = new THREE.Box3().setFromObject(parts.nacelle.mesh), nc = nb.getCenter(new THREE.Vector3());
+  genLabel.position.copy(nc).add(new THREE.Vector3(0, 11, 0)); genLabel.material.opacity = lit; genLabel.visible = lit > 0.01;
+  // the trial tag stays in the top corner of the view
+  trial.position.copy(camera.position).add(new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion).multiplyScalar(120))
+    .add(new THREE.Vector3(0, 1, 0).applyQuaternion(camera.quaternion).multiplyScalar(56));
+  trial.scale.set(13, 2.4, 1);
+  composer.render();
+  return renderer.domElement.toDataURL('image/jpeg', 0.92);
+};
+window.ready = true;
+</script></body></html>
