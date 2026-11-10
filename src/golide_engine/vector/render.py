@@ -1232,7 +1232,7 @@ class VectorRenderer:
         audio = ("[1:a]loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000,asplit=2[v][key];"
                  f"[2:a]aresample=48000,volume={mix['sfx']}[s];"
                  "[3:a]aresample=48000[b0];"
-                 f"[b0][key]sidechaincompress={mix['duck']}[b];"
+                 f"[b0][key]sidechaincompress={TRACK_DUCK if track else mix['duck']}[b];"
                  "[v][s][b]amix=inputs=3:duration=first:normalize=0,alimiter=limit=0.79:level=0:attack=2:release=60[a]")
         command = ["ffmpeg", "-y", "-loglevel", "error", *inputs, "-filter_complex", audio,
                    "-map", "0:v", "-map", "[a]", "-c:v", "libx264", "-preset", "medium", "-crf", "19",
@@ -1264,6 +1264,10 @@ class VectorRenderer:
 # Owner review 2026-11-01, separate per format. Long: the music drops to almost nothing
 # while he speaks (measured about 25 dB down) and comes back only in the pauses; the effects come
 # down a bit (-2 dB). Shorts: the effects come down a bit (-1.5 dB); the dip stays.
+# 2026-11-10 (owner): real music must stay recognisable: a gentle, slow dip under the voice
+# (about 4 to 5 dB), not the deep fast pump made for the synthesised bed.
+TRACK_DUCK = "threshold=0.06:ratio=2:attack=250:release=1800"
+
 AUDIO_MIX = {
     # 2026-11-04: "bring back a bit of music": about 12 dB under the voice (was 25, near silent)
     "long": {"sfx": 0.79, "duck": "threshold=0.005:ratio=3:attack=60:release=900"},
