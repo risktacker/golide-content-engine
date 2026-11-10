@@ -539,22 +539,6 @@ function renderJobList() {
       await loadProductionJobs();
     };
   });
-  // 2026-11-06 (owner): the AI voice reads this script instead of his recording. Two taps: it spends credits.
-  $$(".ai-voice-button").forEach((button) => {
-    button.onclick = async () => {
-      if (button.dataset.confirm !== "1") {
-        button.dataset.confirm = "1"; button.textContent = "Tap again: AI voice reads it";
-        setTimeout(() => { button.dataset.confirm = ""; button.textContent = "Use AI voice"; }, 3500);
-        return;
-      }
-      button.disabled = true; button.textContent = "Starting...";
-      const card = button.closest(".action-card");
-      const picked = card?.querySelector(".post-to") ? pickedPlatforms(card) : null;
-      await api("/api/production-jobs/" + encodeURIComponent(button.dataset.job) + "/ai-voice",
-        { method: "POST", body: JSON.stringify(picked ? { platforms: picked } : {}) });
-      await loadProductionJobs();
-    };
-  });
   $$(".skip-job").forEach((button) => {
     button.onclick = async () => {
       if (button.dataset.confirm !== "1") {  // two taps: no accidental skips
@@ -681,6 +665,22 @@ function renderActionQueues() {
     ', waiting for your recording</small></div><span class="pill">Record</span></div>'
   ).join("");
 
+  // 2026-11-06 (owner); bound here 2026-11-10: it was bound before the cards were redrawn, so taps did nothing.: the AI voice reads this script instead of his recording. Two taps: it spends credits.
+  $$(".ai-voice-button").forEach((button) => {
+    button.onclick = async () => {
+      if (button.dataset.confirm !== "1") {
+        button.dataset.confirm = "1"; button.textContent = "Tap again: AI voice reads it";
+        setTimeout(() => { button.dataset.confirm = ""; button.textContent = "Use AI voice"; }, 3500);
+        return;
+      }
+      button.disabled = true; button.textContent = "Starting...";
+      const card = button.closest(".action-card");
+      const picked = card?.querySelector(".post-to") ? pickedPlatforms(card) : null;
+      await api("/api/production-jobs/" + encodeURIComponent(button.dataset.job) + "/ai-voice",
+        { method: "POST", body: JSON.stringify(picked ? { platforms: picked } : {}) });
+      await loadProductionJobs();
+    };
+  });
   $$(".voice-input").forEach((input) => {
     input.onchange = () => {
       uploadVoice(input.dataset.job, input.files?.[0]);
