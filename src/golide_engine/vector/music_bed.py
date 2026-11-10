@@ -24,8 +24,13 @@ def settings() -> dict:
         return {}
 
 
-def pick(fmt: str, n: int | None) -> dict | None:
-    tracks = [t for t in settings().get(fmt, []) if (ROOT / t["file"]).exists()]
+def pick(fmt: str, n: int | None, story: str = "") -> dict | None:
+    """One track for this video, rotating. A Short about something hot or dangerous (an alert, a
+    hack, a crash) gets the alert track (owner 2026-11-10)."""
+    from .thumb_styles import is_alert
+
+    key = "short_alert" if fmt == "short" and story and is_alert(story) and settings().get("short_alert") else fmt
+    tracks = [t for t in settings().get(key, []) if (ROOT / t["file"]).exists()]
     if not tracks:
         return None
     return dict(tracks[(n or 0) % len(tracks)], path=str(ROOT / tracks[(n or 0) % len(tracks)]["file"]))

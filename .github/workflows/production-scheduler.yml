@@ -103,6 +103,9 @@ jobs:
           fi
       - run: python -m pip install -e '.[production,video]'
         if: steps.automation.outputs.enabled == 'true'
+      - name: Browser for the thumbnail logo tiles
+        if: steps.automation.outputs.enabled == 'true'
+        run: python -m playwright install --with-deps chromium
       - name: Keep built 3D objects between runs (an object is paid for once)
         if: steps.automation.outputs.enabled == 'true'
         uses: actions/cache@v4

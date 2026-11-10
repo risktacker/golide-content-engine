@@ -32,6 +32,7 @@ video = [
   "cairosvg>=2.7,<3",
   "reportlab>=4,<5",
   "fast-simplification>=0.1,<1",
+  "playwright>=1.40,<2",  # 2026-11-10: thumbnail logo tiles (Three.js in headless Chromium)
 ]
 test = []
 

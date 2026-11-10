@@ -1417,7 +1417,7 @@ class ProductionService:
                 )
                 from ..vector.music_bed import pick as pick_music
                 n = int(rendered_before[0]["n"]) if rendered_before else None
-                track = pick_music(str(spec["format"]), n)
+                track = pick_music(str(spec["format"]), n, f"{plan.get('title', '')} {spec.get('title', '')}")
                 (work / "music.json").write_text(json.dumps(track or {}) + "\n", encoding="utf-8")
                 print(json.dumps({"status": "music", "track": (track or {}).get("title", "synthesised bed")}))
                 VectorRenderer(str(spec["format"])).render(
@@ -2086,6 +2086,30 @@ class ProductionService:
                     canvas.save(thumbnail)
                     print(json.dumps({"status": "short_thumbnail_from_cover"}))
                     return
+            # 2026-11-10 (owner approved): the editing styles drawn in code with the story's real
+            # logos as glossy 3D tiles; no image model. Stories with no known logo keep the photo path.
+            try:
+                words_path = work / "thumbnail-words.json"
+                if not words_path.exists():
+                    from ..vector.thumbnail_v2 import LAST_BRANDS, big_words
+                    plan_cover = (json.loads((work / "visual-plan.json").read_text(encoding="utf-8")).get("cover") or {}) \
+                        if (work / "visual-plan.json").exists() else {}
+                    picked = big_words(self.providers.text(live=True), metadata["title"], str(plan_cover.get("text", "")),
+                                       str((spec.get("source_breakout") or {}).get("title") or ""))
+                    if picked:
+                        words_path.write_text(json.dumps({"words": picked[0][0], "punch": picked[0][1],
+                                                          "brands": list(LAST_BRANDS)}) + "\n", encoding="utf-8")
+                chosen = json.loads(words_path.read_text(encoding="utf-8"))
+                from ..vector.thumb_styles import make as styled
+                rows = self.database.execute("SELECT COUNT(DISTINCT production_id) AS n FROM stage_runs WHERE stage='thumbnail' AND status='completed'").fetchall()
+                n = int(rows[0]["n"]) if rows else 0
+                style = styled(metadata["title"], str(chosen.get("words", "")), str(chosen.get("punch", "")),
+                               [str(b) for b in chosen.get("brands") or []], n, thumbnail)
+                if style:
+                    print(json.dumps({"status": "thumbnail_styled", "style": style, "brands": chosen.get("brands")}))
+                    return
+            except Exception as exc:  # noqa: BLE001 - the photo thumbnail is the fallback
+                print(json.dumps({"status": "thumbnail_style_failed", "error": str(exc)[:300]}))
             self._reserve(
                 spec, thumbnail_cost_model, Usage(images=1), stage="thumbnail"
             )

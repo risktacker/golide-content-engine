@@ -56,3 +56,24 @@ def test_published_models_need_an_allowed_licence_and_are_credited():
     assert set(real_models.LICENCES) == {"cc0", "by"}       # never share-alike or non-commercial
     line = real_models.credit_line({"credit": {"title": "Car", "author": "Ann", "url": "https://s/x", "licence": "CC BY 4.0"}})
     assert "Ann" in line and "CC BY 4.0" in line
+
+
+def test_approved_styles_pick_by_story_and_draw_without_the_image_model(tmp_path, monkeypatch):
+    from golide_engine.vector import thumb_styles as T
+
+    assert T.choose("Nvidia Lost $400B In One Day", 1, 0) == "dark_drama"
+    assert T.choose("Best AI Video Tools", 6, 0) == "platter"
+    assert {T.choose("How Chips Are Made", 1, n) for n in range(3)} == {"light_glass", "editorial", "grid_paper"}
+    icon = {"title": "Claude", "hex": "D97757", "svg": SVG}
+    monkeypatch.setattr(logos, "find", lambda name: icon if name == "Claude" else None)
+    fake = lambda spec: Image.new("RGBA", (spec["w"], spec["h"]), (217, 119, 87, 255))
+    for n in range(3):
+        out = tmp_path / f"t{n}.jpg"
+        style = T.make("How Claude Builds Apps", "Claude Builds", "Builds", ["Claude", "Nobody"], n, out, tiles=fake)
+        assert style in T.STYLES and Image.open(out).size == (1280, 720)
+    assert T.make("Story", "Big Words", "Words", ["Nobody"], 0, tmp_path / "none.jpg", tiles=fake) is None
+
+
+def test_alert_shorts_get_the_trailer_music():
+    picked = music_bed.pick("short", 0, "Hackers breach a bank")
+    assert picked is None or picked["title"] == "Motivational Trailer"

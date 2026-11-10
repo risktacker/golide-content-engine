@@ -113,12 +113,12 @@ def big_words(text, title: str, line: str = "", source_title: str = "", count: i
         "3 short, strong words (Title Case) that make someone tap: the hook or tension the title sets up, "
         "never the title repeated. Model the idea of the source video's title, in our own words. "
         "\"punch\" is the 1 or 2 words of that option, copied exactly, that get the accent colour. "
-        f"Give {count} clearly different options. \"brands\": the 1 to 3 real companies, apps or products "
+        f"Give {count} clearly different options. \"brands\": the 1 to 6 real companies, apps or products "
         "the video is about whose logo viewers know (e.g. Claude, Blender, Apple, Nvidia, Tesla), most "
         "important first; empty when none.",
         f"TITLE: {title}\nOPENING LINE: {line}\nSOURCE VIDEO TITLE: {source_title}",
         BIG_WORDS_SCHEMA, max_output_tokens=1200)
-    LAST_BRANDS[:] = [str(b).strip() for b in out.value.get("brands", []) if str(b).strip()][:3]
+    LAST_BRANDS[:] = [str(b).strip() for b in out.value.get("brands", []) if str(b).strip()][:6]
     options = [(str(o.get("words", "")).strip(), str(o.get("punch", "")).strip())
                for o in out.value.get("options", []) if str(o.get("words", "")).strip()]
     return [(w, p) for w, p in options if 2 <= len(w.split()) <= 3][:count] or options[:count]

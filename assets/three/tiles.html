@@ -1,0 +1,66 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:transparent}</style>
+<script type="importmap">{"imports":{"three":"/three/build/three.module.js","three/addons/":"/three/examples/jsm/"}}</script></head><body>
+<script type="module">
+import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+window.draw = async (spec) => {
+  const W = spec.w, H = spec.h;
+  const r = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+  r.setSize(W, H); r.setPixelRatio(1); r.setClearColor(0x000000, 0);
+  r.toneMapping = THREE.NeutralToneMapping; r.toneMappingExposure = spec.exposure || 0.95;
+  r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+  document.body.innerHTML = ''; document.body.appendChild(r.domElement);
+  const scene = new THREE.Scene();
+  const pm = new THREE.PMREMGenerator(r); scene.environment = pm.fromScene(new RoomEnvironment(), 0.03).texture;
+  scene.environmentIntensity = spec.env || 0.55;
+  const cam = new THREE.PerspectiveCamera(spec.fov || 28, W / H, 0.1, 100); cam.position.set(0, spec.camY || 0, spec.dist || 12); cam.lookAt(0, 0, 0);
+  const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(-3, 6, 8); key.castShadow = true; scene.add(key);
+  key.shadow.mapSize.set(2048, 2048); Object.assign(key.shadow.camera, { left: -10, right: 10, top: 10, bottom: -10 });
+  const rim = new THREE.DirectionalLight(0xffffff, 1.2); rim.position.set(6, 3, -4); scene.add(rim);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.25));
+  for (const it of spec.items || []) {
+    const g = new THREE.Group();
+    const s = it.size || 2.4, depth = s * 0.34;
+    const col = new THREE.Color('#' + it.hex);
+    const glass = it.style === 'glass';
+    const body = new THREE.Mesh(new RoundedBoxGeometry(s, s, depth, 8, s * 0.22),
+      glass ? new THREE.MeshPhysicalMaterial({ color: 0xffffff, transmission: 0.9, thickness: 1.2, roughness: 0.18, ior: 1.4, clearcoat: 1, attenuationColor: col, attenuationDistance: 3 })
+            : new THREE.MeshPhysicalMaterial({ color: col, roughness: 0.22, metalness: 0.0, clearcoat: 1.0, clearcoatRoughness: 0.06, sheen: 0.3 }));
+    body.castShadow = true; g.add(body);
+    if (it.svg) {      // the real mark as a crisp decal on the face (robust for every logo shape)
+      const svg = it.svg.replace('<svg ', `<svg fill="#${it.mark || 'ffffff'}" width="1024" height="1024" `);
+      const img = new Image(); img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
+      await img.decode();
+      const c = document.createElement('canvas'); c.width = c.height = 1024; c.getContext('2d').drawImage(img, 0, 0, 1024, 1024);
+      const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8;
+      const face = new THREE.Mesh(new THREE.PlaneGeometry(s * 0.56, s * 0.56),
+        new THREE.MeshPhysicalMaterial({ map: tex, transparent: true, roughness: 0.3, clearcoat: 1, alphaTest: 0.02 }));
+      face.position.z = depth / 2 + 0.004; g.add(face);
+    }
+    if (it.badge) {   // small round badge on a corner
+      const b = new THREE.Mesh(new THREE.CylinderGeometry(s * 0.17, s * 0.17, s * 0.08, 48), new THREE.MeshPhysicalMaterial({ color: new THREE.Color('#' + it.badge), clearcoat: 1, roughness: 0.2 }));
+      b.rotation.x = Math.PI / 2; b.position.set(s * 0.42, s * 0.42, depth / 2 + 0.05); g.add(b);
+    }
+    g.position.set(...(it.pos || [0, 0, 0])); g.rotation.set(...(it.rot || [0, 0, 0]).map((d) => d * Math.PI / 180));
+    scene.add(g);
+  }
+  if (spec.platter) {   // a polished chrome platter under a row of icons
+    const p = spec.platter;
+    const m = new THREE.Mesh(new THREE.CylinderGeometry(p.r, p.r * 0.97, 0.22, 128), new THREE.MeshPhysicalMaterial({ color: 0xf2f2f2, metalness: 1, roughness: 0.05, clearcoat: 1, envMapIntensity: 2.6 }));
+    m.position.set(...p.pos); m.rotation.x = 0.0; m.receiveShadow = true; scene.add(m);
+  }
+  for (const c of spec.chrome || []) {   // chrome star / coin props
+    let geo;
+    if (c.kind === 'star') { const sh = new THREE.Shape(); for (let i = 0; i < 10; i++) { const a = i / 10 * Math.PI * 2 - Math.PI / 2, rr = i % 2 ? 0.45 : 1; i ? sh.lineTo(Math.cos(a) * rr, Math.sin(a) * rr) : sh.moveTo(Math.cos(a) * rr, Math.sin(a) * rr); }
+      geo = new THREE.ExtrudeGeometry(sh, { depth: 0.35, bevelEnabled: true, bevelThickness: 0.15, bevelSize: 0.12, bevelSegments: 6 }); }
+    else geo = new THREE.CylinderGeometry(1, 1, 0.35, 96).rotateX(Math.PI / 2);
+    const m = new THREE.Mesh(geo, new THREE.MeshPhysicalMaterial({ color: 0xffffff, metalness: 1, roughness: 0.08, iridescence: 0.6, clearcoat: 1 }));
+    m.scale.setScalar(c.size || 1); m.position.set(...c.pos); m.rotation.set(...(c.rot || [0, 0, 0]).map((d) => d * Math.PI / 180)); scene.add(m);
+  }
+  if (spec.shadow) { const f = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.ShadowMaterial({ opacity: spec.shadow })); f.position.z = -1.2; f.receiveShadow = true; scene.add(f); }
+  r.render(scene, cam);
+  return r.domElement.toDataURL('image/png');
+};
+window.ready = true;
+</script></body></html>
