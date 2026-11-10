@@ -7,7 +7,11 @@ Owner: Esiah (Lusaka, UTC+2). Direct, no sugar-coating. Studio: studio.golidee.c
 ## Owner's rules (always)
 - Talk before code on anything that costs money or changes visuals; state costs first. "Approved" or "Perfect" = go.
 - Show a preview (still frames / contact sheet) before pushing visual changes. Not a full video unless asked.
-- Never touch the music videos. Never use other people's faces. Licence-clear assets only, no real logos.
+- Never touch the music videos. Never use other people's faces. Licence-clear assets only.
+- Thumbnails (owner 2026-11-10): real logos of the products and apps in the story are used; no owner avatar
+  (only when he is in the video); real objects, never generative look-alikes.
+- Parked (owner 2026-11-10): a Skool community (videos posted there, classroom of repos and sources) comes
+  after the Advanced list.
 - No cloned voice. AI voice = ElevenLabs "Mark - Natural Conversations" (UgBBYS2sOqTuMpoF3BR0), only when the
   owner taps "Use AI voice" for that video; otherwise his own recording. Monthly cap 115,000 characters.
 - Trials are labelled as trials. Don't paste API tokens. Digits for numbers.
