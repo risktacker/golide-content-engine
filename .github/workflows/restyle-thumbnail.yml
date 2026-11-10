@@ -1,0 +1,66 @@
+name: Restyle a published thumbnail
+
+# 2026-11-10 (owner): swap a published long video's thumbnail for the approved style, from the
+# words and brands that run already chose. No image model, no other change to the video.
+on:
+  workflow_dispatch:
+    inputs:
+      production_id:
+        description: "Production id, e.g. golide-long-2026-11-10"
+        required: true
+      video_id:
+        description: "YouTube video id"
+        required: true
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  restyle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            productions
+          key: golide-production-checkpoint-${{ github.run_id }}
+          restore-keys: |
+            golide-production-checkpoint-
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          sudo apt-get update && sudo apt-get install -y libcairo2-dev pkg-config
+          python -m pip install -e '.[production,video]'
+          python -m playwright install --with-deps chromium
+      - name: Draw and upload
+        env:
+          GOLIDE_STUDIO_BASE_URL: "https://studio.golidee.com"
+          PID: ${{ inputs.production_id }}
+          VID: ${{ inputs.video_id }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from golide_engine.vector.thumb_styles import make
+          from golide_engine.youtube.auth import services
+          from googleapiclient.http import MediaFileUpload
+          pid, vid = os.environ["PID"], os.environ["VID"]
+          work = Path("productions") / pid
+          words = json.loads((work / "thumbnail-words.json").read_text())
+          title = json.loads((work / "metadata.json").read_text()).get("title", "") if (work / "metadata.json").exists() else words.get("words", "")
+          out = work / "thumbnail-styled.jpg"
+          style = make(title, words.get("words", ""), words.get("punch", ""), words.get("brands") or [], 0, out)
+          if not style:
+              raise SystemExit(f"no known logo in {words.get('brands')}: nothing to restyle")
+          youtube, _ = services()
+          youtube.thumbnails().set(videoId=vid, media_body=MediaFileUpload(str(out), mimetype="image/jpeg")).execute()
+          print(json.dumps({"status": "thumbnail_restyled", "style": style, "brands": words.get("brands")}))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail
+          path: productions/${{ inputs.production_id }}/thumbnail-styled.jpg
