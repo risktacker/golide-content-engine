@@ -114,6 +114,7 @@ jobs:
         if: steps.automation.outputs.enabled == 'true'
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          SKETCHFAB_TOKEN: ${{ secrets.SKETCHFAB_TOKEN }}
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
           SUPADATA_API_KEY: ${{ secrets.SUPADATA_API_KEY }}
           GOLIDE_ENABLE_PAID_PRODUCTION: "1"

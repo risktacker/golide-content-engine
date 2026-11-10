@@ -1,0 +1,14 @@
+{
+  "_about": "Owner 2026-11-10: real music, low under the voice, fading in at the start and out at the end (the way Frame-Dragging opens). One track per video, rotating. Long and Shorts are separate.",
+  "fade_in_seconds": 4.0,
+  "fade_out_seconds": 4.0,
+  "long": [
+    {"file": "assets/music/frame-dragging-the-grey-room-density-time.mp3", "title": "Frame-Dragging", "artist": "The Grey Room / Density & Time", "source": "YouTube Audio Library", "license": "youtube-audio-library"},
+    {"file": "assets/music/crimson-fly-huma-huma.mp3", "title": "Crimson Fly", "artist": "Huma-Huma", "source": "YouTube Audio Library", "license": "youtube-audio-library"},
+    {"file": "assets/music/crock-pot-diamond-ortiz.mp3", "title": "Crock Pot", "artist": "Diamond Ortiz", "source": "YouTube Audio Library", "license": "youtube-audio-library", "level_offset_db": -3.0}
+  ],
+  "short": [
+    {"file": "assets/music/short-discipline-finishes.mp3", "title": "Discipline Finishes (Shorts audio)", "artist": "unknown", "source": "owner-supplied Shorts audio", "license": "owner-supplied (owner decision 2026-11-10)"},
+    {"file": "assets/music/winner-ashamaluevmusic.mp3", "title": "Winner", "artist": "AShamaluevMusic", "source": "ashamaluevmusic.com free download (free for short-form videos)", "license": "ashamaluevmusic-free-short-form", "attribution": "Winner by AShamaluevMusic"}
+  ]
+}

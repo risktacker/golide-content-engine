@@ -1,5 +1,7 @@
 {
-  "_about": "What each video gives the viewer at the end (owner 2026-11-10). Empty = nothing offered yet. Example: 'the free step-by-step checklist from this video is on golidee.com, link in the description'.",
-  "long": "",
-  "short": ""
+  "_about": "Owner 2026-11-10: the offer. The video says it once near the end; the description carries the free guide PDF (made per video) and the community link (community_url, empty until the Skool community opens).",
+  "long": "the free guide to this video and the link to our community for updates and all these stories are in the description",
+  "short": "the free guide and our community link are in the description",
+  "community_url": "",
+  "guide_base_url": "https://studio.golidee.com/guides/"
 }

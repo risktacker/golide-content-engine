@@ -1180,7 +1180,8 @@ class VectorRenderer:
 
     def render(self, plan: dict[str, Any], words: list[dict[str, Any]], narration: Path, output: Path,
                duration: float, music: Path | None = None, music_volume: float = 0.03,
-               illustrations: dict[str, Path] | None = None, bed_variant: int | None = None) -> Path:
+               illustrations: dict[str, Path] | None = None, bed_variant: int | None = None,
+               track: dict | None = None) -> Path:
         lines = align_lines(plan, words, duration)
         from .number_cards import find_cards
         self.cards = find_cards(lines)
@@ -1211,11 +1212,16 @@ class VectorRenderer:
 
         sfx_path = render_sfx(groups, duration, output.with_name(output.stem + "-sfx.wav"),
                               self._action_cues(plan, lines, groups))
-        bed_path = render_ambient(duration, output.with_name(output.stem + "-bed.wav"),
-                                  seed_text=str(plan.get("title", "")), variant=bed_variant,
-                                  level_db=LEVELS_DB.get(self.format, LEVEL_DB),
-                                  # long videos: a different bed each chapter (2026-11-04)
-                                  starts=[m.start for m in self.chapters] if self.format == "long" else None)
+        if track:   # 2026-11-10 (owner): real music, low, faded in and out
+            from .music_bed import render as render_track
+            bed_path = render_track(track, duration, output.with_name(output.stem + "-bed.wav"),
+                                    LEVELS_DB.get(self.format, LEVEL_DB))
+        else:
+            bed_path = render_ambient(duration, output.with_name(output.stem + "-bed.wav"),
+                                      seed_text=str(plan.get("title", "")), variant=bed_variant,
+                                      level_db=LEVELS_DB.get(self.format, LEVEL_DB),
+                                      # long videos: a different bed each chapter (2026-11-04)
+                                      starts=[m.start for m in self.chapters] if self.format == "long" else None)
         mix = AUDIO_MIX.get(self.format, AUDIO_MIX["short"])
         inputs = ["-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{L.width}x{L.height}",
                   "-r", str(self.fps), "-i", "-", "-i", str(narration), "-i", str(sfx_path),

@@ -109,6 +109,16 @@ class R2TemporaryMediaStore:
             pass
         return prepared
 
+    def put_object(self, key: str, data: bytes, content_type: str = "application/octet-stream") -> str:
+        """Store a lasting object (not under temp/, so the cleanup never removes it)."""
+        if ".." in key.split("/") or key.startswith("temp/"):
+            raise ValueError("unsafe lasting key")
+        request = urllib.request.Request(self._presign("PUT", key, 900), data=data, method="PUT",
+                                         headers={"Content-Type": content_type})
+        with urllib.request.urlopen(request, timeout=60):
+            pass
+        return f"r2://{key}"
+
     def delete(self, media_ref: str) -> None:
         key = self._key(media_ref)
         self.delete_http.delete(self._presign("DELETE", key, 900))

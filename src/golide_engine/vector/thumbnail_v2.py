@@ -52,6 +52,9 @@ def fetch_reference(url: str, dest: Path) -> Path | None:
 
 def thumbnail_prompt_v2(title: str, moment: str, colors: list[str], has_reference: bool) -> str:
     subject = moment.strip() or f"the one object the story is about: {title}"
+    # 2026-11-10 (owner): real objects make people click; symbols and metaphors do not.
+    subject += (". Show the REAL thing itself (the actual product, machine, device or place), never a "
+                "symbol or metaphor for it: no vaults, safes, scales, padlocks, keys, shields or brains")
     names = [GLOW_WORDS.get(c, c) for c in colors] or [GLOW_WORDS["gold"]]
     glow, rim = names[0], (names[1] if len(names) > 1 else names[0])
     reference = (
@@ -93,27 +96,32 @@ def art_left_edge(image: Image.Image, top: float = 0.12, bottom: float = 0.88) -
 
 
 BIG_WORDS_SCHEMA = {
-    "type": "object", "additionalProperties": False, "required": ["options"],
+    "type": "object", "additionalProperties": False, "required": ["options", "brands"],
     "properties": {"options": {"type": "array", "items": {
         "type": "object", "additionalProperties": False, "required": ["words", "punch"],
-        "properties": {"words": {"type": "string"}, "punch": {"type": "string"}}}}},
+        "properties": {"words": {"type": "string"}, "punch": {"type": "string"}}}},
+        "brands": {"type": "array", "items": {"type": "string"}}},
 }
+LAST_BRANDS: list[str] = []
 
 
 def big_words(text, title: str, line: str = "", source_title: str = "", count: int = 1) -> list[tuple[str, str]]:
     """2026-11-05 (owner): "they just needed big words". 2 to 4 words on the thumbnail, big,
     instead of the 3 to 6 word opening line. Modelled on the idea of the source video, ours."""
     out = text.generate_json(
-        "Write the big words printed on a YouTube thumbnail for a tech explainer. Each option is 2 to "
-        "4 short, strong words (Title Case) that make someone tap: the hook or tension the title sets up, "
+        "Write the big words printed on a YouTube thumbnail for a tech explainer. Each option is 2 or "
+        "3 short, strong words (Title Case) that make someone tap: the hook or tension the title sets up, "
         "never the title repeated. Model the idea of the source video's title, in our own words. "
         "\"punch\" is the 1 or 2 words of that option, copied exactly, that get the accent colour. "
-        f"Give {count} clearly different options.",
+        f"Give {count} clearly different options. \"brands\": the 1 to 3 real companies, apps or products "
+        "the video is about whose logo viewers know (e.g. Claude, Blender, Apple, Nvidia, Tesla), most "
+        "important first; empty when none.",
         f"TITLE: {title}\nOPENING LINE: {line}\nSOURCE VIDEO TITLE: {source_title}",
         BIG_WORDS_SCHEMA, max_output_tokens=1200)
+    LAST_BRANDS[:] = [str(b).strip() for b in out.value.get("brands", []) if str(b).strip()][:3]
     options = [(str(o.get("words", "")).strip(), str(o.get("punch", "")).strip())
                for o in out.value.get("options", []) if str(o.get("words", "")).strip()]
-    return [(w, p) for w, p in options if 2 <= len(w.split()) <= 4][:count] or options[:count]
+    return [(w, p) for w, p in options if 2 <= len(w.split()) <= 3][:count] or options[:count]
 
 
 def stamp_overlap(path: Path, text: str, punch: str = "", palette: list | None = None) -> None:

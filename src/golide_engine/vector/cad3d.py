@@ -215,6 +215,21 @@ def named_objects(scenes: list[dict]) -> list[str]:
     return names
 
 
+def credits(scenes: list[dict]) -> list[str]:
+    """Description credits for the published models a video shows (CC BY needs one)."""
+    from .real_models import credit_line
+
+    lines = []
+    for name in named_objects(scenes):
+        try:
+            line = credit_line(json.loads((folder(name) / "object.json").read_text(encoding="utf-8")))
+        except (OSError, ValueError):
+            continue
+        if line and line not in lines:
+            lines.append(line)
+    return lines
+
+
 def prepare(scenes: list[dict], research: str, text: Any, record: Callable[[str, Any], None]) -> list[str]:
     """Build every named object a video needs, once. Returns the names that could not be built."""
     cfg = settings()
@@ -224,6 +239,17 @@ def prepare(scenes: list[dict], research: str, text: Any, record: Callable[[str,
     for name in named_objects(scenes)[: cfg.get("max_objects_per_video", 4)]:
         if available(name):
             continue
+        # 2026-11-10 (owner): exact real objects. A published model of the real thing comes first;
+        # CAD builds it only when none is clearly that exact object (vector.real_models).
+        try:
+            from .real_models import fetch, token
+            if token():
+                _obj, outputs = fetch(name, research, text, folder(name))
+                for output in outputs:
+                    record("real-model-pick", output)
+                continue
+        except Exception as error:  # noqa: BLE001 - fall back to building it
+            print(json.dumps({"status": "real_model_skipped", "object": name, "reason": str(error)[:300]}))
         try:
             for output in make(name, research, text):
                 record("cad3d", output)

@@ -291,9 +291,19 @@ class ProductionService:
             words = str(cover.get("text") or cover.get("thumbnail_text") or "")
             punch = str(cover.get("gold") or cover.get("thumbnail_punch") or "")
             big = work / "thumbnail-words.json"
+            brands: list[str] = []
             if big.exists():
                 chosen = json.loads(big.read_text(encoding="utf-8"))
                 words, punch = str(chosen.get("words") or words), str(chosen.get("punch") or "")
+                brands = [str(b) for b in chosen.get("brands") or []]
+            if brands:   # 2026-11-10 (owner): the real logos of what the video is about, big, in front
+                from PIL import Image as _Image
+                from ..vector.logos import place
+                from ..vector.thumbnail_v2 import art_left_edge
+                art = _Image.open(thumbnail).convert("RGB")
+                used = place(art, brands, max(0.34, min(0.56, art_left_edge(art))))
+                art.save(thumbnail)
+                print(json.dumps({"status": "thumbnail_logos", "asked": brands, "placed": used}))
             stamp_thumbnail(thumbnail, words, punch, palette_rgb(colors))
         except Exception as exc:  # the plain artwork still works as a thumbnail
             print(json.dumps({"status": "thumbnail_text_skipped", "error": str(exc)[:300]}))
@@ -1397,6 +1407,7 @@ class ProductionService:
                 self._reserve(spec, text_model, Usage(input_tokens=8000, output_tokens=30000))
                 cad3d.prepare(scenes, self._storyboard_facts(spec, work), text,
                               lambda name, output: self._record_text(production_id, name, output))
+                (work / "3d-credits.json").write_text(json.dumps(cad3d.credits(scenes)) + "\n", encoding="utf-8")
 
             def vector_render_stage():
                 # Rotate the four atmosphere beds in order across videos.
@@ -1404,10 +1415,14 @@ class ProductionService:
                     "SELECT COUNT(DISTINCT production_id) n FROM stage_runs WHERE stage='render-vector-v1' "
                     "AND status='completed' AND production_id<>?", (production_id,),
                 )
+                from ..vector.music_bed import pick as pick_music
+                n = int(rendered_before[0]["n"]) if rendered_before else None
+                track = pick_music(str(spec["format"]), n)
+                (work / "music.json").write_text(json.dumps(track or {}) + "\n", encoding="utf-8")
+                print(json.dumps({"status": "music", "track": (track or {}).get("title", "synthesised bed")}))
                 VectorRenderer(str(spec["format"])).render(
                     plan, timed_words, narration, video_path, narration_seconds,
-                    music=None, illustrations=illustrations,
-                    bed_variant=int(rendered_before[0]["n"]) if rendered_before else None,
+                    music=None, illustrations=illustrations, bed_variant=n, track=track,
                 )
 
             self.runner.run(production_id, "render-vector-v1", vector_render_stage, attempts=1)
@@ -1978,6 +1993,47 @@ class ProductionService:
                 metadata["link"] = str(external_info(spec).get("link", "")).strip()
             if music.attribution and music.attribution not in metadata["description"]:
                 metadata["description"] = metadata["description"].rstrip() + f"\n\nMusic: {music.attribution}"
+            # 2026-11-10 (owner): the offer: a free guide PDF for this video, and the community link.
+            try:
+                from ..engine.guide import offer_settings, render_pdf, sources, write_guide
+                offer = offer_settings(self.root)
+                guide_pdf = work / "guide.pdf"
+                if not guide_pdf.exists():
+                    research_json = json.loads((work / "research.json").read_text(encoding="utf-8"))
+                    self._reserve(spec, text_model, Usage(input_tokens=6000, output_tokens=2500))
+                    guide, guide_out = write_guide(self.providers.text(live=True), metadata["title"], script, research_json)
+                    self._record_text(production_id, "guide", guide_out)
+                    render_pdf(guide, metadata["title"], sources(research_json), guide_pdf, offer.get("community_url", ""))
+                guide_url = ""
+                from ..storage.r2 import r2_store_from_environment
+                store = r2_store_from_environment()
+                if store is not None and offer.get("guide_base_url"):
+                    store.put_object(f"guides/{production_id}.pdf", guide_pdf.read_bytes(), "application/pdf")
+                    guide_url = str(offer["guide_base_url"]) + f"{production_id}.pdf"
+                extra = []
+                if guide_url and guide_url not in metadata["description"]:
+                    extra.append(f"Free guide to this video (steps and every source): {guide_url}")
+                if offer.get("community_url") and offer["community_url"] not in metadata["description"]:
+                    extra.append(f"Join the GOLIDE community for updates and all these stories: {offer['community_url']}")
+                if extra:
+                    body = str(metadata["description"])
+                    metadata["description"] = "\n".join(extra) + "\n\n" + body
+                print(json.dumps({"status": "guide", "url": guide_url}))
+            except Exception as exc:  # noqa: BLE001 - the video still ships without its guide
+                print(json.dumps({"status": "guide_failed", "error": str(exc)[:300]}))
+            try:   # 2026-11-10: published 3D models are credited (CC BY asks for it)
+                for line in json.loads((work / "3d-credits.json").read_text(encoding="utf-8")):
+                    if line not in metadata["description"]:
+                        metadata["description"] = metadata["description"].rstrip() + f"\n\n{line}"
+            except (OSError, ValueError):
+                pass
+            try:   # 2026-11-10: the real track under this video is credited
+                from ..vector.music_bed import credit
+                line = credit(json.loads((work / "music.json").read_text(encoding="utf-8")))
+                if line and line not in metadata["description"]:
+                    metadata["description"] = metadata["description"].rstrip() + f"\n\nMusic: {line}"
+            except (OSError, ValueError):
+                pass
             validate_upload_metadata(metadata, policy)
             metadata_path.write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
             self._record_text(production_id, "metadata", output)
@@ -2001,7 +2057,9 @@ class ProductionService:
                     picked = big_words(self.providers.text(live=True), metadata["title"], str(plan_cover.get("text", "")),
                                        str((spec.get("source_breakout") or {}).get("title") or ""))
                     if picked:
-                        words_path.write_text(json.dumps({"words": picked[0][0], "punch": picked[0][1]}) + "\n", encoding="utf-8")
+                        from ..vector.thumbnail_v2 import LAST_BRANDS
+                        words_path.write_text(json.dumps({"words": picked[0][0], "punch": picked[0][1],
+                                                          "brands": list(LAST_BRANDS)}) + "\n", encoding="utf-8")
             except Exception as exc:  # noqa: BLE001 - the opening line still works
                 print(json.dumps({"status": "big_words_failed", "error": str(exc)[:200]}))
             self._stamp_thumbnail(work, target)

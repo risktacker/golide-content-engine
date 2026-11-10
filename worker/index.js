@@ -1404,6 +1404,14 @@ export default {
       if(!env.ASSETS) return new Response("Not found",{status:404});
       return env.ASSETS.fetch(request);
     }
+    // 2026-11-10 (owner): each video's free guide, linked in its description (public, no login).
+    const guide=url.pathname.match(/^\/guides\/([a-z0-9][a-z0-9_-]{0,80})\.pdf$/);
+    if(guide&&request.method==="GET"){
+      const object=env.MEDIA?await env.MEDIA.get(`guides/${guide[1]}.pdf`):null;
+      if(!object) return new Response("Guide not found",{status:404});
+      return new Response(object.body,{headers:{"content-type":"application/pdf","cache-control":"public, max-age=86400",
+        "content-disposition":`inline; filename="golide-${guide[1]}.pdf"`}});
+    }
     // 2026-10-24: the public contact panel on golidee.com (no login; checks in contact.js).
     if(url.pathname==="/api/public/contact"){
       await ensureSchema(env.DB);
