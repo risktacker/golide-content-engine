@@ -270,7 +270,7 @@ class Composer:
         inner = (f'<div class="frame" id="{sid}-f" style="left:{fx}px;top:{fy:.0f}px;width:{fw}px;height:{fh:.0f}px;{look}">'
                  f'{chrome}<div class="page" style="top:{bar}px"><div id="{sid}-pg" style="position:absolute;left:0;top:0;'
                  f'width:{fw}px;height:{img_h:.0f}px"><img src="{img}">{marks}</div></div></div>')
-        if domain:
+        if domain and not data.get("no_tag"):
             inner += (f'<div class="chip" id="{sid}-src" style="position:absolute;left:{fx}px;top:{fy + fh + 26:.0f}px;'
                       f'font-size:24px">Source · {_e(domain)}</div>')
         if callout and self.fmt == "short":     # one compact band that ends above the captions
@@ -298,7 +298,7 @@ class Composer:
             end = '{scale:1,x:0,y:0,rotation:0,rotationX:0,rotationY:0,opacity:1,filter:"blur(0px)"'
             self.tw(f'tl.fromTo("#{sid}-f",{start},{end},duration:.6,ease:"{ease}"}},{t0:.3f});')
             self.cue("whoosh", t0)
-        if domain:
+        if domain and not data.get("no_tag"):
             self.tw(f'tl.fromTo("#{sid}-src",{{y:20,opacity:0}},{{y:0,opacity:1,duration:.4,ease:"power3.out"}},{t0 + 0.5:.3f});')
         if spots:   # camera zooms INSIDE the card to the facts, page edges never show
             x0 = min(sp["rect"][0] for sp in spots) * k; y0 = min(sp["rect"][1] for sp in spots) * k
@@ -710,7 +710,7 @@ class Composer:
             bubble = (f'<div class="disc" style="left:{x + w * .12:.0f}px;top:{y + size * .93:.0f}px;width:{w * .76:.0f}px;'
                       f'height:{size * .09:.0f}px"></div>')
         if place == "corner":
-            bubble = (f'<div class="card" id="{sid}-bub" style="position:absolute;left:{x - 24:.0f}px;top:{y + size * .14:.0f}px;'
+            bubble = (f'<div data-box="goli" class="card" id="{sid}-bub" style="position:absolute;left:{x - 24:.0f}px;top:{y + size * .14:.0f}px;'
                       f'width:{w + 48:.0f}px;height:{size * .88:.0f}px;border-radius:36px;background:radial-gradient('
                       f'circle at 50% 35%,#1E3A9E,#0B0F1E 75%);border:2px solid rgba(232,194,104,.55)"></div>')
         title = ""
@@ -725,7 +725,9 @@ class Composer:
                 title = (f'<div style="position:absolute;left:{self.w * 0.52:.0f}px;right:110px;top:50%;margin-top:-170px">'
                          f'<div class="title" style="font-size:96px">{spans}</div></div>')
         front = (studio.front(sid, self.fmt) if place == "studio" else studio.front(sid, "lower") if place == "lower" else "")
-        inner = (f'{bubble}{title}<div id="{sid}-ch" style="position:absolute;left:{x:.0f}px;top:{y:.0f}px;width:{w:.0f}px;'
+        floor = (studio.layout(self.fmt)["desk_y"] if place == "studio" else studio.layout("lower")["desk_y"]
+                 if place == "lower" else "")
+        inner = (f'{bubble}{title}<div id="{sid}-ch" data-box="goli" data-floor="{floor}" style="position:absolute;left:{x:.0f}px;top:{y:.0f}px;width:{w:.0f}px;'
                  f'height:{size}px">{layers}</div>{front}')
         self.parts.append(f'<section id="{sid}" class="scene clip" data-start="{t0:.3f}" data-duration="{dur:.3f}" '
                           f'style="z-index:{40 if place in ("corner", "lower", "side") else 1}"><div class="stage"><div class="cam">{inner}</div></div></section>')
@@ -801,11 +803,18 @@ class Composer:
             wat = t0 + float(w_.get("at", 0.3 + i * 0.2))
             self.tw(f'tl.fromTo("#{sid}-w{i}",{{y:50,opacity:0}},{{y:0,opacity:1,duration:.4,ease:"back.out(1.6)"}},{wat:.3f});')
 
+    @staticmethod
+    def _in_studio(edit: dict[str, Any], cap: dict[str, Any]) -> bool:
+        mid = (float(cap["start"]) + float(cap["end"])) / 2
+        return any(sc["type"] == "host" and (sc.get("data") or {}).get("place") == "studio"
+                   and sc["start"] <= mid < sc["start"] + sc["duration"] for sc in edit["scenes"])
+
     # ---- output
     def build(self, edit: dict[str, Any], out: Path) -> Path:
         self.uses_mascot = False
         self.uses_studio = False
         for s in edit["scenes"]:
+            s["_sid"] = f"s{self.n + 1}-"      # the layout check finds this scene's boxes by it
             getattr(self, s["type"])(float(s["start"]), float(s["duration"]), s["data"], s.get("in", "rise"))
         duration = float(edit.get("duration") or max(float(s["start"]) + float(s["duration"]) for s in edit["scenes"]))
         audio = ""
@@ -832,29 +841,32 @@ class Composer:
         # it is said, key terms in gold. Shorts: a band between the proof and Goli; long: low centre.
         caps = ""
         top = 1062 if self.fmt == "short" else self.h - 150
+        studio_top = 1592 if self.fmt == "short" else self.h - 150
         size = 60 if self.fmt == "short" else 50
-        for i, c in enumerate(edit.get("captions") or []):
+        cap_list = edit.get("captions") or []
+        for i, c in enumerate(cap_list):         # a line leaves before the next one arrives: never two at once
+            if i + 1 < len(cap_list):
+                c["end"] = min(float(c["end"]), float(cap_list[i + 1]["start"]) - 0.01)
+        for i, c in enumerate(cap_list):
             spans = "".join(f'<span id="c{i}w{j}" class="{"key" if j in c.get("keys", []) else ""}">{_e(w["text"])}</span>'
                             for j, w in enumerate(c["words"]))
             side = "" if self.fmt == "short" else "left:120px;right:600px;"     # long: clear of Goli on the right
-            caps += f'<div class="cap" id="c{i}" style="top:{top}px;font-size:{size}px;{side}">{spans}</div>'
+            # the layout check (edit/layout.py) gives each caption the free band it needs
+            ctop = c.get("top", top if not self._in_studio(edit, c) else studio_top)
+            caps += (f'<div class="cap" id="c{i}" style="top:{ctop}px;font-size:{size}px;{side}">'
+                     f'<div class="capin" data-box="caption" style="display:inline-block">{spans}</div></div>')
             self.tw(f'tl.set("#c{i}",{{opacity:1}},{float(c["start"]):.3f});tl.set("#c{i}",{{opacity:0}},{float(c["end"]):.3f});')
             for j, w in enumerate(c["words"]):
                 at = max(float(c["start"]), float(w["at"]))
                 self.tw(f'tl.fromTo("#c{i}w{j}",{{opacity:.38,scale:1}},{{opacity:1,scale:1.12,duration:.08,immediateRender:false}},{at:.3f});'
                         f'tl.to("#c{i}w{j}",{{scale:1,duration:.12}},{at + 0.08:.3f});')
         caps = f'<div id="caps">{caps}</div>' if caps else ""
-        if caps and self.fmt == "short":   # in the studio the captions sit on the desk front, clear of Goli's face
-            for sc in edit["scenes"]:
-                if sc["type"] == "host" and (sc.get("data") or {}).get("place") == "studio":
-                    a, b = float(sc["start"]), float(sc["start"]) + float(sc["duration"])
-                    self.tw(f'tl.set("#caps",{{y:530}},{a:.3f});tl.set("#caps",{{y:0}},{b:.3f});')
         chapters = edit.get("chapters") or []
         from .mascot import logo_mark
 
-        brand = ('<div id="brand"><div class="logo"><svg width="44" height="44" viewBox="-32 -32 64 64">'
+        brand = ('<div id="brand"><div class="logo" data-box="brand"><svg width="44" height="44" viewBox="-32 -32 64 64">'
                  f'{logo_mark(0, 0, 60, "#F4F1EA")}</svg>GOLIDE</div>')
-        brand += "".join(f'<div class="chap" id="chap{i}">{_e(c["title"])}</div>' for i, c in enumerate(chapters))
+        brand += "".join(f'<div class="chap" data-box="brand" id="chap{i}">{_e(c["title"])}</div>' for i, c in enumerate(chapters))
         brand += '<div class="prog" id="prog"></div></div>'
         btw = [f'tl.fromTo("#prog",{{width:"0%"}},{{width:"100%",duration:{duration:.3f},ease:"none"}},0);']
         for i, c in enumerate(chapters):
@@ -862,6 +874,13 @@ class Composer:
             if i:
                 btw.append(f'tl.to("#chap{i - 1}",{{opacity:0,y:-10,duration:.25}},{at:.3f});')
             btw.append(f'tl.fromTo("#chap{i}",{{opacity:0,y:10}},{{opacity:1,y:0,duration:.35,ease:"power3.out"}},{at + 0.1:.3f});')
+        # the layout check hides the brand marks during scenes where they would touch content
+        for t in sorted(set(edit.get("brand_hide") or [])):
+            sc = next((x for x in edit["scenes"] if x["type"] != "host" and x["start"] <= t < x["start"] + x["duration"]), None)
+            if sc:
+                a, b = float(sc["start"]), float(sc["start"]) + float(sc["duration"])
+                btw.append(f'tl.set("#brand .logo",{{autoAlpha:0}},{a:.3f});tl.set("#brand .chap",{{visibility:"hidden"}},{a:.3f});'
+                           f'tl.set("#brand .logo",{{autoAlpha:.92}},{b:.3f});tl.set("#brand .chap",{{visibility:"inherit"}},{b:.3f});')
         self.tweens.extend(btw)
         page = f"""<!doctype html><html lang="en"><head><meta charset="UTF-8">
 <meta name="viewport" content="width={self.w}, height={self.h}"><script src="gsap.min.js"></script>
@@ -881,6 +900,9 @@ tl.fromTo("#bg",{{x:0}},{{x:-48,duration:{duration:.3f},ease:"none"}},0);
 {chr(10).join(self.tweens)}
 window.__timelines["main"]=tl;
 </script></body></html>"""
+        for cls, kind in (('class="card"', "card"), ('class="frame"', "card"), ('class="chip"', "chip"),
+                          ('class="title"', "text"), ('class="tile"', "logo"), ('class="label"', "text"), ('class="num"', "text")):
+            page = page.replace(cls, f'{cls} data-box="{kind}"')
         (out / "index.html").write_text(page, encoding="utf-8")
         (out / "sfx.json").write_text(json.dumps(sorted(self.sfx, key=lambda c: c["t"])), encoding="utf-8")
         return out / "index.html"
