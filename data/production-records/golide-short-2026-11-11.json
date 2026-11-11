@@ -1,0 +1,493 @@
+{
+  "production_id": "golide-short-2026-11-11",
+  "youtube_video_id": "6-ZFo_kpG2g",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "6-ZFo_kpG2g",
+    "upload_status": "published",
+    "privacy_status": "public",
+    "scheduled_at": null,
+    "uploaded_at": "2026-11-11T17:41:43.115265+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "Nvidia CEO Jensen Huang and Chinese Spy? This is why Elon Musk builds chips",
+    "status": "published",
+    "scheduled_at": "2026-11-11T11:00:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-shorts-mon-wed-fri\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-choice\"}"
+  },
+  "narration": "What just happened?\nAn alleged Chinese spy, Jensen Huang, and a massive AI chip project.\nBut there’s a much bigger story hiding underneath.\nJensen Huang acknowledged an affair.\nAfter reports described the woman as a suspected Chinese intelligence operative,\nthe chip company’s board opened an independent investigation.\nBut nobody has proved she was a spy, Huang knew, or technology changed hands.\nChina rejected the claim, and the shareholder lawsuit remains unproven.\nWhy does this matter?\nAI needs chip design, fabrication, memory, packaging, servers, power, cooling and data centers.\nOne bottleneck decides who gets compute, how fast, and at what price.\nNow look at Terafab: Musk’s proposed project for chip design, memory and logic fabrication,\nand packaging, targeting one terawatt of compute.\nBut filings warn it could miss schedule or fail.\nIf it works, Musk-linked AI gets supply.\nDon’t assume prices will fall: reserved capacity could squeeze rivals,\nwhile added capacity could increase competition.\nGovernments care because chips support military, cyber and surveillance systems.\nWant to understand AI?\nThe free guide and community link are in the description.\nFollow for more.\nThe spy claim is unproven; the power sits in the factories.\n",
+  "research": {
+    "summary": "The defensible account is narrower than the sensational version. Confirmed: Nvidia CEO Jensen Huang acknowledged an extramarital relationship, and Nvidia’s board opened an independent investigation after reports connected the relationship to a woman described in news coverage as a suspected Chinese intelligence operative. Not confirmed: that the woman was a spy, that Huang knew of or assisted any intelligence operation, or that Nvidia technology was transferred through the relationship. Those remain allegations under investigation; China has rejected the accusation, and a shareholder lawsuit makes claims that have not been proven in court.\n\nThe broader significance is the physical structure of AI. Advanced models require a chain that includes chip architecture and design, semiconductor fabrication, high-bandwidth memory, advanced packaging, servers and networking, electricity, cooling, and data-center construction. Control over any major link can determine who gets compute, how quickly it is deployed, and at what price.\n\nThat is the context for Elon Musk’s reported Terafab ambitions. SpaceX filings describe Terafab as a planned, vertically integrated project associated with SpaceX, Tesla and their AI efforts, spanning chip design inputs, logic and memory fabrication, advanced packaging and testing. The filings also acknowledge that the project is intended to reduce dependence on external suppliers but may not meet its timetable—or succeed at all—and that the companies expect to keep buying substantial amounts of hardware from third parties.\n\nIf such a project worked at scale, it could improve chip availability for Musk-linked AI, robotics and space-computing programs and potentially reduce their exposure to shortages. It would not automatically lower prices for everyone: capacity reserved for affiliated companies could tighten supply for rivals, while a successful new source could eventually add competition. The national-security stakes follow from the same bottleneck. Governments already treat advanced chips, manufacturing equipment and large-scale AI as strategically sensitive because they affect military modernization, cyber capabilities and surveillance. The story therefore matters beyond personal scandal: it illustrates how relationships, export controls, corporate governance and national power increasingly intersect at the semiconductor layer of AI.",
+    "claims": [
+      {
+        "claim": "Jensen Huang acknowledged having an extramarital relationship, and Nvidia’s board announced an independent investigation after reports raised national-security concerns.",
+        "source_title": "Nvidia CEO Jensen Huang admits affair, board to launch investigation",
+        "source_url": "https://www.axios.com/2026/11/08/nvidia-ceo-jensen-huang-admits-affair-board-to-launch-investigation",
+        "published_or_updated": "November 8, 2026"
+      },
+      {
+        "claim": "The public record describes the alleged intelligence connection as an allegation or suspicion, not an established fact; China rejected the accusation, and reporting did not establish that Huang knew the person was a spy.",
+        "source_title": "What we know—and what we don’t—as Nvidia investigates an alleged spy plot involving its CEO",
+        "source_url": "https://apnews.com/article/df45d21030691f59c67bc0b35adb89a2",
+        "published_or_updated": "November 10, 2026"
+      },
+      {
+        "claim": "A shareholder complaint alleges that Nvidia and Huang misled investors, but a complaint is an accusation and does not prove that espionage occurred or that Nvidia disclosed technology improperly.",
+        "source_title": "Nvidia and Jensen Huang face shareholder lawsuit alleging investors were misled about spy affair",
+        "source_url": "https://apnews.com/article/1f060e52b308cb2c649807518d5081e2",
+        "published_or_updated": "November 11, 2026"
+      },
+      {
+        "claim": "SpaceX’s SEC filing says AI scaling depends on physical inputs including power, AI processors, data-center infrastructure, telecommunications and other components; it also identifies concentrated advanced-fab capacity as a supply-chain risk.",
+        "source_title": "SpaceX registration statement and risk disclosures",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1181412/000162828026036936/spaceexplorationtechnologi.htm",
+        "published_or_updated": "2026"
+      },
+      {
+        "claim": "The same filing says Terafab is intended to expand internal chip manufacturing and alleviate potential AI-chip shortages, while warning that the project may not achieve its objectives on schedule or at all and that SpaceX expects to continue sourcing significant hardware from third parties.",
+        "source_title": "SpaceX registration statement and risk disclosures",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1181412/000162828026036936/spaceexplorationtechnologi.htm",
+        "published_or_updated": "2026"
+      },
+      {
+        "claim": "SpaceX describes Terafab as a planned vertically integrated facility covering lithography-mask design, logic and memory fabrication, and advanced packaging, with a long-term goal of one terawatt of annual compute-production capacity.",
+        "source_title": "SpaceX prospectus discussion of Terafab",
+        "source_url": "https://content.spacex.com/cms-assets/FINAL_Documents%20and%20Updates/SpaceX%20-%20EU%20Prospectus%20%28Approved%20by%20Bafin%29-%20June%205%2C%202026.pdf",
+        "published_or_updated": "2026"
+      },
+      {
+        "claim": "Musk said Terafab’s rough target was volume production in the third quarter of 2028, while explicitly attaching large uncertainty to that schedule; the project is therefore an ambition and plan, not evidence of an operating mega-fab.",
+        "source_title": "SpaceX and Tesla’s Terafab targets 2028 for volume chip production, Musk says",
+        "source_url": "https://www.investing.com/news/stock-market-news/spacex-and-teslas-terafab-targets-2028-for-volume-chip-production-musk-says-4961351",
+        "published_or_updated": "October 20, 2026"
+      },
+      {
+        "claim": "Power is a material AI-infrastructure constraint: the Energy Department estimates that U.S. data centers used about 4.4% of national electricity in 2023 and could reach roughly 6.7% to 12% by 2028.",
+        "source_title": "DOE releases new report evaluating increase in electricity demand from data centers",
+        "source_url": "https://www.energy.gov/articles/doe-releases-new-report-evaluating-increase-electricity-demand-data-centers",
+        "published_or_updated": "December 20, 2024"
+      },
+      {
+        "claim": "Advanced packaging and a broader domestic semiconductor ecosystem are treated by the Commerce Department as strategic infrastructure supporting artificial intelligence, aerospace and other critical industries.",
+        "source_title": "U.S. Department of Commerce National Security Fact Sheet",
+        "source_url": "https://www.commerce.gov/sites/default/files/2024-12/National-Security-Fact-Sheet.pdf",
+        "published_or_updated": "December 2024"
+      },
+      {
+        "claim": "The Commerce Department identifies advanced semiconductors and large-scale AI as national-security concerns because they can support military modernization, advanced weapons systems, surveillance and other sensitive capabilities.",
+        "source_title": "U.S. Department of Commerce FY 2024 Annual Performance Report",
+        "source_url": "https://www.commerce.gov/sites/default/files/2025-01/FY-2024-APR.pdf",
+        "published_or_updated": "January 2025"
+      },
+      {
+        "claim": "Control of chip production could affect availability and prices, but the direction is not predetermined: added capacity could ease shortages and lower costs for the owner, while vertically reserved capacity or increased concentration could limit access for competitors. This is an economic inference from the documented supply constraints and Terafab’s stated purpose, not a reported fact about future prices.",
+        "source_title": "SpaceX registration statement and risk disclosures",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1181412/000162828026036936/spaceexplorationtechnologi.htm",
+        "published_or_updated": "2026"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Nvidia CEO Jensen Huang and Chinese Spy? This is why Elon Musk builds chips",
+    "description": "Free guide to this video (steps and every source): https://studio.golidee.com/guides/golide-short-2026-11-11.pdf\n\nJensen Huang acknowledged an affair after reports linked the woman to an alleged Chinese intelligence operation. Nvidia opened an independent investigation, but the spy claim, knowledge of any wrongdoing, and technology transfers remain unproven. China has rejected the allegations, while a shareholder lawsuit is still pending.\n\nThe bigger story is control of AI infrastructure. Musk’s proposed Terafab aims to combine chip design, memory, fabrication, packaging and testing at massive scale. This video explains why factories, power, capacity and supply chains may matter more than the scandal itself.\n\n#JensenHuang #Nvidia #Terafab #AIChips #Semiconductors #AIGeopolitics #GOLIDE\n\nMusic: Winner by AShamaluevMusic",
+    "tags": [
+      "Jensen Huang",
+      "Nvidia spy allegations",
+      "Nvidia investigation",
+      "Chinese spy claims",
+      "Jensen Huang affair",
+      "Nvidia shareholder lawsuit",
+      "Nvidia China",
+      "Alice Huang",
+      "Megaspeed",
+      "Elon Musk Terafab",
+      "Terafab project",
+      "Musk AI chips",
+      "AI chip supply",
+      "AI chip manufacturing",
+      "AI chip shortage",
+      "AI infrastructure",
+      "AI compute",
+      "semiconductor industry",
+      "chip fabrication",
+      "advanced packaging",
+      "memory chips",
+      "logic chips",
+      "AI data centers",
+      "China chip exports",
+      "GOLIDE"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "keywords": [
+      "Jensen Huang spy claims",
+      "Nvidia investigation",
+      "Nvidia China scandal",
+      "Jensen Huang affair",
+      "Nvidia shareholder lawsuit",
+      "Musk Terafab project",
+      "Terafab AI chips",
+      "AI chip supply",
+      "AI chip manufacturing",
+      "semiconductor supply chain",
+      "AI compute capacity",
+      "China chip exports",
+      "Nvidia CEO scandal",
+      "AI infrastructure",
+      "chip fabrication"
+    ],
+    "hashtags": [
+      "#JensenHuang",
+      "#Nvidia",
+      "#Terafab",
+      "#AIChips",
+      "#Semiconductors",
+      "#AIGeopolitics",
+      "#GOLIDE"
+    ],
+    "format": "short",
+    "title_description_language": "en",
+    "seo_body": "Jensen Huang acknowledged an affair after reports linked the woman to an alleged Chinese intelligence operation. Nvidia opened an independent investigation, but the spy claim, knowledge of any wrongdoing, and technology transfers remain unproven. China has rejected the allegations, while a shareholder lawsuit is still pending.\n\nThe bigger story is control of AI infrastructure. Musk’s proposed Terafab aims to combine chip design, memory, fabrication, packaging and testing at massive scale. This video explains why factories, power, capacity and supply chains may matter more than the scandal itself."
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "Jensen Huang acknowledged having an extramarital relationship, and Nvidia’s board announced an independent investigation after reports raised national-security concerns.",
+        "source_title": "Nvidia CEO Jensen Huang admits affair, board to launch investigation",
+        "source_url": "https://www.axios.com/2026/11/08/nvidia-ceo-jensen-huang-admits-affair-board-to-launch-investigation",
+        "published_or_updated": "November 8, 2026"
+      },
+      {
+        "claim": "The public record describes the alleged intelligence connection as an allegation or suspicion, not an established fact; China rejected the accusation, and reporting did not establish that Huang knew the person was a spy.",
+        "source_title": "What we know—and what we don’t—as Nvidia investigates an alleged spy plot involving its CEO",
+        "source_url": "https://apnews.com/article/df45d21030691f59c67bc0b35adb89a2",
+        "published_or_updated": "November 10, 2026"
+      },
+      {
+        "claim": "A shareholder complaint alleges that Nvidia and Huang misled investors, but a complaint is an accusation and does not prove that espionage occurred or that Nvidia disclosed technology improperly.",
+        "source_title": "Nvidia and Jensen Huang face shareholder lawsuit alleging investors were misled about spy affair",
+        "source_url": "https://apnews.com/article/1f060e52b308cb2c649807518d5081e2",
+        "published_or_updated": "November 11, 2026"
+      },
+      {
+        "claim": "SpaceX’s SEC filing says AI scaling depends on physical inputs including power, AI processors, data-center infrastructure, telecommunications and other components; it also identifies concentrated advanced-fab capacity as a supply-chain risk.",
+        "source_title": "SpaceX registration statement and risk disclosures",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1181412/000162828026036936/spaceexplorationtechnologi.htm",
+        "published_or_updated": "2026"
+      },
+      {
+        "claim": "The same filing says Terafab is intended to expand internal chip manufacturing and alleviate potential AI-chip shortages, while warning that the project may not achieve its objectives on schedule or at all and that SpaceX expects to continue sourcing significant hardware from third parties.",
+        "source_title": "SpaceX registration statement and risk disclosures",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1181412/000162828026036936/spaceexplorationtechnologi.htm",
+        "published_or_updated": "2026"
+      },
+      {
+        "claim": "SpaceX describes Terafab as a planned vertically integrated facility covering lithography-mask design, logic and memory fabrication, and advanced packaging, with a long-term goal of one terawatt of annual compute-production capacity.",
+        "source_title": "SpaceX prospectus discussion of Terafab",
+        "source_url": "https://content.spacex.com/cms-assets/FINAL_Documents%20and%20Updates/SpaceX%20-%20EU%20Prospectus%20%28Approved%20by%20Bafin%29-%20June%205%2C%202026.pdf",
+        "published_or_updated": "2026"
+      },
+      {
+        "claim": "Musk said Terafab’s rough target was volume production in the third quarter of 2028, while explicitly attaching large uncertainty to that schedule; the project is therefore an ambition and plan, not evidence of an operating mega-fab.",
+        "source_title": "SpaceX and Tesla’s Terafab targets 2028 for volume chip production, Musk says",
+        "source_url": "https://www.investing.com/news/stock-market-news/spacex-and-teslas-terafab-targets-2028-for-volume-chip-production-musk-says-4961351",
+        "published_or_updated": "October 20, 2026"
+      },
+      {
+        "claim": "Power is a material AI-infrastructure constraint: the Energy Department estimates that U.S. data centers used about 4.4% of national electricity in 2023 and could reach roughly 6.7% to 12% by 2028.",
+        "source_title": "DOE releases new report evaluating increase in electricity demand from data centers",
+        "source_url": "https://www.energy.gov/articles/doe-releases-new-report-evaluating-increase-electricity-demand-data-centers",
+        "published_or_updated": "December 20, 2024"
+      },
+      {
+        "claim": "Advanced packaging and a broader domestic semiconductor ecosystem are treated by the Commerce Department as strategic infrastructure supporting artificial intelligence, aerospace and other critical industries.",
+        "source_title": "U.S. Department of Commerce National Security Fact Sheet",
+        "source_url": "https://www.commerce.gov/sites/default/files/2024-12/National-Security-Fact-Sheet.pdf",
+        "published_or_updated": "December 2024"
+      },
+      {
+        "claim": "The Commerce Department identifies advanced semiconductors and large-scale AI as national-security concerns because they can support military modernization, advanced weapons systems, surveillance and other sensitive capabilities.",
+        "source_title": "U.S. Department of Commerce FY 2024 Annual Performance Report",
+        "source_url": "https://www.commerce.gov/sites/default/files/2025-01/FY-2024-APR.pdf",
+        "published_or_updated": "January 2025"
+      },
+      {
+        "claim": "Control of chip production could affect availability and prices, but the direction is not predetermined: added capacity could ease shortages and lower costs for the owner, while vertically reserved capacity or increased concentration could limit access for competitors. This is an economic inference from the documented supply constraints and Terafab’s stated purpose, not a reported fact about future prices.",
+        "source_title": "SpaceX registration statement and risk disclosures",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1181412/000162828026036936/spaceexplorationtechnologi.htm",
+        "published_or_updated": "2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "Nvidia Jensen Huang investigation Terafab Elon Musk AI chip manufacturing explained",
+      "score": 94.1,
+      "verdict": "pass",
+      "recent_videos": 1,
+      "median_views_per_day": 1080105.6,
+      "top_views_per_day": 1080105.6,
+      "market_coverage": 1,
+      "title_query_overlap": 1,
+      "measured_at": "2026-11-11T07:04:13.411179+00:00",
+      "signal_type": "youtube-breakout-v1"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.75,
+      "true_peak_dbtp": -1.76,
+      "loudness_range": 3.3
+    },
+    "editorial": {
+      "beats": 22,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-11-11T17:41:28.846705+00:00",
+    "warnings": [
+      "possible misspelling: golidee"
+    ]
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-choice",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-short-2026-11-11",
+    "created_at": "2026-11-11T17:41:29.814636+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-11-11T11:00:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "8107d0ceafc21bfdeecbddd2dbef938f0683b1c8b5b6db77855d5df1173f86d7",
+        "bytes": 66057692
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "377f53aa757fca70223c3cb8d35f1ec664a8f64583c14319c7a82eabef35a93c",
+        "bytes": 183725
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "6647506838b85ef39f01e32bbf5c412e9fb9b590f4a44f990f7c291b4ab54b37",
+        "bytes": 2986
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "e437f790e53aeac07c2c8c8e403941354f326dc5d8fef6d62dfa869084d5f615",
+        "bytes": 2871
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "505fcea64d47607eb432de912abc6cde2f7188c490450ef5b280687b4d2649d1",
+        "bytes": 562
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "16c38d85b254add29c2e4585ca40369afe06cc5f3acb3f8be0ab8537318ce53a",
+        "bytes": 6561
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "a89ff2471888a87d484d27c42628bc73c1b69af0f55aa955038e7843c845f9ce",
+        "bytes": 382
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "0520d7c2a23c64b7099f7308636e8c30942eb6ca0bc1041129a964431da3082e",
+        "bytes": 316
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 25534.0,
+      "cached_input_units": 0.0,
+      "output_units": 3189.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008934,
+      "created_at": "2026-11-11T07:04:12.778876+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-11T07:04:12.781185+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 21449.0,
+      "cached_input_units": 0.0,
+      "output_units": 2221.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006955,
+      "created_at": "2026-11-11T07:04:42.112977+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-11T07:04:42.114760+00:00"
+    },
+    {
+      "stage": "script-story",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9887.0,
+      "cached_input_units": 0.0,
+      "output_units": 5879.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.009032,
+      "created_at": "2026-11-11T07:07:02.595938+00:00"
+    },
+    {
+      "stage": "script-board",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 631.0,
+      "cached_input_units": 0.0,
+      "output_units": 882.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001185,
+      "created_at": "2026-11-11T07:07:13.059560+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9887.0,
+      "cached_input_units": 0.0,
+      "output_units": 5879.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.009032,
+      "created_at": "2026-11-11T07:07:13.061954+00:00"
+    },
+    {
+      "stage": "script-edit-board",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 650.0,
+      "cached_input_units": 0.0,
+      "output_units": 1060.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001402,
+      "created_at": "2026-11-11T17:03:02.148945+00:00"
+    },
+    {
+      "stage": "owner-voice",
+      "provider": "elevenlabs",
+      "model": "eleven_multilingual_v2",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 1248,
+      "cost_usd": 0.2496,
+      "created_at": "2026-11-11T17:03:09.809638+00:00"
+    },
+    {
+      "stage": "edit-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1949.0,
+      "cached_input_units": 0.0,
+      "output_units": 3852.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005012,
+      "created_at": "2026-11-11T17:20:29.242244+00:00"
+    },
+    {
+      "stage": "guide",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1502.0,
+      "cached_input_units": 0.0,
+      "output_units": 880.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001356,
+      "created_at": "2026-11-11T17:34:13.425984+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 13620.0,
+      "cached_input_units": 0.0,
+      "output_units": 832.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.003722,
+      "created_at": "2026-11-11T17:34:14.998281+00:00"
+    }
+  ],
+  "recorded_at": "2026-11-11T17:41:43.120696+00:00"
+}
