@@ -1,5 +1,5 @@
 {
-  "_about": "Owner 2026-11-10: real music, low under the voice, fading in at the start and out at the end (the way Frame-Dragging opens). One track per video, rotating. Long and Shorts are separate. 2026-11-10: owner's long picks added; the Motivational Trailer also plays under Shorts about hot or dangerous stories (alerts, hacks, crashes).",
+  "_about": "Owner 2026-11-10: real music, low under the voice, fading in at the start and out at the end (the way Frame-Dragging opens). One track per video, rotating. Long and Shorts are separate. 2026-11-10: owner's long picks added; the Motivational Trailer also plays under Shorts about hot or dangerous stories (alerts, hacks, crashes). 2026-11-12 (owner): the generated ambient bed is gone (it played as noise in the trial re-cuts); Discipline Finishes plays most Shorts (weight 3).",
   "fade_in_seconds": 4.0,
   "fade_out_seconds": 4.0,
   "long": [
@@ -54,7 +54,8 @@
       "title": "Discipline Finishes (Shorts audio)",
       "artist": "unknown",
       "source": "owner-supplied Shorts audio",
-      "license": "owner-supplied (owner decision 2026-11-10)"
+      "license": "owner-supplied (owner decision 2026-11-10)",
+      "weight": 3
     },
     {
       "file": "assets/music/winner-ashamaluevmusic.mp3",
