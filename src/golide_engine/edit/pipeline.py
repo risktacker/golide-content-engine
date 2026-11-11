@@ -27,7 +27,11 @@ def settings() -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
 
 
-def enabled(fmt: str) -> bool:
+def enabled(fmt: str, spec: dict[str, Any] | None = None) -> bool:
+    """The owner's choice for this video (Studio: Video style) wins; otherwise the default for the format."""
+    style = str((spec or {}).get("video_style") or "").lower()
+    if style in ("goli", "illustration"):
+        return style == "goli"
     return bool(settings().get(fmt))
 
 

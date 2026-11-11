@@ -166,19 +166,22 @@ def _character(pose, uid, mouth, expression, look, blink, cap) -> str:
     h += ('<ellipse cx="200" cy="248" rx="22" ry="14" fill="url(#pg-nose)"/>'
           '<ellipse cx="193" cy="243" rx="7" ry="4" fill="#fff" opacity=".55"/>')
     h += _mouths(uid, mouth)
-    lids = ""
+    lids, whites, pupils, extras = "", "", "", ""
     for s in (-1, 1):
         x = 200 + s * 40
-        h += (f'<ellipse cx="{x}" cy="176" rx="{19 * es}" ry="{21 * es}" fill="url(#pg-eye)"/>'
-              f'<circle cx="{x + look[0]}" cy="{178 + look[1]}" r="{12 * min(es, 1.05)}" fill="url(#pg-iris)"/>'
-              f'<circle cx="{x + look[0]}" cy="{178 + look[1]}" r="6.5" fill="#0B0603"/>'
-              f'<circle cx="{x + look[0] + 4}" cy="{178 + look[1] - 5}" r="4" fill="#fff"/>')
+        whites += f'<ellipse cx="{x}" cy="176" rx="{19 * es}" ry="{21 * es}"/>'
+        pupils += (f'<circle cx="{x + look[0]}" cy="{178 + look[1]}" r="{12 * min(es, 1.05)}" fill="url(#pg-iris)"/>'
+                   f'<circle cx="{x + look[0]}" cy="{178 + look[1]}" r="6.5" fill="#0B0603"/>'
+                   f'<circle cx="{x + look[0] + 4}" cy="{178 + look[1] - 5}" r="4" fill="#fff"/>')
         if lid_line:
-            h += f'<path d="M{x - 19 * es} 168 Q{x} 157 {x + 19 * es} 168 L{x + 19 * es} 160 L{x - 19 * es} 160 Z" fill="#FFE9C8"/>'
+            extras += f'<path d="M{x - 19 * es} 168 Q{x} 157 {x + 19 * es} 168 L{x + 19 * es} 160 L{x - 19 * es} 160 Z" fill="#FFE9C8"/>'
         lids += f'<ellipse cx="{x}" cy="176" rx="{21 * es}" ry="{23 * es}" fill="#F6D6A8"/>'
-        h += (f'<path d="M{x - 26} {140 + lift} Q{x} {128 + lift} {x + 26} {138 + lift} L{x + 24} {149 + lift} '
-              f'Q{x} {141 + lift} {x - 24} {152 + lift} Z" fill="#5A2A04" '
-              f'transform="rotate({s * (tilt + 6)} {x} {142 + lift})"/>')
+        extras += (f'<path d="M{x - 26} {140 + lift} Q{x} {128 + lift} {x + 26} {138 + lift} L{x + 24} {149 + lift} '
+                   f'Q{x} {141 + lift} {x - 24} {152 + lift} Z" fill="#5A2A04" '
+                   f'transform="rotate({s * (tilt + 6)} {x} {142 + lift})"/>')
+    # the pupils move as one (ids {uid}-eyes) and never leave the whites of the eyes
+    h += (f'<clipPath id="{uid}-eyeclip">{whites}</clipPath><g fill="url(#pg-eye)">{whites}</g>'
+          f'<g clip-path="url(#{uid}-eyeclip)"><g id="{uid}-eyes">{pupils}</g></g>{extras}')
     h += (f'<g id="{uid}-lid" style="transform-origin:200px 176px;transform-box:view-box" '
           f'transform="scale(1 {1 if blink else 0.001})">{lids}</g>')
     h += ('<g filter="url(#pg-drop)"><circle cx="160" cy="176" r="33" fill="#fff" fill-opacity=".08" stroke="url(#pg-gold)" stroke-width="7"/>'

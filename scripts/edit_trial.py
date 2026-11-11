@@ -25,6 +25,7 @@ t = time.time()
 sources = capture(research, out / "sources")
 print(json.dumps({"capture_s": round(time.time() - t), "pages": [(s["url"], s.get("ok"), len(s.get("highlights") or [])) for s in sources]}))
 narration = Path(sys.argv[1])
+FMT = sys.argv[2] if len(sys.argv) > 2 else "short"
 cues = lipsync(narration, out / "cues.json")
 texts = ["Anthropic just shipped a new model and the price is wild.", "Here is the page with the real numbers.",
          "Claude, OpenAI and Google are all in this race.", "So who should pay for it?", "Follow for one AI story a day."]
@@ -42,7 +43,7 @@ raw = {"scenes": [
     {"type": "logos", "first_line": 2, "last_line": 2, "brands": ["Claude", "OpenAI", "Google Gemini"], "screen_words": "The race"},
     {"type": "studio", "first_line": 3, "last_line": 3, "poses": [{"pose": "think", "word": "who"}], "screen_words": "Who should pay?", "punch": "pay"},
     {"type": "follow", "first_line": 4, "last_line": 4, "label": "One AI story a day"}]}
-edit = editor.build(raw, lines, min(22.0, tt + 1.5), "short", sources, out / "sources", cues, [], logo_tile_maker(out / "logos"))
+edit = editor.build(raw, lines, min(22.0, tt + 1.5), FMT, sources, out / "sources", cues, [], logo_tile_maker(out / "logos"))
 editor.save(edit, out / "edit-list.json")
 print(json.dumps({"notes": edit["notes"], "scenes": [s["type"] for s in edit["scenes"]]}))
 t = time.time()

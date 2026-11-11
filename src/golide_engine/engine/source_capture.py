@@ -79,6 +79,32 @@ FIND = r"""
 """
 
 
+# 2026-11-11 (owner): every source gets a zoom and a pointer even when no claim is found on it, and
+# its own photo becomes a block. The page's headline and its biggest picture near the top are located.
+MAIN = r"""
+() => {
+  const skip = (el) => !!el.closest('nav, header nav, footer, aside, [role=navigation]');
+  const vis = (r) => r.width > 40 && r.height > 16 && r.top + scrollY < 2400;
+  let headline = null;
+  for (const h of document.querySelectorAll('main h1, article h1, h1, main h2, article h2')) {
+    const r = h.getBoundingClientRect();
+    if (!skip(h) && vis(r) && (h.innerText || '').trim().length > 8) {
+      headline = [r.left + scrollX, r.top + scrollY, r.width, r.height]; break;
+    }
+  }
+  let image = null, best = 0;
+  for (const img of document.querySelectorAll('img, picture img, video[poster]')) {
+    const r = img.getBoundingClientRect();
+    const area = r.width * r.height;
+    if (!skip(img) && r.width >= 320 && r.height >= 180 && r.top + scrollY < 2000 && area > best) {
+      best = area; image = [r.left + scrollX, r.top + scrollY, r.width, r.height];
+    }
+  }
+  return { headline, image };
+}
+"""
+
+
 def sources(research: dict[str, Any]) -> list[dict[str, Any]]:
     """Each distinct source page with the claims taken from it."""
     pages: dict[str, dict[str, Any]] = {}
@@ -170,8 +196,26 @@ def capture(research: dict[str, Any], folder: Path) -> list[dict[str, Any]]:
                 page.screenshot(path=str(full))
                 page.set_viewport_size(VIEW)
                 spots = page.evaluate(FIND, phrases(page_info["claims"]))
+                main = page.evaluate(MAIN) or {}
+                photo = None
+                if main.get("image"):
+                    x, y, w, h = main["image"]
+                    photo = folder / f"{i:02d}-photo.png"
+                    try:
+                        from PIL import Image as _Image
+                        with _Image.open(full) as shot:
+                            k = 1.5
+                            box = (int(x * k), int(y * k), int((x + w) * k), int(min(y + h, height) * k))
+                            if box[3] - box[1] > 120:
+                                shot.crop(box).save(photo)
+                            else:
+                                photo = None
+                    except Exception:  # noqa: BLE001
+                        photo = None
                 entry.update(ok=True, top=top.name, full=full.name, full_height=int(height), scale=1.5,
-                             highlights=spots, faces_blurred=blur_faces(top) + blur_faces(full))
+                             highlights=spots, headline=main.get("headline"),
+                             photo=photo.name if photo else None,
+                             faces_blurred=blur_faces(top) + blur_faces(full) + (blur_faces(photo) if photo else 0))
             except Exception as error:  # noqa: BLE001
                 entry["error"] = str(error)[:200]
             finally:

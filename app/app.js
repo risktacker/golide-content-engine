@@ -606,6 +606,28 @@ function pickedPlatforms(scope) {
   return [...(scope?.querySelectorAll(".post-to input:checked") || [])].map((input) => input.value);
 }
 
+// 2026-11-11 (owner): he picks each video's style. Goli (the edit engine) is the default; the
+// illustration engine stays available as an option.
+// The choice comes up right after "Use AI voice" or after the recording uploads; the build starts on the tap.
+const VIDEO_STYLES = [["goli", "Goli"], ["illustration", "Illustration"]];
+let styleAsking = null;
+
+function askStyle(jobId) {
+  return new Promise((resolve) => {
+    const card = document.getElementById("job-" + jobId);
+    const row = document.createElement("div");
+    row.className = "style-ask";
+    row.innerHTML = '<span class="post-to-label">Video type</span>' + VIDEO_STYLES.map(([key, name]) =>
+      '<button class="action-button style-go' + (key === "goli" ? " primary" : "") + '" data-style="' + key + '">' + name + '</button>').join("") +
+      '<button class="action-button style-cancel">Cancel</button>';
+    styleAsking = jobId;
+    (card?.querySelector(".action-controls") || card || document.body).prepend(row);
+    row.querySelectorAll("button").forEach((button) => {
+      button.onclick = () => { styleAsking = null; row.remove(); resolve(button.dataset.style || null); };
+    });
+  });
+}
+
 function actionCard(job) {
   const script = job.script || "The engine is finishing the approved script.";
   const windowRange = RECORDING_WINDOWS[job.format === "long" ? "long" : "short"];
@@ -654,7 +676,7 @@ let scriptEditing = null;
 let studioNotice = "";
 
 function renderActionQueues() {
-  if (scriptEditing) return;
+  if (scriptEditing || styleAsking) return;
   const waiting = productionJobs.filter((job) => job.status === "waiting_owner_voice");
   const replaceable = productionJobs.filter((job) => job.owner_voice_media_ref && REPLACEABLE.has(job.status));
   const root = $("#action-queue");
@@ -682,16 +704,15 @@ function renderActionQueues() {
   // 2026-11-06 (owner); bound here 2026-11-10: it was bound before the cards were redrawn, so taps did nothing.: the AI voice reads this script instead of his recording. Two taps: it spends credits.
   $$(".ai-voice-button").forEach((button) => {
     button.onclick = async () => {
-      if (button.dataset.confirm !== "1") {
-        button.dataset.confirm = "1"; button.textContent = "Tap again: AI voice reads it";
-        setTimeout(() => { button.dataset.confirm = ""; button.textContent = "Use AI voice"; }, 3500);
-        return;
-      }
-      button.disabled = true; button.textContent = "Starting...";
+      if (styleAsking) return;
+      button.disabled = true;
+      const style = await askStyle(button.dataset.job);       // the tap on Goli / Illustration starts it (it spends credits)
+      if (!style) { button.disabled = false; return; }
+      button.textContent = "Starting...";
       const card = button.closest(".action-card");
       const picked = card?.querySelector(".post-to") ? pickedPlatforms(card) : null;
       await api("/api/production-jobs/" + encodeURIComponent(button.dataset.job) + "/ai-voice",
-        { method: "POST", body: JSON.stringify(picked ? { platforms: picked } : {}) });
+        { method: "POST", body: JSON.stringify(Object.assign({ style }, picked ? { platforms: picked } : {})) });
       await loadProductionJobs();
     };
   });
@@ -844,9 +865,12 @@ async function uploadVoice(jobId, file) {
   if (status) status.textContent = "Uploading " + file.name + "...";
   try {
     const mediaRef = await prepareUpload(file);
+    if (status) status.textContent = "Uploaded. Choose the video type:";
+    const style = await askStyle(jobId);
+    if (!style) { if (status) status.textContent = "Upload kept here; upload again when you are ready."; return; }
     await api("/api/production-jobs/" + encodeURIComponent(jobId) + "/voice", {
       method: "POST",
-      body: JSON.stringify(Object.assign({ media_ref: mediaRef },
+      body: JSON.stringify(Object.assign({ media_ref: mediaRef, style },
         card?.querySelector(".post-to") ? { platforms: pickedPlatforms(card) } : {})),
     });
     if (status) status.textContent = "Uploaded. Production has started; the video is ready in about 20 to 30 minutes.";

@@ -27,10 +27,11 @@
     "voice_id": "UgBBYS2sOqTuMpoF3BR0",
     "voice_name": "Mark - Natural Conversations",
     "model": "eleven_multilingual_v2",
+    "voice_settings_note": "2026-11-11 (owner): the read was flat, the same level whatever the feeling: lower stability and some style let Mark rise and fall with the words (same voice, same price).",
     "voice_settings": {
-      "stability": 0.5,
+      "stability": 0.34,
       "similarity_boost": 0.75,
-      "style": 0.0,
+      "style": 0.4,
       "use_speaker_boost": true
     },
     "monthly_character_limit": 115000,
