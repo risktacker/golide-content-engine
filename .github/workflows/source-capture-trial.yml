@@ -1,0 +1,57 @@
+name: Source capture trial
+
+# Production plan step 1 (2026-11-11): capture the real source pages of one video and save a
+# contact sheet for the owner's check on the branch source-capture-trial.
+on:
+  workflow_dispatch:
+    inputs:
+      production_id:
+        description: "Production id whose research to capture, e.g. golide-long-2026-11-10"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache/restore@v4
+        with:
+          path: productions
+          key: golide-production-checkpoint-${{ github.run_id }}
+          restore-keys: golide-production-checkpoint-
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          sudo apt-get update && sudo apt-get install -y libcairo2-dev pkg-config
+          python -m pip install -e '.[production,video]'
+          python -m playwright install --with-deps chromium
+      - name: Capture
+        env:
+          PID: ${{ inputs.production_id }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from golide_engine.engine.source_capture import capture, contact_sheet
+          pid = os.environ["PID"]
+          research = json.loads((Path("productions") / pid / "research.json").read_text())
+          out = Path("trial") / pid
+          log = capture(research, out)
+          contact_sheet(out, out / "contact-sheet.jpg")
+          print(json.dumps([{k: e.get(k) for k in ("url", "ok", "faces_blurred", "error")} | {"found": len(e.get("highlights", []))} for e in log], indent=1))
+          PY
+      - name: Save to the trial branch
+        env:
+          PID: ${{ inputs.production_id }}
+        run: |
+          git config user.name "golide-engine"; git config user.email "engine@golidee.com"
+          git checkout -B source-capture-trial
+          mkdir -p trial-results/$PID
+          cp trial/$PID/contact-sheet.jpg trial/$PID/sources.json trial-results/$PID/
+          for f in trial/$PID/*-top.png; do python -c "from PIL import Image; import sys; Image.open(sys.argv[1]).convert('RGB').save(sys.argv[2], quality=85)" "$f" "trial-results/$PID/$(basename ${f%.png}).jpg"; done
+          git add trial-results && git commit -m "Source capture trial: $PID" && git push -f origin source-capture-trial

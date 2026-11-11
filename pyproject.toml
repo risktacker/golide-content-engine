@@ -33,6 +33,7 @@ video = [
   "reportlab>=4,<5",
   "fast-simplification>=0.1,<1",
   "playwright>=1.40,<2",  # 2026-11-10: thumbnail logo tiles (Three.js in headless Chromium)
+  "opencv-python-headless>=4.8,<5",  # 2026-11-11: blur real faces in source captures
 ]
 test = []
 
