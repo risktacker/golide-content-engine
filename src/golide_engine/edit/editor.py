@@ -273,6 +273,8 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
             if kind not in ("words", None):
                 notes.append(f"scene {k}: {kind} without its data, shown as words")
             out.append(words_scene())
+    if fmt == "short":
+        out = _lower_host(out, cues)
     return {"format": fmt, "duration": duration, "scenes": out, "notes": notes,
             "chapters": [{"title": f"{getattr(m, 'number', '')} · {getattr(m, 'title', '')}".strip(" ·"),
                           "at": float(getattr(m, "start", 0))} for m in chapters]}
@@ -280,3 +282,45 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
 
 def save(edit: dict[str, Any], path: Path) -> None:
     path.write_text(json.dumps(edit, indent=2, default=str) + "\n", encoding="utf-8")
+
+
+# A Short shows the proof on top and keeps Goli at his desk below it for the whole run of cards
+# (owner 2026-11-11: no empty space above and below the cards). His pose follows each card.
+REACT = {"browser_shot": "point_up", "stat_counter": "shock", "comparison": "explain", "steps": "point_up",
+         "timeline": "explain", "quote_card": "think", "logo_tiles": "thumbs_up", "kinetic_title": "talk",
+         "chapter_card": "talk", "follow_cta": "wave"}
+
+
+def _lower_host(scenes: list[dict], cues: list[dict]) -> list[dict]:
+    corner = [s for s in scenes if s["type"] == "host" and s["data"].get("place") == "corner"]
+    main = [s for s in scenes if s not in corner]
+    out: list[dict] = []
+    run: list[dict] = []
+
+    def close():
+        if not run:
+            return
+        t0 = run[0]["start"]
+        t1 = run[-1]["start"] + run[-1]["duration"]
+        poses = []
+        for scene in run:
+            poses.append({"pose": REACT.get(scene["type"], "talk"), "at": round(scene["start"] - t0, 3)})
+            for c in corner:            # the editor's own reaction words for this card win
+                if abs(c["start"] - scene["start"]) < 0.6:
+                    for p in c["data"].get("poses", []):
+                        if p["at"] > 0.3:
+                            poses.append({"pose": p["pose"], "at": round(c["start"] - t0 + p["at"], 3)})
+        poses = sorted(poses, key=lambda p: p["at"])
+        out.append({"type": "host", "start": t0, "duration": t1 - t0, "data": {
+            "place": "lower", "cues": [{"start": round(c["start"] - t0, 3), "value": c["value"]}
+                                       for c in cues if t0 <= c["start"] < t1], "poses": poses}})
+        run.clear()
+
+    for scene in main:
+        if scene["type"] == "host":
+            close()
+        else:
+            run.append(scene)
+        out.append(scene)
+    close()
+    return sorted(out, key=lambda s: (s["start"], s["type"] == "host"))

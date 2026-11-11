@@ -29,8 +29,25 @@ LAYOUTS = {
 }
 
 
+LAYOUTS["lower"] = {"w": 1080, "h": 1920, "desk_y": 1752, "seat_x": 540, "size": 640, "top": 1250}
+
+
 def layout(fmt: str) -> dict:
-    return LAYOUTS["short" if fmt == "short" else "long"]
+    return LAYOUTS[fmt] if fmt in ("short", "lower") else LAYOUTS["long"]
+
+
+def lower_back(sid: str) -> str:
+    """The Short's lower third: a slice of the studio behind Goli while the proof plays on top."""
+    L = LAYOUTS["lower"]
+    W, H, top = L["w"], L["h"], L["top"]
+    slats = "".join(f'<rect x="{x}" y="{top}" width="58" height="{H - top}" fill="url(#st-slat)"/>'
+                    f'<rect x="{x + 58}" y="{top}" width="8" height="{H - top}" fill="#070A12"/>' for x in range(0, W, 66))
+    return (f'<svg id="{sid}-low" viewBox="0 0 {W} {H}" width="{W}" height="{H}" style="position:absolute;left:0;top:0">'
+            f'<rect x="0" y="{top}" width="{W}" height="{H - top}" fill="url(#st-wall)"/>{slats}'
+            f'<rect x="0" y="{top}" width="{W}" height="{H - top}" fill="url(#st-up)"/>'
+            f'<ellipse cx="{L["seat_x"]}" cy="{top + 260}" rx="330" ry="260" fill="url(#st-glowb)"/>'
+            f'<rect x="0" y="{top - 3}" width="{W}" height="4" fill="url(#st-edge)"/>'
+            f'<rect x="0" y="{top}" width="{W}" height="40" fill="#F2C14E" opacity=".10" filter="url(#st-blur)"/></svg>')
 
 DEFS = """<svg width="0" height="0" style="position:absolute"><defs>
 <linearGradient id="st-wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0A0E1A"/><stop offset=".7" stop-color="#121A30"/><stop offset="1" stop-color="#1A1408"/></linearGradient>
@@ -125,9 +142,10 @@ def front(sid: str, fmt: str = "long") -> str:
   <rect id="{sid}-edge" x="-20" y="{DESK_Y + 28}" width="{W + 40}" height="5" fill="url(#st-edge)"/>
   <rect x="-20" y="{DESK_Y + 33}" width="{W + 40}" height="60" fill="#F2C14E" opacity=".12" filter="url(#st-blur)"/>
   {"".join(f'<rect x="{x}" y="{DESK_Y + 52}" width="3" height="{H - DESK_Y}" fill="#F2C14E" opacity=".22"/>' for x in (W * .25, W * .5, W * .75))}
-  <rect x="{W / 2 - 230}" y="{DESK_Y + 120}" width="460" height="104" rx="52" fill="#0B0E16" stroke="#F2C14E" stroke-opacity=".55" stroke-width="3"/>
-  {logo_mark(W / 2 - 160, DESK_Y + 172, 64, "#F4F1EA", "#F2C14E")}
-  <text x="{W / 2 - 112}" y="{DESK_Y + 194}" font-family="Poppins" font-weight="900" font-size="60" letter-spacing="8" fill="#F4F1EA">GOLIDE</text>
+  <g transform="translate({W / 2} {DESK_Y + min(172, (H - DESK_Y) * .55)}) scale({min(1.0, (H - DESK_Y) / 300):.3f})">
+  <rect x="-230" y="-52" width="460" height="104" rx="52" fill="#0B0E16" stroke="#F2C14E" stroke-opacity=".55" stroke-width="3"/>
+  {logo_mark(-160, 0, 64, "#F4F1EA", "#F2C14E")}
+  <text x="-112" y="22" font-family="Poppins" font-weight="900" font-size="60" letter-spacing="8" fill="#F4F1EA">GOLIDE</text></g>
   
 </g>
 <g filter="url(#st-drop)" {near}>

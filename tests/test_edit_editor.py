@@ -40,6 +40,9 @@ class EditorTest(unittest.TestCase):
         edit = editor.build(raw, self.lines, 12.0, "short", self.sources, Path("/tmp"), [], [])
         types = [s["type"] for s in edit["scenes"]]
         self.assertEqual(types, ["host", "browser_shot", "host", "kinetic_title"])
+        lower = edit["scenes"][2]["data"]
+        self.assertEqual(lower["place"], "lower")      # Short: Goli stays below the cards, no corner pop-ins
+        self.assertEqual([p["pose"] for p in lower["poses"]][:1], ["point_up"])
         self.assertTrue(any("source 7" in n for n in edit["notes"]))
         host = edit["scenes"][0]["data"]
         self.assertEqual(host["place"], "studio")
@@ -48,7 +51,8 @@ class EditorTest(unittest.TestCase):
         self.assertAlmostEqual(shot["data"]["highlights"][0]["at"], max(0.9, self.lines[1].words[2].start - shot["start"]), 2)  # card lands first
         last = edit["scenes"][-1]
         self.assertAlmostEqual(last["start"] + last["duration"], 12.0)
-        starts = [s["start"] for s in edit["scenes"] if s["type"] != "host" or s["data"]["place"] != "corner"]
+        self.assertAlmostEqual(edit["scenes"][2]["duration"], 12.0 - edit["scenes"][1]["start"])
+        starts = [s["start"] for s in edit["scenes"] if s["type"] != "host" or s["data"]["place"] == "studio"]
         self.assertEqual(starts, sorted(starts))
 
     def test_request_marks(self):
