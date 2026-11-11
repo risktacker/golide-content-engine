@@ -77,25 +77,8 @@ Full transcripts are in this folder as `<video id>.txt`.
 
 ---
 
-## 4. AI Telly-style F-15EX (4XlC6tqh92U), photoreal 3D machine explainer
-
-**Scenes:**
-- **0:00–0:05:** fast 3D cutaways (Vulcan cannon, ammo drum, missiles); frosted-glass or X-ray skin over brushed steel, chrome and bronze internals; volumetric flare; orbital and macro moves.
-- **0:06–0:15:** a jet in a dark hangar; glowing structure lines reveal spars and ribs; 3D tracked HUD labels with leader lines.
-- **0:16–0:39:** cockpit inside and out over a real-looking coast; the pilot and WSO; a targeting-pod laser; impact; a thermal HUD view.
-- **0:40–1:23:** history (F-4, MiG-21); gloved hands placing a J-35 on a map table; carriers, radar domes, datalink lines.
-- **1:24–1:49:** X-ray gun firing, radar cross-section, lock-on, afterburners, 6 fuel tanks highlighted in yellow and cyan.
-- **1:50–1:54:** Blender viewport behind the scenes.
-- **1:55–3:24:** fuselage sections with tracked labels; red force vectors bending the spars in a 9 G turn; wind-tunnel particles; an exploded honeycomb panel.
-- **3:25 onward:** cockpit and MFDs, jamming sphere, LANTIRN pods with thermal picture-in-picture, missile release, a full Vulcan mechanism, the F110 engine in 4 labelled stages (blue cold air to red combustion), fly-by-wire pulses to glowing control surfaces, history and payload outro.
-
-**System:**
-- **Palette:** slate grey, navy, sky blue, steel; accents neon cyan, green, safety orange.
-- **Type:** uppercase geometric sans with a mono HUD font.
-- **Devices:** X-ray cutaways, 3D-tracked labels, datalink beams and rings.
-- **Cuts:** 18–24 a minute.
-- **Premium because:** physically accurate rigs (ammo belts, compressor blades), volumetric light and PBR wear, and every part glows the instant it is named.
-- **Tools:** Blender (Cycles, geometry nodes), Unreal for terrain, After Effects for HUD.
+## 4. AI Telly-style F-15EX (4XlC6tqh92U), parked, last priority (owner 2026-11-11)
+Photoreal Blender machine explainer: X-ray cutaways, exploded parts, 3D-tracked labels, every part glows as it is named, 18–24 cuts a minute. The full transcript is kept in `4XlC6tqh92U.txt`; the detailed breakdown was cut to save space.
 
 ---
 
