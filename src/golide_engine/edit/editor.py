@@ -353,8 +353,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
                 notes.append(f"scene {k}: {kind} without its data, shown as words")
             out.append(words_scene())
     out = _pace(out, lines, fmt)
-    if fmt == "short":
-        out = _lower_host(out, cues)
+    out = _lower_host(out, cues, fmt)
     return {"format": fmt, "duration": duration, "scenes": out, "notes": notes, "captions": captions(lines, fmt),
             "chapters": [{"title": f"{getattr(m, 'number', '')} · {getattr(m, 'title', '')}".strip(" ·"),
                           "at": float(getattr(m, "start", 0))} for m in chapters]}
@@ -371,7 +370,7 @@ REACT = {"browser_shot": "point_up", "stat_counter": "shock", "comparison": "exp
          "chapter_card": "talk", "follow_cta": "wave"}
 
 
-def _lower_host(scenes: list[dict], cues: list[dict]) -> list[dict]:
+def _lower_host(scenes: list[dict], cues: list[dict], fmt: str = "short") -> list[dict]:
     corner = [s for s in scenes if s["type"] == "host" and s["data"].get("place") == "corner"]
     main = [s for s in scenes if s not in corner]
     out: list[dict] = []
@@ -393,7 +392,7 @@ def _lower_host(scenes: list[dict], cues: list[dict]) -> list[dict]:
                             poses.append({"pose": p["pose"], "at": round(c["start"] - t0 + p["at"], 3)})
         poses = sorted(poses, key=lambda p: p["at"])
         # 2026-11-11 (owner): not always at the desk: every other run of cards he stands beside them
-        place = "lower" if runs[0] % 2 == 0 else "side"
+        place = ("lower", "side")[runs[0] % 2] if fmt == "short" else ("side", "corner")[runs[0] % 2]
         runs[0] += 1
         out.append({"type": "host", "start": t0, "duration": t1 - t0, "data": {
             "place": place, "cues": [{"start": round(c["start"] - t0, 3), "value": c["value"]}

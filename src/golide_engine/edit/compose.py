@@ -753,7 +753,8 @@ class Composer:
         for i, c in enumerate(edit.get("captions") or []):
             spans = "".join(f'<span id="c{i}w{j}" class="{"key" if j in c.get("keys", []) else ""}">{_e(w["text"])}</span>'
                             for j, w in enumerate(c["words"]))
-            caps += f'<div class="cap" id="c{i}" style="top:{top}px;font-size:{size}px">{spans}</div>'
+            side = "" if self.fmt == "short" else "left:120px;right:600px;"     # long: clear of Goli on the right
+            caps += f'<div class="cap" id="c{i}" style="top:{top}px;font-size:{size}px;{side}">{spans}</div>'
             self.tw(f'tl.set("#c{i}",{{opacity:1}},{float(c["start"]):.3f});tl.set("#c{i}",{{opacity:0}},{float(c["end"]):.3f});')
             for j, w in enumerate(c["words"]):
                 at = max(float(c["start"]), float(w["at"]))

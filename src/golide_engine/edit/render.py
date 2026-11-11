@@ -180,7 +180,10 @@ def render(edit: dict[str, Any], folder: Path, narration: Path, output: Path, ou
              "[v][s][b]amix=inputs=3:duration=first:normalize=0,alimiter=limit=0.89:level=0:attack=2:release=60[a]")
     output.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(silent), "-i", str(narration), "-i", str(sfx),
-                    "-i", str(bed), "-filter_complex", audio, "-map", "0:v", "-map", "[a]", "-c:v", "copy",
+                    "-i", str(bed), "-filter_complex", audio, "-map", "0:v", "-map", "[a]",
+                    # 2026-11-11 (owner): an 85 MB Short is too big: standard H.264 near YouTube's own rate
+                    "-c:v", "libx264", "-preset", "veryfast", "-crf", "21", "-maxrate", "12M", "-bufsize", "24M",
+                    "-pix_fmt", "yuv420p",
                     "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-t", f"{duration:.3f}", "-movflags", "+faststart",
                     str(output)], check=True)
     # the opening frame doubles as the Short's thumbnail card (as the vector renderer's cover did)
