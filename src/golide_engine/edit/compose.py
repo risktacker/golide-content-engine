@@ -86,6 +86,11 @@ html,body{margin:0;background:#07080B}
  box-shadow:0 30px 80px rgba(0,0,0,.5)}
 .studio .dotp{position:absolute;width:6px;height:6px;border-radius:50%;background:#E8C268;box-shadow:0 0 12px #E8C268}
 #brand{position:absolute;inset:0;z-index:45;pointer-events:none}
+#caps{position:absolute;inset:0;z-index:46;pointer-events:none}
+.cap{position:absolute;left:60px;right:60px;text-align:center;opacity:0;font:800 60px/1.16 Poppins;color:#F4F1EA;
+ text-shadow:0 4px 18px rgba(0,0,0,.85),0 0 2px #000}
+.cap span{display:inline-block;margin:0 .14em;opacity:.38}
+.cap span.key{color:#E8C268}
 #brand .logo{position:absolute;left:44px;top:34px;display:flex;align-items:center;gap:12px;font:900 30px Poppins;color:#F4F1EA;
  letter-spacing:.06em;opacity:.92}
 #brand .logo i{width:40px;height:40px;border-radius:50%;background:linear-gradient(#FFE7A3,#B07D1C);color:#0E1A4A;
@@ -112,7 +117,7 @@ class Composer:
 
     def __init__(self, fmt: str = "long", outfit: str = "royal"):
         # a Short splits the frame: the proof on top (centred here), Goli at his desk below (LOWER_TOP down)
-        self.cy = SIZES[fmt][1] // 2 if fmt == "long" else 650
+        self.cy = SIZES[fmt][1] // 2 if fmt == "long" else 580
         self.outfit = outfit
         self.outfits: set[str] = set()
         self.fmt = fmt
@@ -172,14 +177,21 @@ class Composer:
         browser bar) or "fade" (no bar, edges melt into the background)."""
         sid = self._id("page")
         edge = data.get("edge", "glass")
-        spots = (data.get("highlights") or [])[:2]
+        spots = [dict(sp) for sp in (data.get("highlights") or [])[:2]]
+        if not spots and data.get("headline"):
+            # 2026-11-11 (owner): no screenshot without a zoom and a mark: the headline is the fact
+            spots = [{"rect": data["headline"], "at": 0.9, "sweep": True}]
         callout = next((sp for sp in spots if sp.get("label")), None)
+        zoomed = bool(data.get("zoomed"))           # the second, closer beat of the same page
+        if zoomed:
+            for sp in spots:
+                sp["at"] = min(float(sp.get("at", 0.5)), 0.45)
         bar = 44 if edge == "glass" else 0
         if self.fmt == "long":
             fw = 1180 if callout else 1320
             fx = 130 if callout else (self.w - fw) // 2
         else:
-            fw, fx = 1000, 40
+            fw, fx = 940, 70                          # inside the Short's safe margins
         page_w = float(data.get("page_width", 1440))
         k = fw / page_w                                   # css px of the page -> card px
         with Image.open(data["image"]) as im:
@@ -193,7 +205,7 @@ class Composer:
         for j, spot in enumerate(spots):
             x, y, w, h = spot["rect"]
             hx, hy, hw, hh = x * k - 6, y * k - 4, w * k + 12, h * k + 8
-            if dark:      # a highlighter vanishes on a dark page: a gold underline stroke instead
+            if dark or spot.get("sweep"):   # dark page or a headline: a gold underline sweep
                 marks += (f'<div class="hl dark" id="{sid}-hl{j}" style="left:{hx:.0f}px;top:{hy + hh * 0.8:.0f}px;'
                           f'width:0px;height:{max(4, hh * 0.09):.0f}px"></div>')
             else:
@@ -202,6 +214,19 @@ class Composer:
             at = t0 + float(spot.get("at", 1.2 + j * 1.0))
             hl_tweens.append(f'tl.to("#{sid}-hl{j}",{{width:{hw:.0f},duration:.35,ease:"none"}},{at:.3f});')
             self.cue("click", at)
+            if j == 0:      # a pointer glides in and clicks on the fact
+                px, py = hx + min(hw, 220) * 0.5, hy + hh * 0.75
+                marks += (f'<div id="{sid}-cur" style="position:absolute;left:{px:.0f}px;top:{py:.0f}px;width:46px;height:46px;'
+                          f'opacity:0;z-index:5"><svg viewBox="0 0 24 24" width="46" height="46"><path d="M4 2 L4 19 L8.5 15 '
+                          f'L11.5 22 L14.5 20.6 L11.6 13.8 L18 13.8 Z" fill="#fff" stroke="#111" stroke-width="1.6" '
+                          f'stroke-linejoin="round"/></svg></div><div id="{sid}-rip" style="position:absolute;left:{px - 30:.0f}px;'
+                          f'top:{py - 30:.0f}px;width:60px;height:60px;border-radius:50%;border:4px solid #E8C268;opacity:0"></div>')
+                hl_tweens.append(f'tl.fromTo("#{sid}-cur",{{x:160,y:120,opacity:0}},{{x:0,y:0,opacity:1,duration:.45,'
+                                 f'ease:"power2.out"}},{max(t0 + 0.05, at - 0.5):.3f});')
+                hl_tweens.append(f'tl.fromTo("#{sid}-cur",{{scale:1}},{{scale:.8,duration:.08,yoyo:true,repeat:1,'
+                                 f'immediateRender:false}},{at - 0.05:.3f});')
+                hl_tweens.append(f'tl.fromTo("#{sid}-rip",{{scale:.3,opacity:1}},{{scale:1.8,opacity:0,duration:.45,'
+                                 f'ease:"power2.out"}},{at - 0.02:.3f});')
             if spot.get("ring"):
                 r = max(hw, hh) * 0.85
                 marks += (f'<div class="ring" id="{sid}-ring{j}" style="left:{hx + hw / 2 - r:.0f}px;'
@@ -236,10 +261,12 @@ class Composer:
                       f'<div style="font:900 84px/1 Poppins;color:#E8C268">{_e(callout["label"])}</div>'
                       f'<div class="label" style="margin-top:14px;font-size:30px">{_e(callout.get("sub", ""))}</div></div>')
         self.scene(sid, t0, dur, inner)
-        # the card grows in from small (house rule: sources never slam in full screen)
-        self.tw(f'tl.fromTo("#{sid}-f",{{scale:.62,y:70,opacity:0}},{{scale:1,y:0,opacity:1,duration:.75,'
-                f'ease:"back.out(1.3)"}},{t0:.3f});')
-        self.cue("whoosh", t0)
+        if zoomed:      # a hard cut to the closer shot
+            self.cue("click", t0)
+        else:           # the card grows in from small (house rule: sources never slam in full screen)
+            self.tw(f'tl.fromTo("#{sid}-f",{{scale:.62,y:70,opacity:0}},{{scale:1,y:0,opacity:1,duration:.6,'
+                    f'ease:"back.out(1.3)"}},{t0:.3f});')
+            self.cue("whoosh", t0)
         if domain:
             self.tw(f'tl.fromTo("#{sid}-src",{{y:20,opacity:0}},{{y:0,opacity:1,duration:.4,ease:"power3.out"}},{t0 + 0.5:.3f});')
         if spots:   # camera zooms INSIDE the card to the facts, page edges never show
@@ -250,16 +277,47 @@ class Composer:
             z = max(1.0, min(float(data.get("zoom", 1.9)), 0.75 * fw / max(1.0, x1 - x0)))
             dx = min(max((fw / 2 - ox), -(fw - ox) * (z - 1)), ox * (z - 1))
             dy = min(max((ph / 2 - oy), ph - oy - (img_h - oy) * z), oy * (z - 1))
-            at = t0 + float(spots[0].get("at", 1.2)) - 0.55
-            self.tw(f'tl.to("#{sid}-pg",{{x:{dx:.0f},y:{dy:.0f},scale:{z:.3f},transformOrigin:"{ox:.0f}px {oy:.0f}px",'
-                    f'duration:1.1,ease:"power2.inOut"}},{at:.3f});')
+            if zoomed:
+                z2 = z * 1.08
+                dx2 = min(max((fw / 2 - ox), -(fw - ox) * (z2 - 1)), ox * (z2 - 1))
+                dy2 = min(max((ph / 2 - oy), ph - oy - (img_h - oy) * z2), oy * (z2 - 1))
+                self.tw(f'tl.fromTo("#{sid}-pg",{{x:{dx:.0f},y:{dy:.0f},scale:{z:.3f},transformOrigin:"{ox:.0f}px {oy:.0f}px"}},'
+                        f'{{x:{dx2:.0f},y:{dy2:.0f},scale:{z2:.3f},duration:{dur:.2f},ease:"none"}},{t0:.3f});')
+            else:
+                at = max(t0 + 0.45, t0 + float(spots[0].get("at", 1.2)) - 0.5)
+                self.tw(f'tl.to("#{sid}-pg",{{x:{dx:.0f},y:{dy:.0f},scale:{z:.3f},transformOrigin:"{ox:.0f}px {oy:.0f}px",'
+                        f'duration:.8,ease:"power2.inOut"}},{at:.3f});')
         if callout:
             at = t0 + float(callout.get("at", 1.2)) + 0.35
             self.tw(f'tl.fromTo("#{sid}-co",{{x:60,opacity:0}},{{x:0,opacity:1,duration:.55,ease:"back.out(1.5)"}},{at:.3f});')
             self.cue("pop", at)
-        self.drift(sid, t0, dur, 0.008)
+        if self.fmt == "long":
+            self.drift(sid, t0, dur, 0.006)
         for js in hl_tweens:
             self.tw(js)
+
+    def photo(self, t0, dur, data, how="rise"):
+        """The source's own picture as a block: framed, slow Ken Burns push, source tag."""
+        sid = self._id("photo")
+        with Image.open(data["image"]) as im:
+            ratio = im.height / im.width
+        fw = 940 if self.fmt == "short" else 1300
+        fh = min(fw * ratio, 760 if self.fmt == "short" else 760)
+        fx, fy = (self.w - fw) / 2, (self.cy - fh / 2 - 20)
+        img = self.asset(data["image"])
+        domain = re.sub(r"^https?://(www\.)?", "", str(data.get("url", ""))).split("/")[0]
+        inner = (f'<div class="frame" id="{sid}-f" style="left:{fx:.0f}px;top:{fy:.0f}px;width:{fw}px;height:{fh:.0f}px;'
+                 f'border:2px solid rgba(232,194,104,.6);box-shadow:0 30px 90px rgba(0,0,0,.7),0 0 60px rgba(232,194,104,.2)">'
+                 f'<img id="{sid}-i" src="{img}" style="position:absolute;left:0;top:50%;width:100%;transform-origin:50% 50%"></div>')
+        if domain:
+            inner += (f'<div class="chip" id="{sid}-src" style="position:absolute;left:{fx:.0f}px;top:{fy + fh + 24:.0f}px;'
+                      f'font-size:24px">Source · {_e(domain)}</div>')
+        self.scene(sid, t0, dur, inner)
+        self.tw(f'tl.fromTo("#{sid}-f",{{scale:.7,rotation:-3,opacity:0}},{{scale:1,rotation:0,opacity:1,duration:.5,'
+                f'ease:"back.out(1.5)"}},{t0:.3f});')
+        self.tw(f'tl.fromTo("#{sid}-i",{{yPercent:-50,scale:1.04,x:0}},{{yPercent:-50,scale:1.16,x:-20,duration:{dur:.2f},'
+                f'ease:"none"}},{t0:.3f});')
+        self.cue("whoosh", t0)
 
     def stat_counter(self, t0, dur, data, how="whip"):
         """A real number counts up, punches and sits on a label (impact sound)."""
@@ -478,12 +536,16 @@ class Composer:
         cues = data.get("cues") or []
         outfit = data.get("outfit") or self.outfit
         self.outfits.add(outfit)
+        side = 560 if self.fmt == "short" else 600
         size = {"full": 1000, "left": 860, "right": 860, "corner": 420, "studio": studio.layout(self.fmt)["size"],
-                "lower": studio.layout("lower")["size"]}[place]
+                "lower": studio.layout("lower")["size"], "side": side}[place]
         w = size * mascot.VIEW[0] / mascot.VIEW[1]
         x = {"full": self.w * 0.27 - w / 2, "left": 40, "right": self.w - w - 40, "corner": self.w - w - 50,
-             "studio": studio.layout(self.fmt)["seat_x"] - w / 2, "lower": studio.layout("lower")["seat_x"] - w / 2}[place]
+             "studio": studio.layout(self.fmt)["seat_x"] - w / 2, "lower": studio.layout("lower")["seat_x"] - w / 2,
+             "side": 10 if self.fmt == "short" else self.w - w - 30}[place]
         y = self.h - size - (30 if place != "corner" else 20)
+        if place == "side":   # standing beside the block; on a Short his feet stay above YouTube's caption area
+            y = (1700 if self.fmt == "short" else self.h - 20) - size
         if place in ("studio", "lower"):      # seated: desk top at his waist
             y = studio.layout(self.fmt if place == "studio" else "lower")["desk_y"] - 430 * size / 540
         layers = ""
@@ -520,6 +582,9 @@ class Composer:
                       f'{panels}{dots}'
                       f'<div class="disc" style="left:{cxp - w * .62:.0f}px;top:{y + size * .9:.0f}px;width:{w * 1.24:.0f}px;'
                       f'height:{size * .13:.0f}px"></div></div>')
+        if place == "side":
+            bubble = (f'<div class="disc" style="left:{x + w * .12:.0f}px;top:{y + size * .93:.0f}px;width:{w * .76:.0f}px;'
+                      f'height:{size * .09:.0f}px"></div>')
         if place == "corner":
             bubble = (f'<div class="card" id="{sid}-bub" style="position:absolute;left:{x - 24:.0f}px;top:{y + size * .14:.0f}px;'
                       f'width:{w + 48:.0f}px;height:{size * .88:.0f}px;border-radius:36px;background:radial-gradient('
@@ -539,7 +604,7 @@ class Composer:
         inner = (f'{bubble}{title}<div id="{sid}-ch" style="position:absolute;left:{x:.0f}px;top:{y:.0f}px;width:{w:.0f}px;'
                  f'height:{size}px">{layers}</div>{front}')
         self.parts.append(f'<section id="{sid}" class="scene clip" data-start="{t0:.3f}" data-duration="{dur:.3f}" '
-                          f'style="z-index:{40 if place in ("corner", "lower") else 1}"><div class="stage"><div class="cam">{inner}</div></div></section>')
+                          f'style="z-index:{40 if place in ("corner", "lower", "side") else 1}"><div class="stage"><div class="cam">{inner}</div></div></section>')
         # entrance: he pops up from below the frame (in the studio he is already seated; the set eases in)
         if place == "lower":
             self.tw(f'tl.fromTo("#{sid}-ch",{{y:{size * 0.4:.0f}}},{{y:0,duration:.5,ease:"back.out(1.4)"}},{t0:.3f});')
@@ -549,6 +614,9 @@ class Composer:
             # the set has its own neon GOLIDE sign: the corner mark steps aside while we are in the studio
             self.tw(f'tl.to("#brand .logo",{{opacity:0,duration:.2}},{t0:.3f});tl.to("#brand .logo",{{opacity:.92,duration:.3}},{t0 + dur:.3f});')
             self.tw(f'tl.fromTo("#{sid} .cam",{{scale:1.06}},{{scale:1.0,duration:{min(2.0, dur):.2f},ease:"power2.out"}},{t0:.3f});')
+        elif place == "side":
+            self.tw(f'tl.fromTo("#{sid}-ch",{{x:{-w if self.fmt == "short" else w:.0f},opacity:0}},{{x:0,opacity:1,duration:.45,'
+                    f'ease:"back.out(1.5)"}},{t0:.3f});')
         elif place != "lower":
             self.tw(f'tl.fromTo("#{sid}-ch",{{y:{size * 0.5:.0f},opacity:0}},{{y:0,opacity:1,duration:.55,ease:"back.out(1.5)"}},{t0:.3f});')
         if place == "corner":
@@ -586,6 +654,19 @@ class Composer:
                 self.tw(f'tl.set("#{sid} [id$=-mX]",{{opacity:0}},{at:.3f});')
             self.tw(f'tl.set("#{sid} [id$=-m{v}]",{{opacity:1}},{at:.3f});')
             last = v
+        # eyes alive (owner 2026-11-11): small glances on a fixed pattern, up to what he points at,
+        # back to the viewer; never static
+        looks = {"point_up": (1, -7), "point_left": (-8, -2), "point": (8, -3), "think": (-5, -7), "shock": (0, -1)}
+        glance = [(4, 1), (-4, 2), (0, 0), (5, -2), (-3, -1), (0, 0)]
+        marks_ = sorted([(t0 + float(p["at"]), looks.get(p["pose"])) for p in poses if looks.get(p["pose"])])
+        at, i = t0 + 0.7, 0
+        while at < t0 + dur - 0.2:
+            gx, gy = glance[i % len(glance)]
+            self.tw(f'tl.to("#{sid} [id$=-eyes]",{{x:{gx},y:{gy},duration:.12,ease:"power2.out"}},{at:.3f});')
+            at += (1.4, 1.9, 1.1, 2.3)[i % 4]
+            i += 1
+        for at_, (gx, gy) in marks_:
+            self.tw(f'tl.to("#{sid} [id$=-eyes]",{{x:{gx},y:{gy},duration:.1,ease:"power2.out"}},{at_ + 0.05:.3f});')
         # blinks every 2.8 to 4.2 s (fixed pattern, so renders repeat exactly)
         at, gaps, i = t0 + 1.2, (3.1, 2.8, 4.2, 3.5), 0
         while at < t0 + dur - 0.3:
@@ -623,6 +704,26 @@ class Composer:
         (out / "media").mkdir(exist_ok=True)
         for name, src in self.files.items():
             shutil.copy(src, out / name)
+        # captions (owner 2026-11-11: as in the illustration videos): the spoken words, each lighting up as
+        # it is said, key terms in gold. Shorts: a band between the proof and Goli; long: low centre.
+        caps = ""
+        top = 1062 if self.fmt == "short" else self.h - 150
+        size = 60 if self.fmt == "short" else 50
+        for i, c in enumerate(edit.get("captions") or []):
+            spans = "".join(f'<span id="c{i}w{j}" class="{"key" if j in c.get("keys", []) else ""}">{_e(w["text"])}</span>'
+                            for j, w in enumerate(c["words"]))
+            caps += f'<div class="cap" id="c{i}" style="top:{top}px;font-size:{size}px">{spans}</div>'
+            self.tw(f'tl.set("#c{i}",{{opacity:1}},{float(c["start"]):.3f});tl.set("#c{i}",{{opacity:0}},{float(c["end"]):.3f});')
+            for j, w in enumerate(c["words"]):
+                at = max(float(c["start"]), float(w["at"]))
+                self.tw(f'tl.fromTo("#c{i}w{j}",{{opacity:.38,scale:1}},{{opacity:1,scale:1.12,duration:.08,immediateRender:false}},{at:.3f});'
+                        f'tl.to("#c{i}w{j}",{{scale:1,duration:.12}},{at + 0.08:.3f});')
+        caps = f'<div id="caps">{caps}</div>' if caps else ""
+        if caps and self.fmt == "short":   # in the studio the captions sit on the desk front, clear of Goli's face
+            for sc in edit["scenes"]:
+                if sc["type"] == "host" and (sc.get("data") or {}).get("place") == "studio":
+                    a, b = float(sc["start"]), float(sc["start"]) + float(sc["duration"])
+                    self.tw(f'tl.set("#caps",{{y:530}},{a:.3f});tl.set("#caps",{{y:0}},{b:.3f});')
         chapters = edit.get("chapters") or []
         from .mascot import logo_mark
 
@@ -644,6 +745,7 @@ class Composer:
 <div class="bg" id="bg"></div><div class="glow" id="glow"></div>
 {''.join(self.parts)}
 {audio}
+{caps}
 {brand}
 <div class="finish"></div><div class="grain"></div>
 </div>

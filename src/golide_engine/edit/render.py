@@ -66,9 +66,42 @@ def lipsync(narration: Path, out: Path) -> list[dict[str, Any]]:
         # Rhubarb missing on this machine: open the mouth with the loudness of the voice instead.
         print("::warning title=Lip sync::Rhubarb not found, mouth follows loudness")
         cues = _loudness_cues(wav)
+    cues = gate(cues, wav)
     wav.unlink(missing_ok=True)
     out.write_text(json.dumps(cues) + "\n", encoding="utf-8")
     return cues
+
+
+def _envelope(wav: Path, step: float) -> tuple[np.ndarray, float]:
+    with wave.open(str(wav)) as w:
+        rate = w.getframerate()
+        x = np.frombuffer(w.readframes(w.getnframes()), dtype="<i2").astype(np.float32) / 32768
+    hop = max(1, int(rate * step))
+    rms = np.array([np.sqrt(np.mean(x[i:i + hop] ** 2)) for i in range(0, max(1, len(x) - hop), hop)])
+    return rms, float(np.percentile(rms, 95)) or 1.0
+
+
+def gate(cues: list[dict[str, Any]], wav: Path, step: float = 1 / 30) -> list[dict[str, Any]]:
+    """2026-11-11 (owner): the mouth must be shut when nothing is said and moving when something is.
+    Frame by frame, silence closes the mouth (X) and sound never shows a closed rest mouth."""
+    if not cues:
+        return cues
+    rms, top = _envelope(wav, step)
+    quiet = top * 0.09
+    out, k, last = [], 0, None
+    for f, level in enumerate(rms):
+        t = f * step
+        while k + 1 < len(cues) and cues[k + 1]["start"] <= t:
+            k += 1
+        shape = cues[k]["value"] if cues[k]["start"] <= t else "X"
+        if level < quiet:
+            shape = "X"
+        elif shape == "X":
+            shape = "B" if level < top * 0.35 else "C"
+        if shape != last:
+            out.append({"start": round(t, 3), "value": shape})
+            last = shape
+    return out
 
 
 def _loudness_cues(wav: Path, step: float = 1 / 12) -> list[dict[str, Any]]:
@@ -139,11 +172,12 @@ def render(edit: dict[str, Any], folder: Path, narration: Path, output: Path, ou
     else:
         bed = render_ambient(duration, folder / "bed.wav", seed_text=str(edit.get("title", "")), level_db=level)
     mix = AUDIO_MIX.get(fmt, AUDIO_MIX["short"])
-    audio = ("[1:a]loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000,asplit=2[v][key];"
+    # 2026-11-11 (owner): the voice sat too low: it leads now (-14 LUFS) and the music sits further under it
+    audio = ("[1:a]loudnorm=I=-14:TP=-1.2:LRA=14,aresample=48000,asplit=2[v][key];"
              f"[2:a]aresample=48000,volume={mix['sfx']}[s];"
-             "[3:a]aresample=48000[b0];"
+             "[3:a]aresample=48000,volume=0.7[b0];"
              f"[b0][key]sidechaincompress={TRACK_DUCK if track else mix['duck']}[b];"
-             "[v][s][b]amix=inputs=3:duration=first:normalize=0,alimiter=limit=0.79:level=0:attack=2:release=60[a]")
+             "[v][s][b]amix=inputs=3:duration=first:normalize=0,alimiter=limit=0.89:level=0:attack=2:release=60[a]")
     output.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(silent), "-i", str(narration), "-i", str(sfx),
                     "-i", str(bed), "-filter_complex", audio, "-map", "0:v", "-map", "[a]", "-c:v", "copy",

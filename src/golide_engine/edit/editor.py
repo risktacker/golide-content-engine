@@ -10,6 +10,7 @@ checks that every reference it was given is real.
 from __future__ import annotations
 
 import json
+import math
 import re
 from pathlib import Path
 from typing import Any
@@ -224,7 +225,8 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
             out.append({"type": "browser_shot", "start": t0, "duration": dur, "data": {
                 "image": capture_dir / page["top"],
                 "url": page.get("url", ""), "edge": s.get("edge") or "glass",
-                "page_width": 1440, "highlights": [h for h in highlights if h]}})
+                "page_width": 1440, "highlights": [h for h in highlights if h], "headline": page.get("headline"),
+                "photo": str(capture_dir / page["photo"]) if page.get("photo") else None}})
             if s.get("goli_corner") and dur >= 1.8:
                 out.append({"type": "host", "start": t0 + 0.35, "duration": dur - 0.35, "data": {
                     "place": "corner", "cues": _cues_between(cues, t0 + 0.35, t1),
@@ -273,9 +275,10 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
             if kind not in ("words", None):
                 notes.append(f"scene {k}: {kind} without its data, shown as words")
             out.append(words_scene())
+    out = _pace(out, lines, fmt)
     if fmt == "short":
         out = _lower_host(out, cues)
-    return {"format": fmt, "duration": duration, "scenes": out, "notes": notes,
+    return {"format": fmt, "duration": duration, "scenes": out, "notes": notes, "captions": captions(lines, fmt),
             "chapters": [{"title": f"{getattr(m, 'number', '')} · {getattr(m, 'title', '')}".strip(" ·"),
                           "at": float(getattr(m, "start", 0))} for m in chapters]}
 
@@ -296,6 +299,7 @@ def _lower_host(scenes: list[dict], cues: list[dict]) -> list[dict]:
     main = [s for s in scenes if s not in corner]
     out: list[dict] = []
     run: list[dict] = []
+    runs = [0]
 
     def close():
         if not run:
@@ -311,16 +315,127 @@ def _lower_host(scenes: list[dict], cues: list[dict]) -> list[dict]:
                         if p["at"] > 0.3:
                             poses.append({"pose": p["pose"], "at": round(c["start"] - t0 + p["at"], 3)})
         poses = sorted(poses, key=lambda p: p["at"])
+        # 2026-11-11 (owner): not always at the desk: every other run of cards he stands beside them
+        place = "lower" if runs[0] % 2 == 0 else "side"
+        runs[0] += 1
         out.append({"type": "host", "start": t0, "duration": t1 - t0, "data": {
-            "place": "lower", "cues": [{"start": round(c["start"] - t0, 3), "value": c["value"]}
+            "place": place, "cues": [{"start": round(c["start"] - t0, 3), "value": c["value"]}
                                        for c in cues if t0 <= c["start"] < t1], "poses": poses}})
         run.clear()
 
     for scene in main:
-        if scene["type"] == "host":
+        if scene["type"] == "host" or (run and scene["type"] == "follow_cta"):
             close()
         else:
             run.append(scene)
         out.append(scene)
     close()
     return sorted(out, key=lambda s: (s["start"], s["type"] == "host"))
+
+
+def captions(lines: list[Any], fmt: str) -> list[dict[str, Any]]:
+    """Spoken-word captions, chunked as the illustration engine does (short: up to 4 words, long: 7)."""
+    from ..vector.align import caption_chunks
+
+    out = []
+    for c in caption_chunks(lines, max_words=4 if fmt == "short" else 7):
+        if not c.words:
+            continue
+        out.append({"start": round(float(c.words[0].start) - 0.05, 3), "end": round(float(c.end), 3),
+                    "words": [{"text": w.text, "at": round(float(w.start), 3)} for w in c.words],
+                    "keys": sorted(int(k) for k in c.keys)})
+    return out
+
+
+# 2026-11-11 (owner): "too slow": in the niche the picture changes every second or two. A stretch longer
+# than a beat is cut at word boundaries into beats that each show something new.
+BEAT = {"short": 2.2, "long": 4.0}
+STUDIO_BEAT = {"short": 3.0, "long": 6.0}
+HOLD = {"stat_counter", "comparison", "steps", "timeline", "quote_card", "logo_tiles", "chapter_card", "follow_cta"}
+
+
+def _spoken(lines, a: float, b: float) -> list[Any]:
+    return [w for line in lines for w in (getattr(line, "words", []) or []) if a <= w.start < b]
+
+
+def _cuts(lines, t0: float, t1: float, beat: float) -> list[float]:
+    n = min(6, max(1, math.ceil((t1 - t0) / beat - 0.25)))
+    if n == 1:
+        return [t0, t1]
+    starts = [w.start for w in _spoken(lines, t0 + 0.6, t1 - 0.6)]
+    cuts = [t0]
+    for k in range(1, n):
+        want = t0 + (t1 - t0) * k / n
+        near = min(starts, key=lambda x: abs(x - want)) if starts else want
+        near = near - 0.05 if abs(near - want) <= 1.0 else want     # a silent stretch is cut on time
+        if near - cuts[-1] > 0.8 and t1 - near > 0.8:
+            cuts.append(near)
+    return cuts + [t1]
+
+
+FILLER = set("a an the and or but so to of in on at for with is are was were be been it its it's this that these those "
+             "you your we our i my me he she they them their there here just really actually what who how why when "
+             "do does did can could would should will have has had not no yes than then as by from up out about".split())
+
+
+def _words_beat(lines, a: float, b: float) -> dict:
+    """The meaning of what is said in this beat, not the running text (the captions carry that)."""
+    spoken = _spoken(lines, a, b) or _spoken(lines, a - 1, b)
+    ws = [w for w in spoken if _norm(w.text) not in FILLER][:4] or spoken[:4]
+    punch = max((w.text for w in ws), key=lambda t: (bool(re.search(r"\d", t)), len(t)), default="")
+    return {"type": "kinetic_title", "start": a, "duration": b - a, "in": "cut", "data": {
+        "words": [{"text": w.text, "at": round(max(0.05, w.start - a), 3)} for w in ws],
+        "punch": punch.lower().strip(".,!?")}}
+
+
+def _slice_host(s: dict, a: float, b: float, lines, first: bool) -> dict:
+    t0 = s["start"]
+    d = s["data"]
+    poses = [p for p in d.get("poses", []) if a - t0 <= p["at"] < b - t0]
+    before = [p for p in d.get("poses", []) if p["at"] < a - t0]
+    if not poses or poses[0]["at"] > a - t0 + 0.05:
+        poses.insert(0, {"pose": (before[-1]["pose"] if before else "talk"), "at": a - t0})
+    return dict(s, start=a, duration=b - a, data=dict(
+        d, cues=[dict(c, start=round(c["start"] - (a - t0), 3)) for c in d.get("cues", []) if a - t0 <= c["start"] < b - t0],
+        poses=[dict(p, at=round(p["at"] - (a - t0), 3)) for p in poses],
+        words=[dict(w, at=round(max(0.05, w["at"] - (a - t0)), 3)) for w in d.get("words", [])] if first
+        else _words_beat(lines, a, b)["data"]["words"]))
+
+
+def _pace(scenes: list[dict], lines, fmt: str) -> list[dict]:
+    beat, out = BEAT.get(fmt, 4.0), []
+    for s in scenes:
+        t0, t1 = s["start"], s["start"] + s["duration"]
+        kind = s["type"]
+        if kind == "host" and s["data"].get("place") != "studio":
+            out.append(s)
+            continue
+        limit = STUDIO_BEAT[fmt] if kind == "host" else beat * 1.6 if kind in HOLD else beat
+        if t1 - t0 <= limit:
+            out.append(s)
+            continue
+        if kind in HOLD:                       # the card keeps time for its build, then the words carry on
+            starts = [w.start for w in _spoken(lines, t0 + limit - 0.6, t1 - 0.8)]
+            first = (starts[0] - 0.05) if starts else t0 + limit
+            out.append(dict(s, duration=first - t0))
+            cuts = _cuts(lines, first, t1, beat)
+            out.extend(_words_beat(lines, a, b) for a, b in zip(cuts, cuts[1:]))
+            continue
+        cuts = _cuts(lines, t0, t1, beat if kind != "host" else STUDIO_BEAT[fmt] * 0.7)
+        for k, (a, b) in enumerate(zip(cuts, cuts[1:])):
+            if kind == "browser_shot":
+                photo = s["data"].get("photo")
+                if k == 0:
+                    out.append(dict(s, start=a, duration=b - a))
+                elif k == 1:
+                    out.append(dict(s, start=a, duration=b - a, data=dict(s["data"], zoomed=True)))
+                elif k == 2 and photo:
+                    out.append({"type": "photo", "start": a, "duration": b - a,
+                                "data": {"image": photo, "url": s["data"].get("url", "")}})
+                else:
+                    out.append(_words_beat(lines, a, b))
+            elif kind == "host":               # studio, then Goli steps aside for the words, then back
+                out.append(_slice_host(s, a, b, lines, k == 0) if k % 2 == 0 else _words_beat(lines, a, b))
+            else:
+                out.append(_words_beat(lines, a, b))
+    return sorted(out, key=lambda x: (x["start"], x["type"] == "host"))
