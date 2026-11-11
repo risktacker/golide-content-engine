@@ -120,6 +120,10 @@ class Composer:
         self.cy = SIZES[fmt][1] // 2 if fmt == "long" else 580
         self.outfit = outfit
         self.outfits: set[str] = set()
+        # 2026-11-11 (owner): no two screenshots, photos or word cards may move the same way: each gets the
+        # next entry, camera move, mark and pointer path from cycles of different lengths, so the
+        # combination does not come round again for many shots
+        self.n_shot = self.n_words = self.n_photo = 0
         self.fmt = fmt
         self.w, self.h = SIZES[fmt]
         self.parts: list[str] = []
@@ -176,6 +180,9 @@ class Composer:
         fact beside the card and a source tag sits under it. edge: "glass" (clean cut, gold rim,
         browser bar) or "fade" (no bar, edges melt into the background)."""
         sid = self._id("page")
+        n = self.n_shot
+        self.n_shot += 1
+        entry, camera, mark, pointer = n % 5, (n * 2 + 1) % 4, (n * 3 + 2) % 4, (n + 1) % 3
         edge = data.get("edge", "glass")
         spots = [dict(sp) for sp in (data.get("highlights") or [])[:2]]
         if not spots and data.get("headline"):
@@ -188,8 +195,8 @@ class Composer:
                 sp["at"] = min(float(sp.get("at", 0.5)), 0.45)
         bar = 44 if edge == "glass" else 0
         if self.fmt == "long":
-            fw = 1180 if callout else 1320
-            fx = 130 if callout else (self.w - fw) // 2
+            fw = 1180 if callout else (1320, 1240, 1380)[n % 3]
+            fx = 130 if callout else ((self.w - fw) // 2, 110, self.w - fw - 110)[n % 3]
         else:
             fw, fx = 940, 70                          # inside the Short's safe margins
         page_w = float(data.get("page_width", 1440))
@@ -205,14 +212,30 @@ class Composer:
         for j, spot in enumerate(spots):
             x, y, w, h = spot["rect"]
             hx, hy, hw, hh = x * k - 6, y * k - 4, w * k + 12, h * k + 8
-            if dark or spot.get("sweep"):   # dark page or a headline: a gold underline sweep
-                marks += (f'<div class="hl dark" id="{sid}-hl{j}" style="left:{hx:.0f}px;top:{hy + hh * 0.8:.0f}px;'
-                          f'width:0px;height:{max(4, hh * 0.09):.0f}px"></div>')
-            else:
+            style = (mark + j) % 4
+            if style == 0 and (dark or spot.get("sweep")):
+                style = 1                      # a highlighter vanishes on dark pages and long headlines
+            at = t0 + float(spot.get("at", 1.2 + j * 1.0))
+            if style == 0:                     # highlighter pen across the words
                 marks += (f'<div class="hl" id="{sid}-hl{j}" style="left:{hx:.0f}px;top:{hy:.0f}px;'
                           f'width:0px;height:{hh:.0f}px"></div>')
-            at = t0 + float(spot.get("at", 1.2 + j * 1.0))
-            hl_tweens.append(f'tl.to("#{sid}-hl{j}",{{width:{hw:.0f},duration:.35,ease:"none"}},{at:.3f});')
+                hl_tweens.append(f'tl.to("#{sid}-hl{j}",{{width:{hw:.0f},duration:.35,ease:"none"}},{at:.3f});')
+            elif style == 1:                   # a gold box drawn round the words
+                marks += (f'<div id="{sid}-hl{j}" style="position:absolute;left:{hx - 6:.0f}px;top:{hy - 6:.0f}px;'
+                          f'width:{hw + 12:.0f}px;height:{hh + 12:.0f}px;border:4px solid #E8C268;border-radius:10px;'
+                          f'box-shadow:0 0 18px rgba(232,194,104,.6)"></div>')
+                hl_tweens.append(f'tl.fromTo("#{sid}-hl{j}",{{clipPath:"inset(0 100% 100% 0)"}},{{clipPath:"inset(0 0% 0% 0)",'
+                                 f'duration:.4,ease:"power2.inOut"}},{at:.3f});')
+            elif style == 2:                   # underline sweep
+                marks += (f'<div class="hl dark" id="{sid}-hl{j}" style="left:{hx:.0f}px;top:{hy + hh * 0.86:.0f}px;'
+                          f'width:0px;height:{max(5, hh * 0.1):.0f}px"></div>')
+                hl_tweens.append(f'tl.to("#{sid}-hl{j}",{{width:{hw:.0f},duration:.32,ease:"power1.out"}},{at:.3f});')
+            else:                              # a hand-drawn ellipse round it
+                marks += (f'<div id="{sid}-hl{j}" style="position:absolute;left:{hx - 24:.0f}px;top:{hy - 18:.0f}px;'
+                          f'width:{hw + 48:.0f}px;height:{hh + 36:.0f}px;border:4px solid #E8C268;border-radius:50%;'
+                          f'transform-origin:50% 50%"></div>')
+                hl_tweens.append(f'tl.fromTo("#{sid}-hl{j}",{{scale:1.5,rotation:-8,opacity:0}},{{scale:1,rotation:-2,opacity:1,'
+                                 f'duration:.38,ease:"back.out(2)"}},{at:.3f});')
             self.cue("click", at)
             if j == 0:      # a pointer glides in and clicks on the fact
                 px, py = hx + min(hw, 220) * 0.5, hy + hh * 0.75
@@ -221,8 +244,9 @@ class Composer:
                           f'L11.5 22 L14.5 20.6 L11.6 13.8 L18 13.8 Z" fill="#fff" stroke="#111" stroke-width="1.6" '
                           f'stroke-linejoin="round"/></svg></div><div id="{sid}-rip" style="position:absolute;left:{px - 30:.0f}px;'
                           f'top:{py - 30:.0f}px;width:60px;height:60px;border-radius:50%;border:4px solid #E8C268;opacity:0"></div>')
-                hl_tweens.append(f'tl.fromTo("#{sid}-cur",{{x:160,y:120,opacity:0}},{{x:0,y:0,opacity:1,duration:.45,'
-                                 f'ease:"power2.out"}},{max(t0 + 0.05, at - 0.5):.3f});')
+                fromx, fromy = ((160, 120), (-220, 40), (40, -180))[pointer]
+                hl_tweens.append(f'tl.fromTo("#{sid}-cur",{{x:{fromx},y:{fromy},opacity:0}},{{x:0,y:0,opacity:1,duration:.45,'
+                                 f'ease:"{("power2.out", "power3.inOut", "back.out(1.2)")[pointer]}"}},{max(t0 + 0.05, at - 0.5):.3f});')
                 hl_tweens.append(f'tl.fromTo("#{sid}-cur",{{scale:1}},{{scale:.8,duration:.08,yoyo:true,repeat:1,'
                                  f'immediateRender:false}},{at - 0.05:.3f});')
                 hl_tweens.append(f'tl.fromTo("#{sid}-rip",{{scale:.3,opacity:1}},{{scale:1.8,opacity:0,duration:.45,'
@@ -265,9 +289,14 @@ class Composer:
         self.scene(sid, t0, dur, inner)
         if zoomed:      # a hard cut to the closer shot
             self.cue("click", t0)
-        else:           # the card grows in from small (house rule: sources never slam in full screen)
-            self.tw(f'tl.fromTo("#{sid}-f",{{scale:.62,y:70,opacity:0}},{{scale:1,y:0,opacity:1,duration:.6,'
-                    f'ease:"back.out(1.3)"}},{t0:.3f});')
+        else:           # never slams in full screen; five different ways in
+            start, ease = (('{scale:.62,y:70,opacity:0}', "back.out(1.3)"),
+                           (f'{{x:{-self.w * .55:.0f},rotationY:32,transformPerspective:1400,opacity:0}}', "power3.out"),
+                           ('{y:-320,rotation:-4,opacity:0}', "back.out(1.1)"),
+                           ('{rotationX:-62,y:90,transformPerspective:1400,transformOrigin:"50% 100%",opacity:0}', "power3.out"),
+                           ('{scale:1.35,opacity:0,filter:"blur(12px)"}', "power2.out"))[entry]
+            end = '{scale:1,x:0,y:0,rotation:0,rotationX:0,rotationY:0,opacity:1,filter:"blur(0px)"'
+            self.tw(f'tl.fromTo("#{sid}-f",{start},{end},duration:.6,ease:"{ease}"}},{t0:.3f});')
             self.cue("whoosh", t0)
         if domain:
             self.tw(f'tl.fromTo("#{sid}-src",{{y:20,opacity:0}},{{y:0,opacity:1,duration:.4,ease:"power3.out"}},{t0 + 0.5:.3f});')
@@ -283,12 +312,32 @@ class Composer:
                 z2 = z * 1.08
                 dx2 = min(max((fw / 2 - ox), -(fw - ox) * (z2 - 1)), ox * (z2 - 1))
                 dy2 = min(max((ph / 2 - oy), ph - oy - (img_h - oy) * z2), oy * (z2 - 1))
-                self.tw(f'tl.fromTo("#{sid}-pg",{{x:{dx:.0f},y:{dy:.0f},scale:{z:.3f},transformOrigin:"{ox:.0f}px {oy:.0f}px"}},'
-                        f'{{x:{dx2:.0f},y:{dy2:.0f},scale:{z2:.3f},duration:{dur:.2f},ease:"none"}},{t0:.3f});')
+                if n % 2:
+                    self.tw(f'tl.fromTo("#{sid}-pg",{{x:{dx - fw * .08:.0f},y:{dy:.0f},scale:{z:.3f},transformOrigin:"{ox:.0f}px {oy:.0f}px"}},'
+                            f'{{x:{dx + fw * .08:.0f},duration:{dur:.2f},ease:"none"}},{t0:.3f});')
+                else:
+                    self.tw(f'tl.fromTo("#{sid}-pg",{{x:{dx:.0f},y:{dy:.0f},scale:{z:.3f},transformOrigin:"{ox:.0f}px {oy:.0f}px"}},'
+                            f'{{x:{dx2:.0f},y:{dy2:.0f},scale:{z2:.3f},duration:{dur:.2f},ease:"none"}},{t0:.3f});')
             else:
                 at = max(t0 + 0.45, t0 + float(spots[0].get("at", 1.2)) - 0.5)
-                self.tw(f'tl.to("#{sid}-pg",{{x:{dx:.0f},y:{dy:.0f},scale:{z:.3f},transformOrigin:"{ox:.0f}px {oy:.0f}px",'
-                        f'duration:.8,ease:"power2.inOut"}},{at:.3f});')
+                origin = f'transformOrigin:"{ox:.0f}px {oy:.0f}px"'
+                if camera == 0:                # straight push to the fact
+                    self.tw(f'tl.to("#{sid}-pg",{{x:{dx:.0f},y:{dy:.0f},scale:{z:.3f},{origin},duration:.8,'
+                            f'ease:"power2.inOut"}},{at:.3f});')
+                elif camera == 1:              # scroll down the page, then lean in
+                    zs = 1 + (z - 1) * 0.55
+                    dys = min(max((ph / 2 - oy), ph - oy - (img_h - oy) * zs), oy * (zs - 1))
+                    self.tw(f'tl.to("#{sid}-pg",{{y:{dys:.0f},scale:{zs:.3f},{origin},duration:1.0,ease:"power1.inOut"}},'
+                            f'{max(t0 + 0.2, at - 0.6):.3f});')
+                    self.tw(f'tl.to("#{sid}-pg",{{x:{dx:.0f},y:{dy:.0f},scale:{z:.3f},duration:.5,ease:"power2.out"}},'
+                            f'{at + 0.45:.3f});')
+                elif camera == 2:              # already close, sliding across to the fact
+                    self.tw(f'tl.fromTo("#{sid}-pg",{{x:{dx + fw * .3:.0f},y:{dy:.0f},scale:{z:.3f},{origin}}},'
+                            f'{{x:{dx:.0f},duration:{max(0.9, at - t0 + 0.2):.2f},ease:"power2.out"}},{t0:.3f});')
+                else:                          # overshoot past the fact and settle back
+                    self.tw(f'tl.to("#{sid}-pg",{{x:{dx:.0f},y:{dy:.0f},scale:{z * 1.12:.3f},{origin},duration:.55,'
+                            f'ease:"power3.in"}},{at:.3f});')
+                    self.tw(f'tl.to("#{sid}-pg",{{scale:{z:.3f},duration:.45,ease:"back.out(1.6)"}},{at + 0.55:.3f});')
         if callout:
             at = t0 + float(callout.get("at", 1.2)) + 0.35
             self.tw(f'tl.fromTo("#{sid}-co",{{x:60,opacity:0}},{{x:0,opacity:1,duration:.55,ease:"back.out(1.5)"}},{at:.3f});')
@@ -315,10 +364,16 @@ class Composer:
             inner += (f'<div class="chip" id="{sid}-src" style="position:absolute;left:{fx:.0f}px;top:{fy + fh + 24:.0f}px;'
                       f'font-size:24px">Source · {_e(domain)}</div>')
         self.scene(sid, t0, dur, inner)
-        self.tw(f'tl.fromTo("#{sid}-f",{{scale:.7,rotation:-3,opacity:0}},{{scale:1,rotation:0,opacity:1,duration:.5,'
-                f'ease:"back.out(1.5)"}},{t0:.3f});')
-        self.tw(f'tl.fromTo("#{sid}-i",{{yPercent:-50,scale:1.04,x:0}},{{yPercent:-50,scale:1.16,x:-20,duration:{dur:.2f},'
-                f'ease:"none"}},{t0:.3f});')
+        v = self.n_photo % 3
+        self.n_photo += 1
+        start = ('{scale:.7,rotation:-3,opacity:0}', '{x:-140,rotationY:25,transformPerspective:1400,opacity:0}',
+                 '{clipPath:"inset(50% 0 50% 0)"}')[v]
+        end = ('{scale:1,rotation:0,opacity:1', '{x:0,rotationY:0,opacity:1', '{clipPath:"inset(0% 0 0% 0)"')[v]
+        self.tw(f'tl.fromTo("#{sid}-f",{start},{end},duration:.5,ease:"power3.out"}},{t0:.3f});')
+        move = (('{yPercent:-50,scale:1.04,x:0}', f'{{yPercent:-50,scale:1.16,x:-20,duration:{dur:.2f},ease:"none"}}'),
+                ('{yPercent:-50,scale:1.12,x:-50}', f'{{yPercent:-50,scale:1.12,x:50,duration:{dur:.2f},ease:"none"}}'),
+                ('{yPercent:-50,scale:1.22,x:0}', f'{{yPercent:-50,scale:1.04,x:0,duration:{dur:.2f},ease:"power1.out"}}'))[v]
+        self.tw(f'tl.fromTo("#{sid}-i",{move[0]},{move[1]},{t0:.3f});')
         self.cue("whoosh", t0)
 
     def stat_counter(self, t0, dur, data, how="whip"):
@@ -349,27 +404,55 @@ class Composer:
         self.drift(sid, t0, dur, 0.012)
 
     def kinetic_title(self, t0, dur, data, how="cut"):
-        """Words build on their spoken times; the punch word scales up and turns gold."""
+        """Words build on their spoken times; the punch word is marked. Four looks in turn (owner
+        2026-11-11: no word card may look like the one before it)."""
         sid = self._id("title")
+        v = self.n_words % 4
+        self.n_words += 1
         words = data["words"]                             # [{"text":..,"at":..}]
         punch = str(data.get("punch", "")).lower()
         sub = f'<div class="label" style="margin-top:28px">{_e(data["sub"])}</div>' if data.get("sub") else ""
-        spans = "".join(f'<span class="word{" gold" if w["text"].lower().strip(".,!?") == punch else ""}" '
-                        f'id="{sid}-w{i}">{_e(w["text"])}</span>' for i, w in enumerate(words))
-        m = 120 if self.fmt == "long" else 70
+        is_punch = [w["text"].lower().strip(".,!?") == punch for w in words]
+        long = self.fmt == "long"
+        m = 120 if long else 70
+        size = (112 if long else 104, 120 if long else 112, 104 if long else 96, 132 if long else 124)[v]
+        if v == 1:      # centred, the punch word on a gold block
+            spans = "".join(f'<span class="word" id="{sid}-w{i}" style="{"background:#E8C268;color:#0B0E16;padding:0 .18em;border-radius:12px" if p else ""}">'
+                            f'{_e(w["text"])}</span>' for i, (w, p) in enumerate(zip(words, is_punch)))
+            body = f'<div class="title" style="text-align:center;font-size:{size}px;line-height:1.12">{spans}</div>'
+        elif v == 2:    # a gold rule on the left, words slide in from the right
+            spans = "".join(f'<span class="word{" gold" if p else ""}" id="{sid}-w{i}">{_e(w["text"])}</span>'
+                            for i, (w, p) in enumerate(zip(words, is_punch)))
+            body = (f'<div style="display:flex;gap:34px;align-items:stretch"><div id="{sid}-rule" style="width:12px;'
+                    f'border-radius:6px;background:#E8C268;transform-origin:50% 0"></div>'
+                    f'<div class="title" style="text-align:left;font-size:{size}px">{spans}</div></div>')
+        elif v == 3:    # one word per line, stacked big, the punch word outlined in gold
+            spans = "".join(f'<div class="word" id="{sid}-w{i}" style="display:block;{"color:transparent;-webkit-text-stroke:3px #E8C268" if p else ""}">'
+                            f'{_e(w["text"])}</div>' for i, (w, p) in enumerate(zip(words[:4], is_punch[:4])))
+            words, is_punch = words[:4], is_punch[:4]
+            body = f'<div class="title" style="text-align:center;font-size:{size}px;line-height:.98;text-transform:uppercase">{spans}</div>'
+        else:           # left, rising, the punch word gold
+            spans = "".join(f'<span class="word{" gold" if p else ""}" id="{sid}-w{i}">{_e(w["text"])}</span>'
+                            for i, (w, p) in enumerate(zip(words, is_punch)))
+            body = f'<div class="title" style="text-align:left;font-size:{size}px">{spans}</div>'
         inner = (f'<div style="position:absolute;left:{m}px;right:{m}px;top:{self.cy}px;transform:translateY(-50%)">'
-                 f'<div class="title" style="text-align:left;font-size:{112 if self.fmt == "long" else 104}px">{spans}</div>'
-                 f'{sub}</div>')
+                 f'{body}{sub}</div>')
         self.scene(sid, t0, dur, inner)
+        if v == 2:
+            self.tw(f'tl.fromTo("#{sid}-rule",{{scaleY:0}},{{scaleY:1,duration:.35,ease:"power3.out"}},{t0:.3f});')
+        start = ('{y:60,opacity:0,clipPath:"inset(0 0 100% 0)"}', '{scale:1.6,opacity:0}', '{x:120,opacity:0}',
+                 '{y:-40,opacity:0,rotationX:-70,transformPerspective:900}')[v]
+        end = ('{y:0,opacity:1,clipPath:"inset(0 0 0% 0)",duration:.45,ease:"back.out(1.6)"}',
+               '{scale:1,opacity:1,duration:.3,ease:"power3.out"}', '{x:0,opacity:1,duration:.35,ease:"power3.out"}',
+               '{y:0,opacity:1,rotationX:0,duration:.4,ease:"back.out(1.4)"}')[v]
         for i, w in enumerate(words):
             at = t0 + float(w.get("at", i * 0.18))
-            self.tw(f'tl.fromTo("#{sid}-w{i}",{{y:60,opacity:0,clipPath:"inset(0 0 100% 0)"}},'
-                    f'{{y:0,opacity:1,clipPath:"inset(0 0 0% 0)",duration:.45,ease:"back.out(1.6)"}},{at:.3f});')
-            if w["text"].lower().strip(".,!?") == punch:
+            self.tw(f'tl.fromTo("#{sid}-w{i}",{start},{end},{at:.3f});')
+            if is_punch[i]:
                 self.tw(f'tl.fromTo("#{sid}-w{i}",{{scale:1}},{{scale:1.15,duration:.18,yoyo:true,repeat:1,'
-                        f'ease:"power2.out"}},{at + 0.45:.3f});')
+                        f'ease:"power2.out",immediateRender:false}},{at + 0.45:.3f});')
                 self.cue("impact", at + 0.45)
-        self.drift(sid, t0, dur, 0.015)
+        self.drift(sid, t0, dur, (0.015, 0.0, 0.01, 0.02)[v])
 
     def chapter_card(self, t0, dur, data, how="whip"):
         sid = self._id("chapter")
