@@ -283,5 +283,14 @@
     "measured_at": "2026-11-11T07:04:13.411179+00:00",
     "signal_type": "youtube-breakout-v1"
   },
-  "selected_topic_source": "https://content.spacex.com/cms-assets/FINAL_Documents%20and%20Updates/SpaceX%20-%20EU%20Prospectus%20%28Approved%20by%20Bafin%29%20-%20June%205%2C%202026.pdf"
+  "selected_topic_source": "https://content.spacex.com/cms-assets/FINAL_Documents%20and%20Updates/SpaceX%20-%20EU%20Prospectus%20%28Approved%20by%20Bafin%29%20-%20June%205%2C%202026.pdf",
+  "script_edit": "What just happened? \nAn alleged Chinese spy, Jensen Huang, and a massive AI chip project. But there\u2019s a much bigger story hiding underneath.\n\nJensen Huang acknowledged an affair. After reports described the woman as a suspected Chinese intelligence operative, the chip company\u2019s board opened an independent investigation. But nobody has proved she was a spy, Huang knew, or technology changed hands. China rejected the claim, and the shareholder lawsuit remains unproven.\n\nWhy does this matter? AI needs chip design, fabrication, memory, packaging, servers, power, cooling and data centers. One bottleneck decides who gets compute, how fast, and at what price.\n\nNow look at Terafab: Musk\u2019s proposed project for chip design, memory and logic fabrication, and packaging, targeting one terawatt of compute. But filings warn it could miss schedule or fail.\n\nIf it works, Musk-linked AI gets supply. Don\u2019t assume prices will fall: reserved capacity could squeeze rivals, while added capacity could increase competition.\n\nGovernments care because chips support military, cyber and surveillance systems.\n\nWant to understand AI? The free guide and community link are in the description. Follow for more. The spy claim is unproven; the power sits in the factories.",
+  "voice_choice": "ai",
+  "platforms": [
+    "youtube",
+    "instagram",
+    "facebook",
+    "linkedin"
+  ],
+  "_failed_runs": 1
 }
