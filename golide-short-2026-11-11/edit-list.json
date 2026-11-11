@@ -1,0 +1,5269 @@
+{
+  "format": "short",
+  "duration": 91.068662,
+  "scenes": [
+    {
+      "type": "host",
+      "start": 0.0,
+      "duration": 1.738,
+      "data": {
+        "place": "studio",
+        "cues": [
+          {
+            "start": 0.0,
+            "value": "B"
+          },
+          {
+            "start": 0.033,
+            "value": "F"
+          },
+          {
+            "start": 0.133,
+            "value": "C"
+          },
+          {
+            "start": 0.2,
+            "value": "B"
+          },
+          {
+            "start": 0.267,
+            "value": "X"
+          },
+          {
+            "start": 0.333,
+            "value": "B"
+          },
+          {
+            "start": 0.4,
+            "value": "C"
+          },
+          {
+            "start": 0.5,
+            "value": "B"
+          },
+          {
+            "start": 0.567,
+            "value": "X"
+          },
+          {
+            "start": 0.6,
+            "value": "C"
+          },
+          {
+            "start": 0.7,
+            "value": "A"
+          },
+          {
+            "start": 0.767,
+            "value": "C"
+          },
+          {
+            "start": 0.8,
+            "value": "X"
+          },
+          {
+            "start": 0.833,
+            "value": "C"
+          },
+          {
+            "start": 0.9,
+            "value": "B"
+          },
+          {
+            "start": 1.033,
+            "value": "X"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "talk",
+            "at": 0
+          },
+          {
+            "pose": "shock",
+            "at": 0.604
+          }
+        ],
+        "words": [
+          {
+            "text": "WHAT",
+            "at": 0.15
+          },
+          {
+            "text": "JUST",
+            "at": 0.348
+          },
+          {
+            "text": "HAPPENED?",
+            "at": 0.604
+          }
+        ],
+        "punch": "what"
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 1.738,
+      "duration": 1.9849999999999999,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/03-full.png",
+        "url": "https://apnews.com/article/1f060e52b308cb2c649807518d5081e2",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              170,
+              4246.078125,
+              720,
+              83.671875
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Suspected spy",
+            "sub": "U.S. intelligence allegation"
+          }
+        ],
+        "headline": [
+          40,
+          430,
+          980,
+          192
+        ],
+        "photo": null
+      }
+    },
+    {
+      "type": "host",
+      "start": 1.738,
+      "duration": 32.74,
+      "data": {
+        "place": "lower",
+        "cues": [
+          {
+            "start": 0.162,
+            "value": "C"
+          },
+          {
+            "start": 0.362,
+            "value": "H"
+          },
+          {
+            "start": 0.429,
+            "value": "C"
+          },
+          {
+            "start": 0.495,
+            "value": "B"
+          },
+          {
+            "start": 0.629,
+            "value": "X"
+          },
+          {
+            "start": 0.662,
+            "value": "B"
+          },
+          {
+            "start": 0.695,
+            "value": "X"
+          },
+          {
+            "start": 0.729,
+            "value": "B"
+          },
+          {
+            "start": 0.929,
+            "value": "C"
+          },
+          {
+            "start": 0.995,
+            "value": "B"
+          },
+          {
+            "start": 1.329,
+            "value": "A"
+          },
+          {
+            "start": 1.429,
+            "value": "X"
+          },
+          {
+            "start": 1.462,
+            "value": "D"
+          },
+          {
+            "start": 1.729,
+            "value": "B"
+          },
+          {
+            "start": 1.862,
+            "value": "X"
+          },
+          {
+            "start": 1.895,
+            "value": "B"
+          },
+          {
+            "start": 1.929,
+            "value": "X"
+          },
+          {
+            "start": 2.029,
+            "value": "B"
+          },
+          {
+            "start": 2.229,
+            "value": "C"
+          },
+          {
+            "start": 2.362,
+            "value": "B"
+          },
+          {
+            "start": 2.629,
+            "value": "X"
+          },
+          {
+            "start": 2.662,
+            "value": "E"
+          },
+          {
+            "start": 3.062,
+            "value": "B"
+          },
+          {
+            "start": 3.095,
+            "value": "X"
+          },
+          {
+            "start": 3.495,
+            "value": "B"
+          },
+          {
+            "start": 3.629,
+            "value": "A"
+          },
+          {
+            "start": 3.729,
+            "value": "C"
+          },
+          {
+            "start": 3.895,
+            "value": "B"
+          },
+          {
+            "start": 4.029,
+            "value": "G"
+          },
+          {
+            "start": 4.095,
+            "value": "X"
+          },
+          {
+            "start": 4.129,
+            "value": "G"
+          },
+          {
+            "start": 4.162,
+            "value": "C"
+          },
+          {
+            "start": 4.229,
+            "value": "B"
+          },
+          {
+            "start": 4.295,
+            "value": "C"
+          },
+          {
+            "start": 4.362,
+            "value": "F"
+          },
+          {
+            "start": 4.562,
+            "value": "X"
+          },
+          {
+            "start": 4.595,
+            "value": "F"
+          },
+          {
+            "start": 4.662,
+            "value": "X"
+          },
+          {
+            "start": 4.729,
+            "value": "A"
+          },
+          {
+            "start": 4.762,
+            "value": "B"
+          },
+          {
+            "start": 4.862,
+            "value": "D"
+          },
+          {
+            "start": 4.929,
+            "value": "B"
+          },
+          {
+            "start": 4.995,
+            "value": "C"
+          },
+          {
+            "start": 5.062,
+            "value": "B"
+          },
+          {
+            "start": 5.095,
+            "value": "X"
+          },
+          {
+            "start": 5.129,
+            "value": "B"
+          },
+          {
+            "start": 5.162,
+            "value": "X"
+          },
+          {
+            "start": 6.195,
+            "value": "C"
+          },
+          {
+            "start": 6.262,
+            "value": "B"
+          },
+          {
+            "start": 6.395,
+            "value": "C"
+          },
+          {
+            "start": 6.462,
+            "value": "B"
+          },
+          {
+            "start": 6.529,
+            "value": "C"
+          },
+          {
+            "start": 6.595,
+            "value": "A"
+          },
+          {
+            "start": 6.762,
+            "value": "C"
+          },
+          {
+            "start": 6.862,
+            "value": "A"
+          },
+          {
+            "start": 6.929,
+            "value": "B"
+          },
+          {
+            "start": 7.095,
+            "value": "E"
+          },
+          {
+            "start": 7.262,
+            "value": "B"
+          },
+          {
+            "start": 7.329,
+            "value": "E"
+          },
+          {
+            "start": 7.462,
+            "value": "B"
+          },
+          {
+            "start": 7.595,
+            "value": "C"
+          },
+          {
+            "start": 7.662,
+            "value": "X"
+          },
+          {
+            "start": 7.695,
+            "value": "C"
+          },
+          {
+            "start": 7.795,
+            "value": "B"
+          },
+          {
+            "start": 8.429,
+            "value": "X"
+          },
+          {
+            "start": 9.962,
+            "value": "B"
+          },
+          {
+            "start": 10.029,
+            "value": "C"
+          },
+          {
+            "start": 10.162,
+            "value": "B"
+          },
+          {
+            "start": 10.295,
+            "value": "C"
+          },
+          {
+            "start": 10.462,
+            "value": "X"
+          },
+          {
+            "start": 10.495,
+            "value": "E"
+          },
+          {
+            "start": 10.795,
+            "value": "B"
+          },
+          {
+            "start": 10.862,
+            "value": "C"
+          },
+          {
+            "start": 10.962,
+            "value": "D"
+          },
+          {
+            "start": 11.095,
+            "value": "B"
+          },
+          {
+            "start": 11.295,
+            "value": "C"
+          },
+          {
+            "start": 11.495,
+            "value": "X"
+          },
+          {
+            "start": 11.562,
+            "value": "G"
+          },
+          {
+            "start": 11.595,
+            "value": "C"
+          },
+          {
+            "start": 11.729,
+            "value": "B"
+          },
+          {
+            "start": 11.862,
+            "value": "X"
+          },
+          {
+            "start": 12.529,
+            "value": "C"
+          },
+          {
+            "start": 12.629,
+            "value": "B"
+          },
+          {
+            "start": 12.695,
+            "value": "E"
+          },
+          {
+            "start": 12.762,
+            "value": "B"
+          },
+          {
+            "start": 12.829,
+            "value": "A"
+          },
+          {
+            "start": 12.929,
+            "value": "X"
+          },
+          {
+            "start": 12.995,
+            "value": "E"
+          },
+          {
+            "start": 13.062,
+            "value": "B"
+          },
+          {
+            "start": 13.195,
+            "value": "X"
+          },
+          {
+            "start": 13.229,
+            "value": "B"
+          },
+          {
+            "start": 13.395,
+            "value": "X"
+          },
+          {
+            "start": 13.429,
+            "value": "B"
+          },
+          {
+            "start": 13.529,
+            "value": "A"
+          },
+          {
+            "start": 13.662,
+            "value": "C"
+          },
+          {
+            "start": 13.762,
+            "value": "F"
+          },
+          {
+            "start": 13.862,
+            "value": "A"
+          },
+          {
+            "start": 13.929,
+            "value": "C"
+          },
+          {
+            "start": 14.062,
+            "value": "B"
+          },
+          {
+            "start": 14.262,
+            "value": "C"
+          },
+          {
+            "start": 14.329,
+            "value": "A"
+          },
+          {
+            "start": 14.429,
+            "value": "X"
+          },
+          {
+            "start": 14.462,
+            "value": "C"
+          },
+          {
+            "start": 14.495,
+            "value": "B"
+          },
+          {
+            "start": 14.562,
+            "value": "X"
+          },
+          {
+            "start": 14.629,
+            "value": "B"
+          },
+          {
+            "start": 14.795,
+            "value": "X"
+          },
+          {
+            "start": 14.829,
+            "value": "B"
+          },
+          {
+            "start": 14.929,
+            "value": "C"
+          },
+          {
+            "start": 14.995,
+            "value": "B"
+          },
+          {
+            "start": 15.429,
+            "value": "C"
+          },
+          {
+            "start": 15.495,
+            "value": "X"
+          },
+          {
+            "start": 15.529,
+            "value": "C"
+          },
+          {
+            "start": 15.562,
+            "value": "H"
+          },
+          {
+            "start": 15.629,
+            "value": "C"
+          },
+          {
+            "start": 15.695,
+            "value": "B"
+          },
+          {
+            "start": 15.895,
+            "value": "D"
+          },
+          {
+            "start": 15.962,
+            "value": "A"
+          },
+          {
+            "start": 16.062,
+            "value": "X"
+          },
+          {
+            "start": 16.129,
+            "value": "B"
+          },
+          {
+            "start": 16.329,
+            "value": "G"
+          },
+          {
+            "start": 16.362,
+            "value": "X"
+          },
+          {
+            "start": 17.029,
+            "value": "B"
+          },
+          {
+            "start": 17.162,
+            "value": "A"
+          },
+          {
+            "start": 17.229,
+            "value": "X"
+          },
+          {
+            "start": 17.329,
+            "value": "C"
+          },
+          {
+            "start": 17.395,
+            "value": "A"
+          },
+          {
+            "start": 17.462,
+            "value": "B"
+          },
+          {
+            "start": 17.662,
+            "value": "A"
+          },
+          {
+            "start": 17.762,
+            "value": "E"
+          },
+          {
+            "start": 18.062,
+            "value": "X"
+          },
+          {
+            "start": 18.095,
+            "value": "E"
+          },
+          {
+            "start": 18.162,
+            "value": "A"
+          },
+          {
+            "start": 18.229,
+            "value": "C"
+          },
+          {
+            "start": 18.262,
+            "value": "X"
+          },
+          {
+            "start": 18.295,
+            "value": "C"
+          },
+          {
+            "start": 18.362,
+            "value": "B"
+          },
+          {
+            "start": 18.595,
+            "value": "X"
+          },
+          {
+            "start": 18.695,
+            "value": "B"
+          },
+          {
+            "start": 18.862,
+            "value": "A"
+          },
+          {
+            "start": 18.962,
+            "value": "X"
+          },
+          {
+            "start": 18.995,
+            "value": "C"
+          },
+          {
+            "start": 19.129,
+            "value": "B"
+          },
+          {
+            "start": 19.295,
+            "value": "X"
+          },
+          {
+            "start": 19.362,
+            "value": "B"
+          },
+          {
+            "start": 19.429,
+            "value": "G"
+          },
+          {
+            "start": 19.495,
+            "value": "C"
+          },
+          {
+            "start": 19.562,
+            "value": "B"
+          },
+          {
+            "start": 19.629,
+            "value": "C"
+          },
+          {
+            "start": 19.662,
+            "value": "X"
+          },
+          {
+            "start": 19.695,
+            "value": "C"
+          },
+          {
+            "start": 19.895,
+            "value": "B"
+          },
+          {
+            "start": 20.062,
+            "value": "C"
+          },
+          {
+            "start": 20.195,
+            "value": "X"
+          },
+          {
+            "start": 21.162,
+            "value": "C"
+          },
+          {
+            "start": 21.262,
+            "value": "B"
+          },
+          {
+            "start": 21.395,
+            "value": "C"
+          },
+          {
+            "start": 21.529,
+            "value": "E"
+          },
+          {
+            "start": 21.595,
+            "value": "A"
+          },
+          {
+            "start": 21.695,
+            "value": "C"
+          },
+          {
+            "start": 21.729,
+            "value": "B"
+          },
+          {
+            "start": 21.929,
+            "value": "C"
+          },
+          {
+            "start": 22.062,
+            "value": "A"
+          },
+          {
+            "start": 22.129,
+            "value": "X"
+          },
+          {
+            "start": 22.195,
+            "value": "A"
+          },
+          {
+            "start": 22.229,
+            "value": "X"
+          },
+          {
+            "start": 22.262,
+            "value": "F"
+          },
+          {
+            "start": 22.429,
+            "value": "G"
+          },
+          {
+            "start": 22.495,
+            "value": "B"
+          },
+          {
+            "start": 22.729,
+            "value": "F"
+          },
+          {
+            "start": 22.795,
+            "value": "C"
+          },
+          {
+            "start": 22.862,
+            "value": "B"
+          },
+          {
+            "start": 22.995,
+            "value": "A"
+          },
+          {
+            "start": 23.062,
+            "value": "D"
+          },
+          {
+            "start": 23.095,
+            "value": "X"
+          },
+          {
+            "start": 23.162,
+            "value": "D"
+          },
+          {
+            "start": 23.362,
+            "value": "B"
+          },
+          {
+            "start": 23.495,
+            "value": "E"
+          },
+          {
+            "start": 23.529,
+            "value": "X"
+          },
+          {
+            "start": 23.595,
+            "value": "E"
+          },
+          {
+            "start": 23.762,
+            "value": "F"
+          },
+          {
+            "start": 24.129,
+            "value": "X"
+          },
+          {
+            "start": 24.662,
+            "value": "E"
+          },
+          {
+            "start": 24.895,
+            "value": "B"
+          },
+          {
+            "start": 24.962,
+            "value": "C"
+          },
+          {
+            "start": 25.095,
+            "value": "B"
+          },
+          {
+            "start": 25.129,
+            "value": "X"
+          },
+          {
+            "start": 25.162,
+            "value": "D"
+          },
+          {
+            "start": 25.295,
+            "value": "H"
+          },
+          {
+            "start": 25.395,
+            "value": "C"
+          },
+          {
+            "start": 25.462,
+            "value": "B"
+          },
+          {
+            "start": 25.729,
+            "value": "C"
+          },
+          {
+            "start": 25.795,
+            "value": "B"
+          },
+          {
+            "start": 25.929,
+            "value": "C"
+          },
+          {
+            "start": 26.162,
+            "value": "B"
+          },
+          {
+            "start": 26.262,
+            "value": "X"
+          },
+          {
+            "start": 26.329,
+            "value": "B"
+          },
+          {
+            "start": 26.429,
+            "value": "X"
+          },
+          {
+            "start": 27.529,
+            "value": "B"
+          },
+          {
+            "start": 27.629,
+            "value": "C"
+          },
+          {
+            "start": 27.829,
+            "value": "B"
+          },
+          {
+            "start": 28.129,
+            "value": "C"
+          },
+          {
+            "start": 28.195,
+            "value": "B"
+          },
+          {
+            "start": 28.262,
+            "value": "X"
+          },
+          {
+            "start": 28.295,
+            "value": "B"
+          },
+          {
+            "start": 28.462,
+            "value": "C"
+          },
+          {
+            "start": 28.529,
+            "value": "H"
+          },
+          {
+            "start": 28.662,
+            "value": "C"
+          },
+          {
+            "start": 28.762,
+            "value": "B"
+          },
+          {
+            "start": 28.829,
+            "value": "A"
+          },
+          {
+            "start": 28.929,
+            "value": "X"
+          },
+          {
+            "start": 29.395,
+            "value": "B"
+          },
+          {
+            "start": 29.662,
+            "value": "C"
+          },
+          {
+            "start": 29.795,
+            "value": "E"
+          },
+          {
+            "start": 30.295,
+            "value": "F"
+          },
+          {
+            "start": 30.429,
+            "value": "B"
+          },
+          {
+            "start": 30.629,
+            "value": "A"
+          },
+          {
+            "start": 30.729,
+            "value": "C"
+          },
+          {
+            "start": 30.762,
+            "value": "B"
+          },
+          {
+            "start": 30.962,
+            "value": "X"
+          },
+          {
+            "start": 31.029,
+            "value": "D"
+          },
+          {
+            "start": 31.129,
+            "value": "C"
+          },
+          {
+            "start": 31.162,
+            "value": "A"
+          },
+          {
+            "start": 31.262,
+            "value": "X"
+          },
+          {
+            "start": 31.362,
+            "value": "F"
+          },
+          {
+            "start": 31.529,
+            "value": "G"
+          },
+          {
+            "start": 31.595,
+            "value": "C"
+          },
+          {
+            "start": 31.695,
+            "value": "X"
+          },
+          {
+            "start": 31.729,
+            "value": "C"
+          },
+          {
+            "start": 31.762,
+            "value": "X"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "point_up",
+            "at": 0.0
+          },
+          {
+            "pose": "point",
+            "at": 1.35
+          },
+          {
+            "pose": "point_up",
+            "at": 1.985
+          },
+          {
+            "pose": "point_up",
+            "at": 3.32
+          },
+          {
+            "pose": "point_up",
+            "at": 4.752
+          },
+          {
+            "pose": "point_up",
+            "at": 6.014
+          },
+          {
+            "pose": "point_up",
+            "at": 7.988
+          },
+          {
+            "pose": "point_up",
+            "at": 9.856
+          },
+          {
+            "pose": "shock",
+            "at": 10.801
+          },
+          {
+            "pose": "point_up",
+            "at": 12.411
+          },
+          {
+            "pose": "point_up",
+            "at": 14.709
+          },
+          {
+            "pose": "point",
+            "at": 15.387
+          },
+          {
+            "pose": "point_up",
+            "at": 16.846
+          },
+          {
+            "pose": "point_up",
+            "at": 18.622
+          },
+          {
+            "pose": "talk",
+            "at": 21.025
+          },
+          {
+            "pose": "talk",
+            "at": 23.405
+          },
+          {
+            "pose": "talk",
+            "at": 25.588
+          },
+          {
+            "pose": "talk",
+            "at": 27.376
+          },
+          {
+            "pose": "point_up",
+            "at": 29.199
+          },
+          {
+            "pose": "point",
+            "at": 30.143
+          },
+          {
+            "pose": "point_up",
+            "at": 30.976
+          }
+        ]
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 3.723,
+      "duration": 1.335,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/03-top.png",
+        "url": "https://apnews.com/article/1f060e52b308cb2c649807518d5081e2",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              40,
+              430,
+              980,
+              192
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Jensen Huang",
+            "sub": "Nvidia chief executive"
+          }
+        ],
+        "headline": [
+          40,
+          430,
+          980,
+          192
+        ],
+        "photo": null
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 5.058,
+      "duration": 2.694,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/06-full.png",
+        "url": "https://www.investing.com/news/stock-market-news/spacex-and-teslas-terafab-targets-2028-for-volume-chip-production-musk-says-4961351",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              108,
+              1450.78125,
+              764,
+              108
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "1 terawatt",
+            "sub": "Planned AI computing power"
+          }
+        ],
+        "headline": [
+          40,
+          487,
+          900,
+          120
+        ],
+        "photo": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/06-photo.png"
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 7.752,
+      "duration": 1.9739999999999993,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/03-full.png",
+        "url": "https://apnews.com/article/1f060e52b308cb2c649807518d5081e2",
+        "edge": "fade",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              170,
+              1581.34375,
+              720,
+              111.5625
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Bigger story",
+            "sub": "Affair draws scrutiny"
+          }
+        ],
+        "headline": [
+          40,
+          430,
+          980,
+          192
+        ],
+        "photo": null
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 9.725999999999999,
+      "duration": 1.868000000000002,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/03-full.png",
+        "url": "https://apnews.com/article/1f060e52b308cb2c649807518d5081e2",
+        "edge": "fade",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              170,
+              1581.34375,
+              720,
+              111.5625
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Bigger story",
+            "sub": "Affair draws scrutiny"
+          }
+        ],
+        "headline": [
+          40,
+          430,
+          980,
+          192
+        ],
+        "photo": null,
+        "zoomed": true
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 11.594000000000001,
+      "duration": 2.5549999999999997,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/03-full.png",
+        "url": "https://apnews.com/article/1f060e52b308cb2c649807518d5081e2",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              170,
+              1477.671875,
+              720,
+              83.671875
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Affair acknowledged",
+            "sub": "Huang apologized publicly"
+          }
+        ],
+        "headline": [
+          40,
+          430,
+          980,
+          192
+        ],
+        "photo": null
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 14.149000000000001,
+      "duration": 2.2979999999999983,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/03-full.png",
+        "url": "https://apnews.com/article/1f060e52b308cb2c649807518d5081e2",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              170,
+              1712.90625,
+              720,
+              83.671875
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Suspected operative",
+            "sub": "Reports described the woman"
+          }
+        ],
+        "headline": [
+          40,
+          430,
+          980,
+          192
+        ],
+        "photo": null
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 16.447,
+      "duration": 2.1370000000000005,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/03-full.png",
+        "url": "https://apnews.com/article/1f060e52b308cb2c649807518d5081e2",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              170,
+              4246.078125,
+              720,
+              83.671875
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Chinese intelligence",
+            "sub": "Reported information gathering"
+          }
+        ],
+        "headline": [
+          40,
+          430,
+          980,
+          192
+        ],
+        "photo": null
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 18.584,
+      "duration": 1.7759999999999998,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/03-full.png",
+        "url": "https://apnews.com/article/1f060e52b308cb2c649807518d5081e2",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              170,
+              3236.15625,
+              720,
+              167.34375
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Independent investigation",
+            "sub": "Board retained investigators"
+          }
+        ],
+        "headline": [
+          40,
+          430,
+          980,
+          192
+        ],
+        "photo": null
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 20.36,
+      "duration": 2.4029999999999987,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/03-full.png",
+        "url": "https://apnews.com/article/1f060e52b308cb2c649807518d5081e2",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              170,
+              3236.15625,
+              720,
+              167.34375
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Independent investigation",
+            "sub": "Board retained investigators"
+          }
+        ],
+        "headline": [
+          40,
+          430,
+          980,
+          192
+        ],
+        "photo": null,
+        "zoomed": true
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 22.762999999999998,
+      "duration": 2.3800000000000026,
+      "in": "cut",
+      "data": {
+        "words": [
+          {
+            "text": "nobody",
+            "at": 0.411
+          },
+          {
+            "text": "proved",
+            "at": 1.13
+          },
+          {
+            "text": "spy,",
+            "at": 1.99
+          }
+        ],
+        "punch": "nobody"
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 25.143,
+      "duration": 2.183,
+      "in": "cut",
+      "data": {
+        "words": [
+          {
+            "text": "Huang",
+            "at": 0.12
+          },
+          {
+            "text": "knew,",
+            "at": 0.422
+          },
+          {
+            "text": "technology",
+            "at": 1.595
+          }
+        ],
+        "punch": "technology"
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 27.326,
+      "duration": 1.7880000000000003,
+      "in": "cut",
+      "data": {
+        "words": [
+          {
+            "text": "changed",
+            "at": 0.05
+          },
+          {
+            "text": "hands.",
+            "at": 0.422
+          }
+        ],
+        "punch": "changed"
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 29.114,
+      "duration": 1.8229999999999968,
+      "in": "cut",
+      "data": {
+        "words": [
+          {
+            "text": "CHINA",
+            "at": 0.15
+          },
+          {
+            "text": "REJECTED",
+            "at": 0.526
+          },
+          {
+            "text": "CLAIM",
+            "at": 1.165
+          }
+        ],
+        "punch": "rejected"
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 30.936999999999998,
+      "duration": 1.7770000000000081,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/03-full.png",
+        "url": "https://apnews.com/article/1f060e52b308cb2c649807518d5081e2",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              170,
+              3423.5,
+              720,
+              139.453125
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Shareholder lawsuit",
+            "sub": "Complaint seeks damages"
+          }
+        ],
+        "headline": [
+          40,
+          430,
+          980,
+          192
+        ],
+        "photo": null
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 32.714000000000006,
+      "duration": 1.7639999999999958,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/03-full.png",
+        "url": "https://apnews.com/article/1f060e52b308cb2c649807518d5081e2",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              170,
+              3423.5,
+              720,
+              139.453125
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Shareholder lawsuit",
+            "sub": "Complaint seeks damages"
+          }
+        ],
+        "headline": [
+          40,
+          430,
+          980,
+          192
+        ],
+        "photo": null,
+        "zoomed": true
+      }
+    },
+    {
+      "type": "host",
+      "start": 34.478,
+      "duration": 2.1709999999999994,
+      "data": {
+        "place": "studio",
+        "cues": [
+          {
+            "start": 0.122,
+            "value": "F"
+          },
+          {
+            "start": 0.322,
+            "value": "B"
+          },
+          {
+            "start": 0.589,
+            "value": "X"
+          },
+          {
+            "start": 0.622,
+            "value": "B"
+          },
+          {
+            "start": 0.755,
+            "value": "A"
+          },
+          {
+            "start": 0.822,
+            "value": "C"
+          },
+          {
+            "start": 0.889,
+            "value": "B"
+          },
+          {
+            "start": 0.922,
+            "value": "E"
+          },
+          {
+            "start": 1.122,
+            "value": "X"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "talk",
+            "at": 0
+          },
+          {
+            "pose": "think",
+            "at": 0.817
+          }
+        ],
+        "words": [
+          {
+            "text": "WHY",
+            "at": 0.15
+          },
+          {
+            "text": "DOES",
+            "at": 0.434
+          },
+          {
+            "text": "THIS",
+            "at": 0.619
+          },
+          {
+            "text": "MATTER?",
+            "at": 0.817
+          }
+        ],
+        "punch": "why"
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 36.649,
+      "duration": 1.6950000000000003,
+      "in": "cut",
+      "data": {
+        "words": [
+          {
+            "text": "CHIP",
+            "at": 0.793
+          },
+          {
+            "text": "DESIGN",
+            "at": 1.061
+          }
+        ],
+        "punch": "needs"
+      }
+    },
+    {
+      "type": "host",
+      "start": 36.649,
+      "duration": 30.301999999999992,
+      "data": {
+        "place": "side",
+        "cues": [
+          {
+            "start": 0.151,
+            "value": "C"
+          },
+          {
+            "start": 0.384,
+            "value": "B"
+          },
+          {
+            "start": 0.651,
+            "value": "F"
+          },
+          {
+            "start": 0.784,
+            "value": "X"
+          },
+          {
+            "start": 0.818,
+            "value": "F"
+          },
+          {
+            "start": 0.984,
+            "value": "X"
+          },
+          {
+            "start": 1.051,
+            "value": "F"
+          },
+          {
+            "start": 1.084,
+            "value": "B"
+          },
+          {
+            "start": 1.218,
+            "value": "C"
+          },
+          {
+            "start": 1.284,
+            "value": "B"
+          },
+          {
+            "start": 1.551,
+            "value": "X"
+          },
+          {
+            "start": 1.884,
+            "value": "C"
+          },
+          {
+            "start": 1.918,
+            "value": "A"
+          },
+          {
+            "start": 2.018,
+            "value": "B"
+          },
+          {
+            "start": 2.151,
+            "value": "X"
+          },
+          {
+            "start": 2.184,
+            "value": "B"
+          },
+          {
+            "start": 2.684,
+            "value": "X"
+          },
+          {
+            "start": 2.984,
+            "value": "A"
+          },
+          {
+            "start": 3.084,
+            "value": "C"
+          },
+          {
+            "start": 3.151,
+            "value": "A"
+          },
+          {
+            "start": 3.218,
+            "value": "E"
+          },
+          {
+            "start": 3.384,
+            "value": "B"
+          },
+          {
+            "start": 3.484,
+            "value": "X"
+          },
+          {
+            "start": 4.084,
+            "value": "C"
+          },
+          {
+            "start": 4.151,
+            "value": "B"
+          },
+          {
+            "start": 4.718,
+            "value": "X"
+          },
+          {
+            "start": 5.118,
+            "value": "B"
+          },
+          {
+            "start": 5.251,
+            "value": "E"
+          },
+          {
+            "start": 5.384,
+            "value": "G"
+          },
+          {
+            "start": 5.451,
+            "value": "E"
+          },
+          {
+            "start": 5.651,
+            "value": "B"
+          },
+          {
+            "start": 5.784,
+            "value": "X"
+          },
+          {
+            "start": 6.284,
+            "value": "C"
+          },
+          {
+            "start": 6.451,
+            "value": "E"
+          },
+          {
+            "start": 6.784,
+            "value": "X"
+          },
+          {
+            "start": 7.318,
+            "value": "F"
+          },
+          {
+            "start": 7.484,
+            "value": "B"
+          },
+          {
+            "start": 7.718,
+            "value": "C"
+          },
+          {
+            "start": 7.918,
+            "value": "B"
+          },
+          {
+            "start": 7.984,
+            "value": "C"
+          },
+          {
+            "start": 8.251,
+            "value": "B"
+          },
+          {
+            "start": 8.351,
+            "value": "C"
+          },
+          {
+            "start": 8.484,
+            "value": "E"
+          },
+          {
+            "start": 8.551,
+            "value": "B"
+          },
+          {
+            "start": 8.584,
+            "value": "X"
+          },
+          {
+            "start": 8.618,
+            "value": "B"
+          },
+          {
+            "start": 8.684,
+            "value": "X"
+          },
+          {
+            "start": 9.718,
+            "value": "F"
+          },
+          {
+            "start": 9.751,
+            "value": "C"
+          },
+          {
+            "start": 9.818,
+            "value": "A"
+          },
+          {
+            "start": 9.884,
+            "value": "D"
+          },
+          {
+            "start": 9.984,
+            "value": "B"
+          },
+          {
+            "start": 10.051,
+            "value": "C"
+          },
+          {
+            "start": 10.184,
+            "value": "B"
+          },
+          {
+            "start": 10.284,
+            "value": "X"
+          },
+          {
+            "start": 10.318,
+            "value": "B"
+          },
+          {
+            "start": 10.551,
+            "value": "F"
+          },
+          {
+            "start": 10.718,
+            "value": "X"
+          },
+          {
+            "start": 10.751,
+            "value": "F"
+          },
+          {
+            "start": 10.818,
+            "value": "B"
+          },
+          {
+            "start": 11.051,
+            "value": "X"
+          },
+          {
+            "start": 11.084,
+            "value": "B"
+          },
+          {
+            "start": 11.118,
+            "value": "A"
+          },
+          {
+            "start": 11.184,
+            "value": "F"
+          },
+          {
+            "start": 11.251,
+            "value": "X"
+          },
+          {
+            "start": 11.284,
+            "value": "F"
+          },
+          {
+            "start": 11.384,
+            "value": "E"
+          },
+          {
+            "start": 11.451,
+            "value": "X"
+          },
+          {
+            "start": 11.518,
+            "value": "C"
+          },
+          {
+            "start": 11.618,
+            "value": "E"
+          },
+          {
+            "start": 11.684,
+            "value": "G"
+          },
+          {
+            "start": 11.718,
+            "value": "X"
+          },
+          {
+            "start": 11.784,
+            "value": "C"
+          },
+          {
+            "start": 11.951,
+            "value": "B"
+          },
+          {
+            "start": 12.084,
+            "value": "X"
+          },
+          {
+            "start": 12.118,
+            "value": "B"
+          },
+          {
+            "start": 12.151,
+            "value": "X"
+          },
+          {
+            "start": 12.284,
+            "value": "C"
+          },
+          {
+            "start": 12.318,
+            "value": "B"
+          },
+          {
+            "start": 12.518,
+            "value": "A"
+          },
+          {
+            "start": 12.551,
+            "value": "X"
+          },
+          {
+            "start": 12.618,
+            "value": "B"
+          },
+          {
+            "start": 12.684,
+            "value": "C"
+          },
+          {
+            "start": 12.751,
+            "value": "B"
+          },
+          {
+            "start": 12.984,
+            "value": "X"
+          },
+          {
+            "start": 14.051,
+            "value": "C"
+          },
+          {
+            "start": 14.084,
+            "value": "E"
+          },
+          {
+            "start": 14.151,
+            "value": "F"
+          },
+          {
+            "start": 14.218,
+            "value": "C"
+          },
+          {
+            "start": 14.284,
+            "value": "B"
+          },
+          {
+            "start": 14.351,
+            "value": "C"
+          },
+          {
+            "start": 14.384,
+            "value": "X"
+          },
+          {
+            "start": 14.418,
+            "value": "C"
+          },
+          {
+            "start": 14.551,
+            "value": "B"
+          },
+          {
+            "start": 14.618,
+            "value": "C"
+          },
+          {
+            "start": 14.684,
+            "value": "X"
+          },
+          {
+            "start": 14.751,
+            "value": "C"
+          },
+          {
+            "start": 14.851,
+            "value": "B"
+          },
+          {
+            "start": 14.984,
+            "value": "X"
+          },
+          {
+            "start": 15.518,
+            "value": "A"
+          },
+          {
+            "start": 15.618,
+            "value": "D"
+          },
+          {
+            "start": 15.718,
+            "value": "B"
+          },
+          {
+            "start": 15.918,
+            "value": "X"
+          },
+          {
+            "start": 15.984,
+            "value": "A"
+          },
+          {
+            "start": 16.051,
+            "value": "E"
+          },
+          {
+            "start": 16.084,
+            "value": "X"
+          },
+          {
+            "start": 16.118,
+            "value": "E"
+          },
+          {
+            "start": 16.151,
+            "value": "F"
+          },
+          {
+            "start": 16.284,
+            "value": "A"
+          },
+          {
+            "start": 16.318,
+            "value": "X"
+          },
+          {
+            "start": 16.418,
+            "value": "B"
+          },
+          {
+            "start": 16.451,
+            "value": "D"
+          },
+          {
+            "start": 16.518,
+            "value": "B"
+          },
+          {
+            "start": 16.651,
+            "value": "X"
+          },
+          {
+            "start": 16.751,
+            "value": "E"
+          },
+          {
+            "start": 16.784,
+            "value": "B"
+          },
+          {
+            "start": 16.918,
+            "value": "A"
+          },
+          {
+            "start": 17.018,
+            "value": "X"
+          },
+          {
+            "start": 17.084,
+            "value": "C"
+          },
+          {
+            "start": 17.151,
+            "value": "B"
+          },
+          {
+            "start": 17.218,
+            "value": "D"
+          },
+          {
+            "start": 17.351,
+            "value": "B"
+          },
+          {
+            "start": 17.451,
+            "value": "A"
+          },
+          {
+            "start": 17.518,
+            "value": "B"
+          },
+          {
+            "start": 17.618,
+            "value": "X"
+          },
+          {
+            "start": 17.951,
+            "value": "A"
+          },
+          {
+            "start": 17.984,
+            "value": "C"
+          },
+          {
+            "start": 18.084,
+            "value": "A"
+          },
+          {
+            "start": 18.151,
+            "value": "E"
+          },
+          {
+            "start": 18.284,
+            "value": "B"
+          },
+          {
+            "start": 18.418,
+            "value": "H"
+          },
+          {
+            "start": 18.484,
+            "value": "D"
+          },
+          {
+            "start": 18.651,
+            "value": "B"
+          },
+          {
+            "start": 18.784,
+            "value": "G"
+          },
+          {
+            "start": 18.818,
+            "value": "X"
+          },
+          {
+            "start": 18.884,
+            "value": "C"
+          },
+          {
+            "start": 18.918,
+            "value": "A"
+          },
+          {
+            "start": 19.018,
+            "value": "C"
+          },
+          {
+            "start": 19.084,
+            "value": "X"
+          },
+          {
+            "start": 19.118,
+            "value": "C"
+          },
+          {
+            "start": 19.218,
+            "value": "B"
+          },
+          {
+            "start": 19.351,
+            "value": "C"
+          },
+          {
+            "start": 19.484,
+            "value": "B"
+          },
+          {
+            "start": 19.518,
+            "value": "X"
+          },
+          {
+            "start": 19.884,
+            "value": "C"
+          },
+          {
+            "start": 19.918,
+            "value": "A"
+          },
+          {
+            "start": 19.984,
+            "value": "C"
+          },
+          {
+            "start": 20.118,
+            "value": "B"
+          },
+          {
+            "start": 20.551,
+            "value": "X"
+          },
+          {
+            "start": 21.218,
+            "value": "D"
+          },
+          {
+            "start": 21.318,
+            "value": "B"
+          },
+          {
+            "start": 21.651,
+            "value": "F"
+          },
+          {
+            "start": 21.751,
+            "value": "C"
+          },
+          {
+            "start": 21.984,
+            "value": "X"
+          },
+          {
+            "start": 22.018,
+            "value": "B"
+          },
+          {
+            "start": 22.084,
+            "value": "C"
+          },
+          {
+            "start": 22.151,
+            "value": "E"
+          },
+          {
+            "start": 22.284,
+            "value": "B"
+          },
+          {
+            "start": 22.451,
+            "value": "X"
+          },
+          {
+            "start": 22.484,
+            "value": "B"
+          },
+          {
+            "start": 22.518,
+            "value": "A"
+          },
+          {
+            "start": 22.584,
+            "value": "F"
+          },
+          {
+            "start": 22.818,
+            "value": "X"
+          },
+          {
+            "start": 22.851,
+            "value": "B"
+          },
+          {
+            "start": 22.884,
+            "value": "X"
+          },
+          {
+            "start": 24.018,
+            "value": "C"
+          },
+          {
+            "start": 24.051,
+            "value": "B"
+          },
+          {
+            "start": 24.151,
+            "value": "X"
+          },
+          {
+            "start": 24.251,
+            "value": "G"
+          },
+          {
+            "start": 24.318,
+            "value": "B"
+          },
+          {
+            "start": 24.651,
+            "value": "F"
+          },
+          {
+            "start": 24.718,
+            "value": "E"
+          },
+          {
+            "start": 24.851,
+            "value": "B"
+          },
+          {
+            "start": 24.984,
+            "value": "X"
+          },
+          {
+            "start": 25.018,
+            "value": "B"
+          },
+          {
+            "start": 25.151,
+            "value": "A"
+          },
+          {
+            "start": 25.251,
+            "value": "B"
+          },
+          {
+            "start": 25.484,
+            "value": "X"
+          },
+          {
+            "start": 25.551,
+            "value": "C"
+          },
+          {
+            "start": 25.751,
+            "value": "F"
+          },
+          {
+            "start": 25.884,
+            "value": "E"
+          },
+          {
+            "start": 26.084,
+            "value": "G"
+          },
+          {
+            "start": 26.151,
+            "value": "X"
+          },
+          {
+            "start": 26.218,
+            "value": "G"
+          },
+          {
+            "start": 26.251,
+            "value": "B"
+          },
+          {
+            "start": 26.451,
+            "value": "X"
+          },
+          {
+            "start": 27.318,
+            "value": "B"
+          },
+          {
+            "start": 27.484,
+            "value": "F"
+          },
+          {
+            "start": 27.551,
+            "value": "E"
+          },
+          {
+            "start": 27.684,
+            "value": "C"
+          },
+          {
+            "start": 27.718,
+            "value": "X"
+          },
+          {
+            "start": 27.751,
+            "value": "B"
+          },
+          {
+            "start": 27.851,
+            "value": "A"
+          },
+          {
+            "start": 27.951,
+            "value": "C"
+          },
+          {
+            "start": 27.984,
+            "value": "B"
+          },
+          {
+            "start": 28.118,
+            "value": "X"
+          },
+          {
+            "start": 28.151,
+            "value": "B"
+          },
+          {
+            "start": 28.251,
+            "value": "C"
+          },
+          {
+            "start": 28.384,
+            "value": "X"
+          },
+          {
+            "start": 28.418,
+            "value": "C"
+          },
+          {
+            "start": 28.551,
+            "value": "B"
+          },
+          {
+            "start": 28.618,
+            "value": "C"
+          },
+          {
+            "start": 28.818,
+            "value": "B"
+          },
+          {
+            "start": 29.018,
+            "value": "A"
+          },
+          {
+            "start": 29.118,
+            "value": "X"
+          },
+          {
+            "start": 29.151,
+            "value": "H"
+          },
+          {
+            "start": 29.251,
+            "value": "D"
+          },
+          {
+            "start": 29.384,
+            "value": "B"
+          },
+          {
+            "start": 29.451,
+            "value": "X"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "talk",
+            "at": 0.0
+          },
+          {
+            "pose": "point_up",
+            "at": 1.695
+          },
+          {
+            "pose": "talk",
+            "at": 3.901
+          },
+          {
+            "pose": "point_up",
+            "at": 6.13
+          },
+          {
+            "pose": "point_up",
+            "at": 7.768
+          },
+          {
+            "pose": "talk",
+            "at": 9.567
+          },
+          {
+            "pose": "talk",
+            "at": 11.413
+          },
+          {
+            "pose": "point_up",
+            "at": 13.874
+          },
+          {
+            "pose": "point_up",
+            "at": 15.453
+          },
+          {
+            "pose": "point_up",
+            "at": 17.856
+          },
+          {
+            "pose": "talk",
+            "at": 19.679
+          },
+          {
+            "pose": "shock",
+            "at": 21.803
+          },
+          {
+            "pose": "point_up",
+            "at": 23.858
+          },
+          {
+            "pose": "point_up",
+            "at": 25.484
+          },
+          {
+            "pose": "shock",
+            "at": 26.161
+          },
+          {
+            "pose": "talk",
+            "at": 27.109
+          },
+          {
+            "pose": "talk",
+            "at": 28.723
+          }
+        ]
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 38.344,
+      "duration": 2.206000000000003,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/06-full.png",
+        "url": "https://www.investing.com/news/stock-market-news/spacex-and-teslas-terafab-targets-2028-for-volume-chip-production-musk-says-4961351",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              108,
+              1573.78125,
+              764,
+              81
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Fabrication",
+            "sub": "Advanced chip manufacturing"
+          }
+        ],
+        "headline": [
+          40,
+          487,
+          900,
+          120
+        ],
+        "photo": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/06-photo.png"
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 40.550000000000004,
+      "duration": 2.228999999999999,
+      "in": "cut",
+      "data": {
+        "words": [
+          {
+            "text": "packaging,",
+            "at": 0.12
+          },
+          {
+            "text": "servers,",
+            "at": 1.281
+          }
+        ],
+        "punch": "packaging"
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 42.779,
+      "duration": 1.6379999999999981,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/07-full.png",
+        "url": "https://www.energy.gov/articles/doe-releases-new-report-evaluating-increase-electricity-demand-data-centers",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              170.671875,
+              1297.09375,
+              1088,
+              86.390625
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "4.4%",
+            "sub": "U.S. electricity in 2023"
+          }
+        ],
+        "headline": [
+          170.671875,
+          204.03125,
+          1088,
+          222
+        ],
+        "photo": null
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 44.417,
+      "duration": 1.7989999999999995,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/07-full.png",
+        "url": "https://www.energy.gov/articles/doe-releases-new-report-evaluating-increase-electricity-demand-data-centers",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              170.671875,
+              1297.09375,
+              1088,
+              86.390625
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "4.4%",
+            "sub": "U.S. electricity in 2023"
+          }
+        ],
+        "headline": [
+          170.671875,
+          204.03125,
+          1088,
+          222
+        ],
+        "photo": null,
+        "zoomed": true
+      }
+    },
+    {
+      "type": "flow",
+      "start": 46.216,
+      "duration": 1.8460000000000036,
+      "in": "wipe",
+      "data": {
+        "nodes": [
+          "Bottleneck",
+          "Compute access",
+          "Who gets it"
+        ],
+        "brands": []
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 48.062000000000005,
+      "duration": 2.4609999999999985,
+      "in": "cut",
+      "data": {
+        "words": [
+          {
+            "text": "fast,",
+            "at": 0.317
+          },
+          {
+            "text": "price.",
+            "at": 1.188
+          }
+        ],
+        "punch": "price"
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 50.523,
+      "duration": 1.5790000000000006,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/06-top.png",
+        "url": "https://www.investing.com/news/stock-market-news/spacex-and-teslas-terafab-targets-2028-for-volume-chip-production-musk-says-4961351",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              40,
+              487,
+              900,
+              120
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Terafab",
+            "sub": "SpaceX-Tesla chip venture"
+          }
+        ],
+        "headline": [
+          40,
+          487,
+          900,
+          120
+        ],
+        "photo": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/06-photo.png"
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 52.102000000000004,
+      "duration": 2.4029999999999987,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/06-full.png",
+        "url": "https://www.investing.com/news/stock-market-news/spacex-and-teslas-terafab-targets-2028-for-volume-chip-production-musk-says-4961351",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              108,
+              1285.78125,
+              764,
+              81
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Musk's project",
+            "sub": "SpaceX-Tesla joint venture"
+          }
+        ],
+        "headline": [
+          40,
+          487,
+          900,
+          120
+        ],
+        "photo": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/06-photo.png"
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 54.505,
+      "duration": 1.8230000000000004,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/06-full.png",
+        "url": "https://www.investing.com/news/stock-market-news/spacex-and-teslas-terafab-targets-2028-for-volume-chip-production-musk-says-4961351",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              108,
+              1573.78125,
+              764,
+              81
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Logic and memory",
+            "sub": "Chips made in one facility"
+          }
+        ],
+        "headline": [
+          40,
+          487,
+          900,
+          120
+        ],
+        "photo": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/06-photo.png"
+      }
+    },
+    {
+      "type": "photo",
+      "start": 56.328,
+      "duration": 2.1240000000000023,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/06-photo.png",
+        "url": "https://www.investing.com/news/stock-market-news/spacex-and-teslas-terafab-targets-2028-for-volume-chip-production-musk-says-4961351"
+      }
+    },
+    {
+      "type": "stat_counter",
+      "start": 58.452000000000005,
+      "duration": 2.0549999999999997,
+      "in": "whip",
+      "data": {
+        "value": 1.0,
+        "prefix": "",
+        "suffix": " terawatt",
+        "decimals": 0,
+        "label": "Targeted compute"
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 60.507000000000005,
+      "duration": 1.6259999999999977,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/06-full.png",
+        "url": "https://www.investing.com/news/stock-market-news/spacex-and-teslas-terafab-targets-2028-for-volume-chip-production-musk-says-4961351",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              108,
+              1381.78125,
+              764,
+              54
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Big error bars",
+            "sub": "Timeline may not happen"
+          }
+        ],
+        "headline": [
+          40,
+          487,
+          900,
+          120
+        ],
+        "photo": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/06-photo.png"
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 62.133,
+      "duration": 1.625,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/06-full.png",
+        "url": "https://www.investing.com/news/stock-market-news/spacex-and-teslas-terafab-targets-2028-for-volume-chip-production-musk-says-4961351",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              108,
+              1381.78125,
+              764,
+              54
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Big error bars",
+            "sub": "Timeline may not happen"
+          }
+        ],
+        "headline": [
+          40,
+          487,
+          900,
+          120
+        ],
+        "photo": "/home/runner/work/golide-content-engine/golide-content-engine/build/edit-rerun/golide-short-2026-11-11/sources/06-photo.png",
+        "zoomed": true
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 63.758,
+      "duration": 1.6139999999999972,
+      "in": "cut",
+      "data": {
+        "words": [
+          {
+            "text": "If",
+            "at": 0.12
+          },
+          {
+            "text": "works,",
+            "at": 0.399
+          },
+          {
+            "text": "Musk-linked",
+            "at": 0.77
+          },
+          {
+            "text": "AI",
+            "at": 1.362
+          }
+        ],
+        "punch": "musk-linked"
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 65.372,
+      "duration": 1.5789999999999935,
+      "in": "cut",
+      "data": {
+        "words": [
+          {
+            "text": "gets",
+            "at": 0.05
+          },
+          {
+            "text": "supply.",
+            "at": 0.271
+          }
+        ],
+        "punch": "supply"
+      }
+    },
+    {
+      "type": "host",
+      "start": 66.951,
+      "duration": 1.972999999999999,
+      "data": {
+        "place": "studio",
+        "cues": [
+          {
+            "start": 0.082,
+            "value": "E"
+          },
+          {
+            "start": 0.282,
+            "value": "F"
+          },
+          {
+            "start": 0.349,
+            "value": "B"
+          },
+          {
+            "start": 0.416,
+            "value": "F"
+          },
+          {
+            "start": 0.616,
+            "value": "A"
+          },
+          {
+            "start": 0.749,
+            "value": "B"
+          },
+          {
+            "start": 1.249,
+            "value": "X"
+          },
+          {
+            "start": 1.316,
+            "value": "E"
+          },
+          {
+            "start": 1.582,
+            "value": "X"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "talk",
+            "at": 0
+          },
+          {
+            "pose": "think",
+            "at": 0.712
+          }
+        ],
+        "words": [
+          {
+            "text": "DON'T",
+            "at": 0.15
+          },
+          {
+            "text": "ASSUME",
+            "at": 0.387
+          },
+          {
+            "text": "LOWER",
+            "at": 0.647
+          },
+          {
+            "text": "PRICES",
+            "at": 0.727
+          }
+        ],
+        "punch": "don't"
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 68.92399999999999,
+      "duration": 2.311000000000007,
+      "in": "cut",
+      "data": {
+        "words": [
+          {
+            "text": "reserved",
+            "at": 0.12
+          },
+          {
+            "text": "capacity",
+            "at": 0.538
+          },
+          {
+            "text": "squeeze",
+            "at": 1.246
+          },
+          {
+            "text": "rivals,",
+            "at": 1.63
+          }
+        ],
+        "punch": "reserved"
+      }
+    },
+    {
+      "type": "host",
+      "start": 68.92399999999999,
+      "duration": 11.227000000000004,
+      "data": {
+        "place": "lower",
+        "cues": [
+          {
+            "start": 0.109,
+            "value": "B"
+          },
+          {
+            "start": 0.309,
+            "value": "E"
+          },
+          {
+            "start": 0.443,
+            "value": "B"
+          },
+          {
+            "start": 0.509,
+            "value": "A"
+          },
+          {
+            "start": 0.543,
+            "value": "X"
+          },
+          {
+            "start": 0.576,
+            "value": "A"
+          },
+          {
+            "start": 0.609,
+            "value": "C"
+          },
+          {
+            "start": 0.643,
+            "value": "X"
+          },
+          {
+            "start": 0.676,
+            "value": "C"
+          },
+          {
+            "start": 0.843,
+            "value": "B"
+          },
+          {
+            "start": 0.976,
+            "value": "F"
+          },
+          {
+            "start": 1.176,
+            "value": "B"
+          },
+          {
+            "start": 1.343,
+            "value": "F"
+          },
+          {
+            "start": 1.409,
+            "value": "B"
+          },
+          {
+            "start": 1.676,
+            "value": "C"
+          },
+          {
+            "start": 1.743,
+            "value": "B"
+          },
+          {
+            "start": 2.109,
+            "value": "X"
+          },
+          {
+            "start": 2.509,
+            "value": "F"
+          },
+          {
+            "start": 2.576,
+            "value": "B"
+          },
+          {
+            "start": 2.676,
+            "value": "H"
+          },
+          {
+            "start": 2.809,
+            "value": "B"
+          },
+          {
+            "start": 2.876,
+            "value": "C"
+          },
+          {
+            "start": 3.009,
+            "value": "X"
+          },
+          {
+            "start": 3.043,
+            "value": "A"
+          },
+          {
+            "start": 3.076,
+            "value": "C"
+          },
+          {
+            "start": 3.143,
+            "value": "X"
+          },
+          {
+            "start": 3.176,
+            "value": "C"
+          },
+          {
+            "start": 3.276,
+            "value": "B"
+          },
+          {
+            "start": 3.543,
+            "value": "X"
+          },
+          {
+            "start": 3.576,
+            "value": "B"
+          },
+          {
+            "start": 3.976,
+            "value": "D"
+          },
+          {
+            "start": 4.043,
+            "value": "X"
+          },
+          {
+            "start": 4.076,
+            "value": "C"
+          },
+          {
+            "start": 4.143,
+            "value": "A"
+          },
+          {
+            "start": 4.209,
+            "value": "B"
+          },
+          {
+            "start": 4.243,
+            "value": "X"
+          },
+          {
+            "start": 4.276,
+            "value": "B"
+          },
+          {
+            "start": 4.509,
+            "value": "C"
+          },
+          {
+            "start": 4.676,
+            "value": "X"
+          },
+          {
+            "start": 4.709,
+            "value": "B"
+          },
+          {
+            "start": 4.743,
+            "value": "X"
+          },
+          {
+            "start": 5.743,
+            "value": "B"
+          },
+          {
+            "start": 5.876,
+            "value": "C"
+          },
+          {
+            "start": 5.943,
+            "value": "G"
+          },
+          {
+            "start": 6.009,
+            "value": "E"
+          },
+          {
+            "start": 6.076,
+            "value": "A"
+          },
+          {
+            "start": 6.143,
+            "value": "B"
+          },
+          {
+            "start": 6.209,
+            "value": "C"
+          },
+          {
+            "start": 6.343,
+            "value": "X"
+          },
+          {
+            "start": 6.376,
+            "value": "C"
+          },
+          {
+            "start": 6.409,
+            "value": "X"
+          },
+          {
+            "start": 6.443,
+            "value": "C"
+          },
+          {
+            "start": 6.609,
+            "value": "A"
+          },
+          {
+            "start": 6.676,
+            "value": "B"
+          },
+          {
+            "start": 6.776,
+            "value": "C"
+          },
+          {
+            "start": 6.843,
+            "value": "X"
+          },
+          {
+            "start": 6.876,
+            "value": "C"
+          },
+          {
+            "start": 6.976,
+            "value": "B"
+          },
+          {
+            "start": 7.076,
+            "value": "X"
+          },
+          {
+            "start": 7.143,
+            "value": "B"
+          },
+          {
+            "start": 7.243,
+            "value": "A"
+          },
+          {
+            "start": 7.376,
+            "value": "B"
+          },
+          {
+            "start": 7.443,
+            "value": "A"
+          },
+          {
+            "start": 7.543,
+            "value": "E"
+          },
+          {
+            "start": 7.576,
+            "value": "X"
+          },
+          {
+            "start": 7.609,
+            "value": "E"
+          },
+          {
+            "start": 7.709,
+            "value": "B"
+          },
+          {
+            "start": 7.776,
+            "value": "A"
+          },
+          {
+            "start": 7.876,
+            "value": "B"
+          },
+          {
+            "start": 7.943,
+            "value": "H"
+          },
+          {
+            "start": 7.976,
+            "value": "B"
+          },
+          {
+            "start": 8.043,
+            "value": "C"
+          },
+          {
+            "start": 8.176,
+            "value": "B"
+          },
+          {
+            "start": 8.609,
+            "value": "A"
+          },
+          {
+            "start": 8.676,
+            "value": "E"
+          },
+          {
+            "start": 8.909,
+            "value": "B"
+          },
+          {
+            "start": 8.943,
+            "value": "X"
+          },
+          {
+            "start": 9.076,
+            "value": "C"
+          },
+          {
+            "start": 9.176,
+            "value": "B"
+          },
+          {
+            "start": 9.376,
+            "value": "E"
+          },
+          {
+            "start": 9.443,
+            "value": "G"
+          },
+          {
+            "start": 9.509,
+            "value": "B"
+          },
+          {
+            "start": 9.576,
+            "value": "H"
+          },
+          {
+            "start": 9.643,
+            "value": "C"
+          },
+          {
+            "start": 9.709,
+            "value": "B"
+          },
+          {
+            "start": 9.943,
+            "value": "C"
+          },
+          {
+            "start": 10.076,
+            "value": "A"
+          },
+          {
+            "start": 10.176,
+            "value": "B"
+          },
+          {
+            "start": 10.309,
+            "value": "X"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "talk",
+            "at": 0.0
+          },
+          {
+            "pose": "explain",
+            "at": 2.311
+          },
+          {
+            "pose": "talk",
+            "at": 5.678
+          },
+          {
+            "pose": "talk",
+            "at": 7.721
+          },
+          {
+            "pose": "talk",
+            "at": 9.242
+          }
+        ]
+      }
+    },
+    {
+      "type": "comparison",
+      "start": 71.235,
+      "duration": 3.3669999999999902,
+      "in": "wipe",
+      "data": {
+        "left": "Reserved capacity",
+        "right": "Added capacity",
+        "rows": [
+          [
+            "Effect",
+            "Squeeze rivals",
+            "Increase competition"
+          ],
+          [
+            "Supply",
+            "Restricted",
+            "Expanded"
+          ]
+        ],
+        "winners": [
+          null,
+          "right"
+        ],
+        "gap": 0.55
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 74.60199999999999,
+      "duration": 2.0430000000000064,
+      "in": "cut",
+      "data": {
+        "words": [
+          {
+            "text": "CHIPS",
+            "at": 1.397
+          },
+          {
+            "text": "POWER",
+            "at": 1.643
+          },
+          {
+            "text": "SYSTEMS",
+            "at": 1.723
+          }
+        ],
+        "punch": "strategic"
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 76.645,
+      "duration": 1.5210000000000008,
+      "in": "cut",
+      "data": {
+        "words": [
+          {
+            "text": "military,",
+            "at": 0.12
+          },
+          {
+            "text": "cyber",
+            "at": 0.747
+          }
+        ],
+        "punch": "military"
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 78.166,
+      "duration": 1.9849999999999994,
+      "in": "cut",
+      "data": {
+        "words": [
+          {
+            "text": "surveillance",
+            "at": 0.05
+          },
+          {
+            "text": "systems.",
+            "at": 0.549
+          }
+        ],
+        "punch": "surveillance"
+      }
+    },
+    {
+      "type": "host",
+      "start": 80.151,
+      "duration": 1.7420000000000044,
+      "data": {
+        "place": "studio",
+        "cues": [
+          {
+            "start": 0.182,
+            "value": "F"
+          },
+          {
+            "start": 0.216,
+            "value": "B"
+          },
+          {
+            "start": 0.282,
+            "value": "C"
+          },
+          {
+            "start": 0.416,
+            "value": "B"
+          },
+          {
+            "start": 0.549,
+            "value": "C"
+          },
+          {
+            "start": 0.782,
+            "value": "B"
+          },
+          {
+            "start": 0.849,
+            "value": "C"
+          },
+          {
+            "start": 0.949,
+            "value": "X"
+          },
+          {
+            "start": 1.016,
+            "value": "C"
+          },
+          {
+            "start": 1.116,
+            "value": "D"
+          },
+          {
+            "start": 1.416,
+            "value": "B"
+          },
+          {
+            "start": 1.549,
+            "value": "X"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "talk",
+            "at": 0
+          },
+          {
+            "pose": "point_up",
+            "at": 0.399
+          }
+        ],
+        "words": [
+          {
+            "text": "WANT",
+            "at": 0.15
+          },
+          {
+            "text": "TO",
+            "at": 0.317
+          },
+          {
+            "text": "UNDERSTAND",
+            "at": 0.399
+          },
+          {
+            "text": "AI?",
+            "at": 0.968
+          }
+        ],
+        "punch": "ai"
+      }
+    },
+    {
+      "type": "steps",
+      "start": 81.893,
+      "duration": 2.9129999999999967,
+      "in": "wipe",
+      "data": {
+        "heading": "",
+        "items": [
+          "Open description",
+          "Get the free guide",
+          "Join the community"
+        ],
+        "at": [
+          1.919,
+          0.282,
+          0.92
+        ]
+      }
+    },
+    {
+      "type": "host",
+      "start": 81.893,
+      "duration": 2.9129999999999967,
+      "data": {
+        "place": "side",
+        "cues": [
+          {
+            "start": 0.207,
+            "value": "C"
+          },
+          {
+            "start": 0.274,
+            "value": "G"
+          },
+          {
+            "start": 0.34,
+            "value": "B"
+          },
+          {
+            "start": 0.407,
+            "value": "C"
+          },
+          {
+            "start": 0.707,
+            "value": "B"
+          },
+          {
+            "start": 0.974,
+            "value": "A"
+          },
+          {
+            "start": 1.04,
+            "value": "F"
+          },
+          {
+            "start": 1.107,
+            "value": "B"
+          },
+          {
+            "start": 1.474,
+            "value": "E"
+          },
+          {
+            "start": 1.607,
+            "value": "B"
+          },
+          {
+            "start": 2.107,
+            "value": "X"
+          },
+          {
+            "start": 2.14,
+            "value": "B"
+          },
+          {
+            "start": 2.174,
+            "value": "A"
+          },
+          {
+            "start": 2.24,
+            "value": "B"
+          },
+          {
+            "start": 2.274,
+            "value": "X"
+          },
+          {
+            "start": 2.307,
+            "value": "C"
+          },
+          {
+            "start": 2.507,
+            "value": "B"
+          },
+          {
+            "start": 2.54,
+            "value": "X"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "point_up",
+            "at": 0.0
+          }
+        ]
+      }
+    },
+    {
+      "type": "follow_cta",
+      "start": 84.806,
+      "duration": 2.1829999999999927,
+      "data": {
+        "reason": "More AI explainers"
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 86.98899999999999,
+      "duration": 2.13600000000001,
+      "in": "cut",
+      "data": {
+        "words": [
+          {
+            "text": "SPY",
+            "at": 0.294
+          },
+          {
+            "text": "CLAIM",
+            "at": 0.619
+          },
+          {
+            "text": "UNPROVEN",
+            "at": 1.072
+          }
+        ],
+        "punch": "unproven"
+      }
+    },
+    {
+      "type": "host",
+      "start": 86.98899999999999,
+      "duration": 2.13600000000001,
+      "data": {
+        "place": "lower",
+        "cues": [
+          {
+            "start": 0.211,
+            "value": "B"
+          },
+          {
+            "start": 0.278,
+            "value": "A"
+          },
+          {
+            "start": 0.344,
+            "value": "C"
+          },
+          {
+            "start": 0.411,
+            "value": "X"
+          },
+          {
+            "start": 0.444,
+            "value": "C"
+          },
+          {
+            "start": 0.578,
+            "value": "H"
+          },
+          {
+            "start": 0.711,
+            "value": "B"
+          },
+          {
+            "start": 0.778,
+            "value": "A"
+          },
+          {
+            "start": 0.844,
+            "value": "B"
+          },
+          {
+            "start": 0.944,
+            "value": "D"
+          },
+          {
+            "start": 1.044,
+            "value": "X"
+          },
+          {
+            "start": 1.144,
+            "value": "C"
+          },
+          {
+            "start": 1.211,
+            "value": "A"
+          },
+          {
+            "start": 1.344,
+            "value": "X"
+          },
+          {
+            "start": 1.478,
+            "value": "F"
+          },
+          {
+            "start": 1.611,
+            "value": "C"
+          },
+          {
+            "start": 1.644,
+            "value": "X"
+          },
+          {
+            "start": 1.678,
+            "value": "C"
+          },
+          {
+            "start": 1.744,
+            "value": "B"
+          },
+          {
+            "start": 1.811,
+            "value": "X"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "talk",
+            "at": 0.0
+          }
+        ]
+      }
+    },
+    {
+      "type": "host",
+      "start": 89.125,
+      "duration": 1.9436620000000033,
+      "data": {
+        "place": "studio",
+        "cues": [
+          {
+            "start": 0.208,
+            "value": "A"
+          },
+          {
+            "start": 0.242,
+            "value": "C"
+          },
+          {
+            "start": 0.275,
+            "value": "X"
+          },
+          {
+            "start": 0.308,
+            "value": "C"
+          },
+          {
+            "start": 0.442,
+            "value": "E"
+          },
+          {
+            "start": 0.575,
+            "value": "B"
+          },
+          {
+            "start": 0.942,
+            "value": "C"
+          },
+          {
+            "start": 1.008,
+            "value": "G"
+          },
+          {
+            "start": 1.075,
+            "value": "X"
+          },
+          {
+            "start": 1.108,
+            "value": "C"
+          },
+          {
+            "start": 1.208,
+            "value": "B"
+          },
+          {
+            "start": 1.275,
+            "value": "X"
+          },
+          {
+            "start": 1.308,
+            "value": "E"
+          },
+          {
+            "start": 1.442,
+            "value": "B"
+          },
+          {
+            "start": 1.675,
+            "value": "X"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "talk",
+            "at": 0
+          },
+          {
+            "pose": "point_up",
+            "at": 1.061
+          }
+        ],
+        "words": [
+          {
+            "text": "POWER",
+            "at": 0.271
+          },
+          {
+            "text": "SITS",
+            "at": 0.631
+          },
+          {
+            "text": "IN",
+            "at": 0.875
+          },
+          {
+            "text": "FACTORIES",
+            "at": 1.061
+          }
+        ],
+        "punch": "power"
+      }
+    }
+  ],
+  "notes": [],
+  "captions": [
+    {
+      "start": -0.004,
+      "end": 1.858,
+      "words": [
+        {
+          "text": "What",
+          "at": 0.046
+        },
+        {
+          "text": "just",
+          "at": 0.348
+        },
+        {
+          "text": "happened?",
+          "at": 0.604
+        }
+      ],
+      "keys": [
+        1,
+        2
+      ]
+    },
+    {
+      "start": 1.808,
+      "end": 3.843,
+      "words": [
+        {
+          "text": "An",
+          "at": 1.858
+        },
+        {
+          "text": "alleged",
+          "at": 2.032
+        },
+        {
+          "text": "Chinese",
+          "at": 2.496
+        },
+        {
+          "text": "spy,",
+          "at": 3.088
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 3.793,
+      "end": 5.178,
+      "words": [
+        {
+          "text": "Jensen",
+          "at": 3.843
+        },
+        {
+          "text": "Huang,",
+          "at": 4.365
+        }
+      ],
+      "keys": [
+        0,
+        1
+      ]
+    },
+    {
+      "start": 5.128,
+      "end": 5.875,
+      "words": [
+        {
+          "text": "and",
+          "at": 5.178
+        },
+        {
+          "text": "a",
+          "at": 5.364
+        },
+        {
+          "text": "massive",
+          "at": 5.445
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 5.825,
+      "end": 7.872,
+      "words": [
+        {
+          "text": "AI",
+          "at": 5.875
+        },
+        {
+          "text": "chip",
+          "at": 6.246
+        },
+        {
+          "text": "project.",
+          "at": 6.49
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 7.822,
+      "end": 8.742,
+      "words": [
+        {
+          "text": "But",
+          "at": 7.872
+        },
+        {
+          "text": "there's",
+          "at": 8.081
+        },
+        {
+          "text": "a",
+          "at": 8.313
+        },
+        {
+          "text": "much",
+          "at": 8.452
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 8.692,
+      "end": 11.714,
+      "words": [
+        {
+          "text": "bigger",
+          "at": 8.742
+        },
+        {
+          "text": "story",
+          "at": 9.033
+        },
+        {
+          "text": "hiding",
+          "at": 9.416
+        },
+        {
+          "text": "underneath.",
+          "at": 9.776
+        }
+      ],
+      "keys": [
+        0,
+        1
+      ]
+    },
+    {
+      "start": 11.664,
+      "end": 13.096,
+      "words": [
+        {
+          "text": "Jensen",
+          "at": 11.714
+        },
+        {
+          "text": "Huang",
+          "at": 12.19
+        },
+        {
+          "text": "acknowledged",
+          "at": 12.539
+        }
+      ],
+      "keys": [
+        2
+      ]
+    },
+    {
+      "start": 13.046,
+      "end": 14.269,
+      "words": [
+        {
+          "text": "an",
+          "at": 13.096
+        },
+        {
+          "text": "affair.",
+          "at": 13.189
+        }
+      ],
+      "keys": [
+        0,
+        1
+      ]
+    },
+    {
+      "start": 14.219,
+      "end": 15.523,
+      "words": [
+        {
+          "text": "After",
+          "at": 14.269
+        },
+        {
+          "text": "reports",
+          "at": 14.582
+        },
+        {
+          "text": "described",
+          "at": 14.977
+        },
+        {
+          "text": "the",
+          "at": 15.418
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 15.473,
+      "end": 16.567,
+      "words": [
+        {
+          "text": "woman",
+          "at": 15.523
+        },
+        {
+          "text": "as",
+          "at": 15.79
+        },
+        {
+          "text": "a",
+          "at": 15.906
+        },
+        {
+          "text": "suspected",
+          "at": 15.987
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 16.517,
+      "end": 18.704,
+      "words": [
+        {
+          "text": "Chinese",
+          "at": 16.567
+        },
+        {
+          "text": "intelligence",
+          "at": 17.125
+        },
+        {
+          "text": "operative,",
+          "at": 17.728
+        }
+      ],
+      "keys": [
+        0,
+        1
+      ]
+    },
+    {
+      "start": 18.654,
+      "end": 19.842,
+      "words": [
+        {
+          "text": "the",
+          "at": 18.704
+        },
+        {
+          "text": "chip",
+          "at": 18.843
+        },
+        {
+          "text": "company's",
+          "at": 19.075
+        },
+        {
+          "text": "board",
+          "at": 19.516
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 19.792,
+      "end": 22.883,
+      "words": [
+        {
+          "text": "opened",
+          "at": 19.842
+        },
+        {
+          "text": "an",
+          "at": 20.236
+        },
+        {
+          "text": "independent",
+          "at": 20.41
+        },
+        {
+          "text": "investigation.",
+          "at": 21.107
+        }
+      ],
+      "keys": [
+        2,
+        3
+      ]
+    },
+    {
+      "start": 22.833,
+      "end": 24.335,
+      "words": [
+        {
+          "text": "But",
+          "at": 22.883
+        },
+        {
+          "text": "nobody",
+          "at": 23.174
+        },
+        {
+          "text": "has",
+          "at": 23.696
+        },
+        {
+          "text": "proved",
+          "at": 23.893
+        }
+      ],
+      "keys": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "start": 24.285,
+      "end": 25.263,
+      "words": [
+        {
+          "text": "she",
+          "at": 24.335
+        },
+        {
+          "text": "was",
+          "at": 24.497
+        },
+        {
+          "text": "a",
+          "at": 24.683
+        },
+        {
+          "text": "spy,",
+          "at": 24.753
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 25.213,
+      "end": 26.738,
+      "words": [
+        {
+          "text": "Huang",
+          "at": 25.263
+        },
+        {
+          "text": "knew,",
+          "at": 25.565
+        },
+        {
+          "text": "or",
+          "at": 26.378
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 26.688,
+      "end": 29.234,
+      "words": [
+        {
+          "text": "technology",
+          "at": 26.738
+        },
+        {
+          "text": "changed",
+          "at": 27.376
+        },
+        {
+          "text": "hands.",
+          "at": 27.748
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 29.184,
+      "end": 31.057,
+      "words": [
+        {
+          "text": "China",
+          "at": 29.234
+        },
+        {
+          "text": "rejected",
+          "at": 29.64
+        },
+        {
+          "text": "the",
+          "at": 30.174
+        },
+        {
+          "text": "claim,",
+          "at": 30.279
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 31.007,
+      "end": 31.881,
+      "words": [
+        {
+          "text": "and",
+          "at": 31.057
+        },
+        {
+          "text": "the",
+          "at": 31.231
+        },
+        {
+          "text": "shareholder",
+          "at": 31.335
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 31.831,
+      "end": 34.598,
+      "words": [
+        {
+          "text": "lawsuit",
+          "at": 31.881
+        },
+        {
+          "text": "remains",
+          "at": 32.311
+        },
+        {
+          "text": "unproven.",
+          "at": 32.764
+        }
+      ],
+      "keys": [
+        1,
+        2
+      ]
+    },
+    {
+      "start": 34.548,
+      "end": 36.769,
+      "words": [
+        {
+          "text": "Why",
+          "at": 34.598
+        },
+        {
+          "text": "does",
+          "at": 34.912
+        },
+        {
+          "text": "this",
+          "at": 35.097
+        },
+        {
+          "text": "matter?",
+          "at": 35.295
+        }
+      ],
+      "keys": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "start": 36.719,
+      "end": 38.464,
+      "words": [
+        {
+          "text": "AI",
+          "at": 36.769
+        },
+        {
+          "text": "needs",
+          "at": 37.152
+        },
+        {
+          "text": "chip",
+          "at": 37.442
+        },
+        {
+          "text": "design,",
+          "at": 37.71
+        }
+      ],
+      "keys": [
+        2,
+        3
+      ]
+    },
+    {
+      "start": 38.414,
+      "end": 40.67,
+      "words": [
+        {
+          "text": "fabrication,",
+          "at": 38.464
+        },
+        {
+          "text": "memory,",
+          "at": 39.683
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 40.62,
+      "end": 42.899,
+      "words": [
+        {
+          "text": "packaging,",
+          "at": 40.67
+        },
+        {
+          "text": "servers,",
+          "at": 41.831
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 42.849,
+      "end": 44.664,
+      "words": [
+        {
+          "text": "power,",
+          "at": 42.899
+        },
+        {
+          "text": "cooling",
+          "at": 43.944
+        },
+        {
+          "text": "and",
+          "at": 44.467
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 44.614,
+      "end": 46.336,
+      "words": [
+        {
+          "text": "data",
+          "at": 44.664
+        },
+        {
+          "text": "centers.",
+          "at": 44.943
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 46.286,
+      "end": 47.381,
+      "words": [
+        {
+          "text": "One",
+          "at": 46.336
+        },
+        {
+          "text": "bottleneck",
+          "at": 46.591
+        },
+        {
+          "text": "decides",
+          "at": 46.997
+        }
+      ],
+      "keys": [
+        0,
+        1
+      ]
+    },
+    {
+      "start": 47.331,
+      "end": 48.182,
+      "words": [
+        {
+          "text": "who",
+          "at": 47.381
+        },
+        {
+          "text": "gets",
+          "at": 47.543
+        },
+        {
+          "text": "compute,",
+          "at": 47.729
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 48.132,
+      "end": 49.029,
+      "words": [
+        {
+          "text": "how",
+          "at": 48.182
+        },
+        {
+          "text": "fast,",
+          "at": 48.379
+        },
+        {
+          "text": "and",
+          "at": 48.855
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 48.979,
+      "end": 50.643,
+      "words": [
+        {
+          "text": "at",
+          "at": 49.029
+        },
+        {
+          "text": "what",
+          "at": 49.099
+        },
+        {
+          "text": "price.",
+          "at": 49.25
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 50.593,
+      "end": 52.222,
+      "words": [
+        {
+          "text": "Now",
+          "at": 50.643
+        },
+        {
+          "text": "look",
+          "at": 50.817
+        },
+        {
+          "text": "at",
+          "at": 50.98
+        },
+        {
+          "text": "Terafab:",
+          "at": 51.061
+        }
+      ],
+      "keys": [
+        3
+      ]
+    },
+    {
+      "start": 52.172,
+      "end": 53.359,
+      "words": [
+        {
+          "text": "Musk's",
+          "at": 52.222
+        },
+        {
+          "text": "proposed",
+          "at": 52.605
+        },
+        {
+          "text": "project",
+          "at": 53.0
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 53.309,
+      "end": 54.625,
+      "words": [
+        {
+          "text": "for",
+          "at": 53.359
+        },
+        {
+          "text": "chip",
+          "at": 53.499
+        },
+        {
+          "text": "design,",
+          "at": 53.719
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 54.575,
+      "end": 56.448,
+      "words": [
+        {
+          "text": "memory",
+          "at": 54.625
+        },
+        {
+          "text": "and",
+          "at": 54.997
+        },
+        {
+          "text": "logic",
+          "at": 55.136
+        },
+        {
+          "text": "fabrication,",
+          "at": 55.484
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 56.398,
+      "end": 58.572,
+      "words": [
+        {
+          "text": "and",
+          "at": 56.448
+        },
+        {
+          "text": "packaging,",
+          "at": 56.668
+        },
+        {
+          "text": "targeting",
+          "at": 57.795
+        },
+        {
+          "text": "one",
+          "at": 58.329
+        }
+      ],
+      "keys": [
+        3
+      ]
+    },
+    {
+      "start": 58.522,
+      "end": 60.627,
+      "words": [
+        {
+          "text": "terawatt",
+          "at": 58.572
+        },
+        {
+          "text": "of",
+          "at": 59.025
+        },
+        {
+          "text": "compute.",
+          "at": 59.13
+        }
+      ],
+      "keys": [
+        0
+      ]
+    },
+    {
+      "start": 60.577,
+      "end": 61.556,
+      "words": [
+        {
+          "text": "But",
+          "at": 60.627
+        },
+        {
+          "text": "filings",
+          "at": 60.848
+        },
+        {
+          "text": "warn",
+          "at": 61.301
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 61.506,
+      "end": 62.183,
+      "words": [
+        {
+          "text": "it",
+          "at": 61.556
+        },
+        {
+          "text": "could",
+          "at": 61.649
+        },
+        {
+          "text": "miss",
+          "at": 61.858
+        }
+      ],
+      "keys": [
+        2
+      ]
+    },
+    {
+      "start": 62.133,
+      "end": 63.878,
+      "words": [
+        {
+          "text": "schedule",
+          "at": 62.183
+        },
+        {
+          "text": "or",
+          "at": 62.671
+        },
+        {
+          "text": "fail.",
+          "at": 62.81
+        }
+      ],
+      "keys": [
+        0
+      ]
+    },
+    {
+      "start": 63.828,
+      "end": 65.12,
+      "words": [
+        {
+          "text": "If",
+          "at": 63.878
+        },
+        {
+          "text": "it",
+          "at": 64.052
+        },
+        {
+          "text": "works,",
+          "at": 64.157
+        },
+        {
+          "text": "Musk-linked",
+          "at": 64.528
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 65.07,
+      "end": 67.071,
+      "words": [
+        {
+          "text": "AI",
+          "at": 65.12
+        },
+        {
+          "text": "gets",
+          "at": 65.422
+        },
+        {
+          "text": "supply.",
+          "at": 65.643
+        }
+      ],
+      "keys": [
+        1,
+        2
+      ]
+    },
+    {
+      "start": 67.021,
+      "end": 68.034,
+      "words": [
+        {
+          "text": "Don't",
+          "at": 67.071
+        },
+        {
+          "text": "assume",
+          "at": 67.338
+        },
+        {
+          "text": "prices",
+          "at": 67.663
+        }
+      ],
+      "keys": [
+        2
+      ]
+    },
+    {
+      "start": 67.984,
+      "end": 69.044,
+      "words": [
+        {
+          "text": "will",
+          "at": 68.034
+        },
+        {
+          "text": "fall:",
+          "at": 68.22
+        }
+      ],
+      "keys": [
+        0,
+        1
+      ]
+    },
+    {
+      "start": 68.994,
+      "end": 70.17,
+      "words": [
+        {
+          "text": "reserved",
+          "at": 69.044
+        },
+        {
+          "text": "capacity",
+          "at": 69.462
+        },
+        {
+          "text": "could",
+          "at": 69.996
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 70.12,
+      "end": 71.355,
+      "words": [
+        {
+          "text": "squeeze",
+          "at": 70.17
+        },
+        {
+          "text": "rivals,",
+          "at": 70.554
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 71.305,
+      "end": 72.458,
+      "words": [
+        {
+          "text": "while",
+          "at": 71.355
+        },
+        {
+          "text": "added",
+          "at": 71.68
+        },
+        {
+          "text": "capacity",
+          "at": 71.935
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 72.408,
+      "end": 74.722,
+      "words": [
+        {
+          "text": "could",
+          "at": 72.458
+        },
+        {
+          "text": "increase",
+          "at": 72.62
+        },
+        {
+          "text": "competition.",
+          "at": 72.98
+        }
+      ],
+      "keys": [
+        1,
+        2
+      ]
+    },
+    {
+      "start": 74.672,
+      "end": 75.999,
+      "words": [
+        {
+          "text": "Governments",
+          "at": 74.722
+        },
+        {
+          "text": "care",
+          "at": 75.267
+        },
+        {
+          "text": "because",
+          "at": 75.639
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 75.949,
+      "end": 76.765,
+      "words": [
+        {
+          "text": "chips",
+          "at": 75.999
+        },
+        {
+          "text": "support",
+          "at": 76.359
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 76.715,
+      "end": 78.216,
+      "words": [
+        {
+          "text": "military,",
+          "at": 76.765
+        },
+        {
+          "text": "cyber",
+          "at": 77.392
+        },
+        {
+          "text": "and",
+          "at": 77.914
+        }
+      ],
+      "keys": [
+        0
+      ]
+    },
+    {
+      "start": 78.166,
+      "end": 80.271,
+      "words": [
+        {
+          "text": "surveillance",
+          "at": 78.216
+        },
+        {
+          "text": "systems.",
+          "at": 78.715
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 80.221,
+      "end": 82.013,
+      "words": [
+        {
+          "text": "Want",
+          "at": 80.271
+        },
+        {
+          "text": "to",
+          "at": 80.468
+        },
+        {
+          "text": "understand",
+          "at": 80.55
+        },
+        {
+          "text": "AI?",
+          "at": 81.119
+        }
+      ],
+      "keys": [
+        2,
+        3
+      ]
+    },
+    {
+      "start": 81.963,
+      "end": 82.813,
+      "words": [
+        {
+          "text": "The",
+          "at": 82.013
+        },
+        {
+          "text": "free",
+          "at": 82.175
+        },
+        {
+          "text": "guide",
+          "at": 82.419
+        },
+        {
+          "text": "and",
+          "at": 82.686
+        }
+      ],
+      "keys": [
+        1,
+        2
+      ]
+    },
+    {
+      "start": 82.763,
+      "end": 83.707,
+      "words": [
+        {
+          "text": "community",
+          "at": 82.813
+        },
+        {
+          "text": "link",
+          "at": 83.255
+        },
+        {
+          "text": "are",
+          "at": 83.464
+        },
+        {
+          "text": "in",
+          "at": 83.603
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 83.657,
+      "end": 84.926,
+      "words": [
+        {
+          "text": "the",
+          "at": 83.707
+        },
+        {
+          "text": "description.",
+          "at": 83.812
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 84.876,
+      "end": 87.109,
+      "words": [
+        {
+          "text": "Follow",
+          "at": 84.926
+        },
+        {
+          "text": "for",
+          "at": 85.286
+        },
+        {
+          "text": "more.",
+          "at": 85.426
+        }
+      ],
+      "keys": [
+        0
+      ]
+    },
+    {
+      "start": 87.059,
+      "end": 87.864,
+      "words": [
+        {
+          "text": "The",
+          "at": 87.109
+        },
+        {
+          "text": "spy",
+          "at": 87.283
+        },
+        {
+          "text": "claim",
+          "at": 87.608
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 87.814,
+      "end": 89.245,
+      "words": [
+        {
+          "text": "is",
+          "at": 87.864
+        },
+        {
+          "text": "unproven;",
+          "at": 88.061
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 89.195,
+      "end": 90.0,
+      "words": [
+        {
+          "text": "the",
+          "at": 89.245
+        },
+        {
+          "text": "power",
+          "at": 89.396
+        },
+        {
+          "text": "sits",
+          "at": 89.756
+        }
+      ],
+      "keys": [
+        1,
+        2
+      ]
+    },
+    {
+      "start": 89.95,
+      "end": 90.882,
+      "words": [
+        {
+          "text": "in",
+          "at": 90.0
+        },
+        {
+          "text": "the",
+          "at": 90.081
+        },
+        {
+          "text": "factories.",
+          "at": 90.186
+        }
+      ],
+      "keys": []
+    }
+  ],
+  "chapters": []
+}
