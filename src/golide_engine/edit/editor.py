@@ -16,7 +16,8 @@ from pathlib import Path
 from typing import Any
 
 POSES = ["talk", "explain", "point", "point_up", "point_left", "shock", "think", "thumbs_up", "shrug", "wave"]
-TYPES = ["studio", "source", "stat", "compare", "steps", "timeline", "quote", "words", "logos", "chapter", "follow"]
+TYPES = ["studio", "source", "photo", "stat", "compare", "steps", "timeline", "flow", "quote", "words", "logos", "icon",
+         "chapter", "follow"]
 
 _str = {"type": "string"}
 _nstr = {"type": ["string", "null"]}
@@ -55,39 +56,81 @@ EDIT_SCHEMA = {"type": "object", "additionalProperties": False,
 def instructions(fmt: str) -> str:
     short = fmt == "short"
     return f"""You are the editor of GOLIDE, a faceless AI-explainer channel. Its host is Goli, an original cartoon
-pangolin in a GOLIDE hoodie who talks with the owner's voice from a studio desk. You cut a {"vertical Short" if short else "long video"}
-the way the best channels in the niche do (AI Terry, Outskill): real proof on screen, a new picture every
-{"1.5 to 2.5" if short else "2 to 4"} seconds, the host bringing the viewer back between the proof.
+pangolin in a GOLIDE hoodie who talks with the owner's voice. You cut a {"vertical Short" if short else "long video"} the way
+the best channels in the niche do: fast, real proof on screen, and the picture ALWAYS shows what is being said
+at that moment.
 
-You get the spoken lines (numbered, with times), the real pages captured for this story with the exact phrases
-found on each, and the chapters. Return scenes that cover every line exactly once, in order, with no gaps:
-scene N+1's first_line = scene N's last_line + 1; the first scene starts at line 0 and the last ends at the last line.
+The narration is cut into BEATS of about {"2" if short else "3"} seconds. Give every beat its own picture that shows
+exactly what that beat says. A scene normally covers ONE beat (first_line = last_line = the beat number). Only a
+stat, compare, steps, timeline or flow card may cover 2 beats, and a studio scene at most 2. Scenes cover every beat
+exactly once, in order, no gaps: scene N+1's first_line = scene N's last_line + 1.
 
-Scene types (fill only the fields the type uses, null or [] for the rest):
-- studio: Goli at his desk, the screen behind him shows screen_words (max 6 words, the line's hook, never a full
-  sentence) with one punch word. Use it to open (line 0), to come back between proof runs, and to land the payoff.
-  poses: 1 to 3, each on a word actually spoken in the scene (talk, explain, point, point_up, point_left, shock,
-  think, thumbs_up, shrug, wave). shock for a surprising number, think for a question, thumbs_up for a win,
-  shrug for a limit, explain for how it works.
-- source: a real captured page as a card (source = page index, phrase = phrase index on that page to highlight,
-  callout = the fact in at most 4 words, e.g. "$40", callout_sub = what it is in 3 to 6 words, edge glass or fade).
-  Use it whenever a line states a fact a captured page shows. Prefer this over any drawn card: real proof first.
-  goli_corner true lets Goli react in a corner bubble (do it on about half of the source scenes, with 1 to 2 poses).
+You also get CAPTURED PAGES: the real web pages behind the story, each cut into SHOTS (its headline, the exact
+facts found on it, and every paragraph, list item and table cell with its text). A shot is a place on the page the
+camera zooms to. Match beats to shots by meaning: when a beat states a fact, pick the shot whose text says it.
+Use many different shots; never the same shot twice in a row; the same page twice in a row only on a different shot.
+
+Scene types (fill only the fields the type uses; null or [] for the rest):
+- source: a captured page, zoomed to one shot (source = page index, phrase = shot index). callout = the fact in at
+  most 4 words (e.g. "$40") or null, callout_sub = what it is (3 to 6 words), edge glass or fade.
+- photo: the page's own picture (source = page index; only pages marked "photo: yes").
 - stat: one number that matters (value as a number, prefix like "$", suffix like "%" or "x", label 2 to 5 words).
-- compare: left vs right with 2 to 4 rows (label, a, b, winner).
-- steps: 2 to 4 short imperative items (max 5 words each) when the line tells the viewer what to do.
-- timeline: 3 to 4 points (when, what) when the line moves through time.
-- quote: a short real quote from the research (quote, quote_by).
-- words: kinetic words for a line with no proof and no number: screen_words (max 6 words) and a punch word.
-- logos: 2 to 4 real product or company names (brands) when the line names them together.
-- chapter: on the first line of a chapter: label = the chapter title.
-- follow: the line that asks the viewer to follow (marked FOLLOW): label = the reason, max 6 words.
+- compare: left vs right, 2 to 4 rows (label, a, b, winner).
+- steps: 2 to 4 short imperative items (max 5 words each) when the beat tells the viewer what to do.
+- timeline: 3 to 4 points (when, what) when the beat moves through time.
+- flow: how something works or what leads to what: 2 to 4 short nodes in items (max 3 words each).
+- quote: a short real quote from the pages or research (quote, quote_by).
+- logos: 2 to 4 real product or company names (brands) named together in the beat.
+- icon: one product or company named in the beat (brands = [that name], label = what about it, max 5 words).
+- words: kinetic words only when nothing else fits: screen_words (max 5 words) and a punch word.
+- studio: Goli at his desk, his screen shows screen_words (max 5 words) with a punch word. Use it for the opening hook,
+  a reaction, a question to the viewer and the payoff; at most 1 beat in 5. poses: 1 to 2, each on a word spoken in
+  that beat (talk, explain, point, point_up, point_left, shock, think, thumbs_up, shrug, wave).
+- chapter: the first beat of a chapter (marked CHAPTER START): label = the chapter title.
+- follow: the beat marked FOLLOW: label = the reason, max 6 words.
+goli_corner: true on about half of the source and photo scenes, with 1 pose on a word in that beat (point_up when
+the beat points at the proof, shock for a surprising number).
 
-House rules: proof before claims; never two scenes of the same type in a row, except source after source
-when they are different pages; no studio scene longer than {"4" if short else "8"} seconds; screen text never
-repeats the spoken sentence word for word, it names the point; numbers and names exactly as in the lines or
-on the page, never invented. Only use source and phrase indexes that are listed. Every pose word must be a word
-spoken inside that scene."""
+Rules: the picture matches the words of its beat; real proof first (source, photo) whenever a page shows it; never two
+scenes of the same type in a row except source after source on different shots; numbers and names exactly as spoken
+or on the page, never invented; only listed page and shot numbers."""
+
+
+def beats(lines: list[Any], fmt: str) -> list[Any]:
+    """The narration cut into beats of about 2 s (Short) or 3 s (long), at pauses and inside each line,
+    so a picture can be chosen for every few words (owner 2026-11-11: what is on screen is what is said)."""
+    from ..vector.align import TimedLine
+
+    target, low = (1.9, 1.1) if fmt == "short" else (3.0, 1.6)
+    out: list[Any] = []
+    for line in lines:
+        words = list(getattr(line, "words", []) or [])
+        if not words:
+            out.append(TimedLine(len(out), line.text, line.emphasis, line.visual, line.label, line.section,
+                                 line.start, line.end, []))
+            continue
+        chunk: list[Any] = []
+        for k, w in enumerate(words):
+            chunk.append(w)
+            span = w.end - chunk[0].start
+            nxt = words[k + 1] if k + 1 < len(words) else None
+            pause = (nxt.start - w.end) if nxt else 9
+            remaining = words[-1].end - w.end
+            if nxt is None or (span >= low and remaining >= low and (span >= target or pause > 0.22 or
+                                                                    str(w.text)[-1:] in ",.;:?!")):
+                out.append(TimedLine(len(out), " ".join(x.text for x in chunk), line.emphasis, line.visual, line.label,
+                                     line.section, chunk[0].start, chunk[-1].end, chunk))
+                chunk = []
+    return out
+
+
+def shots(page: dict[str, Any]) -> list[dict[str, Any]]:
+    """Every place on a captured page the camera can zoom to: the facts found, the headline, every block."""
+    out = [{"kind": "fact", "text": h["phrase"], "rect": h["rects"][0]} for h in page.get("highlights") or []]
+    if page.get("headline"):
+        out.append({"kind": "headline", "text": str(page.get("title", ""))[:120], "rect": page["headline"]})
+    out += [{"kind": "text", "text": b["text"], "rect": b["rect"]} for b in page.get("blocks") or []]
+    return out
 
 
 def request(title: str, lines: list[Any], sources: list[dict[str, Any]], chapters: list[Any],
@@ -103,10 +146,13 @@ def request(title: str, lines: list[Any], sources: list[dict[str, Any]], chapter
         rows.append(f"{line.index}: [{line.start:.1f}-{line.end:.1f}s]{' (' + ', '.join(mark) + ')' if mark else ''} {line.text}")
     pages = []
     for i, page in enumerate(sources):
-        found = "; ".join(f"{j}: \"{h['phrase']}\"" for j, h in enumerate(page.get("highlights") or []))
-        pages.append(f"[{i}] {page.get('title', '')[:90]} ({_domain(page.get('url', ''))})\n    phrases: {found or 'none'}")
+        if not page.get("ok"):
+            continue
+        listed = "\n".join(f"    {j} [{sh['kind']}] {sh['text']}" for j, sh in enumerate(shots(page)))
+        pages.append(f"[{i}] {page.get('title', '')[:90]} ({_domain(page.get('url', ''))})"
+                     f"{' photo: yes' if page.get('photo') else ''}\n{listed or '    (no shots)'}")
     chap = "\n".join(f"- {getattr(m, 'number', '')} {getattr(m, 'title', '')} at {getattr(m, 'start', 0):.1f}s" for m in chapters)
-    return (f"TITLE: {title}\n\nLINES\n" + "\n".join(rows) + "\n\nCAPTURED PAGES\n" + ("\n".join(pages) or "none")
+    return (f"TITLE: {title}\n\nBEATS\n" + "\n".join(rows) + "\n\nCAPTURED PAGES\n" + ("\n".join(pages) or "none")
             + "\n\nCHAPTERS\n" + (chap or "none"))
 
 
@@ -211,19 +257,22 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
                 notes.append(f"scene {k}: source {src} not captured, shown as words")
                 out.append(words_scene())
                 continue
-            spots = page.get("highlights") or []
+            spots = shots(page)
             ph = s.get("phrase")
             spot = spots[ph] if isinstance(ph, int) and 0 <= ph < len(spots) else None
             highlights = []
             if spot:
-                at = _phrase_time(lines, spot["phrase"], t0, t1)
-                highlights.append({"rect": spot["rects"][0], "ring": len(spot["phrase"]) <= 8,
-                                   "at": round(max(0.9, (at - t0) if at is not None else 1.2), 3),
+                at = _phrase_time(lines, spot["text"], t0, t1) if spot["kind"] == "fact" else None
+                highlights.append({"rect": spot["rect"], "ring": spot["kind"] == "fact" and len(spot["text"]) <= 8,
+                                   "sweep": spot["kind"] != "fact",
+                                   "at": round(max(0.6, (at - t0) if at is not None else 0.7), 3),
                                    "label": s.get("callout") or None, "sub": s.get("callout_sub") or ""})
             elif ph is not None:
-                notes.append(f"scene {k}: phrase {ph} not on page {src}")
+                notes.append(f"scene {k}: shot {ph} not on page {src}")
+            # a shot below the first screen is filmed on the whole-page capture
+            deep = bool(spot) and spot["rect"][1] + spot["rect"][3] > 860 and page.get("full")
             out.append({"type": "browser_shot", "start": t0, "duration": dur, "data": {
-                "image": capture_dir / page["top"],
+                "image": capture_dir / (page["full"] if deep else page["top"]),
                 "url": page.get("url", ""), "edge": s.get("edge") or "glass",
                 "page_width": 1440, "highlights": [h for h in highlights if h], "headline": page.get("headline"),
                 "photo": str(capture_dir / page["photo"]) if page.get("photo") else None}})
@@ -231,6 +280,25 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
                 out.append({"type": "host", "start": t0 + 0.35, "duration": dur - 0.35, "data": {
                     "place": "corner", "cues": _cues_between(cues, t0 + 0.35, t1),
                     "poses": [dict(p, at=max(0, p["at"] - 0.35)) for p in poses] or [{"pose": "point_left", "at": 0}]}})
+        elif kind == "photo":
+            src = s.get("source")
+            page = sources[src] if isinstance(src, int) and 0 <= src < len(sources) else None
+            if page and page.get("photo") and capture_dir and (capture_dir / page["photo"]).exists():
+                out.append({"type": "photo", "start": t0, "duration": dur, "data": {
+                    "image": capture_dir / page["photo"], "url": page.get("url", "")}})
+                if s.get("goli_corner") and dur >= 1.2:
+                    out.append({"type": "host", "start": t0 + 0.2, "duration": dur - 0.2, "data": {
+                        "place": "corner", "cues": _cues_between(cues, t0 + 0.2, t1),
+                        "poses": [dict(p, at=max(0, p["at"] - 0.2)) for p in poses]}})
+            else:
+                notes.append(f"scene {k}: no photo on page {src}, shown as words")
+                out.append(words_scene())
+        elif kind == "flow" and len(s.get("items") or []) >= 2:
+            out.append({"type": "flow", "start": t0, "duration": dur, "in": "wipe", "data": {
+                "nodes": s["items"][:4], "brands": s.get("brands") or []}})
+        elif kind == "icon" and s.get("brands") and logo_tiles and logo_tiles(s["brands"][0]):
+            out.append({"type": "logo_tiles", "start": t0, "duration": dur, "data": {
+                "tiles": [{"image": logo_tiles(s["brands"][0])}], "caption": s.get("label") or s["brands"][0], "big": True}})
         elif kind == "stat" and isinstance(s.get("value"), (int, float)):
             value = float(s["value"])
             out.append({"type": "stat_counter", "start": t0, "duration": dur, "in": "whip", "data": {

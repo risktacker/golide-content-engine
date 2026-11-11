@@ -1,0 +1,60 @@
+name: Edit engine re-cut (trial)
+
+on:
+  workflow_dispatch:
+    inputs:
+      production_id:
+        required: true
+      ref:
+        default: edit-engine
+
+permissions:
+  contents: write
+
+jobs:
+  recut:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+      - name: Restore the production checkpoint (read only)
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            productions
+            build
+            release-packages
+            generated
+          key: golide-production-checkpoint-none
+          restore-keys: |
+            golide-production-checkpoint-
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core libcairo2-dev pkg-config
+      - run: python -m pip install -e '.[production,video]'
+      - run: python -m playwright install --with-deps chromium
+      - name: Rhubarb Lip Sync
+        run: |
+          R="$HOME/.cache/golide-rhubarb"; mkdir -p "$R"
+          curl -sSL -o "$R/r.zip" https://github.com/DanielSWolf/rhubarb-lip-sync/releases/download/v1.14.0/Rhubarb-Lip-Sync-1.14.0-Linux.zip
+          unzip -qo "$R/r.zip" -d "$R"
+      - name: Re-cut
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GOLIDE_ENABLE_PAID_PRODUCTION: "1"
+        run: python scripts/edit_rerun.py "${{ inputs.production_id }}"
+      - name: Keep the result on the edit-trials branch
+        run: |
+          D="build/edit-rerun/${{ inputs.production_id }}"
+          mkdir -p /tmp/keep && cp "$D"/video.mp4 "$D"/edit-list.json "$D"/still-*.jpg /tmp/keep/
+          git config user.name "golide-bot"; git config user.email "bot@golidee.com"
+          git fetch origin edit-trials || true
+          git switch --orphan edit-trials-new
+          git rm -rq --cached . 2>/dev/null || true
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          mkdir -p "${{ inputs.production_id }}" && cp /tmp/keep/* "${{ inputs.production_id }}/"
+          git add "${{ inputs.production_id }}" && git commit -qm "Re-cut ${{ inputs.production_id }} (trial)"
+          git push -f origin edit-trials-new:edit-trials
