@@ -14,7 +14,7 @@ permissions:
 jobs:
   recut:
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: 170
     steps:
       - uses: actions/checkout@v4
         with:

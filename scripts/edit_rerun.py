@@ -51,6 +51,7 @@ editor.save(edit, out / "edit-list.json")
 print(json.dumps({"beats": len(beat_lines), "scenes": len(edit["scenes"]), "notes": edit["notes"],
                   "types": [s["type"] + (":" + s["data"]["place"] if s["type"] == "host" else "") for s in edit["scenes"]]}))
 render(edit, out, narration, out / "video.mp4", outfit_today(), None)
+print(json.dumps({"video_mb": round((out / "video.mp4").stat().st_size / 1e6, 1), "seconds": round(seconds, 1)}))
 for i, t in enumerate([seconds * k / 12 for k in range(12)]):
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", f"{t + 0.6:.2f}", "-i", str(out / "video.mp4"), "-frames:v", "1",
                     "-vf", "scale=360:-1", str(out / f"still-{i:02d}.jpg")], check=True)
