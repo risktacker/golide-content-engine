@@ -42,11 +42,23 @@ class EditComposeTest(unittest.TestCase):
             # the camera drift never fights the entrance on the same element
             self.assertFalse(re.search(r'fromTo\("#s\d+-\w+ \.stage",\{scale:1\}', page))
 
-    def test_dark_page_gets_underline(self):
+    def test_dark_page_never_gets_the_pen_highlighter(self):
+        for _ in range(4):
+            with TemporaryDirectory() as t:
+                self.assertNotIn('<div class="hl" id=', self.build(Path(t), dark=True))
+
+    def test_screenshots_move_differently(self):
+        from golide_engine.edit.compose import Composer as C
         with TemporaryDirectory() as t:
-            self.assertIn('class="hl dark"', self.build(Path(t), dark=True))
-        with TemporaryDirectory() as t:
-            self.assertNotIn('class="hl dark"', self.build(Path(t)))
+            shot = Path(t) / "p.png"
+            Image.new("RGB", (2160, 1350), (250, 250, 250)).save(shot)
+            scenes = [{"type": "browser_shot", "start": i * 2, "duration": 2, "data": {
+                "image": shot, "url": "https://e.com", "highlights": [{"rect": [800, 300, 40, 28]}]}} for i in range(5)]
+            C("short").build({"format": "short", "scenes": scenes}, Path(t) / "c")
+            page = (Path(t) / "c/index.html").read_text()
+            entries = re.findall(r'tl\.fromTo\("#s\d+-page-f",(\{[^}]*\})', page)
+            self.assertEqual(len(entries), 5)
+            self.assertEqual(len(set(entries)), 5)          # five shots, five different ways in
 
     def test_claim_phrases_longest_first(self):
         groups = phrases(["Fable 5.2 costs $40 per million output tokens."])

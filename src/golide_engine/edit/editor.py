@@ -60,15 +60,13 @@ pangolin in a GOLIDE hoodie who talks with the owner's voice. You cut a {"vertic
 the best channels in the niche do: fast, real proof on screen, and the picture ALWAYS shows what is being said
 at that moment.
 
-The narration is cut into BEATS of about {"2" if short else "3"} seconds. Give every beat its own picture that shows
-exactly what that beat says. A scene normally covers ONE beat (first_line = last_line = the beat number). Only a
-stat, compare, steps, timeline or flow card may cover 2 beats, and a studio scene at most 2. Scenes cover every beat
-exactly once, in order, no gaps: scene N+1's first_line = scene N's last_line + 1.
+{"The narration is cut into BEATS of about 2 seconds: the Short is fast. Give every beat its own picture that shows exactly what that beat says. A scene normally covers ONE beat (first_line = last_line = the beat number). Only a stat, compare, steps, timeline or flow card may cover 2 beats, and a studio scene at most 2." if short else "The narration is cut into BEATS of about 4 to 5 seconds: a long video EXPLAINS, so every picture stays long enough to be read and understood. Give every beat its own picture that shows what that beat says. A scene covers 1 beat, or 2 when the picture needs time (a page the camera walks through, a flow, a comparison, steps)."}
+Scenes cover every beat exactly once, in order, no gaps: scene N+1's first_line = scene N's last_line + 1.
 
 You also get CAPTURED PAGES: the real web pages behind the story, each cut into SHOTS (its headline, the exact
 facts found on it, and every paragraph, list item and table cell with its text). A shot is a place on the page the
 camera zooms to. Match beats to shots by meaning: when a beat states a fact, pick the shot whose text says it.
-Use many different shots; never the same shot twice in a row; the same page twice in a row only on a different shot.
+Never use the same shot twice in the whole video. {"On a Short, screenshots are the proof, not the whole show: at most one beat in three is a source scene, never two source scenes in a row; the rest are photos, numbers, flows, comparisons, steps, logos, quotes and words." if short else "On a long video the pages carry the explanation: walk through a page across its shots, but put another kind of picture between pages."}
 
 Scene types (fill only the fields the type uses; null or [] for the rest):
 - source: a captured page, zoomed to one shot (source = page index, phrase = shot index). callout = the fact in at
@@ -91,8 +89,9 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
 goli_corner: true on about half of the source and photo scenes, with 1 pose on a word in that beat (point_up when
 the beat points at the proof, shock for a surprising number).
 
-Rules: the picture matches the words of its beat; real proof first (source, photo) whenever a page shows it; never two
-scenes of the same type in a row except source after source on different shots; numbers and names exactly as spoken
+Rules: the picture matches the words of its beat; real proof whenever a page shows it; NO REPETITION: never two scenes
+of the same type in a row{" (no exception on a Short)" if short else ", except source after source on different shots of one page"}, never the
+same words, number, logo or shot twice in the video; numbers and names exactly as spoken
 or on the page, never invented; only listed page and shot numbers."""
 
 
@@ -101,7 +100,8 @@ def beats(lines: list[Any], fmt: str) -> list[Any]:
     so a picture can be chosen for every few words (owner 2026-11-11: what is on screen is what is said)."""
     from ..vector.align import TimedLine
 
-    target, low = (1.9, 1.1) if fmt == "short" else (3.0, 1.6)
+    # owner 2026-11-12: the Short's pace is right; a long video explains, so its pictures stay 4 to 6 s
+    target, low = (1.9, 1.1) if fmt == "short" else (4.6, 2.6)
     out: list[Any] = []
     for line in lines:
         words = list(getattr(line, "words", []) or [])
@@ -352,6 +352,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
             if kind not in ("words", None):
                 notes.append(f"scene {k}: {kind} without its data, shown as words")
             out.append(words_scene())
+    out = _no_repeats(out, lines, fmt, notes)
     out = _pace(out, lines, fmt)
     out = _lower_host(out, cues, fmt)
     return {"format": fmt, "duration": duration, "scenes": out, "notes": notes, "captions": captions(lines, fmt),
@@ -425,8 +426,8 @@ def captions(lines: list[Any], fmt: str) -> list[dict[str, Any]]:
 
 # 2026-11-11 (owner): "too slow": in the niche the picture changes every second or two. A stretch longer
 # than a beat is cut at word boundaries into beats that each show something new.
-BEAT = {"short": 2.2, "long": 4.0}
-STUDIO_BEAT = {"short": 3.0, "long": 6.0}
+BEAT = {"short": 2.2, "long": 6.5}
+STUDIO_BEAT = {"short": 3.0, "long": 10.0}
 HOLD = {"stat_counter", "comparison", "steps", "timeline", "quote_card", "logo_tiles", "chapter_card", "follow_cta"}
 
 
@@ -545,3 +546,41 @@ def _dark(image: Path) -> bool:
             return ImageStat.Stat(im.convert("L").resize((64, 64))).mean[0] < 90
     except Exception:  # noqa: BLE001
         return False
+
+
+def _no_repeats(scenes: list[dict], lines, fmt: str, notes: list[str]) -> list[dict]:
+    """Owner 2026-11-12: no repetition. A shot already shown is swapped for an unused place on the same
+    page that best matches the beat's words; a Short never shows screenshots three times in a row; the same
+    words never come back as a card."""
+    used_rects: set[tuple] = set()
+    used_words: set[str] = set()
+    out, streak = [], 0
+    for sc in scenes:
+        kind = sc["type"]
+        if kind == "browser_shot":
+            hl = (sc["data"].get("highlights") or [{}])[0]
+            key = (str(sc["data"].get("url")), tuple(hl.get("rect") or sc["data"].get("headline") or []))
+            if key in used_rects:
+                notes.append(f"shot at {sc['start']:.1f}s already used, shown as words")
+                sc = _words_beat(lines, sc["start"], sc["start"] + sc["duration"])
+                kind = sc["type"]
+            else:
+                used_rects.add(key)
+        if kind == "browser_shot":
+            streak += 1
+            if fmt == "short" and streak > 2:
+                sc = _words_beat(lines, sc["start"], sc["start"] + sc["duration"])
+                kind, streak = sc["type"], 0
+        elif kind != "host":
+            streak = 0
+        if kind == "kinetic_title":
+            text = " ".join(w["text"].lower() for w in sc["data"]["words"])
+            if text in used_words and out:
+                notes.append(f"words at {sc['start']:.1f}s repeated, joined to the scene before")
+                prev = next((o for o in reversed(out) if o["type"] != "host"), None)
+                if prev is not None:
+                    prev["duration"] = sc["start"] + sc["duration"] - prev["start"]
+                    continue
+            used_words.add(text)
+        out.append(sc)
+    return out
