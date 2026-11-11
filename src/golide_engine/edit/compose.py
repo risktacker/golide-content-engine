@@ -12,10 +12,13 @@ kinetic_title, chapter_card, follow_cta.
 from __future__ import annotations
 
 import html
+import re
 import json
 import shutil
 from pathlib import Path
 from typing import Any
+
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[3]
 ASSETS = ROOT / "assets" / "edit"
@@ -63,6 +66,30 @@ html,body{margin:0;background:#07080B}
 .row{display:flex;align-items:center}
 .tile{position:absolute;width:300px;height:300px}
 .tile img{width:100%;height:100%}
+.studio{position:absolute;inset:0;overflow:hidden}
+.studio .wall{position:absolute;left:0;right:0;top:6%;text-align:center;font:900 260px/1 Poppins;letter-spacing:.08em;
+ color:rgba(232,194,104,.035);-webkit-text-stroke:2px rgba(232,194,104,.16)}
+.studio .floor{position:absolute;left:-50%;right:-50%;bottom:-8%;height:62%;transform-origin:50% 100%;
+ transform:perspective(900px) rotateX(64deg);background-image:linear-gradient(rgba(232,194,104,.42) 3px,transparent 3px),
+ linear-gradient(90deg,rgba(232,194,104,.42) 3px,transparent 3px);background-size:90px 90px;
+ -webkit-mask-image:linear-gradient(to top,#000 10%,transparent 85%);mask-image:linear-gradient(to top,#000 25%,transparent 95%)}
+.studio .horizon{position:absolute;left:0;right:0;top:52%;height:3px;background:linear-gradient(90deg,transparent,
+ rgba(232,194,104,.7),transparent);box-shadow:0 0 40px 10px rgba(232,194,104,.18)}
+.studio .spot{position:absolute;top:-10%;width:900px;height:1150px;background:radial-gradient(ellipse 50% 60% at 50% 30%,
+ rgba(76,125,255,.38),rgba(76,125,255,0) 70%)}
+.studio .disc{position:absolute;border-radius:50%;background:radial-gradient(ellipse at 50% 40%,#1B2340,#0A0D16 70%);
+ box-shadow:0 0 0 3px rgba(232,194,104,.7),0 0 60px 12px rgba(232,194,104,.28),inset 0 -10px 30px rgba(0,0,0,.6)}
+.studio .panel{position:absolute;border-radius:22px;background:rgba(22,27,40,.55);border:1px solid rgba(255,255,255,.12);
+ box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.studio .dotp{position:absolute;width:6px;height:6px;border-radius:50%;background:#E8C268;box-shadow:0 0 12px #E8C268}
+#brand{position:absolute;inset:0;z-index:45;pointer-events:none}
+#brand .logo{position:absolute;left:44px;top:34px;display:flex;align-items:center;gap:12px;font:900 30px Poppins;color:#F4F1EA;
+ letter-spacing:.06em;opacity:.92}
+#brand .logo i{width:40px;height:40px;border-radius:50%;background:linear-gradient(#FFE7A3,#B07D1C);color:#0E1A4A;
+ display:grid;place-items:center;font:900 24px Poppins;font-style:normal}
+#brand .chap{position:absolute;right:44px;top:38px;padding:8px 20px;border-radius:999px;background:rgba(17,20,26,.8);
+ border:1px solid rgba(232,194,104,.45);color:#E8C268;font:600 24px Inter;opacity:0}
+#brand .prog{position:absolute;left:0;bottom:0;height:5px;width:0;background:linear-gradient(90deg,#B07D1C,#FFE7A3)}
 """
 
 
@@ -132,56 +159,93 @@ class Composer:
 
     # ---- templates
     def browser_shot(self, t0, dur, data, how="rise"):
-        """A real source page in a browser frame: it lands, the camera pushes to the fact, the
-        highlighter draws over the exact words, then a gold ring if it is a single number."""
+        """A real source page as a floating card (never full screen): it grows in, the camera zooms
+        inside the card to the fact, the highlighter draws over the exact words, a callout names the
+        fact beside the card and a source tag sits under it. edge: "glass" (clean cut, gold rim,
+        browser bar) or "fade" (no bar, edges melt into the background)."""
         sid = self._id("page")
-        fw, fh = (1500, 900) if self.fmt == "long" else (980, 1300)
-        fx, fy = (self.w - fw) // 2, (self.h - fh) // 2 + 10
-        img = self.asset(data["image"])
+        edge = data.get("edge", "glass")
+        spots = (data.get("highlights") or [])[:2]
+        callout = next((sp for sp in spots if sp.get("label")), None)
+        bar = 44 if edge == "glass" else 0
+        if self.fmt == "long":
+            fw = 1180 if callout else 1320
+            fx = 130 if callout else (self.w - fw) // 2
+        else:
+            fw, fx = 940, 70
         page_w = float(data.get("page_width", 1440))
-        k = fw / page_w                                   # css px of the page -> frame px
-        marks = ""
-        hl_tweens = []
+        k = fw / page_w                                   # css px of the page -> card px
+        with Image.open(data["image"]) as im:
+            img_h = fw * im.height / im.width
+        ph = min(img_h, fw * 0.6)                         # visible page height inside the card
+        fh = ph + bar
+        fy = (self.h - fh) / 2 - 20
+        img = self.asset(data["image"])
+        marks, hl_tweens = "", []
         dark = _is_dark(Path(data["image"]))
-        for j, spot in enumerate(data.get("highlights", [])[:2]):
+        for j, spot in enumerate(spots):
             x, y, w, h = spot["rect"]
             hx, hy, hw, hh = x * k - 6, y * k - 4, w * k + 12, h * k + 8
             if dark:      # a highlighter vanishes on a dark page: a gold underline stroke instead
                 marks += (f'<div class="hl dark" id="{sid}-hl{j}" style="left:{hx:.0f}px;top:{hy + hh * 0.8:.0f}px;'
-                          f'width:0px;height:{max(6, hh * 0.09):.0f}px"></div>')
+                          f'width:0px;height:{max(4, hh * 0.09):.0f}px"></div>')
             else:
                 marks += (f'<div class="hl" id="{sid}-hl{j}" style="left:{hx:.0f}px;top:{hy:.0f}px;'
                           f'width:0px;height:{hh:.0f}px"></div>')
-            at = t0 + float(spot.get("at", 0.9 + j * 1.0))
+            at = t0 + float(spot.get("at", 1.2 + j * 1.0))
             hl_tweens.append(f'tl.to("#{sid}-hl{j}",{{width:{hw:.0f},duration:.35,ease:"none"}},{at:.3f});')
             self.cue("click", at)
             if spot.get("ring"):
-                r = max(hw, hh) * 0.9
+                r = max(hw, hh) * 0.85
                 marks += (f'<div class="ring" id="{sid}-ring{j}" style="left:{hx + hw / 2 - r:.0f}px;'
                           f'top:{hy + hh / 2 - r:.0f}px;width:{2 * r:.0f}px;height:{2 * r:.0f}px"></div>')
                 hl_tweens.append(f'tl.fromTo("#{sid}-ring{j}",{{scale:1.6,opacity:0}},{{scale:1,opacity:1,'
                                  f'duration:.4,ease:"back.out(2)"}},{at + 0.3:.3f});')
-        inner = (f'<div class="frame" id="{sid}-f" style="left:{fx}px;top:{fy}px;width:{fw}px;height:{fh}px">'
-                 f'<div class="bar"><div class="dot" style="background:#ff5f57"></div><div class="dot" '
-                 f'style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div>'
-                 f'<div class="url">{_e(data.get("url", ""))}</div></div>'
-                 f'<div class="page"><div id="{sid}-pg" style="position:absolute;inset:0">'
-                 f'<img src="{img}">{marks}</div></div></div>')
+        chrome = ""
+        if bar:
+            chrome = (f'<div class="bar"><div class="dot" style="background:#ff5f57"></div><div class="dot" '
+                      f'style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div>'
+                      f'<div class="url">{_e(data.get("url", ""))}</div></div>')
+        look = ("border:1.5px solid rgba(232,194,104,.55);box-shadow:0 0 0 1px rgba(0,0,0,.4),0 30px 90px rgba(0,0,0,.7),"
+                "0 0 60px rgba(232,194,104,.18)" if edge == "glass" else
+                "border-radius:28px;-webkit-mask-image:radial-gradient(ellipse 72% 70% at 50% 50%,#000 58%,transparent 100%);"
+                "mask-image:radial-gradient(ellipse 72% 70% at 50% 50%,#000 58%,transparent 100%);box-shadow:none")
+        domain = re.sub(r"^https?://(www\.)?", "", str(data.get("url", ""))).split("/")[0]
+        inner = (f'<div class="frame" id="{sid}-f" style="left:{fx}px;top:{fy:.0f}px;width:{fw}px;height:{fh:.0f}px;{look}">'
+                 f'{chrome}<div class="page" style="top:{bar}px"><div id="{sid}-pg" style="position:absolute;left:0;top:0;'
+                 f'width:{fw}px;height:{img_h:.0f}px"><img src="{img}">{marks}</div></div></div>')
+        if domain:
+            inner += (f'<div class="chip" id="{sid}-src" style="position:absolute;left:{fx}px;top:{fy + fh + 26:.0f}px;'
+                      f'font-size:24px">Source · {_e(domain)}</div>')
+        if callout:
+            cx0 = fx + fw + 60
+            inner += (f'<div class="card" id="{sid}-co" style="position:absolute;left:{cx0}px;top:{self.h * .24:.0f}px;'
+                      f'width:{self.w - cx0 - 70}px;box-sizing:border-box;padding:30px 32px;border-color:rgba(232,194,104,.5)">'
+                      f'<div style="font:900 84px/1 Poppins;color:#E8C268">{_e(callout["label"])}</div>'
+                      f'<div class="label" style="margin-top:14px;font-size:30px">{_e(callout.get("sub", ""))}</div></div>')
         self.scene(sid, t0, dur, inner)
-        self.entrance(sid, t0, how)
-        spots = data.get("highlights") or []
-        if spots:                                          # targeted push to the facts (centre of all of them)
-            x0 = min(sp["rect"][0] for sp in spots[:2]); y0 = min(sp["rect"][1] for sp in spots[:2])
-            x1 = max(sp["rect"][0] + sp["rect"][2] for sp in spots[:2])
-            y1 = max(sp["rect"][1] + sp["rect"][3] for sp in spots[:2])
-            cx, cy = fx + (x0 + x1) / 2 * k, fy + 44 + (y0 + y1) / 2 * k
-            z = min(float(data.get("zoom", 1.8)), 0.8 * self.w / max(1.0, (x1 - x0) * k))
-            at = t0 + float(spots[0].get("at", 0.9)) - 0.5
-            self.tw(f'tl.to("#{sid}-f",{{x:{(self.w / 2 - cx) * (z - 1) / z:.0f},y:{(self.h / 2 - cy) * (z - 1) / z:.0f},'
-                    f'scale:{z},duration:1.1,ease:"power2.inOut",transformOrigin:"{cx - fx:.0f}px {cy - fy:.0f}px"}},'
-                    f'{at:.3f});')
-        else:
-            self.drift(sid, t0, dur)
+        # the card grows in from small (house rule: sources never slam in full screen)
+        self.tw(f'tl.fromTo("#{sid}-f",{{scale:.62,y:70,opacity:0}},{{scale:1,y:0,opacity:1,duration:.75,'
+                f'ease:"back.out(1.3)"}},{t0:.3f});')
+        self.cue("whoosh", t0)
+        if domain:
+            self.tw(f'tl.fromTo("#{sid}-src",{{y:20,opacity:0}},{{y:0,opacity:1,duration:.4,ease:"power3.out"}},{t0 + 0.5:.3f});')
+        if spots:   # camera zooms INSIDE the card to the facts, page edges never show
+            x0 = min(sp["rect"][0] for sp in spots) * k; y0 = min(sp["rect"][1] for sp in spots) * k
+            x1 = max(sp["rect"][0] + sp["rect"][2] for sp in spots) * k
+            y1 = max(sp["rect"][1] + sp["rect"][3] for sp in spots) * k
+            ox, oy = (x0 + x1) / 2, (y0 + y1) / 2
+            z = max(1.0, min(float(data.get("zoom", 1.9)), 0.75 * fw / max(1.0, x1 - x0)))
+            dx = min(max((fw / 2 - ox), -(fw - ox) * (z - 1)), ox * (z - 1))
+            dy = min(max((ph / 2 - oy), ph - oy - (img_h - oy) * z), oy * (z - 1))
+            at = t0 + float(spots[0].get("at", 1.2)) - 0.55
+            self.tw(f'tl.to("#{sid}-pg",{{x:{dx:.0f},y:{dy:.0f},scale:{z:.3f},transformOrigin:"{ox:.0f}px {oy:.0f}px",'
+                    f'duration:1.1,ease:"power2.inOut"}},{at:.3f});')
+        if callout:
+            at = t0 + float(callout.get("at", 1.2)) + 0.35
+            self.tw(f'tl.fromTo("#{sid}-co",{{x:60,opacity:0}},{{x:0,opacity:1,duration:.55,ease:"back.out(1.5)"}},{at:.3f});')
+            self.cue("pop", at)
+        self.drift(sid, t0, dur, 0.008)
         for js in hl_tweens:
             self.tw(js)
 
@@ -374,6 +438,27 @@ class Composer:
                        f'style="position:absolute;left:0;top:0;opacity:{1 if k == 0 else 0}">'
                        f'{mascot.character(p["pose"], uid=uid, expression=p.get("face"))}</svg>')
         bubble = ""
+        if place != "corner":     # Pango's studio: back-wall wordmark, spotlight, floor grid to the horizon, glow disc
+            cxp = x + w / 2
+            panels = "".join(
+                f'<div class="panel" id="{sid}-pn{i}" style="left:{px:.0f}px;top:{py:.0f}px;width:{pw}px;height:{ph_}px">{body}</div>'
+                for i, (px, py, pw, ph_, body) in enumerate([
+                    (max(40, cxp - w * .95), self.h * .2, 190, 130,
+                     '<div style="display:flex;gap:12px;align-items:flex-end;height:100%;padding:0 26px 22px">'
+                     + "".join(f'<div style="width:22px;height:{hb}px;border-radius:6px;background:{c}"></div>'
+                               for hb, c in ((30, "#2450E6"), (52, "#4C7DFF"), (78, "#E8C268"), (64, "#4C7DFF")))
+                     + '</div>'),
+                    (min(self.w * .46, cxp + w * .62), self.h * .12, 170, 110,
+                     '<div style="font:900 52px/110px Poppins;color:#E8C268;text-align:center">&lt;/&gt;</div>'),
+                ]))
+            dots = "".join(f'<div class="dotp" id="{sid}-d{i}" style="left:{dx_:.0f}px;top:{dy_:.0f}px;opacity:{op}"></div>'
+                           for i, (dx_, dy_, op) in enumerate([(cxp - 320, 300, .7), (cxp + 300, 380, .5), (cxp - 180, 180, .4),
+                                                               (cxp + 420, 220, .6), (cxp - 420, 520, .5)]))
+            bubble = (f'<div class="studio" id="{sid}-set"><div class="wall">GOLIDE</div>'
+                      f'<div class="spot" style="left:{cxp - 450:.0f}px"></div><div class="horizon"></div><div class="floor"></div>'
+                      f'{panels}{dots}'
+                      f'<div class="disc" style="left:{cxp - w * .62:.0f}px;top:{y + size * .9:.0f}px;width:{w * 1.24:.0f}px;'
+                      f'height:{size * .13:.0f}px"></div></div>')
         if place == "corner":
             bubble = (f'<div class="card" id="{sid}-bub" style="position:absolute;left:{x - 24:.0f}px;top:{y + size * .14:.0f}px;'
                       f'width:{w + 48:.0f}px;height:{size * .88:.0f}px;border-radius:36px;background:radial-gradient('
@@ -393,6 +478,14 @@ class Composer:
         if place == "corner":
             self.tw(f'tl.fromTo("#{sid}-bub",{{scale:.6,opacity:0}},{{scale:1,opacity:1,duration:.4,ease:"back.out(1.8)"}},{t0:.3f});')
         self.cue("pop", t0 + 0.1)
+        if place != "corner":
+            for i in range(2):
+                self.tw(f'tl.fromTo("#{sid}-pn{i}",{{y:{30 + 20 * i},opacity:0}},{{y:0,opacity:1,duration:.8,ease:"power3.out"}},{t0 + 0.2 + 0.15 * i:.3f});')
+                self.tw(f'tl.to("#{sid}-pn{i}",{{y:{-14 + 28 * i},duration:{max(0.5, dur - 1):.2f},ease:"sine.inOut"}},{t0 + 1.0:.3f});')
+            for i in range(5):
+                self.tw(f'tl.to("#{sid}-d{i}",{{y:{-40 - 12 * i},x:{(-1) ** i * 18},duration:{dur:.2f},ease:"none"}},{t0:.3f});')
+            self.tw(f'tl.fromTo("#{sid}-set .floor",{{backgroundPositionY:"0px"}},{{backgroundPositionY:"90px",duration:{dur:.2f},'
+                    f'ease:"none"}},{t0:.3f});')
         # breathing: a slow bob for the whole scene
         n = max(1, int(dur / 1.6))
         self.tw(f'tl.to("#{sid}-ch .{sid}-pose",{{y:-6,duration:.8,ease:"sine.inOut",yoyo:true,repeat:{2 * n - 1}}},{t0 + 0.6:.3f});')
@@ -448,6 +541,17 @@ class Composer:
         (out / "media").mkdir(exist_ok=True)
         for name, src in self.files.items():
             shutil.copy(src, out / name)
+        chapters = edit.get("chapters") or []
+        brand = '<div id="brand"><div class="logo"><i>G</i>GOLIDE</div>'
+        brand += "".join(f'<div class="chap" id="chap{i}">{_e(c["title"])}</div>' for i, c in enumerate(chapters))
+        brand += '<div class="prog" id="prog"></div></div>'
+        btw = [f'tl.fromTo("#prog",{{width:"0%"}},{{width:"100%",duration:{duration:.3f},ease:"none"}},0);']
+        for i, c in enumerate(chapters):
+            at = float(c["at"])
+            if i:
+                btw.append(f'tl.to("#chap{i - 1}",{{opacity:0,y:-10,duration:.25}},{at:.3f});')
+            btw.append(f'tl.fromTo("#chap{i}",{{opacity:0,y:10}},{{opacity:1,y:0,duration:.35,ease:"power3.out"}},{at + 0.1:.3f});')
+        self.tweens.extend(btw)
         page = f"""<!doctype html><html lang="en"><head><meta charset="UTF-8">
 <meta name="viewport" content="width={self.w}, height={self.h}"><script src="gsap.min.js"></script>
 <style>{CSS}</style></head><body>
@@ -455,6 +559,7 @@ class Composer:
 <div class="bg" id="bg"></div><div class="glow" id="glow"></div>
 {''.join(self.parts)}
 {audio}
+{brand}
 <div class="finish"></div><div class="grain"></div>
 </div>
 <script>
