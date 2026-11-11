@@ -1,0 +1,41 @@
+name: Edit engine trial
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        default: edit-engine
+
+permissions:
+  contents: read
+
+jobs:
+  trial:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg libcairo2-dev pkg-config
+      - run: python -m pip install -e '.[production,video]'
+      - run: python -m playwright install --with-deps chromium
+      - name: Rhubarb Lip Sync
+        run: |
+          R="$HOME/.cache/golide-rhubarb"; mkdir -p "$R"
+          curl -sSL -o "$R/r.zip" https://github.com/DanielSWolf/rhubarb-lip-sync/releases/download/v1.14.0/Rhubarb-Lip-Sync-1.14.0-Linux.zip
+          unzip -qo "$R/r.zip" -d "$R"
+      - name: Trial render
+        run: |
+          VOICE=$(python -c "import json;c=json.load(open('config/background-music.json'));print(c['short'][0]['file'])")
+          python scripts/edit_trial.py "$VOICE"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: edit-trial
+          path: |
+            build/edit-trial/video.mp4
+            build/edit-trial/edit-list.json
+            build/edit-trial/sources/sources.json
