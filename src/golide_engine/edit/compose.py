@@ -352,11 +352,96 @@ class Composer:
         self.entrance(sid, t0, "rise")
         self.cue("click", t0 + 0.4)
 
+    def host(self, t0, dur, data, how="rise"):
+        """Pango, the GOLIDE host, talking with the owner's voice. place: full (left half, the scene's
+        words on the right), left/right (standing beside another scene), corner (small bubble over a
+        screenshot). Poses change on words; the mouth follows Rhubarb cues; he blinks and breathes."""
+        from . import mascot
+
+        sid = self._id("host")
+        self.uses_mascot = True
+        place = data.get("place", "full")
+        poses = data.get("poses") or [{"pose": "talk", "at": 0}]
+        cues = data.get("cues") or []
+        size = {"full": 1000, "left": 860, "right": 860, "corner": 420}[place]
+        w = size * mascot.VIEW[0] / mascot.VIEW[1]
+        x = {"full": self.w * 0.27 - w / 2, "left": 40, "right": self.w - w - 40, "corner": self.w - w - 50}[place]
+        y = self.h - size - (30 if place != "corner" else 20)
+        layers = ""
+        for k, p in enumerate(poses):
+            uid = f"{sid}-p{k}"
+            layers += (f'<svg id="{uid}" class="{sid}-pose" viewBox="0 0 400 540" width="{w:.0f}" height="{size}" '
+                       f'style="position:absolute;left:0;top:0;opacity:{1 if k == 0 else 0}">'
+                       f'{mascot.character(p["pose"], uid=uid, expression=p.get("face"))}</svg>')
+        bubble = ""
+        if place == "corner":
+            bubble = (f'<div class="card" id="{sid}-bub" style="position:absolute;left:{x - 24:.0f}px;top:{y + size * .14:.0f}px;'
+                      f'width:{w + 48:.0f}px;height:{size * .88:.0f}px;border-radius:36px;background:radial-gradient('
+                      f'circle at 50% 35%,#1E3A9E,#0B0F1E 75%);border:2px solid rgba(232,194,104,.55)"></div>')
+        title = ""
+        if place == "full" and data.get("words"):
+            spans = "".join(f'<span class="word{" gold" if w_["text"].lower().strip(".,!?") == str(data.get("punch", "")).lower() else ""}" '
+                            f'id="{sid}-w{i}">{_e(w_["text"])}</span>' for i, w_ in enumerate(data["words"]))
+            title = (f'<div style="position:absolute;left:{self.w * 0.52:.0f}px;right:110px;top:50%;margin-top:-170px">'
+                     f'<div class="title" style="font-size:96px">{spans}</div></div>')
+        inner = (f'{bubble}<div id="{sid}-ch" style="position:absolute;left:{x:.0f}px;top:{y:.0f}px;width:{w:.0f}px;'
+                 f'height:{size}px">{layers}</div>{title}')
+        self.parts.append(f'<section id="{sid}" class="scene clip" data-start="{t0:.3f}" data-duration="{dur:.3f}" '
+                          f'style="z-index:{40 if place == "corner" else 1}"><div class="stage">{inner}</div></section>')
+        # entrance: he pops up from below the frame
+        self.tw(f'tl.fromTo("#{sid}-ch",{{y:{size * 0.5:.0f},opacity:0}},{{y:0,opacity:1,duration:.55,ease:"back.out(1.5)"}},{t0:.3f});')
+        if place == "corner":
+            self.tw(f'tl.fromTo("#{sid}-bub",{{scale:.6,opacity:0}},{{scale:1,opacity:1,duration:.4,ease:"back.out(1.8)"}},{t0:.3f});')
+        self.cue("pop", t0 + 0.1)
+        # breathing: a slow bob for the whole scene
+        n = max(1, int(dur / 1.6))
+        self.tw(f'tl.to("#{sid}-ch .{sid}-pose",{{y:-6,duration:.8,ease:"sine.inOut",yoyo:true,repeat:{2 * n - 1}}},{t0 + 0.6:.3f});')
+        # pose changes on their words, with a small squash so the change reads as movement
+        for k in range(1, len(poses)):
+            at = t0 + float(poses[k]["at"])
+            self.tw(f'tl.set("#{sid}-p{k - 1}",{{opacity:0}},{at:.3f});tl.set("#{sid}-p{k}",{{opacity:1}},{at:.3f});')
+            self.tw(f'tl.fromTo("#{sid}-p{k}",{{scaleY:.96,scaleX:1.03,transformOrigin:"50% 100%"}},'
+                    f'{{scaleY:1,scaleX:1,duration:.25,ease:"back.out(3)",immediateRender:false}},{at:.3f});')
+        # lip sync: show one mouth shape at a time, in every pose layer
+        last = None
+        for c in cues:
+            at = t0 + float(c["start"])
+            if at >= t0 + dur:
+                break
+            v = c["value"]
+            if v == last:
+                continue
+            if last:
+                self.tw(f'tl.set("#{sid} [id$=-m{last}]",{{opacity:0}},{at:.3f});')
+            else:
+                self.tw(f'tl.set("#{sid} [id$=-mX]",{{opacity:0}},{at:.3f});')
+            self.tw(f'tl.set("#{sid} [id$=-m{v}]",{{opacity:1}},{at:.3f});')
+            last = v
+        # blinks every 2.8 to 4.2 s (fixed pattern, so renders repeat exactly)
+        at, gaps, i = t0 + 1.2, (3.1, 2.8, 4.2, 3.5), 0
+        while at < t0 + dur - 0.3:
+            self.tw(f'tl.to("#{sid} [id$=-lid]",{{scaleY:1,duration:.06,yoyo:true,repeat:1,transformOrigin:"50% 50%"}},{at:.3f});')
+            at += gaps[i % len(gaps)]
+            i += 1
+        for i, w_ in enumerate(data.get("words") or []):
+            wat = t0 + float(w_.get("at", 0.3 + i * 0.2))
+            self.tw(f'tl.fromTo("#{sid}-w{i}",{{y:50,opacity:0}},{{y:0,opacity:1,duration:.4,ease:"back.out(1.6)"}},{wat:.3f});')
+
     # ---- output
     def build(self, edit: dict[str, Any], out: Path) -> Path:
+        self.uses_mascot = False
         for s in edit["scenes"]:
             getattr(self, s["type"])(float(s["start"]), float(s["duration"]), s["data"], s.get("in", "rise"))
         duration = float(edit.get("duration") or max(float(s["start"]) + float(s["duration"]) for s in edit["scenes"]))
+        audio = ""
+        if edit.get("audio"):
+            name = self.asset(Path(edit["audio"]))
+            audio = (f'<audio id="voice" class="clip" src="{name}" data-start="0" data-duration="{duration:.3f}" '
+                     f'data-volume="1"></audio>')
+        if self.uses_mascot:
+            from .mascot import DEFS as MASCOT_DEFS
+
+            audio += f'<svg width="0" height="0" style="position:absolute">{MASCOT_DEFS}</svg>'
         out.mkdir(parents=True, exist_ok=True)
         shutil.copytree(ASSETS / "fonts", out / "fonts", dirs_exist_ok=True)
         shutil.copy(ASSETS / "gsap.min.js", out / "gsap.min.js")
@@ -369,6 +454,7 @@ class Composer:
 <div id="root" data-composition-id="main" data-start="0" data-width="{self.w}" data-height="{self.h}" data-duration="{duration:.3f}">
 <div class="bg" id="bg"></div><div class="glow" id="glow"></div>
 {''.join(self.parts)}
+{audio}
 <div class="finish"></div><div class="grain"></div>
 </div>
 <script>

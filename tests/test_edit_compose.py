@@ -57,3 +57,26 @@ class EditComposeTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class MascotTest(unittest.TestCase):
+    def test_every_pose_and_mouth_draws(self):
+        from golide_engine.edit import mascot
+
+        for pose in mascot.POSES:
+            s = mascot.character(pose, uid="t")
+            for k in mascot.MOUTHS:
+                self.assertIn(f'id="t-m{k}"', s)
+            self.assertIn('id="t-lid"', s)
+        self.assertTrue(mascot.svg("shock").startswith("<svg"))
+
+    def test_host_scene_lip_syncs(self):
+        with TemporaryDirectory() as t:
+            edit = {"format": "long", "scenes": [{"type": "host", "start": 0, "duration": 3, "data": {
+                "place": "full", "cues": [{"start": 0.1, "value": "C"}, {"start": 0.3, "value": "A"}],
+                "poses": [{"pose": "talk", "at": 0}, {"pose": "point", "at": 1.5}]}}]}
+            Composer("long").build(edit, Path(t) / "c")
+            page = (Path(t) / "c/index.html").read_text()
+            self.assertIn('[id$=-mC]",{opacity:1}', page)
+            self.assertIn('id="pg-plate"', page)       # shared gradients present once
+            self.assertIn("s1-host-p1", page)
