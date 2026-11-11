@@ -51,9 +51,9 @@ jobs:
           D="build/edit-rerun/${{ inputs.production_id }}"
           mkdir -p /tmp/keep && cp "$D"/video.mp4 "$D"/edit-list.json "$D"/still-*.jpg /tmp/keep/
           git config user.name "golide-bot"; git config user.email "bot@golidee.com"
-          git fetch origin edit-trials || true
-          git switch --orphan edit-trials-new
-          git rm -rq --cached . 2>/dev/null || true
+          git checkout -qf --orphan edit-trials-new
+          git rm -rfq --cached . >/dev/null 2>&1 || true
+          git clean -fdxq
           find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
           mkdir -p "${{ inputs.production_id }}" && cp /tmp/keep/* "${{ inputs.production_id }}/"
           git add "${{ inputs.production_id }}" && git commit -qm "Re-cut ${{ inputs.production_id }} (trial)"
