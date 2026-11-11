@@ -13,7 +13,7 @@ class RecordEmailTests(unittest.TestCase):
         )
         self.assertTrue(message["Subject"].startswith("Record today: [Short]"))
         body = message.get_body(("plain",)).get_content()
-        self.assertIn("0:30 to 1:30", body)
+        self.assertIn("0:30 to 3:00", body)
         self.assertIn("Systems do.", body)
         self.assertIn("#job-golide-short-2026-10-05", body)
 

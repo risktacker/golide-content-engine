@@ -8,16 +8,16 @@ from golide_engine.orchestration.recording import (
 
 class RecordingLengthTests(unittest.TestCase):
     def test_windows_are_locked(self):
-        self.assertEqual(RECORDING_WINDOWS["short"], (30.0, 90.0))
+        self.assertEqual(RECORDING_WINDOWS["short"], (30.0, 180.0))
         self.assertEqual(RECORDING_WINDOWS["long"], (150.0, 720.0))
 
     def test_accepts_inside_window(self):
-        for fmt, seconds in [("short", 30), ("short", 75), ("short", 90.4),
+        for fmt, seconds in [("short", 30), ("short", 75), ("short", 90.4), ("short", 91), ("short", 179),
                              ("long", 150), ("long", 309), ("long", 600), ("long", 719)]:
             check_recording_length(fmt, seconds)
 
     def test_rejects_outside_window_with_rerecord_message(self):
-        for fmt, seconds, word in [("short", 29, "too short"), ("short", 91, "too long"),
+        for fmt, seconds, word in [("short", 29, "too short"), ("short", 181, "too long"),
                                    ("long", 140, "too short"), ("long", 721, "too long")]:
             with self.assertRaises(RecordingLengthError) as info:
                 check_recording_length(fmt, seconds)
