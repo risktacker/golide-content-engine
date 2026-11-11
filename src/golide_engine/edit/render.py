@@ -150,7 +150,7 @@ def render_sfx(cues: list[dict[str, Any]], duration: float, out: Path) -> Path:
 
 def render(edit: dict[str, Any], folder: Path, narration: Path, output: Path, outfit: str,
            track: dict | None = None, workers: str = "auto") -> Path:
-    from ..vector.ambient import LEVEL_DB, LEVELS_DB, render_ambient
+    from ..vector.ambient import LEVEL_DB, LEVELS_DB
     from ..vector.render import AUDIO_MIX, TRACK_DUCK
     from .compose import Composer
 
@@ -179,17 +179,18 @@ def render(edit: dict[str, Any], folder: Path, narration: Path, output: Path, ou
                     "--quality", "high", "--workers", workers, "--quiet"], check=True, env=env)
     sfx = render_sfx(json.loads((comp / "sfx.json").read_text()), duration, folder / "sfx.wav")
     level = LEVELS_DB.get(fmt, LEVEL_DB)
-    if track:
-        from ..vector.music_bed import render as render_track
-        bed = render_track(track, duration, folder / "bed.wav", level)
-    else:
-        bed = render_ambient(duration, folder / "bed.wav", seed_text=str(edit.get("title", "")), level_db=level)
+    from ..vector.music_bed import pick, render as render_track
+    # 2026-11-12 (owner): never the generated ambient bed (it plays as noise): always a real track
+    track = track or pick(fmt, None, str(edit.get("title", "")))
+    if not track:
+        raise RuntimeError("no music track found in config/background-music.json")
+    bed = render_track(track, duration, folder / "bed.wav", level)
     mix = AUDIO_MIX.get(fmt, AUDIO_MIX["short"])
     # 2026-11-11 (owner): the voice sat too low: it leads now (-14 LUFS) and the music sits further under it
     audio = ("[1:a]loudnorm=I=-14:TP=-1.2:LRA=14,aresample=48000,asplit=2[v][key];"
              f"[2:a]aresample=48000,volume={mix['sfx']}[s];"
              "[3:a]aresample=48000,volume=0.7[b0];"
-             f"[b0][key]sidechaincompress={TRACK_DUCK if track else mix['duck']}[b];"
+             f"[b0][key]sidechaincompress={TRACK_DUCK}[b];"
              "[v][s][b]amix=inputs=3:duration=first:normalize=0,alimiter=limit=0.89:level=0:attack=2:release=60[a]")
     output.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(silent), "-i", str(narration), "-i", str(sfx),

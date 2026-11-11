@@ -31,9 +31,12 @@ def pick(fmt: str, n: int | None, story: str = "") -> dict | None:
 
     key = "short_alert" if fmt == "short" and story and is_alert(story) and settings().get("short_alert") else fmt
     tracks = [t for t in settings().get(key, []) if (ROOT / t["file"]).exists()]
+    # a track's weight is how many turns it gets in the rotation (owner 2026-11-12: Discipline Finishes most)
+    tracks = [t for t in tracks for _ in range(max(1, int(t.get("weight", 1))))]
     if not tracks:
         return None
-    return dict(tracks[(n or 0) % len(tracks)], path=str(ROOT / tracks[(n or 0) % len(tracks)]["file"]))
+    t = tracks[(n or 0) % len(tracks)]
+    return dict(t, path=str(ROOT / t["file"]))
 
 
 def _length(path: str) -> float:

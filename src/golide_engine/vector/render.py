@@ -1215,6 +1215,9 @@ class VectorRenderer:
 
         sfx_path = render_sfx(groups, duration, output.with_name(output.stem + "-sfx.wav"),
                               self._action_cues(plan, lines, groups))
+        if not track:   # 2026-11-12 (owner): never the generated bed when a real track exists
+            from .music_bed import pick
+            track = pick(self.format, None, str(plan.get("title", "")))
         if track:   # 2026-11-10 (owner): real music, low, faded in and out
             from .music_bed import render as render_track
             bed_path = render_track(track, duration, output.with_name(output.stem + "-bed.wav"),

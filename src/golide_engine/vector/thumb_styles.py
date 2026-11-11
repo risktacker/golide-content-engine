@@ -208,8 +208,64 @@ GOLI = {
     "platter": ("point_left", "B", "sure", 1070, 560),
     "photo_card": ("shock", "D", "shock", 1080, 620),
     "words": ("point_left", "C", "sure", 1040, 660),
+    "studio": ("point", "C", "sure", 335, 640),
 }
 ZONE = 860            # with Goli in the picture, words and tiles stay left of this line; he owns the right
+
+
+STUDIO = ROOT / "assets" / "thumbs" / "studio-backdrop.jpg"   # Goli's own set, empty (rendered from edit/studio.py)
+SCREEN = (749, 69, 1235, 433)       # the set's big screen, in the 1280 x 720 thumbnail
+
+
+def _studio_bg(screen: Image.Image | None = None, glow: tuple = (64, 110, 255)) -> Image.Image:
+    """2026-11-12 (owner): a thumbnail is a picture of a real place: Goli's studio behind him, a little
+    out of focus like a camera shot, with the story's own thing on the big screen."""
+    b = Image.open(STUDIO).convert("RGBA").resize((W, H), Image.LANCZOS)
+    if screen is not None:
+        x0, y0, x1, y1 = SCREEN
+        pic = screen.convert("RGBA")
+        k = max((x1 - x0) / pic.width, (y1 - y0) / pic.height)
+        pic = pic.resize((int(pic.width * k) + 1, int(pic.height * k) + 1), Image.LANCZOS)
+        pic = pic.crop(((pic.width - (x1 - x0)) // 2, (pic.height - (y1 - y0)) // 2,
+                        (pic.width + (x1 - x0)) // 2, (pic.height + (y1 - y0)) // 2))
+        mask = Image.new("L", pic.size, 0)
+        ImageDraw.Draw(mask).rounded_rectangle([0, 0, pic.width - 1, pic.height - 1], 10, fill=255)
+        b.paste(pic, (x0, y0), mask)
+        _glow(b, ((x0 + x1) // 2, (y0 + y1) // 2), 300, glow + (60,))
+    b = b.filter(ImageFilter.GaussianBlur(3.2))                    # depth of field: the set sits behind
+    shade = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(shade)
+    for i in range(H // 2):                                          # darker toward the bottom: words sit there
+        d.line([(0, H - i), (W, H - i)], fill=(4, 6, 12, int(200 * (1 - i / (H / 2)) ** 1.4)))
+    b.alpha_composite(shade)
+    vig = Image.new("L", (W, H), 0)
+    ImageDraw.Draw(vig).ellipse([-260, -200, W + 260, H + 200], fill=255)
+    vig = vig.filter(ImageFilter.GaussianBlur(120))
+    dark = Image.new("RGBA", (W, H), (0, 0, 0, 170))
+    dark.putalpha(Image.eval(vig, lambda v: int(170 * (1 - v / 255))))
+    b.alpha_composite(dark)
+    return b
+
+
+def _rim(cut: Image.Image, colour: tuple = (120, 170, 255)) -> Image.Image:
+    """A thin back-light around Goli so he separates from the set (studio lighting)."""
+    a = cut.getchannel("A")
+    halo = Image.new("RGBA", cut.size, colour + (0,))
+    halo.putalpha(a.filter(ImageFilter.MaxFilter(9)).filter(ImageFilter.GaussianBlur(6)))
+    out = Image.new("RGBA", cut.size, (0, 0, 0, 0))
+    out.alpha_composite(halo)
+    out.alpha_composite(cut)
+    return out
+
+
+def _big(b: Image.Image, xy: tuple, text: str, font, fill, depth: int = 10, edge=(0, 0, 0)) -> None:
+    """Thumbnail lettering: heavy outline and an extruded 3D block under the face."""
+    x, y = xy
+    d = ImageDraw.Draw(b)
+    for k in range(depth, 0, -1):
+        d.text((x + k * .6, y + k), text, font=font, fill=tuple(int(c * .35) for c in fill), stroke_width=8,
+               stroke_fill=edge)
+    d.text((x, y), text, font=font, fill=fill, stroke_width=8, stroke_fill=edge)
 
 
 def _paste_goli(b: Image.Image, cut: Image.Image, cx: int) -> None:
@@ -344,6 +400,24 @@ def compose(style: str, words: str, punch: str, names: list[str], icons: list[di
         frame.paste(pic, (8, 8))
         frame = frame.rotate(-4, expand=True, resample=Image.BICUBIC)
         b.alpha_composite(frame, (50, top))
+    elif style == "studio":
+        # Goli in his studio, pointing at the story on the big screen; the words under it
+        screen = Image.open(photo).convert("RGB") if photo and Path(photo).exists() else None
+        if screen is None and icons:
+            screen = Image.new("RGBA", (640, 480), (10, 14, 26, 255))
+            _glow(screen, (320, 240), 260, _vivid(_hex(icons[0]["hex"])) + (150,))
+            t = tiles({"w": 480, "h": 480, "fov": 30, "dist": 10,
+                       "items": [_tile(icons[0], pos=[0, 0, 0], rot=[10, -22, 6], size=3.4)]})
+            screen.alpha_composite(t, (80, 0))
+        alert = is_alert(words)
+        b = _studio_bg(screen, (238, 46, 46) if alert else brand)
+        f1 = fit(rest, ANTON, 620, 96, 100)
+        f2 = fit(punch, ANTON, 620, 170, 170)
+        h1 = f1.getbbox(rest)[3]
+        y0 = H - 24 - h1 - 12 - f2.getbbox(punch)[3]
+        _big(b, (620, y0), rest, f1, (248, 248, 248), depth=6)
+        _big(b, (620, y0 + h1 + 12), punch, f2, (238, 46, 46) if alert else (250, 204, 21), depth=12,
+             edge=(30, 6, 6) if alert else (40, 28, 0))
     elif style == "words":
         # no logo and no picture: Goli and the big words on the house glass look
         b = _grad((244, 246, 255), (214, 224, 250))
@@ -357,7 +431,7 @@ def compose(style: str, words: str, punch: str, names: list[str], icons: list[di
     else:
         raise ValueError(f"unknown style {style}")
     if host is not None:
-        _paste_goli(b, host, GOLI[style][3])
+        _paste_goli(b, _rim(host) if style == "studio" else host, GOLI[style][3])
     out.parent.mkdir(parents=True, exist_ok=True)
     b.convert("RGB").save(out, quality=94)
     return out
