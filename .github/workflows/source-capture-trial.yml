@@ -39,7 +39,25 @@ jobs:
           from pathlib import Path
           from golide_engine.engine.source_capture import capture, contact_sheet
           pid = os.environ["PID"]
-          research = json.loads((Path("productions") / pid / "research.json").read_text())
+          path = Path("productions") / pid / "research.json"
+          if path.exists():
+              research = json.loads(path.read_text())
+          else:   # the run's working files are cleared after upload: use the record's claims and links
+              record = json.loads((Path("data/production-records") / f"{pid}.json").read_text())
+              claims = []
+              def walk(o):
+                  if isinstance(o, dict):
+                      if str(o.get("source_url", "")).startswith("http"):
+                          claims.append({"claim": o.get("claim", ""), "source_url": o["source_url"], "source_title": o.get("source_title", "")})
+                      for v in o.values(): walk(v)
+                  elif isinstance(o, list):
+                      for v in o: walk(v)
+              walk(record)
+              if not claims:
+                  import re
+                  urls = sorted(set(re.findall(r'https?://[^"\s]+', json.dumps(record))))
+                  claims = [{"claim": "", "source_url": u} for u in urls]
+              research = {"claims": claims}
           out = Path("trial") / pid
           log = capture(research, out)
           contact_sheet(out, out / "contact-sheet.jpg")
