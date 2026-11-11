@@ -55,10 +55,6 @@ class EditComposeTest(unittest.TestCase):
         self.assertIn("$40", groups[0])
 
 
-if __name__ == "__main__":
-    unittest.main()
-
-
 class MascotTest(unittest.TestCase):
     def test_every_pose_and_mouth_draws(self):
         from golide_engine.edit import mascot
@@ -80,3 +76,7 @@ class MascotTest(unittest.TestCase):
             self.assertIn('[id$=-mC]",{opacity:1}', page)
             self.assertIn('id="pg-plate"', page)       # shared gradients present once
             self.assertIn("s1-host-p1", page)
+
+
+if __name__ == "__main__":
+    unittest.main()
