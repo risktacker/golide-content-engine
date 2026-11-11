@@ -505,3 +505,9 @@ body.sheet-open{overflow:hidden}
 .script-status{display:block;margin-top:8px}
 .script-box.editing + .script-tools{display:none}
 .replace-go.ready{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}
+/* 2026-11-11: the video type is chosen right after "Use AI voice" or the upload */
+.style-ask{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0 0 14px;padding:12px 14px;border-radius:12px;
+  border:1px solid rgba(232,194,104,.55);background:rgba(232,194,104,.08)}
+.style-ask .post-to-label{width:100%;color:var(--text,inherit);font-weight:600}
+.style-ask .style-go{min-width:120px}
+.style-ask .style-go.primary{background:#E8C268;color:#111;border-color:#E8C268;font-weight:700}

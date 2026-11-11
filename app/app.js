@@ -608,14 +608,24 @@ function pickedPlatforms(scope) {
 
 // 2026-11-11 (owner): he picks each video's style. Goli (the edit engine) is the default; the
 // illustration engine stays available as an option.
+// The choice comes up right after "Use AI voice" or after the recording uploads; the build starts on the tap.
 const VIDEO_STYLES = [["goli", "Goli"], ["illustration", "Illustration"]];
+let styleAsking = null;
 
-function styleHtml(job) {
-  const current = job.video_style || "goli";
-  return '<div class="post-to style-pick" data-job="' + escAttr(job.job_id) + '"><span class="post-to-label">Video style</span>' +
-    VIDEO_STYLES.map(([key, name]) =>
-      '<label class="post-chip"><input type="radio" name="style-' + escAttr(job.job_id) + '" value="' + key + '"' +
-      (current === key ? " checked" : "") + '><span>' + name + '</span></label>').join("") + '</div>';
+function askStyle(jobId) {
+  return new Promise((resolve) => {
+    const card = document.getElementById("job-" + jobId);
+    const row = document.createElement("div");
+    row.className = "style-ask";
+    row.innerHTML = '<span class="post-to-label">Video type</span>' + VIDEO_STYLES.map(([key, name]) =>
+      '<button class="action-button style-go' + (key === "goli" ? " primary" : "") + '" data-style="' + key + '">' + name + '</button>').join("") +
+      '<button class="action-button style-cancel">Cancel</button>';
+    styleAsking = jobId;
+    (card?.querySelector(".action-controls") || card || document.body).prepend(row);
+    row.querySelectorAll("button").forEach((button) => {
+      button.onclick = () => { styleAsking = null; row.remove(); resolve(button.dataset.style || null); };
+    });
+  });
 }
 
 function actionCard(job) {
@@ -636,7 +646,7 @@ function actionCard(job) {
       '<button class="action-button replace-cancel" data-job="' + escAttr(job.job_id) + '">Cancel</button>' +
       '<p class="replace-note">Paste the link, then tap <b>Write a new script</b>. The engine treats that video as today\'s title: it researches the subject from other sources and writes a new script here (a few cents).</p></div>' +
     '<span class="voice-status script-status" id="script-status-' + escAttr(job.job_id) + '"></span></div>' +
-    '<div class="action-controls">' + styleHtml(job) + postToHtml(null) +
+    '<div class="action-controls">' + postToHtml(null) +
       '<button class="ai-voice-button" data-job="' + escAttr(job.job_id) + '">Use AI voice</button>' +
       '<label class="upload-button">Upload my recording<input class="voice-input" type="file" accept="audio/*,video/*,.m4a,.mp3,.wav,.aac,.caf,.ogg,.opus,.webm,.mp4,.mov" data-job="' + escAttr(job.job_id) + '"></label>' +
       '<button class="action-button copy-script" data-job="' + escAttr(job.job_id) + '">Copy script</button>' +
@@ -666,7 +676,7 @@ let scriptEditing = null;
 let studioNotice = "";
 
 function renderActionQueues() {
-  if (scriptEditing) return;
+  if (scriptEditing || styleAsking) return;
   const waiting = productionJobs.filter((job) => job.status === "waiting_owner_voice");
   const replaceable = productionJobs.filter((job) => job.owner_voice_media_ref && REPLACEABLE.has(job.status));
   const root = $("#action-queue");
@@ -694,30 +704,16 @@ function renderActionQueues() {
   // 2026-11-06 (owner); bound here 2026-11-10: it was bound before the cards were redrawn, so taps did nothing.: the AI voice reads this script instead of his recording. Two taps: it spends credits.
   $$(".ai-voice-button").forEach((button) => {
     button.onclick = async () => {
-      if (button.dataset.confirm !== "1") {
-        button.dataset.confirm = "1"; button.textContent = "Tap again: AI voice reads it";
-        setTimeout(() => { button.dataset.confirm = ""; button.textContent = "Use AI voice"; }, 3500);
-        return;
-      }
-      button.disabled = true; button.textContent = "Starting...";
+      if (styleAsking) return;
+      button.disabled = true;
+      const style = await askStyle(button.dataset.job);       // the tap on Goli / Illustration starts it (it spends credits)
+      if (!style) { button.disabled = false; return; }
+      button.textContent = "Starting...";
       const card = button.closest(".action-card");
       const picked = card?.querySelector(".post-to") ? pickedPlatforms(card) : null;
       await api("/api/production-jobs/" + encodeURIComponent(button.dataset.job) + "/ai-voice",
-        { method: "POST", body: JSON.stringify(picked ? { platforms: picked } : {}) });
+        { method: "POST", body: JSON.stringify(Object.assign({ style }, picked ? { platforms: picked } : {})) });
       await loadProductionJobs();
-    };
-  });
-  $$(".style-pick input").forEach((input) => {
-    input.onchange = async () => {
-      const box = input.closest(".style-pick");
-      const status = document.getElementById("voice-status-" + box.dataset.job);
-      try {
-        await api("/api/production-jobs/" + encodeURIComponent(box.dataset.job) + "/style",
-          { method: "POST", body: JSON.stringify({ style: input.value }) });
-        const job = productionJobs.find((item) => item.job_id === box.dataset.job);
-        if (job) job.video_style = input.value;
-        if (status) status.textContent = "Style: " + (input.value === "goli" ? "Goli" : "Illustration");
-      } catch (error) { if (status) status.textContent = error.message; }
     };
   });
   $$(".voice-input").forEach((input) => {
@@ -869,9 +865,12 @@ async function uploadVoice(jobId, file) {
   if (status) status.textContent = "Uploading " + file.name + "...";
   try {
     const mediaRef = await prepareUpload(file);
+    if (status) status.textContent = "Uploaded. Choose the video type:";
+    const style = await askStyle(jobId);
+    if (!style) { if (status) status.textContent = "Upload kept here; upload again when you are ready."; return; }
     await api("/api/production-jobs/" + encodeURIComponent(jobId) + "/voice", {
       method: "POST",
-      body: JSON.stringify(Object.assign({ media_ref: mediaRef },
+      body: JSON.stringify(Object.assign({ media_ref: mediaRef, style },
         card?.querySelector(".post-to") ? { platforms: pickedPlatforms(card) } : {})),
     });
     if (status) status.textContent = "Uploaded. Production has started; the video is ready in about 20 to 30 minutes.";
