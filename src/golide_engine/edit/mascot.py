@@ -46,6 +46,7 @@ POSES: dict[str, dict] = {
     "think":    {"arms": (14, -12, 40, 113), "hand": None, "tilt": 6, "face": "think", "look": (-5, -7)},
     "thumbs_up": {"arms": (14, -12, -36, -104), "hand": "thumb", "tilt": 4, "face": "happy"},
     "shrug":    {"arms": (58, -104, -58, 104), "hand": None, "tilt": 8, "face": "skeptic"},
+    "point_both_up": {"arms": (150, -14, -150, 14), "hand": "point_both", "tilt": 0, "face": "happy", "look": (0, 2)},
     "wave":     {"arms": (14, -12, -128, -30), "hand": None, "tilt": -3, "face": "happy"},
 }
 FACES = {  # brow lift, brow tilt, eye scale, lid line, default look
@@ -140,7 +141,7 @@ def _character(pose, uid, mouth, expression, look, blink, cap) -> str:
               f'<path d="M{x - 34} 512 Q{x - 34} 488 {x - 10} 486 L{x + 22} 486 Q{x + 38} 490 {x + 36} 512 Z" '
               f'fill="url(#pg-shoe)" filter="url(#pg-drop)"/><rect x="{x - 34}" y="506" width="70" height="8" rx="4" fill="url(#pg-gold)"/>'
               f'<path d="M{x - 12} 494 L{x + 16} 494" stroke="#2450E6" stroke-width="5" stroke-linecap="round"/>')
-    left_hand = "point" if p["hand"] == "point_left" else None
+    left_hand = "point" if p["hand"] in ("point_left", "point_both") else None
     g += _arm(104, 338, la, lf, left_hand)
     g += ('<path d="M92 356 Q96 300 200 294 Q304 300 308 356 L304 452 Q200 478 96 452 Z" fill="url(#pg-hoodie)" filter="url(#pg-drop)"/>'
           '<path d="M118 372 Q130 318 172 308" stroke="#8FB0FF" stroke-width="8" fill="none" stroke-linecap="round" opacity=".55"/>'
@@ -191,7 +192,7 @@ def _character(pose, uid, mouth, expression, look, blink, cap) -> str:
           '<path d="M140 156 Q150 148 162 150" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none" opacity=".7"/>'
           '<path d="M220 156 Q230 148 242 150" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none" opacity=".7"/>')
     h += "</g>"
-    right_hand = p["hand"] if p["hand"] in ("point", "thumb") else None
+    right_hand = "point" if p["hand"] == "point_both" else p["hand"] if p["hand"] in ("point", "thumb") else None
     return g + h + _arm(296, 338, ra, rf, right_hand)
 
 
