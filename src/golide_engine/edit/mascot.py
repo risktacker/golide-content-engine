@@ -1,4 +1,4 @@
-"""Pango, the GOLIDE host (owner approved the design 2026-11-11).
+"""Goli the pangolin, the GOLIDE host (owner approved the design 2026-11-11).
 
 An original pangolin character in a GOLIDE hoodie with gold glasses, drawn entirely in code (SVG with
 3D-style shading), so it costs nothing and nobody else owns it. He replaces the presenter that big
@@ -117,7 +117,18 @@ def _mouths(uid: str, default: str) -> str:
 
 
 def character(pose: str = "talk", uid: str = "pg", mouth: str = "X", expression: str | None = None,
-              look: tuple[float, float] | None = None, blink: bool = False) -> str:
+              look: tuple[float, float] | None = None, blink: bool = False, outfit: str = "royal") -> str:
+    """Goli in one pose and the day's outfit. See _character for ids."""
+    o = OUTFITS[outfit]
+    body = _character(pose, uid, mouth, expression, look, blink, o["cap"])
+    for old, new in (("url(#pg-hoodie)", f"url(#pg-hoodie-{outfit})"), ("url(#pg-sleeve)", f"url(#pg-sleeve-{outfit})"),
+                     ("url(#pg-cap)", f"url(#pg-cap-{outfit})"), ("#1A3BB8", o["dark"]), ("#1E43C8", o["pocket"]),
+                     ("#8FB0FF", o["shine"]), ("#2450E6", o["main"])):
+        body = body.replace(old, new)
+    return body
+
+
+def _character(pose, uid, mouth, expression, look, blink, cap) -> str:
     """Pango in one pose. Ids: {uid}-head (for nods), {uid}-m<shape> (mouths), {uid}-lid (blink)."""
     p = POSES[pose]
     lift, tilt, es, lid_line, face_look = FACES[expression or p["face"]]
@@ -135,11 +146,9 @@ def character(pose: str = "talk", uid: str = "pg", mouth: str = "X", expression:
           '<path d="M118 372 Q130 318 172 308" stroke="#8FB0FF" stroke-width="8" fill="none" stroke-linecap="round" opacity=".55"/>'
           '<path d="M150 410 L250 410 L240 446 L160 446 Z" fill="#1E43C8" opacity=".9"/>'
           '<path d="M148 300 Q200 340 252 300 Q240 318 200 324 Q160 318 148 300 Z" fill="#1A3BB8"/>'
-          '<path d="M178 318 L174 366" stroke="url(#pg-gold)" stroke-width="5" stroke-linecap="round"/>'
-          '<path d="M222 318 L226 366" stroke="url(#pg-gold)" stroke-width="5" stroke-linecap="round"/>'
-          '<circle cx="174" cy="370" r="6" fill="url(#pg-gold)"/><circle cx="226" cy="370" r="6" fill="url(#pg-gold)"/>'
-          '<circle cx="200" cy="380" r="25" fill="url(#pg-gold)" filter="url(#pg-drop)"/>'
-          '<text x="200" y="391" text-anchor="middle" font-family="Poppins" font-weight="900" font-size="29" fill="#0E1A4A">G</text>')
+          '<path d="M180 318 L178 352" stroke="#F4F1EA" stroke-width="4" stroke-linecap="round" opacity=".8"/>'
+          '<path d="M220 318 L222 352" stroke="#F4F1EA" stroke-width="4" stroke-linecap="round" opacity=".8"/>')
+    g += logo_mark(200, 384, 64, "#F4F1EA")
     for (x, y, r) in [(128, 302, -32), (272, 302, 32)]:       # gold scale plates on the shoulders
         g += f'<g transform="rotate({r} {x} {y})">{_plate(x, y - 14, 46, 44)}</g>'
     h = f'<g id="{uid}-head" transform="rotate({p["tilt"]} 200 300)">'
@@ -153,6 +162,7 @@ def character(pose: str = "talk", uid: str = "pg", mouth: str = "X", expression:
     h += f'<g clip-path="url(#pg-headclip)">{crown}</g>'
     h += ('<path d="M104 168 Q104 132 150 128 Q200 122 250 128 Q296 132 296 168 Q296 214 274 240 Q256 280 238 300 '
           'Q200 320 162 300 Q144 280 126 240 Q104 214 104 168 Z" fill="url(#pg-mask)" filter="url(#pg-ao)"/>')
+    h += _cap(cap)
     h += ('<ellipse cx="200" cy="248" rx="22" ry="14" fill="url(#pg-nose)"/>'
           '<ellipse cx="193" cy="243" rx="7" ry="4" fill="#fff" opacity=".55"/>')
     h += _mouths(uid, mouth)
@@ -182,8 +192,91 @@ def character(pose: str = "talk", uid: str = "pg", mouth: str = "X", expression:
     return g + h + _arm(296, 338, ra, rf, right_hand)
 
 
-def svg(pose: str = "talk", width: int = 400, mouth: str = "X", **kw) -> str:
+def svg(pose: str = "talk", width: int = 400, mouth: str = "X", outfit: str = "royal", **kw) -> str:
     """A standalone SVG of Pango (for stills, thumbnails and checks)."""
     w, h = VIEW
     return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{width * h / w:.0f}" viewBox="0 0 {w} {h}">'
-            f'{DEFS}{character(pose, mouth=mouth, **kw)}</svg>')
+            f'{DEFS}{outfit_defs(outfit)}{character(pose, mouth=mouth, outfit=outfit, **kw)}</svg>')
+
+
+# ---- the GOLIDE mark (Studio's brand mark: a G of dots growing round, a grey and a gold dot inside)
+MARK = [(48.85, 17.86, 1.60), (53.60, 27.80, 1.82), (52.92, 38.80, 2.04), (47.00, 48.09, 2.26), (37.32, 53.35, 2.48),
+        (26.31, 53.25, 2.70), (16.72, 47.83, 2.92), (10.96, 38.43, 3.14), (10.48, 27.43, 3.36), (15.40, 17.57, 3.58),
+        (24.48, 11.33, 3.80)]
+
+
+def logo_mark(cx: float, cy: float, size: float, colour: str = "#F4F1EA", gold: str = "#E8C268") -> str:
+    k = size / 64
+    dots = "".join(f'<circle cx="{cx + (x - 32) * k:.2f}" cy="{cy + (y - 32) * k:.2f}" r="{r * k:.2f}" fill="{colour}"/>'
+                   for x, y, r in MARK)
+    return (dots + f'<circle cx="{cx + 4 * k:.2f}" cy="{cy:.2f}" r="{2.2 * k:.2f}" fill="{colour}" opacity=".55"/>'
+            f'<circle cx="{cx + 12 * k:.2f}" cy="{cy:.2f}" r="{3.6 * k:.2f}" fill="{gold}"/>')
+
+
+# ---- weekly wardrobe (owner 2026-11-11): a different hoodie colour and cap each weekday
+OUTFITS: dict[str, dict] = {
+    "royal":    {"light": "#4C7DFF", "main": "#2450E6", "deep": "#14309A", "dark": "#1A3BB8", "pocket": "#1E43C8",
+                 "shine": "#8FB0FF", "cap": None},
+    "ember":    {"light": "#FF7A4D", "main": "#E8462F", "deep": "#9E2412", "dark": "#B7301C", "pocket": "#C93A24",
+                 "shine": "#FFB199", "cap": ("snapback", "#16181F", "#2A2E3A")},
+    "emerald":  {"light": "#3DDC97", "main": "#12A36B", "deep": "#0A6A45", "dark": "#0D7E52", "pocket": "#0F8F5D",
+                 "shine": "#9BF0C9", "cap": ("beanie", "#F4EBDD", "#D9CBB3")},
+    "midnight": {"light": "#3A3F52", "main": "#232735", "deep": "#12141C", "dark": "#191C27", "pocket": "#1E2230",
+                 "shine": "#6B7390", "cap": ("snapback", "#F2C14E", "#B07D1C")},
+    "violet":   {"light": "#A274FF", "main": "#7B3FE4", "deep": "#4B1FA0", "dark": "#5A2BBE", "pocket": "#6633CF",
+                 "shine": "#CDB4FF", "cap": ("backwards", "#16181F", "#2A2E3A")},
+    "sky":      {"light": "#5CCBFF", "main": "#19A7E0", "deep": "#0B6C99", "dark": "#0F82B5", "pocket": "#1494C9",
+                 "shine": "#B5E8FF", "cap": ("snapback", "#F4F1EA", "#C9CED8")},
+    "crimson":  {"light": "#FF5C86", "main": "#C81E4A", "deep": "#7E0F2B", "dark": "#981638", "pocket": "#AF1A41",
+                 "shine": "#FFA8BF", "cap": ("beanie", "#16181F", "#2A2E3A")},
+}
+WEEK = ("royal", "ember", "emerald", "midnight", "violet", "sky", "crimson")   # Monday .. Sunday
+
+
+def outfit_for(day) -> str:
+    """The outfit for a date (datetime.date): Monday royal blue ... Sunday crimson."""
+    return WEEK[day.weekday()]
+
+
+def outfit_defs(outfit: str) -> str:
+    o = OUTFITS[outfit]
+    cap = o["cap"]
+    cap_grad = (f'<linearGradient id="pg-cap-{outfit}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{cap[1]}"/>'
+                f'<stop offset="1" stop-color="{cap[2]}"/></linearGradient>') if cap else ""
+    return (f'<svg width="0" height="0" style="position:absolute"><defs>'
+            f'<linearGradient id="pg-hoodie-{outfit}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{o["light"]}"/>'
+            f'<stop offset=".55" stop-color="{o["main"]}"/><stop offset="1" stop-color="{o["deep"]}"/></linearGradient>'
+            f'<linearGradient id="pg-sleeve-{outfit}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="{o["dark"]}"/>'
+            f'<stop offset=".45" stop-color="{o["light"]}"/><stop offset="1" stop-color="{o["dark"]}"/></linearGradient>'
+            f'{cap_grad}</defs></svg>')
+
+
+def _cap(cap) -> str:
+    """Sits high on the crown so brows and glasses stay free."""
+    return f'<g transform="translate(0 -22)">{_cap_shape(cap)}</g>' if cap else ""
+
+
+def _cap_shape(cap) -> str:
+    kind, colour, _ = cap
+    ink = "#16181F" if colour in ("#F4F1EA", "#F2C14E", "#F4EBDD") else "#F4F1EA"
+    dome = ('<path d="M98 132 Q98 34 200 30 Q302 34 302 132 Q200 112 98 132 Z" fill="url(#pg-cap)" filter="url(#pg-drop)"/>'
+            '<path d="M130 70 Q160 44 200 40" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" opacity=".35"/>')
+    if kind == "snapback":
+        return (dome + '<path d="M200 32 L200 120" stroke="#000" stroke-opacity=".18" stroke-width="3"/>'
+                '<circle cx="200" cy="32" r="7" fill="url(#pg-cap)"/>'
+                + logo_mark(196, 86, 46, ink) +
+                '<path d="M96 128 Q200 108 304 128 Q326 140 304 150 Q200 168 96 150 Q74 140 96 128 Z" fill="url(#pg-cap)" '
+                'filter="url(#pg-drop)"/><path d="M110 146 Q200 160 290 146" stroke="#000" stroke-opacity=".25" '
+                'stroke-width="4" fill="none"/>')
+    if kind == "backwards":
+        return (dome + '<path d="M160 128 Q200 96 240 128" fill="#0B0D12" stroke="#E8C268" stroke-width="3"/>'
+                '<rect x="176" y="112" width="48" height="8" rx="4" fill="#E8C268"/>'
+                '<path d="M118 130 Q200 118 282 130" stroke="#000" stroke-opacity=".3" stroke-width="4" fill="none"/>')
+    if kind == "beanie":
+        ribs = "".join(f'<path d="M{x} 112 L{x} 140" stroke="#000" stroke-opacity=".14" stroke-width="5"/>'
+                       for x in range(108, 300, 14))
+        return ('<path d="M100 128 Q96 22 200 18 Q304 22 300 128 Z" fill="url(#pg-cap)" filter="url(#pg-drop)"/>'
+                '<path d="M128 60 Q160 34 200 30" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" opacity=".35"/>'
+                '<rect x="94" y="108" width="212" height="36" rx="18" fill="url(#pg-cap)" filter="url(#pg-drop)"/>'
+                + ribs + logo_mark(200, 126, 30, ink))
+    return ""

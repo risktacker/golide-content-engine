@@ -20,6 +20,8 @@ from typing import Any
 
 from PIL import Image
 
+from . import studio
+
 ROOT = Path(__file__).resolve().parents[3]
 ASSETS = ROOT / "assets" / "edit"
 SIZES = {"long": (1920, 1080), "short": (1080, 1920)}
@@ -107,7 +109,9 @@ def _e(text: Any) -> str:
 class Composer:
     """Collects scene markup and one GSAP timeline."""
 
-    def __init__(self, fmt: str = "long"):
+    def __init__(self, fmt: str = "long", outfit: str = "royal"):
+        self.outfit = outfit
+        self.outfits: set[str] = set()
         self.fmt = fmt
         self.w, self.h = SIZES[fmt]
         self.parts: list[str] = []
@@ -427,18 +431,26 @@ class Composer:
         place = data.get("place", "full")
         poses = data.get("poses") or [{"pose": "talk", "at": 0}]
         cues = data.get("cues") or []
-        size = {"full": 1000, "left": 860, "right": 860, "corner": 420}[place]
+        outfit = data.get("outfit") or self.outfit
+        self.outfits.add(outfit)
+        size = {"full": 1000, "left": 860, "right": 860, "corner": 420, "studio": 820}[place]
         w = size * mascot.VIEW[0] / mascot.VIEW[1]
-        x = {"full": self.w * 0.27 - w / 2, "left": 40, "right": self.w - w - 40, "corner": self.w - w - 50}[place]
+        x = {"full": self.w * 0.27 - w / 2, "left": 40, "right": self.w - w - 40, "corner": self.w - w - 50,
+             "studio": studio.SEAT_X - w / 2}[place]
         y = self.h - size - (30 if place != "corner" else 20)
+        if place == "studio":                 # seated: desk top at his waist
+            y = studio.DESK_Y - 430 * size / 540
         layers = ""
         for k, p in enumerate(poses):
             uid = f"{sid}-p{k}"
             layers += (f'<svg id="{uid}" class="{sid}-pose" viewBox="0 0 400 540" width="{w:.0f}" height="{size}" '
                        f'style="position:absolute;left:0;top:0;opacity:{1 if k == 0 else 0}">'
-                       f'{mascot.character(p["pose"], uid=uid, expression=p.get("face"))}</svg>')
+                       f'{mascot.character(p["pose"], uid=uid, expression=p.get("face"), outfit=outfit)}</svg>')
         bubble = ""
-        if place != "corner":     # Pango's studio: back-wall wordmark, spotlight, floor grid to the horizon, glow disc
+        if place == "studio":
+            self.uses_studio = True
+            bubble = studio.back(sid)
+        elif place != "corner":     # open stage: back-wall wordmark, spotlight, floor grid to the horizon, glow disc
             cxp = x + w / 2
             panels = "".join(
                 f'<div class="panel" id="{sid}-pn{i}" style="left:{px:.0f}px;top:{py:.0f}px;width:{pw}px;height:{ph_}px">{body}</div>'
@@ -464,21 +476,30 @@ class Composer:
                       f'width:{w + 48:.0f}px;height:{size * .88:.0f}px;border-radius:36px;background:radial-gradient('
                       f'circle at 50% 35%,#1E3A9E,#0B0F1E 75%);border:2px solid rgba(232,194,104,.55)"></div>')
         title = ""
-        if place == "full" and data.get("words"):
+        if place in ("full", "studio") and data.get("words"):
             spans = "".join(f'<span class="word{" gold" if w_["text"].lower().strip(".,!?") == str(data.get("punch", "")).lower() else ""}" '
                             f'id="{sid}-w{i}">{_e(w_["text"])}</span>' for i, w_ in enumerate(data["words"]))
-            title = (f'<div style="position:absolute;left:{self.w * 0.52:.0f}px;right:110px;top:50%;margin-top:-170px">'
-                     f'<div class="title" style="font-size:96px">{spans}</div></div>')
-        inner = (f'{bubble}<div id="{sid}-ch" style="position:absolute;left:{x:.0f}px;top:{y:.0f}px;width:{w:.0f}px;'
-                 f'height:{size}px">{layers}</div>{title}')
+            if place == "studio":       # the words appear on the studio's video wall
+                title = (f'<div style="position:absolute;left:1190px;width:600px;top:230px">'
+                         f'<div class="title" style="font-size:72px;line-height:1.05">{spans}</div></div>')
+            else:
+                title = (f'<div style="position:absolute;left:{self.w * 0.52:.0f}px;right:110px;top:50%;margin-top:-170px">'
+                         f'<div class="title" style="font-size:96px">{spans}</div></div>')
+        front = studio.front(sid) if place == "studio" else ""
+        inner = (f'{bubble}{title}<div id="{sid}-ch" style="position:absolute;left:{x:.0f}px;top:{y:.0f}px;width:{w:.0f}px;'
+                 f'height:{size}px">{layers}</div>{front}')
         self.parts.append(f'<section id="{sid}" class="scene clip" data-start="{t0:.3f}" data-duration="{dur:.3f}" '
-                          f'style="z-index:{40 if place == "corner" else 1}"><div class="stage">{inner}</div></section>')
-        # entrance: he pops up from below the frame
-        self.tw(f'tl.fromTo("#{sid}-ch",{{y:{size * 0.5:.0f},opacity:0}},{{y:0,opacity:1,duration:.55,ease:"back.out(1.5)"}},{t0:.3f});')
+                          f'style="z-index:{40 if place == "corner" else 1}"><div class="stage"><div class="cam">{inner}</div></div></section>')
+        # entrance: he pops up from below the frame (in the studio he is already seated; the set eases in)
+        if place == "studio":
+            self.tweens.extend(studio.motion(sid, t0, dur))
+            self.tw(f'tl.fromTo("#{sid} .cam",{{scale:1.06}},{{scale:1.0,duration:{min(2.0, dur):.2f},ease:"power2.out"}},{t0:.3f});')
+        else:
+            self.tw(f'tl.fromTo("#{sid}-ch",{{y:{size * 0.5:.0f},opacity:0}},{{y:0,opacity:1,duration:.55,ease:"back.out(1.5)"}},{t0:.3f});')
         if place == "corner":
             self.tw(f'tl.fromTo("#{sid}-bub",{{scale:.6,opacity:0}},{{scale:1,opacity:1,duration:.4,ease:"back.out(1.8)"}},{t0:.3f});')
         self.cue("pop", t0 + 0.1)
-        if place != "corner":
+        if place in ("full", "left", "right"):
             for i in range(2):
                 self.tw(f'tl.fromTo("#{sid}-pn{i}",{{y:{30 + 20 * i},opacity:0}},{{y:0,opacity:1,duration:.8,ease:"power3.out"}},{t0 + 0.2 + 0.15 * i:.3f});')
                 self.tw(f'tl.to("#{sid}-pn{i}",{{y:{-14 + 28 * i},duration:{max(0.5, dur - 1):.2f},ease:"sine.inOut"}},{t0 + 1.0:.3f});')
@@ -523,6 +544,7 @@ class Composer:
     # ---- output
     def build(self, edit: dict[str, Any], out: Path) -> Path:
         self.uses_mascot = False
+        self.uses_studio = False
         for s in edit["scenes"]:
             getattr(self, s["type"])(float(s["start"]), float(s["duration"]), s["data"], s.get("in", "rise"))
         duration = float(edit.get("duration") or max(float(s["start"]) + float(s["duration"]) for s in edit["scenes"]))
@@ -534,7 +556,12 @@ class Composer:
         if self.uses_mascot:
             from .mascot import DEFS as MASCOT_DEFS
 
+            from .mascot import outfit_defs
+
             audio += f'<svg width="0" height="0" style="position:absolute">{MASCOT_DEFS}</svg>'
+            audio += "".join(outfit_defs(o) for o in sorted(self.outfits))
+        if self.uses_studio:
+            audio += studio.DEFS
         out.mkdir(parents=True, exist_ok=True)
         shutil.copytree(ASSETS / "fonts", out / "fonts", dirs_exist_ok=True)
         shutil.copy(ASSETS / "gsap.min.js", out / "gsap.min.js")
@@ -542,7 +569,10 @@ class Composer:
         for name, src in self.files.items():
             shutil.copy(src, out / name)
         chapters = edit.get("chapters") or []
-        brand = '<div id="brand"><div class="logo"><i>G</i>GOLIDE</div>'
+        from .mascot import logo_mark
+
+        brand = ('<div id="brand"><div class="logo"><svg width="44" height="44" viewBox="-32 -32 64 64">'
+                 f'{logo_mark(0, 0, 60, "#F4F1EA")}</svg>GOLIDE</div>')
         brand += "".join(f'<div class="chap" id="chap{i}">{_e(c["title"])}</div>' for i, c in enumerate(chapters))
         brand += '<div class="prog" id="prog"></div></div>'
         btw = [f'tl.fromTo("#prog",{{width:"0%"}},{{width:"100%",duration:{duration:.3f},ease:"none"}},0);']

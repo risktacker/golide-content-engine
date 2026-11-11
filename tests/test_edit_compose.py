@@ -78,5 +78,26 @@ class MascotTest(unittest.TestCase):
             self.assertIn("s1-host-p1", page)
 
 
+class StudioWardrobeTest(unittest.TestCase):
+    def test_week_rotation(self):
+        from datetime import date
+
+        from golide_engine.edit import mascot
+
+        self.assertEqual(mascot.outfit_for(date(2026, 11, 9)), "royal")      # Monday
+        self.assertEqual(mascot.outfit_for(date(2026, 11, 15)), "crimson")   # Sunday
+        self.assertEqual(len(set(mascot.WEEK)), 7)
+        self.assertIn("pg-hoodie-ember", mascot.character("talk", outfit="ember"))
+
+    def test_studio_host(self):
+        with TemporaryDirectory() as t:
+            edit = {"format": "long", "chapters": [{"title": "1 · Intro", "at": 0}], "scenes": [
+                {"type": "host", "start": 0, "duration": 3, "data": {"place": "studio", "words": [{"text": "Hi", "at": 0.2}]}}]}
+            Composer("long", outfit="violet").build(edit, Path(t) / "c")
+            page = (Path(t) / "c/index.html").read_text()
+            for needle in ('id="st-desk"', "s1-host-line", 'id="pg-hoodie-violet"', 'id="chap0"', 'id="prog"'):
+                self.assertIn(needle, page)
+
+
 if __name__ == "__main__":
     unittest.main()
