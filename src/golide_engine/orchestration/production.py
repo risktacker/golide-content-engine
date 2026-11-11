@@ -1205,6 +1205,14 @@ class ProductionService:
             )
             edit_pipeline.run(self, spec, work, production_id, json.loads(scene_plan_path.read_text(encoding="utf-8")),
                               timed_words, narration, narration_seconds, video_path, text, text_model, research)
+            edit_list = json.loads((work / "edit" / "edit-list.json").read_text(encoding="utf-8"))
+            # QA and the release record read the storyboard: the edit list's scenes are this video's beats
+            storyboard = {"renderer": "edit", "scenes": [
+                {"id": f"scene-{k:03d}", "start": sc["start"], "end": sc["start"] + sc["duration"],
+                 "duration": sc["duration"], "visual": sc["type"],
+                 "visual_caption": str((sc.get("data") or {}).get("place") or sc["type"])}
+                for k, sc in enumerate(edit_list["scenes"])]}
+            (work / "storyboard-vector.json").write_text(json.dumps(storyboard, indent=2) + "\n", encoding="utf-8")
             rendered_seconds = self._duration(video_path)
             if abs(rendered_seconds - narration_seconds) > max(0.75, narration_seconds * 0.01):
                 raise RuntimeError(f"render duration {rendered_seconds:.2f}s does not match narration {narration_seconds:.2f}s")
