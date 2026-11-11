@@ -41,22 +41,38 @@ DISMISS = r"""
 """
 
 FIND = r"""
-(phrases) => {
+(groups) => {
+  // groups: one list per claim, longest phrase first. The first visible match inside the page's
+  // main content wins; menus, headers, footers and sidebars never count (2026-11-11: "5.2" hit the nav).
+  const skip = (el) => !!el.closest('nav, header, footer, aside, [role=navigation], [role=banner], [aria-hidden=true]');
+  const main = document.querySelector('main, article, [role=main]') || document.body;
+  const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT);
+  const nodes = []; let n;
+  while ((n = walker.nextNode())) if (n.parentElement && !skip(n.parentElement)) nodes.push(n);
   const out = [];
-  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-  const nodes = []; let n; while ((n = walker.nextNode())) nodes.push(n);
-  for (const phrase of phrases) {
-    const want = phrase.toLowerCase();
-    for (const node of nodes) {
-      const i = node.textContent.toLowerCase().indexOf(want);
-      if (i < 0) continue;
-      const range = document.createRange();
-      range.setStart(node, i); range.setEnd(node, Math.min(node.textContent.length, i + want.length));
-      const rects = [...range.getClientRects()].filter((r) => r.width > 2 && r.height > 2);
-      if (!rects.length) continue;
-      out.push({ phrase, rects: rects.map((r) => [r.left + scrollX, r.top + scrollY, r.width, r.height]) });
-      break;
+  for (const group of groups) {
+    let hit = null;
+    for (const phrase of group) {
+      const want = phrase.toLowerCase();
+      for (const node of nodes) {
+        const text = node.textContent.toLowerCase();
+        let i = text.indexOf(want);
+        while (i >= 0) {
+          const before = text[i - 1] || ' ', after = text[i + want.length] || ' ';
+          if (!/[a-z0-9]/.test(before) && !/[a-z0-9]/.test(after)) break;   // whole words only
+          i = text.indexOf(want, i + 1);
+        }
+        if (i < 0) continue;
+        const range = document.createRange();
+        range.setStart(node, i); range.setEnd(node, i + want.length);
+        const rects = [...range.getClientRects()].filter((r) => r.width > 2 && r.height > 2);
+        if (!rects.length) continue;
+        hit = { phrase, rects: rects.map((r) => [r.left + scrollX, r.top + scrollY, r.width, r.height]) };
+        break;
+      }
+      if (hit) break;
     }
+    if (hit) out.push(hit);
   }
   return out;
 }
@@ -75,23 +91,33 @@ def sources(research: dict[str, Any]) -> list[dict[str, Any]]:
     return list(pages.values())[:MAX_PAGES]
 
 
-def phrases(claims: list[str]) -> list[str]:
-    """Short exact pieces of each claim to find on the page: numbers with their words first."""
-    out: list[str] = []
+def phrases(claims: list[str]) -> list[list[str]]:
+    """For each claim, exact pieces to find on the page, longest first: a number with the words
+    around it, then the number with its unit, then the claim's opening words."""
+    groups: list[list[str]] = []
     for claim in claims:
-        for m in re.finditer(r"[$€£]?\d[\d,.]*\s?(?:%|percent|million|billion|tokens?|GB|TB|MB|ms|seconds?|minutes?|hours?|days?|x)?",
-                             claim):
-            if len(m.group(0).strip()) >= 2:
-                out.append(m.group(0).strip())
         words = claim.split()
+        group: list[str] = []
+        for k, w in enumerate(words):
+            if re.search(r"\d", w):
+                for left, right in ((2, 2), (1, 2), (0, 2), (1, 1), (0, 1)):
+                    piece = " ".join(words[max(0, k - left): k + 1 + right]).strip(".,;:()\"'")
+                    if len(piece.split()) > 1:
+                        group.append(piece)
+                bare = w.strip(".,;:()\"'")
+                if len(bare) >= 2:
+                    group.append(bare)
         if len(words) >= 4:
-            out.append(" ".join(words[:4]))
-    seen, keep = set(), []
-    for p in out:
-        if p.lower() not in seen:
-            seen.add(p.lower())
-            keep.append(p)
-    return keep[:12]
+            group.append(" ".join(words[:6]).strip(".,;:"))
+            group.append(" ".join(words[:4]).strip(".,;:"))
+        seen, keep = set(), []
+        for piece in sorted(group, key=len, reverse=True):
+            if piece.lower() not in seen:
+                seen.add(piece.lower())
+                keep.append(piece)
+        if keep:
+            groups.append(keep[:14])
+    return groups[:12]
 
 
 def blur_faces(path: Path) -> int:
