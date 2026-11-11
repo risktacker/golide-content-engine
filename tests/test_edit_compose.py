@@ -111,5 +111,21 @@ class StudioWardrobeTest(unittest.TestCase):
                 self.assertIn(needle, page)
 
 
+class LayoutCheckTest(unittest.TestCase):
+    def test_overlap_rules(self):
+        from golide_engine.edit.layout import collisions
+
+        card = {"i": 0, "id": "a", "kind": "card", "scene": "s1-page", "x": 0, "y": 0, "w": 500, "h": 300, "inside": []}
+        text = {"i": 1, "id": "b", "kind": "text", "scene": "s1-page", "x": 10, "y": 10, "w": 100, "h": 50, "inside": [0]}
+        cap = {"i": 2, "id": "", "kind": "caption", "scene": "caps", "x": 100, "y": 250, "w": 300, "h": 80, "inside": []}
+        goli = {"i": 3, "id": "g", "kind": "goli", "scene": "s2-host", "x": 0, "y": 200, "w": 400, "h": 600, "inside": [],
+                "floor": 245}
+        found = collisions([card, text, cap, goli])
+        pairs = {(a["kind"], b["kind"]) for a, b, _ in found}
+        self.assertIn(("card", "caption"), pairs)               # caption on a card: caught
+        self.assertNotIn(("card", "text"), pairs)               # text inside its own card: fine
+        self.assertNotIn(("caption", "goli"), pairs)            # Goli's legs are behind the desk (floor)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -159,7 +159,20 @@ def render(edit: dict[str, Any], folder: Path, narration: Path, output: Path, ou
     comp = folder / "composition"
     if comp.exists():
         shutil.rmtree(comp)
-    Composer(fmt, outfit=outfit).build(edit, comp)
+    # 2026-11-12 (owner): nothing may overlap: build, measure every box at many moments, fix, repeat
+    from .compose import SIZES
+    from .layout import resolve, save_report
+
+    def build(e):
+        if comp.exists():
+            shutil.rmtree(comp)
+        Composer(fmt, outfit=outfit).build(e, comp)
+
+    resolve(edit, build, comp, SIZES[fmt])
+    save_report(edit, folder / "layout-report.json")
+    for note in edit.get("notes", []):
+        if note.startswith("overlap left"):
+            print(f"::warning title=Layout::{note}")
     silent = folder / "pictures.mp4"
     env = dict(os.environ, HYPERFRAMES_BROWSER_PATH=_browser())
     subprocess.run(["npx", "-y", HYPERFRAMES, "render", str(comp), "-o", str(silent), "--fps", "30",
