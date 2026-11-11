@@ -5,6 +5,8 @@ on:
     inputs:
       ref:
         default: edit-engine
+      format:
+        default: short
 
 permissions:
   contents: read
@@ -31,7 +33,7 @@ jobs:
       - name: Trial render
         run: |
           VOICE=$(python -c "import json;c=json.load(open('config/background-music.json'));print(c['short'][0]['file'])")
-          python scripts/edit_trial.py "$VOICE"
+          python scripts/edit_trial.py "$VOICE" "${{ inputs.format }}"
       - uses: actions/upload-artifact@v4
         with:
           name: edit-trial
