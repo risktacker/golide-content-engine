@@ -82,7 +82,7 @@
         "subscribers": 35200,
         "views": 1526720,
         "views_per_hour": 45004.4,
-        "breakout": 187.0,
+        "breakout": 187,
         "hours_old": 33.9,
         "duration_seconds": 15,
         "format": "short",
@@ -96,9 +96,9 @@
       "trend_pulse": {
         "query": "Nvidia Jensen Huang investigation Terafab Elon Musk AI chip manufacturing explained",
         "fresh_videos": 0,
-        "median_views_per_hour": 0.0,
-        "top_views_per_hour": 0.0,
-        "score": 15.0,
+        "median_views_per_hour": 0,
+        "top_views_per_hour": 0,
+        "score": 15,
         "hot": false,
         "measured_at": "2026-11-11T07:04:11.766239+00:00"
       }
@@ -116,13 +116,13 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "xAI Colossus 2 Memphis data center turbines noise pollution residents explained",
-        "score": 85.0,
+        "score": 85,
         "verdict": "pass",
         "recent_videos": 64,
         "median_views_per_day": 560874.65,
         "top_views_per_day": 4671421.89,
         "market_coverage": 4,
-        "title_query_overlap": 0.0,
+        "title_query_overlap": 0,
         "measured_at": "2026-11-11T07:04:11.759546+00:00",
         "signal_type": "youtube-most-popular-seed-proxy"
       },
@@ -140,15 +140,15 @@
         "description": "More than three decades after serving in Operation Desert Storm, Loretta Young Thornton never expected the sounds of war to follow her home.\n\nThe 66-year-old retired Army veteran and U.S. Postal Service retiree lives next door to Elon Musk\u2019s Colossus 2 AI data center in Memphis\u2019 Whitehaven neighborh",
         "url": "https://www.youtube.com/watch?v=quuwf7mwhQk",
         "news": false,
-        "score": 84.0
+        "score": 84
       },
       "title_changes": 3,
       "trend_pulse": {
         "query": "xAI Colossus 2 Memphis data center turbines noise pollution residents explained",
         "fresh_videos": 0,
-        "median_views_per_hour": 0.0,
-        "top_views_per_hour": 0.0,
-        "score": 15.0,
+        "median_views_per_hour": 0,
+        "top_views_per_hour": 0,
+        "score": 15,
         "hot": false,
         "measured_at": "2026-11-11T07:04:11.994657+00:00"
       }
@@ -166,13 +166,13 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "Claude Fable 5.2 designs voice assistant hardware PCB CAD firmware explained",
-        "score": 85.0,
+        "score": 85,
         "verdict": "pass",
         "recent_videos": 64,
         "median_views_per_day": 560874.65,
         "top_views_per_day": 4671421.89,
         "market_coverage": 4,
-        "title_query_overlap": 0.0,
+        "title_query_overlap": 0,
         "measured_at": "2026-11-11T07:04:11.760007+00:00",
         "signal_type": "youtube-most-popular-seed-proxy"
       },
@@ -181,7 +181,7 @@
         "channel": "Claude",
         "subscribers": 729000,
         "views": 1017441,
-        "views_per_hour": 28181.0,
+        "views_per_hour": 28181,
         "breakout": 0.7,
         "hours_old": 36.1,
         "duration_seconds": 48,
@@ -197,7 +197,7 @@
         "query": "Claude Fable 5.2 designs voice assistant hardware PCB CAD firmware explained",
         "fresh_videos": 2,
         "median_views_per_hour": 14.4,
-        "top_views_per_hour": 28.0,
+        "top_views_per_hour": 28,
         "score": 40.6,
         "hot": false,
         "measured_at": "2026-11-11T07:04:12.204945+00:00"
@@ -240,14 +240,14 @@
         "description": "",
         "url": "https://www.youtube.com/watch?v=vzO_Tc9AQ10",
         "news": false,
-        "score": 72.0
+        "score": 72
       },
       "title_changes": 1,
       "trend_pulse": {
         "query": "Anthropic Claude Fable 5.2 launch capabilities system card benchmark explained",
         "fresh_videos": 10,
         "median_views_per_hour": 1.6,
-        "top_views_per_hour": 6428.0,
+        "top_views_per_hour": 6428,
         "score": 59.1,
         "hot": false,
         "measured_at": "2026-11-11T07:04:12.482549+00:00"
@@ -261,7 +261,7 @@
     "subscribers": 35200,
     "views": 1526720,
     "views_per_hour": 45004.4,
-    "breakout": 187.0,
+    "breakout": 187,
     "hours_old": 33.9,
     "duration_seconds": 15,
     "format": "short",
@@ -279,7 +279,7 @@
     "median_views_per_day": 1080105.6,
     "top_views_per_day": 1080105.6,
     "market_coverage": 1,
-    "title_query_overlap": 1.0,
+    "title_query_overlap": 1,
     "measured_at": "2026-11-11T07:04:13.411179+00:00",
     "signal_type": "youtube-breakout-v1"
   },
@@ -292,5 +292,5 @@
     "facebook",
     "linkedin"
   ],
-  "_failed_runs": 1
+  "_failed_runs": 2
 }
