@@ -249,11 +249,13 @@ class Composer:
         if domain:
             inner += (f'<div class="chip" id="{sid}-src" style="position:absolute;left:{fx}px;top:{fy + fh + 26:.0f}px;'
                       f'font-size:24px">Source · {_e(domain)}</div>')
-        if callout and self.fmt == "short":
-            inner += (f'<div class="card" id="{sid}-co" style="position:absolute;left:{fx}px;top:{fy + fh + 100:.0f}px;'
-                      f'width:{fw}px;box-sizing:border-box;padding:30px 36px;border-color:rgba(232,194,104,.5)">'
-                      f'<div style="font:900 84px/1 Poppins;color:#E8C268">{_e(callout["label"])}</div>'
-                      f'<div class="label" style="margin-top:14px;font-size:32px">{_e(callout.get("sub", ""))}</div></div>')
+        if callout and self.fmt == "short":     # one compact band that ends above the captions
+            top = min(fy + fh + 84, 1062 - 150)
+            inner += (f'<div class="card" id="{sid}-co" style="position:absolute;left:{fx}px;top:{top:.0f}px;'
+                      f'width:{fw}px;box-sizing:border-box;padding:20px 30px;border-color:rgba(232,194,104,.5);'
+                      f'display:flex;align-items:baseline;gap:22px;white-space:nowrap;overflow:hidden">'
+                      f'<div style="font:900 64px/1 Poppins;color:#E8C268">{_e(callout["label"])}</div>'
+                      f'<div class="label" style="font-size:30px;overflow:hidden;text-overflow:ellipsis">{_e(callout.get("sub", ""))}</div></div>')
         elif callout:
             cx0 = fx + fw + 60
             inner += (f'<div class="card" id="{sid}-co" style="position:absolute;left:{cx0}px;top:{self.h * .24:.0f}px;'

@@ -271,9 +271,18 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
                 notes.append(f"scene {k}: shot {ph} not on page {src}")
             # a shot below the first screen is filmed on the whole-page capture
             deep = bool(spot) and spot["rect"][1] + spot["rect"][3] > 860 and page.get("full")
+            image = capture_dir / (page["full"] if deep else page["top"])
+            if spot and not _shows_something(image, spot["rect"]):
+                # 2026-11-11: a zoom landed on an empty dark patch of a page: use the headline instead
+                notes.append(f"scene {k}: shot {ph} on page {src} looked empty, zoomed to the headline")
+                head = page.get("headline")
+                highlights = ([{"rect": head, "sweep": True, "at": 0.6, "label": s.get("callout") or None,
+                                "sub": s.get("callout_sub") or ""}] if head and _shows_something(capture_dir / page["top"], head) else [])
+                deep = False
+                image = capture_dir / page["top"]
             out.append({"type": "browser_shot", "start": t0, "duration": dur, "data": {
-                "image": capture_dir / (page["full"] if deep else page["top"]),
-                "url": page.get("url", ""), "edge": s.get("edge") or "glass",
+                "image": image,
+                "url": page.get("url", ""), "edge": "glass" if _dark(image) else (s.get("edge") or "glass"),
                 "page_width": 1440, "highlights": [h for h in highlights if h], "headline": page.get("headline"),
                 "photo": str(capture_dir / page["photo"]) if page.get("photo") else None}})
             if s.get("goli_corner") and dur >= 1.8:
@@ -507,3 +516,33 @@ def _pace(scenes: list[dict], lines, fmt: str) -> list[dict]:
             else:
                 out.append(_words_beat(lines, a, b))
     return sorted(out, key=lambda x: (x["start"], x["type"] == "host"))
+
+
+def _crop_stats(image: Path, rect, scale: float = 1.5):
+    from PIL import Image, ImageStat
+
+    with Image.open(image) as im:
+        x, y, w, h = rect
+        box = (int(x * scale), int(y * scale), int((x + w) * scale), int((y + h) * scale))
+        box = (max(0, box[0]), max(0, box[1]), min(im.width, box[2]), min(im.height, box[3]))
+        if box[2] - box[0] < 8 or box[3] - box[1] < 8:
+            return None
+        return ImageStat.Stat(im.crop(box).convert("L"))
+
+
+def _shows_something(image: Path, rect) -> bool:
+    """A shot is worth zooming to only when it holds visible text or picture (contrast inside it)."""
+    try:
+        st = _crop_stats(image, rect)
+    except Exception:  # noqa: BLE001
+        return True
+    return bool(st) and st.stddev[0] > 14
+
+
+def _dark(image: Path) -> bool:
+    try:
+        from PIL import Image, ImageStat
+        with Image.open(image) as im:
+            return ImageStat.Stat(im.convert("L").resize((64, 64))).mean[0] < 90
+    except Exception:  # noqa: BLE001
+        return False
