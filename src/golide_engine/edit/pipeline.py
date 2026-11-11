@@ -94,20 +94,25 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
     (work / "chapters.json").write_text(json.dumps(
         [{"start": m.start, "number": m.number, "title": m.title} for m in marks], indent=2) + "\n", encoding="utf-8")
     spoken = [line for line in plan.get("lines", []) if str(line.get("text", "")).strip()]
-    follow = {i for i, line in enumerate(spoken) if line.get("follow") is True}
-    raw_path = folder / "edit-plan-raw.json"
+    follow_lines = {i for i, line in enumerate(spoken) if line.get("follow") is True}
+    # 2026-11-11 (owner): a picture per beat of about two seconds, each showing what that beat says
+    beat_lines = editor.beats(lines, fmt)
+    follow = {b.index for b in beat_lines for i in follow_lines
+              if i < len(lines) and lines[i].start - 0.01 <= b.start <= lines[i].end}
+    raw_path = folder / "edit-plan-raw-v2.json"     # v2: planned per beat (2026-11-11)
 
     def plan_stage():
         production._require_absent(raw_path, "edit-plan")
-        content = editor.request(str(spec.get("title", "")), lines, sources, marks, follow)
-        production._reserve(spec, text_model, Usage(input_tokens=len(content) // 3 + 3000, output_tokens=12000))
-        output = text.generate_json(editor.instructions(fmt), content, editor.EDIT_SCHEMA, max_output_tokens=12000)
+        content = editor.request(str(spec.get("title", "")), beat_lines, sources, marks, follow)
+        out_tokens = min(60000, 6000 + 260 * len(beat_lines))
+        production._reserve(spec, text_model, Usage(input_tokens=len(content) // 3 + 3000, output_tokens=out_tokens))
+        output = text.generate_json(editor.instructions(fmt), content, editor.EDIT_SCHEMA, max_output_tokens=out_tokens)
         production._record_text(production_id, "edit-plan", output)
         raw_path.write_text(json.dumps(output.value, indent=2) + "\n", encoding="utf-8")
 
-    production.runner.run(production_id, "edit-plan-v1", plan_stage)
+    production.runner.run(production_id, "edit-plan-v2", plan_stage)
     raw = json.loads(raw_path.read_text(encoding="utf-8"))
-    edit = editor.build(raw, lines, narration_seconds, fmt, sources, capture_dir, cues, marks,
+    edit = editor.build(raw, beat_lines, narration_seconds, fmt, sources, capture_dir, cues, marks,
                         logo_tile_maker(folder / "logos"))
     edit["title"] = str(spec.get("title", ""))
     editor.save(edit, folder / "edit-list.json")

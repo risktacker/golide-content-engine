@@ -52,7 +52,7 @@ class EditorTest(unittest.TestCase):
         self.assertEqual(host["place"], "studio")
         self.assertEqual([p["pose"] for p in host["poses"]], ["talk", "shock"])
         shot = edit["scenes"][1]
-        self.assertAlmostEqual(shot["data"]["highlights"][0]["at"], max(0.9, self.lines[1].words[2].start - shot["start"]), 2)  # card lands first
+        self.assertAlmostEqual(shot["data"]["highlights"][0]["at"], max(0.6, self.lines[1].words[2].start - shot["start"]), 2)  # card lands first
         last = edit["scenes"][-1]
         self.assertAlmostEqual(last["start"] + last["duration"], 12.0)
         self.assertAlmostEqual(edit["scenes"][2]["duration"], 12.0 - edit["scenes"][1]["start"])
@@ -62,7 +62,22 @@ class EditorTest(unittest.TestCase):
     def test_request_marks(self):
         text = editor.request("T", self.lines, self.sources, [], {3})
         self.assertIn("(FOLLOW)", text)
-        self.assertIn('0: "$40"', text)
+        self.assertIn("0 [fact] $40", text)
+        self.assertIn("BEATS", text)
+
+    def test_beats_are_short_and_inside_lines(self):
+        long_line = _lines(["one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen"])
+        out = editor.beats(long_line, "short")
+        self.assertGreaterEqual(len(out), 2)
+        for b in out:
+            self.assertLessEqual(b.end - b.start, 3.2)
+        self.assertEqual(" ".join(b.text for b in out), long_line[0].text)
+        self.assertEqual([b.index for b in out], list(range(len(out))))
+
+    def test_shots_cover_page_blocks(self):
+        page = dict(self.sources[0], headline=[10, 10, 500, 60], blocks=[{"text": "A long paragraph about it", "rect": [1, 2, 3, 4]}])
+        kinds = [s["kind"] for s in editor.shots(page)]
+        self.assertEqual(kinds, ["fact", "headline", "text"])
 
 
 if __name__ == "__main__":

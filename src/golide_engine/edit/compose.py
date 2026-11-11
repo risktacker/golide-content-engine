@@ -249,11 +249,13 @@ class Composer:
         if domain:
             inner += (f'<div class="chip" id="{sid}-src" style="position:absolute;left:{fx}px;top:{fy + fh + 26:.0f}px;'
                       f'font-size:24px">Source · {_e(domain)}</div>')
-        if callout and self.fmt == "short":
-            inner += (f'<div class="card" id="{sid}-co" style="position:absolute;left:{fx}px;top:{fy + fh + 100:.0f}px;'
-                      f'width:{fw}px;box-sizing:border-box;padding:30px 36px;border-color:rgba(232,194,104,.5)">'
-                      f'<div style="font:900 84px/1 Poppins;color:#E8C268">{_e(callout["label"])}</div>'
-                      f'<div class="label" style="margin-top:14px;font-size:32px">{_e(callout.get("sub", ""))}</div></div>')
+        if callout and self.fmt == "short":     # one compact band that ends above the captions
+            top = min(fy + fh + 84, 1062 - 150)
+            inner += (f'<div class="card" id="{sid}-co" style="position:absolute;left:{fx}px;top:{top:.0f}px;'
+                      f'width:{fw}px;box-sizing:border-box;padding:20px 30px;border-color:rgba(232,194,104,.5);'
+                      f'display:flex;align-items:baseline;gap:22px;white-space:nowrap;overflow:hidden">'
+                      f'<div style="font:900 64px/1 Poppins;color:#E8C268">{_e(callout["label"])}</div>'
+                      f'<div class="label" style="font-size:30px;overflow:hidden;text-overflow:ellipsis">{_e(callout.get("sub", ""))}</div></div>')
         elif callout:
             cx0 = fx + fw + 60
             inner += (f'<div class="card" id="{sid}-co" style="position:absolute;left:{cx0}px;top:{self.h * .24:.0f}px;'
@@ -489,19 +491,58 @@ class Composer:
             self.cue("click", at)
         self.drift(sid, t0, dur, 0.012)
 
+    def flow(self, t0, dur, data, how="wipe"):
+        """How it works: nodes appear one by one, joined by arrows that draw themselves (vertical on a Short)."""
+        sid = self._id("flow")
+        nodes = [str(n) for n in data["nodes"]][:4]
+        n = len(nodes)
+        vertical = self.fmt == "short"
+        nw, nh = (760, 150) if vertical else (min(420, (self.w - 200) / n - 70), 170)
+        gap = (self.h * 0.0 + 70) if vertical else 70
+        total = n * nh + (n - 1) * gap if vertical else n * nw + (n - 1) * gap
+        x0 = (self.w - (nw if vertical else total)) / 2
+        y0 = self.cy - (total if vertical else nh) / 2
+        html_, arrows = "", ""
+        for i, text in enumerate(nodes):
+            x = x0 if vertical else x0 + i * (nw + gap)
+            y = y0 + i * (nh + gap) if vertical else y0
+            gold = i == n - 1
+            html_ += (f'<div class="card" id="{sid}-n{i}" style="position:absolute;left:{x:.0f}px;top:{y:.0f}px;width:{nw:.0f}px;'
+                      f'height:{nh}px;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 24px;'
+                      f'border-color:{"rgba(232,194,104,.8)" if gold else "rgba(255,255,255,.12)"};'
+                      f'box-shadow:0 20px 60px rgba(0,0,0,.6){",0 0 40px rgba(232,194,104,.35)" if gold else ""}">'
+                      f'<div style="font:800 {54 if vertical else 46}px/1.1 Poppins;{"color:#E8C268" if gold else ""}">{_e(text)}</div></div>')
+            if i < n - 1:
+                if vertical:
+                    ax, ay, aw, ah = x0 + nw / 2 - 4, y + nh + 8, 8, gap - 16
+                else:
+                    ax, ay, aw, ah = x + nw + 8, y0 + nh / 2 - 4, gap - 16, 8
+                arrows += (f'<div id="{sid}-a{i}" style="position:absolute;left:{ax:.0f}px;top:{ay:.0f}px;width:{aw:.0f}px;'
+                           f'height:{ah:.0f}px;background:#E8C268;border-radius:4px;transform-origin:{"50% 0" if vertical else "0 50%"}"></div>')
+        self.scene(sid, t0, dur, arrows + html_)
+        step = min(0.6, max(0.25, (dur - 0.5) / max(1, n)))
+        for i in range(n):
+            at = t0 + 0.1 + i * step
+            self.tw(f'tl.fromTo("#{sid}-n{i}",{{scale:.6,opacity:0}},{{scale:1,opacity:1,duration:.35,ease:"back.out(1.8)"}},{at:.3f});')
+            self.cue("pop", at)
+            if i < n - 1:
+                prop = "scaleY" if vertical else "scaleX"
+                self.tw(f'tl.fromTo("#{sid}-a{i}",{{{prop}:0}},{{{prop}:1,duration:{step * 0.8:.2f},ease:"power2.out"}},{at + 0.25:.3f});')
+        self.drift(sid, t0, dur, 0.01)
+
     def logo_tiles(self, t0, dur, data, how="rise"):
         """The real 3D logo tiles (rendered by vector.thumb_styles) float in with parallax."""
         sid = self._id("logos")
         tiles = data["tiles"]                               # [{"image": path}]
         n = len(tiles)
         gap = min(360, (self.w - 60) / max(1, n))
-        ts = min(300, gap - 30)
+        ts = min(300, gap - 30) if not data.get("big") else (560 if self.fmt == "short" else 480)
         x0 = self.w / 2 - gap * (n - 1) / 2
-        inner = "".join(f'<div class="tile" id="{sid}-t{i}" style="left:{x0 + gap * i - ts / 2:.0f}px;top:{self.cy - 190:.0f}px;'
+        inner = "".join(f'<div class="tile" id="{sid}-t{i}" style="left:{x0 + gap * i - ts / 2:.0f}px;top:{self.cy - (ts / 2 + 70 if data.get("big") else 190):.0f}px;'
                         f'width:{ts:.0f}px;height:{ts:.0f}px">'
                         f'<img src="{self.asset(t["image"])}"></div>' for i, t in enumerate(tiles))
         if data.get("caption"):
-            inner += (f'<div class="title" style="position:absolute;left:0;right:0;top:{self.cy + 170:.0f}px;'
+            inner += (f'<div class="title" style="position:absolute;left:0;right:0;top:{self.cy + (ts / 2 - 30 if data.get("big") else 170):.0f}px;'
                       f'text-align:center;font-size:84px">{_e(data["caption"])}</div>')
         self.scene(sid, t0, dur, inner)
         for i in range(n):

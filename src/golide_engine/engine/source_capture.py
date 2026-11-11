@@ -100,7 +100,18 @@ MAIN = r"""
       best = area; image = [r.left + scrollX, r.top + scrollY, r.width, r.height];
     }
   }
-  return { headline, image };
+  // every readable block of the article, so a beat can zoom to the exact part that says it
+  const blocks = [];
+  const root = document.querySelector('main, article, [role=main]') || document.body;
+  for (const el of root.querySelectorAll('h2, h3, p, li, blockquote, figcaption, td, th, pre, dd')) {
+    if (blocks.length >= 40 || skip(el)) continue;
+    const text = (el.innerText || '').replace(/\s+/g, ' ').trim();
+    const r = el.getBoundingClientRect();
+    if (text.length < 25 || r.width < 120 || r.height < 14 || r.top + scrollY > 5200) continue;
+    if (blocks.some((b) => b.text === text.slice(0, 160))) continue;
+    blocks.push({ text: text.slice(0, 160), rect: [r.left + scrollX, r.top + scrollY, r.width, Math.min(r.height, 420)] });
+  }
+  return { headline, image, blocks };
 }
 """
 
@@ -213,7 +224,7 @@ def capture(research: dict[str, Any], folder: Path) -> list[dict[str, Any]]:
                     except Exception:  # noqa: BLE001
                         photo = None
                 entry.update(ok=True, top=top.name, full=full.name, full_height=int(height), scale=1.5,
-                             highlights=spots, headline=main.get("headline"),
+                             highlights=spots, headline=main.get("headline"), blocks=main.get("blocks") or [],
                              photo=photo.name if photo else None,
                              faces_blurred=blur_faces(top) + blur_faces(full) + (blur_faces(photo) if photo else 0))
             except Exception as error:  # noqa: BLE001
