@@ -493,6 +493,8 @@ class Composer:
         # entrance: he pops up from below the frame (in the studio he is already seated; the set eases in)
         if place == "studio":
             self.tweens.extend(studio.motion(sid, t0, dur))
+            # the set has its own neon GOLIDE sign: the corner mark steps aside while we are in the studio
+            self.tw(f'tl.to("#brand .logo",{{opacity:0,duration:.2}},{t0:.3f});tl.to("#brand .logo",{{opacity:.92,duration:.3}},{t0 + dur:.3f});')
             self.tw(f'tl.fromTo("#{sid} .cam",{{scale:1.06}},{{scale:1.0,duration:{min(2.0, dur):.2f},ease:"power2.out"}},{t0:.3f});')
         else:
             self.tw(f'tl.fromTo("#{sid}-ch",{{y:{size * 0.5:.0f},opacity:0}},{{y:0,opacity:1,duration:.55,ease:"back.out(1.5)"}},{t0:.3f});')

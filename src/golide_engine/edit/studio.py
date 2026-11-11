@@ -100,7 +100,11 @@ def front(sid: str) -> str:
   <rect x="-20" y="{DESK_Y + 30}" width="{W + 40}" height="{H - DESK_Y}" fill="url(#st-desk)"/>
   <rect id="{sid}-edge" x="-20" y="{DESK_Y + 28}" width="{W + 40}" height="5" fill="url(#st-edge)"/>
   <rect x="-20" y="{DESK_Y + 33}" width="{W + 40}" height="60" fill="#F2C14E" opacity=".12" filter="url(#st-blur)"/>
-  {logo_mark(W / 2 + 330, DESK_Y + 150, 90, "#2E3445", "#8A6A22")}
+  {"".join(f'<rect x="{x}" y="{DESK_Y + 52}" width="3" height="{H - DESK_Y}" fill="#F2C14E" opacity=".22"/>' for x in (480, 960, 1440))}
+  <rect x="{W / 2 - 230}" y="{DESK_Y + 120}" width="460" height="104" rx="52" fill="#0B0E16" stroke="#F2C14E" stroke-opacity=".55" stroke-width="3"/>
+  {logo_mark(W / 2 - 160, DESK_Y + 172, 64, "#F4F1EA", "#F2C14E")}
+  <text x="{W / 2 - 112}" y="{DESK_Y + 194}" font-family="Poppins" font-weight="900" font-size="60" letter-spacing="8" fill="#F4F1EA">GOLIDE</text>
+  <path d="M1110 {DESK_Y + 40} L1860 {DESK_Y + 40} L1800 {DESK_Y + 110} L1170 {DESK_Y + 110} Z" fill="#3D6CFF" opacity=".08"/>
 </g>
 <g filter="url(#st-drop)">
   <path d="M930 {DESK_Y + 4} L1210 {DESK_Y + 4} L1236 {DESK_Y + 22} L904 {DESK_Y + 22} Z" fill="#9AA1B1"/>
