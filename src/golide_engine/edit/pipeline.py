@@ -1,0 +1,134 @@
+"""The edit engine inside the daily production run (steps 1 to 5 of the 2026-11-11 plan).
+
+Switched per format in config/edit-engine.json. When on, it replaces the drawn-illustration path
+(visual plan, generated pictures, vector render) for that format; everything before (research,
+script, the owner's recording) and after (thumbnail, metadata, upload) is unchanged.
+
+Stages, each checkpointed like the rest of the run:
+- sources-capture-v1: every research page opened, screenshotted, claims located, faces blurred.
+- lipsync-v1: Goli's mouth cues from the recording.
+- edit-plan-v1: the editor model call (one text call).
+- render-edit-v1: HyperFrames render plus the audio mix.
+"""
+
+from __future__ import annotations
+
+import json
+from datetime import datetime
+from pathlib import Path
+from typing import Any
+from zoneinfo import ZoneInfo
+
+ROOT = Path(__file__).resolve().parents[3]
+
+
+def settings() -> dict[str, Any]:
+    path = ROOT / "config/edit-engine.json"
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+
+
+def enabled(fmt: str) -> bool:
+    return bool(settings().get(fmt))
+
+
+def outfit_today() -> str:
+    from .mascot import outfit_for
+
+    return outfit_for(datetime.now(ZoneInfo("Africa/Lusaka")).date())
+
+
+def logo_tile_maker(folder: Path):
+    """brand name -> path of a glossy 3D logo tile (Simple Icons, CC0), or None when unknown."""
+    folder.mkdir(parents=True, exist_ok=True)
+
+    def make(name: str) -> Path | None:
+        from ..vector import logos, thumb_styles
+
+        icon = logos.find(name)
+        if not icon:
+            return None
+        target = folder / f"{logos.slug(name)}.png"
+        if not target.exists():
+            image = thumb_styles.render_tiles({"w": 520, "h": 520, "fov": 30, "dist": 9,
+                                               "items": [thumb_styles._tile(icon, pos=[0, 0, 0], rot=[10, -18, 0], size=3.4)]})
+            image.crop(image.getbbox()).save(target)
+        return target
+
+    return make
+
+
+def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: dict[str, Any],
+        timed_words: list[dict[str, Any]], narration: Path, narration_seconds: float, video_path: Path,
+        text, text_model: str, research: dict[str, Any]) -> dict | None:
+    """Make the day's video with the edit engine. Returns the music track used (for the ledger)."""
+    from ..operations.costs import Usage
+    from ..vector.align import align_lines
+    from ..vector.chapters import chapter_marks
+    from ..vector.music_bed import pick as pick_music
+    from . import editor
+    from .render import lipsync, render
+
+    fmt = str(spec["format"])
+    folder = work / "edit"
+    folder.mkdir(parents=True, exist_ok=True)
+    capture_dir = folder / "sources"
+    sources_log = capture_dir / "sources.json"
+
+    def capture_stage():
+        from ..engine.source_capture import capture
+        capture(research, capture_dir)
+
+    production.runner.run(production_id, "sources-capture-v1", capture_stage, attempts=1)
+    sources = json.loads(sources_log.read_text(encoding="utf-8")) if sources_log.exists() else []
+
+    cues_path = folder / "mouth-cues.json"
+    production.runner.run(production_id, "lipsync-v1", lambda: lipsync(narration, cues_path), attempts=1)
+    cues = json.loads(cues_path.read_text(encoding="utf-8"))
+
+    lines = align_lines(plan, timed_words, narration_seconds)
+    marks = chapter_marks(plan, lines) if plan.get("chapters") else []
+    (work / "chapters.json").write_text(json.dumps(
+        [{"start": m.start, "number": m.number, "title": m.title} for m in marks], indent=2) + "\n", encoding="utf-8")
+    spoken = [line for line in plan.get("lines", []) if str(line.get("text", "")).strip()]
+    follow = {i for i, line in enumerate(spoken) if line.get("follow") is True}
+    raw_path = folder / "edit-plan-raw.json"
+
+    def plan_stage():
+        production._require_absent(raw_path, "edit-plan")
+        content = editor.request(str(spec.get("title", "")), lines, sources, marks, follow)
+        production._reserve(spec, text_model, Usage(input_tokens=len(content) // 3 + 3000, output_tokens=12000))
+        output = text.generate_json(editor.instructions(fmt), content, editor.EDIT_SCHEMA, max_output_tokens=12000)
+        production._record_text(production_id, "edit-plan", output)
+        raw_path.write_text(json.dumps(output.value, indent=2) + "\n", encoding="utf-8")
+
+    production.runner.run(production_id, "edit-plan-v1", plan_stage)
+    raw = json.loads(raw_path.read_text(encoding="utf-8"))
+    edit = editor.build(raw, lines, narration_seconds, fmt, sources, capture_dir, cues, marks,
+                        logo_tile_maker(folder / "logos"))
+    edit["title"] = str(spec.get("title", ""))
+    editor.save(edit, folder / "edit-list.json")
+    for note in edit["notes"]:
+        print(f"::notice title=Editor::{note}")
+    print(json.dumps({"status": "edit_list", "scenes": len(edit["scenes"]),
+                      "types": sorted({s["type"] for s in edit["scenes"]})}))
+
+    track_path = work / "music.json"
+
+    def render_stage():
+        rendered_before = production.database.rows(
+            "SELECT COUNT(DISTINCT production_id) n FROM stage_runs WHERE stage IN ('render-vector-v1','render-edit-v1') "
+            "AND status='completed' AND production_id<>?", (production_id,))
+        n = int(rendered_before[0]["n"]) if rendered_before else None
+        track = pick_music(fmt, n, f"{plan.get('title', '')} {spec.get('title', '')}")
+        track_path.write_text(json.dumps(track or {}) + "\n", encoding="utf-8")
+        outfit = outfit_today()
+        print(json.dumps({"status": "edit_render", "outfit": outfit, "music": (track or {}).get("title", "bed")}))
+        render(edit, folder, narration, video_path, outfit, track)
+
+    production.runner.run(production_id, "render-edit-v1", render_stage, attempts=1)
+    labels = video_path.with_name("visual-labels.srt")
+    if not labels.exists():
+        from ..captions import words_to_srt
+        labels.write_text(words_to_srt([{"word": s["type"].replace("_", " ").upper(), "start": s["start"],
+                                         "end": s["start"] + s["duration"]} for s in edit["scenes"]]), encoding="utf-8")
+    return json.loads(track_path.read_text(encoding="utf-8")) if track_path.exists() else None

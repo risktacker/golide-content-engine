@@ -1189,7 +1189,26 @@ class ProductionService:
         scene_plan_path = work / "scene-plan.json"
         vector_mode = scene_plan_path.exists()
         video_path = self.root / "build" / production_id / "video.mp4"
-        if vector_mode:
+        from ..edit import pipeline as edit_pipeline
+        # 2026-11-11 (owner): the edit engine (real sources, Goli the host, HyperFrames motion design),
+        # switched on per format in config/edit-engine.json.
+        if vector_mode and edit_pipeline.enabled(str(spec["format"])):
+            held = render_hold_reason(self.root, str(spec["format"]))
+            already = self.database.rows(
+                "SELECT 1 FROM stage_runs WHERE production_id=? AND stage='render-edit-v1' AND status='completed' LIMIT 1",
+                (production_id,),
+            )
+            if held and not already:
+                raise RenderHeld(held)
+            music = MusicRegistry(self.root / "config/music-registry.json").select(
+                spec["music"]["mood"], spec["music"].get("track_id")
+            )
+            edit_pipeline.run(self, spec, work, production_id, json.loads(scene_plan_path.read_text(encoding="utf-8")),
+                              timed_words, narration, narration_seconds, video_path, text, text_model, research)
+            rendered_seconds = self._duration(video_path)
+            if abs(rendered_seconds - narration_seconds) > max(0.75, narration_seconds * 0.01):
+                raise RuntimeError(f"render duration {rendered_seconds:.2f}s does not match narration {narration_seconds:.2f}s")
+        elif vector_mode:
             from ..vector.align import align_lines
             from ..vector.render import VectorRenderer
 
