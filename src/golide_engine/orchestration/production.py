@@ -2115,7 +2115,8 @@ class ProductionService:
                     print(json.dumps({"status": "short_thumbnail_from_cover"}))
                     return
             # 2026-11-10 (owner approved): the editing styles drawn in code with the story's real
-            # logos as glossy 3D tiles; no image model. Stories with no known logo keep the photo path.
+            # logos as glossy 3D tiles; no image model. 2026-11-12: every story gets one (Goli plus
+            # logos, the source's picture, or the big words); the paid photo stays only for a failure.
             try:
                 words_path = work / "thumbnail-words.json"
                 if not words_path.exists():
@@ -2131,8 +2132,13 @@ class ProductionService:
                 from ..vector.thumb_styles import make as styled
                 rows = self.database.rows("SELECT COUNT(DISTINCT production_id) AS n FROM stage_runs WHERE stage='thumbnail' AND status='completed'")
                 n = int(rows[0]["n"]) if rows else 0
+                # 2026-11-12 (owner): Goli hosts the thumbnail in the day's outfit; a story with no known
+                # logo shows the source's own real picture (captured by the edit engine) beside him
+                from ..edit.pipeline import outfit_today
+                photos = sorted((work / "edit" / "sources").glob("*-photo.png"))
                 style = styled(metadata["title"], str(chosen.get("words", "")), str(chosen.get("punch", "")),
-                               [str(b) for b in chosen.get("brands") or []], n, thumbnail)
+                               [str(b) for b in chosen.get("brands") or []], n, thumbnail,
+                               outfit=outfit_today(), photo=photos[0] if photos else None)
                 if style:
                     print(json.dumps({"status": "thumbnail_styled", "style": style, "brands": chosen.get("brands")}))
                     return

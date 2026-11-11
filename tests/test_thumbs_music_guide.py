@@ -67,11 +67,19 @@ def test_approved_styles_pick_by_story_and_draw_without_the_image_model(tmp_path
     icon = {"title": "Claude", "hex": "D97757", "svg": SVG}
     monkeypatch.setattr(logos, "find", lambda name: icon if name == "Claude" else None)
     fake = lambda spec: Image.new("RGBA", (spec["w"], spec["h"]), (217, 119, 87, 255))
+    monkeypatch.setattr(T, "goli", lambda *a, **k: Image.new("RGBA", (300, 600), (40, 90, 200, 255)))
     for n in range(3):
         out = tmp_path / f"t{n}.jpg"
         style = T.make("How Claude Builds Apps", "Claude Builds", "Builds", ["Claude", "Nobody"], n, out, tiles=fake)
         assert style in T.STYLES and Image.open(out).size == (1280, 720)
-    assert T.make("Story", "Big Words", "Words", ["Nobody"], 0, tmp_path / "none.jpg", tiles=fake) is None
+    # 2026-11-12: Goli hosts every thumbnail; no logo -> the source's real picture, else the big words
+    assert T.make("Story", "Big Words", "Words", ["Nobody"], 0, tmp_path / "none.jpg", tiles=fake,
+                  with_goli=False) is None
+    assert T.make("Story", "Big Words", "Words", ["Nobody"], 0, tmp_path / "w.jpg", tiles=fake) == "words"
+    pic = tmp_path / "p.png"
+    Image.new("RGB", (900, 600), (90, 120, 170)).save(pic)
+    assert T.make("Story", "Big Words", "Words", [], 0, tmp_path / "p.jpg", tiles=fake, photo=pic) == "photo_card"
+    assert Image.open(tmp_path / "p.jpg").size == (1280, 720)
 
 
 def test_alert_shorts_get_the_trailer_music():
