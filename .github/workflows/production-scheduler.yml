@@ -109,6 +109,23 @@ jobs:
       - name: Browser for the thumbnail logo tiles
         if: steps.automation.outputs.enabled == 'true'
         run: python -m playwright install --with-deps chromium
+      - name: Edit engine tools (Rhubarb Lip Sync, HyperFrames)
+        if: steps.automation.outputs.enabled == 'true'
+        run: |
+          R="$HOME/.cache/golide-rhubarb"
+          if [ ! -x "$R/Rhubarb-Lip-Sync-1.14.0-Linux/rhubarb" ]; then
+            mkdir -p "$R" && curl -sSL -o "$R/r.zip" https://github.com/DanielSWolf/rhubarb-lip-sync/releases/download/v1.14.0/Rhubarb-Lip-Sync-1.14.0-Linux.zip \
+              && unzip -qo "$R/r.zip" -d "$R" && rm "$R/r.zip" || echo "::warning title=Rhubarb::download failed, mouth follows loudness"
+          fi
+          npx -y hyperframes@0.9.32 --version || true
+      - name: Keep the edit engine tools between runs
+        if: steps.automation.outputs.enabled == 'true'
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/golide-rhubarb
+            ~/.npm
+          key: edit-tools-v1
       - name: Keep built 3D objects between runs (an object is paid for once)
         if: steps.automation.outputs.enabled == 'true'
         uses: actions/cache@v4
