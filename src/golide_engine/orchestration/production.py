@@ -1192,7 +1192,7 @@ class ProductionService:
         from ..edit import pipeline as edit_pipeline
         # 2026-11-11 (owner): the edit engine (real sources, Goli the host, HyperFrames motion design),
         # switched on per format in config/edit-engine.json.
-        if vector_mode and edit_pipeline.enabled(str(spec["format"])):
+        if vector_mode and edit_pipeline.enabled(str(spec["format"]), spec):
             held = render_hold_reason(self.root, str(spec["format"]))
             already = self.database.rows(
                 "SELECT 1 FROM stage_runs WHERE production_id=? AND stage='render-edit-v1' AND status='completed' LIMIT 1",

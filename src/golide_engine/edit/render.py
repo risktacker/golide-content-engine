@@ -24,8 +24,17 @@ RHUBARB_VERSION = "1.14.0"
 
 
 def _browser() -> str:
+    """Chrome for filming: the headless shell Playwright installs (HyperFrames' fast capture path),
+    else Playwright's full Chromium."""
     if os.environ.get("HYPERFRAMES_BROWSER_PATH"):
         return os.environ["HYPERFRAMES_BROWSER_PATH"]
+    import glob
+
+    roots = [os.environ.get("PLAYWRIGHT_BROWSERS_PATH") or "", str(Path.home() / ".cache/ms-playwright"), "/opt/pw-browsers"]
+    for root in filter(None, roots):
+        shells = sorted(glob.glob(f"{root}/chromium_headless_shell-*/chrome-headless-shell-linux64/chrome-headless-shell"))
+        if shells:
+            return shells[-1]
     from playwright.sync_api import sync_playwright
 
     with sync_playwright() as p:

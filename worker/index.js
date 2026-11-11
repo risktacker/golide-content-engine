@@ -466,6 +466,7 @@ async function createPost(env,payload){
 
 async function listProductionJobs(db){
   const {results=[]}=await db.prepare(`SELECT job_id,format,status,stage,title,selected_topic,script,owner_voice_media_ref,
+    json_extract(spec_json,'$.video_style') AS video_style,
     generate_at,scheduled_at,actual_cost_usd,openai_cost_usd,run_url,release_url,error,claimed_at,created_at,updated_at
     FROM production_jobs
     WHERE archived_at IS NULL
@@ -1155,6 +1156,19 @@ async function handleApi(request,env,url){
     if(!r.meta?.changes) return json({status:"unchanged"});
     try{await dispatchWorkflow(env,"production-scheduler.yml");}catch(e){console.log(JSON.stringify({dispatch:"ai_voice_failed",error:String(e?.message||e)}));}
     return json({status:"queued"});
+  }
+  // 2026-11-11 (owner): each video's style is his choice: "goli" (the edit engine with Goli, the default)
+  // or "illustration" (the drawn-illustration engine, kept as an option). Changeable until the video is built.
+  const styleMatch=url.pathname.match(/^\/api\/production-jobs\/([^/]+)\/style$/);
+  if(styleMatch&&request.method==="POST"){
+    const id=decodeURIComponent(styleMatch[1]);
+    let body={}; try{body=await request.json();}catch{}
+    const style=String(body.style||"");
+    if(!["goli","illustration"].includes(style)) return err("Choose goli or illustration.",400);
+    const r=await env.DB.prepare(`UPDATE production_jobs SET spec_json=json_set(spec_json,'$.video_style',?),updated_at=? WHERE job_id=? AND status IN ('waiting_owner_voice','queued','scheduled_generation','pending')`)
+      .bind(style,nowIso(),id).run();
+    if(!r.meta?.changes) return err("This video is already being built; its style can no longer change.",409);
+    return json({status:"saved",style});
   }
   // 2026-11-10 (owner): Studio's script editor. His words become the script (before any voice).
   const editMatch=url.pathname.match(/^\/api\/production-jobs\/([^/]+)\/script$/);

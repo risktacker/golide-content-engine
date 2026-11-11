@@ -606,6 +606,18 @@ function pickedPlatforms(scope) {
   return [...(scope?.querySelectorAll(".post-to input:checked") || [])].map((input) => input.value);
 }
 
+// 2026-11-11 (owner): he picks each video's style. Goli (the edit engine) is the default; the
+// illustration engine stays available as an option.
+const VIDEO_STYLES = [["goli", "Goli"], ["illustration", "Illustration"]];
+
+function styleHtml(job) {
+  const current = job.video_style || "goli";
+  return '<div class="post-to style-pick" data-job="' + escAttr(job.job_id) + '"><span class="post-to-label">Video style</span>' +
+    VIDEO_STYLES.map(([key, name]) =>
+      '<label class="post-chip"><input type="radio" name="style-' + escAttr(job.job_id) + '" value="' + key + '"' +
+      (current === key ? " checked" : "") + '><span>' + name + '</span></label>').join("") + '</div>';
+}
+
 function actionCard(job) {
   const script = job.script || "The engine is finishing the approved script.";
   const windowRange = RECORDING_WINDOWS[job.format === "long" ? "long" : "short"];
@@ -624,7 +636,7 @@ function actionCard(job) {
       '<button class="action-button replace-cancel" data-job="' + escAttr(job.job_id) + '">Cancel</button>' +
       '<p class="replace-note">Paste the link, then tap <b>Write a new script</b>. The engine treats that video as today\'s title: it researches the subject from other sources and writes a new script here (a few cents).</p></div>' +
     '<span class="voice-status script-status" id="script-status-' + escAttr(job.job_id) + '"></span></div>' +
-    '<div class="action-controls">' + postToHtml(null) +
+    '<div class="action-controls">' + styleHtml(job) + postToHtml(null) +
       '<button class="ai-voice-button" data-job="' + escAttr(job.job_id) + '">Use AI voice</button>' +
       '<label class="upload-button">Upload my recording<input class="voice-input" type="file" accept="audio/*,video/*,.m4a,.mp3,.wav,.aac,.caf,.ogg,.opus,.webm,.mp4,.mov" data-job="' + escAttr(job.job_id) + '"></label>' +
       '<button class="action-button copy-script" data-job="' + escAttr(job.job_id) + '">Copy script</button>' +
@@ -693,6 +705,19 @@ function renderActionQueues() {
       await api("/api/production-jobs/" + encodeURIComponent(button.dataset.job) + "/ai-voice",
         { method: "POST", body: JSON.stringify(picked ? { platforms: picked } : {}) });
       await loadProductionJobs();
+    };
+  });
+  $$(".style-pick input").forEach((input) => {
+    input.onchange = async () => {
+      const box = input.closest(".style-pick");
+      const status = document.getElementById("voice-status-" + box.dataset.job);
+      try {
+        await api("/api/production-jobs/" + encodeURIComponent(box.dataset.job) + "/style",
+          { method: "POST", body: JSON.stringify({ style: input.value }) });
+        const job = productionJobs.find((item) => item.job_id === box.dataset.job);
+        if (job) job.video_style = input.value;
+        if (status) status.textContent = "Style: " + (input.value === "goli" ? "Goli" : "Illustration");
+      } catch (error) { if (status) status.textContent = error.message; }
     };
   });
   $$(".voice-input").forEach((input) => {
