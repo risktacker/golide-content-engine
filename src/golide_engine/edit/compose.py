@@ -45,7 +45,7 @@ html,body{margin:0;background:#07080B}
  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 .scene{position:absolute;inset:0}
 .stage,.cam{position:absolute;inset:0;transform-origin:50% 50%}
-.card{background:rgba(17,20,26,.92);border:1px solid rgba(255,255,255,.08);border-radius:18px;
+.card{box-sizing:border-box;background:rgba(17,20,26,.92);border:1px solid rgba(255,255,255,.08);border-radius:18px;
  box-shadow:0 40px 120px rgba(0,0,0,.6)}
 .frame{position:absolute;border-radius:18px;overflow:hidden;background:#fff;
  box-shadow:0 40px 120px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.1)}
@@ -183,7 +183,7 @@ class Composer:
             img_h = fw * im.height / im.width
         ph = min(img_h, fw * 0.6)                         # visible page height inside the card
         fh = ph + bar
-        fy = (self.h - fh) / 2 - 20
+        fy = (self.h - fh) / 2 - 20 if self.fmt == "long" else 360
         img = self.asset(data["image"])
         marks, hl_tweens = "", []
         dark = _is_dark(Path(data["image"]))
@@ -221,7 +221,12 @@ class Composer:
         if domain:
             inner += (f'<div class="chip" id="{sid}-src" style="position:absolute;left:{fx}px;top:{fy + fh + 26:.0f}px;'
                       f'font-size:24px">Source · {_e(domain)}</div>')
-        if callout:
+        if callout and self.fmt == "short":
+            inner += (f'<div class="card" id="{sid}-co" style="position:absolute;left:{fx}px;top:{fy + fh + 100:.0f}px;'
+                      f'width:{fw}px;box-sizing:border-box;padding:30px 36px;border-color:rgba(232,194,104,.5)">'
+                      f'<div style="font:900 84px/1 Poppins;color:#E8C268">{_e(callout["label"])}</div>'
+                      f'<div class="label" style="margin-top:14px;font-size:32px">{_e(callout.get("sub", ""))}</div></div>')
+        elif callout:
             cx0 = fx + fw + 60
             inner += (f'<div class="card" id="{sid}-co" style="position:absolute;left:{cx0}px;top:{self.h * .24:.0f}px;'
                       f'width:{self.w - cx0 - 70}px;box-sizing:border-box;padding:30px 32px;border-color:rgba(232,194,104,.5)">'
@@ -260,9 +265,13 @@ class Composer:
         prefix, suffix = data.get("prefix", ""), data.get("suffix", "")
         decimals = int(data.get("decimals", 0))
         source = f'<div class="chip" style="margin-top:26px">{_e(data["source"])}</div>' if data.get("source") else ""
-        inner = (f'<div class="card" style="position:absolute;left:50%;top:50%;width:1100px;height:560px;'
-                 f'margin:-280px 0 0 -550px;display:flex;flex-direction:column;align-items:center;justify-content:center">'
-                 f'<div class="num"><span>{_e(prefix)}</span><span id="{sid}-n">0</span><span>{_e(suffix)}</span></div>'
+        cw = min(1100, self.w - 100)
+        digits = len(f"{prefix}{value:,.{decimals}f}{suffix}")
+        size = int(min(220, cw * 1.55 / max(1, digits)))
+        inner = (f'<div class="card" style="position:absolute;left:50%;top:50%;width:{cw}px;height:560px;'
+                 f'margin:-280px 0 0 -{cw // 2}px;display:flex;flex-direction:column;align-items:center;justify-content:center;'
+                 f'text-align:center;box-sizing:border-box;padding:0 40px">'
+                 f'<div class="num" style="font-size:{size}px"><span>{_e(prefix)}</span><span id="{sid}-n">0</span><span>{_e(suffix)}</span></div>'
                  f'<div class="label" id="{sid}-l" style="margin-top:22px">{_e(data.get("label", ""))}</div>'
                  f'{source}</div>')
         self.scene(sid, t0, dur, inner)
@@ -284,8 +293,9 @@ class Composer:
         sub = f'<div class="label" style="margin-top:28px">{_e(data["sub"])}</div>' if data.get("sub") else ""
         spans = "".join(f'<span class="word{" gold" if w["text"].lower().strip(".,!?") == punch else ""}" '
                         f'id="{sid}-w{i}">{_e(w["text"])}</span>' for i, w in enumerate(words))
-        inner = (f'<div style="position:absolute;left:120px;right:120px;top:50%;transform:translateY(-50%)">'
-                 f'<div class="title" style="text-align:left">{spans}</div>'
+        m = 120 if self.fmt == "long" else 70
+        inner = (f'<div style="position:absolute;left:{m}px;right:{m}px;top:50%;transform:translateY(-50%)">'
+                 f'<div class="title" style="text-align:left;font-size:{112 if self.fmt == "long" else 104}px">{spans}</div>'
                  f'{sub}</div>')
         self.scene(sid, t0, dur, inner)
         for i, w in enumerate(words):
@@ -300,9 +310,10 @@ class Composer:
 
     def chapter_card(self, t0, dur, data, how="whip"):
         sid = self._id("chapter")
-        inner = (f'<div style="position:absolute;left:140px;top:50%;transform:translateY(-50%)">'
+        m = 140 if self.fmt == "long" else 80
+        inner = (f'<div style="position:absolute;left:{m}px;right:{m}px;top:50%;transform:translateY(-50%)">'
                  f'<div class="chip" id="{sid}-c">{_e(data.get("number", ""))}</div>'
-                 f'<div class="title" id="{sid}-t" style="margin-top:26px;font-size:128px">{_e(data["title"])}</div>'
+                 f'<div class="title" id="{sid}-t" style="margin-top:26px;font-size:{128 if self.fmt == "long" else 104}px">{_e(data["title"])}</div>'
                  f'<div id="{sid}-u" style="height:10px;width:0;background:#E8C268;margin-top:26px;border-radius:5px"></div></div>')
         self.scene(sid, t0, dur, inner)
         self.entrance(sid, t0, how)
@@ -316,10 +327,11 @@ class Composer:
         words = str(data["text"]).split()
         mark = {w.lower().strip(".,") for w in data.get("mark", [])}
         body = " ".join(f'<span class="{"gold" if w.lower().strip(".,") in mark else ""}">{_e(w)}</span>' for w in words)
-        inner = (f'<div class="card" style="position:absolute;left:50%;top:50%;width:1300px;margin-left:-650px;'
-                 f'transform:translateY(-50%);padding:70px 80px">'
+        cw = min(1300, self.w - 100)
+        inner = (f'<div class="card" style="position:absolute;left:50%;top:50%;width:{cw}px;margin-left:-{cw // 2}px;'
+                 f'transform:translateY(-50%);padding:70px 70px;box-sizing:border-box">'
                  f'<div style="font:900 120px/0.6 Poppins;color:#E8C268">&ldquo;</div>'
-                 f'<div style="font:800 58px/1.25 Poppins">{body}</div>'
+                 f'<div style="font:800 {58 if self.fmt == "long" else 54}px/1.25 Poppins">{body}</div>'
                  f'<div class="label" style="margin-top:34px">{_e(data.get("who", ""))}</div></div>')
         self.scene(sid, t0, dur, inner)
         self.entrance(sid, t0, how)
@@ -329,18 +341,20 @@ class Composer:
         """Two sides; the rows build one by one; the winning value glows gold."""
         sid = self._id("compare")
         left, right = data["left"], data["right"]
+        lw, vw = (420, 330) if self.fmt == "long" else (300, 290)
+        cw = lw + 2 * vw + 120
         rows = ""
         for i, (label, a, b) in enumerate(data["rows"]):
             win = data.get("winners", [None] * len(data["rows"]))[i]
             rows += (f'<div class="row" id="{sid}-r{i}" style="padding:18px 0;border-top:1px solid rgba(255,255,255,.08)">'
-                     f'<div class="label" style="width:420px">{_e(label)}</div>'
-                     f'<div style="width:330px;font:800 48px Poppins;{"color:#E8C268" if win == "left" else ""}">{_e(a)}</div>'
-                     f'<div style="width:330px;font:800 48px Poppins;{"color:#E8C268" if win == "right" else ""}">{_e(b)}</div></div>')
-        inner = (f'<div class="card" style="position:absolute;left:50%;top:50%;width:1220px;margin-left:-610px;'
-                 f'transform:translateY(-50%);padding:50px 60px">'
-                 f'<div class="row" style="padding-bottom:14px"><div style="width:420px"></div>'
-                 f'<div style="width:330px;font:900 54px Poppins">{_e(left)}</div>'
-                 f'<div style="width:330px;font:900 54px Poppins;color:#38BDF8">{_e(right)}</div></div>{rows}</div>')
+                     f'<div class="label" style="width:{lw}px">{_e(label)}</div>'
+                     f'<div style="width:{vw}px;font:800 46px Poppins;{"color:#E8C268" if win == "left" else ""}">{_e(a)}</div>'
+                     f'<div style="width:{vw}px;font:800 46px Poppins;{"color:#E8C268" if win == "right" else ""}">{_e(b)}</div></div>')
+        inner = (f'<div class="card" style="position:absolute;left:50%;top:50%;width:{cw}px;margin-left:-{cw // 2}px;'
+                 f'transform:translateY(-50%);padding:50px 60px;box-sizing:border-box">'
+                 f'<div class="row" style="padding-bottom:14px"><div style="width:{lw}px"></div>'
+                 f'<div style="width:{vw}px;font:900 50px Poppins">{_e(left)}</div>'
+                 f'<div style="width:{vw}px;font:900 50px Poppins;color:#38BDF8">{_e(right)}</div></div>{rows}</div>')
         self.scene(sid, t0, dur, inner)
         self.entrance(sid, t0, how)
         for i in range(len(data["rows"])):
@@ -355,7 +369,8 @@ class Composer:
                         f'<div style="width:86px;height:86px;border-radius:24px;background:#E8C268;color:#07080B;'
                         f'display:grid;place-items:center;font:900 46px Poppins">{i + 1}</div>'
                         f'<div style="font:800 54px Poppins">{_e(s)}</div></div>' for i, s in enumerate(data["items"]))
-        inner = (f'<div style="position:absolute;left:180px;top:50%;transform:translateY(-50%)">'
+        m = 180 if self.fmt == "long" else 70
+        inner = (f'<div style="position:absolute;left:{m}px;right:{m}px;top:50%;transform:translateY(-50%)">'
                  f'<div class="label" style="margin-bottom:18px">{_e(data.get("heading", ""))}</div>{items}</div>')
         self.scene(sid, t0, dur, inner)
         self.entrance(sid, t0, how)
@@ -370,6 +385,8 @@ class Composer:
         sid = self._id("time")
         pts = data["points"]                                # [{"when":..,"what":..}]
         n = len(pts)
+        if self.fmt == "short":
+            return self._timeline_vertical(sid, t0, dur, pts, how)
         span = self.w - 360
         dots = ""
         for i, p in enumerate(pts):
@@ -390,14 +407,36 @@ class Composer:
             self.cue("click", at)
         self.drift(sid, t0, dur, 0.012)
 
+    def _timeline_vertical(self, sid, t0, dur, pts, how):
+        n = len(pts)
+        top, span = 420, 1080
+        rows = "".join(f'<div id="{sid}-p{i}" style="position:absolute;left:150px;right:70px;top:{top + span * i / max(1, n - 1) - 34:.0f}px">'
+                       f'<div style="position:absolute;left:-74px;top:22px;width:30px;height:30px;border-radius:50%;'
+                       f'background:#E8C268;box-shadow:0 0 30px rgba(232,194,104,.7)"></div>'
+                       f'<div style="font:900 60px/1 Poppins">{_e(p["when"])}</div>'
+                       f'<div class="label" style="font-size:34px;margin-top:10px">{_e(p["what"])}</div></div>' for i, p in enumerate(pts))
+        inner = (f'<div id="{sid}-line" style="position:absolute;left:89px;top:{top}px;width:4px;height:0;'
+                 f'background:linear-gradient(#E8C268,rgba(232,194,104,.3))"></div>{rows}')
+        self.scene(sid, t0, dur, inner)
+        self.entrance(sid, t0, how)
+        run = min(2.4, dur - 0.6)
+        self.tw(f'tl.to("#{sid}-line",{{height:{span},duration:{run:.2f},ease:"power2.inOut"}},{t0 + 0.2:.3f});')
+        for i in range(n):
+            at = t0 + 0.25 + run * (i / max(1, n - 1))
+            self.tw(f'tl.fromTo("#{sid}-p{i}",{{x:40,opacity:0}},{{x:0,opacity:1,duration:.45,ease:"back.out(1.6)"}},{at:.3f});')
+            self.cue("click", at)
+        self.drift(sid, t0, dur, 0.012)
+
     def logo_tiles(self, t0, dur, data, how="rise"):
         """The real 3D logo tiles (rendered by vector.thumb_styles) float in with parallax."""
         sid = self._id("logos")
         tiles = data["tiles"]                               # [{"image": path}]
         n = len(tiles)
-        gap = 360
+        gap = min(360, (self.w - 60) / max(1, n))
+        ts = min(300, gap - 30)
         x0 = self.w / 2 - gap * (n - 1) / 2
-        inner = "".join(f'<div class="tile" id="{sid}-t{i}" style="left:{x0 + gap * i - 150:.0f}px;top:{self.h / 2 - 190:.0f}px">'
+        inner = "".join(f'<div class="tile" id="{sid}-t{i}" style="left:{x0 + gap * i - ts / 2:.0f}px;top:{self.h / 2 - 190:.0f}px;'
+                        f'width:{ts:.0f}px;height:{ts:.0f}px">'
                         f'<img src="{self.asset(t["image"])}"></div>' for i, t in enumerate(tiles))
         if data.get("caption"):
             inner += (f'<div class="title" style="position:absolute;left:0;right:0;top:{self.h / 2 + 170:.0f}px;'
@@ -433,13 +472,13 @@ class Composer:
         cues = data.get("cues") or []
         outfit = data.get("outfit") or self.outfit
         self.outfits.add(outfit)
-        size = {"full": 1000, "left": 860, "right": 860, "corner": 420, "studio": 820}[place]
+        size = {"full": 1000, "left": 860, "right": 860, "corner": 420, "studio": studio.layout(self.fmt)["size"]}[place]
         w = size * mascot.VIEW[0] / mascot.VIEW[1]
         x = {"full": self.w * 0.27 - w / 2, "left": 40, "right": self.w - w - 40, "corner": self.w - w - 50,
-             "studio": studio.SEAT_X - w / 2}[place]
+             "studio": studio.layout(self.fmt)["seat_x"] - w / 2}[place]
         y = self.h - size - (30 if place != "corner" else 20)
         if place == "studio":                 # seated: desk top at his waist
-            y = studio.DESK_Y - 430 * size / 540
+            y = studio.layout(self.fmt)["desk_y"] - 430 * size / 540
         layers = ""
         for k, p in enumerate(poses):
             uid = f"{sid}-p{k}"
@@ -449,7 +488,7 @@ class Composer:
         bubble = ""
         if place == "studio":
             self.uses_studio = True
-            bubble = studio.back(sid)
+            bubble = studio.back(sid, self.fmt)
         elif place != "corner":     # open stage: back-wall wordmark, spotlight, floor grid to the horizon, glow disc
             cxp = x + w / 2
             panels = "".join(
@@ -480,12 +519,13 @@ class Composer:
             spans = "".join(f'<span class="word{" gold" if w_["text"].lower().strip(".,!?") == str(data.get("punch", "")).lower() else ""}" '
                             f'id="{sid}-w{i}">{_e(w_["text"])}</span>' for i, w_ in enumerate(data["words"]))
             if place == "studio":       # the words appear on the studio's video wall
-                title = (f'<div style="position:absolute;left:1190px;width:600px;top:230px">'
-                         f'<div class="title" style="font-size:72px;line-height:1.05">{spans}</div></div>')
+                wx, wy, ww, wf = studio.layout(self.fmt)["words"]
+                title = (f'<div style="position:absolute;left:{wx}px;width:{ww}px;top:{wy}px">'
+                         f'<div class="title" style="font-size:{wf}px;line-height:1.05">{spans}</div></div>')
             else:
                 title = (f'<div style="position:absolute;left:{self.w * 0.52:.0f}px;right:110px;top:50%;margin-top:-170px">'
                          f'<div class="title" style="font-size:96px">{spans}</div></div>')
-        front = studio.front(sid) if place == "studio" else ""
+        front = studio.front(sid, self.fmt) if place == "studio" else ""
         inner = (f'{bubble}{title}<div id="{sid}-ch" style="position:absolute;left:{x:.0f}px;top:{y:.0f}px;width:{w:.0f}px;'
                  f'height:{size}px">{layers}</div>{front}')
         self.parts.append(f'<section id="{sid}" class="scene clip" data-start="{t0:.3f}" data-duration="{dur:.3f}" '

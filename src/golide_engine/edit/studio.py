@@ -13,8 +13,24 @@ from __future__ import annotations
 from .mascot import logo_mark
 
 W, H = 1920, 1080
-DESK_Y = 772                      # desk top on screen
-SEAT_X = 640                      # Goli's centre line
+DESK_Y = 772                      # desk top on screen (long)
+SEAT_X = 640                      # Goli's centre line (long)
+
+# Where each piece of the set sits per format. Pieces are drawn in the long frame's coordinates and
+# moved as groups: (translate x, translate y, scale). The Short stacks the set: video wall on top,
+# Goli at the desk below it.
+LAYOUTS = {
+    "long": {"w": 1920, "h": 1080, "desk_y": 772, "seat_x": 640, "size": 820,
+             "wall": (0, 0, 1.0), "neon": (0, 0, 1.0), "shelf": (0, 0, 1.0),
+             "words": (1190, 230, 600, 72)},
+    "short": {"w": 1080, "h": 1920, "desk_y": 1560, "seat_x": 540, "size": 900,
+              "wall": (-1361, 48, 1.28), "neon": None, "shelf": (-80, 540, 1.0),
+              "words": (130, 300, 820, 92)},
+}
+
+
+def layout(fmt: str) -> dict:
+    return LAYOUTS["short" if fmt == "short" else "long"]
 
 DEFS = """<svg width="0" height="0" style="position:absolute"><defs>
 <linearGradient id="st-wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0A0E1A"/><stop offset=".7" stop-color="#121A30"/><stop offset="1" stop-color="#1A1408"/></linearGradient>
@@ -37,8 +53,13 @@ DEFS = """<svg width="0" height="0" style="position:absolute"><defs>
 </defs></svg>"""
 
 
-def back(sid: str) -> str:
+def back(sid: str, fmt: str = "long") -> str:
     """Wall, neon sign, shelves, video wall and chair (behind Goli)."""
+    L = layout(fmt)
+    W, H, DESK_Y, SEAT_X = L["w"], L["h"], L["desk_y"], L["seat_x"]
+    k = L["size"] / 820
+    g = lambda key: ('transform="translate({} {}) scale({})"'.format(*L[key]) if L[key]  # noqa: E731
+                     else 'style="display:none"')
     slats = "".join(f'<rect x="{x}" y="0" width="58" height="{H}" fill="url(#st-slat)"/>'
                     f'<rect x="{x + 58}" y="0" width="8" height="{H}" fill="#070A12"/>' for x in range(0, W, 66))
     books = ""
@@ -56,13 +77,13 @@ def back(sid: str) -> str:
 <rect width="{W}" height="{H}" fill="url(#st-wall)"/>{slats}
 <rect width="{W}" height="{H}" fill="url(#st-up)"/>
 <rect y="{H - 40}" width="{W}" height="40" fill="#F2C14E" opacity=".25" filter="url(#st-blur)"/>
-<ellipse cx="{SEAT_X}" cy="380" rx="460" ry="380" fill="url(#st-glowb)"/>
-<g filter="url(#st-neon)" id="{sid}-neon">
+<ellipse cx="{SEAT_X}" cy="{DESK_Y - 390 * k}" rx="{460 * k}" ry="{380 * k}" fill="url(#st-glowb)"/>
+<g {g("neon")}><g filter="url(#st-neon)" id="{sid}-neon">
   <rect x="70" y="110" width="430" height="120" rx="60" fill="none" stroke="#F2C14E" stroke-width="5" opacity=".9"/>
   {logo_mark(140, 170, 70, "#FFF4D6", "#F2C14E")}
   <text x="190" y="192" font-family="Poppins" font-weight="900" font-size="64" letter-spacing="6" fill="#FFF4D6">GOLIDE</text>
-</g>
-<g filter="url(#st-drop)">
+</g></g>
+<g {g("shelf")}><g filter="url(#st-drop)">
   <rect x="96" y="470" width="300" height="14" rx="4" fill="#2A2F3D"/><rect x="96" y="640" width="300" height="14" rx="4" fill="#2A2F3D"/>
   {books}
   <path d="M290 470 L300 420 L340 420 L350 470 Z" fill="#E8C268"/><circle cx="320" cy="398" r="26" fill="#F2C14E"/>
@@ -72,8 +93,8 @@ def back(sid: str) -> str:
   <ellipse cx="290" cy="575" rx="22" ry="34" fill="url(#st-leaf)" transform="rotate(-25 290 575)"/>
   <ellipse cx="318" cy="566" rx="22" ry="40" fill="url(#st-leaf)"/>
   <ellipse cx="344" cy="578" rx="20" ry="32" fill="url(#st-leaf)" transform="rotate(25 344 578)"/>
-</g>
-<g filter="url(#st-drop)" id="{sid}-wall">
+</g></g>
+<g {g("wall")}><g filter="url(#st-drop)" id="{sid}-wall">
   <path d="M1110 110 Q1500 80 1860 120 L1860 640 Q1500 680 1110 650 Z" fill="#05070D" stroke="#2A3354" stroke-width="10"/>
   <path d="M1124 124 Q1500 96 1846 132 L1846 626 Q1500 664 1124 636 Z" fill="url(#st-screen)"/>
   <path d="M1124 124 Q1500 96 1846 132 L1846 200 Q1500 170 1124 190 Z" fill="#fff" opacity=".035"/>
@@ -83,50 +104,53 @@ def back(sid: str) -> str:
         stroke="#F2C14E" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="900" stroke-dashoffset="900"/>
   {logo_mark(1806, 594, 40, "#8FA0C8", "#F2C14E")}
 </g>
-<rect x="1100" y="660" width="770" height="40" fill="#3D6CFF" opacity=".22" filter="url(#st-blur)"/>
-<g filter="url(#st-drop)">
-  <path d="M{SEAT_X - 250} {DESK_Y} L{SEAT_X - 230} 330 Q{SEAT_X} 280 {SEAT_X + 230} 330 L{SEAT_X + 250} {DESK_Y} Z" fill="url(#st-chair)"/>
-  <path d="M{SEAT_X - 212} {DESK_Y - 20} L{SEAT_X - 196} 360 Q{SEAT_X} 316 {SEAT_X + 196} 360 L{SEAT_X + 212} {DESK_Y - 20}"
-        fill="none" stroke="#E8C268" stroke-width="4" opacity=".75"/>
+<rect x="1100" y="660" width="770" height="40" fill="#3D6CFF" opacity=".22" filter="url(#st-blur)"/></g>
+<g filter="url(#st-drop)" transform="translate({SEAT_X} {DESK_Y}) scale({k}) translate(-640 -772)">
+  <path d="M390 772 L410 330 Q640 280 870 330 L890 772 Z" fill="url(#st-chair)"/>
+  <path d="M428 752 L444 360 Q640 316 836 360 L852 752" fill="none" stroke="#E8C268" stroke-width="4" opacity=".75"/>
 </g>
 </svg>"""
 
 
-def front(sid: str) -> str:
+def front(sid: str, fmt: str = "long") -> str:
     """Desk, laptop, mug and the podcast mic (in front of Goli)."""
+    L = layout(fmt)
+    W, H, DESK_Y, SEAT_X = L["w"], L["h"], L["desk_y"], L["seat_x"]
+    k = L["size"] / 820
+    near = f'transform="translate({SEAT_X} {DESK_Y}) scale({k}) translate(-640 -772)"'
     return f"""<svg viewBox="0 0 {W} {H}" width="{W}" height="{H}" style="position:absolute;left:0;top:0">
 <g filter="url(#st-drop)">
   <path d="M-20 {DESK_Y} L{W + 20} {DESK_Y} L{W + 20} {DESK_Y + 30} L-20 {DESK_Y + 30} Z" fill="url(#st-top)"/>
   <rect x="-20" y="{DESK_Y + 30}" width="{W + 40}" height="{H - DESK_Y}" fill="url(#st-desk)"/>
   <rect id="{sid}-edge" x="-20" y="{DESK_Y + 28}" width="{W + 40}" height="5" fill="url(#st-edge)"/>
   <rect x="-20" y="{DESK_Y + 33}" width="{W + 40}" height="60" fill="#F2C14E" opacity=".12" filter="url(#st-blur)"/>
-  {"".join(f'<rect x="{x}" y="{DESK_Y + 52}" width="3" height="{H - DESK_Y}" fill="#F2C14E" opacity=".22"/>' for x in (480, 960, 1440))}
+  {"".join(f'<rect x="{x}" y="{DESK_Y + 52}" width="3" height="{H - DESK_Y}" fill="#F2C14E" opacity=".22"/>' for x in (W * .25, W * .5, W * .75))}
   <rect x="{W / 2 - 230}" y="{DESK_Y + 120}" width="460" height="104" rx="52" fill="#0B0E16" stroke="#F2C14E" stroke-opacity=".55" stroke-width="3"/>
   {logo_mark(W / 2 - 160, DESK_Y + 172, 64, "#F4F1EA", "#F2C14E")}
   <text x="{W / 2 - 112}" y="{DESK_Y + 194}" font-family="Poppins" font-weight="900" font-size="60" letter-spacing="8" fill="#F4F1EA">GOLIDE</text>
-  <path d="M1110 {DESK_Y + 40} L1860 {DESK_Y + 40} L1800 {DESK_Y + 110} L1170 {DESK_Y + 110} Z" fill="#3D6CFF" opacity=".08"/>
+  
 </g>
-<g filter="url(#st-drop)">
-  <path d="M930 {DESK_Y + 4} L1210 {DESK_Y + 4} L1236 {DESK_Y + 22} L904 {DESK_Y + 22} Z" fill="#9AA1B1"/>
-  <path d="M948 {DESK_Y + 4} L962 {DESK_Y - 186} L1178 {DESK_Y - 186} L1192 {DESK_Y + 4} Z" fill="url(#st-laptop)"/>
-  <ellipse cx="1070" cy="{DESK_Y - 92}" rx="60" ry="60" fill="url(#st-glowg)"/>
+<g filter="url(#st-drop)" {near}>
+  <path d="M930 {776} L1210 {776} L1236 {772 + 22} L904 {772 + 22} Z" fill="#9AA1B1"/>
+  <path d="M948 {776} L962 {772 - 186} L1178 {772 - 186} L1192 {776} Z" fill="url(#st-laptop)"/>
+  <ellipse cx="1070" cy="{772 - 92}" rx="60" ry="60" fill="url(#st-glowg)"/>
   {logo_mark(1070, DESK_Y - 92, 74, "#F4F1EA", "#F2C14E")}
 </g>
-<g filter="url(#st-drop)">
-  <rect x="230" y="{DESK_Y - 96}" width="78" height="96" rx="12" fill="#F4F1EA"/>
-  <path d="M308 {DESK_Y - 76} Q348 {DESK_Y - 70} 340 {DESK_Y - 40} Q334 {DESK_Y - 18} 306 {DESK_Y - 22}" fill="none" stroke="#F4F1EA" stroke-width="12"/>
+<g filter="url(#st-drop)" {near}>
+  <rect x="230" y="{772 - 96}" width="78" height="96" rx="12" fill="#F4F1EA"/>
+  <path d="M308 {772 - 76} Q348 {772 - 70} 340 {772 - 40} Q334 {772 - 18} 306 {772 - 22}" fill="none" stroke="#F4F1EA" stroke-width="12"/>
   {logo_mark(268, DESK_Y - 50, 40, "#16181F", "#E8C268")}
-  <path id="{sid}-steam" d="M254 {DESK_Y - 110} Q244 {DESK_Y - 140} 258 {DESK_Y - 165} Q272 {DESK_Y - 190} 262 {DESK_Y - 215}"
+  <path id="{sid}-steam" d="M254 {772 - 110} Q244 {772 - 140} 258 {772 - 165} Q272 {772 - 190} 262 {772 - 215}"
         fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".18"/>
 </g>
-<g filter="url(#st-drop)">
-  <rect x="380" y="{DESK_Y - 6}" width="54" height="22" rx="6" fill="#16181F"/>
-  <path d="M407 {DESK_Y - 6} L330 {DESK_Y - 150} L434 {DESK_Y - 195}" fill="none" stroke="url(#st-metal)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="330" cy="{DESK_Y - 150}" r="12" fill="#3A3F4D"/>
-  <g transform="rotate(25 455 {DESK_Y - 240})">
-    <rect x="424" y="{DESK_Y - 340}" width="62" height="150" rx="31" fill="url(#st-mic)"/>
-    <rect x="420" y="{DESK_Y - 296}" width="70" height="14" rx="7" fill="#E8C268"/>
-    <path d="M430 {DESK_Y - 328} L480 {DESK_Y - 328} M430 {DESK_Y - 312} L480 {DESK_Y - 312}" stroke="#555B6B" stroke-width="3"/>
+<g filter="url(#st-drop)" {near}>
+  <rect x="380" y="{772 - 6}" width="54" height="22" rx="6" fill="#16181F"/>
+  <path d="M407 {772 - 6} L330 {772 - 150} L434 {772 - 195}" fill="none" stroke="url(#st-metal)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="330" cy="{772 - 150}" r="12" fill="#3A3F4D"/>
+  <g transform="rotate(25 455 {772 - 240})">
+    <rect x="424" y="{772 - 340}" width="62" height="150" rx="31" fill="url(#st-mic)"/>
+    <rect x="420" y="{772 - 296}" width="70" height="14" rx="7" fill="#E8C268"/>
+    <path d="M430 {772 - 328} L480 {772 - 328} M430 {772 - 312} L480 {772 - 312}" stroke="#555B6B" stroke-width="3"/>
   </g>
 </g>
 </svg>"""
