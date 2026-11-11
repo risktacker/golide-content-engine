@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   recover-thumbnail-and-upload:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     env:
       PRODUCTION_ID: golide-long-flagship-2026-09-03
