@@ -1,0 +1,243 @@
+[
+  {
+    "url": "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+    "title": "Introducing Claude Fable 5.2 and Claude Mythos 5.2 \\ Anthropic",
+    "claims": [
+      "Anthropic announced Claude Fable 5.2 and Claude Mythos 5.2 on November 9, 2026, describing them as models for demanding technical work in coding, reasoning, vision, science, and engineering.",
+      "Fable 5.2 and Mythos 5.2 use the same underlying model; Fable is publicly available with stronger cyber and biology safeguards, while Mythos is limited to verified organizations.",
+      "Anthropic says Fable 5.2 generates outputs up to 30% faster than Fable 5.1 and that its reduced false-positive safeguards resulted in about 55% fewer blocks overall, with separate reductions reported for cybersecurity and biology.",
+      "Anthropic\u2019s reported evaluations put Fable 5.2 ahead of Opus 5.5 on several tested tasks, including FrontierSWE v2, AutomationBench, Terminal-Bench-Science, BenchCAD, and Chartography, while some comparisons were close or depended on the selected effort level.",
+      "Anthropic reports that prerelease testing used Fable 5.2 to complete otherwise difficult software migrations, design three working electronic devices, make progress on robotics tasks, and solve two open problems in black-hole physics. These are company-reported demonstrations, not independent proof that the model has solved broad scientific research.",
+      "Anthropic announced Claude Fable 5.2 and Claude Mythos 5.2 on November 9, 2026, describing them as models for demanding technical work in coding, reasoning, vision, science, and engineering.",
+      "Fable 5.2 and Mythos 5.2 use the same underlying model; Fable is publicly available with stronger cyber and biology safeguards, while Mythos is limited to verified organizations.",
+      "Anthropic says Fable 5.2 generates outputs up to 30% faster than Fable 5.1 and that its reduced false-positive safeguards resulted in about 55% fewer blocks overall, with separate reductions reported for cybersecurity and biology.",
+      "Anthropic\u2019s reported evaluations put Fable 5.2 ahead of Opus 5.5 on several tested tasks, including FrontierSWE v2, AutomationBench, Terminal-Bench-Science, BenchCAD, and Chartography, while some comparisons were close or depended on the selected effort level.",
+      "Anthropic reports that prerelease testing used Fable 5.2 to complete otherwise difficult software migrations, design three working electronic devices, make progress on robotics tasks, and solve two open problems in black-hole physics. These are company-reported demonstrations, not independent proof that the model has solved broad scientific research."
+    ],
+    "ok": true,
+    "top": "01-top.png",
+    "full": "01-full.png",
+    "full_height": 5400,
+    "scale": 1.5,
+    "highlights": [
+      {
+        "phrase": "5.2",
+        "rects": [
+          [
+            838.234375,
+            255.75,
+            97.765625,
+            93
+          ]
+        ]
+      },
+      {
+        "phrase": "9,",
+        "rects": [
+          [
+            731.65625,
+            217.8125,
+            15.375,
+            18
+          ]
+        ]
+      },
+      {
+        "phrase": "Fable 5.2 and Mythos",
+        "rects": [
+          [
+            593.25,
+            1565.90625,
+            169,
+            21
+          ]
+        ]
+      },
+      {
+        "phrase": "30%",
+        "rects": [
+          [
+            924.25,
+            1591.4375,
+            36,
+            21
+          ]
+        ]
+      },
+      {
+        "phrase": "5.1",
+        "rects": [
+          [
+            549.25,
+            1616.96875,
+            22,
+            21
+          ]
+        ]
+      },
+      {
+        "phrase": "55%",
+        "rects": [
+          [
+            967.25,
+            18384.28125,
+            36,
+            21
+          ]
+        ]
+      },
+      {
+        "phrase": "5.5",
+        "rects": [
+          [
+            942.25,
+            2172.53125,
+            24,
+            21
+          ]
+        ]
+      },
+      {
+        "phrase": "2,",
+        "rects": [
+          [
+            442.5,
+            3848,
+            12,
+            18
+          ]
+        ]
+      }
+    ],
+    "faces_blurred": 0,
+    "captured_at": "2026-11-11T04:17:38+00:00"
+  },
+  {
+    "url": "https://platform.claude.com/docs/en/models/fable-5-2/overview",
+    "title": "Claude Fable 5.2 - Claude Platform Docs",
+    "claims": [
+      "Fable 5.2 has a 1-million-token context window, a maximum output of 128,000 tokens, always-on adaptive thinking, and a default high-effort setting.",
+      "The API price is $8 per million input tokens and $40 per million output tokens, compared with $10 and $50 for Fable 5.1; batch requests receive a 50% discount.",
+      "The intended user workflow is to employ Fable 5.2 for demanding reasoning and long-horizon agentic tasks such as multistep research, large codebases, and work that must end in a finished document, spreadsheet, or presentation.",
+      "Fable 5.2 has a 1-million-token context window, a maximum output of 128,000 tokens, always-on adaptive thinking, and a default high-effort setting.",
+      "The API price is $8 per million input tokens and $40 per million output tokens, compared with $10 and $50 for Fable 5.1; batch requests receive a 50% discount.",
+      "The intended user workflow is to employ Fable 5.2 for demanding reasoning and long-horizon agentic tasks such as multistep research, large codebases, and work that must end in a finished document, spreadsheet, or presentation."
+    ],
+    "ok": true,
+    "top": "02-top.png",
+    "full": "02-full.png",
+    "full_height": 3484,
+    "scale": 1.5,
+    "highlights": [
+      {
+        "phrase": "5.2",
+        "rects": [
+          [
+            107,
+            182,
+            19,
+            18
+          ]
+        ]
+      },
+      {
+        "phrase": "$8",
+        "rects": [
+          [
+            859.5,
+            310,
+            23,
+            28
+          ]
+        ]
+      },
+      {
+        "phrase": "$40",
+        "rects": [
+          [
+            1131.5,
+            310,
+            36,
+            28
+          ]
+        ]
+      },
+      {
+        "phrase": "$10",
+        "rects": [
+          [
+            760.828125,
+            811.84375,
+            23,
+            18
+          ]
+        ]
+      },
+      {
+        "phrase": "5.1",
+        "rects": [
+          [
+            722.5,
+            2033.625,
+            18,
+            18
+          ]
+        ]
+      },
+      {
+        "phrase": "50%",
+        "rects": [
+          [
+            595.5,
+            1542.125,
+            31,
+            18
+          ]
+        ]
+      }
+    ],
+    "faces_blurred": 0,
+    "captured_at": "2026-11-11T04:17:43+00:00"
+  },
+  {
+    "url": "https://platform.claude.com/docs/en/models/fable-5-2/whats-new-fable-5-2",
+    "title": "What's new in Claude Fable 5.2 - Claude Platform Docs",
+    "claims": [
+      "Anthropic recommends starting most ordinary coding and knowledge-work tasks with Opus 5.5, then switching to Fable 5.2 when higher-effort Opus evaluations do not meet the required quality.",
+      "Developers can call Fable 5.2 with the model ID claude-fable-5-2 through the Claude API and supported cloud platforms; users can control reasoning depth with the effort parameter and use the model for long-running agentic workflows.",
+      "Anthropic recommends starting most ordinary coding and knowledge-work tasks with Opus 5.5, then switching to Fable 5.2 when higher-effort Opus evaluations do not meet the required quality.",
+      "Developers can call Fable 5.2 with the model ID claude-fable-5-2 through the Claude API and supported cloud platforms; users can control reasoning depth with the effort parameter and use the model for long-running agentic workflows."
+    ],
+    "ok": true,
+    "top": "03-top.png",
+    "full": "03-full.png",
+    "full_height": 5400,
+    "scale": 1.5,
+    "highlights": [
+      {
+        "phrase": "5.5,",
+        "rects": [
+          [
+            756.5,
+            1805.109375,
+            24,
+            19
+          ]
+        ]
+      },
+      {
+        "phrase": "5.2",
+        "rects": [
+          [
+            107,
+            182,
+            19,
+            18
+          ]
+        ]
+      }
+    ],
+    "faces_blurred": 0,
+    "captured_at": "2026-11-11T04:17:50+00:00"
+  }
+]
