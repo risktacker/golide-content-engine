@@ -87,9 +87,20 @@ jobs:
         if: steps.automation.outputs.enabled == 'true'
         with:
           python-version: "3.12"
+      - name: Keep the system packages (Ubuntu mirrors went down 2026-11-11 and held the Short)
+        if: steps.automation.outputs.enabled == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/apt-debs
+          key: apt-debs-v1
       - name: Ensure FFmpeg, fonts and Cairo (vector renderer)
         if: steps.automation.outputs.enabled == 'true'
         run: |
+          from_cache() {
+            ls ~/apt-debs/*.deb >/dev/null 2>&1 || return 1
+            sudo dpkg -i --force-depends ~/apt-debs/*.deb >/dev/null 2>&1 || true
+            command -v ffmpeg >/dev/null && pkg-config --exists cairo
+          }
           if command -v ffmpeg >/dev/null && fc-match DejaVuSans >/dev/null && pkg-config --exists cairo; then
             ffmpeg -version | head -1
             pkg-config --modversion cairo
@@ -97,10 +108,12 @@ jobs:
             sudo find /etc/apt/sources.list.d -maxdepth 1 -type f -iname '*microsoft*' -exec mv {} {}.disabled \;
             # 2026-11-06: a hung mirror held this step 40 minutes; give up after 6 and retry once
             for attempt in 1 2; do
-              if timeout 360 sudo apt-get update -o Acquire::Retries=3 \
+              if timeout 240 sudo apt-get update -o Acquire::Retries=2 \
                  && timeout 600 sudo apt-get install -y -o Acquire::Retries=3 ffmpeg fonts-dejavu-core libcairo2-dev pkg-config; then
+                mkdir -p ~/apt-debs && cp /var/cache/apt/archives/*.deb ~/apt-debs/ 2>/dev/null || true
                 break
               fi
+              if from_cache; then echo "::warning title=Ubuntu mirrors::down, installed from the kept packages"; break; fi
               [ "$attempt" = 2 ] && exit 1
             done
           fi
