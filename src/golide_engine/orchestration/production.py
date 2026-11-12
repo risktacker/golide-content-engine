@@ -30,6 +30,8 @@ from ..storage.database import Database
 from ..youtube.demand import TopicDemandRejected, YouTubeDemandGate
 from ..youtube_metadata import load_metadata_policy, validate_upload_metadata
 from .schemas import METADATA_SCHEMA, RESEARCH_SCHEMA, STORYBOARD_SCHEMA, TREND_CANDIDATES_SCHEMA
+from .topic_check import (RESEARCH_RULE, TITLE_CHECK_SCHEMA, TITLE_RULE, checked_title, core_problem, title_input,
+                          topic_packet)
 from ..engine.content_rules import SCRIPT_SCHEMA, chapter_problems, follow_problems, length_problems, line_problems, script_display, script_instructions, script_text, SPOKEN_SCHEMA, SPOKEN_PASS_EFFORT, spoken_pass_instructions, merge_spoken
 from .recording import RecordingLengthError, check_recording_length
 from .stage_runner import StageRunner
@@ -803,8 +805,9 @@ class ProductionService:
             self._require_absent(research_path, "research")
             self._reserve(spec, text_model, Usage(input_tokens=max(1, len(spec["brief"]) // 4), output_tokens=12000))
             output = text.generate_json(
-                "Research only verifiable claims for an original G$LIDE explainer. Every claim requires a direct source URL. Reject sensational claims unsupported by evidence.",
-                spec["brief"], RESEARCH_SCHEMA, web_search=True,
+                "Research only verifiable claims for an original G$LIDE explainer. Every claim requires a direct source URL. Reject sensational claims unsupported by evidence."
+                + RESEARCH_RULE,
+                topic_packet(spec) + "BRIEF\n" + spec["brief"], RESEARCH_SCHEMA, web_search=True,
             )
             research_path.write_text(json.dumps(output.value, indent=2) + "\n", encoding="utf-8")
             self._record_text(production_id, "research", output)
@@ -820,6 +823,9 @@ class ProductionService:
         if research_override.exists():
             research_path.write_text(research_override.read_text(encoding="utf-8"), encoding="utf-8")
         research = json.loads(research_path.read_text(encoding="utf-8"))
+        # 2026-11-12 (owner): no script and no voice for a topic the research could not verify
+        if (problem := core_problem(research)) and not (work / "script.txt").exists():
+            raise RuntimeError(f"research did not find this video's topic, stopped before the script: {problem}")
         self._budget(spec)
 
         script_path = work / "script.txt"
@@ -891,7 +897,7 @@ class ProductionService:
                           stage="script")
             output = text.generate_json(
                 story_instructions(fmt, model_seconds),
-                f"TOPIC BRIEF\n{spec['brief']}{source_video}{models_block}\n\nVERIFIED RESEARCH\n{json.dumps(research)}",
+                f"{topic_packet(spec)}TOPIC BRIEF\n{spec['brief']}{source_video}{models_block}\n\nVERIFIED RESEARCH\n{json.dumps(research)}",
                 STORY_SCHEMA,
                 max_output_tokens=script_tokens * 2,   # high effort thinks first
                 reasoning_effort=SPOKEN_PASS_EFFORT,
@@ -2106,6 +2112,21 @@ class ProductionService:
             self._record_text(production_id, "metadata", output)
         self.runner.run(production_id, "metadata", metadata_stage)
         metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+        if spec.get("model_title") and not metadata.get("title_checked"):
+            # 2026-11-12 (owner): the title rides the breakout, but only with what the final script says. Every
+            # name, number and claim in it is checked against what the viewer hears; a title the script cannot
+            # back is rewritten from the script in the modelled title's form. Runs once, also for a video whose
+            # metadata was written before this check.
+            modelled = str((spec.get("source_breakout") or {}).get("title") or spec["model_title"])
+            check = text.generate_json(TITLE_RULE, title_input(str(metadata["title"]), modelled, script),
+                                       TITLE_CHECK_SCHEMA)
+            self._record_text(production_id, "title-check", check)
+            metadata["title"], wrong = checked_title(check.value, str(metadata["title"]))
+            metadata["title_checked"] = True
+            metadata_path.write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
+            if wrong:
+                print(json.dumps({"status": "title_rewritten", "title": metadata["title"], "not_in_script": wrong}))
+                print(f"::warning title=Title rewritten to match the script::{metadata['title']}")
         self._budget(spec)
 
         raw_thumbnail = work / "thumbnail-source.png"
