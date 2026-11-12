@@ -65,7 +65,7 @@ PAIRS = {("text", "text"), ("text", "tile"), ("text", "face"), ("text", "goli"),
          ("face", "tile"), ("tile", "tile"), ("face", "picture")}
 
 
-def check(rec: list[tuple[str, Image.Image]], allow: int = 60) -> list[str]:
+def check(rec: list[tuple[str, Image.Image]], allow: int = 25) -> list[str]:
     hits = []
     for i, (ka, ma) in enumerate(rec):
         if ka == "text":
@@ -78,9 +78,12 @@ def check(rec: list[tuple[str, Image.Image]], allow: int = 60) -> list[str]:
                 continue
             if ka == kb == "face":
                 continue
-            both = ImageChops.multiply(ma, mb)
+            # words keep a clear margin (about 7 px) from everything else
+            a2 = ma.filter(ImageFilter.MaxFilter(15)) if ka == "text" and kb != "text" else ma
+            b2 = mb.filter(ImageFilter.MaxFilter(15)) if kb == "text" and ka != "text" else mb
+            both = ImageChops.multiply(a2, b2)
             n = both.histogram()[255]
-            if n > allow:
+            if n > (4 if "text" in (ka, kb) else allow):      # words: not one pixel more than a speck
                 hits.append(f"{ka} #{i} x {kb} #{j} ({n} px)")
     return hits
 
@@ -150,9 +153,9 @@ def d_point_up(s: Story) -> Image.Image:
     T._glow(b, (300, 470), 260, (255, 140, 40, 110))
     T._glow(b, (980, 470), 260, (255, 140, 40, 110))
     T._glow(b, (640, 230), 380, a + (90,))
-    f = T.fit(s.rest, T.P9, 900, 170, 170)
-    T._text(b, (640, 92), s.rest, f, (255, 255, 255), anchor="mm", shadow=(0, 8, (0, 0, 0, 160), 10))
-    pf = T.fit(s.punch, T.P9, 560, 100, 92)
+    f = T.fit(s.rest, HEAVY, 1000, 190, 200)
+    power(b, (640, 92), s.rest, f, (255, 255, 255), glow=a, anchor="mm")
+    pf = T.fit(s.punch, HEAVY, 560, 100, 92)
     pw = pf.getbbox(s.punch)[2] + 80
     top = 92 + f.getbbox(s.rest, anchor="mm")[3] + 26
     glow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
@@ -161,10 +164,11 @@ def d_point_up(s: Story) -> Image.Image:
     ImageDraw.Draw(b).rounded_rectangle([640 - pw / 2, top, 640 + pw / 2, top + 124], 34, fill=tuple(int(c * .8) for c in a),
                                         outline=tuple(min(255, c + 110) for c in a), width=5)
     T._text(b, (640, top + 62), s.punch, pf, (255, 255, 255), anchor="mm")
+    T.record("object", Image.new("L", (int(pw), 124), 255), (640 - pw / 2, top))
     for icon, cx, rot in ((s.icons[0], 230, [8, 24, -8]), (s.icons[1], 1050, [8, -24, 8])):
         t = _tiles([T._tile(icon, pos=[0, 0, 0], rot=rot, size=3.5)], 380, 380, 9.5)
         T._place(b, t, (cx - 190, 340), 0.4)
-    _put_goli(b, T.goli("point_both_up", s.outfit, "D", "happy", 380, upper=.72), 640, H)
+    _put_goli(b, T.goli("point_both_up", s.outfit, "D", "happy", 450, upper=.72), 640, H + 20)
     return b
 
 
@@ -173,13 +177,12 @@ def d_hug_tiles(s: Story) -> Image.Image:
     a = s.accent
     b = Image.new("RGBA", (W, H), (244, 240, 230, 255))
     T._grid(b, 40, (226, 220, 206, 255), 2)
-    f1 = T.fit(s.rest, T.P9, 460, 140, 140)
-    T._text(b, (40, 30), s.rest, f1, (12, 12, 14))
-    y2 = 40 + f1.getbbox(s.rest)[3]
-    f2 = T.fit(s.punch, T.SERIF_I, 500, 150, 132)
-    T._text(b, (36, y2), s.punch, f2, a)
+    f1 = _fitp(s.rest, 520, 190)
+    b1 = power(b, (40, 24 - f1.getbbox(s.rest)[1]), s.rest, f1, (12, 12, 14))
+    f2 = T.fit(s.punch, T.SERIF_I, 560, 190, 200)
+    b2 = power(b, (36, b1[3] + int(f1.size * .16) - f2.getbbox(s.punch)[1]), s.punch, f2, a, glow=None)
     d = ImageDraw.Draw(b)
-    y3 = y2 + f2.getbbox(s.punch)[3] + 40
+    y3 = b2[3] + 40
     pts = [(170 + t * 4, y3 + 26 * math.sin(t / 9)) for t in range(0, 40)]
     for k in range(0, len(pts) - 1, 2):
         d.line([pts[k], pts[k + 1]], fill=a, width=6)
@@ -226,6 +229,7 @@ def d_crash(s: Story) -> Image.Image:
     lit.alpha_composite(slab)
     lit = lit.rotate(18, expand=True, resample=Image.BICUBIC)
     at = (500, 400)
+    T.record("object", lit.getchannel("A"), at)
     g = T.goli("talk", s.outfit, "E", "shock", 560, upper=.86)
     gd = ImageDraw.Draw(g)
     for (x, y) in ((0.30, 0.30), (0.25, 0.42), (0.72, 0.27)):        # sweat drops
@@ -248,11 +252,9 @@ def d_crash(s: Story) -> Image.Image:
         sleeve(b, (sx, sy), (px, py + 26), 46, s.outfit)
     for px, py in spots:
         b.alpha_composite(paw(30), (int(px - 36), int(py)))
-    f = T.fit(s.rest, T.P9, 600, 140, 140)
-    T._text(b, (60, 22), s.rest, f, (236, 236, 236), shadow=(0, 6, (0, 0, 0, 200), 8))
-    x2 = 60 + f.getbbox(s.rest)[2] + 34
-    T._text(b, (x2, 22), s.punch, T.fit(s.punch, T.P9, W - x2 - 40, 140, 140), (236, 64, 52),
-            shadow=(0, 6, (0, 0, 0, 200), 8))
+    f = T.fit(s.rest, HEAVY, 640, 150, 160)
+    r = power(b, (50, 18), s.rest, f, (240, 240, 240))
+    power(b, (r[2] + 30, 18), s.punch, T.fit(s.punch, HEAVY, W - r[2] - 70, 150, 160), (236, 64, 52), glow=(236, 64, 52))
     return b
 
 
@@ -262,14 +264,16 @@ def d_giant_word(s: Story) -> Image.Image:
     b = Image.new("RGBA", (W, H), (248, 248, 248, 255))
     layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     first, second = (s.rest, s.punch) if s.rest != s.words else (s.words, "")
-    f = T.fit(first, T.P9, 760 if second else 1200, 330, 330)
+    f = T.fit(first, HEAVY, 760 if second else 1200, 330, 330)
     saved, T.REC = T.REC, None            # the giant words are scenery behind Goli, not the readable words
     T._text(layer, (20, -40), first, f, (16, 16, 16))
     if second:
         x = 20 + f.getbbox(first)[2] + 20
-        T._text(layer, (x, 10), second, T.fit(second, T.P9, W - x - 20, 300, 290), a)
+        T._text(layer, (x, 10), second, T.fit(second, HEAVY, W - x - 20, 300, 290), a)
     T.REC = saved
-    b.alpha_composite(layer.filter(ImageFilter.GaussianBlur(7)))
+    layer = layer.filter(ImageFilter.GaussianBlur(7))
+    b.alpha_composite(layer)
+    T.record("object", layer.getchannel("A"))
     floor = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     fd = ImageDraw.Draw(floor)
     for i in range(240):
@@ -285,8 +289,8 @@ def d_platter(s: Story) -> Image.Image:
     """Logo tiles on a silver platter held out by Goli; slug title with a red marker underline."""
     b = T._grad((252, 252, 252), (232, 232, 236))
     slug = "/" + "-".join(s.words.lower().split())
-    f = T.fit(slug, T.P9, 820, 130, 130)
-    T._text(b, (40, 30), slug, f, (14, 14, 26))
+    f = T.fit(slug, HEAVY, 860, 160, 160)
+    power(b, (40, 30), slug, f, (14, 14, 26))
     x1 = 40 + f.getbbox(slug)[2]
     y = 30 + f.getbbox(slug)[3] + 24
     ImageDraw.Draw(b).line([(70, y + 8), (x1 * .45, y), (x1 * .8, y - 2), (x1 * .95, y + 6)], fill=(232, 40, 40), width=13)
@@ -322,6 +326,294 @@ def _legacy(style: str) -> Callable[[Story], Image.Image]:
     return draw
 
 
+# ---------------------------------------------------------------- the finish (owner 2026-11-12: "big text, powerful
+# font, shadows, outer glow, inner glow, background highlight, saturation, blur, lighting; avatar and objects big")
+
+def power(b: Image.Image, xy, text: str, font, fill=(255, 255, 255), glow=None, anchor="la", outline=None,
+          shadow: bool = True) -> tuple[int, int, int, int]:
+    """Thumbnail lettering: soft drop shadow, coloured outer glow, a lit top (inner glow) over the fill, optional
+    outline. Returns the box of the words."""
+    m = Image.new("L", (W, H), 0)
+    ImageDraw.Draw(m).text(xy, text, font=font, fill=255, anchor=anchor, stroke_width=4 if outline else 0)
+    box = m.getbbox() or (0, 0, 1, 1)
+    if shadow:
+        sh = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        sh.putalpha(m.point(lambda v: int(v * .55)))
+        b.alpha_composite(ImageChops.offset(sh, 0, 12).filter(ImageFilter.GaussianBlur(14)))
+    if glow:
+        g = Image.new("RGBA", (W, H), tuple(glow) + (0,))
+        g.putalpha(m.filter(ImageFilter.MaxFilter(7)).filter(ImageFilter.GaussianBlur(16)).point(lambda v: int(v * .55)))
+        b.alpha_composite(g)
+    if outline:
+        o = Image.new("RGBA", (W, H), tuple(outline) + (255,))
+        o.putalpha(m)
+        b.alpha_composite(o)
+        m = Image.new("L", (W, H), 0)
+        ImageDraw.Draw(m).text(xy, text, font=font, fill=255, anchor=anchor)
+    # fill: a vertical gradient from a lit top to the colour (or the two given colours)
+    if isinstance(fill[0], (tuple, list)):
+        top, bottom = fill
+    elif sum(fill) < 200:                       # black words: a faint lift only
+        top, bottom = tuple(c + 34 for c in fill), tuple(fill)
+    else:
+        top, bottom = tuple(min(255, int(c + (255 - c) * .28)) for c in fill), tuple(fill)
+    grad = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    gd = ImageDraw.Draw(grad)
+    for y in range(box[1], box[3] + 1):
+        k = (y - box[1]) / max(1, box[3] - box[1])
+        gd.line([(box[0], y), (box[2], y)], fill=tuple(int(a + (c - a) * k) for a, c in zip(top, bottom)) + (255,))
+    grad.putalpha(ImageChops.multiply(grad.getchannel("A"), m))
+    b.alpha_composite(grad)
+    # inner glow: a thin light line along the top of each letter
+    edge = ImageChops.subtract(m, ImageChops.offset(m, 0, 5))
+    hi = Image.new("RGBA", (W, H), (255, 255, 255, 0))
+    hi.putalpha(edge.filter(ImageFilter.GaussianBlur(1.2)).point(lambda v: int(v * .45)))
+    b.alpha_composite(hi)
+    T.record("text", m)
+    return box
+
+
+def spotlight(b: Image.Image, xy, r: int, col=(255, 255, 255), a: int = 150) -> None:
+    """Background highlight: a soft pool of light behind the subject."""
+    T._glow(b, xy, r, tuple(col) + (a,))
+
+
+def finish(img: Image.Image) -> Image.Image:
+    """Saturation, contrast, a little sharpness and a vignette, like a final grade."""
+    from PIL import ImageEnhance
+    rgb = img.convert("RGB")
+    rgb = ImageEnhance.Color(rgb).enhance(1.14)
+    rgb = ImageEnhance.Contrast(rgb).enhance(1.06)
+    rgb = rgb.filter(ImageFilter.UnsharpMask(radius=2, percent=60, threshold=3))
+    vig = Image.new("L", (W, H), 0)
+    ImageDraw.Draw(vig).ellipse([-200, -160, W + 200, H + 160], fill=255)
+    vig = vig.filter(ImageFilter.GaussianBlur(140))
+    dark = Image.new("RGB", (W, H), (0, 0, 0))
+    return Image.composite(rgb, dark, vig.point(lambda v: int(150 + v * 105 / 255))).convert("RGBA")
+
+
+def fill_check(rec: list[tuple[str, Image.Image]]) -> list[str]:
+    """No empty, unserious frames: the words must be big and the picture must be filled."""
+    out = []
+    texts = [m for k, m in rec if k == "text"]
+    if texts:
+        tallest = max((m.getbbox() or (0, 0, 0, 0))[3] - (m.getbbox() or (0, 0, 0, 0))[1] for m in texts)
+        if tallest < 85:
+            out.append(f"words too small ({tallest}px tall)")
+    union = Image.new("L", (W, H), 0)
+    for k, m in rec:
+        if k in ("text", "tile", "goli", "picture", "object"):
+            union = ImageChops.lighter(union, m)
+    union = union.filter(ImageFilter.MaxFilter(41))
+    empty = 0
+    for cx in range(8):
+        for cy in range(5):
+            cell = union.crop((cx * 160, cy * 144, cx * 160 + 160, cy * 144 + 144))
+            if cell.histogram()[255] < 160 * 144 * .08:
+                empty += 1
+    if empty > 16:
+        out.append(f"too much empty space ({empty} of 40 cells)")
+    return out
+
+
+HEAVY = "InterDisplay-Black.otf"          # tight, heavy display face (OFL), the look of the model thumbnails
+HEAVY_I = "InterDisplay-BlackItalic.otf"
+
+
+def _fitp(text: str, w: int, h: int, start: int = 300, face: str = HEAVY):
+    return T.fit(text, face, w, h, start)
+
+
+def _bust(s: Story, pose: str, mouth: str, face: str | None, h: int = 690) -> Image.Image:
+    return T.goli(pose, s.outfit, mouth, face, h, upper=.74)
+
+
+def _lines(words: list[str], n: int) -> list[str]:
+    """Split words into n lines of similar length."""
+    from itertools import combinations
+    if n <= 1 or len(words) <= 1:
+        return [" ".join(words)]
+    n = min(n, len(words))
+    best = None
+    for cuts in combinations(range(1, len(words)), n - 1):
+        parts = [" ".join(words[a:b]) for a, b in zip((0,) + cuts, cuts + (len(words),))]
+        longest = max(len(p) for p in parts)
+        if best is None or longest < best[0]:
+            best = (longest, parts)
+    return best[1]
+
+
+def _stack(b, s: Story, x: int, y: int, w: int, h: int, dark=(16, 16, 22), hot=None, outline=None,
+           max_lines: int = 3, gap: int = 10, middle: bool = False) -> int:
+    """All the words as big as the box allows: tried on 1, 2 and 3 lines, the layout with the biggest
+    letters wins. Lines holding the accent word get the accent colour and glow. Returns the bottom."""
+    a = hot or s.accent
+    words = s.words.split()
+    best = None
+    for n in range(1, min(max_lines, len(words)) + 1):
+        lines = _lines(words, n)
+        fonts = [_fitp(line, w, int((h - gap * (n - 1)) / n / 1.12), 330) for line in lines]
+        size = min(f.size for f in fonts)
+        if best is None or size > best[0]:
+            best = (size, lines)
+    size, lines = best
+    font = T._font(HEAVY, size)
+    gap = max(gap, int(size * .16))           # clear air between lines, so glow and shadow never merge them
+    punch = set(s.punch.split())
+    top = y
+    if middle:                                 # centre the block in its box
+        block = sum(font.getbbox(line)[3] - font.getbbox(line)[1] for line in lines) + gap * (len(lines) - 1)
+        top = y + max(0, (h - block) // 2)
+    for line in lines:
+        hit = bool(punch & set(line.split()))
+        fill = (tuple(min(255, int(c * 1.05) + 10) for c in a), tuple(int(c * .78) for c in a)) if hit else dark
+        box = power(b, (x, top - font.getbbox(line)[1]), line, font, fill, glow=a if hit else None, outline=outline)
+        top = box[3] + gap
+    return top - gap
+
+
+def _two_lines(b, s: Story, x: int, y: int, w: int, dark=(16, 16, 22), glow_rest=None, h1=200, h2=230,
+               punch_fill=None, outline=None) -> int:
+    """The rest of the words, then the accent word under it, both as big as the width allows."""
+    a = s.accent
+    f1 = _fitp(s.rest, w, h1)
+    box1 = power(b, (x, y), s.rest, f1, dark, glow_rest, outline=outline)
+    f2 = _fitp(s.punch, w, h2)
+    box2 = power(b, (x, box1[3] + 14 - (f2.getbbox(s.punch)[1])), s.punch, f2,
+                 punch_fill or (tuple(min(255, int(c * 1.15) + 20) for c in a), tuple(int(c * .7) for c in a)),
+                 glow=a, outline=outline)
+    return box2[3]
+
+
+def d_glass_point(s: Story) -> Image.Image:
+    """Light glass: two big lines of words, big glossy logo tiles under them, big Goli pointing at them."""
+    a = s.accent
+    tint = tuple(min(255, 228 + c // 10) for c in a)
+    b = T._grad((250, 250, 255), tint)
+    T._grid(b, 48, (255, 255, 255, 130))
+    spotlight(b, (1000, 330), 380, (255, 255, 255), 230)
+    spotlight(b, (980, 420), 300, a, 70)
+    bottom = _stack(b, s, 44, 24, 700, 430)
+    n = min(3, len(s.icons))
+    size = 4.2 if n == 1 else 2.9
+    items = [T._tile(icon, pos=[(k - (n - 1) / 2) * size * 1.15, 0, 0], rot=[8, 18 - 14 * k, -6 + 6 * k], size=size)
+             for k, icon in enumerate(s.icons[:n])]
+    t = _tiles(items, 680, max(220, H - bottom - 10), 12 if n > 1 else 9)
+    T._place(b, t, (40, bottom + 4), 0.4)
+    _put_goli(b, _bust(s, "point_left", "C", _pose(s)), 1010, H)
+    return b
+
+
+def d_dark_drama(s: Story) -> Image.Image:
+    """Dark and moody: white words with a red or gold glowing word, a big tilted logo, shocked Goli lit from behind."""
+    a = s.accent
+    hot = (238, 46, 46) if s.mood == "alarm" else (250, 196, 30)
+    b = T._grad(tuple(int(c * .16) + 6 for c in a), (4, 5, 9))
+    spotlight(b, (1010, 360), 360, hot, 90)
+    spotlight(b, (300, 560), 260, a, 70)
+    bottom = _stack(b, s, 44, 24, 660, 440, dark=(246, 246, 246), hot=hot)
+    t = _tiles([T._tile(s.icons[0], pos=[0, 0, 0], rot=[18, -28, -14], size=3.6)], 420, max(240, H - bottom), 10)
+    T._place(b, t, (650 - t.width, bottom - 10), 0.5)
+    _put_goli(b, _bust(s, "shock", "E", "shock"), 1010, H)
+    return b
+
+
+def d_mega_word(s: Story) -> Image.Image:
+    """Editorial: a label pill, then one giant word filling the left; the logo big beside it; Goli pointing."""
+    a = s.accent
+    b = T._grad((252, 252, 252), (230, 232, 238))
+    spotlight(b, (1000, 340), 360, a, 60)
+    label = s.rest if len(s.rest) <= 22 else (s.names[0] if s.names else s.rest[:22])
+    pf = _fitp(label, 560, 64, 64)
+    pw, ph = pf.getbbox(label)[2] + 56, 92
+    ImageDraw.Draw(b).rounded_rectangle([44, 30, 44 + pw, 30 + ph], 46, fill=(14, 14, 18))
+    power(b, (44 + pw / 2, 30 + ph / 2), label, pf, (255, 255, 255), anchor="mm", shadow=False)
+    f = _fitp(s.punch, 700, 420, 420)
+    box = power(b, (44, 150 - f.getbbox(s.punch)[1]), s.punch, f, (14, 14, 18), glow=a)
+    if s.icons:
+        t = _tiles([T._tile(s.icons[0], pos=[0, 0, 0], rot=[10, -24, 8], size=3.4)], 300, 300, 9)
+        x = min(box[2] + 16, 760 - t.width)
+        y = box[3] + 10 if box[2] + 16 > 760 - t.width else max(150, box[3] - t.height)
+        T._place(b, t, (x, min(y, H - t.height)), 0.45)
+    _put_goli(b, _bust(s, "point_left", "B", _pose(s)), 1040, H)
+    return b
+
+
+def d_grid_arrow(s: Story) -> Image.Image:
+    """Graph paper: a black word and a coloured italic word, a hand-drawn arrow to big logo tiles, Goli thumbs up."""
+    a = s.accent
+    b = Image.new("RGBA", (W, H), (246, 242, 232, 255))
+    T._grid(b, 40, (228, 222, 208, 255), 2)
+    spotlight(b, (1010, 360), 340, (255, 255, 255), 200)
+    f1 = _fitp(s.rest, 660, 190)
+    b1 = power(b, (44, 24), s.rest, f1, (14, 14, 16))
+    f2 = T.fit(s.punch, T.SERIF_I, 640, 210, 220)
+    b2 = power(b, (40, b1[3] + int(f1.size * .16) - f2.getbbox(s.punch)[1]), s.punch, f2, a, glow=None)
+    d = ImageDraw.Draw(b)
+    y = b2[3] + 50
+    pts = [(70 + t * 5, y + 24 * math.sin(t / 8)) for t in range(0, 34)]
+    for k in range(0, len(pts) - 1, 2):
+        d.line([pts[k], pts[k + 1]], fill=a, width=7)
+    d.polygon([(pts[-1][0] + 26, pts[-1][1]), (pts[-1][0] - 4, pts[-1][1] - 20), (pts[-1][0] - 2, pts[-1][1] + 22)], fill=a)
+    n = min(3, len(s.icons))
+    items = [T._tile(icon, pos=[(k - (n - 1) / 2) * 3.1, 0.4 * (k % 2), 0], rot=[8, 16 - 12 * k, -8 + 8 * k], size=2.9,
+                     badge="e8197a") for k, icon in enumerate(s.icons[:n])]
+    t = _tiles(items, 520, max(220, H - b2[3]), 12 if n > 1 else 9)
+    T._place(b, t, (300, H - t.height), 0.4)
+    _put_goli(b, _bust(s, "thumbs_up", "D", "happy"), 1030, H)
+    return b
+
+
+def d_studio(s: Story) -> Image.Image:
+    """Goli big in his studio; the story on the big screen behind; the words big and glowing over the desk."""
+    a = s.accent
+    screen = None
+    if s.photo or s.shots:
+        screen = Image.open(s.photo or s.shots[0]).convert("RGB")
+    elif s.icons:
+        screen = Image.new("RGBA", (640, 480), (10, 14, 26, 255))
+        T._glow(screen, (320, 240), 260, a + (150,))
+        screen.alpha_composite(_tiles([T._tile(s.icons[0], pos=[0, 0, 0], rot=[10, -22, 6], size=3.4)], 480, 480, 10), (80, 0))
+    b = T._studio_bg(screen, (238, 46, 46) if s.mood == "alarm" else a)
+    spotlight(b, (300, 420), 300, a, 90)
+    _put_goli(b, _bust(s, "talk", "C", _pose(s)), 300, H, rim=(140, 180, 255))
+    hot = (238, 46, 46) if s.mood == "alarm" else (250, 204, 21)
+    f1 = _fitp(s.rest, 640, 130, 140)
+    f2 = _fitp(s.punch, 640, 190, 200)
+    h2 = f2.getbbox(s.punch)[3] - f2.getbbox(s.punch)[1]
+    y2 = H - 30 - h2 - f2.getbbox(s.punch)[1]
+    power(b, (600, y2 - 10 - (f1.getbbox(s.rest)[3])), s.rest, f1, (250, 250, 250), outline=(10, 10, 14))
+    power(b, (600, y2), s.punch, f2, (tuple(min(255, c + 30) for c in hot), hot), glow=hot, outline=(30, 14, 0))
+    return b
+
+
+def d_big_words(s: Story) -> Image.Image:
+    """Nothing else to show: the words fill the left in up to three huge lines; Goli points at them."""
+    a = s.accent
+    b = T._grad((246, 247, 255), tuple(min(255, 214 + c // 8) for c in a))
+    T._grid(b, 48, (255, 255, 255, 110))
+    spotlight(b, (1010, 340), 380, (255, 255, 255), 220)
+    _stack(b, s, 44, 24, 650, H - 48, max_lines=4, middle=True)
+    _put_goli(b, _bust(s, "point_left", "C", _pose(s)), 1030, H)
+    return b
+
+
+def d_photo_card(s: Story) -> Image.Image:
+    """The source's real photo big and tilted in a frame, the words above it, shocked Goli beside it."""
+    a = s.accent
+    b = T._grad((18, 22, 36), (6, 8, 14))
+    spotlight(b, (1010, 360), 360, a, 90)
+    bottom = _stack(b, s, 44, 20, 680, 300, dark=(246, 246, 246))
+    pic = Image.open(s.photo).convert("RGB")
+    pic.thumbnail((700, max(240, H - bottom - 30)))
+    frame = Image.new("RGBA", (pic.width + 20, pic.height + 20), (240, 240, 240, 255))
+    frame.paste(pic, (10, 10))
+    frame = frame.rotate(-3, expand=True, resample=Image.BICUBIC)
+    T._place(b, frame, (40, bottom + 14), 0.5)
+    _put_goli(b, _bust(s, "shock", "E", "shock"), 1030, H)
+    return b
+
+
 # ---------------------------------------------------------------- designs drawn as web pages (CSS 3D, blur, glass)
 
 def _uri(img_or_path, kind="png") -> str:
@@ -340,7 +632,8 @@ def _uri(img_or_path, kind="png") -> str:
 
 
 def _font_uri(name: str) -> str:
-    return "data:font/woff;base64," + base64.b64encode((FONTS / name).read_bytes()).decode()
+    kind = "otf" if name.endswith(".otf") else "woff"
+    return f"data:font/{kind};base64," + base64.b64encode((FONTS / name).read_bytes()).decode()
 
 
 def _glass(icon: dict, size: int, x: int, y: int, rot: float = 0) -> str:
@@ -389,7 +682,7 @@ body{width:1280px;height:720px;overflow:hidden;position:relative;font-family:P9}
        border:2px solid rgba(255,255,255,.95);
        box-shadow:0 18px 40px rgba(60,60,140,.25), inset 0 2px 0 #fff, inset 0 -10px 24px rgba(120,130,220,.25)}
 .glass svg{filter:drop-shadow(0 4px 6px rgba(0,0,0,.18))}
-.title{position:absolute;white-space:nowrap;line-height:.92;letter-spacing:-2px}
+.title{position:absolute;white-space:nowrap;line-height:.92;letter-spacing:-3px;filter:drop-shadow(0 10px 14px rgba(0,0,0,.28)) drop-shadow(0 0 22px var(--glow,rgba(124,58,255,.35)))}
 .desk{position:absolute;left:-40px;right:-40px;height:130px;bottom:-30px;border-radius:50% 50% 0 0/40px 40px 0 0;
       background:linear-gradient(#ffffff,#e4e7f2);box-shadow:0 -10px 30px rgba(60,60,120,.18)}
 .kb{position:absolute;height:34px;border-radius:10px;background:linear-gradient(#2a2c34,#121318);
@@ -429,7 +722,7 @@ QA_JS = r"""() => {
 
 
 def _page(body: str, bg: str) -> str:
-    fonts = (f"@font-face{{font-family:P9;src:url({_font_uri(T.P9)})}}"
+    fonts = (f"@font-face{{font-family:P9;src:url({_font_uri(HEAVY)})}}"
              f"@font-face{{font-family:AN;src:url({_font_uri(T.ANTON)})}}")
     return f'<html><head><style>{fonts}{CSS}</style></head><body><div class="bg" style="background:{bg}"></div>{body}</body></html>'
 
@@ -442,16 +735,14 @@ def _grad_text(rgb) -> str:
 
 def h_desk_wall(s: Story) -> str:
     """Goli at a white desk with a keyboard; two real pages curve away on both sides behind him; title on top."""
-    cut = T.goli("talk", s.outfit, "A", _pose(s), 470, upper=.74)
+    cut = T.goli("talk", s.outfit, "A", _pose(s), 500, upper=.74)
     a = s.accent
     left, right = s.shots[0], s.shots[1 % len(s.shots)]
-    body = (_shot(_uri(left), 10, 150, 600, 32, 1.4, origin="left") + _shot(_uri(right), 670, 150, 600, -32, 1.4, origin="right")
-            + _goli_html(cut, 640, 640)
+    body = (_shot(_uri(left), 10, 205, 600, 32, 1.4, origin="left") + _shot(_uri(right), 670, 205, 600, -32, 1.4, origin="right")
+            + _goli_html(cut, 640, 700)
             + '<div class="desk"></div><div class="kb" style="left:470px;width:340px;bottom:58px"></div>'
-            + '<div style="position:absolute;left:20px;width:1240px;top:14px;display:flex;justify-content:center;gap:26px">'
-            f'<div class="title" data-qa="title" data-fit="560" style="position:relative;font-size:122px;color:#0d0d12">{s.rest}</div>'
-            f'<div class="title" data-qa="title" data-fit="620" style="position:relative;font-size:122px;{_grad_text(a)}">'
-            f'{s.punch}</div></div>')
+            + f'<div class="title" data-qa="title" data-fit="1220" style="left:50%;transform:translateX(-50%);top:6px;'
+            f'font-size:190px;color:#0d0d12">{s.rest} <span style="{_grad_text(a)}">{s.punch}</span></div>')
     if s.icons:
         body += _glass(s.icons[0], 112, 1120, 572, -8)
     if len(s.icons) > 1:
@@ -464,16 +755,16 @@ def h_side_course(s: Story) -> str:
     """Stacked big words and glass logos on one side; Goli on the other with a real page tilted behind him."""
     a = s.accent
     flip = s.seed % 2 == 1                      # Goli right or left, so two of these never look alike
-    cut = T.goli("think", s.outfit, "A", "think", 600, upper=.8)
+    cut = T.goli("think", s.outfit, "A", "think", 690, upper=.8)
     words_x, goli_cx, shot_x, ry = (660, 250, -40, 26) if flip else (40, 1030, 470, -26)
     origin = "left" if flip else "right"
     body = (_shot(_uri(s.shots[0]), shot_x, 60, 760, ry, 1.2, origin=origin) + _goli_html(cut, goli_cx, 730)
-            + f'<div class="title" data-qa="title" data-fit="560" style="left:{words_x}px;top:40px;font-size:150px;color:#0d0d12">'
+            + f'<div class="title" data-qa="title" data-fit="560" style="left:{words_x}px;top:30px;font-size:190px;color:#0d0d12">'
             f'{s.rest}</div>'
-            f'<div class="title" data-qa="title" data-fit="560" style="left:{words_x}px;top:180px;font-size:150px;{_grad_text(a)}">'
+            f'<div class="title" data-qa="title" data-fit="560" style="left:{words_x}px;top:210px;font-size:190px;{_grad_text(a)}">'
             f'{s.punch}</div>')
     for k, icon in enumerate(s.icons[:2]):
-        body += _glass(icon, 150, words_x + 20 + k * 190, 440, -6 if k == 0 else 6)
+        body += _glass(icon, 180, words_x + 20 + k * 220, 450, -6 if k == 0 else 6)
     soft = tuple(min(255, 200 + c // 4) for c in a)
     return _page(body, f"linear-gradient(180deg,#ffffff 0%,#f6f3ff 55%,{_hexs(soft)} 100%)")
 
@@ -482,13 +773,13 @@ def h_floating(s: Story) -> str:
     """A real page out of focus as the back wall; glass logos float around Goli; words across the bottom."""
     a = s.accent
     pose = {"alarm": "shock", "money": "thumbs_up"}.get(s.mood, "point_both_up")
-    cut = T.goli(pose, s.outfit, "D", _pose(s, "happy"), 470, upper=.74)
-    body = _shot(_uri(s.shots[0]), 250, 30, 780, 0, 4, -120) + _goli_html(cut, 640, 560)
+    cut = T.goli(pose, s.outfit, "D", _pose(s, "happy"), 520, upper=.74)
+    body = _shot(_uri(s.shots[0]), 220, 20, 840, 0, 4, -120) + _goli_html(cut, 640, 545)
     for icon, (size, x, y, r) in zip(s.icons[:4], [(120, 60, 60, -10), (110, 1100, 60, 10), (104, 150, 250, 8),
                                                      (104, 1020, 250, -6)]):
         body += _glass(icon, size, x, y, r)
-    body += (f'<div class="title" data-qa="title" data-fit="1180" style="left:50px;width:1180px;text-align:center;top:574px;'
-             f'font-size:118px;color:#0d0d12">{s.rest} <span style="{_grad_text(a)}">{s.punch}</span></div>')
+    body += (f'<div class="title" data-qa="title" data-fit="1180" style="left:50px;width:1180px;text-align:center;top:552px;'
+             f'font-size:150px;color:#0d0d12">{s.rest} <span style="{_grad_text(a)}">{s.punch}</span></div>')
     return _page(body, "radial-gradient(ellipse at 50% 40%,#ffffff 0%,#edf2ff 60%,#d6e0fb 100%)")
 
 
@@ -542,18 +833,20 @@ DESIGNS = [
            "product name, one big name (like 'fable 5.2').", lambda s: len(s.words) <= 16, d_giant_word),
     Design("platter", "Logo tiles on a silver platter held out by Goli; slug title with a red marker underline. For stacks, "
            "toolkits, '7 tools' (like '/motion-graphics').", _logos(4), d_platter),
-    Design("light_glass", "Clean light glass with a grid, big two-line words left, glossy logo tiles, Goli pointing at them.",
-           _logos(1), _legacy("light_glass")),
-    Design("dark_drama", "Dark, moody, one big tilted logo, shocked Goli, red or gold word.", _logos(1), _legacy("dark_drama")),
-    Design("editorial", "Editorial pill label and one giant word with a logo tile on its edge, Goli pointing.", _logos(1),
-           _legacy("editorial")),
-    Design("grid_paper", "Graph paper, a hand-drawn arrow to the logo tiles, Goli thumbs up.", _logos(1), _legacy("grid_paper")),
-    Design("studio", "Goli in his studio pointing at the story on the big screen, words under it.",
-           lambda s: bool(s.icons or s.shots or s.photo), _legacy("studio")),
-    Design("photo_card", "The source's real photo in a gold frame beside shocked Goli, dark.", lambda s: bool(s.photo),
-           _legacy("photo_card")),
-    Design("words", "Light glass, Goli points at the big words. For stories with nothing else to show.", lambda s: True,
-           _legacy("words")),
+    Design("glass_point", "Light glass with a grid, two huge lines of words, big glossy logo tiles under them, big Goli "
+           "pointing at them. For updates and features of one to three products.", _logos(1), d_glass_point),
+    Design("dark_drama", "Dark and moody: white words and a red or gold glowing word, a big tilted logo, shocked Goli lit "
+           "from behind. For bad news, warnings, drama around one company.", _logos(1), d_dark_drama),
+    Design("mega_word", "Editorial: a black label pill, one giant word filling the left, the logo beside it, Goli pointing. "
+           "For one-word verdicts (FREE, DEAD, BANNED, OVER).", lambda s: len(s.punch) <= 9, d_mega_word),
+    Design("grid_arrow", "Graph paper: black word plus a coloured italic word, a hand-drawn arrow to big logo tiles, Goli "
+           "thumbs up. For tips, apps, ways to earn or save.", _logos(1), d_grid_arrow),
+    Design("studio", "Goli big in his studio, the story on the big screen behind him, the words big and glowing over the "
+           "desk. For news and announcements.", lambda s: bool(s.icons or s.shots or s.photo), d_studio),
+    Design("photo_card", "The source's real photo big in a tilted frame under the words, shocked Goli beside it, dark. "
+           "For stories about a real event or thing in a photo.", lambda s: bool(s.photo), d_photo_card),
+    Design("big_words", "The words fill the left in up to three huge lines, Goli points at them. For stories with nothing "
+           "else to show.", lambda s: True, d_big_words),
 ]
 BY_NAME = {d.name: d for d in DESIGNS}
 
@@ -608,8 +901,9 @@ def recent_designs(root: Path, limit: int = 3) -> list[str]:
 def render(design: Design, s: Story) -> tuple[Image.Image, list[str]]:
     drawn = design.draw(s)
     if isinstance(drawn, str):
-        return shoot(drawn)
-    return drawn, []
+        image, hits = shoot(drawn)
+        return finish(image), hits
+    return finish(drawn), (fill_check(T.REC) if T.REC is not None else [])
 
 
 def make(title: str, words: str, punch: str, brands: list[str], out: Path, *, shots: list[Path] | None = None,
