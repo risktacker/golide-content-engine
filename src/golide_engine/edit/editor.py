@@ -16,8 +16,8 @@ from pathlib import Path
 from typing import Any
 
 POSES = ["talk", "explain", "point", "point_up", "point_left", "shock", "think", "thumbs_up", "shrug", "wave"]
-TYPES = ["studio", "source", "photo", "stat", "compare", "steps", "timeline", "flow", "quote", "words", "logos", "icon",
-         "chapter", "follow"]
+TYPES = ["studio", "source", "walkthrough", "photo", "stat", "compare", "steps", "checklist", "prompt", "timeline", "flow",
+         "quote", "words", "logos", "icon", "chapter", "follow"]
 
 _str = {"type": "string"}
 _nstr = {"type": ["string", "null"]}
@@ -41,13 +41,14 @@ SCENE = {
             "label": _str, "a": _str, "b": _str, "winner": {"type": "string", "enum": ["left", "right", "none"]}},
             "required": ["label", "a", "b", "winner"]}},
         "items": {"type": "array", "items": _str},
+        "shots": {"type": "array", "items": {"type": "integer"}},
         "points": {"type": "array", "items": {"type": "object", "additionalProperties": False, "properties": {
             "when": _str, "what": _str}, "required": ["when", "what"]}},
         "brands": {"type": "array", "items": _str},
     },
     "required": ["type", "first_line", "last_line", "goli_corner", "poses", "screen_words", "punch", "source", "phrase",
                  "callout", "callout_sub", "edge", "value", "prefix", "suffix", "label", "quote", "quote_by", "left",
-                 "right", "rows", "items", "points", "brands"],
+                 "right", "rows", "items", "shots", "points", "brands"],
 }
 EDIT_SCHEMA = {"type": "object", "additionalProperties": False,
                "properties": {"scenes": {"type": "array", "items": SCENE}}, "required": ["scenes"]}
@@ -60,7 +61,7 @@ pangolin in a GOLIDE hoodie who talks with the owner's voice. You cut a {"vertic
 the best channels in the niche do: fast, real proof on screen, and the picture ALWAYS shows what is being said
 at that moment.
 
-{"The narration is cut into BEATS of about 2 seconds: the Short is fast. Give every beat its own picture that shows exactly what that beat says. A scene normally covers ONE beat (first_line = last_line = the beat number). Only a stat, compare, steps, timeline or flow card may cover 2 beats, and a studio scene at most 2." if short else "The narration is cut into BEATS of about 4 to 5 seconds: a long video EXPLAINS, so every picture stays long enough to be read and understood. Give every beat its own picture that shows what that beat says. A scene covers 1 beat, or 2 when the picture needs time (a page the camera walks through, a flow, a comparison, steps)."}
+{"The narration is cut into BEATS of about 2 seconds: the Short is fast. Give every beat its own picture that shows exactly what that beat says. A scene normally covers ONE beat (first_line = last_line = the beat number). Only a stat, compare, steps, timeline or flow card may cover 2 beats, and a studio scene at most 2." if short else "The narration is cut into BEATS of about 4 to 5 seconds: a long video EXPLAINS, so every picture stays long enough to be read and understood. Give every beat its own picture that shows what that beat says. A scene covers 1 beat, or 2 when the picture needs time (a page the camera walks through, a walkthrough, a flow, a comparison, steps, a typed prompt)."}
 Scenes cover every beat exactly once, in order, no gaps: scene N+1's first_line = scene N's last_line + 1.
 
 You also get CAPTURED PAGES: the real web pages behind the story, each cut into SHOTS (its headline, the exact
@@ -74,7 +75,17 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
 - photo: the page's own picture (source = page index; only pages marked "photo: yes").
 - stat: one number that matters (value as a number, prefix like "$", suffix like "%" or "x", label 2 to 5 words).
 - compare: left vs right, 2 to 4 rows (label, a, b, winner).
-- steps: 2 to 4 short imperative items (max 5 words each) when the beat tells the viewer what to do.
+- walkthrough: the beat tells the viewer how to do something IN a product (open, click, set, choose, install, type)
+  and a captured page is that product's own page, docs or settings: source = page index, items = 2 to 4 steps (max
+  4 words each, as spoken), shots = for each step the shot on that page where its button, menu, field, setting or
+  command is (prefer [control] shots: the page's own buttons, menus, fields and commands). The viewer sees the real page; the camera goes to each place, the cursor clicks it and a numbered
+  badge names the step. ALWAYS prefer this over steps when such a page exists: show the real thing, not text.
+- steps: 2 to 4 short imperative items (max 5 words each) when the beat tells the viewer what to do and NO captured
+  page shows where it is done.
+- prompt: the beat says what to type or ask an AI tool: quote = the exact prompt (max 20 words, as spoken or as the
+  research gives it), label = the tool's name. It is typed into a chat box on screen and sent.
+- checklist: 2 to 5 things the viewer needs, should check, or that a product has (items, max 5 words each); each is
+  ticked on the word that says it.
 - timeline: 3 to 4 points (when, what) when the beat moves through time.
 - flow: how something works or what leads to what: 2 to 4 short nodes in items (max 3 words each).
 - quote: a short real quote from the pages or research (quote, quote_by).
@@ -130,6 +141,7 @@ def shots(page: dict[str, Any]) -> list[dict[str, Any]]:
     if page.get("headline"):
         out.append({"kind": "headline", "text": str(page.get("title", ""))[:120], "rect": page["headline"]})
     out += [{"kind": "text", "text": b["text"], "rect": b["rect"]} for b in page.get("blocks") or []]
+    out += [{"kind": "control", "text": c["text"], "rect": c["rect"]} for c in page.get("controls") or []]
     return out
 
 
@@ -154,6 +166,64 @@ def request(title: str, lines: list[Any], sources: list[dict[str, Any]], chapter
     chap = "\n".join(f"- {getattr(m, 'number', '')} {getattr(m, 'title', '')} at {getattr(m, 'start', 0):.1f}s" for m in chapters)
     return (f"TITLE: {title}\n\nBEATS\n" + "\n".join(rows) + "\n\nCAPTURED PAGES\n" + ("\n".join(pages) or "none")
             + "\n\nCHAPTERS\n" + (chap or "none"))
+
+
+def _item_times(items: list[str], lines, t0: float, t1: float, first: float = 0.3) -> list[float]:
+    """Each item lands on the word that says it; unspoken ones are spread evenly; always in order, apart."""
+    n, dur = len(items), t1 - t0
+    out: list[float] = []
+    for i, item in enumerate(items):
+        at = _phrase_time(lines, item, t0, t1)
+        even = first + i * max(0.6, (dur - first - 0.6) / max(1, n))
+        t = (at - t0) if at is not None else even
+        if out and t < out[-1] + 0.6:
+            t = out[-1] + 0.6
+        out.append(round(min(t, dur - 0.3), 3))
+    return out
+
+
+def _walkthrough(s: dict, sources: list[dict], capture_dir, lines, t0: float, t1: float, notes: list[str],
+                 k: int) -> dict | None:
+    """The steps on the product's own captured page: one shot per step. None (shown as plain steps) when the
+    page or a shot is missing or the shot is an empty patch."""
+    src = s.get("source")
+    page = sources[src] if isinstance(src, int) and 0 <= src < len(sources) else None
+    items, picks = (s.get("items") or [])[:4], (s.get("shots") or [])[:4]
+    if not page or not page.get("ok") or not capture_dir or len(items) < 2 or len(picks) < len(items):
+        notes.append(f"scene {k}: walkthrough without a page or a shot per step, shown as steps")
+        return None
+    spots = shots(page)
+    if any(not isinstance(p, int) or not 0 <= p < len(spots) for p in picks[:len(items)]):
+        notes.append(f"scene {k}: walkthrough shot not on page {src}, shown as steps")
+        return None
+    rects = [spots[p]["rect"] for p in picks[:len(items)]]
+    deep = bool(page.get("full")) and any(r[1] + r[3] > 860 for r in rects)
+    image = capture_dir / (page["full"] if deep else page["top"])
+    if not all(_shows_something(image, r) for r in rects):
+        notes.append(f"scene {k}: a walkthrough shot looked empty, shown as steps")
+        return None
+    times = _item_times(items, lines, t0, t1, first=0.9)
+    return {"image": image, "url": page.get("url", ""), "page_width": 1440, "heading": s.get("label") or "",
+            "steps": [{"rect": r, "label": it, "at": at} for r, it, at in zip(rects, items, times)]}
+
+
+def one_goli(scenes: list[dict]) -> list[dict]:
+    """2026-11-12 (owner): one Goli per block. Goli scenes never overlap: a later one starts when the earlier ends
+    (a sliver is dropped)."""
+    hosts = sorted((s for s in scenes if s["type"] == "host"), key=lambda s: s["start"])
+    end, drop = -1.0, []
+    for h in hosts:
+        if h["start"] < end - 0.02:
+            cut = end - h["start"]
+            if h["duration"] - cut < 0.4:
+                drop.append(id(h))
+                continue
+            h["start"], h["duration"] = round(end, 3), round(h["duration"] - cut, 3)
+            d = h["data"]
+            d["poses"] = [dict(p, at=round(max(0.0, p["at"] - cut), 3)) for p in d.get("poses", [])]
+            d["cues"] = [dict(c, start=round(c["start"] - cut, 3)) for c in d.get("cues", []) if c["start"] - cut >= 0]
+        end = max(end, h["start"] + h["duration"])
+    return [s for s in scenes if id(s) not in drop]
 
 
 def _domain(url: str) -> str:
@@ -351,7 +421,16 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
                 "rows": [[r["label"], r["a"], r["b"]] for r in rows],
                 "winners": [r["winner"] if r["winner"] != "none" else None for r in rows],
                 "gap": min(0.55, max(0.25, (dur - 0.8) / max(1, len(rows))))}})
-        elif kind == "steps" and s.get("items"):
+        elif kind == "walkthrough" and (walk := _walkthrough(s, sources, capture_dir, lines, t0, t1, notes, k)):
+            out.append({"type": "walkthrough", "start": t0, "duration": dur, "data": walk})
+        elif kind == "prompt" and s.get("quote"):
+            out.append({"type": "prompt_card", "start": t0, "duration": dur, "in": "rise", "data": {
+                "text": " ".join(str(s["quote"]).split()[:24]), "tool": s.get("label") or ""}})
+        elif kind == "checklist" and s.get("items"):
+            items = s["items"][:5]
+            out.append({"type": "checklist", "start": t0, "duration": dur, "in": "wipe", "data": {
+                "heading": s.get("screen_words") or "", "items": items, "at": _item_times(items, lines, t0, t1)}})
+        elif kind in ("steps", "walkthrough") and s.get("items"):
             items = s["items"][:4]
             times = []
             for i, item in enumerate(items):
@@ -391,6 +470,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
     out = _lower_host(out, cues, fmt)
     if bookends and lines:
         out = _bookends(out, lines, cues, duration, *bookends)
+    out = one_goli(out)
     return {"format": fmt, "duration": duration, "scenes": out, "notes": notes, "captions": captions(lines, fmt),
             "chapters": [{"title": f"{getattr(m, 'number', '')} · {getattr(m, 'title', '')}".strip(" ·"),
                           "at": float(getattr(m, "start", 0))} for m in chapters]}
@@ -458,7 +538,7 @@ def save(edit: dict[str, Any], path: Path) -> None:
 # A Short shows the proof on top and keeps Goli at his desk below it for the whole run of cards
 # (owner 2026-11-11: no empty space above and below the cards). His pose follows each card.
 REACT = {"browser_shot": "point_up", "stat_counter": "shock", "comparison": "explain", "steps": "point_up",
-         "timeline": "explain", "quote_card": "think", "logo_tiles": "thumbs_up", "kinetic_title": "talk",
+         "walkthrough": "point_up", "prompt_card": "point_up", "checklist": "thumbs_up", "timeline": "explain", "quote_card": "think", "logo_tiles": "thumbs_up", "kinetic_title": "talk",
          "chapter_card": "talk", "follow_cta": "wave"}
 
 
@@ -467,7 +547,8 @@ REACT = {"browser_shot": "point_up", "stat_counter": "shock", "comparison": "exp
 # gesture twice in a row for the same kind of card.
 REACT_LONG = {"browser_shot": ["point_left", "point_up", "explain"], "photo": ["point_left", "think"],
               "stat_counter": ["shock", "point_left"], "comparison": ["shrug", "think", "explain"],
-              "steps": ["explain", "point_up", "thumbs_up"], "timeline": ["point_left", "explain"],
+              "steps": ["explain", "point_up", "thumbs_up"], "walkthrough": ["point_left", "point_up", "explain"],
+              "prompt_card": ["point_left", "think"], "checklist": ["thumbs_up", "explain"], "timeline": ["point_left", "explain"],
               "flow": ["explain", "point_left"], "quote_card": ["think", "shrug"], "logo_tiles": ["thumbs_up", "point_left"],
               "kinetic_title": ["explain", "talk", "point_left"], "chapter_card": ["wave", "talk"]}
 
@@ -538,7 +619,7 @@ def captions(lines: list[Any], fmt: str) -> list[dict[str, Any]]:
 # than a beat is cut at word boundaries into beats that each show something new.
 BEAT = {"short": 2.2, "long": 6.5}
 STUDIO_BEAT = {"short": 3.0, "long": 10.0}
-HOLD = {"stat_counter", "comparison", "steps", "timeline", "quote_card", "logo_tiles", "chapter_card", "follow_cta"}
+HOLD = {"stat_counter", "comparison", "steps", "walkthrough", "prompt_card", "checklist", "timeline", "quote_card", "logo_tiles", "chapter_card", "follow_cta"}
 
 
 def _spoken(lines, a: float, b: float) -> list[Any]:
@@ -597,14 +678,24 @@ def _pace(scenes: list[dict], lines, fmt: str) -> list[dict]:
         if kind == "host" and s["data"].get("place") != "studio":
             out.append(s)
             continue
-        limit = STUDIO_BEAT[fmt] if kind == "host" else beat * 1.6 if kind in HOLD else beat
+        limit = (STUDIO_BEAT[fmt] if kind == "host" else beat * 2.4 if kind == "walkthrough"
+                 else beat * 1.6 if kind in HOLD else beat)
         if t1 - t0 <= limit:
             out.append(s)
             continue
         if kind in HOLD:                       # the card keeps time for its build, then the words carry on
             starts = [w.start for w in _spoken(lines, t0 + limit - 0.6, t1 - 0.8)]
             first = (starts[0] - 0.05) if starts else t0 + limit
-            out.append(dict(s, duration=first - t0))
+            kept = dict(s, duration=first - t0)
+            for key in ("steps", "items"):     # a step or item the shortened card no longer reaches is left out
+                if kind in ("walkthrough", "checklist") and key in s["data"]:
+                    times = s["data"]["steps"] if key == "steps" else s["data"].get("at") or []
+                    keep = [i for i, x in enumerate(times) if (x["at"] if key == "steps" else x) < first - t0 - 0.6] or [0]
+                    data = dict(s["data"], **{key: [s["data"][key][i] for i in keep]})
+                    if key == "items":
+                        data["at"] = [s["data"]["at"][i] for i in keep]
+                    kept["data"] = data
+            out.append(kept)
             cuts = _cuts(lines, first, t1, beat)
             out.extend(_words_beat(lines, a, b) for a, b in zip(cuts, cuts[1:]))
             continue

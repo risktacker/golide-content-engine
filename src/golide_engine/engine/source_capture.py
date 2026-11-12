@@ -111,7 +111,24 @@ MAIN = r"""
     if (blocks.some((b) => b.text === text.slice(0, 160))) continue;
     blocks.push({ text: text.slice(0, 160), rect: [r.left + scrollX, r.top + scrollY, r.width, Math.min(r.height, 420)] });
   }
-  return { headline, image, blocks };
+  // 2026-11-12 (owner, modelled on Outskill): the things a viewer clicks or types into, so steps can be shown
+  // on the real page: buttons, links that look like buttons, menu and tab items, fields, short commands
+  const controls = [];
+  for (const el of document.querySelectorAll('button, [role=button], [role=tab], [role=menuitem], nav a, header a, ' +
+                                             'a[class*=btn], a[class*=button], input, textarea, select, code, kbd')) {
+    if (controls.length >= 40) break;
+    const r = el.getBoundingClientRect();
+    const s = getComputedStyle(el);
+    if (r.width < 24 || r.height < 14 || r.width > 700 || s.visibility === 'hidden' || +s.opacity === 0) continue;
+    if (r.top + scrollY > 5200 || r.left < 0 || r.right > innerWidth + 1) continue;
+    let text = (el.innerText || el.value || el.getAttribute('placeholder') || el.getAttribute('aria-label') || '')
+      .replace(/\s+/g, ' ').trim();
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') text = 'field: ' + text;
+    if (text.length < 2 || text.length > 60) continue;
+    if (controls.some((c) => c.text === text)) continue;
+    controls.push({ text, rect: [r.left + scrollX, r.top + scrollY, r.width, r.height] });
+  }
+  return { headline, image, blocks, controls };
 }
 """
 
@@ -225,6 +242,7 @@ def capture(research: dict[str, Any], folder: Path) -> list[dict[str, Any]]:
                         photo = None
                 entry.update(ok=True, top=top.name, full=full.name, full_height=int(height), scale=1.5,
                              highlights=spots, headline=main.get("headline"), blocks=main.get("blocks") or [],
+                             controls=main.get("controls") or [],
                              photo=photo.name if photo else None,
                              faces_blurred=blur_faces(top) + blur_faces(full) + (blur_faces(photo) if photo else 0))
             except Exception as error:  # noqa: BLE001
