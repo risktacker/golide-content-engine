@@ -796,7 +796,10 @@ class Composer:
         # blinks every 2.8 to 4.2 s (fixed pattern, so renders repeat exactly)
         at, gaps, i = t0 + 1.2, (3.1, 2.8, 4.2, 3.5), 0
         while at < t0 + dur - 0.3:
-            self.tw(f'tl.to("#{sid} [id$=-lid]",{{scaleY:1,duration:.06,yoyo:true,repeat:1,transformOrigin:"50% 50%"}},{at:.3f});')
+            # 2026-11-12: the lids close on the eyes (SVG point 200,176). A box-relative origin on the collapsed lid
+            # group threw them up onto the beanie for a frame, which looked like the top of his head was cut off.
+            self.tw(f'tl.fromTo("#{sid} [id$=-lid]",{{scaleY:0.001,svgOrigin:"200 176"}},'
+                    f'{{scaleY:1,svgOrigin:"200 176",duration:.06,yoyo:true,repeat:1,immediateRender:false}},{at:.3f});')
             at += gaps[i % len(gaps)]
             i += 1
         for i, w_ in enumerate(data.get("words") or []):
