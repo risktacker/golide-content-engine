@@ -6,8 +6,12 @@ RESEARCH_SCHEMA = {
             "claim": {"type": "string"}, "source_title": {"type": "string"},
             "source_url": {"type": "string"}, "published_or_updated": {"type": "string"},
         }, "required": ["claim", "source_title", "source_url", "published_or_updated"], "additionalProperties": False}},
+        "core_fact": {"type": "object", "properties": {
+            "fact": {"type": "string"}, "source_url": {"type": "string"},
+            "published_or_updated": {"type": "string"}, "verified": {"type": "boolean"},
+        }, "required": ["fact", "source_url", "published_or_updated", "verified"], "additionalProperties": False},
     },
-    "required": ["summary", "claims"], "additionalProperties": False,
+    "required": ["summary", "claims", "core_fact"], "additionalProperties": False,
 }
 
 ANNOTATION_SCHEMA = {
