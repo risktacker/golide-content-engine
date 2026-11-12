@@ -154,7 +154,7 @@ def d_point_up(s: Story) -> Image.Image:
     T._glow(b, (980, 470), 260, (255, 140, 40, 110))
     T._glow(b, (640, 230), 380, a + (90,))
     f = T.fit(s.rest, HEAVY, 1000, 190, 200)
-    power(b, (640, 92), s.rest, f, (255, 255, 255), glow=a, anchor="mm")
+    power(b, (640, 92), s.rest, f, (255, 255, 255), anchor="mm")
     pf = T.fit(s.punch, HEAVY, 560, 100, 92)
     pw = pf.getbbox(s.punch)[2] + 80
     top = 92 + f.getbbox(s.rest, anchor="mm")[3] + 26
@@ -254,7 +254,7 @@ def d_crash(s: Story) -> Image.Image:
         b.alpha_composite(paw(30), (int(px - 36), int(py)))
     f = T.fit(s.rest, HEAVY, 640, 150, 160)
     r = power(b, (50, 18), s.rest, f, (240, 240, 240))
-    power(b, (r[2] + 30, 18), s.punch, T.fit(s.punch, HEAVY, W - r[2] - 70, 150, 160), (236, 64, 52), glow=(236, 64, 52))
+    power(b, (r[2] + 30, 18), s.punch, T.fit(s.punch, HEAVY, W - r[2] - 70, 150, 160), (236, 64, 52))
     return b
 
 
@@ -330,7 +330,7 @@ def _legacy(style: str) -> Callable[[Story], Image.Image]:
 # font, shadows, outer glow, inner glow, background highlight, saturation, blur, lighting; avatar and objects big")
 
 def power(b: Image.Image, xy, text: str, font, fill=(255, 255, 255), glow=None, anchor="la", outline=None,
-          shadow: bool = True) -> tuple[int, int, int, int]:
+          shadow: bool = False, lit: bool = False) -> tuple[int, int, int, int]:
     """Thumbnail lettering: soft drop shadow, coloured outer glow, a lit top (inner glow) over the fill, optional
     outline. Returns the box of the words."""
     m = Image.new("L", (W, H), 0)
@@ -351,12 +351,7 @@ def power(b: Image.Image, xy, text: str, font, fill=(255, 255, 255), glow=None, 
         m = Image.new("L", (W, H), 0)
         ImageDraw.Draw(m).text(xy, text, font=font, fill=255, anchor=anchor)
     # fill: a vertical gradient from a lit top to the colour (or the two given colours)
-    if isinstance(fill[0], (tuple, list)):
-        top, bottom = fill
-    elif sum(fill) < 200:                       # black words: a faint lift only
-        top, bottom = tuple(c + 34 for c in fill), tuple(fill)
-    else:
-        top, bottom = tuple(min(255, int(c + (255 - c) * .28)) for c in fill), tuple(fill)
+    top, bottom = fill if isinstance(fill[0], (tuple, list)) else (tuple(fill), tuple(fill))
     grad = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     gd = ImageDraw.Draw(grad)
     for y in range(box[1], box[3] + 1):
@@ -364,11 +359,11 @@ def power(b: Image.Image, xy, text: str, font, fill=(255, 255, 255), glow=None, 
         gd.line([(box[0], y), (box[2], y)], fill=tuple(int(a + (c - a) * k) for a, c in zip(top, bottom)) + (255,))
     grad.putalpha(ImageChops.multiply(grad.getchannel("A"), m))
     b.alpha_composite(grad)
-    # inner glow: a thin light line along the top of each letter
-    edge = ImageChops.subtract(m, ImageChops.offset(m, 0, 5))
-    hi = Image.new("RGBA", (W, H), (255, 255, 255, 0))
-    hi.putalpha(edge.filter(ImageFilter.GaussianBlur(1.2)).point(lambda v: int(v * .45)))
-    b.alpha_composite(hi)
+    if lit:   # inner glow: a thin light line along the top of each letter (only where the model has it)
+        edge = ImageChops.subtract(m, ImageChops.offset(m, 0, 5))
+        hi = Image.new("RGBA", (W, H), (255, 255, 255, 0))
+        hi.putalpha(edge.filter(ImageFilter.GaussianBlur(1.2)).point(lambda v: int(v * .45)))
+        b.alpha_composite(hi)
     T.record("text", m)
     return box
 
@@ -467,7 +462,7 @@ def _stack(b, s: Story, x: int, y: int, w: int, h: int, dark=(16, 16, 22), hot=N
     for line in lines:
         hit = bool(punch & set(line.split()))
         fill = (tuple(min(255, int(c * 1.05) + 10) for c in a), tuple(int(c * .78) for c in a)) if hit else dark
-        box = power(b, (x, top - font.getbbox(line)[1]), line, font, fill, glow=a if hit else None, outline=outline)
+        box = power(b, (x, top - font.getbbox(line)[1]), line, font, fill, outline=outline)
         top = box[3] + gap
     return top - gap
 
@@ -682,7 +677,7 @@ body{width:1280px;height:720px;overflow:hidden;position:relative;font-family:P9}
        border:2px solid rgba(255,255,255,.95);
        box-shadow:0 18px 40px rgba(60,60,140,.25), inset 0 2px 0 #fff, inset 0 -10px 24px rgba(120,130,220,.25)}
 .glass svg{filter:drop-shadow(0 4px 6px rgba(0,0,0,.18))}
-.title{position:absolute;white-space:nowrap;line-height:.92;letter-spacing:-3px;filter:drop-shadow(0 10px 14px rgba(0,0,0,.28)) drop-shadow(0 0 22px var(--glow,rgba(124,58,255,.35)))}
+.title{position:absolute;white-space:nowrap;line-height:.92;letter-spacing:-3px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.14))}
 .desk{position:absolute;left:-40px;right:-40px;height:130px;bottom:-30px;border-radius:50% 50% 0 0/40px 40px 0 0;
       background:linear-gradient(#ffffff,#e4e7f2);box-shadow:0 -10px 30px rgba(60,60,120,.18)}
 .kb{position:absolute;height:34px;border-radius:10px;background:linear-gradient(#2a2c34,#121318);
@@ -807,6 +802,8 @@ class Design:
     about: str                                   # what it looks like / when it fits (for the director)
     fits: Callable[[Story], bool]
     draw: Callable[[Story], Any]                 # Image (Pillow) or str (web page)
+    grade: bool = True                           # the model has a polished, graded look (saturation, vignette)
+    fallback: bool = False                       # only when no modelled design fits
 
 
 def _logos(n):
@@ -826,27 +823,16 @@ DESIGNS = [
     Design("point_up", "Dark blue glow; Goli points up with both hands at two big logos; title on top with the accent word in "
            "a glowing pill. For 'X + Y' combos and two-tool stories (like 'AI 3D rendering').", _logos(2), d_point_up),
     Design("hug_tiles", "Grid paper; Goli hugs three big glossy logo tiles with badges; black word plus a pink italic word and "
-           "a dashed arrow. For free, unlimited, giveaways, 'tools you need' (like 'Free & Unlimited.').", _logos(3), d_hug_tiles),
+           "a dashed arrow. For free, unlimited, giveaways, 'tools you need' (like 'Free & Unlimited.').", _logos(3), d_hug_tiles,
+           grade=False),
     Design("crash", "Stormy dark cliffs; Goli shocked and sweating grips the edge of a cracking glowing slab; white name and "
            "a red figure. For crashes, losses, hacks, collapses (like 'NVIDIA -$400B').", lambda s: s.mood == "alarm", d_crash),
     Design("giant_word", "Huge words out of focus behind; Goli close and sharp on a white sweep. For a new release, a model or "
-           "product name, one big name (like 'fable 5.2').", lambda s: len(s.words) <= 16, d_giant_word),
+           "product name, one big name (like 'fable 5.2').", lambda s: len(s.words) <= 16, d_giant_word, grade=False),
     Design("platter", "Logo tiles on a silver platter held out by Goli; slug title with a red marker underline. For stacks, "
-           "toolkits, '7 tools' (like '/motion-graphics').", _logos(4), d_platter),
-    Design("glass_point", "Light glass with a grid, two huge lines of words, big glossy logo tiles under them, big Goli "
-           "pointing at them. For updates and features of one to three products.", _logos(1), d_glass_point),
-    Design("dark_drama", "Dark and moody: white words and a red or gold glowing word, a big tilted logo, shocked Goli lit "
-           "from behind. For bad news, warnings, drama around one company.", _logos(1), d_dark_drama),
-    Design("mega_word", "Editorial: a black label pill, one giant word filling the left, the logo beside it, Goli pointing. "
-           "For one-word verdicts (FREE, DEAD, BANNED, OVER).", lambda s: len(s.punch) <= 9, d_mega_word),
-    Design("grid_arrow", "Graph paper: black word plus a coloured italic word, a hand-drawn arrow to big logo tiles, Goli "
-           "thumbs up. For tips, apps, ways to earn or save.", _logos(1), d_grid_arrow),
-    Design("studio", "Goli big in his studio, the story on the big screen behind him, the words big and glowing over the "
-           "desk. For news and announcements.", lambda s: bool(s.icons or s.shots or s.photo), d_studio),
-    Design("photo_card", "The source's real photo big in a tilted frame under the words, shocked Goli beside it, dark. "
-           "For stories about a real event or thing in a photo.", lambda s: bool(s.photo), d_photo_card),
-    Design("big_words", "The words fill the left in up to three huge lines, Goli points at them. For stories with nothing "
-           "else to show.", lambda s: True, d_big_words),
+           "toolkits, '7 tools' (like '/motion-graphics').", _logos(4), d_platter, grade=False),
+    Design("big_words", "Last resort when nothing else fits: the words big on the left, Goli points at them.",
+           lambda s: True, d_big_words, grade=False, fallback=True),
 ]
 BY_NAME = {d.name: d for d in DESIGNS}
 
@@ -900,10 +886,11 @@ def recent_designs(root: Path, limit: int = 3) -> list[str]:
 
 def render(design: Design, s: Story) -> tuple[Image.Image, list[str]]:
     drawn = design.draw(s)
+    grade = finish if design.grade else (lambda im: im)
     if isinstance(drawn, str):
         image, hits = shoot(drawn)
-        return finish(image), hits
-    return finish(drawn), (fill_check(T.REC) if T.REC is not None else [])
+        return grade(image), hits
+    return grade(drawn), (fill_check(T.REC) if T.REC is not None else [])
 
 
 def make(title: str, words: str, punch: str, brands: list[str], out: Path, *, shots: list[Path] | None = None,
@@ -919,7 +906,7 @@ def make(title: str, words: str, punch: str, brands: list[str], out: Path, *, sh
     if not s.punch or s.punch not in s.words:
         s.punch = s.words.split()[-1] if s.words else ""
     recent = recent or []
-    fit = [d for d in DESIGNS if d.fits(s)]
+    fit = [d for d in DESIGNS if d.fits(s) and not d.fallback] or [d for d in DESIGNS if d.fallback]
     choices = [d for d in fit if d.name not in recent[:2]] or fit          # never the last two again
     ranking: list[str] = []
     if text is not None:
@@ -933,8 +920,9 @@ def make(title: str, words: str, punch: str, brands: list[str], out: Path, *, sh
     rest = [d.name for d in choices if d.name not in ranking]
     rnd.shuffle(rest)
     order = [n for n in ranking if n in {d.name for d in choices}] + rest
+    order = order[:6] + [d.name for d in DESIGNS if d.fallback and d.name not in order]
     best: tuple[int, str, Image.Image] | None = None
-    for name in order[:6]:
+    for name in order:
         T.REC = []
         try:
             image, hits = render(BY_NAME[name], s)

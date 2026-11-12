@@ -10,6 +10,10 @@ Owner: Esiah (Lusaka, UTC+2). Direct, no sugar-coating. Studio: studio.golidee.c
 - Never touch the music videos. Never use other people's faces. Licence-clear assets only.
 - Thumbnails (owner 2026-11-10): real logos of the products and apps in the story are used; no owner avatar
   (only when he is in the video); real objects, never generative look-alikes.
+- Thumbnail engine (owner 2026-11-12, `vector/thumb_engine.py`): long videos only. Designs copied from the owner's
+  model thumbnails with Goli in place of the person; each keeps its model's own lettering and finish (no blanket
+  shadows or glow). Picked per video against the modelled video's thumbnail; never the last two designs; every
+  design passes the collision, small-words and empty-frame checks before use. Add a design only with a model.
 - Parked (owner 2026-11-10): a Skool community (videos posted there, classroom of repos and sources) comes
   after the Advanced list.
 - No cloned voice. AI voice = ElevenLabs "Mark - Natural Conversations" (UgBBYS2sOqTuMpoF3BR0), only when the
