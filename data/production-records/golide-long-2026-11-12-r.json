@@ -1,0 +1,456 @@
+{
+  "production_id": "golide-long-2026-11-12-r",
+  "youtube_video_id": "eIUTc8KK790",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "eIUTc8KK790",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-11-12T22:27:26.029197+00:00"
+  },
+  "production": {
+    "format": "long",
+    "title": "Did Anthropic Just Justify Its $1 Trillion IPO?",
+    "status": "scheduled",
+    "scheduled_at": "2026-11-13T17:30:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-long-tue-thu-sat\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-choice\"}"
+  },
+  "narration": "On February 5, 2026, Anthropic launched Claude Opus 4.6,\nand the launch made it easy to mistake the upgrade for a smarter chatbot.\nBut the important change is not the first answer it gives you.\nIt’s what happens after that answer.\nA long-horizon model can plan a job, use tools, keep track of earlier work,\nwrite and run code, then check whether the result works.\nThat matters if you want to hand over a bug investigation, data analysis,\nor codebase migration instead of asking for a paragraph at a time.\nBy the end, you’ll see the loop that makes this possible,\nwhat still needs a human, and why investors care without treating valuation as destiny.\nStart with the old model.\nYou ask for an explanation, draft, or code snippet.\nIt produces something plausible and waits.\nUseful, but still a response engine.\nIn Anthropic’s launch post for Opus 4.6, the emphasis was on careful planning,\nlonger agentic tasks, large codebases, debugging, and code review.\nInstead of “write this function,” you can give it a goal in a workspace.\nIt can break that goal into smaller decisions: inspect the repository, find relevant files,\nchange one part, and test it.\nThe unit of work has changed from an answer to a bounded project.\nThink of the model as a junior engineer at a workbench,\nnot an oracle behind a counter.\nIt still needs a clear objective and permission to touch the right things.\nA vague request can produce a confident detour,\nand a good plan can fail if the workspace is wrong.\nThat is why the next step matters: it needs hands.\nThose hands are tools.\nA model that only remembers patterns can suggest a database query.\nA tool-using system can inspect documentation, open files, query data, edit a project,\nrun a command, or execute a test.\nFor coding, the useful loop is straightforward: understand the repository, make a change,\nrun the tests, read the failure, fix the cause, and try again.\nIt is a workbench, not autocomplete.\nBut what stops it losing the thread?\nAnthropic describes context management as part of the system.\nOpus 4.6 included a 1-million-token context window in beta and context compaction,\nwhich summarizes earlier work so an agent can continue across longer tasks.\nPicture the workbench filling with notes and test results.\nCompaction clears space without throwing away the useful plan.\nIt does not create perfect memory.\nThe system still needs checkpoints and a way\nto recover when a tool call goes wrong.\nSo the model can act, but acting alone is not the same as finishing.\nWe still need proof.\nProof is where this upgrade becomes practical, or dangerous.\nA model can write code that looks right and still fails.\nSo it needs to compare its output with evidence.\nFor software, that might mean a passing test, a completed migration,\nor data that matches.\nAnthropic’s material describes long-running agents gathering context, planning, executing through tools,\nand managing context across multiple windows.\nIn the later Opus 4.8 announcement,\nAnthropic described workflows where Claude Code could plan work, run parallel subagents,\nand verify outputs against an existing test suite.\nThe workbench splits into several benches, then checks the finished parts against a ruler.\nBut the same engineering guidance warns that putting a model\nin a loop does not guarantee a production-quality application.\nA loop can repeat a bad assumption very efficiently.\nYou still need tests that matter, limited permissions,\nand a person who notices when the target itself is wrong.\nSelf-checking is not self-trust.\nThe model can inspect evidence; humans decide if it’s enough.\nThat brings us to the investor story.\nWhy do those capabilities matter to a public company?\nAnthropic’s IPO fact sheet describes the direction as moving from\ndiscrete prompt responses toward a “Virtual Collaborator” doing complex, long-horizon work.\nThe commercial idea is simple:\nif a customer uses a model through an entire coding, research, or operations workflow,\nit may become harder to replace than an occasional chat answer.\nIts prospectus says customers use higher-capability models for complex reasoning, coding, and agentic workflows.\nSpending is mainly driven by the model chosen and how much it is used.\nPromising, but not a guarantee.\nCompute remains a major cost, and infrastructure commitments affect cash flow.\nSo investors are asking whether customers keep using it,\nwhether the work creates measurable value,\nand whether revenue can outrun inference and infrastructure costs.\nThe launch is a signal,\nnot a profit forecast and not proof of any IPO valuation.\nCompetition, safety, execution, retention,\nand the gap between benchmarks and dependable production work still decide the answer.\nThe simple version is,\nthe upgrade turns AI from an answer box into a workbench: it plans, acts,\nremembers enough to continue, writes code, and checks the result.\nBut it still needs a bounded job, good tests, safe permissions, and human judgment.\nThe free guide to this video and the link to our\ncommunity for updates and all these stories are in the description.\nFollow the channel if you want the next launch\nexplained by what it changes in your actual work, not just by the demo.\n",
+  "research": {
+    "summary": "The viral frontier-model launch was easy to misread as a smarter chatbot. The more important change is operational: the model is being built to stay with a problem after the first answer.\n\nA question-answering model is mainly a response engine. You ask for an explanation, draft, or code snippet; it produces an answer and waits. A long-horizon technical model is closer to a junior researcher or engineer operating inside a controlled workspace. It can break a goal into steps, inspect files or data, call tools, write and run code, observe the result, revise its approach, and preserve enough context to continue later.\n\nThat difference matters in practice. Planning turns “build this” into a sequence of smaller decisions. Tool use lets the model search documentation, query data, edit files, run commands, or execute tests rather than relying only on what it remembers. Persistent context prevents every step from starting from zero; systems such as context compaction can summarize earlier work so an agent can continue across a longer task. Coding becomes a loop—understand the repository, make a change, run tests, debug failures, and review the result—not just code generation. Verification is the crucial final step: the model tries to compare its output with evidence, such as passing tests or a completed migration, before reporting success.\n\nThe upgrade therefore changes the unit of work. Instead of buying an answer, a user can delegate a bounded project: investigate a bug, migrate a codebase, analyze a dataset, or prepare a technical report. That does not make the system an autonomous expert. It still needs permissions, clear objectives, reliable tests, human judgment, and safeguards; Anthropic’s own engineering material notes that simply placing a model in a loop does not guarantee production-quality results.\n\nInvestors care because these capabilities could move AI from an occasional software feature into a recurring workflow layer. If customers use a model for sustained coding, research, analysis, and operations, usage can become deeper and harder to replace than one-off chat. The business question is not whether a launch produces impressive demos. It is whether the system creates measurable customer value, earns repeat usage, and does so at a cost that leaves room for profit after inference and infrastructure expenses.\n\nThat is why investors watch agentic coding, tool use, context management, and verification. They are signals of whether a model can perform economically valuable work, not merely generate fluent text. But they are signals—not proof of future revenue, profitability, or any particular IPO valuation. A public-market case would still depend on customer retention, pricing, compute costs, competition, safety, execution, and the gap between benchmark performance and dependable production work.",
+    "claims": [
+      {
+        "claim": "Anthropic’s Claude Opus 4.6 launch described improvements in careful planning, longer agentic tasks, large-codebase work, code review, debugging, a 1-million-token context window in beta, and context compaction for longer-running tasks.",
+        "source_title": "Introducing Claude Opus 4.6",
+        "source_url": "https://www.anthropic.com/news/claude-opus-4-6",
+        "published_or_updated": "February 5, 2026"
+      },
+      {
+        "claim": "Anthropic describes long-running agents as systems that gather context, plan, execute through tools, and manage context across multiple windows; it also warns that putting a model in a loop alone does not reliably produce a production-quality application.",
+        "source_title": "Effective harnesses for long-running agents",
+        "source_url": "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents",
+        "published_or_updated": "2025"
+      },
+      {
+        "claim": "Anthropic’s Claude Opus 4.8 announcement describes dynamic workflows in which Claude Code can plan work, run parallel subagents, and verify outputs before reporting back, including codebase-scale migrations measured against an existing test suite.",
+        "source_title": "Introducing Claude Opus 4.8",
+        "source_url": "https://www.anthropic.com/news/claude-opus-4-8",
+        "published_or_updated": "May 28, 2026"
+      },
+      {
+        "claim": "Anthropic says Claude Code work increasingly includes end-to-end activities such as deploying and running code, analyzing data, and writing non-code documents; its study analyzed approximately 400,000 sessions and reported that successful tasks were associated with verifiable evidence such as passing tests or committed work.",
+        "source_title": "How Claude Code is used in practice",
+        "source_url": "https://www.anthropic.com/research/claude-code-expertise",
+        "published_or_updated": "June 16, 2026"
+      },
+      {
+        "claim": "Anthropic’s IPO fact sheet frames the commercial shift as movement from discrete prompt responses toward a ‘Virtual Collaborator’ that performs complex, long-horizon work, and says customers realize value through more productive employees, faster processes, and embedded intelligence in products.",
+        "source_title": "Anthropic IPO Fact Sheet",
+        "source_url": "https://ipo.anthropic.com/documents/us/factsheet.pdf",
+        "published_or_updated": "2026"
+      },
+      {
+        "claim": "Anthropic’s prospectus says customers use higher-capability models for complex reasoning, coding, and agentic workflows, while customer spending is primarily driven by the model used and the volume of usage.",
+        "source_title": "Anthropic Prospectus",
+        "source_url": "https://ipo.anthropic.com/documents/us/prospectus.pdf",
+        "published_or_updated": "2026"
+      },
+      {
+        "claim": "Anthropic’s prospectus also describes compute investment as a major ongoing requirement and says infrastructure commitments can materially affect the company’s cash-flow profile, which is why capability alone does not establish profitability or justify a particular valuation.",
+        "source_title": "Anthropic Prospectus",
+        "source_url": "https://ipo.anthropic.com/documents/us/prospectus.pdf",
+        "published_or_updated": "2026"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Did Anthropic Just Turn AI Into a Workbench?",
+    "description": "Free guide to this video (steps and every source): https://studio.golidee.com/guides/golide-long-2026-11-12-r.pdf\n\nClaude Opus 4.6 is more than a chatbot that gives better answers. This video explains how long-horizon AI agents plan tasks, use tools, manage context, write and test code, recover from errors, and continue working across a larger project.\n\nYou’ll also see why this matters for Claude Code, software development, data analysis, and Anthropic’s business story. The model can inspect evidence and check its work, but reliable tests, safe permissions, clear goals, and human judgment are still essential.\n\nChapters\n0:00 Intro\n0:43 Answer to Workbench\n1:43 Tools and Context\n2:52 Proof and Limits\n4:00 Why Investors Care\n5:13 Close\n\n#ClaudeOpus46 #ClaudeAI #Anthropic #AIAgents #ClaudeCode #AgenticAI #AICoding #GOLIDE\n\nMusic: Crock Pot by Diamond Ortiz",
+    "tags": [
+      "Claude Opus 4.6",
+      "Claude Opus 4.6 explained",
+      "Claude Opus 4.8",
+      "Anthropic AI agents",
+      "Claude Code agents",
+      "long horizon AI",
+      "agentic AI coding",
+      "AI coding agents",
+      "AI model context window",
+      "1 million token context",
+      "AI code review",
+      "AI debugging agent",
+      "Anthropic IPO",
+      "virtual collaborator AI",
+      "AI agents explained",
+      "Claude AI",
+      "Anthropic Claude",
+      "Claude Opus",
+      "Claude Code",
+      "AI coding",
+      "coding agents",
+      "AI automation",
+      "AI tools",
+      "AI software development"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [
+      "0:00 Intro",
+      "0:43 Answer to Workbench",
+      "1:43 Tools and Context",
+      "2:52 Proof and Limits",
+      "4:00 Why Investors Care",
+      "5:13 Close"
+    ],
+    "keywords": [
+      "Claude Opus 4.6",
+      "Claude Opus 4.6 explained",
+      "Claude Opus 4.8",
+      "Anthropic AI agents",
+      "Claude Code agents",
+      "long horizon AI",
+      "agentic AI coding",
+      "AI coding agents",
+      "1 million token context",
+      "AI code review",
+      "AI debugging agent",
+      "Anthropic IPO",
+      "virtual collaborator AI",
+      "AI agents explained",
+      "long context AI"
+    ],
+    "hashtags": [
+      "#ClaudeOpus46",
+      "#ClaudeAI",
+      "#Anthropic",
+      "#AIAgents",
+      "#ClaudeCode",
+      "#AgenticAI",
+      "#AICoding",
+      "#GOLIDE"
+    ],
+    "format": "long",
+    "title_description_language": "en",
+    "seo_body": "Claude Opus 4.6 is more than a chatbot that gives better answers. This video explains how long-horizon AI agents plan tasks, use tools, manage context, write and test code, recover from errors, and continue working across a larger project.\n\nYou’ll also see why this matters for Claude Code, software development, data analysis, and Anthropic’s business story. The model can inspect evidence and check its work, but reliable tests, safe permissions, clear goals, and human judgment are still essential.",
+    "title_checked": true
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "Anthropic’s Claude Opus 4.6 launch described improvements in careful planning, longer agentic tasks, large-codebase work, code review, debugging, a 1-million-token context window in beta, and context compaction for longer-running tasks.",
+        "source_title": "Introducing Claude Opus 4.6",
+        "source_url": "https://www.anthropic.com/news/claude-opus-4-6",
+        "published_or_updated": "February 5, 2026"
+      },
+      {
+        "claim": "Anthropic describes long-running agents as systems that gather context, plan, execute through tools, and manage context across multiple windows; it also warns that putting a model in a loop alone does not reliably produce a production-quality application.",
+        "source_title": "Effective harnesses for long-running agents",
+        "source_url": "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents",
+        "published_or_updated": "2025"
+      },
+      {
+        "claim": "Anthropic’s Claude Opus 4.8 announcement describes dynamic workflows in which Claude Code can plan work, run parallel subagents, and verify outputs before reporting back, including codebase-scale migrations measured against an existing test suite.",
+        "source_title": "Introducing Claude Opus 4.8",
+        "source_url": "https://www.anthropic.com/news/claude-opus-4-8",
+        "published_or_updated": "May 28, 2026"
+      },
+      {
+        "claim": "Anthropic says Claude Code work increasingly includes end-to-end activities such as deploying and running code, analyzing data, and writing non-code documents; its study analyzed approximately 400,000 sessions and reported that successful tasks were associated with verifiable evidence such as passing tests or committed work.",
+        "source_title": "How Claude Code is used in practice",
+        "source_url": "https://www.anthropic.com/research/claude-code-expertise",
+        "published_or_updated": "June 16, 2026"
+      },
+      {
+        "claim": "Anthropic’s IPO fact sheet frames the commercial shift as movement from discrete prompt responses toward a ‘Virtual Collaborator’ that performs complex, long-horizon work, and says customers realize value through more productive employees, faster processes, and embedded intelligence in products.",
+        "source_title": "Anthropic IPO Fact Sheet",
+        "source_url": "https://ipo.anthropic.com/documents/us/factsheet.pdf",
+        "published_or_updated": "2026"
+      },
+      {
+        "claim": "Anthropic’s prospectus says customers use higher-capability models for complex reasoning, coding, and agentic workflows, while customer spending is primarily driven by the model used and the volume of usage.",
+        "source_title": "Anthropic Prospectus",
+        "source_url": "https://ipo.anthropic.com/documents/us/prospectus.pdf",
+        "published_or_updated": "2026"
+      },
+      {
+        "claim": "Anthropic’s prospectus also describes compute investment as a major ongoing requirement and says infrastructure commitments can materially affect the company’s cash-flow profile, which is why capability alone does not establish profitability or justify a particular valuation.",
+        "source_title": "Anthropic Prospectus",
+        "source_url": "https://ipo.anthropic.com/documents/us/prospectus.pdf",
+        "published_or_updated": "2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "Anthropic Fable 5.2 Mythos 5.2 launch capabilities coding agents IPO explained",
+      "score": 79.5,
+      "verdict": "pass",
+      "recent_videos": 1,
+      "median_views_per_day": 767863.2,
+      "top_views_per_day": 767863.2,
+      "market_coverage": 1,
+      "title_query_overlap": 1,
+      "measured_at": "2026-11-12T17:22:52.740283+00:00",
+      "signal_type": "youtube-breakout-v1"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -15.41,
+      "true_peak_dbtp": -1.73,
+      "loudness_range": 2.4
+    },
+    "editorial": {
+      "beats": 91,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-11-12T22:27:08.789939+00:00",
+    "warnings": [
+      "possible misspelling: golidee"
+    ]
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-choice",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-long-tue-thu-sat",
+    "thumbnail_style": "side_course",
+    "intro": "pop_up",
+    "outro": "wave_walk"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-long-2026-11-12-r",
+    "created_at": "2026-11-12T22:27:16.411314+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-11-13T17:30:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "787df455e135e82cad42ec56d560d9a61f8d9182da2e0921cbfe3c9e25ef7525",
+        "bytes": 79631370
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "e6b7ad77690f93f85f47b30d958a913656c0c850320bb5f4ed913a3ef174f96e",
+        "bytes": 459636
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "590d2980b3c21168ea89d13ade381d9ff13081562be15ea24e6474b702b5ee47",
+        "bytes": 3064
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "b98d4e4d7eee33d01cdb92bf4cb40bff8ea46742ee93d434f7332d80661dec5c",
+        "bytes": 11288
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "476457b5782f7287f2ed65a994a8414e6aedcad3ca798960262f62d103097749",
+        "bytes": 2362
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "cc46d3bcb51327337f4495d4d5d8326413bdbf3d0ae9a76ae457abf7da9c48e3",
+        "bytes": 4051
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "dc2861afea84bf1303854495356752314cb5253991fb4de3e672476f5ae190ac",
+        "bytes": 461
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "6f7d13a9377d164576fda75d31729a234474ce9d1135ace9dc5d7c5a692eefeb",
+        "bytes": 316
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-titles",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 264.0,
+      "cached_input_units": 0.0,
+      "output_units": 161.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000246,
+      "created_at": "2026-11-12T17:22:50.643058+00:00"
+    },
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 26022.0,
+      "cached_input_units": 0.0,
+      "output_units": 3669.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.009607,
+      "created_at": "2026-11-12T17:22:52.016267+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-12T17:22:52.058940+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 22991.0,
+      "cached_input_units": 0.0,
+      "output_units": 2144.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007171,
+      "created_at": "2026-11-12T17:23:18.682372+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-12T17:23:18.688181+00:00"
+    },
+    {
+      "stage": "script-story",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 21185.0,
+      "cached_input_units": 0.0,
+      "output_units": 10141.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.016406,
+      "created_at": "2026-11-12T17:24:47.167054+00:00"
+    },
+    {
+      "stage": "script-board",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1600.0,
+      "cached_input_units": 0.0,
+      "output_units": 3053.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.003984,
+      "created_at": "2026-11-12T17:25:08.539984+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 21185.0,
+      "cached_input_units": 0.0,
+      "output_units": 10141.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.016406,
+      "created_at": "2026-11-12T17:25:08.542847+00:00"
+    },
+    {
+      "stage": "edit-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9184.0,
+      "cached_input_units": 0.0,
+      "output_units": 9382.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.013095,
+      "created_at": "2026-11-12T21:40:50.388971+00:00"
+    },
+    {
+      "stage": "guide",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2227.0,
+      "cached_input_units": 0.0,
+      "output_units": 962.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.0016,
+      "created_at": "2026-11-12T22:26:01.254215+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 14465.0,
+      "cached_input_units": 0.0,
+      "output_units": 968.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004055,
+      "created_at": "2026-11-12T22:26:02.583790+00:00"
+    },
+    {
+      "stage": "title-check",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1261.0,
+      "cached_input_units": 0.0,
+      "output_units": 373.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.0007,
+      "created_at": "2026-11-12T22:26:08.481717+00:00"
+    }
+  ],
+  "recorded_at": "2026-11-12T22:27:26.034540+00:00"
+}

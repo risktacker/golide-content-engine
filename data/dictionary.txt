@@ -37,3 +37,6 @@ boostback  # seen in your recording and the research sources
 codebases  # seen in your recording and the research sources
 pdf  # seen in the research sources
 terawatt  # seen in your recording and the research sources
+agentic  # seen in your recording and the research sources
+autocomplete  # seen in your recording
+subagents  # seen in your recording and the research sources
