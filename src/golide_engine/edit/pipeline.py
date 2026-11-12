@@ -155,6 +155,15 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
         render(edit, folder, narration, video_path, outfit, track)
 
     production.runner.run(production_id, "render-edit-v1", render_stage, attempts=1)
+
+    def remix_stage():
+        """2026-11-12: the sound is mixed again over the finished pictures (no new render) with the
+        -2 dBFS limiter, so a video rendered before that change still passes the loudness check."""
+        from .render import mix
+        track = json.loads(track_path.read_text(encoding="utf-8")) if track_path.exists() else None
+        mix(edit, folder, narration, video_path, video_path, track or None, copy_video=True)
+
+    production.runner.run(production_id, "mix-edit-v2", remix_stage, attempts=1)
     labels = video_path.with_name("visual-labels.srt")
     if not labels.exists():
         from ..captions import words_to_srt

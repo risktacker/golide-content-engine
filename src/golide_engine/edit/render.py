@@ -150,8 +150,6 @@ def render_sfx(cues: list[dict[str, Any]], duration: float, out: Path) -> Path:
 
 def render(edit: dict[str, Any], folder: Path, narration: Path, output: Path, outfit: str,
            track: dict | None = None, workers: str = "auto") -> Path:
-    from ..vector.ambient import LEVEL_DB, LEVELS_DB
-    from ..vector.render import AUDIO_MIX, TRACK_DUCK
     from .compose import Composer
 
     fmt = edit["format"]
@@ -177,6 +175,20 @@ def render(edit: dict[str, Any], folder: Path, narration: Path, output: Path, ou
     env = dict(os.environ, HYPERFRAMES_BROWSER_PATH=_browser())
     subprocess.run(["npx", "-y", HYPERFRAMES, "render", str(comp), "-o", str(silent), "--fps", "30",
                     "--quality", "high", "--workers", workers, "--quiet"], check=True, env=env)
+    mix(edit, folder, narration, silent, output, track)
+    return output
+
+
+def mix(edit: dict[str, Any], folder: Path, narration: Path, pictures: Path, output: Path,
+        track: dict | None = None, copy_video: bool = False) -> Path:
+    """Sound under the pictures: the voice, the scene sounds, the music; then the H.264 encode (or, with
+    copy_video, the already-encoded pictures of a finished video kept as they are)."""
+    from ..vector.ambient import LEVEL_DB, LEVELS_DB
+    from ..vector.render import AUDIO_MIX, TRACK_DUCK
+
+    fmt = edit["format"]
+    duration = float(edit["duration"])
+    comp = folder / "composition"
     sfx = render_sfx(json.loads((comp / "sfx.json").read_text()), duration, folder / "sfx.wav")
     level = LEVELS_DB.get(fmt, LEVEL_DB)
     from ..vector.music_bed import pick, render as render_track
@@ -185,21 +197,27 @@ def render(edit: dict[str, Any], folder: Path, narration: Path, output: Path, ou
     if not track:
         raise RuntimeError("no music track found in config/background-music.json")
     bed = render_track(track, duration, folder / "bed.wav", level)
-    mix = AUDIO_MIX.get(fmt, AUDIO_MIX["short"])
-    # 2026-11-11 (owner): the voice sat too low: it leads now (-14 LUFS) and the music sits further under it
-    audio = ("[1:a]loudnorm=I=-14:TP=-1.2:LRA=14,aresample=48000,asplit=2[v][key];"
-             f"[2:a]aresample=48000,volume={mix['sfx']}[s];"
+    mixdown = AUDIO_MIX.get(fmt, AUDIO_MIX["short"])
+    # 2026-11-11 (owner): the voice sat too low: it leads now (-14 LUFS) and the music sits further under it.
+    # 2026-11-12: the limiter sits at -2 dBFS (as the illustration mix does): at -1 dBFS the AAC encode
+    # pushed the true peak to -0.42 dBTP and QA (max -1 dBTP) refused the first long Goli video.
+    audio = ("[1:a]loudnorm=I=-14:TP=-1.5:LRA=14,aresample=48000,asplit=2[v][key];"
+             f"[2:a]aresample=48000,volume={mixdown['sfx']}[s];"
              "[3:a]aresample=48000,volume=0.7[b0];"
              f"[b0][key]sidechaincompress={TRACK_DUCK}[b];"
-             "[v][s][b]amix=inputs=3:duration=first:normalize=0,alimiter=limit=0.89:level=0:attack=2:release=60[a]")
+             "[v][s][b]amix=inputs=3:duration=first:normalize=0,alimiter=limit=0.79:level=0:attack=2:release=60[a]")
     output.parent.mkdir(parents=True, exist_ok=True)
-    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(silent), "-i", str(narration), "-i", str(sfx),
-                    "-i", str(bed), "-filter_complex", audio, "-map", "0:v", "-map", "[a]",
-                    # 2026-11-11 (owner): an 85 MB Short is too big: standard H.264 near YouTube's own rate
-                    "-c:v", "libx264", "-preset", "veryfast", "-crf", "21", "-maxrate", "12M", "-bufsize", "24M",
-                    "-pix_fmt", "yuv420p",
+    target = output.with_name(output.stem + ".mixing.mp4") if copy_video else output
+    video = (["-c:v", "copy"] if copy_video else
+             # 2026-11-11 (owner): an 85 MB Short is too big: standard H.264 near YouTube's own rate
+             ["-c:v", "libx264", "-preset", "veryfast", "-crf", "21", "-maxrate", "12M", "-bufsize", "24M",
+              "-pix_fmt", "yuv420p"])
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(pictures), "-i", str(narration), "-i", str(sfx),
+                    "-i", str(bed), "-filter_complex", audio, "-map", "0:v", "-map", "[a]", *video,
                     "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-t", f"{duration:.3f}", "-movflags", "+faststart",
-                    str(output)], check=True)
+                    str(target)], check=True)
+    if copy_video:
+        target.replace(output)
     # the opening frame doubles as the Short's thumbnail card (as the vector renderer's cover did)
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", "1.2", "-i", str(output), "-frames:v", "1",
                     str(output.with_name(output.stem + "-cover.jpg"))], check=True)
