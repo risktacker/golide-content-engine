@@ -29,6 +29,10 @@
       "billing": "starter-plan-credit-allocation",
       "fallback_per_million_characters": 200
     },
+    "eleven_v3": {
+      "billing": "starter-plan-credit-allocation",
+      "fallback_per_million_characters": 200
+    },
     "web-search": {
       "billing": "per-call-plus-model-tokens",
       "per_tool_call": 0.01
