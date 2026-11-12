@@ -90,7 +90,9 @@ class YouTubeUploader:
             request = self.youtube.videos().insert(part="snippet,status", body=body, media_body=MediaFileUpload(str(video), chunksize=-1, resumable=True))
             response = with_retry(request.execute)
         video_id = response["id"]
-        with_retry(lambda: self.youtube.thumbnails().set(videoId=video_id, media_body=MediaFileUpload(str(thumbnail))).execute())
+        # 2026-11-12 (owner): Shorts get no custom thumbnail; YouTube shows a frame of the Short itself.
+        if "-short-" not in production_id:
+            with_retry(lambda: self.youtube.thumbnails().set(videoId=video_id, media_body=MediaFileUpload(str(thumbnail))).execute())
         uploaded_at = utc_now()
         self.database.execute(
             """INSERT INTO uploads(production_id, youtube_video_id, privacy_status, upload_status, request_fingerprint, uploaded_at, updated_at)
