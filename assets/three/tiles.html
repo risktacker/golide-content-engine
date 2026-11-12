@@ -41,6 +41,14 @@ window.draw = async (spec) => {
     if (it.badge) {   // small round badge on a corner
       const b = new THREE.Mesh(new THREE.CylinderGeometry(s * 0.17, s * 0.17, s * 0.08, 48), new THREE.MeshPhysicalMaterial({ color: new THREE.Color('#' + it.badge), clearcoat: 1, roughness: 0.2 }));
       b.rotation.x = Math.PI / 2; b.position.set(s * 0.42, s * 0.42, depth / 2 + 0.05); g.add(b);
+      if (it.badgeText) {   // a white sign on the badge (e.g. the infinity mark)
+        const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d');
+        x.fillStyle = '#fff'; x.font = '900 190px sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle';
+        x.fillText(it.badgeText, 128, 140);
+        const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+        const f = new THREE.Mesh(new THREE.PlaneGeometry(s * 0.3, s * 0.3), new THREE.MeshBasicMaterial({ map: t, transparent: true }));
+        f.position.set(s * 0.42, s * 0.42, depth / 2 + 0.05 + s * 0.041); g.add(f);
+      }
     }
     g.position.set(...(it.pos || [0, 0, 0])); g.rotation.set(...(it.rot || [0, 0, 0]).map((d) => d * Math.PI / 180));
     scene.add(g);
