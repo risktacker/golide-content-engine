@@ -2220,8 +2220,9 @@ class ProductionService:
         )
         params_path = work / "generation-parameters.json"
         params = dict(spec.get("generation_parameters", {}))
-        if (work / "thumbnail-style.json").exists():      # so the next video never repeats this design
-            params.update(json.loads((work / "thumbnail-style.json").read_text(encoding="utf-8")))
+        for picked in (work / "thumbnail-style.json", work / "edit" / "bookends.json"):   # never repeated next time
+            if picked.exists():
+                params.update(json.loads(picked.read_text(encoding="utf-8")))
         params_path.write_text(json.dumps(params, indent=2) + "\n", encoding="utf-8")
         qa_path = work / "qa-report.json"
         def qa_stage():

@@ -112,8 +112,28 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
 
     production.runner.run(production_id, "edit-plan-v2", plan_stage)
     raw = json.loads(raw_path.read_text(encoding="utf-8"))
+    bookends = None
+    if fmt == "long":        # 2026-11-12 (owner): seven openings, five endings, never the same as the last videos
+        picked = folder / "bookends.json"
+        if not picked.exists():
+            used = []
+            for path in (ROOT / "data" / "production-records").glob("*.json"):
+                try:
+                    params = json.loads(path.read_text(encoding="utf-8")).get("generation_parameters") or {}
+                    rec = json.loads(path.read_text(encoding="utf-8")).get("recorded_at", "")
+                except (OSError, ValueError, AttributeError):
+                    continue
+                if isinstance(params, dict) and params.get("intro"):
+                    used.append((str(rec), params["intro"], params.get("outro", "")))
+            used.sort(reverse=True)
+            intro, outro = editor.pick_bookends(str(spec.get("title", "")), [u[1] for u in used], [u[2] for u in used],
+                                                len(used))
+            picked.write_text(json.dumps({"intro": intro, "outro": outro}) + "\n", encoding="utf-8")
+        chosen = json.loads(picked.read_text(encoding="utf-8"))
+        bookends = (chosen["intro"], chosen["outro"])
+        print(json.dumps({"status": "edit_bookends", **chosen}))
     edit = editor.build(raw, beat_lines, narration_seconds, fmt, sources, capture_dir, cues, marks,
-                        logo_tile_maker(folder / "logos"))
+                        logo_tile_maker(folder / "logos"), bookends=bookends)
     edit["title"] = str(spec.get("title", ""))
     editor.save(edit, folder / "edit-list.json")
     for note in edit["notes"]:

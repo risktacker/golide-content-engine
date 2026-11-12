@@ -199,7 +199,8 @@ def _cues_between(cues: list[dict], start: float, end: float) -> list[dict]:
 
 
 def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sources: list[dict[str, Any]],
-          capture_dir: Path | None, cues: list[dict], chapters: list[Any], logo_tiles=None) -> dict[str, Any]:
+          capture_dir: Path | None, cues: list[dict], chapters: list[Any], logo_tiles=None,
+          bookends: tuple[str, str] | None = None) -> dict[str, Any]:
     """The editor's answer as a timed edit list for compose.Composer. Line ranges are repaired so every
     line is covered once; references to pages, phrases or words that do not exist are dropped (the scene
     keeps its words), and every such repair is reported in the edit list's `notes`."""
@@ -355,9 +356,66 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
     out = _no_repeats(out, lines, fmt, notes)
     out = _pace(out, lines, fmt)
     out = _lower_host(out, cues, fmt)
+    if bookends and lines:
+        out = _bookends(out, lines, cues, duration, *bookends)
     return {"format": fmt, "duration": duration, "scenes": out, "notes": notes, "captions": captions(lines, fmt),
             "chapters": [{"title": f"{getattr(m, 'number', '')} · {getattr(m, 'title', '')}".strip(" ·"),
                           "at": float(getattr(m, "start", 0))} for m in chapters]}
+
+
+# 2026-11-12 (owner): long videos never open or close the same way, and Goli is "interactive".
+INTROS = ("walk_in", "pop_up", "chair_spin", "close_pull", "screen_on", "coffee", "stage_slam")
+OUTROS = ("wave_walk", "lights_off", "lean_back", "chair_spin_away", "end_card")
+INTRO_POSES = {"walk_in": [("talk", 0)], "pop_up": [("shock", 0), ("talk", 1.3)], "chair_spin": [("talk", 0)],
+               "close_pull": [("talk", 0)], "screen_on": [("point", 0), ("talk", 1.6)],
+               "coffee": [("think", 0), ("talk", 1.0)], "stage_slam": [("point", 0.3), ("talk", 1.8)]}
+OUTRO_POSES = {"wave_walk": [("talk", 0), ("wave", -2.2)], "lights_off": [("talk", 0), ("wave", -2.4)],
+               "lean_back": [("talk", 0), ("thumbs_up", -2.2)], "chair_spin_away": [("talk", 0), ("wave", -2.0)],
+               "end_card": [("point", 0)]}
+CALM = {"coffee", "lean_back"}
+
+
+def pick_bookends(title: str, recent_intros: list[str], recent_outros: list[str], seed: int) -> tuple[str, str]:
+    """One opening and one ending: never one of the last 3 used; a shock story never opens with coffee."""
+    import random
+    from ..vector.thumb_styles import is_alert
+    rnd = random.Random(seed)
+    alarm = is_alert(title)
+    intros = [i for i in INTROS if i not in recent_intros[:3] and not (alarm and i in CALM)] or list(INTROS)
+    if alarm and "pop_up" in intros:
+        intros = ["pop_up"] + [i for i in intros if i != "pop_up"][:1]
+    outros = [o for o in OUTROS if o not in recent_outros[:3]] or list(OUTROS)
+    return rnd.choice(intros), rnd.choice(outros)
+
+
+def _bookends(scenes: list[dict], lines: list[Any], cues: list[dict], duration: float, intro: str, outro: str,
+              length: float = 3.6) -> list[dict]:
+    """The opening covers the first ~3.6 s and the ending the last ~3.6 s: scenes under them are trimmed."""
+    a = min(length, duration / 4)
+    b = max(a + 1.0, duration - length)
+
+    def text_between(t0, t1):
+        return " ".join(l.text for l in lines if l.start < t1 and l.end > t0) or (lines[0].text if lines else "")
+
+    def host(t0, t1, which, poses, place):
+        words = text_between(t0, t1).split()[:5]
+        at = [round(i * min(1.4, t1 - t0) / max(1, len(words)), 2) for i in range(len(words))]
+        ps = [{"pose": p, "at": round(max(0.0, (t1 - t0) + o if o < 0 else o), 3)} for p, o in poses]
+        return {"type": "host", "start": t0, "duration": t1 - t0, "data": {
+            "place": place, "cues": _cues_between(cues, t0, t1), "poses": sorted(ps, key=lambda p: p["at"]),
+            "words": [{"text": w_, "at": t} for w_, t in zip(words, at)], "punch": (words[-1] if words else "").lower().strip(".,!?"),
+            "intro" if which in INTROS else "outro": which}}
+
+    out = []
+    for sc in scenes:
+        s0, s1 = sc["start"], sc["start"] + sc["duration"]
+        s0, s1 = max(s0, a), min(s1, b)
+        if s1 - s0 < 0.4:
+            continue
+        out.append(dict(sc, start=round(s0, 3), duration=round(s1 - s0, 3)))
+    out.insert(0, host(0.0, a, intro, INTRO_POSES[intro], "full" if intro == "stage_slam" else "studio"))
+    out.append(host(b, duration, outro, OUTRO_POSES[outro], "full" if outro == "end_card" else "studio"))
+    return sorted(out, key=lambda s: (s["start"], s["type"] == "host"))
 
 
 def save(edit: dict[str, Any], path: Path) -> None:
