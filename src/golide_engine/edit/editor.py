@@ -182,7 +182,7 @@ def _phrase_time(lines, phrase: str, start: float, end: float) -> float | None:
     return None
 
 
-def _norm(text: str) -> list[str]:
+def _tokens(text: str) -> list[str]:
     return re.findall(r"[a-z0-9$%.]+", str(text).lower().replace("'", ""))
 
 
@@ -191,8 +191,8 @@ def _readable_phrase(text: str, lines, start: float, end: float, punch: str | No
     read: the editor's words when they appear in this order in what is said, otherwise 3 to 6 spoken
     words around the key word, never across a sentence end."""
     said = " ".join(l.text for l in lines if l.start < end and l.end > start)
-    want = _norm(text)
-    flat = " ".join(_norm(said))
+    want = _tokens(text)
+    flat = " ".join(_tokens(said))
     if want and len(want) <= 8 and " ".join(want) in flat and not re.search(r"[.!?]\s+\S", str(text).strip()):
         return text
     for sentence in re.split(r"(?<=[.!?])\s+", said):
