@@ -82,3 +82,22 @@ class EditorTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_bookends_vary_and_frame_the_video():
+    from types import SimpleNamespace
+
+    from golide_engine.edit import editor as E
+
+    seen = {E.pick_bookends("Story", [], [], n)[0] for n in range(40)}
+    assert len(seen) >= 5                                            # many different openings
+    intro, outro = E.pick_bookends("Story", ["walk_in", "pop_up", "coffee"], ["end_card"], 3)
+    assert intro not in ("walk_in", "pop_up", "coffee") and outro != "end_card"   # never the last ones again
+    assert E.pick_bookends("Nvidia stock crashed", [], [], 1)[0] != "coffee"      # no calm coffee on a crash
+    lines = [SimpleNamespace(text="What just happened", start=0.0, end=2.0),
+             SimpleNamespace(text="The end of the story", start=58.0, end=60.0)]
+    scenes = [{"type": "kinetic_title", "start": 0.0, "duration": 30.0, "data": {}},
+              {"type": "kinetic_title", "start": 30.0, "duration": 30.0, "data": {}}]
+    out = E._bookends(scenes, lines, [], 60.0, "walk_in", "lights_off")
+    assert out[0]["data"]["intro"] == "walk_in" and out[-1]["data"]["outro"] == "lights_off"
+    assert out[1]["start"] >= out[0]["duration"] and out[-2]["start"] + out[-2]["duration"] <= out[-1]["start"] + 1e-6

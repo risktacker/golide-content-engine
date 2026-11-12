@@ -14,6 +14,9 @@ Owner: Esiah (Lusaka, UTC+2). Direct, no sugar-coating. Studio: studio.golidee.c
   model thumbnails with Goli in place of the person; each keeps its model's own lettering and finish (no blanket
   shadows or glow). Picked per video against the modelled video's thumbnail; never the last two designs; every
   design passes the collision, small-words and empty-frame checks before use. Add a design only with a model.
+- Goli openings and endings (owner 2026-11-12, `edit/editor.py` INTROS/OUTROS, `edit/compose.py` bookends): long
+  videos open with one of 7 and close with one of 5 (our own end card, not YouTube's), never one of the last 3 used.
+  Goli is the default for long videos too (`config/edit-engine.json`).
 - Parked (owner 2026-11-10): a Skool community (videos posted there, classroom of repos and sources) comes
   after the Advanced list.
 - No cloned voice. AI voice = ElevenLabs "Mark - Natural Conversations" (UgBBYS2sOqTuMpoF3BR0), only when the

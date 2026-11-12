@@ -647,6 +647,60 @@ class Composer:
         self.entrance(sid, t0, "rise")
         self.cue("click", t0 + 0.4)
 
+    def bookends(self, sid, t0, dur, intro, outro, x, y, w, size) -> None:
+        """2026-11-12 (owner): long videos never open or close the same way. Seven openings, five endings,
+        all on Goli and his set; the editor picks one of each per video (never the last few used)."""
+        ch, end = f"#{sid}-ch", t0 + dur
+
+        def walk(start, frm, to, secs):          # a walk: across, with a step bob and a sway
+            self.tw(f'tl.fromTo("{ch}",{{x:{frm}}},{{x:{to},duration:{secs:.2f},ease:"power1.inOut",immediateRender:{str(start <= t0).lower()}}},{start:.3f});')
+            steps = max(2, int(secs / .32))
+            self.tw(f'tl.fromTo("{ch}",{{y:0,rotation:-2}},{{y:-18,rotation:2,duration:.16,ease:"sine.inOut",yoyo:true,'
+                    f'repeat:{2 * steps - 1},immediateRender:false}},{start:.3f});')
+            self.tw(f'tl.set("{ch}",{{y:0,rotation:0}},{start + secs:.3f});')
+
+        if intro == "walk_in":
+            walk(t0, -(x + w + 60), 0, 1.6)
+        elif intro == "pop_up":
+            self.tw(f'tl.fromTo("{ch}",{{y:{size * .75:.0f}}},{{y:0,duration:.55,ease:"back.out(2.2)"}},{t0 + .25:.3f});')
+            self.cue("pop", t0 + .3)
+        elif intro == "chair_spin":
+            self.tw(f'tl.fromTo("{ch}",{{rotationY:-88,transformPerspective:1600,transformOrigin:"50% 60%"}},'
+                    f'{{rotationY:0,duration:.75,ease:"back.out(1.6)"}},{t0 + .45:.3f});')
+            self.cue("whoosh", t0 + .4)
+        elif intro == "close_pull":
+            ox, oy = x + w / 2, y + size * .3
+            self.tw(f'tl.fromTo("#{sid} .cam",{{scale:2.4,transformOrigin:"{ox:.0f}px {oy:.0f}px"}},'
+                    f'{{scale:1,duration:2.2,ease:"power3.inOut"}},{t0 + .5:.3f});')
+        elif intro == "screen_on":
+            self.tw(f'tl.fromTo("#{sid}-wall",{{opacity:.12}},{{opacity:1,duration:.25,ease:"power2.out"}},{t0 + .9:.3f});')
+            self.tw(f'tl.fromTo("#{sid}-scr",{{opacity:0,scale:1.15}},{{opacity:1,scale:1,duration:.4,ease:"back.out(2)"}},{t0 + 1.0:.3f});')
+            self.tw(f'tl.fromTo("#{sid} [id$=-eyes]",{{x:9,y:-4}},{{x:0,y:0,duration:.2,immediateRender:true}},{t0 + 1.4:.3f});')
+            self.cue("click", t0 + .85)
+        elif intro == "coffee":
+            self.tw(f'tl.fromTo("#{sid} [id$=-eyes]",{{x:0,y:7}},{{x:0,y:0,duration:.18,immediateRender:true}},{t0 + 1.0:.3f});')
+            self.tw(f'tl.fromTo("{ch}",{{rotation:4,transformOrigin:"50% 90%"}},{{rotation:0,duration:.4,ease:"back.out(2)"}},{t0 + 1.0:.3f});')
+        elif intro == "stage_slam":
+            self.tw(f'tl.fromTo("#{sid} .title",{{scale:2.6,opacity:0}},{{scale:1,opacity:1,duration:.32,ease:"power4.in"}},{t0 + .35:.3f});')
+            self.tw(f'tl.fromTo("#{sid} .cam",{{x:-14}},{{x:0,duration:.35,ease:"elastic.out(1,.3)"}},{t0 + .67:.3f});')
+            self.cue("impact", t0 + .67)
+
+        if outro == "wave_walk":
+            walk(end - 1.5, 0, -(x + w + 60), 1.4)
+        elif outro == "lights_off":
+            self.tw(f'tl.to("#{sid}-wall",{{opacity:.1,duration:.15}},{end - 1.6:.3f});')
+            self.tw(f'tl.to("#{sid}-dim",{{opacity:.92,duration:1.0,ease:"power2.in"}},{end - 1.2:.3f});')
+            self.cue("click", end - 1.6)
+        elif outro == "lean_back":
+            self.tw(f'tl.to("{ch}",{{rotation:-7,y:18,transformOrigin:"50% 95%",duration:.6,ease:"power2.out"}},{end - 2.2:.3f});')
+        elif outro == "chair_spin_away":
+            self.tw(f'tl.to("{ch}",{{rotationY:88,transformPerspective:1600,transformOrigin:"50% 60%",duration:.6,ease:"back.in(1.6)"}},'
+                    f'{end - 1.0:.3f});')
+            self.cue("whoosh", end - 0.9)
+        elif outro == "end_card":
+            self.tw(f'tl.fromTo("#{sid}-end",{{x:120,opacity:0}},{{x:0,opacity:1,duration:.5,ease:"back.out(1.6)"}},{t0 + .3:.3f});')
+            self.tw(f'tl.fromTo("#{sid}-sub",{{scale:1}},{{scale:1.08,duration:.35,yoyo:true,repeat:5,ease:"sine.inOut"}},{t0 + 1.0:.3f});')
+
     def host(self, t0, dur, data, how="rise"):
         """Pango, the GOLIDE host, talking with the owner's voice. place: full (left half, the scene's
         words on the right), left/right (standing beside another scene), corner (small bubble over a
@@ -686,10 +740,11 @@ class Composer:
             self.uses_studio = True
             bubble = studio.lower_back(sid)
         elif place != "corner":     # open stage: back-wall wordmark, spotlight, floor grid to the horizon, glow disc
+            end_card = data.get("outro") == "end_card"      # the end card owns the right side: no floating panels
             cxp = x + w / 2
             panels = "".join(
                 f'<div class="panel" id="{sid}-pn{i}" style="left:{px:.0f}px;top:{py:.0f}px;width:{pw}px;height:{ph_}px">{body}</div>'
-                for i, (px, py, pw, ph_, body) in enumerate([
+                for i, (px, py, pw, ph_, body) in enumerate([] if end_card else [
                     (max(40, cxp - w * .95), self.h * .2, 190, 130,
                      '<div style="display:flex;gap:12px;align-items:flex-end;height:100%;padding:0 26px 22px">'
                      + "".join(f'<div style="width:22px;height:{hb}px;border-radius:6px;background:{c}"></div>'
@@ -714,12 +769,12 @@ class Composer:
                       f'width:{w + 48:.0f}px;height:{size * .88:.0f}px;border-radius:36px;background:radial-gradient('
                       f'circle at 50% 35%,#1E3A9E,#0B0F1E 75%);border:2px solid rgba(232,194,104,.55)"></div>')
         title = ""
-        if place in ("full", "studio") and data.get("words"):
+        if place in ("full", "studio") and data.get("words") and data.get("outro") != "end_card":
             spans = "".join(f'<span class="word{" gold" if w_["text"].lower().strip(".,!?") == str(data.get("punch", "")).lower() else ""}" '
                             f'id="{sid}-w{i}">{_e(w_["text"])}</span>' for i, w_ in enumerate(data["words"]))
             if place == "studio":       # the words appear on the studio's video wall
                 wx, wy, ww, wf = studio.layout(self.fmt)["words"]
-                title = (f'<div style="position:absolute;left:{wx}px;width:{ww}px;top:{wy}px">'
+                title = (f'<div id="{sid}-scr" style="position:absolute;left:{wx}px;width:{ww}px;top:{wy}px">'
                          f'<div class="title" style="font-size:{wf}px;line-height:1.05">{spans}</div></div>')
             else:
                 title = (f'<div style="position:absolute;left:{self.w * 0.52:.0f}px;right:110px;top:50%;margin-top:-170px">'
@@ -727,8 +782,20 @@ class Composer:
         front = (studio.front(sid, self.fmt) if place == "studio" else studio.front(sid, "lower") if place == "lower" else "")
         floor = (studio.layout(self.fmt)["desk_y"] if place == "studio" else studio.layout("lower")["desk_y"]
                  if place == "lower" else "")
-        inner = (f'{bubble}{title}<div id="{sid}-ch" data-box="goli" data-floor="{floor}" style="position:absolute;left:{x:.0f}px;top:{y:.0f}px;width:{w:.0f}px;'
-                 f'height:{size}px">{layers}</div>{front}')
+        intro, outro = data.get("intro"), data.get("outro")
+        card = ""
+        if outro == "end_card":       # our own end card (owner 2026-11-12): Goli points at it
+            card = (f'<div class="card" data-box="card" id="{sid}-end" style="position:absolute;left:{self.w * .5:.0f}px;top:{self.h * .2:.0f}px;'
+                    f'width:{self.w * .42:.0f}px;padding:56px 60px;text-align:center;border:2px solid rgba(232,194,104,.6)">'
+                    f'<svg viewBox="-32 -32 64 64" width="120" height="120">{mascot.logo_mark(0, 0, 60, "#F4F1EA")}</svg>'
+                    f'<div class="title" style="font-size:64px;margin:18px 0 26px">More every day</div>'
+                    f'<div id="{sid}-sub" style="display:inline-block;background:#E8C268;color:#0B0D12;font:900 46px/1 Poppins;'
+                    f'padding:24px 52px;border-radius:60px">Subscribe</div>'
+                    f'<div class="label" style="margin-top:30px;font-size:38px;color:#F4F1EA">golidee.com</div></div>')
+        dim = (f'<div id="{sid}-dim" style="position:absolute;inset:0;background:#000;opacity:0;pointer-events:none"></div>'
+               if outro == "lights_off" else "")
+        inner = (f'{bubble}{title}{card}<div id="{sid}-ch" data-box="goli" data-floor="{floor}" style="position:absolute;left:{x:.0f}px;top:{y:.0f}px;width:{w:.0f}px;'
+                 f'height:{size}px">{layers}</div>{front}{dim}')
         self.parts.append(f'<section id="{sid}" class="scene clip" data-start="{t0:.3f}" data-duration="{dur:.3f}" '
                           f'style="z-index:{40 if place in ("corner", "lower", "side") else 1}"><div class="stage"><div class="cam">{inner}</div></div></section>')
         # entrance: he pops up from below the frame (in the studio he is already seated; the set eases in)
@@ -739,7 +806,8 @@ class Composer:
             self.tweens.extend(studio.motion(sid, t0, dur))
             # the set has its own neon GOLIDE sign: the corner mark steps aside while we are in the studio
             self.tw(f'tl.to("#brand .logo",{{opacity:0,duration:.2}},{t0:.3f});tl.to("#brand .logo",{{opacity:.92,duration:.3}},{t0 + dur:.3f});')
-            self.tw(f'tl.fromTo("#{sid} .cam",{{scale:1.06}},{{scale:1.0,duration:{min(2.0, dur):.2f},ease:"power2.out"}},{t0:.3f});')
+            if intro != "close_pull":
+                self.tw(f'tl.fromTo("#{sid} .cam",{{scale:1.06}},{{scale:1.0,duration:{min(2.0, dur):.2f},ease:"power2.out"}},{t0:.3f});')
         elif place == "side":
             self.tw(f'tl.fromTo("#{sid}-ch",{{x:{-w if self.fmt == "short" else w:.0f},opacity:0}},{{x:0,opacity:1,duration:.45,'
                     f'ease:"back.out(1.5)"}},{t0:.3f});')
@@ -748,7 +816,7 @@ class Composer:
         if place == "corner":
             self.tw(f'tl.fromTo("#{sid}-bub",{{scale:.6,opacity:0}},{{scale:1,opacity:1,duration:.4,ease:"back.out(1.8)"}},{t0:.3f});')
         self.cue("pop", t0 + 0.1)
-        if place in ("full", "left", "right"):
+        if place in ("full", "left", "right") and data.get("outro") != "end_card":
             for i in range(2):
                 self.tw(f'tl.fromTo("#{sid}-pn{i}",{{y:{30 + 20 * i},opacity:0}},{{y:0,opacity:1,duration:.8,ease:"power3.out"}},{t0 + 0.2 + 0.15 * i:.3f});')
                 self.tw(f'tl.to("#{sid}-pn{i}",{{y:{-14 + 28 * i},duration:{max(0.5, dur - 1):.2f},ease:"sine.inOut"}},{t0 + 1.0:.3f});')
@@ -756,6 +824,7 @@ class Composer:
                 self.tw(f'tl.to("#{sid}-d{i}",{{y:{-40 - 12 * i},x:{(-1) ** i * 18},duration:{dur:.2f},ease:"none"}},{t0:.3f});')
             self.tw(f'tl.fromTo("#{sid}-set .floor",{{backgroundPositionY:"0px"}},{{backgroundPositionY:"90px",duration:{dur:.2f},'
                     f'ease:"none"}},{t0:.3f});')
+        self.bookends(sid, t0, dur, intro, outro, x, y, w, size)
         # breathing: a slow bob for the whole scene
         n = max(1, int(dur / 1.6))
         self.tw(f'tl.to("#{sid}-ch .{sid}-pose",{{y:-6,duration:.8,ease:"sine.inOut",yoyo:true,repeat:{2 * n - 1}}},{t0 + 0.6:.3f});')
