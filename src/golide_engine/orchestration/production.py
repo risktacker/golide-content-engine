@@ -897,6 +897,24 @@ class ProductionService:
                 reasoning_effort=SPOKEN_PASS_EFFORT,
             )
             self._record_text(production_id, "script-story", output)
+            # 2026-11-12: if it still lands well off its length, the same writer gets the real count and
+            # rewrites it to size (same story, nothing chopped off). One call, rarely needed.
+            from ..engine.content_rules import length_target
+            target = length_target(fmt, model_seconds)
+            spoken = len(re.sub(r"\[\[\d+\]\]", " ", str(output.value.get("script") or "")).split())
+            if fmt == "long" and not (target["words_min"] * .9 <= spoken <= target["words_max"] * 1.1):
+                print(json.dumps({"status": "script_resize", "words": spoken,
+                                  "target": [target["words_min"], target["words_max"]]}))
+                self._reserve(spec, text_model, Usage(input_tokens=len(json.dumps(output.value)) // 3 + 9000,
+                                                      output_tokens=script_tokens * 2), stage="script")
+                output = text.generate_json(
+                    story_instructions(fmt, model_seconds),
+                    f"YOUR SCRIPT (it is {spoken} spoken words; it must be {target['words_min']} to "
+                    f"{target['words_max']}). Rewrite it to that size: the same story, facts, order, chapters and "
+                    f"markers, every part kept in proportion; {'tighten every part' if spoken > target['words_max'] else 'go deeper inside every part with real facts from the research'}.\n"
+                    f"{json.dumps(output.value)}\n\nVERIFIED RESEARCH\n{json.dumps(research)}",
+                    STORY_SCHEMA, max_output_tokens=script_tokens * 2, reasoning_effort=SPOKEN_PASS_EFFORT)
+                self._record_text(production_id, "script-story-resize", output)
             plan = plan_from_story(dict(output.value), fmt)
             if len(plan["lines"]) < 6:
                 raise RuntimeError("the story came back too short to make a video")

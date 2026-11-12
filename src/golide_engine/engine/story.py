@@ -88,6 +88,24 @@ def story_instructions(format_name: str, model_seconds: float | None = None) -> 
     # the method examples are long-video stories; a Short follows its own shape (2026-11-10)
     example = _read(EXAMPLE_FILE) if format_name == "long" else ""
     example_2 = _read(EXAMPLE_FILE_2) if format_name == "long" else ""
+    # 2026-11-12 (owner: why does it exceed the length?): the examples are 2,089 and 3,523 words and the length
+    # was one line at the bottom, so the writer copied the examples' size. The length now leads, each part gets
+    # its own budget, and every example says how long it is.
+    lo, hi = target["words_min"], target["words_max"]
+    if format_name == "long":
+        intro, close = round(hi * .12 / 10) * 10, round(hi * .08 / 10) * 10
+        body = round(((lo + hi) / 2 - intro - close) / 10) * 10
+        budget = (f"Budget: Intro about {intro} words; the numbered chapters together about {body} words, shared evenly "
+                  f"(with 4 chapters about {body // 4} each, with 6 about {body // 6} each); Close about {close} words.")
+    else:
+        budget = ""
+    length = (f"LENGTH (the first rule): this script is {lo} to {hi} spoken words, about {target['seconds']} seconds "
+              f"read aloud. Not more, not less. {budget} The model scripts and method examples below are longer: copy "
+              "how they tell it, never their length.\n\n")
+
+    def sized(text: str) -> str:
+        n = len(text.split())
+        return f"({n} words, about {n / 150:.0f} minutes: far longer than yours, for method only)"
     guide = _read(GUIDE_FILE)
     offer = script_offer(format_name)
     if format_name == "short":
@@ -129,7 +147,8 @@ def story_instructions(format_name: str, model_seconds: float | None = None) -> 
     return (
         f"You write the narration for {kind} about a technology, AI or science story. "
         "It is read aloud, and animated pictures follow the words.\n\n"
-        "WRITE IT THE WAY THE VIDEOS THAT WORK DO. Study the MODEL SCRIPTS you are given (videos working on "
+        + length
+        + "WRITE IT THE WAY THE VIDEOS THAT WORK DO. Study the MODEL SCRIPTS you are given (videos working on "
         "YouTube now) and do what they do, with our research and our own words.\n"
         + shape
         + (f"- What the viewer gets (say it once, near the end, in one natural sentence, separate from the follow "
@@ -138,10 +157,12 @@ def story_instructions(format_name: str, model_seconds: float | None = None) -> 
         "from a model script or a method example: we copy how they tell it, not what they say.\n\n"
         + (f"SCRIPT VOICE GUIDE (the owner's)\n{guide}\n\n" if guide else "")
         + "HOW THE OWNER TALKS\n" + voice_pairs() + owner_voice() + "\n"
-        + (f"METHOD EXAMPLE 1, a news story (a script that works; how it tells the story, not its words)\n{example}\n\n" if example else "")
-        + (f"METHOD EXAMPLE 2, a tool or product (how it stays connected from start to end, not its words)\n{example_2}\n\n" if example_2 else "")
+        + (f"METHOD EXAMPLE 1, a news story {sized(example)} (a script that works; how it tells the story, not its "
+           f"words)\n{example}\n\n" if example else "")
+        + (f"METHOD EXAMPLE 2, a tool or product {sized(example_2)} (how it stays connected from start to end, not "
+           f"its words)\n{example_2}\n\n" if example_2 else "")
         + "TECHNICAL (the pipeline needs these)\n"
-        f"- About {target['words_min']} to {target['words_max']} spoken words (about {target['seconds']} seconds).\n"
+        f"- {lo} to {hi} spoken words (about {target['seconds']} seconds): count them before you answer.\n"
         + chapters
         + "- Numbers as digits (6.3 billion, 93 cents, 4:20, 2026, 18,270); fractions and everyday ordinals stay "
         "words, and \"one\" on its own stays a word.\n"

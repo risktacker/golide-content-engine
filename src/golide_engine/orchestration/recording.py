@@ -10,7 +10,7 @@ from __future__ import annotations
 
 RECORDING_WINDOWS: dict[str, tuple[float, float]] = {
     "short": (30.0, 180.0),  # 2026-11-11 owner: a 1:31 AI read was refused; the limit is YouTube's own 3:00
-    "long": (150.0, 720.0),  # 2026-11-10 owner: room up to 12:00 so a long read never fails  # owner 2026-10-10 max 10:00; 2026-10-14 min 2:30 (a fast reading must not be refused)
+    "long": (150.0, 780.0),  # 2026-11-12 owner: buffer up to 13:00 (scripts are sized for 8 to 9 min); 2026-11-10 12:00  # owner 2026-10-10 max 10:00; 2026-10-14 min 2:30 (a fast reading must not be refused)
 }
 
 
