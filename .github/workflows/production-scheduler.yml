@@ -28,7 +28,7 @@ permissions:
 jobs:
   produce:
     runs-on: ubuntu-24.04
-    timeout-minutes: 180
+    timeout-minutes: 300
     env:
       GOLIDE_STUDIO_BASE_URL: "https://studio.golidee.com"
       # Owner recordings and rendered media live in temporary R2 storage.

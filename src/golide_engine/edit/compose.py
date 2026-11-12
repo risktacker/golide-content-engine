@@ -916,9 +916,13 @@ class Composer:
         studio_top = 1592 if self.fmt == "short" else self.h - 150
         size = 60 if self.fmt == "short" else 50
         cap_list = edit.get("captions") or []
+        cap_list.sort(key=lambda c: float(c["start"]))
         for i, c in enumerate(cap_list):         # a line leaves before the next one arrives: never two at once
             if i + 1 < len(cap_list):
                 c["end"] = min(float(c["end"]), float(cap_list[i + 1]["start"]) - 0.01)
+        # a line squeezed to nothing by the next one is dropped (otherwise it would never be hidden again);
+        # in place, so the layout check keeps the same numbering
+        cap_list[:] = [c for c in cap_list if float(c["end"]) - float(c["start"]) >= 0.15]
         for i, c in enumerate(cap_list):
             spans = "".join(f'<span id="c{i}w{j}" class="{"key" if j in c.get("keys", []) else ""}">{_e(w["text"])}</span>'
                             for j, w in enumerate(c["words"]))
