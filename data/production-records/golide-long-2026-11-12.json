@@ -1,0 +1,495 @@
+{
+  "production_id": "golide-long-2026-11-12",
+  "youtube_video_id": "ZgfsYZOfMu8",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "ZgfsYZOfMu8",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-11-12T14:09:52.947129+00:00"
+  },
+  "production": {
+    "format": "long",
+    "title": "The AI Bubble Just Claimed Its First Job",
+    "status": "scheduled",
+    "scheduled_at": "2026-11-12T17:30:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-long-tue-thu-sat\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-choice\"}"
+  },
+  "narration": "Most AI still works like a clerk at a counter.\nYou ask for something, it gives you an answer, and the interaction ends.\nNow imagine the clerk remembering your preferences, opening the right websites, filling in forms,\nand continuing after you put your phone down.\nThat’s the promise behind Muse, Meta’s personal AI agent.\nOn September 8, 2026,\nMeta introduced it as a system that can work across everyday apps,\nnot just write a reply in one chat box.\nThat sounds like the next phase of AI.\nBut a polished task demo is not the same thing as independent judgment.\nAn agent can finish a workflow because it has the right context,\ntools and permission.\nThat doesn’t mean it knows what to do when the situation changes.\nIn this video, we’ll follow how Muse moves from answer to action,\nwhat it needs access to, why the demo is convincing, and where autonomy stops.\nBy the end,\nyou’ll have a practical way to decide which tasks an agent can handle,\nand which ones should still wait for your approval.\nStart with what actually changed.\nA chatbot normally receives a prompt, reads the words in front of it,\nand generates a response.\nIt may remember the conversation while the chat is open,\nbut the job is usually finished when the answer appears.\nThe Associated Press describes agents as a step beyond that model.\nInstead of merely drafting a response,\nan agent can use information to complete a task,\npotentially carrying out an entire workflow.\nThat difference sounds small until you picture an ordinary request.\nFind a flight, compare the options, and tell me which one fits my schedule.\nA chatbot can search or explain how to compare flights.\nAn agent is meant to keep going: it uses your context, checks a service,\nand brings back a decision or asks for the next permission.\nMeta presents Muse in that role.\nIt says the system can open a browser, fill out forms, send email,\nbook travel, negotiate on your behalf, and keep working after the app is closed.\nThose are company claims, not proof that every task works perfectly.\nAnd that distinction is the key.\nThe front desk has become a helper who can walk to other desks.\nBut someone still has to decide which doors it may open.\nThat helper becomes useful because it has 3\nthings a normal chat window usually lacks: context, connections and the ability to act.\nMeta says Muse can remember what matters to you\nand use details mentioned earlier when making later suggestions.\nSo your preferences don’t have to be repeated from scratch every time.\nIf it knows the kind of trip you prefer,\nor the details of an ongoing task,\nit can use that information as the job continues.\nThen there are the connections.\nUsers choose which apps Muse can work with and set permissions for those services.\nThat might include email, shopping, travel or other everyday tools.\nThe agent can then move between them instead of waiting\nfor you to copy information from one place to another.\nThe final piece is execution.\nMeta describes Muse using a dedicated browser-based secure virtual machine.\nIn simple terms, it has a controlled computer space where it can browse,\nenter information and carry out steps on your behalf.\nThink of it as giving the helper a desk,\na memory of your preferences and a keyring.\nThe keyring is what makes the system useful,\nbut it is also what makes the system worth worrying about.\nBecause if the agent can fill in a form,\nit can fill in the wrong form.\nIf it can send an email, it can send the wrong email.\nThe convenience comes from letting it continue without asking you to supervise every click.\nThe risk comes from that same freedom.\nNow pause at the part that looks most impressive:\nMuse completing a task after you have stopped interacting with it.\nThat really is different from asking a chatbot to draft a message.\nA chatbot gives you a piece of work to inspect.\nAn agent is supposed to take that piece, open the next tool,\nenter the information, and move the workflow forward.\nBut look closely at what a successful demo actually proves.\nIt proves that the system was given a defined goal, the right information,\ncompatible services and enough permission to reach the finish line.\nIt proves that the selected tools worked together for that task.\nIt does not prove that Muse has common sense in the human sense.\nIt does not prove that it will understand an unclear request,\nspot a hidden risk, recover from an unusual website,\nor balance 2 priorities that conflict with each other.\nThat is the difference between completing a route and choosing the right destination.\nA navigation app can follow a road very well.\nIt still needs to know whether you meant the office,\nthe hotel or the airport.\nSo the demo is convincing for a narrower reason than the word autonomy suggests.\nIt shows a new software pipeline: remember the context, choose a tool,\nperform a step, check what happened, and continue.\nThat is a real change in how software can work.\nIt just isn’t independent judgment yet.\nThis is where the word autonomy needs some care.\nTrue autonomy would mean handling ambiguity, consequences and changing priorities reliably,\nnot simply carrying out a prepared sequence.\nImagine asking an agent to arrange a trip.\nThe flight can be found.\nThe form can be filled in.\nBut what happens when the cheapest option has a long overnight connection,\nthe meeting time changes, and the cancellation policy is unclear?\nThose are not just clicks.\nThey are decisions with consequences.\nMeta’s own safeguards point to this boundary.\nThe company says Muse asks for approval before sensitive\nactions such as sending email or making a purchase.\nThat means the system can work in the background,\nbut it is not supposed to have unlimited authority over everything it can reach.\nMeta executives also said on the company’s third-quarter 2026 earnings call that many\nnear-term agent experiences are expected to remain AI-assisted rather than fully autonomous,\nwith adoption developing unevenly over time.\nThat is the honest middle ground.\nMuse can remove a lot of digital busywork,\nbut it still needs rules about when to stop and ask you.\nHere’s the practical tip: require approval for anything irreversible, expensive,\npersonal or difficult to undo.\nLet an agent collect options and prepare the form.\nKeep the final decision in your hands.\nAnd now we reach the ordinary-person tradeoff.\nMuse is more useful when it knows more\nabout you and can do more for you.\nBut every extra connection creates another place where something can go wrong.\nIndependent testing by TechRadar found that Muse became more useful when\nit could retrieve context from email and act across connected services.\nThe same test also made the reviewer more cautious about\ngiving an agent access to personal correspondence and accounts.\nThat tension is the entire product.\nThe system cannot save you much time if it knows nothing,\ncan open nothing and is allowed to do nothing.\nBut if it can read your messages,\nuse your accounts and make choices for you,\nthen convenience has become a form of access.\nSo start small.\nConnect one low-risk service, not your whole digital life.\nGive the agent a narrow task, read the permission settings,\nand check what it actually did afterward.\nKeep approval turned on for messages, purchases, bookings and anything involving sensitive information.\nYou might be wondering why not just let\nit do everything if the goal is automation.\nThe honest answer is that most mistakes are not dramatic.\nThey are small misunderstandings that become expensive once the system has permission to act.\nA wrong purchase, a message sent too early,\nor a private detail shared with the wrong\nperson can matter more than the time saved.\nMuse reveals the direction of AI clearly.\nThe winning assistant may not be the one that gives the cleverest answer.\nIt may be the one that remembers enough,\nconnects to enough services and has enough permission\nto become part of your daily life.\nThat is also why trust, not intelligence alone, becomes the limit.\nThe simple version is this: a chatbot answers, while an agent remembers context,\nuses connected tools and carries a task forward.\nMuse shows that the technology can move from conversation into action,\nbut the demo still depends on defined goals,\npermissions and human approval at the important moments.\nThe free guide to this video,\nplus the link to our community for updates and all these stories,\nare in the description.\nFollow the channel for more breakdowns of what new AI can actually do,\nand where the impressive demo stops.\nSo here’s the question:\nhow much of your digital life would you let one system operate for you?\n",
+  "research": {
+    "summary": "G$LIDE explainer concept: “The AI That Doesn’t Stop at an Answer.” Open with a familiar chatbot interaction: one prompt, one response, finished. Then cut to Meta’s Muse framing: a personal agent that can retain relevant context, connect to services, browse, fill forms, and continue working after the user closes the app. The central editorial move is to split the spectacle from the reality. A polished demo proves that the agent can complete a bounded workflow; it does not prove independent judgment, reliability in unfamiliar situations, or permission to make every consequential decision. The second half should make the tradeoff ordinary and concrete: Muse can save time on shopping, scheduling, travel, email, and recurring tasks, but its usefulness increases as it receives more context and access. The closing question is not “Will AI become autonomous?” but “How much of your digital life would you let one system operate—and where would you require approval?” Suggested narration: “The next phase of AI may not look like a smarter answer. It may look like software that remembers what matters, opens the apps you use, and keeps working after you leave. That is the promise of a personal agent. But watch the demo closely: the impressive part is not that it thinks like a person. It is that it has a defined task, selected tools, stored context, and permissions. True autonomy would mean handling ambiguity, consequences, and conflicting priorities reliably—not merely completing a scripted workflow. Muse’s own safeguards point to the boundary: it can work in the background, but Meta says it asks for approval before sensitive actions such as sending email or making purchases. For an ordinary user, the bargain is simple: less digital busywork in exchange for giving one system access to more of your inbox, accounts, preferences, and decisions. Convenience is the product. Trust is the constraint.”",
+    "claims": [
+      {
+        "claim": "Meta describes Muse as a personal AI agent that can work across daily apps, use a dedicated browser-based secure virtual machine, learn from conversations, and act on a user’s behalf.",
+        "source_title": "Introducing Muse: The World’s First Personal AI Agent Built for Everyone",
+        "source_url": "https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent",
+        "published_or_updated": "September 8, 2026; updated November 10, 2026"
+      },
+      {
+        "claim": "Meta says Muse can open a browser, fill out forms, send email, book travel, negotiate on a user’s behalf, and continue working after the app is closed.",
+        "source_title": "Introducing Muse: The World’s First Personal AI Agent Built for Everyone",
+        "source_url": "https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent",
+        "published_or_updated": "September 8, 2026; updated November 10, 2026"
+      },
+      {
+        "claim": "Meta says Muse remembers what matters to a user and can use details mentioned earlier to make suggestions or support later actions.",
+        "source_title": "Introducing Muse: The World’s First Personal AI Agent Built for Everyone",
+        "source_url": "https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent",
+        "published_or_updated": "September 8, 2026; updated November 10, 2026"
+      },
+      {
+        "claim": "Meta says users choose which apps Muse connects to and can set permissions; it also says Muse asks for approval before sensitive actions such as sending email or making a purchase.",
+        "source_title": "Introducing Muse: The World’s First Personal AI Agent Built for Everyone",
+        "source_url": "https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent",
+        "published_or_updated": "September 8, 2026; updated November 10, 2026"
+      },
+      {
+        "claim": "The Associated Press describes AI agents as a step beyond chatbots because they can use information to complete tasks and potentially carry out an entire workflow rather than merely draft a response.",
+        "source_title": "Meta launches personal AI agent, Muse, emphasizes safety and privacy",
+        "source_url": "https://apnews.com/article/meta-muse-ai-agent-3a4572eb4cf4e95d8a0dfdad6e6ca065",
+        "published_or_updated": "September 2026"
+      },
+      {
+        "claim": "Meta executives said many near-term agent experiences are expected to remain AI-assisted rather than fully autonomous, with adoption developing unevenly over time.",
+        "source_title": "Meta Q3 2026 Earnings Call Transcript",
+        "source_url": "https://s21.q4cdn.com/399680738/files/content_files/2026/q3/META-Q3-2026-Earnings-Call-Transcript.pdf",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "Independent testing reported that Muse’s usefulness increased when it could retrieve context from email and act across connected services, while also making the tester more cautious about granting access to personal correspondence and accounts.",
+        "source_title": "I tried Meta’s new Muse AI agent — it’s incredibly useful, but handing it my digital life felt deeply uncomfortable",
+        "source_url": "https://www.techradar.com/ai-platforms-assistants/i-tried-metas-new-muse-ai-agent-its-incredibly-useful-but-handing-it-my-digital-life-felt-deeply-uncomfortable",
+        "published_or_updated": "September 14, 2026"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "The AI Bubble Just Claimed Its First Job",
+    "description": "Free guide to this video (steps and every source): https://studio.golidee.com/guides/golide-long-2026-11-12.pdf\n\nMeta Muse is designed to do more than answer questions. It can remember your preferences, connect to apps, browse the web, fill out forms, send email, book travel, and continue working after you close the app.\n\nThis breakdown explains how Muse moves from conversation to action, what its Secure VM and permissions enable, why the demos are convincing, and where human approval still matters. We also look at the privacy and trust tradeoffs of giving an AI access to your digital life.\n\nChapters\n0:00 Intro\n1:04 From Answers to Actions\n2:21 How Muse Works\n3:48 What the Demo Proves\n5:12 Where Autonomy Stops\n6:40 The Access Tradeoff\n8:26 Close\n\n#MetaMuse #AIAgents #AgenticAI #MetaAI #ArtificialIntelligence #AIAutomation #GOLIDE\n\nMusic: Crimson Fly by Huma-Huma",
+    "tags": [
+      "Meta Muse",
+      "Muse AI agent",
+      "Meta AI agent",
+      "Meta Muse explained",
+      "personal AI agent",
+      "AI agents explained",
+      "agentic AI",
+      "AI automation",
+      "AI assistant",
+      "autonomous AI",
+      "AI browser agent",
+      "AI task automation",
+      "Meta AI",
+      "Muse Secure VM",
+      "AI privacy",
+      "AI safety",
+      "AI permissions",
+      "AI email assistant",
+      "AI travel booking",
+      "AI booking agent",
+      "AI workflow automation",
+      "chatbot vs agent",
+      "AI agent risks",
+      "future of AI agents",
+      "Mark Zuckerberg AI",
+      "Alexandr Wang"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [
+      "0:00 Intro",
+      "1:04 From Answers to Actions",
+      "2:21 How Muse Works",
+      "3:48 What the Demo Proves",
+      "5:12 Where Autonomy Stops",
+      "6:40 The Access Tradeoff",
+      "8:26 Close"
+    ],
+    "keywords": [
+      "Meta Muse AI agent",
+      "Muse AI agent explained",
+      "Meta personal AI agent",
+      "how Meta Muse works",
+      "AI agent vs chatbot",
+      "Muse Secure VM",
+      "Meta Muse privacy",
+      "AI agent permissions",
+      "AI agents 2026",
+      "AI browser agent",
+      "personal AI assistant",
+      "AI task automation",
+      "autonomous AI agents",
+      "AI agent safety"
+    ],
+    "hashtags": [
+      "#MetaMuse",
+      "#AIAgents",
+      "#AgenticAI",
+      "#MetaAI",
+      "#ArtificialIntelligence",
+      "#AIAutomation",
+      "#GOLIDE"
+    ],
+    "format": "long",
+    "title_description_language": "en",
+    "seo_body": "Meta Muse is designed to do more than answer questions. It can remember your preferences, connect to apps, browse the web, fill out forms, send email, book travel, and continue working after you close the app.\n\nThis breakdown explains how Muse moves from conversation to action, what its Secure VM and permissions enable, why the demos are convincing, and where human approval still matters. We also look at the privacy and trust tradeoffs of giving an AI access to your digital life."
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "Meta describes Muse as a personal AI agent that can work across daily apps, use a dedicated browser-based secure virtual machine, learn from conversations, and act on a user’s behalf.",
+        "source_title": "Introducing Muse: The World’s First Personal AI Agent Built for Everyone",
+        "source_url": "https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent",
+        "published_or_updated": "September 8, 2026; updated November 10, 2026"
+      },
+      {
+        "claim": "Meta says Muse can open a browser, fill out forms, send email, book travel, negotiate on a user’s behalf, and continue working after the app is closed.",
+        "source_title": "Introducing Muse: The World’s First Personal AI Agent Built for Everyone",
+        "source_url": "https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent",
+        "published_or_updated": "September 8, 2026; updated November 10, 2026"
+      },
+      {
+        "claim": "Meta says Muse remembers what matters to a user and can use details mentioned earlier to make suggestions or support later actions.",
+        "source_title": "Introducing Muse: The World’s First Personal AI Agent Built for Everyone",
+        "source_url": "https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent",
+        "published_or_updated": "September 8, 2026; updated November 10, 2026"
+      },
+      {
+        "claim": "Meta says users choose which apps Muse connects to and can set permissions; it also says Muse asks for approval before sensitive actions such as sending email or making a purchase.",
+        "source_title": "Introducing Muse: The World’s First Personal AI Agent Built for Everyone",
+        "source_url": "https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent",
+        "published_or_updated": "September 8, 2026; updated November 10, 2026"
+      },
+      {
+        "claim": "The Associated Press describes AI agents as a step beyond chatbots because they can use information to complete tasks and potentially carry out an entire workflow rather than merely draft a response.",
+        "source_title": "Meta launches personal AI agent, Muse, emphasizes safety and privacy",
+        "source_url": "https://apnews.com/article/meta-muse-ai-agent-3a4572eb4cf4e95d8a0dfdad6e6ca065",
+        "published_or_updated": "September 2026"
+      },
+      {
+        "claim": "Meta executives said many near-term agent experiences are expected to remain AI-assisted rather than fully autonomous, with adoption developing unevenly over time.",
+        "source_title": "Meta Q3 2026 Earnings Call Transcript",
+        "source_url": "https://s21.q4cdn.com/399680738/files/content_files/2026/q3/META-Q3-2026-Earnings-Call-Transcript.pdf",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "Independent testing reported that Muse’s usefulness increased when it could retrieve context from email and act across connected services, while also making the tester more cautious about granting access to personal correspondence and accounts.",
+        "source_title": "I tried Meta’s new Muse AI agent — it’s incredibly useful, but handing it my digital life felt deeply uncomfortable",
+        "source_url": "https://www.techradar.com/ai-platforms-assistants/i-tried-metas-new-muse-ai-agent-its-incredibly-useful-but-handing-it-my-digital-life-felt-deeply-uncomfortable",
+        "published_or_updated": "September 14, 2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "Meta Muse personal AI agent privacy memory autonomous actions explained",
+      "score": 83.8,
+      "verdict": "pass",
+      "recent_videos": 1,
+      "median_views_per_day": 1084704,
+      "top_views_per_day": 1084704,
+      "market_coverage": 1,
+      "title_query_overlap": 1,
+      "measured_at": "2026-11-12T04:03:59.087086+00:00",
+      "signal_type": "youtube-breakout-v1"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -16.36,
+      "true_peak_dbtp": -1.38,
+      "loudness_range": 2.8
+    },
+    "editorial": {
+      "beats": 95,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-11-12T14:09:30.930583+00:00",
+    "warnings": [
+      "possible misspelling: golidee"
+    ]
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-choice",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-long-tue-thu-sat",
+    "thumbnail_style": "giant_word",
+    "intro": "stage_slam",
+    "outro": "chair_spin_away"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-long-2026-11-12",
+    "created_at": "2026-11-12T14:09:32.081999+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-11-12T17:30:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "80872b58a4f94a2a38bf59504fa2f9936ea79e4429d29aba269d430fe5e53e44",
+        "bytes": 109528002
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "2f19891f8505f95157ecda1b1638429ac4b0832b646d8dd08ee43eef5620fb48",
+        "bytes": 391477
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "9230acb5840bb315dbc52a97207b36bc1f48523954c56c1dad63efe360aebfd5",
+        "bytes": 3032
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "7859305de49a667f8edab61d8e70b5117c16dd603a7c41c2dd8474a65d4c4c05",
+        "bytes": 20595
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "2bb4aa573583aba95076e86387412ae20ea257322df65856945e0b14ed9fcd80",
+        "bytes": 2601
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "331eaeed4b2007c36f05279692effe9876efea5fff6f72bb18c1ae303a0b94ba",
+        "bytes": 4159
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "47666353e569d3435f963d5495ca797a145af7ea8d41fe9fdd755eef41f816c2",
+        "bytes": 470
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "faf6b61eeb18e436566deaad9791e550afc6da1589cceec32d1dc6033bc56588",
+        "bytes": 316
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-titles",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 201.0,
+      "cached_input_units": 0.0,
+      "output_units": 130.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000196,
+      "created_at": "2026-11-12T04:03:57.315997+00:00"
+    },
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 19080.0,
+      "cached_input_units": 0.0,
+      "output_units": 2681.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007033,
+      "created_at": "2026-11-12T04:03:58.483672+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-12T04:03:58.485703+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 21589.0,
+      "cached_input_units": 0.0,
+      "output_units": 1816.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006497,
+      "created_at": "2026-11-12T04:04:18.083769+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-12T04:04:18.085167+00:00"
+    },
+    {
+      "stage": "script-story",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 21472.0,
+      "cached_input_units": 0.0,
+      "output_units": 3374.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008343,
+      "created_at": "2026-11-12T04:04:53.964413+00:00"
+    },
+    {
+      "stage": "script-board",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2980.0,
+      "cached_input_units": 0.0,
+      "output_units": 5883.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007656,
+      "created_at": "2026-11-12T04:05:44.255676+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 21472.0,
+      "cached_input_units": 0.0,
+      "output_units": 3374.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008343,
+      "created_at": "2026-11-12T04:05:44.259585+00:00"
+    },
+    {
+      "stage": "script-story",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 21615.0,
+      "cached_input_units": 0.0,
+      "output_units": 4474.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.009692,
+      "created_at": "2026-11-12T11:22:40.393300+00:00"
+    },
+    {
+      "stage": "script-board",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2381.0,
+      "cached_input_units": 0.0,
+      "output_units": 4782.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006215,
+      "created_at": "2026-11-12T11:23:14.156156+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 21615.0,
+      "cached_input_units": 0.0,
+      "output_units": 4474.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.009692,
+      "created_at": "2026-11-12T11:23:14.163131+00:00"
+    },
+    {
+      "stage": "owner-voice",
+      "provider": "elevenlabs",
+      "model": "eleven_multilingual_v2",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 8599,
+      "cost_usd": 1.7198,
+      "created_at": "2026-11-12T11:35:23.270335+00:00"
+    },
+    {
+      "stage": "edit-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 6960.0,
+      "cached_input_units": 0.0,
+      "output_units": 7569.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.010475,
+      "created_at": "2026-11-12T11:41:14.076453+00:00"
+    },
+    {
+      "stage": "guide",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2652.0,
+      "cached_input_units": 0.0,
+      "output_units": 827.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001523,
+      "created_at": "2026-11-12T12:26:10.116516+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 14992.0,
+      "cached_input_units": 0.0,
+      "output_units": 638.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.003764,
+      "created_at": "2026-11-12T12:26:11.718397+00:00"
+    }
+  ],
+  "recorded_at": "2026-11-12T14:09:52.954893+00:00"
+}
