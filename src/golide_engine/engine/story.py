@@ -184,8 +184,16 @@ def plan_from_story(story: dict, format_name: str) -> dict:
         blocks = [{"chapter": 0, "text": " ".join(re.sub(r"\[\[\d+\]\]", " ", text).split())}]
     last = max(0, len(chapters) - 1)
     lines: list[dict] = []
+    highest = 0
     for block in blocks:
         index = min(max(0, int(block["chapter"])), last)
+        if chapters and index < highest:
+            # a marker that goes backwards (the close marked like the intro) is the Close part
+            if str(chapters[-1].get("number", "")).strip() or index == last:
+                chapters.append({"number": "", "title": "Close"})
+                last = len(chapters) - 1
+            index = last
+        highest = max(highest, index)
         for piece in split_spoken(block["text"]):
             lines.append({"chapter": index, "section": "proof", "text": piece, "emphasis": "",
                           "visual": "icon_hero", "subjects": [], "label": "",
