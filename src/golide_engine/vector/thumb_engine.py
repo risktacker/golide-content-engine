@@ -67,7 +67,21 @@ PAIRS = {("text", "text"), ("text", "tile"), ("text", "face"), ("text", "goli"),
 
 def check(rec: list[tuple[str, Image.Image]], allow: int = 25) -> list[str]:
     hits = []
+    goli = None
+    for k, m in rec:
+        if k == "goli":
+            goli = m if goli is None else ImageChops.lighter(goli, m)
     for i, (ka, ma) in enumerate(rec):
+        if ka == "giant":
+            box = ma.point(lambda v: 255 if v > 120 else 0).getbbox()
+            if box and (box[0] < 4 or box[1] < 2 or box[2] > W - 4 or box[3] > H - 2):
+                hits.append("giant words leave the frame")
+            if goli is not None:
+                solid = ma.point(lambda v: 255 if v > 120 else 0)
+                total = solid.histogram()[255] or 1
+                hidden = ImageChops.multiply(solid, goli).histogram()[255]
+                if hidden / total > .04:
+                    hits.append(f"Goli hides {hidden / total:.0%} of the giant words")
         if ka == "text":
             box = ma.getbbox()
             if box and (box[0] < 6 or box[1] < 4 or box[2] > W - 6 or box[3] > H - 4):
@@ -264,24 +278,32 @@ def d_giant_word(s: Story) -> Image.Image:
     b = Image.new("RGBA", (W, H), (248, 248, 248, 255))
     layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     first, second = (s.rest, s.punch) if s.rest != s.words else (s.words, "")
-    f = T.fit(first, HEAVY, 760 if second else 1200, 330, 330)
-    saved, T.REC = T.REC, None            # the giant words are scenery behind Goli, not the readable words
-    T._text(layer, (20, -40), first, f, (16, 16, 16))
+    # the name fills the left two thirds, stacked when it has two parts; Goli stands on the right so the
+    # name is never behind him (owner 2026-11-12)
+    saved, T.REC = T.REC, None
     if second:
-        x = 20 + f.getbbox(first)[2] + 20
-        T._text(layer, (x, 10), second, T.fit(second, HEAVY, W - x - 20, 300, 290), a)
+        f = T.fit(first, HEAVY, 760, 300, 330)
+        T._text(layer, (36, 20 - f.getbbox(first)[1]), first, f, (16, 16, 16))
+        f2 = T.fit(second, HEAVY, 760, 300, 330)
+        T._text(layer, (36, 20 + f.getbbox(first)[3] - f.getbbox(first)[1] + 30 - f2.getbbox(second)[1]), second, f2, a)
+    else:
+        f = T.fit(first, HEAVY, 760, 520, 520)
+        T._text(layer, (36, (H - (f.getbbox(first)[3] - f.getbbox(first)[1])) // 2 - 40 - f.getbbox(first)[1]),
+                first, f, (16, 16, 16))
     T.REC = saved
     layer = layer.filter(ImageFilter.GaussianBlur(7))
     b.alpha_composite(layer)
-    T.record("object", layer.getchannel("A"))
+    # 2026-11-12 (owner: hidden and cut words): the giant words are checked too: inside the frame, and
+    # Goli may hide only a small part of them
+    T.record("giant", layer.getchannel("A"))
     floor = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     fd = ImageDraw.Draw(floor)
     for i in range(240):
         fd.line([(0, H - i), (W, H - i)], fill=(225, 225, 228, int(150 * (1 - i / 240))))
     b.alpha_composite(floor)
-    _shadow(b, 620, 712, 520, 120, 18)
-    pose = {"alarm": "shock", "hype": "point_up", "money": "thumbs_up"}.get(s.mood, "explain")
-    _put_goli(b, T.goli(pose, s.outfit, "A" if s.mood == "calm" else "D", _pose(s, "skeptic"), 760, upper=.8), 620, H + 6)
+    _shadow(b, 1050, 712, 480, 120, 18)
+    pose = {"alarm": "shock", "hype": "point_up", "money": "thumbs_up"}.get(s.mood, "point_left")
+    _put_goli(b, T.goli(pose, s.outfit, "A" if s.mood == "calm" else "D", _pose(s, "skeptic"), 700, upper=.8), 1050, H + 6)
     return b
 
 
@@ -397,7 +419,7 @@ def fill_check(rec: list[tuple[str, Image.Image]]) -> list[str]:
             out.append(f"words too small ({tallest}px tall)")
     union = Image.new("L", (W, H), 0)
     for k, m in rec:
-        if k in ("text", "tile", "goli", "picture", "object"):
+        if k in ("text", "tile", "goli", "picture", "object", "giant"):
             union = ImageChops.lighter(union, m)
     union = union.filter(ImageFilter.MaxFilter(41))
     empty = 0
@@ -827,8 +849,9 @@ DESIGNS = [
            grade=False),
     Design("crash", "Stormy dark cliffs; Goli shocked and sweating grips the edge of a cracking glowing slab; white name and "
            "a red figure. For crashes, losses, hacks, collapses (like 'NVIDIA -$400B').", lambda s: s.mood == "alarm", d_crash),
-    Design("giant_word", "Huge words out of focus behind; Goli close and sharp on a white sweep. For a new release, a model or "
-           "product name, one big name (like 'fable 5.2').", lambda s: len(s.words) <= 16, d_giant_word, grade=False),
+    Design("giant_word", "Huge words out of focus behind; Goli close and sharp on a white sweep. Only for ONE short name: a "
+           "new release, a model or product name (like 'fable 5.2'); never a phrase or sentence.",
+           lambda s: len(s.words.split()) <= 2 and len(s.words.replace(" ", "")) <= 9, d_giant_word, grade=False),
     Design("platter", "Logo tiles on a silver platter held out by Goli; slug title with a red marker underline. For stacks, "
            "toolkits, '7 tools' (like '/motion-graphics').", _logos(4), d_platter, grade=False),
     Design("big_words", "Last resort when nothing else fits: the words big on the left, Goli points at them.",
@@ -867,6 +890,26 @@ def direct(text, s: Story, model_url: str, model_title: str, choices: list[Desig
         DIRECTOR_SCHEMA, max_output_tokens=800, images=images)
     v = out.value
     return [n for n in v.get("ranking", []) if n in BY_NAME], str(v.get("mood", "calm")), str(v.get("reason", ""))
+
+
+REVIEW_SCHEMA = {"type": "object", "additionalProperties": False, "required": ["ok", "problems"],
+                 "properties": {"ok": {"type": "boolean"}, "problems": {"type": "array", "items": {"type": "string"}}}}
+
+
+def review(text, image: Image.Image, words: str) -> list[str]:
+    """2026-11-12 (owner): a last look at the finished picture, the way a viewer sees it: every word readable
+    in full, nothing cut off by the edge, nothing covering the words. Code checks measure boxes; this looks."""
+    small = image.convert("RGB").resize((640, 360))
+    buf = io.BytesIO()
+    small.save(buf, "JPEG", quality=85)
+    url = "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
+    out = text.generate_json(
+        "You check a YouTube thumbnail before it is published. Fail it (ok=false) if any headline word is hidden, "
+        "covered by the character or an object, cut off by the edge of the picture, too blurred to read, or too small "
+        "to read on a phone. Blurred background words are fine only if they can still be read in full. Otherwise ok=true.",
+        f"The headline words should read: {words}", REVIEW_SCHEMA, max_output_tokens=300, images=[url])
+    v = out.value
+    return [] if v.get("ok") else [f"review: {p}" for p in (v.get("problems") or ["not readable"])][:3]
 
 
 def recent_designs(root: Path, limit: int = 3) -> list[str]:
@@ -932,6 +975,11 @@ def make(title: str, words: str, punch: str, brands: list[str], out: Path, *, sh
             continue
         finally:
             T.REC = None
+        if not hits and text is not None:
+            try:
+                hits = review(text, image, s.words)
+            except Exception as exc:  # noqa: BLE001 - the code checks already passed; a failed look is not a veto
+                log({"status": "thumbnail_review_failed", "error": str(exc)[:200]})
         log({"status": "thumbnail_layout_check", "design": name, "collisions": hits[:6]})
         if not hits:
             image.convert("RGB").save(out, quality=92)
