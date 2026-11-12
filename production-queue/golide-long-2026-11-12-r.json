@@ -96,9 +96,9 @@
       "trend_pulse": {
         "query": "Anthropic Claude Whiteboards Sheets Data launch what they do ordinary users",
         "fresh_videos": 0,
-        "median_views_per_hour": 0.0,
-        "top_views_per_hour": 0.0,
-        "score": 15.0,
+        "median_views_per_hour": 0,
+        "top_views_per_hour": 0,
+        "score": 15,
         "hot": false,
         "measured_at": "2026-11-12T17:22:50.659930+00:00"
       }
@@ -133,7 +133,7 @@
         "views": 1504720,
         "views_per_hour": 31994.3,
         "breakout": 1.6,
-        "hours_old": 47.0,
+        "hours_old": 47,
         "duration_seconds": 334,
         "format": "long",
         "found_by": "channel @Fireship",
@@ -148,7 +148,7 @@
         "fresh_videos": 1,
         "median_views_per_hour": 0.1,
         "top_views_per_hour": 0.1,
-        "score": 18.0,
+        "score": 18,
         "hot": false,
         "measured_at": "2026-11-12T17:22:50.852223+00:00"
       }
@@ -166,13 +166,13 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "OpenAI Linux kernel 948 privilege escalation exploits 1.2 million explanation",
-        "score": 85.0,
+        "score": 85,
         "verdict": "pass",
         "recent_videos": 61,
         "median_views_per_day": 603377.68,
         "top_views_per_day": 4756383.62,
         "market_coverage": 4,
-        "title_query_overlap": 0.0,
+        "title_query_overlap": 0,
         "measured_at": "2026-11-12T17:22:47.289717+00:00",
         "signal_type": "youtube-most-popular-seed-proxy"
       },
@@ -231,7 +231,7 @@
         "channel": "Zack Freedman",
         "subscribers": 682000,
         "views": 240342,
-        "views_per_hour": 8629.0,
+        "views_per_hour": 8629,
         "breakout": 0.5,
         "hours_old": 27.9,
         "duration_seconds": 2421,
@@ -312,7 +312,7 @@
     "views": 1504720,
     "views_per_hour": 31994.3,
     "breakout": 1.6,
-    "hours_old": 47.0,
+    "hours_old": 47,
     "duration_seconds": 334,
     "format": "long",
     "found_by": "channel @Fireship",
@@ -329,7 +329,7 @@
     "median_views_per_day": 767863.2,
     "top_views_per_day": 767863.2,
     "market_coverage": 1,
-    "title_query_overlap": 1.0,
+    "title_query_overlap": 1,
     "measured_at": "2026-11-12T17:22:52.740283+00:00",
     "signal_type": "youtube-breakout-v1"
   },
