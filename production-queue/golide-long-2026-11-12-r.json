@@ -9,7 +9,7 @@
   "budget_class": "scheduled",
   "purpose": "channel-automation",
   "generate_at": "2026-11-12T17:00:00Z",
-  "max_cost_usd": 6.0,
+  "max_cost_usd": 6,
   "production_authorized": true,
   "output_destination": "render-and-upload",
   "owner_voice_required": true,
@@ -333,5 +333,14 @@
     "measured_at": "2026-11-12T17:22:52.740283+00:00",
     "signal_type": "youtube-breakout-v1"
   },
-  "selected_topic_source": "https://www.anthropic.com/claude-fable-and-mythos-5-2"
+  "selected_topic_source": "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+  "voice_choice": "ai",
+  "platforms": [
+    "youtube",
+    "instagram",
+    "facebook",
+    "linkedin"
+  ],
+  "video_style": "goli",
+  "_failed_runs": 1
 }
