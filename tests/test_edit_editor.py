@@ -101,3 +101,20 @@ def test_bookends_vary_and_frame_the_video():
     out = E._bookends(scenes, lines, [], 60.0, "walk_in", "lights_off")
     assert out[0]["data"]["intro"] == "walk_in" and out[-1]["data"]["outro"] == "lights_off"
     assert out[1]["start"] >= out[0]["duration"] and out[-2]["start"] + out[-2]["duration"] <= out[-1]["start"] + 1e-6
+
+
+def test_close_marked_as_intro_becomes_close():
+    from types import SimpleNamespace
+
+    from golide_engine.engine.story import plan_from_story
+    from golide_engine.vector.chapters import chapter_marks
+
+    story = {"title": "t", "chapters": [{"number": "", "title": "Intro"}, {"number": "01", "title": "One"}],
+             "script": "[[0]] Hello there friend. [[1]] The first part is here. [[0]] And that is the close of it."}
+    plan = plan_from_story(story, "long")
+    assert plan["chapters"][-1]["title"] == "Close"
+    assert [l["chapter"] for l in plan["lines"]] == sorted(l["chapter"] for l in plan["lines"])
+    bad = {"chapters": [{"number": "", "title": "Intro"}, {"number": "01", "title": "One"}],
+           "lines": [{"text": "a", "chapter": 0}, {"text": "b", "chapter": 1}, {"text": "c", "chapter": 0}]}
+    timed = [SimpleNamespace(index=i, start=float(i * 20), section="proof") for i in range(3)]
+    assert [m.title for m in chapter_marks(bad, timed)] == ["Intro", "One", "Close"]

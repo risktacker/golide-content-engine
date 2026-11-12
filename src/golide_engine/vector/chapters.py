@@ -43,14 +43,21 @@ def chapter_marks(plan: dict[str, Any], timed_lines: Sequence[Any]) -> list[Chap
     chapters = plan.get("chapters") or []
     marks: list[ChapterMark] = []
     previous: object = object()
+    highest = -1
     for timed in timed_lines:
         source = spoken[timed.index] if timed.index < len(spoken) else {}
         if chapters:
             key = source.get("chapter")
             if not isinstance(key, int) or not 0 <= key < len(chapters):
                 continue
-            chapter = chapters[key]
-            number, title = str(chapter.get("number", "")).strip(), str(chapter.get("title", "")).strip()
+            if key < highest:
+                # 2026-11-12: the writer marked the close with the intro's marker; chapters never run
+                # backwards, so a part after the last chapter is the Close
+                key, number, title = "close", "", "Close"
+            else:
+                highest = key
+                chapter = chapters[key]
+                number, title = str(chapter.get("number", "")).strip(), str(chapter.get("title", "")).strip()
         else:
             key = source.get("section", timed.section)
             number, title = "", SECTION_TITLES.get(str(key), str(key).title())
