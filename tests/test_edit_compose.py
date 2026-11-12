@@ -107,7 +107,7 @@ class StudioWardrobeTest(unittest.TestCase):
                 {"type": "host", "start": 0, "duration": 3, "data": {"place": "studio", "words": [{"text": "Hi", "at": 0.2}]}}]}
             Composer("long", outfit="violet").build(edit, Path(t) / "c")
             page = (Path(t) / "c/index.html").read_text()
-            for needle in ('id="st-desk"', "s1-host-line", 'id="pg-hoodie-violet"', 'id="chap0"', 'id="prog"'):
+            for needle in ('id="st-desk"', "s1-host-line", 'id="pg-hoodie-violet"', 'id="prog"'):   # no section label (2026-11-12)
                 self.assertIn(needle, page)
 
 

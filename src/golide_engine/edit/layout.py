@@ -166,6 +166,9 @@ def resolve(edit: dict[str, Any], comp_builder, comp: Path, size: tuple[int, int
             if not sc["data"].get("tried_swap") and place in other:
                 sc["data"]["place"] = other[place]
                 sc["data"]["tried_swap"] = True
+            elif fmt == "long":
+                sc["data"]["tried_out"] = True  # 2026-11-12 (owner): in long videos Goli stays (his quarter is kept free)
+                continue
             else:
                 sc["data"]["tried_out"] = True
                 sc["duration"] = 0.0           # Goli steps out of this scene

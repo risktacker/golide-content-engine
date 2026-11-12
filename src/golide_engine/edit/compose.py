@@ -119,6 +119,8 @@ class Composer:
         # a Short splits the frame: the proof on top (centred here), Goli at his desk below (LOWER_TOP down)
         self.cy = SIZES[fmt][1] // 2 if fmt == "long" else 580
         self.outfit = outfit
+        self.zone = False        # this scene leaves the right quarter to Goli (long videos)
+        self._subscribe_sid = None
         self.outfits: set[str] = set()
         # 2026-11-11 (owner): no two screenshots, photos or word cards may move the same way: each gets the
         # next entry, camera move, mark and pointer path from cycles of different lengths, so the
@@ -170,6 +172,10 @@ class Composer:
                 f'ease:"none"}},{t0:.3f});')
 
     def scene(self, sid: str, t0: float, dur: float, inner: str) -> None:
+        if self.zone and self.fmt == "long":
+            # 2026-11-12 (owner): Goli is in (nearly) every scene: the content keeps to the left three quarters
+            # and Goli has the right quarter, so he is never pushed out and never covers the proof
+            inner = f'<div class="zone" style="position:absolute;inset:0;transform:scale(.74);transform-origin:3% 52%">{inner}</div>'
         self.parts.append(f'<section id="{sid}" class="scene clip" data-start="{t0:.3f}" data-duration="{dur:.3f}">'
                           f'<div class="stage"><div class="cam">{inner}</div></div></section>')
 
@@ -282,9 +288,13 @@ class Composer:
                       f'<div class="label" style="font-size:30px;overflow:hidden;text-overflow:ellipsis">{_e(callout.get("sub", ""))}</div></div>')
         elif callout:
             cx0 = fx + fw + 60
+            cw = self.w - cx0 - 70
+            # 2026-11-12 (owner: a cut-off card): the label never runs past its card: sized to its longest word
+            longest = max((len(x) for x in str(callout["label"]).split()), default=1)
+            fs = int(max(40, min(84, (cw - 64) / (0.66 * longest))))
             inner += (f'<div class="card" id="{sid}-co" style="position:absolute;left:{cx0}px;top:{self.h * .24:.0f}px;'
-                      f'width:{self.w - cx0 - 70}px;box-sizing:border-box;padding:30px 32px;border-color:rgba(232,194,104,.5)">'
-                      f'<div style="font:900 84px/1 Poppins;color:#E8C268">{_e(callout["label"])}</div>'
+                      f'width:{cw}px;box-sizing:border-box;padding:30px 32px;border-color:rgba(232,194,104,.5);overflow:hidden">'
+                      f'<div style="font:900 {fs}px/1.05 Poppins;color:#E8C268;overflow-wrap:anywhere">{_e(callout["label"])}</div>'
                       f'<div class="label" style="margin-top:14px;font-size:30px">{_e(callout.get("sub", ""))}</div></div>')
         self.scene(sid, t0, dur, inner)
         if zoomed:      # a hard cut to the closer shot
@@ -697,7 +707,18 @@ class Composer:
             self.tw(f'tl.to("{ch}",{{rotationY:88,transformPerspective:1600,transformOrigin:"50% 60%",duration:.6,ease:"back.in(1.6)"}},'
                     f'{end - 1.0:.3f});')
             self.cue("whoosh", end - 0.9)
-        elif outro == "end_card":
+        if self._subscribe_sid == sid:
+            self.tw(f'tl.fromTo("#{sid}-subw",{{y:60,opacity:0}},{{y:0,opacity:1,duration:.45,ease:"back.out(1.8)"}},{t0 + .25:.3f});')
+            press = t0 + min(1.2, dur * .35)
+            self.tw(f'tl.to("#{sid}-btn",{{scale:.9,duration:.08}},{press:.3f});')
+            self.tw(f'tl.to("#{sid}-btn",{{scale:1,backgroundColor:"#3A3D48",duration:.18}},{press + .08:.3f});')
+            self.tw(f'tl.to("#{sid}-s1",{{opacity:0,duration:.12}},{press + .08:.3f});')
+            self.tw(f'tl.to("#{sid}-s2",{{opacity:1,duration:.12}},{press + .12:.3f});')
+            self.tw(f'tl.fromTo("#{sid}-bell",{{rotation:0}},{{rotation:18,duration:.09,yoyo:true,repeat:7,ease:"sine.inOut"}},{press + .35:.3f});')
+            self.tw(f'tl.set("#{sid}-bell",{{rotation:0}},{press + 1.1:.3f});')
+            self.cue("click", press)
+            self.cue("pop", press + .35)
+        if outro == "end_card":
             self.tw(f'tl.fromTo("#{sid}-end",{{x:120,opacity:0}},{{x:0,opacity:1,duration:.5,ease:"back.out(1.6)"}},{t0 + .3:.3f});')
             self.tw(f'tl.fromTo("#{sid}-sub",{{scale:1}},{{scale:1.08,duration:.35,yoyo:true,repeat:5,ease:"sine.inOut"}},{t0 + 1.0:.3f});')
 
@@ -740,7 +761,8 @@ class Composer:
             self.uses_studio = True
             bubble = studio.lower_back(sid)
         elif place != "corner":     # open stage: back-wall wordmark, spotlight, floor grid to the horizon, glow disc
-            end_card = data.get("outro") == "end_card"      # the end card owns the right side: no floating panels
+            # the end card or the subscribe button owns the right side: no floating panels
+            end_card = data.get("outro") == "end_card" or bool(data.get("subscribe"))
             cxp = x + w / 2
             panels = "".join(
                 f'<div class="panel" id="{sid}-pn{i}" style="left:{px:.0f}px;top:{py:.0f}px;width:{pw}px;height:{ph_}px">{body}</div>'
@@ -769,7 +791,7 @@ class Composer:
                       f'width:{w + 48:.0f}px;height:{size * .88:.0f}px;border-radius:36px;background:radial-gradient('
                       f'circle at 50% 35%,#1E3A9E,#0B0F1E 75%);border:2px solid rgba(232,194,104,.55)"></div>')
         title = ""
-        if place in ("full", "studio") and data.get("words") and data.get("outro") != "end_card":
+        if place in ("full", "studio") and data.get("words") and data.get("outro") != "end_card" and not data.get("subscribe"):
             spans = "".join(f'<span class="word{" gold" if w_["text"].lower().strip(".,!?") == str(data.get("punch", "")).lower() else ""}" '
                             f'id="{sid}-w{i}">{_e(w_["text"])}</span>' for i, w_ in enumerate(data["words"]))
             if place == "studio":       # the words appear on the studio's video wall
@@ -783,6 +805,7 @@ class Composer:
         floor = (studio.layout(self.fmt)["desk_y"] if place == "studio" else studio.layout("lower")["desk_y"]
                  if place == "lower" else "")
         intro, outro = data.get("intro"), data.get("outro")
+        self._subscribe_sid = sid if data.get("subscribe") else None
         card = ""
         if outro == "end_card":       # our own end card (owner 2026-11-12): Goli points at it
             card = (f'<div class="card" data-box="card" id="{sid}-end" style="position:absolute;left:{self.w * .5:.0f}px;top:{self.h * .2:.0f}px;'
@@ -792,6 +815,19 @@ class Composer:
                     f'<div id="{sid}-sub" style="display:inline-block;background:#E8C268;color:#0B0D12;font:900 46px/1 Poppins;'
                     f'padding:24px 52px;border-radius:60px">Subscribe</div>'
                     f'<div class="label" style="margin-top:30px;font-size:38px;color:#F4F1EA">golidee.com</div></div>')
+        if data.get("subscribe"):     # 2026-11-12 (owner): Goli points at the Subscribe button; it is pressed; the bell rings
+            bx, by = (self.w * .52, self.h * .36) if self.fmt == "long" else (self.w * .5 - 330, 470)
+            card += (f'<div id="{sid}-subw" data-box="card" style="position:absolute;left:{bx:.0f}px;top:{by:.0f}px;display:flex;'
+                     f'align-items:center;gap:34px;padding:34px 40px;border-radius:40px;background:rgba(18,20,30,.92);'
+                     f'border:2px solid rgba(255,255,255,.14);box-shadow:0 30px 70px rgba(0,0,0,.5)">'
+                     f'<svg viewBox="-32 -32 64 64" width="96" height="96">{mascot.logo_mark(0, 0, 60, "#F4F1EA")}</svg>'
+                     f'<div id="{sid}-btn" style="position:relative;width:400px;text-align:center;background:#E53935;color:#fff;'
+                     f'font:900 52px/1 Poppins;padding:30px 0;border-radius:60px;white-space:nowrap">'
+                     f'<span id="{sid}-s1">Subscribe</span><span id="{sid}-s2" style="position:absolute;left:0;right:0;'
+                     f'top:30px;opacity:0">Subscribed</span></div>'
+                     f'<svg id="{sid}-bell" viewBox="0 0 64 64" width="90" height="90" style="transform-origin:50% 8%">'
+                     f'<path d="M32 6c-11 0-18 9-18 20v12l-6 8h48l-6-8V26C50 15 43 6 32 6z" fill="#F4F1EA"/>'
+                     f'<circle cx="32" cy="52" r="6" fill="#F4F1EA"/></svg></div>')
         dim = (f'<div id="{sid}-dim" style="position:absolute;inset:0;background:#000;opacity:0;pointer-events:none"></div>'
                if outro == "lights_off" else "")
         inner = (f'{bubble}{title}{card}<div id="{sid}-ch" data-box="goli" data-floor="{floor}" style="position:absolute;left:{x:.0f}px;top:{y:.0f}px;width:{w:.0f}px;'
@@ -816,7 +852,7 @@ class Composer:
         if place == "corner":
             self.tw(f'tl.fromTo("#{sid}-bub",{{scale:.6,opacity:0}},{{scale:1,opacity:1,duration:.4,ease:"back.out(1.8)"}},{t0:.3f});')
         self.cue("pop", t0 + 0.1)
-        if place in ("full", "left", "right") and data.get("outro") != "end_card":
+        if place in ("full", "left", "right") and data.get("outro") != "end_card" and not data.get("subscribe"):
             for i in range(2):
                 self.tw(f'tl.fromTo("#{sid}-pn{i}",{{y:{30 + 20 * i},opacity:0}},{{y:0,opacity:1,duration:.8,ease:"power3.out"}},{t0 + 0.2 + 0.15 * i:.3f});')
                 self.tw(f'tl.to("#{sid}-pn{i}",{{y:{-14 + 28 * i},duration:{max(0.5, dur - 1):.2f},ease:"sine.inOut"}},{t0 + 1.0:.3f});')
@@ -887,6 +923,7 @@ class Composer:
         self.uses_studio = False
         for s in edit["scenes"]:
             s["_sid"] = f"s{self.n + 1}-"      # the layout check finds this scene's boxes by it
+            self.zone = bool(s["data"].get("goli_zone")) if s["type"] != "host" else False
             getattr(self, s["type"])(float(s["start"]), float(s["duration"]), s["data"], s.get("in", "rise"))
         duration = float(edit.get("duration") or max(float(s["start"]) + float(s["duration"]) for s in edit["scenes"]))
         audio = ""
@@ -940,9 +977,10 @@ class Composer:
         chapters = edit.get("chapters") or []
         from .mascot import logo_mark
 
+        # 2026-11-12 (owner): the dotted logo only (no word) and no section label ("Intro", "01 · ...") in the corner
         brand = ('<div id="brand"><div class="logo" data-box="brand"><svg width="44" height="44" viewBox="-32 -32 64 64">'
-                 f'{logo_mark(0, 0, 60, "#F4F1EA")}</svg>GOLIDE</div>')
-        brand += "".join(f'<div class="chap" data-box="brand" id="chap{i}">{_e(c["title"])}</div>' for i, c in enumerate(chapters))
+                 f'{logo_mark(0, 0, 60, "#F4F1EA")}</svg></div>')
+        chapters = []
         brand += '<div class="prog" id="prog"></div></div>'
         btw = [f'tl.fromTo("#prog",{{width:"0%"}},{{width:"100%",duration:{duration:.3f},ease:"none"}},0);']
         for i, c in enumerate(chapters):

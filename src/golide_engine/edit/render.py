@@ -203,7 +203,8 @@ def mix(edit: dict[str, Any], folder: Path, narration: Path, pictures: Path, out
     # pushed the true peak to -0.42 dBTP and QA (max -1 dBTP) refused the first long Goli video.
     audio = ("[1:a]loudnorm=I=-14:TP=-1.5:LRA=14,aresample=48000,asplit=2[v][key];"
              f"[2:a]aresample=48000,volume={mixdown['sfx']}[s];"
-             "[3:a]aresample=48000,volume=0.7[b0];"
+             # 2026-11-12 (owner): the music was too loud in the first long Goli video: 8 dB lower
+             "[3:a]aresample=48000,volume=0.4[b0];"
              f"[b0][key]sidechaincompress={TRACK_DUCK}[b];"
              # limited at 4x the sample rate so the peaks between samples are caught too (true peak)
              "[v][s][b]amix=inputs=3:duration=first:normalize=0,aresample=192000,"

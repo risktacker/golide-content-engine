@@ -182,6 +182,33 @@ def _phrase_time(lines, phrase: str, start: float, end: float) -> float | None:
     return None
 
 
+def _norm(text: str) -> list[str]:
+    return re.findall(r"[a-z0-9$%.]+", str(text).lower().replace("'", ""))
+
+
+def _readable_phrase(text: str, lines, start: float, end: float, punch: str | None = None) -> str:
+    """2026-11-12 (owner: "finish line. proves selected"): words on screen are a phrase a person would
+    read: the editor's words when they appear in this order in what is said, otherwise 3 to 6 spoken
+    words around the key word, never across a sentence end."""
+    said = " ".join(l.text for l in lines if l.start < end and l.end > start)
+    want = _norm(text)
+    flat = " ".join(_norm(said))
+    if want and len(want) <= 8 and " ".join(want) in flat and not re.search(r"[.!?]\s+\S", str(text).strip()):
+        return text
+    for sentence in re.split(r"(?<=[.!?])\s+", said):
+        words = sentence.split()
+        if not words:
+            continue
+        key = next((i for i, w in enumerate(words) if punch and punch.lower() in w.lower()), None)
+        if key is None and punch:
+            continue
+        key = key or 0
+        a = max(0, key - 3)
+        return " ".join(words[a:a + 6]).strip(" ,;:")
+    words = said.split()
+    return " ".join(words[:6]).strip(" ,;:") or text
+
+
 def _screen_words(text: str, lines, start: float, end: float) -> list[dict[str, Any]]:
     words = str(text or "").split()[:8]
     out, last = [], 0.15
@@ -244,6 +271,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
             poses.insert(0, {"pose": "talk", "at": 0})
 
         def words_scene(text=words, punch=s.get("punch")):
+            text = _readable_phrase(text, lines, t0, t1, punch)
             return {"type": "kinetic_title", "start": t0, "duration": dur, "in": "cut",
                     "data": {"words": _screen_words(text, lines, t0, t1), "punch": (punch or "").lower().strip(".,!?")}}
 
@@ -346,9 +374,12 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
             out.append({"type": "chapter_card", "start": t0, "duration": dur, "in": "whip", "data": {
                 "number": "", "title": s.get("label") or words}})
         elif kind == "follow":
-            out.append({"type": "follow_cta", "start": t0, "duration": dur, "data": {"reason": s.get("label") or ""}})
-            out.append({"type": "host", "start": t0 + 0.3, "duration": max(0.5, dur - 0.3), "data": {
-                "place": "corner", "cues": _cues_between(cues, t0 + 0.3, t1), "poses": [{"pose": "wave", "at": 0}]}})
+            # 2026-11-12 (owner): no "follow" text card: Goli points at a Subscribe button that gets pressed,
+            # then the bell rings
+            out.append({"type": "host", "start": t0, "duration": dur, "data": {
+                "place": "full" if fmt == "long" else "lower", "subscribe": True, "cues": _cues_between(cues, t0, t1),
+                "poses": [{"pose": "point" if fmt == "long" else "point_up", "at": 0},
+                          {"pose": "thumbs_up", "at": round(min(dur - 0.4, 2.2), 2)}]}})
         else:
             if kind not in ("words", None):
                 notes.append(f"scene {k}: {kind} without its data, shown as words")
@@ -429,12 +460,23 @@ REACT = {"browser_shot": "point_up", "stat_counter": "shock", "comparison": "exp
          "chapter_card": "talk", "follow_cta": "wave"}
 
 
+# 2026-11-12 (owner): in long videos Goli stands right of the proof in (nearly) every scene and reacts to it:
+# points at the page, is shocked by the number, counts through the steps, shrugs at a doubt; never the same
+# gesture twice in a row for the same kind of card.
+REACT_LONG = {"browser_shot": ["point_left", "point_up", "explain"], "photo": ["point_left", "think"],
+              "stat_counter": ["shock", "point_left"], "comparison": ["shrug", "think", "explain"],
+              "steps": ["explain", "point_up", "thumbs_up"], "timeline": ["point_left", "explain"],
+              "flow": ["explain", "point_left"], "quote_card": ["think", "shrug"], "logo_tiles": ["thumbs_up", "point_left"],
+              "kinetic_title": ["explain", "talk", "point_left"], "chapter_card": ["wave", "talk"]}
+
+
 def _lower_host(scenes: list[dict], cues: list[dict], fmt: str = "short") -> list[dict]:
     corner = [s for s in scenes if s["type"] == "host" and s["data"].get("place") == "corner"]
     main = [s for s in scenes if s not in corner]
     out: list[dict] = []
     run: list[dict] = []
     runs = [0]
+    used: dict[str, int] = {}
 
     def close():
         if not run:
@@ -443,6 +485,14 @@ def _lower_host(scenes: list[dict], cues: list[dict], fmt: str = "short") -> lis
         t1 = run[-1]["start"] + run[-1]["duration"]
         poses = []
         for scene in run:
+            if fmt == "long":
+                options = REACT_LONG.get(scene["type"], ["talk", "explain"])
+                used[scene["type"]] = used.get(scene["type"], -1) + 1
+                poses.append({"pose": options[used[scene["type"]] % len(options)], "at": round(scene["start"] - t0, 3)})
+                if scene["duration"] > 3.0:          # then back to talking, so he never freezes in one gesture
+                    poses.append({"pose": "talk", "at": round(scene["start"] - t0 + scene["duration"] * .6, 3)})
+                scene["data"]["goli_zone"] = True
+                continue
             poses.append({"pose": REACT.get(scene["type"], "talk"), "at": round(scene["start"] - t0, 3)})
             for c in corner:            # the editor's own reaction words for this card win
                 if abs(c["start"] - scene["start"]) < 0.6:
@@ -451,7 +501,7 @@ def _lower_host(scenes: list[dict], cues: list[dict], fmt: str = "short") -> lis
                             poses.append({"pose": p["pose"], "at": round(c["start"] - t0 + p["at"], 3)})
         poses = sorted(poses, key=lambda p: p["at"])
         # 2026-11-11 (owner): not always at the desk: every other run of cards he stands beside them
-        place = ("lower", "side")[runs[0] % 2] if fmt == "short" else ("side", "corner")[runs[0] % 2]
+        place = ("lower", "side")[runs[0] % 2] if fmt == "short" else ("side", "side", "corner")[runs[0] % 3]
         runs[0] += 1
         out.append({"type": "host", "start": t0, "duration": t1 - t0, "data": {
             "place": place, "cues": [{"start": round(c["start"] - t0, 3), "value": c["value"]}
