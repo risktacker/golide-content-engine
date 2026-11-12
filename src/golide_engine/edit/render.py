@@ -205,17 +205,33 @@ def mix(edit: dict[str, Any], folder: Path, narration: Path, pictures: Path, out
              f"[2:a]aresample=48000,volume={mixdown['sfx']}[s];"
              "[3:a]aresample=48000,volume=0.7[b0];"
              f"[b0][key]sidechaincompress={TRACK_DUCK}[b];"
-             "[v][s][b]amix=inputs=3:duration=first:normalize=0,alimiter=limit=0.79:level=0:attack=2:release=60[a]")
+             # limited at 4x the sample rate so the peaks between samples are caught too (true peak)
+             "[v][s][b]amix=inputs=3:duration=first:normalize=0,aresample=192000,"
+             "alimiter=limit=0.79:level=0:attack=2:release=60,aresample=48000,volume={trim}dB[a]")
     output.parent.mkdir(parents=True, exist_ok=True)
     target = output.with_name(output.stem + ".mixing.mp4") if copy_video else output
     video = (["-c:v", "copy"] if copy_video else
              # 2026-11-11 (owner): an 85 MB Short is too big: standard H.264 near YouTube's own rate
              ["-c:v", "libx264", "-preset", "veryfast", "-crf", "21", "-maxrate", "12M", "-bufsize", "24M",
               "-pix_fmt", "yuv420p"])
-    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(pictures), "-i", str(narration), "-i", str(sfx),
-                    "-i", str(bed), "-filter_complex", audio, "-map", "0:v", "-map", "[a]", *video,
-                    "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-t", f"{duration:.3f}", "-movflags", "+faststart",
-                    str(target)], check=True)
+    from ..quality.audio import measure_loudness
+
+    trim = 0.0
+    for _ in range(3):
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(pictures), "-i", str(narration), "-i", str(sfx),
+                        "-i", str(bed), "-filter_complex", audio.replace("{trim}", f"{trim:.2f}"), "-map", "0:v",
+                        "-map", "[a]", *video, "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-t", f"{duration:.3f}",
+                        "-movflags", "+faststart", str(target)], check=True)
+        # 2026-11-12: measured after the encode, as QA measures it; brought under -1.5 dBTP if it is over
+        peak = measure_loudness(target)["true_peak_dbtp"]
+        if peak <= -1.3:
+            break
+        trim -= peak + 1.6
+        print(json.dumps({"status": "mix_peak", "true_peak": peak, "trim_db": round(trim, 2)}))
+        if not copy_video:          # the pictures are encoded once; a second pass only redoes the sound
+            pictures, video = target, ["-c:v", "copy"]
+            target = output.with_name(output.stem + ".mixing.mp4")
+            copy_video = True
     if copy_video:
         target.replace(output)
     # the opening frame doubles as the Short's thumbnail card (as the vector renderer's cover did)
