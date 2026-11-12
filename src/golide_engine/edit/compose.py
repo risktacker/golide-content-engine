@@ -556,6 +556,152 @@ class Composer:
             self.cue("click", at)
         self.drift(sid, t0, dur, 0.012)
 
+    def walkthrough(self, t0, dur, data, how="rise"):
+        """2026-11-12 (owner, modelled on Outskill): steps are shown IN the real product, not as text. The
+        product's own page sits in a browser frame; for each step the camera moves to the exact button, field or
+        setting, the cursor glides there and clicks, everything else dims, and a numbered badge names the step."""
+        sid = self._id("walk")
+        steps = data["steps"]
+        fw = 1500 if self.fmt == "long" else 940
+        page_w = float(data.get("page_width", 1440))
+        k = fw / page_w
+        with Image.open(data["image"]) as im:
+            img_h = fw * im.height / im.width
+        bar, head = 44, 70 if data.get("heading") else 0
+        ph = min(img_h, fw * (0.62 if self.fmt == "long" else 1.1), self.h - 160 - bar - head)
+        fx = (self.w - fw) // 2
+        fy = (self.h - ph - bar + head) / 2 if self.fmt == "long" else 170 + head
+        z = 2.5 if self.fmt == "long" else 2.2       # close enough to read the button itself
+        cur = 46 / z
+        marks = ""
+        tw = []
+        prev = None
+        for i, st in enumerate(steps):
+            x, y, w, h = (v * k for v in st["rect"])
+            at = t0 + float(st["at"])
+            ox, oy = x + w / 2, y + h / 2
+            px = min(max(fw / 2 - ox * z, fw - fw * z), 0)
+            py = min(max(ph / 2 - oy * z, ph - img_h * z), 0)
+            move = max(t0 + 0.35, at - 0.75)
+            tw.append(f'tl.to("#{sid}-pg",{{x:{px:.0f},y:{py:.0f},scale:{z},duration:{min(.7, at - move):.2f},'
+                      f'ease:"power3.inOut"}},{move:.3f});')
+            # the cursor glides from the last step (or in from the corner) and clicks
+            cx, cy = x + min(w, 260) * 0.5, y + h * 0.6
+            frm = prev or (cx + 160, cy + 120)
+            tw.append(f'tl.fromTo("#{sid}-cur",{{x:{frm[0]:.0f},y:{frm[1]:.0f},opacity:1}},{{x:{cx:.0f},y:{cy:.0f},'
+                      f'duration:.55,ease:"power2.inOut",immediateRender:{str(i == 0).lower()}}},{at - 0.6:.3f});')
+            tw.append(f'tl.fromTo("#{sid}-cur svg",{{scale:1}},{{scale:.78,duration:.08,yoyo:true,repeat:1,'
+                      f'immediateRender:false}},{at - 0.05:.3f});')
+            marks += (f'<div id="{sid}-rip{i}" style="position:absolute;left:{cx - 22 / z * 2:.0f}px;top:{cy - 22 / z * 2:.0f}px;'
+                      f'width:{88 / z:.0f}px;height:{88 / z:.0f}px;border-radius:50%;border:{4 / z:.1f}px solid #E8C268;opacity:0"></div>')
+            tw.append(f'tl.fromTo("#{sid}-rip{i}",{{scale:.3,opacity:1}},{{scale:1.9,opacity:0,duration:.45,ease:"power2.out"}},{at:.3f});')
+            # the spotlight: everything but the target dims; a gold frame sits round it
+            pad = 8 / z
+            marks += (f'<div id="{sid}-sp{i}" style="position:absolute;left:{x - pad:.0f}px;top:{y - pad:.0f}px;'
+                      f'width:{w + 2 * pad:.0f}px;height:{h + 2 * pad:.0f}px;border-radius:{10 / z:.0f}px;'
+                      f'border:{4 / z:.1f}px solid #E8C268;box-shadow:0 0 0 4000px rgba(5,6,10,.58),0 0 {24 / z:.0f}px rgba(232,194,104,.7);opacity:0"></div>')
+            tw.append(f'tl.fromTo("#{sid}-sp{i}",{{opacity:0}},{{opacity:1,duration:.3}},{at + 0.02:.3f});')
+            # the badge: the step's number and its words, beside the target (below when there is no room)
+            fs = 40 / z
+            # the badge goes where the viewer can see it: right of the target when it fits inside the frame on
+            # screen, else under it, pulled left so it never runs past the frame's edge
+            bw = (len(st["label"]) * 0.6 * fs + fs * 1.7 + 50 / z) * z           # its width on screen
+            sx = px + (x + w) * z                                                  # target's right edge on screen
+            if sx + 18 + bw < fw - 16:
+                bx, by = x + w + 18 / z, oy - fs * .85
+            else:
+                bx, by = max(-px / z + 16 / z, min(x, (fw - 16 - bw - px) / z)), y + h + 14 / z
+            marks += (f'<div id="{sid}-b{i}" style="position:absolute;left:{bx:.0f}px;top:{by:.0f}px;display:flex;'
+                      f'align-items:center;gap:{10 / z:.0f}px;white-space:nowrap;opacity:0">'
+                      f'<div style="width:{fs * 1.7:.0f}px;height:{fs * 1.7:.0f}px;border-radius:50%;background:#E8C268;color:#07080B;'
+                      f'display:grid;place-items:center;font:900 {fs:.0f}px Poppins">{i + 1}</div>'
+                      f'<div style="background:rgba(10,11,16,.92);border:{2 / z:.1f}px solid rgba(232,194,104,.6);'
+                      f'border-radius:{12 / z:.0f}px;padding:{8 / z:.0f}px {16 / z:.0f}px;font:800 {fs:.0f}px Poppins;color:#fff">'
+                      f'{_e(st["label"])}</div></div>')
+            tw.append(f'tl.fromTo("#{sid}-b{i}",{{x:{-20 / z:.0f},opacity:0}},{{x:0,opacity:1,duration:.35,ease:"back.out(1.8)"}},{at + 0.12:.3f});')
+            if i + 1 < len(steps):
+                nxt = t0 + float(steps[i + 1]["at"]) - 0.75
+                tw.append(f'tl.to(["#{sid}-sp{i}","#{sid}-b{i}"],{{opacity:0,duration:.25}},{max(at + 0.5, nxt - 0.1):.3f});')
+            self.cue("click", at)
+            prev = (cx, cy)
+        marks += (f'<div id="{sid}-cur" style="position:absolute;left:0;top:0;width:{cur:.0f}px;height:{cur:.0f}px;'
+                  f'opacity:0;z-index:5"><svg viewBox="0 0 24 24" width="{cur:.0f}" height="{cur:.0f}" style="transform-origin:0 0">'
+                  f'<path d="M4 2 L4 19 L8.5 15 L11.5 22 L14.5 20.6 L11.6 13.8 L18 13.8 Z" fill="#fff" stroke="#111" '
+                  f'stroke-width="1.6" stroke-linejoin="round"/></svg></div>')
+        chrome = (f'<div class="bar"><div class="dot" style="background:#ff5f57"></div><div class="dot" '
+                  f'style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div>'
+                  f'<div class="url">{_e(data.get("url", ""))}</div></div>')
+        img = self.asset(data["image"])
+        inner = (f'<div class="frame" id="{sid}-f" style="left:{fx}px;top:{fy:.0f}px;width:{fw}px;height:{ph + bar:.0f}px;'
+                 f'border:1.5px solid rgba(232,194,104,.55);box-shadow:0 30px 90px rgba(0,0,0,.7),0 0 60px rgba(232,194,104,.18)">'
+                 f'{chrome}<div class="page" style="top:{bar}px"><div id="{sid}-pg" style="position:absolute;left:0;top:0;'
+                 f'width:{fw}px;height:{img_h:.0f}px;transform-origin:0 0"><img src="{img}">{marks}</div></div></div>')
+        if data.get("heading"):
+            inner += (f'<div class="chip" id="{sid}-h" style="position:absolute;left:{fx}px;top:{fy - 64:.0f}px;'
+                      f'font-size:28px">{_e(data["heading"])}</div>')
+        self.scene(sid, t0, dur, inner)
+        self.tw(f'tl.fromTo("#{sid}-f",{{scale:.7,y:60,opacity:0}},{{scale:1,y:0,opacity:1,duration:.55,ease:"back.out(1.3)"}},{t0:.3f});')
+        self.cue("whoosh", t0)
+        self.tweens.extend(tw)
+
+    def prompt_card(self, t0, dur, data, how="rise"):
+        """What to type into an AI tool, typed letter by letter into a chat box, then sent."""
+        sid = self._id("prompt")
+        text = str(data["text"])
+        cw = min(1240, self.w - 120)
+        fs = 46 if self.fmt == "long" else 52
+        chars = "".join(f'<span style="display:none">{_e(c)}</span>' for c in text)
+        inner = (f'<div class="card" id="{sid}-c" style="position:absolute;left:50%;top:{self.cy}px;width:{cw}px;margin-left:-{cw // 2}px;'
+                 f'transform:translateY(-50%);padding:34px 40px;box-sizing:border-box">'
+                 f'<div class="label" style="margin-bottom:22px">{_e(data.get("tool") or "Prompt")}</div>'
+                 f'<div style="display:flex;align-items:flex-end;gap:24px;background:rgba(255,255,255,.05);'
+                 f'border:1.5px solid rgba(255,255,255,.14);border-radius:22px;padding:26px 28px">'
+                 f'<div id="{sid}-t" style="flex:1;font:600 {fs}px/1.3 Inter, Poppins;color:#F4F1EA;min-height:{fs * 1.3:.0f}px">{chars}'
+                 f'<span id="{sid}-caret" style="display:inline-block;width:4px;height:{fs:.0f}px;background:#E8C268;'
+                 f'vertical-align:-6px;margin-left:3px"></span></div>'
+                 f'<div id="{sid}-send" style="width:76px;height:76px;border-radius:50%;background:#E8C268;display:grid;'
+                 f'place-items:center;flex:none"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7" '
+                 f'stroke="#07080B" stroke-width="3" fill="none" stroke-linecap="round"/></svg></div></div></div>')
+        self.scene(sid, t0, dur, inner)
+        self.entrance(sid, t0, how)
+        start = t0 + 0.45
+        typing = max(0.8, min(dur - 1.3, 0.045 * len(text)))
+        self.tw(f'tl.fromTo("#{sid}-t > span:not(#{sid}-caret)",{{display:"none"}},{{display:"inline",duration:.001,'
+                f'stagger:{typing / max(1, len(text)):.4f},immediateRender:true}},{start:.3f});')
+        self.tw(f'tl.fromTo("#{sid}-caret",{{opacity:1}},{{opacity:0,duration:.01,repeat:{int(dur / 0.5)},yoyo:true,'
+                f'repeatDelay:.25}},{t0:.3f});')
+        send = start + typing + 0.25
+        self.tw(f'tl.fromTo("#{sid}-send",{{scale:1}},{{scale:.82,duration:.09,yoyo:true,repeat:1,immediateRender:false}},{send:.3f});')
+        self.tw(f'tl.fromTo("#{sid}-send",{{boxShadow:"0 0 0 0 rgba(232,194,104,.8)"}},{{boxShadow:"0 0 0 26px rgba(232,194,104,0)",'
+                f'duration:.5,immediateRender:false}},{send:.3f});')
+        self.cue("click", send)
+        self.drift(sid, t0, dur, 0.01)
+
+    def checklist(self, t0, dur, data, how="wipe"):
+        """Items ticked off one by one, each on the word that says it."""
+        sid = self._id("check")
+        fs = 54 if self.fmt == "long" else 64
+        rows = ""
+        for i, item in enumerate(data["items"]):
+            rows += (f'<div class="row" id="{sid}-i{i}" style="gap:30px;margin:24px 0;opacity:.45">'
+                     f'<div style="width:72px;height:72px;border-radius:18px;border:4px solid #E8C268;display:grid;place-items:center;flex:none">'
+                     f'<svg width="50" height="50" viewBox="0 0 24 24"><path id="{sid}-k{i}" d="M4 12.5l5 5L20 6.5" fill="none" '
+                     f'stroke="#E8C268" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" '
+                     f'stroke-dasharray="26" stroke-dashoffset="26"/></svg></div>'
+                     f'<div style="font:800 {fs}px/1.1 Poppins">{_e(item)}</div></div>')
+        m = 180 if self.fmt == "long" else 70
+        inner = (f'<div style="position:absolute;left:{m}px;right:{m}px;top:{self.cy}px;transform:translateY(-50%)">'
+                 f'<div class="label" style="margin-bottom:18px">{_e(data.get("heading", ""))}</div>{rows}</div>')
+        self.scene(sid, t0, dur, inner)
+        self.entrance(sid, t0, how)
+        n = len(data["items"])
+        for i in range(n):
+            at = t0 + float((data.get("at") or [0.4 + 0.75 * j for j in range(n)])[i])
+            self.tw(f'tl.to("#{sid}-i{i}",{{opacity:1,duration:.2}},{at:.3f});')
+            self.tw(f'tl.to("#{sid}-k{i}",{{strokeDashoffset:0,duration:.3,ease:"power2.out"}},{at:.3f});')
+            self.cue("pop", at)
+        self.drift(sid, t0, dur, 0.012)
+
     def timeline(self, t0, dur, data, how="whip"):
         sid = self._id("time")
         pts = data["points"]                                # [{"when":..,"what":..}]
