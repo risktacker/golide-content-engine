@@ -2115,7 +2115,8 @@ class ProductionService:
                     print(json.dumps({"status": "short_thumbnail_from_cover"}))
                     return
             # 2026-11-10 (owner approved): the editing styles drawn in code with the story's real
-            # logos as glossy 3D tiles; no image model. Stories with no known logo keep the photo path.
+            # logos as glossy 3D tiles; no image model. 2026-11-12: every story gets one (Goli plus
+            # logos, the source's picture, or the big words); the paid photo stays only for a failure.
             try:
                 words_path = work / "thumbnail-words.json"
                 if not words_path.exists():
@@ -2128,12 +2129,35 @@ class ProductionService:
                         words_path.write_text(json.dumps({"words": picked[0][0], "punch": picked[0][1],
                                                           "brands": list(LAST_BRANDS)}) + "\n", encoding="utf-8")
                 chosen = json.loads(words_path.read_text(encoding="utf-8"))
-                from ..vector.thumb_styles import make as styled
                 rows = self.database.rows("SELECT COUNT(DISTINCT production_id) AS n FROM stage_runs WHERE stage='thumbnail' AND status='completed'")
                 n = int(rows[0]["n"]) if rows else 0
-                style = styled(metadata["title"], str(chosen.get("words", "")), str(chosen.get("punch", "")),
-                               [str(b) for b in chosen.get("brands") or []], n, thumbnail)
+                # 2026-11-12 (owner): the thumbnail engine: many designs drawn from real things (logos, the
+                # captured source pages, the source photo) with Goli as host; picked per video against the
+                # thumbnail of the video ours is modelled on; never the design of the last videos; every
+                # design passes the collision check before it is used.
+                from ..edit.pipeline import outfit_today
+                from ..vector.thumb_engine import make as engine_make, recent_designs
+                sources = work / "edit" / "sources"
+                if not list(sources.glob("*-top.png")) and (work / "research.json").exists():
+                    sources = work / "thumb-sources"
+                    try:
+                        if not list(sources.glob("*-top.png")):
+                            from ..engine.source_capture import capture
+                            capture(json.loads((work / "research.json").read_text(encoding="utf-8")), sources)
+                    except Exception as exc:  # noqa: BLE001 - designs without screenshots still work
+                        print(json.dumps({"status": "thumbnail_capture_failed", "error": str(exc)[:200]}))
+                shots = sorted(sources.glob("*-top.png"))
+                photos = sorted(sources.glob("*-photo.png"))
+                model = spec.get("source_breakout") or {}
+                style = engine_make(metadata["title"], str(chosen.get("words", "")), str(chosen.get("punch", "")),
+                                    [str(b) for b in chosen.get("brands") or []], thumbnail, shots=shots,
+                                    photo=photos[0] if photos else None, outfit=outfit_today(),
+                                    recent=recent_designs(self.root), text=self.providers.text(live=True),
+                                    model_url=str(model.get("url", "")), model_title=str(model.get("title", "")),
+                                    seed=n, log=lambda e: print(json.dumps(e)))
                 if style:
+                    (work / "thumbnail-style.json").write_text(json.dumps({"thumbnail_style": style}) + "\n",
+                                                               encoding="utf-8")
                     print(json.dumps({"status": "thumbnail_styled", "style": style, "brands": chosen.get("brands")}))
                     return
             except Exception as exc:  # noqa: BLE001 - the photo thumbnail is the fallback
@@ -2195,7 +2219,10 @@ class ProductionService:
             encoding="utf-8",
         )
         params_path = work / "generation-parameters.json"
-        params_path.write_text(json.dumps(spec.get("generation_parameters", {}), indent=2) + "\n", encoding="utf-8")
+        params = dict(spec.get("generation_parameters", {}))
+        if (work / "thumbnail-style.json").exists():      # so the next video never repeats this design
+            params.update(json.loads((work / "thumbnail-style.json").read_text(encoding="utf-8")))
+        params_path.write_text(json.dumps(params, indent=2) + "\n", encoding="utf-8")
         qa_path = work / "qa-report.json"
         def qa_stage():
             # "Add to dictionary": a word the dictionary does not know is accepted
