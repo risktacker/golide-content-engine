@@ -175,7 +175,7 @@ class Composer:
         if self.zone and self.fmt == "long":
             # 2026-11-12 (owner): Goli is in (nearly) every scene: the content keeps to the left three quarters
             # and Goli has the right quarter, so he is never pushed out and never covers the proof
-            inner = f'<div class="zone" style="position:absolute;inset:0;transform:scale(.74);transform-origin:3% 52%">{inner}</div>'
+            inner = f'<div class="zone" style="position:absolute;inset:0;transform:scale(.75);transform-origin:2% 50%">{inner}</div>'
         self.parts.append(f'<section id="{sid}" class="scene clip" data-start="{t0:.3f}" data-duration="{dur:.3f}">'
                           f'<div class="stage"><div class="cam">{inner}</div></div></section>')
 
@@ -331,7 +331,25 @@ class Composer:
             else:
                 at = max(t0 + 0.45, t0 + float(spots[0].get("at", 1.2)) - 0.5)
                 origin = f'transformOrigin:"{ox:.0f}px {oy:.0f}px"'
-                if camera == 0:                # straight push to the fact
+                if data.get("record") and dur >= 2.5:
+                    # 2026-11-12 (owner): like a screen recording: the page is scrolled with the mouse wheel in a
+                    # few human steps from the top down to the fact, then the camera leans in on it
+                    target = max(ph - img_h, min(0.0, ph * .42 - oy))
+                    steps = 3 if target < -ph * .6 else 2
+                    span = max(0.9, min(at - t0 - 0.2, dur * .55))
+                    for k in range(steps):
+                        when = t0 + 0.3 + span * k / steps
+                        y_k = target * (k + 1) / steps
+                        self.tw(f'tl.to("#{sid}-pg",{{y:{y_k:.0f},duration:{span / steps * .55:.2f},ease:"power2.out"}},{when:.3f});')
+                        self.cue("click", when) if k == 0 else None
+                    lean = t0 + 0.3 + span + 0.1
+                    zf = max(z, 1.35)
+                    # scaled around the fact: the fact sits a little above the middle, page edges never show
+                    yl = min(max(ph * .45 - oy, ph - oy - (img_h - oy) * zf), oy * (zf - 1))
+                    xl = min(max(fw / 2 - ox, -(fw - ox) * (zf - 1)), ox * (zf - 1))
+                    self.tw(f'tl.to("#{sid}-pg",{{x:{xl:.0f},y:{yl:.0f},scale:{zf:.3f},'
+                            f'{origin},duration:.7,ease:"power2.inOut"}},{lean:.3f});')
+                elif camera == 0:                # straight push to the fact
                     self.tw(f'tl.to("#{sid}-pg",{{x:{dx:.0f},y:{dy:.0f},scale:{z:.3f},{origin},duration:.8,'
                             f'ease:"power2.inOut"}},{at:.3f});')
                 elif camera == 1:              # scroll down the page, then lean in
@@ -735,16 +753,16 @@ class Composer:
         cues = data.get("cues") or []
         outfit = data.get("outfit") or self.outfit
         self.outfits.add(outfit)
-        side = 560 if self.fmt == "short" else 600
+        side = 560 if self.fmt == "short" else 820     # 2026-11-12 (owner): big enough to be seen
         size = {"full": 1000, "left": 860, "right": 860, "corner": 420, "studio": studio.layout(self.fmt)["size"],
                 "lower": studio.layout("lower")["size"], "side": side}[place]
         w = size * mascot.VIEW[0] / mascot.VIEW[1]
         x = {"full": self.w * 0.27 - w / 2, "left": 40, "right": self.w - w - 40, "corner": self.w - w - 50,
              "studio": studio.layout(self.fmt)["seat_x"] - w / 2, "lower": studio.layout("lower")["seat_x"] - w / 2,
-             "side": 10 if self.fmt == "short" else self.w - w - 30}[place]
+             "side": 10 if self.fmt == "short" else self.w - w + 60}[place]
         y = self.h - size - (30 if place != "corner" else 20)
         if place == "side":   # standing beside the block; on a Short his feet stay above YouTube's caption area
-            y = (1700 if self.fmt == "short" else self.h - 20) - size
+            y = (1700 if self.fmt == "short" else self.h + 150) - size   # long: knees at the frame's bottom edge
         if place in ("studio", "lower"):      # seated: desk top at his waist
             y = studio.layout(self.fmt if place == "studio" else "lower")["desk_y"] - 430 * size / 540
         layers = ""

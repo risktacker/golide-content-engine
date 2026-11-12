@@ -299,7 +299,8 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
             elif ph is not None:
                 notes.append(f"scene {k}: shot {ph} not on page {src}")
             # a shot below the first screen is filmed on the whole-page capture
-            deep = bool(spot) and spot["rect"][1] + spot["rect"][3] > 860 and page.get("full")
+            # 2026-11-12 (owner: Outskill's screen recordings): long videos film the whole page and scroll it
+            deep = bool(page.get("full")) and (fmt == "long" or (bool(spot) and spot["rect"][1] + spot["rect"][3] > 860))
             image = capture_dir / (page["full"] if deep else page["top"])
             if spot and not _shows_something(image, spot["rect"]):
                 # 2026-11-11: a zoom landed on an empty dark patch of a page: use the headline instead
@@ -313,7 +314,8 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
                 "image": image,
                 "url": page.get("url", ""), "edge": "glass" if _dark(image) else (s.get("edge") or "glass"),
                 "page_width": 1440, "highlights": [h for h in highlights if h], "headline": page.get("headline"),
-                "photo": str(capture_dir / page["photo"]) if page.get("photo") else None}})
+                "photo": str(capture_dir / page["photo"]) if page.get("photo") else None,
+                "record": bool(deep and fmt == "long")}})
             if s.get("goli_corner") and dur >= 1.8:
                 out.append({"type": "host", "start": t0 + 0.35, "duration": dur - 0.35, "data": {
                     "place": "corner", "cues": _cues_between(cues, t0 + 0.35, t1),
