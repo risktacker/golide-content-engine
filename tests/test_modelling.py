@@ -297,7 +297,7 @@ class LongLengthTests(unittest.TestCase):
 
         plan = {"lines": [{"text": "word " * 600}]}
         self.assertIn("too short", " ".join(length_problems(plan, "long")))
-        plan = {"lines": [{"text": "word " * 1350}]}
+        plan = {"lines": [{"text": "word " * 830}]}
         self.assertEqual([], length_problems(plan, "long"))
 
 

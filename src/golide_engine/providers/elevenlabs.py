@@ -55,6 +55,23 @@ def alignment_to_words(alignment: dict[str, Any]) -> list[dict[str, float | str]
     return words
 
 
+def strip_cues(words: list[dict]) -> list[dict]:
+    """Drop the emotion cues ([excited], [clears throat]) from timed words: they are performed, not said."""
+    out, inside = [], False
+    for w in words:
+        token = str(w["word"])
+        if "[" in token:
+            inside = True
+        if not inside:
+            out.append(w)
+        elif "]" in token:
+            inside = False
+            rest = token.split("]", 1)[1].strip()
+            if rest:
+                out.append(dict(w, word=rest))
+    return out
+
+
 class ElevenLabsVoiceProvider:
     api_root = "https://api.elevenlabs.io/v1"
     _FORBIDDEN_NARRATION_PREFIX = re.compile(
@@ -155,14 +172,27 @@ class ElevenLabsVoiceProvider:
             "model": self.model,
         }
 
-    def synthesize(self, script: str, output: Path) -> ProviderOutput:
-        text = script.strip()
-        self.validate_spoken_narration(text)
-        characters = len(text)
-        if characters > self.max_characters_per_request:
-            raise ValueError(
-                f"narration has {characters} characters; limit is {self.max_characters_per_request}"
-            )
+    def _parts(self, text: str) -> list[str]:
+        """Paragraphs (then sentences) packed into requests under the per-request limit."""
+        limit = self.max_characters_per_request
+        pieces: list[str] = []
+        for para in [p.strip() for p in re.split(r"\n\s*\n", text) if p.strip()]:
+            if len(para) <= limit:
+                pieces.append(para)
+                continue
+            for sentence in re.split(r"(?<=[.!?])\s+", para):
+                pieces.append(sentence)
+        parts: list[str] = []
+        for piece in pieces:
+            if len(piece) > limit:
+                raise ValueError(f"one sentence has {len(piece)} characters; limit is {limit}")
+            if parts and len(parts[-1]) + 2 + len(piece) <= limit:
+                parts[-1] += "\n\n" + piece
+            else:
+                parts.append(piece)
+        return parts
+
+    def _one(self, text: str, output: Path) -> tuple[list[dict], Any]:
         payload, headers = self._request(
             "POST",
             (
@@ -176,13 +206,57 @@ class ElevenLabsVoiceProvider:
             },
         )
         encoded_audio = payload.get("audio_base64")
+        if not encoded_audio:
+            raise RuntimeError("ElevenLabs response omitted audio")
         alignment = payload.get("normalized_alignment") or payload.get("alignment")
-        if not encoded_audio or not alignment:
-            raise RuntimeError("ElevenLabs response omitted audio or alignment")
-        words = alignment_to_words(alignment)
+        try:
+            words = alignment_to_words(alignment) if alignment else []
+        except ValueError:
+            words = []
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_bytes(base64.b64decode(encoded_audio, validate=True))
-        request_id = headers.get("request-id") or headers.get("x-request-id")
+        return words, headers
+
+    @staticmethod
+    def _duration(path: Path) -> float:
+        import subprocess
+        out = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)],
+                             capture_output=True, text=True, check=True)
+        return float(out.stdout.strip() or 0)
+
+    def synthesize(self, script: str, output: Path) -> ProviderOutput:
+        """2026-11-12: read in parts under the per-request limit (Eleven v3 takes 5,000 characters) and joined.
+        Emotion cues in square brackets ([excited], [serious]...) are performed, never spoken, and are
+        dropped from the word timings. Word timings may be empty (then the caller transcribes the audio)."""
+        import subprocess
+        text = script.strip()
+        self.validate_spoken_narration(text)
+        characters = len(text)
+        parts = self._parts(text)
+        words: list[dict] = []
+        files: list[Path] = []
+        offset, request_id, timed = 0.0, None, True
+        for i, part in enumerate(parts):
+            piece = output.with_name(f"{output.stem}.part{i}{output.suffix}")
+            part_words, headers = self._one(part, piece)
+            request_id = request_id or headers.get("request-id") or headers.get("x-request-id")
+            timed = timed and bool(part_words)
+            words += [dict(w, start=float(w["start"]) + offset, end=float(w["end"]) + offset) for w in part_words]
+            try:
+                offset += self._duration(piece)
+            except Exception:  # noqa: BLE001 - no readable length: the last timed word ends the part
+                offset = float(words[-1]["end"]) if words else offset
+            files.append(piece)
+        if len(files) == 1:
+            files[0].replace(output)
+        else:
+            listing = output.with_name(output.stem + ".parts.txt")
+            listing.write_text("".join(f"file '{f.resolve()}'\n" for f in files), encoding="utf-8")
+            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", str(listing),
+                            "-c", "copy", str(output)], check=True)
+            for f in files + [listing]:
+                f.unlink(missing_ok=True)
+        words = strip_cues(words) if timed else []
         return ProviderOutput(
             output,
             request_id,
@@ -191,7 +265,8 @@ class ElevenLabsVoiceProvider:
                 "model": self.model,
                 "voice_id": self.voice_id,
                 "characters": characters,
-                "duration_seconds": float(words[-1]["end"]),
+                "parts": len(parts),
+                "duration_seconds": offset,
                 "words": words,
             },
         )

@@ -901,7 +901,8 @@ class ProductionService:
             # rewrites it to size (same story, nothing chopped off). One call, rarely needed.
             from ..engine.content_rules import length_target
             target = length_target(fmt, model_seconds)
-            spoken = len(re.sub(r"\[\[\d+\]\]", " ", str(output.value.get("script") or "")).split())
+            from ..engine.story import strip_cues
+            spoken = len(re.sub(r"\[\[\d+\]\]", " ", strip_cues(str(output.value.get("script") or ""))).split())
             if fmt == "long" and not (target["words_min"] * .9 <= spoken <= target["words_max"] * 1.1):
                 print(json.dumps({"status": "script_resize", "words": spoken,
                                   "target": [target["words_min"], target["words_max"]]}))
@@ -1092,6 +1093,9 @@ class ProductionService:
             text = ("\n\n".join(row for row in script_display(plan_now).splitlines()
                                   if row.strip() and not row.startswith("["))
                     if plan_now else " ".join(script.split()))
+            # 2026-11-12 (owner): Eleven v3 reads the copy that carries the emotion cues ([excited]...)
+            if plan_now and str(plan_now.get("voice_script") or "").strip():
+                text = str(plan_now["voice_script"]).strip()
             ai_words = work / "narration-ai-words.json"
             if ai_audio.exists() and ai_words.exists():
                 # Already paid for (a retry after a later failure): never read it twice.
@@ -1110,7 +1114,16 @@ class ProductionService:
                 raise RuntimeError(f"the AI read is the wrong length for this format: {exc}") from exc
             words = details["words"]
             if not words:
-                raise RuntimeError("ElevenLabs returned no word timing")
+                # the model sent no timings (Eleven v3 may not): the joined read is transcribed instead
+                captioner = self.providers.captions(live=True)
+                try:
+                    words = captioner.transcribe_words(narration, prompt=transcription_prompt(script)).value
+                except TypeError:
+                    words = captioner.transcribe_words(narration).value
+                if not words:
+                    raise RuntimeError("the AI read has no word timing and could not be transcribed")
+                details["words"] = words
+                ai_words.write_text(json.dumps(details) + "\n", encoding="utf-8")
             timed_words_path.write_text(json.dumps(words, indent=2) + "\n", encoding="utf-8")
             print(json.dumps({"status": "ai_voice", "production_id": production_id, "voice": voice.voice_id,
                               "characters": details["characters"]}))

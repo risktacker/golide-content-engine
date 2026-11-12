@@ -24,7 +24,8 @@ class ChapterTests(unittest.TestCase):
         # Flow is no longer asserted here: the 2026-10-09 narration rule rightly
         # flags this plan's list-style action section.
         # 2026-10-22: steps are no longer required (verdicts, not homework), so this plan passes.
-        problems = chapter_problems(self.plan, "long")
+        # 2026-11-12: this old 8-minute plan has 5 chapters; a 5-to-6-minute video asks for 3 or 4
+        problems = [p for p in chapter_problems(self.plan, "long") if "numbered chapters" not in p]
         self.assertEqual([], problems)
 
     def test_display_has_headings_but_spoken_text_does_not(self):

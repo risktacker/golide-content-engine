@@ -268,18 +268,20 @@ def static_post_instructions(slot: str, has_product: bool = True, theme: str = "
 SCRIPT_LENGTH_TARGETS = {
     # Spoken words at ~150 wpm, set below the recording window so the owner
     # has room to breathe. Windows: short 0:30-1:30, long 3:30-5:00.
-    "short": {"words_min": 150, "words_max": 185, "seconds": "60 to 75"},
+    # 2026-11-12 (owner): Shorts are 45 seconds (Eleven v3 voice budget)
+    "short": {"words_min": 105, "words_max": 120, "seconds": "40 to 48"},
     # 2026-10-22: the owner reads fast (about 170 words a minute: 885 words took 5:07),
     # so 700 to 800 words came out under 5 minutes. 1,300 to 1,450 words is about 8
     # minutes at his pace, past the 8-minute mark where YouTube allows mid-roll ads.
     # 2026-11-10 (owner): every long read lands at 8 to 9 minutes (past the mid-roll mark).
-    "long": {"words_min": 1210, "words_max": 1340, "seconds": "480 to 530"},
+    # 2026-11-12 (owner): long videos are 5 to 6 minutes (Eleven v3 voice within 115,000 characters a month)
+    "long": {"words_min": 760, "words_max": 900, "seconds": "300 to 355"},
 }
 
 
 # 2026-11-01: a long video is as long as the video it models ("not all 7-8 minutes, some
 # 3, some 4, some 5... not 8-9"), between 3 and 8 minutes, at the owner's ~170 words a minute.
-LONG_MODEL_SECONDS = (495, 515)
+LONG_MODEL_SECONDS = (310, 340)       # 2026-11-12 (owner): 5 to 6 minutes
 # 2026-11-10 (owner): long reads land at 8 to 9 minutes. Scripts are sized at the AI voice's pace
 # (152 words a minute: 1,656 words read in 10:53), so the owner's faster read stays above 7.
 OWNER_WORDS_PER_MINUTE = 152

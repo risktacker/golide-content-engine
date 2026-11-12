@@ -167,15 +167,29 @@ def story_instructions(format_name: str, model_seconds: float | None = None) -> 
         + "- Numbers as digits (6.3 billion, 93 cents, 4:20, 2026, 18,270); fractions and everyday ordinals stay "
         "words, and \"one\" on its own stays a word.\n"
         "- Never say the brand name aloud; say \"follow the channel\" or \"follow us\".\n"
+        "- VOICE CUES (2026-11-12): the script is performed by an expressive AI voice. Where the feeling changes, put "
+        "one cue in square brackets just before the words it colours: [excited], [curious], [serious], [surprised], "
+        "[laughs], [chuckles], [sighs], [whispers], [emphatic], [thoughtful], [warmly], [sarcastic]. About one cue "
+        "every 2 or 3 sentences, never two in a row, never inside a number or name. Cues are not counted as words. "
+        "Use \"...\" for a short pause and CAPITALS on one word for stress, sparingly. No other brackets.\n"
         "- \"title\": the working title of the video.\n"
         "Return JSON."
     )
 
 
+CUE = re.compile(r"\[(?!\[)[^\]\[]{1,30}\](?!\])")
+
+
+def strip_cues(text: str) -> str:
+    """The script without the voice cues ([excited]...), for the screen, the captions and the counts."""
+    return re.sub(r"[ \t]{2,}", " ", CUE.sub("", text)).replace(" ,", ",").replace(" .", ".")
+
+
 def plan_from_story(story: dict, format_name: str) -> dict:
     """The story cut into screen lines, chapter by chapter, words untouched."""
     chapters = list(story.get("chapters") or []) if format_name == "long" else []
-    text = str(story.get("script") or "")
+    performed = str(story.get("script") or "")
+    text = strip_cues(performed)
     if chapters:
         blocks = spoken_blocks(text)
         if blocks and blocks[0]["chapter"] == -1:
@@ -198,7 +212,9 @@ def plan_from_story(story: dict, format_name: str) -> dict:
             lines.append({"chapter": index, "section": "proof", "text": piece, "emphasis": "",
                           "visual": "icon_hero", "subjects": [], "label": "",
                           "follow": "follow" in piece.lower()})
-    return {"title": str(story.get("title") or ""), "chapters": chapters, "lines": lines}
+    voice = "\n\n".join(p.strip() for p in re.split(r"\[\[\d+\]\]|\n\s*\n", performed) if p.strip())
+    return {"title": str(story.get("title") or ""), "chapters": chapters, "lines": lines,
+            "voice_script": voice if CUE.search(performed) else ""}
 
 
 def board_instructions() -> str:
