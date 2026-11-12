@@ -163,7 +163,7 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
         track = json.loads(track_path.read_text(encoding="utf-8")) if track_path.exists() else None
         mix(edit, folder, narration, video_path, video_path, track or None, copy_video=True)
 
-    production.runner.run(production_id, "mix-edit-v2", remix_stage, attempts=1)
+    production.runner.run(production_id, "mix-edit-v3", remix_stage, attempts=1)   # v3: true-peak safe
     labels = video_path.with_name("visual-labels.srt")
     if not labels.exists():
         from ..captions import words_to_srt
