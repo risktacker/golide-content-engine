@@ -20,3 +20,11 @@ def test_cues_are_performed_not_shown():
                             "[serious] Here is why it matters to you."}, "short")
     assert all("[" not in l["text"] for l in plan["lines"])
     assert plan["voice_script"].startswith("[excited] Big news")
+
+
+def test_v3_has_a_price():
+    """2026-11-12: the first v3 read crashed after it was paid for, because v3 had no price."""
+    import json
+    from pathlib import Path
+    pricing = json.loads(Path("config/provider-pricing.json").read_text())
+    assert "eleven_v3" in json.dumps(pricing)

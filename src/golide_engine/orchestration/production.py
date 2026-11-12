@@ -1100,13 +1100,21 @@ class ProductionService:
             if ai_audio.exists() and ai_words.exists():
                 # Already paid for (a retry after a later failure): never read it twice.
                 details = json.loads(ai_words.read_text(encoding="utf-8"))
+            elif ai_audio.exists() and ai_audio.stat().st_size > 10_000:
+                # 2026-11-12: the read was paid for but the run stopped before its timings were saved. Never
+                # buy it again: keep the audio and take the timings from a transcription below.
+                details = {"characters": len(text), "words": []}
+                ai_words.write_text(json.dumps(details) + "\n", encoding="utf-8")
             else:
                 self.costs.require_monthly_character_capacity("elevenlabs", len(text), voice.monthly_character_limit)
                 out = voice.synthesize(text, ai_audio)
-                self.costs.record(production_id, "owner-voice", "elevenlabs", voice.model,
-                                  Usage(characters=int(out.details["characters"])), out.request_id)
                 details = {"characters": out.details["characters"], "words": out.details["words"]}
-                ai_words.write_text(json.dumps(details) + "\n", encoding="utf-8")
+                ai_words.write_text(json.dumps(details) + "\n", encoding="utf-8")   # saved before anything can fail
+                try:
+                    self.costs.record(production_id, "owner-voice", "elevenlabs", voice.model,
+                                      Usage(characters=int(out.details["characters"])), out.request_id)
+                except Exception as exc:  # noqa: BLE001 - a missing price must never stop a paid-for video
+                    print(json.dumps({"warning": "voice cost not recorded", "error": str(exc)[:200]}))
             fetch_narration()
             try:
                 check_recording_length(str(spec["format"]), self._duration(narration))
