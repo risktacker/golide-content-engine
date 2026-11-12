@@ -125,7 +125,24 @@ def _glow(base, xy, r, col):
     base.alpha_composite(g.filter(ImageFilter.GaussianBlur(r * 0.5)))
 
 
+# 2026-11-12 (owner: "too much collision"): while a thumbnail is drawn, every piece of words, logo tiles,
+# pictures and Goli is recorded as a mask so the layout check can prove nothing touches what it must not.
+REC: list | None = None
+
+
+def record(kind: str, mask: Image.Image, xy: tuple[int, int] = (0, 0)) -> None:
+    if REC is None:
+        return
+    full = Image.new("L", (W, H), 0)
+    full.paste(mask, (int(xy[0]), int(xy[1])))
+    REC.append((kind, full.point(lambda v: 255 if v > 40 else 0)))
+
+
 def _text(base, xy, s, f, fill=None, stroke=0, stroke_fill=None, shadow=None, anchor="la", grad=None):
+    if REC is not None:
+        m = Image.new("L", base.size, 0)
+        ImageDraw.Draw(m).text(xy, s, font=f, fill=255, anchor=anchor, stroke_width=stroke)
+        record("text", m)
     if shadow:
         sh = Image.new("RGBA", base.size, (0, 0, 0, 0))
         ImageDraw.Draw(sh).text((xy[0] + shadow[0], xy[1] + shadow[1]), s, font=f, fill=shadow[2], anchor=anchor,
@@ -157,6 +174,7 @@ def _place(base: Image.Image, tiles_img: Image.Image, xy: tuple[int, int], stren
     canvas = canvas.filter(ImageFilter.GaussianBlur(22))
     base.alpha_composite(canvas, (xy[0] - pad, xy[1] - pad))
     base.alpha_composite(tiles_img, xy)
+    record("tile", tiles_img.getchannel("A"), xy)
 
 
 def _hex(h: str) -> tuple[int, int, int]:
@@ -266,6 +284,10 @@ def _big(b: Image.Image, xy: tuple, text: str, font, fill, depth: int = 10, edge
         d.text((x + k * .6, y + k), text, font=font, fill=tuple(int(c * .35) for c in fill), stroke_width=8,
                stroke_fill=edge)
     d.text((x, y), text, font=font, fill=fill, stroke_width=8, stroke_fill=edge)
+    if REC is not None:
+        m = Image.new("L", b.size, 0)
+        ImageDraw.Draw(m).text((x, y), text, font=font, fill=255, stroke_width=8)
+        record("text", m)
 
 
 def _paste_goli(b: Image.Image, cut: Image.Image, cx: int) -> None:
@@ -273,6 +295,16 @@ def _paste_goli(b: Image.Image, cut: Image.Image, cx: int) -> None:
     ImageDraw.Draw(shadow).ellipse([cx - cut.width * .38, H - 34, cx + cut.width * .38, H + 30], fill=(0, 0, 0, 90))
     b.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(18)))
     b.alpha_composite(cut, (int(cx - cut.width / 2), H - cut.height))
+    record_goli(cut, (int(cx - cut.width / 2), H - cut.height))
+
+
+def record_goli(cut: Image.Image, xy: tuple[int, int]) -> None:
+    """Goli's body, and his face (the head: top part of the cut-out) which nothing may cover."""
+    a = cut.getchannel("A")
+    record("goli", a, xy)
+    head = Image.new("L", a.size, 0)
+    head.paste(a.crop((0, 0, a.width, int(a.height * .52))), (0, 0))
+    record("face", head, xy)
 
 
 def compose(style: str, words: str, punch: str, names: list[str], icons: list[dict], out: Path,
@@ -330,7 +362,7 @@ def compose(style: str, words: str, punch: str, names: list[str], icons: list[di
     elif style == "dark_drama":
         b = _grad((8, 26, 28), (4, 10, 12))
         _glow(b, (900, 420), 330, brand + (120,))
-        tw = 500 if host is not None else 560
+        tw = 420 if host is not None else 560
         f1 = fit(rest, ANTON, tw, 200, 190)
         _text(b, (60, 40), rest, f1, (245, 245, 245), shadow=(0, 8, (0, 0, 0, 200), 8))
         f2 = fit(punch, ANTON, tw, 260, 240)
@@ -339,10 +371,15 @@ def compose(style: str, words: str, punch: str, names: list[str], icons: list[di
         t = tiles({"w": 660, "h": 720, "fov": 30, "dist": 12.5,
                    "items": [_tile(icons[0], pos=[0, 0, 0], rot=[18, -28, -14], size=3.4)]})
         if host is not None:
-            t = t.resize((int(t.width * .5), int(t.height * .5)), Image.LANCZOS)
-            b.alpha_composite(t, (ZONE - t.width - 260, H - t.height - 10))
+            # beside the words, never on them (owner 2026-11-12: no collisions)
+            t = t.resize((int(t.width * .42), int(t.height * .42)), Image.LANCZOS)
+            right = 60 + max(f1.getbbox(rest)[2], f2.getbbox(punch)[2]) + 24
+            at = (min(right, ZONE - t.width), H - t.height - 30)
+            b.alpha_composite(t, at)
+            record("tile", t.getchannel("A"), at)
         else:
             b.alpha_composite(t, (620, 0))
+            record("tile", t.getchannel("A"), (620, 0))
 
     elif style == "editorial":
         b = Image.new("RGBA", (W, H), (250, 250, 250, 255))
@@ -353,7 +390,7 @@ def compose(style: str, words: str, punch: str, names: list[str], icons: list[di
         d.rounded_rectangle([150, 46, 150 + pw, 140], 48, fill=(14, 14, 16))
         _text(b, (150 + pw / 2, 93), pill, pf, (255, 255, 255), anchor="mm")
         big = punch if len(punch) >= 3 else words
-        fb = fit(big, ANTON, 600 if host is not None else 860, 460, 420)
+        fb = fit(big, ANTON, 480 if host is not None else 860, 460, 420)
         bw = fb.getbbox(big)[2] - fb.getbbox(big)[0]
         _text(b, (70 + bw / 2, 440), big, fb, (14, 14, 16), anchor="mm")
         t = tiles({"w": 700, "h": 520, "fov": 30, "dist": 11,
@@ -361,7 +398,8 @@ def compose(style: str, words: str, punch: str, names: list[str], icons: list[di
                    "chrome": [{"kind": "star", "pos": [-2.2, -1.4, 1], "rot": [20, 30, -15], "size": 1.0}]})
         if host is not None:
             t = t.resize((int(t.width * .5), int(t.height * .5)), Image.LANCZOS)
-            _place(b, t, (min(ZONE - t.width - 40, 70 + bw - 120), 420))
+            t = t.resize((int(t.width * .8), int(t.height * .8)), Image.LANCZOS)
+            _place(b, t, (min(ZONE - t.width, 70 + bw + 24), 420))
         else:
             _place(b, t, (min(W - 600, 70 + bw - 260), 230))
 
@@ -400,6 +438,7 @@ def compose(style: str, words: str, punch: str, names: list[str], icons: list[di
         frame.paste(pic, (8, 8))
         frame = frame.rotate(-4, expand=True, resample=Image.BICUBIC)
         b.alpha_composite(frame, (50, top))
+        record("picture", frame.getchannel("A"), (50, top))
     elif style == "studio":
         # Goli in his studio, pointing at the story on the big screen; the words under it
         screen = Image.open(photo).convert("RGB") if photo and Path(photo).exists() else None
