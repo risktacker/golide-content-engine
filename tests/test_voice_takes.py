@@ -45,3 +45,23 @@ def test_liveliness_hears_a_flat_read(tmp_path):
     subprocess.run(["ffmpeg", "-v", "error", "-f", "lavfi", "-i", "aevalsrc=0.5*sin(2*PI*(110*t+40*t*t)):d=3", str(moving)],
                    check=True)
     assert liveliness(moving) > liveliness(flat)
+
+
+def test_a_short_last_paragraph_never_overwrites_the_opening():
+    """The broken Short of 2026-11-13: paragraphs of 167, 274, 192, 114 and 60 characters lost the opening and
+    read the middle twice."""
+    paras = [c * n for c, n in zip("ABCDE", (167, 274, 192, 114, 60))]
+    for takes in (1, 3):
+        parts = _voice(takes)._parts("\n\n".join(paras))
+        joined = " ".join(parts).replace("\n\n", " ")
+        assert parts[0].startswith("A") and joined.split() == paras
+
+
+def test_every_split_adds_up_to_the_script():
+    import random
+    rng = random.Random(7)
+    for _ in range(300):
+        paras = [chr(65 + i) * rng.randint(20, 600) for i in range(rng.randint(1, 9))]
+        for takes in (1, 3):
+            parts = _voice(takes)._parts("\n\n".join(paras))
+            assert " ".join(parts).replace("\n\n", " ").split() == paras
