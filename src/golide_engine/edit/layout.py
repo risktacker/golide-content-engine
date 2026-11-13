@@ -68,7 +68,7 @@ TEXT_PROBE = r"""
     for (const el of sec.querySelectorAll('*')) {
       if (el.closest('.bar') || el.classList.contains('url')) continue;
       const own = [...el.childNodes].some((k) => k.nodeType === 3 && k.textContent.trim().length > 1);
-      const pic = ['IMG', 'CANVAS', 'svg'].includes(el.tagName);   // words and pictures, not their containers
+      const pic = ['IMG', 'CANVAS', 'svg'].includes(el.tagName) || el.classList.contains('card') || el.classList.contains('frame');   // words, pictures and the cards around them; not full-width containers
       if (!own && !pic) continue;
       if (visible(el) < 0.35) continue;
       const er = el.getBoundingClientRect();
@@ -126,8 +126,13 @@ def legibility(edit: dict[str, Any], comp_builder, comp: Path, size: tuple[int, 
             w, h = size
             x0, y0, x1, y1 = m["box"]
             if fmt == "long":
-                ox, oy, right = 0.02 * w, h / 2, w - 470
-                room = min((right - ox) / max(1.0, x1 - ox), (oy - 40) / max(1.0, oy - y0), (h - 60 - oy) / max(1.0, y1 - oy))
+                ox, oy = 0.02 * w, h / 2
+                fit = lambda right: min((right - ox) / max(1.0, x1 - ox), (oy - 40) / max(1.0, oy - y0),
+                                        (h - 60 - oy) / max(1.0, y1 - oy))
+                room, beside = fit(w - 40), fit(w - 470)
+                # 2026-11-13 (owner): a wide design that needs Goli's quarter gets it: he fades out for this scene
+                if min(boost, room, MAX_BOOST[fmt]) > beside + 0.02:
+                    edit.setdefault("goli_gaps", []).append([sc["start"], round(sc["start"] + sc["duration"], 3)])
             else:
                 ox, oy = w / 2, h / 2
                 room = min((w / 2 - 30) / max(1.0, max(ox - x0, x1 - ox)), (h / 2 - 60) / max(1.0, max(oy - y0, y1 - oy)))
@@ -262,7 +267,16 @@ def resolve(edit: dict[str, Any], comp_builder, comp: Path, size: tuple[int, int
                 sc["data"]["place"] = other[place]
                 sc["data"]["tried_swap"] = True
             elif fmt == "long":
-                sc["data"]["tried_out"] = True  # 2026-11-12 (owner): in long videos Goli stays (his quarter is kept free)
+                # 2026-11-13 (owner): nothing may overlap him: he fades out for each content scene he touches
+                for t, a, b, _ in hits:
+                    if not (a0 <= t < a1) or "goli" not in (a["kind"], b["kind"]):
+                        continue
+                    for other in edit["scenes"]:
+                        if other["type"] != "host" and other["start"] <= t < other["start"] + other["duration"]:
+                            gap = [other["start"], round(other["start"] + other["duration"], 3)]
+                            if gap not in edit.setdefault("goli_gaps", []):
+                                edit["goli_gaps"].append(gap)
+                                changed = True
                 continue
             else:
                 sc["data"]["tried_out"] = True

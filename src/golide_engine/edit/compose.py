@@ -1197,6 +1197,16 @@ class Composer:
                  f'height:{size}px"><div style="position:absolute;inset:0;{flip}">{layers}</div></div>{front}{dim}')
         self.parts.append(f'<section id="{sid}" class="scene clip" data-start="{t0:.3f}" data-duration="{dur:.3f}" '
                           f'style="z-index:{40 if place in ("corner", "lower", "side") else 1}"><div class="stage"><div class="cam">{inner}</div></div></section>')
+        # 2026-11-13 (owner): when a scene needs his space, Goli steps aside (fades out) for it and comes back after;
+        # nothing may ever overlap him
+        te = t0          # when he comes in: later when the first scene of his run needs his space
+        gaps = [(a, b) for a, b in getattr(self, "goli_gaps", []) if a < t0 + dur - 0.2 and b > t0 + 0.2] \
+            if place in ("side", "corner", "lower") else []
+        for a, b in gaps:
+            if a <= t0 + 0.1 and b < t0 + dur - 0.3:
+                te = max(te, b - 0.05)
+        if te > t0:
+            self.tw(f'tl.set("#{sid}-ch",{{opacity:0}},{t0:.3f});')
         # entrance: he pops up from below the frame (in the studio he is already seated; the set eases in)
         if place == "lower":
             self.tw(f'tl.fromTo("#{sid}-ch",{{y:{size * 0.4:.0f}}},{{y:0,duration:.5,ease:"back.out(1.4)"}},{t0:.3f});')
@@ -1209,9 +1219,17 @@ class Composer:
                 self.tw(f'tl.fromTo("#{sid} .cam",{{scale:1.06}},{{scale:1.0,duration:{min(2.0, dur):.2f},ease:"power2.out"}},{t0:.3f});')
         elif place == "side":
             self.tw(f'tl.fromTo("#{sid}-ch",{{x:{-w if self.fmt == "short" else w:.0f},opacity:0}},{{x:0,opacity:1,duration:.45,'
-                    f'ease:"back.out(1.5)"}},{t0:.3f});')
+                    f'ease:"back.out(1.5)",immediateRender:{str(te == t0).lower()}}},{te:.3f});')
         elif place != "lower":
-            self.tw(f'tl.fromTo("#{sid}-ch",{{y:{size * 0.5:.0f},opacity:0}},{{y:0,opacity:1,duration:.55,ease:"back.out(1.5)"}},{t0:.3f});')
+            self.tw(f'tl.fromTo("#{sid}-ch",{{y:{size * 0.5:.0f},opacity:0}},{{y:0,opacity:1,duration:.55,ease:"back.out(1.5)",'
+                    f'immediateRender:{str(te == t0).lower()}}},{te:.3f});')
+        # 2026-11-13 (owner): a later scene that needs his space: he fades aside for it and comes back after
+        for a, b in gaps:
+            if a <= t0 + 0.1:
+                continue
+            self.tw(f'tl.to("#{sid}-ch",{{opacity:0,x:"+=60",duration:.28,ease:"power2.in"}},{a - 0.28:.3f});')
+            if b < t0 + dur - 0.3:
+                self.tw(f'tl.to("#{sid}-ch",{{opacity:1,x:"-=60",duration:.35,ease:"power2.out"}},{b - 0.05:.3f});')
         if place == "corner":
             self.tw(f'tl.fromTo("#{sid}-bub",{{scale:.6,opacity:0}},{{scale:1,opacity:1,duration:.4,ease:"back.out(1.8)"}},{t0:.3f});')
         self.cue("pop", t0 + 0.1)
@@ -1284,6 +1302,7 @@ class Composer:
     def build(self, edit: dict[str, Any], out: Path) -> Path:
         self.uses_mascot = False
         self.uses_studio = False
+        self.goli_gaps = [tuple(g) for g in edit.get("goli_gaps") or []]
         for s in edit["scenes"]:
             s["_sid"] = f"s{self.n + 1}-"      # the layout check finds this scene's boxes by it
             self.zone = bool(s["data"].get("goli_zone")) if s["type"] != "host" else False

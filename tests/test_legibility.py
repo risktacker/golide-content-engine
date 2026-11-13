@@ -22,3 +22,24 @@ def test_a_small_sparse_scene_is_enlarged_but_never_into_goli(tmp_path):
     assert boost and 1.2 < boost <= 1.6 and notes
     build(edit)
     assert f"scale({0.84 * boost:.3f})" in (comp / "index.html").read_text()
+
+
+def test_goli_steps_aside_for_a_scene_that_needs_his_space(tmp_path):
+    scenes = [{"type": "flow", "start": 0, "duration": 3, "in": "wipe",
+               "data": {"nodes": ["Write code", "Run it", "Check result"], "goli_zone": True}},
+              {"type": "checklist", "start": 3, "duration": 3, "in": "wipe", "data": {
+                  "heading": "Before you switch", "items": ["An account", "A task"], "at": [0.4, 1.0], "goli_zone": True}},
+              {"type": "host", "start": 0, "duration": 6, "data": {"place": "side", "cues": [],
+                                                                  "poses": [{"pose": "point", "at": 0}]}}]
+    edit = {"format": "long", "duration": 6, "scenes": scenes}
+    comp = tmp_path / "c"
+
+    def build(e):
+        if comp.exists():
+            shutil.rmtree(comp)
+        Composer("long").build(e, comp)
+    legibility(edit, build, comp, SIZES["long"])
+    assert [0, 3] in edit.get("goli_gaps", [])        # the wide flow gets his quarter
+    build(edit)
+    html = (comp / "index.html").read_text()
+    assert "immediateRender:false},2.950" in html     # he comes in as the flow ends
