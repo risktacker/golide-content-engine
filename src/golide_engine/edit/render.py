@@ -179,6 +179,10 @@ def render(edit: dict[str, Any], folder: Path, narration: Path, output: Path, ou
     return output
 
 
+VOICE_CHAIN = ("highpass=f=80,equalizer=f=280:t=q:w=1.2:g=-2.5,equalizer=f=3800:t=q:w=1.4:g=2.5,"
+               "deesser=i=0.35,acompressor=threshold=0.1:ratio=2.5:attack=8:release=120:makeup=1.6")
+
+
 def mix(edit: dict[str, Any], folder: Path, narration: Path, pictures: Path, output: Path,
         track: dict | None = None, copy_video: bool = False) -> Path:
     """Sound under the pictures: the voice, the scene sounds, the music; then the H.264 encode (or, with
@@ -201,7 +205,9 @@ def mix(edit: dict[str, Any], folder: Path, narration: Path, pictures: Path, out
     # 2026-11-11 (owner): the voice sat too low: it leads now (-14 LUFS) and the music sits further under it.
     # 2026-11-12: the limiter sits at -2 dBFS (as the illustration mix does): at -1 dBFS the AAC encode
     # pushed the true peak to -0.42 dBTP and QA (max -1 dBTP) refused the first long Goli video.
-    audio = ("[1:a]loudnorm=I=-14:TP=-1.5:LRA=14,aresample=48000,asplit=2[v][key];"
+    # 2026-11-13 (owner, from Isaac's AI-voice method): the voice is cleaned like a recorded one before it is
+    # levelled: rumble cut, a little mud taken out, presence lifted, esses tamed, gently compressed
+    audio = ("[1:a]" + VOICE_CHAIN + ",loudnorm=I=-14:TP=-1.5:LRA=14,aresample=48000,asplit=2[v][key];"
              f"[2:a]aresample=48000,volume={mixdown['sfx']}[s];"
              # 2026-11-12 (owner): the music was too loud in the first long Goli video: 8 dB lower
              "[3:a]aresample=48000,volume=0.4[b0];"
