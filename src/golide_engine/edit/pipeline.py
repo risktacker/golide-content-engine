@@ -85,6 +85,33 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
     production.runner.run(production_id, "sources-capture-v1", capture_stage, attempts=1)
     sources = json.loads(sources_log.read_text(encoding="utf-8")) if sources_log.exists() else []
 
+    # 2026-11-13 (owner, modelled on Outskill): the tool the story is about, really run and shown in a terminal
+    demos_path = folder / "demos.json"
+
+    def demo_stage():
+        from . import demos as demo_runs
+        if fmt != "long":
+            demo_runs.save([], demos_path)
+            return
+        content = demo_runs.request(str(spec.get("title", "")), str(plan.get("voice_script") or ""), research)
+        production._reserve(spec, text_model, Usage(input_tokens=len(content) // 3 + 1500, output_tokens=2000))
+        output = text.generate_json(demo_runs.INSTRUCTIONS, content, demo_runs.DEMO_SCHEMA, max_output_tokens=3000)
+        production._record_text(production_id, "demo-plan", output)
+        try:
+            ask = demo_runs.openai_asker()
+        except Exception:  # noqa: BLE001 - no OpenAI client: the AI demo is skipped, the rest still run
+            ask = None
+        ran = demo_runs.run(list(output.value.get("demos") or []), ask)
+        demo_runs.save(ran, demos_path)
+        print(json.dumps({"status": "demos", "planned": len(output.value.get("demos") or []), "ran": len(ran),
+                          "what": [d["purpose"] for d in ran]}))
+
+    try:
+        production.runner.run(production_id, "demos-v1", demo_stage, attempts=1)
+    except Exception as error:  # noqa: BLE001 - a demo that cannot run never stops the video
+        print(json.dumps({"status": "demos_failed", "error": str(error)[:300]}))
+    demo_list = json.loads(demos_path.read_text(encoding="utf-8")) if demos_path.exists() else []
+
     cues_path = folder / "mouth-cues.json"
     production.runner.run(production_id, "lipsync-v1", lambda: lipsync(narration, cues_path), attempts=1)
     cues = json.loads(cues_path.read_text(encoding="utf-8"))
@@ -103,7 +130,7 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
 
     def plan_stage():
         production._require_absent(raw_path, "edit-plan")
-        content = editor.request(str(spec.get("title", "")), beat_lines, sources, marks, follow)
+        content = editor.request(str(spec.get("title", "")), beat_lines, sources, marks, follow, demo_list)
         out_tokens = min(60000, 6000 + 260 * len(beat_lines))
         production._reserve(spec, text_model, Usage(input_tokens=len(content) // 3 + 3000, output_tokens=out_tokens))
         output = text.generate_json(editor.instructions(fmt), content, editor.EDIT_SCHEMA, max_output_tokens=out_tokens)
@@ -133,7 +160,7 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
         bookends = (chosen["intro"], chosen["outro"])
         print(json.dumps({"status": "edit_bookends", **chosen}))
     edit = editor.build(raw, beat_lines, narration_seconds, fmt, sources, capture_dir, cues, marks,
-                        logo_tile_maker(folder / "logos"), bookends=bookends)
+                        logo_tile_maker(folder / "logos"), bookends=bookends, demos=demo_list)
     edit["title"] = str(spec.get("title", ""))
     editor.save(edit, folder / "edit-list.json")
     for note in edit["notes"]:
