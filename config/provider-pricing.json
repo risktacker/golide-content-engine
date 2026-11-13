@@ -29,6 +29,10 @@
       "billing": "starter-plan-credit-allocation",
       "fallback_per_million_characters": 200
     },
+    "eleven_v4": {
+      "billing": "starter-plan-credit-allocation",
+      "fallback_per_million_characters": 200
+    },
     "eleven_v3": {
       "billing": "starter-plan-credit-allocation",
       "fallback_per_million_characters": 200

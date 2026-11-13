@@ -4,6 +4,11 @@ name: ElevenLabs check
 # makes no speech, spends no voice credits.
 on:
   workflow_dispatch:
+    inputs:
+      v4_test:
+        description: "Also read one short sentence with Eleven v4 through the engine's endpoint (about 60 characters)"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -27,3 +32,12 @@ jobs:
           echo "LIBRARY SEARCH Mark:"
           curl -s -H "xi-api-key: $ELEVENLABS_API_KEY" "https://api.elevenlabs.io/v1/shared-voices?search=Mark&page_size=10" \
             | python3 -c "import json,sys; d=json.load(sys.stdin); [print('  LIB:', v.get('name'), '|', v.get('voice_id'), '|', v.get('public_owner_id'), '|', v.get('accent'), v.get('age'), '| used', v.get('usage_character_count_1y') or v.get('cloned_by_count')) for v in d.get('voices',[])] if 'voices' in d else print('  not readable:', str(d)[:160])"
+      - name: Eleven v4 through the engine's endpoint (one sentence, about 60 characters)
+        if: inputs.v4_test
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: |
+          curl -s -X POST -H "xi-api-key: $ELEVENLABS_API_KEY" -H "Content-Type: application/json" \
+            "https://api.elevenlabs.io/v1/text-to-speech/UgBBYS2sOqTuMpoF3BR0/with-timestamps?output_format=mp3_44100_128" \
+            -d '{"text":"[curious] So which phone are you actually looking at?","model_id":"eleven_v4","voice_settings":{"stability":0.5,"similarity_boost":0.75}}' \
+            | python3 -c "import json,sys; d=json.load(sys.stdin); a=d.get('normalized_alignment') or d.get('alignment'); print('V4:', 'audio ok' if d.get('audio_base64') else 'NO AUDIO', '| timings', 'ok (%d characters)' % len(a['characters']) if a else 'missing', '' if d.get('audio_base64') else str(d)[:300])"

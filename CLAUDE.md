@@ -21,9 +21,10 @@ Owner: Esiah (Lusaka, UTC+2). Direct, no sugar-coating. Studio: studio.golidee.c
   after the Advanced list.
 - No cloned voice. AI voice = ElevenLabs "Mark - Natural Conversations" (UgBBYS2sOqTuMpoF3BR0), only when the
   owner taps "Use AI voice" for that video; otherwise his own recording. Monthly cap 115,000 characters.
-  Eleven v3 (owner 2026-11-13): one request per paragraph (each its own tone); the hook of a long video (its opening
-  2-3 sentences) is read 3 times (Natural + 2x Creative) and the liveliest believable take is kept (~10k chars/month).
-  The script is written to be performed (questions, reactions, "...", one CAPS word, v3 tags) and checked before voice.
+  Eleven v4 (owner 2026-11-13, after his own test): ONE read per video (v4 takes 10,000 characters; split only past
+  that, at paragraphs); no hook takes. The writer writes plainly (no tags, capitals, "..." or hype); a separate voice
+  director (`engine/story.py` direction_instructions) adds 2-4 tags in a Short, about one per 120-150 words in a long
+  video, only where the feeling changes, never stacked; it may not change a word (checked, else the plain script).
 - Trials are labelled as trials. Don't paste API tokens. Digits for numbers.
 - Don't poll or babysit long runs; it burns the owner's usage.
 - Never start with limits. Build the general capability the owner asks for, not a fixed short list.
@@ -57,8 +58,8 @@ storyboard call picks gold words and pictures. Copy the method of model scripts,
 ## Shorts (owner 2026-11-13, after the broken USB Short)
 - Script: 150-185 words (60-75 s), its own method (`engine/story.py` short shape): one direction, a hook that puts the
   viewer in someone's shoes, then a chain where each step causes the next, a turn, a payoff tied to the first line.
-  Model: `8e4TYDVZTwk` (read for every Short, `config/model-videos.txt` "always"). No "..." in a Short; long at most 2;
-  "..." is never shown on screen. Read once (no hook takes); voice parts must add up to the script.
+  Model: `8e4TYDVZTwk` (read for every Short, `config/model-videos.txt` "always"). No "..." in a Short; long at most 1;
+  "..." is never shown on screen. One read; voice parts must add up to the script.
 - Sound: no pops or ticks; whoosh on cuts, an impact only on a big number (`edit/render.py` sound_plan).
 - Music: Discipline Finishes under every Short until 2026-12-13 (`short_signature`), one steady bed, no dips.
 - Frame: content stays inside the phone crop (130 px left, 160 right, 230 top) at every moment (`layout.keep_inside`).

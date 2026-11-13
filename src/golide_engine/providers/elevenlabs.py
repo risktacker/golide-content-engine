@@ -201,6 +201,20 @@ class ElevenLabsVoiceProvider:
                     chunk = f"{chunk} {sentence}".strip()
             if chunk:
                 pieces.append(chunk)
+        if self.hook_takes <= 1:
+            # 2026-11-13 (owner): ONE read whenever it fits (v4: 10,000 characters, every video we make). Separate
+            # requests come back as different people; only a script past the limit is split, at paragraph breaks,
+            # into as few parts as possible.
+            parts = []
+            for piece in pieces:
+                if parts and len(parts[-1]) + 2 + len(piece) <= limit:
+                    parts[-1] += "\n\n" + piece
+                else:
+                    parts.append(piece)
+            flat = lambda s: re.sub(r"\s+", " ", s).strip()
+            if flat(" ".join(parts)) != flat(" ".join(pieces)):
+                raise RuntimeError("voice parts do not add up to the script; nothing was sent")
+            return parts
         if self.hook_takes > 1 and pieces and len(pieces[0]) > self.HOOK_MAX:
             # the hook is the opening sentences only (it is the part read several times)
             sentences, hook = re.split(r"(?<=[.!?])\s+", pieces[0]), ""

@@ -100,18 +100,11 @@ Ask:
 
 If the answer reveals awkward or artificial language, rewrite it before returning the script.
 
-## 11. Written to be performed (owner 2026-11-13)
-The script is performed by an AI voice, and the voice can only perform what the text gives it. A script with no
-questions, no exclamations and no pauses is read like a newspaper, however good the voice is.
-
-So, like a real YouTuber talking to one friend:
-- Ask the viewer things, and ask yourself things out loud: "So what actually changed?" "Sounds great, right?"
-- React when a fact deserves it: "That's a lot of money!" "Wait. Read that again." "Okay..." "Honestly?" "Yeah, no."
-- Pause rarely: a full stop or a line break is the pause. "..." makes the voice stop dead, so a long video uses it at
-  most once or twice for a real trail-off, and a Short never uses it (owner 2026-11-13).
-- Hit ONE word in capitals where a person would stress it, about once every 3 or 4 sentences.
-- Mix short sentences with longer ones; never three long ones in a row; always use contractions.
-- Every reaction is honest: excitement only for something exciting, doubt only where there is doubt.
+## 11. Written to be read naturally (owner 2026-11-13)
+Write it the way a smart person tells a friend something interesting: plain words, contractions, sentences of
+different lengths, a question only where a person would really ask it. Most of it is simply someone explaining.
+No audio tags, no capitals for stress, no "...", no exclamation marks for hype: a separate voice director adds the
+little direction the voice needs after the script is finished.
 
 ## OUTPUT REQUIREMENT
 Return the finished script, not an explanation of your writing process.

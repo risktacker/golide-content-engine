@@ -26,8 +26,8 @@
     "note": "2026-11-06 (owner): scheduled Shorts and long videos are read by Mark (Natural Conversations; owner switched from Bradford 2026-11-06) on ElevenLabs Creator (121k credits/month). An uploaded owner recording always wins; external (own) videos always use the owner's recording.",
     "voice_id": "UgBBYS2sOqTuMpoF3BR0",
     "voice_name": "Mark - Natural Conversations",
-    "model": "eleven_v3",
-    "voice_settings_note": "2026-11-12: v3 takes stability 0.0 (creative), 0.5 (natural) or 1.0 (robust); natural keeps Mark's voice steady while the cues carry the feeling.",
+    "model": "eleven_v4",
+    "voice_settings_note": "2026-11-13: v4 keeps stability and similarity (no style or speed); 0.5 is the middle, as in the owner's test.",
     "voice_settings": {
       "stability": 0.5,
       "similarity_boost": 0.75
@@ -36,11 +36,13 @@
     "ai_voice_allowed": true,
     "cloned_voice_allowed": false,
     "required_spec_field": "owner_voice_media_ref",
-    "model_note": "2026-11-12 (owner): Eleven v3 with emotion cues in the script ([excited], [serious], [laughs]...): the v2 read was flat. Same price per character. v3 takes at most 5,000 characters a request, so long reads are sent in parts and joined.",
-    "max_characters_per_request": 4800,
-    "hook_takes": 3,
-    "take_settings": {"stability": 0.0},
-    "hook_takes_note": "2026-11-13 (owner): the hook (first paragraph) is read 3 times (once Natural, twice Creative) and the liveliest believable read is kept; the rest is read once, one request per paragraph (Isaac's method: each paragraph its own tone). About 9,000 extra characters a month."
+    "model_note": "2026-11-13 (owner, after his own test): Eleven v4. v4 takes up to 10,000 characters a request, so every video (a Short or a long one) is ONE read: one voice, one pitch, start to end. The v3 paragraph-by-paragraph read sounded like 4 different people.",
+    "max_characters_per_request": 9800,
+    "hook_takes": 1,
+    "take_settings": {
+      "stability": 0.0
+    },
+    "hook_takes_note": "2026-11-13 (owner: break every recording rule): no extra hook takes; one read."
   },
   "captions": {
     "provider": "openai-transcription",

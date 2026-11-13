@@ -11,15 +11,17 @@ def _voice(takes=3):
                                    take_settings={"stability": 0.0})
 
 
-def test_one_request_per_paragraph():
-    script = "\n\n".join([PARA] * 6)
-    parts = _voice(1)._parts(script)
-    assert len(parts) == 6 and all(len(p) >= 250 for p in parts)
+def test_one_read_whenever_it_fits():
+    """2026-11-13 (owner): per-paragraph reads sounded like 4 different people; v4 reads the whole video at once."""
+    script = "\n\n".join([PARA.strip()] * 6)
+    assert _voice(1)._parts(script) == [script]
 
 
-def test_short_paragraphs_join_the_next():
-    parts = _voice(1)._parts("Short one.\n\n" + PARA + "\n\n" + PARA)
-    assert len(parts) == 2 and parts[0].startswith("Short one.")
+def test_past_the_limit_splits_at_paragraphs_into_as_few_parts_as_possible():
+    v = ElevenLabsVoiceProvider("eleven_v4", "voice", max_characters_per_request=1000, hook_takes=1)
+    script = "\n\n".join([PARA.strip()] * 6)    # 6 x 344 characters
+    parts = v._parts(script)
+    assert len(parts) == 3 and all(len(p) <= 1000 for p in parts) and "\n\n".join(parts) == script
 
 
 def test_hook_is_the_opening_sentences_and_is_its_own_part():

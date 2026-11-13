@@ -922,8 +922,8 @@ class ProductionService:
                     f"{json.dumps(output.value)}\n\nVERIFIED RESEARCH\n{json.dumps(research)}",
                     STORY_SCHEMA, max_output_tokens=script_tokens * 2, reasoning_effort=SPOKEN_PASS_EFFORT)
                 self._record_text(production_id, "script-story-resize", output)
-            # 2026-11-13 (owner): the voice performs what the text gives it. A flat script (no questions, no
-            # reactions, no pauses) goes back to the writer once with what is missing, before any voice is bought.
+            # 2026-11-13 (owner): problems that would make the read sound wrong ("..." stops, loose sentences in a
+            # Short, the same thing said twice) go back to the writer once, before any voice is bought.
             from ..engine.story import delivery_problems
             flat = delivery_problems(str(output.value.get("script") or ""), fmt)
             if flat:
@@ -932,13 +932,28 @@ class ProductionService:
                                                       output_tokens=script_tokens * 2), stage="script")
                 output = text.generate_json(
                     story_instructions(fmt, model_seconds),
-                    "YOUR SCRIPT has these problems for the voice: " + "; ".join(flat) + ". Rewrite it for SPOKEN DELIVERY "
-                    "and VOICE TAGS exactly as the rules say: the same story, facts, order, chapters, markers and "
-                    "length (within 5%), only now written to be performed.\n" + json.dumps(output.value),
+                    "YOUR SCRIPT has these problems: " + "; ".join(flat) + ". Fix only those: the same story, facts, "
+                    "order, chapters, markers and length (within 5%).\n" + json.dumps(output.value),
                     STORY_SCHEMA, max_output_tokens=script_tokens * 2, reasoning_effort=SPOKEN_PASS_EFFORT)
                 self._record_text(production_id, "script-story-delivery", output)
                 print(json.dumps({"status": "script_delivery_after",
                                   "problems": delivery_problems(str(output.value.get("script") or ""), fmt)}))
+            # 2026-11-13 (owner, after his own Eleven v4 test): a separate voice director marks the performance on
+            # the finished script: a few tags only where the feeling changes, never a word changed (checked; on any
+            # change the plain script is read as it is). About $0.01.
+            from ..engine.story import DIRECTION_SCHEMA, apply_direction, direction_instructions
+            plain = str(output.value.get("script") or "")
+            try:
+                self._reserve(spec, text_model, Usage(input_tokens=len(plain) // 3 + 1500,
+                                                      output_tokens=len(plain) // 2 + 2000), stage="script")
+                directed = text.generate_json(direction_instructions(fmt), plain, DIRECTION_SCHEMA,
+                                              max_output_tokens=len(plain) // 2 + 6000)
+                self._record_text(production_id, "script-voice-direction", directed)
+                script_now, why = apply_direction(plain, str(directed.value.get("script") or ""))
+            except Exception as error:  # noqa: BLE001 - the plain script is read as it is
+                script_now, why = plain, f"direction failed: {str(error)[:120]}"
+            print(json.dumps({"status": "voice_direction", "result": why}))
+            output.value["script"] = script_now
             plan = plan_from_story(dict(output.value), fmt)
             if len(plan["lines"]) < 6:
                 raise RuntimeError("the story came back too short to make a video")

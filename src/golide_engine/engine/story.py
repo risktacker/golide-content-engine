@@ -187,35 +187,73 @@ def story_instructions(format_name: str, model_seconds: float | None = None) -> 
         + "- Numbers as digits (6.3 billion, 93 cents, 4:20, 2026, 18,270); fractions and everyday ordinals stay "
         "words, and \"one\" on its own stays a word.\n"
         "- Never say the brand name aloud; say \"follow the channel\" or \"follow us\".\n"
-        "- SPOKEN DELIVERY (owner 2026-11-13): this script is PERFORMED by an expressive AI voice. A flat, article-like "
-        "script is read flat; the voice can only perform what the text gives it. Write it the way a sharp YouTuber "
-        "talks to one friend:\n"
-        "  * questions to the viewer and to yourself (\"So what changed?\", \"Sounds great, right?\") - at least one in "
-        "every chapter, usually more;\n"
-        "  * real reactions where the facts earn them, with ! (\"That's a lot of money!\", \"Wait. Read that again.\"), "
-        "and short reaction words (\"Okay.\", \"Look,\", \"Honestly?\", \"Yeah.\", \"Hmm.\", \"No, really.\");\n"
-        + ("  * no \"...\" at all (the voice stops dead on it); a full stop or a line break is the pause;\n"
-           if format_name == "short" else
-           "  * \"...\" at most twice in the whole script, only for a real trail-off (the voice stops dead on it); a "
-           "full stop or a line break is the pause; a dash for a quick aside;\n")
-        + 
-        "  * ONE word in CAPITALS where a person would hit it (about one every 3 or 4 sentences), never a number or name;\n"
-        "  * short sentences next to longer ones; contractions always; never three long sentences in a row;\n"
-        "  * the odd self-correction or aside when it helps (\"...in this video - no, in the next five minutes - \").\n"
-        "  Every reaction must be honest: excitement only for something exciting, doubt for something doubtful. Facts "
-        "never change for the sake of delivery.\n"
-        "- VOICE TAGS (Eleven v3 audio tags, from ElevenLabs' v3 guide): lowercase words in square brackets, performed "
-        "and never said, placed directly before the words they colour. Use the tags v3 knows: emotion [excited], "
-        "[curious], [happily], [sad], [serious], [surprised], [awe], [sarcastic], [skeptical], [mischievously]; delivery "
-        "[whispers], [softly], [quietly], [slowly], [rushed], [drawn out], [pause]; reactions [laughs], [chuckles], "
-        "[sighs], [exhales], [gasps], [clears throat]. Combine two for a layered read ([curious][softly]). Open EVERY "
-        "paragraph with a tag for how it is said, and add one only where the feeling really turns (a Short: about one "
-        "per 3 or 4 sentences; a long video: about one per 2 or 3); "
-        "never inside a number or name. Build each chapter toward a peak, and set up a reveal with [quietly] and a "
-        "line break before it (a line break is a pause). Tags are not counted as words. No other brackets.\n"
+        "- HOW IT SOUNDS (owner 2026-11-13: every delivery rule is gone): write it the way a smart person tells a "
+        "friend something interesting. Plain words, contractions, sentences of different lengths, a question only where "
+        "a person would really ask one. No audio tags, no words in capitals, no \"...\", no exclamation marks for "
+        "hype; most of it is simply someone explaining. The voice direction is added afterwards by a separate step.\n"
         "- \"title\": the working title of the video.\n"
         "Return JSON."
     )
+
+
+DIRECTION_SCHEMA: dict = {
+    "type": "object", "additionalProperties": False,
+    "properties": {"script": {"type": "string"}},
+    "required": ["script"],
+}
+
+# 2026-11-13 (owner, after his own Eleven v4 test: "the last one is way better"): the writer writes plainly and a
+# separate voice director marks the performance. Tags direct, they never decorate.
+DIRECTOR_TAGS = ("curious", "thoughtful", "serious", "skeptical", "quietly", "confidently", "warmly", "amused",
+                 "surprised", "excited", "sighs", "chuckles")
+
+
+def direction_instructions(format_name: str) -> str:
+    many = "2 to 4" if format_name == "short" else "about one for every 120 to 150 words"
+    return (
+        "You are the voice director for an Eleven v4 narration (ElevenLabs). The script is finished. You return the "
+        "SAME script with a few audio tags and light punctuation that make one real person sound like they are telling "
+        "an interesting story, never like someone performing instructions.\n\n"
+        "RULES\n"
+        "- Tags direct the performance, they never decorate it. Most of the script has NO tag: a person mostly just "
+        "explains. Aim for about 70% relaxed, plain explaining, 20% curious or thoughtful, 10% real weight on the one "
+        "or two things that matter most.\n"
+        f"- Use {many} tags in total. Put a tag only where the feeling really changes (the hook, the turn, the "
+        "reveal, the close), at the start of that sentence. Never two tags together, never two tags in a row on "
+        "neighbouring sentences.\n"
+        f"- Use only these tags: {', '.join('[' + t + ']' for t in DIRECTOR_TAGS)}. [sighs] and [chuckles] at most "
+        "once each, only where a person would really do it. No shouting, no whispering, no laughing out loud.\n"
+        "- Emphasis: at most one word in CAPITALS per 150 words, only the word a person would really stress (a fact "
+        "word like UNCONFIRMED), never a name or number. No exclamation marks unless the line is truly exciting.\n"
+        "- Pace: a paragraph break is a breath; a full stop ends a thought; a comma keeps it flowing; a dash for an "
+        "aside. "
+        + ("No \"...\" at all.\n" if format_name == "short" else "At most one \"...\" in the whole script.\n")
+        + "- You may split a long sentence in two or join two short ones with a comma or \"and\", and you may start a "
+        "new paragraph where a person would breathe. You NEVER add, remove or change words, numbers, names or facts, "
+        "and you keep every [[n]] chapter marker exactly where it is.\n"
+        "Return JSON {\"script\": \"...\"}."
+    )
+
+
+def _spoken_words(text: str) -> list[str]:
+    body = re.sub(r"\[\[\d+\]\]", " ", CUE.sub(" ", text))
+    return [w for w in re.findall(r"[a-z0-9]+", body.lower().replace("’", "'").replace("'", "")) if w not in ("and",)]
+
+
+def apply_direction(plain: str, directed: str) -> tuple[str, str]:
+    """The directed script when it says exactly the same words (and keeps the chapter markers), else the plain one.
+    Returns (script, why)."""
+    if not directed.strip():
+        return plain, "empty direction"
+    if re.findall(r"\[\[\d+\]\]", plain) != re.findall(r"\[\[\d+\]\]", directed):
+        return plain, "chapter markers moved"
+    if _spoken_words(plain) != _spoken_words(directed):
+        return plain, "words changed"
+    unknown = {t.strip().lower() for t in CUE.findall(directed)} - {f"[{t}]" for t in DIRECTOR_TAGS}
+    for tag in unknown:                                   # an unknown tag is dropped, never read aloud
+        directed = directed.replace(tag, "").replace(tag.upper(), "")
+    directed = re.sub(r"(\[[a-z ]+\])\s*(\[[a-z ]+\])", r"\1", directed)     # never two tags together
+    return directed, "ok"
 
 
 CUE = re.compile(r"\[(?!\[)[^\]\[]{1,30}\](?!\])")
@@ -309,19 +347,15 @@ CONNECTIVES = ("so ", "then ", "but ", "and ", "now ", "first", "still ", "becau
 
 
 def delivery_problems(script: str, fmt: str = "long") -> list[str]:
-    """2026-11-13 (owner): why a script would be read flat. The 2026-11-12 long video had, in 59 sentences, 2
-    questions, no exclamation, no pause and 2 stressed words, and sounded like someone reading an article.
-    Later the same day (owner, the broken USB Short): "..." made the voice stop dead, and a Short of loose
-    sentences had no direction; a Short has none of them and is one connected chain."""
+    """What would make the script sound wrong when read. 2026-11-13 (owner, after his Eleven v4 test: "break every
+    rule you had set in recording"): no more quotas of questions, exclamations, capitals or tags; those made the
+    voice perform instead of talk. Left: no "..." stops, a Short is one connected chain, nothing said twice, the
+    hook is not a date or a greeting, no run of long sentences."""
     body = CUE.sub(" ", script)
     paras = [p for p in re.split(r"\n\s*\n", script) if p.strip() and not re.fullmatch(r"\s*\[\[?[^\]]*\]\]?\s*", p)]
     sentences = [x for x in re.split(r"(?<=[.!?…])\s+", body) if len(x.split()) >= 2]
     n = max(1, len(sentences))
     out = []
-    if body.count("?") < max(2, n // 12):
-        out.append(f"{body.count('?')} questions in {n} sentences (want at least {max(2, n // 12)})")
-    if body.count("!") < max(1, n // 25):
-        out.append(f"{body.count('!')} exclamations (want at least {max(1, n // 25)})")
     pauses = body.count("...") + body.count("…")
     if fmt == "short" and pauses:
         out.append(f"{pauses} \"...\" in a Short (want none: the voice stops dead on each; use a full stop)")
@@ -340,12 +374,6 @@ def delivery_problems(script: str, fmt: str = "long") -> list[str]:
     repeated = [g for g, k in grams.items() if k > 1]
     if repeated:
         out.append(f"says the same thing twice (\"{repeated[0]}\")")
-    caps = len(re.findall(r"\b[A-Z]{2,}[a-z]*\b(?<![A-Z]{2}\b)|\b[A-Z]{3,}\b", body))
-    if caps < max(1, n // 10):
-        out.append(f"{caps} stressed CAPITAL words (want at least {max(1, n // 10)})")
-    opened = sum(1 for p in paras if CUE.match(p.strip()))
-    if paras and opened < len(paras) * 0.6:
-        out.append(f"{opened} of {len(paras)} paragraphs open with a direction tag")
     first = re.split(r"(?<=[.!?…])\s+", body.strip(), maxsplit=1)[0].strip().lower()
     months = "january february march april may june july august september october november december".split()
     if re.match(r"(on |in |back in |as of )?(" + "|".join(months) + r"|\d{1,2}(st|nd|rd|th)? |\d{4})", first) or \

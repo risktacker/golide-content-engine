@@ -15,19 +15,34 @@ PERFORMED = """[curious][softly] So... what actually changed? Honestly? Not the 
 [sarcastic] Sounds great, right? Okay, but who checks the checker? That's the real question."""
 
 
-def test_flat_script_is_caught():
-    problems = delivery_problems(FLAT)
-    assert any("questions" in p for p in problems)
-    assert any("exclamations" in p for p in problems)
+def test_no_quotas_any_more():
+    """2026-11-13 (owner, after his v4 test): no counts of questions, exclamations, capitals or tags."""
+    plain = ("Imagine a phone reveal so convincing, you forget the company never revealed it. The clips show a purple "
+             "phone with 4 cameras. But the phone is still unconfirmed. So what surfaced? Tom's Guide reported dummy "
+             "units. A dummy copies the outside, but it doesn't prove the real phone matches.")
+    assert delivery_problems(plain, "short") == []
+    assert delivery_problems(PERFORMED.replace("...", "."), "long") == []
 
 
-def test_performed_script_passes():
-    assert delivery_problems(PERFORMED) == []
-
-
-def test_writer_is_told_to_perform():
+def test_writer_writes_plainly_and_a_director_adds_the_tags():
+    from golide_engine.engine.story import direction_instructions
     rules = story_instructions("long", (310, 340))
-    assert "SPOKEN DELIVERY" in rules and "VOICE TAGS" in rules and "[laughs]" in rules and "[whispers]" in rules
+    assert "No audio tags" in rules and "VOICE TAGS" not in rules
+    d = direction_instructions("short")
+    assert "[curious]" in d and "NEVER add, remove or change words" in d and "never two tags" in d.lower()
+
+
+def test_direction_is_kept_only_when_the_words_are_the_same():
+    from golide_engine.engine.story import apply_direction
+    plain = "[[0]] The dummy units show 4 cameras. Sounds convincing, right? It's a rumour, not a reveal."
+    good = "[[0]] [skeptical] The dummy units show 4 cameras.\n\nSounds convincing, right? It's a RUMOUR, not a reveal."
+    assert apply_direction(plain, good) == (good, "ok")
+    assert apply_direction(plain, good.replace("4", "four"))[1] == "words changed"
+    assert apply_direction(plain, good.replace("[[0]] ", ""))[1] == "chapter markers moved"
+    stacked = "[[0]] [skeptical] [surprised] The dummy units show 4 cameras. Sounds convincing, right? It's a rumour, not a reveal."
+    assert "[surprised]" not in apply_direction(plain, stacked)[0]
+    odd = "[[0]] [screams] The dummy units show 4 cameras. Sounds convincing, right? It's a rumour, not a reveal."
+    assert "[screams]" not in apply_direction(plain, odd)[0]
 
 
 def test_hook_never_opens_with_a_date_or_greeting():
