@@ -49,6 +49,97 @@ PROBE = r"""
 }
 """
 
+# 2026-11-13 (owner, point 5): every scene is measured for its smallest readable text and how much of the frame
+# its content fills; a scene that is too small or mostly empty is enlarged before anything else is checked.
+TEXT_PROBE = r"""
+(t) => {
+  for (const c of document.querySelectorAll('.clip')) {
+    const s = +c.dataset.start, d = +c.dataset.duration;
+    c.style.display = (t >= s && t < s + d) ? '' : 'none';
+  }
+  window.__timelines.main.seek(t, false);
+  const out = {};
+  for (const sec of document.querySelectorAll('section.scene.clip')) {
+    if (sec.style.display === 'none' || sec.id.includes('-host')) continue;
+    let small = 1e9, x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9, n = 0;
+    const visible = (el) => { let o = 1, e = el;
+      while (e && e !== sec) { const cs = getComputedStyle(e); if (cs.display === 'none' || cs.visibility === 'hidden') return 0;
+        o *= parseFloat(cs.opacity); e = e.parentElement; } return o; };
+    for (const el of sec.querySelectorAll('*')) {
+      if (el.closest('.bar') || el.classList.contains('url')) continue;
+      const own = [...el.childNodes].some((k) => k.nodeType === 3 && k.textContent.trim().length > 1);
+      const pic = ['IMG', 'CANVAS', 'svg'].includes(el.tagName);   // words and pictures, not their containers
+      if (!own && !pic) continue;
+      if (visible(el) < 0.35) continue;
+      const er = el.getBoundingClientRect();
+      let r = er;
+      if (own && !(el instanceof SVGElement)) { const rg = document.createRange(); rg.selectNodeContents(el); r = rg.getBoundingClientRect(); }
+      if (r.width < 4 || r.height < 4 || r.right < 0 || r.left > innerWidth) continue;
+      if (own) {
+        const svgText = el instanceof SVGElement;
+        const scale = !svgText && el.offsetWidth ? er.width / el.offsetWidth : 1;
+        const px = svgText ? r.height * 0.78 : parseFloat(getComputedStyle(el).fontSize) * scale;
+        if (px > 4) small = Math.min(small, px);
+      }
+      x0 = Math.min(x0, r.left); y0 = Math.min(y0, r.top); x1 = Math.max(x1, r.right); y1 = Math.max(y1, r.bottom); n++;
+    }
+    if (n) out[sec.id] = { small: small < 1e9 ? small : null, fill: Math.max(0, (x1 - x0) * (y1 - y0)) / (innerWidth * innerHeight),
+                           box: [x0, y0, x1, y1] };
+  }
+  return out;
+}
+"""
+
+MIN_TEXT = {"long": 26.0, "short": 30.0}   # px on the 1080-high frame: smaller is unreadable on a phone
+MIN_FILL = 0.22                            # content covering less than this share of the frame looks empty
+MAX_BOOST = {"long": 1.6, "short": 1.4}
+
+
+def legibility(edit: dict[str, Any], comp_builder, comp: Path, size: tuple[int, int]) -> list[str]:
+    """Measure each scene after it has come in; enlarge the ones with tiny text or an empty frame."""
+    from playwright.sync_api import sync_playwright
+
+    fmt = edit["format"]
+    comp_builder(edit)
+    scenes = [sc for sc in edit["scenes"] if sc["type"] not in ("host",)]
+    notes: list[str] = []
+    with sync_playwright() as pw:
+        browser = pw.chromium.launch()
+        page = browser.new_page(viewport={"width": size[0], "height": size[1]})
+        page.add_init_script("window.__timelines = {};")
+        page.goto((comp / "index.html").as_uri())
+        page.wait_for_function("() => !!(window.__timelines && window.__timelines.main)", timeout=20000)
+        page.evaluate("document.fonts.ready")
+        for sc in scenes:
+            t = round(sc["start"] + min(sc["duration"] * 0.75, max(0.2, sc["duration"] - 0.3)), 3)
+            got = page.evaluate(TEXT_PROBE, t)
+            if not got:
+                continue
+            m = max(got.values(), key=lambda v: v["fill"])
+            boost = 1.0
+            if m["small"] and m["small"] < MIN_TEXT[fmt]:
+                boost = max(boost, MIN_TEXT[fmt] / m["small"])
+            if m["fill"] < MIN_FILL:
+                boost = max(boost, (MIN_FILL / max(m["fill"], 0.05)) ** 0.5)
+            # as far as this scene's own content can grow without reaching Goli (long: his quarter on the right)
+            # or the frame's edges; it grows from the zone's anchor (long) or the middle (Short)
+            w, h = size
+            x0, y0, x1, y1 = m["box"]
+            if fmt == "long":
+                ox, oy, right = 0.02 * w, h / 2, w - 470
+                room = min((right - ox) / max(1.0, x1 - ox), (oy - 40) / max(1.0, oy - y0), (h - 60 - oy) / max(1.0, y1 - oy))
+            else:
+                ox, oy = w / 2, h / 2
+                room = min((w / 2 - 30) / max(1.0, max(ox - x0, x1 - ox)), (h / 2 - 60) / max(1.0, max(oy - y0, y1 - oy)))
+            boost = round(max(1.0, min(boost, room, MAX_BOOST[fmt])), 3)
+            if boost > 1.01:
+                sc["data"]["boost"] = boost
+                notes.append(f"{sc['type']} at {sc['start']:.1f}s enlarged x{boost} (smallest text "
+                             f"{(m['small'] or 0):.0f}px, fills {m['fill']:.0%})")
+        browser.close()
+    return notes
+
+
 GIVE_WAY = {"caption": 0, "brand": 1, "chip": 2, "goli": 3, "logo": 4, "text": 5, "card": 6}
 
 
@@ -129,6 +220,10 @@ def resolve(edit: dict[str, Any], comp_builder, comp: Path, size: tuple[int, int
     caps = edit.get("captions") or []
     hosts = [sc for sc in edit["scenes"] if sc["type"] == "host" and sc["data"].get("place") in ("side", "corner", "lower")]
     left: list[str] = []
+    try:
+        edit.setdefault("notes", []).extend(legibility(edit, comp_builder, comp, size))
+    except Exception as error:  # noqa: BLE001 - the readability pass never stops a render
+        edit.setdefault("notes", []).append(f"legibility check skipped: {str(error)[:120]}")
     for rnd in range(rounds):
         comp_builder(edit)
         seen = probe(comp, size, _times(edit))

@@ -174,7 +174,39 @@ class Composer:
         elif how == "rise":
             self.tw(f'tl.fromTo("{sel}",{{y:90,scale:.94,opacity:0}},'
                     f'{{y:0,scale:1,opacity:1,duration:.7,ease:"back.out(1.4)"}},{t0:.3f});')
-        # "cut": nothing, the clip simply starts
+        elif how == "push":
+            # 2026-11-13 (owner, point 6): the same thought goes on: the last shot slides away as this one pushes in
+            self.tw(f'tl.fromTo("{sel}",{{x:{self.w * 0.32:.0f},filter:"blur(8px)"}},'
+                    f'{{x:0,filter:"blur(0px)",duration:.4,ease:"power3.out"}},{t0:.3f});')
+            self._exit(t0, f'{{x:{-self.w * 0.32:.0f},filter:"blur(8px)",duration:.3,ease:"power2.in"}}')
+            self.cue("whoosh", t0 - 0.1)
+        elif how == "zoom":
+            # going deeper into the same thing: the camera flies into the last shot and lands in this one
+            self.tw(f'tl.fromTo("{sel}",{{scale:.72,filter:"blur(10px)"}},'
+                    f'{{scale:1,filter:"blur(0px)",duration:.45,ease:"power3.out"}},{t0:.3f});')
+            self._exit(t0, '{scale:1.55,filter:"blur(12px)",duration:.3,ease:"power2.in"}')
+            self.cue("whoosh", t0 - 0.1)
+        elif how == "iris":
+            # the answer is revealed: a circle opens from the middle
+            self.tw(f'tl.fromTo("{sel}",{{clipPath:"circle(0% at 50% 50%)"}},'
+                    f'{{clipPath:"circle(80% at 50% 50%)",duration:.55,ease:"power2.inOut"}},{t0:.3f});')
+            self.cue("riser", t0 - 0.6)
+        elif how == "flash":
+            # a big number lands: a gold flash and a punch
+            fid = f"{sid}-flash"
+            self.parts.append(f'<div id="{fid}" class="clip" data-start="{t0:.3f}" data-duration="0.5" '
+                              f'style="position:absolute;inset:0;background:radial-gradient(circle,rgba(232,194,104,.55),'
+                              f'rgba(232,194,104,0) 70%);z-index:30;pointer-events:none;opacity:0"></div>')
+            self.tw(f'tl.fromTo("#{fid}",{{opacity:.9}},{{opacity:0,duration:.35,ease:"power2.out"}},{t0:.3f});')
+            self.tw(f'tl.fromTo("{sel}",{{scale:1.08}},{{scale:1,duration:.35,ease:"power3.out"}},{t0:.3f});')
+            self.cue("impact", t0)
+        # "cut" and "match" (the same page goes on): nothing, the clip simply starts
+
+    def _exit(self, t0: float, to: str) -> None:
+        """The previous shot leaves in step with this one coming in (it ends exactly when this one starts)."""
+        prev = getattr(self, "_prev_scene", None)
+        if prev and abs(prev[1] - t0) < 0.05:
+            self.tw(f'tl.to("#{prev[0]} .stage",{to},{t0 - 0.3:.3f});')
 
     def drift(self, sid: str, t0: float, dur: float, amount: float = 0.02) -> None:
         """Never a static frame: a slow push-in through the shot."""
@@ -182,10 +214,17 @@ class Composer:
                 f'ease:"none"}},{t0:.3f});')
 
     def scene(self, sid: str, t0: float, dur: float, inner: str) -> None:
+        if "-host" not in sid:
+            self._prev_scene, self._cur_scene = getattr(self, "_cur_scene", None), (sid, t0 + dur)
         if self.zone and self.fmt == "long":
             # 2026-11-12 (owner): Goli is in (nearly) every scene: the content keeps to the left three quarters
             # and Goli has the right quarter, so he is never pushed out and never covers the proof
-            inner = f'<div class="zone" style="position:absolute;inset:0;transform:scale(.84);transform-origin:2% 50%">{inner}</div>'
+            inner = (f'<div class="zone" style="position:absolute;inset:0;transform:scale({0.84 * getattr(self, "_boost", 1.0):.3f});'
+                     f'transform-origin:2% 50%">{inner}</div>')
+        elif getattr(self, "_boost", 1.0) > 1.0:
+            # 2026-11-13 (point 5): a scene measured too small is enlarged around its middle
+            inner = (f'<div style="position:absolute;inset:0;transform:scale({self._boost:.3f});transform-origin:50% 50%">'
+                     f'{inner}</div>')
         # the slow push-in grows from the content's side, so text on the left never drifts off the frame
         cam = ' style="transform-origin:22% 50%"' if self.zone and self.fmt == "long" else ""
         self.parts.append(f'<section id="{sid}" class="scene clip" data-start="{t0:.3f}" data-duration="{dur:.3f}">'
@@ -830,10 +869,10 @@ class Composer:
     def checklist(self, t0, dur, data, how="wipe"):
         """Items ticked off one by one, each on the word that says it."""
         sid = self._id("check")
-        fs = 54 if self.fmt == "long" else 64
+        fs = 66 if self.fmt == "long" else 64
         rows = ""
         for i, item in enumerate(data["items"]):
-            rows += (f'<div class="row" id="{sid}-i{i}" style="gap:30px;margin:24px 0;opacity:.45">'
+            rows += (f'<div class="row" id="{sid}-i{i}" style="gap:34px;margin:34px 0;opacity:.45">'
                      f'<div style="width:72px;height:72px;border-radius:18px;border:4px solid #E8C268;display:grid;place-items:center;flex:none">'
                      f'<svg width="50" height="50" viewBox="0 0 24 24"><path id="{sid}-k{i}" d="M4 12.5l5 5L20 6.5" fill="none" '
                      f'stroke="#E8C268" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" '
@@ -904,7 +943,8 @@ class Composer:
         nodes = [str(n) for n in data["nodes"]][:4]
         n = len(nodes)
         vertical = self.fmt == "short"
-        nw, nh = (760, 150) if vertical else (min(420, (self.w - 200) / n - 70), 170)
+        # 2026-11-13 (point 5): long-video nodes were a thin band in an empty frame: taller, bigger words
+        nw, nh = (760, 150) if vertical else (min(420, (self.w - 200) / n - 70), 280)
         gap = (self.h * 0.0 + 70) if vertical else 70
         total = n * nh + (n - 1) * gap if vertical else n * nw + (n - 1) * gap
         x0 = (self.w - (nw if vertical else total)) / 2
@@ -918,7 +958,7 @@ class Composer:
                       f'height:{nh}px;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 24px;'
                       f'border-color:{"rgba(232,194,104,.8)" if gold else "rgba(255,255,255,.12)"};'
                       f'box-shadow:0 20px 60px rgba(0,0,0,.6){",0 0 40px rgba(232,194,104,.35)" if gold else ""}">'
-                      f'<div style="font:800 {54 if vertical else 46}px/1.1 Poppins;{"color:#E8C268" if gold else ""}">{_e(text)}</div></div>')
+                      f'<div style="font:800 {54 if vertical else 58}px/1.12 Poppins;{"color:#E8C268" if gold else ""}">{_e(text)}</div></div>')
             if i < n - 1:
                 if vertical:
                     ax, ay, aw, ah = x0 + nw / 2 - 4, y + nh + 8, 8, gap - 16
@@ -1247,6 +1287,7 @@ class Composer:
         for s in edit["scenes"]:
             s["_sid"] = f"s{self.n + 1}-"      # the layout check finds this scene's boxes by it
             self.zone = bool(s["data"].get("goli_zone")) if s["type"] != "host" else False
+            self._boost = float((s.get("data") or {}).get("boost") or 1.0)
             getattr(self, s["type"])(float(s["start"]), float(s["duration"]), s["data"], s.get("in", "rise"))
         duration = float(edit.get("duration") or max(float(s["start"]) + float(s["duration"]) for s in edit["scenes"]))
         audio = ""

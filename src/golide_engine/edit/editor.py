@@ -526,6 +526,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
     if bookends and lines:
         out = _bookends(out, lines, cues, duration, *bookends)
     out = one_goli(out)
+    _transitions(out, lines)
     return {"format": fmt, "duration": duration, "scenes": out, "notes": notes, "captions": captions(lines, fmt),
             "chapters": [{"title": f"{getattr(m, 'number', '')} · {getattr(m, 'title', '')}".strip(" ·"),
                           "at": float(getattr(m, "start", 0))} for m in chapters]}
@@ -880,3 +881,44 @@ def quiet_windows(voice_script: str, lines: list[Any], most: int = 3, longest: f
         if len(out) >= most:
             break
     return out
+
+
+DEEPER = {"walkthrough", "terminal", "object3d"}
+
+
+def _transitions(scenes: list[dict], lines) -> None:
+    """2026-11-13 (owner, point 6): how a scene comes in says how it relates to the one before:
+    the same page going on -> match (cut, no movement); going deeper into the same thing (a page, then its steps, a
+    real run or the device itself) -> zoom through; a big number -> gold flash; the answer to a question, or a
+    lock/magnifier reveal -> iris; a turn in the argument ("But...", "However...") or a comparison -> whip; a new
+    chapter -> wipe; otherwise the thought goes on -> push. Never the same one three times in a row."""
+    content = [s for s in sorted(scenes, key=lambda s: s["start"]) if s["type"] != "host"]
+    said = lambda t: " ".join(str(getattr(l, "text", "")) for l in lines
+                              if getattr(l, "start", 0) <= t + 0.3 and getattr(l, "end", 0) >= t - 0.3).strip().lower()
+    prev_said = lambda t: " ".join(str(getattr(l, "text", "")) for l in lines if getattr(l, "end", 0) <= t + 0.05)[-160:]
+    used: list[str] = []
+    for i, sc in enumerate(content):
+        if i == 0 or sc.get("in") == "none":
+            continue
+        before, kind, t = content[i - 1], sc["type"], sc["start"]
+        url = lambda x: str((x.get("data") or {}).get("url") or "")
+        if kind == "chapter_card":
+            how = "wipe"
+        elif kind == before["type"] == "browser_shot" and url(sc) and url(sc) == url(before):
+            how = "match"
+        elif kind in DEEPER and before["type"] in ("browser_shot", "kinetic_title", "metaphor", "stat_counter"):
+            how = "zoom"
+        elif kind == "stat_counter":
+            how = "flash"
+        elif (kind == "metaphor" and (sc.get("data") or {}).get("kind") in ("unlock", "magnify")) or \
+                prev_said(t).rstrip().endswith("?"):
+            how = "iris"
+        elif kind in ("comparison",) or ((sc.get("data") or {}).get("kind") == "scales") or \
+                said(t).startswith(("but ", "however", "yet ", "instead")):
+            how = "whip"
+        else:
+            how = "push"
+        if used[-2:] == [how, how] and how not in ("match",):
+            how = {"push": "wipe", "wipe": "push", "whip": "push", "zoom": "push", "iris": "push", "flash": "push"}[how]
+        sc["in"] = how
+        used.append(how)
