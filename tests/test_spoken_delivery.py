@@ -29,3 +29,16 @@ def test_performed_script_passes():
 def test_writer_is_told_to_perform():
     rules = story_instructions("long", (310, 340))
     assert "SPOKEN DELIVERY" in rules and "VOICE TAGS" in rules and "[laughs]" in rules and "[whispers]" in rules
+
+
+def test_hook_never_opens_with_a_date_or_greeting():
+    for bad in ("[excited] On February 5, 2026, Anthropic launched Claude.", "In this video we look at AI.",
+                "Hey everyone, welcome back."):
+        assert any("first sentence" in p for p in delivery_problems(bad))
+    assert not any("first sentence" in p for p in delivery_problems(
+        "[curious] Your AI can now finish a junior engineer's job... so why are investors nervous?"))
+
+
+def test_voice_is_cleaned_before_levelling():
+    from golide_engine.edit.render import VOICE_CHAIN
+    assert "highpass" in VOICE_CHAIN and "deesser" in VOICE_CHAIN and "acompressor" in VOICE_CHAIN

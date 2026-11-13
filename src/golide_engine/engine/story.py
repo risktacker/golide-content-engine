@@ -127,9 +127,13 @@ def story_instructions(format_name: str, model_seconds: float | None = None) -> 
             "THE ESSENCE (owner 2026-11-10): this channel is not news. Every video explains how something is made, "
             "how it happened, how to do it, the steps, or the solution. The viewer must leave with something they "
             "can use. Do what the long videos that work do:\n"
-            "- Open on the most striking real moment (a date, a number, a person), then why it matters to the viewer, "
-            "then say plainly what they will have by the end (\"By the end of this video you'll know exactly how... "
-            "and how to...\").\n"
+            "- THE HOOK (owner 2026-11-13): the first 2 sentences decide if anyone stays. Open on the payoff or the "
+            "most surprising consequence for the VIEWER, as a contradiction or a question they now need answered "
+            "(\"Your AI can now finish a job you'd give a junior engineer... so why are investors nervous?\"), using a "
+            "concrete thing the screen can show. Never open with a date, a company announcement, \"In this video\", "
+            "\"Today\" or a greeting; the date and the source come in sentence 3 or later. Then why it matters to the "
+            "viewer, then say plainly what they will have by the end (\"By the end of this video you'll know exactly "
+            "how... and how to...\").\n"
             "- Tell it as a story in the order things happened: real moments, times, amounts, names, places, and who "
             "said what (name the source). Explain a technical step at the moment it happens, with one simple everyday "
             "picture when it is needed, and come back to that picture later.\n"
@@ -295,6 +299,11 @@ def delivery_problems(script: str) -> list[str]:
     opened = sum(1 for p in paras if CUE.match(p.strip()))
     if paras and opened < len(paras) * 0.6:
         out.append(f"{opened} of {len(paras)} paragraphs open with a direction tag")
+    first = re.split(r"(?<=[.!?…])\s+", body.strip(), maxsplit=1)[0].strip().lower()
+    months = "january february march april may june july august september october november december".split()
+    if re.match(r"(on |in |back in |as of )?(" + "|".join(months) + r"|\d{1,2}(st|nd|rd|th)? |\d{4})", first) or \
+            re.match(r"(in this video|today|hey|hi|welcome|so today)", first):
+        out.append("the first sentence opens with a date, an announcement or a greeting, not the hook")
     longs = max((len(list(g)) for k, g in __import__("itertools").groupby(len(x.split()) > 22 for x in sentences) if k),
                 default=0)
     if longs >= 3:
