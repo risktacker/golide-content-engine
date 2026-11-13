@@ -218,7 +218,14 @@ class ElevenLabsVoiceProvider:
             else:
                 parts.append(piece)
         if len(parts) > 1 and len(parts[-1]) < self.MIN_PART and len(parts[-2]) + 2 + len(parts[-1]) <= limit:
-            parts[-2] += "\n\n" + parts.pop()
+            # 2026-11-13: pop first, then join. `parts[-2] += parts.pop()` read one part and wrote another: the
+            # opening of the script was overwritten and the middle read twice (the broken Short of 2026-11-13).
+            last = parts.pop()
+            parts[-1] = parts[-1] + "\n\n" + last
+        # nothing lost, nothing doubled: the parts put back together are the script, in order
+        flat = lambda s: re.sub(r"\s+", " ", s).strip()
+        if flat(" ".join(parts)) != flat(" ".join(pieces)):
+            raise RuntimeError("voice parts do not add up to the script; nothing was sent")
         return parts
 
     def planned_characters(self, script: str, hook_takes: int | None = None) -> int:
@@ -326,6 +333,14 @@ class ElevenLabsVoiceProvider:
             for f in files + [listing]:
                 f.unlink(missing_ok=True)
         words = strip_cues(words) if timed else []
+        if words:
+            # the read says the script once, start to end: same opening words, about the same number of words
+            said = [re.sub(r"\W", "", str(w["word"])).lower() for w in words]
+            script_words = [re.sub(r"\W", "", x).lower() for x in re.sub(r"\[[^\]]*\]", " ", text).split()]
+            script_words = [x for x in script_words if x]
+            said = [x for x in said if x]
+            if said[:3] != script_words[:3] or abs(len(said) - len(script_words)) > max(3, len(script_words) // 10):
+                raise RuntimeError("the voice read does not match the script (opening or length); stopped before the edit")
         return ProviderOutput(
             output,
             request_id,
