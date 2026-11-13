@@ -68,7 +68,7 @@ def unlock(sid, at, label="", **_):
           f'tl.to("#{sid}-body",{{attr:{{fill:"{GOLD}"}},duration:.3}},{at + .1:.3f});',
           f'tl.fromTo("#{sid}-glow",{{opacity:0,scale:.6,svgOrigin:"700 360"}},{{opacity:1,scale:1.15,duration:.6}},{at:.3f});',
           f'tl.fromTo("#{sid}-lb",{{opacity:0,y:20}},{{opacity:1,y:0,duration:.4}},{at + .35:.3f});']
-    return svg, tw, [("click", at), ("pop", at + .35)]
+    return svg, tw, [("riser", max(0, at - .8)), ("click", at), ("shimmer", at + .3)]
 
 
 def magnify(sid, at, label="", items=(), **_):
@@ -164,7 +164,7 @@ def transform(sid, at, left="", right="", **_):
                   f'rotation:{(i * 37) % 90 - 45},opacity:0,duration:.6,ease:"power2.inOut"}},{at + i * .02:.3f});')
     tw.append(f'tl.fromTo("#{sid}-b",{{opacity:0,scale:.7,transformOrigin:"50% 50%"}},{{opacity:1,scale:1,duration:.4,'
               f'ease:"back.out(2)"}},{at + .5:.3f});')
-    return svg, tw, [("whoosh", at), ("pop", at + .5)]
+    return svg, tw, [("whoosh", at), ("impact", at + .5)]
 
 
 def iceberg(sid, at, label="", items=(), times=None, **_):
