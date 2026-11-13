@@ -1129,8 +1129,16 @@ class ProductionService:
                 details = {"characters": len(text), "words": []}
                 ai_words.write_text(json.dumps(details) + "\n", encoding="utf-8")
             else:
-                self.costs.require_monthly_character_capacity("elevenlabs", len(text), voice.monthly_character_limit)
-                out = voice.synthesize(text, ai_audio)
+                # 2026-11-13 (owner): best of 3 reads for the hook of long videos only (about 9,000 characters a
+                # month); Shorts are read once, paragraph by paragraph
+                takes = None if str(spec.get("format")) == "long" else 1
+                if hasattr(voice, "planned_characters"):
+                    planned = voice.planned_characters(text, takes)
+                    out_args = {"hook_takes": takes}
+                else:
+                    planned, out_args = len(text), {}
+                self.costs.require_monthly_character_capacity("elevenlabs", planned, voice.monthly_character_limit)
+                out = voice.synthesize(text, ai_audio, **out_args)
                 details = {"characters": out.details["characters"], "words": out.details["words"]}
                 ai_words.write_text(json.dumps(details) + "\n", encoding="utf-8")   # saved before anything can fail
                 try:

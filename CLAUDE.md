@@ -21,6 +21,9 @@ Owner: Esiah (Lusaka, UTC+2). Direct, no sugar-coating. Studio: studio.golidee.c
   after the Advanced list.
 - No cloned voice. AI voice = ElevenLabs "Mark - Natural Conversations" (UgBBYS2sOqTuMpoF3BR0), only when the
   owner taps "Use AI voice" for that video; otherwise his own recording. Monthly cap 115,000 characters.
+  Eleven v3 (owner 2026-11-13): one request per paragraph (each its own tone); the hook of a long video (its opening
+  2-3 sentences) is read 3 times (Natural + 2x Creative) and the liveliest believable take is kept (~10k chars/month).
+  The script is written to be performed (questions, reactions, "...", one CAPS word, v3 tags) and checked before voice.
 - Trials are labelled as trials. Don't paste API tokens. Digits for numbers.
 - Don't poll or babysit long runs; it burns the owner's usage.
 - Never start with limits. Build the general capability the owner asks for, not a fixed short list.
