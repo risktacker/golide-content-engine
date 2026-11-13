@@ -91,6 +91,8 @@ class ElevenLabsVoiceProvider:
         voice_settings: dict[str, Any] | None = None,
         max_characters_per_request: int = 10_000,
         monthly_character_limit: int = 27_000,
+        hook_takes: int = 1,
+        take_settings: dict[str, Any] | None = None,
     ):
         self.model = model
         self.voice_id = voice_id
@@ -98,6 +100,8 @@ class ElevenLabsVoiceProvider:
         self.voice_settings = voice_settings or {}
         self.max_characters_per_request = int(max_characters_per_request)
         self.monthly_character_limit = int(monthly_character_limit)
+        self.hook_takes = max(1, int(hook_takes))
+        self.take_settings = take_settings or {}
         if not self.voice_id:
             raise ValueError("ElevenLabs voice_id is required")
         if self.max_characters_per_request < 1 or self.monthly_character_limit < 1:
@@ -172,27 +176,61 @@ class ElevenLabsVoiceProvider:
             "model": self.model,
         }
 
+    MIN_PART = 250     # ElevenLabs: very short v3 prompts give inconsistent reads; stay above 250 characters
+    HOOK_MAX = 400     # the hook read several times: its opening 2 or 3 sentences
+
     def _parts(self, text: str) -> list[str]:
-        """Paragraphs (then sentences) packed into requests under the per-request limit."""
+        """2026-11-13 (owner, Isaac's method): one request per paragraph, so each paragraph gets its own slightly
+        different tone and pace (as a person's energy shifts) instead of one even pattern for the whole video. Same
+        characters, same cost. A paragraph under 250 characters joins the next; one over the request limit is split
+        on sentences."""
         limit = self.max_characters_per_request
         pieces: list[str] = []
         for para in [p.strip() for p in re.split(r"\n\s*\n", text) if p.strip()]:
             if len(para) <= limit:
                 pieces.append(para)
                 continue
+            chunk = ""
             for sentence in re.split(r"(?<=[.!?])\s+", para):
-                pieces.append(sentence)
+                if len(sentence) > limit:
+                    raise ValueError(f"one sentence has {len(sentence)} characters; limit is {limit}")
+                if chunk and len(chunk) + 1 + len(sentence) > limit:
+                    pieces.append(chunk)
+                    chunk = sentence
+                else:
+                    chunk = f"{chunk} {sentence}".strip()
+            if chunk:
+                pieces.append(chunk)
+        if self.hook_takes > 1 and pieces and len(pieces[0]) > self.HOOK_MAX:
+            # the hook is the opening sentences only (it is the part read several times)
+            sentences, hook = re.split(r"(?<=[.!?])\s+", pieces[0]), ""
+            while sentences and (len(hook) < self.MIN_PART or len(hook) + 1 + len(sentences[0]) <= self.HOOK_MAX):
+                hook = f"{hook} {sentences.pop(0)}".strip()
+            rest = " ".join(sentences)
+            pieces[0:1] = [hook] + ([rest] if rest else [])
         parts: list[str] = []
-        for piece in pieces:
-            if len(piece) > limit:
-                raise ValueError(f"one sentence has {len(piece)} characters; limit is {limit}")
-            if parts and len(parts[-1]) + 2 + len(piece) <= limit:
+        for i, piece in enumerate(pieces):
+            if i == 1 and self.hook_takes > 1:      # the hook stays on its own
+                parts.append(piece)
+                continue
+            if parts and len(parts[-1]) < self.MIN_PART and len(parts[-1]) + 2 + len(piece) <= limit:
                 parts[-1] += "\n\n" + piece
             else:
                 parts.append(piece)
+        if len(parts) > 1 and len(parts[-1]) < self.MIN_PART and len(parts[-2]) + 2 + len(parts[-1]) <= limit:
+            parts[-2] += "\n\n" + parts.pop()
         return parts
 
-    def _one(self, text: str, output: Path) -> tuple[list[dict], Any]:
+    def planned_characters(self, script: str, hook_takes: int | None = None) -> int:
+        """Characters this read will use: the script once, plus the extra takes of the hook."""
+        takes, self.hook_takes = self.hook_takes, self.hook_takes if hook_takes is None else max(1, hook_takes)
+        try:
+            parts = self._parts(script.strip())
+            return len(script.strip()) + (self.hook_takes - 1) * (len(parts[0]) if len(parts) > 1 else 0)
+        finally:
+            self.hook_takes = takes
+
+    def _one(self, text: str, output: Path, settings: dict[str, Any] | None = None) -> tuple[list[dict], Any]:
         payload, headers = self._request(
             "POST",
             (
@@ -202,7 +240,7 @@ class ElevenLabsVoiceProvider:
             {
                 "text": text,
                 "model_id": self.model,
-                "voice_settings": self.voice_settings,
+                "voice_settings": settings or self.voice_settings,
             },
         )
         encoded_audio = payload.get("audio_base64")
@@ -224,7 +262,33 @@ class ElevenLabsVoiceProvider:
                              capture_output=True, text=True, check=True)
         return float(out.stdout.strip() or 0)
 
-    def synthesize(self, script: str, output: Path) -> ProviderOutput:
+    def _best_take(self, text: str, output: Path) -> tuple[list[dict], Any, list[dict]]:
+        """2026-11-13 (owner): the hook (the first part) is read several times and the best read is kept: the
+        first with the usual settings, the others with v3's more expressive setting. A take that drops or adds
+        words (its length is far off the others') is out; of the rest, the liveliest (the voice rises and falls
+        most) wins."""
+        takes = []
+        for k in range(self.hook_takes):
+            path = output.with_name(f"{output.stem}.take{k}{output.suffix}")
+            settings = self.voice_settings if k == 0 else {**self.voice_settings, **self.take_settings}
+            words, headers = self._one(text, path, settings)
+            takes.append({"path": path, "words": words, "headers": headers, "take": k,
+                          "seconds": self._duration(path), "life": liveliness(path)})
+        report = pick_take(takes, len(text.split()))
+        best = next(t for t in takes if t["take"] == report["chosen"])
+        best["path"].replace(output)
+        for t in takes:
+            t["path"].unlink(missing_ok=True)
+        return best["words"], best["headers"], report["takes"]
+
+    def synthesize(self, script: str, output: Path, hook_takes: int | None = None) -> ProviderOutput:
+        takes, self.hook_takes = self.hook_takes, self.hook_takes if hook_takes is None else max(1, hook_takes)
+        try:
+            return self._synthesize(script, output)
+        finally:
+            self.hook_takes = takes
+
+    def _synthesize(self, script: str, output: Path) -> ProviderOutput:
         """2026-11-12: read in parts under the per-request limit (Eleven v3 takes 5,000 characters) and joined.
         Emotion cues in square brackets ([excited], [serious]...) are performed, never spoken, and are
         dropped from the word timings. Word timings may be empty (then the caller transcribes the audio)."""
@@ -236,9 +300,14 @@ class ElevenLabsVoiceProvider:
         words: list[dict] = []
         files: list[Path] = []
         offset, request_id, timed = 0.0, None, True
+        takes_report: list[dict] = []
         for i, part in enumerate(parts):
             piece = output.with_name(f"{output.stem}.part{i}{output.suffix}")
-            part_words, headers = self._one(part, piece)
+            if i == 0 and self.hook_takes > 1 and len(parts) > 1:
+                part_words, headers, takes_report = self._best_take(part, piece)
+                characters += (self.hook_takes - 1) * len(part)
+            else:
+                part_words, headers = self._one(part, piece)
             request_id = request_id or headers.get("request-id") or headers.get("x-request-id")
             timed = timed and bool(part_words)
             words += [dict(w, start=float(w["start"]) + offset, end=float(w["end"]) + offset) for w in part_words]
@@ -266,7 +335,51 @@ class ElevenLabsVoiceProvider:
                 "voice_id": self.voice_id,
                 "characters": characters,
                 "parts": len(parts),
+                "hook_takes": takes_report,
                 "duration_seconds": offset,
                 "words": words,
             },
         )
+
+
+def liveliness(audio: Path) -> float:
+    """How much a read rises and falls: the spread of its pitch (in semitones) plus the spread of its loudness,
+    over the voiced moments. A flat read scores low."""
+    import subprocess
+
+    import numpy as np
+    raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(audio), "-ac", "1", "-ar", "16000", "-f", "s16le", "-"],
+                         check=True, capture_output=True).stdout
+    x = np.frombuffer(raw, dtype=np.int16).astype(np.float32) / 32768.0
+    frame, hop = 640, 320                        # 40 ms frames, 20 ms apart
+    pitches, levels = [], []
+    for start in range(0, len(x) - frame, hop):
+        f = x[start:start + frame]
+        rms = float(np.sqrt(np.mean(f * f)))
+        if rms < 0.02:
+            continue
+        f = f - f.mean()
+        ac = np.correlate(f, f, mode="full")[frame - 1:]
+        lo, hi = 16000 // 400, 16000 // 70       # 70 to 400 Hz
+        lag = lo + int(np.argmax(ac[lo:hi]))
+        if ac[lag] > 0.3 * ac[0]:
+            pitches.append(16000 / lag)
+            levels.append(20 * np.log10(rms))
+    if len(pitches) < 10:
+        return 0.0
+    semis = 12 * np.log2(np.array(pitches) / np.median(pitches))
+    return round(float(np.std(np.clip(semis, -12, 12)) + 0.25 * np.std(levels)), 3)
+
+
+def pick_take(takes: list[dict], words: int) -> dict:
+    """The take to keep: of the reads whose length is believable (within 20% of the middle one: a read that
+    dropped or invented words is much shorter or longer), the liveliest."""
+    lengths = sorted(t["seconds"] for t in takes)
+    middle = lengths[len(lengths) // 2] or 1.0
+    report = []
+    for t in takes:
+        ok = abs(t["seconds"] - middle) <= 0.2 * middle and t["seconds"] >= words / 5.5
+        report.append({"take": t["take"], "seconds": round(t["seconds"], 2), "liveliness": t["life"], "ok": ok})
+    good = [r for r in report if r["ok"]] or [r for r in report if r["take"] == 0]
+    chosen = max(good, key=lambda r: r["liveliness"])["take"]
+    return {"chosen": chosen, "takes": [dict(r, chosen=r["take"] == chosen) for r in report]}

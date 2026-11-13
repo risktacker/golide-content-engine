@@ -37,7 +37,10 @@
     "cloned_voice_allowed": false,
     "required_spec_field": "owner_voice_media_ref",
     "model_note": "2026-11-12 (owner): Eleven v3 with emotion cues in the script ([excited], [serious], [laughs]...): the v2 read was flat. Same price per character. v3 takes at most 5,000 characters a request, so long reads are sent in parts and joined.",
-    "max_characters_per_request": 4800
+    "max_characters_per_request": 4800,
+    "hook_takes": 3,
+    "take_settings": {"stability": 0.0},
+    "hook_takes_note": "2026-11-13 (owner): the hook (first paragraph) is read 3 times (once Natural, twice Creative) and the liveliest believable read is kept; the rest is read once, one request per paragraph (Isaac's method: each paragraph its own tone). About 9,000 extra characters a month."
   },
   "captions": {
     "provider": "openai-transcription",

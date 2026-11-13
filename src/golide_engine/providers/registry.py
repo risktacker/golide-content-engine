@@ -41,7 +41,9 @@ class ProviderRegistry:
         from .elevenlabs import ElevenLabsVoiceProvider
         return ElevenLabsVoiceProvider(cfg["model"], cfg["voice_id"], voice_settings=cfg.get("voice_settings"),
                                        monthly_character_limit=int(cfg.get("monthly_character_limit", 115000)),
-                                       max_characters_per_request=int(cfg.get("max_characters_per_request", 10_000)))
+                                       max_characters_per_request=int(cfg.get("max_characters_per_request", 10_000)),
+                                       hook_takes=int(cfg.get("hook_takes", 1)),
+                                       take_settings=cfg.get("take_settings"))
 
     def captions(self, *, live: bool = False):
         cfg = self.config["captions"]
