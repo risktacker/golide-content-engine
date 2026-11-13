@@ -16,9 +16,11 @@ from pathlib import Path
 from typing import Any
 
 POSES = ["talk", "explain", "point", "point_up", "point_left", "shock", "think", "thumbs_up", "shrug", "wave"]
-TYPES = ["studio", "source", "terminal", "walkthrough", "photo", "stat", "compare", "steps", "checklist", "prompt", "timeline", "flow",
+TYPES = ["studio", "source", "terminal", "metaphor", "object3d", "walkthrough", "photo", "stat", "compare", "steps", "checklist", "prompt", "timeline", "flow",
          "quote", "words", "logos", "icon", "chapter", "follow"]
 
+OBJECTS3D = ("laptop", "phone", "server", "chip", "battery")
+METAPHORS = ("scales", "unlock", "magnify", "funnel", "stack", "gauge", "transform", "iceberg", "cycle")
 _str = {"type": "string"}
 _nstr = {"type": ["string", "null"]}
 _nnum = {"type": ["number", "null"]}
@@ -45,10 +47,13 @@ SCENE = {
         "points": {"type": "array", "items": {"type": "object", "additionalProperties": False, "properties": {
             "when": _str, "what": _str}, "required": ["when", "what"]}},
         "brands": {"type": "array", "items": _str},
+        "object3d": {"type": ["string", "null"], "enum": ["laptop", "phone", "server", "chip", "battery", None]},
+        "metaphor": {"type": ["string", "null"], "enum": ["scales", "unlock", "magnify", "funnel", "stack", "gauge",
+                                                          "transform", "iceberg", "cycle", None]},
     },
     "required": ["type", "first_line", "last_line", "goli_corner", "poses", "screen_words", "punch", "source", "phrase",
                  "callout", "callout_sub", "edge", "value", "prefix", "suffix", "label", "quote", "quote_by", "left",
-                 "right", "rows", "items", "shots", "points", "brands"],
+                 "right", "rows", "items", "shots", "points", "brands", "metaphor", "object3d"],
 }
 EDIT_SCHEMA = {"type": "object", "additionalProperties": False,
                "properties": {"scenes": {"type": "array", "items": SCENE}}, "required": ["scenes"]}
@@ -75,6 +80,20 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
 - photo: the page's own picture (source = page index; only pages marked "photo: yes").
 - stat: one number that matters (value as a number, prefix like "$", suffix like "%" or "x", label 2 to 5 words).
 - compare: left vs right, 2 to 4 rows (label, a, b, winner).
+- object3d: the words talk about a real device or what is inside it (a laptop, a phone, a server or data centre
+  rack, a chip or GPU, a battery): object3d = which one; it turns in clear glass and its move (lid opens, a server
+  slides out, the chip lid lifts, the phone's layers part, cells rise) lands on punch, the spoken word. The part the
+  story is about turns gold with a line to a label: label = what it is in this story, max 5 words ("Your rented
+  GPU"); two other parts get their own name. At most 2 in a long video, 1 in a Short, never two in a row.
+- metaphor: the beat explains an IDEA (a trade-off, a hidden cost, a bottleneck, layers, a loop, a level, a change):
+  show it as a moving picture instead of text. metaphor = one of:
+  scales (two things weighed: left, right, punch = the heavier one), unlock (something now possible: label),
+  magnify (what is really underneath: label = the hidden truth), funnel (many things become one: items = 2-4 inputs,
+  label = the result), stack (layers of a system: items bottom to top, 2-5), gauge (a level or amount: value 0-100,
+  label), transform (one thing becomes another: left = before, right = after), iceberg (the visible part and the
+  hidden mass: label = what people see, items = what is hidden), cycle (a loop: items = 3-5 steps).
+  punch = the spoken word it lands on. Words max 4 each, as spoken. About 1 in 6 scenes of a long video; never two
+  of the same metaphor in a video; prefer it over steps/flow/compare/checklist whenever the idea has a shape.
 - terminal: a REAL RUN (listed under REAL RUNS) proves what the beat says (the repo, the tool, the model actually
   working): source = the run's index, phrase = the words in its output to highlight. The viewer watches the real
   commands and the real output. Use each real run once, on the beat it proves best, over 2 beats.
@@ -330,6 +349,8 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
 
     out: list[dict] = []
     shown_runs: set[int] = set()
+    used_metaphors: set[str] = set()
+    shown_3d: list[str] = []
     for k, s in enumerate(fixed):
         t0 = 0.0 if k == 0 else float(lines[s["first_line"]].start) - 0.12
         t1 = duration if k == len(fixed) - 1 else float(lines[fixed[k + 1]["first_line"]].start) - 0.12
@@ -427,6 +448,24 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
                 "rows": [[r["label"], r["a"], r["b"]] for r in rows],
                 "winners": [r["winner"] if r["winner"] != "none" else None for r in rows],
                 "gap": min(0.55, max(0.25, (dur - 0.8) / max(1, len(rows))))}})
+        elif kind == "object3d" and s.get("object3d") in OBJECTS3D and len(shown_3d) < (1 if fmt == "short" else 2) \
+                and not (out and out[-1]["type"] == "object3d"):
+            shown_3d.append(s["object3d"])
+            land = _word_time(lines, s.get("punch") or "", t0, t1)
+            out.append({"type": "object3d", "start": t0, "duration": dur, "in": "rise", "data": {
+                "object": s["object3d"], "at": round(max(0.5, min(dur - 1.6, (land - t0) if land else 0.8)), 3),
+                "lead": " ".join(str(s.get("label") or s.get("screen_words") or "").split()[:5])}})
+        elif kind == "metaphor" and s.get("metaphor") in METAPHORS and s["metaphor"] not in used_metaphors:
+            used_metaphors.add(s["metaphor"])
+            land = _word_time(lines, s.get("punch") or "", t0, t1)
+            items = [str(x) for x in (s.get("items") or [])][:5]
+            right = str(s.get("right") or "")
+            winner = "right" if s.get("punch") and right and str(s["punch"]).lower() in right.lower() else "left"
+            out.append({"type": "metaphor", "start": t0, "duration": dur, "in": "rise", "data": {
+                "kind": s["metaphor"], "at": round(max(0.6, min(dur - 0.8, (land - t0) if land else dur * 0.45)), 3),
+                "label": s.get("label") or s.get("screen_words") or "", "items": items,
+                "times": _item_times(items, lines, t0, t1) if items else None,
+                "left": s.get("left") or "", "right": right, "winner": winner, "value": s.get("value")}})
         elif kind == "terminal" and isinstance(s.get("source"), int) and 0 <= s["source"] < len(demos or []) \
                 and s["source"] not in shown_runs:
             from .demos import scene_data
@@ -554,7 +593,7 @@ def save(edit: dict[str, Any], path: Path) -> None:
 # A Short shows the proof on top and keeps Goli at his desk below it for the whole run of cards
 # (owner 2026-11-11: no empty space above and below the cards). His pose follows each card.
 REACT = {"browser_shot": "point_up", "stat_counter": "shock", "comparison": "explain", "steps": "point_up",
-         "walkthrough": "point_up", "terminal": "point", "prompt_card": "point_up", "checklist": "thumbs_up", "timeline": "explain", "quote_card": "think", "logo_tiles": "thumbs_up", "kinetic_title": "talk",
+         "walkthrough": "point_up", "terminal": "point", "metaphor": "point", "object3d": "point", "prompt_card": "point_up", "checklist": "thumbs_up", "timeline": "explain", "quote_card": "think", "logo_tiles": "thumbs_up", "kinetic_title": "talk",
          "chapter_card": "talk", "follow_cta": "wave"}
 
 
@@ -563,7 +602,7 @@ REACT = {"browser_shot": "point_up", "stat_counter": "shock", "comparison": "exp
 # gesture twice in a row for the same kind of card.
 REACT_LONG = {"browser_shot": ["point_left", "point_up", "explain"], "photo": ["point_left", "think"],
               "stat_counter": ["shock", "point_left"], "comparison": ["shrug", "think", "explain"],
-              "steps": ["explain", "point_up", "thumbs_up"], "walkthrough": ["point_left", "point_up", "explain"], "terminal": ["point", "think", "thumbs_up"],
+              "steps": ["explain", "point_up", "thumbs_up"], "walkthrough": ["point_left", "point_up", "explain"], "terminal": ["point", "think", "thumbs_up"], "metaphor": ["point", "shock", "think"], "object3d": ["point", "shock", "explain"],
               "prompt_card": ["point_left", "think"], "checklist": ["thumbs_up", "explain"], "timeline": ["point_left", "explain"],
               "flow": ["explain", "point_left"], "quote_card": ["think", "shrug"], "logo_tiles": ["thumbs_up", "point_left"],
               "kinetic_title": ["explain", "talk", "point_left"], "chapter_card": ["wave", "talk"]}
@@ -635,7 +674,7 @@ def captions(lines: list[Any], fmt: str) -> list[dict[str, Any]]:
 # than a beat is cut at word boundaries into beats that each show something new.
 BEAT = {"short": 2.2, "long": 6.5}
 STUDIO_BEAT = {"short": 3.0, "long": 10.0}
-HOLD = {"stat_counter", "comparison", "steps", "walkthrough", "terminal", "prompt_card", "checklist", "timeline", "quote_card", "logo_tiles", "chapter_card", "follow_cta"}
+HOLD = {"stat_counter", "comparison", "steps", "walkthrough", "terminal", "metaphor", "object3d", "prompt_card", "checklist", "timeline", "quote_card", "logo_tiles", "chapter_card", "follow_cta"}
 
 
 def _spoken(lines, a: float, b: float) -> list[Any]:
