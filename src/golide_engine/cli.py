@@ -602,7 +602,16 @@ def main() -> int:
                 "paused_funds": "paused_funds",
                 "failed": "failed",
             }[stage_status]
-            report_studio(mapped, stage, error)
+            # 2026-11-13 (owner): with the AI voice chosen up front a video never stops for a recording, so
+            # Studio showed "GOLIDE Short · date" all the way to the upload. Send the real title once it exists.
+            title = topic = None
+            try:
+                current = json.loads(spec_path.read_text(encoding="utf-8"))
+                if current.get("title") and not str(current["title"]).startswith("GOLIDE "):
+                    title, topic = str(current["title"]), str(current.get("brief") or current["title"])
+            except (OSError, ValueError):
+                pass
+            report_studio(mapped, stage, error, title=title, selected_topic=topic)
 
         service = ProductionService(
             Path.cwd(), database, youtube=youtube, stage_listener=stage_listener
