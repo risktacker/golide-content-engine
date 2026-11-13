@@ -1,0 +1,733 @@
+{
+  "renderer": "edit",
+  "scenes": [
+    {
+      "id": "scene-000",
+      "start": 0.0,
+      "end": 3.6,
+      "duration": 3.6,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-001",
+      "start": 3.6,
+      "end": 5.54,
+      "duration": 1.94,
+      "visual": "chapter_card",
+      "visual_caption": "chapter_card"
+    },
+    {
+      "id": "scene-002",
+      "start": 3.6,
+      "end": 5.54,
+      "duration": 1.94,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-003",
+      "start": 5.54,
+      "end": 9.68,
+      "duration": 4.14,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-004",
+      "start": 9.68,
+      "end": 13.26,
+      "duration": 3.58,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-005",
+      "start": 9.68,
+      "end": 37.54,
+      "duration": 27.86,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-006",
+      "start": 13.26,
+      "end": 16.18,
+      "duration": 2.92,
+      "visual": "flow",
+      "visual_caption": "flow"
+    },
+    {
+      "id": "scene-007",
+      "start": 16.18,
+      "end": 21.7,
+      "duration": 5.52,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-008",
+      "start": 21.7,
+      "end": 25.74,
+      "duration": 4.04,
+      "visual": "flow",
+      "visual_caption": "flow"
+    },
+    {
+      "id": "scene-009",
+      "start": 25.74,
+      "end": 29.86,
+      "duration": 4.12,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-010",
+      "start": 29.86,
+      "end": 34.44,
+      "duration": 4.58,
+      "visual": "comparison",
+      "visual_caption": "comparison"
+    },
+    {
+      "id": "scene-011",
+      "start": 34.44,
+      "end": 37.54,
+      "duration": 3.1,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-012",
+      "start": 37.54,
+      "end": 43.28,
+      "duration": 5.74,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-013",
+      "start": 43.28,
+      "end": 45.160000000000004,
+      "duration": 1.88,
+      "visual": "chapter_card",
+      "visual_caption": "chapter_card"
+    },
+    {
+      "id": "scene-014",
+      "start": 43.28,
+      "end": 45.160000000000004,
+      "duration": 1.88,
+      "visual": "host",
+      "visual_caption": "corner"
+    },
+    {
+      "id": "scene-015",
+      "start": 45.16,
+      "end": 48.5,
+      "duration": 3.34,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-016",
+      "start": 48.5,
+      "end": 51.88,
+      "duration": 3.38,
+      "visual": "flow",
+      "visual_caption": "flow"
+    },
+    {
+      "id": "scene-017",
+      "start": 48.5,
+      "end": 99.56,
+      "duration": 51.06,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-018",
+      "start": 51.88,
+      "end": 54.300000000000004,
+      "duration": 2.42,
+      "visual": "kinetic_title",
+      "visual_caption": "kinetic_title"
+    },
+    {
+      "id": "scene-019",
+      "start": 54.3,
+      "end": 60.839999999999996,
+      "duration": 6.54,
+      "visual": "kinetic_title",
+      "visual_caption": "kinetic_title"
+    },
+    {
+      "id": "scene-020",
+      "start": 60.84,
+      "end": 66.44,
+      "duration": 5.6,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-021",
+      "start": 66.44,
+      "end": 77.22,
+      "duration": 10.78,
+      "visual": "walkthrough",
+      "visual_caption": "walkthrough"
+    },
+    {
+      "id": "scene-022",
+      "start": 77.22,
+      "end": 79.08,
+      "duration": 1.86,
+      "visual": "walkthrough",
+      "visual_caption": "walkthrough"
+    },
+    {
+      "id": "scene-023",
+      "start": 79.08,
+      "end": 83.75999999999999,
+      "duration": 4.68,
+      "visual": "comparison",
+      "visual_caption": "comparison"
+    },
+    {
+      "id": "scene-024",
+      "start": 83.76,
+      "end": 86.88000000000001,
+      "duration": 3.12,
+      "visual": "photo",
+      "visual_caption": "photo"
+    },
+    {
+      "id": "scene-025",
+      "start": 86.88,
+      "end": 89.24,
+      "duration": 2.36,
+      "visual": "kinetic_title",
+      "visual_caption": "kinetic_title"
+    },
+    {
+      "id": "scene-026",
+      "start": 89.24,
+      "end": 93.24,
+      "duration": 4.0,
+      "visual": "checklist",
+      "visual_caption": "checklist"
+    },
+    {
+      "id": "scene-027",
+      "start": 93.24,
+      "end": 96.17999999999999,
+      "duration": 2.94,
+      "visual": "kinetic_title",
+      "visual_caption": "kinetic_title"
+    },
+    {
+      "id": "scene-028",
+      "start": 96.18,
+      "end": 99.56,
+      "duration": 3.38,
+      "visual": "comparison",
+      "visual_caption": "comparison"
+    },
+    {
+      "id": "scene-029",
+      "start": 99.56,
+      "end": 103.42,
+      "duration": 3.86,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-030",
+      "start": 103.42,
+      "end": 105.14,
+      "duration": 1.72,
+      "visual": "chapter_card",
+      "visual_caption": "chapter_card"
+    },
+    {
+      "id": "scene-031",
+      "start": 103.42,
+      "end": 133.0,
+      "duration": 29.58,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-032",
+      "start": 105.14,
+      "end": 109.36,
+      "duration": 4.22,
+      "visual": "comparison",
+      "visual_caption": "comparison"
+    },
+    {
+      "id": "scene-033",
+      "start": 109.36,
+      "end": 113.08,
+      "duration": 3.72,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-034",
+      "start": 113.08,
+      "end": 116.39999999999999,
+      "duration": 3.32,
+      "visual": "flow",
+      "visual_caption": "flow"
+    },
+    {
+      "id": "scene-035",
+      "start": 116.4,
+      "end": 119.2,
+      "duration": 2.8,
+      "visual": "walkthrough",
+      "visual_caption": "walkthrough"
+    },
+    {
+      "id": "scene-036",
+      "start": 119.2,
+      "end": 125.22,
+      "duration": 6.02,
+      "visual": "flow",
+      "visual_caption": "flow"
+    },
+    {
+      "id": "scene-037",
+      "start": 125.22,
+      "end": 129.98,
+      "duration": 4.76,
+      "visual": "walkthrough",
+      "visual_caption": "walkthrough"
+    },
+    {
+      "id": "scene-038",
+      "start": 129.98,
+      "end": 133.0,
+      "duration": 3.02,
+      "visual": "kinetic_title",
+      "visual_caption": "kinetic_title"
+    },
+    {
+      "id": "scene-039",
+      "start": 133.0,
+      "end": 135.54,
+      "duration": 2.54,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-040",
+      "start": 135.54,
+      "end": 139.6,
+      "duration": 4.06,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-041",
+      "start": 135.54,
+      "end": 170.28,
+      "duration": 34.74,
+      "visual": "host",
+      "visual_caption": "corner"
+    },
+    {
+      "id": "scene-042",
+      "start": 139.6,
+      "end": 146.22,
+      "duration": 6.62,
+      "visual": "stat_counter",
+      "visual_caption": "stat_counter"
+    },
+    {
+      "id": "scene-043",
+      "start": 146.22,
+      "end": 151.7,
+      "duration": 5.48,
+      "visual": "kinetic_title",
+      "visual_caption": "kinetic_title"
+    },
+    {
+      "id": "scene-044",
+      "start": 151.7,
+      "end": 155.33999999999997,
+      "duration": 3.64,
+      "visual": "photo",
+      "visual_caption": "photo"
+    },
+    {
+      "id": "scene-045",
+      "start": 155.34,
+      "end": 158.16,
+      "duration": 2.82,
+      "visual": "flow",
+      "visual_caption": "flow"
+    },
+    {
+      "id": "scene-046",
+      "start": 158.16,
+      "end": 160.79999999999998,
+      "duration": 2.64,
+      "visual": "kinetic_title",
+      "visual_caption": "kinetic_title"
+    },
+    {
+      "id": "scene-047",
+      "start": 160.8,
+      "end": 165.38000000000002,
+      "duration": 4.58,
+      "visual": "checklist",
+      "visual_caption": "checklist"
+    },
+    {
+      "id": "scene-048",
+      "start": 165.38,
+      "end": 170.28,
+      "duration": 4.9,
+      "visual": "comparison",
+      "visual_caption": "comparison"
+    },
+    {
+      "id": "scene-049",
+      "start": 170.28,
+      "end": 172.44,
+      "duration": 2.16,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-050",
+      "start": 172.44,
+      "end": 176.1,
+      "duration": 3.66,
+      "visual": "chapter_card",
+      "visual_caption": "chapter_card"
+    },
+    {
+      "id": "scene-051",
+      "start": 172.44,
+      "end": 236.28,
+      "duration": 63.84,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-052",
+      "start": 176.1,
+      "end": 179.22,
+      "duration": 3.12,
+      "visual": "kinetic_title",
+      "visual_caption": "kinetic_title"
+    },
+    {
+      "id": "scene-053",
+      "start": 179.22,
+      "end": 182.68,
+      "duration": 3.46,
+      "visual": "flow",
+      "visual_caption": "flow"
+    },
+    {
+      "id": "scene-054",
+      "start": 182.68,
+      "end": 189.26000000000002,
+      "duration": 6.58,
+      "visual": "checklist",
+      "visual_caption": "checklist"
+    },
+    {
+      "id": "scene-055",
+      "start": 189.26,
+      "end": 195.95999999999998,
+      "duration": 6.7,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-056",
+      "start": 195.96,
+      "end": 198.82000000000002,
+      "duration": 2.86,
+      "visual": "flow",
+      "visual_caption": "flow"
+    },
+    {
+      "id": "scene-057",
+      "start": 198.82,
+      "end": 201.98,
+      "duration": 3.16,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-058",
+      "start": 201.98,
+      "end": 210.04,
+      "duration": 8.06,
+      "visual": "walkthrough",
+      "visual_caption": "walkthrough"
+    },
+    {
+      "id": "scene-059",
+      "start": 210.04,
+      "end": 215.54,
+      "duration": 5.5,
+      "visual": "photo",
+      "visual_caption": "photo"
+    },
+    {
+      "id": "scene-060",
+      "start": 215.54,
+      "end": 223.12,
+      "duration": 7.58,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-061",
+      "start": 223.12,
+      "end": 226.68,
+      "duration": 3.56,
+      "visual": "kinetic_title",
+      "visual_caption": "kinetic_title"
+    },
+    {
+      "id": "scene-062",
+      "start": 226.68,
+      "end": 233.64000000000001,
+      "duration": 6.96,
+      "visual": "checklist",
+      "visual_caption": "checklist"
+    },
+    {
+      "id": "scene-063",
+      "start": 233.64,
+      "end": 236.27999999999997,
+      "duration": 2.64,
+      "visual": "comparison",
+      "visual_caption": "comparison"
+    },
+    {
+      "id": "scene-064",
+      "start": 236.28,
+      "end": 240.38,
+      "duration": 4.1,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-065",
+      "start": 240.38,
+      "end": 243.16,
+      "duration": 2.78,
+      "visual": "chapter_card",
+      "visual_caption": "chapter_card"
+    },
+    {
+      "id": "scene-066",
+      "start": 240.38,
+      "end": 243.16,
+      "duration": 2.78,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-067",
+      "start": 243.16,
+      "end": 247.04,
+      "duration": 3.88,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-068",
+      "start": 247.04,
+      "end": 250.34,
+      "duration": 3.3,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-069",
+      "start": 247.04,
+      "end": 296.65999999999997,
+      "duration": 49.62,
+      "visual": "host",
+      "visual_caption": "corner"
+    },
+    {
+      "id": "scene-070",
+      "start": 250.34,
+      "end": 256.57,
+      "duration": 6.23,
+      "visual": "comparison",
+      "visual_caption": "comparison"
+    },
+    {
+      "id": "scene-071",
+      "start": 256.57,
+      "end": 258.88,
+      "duration": 2.31,
+      "visual": "kinetic_title",
+      "visual_caption": "kinetic_title"
+    },
+    {
+      "id": "scene-072",
+      "start": 258.88,
+      "end": 263.71999999999997,
+      "duration": 4.84,
+      "visual": "flow",
+      "visual_caption": "flow"
+    },
+    {
+      "id": "scene-073",
+      "start": 263.72,
+      "end": 268.02000000000004,
+      "duration": 4.3,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-074",
+      "start": 268.02,
+      "end": 276.03999999999996,
+      "duration": 8.02,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-075",
+      "start": 276.04,
+      "end": 280.56,
+      "duration": 4.52,
+      "visual": "flow",
+      "visual_caption": "flow"
+    },
+    {
+      "id": "scene-076",
+      "start": 280.56,
+      "end": 283.2,
+      "duration": 2.64,
+      "visual": "kinetic_title",
+      "visual_caption": "kinetic_title"
+    },
+    {
+      "id": "scene-077",
+      "start": 283.2,
+      "end": 287.9,
+      "duration": 4.7,
+      "visual": "checklist",
+      "visual_caption": "checklist"
+    },
+    {
+      "id": "scene-078",
+      "start": 287.9,
+      "end": 296.65999999999997,
+      "duration": 8.76,
+      "visual": "checklist",
+      "visual_caption": "checklist"
+    },
+    {
+      "id": "scene-079",
+      "start": 296.66,
+      "end": 303.20000000000005,
+      "duration": 6.54,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-080",
+      "start": 303.2,
+      "end": 313.34,
+      "duration": 10.14,
+      "visual": "checklist",
+      "visual_caption": "checklist"
+    },
+    {
+      "id": "scene-081",
+      "start": 303.2,
+      "end": 314.96,
+      "duration": 11.76,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-082",
+      "start": 313.34,
+      "end": 314.96,
+      "duration": 1.62,
+      "visual": "chapter_card",
+      "visual_caption": "chapter_card"
+    },
+    {
+      "id": "scene-083",
+      "start": 314.96,
+      "end": 321.56,
+      "duration": 6.6,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-084",
+      "start": 321.56,
+      "end": 325.3,
+      "duration": 3.74,
+      "visual": "flow",
+      "visual_caption": "flow"
+    },
+    {
+      "id": "scene-085",
+      "start": 321.56,
+      "end": 339.46,
+      "duration": 17.9,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-086",
+      "start": 325.3,
+      "end": 332.2,
+      "duration": 6.9,
+      "visual": "checklist",
+      "visual_caption": "checklist"
+    },
+    {
+      "id": "scene-087",
+      "start": 332.2,
+      "end": 339.46,
+      "duration": 7.26,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-088",
+      "start": 339.46,
+      "end": 341.21999999999997,
+      "duration": 1.76,
+      "visual": "host",
+      "visual_caption": "full"
+    },
+    {
+      "id": "scene-089",
+      "start": 341.22,
+      "end": 342.11100000000005,
+      "duration": 0.891,
+      "visual": "host",
+      "visual_caption": "full"
+    },
+    {
+      "id": "scene-090",
+      "start": 342.11102,
+      "end": 345.71102,
+      "duration": 3.6000000000000227,
+      "visual": "host",
+      "visual_caption": "studio"
+    }
+  ]
+}

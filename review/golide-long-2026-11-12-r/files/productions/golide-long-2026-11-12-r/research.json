@@ -1,0 +1,47 @@
+{
+  "summary": "The viral frontier-model launch was easy to misread as a smarter chatbot. The more important change is operational: the model is being built to stay with a problem after the first answer.\n\nA question-answering model is mainly a response engine. You ask for an explanation, draft, or code snippet; it produces an answer and waits. A long-horizon technical model is closer to a junior researcher or engineer operating inside a controlled workspace. It can break a goal into steps, inspect files or data, call tools, write and run code, observe the result, revise its approach, and preserve enough context to continue later.\n\nThat difference matters in practice. Planning turns \u201cbuild this\u201d into a sequence of smaller decisions. Tool use lets the model search documentation, query data, edit files, run commands, or execute tests rather than relying only on what it remembers. Persistent context prevents every step from starting from zero; systems such as context compaction can summarize earlier work so an agent can continue across a longer task. Coding becomes a loop\u2014understand the repository, make a change, run tests, debug failures, and review the result\u2014not just code generation. Verification is the crucial final step: the model tries to compare its output with evidence, such as passing tests or a completed migration, before reporting success.\n\nThe upgrade therefore changes the unit of work. Instead of buying an answer, a user can delegate a bounded project: investigate a bug, migrate a codebase, analyze a dataset, or prepare a technical report. That does not make the system an autonomous expert. It still needs permissions, clear objectives, reliable tests, human judgment, and safeguards; Anthropic\u2019s own engineering material notes that simply placing a model in a loop does not guarantee production-quality results.\n\nInvestors care because these capabilities could move AI from an occasional software feature into a recurring workflow layer. If customers use a model for sustained coding, research, analysis, and operations, usage can become deeper and harder to replace than one-off chat. The business question is not whether a launch produces impressive demos. It is whether the system creates measurable customer value, earns repeat usage, and does so at a cost that leaves room for profit after inference and infrastructure expenses.\n\nThat is why investors watch agentic coding, tool use, context management, and verification. They are signals of whether a model can perform economically valuable work, not merely generate fluent text. But they are signals\u2014not proof of future revenue, profitability, or any particular IPO valuation. A public-market case would still depend on customer retention, pricing, compute costs, competition, safety, execution, and the gap between benchmark performance and dependable production work.",
+  "claims": [
+    {
+      "claim": "Anthropic\u2019s Claude Opus 4.6 launch described improvements in careful planning, longer agentic tasks, large-codebase work, code review, debugging, a 1-million-token context window in beta, and context compaction for longer-running tasks.",
+      "source_title": "Introducing Claude Opus 4.6",
+      "source_url": "https://www.anthropic.com/news/claude-opus-4-6",
+      "published_or_updated": "February 5, 2026"
+    },
+    {
+      "claim": "Anthropic describes long-running agents as systems that gather context, plan, execute through tools, and manage context across multiple windows; it also warns that putting a model in a loop alone does not reliably produce a production-quality application.",
+      "source_title": "Effective harnesses for long-running agents",
+      "source_url": "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents",
+      "published_or_updated": "2025"
+    },
+    {
+      "claim": "Anthropic\u2019s Claude Opus 4.8 announcement describes dynamic workflows in which Claude Code can plan work, run parallel subagents, and verify outputs before reporting back, including codebase-scale migrations measured against an existing test suite.",
+      "source_title": "Introducing Claude Opus 4.8",
+      "source_url": "https://www.anthropic.com/news/claude-opus-4-8",
+      "published_or_updated": "May 28, 2026"
+    },
+    {
+      "claim": "Anthropic says Claude Code work increasingly includes end-to-end activities such as deploying and running code, analyzing data, and writing non-code documents; its study analyzed approximately 400,000 sessions and reported that successful tasks were associated with verifiable evidence such as passing tests or committed work.",
+      "source_title": "How Claude Code is used in practice",
+      "source_url": "https://www.anthropic.com/research/claude-code-expertise",
+      "published_or_updated": "June 16, 2026"
+    },
+    {
+      "claim": "Anthropic\u2019s IPO fact sheet frames the commercial shift as movement from discrete prompt responses toward a \u2018Virtual Collaborator\u2019 that performs complex, long-horizon work, and says customers realize value through more productive employees, faster processes, and embedded intelligence in products.",
+      "source_title": "Anthropic IPO Fact Sheet",
+      "source_url": "https://ipo.anthropic.com/documents/us/factsheet.pdf",
+      "published_or_updated": "2026"
+    },
+    {
+      "claim": "Anthropic\u2019s prospectus says customers use higher-capability models for complex reasoning, coding, and agentic workflows, while customer spending is primarily driven by the model used and the volume of usage.",
+      "source_title": "Anthropic Prospectus",
+      "source_url": "https://ipo.anthropic.com/documents/us/prospectus.pdf",
+      "published_or_updated": "2026"
+    },
+    {
+      "claim": "Anthropic\u2019s prospectus also describes compute investment as a major ongoing requirement and says infrastructure commitments can materially affect the company\u2019s cash-flow profile, which is why capability alone does not establish profitability or justify a particular valuation.",
+      "source_title": "Anthropic Prospectus",
+      "source_url": "https://ipo.anthropic.com/documents/us/prospectus.pdf",
+      "published_or_updated": "2026"
+    }
+  ]
+}

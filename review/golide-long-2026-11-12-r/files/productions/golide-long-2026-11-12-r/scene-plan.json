@@ -1,0 +1,1251 @@
+{
+  "title": "What a Frontier AI Upgrade Actually Changes",
+  "chapters": [
+    {
+      "number": "",
+      "title": "Intro"
+    },
+    {
+      "number": "01",
+      "title": "Answer to Workbench"
+    },
+    {
+      "number": "02",
+      "title": "Tools and Context"
+    },
+    {
+      "number": "03",
+      "title": "Proof and Limits"
+    },
+    {
+      "number": "04",
+      "title": "Why Investors Care"
+    },
+    {
+      "number": "",
+      "title": "Close"
+    }
+  ],
+  "lines": [
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "On February 5, 2026, Anthropic launched Claude Opus 4.6,",
+      "emphasis": "Claude Opus 4.6",
+      "visual": "icon_hero",
+      "subjects": [
+        "Anthropic building",
+        "Claude interface"
+      ],
+      "label": "Launch day",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "and the launch made it easy to mistake the upgrade for a smarter chatbot.",
+      "emphasis": "smarter chatbot",
+      "visual": "split_compare",
+      "subjects": [
+        "chatbot screen",
+        "user"
+      ],
+      "label": "Easy mistake",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "But the important change is not the first answer it gives you.",
+      "emphasis": "important change",
+      "visual": "icon_hero",
+      "subjects": [
+        "chatbot screen",
+        "gear"
+      ],
+      "label": "The shift",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "It\u2019s what happens after that answer.",
+      "emphasis": "after that answer",
+      "visual": "icon_flow",
+      "subjects": [
+        "chat window",
+        "arrow"
+      ],
+      "label": "After answering",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "A long-horizon model can plan a job, use tools, keep track of earlier work,",
+      "emphasis": "long-horizon model",
+      "visual": "icon_flow",
+      "subjects": [
+        "AI model",
+        "calendar",
+        "tool icons"
+      ],
+      "label": "Long horizon",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "write and run code, then check whether the result works.",
+      "emphasis": "write and run code",
+      "visual": "icon_flow",
+      "subjects": [
+        "laptop",
+        "code editor",
+        "test terminal"
+      ],
+      "label": "Code loop",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "That matters if you want to hand over a bug investigation, data analysis,",
+      "emphasis": "bug investigation",
+      "visual": "icon_pair",
+      "subjects": [
+        "bug icon",
+        "magnifying glass",
+        "laptop"
+      ],
+      "label": "Real work",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "or codebase migration instead of asking for a paragraph at a time.",
+      "emphasis": "codebase migration",
+      "visual": "icon_flow",
+      "subjects": [
+        "server",
+        "database",
+        "code files"
+      ],
+      "label": "Hand it over",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "By the end, you\u2019ll see the loop that makes this possible,",
+      "emphasis": "the loop",
+      "visual": "icon_orbit",
+      "subjects": [
+        "circular arrows",
+        "laptop",
+        "checkmark"
+      ],
+      "label": "The loop",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "what still needs a human, and why investors care without treating valuation as destiny.",
+      "emphasis": "investors care",
+      "visual": "icon_pair",
+      "subjects": [
+        "investor",
+        "company building",
+        "ledger"
+      ],
+      "label": "Why investors care",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Start with the old model.",
+      "emphasis": "old model",
+      "visual": "icon_hero",
+      "subjects": [
+        "old computer",
+        "chat window"
+      ],
+      "label": "Start here",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "You ask for an explanation, draft, or code snippet.",
+      "emphasis": "code snippet",
+      "visual": "icon_flow",
+      "subjects": [
+        "user",
+        "text prompt",
+        "code window"
+      ],
+      "label": "The prompt",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "It produces something plausible and waits.",
+      "emphasis": "plausible",
+      "visual": "clock",
+      "subjects": [
+        "code window",
+        "hourglass"
+      ],
+      "label": "Then it waits",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Useful, but still a response engine.",
+      "emphasis": "response engine",
+      "visual": "icon_hero",
+      "subjects": [
+        "chatbot",
+        "single response bubble"
+      ],
+      "label": "Response engine",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "In Anthropic\u2019s launch post for Opus 4.6, the emphasis was on careful planning,",
+      "emphasis": "careful planning",
+      "visual": "checklist",
+      "subjects": [
+        "Anthropic launch post",
+        "checklist",
+        "codebase"
+      ],
+      "label": "Launch emphasis",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "longer agentic tasks, large codebases, debugging, and code review.",
+      "emphasis": "longer agentic tasks",
+      "visual": "icon_grid",
+      "subjects": [
+        "codebase",
+        "bug report",
+        "review document"
+      ],
+      "label": "Agentic work",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Instead of \u201cwrite this function,\u201d you can give it a goal in a workspace.",
+      "emphasis": "a goal",
+      "visual": "icon_flow",
+      "subjects": [
+        "user",
+        "workspace",
+        "target"
+      ],
+      "label": "Give it a goal",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "It can break that goal into smaller decisions: inspect the repository, find relevant files,",
+      "emphasis": "smaller decisions",
+      "visual": "staircase",
+      "subjects": [
+        "repository",
+        "file folders",
+        "decision tree"
+      ],
+      "label": "Break it down",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "change one part, and test it.",
+      "emphasis": "test it",
+      "visual": "icon_flow",
+      "subjects": [
+        "code file",
+        "terminal",
+        "test checkmark"
+      ],
+      "label": "Build and test",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "The unit of work has changed from an answer to a bounded project.",
+      "emphasis": "bounded project",
+      "visual": "icon_hero",
+      "subjects": [
+        "project board",
+        "finish line"
+      ],
+      "label": "Unit of work",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Think of the model as a junior engineer at a workbench,",
+      "emphasis": "junior engineer",
+      "visual": "icon_hero",
+      "subjects": [
+        "engineer",
+        "workbench",
+        "laptop"
+      ],
+      "label": "Workbench model",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "not an oracle behind a counter.",
+      "emphasis": "not an oracle",
+      "visual": "cross_out",
+      "subjects": [
+        "workbench",
+        "counter",
+        "oracle statue"
+      ],
+      "label": "Not an oracle",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "It still needs a clear objective and permission to touch the right things.",
+      "emphasis": "clear objective",
+      "visual": "checklist",
+      "subjects": [
+        "target",
+        "tool permissions panel",
+        "workspace"
+      ],
+      "label": "Guardrails",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "A vague request can produce a confident detour,",
+      "emphasis": "confident detour",
+      "visual": "icon_flow",
+      "subjects": [
+        "wrong-direction arrow",
+        "chatbot",
+        "road sign"
+      ],
+      "label": "Vague request",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "and a good plan can fail if the workspace is wrong.",
+      "emphasis": "workspace is wrong",
+      "visual": "cross_out",
+      "subjects": [
+        "broken workspace",
+        "warning sign",
+        "file cabinet"
+      ],
+      "label": "Wrong workspace",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "That is why the next step matters: it needs hands.",
+      "emphasis": "needs hands",
+      "visual": "icon_hero",
+      "subjects": [
+        "robot hand",
+        "workbench",
+        "toolbox"
+      ],
+      "label": "It needs hands",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "Those hands are tools.",
+      "emphasis": "Those hands",
+      "visual": "icon_pair",
+      "subjects": [
+        "robot hand",
+        "toolbox"
+      ],
+      "label": "Those hands",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "A model that only remembers patterns can suggest a database query.",
+      "emphasis": "database query",
+      "visual": "icon_pair",
+      "subjects": [
+        "database",
+        "query window"
+      ],
+      "label": "Pattern memory",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "A tool-using system can inspect documentation, open files, query data, edit a project,",
+      "emphasis": "tool-using system",
+      "visual": "icon_flow",
+      "subjects": [
+        "AI model",
+        "documentation",
+        "file folder"
+      ],
+      "label": "Using tools",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "run a command, or execute a test.",
+      "emphasis": "execute a test",
+      "visual": "icon_flow",
+      "subjects": [
+        "terminal",
+        "test file",
+        "play button"
+      ],
+      "label": "Tool access",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "For coding, the useful loop is straightforward: understand the repository, make a change,",
+      "emphasis": "useful loop",
+      "visual": "icon_orbit",
+      "subjects": [
+        "repository",
+        "code editor",
+        "test terminal"
+      ],
+      "label": "Coding loop",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "run the tests, read the failure, fix the cause, and try again.",
+      "emphasis": "fix the cause",
+      "visual": "icon_flow",
+      "subjects": [
+        "failed test",
+        "bug",
+        "wrench"
+      ],
+      "label": "Fix and retry",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "It is a workbench, not autocomplete.",
+      "emphasis": "not autocomplete",
+      "visual": "split_compare",
+      "subjects": [
+        "workbench",
+        "autocomplete text box"
+      ],
+      "label": "More than autocomplete",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "But what stops it losing the thread?",
+      "emphasis": "losing the thread",
+      "visual": "icon_hero",
+      "subjects": [
+        "tangled thread",
+        "AI model",
+        "workspace"
+      ],
+      "label": "Keep the thread",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "Anthropic describes context management as part of the system.",
+      "emphasis": "context management",
+      "visual": "icon_hero",
+      "subjects": [
+        "context window",
+        "folders",
+        "AI model"
+      ],
+      "label": "Context management",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "Opus 4.6 included a 1-million-token context window in beta and context compaction,",
+      "emphasis": "1-million-token",
+      "visual": "gauge",
+      "subjects": [
+        "large context window",
+        "token counter",
+        "document stack"
+      ],
+      "label": "Context window",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "which summarizes earlier work so an agent can continue across longer tasks.",
+      "emphasis": "summarizes",
+      "visual": "icon_flow",
+      "subjects": [
+        "document stack",
+        "compression arrows",
+        "workspace"
+      ],
+      "label": "Compact context",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "Picture the workbench filling with notes and test results.",
+      "emphasis": "notes and test results",
+      "visual": "icon_grid",
+      "subjects": [
+        "workbench",
+        "sticky notes",
+        "test reports"
+      ],
+      "label": "A crowded bench",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "Compaction clears space without throwing away the useful plan.",
+      "emphasis": "clears space",
+      "visual": "icon_flow",
+      "subjects": [
+        "workbench",
+        "cleared notes",
+        "plan document"
+      ],
+      "label": "Clear space",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "It does not create perfect memory.",
+      "emphasis": "perfect memory",
+      "visual": "cross_out",
+      "subjects": [
+        "brain",
+        "broken memory card",
+        "AI model"
+      ],
+      "label": "Not perfect memory",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "The system still needs checkpoints and a way",
+      "emphasis": "checkpoints",
+      "visual": "icon_flow",
+      "subjects": [
+        "checkpoint flag",
+        "saved project",
+        "laptop"
+      ],
+      "label": "Checkpoints",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "to recover when a tool call goes wrong.",
+      "emphasis": "recover",
+      "visual": "icon_flow",
+      "subjects": [
+        "error message",
+        "back arrow",
+        "tool terminal"
+      ],
+      "label": "Recover errors",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "So the model can act, but acting alone is not the same as finishing.",
+      "emphasis": "acting alone",
+      "visual": "split_compare",
+      "subjects": [
+        "AI model",
+        "unfinished project",
+        "toolbox"
+      ],
+      "label": "Acting is not finishing",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "We still need proof.",
+      "emphasis": "We still need proof",
+      "visual": "icon_hero",
+      "subjects": [
+        "test report",
+        "magnifying glass",
+        "checkmark"
+      ],
+      "label": "Need proof",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Proof is where this upgrade becomes practical, or dangerous.",
+      "emphasis": "practical, or dangerous",
+      "visual": "split_compare",
+      "subjects": [
+        "code project",
+        "warning sign",
+        "safety helmet"
+      ],
+      "label": "Practical or dangerous",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "A model can write code that looks right and still fails.",
+      "emphasis": "still fails",
+      "visual": "icon_pair",
+      "subjects": [
+        "code window",
+        "failed test",
+        "red warning"
+      ],
+      "label": "Looks right, fails",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "So it needs to compare its output with evidence.",
+      "emphasis": "evidence",
+      "visual": "icon_flow",
+      "subjects": [
+        "output document",
+        "magnifying glass",
+        "test report"
+      ],
+      "label": "Compare evidence",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "For software, that might mean a passing test, a completed migration,",
+      "emphasis": "passing test",
+      "visual": "checklist",
+      "subjects": [
+        "test suite",
+        "green checkmark",
+        "database"
+      ],
+      "label": "Proof points",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "or data that matches.",
+      "emphasis": "matches",
+      "visual": "icon_flow",
+      "subjects": [
+        "AI model",
+        "timeline",
+        "tool icons"
+      ],
+      "label": "Long-running agents",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Anthropic\u2019s material describes long-running agents gathering context, planning, executing through tools,",
+      "emphasis": "long-running",
+      "visual": "icon_grid",
+      "subjects": [
+        "several context windows",
+        "AI model",
+        "documents"
+      ],
+      "label": "Across windows",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "and managing context across multiple windows.",
+      "emphasis": "managing",
+      "visual": "icon_hero",
+      "subjects": [
+        "Anthropic announcement",
+        "Claude Code screen"
+      ],
+      "label": "Later announcement",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "In the later Opus 4.8 announcement,",
+      "emphasis": "4.8",
+      "visual": "icon_grid",
+      "subjects": [
+        "Claude Code",
+        "multiple worker screens",
+        "flow arrows"
+      ],
+      "label": "Parallel work",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Anthropic described workflows where Claude Code could plan work, run parallel subagents,",
+      "emphasis": "Anthropic",
+      "visual": "checklist",
+      "subjects": [
+        "test suite",
+        "ruler",
+        "completed code"
+      ],
+      "label": "Verify outputs",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "and verify outputs against an existing test suite.",
+      "emphasis": "existing",
+      "visual": "icon_grid",
+      "subjects": [
+        "multiple workbenches",
+        "ruler",
+        "finished modules"
+      ],
+      "label": "Split and check",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "The workbench splits into several benches, then checks the finished parts against a ruler.",
+      "emphasis": "workbench",
+      "visual": "icon_hero",
+      "subjects": [
+        "engineering document",
+        "warning sign",
+        "AI loop"
+      ],
+      "label": "Engineering warning",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "But the same engineering guidance warns that putting a model",
+      "emphasis": "engineering",
+      "visual": "cross_out",
+      "subjects": [
+        "software application",
+        "factory",
+        "quality badge"
+      ],
+      "label": "No guarantee",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "in a loop does not guarantee a production-quality application.",
+      "emphasis": "production-quality",
+      "visual": "icon_orbit",
+      "subjects": [
+        "looping arrows",
+        "wrong premise note",
+        "warning sign"
+      ],
+      "label": "Bad loop",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "A loop can repeat a bad assumption very efficiently.",
+      "emphasis": "efficiently",
+      "visual": "checklist",
+      "subjects": [
+        "permission panel",
+        "test suite",
+        "human reviewer"
+      ],
+      "label": "Safety controls",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "You still need tests that matter, limited permissions,",
+      "emphasis": "permissions",
+      "visual": "cross_out",
+      "subjects": [
+        "wrong target",
+        "human reviewer",
+        "warning sign"
+      ],
+      "label": "Check the target",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "and a person who notices when the target itself is wrong.",
+      "emphasis": "notices",
+      "visual": "split_compare",
+      "subjects": [
+        "AI model",
+        "mirror",
+        "test report"
+      ],
+      "label": "Not self-trust",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Self-checking is not self-trust.",
+      "emphasis": "Self-checking",
+      "visual": "icon_pair",
+      "subjects": [
+        "human reviewer",
+        "evidence folder",
+        "checkmark"
+      ],
+      "label": "Human judgment",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "The model can inspect evidence; humans decide if it\u2019s enough.",
+      "emphasis": "evidence",
+      "visual": "icon_hero",
+      "subjects": [
+        "investor",
+        "company building",
+        "chart"
+      ],
+      "label": "Investor story",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "That brings us to the investor story.",
+      "emphasis": "investor",
+      "visual": "icon_pair",
+      "subjects": [
+        "stock exchange building",
+        "company building",
+        "investor"
+      ],
+      "label": "Public company",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Why do those capabilities matter to a public company?",
+      "emphasis": "capabilities",
+      "visual": "icon_hero",
+      "subjects": [
+        "virtual assistant",
+        "engineer",
+        "workspace"
+      ],
+      "label": "Virtual Collaborator",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Anthropic\u2019s IPO fact sheet describes the direction as moving from",
+      "emphasis": "Anthropic\u2019s",
+      "visual": "icon_flow",
+      "subjects": [
+        "coding workspace",
+        "research files",
+        "operations dashboard"
+      ],
+      "label": "Complex work",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "discrete prompt responses toward a \u201cVirtual Collaborator\u201d doing complex, long-horizon work.",
+      "emphasis": "Collaborator\u201d",
+      "visual": "icon_hero",
+      "subjects": [
+        "business handshake",
+        "AI workspace",
+        "customer"
+      ],
+      "label": "The business idea",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "The commercial idea is simple:",
+      "emphasis": "commercial",
+      "visual": "icon_flow",
+      "subjects": [
+        "customer",
+        "codebase",
+        "workflow arrows"
+      ],
+      "label": "Workflow adoption",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "if a customer uses a model through an entire coding, research, or operations workflow,",
+      "emphasis": "operations",
+      "visual": "icon_pair",
+      "subjects": [
+        "AI workspace",
+        "replacement arrows",
+        "locked tool"
+      ],
+      "label": "Sticky workflow",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "it may become harder to replace than an occasional chat answer.",
+      "emphasis": "occasional",
+      "visual": "icon_grid",
+      "subjects": [
+        "model selector",
+        "code editor",
+        "reasoning document"
+      ],
+      "label": "Higher capability",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Its prospectus says customers use higher-capability models for complex reasoning, coding, and agentic workflows.",
+      "emphasis": "higher-capability",
+      "visual": "gauge",
+      "subjects": [
+        "model selector",
+        "usage meter",
+        "customer"
+      ],
+      "label": "Usage drives spend",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Spending is mainly driven by the model chosen and how much it is used.",
+      "emphasis": "Spending",
+      "visual": "cross_out",
+      "subjects": [
+        "promise document",
+        "warning sign",
+        "crossed fingers"
+      ],
+      "label": "Not guaranteed",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Promising, but not a guarantee.",
+      "emphasis": "Promising",
+      "visual": "bar_chart",
+      "subjects": [
+        "server racks",
+        "compute chip",
+        "invoice"
+      ],
+      "label": "Compute cost",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Compute remains a major cost, and infrastructure commitments affect cash flow.",
+      "emphasis": "cash flow",
+      "visual": "line_chart",
+      "subjects": [
+        "cash flow arrows",
+        "server racks",
+        "ledger"
+      ],
+      "label": "Infrastructure pressure",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "So investors are asking whether customers keep using it,",
+      "emphasis": "customers keep using it",
+      "visual": "icon_orbit",
+      "subjects": [
+        "customer",
+        "AI dashboard",
+        "repeat arrows"
+      ],
+      "label": "Retention",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "whether the work creates measurable value,",
+      "emphasis": "measurable value",
+      "visual": "gauge",
+      "subjects": [
+        "value dashboard",
+        "customer",
+        "checkmark"
+      ],
+      "label": "Measure value",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "and whether revenue can outrun inference and infrastructure costs.",
+      "emphasis": "outrun inference",
+      "visual": "line_chart",
+      "subjects": [
+        "revenue arrow",
+        "server racks",
+        "cost arrow"
+      ],
+      "label": "Revenue versus cost",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "The launch is a signal,",
+      "emphasis": "a signal",
+      "visual": "icon_hero",
+      "subjects": [
+        "launch announcement",
+        "signal beacon",
+        "investor"
+      ],
+      "label": "A signal",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "not a profit forecast and not proof of any IPO valuation.",
+      "emphasis": "profit forecast",
+      "visual": "cross_out",
+      "subjects": [
+        "forecast chart",
+        "launch announcement",
+        "warning sign"
+      ],
+      "label": "Not a forecast",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Competition, safety, execution, retention,",
+      "emphasis": "Competition",
+      "visual": "icon_grid",
+      "subjects": [
+        "rival company buildings",
+        "AI models",
+        "race track"
+      ],
+      "label": "What decides it",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "and the gap between benchmarks and dependable production work still decide the answer.",
+      "emphasis": "dependable production work",
+      "visual": "checklist",
+      "subjects": [
+        "production software",
+        "factory",
+        "test report"
+      ],
+      "label": "Production reality",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "The simple version is,",
+      "emphasis": "simple version",
+      "visual": "icon_hero",
+      "subjects": [
+        "summary card",
+        "AI workbench"
+      ],
+      "label": "The simple version",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "the upgrade turns AI from an answer box into a workbench: it plans, acts,",
+      "emphasis": "answer box",
+      "visual": "split_compare",
+      "subjects": [
+        "answer box",
+        "workbench",
+        "AI model"
+      ],
+      "label": "From box to bench",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "remembers enough to continue, writes code, and checks the result.",
+      "emphasis": "checks the result",
+      "visual": "icon_flow",
+      "subjects": [
+        "code editor",
+        "test report",
+        "green checkmark"
+      ],
+      "label": "Checks results",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "But it still needs a bounded job, good tests, safe permissions, and human judgment.",
+      "emphasis": "human judgment",
+      "visual": "checklist",
+      "subjects": [
+        "human reviewer",
+        "shield",
+        "test suite"
+      ],
+      "label": "Human judgment",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "The free guide to this video and the link to our",
+      "emphasis": "free guide",
+      "visual": "icon_pair",
+      "subjects": [
+        "guide document",
+        "video screen",
+        "link icon"
+      ],
+      "label": "Free guide",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "community for updates and all these stories are in the description.",
+      "emphasis": "community",
+      "visual": "icon_pair",
+      "subjects": [
+        "community group",
+        "phone screen",
+        "update bell"
+      ],
+      "label": "Join community",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "cta",
+      "text": "Follow the channel if you want the next launch",
+      "emphasis": "Follow the channel",
+      "visual": "icon_hero",
+      "subjects": [
+        "follow button",
+        "channel screen",
+        "bell"
+      ],
+      "label": "Follow for more",
+      "follow": true
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "explained by what it changes in your actual work, not just by the demo.",
+      "emphasis": "actual work",
+      "visual": "logo_end",
+      "subjects": [
+        "workbench",
+        "engineer",
+        "launch screen"
+      ],
+      "label": "What changes",
+      "follow": false
+    }
+  ],
+  "voice_script": "[excited] On February 5, 2026, Anthropic launched Claude Opus 4.6, and the launch made it easy to mistake the upgrade for a smarter chatbot. [curious] But the important change is not the first answer it gives you. It\u2019s what happens after that answer. A long-horizon model can plan a job, use tools, keep track of earlier work, write and run code, then check whether the result works. [emphatic] That matters if you want to hand over a bug investigation, data analysis, or codebase migration instead of asking for a paragraph at a time. [thoughtful] By the end, you\u2019ll see the loop that makes this possible, what still needs a human, and why investors care without treating valuation as destiny.\n\n[curious] Start with the old model. You ask for an explanation, draft, or code snippet. It produces something plausible and waits. Useful, but still a response engine.\n\n[serious] In Anthropic\u2019s launch post for Opus 4.6, the emphasis was on careful planning, longer agentic tasks, large codebases, debugging, and code review.\n\nInstead of \u201cwrite this function,\u201d you can give it a goal in a workspace. It can break that goal into smaller decisions: inspect the repository, find relevant files, change one part, and test it.\n\n[emphatic] The unit of work has changed from an answer to a bounded project. Think of the model as a junior engineer at a workbench, not an oracle behind a counter.\n\n[thoughtful] It still needs a clear objective and permission to touch the right things. A vague request can produce a confident detour, and a good plan can fail if the workspace is wrong. That is why the next step matters: it needs hands.\n\n[excited] Those hands are tools. A model that only remembers patterns can suggest a database query. A tool-using system can inspect documentation, open files, query data, edit a project, run a command, or execute a test.\n\nFor coding, the useful loop is straightforward: understand the repository, make a change, run the tests, read the failure, fix the cause, and try again. It is a workbench, not autocomplete.\n\n[curious] But what stops it losing the thread? Anthropic describes context management as part of the system. Opus 4.6 included a 1-million-token context window in beta and context compaction, which summarizes earlier work so an agent can continue across longer tasks.\n\n[thoughtful] Picture the workbench filling with notes and test results. Compaction clears space without throwing away the useful plan. It does not create perfect memory. The system still needs checkpoints and a way to recover when a tool call goes wrong.\n\n[serious] So the model can act, but acting alone is not the same as finishing. We still need proof.\n\n[serious] Proof is where this upgrade becomes practical, or dangerous. A model can write code that looks right and still fails. So it needs to compare its output with evidence.\n\nFor software, that might mean a passing test, a completed migration, or data that matches. Anthropic\u2019s material describes long-running agents gathering context, planning, executing through tools, and managing context across multiple windows.\n\n[emphatic] In the later Opus 4.8 announcement, Anthropic described workflows where Claude Code could plan work, run parallel subagents, and verify outputs against an existing test suite. The workbench splits into several benches, then checks the finished parts against a ruler.\n\n[serious] But the same engineering guidance warns that putting a model in a loop does not guarantee a production-quality application. A loop can repeat a bad assumption very efficiently.\n\n[thoughtful] You still need tests that matter, limited permissions, and a person who notices when the target itself is wrong. Self-checking is not self-trust. The model can inspect evidence; humans decide if it\u2019s enough.\n\n[curious] That brings us to the investor story. Why do those capabilities matter to a public company?\n\nAnthropic\u2019s IPO fact sheet describes the direction as moving from discrete prompt responses toward a \u201cVirtual Collaborator\u201d doing complex, long-horizon work. [emphatic] The commercial idea is simple: if a customer uses a model through an entire coding, research, or operations workflow, it may become harder to replace than an occasional chat answer.\n\nIts prospectus says customers use higher-capability models for complex reasoning, coding, and agentic workflows. Spending is mainly driven by the model chosen and how much it is used.\n\n[thoughtful] Promising, but not a guarantee. Compute remains a major cost, and infrastructure commitments affect cash flow.\n\n[serious] So investors are asking whether customers keep using it, whether the work creates measurable value, and whether revenue can outrun inference and infrastructure costs.\n\nThe launch is a signal, not a profit forecast and not proof of any IPO valuation. Competition, safety, execution, retention, and the gap between benchmarks and dependable production work still decide the answer.\n\n[warmly] The simple version is, the upgrade turns AI from an answer box into a workbench: it plans, acts, remembers enough to continue, writes code, and checks the result. But it still needs a bounded job, good tests, safe permissions, and human judgment.\n\nThe free guide to this video and the link to our community for updates and all these stories are in the description. [emphatic] Follow the channel if you want the next launch explained by what it changes in your actual work, not just by the demo."
+}

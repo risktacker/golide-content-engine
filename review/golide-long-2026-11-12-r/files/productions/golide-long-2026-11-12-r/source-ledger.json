@@ -1,0 +1,66 @@
+{
+  "claims": [
+    {
+      "claim": "Anthropic\u2019s Claude Opus 4.6 launch described improvements in careful planning, longer agentic tasks, large-codebase work, code review, debugging, a 1-million-token context window in beta, and context compaction for longer-running tasks.",
+      "source_title": "Introducing Claude Opus 4.6",
+      "source_url": "https://www.anthropic.com/news/claude-opus-4-6",
+      "published_or_updated": "February 5, 2026"
+    },
+    {
+      "claim": "Anthropic describes long-running agents as systems that gather context, plan, execute through tools, and manage context across multiple windows; it also warns that putting a model in a loop alone does not reliably produce a production-quality application.",
+      "source_title": "Effective harnesses for long-running agents",
+      "source_url": "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents",
+      "published_or_updated": "2025"
+    },
+    {
+      "claim": "Anthropic\u2019s Claude Opus 4.8 announcement describes dynamic workflows in which Claude Code can plan work, run parallel subagents, and verify outputs before reporting back, including codebase-scale migrations measured against an existing test suite.",
+      "source_title": "Introducing Claude Opus 4.8",
+      "source_url": "https://www.anthropic.com/news/claude-opus-4-8",
+      "published_or_updated": "May 28, 2026"
+    },
+    {
+      "claim": "Anthropic says Claude Code work increasingly includes end-to-end activities such as deploying and running code, analyzing data, and writing non-code documents; its study analyzed approximately 400,000 sessions and reported that successful tasks were associated with verifiable evidence such as passing tests or committed work.",
+      "source_title": "How Claude Code is used in practice",
+      "source_url": "https://www.anthropic.com/research/claude-code-expertise",
+      "published_or_updated": "June 16, 2026"
+    },
+    {
+      "claim": "Anthropic\u2019s IPO fact sheet frames the commercial shift as movement from discrete prompt responses toward a \u2018Virtual Collaborator\u2019 that performs complex, long-horizon work, and says customers realize value through more productive employees, faster processes, and embedded intelligence in products.",
+      "source_title": "Anthropic IPO Fact Sheet",
+      "source_url": "https://ipo.anthropic.com/documents/us/factsheet.pdf",
+      "published_or_updated": "2026"
+    },
+    {
+      "claim": "Anthropic\u2019s prospectus says customers use higher-capability models for complex reasoning, coding, and agentic workflows, while customer spending is primarily driven by the model used and the volume of usage.",
+      "source_title": "Anthropic Prospectus",
+      "source_url": "https://ipo.anthropic.com/documents/us/prospectus.pdf",
+      "published_or_updated": "2026"
+    },
+    {
+      "claim": "Anthropic\u2019s prospectus also describes compute investment as a major ongoing requirement and says infrastructure commitments can materially affect the company\u2019s cash-flow profile, which is why capability alone does not establish profitability or justify a particular valuation.",
+      "source_title": "Anthropic Prospectus",
+      "source_url": "https://ipo.anthropic.com/documents/us/prospectus.pdf",
+      "published_or_updated": "2026"
+    }
+  ],
+  "platform_demand": {
+    "query": "Anthropic Fable 5.2 Mythos 5.2 launch capabilities coding agents IPO explained",
+    "score": 79.5,
+    "verdict": "pass",
+    "recent_videos": 1,
+    "median_views_per_day": 767863.2,
+    "top_views_per_day": 767863.2,
+    "market_coverage": 1,
+    "title_query_overlap": 1,
+    "measured_at": "2026-11-12T17:22:52.740283+00:00",
+    "signal_type": "youtube-breakout-v1"
+  },
+  "music": {
+    "type": "music",
+    "title": "GOLIDE Curiosity Bed",
+    "creator": "GOLIDE",
+    "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+    "license": "GOLIDE-Owned-Procedural-1.0",
+    "attribution": ""
+  }
+}

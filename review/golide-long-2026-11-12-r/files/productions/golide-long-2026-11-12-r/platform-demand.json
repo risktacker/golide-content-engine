@@ -1,0 +1,12 @@
+{
+  "query": "Anthropic Fable 5.2 Mythos 5.2 launch capabilities coding agents IPO explained",
+  "score": 79.5,
+  "verdict": "pass",
+  "recent_videos": 1,
+  "median_views_per_day": 767863.2,
+  "top_views_per_day": 767863.2,
+  "market_coverage": 1,
+  "title_query_overlap": 1.0,
+  "measured_at": "2026-11-12T17:22:52.740283+00:00",
+  "signal_type": "youtube-breakout-v1"
+}

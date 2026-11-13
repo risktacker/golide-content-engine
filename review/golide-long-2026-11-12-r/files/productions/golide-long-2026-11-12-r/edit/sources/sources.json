@@ -1,0 +1,2215 @@
+[
+  {
+    "url": "https://www.anthropic.com/news/claude-opus-4-6",
+    "title": "Claude Opus 4.6 \\ Anthropic",
+    "claims": [
+      "Anthropic\u2019s Claude Opus 4.6 launch described improvements in careful planning, longer agentic tasks, large-codebase work, code review, debugging, a 1-million-token context window in beta, and context compaction for longer-running tasks."
+    ],
+    "ok": true,
+    "top": "01-top.png",
+    "full": "01-full.png",
+    "full_height": 5400,
+    "scale": 1.5,
+    "highlights": [
+      {
+        "phrase": "4.6",
+        "rects": [
+          [
+            579.25,
+            731.921875,
+            25,
+            21
+          ]
+        ]
+      }
+    ],
+    "headline": [
+      484.5,
+      164,
+      456,
+      37.109375
+    ],
+    "blocks": [
+      {
+        "text": "We\u2019re upgrading our smartest model.",
+        "rect": [
+          400.25,
+          680.390625,
+          624.5,
+          25.53125
+        ]
+      },
+      {
+        "text": "The new Claude Opus 4.6 improves on its predecessor\u2019s coding skills. It plans more carefully, sustains agentic tasks for longer, can operate more reliably in la",
+        "rect": [
+          400.25,
+          729.921875,
+          624.5,
+          127.65625
+        ]
+      },
+      {
+        "text": "Opus 4.6 can also apply its improved abilities to a range of everyday work tasks: running financial analyses, doing research, and using and creating documents, ",
+        "rect": [
+          400.25,
+          881.578125,
+          624.5,
+          127.65625
+        ]
+      },
+      {
+        "text": "The model\u2019s performance is state-of-the-art on several evaluations. For example, it achieves the highest score on the agentic coding evaluation Terminal-Bench 2",
+        "rect": [
+          400.25,
+          1033.234375,
+          624.5,
+          255.3125
+        ]
+      },
+      {
+        "text": "As we show in our extensive system card, Opus 4.6 also shows an overall safety profile as good as, or better than, any other frontier model in the industry, wit",
+        "rect": [
+          400.25,
+          1312.546875,
+          624.5,
+          76.59375
+        ]
+      },
+      {
+        "text": "Opus 4.6 is state-of-the-art on real-world work tasks across several professional domains.",
+        "rect": [
+          186.75,
+          2112.609375,
+          1051.5,
+          40.03125
+        ]
+      },
+      {
+        "text": "In Claude Code, you can now assemble agent teams to work on tasks together. On the API, Claude can use compaction to summarize its own context and perform longe",
+        "rect": [
+          400.25,
+          2216.640625,
+          624.5,
+          153.1875
+        ]
+      },
+      {
+        "text": "We\u2019ve made substantial upgrades to Claude in Excel, and we\u2019re releasing Claude in PowerPoint in a research preview. This makes Claude much more capable for ever",
+        "rect": [
+          400.25,
+          2393.828125,
+          624.5,
+          76.59375
+        ]
+      },
+      {
+        "text": "Claude Opus 4.6 is available today on claude.ai, our API, and all major cloud platforms. If you\u2019re a developer, use claude-opus-4-6 via the Claude API. Pricing ",
+        "rect": [
+          400.25,
+          2949.703125,
+          624.5,
+          104.125
+        ]
+      },
+      {
+        "text": "We cover the model, our new product updates, our evaluations, and our extensive safety testing in depth below.",
+        "rect": [
+          400.25,
+          3077.828125,
+          624.5,
+          51.0625
+        ]
+      },
+      {
+        "text": "We build Claude with Claude. Our engineers write code with Claude Code every day, and every new model first gets tested on our own work. With Opus 4.6, we\u2019ve fo",
+        "rect": [
+          400.25,
+          3232.234375,
+          624.5,
+          153.1875
+        ]
+      },
+      {
+        "text": "Opus 4.6 often thinks more deeply and more carefully revisits its reasoning before settling on an answer. This produces better results on harder problems, but c",
+        "rect": [
+          400.25,
+          3409.421875,
+          624.5,
+          155.1875
+        ]
+      },
+      {
+        "text": "Here are some of the things our Early Access partners told us about Claude Opus 4.6, including its propensity to work autonomously without hand-holding, its suc",
+        "rect": [
+          400.25,
+          3588.609375,
+          624.5,
+          102.125
+        ]
+      },
+      {
+        "text": "\u201cClaude Opus 4.6 is the strongest model Anthropic has shipped. It takes complicated requests and actually follows through, breaking them into concrete steps, ex",
+        "rect": [
+          325.5,
+          3873.734375,
+          340,
+          204.25
+        ]
+      },
+      {
+        "text": "Sarah Sachs AI Lead, Notion",
+        "rect": [
+          325.5,
+          4109.984375,
+          340,
+          40.03125
+        ]
+      },
+      {
+        "text": "\u201cEarly testing shows Claude Opus 4.6 delivering on the complex, multi-step coding work developers face every day\u2014especially agentic workflows that demand planni",
+        "rect": [
+          761.5,
+          3873.734375,
+          340,
+          178.71875
+        ]
+      },
+      {
+        "text": "Mario Rodriguez Chief Product Officer, GitHub",
+        "rect": [
+          761.5,
+          4084.453125,
+          340,
+          40.03125
+        ]
+      },
+      {
+        "text": "Chief Product Officer, GitHub",
+        "rect": [
+          761.5,
+          4104.46875,
+          340,
+          20.015625
+        ]
+      },
+      {
+        "text": "\u201cClaude Opus 4.6 is a huge leap for agentic planning. It breaks complex tasks into independent subtasks, runs tools and subagents in parallel, and identifies bl",
+        "rect": [
+          1197.5,
+          3873.734375,
+          340,
+          127.65625
+        ]
+      },
+      {
+        "text": "Michele Catasta President, Replit",
+        "rect": [
+          1197.5,
+          4033.390625,
+          340,
+          40.03125
+        ]
+      },
+      {
+        "text": "\u201cClaude Opus 4.6 is the best model we've tested yet. Its reasoning and planning capabilities have been exceptional at powering our AI Teammates. It's also a fan",
+        "rect": [
+          1633.5,
+          3873.734375,
+          340,
+          178.71875
+        ]
+      },
+      {
+        "text": "Amritansh Raghav Interim CTO, Asana",
+        "rect": [
+          1633.5,
+          4084.453125,
+          340,
+          40.03125
+        ]
+      },
+      {
+        "text": "\u201cClaude Opus 4.6 reasons through complex problems at a level we haven't seen before. It considers edge cases that other models miss and consistently lands on mo",
+        "rect": [
+          2069.5,
+          3873.734375,
+          340,
+          204.25
+        ]
+      },
+      {
+        "text": "\u201cClaude Opus 4.6 feels noticeably better than Opus 4.5 in Windsurf, especially on tasks that require careful exploration like debugging and understanding unfami",
+        "rect": [
+          2505.5,
+          3873.734375,
+          340,
+          178.71875
+        ]
+      },
+      {
+        "text": "\u201cClaude Opus 4.6 represents a meaningful leap in long-context performance. In our testing, we saw it handle much larger bodies of information with a level of co",
+        "rect": [
+          2941.5,
+          3873.734375,
+          340,
+          255.3125
+        ]
+      },
+      {
+        "text": "Joel Hron Chief Technology Officer, Thomson Reuters",
+        "rect": [
+          2941.5,
+          4161.046875,
+          340,
+          40.03125
+        ]
+      },
+      {
+        "text": "Chief Technology Officer, Thomson Reuters",
+        "rect": [
+          2941.5,
+          4181.0625,
+          340,
+          20.015625
+        ]
+      },
+      {
+        "text": "\u201cAcross 40 cybersecurity investigations, Claude Opus 4.6 produced the best results 38 of 40 times in a blind ranking against Claude 4.5 models. Each model ran e",
+        "rect": [
+          3377.5,
+          3873.734375,
+          340,
+          153.1875
+        ]
+      },
+      {
+        "text": "Stian Kirkeberg Head of AI & ML, NBIM",
+        "rect": [
+          3377.5,
+          4058.921875,
+          340,
+          40.03125
+        ]
+      },
+      {
+        "text": "\u201cClaude Opus 4.6 is the new frontier on long-running tasks from our internal benchmarks and testing. It's also been highly effective at reviewing code.\u201d",
+        "rect": [
+          3813.5,
+          3873.734375,
+          340,
+          102.125
+        ]
+      },
+      {
+        "text": "Michael Truell Co-founder & CEO, Cursor",
+        "rect": [
+          3813.5,
+          4007.859375,
+          340,
+          40.03125
+        ]
+      },
+      {
+        "text": "\u201cClaude Opus 4.6 achieved the highest BigLaw Bench score of any Claude model at 90.2%. With 40% perfect scores and 84% above 0.8, it\u2019s remarkably capable for le",
+        "rect": [
+          4249.5,
+          3873.734375,
+          340,
+          127.65625
+        ]
+      },
+      {
+        "text": "Niko Grupen Head of AI Research, Harvey",
+        "rect": [
+          4249.5,
+          4033.390625,
+          340,
+          40.03125
+        ]
+      },
+      {
+        "text": "Head of AI Research, Harvey",
+        "rect": [
+          4249.5,
+          4053.40625,
+          340,
+          20.015625
+        ]
+      },
+      {
+        "text": "\u201cClaude Opus 4.6 autonomously closed 13 issues and assigned 12 issues to the right team members in a single day, managing a ~50-person organization across 6 rep",
+        "rect": [
+          4685.5,
+          3873.734375,
+          340,
+          229.78125
+        ]
+      },
+      {
+        "text": "Yusuke Kaji General Manager, AI, Rakuten",
+        "rect": [
+          4685.5,
+          4135.515625,
+          340,
+          40.03125
+        ]
+      },
+      {
+        "text": "General Manager, AI, Rakuten",
+        "rect": [
+          4685.5,
+          4155.53125,
+          340,
+          20.015625
+        ]
+      },
+      {
+        "text": "\u201cClaude Opus 4.6 is an uplift in design quality. It works beautifully with our design systems and it\u2019s more autonomous, which is core to Lovable\u2019s values. Peopl",
+        "rect": [
+          5121.5,
+          3873.734375,
+          340,
+          153.1875
+        ]
+      },
+      {
+        "text": "Fabian Hedin Co-founder, Lovable",
+        "rect": [
+          5121.5,
+          4058.921875,
+          340,
+          40.03125
+        ]
+      },
+      {
+        "text": "\u201cClaude Opus 4.6 excels in high-reasoning tasks like multi-source analysis across legal, financial, and technical content. Box\u2019s eval showed a 10% lift in perfo",
+        "rect": [
+          5557.5,
+          3873.734375,
+          340,
+          178.71875
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "text": "News",
+        "rect": [
+          80,
+          28,
+          70.53125,
+          28
+        ]
+      },
+      {
+        "text": "Research",
+        "rect": [
+          158.53125,
+          28,
+          110.046875,
+          28
+        ]
+      },
+      {
+        "text": "Policy",
+        "rect": [
+          276.578125,
+          28,
+          86.78125,
+          28
+        ]
+      },
+      {
+        "text": "Commitments",
+        "rect": [
+          371.359375,
+          28,
+          140.4375,
+          28
+        ]
+      },
+      {
+        "text": "Anthropic",
+        "rect": [
+          627.5,
+          30,
+          170,
+          24
+        ]
+      },
+      {
+        "text": "Company",
+        "rect": [
+          1002.765625,
+          28,
+          109.921875,
+          28
+        ]
+      },
+      {
+        "text": "Try Claude",
+        "rect": [
+          1120.6875,
+          28,
+          116.3125,
+          28
+        ]
+      },
+      {
+        "text": "field: Enter search...",
+        "rect": [
+          941,
+          27,
+          296,
+          30
+        ]
+      },
+      {
+        "text": "Search",
+        "rect": [
+          1245,
+          28,
+          28,
+          28
+        ]
+      },
+      {
+        "text": "Enter focus mode",
+        "rect": [
+          1281,
+          28,
+          28,
+          28
+        ]
+      },
+      {
+        "text": "Open menu",
+        "rect": [
+          1317,
+          28,
+          28,
+          28
+        ]
+      },
+      {
+        "text": "01 First impressions",
+        "rect": [
+          80,
+          266.109375,
+          197.5,
+          44.015625
+        ]
+      },
+      {
+        "text": "02 Evaluating Claude Opus 4.6",
+        "rect": [
+          80,
+          311.125,
+          197.5,
+          64.03125
+        ]
+      },
+      {
+        "text": "03 A step forward on safety",
+        "rect": [
+          80,
+          376.15625,
+          197.5,
+          44.015625
+        ]
+      },
+      {
+        "text": "04 Product and API updates",
+        "rect": [
+          80,
+          421.171875,
+          197.5,
+          44.015625
+        ]
+      },
+      {
+        "text": "Play video",
+        "rect": [
+          670.5,
+          398.75,
+          84,
+          84
+        ]
+      },
+      {
+        "text": "Models",
+        "rect": [
+          1254.25,
+          323.125,
+          46.78125,
+          20.015625
+        ]
+      },
+      {
+        "text": "Claude Opus",
+        "rect": [
+          1254.25,
+          370.140625,
+          82.4375,
+          16
+        ]
+      },
+      {
+        "text": "Coding",
+        "rect": [
+          1254.25,
+          402.15625,
+          46.78125,
+          16
+        ]
+      },
+      {
+        "text": "Benchmarks",
+        "rect": [
+          1254.25,
+          434.171875,
+          78.3125,
+          16
+        ]
+      },
+      {
+        "text": "See more...",
+        "rect": [
+          1254.25,
+          464.1875,
+          69.4375,
+          20.015625
+        ]
+      },
+      {
+        "text": "View more",
+        "rect": [
+          1147.5,
+          2455.03125,
+          118.171875,
+          28
+        ]
+      },
+      {
+        "text": "Knowledge work",
+        "rect": [
+          186.75,
+          1453.140625,
+          141.828125,
+          28
+        ]
+      },
+      {
+        "text": "Agentic search",
+        "rect": [
+          328.578125,
+          1453.140625,
+          131.828125,
+          28
+        ]
+      },
+      {
+        "text": "Reasoning",
+        "rect": [
+          541.1875,
+          1453.140625,
+          102.171875,
+          28
+        ]
+      },
+      {
+        "text": "claude-opus-4-6",
+        "rect": [
+          687.25,
+          2976.578125,
+          130,
+          25.3125
+        ]
+      },
+      {
+        "text": "/effort",
+        "rect": [
+          947.25,
+          3512.890625,
+          66,
+          25.3125
+        ]
+      },
+      {
+        "text": "Previous slide",
+        "rect": [
+          630.484375,
+          4265.078125,
+          28,
+          28
+        ]
+      },
+      {
+        "text": "Next slide",
+        "rect": [
+          766.5,
+          4265.078125,
+          28,
+          28
+        ]
+      }
+    ],
+    "photo": "01-photo.png",
+    "faces_blurred": 0,
+    "captured_at": "2026-11-12T21:30:55+00:00"
+  },
+  {
+    "url": "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents",
+    "title": "Effective harnesses for long-running agents \\ Anthropic",
+    "claims": [
+      "Anthropic describes long-running agents as systems that gather context, plan, execute through tools, and manage context across multiple windows; it also warns that putting a model in a loop alone does not reliably produce a production-quality application."
+    ],
+    "ok": true,
+    "top": "02-top.png",
+    "full": "02-full.png",
+    "full_height": 5400,
+    "scale": 1.5,
+    "highlights": [],
+    "headline": [
+      352.5,
+      164,
+      720,
+      37.109375
+    ],
+    "blocks": [
+      {
+        "text": "Agents Context engineering Coding See more...",
+        "rect": [
+          1225.671875,
+          368.140625,
+          134.484375,
+          116.0625
+        ]
+      },
+      {
+        "text": "As AI agents become more capable, developers are increasingly asking them to take on complex tasks requiring work that spans hours, or even days. However, getti",
+        "rect": [
+          400.25,
+          265.109375,
+          624.5,
+          102.125
+        ]
+      },
+      {
+        "text": "The core challenge of long-running agents is that they must work in discrete sessions, and each new session begins with no memory of what came before. Imagine a",
+        "rect": [
+          400.25,
+          391.234375,
+          624.5,
+          178.71875
+        ]
+      },
+      {
+        "text": "We developed a two-fold solution to enable the Claude Agent SDK to work effectively across many context windows: an initializer agent that sets up the environme",
+        "rect": [
+          400.25,
+          593.953125,
+          624.5,
+          127.65625
+        ]
+      },
+      {
+        "text": "The long-running agent problem",
+        "rect": [
+          400.25,
+          769.609375,
+          624.5,
+          31.34375
+        ]
+      },
+      {
+        "text": "The Claude Agent SDK is a powerful, general-purpose agent harness adept at coding, as well as other tasks that require the model to use tools to gather context,",
+        "rect": [
+          400.25,
+          824.953125,
+          624.5,
+          153.1875
+        ]
+      },
+      {
+        "text": "However, compaction isn\u2019t sufficient. Out of the box, even a frontier coding model like Opus 4.5 running on the Claude Agent SDK in a loop across multiple conte",
+        "rect": [
+          400.25,
+          1002.140625,
+          624.5,
+          102.125
+        ]
+      },
+      {
+        "text": "Claude\u2019s failures manifested in two patterns. First, the agent tended to try to do too much at once\u2014essentially to attempt to one-shot the app. Often, this led ",
+        "rect": [
+          400.25,
+          1128.265625,
+          624.5,
+          204.25
+        ]
+      },
+      {
+        "text": "A second failure mode would often occur later in a project. After some features had already been built, a later agent instance would look around, see that progr",
+        "rect": [
+          400.25,
+          1356.515625,
+          624.5,
+          76.59375
+        ]
+      },
+      {
+        "text": "This decomposes the problem into two parts. First, we need to set up an initial environment that lays the foundation for all the features that a given prompt re",
+        "rect": [
+          400.25,
+          1457.109375,
+          624.5,
+          229.78125
+        ]
+      },
+      {
+        "text": "When experimenting internally, we addressed these problems using a two-part solution:",
+        "rect": [
+          400.25,
+          1710.890625,
+          624.5,
+          51.0625
+        ]
+      },
+      {
+        "text": "Initializer agent: The very first agent session uses a specialized prompt that asks the model to set up the initial environment: an init.sh script, a claude-pro",
+        "rect": [
+          425.265625,
+          1785.953125,
+          599.484375,
+          104.125
+        ]
+      },
+      {
+        "text": "Coding agent: Every subsequent session asks the model to make incremental progress, then leave structured updates.1",
+        "rect": [
+          425.265625,
+          1914.078125,
+          599.484375,
+          51.0625
+        ]
+      },
+      {
+        "text": "The key insight here was finding a way for agents to quickly understand the state of work when starting with a fresh context window, which is accomplished with ",
+        "rect": [
+          400.25,
+          1989.140625,
+          624.5,
+          127.65625
+        ]
+      },
+      {
+        "text": "In the updated Claude 4 prompting guide, we shared some best practices for multi-context window workflows, including a harness structure that uses \u201ca different ",
+        "rect": [
+          400.25,
+          2220.140625,
+          624.5,
+          153.1875
+        ]
+      },
+      {
+        "text": "To address the problem of the agent one-shotting an app or prematurely considering the project complete, we prompted the initializer agent to write a comprehens",
+        "rect": [
+          400.25,
+          2472.046875,
+          624.5,
+          178.71875
+        ]
+      },
+      {
+        "text": "{ \"CATEGORY\": \"FUNCTIONAL\", \"DESCRIPTION\": \"NEW CHAT BUTTON CREATES A FRESH CONVERSATION\", \"STEPS\": [ \"NAVIGATE TO MAIN INTERFACE\", \"CLICK THE 'NEW CHAT' BUTTON",
+        "rect": [
+          401.25,
+          2768.765625,
+          622.5,
+          312.1875
+        ]
+      },
+      {
+        "text": "We prompt coding agents to edit this file only by changing the status of a passes field, and we use strongly-worded instructions like \u201cIt is unacceptable to rem",
+        "rect": [
+          400.25,
+          3133.765625,
+          624.5,
+          153.1875
+        ]
+      },
+      {
+        "text": "Given this initial environment scaffolding, the next iteration of the coding agent was then asked to work on only one feature at a time. This incremental approa",
+        "rect": [
+          400.25,
+          3385.671875,
+          624.5,
+          102.125
+        ]
+      },
+      {
+        "text": "Once working incrementally, it\u2019s still essential that the model leaves the environment in a clean state after making a code change. In our experiments, we found",
+        "rect": [
+          400.25,
+          3511.796875,
+          624.5,
+          153.1875
+        ]
+      },
+      {
+        "text": "These approaches also increased efficiency, as they eliminated the need for an agent to have to guess at what had happened and spend its time trying to get the ",
+        "rect": [
+          400.25,
+          3688.984375,
+          624.5,
+          76.59375
+        ]
+      },
+      {
+        "text": "One final major failure mode that we observed was Claude\u2019s tendency to mark a feature as complete without proper testing. Absent explicit prompting, Claude tend",
+        "rect": [
+          400.25,
+          3864.296875,
+          624.5,
+          129.65625
+        ]
+      },
+      {
+        "text": "In the case of building a web app, Claude mostly did well at verifying features end-to-end once explicitly prompted to use browser automation tools and do all t",
+        "rect": [
+          400.25,
+          4017.953125,
+          624.5,
+          76.59375
+        ]
+      },
+      {
+        "text": "Screenshots taken by Claude through the Puppeteer MCP server as it tested the claude.ai clone.",
+        "rect": [
+          400.25,
+          4525.828125,
+          624.5,
+          40.03125
+        ]
+      },
+      {
+        "text": "Providing Claude with these kinds of testing tools dramatically improved performance, as the agent was able to identify and fix bugs that weren\u2019t obvious from t",
+        "rect": [
+          400.25,
+          4629.859375,
+          624.5,
+          76.59375
+        ]
+      },
+      {
+        "text": "Some issues remain, like limitations to Claude\u2019s vision and to browser automation tools making it difficult to identify every kind of bug. For example, Claude c",
+        "rect": [
+          400.25,
+          4730.453125,
+          624.5,
+          102.125
+        ]
+      },
+      {
+        "text": "With all of the above in place, every coding agent is prompted to run through a series of steps to get its bearings, some quite basic but still helpful:",
+        "rect": [
+          400.25,
+          4935.921875,
+          624.5,
+          51.0625
+        ]
+      },
+      {
+        "text": "Run pwd to see the directory you\u2019re working in. You\u2019ll only be able to edit files in this directory.",
+        "rect": [
+          425.265625,
+          5010.984375,
+          599.484375,
+          53.0625
+        ]
+      },
+      {
+        "text": "Read the git logs and progress files to get up to speed on what was recently worked on.",
+        "rect": [
+          425.265625,
+          5088.046875,
+          599.484375,
+          51.0625
+        ]
+      },
+      {
+        "text": "Read the features list file and choose the highest-priority feature that\u2019s not yet done to work on.",
+        "rect": [
+          425.265625,
+          5163.109375,
+          599.484375,
+          51.0625
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "text": "News",
+        "rect": [
+          80,
+          28,
+          70.53125,
+          28
+        ]
+      },
+      {
+        "text": "Research",
+        "rect": [
+          158.53125,
+          28,
+          110.046875,
+          28
+        ]
+      },
+      {
+        "text": "Policy",
+        "rect": [
+          276.578125,
+          28,
+          86.78125,
+          28
+        ]
+      },
+      {
+        "text": "Commitments",
+        "rect": [
+          371.359375,
+          28,
+          140.4375,
+          28
+        ]
+      },
+      {
+        "text": "Anthropic",
+        "rect": [
+          627.5,
+          30,
+          170,
+          24
+        ]
+      },
+      {
+        "text": "Company",
+        "rect": [
+          1002.765625,
+          28,
+          109.921875,
+          28
+        ]
+      },
+      {
+        "text": "Try Claude",
+        "rect": [
+          1120.6875,
+          28,
+          116.3125,
+          28
+        ]
+      },
+      {
+        "text": "field: Enter search...",
+        "rect": [
+          941,
+          27,
+          296,
+          30
+        ]
+      },
+      {
+        "text": "Search",
+        "rect": [
+          1245,
+          28,
+          28,
+          28
+        ]
+      },
+      {
+        "text": "Enter focus mode",
+        "rect": [
+          1281,
+          28,
+          28,
+          28
+        ]
+      },
+      {
+        "text": "Open menu",
+        "rect": [
+          1317,
+          28,
+          28,
+          28
+        ]
+      },
+      {
+        "text": "01 The long-running agent problem",
+        "rect": [
+          80,
+          266.109375,
+          197.5,
+          64.03125
+        ]
+      },
+      {
+        "text": "02 Environment management",
+        "rect": [
+          80,
+          331.140625,
+          197.5,
+          64.03125
+        ]
+      },
+      {
+        "text": "03 Getting up to speed",
+        "rect": [
+          80,
+          396.171875,
+          197.5,
+          44.015625
+        ]
+      },
+      {
+        "text": "04 Future work",
+        "rect": [
+          80,
+          441.1875,
+          197.5,
+          44.015625
+        ]
+      },
+      {
+        "text": "Engineering",
+        "rect": [
+          1225.671875,
+          323.125,
+          78.4375,
+          20.015625
+        ]
+      },
+      {
+        "text": "Agents",
+        "rect": [
+          1225.671875,
+          370.140625,
+          48.78125,
+          16
+        ]
+      },
+      {
+        "text": "Context engineering",
+        "rect": [
+          1225.671875,
+          402.15625,
+          134.484375,
+          16
+        ]
+      },
+      {
+        "text": "Coding",
+        "rect": [
+          1225.671875,
+          434.171875,
+          46.78125,
+          16
+        ]
+      },
+      {
+        "text": "See more...",
+        "rect": [
+          1225.671875,
+          464.1875,
+          69.4375,
+          20.015625
+        ]
+      },
+      {
+        "text": "View more",
+        "rect": [
+          1147.5,
+          1169,
+          118.171875,
+          28
+        ]
+      },
+      {
+        "text": "init.sh",
+        "rect": [
+          830.265625,
+          1812.828125,
+          66,
+          25.3125
+        ]
+      },
+      {
+        "text": "Copy",
+        "rect": [
+          807.4375,
+          2727.765625,
+          87.53125,
+          28
+        ]
+      },
+      {
+        "text": "Expand",
+        "rect": [
+          902.96875,
+          2727.765625,
+          108.78125,
+          28
+        ]
+      },
+      {
+        "text": "curl",
+        "rect": [
+          400.25,
+          3942.234375,
+          42,
+          25.3125
+        ]
+      },
+      {
+        "text": "pwd",
+        "rect": [
+          460.265625,
+          5012.328125,
+          34,
+          25.3125
+        ]
+      }
+    ],
+    "photo": null,
+    "faces_blurred": 0,
+    "captured_at": "2026-11-12T21:31:01+00:00"
+  },
+  {
+    "url": "https://www.anthropic.com/news/claude-opus-4-8",
+    "title": "Introducing Claude Opus 4.8 \\ Anthropic",
+    "claims": [
+      "Anthropic\u2019s Claude Opus 4.8 announcement describes dynamic workflows in which Claude Code can plan work, run parallel subagents, and verify outputs before reporting back, including codebase-scale migrations measured against an existing test suite."
+    ],
+    "ok": true,
+    "top": "03-top.png",
+    "full": "03-full.png",
+    "full_height": 5400,
+    "scale": 1.5,
+    "highlights": [
+      {
+        "phrase": "4.8",
+        "rects": [
+          [
+            149.90625,
+            50.984375,
+            19.40625,
+            16
+          ]
+        ]
+      }
+    ],
+    "headline": [
+      484.5,
+      164,
+      456,
+      37.109375
+    ],
+    "blocks": [
+      {
+        "text": "We\u2019re upgrading Claude Opus to a new version: Claude Opus 4.8. It builds on Opus 4.7 with improvements across benchmarks, and is a more effective collaborator. ",
+        "rect": [
+          400.25,
+          680.390625,
+          624.5,
+          76.59375
+        ]
+      },
+      {
+        "text": "Opus 4.8 launches alongside several new features. Users on claude.ai now have control over the amount of effort Claude puts into a task. Claude Code has a new \u201c",
+        "rect": [
+          400.25,
+          780.984375,
+          624.5,
+          127.65625
+        ]
+      },
+      {
+        "text": "The table below shows how Opus 4.8 compares to its predecessor and to other models on tests of coding, agentic skills, reasoning, and practical knowledge work t",
+        "rect": [
+          400.25,
+          1011.984375,
+          624.5,
+          102.125
+        ]
+      },
+      {
+        "text": "Collaborating with Opus 4.8",
+        "rect": [
+          400.25,
+          1674.75,
+          624.5,
+          31.34375
+        ]
+      },
+      {
+        "text": "Early testers have found Claude Opus 4.8 to be more reliable and sharper in its judgment when it\u2019s performing agentic tasks. Below are quotes from many of these",
+        "rect": [
+          400.25,
+          1730.09375,
+          624.5,
+          76.59375
+        ]
+      },
+      {
+        "text": "\u201cClaude Opus 4.8 has noticeably better judgment. In Claude Code, it asks the right questions, catches its own mistakes, pushes back when a plan isn\u2019t sound, and",
+        "rect": [
+          325.5,
+          1989.6875,
+          340,
+          204.25
+        ]
+      },
+      {
+        "text": "Tom Pritchard Staff Engineer",
+        "rect": [
+          325.5,
+          2225.9375,
+          340,
+          40.03125
+        ]
+      },
+      {
+        "text": "\u201cOn our Super-Agent benchmark, Claude Opus 4.8 is the only model to complete every case end-to-end, beating prior Opus models and GPT-5.5 at parity on cost. For",
+        "rect": [
+          761.5,
+          1989.6875,
+          340,
+          178.71875
+        ]
+      },
+      {
+        "text": "Kay Zhu Co-Founder and CTO",
+        "rect": [
+          761.5,
+          2200.40625,
+          340,
+          40.03125
+        ]
+      },
+      {
+        "text": "\u201cOn CursorBench, Claude Opus 4.8 exceeds prior Opus models across every effort level. Tool calling is meaningfully more efficient, using fewer steps for the sam",
+        "rect": [
+          1197.5,
+          1989.6875,
+          340,
+          153.1875
+        ]
+      },
+      {
+        "text": "Michael Truell Co-Founder and CEO",
+        "rect": [
+          1197.5,
+          2174.875,
+          340,
+          40.03125
+        ]
+      },
+      {
+        "text": "\u201cClaude Opus 4.8 delivers the highest score recorded on our Legal Agent Benchmark, and is the first model to break 10% overall on the all-pass standard. For sub",
+        "rect": [
+          1633.5,
+          1989.6875,
+          340,
+          204.25
+        ]
+      },
+      {
+        "text": "Niko Grupen Head of Applied Research",
+        "rect": [
+          1633.5,
+          2225.9375,
+          340,
+          40.03125
+        ]
+      },
+      {
+        "text": "\u201cClaude Opus 4.8 feels like a major quality-of-life update over Opus 4.7: faster, easier to collaborate with, and better at carrying context and style direction",
+        "rect": [
+          2069.5,
+          1989.6875,
+          340,
+          204.25
+        ]
+      },
+      {
+        "text": "Katie Parrott Staff Writer",
+        "rect": [
+          2069.5,
+          2225.9375,
+          340,
+          40.03125
+        ]
+      },
+      {
+        "text": "\u201cClaude Opus 4.8 is the strongest computer-use and browser-agent model we\u2019ve tested, scoring 84% on Online-Mind2Web, which is a meaningful jump over both Opus 4",
+        "rect": [
+          2505.5,
+          1989.6875,
+          340,
+          204.25
+        ]
+      },
+      {
+        "text": "Miguel Gonzalez Tech Lead",
+        "rect": [
+          2505.5,
+          2225.9375,
+          340,
+          40.03125
+        ]
+      },
+      {
+        "text": "\u201cClaude Opus 4.8 uses tools cleanly and follows instructions with the consistency our autonomous engineering workloads need to keep running unattended. It impro",
+        "rect": [
+          2941.5,
+          1989.6875,
+          340,
+          255.3125
+        ]
+      },
+      {
+        "text": "\u201cOn our long-running evals, Claude Opus 4.8\u2019s analysis was consistently higher quality than prior Opus models. It finished faster and produced richer, more info",
+        "rect": [
+          3377.5,
+          1989.6875,
+          340,
+          280.84375
+        ]
+      },
+      {
+        "text": "Michael Ran Sr. Investment Associate",
+        "rect": [
+          3377.5,
+          2302.53125,
+          340,
+          40.03125
+        ]
+      },
+      {
+        "text": "\u201cAcross CoCounsel Legal, Claude Opus 4.8 delivered meaningful improvements in consistency and reasoning quality compared to prior Opus models. For the high-stak",
+        "rect": [
+          3813.5,
+          1989.6875,
+          340,
+          280.84375
+        ]
+      },
+      {
+        "text": "Joel Hron Chief Technology Officer",
+        "rect": [
+          3813.5,
+          2302.53125,
+          340,
+          40.03125
+        ]
+      },
+      {
+        "text": "\u201cClaude Opus 4.8 sets a new bar for enterprise AI. In Genie, Databricks\u2019 AI agent for data and knowledge work, the new Opus model unlocks a step change in agent",
+        "rect": [
+          4249.5,
+          1989.6875,
+          340,
+          255.3125
+        ]
+      },
+      {
+        "text": "Hanlin Tang CTO, Neural Networks",
+        "rect": [
+          4249.5,
+          2277,
+          340,
+          40.03125
+        ]
+      },
+      {
+        "text": "\u201cFor financial-document workflows in Hebbia\u2019s orchestrator, Claude Opus 4.8 delivers the same strong quality as Opus 4.7 with noticeably better citation precisi",
+        "rect": [
+          4685.5,
+          1989.6875,
+          340,
+          204.25
+        ]
+      },
+      {
+        "text": "One of the most prominent improvements in Opus 4.8 is its honesty. We train all our models to be honest\u2014for instance, to avoid making claims that they can\u2019t sup",
+        "rect": [
+          400.25,
+          2498.5625,
+          624.5,
+          229.78125
+        ]
+      },
+      {
+        "text": "As always, we ran a detailed alignment assessment on the model before release. In terms of positive traits, our Alignment team concluded that Opus 4.8 \u201creaches ",
+        "rect": [
+          400.25,
+          2752.34375,
+          624.5,
+          229.78125
+        ]
+      },
+      {
+        "text": "In addition to Claude Opus 4.8, we\u2019re making the following updates:",
+        "rect": [
+          400.25,
+          3500.75,
+          624.5,
+          25.53125
+        ]
+      },
+      {
+        "text": "Dynamic workflows. This new feature, available in research preview, allows Claude to take on even bigger tasks in Claude Code. Claude can plan the work and then",
+        "rect": [
+          425.265625,
+          3550.28125,
+          599.484375,
+          255.3125
+        ]
+      },
+      {
+        "text": "Effort control in claude.ai and Cowork. A new control alongside the model selector lets users choose how much effort Claude puts into a response. On higher effo",
+        "rect": [
+          425.265625,
+          3829.59375,
+          599.484375,
+          153.1875
+        ]
+      },
+      {
+        "text": "The Messages API now accepts system entries inside the messages array. Developers can update Claude\u2019s instructions mid-task without breaking the prompt cache or",
+        "rect": [
+          425.265625,
+          4006.78125,
+          599.484375,
+          127.65625
+        ]
+      },
+      {
+        "text": "Opus 4.8 defaults to high effort, which we judge to be the best overall balance of quality and user experience. On coding tasks, this effort level spends a simi",
+        "rect": [
+          400.25,
+          4773.15625,
+          624.5,
+          231.78125
+        ]
+      },
+      {
+        "text": "Users will find Opus 4.8 to be a modest but tangible improvement on its predecessor. There\u2019s still more to be done: we\u2019re working on developing and releasing mo",
+        "rect": [
+          400.25,
+          5108.28125,
+          624.5,
+          102.125
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "text": "News",
+        "rect": [
+          80,
+          28,
+          70.53125,
+          28
+        ]
+      },
+      {
+        "text": "Research",
+        "rect": [
+          158.53125,
+          28,
+          110.046875,
+          28
+        ]
+      },
+      {
+        "text": "Policy",
+        "rect": [
+          276.578125,
+          28,
+          86.78125,
+          28
+        ]
+      },
+      {
+        "text": "Commitments",
+        "rect": [
+          371.359375,
+          28,
+          140.4375,
+          28
+        ]
+      },
+      {
+        "text": "Anthropic",
+        "rect": [
+          627.5,
+          30,
+          170,
+          24
+        ]
+      },
+      {
+        "text": "Company",
+        "rect": [
+          1002.765625,
+          28,
+          109.921875,
+          28
+        ]
+      },
+      {
+        "text": "Try Claude",
+        "rect": [
+          1120.6875,
+          28,
+          116.3125,
+          28
+        ]
+      },
+      {
+        "text": "field: Enter search...",
+        "rect": [
+          941,
+          27,
+          296,
+          30
+        ]
+      },
+      {
+        "text": "Search",
+        "rect": [
+          1245,
+          28,
+          28,
+          28
+        ]
+      },
+      {
+        "text": "Enter focus mode",
+        "rect": [
+          1281,
+          28,
+          28,
+          28
+        ]
+      },
+      {
+        "text": "Open menu",
+        "rect": [
+          1317,
+          28,
+          28,
+          28
+        ]
+      },
+      {
+        "text": "01 Opus 4.8\u2019s capabilities",
+        "rect": [
+          80,
+          266.109375,
+          197.5,
+          44.015625
+        ]
+      },
+      {
+        "text": "02 Collaborating with Opus 4.8",
+        "rect": [
+          80,
+          311.125,
+          197.5,
+          64.03125
+        ]
+      },
+      {
+        "text": "03 Also launching today",
+        "rect": [
+          80,
+          376.15625,
+          197.5,
+          44.015625
+        ]
+      },
+      {
+        "text": "04 A note on effort",
+        "rect": [
+          80,
+          421.171875,
+          197.5,
+          44.015625
+        ]
+      },
+      {
+        "text": "05 What\u2019s next?",
+        "rect": [
+          80,
+          466.1875,
+          197.5,
+          44.015625
+        ]
+      },
+      {
+        "text": "06 Availability",
+        "rect": [
+          80,
+          511.203125,
+          197.5,
+          44.015625
+        ]
+      },
+      {
+        "text": "Models",
+        "rect": [
+          1254.25,
+          323.125,
+          46.78125,
+          20.015625
+        ]
+      },
+      {
+        "text": "Claude Opus",
+        "rect": [
+          1254.25,
+          370.140625,
+          82.4375,
+          16
+        ]
+      },
+      {
+        "text": "Claude Code",
+        "rect": [
+          1254.25,
+          402.15625,
+          82.4375,
+          16
+        ]
+      },
+      {
+        "text": "Coding",
+        "rect": [
+          1254.25,
+          434.171875,
+          46.78125,
+          16
+        ]
+      },
+      {
+        "text": "See more...",
+        "rect": [
+          1254.25,
+          464.1875,
+          69.4375,
+          20.015625
+        ]
+      },
+      {
+        "text": "View more",
+        "rect": [
+          1147.5,
+          1600.78125,
+          118.171875,
+          28
+        ]
+      },
+      {
+        "text": "Previous slide",
+        "rect": [
+          630.484375,
+          2406.5625,
+          28,
+          28
+        ]
+      },
+      {
+        "text": "Next slide",
+        "rect": [
+          766.5,
+          2406.5625,
+          28,
+          28
+        ]
+      },
+      {
+        "text": "Play video",
+        "rect": [
+          670.5,
+          4392.125,
+          84,
+          84
+        ]
+      },
+      {
+        "text": "xhigh",
+        "rect": [
+          614.25,
+          4851.09375,
+          50,
+          25.3125
+        ]
+      }
+    ],
+    "photo": "03-photo.png",
+    "faces_blurred": 0,
+    "captured_at": "2026-11-12T21:31:07+00:00"
+  },
+  {
+    "url": "https://www.anthropic.com/research/claude-code-expertise",
+    "title": "How Claude Code is used in practice \\ Anthropic",
+    "claims": [
+      "Anthropic says Claude Code work increasingly includes end-to-end activities such as deploying and running code, analyzing data, and writing non-code documents; its study analyzed approximately 400,000 sessions and reported that successful tasks were associated with verifiable evidence such as passing tests or committed work."
+    ],
+    "ok": true,
+    "top": "04-top.png",
+    "full": "04-full.png",
+    "full_height": 5400,
+    "scale": 1.5,
+    "highlights": [
+      {
+        "phrase": "400,000",
+        "rects": [
+          [
+            886.265625,
+            826.640625,
+            71,
+            21
+          ]
+        ]
+      }
+    ],
+    "headline": [
+      297,
+      164,
+      831,
+      37.109375
+    ],
+    "blocks": [
+      {
+        "text": "Building on prior work, we introduce a framework for studying interactive agentic coding based on a privacy-preserving analysis of ~400,000 Claude Code sessions",
+        "rect": [
+          425.265625,
+          799.109375,
+          599.484375,
+          102.125
+        ]
+      },
+      {
+        "text": "In a typical session, people make most of the planning decisions (what to do) and Claude makes most of the execution decisions (how to do it). The greater domai",
+        "rect": [
+          425.265625,
+          925.234375,
+          599.484375,
+          178.71875
+        ]
+      },
+      {
+        "text": "The more domain expertise a person has, the more often the session ends in success\u2014though the gap between intermediate and expert users is modest. Over the seve",
+        "rect": [
+          425.265625,
+          1127.953125,
+          599.484375,
+          153.1875
+        ]
+      },
+      {
+        "text": "Over those seven months, the value of the typical task, which we estimate through a comparison to freelance job postings, rose in almost every kind of work\u2014abou",
+        "rect": [
+          425.265625,
+          1305.140625,
+          599.484375,
+          76.59375
+        ]
+      },
+      {
+        "text": "Agentic coding has taken off. The share of GitHub projects with coding agent activity has more than doubled since late 2025,1 and Claude Code users now spend an",
+        "rect": [
+          400.25,
+          1485.078125,
+          624.5,
+          178.71875
+        ]
+      },
+      {
+        "text": "This report provides evidence on how Claude Code is used in practice, based on a privacy-preserving analysis of ~400,000 interactive sessions from ~235,000 peop",
+        "rect": [
+          400.25,
+          1687.796875,
+          624.5,
+          280.84375
+        ]
+      },
+      {
+        "text": "What happens on Claude Code may be a preview of where knowledge work is headed, as agents become embedded in non-coding work. We find that Claude is handling mo",
+        "rect": [
+          400.25,
+          1992.640625,
+          624.5,
+          127.65625
+        ]
+      },
+      {
+        "text": "We also see evidence that domain expertise, and not coding proficiency, amplifies effective use of the tool. In particular, domain experts succeed more often, a",
+        "rect": [
+          400.25,
+          2144.296875,
+          624.5,
+          153.1875
+        ]
+      },
+      {
+        "text": "These findings give us an early read on possible transitions in the labor market. In our data, success is determined by how well a person understands the proble",
+        "rect": [
+          400.25,
+          2321.484375,
+          624.5,
+          229.78125
+        ]
+      },
+      {
+        "text": "What people use Claude Code for",
+        "rect": [
+          400.25,
+          2654.609375,
+          624.5,
+          26.71875
+        ]
+      },
+      {
+        "text": "To understand what people are using Claude Code for, we classify each session into one of nine work modes\u2014the single activity that best describes what the sessi",
+        "rect": [
+          400.25,
+          2705.328125,
+          624.5,
+          280.84375
+        ]
+      },
+      {
+        "text": "About 56% of sessions consist of writing (25%), fixing (26%), or testing and orchestrating code (5%). Operating software comprises 17%, while 14% of sessions ar",
+        "rect": [
+          400.25,
+          3010.171875,
+          624.5,
+          102.125
+        ]
+      },
+      {
+        "text": "The nine modes of work: Each interactive session is classified into the single mode that best describes what it is trying to accomplish.",
+        "rect": [
+          400.25,
+          3543.578125,
+          624.5,
+          40.03125
+        ]
+      },
+      {
+        "text": "We classify each session by having a model read its transcript, then using our privacy-preserving analysis tool, we check them against telemetry that's recorded",
+        "rect": [
+          400.25,
+          3647.609375,
+          624.5,
+          153.1875
+        ]
+      },
+      {
+        "text": "How autonomous is Claude Code? Capability evaluations suggest the ceiling is high and rising: on benchmarks such as METR's time-horizon evaluations, frontier mo",
+        "rect": [
+          400.25,
+          3899.515625,
+          624.5,
+          153.1875
+        ]
+      },
+      {
+        "text": "We investigate this question from two angles. First, we focus on the extent to which people are entrusting decisions to Claude, and second we look at how many a",
+        "rect": [
+          400.25,
+          4076.703125,
+          624.5,
+          280.84375
+        ]
+      },
+      {
+        "text": "On average, people make about 70% of the planning decisions but only 20% of the execution decisions (Figure 2). In practice, there is a clear division of labor ",
+        "rect": [
+          400.25,
+          4381.546875,
+          624.5,
+          102.125
+        ]
+      },
+      {
+        "text": "To understand the delegation of actions in a session, we look at the session\u2019s structure instead of its content. A Claude Code session involves Claude and the u",
+        "rect": [
+          400.25,
+          4507.671875,
+          624.5,
+          255.3125
+        ]
+      },
+      {
+        "text": "How much Claude does between check-ins largely tracks who is making the decisions. When the user keeps control of execution (i.e. makes over 80% of execution de",
+        "rect": [
+          400.25,
+          4786.984375,
+          624.5,
+          127.65625
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "text": "News",
+        "rect": [
+          80,
+          28,
+          70.53125,
+          28
+        ]
+      },
+      {
+        "text": "Research",
+        "rect": [
+          158.53125,
+          28,
+          110.046875,
+          28
+        ]
+      },
+      {
+        "text": "Policy",
+        "rect": [
+          276.578125,
+          28,
+          86.78125,
+          28
+        ]
+      },
+      {
+        "text": "Commitments",
+        "rect": [
+          371.359375,
+          28,
+          140.4375,
+          28
+        ]
+      },
+      {
+        "text": "Anthropic",
+        "rect": [
+          627.5,
+          30,
+          170,
+          24
+        ]
+      },
+      {
+        "text": "Company",
+        "rect": [
+          1002.765625,
+          28,
+          109.921875,
+          28
+        ]
+      },
+      {
+        "text": "Try Claude",
+        "rect": [
+          1120.6875,
+          28,
+          116.3125,
+          28
+        ]
+      },
+      {
+        "text": "field: Enter search...",
+        "rect": [
+          941,
+          27,
+          296,
+          30
+        ]
+      },
+      {
+        "text": "Search",
+        "rect": [
+          1245,
+          28,
+          28,
+          28
+        ]
+      },
+      {
+        "text": "Enter focus mode",
+        "rect": [
+          1281,
+          28,
+          28,
+          28
+        ]
+      },
+      {
+        "text": "Open menu",
+        "rect": [
+          1317,
+          28,
+          28,
+          28
+        ]
+      },
+      {
+        "text": "Read in PDF",
+        "rect": [
+          640,
+          233.109375,
+          145,
+          36
+        ]
+      },
+      {
+        "text": "01 Introduction",
+        "rect": [
+          80,
+          334.109375,
+          197.5,
+          44.015625
+        ]
+      },
+      {
+        "text": "02 The division of labor",
+        "rect": [
+          80,
+          379.125,
+          197.5,
+          44.015625
+        ]
+      },
+      {
+        "text": "03 Who uses Claude Code, and for what",
+        "rect": [
+          80,
+          424.140625,
+          197.5,
+          64.03125
+        ]
+      },
+      {
+        "text": "04 Success depends on what the user brings",
+        "rect": [
+          80,
+          489.171875,
+          197.5,
+          64.03125
+        ]
+      },
+      {
+        "text": "05 The returns to expertise",
+        "rect": [
+          80,
+          554.203125,
+          197.5,
+          44.015625
+        ]
+      },
+      {
+        "text": "06 Looking ahead",
+        "rect": [
+          80,
+          599.21875,
+          197.5,
+          44.015625
+        ]
+      },
+      {
+        "text": "Economics",
+        "rect": [
+          1226.78125,
+          391.125,
+          68.171875,
+          20.015625
+        ]
+      },
+      {
+        "text": "Claude Code",
+        "rect": [
+          1226.78125,
+          438.140625,
+          82.4375,
+          16
+        ]
+      },
+      {
+        "text": "Labor market",
+        "rect": [
+          1226.78125,
+          470.15625,
+          83.5625,
+          16
+        ]
+      },
+      {
+        "text": "How people use AI",
+        "rect": [
+          1226.78125,
+          502.171875,
+          118.21875,
+          16
+        ]
+      },
+      {
+        "text": "See more...",
+        "rect": [
+          1226.78125,
+          532.1875,
+          69.4375,
+          20.015625
+        ]
+      },
+      {
+        "text": "View more",
+        "rect": [
+          1147.5,
+          1652.28125,
+          118.171875,
+          28
+        ]
+      }
+    ],
+    "photo": "04-photo.png",
+    "faces_blurred": 0,
+    "captured_at": "2026-11-12T21:31:14+00:00"
+  },
+  {
+    "url": "https://ipo.anthropic.com/documents/us/factsheet.pdf",
+    "title": "Anthropic IPO Fact Sheet",
+    "claims": [
+      "Anthropic\u2019s IPO fact sheet frames the commercial shift as movement from discrete prompt responses toward a \u2018Virtual Collaborator\u2019 that performs complex, long-horizon work, and says customers realize value through more productive employees, faster processes, and embedded intelligence in products."
+    ],
+    "ok": false,
+    "error": "Page.goto: Download is starting\nCall log:\n  - navigating to \"https://ipo.anthropic.com/documents/us/factsheet.pdf\", waiting until \"domcontentloaded\"\n",
+    "captured_at": "2026-11-12T21:31:14+00:00"
+  },
+  {
+    "url": "https://ipo.anthropic.com/documents/us/prospectus.pdf",
+    "title": "Anthropic Prospectus",
+    "claims": [
+      "Anthropic\u2019s prospectus says customers use higher-capability models for complex reasoning, coding, and agentic workflows, while customer spending is primarily driven by the model used and the volume of usage.",
+      "Anthropic\u2019s prospectus also describes compute investment as a major ongoing requirement and says infrastructure commitments can materially affect the company\u2019s cash-flow profile, which is why capability alone does not establish profitability or justify a particular valuation."
+    ],
+    "ok": false,
+    "error": "Page.goto: Download is starting\nCall log:\n  - navigating to \"https://ipo.anthropic.com/documents/us/prospectus.pdf\", waiting until \"domcontentloaded\"\n",
+    "captured_at": "2026-11-12T21:31:14+00:00"
+  }
+]

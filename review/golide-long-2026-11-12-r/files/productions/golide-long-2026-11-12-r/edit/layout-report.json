@@ -1,0 +1,24 @@
+{
+  "layout": {
+    "rounds": 2,
+    "left": 14
+  },
+  "notes": [
+    "shot at 54.3s already used, shown as words",
+    "shot at 146.2s already used, shown as words",
+    "overlap left: 151.9s card#s45-photo-f x chip#s45-photo-src (11%)",
+    "overlap left: 339.6s goli#s89-host-ch x caption#caps (60%)",
+    "overlap left: 339.9s goli#s89-host-ch x caption#caps (38%)",
+    "overlap left: 340.2s goli#s89-host-ch x caption#caps (60%)",
+    "overlap left: 340.3s goli#s89-host-ch x caption#caps (60%)",
+    "overlap left: 340.4s goli#s89-host-ch x caption#caps (61%)",
+    "overlap left: 340.5s goli#s89-host-ch x caption#caps (61%)",
+    "overlap left: 340.8s goli#s89-host-ch x caption#caps (61%)",
+    "overlap left: 341.1s goli#s89-host-ch x caption#caps (61%)",
+    "overlap left: 341.2s goli#s89-host-ch x caption#caps (61%)",
+    "overlap left: 341.4s goli#s90-host-ch x caption#caps (54%)",
+    "overlap left: 341.6s goli#s90-host-ch x caption#caps (19%)",
+    "overlap left: 341.8s goli#s90-host-ch x caption#caps (47%)",
+    "overlap left: 342.0s goli#s90-host-ch x caption#caps (54%)"
+  ]
+}

@@ -1,0 +1,32 @@
+[
+  {
+    "start": 0.0,
+    "number": "",
+    "title": "Intro"
+  },
+  {
+    "start": 43.400001525878906,
+    "number": "01",
+    "title": "Answer to Workbench"
+  },
+  {
+    "start": 103.54000091552734,
+    "number": "02",
+    "title": "Tools and Context"
+  },
+  {
+    "start": 172.55999755859375,
+    "number": "03",
+    "title": "Proof and Limits"
+  },
+  {
+    "start": 240.5,
+    "number": "04",
+    "title": "Why Investors Care"
+  },
+  {
+    "start": 313.4599914550781,
+    "number": "",
+    "title": "Close"
+  }
+]
