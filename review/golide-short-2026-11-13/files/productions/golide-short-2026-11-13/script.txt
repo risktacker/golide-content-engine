@@ -1,0 +1,18 @@
+That blue USB port may be lying...
+Blue usually signals SuperSpeed, while black often points to USB 2.0.
+So blue means faster, right?
+Not ALWAYS!
+USB 2.0 reaches 480 megabits per second; newer ports may advertise 5, 10, 20,
+40, or 80 gigabits.
+But color is only a clue...
+The standards group recommends blue for USB 3.0 Standard-A,
+but allows other ways to distinguish ports.
+What should you trust?
+Check the SS logo, then read the specification.
+Charging's separate; color doesn't tell you wattage.
+What about USB-C?
+Its shape doesn't guarantee speed or power.
+The free guide and our community link are in the description.
+Follow the channel for tech tips!
+Blue is a hint...
+the specification is the ANSWER.

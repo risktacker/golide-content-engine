@@ -1,0 +1,253 @@
+{
+  "title": "USB Colors Really Matter!",
+  "chapters": [],
+  "lines": [
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "That blue USB port may be lying...",
+      "emphasis": "blue USB port",
+      "visual": "icon_hero",
+      "subjects": [
+        "blue USB port",
+        "USB cable"
+      ],
+      "label": "USB Color",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "Blue usually signals SuperSpeed, while black often points to USB 2.0.",
+      "emphasis": "SuperSpeed",
+      "visual": "icon_pair",
+      "subjects": [
+        "blue USB port",
+        "black USB port",
+        "USB cable"
+      ],
+      "label": "Color Clues",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "So blue means faster, right?",
+      "emphasis": "faster",
+      "visual": "icon_flow",
+      "subjects": [
+        "blue USB port",
+        "speedometer",
+        "USB cable"
+      ],
+      "label": "Faster?",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "Not ALWAYS!",
+      "emphasis": "ALWAYS",
+      "visual": "cross_out",
+      "subjects": [
+        "blue USB port",
+        "warning sign"
+      ],
+      "label": "Not Always",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "USB 2.0 reaches 480 megabits per second; newer ports may advertise 5, 10, 20,",
+      "emphasis": "480 megabits",
+      "visual": "bar_chart",
+      "subjects": [
+        "USB 2.0 port",
+        "speedometer",
+        "USB cable"
+      ],
+      "label": "USB 2.0",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "40, or 80 gigabits.",
+      "emphasis": "80 gigabits",
+      "visual": "bar_chart",
+      "subjects": [
+        "USB-C port",
+        "speedometer",
+        "USB cable"
+      ],
+      "label": "Up to 80 Gbps",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "But color is only a clue...",
+      "emphasis": "only a clue",
+      "visual": "icon_hero",
+      "subjects": [
+        "blue USB port",
+        "magnifying glass"
+      ],
+      "label": "Just a Clue",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "The standards group recommends blue for USB 3.0 Standard-A,",
+      "emphasis": "blue",
+      "visual": "icon_hero",
+      "subjects": [
+        "USB 3.0 Standard-A port",
+        "standards document"
+      ],
+      "label": "USB 3.0",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "but allows other ways to distinguish ports.",
+      "emphasis": "other ways",
+      "visual": "icon_grid",
+      "subjects": [
+        "USB ports",
+        "SS logo",
+        "USB symbols"
+      ],
+      "label": "Other Markings",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "What should you trust?",
+      "emphasis": "trust",
+      "visual": "icon_hero",
+      "subjects": [
+        "USB port",
+        "specification sheet",
+        "SS logo"
+      ],
+      "label": "What to Trust",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "Check the SS logo, then read the specification.",
+      "emphasis": "SS logo",
+      "visual": "checklist",
+      "subjects": [
+        "SS logo",
+        "USB port",
+        "specification sheet"
+      ],
+      "label": "Check This",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "Charging's separate; color doesn't tell you wattage.",
+      "emphasis": "wattage",
+      "visual": "split_compare",
+      "subjects": [
+        "USB charger",
+        "USB port",
+        "power meter"
+      ],
+      "label": "Charging Separate",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "What about USB-C?",
+      "emphasis": "USB-C",
+      "visual": "icon_hero",
+      "subjects": [
+        "USB-C connector",
+        "USB-C port"
+      ],
+      "label": "USB-C",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "Its shape doesn't guarantee speed or power.",
+      "emphasis": "doesn't guarantee",
+      "visual": "cross_out",
+      "subjects": [
+        "USB-C connector",
+        "speedometer",
+        "power meter"
+      ],
+      "label": "Shape \u2260 Speed",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "The free guide and our community link are in the description.",
+      "emphasis": "free guide",
+      "visual": "icon_flow",
+      "subjects": [
+        "guide document",
+        "community webpage",
+        "laptop"
+      ],
+      "label": "Description Link",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "cta",
+      "text": "Follow the channel for tech tips!",
+      "emphasis": "Follow",
+      "visual": "icon_hero",
+      "subjects": [
+        "smartphone",
+        "tech tips screen",
+        "follow button"
+      ],
+      "label": "Follow for Tips",
+      "follow": true
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "Blue is a hint...",
+      "emphasis": "hint",
+      "visual": "icon_hero",
+      "subjects": [
+        "blue USB port",
+        "question mark"
+      ],
+      "label": "A Hint",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "the specification is the ANSWER.",
+      "emphasis": "ANSWER",
+      "visual": "logo_end",
+      "subjects": [
+        "specification sheet",
+        "USB port",
+        "gold checkmark"
+      ],
+      "label": "The Answer",
+      "follow": false
+    }
+  ],
+  "voice_script": "[curious] That blue USB port may be lying...\nBlue usually signals SuperSpeed, while black often points to USB 2.0.\nSo blue means faster, right?\n[surprised] Not ALWAYS!\n\n[serious] USB 2.0 reaches 480 megabits per second; newer ports may advertise 5, 10, 20, 40, or 80 gigabits.\n[skeptical] But color is only a clue...\nThe standards group recommends blue for USB 3.0 Standard-A, but allows other ways to distinguish ports.\nWhat should you trust?\n\n[curious] Check the SS logo, then read the specification.\n[serious] Charging's separate; color doesn't tell you wattage.\n[curious] What about USB-C? Its shape doesn't guarantee speed or power.\n\n[softly] The free guide and our community link are in the description.\n[curious] Follow the channel for tech tips!\n\n[quietly] Blue is a hint... the specification is the ANSWER."
+}

@@ -1,0 +1,269 @@
+{
+  "renderer": "edit",
+  "scenes": [
+    {
+      "id": "scene-000",
+      "start": 0.0,
+      "end": 0.76,
+      "duration": 0.76,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-001",
+      "start": 0.76,
+      "end": 1.2719999999999998,
+      "duration": 0.5119999999999998,
+      "visual": "kinetic_title",
+      "visual_caption": "kinetic_title"
+    },
+    {
+      "id": "scene-002",
+      "start": 0.76,
+      "end": 5.879999999999999,
+      "duration": 5.119999999999999,
+      "visual": "host",
+      "visual_caption": "lower"
+    },
+    {
+      "id": "scene-003",
+      "start": 1.2719999999999998,
+      "end": 1.783,
+      "duration": 0.5110000000000001,
+      "visual": "metaphor",
+      "visual_caption": "metaphor"
+    },
+    {
+      "id": "scene-004",
+      "start": 1.783,
+      "end": 2.28,
+      "duration": 0.4969999999999999,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-005",
+      "start": 2.28,
+      "end": 2.88,
+      "duration": 0.6000000000000001,
+      "visual": "stat_counter",
+      "visual_caption": "stat_counter"
+    },
+    {
+      "id": "scene-006",
+      "start": 2.88,
+      "end": 3.705,
+      "duration": 0.8250000000000002,
+      "visual": "kinetic_title",
+      "visual_caption": "kinetic_title"
+    },
+    {
+      "id": "scene-007",
+      "start": 3.705,
+      "end": 4.64,
+      "duration": 0.9349999999999996,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-008",
+      "start": 4.64,
+      "end": 5.04,
+      "duration": 0.40000000000000036,
+      "visual": "metaphor",
+      "visual_caption": "metaphor"
+    },
+    {
+      "id": "scene-009",
+      "start": 4.88,
+      "end": 5.42,
+      "duration": 0.54,
+      "visual": "kinetic_title",
+      "visual_caption": "kinetic_title"
+    },
+    {
+      "id": "scene-010",
+      "start": 5.42,
+      "end": 5.879999999999999,
+      "duration": 0.4599999999999991,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-011",
+      "start": 5.879999999999999,
+      "end": 6.479999999999999,
+      "duration": 0.5999999999999996,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-012",
+      "start": 6.479999999999999,
+      "end": 7.224,
+      "duration": 0.7440000000000015,
+      "visual": "comparison",
+      "visual_caption": "comparison"
+    },
+    {
+      "id": "scene-013",
+      "start": 6.479999999999999,
+      "end": 7.224,
+      "duration": 0.7440000000000015,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-014",
+      "start": 7.224,
+      "end": 8.680000000000001,
+      "duration": 1.4560000000000013,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-015",
+      "start": 8.680000000000001,
+      "end": 11.705,
+      "duration": 3.0249999999999986,
+      "visual": "metaphor",
+      "visual_caption": "metaphor"
+    },
+    {
+      "id": "scene-016",
+      "start": 8.680000000000001,
+      "end": 15.349,
+      "duration": 6.668999999999999,
+      "visual": "host",
+      "visual_caption": "lower"
+    },
+    {
+      "id": "scene-017",
+      "start": 11.705,
+      "end": 13.523,
+      "duration": 1.8179999999999996,
+      "visual": "kinetic_title",
+      "visual_caption": "kinetic_title"
+    },
+    {
+      "id": "scene-018",
+      "start": 13.523,
+      "end": 15.349,
+      "duration": 1.8260000000000005,
+      "visual": "kinetic_title",
+      "visual_caption": "kinetic_title"
+    },
+    {
+      "id": "scene-019",
+      "start": 15.349,
+      "end": 17.688,
+      "duration": 2.3389999999999986,
+      "visual": "host",
+      "visual_caption": "lower"
+    },
+    {
+      "id": "scene-020",
+      "start": 17.688,
+      "end": 19.02,
+      "duration": 1.3320000000000007,
+      "visual": "metaphor",
+      "visual_caption": "metaphor"
+    },
+    {
+      "id": "scene-021",
+      "start": 17.688,
+      "end": 37.071449,
+      "duration": 19.383449000000002,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-022",
+      "start": 19.02,
+      "end": 21.022448999999998,
+      "duration": 2.0024489999999986,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-023",
+      "start": 21.022448999999998,
+      "end": 24.542448999999998,
+      "duration": 3.5199999999999996,
+      "visual": "steps",
+      "visual_caption": "steps"
+    },
+    {
+      "id": "scene-024",
+      "start": 24.542448999999998,
+      "end": 24.859448999999998,
+      "duration": 0.31700000000000017,
+      "visual": "kinetic_title",
+      "visual_caption": "kinetic_title"
+    },
+    {
+      "id": "scene-025",
+      "start": 24.859448999999998,
+      "end": 26.664448999999998,
+      "duration": 1.8049999999999997,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-026",
+      "start": 26.664448999999998,
+      "end": 28.386448999999995,
+      "duration": 1.7219999999999978,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-027",
+      "start": 28.386448999999995,
+      "end": 30.052449,
+      "duration": 1.666000000000004,
+      "visual": "kinetic_title",
+      "visual_caption": "kinetic_title"
+    },
+    {
+      "id": "scene-028",
+      "start": 30.052449,
+      "end": 32.069449,
+      "duration": 2.0169999999999995,
+      "visual": "metaphor",
+      "visual_caption": "metaphor"
+    },
+    {
+      "id": "scene-029",
+      "start": 32.069449,
+      "end": 33.640449000000004,
+      "duration": 1.571000000000005,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-030",
+      "start": 33.640449000000004,
+      "end": 35.405449000000004,
+      "duration": 1.7650000000000006,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-031",
+      "start": 35.405449000000004,
+      "end": 37.071449,
+      "duration": 1.6659999999999968,
+      "visual": "kinetic_title",
+      "visual_caption": "kinetic_title"
+    },
+    {
+      "id": "scene-032",
+      "start": 37.071449,
+      "end": 38.602449,
+      "duration": 1.5309999999999988,
+      "visual": "host",
+      "visual_caption": "lower"
+    }
+  ]
+}

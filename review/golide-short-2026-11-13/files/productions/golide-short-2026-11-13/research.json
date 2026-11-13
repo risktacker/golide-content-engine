@@ -1,0 +1,59 @@
+{
+  "summary": "USB port color is a useful visual hint, not a universal speed standard. USB-IF recommends Pantone 300C blue for USB 3.0 Standard-A connectors when a system mixes USB 2.0 and USB 3.0 ports, but only requires that users can clearly distinguish the ports; manufacturers may choose another method. In practice, blue often suggests SuperSpeed USB and black often suggests USB 2.0, but the printed \u201cSS\u201d mark, speed rating, manual or product specification is more reliable. USB-C shape alone also says nothing definitive about speed or charging power.",
+  "claims": [
+    {
+      "claim": "USB-IF lists blue, specifically Pantone 300C, as a recommended color for USB 3.0 Standard-A connectors. The recommendation is especially relevant when USB 2.0 and USB 3.0 ports appear on the same system.",
+      "source_title": "USB-IF Compliance Updates \u2014 Blue Pantone in USB 3.0 Connectors",
+      "source_url": "https://compliance.usb.org/index.asp?Format=Standard&UpdateFile=USB3",
+      "published_or_updated": "June 2011"
+    },
+    {
+      "claim": "USB-IF requires users to be able to clearly distinguish USB 3.0 from USB 2.0 ports, but leaves the exact visual method to the system manufacturer. Therefore, port color is a convention rather than a universal rule.",
+      "source_title": "USB-IF Compliance Updates \u2014 Blue Pantone in USB 3.0 Connectors",
+      "source_url": "https://compliance.usb.org/index.asp?Format=Standard&UpdateFile=USB3",
+      "published_or_updated": "June 2011"
+    },
+    {
+      "claim": "Blue commonly identifies USB 3.0 or SuperSpeed ports, while black is commonly associated with USB 2.0 on some computers; however, manufacturers may use different colors, including black for faster ports. Dell advises checking the SS symbol or the device manual instead of relying only on color.",
+      "source_title": "USB Device Not Working at Full Speed on Your Dell Computer",
+      "source_url": "https://www.dell.com/support/kbdoc/en-us/000135207/usb-3-0-device-is-recognized-as-usb-2-0-on-a-dell-system",
+      "published_or_updated": "2026"
+    },
+    {
+      "claim": "USB 2.0 supports data operation up to 480 Mbps, while current USB-IF consumer-facing performance labels identify USB 5Gbps, 10Gbps, 20Gbps, 40Gbps and 80Gbps capabilities. The USB-IF recommends communicating the performance rating directly rather than relying on terms such as USB 3.2 Gen 1 or SuperSpeed.",
+      "source_title": "USB Data Performance \u2014 Language Usage Guidelines from USB-IF",
+      "source_url": "https://www.usb.org/sites/default/files/usb_data_performance_language_usage_guidelines_jan_2024.pdf",
+      "published_or_updated": "January 2024"
+    },
+    {
+      "claim": "USB-C describes the connector format, not one fixed speed. A USB-C product may support USB 2.0, USB 5Gbps, USB 10Gbps, USB 20Gbps, USB4 or other capabilities, so the USB-C shape alone cannot establish performance.",
+      "source_title": "USB Type-C and USB 2.0 Type-C Cable and Connector \u2014 Language, Product and Packaging Guidelines",
+      "source_url": "https://www.usb.org/sites/default/files/usb_type-c_language_product_and_packaging_guidelines_20230320.pdf",
+      "published_or_updated": "March 20, 2023"
+    },
+    {
+      "claim": "A USB 2.0 Type-C cable supports data operation up to 480 Mbps and cannot carry USB 3.2 or USB4 signals. If a faster host or device is connected through a USB 2.0 Type-C cable, the connection operates at USB 2.0 speed.",
+      "source_title": "USB Type-C and USB 2.0 Type-C Cable and Connector \u2014 Language, Product and Packaging Guidelines",
+      "source_url": "https://www.usb.org/sites/default/files/usb_type-c_language_product_and_packaging_guidelines_20230320.pdf",
+      "published_or_updated": "March 20, 2023"
+    },
+    {
+      "claim": "Charging capability is separate from the color of a port. USB Power Delivery enables flexible power delivery over USB Type-C, and USB-IF-approved product logos identify power capabilities such as 60W or 240W; consumers should check the wattage label or product specifications rather than infer charging power from color.",
+      "source_title": "USB Charger \u2014 USB Power Delivery",
+      "source_url": "https://usb.org/usb-charger-pd",
+      "published_or_updated": "Current USB-IF page; USB PD 3.1 announced in 2021"
+    },
+    {
+      "claim": "A practical way to identify a port is to check for an SS or speed logo, then confirm the exact rating in the computer\u2019s manual or specification sheet. For USB-C cables, USB-IF labeling can identify both data rate and power capability.",
+      "source_title": "USB-C to USB-C Cable Logo Requirements",
+      "source_url": "https://compliance.usb.org/index.asp?Format=Standard&UpdateFile=Cables+and+Connectors&pubDate=20261005",
+      "published_or_updated": "April 2022; page crawled in 2026"
+    }
+  ],
+  "core_fact": {
+    "fact": "In a June 2011 USB-IF compliance update, USB-IF said Pantone 300C blue was recommended for USB 3.0 Standard-A connectors, especially on systems mixing USB 2.0 and USB 3.0 ports. It required users to clearly distinguish the port types but left the specific visual method to manufacturers.",
+    "source_url": "https://compliance.usb.org/index.asp?Format=Standard&UpdateFile=USB3",
+    "published_or_updated": "June 2011",
+    "verified": true
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "layout": {
+    "rounds": 2,
+    "left": 0
+  },
+  "notes": [
+    "scene 20: icon without its data, shown as words",
+    "words at 34.2s repeated, joined to the scene before",
+    "kinetic_title at 0.8s enlarged x1.082 (smallest text 104px, fills 2%)",
+    "kinetic_title at 2.9s enlarged x1.4 (smallest text 112px, fills 4%)",
+    "browser_shot at 3.7s enlarged x1.083 (smallest text 24px, fills 29%)",
+    "kinetic_title at 4.9s enlarged x1.313 (smallest text 96px, fills 2%)",
+    "kinetic_title at 11.7s enlarged x1.127 (smallest text 127px, fills 17%)",
+    "kinetic_title at 13.5s enlarged x1.064 (smallest text 106px, fills 5%)",
+    "steps at 21.0s enlarged x1.389 (smallest text 70px, fills 7%)",
+    "browser_shot at 24.9s enlarged x1.075 (smallest text 24px, fills 34%)",
+    "kinetic_title at 28.4s enlarged x1.184 (smallest text 97px, fills 7%)",
+    "kinetic_title at 35.4s enlarged x1.103 (smallest text 127px, fills 8%)"
+  ]
+}

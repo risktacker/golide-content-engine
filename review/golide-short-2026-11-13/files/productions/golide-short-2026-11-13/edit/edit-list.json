@@ -1,0 +1,2741 @@
+{
+  "format": "short",
+  "duration": 38.602449,
+  "scenes": [
+    {
+      "type": "host",
+      "start": 0.0,
+      "duration": 0.76,
+      "data": {
+        "place": "studio",
+        "cues": [
+          {
+            "start": 0.0,
+            "value": "X"
+          },
+          {
+            "start": 0.067,
+            "value": "B"
+          },
+          {
+            "start": 0.1,
+            "value": "C"
+          },
+          {
+            "start": 0.167,
+            "value": "B"
+          },
+          {
+            "start": 0.233,
+            "value": "X"
+          },
+          {
+            "start": 0.333,
+            "value": "B"
+          },
+          {
+            "start": 0.433,
+            "value": "C"
+          },
+          {
+            "start": 0.6,
+            "value": "B"
+          },
+          {
+            "start": 0.667,
+            "value": "C"
+          },
+          {
+            "start": 0.733,
+            "value": "B"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "talk",
+            "at": 0
+          },
+          {
+            "pose": "point",
+            "at": 0.19
+          }
+        ],
+        "words": [
+          {
+            "text": "SS",
+            "at": 0.36
+          },
+          {
+            "text": "LOGO",
+            "at": 0.44
+          }
+        ],
+        "punch": "ss"
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 0.76,
+      "duration": 0.5119999999999998,
+      "in": "cut",
+      "data": {
+        "words": [
+          {
+            "text": "Check",
+            "at": 0.15
+          },
+          {
+            "text": "the",
+            "at": 0.23
+          },
+          {
+            "text": "SS",
+            "at": 0.31
+          },
+          {
+            "text": "logo",
+            "at": 0.39
+          }
+        ],
+        "punch": "logo"
+      }
+    },
+    {
+      "type": "host",
+      "start": 0.76,
+      "duration": 5.119999999999999,
+      "data": {
+        "place": "lower",
+        "cues": [
+          {
+            "start": 0.107,
+            "value": "X"
+          },
+          {
+            "start": 0.14,
+            "value": "B"
+          },
+          {
+            "start": 0.173,
+            "value": "E"
+          },
+          {
+            "start": 0.54,
+            "value": "F"
+          },
+          {
+            "start": 0.64,
+            "value": "X"
+          },
+          {
+            "start": 0.74,
+            "value": "C"
+          },
+          {
+            "start": 0.873,
+            "value": "B"
+          },
+          {
+            "start": 1.14,
+            "value": "A"
+          },
+          {
+            "start": 1.207,
+            "value": "X"
+          },
+          {
+            "start": 1.273,
+            "value": "C"
+          },
+          {
+            "start": 1.407,
+            "value": "B"
+          },
+          {
+            "start": 1.473,
+            "value": "G"
+          },
+          {
+            "start": 1.54,
+            "value": "C"
+          },
+          {
+            "start": 1.607,
+            "value": "X"
+          },
+          {
+            "start": 1.673,
+            "value": "C"
+          },
+          {
+            "start": 1.74,
+            "value": "B"
+          },
+          {
+            "start": 1.907,
+            "value": "C"
+          },
+          {
+            "start": 2.04,
+            "value": "X"
+          },
+          {
+            "start": 2.907,
+            "value": "B"
+          },
+          {
+            "start": 2.973,
+            "value": "D"
+          },
+          {
+            "start": 3.04,
+            "value": "B"
+          },
+          {
+            "start": 3.44,
+            "value": "A"
+          },
+          {
+            "start": 3.54,
+            "value": "X"
+          },
+          {
+            "start": 3.607,
+            "value": "B"
+          },
+          {
+            "start": 3.773,
+            "value": "X"
+          },
+          {
+            "start": 4.073,
+            "value": "B"
+          },
+          {
+            "start": 4.107,
+            "value": "C"
+          },
+          {
+            "start": 4.173,
+            "value": "E"
+          },
+          {
+            "start": 4.307,
+            "value": "C"
+          },
+          {
+            "start": 4.44,
+            "value": "B"
+          },
+          {
+            "start": 4.64,
+            "value": "C"
+          },
+          {
+            "start": 4.74,
+            "value": "F"
+          },
+          {
+            "start": 5.073,
+            "value": "D"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "talk",
+            "at": 0.0
+          },
+          {
+            "pose": "point",
+            "at": 0.512
+          },
+          {
+            "pose": "point_up",
+            "at": 1.023
+          },
+          {
+            "pose": "shock",
+            "at": 1.52
+          },
+          {
+            "pose": "talk",
+            "at": 2.12
+          },
+          {
+            "pose": "point_up",
+            "at": 2.945
+          },
+          {
+            "pose": "point",
+            "at": 3.88
+          },
+          {
+            "pose": "talk",
+            "at": 4.12
+          },
+          {
+            "pose": "point_up",
+            "at": 4.66
+          }
+        ]
+      }
+    },
+    {
+      "type": "metaphor",
+      "start": 1.2719999999999998,
+      "duration": 0.5110000000000001,
+      "in": "iris",
+      "data": {
+        "kind": "magnify",
+        "at": 0.6,
+        "label": "SPECIFICATION",
+        "items": [],
+        "times": null,
+        "left": "",
+        "right": "",
+        "winner": "left",
+        "value": null
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 1.783,
+      "duration": 0.4969999999999999,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13/edit/sources/01-full.png",
+        "url": "https://compliance.usb.org/index.asp?Format=Standard&UpdateFile=USB3",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              10,
+              1181,
+              1420,
+              179
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "BLUE",
+            "sub": "USB 3.0 connector color"
+          }
+        ],
+        "headline": null,
+        "photo": null,
+        "record": false
+      },
+      "in": "push"
+    },
+    {
+      "type": "stat_counter",
+      "start": 2.28,
+      "duration": 0.6000000000000001,
+      "in": "flash",
+      "data": {
+        "value": 480.0,
+        "prefix": "",
+        "suffix": " megabits per second",
+        "decimals": 0,
+        "label": "USB 2.0 DATA"
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 2.88,
+      "duration": 0.8250000000000002,
+      "in": "push",
+      "data": {
+        "words": [
+          {
+            "text": "40,",
+            "at": 0.33
+          },
+          {
+            "text": "or",
+            "at": 0.425
+          },
+          {
+            "text": "80",
+            "at": 0.505
+          },
+          {
+            "text": "gigabits.",
+            "at": 0.585
+          }
+        ],
+        "punch": "gigabits"
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 3.705,
+      "duration": 0.9349999999999996,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13/edit/sources/05-top.png",
+        "url": "https://usb.org/usb-charger-pd",
+        "edge": "fade",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              135,
+              216,
+              1170,
+              108.75
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "DATA + POWER",
+            "sub": "USB evolved interface"
+          }
+        ],
+        "headline": [
+          135,
+          92,
+          1170,
+          44
+        ],
+        "photo": null,
+        "record": false
+      },
+      "in": "push"
+    },
+    {
+      "type": "metaphor",
+      "start": 4.64,
+      "duration": 0.40000000000000036,
+      "in": "whip",
+      "data": {
+        "kind": "scales",
+        "at": 0.6,
+        "label": "",
+        "items": [],
+        "times": null,
+        "left": "COLOR",
+        "right": "WATTAGE",
+        "winner": "left",
+        "value": null
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 4.88,
+      "duration": 0.54,
+      "in": "push",
+      "data": {
+        "words": [
+          {
+            "text": "color",
+            "at": 0.15
+          },
+          {
+            "text": "doesn't",
+            "at": 0.23
+          },
+          {
+            "text": "tell",
+            "at": 0.31
+          }
+        ],
+        "punch": "doesn't"
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 5.42,
+      "duration": 0.4599999999999991,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13/edit/sources/05-top.png",
+        "url": "https://usb.org/usb-charger-pd",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              135,
+              406.125,
+              1170,
+              108.75
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "240W",
+            "sub": "USB Power Delivery maximum"
+          }
+        ],
+        "headline": [
+          135,
+          92,
+          1170,
+          44
+        ],
+        "photo": null,
+        "record": false
+      },
+      "in": "push"
+    },
+    {
+      "type": "host",
+      "start": 5.879999999999999,
+      "duration": 0.5999999999999996,
+      "data": {
+        "place": "studio",
+        "cues": [
+          {
+            "start": 0.087,
+            "value": "B"
+          },
+          {
+            "start": 0.32,
+            "value": "X"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "talk",
+            "at": 0
+          }
+        ],
+        "words": [
+          {
+            "text": "SS",
+            "at": 0.2
+          },
+          {
+            "text": "\u2192",
+            "at": 0.28
+          },
+          {
+            "text": "SPEC",
+            "at": 0.36
+          }
+        ],
+        "punch": "answer"
+      }
+    },
+    {
+      "type": "comparison",
+      "start": 6.479999999999999,
+      "duration": 0.7440000000000015,
+      "in": "whip",
+      "data": {
+        "left": "COLOR",
+        "right": "WATTAGE",
+        "rows": [
+          [
+            "What you see",
+            "Blue",
+            "\u2014"
+          ],
+          [
+            "What to read",
+            "\u2014",
+            "Specification"
+          ]
+        ],
+        "winners": [
+          "left",
+          "right"
+        ],
+        "gap": 0.25
+      }
+    },
+    {
+      "type": "host",
+      "start": 6.479999999999999,
+      "duration": 0.7440000000000015,
+      "data": {
+        "place": "side",
+        "cues": [],
+        "poses": [
+          {
+            "pose": "explain",
+            "at": 0.0
+          }
+        ]
+      }
+    },
+    {
+      "type": "host",
+      "start": 7.224,
+      "duration": 1.4560000000000013,
+      "data": {
+        "place": "studio",
+        "cues": [
+          {
+            "start": 0.143,
+            "value": "F"
+          },
+          {
+            "start": 0.176,
+            "value": "B"
+          },
+          {
+            "start": 0.243,
+            "value": "A"
+          },
+          {
+            "start": 0.309,
+            "value": "C"
+          },
+          {
+            "start": 0.409,
+            "value": "F"
+          },
+          {
+            "start": 0.609,
+            "value": "B"
+          },
+          {
+            "start": 0.676,
+            "value": "A"
+          },
+          {
+            "start": 0.743,
+            "value": "X"
+          },
+          {
+            "start": 0.809,
+            "value": "B"
+          },
+          {
+            "start": 1.276,
+            "value": "X"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "talk",
+            "at": 0
+          },
+          {
+            "pose": "think",
+            "at": 0.12
+          }
+        ],
+        "words": [
+          {
+            "text": "WHAT",
+            "at": 0.15
+          },
+          {
+            "text": "ABOUT",
+            "at": 0.23
+          },
+          {
+            "text": "USB-C?",
+            "at": 0.476
+          }
+        ],
+        "punch": "usb-c"
+      }
+    },
+    {
+      "type": "metaphor",
+      "start": 8.680000000000001,
+      "duration": 3.0249999999999986,
+      "in": "iris",
+      "data": {
+        "kind": "iceberg",
+        "at": 0.888,
+        "label": "USB-C SHAPE",
+        "items": [
+          "speed",
+          "power",
+          "protocol"
+        ],
+        "times": [
+          1.387,
+          1.987,
+          2.587
+        ],
+        "left": "",
+        "right": "",
+        "winner": "left",
+        "value": null
+      }
+    },
+    {
+      "type": "host",
+      "start": 8.680000000000001,
+      "duration": 6.668999999999999,
+      "data": {
+        "place": "lower",
+        "cues": [
+          {
+            "start": 0.253,
+            "value": "B"
+          },
+          {
+            "start": 0.487,
+            "value": "C"
+          },
+          {
+            "start": 0.553,
+            "value": "A"
+          },
+          {
+            "start": 0.653,
+            "value": "X"
+          },
+          {
+            "start": 0.72,
+            "value": "C"
+          },
+          {
+            "start": 1.12,
+            "value": "B"
+          },
+          {
+            "start": 1.453,
+            "value": "A"
+          },
+          {
+            "start": 1.52,
+            "value": "X"
+          },
+          {
+            "start": 1.587,
+            "value": "B"
+          },
+          {
+            "start": 1.753,
+            "value": "E"
+          },
+          {
+            "start": 1.953,
+            "value": "A"
+          },
+          {
+            "start": 2.053,
+            "value": "X"
+          },
+          {
+            "start": 2.12,
+            "value": "C"
+          },
+          {
+            "start": 2.253,
+            "value": "E"
+          },
+          {
+            "start": 2.52,
+            "value": "X"
+          },
+          {
+            "start": 3.187,
+            "value": "B"
+          },
+          {
+            "start": 3.253,
+            "value": "G"
+          },
+          {
+            "start": 3.287,
+            "value": "X"
+          },
+          {
+            "start": 3.353,
+            "value": "B"
+          },
+          {
+            "start": 3.487,
+            "value": "D"
+          },
+          {
+            "start": 3.687,
+            "value": "B"
+          },
+          {
+            "start": 3.82,
+            "value": "C"
+          },
+          {
+            "start": 3.953,
+            "value": "B"
+          },
+          {
+            "start": 4.02,
+            "value": "D"
+          },
+          {
+            "start": 4.12,
+            "value": "B"
+          },
+          {
+            "start": 4.153,
+            "value": "X"
+          },
+          {
+            "start": 4.22,
+            "value": "B"
+          },
+          {
+            "start": 4.253,
+            "value": "A"
+          },
+          {
+            "start": 4.32,
+            "value": "F"
+          },
+          {
+            "start": 4.387,
+            "value": "B"
+          },
+          {
+            "start": 4.72,
+            "value": "E"
+          },
+          {
+            "start": 5.02,
+            "value": "B"
+          },
+          {
+            "start": 5.353,
+            "value": "X"
+          },
+          {
+            "start": 5.387,
+            "value": "B"
+          },
+          {
+            "start": 5.42,
+            "value": "A"
+          },
+          {
+            "start": 5.52,
+            "value": "B"
+          },
+          {
+            "start": 5.587,
+            "value": "C"
+          },
+          {
+            "start": 5.787,
+            "value": "X"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "point",
+            "at": 0.0
+          },
+          {
+            "pose": "talk",
+            "at": 3.025
+          },
+          {
+            "pose": "talk",
+            "at": 4.843
+          }
+        ]
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 11.705,
+      "duration": 1.8179999999999996,
+      "in": "push",
+      "data": {
+        "words": [
+          {
+            "text": "free",
+            "at": 0.183
+          },
+          {
+            "text": "guide",
+            "at": 0.442
+          },
+          {
+            "text": "community",
+            "at": 1.063
+          },
+          {
+            "text": "link",
+            "at": 1.543
+          }
+        ],
+        "punch": "community"
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 13.523,
+      "duration": 1.8260000000000005,
+      "in": "push",
+      "data": {
+        "words": [
+          {
+            "text": "description.",
+            "at": 0.284
+          }
+        ],
+        "punch": "description"
+      }
+    },
+    {
+      "type": "host",
+      "start": 15.349,
+      "duration": 2.3389999999999986,
+      "data": {
+        "place": "lower",
+        "subscribe": true,
+        "cues": [
+          {
+            "start": 0.084,
+            "value": "D"
+          },
+          {
+            "start": 0.184,
+            "value": "E"
+          },
+          {
+            "start": 0.251,
+            "value": "F"
+          },
+          {
+            "start": 0.318,
+            "value": "B"
+          },
+          {
+            "start": 0.484,
+            "value": "C"
+          },
+          {
+            "start": 0.618,
+            "value": "B"
+          },
+          {
+            "start": 0.684,
+            "value": "G"
+          },
+          {
+            "start": 0.718,
+            "value": "X"
+          },
+          {
+            "start": 0.751,
+            "value": "B"
+          },
+          {
+            "start": 0.818,
+            "value": "X"
+          },
+          {
+            "start": 0.851,
+            "value": "C"
+          },
+          {
+            "start": 0.951,
+            "value": "B"
+          },
+          {
+            "start": 0.984,
+            "value": "X"
+          },
+          {
+            "start": 1.084,
+            "value": "B"
+          },
+          {
+            "start": 1.151,
+            "value": "A"
+          },
+          {
+            "start": 1.218,
+            "value": "X"
+          },
+          {
+            "start": 1.251,
+            "value": "B"
+          },
+          {
+            "start": 1.384,
+            "value": "X"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "point_up",
+            "at": 0
+          },
+          {
+            "pose": "thumbs_up",
+            "at": 1.94
+          }
+        ]
+      }
+    },
+    {
+      "type": "metaphor",
+      "start": 17.688,
+      "duration": 1.3320000000000007,
+      "in": "iris",
+      "data": {
+        "kind": "unlock",
+        "at": 0.6,
+        "label": "BLUE = HINT",
+        "items": [],
+        "times": null,
+        "left": "",
+        "right": "",
+        "winner": "left",
+        "value": null
+      }
+    },
+    {
+      "type": "host",
+      "start": 17.688,
+      "duration": 19.383449000000002,
+      "data": {
+        "place": "side",
+        "cues": [
+          {
+            "start": 0.079,
+            "value": "F"
+          },
+          {
+            "start": 0.379,
+            "value": "B"
+          },
+          {
+            "start": 0.445,
+            "value": "C"
+          },
+          {
+            "start": 0.512,
+            "value": "B"
+          },
+          {
+            "start": 0.812,
+            "value": "X"
+          },
+          {
+            "start": 1.545,
+            "value": "B"
+          },
+          {
+            "start": 1.612,
+            "value": "A"
+          },
+          {
+            "start": 1.679,
+            "value": "X"
+          },
+          {
+            "start": 1.745,
+            "value": "C"
+          },
+          {
+            "start": 1.845,
+            "value": "B"
+          },
+          {
+            "start": 1.945,
+            "value": "X"
+          },
+          {
+            "start": 1.979,
+            "value": "C"
+          },
+          {
+            "start": 2.045,
+            "value": "X"
+          },
+          {
+            "start": 2.079,
+            "value": "C"
+          },
+          {
+            "start": 2.112,
+            "value": "X"
+          },
+          {
+            "start": 2.145,
+            "value": "C"
+          },
+          {
+            "start": 2.179,
+            "value": "B"
+          },
+          {
+            "start": 2.312,
+            "value": "C"
+          },
+          {
+            "start": 2.412,
+            "value": "B"
+          },
+          {
+            "start": 2.645,
+            "value": "X"
+          },
+          {
+            "start": 2.679,
+            "value": "B"
+          },
+          {
+            "start": 2.779,
+            "value": "X"
+          },
+          {
+            "start": 2.812,
+            "value": "C"
+          },
+          {
+            "start": 3.012,
+            "value": "B"
+          },
+          {
+            "start": 3.112,
+            "value": "E"
+          },
+          {
+            "start": 3.245,
+            "value": "B"
+          },
+          {
+            "start": 3.279,
+            "value": "X"
+          },
+          {
+            "start": 3.479,
+            "value": "B"
+          },
+          {
+            "start": 3.512,
+            "value": "C"
+          },
+          {
+            "start": 3.579,
+            "value": "B"
+          },
+          {
+            "start": 3.645,
+            "value": "X"
+          },
+          {
+            "start": 3.779,
+            "value": "B"
+          },
+          {
+            "start": 3.879,
+            "value": "C"
+          },
+          {
+            "start": 3.945,
+            "value": "B"
+          },
+          {
+            "start": 4.079,
+            "value": "C"
+          },
+          {
+            "start": 4.145,
+            "value": "B"
+          },
+          {
+            "start": 4.212,
+            "value": "E"
+          },
+          {
+            "start": 4.645,
+            "value": "F"
+          },
+          {
+            "start": 4.745,
+            "value": "X"
+          },
+          {
+            "start": 5.045,
+            "value": "B"
+          },
+          {
+            "start": 5.112,
+            "value": "C"
+          },
+          {
+            "start": 5.145,
+            "value": "B"
+          },
+          {
+            "start": 5.512,
+            "value": "A"
+          },
+          {
+            "start": 5.579,
+            "value": "C"
+          },
+          {
+            "start": 5.612,
+            "value": "X"
+          },
+          {
+            "start": 5.645,
+            "value": "C"
+          },
+          {
+            "start": 5.745,
+            "value": "B"
+          },
+          {
+            "start": 5.845,
+            "value": "X"
+          },
+          {
+            "start": 5.879,
+            "value": "C"
+          },
+          {
+            "start": 5.945,
+            "value": "X"
+          },
+          {
+            "start": 5.979,
+            "value": "C"
+          },
+          {
+            "start": 6.012,
+            "value": "X"
+          },
+          {
+            "start": 6.045,
+            "value": "C"
+          },
+          {
+            "start": 6.079,
+            "value": "B"
+          },
+          {
+            "start": 6.212,
+            "value": "C"
+          },
+          {
+            "start": 6.412,
+            "value": "X"
+          },
+          {
+            "start": 7.345,
+            "value": "B"
+          },
+          {
+            "start": 7.412,
+            "value": "D"
+          },
+          {
+            "start": 7.445,
+            "value": "B"
+          },
+          {
+            "start": 7.812,
+            "value": "A"
+          },
+          {
+            "start": 7.879,
+            "value": "E"
+          },
+          {
+            "start": 7.912,
+            "value": "X"
+          },
+          {
+            "start": 7.979,
+            "value": "E"
+          },
+          {
+            "start": 8.045,
+            "value": "B"
+          },
+          {
+            "start": 8.145,
+            "value": "X"
+          },
+          {
+            "start": 8.445,
+            "value": "C"
+          },
+          {
+            "start": 8.545,
+            "value": "E"
+          },
+          {
+            "start": 8.612,
+            "value": "B"
+          },
+          {
+            "start": 8.679,
+            "value": "C"
+          },
+          {
+            "start": 8.812,
+            "value": "B"
+          },
+          {
+            "start": 8.945,
+            "value": "C"
+          },
+          {
+            "start": 9.112,
+            "value": "F"
+          },
+          {
+            "start": 9.379,
+            "value": "E"
+          },
+          {
+            "start": 9.445,
+            "value": "B"
+          },
+          {
+            "start": 9.512,
+            "value": "E"
+          },
+          {
+            "start": 9.579,
+            "value": "F"
+          },
+          {
+            "start": 9.779,
+            "value": "X"
+          },
+          {
+            "start": 10.845,
+            "value": "F"
+          },
+          {
+            "start": 10.912,
+            "value": "B"
+          },
+          {
+            "start": 10.945,
+            "value": "A"
+          },
+          {
+            "start": 11.012,
+            "value": "C"
+          },
+          {
+            "start": 11.112,
+            "value": "F"
+          },
+          {
+            "start": 11.379,
+            "value": "C"
+          },
+          {
+            "start": 11.445,
+            "value": "A"
+          },
+          {
+            "start": 11.512,
+            "value": "X"
+          },
+          {
+            "start": 11.579,
+            "value": "B"
+          },
+          {
+            "start": 12.112,
+            "value": "X"
+          },
+          {
+            "start": 12.645,
+            "value": "B"
+          },
+          {
+            "start": 12.912,
+            "value": "C"
+          },
+          {
+            "start": 12.979,
+            "value": "A"
+          },
+          {
+            "start": 13.045,
+            "value": "X"
+          },
+          {
+            "start": 13.145,
+            "value": "C"
+          },
+          {
+            "start": 13.512,
+            "value": "B"
+          },
+          {
+            "start": 13.679,
+            "value": "X"
+          },
+          {
+            "start": 13.712,
+            "value": "B"
+          },
+          {
+            "start": 13.879,
+            "value": "A"
+          },
+          {
+            "start": 13.945,
+            "value": "B"
+          },
+          {
+            "start": 13.979,
+            "value": "X"
+          },
+          {
+            "start": 14.045,
+            "value": "B"
+          },
+          {
+            "start": 14.212,
+            "value": "E"
+          },
+          {
+            "start": 14.312,
+            "value": "X"
+          },
+          {
+            "start": 14.379,
+            "value": "E"
+          },
+          {
+            "start": 14.479,
+            "value": "A"
+          },
+          {
+            "start": 14.545,
+            "value": "C"
+          },
+          {
+            "start": 14.579,
+            "value": "X"
+          },
+          {
+            "start": 14.612,
+            "value": "C"
+          },
+          {
+            "start": 14.779,
+            "value": "E"
+          },
+          {
+            "start": 14.979,
+            "value": "X"
+          },
+          {
+            "start": 15.979,
+            "value": "B"
+          },
+          {
+            "start": 16.045,
+            "value": "G"
+          },
+          {
+            "start": 16.079,
+            "value": "X"
+          },
+          {
+            "start": 16.145,
+            "value": "G"
+          },
+          {
+            "start": 16.179,
+            "value": "B"
+          },
+          {
+            "start": 16.245,
+            "value": "C"
+          },
+          {
+            "start": 16.445,
+            "value": "B"
+          },
+          {
+            "start": 16.612,
+            "value": "C"
+          },
+          {
+            "start": 16.745,
+            "value": "D"
+          },
+          {
+            "start": 16.812,
+            "value": "B"
+          },
+          {
+            "start": 16.912,
+            "value": "X"
+          },
+          {
+            "start": 17.012,
+            "value": "A"
+          },
+          {
+            "start": 17.112,
+            "value": "F"
+          },
+          {
+            "start": 17.212,
+            "value": "B"
+          },
+          {
+            "start": 17.545,
+            "value": "E"
+          },
+          {
+            "start": 17.645,
+            "value": "X"
+          },
+          {
+            "start": 17.679,
+            "value": "E"
+          },
+          {
+            "start": 17.745,
+            "value": "B"
+          },
+          {
+            "start": 18.245,
+            "value": "X"
+          },
+          {
+            "start": 18.279,
+            "value": "B"
+          },
+          {
+            "start": 18.312,
+            "value": "A"
+          },
+          {
+            "start": 18.412,
+            "value": "B"
+          },
+          {
+            "start": 18.479,
+            "value": "C"
+          },
+          {
+            "start": 18.679,
+            "value": "X"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "point",
+            "at": 0.0
+          },
+          {
+            "pose": "point_up",
+            "at": 1.332
+          },
+          {
+            "pose": "point_up",
+            "at": 2.712
+          },
+          {
+            "pose": "point_up",
+            "at": 3.334
+          },
+          {
+            "pose": "talk",
+            "at": 6.854
+          },
+          {
+            "pose": "point_up",
+            "at": 7.171
+          },
+          {
+            "pose": "point_up",
+            "at": 8.976
+          },
+          {
+            "pose": "talk",
+            "at": 10.698
+          },
+          {
+            "pose": "point",
+            "at": 12.364
+          },
+          {
+            "pose": "point_up",
+            "at": 14.381
+          },
+          {
+            "pose": "point_up",
+            "at": 15.952
+          },
+          {
+            "pose": "talk",
+            "at": 17.717
+          }
+        ]
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 19.02,
+      "duration": 2.0024489999999986,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13/edit/sources/01-top.png",
+        "url": "https://compliance.usb.org/index.asp?Format=Standard&UpdateFile=USB3",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              646.625,
+              469,
+              551.671875,
+              38
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "SPEC",
+            "sub": "Blue defined by specification"
+          }
+        ],
+        "headline": null,
+        "photo": null,
+        "record": false
+      },
+      "in": "push"
+    },
+    {
+      "type": "steps",
+      "start": 21.022448999999998,
+      "duration": 3.5199999999999996,
+      "in": "push",
+      "data": {
+        "heading": "",
+        "items": [
+          "Find SS logo",
+          "Read specification"
+        ],
+        "at": [
+          0.513,
+          1.628
+        ]
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 24.542448999999998,
+      "duration": 0.31700000000000017,
+      "in": "wipe",
+      "data": {
+        "words": [],
+        "punch": ""
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 24.859448999999998,
+      "duration": 1.8049999999999997,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13/edit/sources/05-top.png",
+        "url": "https://usb.org/usb-charger-pd",
+        "edge": "fade",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              135,
+              338.25,
+              1170,
+              54.375
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "POWER + DATA",
+            "sub": "USB PD over one cable"
+          }
+        ],
+        "headline": [
+          135,
+          92,
+          1170,
+          44
+        ],
+        "photo": null,
+        "record": false
+      },
+      "in": "push"
+    },
+    {
+      "type": "browser_shot",
+      "start": 26.664448999999998,
+      "duration": 1.7219999999999978,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13/edit/sources/05-top.png",
+        "url": "https://usb.org/usb-charger-pd",
+        "edge": "fade",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              135,
+              338.25,
+              1170,
+              54.375
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "POWER + DATA",
+            "sub": "USB PD over one cable"
+          }
+        ],
+        "headline": [
+          135,
+          92,
+          1170,
+          44
+        ],
+        "photo": null,
+        "record": false,
+        "zoomed": true
+      },
+      "in": "match"
+    },
+    {
+      "type": "kinetic_title",
+      "start": 28.386448999999995,
+      "duration": 1.666000000000004,
+      "in": "push",
+      "data": {
+        "words": [
+          {
+            "text": "What",
+            "at": 0.15
+          },
+          {
+            "text": "about",
+            "at": 0.23
+          },
+          {
+            "text": "USB-C?",
+            "at": 0.496
+          }
+        ],
+        "punch": ""
+      }
+    },
+    {
+      "type": "metaphor",
+      "start": 30.052449,
+      "duration": 2.0169999999999995,
+      "in": "iris",
+      "data": {
+        "kind": "transform",
+        "at": 0.99,
+        "label": "",
+        "items": [],
+        "times": null,
+        "left": "USB-C SHAPE",
+        "right": "UNKNOWN SPEED",
+        "winner": "left",
+        "value": null
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 32.069449,
+      "duration": 1.571000000000005,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13/edit/sources/05-full.png",
+        "url": "https://usb.org/usb-charger-pd",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              159,
+              902.15625,
+              1146,
+              27.1875
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": null,
+            "sub": ""
+          }
+        ],
+        "headline": [
+          135,
+          92,
+          1170,
+          44
+        ],
+        "photo": null,
+        "record": false
+      },
+      "in": "iris"
+    },
+    {
+      "type": "browser_shot",
+      "start": 33.640449000000004,
+      "duration": 1.7650000000000006,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13/edit/sources/05-full.png",
+        "url": "https://usb.org/usb-charger-pd",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              159,
+              902.15625,
+              1146,
+              27.1875
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": null,
+            "sub": ""
+          }
+        ],
+        "headline": [
+          135,
+          92,
+          1170,
+          44
+        ],
+        "photo": null,
+        "record": false,
+        "zoomed": true
+      },
+      "in": "match"
+    },
+    {
+      "type": "kinetic_title",
+      "start": 35.405449000000004,
+      "duration": 1.6659999999999968,
+      "in": "push",
+      "data": {
+        "words": [
+          {
+            "text": "description.",
+            "at": 0.284
+          }
+        ],
+        "punch": "description"
+      }
+    },
+    {
+      "type": "host",
+      "start": 37.071449,
+      "duration": 1.5309999999999988,
+      "data": {
+        "place": "lower",
+        "subscribe": true,
+        "cues": [
+          {
+            "start": 0.096,
+            "value": "E"
+          },
+          {
+            "start": 0.262,
+            "value": "B"
+          },
+          {
+            "start": 0.496,
+            "value": "C"
+          },
+          {
+            "start": 0.696,
+            "value": "H"
+          },
+          {
+            "start": 0.829,
+            "value": "X"
+          },
+          {
+            "start": 0.896,
+            "value": "C"
+          },
+          {
+            "start": 0.962,
+            "value": "X"
+          },
+          {
+            "start": 0.996,
+            "value": "C"
+          },
+          {
+            "start": 1.029,
+            "value": "B"
+          },
+          {
+            "start": 1.129,
+            "value": "X"
+          },
+          {
+            "start": 1.229,
+            "value": "B"
+          },
+          {
+            "start": 1.329,
+            "value": "A"
+          },
+          {
+            "start": 1.396,
+            "value": "X"
+          },
+          {
+            "start": 1.429,
+            "value": "B"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "point_up",
+            "at": 0
+          },
+          {
+            "pose": "thumbs_up",
+            "at": 1.13
+          }
+        ]
+      }
+    }
+  ],
+  "notes": [
+    "scene 20: icon without its data, shown as words",
+    "words at 34.2s repeated, joined to the scene before"
+  ],
+  "captions": [
+    {
+      "start": 0.14,
+      "end": 0.88,
+      "words": [
+        {
+          "text": "Check",
+          "at": 0.19
+        },
+        {
+          "text": "the",
+          "at": 0.26
+        },
+        {
+          "text": "SS",
+          "at": 0.48
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 0.83,
+      "end": 1.392,
+      "words": [
+        {
+          "text": "logo,",
+          "at": 0.88
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 1.342,
+      "end": 1.903,
+      "words": [
+        {
+          "text": "then",
+          "at": 1.392
+        },
+        {
+          "text": "read",
+          "at": 1.568
+        },
+        {
+          "text": "the",
+          "at": 1.78
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 1.853,
+      "end": 2.4,
+      "words": [
+        {
+          "text": "specification.",
+          "at": 1.903
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 2.35,
+      "end": 2.4,
+      "words": [
+        {
+          "text": "USB",
+          "at": 2.4
+        },
+        {
+          "text": "2.0",
+          "at": 2.4
+        },
+        {
+          "text": "reaches",
+          "at": 2.4
+        },
+        {
+          "text": "480",
+          "at": 2.4
+        }
+      ],
+      "keys": [
+        3
+      ]
+    },
+    {
+      "start": 2.35,
+      "end": 2.4,
+      "words": [
+        {
+          "text": "megabits",
+          "at": 2.4
+        },
+        {
+          "text": "per",
+          "at": 2.4
+        },
+        {
+          "text": "second;",
+          "at": 2.4
+        },
+        {
+          "text": "newer",
+          "at": 2.4
+        }
+      ],
+      "keys": [
+        0
+      ]
+    },
+    {
+      "start": 2.35,
+      "end": 2.4,
+      "words": [
+        {
+          "text": "ports",
+          "at": 2.4
+        },
+        {
+          "text": "may",
+          "at": 2.4
+        },
+        {
+          "text": "advertise",
+          "at": 2.4
+        },
+        {
+          "text": "5,",
+          "at": 2.4
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 2.35,
+      "end": 3.0,
+      "words": [
+        {
+          "text": "10,",
+          "at": 2.4
+        },
+        {
+          "text": "20,",
+          "at": 2.4
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 2.95,
+      "end": 3.825,
+      "words": [
+        {
+          "text": "40,",
+          "at": 3.0
+        },
+        {
+          "text": "or",
+          "at": 3.0
+        },
+        {
+          "text": "80",
+          "at": 3.0
+        },
+        {
+          "text": "gigabits.",
+          "at": 3.0
+        }
+      ],
+      "keys": [
+        2,
+        3
+      ]
+    },
+    {
+      "start": 3.775,
+      "end": 4.76,
+      "words": [
+        {
+          "text": "Charging's",
+          "at": 3.825
+        },
+        {
+          "text": "separate;",
+          "at": 4.116
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 4.71,
+      "end": 5.0,
+      "words": [
+        {
+          "text": "color",
+          "at": 4.76
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 4.95,
+      "end": 5.54,
+      "words": [
+        {
+          "text": "doesn't",
+          "at": 5.0
+        },
+        {
+          "text": "tell",
+          "at": 5.328
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 5.49,
+      "end": 6.0,
+      "words": [
+        {
+          "text": "you",
+          "at": 5.54
+        },
+        {
+          "text": "wattage.",
+          "at": 5.664
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 5.95,
+      "end": 6.0,
+      "words": [
+        {
+          "text": "Check",
+          "at": 6.0
+        },
+        {
+          "text": "the",
+          "at": 6.0
+        },
+        {
+          "text": "SS",
+          "at": 6.0
+        },
+        {
+          "text": "logo,",
+          "at": 6.0
+        }
+      ],
+      "keys": [
+        2,
+        3
+      ]
+    },
+    {
+      "start": 5.95,
+      "end": 6.6,
+      "words": [
+        {
+          "text": "then",
+          "at": 6.0
+        },
+        {
+          "text": "read",
+          "at": 6.0
+        },
+        {
+          "text": "the",
+          "at": 6.0
+        },
+        {
+          "text": "specification.",
+          "at": 6.0
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 6.55,
+      "end": 6.6,
+      "words": [
+        {
+          "text": "Charging's",
+          "at": 6.6
+        },
+        {
+          "text": "separate;",
+          "at": 6.6
+        },
+        {
+          "text": "color",
+          "at": 6.6
+        },
+        {
+          "text": "doesn't",
+          "at": 6.6
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 6.55,
+      "end": 7.344,
+      "words": [
+        {
+          "text": "tell",
+          "at": 6.6
+        },
+        {
+          "text": "you",
+          "at": 6.6
+        },
+        {
+          "text": "wattage.",
+          "at": 6.6
+        }
+      ],
+      "keys": [
+        2
+      ]
+    },
+    {
+      "start": 7.294,
+      "end": 8.8,
+      "words": [
+        {
+          "text": "What",
+          "at": 7.344
+        },
+        {
+          "text": "about",
+          "at": 7.4
+        },
+        {
+          "text": "USB-C?",
+          "at": 7.7
+        }
+      ],
+      "keys": [
+        2
+      ]
+    },
+    {
+      "start": 8.75,
+      "end": 10.067,
+      "words": [
+        {
+          "text": "Its",
+          "at": 8.8
+        },
+        {
+          "text": "shape",
+          "at": 9.08
+        },
+        {
+          "text": "doesn't",
+          "at": 9.307
+        },
+        {
+          "text": "guarantee",
+          "at": 9.568
+        }
+      ],
+      "keys": [
+        2,
+        3
+      ]
+    },
+    {
+      "start": 10.017,
+      "end": 11.825,
+      "words": [
+        {
+          "text": "speed",
+          "at": 10.067
+        },
+        {
+          "text": "or",
+          "at": 10.453
+        },
+        {
+          "text": "power.",
+          "at": 10.64
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 11.775,
+      "end": 12.6,
+      "words": [
+        {
+          "text": "The",
+          "at": 11.825
+        },
+        {
+          "text": "free",
+          "at": 11.888
+        },
+        {
+          "text": "guide",
+          "at": 12.147
+        },
+        {
+          "text": "and",
+          "at": 12.5
+        }
+      ],
+      "keys": [
+        1,
+        2
+      ]
+    },
+    {
+      "start": 12.55,
+      "end": 13.573,
+      "words": [
+        {
+          "text": "our",
+          "at": 12.6
+        },
+        {
+          "text": "community",
+          "at": 12.768
+        },
+        {
+          "text": "link",
+          "at": 13.248
+        },
+        {
+          "text": "are",
+          "at": 13.46
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 13.523,
+      "end": 15.469,
+      "words": [
+        {
+          "text": "in",
+          "at": 13.573
+        },
+        {
+          "text": "the",
+          "at": 13.7
+        },
+        {
+          "text": "description.",
+          "at": 13.807
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 15.419,
+      "end": 15.96,
+      "words": [
+        {
+          "text": "Follow",
+          "at": 15.469
+        },
+        {
+          "text": "the",
+          "at": 15.54
+        },
+        {
+          "text": "channel",
+          "at": 15.64
+        }
+      ],
+      "keys": [
+        0
+      ]
+    },
+    {
+      "start": 15.91,
+      "end": 17.808,
+      "words": [
+        {
+          "text": "for",
+          "at": 15.96
+        },
+        {
+          "text": "tech",
+          "at": 16.128
+        },
+        {
+          "text": "tips!",
+          "at": 16.384
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 17.758,
+      "end": 19.14,
+      "words": [
+        {
+          "text": "Blue",
+          "at": 17.808
+        },
+        {
+          "text": "is",
+          "at": 17.893
+        },
+        {
+          "text": "a",
+          "at": 18.04
+        },
+        {
+          "text": "hint...",
+          "at": 18.16
+        }
+      ],
+      "keys": [
+        3
+      ]
+    },
+    {
+      "start": 19.09,
+      "end": 20.26,
+      "words": [
+        {
+          "text": "the",
+          "at": 19.14
+        },
+        {
+          "text": "specification",
+          "at": 19.257
+        },
+        {
+          "text": "is",
+          "at": 20.08
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 20.21,
+      "end": 21.142,
+      "words": [
+        {
+          "text": "the",
+          "at": 20.26
+        },
+        {
+          "text": "ANSWER.",
+          "at": 20.4
+        }
+      ],
+      "keys": [
+        1
+      ]
+    },
+    {
+      "start": 21.092,
+      "end": 22.186,
+      "words": [
+        {
+          "text": "Check",
+          "at": 21.142
+        },
+        {
+          "text": "the",
+          "at": 21.295
+        },
+        {
+          "text": "SS",
+          "at": 21.362
+        },
+        {
+          "text": "logo,",
+          "at": 21.535
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 22.136,
+      "end": 24.979,
+      "words": [
+        {
+          "text": "then",
+          "at": 22.186
+        },
+        {
+          "text": "read",
+          "at": 22.65
+        },
+        {
+          "text": "the",
+          "at": 22.65
+        },
+        {
+          "text": "specification.",
+          "at": 22.842
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 24.929,
+      "end": 26.362,
+      "words": [
+        {
+          "text": "Charging's",
+          "at": 24.979
+        },
+        {
+          "text": "separate;",
+          "at": 25.278
+        },
+        {
+          "text": "color",
+          "at": 25.544
+        },
+        {
+          "text": "doesn't",
+          "at": 26.015
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 26.312,
+      "end": 28.506,
+      "words": [
+        {
+          "text": "tell",
+          "at": 26.362
+        },
+        {
+          "text": "you",
+          "at": 26.522
+        },
+        {
+          "text": "wattage.",
+          "at": 26.714
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 28.456,
+      "end": 30.172,
+      "words": [
+        {
+          "text": "What",
+          "at": 28.506
+        },
+        {
+          "text": "about",
+          "at": 28.562
+        },
+        {
+          "text": "USB-C?",
+          "at": 28.882
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 30.122,
+      "end": 31.042,
+      "words": [
+        {
+          "text": "Its",
+          "at": 30.172
+        },
+        {
+          "text": "shape",
+          "at": 30.482
+        },
+        {
+          "text": "doesn't",
+          "at": 30.722
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 30.992,
+      "end": 32.189,
+      "words": [
+        {
+          "text": "guarantee",
+          "at": 31.042
+        },
+        {
+          "text": "speed",
+          "at": 31.482
+        },
+        {
+          "text": "or",
+          "at": 31.962
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 32.139,
+      "end": 34.302,
+      "words": [
+        {
+          "text": "power.",
+          "at": 32.189
+        },
+        {
+          "text": "The",
+          "at": 33.627
+        },
+        {
+          "text": "free",
+          "at": 33.69
+        },
+        {
+          "text": "guide",
+          "at": 33.949
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 34.252,
+      "end": 35.282,
+      "words": [
+        {
+          "text": "and",
+          "at": 34.302
+        },
+        {
+          "text": "our",
+          "at": 34.382
+        },
+        {
+          "text": "community",
+          "at": 34.498
+        },
+        {
+          "text": "link",
+          "at": 35.05
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 35.232,
+      "end": 37.191,
+      "words": [
+        {
+          "text": "are",
+          "at": 35.282
+        },
+        {
+          "text": "in",
+          "at": 35.455
+        },
+        {
+          "text": "the",
+          "at": 35.582
+        },
+        {
+          "text": "description.",
+          "at": 35.689
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 37.141,
+      "end": 37.762,
+      "words": [
+        {
+          "text": "Follow",
+          "at": 37.191
+        },
+        {
+          "text": "the",
+          "at": 37.262
+        },
+        {
+          "text": "channel",
+          "at": 37.372
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 37.712,
+      "end": 38.602,
+      "words": [
+        {
+          "text": "for",
+          "at": 37.762
+        },
+        {
+          "text": "tech",
+          "at": 37.946
+        },
+        {
+          "text": "tips!",
+          "at": 38.266
+        }
+      ],
+      "keys": []
+    }
+  ],
+  "chapters": [],
+  "title": "USB Colors Really Matter!",
+  "quiet": [
+    [
+      2.4,
+      6.0
+    ],
+    [
+      6.0,
+      11.82
+    ],
+    [
+      11.82,
+      17.81
+    ]
+  ]
+}
