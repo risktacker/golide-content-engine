@@ -1,0 +1,43 @@
+name: Fetch a production's files
+
+# 2026-11-13: hand back a finished video's render, edit plan, scripts and audio from the run checkpoint, so it can
+# be reviewed frame by frame.
+on:
+  workflow_dispatch:
+    inputs:
+      production_id:
+        description: "Production id, e.g. golide-long-2026-11-12-r"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            productions
+          key: golide-production-checkpoint-${{ github.run_id }}
+          restore-keys: |
+            golide-production-checkpoint-
+      - name: List what the checkpoint holds
+        run: |
+          ls -la "productions/${{ inputs.production_id }}" || (ls productions; exit 1)
+          find "productions/${{ inputs.production_id }}" -maxdepth 3 -type f -size +1k | head -200
+      - uses: actions/upload-artifact@v4
+        with:
+          name: production
+          retention-days: 3
+          path: |
+            productions/${{ inputs.production_id }}/**/*.json
+            productions/${{ inputs.production_id }}/**/*.txt
+            productions/${{ inputs.production_id }}/**/*.md
+            productions/${{ inputs.production_id }}/**/*.mp4
+            productions/${{ inputs.production_id }}/**/*.mp3
+            productions/${{ inputs.production_id }}/**/*.wav
+            productions/${{ inputs.production_id }}/**/*.jpg
+            productions/${{ inputs.production_id }}/**/*.png
