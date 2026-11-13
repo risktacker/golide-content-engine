@@ -18,6 +18,8 @@ const LINKEDIN_SCOPES = "openid profile w_member_social";
 const YOUTUBE_SCOPES = [
   "https://www.googleapis.com/auth/youtube.upload",
   "https://www.googleapis.com/auth/youtube.readonly",
+  // 2026-11-13 (owner): change a video after upload (publish now, move its time, fix a title or thumbnail)
+  "https://www.googleapis.com/auth/youtube.force-ssl",
   "https://www.googleapis.com/auth/yt-analytics.readonly",
   "https://www.googleapis.com/auth/yt-analytics-monetary.readonly",
 ];
