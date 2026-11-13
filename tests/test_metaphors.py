@@ -27,3 +27,23 @@ def test_editor_places_a_metaphor_on_its_word(tmp_path):
     assert metas[0]["data"]["winner"] == "right" and metas[0]["data"]["at"] > 0.5
     html = Composer("long").build(edit, tmp_path / "o").read_text()
     assert "svgOrigin" in html and "Accuracy" in html
+
+
+def _s3d(obj, first, last, punch="opens", label="Your rented GPU"):
+    return {"type": "object3d", "object3d": obj, "metaphor": None, "first_line": first, "last_line": last,
+            "goli_corner": False, "poses": [], "screen_words": None, "punch": punch, "source": None, "phrase": None,
+            "items": [], "shots": [], "quote": None, "label": label, "left": None, "right": None, "value": None}
+
+
+def test_glass_object_with_its_label_and_limits(tmp_path):
+    lines = _lines(["The lid opens and the screen lights up.", "In the rack one server slides out.",
+                    "Inside the chip the die is tiny.", "And the battery cells rise out."])
+    raw = {"scenes": [_s3d("laptop", 0, 0), _s3d("laptop", 1, 1), _s3d("server", 2, 2, "slides"), _s3d("chip", 3, 3, "rise")]}
+    edit = editor.build(raw, lines, 8.0, "long", [], None, [], [])
+    objs = [s for s in edit["scenes"] if s["type"] == "object3d"]
+    assert len(objs) == 2                                  # at most 2 in a long video, never two in a row
+    assert objs[0]["data"]["lead"] == "Your rented GPU"
+    html = Composer("long").build(edit, tmp_path / "o")
+    text = html.read_text()
+    assert "glass3d.js" in text and "importmap" in text and '"lead": "Your rented GPU"' in text
+    assert (html.parent / "three" / "g3d" / "glass3d.js").exists()

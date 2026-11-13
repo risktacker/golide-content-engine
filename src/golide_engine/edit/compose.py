@@ -672,18 +672,21 @@ class Composer:
         at = float(data.get("at", 1.0))
         label = (f'<div class="label" style="position:absolute;left:0;right:0;top:{self.cy + ch / 2 - 40:.0f}px;'
                  f'text-align:center;font-size:40px;color:#E8C268">{_e(data["label"])}</div>') if data.get("label") else ""
-        inner = (f'<canvas id="{sid}-cv" width="{cw}" height="{ch}" style="position:absolute;left:{(self.w - cw) / 2:.0f}px;'
-                 f'top:{self.cy - ch / 2:.0f}px;width:{cw}px;height:{ch}px"></canvas>{label}'
+        opts = {"at": at, "callouts": data.get("callouts") or [], "lead": data.get("lead") or ""}
+        pos = f'position:absolute;left:{(self.w - cw) / 2:.0f}px;top:{self.cy - ch / 2:.0f}px;width:{cw}px;height:{ch}px'
+        inner = (f'<canvas id="{sid}-cv" width="{cw}" height="{ch}" style="{pos}"></canvas>'
+                 f'<svg id="{sid}-ov" viewBox="0 0 {cw} {ch}" width="{cw}" height="{ch}" style="{pos};overflow:visible"></svg>{label}'
                  f'<script type="module">import {{ mount }} from "./three/g3d/glass3d.js";'
                  f'window.__g3d = window.__g3d || {{}};'
-                 f'const r = mount(document.getElementById("{sid}-cv"), {json.dumps(data["object"])});'
-                 f'window.__g3d["{sid}"] = r; r(0, -0.6);</script>')
+                 f'const r = mount(document.getElementById("{sid}-cv"), {json.dumps(data["object"])}, '
+                 f'Object.assign({json.dumps(opts)}, {{overlay: document.getElementById("{sid}-ov")}}));'
+                 f'window.__g3d["{sid}"] = r; r(0, -0.6, 0);</script>')
         self.scene(sid, t0, dur, inner)
         self.entrance(sid, t0, how)
         move = 0.9
         self.tw(f'(function(){{var o={{s:0}};tl.fromTo(o,{{s:0}},{{s:{dur:.3f},duration:{dur:.3f},ease:"none",onUpdate:function(){{'
                 f'var f=window.__g3d&&window.__g3d["{sid}"];if(!f)return;var m=Math.min(1,Math.max(0,(o.s-{at:.3f})/{move}));'
-                f'm=m*m*(3-2*m);f(m,-0.6+0.55*o.s/{dur:.3f});}}}},{t0:.3f});}})();')
+                f'm=m*m*(3-2*m);f(m,-0.6+0.55*o.s/{dur:.3f},o.s);}}}},{t0:.3f});}})();')
         self.cue("whoosh", t0 + at - 0.1)
 
     def metaphor(self, t0, dur, data, how="rise"):

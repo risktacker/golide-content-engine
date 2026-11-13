@@ -46,5 +46,13 @@ storyboard call picks gold words and pictures. Copy the method of model scripts,
   explanations, about half the scenes 3D, never more than 3 in a row.
 - Moves 0.6 s on the spoken word; slow turn through the scene; poses reused until visibly turned.
 
+## Edit engine scenes (owner 2026-11-13, `edit/`)
+- Real runs (`edit/demos.py`): read-only commands only (allowlist), shown as a terminal with the proving line lit.
+- Visual metaphors (`edit/metaphors.py`): scales, unlock, magnify, funnel, stack, gauge, transform, iceberg, cycle;
+  about 1 in 6 scenes, never the same twice in a video.
+- Glass 3D (`assets/edit/g3d/glass3d.js`, three.js in the video): laptop, phone, server, chip, battery in clear glass
+  with lit edges, one gold part with a callout line to its label, two other parts named. Max 2 per long video, 1 per
+  Short, never two in a row. Goli faces the content (mirrored on the right).
+
 ## Checks
 `python3 -m pytest -q` must pass before every push (467 tests as of 2026-11-06).

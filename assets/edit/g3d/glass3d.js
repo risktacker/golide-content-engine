@@ -41,6 +41,16 @@ const OBJECTS = {
   },
 };
 
+// what each part is called (in part order), and the parts labelled by default: the gold one first
+export const NAMES = {
+  laptop: ['Base', 'Keyboard', 'Trackpad', 'Lid', 'Screen'],
+  phone: ['Back glass', 'Battery', 'Logic board', 'Midframe', 'Display', 'Cover glass'],
+  server: ['Rack', 'Rack', 'Top', 'Bottom', 'Server 1', 'Server 2', 'Server 3', 'Server 4', 'Server 5'],
+  chip: ['Substrate', 'Die', 'Heat spreader', 'Wall', 'Wall', 'Wall', 'Wall'],
+  battery: ['Case', 'Wall', 'Wall', 'Wall', 'Wall', ...Array.from({ length: 8 }, (_, k) => `Cell ${k + 1}`)],
+};
+const DEFAULT = { laptop: [4, 1, 2], phone: [4, 1, 2], server: [6, 0], chip: [1, 2, 0], battery: [7, 0] };
+
 function place(part) {   // centre of the part and its x-rotation, in three.js coordinates
   let [x, y, z] = part.c; z += part.s[2] / 2;
   let a = 0;
@@ -101,7 +111,73 @@ export function mount(canvas, name, opts = {}) {
   camera.position.set(0, centre.y + size * 0.5, dist);
   camera.lookAt(0, centre.y, 0);
 
-  return function render(u, yaw) {
+  // callouts: a thin line from the exact spot on a part to a small label beside the object (owner 2026-11-13)
+  const overlay = opts.overlay || null;
+  const parts0 = make(0);
+  const callouts = (opts.callouts && opts.callouts.length ? opts.callouts : (DEFAULT[name] || []).map((i) => ({ part: i })))
+    .filter((c) => c.part >= 0 && c.part < parts0.length).slice(0, 3)
+    .map((c, k) => ({ ...c, text: (k === 0 && opts.lead) || c.text || NAMES[name][c.part], k }));
+  const ns = 'http://www.w3.org/2000/svg';
+  const els = overlay ? callouts.map((c) => {
+    const g = document.createElementNS(ns, 'g');
+    const line = document.createElementNS(ns, 'polyline');
+    line.setAttribute('fill', 'none'); line.setAttribute('stroke', c.k === 0 ? '#E8C268' : '#CFE6FF');
+    line.setAttribute('stroke-width', '4');
+    const dot = document.createElementNS(ns, 'circle'); dot.setAttribute('r', '11');
+    dot.setAttribute('fill', c.k === 0 ? '#E8C268' : '#CFE6FF'); dot.setAttribute('stroke', '#07080B'); dot.setAttribute('stroke-width', '3');
+    const box = document.createElementNS(ns, 'g');
+    const rect = document.createElementNS(ns, 'rect'); rect.setAttribute('rx', '14');
+    rect.setAttribute('fill', c.k === 0 ? '#E8C268' : 'rgba(10,12,18,.88)');
+    rect.setAttribute('stroke', c.k === 0 ? '#E8C268' : 'rgba(207,230,255,.6)'); rect.setAttribute('stroke-width', '2');
+    const txt = document.createElementNS(ns, 'text'); txt.textContent = c.text;
+    txt.setAttribute('font-family', 'Poppins'); txt.setAttribute('font-weight', '800'); txt.setAttribute('font-size', '42');
+    txt.setAttribute('fill', c.k === 0 ? '#07080B' : '#F4F1EA'); txt.setAttribute('dominant-baseline', 'middle');
+    box.append(rect, txt); g.append(line, dot, box); overlay.append(g);
+    const w = c.text.length * 42 * 0.6 + 44;
+    return { g, line, dot, rect, txt, w };
+  }) : [];
+  const W = canvas.width, Hh = canvas.height, v = new THREE.Vector3();
+
+  function label(t, u) {
+    // anchor: the top middle of the part, as it is now on screen
+    const at = (c, ox = 0, oz = 0) => {
+      const { m } = meshes[c.part]; const s = parts0[c.part].s;
+      m.updateMatrixWorld(); v.set(ox * s[0], s[2] / 2, oz * s[1]); m.localToWorld(v); v.project(camera);
+      return { x: (v.x + 1) / 2 * W, y: (1 - v.y) / 2 * Hh };
+    };
+    const pts = callouts.map((c) => at(c));
+    // two dots on the same spot (a part sitting in the middle of another): the bigger part's moves to its edge
+    for (let i = 0; i < pts.length; i++) for (let j = 0; j < i; j++) {
+      if (Math.hypot(pts[i].x - pts[j].x, pts[i].y - pts[j].y) < 70) {
+        const big = parts0[callouts[i].part].s[0] >= parts0[callouts[j].part].s[0] ? i : j;
+        pts[big] = at(callouts[big], 0.36, 0.3);
+      }
+    }
+    // labels in two columns beside the object, kept apart and in the order of their anchors
+    const sides = { left: [], right: [] };
+    pts.forEach((p, i) => (p.x < W / 2 ? sides.left : sides.right).push(i));
+    for (const [side, idx] of Object.entries(sides)) {
+      idx.sort((a, b) => pts[a].y - pts[b].y);
+      let last = -1e9;
+      idx.forEach((i) => {
+        const p = pts[i], el = els[i], c = callouts[i];
+        let ly = Math.max(p.y - 70, last + 96, 56); ly = Math.min(ly, Hh - 50); last = ly;
+        const lx = side === 'left' ? Math.max(20, Math.min(p.x - 160, W * 0.16)) - el.w : Math.min(W - 20 - el.w, Math.max(p.x + 160, W * 0.84));
+        const edge = side === 'left' ? lx + el.w : lx;
+        const knee = side === 'left' ? edge + 30 : edge - 30;
+        el.line.setAttribute('points', `${p.x},${p.y} ${knee},${ly} ${edge},${ly}`);
+        el.dot.setAttribute('cx', p.x); el.dot.setAttribute('cy', p.y);
+        el.rect.setAttribute('x', lx); el.rect.setAttribute('y', ly - 36); el.rect.setAttribute('width', el.w); el.rect.setAttribute('height', 72);
+        el.txt.setAttribute('x', lx + 22); el.txt.setAttribute('y', ly + 2);
+        const show = Math.min(1, Math.max(0, (t - (opts.at || 1) - 0.7 - c.k * 0.35) / 0.35));
+        el.g.setAttribute('opacity', show.toFixed(3));
+        const len = el.line.getTotalLength ? 0 : 0;
+        el.line.setAttribute('stroke-dasharray', `${(show * 2000).toFixed(0)} 2000`);
+      });
+    }
+  }
+
+  return function render(u, yaw, t = 0) {
     make(u).forEach((p, i) => {
       const { pos, a } = place(p); const { m, e } = meshes[i];
       m.position.copy(pos); m.rotation.set(a, 0, 0);
@@ -109,5 +185,6 @@ export function mount(canvas, name, opts = {}) {
     });
     turn.rotation.y = yaw;
     renderer.render(scene, camera);
+    if (els.length) label(t, u);
   };
 }
