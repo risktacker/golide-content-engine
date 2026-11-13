@@ -87,7 +87,7 @@ html,body{margin:0;background:#07080B}
 .studio .dotp{position:absolute;width:6px;height:6px;border-radius:50%;background:#E8C268;box-shadow:0 0 12px #E8C268}
 #brand{position:absolute;inset:0;z-index:45;pointer-events:none}
 #caps{position:absolute;inset:0;z-index:46;pointer-events:none}
-.cap{position:absolute;left:60px;right:60px;text-align:center;opacity:0;font:800 60px/1.16 Poppins;color:#F4F1EA;
+.cap{position:absolute;left:var(--cap-l,60px);right:var(--cap-r,60px);text-align:center;opacity:0;font:800 60px/1.16 Poppins;color:#F4F1EA;
  text-shadow:0 4px 18px rgba(0,0,0,.85),0 0 2px #000}
 .cap span{display:inline-block;margin:0 .24em;opacity:.38}
 .cap span.key{color:#E8C268}
@@ -196,9 +196,10 @@ class Composer:
                     f'{{y:0,scale:1,opacity:1,duration:.7,ease:"back.out(1.4)"}},{t0:.3f});')
         elif how == "push":
             # 2026-11-13 (owner, point 6): the same thought goes on: the last shot slides away as this one pushes in
-            self.tw(f'tl.fromTo("{sel}",{{x:{self.w * 0.32:.0f},filter:"blur(8px)"}},'
-                    f'{{x:0,filter:"blur(0px)",duration:.4,ease:"power3.out"}},{t0:.3f});')
-            self._exit(t0, f'{{x:{-self.w * 0.32:.0f},filter:"blur(8px)",duration:.3,ease:"power2.in"}}')
+            # 2026-11-13 (owner: "smooth"): a short glide with a fade, never a slam against the frame edge
+            self.tw(f'tl.fromTo("{sel}",{{x:{self.w * 0.12:.0f},opacity:0,filter:"blur(4px)"}},'
+                    f'{{x:0,opacity:1,filter:"blur(0px)",duration:.5,ease:"power2.out"}},{t0:.3f});')
+            self._exit(t0, f'{{x:{-self.w * 0.10:.0f},opacity:0,filter:"blur(4px)",duration:.3,ease:"power1.in"}}')
             self.cue("whoosh", t0 - 0.1)
         elif how == "zoom":
             # going deeper into the same thing: the camera flies into the last shot and lands in this one
@@ -241,7 +242,7 @@ class Composer:
             # and Goli has the right quarter, so he is never pushed out and never covers the proof
             inner = (f'<div class="zone" style="position:absolute;inset:0;transform:scale({0.84 * getattr(self, "_boost", 1.0):.3f});'
                      f'transform-origin:2% 50%">{inner}</div>')
-        elif getattr(self, "_boost", 1.0) > 1.0:
+        elif abs(getattr(self, "_boost", 1.0) - 1.0) > 0.005:
             # 2026-11-13 (point 5): a scene measured too small is enlarged around its middle
             inner = (f'<div style="position:absolute;inset:0;transform:scale({self._boost:.3f});transform-origin:50% 50%">'
                      f'{inner}</div>')
@@ -509,7 +510,8 @@ class Composer:
         sid = self._id("title")
         v = self.n_words % 4
         self.n_words += 1
-        words = data["words"]                             # [{"text":..,"at":..}]
+        from .editor import _no_dots
+        words = [dict(w, text=_no_dots(w["text"])) for w in data["words"]]    # [{"text":..,"at":..}], no "..." shown
         # 2026-11-13 (review): never an empty frame while waiting for the first spoken word: the line starts
         # building within a quarter second of the cut, keeping its own rhythm after that
         late = min((float(w.get("at", 0)) for w in words), default=0.0) - 0.25
@@ -521,6 +523,13 @@ class Composer:
         long = self.fmt == "long"
         m = 120 if long else 70
         size = (112 if long else 104, 120 if long else 112, 104 if long else 96, 132 if long else 124)[v]
+        # 2026-11-13 (owner: words ran off the frame): the Short keeps inside the phone's crop (130 left, 160 right)
+        # and the longest word always fits its line (Poppins 900 is about .66 em a letter, capitals .74)
+        left_m, right_m = (m, m) if long else (130, 160)
+        room = self.w - left_m - right_m - (46 if v == 2 else 0)
+        longest = max((len(str(w["text"])) for w in (words[:4] if v == 3 else words)), default=1)
+        per = 0.74 if v == 3 else 0.66
+        size = int(min(size, room / max(1, longest * per)))
         if v == 1:      # centred, the punch word on a gold block
             spans = "".join(f'<span class="word" id="{sid}-w{i}" style="{"background:#E8C268;color:#0B0E16;padding:0 .18em;border-radius:12px" if p else ""}">'
                             f'{_e(w["text"])}</span>' for i, (w, p) in enumerate(zip(words, is_punch)))
@@ -540,7 +549,7 @@ class Composer:
             spans = "".join(f'<span class="word{" gold" if p else ""}" id="{sid}-w{i}">{_e(w["text"])}</span>'
                             for i, (w, p) in enumerate(zip(words, is_punch)))
             body = f'<div class="title" style="text-align:left;font-size:{size}px">{spans}</div>'
-        inner = (f'<div style="position:absolute;left:{m}px;right:{m}px;top:{self.cy}px;transform:translateY(-50%)">'
+        inner = (f'<div style="position:absolute;left:{left_m}px;right:{right_m}px;top:{self.cy}px;transform:translateY(-50%)">'
                  f'{body}{sub}</div>')
         self.scene(sid, t0, dur, inner)
         if v == 2:
@@ -1431,7 +1440,7 @@ class Composer:
         self.tweens.extend(btw)
         page = f"""<!doctype html><html lang="en"><head><meta charset="UTF-8">
 <meta name="viewport" content="width={self.w}, height={self.h}"><script src="gsap.min.js"></script>{IMPORTMAP if getattr(self, "uses_three", False) else ""}
-<style>{CSS}</style></head><body>
+<style>{CSS}{":root{--cap-l:130px;--cap-r:160px}" if self.fmt == "short" else ""}</style></head><body>
 <div id="root" data-composition-id="main" data-start="0" data-width="{self.w}" data-height="{self.h}" data-duration="{duration:.3f}">
 <div class="bg" id="bg"></div><div class="glow" id="glow"></div>
 {''.join(self.parts)}

@@ -110,18 +110,32 @@ def story_instructions(format_name: str, model_seconds: float | None = None) -> 
     offer = script_offer(format_name)
     if format_name == "short":
         shape = (
-            "A SHORT HAS ITS OWN SHAPE (owner 2026-11-10: never a cut-down long video). Do what the shorts that work "
-            "do (models: 29-million-view story shorts, the \"You're Elon Musk...\" chain, the \"too small, not too big\" "
-            "answer):\n"
-            "- The very first sentence is the hook, with no intro and no greeting: a contradiction (\"74 soldiers knocked "
-            "down an iron bridge just by walking across it\"), or put the viewer in someone's shoes (\"You're the boss "
-            "of...\"), or the question everyone has followed by the opposite of what they expect.\n"
-            "- Then escalate step by step, each sentence one move further (\"So... Then... Still not enough?\").\n"
-            "- Then the turn where the real reason comes out (\"Here's the thing.\" or \"You see,\"; vary it).\n"
-            "- Then the payoff: the one thing the viewer now knows or can do, said plainly.\n"
-            "- The last line lands a twist that ties back to the first sentence, so the Short loops.\n"
-            "- Relentless delivery: short sentences, no dead air, no recap, no \"in this video\".\n"
-            "- One sentence asking the viewer to follow the channel, with a real reason, just before the last line.\n")
+            "A SHORT HAS ITS OWN SHAPE (owner 2026-11-10 and 2026-11-13: never a cut-down long video, and never a pile "
+            "of loose sentences). A Short wins or loses in the first 2 seconds and keeps people only if every sentence "
+            "pulls them into the next. Model the Shorts that work (the \"You're Elon Musk...\" chain, and the "
+            "\"Imagine you're Mark Zuckerberg, but you're losing the AI race\" Short: 666K views in 3 days) exactly "
+            "in METHOD:\n"
+            "- ONE DIRECTION. Before writing, decide the one question the Short answers and the one person or thing it "
+            "follows (the company, the founder, the viewer holding the device). Every sentence moves that one story "
+            "forward; nothing is a side fact.\n"
+            "- THE HOOK is sentence 1: put the viewer in someone's shoes with a problem (\"Imagine you're X, but...\", "
+            "\"You're the boss of X and...\") or a contradiction they can see. Sentence 2 gives the hidden strength or "
+            "the stakes, with one hard number (\"Every night, 280 million screens are waiting on you.\").\n"
+            "- THE CHAIN: then the story moves in steps where each step CAUSES the next. A need, the move that answers it, "
+            "the new need that move creates: \"So you...\", \"First...\", \"Then...\", \"Now you need...\", \"But one "
+            "is not enough, so...\", \"Still not enough?\". Every step has a real name, amount or place from the "
+            "research. Even a how-to is told as this chain (\"You plug it in. Nothing. So you check...\"), never as a "
+            "list of tips.\n"
+            "- THE TURN: one line that flips what the viewer thought (\"And the insane part?\", \"Here's the thing.\"; "
+            "vary it), then the strongest fact.\n"
+            "- THE PAYOFF: the last 2 sentences say what it all adds up to, in one plain verdict that ties back to the "
+            "first sentence, ending on a short punch line (\"That's the whole trick. And now you're ahead.\").\n"
+            "- Each sentence starts from the one before (a connective, or the same subject carried on). No sentence "
+            "could be moved elsewhere without breaking the story. Never say the same thing twice.\n"
+            "- Relentless: no intro, no recap, no \"in this video\", no dead air, NO \"...\" anywhere (the voice stops "
+            "dead on it).\n"
+            "- The follow ask (and what the viewer gets, if given below) is ONE short sentence just before the punch "
+            "line, never in the middle.\n")
     else:
         shape = (
             "THE ESSENCE (owner 2026-11-10): this channel is not news. Every video explains how something is made, "
@@ -155,8 +169,10 @@ def story_instructions(format_name: str, model_seconds: float | None = None) -> 
         + "WRITE IT THE WAY THE VIDEOS THAT WORK DO. Study the MODEL SCRIPTS you are given (videos working on "
         "YouTube now) and do what they do, with our research and our own words.\n"
         + shape
-        + (f"- What the viewer gets (say it once, near the end, in one natural sentence, separate from the follow "
-           f"sentence): {offer}\n" if offer else "")
+        + ((f"- What the viewer gets, said in the same one sentence as the follow ask: {offer}\n"
+            if format_name == "short" else
+            f"- What the viewer gets (say it once, near the end, in one natural sentence, separate from the follow "
+            f"sentence): {offer}\n") if offer else "")
         + "Facts only from VERIFIED RESEARCH. A company's own figure is said as their claim. Never reuse a sentence "
         "from a model script or a method example: we copy how they tell it, not what they say.\n\n"
         + (f"SCRIPT VOICE GUIDE (the owner's)\n{guide}\n\n" if guide else "")
@@ -177,8 +193,12 @@ def story_instructions(format_name: str, model_seconds: float | None = None) -> 
         "  * questions to the viewer and to yourself (\"So what changed?\", \"Sounds great, right?\") - at least one in "
         "every chapter, usually more;\n"
         "  * real reactions where the facts earn them, with ! (\"That's a lot of money!\", \"Wait. Read that again.\"), "
-        "and short reaction words (\"Okay.\", \"Look,\", \"Honestly?\", \"Yeah...\", \"Hmm.\", \"No, really.\");\n"
-        "  * \"...\" where a person pauses to let something land or trails off; a dash for a quick aside;\n"
+        "and short reaction words (\"Okay.\", \"Look,\", \"Honestly?\", \"Yeah.\", \"Hmm.\", \"No, really.\");\n"
+        + ("  * no \"...\" at all (the voice stops dead on it); a full stop or a line break is the pause;\n"
+           if format_name == "short" else
+           "  * \"...\" at most twice in the whole script, only for a real trail-off (the voice stops dead on it); a "
+           "full stop or a line break is the pause; a dash for a quick aside;\n")
+        + 
         "  * ONE word in CAPITALS where a person would hit it (about one every 3 or 4 sentences), never a number or name;\n"
         "  * short sentences next to longer ones; contractions always; never three long sentences in a row;\n"
         "  * the odd self-correction or aside when it helps (\"...in this video - no, in the next five minutes - \").\n"
@@ -189,7 +209,8 @@ def story_instructions(format_name: str, model_seconds: float | None = None) -> 
         "[curious], [happily], [sad], [serious], [surprised], [awe], [sarcastic], [skeptical], [mischievously]; delivery "
         "[whispers], [softly], [quietly], [slowly], [rushed], [drawn out], [pause]; reactions [laughs], [chuckles], "
         "[sighs], [exhales], [gasps], [clears throat]. Combine two for a layered read ([curious][softly]). Open EVERY "
-        "paragraph with a tag for how it is said, and add one where the feeling turns, about one per 2 sentences; "
+        "paragraph with a tag for how it is said, and add one only where the feeling really turns (a Short: about one "
+        "per 3 or 4 sentences; a long video: about one per 2 or 3); "
         "never inside a number or name. Build each chapter toward a peak, and set up a reveal with [quietly] and a "
         "line break before it (a line break is a pause). Tags are not counted as words. No other brackets.\n"
         "- \"title\": the working title of the video.\n"
@@ -202,7 +223,11 @@ CUE = re.compile(r"\[(?!\[)[^\]\[]{1,30}\](?!\])")
 
 def strip_cues(text: str) -> str:
     """The script without the voice cues ([excited]...), for the screen, the captions and the counts."""
-    return re.sub(r"[ \t]{2,}", " ", CUE.sub("", text)).replace(" ,", ",").replace(" .", ".")
+    # 2026-11-13 (owner): "..." is the voice's pause, never shown: before a new sentence it is a full stop,
+    # inside one a comma
+    text = re.sub(r"(?:\.\.\.|…)(?=\s*(?:\n|$|\[|[A-Z]))", ".", CUE.sub("", text))
+    text = re.sub(r"\s*(?:\.\.\.|…)\s*", ", ", text)
+    return re.sub(r"[ \t]{2,}", " ", text).replace(" ,", ",").replace(" .", ".").replace("..", ".")
 
 
 def plan_from_story(story: dict, format_name: str) -> dict:
@@ -278,9 +303,16 @@ def apply_board(plan: dict, board: dict) -> dict:
     return plan
 
 
-def delivery_problems(script: str) -> list[str]:
+CONNECTIVES = ("so ", "then ", "but ", "and ", "now ", "first", "still ", "because ", "that's ", "that ", "this ",
+               "which ", "it ", "it's ", "they ", "you ", "your ", "here's ", "yet ", "or ", "next", "after ", "even ",
+               "instead", "plus ", "meanwhile", "suddenly", "and ")
+
+
+def delivery_problems(script: str, fmt: str = "long") -> list[str]:
     """2026-11-13 (owner): why a script would be read flat. The 2026-11-12 long video had, in 59 sentences, 2
-    questions, no exclamation, no pause and 2 stressed words, and sounded like someone reading an article."""
+    questions, no exclamation, no pause and 2 stressed words, and sounded like someone reading an article.
+    Later the same day (owner, the broken USB Short): "..." made the voice stop dead, and a Short of loose
+    sentences had no direction; a Short has none of them and is one connected chain."""
     body = CUE.sub(" ", script)
     paras = [p for p in re.split(r"\n\s*\n", script) if p.strip() and not re.fullmatch(r"\s*\[\[?[^\]]*\]\]?\s*", p)]
     sentences = [x for x in re.split(r"(?<=[.!?…])\s+", body) if len(x.split()) >= 2]
@@ -291,8 +323,23 @@ def delivery_problems(script: str) -> list[str]:
     if body.count("!") < max(1, n // 25):
         out.append(f"{body.count('!')} exclamations (want at least {max(1, n // 25)})")
     pauses = body.count("...") + body.count("…")
-    if pauses < max(2, n // 15):
-        out.append(f"{pauses} pauses with ... (want at least {max(2, n // 15)})")
+    if fmt == "short" and pauses:
+        out.append(f"{pauses} \"...\" in a Short (want none: the voice stops dead on each; use a full stop)")
+    elif pauses > 2:
+        out.append(f"{pauses} \"...\" (want at most 2: the voice stops dead on each; use a full stop)")
+    if fmt == "short" and n >= 6:
+        joined = sum(1 for x in sentences[1:] if x.strip().lower().lstrip("\"'([").startswith(CONNECTIVES))
+        if joined < 0.4 * (n - 1):
+            out.append(f"only {joined} of {n - 1} sentences carry on from the one before (want at least "
+                       f"{int(0.4 * (n - 1)) + 1}): it reads as loose facts, not one chain")
+    grams: dict[str, int] = {}
+    words = re.findall(r"[a-z0-9']+", body.lower())
+    for i in range(len(words) - 5):
+        g = " ".join(words[i:i + 6])
+        grams[g] = grams.get(g, 0) + 1
+    repeated = [g for g, k in grams.items() if k > 1]
+    if repeated:
+        out.append(f"says the same thing twice (\"{repeated[0]}\")")
     caps = len(re.findall(r"\b[A-Z]{2,}[a-z]*\b(?<![A-Z]{2}\b)|\b[A-Z]{3,}\b", body))
     if caps < max(1, n // 10):
         out.append(f"{caps} stressed CAPITAL words (want at least {max(1, n // 10)})")

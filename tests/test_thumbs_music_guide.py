@@ -82,9 +82,18 @@ def test_approved_styles_pick_by_story_and_draw_without_the_image_model(tmp_path
     assert Image.open(tmp_path / "p.jpg").size == (1280, 720)
 
 
-def test_alert_shorts_get_the_trailer_music():
+def test_alert_shorts_get_the_trailer_music(monkeypatch):
+    # after the signature month (owner 2026-11-13) the alert track comes back
+    cfg = dict(music_bed.settings(), short_signature={})
+    monkeypatch.setattr(music_bed, "settings", lambda: cfg)
     picked = music_bed.pick("short", 0, "Hackers breach a bank")
     assert picked is None or picked["title"] == "Motivational Trailer"
+
+
+def test_every_short_gets_the_signature_track_this_month():
+    for n, story in enumerate(["Hackers breach a bank", "A new phone", "USB colours"]):
+        picked = music_bed.pick("short", n, story)
+        assert picked is None or picked["title"].startswith("Discipline Finishes")
 
 
 def test_follow_button_shows_only_while_it_is_said():

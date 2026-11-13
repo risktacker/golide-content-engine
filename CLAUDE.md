@@ -54,5 +54,16 @@ storyboard call picks gold words and pictures. Copy the method of model scripts,
   with lit edges, one gold part with a callout line to its label, two other parts named. Max 2 per long video, 1 per
   Short, never two in a row. Goli faces the content (mirrored on the right).
 
+## Shorts (owner 2026-11-13, after the broken USB Short)
+- Script: 150-185 words (60-75 s), its own method (`engine/story.py` short shape): one direction, a hook that puts the
+  viewer in someone's shoes, then a chain where each step causes the next, a turn, a payoff tied to the first line.
+  Model: `8e4TYDVZTwk` (read for every Short, `config/model-videos.txt` "always"). No "..." in a Short; long at most 2;
+  "..." is never shown on screen. Read once (no hook takes); voice parts must add up to the script.
+- Sound: no pops or ticks; whoosh on cuts, an impact only on a big number (`edit/render.py` sound_plan).
+- Music: Discipline Finishes under every Short until 2026-12-13 (`short_signature`), one steady bed, no dips.
+- Frame: content stays inside the phone crop (130 px left, 160 right, 230 top) at every moment (`layout.keep_inside`).
+- Pace: no picture under 1.0 s (Short) / 1.5 s (long); 1 metaphor per Short, 3 per long; a strong transition
+  (zoom, flash, iris, whip) at most once in three cuts, the rest glide or cut.
+
 ## Checks
 `python3 -m pytest -q` must pass before every push (467 tests as of 2026-11-06).

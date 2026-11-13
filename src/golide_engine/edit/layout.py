@@ -74,6 +74,15 @@ TEXT_PROBE = r"""
       const er = el.getBoundingClientRect();
       let r = er;
       if (own && !(el instanceof SVGElement)) { const rg = document.createRange(); rg.selectNodeContents(el); r = rg.getBoundingClientRect(); }
+      // what a card with overflow hidden cuts off is not on screen (a page zoomed inside its card)
+      let cx0 = r.left, cy0 = r.top, cx1 = r.right, cy1 = r.bottom;
+      for (let a = el.parentElement; a && a !== sec; a = a.parentElement) {
+        const ov = getComputedStyle(a).overflow;
+        if (ov === 'visible') continue;
+        const ar = a.getBoundingClientRect();
+        cx0 = Math.max(cx0, ar.left); cy0 = Math.max(cy0, ar.top); cx1 = Math.min(cx1, ar.right); cy1 = Math.min(cy1, ar.bottom);
+      }
+      r = { left: cx0, top: cy0, right: cx1, bottom: cy1, width: cx1 - cx0, height: cy1 - cy0 };
       if (r.width < 4 || r.height < 4 || r.right < 0 || r.left > innerWidth) continue;
       if (own) {
         const svgText = el instanceof SVGElement;
@@ -146,6 +155,59 @@ def legibility(edit: dict[str, Any], comp_builder, comp: Path, size: tuple[int, 
                 sc["data"]["boost"] = boost
                 notes.append(f"{sc['type']} at {sc['start']:.1f}s enlarged x{boost} (smallest text "
                              f"{(m['small'] or 0):.0f}px, fills {m['fill']:.0%})")
+        browser.close()
+    return notes
+
+
+# 2026-11-13 (owner: "objects can't be reaching the edges"): YouTube fills a tall phone with a Short and crops its
+# sides (about 9% each side on a 19.5:9 screen), the like/comment column covers the right, the Shorts bar the top.
+# Every scene's content stays inside this box, measured through the whole scene (after it lands, before it leaves).
+SAFE = {"short": (130, 230, 1080 - 160, 1920 - 120), "long": (36, 30, 1920 - 36, 1080 - 30)}
+
+
+def safe_factor(box: list[float], fmt: str, size: tuple[int, int]) -> float:
+    """How much a box (x0, y0, x1, y1) must shrink about the scene's scale origin to sit inside the safe area."""
+    w, h = size
+    l, t, r, b = SAFE[fmt] if fmt in SAFE else (30, 30, w - 30, h - 30)
+    ox, oy = (0.02 * w, h / 2) if fmt == "long" else (w / 2, h / 2)
+    x0, y0, x1, y1 = box
+    f = 1.0
+    if x0 < l and ox - x0 > 1:
+        f = min(f, (ox - l) / (ox - x0)) if ox > l else f
+    if x1 > r and x1 - ox > 1:
+        f = min(f, (r - ox) / (x1 - ox))
+    if y0 < t and oy - y0 > 1:
+        f = min(f, (oy - t) / (oy - y0))
+    if y1 > b and y1 - oy > 1:
+        f = min(f, (b - oy) / (y1 - oy))
+    return max(0.5, f)
+
+
+def keep_inside(edit: dict[str, Any], comp_builder, comp: Path, size: tuple[int, int]) -> list[str]:
+    """Shrink every scene whose content goes past the safe area at any moment of its time on screen."""
+    from playwright.sync_api import sync_playwright
+
+    fmt = edit["format"]
+    comp_builder(edit)
+    notes: list[str] = []
+    with sync_playwright() as pw:
+        browser = pw.chromium.launch()
+        page = browser.new_page(viewport={"width": size[0], "height": size[1]})
+        page.add_init_script("window.__timelines = {};")
+        page.goto((comp / "index.html").as_uri())
+        page.wait_for_function("() => !!(window.__timelines && window.__timelines.main)", timeout=20000)
+        page.evaluate("document.fonts.ready")
+        for sc in [x for x in edit["scenes"] if x["type"] != "host"]:
+            a, d = float(sc["start"]), float(sc["duration"])
+            times = sorted({round(a + min(0.45, d * 0.4), 3), round(a + d * 0.6, 3), round(a + max(d * 0.6, d - 0.35), 3)})
+            worst = 1.0
+            for t in times:
+                for v in (page.evaluate(TEXT_PROBE, t) or {}).values():
+                    worst = min(worst, safe_factor(v["box"], fmt, size))
+            if worst < 0.99:
+                old = float(sc["data"].get("boost") or 1.0)
+                sc["data"]["boost"] = round(old * worst * 0.98, 3)
+                notes.append(f"{sc['type']} at {a:.1f}s kept inside the frame (x{sc['data']['boost']})")
         browser.close()
     return notes
 
@@ -234,6 +296,10 @@ def resolve(edit: dict[str, Any], comp_builder, comp: Path, size: tuple[int, int
         edit.setdefault("notes", []).extend(legibility(edit, comp_builder, comp, size))
     except Exception as error:  # noqa: BLE001 - the readability pass never stops a render
         edit.setdefault("notes", []).append(f"legibility check skipped: {str(error)[:120]}")
+    try:
+        edit.setdefault("notes", []).extend(keep_inside(edit, comp_builder, comp, size))
+    except Exception as error:  # noqa: BLE001 - logged; the collision pass still runs
+        edit.setdefault("notes", []).append(f"safe-area check skipped: {str(error)[:120]}")
     for rnd in range(rounds):
         comp_builder(edit)
         seen = probe(comp, size, _times(edit))

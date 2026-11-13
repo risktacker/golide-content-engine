@@ -107,7 +107,8 @@ questions, no exclamations and no pauses is read like a newspaper, however good 
 So, like a real YouTuber talking to one friend:
 - Ask the viewer things, and ask yourself things out loud: "So what actually changed?" "Sounds great, right?"
 - React when a fact deserves it: "That's a lot of money!" "Wait. Read that again." "Okay..." "Honestly?" "Yeah, no."
-- Pause with "..." where a person lets something land or trails off; use a dash for a quick aside.
+- Pause rarely: a full stop or a line break is the pause. "..." makes the voice stop dead, so a long video uses it at
+  most once or twice for a real trail-off, and a Short never uses it (owner 2026-11-13).
 - Hit ONE word in capitals where a person would stress it, about once every 3 or 4 sentences.
 - Mix short sentences with longer ones; never three long ones in a row; always use contractions.
 - Every reaction is honest: excitement only for something exciting, doubt only where there is doubt.

@@ -17,7 +17,11 @@ def test_transition_follows_meaning():
               {"type": "host", "start": 0, "duration": 14, "data": {}}]
     editor._transitions(scenes, lines)
     got = [s["in"] for s in scenes if s["type"] != "host"]
-    assert got == ["rise", "match", "iris", "zoom", "flash", "whip", "wipe"]
+    # 2026-11-13 (owner: smooth): a strong one at most once in three cuts, so the zoom and the flash flow instead
+    assert got[:3] == ["rise", "match", "iris"] and got[-1] == "wipe"
+    assert "whip" in got and "zoom" not in got[3:4]
+    strong = [g in editor.STRONG for g in got]
+    assert all(sum(strong[i:i + 3]) <= 1 for i in range(len(strong)))
 
 
 def test_never_three_alike_in_a_row():

@@ -162,7 +162,8 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
     edit = editor.build(raw, beat_lines, narration_seconds, fmt, sources, capture_dir, cues, marks,
                         logo_tile_maker(folder / "logos"), bookends=bookends, demos=demo_list)
     edit["title"] = str(spec.get("title", ""))
-    edit["quiet"] = editor.quiet_windows(str(plan.get("voice_script") or ""), lines)   # music drops for these
+    # music drops for these; a Short keeps one steady bed (owner 2026-11-13: the dips sounded like the music changing)
+    edit["quiet"] = [] if fmt == "short" else editor.quiet_windows(str(plan.get("voice_script") or ""), lines)
     editor.save(edit, folder / "edit-list.json")
     for note in edit["notes"]:
         print(f"::notice title=Editor::{note}")

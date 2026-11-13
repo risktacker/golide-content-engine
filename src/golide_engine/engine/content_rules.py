@@ -269,7 +269,8 @@ SCRIPT_LENGTH_TARGETS = {
     # Spoken words at ~150 wpm, set below the recording window so the owner
     # has room to breathe. Windows: short 0:30-1:30, long 3:30-5:00.
     # 2026-11-12 (owner): Shorts are 45 seconds (Eleven v3 voice budget)
-    "short": {"words_min": 105, "words_max": 120, "seconds": "40 to 48"},
+    # 2026-11-13 (owner: "we cut script length and everything broke... return the length"): back to 60 to 75 s
+    "short": {"words_min": 150, "words_max": 185, "seconds": "60 to 75"},
     # 2026-10-22: the owner reads fast (about 170 words a minute: 885 words took 5:07),
     # so 700 to 800 words came out under 5 minutes. 1,300 to 1,450 words is about 8
     # minutes at his pace, past the 8-minute mark where YouTube allows mid-roll ads.

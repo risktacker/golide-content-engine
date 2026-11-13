@@ -455,7 +455,8 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
             out.append({"type": "object3d", "start": t0, "duration": dur, "in": "rise", "data": {
                 "object": s["object3d"], "at": round(max(0.5, min(dur - 1.6, (land - t0) if land else 0.8)), 3),
                 "lead": " ".join(str(s.get("label") or s.get("screen_words") or "").split()[:5])}})
-        elif kind == "metaphor" and s.get("metaphor") in METAPHORS and s["metaphor"] not in used_metaphors:
+        elif kind == "metaphor" and s.get("metaphor") in METAPHORS and s["metaphor"] not in used_metaphors \
+                and len(used_metaphors) < METAPHOR_CAP[fmt]:
             used_metaphors.add(s["metaphor"])
             land = _word_time(lines, s.get("punch") or "", t0, t1)
             items = [str(x) for x in (s.get("items") or [])][:5]
@@ -522,6 +523,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
             out.append(words_scene())
     out = _no_repeats(out, lines, fmt, notes)
     out = _pace(out, lines, fmt)
+    out = _min_length(out, fmt)
     out = _lower_host(out, cues, fmt)
     if bookends and lines:
         out = _bookends(out, lines, cues, duration, *bookends)
@@ -657,6 +659,12 @@ def _lower_host(scenes: list[dict], cues: list[dict], fmt: str = "short") -> lis
     return sorted(out, key=lambda s: (s["start"], s["type"] == "host"))
 
 
+def _no_dots(text: str) -> str:
+    """2026-11-13 (owner): "..." is how the voice is told to pause; on screen it reads as a stop. Captions drop it."""
+    t = str(text).replace("…", "...")
+    return t[:-3] if t.endswith("...") and len(t) > 3 else t.replace("...", "")
+
+
 def captions(lines: list[Any], fmt: str) -> list[dict[str, Any]]:
     """Spoken-word captions, chunked as the illustration engine does (short: up to 4 words, long: 7)."""
     from ..vector.align import caption_chunks
@@ -666,7 +674,7 @@ def captions(lines: list[Any], fmt: str) -> list[dict[str, Any]]:
         if not c.words:
             continue
         out.append({"start": round(float(c.words[0].start) - 0.05, 3), "end": round(float(c.end), 3),
-                    "words": [{"text": w.text, "at": round(float(w.start), 3)} for w in c.words],
+                    "words": [{"text": _no_dots(w.text), "at": round(float(w.start), 3)} for w in c.words],
                     "keys": sorted(int(k) for k in c.keys)})
     return out
 
@@ -857,7 +865,8 @@ def _no_repeats(scenes: list[dict], lines, fmt: str, notes: list[str]) -> list[d
 QUIET_TAGS = ("serious", "quietly", "whispers", "softly", "slowly", "sad", "sighs", "exhales")
 
 
-def quiet_windows(voice_script: str, lines: list[Any], most: int = 3, longest: float = 12.0) -> list[list[float]]:
+def quiet_windows(voice_script: str, lines: list[Any], most: int = 2, longest: float = 12.0,
+                  apart: float = 45.0) -> list[list[float]]:
     """2026-11-13 (owner, point 8): where the music drops out: the paragraphs the script marks as serious or quiet
     ([serious], [quietly], [whispers], [sighs]...), timed by the spoken lines they match. At most 3 a video, each
     at most 12 s, so the drop stays an effect."""
@@ -877,6 +886,8 @@ def quiet_windows(voice_script: str, lines: list[Any], most: int = 3, longest: f
         end = next((b for w, a, b in reversed(timed) if " ".join(tail) in " ".join(w)), None)
         if start is None or end is None or end <= start:
             continue
+        if out and start - out[-1][1] < apart:      # 2026-11-13: never back to back (they chained over 15 s)
+            continue
         out.append([round(start, 2), round(min(end, start + longest), 2)])
         if len(out) >= most:
             break
@@ -884,6 +895,38 @@ def quiet_windows(voice_script: str, lines: list[Any], most: int = 3, longest: f
 
 
 DEEPER = {"walkthrough", "terminal", "object3d"}
+# 2026-11-13 (owner): five metaphors in one 38 s Short read as noise. The picture of an idea is an event.
+METAPHOR_CAP = {"short": 1, "long": 3}
+# the shortest a picture may stay (a fast cut is still a picture the eye can read); the beat's words go on
+MIN_SCENE = {"short": 1.0, "long": 1.5}
+STRONG = {"zoom", "flash", "iris", "whip"}
+
+
+def _min_length(scenes: list[dict], fmt: str) -> list[dict]:
+    """A picture shorter than MIN_SCENE gives its time to the one before it (or after, at the start)."""
+    content = sorted((s for s in scenes if s["type"] != "host"), key=lambda s: s["start"])
+    keep: list[dict] = []
+    for sc in content:
+        if sc["duration"] >= MIN_SCENE[fmt] or not keep and sc is content[-1]:
+            keep.append(sc)
+            continue
+        if keep and abs(keep[-1]["start"] + keep[-1]["duration"] - sc["start"]) < 0.08:
+            keep[-1]["duration"] = round(sc["start"] + sc["duration"] - keep[-1]["start"], 3)
+        else:
+            keep.append(sc)          # nothing joined before it: it holds and the next short one joins it
+    # a run of short ones at the very start became one too-short scene: it takes the next one's time
+    out, i = [], 0
+    while i < len(keep):
+        sc = keep[i]
+        if sc["duration"] < MIN_SCENE[fmt] and i + 1 < len(keep) and \
+                abs(sc["start"] + sc["duration"] - keep[i + 1]["start"]) < 0.08:
+            keep[i + 1] = dict(keep[i + 1], start=sc["start"],
+                               duration=round(keep[i + 1]["start"] + keep[i + 1]["duration"] - sc["start"], 3))
+            i += 1
+            continue
+        out.append(sc)
+        i += 1
+    return sorted(out + [s for s in scenes if s["type"] == "host"], key=lambda s: (s["start"], s["type"] == "host"))
 
 
 def _transitions(scenes: list[dict], lines) -> None:
@@ -920,5 +963,13 @@ def _transitions(scenes: list[dict], lines) -> None:
             how = "push"
         if used[-2:] == [how, how] and how not in ("match",):
             how = {"push": "wipe", "wipe": "push", "whip": "push", "zoom": "push", "iris": "push", "flash": "push"}[how]
+        # 2026-11-13 (owner: "transitions should be smooth and meaningful"): a strong one (zoom, flash, iris, whip)
+        # is a punctuation mark: at most one in three cuts; the rest flow (push, or a clean cut for a quick beat)
+        if how in STRONG and any(u in STRONG for u in used[-2:]):
+            how = "push"
+        if how == "push" and sc["duration"] < 1.3:
+            how = "match"
+        if used and used[-1] == "match" and how == "match" and kind != before["type"] and len(used) > 1 and used[-2] == "match":
+            how = "push"
         sc["in"] = how
         used.append(how)

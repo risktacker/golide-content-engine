@@ -91,7 +91,7 @@ def trim(text: str, fmt: str) -> str:
     return " ".join(words[:cap])
 
 
-def owner_picks(fmt: str) -> list[str]:
+def owner_picks(fmt: str, always: bool = False) -> list[str]:
     """Videos the owner chose as references (config/model-videos.txt: "short <url>" / "long <url>")."""
     try:
         lines = MODEL_VIDEOS_FILE.read_text(encoding="utf-8").splitlines()
@@ -100,7 +100,8 @@ def owner_picks(fmt: str) -> list[str]:
     picks = []
     for line in lines:
         parts = line.split()
-        if len(parts) >= 2 and not line.startswith("#") and parts[0] in (fmt, "any"):
+        if len(parts) >= 2 and not line.startswith("#") and parts[0] in (fmt, "any") and \
+                (not always or "always" in parts[2:]):
             picks.append(parts[1])
     return picks
 
@@ -116,6 +117,9 @@ def choose_models(source: dict | None, breakouts: list[dict], fmt: str, limit: i
         import datetime as _dt
         k = _dt.date.today().toordinal() % len(picks)
         picks = picks[k:] + picks[:k]
+    # 2026-11-13 (owner): a pick marked "always" is read for every video of its format, first among the picks
+    always = set(owner_picks(fmt, always=True))
+    picks = [p for p in picks if p["url"] in always] + [p for p in picks if p["url"] not in always]
     pool = ([source] if source and source.get("url") else []) + picks[:1] + sorted(
         (b for b in breakouts if b.get("format", fmt) == fmt and b.get("url")),
         key=lambda b: float(b.get("score", 0)), reverse=True)

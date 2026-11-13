@@ -127,6 +127,31 @@ SFX_MAP = {"whoosh": "whoosh", "click": "tick", "pop": "pop", "impact": "hit", "
            "typing": "typing"}
 
 
+# 2026-11-13 (owner: "too much of stupid pops. Whoosh good"): 64 sounds in a 38 s Short. Pops and ticks are out; a
+# whoosh carries the cut; an impact (with its riser) only on a big number; the rest only where something is really
+# happening (keys typing, a glass object). Each kind keeps its own spacing and no two sounds land within 0.6 s.
+SOUND_GAP = {"whoosh": 0.9, "impact": 4.0, "riser": 4.0, "shimmer": 6.0, "typing": 3.0}
+SOUND_MIN_APART = 0.6
+
+
+def sound_plan(cues: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """The cues that are actually played."""
+    kept: list[dict[str, Any]] = []
+    last: dict[str, float] = {}
+    for c in sorted(cues, key=lambda c: c["t"]):
+        kind = c.get("kind")
+        if kind not in SOUND_GAP or c["t"] < 0 or c["t"] - last.get(kind, -99) < SOUND_GAP[kind]:
+            continue
+        pair = kind == "impact" and kept and kept[-1]["kind"] == "riser"     # a riser leads into its hit
+        if kept and c["t"] - kept[-1]["t"] < SOUND_MIN_APART and not pair:
+            continue
+        last[kind] = c["t"]
+        kept.append(c)
+    # a riser with no hit after it is a build-up to nothing
+    return [c for i, c in enumerate(kept) if c["kind"] != "riser"
+            or any(d["kind"] == "impact" and 0 < d["t"] - c["t"] <= 2.5 for d in kept[i + 1:])]
+
+
 def quiet_expr(windows: list[list[float]], floor: float = 0.12) -> str:
     """2026-11-13 (owner, point 8): the music drops almost out under a serious line and comes back after it. A
     volume expression: 1 normally, `floor` inside each window, with a 0.6 s fade down and a 0.9 s fade back."""
@@ -144,12 +169,10 @@ def render_sfx(cues: list[dict[str, Any]], duration: float, out: Path) -> Path:
     sounds, levels = {**ACTION_SOUNDS, **SOUNDS}, {**ACTION_LEVELS, **LEVELS}
 
     track = np.zeros(int(RATE * (duration + 2)), dtype=np.float64)
-    last: dict[str, float] = {}
-    for c in sorted(cues, key=lambda c: c["t"]):
+    for c in sound_plan(cues):
         kind = SFX_MAP.get(c["kind"])
-        if not kind or c["t"] < 0 or c["t"] - last.get(kind, -9) < 0.45:
-            continue                       # sparse: the same sound never machine-guns
-        last[kind] = c["t"]
+        if not kind:
+            continue
         sound = sounds[kind]()
         sound = sound / (np.max(np.abs(sound)) or 1.0) * levels[kind]
         a = int(c["t"] * RATE)

@@ -4,3 +4,4 @@ long https://www.youtube.com/watch?v=v_XdN5-ya9A
 long https://www.youtube.com/watch?v=hgLI491ajG0
 short https://www.youtube.com/shorts/znWzWYHoLOg
 short https://www.youtube.com/shorts/_g0GKNrAzAU
+short https://www.youtube.com/shorts/8e4TYDVZTwk always   # owner 2026-11-13: "this is how u make the script for shorts" (666K views in 3 days)

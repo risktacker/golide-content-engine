@@ -10,7 +10,7 @@ PERFORMED = """[curious][softly] So... what actually changed? Honestly? Not the 
 
 [curious] Think about it. You ask it for a function. It writes one. Then what? It just waits.
 
-[excited] Not anymore! Now it plans the job, runs the code, and checks it. Wait. Read that again... it CHECKS its own work.
+[excited] Not anymore! Now it plans the job, runs the code, and checks it. Wait. Read that again. It CHECKS its own work.
 
 [sarcastic] Sounds great, right? Okay, but who checks the checker? That's the real question."""
 
@@ -19,7 +19,6 @@ def test_flat_script_is_caught():
     problems = delivery_problems(FLAT)
     assert any("questions" in p for p in problems)
     assert any("exclamations" in p for p in problems)
-    assert any("pauses" in p for p in problems)
 
 
 def test_performed_script_passes():
@@ -42,3 +41,19 @@ def test_hook_never_opens_with_a_date_or_greeting():
 def test_voice_is_cleaned_before_levelling():
     from golide_engine.edit.render import VOICE_CHAIN
     assert "highpass" in VOICE_CHAIN and "deesser" in VOICE_CHAIN and "acompressor" in VOICE_CHAIN
+
+
+def test_a_short_has_no_dead_stops_and_is_one_chain():
+    loose = ("[curious] Blue ports may be faster... Black ports are USB 2.0. Speeds reach 80 gigabits! "
+             "Standards bodies recommend blue. Colour is a clue? Logos matter. Wattage is separate. Shapes vary.")
+    got = delivery_problems(loose, "short")
+    assert any('"..."' in p for p in got) and any("chain" in p for p in got)
+    chain = ("[curious] Imagine you buy a laptop, but the fast port is a lie? So you check the colour. "
+             "But blue only hints at speed! Then you look for the SS logo. That logo is the real promise. "
+             "And the charging? That's a different label again. So you read the spec, and now you KNOW.")
+    assert delivery_problems(chain, "short") == []
+
+
+def test_the_same_thing_said_twice_is_caught():
+    twice = "[curious] Check the SS logo, then read the specification. Okay? Wow! Check the SS logo, then read the specification."
+    assert any("twice" in p for p in delivery_problems(twice, "short"))

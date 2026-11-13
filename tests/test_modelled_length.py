@@ -8,7 +8,7 @@ def test_long_reads_land_at_5_to_6_minutes_whatever_the_model():
     for model in (60, 200, 300, 3600, None):
         t = length_target("long", model)
         assert 700 <= t["words_min"] and t["words_max"] <= 920    # 2026-11-12 owner: 5 to 6 minutes (v3 budget)
-    assert length_target("short", 20)["words_min"] == 105         # 2026-11-12 owner: 45-second shorts
+    assert length_target("short", 20)["words_min"] == 150         # 2026-11-13 owner: back to 60-75 s shorts
 
 
 def test_short_long_video_gets_fewer_chapters_and_is_checked_against_its_own_length():

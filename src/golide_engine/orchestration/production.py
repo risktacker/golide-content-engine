@@ -925,20 +925,20 @@ class ProductionService:
             # 2026-11-13 (owner): the voice performs what the text gives it. A flat script (no questions, no
             # reactions, no pauses) goes back to the writer once with what is missing, before any voice is bought.
             from ..engine.story import delivery_problems
-            flat = delivery_problems(str(output.value.get("script") or ""))
+            flat = delivery_problems(str(output.value.get("script") or ""), fmt)
             if flat:
                 print(json.dumps({"status": "script_delivery_pass", "problems": flat}))
                 self._reserve(spec, text_model, Usage(input_tokens=len(json.dumps(output.value)) // 3 + 9000,
                                                       output_tokens=script_tokens * 2), stage="script")
                 output = text.generate_json(
                     story_instructions(fmt, model_seconds),
-                    "YOUR SCRIPT reads flat for a voice: " + "; ".join(flat) + ". Rewrite it for SPOKEN DELIVERY "
+                    "YOUR SCRIPT has these problems for the voice: " + "; ".join(flat) + ". Rewrite it for SPOKEN DELIVERY "
                     "and VOICE TAGS exactly as the rules say: the same story, facts, order, chapters, markers and "
                     "length (within 5%), only now written to be performed.\n" + json.dumps(output.value),
                     STORY_SCHEMA, max_output_tokens=script_tokens * 2, reasoning_effort=SPOKEN_PASS_EFFORT)
                 self._record_text(production_id, "script-story-delivery", output)
                 print(json.dumps({"status": "script_delivery_after",
-                                  "problems": delivery_problems(str(output.value.get("script") or ""))}))
+                                  "problems": delivery_problems(str(output.value.get("script") or ""), fmt)}))
             plan = plan_from_story(dict(output.value), fmt)
             if len(plan["lines"]) < 6:
                 raise RuntimeError("the story came back too short to make a video")

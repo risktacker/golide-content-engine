@@ -29,6 +29,13 @@ def pick(fmt: str, n: int | None, story: str = "") -> dict | None:
     hack, a crash) gets the alert track (owner 2026-11-10)."""
     from .thumb_styles import is_alert
 
+    import datetime as _dt
+    # 2026-11-13 (owner): one signature track under every Short for a month ("when it started even the atmosphere
+    # changed"); the rotation (and the alert track) come back after "signature_until"
+    sig = settings().get("short_signature") or {}
+    if fmt == "short" and sig.get("file") and (ROOT / sig["file"]).exists() and \
+            _dt.date.today().isoformat() <= str(sig.get("until", "")):
+        return dict(sig, path=str(ROOT / sig["file"]))
     key = "short_alert" if fmt == "short" and story and is_alert(story) and settings().get("short_alert") else fmt
     tracks = [t for t in settings().get(key, []) if (ROOT / t["file"]).exists()]
     # a track's weight is how many turns it gets in the rotation (owner 2026-11-12: Discipline Finishes most)
