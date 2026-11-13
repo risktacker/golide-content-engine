@@ -167,11 +167,25 @@ def story_instructions(format_name: str, model_seconds: float | None = None) -> 
         + "- Numbers as digits (6.3 billion, 93 cents, 4:20, 2026, 18,270); fractions and everyday ordinals stay "
         "words, and \"one\" on its own stays a word.\n"
         "- Never say the brand name aloud; say \"follow the channel\" or \"follow us\".\n"
-        "- VOICE CUES (2026-11-12): the script is performed by an expressive AI voice. Where the feeling changes, put "
-        "one cue in square brackets just before the words it colours: [excited], [curious], [serious], [surprised], "
-        "[laughs], [chuckles], [sighs], [whispers], [emphatic], [thoughtful], [warmly], [sarcastic]. About one cue "
-        "every 2 or 3 sentences, never two in a row, never inside a number or name. Cues are not counted as words. "
-        "Use \"...\" for a short pause and CAPITALS on one word for stress, sparingly. No other brackets.\n"
+        "- SPOKEN DELIVERY (owner 2026-11-13): this script is PERFORMED by an expressive AI voice. A flat, article-like "
+        "script is read flat; the voice can only perform what the text gives it. Write it the way a sharp YouTuber "
+        "talks to one friend:\n"
+        "  * questions to the viewer and to yourself (\"So what changed?\", \"Sounds great, right?\") - at least one in "
+        "every chapter, usually more;\n"
+        "  * real reactions where the facts earn them, with ! (\"That's a lot of money!\", \"Wait. Read that again.\"), "
+        "and short reaction words (\"Okay.\", \"Look,\", \"Honestly?\", \"Yeah...\", \"Hmm.\", \"No, really.\");\n"
+        "  * \"...\" where a person pauses to let something land or trails off; a dash for a quick aside;\n"
+        "  * ONE word in CAPITALS where a person would hit it (about one every 3 or 4 sentences), never a number or name;\n"
+        "  * short sentences next to longer ones; contractions always; never three long sentences in a row;\n"
+        "  * the odd self-correction or aside when it helps (\"...in this video - no, in the next five minutes - \").\n"
+        "  Every reaction must be honest: excitement only for something exciting, doubt for something doubtful. Facts "
+        "never change for the sake of delivery.\n"
+        "- VOICE TAGS (Eleven v3/v4 audio tags): square-bracket directions the voice performs and never says. Open EVERY "
+        "paragraph with a direction for how it is said, in plain words (\"[warm, conversational]\", \"[low, serious, "
+        "slower]\", \"[quick, excited]\", \"[dry, a little amused]\", \"[curious, leaning in]\"), and add reaction "
+        "tags where a person would really make the sound: [laughs], [chuckles], [sighs], [scoffs], [exhales], "
+        "[gasps], [whispers], [surprised], [sarcastic], [skeptical]. About one tag per 2 sentences, never two side by "
+        "side, never inside a number or name. Tags are not counted as words. No other brackets.\n"
         "- \"title\": the working title of the video.\n"
         "Return JSON."
     )
@@ -256,3 +270,31 @@ def apply_board(plan: dict, board: dict) -> dict:
             numbers = [w for w in words if any(ch.isdigit() for ch in w)]
             line["emphasis"] = numbers[0] if numbers else max(words, key=len, default="")
     return plan
+
+
+def delivery_problems(script: str) -> list[str]:
+    """2026-11-13 (owner): why a script would be read flat. The 2026-11-12 long video had, in 59 sentences, 2
+    questions, no exclamation, no pause and 2 stressed words, and sounded like someone reading an article."""
+    body = CUE.sub(" ", script)
+    paras = [p for p in re.split(r"\n\s*\n", script) if p.strip() and not re.fullmatch(r"\s*\[\[?[^\]]*\]\]?\s*", p)]
+    sentences = [x for x in re.split(r"(?<=[.!?…])\s+", body) if len(x.split()) >= 2]
+    n = max(1, len(sentences))
+    out = []
+    if body.count("?") < max(2, n // 12):
+        out.append(f"{body.count('?')} questions in {n} sentences (want at least {max(2, n // 12)})")
+    if body.count("!") < max(1, n // 25):
+        out.append(f"{body.count('!')} exclamations (want at least {max(1, n // 25)})")
+    pauses = body.count("...") + body.count("…")
+    if pauses < max(2, n // 15):
+        out.append(f"{pauses} pauses with ... (want at least {max(2, n // 15)})")
+    caps = len(re.findall(r"\b[A-Z]{2,}[a-z]*\b(?<![A-Z]{2}\b)|\b[A-Z]{3,}\b", body))
+    if caps < max(1, n // 10):
+        out.append(f"{caps} stressed CAPITAL words (want at least {max(1, n // 10)})")
+    opened = sum(1 for p in paras if CUE.match(p.strip()))
+    if paras and opened < len(paras) * 0.6:
+        out.append(f"{opened} of {len(paras)} paragraphs open with a direction tag")
+    longs = max((len(list(g)) for k, g in __import__("itertools").groupby(len(x.split()) > 22 for x in sentences) if k),
+                default=0)
+    if longs >= 3:
+        out.append(f"{longs} long sentences in a row")
+    return out

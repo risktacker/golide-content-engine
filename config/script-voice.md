@@ -15,7 +15,7 @@ Allow sentences to have different lengths. Some can be short. Others can be long
 
 Avoid making every sentence sound perfectly structured or rhythmically identical.
 
-Do not force slang, jokes, filler words or exaggerated enthusiasm.
+Do not force slang or jokes. Reactions, questions and enthusiasm are welcome when the facts earn them (see section 11); never fake ones.
 
 ## 3. Teach as you speak
 Approach the audience as someone who understands the subject and is explaining it to another person.
@@ -41,7 +41,7 @@ Avoid:
 - Generic hooks such as "In today's fast-paced world".
 - Overused transitions such as "Let's dive in".
 - Repetitive sentence structures.
-- Unnecessary rhetorical questions.
+- Rhetorical questions that lead nowhere (a question that sets up the next point is good; see section 11).
 - Artificially dramatic statements.
 - Excessive one-line sentences.
 - Generic motivational language.
@@ -99,6 +99,18 @@ Ask:
 - Can the speaker deliver it comfortably without sounding like they're reading?
 
 If the answer reveals awkward or artificial language, rewrite it before returning the script.
+
+## 11. Written to be performed (owner 2026-11-13)
+The script is performed by an AI voice, and the voice can only perform what the text gives it. A script with no
+questions, no exclamations and no pauses is read like a newspaper, however good the voice is.
+
+So, like a real YouTuber talking to one friend:
+- Ask the viewer things, and ask yourself things out loud: "So what actually changed?" "Sounds great, right?"
+- React when a fact deserves it: "That's a lot of money!" "Wait. Read that again." "Okay..." "Honestly?" "Yeah, no."
+- Pause with "..." where a person lets something land or trails off; use a dash for a quick aside.
+- Hit ONE word in capitals where a person would stress it, about once every 3 or 4 sentences.
+- Mix short sentences with longer ones; never three long ones in a row; always use contractions.
+- Every reaction is honest: excitement only for something exciting, doubt only where there is doubt.
 
 ## OUTPUT REQUIREMENT
 Return the finished script, not an explanation of your writing process.

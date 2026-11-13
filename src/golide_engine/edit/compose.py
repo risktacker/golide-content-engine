@@ -89,7 +89,7 @@ html,body{margin:0;background:#07080B}
 #caps{position:absolute;inset:0;z-index:46;pointer-events:none}
 .cap{position:absolute;left:60px;right:60px;text-align:center;opacity:0;font:800 60px/1.16 Poppins;color:#F4F1EA;
  text-shadow:0 4px 18px rgba(0,0,0,.85),0 0 2px #000}
-.cap span{display:inline-block;margin:0 .14em;opacity:.38}
+.cap span{display:inline-block;margin:0 .24em;opacity:.38}
 .cap span.key{color:#E8C268}
 #brand .logo{position:absolute;left:44px;top:34px;display:flex;align-items:center;gap:12px;font:900 30px Poppins;color:#F4F1EA;
  letter-spacing:.06em;opacity:.92}
@@ -175,7 +175,7 @@ class Composer:
         if self.zone and self.fmt == "long":
             # 2026-11-12 (owner): Goli is in (nearly) every scene: the content keeps to the left three quarters
             # and Goli has the right quarter, so he is never pushed out and never covers the proof
-            inner = f'<div class="zone" style="position:absolute;inset:0;transform:scale(.75);transform-origin:2% 50%">{inner}</div>'
+            inner = f'<div class="zone" style="position:absolute;inset:0;transform:scale(.84);transform-origin:2% 50%">{inner}</div>'
         self.parts.append(f'<section id="{sid}" class="scene clip" data-start="{t0:.3f}" data-duration="{dur:.3f}">'
                           f'<div class="stage"><div class="cam">{inner}</div></div></section>')
 
@@ -899,7 +899,9 @@ class Composer:
         cues = data.get("cues") or []
         outfit = data.get("outfit") or self.outfit
         self.outfits.add(outfit)
-        side = 560 if self.fmt == "short" else 820     # 2026-11-12 (owner): big enough to be seen
+        # 2026-11-12 (owner): big enough to be seen; 2026-11-13 (review): at 820 he took 30% of the frame and
+        # pushed the proof small, so 700 beside a larger proof area
+        side = 560 if self.fmt == "short" else 700
         size = {"full": 1000, "left": 860, "right": 860, "corner": 420, "studio": studio.layout(self.fmt)["size"],
                 "lower": studio.layout("lower")["size"], "side": side}[place]
         w = size * mascot.VIEW[0] / mascot.VIEW[1]
