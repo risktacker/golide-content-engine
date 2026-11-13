@@ -131,8 +131,13 @@ def legibility(edit: dict[str, Any], comp_builder, comp: Path, size: tuple[int, 
                                         (h - 60 - oy) / max(1.0, y1 - oy))
                 room, beside = fit(w - 40), fit(w - 470)
                 # 2026-11-13 (owner): a wide design that needs Goli's quarter gets it: he fades out for this scene
-                if min(boost, room, MAX_BOOST[fmt]) > beside + 0.02:
+                # ...but Goli stays the host: his steps aside for space add up to at most 10% of the video
+                away = sum(b - a for a, b in edit.get("goli_gaps", []))
+                if min(boost, room, MAX_BOOST[fmt]) > beside + 0.02 and \
+                        away + sc["duration"] <= 0.10 * float(edit.get("duration") or 1e9):
                     edit.setdefault("goli_gaps", []).append([sc["start"], round(sc["start"] + sc["duration"], 3)])
+                else:
+                    room = min(room, beside)
             else:
                 ox, oy = w / 2, h / 2
                 room = min((w / 2 - 30) / max(1.0, max(ox - x0, x1 - ox)), (h / 2 - 60) / max(1.0, max(oy - y0, y1 - oy)))

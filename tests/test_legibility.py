@@ -31,7 +31,7 @@ def test_goli_steps_aside_for_a_scene_that_needs_his_space(tmp_path):
                   "heading": "Before you switch", "items": ["An account", "A task"], "at": [0.4, 1.0], "goli_zone": True}},
               {"type": "host", "start": 0, "duration": 6, "data": {"place": "side", "cues": [],
                                                                   "poses": [{"pose": "point", "at": 0}]}}]
-    edit = {"format": "long", "duration": 6, "scenes": scenes}
+    edit = {"format": "long", "duration": 40, "scenes": scenes}      # 10% of 40 s: a 3 s step aside is allowed
     comp = tmp_path / "c"
 
     def build(e):
@@ -40,6 +40,11 @@ def test_goli_steps_aside_for_a_scene_that_needs_his_space(tmp_path):
         Composer("long").build(e, comp)
     legibility(edit, build, comp, SIZES["long"])
     assert [0, 3] in edit.get("goli_gaps", [])        # the wide flow gets his quarter
+    short = dict(edit, duration=6, goli_gaps=[])
+    for sc in short["scenes"]:
+        sc["data"].pop("boost", None)
+    legibility(short, build, comp, SIZES["long"])
+    assert short["goli_gaps"] == []                   # over 10% of the video: he stays, the content fits beside him
     build(edit)
     html = (comp / "index.html").read_text()
     assert "immediateRender:false},2.950" in html     # he comes in as the flow ends
