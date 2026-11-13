@@ -36,7 +36,7 @@ class _Database:
 
 
 class UploaderScheduleTests(unittest.TestCase):
-    def test_missed_approved_release_publishes_after_qa(self):
+    def test_missed_approved_release_goes_out_30_minutes_later(self):
         youtube = _YouTube()
         database = _Database()
         release = {
@@ -48,9 +48,9 @@ class UploaderScheduleTests(unittest.TestCase):
             YouTubeUploader(youtube, database, "channel-1").schedule(
                 "production-1", "video-1", "2020-01-01T00:00:00Z", release
             )
-        self.assertEqual("public", youtube.resource.body["status"]["privacyStatus"])
-        self.assertNotIn("publishAt", youtube.resource.body["status"])
-        self.assertTrue(any("status=?" in query and params[0] == "published"
+        self.assertEqual("private", youtube.resource.body["status"]["privacyStatus"])
+        self.assertIn("publishAt", youtube.resource.body["status"])
+        self.assertTrue(any("status=?" in query and params[0] == "scheduled"
                             for query, params in database.calls))
 
 

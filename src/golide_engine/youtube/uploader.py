@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from ..operations.retry import with_retry
@@ -17,16 +17,24 @@ def _fingerprint(video: Path, metadata: dict) -> str:
     return digest.hexdigest()
 
 
+CHECK_MINUTES = 30
+
+
+def release_time(publish_at: str, now: datetime | None = None) -> datetime:
+    """2026-11-13 (owner): a video whose slot has passed (or passes before it is checked) goes out 30 minutes after
+    it is rendered, so the owner can look at it first. Never public the second it finishes."""
+    instant = datetime.fromisoformat(publish_at.replace("Z", "+00:00")).astimezone(timezone.utc)
+    soonest = (now or datetime.now(timezone.utc)) + timedelta(minutes=CHECK_MINUTES)
+    return max(instant, soonest).replace(microsecond=0)
+
+
 def _initial_release_status(release: dict) -> tuple[dict, str, str]:
     """Set final visibility during upload so youtube.upload scope is sufficient."""
     status = {"privacyStatus": "private", "selfDeclaredMadeForKids": False}
     publish_at = release.get("scheduled_at")
     if not publish_at:
         return status, "uploaded_private", "private"
-    instant = datetime.fromisoformat(str(publish_at).replace("Z", "+00:00"))
-    if instant.astimezone(timezone.utc) <= datetime.now(timezone.utc):
-        status["privacyStatus"] = "public"
-        return status, "published", "public"
+    instant = release_time(str(publish_at))
     status["publishAt"] = instant.astimezone(timezone.utc).isoformat().replace(
         "+00:00", "Z"
     )
@@ -111,15 +119,12 @@ class YouTubeUploader:
 
     def schedule(self, production_id: str, video_id: str, publish_at: str, release: dict) -> None:
         self._assert_release(release)
-        instant = datetime.fromisoformat(publish_at.replace("Z", "+00:00"))
-        missed = instant.astimezone(timezone.utc) <= datetime.now(timezone.utc)
-        status = {"privacyStatus": "public" if missed else "private", "selfDeclaredMadeForKids": False}
-        if not missed:
-            status["publishAt"] = instant.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+        instant = release_time(publish_at)
+        publish_at = instant.isoformat().replace("+00:00", "Z")
+        status = {"privacyStatus": "private", "selfDeclaredMadeForKids": False, "publishAt": publish_at}
         body = {"id": video_id, "status": status}
         with_retry(lambda: self.youtube.videos().update(part="status", body=body).execute())
-        final_state = "published" if missed else "scheduled"
-        privacy = "public" if missed else "private"
+        final_state, privacy = "scheduled", "private"
         self.database.execute(
             "UPDATE uploads SET privacy_status=?, scheduled_at=?, upload_status=?, updated_at=? WHERE production_id=?",
             (privacy, publish_at, final_state, utc_now(), production_id),
