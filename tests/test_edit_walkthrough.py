@@ -74,3 +74,24 @@ def test_one_goli_per_block():
     assert hosts[1]["start"] == 5.0 and hosts[1]["data"]["poses"][0]["at"] == 0.5
     for a, b in zip(hosts, hosts[1:]):
         assert a["start"] + a["duration"] <= b["start"] + 1e-6
+
+
+def test_one_page_at_most_twice_in_a_row():
+    lines = _lines(["One two three four five six.", "Seven eight nine ten eleven twelve.", "More words here now please."])
+    shot = lambda a, r: {"type": "browser_shot", "start": a, "duration": 2.0, "data": {
+        "url": "https://x.example", "highlights": [{"rect": r}]}}
+    notes = []
+    out = editor._no_repeats([shot(0, [1, 1, 1, 1]), shot(2, [2, 2, 2, 2]), shot(4, [3, 3, 3, 3]), shot(6, [4, 4, 4, 4])],
+                             lines, "long", notes)
+    kinds = [s["type"] for s in out]
+    assert kinds[:2] == ["browser_shot", "browser_shot"] and kinds[2] == "kinetic_title"
+
+
+def test_goli_points_at_the_content():
+    from golide_engine.edit.compose import Composer
+    import tempfile, pathlib
+    edit = {"format": "long", "duration": 4.0, "scenes": [
+        {"type": "host", "start": 0, "duration": 4.0, "data": {"place": "side", "cues": [], "poses": [
+            {"pose": "point_left", "at": 0}]}}]}
+    html = Composer("long").build(edit, pathlib.Path(tempfile.mkdtemp()) / "o").read_text()
+    assert "scaleX(-1)" in html          # on the right he faces left, toward the content
