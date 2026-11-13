@@ -851,3 +851,32 @@ def _no_repeats(scenes: list[dict], lines, fmt: str, notes: list[str]) -> list[d
             used_words.add(text)
         out.append(sc)
     return out
+
+
+QUIET_TAGS = ("serious", "quietly", "whispers", "softly", "slowly", "sad", "sighs", "exhales")
+
+
+def quiet_windows(voice_script: str, lines: list[Any], most: int = 3, longest: float = 12.0) -> list[list[float]]:
+    """2026-11-13 (owner, point 8): where the music drops out: the paragraphs the script marks as serious or quiet
+    ([serious], [quietly], [whispers], [sighs]...), timed by the spoken lines they match. At most 3 a video, each
+    at most 12 s, so the drop stays an effect."""
+    import re as _re
+    words = lambda t: _re.findall(r"[a-z0-9']+", str(t).lower())
+    timed = [(words(getattr(l, "text", "")), float(getattr(l, "start", 0)), float(getattr(l, "end", 0))) for l in lines]
+    out: list[list[float]] = []
+    for para in _re.split(r"\n\s*\n", voice_script or ""):
+        tags = " ".join(_re.findall(r"\[([^\]]+)\]", para[:120])).lower()
+        if not any(t in tags for t in QUIET_TAGS):
+            continue
+        body = words(_re.sub(r"\[[^\]]*\]", " ", para))
+        if len(body) < 4:
+            continue
+        head, tail = body[:4], body[-4:]
+        start = next((a for w, a, b in timed if w[:4] == head or " ".join(head) in " ".join(w)), None)
+        end = next((b for w, a, b in reversed(timed) if " ".join(tail) in " ".join(w)), None)
+        if start is None or end is None or end <= start:
+            continue
+        out.append([round(start, 2), round(min(end, start + longest), 2)])
+        if len(out) >= most:
+            break
+    return out

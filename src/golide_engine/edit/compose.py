@@ -440,6 +440,7 @@ class Composer:
                 f'o.v.toLocaleString("en-US",{{minimumFractionDigits:{decimals},maximumFractionDigits:{decimals}}})}}}},{at:.3f});}})();')
         self.tw(f'tl.fromTo("#{sid} .num",{{scale:1}},{{scale:1.08,duration:.12,yoyo:true,repeat:1,ease:"power2.out"}},{at + 0.9:.3f});')
         self.tw(f'tl.fromTo("#{sid}-l",{{y:24,opacity:0}},{{y:0,opacity:1,duration:.5,ease:"power3.out"}},{at + 0.3:.3f});')
+        self.cue("riser", at)                 # the count builds into the number, then it lands
         self.cue("impact", at + 0.9)
         self.drift(sid, t0, dur, 0.012)
 
@@ -687,7 +688,9 @@ class Composer:
         self.tw(f'(function(){{var o={{s:0}};tl.fromTo(o,{{s:0}},{{s:{dur:.3f},duration:{dur:.3f},ease:"none",onUpdate:function(){{'
                 f'var f=window.__g3d&&window.__g3d["{sid}"];if(!f)return;var m=Math.min(1,Math.max(0,(o.s-{at:.3f})/{move}));'
                 f'm=m*m*(3-2*m);f(m,-0.6+0.55*o.s/{dur:.3f},o.s);}}}},{t0:.3f});}})();')
-        self.cue("whoosh", t0 + at - 0.1)
+        self.cue("riser", t0 + at - 0.8)
+        self.cue("impact", t0 + at)
+        self.cue("shimmer", t0 + at + 0.5)
 
     def metaphor(self, t0, dur, data, how="rise"):
         """2026-11-13 (owner): an idea as a moving picture (scales, a lock, a magnifier, a funnel...), landing on
@@ -773,6 +776,7 @@ class Composer:
             self.tw(f'tl.set("#{sid}-r{i}",{{opacity:1}},{at[i]:.3f});')
             if r["kind"] == "cmd":
                 self.tw(f'tl.to("#{sid}-c{i}",{{width:"auto",duration:{typing - 0.05:.2f},ease:"steps({max(4, len(r["text"]) // 2)})"}},{at[i]:.3f});')
+                self.cue("typing", at[i])
                 self.cue("click", at[i] + typing)
             if i >= visible:               # the terminal scrolls as lines arrive
                 self.tw(f'tl.set("#{sid}-b",{{y:{-(i - visible + 1) * lh}}},{at[i]:.3f});')
@@ -819,6 +823,7 @@ class Composer:
         self.tw(f'tl.fromTo("#{sid}-send",{{scale:1}},{{scale:.82,duration:.09,yoyo:true,repeat:1,immediateRender:false}},{send:.3f});')
         self.tw(f'tl.fromTo("#{sid}-send",{{boxShadow:"0 0 0 0 rgba(232,194,104,.8)"}},{{boxShadow:"0 0 0 26px rgba(232,194,104,0)",'
                 f'duration:.5,immediateRender:false}},{send:.3f});')
+        self.cue("typing", start)
         self.cue("click", send)
         self.drift(sid, t0, dur, 0.01)
 

@@ -121,11 +121,27 @@ def _loudness_cues(wav: Path, step: float = 1 / 12) -> list[dict[str, Any]]:
     return cues
 
 
-SFX_MAP = {"whoosh": "whoosh", "click": "tick", "pop": "pop", "impact": "pop", "riser": "rise"}
+# 2026-11-13 (owner, point 8): a real low hit on big landings (was a pop), a riser into reveals, a shimmer when
+# something turns gold or opens, typing under typed text
+SFX_MAP = {"whoosh": "whoosh", "click": "tick", "pop": "pop", "impact": "hit", "riser": "rise", "shimmer": "shimmer",
+           "typing": "typing"}
+
+
+def quiet_expr(windows: list[list[float]], floor: float = 0.12) -> str:
+    """2026-11-13 (owner, point 8): the music drops almost out under a serious line and comes back after it. A
+    volume expression: 1 normally, `floor` inside each window, with a 0.6 s fade down and a 0.9 s fade back."""
+    if not windows:
+        return "1"
+    parts = [f"(1-{1 - floor:.2f}*clip(min((t-{a - 0.6:.2f})/0.6,({b + 0.9:.2f}-t)/0.9),0,1))" for a, b in windows]
+    expr = parts[0]
+    for part in parts[1:]:
+        expr = f"min({expr},{part})"
+    return expr.replace(",", "\\,")
 
 
 def render_sfx(cues: list[dict[str, Any]], duration: float, out: Path) -> Path:
-    from ..vector.sfx import LEVELS, RATE, SOUNDS
+    from ..vector.sfx import ACTION_LEVELS, ACTION_SOUNDS, LEVELS, RATE, SOUNDS
+    sounds, levels = {**ACTION_SOUNDS, **SOUNDS}, {**ACTION_LEVELS, **LEVELS}
 
     track = np.zeros(int(RATE * (duration + 2)), dtype=np.float64)
     last: dict[str, float] = {}
@@ -134,8 +150,8 @@ def render_sfx(cues: list[dict[str, Any]], duration: float, out: Path) -> Path:
         if not kind or c["t"] < 0 or c["t"] - last.get(kind, -9) < 0.45:
             continue                       # sparse: the same sound never machine-guns
         last[kind] = c["t"]
-        sound = SOUNDS[kind]()
-        sound = sound / (np.max(np.abs(sound)) or 1.0) * LEVELS[kind]
+        sound = sounds[kind]()
+        sound = sound / (np.max(np.abs(sound)) or 1.0) * levels[kind]
         a = int(c["t"] * RATE)
         b = min(len(track), a + len(sound))
         track[a:b] += sound[: b - a]
@@ -210,7 +226,7 @@ def mix(edit: dict[str, Any], folder: Path, narration: Path, pictures: Path, out
     audio = ("[1:a]" + VOICE_CHAIN + ",loudnorm=I=-14:TP=-1.5:LRA=14,aresample=48000,asplit=2[v][key];"
              f"[2:a]aresample=48000,volume={mixdown['sfx']}[s];"
              # 2026-11-12 (owner): the music was too loud in the first long Goli video: 8 dB lower
-             "[3:a]aresample=48000,volume=0.4[b0];"
+             f"[3:a]aresample=48000,volume=0.4,volume='{quiet_expr(edit.get('quiet') or [])}':eval=frame[b0];"
              f"[b0][key]sidechaincompress={TRACK_DUCK}[b];"
              # limited at 4x the sample rate so the peaks between samples are caught too (true peak)
              "[v][s][b]amix=inputs=3:duration=first:normalize=0,aresample=192000,"
