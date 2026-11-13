@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any
 
 POSES = ["talk", "explain", "point", "point_up", "point_left", "shock", "think", "thumbs_up", "shrug", "wave"]
-TYPES = ["studio", "source", "walkthrough", "photo", "stat", "compare", "steps", "checklist", "prompt", "timeline", "flow",
+TYPES = ["studio", "source", "terminal", "walkthrough", "photo", "stat", "compare", "steps", "checklist", "prompt", "timeline", "flow",
          "quote", "words", "logos", "icon", "chapter", "follow"]
 
 _str = {"type": "string"}
@@ -75,6 +75,9 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
 - photo: the page's own picture (source = page index; only pages marked "photo: yes").
 - stat: one number that matters (value as a number, prefix like "$", suffix like "%" or "x", label 2 to 5 words).
 - compare: left vs right, 2 to 4 rows (label, a, b, winner).
+- terminal: a REAL RUN (listed under REAL RUNS) proves what the beat says (the repo, the tool, the model actually
+  working): source = the run's index, phrase = the words in its output to highlight. The viewer watches the real
+  commands and the real output. Use each real run once, on the beat it proves best, over 2 beats.
 - walkthrough: the beat tells the viewer how to do something IN a product (open, click, set, choose, install, type)
   and a captured page is that product's own page, docs or settings: source = page index, items = 2 to 4 steps (max
   4 words each, as spoken), shots = for each step the shot on that page where its button, menu, field, setting or
@@ -146,7 +149,7 @@ def shots(page: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def request(title: str, lines: list[Any], sources: list[dict[str, Any]], chapters: list[Any],
-            follow: set[int]) -> str:
+            follow: set[int], demos: list[dict[str, Any]] | None = None) -> str:
     starts = {line.index for line in lines for m in chapters if abs(float(line.start) - float(m.start)) < 0.05}
     rows = []
     for line in lines:
@@ -164,7 +167,9 @@ def request(title: str, lines: list[Any], sources: list[dict[str, Any]], chapter
         pages.append(f"[{i}] {page.get('title', '')[:90]} ({_domain(page.get('url', ''))})"
                      f"{' photo: yes' if page.get('photo') else ''}\n{listed or '    (no shots)'}")
     chap = "\n".join(f"- {getattr(m, 'number', '')} {getattr(m, 'title', '')} at {getattr(m, 'start', 0):.1f}s" for m in chapters)
+    from .demos import listing
     return (f"TITLE: {title}\n\nBEATS\n" + "\n".join(rows) + "\n\nCAPTURED PAGES\n" + ("\n".join(pages) or "none")
+            + "\n\nREAL RUNS (terminal)\n" + (listing(demos or []) or "none")
             + "\n\nCHAPTERS\n" + (chap or "none"))
 
 
@@ -297,7 +302,7 @@ def _cues_between(cues: list[dict], start: float, end: float) -> list[dict]:
 
 def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sources: list[dict[str, Any]],
           capture_dir: Path | None, cues: list[dict], chapters: list[Any], logo_tiles=None,
-          bookends: tuple[str, str] | None = None) -> dict[str, Any]:
+          bookends: tuple[str, str] | None = None, demos: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     """The editor's answer as a timed edit list for compose.Composer. Line ranges are repaired so every
     line is covered once; references to pages, phrases or words that do not exist are dropped (the scene
     keeps its words), and every such repair is reported in the edit list's `notes`."""
@@ -324,6 +329,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
         fixed[-1]["last_line"] = n - 1
 
     out: list[dict] = []
+    shown_runs: set[int] = set()
     for k, s in enumerate(fixed):
         t0 = 0.0 if k == 0 else float(lines[s["first_line"]].start) - 0.12
         t1 = duration if k == len(fixed) - 1 else float(lines[fixed[k + 1]["first_line"]].start) - 0.12
@@ -421,6 +427,12 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
                 "rows": [[r["label"], r["a"], r["b"]] for r in rows],
                 "winners": [r["winner"] if r["winner"] != "none" else None for r in rows],
                 "gap": min(0.55, max(0.25, (dur - 0.8) / max(1, len(rows))))}})
+        elif kind == "terminal" and isinstance(s.get("source"), int) and 0 <= s["source"] < len(demos or []) \
+                and s["source"] not in shown_runs:
+            from .demos import scene_data
+            shown_runs.add(s["source"])
+            out.append({"type": "terminal", "start": t0, "duration": dur, "data": scene_data(demos[s["source"]],
+                                                                                             s.get("phrase"))})
         elif kind == "walkthrough" and (walk := _walkthrough(s, sources, capture_dir, lines, t0, t1, notes, k)):
             out.append({"type": "walkthrough", "start": t0, "duration": dur, "data": walk})
         elif kind == "prompt" and s.get("quote"):
@@ -542,7 +554,7 @@ def save(edit: dict[str, Any], path: Path) -> None:
 # A Short shows the proof on top and keeps Goli at his desk below it for the whole run of cards
 # (owner 2026-11-11: no empty space above and below the cards). His pose follows each card.
 REACT = {"browser_shot": "point_up", "stat_counter": "shock", "comparison": "explain", "steps": "point_up",
-         "walkthrough": "point_up", "prompt_card": "point_up", "checklist": "thumbs_up", "timeline": "explain", "quote_card": "think", "logo_tiles": "thumbs_up", "kinetic_title": "talk",
+         "walkthrough": "point_up", "terminal": "point", "prompt_card": "point_up", "checklist": "thumbs_up", "timeline": "explain", "quote_card": "think", "logo_tiles": "thumbs_up", "kinetic_title": "talk",
          "chapter_card": "talk", "follow_cta": "wave"}
 
 
@@ -551,7 +563,7 @@ REACT = {"browser_shot": "point_up", "stat_counter": "shock", "comparison": "exp
 # gesture twice in a row for the same kind of card.
 REACT_LONG = {"browser_shot": ["point_left", "point_up", "explain"], "photo": ["point_left", "think"],
               "stat_counter": ["shock", "point_left"], "comparison": ["shrug", "think", "explain"],
-              "steps": ["explain", "point_up", "thumbs_up"], "walkthrough": ["point_left", "point_up", "explain"],
+              "steps": ["explain", "point_up", "thumbs_up"], "walkthrough": ["point_left", "point_up", "explain"], "terminal": ["point", "think", "thumbs_up"],
               "prompt_card": ["point_left", "think"], "checklist": ["thumbs_up", "explain"], "timeline": ["point_left", "explain"],
               "flow": ["explain", "point_left"], "quote_card": ["think", "shrug"], "logo_tiles": ["thumbs_up", "point_left"],
               "kinetic_title": ["explain", "talk", "point_left"], "chapter_card": ["wave", "talk"]}
@@ -623,7 +635,7 @@ def captions(lines: list[Any], fmt: str) -> list[dict[str, Any]]:
 # than a beat is cut at word boundaries into beats that each show something new.
 BEAT = {"short": 2.2, "long": 6.5}
 STUDIO_BEAT = {"short": 3.0, "long": 10.0}
-HOLD = {"stat_counter", "comparison", "steps", "walkthrough", "prompt_card", "checklist", "timeline", "quote_card", "logo_tiles", "chapter_card", "follow_cta"}
+HOLD = {"stat_counter", "comparison", "steps", "walkthrough", "terminal", "prompt_card", "checklist", "timeline", "quote_card", "logo_tiles", "chapter_card", "follow_cta"}
 
 
 def _spoken(lines, a: float, b: float) -> list[Any]:
@@ -682,7 +694,7 @@ def _pace(scenes: list[dict], lines, fmt: str) -> list[dict]:
         if kind == "host" and s["data"].get("place") != "studio":
             out.append(s)
             continue
-        limit = (STUDIO_BEAT[fmt] if kind == "host" else beat * 2.4 if kind == "walkthrough"
+        limit = (STUDIO_BEAT[fmt] if kind == "host" else beat * 2.4 if kind in ("walkthrough", "terminal")
                  else beat * 1.6 if kind in HOLD else beat)
         if t1 - t0 <= limit:
             out.append(s)

@@ -651,6 +651,82 @@ class Composer:
         self.cue("whoosh", t0)
         self.tweens.extend(tw)
 
+    def terminal(self, t0, dur, data, how="rise"):
+        """2026-11-13 (owner, modelled on Outskill): a REAL run. The commands are typed, the output the run really
+        printed comes in with its real rhythm (sped up to fit, and the real time is shown), the window scrolls like
+        a terminal, the line that proves the point lights up gold, and a check lands when it worked."""
+        sid = self._id("term")
+        rows = data["rows"]
+        long = self.fmt == "long"
+        fw = 1500 if long else 960
+        lh, fs = (50, 36) if long else (50, 34)
+        visible = 12 if long else 20
+        fh = lh * visible + 40
+        fx, fy = (self.w - fw) // 2, max(70, (self.h - fh - 50) // 2)
+        cmds = [i for i, r in enumerate(rows) if r["kind"] == "cmd"]
+        bounds = cmds + [len(rows)]
+        real = sum(max((r["t"] for r in rows[c + 1:bounds[j + 1]]), default=0.0) for j, c in enumerate(cmds))
+        typing = 0.55
+        avail = max(0.8, dur - 0.6 - typing * len(cmds) - 1.0)
+        k = min(1.0, avail / real) if real > 0 else 1.0
+        clock, at, base = t0 + 0.6, [], t0 + 0.6
+        for i, r in enumerate(rows):
+            if r["kind"] == "cmd":
+                clock = (at[-1] + 0.25) if at else clock
+                at.append(clock)
+                base = clock + typing
+            else:
+                at.append(base + r["t"] * k)
+        if at and at[-1] > t0 + dur - 0.9:          # never past the end: squeeze the tail evenly
+            sq = (t0 + dur - 0.9 - t0 - 0.6) / max(0.1, at[-1] - t0 - 0.6)
+            at = [t0 + 0.6 + (a - t0 - 0.6) * sq for a in at]
+        body = ""
+        for i, r in enumerate(rows):
+            mark = data.get("mark") == i
+            text = _e(r["text"]) or "&nbsp;"
+            if r["kind"] == "cmd":
+                body += (f'<div id="{sid}-r{i}" style="height:{lh}px;white-space:pre;opacity:0">'
+                         f'<span style="color:#7EE787">$ </span><span id="{sid}-c{i}" style="display:inline-block;'
+                         f'overflow:hidden;vertical-align:top;white-space:pre;width:0">{text}</span></div>')
+            else:
+                body += (f'<div id="{sid}-r{i}" style="height:{lh}px;white-space:pre;overflow:hidden;opacity:0;'
+                         f'color:{"#0B0E16" if mark else "#C9D1D9"};{"background:#E8C268;border-radius:6px;font-weight:800;" if mark else ""}'
+                         f'padding:0 8px;margin:0 -8px">{text}</div>')
+        title = _e(data.get("title", ""))
+        real_txt = f"real run · {real:.1f} s" if real >= 1 else "real run"
+        inner = (f'<div class="frame" id="{sid}-f" style="left:{fx}px;top:{fy}px;width:{fw}px;height:{fh + 50}px;background:#0D1117;'
+                 f'border:1.5px solid rgba(232,194,104,.5);box-shadow:0 30px 90px rgba(0,0,0,.7)">'
+                 f'<div class="bar"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e">'
+                 f'</div><div class="dot" style="background:#28c840"></div><div class="url" style="font-family:monospace">'
+                 f'{title} — {real_txt}</div></div>'
+                 f'<div style="position:absolute;left:28px;right:28px;top:62px;bottom:20px;overflow:hidden">'
+                 f'<div id="{sid}-b" style="font:500 {fs}px/{lh}px monospace;position:absolute;left:0;right:0;top:0">{body}</div></div>'
+                 f'<div id="{sid}-ok" style="position:absolute;right:26px;bottom:20px;width:64px;height:64px;border-radius:50%;'
+                 f'background:#28c840;display:grid;place-items:center;opacity:0"><svg width="38" height="38" viewBox="0 0 24 24">'
+                 f'<path d="M4 12.5l5 5L20 6.5" fill="none" stroke="#0B0E16" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>')
+        self.scene(sid, t0, dur, inner)
+        self.tw(f'tl.fromTo("#{sid}-f",{{y:50,scale:.92,opacity:0}},{{y:0,scale:1,opacity:1,duration:.45,ease:"power3.out"}},{t0:.3f});')
+        self.cue("whoosh", t0)
+        for i, r in enumerate(rows):
+            self.tw(f'tl.set("#{sid}-r{i}",{{opacity:1}},{at[i]:.3f});')
+            if r["kind"] == "cmd":
+                self.tw(f'tl.to("#{sid}-c{i}",{{width:"auto",duration:{typing - 0.05:.2f},ease:"steps({max(4, len(r["text"]) // 2)})"}},{at[i]:.3f});')
+                self.cue("click", at[i] + typing)
+            if i >= visible:               # the terminal scrolls as lines arrive
+                self.tw(f'tl.set("#{sid}-b",{{y:{-(i - visible + 1) * lh}}},{at[i]:.3f});')
+        mark = data.get("mark")
+        if isinstance(mark, int) and 0 <= mark < len(rows):
+            # the camera goes to the line that proves the point and holds there
+            shown = min(mark, visible - 1) if mark < visible else visible - 1
+            oy = 62 + shown * lh + lh / 2
+            self.tw(f'tl.to("#{sid}-f",{{scale:1.25,transformOrigin:"6% {oy / (fh + 50) * 100:.1f}%",duration:.6,'
+                    f'ease:"power3.inOut"}},{at[mark] + 0.1:.3f});')
+            self.cue("pop", at[mark])
+        if data.get("ok") and at:
+            self.tw(f'tl.fromTo("#{sid}-ok",{{scale:0,opacity:0}},{{scale:1,opacity:1,duration:.35,ease:"back.out(2.2)"}},{at[-1] + 0.3:.3f});')
+            self.cue("pop", at[-1] + 0.3)
+        self.drift(sid, t0, dur, 0.008)
+
     def prompt_card(self, t0, dur, data, how="rise"):
         """What to type into an AI tool, typed letter by letter into a chat box, then sent."""
         sid = self._id("prompt")
