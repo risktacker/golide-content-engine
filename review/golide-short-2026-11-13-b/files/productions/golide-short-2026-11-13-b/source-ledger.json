@@ -1,0 +1,66 @@
+{
+  "claims": [
+    {
+      "claim": "Tom\u2019s Guide reported on November 12, 2026 that new Galaxy S27 dummy units appeared online from Sonny Dickson, showing supposed S27 Ultra, S27 Pro, and S27 Plus models; the report did not describe them as Samsung-announced retail products.",
+      "source_title": "Samsung Galaxy S27 dummy units could change what we thought we knew about the upcoming flagships \u2014 but I'm not convinced these are accurate and here's why",
+      "source_url": "https://www.tomsguide.com/phones/samsung-phones/samsung-galaxy-s27-dummy-units-could-change-what-we-thought-we-knew-about-the-upcoming-flagships-but-im-not-convinced-these-are-accurate-and-heres-why",
+      "published_or_updated": "November 12, 2026"
+    },
+    {
+      "claim": "The reported S27 Ultra and S27 Pro dummy units show four rear cameras, but Tom\u2019s Guide said that conflicts with other S27 leaks; Ice Universe specifically claimed the upper-right camera shown on the units does not exist.",
+      "source_title": "Samsung Galaxy S27 dummy units could change what we thought we knew about the upcoming flagships \u2014 but I'm not convinced these are accurate and here's why",
+      "source_url": "https://www.tomsguide.com/phones/samsung-phones/samsung-galaxy-s27-dummy-units-could-change-what-we-thought-we-knew-about-the-upcoming-flagships-but-im-not-convinced-these-are-accurate-and-heres-why",
+      "published_or_updated": "November 12, 2026"
+    },
+    {
+      "claim": "Tom\u2019s Guide said the available reports suggest the S27 Ultra could drop the secondary 10MP telephoto camera in favor of a triple-lens rear system, illustrating that the dummy-unit design is disputed rather than established.",
+      "source_title": "Samsung Galaxy S27 dummy units could change what we thought we knew about the upcoming flagships \u2014 but I'm not convinced these are accurate and here's why",
+      "source_url": "https://www.tomsguide.com/phones/samsung-phones/samsung-galaxy-s27-dummy-units-could-change-what-we-thought-we-knew-about-the-upcoming-flagships-but-im-not-convinced-these-are-accurate-and-heres-why",
+      "published_or_updated": "November 12, 2026"
+    },
+    {
+      "claim": "Tom\u2019s Guide stated that Samsung had not revealed the details and was expected to wait until a future Galaxy Unpacked event, which the article said was expected in January; therefore, current specifications should be labeled rumors or leaks.",
+      "source_title": "Samsung Galaxy S27 dummy units could change what we thought we knew about the upcoming flagships \u2014 but I'm not convinced these are accurate and here's why",
+      "source_url": "https://www.tomsguide.com/phones/samsung-phones/samsung-galaxy-s27-dummy-units-could-change-what-we-thought-we-knew-about-the-upcoming-flagships-but-im-not-convinced-these-are-accurate-and-heres-why",
+      "published_or_updated": "November 12, 2026"
+    },
+    {
+      "claim": "Samsung\u2019s U.S. smartphone page, checked in November 2026, promotes the Galaxy S26 Ultra as the current S-series Ultra model and does not list a Galaxy S27 Ultra product page or official color specification.",
+      "source_title": "Explore the Latest Galaxy Smartphones | Samsung US",
+      "source_url": "https://www.samsung.com/us/smartphones/",
+      "published_or_updated": "Crawled November 9, 2026"
+    },
+    {
+      "claim": "The color rumor reported in October 2026 used the name \u201cViolet,\u201d not Samsung\u2019s confirmed product name \u201cCobalt Violet\u201d; Android Authority described the color information as a leak and noted uncertainty about the exact finishes.",
+      "source_title": "Galaxy S27 Ultra colors leak, and Samsung could be breaking up with purple",
+      "source_url": "https://www.androidauthority.com/galaxy-s27-ultra-colors-leak-3719062/",
+      "published_or_updated": "October 5, 2026"
+    },
+    {
+      "claim": "A product dummy is a physical model intended to reproduce a product\u2019s external characteristics without necessarily containing its working technical principles, so a convincing-looking dummy cannot by itself prove the final working phone\u2019s design or specifications.",
+      "source_title": "Delft Design Guide: Three-dimensional Models",
+      "source_url": "https://arl.human.cornell.edu/PAGES_Delft/Delft_Design_Guide.pdf",
+      "published_or_updated": "Source document accessed November 13, 2026"
+    }
+  ],
+  "platform_demand": {
+    "query": "Samsung Galaxy S27 Ultra Cobalt Violet dummy unit leak November 2026",
+    "score": 97.8,
+    "verdict": "pass",
+    "recent_videos": 1,
+    "median_views_per_day": 4475892.0,
+    "top_views_per_day": 4475892.0,
+    "market_coverage": 1,
+    "title_query_overlap": 1.0,
+    "measured_at": "2026-11-13T16:51:10.840729+00:00",
+    "signal_type": "youtube-breakout-v1"
+  },
+  "music": {
+    "type": "music",
+    "title": "GOLIDE Curiosity Bed",
+    "creator": "GOLIDE",
+    "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+    "license": "GOLIDE-Owned-Procedural-1.0",
+    "attribution": ""
+  }
+}

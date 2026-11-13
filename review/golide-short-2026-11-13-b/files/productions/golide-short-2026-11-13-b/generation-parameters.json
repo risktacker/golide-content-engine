@@ -1,0 +1,14 @@
+{
+  "brand_preset": "golide-editorial",
+  "voice": "owner-choice",
+  "pacing": "fast",
+  "visual_density": 4,
+  "motion_intensity": 4,
+  "annotation_density": 3,
+  "avatar_frequency": 2,
+  "sound_design": 3,
+  "image_change_bias": 4,
+  "editorial_manifest": "beat-motion-audio-v1",
+  "platform_demand_gate": "youtube-wide-proxy-v1",
+  "schedule_rule": "golide-shorts-mon-wed-fri"
+}

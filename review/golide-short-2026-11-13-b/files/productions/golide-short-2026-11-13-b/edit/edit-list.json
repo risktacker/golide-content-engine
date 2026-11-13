@@ -1,0 +1,4974 @@
+{
+  "format": "short",
+  "duration": 74.687347,
+  "scenes": [
+    {
+      "type": "host",
+      "start": 0.0,
+      "duration": 2.08,
+      "data": {
+        "place": "studio",
+        "cues": [
+          {
+            "start": 0.0,
+            "value": "X"
+          },
+          {
+            "start": 0.067,
+            "value": "B"
+          },
+          {
+            "start": 0.133,
+            "value": "A"
+          },
+          {
+            "start": 0.2,
+            "value": "C"
+          },
+          {
+            "start": 0.333,
+            "value": "B"
+          },
+          {
+            "start": 0.533,
+            "value": "G"
+          },
+          {
+            "start": 0.7,
+            "value": "F"
+          },
+          {
+            "start": 0.767,
+            "value": "B"
+          },
+          {
+            "start": 1.3,
+            "value": "E"
+          },
+          {
+            "start": 1.4,
+            "value": "C"
+          },
+          {
+            "start": 1.667,
+            "value": "B"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "talk",
+            "at": 0
+          },
+          {
+            "pose": "talk",
+            "at": 0.312
+          },
+          {
+            "pose": "shock",
+            "at": 1.418
+          }
+        ],
+        "words": [
+          {
+            "text": "A",
+            "at": 0.44
+          },
+          {
+            "text": "phone",
+            "at": 0.52
+          },
+          {
+            "text": "reveal?",
+            "at": 0.766
+          }
+        ],
+        "punch": "convincing"
+      }
+    },
+    {
+      "type": "metaphor",
+      "start": 2.08,
+      "duration": 2.54,
+      "in": "rise",
+      "data": {
+        "kind": "transform",
+        "at": 1.74,
+        "label": "",
+        "items": [],
+        "times": null,
+        "left": "Viral reveal",
+        "right": "Not revealed",
+        "winner": "right",
+        "value": null
+      }
+    },
+    {
+      "type": "host",
+      "start": 2.08,
+      "duration": 22.527347,
+      "data": {
+        "place": "lower",
+        "cues": [
+          {
+            "start": 0.053,
+            "value": "X"
+          },
+          {
+            "start": 0.187,
+            "value": "B"
+          },
+          {
+            "start": 0.22,
+            "value": "F"
+          },
+          {
+            "start": 0.32,
+            "value": "G"
+          },
+          {
+            "start": 0.387,
+            "value": "C"
+          },
+          {
+            "start": 0.52,
+            "value": "B"
+          },
+          {
+            "start": 0.62,
+            "value": "X"
+          },
+          {
+            "start": 0.687,
+            "value": "B"
+          },
+          {
+            "start": 0.72,
+            "value": "C"
+          },
+          {
+            "start": 0.887,
+            "value": "A"
+          },
+          {
+            "start": 0.953,
+            "value": "X"
+          },
+          {
+            "start": 0.987,
+            "value": "B"
+          },
+          {
+            "start": 1.187,
+            "value": "C"
+          },
+          {
+            "start": 1.387,
+            "value": "B"
+          },
+          {
+            "start": 1.52,
+            "value": "C"
+          },
+          {
+            "start": 1.653,
+            "value": "B"
+          },
+          {
+            "start": 1.82,
+            "value": "C"
+          },
+          {
+            "start": 1.887,
+            "value": "B"
+          },
+          {
+            "start": 2.153,
+            "value": "G"
+          },
+          {
+            "start": 2.22,
+            "value": "B"
+          },
+          {
+            "start": 2.42,
+            "value": "C"
+          },
+          {
+            "start": 2.52,
+            "value": "B"
+          },
+          {
+            "start": 2.553,
+            "value": "X"
+          },
+          {
+            "start": 3.22,
+            "value": "B"
+          },
+          {
+            "start": 3.287,
+            "value": "G"
+          },
+          {
+            "start": 3.353,
+            "value": "C"
+          },
+          {
+            "start": 3.42,
+            "value": "B"
+          },
+          {
+            "start": 3.587,
+            "value": "F"
+          },
+          {
+            "start": 3.62,
+            "value": "X"
+          },
+          {
+            "start": 3.653,
+            "value": "F"
+          },
+          {
+            "start": 3.853,
+            "value": "X"
+          },
+          {
+            "start": 3.887,
+            "value": "B"
+          },
+          {
+            "start": 3.987,
+            "value": "E"
+          },
+          {
+            "start": 4.053,
+            "value": "C"
+          },
+          {
+            "start": 4.12,
+            "value": "A"
+          },
+          {
+            "start": 4.187,
+            "value": "X"
+          },
+          {
+            "start": 4.287,
+            "value": "E"
+          },
+          {
+            "start": 4.32,
+            "value": "A"
+          },
+          {
+            "start": 4.387,
+            "value": "X"
+          },
+          {
+            "start": 4.453,
+            "value": "C"
+          },
+          {
+            "start": 4.487,
+            "value": "H"
+          },
+          {
+            "start": 4.553,
+            "value": "C"
+          },
+          {
+            "start": 4.753,
+            "value": "H"
+          },
+          {
+            "start": 4.82,
+            "value": "B"
+          },
+          {
+            "start": 5.12,
+            "value": "C"
+          },
+          {
+            "start": 5.187,
+            "value": "B"
+          },
+          {
+            "start": 5.253,
+            "value": "X"
+          },
+          {
+            "start": 5.287,
+            "value": "B"
+          },
+          {
+            "start": 5.32,
+            "value": "X"
+          },
+          {
+            "start": 5.353,
+            "value": "F"
+          },
+          {
+            "start": 5.387,
+            "value": "C"
+          },
+          {
+            "start": 5.453,
+            "value": "B"
+          },
+          {
+            "start": 5.587,
+            "value": "C"
+          },
+          {
+            "start": 5.72,
+            "value": "B"
+          },
+          {
+            "start": 6.153,
+            "value": "C"
+          },
+          {
+            "start": 6.287,
+            "value": "B"
+          },
+          {
+            "start": 6.42,
+            "value": "G"
+          },
+          {
+            "start": 6.453,
+            "value": "X"
+          },
+          {
+            "start": 6.553,
+            "value": "G"
+          },
+          {
+            "start": 6.587,
+            "value": "E"
+          },
+          {
+            "start": 6.72,
+            "value": "C"
+          },
+          {
+            "start": 6.753,
+            "value": "X"
+          },
+          {
+            "start": 6.82,
+            "value": "C"
+          },
+          {
+            "start": 6.987,
+            "value": "A"
+          },
+          {
+            "start": 7.087,
+            "value": "C"
+          },
+          {
+            "start": 7.22,
+            "value": "B"
+          },
+          {
+            "start": 7.32,
+            "value": "X"
+          },
+          {
+            "start": 7.853,
+            "value": "A"
+          },
+          {
+            "start": 7.887,
+            "value": "B"
+          },
+          {
+            "start": 7.953,
+            "value": "C"
+          },
+          {
+            "start": 8.12,
+            "value": "B"
+          },
+          {
+            "start": 8.287,
+            "value": "G"
+          },
+          {
+            "start": 8.353,
+            "value": "C"
+          },
+          {
+            "start": 8.42,
+            "value": "G"
+          },
+          {
+            "start": 8.487,
+            "value": "C"
+          },
+          {
+            "start": 8.553,
+            "value": "A"
+          },
+          {
+            "start": 8.653,
+            "value": "B"
+          },
+          {
+            "start": 8.753,
+            "value": "X"
+          },
+          {
+            "start": 8.787,
+            "value": "B"
+          },
+          {
+            "start": 8.92,
+            "value": "X"
+          },
+          {
+            "start": 8.953,
+            "value": "B"
+          },
+          {
+            "start": 9.253,
+            "value": "X"
+          },
+          {
+            "start": 9.32,
+            "value": "B"
+          },
+          {
+            "start": 9.353,
+            "value": "X"
+          },
+          {
+            "start": 9.387,
+            "value": "F"
+          },
+          {
+            "start": 9.453,
+            "value": "B"
+          },
+          {
+            "start": 9.653,
+            "value": "X"
+          },
+          {
+            "start": 9.687,
+            "value": "F"
+          },
+          {
+            "start": 9.72,
+            "value": "B"
+          },
+          {
+            "start": 10.153,
+            "value": "X"
+          },
+          {
+            "start": 10.187,
+            "value": "B"
+          },
+          {
+            "start": 10.32,
+            "value": "X"
+          },
+          {
+            "start": 10.587,
+            "value": "B"
+          },
+          {
+            "start": 10.62,
+            "value": "C"
+          },
+          {
+            "start": 10.687,
+            "value": "X"
+          },
+          {
+            "start": 10.753,
+            "value": "G"
+          },
+          {
+            "start": 10.82,
+            "value": "E"
+          },
+          {
+            "start": 10.887,
+            "value": "F"
+          },
+          {
+            "start": 10.953,
+            "value": "C"
+          },
+          {
+            "start": 11.253,
+            "value": "B"
+          },
+          {
+            "start": 11.32,
+            "value": "E"
+          },
+          {
+            "start": 11.353,
+            "value": "X"
+          },
+          {
+            "start": 11.387,
+            "value": "E"
+          },
+          {
+            "start": 11.52,
+            "value": "A"
+          },
+          {
+            "start": 11.587,
+            "value": "E"
+          },
+          {
+            "start": 11.753,
+            "value": "B"
+          },
+          {
+            "start": 11.82,
+            "value": "G"
+          },
+          {
+            "start": 11.953,
+            "value": "C"
+          },
+          {
+            "start": 12.02,
+            "value": "B"
+          },
+          {
+            "start": 12.32,
+            "value": "X"
+          },
+          {
+            "start": 12.42,
+            "value": "D"
+          },
+          {
+            "start": 12.453,
+            "value": "B"
+          },
+          {
+            "start": 12.653,
+            "value": "X"
+          },
+          {
+            "start": 12.687,
+            "value": "B"
+          },
+          {
+            "start": 12.82,
+            "value": "H"
+          },
+          {
+            "start": 12.887,
+            "value": "C"
+          },
+          {
+            "start": 13.087,
+            "value": "X"
+          },
+          {
+            "start": 13.12,
+            "value": "C"
+          },
+          {
+            "start": 13.287,
+            "value": "X"
+          },
+          {
+            "start": 13.353,
+            "value": "E"
+          },
+          {
+            "start": 13.52,
+            "value": "A"
+          },
+          {
+            "start": 13.587,
+            "value": "B"
+          },
+          {
+            "start": 13.687,
+            "value": "X"
+          },
+          {
+            "start": 14.387,
+            "value": "B"
+          },
+          {
+            "start": 14.487,
+            "value": "E"
+          },
+          {
+            "start": 14.553,
+            "value": "F"
+          },
+          {
+            "start": 14.687,
+            "value": "X"
+          },
+          {
+            "start": 14.787,
+            "value": "F"
+          },
+          {
+            "start": 14.82,
+            "value": "E"
+          },
+          {
+            "start": 14.887,
+            "value": "C"
+          },
+          {
+            "start": 15.12,
+            "value": "B"
+          },
+          {
+            "start": 15.187,
+            "value": "X"
+          },
+          {
+            "start": 15.22,
+            "value": "B"
+          },
+          {
+            "start": 15.553,
+            "value": "E"
+          },
+          {
+            "start": 15.687,
+            "value": "G"
+          },
+          {
+            "start": 15.72,
+            "value": "X"
+          },
+          {
+            "start": 15.753,
+            "value": "B"
+          },
+          {
+            "start": 16.02,
+            "value": "X"
+          },
+          {
+            "start": 17.353,
+            "value": "B"
+          },
+          {
+            "start": 17.387,
+            "value": "X"
+          },
+          {
+            "start": 17.52,
+            "value": "D"
+          },
+          {
+            "start": 17.62,
+            "value": "C"
+          },
+          {
+            "start": 17.687,
+            "value": "E"
+          },
+          {
+            "start": 17.753,
+            "value": "G"
+          },
+          {
+            "start": 17.82,
+            "value": "C"
+          },
+          {
+            "start": 17.887,
+            "value": "A"
+          },
+          {
+            "start": 17.987,
+            "value": "B"
+          },
+          {
+            "start": 18.053,
+            "value": "X"
+          },
+          {
+            "start": 18.087,
+            "value": "B"
+          },
+          {
+            "start": 18.12,
+            "value": "F"
+          },
+          {
+            "start": 18.153,
+            "value": "X"
+          },
+          {
+            "start": 18.187,
+            "value": "F"
+          },
+          {
+            "start": 18.22,
+            "value": "C"
+          },
+          {
+            "start": 18.287,
+            "value": "H"
+          },
+          {
+            "start": 18.42,
+            "value": "X"
+          },
+          {
+            "start": 18.787,
+            "value": "D"
+          },
+          {
+            "start": 18.887,
+            "value": "C"
+          },
+          {
+            "start": 18.953,
+            "value": "A"
+          },
+          {
+            "start": 19.02,
+            "value": "C"
+          },
+          {
+            "start": 19.087,
+            "value": "D"
+          },
+          {
+            "start": 19.22,
+            "value": "B"
+          },
+          {
+            "start": 19.353,
+            "value": "A"
+          },
+          {
+            "start": 19.453,
+            "value": "X"
+          },
+          {
+            "start": 19.52,
+            "value": "E"
+          },
+          {
+            "start": 19.62,
+            "value": "B"
+          },
+          {
+            "start": 19.787,
+            "value": "X"
+          },
+          {
+            "start": 19.82,
+            "value": "C"
+          },
+          {
+            "start": 19.887,
+            "value": "A"
+          },
+          {
+            "start": 19.987,
+            "value": "F"
+          },
+          {
+            "start": 20.153,
+            "value": "C"
+          },
+          {
+            "start": 20.22,
+            "value": "B"
+          },
+          {
+            "start": 20.32,
+            "value": "X"
+          },
+          {
+            "start": 20.353,
+            "value": "B"
+          },
+          {
+            "start": 20.52,
+            "value": "X"
+          },
+          {
+            "start": 20.587,
+            "value": "B"
+          },
+          {
+            "start": 20.753,
+            "value": "X"
+          },
+          {
+            "start": 20.787,
+            "value": "B"
+          },
+          {
+            "start": 21.02,
+            "value": "C"
+          },
+          {
+            "start": 21.087,
+            "value": "B"
+          },
+          {
+            "start": 21.153,
+            "value": "A"
+          },
+          {
+            "start": 21.22,
+            "value": "E"
+          },
+          {
+            "start": 21.253,
+            "value": "X"
+          },
+          {
+            "start": 21.287,
+            "value": "E"
+          },
+          {
+            "start": 21.387,
+            "value": "F"
+          },
+          {
+            "start": 21.453,
+            "value": "B"
+          },
+          {
+            "start": 21.52,
+            "value": "E"
+          },
+          {
+            "start": 21.62,
+            "value": "X"
+          },
+          {
+            "start": 21.687,
+            "value": "E"
+          },
+          {
+            "start": 21.82,
+            "value": "B"
+          },
+          {
+            "start": 21.853,
+            "value": "X"
+          },
+          {
+            "start": 21.887,
+            "value": "B"
+          },
+          {
+            "start": 22.02,
+            "value": "C"
+          },
+          {
+            "start": 22.153,
+            "value": "X"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "point",
+            "at": 0.0
+          },
+          {
+            "pose": "talk",
+            "at": 2.54
+          },
+          {
+            "pose": "point",
+            "at": 4.137
+          },
+          {
+            "pose": "point_up",
+            "at": 4.96
+          },
+          {
+            "pose": "talk",
+            "at": 7.38
+          },
+          {
+            "pose": "shock",
+            "at": 9.16
+          },
+          {
+            "pose": "point_up",
+            "at": 10.4
+          },
+          {
+            "pose": "point_up",
+            "at": 11.829
+          },
+          {
+            "pose": "point_up",
+            "at": 12.29
+          },
+          {
+            "pose": "talk",
+            "at": 13.88
+          },
+          {
+            "pose": "talk",
+            "at": 15.372
+          },
+          {
+            "pose": "talk",
+            "at": 17.42
+          },
+          {
+            "pose": "point_up",
+            "at": 18.627
+          },
+          {
+            "pose": "talk",
+            "at": 20.375
+          }
+        ]
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 4.62,
+      "duration": 2.42,
+      "in": "push",
+      "data": {
+        "words": [
+          {
+            "text": "viral",
+            "at": 0.713
+          },
+          {
+            "text": "clips",
+            "at": 1.033
+          },
+          {
+            "text": "show",
+            "at": 1.332
+          },
+          {
+            "text": "purple",
+            "at": 1.597
+          }
+        ],
+        "punch": "purple"
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 7.04,
+      "duration": 2.420000000000001,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13-b/edit/sources/01-full.png",
+        "url": "https://www.tomsguide.com/phones/samsung-phones/samsung-galaxy-s27-dummy-units-could-change-what-we-thought-we-knew-about-the-upcoming-flagships-but-im-not-convinced-these-are-accurate-and-heres-why",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              259,
+              1457.921875,
+              602,
+              48
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Four cameras",
+            "sub": "On Ultra and Pro"
+          }
+        ],
+        "headline": [
+          259,
+          493,
+          602,
+          170
+        ],
+        "photo": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13-b/edit/sources/01-photo.png",
+        "record": false
+      },
+      "in": "push"
+    },
+    {
+      "type": "kinetic_title",
+      "start": 9.46,
+      "duration": 1.7799999999999994,
+      "in": "wipe",
+      "data": {
+        "words": [
+          {
+            "text": "November",
+            "at": 0.896
+          },
+          {
+            "text": "13",
+            "at": 1.34
+          }
+        ],
+        "punch": "as of"
+      }
+    },
+    {
+      "type": "stat_counter",
+      "start": 11.24,
+      "duration": 1.2400000000000002,
+      "in": "flash",
+      "data": {
+        "value": 2026.0,
+        "prefix": "",
+        "suffix": "",
+        "decimals": 0,
+        "label": "The year"
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 12.48,
+      "duration": 1.8899999999999988,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13-b/edit/sources/03-full.png",
+        "url": "https://www.androidauthority.com/galaxy-s27-ultra-colors-leak-3719062/",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              75,
+              1504.8125,
+              890,
+              56.15625
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Violet",
+            "sub": "Special color leak"
+          }
+        ],
+        "headline": [
+          75,
+          167,
+          1290,
+          92
+        ],
+        "photo": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13-b/edit/sources/03-photo.png",
+        "record": false
+      },
+      "in": "push"
+    },
+    {
+      "type": "browser_shot",
+      "start": 14.37,
+      "duration": 1.5899999999999999,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13-b/edit/sources/03-full.png",
+        "url": "https://www.androidauthority.com/galaxy-s27-ultra-colors-leak-3719062/",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              75,
+              1504.8125,
+              890,
+              56.15625
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Violet",
+            "sub": "Special color leak"
+          }
+        ],
+        "headline": [
+          75,
+          167,
+          1290,
+          92
+        ],
+        "photo": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13-b/edit/sources/03-photo.png",
+        "record": false,
+        "zoomed": true
+      },
+      "in": "match"
+    },
+    {
+      "type": "kinetic_title",
+      "start": 15.959999999999999,
+      "duration": 1.491999999999999,
+      "in": "push",
+      "data": {
+        "words": [
+          {
+            "text": "So",
+            "at": 0.12
+          },
+          {
+            "text": "what",
+            "at": 0.68
+          },
+          {
+            "text": "actually",
+            "at": 1.053
+          }
+        ],
+        "punch": "actually"
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 17.451999999999998,
+      "duration": 2.0483469999999997,
+      "in": "push",
+      "data": {
+        "words": [
+          {
+            "text": "surfaced?",
+            "at": 0.05
+          }
+        ],
+        "punch": "surfaced"
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 19.500346999999998,
+      "duration": 1.2070000000000007,
+      "in": "iris",
+      "data": {
+        "words": [
+          {
+            "text": "November",
+            "at": 0.183
+          },
+          {
+            "text": "12",
+            "at": 0.627
+          }
+        ],
+        "punch": "surfaced"
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 20.707347,
+      "duration": 1.748000000000001,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13-b/edit/sources/01-full.png",
+        "url": "https://www.tomsguide.com/phones/samsung-phones/samsung-galaxy-s27-dummy-units-could-change-what-we-thought-we-knew-about-the-upcoming-flagships-but-im-not-convinced-these-are-accurate-and-heres-why",
+        "edge": "fade",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              259,
+              1345.921875,
+              602,
+              96
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Dummy units",
+            "sub": "S27 lineup appeared online"
+          }
+        ],
+        "headline": [
+          259,
+          493,
+          602,
+          170
+        ],
+        "photo": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13-b/edit/sources/01-photo.png",
+        "record": false
+      },
+      "in": "push"
+    },
+    {
+      "type": "kinetic_title",
+      "start": 22.455347,
+      "duration": 2.152000000000001,
+      "in": "push",
+      "data": {
+        "words": [
+          {
+            "text": "Supposed",
+            "at": 0.685
+          },
+          {
+            "text": "Ultra",
+            "at": 1.205
+          }
+        ],
+        "punch": "ultra"
+      }
+    },
+    {
+      "type": "host",
+      "start": 24.607347,
+      "duration": 1.519999999999996,
+      "data": {
+        "place": "studio",
+        "cues": [
+          {
+            "start": 0.426,
+            "value": "F"
+          },
+          {
+            "start": 0.526,
+            "value": "B"
+          },
+          {
+            "start": 0.726,
+            "value": "X"
+          },
+          {
+            "start": 0.76,
+            "value": "B"
+          },
+          {
+            "start": 0.86,
+            "value": "A"
+          },
+          {
+            "start": 0.96,
+            "value": "C"
+          },
+          {
+            "start": 1.026,
+            "value": "B"
+          },
+          {
+            "start": 1.093,
+            "value": "E"
+          },
+          {
+            "start": 1.26,
+            "value": "X"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "talk",
+            "at": 0
+          },
+          {
+            "pose": "think",
+            "at": 0.777
+          }
+        ],
+        "words": [
+          {
+            "text": "Why",
+            "at": 0.15
+          },
+          {
+            "text": "does",
+            "at": 0.512
+          },
+          {
+            "text": "it",
+            "at": 0.772
+          },
+          {
+            "text": "matter?",
+            "at": 0.852
+          }
+        ],
+        "punch": "matter"
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 26.127346999999997,
+      "duration": 2.3000000000000043,
+      "in": "iris",
+      "data": {
+        "words": [
+          {
+            "text": "dummy",
+            "at": 0.627
+          },
+          {
+            "text": "copies",
+            "at": 1.017
+          },
+          {
+            "text": "outside,",
+            "at": 1.59
+          }
+        ],
+        "punch": "outside"
+      }
+    },
+    {
+      "type": "host",
+      "start": 26.127346999999997,
+      "duration": 14.906714000000004,
+      "data": {
+        "place": "side",
+        "cues": [
+          {
+            "start": 0.606,
+            "value": "C"
+          },
+          {
+            "start": 0.873,
+            "value": "A"
+          },
+          {
+            "start": 0.94,
+            "value": "B"
+          },
+          {
+            "start": 0.973,
+            "value": "C"
+          },
+          {
+            "start": 1.006,
+            "value": "D"
+          },
+          {
+            "start": 1.04,
+            "value": "X"
+          },
+          {
+            "start": 1.073,
+            "value": "D"
+          },
+          {
+            "start": 1.106,
+            "value": "C"
+          },
+          {
+            "start": 1.173,
+            "value": "A"
+          },
+          {
+            "start": 1.24,
+            "value": "B"
+          },
+          {
+            "start": 1.273,
+            "value": "X"
+          },
+          {
+            "start": 1.306,
+            "value": "B"
+          },
+          {
+            "start": 1.473,
+            "value": "X"
+          },
+          {
+            "start": 1.506,
+            "value": "B"
+          },
+          {
+            "start": 1.606,
+            "value": "C"
+          },
+          {
+            "start": 1.673,
+            "value": "B"
+          },
+          {
+            "start": 1.773,
+            "value": "X"
+          },
+          {
+            "start": 1.806,
+            "value": "B"
+          },
+          {
+            "start": 1.973,
+            "value": "C"
+          },
+          {
+            "start": 2.04,
+            "value": "B"
+          },
+          {
+            "start": 2.206,
+            "value": "X"
+          },
+          {
+            "start": 2.506,
+            "value": "A"
+          },
+          {
+            "start": 2.54,
+            "value": "B"
+          },
+          {
+            "start": 2.706,
+            "value": "C"
+          },
+          {
+            "start": 2.773,
+            "value": "B"
+          },
+          {
+            "start": 2.906,
+            "value": "A"
+          },
+          {
+            "start": 2.973,
+            "value": "X"
+          },
+          {
+            "start": 3.04,
+            "value": "F"
+          },
+          {
+            "start": 3.173,
+            "value": "G"
+          },
+          {
+            "start": 3.24,
+            "value": "B"
+          },
+          {
+            "start": 3.306,
+            "value": "C"
+          },
+          {
+            "start": 3.373,
+            "value": "B"
+          },
+          {
+            "start": 3.606,
+            "value": "G"
+          },
+          {
+            "start": 3.64,
+            "value": "X"
+          },
+          {
+            "start": 3.706,
+            "value": "G"
+          },
+          {
+            "start": 3.74,
+            "value": "D"
+          },
+          {
+            "start": 3.806,
+            "value": "B"
+          },
+          {
+            "start": 3.873,
+            "value": "A"
+          },
+          {
+            "start": 3.973,
+            "value": "C"
+          },
+          {
+            "start": 4.073,
+            "value": "B"
+          },
+          {
+            "start": 4.173,
+            "value": "C"
+          },
+          {
+            "start": 4.306,
+            "value": "B"
+          },
+          {
+            "start": 4.44,
+            "value": "X"
+          },
+          {
+            "start": 4.94,
+            "value": "F"
+          },
+          {
+            "start": 5.006,
+            "value": "X"
+          },
+          {
+            "start": 5.04,
+            "value": "F"
+          },
+          {
+            "start": 5.073,
+            "value": "B"
+          },
+          {
+            "start": 5.273,
+            "value": "F"
+          },
+          {
+            "start": 5.34,
+            "value": "H"
+          },
+          {
+            "start": 5.406,
+            "value": "C"
+          },
+          {
+            "start": 5.473,
+            "value": "B"
+          },
+          {
+            "start": 5.773,
+            "value": "C"
+          },
+          {
+            "start": 5.84,
+            "value": "X"
+          },
+          {
+            "start": 5.873,
+            "value": "C"
+          },
+          {
+            "start": 5.973,
+            "value": "A"
+          },
+          {
+            "start": 6.006,
+            "value": "C"
+          },
+          {
+            "start": 6.106,
+            "value": "A"
+          },
+          {
+            "start": 6.14,
+            "value": "X"
+          },
+          {
+            "start": 6.206,
+            "value": "B"
+          },
+          {
+            "start": 6.24,
+            "value": "D"
+          },
+          {
+            "start": 6.34,
+            "value": "B"
+          },
+          {
+            "start": 6.64,
+            "value": "C"
+          },
+          {
+            "start": 6.84,
+            "value": "A"
+          },
+          {
+            "start": 6.906,
+            "value": "C"
+          },
+          {
+            "start": 6.973,
+            "value": "B"
+          },
+          {
+            "start": 7.04,
+            "value": "X"
+          },
+          {
+            "start": 7.073,
+            "value": "B"
+          },
+          {
+            "start": 7.106,
+            "value": "X"
+          },
+          {
+            "start": 7.34,
+            "value": "A"
+          },
+          {
+            "start": 7.473,
+            "value": "C"
+          },
+          {
+            "start": 7.54,
+            "value": "A"
+          },
+          {
+            "start": 7.64,
+            "value": "B"
+          },
+          {
+            "start": 7.906,
+            "value": "X"
+          },
+          {
+            "start": 8.006,
+            "value": "F"
+          },
+          {
+            "start": 8.173,
+            "value": "B"
+          },
+          {
+            "start": 8.24,
+            "value": "X"
+          },
+          {
+            "start": 8.273,
+            "value": "B"
+          },
+          {
+            "start": 8.306,
+            "value": "X"
+          },
+          {
+            "start": 8.473,
+            "value": "C"
+          },
+          {
+            "start": 8.54,
+            "value": "X"
+          },
+          {
+            "start": 8.673,
+            "value": "B"
+          },
+          {
+            "start": 8.806,
+            "value": "C"
+          },
+          {
+            "start": 8.94,
+            "value": "H"
+          },
+          {
+            "start": 9.04,
+            "value": "X"
+          },
+          {
+            "start": 9.173,
+            "value": "C"
+          },
+          {
+            "start": 9.206,
+            "value": "B"
+          },
+          {
+            "start": 9.306,
+            "value": "X"
+          },
+          {
+            "start": 9.34,
+            "value": "B"
+          },
+          {
+            "start": 9.373,
+            "value": "C"
+          },
+          {
+            "start": 9.44,
+            "value": "B"
+          },
+          {
+            "start": 9.573,
+            "value": "C"
+          },
+          {
+            "start": 9.64,
+            "value": "B"
+          },
+          {
+            "start": 9.706,
+            "value": "A"
+          },
+          {
+            "start": 9.773,
+            "value": "C"
+          },
+          {
+            "start": 10.006,
+            "value": "B"
+          },
+          {
+            "start": 10.04,
+            "value": "X"
+          },
+          {
+            "start": 10.173,
+            "value": "B"
+          },
+          {
+            "start": 10.273,
+            "value": "C"
+          },
+          {
+            "start": 10.34,
+            "value": "B"
+          },
+          {
+            "start": 10.473,
+            "value": "C"
+          },
+          {
+            "start": 10.64,
+            "value": "B"
+          },
+          {
+            "start": 10.973,
+            "value": "A"
+          },
+          {
+            "start": 11.073,
+            "value": "X"
+          },
+          {
+            "start": 11.173,
+            "value": "B"
+          },
+          {
+            "start": 11.206,
+            "value": "D"
+          },
+          {
+            "start": 11.273,
+            "value": "A"
+          },
+          {
+            "start": 11.373,
+            "value": "H"
+          },
+          {
+            "start": 11.54,
+            "value": "C"
+          },
+          {
+            "start": 11.606,
+            "value": "A"
+          },
+          {
+            "start": 11.74,
+            "value": "X"
+          },
+          {
+            "start": 12.706,
+            "value": "B"
+          },
+          {
+            "start": 12.873,
+            "value": "X"
+          },
+          {
+            "start": 12.906,
+            "value": "C"
+          },
+          {
+            "start": 13.006,
+            "value": "A"
+          },
+          {
+            "start": 13.073,
+            "value": "B"
+          },
+          {
+            "start": 13.306,
+            "value": "E"
+          },
+          {
+            "start": 13.373,
+            "value": "F"
+          },
+          {
+            "start": 13.473,
+            "value": "X"
+          },
+          {
+            "start": 13.606,
+            "value": "E"
+          },
+          {
+            "start": 13.94,
+            "value": "B"
+          },
+          {
+            "start": 14.173,
+            "value": "C"
+          },
+          {
+            "start": 14.206,
+            "value": "X"
+          },
+          {
+            "start": 14.273,
+            "value": "C"
+          },
+          {
+            "start": 14.44,
+            "value": "A"
+          },
+          {
+            "start": 14.54,
+            "value": "C"
+          },
+          {
+            "start": 14.64,
+            "value": "B"
+          },
+          {
+            "start": 14.806,
+            "value": "X"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "talk",
+            "at": 0.0
+          },
+          {
+            "pose": "explain",
+            "at": 2.3
+          },
+          {
+            "pose": "point",
+            "at": 4.463
+          },
+          {
+            "pose": "talk",
+            "at": 6.5
+          },
+          {
+            "pose": "talk",
+            "at": 9.037
+          },
+          {
+            "pose": "point_up",
+            "at": 11.734
+          },
+          {
+            "pose": "point_up",
+            "at": 13.185
+          },
+          {
+            "pose": "point_up",
+            "at": 13.507
+          }
+        ]
+      }
+    },
+    {
+      "type": "comparison",
+      "start": 28.427347,
+      "duration": 2.1629999999999967,
+      "in": "push",
+      "data": {
+        "left": "",
+        "right": "",
+        "rows": [
+          [
+            "Outside",
+            "Copied",
+            "Could match"
+          ],
+          [
+            "Inside",
+            "Unknown",
+            "Not proven"
+          ]
+        ],
+        "winners": [
+          null,
+          null
+        ],
+        "gap": 0.55
+      }
+    },
+    {
+      "type": "object3d",
+      "start": 30.590346999999998,
+      "duration": 2.0370000000000026,
+      "in": "push",
+      "data": {
+        "object": "phone",
+        "at": 0.5,
+        "lead": "Camera processing"
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 32.627347,
+      "duration": 2.5367139999999964,
+      "in": "wipe",
+      "data": {
+        "words": [
+          {
+            "text": "make",
+            "at": 0.364
+          },
+          {
+            "text": "\u201cmaybe\u201d",
+            "at": 0.74
+          },
+          {
+            "text": "look",
+            "at": 1.468
+          },
+          {
+            "text": "OFFICIAL.",
+            "at": 1.78
+          }
+        ],
+        "punch": "official"
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 35.164061,
+      "duration": 2.6970000000000027,
+      "in": "push",
+      "data": {
+        "words": [
+          {
+            "text": "shiny",
+            "at": 0.377
+          },
+          {
+            "text": "back",
+            "at": 0.758
+          },
+          {
+            "text": "creates",
+            "at": 1.0
+          },
+          {
+            "text": "REAL",
+            "at": 1.59
+          }
+        ],
+        "punch": "creates"
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 37.861061,
+      "duration": 1.4510000000000005,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13-b/edit/sources/01-full.png",
+        "url": "https://www.tomsguide.com/phones/samsung-phones/samsung-galaxy-s27-dummy-units-could-change-what-we-thought-we-knew-about-the-upcoming-flagships-but-im-not-convinced-these-are-accurate-and-heres-why",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              259,
+              2528.546875,
+              602,
+              120
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Four rear cameras",
+            "sub": "Ultra phones trend"
+          }
+        ],
+        "headline": [
+          259,
+          493,
+          602,
+          170
+        ],
+        "photo": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13-b/edit/sources/01-photo.png",
+        "record": false
+      },
+      "in": "whip"
+    },
+    {
+      "type": "browser_shot",
+      "start": 39.312061,
+      "duration": 1.7220000000000013,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13-b/edit/sources/01-full.png",
+        "url": "https://www.tomsguide.com/phones/samsung-phones/samsung-galaxy-s27-dummy-units-could-change-what-we-thought-we-knew-about-the-upcoming-flagships-but-im-not-convinced-these-are-accurate-and-heres-why",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              259,
+              2528.546875,
+              602,
+              120
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Four rear cameras",
+            "sub": "Ultra phones trend"
+          }
+        ],
+        "headline": [
+          259,
+          493,
+          602,
+          170
+        ],
+        "photo": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13-b/edit/sources/01-photo.png",
+        "record": false,
+        "zoomed": true
+      },
+      "in": "match"
+    },
+    {
+      "type": "host",
+      "start": 41.034061,
+      "duration": 1.2999999999999972,
+      "data": {
+        "place": "studio",
+        "cues": [
+          {
+            "start": 0.166,
+            "value": "B"
+          },
+          {
+            "start": 0.266,
+            "value": "C"
+          },
+          {
+            "start": 0.399,
+            "value": "A"
+          },
+          {
+            "start": 0.466,
+            "value": "C"
+          },
+          {
+            "start": 0.499,
+            "value": "X"
+          },
+          {
+            "start": 0.533,
+            "value": "C"
+          },
+          {
+            "start": 0.599,
+            "value": "B"
+          },
+          {
+            "start": 0.766,
+            "value": "G"
+          },
+          {
+            "start": 0.799,
+            "value": "X"
+          },
+          {
+            "start": 0.833,
+            "value": "B"
+          },
+          {
+            "start": 0.899,
+            "value": "X"
+          },
+          {
+            "start": 0.999,
+            "value": "B"
+          },
+          {
+            "start": 1.033,
+            "value": "C"
+          },
+          {
+            "start": 1.099,
+            "value": "B"
+          },
+          {
+            "start": 1.233,
+            "value": "X"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "talk",
+            "at": 0
+          },
+          {
+            "pose": "shock",
+            "at": 0.413
+          }
+        ],
+        "words": [
+          {
+            "text": "Sounds",
+            "at": 0.15
+          },
+          {
+            "text": "specific?",
+            "at": 0.413
+          }
+        ],
+        "punch": "specific"
+      }
+    },
+    {
+      "type": "comparison",
+      "start": 42.334061,
+      "duration": 2.6799999999999997,
+      "in": "push",
+      "data": {
+        "left": "",
+        "right": "",
+        "rows": [
+          [
+            "Dummy",
+            "Four cameras",
+            "\u2014"
+          ],
+          [
+            "Other leaks",
+            "Fewer cameras",
+            "\u2014"
+          ]
+        ],
+        "winners": [
+          "left",
+          "right"
+        ],
+        "gap": 0.55
+      }
+    },
+    {
+      "type": "host",
+      "start": 42.334061,
+      "duration": 15.793286000000002,
+      "data": {
+        "place": "lower",
+        "cues": [
+          {
+            "start": 0.566,
+            "value": "C"
+          },
+          {
+            "start": 0.633,
+            "value": "B"
+          },
+          {
+            "start": 0.699,
+            "value": "X"
+          },
+          {
+            "start": 0.766,
+            "value": "B"
+          },
+          {
+            "start": 0.899,
+            "value": "X"
+          },
+          {
+            "start": 0.933,
+            "value": "B"
+          },
+          {
+            "start": 1.033,
+            "value": "C"
+          },
+          {
+            "start": 1.099,
+            "value": "X"
+          },
+          {
+            "start": 1.133,
+            "value": "C"
+          },
+          {
+            "start": 1.166,
+            "value": "B"
+          },
+          {
+            "start": 1.333,
+            "value": "X"
+          },
+          {
+            "start": 1.366,
+            "value": "B"
+          },
+          {
+            "start": 1.466,
+            "value": "G"
+          },
+          {
+            "start": 1.499,
+            "value": "X"
+          },
+          {
+            "start": 1.599,
+            "value": "B"
+          },
+          {
+            "start": 1.699,
+            "value": "X"
+          },
+          {
+            "start": 1.733,
+            "value": "B"
+          },
+          {
+            "start": 1.966,
+            "value": "C"
+          },
+          {
+            "start": 2.033,
+            "value": "B"
+          },
+          {
+            "start": 2.099,
+            "value": "E"
+          },
+          {
+            "start": 2.166,
+            "value": "F"
+          },
+          {
+            "start": 2.233,
+            "value": "B"
+          },
+          {
+            "start": 2.366,
+            "value": "X"
+          },
+          {
+            "start": 2.399,
+            "value": "B"
+          },
+          {
+            "start": 2.566,
+            "value": "X"
+          },
+          {
+            "start": 2.799,
+            "value": "C"
+          },
+          {
+            "start": 3.199,
+            "value": "B"
+          },
+          {
+            "start": 3.266,
+            "value": "F"
+          },
+          {
+            "start": 3.466,
+            "value": "G"
+          },
+          {
+            "start": 3.566,
+            "value": "E"
+          },
+          {
+            "start": 3.699,
+            "value": "H"
+          },
+          {
+            "start": 3.766,
+            "value": "X"
+          },
+          {
+            "start": 3.833,
+            "value": "H"
+          },
+          {
+            "start": 3.899,
+            "value": "B"
+          },
+          {
+            "start": 3.966,
+            "value": "A"
+          },
+          {
+            "start": 4.066,
+            "value": "B"
+          },
+          {
+            "start": 4.199,
+            "value": "A"
+          },
+          {
+            "start": 4.266,
+            "value": "E"
+          },
+          {
+            "start": 4.333,
+            "value": "X"
+          },
+          {
+            "start": 4.366,
+            "value": "E"
+          },
+          {
+            "start": 4.466,
+            "value": "B"
+          },
+          {
+            "start": 4.599,
+            "value": "C"
+          },
+          {
+            "start": 4.666,
+            "value": "X"
+          },
+          {
+            "start": 4.733,
+            "value": "C"
+          },
+          {
+            "start": 4.899,
+            "value": "A"
+          },
+          {
+            "start": 4.966,
+            "value": "C"
+          },
+          {
+            "start": 5.033,
+            "value": "B"
+          },
+          {
+            "start": 5.099,
+            "value": "C"
+          },
+          {
+            "start": 5.233,
+            "value": "B"
+          },
+          {
+            "start": 5.833,
+            "value": "X"
+          },
+          {
+            "start": 5.866,
+            "value": "B"
+          },
+          {
+            "start": 5.899,
+            "value": "X"
+          },
+          {
+            "start": 6.699,
+            "value": "C"
+          },
+          {
+            "start": 6.899,
+            "value": "B"
+          },
+          {
+            "start": 6.966,
+            "value": "E"
+          },
+          {
+            "start": 7.033,
+            "value": "F"
+          },
+          {
+            "start": 7.166,
+            "value": "A"
+          },
+          {
+            "start": 7.266,
+            "value": "B"
+          },
+          {
+            "start": 7.466,
+            "value": "C"
+          },
+          {
+            "start": 7.533,
+            "value": "B"
+          },
+          {
+            "start": 7.599,
+            "value": "C"
+          },
+          {
+            "start": 7.733,
+            "value": "B"
+          },
+          {
+            "start": 7.799,
+            "value": "E"
+          },
+          {
+            "start": 7.933,
+            "value": "F"
+          },
+          {
+            "start": 7.999,
+            "value": "B"
+          },
+          {
+            "start": 8.233,
+            "value": "X"
+          },
+          {
+            "start": 8.266,
+            "value": "B"
+          },
+          {
+            "start": 8.299,
+            "value": "X"
+          },
+          {
+            "start": 8.333,
+            "value": "B"
+          },
+          {
+            "start": 8.433,
+            "value": "H"
+          },
+          {
+            "start": 8.566,
+            "value": "C"
+          },
+          {
+            "start": 8.633,
+            "value": "B"
+          },
+          {
+            "start": 8.999,
+            "value": "X"
+          },
+          {
+            "start": 9.166,
+            "value": "B"
+          },
+          {
+            "start": 9.233,
+            "value": "A"
+          },
+          {
+            "start": 9.299,
+            "value": "B"
+          },
+          {
+            "start": 9.333,
+            "value": "X"
+          },
+          {
+            "start": 9.399,
+            "value": "B"
+          },
+          {
+            "start": 9.433,
+            "value": "C"
+          },
+          {
+            "start": 9.499,
+            "value": "B"
+          },
+          {
+            "start": 9.666,
+            "value": "C"
+          },
+          {
+            "start": 9.733,
+            "value": "B"
+          },
+          {
+            "start": 9.766,
+            "value": "X"
+          },
+          {
+            "start": 9.799,
+            "value": "B"
+          },
+          {
+            "start": 9.866,
+            "value": "C"
+          },
+          {
+            "start": 9.999,
+            "value": "B"
+          },
+          {
+            "start": 10.133,
+            "value": "C"
+          },
+          {
+            "start": 10.166,
+            "value": "X"
+          },
+          {
+            "start": 10.199,
+            "value": "C"
+          },
+          {
+            "start": 10.366,
+            "value": "A"
+          },
+          {
+            "start": 10.433,
+            "value": "C"
+          },
+          {
+            "start": 10.533,
+            "value": "A"
+          },
+          {
+            "start": 10.633,
+            "value": "B"
+          },
+          {
+            "start": 10.666,
+            "value": "X"
+          },
+          {
+            "start": 10.699,
+            "value": "B"
+          },
+          {
+            "start": 10.866,
+            "value": "C"
+          },
+          {
+            "start": 10.933,
+            "value": "B"
+          },
+          {
+            "start": 10.999,
+            "value": "C"
+          },
+          {
+            "start": 11.133,
+            "value": "H"
+          },
+          {
+            "start": 11.199,
+            "value": "C"
+          },
+          {
+            "start": 11.266,
+            "value": "G"
+          },
+          {
+            "start": 11.299,
+            "value": "X"
+          },
+          {
+            "start": 11.399,
+            "value": "E"
+          },
+          {
+            "start": 11.433,
+            "value": "B"
+          },
+          {
+            "start": 11.499,
+            "value": "E"
+          },
+          {
+            "start": 11.633,
+            "value": "F"
+          },
+          {
+            "start": 11.733,
+            "value": "X"
+          },
+          {
+            "start": 11.833,
+            "value": "B"
+          },
+          {
+            "start": 11.899,
+            "value": "E"
+          },
+          {
+            "start": 11.966,
+            "value": "F"
+          },
+          {
+            "start": 12.099,
+            "value": "B"
+          },
+          {
+            "start": 12.233,
+            "value": "X"
+          },
+          {
+            "start": 12.299,
+            "value": "E"
+          },
+          {
+            "start": 12.366,
+            "value": "B"
+          },
+          {
+            "start": 12.499,
+            "value": "F"
+          },
+          {
+            "start": 12.733,
+            "value": "B"
+          },
+          {
+            "start": 12.833,
+            "value": "X"
+          },
+          {
+            "start": 12.866,
+            "value": "B"
+          },
+          {
+            "start": 12.899,
+            "value": "X"
+          },
+          {
+            "start": 12.933,
+            "value": "C"
+          },
+          {
+            "start": 13.066,
+            "value": "B"
+          },
+          {
+            "start": 13.199,
+            "value": "X"
+          },
+          {
+            "start": 14.499,
+            "value": "B"
+          },
+          {
+            "start": 14.566,
+            "value": "C"
+          },
+          {
+            "start": 14.866,
+            "value": "E"
+          },
+          {
+            "start": 14.999,
+            "value": "X"
+          },
+          {
+            "start": 15.166,
+            "value": "B"
+          },
+          {
+            "start": 15.233,
+            "value": "X"
+          },
+          {
+            "start": 15.266,
+            "value": "B"
+          },
+          {
+            "start": 15.299,
+            "value": "C"
+          },
+          {
+            "start": 15.366,
+            "value": "F"
+          },
+          {
+            "start": 15.566,
+            "value": "A"
+          },
+          {
+            "start": 15.666,
+            "value": "E"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "explain",
+            "at": 0.0
+          },
+          {
+            "pose": "point_up",
+            "at": 2.68
+          },
+          {
+            "pose": "point_up",
+            "at": 4.09
+          },
+          {
+            "pose": "point",
+            "at": 5.02
+          },
+          {
+            "pose": "talk",
+            "at": 5.94
+          },
+          {
+            "pose": "point_up",
+            "at": 8.02
+          },
+          {
+            "pose": "point_up",
+            "at": 10.05
+          },
+          {
+            "pose": "explain",
+            "at": 11.732
+          },
+          {
+            "pose": "talk",
+            "at": 13.873
+          }
+        ]
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 45.014061,
+      "duration": 1.4099999999999966,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13-b/edit/sources/01-full.png",
+        "url": "https://www.tomsguide.com/phones/samsung-phones/samsung-galaxy-s27-dummy-units-could-change-what-we-thought-we-knew-about-the-upcoming-flagships-but-im-not-convinced-these-are-accurate-and-heres-why",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              259,
+              2336.546875,
+              550,
+              150
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Camera does not exist",
+            "sub": "Ice Universe claim"
+          }
+        ],
+        "headline": [
+          259,
+          493,
+          602,
+          170
+        ],
+        "photo": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13-b/edit/sources/01-photo.png",
+        "record": false
+      },
+      "in": "iris"
+    },
+    {
+      "type": "browser_shot",
+      "start": 46.424060999999995,
+      "duration": 1.8500000000000014,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13-b/edit/sources/01-full.png",
+        "url": "https://www.tomsguide.com/phones/samsung-phones/samsung-galaxy-s27-dummy-units-could-change-what-we-thought-we-knew-about-the-upcoming-flagships-but-im-not-convinced-these-are-accurate-and-heres-why",
+        "edge": "glass",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              259,
+              2336.546875,
+              550,
+              150
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Camera does not exist",
+            "sub": "Ice Universe claim"
+          }
+        ],
+        "headline": [
+          259,
+          493,
+          602,
+          170
+        ],
+        "photo": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13-b/edit/sources/01-photo.png",
+        "record": false,
+        "zoomed": true
+      },
+      "in": "match"
+    },
+    {
+      "type": "kinetic_title",
+      "start": 48.274060999999996,
+      "duration": 2.0800390000000064,
+      "in": "push",
+      "data": {
+        "words": [
+          {
+            "text": "Another",
+            "at": 0.15
+          },
+          {
+            "text": "rumor",
+            "at": 1.027
+          },
+          {
+            "text": "suggests",
+            "at": 1.413
+          },
+          {
+            "text": "only",
+            "at": 1.68
+          }
+        ],
+        "punch": "only"
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 50.3541,
+      "duration": 2.029961,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13-b/edit/sources/01-full.png",
+        "url": "https://www.tomsguide.com/phones/samsung-phones/samsung-galaxy-s27-dummy-units-could-change-what-we-thought-we-knew-about-the-upcoming-flagships-but-im-not-convinced-these-are-accurate-and-heres-why",
+        "edge": "fade",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              434,
+              2602.546875,
+              205,
+              20
+            ],
+            "ring": false,
+            "sweep": false,
+            "at": 1.496,
+            "label": "10MP telephoto",
+            "sub": "Secondary lens rumor"
+          }
+        ],
+        "headline": [
+          259,
+          493,
+          602,
+          170
+        ],
+        "photo": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13-b/edit/sources/01-photo.png",
+        "record": false
+      },
+      "in": "push"
+    },
+    {
+      "type": "browser_shot",
+      "start": 52.384061,
+      "duration": 1.6822859999999977,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13-b/edit/sources/01-full.png",
+        "url": "https://www.tomsguide.com/phones/samsung-phones/samsung-galaxy-s27-dummy-units-could-change-what-we-thought-we-knew-about-the-upcoming-flagships-but-im-not-convinced-these-are-accurate-and-heres-why",
+        "edge": "fade",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              434,
+              2602.546875,
+              205,
+              20
+            ],
+            "ring": false,
+            "sweep": false,
+            "at": 1.496,
+            "label": "10MP telephoto",
+            "sub": "Secondary lens rumor"
+          }
+        ],
+        "headline": [
+          259,
+          493,
+          602,
+          170
+        ],
+        "photo": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13-b/edit/sources/01-photo.png",
+        "record": false,
+        "zoomed": true
+      },
+      "in": "match"
+    },
+    {
+      "type": "comparison",
+      "start": 54.066347,
+      "duration": 2.1409999999999982,
+      "in": "whip",
+      "data": {
+        "left": "Dummy phone",
+        "right": "Rumored phone",
+        "rows": [
+          [
+            "Camera layout",
+            "Four",
+            "Fewer"
+          ],
+          [
+            "Status",
+            "Physical prop",
+            "Unconfirmed"
+          ]
+        ],
+        "winners": [
+          null,
+          null
+        ],
+        "gap": 0.55
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 56.207347,
+      "duration": 1.9200000000000017,
+      "in": "push",
+      "data": {
+        "words": [
+          {
+            "text": "A",
+            "at": 1.36
+          },
+          {
+            "text": "RUMOR",
+            "at": 1.44
+          }
+        ],
+        "punch": "rumor"
+      }
+    },
+    {
+      "type": "host",
+      "start": 58.127347,
+      "duration": 1.1799999999999997,
+      "data": {
+        "place": "studio",
+        "cues": [
+          {
+            "start": 0.106,
+            "value": "X"
+          },
+          {
+            "start": 0.173,
+            "value": "D"
+          },
+          {
+            "start": 0.273,
+            "value": "B"
+          },
+          {
+            "start": 0.94,
+            "value": "X"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "talk",
+            "at": 0
+          },
+          {
+            "pose": "shrug",
+            "at": 0.389
+          }
+        ],
+        "words": [
+          {
+            "text": "Not",
+            "at": 0.15
+          },
+          {
+            "text": "a",
+            "at": 0.28
+          },
+          {
+            "text": "reveal",
+            "at": 0.389
+          }
+        ],
+        "punch": "reveal"
+      }
+    },
+    {
+      "type": "checklist",
+      "start": 59.307347,
+      "duration": 1.6439999999999984,
+      "in": "push",
+      "data": {
+        "heading": "",
+        "items": [
+          "Official announcement",
+          "Not studio lighting"
+        ],
+        "at": [
+          0.3,
+          0.9
+        ]
+      }
+    },
+    {
+      "type": "host",
+      "start": 59.307347,
+      "duration": 6.150999999999989,
+      "data": {
+        "place": "side",
+        "cues": [
+          {
+            "start": 0.426,
+            "value": "C"
+          },
+          {
+            "start": 0.493,
+            "value": "B"
+          },
+          {
+            "start": 0.76,
+            "value": "X"
+          },
+          {
+            "start": 0.793,
+            "value": "C"
+          },
+          {
+            "start": 0.993,
+            "value": "B"
+          },
+          {
+            "start": 1.093,
+            "value": "X"
+          },
+          {
+            "start": 1.193,
+            "value": "B"
+          },
+          {
+            "start": 1.393,
+            "value": "A"
+          },
+          {
+            "start": 1.493,
+            "value": "X"
+          },
+          {
+            "start": 1.526,
+            "value": "B"
+          },
+          {
+            "start": 1.726,
+            "value": "X"
+          },
+          {
+            "start": 2.26,
+            "value": "F"
+          },
+          {
+            "start": 2.293,
+            "value": "C"
+          },
+          {
+            "start": 2.393,
+            "value": "B"
+          },
+          {
+            "start": 2.46,
+            "value": "G"
+          },
+          {
+            "start": 2.493,
+            "value": "X"
+          },
+          {
+            "start": 2.56,
+            "value": "B"
+          },
+          {
+            "start": 2.593,
+            "value": "C"
+          },
+          {
+            "start": 2.793,
+            "value": "G"
+          },
+          {
+            "start": 2.826,
+            "value": "X"
+          },
+          {
+            "start": 2.893,
+            "value": "B"
+          },
+          {
+            "start": 2.993,
+            "value": "C"
+          },
+          {
+            "start": 3.16,
+            "value": "H"
+          },
+          {
+            "start": 3.226,
+            "value": "C"
+          },
+          {
+            "start": 3.493,
+            "value": "B"
+          },
+          {
+            "start": 3.56,
+            "value": "A"
+          },
+          {
+            "start": 3.593,
+            "value": "X"
+          },
+          {
+            "start": 3.626,
+            "value": "A"
+          },
+          {
+            "start": 3.66,
+            "value": "B"
+          },
+          {
+            "start": 3.793,
+            "value": "X"
+          },
+          {
+            "start": 4.26,
+            "value": "C"
+          },
+          {
+            "start": 4.326,
+            "value": "D"
+          },
+          {
+            "start": 4.393,
+            "value": "B"
+          },
+          {
+            "start": 4.526,
+            "value": "C"
+          },
+          {
+            "start": 4.76,
+            "value": "A"
+          },
+          {
+            "start": 4.826,
+            "value": "B"
+          },
+          {
+            "start": 4.926,
+            "value": "C"
+          },
+          {
+            "start": 4.993,
+            "value": "X"
+          },
+          {
+            "start": 5.026,
+            "value": "C"
+          },
+          {
+            "start": 5.093,
+            "value": "B"
+          },
+          {
+            "start": 5.226,
+            "value": "F"
+          },
+          {
+            "start": 5.36,
+            "value": "X"
+          },
+          {
+            "start": 5.393,
+            "value": "F"
+          },
+          {
+            "start": 5.426,
+            "value": "B"
+          },
+          {
+            "start": 5.56,
+            "value": "E"
+          },
+          {
+            "start": 5.626,
+            "value": "F"
+          },
+          {
+            "start": 5.693,
+            "value": "H"
+          },
+          {
+            "start": 5.793,
+            "value": "B"
+          },
+          {
+            "start": 5.926,
+            "value": "X"
+          },
+          {
+            "start": 5.993,
+            "value": "B"
+          },
+          {
+            "start": 6.126,
+            "value": "X"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "thumbs_up",
+            "at": 0.0
+          },
+          {
+            "pose": "point_up",
+            "at": 1.644
+          },
+          {
+            "pose": "talk",
+            "at": 4.12
+          }
+        ]
+      }
+    },
+    {
+      "type": "steps",
+      "start": 60.951347,
+      "duration": 2.475999999999999,
+      "in": "wipe",
+      "data": {
+        "heading": "",
+        "items": [
+          "Wait for Samsung announcement"
+        ],
+        "at": [
+          0.12
+        ]
+      }
+    },
+    {
+      "type": "photo",
+      "start": 63.427347,
+      "duration": 2.0309999999999917,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13-b/edit/sources/02-photo.png",
+        "url": "https://www.samsung.com/us/smartphones/"
+      },
+      "in": "push"
+    },
+    {
+      "type": "host",
+      "start": 65.45834699999999,
+      "duration": 2.1089999999999947,
+      "data": {
+        "place": "lower",
+        "subscribe": true,
+        "cues": [
+          {
+            "start": 1.075,
+            "value": "D"
+          },
+          {
+            "start": 1.175,
+            "value": "E"
+          },
+          {
+            "start": 1.242,
+            "value": "F"
+          },
+          {
+            "start": 1.309,
+            "value": "C"
+          },
+          {
+            "start": 1.375,
+            "value": "B"
+          },
+          {
+            "start": 1.442,
+            "value": "G"
+          },
+          {
+            "start": 1.509,
+            "value": "X"
+          },
+          {
+            "start": 1.542,
+            "value": "E"
+          },
+          {
+            "start": 1.609,
+            "value": "C"
+          },
+          {
+            "start": 1.675,
+            "value": "G"
+          },
+          {
+            "start": 1.709,
+            "value": "X"
+          },
+          {
+            "start": 1.809,
+            "value": "B"
+          },
+          {
+            "start": 1.875,
+            "value": "C"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "point_up",
+            "at": 0
+          },
+          {
+            "pose": "thumbs_up",
+            "at": 1.71
+          }
+        ]
+      }
+    },
+    {
+      "type": "kinetic_title",
+      "start": 67.56734699999998,
+      "duration": 2.027000000000001,
+      "in": "push",
+      "data": {
+        "words": [
+          {
+            "text": "link",
+            "at": 0.928
+          },
+          {
+            "text": "in",
+            "at": 1.147
+          },
+          {
+            "text": "the",
+            "at": 1.227
+          },
+          {
+            "text": "description.",
+            "at": 1.333
+          }
+        ],
+        "punch": "description"
+      }
+    },
+    {
+      "type": "host",
+      "start": 67.56734699999998,
+      "duration": 2.027000000000001,
+      "data": {
+        "place": "lower",
+        "cues": [
+          {
+            "start": 0.033,
+            "value": "B"
+          },
+          {
+            "start": 0.133,
+            "value": "C"
+          },
+          {
+            "start": 0.333,
+            "value": "D"
+          },
+          {
+            "start": 0.4,
+            "value": "B"
+          },
+          {
+            "start": 0.533,
+            "value": "X"
+          },
+          {
+            "start": 0.566,
+            "value": "B"
+          },
+          {
+            "start": 0.6,
+            "value": "A"
+          },
+          {
+            "start": 0.7,
+            "value": "F"
+          },
+          {
+            "start": 0.766,
+            "value": "B"
+          },
+          {
+            "start": 1.133,
+            "value": "C"
+          },
+          {
+            "start": 1.266,
+            "value": "B"
+          },
+          {
+            "start": 1.633,
+            "value": "X"
+          },
+          {
+            "start": 1.666,
+            "value": "A"
+          },
+          {
+            "start": 1.766,
+            "value": "B"
+          },
+          {
+            "start": 1.833,
+            "value": "C"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "talk",
+            "at": 0.0
+          }
+        ]
+      }
+    },
+    {
+      "type": "host",
+      "start": 69.59434699999998,
+      "duration": 1.3250000000000028,
+      "data": {
+        "place": "studio",
+        "cues": [
+          {
+            "start": 0.006,
+            "value": "X"
+          },
+          {
+            "start": 0.673,
+            "value": "C"
+          },
+          {
+            "start": 0.706,
+            "value": "B"
+          },
+          {
+            "start": 1.039,
+            "value": "C"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "talk",
+            "at": 0
+          },
+          {
+            "pose": "wave",
+            "at": 0.917
+          }
+        ],
+        "words": [
+          {
+            "text": "Until",
+            "at": 0.15
+          },
+          {
+            "text": "then...",
+            "at": 0.917
+          }
+        ],
+        "punch": "then"
+      }
+    },
+    {
+      "type": "browser_shot",
+      "start": 70.91934699999999,
+      "duration": 2.328000000000003,
+      "data": {
+        "image": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13-b/edit/sources/01-full.png",
+        "url": "https://www.tomsguide.com/phones/samsung-phones/samsung-galaxy-s27-dummy-units-could-change-what-we-thought-we-knew-about-the-upcoming-flagships-but-im-not-convinced-these-are-accurate-and-heres-why",
+        "edge": "fade",
+        "page_width": 1440,
+        "highlights": [
+          {
+            "rect": [
+              259,
+              4166.265625,
+              602,
+              120
+            ],
+            "ring": false,
+            "sweep": true,
+            "at": 0.7,
+            "label": "Rumors aren't always reliable",
+            "sub": "Leak evidence warning"
+          }
+        ],
+        "headline": [
+          259,
+          493,
+          602,
+          170
+        ],
+        "photo": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-short-2026-11-13-b/edit/sources/01-photo.png",
+        "record": false
+      },
+      "in": "wipe"
+    },
+    {
+      "type": "host",
+      "start": 70.91934699999999,
+      "duration": 3.768000000000015,
+      "data": {
+        "place": "side",
+        "cues": [
+          {
+            "start": 0.048,
+            "value": "X"
+          },
+          {
+            "start": 0.248,
+            "value": "B"
+          },
+          {
+            "start": 0.314,
+            "value": "A"
+          },
+          {
+            "start": 0.381,
+            "value": "X"
+          },
+          {
+            "start": 0.448,
+            "value": "E"
+          },
+          {
+            "start": 0.514,
+            "value": "A"
+          },
+          {
+            "start": 0.581,
+            "value": "X"
+          },
+          {
+            "start": 0.648,
+            "value": "B"
+          },
+          {
+            "start": 0.714,
+            "value": "G"
+          },
+          {
+            "start": 0.748,
+            "value": "X"
+          },
+          {
+            "start": 0.814,
+            "value": "E"
+          },
+          {
+            "start": 0.914,
+            "value": "F"
+          },
+          {
+            "start": 0.981,
+            "value": "B"
+          },
+          {
+            "start": 1.281,
+            "value": "C"
+          },
+          {
+            "start": 1.348,
+            "value": "G"
+          },
+          {
+            "start": 1.414,
+            "value": "B"
+          },
+          {
+            "start": 1.748,
+            "value": "C"
+          },
+          {
+            "start": 1.814,
+            "value": "F"
+          },
+          {
+            "start": 1.881,
+            "value": "B"
+          },
+          {
+            "start": 2.081,
+            "value": "X"
+          },
+          {
+            "start": 2.148,
+            "value": "B"
+          },
+          {
+            "start": 2.181,
+            "value": "X"
+          },
+          {
+            "start": 2.514,
+            "value": "D"
+          },
+          {
+            "start": 2.581,
+            "value": "B"
+          },
+          {
+            "start": 2.648,
+            "value": "A"
+          },
+          {
+            "start": 2.714,
+            "value": "X"
+          },
+          {
+            "start": 2.781,
+            "value": "F"
+          },
+          {
+            "start": 2.948,
+            "value": "G"
+          },
+          {
+            "start": 3.014,
+            "value": "X"
+          },
+          {
+            "start": 3.048,
+            "value": "C"
+          },
+          {
+            "start": 3.081,
+            "value": "G"
+          },
+          {
+            "start": 3.148,
+            "value": "F"
+          },
+          {
+            "start": 3.214,
+            "value": "B"
+          },
+          {
+            "start": 3.481,
+            "value": "A"
+          },
+          {
+            "start": 3.581,
+            "value": "X"
+          },
+          {
+            "start": 3.648,
+            "value": "B"
+          }
+        ],
+        "poses": [
+          {
+            "pose": "point_up",
+            "at": 0.0
+          },
+          {
+            "pose": "point_up",
+            "at": 1.768
+          },
+          {
+            "pose": "explain",
+            "at": 2.328
+          }
+        ]
+      }
+    },
+    {
+      "type": "comparison",
+      "start": 73.24734699999999,
+      "duration": 1.440000000000012,
+      "in": "whip",
+      "data": {
+        "left": "Leak evidence",
+        "right": "Shipping proof",
+        "rows": [
+          [
+            "Purple phone",
+            "Seen online",
+            "Not confirmed"
+          ],
+          [
+            "What ships",
+            "Unknown",
+            "Official only"
+          ]
+        ],
+        "winners": [
+          null,
+          null
+        ],
+        "gap": 0.32000000000000595
+      }
+    }
+  ],
+  "notes": [
+    "scene 7: metaphor without its data, shown as words",
+    "scene 12: metaphor without its data, shown as words",
+    "scene 16: metaphor without its data, shown as words",
+    "scene 21: metaphor without its data, shown as words"
+  ],
+  "captions": [
+    {
+      "start": 0.262,
+      "end": 0.766,
+      "words": [
+        {
+          "text": "Imagine",
+          "at": 0.312
+        },
+        {
+          "text": "a",
+          "at": 0.44
+        },
+        {
+          "text": "phone",
+          "at": 0.52
+        }
+      ],
+      "keys": [
+        2
+      ]
+    },
+    {
+      "start": 0.716,
+      "end": 2.2,
+      "words": [
+        {
+          "text": "reveal",
+          "at": 0.766
+        },
+        {
+          "text": "so",
+          "at": 1.147
+        },
+        {
+          "text": "convincing,",
+          "at": 1.418
+        }
+      ],
+      "keys": [
+        0
+      ]
+    },
+    {
+      "start": 2.15,
+      "end": 3.248,
+      "words": [
+        {
+          "text": "you",
+          "at": 2.2
+        },
+        {
+          "text": "forget",
+          "at": 2.366
+        },
+        {
+          "text": "the",
+          "at": 2.66
+        },
+        {
+          "text": "company",
+          "at": 2.78
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 3.198,
+      "end": 4.74,
+      "words": [
+        {
+          "text": "hasn't",
+          "at": 3.248
+        },
+        {
+          "text": "actually",
+          "at": 3.573
+        },
+        {
+          "text": "revealed",
+          "at": 4.044
+        },
+        {
+          "text": "it.",
+          "at": 4.453
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 4.69,
+      "end": 6.12,
+      "words": [
+        {
+          "text": "The",
+          "at": 4.74
+        },
+        {
+          "text": "viral",
+          "at": 5.333
+        },
+        {
+          "text": "clips",
+          "at": 5.653
+        },
+        {
+          "text": "show",
+          "at": 5.952
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 6.07,
+      "end": 7.16,
+      "words": [
+        {
+          "text": "a",
+          "at": 6.12
+        },
+        {
+          "text": "purple",
+          "at": 6.217
+        },
+        {
+          "text": "Galaxy",
+          "at": 6.629
+        }
+      ],
+      "keys": [
+        1,
+        2
+      ]
+    },
+    {
+      "start": 7.11,
+      "end": 8.56,
+      "words": [
+        {
+          "text": "S27",
+          "at": 7.16
+        },
+        {
+          "text": "Ultra",
+          "at": 7.907
+        },
+        {
+          "text": "with",
+          "at": 8.272
+        }
+      ],
+      "keys": [
+        0,
+        1
+      ]
+    },
+    {
+      "start": 8.51,
+      "end": 9.58,
+      "words": [
+        {
+          "text": "4",
+          "at": 8.56
+        },
+        {
+          "text": "cameras.",
+          "at": 8.79
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 9.53,
+      "end": 10.356,
+      "words": [
+        {
+          "text": "But",
+          "at": 9.58
+        },
+        {
+          "text": "as",
+          "at": 10.053
+        },
+        {
+          "text": "of",
+          "at": 10.213
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 10.306,
+      "end": 11.36,
+      "words": [
+        {
+          "text": "November",
+          "at": 10.356
+        },
+        {
+          "text": "13,",
+          "at": 10.8
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 11.31,
+      "end": 12.6,
+      "words": [
+        {
+          "text": "2026,",
+          "at": 11.36
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 12.55,
+      "end": 13.909,
+      "words": [
+        {
+          "text": "the",
+          "at": 12.6
+        },
+        {
+          "text": "phone",
+          "at": 12.787
+        },
+        {
+          "text": "and",
+          "at": 13.16
+        },
+        {
+          "text": "\u201cCobalt",
+          "at": 13.36
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 13.859,
+      "end": 16.08,
+      "words": [
+        {
+          "text": "Violet\u201d",
+          "at": 13.909
+        },
+        {
+          "text": "are",
+          "at": 14.42
+        },
+        {
+          "text": "still",
+          "at": 14.533
+        },
+        {
+          "text": "UNCONFIRMED.",
+          "at": 14.907
+        }
+      ],
+      "keys": [
+        3
+      ]
+    },
+    {
+      "start": 16.03,
+      "end": 19.62,
+      "words": [
+        {
+          "text": "So",
+          "at": 16.08
+        },
+        {
+          "text": "what",
+          "at": 16.64
+        },
+        {
+          "text": "actually",
+          "at": 17.013
+        },
+        {
+          "text": "surfaced?",
+          "at": 17.502
+        }
+      ],
+      "keys": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "start": 19.57,
+      "end": 20.827,
+      "words": [
+        {
+          "text": "On",
+          "at": 19.62
+        },
+        {
+          "text": "November",
+          "at": 19.683
+        },
+        {
+          "text": "12,",
+          "at": 20.127
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 20.777,
+      "end": 21.78,
+      "words": [
+        {
+          "text": "Tom's",
+          "at": 20.827
+        },
+        {
+          "text": "Guide",
+          "at": 21.127
+        },
+        {
+          "text": "reported",
+          "at": 21.371
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 21.73,
+      "end": 22.575,
+      "words": [
+        {
+          "text": "dummy",
+          "at": 21.78
+        },
+        {
+          "text": "units,",
+          "at": 22.114
+        }
+      ],
+      "keys": [
+        0,
+        1
+      ]
+    },
+    {
+      "start": 22.525,
+      "end": 24.727,
+      "words": [
+        {
+          "text": "including",
+          "at": 22.575
+        },
+        {
+          "text": "a",
+          "at": 23.047
+        },
+        {
+          "text": "supposed",
+          "at": 23.14
+        },
+        {
+          "text": "Ultra.",
+          "at": 23.66
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 24.677,
+      "end": 26.247,
+      "words": [
+        {
+          "text": "Why",
+          "at": 24.727
+        },
+        {
+          "text": "does",
+          "at": 25.119
+        },
+        {
+          "text": "that",
+          "at": 25.263
+        },
+        {
+          "text": "matter?",
+          "at": 25.384
+        }
+      ],
+      "keys": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "start": 26.197,
+      "end": 27.527,
+      "words": [
+        {
+          "text": "A",
+          "at": 26.247
+        },
+        {
+          "text": "dummy",
+          "at": 26.754
+        },
+        {
+          "text": "copies",
+          "at": 27.144
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 27.477,
+      "end": 28.547,
+      "words": [
+        {
+          "text": "the",
+          "at": 27.527
+        },
+        {
+          "text": "outside,",
+          "at": 27.717
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 28.497,
+      "end": 29.287,
+      "words": [
+        {
+          "text": "but",
+          "at": 28.547
+        },
+        {
+          "text": "it",
+          "at": 28.634
+        },
+        {
+          "text": "doesn't",
+          "at": 28.727
+        },
+        {
+          "text": "prove",
+          "at": 29.047
+        }
+      ],
+      "keys": [
+        2,
+        3
+      ]
+    },
+    {
+      "start": 29.237,
+      "end": 30.71,
+      "words": [
+        {
+          "text": "the",
+          "at": 29.287
+        },
+        {
+          "text": "real",
+          "at": 29.455
+        },
+        {
+          "text": "phone",
+          "at": 29.687
+        },
+        {
+          "text": "matches.",
+          "at": 29.957
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 30.66,
+      "end": 31.853,
+      "words": [
+        {
+          "text": "Studio",
+          "at": 30.71
+        },
+        {
+          "text": "lighting",
+          "at": 31.363
+        },
+        {
+          "text": "and",
+          "at": 31.687
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 31.803,
+      "end": 32.747,
+      "words": [
+        {
+          "text": "camera",
+          "at": 31.853
+        },
+        {
+          "text": "processing",
+          "at": 32.178
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 32.697,
+      "end": 34.095,
+      "words": [
+        {
+          "text": "can",
+          "at": 32.747
+        },
+        {
+          "text": "make",
+          "at": 32.991
+        },
+        {
+          "text": "\u201cmaybe\u201d",
+          "at": 33.367
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 34.045,
+      "end": 35.284,
+      "words": [
+        {
+          "text": "look",
+          "at": 34.095
+        },
+        {
+          "text": "OFFICIAL.",
+          "at": 34.407
+        }
+      ],
+      "keys": [
+        0,
+        1
+      ]
+    },
+    {
+      "start": 35.234,
+      "end": 36.164,
+      "words": [
+        {
+          "text": "But",
+          "at": 35.284
+        },
+        {
+          "text": "the",
+          "at": 35.354
+        },
+        {
+          "text": "shiny",
+          "at": 35.541
+        },
+        {
+          "text": "back",
+          "at": 35.922
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 36.114,
+      "end": 37.981,
+      "words": [
+        {
+          "text": "creates",
+          "at": 36.164
+        },
+        {
+          "text": "a",
+          "at": 36.594
+        },
+        {
+          "text": "REAL",
+          "at": 36.754
+        },
+        {
+          "text": "problem!",
+          "at": 37.154
+        }
+      ],
+      "keys": [
+        2,
+        3
+      ]
+    },
+    {
+      "start": 37.931,
+      "end": 39.634,
+      "words": [
+        {
+          "text": "These",
+          "at": 37.981
+        },
+        {
+          "text": "dummies",
+          "at": 38.954
+        },
+        {
+          "text": "show",
+          "at": 39.362
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 39.584,
+      "end": 41.154,
+      "words": [
+        {
+          "text": "4",
+          "at": 39.634
+        },
+        {
+          "text": "rear",
+          "at": 39.938
+        },
+        {
+          "text": "cameras.",
+          "at": 40.274
+        }
+      ],
+      "keys": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "start": 41.104,
+      "end": 42.454,
+      "words": [
+        {
+          "text": "Sounds",
+          "at": 41.154
+        },
+        {
+          "text": "specific,",
+          "at": 41.447
+        },
+        {
+          "text": "right?",
+          "at": 41.994
+        }
+      ],
+      "keys": [
+        0,
+        1
+      ]
+    },
+    {
+      "start": 42.404,
+      "end": 44.066,
+      "words": [
+        {
+          "text": "Yet",
+          "at": 42.454
+        },
+        {
+          "text": "that",
+          "at": 43.026
+        },
+        {
+          "text": "detail",
+          "at": 43.211
+        },
+        {
+          "text": "conflicts",
+          "at": 43.602
+        }
+      ],
+      "keys": [
+        3
+      ]
+    },
+    {
+      "start": 44.016,
+      "end": 45.134,
+      "words": [
+        {
+          "text": "with",
+          "at": 44.066
+        },
+        {
+          "text": "other",
+          "at": 44.221
+        },
+        {
+          "text": "leaks,",
+          "at": 44.434
+        }
+      ],
+      "keys": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "start": 45.084,
+      "end": 45.994,
+      "words": [
+        {
+          "text": "and",
+          "at": 45.134
+        },
+        {
+          "text": "Ice",
+          "at": 45.374
+        },
+        {
+          "text": "Universe",
+          "at": 45.598
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 45.944,
+      "end": 46.971,
+      "words": [
+        {
+          "text": "claimed",
+          "at": 45.994
+        },
+        {
+          "text": "the",
+          "at": 46.314
+        },
+        {
+          "text": "upper-right",
+          "at": 46.474
+        }
+      ],
+      "keys": [
+        2
+      ]
+    },
+    {
+      "start": 46.921,
+      "end": 48.394,
+      "words": [
+        {
+          "text": "camera",
+          "at": 46.971
+        },
+        {
+          "text": "doesn't",
+          "at": 47.354
+        },
+        {
+          "text": "exist.",
+          "at": 47.714
+        }
+      ],
+      "keys": [
+        0
+      ]
+    },
+    {
+      "start": 48.344,
+      "end": 50.474,
+      "words": [
+        {
+          "text": "Another",
+          "at": 48.394
+        },
+        {
+          "text": "rumor",
+          "at": 49.301
+        },
+        {
+          "text": "suggests",
+          "at": 49.687
+        },
+        {
+          "text": "only",
+          "at": 50.178
+        }
+      ],
+      "keys": [
+        3
+      ]
+    },
+    {
+      "start": 50.424,
+      "end": 51.85,
+      "words": [
+        {
+          "text": "3",
+          "at": 50.474
+        },
+        {
+          "text": "lenses,",
+          "at": 50.754
+        },
+        {
+          "text": "dropping",
+          "at": 51.43
+        },
+        {
+          "text": "a",
+          "at": 51.754
+        }
+      ],
+      "keys": [
+        0,
+        1
+      ]
+    },
+    {
+      "start": 51.8,
+      "end": 54.186,
+      "words": [
+        {
+          "text": "secondary",
+          "at": 51.85
+        },
+        {
+          "text": "10MP",
+          "at": 52.434
+        },
+        {
+          "text": "telephoto.",
+          "at": 53.186
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 54.136,
+      "end": 54.807,
+      "words": [
+        {
+          "text": "So",
+          "at": 54.186
+        },
+        {
+          "text": "which",
+          "at": 54.247
+        },
+        {
+          "text": "phone",
+          "at": 54.487
+        },
+        {
+          "text": "are",
+          "at": 54.707
+        }
+      ],
+      "keys": [
+        1,
+        2
+      ]
+    },
+    {
+      "start": 54.757,
+      "end": 56.327,
+      "words": [
+        {
+          "text": "you",
+          "at": 54.807
+        },
+        {
+          "text": "looking",
+          "at": 54.967
+        },
+        {
+          "text": "at?",
+          "at": 55.327
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 56.277,
+      "end": 57.567,
+      "words": [
+        {
+          "text": "Right",
+          "at": 56.327
+        },
+        {
+          "text": "now,",
+          "at": 56.967
+        },
+        {
+          "text": "it's",
+          "at": 57.38
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 57.517,
+      "end": 58.247,
+      "words": [
+        {
+          "text": "a",
+          "at": 57.567
+        },
+        {
+          "text": "RUMOR,",
+          "at": 57.647
+        }
+      ],
+      "keys": [
+        1
+      ]
+    },
+    {
+      "start": 58.197,
+      "end": 59.427,
+      "words": [
+        {
+          "text": "not",
+          "at": 58.247
+        },
+        {
+          "text": "a",
+          "at": 58.407
+        },
+        {
+          "text": "reveal.",
+          "at": 58.516
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 59.377,
+      "end": 60.34,
+      "words": [
+        {
+          "text": "The",
+          "at": 59.427
+        },
+        {
+          "text": "real",
+          "at": 59.759
+        },
+        {
+          "text": "test",
+          "at": 59.967
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 60.29,
+      "end": 61.071,
+      "words": [
+        {
+          "text": "is",
+          "at": 60.34
+        },
+        {
+          "text": "simple:",
+          "at": 60.504
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 61.021,
+      "end": 61.94,
+      "words": [
+        {
+          "text": "wait",
+          "at": 61.071
+        },
+        {
+          "text": "for",
+          "at": 61.687
+        },
+        {
+          "text": "an",
+          "at": 61.834
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 61.89,
+      "end": 63.547,
+      "words": [
+        {
+          "text": "official",
+          "at": 61.94
+        },
+        {
+          "text": "announcement,",
+          "at": 62.416
+        }
+      ],
+      "keys": [
+        0,
+        1
+      ]
+    },
+    {
+      "start": 63.497,
+      "end": 64.18,
+      "words": [
+        {
+          "text": "not",
+          "at": 63.547
+        },
+        {
+          "text": "a",
+          "at": 63.767
+        },
+        {
+          "text": "dummy",
+          "at": 63.86
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 64.13,
+      "end": 65.578,
+      "words": [
+        {
+          "text": "under",
+          "at": 64.18
+        },
+        {
+          "text": "studio",
+          "at": 64.504
+        },
+        {
+          "text": "lights.",
+          "at": 64.916
+        }
+      ],
+      "keys": [
+        1,
+        2
+      ]
+    },
+    {
+      "start": 65.528,
+      "end": 66.947,
+      "words": [
+        {
+          "text": "Follow",
+          "at": 65.578
+        },
+        {
+          "text": "us",
+          "at": 66.66
+        },
+        {
+          "text": "for",
+          "at": 66.807
+        }
+      ],
+      "keys": [
+        0,
+        1
+      ]
+    },
+    {
+      "start": 66.897,
+      "end": 67.687,
+      "words": [
+        {
+          "text": "the",
+          "at": 66.947
+        },
+        {
+          "text": "free",
+          "at": 67.055
+        },
+        {
+          "text": "guide",
+          "at": 67.314
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 67.637,
+      "end": 68.714,
+      "words": [
+        {
+          "text": "and",
+          "at": 67.687
+        },
+        {
+          "text": "our",
+          "at": 67.847
+        },
+        {
+          "text": "community",
+          "at": 68.015
+        },
+        {
+          "text": "link",
+          "at": 68.495
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 68.664,
+      "end": 69.714,
+      "words": [
+        {
+          "text": "in",
+          "at": 68.714
+        },
+        {
+          "text": "the",
+          "at": 68.787
+        },
+        {
+          "text": "description.",
+          "at": 68.9
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 69.664,
+      "end": 71.039,
+      "words": [
+        {
+          "text": "Until",
+          "at": 69.714
+        },
+        {
+          "text": "then,",
+          "at": 70.511
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 70.989,
+      "end": 72.091,
+      "words": [
+        {
+          "text": "that",
+          "at": 71.039
+        },
+        {
+          "text": "purple",
+          "at": 71.213
+        },
+        {
+          "text": "phone",
+          "at": 71.554
+        },
+        {
+          "text": "is",
+          "at": 71.94
+        }
+      ],
+      "keys": []
+    },
+    {
+      "start": 72.041,
+      "end": 73.367,
+      "words": [
+        {
+          "text": "evidence",
+          "at": 72.091
+        },
+        {
+          "text": "of",
+          "at": 72.474
+        },
+        {
+          "text": "a",
+          "at": 72.567
+        },
+        {
+          "text": "leak,",
+          "at": 72.687
+        }
+      ],
+      "keys": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "start": 73.317,
+      "end": 73.999,
+      "words": [
+        {
+          "text": "not",
+          "at": 73.367
+        },
+        {
+          "text": "proof",
+          "at": 73.54
+        },
+        {
+          "text": "of",
+          "at": 73.86
+        }
+      ],
+      "keys": [
+        0,
+        1
+      ]
+    },
+    {
+      "start": 73.949,
+      "end": 74.687,
+      "words": [
+        {
+          "text": "what",
+          "at": 73.999
+        },
+        {
+          "text": "ships.",
+          "at": 74.194
+        }
+      ],
+      "keys": []
+    }
+  ],
+  "chapters": [],
+  "title": "Samsung Galaxy S27 Ultra Cobalt Violet Explained",
+  "quiet": []
+}
