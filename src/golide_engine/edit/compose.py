@@ -112,6 +112,9 @@ def _e(text: Any) -> str:
     return html.escape(str(text), quote=True)
 
 
+IMPORTMAP = '<script type="importmap">{"imports":{"three":"./three/three.module.js"}}</script>'
+
+
 def _shift(tween: str, t0: float) -> str:
     """A GSAP call whose last argument is its time from the scene start, moved to the scene's place in the video."""
     import re as _re
@@ -657,6 +660,31 @@ class Composer:
         self.tw(f'tl.fromTo("#{sid}-f",{{scale:.7,y:60,opacity:0}},{{scale:1,y:0,opacity:1,duration:.55,ease:"back.out(1.3)"}},{t0:.3f});')
         self.cue("whoosh", t0)
         self.tweens.extend(tw)
+
+    def object3d(self, t0, dur, data, how="rise"):
+        """2026-11-13 (owner): a real device in clear glass with lit edges and one gold part (the one the story is
+        about), turning slowly; its move (lid opens, server slides out, chip lid lifts...) lands on the spoken word.
+        Rendered by three.js in the video itself (assets/edit/g3d/glass3d.js)."""
+        sid = self._id("g3d")
+        self.uses_three = True
+        long = self.fmt == "long"
+        cw, ch = (1500, 940) if long else (1000, 1100)
+        at = float(data.get("at", 1.0))
+        label = (f'<div class="label" style="position:absolute;left:0;right:0;top:{self.cy + ch / 2 - 40:.0f}px;'
+                 f'text-align:center;font-size:40px;color:#E8C268">{_e(data["label"])}</div>') if data.get("label") else ""
+        inner = (f'<canvas id="{sid}-cv" width="{cw}" height="{ch}" style="position:absolute;left:{(self.w - cw) / 2:.0f}px;'
+                 f'top:{self.cy - ch / 2:.0f}px;width:{cw}px;height:{ch}px"></canvas>{label}'
+                 f'<script type="module">import {{ mount }} from "./three/g3d/glass3d.js";'
+                 f'window.__g3d = window.__g3d || {{}};'
+                 f'const r = mount(document.getElementById("{sid}-cv"), {json.dumps(data["object"])});'
+                 f'window.__g3d["{sid}"] = r; r(0, -0.6);</script>')
+        self.scene(sid, t0, dur, inner)
+        self.entrance(sid, t0, how)
+        move = 0.9
+        self.tw(f'(function(){{var o={{s:0}};tl.fromTo(o,{{s:0}},{{s:{dur:.3f},duration:{dur:.3f},ease:"none",onUpdate:function(){{'
+                f'var f=window.__g3d&&window.__g3d["{sid}"];if(!f)return;var m=Math.min(1,Math.max(0,(o.s-{at:.3f})/{move}));'
+                f'm=m*m*(3-2*m);f(m,-0.6+0.55*o.s/{dur:.3f});}}}},{t0:.3f});}})();')
+        self.cue("whoosh", t0 + at - 0.1)
 
     def metaphor(self, t0, dur, data, how="rise"):
         """2026-11-13 (owner): an idea as a moving picture (scales, a lock, a magnifier, a funnel...), landing on
@@ -1230,6 +1258,12 @@ class Composer:
         out.mkdir(parents=True, exist_ok=True)
         shutil.copytree(ASSETS / "fonts", out / "fonts", dirs_exist_ok=True)
         shutil.copy(ASSETS / "gsap.min.js", out / "gsap.min.js")
+        if getattr(self, "uses_three", False):     # three.js and the glass objects, only when a scene needs them
+            three = ASSETS.parent / "three"
+            (out / "three" / "g3d").mkdir(parents=True, exist_ok=True)
+            shutil.copy(three / "lib" / "three.module.js", out / "three" / "three.module.js")
+            shutil.copytree(three / "examples", out / "three" / "examples", dirs_exist_ok=True)
+            shutil.copy(ASSETS / "g3d" / "glass3d.js", out / "three" / "g3d" / "glass3d.js")
         (out / "media").mkdir(exist_ok=True)
         for name, src in self.files.items():
             shutil.copy(src, out / name)
@@ -1284,7 +1318,7 @@ class Composer:
                            f'tl.set("#brand .logo",{{autoAlpha:.92}},{b:.3f});tl.set("#brand .chap",{{visibility:"inherit"}},{b:.3f});')
         self.tweens.extend(btw)
         page = f"""<!doctype html><html lang="en"><head><meta charset="UTF-8">
-<meta name="viewport" content="width={self.w}, height={self.h}"><script src="gsap.min.js"></script>
+<meta name="viewport" content="width={self.w}, height={self.h}"><script src="gsap.min.js"></script>{IMPORTMAP if getattr(self, "uses_three", False) else ""}
 <style>{CSS}</style></head><body>
 <div id="root" data-composition-id="main" data-start="0" data-width="{self.w}" data-height="{self.h}" data-duration="{duration:.3f}">
 <div class="bg" id="bg"></div><div class="glow" id="glow"></div>
