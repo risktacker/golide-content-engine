@@ -760,8 +760,19 @@ def _no_repeats(scenes: list[dict], lines, fmt: str, notes: list[str]) -> list[d
     used_rects: set[tuple] = set()
     used_words: set[str] = set()
     out, streak = [], 0
+    page_run: list[str] = []     # 2026-11-13 (review): one page 3 or 4 times in a row looked stuck: at most 2
     for sc in scenes:
         kind = sc["type"]
+        if kind == "browser_shot":
+            url = str(sc["data"].get("url"))
+            if page_run[-2:] == [url, url]:
+                notes.append(f"page at {sc['start']:.1f}s shown twice in a row already, shown as words")
+                sc = _words_beat(lines, sc["start"], sc["start"] + sc["duration"])
+                kind, page_run = sc["type"], []
+        if kind == "browser_shot":
+            page_run.append(str(sc["data"].get("url")))
+        elif kind != "host":
+            page_run = []
         if kind == "browser_shot":
             hl = (sc["data"].get("highlights") or [{}])[0]
             key = (str(sc["data"].get("url")), tuple(hl.get("rect") or sc["data"].get("headline") or []))

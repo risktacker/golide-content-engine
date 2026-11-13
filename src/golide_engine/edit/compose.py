@@ -176,8 +176,10 @@ class Composer:
             # 2026-11-12 (owner): Goli is in (nearly) every scene: the content keeps to the left three quarters
             # and Goli has the right quarter, so he is never pushed out and never covers the proof
             inner = f'<div class="zone" style="position:absolute;inset:0;transform:scale(.84);transform-origin:2% 50%">{inner}</div>'
+        # the slow push-in grows from the content's side, so text on the left never drifts off the frame
+        cam = ' style="transform-origin:22% 50%"' if self.zone and self.fmt == "long" else ""
         self.parts.append(f'<section id="{sid}" class="scene clip" data-start="{t0:.3f}" data-duration="{dur:.3f}">'
-                          f'<div class="stage"><div class="cam">{inner}</div></div></section>')
+                          f'<div class="stage"><div class="cam"{cam}>{inner}</div></div></section>')
 
     # ---- templates
     def browser_shot(self, t0, dur, data, how="rise"):
@@ -438,6 +440,11 @@ class Composer:
         v = self.n_words % 4
         self.n_words += 1
         words = data["words"]                             # [{"text":..,"at":..}]
+        # 2026-11-13 (review): never an empty frame while waiting for the first spoken word: the line starts
+        # building within a quarter second of the cut, keeping its own rhythm after that
+        late = min((float(w.get("at", 0)) for w in words), default=0.0) - 0.25
+        if late > 0:
+            words = [dict(w, at=float(w.get("at", 0)) - late) for w in words]
         punch = str(data.get("punch", "")).lower()
         sub = f'<div class="label" style="margin-top:28px">{_e(data["sub"])}</div>' if data.get("sub") else ""
         is_punch = [w["text"].lower().strip(".,!?") == punch for w in words]
@@ -913,6 +920,13 @@ class Composer:
             y = (1700 if self.fmt == "short" else self.h + 150) - size   # long: knees at the frame's bottom edge
         if place in ("studio", "lower"):      # seated: desk top at his waist
             y = studio.layout(self.fmt if place == "studio" else "lower")["desk_y"] - 430 * size / 540
+        # 2026-11-13 (owner): Goli gestures TOWARD what he talks about. His poses point to screen right; standing on
+        # the right of a long video (the content on his left) he is mirrored, so a point, a thumbs up or a look goes
+        # to the content and never off the frame edge. A pose that would point away from the content is turned round.
+        mirror = self.fmt == "long" and place in ("side", "corner", "right")
+        if self.fmt == "long":
+            poses = [dict(p, pose="point") if p.get("pose") == "point_left" else p for p in poses]
+        flip = "transform:scaleX(-1);" if mirror else ""
         layers = ""
         for k, p in enumerate(poses):
             uid = f"{sid}-p{k}"
@@ -997,7 +1011,7 @@ class Composer:
         dim = (f'<div id="{sid}-dim" style="position:absolute;inset:0;background:#000;opacity:0;pointer-events:none"></div>'
                if outro == "lights_off" else "")
         inner = (f'{bubble}{title}{card}<div id="{sid}-ch" data-box="goli" data-floor="{floor}" style="position:absolute;left:{x:.0f}px;top:{y:.0f}px;width:{w:.0f}px;'
-                 f'height:{size}px">{layers}</div>{front}{dim}')
+                 f'height:{size}px"><div style="position:absolute;inset:0;{flip}">{layers}</div></div>{front}{dim}')
         self.parts.append(f'<section id="{sid}" class="scene clip" data-start="{t0:.3f}" data-duration="{dur:.3f}" '
                           f'style="z-index:{40 if place in ("corner", "lower", "side") else 1}"><div class="stage"><div class="cam">{inner}</div></div></section>')
         # entrance: he pops up from below the frame (in the studio he is already seated; the set eases in)
