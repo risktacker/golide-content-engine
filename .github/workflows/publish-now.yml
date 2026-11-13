@@ -1,0 +1,42 @@
+name: Publish a video now
+
+# 2026-11-13 (owner): make one uploaded video public right away (it drops its scheduled time).
+on:
+  workflow_dispatch:
+    inputs:
+      video_id:
+        description: "YouTube video id"
+        required: true
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e '.[production]'
+      - name: Make it public
+        env:
+          GOLIDE_STUDIO_BASE_URL: "https://studio.golidee.com"
+          VID: ${{ inputs.video_id }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from golide_engine.youtube.auth import services
+          vid = os.environ["VID"]
+          youtube, _ = services()
+          youtube.videos().update(part="status", body={"id": vid, "status": {
+              "privacyStatus": "public", "selfDeclaredMadeForKids": False}}).execute()
+          item = youtube.videos().list(part="status,snippet", id=vid).execute()["items"][0]
+          print(json.dumps({"status": "published", "video_id": vid, "privacy": item["status"]["privacyStatus"],
+                            "title": item["snippet"]["title"]}))
+          if item["status"]["privacyStatus"] != "public":
+              raise SystemExit("YouTube did not make it public")
+          PY
