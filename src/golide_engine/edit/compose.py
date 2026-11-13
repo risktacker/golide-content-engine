@@ -112,6 +112,13 @@ def _e(text: Any) -> str:
     return html.escape(str(text), quote=True)
 
 
+def _shift(tween: str, t0: float) -> str:
+    """A GSAP call whose last argument is its time from the scene start, moved to the scene's place in the video."""
+    import re as _re
+    m = _re.search(r",(-?[\d.]+)\);$", tween)
+    return tween if not m else tween[:m.start()] + f",{t0 + float(m.group(1)):.3f});"
+
+
 class Composer:
     """Collects scene markup and one GSAP timeline."""
 
@@ -650,6 +657,30 @@ class Composer:
         self.tw(f'tl.fromTo("#{sid}-f",{{scale:.7,y:60,opacity:0}},{{scale:1,y:0,opacity:1,duration:.55,ease:"back.out(1.3)"}},{t0:.3f});')
         self.cue("whoosh", t0)
         self.tweens.extend(tw)
+
+    def metaphor(self, t0, dur, data, how="rise"):
+        """2026-11-13 (owner): an idea as a moving picture (scales, a lock, a magnifier, a funnel...), landing on
+        the spoken word; drawn in code (edit/metaphors.py)."""
+        from . import metaphors
+        sid = self._id("meta")
+        kind = data["kind"]
+        at = float(data.get("at", 1.0))
+        args = {k: v for k, v in data.items() if k not in ("kind", "at", "goli_zone", "heading")}
+        svg, tweens, cues = metaphors.DRAW[kind](sid, at, **args)
+        width = 1640 if self.fmt == "long" else 1000      # drawn large: the idea fills the proof area
+        height = width * metaphors.H / metaphors.W
+        head = (f'<div class="label" style="position:absolute;left:0;right:0;top:{max(40, self.cy - height / 2 - 60):.0f}px;'
+                f'text-align:center;font-size:36px">{_e(data["heading"])}</div>') if data.get("heading") else ""
+        inner = (f'{head}<svg viewBox="0 0 {metaphors.W} {metaphors.H}" width="{width}" height="{height:.0f}" '
+                 f'style="position:absolute;left:{(self.w - width) / 2:.0f}px;top:{self.cy - height / 2 + 20:.0f}px;overflow:visible">'
+                 f'{svg}</svg>')
+        self.scene(sid, t0, dur, inner)
+        self.entrance(sid, t0, how)
+        for tw in tweens:      # the library times from the scene start; move it onto the timeline
+            self.tw(_shift(tw, t0))
+        for kind_, t in cues:
+            self.cue(kind_, t0 + t)
+        self.drift(sid, t0, dur, 0.008)
 
     def terminal(self, t0, dur, data, how="rise"):
         """2026-11-13 (owner, modelled on Outskill): a REAL run. The commands are typed, the output the run really
