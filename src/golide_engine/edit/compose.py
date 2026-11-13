@@ -115,6 +115,26 @@ def _e(text: Any) -> str:
 IMPORTMAP = '<script type="importmap">{"imports":{"three":"./three/three.module.js"}}</script>'
 
 
+def reactions(edit: dict[str, Any]) -> list[tuple[float, str]]:
+    """When Goli reacts (owner 2026-11-13, point 4): the end of a spoken question or exclamation (from the
+    captions' words), and the moment something lands on screen (a number, a metaphor, a 3D move)."""
+    out: list[tuple[float, str]] = []
+    for c in edit.get("captions") or []:
+        for w in c.get("words") or []:
+            text = str(w.get("text", "")).rstrip()
+            if text.endswith("?"):
+                out.append((float(w.get("at", c.get("start", 0))), "question"))
+            elif text.endswith("!"):
+                out.append((float(w.get("at", c.get("start", 0))), "exclaim"))
+    for sc in edit.get("scenes") or []:
+        d = sc.get("data") or {}
+        if sc["type"] in ("metaphor", "object3d"):
+            out.append((float(sc["start"]) + float(d.get("at", 1.0)), "land"))
+        elif sc["type"] == "stat_counter":
+            out.append((float(sc["start"]) + 1.25, "land"))
+    return sorted(out)
+
+
 def _shift(tween: str, t0: float) -> str:
     """A GSAP call whose last argument is its time from the scene start, moved to the scene's place in the video."""
     import re as _re
@@ -1194,7 +1214,8 @@ class Composer:
         dim = (f'<div id="{sid}-dim" style="position:absolute;inset:0;background:#000;opacity:0;pointer-events:none"></div>'
                if outro == "lights_off" else "")
         inner = (f'{bubble}{title}{card}<div id="{sid}-ch" data-box="goli" data-floor="{floor}" style="position:absolute;left:{x:.0f}px;top:{y:.0f}px;width:{w:.0f}px;'
-                 f'height:{size}px"><div style="position:absolute;inset:0;{flip}">{layers}</div></div>{front}{dim}')
+                 f'height:{size}px"><div id="{sid}-act" style="position:absolute;inset:0"><div style="position:absolute;inset:0;{flip}">'
+                 f'{layers}</div></div></div>{front}{dim}')
         self.parts.append(f'<section id="{sid}" class="scene clip" data-start="{t0:.3f}" data-duration="{dur:.3f}" '
                           f'style="z-index:{40 if place in ("corner", "lower", "side") else 1}"><div class="stage"><div class="cam">{inner}</div></div></section>')
         # 2026-11-13 (owner): when a scene needs his space, Goli steps aside (fades out) for it and comes back after;
@@ -1245,12 +1266,34 @@ class Composer:
         # breathing: a slow bob for the whole scene
         n = max(1, int(dur / 1.6))
         self.tw(f'tl.to("#{sid}-ch .{sid}-pose",{{y:-6,duration:.8,ease:"sine.inOut",yoyo:true,repeat:{2 * n - 1}}},{t0 + 0.6:.3f});')
-        # pose changes on their words, with a small squash so the change reads as movement
+        # 2026-11-13 (owner, point 4): pose changes MOVE: a small dip to gather, the old pose hands over to the new
+        # one in a blink, the new one swings in from a slight turn and settles with an overshoot
         for k in range(1, len(poses)):
             at = t0 + float(poses[k]["at"])
+            tilt = -5 if k % 2 else 4
+            self.tw(f'tl.to("#{sid}-p{k - 1}",{{scaleY:.95,y:6,duration:.08,transformOrigin:"50% 100%",ease:"power2.in"}},{at - 0.1:.3f});')
+            # one pose at a time (never two blended): the swap is instant, the swing does the moving
             self.tw(f'tl.set("#{sid}-p{k - 1}",{{opacity:0}},{at:.3f});tl.set("#{sid}-p{k}",{{opacity:1}},{at:.3f});')
-            self.tw(f'tl.fromTo("#{sid}-p{k}",{{scaleY:.96,scaleX:1.03,transformOrigin:"50% 100%"}},'
-                    f'{{scaleY:1,scaleX:1,duration:.25,ease:"back.out(3)",immediateRender:false}},{at:.3f});')
+            self.tw(f'tl.fromTo("#{sid}-p{k}",{{rotation:{tilt},scaleY:.94,scaleX:1.04,y:8,transformOrigin:"50% 100%"}},'
+                    f'{{rotation:0,scaleY:1,scaleX:1,y:0,duration:.34,ease:"back.out(2.4)",immediateRender:false}},{at:.3f});')
+        # reactions to what is said: a head tilt on a question, a hop on an exclamation, a lean toward the
+        # content when something lands (a number, a metaphor, a 3D move)
+        toward = -1 if mirror or place in ("corner",) else 1
+        if place in ("side", "corner", "lower", "full", "left", "right"):
+            last = -9.0
+            for at, kind in getattr(self, "reacts", []):
+                if not (t0 + 0.6 <= at <= t0 + dur - 0.8) or at - last < 1.6:
+                    continue
+                last = at
+                if kind == "question":
+                    self.tw(f'tl.to("#{sid}-act",{{rotation:{-6 * toward},duration:.3,ease:"power2.out",transformOrigin:"50% 100%"}},{at - 0.3:.3f});'
+                            f'tl.to("#{sid}-act",{{rotation:0,duration:.5,ease:"power2.inOut"}},{at + 0.5:.3f});')
+                elif kind == "exclaim":
+                    self.tw(f'tl.to("#{sid}-act",{{y:-26,duration:.16,ease:"power2.out"}},{at - 0.2:.3f});'
+                            f'tl.to("#{sid}-act",{{y:0,duration:.3,ease:"bounce.out"}},{at - 0.04:.3f});')
+                else:
+                    self.tw(f'tl.to("#{sid}-act",{{rotation:{4 * toward},x:{16 * toward},duration:.28,ease:"power2.out",transformOrigin:"50% 100%"}},{at - 0.1:.3f});'
+                            f'tl.to("#{sid}-act",{{rotation:0,x:0,duration:.6,ease:"power2.inOut"}},{at + 0.9:.3f});')
         # lip sync: show one mouth shape at a time, in every pose layer
         last = None
         for c in cues:
@@ -1303,6 +1346,7 @@ class Composer:
         self.uses_mascot = False
         self.uses_studio = False
         self.goli_gaps = [tuple(g) for g in edit.get("goli_gaps") or []]
+        self.reacts = reactions(edit)
         for s in edit["scenes"]:
             s["_sid"] = f"s{self.n + 1}-"      # the layout check finds this scene's boxes by it
             self.zone = bool(s["data"].get("goli_zone")) if s["type"] != "host" else False
