@@ -451,6 +451,10 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
             else:
                 notes.append(f"scene {k}: no logos found for {s['brands']}, shown as words")
                 out.append(words_scene(" ".join(s["brands"][:4])))
+        elif kind == "chapter" and str(s.get("label") or words).strip().lower() in ("intro", "introduction", "close",
+                                                                                    "outro", "conclusion"):
+            # 2026-11-13 (review): no "Intro" / "Close" title cards: the opening and ending say that already
+            out.append(words_scene(words))
         elif kind == "chapter":
             out.append({"type": "chapter_card", "start": t0, "duration": dur, "in": "whip", "data": {
                 "number": "", "title": s.get("label") or words}})
@@ -584,7 +588,7 @@ def _lower_host(scenes: list[dict], cues: list[dict], fmt: str = "short") -> lis
                             poses.append({"pose": p["pose"], "at": round(c["start"] - t0 + p["at"], 3)})
         poses = sorted(poses, key=lambda p: p["at"])
         # 2026-11-11 (owner): not always at the desk: every other run of cards he stands beside them
-        place = ("lower", "side")[runs[0] % 2] if fmt == "short" else ("side", "side", "corner")[runs[0] % 3]
+        place = ("lower", "side")[runs[0] % 2] if fmt == "short" else "side"   # 2026-11-13 (review): the boxed corner Goli left near-empty frames
         runs[0] += 1
         out.append({"type": "host", "start": t0, "duration": t1 - t0, "data": {
             "place": place, "cues": [{"start": round(c["start"] - t0, 3), "value": c["value"]}
