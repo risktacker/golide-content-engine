@@ -174,7 +174,39 @@ class Composer:
         elif how == "rise":
             self.tw(f'tl.fromTo("{sel}",{{y:90,scale:.94,opacity:0}},'
                     f'{{y:0,scale:1,opacity:1,duration:.7,ease:"back.out(1.4)"}},{t0:.3f});')
-        # "cut": nothing, the clip simply starts
+        elif how == "push":
+            # 2026-11-13 (owner, point 6): the same thought goes on: the last shot slides away as this one pushes in
+            self.tw(f'tl.fromTo("{sel}",{{x:{self.w * 0.32:.0f},filter:"blur(8px)"}},'
+                    f'{{x:0,filter:"blur(0px)",duration:.4,ease:"power3.out"}},{t0:.3f});')
+            self._exit(t0, f'{{x:{-self.w * 0.32:.0f},filter:"blur(8px)",duration:.3,ease:"power2.in"}}')
+            self.cue("whoosh", t0 - 0.1)
+        elif how == "zoom":
+            # going deeper into the same thing: the camera flies into the last shot and lands in this one
+            self.tw(f'tl.fromTo("{sel}",{{scale:.72,filter:"blur(10px)"}},'
+                    f'{{scale:1,filter:"blur(0px)",duration:.45,ease:"power3.out"}},{t0:.3f});')
+            self._exit(t0, '{scale:1.55,filter:"blur(12px)",duration:.3,ease:"power2.in"}')
+            self.cue("whoosh", t0 - 0.1)
+        elif how == "iris":
+            # the answer is revealed: a circle opens from the middle
+            self.tw(f'tl.fromTo("{sel}",{{clipPath:"circle(0% at 50% 50%)"}},'
+                    f'{{clipPath:"circle(80% at 50% 50%)",duration:.55,ease:"power2.inOut"}},{t0:.3f});')
+            self.cue("riser", t0 - 0.6)
+        elif how == "flash":
+            # a big number lands: a gold flash and a punch
+            fid = f"{sid}-flash"
+            self.parts.append(f'<div id="{fid}" class="clip" data-start="{t0:.3f}" data-duration="0.5" '
+                              f'style="position:absolute;inset:0;background:radial-gradient(circle,rgba(232,194,104,.55),'
+                              f'rgba(232,194,104,0) 70%);z-index:30;pointer-events:none;opacity:0"></div>')
+            self.tw(f'tl.fromTo("#{fid}",{{opacity:.9}},{{opacity:0,duration:.35,ease:"power2.out"}},{t0:.3f});')
+            self.tw(f'tl.fromTo("{sel}",{{scale:1.08}},{{scale:1,duration:.35,ease:"power3.out"}},{t0:.3f});')
+            self.cue("impact", t0)
+        # "cut" and "match" (the same page goes on): nothing, the clip simply starts
+
+    def _exit(self, t0: float, to: str) -> None:
+        """The previous shot leaves in step with this one coming in (it ends exactly when this one starts)."""
+        prev = getattr(self, "_prev_scene", None)
+        if prev and abs(prev[1] - t0) < 0.05:
+            self.tw(f'tl.to("#{prev[0]} .stage",{to},{t0 - 0.3:.3f});')
 
     def drift(self, sid: str, t0: float, dur: float, amount: float = 0.02) -> None:
         """Never a static frame: a slow push-in through the shot."""
@@ -182,6 +214,8 @@ class Composer:
                 f'ease:"none"}},{t0:.3f});')
 
     def scene(self, sid: str, t0: float, dur: float, inner: str) -> None:
+        if "-host" not in sid:
+            self._prev_scene, self._cur_scene = getattr(self, "_cur_scene", None), (sid, t0 + dur)
         if self.zone and self.fmt == "long":
             # 2026-11-12 (owner): Goli is in (nearly) every scene: the content keeps to the left three quarters
             # and Goli has the right quarter, so he is never pushed out and never covers the proof
