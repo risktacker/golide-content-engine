@@ -1,0 +1,480 @@
+{
+  "production_id": "golide-short-2026-11-13",
+  "youtube_video_id": "vJSvKbm8QWA",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "vJSvKbm8QWA",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-11-13T11:29:02.733616+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "USB Colors Really Matter!",
+    "status": "scheduled",
+    "scheduled_at": "2026-11-13T11:00:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-shorts-mon-wed-fri\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-choice\"}"
+  },
+  "narration": "That blue USB port may be lying...\nBlue usually signals SuperSpeed, while black often points to USB 2.0.\nSo blue means faster, right?\nNot ALWAYS!\nUSB 2.0 reaches 480 megabits per second; newer ports may advertise 5, 10, 20,\n40, or 80 gigabits.\nBut color is only a clue...\nThe standards group recommends blue for USB 3.0 Standard-A,\nbut allows other ways to distinguish ports.\nWhat should you trust?\nCheck the SS logo, then read the specification.\nCharging's separate; color doesn't tell you wattage.\nWhat about USB-C?\nIts shape doesn't guarantee speed or power.\nThe free guide and our community link are in the description.\nFollow the channel for tech tips!\nBlue is a hint...\nthe specification is the ANSWER.\n",
+  "research": {
+    "summary": "USB port color is a useful visual hint, not a universal speed standard. USB-IF recommends Pantone 300C blue for USB 3.0 Standard-A connectors when a system mixes USB 2.0 and USB 3.0 ports, but only requires that users can clearly distinguish the ports; manufacturers may choose another method. In practice, blue often suggests SuperSpeed USB and black often suggests USB 2.0, but the printed “SS” mark, speed rating, manual or product specification is more reliable. USB-C shape alone also says nothing definitive about speed or charging power.",
+    "claims": [
+      {
+        "claim": "USB-IF lists blue, specifically Pantone 300C, as a recommended color for USB 3.0 Standard-A connectors. The recommendation is especially relevant when USB 2.0 and USB 3.0 ports appear on the same system.",
+        "source_title": "USB-IF Compliance Updates — Blue Pantone in USB 3.0 Connectors",
+        "source_url": "https://compliance.usb.org/index.asp?Format=Standard&UpdateFile=USB3",
+        "published_or_updated": "June 2011"
+      },
+      {
+        "claim": "USB-IF requires users to be able to clearly distinguish USB 3.0 from USB 2.0 ports, but leaves the exact visual method to the system manufacturer. Therefore, port color is a convention rather than a universal rule.",
+        "source_title": "USB-IF Compliance Updates — Blue Pantone in USB 3.0 Connectors",
+        "source_url": "https://compliance.usb.org/index.asp?Format=Standard&UpdateFile=USB3",
+        "published_or_updated": "June 2011"
+      },
+      {
+        "claim": "Blue commonly identifies USB 3.0 or SuperSpeed ports, while black is commonly associated with USB 2.0 on some computers; however, manufacturers may use different colors, including black for faster ports. Dell advises checking the SS symbol or the device manual instead of relying only on color.",
+        "source_title": "USB Device Not Working at Full Speed on Your Dell Computer",
+        "source_url": "https://www.dell.com/support/kbdoc/en-us/000135207/usb-3-0-device-is-recognized-as-usb-2-0-on-a-dell-system",
+        "published_or_updated": "2026"
+      },
+      {
+        "claim": "USB 2.0 supports data operation up to 480 Mbps, while current USB-IF consumer-facing performance labels identify USB 5Gbps, 10Gbps, 20Gbps, 40Gbps and 80Gbps capabilities. The USB-IF recommends communicating the performance rating directly rather than relying on terms such as USB 3.2 Gen 1 or SuperSpeed.",
+        "source_title": "USB Data Performance — Language Usage Guidelines from USB-IF",
+        "source_url": "https://www.usb.org/sites/default/files/usb_data_performance_language_usage_guidelines_jan_2024.pdf",
+        "published_or_updated": "January 2024"
+      },
+      {
+        "claim": "USB-C describes the connector format, not one fixed speed. A USB-C product may support USB 2.0, USB 5Gbps, USB 10Gbps, USB 20Gbps, USB4 or other capabilities, so the USB-C shape alone cannot establish performance.",
+        "source_title": "USB Type-C and USB 2.0 Type-C Cable and Connector — Language, Product and Packaging Guidelines",
+        "source_url": "https://www.usb.org/sites/default/files/usb_type-c_language_product_and_packaging_guidelines_20230320.pdf",
+        "published_or_updated": "March 20, 2023"
+      },
+      {
+        "claim": "A USB 2.0 Type-C cable supports data operation up to 480 Mbps and cannot carry USB 3.2 or USB4 signals. If a faster host or device is connected through a USB 2.0 Type-C cable, the connection operates at USB 2.0 speed.",
+        "source_title": "USB Type-C and USB 2.0 Type-C Cable and Connector — Language, Product and Packaging Guidelines",
+        "source_url": "https://www.usb.org/sites/default/files/usb_type-c_language_product_and_packaging_guidelines_20230320.pdf",
+        "published_or_updated": "March 20, 2023"
+      },
+      {
+        "claim": "Charging capability is separate from the color of a port. USB Power Delivery enables flexible power delivery over USB Type-C, and USB-IF-approved product logos identify power capabilities such as 60W or 240W; consumers should check the wattage label or product specifications rather than infer charging power from color.",
+        "source_title": "USB Charger — USB Power Delivery",
+        "source_url": "https://usb.org/usb-charger-pd",
+        "published_or_updated": "Current USB-IF page; USB PD 3.1 announced in 2021"
+      },
+      {
+        "claim": "A practical way to identify a port is to check for an SS or speed logo, then confirm the exact rating in the computer’s manual or specification sheet. For USB-C cables, USB-IF labeling can identify both data rate and power capability.",
+        "source_title": "USB-C to USB-C Cable Logo Requirements",
+        "source_url": "https://compliance.usb.org/index.asp?Format=Standard&UpdateFile=Cables+and+Connectors&pubDate=20261005",
+        "published_or_updated": "April 2022; page crawled in 2026"
+      }
+    ],
+    "core_fact": {
+      "fact": "In a June 2011 USB-IF compliance update, USB-IF said Pantone 300C blue was recommended for USB 3.0 Standard-A connectors, especially on systems mixing USB 2.0 and USB 3.0 ports. It required users to clearly distinguish the port types but left the specific visual method to manufacturers.",
+      "source_url": "https://compliance.usb.org/index.asp?Format=Standard&UpdateFile=USB3",
+      "published_or_updated": "June 2011",
+      "verified": true
+    }
+  },
+  "metadata": {
+    "title": "USB Colors Really Matter!",
+    "description": "Free guide to this video (steps and every source): https://studio.golidee.com/guides/golide-short-2026-11-13.pdf\n\nA blue USB port usually hints at SuperSpeed, but color alone does not guarantee the fastest connection. This quick tech tip explains what blue and black ports often mean, why USB speeds range from 480 Mbps to much faster standards, and why the SS logo and specification matter more than color.\n\nYou’ll also learn why USB-C shape does not guarantee speed or charging power. Check the port markings and device specifications before assuming what a USB port can do.\n\n#USB #USB3 #USBC #TechTips #ComputerTips #USBPorts #GOLIDE",
+    "tags": [
+      "USB port color",
+      "blue USB port",
+      "USB port speed",
+      "USB 3.0 port",
+      "USB 2.0 port",
+      "USB-C speed",
+      "USB-C charging",
+      "SuperSpeed USB",
+      "USB SS logo",
+      "USB port meaning",
+      "USB transfer speeds",
+      "USB 3.2 speeds",
+      "USB 4 speed",
+      "480 Mbps USB",
+      "USB wattage",
+      "USB data speed",
+      "USB-A port",
+      "USB-C port",
+      "black USB port",
+      "USB standards",
+      "USB speed explained",
+      "USB charging explained",
+      "tech tips",
+      "computer ports",
+      "USB guide",
+      "USB facts",
+      "USB explained",
+      "GOLIDE",
+      "USB port colors"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "keywords": [
+      "blue USB port",
+      "USB port colors",
+      "USB port speed",
+      "USB 3.0 speed",
+      "USB 2.0 speed",
+      "USB-C speed",
+      "USB SS logo",
+      "SuperSpeed USB",
+      "USB transfer speed",
+      "USB charging wattage",
+      "USB port meaning",
+      "USB 3.2 speeds",
+      "USB 4 speed",
+      "USB specifications"
+    ],
+    "hashtags": [
+      "#USB",
+      "#USB3",
+      "#USBC",
+      "#TechTips",
+      "#ComputerTips",
+      "#USBPorts",
+      "#GOLIDE"
+    ],
+    "format": "short",
+    "title_description_language": "en",
+    "seo_body": "A blue USB port usually hints at SuperSpeed, but color alone does not guarantee the fastest connection. This quick tech tip explains what blue and black ports often mean, why USB speeds range from 480 Mbps to much faster standards, and why the SS logo and specification matter more than color.\n\nYou’ll also learn why USB-C shape does not guarantee speed or charging power. Check the port markings and device specifications before assuming what a USB port can do.",
+    "title_checked": true
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "USB-IF lists blue, specifically Pantone 300C, as a recommended color for USB 3.0 Standard-A connectors. The recommendation is especially relevant when USB 2.0 and USB 3.0 ports appear on the same system.",
+        "source_title": "USB-IF Compliance Updates — Blue Pantone in USB 3.0 Connectors",
+        "source_url": "https://compliance.usb.org/index.asp?Format=Standard&UpdateFile=USB3",
+        "published_or_updated": "June 2011"
+      },
+      {
+        "claim": "USB-IF requires users to be able to clearly distinguish USB 3.0 from USB 2.0 ports, but leaves the exact visual method to the system manufacturer. Therefore, port color is a convention rather than a universal rule.",
+        "source_title": "USB-IF Compliance Updates — Blue Pantone in USB 3.0 Connectors",
+        "source_url": "https://compliance.usb.org/index.asp?Format=Standard&UpdateFile=USB3",
+        "published_or_updated": "June 2011"
+      },
+      {
+        "claim": "Blue commonly identifies USB 3.0 or SuperSpeed ports, while black is commonly associated with USB 2.0 on some computers; however, manufacturers may use different colors, including black for faster ports. Dell advises checking the SS symbol or the device manual instead of relying only on color.",
+        "source_title": "USB Device Not Working at Full Speed on Your Dell Computer",
+        "source_url": "https://www.dell.com/support/kbdoc/en-us/000135207/usb-3-0-device-is-recognized-as-usb-2-0-on-a-dell-system",
+        "published_or_updated": "2026"
+      },
+      {
+        "claim": "USB 2.0 supports data operation up to 480 Mbps, while current USB-IF consumer-facing performance labels identify USB 5Gbps, 10Gbps, 20Gbps, 40Gbps and 80Gbps capabilities. The USB-IF recommends communicating the performance rating directly rather than relying on terms such as USB 3.2 Gen 1 or SuperSpeed.",
+        "source_title": "USB Data Performance — Language Usage Guidelines from USB-IF",
+        "source_url": "https://www.usb.org/sites/default/files/usb_data_performance_language_usage_guidelines_jan_2024.pdf",
+        "published_or_updated": "January 2024"
+      },
+      {
+        "claim": "USB-C describes the connector format, not one fixed speed. A USB-C product may support USB 2.0, USB 5Gbps, USB 10Gbps, USB 20Gbps, USB4 or other capabilities, so the USB-C shape alone cannot establish performance.",
+        "source_title": "USB Type-C and USB 2.0 Type-C Cable and Connector — Language, Product and Packaging Guidelines",
+        "source_url": "https://www.usb.org/sites/default/files/usb_type-c_language_product_and_packaging_guidelines_20230320.pdf",
+        "published_or_updated": "March 20, 2023"
+      },
+      {
+        "claim": "A USB 2.0 Type-C cable supports data operation up to 480 Mbps and cannot carry USB 3.2 or USB4 signals. If a faster host or device is connected through a USB 2.0 Type-C cable, the connection operates at USB 2.0 speed.",
+        "source_title": "USB Type-C and USB 2.0 Type-C Cable and Connector — Language, Product and Packaging Guidelines",
+        "source_url": "https://www.usb.org/sites/default/files/usb_type-c_language_product_and_packaging_guidelines_20230320.pdf",
+        "published_or_updated": "March 20, 2023"
+      },
+      {
+        "claim": "Charging capability is separate from the color of a port. USB Power Delivery enables flexible power delivery over USB Type-C, and USB-IF-approved product logos identify power capabilities such as 60W or 240W; consumers should check the wattage label or product specifications rather than infer charging power from color.",
+        "source_title": "USB Charger — USB Power Delivery",
+        "source_url": "https://usb.org/usb-charger-pd",
+        "published_or_updated": "Current USB-IF page; USB PD 3.1 announced in 2021"
+      },
+      {
+        "claim": "A practical way to identify a port is to check for an SS or speed logo, then confirm the exact rating in the computer’s manual or specification sheet. For USB-C cables, USB-IF labeling can identify both data rate and power capability.",
+        "source_title": "USB-C to USB-C Cable Logo Requirements",
+        "source_url": "https://compliance.usb.org/index.asp?Format=Standard&UpdateFile=Cables+and+Connectors&pubDate=20261005",
+        "published_or_updated": "April 2022; page crawled in 2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "USB port colors blue black red meaning speed charging explained USB-IF",
+      "score": 78.7,
+      "verdict": "pass",
+      "recent_videos": 1,
+      "median_views_per_day": 769992.0,
+      "top_views_per_day": 769992.0,
+      "market_coverage": 1,
+      "title_query_overlap": 1.0,
+      "measured_at": "2026-11-13T07:04:35.308353+00:00",
+      "signal_type": "youtube-breakout-v1"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -15.44,
+      "true_peak_dbtp": -1.92,
+      "loudness_range": 2.5
+    },
+    "editorial": {
+      "beats": 33,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-11-13T11:28:59.402284+00:00",
+    "warnings": [
+      "possible misspelling: golidee"
+    ]
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-choice",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-short-2026-11-13",
+    "created_at": "2026-11-13T11:29:00.492286+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-11-13T11:00:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "a2eeb400eefd6f168788466c5643e99088256d924bc3bb3f05fb0efb0e07d70b",
+        "bytes": 11596763
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "6577590630b237eb2abd5ab90f94893463cd62733acbd26a6ae19e1660ba6b9b",
+        "bytes": 115962
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "ec38695c20f75615a450df2770b0b89f17077ef24c8a63e65462e9d7c0200617",
+        "bytes": 2522
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "53d21f2e533ba9bc692062d979552eefe97aa106baa79c19b35091d8a24d9c2e",
+        "bytes": 1375
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "14d1ced43285babe4aef40ddde5d4dda09c032e8a669ae017631d788dc2b9b1d",
+        "bytes": 768
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "ed37cd1f8a5c58535d87818a2ea51e841371ab5653e6a5d4b2e27f8b0d04de8c",
+        "bytes": 4999
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "a89ff2471888a87d484d27c42628bc73c1b69af0f55aa955038e7843c845f9ce",
+        "bytes": 382
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "4b9443d9bb176629b3483fdf6936c3421ef738292c8029259326295b8d186d91",
+        "bytes": 316
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 45496.0,
+      "cached_input_units": 0.0,
+      "output_units": 3906.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.013786,
+      "created_at": "2026-11-13T07:04:34.841371+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-13T07:04:34.842951+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 21485.0,
+      "cached_input_units": 0.0,
+      "output_units": 1828.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006491,
+      "created_at": "2026-11-13T07:04:57.550795+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-13T07:04:57.576522+00:00"
+    },
+    {
+      "stage": "script-story",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 10134.0,
+      "cached_input_units": 0.0,
+      "output_units": 6161.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00942,
+      "created_at": "2026-11-13T07:07:11.683481+00:00"
+    },
+    {
+      "stage": "script-story-delivery",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 8028.0,
+      "cached_input_units": 7702.0,
+      "output_units": 1288.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001765,
+      "created_at": "2026-11-13T07:07:25.437278+00:00"
+    },
+    {
+      "stage": "script-board",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 566.0,
+      "cached_input_units": 0.0,
+      "output_units": 983.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001293,
+      "created_at": "2026-11-13T07:07:34.426613+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 8028.0,
+      "cached_input_units": 7702.0,
+      "output_units": 1288.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001765,
+      "created_at": "2026-11-13T07:07:34.429216+00:00"
+    },
+    {
+      "stage": "owner-voice",
+      "provider": "elevenlabs",
+      "model": "eleven_v3",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 815,
+      "cost_usd": 0.163,
+      "created_at": "2026-11-13T11:23:56.273380+00:00"
+    },
+    {
+      "stage": "edit-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 5843.0,
+      "cached_input_units": 0.0,
+      "output_units": 4724.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006837,
+      "created_at": "2026-11-13T11:25:07.994099+00:00"
+    },
+    {
+      "stage": "guide",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1114.0,
+      "cached_input_units": 0.0,
+      "output_units": 700.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001063,
+      "created_at": "2026-11-13T11:28:49.367464+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9334.0,
+      "cached_input_units": 0.0,
+      "output_units": 785.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002809,
+      "created_at": "2026-11-13T11:28:50.650169+00:00"
+    },
+    {
+      "stage": "title-check",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 347.0,
+      "cached_input_units": 0.0,
+      "output_units": 135.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000231,
+      "created_at": "2026-11-13T11:28:54.105152+00:00"
+    }
+  ],
+  "recorded_at": "2026-11-13T11:29:02.737507+00:00"
+}

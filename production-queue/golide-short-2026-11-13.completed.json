@@ -283,5 +283,13 @@
     "measured_at": "2026-11-13T07:04:35.308353+00:00",
     "signal_type": "youtube-breakout-v1"
   },
-  "selected_topic_source": "https://compliance.usb.org/index.asp?Format=Standard&UpdateFile=USB3"
+  "selected_topic_source": "https://compliance.usb.org/index.asp?Format=Standard&UpdateFile=USB3",
+  "voice_choice": "ai",
+  "platforms": [
+    "youtube",
+    "instagram",
+    "facebook",
+    "linkedin"
+  ],
+  "video_style": "goli"
 }
