@@ -1,0 +1,521 @@
+{
+  "production_id": "golide-long-2026-11-14",
+  "youtube_video_id": "QFS0qU30_mo",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "QFS0qU30_mo",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-11-14T07:11:44.038670+00:00"
+  },
+  "production": {
+    "format": "long",
+    "title": "Macbook PROLED Review: It's Not About Brightness",
+    "status": "scheduled",
+    "scheduled_at": "2026-11-14T17:30:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-long-tue-thu-sat\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-choice\"}"
+  },
+  "narration": "The new MacBook Pro can hit 2,000 nits,\nbut that isn't the reason its screen looks different.\nThe bigger change happens in the dark parts of the picture,\nwhere an LCD is still glowing and this panel can switch individual pixels off.\nOn October 28, Apple announced PROLED XDR with a tandem OLED panel,\nper-pixel compensation and factory calibration.\nThat sounds like a brighter screen, but brightness is only one piece.\nBy the end, you'll know what tandem OLED is doing,\nwhat the 2,000-nit number really means, what happens to power and burn-in,\nand whether you'd notice the upgrade in your own work.\nStart with a normal laptop screen.\nMost LCD panels have a light behind the whole picture.\nLiquid crystals steer it into pixels.\nWhen a dark scene sits beside a bright object,\nthe backlight is still on behind both.\nThe screen can dim zones,\nbut it can't make one pixel perfectly black while its neighbour is bright.\nThat's where blooming, or a halo, can appear.\nOLED changes the job.\nEach pixel makes its own light,\nso a black pixel can switch off while the next stays bright.\nThat gives you deeper blacks and the contrast HDR pictures need:\nbright highlights against a dark room, without washing the scene grey.\nApple specifies a 10,000,000:1 contrast ratio, but treat that as a specification,\nnot a universal viewing result.\nHere's the useful check.\nDon't compare screens with a white webpage alone.\nOpen HDR footage with a night sky,\nsubtitles and a bright light in the same frame.\nLook at the black around the light and whether the highlight stays controlled.\nThat's what this panel is built to show.\nBut making OLED bright enough for a laptop is the difficult part.\nThat's where tandem OLED comes in.\nA normal OLED stack is like one worker doing the whole job.\nTandem OLED puts 2 emitting layers together, so they share the work.\nApple says each can run at lower current, intended to raise peak brightness,\nimprove efficiency and extend panel life compared with a single-emitter design.\nThe headline numbers need translation.\nThe specification says up to 1,000 nits sustained across the full\nscreen and up to 2,000 nits at peak HDR brightness.\nThose aren't the same test.\nA small highlight can hit the peak while\nthe entire display can't hold that level everywhere.\nSo if a review says it's very bright, ask: measured where, for how long,\nand in which mode?\nThere is real engineering behind the architecture.\nA published 2010 SID paper found higher efficiency and lower\npower in the particular 2-stack OLED system it studied.\nBut that's background evidence, not an independent measurement of this laptop.\nApple also points to factory calibration,\nwhich should help colours arrive consistent from the box.\nStill, brightness and calibration don't tell the whole story,\nbecause every glowing pixel uses power.\nPower is more complicated than the 2,000-nit label.\nOLED can be efficient when much of the image is dark,\nbecause black pixels are off.\nA bright full-screen document asks many pixels to work at once,\nso the result depends on content, brightness and refresh rate.\nThe display can drop ProMotion to 10Hz for idle content,\nand its adaptive brightness policy considers power draw, battery life and panel longevity.\nBut there isn't a universal display-only wattage figure,\nso don't assume peak brightness predicts battery life.\nThen there's the question people skip: what happens after years?\nStatic, high-contrast elements displayed for long periods can contribute to burn-in or uneven brightness.\nApple says its display engine monitors content, usage, temperature and ambient conditions,\nthen applies compensation and uniformity correction.\nThat's mitigation, not proof the risk has disappeared.\nProfessional OLED documentation still warns about permanent changes.\nHere's the practical tip.\nIf your day is a fixed spreadsheet or editor interface,\nvary the content when you can, use sensible brightness,\nand don't expect OLED tradeoffs to be gone.\nThe question is whether you spend enough time\nlooking at the strengths to accept them.\nFor an HDR editor, colorist, photographer or designer, the answer may be yes.\nDeep blacks can make shadow detail and contrast easier to judge,\nbright highlights have more room, and factory calibration can provide a useful starting point.\nSomeone working outdoors or under difficult lighting may notice this\nmore than someone at a desk in a dim room.\nFor ordinary browsing, documents and mostly SDR office work, the upgrade may be quieter.\nText can look good on an LCD,\nand a white webpage doesn't show off perfect blacks.\nYour result depends on content, ambient light,\nviewing distance and whether you care about HDR and accurate colour.\nSo don't use one review as universal proof.\nLook for independent measurements of sustained full-screen brightness, small-window HDR brightness, black level,\ncolour accuracy, power draw and long-term uniformity.\nThen compare them with your work, not a cinematic demo.\nHere's the buying rule: if you create or inspect HDR images,\ncontrast and highlight control are the reason to consider it.\nIf you mostly write, browse and code,\nbrightness alone probably isn't enough to replace a good MacBook Pro.\nThe simple version is,\ntandem OLED makes bright HDR highlights possible while sharing the electrical work,\nbut the real visual change is pixel-level black and contrast.\nThe 2,000-nit figure is a peak claim, not everyday full-screen brightness,\nand burn-in is managed, not erased.\nThe free guide to this video and the link to our\ncommunity for updates and all these stories are in the description.\nFollow the channel for breakdowns that separate a specification from what you'll actually see.\n",
+  "research": {
+    "summary": "Apple introduced the MacBook Pro with PROLED XDR on October 28, 2026, using a tandem OLED panel, per-pixel display compensation, factory calibration, and a claimed 2,000-nit peak. The meaningful change is not simply a brighter screen: self-emissive pixels enable true black and extremely high contrast, while tandem OLED is designed to share the work between two emitting layers, improving peak brightness, efficiency, and panel longevity compared with a single-emitter OLED. The review should distinguish Apple’s specifications and engineering explanations from independently measured performance. The upgrade is most likely to matter to HDR video editors, photographers, colorists, designers, and users working in bright or highly controlled environments; ordinary SDR office work may show a smaller benefit.",
+    "claims": [
+      {
+        "claim": "Apple announced the new MacBook Pro with PROLED XDR on October 28, 2026, with customer availability beginning November 6, 2026.",
+        "source_title": "Apple unveils groundbreaking MacBook Pro with PROLED XDR Display and Touch for the first time on Mac",
+        "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+        "published_or_updated": "October 28, 2026"
+      },
+      {
+        "claim": "Apple specifies a tandem OLED display with up to 1,000 nits sustained full-screen brightness, 2,000 nits peak HDR brightness, and a 10,000,000:1 contrast ratio. The 2,000-nit figure should not be presented as the same thing as sustained full-screen output.",
+        "source_title": "MacBook Pro with PROLED XDR Display — Technical Specifications",
+        "source_url": "https://www.apple.com/macbook-pro/proled-xdr-display/specs/",
+        "published_or_updated": "2026, accessed November 14, 2026"
+      },
+      {
+        "claim": "Unlike an LCD laptop panel, OLED pixels are self-emissive: each pixel generates its own light, so a pixel displaying black can turn off rather than relying on a backlight that remains active. Apple says this produces accurate black levels and avoids the blooming or halos associated with backlight-based displays.",
+        "source_title": "PROLED XDR Display Technology Overview",
+        "source_url": "https://www.apple.com/in/macbook-pro/proled-xdr-display/pdf/PROLED_XDR_Display_Technical_Paper.pdf",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "Tandem OLED stacks two electroluminescent emitting layers. Apple describes the layers as sharing the work, allowing each layer to operate at lower current; Apple says this is intended to improve peak brightness, power efficiency, and panel lifespan compared with a single-emitter OLED.",
+        "source_title": "PROLED XDR Display Technology Overview",
+        "source_url": "https://www.apple.com/in/macbook-pro/proled-xdr-display/pdf/PROLED_XDR_Display_Technical_Paper.pdf",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "Independent display research supports the general engineering rationale for tandem OLED: a published SID paper reported that a two-stack OLED design achieved higher efficiency and reduced power consumption in the specific display system studied. That result should be treated as background evidence for the architecture, not as a measurement of this MacBook Pro.",
+        "source_title": "Hybrid Tandem White OLEDs with High Efficiency and Long Life-time for AMOLED Displays and Solid-State Lighting",
+        "source_url": "https://sid.onlinelibrary.wiley.com/doi/abs/10.1889/1.3500587",
+        "published_or_updated": "2010"
+      },
+      {
+        "claim": "Apple says the M5 Pro and M5 Max display engine applies real-time, per-pixel compensation for content, pixel usage, temperature, and ambient conditions, including burn-in mitigation and uniformity correction. These are Apple’s engineering claims; the review should not treat them as independently proven without long-term testing.",
+        "source_title": "PROLED XDR Display Technology Overview",
+        "source_url": "https://www.apple.com/in/macbook-pro/proled-xdr-display/pdf/PROLED_XDR_Display_Technical_Paper.pdf",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "OLED retains a long-term tradeoff: static, high-contrast images displayed for extended periods can contribute to permanent burn-in or brightness changes. Sony’s professional OLED monitor documentation explicitly warns about this risk, while Apple describes pixel-use monitoring and compensation as mitigation rather than proof that the risk has disappeared.",
+        "source_title": "Sony Professional OLED Monitor Precaution Manual",
+        "source_url": "https://pro.sony/s3/cms-static-content/operation-manual/4488667111.pdf",
+        "published_or_updated": "Undated manufacturer manual, accessed November 14, 2026"
+      },
+      {
+        "claim": "The display’s power behavior is content- and mode-dependent rather than determined by the peak-nit number alone. Apple says ProMotion can reduce refresh rate to 10Hz for idle content and that its adaptive brightness policy considers power draw, battery life, and panel longevity; Apple does not provide a universal display-only wattage figure in the cited materials.",
+        "source_title": "PROLED XDR Display Technology Overview",
+        "source_url": "https://www.apple.com/in/macbook-pro/proled-xdr-display/pdf/PROLED_XDR_Display_Technical_Paper.pdf",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "The people most likely to notice the improvement are HDR video editors, colorists, photographers, designers, and users working outdoors or under difficult lighting, because the relevant changes include black level, highlight control, wide-gamut support, reflection control, and calibration. This audience assessment is an inference from Apple’s stated workflows and display features, not a universal viewing test.",
+        "source_title": "PROLED XDR Display Technology Overview",
+        "source_url": "https://www.apple.com/in/macbook-pro/proled-xdr-display/pdf/PROLED_XDR_Display_Technical_Paper.pdf",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "For ordinary web browsing, documents, and mostly SDR office work, the difference may be less dramatic than the headline brightness suggests; the visible benefit will depend on ambient light, HDR content, viewing distance, source material, and whether the user values perfect blacks and accurate color. This is an inference from the display’s operating modes and stated strengths, not a claim that every user will experience the same result.",
+        "source_title": "MacBook Pro with PROLED XDR Display — Technical Specifications",
+        "source_url": "https://www.apple.com/macbook-pro/proled-xdr-display/specs/",
+        "published_or_updated": "2026, accessed November 14, 2026"
+      }
+    ],
+    "core_fact": {
+      "fact": "On October 28, 2026, Apple announced a new MacBook Pro with a PROLED XDR display using tandem OLED technology, advanced per-pixel display algorithms, and factory calibration; Apple claims up to 2,000 nits peak brightness and a 10,000,000:1 contrast ratio.",
+      "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+      "published_or_updated": "October 28, 2026",
+      "verified": true
+    }
+  },
+  "metadata": {
+    "title": "Macbook PROLED Review: It's Not About Brightness",
+    "description": "Free guide to this video (steps and every source): https://studio.golidee.com/guides/golide-long-2026-11-14.pdf\n\nApple’s new MacBook Pro uses a tandem OLED panel called PROLED XDR. This video explains why the biggest visual change is not simply brighter highlights, but deeper blacks, higher contrast, and less blooming around bright objects.\n\nWe break down how tandem OLED works, what the 2,000-nit peak brightness figure actually means, and how full-screen brightness, HDR content, power use, ProMotion, factory calibration, and burn-in concerns fit together.\n\nYou’ll also learn who is most likely to notice the upgrade, from HDR editors and photographers to people who mainly browse, write, and code.\n\nChapters\n0:00 Intro\n0:44 The Black Difference\n1:48 What Tandem Changes\n2:57 Power And Burn-In\n4:11 Who Should Upgrade\n5:21 Close\n\n#MacBookPro #TandemOLED #PROLEDXDR #OLED #AppleDisplay #HDR #TechExplained\n\nMusic: Infinity Love by Luminewave",
+    "tags": [
+      "MacBook Pro OLED",
+      "MacBook Pro tandem OLED",
+      "PROLED XDR",
+      "Apple PROLED XDR",
+      "MacBook Pro display",
+      "tandem OLED explained",
+      "2000 nits MacBook",
+      "MacBook OLED explained",
+      "OLED vs mini LED",
+      "MacBook Pro HDR",
+      "MacBook Pro brightness",
+      "OLED burn in MacBook",
+      "MacBook Pro contrast",
+      "MacBook Pro calibration",
+      "OLED laptop display",
+      "HDR display explained",
+      "OLED power consumption",
+      "OLED pixel brightness",
+      "OLED black levels",
+      "OLED blooming explained",
+      "GOLIDE",
+      "AI news"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [
+      "0:00 Intro",
+      "0:44 The Black Difference",
+      "1:48 What Tandem Changes",
+      "2:57 Power And Burn-In",
+      "4:11 Who Should Upgrade",
+      "5:21 Close"
+    ],
+    "keywords": [
+      "MacBook Pro OLED",
+      "tandem OLED MacBook",
+      "PROLED XDR explained",
+      "MacBook Pro 2000 nits",
+      "MacBook OLED display",
+      "tandem OLED explained",
+      "OLED vs mini LED",
+      "MacBook Pro HDR",
+      "OLED burn in",
+      "OLED brightness",
+      "MacBook Pro display",
+      "OLED contrast ratio",
+      "MacBook Pro screen",
+      "HDR laptop display",
+      "OLED power use"
+    ],
+    "hashtags": [
+      "#MacBookPro",
+      "#TandemOLED",
+      "#PROLEDXDR",
+      "#OLED",
+      "#AppleDisplay",
+      "#HDR",
+      "#TechExplained"
+    ],
+    "format": "long",
+    "title_description_language": "en",
+    "seo_body": "Apple’s new MacBook Pro uses a tandem OLED panel called PROLED XDR. This video explains why the biggest visual change is not simply brighter highlights, but deeper blacks, higher contrast, and less blooming around bright objects.\n\nWe break down how tandem OLED works, what the 2,000-nit peak brightness figure actually means, and how full-screen brightness, HDR content, power use, ProMotion, factory calibration, and burn-in concerns fit together.\n\nYou’ll also learn who is most likely to notice the upgrade, from HDR editors and photographers to people who mainly browse, write, and code.",
+    "title_checked": true
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "Apple announced the new MacBook Pro with PROLED XDR on October 28, 2026, with customer availability beginning November 6, 2026.",
+        "source_title": "Apple unveils groundbreaking MacBook Pro with PROLED XDR Display and Touch for the first time on Mac",
+        "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+        "published_or_updated": "October 28, 2026"
+      },
+      {
+        "claim": "Apple specifies a tandem OLED display with up to 1,000 nits sustained full-screen brightness, 2,000 nits peak HDR brightness, and a 10,000,000:1 contrast ratio. The 2,000-nit figure should not be presented as the same thing as sustained full-screen output.",
+        "source_title": "MacBook Pro with PROLED XDR Display — Technical Specifications",
+        "source_url": "https://www.apple.com/macbook-pro/proled-xdr-display/specs/",
+        "published_or_updated": "2026, accessed November 14, 2026"
+      },
+      {
+        "claim": "Unlike an LCD laptop panel, OLED pixels are self-emissive: each pixel generates its own light, so a pixel displaying black can turn off rather than relying on a backlight that remains active. Apple says this produces accurate black levels and avoids the blooming or halos associated with backlight-based displays.",
+        "source_title": "PROLED XDR Display Technology Overview",
+        "source_url": "https://www.apple.com/in/macbook-pro/proled-xdr-display/pdf/PROLED_XDR_Display_Technical_Paper.pdf",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "Tandem OLED stacks two electroluminescent emitting layers. Apple describes the layers as sharing the work, allowing each layer to operate at lower current; Apple says this is intended to improve peak brightness, power efficiency, and panel lifespan compared with a single-emitter OLED.",
+        "source_title": "PROLED XDR Display Technology Overview",
+        "source_url": "https://www.apple.com/in/macbook-pro/proled-xdr-display/pdf/PROLED_XDR_Display_Technical_Paper.pdf",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "Independent display research supports the general engineering rationale for tandem OLED: a published SID paper reported that a two-stack OLED design achieved higher efficiency and reduced power consumption in the specific display system studied. That result should be treated as background evidence for the architecture, not as a measurement of this MacBook Pro.",
+        "source_title": "Hybrid Tandem White OLEDs with High Efficiency and Long Life-time for AMOLED Displays and Solid-State Lighting",
+        "source_url": "https://sid.onlinelibrary.wiley.com/doi/abs/10.1889/1.3500587",
+        "published_or_updated": "2010"
+      },
+      {
+        "claim": "Apple says the M5 Pro and M5 Max display engine applies real-time, per-pixel compensation for content, pixel usage, temperature, and ambient conditions, including burn-in mitigation and uniformity correction. These are Apple’s engineering claims; the review should not treat them as independently proven without long-term testing.",
+        "source_title": "PROLED XDR Display Technology Overview",
+        "source_url": "https://www.apple.com/in/macbook-pro/proled-xdr-display/pdf/PROLED_XDR_Display_Technical_Paper.pdf",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "OLED retains a long-term tradeoff: static, high-contrast images displayed for extended periods can contribute to permanent burn-in or brightness changes. Sony’s professional OLED monitor documentation explicitly warns about this risk, while Apple describes pixel-use monitoring and compensation as mitigation rather than proof that the risk has disappeared.",
+        "source_title": "Sony Professional OLED Monitor Precaution Manual",
+        "source_url": "https://pro.sony/s3/cms-static-content/operation-manual/4488667111.pdf",
+        "published_or_updated": "Undated manufacturer manual, accessed November 14, 2026"
+      },
+      {
+        "claim": "The display’s power behavior is content- and mode-dependent rather than determined by the peak-nit number alone. Apple says ProMotion can reduce refresh rate to 10Hz for idle content and that its adaptive brightness policy considers power draw, battery life, and panel longevity; Apple does not provide a universal display-only wattage figure in the cited materials.",
+        "source_title": "PROLED XDR Display Technology Overview",
+        "source_url": "https://www.apple.com/in/macbook-pro/proled-xdr-display/pdf/PROLED_XDR_Display_Technical_Paper.pdf",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "The people most likely to notice the improvement are HDR video editors, colorists, photographers, designers, and users working outdoors or under difficult lighting, because the relevant changes include black level, highlight control, wide-gamut support, reflection control, and calibration. This audience assessment is an inference from Apple’s stated workflows and display features, not a universal viewing test.",
+        "source_title": "PROLED XDR Display Technology Overview",
+        "source_url": "https://www.apple.com/in/macbook-pro/proled-xdr-display/pdf/PROLED_XDR_Display_Technical_Paper.pdf",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "For ordinary web browsing, documents, and mostly SDR office work, the difference may be less dramatic than the headline brightness suggests; the visible benefit will depend on ambient light, HDR content, viewing distance, source material, and whether the user values perfect blacks and accurate color. This is an inference from the display’s operating modes and stated strengths, not a claim that every user will experience the same result.",
+        "source_title": "MacBook Pro with PROLED XDR Display — Technical Specifications",
+        "source_url": "https://www.apple.com/macbook-pro/proled-xdr-display/specs/",
+        "published_or_updated": "2026, accessed November 14, 2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "Apple PROLED XDR MacBook Pro tandem OLED how it works review",
+      "score": 87.2,
+      "verdict": "pass",
+      "recent_videos": 1,
+      "median_views_per_day": 2163285.5999999996,
+      "top_views_per_day": 2163285.5999999996,
+      "market_coverage": 1,
+      "title_query_overlap": 1,
+      "measured_at": "2026-11-14T04:04:24.921878+00:00",
+      "signal_type": "youtube-breakout-v1"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -15.87,
+      "true_peak_dbtp": -1.77,
+      "loudness_range": 2.1
+    },
+    "editorial": {
+      "beats": 65,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-11-14T07:11:21.320385+00:00",
+    "warnings": [
+      "possible misspelling: golidee"
+    ]
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-choice",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-long-tue-thu-sat",
+    "thumbnail_style": "desk_wall",
+    "intro": "walk_in",
+    "outro": "lights_off"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-long-2026-11-14",
+    "created_at": "2026-11-14T07:11:34.610324+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-11-14T17:30:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "0ab9f420c970d936500c7b82efdc96a0b0603f82ec64449c243e38d32d3ebbbe",
+        "bytes": 61995321
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "5e9fccbcc78b876b927d8af19f40f85761544d039bd838849d58839d4db14d18",
+        "bytes": 505223
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "3e84938a3a3202bb504a76706c04eb72c6fa376134deb63a21798ae3f96ec894",
+        "bytes": 3220
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "83f15a3bbe2d1c2486f5296a43e09e05e7e385e11ec674192c655ed2528d6588",
+        "bytes": 12318
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "9615cebd45ce1fce905d139c9b990645da676cc566efeabc47482e5d3283932a",
+        "bytes": 1797
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "c8116db2417854ecd842de714fcc5eaffdcdc2c703d890599c5d0df4abc637fc",
+        "bytes": 6773
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "458ad0750cbee79df3189470b83c05b775eb49df8319784b9a958ccbed9d2a15",
+        "bytes": 461
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "9627e3e7854f44ba4d6a9796b127fb4bc5eecd98fb551065ea7d8be31e20a490",
+        "bytes": 316
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-titles",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 195.0,
+      "cached_input_units": 0.0,
+      "output_units": 69.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000122,
+      "created_at": "2026-11-14T04:04:18.599849+00:00"
+    },
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 27183.0,
+      "cached_input_units": 0.0,
+      "output_units": 3031.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.009074,
+      "created_at": "2026-11-14T04:04:20.622552+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-14T04:04:20.623913+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 38339.0,
+      "cached_input_units": 0.0,
+      "output_units": 2409.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.010559,
+      "created_at": "2026-11-14T04:04:51.573903+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-14T04:04:51.575108+00:00"
+    },
+    {
+      "stage": "script-story",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 16058.0,
+      "cached_input_units": 0.0,
+      "output_units": 10911.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.016305,
+      "created_at": "2026-11-14T04:06:19.153334+00:00"
+    },
+    {
+      "stage": "script-voice-direction",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1607.0,
+      "cached_input_units": 0.0,
+      "output_units": 1468.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002083,
+      "created_at": "2026-11-14T04:06:28.994052+00:00"
+    },
+    {
+      "stage": "script-board",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1691.0,
+      "cached_input_units": 0.0,
+      "output_units": 3313.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004314,
+      "created_at": "2026-11-14T04:06:54.755606+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 16058.0,
+      "cached_input_units": 0.0,
+      "output_units": 10911.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.016305,
+      "created_at": "2026-11-14T04:06:54.758205+00:00"
+    },
+    {
+      "stage": "demo-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2414.0,
+      "cached_input_units": 0.0,
+      "output_units": 96.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000598,
+      "created_at": "2026-11-14T06:25:52.539979+00:00"
+    },
+    {
+      "stage": "edit-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 6093.0,
+      "cached_input_units": 0.0,
+      "output_units": 6394.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008891,
+      "created_at": "2026-11-14T06:29:14.636989+00:00"
+    },
+    {
+      "stage": "guide",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2275.0,
+      "cached_input_units": 0.0,
+      "output_units": 985.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001637,
+      "created_at": "2026-11-14T07:10:12.090552+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 14547.0,
+      "cached_input_units": 0.0,
+      "output_units": 821.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.003895,
+      "created_at": "2026-11-14T07:10:12.954136+00:00"
+    },
+    {
+      "stage": "title-check",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1330.0,
+      "cached_input_units": 0.0,
+      "output_units": 286.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000609,
+      "created_at": "2026-11-14T07:10:18.140676+00:00"
+    }
+  ],
+  "recorded_at": "2026-11-14T07:11:44.043690+00:00"
+}
