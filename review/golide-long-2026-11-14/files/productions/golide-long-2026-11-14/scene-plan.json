@@ -1,0 +1,1355 @@
+{
+  "title": "Macbook PROLED Review: It's Not About Brightness",
+  "chapters": [
+    {
+      "number": "",
+      "title": "Intro"
+    },
+    {
+      "number": "01",
+      "title": "The Black Difference"
+    },
+    {
+      "number": "02",
+      "title": "What Tandem Changes"
+    },
+    {
+      "number": "03",
+      "title": "Power And Burn-In"
+    },
+    {
+      "number": "04",
+      "title": "Who Should Upgrade"
+    },
+    {
+      "number": "",
+      "title": "Close"
+    }
+  ],
+  "lines": [
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "The new MacBook Pro can hit 2,000 nits,",
+      "emphasis": "2,000 nits",
+      "visual": "icon_hero",
+      "subjects": [
+        "MacBook Pro",
+        "laptop screen"
+      ],
+      "label": "Peak brightness",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "but that isn't the reason its screen looks different.",
+      "emphasis": "screen looks different",
+      "visual": "icon_hero",
+      "subjects": [
+        "MacBook Pro screen",
+        "viewer"
+      ],
+      "label": "The real change",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "The bigger change happens in the dark parts of the picture,",
+      "emphasis": "dark parts",
+      "visual": "icon_pair",
+      "subjects": [
+        "dark photograph",
+        "laptop screen"
+      ],
+      "label": "Dark scenes",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "where an LCD is still glowing and this panel can switch individual pixels off.",
+      "emphasis": "pixels off",
+      "visual": "split_compare",
+      "subjects": [
+        "LCD panel",
+        "OLED panel",
+        "individual pixels"
+      ],
+      "label": "Pixel control",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "On October 28, Apple announced PROLED XDR with a tandem OLED panel,",
+      "emphasis": "October 28",
+      "visual": "icon_hero",
+      "subjects": [
+        "Apple logo",
+        "announcement stage",
+        "OLED panel"
+      ],
+      "label": "Apple announcement",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "per-pixel compensation and factory calibration.",
+      "emphasis": "factory calibration",
+      "visual": "icon_grid",
+      "subjects": [
+        "OLED panel",
+        "calibration probe",
+        "color chart"
+      ],
+      "label": "Panel features",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "That sounds like a brighter screen, but brightness is only one piece.",
+      "emphasis": "one piece",
+      "visual": "icon_pair",
+      "subjects": [
+        "bright screen",
+        "puzzle pieces"
+      ],
+      "label": "Only one piece",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "By the end, you'll know what tandem OLED is doing,",
+      "emphasis": "tandem OLED",
+      "visual": "icon_hero",
+      "subjects": [
+        "OLED panel",
+        "laptop"
+      ],
+      "label": "What it does",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "what the 2,000-nit number really means, what happens to power and burn-in,",
+      "emphasis": "2,000-nit number",
+      "visual": "icon_grid",
+      "subjects": [
+        "HDR screen",
+        "power meter",
+        "burn-in pattern"
+      ],
+      "label": "The real meaning",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "and whether you'd notice the upgrade in your own work.",
+      "emphasis": "your own work",
+      "visual": "icon_pair",
+      "subjects": [
+        "photo editor",
+        "video editor",
+        "laptop"
+      ],
+      "label": "Your upgrade",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Start with a normal laptop screen.",
+      "emphasis": "normal laptop screen",
+      "visual": "icon_hero",
+      "subjects": [
+        "laptop screen",
+        "office desk"
+      ],
+      "label": "Start here",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Most LCD panels have a light behind the whole picture.",
+      "emphasis": "light behind",
+      "visual": "icon_flow",
+      "subjects": [
+        "LCD panel",
+        "backlight"
+      ],
+      "label": "Backlight",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Liquid crystals steer it into pixels.",
+      "emphasis": "Liquid crystals",
+      "visual": "icon_flow",
+      "subjects": [
+        "liquid crystal layer",
+        "pixel grid"
+      ],
+      "label": "Pixel steering",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "When a dark scene sits beside a bright object,",
+      "emphasis": "dark scene",
+      "visual": "icon_pair",
+      "subjects": [
+        "dark scene",
+        "bright object",
+        "LCD screen"
+      ],
+      "label": "Mixed contrast",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "the backlight is still on behind both.",
+      "emphasis": "backlight is still on",
+      "visual": "icon_pair",
+      "subjects": [
+        "backlight",
+        "dark object",
+        "bright object"
+      ],
+      "label": "Still glowing",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "The screen can dim zones,",
+      "emphasis": "dim zones",
+      "visual": "icon_grid",
+      "subjects": [
+        "LCD zones",
+        "dimming grid"
+      ],
+      "label": "Zone dimming",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "but it can't make one pixel perfectly black while its neighbour is bright.",
+      "emphasis": "one pixel",
+      "visual": "split_compare",
+      "subjects": [
+        "bright pixel",
+        "black pixel",
+        "LCD panel"
+      ],
+      "label": "Pixel limit",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "That's where blooming, or a halo, can appear.",
+      "emphasis": "blooming",
+      "visual": "icon_hero",
+      "subjects": [
+        "bright light",
+        "halo",
+        "dark scene"
+      ],
+      "label": "Blooming",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "OLED changes the job.",
+      "emphasis": "OLED changes",
+      "visual": "split_compare",
+      "subjects": [
+        "OLED panel",
+        "LCD panel"
+      ],
+      "label": "OLED changes",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Each pixel makes its own light,",
+      "emphasis": "own light",
+      "visual": "icon_hero",
+      "subjects": [
+        "OLED pixel",
+        "glowing pixel"
+      ],
+      "label": "Self-emitting",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "so a black pixel can switch off while the next stays bright.",
+      "emphasis": "switch off",
+      "visual": "icon_pair",
+      "subjects": [
+        "black pixel",
+        "bright pixel"
+      ],
+      "label": "Pixels off",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "That gives you deeper blacks and the contrast HDR pictures need:",
+      "emphasis": "deeper blacks",
+      "visual": "icon_hero",
+      "subjects": [
+        "HDR image",
+        "dark room",
+        "bright highlights"
+      ],
+      "label": "Deep blacks",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "bright highlights against a dark room, without washing the scene grey.",
+      "emphasis": "without washing",
+      "visual": "split_compare",
+      "subjects": [
+        "HDR scene",
+        "bright light",
+        "dark room"
+      ],
+      "label": "Controlled contrast",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Apple specifies a 10,000,000:1 contrast ratio, but treat that as a specification,",
+      "emphasis": "10,000,000:1",
+      "visual": "bar_chart",
+      "subjects": [
+        "contrast chart",
+        "OLED screen"
+      ],
+      "label": "Contrast ratio",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "not a universal viewing result.",
+      "emphasis": "universal viewing",
+      "visual": "split_compare",
+      "subjects": [
+        "two laptop screens",
+        "different rooms"
+      ],
+      "label": "Not universal",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Here's the useful check.",
+      "emphasis": "useful check",
+      "visual": "checklist",
+      "subjects": [
+        "laptop screen",
+        "check mark"
+      ],
+      "label": "Check this",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Don't compare screens with a white webpage alone.",
+      "emphasis": "white webpage",
+      "visual": "cross_out",
+      "subjects": [
+        "white webpage",
+        "laptop"
+      ],
+      "label": "Don't compare this",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Open HDR footage with a night sky,",
+      "emphasis": "HDR footage",
+      "visual": "icon_hero",
+      "subjects": [
+        "night sky",
+        "HDR laptop screen"
+      ],
+      "label": "Open HDR",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "subtitles and a bright light in the same frame.",
+      "emphasis": "bright light",
+      "visual": "icon_grid",
+      "subjects": [
+        "subtitles",
+        "bright light",
+        "night scene"
+      ],
+      "label": "One frame",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Look at the black around the light and whether the highlight stays controlled.",
+      "emphasis": "black around",
+      "visual": "icon_pair",
+      "subjects": [
+        "bright light",
+        "black background",
+        "HDR screen"
+      ],
+      "label": "Inspect the edges",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "That's what this panel is built to show.",
+      "emphasis": "built to show",
+      "visual": "icon_hero",
+      "subjects": [
+        "OLED panel",
+        "HDR scene"
+      ],
+      "label": "The showcase",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "But making OLED bright enough for a laptop is the difficult part.",
+      "emphasis": "bright enough",
+      "visual": "gauge",
+      "subjects": [
+        "laptop screen",
+        "brightness meter"
+      ],
+      "label": "The challenge",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "That's where tandem OLED comes in.",
+      "emphasis": "tandem OLED",
+      "visual": "icon_hero",
+      "subjects": [
+        "tandem OLED stack",
+        "laptop"
+      ],
+      "label": "Tandem OLED",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "A normal OLED stack is like one worker doing the whole job.",
+      "emphasis": "one worker",
+      "visual": "icon_hero",
+      "subjects": [
+        "single OLED stack",
+        "worker icon"
+      ],
+      "label": "Single stack",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "Tandem OLED puts 2 emitting layers together, so they share the work.",
+      "emphasis": "2 emitting layers",
+      "visual": "icon_flow",
+      "subjects": [
+        "two OLED layers",
+        "tandem panel"
+      ],
+      "label": "Shared work",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "Apple says each can run at lower current, intended to raise peak brightness,",
+      "emphasis": "lower current",
+      "visual": "icon_flow",
+      "subjects": [
+        "OLED layers",
+        "electrical current arrows"
+      ],
+      "label": "Lower current",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "improve efficiency and extend panel life compared with a single-emitter design.",
+      "emphasis": "extend panel life",
+      "visual": "icon_grid",
+      "subjects": [
+        "OLED panel",
+        "battery icon",
+        "calendar"
+      ],
+      "label": "Efficiency gains",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "The headline numbers need translation.",
+      "emphasis": "headline numbers",
+      "visual": "icon_pair",
+      "subjects": [
+        "specification sheet",
+        "brightness meter"
+      ],
+      "label": "Translate specs",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "The specification says up to 1,000 nits sustained across the full",
+      "emphasis": "1,000 nits",
+      "visual": "bar_chart",
+      "subjects": [
+        "full-screen laptop",
+        "brightness meter"
+      ],
+      "label": "Sustained brightness",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "screen and up to 2,000 nits at peak HDR brightness.",
+      "emphasis": "2,000 nits",
+      "visual": "bar_chart",
+      "subjects": [
+        "small HDR highlight",
+        "brightness meter"
+      ],
+      "label": "Peak HDR",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "Those aren't the same test.",
+      "emphasis": "same test",
+      "visual": "split_compare",
+      "subjects": [
+        "full-screen test",
+        "small-window test"
+      ],
+      "label": "Different tests",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "A small highlight can hit the peak while",
+      "emphasis": "small highlight",
+      "visual": "icon_hero",
+      "subjects": [
+        "small bright highlight",
+        "HDR screen"
+      ],
+      "label": "Small window",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "the entire display can't hold that level everywhere.",
+      "emphasis": "entire display",
+      "visual": "split_compare",
+      "subjects": [
+        "full laptop display",
+        "brightness meter"
+      ],
+      "label": "Full screen",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "So if a review says it's very bright, ask: measured where, for how long,",
+      "emphasis": "measured where",
+      "visual": "checklist",
+      "subjects": [
+        "review chart",
+        "laptop screen",
+        "stopwatch"
+      ],
+      "label": "Ask the test",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "and in which mode?",
+      "emphasis": "which mode",
+      "visual": "icon_pair",
+      "subjects": [
+        "laptop display modes",
+        "settings menu"
+      ],
+      "label": "Test conditions",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "There is real engineering behind the architecture.",
+      "emphasis": "engineering",
+      "visual": "icon_hero",
+      "subjects": [
+        "OLED stack",
+        "circuit board"
+      ],
+      "label": "The engineering",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "A published 2010 SID paper found higher efficiency and lower",
+      "emphasis": "2010 SID paper",
+      "visual": "icon_hero",
+      "subjects": [
+        "research paper",
+        "OLED stack"
+      ],
+      "label": "Published evidence",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "power in the particular 2-stack OLED system it studied.",
+      "emphasis": "particular",
+      "visual": "bar_chart",
+      "subjects": [
+        "OLED stack",
+        "power meter"
+      ],
+      "label": "Reported result",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "But that's background evidence, not an independent measurement of this laptop.",
+      "emphasis": "independent",
+      "visual": "icon_pair",
+      "subjects": [
+        "two-stack OLED diagram",
+        "research paper"
+      ],
+      "label": "Specific system",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "Apple also points to factory calibration,",
+      "emphasis": "calibration",
+      "visual": "split_compare",
+      "subjects": [
+        "research paper",
+        "MacBook Pro"
+      ],
+      "label": "Not a laptop test",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "which should help colours arrive consistent from the box.",
+      "emphasis": "consistent",
+      "visual": "icon_hero",
+      "subjects": [
+        "calibration probe",
+        "MacBook Pro screen"
+      ],
+      "label": "Factory calibrated",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "Still, brightness and calibration don't tell the whole story,",
+      "emphasis": "calibration",
+      "visual": "icon_pair",
+      "subjects": [
+        "color chart",
+        "laptop screen"
+      ],
+      "label": "Out-of-box color",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "because every glowing pixel uses power.",
+      "emphasis": "because",
+      "visual": "icon_grid",
+      "subjects": [
+        "brightness meter",
+        "color chart",
+        "power meter"
+      ],
+      "label": "More than brightness",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Power is more complicated than the 2,000-nit label.",
+      "emphasis": "2,000-nit",
+      "visual": "icon_flow",
+      "subjects": [
+        "glowing pixels",
+        "power meter"
+      ],
+      "label": "Power per pixel",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "OLED can be efficient when much of the image is dark,",
+      "emphasis": "efficient",
+      "visual": "split_compare",
+      "subjects": [
+        "brightness label",
+        "battery icon"
+      ],
+      "label": "Power is complex",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "because black pixels are off.",
+      "emphasis": "because",
+      "visual": "icon_pair",
+      "subjects": [
+        "dark image",
+        "OLED screen"
+      ],
+      "label": "Dark content",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "A bright full-screen document asks many pixels to work at once,",
+      "emphasis": "full-screen",
+      "visual": "icon_hero",
+      "subjects": [
+        "black pixels",
+        "OLED panel"
+      ],
+      "label": "Pixels off",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "so the result depends on content, brightness and refresh rate.",
+      "emphasis": "brightness",
+      "visual": "icon_hero",
+      "subjects": [
+        "white document",
+        "laptop screen"
+      ],
+      "label": "Bright content",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "The display can drop ProMotion to 10Hz for idle content,",
+      "emphasis": "content",
+      "visual": "icon_grid",
+      "subjects": [
+        "video frame",
+        "brightness slider",
+        "refresh-rate menu"
+      ],
+      "label": "What affects power",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "and its adaptive brightness policy considers power draw, battery life and panel longevity.",
+      "emphasis": "brightness",
+      "visual": "gauge",
+      "subjects": [
+        "laptop screen",
+        "refresh-rate indicator"
+      ],
+      "label": "Idle refresh",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "But there isn't a universal display-only wattage figure,",
+      "emphasis": "display-only",
+      "visual": "icon_flow",
+      "subjects": [
+        "battery icon",
+        "brightness settings",
+        "OLED panel"
+      ],
+      "label": "Adaptive policy",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "so don't assume peak brightness predicts battery life.",
+      "emphasis": "brightness",
+      "visual": "cross_out",
+      "subjects": [
+        "laptop",
+        "watt meter"
+      ],
+      "label": "No universal figure",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Then there's the question people skip: what happens after years?",
+      "emphasis": "question",
+      "visual": "split_compare",
+      "subjects": [
+        "battery icon",
+        "brightness meter"
+      ],
+      "label": "Don't assume",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Static, high-contrast elements displayed for long periods can contribute to burn-in or uneven brightness.",
+      "emphasis": "high-contrast",
+      "visual": "clock",
+      "subjects": [
+        "OLED laptop",
+        "calendar"
+      ],
+      "label": "Years later",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Apple says its display engine monitors content, usage, temperature and ambient conditions,",
+      "emphasis": "temperature",
+      "visual": "icon_hero",
+      "subjects": [
+        "static spreadsheet",
+        "OLED screen",
+        "burn-in pattern"
+      ],
+      "label": "Burn-in risk",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "then applies compensation and uniformity correction.",
+      "emphasis": "compensation",
+      "visual": "icon_flow",
+      "subjects": [
+        "display engine",
+        "temperature sensor",
+        "laptop screen"
+      ],
+      "label": "Monitoring system",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "That's mitigation, not proof the risk has disappeared.",
+      "emphasis": "disappeared",
+      "visual": "icon_flow",
+      "subjects": [
+        "OLED pixels",
+        "correction grid"
+      ],
+      "label": "Correction",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Professional OLED documentation still warns about permanent changes.",
+      "emphasis": "documentation",
+      "visual": "cross_out",
+      "subjects": [
+        "warning sign",
+        "OLED screen"
+      ],
+      "label": "Risk remains",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Here's the practical tip.",
+      "emphasis": "practical",
+      "visual": "icon_pair",
+      "subjects": [
+        "OLED panel",
+        "warning document"
+      ],
+      "label": "Long-term warning",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "If your day is a fixed spreadsheet or editor interface,",
+      "emphasis": "spreadsheet",
+      "visual": "checklist",
+      "subjects": [
+        "laptop screen",
+        "check mark"
+      ],
+      "label": "Practical tip",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "vary the content when you can, use sensible brightness,",
+      "emphasis": "brightness",
+      "visual": "icon_hero",
+      "subjects": [
+        "spreadsheet",
+        "laptop"
+      ],
+      "label": "Static content",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "and don't expect OLED tradeoffs to be gone.",
+      "emphasis": "tradeoffs",
+      "visual": "icon_flow",
+      "subjects": [
+        "spreadsheet",
+        "video editor",
+        "brightness slider"
+      ],
+      "label": "Reduce stress",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "The question is whether you spend enough time",
+      "emphasis": "question",
+      "visual": "split_compare",
+      "subjects": [
+        "OLED screen",
+        "warning sign"
+      ],
+      "label": "Tradeoffs remain",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "looking at the strengths to accept them.",
+      "emphasis": "strengths",
+      "visual": "clock",
+      "subjects": [
+        "person at laptop",
+        "HDR image"
+      ],
+      "label": "Your priorities",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "For an HDR editor, colorist, photographer or designer, the answer may be yes.",
+      "emphasis": "photographer",
+      "visual": "icon_hero",
+      "subjects": [
+        "HDR screen",
+        "photo editor"
+      ],
+      "label": "The strengths",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Deep blacks can make shadow detail and contrast easier to judge,",
+      "emphasis": "contrast",
+      "visual": "icon_grid",
+      "subjects": [
+        "video editor",
+        "colorist monitor",
+        "camera"
+      ],
+      "label": "Best audience",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "bright highlights have more room, and factory calibration can provide a useful starting point.",
+      "emphasis": "calibration",
+      "visual": "icon_hero",
+      "subjects": [
+        "shadow detail",
+        "HDR image",
+        "laptop screen"
+      ],
+      "label": "Shadow detail",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Someone working outdoors or under difficult lighting may notice this",
+      "emphasis": "difficult",
+      "visual": "icon_pair",
+      "subjects": [
+        "color chart",
+        "calibrated laptop"
+      ],
+      "label": "Useful starting point",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "more than someone at a desk in a dim room.",
+      "emphasis": "someone",
+      "visual": "icon_hero",
+      "subjects": [
+        "laptop outdoors",
+        "sunlight"
+      ],
+      "label": "Bright environments",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "For ordinary browsing, documents and mostly SDR office work, the upgrade may be quieter.",
+      "emphasis": "documents",
+      "visual": "split_compare",
+      "subjects": [
+        "laptop",
+        "dim desk"
+      ],
+      "label": "Dim-room difference",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Text can look good on an LCD,",
+      "emphasis": "Text",
+      "visual": "icon_hero",
+      "subjects": [
+        "web browser",
+        "laptop"
+      ],
+      "label": "Everyday use",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "and a white webpage doesn't show off perfect blacks.",
+      "emphasis": "webpage",
+      "visual": "icon_pair",
+      "subjects": [
+        "text document",
+        "LCD screen"
+      ],
+      "label": "LCD still works",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Your result depends on content, ambient light,",
+      "emphasis": "depends",
+      "visual": "cross_out",
+      "subjects": [
+        "white webpage",
+        "laptop screen"
+      ],
+      "label": "Weak demo",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "viewing distance and whether you care about HDR and accurate colour.",
+      "emphasis": "distance",
+      "visual": "icon_grid",
+      "subjects": [
+        "laptop",
+        "window",
+        "viewer"
+      ],
+      "label": "Your conditions",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "So don't use one review as universal proof.",
+      "emphasis": "one review",
+      "visual": "cross_out",
+      "subjects": [
+        "review webpage",
+        "laptop"
+      ],
+      "label": "Don't generalize",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Look for independent measurements of sustained full-screen brightness, small-window HDR brightness, black level,",
+      "emphasis": "independent measurements",
+      "visual": "checklist",
+      "subjects": [
+        "measurement probe",
+        "laptop screen",
+        "test chart"
+      ],
+      "label": "Check the data",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "colour accuracy, power draw and long-term uniformity.",
+      "emphasis": "long-term uniformity",
+      "visual": "icon_pair",
+      "subjects": [
+        "uniformity test chart",
+        "OLED screen"
+      ],
+      "label": "Long-term test",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Then compare them with your work, not a cinematic demo.",
+      "emphasis": "your work",
+      "visual": "split_compare",
+      "subjects": [
+        "photo editor",
+        "spreadsheet",
+        "laptop"
+      ],
+      "label": "Match your use",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Here's the buying rule: if you create or inspect HDR images,",
+      "emphasis": "buying rule",
+      "visual": "checklist",
+      "subjects": [
+        "shopping cart",
+        "laptop screen"
+      ],
+      "label": "Buying rule",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "contrast and highlight control are the reason to consider it.",
+      "emphasis": "highlight",
+      "visual": "icon_hero",
+      "subjects": [
+        "HDR photo",
+        "photo editor",
+        "laptop"
+      ],
+      "label": "Consider it for HDR",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "If you mostly write, browse and code,",
+      "emphasis": "mostly",
+      "visual": "cross_out",
+      "subjects": [
+        "brightness meter",
+        "MacBook Pro"
+      ],
+      "label": "Not enough",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "brightness alone probably isn't enough to replace a good MacBook Pro.",
+      "emphasis": "brightness",
+      "visual": "icon_grid",
+      "subjects": [
+        "tandem OLED stack",
+        "black pixel",
+        "HDR highlight"
+      ],
+      "label": "The short version",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "The simple version is,",
+      "emphasis": "version",
+      "visual": "icon_flow",
+      "subjects": [
+        "two OLED layers",
+        "electrical current arrows"
+      ],
+      "label": "Shared power",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "tandem OLED makes bright HDR highlights possible while sharing the electrical work,",
+      "emphasis": "highlights",
+      "visual": "icon_pair",
+      "subjects": [
+        "black pixel",
+        "bright pixel",
+        "HDR scene"
+      ],
+      "label": "Real visual change",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "but the real visual change is pixel-level black and contrast.",
+      "emphasis": "pixel-level",
+      "visual": "split_compare",
+      "subjects": [
+        "2,000-nit label",
+        "full-screen display"
+      ],
+      "label": "Peak, not everyday",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "The 2,000-nit figure is a peak claim, not everyday full-screen brightness,",
+      "emphasis": "2,000-nit",
+      "visual": "cross_out",
+      "subjects": [
+        "burn-in warning",
+        "display engine"
+      ],
+      "label": "Risk managed",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "and burn-in is managed, not erased.",
+      "emphasis": "burn-in",
+      "visual": "icon_pair",
+      "subjects": [
+        "guide document",
+        "video description"
+      ],
+      "label": "Free guide",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "cta",
+      "text": "The free guide to this video and the link to our",
+      "emphasis": "guide",
+      "visual": "logo_end",
+      "subjects": [
+        "channel logo",
+        "video screen"
+      ],
+      "label": "Follow for more",
+      "follow": true
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "community for updates and all these stories are in the description.",
+      "emphasis": "description",
+      "visual": "icon_hero",
+      "subjects": [],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "Follow the channel for breakdowns that separate a specification from what you'll actually see.",
+      "emphasis": "specification",
+      "visual": "icon_hero",
+      "subjects": [],
+      "label": "",
+      "follow": true
+    }
+  ],
+  "voice_script": "[curious] The new MacBook Pro can hit 2,000 nits, but that isn't the reason its screen looks different. The bigger change happens in the dark parts of the picture, where an LCD is still glowing and this panel can switch individual pixels off. On October 28, Apple announced PROLED XDR with a tandem OLED panel, per-pixel compensation and factory calibration. That sounds like a brighter screen, but brightness is only one piece. By the end, you'll know what tandem OLED is doing, what the 2,000-nit number really means, what happens to power and burn-in, and whether you'd notice the upgrade in your own work.\n\nStart with a normal laptop screen. Most LCD panels have a light behind the whole picture. Liquid crystals steer it into pixels. When a dark scene sits beside a bright object, the backlight is still on behind both. The screen can dim zones, but it can't make one pixel perfectly black while its neighbour is bright. That's where blooming, or a halo, can appear.\n\n[thoughtful] OLED changes the job. Each pixel makes its own light, so a black pixel can switch off while the next stays bright. That gives you deeper blacks and the contrast HDR pictures need: bright highlights against a dark room, without washing the scene grey. Apple specifies a 10,000,000:1 contrast ratio, but treat that as a specification, not a universal viewing result.\n\nHere's the useful check. Don't compare screens with a white webpage alone. Open HDR footage with a night sky, subtitles and a bright light in the same frame. Look at the black around the light and whether the highlight stays controlled. That's what this panel is built to show. But making OLED bright enough for a laptop is the difficult part.\n\n[confidently] That's where tandem OLED comes in. A normal OLED stack is like one worker doing the whole job. Tandem OLED puts two emitting layers together, so they share the work. Apple says each can run at lower current, intended to raise peak brightness, improve efficiency and extend panel life compared with a single-emitter design.\n\nThe headline numbers need translation. The specification says up to 1,000 nits sustained across the full screen and up to 2,000 nits at peak HDR brightness. Those aren't the same test. A small highlight can hit the peak while the entire display can't hold that level everywhere. So if a review says it's very bright, ask: measured where, for how long, and in which mode?\n\n[serious] There is real engineering behind the architecture. A published 2010 SID paper found higher efficiency and lower power in the particular two-stack OLED system it studied. But that's background evidence, not an independent measurement of this laptop. Apple also points to factory calibration, which should help colours arrive consistent from the box. Still, brightness and calibration don't tell the whole story, because every glowing pixel uses power.\n\nPower is more complicated than the 2,000-nit label. OLED can be efficient when much of the image is dark, because black pixels are off. A bright full-screen document asks many pixels to work at once, so the result depends on content, brightness and refresh rate. The display can drop ProMotion to 10Hz for idle content, and its adaptive brightness policy considers power draw, battery life and panel longevity. But there isn't a universal display-only wattage figure, so don't assume peak brightness predicts battery life.\n\n[quietly] Then there's the question people skip: what happens after years? Static, high-contrast elements displayed for long periods can contribute to burn-in or uneven brightness. Apple says its display engine monitors content, usage, temperature and ambient conditions, then applies compensation and uniformity correction. That's mitigation, not proof the risk has disappeared. Professional OLED documentation still warns about permanent changes.\n\nHere's the practical tip. If your day is a fixed spreadsheet or editor interface, vary the content when you can, use sensible brightness, and don't expect OLED tradeoffs to be gone. The question is whether you spend enough time looking at the strengths to accept them.\n\nFor an HDR editor, colorist, photographer or designer, the answer may be yes. Deep blacks can make shadow detail and contrast easier to judge, bright highlights have more room, and factory calibration can provide a useful starting point. Someone working outdoors or under difficult lighting may notice this more than someone at a desk in a dim room.\n\n[thoughtful] For ordinary browsing, documents and mostly SDR office work, the upgrade may be quieter. Text can look good on an LCD, and a white webpage doesn't show off perfect blacks. Your result depends on content, ambient light, viewing distance and whether you care about HDR and accurate colour.\n\nSo don't use one review as universal proof. Look for independent measurements of sustained full-screen brightness, small-window HDR brightness, black level, colour accuracy, power draw and long-term uniformity. Then compare them with your work, not a cinematic demo. Here's the buying rule: if you create or inspect HDR images, contrast and highlight control are the reason to consider it. If you mostly write, browse and code, brightness alone probably isn't enough to replace a good MacBook Pro.\n\n[warmly] The simple version is, tandem OLED makes bright HDR highlights possible while sharing the electrical work, but the real visual change is pixel-level black and contrast. The 2,000-nit figure is a peak claim, not everyday full-screen brightness, and burn-in is managed, not erased. The free guide to this video and the link to our community for updates and all these stories are in the description. Follow the channel for breakdowns that separate a specification from what you'll actually see."
+}

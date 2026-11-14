@@ -1,0 +1,100 @@
+The new MacBook Pro can hit 2,000 nits,
+but that isn't the reason its screen looks different.
+The bigger change happens in the dark parts of the picture,
+where an LCD is still glowing and this panel can switch individual pixels off.
+On October 28, Apple announced PROLED XDR with a tandem OLED panel,
+per-pixel compensation and factory calibration.
+That sounds like a brighter screen, but brightness is only one piece.
+By the end, you'll know what tandem OLED is doing,
+what the 2,000-nit number really means, what happens to power and burn-in,
+and whether you'd notice the upgrade in your own work.
+Start with a normal laptop screen.
+Most LCD panels have a light behind the whole picture.
+Liquid crystals steer it into pixels.
+When a dark scene sits beside a bright object,
+the backlight is still on behind both.
+The screen can dim zones,
+but it can't make one pixel perfectly black while its neighbour is bright.
+That's where blooming, or a halo, can appear.
+OLED changes the job.
+Each pixel makes its own light,
+so a black pixel can switch off while the next stays bright.
+That gives you deeper blacks and the contrast HDR pictures need:
+bright highlights against a dark room, without washing the scene grey.
+Apple specifies a 10,000,000:1 contrast ratio, but treat that as a specification,
+not a universal viewing result.
+Here's the useful check.
+Don't compare screens with a white webpage alone.
+Open HDR footage with a night sky,
+subtitles and a bright light in the same frame.
+Look at the black around the light and whether the highlight stays controlled.
+That's what this panel is built to show.
+But making OLED bright enough for a laptop is the difficult part.
+That's where tandem OLED comes in.
+A normal OLED stack is like one worker doing the whole job.
+Tandem OLED puts 2 emitting layers together, so they share the work.
+Apple says each can run at lower current, intended to raise peak brightness,
+improve efficiency and extend panel life compared with a single-emitter design.
+The headline numbers need translation.
+The specification says up to 1,000 nits sustained across the full
+screen and up to 2,000 nits at peak HDR brightness.
+Those aren't the same test.
+A small highlight can hit the peak while
+the entire display can't hold that level everywhere.
+So if a review says it's very bright, ask: measured where, for how long,
+and in which mode?
+There is real engineering behind the architecture.
+A published 2010 SID paper found higher efficiency and lower
+power in the particular 2-stack OLED system it studied.
+But that's background evidence, not an independent measurement of this laptop.
+Apple also points to factory calibration,
+which should help colours arrive consistent from the box.
+Still, brightness and calibration don't tell the whole story,
+because every glowing pixel uses power.
+Power is more complicated than the 2,000-nit label.
+OLED can be efficient when much of the image is dark,
+because black pixels are off.
+A bright full-screen document asks many pixels to work at once,
+so the result depends on content, brightness and refresh rate.
+The display can drop ProMotion to 10Hz for idle content,
+and its adaptive brightness policy considers power draw, battery life and panel longevity.
+But there isn't a universal display-only wattage figure,
+so don't assume peak brightness predicts battery life.
+Then there's the question people skip: what happens after years?
+Static, high-contrast elements displayed for long periods can contribute to burn-in or uneven brightness.
+Apple says its display engine monitors content, usage, temperature and ambient conditions,
+then applies compensation and uniformity correction.
+That's mitigation, not proof the risk has disappeared.
+Professional OLED documentation still warns about permanent changes.
+Here's the practical tip.
+If your day is a fixed spreadsheet or editor interface,
+vary the content when you can, use sensible brightness,
+and don't expect OLED tradeoffs to be gone.
+The question is whether you spend enough time
+looking at the strengths to accept them.
+For an HDR editor, colorist, photographer or designer, the answer may be yes.
+Deep blacks can make shadow detail and contrast easier to judge,
+bright highlights have more room, and factory calibration can provide a useful starting point.
+Someone working outdoors or under difficult lighting may notice this
+more than someone at a desk in a dim room.
+For ordinary browsing, documents and mostly SDR office work, the upgrade may be quieter.
+Text can look good on an LCD,
+and a white webpage doesn't show off perfect blacks.
+Your result depends on content, ambient light,
+viewing distance and whether you care about HDR and accurate colour.
+So don't use one review as universal proof.
+Look for independent measurements of sustained full-screen brightness, small-window HDR brightness, black level,
+colour accuracy, power draw and long-term uniformity.
+Then compare them with your work, not a cinematic demo.
+Here's the buying rule: if you create or inspect HDR images,
+contrast and highlight control are the reason to consider it.
+If you mostly write, browse and code,
+brightness alone probably isn't enough to replace a good MacBook Pro.
+The simple version is,
+tandem OLED makes bright HDR highlights possible while sharing the electrical work,
+but the real visual change is pixel-level black and contrast.
+The 2,000-nit figure is a peak claim, not everyday full-screen brightness,
+and burn-in is managed, not erased.
+The free guide to this video and the link to our
+community for updates and all these stories are in the description.
+Follow the channel for breakdowns that separate a specification from what you'll actually see.

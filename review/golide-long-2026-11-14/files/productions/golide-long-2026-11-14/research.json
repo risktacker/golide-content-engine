@@ -1,0 +1,71 @@
+{
+  "summary": "Apple introduced the MacBook Pro with PROLED XDR on October 28, 2026, using a tandem OLED panel, per-pixel display compensation, factory calibration, and a claimed 2,000-nit peak. The meaningful change is not simply a brighter screen: self-emissive pixels enable true black and extremely high contrast, while tandem OLED is designed to share the work between two emitting layers, improving peak brightness, efficiency, and panel longevity compared with a single-emitter OLED. The review should distinguish Apple\u2019s specifications and engineering explanations from independently measured performance. The upgrade is most likely to matter to HDR video editors, photographers, colorists, designers, and users working in bright or highly controlled environments; ordinary SDR office work may show a smaller benefit.",
+  "claims": [
+    {
+      "claim": "Apple announced the new MacBook Pro with PROLED XDR on October 28, 2026, with customer availability beginning November 6, 2026.",
+      "source_title": "Apple unveils groundbreaking MacBook Pro with PROLED XDR Display and Touch for the first time on Mac",
+      "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+      "published_or_updated": "October 28, 2026"
+    },
+    {
+      "claim": "Apple specifies a tandem OLED display with up to 1,000 nits sustained full-screen brightness, 2,000 nits peak HDR brightness, and a 10,000,000:1 contrast ratio. The 2,000-nit figure should not be presented as the same thing as sustained full-screen output.",
+      "source_title": "MacBook Pro with PROLED XDR Display \u2014 Technical Specifications",
+      "source_url": "https://www.apple.com/macbook-pro/proled-xdr-display/specs/",
+      "published_or_updated": "2026, accessed November 14, 2026"
+    },
+    {
+      "claim": "Unlike an LCD laptop panel, OLED pixels are self-emissive: each pixel generates its own light, so a pixel displaying black can turn off rather than relying on a backlight that remains active. Apple says this produces accurate black levels and avoids the blooming or halos associated with backlight-based displays.",
+      "source_title": "PROLED XDR Display Technology Overview",
+      "source_url": "https://www.apple.com/in/macbook-pro/proled-xdr-display/pdf/PROLED_XDR_Display_Technical_Paper.pdf",
+      "published_or_updated": "October 2026"
+    },
+    {
+      "claim": "Tandem OLED stacks two electroluminescent emitting layers. Apple describes the layers as sharing the work, allowing each layer to operate at lower current; Apple says this is intended to improve peak brightness, power efficiency, and panel lifespan compared with a single-emitter OLED.",
+      "source_title": "PROLED XDR Display Technology Overview",
+      "source_url": "https://www.apple.com/in/macbook-pro/proled-xdr-display/pdf/PROLED_XDR_Display_Technical_Paper.pdf",
+      "published_or_updated": "October 2026"
+    },
+    {
+      "claim": "Independent display research supports the general engineering rationale for tandem OLED: a published SID paper reported that a two-stack OLED design achieved higher efficiency and reduced power consumption in the specific display system studied. That result should be treated as background evidence for the architecture, not as a measurement of this MacBook Pro.",
+      "source_title": "Hybrid Tandem White OLEDs with High Efficiency and Long Life-time for AMOLED Displays and Solid-State Lighting",
+      "source_url": "https://sid.onlinelibrary.wiley.com/doi/abs/10.1889/1.3500587",
+      "published_or_updated": "2010"
+    },
+    {
+      "claim": "Apple says the M5 Pro and M5 Max display engine applies real-time, per-pixel compensation for content, pixel usage, temperature, and ambient conditions, including burn-in mitigation and uniformity correction. These are Apple\u2019s engineering claims; the review should not treat them as independently proven without long-term testing.",
+      "source_title": "PROLED XDR Display Technology Overview",
+      "source_url": "https://www.apple.com/in/macbook-pro/proled-xdr-display/pdf/PROLED_XDR_Display_Technical_Paper.pdf",
+      "published_or_updated": "October 2026"
+    },
+    {
+      "claim": "OLED retains a long-term tradeoff: static, high-contrast images displayed for extended periods can contribute to permanent burn-in or brightness changes. Sony\u2019s professional OLED monitor documentation explicitly warns about this risk, while Apple describes pixel-use monitoring and compensation as mitigation rather than proof that the risk has disappeared.",
+      "source_title": "Sony Professional OLED Monitor Precaution Manual",
+      "source_url": "https://pro.sony/s3/cms-static-content/operation-manual/4488667111.pdf",
+      "published_or_updated": "Undated manufacturer manual, accessed November 14, 2026"
+    },
+    {
+      "claim": "The display\u2019s power behavior is content- and mode-dependent rather than determined by the peak-nit number alone. Apple says ProMotion can reduce refresh rate to 10Hz for idle content and that its adaptive brightness policy considers power draw, battery life, and panel longevity; Apple does not provide a universal display-only wattage figure in the cited materials.",
+      "source_title": "PROLED XDR Display Technology Overview",
+      "source_url": "https://www.apple.com/in/macbook-pro/proled-xdr-display/pdf/PROLED_XDR_Display_Technical_Paper.pdf",
+      "published_or_updated": "October 2026"
+    },
+    {
+      "claim": "The people most likely to notice the improvement are HDR video editors, colorists, photographers, designers, and users working outdoors or under difficult lighting, because the relevant changes include black level, highlight control, wide-gamut support, reflection control, and calibration. This audience assessment is an inference from Apple\u2019s stated workflows and display features, not a universal viewing test.",
+      "source_title": "PROLED XDR Display Technology Overview",
+      "source_url": "https://www.apple.com/in/macbook-pro/proled-xdr-display/pdf/PROLED_XDR_Display_Technical_Paper.pdf",
+      "published_or_updated": "October 2026"
+    },
+    {
+      "claim": "For ordinary web browsing, documents, and mostly SDR office work, the difference may be less dramatic than the headline brightness suggests; the visible benefit will depend on ambient light, HDR content, viewing distance, source material, and whether the user values perfect blacks and accurate color. This is an inference from the display\u2019s operating modes and stated strengths, not a claim that every user will experience the same result.",
+      "source_title": "MacBook Pro with PROLED XDR Display \u2014 Technical Specifications",
+      "source_url": "https://www.apple.com/macbook-pro/proled-xdr-display/specs/",
+      "published_or_updated": "2026, accessed November 14, 2026"
+    }
+  ],
+  "core_fact": {
+    "fact": "On October 28, 2026, Apple announced a new MacBook Pro with a PROLED XDR display using tandem OLED technology, advanced per-pixel display algorithms, and factory calibration; Apple claims up to 2,000 nits peak brightness and a 10,000,000:1 contrast ratio.",
+    "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+    "published_or_updated": "October 28, 2026",
+    "verified": true
+  }
+}
