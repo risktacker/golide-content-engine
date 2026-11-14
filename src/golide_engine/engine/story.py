@@ -21,6 +21,8 @@ from .content_rules import (VISUAL_CUES, chapter_range, length_target, owner_voi
 
 EXAMPLE_FILE = Path(__file__).resolve().parents[3] / "config" / "story-example.txt"
 EXAMPLE_FILE_2 = Path(__file__).resolve().parents[3] / "config" / "story-example-2.txt"
+# 2026-11-14 (owner): the fixed method examples are the writer's real model ("3 is the key"); Shorts had none
+EXAMPLE_FILE_SHORT = Path(__file__).resolve().parents[3] / "config" / "story-example-short.txt"
 GUIDE_FILE = Path(__file__).resolve().parents[3] / "config" / "script-voice.md"
 
 STORY_SCHEMA: dict = {
@@ -88,6 +90,7 @@ def story_instructions(format_name: str, model_seconds: float | None = None) -> 
     # the method examples are long-video stories; a Short follows its own shape (2026-11-10)
     example = _read(EXAMPLE_FILE) if format_name == "long" else ""
     example_2 = _read(EXAMPLE_FILE_2) if format_name == "long" else ""
+    example_short = _read(EXAMPLE_FILE_SHORT) if format_name == "short" else ""
     # 2026-11-12 (owner: why does it exceed the length?): the examples are 2,089 and 3,523 words and the length
     # was one line at the bottom, so the writer copied the examples' size. The length now leads, each part gets
     # its own budget, and every example says how long it is.
@@ -181,6 +184,8 @@ def story_instructions(format_name: str, model_seconds: float | None = None) -> 
            f"words)\n{example}\n\n" if example else "")
         + (f"METHOD EXAMPLE 2, a tool or product {sized(example_2)} (how it stays connected from start to end, not "
            f"its words)\n{example_2}\n\n" if example_2 else "")
+        + (f"SHORT METHOD EXAMPLE {sized(example_short)} (how one chain hooks and pulls the viewer to the end, not "
+           f"its words)\n{example_short}\n\n" if example_short else "")
         + "TECHNICAL (the pipeline needs these)\n"
         f"- {lo} to {hi} spoken words (about {target['seconds']} seconds): count them before you answer.\n"
         + chapters
