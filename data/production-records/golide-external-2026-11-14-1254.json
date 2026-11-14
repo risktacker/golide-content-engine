@@ -1,0 +1,244 @@
+{
+  "production_id": "golide-external-2026-11-14-1254",
+  "youtube_video_id": "ez5RN-k8YrU",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "ez5RN-k8YrU",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-11-14T11:08:34.703529+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "External video · 2026-11-14",
+    "status": "scheduled",
+    "scheduled_at": "2026-11-14T10:54:16Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"schedule_rule\": \"studio-external-video\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "[curious] Imagine a phone reveal so convincing,\nyou forget the company hasn’t actually revealed it.\nThe viral clips show a purple Galaxy S27 Ultra with four cameras.\nBut as of November 13, 2026, the phone and “Cobalt Violet” are still UNCONFIRMED.\nSo what actually surfaced?\n[serious] On November 12, Tom’s Guide reported dummy units, including a supposed Ultra.\nNow, why does that matter?\nA dummy copies the outside of a phone.\nIt doesn’t prove the actual device will look the same.\nAnd with studio lighting and camera processing,\nit’s surprisingly easy to make something that looks like an official reveal.\n[skeptical] But there’s something interesting about those cameras.\nThe dummy units show four rear cameras.\nSounds convincing, right?\nExcept that detail conflicts with other leaks.\nIce Universe even claimed the upper-right camera doesn’t exist.\nAnother rumour suggests Samsung could go with just three lenses,\ndropping a secondary 10MP telephoto.\n[thoughtful] So which phone are you actually looking at?\nRight now, it’s a rumour, not a reveal.\nThe real test is simple: wait for Samsung’s official announcement,\nnot a dummy under studio lights.\nFollow us for more AI and technology updates.\nThe free guide and community link are in the description.\nUntil then, that purple phone is evidence of a leak,\nnot proof of what ships.\n",
+  "research": {
+    "summary": "Video built from the owner's own script and recording.",
+    "claims": [
+      {
+        "claim": "The owner's own script.",
+        "source_title": "Owner",
+        "source_url": "",
+        "published_or_updated": ""
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Galaxy S27 Ultra Purple Leak: Dummy Unit or Real Reveal?",
+    "description": "Free guide to this video (steps and every source): https://studio.golidee.com/guides/golide-external-2026-11-14-1254.pdf\n\nA purple Samsung Galaxy S27 Ultra is going viral, but Samsung has not officially revealed the phone or confirmed the “Cobalt Violet” color. This short explains what the leaked dummy units actually show and why they do not prove the final design.\n\nThe four-camera layout also conflicts with other Galaxy S27 Ultra rumors, including claims that Samsung may remove the secondary telephoto lens. For now, this is evidence of a leak—not proof of what Samsung will ship.\n\n#GalaxyS27Ultra #SamsungGalaxy #GalaxyS27 #Samsung #TechNews #PhoneLeaks #GOLIDE",
+    "tags": [
+      "Galaxy S27 Ultra",
+      "Samsung Galaxy S27",
+      "Galaxy S27 Ultra leak",
+      "S27 Ultra dummy unit",
+      "Galaxy S27 purple",
+      "Cobalt Violet Samsung",
+      "Galaxy S27 cameras",
+      "S27 Ultra camera leak",
+      "Samsung phone leak",
+      "Galaxy S27 rumors",
+      "Galaxy S27 design",
+      "Ice Universe",
+      "Toms Guide",
+      "Samsung Galaxy leak",
+      "Android phone rumors",
+      "Samsung camera leak",
+      "Galaxy S27 Ultra colors",
+      "S27 Ultra four cameras",
+      "S27 Ultra telephoto",
+      "Galaxy S27 reveal",
+      "Samsung flagship phone",
+      "GOLIDE"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "keywords": [
+      "Galaxy S27 Ultra leak",
+      "Samsung Galaxy S27 Ultra",
+      "Galaxy S27 Ultra purple",
+      "Galaxy S27 dummy unit",
+      "Cobalt Violet Samsung",
+      "S27 Ultra camera leak",
+      "Galaxy S27 Ultra cameras",
+      "Galaxy S27 Ultra colors",
+      "Ice Universe S27",
+      "Samsung phone rumors",
+      "Galaxy S27 design",
+      "S27 Ultra telephoto",
+      "Samsung Galaxy leak",
+      "Galaxy S27 reveal"
+    ],
+    "hashtags": [
+      "#GalaxyS27Ultra",
+      "#SamsungGalaxy",
+      "#GalaxyS27",
+      "#Samsung",
+      "#TechNews",
+      "#PhoneLeaks",
+      "#GOLIDE"
+    ],
+    "format": "short",
+    "title_description_language": "en",
+    "seo_body": "A purple Samsung Galaxy S27 Ultra is going viral, but Samsung has not officially revealed the phone or confirmed the “Cobalt Violet” color. This short explains what the leaked dummy units actually show and why they do not prove the final design.\n\nThe four-camera layout also conflicts with other Galaxy S27 Ultra rumors, including claims that Samsung may remove the secondary telephoto lens. For now, this is evidence of a leak—not proof of what Samsung will ship.",
+    "link": ""
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "The owner's own script.",
+        "source_title": "Owner",
+        "source_url": "",
+        "published_or_updated": ""
+      }
+    ],
+    "platform_demand": {
+      "verdict": "pass",
+      "reason": "owner-started external video"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -15.86,
+      "true_peak_dbtp": -1.82,
+      "loudness_range": 2.1
+    },
+    "editorial": {
+      "beats": 40,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-11-14T11:08:19.887127+00:00",
+    "warnings": [
+      "possible misspelling: golidee"
+    ]
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "schedule_rule": "studio-external-video"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-external-2026-11-14-1254",
+    "created_at": "2026-11-14T11:08:24.869519+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-11-14T10:54:16Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "e69db27c94ebbb2334abd458d613e35a607fe1d1030564a4da3f564585692d60",
+        "bytes": 13995723
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "ef94362c5e0280f381f710c33a35473b664a9529d51ec9700af1a2c3012085bb",
+        "bytes": 171449
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "f56aa87244deb58eb6e3f02e15ddb4e65e95e249a7eca84b0b43eee984f3d815",
+        "bytes": 2665
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "8f2375a95673d487ea3cd9034c9bb39afdc81e3a4cd77758e3e0998c204ebba8",
+        "bytes": 2411
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "c5ecb9ff8d77e8069d67b086cd954c6db2811b3384edafd34a211831449447a0",
+        "bytes": 1045
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "bc5481e875c6a8a7366c603e0c512baa58fed7f0d285ecdd8480b252a5ec1797",
+        "bytes": 548
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "0c7125f3bd11574c3f63fe318362c2c88afe13989b38396ca7741ab611430bb0",
+        "bytes": 335
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "9a3ee4cb56c99230e2ca252742e7f464d37b1a619d90abf04e24e30885bca362",
+        "bytes": 316
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "edit-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2952.0,
+      "cached_input_units": 0.0,
+      "output_units": 4530.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006026,
+      "created_at": "2026-11-14T10:58:49.093231+00:00"
+    },
+    {
+      "stage": "guide",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 538.0,
+      "cached_input_units": 0.0,
+      "output_units": 563.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000783,
+      "created_at": "2026-11-14T11:07:54.895214+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 13375.0,
+      "cached_input_units": 0.0,
+      "output_units": 841.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.003684,
+      "created_at": "2026-11-14T11:07:55.402458+00:00"
+    }
+  ],
+  "recorded_at": "2026-11-14T11:08:34.707789+00:00"
+}
