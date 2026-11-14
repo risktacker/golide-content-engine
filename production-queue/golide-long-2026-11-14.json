@@ -333,5 +333,14 @@
     "measured_at": "2026-11-14T04:04:24.921878+00:00",
     "signal_type": "youtube-breakout-v1"
   },
-  "selected_topic_source": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/"
+  "selected_topic_source": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+  "video_style": "goli",
+  "owner_voice_media_ref": "r2://temp/2026/11/14/3c068f667d494cf68a0355ced5bef4be-Apples-.mp3",
+  "platforms": [
+    "youtube",
+    "instagram",
+    "facebook",
+    "linkedin"
+  ],
+  "_failed_runs": 1
 }
