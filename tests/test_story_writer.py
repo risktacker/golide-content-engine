@@ -39,7 +39,8 @@ def test_the_writer_models_what_works_and_carries_none_of_the_old_recipe():
 
 def test_short_has_its_own_shape_and_long_gives_the_viewer_something():
     short, long = story_instructions("short", 50), story_instructions("long", 400)
-    # a Short gets its own Short example (2026-11-14), never the long-video ones
+    # a Short gets its own Short examples (2026-11-14), never the long-video ones; long gets the REA one too
     assert "A SHORT HAS ITS OWN SHAPE" in short and "SHORT METHOD EXAMPLE" in short
     assert "METHOD EXAMPLE 1" not in short and "SHORT METHOD EXAMPLE" not in long
+    assert "SHORT METHOD EXAMPLE 3" in short and "METHOD EXAMPLE 3, teaching a topic" in long
     assert "THE ESSENCE" in long and "By the end of this video" in long

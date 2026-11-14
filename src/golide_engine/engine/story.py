@@ -23,6 +23,8 @@ EXAMPLE_FILE = Path(__file__).resolve().parents[3] / "config" / "story-example.t
 EXAMPLE_FILE_2 = Path(__file__).resolve().parents[3] / "config" / "story-example-2.txt"
 # 2026-11-14 (owner): the fixed method examples are the writer's real model ("3 is the key"); Shorts had none
 EXAMPLE_FILE_SHORT = Path(__file__).resolve().parents[3] / "config" / "story-example-short.txt"
+EXAMPLE_FILE_3 = Path(__file__).resolve().parents[3] / "config" / "story-example-3.txt"
+SHORT_EXAMPLES = [Path(__file__).resolve().parents[3] / "config" / f"story-example-short{n}.txt" for n in ("", "-2", "-3")]
 GUIDE_FILE = Path(__file__).resolve().parents[3] / "config" / "script-voice.md"
 
 STORY_SCHEMA: dict = {
@@ -90,7 +92,8 @@ def story_instructions(format_name: str, model_seconds: float | None = None) -> 
     # the method examples are long-video stories; a Short follows its own shape (2026-11-10)
     example = _read(EXAMPLE_FILE) if format_name == "long" else ""
     example_2 = _read(EXAMPLE_FILE_2) if format_name == "long" else ""
-    example_short = _read(EXAMPLE_FILE_SHORT) if format_name == "short" else ""
+    example_3 = _read(EXAMPLE_FILE_3) if format_name == "long" else ""
+    shorts = [x for x in (_read(f) for f in SHORT_EXAMPLES) if x] if format_name == "short" else []
     # 2026-11-12 (owner: why does it exceed the length?): the examples are 2,089 and 3,523 words and the length
     # was one line at the bottom, so the writer copied the examples' size. The length now leads, each part gets
     # its own budget, and every example says how long it is.
@@ -184,8 +187,11 @@ def story_instructions(format_name: str, model_seconds: float | None = None) -> 
            f"words)\n{example}\n\n" if example else "")
         + (f"METHOD EXAMPLE 2, a tool or product {sized(example_2)} (how it stays connected from start to end, not "
            f"its words)\n{example_2}\n\n" if example_2 else "")
-        + (f"SHORT METHOD EXAMPLE {sized(example_short)} (how one chain hooks and pulls the viewer to the end, not "
-           f"its words)\n{example_short}\n\n" if example_short else "")
+        + (f"METHOD EXAMPLE 3, teaching a topic {sized(example_3)} (the owner's favourite: copy how its intro turns a "
+           f"moment into the viewer's problem and how every explanation is a plain picture first, not its words)\n"
+           f"{example_3}\n\n" if example_3 else "")
+        + "".join(f"SHORT METHOD EXAMPLE {i} {sized(x)} (how one chain hooks and pulls the viewer to the end, not its "
+                  f"words)\n{x}\n\n" for i, x in enumerate(shorts, 1)))
         + "TECHNICAL (the pipeline needs these)\n"
         f"- {lo} to {hi} spoken words (about {target['seconds']} seconds): count them before you answer.\n"
         + chapters
