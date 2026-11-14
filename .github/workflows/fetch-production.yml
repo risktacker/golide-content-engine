@@ -41,13 +41,15 @@ jobs:
           OUT="review/$PID"
           mkdir -p "$OUT/frames" "$OUT/files"
           VIDEO=$(find "$W" -name "*.mp4" -size +5M -printf "%s %p\n" | sort -n | tail -1 | cut -d' ' -f2-)
-          echo "video: $VIDEO"
-          ffprobe -v error -show_entries format=duration:stream=width,height,codec_type -of json "$VIDEO" > "$OUT/probe.json"
-          # one frame every 2 s at 480 px, and contact sheets of 40 s (5 x 4)
-          ffmpeg -v error -i "$VIDEO" -vf "fps=1/2,scale=480:-2" -q:v 4 "$OUT/frames/f%04d.jpg"
-          ffmpeg -v error -i "$VIDEO" -vf "fps=1/2,scale=384:-2,drawtext=text='%{pts\:hms}':x=6:y=6:fontsize=18:fontcolor=yellow:box=1:boxcolor=black@0.6,tile=5x4" -q:v 4 "$OUT/sheet%02d.jpg"
-          # loudness and silences of the final mix
-          ffmpeg -v info -i "$VIDEO" -af "silencedetect=n=-38dB:d=0.35,ebur128" -f null - 2> "$OUT/audio.txt" || true
+          echo "video: ${VIDEO:-none yet}"
+          if [ -n "$VIDEO" ]; then
+            ffprobe -v error -show_entries format=duration:stream=width,height,codec_type -of json "$VIDEO" > "$OUT/probe.json"
+            # one frame every 2 s at 480 px, and contact sheets of 40 s (5 x 4)
+            ffmpeg -v error -i "$VIDEO" -vf "fps=1/2,scale=480:-2" -q:v 4 "$OUT/frames/f%04d.jpg"
+            ffmpeg -v error -i "$VIDEO" -vf "fps=1/2,scale=384:-2,drawtext=text='%{pts\:hms}':x=6:y=6:fontsize=18:fontcolor=yellow:box=1:boxcolor=black@0.6,tile=5x4" -q:v 4 "$OUT/sheet%02d.jpg"
+            # loudness and silences of the final mix
+            ffmpeg -v info -i "$VIDEO" -af "silencedetect=n=-38dB:d=0.35,ebur128" -f null - 2> "$OUT/audio.txt" || true
+          fi
           find "$W" -maxdepth 3 -type f \( -name "*.json" -o -name "*.txt" -o -name "*.md" \) -size -2M -exec cp --parents {} "$OUT/files" \;
           git config user.name "golide-bot" && git config user.email "bot@golidee.com"
           git checkout -b "review-$PID"

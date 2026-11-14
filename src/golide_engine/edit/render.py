@@ -246,7 +246,9 @@ def mix(edit: dict[str, Any], folder: Path, narration: Path, pictures: Path, out
     # pushed the true peak to -0.42 dBTP and QA (max -1 dBTP) refused the first long Goli video.
     # 2026-11-13 (owner, from Isaac's AI-voice method): the voice is cleaned like a recorded one before it is
     # levelled: rumble cut, a little mud taken out, presence lifted, esses tamed, gently compressed
-    audio = ("[1:a]" + VOICE_CHAIN + ",loudnorm=I=-14:TP=-1.5:LRA=14,aresample=48000,asplit=2[v][key];"
+    # 2026-11-14 (owner): switched off. The voice must sound in the video exactly as it does on ElevenLabs (the
+    # AI read, and the ElevenLabs reads he uploads); the chain changed it. Only its level is set.
+    audio = ("[1:a]loudnorm=I=-14:TP=-1.5:LRA=14,aresample=48000,asplit=2[v][key];"
              f"[2:a]aresample=48000,volume={mixdown['sfx']}[s];"
              # 2026-11-12 (owner): the music was too loud in the first long Goli video: 8 dB lower
              f"[3:a]aresample=48000,volume=0.4,volume='{quiet_expr(edit.get('quiet') or [])}':eval=frame[b0];"

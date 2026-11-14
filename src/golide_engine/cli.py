@@ -671,8 +671,8 @@ def main() -> int:
             script_file = Path("productions") / spec["id"] / "script.txt"
             plan_file = Path("productions") / spec["id"] / "scene-plan.json"
             if plan_file.exists():
-                from .engine.content_rules import script_display
-                display = script_display(json.loads(plan_file.read_text(encoding="utf-8")))
+                from .engine.content_rules import recording_copy
+                display = recording_copy(json.loads(plan_file.read_text(encoding="utf-8")))
                 script_file = Path("productions") / spec["id"] / "script-display.txt"
                 script_file.write_text(display + "\n", encoding="utf-8")
             send_record_needed(

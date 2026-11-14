@@ -53,9 +53,18 @@ def test_hook_never_opens_with_a_date_or_greeting():
         "[curious] Your AI can now finish a junior engineer's job... so why are investors nervous?"))
 
 
-def test_voice_is_cleaned_before_levelling():
-    from golide_engine.edit.render import VOICE_CHAIN
-    assert "highpass" in VOICE_CHAIN and "deesser" in VOICE_CHAIN and "acompressor" in VOICE_CHAIN
+def test_the_voice_is_not_processed():
+    """2026-11-14 (owner): the voice in the video sounds as it did on ElevenLabs; only its level is set."""
+    import inspect
+    from golide_engine.edit import render
+    src = inspect.getsource(render.mix)
+    assert "VOICE_CHAIN" not in src and "loudnorm" in src
+
+
+def test_studio_gets_the_elevenlabs_copy_with_tags():
+    from golide_engine.engine.content_rules import recording_copy
+    plan = {"voice_script": "[curious] The new MacBook Pro can hit 2,000 nits.", "lines": [], "chapters": []}
+    assert recording_copy(plan).startswith("[curious]")
 
 
 def test_a_short_has_no_dead_stops_and_is_one_chain():

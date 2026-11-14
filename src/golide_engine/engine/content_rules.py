@@ -1229,6 +1229,13 @@ OUTPUT
 """
 
 
+def recording_copy(plan: dict) -> str:
+    """What the owner pastes into ElevenLabs (2026-11-14): the voice-directed script, tags included, no chapter
+    headings (they would be read aloud). Without a directed script, the reading copy."""
+    voice = str(plan.get("voice_script") or "").strip()
+    return voice if voice else script_display(plan)
+
+
 def script_display(plan: dict) -> str:
     """The script as the owner reads it (2026-11-05): each chapter one flowing paragraph under its
     heading (not spoken). The short screen lines are the engine's captions, never his reading copy:

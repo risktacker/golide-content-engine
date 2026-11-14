@@ -32,7 +32,7 @@ from ..youtube_metadata import load_metadata_policy, validate_upload_metadata
 from .schemas import METADATA_SCHEMA, RESEARCH_SCHEMA, STORYBOARD_SCHEMA, TREND_CANDIDATES_SCHEMA
 from .topic_check import (RESEARCH_RULE, TITLE_CHECK_SCHEMA, TITLE_RULE, checked_title, core_problem, title_input,
                           topic_packet)
-from ..engine.content_rules import SCRIPT_SCHEMA, chapter_problems, follow_problems, length_problems, line_problems, script_display, script_instructions, script_text, SPOKEN_SCHEMA, SPOKEN_PASS_EFFORT, spoken_pass_instructions, merge_spoken
+from ..engine.content_rules import recording_copy, SCRIPT_SCHEMA, chapter_problems, follow_problems, length_problems, line_problems, script_display, script_instructions, script_text, SPOKEN_SCHEMA, SPOKEN_PASS_EFFORT, spoken_pass_instructions, merge_spoken
 from .recording import RecordingLengthError, check_recording_length
 from .stage_runner import StageRunner
 
@@ -1040,7 +1040,7 @@ class ProductionService:
             raise WaitingOwnerVoice(
                 production_id,
                 str(spec.get("title", production_id)),
-                script_display(plan_for_display) if plan_for_display else script,
+                recording_copy(plan_for_display) if plan_for_display else script,
             )
 
         if owner_voice_ref:
