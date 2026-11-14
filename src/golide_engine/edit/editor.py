@@ -84,7 +84,7 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
   rack, a chip or GPU, a battery): object3d = which one; it turns in clear glass and its move (lid opens, a server
   slides out, the chip lid lifts, the phone's layers part, cells rise) lands on punch, the spoken word. The part the
   story is about turns gold with a line to a label: label = what it is in this story, max 5 words ("Your rented
-  GPU"); two other parts get their own name. At most 4 in a long video, 1 in a Short, never two in a row; use it
+  GPU"); two other parts get their own name. At most 4 in a long video, 2 in a Short, never two in a row; use it
   whenever the story is about one of these devices (owner 2026-11-14: more glass 3D).
 - metaphor: the beat explains an IDEA (a trade-off, a hidden cost, a bottleneck, layers, a loop, a level, a change):
   show it as a moving picture instead of text. metaphor = one of:
@@ -480,7 +480,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
                 "rows": [[r["label"], r["a"], r["b"]] for r in rows],
                 "winners": [r["winner"] if r["winner"] != "none" else None for r in rows],
                 "gap": min(0.55, max(0.25, (dur - 0.8) / max(1, len(rows))))}})
-        elif kind == "object3d" and s.get("object3d") in OBJECTS3D and len(shown_3d) < (1 if fmt == "short" else 4) \
+        elif kind == "object3d" and s.get("object3d") in OBJECTS3D and len(shown_3d) < (2 if fmt == "short" else 4) \
                 and not (out and out[-1]["type"] == "object3d"):
             shown_3d.append(s["object3d"])
             land = _word_time(lines, s.get("punch") or "", t0, t1)
