@@ -483,7 +483,9 @@ function stageProgress(job) {
   const status = String(job.status || "").toLowerCase();
   if (["scheduled", "completed", "release_ready"].includes(status)) return 5;
   if (stage.includes("release") || stage.includes("qa") || stage.includes("upload")) return 5;
-  if (stage.includes("render") || stage.includes("storyboard") || stage.includes("asset") || stage.includes("thumbnail")) return 4;
+  // 2026-11-14: the Goli engine's steps (edit-plan, captures, demos, voice) are part of "Illustrate and check"
+  if (stage.includes("render") || stage.includes("storyboard") || stage.includes("asset") || stage.includes("thumbnail") ||
+      stage.includes("edit") || stage.includes("capture") || stage.includes("demo") || stage.includes("voice")) return 4;
   if (status === "waiting_owner_voice" || stage.includes("script")) return 3;
   if (stage.includes("research") || stage.includes("trend") || stage.includes("demand")) return 2;
   if (status === "claimed" || status === "running") return 1;
