@@ -519,6 +519,13 @@ def main() -> int:
                     continue
                 kept.append(due_path)
             due = kept
+        # 2026-11-14 (owner): no automatic retries. A video that failed is not picked up again by a scheduled run;
+        # it runs again only when Studio starts a run (his upload, AI voice, a pasted link) or after a fix.
+        if os.getenv("GITHUB_EVENT_NAME") == "schedule":
+            retried = [p for p in due if json.loads(p.read_text(encoding="utf-8")).get("_failed_runs")]
+            for p in retried:
+                print(json.dumps({"status": "failed_video_not_retried_on_schedule", "production_id": p.stem}))
+            due = [p for p in due if p not in retried]
         # 2026-11-14 (owner): slots wait for his link; past the slot's time with none, the engine takes over
         from .orchestration.queue import link_fallback, waiting_for_link
         for due_path in due:
