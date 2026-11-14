@@ -25,6 +25,11 @@ Owner: Esiah (Lusaka, UTC+2). Direct, no sugar-coating. Studio: studio.golidee.c
   that, at paragraphs); no hook takes. The writer writes plainly (no tags, capitals, "..." or hype); a separate voice
   director (`engine/story.py` direction_instructions) adds 2-4 tags in a Short, about one per 120-150 words in a long
   video, only where the feeling changes, never stacked; it may not change a word (checked, else the plain script).
+- Link first (owner 2026-11-14): every scheduled slot waits in Studio ("Needs your link") for the video he pastes;
+  the engine writes the script from it (tagged copy shown for ElevenLabs) and waits for his recording. No link by
+  the slot's time (Short 13:00, long 19:30): the engine picks the topic, reads it with the AI voice and publishes
+  30 minutes after the render (`orchestration/queue.py` waiting_for_link / link_fallback). The voice is never
+  processed after ElevenLabs (no EQ/compressor chain), only levelled.
 - Trials are labelled as trials. Don't paste API tokens. Digits for numbers.
 - Don't poll or babysit long runs; it burns the owner's usage.
 - Never start with limits. Build the general capability the owner asks for, not a fixed short list.

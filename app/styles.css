@@ -231,7 +231,7 @@ main{width:100%;max-width:1320px;margin:0 auto;padding:28px clamp(16px,3.5vw,48p
 .stage-node.done{background:var(--cyan)}
 .stage-node.current{background:var(--gold)}
 .status-pill{display:inline-block;padding:4px 10px;border:1px solid var(--line-strong);border-radius:999px;color:var(--muted);font-size:.8125rem;white-space:nowrap}
-.status-pill.waiting_owner_voice{color:var(--gold);border-color:color-mix(in srgb,var(--gold) 40%,transparent)}
+.status-pill.waiting_owner_link,.status-pill.waiting_owner_voice{color:var(--gold);border-color:color-mix(in srgb,var(--gold) 40%,transparent)}
 .status-pill.failed,.status-pill.paused_funds{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 40%,transparent)}
 .status-pill.completed,.status-pill.release_ready,.status-pill.scheduled,.status-pill.published{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,transparent)}
 

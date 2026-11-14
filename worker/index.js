@@ -1141,7 +1141,7 @@ async function handleApi(request,env,url){
   if(closeMatch&&request.method==="POST"){await closeThread(env.DB,decodeURIComponent(closeMatch[1]));return json({status:"closed"});}
   const archiveMatch=url.pathname.match(/^\/api\/production-jobs\/([^/]+)\/archive$/);
   if(archiveMatch&&request.method==="POST"){
-    await env.DB.prepare(`UPDATE production_jobs SET archived_at=? WHERE job_id=? AND status NOT IN ('claimed','running','waiting_owner_voice','queued')`)
+    await env.DB.prepare(`UPDATE production_jobs SET archived_at=? WHERE job_id=? AND status NOT IN ('claimed','running','waiting_owner_voice','waiting_owner_link','queued')`)
       .bind(nowIso(),decodeURIComponent(archiveMatch[1])).run();
     return json({status:"archived"});
   }
@@ -1193,16 +1193,17 @@ async function handleApi(request,env,url){
     if(!/^https:\/\/(www\.|m\.)?(youtube\.com\/(watch\?v=|shorts\/)|youtu\.be\/)[A-Za-z0-9_-]{11}/.test(link))
       return err("Paste a YouTube video link (youtube.com/watch?v=..., youtu.be/... or a Shorts link).",400);
     const ask=JSON.stringify({url:link,requested_at:nowIso()});
-    const r=await env.DB.prepare(`UPDATE production_jobs SET spec_json=json_remove(json_set(spec_json,'$.replace_model',json(?)),'$.script_edit'),script='',status='queued',stage='replace-script',error=NULL,updated_at=? WHERE job_id=? AND status='waiting_owner_voice'`)
+    // 2026-11-14 (owner): the same paste starts a slot that is waiting for his link
+    const r=await env.DB.prepare(`UPDATE production_jobs SET spec_json=json_remove(json_set(spec_json,'$.replace_model',json(?)),'$.script_edit'),script='',status='queued',stage='replace-script',error=NULL,updated_at=? WHERE job_id=? AND status IN ('waiting_owner_voice','waiting_owner_link')`)
       .bind(ask,nowIso(),id).run();
-    if(!r.meta?.changes) return err("Only a script waiting for its voice can be replaced.",409);
+    if(!r.meta?.changes) return err("Only a slot waiting for your link, or a script waiting for its voice, can take a link.",409);
     try{await dispatchWorkflow(env,"production-scheduler.yml");}catch(e){console.log(JSON.stringify({dispatch:"replace_script_failed",error:String(e?.message||e)}));}
     return json({status:"queued"});
   }
   // 2026-11-04 (owner): a short he will not record is skipped, not left "Needs your recording".
   const skipMatch=url.pathname.match(/^\/api\/production-jobs\/([^/]+)\/skip$/);
   if(skipMatch&&request.method==="POST"){
-    const r=await env.DB.prepare(`UPDATE production_jobs SET status='skipped',stage='skipped-by-owner',updated_at=? WHERE job_id=? AND status='waiting_owner_voice'`)
+    const r=await env.DB.prepare(`UPDATE production_jobs SET status='skipped',stage='skipped-by-owner',updated_at=? WHERE job_id=? AND status IN ('waiting_owner_voice','waiting_owner_link')`)
       .bind(nowIso(),decodeURIComponent(skipMatch[1])).run();
     return json({status:r.meta?.changes?"skipped":"unchanged"});
   }

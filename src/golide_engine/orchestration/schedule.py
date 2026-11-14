@@ -70,6 +70,8 @@ def build_spec(rule: dict[str, Any], day, timezone_name: str, channel_id: str) -
         "production_authorized": True,
         "output_destination": "render-and-upload",
         "owner_voice_required": True,   # 2026-11-06: waits for the owner's choice: his recording or the AI voice
+        # 2026-11-14 (owner): the slot waits for the video he pastes; none by the slot's time, the engine picks
+        "link_wait": bool(rule.get("link_wait", True)),
         "concept": {
             "family": "technology-software-business",
             "promise": "A high-interest current niche topic explained with authoritative evidence and a useful GOLIDE angle",

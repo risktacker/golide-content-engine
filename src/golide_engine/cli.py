@@ -519,13 +519,28 @@ def main() -> int:
                     continue
                 kept.append(due_path)
             due = kept
+        # 2026-11-14 (owner): slots wait for his link; past the slot's time with none, the engine takes over
+        from .orchestration.queue import link_fallback, waiting_for_link
+        for due_path in due:
+            due_spec = json.loads(due_path.read_text(encoding="utf-8"))
+            if link_fallback(due_spec):
+                due_path.write_text(json.dumps(due_spec, indent=2) + "\n", encoding="utf-8")
+                print(json.dumps({"status": "no_link_by_slot_time", "production_id": due_spec["id"],
+                                  "next": "engine picks the topic, AI voice"}))
+            elif waiting_for_link(due_spec) and bridge:
+                try:
+                    bridge.report(str(due_spec.get("_studio_job_id") or due_spec["id"]), status="waiting_owner_link",
+                                  stage="waiting-link")
+                except Exception as exc:
+                    print(json.dumps({"status": "studio_telemetry_unavailable", "operation": "link-wait",
+                                      "error": str(exc)[:200]}))
         if not due:
             print(json.dumps({"status": "no_due_production"}))
             return 0
         from .orchestration.queue import pick_due_spec, record_failure
         spec_path = pick_due_spec(due, Path.cwd())
         if spec_path is None:
-            print(json.dumps({"status": "all_due_productions_waiting_owner_voice",
+            print(json.dumps({"status": "all_due_productions_waiting_owner",
                               "waiting": [p.stem for p in due]}))
             return 0
         spec = json.loads(spec_path.read_text(encoding="utf-8"))

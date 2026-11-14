@@ -60,6 +60,7 @@ function when(value) {
 }
 
 const STATUS_LABELS = {
+  waiting_owner_link: "Needs your link",
   waiting_owner_voice: "Needs your recording",
   queued: "Queued",
   claimed: "Starting",
@@ -655,6 +656,22 @@ function actionCard(job) {
     '</div></article>';
 }
 
+// 2026-11-14 (owner): every slot waits for the video he wants to model. No link by the slot's time
+// (Short 13:00, long 19:30): the engine picks the topic itself and reads it with the AI voice.
+function linkCard(job) {
+  const id = escAttr(job.job_id);
+  const by = job.format === "long" ? "19:30" : "13:00";
+  return '<article class="action-card" id="job-' + id + '"><div><span class="kicker">' +
+    (job.format === "long" ? "Long video" : "Short") + ', link by ' + by + '</span><h4>Paste today\'s video</h4>' +
+    '<p>Paste the YouTube video to model. The engine writes the script from it (with the voice tags) and waits for your recording. ' +
+    'No link by ' + by + ': the engine picks a topic itself, records with the AI voice and publishes 30 minutes after it is built.</p>' +
+    '<div class="replace-row" id="replace-row-' + id + '">' +
+      '<input class="replace-link" type="url" inputmode="url" placeholder="Paste the YouTube link" data-job="' + id + '">' +
+      '<button class="action-button replace-go" data-job="' + id + '">Write the script</button></div>' +
+    '<span class="voice-status script-status" id="script-status-' + id + '"></span></div>' +
+    '<div class="action-controls"><button class="action-button skip-slot" data-job="' + id + '">Skip this slot</button></div></article>';
+}
+
 // 2026-10-18: a recording can be replaced until the video is released (a wrong
 // file was uploaded and there was no way to swap it).
 const REPLACEABLE = new Set(["queued", "claimed", "running", "failed", "paused_funds"]);
@@ -678,11 +695,12 @@ let studioNotice = "";
 function renderActionQueues() {
   if (scriptEditing || styleAsking) return;
   const waiting = productionJobs.filter((job) => job.status === "waiting_owner_voice");
+  const linking = productionJobs.filter((job) => job.status === "waiting_owner_link" && !job.archived_at);
   const replaceable = productionJobs.filter((job) => job.owner_voice_media_ref && REPLACEABLE.has(job.status));
   const root = $("#action-queue");
   const dashboard = $("#dashboard-actions");
 
-  if (!waiting.length && !replaceable.length) {
+  if (!waiting.length && !replaceable.length && !linking.length) {
     root.className = "action-queue empty-state";
     root.innerHTML = studioNotice ? esc(studioNotice) : "No recordings needed right now. You'll get an email when a script is ready.";
     dashboard.className = "stack empty-state";
@@ -691,15 +709,27 @@ function renderActionQueues() {
   }
 
   root.className = "action-queue";
-  root.innerHTML = waiting.map(actionCard).join("") + replaceable.map(replaceCard).join("");
-  dashboard.className = waiting.length ? "stack" : "stack empty-state";
-  dashboard.innerHTML = waiting.length ? "" : "Nothing needs you right now.";
-  if (waiting.length) dashboard.innerHTML = waiting.slice(0, 4).map((job) =>
+  root.innerHTML = linking.map(linkCard).join("") + waiting.map(actionCard).join("") + replaceable.map(replaceCard).join("");
+  const needs = linking.length + waiting.length;
+  dashboard.className = needs ? "stack" : "stack empty-state";
+  dashboard.innerHTML = needs ? "" : "Nothing needs you right now.";
+  if (needs) dashboard.innerHTML = linking.map((job) =>
+    '<div class="item"><div class="item-main"><strong>Paste today\'s video</strong><small>' +
+    (job.format === "long" ? "Long video, link by 19:30" : "Short, link by 13:00") +
+    '</small></div><span class="pill">Link</span></div>'
+  ).join("") + waiting.slice(0, 4).map((job) =>
     '<div class="item"><div class="item-main"><strong>' +
     esc(job.title || "Video script ready") + '</strong><small>' +
     (job.format === "long" ? "Long video" : "Short") +
     ', waiting for your recording</small></div><span class="pill">Record</span></div>'
   ).join("");
+  $$(".skip-slot").forEach((button) => {
+    button.onclick = async () => {
+      button.disabled = true;
+      await api("/api/production-jobs/" + encodeURIComponent(button.dataset.job) + "/skip", { method: "POST" });
+      await loadProductionJobs();
+    };
+  });
 
   // 2026-11-06 (owner); bound here 2026-11-10: it was bound before the cards were redrawn, so taps did nothing.: the AI voice reads this script instead of his recording. Two taps: it spends credits.
   $$(".ai-voice-button").forEach((button) => {

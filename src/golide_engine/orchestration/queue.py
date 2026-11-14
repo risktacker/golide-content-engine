@@ -23,6 +23,33 @@ def due_specs(queue_directory: str | Path, now: datetime | None = None) -> list[
     return [path for _, path in sorted(due)]
 
 
+def _deadline(spec: dict) -> datetime | None:
+    at = str((spec.get("release") or {}).get("scheduled_at") or "")
+    return datetime.fromisoformat(at.replace("Z", "+00:00")) if at else None
+
+
+def waiting_for_link(spec: dict, now: datetime | None = None) -> bool:
+    """2026-11-14 (owner): a scheduled slot first waits for him to paste the video to model. Until the slot's
+    time (Short 13:00, long 19:30) nothing runs and nothing is spent; a pasted link starts it."""
+    if not spec.get("link_wait") or (spec.get("replace_model") or {}).get("url") or spec.get("external"):
+        return False
+    deadline = _deadline(spec)
+    return bool(deadline) and (now or datetime.now(timezone.utc)) < deadline
+
+
+def link_fallback(spec: dict, now: datetime | None = None) -> bool:
+    """No link by the slot's time: the engine finds the topic itself and reads it with the AI voice (owner
+    2026-11-14, option (a): it publishes 30 minutes after the render). Sets it on the spec; True when it did."""
+    if not spec.get("link_wait") or (spec.get("replace_model") or {}).get("url") or spec.get("link_fallback"):
+        return False
+    deadline = _deadline(spec)
+    if not deadline or (now or datetime.now(timezone.utc)) < deadline:
+        return False
+    spec["link_fallback"] = True
+    spec["voice_choice"] = "ai"
+    return True
+
+
 def waiting_for_voice(spec: dict, root: str | Path = ".") -> bool:
     """The script is written and only the owner's recording is missing."""
     if (not spec.get("owner_voice_required", True) or str(spec.get("owner_voice_media_ref") or "").strip()
@@ -51,6 +78,8 @@ def pick_due_spec(due: list[Path], root: str | Path = ".") -> Path | None:
     first_free = None
     for path in due:
         spec = json.loads(path.read_text(encoding="utf-8"))
+        if waiting_for_link(spec):
+            continue
         if str(spec.get("owner_voice_media_ref") or "").strip() or spec.get("voice_choice") == "ai":
             return path
         if first_free is None and not waiting_for_voice(spec, root):

@@ -13,6 +13,8 @@ on:
     # 13:00 Africa/Lusaka releases due social posts (a short's Reels) on time;
     # 14:00 and 20:00 are the resume windows for jobs waiting on owner voice.
     - cron: "0 11,12,18 * * *"
+    # 2026-11-14 (owner): 19:30 Africa/Lusaka on long-video days: no link pasted by then, the engine takes over.
+    - cron: "30 17 * * 2,4,6"
   workflow_dispatch:
 
 concurrency:
