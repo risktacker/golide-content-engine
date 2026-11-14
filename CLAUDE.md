@@ -55,9 +55,13 @@ storyboard call picks gold words and pictures. Copy the method of model scripts,
 ## Edit engine scenes (owner 2026-11-13, `edit/`)
 - Real runs (`edit/demos.py`): read-only commands only (allowlist), shown as a terminal with the proving line lit.
 - Visual metaphors (`edit/metaphors.py`): scales, unlock, magnify, funnel, stack, gauge, transform, iceberg, cycle;
-  about 1 in 6 scenes, never the same twice in a video.
+  about 1 in 4 scenes of a long video (max 6), 1 per Short, never the same twice in a video.
+- Owner review 2026-11-14: long videos are mostly pictures (glass 3D up to 4, metaphors, nodes, real runs); a words
+  block is rare and shows a complete headline phrase, never a cut sentence or keyword pile; a long picture holds
+  instead of cutting to word fragments. His recording is the script: changed words rebuild lines, captions and
+  blocks from what he said (`owner_changes.reading_from_audio`).
 - Glass 3D (`assets/edit/g3d/glass3d.js`, three.js in the video): laptop, phone, server, chip, battery in clear glass
-  with lit edges, one gold part with a callout line to its label, two other parts named. Max 2 per long video, 1 per
+  with lit edges, one gold part with a callout line to its label, two other parts named. Max 4 per long video, 1 per
   Short, never two in a row. Goli faces the content (mirrored on the right).
 
 ## Shorts (owner 2026-11-13, after the broken USB Short)
