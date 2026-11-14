@@ -41,6 +41,6 @@ def test_short_has_its_own_shape_and_long_gives_the_viewer_something():
     short, long = story_instructions("short", 50), story_instructions("long", 400)
     # a Short gets its own Short examples (2026-11-14), never the long-video ones; long gets the REA one too
     assert "A SHORT HAS ITS OWN SHAPE" in short and "SHORT METHOD EXAMPLE" in short
-    assert "METHOD EXAMPLE 1" not in short and "SHORT METHOD EXAMPLE" not in long
+    assert "METHOD EXAMPLE 1, a news story" not in short and "SHORT METHOD EXAMPLE" not in long
     assert "SHORT METHOD EXAMPLE 3" in short and "METHOD EXAMPLE 3, teaching a topic" in long
     assert "THE ESSENCE" in long and "By the end of this video" in long

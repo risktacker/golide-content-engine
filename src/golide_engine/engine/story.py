@@ -191,7 +191,7 @@ def story_instructions(format_name: str, model_seconds: float | None = None) -> 
            f"moment into the viewer's problem and how every explanation is a plain picture first, not its words)\n"
            f"{example_3}\n\n" if example_3 else "")
         + "".join(f"SHORT METHOD EXAMPLE {i} {sized(x)} (how one chain hooks and pulls the viewer to the end, not its "
-                  f"words)\n{x}\n\n" for i, x in enumerate(shorts, 1)))
+                  f"words)\n{x}\n\n" for i, x in enumerate(shorts, 1))
         + "TECHNICAL (the pipeline needs these)\n"
         f"- {lo} to {hi} spoken words (about {target['seconds']} seconds): count them before you answer.\n"
         + chapters
