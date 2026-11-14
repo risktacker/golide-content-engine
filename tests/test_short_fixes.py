@@ -31,3 +31,20 @@ def test_content_past_the_phone_crop_is_shrunk():
 
 def test_one_metaphor_in_a_short():
     assert editor.METAPHOR_CAP["short"] == 1
+
+
+def test_a_long_hook_gets_a_picture_per_sentence_or_clause_and_the_rest_and_shorts_do_not_change():
+    from golide_engine.edit.editor import beats
+    from golide_engine.vector.align import TimedLine, Word
+    text = ("Imagine a phone reveal so convincing, you forget the company never revealed it. The clips show a "
+            "purple phone with four cameras. But it is still unconfirmed, and that matters.")
+    ws = [Word(w, i * 0.32, i * 0.32 + 0.28) for i, w in enumerate(text.split())]
+    hook = TimedLine(0, text, "", "", "", "intro", 0, ws[-1].end, ws)
+    body_words = [Word(w, 20 + i * 0.32, 20 + i * 0.32 + 0.28) for i, w in enumerate(text.split())]
+    body = TimedLine(1, text, "", "", "", "01", 20, body_words[-1].end, body_words)
+    got = beats([hook, body], "long")
+    in_hook = [b for b in got if b.start < 15]
+    assert len(in_hook) == 4 and all(b.text[-1] in ",." for b in in_hook)    # cut where a clause ends
+    assert len([b for b in got if b.start >= 15]) == 2                       # after the hook: the usual pace
+    short = beats([hook], "short")
+    assert [b.text for b in short] == [b.text for b in beats([hook], "short")]

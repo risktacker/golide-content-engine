@@ -132,6 +132,20 @@ same words, number, logo or shot twice in the video; numbers and names exactly a
 or on the page, never invented; only listed page and shot numbers."""
 
 
+HOOK_MAX = 40.0
+
+
+def hook_ends(lines: list[Any], fmt: str) -> float:
+    """When a long video's hook (its opening paragraph, before the first chapter) ends; at most 40 s."""
+    if fmt != "long" or not lines:
+        return 0.0
+    first = getattr(lines[0], "section", "")
+    for line in lines[1:]:
+        if getattr(line, "section", "") != first:
+            return min(HOOK_MAX, float(line.start))
+    return min(HOOK_MAX, float(lines[-1].end))
+
+
 def beats(lines: list[Any], fmt: str) -> list[Any]:
     """The narration cut into beats of about 2 s (Short) or 3 s (long), at pauses and inside each line,
     so a picture can be chosen for every few words (owner 2026-11-11: what is on screen is what is said)."""
@@ -139,9 +153,14 @@ def beats(lines: list[Any], fmt: str) -> list[Any]:
 
     # owner 2026-11-12: the Short's pace is right; a long video explains, so its pictures stay 4 to 6 s
     target, low = (1.9, 1.1) if fmt == "short" else (4.6, 2.6)
+    hook_end = hook_ends(lines, fmt)
     out: list[Any] = []
     for line in lines:
         words = list(getattr(line, "words", []) or [])
+        # 2026-11-14 (owner): the hook is where people decide to stay, so a long video's opening paragraph gets more
+        # pictures, but following what is said: a new picture where a sentence or a clause ends, one at a time,
+        # never on a timer
+        hook = fmt == "long" and line.start < hook_end
         if not words:
             out.append(TimedLine(len(out), line.text, line.emphasis, line.visual, line.label, line.section,
                                  line.start, line.end, []))
@@ -153,8 +172,12 @@ def beats(lines: list[Any], fmt: str) -> list[Any]:
             nxt = words[k + 1] if k + 1 < len(words) else None
             pause = (nxt.start - w.end) if nxt else 9
             remaining = words[-1].end - w.end
-            if nxt is None or (span >= low and remaining >= low and (span >= target or pause > 0.22 or
-                                                                    str(w.text)[-1:] in ",.;:?!")):
+            if hook:
+                cut = nxt is None or (span >= 1.8 and remaining >= 1.8 and str(w.text)[-1:] in ",.;:?!")
+            else:
+                cut = nxt is None or (span >= low and remaining >= low and (span >= target or pause > 0.22 or
+                                                                          str(w.text)[-1:] in ",.;:?!"))
+            if cut:
                 out.append(TimedLine(len(out), " ".join(x.text for x in chunk), line.emphasis, line.visual, line.label,
                                      line.section, chunk[0].start, chunk[-1].end, chunk))
                 chunk = []
@@ -744,10 +767,11 @@ def _slice_host(s: dict, a: float, b: float, lines, first: bool) -> dict:
 
 
 def _pace(scenes: list[dict], lines, fmt: str) -> list[dict]:
-    beat, out = BEAT.get(fmt, 4.0), []
+    out = []
     for s in scenes:
         t0, t1 = s["start"], s["start"] + s["duration"]
         kind = s["type"]
+        beat = BEAT.get(fmt, 4.0)
         if kind == "host" and s["data"].get("place") != "studio":
             out.append(s)
             continue
