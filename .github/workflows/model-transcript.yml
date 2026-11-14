@@ -1,0 +1,36 @@
+name: Read a model video's script
+
+# 2026-11-14 (owner): the words of a video he wants to model, through the engine's own transcript service.
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "YouTube link"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  read:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -q -e '.[production]'
+      - name: Transcript
+        env:
+          SUPADATA_API_KEY: ${{ secrets.SUPADATA_API_KEY }}
+          URL: ${{ inputs.url }}
+        run: |
+          python - <<'PY'
+          import os
+          from golide_engine.youtube.transcripts import fetch
+          text = fetch(os.environ["URL"]) or ""
+          print("TRANSCRIPT-START")
+          print(text if text else "(no transcript)")
+          print("TRANSCRIPT-END")
+          PY
