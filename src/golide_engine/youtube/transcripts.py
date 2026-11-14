@@ -40,8 +40,21 @@ def _supadata(url: str, key: str) -> str:
     headers = {"x-api-key": key, "User-Agent": "golide-engine"}
 
     def get(address: str) -> dict:
-        with urllib.request.urlopen(urllib.request.Request(address, headers=headers), timeout=60) as r:
-            return json.loads(r.read().decode("utf-8"))
+        # 2026-11-14: the free plan answers 429 when asked faster than once a second; wait and ask again. A 429
+        # that does not clear is the month's credits used up (said plainly in the log).
+        import urllib.error
+        for wait in (0, 2, 6):
+            time.sleep(wait)
+            try:
+                with urllib.request.urlopen(urllib.request.Request(address, headers=headers), timeout=60) as r:
+                    return json.loads(r.read().decode("utf-8"))
+            except urllib.error.HTTPError as exc:
+                if exc.code != 429 or wait == 6:
+                    if exc.code == 429:
+                        raise RuntimeError("Supadata refused (429) three times: the month's transcript credits look "
+                                           "used up") from exc
+                    raise
+        return {}
 
     data = get(f"{SUPADATA}?{query}")
     for _ in range(12):                                     # long videos come back as a job
