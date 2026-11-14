@@ -61,7 +61,7 @@ storyboard call picks gold words and pictures. Copy the method of model scripts,
   instead of cutting to word fragments. His recording is the script: changed words rebuild lines, captions and
   blocks from what he said (`owner_changes.reading_from_audio`).
 - Glass 3D (`assets/edit/g3d/glass3d.js`, three.js in the video): laptop, phone, server, chip, battery in clear glass
-  with lit edges, one gold part with a callout line to its label, two other parts named. Max 4 per long video, 1 per
+  with lit edges, one gold part with a callout line to its label, two other parts named. Max 4 per long video, 2 per
   Short, never two in a row. Goli faces the content (mirrored on the right).
 
 ## Shorts (owner 2026-11-13, after the broken USB Short)
