@@ -12,6 +12,7 @@ Both apply only while the recording has not been processed, never to a video alr
 
 from __future__ import annotations
 
+import difflib
 import json
 import re
 from pathlib import Path
@@ -160,3 +161,52 @@ def edit_pending(spec: dict[str, Any], work: Path, current_display: str) -> str:
 
 def mark_edit_done(work: Path, edited: str) -> None:
     (work / EDIT_DONE).write_text(edited + "\n", encoding="utf-8")
+
+
+def _tok(word: str) -> str:
+    return re.sub(r"[^a-z0-9']", "", str(word).lower().replace("\u2019", "'"))
+
+
+def mishearing(heard: int, wanted: int) -> bool:
+    """A gap small enough to be speech-to-text mishearing a word or two, not words he changed."""
+    return heard <= 2 and wanted <= 3
+
+
+def reading_from_audio(display: str, words: list[dict[str, Any]]) -> str:
+    """2026-11-14 (owner): what he actually said is the script. His reading copy ("[n · TITLE]" headings over
+    paragraphs) with every part he changed, added or left out in the recording replaced by the words heard. A
+    word or two that only looks different is speech-to-text mishearing and keeps the script's spelling.
+    Returns "" when the recording says the script."""
+    lines = display.splitlines()
+    slots: list[tuple[int, str]] = []            # (line index, script word) for every spoken word
+    for li, line in enumerate(lines):
+        if re.fullmatch(r"\s*\[(.+)\]\s*", line) or not line.strip():
+            continue
+        slots.extend((li, w) for w in line.split() if _tok(w))
+    heard = [str(w.get("word", "")).strip() for w in words if _tok(str(w.get("word", "")))]
+    if not slots or not heard:
+        return ""
+    matcher = difflib.SequenceMatcher(None, [_tok(h) for h in heard], [_tok(w) for _, w in slots], autojunk=False)
+    out: dict[int, list[str]] = {i: [] for i in range(len(lines))}
+    changed = False
+    for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+        where = slots[min(j1, len(slots) - 1)][0]
+        if tag == "equal" or (tag == "replace" and mishearing(i2 - i1, j2 - j1)):
+            for li, w in slots[j1:j2]:
+                out[li].append(w)
+        elif tag == "insert":                      # script words he did not say
+            changed = True
+        else:                                      # he said something else, or more
+            changed = True
+            out[where].extend(heard[i1:i2])
+    if not changed:
+        return ""
+    rebuilt = []
+    for li, line in enumerate(lines):
+        if re.fullmatch(r"\s*\[(.+)\]\s*", line):
+            rebuilt.append(line.strip())
+        elif out[li]:
+            rebuilt.append(" ".join(out[li]))
+        elif not line.strip():
+            rebuilt.append("")
+    return "\n".join(rebuilt).strip()

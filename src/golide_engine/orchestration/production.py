@@ -1230,6 +1230,38 @@ class ProductionService:
             fetch_narration()
             print(json.dumps({"status": "owner_voice_restored", "production_id": production_id}))
         self._budget(spec)
+        # 2026-11-14 (owner): what he says in his recording IS the script. When he changed the words (in Studio or
+        # on ElevenLabs) the lines, gold words and pictures are made again from what was said, so the captions
+        # and the blocks follow the audio (the 14 Nov hook showed the old script's words). About $0.03.
+        replan_done = work / "script-from-audio.done"
+        if not ai_voice and not external and (work / "scene-plan.json").exists() and not replan_done.exists() \
+                and timed_words_path.exists():
+            from ..engine.story import BOARD_SCHEMA, apply_board, board_input, board_instructions, plan_from_story
+            from .owner_changes import reading_from_audio, story_from_reading
+            plan_path = work / "scene-plan.json"
+            current = json.loads(plan_path.read_text(encoding="utf-8"))
+            said = reading_from_audio(script_display(current),
+                                      json.loads(timed_words_path.read_text(encoding="utf-8")))
+            if said:
+                plan = plan_from_story(story_from_reading(said, current.get("chapters") or []), str(spec["format"]))
+                plan["title"] = current.get("title", "")
+                try:
+                    self._reserve(spec, text_model, Usage(input_tokens=len(board_input(plan)) // 3 + 1500,
+                                                          output_tokens=6000))
+                    board = text.generate_json(board_instructions(), board_input(plan), BOARD_SCHEMA,
+                                               max_output_tokens=8000)
+                    self._record_text(production_id, "script-from-audio-board", board)
+                    plan = apply_board(plan, dict(board.value))
+                except Exception as error:  # noqa: BLE001 - his words stand; pictures fall back to defaults
+                    print(json.dumps({"status": "audio_storyboard_failed", "error": str(error)[:300]}))
+                    plan = apply_board(plan, {})
+                from ..engine.numerals import plan_digits
+                plan = plan_digits(plan)
+                plan_path.write_text(json.dumps(plan, indent=2) + "\n", encoding="utf-8")
+                script_path.write_text(script_text(plan) + "\n", encoding="utf-8")
+                script = script_path.read_text(encoding="utf-8").strip()
+                print(json.dumps({"status": "script_from_recording", "lines": len(plan["lines"])}))
+            replan_done.write_text("done\n", encoding="utf-8")
         narration_seconds = self._duration(narration)
         # The owner recording is the master timeline: never retime the voice.
         check_recording_length(str(spec["format"]), narration_seconds)

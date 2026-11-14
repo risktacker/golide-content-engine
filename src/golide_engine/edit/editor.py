@@ -84,7 +84,8 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
   rack, a chip or GPU, a battery): object3d = which one; it turns in clear glass and its move (lid opens, a server
   slides out, the chip lid lifts, the phone's layers part, cells rise) lands on punch, the spoken word. The part the
   story is about turns gold with a line to a label: label = what it is in this story, max 5 words ("Your rented
-  GPU"); two other parts get their own name. At most 2 in a long video, 1 in a Short, never two in a row.
+  GPU"); two other parts get their own name. At most 4 in a long video, 1 in a Short, never two in a row; use it
+  whenever the story is about one of these devices (owner 2026-11-14: more glass 3D).
 - metaphor: the beat explains an IDEA (a trade-off, a hidden cost, a bottleneck, layers, a loop, a level, a change):
   show it as a moving picture instead of text. metaphor = one of:
   scales (two things weighed: left, right, punch = the heavier one), unlock (something now possible: label),
@@ -92,7 +93,8 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
   label = the result), stack (layers of a system: items bottom to top, 2-5), gauge (a level or amount: value 0-100,
   label), transform (one thing becomes another: left = before, right = after), iceberg (the visible part and the
   hidden mass: label = what people see, items = what is hidden), cycle (a loop: items = 3-5 steps).
-  punch = the spoken word it lands on. Words max 4 each, as spoken. About 1 in 6 scenes of a long video; never two
+  punch = the spoken word it lands on. Words max 4 each, as spoken. About 1 in 4 scenes of a long video (owner
+  2026-11-14: pictures of ideas over words); never two
   of the same metaphor in a video; prefer it over steps/flow/compare/checklist whenever the idea has a shape.
 - terminal: a REAL RUN (listed under REAL RUNS) proves what the beat says (the repo, the tool, the model actually
   working): source = the run's index, phrase = the words in its output to highlight. The viewer watches the real
@@ -113,7 +115,9 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
 - quote: a short real quote from the pages or research (quote, quote_by).
 - logos: 2 to 4 real product or company names (brands) named together in the beat.
 - icon: one product or company named in the beat (brands = [that name], label = what about it, max 5 words).
-- words: kinetic words only when nothing else fits: screen_words (max 5 words) and a punch word.
+- words: kinetic words, ONLY when no picture fits (owner 2026-11-14: a long video is mostly pictures; at most 1 beat
+  in 6 is words): screen_words = a complete phrase that makes sense on its own, like a headline (max 5 words, e.g.
+  "Black pixels switch off"), never the first words of a sentence cut off and never a pile of keywords; a punch word.
 - studio: Goli at his desk, his screen shows screen_words (max 5 words) with a punch word. Use it for the opening hook,
   a reaction, a question to the viewer and the payoff; at most 1 beat in 5. poses: 1 to 2, each on a word spoken in
   that beat (talk, explain, point, point_up, point_left, shock, think, thumbs_up, shrug, wave).
@@ -357,7 +361,12 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
         t0, t1 = max(0.0, t0), max(t0 + 0.4, t1)
         dur = t1 - t0
         kind = s.get("type")
-        words = s.get("screen_words") or " ".join(lines[s["first_line"]].text.split()[:6])
+        # 2026-11-14 (owner): never the first 6 words of a sentence cut off ("The question is whether you spend");
+        # without the editor's own headline, the whole line when it is short, else its key term
+        line0 = lines[s["first_line"]]
+        words = s.get("screen_words") or (line0.text if len(line0.text.split()) <= 6 else
+                                          (getattr(line0, "label", "") or getattr(line0, "emphasis", "") or
+                                           " ".join(line0.text.split()[:6])))
         poses = []
         for p in s.get("poses") or []:
             at = _word_time(lines, p.get("word", ""), t0, t1)
@@ -448,7 +457,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
                 "rows": [[r["label"], r["a"], r["b"]] for r in rows],
                 "winners": [r["winner"] if r["winner"] != "none" else None for r in rows],
                 "gap": min(0.55, max(0.25, (dur - 0.8) / max(1, len(rows))))}})
-        elif kind == "object3d" and s.get("object3d") in OBJECTS3D and len(shown_3d) < (1 if fmt == "short" else 2) \
+        elif kind == "object3d" and s.get("object3d") in OBJECTS3D and len(shown_3d) < (1 if fmt == "short" else 4) \
                 and not (out and out[-1]["type"] == "object3d"):
             shown_3d.append(s["object3d"])
             land = _word_time(lines, s.get("punch") or "", t0, t1)
@@ -759,6 +768,11 @@ def _pace(scenes: list[dict], lines, fmt: str) -> list[dict]:
                     if key == "items":
                         data["at"] = [s["data"]["at"][i] for i in keep]
                     kept["data"] = data
+            if fmt == "long":
+                # 2026-11-14 (owner): a long video keeps the picture instead of cutting to word fragments
+                # ("OLED efficient much image"); viewers found the words confusing
+                out.append(s)
+                continue
             out.append(kept)
             cuts = _cuts(lines, first, t1, beat)
             out.extend(_words_beat(lines, a, b) for a, b in zip(cuts, cuts[1:]))
@@ -896,7 +910,7 @@ def quiet_windows(voice_script: str, lines: list[Any], most: int = 2, longest: f
 
 DEEPER = {"walkthrough", "terminal", "object3d"}
 # 2026-11-13 (owner): five metaphors in one 38 s Short read as noise. The picture of an idea is an event.
-METAPHOR_CAP = {"short": 1, "long": 3}
+METAPHOR_CAP = {"short": 1, "long": 6}      # 2026-11-14 (owner): more metaphor and node blocks in long videos
 # the shortest a picture may stay (a fast cut is still a picture the eye can read); the beat's words go on
 MIN_SCENE = {"short": 1.0, "long": 1.5}
 STRONG = {"zoom", "flash", "iris", "whip"}

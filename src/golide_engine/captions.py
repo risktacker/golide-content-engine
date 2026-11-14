@@ -142,7 +142,9 @@ def respell_from_script(words: list[dict[str, Any]], script: str) -> list[dict[s
     for tag, i1, i2, j1, j2 in matcher.get_opcodes():
         if tag == "equal" or tag == "delete":
             out.extend(words[i1:i2])
-        elif tag == "replace" and (j2 - j1) <= 2 * (i2 - i1) + 2:
+        elif tag == "replace" and (i2 - i1) <= 2 and (j2 - j1) <= 3:
+            # 2026-11-14 (owner): only a word or two is a mishearing; a hook he rewrote while recording kept the
+            # script's old words in the captions
             start, end = float(words[i1]["start"]), float(words[i2 - 1]["end"])
             step = (end - start) / (j2 - j1)
             for k, token in enumerate(script_words[j1:j2]):
