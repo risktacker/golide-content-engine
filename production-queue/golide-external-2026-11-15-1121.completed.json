@@ -1,0 +1,70 @@
+{
+  "id": "golide-external-2026-11-15-1121",
+  "studio_managed": true,
+  "format": "short",
+  "purpose": "external-video",
+  "title": "External video \u00b7 2026-11-15",
+  "brief": "A video built from the owner's own script and recording.",
+  "external": {
+    "title": "",
+    "script": "You are Jensen Huang, the CEO of Nvidia, and you\u2019re the king of the AI gold rush.\n\nGoogle, Meta, OpenAI, Microsoft, Elon Musk they\u2019re all digging for gold. But you\u2019re the one selling the shovels. Every company needs your chips.\n\nNvidia becomes the first company in history worth $5 trillion. But you have no ego. You wear the same leather jacket everywhere. You even got the Nvidia logo tattooed on your arm when your stock hit $100.\n\nMost of your employees became millionaires. People who used to fix graphics drivers are now driving Lambos to work. Your company\u2019s garage looks like a sports car showroom.\n\nBut your story didn\u2019t start there.\n\nAs a teenager, you used to wash dishes at Denny\u2019s and clean a lot of toilets.\n\n \u201cI\u2019ve cleaned more toilets than all of you combined.\u201d\n\nThen one day, you sit in a Denny\u2019s booth with two friends and start a company that makes chips for video games. You call it Nvidia.\n\nBut within a few years, you almost go bankrupt. Somehow, you survive.\n\nThen, in 2006, you put years of work and a lot of money into making your gaming chips useful for science, not just games.\n\nEveryone says you\u2019re stupid. And for years, nobody really uses it.\n\nThen, in 2012, a few researchers train an AI on two of your gaming cards, and it destroys every other AI in a famous image contest.\n\nSuddenly, the whole world wants your chips.\n\nNow, every AI company on Earth is fighting to win the race. But here\u2019s the interesting part: it doesn\u2019t matter who wins, because whoever wins pays you.\n\nNot bad for a dishwasher.\n\nAnd if that wasn\u2019t enough, your biggest rival in AI chips, AMD, is run by Lisa Su, who happens to be your cousin.\n\nThe AI race is basically a family business.\nBut every king has a weakness.\n\nAmerica bans your best chips from China. Yet reports say smugglers managed to sneak billions of dollars\u2019 worth of them in anyway.\n\nThen, The New York Times reports that US officials believe a top executive at Megape, one of your biggest Asian customers, is a Chinese spy. And that you had an affair with her.\n\nYou email your staff, apologising for being unfaithful to your wife.\n\nThen comes a second affair, this time with one of your own vice presidents.\n\nThe FBI investigates your ties to the alleged spy.\n\nNvidia loses almost $200 billion in a single day.\n\nAnd after 33 years, the king of the gold rush resigns.\n You spent 33 years selling shovels to the whole world.\n\nTurns out, you were digging your own grave.",
+    "link": "",
+    "reference_ref": "",
+    "reference_link": ""
+  },
+  "owner_voice_media_ref": "r2://temp/2026/11/15/e155767cc6d4411ca2f7309f5246a6c5-Jensen.mp3",
+  "owner_voice_required": true,
+  "budget_class": "scheduled",
+  "generate_at": "2026-11-15T09:21:13.297Z",
+  "max_cost_usd": 6,
+  "production_authorized": true,
+  "output_destination": "render-and-upload",
+  "concept": {
+    "family": "owner-video",
+    "promise": "The owner's own script, illustrated",
+    "scores": {
+      "scroll_stop": 9,
+      "visual_payoff": 9,
+      "curiosity_gap": 9,
+      "retention_design": 9,
+      "broad_relevance": 8,
+      "evidence_strength": 8,
+      "novelty": 8,
+      "replay_or_loop": 8,
+      "revenue_fit": 6
+    }
+  },
+  "platform_demand": {
+    "verdict": "pass",
+    "reason": "owner-started external video"
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "schedule_rule": "studio-external-video"
+  },
+  "music": {
+    "mood": "curious-tension"
+  },
+  "avatar_reference_images": [],
+  "release": {
+    "approved": true,
+    "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+    "scheduled_at": "2026-11-15T09:21:13Z"
+  },
+  "platforms": [
+    "youtube",
+    "instagram",
+    "facebook",
+    "linkedin"
+  ],
+  "_studio_job_id": "golide-external-2026-11-15-1121"
+}

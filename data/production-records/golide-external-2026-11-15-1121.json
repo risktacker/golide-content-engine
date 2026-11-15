@@ -1,0 +1,249 @@
+{
+  "production_id": "golide-external-2026-11-15-1121",
+  "youtube_video_id": "qfVe5M5YQ84",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "qfVe5M5YQ84",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-11-15T10:02:22.421275+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "External video · 2026-11-15",
+    "status": "scheduled",
+    "scheduled_at": "2026-11-15T09:21:13Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"schedule_rule\": \"studio-external-video\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "You are Jensen Huang, the CEO of Nvidia,\nand you’re the king of the AI gold rush.\nGoogle, Meta, OpenAI, Microsoft, Elon Musk they’re all digging for gold.\nBut you’re the one selling the shovels.\nEvery company needs your chips.\nNvidia becomes the first company in history worth $5 trillion.\nBut you have no ego.\nYou wear the same leather jacket everywhere.\nYou even got the Nvidia logo tattooed on\nyour arm when your stock hit $100.\nMost of your employees became millionaires.\nPeople who used to fix graphics drivers are now driving Lambos to work.\nYour company’s garage looks like a sports car showroom.\nBut your story didn’t start there.\nAs a teenager,\nyou used to wash dishes at Denny’s and clean a lot of toilets.\n“I’ve cleaned more toilets than all of you combined.” Then one day,\nyou sit in a Denny’s booth with two friends and\nstart a company that makes chips for video games.\nYou call it Nvidia.\nBut within a few years, you almost go bankrupt.\nSomehow, you survive.\nThen, in 2006,\nyou put years of work and a lot of\nmoney into making your gaming chips useful for science, not just games.\nEveryone says you’re stupid.\nAnd for years, nobody really uses it.\nThen, in 2012,\na few researchers train an AI on two of your gaming cards,\nand it destroys every other AI in a famous image contest.\nSuddenly, the whole world wants your chips.\nNow, every AI company on Earth is fighting to win the race.\nBut here’s the interesting part: it doesn’t matter who wins,\nbecause whoever wins pays you.\nNot bad for a dishwasher.\nAnd if that wasn’t enough, your biggest rival in AI chips, AMD,\nis run by Lisa Su, who happens to be your cousin.\nThe AI race is basically a family business.\nBut every king has a weakness.\nAmerica bans your best chips from China.\nYet reports say smugglers managed to sneak billions\nof dollars’ worth of them in anyway.\nThen,\nThe New York Times reports that US officials believe a top executive at Megape,\none of your biggest Asian customers, is a Chinese spy.\nAnd that you had an affair with her.\nYou email your staff, apologising for being unfaithful to your wife.\nThen comes a second affair, this time with one of your own vice presidents.\nThe FBI investigates your ties to the alleged spy.\nNvidia loses almost $200 billion in a single day.\nAnd after 33 years, the king of the gold rush resigns.\nYou spent 33 years selling shovels to the whole world.\nTurns out, you were digging your own grave.\n",
+  "research": {
+    "summary": "Video built from the owner's own script and recording.",
+    "claims": [
+      {
+        "claim": "The owner's own script.",
+        "source_title": "Owner",
+        "source_url": "",
+        "published_or_updated": ""
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Jensen Huang: The AI King Who Dug His Own Grave",
+    "description": "Free guide to this video (steps and every source): https://studio.golidee.com/guides/golide-external-2026-11-15-1121.pdf\n\nJensen Huang helped turn NVIDIA from a struggling gaming-chip company into the engine behind the AI boom. This short follows his journey from washing dishes at Denny’s to leading one of the most valuable companies in the world.\n\nBut the story takes a dramatic turn as reported affairs, espionage allegations, China chip restrictions, and a sudden leadership crisis threaten to bring down the king of the AI gold rush.\n\n#JensenHuang #NVIDIA #AI #TechNews #AIBoom #BusinessStory #GOLIDE",
+    "tags": [
+      "Jensen Huang",
+      "NVIDIA CEO",
+      "NVIDIA downfall",
+      "NVIDIA scandal",
+      "Jensen Huang scandal",
+      "NVIDIA AI chips",
+      "AI chip war",
+      "NVIDIA history",
+      "NVIDIA story",
+      "AI gold rush",
+      "Jensen Huang story",
+      "NVIDIA China",
+      "China chip ban",
+      "NVIDIA resignation",
+      "NVIDIA news",
+      "NVIDIA stock",
+      "AI bubble",
+      "GPU revolution",
+      "CUDA NVIDIA",
+      "AMD Lisa Su",
+      "Lisa Su cousin",
+      "NVIDIA CEO scandal",
+      "NVIDIA spy scandal",
+      "AI industry",
+      "tech billionaire",
+      "Silicon Valley",
+      "business documentary"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "keywords": [
+      "Jensen Huang scandal",
+      "NVIDIA CEO scandal",
+      "Jensen Huang resignation",
+      "NVIDIA downfall",
+      "NVIDIA spy scandal",
+      "NVIDIA China scandal",
+      "Jensen Huang story",
+      "NVIDIA AI chips",
+      "NVIDIA CEO",
+      "AI chip war",
+      "NVIDIA history",
+      "NVIDIA stock",
+      "AI gold rush",
+      "Lisa Su NVIDIA"
+    ],
+    "hashtags": [
+      "#JensenHuang",
+      "#NVIDIA",
+      "#AI",
+      "#TechNews",
+      "#AIBoom",
+      "#BusinessStory",
+      "#GOLIDE"
+    ],
+    "format": "short",
+    "title_description_language": "en",
+    "seo_body": "Jensen Huang helped turn NVIDIA from a struggling gaming-chip company into the engine behind the AI boom. This short follows his journey from washing dishes at Denny’s to leading one of the most valuable companies in the world.\n\nBut the story takes a dramatic turn as reported affairs, espionage allegations, China chip restrictions, and a sudden leadership crisis threaten to bring down the king of the AI gold rush.",
+    "link": ""
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "The owner's own script.",
+        "source_title": "Owner",
+        "source_url": "",
+        "published_or_updated": ""
+      }
+    ],
+    "platform_demand": {
+      "verdict": "pass",
+      "reason": "owner-started external video"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -15.96,
+      "true_peak_dbtp": -1.6,
+      "loudness_range": 2.4
+    },
+    "editorial": {
+      "beats": 84,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-11-15T10:02:00.990520+00:00",
+    "warnings": [
+      "possible misspelling: golidee"
+    ]
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "schedule_rule": "studio-external-video"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-external-2026-11-15-1121",
+    "created_at": "2026-11-15T10:02:08.785232+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-11-15T09:21:13Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "a6b032cf0c650358e20a9c91b1f40caf117a27d38cf827b7f5e2c0bd2991a51f",
+        "bytes": 27810881
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "0d4e4aa4e1dc5474cfc7410c6913dd2e4579d4a8ec6bd3eb0b4cd6c56da74af9",
+        "bytes": 178411
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "d17b6944cff42e15893b8fba7d401f9d6117544058db05f0bb11b8e624a9fa04",
+        "bytes": 2470
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "6275660a5e722c1eb68d30bdc67f33f493bb18e28d4d976d8254e1ae0fd1036b",
+        "bytes": 5458
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "422c46deeccbba5da41fe2012ba3c1187e91a85a6c9e8dd6bfdf2b9b42409f06",
+        "bytes": 2291
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "bc5481e875c6a8a7366c603e0c512baa58fed7f0d285ecdd8480b252a5ec1797",
+        "bytes": 548
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "0c7125f3bd11574c3f63fe318362c2c88afe13989b38396ca7741ab611430bb0",
+        "bytes": 335
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "40a7712b94f3acb3bafda45cc3112e6192d9a14007b151ad4e7c72679c88c8b9",
+        "bytes": 315
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "edit-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 3762.0,
+      "cached_input_units": 0.0,
+      "output_units": 8065.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01043,
+      "created_at": "2026-11-15T09:27:38.405121+00:00"
+    },
+    {
+      "stage": "guide",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 805.0,
+      "cached_input_units": 0.0,
+      "output_units": 921.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001266,
+      "created_at": "2026-11-15T10:01:26.305536+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9584.0,
+      "cached_input_units": 0.0,
+      "output_units": 911.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00301,
+      "created_at": "2026-11-15T10:01:27.169645+00:00"
+    }
+  ],
+  "recorded_at": "2026-11-15T10:02:22.428612+00:00"
+}
