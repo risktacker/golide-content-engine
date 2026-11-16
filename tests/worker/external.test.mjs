@@ -30,3 +30,13 @@ test("platform choice: missing means everywhere, nothing ticked means none", () 
   assert.deepEqual(normalizePlatforms([]), ["none"]);
   assert.deepEqual(normalizePlatforms(["LinkedIn", "youtube", "tiktok"]), ["youtube", "linkedin"]);
 });
+
+test("2026-11-17: his own video can be a long video and in Inkee", () => {
+  const spec = buildExternalSpec({ ...base, format: "long", video_style: "illustration" });
+  assert.equal(spec.format, "long");
+  assert.equal(spec.video_style, "illustration");
+  assert.ok(spec.concept.scores.click_promise);
+  const plain = buildExternalSpec({ ...base, format: "nonsense", video_style: "nope" });
+  assert.equal(plain.format, "short");
+  assert.equal(plain.video_style, "goli");
+});

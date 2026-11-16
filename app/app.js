@@ -612,7 +612,8 @@ function pickedPlatforms(scope) {
 // 2026-11-11 (owner): he picks each video's style. Goli (the edit engine) is the default; the
 // illustration engine stays available as an option.
 // The choice comes up right after "Use AI voice" or after the recording uploads; the build starts on the tap.
-const VIDEO_STYLES = [["goli", "Goli"], ["illustration", "Illustration"]];
+// 2026-11-17 (owner): the illustration style is called Inkee
+const VIDEO_STYLES = [["goli", "Goli"], ["illustration", "Inkee"]];
 let styleAsking = null;
 
 function askStyle(jobId) {
@@ -1140,6 +1141,9 @@ $("#external-toggle").onclick = () => {
 $("#ext-voice").onchange = (e) => showPicked(e.target, "#ext-voice-name");
 $("#ext-ref").onchange = (e) => showPicked(e.target, "#ext-ref-name");
 
+// 2026-11-17 (owner): his own video can be a Short or a long video, in Goli or Inkee
+function extFormat() { return document.querySelector('input[name="ext-format"]:checked')?.value === "long" ? "long" : "short"; }
+
 $("#external-form").onsubmit = async (event) => {
   event.preventDefault();
   const status = $("#ext-status");
@@ -1151,7 +1155,7 @@ $("#external-form").onsubmit = async (event) => {
   if (script.split(/\s+/).filter(Boolean).length < 8) return say("Paste the script you recorded.", true);
   if (!voice) return say("Choose your recording.", true);
   try {
-    const problem = recordingLengthProblem("short", await audioDuration(voice));
+    const problem = recordingLengthProblem(extFormat(), await audioDuration(voice));
     if (problem) return say(problem, true);
   } catch {}
   button.disabled = true;
@@ -1166,7 +1170,8 @@ $("#external-form").onsubmit = async (event) => {
       body: JSON.stringify({
         title: $("#ext-title").value.trim(), script, voice_ref: voiceRef, reference_ref: referenceRef,
         link: $("#ext-link").value.trim(), reference_link: $("#ext-ref-link").value.trim(),
-        platforms: pickedPlatforms($("#external-form")),
+        platforms: pickedPlatforms($("#ext-post-to")),
+        format: extFormat(), video_style: document.querySelector('input[name="ext-style"]:checked')?.value || "goli",
       }),
     });
     say("Building now. It publishes when it is ready; follow it under Production below.");

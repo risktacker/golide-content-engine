@@ -7,6 +7,11 @@
 
 export const CHANNEL_ID = "UCqaXVBSBz7iQsRHOupKt-3w";
 
+const LONG_SCORES = {
+  click_promise: 9, thumbnail_title_fit: 9, narrative_engine: 9, visual_depth: 9, evidence_strength: 8,
+  retention_design: 9, broad_relevance: 8, novelty: 8, revenue_fit: 7,
+};
+
 const SHORT_SCORES = {
   scroll_stop: 9, visual_payoff: 9, curiosity_gap: 9, retention_design: 9, broad_relevance: 8,
   evidence_strength: 8, novelty: 8, replay_or_loop: 8, revenue_fit: 6,
@@ -34,11 +39,15 @@ export function buildExternalSpec(payload, now = new Date()) {
     if (value && !/^https?:\/\/\S+$/.test(value)) throw new Error("Links must start with https://");
   }
   if (referenceRef && !referenceRef.startsWith("r2://")) throw new Error("The reference picture did not finish uploading.");
+  // 2026-11-17 (owner): a Short or a long video, in Goli or Inkee (the illustration engine)
+  const format = payload.format === "long" ? "long" : "short";
+  const style = ["goli", "illustration"].includes(payload.video_style) ? payload.video_style : "goli";
   const id = "golide-external-" + lusakaStamp(now);
   return {
     id,
     studio_managed: true,
-    format: "short",
+    format,
+    video_style: style,
     purpose: "external-video",
     title: title || "External video · " + lusakaStamp(now).slice(0, 10),
     brief: "A video built from the owner's own script and recording.",
@@ -50,7 +59,7 @@ export function buildExternalSpec(payload, now = new Date()) {
     max_cost_usd: 6.0,
     production_authorized: true,
     output_destination: "render-and-upload",
-    concept: { family: "owner-video", promise: "The owner's own script, illustrated", scores: SHORT_SCORES },
+    concept: { family: "owner-video", promise: "The owner's own script, illustrated", scores: format === "long" ? LONG_SCORES : SHORT_SCORES },
     platform_demand: { verdict: "pass", reason: "owner-started external video" },
     generation_parameters: {
       brand_preset: "golide-editorial", voice: "owner-recording-only", pacing: "fast", visual_density: 4,
