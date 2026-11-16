@@ -7,9 +7,13 @@ Owner: Esiah (Lusaka, UTC+2). Direct, no sugar-coating. Studio: studio.golidee.c
 ## Owner's rules (always)
 - Talk before code on anything that costs money or changes visuals; state costs first. "Approved" or "Perfect" = go.
 - Show a preview (still frames / contact sheet) before pushing visual changes. Not a full video unless asked.
-- Never touch the music videos. Never use other people's faces. Licence-clear assets only.
+- Never touch the music videos. Licence-clear music and assets.
+- Real photos (owner 2026-11-17): people, products and news photos are used as they are (no face blurring), always as
+  commentary: framed card with the source named on screen and in the description, never a full-screen background.
+  Search order: official/Wikipedia first, then news and social pictures. Thumbnails show the person's real photo when
+  the title is about one person (`photo_card` design). Never fake a person's quote or make a look-alike.
 - Thumbnails (owner 2026-11-10): real logos of the products and apps in the story are used; no owner avatar
-  (only when he is in the video); real objects, never generative look-alikes.
+  (only when he is in the video); real objects, never generative look-alikes; real people's photos allowed (2026-11-17).
 - Thumbnail engine (owner 2026-11-12, `vector/thumb_engine.py`): long videos only. Designs copied from the owner's
   model thumbnails with Goli in place of the person; each keeps its model's own lettering and finish (no blanket
   shadows or glow). Picked per video against the modelled video's thumbnail; never the last two designs; every
