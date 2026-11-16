@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, time, timezone
+from datetime import datetime, time, timedelta, timezone
 from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
@@ -45,6 +45,11 @@ def _scores(format: str) -> dict[str, int]:
 def build_spec(rule: dict[str, Any], day, timezone_name: str, channel_id: str) -> dict[str, Any]:
     zone = ZoneInfo(timezone_name)
     generate_at = datetime.combine(day, _clock(rule["generate_time"]), zone)
+    if rule.get("link_wait", True):
+        # 2026-11-17 (owner: "no paste card at all in Studio"): a slot that waits for his link opens the day
+        # before at 12:00, so the card is there whenever he looks; nothing runs or is spent until he pastes
+        # or the slot's time passes
+        generate_at = datetime.combine(day - timedelta(days=1), time(12, 0), zone)
     publish_at = datetime.combine(day, _clock(rule["publish_time"]), zone)
     format = rule["format"]
     production_id = f"golide-{format}-{day.isoformat()}"
@@ -113,13 +118,14 @@ def materialize_due(
     queue = Path(queue_directory)
     queue.mkdir(parents=True, exist_ok=True)
     created: list[Path] = []
-    weekday = local_now.strftime("%A").lower()
-    for rule in config["rules"]:
-        if local_now.date().isoformat() < rule["start_date"]:
+    # 2026-11-17: today's slots and tomorrow's (a link slot opens the day before)
+    days = [local_now.date(), local_now.date() + timedelta(days=1)]
+    for rule, day in [(r, d) for d in days for r in config["rules"]]:
+        if day.isoformat() < rule["start_date"]:
             continue
-        if weekday not in rule["weekdays"]:
+        if day.strftime("%A").lower() not in rule["weekdays"]:
             continue
-        spec = build_spec(rule, local_now.date(), config["timezone"], config["channel_id"])
+        spec = build_spec(rule, day, config["timezone"], config["channel_id"])
         generate_at = datetime.fromisoformat(spec["generate_at"].replace("Z", "+00:00"))
         publish_at = datetime.fromisoformat(spec["release"]["scheduled_at"].replace("Z", "+00:00"))
         if now < generate_at or now >= publish_at:
