@@ -2280,10 +2280,22 @@ class ProductionService:
                         print(json.dumps({"status": "thumbnail_capture_failed", "error": str(exc)[:200]}))
                 shots = sorted(sources.glob("*-top.png"))
                 photos = sorted(sources.glob("*-photo.png"))
+                # 2026-11-17 (owner): a story about one person shows his real photo on the thumbnail
+                person, person_photo = "", None
+                try:
+                    for entry in json.loads((sources / "sources.json").read_text(encoding="utf-8")):
+                        name = str(entry.get("subject") or "")
+                        if entry.get("picture_only") and entry.get("photo") and len(name.split()) >= 2 \
+                                and name.lower() in str(metadata["title"]).lower():
+                            person, person_photo = name, sources / entry["photo"]
+                            break
+                except (OSError, ValueError):
+                    pass
                 model = spec.get("source_breakout") or {}
                 style = engine_make(metadata["title"], str(chosen.get("words", "")), str(chosen.get("punch", "")),
                                     [str(b) for b in chosen.get("brands") or []], thumbnail, shots=shots,
-                                    photo=photos[0] if photos else None, outfit=outfit_today(),
+                                    photo=person_photo or (photos[0] if photos else None), person=person,
+                                    outfit=outfit_today(),
                                     recent=recent_designs(self.root), text=self.providers.text(live=True),
                                     model_url=str(model.get("url", "")), model_title=str(model.get("title", "")),
                                     seed=n, log=lambda e: print(json.dumps(e)))

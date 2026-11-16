@@ -77,7 +77,8 @@ Never use the same shot twice in the whole video. {"On a Short, screenshots are 
 Scene types (fill only the fields the type uses; null or [] for the rest):
 - source: a captured page, zoomed to one shot (source = page index, phrase = shot index). callout = the fact in at
   most 4 words (e.g. "$40") or null, callout_sub = what it is (3 to 6 words), edge glass or fade.
-- photo: the page's own picture (source = page index; only pages marked "photo: yes").
+- photo: a real picture (source = page index; pages marked "photo: yes" or PICTURE): a person, a product, a place the
+  words name. Owner 2026-11-17: when a line names a person or a product and a picture of it exists, show it.
 - stat: one number that matters (value as a number, prefix like "$", suffix like "%" or "x", label 2 to 5 words).
 - compare: left vs right, 2 to 4 rows (label, a, b, winner).
 - object3d: the words talk about a real device or what is inside it (a laptop, a phone, a server or data centre
@@ -209,9 +210,15 @@ def request(title: str, lines: list[Any], sources: list[dict[str, Any]], chapter
     for i, page in enumerate(sources):
         if not page.get("ok"):
             continue
+        if page.get("picture_only"):
+            # 2026-11-17 (owner): the real picture of a person or product the story names
+            pages.append(f"[{i}] PICTURE of {page.get('subject', '')} (photo only: use it as a photo scene when the "
+                         f"words name {page.get('subject', '')})")
+            continue
         listed = "\n".join(f"    {j} [{sh['kind']}] {sh['text']}" for j, sh in enumerate(shots(page)))
+        n_photos = len(page.get("photos") or ([page["photo"]] if page.get("photo") else []))
         pages.append(f"[{i}] {page.get('title', '')[:90]} ({_domain(page.get('url', ''))})"
-                     f"{' photo: yes' if page.get('photo') else ''}\n{listed or '    (no shots)'}")
+                     f"{f' photo: yes ({n_photos} pictures)' if n_photos else ''}\n{listed or '    (no shots)'}")
     chap = "\n".join(f"- {getattr(m, 'number', '')} {getattr(m, 'title', '')} at {getattr(m, 'start', 0):.1f}s" for m in chapters)
     from .demos import listing
     return (f"TITLE: {title}\n\nBEATS\n" + "\n".join(rows) + "\n\nCAPTURED PAGES\n" + ("\n".join(pages) or "none")
@@ -354,6 +361,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
     keeps its words), and every such repair is reported in the edit list's `notes`."""
     n = len(lines)
     notes: list[str] = []
+    photo_use: dict[int, int] = {}
     scenes = sorted((dict(s) for s in raw.get("scenes") or []), key=lambda s: int(s.get("first_line", 0)))
     fixed: list[dict] = []
     nxt = 0
@@ -411,6 +419,10 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
         elif kind == "source":
             src = s.get("source")
             page = sources[src] if isinstance(src, int) and 0 <= src < len(sources) else None
+            if page and page.get("picture_only") and page.get("photo") and capture_dir:
+                out.append({"type": "photo", "start": t0, "duration": dur, "data": {
+                    "image": capture_dir / page["photo"], "url": page.get("url", "")}})
+                continue
             if not page or not page.get("ok") or not capture_dir:
                 notes.append(f"scene {k}: source {src} not captured, shown as words")
                 out.append(words_scene())
@@ -453,8 +465,12 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
             src = s.get("source")
             page = sources[src] if isinstance(src, int) and 0 <= src < len(sources) else None
             if page and page.get("photo") and capture_dir and (capture_dir / page["photo"]).exists():
+                # each use of a page's photos shows its next picture
+                pics = [p for p in (page.get("photos") or [page["photo"]]) if (capture_dir / p).exists()]
+                pick = pics[photo_use.get(src, 0) % len(pics)]
+                photo_use[src] = photo_use.get(src, 0) + 1
                 out.append({"type": "photo", "start": t0, "duration": dur, "data": {
-                    "image": capture_dir / page["photo"], "url": page.get("url", "")}})
+                    "image": capture_dir / pick, "url": page.get("url", "")}})
                 if s.get("goli_corner") and dur >= 1.2:
                     out.append({"type": "host", "start": t0 + 0.2, "duration": dur - 0.2, "data": {
                         "place": "corner", "cues": _cues_between(cues, t0 + 0.2, t1),

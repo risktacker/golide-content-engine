@@ -93,13 +93,18 @@ MAIN = r"""
     }
   }
   let image = null, best = 0;
+  const images = [];
   for (const img of document.querySelectorAll('img, picture img, video[poster]')) {
     const r = img.getBoundingClientRect();
     const area = r.width * r.height;
-    if (!skip(img) && r.width >= 320 && r.height >= 180 && r.top + scrollY < 2000 && area > best) {
-      best = area; image = [r.left + scrollX, r.top + scrollY, r.width, r.height];
-    }
+    if (skip(img) || r.width < 320 || r.height < 180) continue;
+    const box = [r.left + scrollX, r.top + scrollY, r.width, r.height];
+    if (r.top + scrollY < 2000 && area > best) { best = area; image = box; }
+    // 2026-11-17 (owner): every big picture in the article (people, products), not only the top one
+    if (r.top + scrollY < 6000 && !images.some((b) => Math.abs(b[1] - box[1]) < 40 && Math.abs(b[0] - box[0]) < 40))
+      images.push(box);
   }
+  images.sort((a, b) => b[2] * b[3] - a[2] * a[3]);
   // every readable block of the article, so a beat can zoom to the exact part that says it
   const blocks = [];
   const root = document.querySelector('main, article, [role=main]') || document.body;
@@ -128,7 +133,7 @@ MAIN = r"""
     if (controls.some((c) => c.text === text)) continue;
     controls.push({ text, rect: [r.left + scrollX, r.top + scrollY, r.width, r.height] });
   }
-  return { headline, image, blocks, controls };
+  return { headline, image, images: images.slice(0, 4), blocks, controls };
 }
 """
 
@@ -225,26 +230,27 @@ def capture(research: dict[str, Any], folder: Path) -> list[dict[str, Any]]:
                 page.set_viewport_size(VIEW)
                 spots = page.evaluate(FIND, phrases(page_info["claims"]))
                 main = page.evaluate(MAIN) or {}
-                photo = None
-                if main.get("image"):
-                    x, y, w, h = main["image"]
-                    photo = folder / f"{i:02d}-photo.png"
+                photos: list[str] = []
+                boxes = ([main["image"]] if main.get("image") else []) + [
+                    b for b in (main.get("images") or []) if b != main.get("image")]
+                for n, (x, y, w, h) in enumerate(boxes[:4]):
+                    name = f"{i:02d}-photo.png" if n == 0 else f"{i:02d}-photo{n + 1}.png"
                     try:
                         from PIL import Image as _Image
                         with _Image.open(full) as shot:
                             k = 1.5
                             box = (int(x * k), int(y * k), int((x + w) * k), int(min(y + h, height) * k))
-                            if box[3] - box[1] > 120:
-                                shot.crop(box).save(photo)
-                            else:
-                                photo = None
+                            if box[3] - box[1] > 120 and box[2] - box[0] > 200:
+                                shot.crop(box).save(folder / name)
+                                photos.append(name)
                     except Exception:  # noqa: BLE001
-                        photo = None
+                        pass
+                # 2026-11-17 (owner): people and news photos are shown as they are (no face blurring); always as
+                # commentary in a framed card with the source named
                 entry.update(ok=True, top=top.name, full=full.name, full_height=int(height), scale=1.5,
                              highlights=spots, headline=main.get("headline"), blocks=main.get("blocks") or [],
                              controls=main.get("controls") or [],
-                             photo=photo.name if photo else None,
-                             faces_blurred=blur_faces(top) + blur_faces(full) + (blur_faces(photo) if photo else 0))
+                             photo=photos[0] if photos else None, photos=photos)
             except Exception as error:  # noqa: BLE001
                 entry["error"] = str(error)[:200]
             finally:
@@ -252,8 +258,80 @@ def capture(research: dict[str, Any], folder: Path) -> list[dict[str, Any]]:
             entry["captured_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
             log.append(entry)
         browser.close()
+    log.extend(subject_pictures(named_subjects(research, str(research.get("title") or "")), folder, len(log) + 1))
     (folder / "sources.json").write_text(json.dumps(log, indent=2) + "\n", encoding="utf-8")
     return log
+
+
+NAME = re.compile(r"\b([A-Z][a-zA-Z0-9]+(?:[ -][A-Z][a-zA-Z0-9]+){0,2})\b")
+NOT_NAMES = {"The", "This", "That", "These", "Those", "A", "An", "And", "But", "So", "If", "In", "On", "At", "It",
+             "Its", "Why", "How", "What", "When", "Who", "We", "You", "Your", "They", "He", "She", "I", "AI", "CEO",
+             "New", "Now", "Here", "There", "Every", "Most", "One", "Two", "First", "Last", "According"}
+
+
+def named_subjects(research: dict[str, Any], title: str = "", most: int = 4) -> list[str]:
+    """The people, companies and products the story keeps naming (most mentioned first)."""
+    # names are read from sentences (a Title Case headline would make every word look like a name)
+    text = " ".join([str(research.get("core_fact") or "")] + [str(c.get("claim", "")) for c in research.get("claims", [])])
+    counts: dict[str, int] = {}
+    for sentence in re.split(r"(?<=[.!?])\s+", text):
+        for match in NAME.finditer(sentence):
+            name = match.group(1).strip()
+            words = name.split()
+            if match.start() == 0 and len(words) == 1 and words[0] in NOT_NAMES:
+                continue
+            while words and words[0] in NOT_NAMES:
+                words = words[1:]
+            name = " ".join(words)
+            if len(name) < 3 or (name.isupper() and len(name) <= 3):
+                continue
+            counts[name] = counts.get(name, 0) + (3 if name.lower() in title.lower() else 1)
+    ranked = sorted(counts, key=lambda n: (-counts[n], -len(n)))
+    keep: list[str] = []
+    for name in ranked:
+        if any(name in k or k in name for k in keep):
+            continue
+        keep.append(name)
+    return keep[:most]
+
+
+def subject_pictures(names: list[str], folder: Path, start: int) -> list[dict[str, Any]]:
+    """2026-11-17 (owner): the real picture of each person or product the story names (people too, not only
+    things), from Wikipedia: free, credited on screen as the source. Never stops a video."""
+    import urllib.parse
+    import urllib.request
+
+    out = []
+    headers = {"User-Agent": "GOLIDE-engine/1.0 (studio.golidee.com)"}
+    for k, name in enumerate(names):
+        try:
+            q = urllib.parse.quote(name)
+            with urllib.request.urlopen(urllib.request.Request(
+                    f"https://en.wikipedia.org/w/rest.php/v1/search/title?q={q}&limit=1", headers=headers), timeout=20) as r:
+                pages = json.loads(r.read().decode("utf-8")).get("pages") or []
+            if not pages:
+                continue
+            key = pages[0]["key"]
+            with urllib.request.urlopen(urllib.request.Request(
+                    f"https://en.wikipedia.org/api/rest_v1/page/summary/{urllib.parse.quote(key)}", headers=headers),
+                    timeout=20) as r:
+                summary = json.loads(r.read().decode("utf-8"))
+            src = (summary.get("originalimage") or summary.get("thumbnail") or {}).get("source")
+            if not src or src.lower().endswith(".svg"):
+                continue
+            file = folder / f"{start + k:02d}-photo.png"
+            with urllib.request.urlopen(urllib.request.Request(src, headers=headers), timeout=30) as r:
+                raw = r.read()
+            from io import BytesIO
+            from PIL import Image as _Image
+            with _Image.open(BytesIO(raw)) as im:
+                im.convert("RGB").save(file)
+            out.append({"url": summary.get("content_urls", {}).get("desktop", {}).get("page", src),
+                        "title": f"{name} (picture)", "claims": [], "ok": True, "picture_only": True,
+                        "subject": name, "photo": file.name, "photos": [file.name]})
+        except Exception as error:  # noqa: BLE001
+            out.append({"subject": name, "ok": False, "picture_only": True, "error": str(error)[:160]})
+    return out
 
 
 def contact_sheet(folder: Path, out: Path) -> Path:

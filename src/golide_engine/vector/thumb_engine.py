@@ -40,11 +40,12 @@ class Story:
     punch: str
     names: list[str] = field(default_factory=list)
     icons: list[dict] = field(default_factory=list)
-    shots: list[Path] = field(default_factory=list)       # real page screenshots (faces already blurred)
+    shots: list[Path] = field(default_factory=list)       # real page screenshots
     photo: Path | None = None
     outfit: str = "royal"
     mood: str = "calm"                                     # calm | hype | alarm | money
     seed: int = 0
+    person: str = ""                                       # 2026-11-17: the person the photo shows, named in the title
 
     @property
     def rest(self) -> str:
@@ -854,6 +855,11 @@ DESIGNS = [
            lambda s: len(s.words.split()) <= 2 and len(s.words.replace(" ", "")) <= 9, d_giant_word, grade=False),
     Design("platter", "Logo tiles on a silver platter held out by Goli; slug title with a red marker underline. For stacks, "
            "toolkits, '7 tools' (like '/motion-graphics').", _logos(4), d_platter, grade=False),
+    # 2026-11-17 (owner: "Jensen was the talk of the week, everybody framed him, why didn't we"): when the story is
+    # about one person and we have his real photo, the photo is the thumbnail's hero, Goli reacting beside it
+    Design("photo_card", "The real photo of the person the title is about, big and tilted in a frame, the words above, "
+           "shocked Goli beside it. FIRST CHOICE whenever the title is about one named person (a CEO, a celebrity).",
+           lambda s: bool(s.photo) and bool(s.person), d_photo_card),
     Design("big_words", "Last resort when nothing else fits: the words big on the left, Goli points at them.",
            lambda s: True, d_big_words, grade=False, fallback=True),
 ]
@@ -938,14 +944,15 @@ def render(design: Design, s: Story) -> tuple[Image.Image, list[str]]:
 
 def make(title: str, words: str, punch: str, brands: list[str], out: Path, *, shots: list[Path] | None = None,
          photo: Path | None = None, outfit: str = "royal", recent: list[str] | None = None, text=None,
-         model_url: str = "", model_title: str = "", seed: int = 0, log: Callable[[dict], None] = print) -> str:
+         model_url: str = "", model_title: str = "", seed: int = 0, log: Callable[[dict], None] = print,
+         person: str = "") -> str:
     """Draw the thumbnail; returns the design used. Never the design of the last videos; never with a collision."""
     found = [(b, logos.find(b)) for b in brands]
     found = [(b, i) for b, i in found if i][:7]
     s = Story(title, " ".join(str(words).split()).upper(), str(punch).strip().upper(), [b for b, _ in found],
               [i for _, i in found], [p for p in (shots or []) if Path(p).exists()],
               photo if photo and Path(photo).exists() else None, outfit, "alarm" if T.is_alert(title + " " + words) else "calm",
-              seed)
+              seed, person if photo and Path(photo).exists() else "")
     if not s.punch or s.punch not in s.words:
         s.punch = s.words.split()[-1] if s.words else ""
     recent = recent or []
@@ -963,6 +970,9 @@ def make(title: str, words: str, punch: str, brands: list[str], out: Path, *, sh
     rest = [d.name for d in choices if d.name not in ranking]
     rnd.shuffle(rest)
     order = [n for n in ranking if n in {d.name for d in choices}] + rest
+    if s.person and "photo_card" in order:                 # the person story leads with his photo
+        order.remove("photo_card")
+        order.insert(0, "photo_card")
     order = order[:6] + [d.name for d in DESIGNS if d.fallback and d.name not in order]
     best: tuple[int, str, Image.Image] | None = None
     for name in order:
