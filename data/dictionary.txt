@@ -40,3 +40,5 @@ terawatt  # seen in your recording and the research sources
 agentic  # seen in your recording and the research sources
 autocomplete  # seen in your recording
 subagents  # seen in your recording and the research sources
+recognisable  # seen in your recording
+roadmap  # seen in your recording and the research sources
