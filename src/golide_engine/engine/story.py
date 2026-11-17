@@ -77,7 +77,26 @@ def script_offer(format_name: str) -> str:
         return ""
 
 
-def story_instructions(format_name: str, model_seconds: float | None = None) -> str:
+CLOSE_MODEL = (
+    "THIS VIDEO RETELLS ONE MODEL SCRIPT (owner 2026-11-17: \"we only use what is actually working\"). The MODEL "
+    "SCRIPT below is a video that works. Retell it beat by beat, in the same order:\n"
+    "- The same hook, the same questions to the viewer, the same reveals, twists and \"here's the strange part\" "
+    "turns, the same little scenes and dialogues (the narrator voices both sides, as the model does), the same jokes "
+    "in the same places, the same ending device (a debate, a quote, a callback).\n"
+    "- Keep each sentence's shape, length and rhythm. Change a few words in it: synonyms and small rewordings, not "
+    "every word. The flow stays the same.\n"
+    "- Shorter: fit the LENGTH by cutting or merging the weakest beats; never reorder, never add your own sections, "
+    "never turn it into a lecture, tips list or \"how to check the news\" segment.\n"
+    "- Facts: every name, number and date is checked against VERIFIED RESEARCH (use the research's exact or newer "
+    "figure). A claim the research could not confirm stays in the story said the way the model's sources say it "
+    "(\"reportedly\", \"according to...\", \"allegedly\", \"US investigators say\"), once, then the story moves on; "
+    "no paragraphs of disclaimers.\n"
+    "- Leave out the model creator's own channel: their other videos, sponsor, name and calls to action. Ours is the "
+    "follow ask near the end, in one sentence.\n"
+    "- Chapters: put the markers where the model's story turns.\n\n")
+
+
+def story_instructions(format_name: str, model_seconds: float | None = None, close_model: bool = False) -> str:
     target = length_target(format_name, model_seconds)
     kind = "a YouTube Short (also posted as a Reel)" if format_name == "short" else "a long YouTube video"
     if format_name == "long":
@@ -168,6 +187,19 @@ def story_instructions(format_name: str, model_seconds: float | None = None) -> 
             "one sentence asking them to follow the channel, with a real reason to come back.\n"
             "- When the story is a product rather than an event, tell the story of it the same way and end on how the "
             "viewer can use it or decide about it.\n")
+    if close_model:
+        return (
+            f"You write the narration for {kind}. It is read aloud, and animated pictures follow the words.\n\n"
+            + length + CLOSE_MODEL
+            + "TECHNICAL (the pipeline needs these)\n"
+            f"- {lo} to {hi} spoken words (about {target['seconds']} seconds): count them before you answer.\n"
+            + chapters
+            + "- Numbers as digits (6.3 billion, 93 cents, 4:20, 2026, 18,270); fractions and everyday ordinals stay "
+            "words, and \"one\" on its own stays a word.\n"
+            "- Never say the brand name aloud; say \"follow the channel\" or \"follow us\".\n"
+            "- No audio tags, no words in capitals, no \"...\"; the voice direction is added afterwards.\n"
+            "- \"title\": the working title of the video.\n"
+            "Return JSON.")
     return (
         f"You write the narration for {kind} about a technology, AI or science story. "
         "It is read aloud, and animated pictures follow the words.\n\n"

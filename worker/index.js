@@ -1221,7 +1221,10 @@ async function handleApi(request,env,url){
     const link=String(body.link??"").trim();
     if(!/^https:\/\/(www\.|m\.)?(youtube\.com\/(watch\?v=|shorts\/)|youtu\.be\/)[A-Za-z0-9_-]{11}/.test(link))
       return err("Paste a YouTube video link (youtube.com/watch?v=..., youtu.be/... or a Shorts link).",400);
-    const ask=JSON.stringify({url:link,requested_at:nowIso()});
+    // 2026-11-17 (owner): the model's transcript pasted with the link (from any free transcript site), so the
+    // script follows the model closely even when the engine cannot fetch it
+    const transcript=String(body.transcript??"").replace(/\s+/g," ").trim().slice(0,120000);
+    const ask=JSON.stringify(Object.assign({url:link,requested_at:nowIso()},transcript.split(" ").length>=40?{transcript}:{}));
     // 2026-11-14 (owner): the same paste starts a slot that is waiting for his link
     const r=await env.DB.prepare(`UPDATE production_jobs SET spec_json=json_remove(json_set(spec_json,'$.replace_model',json(?)),'$.script_edit'),script='',status='queued',stage='replace-script',error=NULL,updated_at=? WHERE job_id=? AND status IN ('waiting_owner_voice','waiting_owner_link')`)
       .bind(ask,nowIso(),id).run();

@@ -731,6 +731,7 @@ function actionCard(job) {
       '<button class="action-button replace-script" data-job="' + escAttr(job.job_id) + '">Replace script</button></div>' +
     '<div class="replace-row" id="replace-row-' + escAttr(job.job_id) + '" hidden>' +
       '<input class="replace-link" type="url" inputmode="url" placeholder="Paste the YouTube link to model" data-job="' + escAttr(job.job_id) + '">' +
+      '<textarea class="replace-transcript" rows="3" placeholder="Optional: paste its transcript (from any free transcript site). The script then follows it closely." data-job="' + escAttr(job.job_id) + '"></textarea>' +
       '<button class="action-button replace-go" data-job="' + escAttr(job.job_id) + '">Write a new script</button>' +
       '<button class="action-button replace-cancel" data-job="' + escAttr(job.job_id) + '">Cancel</button>' +
       '<p class="replace-note">Paste the link, then tap <b>Write a new script</b>. The engine treats that video as today\'s title: it researches the subject from other sources and writes a new script here (a few cents).</p></div>' +
@@ -755,6 +756,7 @@ function linkCard(job) {
     'No link by ' + by + ': the engine picks a topic itself, records with the AI voice and publishes 30 minutes after it is built.</p>' +
     '<div class="replace-row" id="replace-row-' + id + '">' +
       '<input class="replace-link" type="url" inputmode="url" placeholder="Paste the YouTube link" data-job="' + id + '">' +
+      '<textarea class="replace-transcript" rows="3" placeholder="Optional: paste its transcript (from any free transcript site). The script then follows it closely." data-job="' + id + '"></textarea>' +
       '<button class="action-button replace-go" data-job="' + id + '">Write the script</button></div>' +
     '<span class="voice-status script-status" id="script-status-' + id + '"></span></div>' +
     '<div class="action-controls"><button class="action-button skip-slot" data-job="' + id + '">Skip this slot</button></div></article>';
@@ -909,11 +911,12 @@ function renderActionQueues() {
       const id = button.dataset.job;
       const row = document.getElementById("replace-row-" + id);
       const link = row?.querySelector(".replace-link")?.value.trim() || "";
+      const transcript = row?.querySelector(".replace-transcript")?.value.trim() || "";
       const status = document.getElementById("script-status-" + id);
       button.disabled = true; button.textContent = "Starting...";
       try {
         await api(`/api/production-jobs/${encodeURIComponent(id)}/replace-script`, {
-          method: "POST", body: JSON.stringify({ link }),
+          method: "POST", body: JSON.stringify(transcript ? { link, transcript } : { link }),
         });
         studioNotice = "New script on its way, modelled on the video you pasted. It appears in Automation when it is ready (a few minutes); you get the usual email.";
         await loadProductionJobs();
