@@ -1,0 +1,1368 @@
+NUMBER 5 (circuit City - Real flow of Energy)
+I want a short 3D motion graphic made with three.js in the "Circuit City" style. Below is the complete source of a reference animation in this exact style, plus the small rendering kit and sound kit it runs on. Use them as your style guide and rebuild the animation around my content.
+
+MY CONTENT:
+[Describe your topic, or paste your script here. If this is left as is, ask me for it before building.]
+
+
+STORYBOARD FIRST: before building the animation, make a VISUAL storyboard and wait for my OK.
+- One HTML page (show it as an artifact if you can) with a grid of panels, one per beat (about 3-6). Each panel is a still of that beat's key frame, rendered with the STAGE kit from a block-out of the scene: simple forms in the reference's materials, lighting, camera angle and grade, so the panels already look like the finished piece. Render the stills one after another on one canvas with S.seek(time) at about 16 samples (enough for depth of field and soft shadows to read) and copy each into an image. Stills only, no animation or sound yet.
+- Under each panel: the beat number, its start and end time, the exact on-screen text, what moves or changes to get there from the previous panel, what the camera does, and its key sounds.
+- Below the grid, list any facts or numbers you had to assume.
+When I approve it (or after my changes), build the full animation exactly as storyboarded, reusing the storyboard's scene code.
+
+WHAT TO BUILD
+One self-contained HTML file (show it as an artifact if you can):
+- three.js 0.187.0 core only, loaded as an ES module from a CDN with an import map (no addons), then set window.THREE = THREE before running the kit and the style code.
+- A 1920x1080 canvas scaled to fit the window, with a small control bar: play/pause, a scrub slider, the time, a sound toggle, loop on by default.
+- A new style object, built the same way as the reference (content block first, then build(S) returning update(t)), that tells MY CONTENT in this style. 7-12 seconds unless my content needs more.
+- Run it with the kit: const S = await K.run(canvas, style, { samples }). Use a low sample count (2-4) while playing live and the style's full count when rendering frames. Expose window.seek = (t) => S.seek(t) and window.DURATION.
+- Play the style's sound(k) score in sync from the player: on play call stopSound = SOUND.live((k) => style.sound(k), currentT, { voiceover: false }), and call stopSound() on pause, on seek and when the sound toggle is turned off.
+- Include the STAGE kit and the SOUND kit below unchanged.
+- Load these Google Fonts before building (the kit awaits the specs in style.fonts): IBM Plex Mono
+
+HOW TO STAY IN THE STYLE
+- The reference shows the look, not the story. Its objects, layout and beats belong to its own topic: do not reuse them unless my content calls for them. Work out what my content needs to show first, then build those things in this look.
+- Tell my content as an explainer, not a title card: things happen to objects or characters over three or four beats that follow from each other, and the picture does the telling. Words are small captions and labels, never the subject of a shot. End on the result of the process or the end of the story, not on a headline, slogan or logo.
+- Keep the reference's materials, lighting, camera language, grade and the way things move. Change the story, the objects and the words; do not change the look.
+- update(t) must set the whole scene for time t and nothing may build up between calls: the kit calls it many times per frame to make motion blur, depth of field and soft shadows. No Math.random, Date or timers; use K.rng(seed).
+- Build everything in code: no downloaded models, images, HDRIs or textures.
+- Simple forms, beautifully lit and finished, beat complicated models that look wrong. Draw my subject accurately and double-check any facts or numbers you show.
+- It is video, often watched on a phone: keep every word the story needs large, sharp and on screen long enough to read, keep the subject filling most of the frame, and keep everything that matters inside the frame for the whole camera move. The first frame should already be worth looking at, and the last second should hold.
+
+FLOW BETWEEN BEATS
+- A new beat does not automatically mean a new scene. When the next idea builds on the last, stay in the same world: the things that matter stay on screen and move, grow, re-arrange or transform, and the camera travels to the part of the scene where the next idea happens.
+- When the story really moves on (a new place or time, a before/after contrast, a reveal), change scene the way this look would: a turn of the set, a page, a passing object that wipes the frame, a change of light. No hard cuts.
+- The reference's scene count is not a template: fit the number of beats to my content.
+
+SOUND (no voiceover: a fuller mix)
+- A sound starts on the exact frame its event appears: drive picture and sound from the same schedule, as the reference does.
+- Score the events that land (things arriving, labels, contacts, transitions, the key number, the result) with sounds this material would make: glass, plastic, paper, metal, motors.
+- A quiet ambience bed is welcome, and music only if it suits the style. Effects in front, bed and music clearly underneath, and small silences so the big hits read.
+
+
+If you are Claude Code with a shell: render an MP4 in headless Chrome with the GPU enabled. Load the page, call window.seek(i / 30) for every frame, capture the canvas and pipe the frames into ffmpeg; render the sound with SOUND.renderOffline((k) => style.sound(k), DURATION, 48000, { voiceover: false }) and mux it in at about -15 LUFS. Look at a few rendered frames and fix framing, lighting or legibility problems before you call it done.
+
+STYLE CARD
+Name: Circuit City
+Family: Spaces and journeys
+Use: explainer
+Look: A real circuit board filmed as a city at night: matte black chips are the buildings, aluminium capacitors the towers, gold tracks the streets, and white silkscreen print names each district. Deep green solder mask, gold and tinned metal, warm signal light.
+Motion: A pulse of light races along the gold tracks from stop to stop and each landmark wakes as it arrives: chips glow from underneath, the processor dies light up in a diagonal wave. The camera flies low and forward after it, like a helicopter shot, and rises once over the big chip.
+Light: Night. The signals are the main light: a warm glow that travels with the pulse and throws moving shadows from every part. A soft cool moonlight from the back left rims the parts and rakes the board so metal glints and textures read; a few tiny indicator LEDs.
+Materials: Semi-gloss solder mask with fine grain and raised copper under it, satin gold tracks and pads, bright tinned pins, moulded black epoxy with laser-etched markings, brushed aluminium cans, iridescent bare silicon.
+Camera: Macro lens, very shallow focus that rides with the pulse. One continuous forward flight that starts low at the edge of the board, sways gently after the pulse, cranes up over the processor and glides on to settle above the last stop.
+Finish: Real depth of field and motion blur, bloom only on the signal and LEDs, filmic contrast with deep blacks, slight lens fringing, vignette, fine grain.
+Good for: Journeys and pipelines: something travels through a system and each stage does its part. Every stage is a landmark with a printed label; the pulse and the camera carry the order.
+
+STAGE KIT (lib/stage.js)
+```js
+// STAGE: a small film-style rendering kit for three.js motion graphics. Classic script; needs a global THREE (core only,
+// no addons). It gives every style the same pipeline:
+//   - one clock: stage.seek(t) builds the whole frame for time t, so frames can be rendered alone and in any order
+//   - accumulation rendering: each frame is the average of N sub-renders, which gives real motion blur, anti-aliasing,
+//     true depth of field (the camera moves across a lens aperture) and soft area-light shadows (lights move across
+//     their own surface), all without post-process tricks
+//   - HDR bloom, tone mapping, vignette, grain, chromatic aberration and a crisp 2D overlay for captions
+//   - code-built lighting environments (no HDRI files), a real mirror floor, canvas textures, text planes, easing,
+//     seeded random and noise
+// Globals: K (helpers) and registerStyle(). A style is { id, name, ..., render: {...}, build(S) -> { update(t), overlay? } }.
+(function (root) {
+  const THREE = root.THREE;
+  const K = {};
+  const STYLES = [];
+  root.STYLES = STYLES;
+  root.registerStyle = (s) => { STYLES.push(s); return s; };
+
+  // ---------------------------------------------------------------- maths
+  K.clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  K.lerp = (a, b, t) => a + (b - a) * t;
+  K.map = (x, a, b, c, d) => c + (d - c) * K.clamp((x - a) / (b - a));
+  K.smooth = (a, b, x) => { const t = K.clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
+  // progress of time t through the window [a, b], 0..1, optionally eased: K.seg(t, 1, 2.5, K.ease.out)
+  K.seg = (t, a, b, ease) => { const u = K.clamp((t - a) / (b - a)); return ease ? ease(u) : u; };
+  K.ease = {
+    linear: (t) => t,
+    in: (t) => t * t * t,
+    out: (t) => 1 - Math.pow(1 - t, 3),
+    inOut: (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
+    outQuint: (t) => 1 - Math.pow(1 - t, 5),
+    inOutQuint: (t) => (t < 0.5 ? 16 * t * t * t * t * t : 1 - Math.pow(-2 * t + 2, 5) / 2),
+    outExpo: (t) => (t >= 1 ? 1 : 1 - Math.pow(2, -10 * t)),
+    inExpo: (t) => (t <= 0 ? 0 : Math.pow(2, 10 * t - 10)),
+    outBack: (t, s = 1.70158) => 1 + (s + 1) * Math.pow(t - 1, 3) + s * Math.pow(t - 1, 2),
+    inBack: (t, s = 1.70158) => (s + 1) * t * t * t - s * t * t,
+    outElastic: (t) => (t <= 0 ? 0 : t >= 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * (2 * Math.PI) / 3) + 1),
+    outBounce: (t) => { const n = 7.5625, d = 2.75; if (t < 1 / d) return n * t * t; if (t < 2 / d) return n * (t -= 1.5 / d) * t + 0.75; if (t < 2.5 / d) return n * (t -= 2.25 / d) * t + 0.9375; return n * (t -= 2.625 / d) * t + 0.984375; },
+  };
+  // damped spring from 0 to 1 starting at time 0 (t in seconds). freq in Hz, damp 0..1 (1 = no overshoot)
+  K.spring = (t, freq = 2.2, damp = 0.45) => {
+    if (t <= 0) return 0;
+    const w = 2 * Math.PI * freq;
+    if (damp >= 1) return 1 - Math.exp(-w * t) * (1 + w * t);
+    const wd = w * Math.sqrt(1 - damp * damp);
+    return 1 - Math.exp(-damp * w * t) * (Math.cos(wd * t) + (damp * w / wd) * Math.sin(wd * t));
+  };
+  // keyframe track: K.track([[0, [0,2,8]], [3, [2,2,6], 'inOut'], [6, 5, K.ease.out]]) -> f(t). Values are numbers or
+  // arrays; the ease on a key shapes the move INTO that key.
+  K.track = (keys) => (t) => {
+    if (t <= keys[0][0]) return keys[0][1];
+    for (let i = 1; i < keys.length; i++) {
+      if (t <= keys[i][0]) {
+        const [t0, v0] = keys[i - 1], [t1, v1, e] = keys[i];
+        const fn = typeof e === 'function' ? e : K.ease[e || 'inOut'];
+        const u = fn((t - t0) / (t1 - t0));
+        return Array.isArray(v0) ? v0.map((a, k) => a + (v1[k] - a) * u) : v0 + (v1 - v0) * u;
+      }
+    }
+    return keys[keys.length - 1][1];
+  };
+
+  // like K.track, but the value flows smoothly THROUGH the middle keys without stopping at them (it only eases in at
+  // the first key and out at the last). Use it for camera moves that should feel like one continuous shot.
+  K.path = (keys) => {
+    const n = keys.length, arr = Array.isArray(keys[0][1]), val = (i) => (arr ? keys[i][1] : [keys[i][1]]), dim = val(0).length;
+    const m = keys.map((_, i) => (i === 0 || i === n - 1 ? new Array(dim).fill(0) : val(i).map((_, k) => (val(i + 1)[k] - val(i - 1)[k]) / (keys[i + 1][0] - keys[i - 1][0]))));
+    return (t) => {
+      if (t <= keys[0][0]) return keys[0][1];
+      if (t >= keys[n - 1][0]) return keys[n - 1][1];
+      let i = 1; while (keys[i][0] < t) i++;
+      const t0 = keys[i - 1][0], h = keys[i][0] - t0, u = (t - t0) / h, u2 = u * u, u3 = u2 * u;
+      const a = val(i - 1), b = val(i), out = a.map((_, k) => (2 * u3 - 3 * u2 + 1) * a[k] + (u3 - 2 * u2 + u) * h * m[i - 1][k] + (-2 * u3 + 3 * u2) * b[k] + (u3 - u2) * h * m[i][k]);
+      return arr ? out : out[0];
+    };
+  };
+
+  // ---------------------------------------------------------------- seeded random and noise
+  K.rng = (seed) => {
+    let a = (typeof seed === 'string' ? [...seed].reduce((h, c) => Math.imul(h ^ c.charCodeAt(0), 16777619), 2166136261) : seed * 2654435761) >>> 0;
+    const r = () => { a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+    r.range = (lo, hi) => lo + (hi - lo) * r();
+    r.int = (lo, hi) => Math.floor(lo + (hi - lo + 1) * r());
+    r.pick = (arr) => arr[Math.floor(r() * arr.length)];
+    r.chance = (p) => r() < p;
+    r.gauss = () => { let u = 0, v = 0; while (u === 0) u = r(); v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+    r.sign = () => (r() < 0.5 ? -1 : 1);
+    return r;
+  };
+  // a stable 0..1 hash of up to three numbers (handy for per-instance variation without storing arrays)
+  K.hash = (x, y = 0, z = 0) => { let h = Math.sin(x * 127.1 + y * 311.7 + z * 74.7) * 43758.5453123; return h - Math.floor(h); };
+  K.noise = (seed = 1) => {
+    const r = K.rng(seed), p = new Uint8Array(512), perm = Array.from({ length: 256 }, (_, i) => i);
+    for (let i = 255; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [perm[i], perm[j]] = [perm[j], perm[i]]; }
+    for (let i = 0; i < 512; i++) p[i] = perm[i & 255];
+    const fade = (t) => t * t * t * (t * (t * 6 - 15) + 10);
+    const grad = (h, x, y, z) => { const u = (h & 15) < 8 ? x : y, v = (h & 15) < 4 ? y : (h & 15) === 12 || (h & 15) === 14 ? x : z; return ((h & 1) ? -u : u) + ((h & 2) ? -v : v); };
+    const n3 = (x, y, z) => {
+      const X = Math.floor(x) & 255, Y = Math.floor(y) & 255, Z = Math.floor(z) & 255;
+      x -= Math.floor(x); y -= Math.floor(y); z -= Math.floor(z);
+      const u = fade(x), v = fade(y), w = fade(z), A = p[X] + Y, AA = p[A] + Z, AB = p[A + 1] + Z, B = p[X + 1] + Y, BA = p[B] + Z, BB = p[B + 1] + Z;
+      const L = K.lerp;
+      return L(L(L(grad(p[AA], x, y, z), grad(p[BA], x - 1, y, z), u), L(grad(p[AB], x, y - 1, z), grad(p[BB], x - 1, y - 1, z), u), v),
+        L(L(grad(p[AA + 1], x, y, z - 1), grad(p[BA + 1], x - 1, y, z - 1), u), L(grad(p[AB + 1], x, y - 1, z - 1), grad(p[BB + 1], x - 1, y - 1, z - 1), u), v), w);
+    };
+    const fbm = (x, y, z = 0, oct = 4) => { let s = 0, a = 0.5, f = 1; for (let i = 0; i < oct; i++) { s += a * n3(x * f, y * f, z * f); a *= 0.5; f *= 2; } return s; };
+    return { n3, n2: (x, y) => n3(x, y, 0), fbm };
+  };
+  const halton = (i, b) => { let f = 1, r = 0; while (i > 0) { f /= b; r += f * (i % b); i = Math.floor(i / b); } return r; };
+  K.halton = halton;
+
+  // ---------------------------------------------------------------- textures, text, geometry
+  // K.canvasTex(1024, 512, (ctx, w, h) => {...}) -> THREE.CanvasTexture (sRGB, mipmapped). Redraw with tex.redraw(fn).
+  K.canvasTex = (w, h, draw, opts = {}) => {
+    const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+    const ctx = cv.getContext('2d');
+    if (draw) draw(ctx, w, h);
+    const tex = new THREE.CanvasTexture(cv);
+    tex.colorSpace = opts.data ? THREE.NoColorSpace : THREE.SRGBColorSpace;
+    tex.anisotropy = 8; tex.generateMipmaps = true; tex.minFilter = THREE.LinearMipmapLinearFilter;
+    if (opts.repeat) { tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(opts.repeat[0], opts.repeat[1]); }
+    tex.redraw = (fn) => { ctx.clearRect(0, 0, w, h); fn(ctx, w, h); tex.needsUpdate = true; };
+    tex.canvas2d = cv; tex.ctx = ctx;
+    return tex;
+  };
+  // A flat piece of text living in the 3D world. K.textPlane('Hello', { font: '800 160px "Inter"', color: '#fff',
+  // height: 0.5 }) -> Mesh whose world height is `height` units per line. opts: align, lineHeight, glow (emissive
+  // multiplier for bloom), lit (use a lit material so it takes shadows), maxWidthPx, letterSpacing (px), pad (px).
+  K.textPlane = (text, o = {}) => {
+    const font = o.font || '700 160px "Inter"', px = +(/(\d+(?:\.\d+)?)px/.exec(font) || [0, 160])[1];
+    const lines = String(text).split('\n'), lh = (o.lineHeight || 1.12) * px, pad = o.pad == null ? Math.ceil(px * 0.25) : o.pad;
+    const m = document.createElement('canvas').getContext('2d'); m.font = font;
+    if (o.letterSpacing) m.letterSpacing = o.letterSpacing + 'px';
+    const wpx = Math.ceil(Math.max(...lines.map((l) => m.measureText(l).width))) + pad * 2, hpx = Math.ceil(lh * lines.length) + pad * 2;
+    const tex = K.canvasTex(wpx, hpx, (ctx) => {
+      ctx.font = font; if (o.letterSpacing) ctx.letterSpacing = o.letterSpacing + 'px';
+      ctx.textBaseline = 'middle'; ctx.textAlign = o.align || 'center'; ctx.fillStyle = o.color || '#ffffff';
+      const x = o.align === 'left' ? pad : o.align === 'right' ? wpx - pad : wpx / 2;
+      lines.forEach((l, i) => ctx.fillText(l, x, pad + lh * (i + 0.5)));
+    });
+    const unit = (o.height || 1) / px, hWorld = hpx * unit, wWorld = wpx * unit; // `height` = world size of the font's px size
+    const mat = o.lit
+      ? new THREE.MeshStandardMaterial({ map: tex, transparent: true, alphaTest: 0.02, roughness: o.roughness == null ? 0.8 : o.roughness, metalness: 0 })
+      : new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false });
+    if (o.glow && !o.lit) mat.color.setScalar(o.glow);
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(wWorld, hWorld), mat);
+    mesh.userData.size = [wWorld, hWorld]; mesh.userData.tex = tex;
+    return mesh;
+  };
+  // Box with rounded edges, centred on the origin. r = edge radius, seg = roundness.
+  K.roundedBox = (w, h, d, r = 0.05, seg = 6) => {
+    r = Math.max(1e-4, Math.min(r, w / 2, h / 2, d / 2));
+    const N = 2 * seg + 1, g = new THREE.BoxGeometry(2, 2, 2, N, N, N), p = g.attributes.position, nrm = g.attributes.normal;
+    const half = [w / 2 - r, h / 2 - r, d / 2 - r], v = new THREE.Vector3();
+    for (let i = 0; i < p.count; i++) {
+      const c = [p.getX(i), p.getY(i), p.getZ(i)], inner = [0, 0, 0], a = [0, 0, 0];
+      for (let k = 0; k < 3; k++) {
+        const idx = Math.round((c[k] + 1) * N / 2), side = idx <= seg ? -1 : 1;
+        a[k] = idx <= seg ? -(1 - idx / seg) : (idx - seg - 1) / seg; inner[k] = side * half[k];
+      }
+      v.set(Math.tan(a[0] * Math.PI / 4), Math.tan(a[1] * Math.PI / 4), Math.tan(a[2] * Math.PI / 4)).normalize();
+      p.setXYZ(i, inner[0] + v.x * r, inner[1] + v.y * r, inner[2] + v.z * r); nrm.setXYZ(i, v.x, v.y, v.z);
+    }
+    // UVs: each of the six sides is mapped flat, 0..1 across the whole side, so textures are not stretched at the corners
+    const uv = g.attributes.uv, per = (N + 1) * (N + 1), sz = [w, h, d];
+    const ax = [[2, 1, -1], [2, 1, 1], [0, 2, 1, -1], [0, 2, 1, 1], [0, 1, 1], [0, 1, -1]];   // [u axis, v axis, u sign, v sign] for +x -x +y -y +z -z
+    for (let i = 0; i < p.count; i++) {
+      const f = ax[Math.min(5, Math.floor(i / per))], c = [p.getX(i), p.getY(i), p.getZ(i)];
+      uv.setXY(i, f[2] * c[f[0]] / sz[f[0]] + 0.5, (f[3] || 1) * c[f[1]] / sz[f[1]] + 0.5);
+    }
+    g.computeBoundingBox(); g.computeBoundingSphere();
+    return g;
+  };
+  // Flat rounded rectangle (a card, a screen, a tile), in the XY plane facing +Z, with UVs 0..1 across it.
+  K.roundedRect = (w, h, r = 0.05, seg = 8) => {
+    const s = new THREE.Shape(), x = w / 2, y = h / 2; r = Math.min(r, x, y);
+    s.moveTo(-x + r, -y); s.lineTo(x - r, -y); s.absarc(x - r, -y + r, r, -Math.PI / 2, 0); s.lineTo(x, y - r); s.absarc(x - r, y - r, r, 0, Math.PI / 2);
+    s.lineTo(-x + r, y); s.absarc(-x + r, y - r, r, Math.PI / 2, Math.PI); s.lineTo(-x, -y + r); s.absarc(-x + r, -y + r, r, Math.PI, Math.PI * 1.5);
+    const g = new THREE.ShapeGeometry(s, seg), p = g.attributes.position, uv = g.attributes.uv;
+    for (let i = 0; i < p.count; i++) uv.setXY(i, p.getX(i) / w + 0.5, p.getY(i) / h + 0.5);
+    return g;
+  };
+  // Tube along a list of [x,y,z] points (smooth Catmull-Rom). closed loops allowed.
+  K.tube = (pts, radius = 0.05, o = {}) => {
+    const curve = new THREE.CatmullRomCurve3(pts.map((p) => new THREE.Vector3(p[0], p[1], p[2] || 0)), !!o.closed, 'centripetal');
+    const g = new THREE.TubeGeometry(curve, o.segments || Math.max(8, pts.length * 3), radius, o.radial || 12, !!o.closed);
+    g.userData.curve = curve;
+    return g;
+  };
+  // Set instance i of an InstancedMesh: K.place(mesh, i, [x,y,z], [rx,ry,rz], scale | [sx,sy,sz]). Call
+  // mesh.instanceMatrix.needsUpdate = true once after a batch.
+  const _o = new THREE.Object3D();
+  K.place = (mesh, i, p, r, s) => {
+    _o.position.set(p[0], p[1], p[2]); if (r) _o.rotation.set(r[0], r[1], r[2]); else _o.rotation.set(0, 0, 0);
+    if (s == null) _o.scale.set(1, 1, 1); else if (typeof s === 'number') _o.scale.set(s, s, s); else _o.scale.set(s[0], s[1], s[2]);
+    _o.updateMatrix(); mesh.setMatrixAt(i, _o.matrix);
+  };
+  // Camera: position, look-at target, optional fov and roll. K.focus sets the lens: focus distance (or a point to
+  // focus on) and aperture radius in world units (0 = everything sharp).
+  const _v = new THREE.Vector3();
+  K.look = (cam, pos, target, fov, roll) => {
+    cam.position.set(pos[0], pos[1], pos[2]); cam.up.set(0, 1, 0); cam.lookAt(target[0], target[1], target[2]);
+    if (roll) cam.rotateZ(roll);
+    if (fov && fov !== cam.fov) { cam.fov = fov; cam.updateProjectionMatrix(); }
+  };
+  K.focus = (cam, at, aperture) => {
+    cam.userData.focus = typeof at === 'number' ? at : _v.set(at[0], at[1], at[2]).distanceTo(cam.position);
+    if (aperture != null) cam.userData.aperture = aperture;
+  };
+
+  // ---------------------------------------------------------------- lighting
+  // Code-built lighting environment for reflections and soft fill (replaces an HDRI). K.env(S, { top, horizon,
+  // bottom: sky gradient colours; panels: [{ pos:[x,y,z], size:[w,h], color, power }] bright rectangles that face the
+  // origin (softboxes, windows, a sun); intensity; background: true to also show it behind the scene; blur }).
+  // Metal and glass can only shine if the environment has something bright in it.
+  K.env = (S, o = {}) => {
+    const es = new THREE.Scene();
+    const sky = new THREE.Mesh(new THREE.SphereGeometry(60, 48, 24), new THREE.ShaderMaterial({
+      side: THREE.BackSide, depthWrite: false,
+      uniforms: { top: { value: new THREE.Color(o.top || '#0b0d12') }, hor: { value: new THREE.Color(o.horizon || o.top || '#14171f') }, bot: { value: new THREE.Color(o.bottom || o.horizon || '#050506') }, gain: { value: o.skyPower == null ? 1 : o.skyPower } },
+      vertexShader: 'varying vec3 vD; void main(){ vD = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+      fragmentShader: 'varying vec3 vD; uniform vec3 top, hor, bot; uniform float gain; void main(){ float y = normalize(vD).y; vec3 c = y > 0.0 ? mix(hor, top, pow(y, 0.6)) : mix(hor, bot, pow(-y, 0.5)); gl_FragColor = vec4(c * gain, 1.0); }',
+    }));
+    es.add(sky);
+    for (const p of o.panels || []) {
+      const c = new THREE.Color(p.color || '#ffffff').multiplyScalar(p.power == null ? 5 : p.power);
+      const m = new THREE.Mesh(p.round ? new THREE.CircleGeometry((p.size ? p.size[0] : 4) / 2, 40) : new THREE.PlaneGeometry(p.size ? p.size[0] : 4, p.size ? p.size[1] : 4), new THREE.MeshBasicMaterial({ color: c, side: THREE.DoubleSide }));
+      m.position.set(p.pos[0], p.pos[1], p.pos[2]); m.lookAt(0, p.aimY || 0, 0); es.add(m);
+    }
+    const pm = new THREE.PMREMGenerator(S.renderer);
+    const rt = pm.fromScene(es, o.blur == null ? 0.02 : o.blur, 0.1, 200);
+    pm.dispose();
+    S.scene.environment = rt.texture;
+    S.scene.environmentIntensity = o.intensity == null ? 1 : o.intensity;
+    if (o.background) { S.scene.background = rt.texture; S.scene.backgroundBlurriness = o.backgroundBlur == null ? 0.5 : o.backgroundBlur; S.scene.backgroundIntensity = o.backgroundIntensity == null ? 1 : o.backgroundIntensity; }
+    return rt.texture;
+  };
+  // A shadow-casting spot light with a real size: `soft` is the radius of the light's surface in world units, which
+  // gives true soft-edged shadows (bigger = softer). o: pos, target, color, power, angle, penumbra, soft, mapSize, near, far.
+  K.spot = (S, o = {}) => {
+    const l = new THREE.SpotLight(o.color || '#ffffff', o.power == null ? 80 : o.power, o.distance || 0, o.angle == null ? 0.5 : o.angle, o.penumbra == null ? 0.6 : o.penumbra, o.decay == null ? 2 : o.decay);
+    l.position.set(...(o.pos || [3, 6, 4])); l.target.position.set(...(o.target || [0, 0, 0]));
+    l.castShadow = o.shadow !== false; l.shadow.mapSize.setScalar(o.mapSize || 2048); l.shadow.bias = o.bias == null ? -0.0004 : o.bias; l.shadow.normalBias = o.normalBias == null ? 0.02 : o.normalBias;
+    l.shadow.camera.near = o.near || 0.5; l.shadow.camera.far = o.far || 60;
+    S.scene.add(l, l.target);
+    if (o.soft) S.softLights.push({ light: l, radius: o.soft });
+    return l;
+  };
+  // A sun: parallel light with shadows. `size` is the half-width of the area that gets shadows, `soft` the blur of
+  // shadow edges in world units at the light (0.3-1.5 looks natural). o: pos, target, color, power, size, soft, mapSize.
+  K.sun = (S, o = {}) => {
+    const l = new THREE.DirectionalLight(o.color || '#ffffff', o.power == null ? 3 : o.power);
+    l.position.set(...(o.pos || [6, 10, 5])); l.target.position.set(...(o.target || [0, 0, 0]));
+    const s = o.size || 8, c = l.shadow.camera;
+    l.castShadow = o.shadow !== false; c.left = -s; c.right = s; c.top = s; c.bottom = -s; c.near = 0.5; c.far = o.far || 80;
+    l.shadow.mapSize.setScalar(o.mapSize || 2048); l.shadow.bias = o.bias == null ? -0.0004 : o.bias; l.shadow.normalBias = o.normalBias == null ? 0.02 : o.normalBias;
+    S.scene.add(l, l.target);
+    if (o.soft) S.softLights.push({ light: l, radius: o.soft });
+    return l;
+  };
+  // Sky light with real occlusion: light arrives from the whole dome and is blocked by objects, so creases, contact
+  // points and the ground under things darken softly (ambient occlusion, but physically made). o: color, power,
+  // size (half-width covered), center, mapSize, spread (1 = full dome, lower = more from above).
+  K.skyLight = (S, o = {}) => {
+    const l = new THREE.DirectionalLight(o.color || '#ffffff', o.power == null ? 1.5 : o.power);
+    const s = o.size || 8, c = l.shadow.camera;
+    l.castShadow = true; c.left = -s; c.right = s; c.top = s; c.bottom = -s; c.near = 0.5; c.far = (o.dist || 30) * 2;
+    l.shadow.mapSize.setScalar(o.mapSize || 1024); l.shadow.bias = o.bias == null ? -0.0006 : o.bias; l.shadow.normalBias = o.normalBias == null ? 0.03 : o.normalBias;
+    l.target.position.set(...(o.center || [0, 0, 0]));
+    S.scene.add(l, l.target);
+    S.skyLights.push({ light: l, dist: o.dist || 30, spread: o.spread == null ? 1 : o.spread });
+    return l;
+  };
+  // A real mirror floor at height y: reflects the scene, and still takes light and shadows like a normal material.
+  // o: y, size, color, roughness (0 = perfect mirror, 0.3 = soft blurred reflection), strength (0..1), metalness,
+  // fresnel (true = reflects more at grazing angles, like polished stone or wet ground), map/normalMap etc via `material`.
+  K.mirrorFloor = (S, o = {}) => {
+    const y = o.y || 0, W = S.W, H = S.H, scale = o.resolution || 1;
+    const rt = new THREE.WebGLRenderTarget(Math.round(W * scale), Math.round(H * scale), { type: THREE.HalfFloatType, samples: S.msaa, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter });
+    const mat = new THREE.MeshStandardMaterial(Object.assign({ color: o.color || '#111114', roughness: o.surfaceRoughness == null ? 0.35 : o.surfaceRoughness, metalness: o.metalness || 0 }, o.material || {}));
+    const u = { tMirror: { value: rt.texture }, uMirrorMatrix: { value: new THREE.Matrix4() }, uMirrorStrength: { value: o.strength == null ? 0.6 : o.strength }, uMirrorFresnel: { value: o.fresnel === false ? 0 : 1 }, uMirrorFade: { value: o.fade || 0 }, uMirrorBlur: { value: (o.roughness || 0) * 7 } };
+    mat.onBeforeCompile = (sh) => {
+      Object.assign(sh.uniforms, u);
+      sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nuniform mat4 uMirrorMatrix; varying vec4 vMirrorCoord; varying vec3 vMirrorWorld;')
+        .replace('#include <begin_vertex>', '#include <begin_vertex>\nvec4 mw = modelMatrix * vec4(transformed, 1.0); vMirrorWorld = mw.xyz; vMirrorCoord = uMirrorMatrix * mw;');
+      sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nuniform sampler2D tMirror; uniform float uMirrorStrength, uMirrorFresnel, uMirrorFade, uMirrorBlur; varying vec4 vMirrorCoord; varying vec3 vMirrorWorld;')
+        .replace('#include <opaque_fragment>', `vec3 mRefl = min(texture2DProj(tMirror, vMirrorCoord, uMirrorBlur).rgb, vec3(12.0));
+          float mF = pow(1.0 - saturate(dot(normalize(vViewPosition), normal)), 5.0);
+          float mK = uMirrorStrength * mix(1.0, 0.06 + 0.94 * mF, uMirrorFresnel);
+          if (uMirrorFade > 0.0) mK *= exp(-length(vMirrorWorld.xz) / uMirrorFade);
+          outgoingLight += mRefl * mK;
+          #include <opaque_fragment>`);
+    };
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(o.size || 80, o.size || 80), mat);
+    mesh.rotation.x = -Math.PI / 2; mesh.position.y = y; mesh.receiveShadow = true;
+    S.scene.add(mesh);
+    S.mirrors.push({ mesh, rt, u, y, rough: o.roughness || 0, cam: new THREE.PerspectiveCamera() });
+    return mesh;
+  };
+
+  // ---------------------------------------------------------------- the stage
+  const QUAD_VS = 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }';
+  const TONE = `
+    vec3 tmFilmic(vec3 c){ // ACES fitted (Stephen Hill)
+      mat3 a = mat3(0.59719,0.07600,0.02840, 0.35458,0.90834,0.13383, 0.04823,0.01566,0.83777);
+      mat3 b = mat3(1.60475,-0.10208,-0.00327, -0.53108,1.10813,-0.07276, -0.07367,-0.00605,1.07602);
+      c = a * (c / 0.6); vec3 x = c * (c + 0.0245786) - 0.000090537; vec3 y = c * (0.983729 * c + 0.4329510) + 0.238081;
+      return clamp(b * (x / y), 0.0, 1.0);
+    }
+    vec3 tmNeutral(vec3 c){ // Khronos PBR neutral: keeps colours true, only compresses highlights
+      float x = min(c.r, min(c.g, c.b)); float off = x < 0.08 ? x - 6.25 * x * x : 0.04; c -= off;
+      float peak = max(c.r, max(c.g, c.b)); if (peak < 0.76) return c;
+      float d = 1.0 - 0.76; float np = 1.0 - d * d / (peak + d - 0.76); c *= np / peak;
+      float g = 1.0 - 1.0 / (0.15 * (peak - np) + 1.0); return mix(c, vec3(np), g);
+    }
+    vec3 tmAgx(vec3 c){ // AgX (minimal, Benjamin Wrensch): soft, filmic, desaturates bright colours gracefully
+      mat3 m = mat3(0.842479062253094,0.0423282422610123,0.0423756549057051, 0.0784335999999992,0.878468636469772,0.0784336, 0.0792237451477643,0.0791661274605434,0.879142973793104);
+      mat3 mi = mat3(1.19687900512017,-0.0528968517574562,-0.0529716355144438, -0.0980208811401368,1.15190312990417,-0.0980434501171241, -0.0990297440797205,-0.0989611768448433,1.15107367264116);
+      c = m * c; c = clamp((log2(max(c, 1e-10)) + 12.47393) / 16.5, 0.0, 1.0);
+      vec3 x2 = c * c, x4 = x2 * x2;
+      c = 15.5 * x4 * x2 - 40.14 * x4 * c + 31.96 * x4 - 6.868 * x2 * c + 0.4298 * x2 + 0.1191 * c - 0.00232;
+      c = mi * c; return pow(max(c, 0.0), vec3(2.2));
+    }`;
+
+  function pass(frag, uniforms) {
+    return new THREE.ShaderMaterial({ vertexShader: QUAD_VS, fragmentShader: 'precision highp float; varying vec2 vUv;\n' + frag, uniforms, depthTest: false, depthWrite: false });
+  }
+
+  // createStage(canvas, style, { samples }) -> S. S.seek(t) renders one finished frame.
+  K.createStage = (canvas, style, opts = {}) => {
+    const R = Object.assign({ samples: 32, preview: 3, shutter: 0.5, fps: 30, exposure: 1, tone: 'filmic', bloom: 0.25, bloomThreshold: 1.0, bloomRadius: 1, vignette: 0.25, grain: 0.03, ca: 0, saturation: 1, contrast: 1, lift: 0, fov: 35, near: 0.1, far: 200, background: '#000000', shadows: true }, style.render || {});
+    const W = opts.width || 1920, H = opts.height || 1080;
+    const N = Math.max(1, opts.samples || R.samples);
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(1); renderer.setSize(W, H, false);
+    renderer.toneMapping = THREE.NoToneMapping;
+    renderer.shadowMap.enabled = !!R.shadows; renderer.shadowMap.type = R.shadowType === 'vsm' ? THREE.VSMShadowMap : THREE.PCFShadowMap;
+    const scene = new THREE.Scene(); scene.background = new THREE.Color(R.background);
+    const camera = new THREE.PerspectiveCamera(R.fov, W / H, R.near, R.far);
+    camera.position.set(0, 1.5, 8); camera.userData.aperture = 0; camera.userData.focus = 8;
+    const msaa = N >= 8 ? 0 : 4;
+    const S = { THREE, K, renderer, scene, camera, W, H, style, R, samples: N, msaa, softLights: [], skyLights: [], mirrors: [], duration: style.duration || 6 };
+
+    const HF = { type: THREE.HalfFloatType, depthBuffer: false };
+    const sceneRT = new THREE.WebGLRenderTarget(W, H, { type: THREE.HalfFloatType, samples: msaa });
+    const accRT = new THREE.WebGLRenderTarget(W, H, HF);
+    const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2));
+    const qScene = new THREE.Scene(); qScene.add(quad);
+    const qCam = new THREE.Camera();
+    const draw = (mat, target) => { quad.material = mat; renderer.setRenderTarget(target); renderer.render(qScene, qCam); };
+
+    const mAcc = pass('uniform sampler2D tex; uniform float w; void main(){ gl_FragColor = vec4(min(texture2D(tex, vUv).rgb, vec3(64.0)) * w, w); }', { tex: { value: sceneRT.texture }, w: { value: 1 } });
+    mAcc.blending = THREE.CustomBlending; mAcc.blendEquation = THREE.AddEquation; mAcc.blendSrc = THREE.OneFactor; mAcc.blendDst = THREE.OneFactor; mAcc.transparent = true;
+
+    // bloom: threshold, then a chain of down-samples and smooth up-samples (wide, soft, no blockiness)
+    const LV = 7, bl = [];
+    for (let i = 0, w = W >> 1, h = H >> 1; i < LV && w > 4 && h > 4; i++, w >>= 1, h >>= 1) bl.push({ d: new THREE.WebGLRenderTarget(w, h, HF), u: new THREE.WebGLRenderTarget(w, h, HF), w, h });
+    const mPre = pass('uniform sampler2D tex; uniform float thr; void main(){ vec3 c = min(texture2D(tex, vUv).rgb, vec3(60.0)); float l = max(c.r, max(c.g, c.b)); float k = clamp((l - thr) / max(thr * 0.5, 1e-3), 0.0, 1.0); gl_FragColor = vec4(c * k * k * (3.0 - 2.0 * k), 1.0); }', { tex: { value: accRT.texture }, thr: { value: R.bloomThreshold } });
+    const mDown = pass(`uniform sampler2D tex; uniform vec2 px;
+      void main(){ vec3 a = texture2D(tex, vUv + px * vec2(-2, 2)).rgb, b = texture2D(tex, vUv + px * vec2(0, 2)).rgb, c = texture2D(tex, vUv + px * vec2(2, 2)).rgb,
+        d = texture2D(tex, vUv + px * vec2(-2, 0)).rgb, e = texture2D(tex, vUv).rgb, f = texture2D(tex, vUv + px * vec2(2, 0)).rgb,
+        g = texture2D(tex, vUv + px * vec2(-2, -2)).rgb, h = texture2D(tex, vUv + px * vec2(0, -2)).rgb, i = texture2D(tex, vUv + px * vec2(2, -2)).rgb,
+        j = texture2D(tex, vUv + px * vec2(-1, 1)).rgb, k = texture2D(tex, vUv + px * vec2(1, 1)).rgb, l = texture2D(tex, vUv + px * vec2(-1, -1)).rgb, m = texture2D(tex, vUv + px * vec2(1, -1)).rgb;
+        gl_FragColor = vec4(e * 0.125 + (a + c + g + i) * 0.03125 + (b + d + f + h) * 0.0625 + (j + k + l + m) * 0.125, 1.0); }`, { tex: { value: null }, px: { value: new THREE.Vector2() } });
+    const mUp = pass(`uniform sampler2D tex, add; uniform vec2 px; uniform float r;
+      void main(){ vec2 o = px * r; vec3 s = texture2D(tex, vUv).rgb * 4.0 + (texture2D(tex, vUv + vec2(o.x, 0)).rgb + texture2D(tex, vUv - vec2(o.x, 0)).rgb + texture2D(tex, vUv + vec2(0, o.y)).rgb + texture2D(tex, vUv - vec2(0, o.y)).rgb) * 2.0
+        + texture2D(tex, vUv + o).rgb + texture2D(tex, vUv - o).rgb + texture2D(tex, vUv + vec2(o.x, -o.y)).rgb + texture2D(tex, vUv + vec2(-o.x, o.y)).rgb;
+        gl_FragColor = vec4(s / 16.0 + texture2D(add, vUv).rgb, 1.0); }`, { tex: { value: null }, add: { value: null }, px: { value: new THREE.Vector2() }, r: { value: R.bloomRadius } });
+
+    const ovCanvas = document.createElement('canvas'); ovCanvas.width = W; ovCanvas.height = H;
+    const ovCtx = ovCanvas.getContext('2d');
+    const ovTex = new THREE.CanvasTexture(ovCanvas); ovTex.colorSpace = THREE.NoColorSpace; ovTex.premultiplyAlpha = true; ovTex.generateMipmaps = false; ovTex.minFilter = THREE.LinearFilter;
+    const mOut = pass(TONE + `
+      uniform sampler2D tex, bloom; uniform float exposure, bloomK, vig, ca, sat, con, lift, levels; uniform int tone; uniform vec2 res;
+      void main(){
+        vec2 d = vUv - 0.5; float r2 = dot(d, d);
+        vec3 c;
+        if (ca > 0.0) { c.r = texture2D(tex, 0.5 + d * (1.0 + ca * r2)).r; c.g = texture2D(tex, vUv).g; c.b = texture2D(tex, 0.5 + d * (1.0 - ca * r2)).b; }
+        else c = texture2D(tex, vUv).rgb;
+        c += texture2D(bloom, vUv).rgb * bloomK / levels;
+        c = max(c * exposure, 0.0);
+        c = tone == 0 ? tmFilmic(c) : tone == 1 ? tmNeutral(c) : tone == 2 ? tmAgx(c) : clamp(c, 0.0, 1.0);
+        float l = dot(c, vec3(0.2126, 0.7152, 0.0722));
+        c = mix(vec3(l), c, sat); c = (c - 0.5) * con + 0.5; c = c + lift * (1.0 - c);
+        c *= 1.0 - vig * smoothstep(0.22, 0.8, length(d * vec2(1.0, 0.82)));
+        c = clamp(c, 0.0, 1.0);
+        c = mix(c * 12.92, 1.055 * pow(c, vec3(1.0 / 2.4)) - 0.055, step(0.0031308, c));
+        gl_FragColor = vec4(c, 1.0);
+      }`, { tex: { value: accRT.texture }, bloom: { value: null }, exposure: { value: R.exposure }, bloomK: { value: R.bloom }, vig: { value: R.vignette }, ca: { value: R.ca }, sat: { value: R.saturation }, con: { value: R.contrast }, lift: { value: R.lift }, levels: { value: 1 }, tone: { value: { filmic: 0, neutral: 1, agx: 2, linear: 3 }[R.tone] ?? 0 }, res: { value: new THREE.Vector2(W, H) } });
+
+    // after grading the picture is 8-bit display colour: optional style filters run here (painterly, dither, halftone...),
+    // then grain and the 2D overlay go on top
+    const LD = { depthBuffer: false, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter };
+    const ldA = new THREE.WebGLRenderTarget(W, H, LD), ldB = new THREE.WebGLRenderTarget(W, H, LD);
+    const mFin = pass(`uniform sampler2D tex, ov; uniform float grain, seed, useOv;
+      float h21(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+      void main(){ vec3 c = texture2D(tex, vUv).rgb; float l = dot(c, vec3(0.2126, 0.7152, 0.0722));
+        float g = (h21(gl_FragCoord.xy + seed) + h21(gl_FragCoord.xy * 1.37 + seed * 1.7) - 1.0);
+        c += g * grain * (0.55 + 0.45 * (1.0 - l));
+        if (useOv > 0.5) { vec4 o = texture2D(ov, vUv); c = o.rgb + c * (1.0 - o.a); }
+        gl_FragColor = vec4(c, 1.0); }`, { tex: { value: ldA.texture }, ov: { value: ovTex }, grain: { value: R.grain }, seed: { value: 0 }, useOv: { value: 0 } });
+    const filters = [];
+    // S.addFilter(fragmentShaderBody, uniforms): a full-screen pass over the graded picture. The shader gets
+    // `uniform sampler2D tex; uniform vec2 res; uniform float time; varying vec2 vUv;` and must set gl_FragColor.
+    S.addFilter = (frag, uniforms = {}) => { const m = pass('uniform sampler2D tex; uniform vec2 res; uniform float time;\n' + frag, Object.assign({ tex: { value: null }, res: { value: new THREE.Vector2(W, H) }, time: { value: 0 } }, uniforms)); filters.push(m); return m; };
+
+    let api = null;
+    const cp = new THREE.Vector3(), right = new THREE.Vector3(), up = new THREE.Vector3(), tmp = new THREE.Vector3(), tmp2 = new THREE.Vector3(), nrm = new THREE.Vector3();
+    const rot = new THREE.Matrix4(), plane = new THREE.Plane(), clip = new THREE.Vector4(), q = new THREE.Vector4(), saved = [];
+
+    function renderMirrors(i) {
+      for (const m of S.mirrors) {
+        const cam = m.cam;
+        // roughness: tilt the mirror plane a little differently on each sub-render, which blurs the reflection
+        const a = m.rough * 0.12, th = 2 * Math.PI * halton(i + 1, 7), rr = Math.sqrt(halton(i + 1, 11)) * a;
+        nrm.set(Math.cos(th) * rr, 1, Math.sin(th) * rr).normalize();
+        const origin = tmp2.set(0, m.y, 0);
+        camera.getWorldPosition(cp);
+        const view = tmp.copy(origin).sub(cp);
+        if (view.dot(nrm) > 0) continue;
+        view.reflect(nrm).negate().add(origin);
+        rot.extractRotation(camera.matrixWorld);
+        const look = new THREE.Vector3(0, 0, -1).applyMatrix4(rot).add(cp);
+        const target = origin.clone().sub(look).reflect(nrm).negate().add(origin);
+        cam.position.copy(view); cam.up.set(0, 1, 0).applyMatrix4(rot).reflect(nrm); cam.lookAt(target);
+        cam.near = camera.near; cam.far = camera.far; cam.updateMatrixWorld(); cam.projectionMatrix.copy(camera.projectionMatrix);
+        m.u.uMirrorMatrix.value.set(0.5, 0, 0, 0.5, 0, 0.5, 0, 0.5, 0, 0, 0.5, 0.5, 0, 0, 0, 1).multiply(cam.projectionMatrix).multiply(cam.matrixWorldInverse);
+        // clip everything below the mirror (oblique near plane)
+        plane.setFromNormalAndCoplanarPoint(nrm, origin).applyMatrix4(cam.matrixWorldInverse);
+        clip.set(plane.normal.x, plane.normal.y, plane.normal.z, plane.constant);
+        const pm = cam.projectionMatrix.elements;
+        q.x = (Math.sign(clip.x) + pm[8]) / pm[0]; q.y = (Math.sign(clip.y) + pm[9]) / pm[5]; q.z = -1; q.w = (1 + pm[10]) / pm[14];
+        clip.multiplyScalar(2 / clip.dot(q));
+        pm[2] = clip.x; pm[6] = clip.y; pm[10] = clip.z + 1 - 0.003; pm[14] = clip.w;
+        m.mesh.visible = false;
+        renderer.setRenderTarget(m.rt); renderer.render(scene, cam);
+        m.mesh.visible = true;
+      }
+    }
+
+    function subRender(t, i, n) {
+      api.update(t);
+      saved.length = 0;
+      // lights with a size: sample a different point on the light each sub-render
+      S.softLights.forEach((s, k) => {
+        const l = s.light; saved.push([l, l.position.clone()]);
+        if (n === 1) return;
+        const u = (halton(i + 1, 3) + k * 0.37) % 1, v = (halton(i + 1, 5) + k * 0.61) % 1, r = Math.sqrt(u) * s.radius, a = 2 * Math.PI * v;
+        tmp.copy(l.position).sub(l.target ? l.target.position : tmp2.set(0, 0, 0)).normalize();
+        right.set(0, 1, 0).cross(tmp); if (right.lengthSq() < 1e-6) right.set(1, 0, 0); right.normalize(); up.crossVectors(tmp, right);
+        l.position.addScaledVector(right, Math.cos(a) * r).addScaledVector(up, Math.sin(a) * r);
+      });
+      S.skyLights.forEach((s, k) => {
+        const u = (halton(i + 1, 2) + k * 0.31) % 1, v = (halton(i + 1, 3) + k * 0.53) % 1;
+        const sinT = Math.sqrt(u) * s.spread, cosT = Math.sqrt(Math.max(0, 1 - sinT * sinT)), a = 2 * Math.PI * v;
+        const c = s.light.target.position;
+        if (n === 1) s.light.position.set(c.x + 0.15 * s.dist, c.y + s.dist, c.z + 0.1 * s.dist);
+        else s.light.position.set(c.x + Math.cos(a) * sinT * s.dist, c.y + cosT * s.dist, c.z + Math.sin(a) * sinT * s.dist);
+      });
+      // lens: move the camera across the aperture and shear the view so the focus plane stays put (true depth of field)
+      camera.updateMatrixWorld(); camera.updateProjectionMatrix();
+      const camPos = camera.position.clone(), e = camera.projectionMatrix.elements;
+      if (n > 1) {
+        const ap = camera.userData.aperture || 0, fd = Math.max(0.05, camera.userData.focus || 8);
+        if (ap > 0) {
+          const r = Math.sqrt(halton(i + 1, 2)) * ap, a = 2 * Math.PI * halton(i + 1, 3), dx = Math.cos(a) * r, dy = Math.sin(a) * r;
+          right.setFromMatrixColumn(camera.matrixWorld, 0); up.setFromMatrixColumn(camera.matrixWorld, 1);
+          camera.position.addScaledVector(right, dx).addScaledVector(up, dy); camera.updateMatrixWorld();
+          e[8] -= e[0] * dx / fd; e[9] -= e[5] * dy / fd;
+        }
+        e[8] += (halton(i + 1, 5) - 0.5) * 2 / W; e[9] += (halton(i + 1, 7) - 0.5) * 2 / H;
+        camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
+      }
+      if (S.mirrors.length) renderMirrors(i);
+      renderer.setRenderTarget(sceneRT); renderer.render(scene, camera);
+      camera.position.copy(camPos); camera.updateMatrixWorld(); camera.updateProjectionMatrix();
+      for (const [l, p] of saved) l.position.copy(p);
+    }
+
+    S.seek = (t, sampleOverride) => {
+      const n = sampleOverride || S.samples;
+      renderer.setRenderTarget(accRT); renderer.setClearColor(0x000000, 0); renderer.clear();
+      mAcc.uniforms.w.value = 1 / n;
+      for (let i = 0; i < n; i++) {
+        const ts = n > 1 ? t + ((i + 0.5) / n - 0.5) * R.shutter / R.fps : t;
+        subRender(K.clamp(ts, 0, S.duration), i, n);
+        renderer.autoClear = false; draw(mAcc, accRT); renderer.autoClear = true;
+      }
+      api.update(t); // leave the scene at the exact frame time (for the overlay and anything that reads it)
+      let bloomTex = null;
+      if (R.bloom > 0) {
+        mPre.uniforms.thr.value = R.bloomThreshold; draw(mPre, bl[0].d);
+        for (let i = 1; i < bl.length; i++) { mDown.uniforms.tex.value = bl[i - 1].d.texture; mDown.uniforms.px.value.set(1 / bl[i - 1].w, 1 / bl[i - 1].h); draw(mDown, bl[i].d); }
+        let prev = bl[bl.length - 1].d;
+        for (let i = bl.length - 2; i >= 0; i--) { mUp.uniforms.tex.value = prev.texture; mUp.uniforms.add.value = bl[i].d.texture; mUp.uniforms.px.value.set(1 / prev.width, 1 / prev.height); draw(mUp, bl[i].u); prev = bl[i].u; }
+        bloomTex = prev.texture;
+      }
+      const o = mOut.uniforms;
+      o.bloom.value = bloomTex; o.bloomK.value = bloomTex ? R.bloom : 0; o.levels.value = bl.length; o.exposure.value = R.exposure; o.vig.value = R.vignette; o.ca.value = R.ca; o.sat.value = R.saturation; o.con.value = R.contrast; o.lift.value = R.lift;
+      draw(mOut, ldA);
+      let src = ldA, dst = ldB;
+      for (const f of filters) { f.uniforms.tex.value = src.texture; f.uniforms.time.value = t; draw(f, dst); [src, dst] = [dst, src]; }
+      const fu = mFin.uniforms;
+      fu.tex.value = src.texture; fu.grain.value = R.grain; fu.seed.value = Math.round(t * R.fps) * 17.0 % 1000;
+      if (api.overlay) { ovCtx.clearRect(0, 0, W, H); ovCtx.save(); api.overlay(ovCtx, t, W, H); ovCtx.restore(); ovTex.needsUpdate = true; fu.useOv.value = 1; } else fu.useOv.value = 0;
+      draw(mFin, null);
+    };
+    S.setApi = (a) => { api = typeof a === 'function' ? { update: a } : a; };
+    return S;
+  };
+
+  // Load fonts, build the style and return its stage. `K.run(canvas, style, { samples })`.
+  K.run = async (canvas, style, opts) => {
+    if (style.fonts && document.fonts) await Promise.all(style.fonts.map((f) => document.fonts.load(f).catch(() => null)));
+    const S = K.createStage(canvas, style, opts);
+    S.setApi(await style.build(S));
+    return S;
+  };
+
+  root.K = K;
+})(typeof window !== 'undefined' ? window : globalThis);
+```
+
+SOUND KIT (lib/sound.js)
+```js
+// sound.js: a small synthesized sound kit for the style explainers. Plain Web Audio, no audio files.
+// Voiceover mode: SOUND.kit(ctx, { voiceover: true }) drops beds and music, plays anything marked minor
+// (play(..., { minor: true }), tone/noise { minor: true }, or scheduled inside k.withMinor(() => ...)) at about 60%
+// volume instead of full, and sits all effects a little lower, so the narration stays on top while the piece still
+// sounds alive. In the full mix, minor sounds play at full volume. Scores can read k.vo to branch further.
+// A style adds   explainerSound(k) { k.bed('room', 0, D); k.play('pop', 1.25); ... }   and the same
+// call schedules into a live AudioContext (the player) or an OfflineAudioContext (the video render).
+// Times are seconds on the explainer's own clock. Randomness is seeded, so every render is identical.
+(function () {
+  'use strict';
+  const SOUND = (window.SOUND = {});
+  const TINY = 1e-4;
+
+  // seeded random in [0,1), keyed by any string
+  function rand(key) {
+    let h = 2166136261;
+    for (let i = 0; i < key.length; i++) { h ^= key.charCodeAt(i); h = Math.imul(h, 16777619); }
+    let a = h >>> 0 || 1;
+    return () => { a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+
+  // note names to Hz: 'A4' = 440, 'C#5', 'Eb3'
+  const STEP = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+  function hz(n) {
+    if (typeof n === 'number') return n;
+    const m = /^([A-G])([#b]?)(-?\d)$/.exec(n);
+    const semis = STEP[m[1]] + (m[2] === '#' ? 1 : m[2] === 'b' ? -1 : 0) + (Number(m[3]) - 4) * 12 - 9;
+    return 440 * Math.pow(2, semis / 12);
+  }
+  SOUND.hz = hz;
+
+  SOUND.kit = function (ctx, opts) {
+    const o = opts || {};
+    const VO = !!o.voiceover;
+    const MINOR = 0.6; // voiceover-mode volume for minor sounds
+    let inMinor = false;
+    const gainOf = (p, d) => (p.gain == null ? d : p.gain) * (VO && (p.minor || inMinor) ? MINOR : 1);
+    const T0 = (o.start || 0) - 0; // explainer time that maps to ctx time `base`
+    const base = ctx.currentTime + (o.delay || 0);
+    // Start times snap to the sample grid (+ a quarter sample): in Chrome a source started a hair off the grid can
+    // spike to about twice its set level.
+    const SR = ctx.sampleRate;
+    const at = (t) => (Math.round((base + (t - T0)) * SR) + 0.25) / SR;
+
+    // ---- buses: sfx, amb, music -> compressor -> master; one shared reverb send
+    const master = ctx.createGain(); master.gain.value = o.master == null ? 0.9 : o.master;
+    const comp = ctx.createDynamicsCompressor();
+    comp.threshold.value = -16; comp.knee.value = 8; comp.ratio.value = 3; comp.attack.value = 0.004; comp.release.value = 0.18;
+    comp.connect(master); master.connect(o.dest || ctx.destination);
+    const bus = {};
+    for (const [name, g] of Object.entries({ sfx: VO ? 0.7 : 0.85, amb: 0.5, music: 0.45 })) { bus[name] = ctx.createGain(); bus[name].gain.value = g; bus[name].connect(comp); }
+
+    // generated room reverb: decaying stereo noise, darker toward the tail
+    const verb = ctx.createConvolver();
+    {
+      const secs = 1.6, n = Math.floor(secs * ctx.sampleRate), ir = ctx.createBuffer(2, n, ctx.sampleRate);
+      for (let c = 0; c < 2; c++) {
+        const r = rand('verb' + c), d = ir.getChannelData(c); let lp = 0;
+        for (let i = 0; i < n; i++) { const u = i / n; lp += (0.6 - 0.45 * u) * ((r() * 2 - 1) - lp); d[i] = lp * Math.pow(1 - u, 3); }
+      }
+      verb.buffer = ir;
+    }
+    const verbIn = ctx.createGain(); verbIn.gain.value = 0.9; verbIn.connect(verb); verb.connect(comp);
+
+    // seeded noise buffers: white, pink-ish and brown
+    const noiseBuf = {};
+    {
+      const n = Math.floor(2.5 * ctx.sampleRate);
+      for (const kind of ['white', 'pink', 'brown']) {
+        const b = ctx.createBuffer(1, n, ctx.sampleRate), d = b.getChannelData(0), r = rand('noise-' + kind);
+        let p0 = 0, p1 = 0, p2 = 0, br = 0;
+        for (let i = 0; i < n; i++) {
+          const w = r() * 2 - 1;
+          if (kind === 'white') d[i] = w;
+          else if (kind === 'pink') { p0 = 0.997 * p0 + 0.029 * w; p1 = 0.985 * p1 + 0.032 * w; p2 = 0.95 * p2 + 0.048 * w; d[i] = (p0 + p1 + p2 + w * 0.05) * 2.2; }
+          else { br = (br + 0.02 * w) / 1.02; d[i] = br * 3.2; }
+        }
+        noiseBuf[kind] = b;
+      }
+    }
+
+    // ---- automation helpers
+    // a value or [[dt, value], ...] from the voice start; ramps are exponential (frequencies)
+    function sweep(param, v, t) {
+      if (!Array.isArray(v)) { param.setValueAtTime(v, t); return; }
+      param.setValueAtTime(v[0][1], t + v[0][0]);
+      for (let i = 1; i < v.length; i++) param.exponentialRampToValueAtTime(Math.max(v[i][1], 1), t + v[i][0]);
+    }
+    // amplitude: linear attack to `gain`, optional hold, exponential release to silence by `dur`
+    function shape(param, t, gain, dur, a, hold) {
+      a = Math.min(a == null ? 0.004 : a, dur * 0.9);
+      hold = Math.min(hold || 0, dur - a);
+      param.setValueAtTime(0, t);
+      param.linearRampToValueAtTime(gain, t + a);
+      if (hold > 0) param.setValueAtTime(gain, t + a + hold);
+      param.exponentialRampToValueAtTime(TINY, t + dur);
+      param.setValueAtTime(0, t + dur + 0.001);
+    }
+    function out(node, p) {
+      const pan = ctx.createStereoPanner(); pan.pan.value = Math.max(-1, Math.min(1, p.pan || 0));
+      node.connect(pan); pan.connect(bus[p.bus || 'sfx']);
+      if (p.verb) { const s = ctx.createGain(); s.gain.value = p.verb; pan.connect(s); s.connect(verbIn); }
+    }
+    function filterNode(p, t) {
+      if (!p.filter) return null;
+      const f = ctx.createBiquadFilter(); f.type = p.filter; f.Q.value = p.q == null ? 1 : p.q;
+      sweep(f.frequency, p.f == null ? 1000 : p.f, t);
+      return f;
+    }
+
+    // Live playback from the middle of a piece: a long sound (a bed, a pad) that began before that point has a start
+    // time in the past, which Web Audio refuses. Pick it up now, at its held level, for the time it has left.
+    function late(t, dur, p) {
+      if (t >= ctx.currentTime) return null;   // never true in an offline render, so rendered sound is unchanged
+      const now = ctx.currentTime + 0.01;
+      const cut = now - t, left = dur - cut;
+      if (left < 0.08) return { skip: true };
+      const a = Math.min(0.05, left / 2);
+      return { t: now, dur: left, p: Object.assign({}, p, { a, hold: Math.max(0, Math.min(left - a - 0.02, (p.a == null ? 0.004 : p.a) + (p.hold || 0) - cut)) }) };
+    }
+
+    // ---- primitives
+    // tone(t, { f, type, dur, gain, a, hold, pan, verb, bus, filter, f2 (filter freq), q, detune })
+    function tone(time, p) {
+      let t = at(time), dur = p.dur || 0.2;
+      if (t + dur < ctx.currentTime || (time < T0 - 0.001 && dur < 1.5)) return;
+      const lt = late(t, dur, p); if (lt) { if (lt.skip) return; t = lt.t; dur = lt.dur; p = lt.p; }
+      const osc = ctx.createOscillator(); osc.type = p.type || 'sine';
+      sweep(osc.frequency, Array.isArray(p.f) ? p.f.map(([d, v]) => [d, hz(v)]) : hz(p.f || 440), t);
+      if (p.detune) osc.detune.value = p.detune;
+      const g = ctx.createGain(); shape(g.gain, t, gainOf(p, 0.3), dur, p.a, p.hold);
+      let node = osc;
+      if (p.filter) { const f = ctx.createBiquadFilter(); f.type = p.filter; f.Q.value = p.q == null ? 0.8 : p.q; sweep(f.frequency, p.f2 || 2000, t); osc.connect(f); node = f; }
+      node.connect(g); out(g, p);
+      osc.start(t); osc.stop(t + dur + 0.02);
+    }
+    // noise(t, { dur, color, filter, f, q, gain, a, hold, pan, verb, bus, rate })
+    function noise(time, p) {
+      let t = at(time), dur = p.dur || 0.2;
+      if (t + dur < ctx.currentTime || (time < T0 - 0.001 && dur < 1.5)) return;
+      const lt = late(t, dur, p); if (lt) { if (lt.skip) return; t = lt.t; dur = lt.dur; p = lt.p; }
+      const src = ctx.createBufferSource(); src.buffer = noiseBuf[p.color || 'white']; src.loop = true;
+      if (p.rate) src.playbackRate.value = p.rate;
+      const g = ctx.createGain(); shape(g.gain, t, gainOf(p, 0.3), dur, p.a, p.hold);
+      const f = filterNode(p, t);
+      if (f) { src.connect(f); f.connect(g); } else src.connect(g);
+      out(g, p);
+      const off = rand('off' + time + (p.f || ''))() * 2;
+      src.start(t, off); src.stop(t + dur + 0.02);
+    }
+
+    // ---- named sounds. play(name, t, opts): opts.gain scales the whole sound, opts.pan places it.
+    const S = {
+      // UI / motion graphics
+      pop: (t, o) => { tone(t, { f: [[0, o.f || 620], [0.07, (o.f || 620) * 0.45]], dur: 0.1, gain: 0.32 * o.g, pan: o.pan }); noise(t, { dur: 0.012, filter: 'highpass', f: 3000, gain: 0.12 * o.g, pan: o.pan }); },
+      tick: (t, o) => noise(t, { dur: 0.018, filter: 'bandpass', f: o.f || 4200, q: 2.5, gain: 0.3 * o.g, pan: o.pan }),
+      click: (t, o) => { tone(t, { f: o.f || 1900, type: 'square', dur: 0.02, gain: 0.08 * o.g, filter: 'lowpass', f2: 3000, pan: o.pan }); noise(t, { dur: 0.01, filter: 'highpass', f: 2500, gain: 0.15 * o.g, pan: o.pan }); },
+      tock: (t, o) => { tone(t, { f: o.f || 820, dur: 0.07, gain: 0.25 * o.g, pan: o.pan }); noise(t, { dur: 0.05, filter: 'bandpass', f: o.f || 820, q: 9, gain: 0.35 * o.g, pan: o.pan }); },
+      blip: (t, o) => tone(t, { f: o.f || 'E6', type: o.type || 'square', dur: o.dur || 0.07, gain: 0.07 * o.g, a: 0.002, hold: (o.dur || 0.07) * 0.6, pan: o.pan }),
+      whoosh: (t, o) => { const d = o.dur || 0.45; noise(t, { dur: d, color: 'pink', filter: 'bandpass', f: [[0, 350], [d * 0.55, o.top || 2600], [d, 700]], q: 0.9, gain: 0.32 * o.g, a: d * 0.5, pan: o.pan, verb: 0.15 }); },
+      swish: (t, o) => { const d = o.dur || 0.18; noise(t, { dur: d, filter: 'highpass', f: [[0, 1800], [d, 5200]], q: 0.7, gain: 0.22 * o.g, a: d * 0.35, pan: o.pan }); },
+      riser: (t, o) => { const d = o.dur || 0.8; noise(t, { dur: d, color: 'pink', filter: 'bandpass', f: [[0, 300], [d, 4000]], q: 1.2, gain: 0.25 * o.g, a: d * 0.95, pan: o.pan, verb: 0.2 }); tone(t, { f: [[0, 180], [d, 720]], type: 'triangle', dur: d, gain: 0.06 * o.g, a: d * 0.9 }); },
+      thud: (t, o) => { tone(t, { f: [[0, o.f || 130], [0.16, 42]], dur: 0.26, gain: 0.55 * o.g, pan: o.pan }); noise(t, { dur: 0.09, color: 'brown', filter: 'lowpass', f: 500, gain: 0.35 * o.g, pan: o.pan }); },
+      impact: (t, o) => { S.thud(t, o); noise(t, { dur: 0.7, color: 'pink', filter: 'lowpass', f: [[0, 2400], [0.6, 300]], gain: 0.3 * o.g, verb: 0.35, pan: o.pan }); },
+      stamp: (t, o) => { S.thud(t, { ...o, f: 160 }); noise(t, { dur: 0.05, filter: 'bandpass', f: 1300, q: 1.2, gain: 0.4 * o.g, pan: o.pan }); noise(t + 0.004, { dur: 0.012, filter: 'highpass', f: 3500, gain: 0.25 * o.g, pan: o.pan }); },
+      ding: (t, o) => { const f = hz(o.f || 'E6'); tone(t, { f, dur: 1.3, gain: 0.2 * o.g, verb: 0.3, pan: o.pan }); tone(t, { f: f * 2.76, dur: 0.5, gain: 0.05 * o.g, verb: 0.3, pan: o.pan }); },
+      success: (t, o) => { S.ding(t, { ...o, f: o.f || 'C6' }); S.ding(t + 0.09, { ...o, f: hz(o.f || 'C6') * 1.5, g: o.g * 0.9 }); },
+      error: (t, o) => { tone(t, { f: o.f || 'A3', type: 'square', dur: 0.13, gain: 0.09 * o.g, hold: 0.08, filter: 'lowpass', f2: 1400, pan: o.pan }); tone(t + 0.15, { f: hz(o.f || 'A3') * 0.8, type: 'square', dur: 0.22, gain: 0.09 * o.g, hold: 0.14, filter: 'lowpass', f2: 1200, pan: o.pan }); },
+      buzz: (t, o) => { const d = o.dur || 0.3; tone(t, { f: o.f || 110, type: 'sawtooth', dur: d, gain: 0.12 * o.g, hold: d * 0.7, filter: 'lowpass', f2: 900, pan: o.pan }); tone(t, { f: (o.f || 110) * 1.01, type: 'sawtooth', dur: d, gain: 0.1 * o.g, hold: d * 0.7, filter: 'lowpass', f2: 900, pan: o.pan }); },
+      sparkle: (t, o) => { const r = rand('sparkle' + t), notes = ['C6', 'D6', 'E6', 'G6', 'A6', 'C7']; for (let i = 0; i < (o.n || 6); i++) { const ti = t + i * 0.04 + r() * 0.01, f = hz(notes[Math.floor(r() * notes.length)]), pan = r() * 1.2 - 0.6; tone(ti, { f, dur: 0.6, gain: 0.04 * o.g, a: 0.002, verb: 0.35, pan }); tone(ti, { f: f * 2.76, dur: 0.2, gain: 0.012 * o.g, a: 0.002, pan }); } },
+      glitch: (t, o) => { const r = rand('glitch' + t); for (let i = 0; i < 7; i++) tone(t + i * 0.022, { f: 200 + r() * 1800, type: 'square', dur: 0.02, gain: 0.07 * o.g, a: 0.001, hold: 0.015, pan: r() * 1.4 - 0.7 }); noise(t, { dur: 0.16, filter: 'bandpass', f: 2500, q: 0.6, gain: 0.12 * o.g }); },
+      shutter: (t, o) => { S.click(t, o); noise(t + 0.06, { dur: 0.04, filter: 'bandpass', f: 2200, q: 1, gain: 0.2 * o.g, pan: o.pan }); },
+      count: (t, o) => S.tick(t, { ...o, f: o.f || 5200, g: o.g * 0.7 }),
+
+      // hand-made media
+      // stroke: a pen/marker/chalk/pencil stroke over `dur` seconds. material sets the surface sound.
+      stroke: (t, o) => {
+        const d = o.dur || 0.4, m = o.material || 'marker', r = rand('stroke' + m + t);
+        const M = {
+          marker: { f: 2900, q: 2.2, g: 0.16, grain: 0.05 },
+          chalk: { f: 1700, q: 0.6, g: 0.22, grain: 0.028 },
+          pencil: { f: 4600, q: 0.8, g: 0.16, grain: 0.04, filter: 'highpass' },
+          pen: { f: 4200, q: 1.6, g: 0.08, grain: 0.06 },
+          brush: { f: 900, q: 0.5, g: 0.1, grain: 0.09, color: 'pink' },
+          sharpie: { f: 2400, q: 1.4, g: 0.2, grain: 0.045 },
+        }[m];
+        for (let x = 0; x < d; x += M.grain * (0.7 + r() * 0.6)) {
+          const gd = M.grain * (0.8 + r() * 0.9);
+          noise(t + x, { dur: gd, color: M.color, filter: M.filter || 'bandpass', f: M.f * (0.8 + r() * 0.4), q: M.q, gain: M.g * o.g * (0.6 + r() * 0.5), a: gd * 0.3, pan: (o.pan || 0) + (r() - 0.5) * 0.2 });
+        }
+      },
+      // paper: picking up / slapping down / turning a sheet
+      paper: (t, o) => { const d = o.dur || 0.35, r = rand('paper' + t); for (let x = 0; x < d; x += 0.025 + r() * 0.03) noise(t + x, { dur: 0.05, filter: 'bandpass', f: 1200 + r() * 2600, q: 0.9, gain: 0.12 * o.g * (1 - x / d * 0.5), pan: o.pan }); },
+      slap: (t, o) => { noise(t, { dur: 0.07, filter: 'highpass', f: 900, gain: 0.45 * o.g, a: 0.001, pan: o.pan }); tone(t, { f: [[0, 180], [0.06, 70]], dur: 0.1, gain: 0.25 * o.g, pan: o.pan }); },
+      tape: (t, o) => { noise(t, { dur: o.dur || 0.5, filter: 'bandpass', f: [[0, 900], [o.dur || 0.5, 2200]], q: 1.8, gain: 0.18 * o.g, a: 0.02, pan: o.pan }); },
+      press: (t, o) => { S.thud(t, { ...o, f: 95, g: o.g * 0.9 }); noise(t + 0.01, { dur: 0.25, color: 'brown', filter: 'lowpass', f: 700, gain: 0.25 * o.g, pan: o.pan }); },
+      roller: (t, o) => { const d = o.dur || 0.6; noise(t, { dur: d, color: 'brown', filter: 'bandpass', f: 380, q: 1.5, gain: 0.3 * o.g, a: 0.05, hold: d * 0.6, pan: o.pan }); for (let x = 0; x < d; x += 0.07) S.tock(t + x, { f: 300, g: o.g * 0.15, pan: o.pan }); },
+      erase: (t, o) => { const d = o.dur || 0.6, r = rand('erase' + t); for (let x = 0; x < d; x += 0.06 + r() * 0.04) noise(t + x, { dur: 0.08, color: 'pink', filter: 'bandpass', f: 700 + r() * 500, q: 0.8, gain: 0.22 * o.g, a: 0.03, pan: (r() - 0.5) * 0.5 }); },
+
+      // machines and screens
+      key: (t, o) => { const r = rand('key' + t); noise(t, { dur: 0.025, filter: 'bandpass', f: 2600 + r() * 1200, q: 2, gain: 0.25 * o.g, a: 0.001, pan: o.pan }); tone(t, { f: 160 + r() * 40, dur: 0.04, gain: 0.12 * o.g, pan: o.pan }); },
+      typing: (t, o) => { const r = rand('typing' + t), n = o.n || 8, rate = o.rate || 0.09; for (let i = 0; i < n; i++) S.key(t + i * rate * (0.75 + r() * 0.5), { g: o.g * (0.7 + r() * 0.4), pan: o.pan }); },
+      typebar: (t, o) => { S.key(t, o); noise(t + 0.008, { dur: 0.03, filter: 'bandpass', f: 1100, q: 4, gain: 0.35 * o.g, pan: o.pan }); },
+      bell: (t, o) => S.ding(t, { ...o, f: o.f || 'A6' }),
+      boot: (t, o) => { tone(t, { f: [[0, 80], [0.35, 1600]], type: 'sine', dur: 0.5, gain: 0.08 * o.g, a: 0.3 }); S.blip(t + 0.45, { ...o, f: 'C6', dur: 0.12 }); },
+      crtOn: (t, o) => { noise(t, { dur: 0.25, filter: 'highpass', f: 2000, gain: 0.2 * o.g, a: 0.001 }); tone(t, { f: 15700, dur: 1.5, gain: 0.02 * o.g, a: 0.1, hold: 1 }); S.thud(t, { ...o, f: 90, g: o.g * 0.5 }); },
+      neon: (t, o) => { const d = o.dur || 0.25, r = rand('neon' + t); for (let x = 0; x < d; x += 0.035 + r() * 0.04) tone(t + x, { f: 120, type: 'sawtooth', dur: 0.03, gain: 0.3 * o.g * (0.5 + r() * 0.5), filter: 'bandpass', f2: 1200, q: 1.2, pan: o.pan }); },
+      // chip (8-bit console) sounds: raw square/triangle, no filtering
+      coin: (t, o) => { tone(t, { f: 'B5', type: 'square', dur: 0.07, gain: 0.07 * o.g, a: 0.001, hold: 0.06 }); tone(t + 0.07, { f: 'E6', type: 'square', dur: 0.3, gain: 0.07 * o.g, a: 0.001, hold: 0.1 }); },
+      jump: (t, o) => tone(t, { f: [[0, 260], [0.16, 820]], type: 'square', dur: 0.18, gain: 0.07 * o.g, a: 0.001, hold: 0.12 }),
+      hurt: (t, o) => { tone(t, { f: [[0, 600], [0.25, 90]], type: 'square', dur: 0.28, gain: 0.08 * o.g, a: 0.001, hold: 0.2 }); noise(t, { dur: 0.2, filter: 'lowpass', f: 1800, gain: 0.15 * o.g, rate: 0.25 }); },
+      powerup: (t, o) => ['C5', 'E5', 'G5', 'C6', 'E6', 'G6', 'C7'].forEach((n, i) => tone(t + i * 0.045, { f: n, type: 'square', dur: 0.06, gain: 0.06 * o.g, a: 0.001, hold: 0.05 })),
+      select: (t, o) => { S.blip(t, { ...o, f: 'A5', dur: 0.04 }); S.blip(t + 0.05, { ...o, f: 'E6', dur: 0.05 }); },
+      text: (t, o) => { const n = o.n || 10, rate = o.rate || 0.05; for (let i = 0; i < n; i++) tone(t + i * rate, { f: i % 2 ? 'C6' : 'G5', type: 'square', dur: 0.025, gain: 0.04 * o.g, a: 0.001, hold: 0.015 }); },
+    };
+
+    function play(name, t, opts) {
+      const fn = S[name];
+      if (!fn) throw new Error('unknown sound: ' + name);
+      const o2 = Object.assign({}, opts); o2.g = o2.gain == null ? 1 : o2.gain;
+      if (opts && opts.minor) withMinor(() => fn(t, o2)); else fn(t, o2);
+    }
+
+    // everything scheduled inside fn counts as minor (quieter in voiceover mode)
+    function withMinor(fn) { const was = inMinor; inMinor = true; try { fn(); } finally { inMinor = was; } }
+
+    // ---- beds: continuous sound under a stretch of time. bed(name, t0, t1, opts)
+    function bed(name, t0, t1, p) {
+      if (VO) return;
+      p = p || {}; const g = p.gain == null ? 1 : p.gain, d = t1 - t0, fade = Math.min(0.4, d / 4);
+      const long = (q) => Object.assign({ dur: d, a: fade, hold: d - fade * 2, bus: 'amb' }, q);
+      if (name === 'room') noise(t0, long({ color: 'brown', filter: 'lowpass', f: 320, gain: 0.12 * g }));
+      else if (name === 'hiss') noise(t0, long({ color: 'pink', filter: 'highpass', f: 5000, gain: 0.02 * g }));
+      else if (name === 'hum') { tone(t0, long({ f: 60, gain: 0.05 * g })); tone(t0, long({ f: 120, gain: 0.025 * g })); tone(t0, long({ f: 180, type: 'triangle', gain: 0.012 * g })); }
+      else if (name === 'rain') { noise(t0, long({ color: 'pink', filter: 'bandpass', f: 2500, q: 0.4, gain: 0.08 * g })); const r = rand('rain'); for (let x = 0; x < d; x += 0.04 + r() * 0.08) noise(t0 + x, { dur: 0.01, filter: 'highpass', f: 4000, gain: 0.04 * g * r(), bus: 'amb', pan: r() * 1.6 - 0.8 }); }
+      else if (name === 'projector') { noise(t0, long({ color: 'pink', filter: 'highpass', f: 3000, gain: 0.03 * g })); for (let x = 0; x < d; x += 1 / 24) S.tock(t0 + x, { f: 700, g: 0.04 * g, pan: 0.3 }); }
+      else if (name === 'vinyl') { noise(t0, long({ color: 'pink', filter: 'bandpass', f: 1500, q: 0.5, gain: 0.025 * g })); const r = rand('vinyl'); for (let x = 0; x < d; x += 0.08 + r() * 0.4) noise(t0 + x, { dur: 0.006, filter: 'highpass', f: 2500, gain: 0.08 * g * r(), bus: 'amb' }); }
+      else throw new Error('unknown bed: ' + name);
+    }
+
+    // ---- music: optional light beds that sit under the effects. music(name, t0, t1, { bpm, chords, gain })
+    // chords: list of note arrays, one per bar, cycled. e.g. [['C4','E4','G4','B4'], ['A3','C4','E4','G4']]
+    function music(name, t0, t1, p) {
+      if (VO) return;
+      p = p || {}; const g = p.gain == null ? 1 : p.gain, bpm = p.bpm || 100, beat = 60 / bpm, bar = beat * 4;
+      const chords = p.chords || [['C4', 'E4', 'G4', 'B4'], ['A3', 'C4', 'E4', 'G4'], ['F3', 'A3', 'C4', 'E4'], ['G3', 'B3', 'D4', 'F4']];
+      let i = 0;
+      for (let t = t0; t < t1 - 0.05; t += bar, i++) {
+        const ch = chords[i % chords.length], len = Math.min(bar, t1 - t);
+        if (name === 'pad' || name === 'pulse') ch.forEach((n, k) => { tone(t, { f: n, type: 'triangle', dur: len + 0.3, gain: 0.035 * g, a: 0.25, hold: len - 0.3, bus: 'music', filter: 'lowpass', f2: 1400, pan: (k - 1.5) * 0.25, verb: 0.25 }); tone(t, { f: hz(n) * 1.004, type: 'sine', dur: len + 0.3, gain: 0.03 * g, a: 0.3, hold: len - 0.3, bus: 'music' }); });
+        if (name === 'pulse') for (let b = 0; b < 4 && t + b * beat < t1 - 0.05; b++) {
+          const tb = t + b * beat;
+          tone(tb, { f: [[0, 110], [0.1, 50]], dur: 0.18, gain: (b % 2 ? 0.16 : 0.26) * g, bus: 'music' });
+          noise(tb + beat / 2, { dur: 0.04, filter: 'highpass', f: 7000, gain: 0.05 * g, bus: 'music' });
+          tone(tb + beat / 2, { f: hz(ch[0]) / 2, type: 'triangle', dur: beat * 0.45, gain: 0.08 * g, bus: 'music' });
+        }
+        if (name === 'chip') for (let s = 0; s < 8 && t + s * beat / 2 < t1 - 0.05; s++) {
+          const ts = t + s * beat / 2;
+          tone(ts, { f: hz(ch[0]) / 2, type: 'triangle', dur: beat * 0.45, gain: 0.12 * g, a: 0.001, hold: beat * 0.35, bus: 'music' });
+          tone(ts, { f: ch[[0, 1, 2, 3, 2, 1, 2, 3][s]], type: 'square', dur: beat * 0.4, gain: 0.03 * g, a: 0.001, hold: beat * 0.25, bus: 'music' });
+        }
+      }
+    }
+
+    return { play, bed, music, tone, noise, withMinor, hz, vo: VO, sounds: Object.keys(S) };
+  };
+
+  // Live playback for a player: SOUND.live(scoreFn, fromT, { voiceover, master }) starts the score from explainer time
+  // fromT right now and returns stop(). Call stop() on pause or seek, and SOUND.live again on play.
+  SOUND.live = function (fn, fromT, opts) {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    fn(SOUND.kit(ctx, Object.assign({}, opts, { start: fromT || 0, delay: 0.03 })));
+    return () => { try { ctx.close(); } catch (e) {} };
+  };
+
+  // Render a style's explainerSound into an OfflineAudioContext; returns interleaved float stereo.
+  SOUND.renderOffline = async function (fn, duration, sampleRate, kitOpts) {
+    const sr = sampleRate || 48000, len = Math.ceil(duration * sr);
+    const ctx = new OfflineAudioContext(2, len, sr);
+    fn(SOUND.kit(ctx, kitOpts || {}));
+    const buf = await ctx.startRendering();
+    const L = buf.getChannelData(0), R = buf.getChannelData(1), inter = new Float32Array(len * 2);
+    let peak = 0;
+    for (let i = 0; i < len; i++) { inter[2 * i] = L[i]; inter[2 * i + 1] = R[i]; peak = Math.max(peak, Math.abs(L[i]), Math.abs(R[i])); }
+    return { inter, peak, frames: len, sr };
+  };
+})();
+```
+
+REFERENCE STYLE SOURCE (styles/circuit-city.js; its sample topic was "A prompt's trip across a chip: PROMPT, MEMORY, PROCESSOR, ANSWER")
+```js
+{
+  // ---------------------------------------------------------------- content (change this for a new topic)
+  // Four stops on the board. Each one is a landmark with its name printed next to it in white silkscreen, and the
+  // pulse visits them in order. REFS are the small reference designators a real board prints beside every part.
+  const STOPS = ['PROMPT', 'MEMORY', 'PROCESSOR', 'ANSWER'];
+  const REFS = ['J1', 'U1-U4', 'U5', 'J2'];
+  const CORES = 4;                 // the processor carries CORES x CORES dies, which light up in a diagonal wave
+  // The schedule in seconds. Picture and sound both read it.
+  const T = { launch: 0.3, memEnd: 2.0, memOut: 2.35, cpu: 3.55, wave: 3.7, waveLen: 1.35, cpuOut: 5.65, answer: 6.5 };
+
+  // ---------------------------------------------------------------- the map
+  // x = right, z = towards the camera. The flight heads away from the camera (to -z), so every label is printed with
+  // its top edge towards -z and reads the right way up for the whole trip.
+  const K = globalThis.K;
+  const BOARD = { x0: -12, x1: 12, zNear: 1.6, zFar: -38.4 };
+  const PORT_IN = [2.2, 0.55], PORT_OUT = [5.5, -37.3];
+  const MEM = { z: -11.5, xs: [-3.45, -1.15, 1.15, 3.45], w: 1.9, d: 2.8 };
+  const CPU = { x: 1.5, z: -26, size: 9 };
+
+  // polyline helpers. A track is a list of [x, z] points with 45-degree bends, like real PCB routing.
+  const measure = (pts) => {
+    const cum = [0]; for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+    const len = cum[cum.length - 1];
+    const at = (s) => { s = K.clamp(s, 0, len); let i = 1; while (i < pts.length - 1 && cum[i] < s) i++; const f = (s - cum[i - 1]) / Math.max(1e-6, cum[i] - cum[i - 1]); return [K.lerp(pts[i - 1][0], pts[i][0], f), K.lerp(pts[i - 1][1], pts[i][1], f)]; };
+    return { pts, cum, len, at };
+  };
+  // the same polyline moved sideways by d, with mitred corners (used for ribbon edges and for bundles of parallel tracks)
+  const offset = (pts, d) => pts.map((p, i) => {
+    const dir = (a, b) => { const x = b[0] - a[0], z = b[1] - a[1], l = Math.hypot(x, z) || 1; return [x / l, z / l]; };
+    const a = dir(pts[Math.max(0, i - 1)], pts[Math.max(1, i)]), b = dir(pts[Math.min(pts.length - 2, i)], pts[Math.min(pts.length - 1, i + 1)]);
+    const mx = -a[1] - b[1], mz = a[0] + b[0], ml = Math.hypot(mx, mz) || 1, k = d / ((mx / ml) * -a[1] + (mz / ml) * a[0]);
+    return [p[0] + mx / ml * k, p[1] + mz / ml * k];
+  });
+  // one pulse run along a track: leaves at t0, arrives at t1 and gathers speed on the way (power ease)
+  const run = (len, t0, t1, p = 1.3) => ({ t0, t1, timeAt: (s) => t0 + (t1 - t0) * Math.pow(K.clamp(s / len), 1 / p), sAt: (t) => len * Math.pow(K.clamp((t - t0) / (t1 - t0)), p) });
+
+  // The route of the signal, shared by the picture and the score.
+  function plan() {
+    const pinNear = MEM.z + MEM.d / 2 + 0.33, pinFar = MEM.z - MEM.d / 2 - 0.33, lane = pinNear + 0.5;
+    // leg A: out of the back of the PROMPT port, one long diagonal across the board, then along a lane that passes in
+    // front of all four memory chips
+    const a = measure([[PORT_IN[0], PORT_IN[1] - 1.5], [PORT_IN[0], PORT_IN[1] - 1.75], [-4.9, PORT_IN[1] - 1.75 - (PORT_IN[0] + 4.9)], [-4.9, lane + 0.7], [-4.2, lane], [MEM.xs[3] - 0.255, lane]]);
+    const runA = run(a.len, T.launch, T.memEnd, 1.25);
+    const tapS = MEM.xs.map((x) => a.len - (MEM.xs[3] - x)), tapT = tapS.map(runA.timeAt);       // when the pulse reaches each chip
+    const taps = MEM.xs.map((x, i) => ({ path: measure([[x - 0.255, lane], [x - 0.255, pinNear]]), run: run(0.5, tapT[i], tapT[i] + 0.05, 1) }));
+    // leg B: two data lines leave every chip and merge into one eight-lane bus that enters the processor near its corner
+    const busX = CPU.x - CPU.size / 2 + 0.9, za = pinFar - 0.6, bus = [];
+    for (let j = 0; j < 8; j++) {
+      const x0 = MEM.xs[j >> 1] + (j & 1 ? 0.255 : -0.255), xs = busX + (j - 3.5) * 0.2;
+      const path = measure([[x0, pinFar], [x0, za], [xs, za - Math.abs(xs - x0)], [xs, CPU.z + CPU.size / 2 - 0.05]]);
+      bus.push({ path, run: run(path.len, T.memOut + 0.035 * j, T.cpu + 0.02 * j, 1.3) });
+    }
+    // leg C: one line out of the far corner of the processor to the ANSWER port
+    const c = measure([[CPU.x + 3.1, CPU.z - CPU.size / 2 + 0.05], [CPU.x + 3.1, -32.6], [PORT_OUT[0], -33.5], [PORT_OUT[0], PORT_OUT[1] + 1.5]]);
+    const runC = run(c.len, T.cpuOut, T.answer, 1.2);
+    // the wave across the cores: i counts from the left, j from the near edge, so it starts where the bus comes in
+    const coreT = (i, j) => T.wave + T.waveLen * (i + j) / (2 * (CORES - 1));
+    return { a, runA, taps, tapT, bus, c, runC, coreT, lane, pinNear, pinFar, busX };
+  }
+
+  registerStyle({
+    id: 'circuit-city',
+    name: 'Circuit City',
+    family: 'Spaces and journeys',
+    look: 'A real circuit board filmed as a city at night: matte black chips are the buildings, aluminium capacitors the towers, gold tracks the streets, and white silkscreen print names each district. Deep green solder mask, gold and tinned metal, warm signal light.',
+    motion: 'A pulse of light races along the gold tracks from stop to stop and each landmark wakes as it arrives: chips glow from underneath, the processor dies light up in a diagonal wave. The camera flies low and forward after it, like a helicopter shot, and rises once over the big chip.',
+    light: 'Night. The signals are the main light: a warm glow that travels with the pulse and throws moving shadows from every part. A soft cool moonlight from the back left rims the parts and rakes the board so metal glints and textures read; a few tiny indicator LEDs.',
+    materials: 'Semi-gloss solder mask with fine grain and raised copper under it, satin gold tracks and pads, bright tinned pins, moulded black epoxy with laser-etched markings, brushed aluminium cans, iridescent bare silicon.',
+    camera: 'Macro lens, very shallow focus that rides with the pulse. One continuous forward flight that starts low at the edge of the board, sways gently after the pulse, cranes up over the processor and glides on to settle above the last stop.',
+    post: 'Real depth of field and motion blur, bloom only on the signal and LEDs, filmic contrast with deep blacks, slight lens fringing, vignette, fine grain.',
+    explains: 'Journeys and pipelines: something travels through a system and each stage does its part. Every stage is a landmark with a printed label; the pulse and the camera carry the order.',
+    topic: "A prompt's trip across a chip: PROMPT, MEMORY, PROCESSOR, ANSWER",
+    duration: 8,
+    fonts: ['600 200px "IBM Plex Mono"', '500 64px "IBM Plex Mono"'],
+    render: { samples: 64, shutter: 0.5, tone: 'filmic', exposure: 1.15, bloom: 0.7, bloomThreshold: 1.3, vignette: 0.42, grain: 0.03, ca: 0.012, fov: 32, near: 0.2, far: 160, background: '#010304' },
+
+    build(S) {
+      const { THREE, scene, camera } = S, P = plan(), rnd = K.rng(4);
+      scene.fog = new THREE.FogExp2('#02060a', 0.016);
+
+      // ---------------------------------------------------------------- light
+      // Moonlight from the back left, well off the flight axis: it rims every part and rakes the copper under the mask,
+      // but its mirror glare on the semi-gloss board falls outside the frame, so blacks stay deep and the labels stay
+      // out of the long shadows of the ports. Thin bright strips in the environment make the glints on metal.
+      K.env(S, { top: '#0a1422', horizon: '#04070b', bottom: '#000000', intensity: 0.75, panels: [
+        { pos: [8, 18, -30], size: [28, 12], color: '#a9c8ff', power: 1.4 },
+        { pos: [-22, 5, -14], size: [1.4, 10], color: '#cfe0ff', power: 7 },
+        { pos: [22, 4, 6], size: [1.2, 8], color: '#ffd9a8', power: 3 },
+      ] });
+      K.sun(S, { pos: [-24, 18, -28], target: [0, 0, -18], color: '#b9d0ff', power: 1.3, size: 27, soft: 1.0, mapSize: 4096 });
+      // The signal's own light. One warm point light with shadows rides with the pulse for the whole trip.
+      const hero = new THREE.PointLight('#ffac5a', 0, 0, 2);
+      hero.castShadow = true; hero.shadow.mapSize.setScalar(1024); hero.shadow.camera.near = 0.05; hero.shadow.camera.far = 40; hero.shadow.bias = -0.004; hero.shadow.normalBias = 0.03;
+      scene.add(hero);
+
+      // ---------------------------------------------------------------- materials
+      const std = (o) => new THREE.MeshStandardMaterial(o);
+      const grain = K.canvasTex(256, 256, (c) => { const r = K.rng(3), d = c.createImageData(256, 256); for (let i = 0; i < d.data.length; i += 4) { d.data[i] = d.data[i + 1] = d.data[i + 2] = 90 + r() * 120; d.data[i + 3] = 255; } c.putImageData(d, 0, 0); }, { data: true });
+      const M = {
+        gold: std({ color: '#d9a546', metalness: 1, roughness: 0.36 }),
+        tin: std({ color: '#b9bdc3', metalness: 1, roughness: 0.34 }),
+        steel: std({ color: '#878c93', metalness: 1, roughness: 0.4 }),
+        alu: std({ color: '#c3c7cc', metalness: 1, roughness: 0.27 }),
+        epoxy: std({ color: '#0c0c0d', roughness: 0.7, bumpMap: grain, bumpScale: 0.5 }),
+        plastic: std({ color: '#070708', roughness: 0.5 }),
+        ceramic: std({ color: '#ffffff', roughness: 0.62 }),          // tinted per instance: tan capacitors, black resistors
+      };
+      const col = new THREE.Color();
+      const add = (geo, mat, x, y, z, cast = true, parent = scene) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = cast; m.receiveShadow = true; parent.add(m); return m; };
+      // an InstancedMesh you can keep adding to: b.put(position, rotation, scale, colour)
+      const batch = (geo, mat, max, cast = true) => {
+        const m = new THREE.InstancedMesh(geo, mat, max); m.count = 0; m.castShadow = cast; m.receiveShadow = true; m.frustumCulled = false; scene.add(m);
+        m.put = (p, r, s, c) => { K.place(m, m.count, p, r, s); if (c) m.setColorAt(m.count, col.set(c)); m.count++; };
+        return m;
+      };
+      // gull-wing pin, unit size: reaches 1 along +x, shoulder at height 1. Scaled per chip.
+      const gull = (() => { const s = new THREE.Shape(), th = 0.15; s.moveTo(-0.15, 1); s.lineTo(0.3, 1); s.lineTo(0.56, th); s.lineTo(1, th); s.lineTo(1, 0); s.lineTo(0.47, 0); s.lineTo(0.21, 1 - th); s.lineTo(-0.15, 1 - th); s.closePath(); const g = new THREE.ExtrudeGeometry(s, { depth: 1, bevelEnabled: false }); g.translate(0, 0, -0.5); return g; })();
+      const pins = batch(gull, M.tin, 1400), pads = batch(new THREE.BoxGeometry(1, 0.012, 1), M.gold, 2600, false);
+      const bodies = batch(K.roundedBox(1, 1, 1, 0.1, 2), M.ceramic, 500), caps = batch(K.roundedBox(1, 1, 1, 0.12, 2), M.tin, 1000);
+
+      // what is where: parts claim their footprint so the random dressing never lands on the route or on a label
+      const taken = [], silk = [], printed = [];
+      const claim = (x, z, w, d, pad = 0.12) => taken.push([x - w / 2 - pad, z - d / 2 - pad, x + w / 2 + pad, z + d / 2 + pad]);
+      const free = (x, z, w, d) => x - w / 2 > BOARD.x0 + 0.4 && x + w / 2 < BOARD.x1 - 0.4 && z + d / 2 < BOARD.zNear - 0.4 && z - d / 2 > BOARD.zFar + 0.4 && !taken.some((b) => x + w / 2 > b[0] && x - w / 2 < b[2] && z + d / 2 > b[1] && z - d / 2 < b[3]);
+      const claimLine = (pts, half) => { const m = measure(pts); for (let s = 0; s <= m.len; s += 0.25) { const p = m.at(s); claim(p[0], p[1], half * 2, half * 2, 0); } };
+
+      // ---------------------------------------------------------------- parts
+      // The top of a moulded package: speckle, a pin-1 dimple and laser-etched lines (a lighter, matt grey).
+      const etched = (lines, w, d, o = {}) => K.canvasTex(512, Math.round(512 * d / w), (c, W, H) => {
+        c.fillStyle = o.base || '#141415'; c.fillRect(0, 0, W, H);
+        const r = K.rng(lines.join('') + w); for (let i = 0; i < 2600; i++) { c.fillStyle = `rgba(255,255,255,${r.range(0.01, 0.05)})`; c.fillRect(r() * W, r() * H, 1.5, 1.5); }
+        c.strokeStyle = 'rgba(255,255,255,0.05)'; c.lineWidth = 3; c.strokeRect(14, 14, W - 28, H - 28);
+        const g = c.createRadialGradient(46, H - 46, 2, 46, H - 46, 18); g.addColorStop(0, '#050505'); g.addColorStop(0.8, '#0a0a0a'); g.addColorStop(1, '#1e1e1f');
+        c.fillStyle = g; c.beginPath(); c.arc(46, H - 46, 18, 0, 7); c.fill();
+        c.fillStyle = o.ink || '#7b7972'; c.textAlign = 'center'; c.textBaseline = 'middle';
+        const px = Math.min(H / (lines.length + 1.1), W * 0.8 / (0.6 * Math.max(...lines.map((l) => l.length))));
+        lines.forEach((l, i) => { c.font = `${i ? 500 : 600} ${Math.round(px * (i ? 0.6 : 1))}px "IBM Plex Mono"`; c.fillText(l, W / 2, H / 2 + (i - (lines.length - 1) / 2) * px * 0.95); });
+      });
+      // K.roundedBox squeezes its UVs into the rounded corners, so printed tops get a flat projection from above instead
+      const flatTop = (g, w, d) => { const p = g.attributes.position, uv = g.attributes.uv; for (let i = 0; i < p.count; i++) uv.setXY(i, p.getX(i) / w + 0.5, 0.5 - p.getZ(i) / d); return g; };
+      const SIDE = { '+z': -Math.PI / 2, '-z': Math.PI / 2, '+x': 0, '-x': Math.PI };
+      let nU = 5, nC = 0, nL = 0;
+      function chip(x, z, w, d, h, o = {}) {
+        const top = std({ map: etched(o.mark || ['FX' + (200 + nU * 7)], w, d), roughness: 0.6, bumpMap: grain, bumpScale: 0.5 });
+        add(flatTop(K.roundedBox(w, h, d, 0.03, 2), w, d), [M.epoxy, M.epoxy, top, M.epoxy, M.epoxy, M.epoxy], x, 0.05 + h / 2, z);
+        const pitch = o.pitch || 0.17, hs = 0.05 + h * 0.6;
+        for (const side of o.pins || ['+z', '-z']) {
+          const alongX = side[1] === 'z', span = alongX ? w : d, n = Math.floor((span - 0.2) / pitch), sg = side[0] === '+' ? 1 : -1;
+          for (let i = 0; i < n; i++) {
+            const u = (i - (n - 1) / 2) * pitch, px = alongX ? x + u : x + sg * w / 2, pz = alongX ? z + sg * d / 2 : z + u;
+            pins.put([px, 0.014, pz], [0, SIDE[side], 0], [0.3, hs, pitch * 0.42]);
+            pads.put([px + (alongX ? 0 : sg * 0.2), 0.006, pz + (alongX ? sg * 0.2 : 0)], [0, SIDE[side], 0], [0.32, 1, pitch * 0.58]);
+          }
+        }
+        silk.push([x, z, w + (o.pins && o.pins.includes('+x') ? 0.9 : 0.16), d + (!o.pins || o.pins.includes('+z') ? 0.9 : 0.16), o.ref || 'U' + ++nU]);
+        claim(x, z, w + 0.8, d + 0.8);
+      }
+      // surface-mount electrolytic capacitor: a black plastic base, an aluminium can with a crimp, a printed top
+      const canTop = K.canvasTex(256, 256, (c) => {
+        c.fillStyle = '#a3a8ae'; c.fillRect(0, 0, 256, 256);
+        c.strokeStyle = 'rgba(255,255,255,0.10)'; for (let r = 8; r < 128; r += 5) { c.beginPath(); c.arc(128, 128, r, 0, 7); c.stroke(); }
+        c.fillStyle = '#0a0a0b'; c.beginPath(); c.arc(128, 128, 126, Math.PI * 0.72, Math.PI * 1.28); c.fill();      // polarity mark
+        c.font = '600 46px "IBM Plex Mono"'; c.textAlign = 'center'; c.fillText('220', 150, 118); c.font = '500 34px "IBM Plex Mono"'; c.fillText('16V', 150, 160);
+      });
+      const canTopMat = std({ map: canTop, metalness: 1, roughness: 0.42 }), canGeo = {};
+      function can(x, z, r, h) {
+        const key = r + '/' + h;
+        canGeo[key] = canGeo[key] || new THREE.LatheGeometry([[0, h], [r - 0.07, h], [r - 0.02, h - 0.025], [r, h - 0.08], [r, 0.3], [r - 0.045, 0.26], [r - 0.045, 0.2], [r, 0.16], [r, 0]].reverse().map(([a, b]) => new THREE.Vector2(a, b)), 48);   // bottom to top, so the faces point outwards
+        add(K.roundedBox(r * 2 + 0.14, 0.18, r * 2 + 0.14, 0.04, 2), M.plastic, x, 0.11, z);
+        add(canGeo[key], M.alu, x, 0.2, z);
+        const t = add(new THREE.CircleGeometry(r - 0.08, 40), canTopMat, x, 0.2 + h + 0.002, z, false); t.rotation.x = -Math.PI / 2; t.rotation.z = rnd.range(-0.3, 0.3);
+        for (const e of [-1, 1]) { caps.put([x + e * (r + 0.16), 0.03, z], null, [0.3, 0.035, 0.4]); pads.put([x + e * (r + 0.14), 0.006, z], null, [0.55, 1, 0.6]); }
+        silk.push([x, z, r * 2 + 0.34, r * 2 + 0.34, 'C' + ++nC, true]); claim(x, z, r * 2 + 0.9, r * 2 + 0.5);
+      }
+      // the small bricks: ceramic capacitors (tan) and resistors (black), each with tinned end caps on gold pads
+      function brick(x, z, len, wid, h, ry, color) {
+        const c = Math.cos(ry), s = Math.sin(ry);
+        bodies.put([x, 0.014 + h / 2, z], [0, ry, 0], [len * 0.62, h, wid], color);
+        for (const e of [-1, 1]) { caps.put([x + e * c * len * 0.39, 0.014 + h / 2, z - e * s * len * 0.39], [0, ry, 0], [len * 0.24, h * 1.07, wid * 1.07]); pads.put([x + e * c * len * 0.44, 0.006, z - e * s * len * 0.44], [0, ry, 0], [len * 0.4, 1, wid * 1.25]); }
+      }
+      const TAN = ['#8c6a48', '#7d5c3e', '#987650'], bricks = (x, z, n, dx, dz, kind) => { for (let i = 0; i < n; i++) brick(x + dx * i, z + dz * i, 0.5, 0.26, kind ? 0.14 : 0.24, dx ? Math.PI / 2 : 0, kind ? '#0b0b0c' : rnd.pick(TAN)); const w = Math.abs(dx) * (n - 1) + (dx ? 0.3 : 0.6), d = Math.abs(dz) * (n - 1) + (dx ? 0.6 : 0.3); claim(x + dx * (n - 1) / 2, z + dz * (n - 1) / 2, w, d, 0.1); };
+      // a shielded power inductor: a squat grey block with a printed value
+      function inductor(x, z, s) {
+        const top = std({ map: etched([rnd.pick(['4R7', '100', '2R2'])], 1, 1, { base: '#2a2b2e', ink: '#b9b9b4' }), roughness: 0.85 }), side = std({ color: '#232427', roughness: 0.85 });
+        add(flatTop(K.roundedBox(s, s * 0.62, s, 0.1, 3), s, s), [side, side, top, side, side, side], x, 0.02 + s * 0.31, z);
+        for (const e of [-1, 1]) { caps.put([x + e * s * 0.5, 0.07, z], null, [0.12, 0.14, s * 0.6]); pads.put([x + e * s * 0.52, 0.006, z], null, [0.4, 1, s * 0.75]); }
+        silk.push([x, z, s + 0.5, s + 0.24, 'L' + ++nL]); claim(x, z, s + 0.8, s + 0.4);
+      }
+      // an indicator LED: a milky brick that lights up, with a small light of its own
+      function led(x, z, color, lamp = true) {
+        const mat = std({ color: '#d9dde0', roughness: 0.35, emissive: color, emissiveIntensity: 0 });
+        add(K.roundedBox(0.3, 0.17, 0.24, 0.05, 2), mat, x, 0.1, z, false);
+        for (const e of [-1, 1]) { caps.put([x + e * 0.2, 0.08, z], null, [0.12, 0.15, 0.26]); pads.put([x + e * 0.24, 0.006, z], null, [0.24, 1, 0.32]); }
+        claim(x, z, 0.9, 0.5); if (!lamp) { mat.emissiveIntensity = 9; return null; }
+        const l = new THREE.PointLight(color, 0, 7, 2); l.position.set(x, 0.5, z); scene.add(l);
+        return (k) => { mat.emissiveIntensity = 16 * k; l.intensity = 1.6 * k; };
+      }
+      // a metal-shell port. face = +1: mouth towards the camera, -1: mouth away. Returns (k) => set the glow inside.
+      function port(x, z, face) {
+        const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = face > 0 ? 0 : Math.PI; scene.add(g);
+        const W = 2.6, H = 0.9, D = 2.2, y = H / 2 + 0.03;
+        const rr = (w, h, r, s) => { const a = w / 2, b = h / 2; s.moveTo(-a + r, -b); s.lineTo(a - r, -b); s.absarc(a - r, -b + r, r, -Math.PI / 2, 0); s.lineTo(a, b - r); s.absarc(a - r, b - r, r, 0, Math.PI / 2); s.lineTo(-a + r, b); s.absarc(-a + r, b - r, r, Math.PI / 2, Math.PI); s.lineTo(-a, -b + r); s.absarc(-a + r, -b + r, r, Math.PI, Math.PI * 1.5); return s; };
+        const tube = rr(W, H, 0.28, new THREE.Shape()); tube.holes.push(rr(W - 0.13, H - 0.13, 0.22, new THREE.Path()));
+        add(new THREE.ExtrudeGeometry(tube, { depth: D, bevelEnabled: true, bevelSize: 0.012, bevelThickness: 0.012, bevelSegments: 2, curveSegments: 10 }), M.steel, 0, y, -D / 2, true, g);
+        add(new THREE.ExtrudeGeometry(rr(W - 0.14, H - 0.14, 0.21, new THREE.Shape()), { depth: D * 0.4, bevelEnabled: false, curveSegments: 8 }), M.plastic, 0, y, -D / 2 + 0.02, false, g);   // the back wall
+        add(new THREE.BoxGeometry(W * 0.7, 0.1, D * 0.5), std({ color: '#121214', roughness: 0.5 }), 0, y, D * 0.16, false, g);                                                  // the tongue
+        const glow = std({ color: '#d9a546', metalness: 1, roughness: 0.3, emissive: '#ffb25e', emissiveIntensity: 0 });
+        add(new THREE.ExtrudeGeometry(rr(W - 0.14, H - 0.14, 0.21, new THREE.Shape()), { depth: 0.03, bevelEnabled: false, curveSegments: 8 }), M.steel, 0, y, -D / 2 - 0.005, false, g);              // the closed rear of the shell
+        for (let i = 0; i < 10; i++) add(new THREE.BoxGeometry(0.085, 0.014, D * 0.38), glow, (i - 4.5) * 0.17, y + 0.055, D * 0.2, false, g);                               // the contacts
+        for (const sx of [-0.62, 0.62]) add(new THREE.BoxGeometry(0.5, 0.012, 0.32), M.plastic, sx, H + 0.03, 0.25, false, g);                                                // stamped windows in the shell
+        for (const sx of [-1, 1]) for (const sz of [-1, 1]) { add(K.roundedBox(0.16, 0.36, 0.42, 0.04, 2), M.tin, sx * (W / 2 + 0.03), 0.18, sz * D * 0.28, true, g); pads.put([x + sx * (W / 2 + 0.12), 0.006, z + sz * D * 0.28], null, [0.5, 1, 0.7]); }
+        for (let i = 0; i < 9; i++) { const px = x + (i - 4) * 0.2, pz = z - face * (D / 2 - 0.02); pins.put([px, 0.014, pz], [0, face * Math.PI / 2, 0], [0.34, 0.24, 0.085]); pads.put([px, 0.006, pz - face * 0.24], null, [0.12, 1, 0.34]); }
+        const l = new THREE.PointLight('#ffb060', 0, 9, 2); l.position.set(0, y + 0.1, D * 0.25); g.add(l);
+        const spill = new THREE.SpotLight('#ffb060', 0, 16, 0.8, 1, 2); spill.position.set(0, y, D / 2 - 0.3); spill.target.position.set(0, face > 0 ? -1.6 : -0.7, D / 2 + (face > 0 ? 4 : 6)); g.add(spill, spill.target);   // light falling out of the mouth onto the desk
+        claim(x, z, W + 1.2, D + 1.4);
+        return (k) => { glow.emissiveIntensity = 9 * k; l.intensity = 2.4 * k; spill.intensity = (face > 0 ? 60 : 800) * k; };
+      }
+
+      // ---------------------------------------------------------------- the landmarks
+      const portIn = port(PORT_IN[0], PORT_IN[1], 1), portOut = port(PORT_OUT[0], PORT_OUT[1], -1);
+      MEM.xs.forEach((x, i) => chip(x, MEM.z, MEM.w, MEM.d, 0.3, { mark: ['FX8G', 'DR5-2611 M' + (i + 1)], ref: 'U' + (i + 1) }));
+      // glow that leaks out from under a working chip: a soft additive patch on the board, with the pins in silhouette
+      const haze = K.canvasTex(256, 256, (c) => { c.filter = 'blur(26px)'; c.fillStyle = '#fff'; c.fillRect(64, 64, 128, 128); });
+      const underglow = (x, z, w, d) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w * 2, d * 2), new THREE.MeshBasicMaterial({ map: haze, color: 0, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false })); m.rotation.x = -Math.PI / 2; m.position.set(x, 0.02, z); scene.add(m); return m.material.color; };
+      const memGlow = MEM.xs.map((x) => underglow(x, MEM.z, MEM.w + 0.5, MEM.d + 0.9));
+
+      // The processor: a dark substrate in a nickel frame carrying a grid of bare silicon dies. Each die has a floorplan
+      // that reads as iridescent metal when idle and as a lit city block when the core is working.
+      const floorplan = (lit) => K.canvasTex(512, 512, (c) => {
+        const r = K.rng(77); c.fillStyle = lit ? '#000' : '#6a7180'; c.fillRect(0, 0, 512, 512);
+        const split = (x, y, w, h, n) => {
+          if (n > 0 && (w > 230 || h > 230 || r.chance(0.5))) { const f = r.range(0.35, 0.65); if (w > h) { split(x, y, w * f, h, n - 1); split(x + w * f, y, w * (1 - f), h, n - 1); } else { split(x, y, w, h * f, n - 1); split(x, y + h * f, w, h * (1 - f), n - 1); } return; }
+          const b = r.range(0.25, 1), hatch = r.chance(0.7), vert = r.chance(0.5);
+          if (lit) {
+            c.fillStyle = `rgba(255,255,255,${hatch ? b * 0.1 : b * 0.3})`; c.fillRect(x + 4, y + 4, w - 8, h - 8);
+            c.strokeStyle = `rgba(255,255,255,${0.5 + b * 0.5})`; c.lineWidth = 4; c.strokeRect(x + 6, y + 6, w - 12, h - 12);
+            if (hatch) { c.fillStyle = `rgba(255,255,255,${b})`; for (let k = 12; k < (vert ? w : h) - 14; k += 14) vert ? c.fillRect(x + k, y + 12, 6, h - 24) : c.fillRect(x + 12, y + k, w - 24, 6); }
+            else for (let k = 0; k < w * h / 700; k++) c.fillRect(x + 12 + Math.floor(r() * (w - 30) / 12) * 12, y + 12 + Math.floor(r() * (h - 30) / 12) * 12, 7, 7);
+          } else { c.fillStyle = r.pick(['#59606e', '#7a7468', '#566d6d', '#72688a', '#8a8f9a']); c.fillRect(x + 3, y + 3, w - 6, h - 6); }
+        };
+        split(26, 26, 460, 460, 4);
+        c.fillStyle = lit ? 'rgba(255,255,255,0.9)' : '#b9a36a'; for (let k = 0; k < 30; k++) for (const [x, y] of [[20 + k * 16.3, 10], [20 + k * 16.3, 496], [10, 20 + k * 16.3], [496, 20 + k * 16.3]]) c.fillRect(x - 3, y - 3, 6, 6);   // bond pads
+      });
+      const planDim = floorplan(false), planLit = floorplan(true), dieSide = std({ color: '#17181b', metalness: 0.6, roughness: 0.4 }), cores = [];
+      {
+        const { x, z, size: s } = CPU, inner = s - 2.1, pitch = (inner - 0.3) / CORES, die = pitch * 0.85;
+        const subTop = std({ roughness: 0.55, map: K.canvasTex(1024, 1024, (c) => {
+          const r = K.rng(9); c.fillStyle = '#14130f'; c.fillRect(0, 0, 1024, 1024);
+          c.strokeStyle = 'rgba(190,150,70,0.22)'; c.lineWidth = 2; for (let k = 0; k < 220; k++) { const a = r() * 6.283, d0 = r.range(120, 360), d1 = d0 + r.range(60, 160); c.beginPath(); c.moveTo(512 + Math.cos(a) * d0, 512 + Math.sin(a) * d0); c.lineTo(512 + Math.cos(a) * d1, 512 + Math.sin(a) * d1); c.stroke(); }
+          c.fillStyle = '#b08a3e'; for (let k = 0; k < 60; k++) for (const [px, py] of [[32 + k * 16.3, 14], [32 + k * 16.3, 1010], [14, 32 + k * 16.3], [1010, 32 + k * 16.3]]) { c.beginPath(); c.arc(px, py, 4, 0, 7); c.fill(); }
+          c.beginPath(); c.moveTo(30, 994); c.lineTo(74, 994); c.lineTo(30, 950); c.fill();
+        }) });
+        const sub = std({ color: '#12110e', roughness: 0.6 });
+        add(flatTop(K.roundedBox(s, 0.14, s, 0.03, 2), s, s), [sub, sub, subTop, sub, sub, sub], x, 0.12, z);
+        const ring = new THREE.Shape(), a = s / 2 - 0.22, b = inner / 2;
+        ring.moveTo(-a, -a); ring.lineTo(a, -a); ring.lineTo(a, a); ring.lineTo(-a, a); ring.closePath();
+        const hole = new THREE.Path(); hole.moveTo(-b, -b); hole.lineTo(-b, b); hole.lineTo(b, b); hole.lineTo(b, -b); hole.closePath(); ring.holes.push(hole);
+        const frame = add(new THREE.ExtrudeGeometry(ring, { depth: 0.1, bevelEnabled: true, bevelSize: 0.025, bevelThickness: 0.025, bevelSegments: 2 }), std({ color: '#3a3d43', metalness: 1, roughness: 0.48 }), x, 0.215, z); frame.rotation.x = -Math.PI / 2;
+        for (let i = 0; i < CORES; i++) for (let j = 0; j < CORES; j++) {
+          const top = new THREE.MeshPhysicalMaterial({ map: planDim, color: '#aab2c4', metalness: 1, roughness: 0.26, emissive: '#ff8a2a', emissiveMap: planLit, emissiveIntensity: 0, iridescence: 1, iridescenceIOR: 1.7, iridescenceThicknessRange: [220, 420] });
+          const cx = x + (i - (CORES - 1) / 2) * pitch, cz = z - (j - (CORES - 1) / 2) * pitch;
+          add(new THREE.BoxGeometry(die + 0.12, 0.04, die + 0.12), M.plastic, cx, 0.2, cz, false);                           // underfill
+          const m = add(flatTop(K.roundedBox(die, 0.1, die, 0.012, 1), die, die), [dieSide, dieSide, top, dieSide, dieSide, dieSide], cx, 0.26, cz); m.rotation.y = Math.floor(K.hash(i, j) * 4) * Math.PI / 2;
+          cores.push({ top, t0: P.coreT(i, j), seed: i * 7 + j });
+        }
+        silk.push([x, z, s + 0.3, s + 0.3, '']); claim(x, z, s + 1.0, s + 1.0);
+      }
+      const cpuGlow = underglow(CPU.x, CPU.z, CPU.size * 0.78, CPU.size * 0.78), outGlow = underglow(PORT_OUT[0], PORT_OUT[1] + 0.3, 2.6, 2.4);
+      // how bright a core is: it flashes on when the wave reaches it, shimmers while it works, and all cores beat once
+      // together at the moment the answer leaves
+      const coreLevel = (c, t) => {
+        const a = t - c.t0; if (a <= 0) return 0;
+        const on = 1 - Math.exp(-a / 0.04), flash = Math.exp(-a / 0.22), work = 0.5 + 0.22 * Math.sin(t * 31 + c.seed * 2.4) * Math.sin(t * 13.7 + c.seed);
+        const out = t - T.cpuOut, beat = out > -0.12 ? (out < 0 ? K.smooth(-0.12, 0, out) * 0.9 : 0.9 * Math.exp(-out / 0.35)) : 0;
+        return on * (work * (out > 0 ? 0.55 + 0.45 * Math.exp(-out / 0.5) : 1) + 1.1 * flash + beat);
+      };
+
+      // ---------------------------------------------------------------- the printed labels
+      // White silkscreen, stretched along the direction of flight like road markings so it still reads from a low camera.
+      const STRETCH = 1.4;
+      const label = (text, ref, x, z, align) => {
+        const m = K.textPlane(text, { font: '600 200px "IBM Plex Mono"', height: 1.0, color: '#eceadf', lit: true, letterSpacing: 6, roughness: 0.78, pad: 20 });
+        const r = K.rng(text), c = m.userData.tex.ctx; c.globalCompositeOperation = 'destination-out';       // pinholes and thin patches, as in real screen print
+        for (let i = 0; i < 500; i++) { c.fillStyle = `rgba(0,0,0,${r.range(0.15, 0.9)})`; c.beginPath(); c.arc(r() * c.canvas.width, r() * c.canvas.height, r.range(0.6, 2.4), 0, 7); c.fill(); }
+        m.userData.tex.needsUpdate = true;
+        const w = m.userData.size[0], d = m.userData.size[1] * STRETCH, cx = align === 'left' ? x + w / 2 : align === 'right' ? x - w / 2 : x;
+        m.rotation.x = -Math.PI / 2; m.scale.y = STRETCH; m.position.set(cx, 0.006, z); m.receiveShadow = true; scene.add(m);
+        const s = K.textPlane(ref, { font: '500 64px "IBM Plex Mono"', height: 0.3, color: '#eceadf', lit: true, roughness: 0.78 });
+        s.rotation.x = -Math.PI / 2; s.scale.y = STRETCH; s.position.set(cx - w / 2 + s.userData.size[0] / 2 + 0.1, 0.006, z - d / 2 + 0.02); s.receiveShadow = true; scene.add(s);
+        claim(cx, z - 0.15, w, d + 0.5, 0.2); printed.push([cx, z - 0.12, w + 0.3, d + 0.55]);
+        return m;
+      };
+      label(STOPS[0], REFS[0], PORT_IN[0] - 1.9, 0.5, 'right');
+      label(STOPS[1], REFS[1], 0.2, P.lane + 1.15, 'center');
+      label(STOPS[2], REFS[2], P.busX + 1.1, CPU.z + CPU.size / 2 + 1.45, 'left');
+      label(STOPS[3], REFS[3], PORT_OUT[0] - 1.8, PORT_OUT[1] - 0.05, 'right');
+
+      // ---------------------------------------------------------------- the streets
+      // Every gold track is a flat ribbon. Each vertex stores the time a pulse passes it (aT) plus [strength, repeat
+      // period, position across the track] (aK); the shader lights each bit of track from its own clock: a white-hot
+      // head, an amber tail that cools in a third of a second and a faint ember. Motion blur comes for free.
+      const rib = { pos: [], aT: [], aK: [], idx: [] };
+      const track = (pts, width, timeAt, amp = 1, period = 0) => {
+        const L = offset(pts, width / 2), R = offset(pts, -width / 2), m = measure(pts);
+        for (let i = 0; i < pts.length - 1; i++) {
+          const n = Math.max(1, Math.ceil((m.cum[i + 1] - m.cum[i]) / 0.12));
+          for (let k = 0; k <= n; k++) {
+            const f = k / n, s = K.lerp(m.cum[i], m.cum[i + 1], f), tt = timeAt ? timeAt(s) : 1e4, v = rib.pos.length / 3;
+            rib.pos.push(K.lerp(L[i][0], L[i + 1][0], f), 0.011, K.lerp(L[i][1], L[i + 1][1], f), K.lerp(R[i][0], R[i + 1][0], f), 0.011, K.lerp(R[i][1], R[i + 1][1], f));
+            rib.aT.push(tt, tt); rib.aK.push(amp, period, 0, amp, period, 1);
+            if (k < n) rib.idx.push(v, v + 1, v + 2, v + 1, v + 3, v + 2);
+          }
+        }
+        claimLine(pts, width / 2 + 0.18);
+      };
+      track(P.a.pts, 0.13, P.runA.timeAt);
+      P.taps.forEach((q) => track(q.path.pts, 0.1, q.run.timeAt));
+      P.bus.forEach((q) => track(q.path.pts, 0.09, q.run.timeAt));
+      track(P.c.pts, 0.13, P.runC.timeAt);
+      // side streets: bundles of parallel tracks fanning out of the big chips, with a little dim traffic of their own
+      const STREETS = [
+        { n: 7, pts: [[CPU.x - 4.55, -24.6], [-5.4, -24.6], [-7.6, -22.4], [-7.6, -16.5], [-9.6, -14.5], [-9.6, -7.3]] },
+        { n: 6, pts: [[CPU.x + 4.55, -24.0], [7.9, -24.0], [9.6, -22.3], [9.6, -13.2]] },
+        { n: 5, pts: [[-0.6, CPU.z - 4.55], [-0.6, -32.4], [-2.4, -34.2], [-9.6, -34.2]] },
+        { n: 4, pts: [[CPU.x + 4.55, -27.9], [8.3, -27.9], [9.5, -29.1], [9.5, -33.4]] },
+        { n: 6, pts: [[5.4, P.pinNear + 0.1], [5.4, -8.2], [7.2, -6.4], [7.2, -2.4]] },
+      ];
+      STREETS.forEach((b, bi) => { for (let k = 0; k < b.n; k++) { const pts = offset(b.pts, (k - (b.n - 1) / 2) * 0.2), live = K.hash(bi, k) < 0.4, len = measure(pts).len, ph = K.hash(k, bi) * 3, dir = K.hash(bi, k, 3) < 0.5; track(pts, 0.075, live ? (s) => ph + (dir ? s : len - s) / 7 : null, 0.22, 2.4 + K.hash(bi, k, 9)); } });
+      const uTime = { value: 0 }, ribbons = new THREE.BufferGeometry();
+      ribbons.setAttribute('position', new THREE.Float32BufferAttribute(rib.pos, 3)); ribbons.setAttribute('aT', new THREE.Float32BufferAttribute(rib.aT, 1)); ribbons.setAttribute('aK', new THREE.Float32BufferAttribute(rib.aK, 3));
+      ribbons.setAttribute('normal', new THREE.Float32BufferAttribute(rib.pos.map((_, i) => (i % 3 === 1 ? 1 : 0)), 3)); ribbons.setIndex(rib.idx);
+      const trackMat = M.gold.clone(); trackMat.side = THREE.DoubleSide;
+      trackMat.onBeforeCompile = (sh) => {
+        sh.uniforms.uTime = uTime;
+        sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute float aT; attribute vec3 aK; varying float vT; varying vec3 vK;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvT = aT; vK = aK;');
+        sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nuniform float uTime; varying float vT; varying vec3 vK;').replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
+          float age = uTime - vT; if (vK.y > 0.0) age = mod(age, vK.y);
+          float a = max(age, 0.0), front = age < 0.0 ? exp(age / 0.006) : 1.0;
+          float heat = front * (10.0 * exp(-a / 0.035) + 1.5 * exp(-a / 0.3) + (vK.y > 0.0 ? 0.0 : 0.22));
+          float across = 1.0 - 0.5 * pow(abs(vK.z * 2.0 - 1.0), 3.0);
+          totalEmissiveRadiance += mix(vec3(1.0, 0.42, 0.09), vec3(1.0, 0.8, 0.52), exp(-a / 0.05)) * heat * vK.x * across;`);
+      };
+      const streets = new THREE.Mesh(ribbons, trackMat); streets.receiveShadow = true; streets.frustumCulled = false; scene.add(streets);
+
+      // ---------------------------------------------------------------- the rest of the city
+      // hand-placed where the camera looks, then a seeded scatter fills the outskirts
+      const pwr = led(PORT_IN[0] + 2.1, -0.4, '#35ff7a'), act = led(MEM.xs[3] + 1.9, P.lane + 0.1, '#ffb347'), done = led(PORT_OUT[0] - 1.75, PORT_OUT[1] + 2.1, '#35ff7a');
+      const far1 = led(-9.2, -20.5, '#ff3b30'), far2 = led(10.2, -30.2, '#ff3b30');
+      claim(3, -34.2, 8.5, 3.8);                                                       // keep the ground in front of the last stop clear for the final frame
+      for (let i = 0, n = 0; i < 300 && n < 18; i++) { const x = rnd.range(BOARD.x0, BOARD.x1), z = rnd.range(BOARD.zFar, -5); if (Math.abs(x - 1) > 6 && free(x, z, 0.9, 0.5)) { led(x, z, rnd.pick(['#ffb347', '#ffb347', '#35ff7a', '#ff3b30']), false); n++; } }   // distant windows: they turn into bokeh
+      chip(4.6, -3.6, 1.3, 1.1, 0.26, { pins: ['-x', '+x'], pitch: 0.24 });
+      chip(-9.6, -5.9, 2.4, 1.7, 0.3, { pitch: 0.2 }); chip(9.6, -11.8, 2.2, 1.7, 0.3, { pitch: 0.2 }); chip(7.2, -1.0, 2.0, 1.6, 0.3, { pitch: 0.2 }); chip(-10.3, -34.2, 1.6, 2.2, 0.3, { pins: ['+x', '-x'], pitch: 0.2 }); chip(9.5, -34.6, 2.2, 1.6, 0.3, { pitch: 0.2 });
+      bricks(MEM.xs[0] - 1.5, MEM.z - 0.9, 4, 0, 0.6, 0); bricks(MEM.xs[3] + 1.5, MEM.z - 0.9, 4, 0, 0.6, 0);
+      bricks(CPU.x + CPU.size / 2 + 0.55, CPU.z + 3.2, 5, 0, -0.55, 0); bricks(CPU.x - CPU.size / 2 - 0.55, CPU.z - 1.2, 5, 0, -0.55, 0); bricks(CPU.x - 3.4, CPU.z - CPU.size / 2 - 0.5, 6, 0.6, 0, 0);
+      bricks(-2.6, -1.5, 3, 0.6, 0, 1); bricks(PORT_OUT[0] + 1.9, PORT_OUT[1] + 1.9, 3, 0.6, 0, 1);
+      [[-7.0, -2.3, 0.75, 2.0], [-8.9, -1.4, 0.6, 1.5], [-7.4, -10.6, 0.9, 2.6], [-9.4, -11.2, 0.75, 2.0], [7.3, -9.9, 0.75, 2.0], [6.6, -16.2, 0.9, 2.6], [8.7, -16.8, 0.9, 2.6], [7.6, -18.9, 0.75, 2.0], [-6.1, -19.6, 0.75, 2.0], [-5.6, -30.6, 0.9, 2.6], [-7.6, -29.8, 0.75, 2.0], [8.2, -36.2, 0.75, 2.0], [10.2, -37.0, 0.6, 1.5], [-3.6, -36.6, 0.75, 2.0]].forEach((c) => can(...c));
+      inductor(10.3, -18.4, 1.5); inductor(-10.2, -17.2, 1.5); inductor(-10.4, -27.0, 1.3);
+      for (let i = 0, n = 0; i < 900 && n < 70; i++) {
+        const x = rnd.range(BOARD.x0, BOARD.x1), z = rnd.range(BOARD.zFar, BOARD.zNear), k = rnd();
+        if (k < 0.2 && Math.abs(x - 1) > 6.5) { const r = rnd.pick([0.6, 0.75, 0.9]); if (free(x, z, r * 2 + 0.9, r * 2 + 0.5)) { can(x, z, r, r === 0.9 ? 2.6 : r === 0.6 ? 1.5 : 2.0); n++; } }
+        else if (k < 0.4 && Math.abs(x - 1) > 5) { const w = rnd.range(1.2, 2.2), d = rnd.range(1.0, 1.7); if (free(x, z, w + 0.8, d + 0.8)) { chip(x, z, w, d, 0.28, { pitch: 0.2 }); n++; } }
+        else if (k < 0.47 && Math.abs(x - 1) > 6.5) { if (free(x, z, 2.2, 1.8)) { inductor(x, z, 1.3); n++; } }
+        else { const m = rnd.int(2, 5), horiz = rnd.chance(0.5), w = horiz ? m * 0.6 : 0.6, d = horiz ? 0.6 : m * 0.55; if (free(x + (horiz ? (m - 1) * 0.3 : 0), z + (horiz ? 0 : (m - 1) * 0.275), w, d)) { bricks(x, z, m, horiz ? 0.6 : 0, horiz ? 0 : 0.55, rnd.chance(0.35) ? 1 : 0); n++; } }
+      }
+
+      // ---------------------------------------------------------------- the board itself
+      // Two canvases painted from the same drawing: colour, and a data map with height in red (the copper under the
+      // mask stands a little proud, which is what catches the raking light) and roughness in green.
+      const PPU = 128, BW = BOARD.x1 - BOARD.x0, BD = BOARD.zNear - BOARD.zFar, r2 = K.rng(21), inner = [], vias = [];
+      for (let b = 0; b < 54; b++) {
+        let x = r2.range(BOARD.x0, BOARD.x1), z = r2.range(BOARD.zFar, BOARD.zNear), dir = r2.int(0, 7); const n = r2.int(2, 7), pts = [[x, z]];
+        for (let s = r2.int(2, 4); s > 0; s--) { const l = r2.range(1.5, 7); x += Math.cos(dir * Math.PI / 4) * l; z += Math.sin(dir * Math.PI / 4) * l; pts.push([x, z]); dir += r2.pick([-1, 1]); }
+        for (let k = 0; k < n; k++) { const o = offset(pts, (k - (n - 1) / 2) * 0.17); inner.push(o); vias.push(o[0], o[o.length - 1]); }
+      }
+      const gold = [P.a.pts, P.c.pts, ...P.taps.map((q) => q.path.pts), ...P.bus.map((q) => q.path.pts), ...STREETS.flatMap((b) => Array.from({ length: b.n }, (_, k) => offset(b.pts, (k - (b.n - 1) / 2) * 0.2)))];
+      const paint = (c, scale, data) => {
+        c.scale(scale, scale); c.lineJoin = 'miter'; c.lineCap = 'butt';
+        const X = (x) => (x - BOARD.x0) * PPU, Z = (z) => (z - BOARD.zFar) * PPU;
+        const line = (pts, w, style) => { c.strokeStyle = style; c.lineWidth = w * PPU; c.beginPath(); pts.forEach((p, i) => (i ? c.lineTo(X(p[0]), Z(p[1])) : c.moveTo(X(p[0]), Z(p[1])))); c.stroke(); };
+        c.fillStyle = data ? 'rgb(0,92,0)' : '#063a22'; c.fillRect(0, 0, BW * PPU, BD * PPU);
+        if (!data) { const r = K.rng(5); for (let i = 0; i < 70; i++) { const x = r() * BW * PPU, y = r() * BD * PPU, s = r.range(200, 700), g = c.createRadialGradient(x, y, 0, x, y, s); g.addColorStop(0, `rgba(${r.chance(0.5) ? '4,20,14' : '16,58,40'},0.35)`); g.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = g; c.fillRect(x - s, y - s, s * 2, s * 2); } }
+        if (data) c.globalCompositeOperation = 'lighter';
+        inner.forEach((p) => line(p, 0.075, data ? 'rgb(110,0,0)' : 'rgba(38,112,76,0.55)'));                         // copper under the mask
+        c.globalCompositeOperation = 'source-over';
+        c.fillStyle = data ? 'rgb(0,92,0)' : '#063a22'; printed.forEach(([x, z, w, d]) => c.fillRect(X(x - w / 2), Z(z - d / 2), w * PPU, d * PPU));   // nothing runs under the big labels
+        gold.forEach((p) => line(p, 0.3, data ? 'rgb(0,92,0)' : '#063a22'));                                           // clearance around the gold streets
+        if (!data) gold.forEach((p) => line(p, 0.08, '#6b4f1c'));                                                      // (their geometry sits on top; this shows in the mirrored outskirts)
+        vias.forEach(([x, z]) => { if (printed.some(([px, pz, pw, pd]) => Math.abs(x - px) < pw / 2 + 0.1 && Math.abs(z - pz) < pd / 2 + 0.1)) return; c.fillStyle = data ? 'rgb(150,40,0)' : '#b98d3a'; c.beginPath(); c.arc(X(x), Z(z), 0.085 * PPU, 0, 7); c.fill(); c.fillStyle = data ? 'rgb(0,200,0)' : '#020403'; c.beginPath(); c.arc(X(x), Z(z), 0.035 * PPU, 0, 7); c.fill(); });
+        // silkscreen: an outline and a reference designator for every part
+        c.strokeStyle = c.fillStyle = data ? 'rgb(120,190,0)' : '#dddbd0'; c.lineWidth = 0.035 * PPU; c.font = `500 ${0.3 * PPU}px "IBM Plex Mono"`; c.textBaseline = 'bottom';
+        silk.forEach(([x, z, w, d, ref, round]) => {
+          c.beginPath(); if (round) { c.arc(X(x), Z(z), w / 2 * PPU, 0.25, Math.PI - 0.25); c.moveTo(X(x) + Math.cos(Math.PI + 0.25) * w / 2 * PPU, Z(z) + Math.sin(Math.PI + 0.25) * w / 2 * PPU); c.arc(X(x), Z(z), w / 2 * PPU, Math.PI + 0.25, -0.25); } else c.rect(X(x - w / 2), Z(z - d / 2), w * PPU, d * PPU); c.stroke();
+          if (ref) c.fillText(ref, X(x - w / 2), Z(z - d / 2) - 0.06 * PPU);
+        });
+      };
+      const boardMap = K.canvasTex(BW * PPU, BD * PPU, (c) => paint(c, 1, false));
+      const boardData = K.canvasTex(BW * PPU / 2, BD * PPU / 2, (c, w, h) => {
+        paint(c, 0.5, true); c.setTransform(1, 0, 0, 1, 0, 0);
+        const d = c.getImageData(0, 0, w, h), r = K.rng(8);                                                             // fine grain: tiny bumps and roughness speckle
+        for (let i = 0; i < d.data.length; i += 4) { const n = r(); d.data[i] = Math.min(255, d.data[i] + n * 16); d.data[i + 1] = Math.min(255, d.data[i + 1] + (r() - 0.5) * 34); }
+        c.putImageData(d, 0, 0);
+      }, { data: true });
+      for (const tx of [boardMap, boardData]) { tx.wrapS = THREE.MirroredRepeatWrapping; tx.repeat.set(2, 1); tx.offset.set(-0.5, 0); }
+      // the board is twice as wide as its drawing: the outskirts are the same drawing mirrored, far out of focus
+      const floor = K.mirrorFloor(S, { size: 1, color: '#ffffff', surfaceRoughness: 1, roughness: 0.3, strength: 1, fresnel: true, material: { map: boardMap, bumpMap: boardData, bumpScale: 1.2, roughnessMap: boardData } });
+      floor.scale.set(BW * 2, BD, 1); floor.position.set(0, 0, (BOARD.zNear + BOARD.zFar) / 2);
+      add(new THREE.BoxGeometry(BW * 2, 0.5, BD), std({ color: '#3e4a2b', roughness: 0.7 }), 0, -0.252, (BOARD.zNear + BOARD.zFar) / 2, false);    // the laminate edge
+      const desk = add(new THREE.PlaneGeometry(400, 400), std({ color: '#101114', roughness: 0.82, bumpMap: grain, bumpScale: 0.4 }), 0, -0.5, 0, false); desk.rotation.x = -Math.PI / 2;   // a dark bench mat under the board
+
+      // ---------------------------------------------------------------- flight plan
+      const mix = (a, b, k) => a.map((v, i) => v + (b[i] - v) * k);
+      const busHead = (t) => { const a = P.bus[3], b = P.bus[4]; return mix(a.path.at(a.run.sAt(t)), b.path.at(b.run.sAt(t)), 0.5); };
+      // where the travelling light is: on the pulse while it runs, hovering over a chip while it works
+      const heroAt = (t) => {
+        const a = P.a.at(P.runA.sAt(t)), b = busHead(t), c = P.c.at(P.runC.sAt(t));
+        let p = [a[0], 0.35, a[1]];
+        p = mix(p, [0, 0.9, MEM.z + 0.4], K.seg(t, T.memEnd - 0.15, T.memOut, K.ease.inOut));
+        p = mix(p, [b[0], 0.4, b[1]], K.seg(t, T.memOut - 0.05, T.memOut + 0.3, K.ease.inOut));
+        p = mix(p, [CPU.x, 2.4, CPU.z], K.seg(t, T.cpu, T.wave + T.waveLen * 0.8, K.ease.inOut));
+        p = mix(p, [c[0], 0.35, c[1]], K.seg(t, T.cpuOut - 0.1, T.cpuOut + 0.2, K.ease.inOut));
+        return mix(p, [PORT_OUT[0], 0.6, PORT_OUT[1] + 1.8], K.seg(t, T.answer - 0.05, T.answer + 0.3, K.ease.out));
+      };
+      const heroPower = K.track([[0, 0], [T.launch - 0.05, 0], [T.launch + 0.12, 7], [T.memEnd, 7], [T.memOut, 5], [T.cpu, 7], [T.wave + T.waveLen, 16], [T.cpuOut, 15], [T.cpuOut + 0.25, 7], [T.answer, 7], [T.answer + 0.5, 5], [8, 4.5]]);
+      // A flight through keyframes [t, [x, y, z]] that never stops on the way: a monotone cubic, so the camera keeps
+      // gliding through every key without overshoot and only comes to rest on the last one.
+      const fly = (keys) => (t) => {
+        const n = keys.length; let i = 1; while (i < n - 1 && keys[i][0] < t) i++;
+        const [t0, p0] = keys[i - 1], [t1, p1] = keys[i], h = t1 - t0, u = K.clamp((t - t0) / h), u2 = u * u, u3 = u2 * u;
+        const seg = (j, k) => (keys[j + 1][1][k] - keys[j][1][k]) / (keys[j + 1][0] - keys[j][0]);
+        const slope = (j, k) => { if (j === 0) return seg(0, k); if (j === n - 1) return 0; const a = seg(j - 1, k), b = seg(j, k); return a * b <= 0 ? 0 : 2 * a * b / (a + b); };
+        return p0.map((a, k) => (2 * u3 - 3 * u2 + 1) * a + (u3 - 2 * u2 + u) * h * slope(i - 1, k) + (3 * u2 - 2 * u3) * p1[k] + (u3 - u2) * h * slope(i, k));
+      };
+      const cam = {
+        pos: fly([[0, [0.2, 2.6, 8.8]], [0.7, [0.0, 2.9, 7.6]], [1.3, [-0.6, 3.8, 4.4]], [2.0, [-0.6, 4.7, 1.2]], [2.6, [-0.3, 5.2, -0.6]], [4.0, [1.3, 9.6, -10.3]], [5.5, [1.5, 9.3, -12.0]], [6.9, [3.25, 6.5, -29.8]], [8, [3.3, 6.4, -30.5]]]),
+        aim: fly([[0, [0.2, 0.85, -0.6]], [0.7, [-0.3, 0.6, -1.8]], [1.3, [-1.8, 0.2, -7.2]], [2.0, [0, 0.2, -10.8]], [2.6, [0.2, 0.2, -12.0]], [4.0, [1.5, 0, -24.3]], [5.5, [1.6, 0, -25.0]], [6.9, [3.35, 0, -36.8]], [8, [3.35, 0, -36.9]]]),
+        focus: fly([[0, [0.2, 0.3, 0.8]], [0.7, [0.5, 0.2, -1.5]], [1.3, [-4, 0.2, -7.5]], [2.0, [0, 0.2, -9.0]], [2.6, [0, 0.2, -9.4]], [4.0, [1.5, 0.2, -21.0]], [5.5, [1.6, 0.3, -22.0]], [6.9, [3.5, 0.3, -36.9]], [8, [3.5, 0.3, -36.9]]]),
+        ap: K.track([[0, 0.13], [1.9, 0.12], [4.0, 0.1], [5.5, 0.09], [6.9, 0.11], [8, 0.11]]),
+      };
+      const portInGlow = K.track([[0, 0.6], [T.launch - 0.04, 1.1, 'in'], [T.launch + 0.6, 0.22, 'out'], [8, 0.22]]);
+      const portOutGlow = K.track([[T.answer - 0.06, 0], [T.answer + 0.12, 1.3, 'out'], [T.answer + 0.7, 0.85, 'inOut'], [8, 0.8]]);
+      const amber = new THREE.Color('#ff9a3c');
+
+      return {
+        update(t) {
+          uTime.value = t;
+          const h = heroAt(t); hero.position.set(h[0], h[1], h[2]); hero.intensity = heroPower(t);
+          // memory: each chip glows from underneath from the moment the pulse reaches it until its data has left
+          MEM.xs.forEach((_, i) => { const k = K.seg(t, P.tapT[i] + 0.04, P.tapT[i] + 0.12, K.ease.out) * (1 - 0.85 * K.seg(t, T.memOut + 0.07 * i, T.memOut + 0.07 * i + 0.4)) * (0.85 + 0.15 * Math.sin(t * 47 + i * 2)); memGlow[i].copy(amber).multiplyScalar(1.5 * k); });
+          let sum = 0; for (const c of cores) { const k = coreLevel(c, t); sum += k; c.top.emissiveIntensity = 4.6 * k; }
+          cpuGlow.copy(amber).multiplyScalar(0.9 * sum / cores.length);
+          portIn(portInGlow(t)); portOut(portOutGlow(t)); outGlow.copy(amber).multiplyScalar(1.1 * portOutGlow(t));
+          pwr(0.9 + 0.1 * Math.sin(t * 9)); act(t > P.tapT[0] && t < T.memOut + 0.3 ? (Math.sin(t * 60) > -0.2 ? 1 : 0.1) : 0.04); done(K.seg(t, T.answer + 0.12, T.answer + 0.2));
+          far1(0.6); far2(0.6);
+          K.look(camera, cam.pos(t), cam.aim(t)); K.focus(camera, cam.focus(t), cam.ap(t));
+        },
+      };
+    },
+
+    sound(k) {
+      const P = plan(), pan = (x) => K.clamp(x / 9, -0.7, 0.7), rr = K.rng(12);
+      // a pulse on a track: a short electric zip that rises as the pulse gathers speed
+      const zip = (t0, t1, gain, f, x0, x1) => {
+        const d = t1 - t0;
+        k.tone(t0, { f: [[0, f], [d, f * 2.5]], type: 'sawtooth', dur: d, gain: 0.05 * gain, a: d * 0.35, hold: d * 0.5, filter: 'bandpass', f2: [[0, 500], [d, 2600]], q: 3, verb: 0.2, pan: pan((x0 + x1) / 2) });
+        k.noise(t0, { dur: d, color: 'pink', filter: 'bandpass', f: [[0, 600], [d, 3200]], q: 1.4, gain: 0.17 * gain, a: d * 0.6, verb: 0.2, pan: pan((x0 + x1) / 2) });
+      };
+      k.bed('room', 0, 8, { gain: 0.9 }); k.bed('hum', 0, 8, { gain: 0.4 });
+      k.music('pad', 0, 8, { bpm: 60, chords: [['D3', 'A3', 'D4', 'F#4'], ['D3', 'A3', 'E4', 'G4']], gain: 0.55 });
+      // PROMPT: the port charges, a relay clicks, the pulse leaves
+      k.tone(0, { f: [[0, 90], [T.launch, 230]], type: 'triangle', dur: T.launch + 0.05, gain: 0.12, a: 0.22, pan: pan(PORT_IN[0]) });
+      k.play('click', T.launch, { gain: 1, pan: pan(PORT_IN[0]) }); k.play('thud', T.launch, { gain: 0.35, pan: pan(PORT_IN[0]) });
+      zip(T.launch, P.tapT[0], 1, 280, PORT_IN[0], -5);
+      // MEMORY: one note per chip as the pulse reaches it, then the chatter of a read
+      P.tapT.forEach((t, i) => { k.play('blip', t + 0.04, { f: ['E5', 'G5', 'B5', 'D6'][i], type: 'triangle', dur: 0.12, gain: 1.6, pan: pan(MEM.xs[i]) }); k.play('tock', t + 0.04, { gain: 0.5, f: 700 + i * 90, pan: pan(MEM.xs[i]) }); });
+      k.withMinor(() => { for (let t = P.tapT[0] + 0.1; t < T.memOut + 0.25; t += 0.04 + rr() * 0.03) k.play('tick', t, { gain: 0.3 + rr() * 0.3, f: 3200 + rr() * 2600, pan: pan(rr.range(-4, 4)) }); });
+      // the bus: eight lines leave one after the other
+      k.withMinor(() => P.bus.forEach((q, j) => k.play('tick', q.run.t0, { gain: 0.6, f: 2400 + j * 220, pan: pan(MEM.xs[j >> 1]) })));
+      zip(T.memOut, T.cpu, 1.25, 220, 1, P.busX);
+      // PROCESSOR: a low thump as the bus lands, one soft bell per core rising with the wave, a swell while it works
+      k.play('thud', T.cpu + 0.03, { gain: 0.7, pan: pan(P.busX) });
+      const scale = ['D4', 'F#4', 'A4', 'B4', 'D5', 'F#5', 'A5'];
+      for (let i = 0; i < CORES; i++) for (let j = 0; j < CORES; j++) { const t = P.coreT(i, j), x = CPU.x + (i - (CORES - 1) / 2) * 1.7; k.tone(t, { f: scale[Math.min(scale.length - 1, i + j)], type: 'triangle', dur: 0.55, gain: 0.07, a: 0.004, verb: 0.4, pan: pan(x) }); k.withMinor(() => k.play('tick', t, { gain: 0.35, f: 5200, pan: pan(x) })); }
+      const d = T.cpuOut - T.wave; k.tone(T.wave, { f: [[0, 73.4], [d, 110]], type: 'sawtooth', dur: d + 0.1, gain: 0.07, a: d * 0.9, filter: 'lowpass', f2: [[0, 250], [d, 1500]], verb: 0.2 });
+      // out: all cores beat together and the answer leaves; the camera dives after it
+      k.play('impact', T.cpuOut, { gain: 0.6, pan: pan(CPU.x) }); zip(T.cpuOut, T.answer, 1.3, 340, CPU.x + 3, PORT_OUT[0]);
+      k.play('whoosh', T.cpuOut + 0.1, { dur: 1.0, gain: 0.45, top: 1800 });
+      // ANSWER: the pulse lands in the port, the green LED comes on
+      k.play('tock', T.answer, { gain: 0.9, f: 520, pan: pan(PORT_OUT[0]) }); k.play('click', T.answer + 0.12, { gain: 0.7, pan: 0.2 });
+      k.play('ding', T.answer + 0.12, { f: 'D6', gain: 1, pan: 0.2 }); k.play('ding', T.answer + 0.24, { f: 'A6', gain: 0.6, pan: 0.3 });
+    },
+  });
+}
+```
+

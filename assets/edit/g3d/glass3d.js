@@ -1,12 +1,15 @@
-// Glass 3D objects (owner 2026-11-13): the approved devices (laptop, phone, server, chip, battery) as clear glass
-// with lit edges and one polished gold part, rendered by three.js inside the video. Same parts and moves as the old
-// engine (vector/motion3d.py); coordinates there are x, y, z-up, here x, y-up, z = -y.
+// 3D objects in the video (owner 2026-11-13, looks and moves 2026-11-17): the approved devices (laptop, phone,
+// server, chip, battery) or ANY object the storyboard builds from parts, with one gold part the story is about.
+// Five looks (Futurepedia 3D atlas, owner's picks): glass (Glass and Light), xray, circuit (Circuit City),
+// white (White Model), layers (Layer Stack); one look per video. Moves land on the spoken word: the object's own
+// move, explode, assemble, lift, rise (parts build up), spin. Coordinates: x, y, z-up (as vector/motion3d.py);
+// three.js is x, y-up, z = -y.
 import * as THREE from 'three';
 import { RoomEnvironment } from '../examples/jsm/environments/RoomEnvironment.js';
 import { RoundedBoxGeometry } from '../examples/jsm/geometries/RoundedBoxGeometry.js';
 
 const ease = (t) => { t = Math.min(1, Math.max(0, t)); return t * t * (3 - 2 * t); };
-const B = (cx, cy, cz, sx, sy, sz, gold = false, rx = null) => ({ c: [cx, cy, cz], s: [sx, sy, sz], gold, rx });
+const B = (cx, cy, cz, sx, sy, sz, gold = false, rx = null, shape = 'box') => ({ c: [cx, cy, cz], s: [sx, sy, sz], gold, rx, shape });
 
 const OBJECTS = {
   laptop(u) {
@@ -50,6 +53,54 @@ export const NAMES = {
   battery: ['Case', 'Wall', 'Wall', 'Wall', 'Wall', ...Array.from({ length: 8 }, (_, k) => `Cell ${k + 1}`)],
 };
 const DEFAULT = { laptop: [4, 1, 2], phone: [4, 1, 2], server: [6, 0], chip: [1, 2, 0], battery: [7, 0] };
+export const LOOKS = ['glass', 'xray', 'circuit', 'white', 'layers'];
+export const MOVES = ['own', 'explode', 'assemble', 'lift', 'rise', 'spin'];
+
+// ANY object (2026-11-17): parts from the storyboard, [{shape: box|cyl|sphere, x, y, z, w, d, h, gold, mover, name}]
+// (z is the part's base). Its own move: "mover" parts slide out to the front.
+function custom(parts) {
+  return (u) => parts.map((p) => B(+p.x || 0, (+p.y || 0) - (p.mover ? 1.3 * u : 0), +p.z || 0,
+    Math.max(0.04, +p.w || 0.5), Math.max(0.04, +p.d || 0.5), Math.max(0.04, +p.h || 0.5), !!p.gold,
+    null, ['cyl', 'sphere'].includes(p.shape) ? p.shape : 'box'));
+}
+
+// a move on top of the object's own parts. u = 0..1 over the move, landing on the spoken word.
+function moved(make, move, goldIndex) {
+  const rest = make(0);
+  const mid = rest.reduce((a, p) => [a[0] + p.c[0], a[1] + p.c[1], a[2] + p.c[2] + p.s[2] / 2], [0, 0, 0]).map((v) => v / rest.length);
+  // a part pushed out sideways from the centre and up by its height in the object (lowest stays down), so
+  // stacked things fan into layers and side parts open out, never a gap in the middle
+  const rank = rest.map((p, k) => k).sort((a, b) => rest[a].c[2] - rest[b].c[2] || a - b);
+  const level = rest.map((_, k) => rank.indexOf(k));
+  const away = (p, k, f) => {
+    const d = [p.c[0] - mid[0], p.c[1] - mid[1]];
+    const n = Math.hypot(...d);
+    const side = n > 0.05 ? 0.9 / n : 0;
+    return { ...p, c: [p.c[0] + d[0] * side * f, p.c[1] + d[1] * side * f, p.c[2] + level[k] * 0.32 * f] };
+  };
+  if (move === 'explode') return (u) => make(0).map((p, k) => ({ ...away(p, k, ease(u)), gold: p.gold || (k === goldIndex && u > 0.5) }));
+  if (move === 'assemble') return (u) => make(0).map((p, k) => ({ ...away(p, k, 1 - ease(u)), gold: p.gold || (k === goldIndex && u > 0.6) }));
+  if (move === 'lift') return (u) => make(0).map((p, k) => (k === goldIndex
+    ? { ...p, c: [p.c[0], p.c[1], p.c[2] + 1.2 * ease(u)], gold: u > 0.2 } : p));
+  if (move === 'rise') return (u) => make(0).map((p, k, all) => {
+    const f = ease((u - k / all.length * 0.6) / 0.4);
+    return { ...p, c: [p.c[0], p.c[1], p.c[2] + 2.2 * (1 - f)], fade: f, gold: p.gold || (k === goldIndex && u > 0.85) };
+  });
+  return make;                    // own (and spin: the object's own move plus a full turn, in render)
+}
+
+const shapeGeo = (p) => {
+  const [w, d, h] = p.s;
+  if (p.shape === 'cyl') { const g = new THREE.CylinderGeometry(0.5, 0.5, 1, 48); g.scale(w, h, d); return g; }
+  if (p.shape === 'sphere') { const g = new THREE.SphereGeometry(0.5, 48, 32); g.scale(w, h, d); return g; }
+  return new RoundedBoxGeometry(w, h, d, 3, Math.min(0.04, Math.min(...p.s) * 0.45));
+};
+const edgeGeo = (p) => {
+  const [w, d, h] = p.s;
+  if (p.shape === 'cyl') { const g = new THREE.EdgesGeometry(new THREE.CylinderGeometry(0.5, 0.5, 1, 32), 30); g.scale(w, h, d); return g; }
+  if (p.shape === 'sphere') { const g = new THREE.EdgesGeometry(new THREE.SphereGeometry(0.5, 12, 8), 1); g.scale(w, h, d); return g; }
+  return new THREE.EdgesGeometry(new THREE.BoxGeometry(w, h, d));
+};
 
 function place(part) {   // centre of the part and its x-rotation, in three.js coordinates
   let [x, y, z] = part.c; z += part.s[2] / 2;
@@ -61,28 +112,73 @@ function place(part) {   // centre of the part and its x-rotation, in three.js c
   return { pos: new THREE.Vector3(x, z, -y), a };
 }
 
+const radial = (rgba0, rgba1) => { const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d');
+  const r = g.createRadialGradient(128, 128, 0, 128, 128, 128); r.addColorStop(0, rgba0); r.addColorStop(1, rgba1);
+  g.fillStyle = r; g.fillRect(0, 0, 256, 256); return new THREE.CanvasTexture(c); };
+
+// the five looks: body material(s), edge colours, lights, floor
+function lookOf(name, n) {
+  const gold = new THREE.MeshPhysicalMaterial({ color: 0xe8b84a, metalness: 0.7, roughness: 0.5, clearcoat: 0.15,
+    emissive: 0x7a4c00, emissiveIntensity: 0.8, envMapIntensity: 0.45, specularIntensity: 0.4 });
+  const goldEdge = new THREE.LineBasicMaterial({ color: 0xffd98a, transparent: true, opacity: 0.9 });
+  const line = (color, opacity) => new THREE.LineBasicMaterial({ color, transparent: true, opacity });
+  if (name === 'xray') {
+    const body = new THREE.MeshBasicMaterial({ color: 0x1f9bff, transparent: true, opacity: 0.07, depthWrite: false,
+      blending: THREE.AdditiveBlending, side: THREE.DoubleSide });
+    const hot = new THREE.MeshBasicMaterial({ color: 0xffc35a, transparent: true, opacity: 0.85, depthWrite: false,
+      blending: THREE.AdditiveBlending });
+    return { body: () => body, gold: hot, edge: line(0x6fe8ff, 1), goldEdge: line(0xffe2a0, 1), exposure: 1.0,
+      lights: [], floor: radial('rgba(47,184,255,.30)', 'rgba(47,184,255,0)'), scan: true };
+  }
+  if (name === 'circuit') {
+    const body = new THREE.MeshStandardMaterial({ color: 0x0c1c2c, metalness: 0.65, roughness: 0.35, envMapIntensity: 0.6 });
+    return { body: () => body, gold, edge: line(0x19f0b4, 0.95), goldEdge, exposure: 1.05,
+      lights: [[0x19f0b4, 1.2, [-4, 4, 3]], [0xffffff, 1.0, [5, 8, 2]]],
+      floor: radial('rgba(25,240,180,.22)', 'rgba(25,240,180,0)'), grid: 0x19f0b4 };
+  }
+  if (name === 'white') {
+    const body = new THREE.MeshStandardMaterial({ color: 0xf1efe9, metalness: 0, roughness: 0.6, envMapIntensity: 0.9 });
+    return { body: () => body, gold, edge: line(0xb9bcc2, 0.35), goldEdge, exposure: 1.0,
+      lights: [[0xffffff, 2.2, [5, 9, 4]], [0xdfe8ff, 0.8, [-6, 4, -3]]],
+      floor: radial('rgba(0,0,0,.55)', 'rgba(0,0,0,0)'), floorDark: true };
+  }
+  if (name === 'layers') {
+    const tints = [0x3d7bff, 0x5a6cff, 0x7a5cff, 0x9a52ff, 0xb84cf0, 0x4fa8ff];
+    const mats = tints.map((c) => new THREE.MeshPhysicalMaterial({ color: c, metalness: 0.1, roughness: 0.25, transmission: 0.35,
+      thickness: 0.3, transparent: true, opacity: 0.78, clearcoat: 1, envMapIntensity: 0.8, emissive: c, emissiveIntensity: 0.18 }));
+    return { body: (k) => mats[k % mats.length], gold, edge: line(0xe6e9ff, 0.8), goldEdge, exposure: 1.05,
+      lights: [[0xffffff, 1.4, [5, 8, 2]], [0xb38cff, 1.6, [-5, 3, -4]]],
+      floor: radial('rgba(122,92,255,.28)', 'rgba(122,92,255,0)'), spread: 0.22 };
+  }
+  const glass = new THREE.MeshPhysicalMaterial({ color: 0xbfe2ff, metalness: 0, roughness: 0.03, transmission: 1,
+    thickness: 0.25, ior: 1.5, clearcoat: 1, clearcoatRoughness: 0.02, attenuationColor: new THREE.Color(0x5aa0ff),
+    attenuationDistance: 2.2, envMapIntensity: 0.75, transparent: true, opacity: 0.55, depthWrite: false,
+    side: THREE.DoubleSide });
+  return { body: () => glass, gold, edge: line(0xd8ecff, 0.85), goldEdge, exposure: 1.1,
+    lights: [[0xffffff, 1.5, [5, 8, 2]], [0x7fb2ff, 2.0, [-5, 3, -4]]], floor: radial('rgba(232,194,104,.28)', 'rgba(232,194,104,0)') };
+}
+
 export function mount(canvas, name, opts = {}) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
   renderer.setPixelRatio(1);
   renderer.setSize(canvas.width, canvas.height, false);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.1;
+  const look = lookOf(LOOKS.includes(opts.look) ? opts.look : 'glass');
+  renderer.toneMappingExposure = look.exposure;
   const scene = new THREE.Scene();
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-  const key = new THREE.DirectionalLight(0xffffff, 1.5); key.position.set(5, 8, 2); scene.add(key);
-  const rim = new THREE.DirectionalLight(0x7fb2ff, 2.0); rim.position.set(-5, 3, -4); scene.add(rim);
+  for (const [c, i, p] of look.lights) { const l = new THREE.DirectionalLight(c, i); l.position.set(...p); scene.add(l); }
 
-  const glass = new THREE.MeshPhysicalMaterial({ color: 0xbfe2ff, metalness: 0, roughness: 0.03, transmission: 1,
-    thickness: 0.25, ior: 1.5, clearcoat: 1, clearcoatRoughness: 0.02, attenuationColor: new THREE.Color(0x5aa0ff),
-    attenuationDistance: 2.2, envMapIntensity: 0.75, transparent: true, opacity: 0.55, depthWrite: false,
-    side: THREE.DoubleSide });
-  const gold = new THREE.MeshPhysicalMaterial({ color: 0xe8b84a, metalness: 0.7, roughness: 0.5, clearcoat: 0.15,
-    emissive: 0x7a4c00, emissiveIntensity: 0.8, envMapIntensity: 0.45, specularIntensity: 0.4 });
-  const edgeMat = new THREE.LineBasicMaterial({ color: 0xd8ecff, transparent: true, opacity: 0.85 });
-  const goldEdge = new THREE.LineBasicMaterial({ color: 0xffd98a, transparent: true, opacity: 0.9 });
+  const base = OBJECTS[name] || (opts.parts && opts.parts.length ? custom(opts.parts) : OBJECTS.chip);
+  const names = NAMES[name] || (opts.parts || []).map((p, k) => p.name || `Part ${k + 1}`);
+  const parts0 = base(0);
+  let goldIndex = parts0.findIndex((p) => p.gold);
+  if (goldIndex < 0) { const own = base(1).findIndex((p) => p.gold); goldIndex = own >= 0 ? own : (DEFAULT[name] || [0])[0]; }
+  const move = MOVES.includes(opts.move) ? opts.move : 'own';
+  const spread = look.spread || 0;
+  const make = ((m) => (u) => m(u).map((p, k) => (spread ? { ...p, c: [p.c[0], p.c[1], p.c[2] + k * spread] } : p)))(moved(base, move, goldIndex));
 
-  const make = OBJECTS[name];
   // fit: centre and scale over the whole move so the object never leaves its frame
   const box = new THREE.Box3();
   for (let i = 0; i <= 10; i++) for (const p of make(i / 10)) {
@@ -92,19 +188,27 @@ export function mount(canvas, name, opts = {}) {
   const centre = box.getCenter(new THREE.Vector3()), size = box.getSize(new THREE.Vector3()).length();
   const turn = new THREE.Group(); scene.add(turn);          // turns about the object's own centre
   const group = new THREE.Group(); turn.add(group); group.position.set(-centre.x, 0, -centre.z);
-  const meshes = make(0).map((p) => {
-    const r = Math.min(0.04, Math.min(...p.s) * 0.45);
-    const geo = new RoundedBoxGeometry(p.s[0], p.s[2], p.s[1], 3, r);
-    const m = new THREE.Mesh(geo, glass);
-    const e = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(p.s[0], p.s[2], p.s[1])), edgeMat);
-    m.add(e); group.add(m); return { m, e };
+  const meshes = parts0.map((p, k) => {
+    const m = new THREE.Mesh(shapeGeo(p), look.body(k));
+    const e = new THREE.LineSegments(edgeGeo(p), look.edge);
+    m.add(e); group.add(m); return { m, e, k };
   });
-  // a soft glow on the floor under it
-  const glowTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d');
-    const r = g.createRadialGradient(128, 128, 0, 128, 128, 128); r.addColorStop(0, 'rgba(232,194,104,.28)'); r.addColorStop(1, 'rgba(232,194,104,0)');
-    g.fillStyle = r; g.fillRect(0, 0, 256, 256); return new THREE.CanvasTexture(c); })();
-  const floor = new THREE.Mesh(new THREE.PlaneGeometry(size * 0.95, size * 0.95), new THREE.MeshBasicMaterial({ map: glowTex, transparent: true, depthWrite: false }));
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(size * 0.95, size * 0.95),
+    new THREE.MeshBasicMaterial({ map: look.floor, transparent: true, depthWrite: false }));
   floor.rotation.x = -Math.PI / 2; floor.position.y = box.min.y - 0.02; turn.add(floor);
+  if (look.grid) {           // Circuit City: the object stands on a lit board of traces
+    const grid = new THREE.GridHelper(size * 1.1, 22, look.grid, look.grid);
+    grid.material.transparent = true; grid.material.opacity = 0.22; grid.position.y = box.min.y - 0.015; turn.add(grid);
+  }
+  let scan = null;           // X-Ray: a thin scanner ring sweeps up through the object
+  if (look.scan) {
+    const sz = box.getSize(new THREE.Vector3()), w = sz.x * 0.62 + 0.15, d = sz.z * 0.62 + 0.15;
+    const ring = new THREE.BufferGeometry().setFromPoints([[-w, -d], [w, -d], [w, d], [-w, d], [-w, -d]]
+      .map(([x, z]) => new THREE.Vector3(x, 0, z)));
+    scan = new THREE.Line(ring, new THREE.LineBasicMaterial({ color: 0x9ff0ff, transparent: true, opacity: 0.9,
+      blending: THREE.AdditiveBlending }));
+    turn.add(scan);
+  }
 
   const camera = new THREE.PerspectiveCamera(28, canvas.width / canvas.height, 0.1, 100);
   const dist = size * 1.75;
@@ -113,10 +217,11 @@ export function mount(canvas, name, opts = {}) {
 
   // callouts: a thin line from the exact spot on a part to a small label beside the object (owner 2026-11-13)
   const overlay = opts.overlay || null;
-  const parts0 = make(0);
-  const callouts = (opts.callouts && opts.callouts.length ? opts.callouts : (DEFAULT[name] || []).map((i) => ({ part: i })))
-    .filter((c) => c.part >= 0 && c.part < parts0.length).slice(0, 3)
-    .map((c, k) => ({ ...c, text: (k === 0 && opts.lead) || c.text || NAMES[name][c.part], k }));
+  const want = opts.callouts && opts.callouts.length ? opts.callouts
+    : (DEFAULT[name] || [goldIndex, ...parts0.map((_, k) => k).filter((k) => k !== goldIndex && opts.parts && opts.parts[k] && opts.parts[k].name)]).map((i) => ({ part: i }));
+  const callouts = want.filter((c) => c.part >= 0 && c.part < parts0.length).slice(0, 3)
+    .map((c, k) => ({ ...c, text: (k === 0 && opts.lead) || c.text || names[c.part] || '', k }))
+    .filter((c) => c.text);
   const ns = 'http://www.w3.org/2000/svg';
   const els = overlay ? callouts.map((c) => {
     const g = document.createElementNS(ns, 'g');
@@ -138,7 +243,7 @@ export function mount(canvas, name, opts = {}) {
   }) : [];
   const W = canvas.width, Hh = canvas.height, v = new THREE.Vector3();
 
-  function label(t, u) {
+  function label(t) {
     // anchor: the top middle of the part, as it is now on screen
     const at = (c, ox = 0, oz = 0) => {
       const { m } = meshes[c.part]; const s = parts0[c.part].s;
@@ -171,7 +276,6 @@ export function mount(canvas, name, opts = {}) {
         el.txt.setAttribute('x', lx + 22); el.txt.setAttribute('y', ly + 2);
         const show = Math.min(1, Math.max(0, (t - (opts.at || 1) - 0.7 - c.k * 0.35) / 0.35));
         el.g.setAttribute('opacity', show.toFixed(3));
-        const len = el.line.getTotalLength ? 0 : 0;
         el.line.setAttribute('stroke-dasharray', `${(show * 2000).toFixed(0)} 2000`);
       });
     }
@@ -179,12 +283,15 @@ export function mount(canvas, name, opts = {}) {
 
   return function render(u, yaw, t = 0) {
     make(u).forEach((p, i) => {
-      const { pos, a } = place(p); const { m, e } = meshes[i];
+      const { pos, a } = place(p); const { m, e, k } = meshes[i];
       m.position.copy(pos); m.rotation.set(a, 0, 0);
-      m.material = p.gold ? gold : glass; e.material = p.gold ? goldEdge : edgeMat;
+      m.material = p.gold ? look.gold : look.body(k); e.material = p.gold ? look.goldEdge : look.edge;
+      const f = p.fade === undefined ? 1 : p.fade;
+      m.visible = f > 0.02; m.scale.setScalar(0.6 + 0.4 * f);
     });
-    turn.rotation.y = yaw;
+    turn.rotation.y = yaw + (move === 'spin' ? Math.PI * 2 * ease(u) : 0);
+    if (scan) { const lo = box.min.y, hi = box.max.y; scan.position.y = lo + (hi - lo) * (0.5 - 0.5 * Math.cos(t * 1.6)); }
     renderer.render(scene, camera);
-    if (els.length) label(t, u);
+    if (els.length) label(t);
   };
 }

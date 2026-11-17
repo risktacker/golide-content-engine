@@ -40,9 +40,8 @@ class EditorTest(unittest.TestCase):
         edit = editor.build(raw, self.lines, 12.0, "short", self.sources, Path("/tmp"), [], [])
         types = [s["type"] for s in edit["scenes"]]
         self.assertEqual(types[:4], ["host", "browser_shot", "host", "kinetic_title"])
-        for sc in edit["scenes"]:             # the pace rule: no block holds the screen too long on a Short
-            if sc["type"] != "host":
-                self.assertLessEqual(sc["duration"], editor.BEAT["short"] * 1.6 + 0.9, sc["type"])
+        # 2026-11-17 (owner): words blocks almost zero: at most 2; past that the picture holds
+        self.assertLessEqual(types.count("kinetic_title"), editor.WORDS_MAX)
         self.assertTrue(edit["captions"] and edit["captions"][0]["words"])
         lower = edit["scenes"][2]["data"]
         self.assertEqual(lower["place"], "lower")      # Short: Goli stays below the cards, no corner pop-ins

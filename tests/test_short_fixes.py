@@ -29,8 +29,16 @@ def test_content_past_the_phone_crop_is_shrunk():
     assert f < 1 and 540 - (540 + 118) * f >= 129
 
 
-def test_one_metaphor_in_a_short():
-    assert editor.METAPHOR_CAP["short"] == 1
+def test_at_most_two_words_blocks_and_the_picture_before_holds():
+    sc = lambda t, s, d: {"type": t, "start": s, "duration": d, "data": {}}
+    scenes = [sc("kinetic_title", 0, 2), sc("metaphor", 2, 2), sc("kinetic_title", 4, 2), sc("photo", 6, 2),
+              sc("kinetic_title", 8, 2), sc("kinetic_title", 10, 2), sc("stat_counter", 12, 2)]
+    notes = []
+    out = editor._words_cap(scenes, notes)
+    assert sum(s["type"] == "kinetic_title" for s in out) == 2
+    photo = next(s for s in out if s["type"] == "photo")
+    assert photo["duration"] == 6 and len(notes) == 2
+    assert sum(s["duration"] for s in out) == 14
 
 
 def test_a_long_hook_gets_a_picture_per_sentence_or_clause_and_the_rest_and_shorts_do_not_change():

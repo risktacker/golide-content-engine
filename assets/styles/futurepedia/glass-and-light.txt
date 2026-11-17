@@ -1,0 +1,1418 @@
+NUMBER 6 (GLASS AND LIGHT)
+I want a short 3D motion graphic made with three.js in the "Glass and Light" style. Below is the complete source of a reference animation in this exact style, plus the small rendering kit and sound kit it runs on. Use them as your style guide and rebuild the animation around my content.
+
+MY CONTENT:
+[Describe your topic, or paste your script here. If this is left as is, ask me for it before building.]
+
+
+STORYBOARD FIRST: before building the animation, make a VISUAL storyboard and wait for my OK.
+- One HTML page (show it as an artifact if you can) with a grid of panels, one per beat (about 3-6). Each panel is a still of that beat's key frame, rendered with the STAGE kit from a block-out of the scene: simple forms in the reference's materials, lighting, camera angle and grade, so the panels already look like the finished piece. Render the stills one after another on one canvas with S.seek(time) at about 16 samples (enough for depth of field and soft shadows to read) and copy each into an image. Stills only, no animation or sound yet.
+- Under each panel: the beat number, its start and end time, the exact on-screen text, what moves or changes to get there from the previous panel, what the camera does, and its key sounds.
+- Below the grid, list any facts or numbers you had to assume.
+When I approve it (or after my changes), build the full animation exactly as storyboarded, reusing the storyboard's scene code.
+
+WHAT TO BUILD
+One self-contained HTML file (show it as an artifact if you can):
+- three.js 0.187.0 core only, loaded as an ES module from a CDN with an import map (no addons), then set window.THREE = THREE before running the kit and the style code.
+- A 1920x1080 canvas scaled to fit the window, with a small control bar: play/pause, a scrub slider, the time, a sound toggle, loop on by default.
+- A new style object, built the same way as the reference (content block first, then build(S) returning update(t)), that tells MY CONTENT in this style. 7-12 seconds unless my content needs more.
+- Run it with the kit: const S = await K.run(canvas, style, { samples }). Use a low sample count (2-4) while playing live and the style's full count when rendering frames. Expose window.seek = (t) => S.seek(t) and window.DURATION.
+- Play the style's sound(k) score in sync from the player: on play call stopSound = SOUND.live((k) => style.sound(k), currentT, { voiceover: false }), and call stopSound() on pause, on seek and when the sound toggle is turned off.
+- Include the STAGE kit and the SOUND kit below unchanged.
+- Load these Google Fonts before building (the kit awaits the specs in style.fonts): Inter
+
+HOW TO STAY IN THE STYLE
+- The reference shows the look, not the story. Its objects, layout and beats belong to its own topic: do not reuse them unless my content calls for them. Work out what my content needs to show first, then build those things in this look.
+- Tell my content as an explainer, not a title card: things happen to objects or characters over three or four beats that follow from each other, and the picture does the telling. Words are small captions and labels, never the subject of a shot. End on the result of the process or the end of the story, not on a headline, slogan or logo.
+- Keep the reference's materials, lighting, camera language, grade and the way things move. Change the story, the objects and the words; do not change the look.
+- update(t) must set the whole scene for time t and nothing may build up between calls: the kit calls it many times per frame to make motion blur, depth of field and soft shadows. No Math.random, Date or timers; use K.rng(seed).
+- Build everything in code: no downloaded models, images, HDRIs or textures.
+- Simple forms, beautifully lit and finished, beat complicated models that look wrong. Draw my subject accurately and double-check any facts or numbers you show.
+- It is video, often watched on a phone: keep every word the story needs large, sharp and on screen long enough to read, keep the subject filling most of the frame, and keep everything that matters inside the frame for the whole camera move. The first frame should already be worth looking at, and the last second should hold.
+
+FLOW BETWEEN BEATS
+- A new beat does not automatically mean a new scene. When the next idea builds on the last, stay in the same world: the things that matter stay on screen and move, grow, re-arrange or transform, and the camera travels to the part of the scene where the next idea happens.
+- When the story really moves on (a new place or time, a before/after contrast, a reveal), change scene the way this look would: a turn of the set, a page, a passing object that wipes the frame, a change of light. No hard cuts.
+- The reference's scene count is not a template: fit the number of beats to my content.
+
+SOUND (no voiceover: a fuller mix)
+- A sound starts on the exact frame its event appears: drive picture and sound from the same schedule, as the reference does.
+- Score the events that land (things arriving, labels, contacts, transitions, the key number, the result) with sounds this material would make: glass, plastic, paper, metal, motors.
+- A quiet ambience bed is welcome, and music only if it suits the style. Effects in front, bed and music clearly underneath, and small silences so the big hits read.
+
+
+If you are Claude Code with a shell: render an MP4 in headless Chrome with the GPU enabled. Load the page, call window.seek(i / 30) for every frame, capture the canvas and pipe the frames into ffmpeg; render the sound with SOUND.renderOffline((k) => style.sound(k), DURATION, 48000, { voiceover: false }) and mux it in at about -15 LUFS. Look at a few rendered frames and fix framing, lighting or legibility problems before you call it done.
+
+STYLE CARD
+Name: Glass and Light
+Family: Material worlds
+Use: explainer
+Look: Real glassware on a dark stone table in front of a glowing backdrop: thin clear jars and bottles turned on a lathe, holding coloured liquids with a visible surface, a meniscus and sharp boundaries between layers. Every liquid throws a pool of its own coloured light, with bright caustic lines, on the table in front of it. Small white measure marks are printed on the glass.
+Motion: Calm, with weight. Bottles lift, lean and pour a thin falling stream; levels rise against the marks while the bottle empties; rings spread where the stream lands; layers settle; a jar is shaken hard and set down. The lamp swings slowly behind the glass so the pools of light sweep across the table.
+Light: Back-lit like glass photography: a bright horizon behind, darkness above, and a lamp behind and above the glass, so light comes through the liquids towards the camera. Softboxes give every rounded edge a white rim; the backdrop gives the glass dark and bright lines to bend.
+Materials: Thin clear glass with real refraction and a thick foot; liquids that let the backdrop through, pale where they are thin and deep where they are thick, and turn milky when mixed; brushed steel for lids and spoons; dark matte stone with a faint sheen.
+Camera: One slow continuous dolly: it starts wide enough for the bottles to lift and pour, then moves in on the jar as the layers form and ends close on the finished mixture, still drifting.
+Finish: True colours (neutral tone curve), bloom on the light pools and rims, a soft vignette, fine grain. Captions are a crisp 2D overlay.
+Good for: Recipes, mixtures, ratios, amounts, chemistry: anything that fills, pours, layers or changes colour, told with real glassware. A beat is one action on the vessel (a pour, an addition, a shake, a wait). Amounts are levels against the marks on the glass, ingredients are colours, and a change of state is a change in the liquid (layers, cloudiness, colour). Labels are the measure marks plus one short caption line per beat.
+
+STAGE KIT (lib/stage.js)
+```js
+// STAGE: a small film-style rendering kit for three.js motion graphics. Classic script; needs a global THREE (core only,
+// no addons). It gives every style the same pipeline:
+//   - one clock: stage.seek(t) builds the whole frame for time t, so frames can be rendered alone and in any order
+//   - accumulation rendering: each frame is the average of N sub-renders, which gives real motion blur, anti-aliasing,
+//     true depth of field (the camera moves across a lens aperture) and soft area-light shadows (lights move across
+//     their own surface), all without post-process tricks
+//   - HDR bloom, tone mapping, vignette, grain, chromatic aberration and a crisp 2D overlay for captions
+//   - code-built lighting environments (no HDRI files), a real mirror floor, canvas textures, text planes, easing,
+//     seeded random and noise
+// Globals: K (helpers) and registerStyle(). A style is { id, name, ..., render: {...}, build(S) -> { update(t), overlay? } }.
+(function (root) {
+  const THREE = root.THREE;
+  const K = {};
+  const STYLES = [];
+  root.STYLES = STYLES;
+  root.registerStyle = (s) => { STYLES.push(s); return s; };
+
+  // ---------------------------------------------------------------- maths
+  K.clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  K.lerp = (a, b, t) => a + (b - a) * t;
+  K.map = (x, a, b, c, d) => c + (d - c) * K.clamp((x - a) / (b - a));
+  K.smooth = (a, b, x) => { const t = K.clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
+  // progress of time t through the window [a, b], 0..1, optionally eased: K.seg(t, 1, 2.5, K.ease.out)
+  K.seg = (t, a, b, ease) => { const u = K.clamp((t - a) / (b - a)); return ease ? ease(u) : u; };
+  K.ease = {
+    linear: (t) => t,
+    in: (t) => t * t * t,
+    out: (t) => 1 - Math.pow(1 - t, 3),
+    inOut: (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
+    outQuint: (t) => 1 - Math.pow(1 - t, 5),
+    inOutQuint: (t) => (t < 0.5 ? 16 * t * t * t * t * t : 1 - Math.pow(-2 * t + 2, 5) / 2),
+    outExpo: (t) => (t >= 1 ? 1 : 1 - Math.pow(2, -10 * t)),
+    inExpo: (t) => (t <= 0 ? 0 : Math.pow(2, 10 * t - 10)),
+    outBack: (t, s = 1.70158) => 1 + (s + 1) * Math.pow(t - 1, 3) + s * Math.pow(t - 1, 2),
+    inBack: (t, s = 1.70158) => (s + 1) * t * t * t - s * t * t,
+    outElastic: (t) => (t <= 0 ? 0 : t >= 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * (2 * Math.PI) / 3) + 1),
+    outBounce: (t) => { const n = 7.5625, d = 2.75; if (t < 1 / d) return n * t * t; if (t < 2 / d) return n * (t -= 1.5 / d) * t + 0.75; if (t < 2.5 / d) return n * (t -= 2.25 / d) * t + 0.9375; return n * (t -= 2.625 / d) * t + 0.984375; },
+  };
+  // damped spring from 0 to 1 starting at time 0 (t in seconds). freq in Hz, damp 0..1 (1 = no overshoot)
+  K.spring = (t, freq = 2.2, damp = 0.45) => {
+    if (t <= 0) return 0;
+    const w = 2 * Math.PI * freq;
+    if (damp >= 1) return 1 - Math.exp(-w * t) * (1 + w * t);
+    const wd = w * Math.sqrt(1 - damp * damp);
+    return 1 - Math.exp(-damp * w * t) * (Math.cos(wd * t) + (damp * w / wd) * Math.sin(wd * t));
+  };
+  // keyframe track: K.track([[0, [0,2,8]], [3, [2,2,6], 'inOut'], [6, 5, K.ease.out]]) -> f(t). Values are numbers or
+  // arrays; the ease on a key shapes the move INTO that key.
+  K.track = (keys) => (t) => {
+    if (t <= keys[0][0]) return keys[0][1];
+    for (let i = 1; i < keys.length; i++) {
+      if (t <= keys[i][0]) {
+        const [t0, v0] = keys[i - 1], [t1, v1, e] = keys[i];
+        const fn = typeof e === 'function' ? e : K.ease[e || 'inOut'];
+        const u = fn((t - t0) / (t1 - t0));
+        return Array.isArray(v0) ? v0.map((a, k) => a + (v1[k] - a) * u) : v0 + (v1 - v0) * u;
+      }
+    }
+    return keys[keys.length - 1][1];
+  };
+
+  // like K.track, but the value flows smoothly THROUGH the middle keys without stopping at them (it only eases in at
+  // the first key and out at the last). Use it for camera moves that should feel like one continuous shot.
+  K.path = (keys) => {
+    const n = keys.length, arr = Array.isArray(keys[0][1]), val = (i) => (arr ? keys[i][1] : [keys[i][1]]), dim = val(0).length;
+    const m = keys.map((_, i) => (i === 0 || i === n - 1 ? new Array(dim).fill(0) : val(i).map((_, k) => (val(i + 1)[k] - val(i - 1)[k]) / (keys[i + 1][0] - keys[i - 1][0]))));
+    return (t) => {
+      if (t <= keys[0][0]) return keys[0][1];
+      if (t >= keys[n - 1][0]) return keys[n - 1][1];
+      let i = 1; while (keys[i][0] < t) i++;
+      const t0 = keys[i - 1][0], h = keys[i][0] - t0, u = (t - t0) / h, u2 = u * u, u3 = u2 * u;
+      const a = val(i - 1), b = val(i), out = a.map((_, k) => (2 * u3 - 3 * u2 + 1) * a[k] + (u3 - 2 * u2 + u) * h * m[i - 1][k] + (-2 * u3 + 3 * u2) * b[k] + (u3 - u2) * h * m[i][k]);
+      return arr ? out : out[0];
+    };
+  };
+
+  // ---------------------------------------------------------------- seeded random and noise
+  K.rng = (seed) => {
+    let a = (typeof seed === 'string' ? [...seed].reduce((h, c) => Math.imul(h ^ c.charCodeAt(0), 16777619), 2166136261) : seed * 2654435761) >>> 0;
+    const r = () => { a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+    r.range = (lo, hi) => lo + (hi - lo) * r();
+    r.int = (lo, hi) => Math.floor(lo + (hi - lo + 1) * r());
+    r.pick = (arr) => arr[Math.floor(r() * arr.length)];
+    r.chance = (p) => r() < p;
+    r.gauss = () => { let u = 0, v = 0; while (u === 0) u = r(); v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+    r.sign = () => (r() < 0.5 ? -1 : 1);
+    return r;
+  };
+  // a stable 0..1 hash of up to three numbers (handy for per-instance variation without storing arrays)
+  K.hash = (x, y = 0, z = 0) => { let h = Math.sin(x * 127.1 + y * 311.7 + z * 74.7) * 43758.5453123; return h - Math.floor(h); };
+  K.noise = (seed = 1) => {
+    const r = K.rng(seed), p = new Uint8Array(512), perm = Array.from({ length: 256 }, (_, i) => i);
+    for (let i = 255; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [perm[i], perm[j]] = [perm[j], perm[i]]; }
+    for (let i = 0; i < 512; i++) p[i] = perm[i & 255];
+    const fade = (t) => t * t * t * (t * (t * 6 - 15) + 10);
+    const grad = (h, x, y, z) => { const u = (h & 15) < 8 ? x : y, v = (h & 15) < 4 ? y : (h & 15) === 12 || (h & 15) === 14 ? x : z; return ((h & 1) ? -u : u) + ((h & 2) ? -v : v); };
+    const n3 = (x, y, z) => {
+      const X = Math.floor(x) & 255, Y = Math.floor(y) & 255, Z = Math.floor(z) & 255;
+      x -= Math.floor(x); y -= Math.floor(y); z -= Math.floor(z);
+      const u = fade(x), v = fade(y), w = fade(z), A = p[X] + Y, AA = p[A] + Z, AB = p[A + 1] + Z, B = p[X + 1] + Y, BA = p[B] + Z, BB = p[B + 1] + Z;
+      const L = K.lerp;
+      return L(L(L(grad(p[AA], x, y, z), grad(p[BA], x - 1, y, z), u), L(grad(p[AB], x, y - 1, z), grad(p[BB], x - 1, y - 1, z), u), v),
+        L(L(grad(p[AA + 1], x, y, z - 1), grad(p[BA + 1], x - 1, y, z - 1), u), L(grad(p[AB + 1], x, y - 1, z - 1), grad(p[BB + 1], x - 1, y - 1, z - 1), u), v), w);
+    };
+    const fbm = (x, y, z = 0, oct = 4) => { let s = 0, a = 0.5, f = 1; for (let i = 0; i < oct; i++) { s += a * n3(x * f, y * f, z * f); a *= 0.5; f *= 2; } return s; };
+    return { n3, n2: (x, y) => n3(x, y, 0), fbm };
+  };
+  const halton = (i, b) => { let f = 1, r = 0; while (i > 0) { f /= b; r += f * (i % b); i = Math.floor(i / b); } return r; };
+  K.halton = halton;
+
+  // ---------------------------------------------------------------- textures, text, geometry
+  // K.canvasTex(1024, 512, (ctx, w, h) => {...}) -> THREE.CanvasTexture (sRGB, mipmapped). Redraw with tex.redraw(fn).
+  K.canvasTex = (w, h, draw, opts = {}) => {
+    const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+    const ctx = cv.getContext('2d');
+    if (draw) draw(ctx, w, h);
+    const tex = new THREE.CanvasTexture(cv);
+    tex.colorSpace = opts.data ? THREE.NoColorSpace : THREE.SRGBColorSpace;
+    tex.anisotropy = 8; tex.generateMipmaps = true; tex.minFilter = THREE.LinearMipmapLinearFilter;
+    if (opts.repeat) { tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(opts.repeat[0], opts.repeat[1]); }
+    tex.redraw = (fn) => { ctx.clearRect(0, 0, w, h); fn(ctx, w, h); tex.needsUpdate = true; };
+    tex.canvas2d = cv; tex.ctx = ctx;
+    return tex;
+  };
+  // A flat piece of text living in the 3D world. K.textPlane('Hello', { font: '800 160px "Inter"', color: '#fff',
+  // height: 0.5 }) -> Mesh whose world height is `height` units per line. opts: align, lineHeight, glow (emissive
+  // multiplier for bloom), lit (use a lit material so it takes shadows), maxWidthPx, letterSpacing (px), pad (px).
+  K.textPlane = (text, o = {}) => {
+    const font = o.font || '700 160px "Inter"', px = +(/(\d+(?:\.\d+)?)px/.exec(font) || [0, 160])[1];
+    const lines = String(text).split('\n'), lh = (o.lineHeight || 1.12) * px, pad = o.pad == null ? Math.ceil(px * 0.25) : o.pad;
+    const m = document.createElement('canvas').getContext('2d'); m.font = font;
+    if (o.letterSpacing) m.letterSpacing = o.letterSpacing + 'px';
+    const wpx = Math.ceil(Math.max(...lines.map((l) => m.measureText(l).width))) + pad * 2, hpx = Math.ceil(lh * lines.length) + pad * 2;
+    const tex = K.canvasTex(wpx, hpx, (ctx) => {
+      ctx.font = font; if (o.letterSpacing) ctx.letterSpacing = o.letterSpacing + 'px';
+      ctx.textBaseline = 'middle'; ctx.textAlign = o.align || 'center'; ctx.fillStyle = o.color || '#ffffff';
+      const x = o.align === 'left' ? pad : o.align === 'right' ? wpx - pad : wpx / 2;
+      lines.forEach((l, i) => ctx.fillText(l, x, pad + lh * (i + 0.5)));
+    });
+    const unit = (o.height || 1) / px, hWorld = hpx * unit, wWorld = wpx * unit; // `height` = world size of the font's px size
+    const mat = o.lit
+      ? new THREE.MeshStandardMaterial({ map: tex, transparent: true, alphaTest: 0.02, roughness: o.roughness == null ? 0.8 : o.roughness, metalness: 0 })
+      : new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false });
+    if (o.glow && !o.lit) mat.color.setScalar(o.glow);
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(wWorld, hWorld), mat);
+    mesh.userData.size = [wWorld, hWorld]; mesh.userData.tex = tex;
+    return mesh;
+  };
+  // Box with rounded edges, centred on the origin. r = edge radius, seg = roundness.
+  K.roundedBox = (w, h, d, r = 0.05, seg = 6) => {
+    r = Math.max(1e-4, Math.min(r, w / 2, h / 2, d / 2));
+    const N = 2 * seg + 1, g = new THREE.BoxGeometry(2, 2, 2, N, N, N), p = g.attributes.position, nrm = g.attributes.normal;
+    const half = [w / 2 - r, h / 2 - r, d / 2 - r], v = new THREE.Vector3();
+    for (let i = 0; i < p.count; i++) {
+      const c = [p.getX(i), p.getY(i), p.getZ(i)], inner = [0, 0, 0], a = [0, 0, 0];
+      for (let k = 0; k < 3; k++) {
+        const idx = Math.round((c[k] + 1) * N / 2), side = idx <= seg ? -1 : 1;
+        a[k] = idx <= seg ? -(1 - idx / seg) : (idx - seg - 1) / seg; inner[k] = side * half[k];
+      }
+      v.set(Math.tan(a[0] * Math.PI / 4), Math.tan(a[1] * Math.PI / 4), Math.tan(a[2] * Math.PI / 4)).normalize();
+      p.setXYZ(i, inner[0] + v.x * r, inner[1] + v.y * r, inner[2] + v.z * r); nrm.setXYZ(i, v.x, v.y, v.z);
+    }
+    // UVs: each of the six sides is mapped flat, 0..1 across the whole side, so textures are not stretched at the corners
+    const uv = g.attributes.uv, per = (N + 1) * (N + 1), sz = [w, h, d];
+    const ax = [[2, 1, -1], [2, 1, 1], [0, 2, 1, -1], [0, 2, 1, 1], [0, 1, 1], [0, 1, -1]];   // [u axis, v axis, u sign, v sign] for +x -x +y -y +z -z
+    for (let i = 0; i < p.count; i++) {
+      const f = ax[Math.min(5, Math.floor(i / per))], c = [p.getX(i), p.getY(i), p.getZ(i)];
+      uv.setXY(i, f[2] * c[f[0]] / sz[f[0]] + 0.5, (f[3] || 1) * c[f[1]] / sz[f[1]] + 0.5);
+    }
+    g.computeBoundingBox(); g.computeBoundingSphere();
+    return g;
+  };
+  // Flat rounded rectangle (a card, a screen, a tile), in the XY plane facing +Z, with UVs 0..1 across it.
+  K.roundedRect = (w, h, r = 0.05, seg = 8) => {
+    const s = new THREE.Shape(), x = w / 2, y = h / 2; r = Math.min(r, x, y);
+    s.moveTo(-x + r, -y); s.lineTo(x - r, -y); s.absarc(x - r, -y + r, r, -Math.PI / 2, 0); s.lineTo(x, y - r); s.absarc(x - r, y - r, r, 0, Math.PI / 2);
+    s.lineTo(-x + r, y); s.absarc(-x + r, y - r, r, Math.PI / 2, Math.PI); s.lineTo(-x, -y + r); s.absarc(-x + r, -y + r, r, Math.PI, Math.PI * 1.5);
+    const g = new THREE.ShapeGeometry(s, seg), p = g.attributes.position, uv = g.attributes.uv;
+    for (let i = 0; i < p.count; i++) uv.setXY(i, p.getX(i) / w + 0.5, p.getY(i) / h + 0.5);
+    return g;
+  };
+  // Tube along a list of [x,y,z] points (smooth Catmull-Rom). closed loops allowed.
+  K.tube = (pts, radius = 0.05, o = {}) => {
+    const curve = new THREE.CatmullRomCurve3(pts.map((p) => new THREE.Vector3(p[0], p[1], p[2] || 0)), !!o.closed, 'centripetal');
+    const g = new THREE.TubeGeometry(curve, o.segments || Math.max(8, pts.length * 3), radius, o.radial || 12, !!o.closed);
+    g.userData.curve = curve;
+    return g;
+  };
+  // Set instance i of an InstancedMesh: K.place(mesh, i, [x,y,z], [rx,ry,rz], scale | [sx,sy,sz]). Call
+  // mesh.instanceMatrix.needsUpdate = true once after a batch.
+  const _o = new THREE.Object3D();
+  K.place = (mesh, i, p, r, s) => {
+    _o.position.set(p[0], p[1], p[2]); if (r) _o.rotation.set(r[0], r[1], r[2]); else _o.rotation.set(0, 0, 0);
+    if (s == null) _o.scale.set(1, 1, 1); else if (typeof s === 'number') _o.scale.set(s, s, s); else _o.scale.set(s[0], s[1], s[2]);
+    _o.updateMatrix(); mesh.setMatrixAt(i, _o.matrix);
+  };
+  // Camera: position, look-at target, optional fov and roll. K.focus sets the lens: focus distance (or a point to
+  // focus on) and aperture radius in world units (0 = everything sharp).
+  const _v = new THREE.Vector3();
+  K.look = (cam, pos, target, fov, roll) => {
+    cam.position.set(pos[0], pos[1], pos[2]); cam.up.set(0, 1, 0); cam.lookAt(target[0], target[1], target[2]);
+    if (roll) cam.rotateZ(roll);
+    if (fov && fov !== cam.fov) { cam.fov = fov; cam.updateProjectionMatrix(); }
+  };
+  K.focus = (cam, at, aperture) => {
+    cam.userData.focus = typeof at === 'number' ? at : _v.set(at[0], at[1], at[2]).distanceTo(cam.position);
+    if (aperture != null) cam.userData.aperture = aperture;
+  };
+
+  // ---------------------------------------------------------------- lighting
+  // Code-built lighting environment for reflections and soft fill (replaces an HDRI). K.env(S, { top, horizon,
+  // bottom: sky gradient colours; panels: [{ pos:[x,y,z], size:[w,h], color, power }] bright rectangles that face the
+  // origin (softboxes, windows, a sun); intensity; background: true to also show it behind the scene; blur }).
+  // Metal and glass can only shine if the environment has something bright in it.
+  K.env = (S, o = {}) => {
+    const es = new THREE.Scene();
+    const sky = new THREE.Mesh(new THREE.SphereGeometry(60, 48, 24), new THREE.ShaderMaterial({
+      side: THREE.BackSide, depthWrite: false,
+      uniforms: { top: { value: new THREE.Color(o.top || '#0b0d12') }, hor: { value: new THREE.Color(o.horizon || o.top || '#14171f') }, bot: { value: new THREE.Color(o.bottom || o.horizon || '#050506') }, gain: { value: o.skyPower == null ? 1 : o.skyPower } },
+      vertexShader: 'varying vec3 vD; void main(){ vD = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+      fragmentShader: 'varying vec3 vD; uniform vec3 top, hor, bot; uniform float gain; void main(){ float y = normalize(vD).y; vec3 c = y > 0.0 ? mix(hor, top, pow(y, 0.6)) : mix(hor, bot, pow(-y, 0.5)); gl_FragColor = vec4(c * gain, 1.0); }',
+    }));
+    es.add(sky);
+    for (const p of o.panels || []) {
+      const c = new THREE.Color(p.color || '#ffffff').multiplyScalar(p.power == null ? 5 : p.power);
+      const m = new THREE.Mesh(p.round ? new THREE.CircleGeometry((p.size ? p.size[0] : 4) / 2, 40) : new THREE.PlaneGeometry(p.size ? p.size[0] : 4, p.size ? p.size[1] : 4), new THREE.MeshBasicMaterial({ color: c, side: THREE.DoubleSide }));
+      m.position.set(p.pos[0], p.pos[1], p.pos[2]); m.lookAt(0, p.aimY || 0, 0); es.add(m);
+    }
+    const pm = new THREE.PMREMGenerator(S.renderer);
+    const rt = pm.fromScene(es, o.blur == null ? 0.02 : o.blur, 0.1, 200);
+    pm.dispose();
+    S.scene.environment = rt.texture;
+    S.scene.environmentIntensity = o.intensity == null ? 1 : o.intensity;
+    if (o.background) { S.scene.background = rt.texture; S.scene.backgroundBlurriness = o.backgroundBlur == null ? 0.5 : o.backgroundBlur; S.scene.backgroundIntensity = o.backgroundIntensity == null ? 1 : o.backgroundIntensity; }
+    return rt.texture;
+  };
+  // A shadow-casting spot light with a real size: `soft` is the radius of the light's surface in world units, which
+  // gives true soft-edged shadows (bigger = softer). o: pos, target, color, power, angle, penumbra, soft, mapSize, near, far.
+  K.spot = (S, o = {}) => {
+    const l = new THREE.SpotLight(o.color || '#ffffff', o.power == null ? 80 : o.power, o.distance || 0, o.angle == null ? 0.5 : o.angle, o.penumbra == null ? 0.6 : o.penumbra, o.decay == null ? 2 : o.decay);
+    l.position.set(...(o.pos || [3, 6, 4])); l.target.position.set(...(o.target || [0, 0, 0]));
+    l.castShadow = o.shadow !== false; l.shadow.mapSize.setScalar(o.mapSize || 2048); l.shadow.bias = o.bias == null ? -0.0004 : o.bias; l.shadow.normalBias = o.normalBias == null ? 0.02 : o.normalBias;
+    l.shadow.camera.near = o.near || 0.5; l.shadow.camera.far = o.far || 60;
+    S.scene.add(l, l.target);
+    if (o.soft) S.softLights.push({ light: l, radius: o.soft });
+    return l;
+  };
+  // A sun: parallel light with shadows. `size` is the half-width of the area that gets shadows, `soft` the blur of
+  // shadow edges in world units at the light (0.3-1.5 looks natural). o: pos, target, color, power, size, soft, mapSize.
+  K.sun = (S, o = {}) => {
+    const l = new THREE.DirectionalLight(o.color || '#ffffff', o.power == null ? 3 : o.power);
+    l.position.set(...(o.pos || [6, 10, 5])); l.target.position.set(...(o.target || [0, 0, 0]));
+    const s = o.size || 8, c = l.shadow.camera;
+    l.castShadow = o.shadow !== false; c.left = -s; c.right = s; c.top = s; c.bottom = -s; c.near = 0.5; c.far = o.far || 80;
+    l.shadow.mapSize.setScalar(o.mapSize || 2048); l.shadow.bias = o.bias == null ? -0.0004 : o.bias; l.shadow.normalBias = o.normalBias == null ? 0.02 : o.normalBias;
+    S.scene.add(l, l.target);
+    if (o.soft) S.softLights.push({ light: l, radius: o.soft });
+    return l;
+  };
+  // Sky light with real occlusion: light arrives from the whole dome and is blocked by objects, so creases, contact
+  // points and the ground under things darken softly (ambient occlusion, but physically made). o: color, power,
+  // size (half-width covered), center, mapSize, spread (1 = full dome, lower = more from above).
+  K.skyLight = (S, o = {}) => {
+    const l = new THREE.DirectionalLight(o.color || '#ffffff', o.power == null ? 1.5 : o.power);
+    const s = o.size || 8, c = l.shadow.camera;
+    l.castShadow = true; c.left = -s; c.right = s; c.top = s; c.bottom = -s; c.near = 0.5; c.far = (o.dist || 30) * 2;
+    l.shadow.mapSize.setScalar(o.mapSize || 1024); l.shadow.bias = o.bias == null ? -0.0006 : o.bias; l.shadow.normalBias = o.normalBias == null ? 0.03 : o.normalBias;
+    l.target.position.set(...(o.center || [0, 0, 0]));
+    S.scene.add(l, l.target);
+    S.skyLights.push({ light: l, dist: o.dist || 30, spread: o.spread == null ? 1 : o.spread });
+    return l;
+  };
+  // A real mirror floor at height y: reflects the scene, and still takes light and shadows like a normal material.
+  // o: y, size, color, roughness (0 = perfect mirror, 0.3 = soft blurred reflection), strength (0..1), metalness,
+  // fresnel (true = reflects more at grazing angles, like polished stone or wet ground), map/normalMap etc via `material`.
+  K.mirrorFloor = (S, o = {}) => {
+    const y = o.y || 0, W = S.W, H = S.H, scale = o.resolution || 1;
+    const rt = new THREE.WebGLRenderTarget(Math.round(W * scale), Math.round(H * scale), { type: THREE.HalfFloatType, samples: S.msaa, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter });
+    const mat = new THREE.MeshStandardMaterial(Object.assign({ color: o.color || '#111114', roughness: o.surfaceRoughness == null ? 0.35 : o.surfaceRoughness, metalness: o.metalness || 0 }, o.material || {}));
+    const u = { tMirror: { value: rt.texture }, uMirrorMatrix: { value: new THREE.Matrix4() }, uMirrorStrength: { value: o.strength == null ? 0.6 : o.strength }, uMirrorFresnel: { value: o.fresnel === false ? 0 : 1 }, uMirrorFade: { value: o.fade || 0 }, uMirrorBlur: { value: (o.roughness || 0) * 7 } };
+    mat.onBeforeCompile = (sh) => {
+      Object.assign(sh.uniforms, u);
+      sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nuniform mat4 uMirrorMatrix; varying vec4 vMirrorCoord; varying vec3 vMirrorWorld;')
+        .replace('#include <begin_vertex>', '#include <begin_vertex>\nvec4 mw = modelMatrix * vec4(transformed, 1.0); vMirrorWorld = mw.xyz; vMirrorCoord = uMirrorMatrix * mw;');
+      sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nuniform sampler2D tMirror; uniform float uMirrorStrength, uMirrorFresnel, uMirrorFade, uMirrorBlur; varying vec4 vMirrorCoord; varying vec3 vMirrorWorld;')
+        .replace('#include <opaque_fragment>', `vec3 mRefl = min(texture2DProj(tMirror, vMirrorCoord, uMirrorBlur).rgb, vec3(12.0));
+          float mF = pow(1.0 - saturate(dot(normalize(vViewPosition), normal)), 5.0);
+          float mK = uMirrorStrength * mix(1.0, 0.06 + 0.94 * mF, uMirrorFresnel);
+          if (uMirrorFade > 0.0) mK *= exp(-length(vMirrorWorld.xz) / uMirrorFade);
+          outgoingLight += mRefl * mK;
+          #include <opaque_fragment>`);
+    };
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(o.size || 80, o.size || 80), mat);
+    mesh.rotation.x = -Math.PI / 2; mesh.position.y = y; mesh.receiveShadow = true;
+    S.scene.add(mesh);
+    S.mirrors.push({ mesh, rt, u, y, rough: o.roughness || 0, cam: new THREE.PerspectiveCamera() });
+    return mesh;
+  };
+
+  // ---------------------------------------------------------------- the stage
+  const QUAD_VS = 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }';
+  const TONE = `
+    vec3 tmFilmic(vec3 c){ // ACES fitted (Stephen Hill)
+      mat3 a = mat3(0.59719,0.07600,0.02840, 0.35458,0.90834,0.13383, 0.04823,0.01566,0.83777);
+      mat3 b = mat3(1.60475,-0.10208,-0.00327, -0.53108,1.10813,-0.07276, -0.07367,-0.00605,1.07602);
+      c = a * (c / 0.6); vec3 x = c * (c + 0.0245786) - 0.000090537; vec3 y = c * (0.983729 * c + 0.4329510) + 0.238081;
+      return clamp(b * (x / y), 0.0, 1.0);
+    }
+    vec3 tmNeutral(vec3 c){ // Khronos PBR neutral: keeps colours true, only compresses highlights
+      float x = min(c.r, min(c.g, c.b)); float off = x < 0.08 ? x - 6.25 * x * x : 0.04; c -= off;
+      float peak = max(c.r, max(c.g, c.b)); if (peak < 0.76) return c;
+      float d = 1.0 - 0.76; float np = 1.0 - d * d / (peak + d - 0.76); c *= np / peak;
+      float g = 1.0 - 1.0 / (0.15 * (peak - np) + 1.0); return mix(c, vec3(np), g);
+    }
+    vec3 tmAgx(vec3 c){ // AgX (minimal, Benjamin Wrensch): soft, filmic, desaturates bright colours gracefully
+      mat3 m = mat3(0.842479062253094,0.0423282422610123,0.0423756549057051, 0.0784335999999992,0.878468636469772,0.0784336, 0.0792237451477643,0.0791661274605434,0.879142973793104);
+      mat3 mi = mat3(1.19687900512017,-0.0528968517574562,-0.0529716355144438, -0.0980208811401368,1.15190312990417,-0.0980434501171241, -0.0990297440797205,-0.0989611768448433,1.15107367264116);
+      c = m * c; c = clamp((log2(max(c, 1e-10)) + 12.47393) / 16.5, 0.0, 1.0);
+      vec3 x2 = c * c, x4 = x2 * x2;
+      c = 15.5 * x4 * x2 - 40.14 * x4 * c + 31.96 * x4 - 6.868 * x2 * c + 0.4298 * x2 + 0.1191 * c - 0.00232;
+      c = mi * c; return pow(max(c, 0.0), vec3(2.2));
+    }`;
+
+  function pass(frag, uniforms) {
+    return new THREE.ShaderMaterial({ vertexShader: QUAD_VS, fragmentShader: 'precision highp float; varying vec2 vUv;\n' + frag, uniforms, depthTest: false, depthWrite: false });
+  }
+
+  // createStage(canvas, style, { samples }) -> S. S.seek(t) renders one finished frame.
+  K.createStage = (canvas, style, opts = {}) => {
+    const R = Object.assign({ samples: 32, preview: 3, shutter: 0.5, fps: 30, exposure: 1, tone: 'filmic', bloom: 0.25, bloomThreshold: 1.0, bloomRadius: 1, vignette: 0.25, grain: 0.03, ca: 0, saturation: 1, contrast: 1, lift: 0, fov: 35, near: 0.1, far: 200, background: '#000000', shadows: true }, style.render || {});
+    const W = opts.width || 1920, H = opts.height || 1080;
+    const N = Math.max(1, opts.samples || R.samples);
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(1); renderer.setSize(W, H, false);
+    renderer.toneMapping = THREE.NoToneMapping;
+    renderer.shadowMap.enabled = !!R.shadows; renderer.shadowMap.type = R.shadowType === 'vsm' ? THREE.VSMShadowMap : THREE.PCFShadowMap;
+    const scene = new THREE.Scene(); scene.background = new THREE.Color(R.background);
+    const camera = new THREE.PerspectiveCamera(R.fov, W / H, R.near, R.far);
+    camera.position.set(0, 1.5, 8); camera.userData.aperture = 0; camera.userData.focus = 8;
+    const msaa = N >= 8 ? 0 : 4;
+    const S = { THREE, K, renderer, scene, camera, W, H, style, R, samples: N, msaa, softLights: [], skyLights: [], mirrors: [], duration: style.duration || 6 };
+
+    const HF = { type: THREE.HalfFloatType, depthBuffer: false };
+    const sceneRT = new THREE.WebGLRenderTarget(W, H, { type: THREE.HalfFloatType, samples: msaa });
+    const accRT = new THREE.WebGLRenderTarget(W, H, HF);
+    const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2));
+    const qScene = new THREE.Scene(); qScene.add(quad);
+    const qCam = new THREE.Camera();
+    const draw = (mat, target) => { quad.material = mat; renderer.setRenderTarget(target); renderer.render(qScene, qCam); };
+
+    const mAcc = pass('uniform sampler2D tex; uniform float w; void main(){ gl_FragColor = vec4(min(texture2D(tex, vUv).rgb, vec3(64.0)) * w, w); }', { tex: { value: sceneRT.texture }, w: { value: 1 } });
+    mAcc.blending = THREE.CustomBlending; mAcc.blendEquation = THREE.AddEquation; mAcc.blendSrc = THREE.OneFactor; mAcc.blendDst = THREE.OneFactor; mAcc.transparent = true;
+
+    // bloom: threshold, then a chain of down-samples and smooth up-samples (wide, soft, no blockiness)
+    const LV = 7, bl = [];
+    for (let i = 0, w = W >> 1, h = H >> 1; i < LV && w > 4 && h > 4; i++, w >>= 1, h >>= 1) bl.push({ d: new THREE.WebGLRenderTarget(w, h, HF), u: new THREE.WebGLRenderTarget(w, h, HF), w, h });
+    const mPre = pass('uniform sampler2D tex; uniform float thr; void main(){ vec3 c = min(texture2D(tex, vUv).rgb, vec3(60.0)); float l = max(c.r, max(c.g, c.b)); float k = clamp((l - thr) / max(thr * 0.5, 1e-3), 0.0, 1.0); gl_FragColor = vec4(c * k * k * (3.0 - 2.0 * k), 1.0); }', { tex: { value: accRT.texture }, thr: { value: R.bloomThreshold } });
+    const mDown = pass(`uniform sampler2D tex; uniform vec2 px;
+      void main(){ vec3 a = texture2D(tex, vUv + px * vec2(-2, 2)).rgb, b = texture2D(tex, vUv + px * vec2(0, 2)).rgb, c = texture2D(tex, vUv + px * vec2(2, 2)).rgb,
+        d = texture2D(tex, vUv + px * vec2(-2, 0)).rgb, e = texture2D(tex, vUv).rgb, f = texture2D(tex, vUv + px * vec2(2, 0)).rgb,
+        g = texture2D(tex, vUv + px * vec2(-2, -2)).rgb, h = texture2D(tex, vUv + px * vec2(0, -2)).rgb, i = texture2D(tex, vUv + px * vec2(2, -2)).rgb,
+        j = texture2D(tex, vUv + px * vec2(-1, 1)).rgb, k = texture2D(tex, vUv + px * vec2(1, 1)).rgb, l = texture2D(tex, vUv + px * vec2(-1, -1)).rgb, m = texture2D(tex, vUv + px * vec2(1, -1)).rgb;
+        gl_FragColor = vec4(e * 0.125 + (a + c + g + i) * 0.03125 + (b + d + f + h) * 0.0625 + (j + k + l + m) * 0.125, 1.0); }`, { tex: { value: null }, px: { value: new THREE.Vector2() } });
+    const mUp = pass(`uniform sampler2D tex, add; uniform vec2 px; uniform float r;
+      void main(){ vec2 o = px * r; vec3 s = texture2D(tex, vUv).rgb * 4.0 + (texture2D(tex, vUv + vec2(o.x, 0)).rgb + texture2D(tex, vUv - vec2(o.x, 0)).rgb + texture2D(tex, vUv + vec2(0, o.y)).rgb + texture2D(tex, vUv - vec2(0, o.y)).rgb) * 2.0
+        + texture2D(tex, vUv + o).rgb + texture2D(tex, vUv - o).rgb + texture2D(tex, vUv + vec2(o.x, -o.y)).rgb + texture2D(tex, vUv + vec2(-o.x, o.y)).rgb;
+        gl_FragColor = vec4(s / 16.0 + texture2D(add, vUv).rgb, 1.0); }`, { tex: { value: null }, add: { value: null }, px: { value: new THREE.Vector2() }, r: { value: R.bloomRadius } });
+
+    const ovCanvas = document.createElement('canvas'); ovCanvas.width = W; ovCanvas.height = H;
+    const ovCtx = ovCanvas.getContext('2d');
+    const ovTex = new THREE.CanvasTexture(ovCanvas); ovTex.colorSpace = THREE.NoColorSpace; ovTex.premultiplyAlpha = true; ovTex.generateMipmaps = false; ovTex.minFilter = THREE.LinearFilter;
+    const mOut = pass(TONE + `
+      uniform sampler2D tex, bloom; uniform float exposure, bloomK, vig, ca, sat, con, lift, levels; uniform int tone; uniform vec2 res;
+      void main(){
+        vec2 d = vUv - 0.5; float r2 = dot(d, d);
+        vec3 c;
+        if (ca > 0.0) { c.r = texture2D(tex, 0.5 + d * (1.0 + ca * r2)).r; c.g = texture2D(tex, vUv).g; c.b = texture2D(tex, 0.5 + d * (1.0 - ca * r2)).b; }
+        else c = texture2D(tex, vUv).rgb;
+        c += texture2D(bloom, vUv).rgb * bloomK / levels;
+        c = max(c * exposure, 0.0);
+        c = tone == 0 ? tmFilmic(c) : tone == 1 ? tmNeutral(c) : tone == 2 ? tmAgx(c) : clamp(c, 0.0, 1.0);
+        float l = dot(c, vec3(0.2126, 0.7152, 0.0722));
+        c = mix(vec3(l), c, sat); c = (c - 0.5) * con + 0.5; c = c + lift * (1.0 - c);
+        c *= 1.0 - vig * smoothstep(0.22, 0.8, length(d * vec2(1.0, 0.82)));
+        c = clamp(c, 0.0, 1.0);
+        c = mix(c * 12.92, 1.055 * pow(c, vec3(1.0 / 2.4)) - 0.055, step(0.0031308, c));
+        gl_FragColor = vec4(c, 1.0);
+      }`, { tex: { value: accRT.texture }, bloom: { value: null }, exposure: { value: R.exposure }, bloomK: { value: R.bloom }, vig: { value: R.vignette }, ca: { value: R.ca }, sat: { value: R.saturation }, con: { value: R.contrast }, lift: { value: R.lift }, levels: { value: 1 }, tone: { value: { filmic: 0, neutral: 1, agx: 2, linear: 3 }[R.tone] ?? 0 }, res: { value: new THREE.Vector2(W, H) } });
+
+    // after grading the picture is 8-bit display colour: optional style filters run here (painterly, dither, halftone...),
+    // then grain and the 2D overlay go on top
+    const LD = { depthBuffer: false, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter };
+    const ldA = new THREE.WebGLRenderTarget(W, H, LD), ldB = new THREE.WebGLRenderTarget(W, H, LD);
+    const mFin = pass(`uniform sampler2D tex, ov; uniform float grain, seed, useOv;
+      float h21(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+      void main(){ vec3 c = texture2D(tex, vUv).rgb; float l = dot(c, vec3(0.2126, 0.7152, 0.0722));
+        float g = (h21(gl_FragCoord.xy + seed) + h21(gl_FragCoord.xy * 1.37 + seed * 1.7) - 1.0);
+        c += g * grain * (0.55 + 0.45 * (1.0 - l));
+        if (useOv > 0.5) { vec4 o = texture2D(ov, vUv); c = o.rgb + c * (1.0 - o.a); }
+        gl_FragColor = vec4(c, 1.0); }`, { tex: { value: ldA.texture }, ov: { value: ovTex }, grain: { value: R.grain }, seed: { value: 0 }, useOv: { value: 0 } });
+    const filters = [];
+    // S.addFilter(fragmentShaderBody, uniforms): a full-screen pass over the graded picture. The shader gets
+    // `uniform sampler2D tex; uniform vec2 res; uniform float time; varying vec2 vUv;` and must set gl_FragColor.
+    S.addFilter = (frag, uniforms = {}) => { const m = pass('uniform sampler2D tex; uniform vec2 res; uniform float time;\n' + frag, Object.assign({ tex: { value: null }, res: { value: new THREE.Vector2(W, H) }, time: { value: 0 } }, uniforms)); filters.push(m); return m; };
+
+    let api = null;
+    const cp = new THREE.Vector3(), right = new THREE.Vector3(), up = new THREE.Vector3(), tmp = new THREE.Vector3(), tmp2 = new THREE.Vector3(), nrm = new THREE.Vector3();
+    const rot = new THREE.Matrix4(), plane = new THREE.Plane(), clip = new THREE.Vector4(), q = new THREE.Vector4(), saved = [];
+
+    function renderMirrors(i) {
+      for (const m of S.mirrors) {
+        const cam = m.cam;
+        // roughness: tilt the mirror plane a little differently on each sub-render, which blurs the reflection
+        const a = m.rough * 0.12, th = 2 * Math.PI * halton(i + 1, 7), rr = Math.sqrt(halton(i + 1, 11)) * a;
+        nrm.set(Math.cos(th) * rr, 1, Math.sin(th) * rr).normalize();
+        const origin = tmp2.set(0, m.y, 0);
+        camera.getWorldPosition(cp);
+        const view = tmp.copy(origin).sub(cp);
+        if (view.dot(nrm) > 0) continue;
+        view.reflect(nrm).negate().add(origin);
+        rot.extractRotation(camera.matrixWorld);
+        const look = new THREE.Vector3(0, 0, -1).applyMatrix4(rot).add(cp);
+        const target = origin.clone().sub(look).reflect(nrm).negate().add(origin);
+        cam.position.copy(view); cam.up.set(0, 1, 0).applyMatrix4(rot).reflect(nrm); cam.lookAt(target);
+        cam.near = camera.near; cam.far = camera.far; cam.updateMatrixWorld(); cam.projectionMatrix.copy(camera.projectionMatrix);
+        m.u.uMirrorMatrix.value.set(0.5, 0, 0, 0.5, 0, 0.5, 0, 0.5, 0, 0, 0.5, 0.5, 0, 0, 0, 1).multiply(cam.projectionMatrix).multiply(cam.matrixWorldInverse);
+        // clip everything below the mirror (oblique near plane)
+        plane.setFromNormalAndCoplanarPoint(nrm, origin).applyMatrix4(cam.matrixWorldInverse);
+        clip.set(plane.normal.x, plane.normal.y, plane.normal.z, plane.constant);
+        const pm = cam.projectionMatrix.elements;
+        q.x = (Math.sign(clip.x) + pm[8]) / pm[0]; q.y = (Math.sign(clip.y) + pm[9]) / pm[5]; q.z = -1; q.w = (1 + pm[10]) / pm[14];
+        clip.multiplyScalar(2 / clip.dot(q));
+        pm[2] = clip.x; pm[6] = clip.y; pm[10] = clip.z + 1 - 0.003; pm[14] = clip.w;
+        m.mesh.visible = false;
+        renderer.setRenderTarget(m.rt); renderer.render(scene, cam);
+        m.mesh.visible = true;
+      }
+    }
+
+    function subRender(t, i, n) {
+      api.update(t);
+      saved.length = 0;
+      // lights with a size: sample a different point on the light each sub-render
+      S.softLights.forEach((s, k) => {
+        const l = s.light; saved.push([l, l.position.clone()]);
+        if (n === 1) return;
+        const u = (halton(i + 1, 3) + k * 0.37) % 1, v = (halton(i + 1, 5) + k * 0.61) % 1, r = Math.sqrt(u) * s.radius, a = 2 * Math.PI * v;
+        tmp.copy(l.position).sub(l.target ? l.target.position : tmp2.set(0, 0, 0)).normalize();
+        right.set(0, 1, 0).cross(tmp); if (right.lengthSq() < 1e-6) right.set(1, 0, 0); right.normalize(); up.crossVectors(tmp, right);
+        l.position.addScaledVector(right, Math.cos(a) * r).addScaledVector(up, Math.sin(a) * r);
+      });
+      S.skyLights.forEach((s, k) => {
+        const u = (halton(i + 1, 2) + k * 0.31) % 1, v = (halton(i + 1, 3) + k * 0.53) % 1;
+        const sinT = Math.sqrt(u) * s.spread, cosT = Math.sqrt(Math.max(0, 1 - sinT * sinT)), a = 2 * Math.PI * v;
+        const c = s.light.target.position;
+        if (n === 1) s.light.position.set(c.x + 0.15 * s.dist, c.y + s.dist, c.z + 0.1 * s.dist);
+        else s.light.position.set(c.x + Math.cos(a) * sinT * s.dist, c.y + cosT * s.dist, c.z + Math.sin(a) * sinT * s.dist);
+      });
+      // lens: move the camera across the aperture and shear the view so the focus plane stays put (true depth of field)
+      camera.updateMatrixWorld(); camera.updateProjectionMatrix();
+      const camPos = camera.position.clone(), e = camera.projectionMatrix.elements;
+      if (n > 1) {
+        const ap = camera.userData.aperture || 0, fd = Math.max(0.05, camera.userData.focus || 8);
+        if (ap > 0) {
+          const r = Math.sqrt(halton(i + 1, 2)) * ap, a = 2 * Math.PI * halton(i + 1, 3), dx = Math.cos(a) * r, dy = Math.sin(a) * r;
+          right.setFromMatrixColumn(camera.matrixWorld, 0); up.setFromMatrixColumn(camera.matrixWorld, 1);
+          camera.position.addScaledVector(right, dx).addScaledVector(up, dy); camera.updateMatrixWorld();
+          e[8] -= e[0] * dx / fd; e[9] -= e[5] * dy / fd;
+        }
+        e[8] += (halton(i + 1, 5) - 0.5) * 2 / W; e[9] += (halton(i + 1, 7) - 0.5) * 2 / H;
+        camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
+      }
+      if (S.mirrors.length) renderMirrors(i);
+      renderer.setRenderTarget(sceneRT); renderer.render(scene, camera);
+      camera.position.copy(camPos); camera.updateMatrixWorld(); camera.updateProjectionMatrix();
+      for (const [l, p] of saved) l.position.copy(p);
+    }
+
+    S.seek = (t, sampleOverride) => {
+      const n = sampleOverride || S.samples;
+      renderer.setRenderTarget(accRT); renderer.setClearColor(0x000000, 0); renderer.clear();
+      mAcc.uniforms.w.value = 1 / n;
+      for (let i = 0; i < n; i++) {
+        const ts = n > 1 ? t + ((i + 0.5) / n - 0.5) * R.shutter / R.fps : t;
+        subRender(K.clamp(ts, 0, S.duration), i, n);
+        renderer.autoClear = false; draw(mAcc, accRT); renderer.autoClear = true;
+      }
+      api.update(t); // leave the scene at the exact frame time (for the overlay and anything that reads it)
+      let bloomTex = null;
+      if (R.bloom > 0) {
+        mPre.uniforms.thr.value = R.bloomThreshold; draw(mPre, bl[0].d);
+        for (let i = 1; i < bl.length; i++) { mDown.uniforms.tex.value = bl[i - 1].d.texture; mDown.uniforms.px.value.set(1 / bl[i - 1].w, 1 / bl[i - 1].h); draw(mDown, bl[i].d); }
+        let prev = bl[bl.length - 1].d;
+        for (let i = bl.length - 2; i >= 0; i--) { mUp.uniforms.tex.value = prev.texture; mUp.uniforms.add.value = bl[i].d.texture; mUp.uniforms.px.value.set(1 / prev.width, 1 / prev.height); draw(mUp, bl[i].u); prev = bl[i].u; }
+        bloomTex = prev.texture;
+      }
+      const o = mOut.uniforms;
+      o.bloom.value = bloomTex; o.bloomK.value = bloomTex ? R.bloom : 0; o.levels.value = bl.length; o.exposure.value = R.exposure; o.vig.value = R.vignette; o.ca.value = R.ca; o.sat.value = R.saturation; o.con.value = R.contrast; o.lift.value = R.lift;
+      draw(mOut, ldA);
+      let src = ldA, dst = ldB;
+      for (const f of filters) { f.uniforms.tex.value = src.texture; f.uniforms.time.value = t; draw(f, dst); [src, dst] = [dst, src]; }
+      const fu = mFin.uniforms;
+      fu.tex.value = src.texture; fu.grain.value = R.grain; fu.seed.value = Math.round(t * R.fps) * 17.0 % 1000;
+      if (api.overlay) { ovCtx.clearRect(0, 0, W, H); ovCtx.save(); api.overlay(ovCtx, t, W, H); ovCtx.restore(); ovTex.needsUpdate = true; fu.useOv.value = 1; } else fu.useOv.value = 0;
+      draw(mFin, null);
+    };
+    S.setApi = (a) => { api = typeof a === 'function' ? { update: a } : a; };
+    return S;
+  };
+
+  // Load fonts, build the style and return its stage. `K.run(canvas, style, { samples })`.
+  K.run = async (canvas, style, opts) => {
+    if (style.fonts && document.fonts) await Promise.all(style.fonts.map((f) => document.fonts.load(f).catch(() => null)));
+    const S = K.createStage(canvas, style, opts);
+    S.setApi(await style.build(S));
+    return S;
+  };
+
+  root.K = K;
+})(typeof window !== 'undefined' ? window : globalThis);
+```
+
+SOUND KIT (lib/sound.js)
+```js
+// sound.js: a small synthesized sound kit for the style explainers. Plain Web Audio, no audio files.
+// Voiceover mode: SOUND.kit(ctx, { voiceover: true }) drops beds and music, plays anything marked minor
+// (play(..., { minor: true }), tone/noise { minor: true }, or scheduled inside k.withMinor(() => ...)) at about 60%
+// volume instead of full, and sits all effects a little lower, so the narration stays on top while the piece still
+// sounds alive. In the full mix, minor sounds play at full volume. Scores can read k.vo to branch further.
+// A style adds   explainerSound(k) { k.bed('room', 0, D); k.play('pop', 1.25); ... }   and the same
+// call schedules into a live AudioContext (the player) or an OfflineAudioContext (the video render).
+// Times are seconds on the explainer's own clock. Randomness is seeded, so every render is identical.
+(function () {
+  'use strict';
+  const SOUND = (window.SOUND = {});
+  const TINY = 1e-4;
+
+  // seeded random in [0,1), keyed by any string
+  function rand(key) {
+    let h = 2166136261;
+    for (let i = 0; i < key.length; i++) { h ^= key.charCodeAt(i); h = Math.imul(h, 16777619); }
+    let a = h >>> 0 || 1;
+    return () => { a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+
+  // note names to Hz: 'A4' = 440, 'C#5', 'Eb3'
+  const STEP = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+  function hz(n) {
+    if (typeof n === 'number') return n;
+    const m = /^([A-G])([#b]?)(-?\d)$/.exec(n);
+    const semis = STEP[m[1]] + (m[2] === '#' ? 1 : m[2] === 'b' ? -1 : 0) + (Number(m[3]) - 4) * 12 - 9;
+    return 440 * Math.pow(2, semis / 12);
+  }
+  SOUND.hz = hz;
+
+  SOUND.kit = function (ctx, opts) {
+    const o = opts || {};
+    const VO = !!o.voiceover;
+    const MINOR = 0.6; // voiceover-mode volume for minor sounds
+    let inMinor = false;
+    const gainOf = (p, d) => (p.gain == null ? d : p.gain) * (VO && (p.minor || inMinor) ? MINOR : 1);
+    const T0 = (o.start || 0) - 0; // explainer time that maps to ctx time `base`
+    const base = ctx.currentTime + (o.delay || 0);
+    // Start times snap to the sample grid (+ a quarter sample): in Chrome a source started a hair off the grid can
+    // spike to about twice its set level.
+    const SR = ctx.sampleRate;
+    const at = (t) => (Math.round((base + (t - T0)) * SR) + 0.25) / SR;
+
+    // ---- buses: sfx, amb, music -> compressor -> master; one shared reverb send
+    const master = ctx.createGain(); master.gain.value = o.master == null ? 0.9 : o.master;
+    const comp = ctx.createDynamicsCompressor();
+    comp.threshold.value = -16; comp.knee.value = 8; comp.ratio.value = 3; comp.attack.value = 0.004; comp.release.value = 0.18;
+    comp.connect(master); master.connect(o.dest || ctx.destination);
+    const bus = {};
+    for (const [name, g] of Object.entries({ sfx: VO ? 0.7 : 0.85, amb: 0.5, music: 0.45 })) { bus[name] = ctx.createGain(); bus[name].gain.value = g; bus[name].connect(comp); }
+
+    // generated room reverb: decaying stereo noise, darker toward the tail
+    const verb = ctx.createConvolver();
+    {
+      const secs = 1.6, n = Math.floor(secs * ctx.sampleRate), ir = ctx.createBuffer(2, n, ctx.sampleRate);
+      for (let c = 0; c < 2; c++) {
+        const r = rand('verb' + c), d = ir.getChannelData(c); let lp = 0;
+        for (let i = 0; i < n; i++) { const u = i / n; lp += (0.6 - 0.45 * u) * ((r() * 2 - 1) - lp); d[i] = lp * Math.pow(1 - u, 3); }
+      }
+      verb.buffer = ir;
+    }
+    const verbIn = ctx.createGain(); verbIn.gain.value = 0.9; verbIn.connect(verb); verb.connect(comp);
+
+    // seeded noise buffers: white, pink-ish and brown
+    const noiseBuf = {};
+    {
+      const n = Math.floor(2.5 * ctx.sampleRate);
+      for (const kind of ['white', 'pink', 'brown']) {
+        const b = ctx.createBuffer(1, n, ctx.sampleRate), d = b.getChannelData(0), r = rand('noise-' + kind);
+        let p0 = 0, p1 = 0, p2 = 0, br = 0;
+        for (let i = 0; i < n; i++) {
+          const w = r() * 2 - 1;
+          if (kind === 'white') d[i] = w;
+          else if (kind === 'pink') { p0 = 0.997 * p0 + 0.029 * w; p1 = 0.985 * p1 + 0.032 * w; p2 = 0.95 * p2 + 0.048 * w; d[i] = (p0 + p1 + p2 + w * 0.05) * 2.2; }
+          else { br = (br + 0.02 * w) / 1.02; d[i] = br * 3.2; }
+        }
+        noiseBuf[kind] = b;
+      }
+    }
+
+    // ---- automation helpers
+    // a value or [[dt, value], ...] from the voice start; ramps are exponential (frequencies)
+    function sweep(param, v, t) {
+      if (!Array.isArray(v)) { param.setValueAtTime(v, t); return; }
+      param.setValueAtTime(v[0][1], t + v[0][0]);
+      for (let i = 1; i < v.length; i++) param.exponentialRampToValueAtTime(Math.max(v[i][1], 1), t + v[i][0]);
+    }
+    // amplitude: linear attack to `gain`, optional hold, exponential release to silence by `dur`
+    function shape(param, t, gain, dur, a, hold) {
+      a = Math.min(a == null ? 0.004 : a, dur * 0.9);
+      hold = Math.min(hold || 0, dur - a);
+      param.setValueAtTime(0, t);
+      param.linearRampToValueAtTime(gain, t + a);
+      if (hold > 0) param.setValueAtTime(gain, t + a + hold);
+      param.exponentialRampToValueAtTime(TINY, t + dur);
+      param.setValueAtTime(0, t + dur + 0.001);
+    }
+    function out(node, p) {
+      const pan = ctx.createStereoPanner(); pan.pan.value = Math.max(-1, Math.min(1, p.pan || 0));
+      node.connect(pan); pan.connect(bus[p.bus || 'sfx']);
+      if (p.verb) { const s = ctx.createGain(); s.gain.value = p.verb; pan.connect(s); s.connect(verbIn); }
+    }
+    function filterNode(p, t) {
+      if (!p.filter) return null;
+      const f = ctx.createBiquadFilter(); f.type = p.filter; f.Q.value = p.q == null ? 1 : p.q;
+      sweep(f.frequency, p.f == null ? 1000 : p.f, t);
+      return f;
+    }
+
+    // Live playback from the middle of a piece: a long sound (a bed, a pad) that began before that point has a start
+    // time in the past, which Web Audio refuses. Pick it up now, at its held level, for the time it has left.
+    function late(t, dur, p) {
+      if (t >= ctx.currentTime) return null;   // never true in an offline render, so rendered sound is unchanged
+      const now = ctx.currentTime + 0.01;
+      const cut = now - t, left = dur - cut;
+      if (left < 0.08) return { skip: true };
+      const a = Math.min(0.05, left / 2);
+      return { t: now, dur: left, p: Object.assign({}, p, { a, hold: Math.max(0, Math.min(left - a - 0.02, (p.a == null ? 0.004 : p.a) + (p.hold || 0) - cut)) }) };
+    }
+
+    // ---- primitives
+    // tone(t, { f, type, dur, gain, a, hold, pan, verb, bus, filter, f2 (filter freq), q, detune })
+    function tone(time, p) {
+      let t = at(time), dur = p.dur || 0.2;
+      if (t + dur < ctx.currentTime || (time < T0 - 0.001 && dur < 1.5)) return;
+      const lt = late(t, dur, p); if (lt) { if (lt.skip) return; t = lt.t; dur = lt.dur; p = lt.p; }
+      const osc = ctx.createOscillator(); osc.type = p.type || 'sine';
+      sweep(osc.frequency, Array.isArray(p.f) ? p.f.map(([d, v]) => [d, hz(v)]) : hz(p.f || 440), t);
+      if (p.detune) osc.detune.value = p.detune;
+      const g = ctx.createGain(); shape(g.gain, t, gainOf(p, 0.3), dur, p.a, p.hold);
+      let node = osc;
+      if (p.filter) { const f = ctx.createBiquadFilter(); f.type = p.filter; f.Q.value = p.q == null ? 0.8 : p.q; sweep(f.frequency, p.f2 || 2000, t); osc.connect(f); node = f; }
+      node.connect(g); out(g, p);
+      osc.start(t); osc.stop(t + dur + 0.02);
+    }
+    // noise(t, { dur, color, filter, f, q, gain, a, hold, pan, verb, bus, rate })
+    function noise(time, p) {
+      let t = at(time), dur = p.dur || 0.2;
+      if (t + dur < ctx.currentTime || (time < T0 - 0.001 && dur < 1.5)) return;
+      const lt = late(t, dur, p); if (lt) { if (lt.skip) return; t = lt.t; dur = lt.dur; p = lt.p; }
+      const src = ctx.createBufferSource(); src.buffer = noiseBuf[p.color || 'white']; src.loop = true;
+      if (p.rate) src.playbackRate.value = p.rate;
+      const g = ctx.createGain(); shape(g.gain, t, gainOf(p, 0.3), dur, p.a, p.hold);
+      const f = filterNode(p, t);
+      if (f) { src.connect(f); f.connect(g); } else src.connect(g);
+      out(g, p);
+      const off = rand('off' + time + (p.f || ''))() * 2;
+      src.start(t, off); src.stop(t + dur + 0.02);
+    }
+
+    // ---- named sounds. play(name, t, opts): opts.gain scales the whole sound, opts.pan places it.
+    const S = {
+      // UI / motion graphics
+      pop: (t, o) => { tone(t, { f: [[0, o.f || 620], [0.07, (o.f || 620) * 0.45]], dur: 0.1, gain: 0.32 * o.g, pan: o.pan }); noise(t, { dur: 0.012, filter: 'highpass', f: 3000, gain: 0.12 * o.g, pan: o.pan }); },
+      tick: (t, o) => noise(t, { dur: 0.018, filter: 'bandpass', f: o.f || 4200, q: 2.5, gain: 0.3 * o.g, pan: o.pan }),
+      click: (t, o) => { tone(t, { f: o.f || 1900, type: 'square', dur: 0.02, gain: 0.08 * o.g, filter: 'lowpass', f2: 3000, pan: o.pan }); noise(t, { dur: 0.01, filter: 'highpass', f: 2500, gain: 0.15 * o.g, pan: o.pan }); },
+      tock: (t, o) => { tone(t, { f: o.f || 820, dur: 0.07, gain: 0.25 * o.g, pan: o.pan }); noise(t, { dur: 0.05, filter: 'bandpass', f: o.f || 820, q: 9, gain: 0.35 * o.g, pan: o.pan }); },
+      blip: (t, o) => tone(t, { f: o.f || 'E6', type: o.type || 'square', dur: o.dur || 0.07, gain: 0.07 * o.g, a: 0.002, hold: (o.dur || 0.07) * 0.6, pan: o.pan }),
+      whoosh: (t, o) => { const d = o.dur || 0.45; noise(t, { dur: d, color: 'pink', filter: 'bandpass', f: [[0, 350], [d * 0.55, o.top || 2600], [d, 700]], q: 0.9, gain: 0.32 * o.g, a: d * 0.5, pan: o.pan, verb: 0.15 }); },
+      swish: (t, o) => { const d = o.dur || 0.18; noise(t, { dur: d, filter: 'highpass', f: [[0, 1800], [d, 5200]], q: 0.7, gain: 0.22 * o.g, a: d * 0.35, pan: o.pan }); },
+      riser: (t, o) => { const d = o.dur || 0.8; noise(t, { dur: d, color: 'pink', filter: 'bandpass', f: [[0, 300], [d, 4000]], q: 1.2, gain: 0.25 * o.g, a: d * 0.95, pan: o.pan, verb: 0.2 }); tone(t, { f: [[0, 180], [d, 720]], type: 'triangle', dur: d, gain: 0.06 * o.g, a: d * 0.9 }); },
+      thud: (t, o) => { tone(t, { f: [[0, o.f || 130], [0.16, 42]], dur: 0.26, gain: 0.55 * o.g, pan: o.pan }); noise(t, { dur: 0.09, color: 'brown', filter: 'lowpass', f: 500, gain: 0.35 * o.g, pan: o.pan }); },
+      impact: (t, o) => { S.thud(t, o); noise(t, { dur: 0.7, color: 'pink', filter: 'lowpass', f: [[0, 2400], [0.6, 300]], gain: 0.3 * o.g, verb: 0.35, pan: o.pan }); },
+      stamp: (t, o) => { S.thud(t, { ...o, f: 160 }); noise(t, { dur: 0.05, filter: 'bandpass', f: 1300, q: 1.2, gain: 0.4 * o.g, pan: o.pan }); noise(t + 0.004, { dur: 0.012, filter: 'highpass', f: 3500, gain: 0.25 * o.g, pan: o.pan }); },
+      ding: (t, o) => { const f = hz(o.f || 'E6'); tone(t, { f, dur: 1.3, gain: 0.2 * o.g, verb: 0.3, pan: o.pan }); tone(t, { f: f * 2.76, dur: 0.5, gain: 0.05 * o.g, verb: 0.3, pan: o.pan }); },
+      success: (t, o) => { S.ding(t, { ...o, f: o.f || 'C6' }); S.ding(t + 0.09, { ...o, f: hz(o.f || 'C6') * 1.5, g: o.g * 0.9 }); },
+      error: (t, o) => { tone(t, { f: o.f || 'A3', type: 'square', dur: 0.13, gain: 0.09 * o.g, hold: 0.08, filter: 'lowpass', f2: 1400, pan: o.pan }); tone(t + 0.15, { f: hz(o.f || 'A3') * 0.8, type: 'square', dur: 0.22, gain: 0.09 * o.g, hold: 0.14, filter: 'lowpass', f2: 1200, pan: o.pan }); },
+      buzz: (t, o) => { const d = o.dur || 0.3; tone(t, { f: o.f || 110, type: 'sawtooth', dur: d, gain: 0.12 * o.g, hold: d * 0.7, filter: 'lowpass', f2: 900, pan: o.pan }); tone(t, { f: (o.f || 110) * 1.01, type: 'sawtooth', dur: d, gain: 0.1 * o.g, hold: d * 0.7, filter: 'lowpass', f2: 900, pan: o.pan }); },
+      sparkle: (t, o) => { const r = rand('sparkle' + t), notes = ['C6', 'D6', 'E6', 'G6', 'A6', 'C7']; for (let i = 0; i < (o.n || 6); i++) { const ti = t + i * 0.04 + r() * 0.01, f = hz(notes[Math.floor(r() * notes.length)]), pan = r() * 1.2 - 0.6; tone(ti, { f, dur: 0.6, gain: 0.04 * o.g, a: 0.002, verb: 0.35, pan }); tone(ti, { f: f * 2.76, dur: 0.2, gain: 0.012 * o.g, a: 0.002, pan }); } },
+      glitch: (t, o) => { const r = rand('glitch' + t); for (let i = 0; i < 7; i++) tone(t + i * 0.022, { f: 200 + r() * 1800, type: 'square', dur: 0.02, gain: 0.07 * o.g, a: 0.001, hold: 0.015, pan: r() * 1.4 - 0.7 }); noise(t, { dur: 0.16, filter: 'bandpass', f: 2500, q: 0.6, gain: 0.12 * o.g }); },
+      shutter: (t, o) => { S.click(t, o); noise(t + 0.06, { dur: 0.04, filter: 'bandpass', f: 2200, q: 1, gain: 0.2 * o.g, pan: o.pan }); },
+      count: (t, o) => S.tick(t, { ...o, f: o.f || 5200, g: o.g * 0.7 }),
+
+      // hand-made media
+      // stroke: a pen/marker/chalk/pencil stroke over `dur` seconds. material sets the surface sound.
+      stroke: (t, o) => {
+        const d = o.dur || 0.4, m = o.material || 'marker', r = rand('stroke' + m + t);
+        const M = {
+          marker: { f: 2900, q: 2.2, g: 0.16, grain: 0.05 },
+          chalk: { f: 1700, q: 0.6, g: 0.22, grain: 0.028 },
+          pencil: { f: 4600, q: 0.8, g: 0.16, grain: 0.04, filter: 'highpass' },
+          pen: { f: 4200, q: 1.6, g: 0.08, grain: 0.06 },
+          brush: { f: 900, q: 0.5, g: 0.1, grain: 0.09, color: 'pink' },
+          sharpie: { f: 2400, q: 1.4, g: 0.2, grain: 0.045 },
+        }[m];
+        for (let x = 0; x < d; x += M.grain * (0.7 + r() * 0.6)) {
+          const gd = M.grain * (0.8 + r() * 0.9);
+          noise(t + x, { dur: gd, color: M.color, filter: M.filter || 'bandpass', f: M.f * (0.8 + r() * 0.4), q: M.q, gain: M.g * o.g * (0.6 + r() * 0.5), a: gd * 0.3, pan: (o.pan || 0) + (r() - 0.5) * 0.2 });
+        }
+      },
+      // paper: picking up / slapping down / turning a sheet
+      paper: (t, o) => { const d = o.dur || 0.35, r = rand('paper' + t); for (let x = 0; x < d; x += 0.025 + r() * 0.03) noise(t + x, { dur: 0.05, filter: 'bandpass', f: 1200 + r() * 2600, q: 0.9, gain: 0.12 * o.g * (1 - x / d * 0.5), pan: o.pan }); },
+      slap: (t, o) => { noise(t, { dur: 0.07, filter: 'highpass', f: 900, gain: 0.45 * o.g, a: 0.001, pan: o.pan }); tone(t, { f: [[0, 180], [0.06, 70]], dur: 0.1, gain: 0.25 * o.g, pan: o.pan }); },
+      tape: (t, o) => { noise(t, { dur: o.dur || 0.5, filter: 'bandpass', f: [[0, 900], [o.dur || 0.5, 2200]], q: 1.8, gain: 0.18 * o.g, a: 0.02, pan: o.pan }); },
+      press: (t, o) => { S.thud(t, { ...o, f: 95, g: o.g * 0.9 }); noise(t + 0.01, { dur: 0.25, color: 'brown', filter: 'lowpass', f: 700, gain: 0.25 * o.g, pan: o.pan }); },
+      roller: (t, o) => { const d = o.dur || 0.6; noise(t, { dur: d, color: 'brown', filter: 'bandpass', f: 380, q: 1.5, gain: 0.3 * o.g, a: 0.05, hold: d * 0.6, pan: o.pan }); for (let x = 0; x < d; x += 0.07) S.tock(t + x, { f: 300, g: o.g * 0.15, pan: o.pan }); },
+      erase: (t, o) => { const d = o.dur || 0.6, r = rand('erase' + t); for (let x = 0; x < d; x += 0.06 + r() * 0.04) noise(t + x, { dur: 0.08, color: 'pink', filter: 'bandpass', f: 700 + r() * 500, q: 0.8, gain: 0.22 * o.g, a: 0.03, pan: (r() - 0.5) * 0.5 }); },
+
+      // machines and screens
+      key: (t, o) => { const r = rand('key' + t); noise(t, { dur: 0.025, filter: 'bandpass', f: 2600 + r() * 1200, q: 2, gain: 0.25 * o.g, a: 0.001, pan: o.pan }); tone(t, { f: 160 + r() * 40, dur: 0.04, gain: 0.12 * o.g, pan: o.pan }); },
+      typing: (t, o) => { const r = rand('typing' + t), n = o.n || 8, rate = o.rate || 0.09; for (let i = 0; i < n; i++) S.key(t + i * rate * (0.75 + r() * 0.5), { g: o.g * (0.7 + r() * 0.4), pan: o.pan }); },
+      typebar: (t, o) => { S.key(t, o); noise(t + 0.008, { dur: 0.03, filter: 'bandpass', f: 1100, q: 4, gain: 0.35 * o.g, pan: o.pan }); },
+      bell: (t, o) => S.ding(t, { ...o, f: o.f || 'A6' }),
+      boot: (t, o) => { tone(t, { f: [[0, 80], [0.35, 1600]], type: 'sine', dur: 0.5, gain: 0.08 * o.g, a: 0.3 }); S.blip(t + 0.45, { ...o, f: 'C6', dur: 0.12 }); },
+      crtOn: (t, o) => { noise(t, { dur: 0.25, filter: 'highpass', f: 2000, gain: 0.2 * o.g, a: 0.001 }); tone(t, { f: 15700, dur: 1.5, gain: 0.02 * o.g, a: 0.1, hold: 1 }); S.thud(t, { ...o, f: 90, g: o.g * 0.5 }); },
+      neon: (t, o) => { const d = o.dur || 0.25, r = rand('neon' + t); for (let x = 0; x < d; x += 0.035 + r() * 0.04) tone(t + x, { f: 120, type: 'sawtooth', dur: 0.03, gain: 0.3 * o.g * (0.5 + r() * 0.5), filter: 'bandpass', f2: 1200, q: 1.2, pan: o.pan }); },
+      // chip (8-bit console) sounds: raw square/triangle, no filtering
+      coin: (t, o) => { tone(t, { f: 'B5', type: 'square', dur: 0.07, gain: 0.07 * o.g, a: 0.001, hold: 0.06 }); tone(t + 0.07, { f: 'E6', type: 'square', dur: 0.3, gain: 0.07 * o.g, a: 0.001, hold: 0.1 }); },
+      jump: (t, o) => tone(t, { f: [[0, 260], [0.16, 820]], type: 'square', dur: 0.18, gain: 0.07 * o.g, a: 0.001, hold: 0.12 }),
+      hurt: (t, o) => { tone(t, { f: [[0, 600], [0.25, 90]], type: 'square', dur: 0.28, gain: 0.08 * o.g, a: 0.001, hold: 0.2 }); noise(t, { dur: 0.2, filter: 'lowpass', f: 1800, gain: 0.15 * o.g, rate: 0.25 }); },
+      powerup: (t, o) => ['C5', 'E5', 'G5', 'C6', 'E6', 'G6', 'C7'].forEach((n, i) => tone(t + i * 0.045, { f: n, type: 'square', dur: 0.06, gain: 0.06 * o.g, a: 0.001, hold: 0.05 })),
+      select: (t, o) => { S.blip(t, { ...o, f: 'A5', dur: 0.04 }); S.blip(t + 0.05, { ...o, f: 'E6', dur: 0.05 }); },
+      text: (t, o) => { const n = o.n || 10, rate = o.rate || 0.05; for (let i = 0; i < n; i++) tone(t + i * rate, { f: i % 2 ? 'C6' : 'G5', type: 'square', dur: 0.025, gain: 0.04 * o.g, a: 0.001, hold: 0.015 }); },
+    };
+
+    function play(name, t, opts) {
+      const fn = S[name];
+      if (!fn) throw new Error('unknown sound: ' + name);
+      const o2 = Object.assign({}, opts); o2.g = o2.gain == null ? 1 : o2.gain;
+      if (opts && opts.minor) withMinor(() => fn(t, o2)); else fn(t, o2);
+    }
+
+    // everything scheduled inside fn counts as minor (quieter in voiceover mode)
+    function withMinor(fn) { const was = inMinor; inMinor = true; try { fn(); } finally { inMinor = was; } }
+
+    // ---- beds: continuous sound under a stretch of time. bed(name, t0, t1, opts)
+    function bed(name, t0, t1, p) {
+      if (VO) return;
+      p = p || {}; const g = p.gain == null ? 1 : p.gain, d = t1 - t0, fade = Math.min(0.4, d / 4);
+      const long = (q) => Object.assign({ dur: d, a: fade, hold: d - fade * 2, bus: 'amb' }, q);
+      if (name === 'room') noise(t0, long({ color: 'brown', filter: 'lowpass', f: 320, gain: 0.12 * g }));
+      else if (name === 'hiss') noise(t0, long({ color: 'pink', filter: 'highpass', f: 5000, gain: 0.02 * g }));
+      else if (name === 'hum') { tone(t0, long({ f: 60, gain: 0.05 * g })); tone(t0, long({ f: 120, gain: 0.025 * g })); tone(t0, long({ f: 180, type: 'triangle', gain: 0.012 * g })); }
+      else if (name === 'rain') { noise(t0, long({ color: 'pink', filter: 'bandpass', f: 2500, q: 0.4, gain: 0.08 * g })); const r = rand('rain'); for (let x = 0; x < d; x += 0.04 + r() * 0.08) noise(t0 + x, { dur: 0.01, filter: 'highpass', f: 4000, gain: 0.04 * g * r(), bus: 'amb', pan: r() * 1.6 - 0.8 }); }
+      else if (name === 'projector') { noise(t0, long({ color: 'pink', filter: 'highpass', f: 3000, gain: 0.03 * g })); for (let x = 0; x < d; x += 1 / 24) S.tock(t0 + x, { f: 700, g: 0.04 * g, pan: 0.3 }); }
+      else if (name === 'vinyl') { noise(t0, long({ color: 'pink', filter: 'bandpass', f: 1500, q: 0.5, gain: 0.025 * g })); const r = rand('vinyl'); for (let x = 0; x < d; x += 0.08 + r() * 0.4) noise(t0 + x, { dur: 0.006, filter: 'highpass', f: 2500, gain: 0.08 * g * r(), bus: 'amb' }); }
+      else throw new Error('unknown bed: ' + name);
+    }
+
+    // ---- music: optional light beds that sit under the effects. music(name, t0, t1, { bpm, chords, gain })
+    // chords: list of note arrays, one per bar, cycled. e.g. [['C4','E4','G4','B4'], ['A3','C4','E4','G4']]
+    function music(name, t0, t1, p) {
+      if (VO) return;
+      p = p || {}; const g = p.gain == null ? 1 : p.gain, bpm = p.bpm || 100, beat = 60 / bpm, bar = beat * 4;
+      const chords = p.chords || [['C4', 'E4', 'G4', 'B4'], ['A3', 'C4', 'E4', 'G4'], ['F3', 'A3', 'C4', 'E4'], ['G3', 'B3', 'D4', 'F4']];
+      let i = 0;
+      for (let t = t0; t < t1 - 0.05; t += bar, i++) {
+        const ch = chords[i % chords.length], len = Math.min(bar, t1 - t);
+        if (name === 'pad' || name === 'pulse') ch.forEach((n, k) => { tone(t, { f: n, type: 'triangle', dur: len + 0.3, gain: 0.035 * g, a: 0.25, hold: len - 0.3, bus: 'music', filter: 'lowpass', f2: 1400, pan: (k - 1.5) * 0.25, verb: 0.25 }); tone(t, { f: hz(n) * 1.004, type: 'sine', dur: len + 0.3, gain: 0.03 * g, a: 0.3, hold: len - 0.3, bus: 'music' }); });
+        if (name === 'pulse') for (let b = 0; b < 4 && t + b * beat < t1 - 0.05; b++) {
+          const tb = t + b * beat;
+          tone(tb, { f: [[0, 110], [0.1, 50]], dur: 0.18, gain: (b % 2 ? 0.16 : 0.26) * g, bus: 'music' });
+          noise(tb + beat / 2, { dur: 0.04, filter: 'highpass', f: 7000, gain: 0.05 * g, bus: 'music' });
+          tone(tb + beat / 2, { f: hz(ch[0]) / 2, type: 'triangle', dur: beat * 0.45, gain: 0.08 * g, bus: 'music' });
+        }
+        if (name === 'chip') for (let s = 0; s < 8 && t + s * beat / 2 < t1 - 0.05; s++) {
+          const ts = t + s * beat / 2;
+          tone(ts, { f: hz(ch[0]) / 2, type: 'triangle', dur: beat * 0.45, gain: 0.12 * g, a: 0.001, hold: beat * 0.35, bus: 'music' });
+          tone(ts, { f: ch[[0, 1, 2, 3, 2, 1, 2, 3][s]], type: 'square', dur: beat * 0.4, gain: 0.03 * g, a: 0.001, hold: beat * 0.25, bus: 'music' });
+        }
+      }
+    }
+
+    return { play, bed, music, tone, noise, withMinor, hz, vo: VO, sounds: Object.keys(S) };
+  };
+
+  // Live playback for a player: SOUND.live(scoreFn, fromT, { voiceover, master }) starts the score from explainer time
+  // fromT right now and returns stop(). Call stop() on pause or seek, and SOUND.live again on play.
+  SOUND.live = function (fn, fromT, opts) {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    fn(SOUND.kit(ctx, Object.assign({}, opts, { start: fromT || 0, delay: 0.03 })));
+    return () => { try { ctx.close(); } catch (e) {} };
+  };
+
+  // Render a style's explainerSound into an OfflineAudioContext; returns interleaved float stereo.
+  SOUND.renderOffline = async function (fn, duration, sampleRate, kitOpts) {
+    const sr = sampleRate || 48000, len = Math.ceil(duration * sr);
+    const ctx = new OfflineAudioContext(2, len, sr);
+    fn(SOUND.kit(ctx, kitOpts || {}));
+    const buf = await ctx.startRendering();
+    const L = buf.getChannelData(0), R = buf.getChannelData(1), inter = new Float32Array(len * 2);
+    let peak = 0;
+    for (let i = 0; i < len; i++) { inter[2 * i] = L[i]; inter[2 * i + 1] = R[i]; peak = Math.max(peak, Math.abs(L[i]), Math.abs(R[i])); }
+    return { inter, peak, frames: len, sr };
+  };
+})();
+```
+
+REFERENCE STYLE SOURCE (styles/glass-light.js; its sample topic was "How a vinaigrette comes together: 3 parts oil, 1 part vinegar")
+```js
+{
+  // ---------------------------------------------------------------- content (change this for a new topic)
+  // A demonstration in glassware. Liquids are poured from their bottles into one jar with measure marks; then
+  // something is added, the lid goes on and the jar is shaken. The liquids do the explaining; captions only name it.
+  const PART = 0.55;                 // height of one part in the jar (the marks on the glass count parts)
+  const MARKS = 4;
+  // one entry per liquid, lowest (densest) layer first. tint = white light after one unit of this liquid (keep it
+  // light: a jar is more than two units deep, and the colour deepens with every unit);
+  // parts = how much goes in; pour = when it leaves its bottle; at = where the bottle stands [x, z]
+  const POURS = [
+    { name: 'vinegar', tint: '#b8242f', parts: 1, pour: [1.5, 2.7], bottle: 'cruet', at: [-3.0, 0.45], stream: 0.055 },
+    { name: 'oil', tint: '#dcc82e', parts: 3, pour: [3.9, 6.0], bottle: 'tall', at: [3.3, -0.35], stream: 0.08 },
+  ];
+  // what happens after the pours: a spoonful goes in, the lid lands, the jar is shaken and the layers become one
+  const MIX = { tint: '#f2cb66', spoonful: '#e2b32c', spoon: 6.6, drop: 7.6, lid: 8.75, shake: [9.25, 10.25] };
+  const CAPTIONS = [                 // [from, to, text, colour of the dot in front]
+    [0.15, 1.5, 'A vinaigrette is a ratio'],
+    [1.6, 3.55, '1 part vinegar', POURS[0].tint],
+    [3.8, 6.8, '3 parts oil. Lighter, so it floats', POURS[1].tint],
+    [6.95, 8.6, 'Mustard binds the two', MIX.spoonful],
+    [9.3, 99, 'Shake: one dressing, 3 to 1', MIX.tint],   // the last one stays for the hold
+  ];
+  const DURATION = 12;
+
+  // ---------------------------------------------------------------- the glassware
+  // Everything is turned on a lathe. A shape is a list of corner points [radius, height, corner rounding]:
+  // `glass` runs from the middle of the foot up the outside, over the lip and down the inside to the middle of the
+  // floor; `liquid` is the body that fits inside (floor, wall, shoulder, neck). radius = of that body's wall,
+  // lip = [radius, height] of the edge a pour leaves from, fill = how high the liquid stands at the start.
+  const SHAPES = {
+    jar: {
+      glass: [[0, 0], [1.3, 0, 0.24], [1.3, 2.9, 0.3], [1.08, 3.26, 0.1], [1.08, 3.36], [1.14, 3.4, 0.02], [1.14, 3.47, 0.02], [1.08, 3.51], [1.08, 3.7, 0.05], [0.97, 3.7, 0.05], [0.97, 3.26, 0.1], [1.19, 2.9, 0.26], [1.19, 0.2, 0.2], [0, 0.2]],
+      liquid: [[0, 0.21], [1.17, 0.21, 0.18], [1.17, 2.9, 0.26], [0.95, 3.26, 0.1], [0.95, 3.68], [0, 3.68]],
+      radius: 1.17, top: 3.7,
+    },
+    cruet: {
+      glass: [[0, 0], [0.95, 0, 0.26], [0.95, 1.9, 0.5], [0.3, 2.7, 0.25], [0.3, 3.24, 0.03], [0.4, 3.31, 0.03], [0.4, 3.4, 0.04], [0.21, 3.4, 0.03], [0.21, 2.7, 0.2], [0.86, 1.9, 0.45], [0.86, 0.16, 0.2], [0, 0.16]],
+      liquid: [[0, 0.17], [0.84, 0.17, 0.18], [0.84, 1.9, 0.45], [0.19, 2.7, 0.2], [0.19, 3.38], [0, 3.38]],
+      radius: 0.84, lip: [0.3, 3.4], fill: 1.85,
+    },
+    tall: {
+      glass: [[0, 0], [1.15, 0, 0.28], [1.15, 3.5, 0.6], [0.3, 4.4, 0.3], [0.3, 5.28, 0.03], [0.41, 5.35, 0.03], [0.41, 5.45, 0.04], [0.21, 5.45, 0.03], [0.21, 4.4, 0.25], [1.06, 3.5, 0.55], [1.06, 0.18, 0.22], [0, 0.18]],
+      liquid: [[0, 0.19], [1.04, 0.19, 0.2], [1.04, 3.5, 0.55], [0.19, 4.4, 0.25], [0.19, 5.43], [0, 5.43]],
+      radius: 1.04, lip: [0.3, 5.45], fill: 3.5,
+    },
+  };
+  const POUR_AT = [0.72, 4.3];       // where a bottle's lip is held while it pours: beside the jar's axis, above its rim
+  const LIFT = 0.8;                  // seconds a bottle takes from the table to the jar, and back
+  const GRAVITY = 36, SPOUT = 1.3;   // how fast a stream falls, and how fast it leaves the bottle
+  const WALL_Z = -14, TABLE_BACK = -3.5;                  // the backdrop stands far behind the table's back edge
+  // timing that picture and sound share
+  const fall = (h, vy = 0) => (vy + Math.sqrt(vy * vy + 2 * GRAVITY * Math.max(h, 0))) / GRAVITY;   // seconds to fall h
+  const FLOOR = SHAPES.jar.liquid[0][1], TOTAL = POURS.reduce((n, p) => n + p.parts, 0);
+  const DELAY = POURS.map((p, i) => fall(POUR_AT[1] - FLOOR - POURS.slice(0, i).reduce((n, q) => n + q.parts, 0) * PART));   // a stream needs a moment to reach the jar: the level rises that much later
+  const DROP_FROM = SHAPES.jar.top + 0.65, PLOP = MIX.drop + fall(DROP_FROM - FLOOR - TOTAL * PART);   // the spoonful falls from here and lands then
+  const LANDED = MIX.shake[1] + 0.22;                    // the shaken jar is back on the table
+
+  // ---------------------------------------------------------------- GLSL shared by several shaders
+  const CAUSTIC = `                                       // a cheap pattern of thin bright lines, like light through water
+    float caustic(vec2 uv, float t) {
+      vec2 p = mod(uv * 6.2831853, 6.2831853) - 250.0, i = p; float c = 1.0;
+      for (int n = 0; n < 4; n++) { float tt = t * (1.0 - 3.5 / float(n + 1));
+        i = p + vec2(cos(tt - i.x) + sin(tt + i.y), sin(tt - i.y) + cos(tt + i.x));
+        c += 1.0 / length(vec2(p.x / (sin(i.x + tt) / 0.005), p.y / (cos(i.y + tt) / 0.005))); }
+      return pow(abs(1.17 - pow(c / 4.0, 1.4)), 8.0);
+    }`;
+  // The studio as a formula, so that the backdrop, the table's sheen and the liquids (which show the room through
+  // themselves) all see the same thing: a glow along the horizon that falls to dark slate, crossed by soft upright
+  // strips of light. Glass needs this: tone to stand out from and lines to bend.
+  const STUDIO = `
+    vec3 backdrop(vec3 P) {
+      float h = smoothstep(-3.6, 4.2, P.y);
+      vec3 c = mix(vec3(1.3, 1.2, 1.06), vec3(0.05, 0.062, 0.08), pow(h, 0.62));
+      float strip = smoothstep(0.1, 0.9, 0.5 + 0.5 * sin(P.x * 1.25 + 0.9 * sin(P.x * 0.41 + 1.3)));
+      return c * mix(1.0, 0.62 + 0.7 * strip, smoothstep(-3.4, -1.0, P.y) * (1.0 - 0.6 * smoothstep(2.5, 6.0, P.y)));
+    }
+    vec3 seen(vec3 P, vec3 d) {                           // what a ray from P ends on: the table, the backdrop or the dark room
+      vec3 far = d.z > -0.05 ? vec3(0.04, 0.045, 0.055) : backdrop(P + d * ((${WALL_Z.toFixed(1)} - P.z) / d.z));
+      if (d.y > -0.01) return far;
+      vec3 Q = P - d * (P.y / d.y), stone = vec3(0.13, 0.125, 0.12) + 0.22 * pow(1.0 + d.y, 4.0) * vec3(1.0, 0.94, 0.85);   // the table, with its sheen
+      return mix(far, stone, smoothstep(${(TABLE_BACK - 1.5).toFixed(1)}, ${(TABLE_BACK + 3).toFixed(1)}, Q.z) * step(Q.z, 30.0));   // (its far edge is seen softly)
+    }
+    vec3 mirrored(vec3 P, vec3 d) {                       // the same for a reflection: it can also catch the long softbox overhead
+      return seen(P, d) + vec3(7.0) * smoothstep(0.66, 0.74, d.y) * (1.0 - smoothstep(0.88, 0.95, d.y)) * step(d.z, 0.0);
+    }`;
+  // A liquid's shape inside its vessel. The vessel is treated as a tube (foot centre uBase, axis uAxis, radius uRad).
+  // The surface is a height above each point of the table: level, plus rings round the place a stream lands, plus
+  // big waves while the vessel is shaken, plus a meniscus that climbs the wall. A second liquid may lie under it:
+  // everything below splitY is liquid A, everything above is liquid B.
+  const LIQUID = `
+    uniform vec3 uBase, uAxis; uniform float uRad, uLevel, uSplit, uMen, uChurn, uTime; uniform vec4 uRing;   // uRing = x, z of the landing place, ring height on the surface, wave height on the boundary
+    float fromAxis(vec3 P) { vec3 q = P - uBase; return length(q - dot(q, uAxis) * uAxis); }
+    float surfaceY(vec3 P) {
+      vec3 q = P - uBase; float r = length(P.xz - uRing.xy);
+      float y = uLevel + uRing.z * sin(r * 12.0 - uTime * 17.0) / (1.0 + r * 3.0);
+      y += uChurn * (0.75 * sin(q.x * 2.3 + uTime * 28.3) + 0.3 * sin(q.z * 3.1 - uTime * 23.0 + q.x * 1.7));
+      return y + uMen * exp(min(fromAxis(P) - uRad, 0.0) / 0.075);
+    }
+    float splitY(vec3 P) {
+      vec3 q = P - uBase;
+      return uSplit + uRing.w * (sin(q.x * 4.0 + uTime * 6.0) + 0.7 * sin(q.z * 5.0 - uTime * 8.0)) + uChurn * 1.5 * sin(q.x * 3.1 - uTime * 21.0 + q.y * 2.6);
+    }`;
+  const WORLD_VS = 'varying vec3 vW, vN; void main(){ vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; vN = normalize(mat3(modelMatrix) * normal); gl_Position = projectionMatrix * viewMatrix * w; }';
+  const BLOBS = 6;                   // small round things that can float inside the jar's liquid (drops of oil, the spoonful)
+
+  registerStyle({
+    id: 'glass-light',
+    name: 'Glass and Light',
+    family: 'Material worlds',
+    look: 'Real glassware on a dark stone table in front of a glowing backdrop: thin clear jars and bottles turned on a lathe, holding coloured liquids with a visible surface, a meniscus and sharp boundaries between layers. Every liquid throws a pool of its own coloured light, with bright caustic lines, on the table in front of it. Small white measure marks are printed on the glass.',
+    motion: 'Calm, with weight. Bottles lift, lean and pour a thin falling stream; levels rise against the marks while the bottle empties; rings spread where the stream lands; layers settle; a jar is shaken hard and set down. The lamp swings slowly behind the glass so the pools of light sweep across the table.',
+    light: 'Back-lit like glass photography: a bright horizon behind, darkness above, and a lamp behind and above the glass, so light comes through the liquids towards the camera. Softboxes give every rounded edge a white rim; the backdrop gives the glass dark and bright lines to bend.',
+    materials: 'Thin clear glass with real refraction and a thick foot; liquids that let the backdrop through, pale where they are thin and deep where they are thick, and turn milky when mixed; brushed steel for lids and spoons; dark matte stone with a faint sheen.',
+    camera: 'One slow continuous dolly: it starts wide enough for the bottles to lift and pour, then moves in on the jar as the layers form and ends close on the finished mixture, still drifting.',
+    post: 'True colours (neutral tone curve), bloom on the light pools and rims, a soft vignette, fine grain. Captions are a crisp 2D overlay.',
+    explains: 'Recipes, mixtures, ratios, amounts, chemistry: anything that fills, pours, layers or changes colour, told with real glassware. A beat is one action on the vessel (a pour, an addition, a shake, a wait). Amounts are levels against the marks on the glass, ingredients are colours, and a change of state is a change in the liquid (layers, cloudiness, colour). Labels are the measure marks plus one short caption line per beat.',
+    topic: 'How a vinaigrette comes together: 3 parts oil, 1 part vinegar',
+    duration: DURATION,
+    fonts: ['600 62px "Inter"', '700 190px "Inter"'],
+    render: { samples: 64, shutter: 0.5, tone: 'neutral', exposure: 1.0, bloom: 0.55, bloomThreshold: 1.0, vignette: 0.3, grain: 0.012, fov: 30, background: '#0a0b0d' },
+
+    build(S) {
+      const { THREE, K, scene, camera, renderer } = S;
+
+      // ---------------------------------------------------------------- 1. what the glass reflects
+      // Reflections come from this environment: a dim room with a few very bright softboxes. On every rounded edge
+      // they become the white rims and streaks that say "glass". (What the glass refracts is the real scene behind it.)
+      K.env(S, { top: '#1b1f25', horizon: '#3d4249', bottom: '#101114', intensity: 1, panels: [
+        { pos: [0, 14, -9], size: [34, 6], color: '#ffffff', power: 22 },          // behind and above: rims along the tops
+        { pos: [0, 12, 14], size: [18, 4], color: '#ffffff', power: 12 },          // above the camera: a streak on every upper shoulder
+        { pos: [-15, 5, 7], size: [1.8, 14], color: '#ffffff', power: 22 },        // two upright strips: streaks down the sides
+        { pos: [15, 6, 8], size: [1.8, 14], color: '#fff1dc', power: 15 },
+      ] });
+
+      // ---------------------------------------------------------------- 2. coloured light on the table
+      // three.js glass casts no coloured shadows, so the light is drawn separately: a camera sits where the lamp is
+      // and renders every caster as "the light that comes through it" (1 = all of it, a tint = coloured liquid, more
+      // than 1 = light gathered by the glass or given off by the liquid, dark at the rims where it is bent away).
+      // Layers multiply. The table then looks its own points up in that picture. Alpha carries 1 + the caster's
+      // height, so the light can blur more the further it has travelled.
+      const LIGHT = { size: [24, 14], res: [2048, 1216], far: 60, centre: new THREE.Vector3(0.5, 2, 2) };
+      const lightRT = new THREE.WebGLRenderTarget(LIGHT.res[0], LIGHT.res[1], { type: THREE.HalfFloatType, depthBuffer: false, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter });
+      const lightScene = new THREE.Scene(), lightCam = new THREE.OrthographicCamera(-LIGHT.size[0] / 2, LIGHT.size[0] / 2, LIGHT.size[1] / 2, -LIGHT.size[1] / 2, 1, LIGHT.far);
+      const uLight = { tLight: { value: lightRT.texture }, uLightVP: { value: new THREE.Matrix4() }, uLightDir: { value: new THREE.Vector3() }, uLightSize: { value: new THREE.Vector2(...LIGHT.size) }, uTime: { value: 0 } };
+      const casters = [];
+      const castColour = (tint, gain, deep = 1.6) => { const c = new THREE.Color(tint); return c.setRGB(c.r ** deep, c.g ** deep, c.b ** deep).multiplyScalar(gain); };   // light thrown on the table has been through about this much liquid
+      // castLight(mesh, { tint, gain, rim, focus, liquid }): make `mesh` throw light on the table.
+      //   tint = colour of the light that passes; gain = its strength (1 = plain glass, 9 = liquid that shines, 0 = solid);
+      //   rim = how dark the outline is (0 = black); focus = how much brighter the middle gets;
+      //   liquid = the uniforms of a liquid body: only the part under its surface casts, each layer in its own colour.
+      function castLight(mesh, o = {}) {
+        const mat = new THREE.ShaderMaterial({
+          uniforms: Object.assign({ uTint: { value: new THREE.Color(o.tint || '#ffffff').multiplyScalar(o.gain == null ? 1 : o.gain) }, uRim: { value: o.rim == null ? 0.4 : o.rim }, uFocus: { value: o.focus || 0 }, uDir: uLight.uLightDir }, o.liquid || {}),
+          vertexShader: WORLD_VS,
+          fragmentShader: `varying vec3 vW, vN; uniform vec3 uTint, uDir; uniform float uRim, uFocus; ${o.liquid ? LIQUID + 'uniform vec3 uCastA, uCastB, uCastMix; uniform float uCloud;' : ''}
+            void main(){
+              float k = dot(normalize(vN), uDir) * ${o.liquid ? '-1.0' : '1.0'}; vec3 tint = uTint;   // glass: the faces turned to the lamp. Liquid: the faces the light leaves by (every ray through the body leaves once)
+              if (k <= 0.0 || vW.y < 0.0) discard;
+              ${o.liquid ? 'if (vW.y > surfaceY(vW)) discard; tint = mix(vW.y < splitY(vW) ? uCastA : uCastB, uCastMix, uCloud);' : ''}
+              gl_FragColor = vec4(tint * mix(uRim, 1.0 + uFocus * pow(k, 3.0), smoothstep(0.08, 0.6, k)), 1.0 + vW.y);
+            }`,
+          side: THREE.DoubleSide, depthTest: false, depthWrite: false, transparent: true, blending: THREE.CustomBlending,
+          blendEquation: THREE.AddEquation, blendSrc: THREE.DstColorFactor, blendDst: THREE.ZeroFactor,          // colour: multiply
+          blendEquationAlpha: THREE.MaxEquation, blendSrcAlpha: THREE.OneFactor, blendDstAlpha: THREE.OneFactor, // alpha: highest caster
+        });
+        const proxy = new THREE.Mesh(mesh.geometry, mat); proxy.matrixAutoUpdate = false; proxy.frustumCulled = false;
+        lightScene.add(proxy); casters.push([mesh, proxy]);
+        return mat;
+      }
+      const _c = new THREE.Color(), _m = new THREE.Matrix4();
+      const shown = (o) => { for (; o; o = o.parent) if (!o.visible) return false; return true; };
+      function renderLight(dir, t) {
+        uLight.uLightDir.value.set(dir[0], dir[1], dir[2]).normalize(); uLight.uTime.value = t;
+        lightCam.position.copy(uLight.uLightDir.value).multiplyScalar(LIGHT.far / 2).add(LIGHT.centre); lightCam.lookAt(LIGHT.centre); lightCam.updateMatrixWorld();
+        uLight.uLightVP.value.multiplyMatrices(lightCam.projectionMatrix, _m.copy(lightCam.matrixWorld).invert());
+        scene.updateMatrixWorld();
+        for (const [mesh, proxy] of casters) { proxy.matrix.copy(mesh.matrixWorld); proxy.visible = shown(mesh); }
+        renderer.getClearColor(_c); const a = renderer.getClearAlpha();
+        renderer.setRenderTarget(lightRT); renderer.setClearColor(0xffffff, 1); renderer.clear(); renderer.render(lightScene, lightCam);
+        renderer.setClearColor(_c, a); renderer.setRenderTarget(null);
+      }
+      // the lookup, for any material that should receive the light (here: the table)
+      const RECEIVE = `
+        uniform sampler2D tLight; uniform mat4 uLightVP; uniform vec3 uLightDir; uniform vec2 uLightSize; uniform float uTime; ${CAUSTIC}
+        float ign(vec2 p) { return fract(52.9829189 * fract(dot(p, vec2(0.06711056, 0.00583715)))); }
+        vec3 lightThrough(vec3 P, float softness) {
+          vec2 uv = (uLightVP * vec4(P, 1.0)).xy * 0.5 + 0.5;
+          float h = max(textureLod(tLight, uv, 4.0).a, 1.0 + (textureLod(tLight, uv, 6.0).a - 1.0) * 1.6) - 1.0;   // roughly how high the caster is here
+          float r = softness * (0.1 + h);                                                            // blur radius in world units
+          float lod = log2(max(1.0, r / uLightSize.x * float(textureSize(tLight, 0).x) * 0.7));
+          float a0 = 6.2831853 * ign(gl_FragCoord.xy + fract(uTime * 7.31) * 97.0); vec3 s = vec3(0.0);
+          for (int i = 0; i < 12; i++) { float fi = float(i) + 0.5, rr = sqrt(fi / 12.0), a = a0 + fi * 2.3999632;
+            s += textureLod(tLight, uv + rr * r * vec2(cos(a), sin(a)) / uLightSize, lod).rgb; }
+          s /= 12.0;
+          // light that has been through glass is never even: it gathers into bright moving lines with darker gaps
+          vec3 dv = abs(s - 1.0); float changed = clamp(max(dv.r, max(dv.g, dv.b)) * 1.6, 0.0, 1.0);
+          s *= 1.0 + changed * (2.6 * min(caustic(P.xz * 0.42, uTime * 0.6), 2.5) - 0.6);
+          // and some of it scatters: a wide faint glow of the same colour around the pool
+          vec3 wide = textureLod(tLight, uv + (vec2(ign(gl_FragCoord.yx + 3.0), ign(gl_FragCoord.xy + 11.0)) - 0.5) * 0.02, 6.0).rgb;
+          return s + max(wide - 1.0, 0.0) * 0.22;
+        }`;
+
+      // ---------------------------------------------------------------- 3. the set: a dark stone table and a far, glowing backdrop
+      const backdrop = new THREE.Mesh(new THREE.PlaneGeometry(140, 60), new THREE.ShaderMaterial({ vertexShader: WORLD_VS, fragmentShader: `varying vec3 vW, vN; ${STUDIO} void main(){ gl_FragColor = vec4(backdrop(vW), 1.0); }` }));
+      backdrop.position.set(0, 10, WALL_Z); scene.add(backdrop);
+      const table = new THREE.Mesh(new THREE.PlaneGeometry(120, 30 - TABLE_BACK), new THREE.ShaderMaterial({
+        uniforms: Object.assign({ uStone: { value: new THREE.Color('#5d5b58') }, uKey: { value: new THREE.Color('#fff3df').multiplyScalar(1.3) }, uFill: { value: new THREE.Color('#c9d6e8').multiplyScalar(0.42) } }, uLight),
+        vertexShader: WORLD_VS,
+        fragmentShader: `varying vec3 vW, vN; uniform vec3 uStone, uKey, uFill; ${STUDIO} ${RECEIVE}
+          float speck(vec2 p) { return fract(sin(dot(floor(p), vec2(127.1, 311.7))) * 43758.5453); }
+          void main(){
+            vec3 V = normalize(cameraPosition - vW);
+            vec3 stone = uStone * (0.9 + 0.2 * speck(vW.xz * 90.0) * speck(vW.xz * 37.0 + 5.0));       // fine mineral speckle
+            // soft fill from the room, plus the lamp coloured by whatever glass and liquid it came through
+            vec3 c = stone * (uFill + uKey * uLightDir.y * lightThrough(vW, 0.085));
+            // a faint sheen: at a low angle the stone mirrors the glowing backdrop a little
+            c += backdrop(vW + reflect(-V, vec3(0.0, 1.0, 0.0)) * ((vW.z - (${WALL_Z.toFixed(1)})) / max(V.z, 0.05))) * (0.012 + 0.22 * pow(1.0 - V.y, 4.0));
+            gl_FragColor = vec4(c * (1.0 - 0.35 * smoothstep(6.0, 18.0, length(vW.xz - vec2(0.0, 2.0)))), 1.0);
+          }`,
+      }));
+      table.rotation.x = -Math.PI / 2; table.position.set(0, 0, (30 + TABLE_BACK) / 2); scene.add(table);
+
+      // ---------------------------------------------------------------- 4. the materials
+      // Clear glass. three.js refraction only sees opaque things, so everything coloured in this style (the liquids,
+      // the set) is opaque and the clear glass goes over it and bends it. Keep it single-sided: double-sided
+      // transmission draws the back faces into its own background picture and can blow out on thin rims.
+      const glass = new THREE.MeshPhysicalMaterial({ color: '#ffffff', roughness: 0.03, metalness: 0, transmission: 1, thickness: 0.35, ior: 1.5, dispersion: 1.0, attenuationColor: new THREE.Color('#9fe3cd'), attenuationDistance: 7, envMapIntensity: 1 });
+      // Real glass shows a dark line along its outline, where light from behind is bent away from the eye. Here the
+      // light coming through is simply dimmed towards the rim.
+      glass.onBeforeCompile = (sh) => {
+        sh.fragmentShader = sh.fragmentShader.replace('#include <transmission_fragment>', `#include <transmission_fragment>
+          totalDiffuse *= mix(vec3(1.0), vec3(0.05, 0.12, 0.12), pow(1.0 - saturate(dot(normal, normalize(vViewPosition))), 2.6));`);
+      };
+      const steel = new THREE.MeshStandardMaterial({ color: '#aab0b8', metalness: 1, roughness: 0.34 }), brass = new THREE.MeshStandardMaterial({ color: '#c79a4b', metalness: 1, roughness: 0.36 });
+
+      // Liquid: an opaque body that is painted by following the view ray THROUGH it. The ray is bent at the
+      // surface it enters, then walked to where it leaves the vessel; on the way each liquid takes its share of the
+      // light (a little where the path is short, a lot where it is long) and adds some of its own colour; at the
+      // end the ray sees the studio. So a round jar shows the backdrop squeezed and flipped, edges are pale, the
+      // middle is deep, and looking down through the top layer you see the layer below.
+      // The body is the whole inside of the vessel; nothing is drawn above the surface. Where the cut shows the
+      // inside of the body, that pixel IS the surface: the view ray is walked down onto the height field, so rings,
+      // waves and the meniscus are real shapes with their own reflections and depth.
+      function liquid(geometry, shape, a, b) {
+        const u = {
+          uBase: { value: new THREE.Vector3() }, uAxis: { value: new THREE.Vector3(0, 1, 0) }, uRad: { value: shape.radius }, uLevel: { value: 0 }, uSplit: { value: -1e3 },
+          uMen: { value: 0.05 }, uChurn: { value: 0 }, uRing: { value: new THREE.Vector4() }, uTime: uLight.uTime, uLightDir: uLight.uLightDir,
+          uTintA: { value: new THREE.Color(a) }, uTintB: { value: new THREE.Color(b) }, uCloud: { value: 0 }, uCloudCol: { value: new THREE.Color(MIX.tint) }, uGlow: { value: 0.2 },
+          uBlobs: { value: Array.from({ length: BLOBS }, () => new THREE.Vector4()) }, uBlobCol: { value: Array.from({ length: BLOBS }, () => new THREE.Vector4()) },
+          uCastA: { value: castColour(a, 9) }, uCastB: { value: castColour(b, 9) }, uCastMix: { value: castColour(MIX.tint, 3.4, 0.7) },
+        };
+        const mesh = new THREE.Mesh(geometry, new THREE.ShaderMaterial({
+          uniforms: u, vertexShader: WORLD_VS, side: THREE.DoubleSide,
+          fragmentShader: `varying vec3 vW, vN; uniform mat4 projectionMatrix; uniform vec3 uTintA, uTintB, uCloudCol, uLightDir; uniform float uCloud, uGlow; uniform vec4 uBlobs[${BLOBS}], uBlobCol[${BLOBS}];
+            ${LIQUID} ${STUDIO}
+            // the light that arrives along a ray that starts at P, just inside the liquid, and travels along d
+            vec3 through(vec3 P, vec3 d, out float len) {
+              vec3 T = vec3(1.0), own = vec3(0.0); len = 0.0;
+              for (int i = 0; i < 4; i++) {
+                float sp = splitY(P); bool low = P.y < sp;
+                vec3 q = P - uBase; float qa = dot(q, uAxis), da = dot(d, uAxis); vec3 qp = q - qa * uAxis, dp = d - da * uAxis;
+                float aa = max(dot(dp, dp), 1e-5), bb = dot(qp, dp), t = (-bb + sqrt(max(bb * bb - aa * (dot(qp, qp) - uRad * uRad), 0.0))) / aa;   // to the wall
+                if (da < 0.0) t = min(t, -qa / da);                                                 // to the floor
+                int hit = 0, blob = -1;                                                             // 0 = it leaves the vessel
+                if (d.y > 0.0) { float tt = ((low ? sp : surfaceY(P)) - P.y) / d.y; if (tt < t) { t = tt; hit = low ? 1 : 2; } }   // 1 = it crosses the boundary, 2 = it meets the surface from below
+                else if (!low) { float tt = (sp - P.y) / d.y; if (tt < t) { t = tt; hit = 1; } }
+                t = max(t, 0.0);
+                for (int k = 0; k < ${BLOBS}; k++) { vec4 s = uBlobs[k]; vec3 oc = P - s.xyz; float ob = dot(oc, d), h = ob * ob - dot(oc, oc) + s.w * s.w;
+                  if (s.w > 0.0 && h > 0.0 && -ob - sqrt(h) > 0.0 && -ob - sqrt(h) < t) { t = -ob - sqrt(h); blob = k; } }
+                vec3 tint = low ? uTintA : uTintB, pass = pow(tint, vec3(t));
+                own += T * (1.0 - exp(-1.4 * t)) * tint * tint * uGlow;          // a little light is scattered inside: the longer the path, the more of the liquid's own colour
+                T *= pass; len += t; P += d * t;
+                if (blob >= 0) {                                                 // something floats in the way: a drop of the other liquid (bright, like a lens) or a solid lump
+                  vec3 n = normalize(P - uBlobs[blob].xyz); vec4 bc = uBlobCol[blob]; float lit = 0.5 + 0.5 * dot(n, uLightDir), edge = 1.0 - max(dot(n, -d), 0.0);
+                  return own + T * bc.rgb * mix(0.75 + 1.3 * edge * edge + 0.5 * lit, 0.7 + 1.1 * lit, bc.a);
+                }
+                if (hit == 0) {                                                  // it leaves: through the floor onto the table, which the liquid's own light colours, or through the far wall
+                  if (da < 0.0 && t >= -qa / da - 1e-4) return own + T * (seen(P, d) * 1.1 + tint * 0.55 * smoothstep(0.9, 1.0, uAxis.y));
+                  vec3 q2 = P - uBase, n = normalize(q2 - dot(q2, uAxis) * uAxis); float square = abs(dot(d, n));
+                  float streak = smoothstep(0.045, 0.0, abs(abs(n.x) - 0.62)) * step(n.z, 0.0);   // the softboxes on the far wall, seen through the liquid
+                  return own + T * (seen(P, d) * 1.25 * (0.5 + 0.5 * square) + 0.5 * streak);
+                }
+                if (hit == 2) d.y = -d.y; else P.y += sign(d.y) * 4e-3;          // the surface seen from below is a mirror
+              }
+              return own + T * seen(P, d);
+            }
+            void main(){
+              if (vW.y > surfaceY(vW)) discard;
+              vec3 eye = cameraPosition, rd = normalize(vW - eye), P = vW, N = normalize(vN); float len;
+              bool top = !gl_FrontFacing; gl_FragDepth = gl_FragCoord.z;
+              if (top) {
+                float reach = 0.9 + 6.0 * uChurn, t = (uLevel + 0.1 + 1.2 * uChurn - eye.y) / rd.y;       // start above the highest wave and step down safely
+                for (int i = 0; i < 20; i++) { vec3 Q = eye + rd * t; t += (Q.y - surfaceY(Q)) / (reach * length(rd.xz) - rd.y); }
+                P = eye + rd * t; vec2 e = vec2(0.012, 0.0);
+                if (fromAxis(P) > uRad * 1.01) discard;                          // the ray meets the surface outside the vessel: this is not the surface, the wall in front covers it
+                N = normalize(vec3(surfaceY(P - e.xyy) - surfaceY(P + e.xyy), 2.0 * e.x, surfaceY(P - e.yyx) - surfaceY(P + e.yyx)));
+                vec4 clip = projectionMatrix * viewMatrix * vec4(P, 1.0); gl_FragDepth = clip.z / clip.w * 0.5 + 0.5;
+              }
+              float nv = max(dot(N, -rd), 0.0);
+              vec3 c = through(P - N * 3e-3, refract(rd, N, 0.75), len);
+              // mixed liquid is cloudy: light is scattered before it gets far, so it looks milky and softly lit from behind
+              float under = top ? 0.0 : surfaceY(vW) - vW.y;
+              vec3 milk = uCloudCol * (0.6 + 0.3 * (0.5 + 0.5 * dot(N, uLightDir)) + 0.4 * pow(1.0 - nv, 2.0) + 0.14 * smoothstep(0.0, 2.6, P.y - uBase.y));
+              milk += vec3(0.2, 0.19, 0.16) * smoothstep(0.2, 0.03, under);                          // a line of fine froth at the top
+              c = mix(c, milk, (1.0 - exp(-10.0 * len)) * uCloud);
+              if (top) c = mix(c, mirrored(P, reflect(rd, N)), 0.02 + 0.98 * pow(1.0 - nv, 5.0));     // the surface also mirrors the room
+              else {
+                float at = abs(vW.y - splitY(vW));
+                c *= (0.62 + 0.5 * pow(nv, 1.5)) * (1.08 - 0.22 * smoothstep(0.0, 2.2, under));        // a round body of liquid is brightest down its middle, and deeper lower down
+                c *= 1.0 - 0.45 * smoothstep(0.035, 0.0, at) * (1.0 - uCloud) * step(-900.0, uSplit); // the boundary between two liquids: a thin dark line
+                c = mix(c * (1.0 - 0.25 * smoothstep(0.09, 0.03, under)), vec3(1.2), 0.75 * smoothstep(0.028, 0.008, under));   // the meniscus: a dark edge under a bright line
+              }
+              gl_FragColor = vec4(c, 1.0);
+            }`,
+        }));
+        castLight(mesh, { liquid: u, rim: 0.5, focus: 0.6 });
+        mesh.userData.u = u;
+        return mesh;
+      }
+      // A falling stream: a thin tapered tube laid along the path of a drop. Simple see-through shading.
+      const streamMat = (tint) => new THREE.ShaderMaterial({
+        uniforms: { uTint: { value: new THREE.Color(tint) } }, vertexShader: WORLD_VS, side: THREE.DoubleSide,
+        fragmentShader: `varying vec3 vW, vN; uniform vec3 uTint; ${STUDIO}
+          void main(){
+            vec3 V = normalize(cameraPosition - vW), N = normalize(vN); if (dot(N, V) < 0.0) N = -N; float nv = dot(N, V);
+            vec3 pass = pow(uTint, vec3(mix(0.3, 1.5, nv)));
+            vec3 c = pass * (0.15 + 1.1 * seen(vW, refract(-V, N, 0.75))) + uTint * uTint * 0.3 * nv;
+            gl_FragColor = vec4(c + 0.25 * mirrored(vW, reflect(-V, N)) * pow(1.0 - nv, 2.0), 1.0);
+          }`,
+      });
+
+      // ---------------------------------------------------------------- 5. turning the glassware
+      // corner points [radius, height, rounding] -> a smooth outline (every rounded corner becomes a small curve)
+      function outline(pts, n = 7) {
+        const out = [], V = (p) => new THREE.Vector2(p[0], p[1]);
+        pts.forEach((p, i) => {
+          if (!p[2] || i === 0 || i === pts.length - 1) { out.push(V(p)); return; }
+          const c = V(p), a = V(pts[i - 1]), b = V(pts[i + 1]), s = c.clone().add(a.sub(c).clampLength(0, Math.min(p[2], c.distanceTo(V(pts[i - 1])) / 2))), e = c.clone().add(b.sub(c).clampLength(0, Math.min(p[2], c.distanceTo(V(pts[i + 1])) / 2)));
+          for (let k = 0; k <= n; k++) { const u = k / n; out.push(new THREE.Vector2((1 - u) * (1 - u) * s.x + 2 * u * (1 - u) * c.x + u * u * e.x, (1 - u) * (1 - u) * s.y + 2 * u * (1 - u) * c.y + u * u * e.y)); }
+        });
+        return out;
+      }
+      const turn = (pts, seg = 96) => new THREE.LatheGeometry(outline(pts), seg);
+      // vessel(shape, a, b): a group with the glass and the liquid body inside it (a = lower liquid, b = upper liquid;
+      // one liquid: give it twice). Drive the liquid with group.userData.u (uLevel, uSplit, uRing, uChurn, uCloud...).
+      function vessel(shape, a, b) {
+        const g = new THREE.Group(), shell = new THREE.Mesh(turn(shape.glass), glass), body = liquid(turn(shape.liquid, 72), shape, a, b);
+        g.add(body, shell); castLight(shell, { tint: '#e9f6f1', rim: 0.62, focus: 0.3 });
+        Object.assign(g.userData, { u: body.userData.u, body, shape, floor: shape.liquid[0][1] });
+        return g;
+      }
+      // How a liquid lies in a leaning bottle. The bottle is cut into slices along its axis; each slice is a disc
+      // that the level surface cuts straight across. level(lean, volume) = height of the surface above the foot;
+      // angle(volume) = the lean at which the surface just reaches the lip, i.e. the angle the bottle pours at.
+      function leaning(shape) {
+        const P = shape.liquid, y0 = P[0][1], y1 = P[P.length - 1][1], N = 40;
+        const rad = (y) => { let i = 2; while (i < P.length - 2 && P[i][1] < y) i++; return K.lerp(P[i - 1][0], P[i][0], K.clamp((y - P[i - 1][1]) / (P[i][1] - P[i - 1][1] || 1))); };
+        const volume = (lean, h) => { const s = Math.max(Math.sin(lean), 1e-3), c = Math.cos(lean); let v = 0;
+          for (let i = 0; i < N; i++) { const y = y0 + (i + 0.5) / N * (y1 - y0), r = rad(y), u = K.clamp((h - c * y) / s / r, -1, 1); v += r * r * (Math.acos(-u) + u * Math.sqrt(1 - u * u)); }
+          return v * (y1 - y0) / N; };
+        const solve = (f, lo, hi) => { for (let i = 0; i < 22; i++) { const m = (lo + hi) / 2; if (f(m)) hi = m; else lo = m; } return (lo + hi) / 2; };
+        const level = (lean, V) => solve((h) => volume(lean, h) > V, -3, y1 + 3);
+        const angle = (V) => solve((a) => level(a, V) > shape.lip[1] * Math.cos(a) - shape.lip[0] * Math.sin(a) + 0.04, 0.3, 2.7);
+        return { level, angle, full: volume(0, shape.fill) };
+      }
+      // stream(tint): returns lay(from, velocity, s0, s1, radius(s)), which lays the tube along the flight of a drop
+      // that left `from` with `velocity`: the part that has been flying for s0..s1 seconds.
+      function stream(tint) {
+        const NS = 30, NR = 10, pos = new Float32Array((NS + 1) * NR * 3), nrm = new Float32Array(pos.length), idx = [];
+        for (let i = 0; i < NS; i++) for (let j = 0; j < NR; j++) { const a = i * NR + j, b = i * NR + (j + 1) % NR; idx.push(a, b, b + NR, a, b + NR, a + NR); }
+        const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('normal', new THREE.BufferAttribute(nrm, 3)); g.setIndex(idx);
+        const mesh = new THREE.Mesh(g, streamMat(tint)); mesh.frustumCulled = false; scene.add(mesh); castLight(mesh, { tint: castColour(tint, 1), gain: 5, rim: 0.7 });
+        return (from, vel, s0, s1, radius) => {
+          mesh.visible = s1 > s0 + 1e-3; if (!mesh.visible) return;
+          for (let i = 0; i <= NS; i++) {
+            const s = s0 + (s1 - s0) * i / NS, x = from[0] + vel[0] * s, y = from[1] + vel[1] * s - GRAVITY / 2 * s * s, tx = vel[0], ty = vel[1] - GRAVITY * s, l = Math.hypot(tx, ty), r = radius(s);
+            for (let j = 0; j < NR; j++) { const a = j / NR * Math.PI * 2, c = Math.cos(a), z = Math.sin(a), k = (i * NR + j) * 3;
+              nrm[k] = ty / l * c; nrm[k + 1] = -tx / l * c; nrm[k + 2] = z; pos[k] = x + nrm[k] * r; pos[k + 1] = y + nrm[k + 1] * r; pos[k + 2] = from[2] + z * r; }
+          }
+          g.attributes.position.needsUpdate = true; g.attributes.normal.needsUpdate = true;
+        };
+      }
+
+      // ---------------------------------------------------------------- 6. the scene
+      const PART_VOLUME = Math.PI * SHAPES.jar.radius ** 2 * PART;
+      const jar = vessel(SHAPES.jar, POURS[0].tint, POURS[POURS.length - 1].tint); scene.add(jar);
+      // measure marks, printed in white on the outside of the jar: a tick and a number for every part
+      {
+        const y0 = 0.3, y1 = 2.85, span = 0.62, tex = K.canvasTex(512, 2048, (ctx, w, h) => {
+          const Y = (y) => h * (1 - (y - y0) / (y1 - y0));
+          ctx.fillStyle = '#ffffff'; ctx.font = '700 190px "Inter"'; ctx.textBaseline = 'middle';
+          for (let k = 1; k <= MARKS * 2; k++) { const y = Y(FLOOR + k * PART / 2), whole = k % 2 === 0; ctx.fillRect(30, y - (whole ? 11 : 7), whole ? 200 : 100, whole ? 22 : 14); if (whole) ctx.fillText(String(k / 2), 268, y + 8); }
+        });
+        const marks = new THREE.Mesh(new THREE.CylinderGeometry(1.306, 1.306, y1 - y0, 48, 1, true, -0.92, span), new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, color: new THREE.Color(0.92, 0.94, 0.94) }));
+        marks.position.y = (y0 + y1) / 2; jar.add(marks);
+      }
+      // the lid: a brass screw cap with a ribbed edge
+      const lid = new THREE.Group();
+      {
+        const T = SHAPES.jar.top, ribs = K.canvasTex(1024, 16, (ctx, w, h) => { for (let x = 0; x < w; x += 16) { const g = ctx.createLinearGradient(x, 0, x + 16, 0); g.addColorStop(0, '#000'); g.addColorStop(0.5, '#fff'); g.addColorStop(1, '#000'); ctx.fillStyle = g; ctx.fillRect(x, 0, 16, h); } }, { data: true, repeat: [1, 1] });
+        const cap = new THREE.Mesh(turn([[0, T + 0.02], [1.17, T + 0.02], [1.17, T - 0.42], [1.215, T - 0.42, 0.02], [1.215, T + 0.09, 0.07], [1.0, T + 0.09, 0.03], [0.94, T + 0.06, 0.03], [0, T + 0.06]]), brass);
+        const edge = new THREE.Mesh(new THREE.CylinderGeometry(1.222, 1.222, 0.26, 96, 1, true), new THREE.MeshStandardMaterial({ color: brass.color, metalness: 1, roughness: 0.4, bumpMap: ribs, bumpScale: 1.2 }));
+        edge.position.y = T - 0.2; lid.add(cap, edge); jar.add(lid); castLight(cap, { gain: 0.02, rim: 1 });
+      }
+      // bottles, each with its liquid, its pouring maths and its stream
+      const bottles = POURS.map((p) => {
+        const shape = SHAPES[p.bottle], g = vessel(shape, p.tint, p.tint), side = Math.sign(p.at[0]);     // side: +1 stands right of the jar and leans left
+        scene.add(g);
+        const lean = leaning(shape), left = lean.full - p.parts * PART_VOLUME, angles = Array.from({ length: 13 }, (_, i) => lean.angle(K.lerp(left, lean.full, i / 12)));
+        return Object.assign(g.userData, { g, side, lean, left, lay: stream(p.tint), angle: (V) => { const x = K.clamp((V - left) / (lean.full - left)) * 12, i = Math.min(11, Math.floor(x)); return K.lerp(angles[i], angles[i + 1], x - i); } });
+      });
+      // the spoon and its spoonful
+      const spoon = new THREE.Group(), tip = new THREE.Group(); spoon.add(tip); scene.add(spoon);   // spoon: where it is and how it is held; tip: turning it over
+      {
+        const bowl = new THREE.Mesh(turn([[0, -0.115], [0.2, -0.09, 0.08], [0.31, 0.0, 0.05], [0.33, 0.03], [0.3, 0.03], [0.19, -0.065, 0.08], [0, -0.09]], 40), steel); bowl.scale.set(1.3, 1, 1);
+        const handle = new THREE.Mesh(K.tube([[0.4, 0.03, 0], [0.9, 0.1, 0], [1.7, 0.16, 0], [2.5, 0.12, 0]], 0.05, { radial: 10 }).scale(1, 0.55, 1.5), steel);
+        tip.add(bowl, handle); castLight(bowl, { gain: 0.02, rim: 1 }); castLight(handle, { gain: 0.02, rim: 1 });
+      }
+      const lumpGeo = new THREE.SphereGeometry(0.2, 32, 20), lumpNoise = K.noise(7);
+      for (let i = 0, p = lumpGeo.attributes.position; i < p.count; i++) { const k = 1 + 0.16 * lumpNoise.n3(p.getX(i) * 6, p.getY(i) * 6, p.getZ(i) * 6); p.setXYZ(i, p.getX(i) * k * 1.12, p.getY(i) * k * 0.78, p.getZ(i) * k); }
+      lumpGeo.computeVertexNormals();
+      const lumpMat = new THREE.MeshStandardMaterial({ color: MIX.spoonful, roughness: 0.5, emissive: new THREE.Color(MIX.spoonful), emissiveIntensity: 0.35 });
+      const lump = new THREE.Mesh(lumpGeo, lumpMat), carried = new THREE.Mesh(lumpGeo, lumpMat);       // the spoonful: falling free, and sitting in the spoon until it drops
+      scene.add(lump); castLight(lump, { tint: MIX.spoonful, gain: 0.15, rim: 1 }); carried.position.y = 0.06; tip.add(carried);
+
+      // ---------------------------------------------------------------- 7. the choreography
+      const flow = (u) => (u + K.smooth(0, 1, u)) / 2;                      // a pour: steady, with a soft start and stop
+      const tints = POURS.map((p) => new THREE.Color(p.tint)), mixTint = new THREE.Color(MIX.tint), rnd = K.rng(3), SEED = Array.from({ length: BLOBS }, () => [rnd.range(-1, 1), rnd.range(-1, 1), rnd()]);
+      const [SH0, SH1] = MIX.shake, DROP_X = 0.12;                         // the spoonful goes in a little off the middle
+      // one shot: wide while the bottles pour, then in on the jar
+      const cam = {
+        pos: K.path([[0, [-2.6, 5.4, 15.8]], [4.4, [-0.4, 5.6, 15.4]], [8.2, [1.2, 5.4, 14.3]], [DURATION, [1.6, 5.2, 13.7]]]),
+        aim: K.path([[0, [0.1, 2.5, 0]], [4.4, [0.5, 2.6, 0]], [8.2, [0.3, 2.3, 0]], [DURATION, [0.2, 2.2, 0]]]),
+        lens: K.path([[0, 0.02], [8.0, 0.03], [DURATION, 0.035]]),
+      };
+      const sunAz = K.track([[0, -0.45], [DURATION, 0.12, 'inOut']]), SUN_EL = 0.72;      // the lamp swings round behind the glass, 41 degrees up
+
+      return {
+        update(t) {
+          const ju = jar.userData.u;
+          // --- the jar: lifted and shaken, then set down
+          const held = K.seg(t, SH0 - 0.25, SH0, K.ease.inOut) * (1 - K.seg(t, SH1, LANDED, K.ease.in)), hard = K.seg(t, SH0 - 0.05, SH0 + 0.12) * (1 - K.seg(t, SH1 - 0.22, SH1 + 0.03)), w = (t - SH0) * Math.PI * 2 * 4.5;
+          const settle = t > LANDED ? 0.05 * Math.exp(-(t - LANDED) * 9) * Math.sin((t - LANDED) * 30) : 0;   // a small bounce on landing
+          jar.position.set(0.14 * Math.cos(w) * hard, 1.05 * held + 0.42 * Math.sin(w) * hard + Math.abs(settle), 0); jar.rotation.z = 0.2 * Math.sin(w + 1.1) * hard;
+          ju.uAxis.value.set(-Math.sin(jar.rotation.z), Math.cos(jar.rotation.z), 0); ju.uBase.value.copy(jar.position).addScaledVector(ju.uAxis.value, FLOOR);
+          // --- pours: each bottle lifts, leans until its liquid reaches the lip, pours, and goes back
+          let parts = 0, ringTop = 0, ringSplit = 0, landX = 0;       // what is in the jar, how hard a stream is landing (on the surface, on the boundary), and where
+          POURS.forEach((p, i) => {
+            const b = bottles[i], [a, z] = p.pour, V = b.lean.full - flow(K.seg(t, a, z)) * p.parts * PART_VOLUME, shape = b.shape;
+            const go = K.seg(t, a - LIFT, a, K.ease.inOut) * (1 - K.seg(t, z + 0.2, z + 0.2 + LIFT, K.ease.inOut));    // 0 = standing on the table, 1 = at the jar
+            const lean = b.angle(V) * K.smooth(0.12, 1, go), phi = b.side * lean, cs = Math.cos(phi), sn = Math.sin(phi);
+            // the lip travels from where it stands to the pouring place; the bottle hangs from its lip
+            const lip = [K.lerp(p.at[0] - b.side * shape.lip[0], b.side * POUR_AT[0], K.smooth(0.1, 1, go)), K.lerp(shape.lip[1], POUR_AT[1], K.smooth(0, 0.75, go)) + 0.5 * Math.sin(Math.PI * go) * (1 - go), K.lerp(p.at[1], 0, go)];
+            const lx = -b.side * shape.lip[0], ly = shape.lip[1];
+            b.g.position.set(lip[0] - (lx * cs - ly * sn), lip[1] - (lx * sn + ly * cs), lip[2]); b.g.rotation.z = phi;
+            b.u.uAxis.value.set(-sn, cs, 0); b.u.uBase.value.copy(b.g.position).addScaledVector(b.u.uAxis.value, b.floor);
+            b.u.uLevel.value = b.g.position.y + b.lean.level(lean, V); b.u.uMen.value = 0.04 * (1 - K.smooth(0, 0.2, lean));
+            // what has arrived in the jar, and the stream on its way there
+            const arriving = K.seg(t, a + DELAY[i], a + DELAY[i] + 0.12) * (1 - K.seg(t, z + DELAY[i] - 0.05, z + DELAY[i] + 0.5, K.ease.out));
+            const got = flow(K.seg(t - DELAY[i], a, z)) * p.parts, level = FLOOR + (parts + got) * PART, vel = [-sn * SPOUT, cs * SPOUT];
+            const sLand = fall(lip[1] - level + 0.05, vel[1]);
+            b.lay(lip, vel, Math.max(0, t - z), Math.min(t - a, sLand), (s) => { const born = t - s, speed = Math.hypot(vel[0], vel[1] - GRAVITY * s);
+              return p.stream * K.smooth(a, a + 0.14, born) * (1 - K.smooth(z - 0.16, z, born)) * (0.45 + 0.55 * Math.sqrt(SPOUT / speed)) * (1 + 0.08 * Math.sin(s * 40 - t * 23)); });
+            if (arriving > 0) { landX = lip[0] + vel[0] * sLand; ringTop += arriving; if (i > 0) ringSplit += arriving; }
+            if (i === 0) ju.uSplit.value = jar.position.y + FLOOR + got * PART;      // the first liquid ends up as the lower layer
+            parts += got;
+            // drops of a lighter liquid that were carried under by the stream bob back up to the boundary
+            if (i > 0) for (let k = 0; k < BLOBS - 1; k++) {
+              const life = ((t - a - DELAY[i]) / 0.62 + k / (BLOBS - 1)) % 1, r = 0.085 * Math.sin(Math.PI * life) ** 0.6 * arriving * (0.7 + 0.5 * SEED[k][2]);
+              ju.uBlobs.value[k].set(landX + 0.32 * SEED[k][0], ju.uSplit.value - 0.36 * (1 - K.ease.out(life)) - r * 0.5, 0.3 * SEED[k][1], arriving > 0 && life > 0 ? r : 0);
+              ju.uBlobCol.value[k].set(tints[i].r ** 0.3, tints[i].g ** 0.3, tints[i].b ** 0.3, 0);
+            }
+          });
+          // --- the shake: both layers break up, cloud over and become one liquid
+          const mixed = K.smooth(SH0 + 0.05, SH0 + 0.8, t), churn = K.seg(t, SH0 - 0.02, SH0 + 0.15) * (1 - K.seg(t, SH1 - 0.15, SH1 + 0.7, K.ease.out));
+          ju.uLevel.value = jar.position.y + FLOOR + parts * PART; ju.uMen.value = 0.05 * K.smooth(0, 0.15, parts);
+          ju.uRing.value.set(landX, 0, 0.03 * ringTop, 0.022 * ringSplit); ju.uChurn.value = 0.78 * churn; ju.uCloud.value = mixed;
+          ju.uTintA.value.lerpColors(tints[0], mixTint, mixed); ju.uTintB.value.lerpColors(tints[tints.length - 1], mixTint, mixed);
+          jar.userData.body.visible = parts > 0.002;
+          // --- the spoon comes in along its handle, turns over, and leaves; the spoonful falls, sinks to the boundary and is shaken in
+          const sIn = K.seg(t, MIX.spoon, MIX.spoon + 0.75, K.ease.out), sOut = K.seg(t, MIX.drop + 0.25, MIX.drop + 1.0, K.ease.in), away = (1 - sIn) + sOut;
+          spoon.position.set(DROP_X + 3.3 * away, DROP_FROM + 4.6 * away, 0); spoon.rotation.z = 0.95; spoon.visible = away < 1;
+          tip.rotation.x = 1.9 * K.seg(t, MIX.drop - 0.32, MIX.drop + 0.05, K.ease.inOut);
+          const surface = ju.uLevel.value, tFall = PLOP - MIX.drop, since = t - MIX.drop, rest = ju.uSplit.value + 0.06;
+          const ly = since < 0 ? 0 : since < tFall ? DROP_FROM - GRAVITY / 2 * since * since : rest + (surface - rest) * Math.exp(-(since - tFall) * 4.2);
+          const gone = K.seg(t, SH0, SH0 + 0.45);
+          lump.visible = since >= 0 && gone < 1; lump.position.set(DROP_X + jar.position.x, ly, 0); lump.rotation.z = Math.min(since, tFall) * 5; lump.scale.setScalar(1 - gone);
+          carried.visible = since < 0;
+          ju.uBlobs.value[BLOBS - 1].set(lump.position.x, lump.position.y, 0, since > tFall && gone < 1 ? 0.2 * (1 - gone) : 0); ju.uBlobCol.value[BLOBS - 1].set(lumpMat.color.r, lumpMat.color.g, lumpMat.color.b, 1);
+          if (since > tFall && since < tFall + 0.9) { const k = 1 - (since - tFall) / 0.9; ju.uRing.value.set(DROP_X, 0, 0.045 * k * k, ju.uRing.value.w + 0.02 * k); }   // its splash
+          // --- the lid comes down turning and is screwed tight
+          const down = K.seg(t, MIX.lid - 0.6, MIX.lid, K.ease.in), tight = K.seg(t, MIX.lid + 0.02, MIX.lid + 0.3, K.ease.out);
+          lid.position.y = 5.2 * (1 - down) ** 2 + 0.1 * (1 - tight); lid.rotation.y = -2.2 * (1 - down) + 1.3 * tight; lid.visible = t > MIX.lid - 0.6;
+          // --- lamp, light on the table, camera
+          const az = sunAz(t);
+          renderLight([Math.sin(az) * Math.cos(SUN_EL), Math.sin(SUN_EL), -Math.cos(az) * Math.cos(SUN_EL)], t);
+          K.look(camera, cam.pos(t), cam.aim(t)); K.focus(camera, cam.aim(t), cam.lens(t));
+        },
+        // captions: one short line per beat, small, in the dark top corner where nothing happens
+        overlay(ctx, t, W, H) {
+          for (const [a, b, text, dot] of CAPTIONS) {
+            const k = K.seg(t, a, a + 0.3, K.ease.out) * (1 - K.seg(t, b - 0.25, b)); if (k <= 0) continue;
+            ctx.font = '600 62px "Inter"'; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';       // capitals about 45 px tall: readable on a phone
+            const x = 96, y = 92 + (1 - K.seg(t, a, a + 0.3, K.ease.out)) * 14;
+            ctx.globalAlpha = k; ctx.shadowColor = 'rgba(0,0,0,0.85)'; ctx.shadowBlur = 20; ctx.shadowOffsetY = 2;
+            if (dot) { ctx.fillStyle = dot; ctx.beginPath(); ctx.arc(x + 17, y + 1, 17, 0, Math.PI * 2); ctx.fill(); }
+            ctx.fillStyle = '#f6f3ec'; ctx.fillText(text, x + (dot ? 56 : 0), y);
+          }
+        },
+      };
+    },
+
+    sound(k) {
+      const NOTES = ['D5', 'F#5'];
+      k.bed('room', 0, DURATION, { gain: 0.4 });
+      k.music('pad', 0, DURATION, { bpm: 40, gain: 0.6, chords: [['D3', 'A3', 'F#4', 'E4'], ['B2', 'F#3', 'D4', 'A4']] });
+      POURS.forEach((p, i) => {
+        const [a, z] = p.pour, d = z - a, pan = i ? 0.35 : -0.35, thick = p.stream / 0.055;          // a thicker stream sounds lower
+        k.play('swish', a - LIFT + 0.1, { gain: 0.3, pan, dur: 0.3 });                            // the bottle is lifted
+        // pouring: the hiss of the stream, then the note of a vessel filling, which rises with the level
+        k.noise(a, { dur: d + 0.15, color: 'pink', filter: 'bandpass', f: [[0, 900 / thick], [d, 1500 / thick]], q: 1.2, gain: 0.05, a: 0.12, hold: d - 0.2, pan: pan * 0.5 });
+        k.noise(a + DELAY[i], { dur: d, color: 'pink', filter: 'bandpass', f: [[0, 420 / thick], [d, 1300 / thick]], q: 2.2, gain: 0.1, a: 0.1, hold: d - 0.35 });
+        k.tone(a + DELAY[i], { f: [[0, SOUND.hz(NOTES[i]) / 2], [d, SOUND.hz(NOTES[i])]], dur: d, gain: 0.03, a: d * 0.8, verb: 0.3 });
+        for (let g = 0, n = Math.round(d * 2.6); g < n; g++) k.play('pop', a + 0.25 + (g + 0.3 * K.hash(g, i)) * d / n, { f: (i ? 170 : 260) + 60 * K.hash(g, i + 5), gain: 0.22, pan });   // the bottle glugs
+        k.play('ding', z + DELAY[i] + 0.1, { f: NOTES[i], gain: 0.7 });                             // the level is at its mark: the glass rings
+        k.play('tock', z + 0.2 + LIFT, { f: i ? 520 : 760, gain: 0.5, pan });                        // the bottle is back on the table
+      });
+      k.play('swish', MIX.spoon + 0.1, { gain: 0.25, pan: 0.2, dur: 0.35 });
+      k.play('pop', PLOP, { f: 230, gain: 0.7 }); k.noise(PLOP, { dur: 0.22, filter: 'bandpass', f: [[0, 2600], [0.2, 900]], q: 1, gain: 0.1, a: 0.01 });   // the spoonful lands
+      k.play('tock', MIX.lid, { f: 1250, gain: 0.85 }); k.play('click', MIX.lid, { gain: 0.9 });  // the lid lands and is screwed tight
+      for (let i = 0; i < 4; i++) k.play('tick', MIX.lid + 0.06 + i * 0.055, { f: 3000 + i * 250, gain: 0.35 });
+      // the shake: liquid slaps the glass twice per swing
+      const [s0, s1] = MIX.shake;
+      k.play('swish', s0 - 0.22, { gain: 0.35, dur: 0.25 });
+      for (let i = 0, n = Math.round((s1 - s0) * 9); i < n; i++) { const t = s0 + i / 9, up = i % 2;
+        k.noise(t, { dur: 0.1, color: 'pink', filter: 'bandpass', f: [[0, up ? 1500 : 800], [0.09, up ? 700 : 1300]], q: 1.1, gain: 0.26 * (1 - 0.3 * i / n), a: 0.012, pan: up ? 0.3 : -0.3 });
+        k.tone(t, { f: [[0, up ? 150 : 120], [0.08, 70]], dur: 0.1, gain: 0.1, pan: up ? 0.3 : -0.3 }); }
+      k.play('thud', LANDED, { f: 110, gain: 0.5 }); k.play('tock', LANDED, { f: 640, gain: 0.45 });   // set down
+      k.play('ding', LANDED + 0.4, { f: 'A5', gain: 0.7 }); k.play('sparkle', LANDED + 0.45, { gain: 0.45 });
+    },
+  });
+}
+```
+

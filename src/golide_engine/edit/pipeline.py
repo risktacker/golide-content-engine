@@ -61,6 +61,56 @@ def logo_tile_maker(folder: Path):
     return make
 
 
+def _recipes(production, spec: dict[str, Any], folder: Path, production_id: str, edit: dict[str, Any],
+             text_model: str) -> None:
+    """2026-11-17 (owner): every recipe scene the editor chose is written by the strong model from its Futurepedia
+    recipe, checked and rendered as a clip (edit/recipes.py). One that cannot be made shows the house 3D the editor
+    named for it, or the picture before it holds."""
+    from ..operations.costs import Usage
+    from ..providers.openai_text import OpenAITextProvider
+    from . import recipes
+
+    conf = settings().get("recipes") or {}
+    scenes = [s for s in edit["scenes"] if s["type"] == "recipe_clip"]
+    if not scenes:
+        return
+    made_path = folder / "recipes.json"
+    made = json.loads(made_path.read_text(encoding="utf-8")) if made_path.exists() else {}
+    writer = OpenAITextProvider(conf.get("model", "gpt-5.6-sol"), conf.get("reasoning_effort", "medium"))
+    for k, sc in enumerate(scenes):
+        key = f"{k}-{sc['data']['recipe']}"
+        if key not in made and conf.get("enabled", True):
+            def stage(sc=sc, key=key):
+                production._reserve(spec, writer.model, Usage(input_tokens=40000, output_tokens=24000))
+                result = recipes.make(writer, sc["data"]["recipe"], sc["data"]["brief"], sc["data"]["words"],
+                                      float(sc["duration"]), str(spec["format"]), folder / "recipes" / key,
+                                      samples=int(conf.get("samples", 5)), workers=int(conf.get("workers", 3)),
+                                      record=lambda name, out: production.costs.record(
+                                          production_id, name, "openai", writer.model, Usage(
+                                              input_tokens=out.input_tokens, cached_input_tokens=out.cached_input_tokens,
+                                              output_tokens=out.output_tokens), out.request_id))
+                made[key] = result
+                made_path.write_text(json.dumps(made, indent=2) + "\n", encoding="utf-8")
+            try:
+                production.runner.run(production_id, f"recipe-{key}-v1", stage, attempts=1)
+            except Exception as error:  # noqa: BLE001 - a recipe scene never stops the video
+                print(json.dumps({"status": "recipe_failed", "scene": key, "error": str(error)[:300]}))
+                made[key] = None
+        result = made.get(key)
+        if result and Path(result["video"]).exists():
+            sc["data"].update(video=result["video"], events=result.get("events") or [], size=result.get("size"))
+            print(json.dumps({"status": "recipe_scene", "scene": key, "accent": result.get("accent")}))
+        elif sc["data"].get("fallback"):
+            sc["type"], sc["data"] = "object3d", dict(sc["data"]["fallback"], look=edit.get("look", "glass"))
+            edit["notes"].append(f"recipe scene {key} could not be made: house 3D instead")
+        else:
+            edit["scenes"].remove(sc)
+            before = [s for s in edit["scenes"] if s["type"] != "host" and s["start"] < sc["start"]]
+            if before:
+                before[-1]["duration"] = round(sc["start"] + sc["duration"] - before[-1]["start"], 3)
+            edit["notes"].append(f"recipe scene {key} could not be made: the picture before holds")
+
+
 def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: dict[str, Any],
         timed_words: list[dict[str, Any]], narration: Path, narration_seconds: float, video_path: Path,
         text, text_model: str, research: dict[str, Any]) -> dict | None:
@@ -159,8 +209,26 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
         chosen = json.loads(picked.read_text(encoding="utf-8"))
         bookends = (chosen["intro"], chosen["outro"])
         print(json.dumps({"status": "edit_bookends", **chosen}))
+    look_path = folder / "look.json"      # 2026-11-17 (owner): one 3D look per video, never the last video's
+    if not look_path.exists():
+        recent = []
+        for path in (ROOT / "data" / "production-records").glob("*.json"):
+            try:
+                record = json.loads(path.read_text(encoding="utf-8"))
+                params = record.get("generation_parameters") or {}
+            except (OSError, ValueError, AttributeError):
+                continue
+            if isinstance(params, dict) and params.get("look3d"):
+                recent.append((str(record.get("recorded_at", "")), params["look3d"]))
+        recent.sort(reverse=True)
+        story = f"{spec.get('title', '')} {plan.get('title', '')} {plan.get('voice_script') or ''}"
+        look_path.write_text(json.dumps({"look3d": editor.pick_look(story, [r[1] for r in recent])}) + "\n",
+                             encoding="utf-8")
+    look = json.loads(look_path.read_text(encoding="utf-8"))["look3d"]
+    print(json.dumps({"status": "edit_look", "look3d": look}))
     edit = editor.build(raw, beat_lines, narration_seconds, fmt, sources, capture_dir, cues, marks,
-                        logo_tile_maker(folder / "logos"), bookends=bookends, demos=demo_list)
+                        logo_tile_maker(folder / "logos"), bookends=bookends, demos=demo_list, look=look)
+    _recipes(production, spec, folder, production_id, edit, text_model)
     edit["title"] = str(spec.get("title", ""))
     # music drops for these; a Short keeps one steady bed (owner 2026-11-13: the dips sounded like the music changing)
     edit["quiet"] = [] if fmt == "short" else editor.quiet_windows(str(plan.get("voice_script") or ""), lines)

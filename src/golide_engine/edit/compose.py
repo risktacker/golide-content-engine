@@ -741,7 +741,12 @@ class Composer:
         at = float(data.get("at", 1.0))
         label = (f'<div class="label" style="position:absolute;left:0;right:0;top:{self.cy + ch / 2 - 40:.0f}px;'
                  f'text-align:center;font-size:40px;color:#E8C268">{_e(data["label"])}</div>') if data.get("label") else ""
-        opts = {"at": at, "callouts": data.get("callouts") or [], "lead": data.get("lead") or ""}
+        move3d = str(data.get("move") or "own")
+        if move3d == "rise":           # it builds up from nothing: start early so the frame is never empty
+            at = min(at, 0.35)
+        opts = {"at": at, "callouts": data.get("callouts") or [], "lead": data.get("lead") or "",
+                "look": data.get("look") or getattr(self, "look", "glass"), "move": move3d,
+                "parts": data.get("parts") or []}
         pos = f'position:absolute;left:{(self.w - cw) / 2:.0f}px;top:{self.cy - ch / 2:.0f}px;width:{cw}px;height:{ch}px'
         inner = (f'<canvas id="{sid}-cv" width="{cw}" height="{ch}" style="{pos}"></canvas>'
                  f'<svg id="{sid}-ov" viewBox="0 0 {cw} {ch}" width="{cw}" height="{ch}" style="{pos};overflow:visible"></svg>{label}'
@@ -752,13 +757,44 @@ class Composer:
                  f'window.__g3d["{sid}"] = r; r(0, -0.6, 0);</script>')
         self.scene(sid, t0, dur, inner)
         self.entrance(sid, t0, how)
-        move = 0.9
+        move = {"explode": 1.4, "assemble": 1.4, "rise": 1.8, "spin": 1.6}.get(move3d, 0.9)
         self.tw(f'(function(){{var o={{s:0}};tl.fromTo(o,{{s:0}},{{s:{dur:.3f},duration:{dur:.3f},ease:"none",onUpdate:function(){{'
                 f'var f=window.__g3d&&window.__g3d["{sid}"];if(!f)return;var m=Math.min(1,Math.max(0,(o.s-{at:.3f})/{move}));'
                 f'm=m*m*(3-2*m);f(m,-0.6+0.55*o.s/{dur:.3f},o.s);}}}},{t0:.3f});}})();')
         self.cue("riser", t0 + at - 0.8)
         self.cue("impact", t0 + at)
         self.cue("shimmer", t0 + at + 0.5)
+
+    def recipe_clip(self, t0, dur, data, how="rise"):
+        """2026-11-17 (owner): a film-quality 3D scene written for this beat from a Futurepedia style recipe
+        (edit/recipes.py), rendered before as a clip, shown in a dark frame. The video sits at the top level of the
+        composition (a timed video may not sit inside a timed scene) at the frame's place on screen."""
+        sid = self._id("recipe")
+        vw, vh = data.get("size") or ((1600, 900) if self.fmt == "long" else (1000, 1000))
+        fw = 1500 if self.fmt == "long" else 940
+        fh = fw * vh / vw
+        fx, fy = (self.w - fw) / 2, self.cy - fh / 2 - (20 if self.fmt == "long" else 0)
+        inner = (f'<div class="frame" id="{sid}-f" style="left:{fx:.0f}px;top:{fy:.0f}px;width:{fw}px;height:{fh:.0f}px;'
+                 f'background:#050607;border:2px solid rgba(232,194,104,.55);'
+                 f'box-shadow:0 30px 90px rgba(0,0,0,.7),0 0 60px rgba(232,194,104,.18)"></div>')
+        self.scene(sid, t0, dur, inner)
+        self.entrance(sid, t0, how)
+        # the same place on screen as the frame, after the scene's own zone scaling (Goli's quarter on the right)
+        k = 0.84 * getattr(self, "_boost", 1.0) if self.zone and self.fmt == "long" else getattr(self, "_boost", 1.0)
+        ox, oy = (0.02 * self.w, self.h / 2) if self.zone and self.fmt == "long" else (self.w / 2, self.h / 2)
+        x, y, w, h = ox + (fx - ox) * k, oy + (fy - oy) * k, fw * k, fh * k
+        name = self.asset(Path(data["video"]))
+        vid = f"{sid}-v"
+        self.parts.append(f'<video id="{vid}" class="clip" src="{name}" muted playsinline data-start="{t0:.3f}" '
+                          f'data-duration="{dur:.3f}" data-volume="0" style="position:absolute;left:{x:.0f}px;top:{y:.0f}px;'
+                          f'width:{w:.0f}px;height:{h:.0f}px;object-fit:cover;border-radius:14px"></video>')
+        self.tw(f'tl.fromTo("#{vid}",{{opacity:0,scale:.94}},{{opacity:1,scale:1,duration:.45,ease:"power3.out"}},{t0:.3f});')
+        self.tw(f'tl.to("#{vid}",{{opacity:0,duration:.2,ease:"none"}},{t0 + dur - 0.2:.3f});')
+        self.cue("whoosh", t0)
+        sounds = {"part": "shimmer", "flow": "whoosh"}     # no impact: that is for a big number only (Shorts rule)
+        for e in data.get("events") or []:
+            if e.get("what") in sounds and 0.3 <= float(e.get("t", 0)) < dur - 0.2:
+                self.cue(sounds[e["what"]], t0 + float(e["t"]))
 
     def metaphor(self, t0, dur, data, how="rise"):
         """2026-11-13 (owner): an idea as a moving picture (scales, a lock, a magnifier, a funnel...), landing on
@@ -1357,6 +1393,7 @@ class Composer:
     def build(self, edit: dict[str, Any], out: Path) -> Path:
         self.uses_mascot = False
         self.uses_studio = False
+        self.look = str(edit.get("look") or "glass")      # 2026-11-17: one 3D look per video
         self.goli_gaps = [tuple(g) for g in edit.get("goli_gaps") or []]
         self.reacts = reactions(edit)
         for s in edit["scenes"]:

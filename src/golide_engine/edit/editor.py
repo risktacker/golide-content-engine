@@ -16,10 +16,33 @@ from pathlib import Path
 from typing import Any
 
 POSES = ["talk", "explain", "point", "point_up", "point_left", "shock", "think", "thumbs_up", "shrug", "wave"]
-TYPES = ["studio", "source", "terminal", "metaphor", "object3d", "walkthrough", "photo", "stat", "compare", "steps", "checklist", "prompt", "timeline", "flow",
+TYPES = ["studio", "source", "terminal", "metaphor", "object3d", "recipe", "walkthrough", "photo", "stat", "compare", "steps", "checklist", "prompt", "timeline", "flow",
          "quote", "words", "logos", "icon", "chapter", "follow"]
 
 OBJECTS3D = ("laptop", "phone", "server", "chip", "battery")
+# 2026-11-17 (owner): Futurepedia style recipes, a new scene written for the beat (edit/recipes.py)
+RECIPE_KEYS = ("xray",)
+# 2026-11-17 (owner): animated 3D blocks; any object, not only the five presets (built from parts3d)
+MOVES3D = ("own", "explode", "assemble", "lift", "rise", "spin")
+# Futurepedia 3D atlas looks (owner's picks), one per video: Glass and Light, X-Ray, Circuit City, White Model,
+# Layer Stack
+LOOKS3D = ("glass", "xray", "circuit", "white", "layers")
+LOOK_WORDS = {
+    "xray": ("chip", "gpu", "nvidia", "transistor", "semiconductor", "inside", "hidden", "teardown", "processor", "tsmc"),
+    "circuit": ("data cent", "server", "cloud", "network", "power", "grid", "energy", "infrastructure", "internet"),
+    "layers": ("model", "agent", "stack", "layer", "software", "system", "architecture", "framework", "api", "llm"),
+    "white": ("robot", "factory", "manufactur", "design", "prototype", "humanoid", "build"),
+    "glass": ("iphone", "phone", "apple", "laptop", "launch", "device", "display", "gadget", "wearable", "glasses"),
+}
+
+
+def pick_look(text: str, recent: list[str]) -> str:
+    """One 3D look per video: the one whose words the story uses most, never the look of the last video."""
+    low = str(text).lower()
+    score = {k: sum(low.count(w) for w in words) for k, words in LOOK_WORDS.items()}
+    order = sorted(LOOKS3D, key=lambda k: (-score[k], LOOKS3D.index(k)))
+    last = recent[:1]
+    return next(k for k in order if k not in last)
 METAPHORS = ("scales", "unlock", "magnify", "funnel", "stack", "gauge", "transform", "iceberg", "cycle")
 _str = {"type": "string"}
 _nstr = {"type": ["string", "null"]}
@@ -47,13 +70,21 @@ SCENE = {
         "points": {"type": "array", "items": {"type": "object", "additionalProperties": False, "properties": {
             "when": _str, "what": _str}, "required": ["when", "what"]}},
         "brands": {"type": "array", "items": _str},
-        "object3d": {"type": ["string", "null"], "enum": ["laptop", "phone", "server", "chip", "battery", None]},
+        "object3d": _nstr,
+        "move3d": {"type": ["string", "null"], "enum": list(MOVES3D) + [None]},
+        "recipe": {"type": ["string", "null"], "enum": list(RECIPE_KEYS) + [None]},
+        "recipe_brief": _nstr,
+        "parts3d": {"type": "array", "items": {"type": "object", "additionalProperties": False, "properties": {
+            "shape": {"type": "string", "enum": ["box", "cyl", "sphere"]}, "x": {"type": "number"},
+            "y": {"type": "number"}, "z": {"type": "number"}, "w": {"type": "number"}, "d": {"type": "number"},
+            "h": {"type": "number"}, "gold": {"type": "boolean"}, "mover": {"type": "boolean"}, "name": _str},
+            "required": ["shape", "x", "y", "z", "w", "d", "h", "gold", "mover", "name"]}},
         "metaphor": {"type": ["string", "null"], "enum": ["scales", "unlock", "magnify", "funnel", "stack", "gauge",
                                                           "transform", "iceberg", "cycle", None]},
     },
     "required": ["type", "first_line", "last_line", "goli_corner", "poses", "screen_words", "punch", "source", "phrase",
                  "callout", "callout_sub", "edge", "value", "prefix", "suffix", "label", "quote", "quote_by", "left",
-                 "right", "rows", "items", "shots", "points", "brands", "metaphor", "object3d"],
+                 "right", "rows", "items", "shots", "points", "brands", "metaphor", "object3d", "move3d", "parts3d", "recipe", "recipe_brief"],
 }
 EDIT_SCHEMA = {"type": "object", "additionalProperties": False,
                "properties": {"scenes": {"type": "array", "items": SCENE}}, "required": ["scenes"]}
@@ -81,12 +112,26 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
   words name. Owner 2026-11-17: when a line names a person or a product and a picture of it exists, show it.
 - stat: one number that matters (value as a number, prefix like "$", suffix like "%" or "x", label 2 to 5 words).
 - compare: left vs right, 2 to 4 rows (label, a, b, winner).
-- object3d: the words talk about a real device or what is inside it (a laptop, a phone, a server or data centre
-  rack, a chip or GPU, a battery): object3d = which one; it turns in clear glass and its move (lid opens, a server
-  slides out, the chip lid lifts, the phone's layers part, cells rise) lands on punch, the spoken word. The part the
+- object3d: the words talk about a real thing or what is inside it. object3d = its name. Five are built in:
+  laptop, phone, server (a data centre rack), chip (a GPU), battery; parts3d = [] for those. ANY other real thing
+  (a robot, a car, a drone, a headset, a power plant, a house...): build it from 3 to 12 simple parts in parts3d
+  (shape box/cyl/sphere, x y z = where its base sits, w d h = its size, about 0.1 to 3 units, z up; name = what the
+  part is; gold = true on the ONE part the story is about; mover = true on a part that slides out). move3d = how it
+  moves on punch, the spoken word: own (the built-in move: lid opens, a server slides out, the chip lid lifts, the
+  phone's layers part, cells rise), explode (it comes apart into its parts: "inside", "made of"), assemble (the
+  parts come together: "built", "combined"), lift (the gold part rises out: "the one that matters"), rise (it
+  builds up part by part: "grows", "stacks up"), spin (it turns all the way round: "every side"). The part the
   story is about turns gold with a line to a label: label = what it is in this story, max 5 words ("Your rented
-  GPU"); two other parts get their own name. At most 4 in a long video, 2 in a Short, never two in a row; use it
-  whenever the story is about one of these devices (owner 2026-11-14: more glass 3D).
+  GPU"); two other parts get their own name. Never two in a row; use it whenever the words are about one of these
+  devices, as often as the story is (owner 2026-11-17: no fixed count, the words decide).
+- recipe: a FILM-QUALITY 3D scene written for this beat in a named style. Use it when the beat (or 2 beats) is
+  exactly what the style is for, and only then; the words decide, there is no quota. recipe = which style:
+  xray = what is INSIDE a real thing and how it works (a chip, a battery, a phone, an engine, a data-centre rack):
+  up to three inner parts, each lit and named in turn, with a simple flow (heat, air, current, data, force) acting
+  on them. recipe_brief = what the scene must show, from the words and research only (max 60 words): the object
+  and its real look, the 1-3 inner parts to light in order and what each does in 2-5 words, the flow, and the brand
+  if there is one (its colour becomes the accent). ALSO fill object3d (+ parts3d, move3d) as the stand-in shown if
+  the scene cannot be made. Never two recipe scenes in a row.
 - metaphor: the beat explains an IDEA (a trade-off, a hidden cost, a bottleneck, layers, a loop, a level, a change):
   show it as a moving picture instead of text. metaphor = one of:
   scales (two things weighed: left, right, punch = the heavier one), unlock (something now possible: label),
@@ -94,9 +139,9 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
   label = the result), stack (layers of a system: items bottom to top, 2-5), gauge (a level or amount: value 0-100,
   label), transform (one thing becomes another: left = before, right = after), iceberg (the visible part and the
   hidden mass: label = what people see, items = what is hidden), cycle (a loop: items = 3-5 steps).
-  punch = the spoken word it lands on. Words max 4 each, as spoken. About 1 in 4 scenes of a long video (owner
-  2026-11-14: pictures of ideas over words); never two
-  of the same metaphor in a video; prefer it over steps/flow/compare/checklist whenever the idea has a shape.
+  punch = the spoken word it lands on. Words max 4 each, as spoken. Use one whenever a beat explains an idea
+  with a shape (owner 2026-11-17: no fixed count); never two metaphor scenes in a row, never the same metaphor
+  twice in a video; prefer it over steps/flow/compare/checklist whenever the idea has a shape.
 - terminal: a REAL RUN (listed under REAL RUNS) proves what the beat says (the repo, the tool, the model actually
   working): source = the run's index, phrase = the words in its output to highlight. The viewer watches the real
   commands and the real output. Use each real run once, on the beat it proves best, over 2 beats.
@@ -116,8 +161,8 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
 - quote: a short real quote from the pages or research (quote, quote_by).
 - logos: 2 to 4 real product or company names (brands) named together in the beat.
 - icon: one product or company named in the beat (brands = [that name], label = what about it, max 5 words).
-- words: kinetic words, ONLY when no picture fits (owner 2026-11-14: a long video is mostly pictures; at most 1 beat
-  in 6 is words): screen_words = a complete phrase that makes sense on its own, like a headline (max 5 words, e.g.
+- words: kinetic words, ONLY when no picture fits, AT MOST 2 IN THE WHOLE VIDEO (owner 2026-11-17: text blocks
+  almost zero; any more are dropped and the picture before holds): screen_words = a complete phrase that makes sense on its own, like a headline (max 5 words, e.g.
   "Black pixels switch off"), never the first words of a sentence cut off and never a pile of keywords; a punch word.
 - studio: Goli at his desk, his screen shows screen_words (max 5 words) with a punch word. Use it for the opening hook,
   a reaction, a question to the viewer and the payoff; at most 1 beat in 5. poses: 1 to 2, each on a word spoken in
@@ -355,7 +400,8 @@ def _cues_between(cues: list[dict], start: float, end: float) -> list[dict]:
 
 def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sources: list[dict[str, Any]],
           capture_dir: Path | None, cues: list[dict], chapters: list[Any], logo_tiles=None,
-          bookends: tuple[str, str] | None = None, demos: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+          bookends: tuple[str, str] | None = None, demos: list[dict[str, Any]] | None = None,
+          look: str = "glass") -> dict[str, Any]:
     """The editor's answer as a timed edit list for compose.Composer. Line ranges are repaired so every
     line is covered once; references to pages, phrases or words that do not exist are dropped (the scene
     keeps its words), and every such repair is reported in the edit list's `notes`."""
@@ -496,15 +542,32 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
                 "rows": [[r["label"], r["a"], r["b"]] for r in rows],
                 "winners": [r["winner"] if r["winner"] != "none" else None for r in rows],
                 "gap": min(0.55, max(0.25, (dur - 0.8) / max(1, len(rows))))}})
-        elif kind == "object3d" and s.get("object3d") in OBJECTS3D and len(shown_3d) < (2 if fmt == "short" else 4) \
+        elif kind == "object3d" and (s.get("object3d") in OBJECTS3D or len(s.get("parts3d") or []) >= 2) \
                 and not (out and out[-1]["type"] == "object3d"):
             shown_3d.append(s["object3d"])
             land = _word_time(lines, s.get("punch") or "", t0, t1)
             out.append({"type": "object3d", "start": t0, "duration": dur, "in": "rise", "data": {
-                "object": s["object3d"], "at": round(max(0.5, min(dur - 1.6, (land - t0) if land else 0.8)), 3),
+                "object": s["object3d"] if s["object3d"] in OBJECTS3D else "custom",
+                "move": s.get("move3d") if s.get("move3d") in MOVES3D else "own",
+                "parts": [] if s["object3d"] in OBJECTS3D else [dict(p) for p in (s.get("parts3d") or [])[:12]],
+                "at": round(max(0.5, min(dur - 1.6, (land - t0) if land else 0.8)), 3),
                 "lead": " ".join(str(s.get("label") or s.get("screen_words") or "").split()[:5])}})
+        elif kind == "recipe" and s.get("recipe") in RECIPE_KEYS and s.get("recipe_brief") \
+                and not (out and out[-1]["type"] == "recipe_clip"):
+            fallback = None
+            if s.get("object3d") in OBJECTS3D or len(s.get("parts3d") or []) >= 2:
+                land = _word_time(lines, s.get("punch") or "", t0, t1)
+                fallback = {"object": s["object3d"] if s.get("object3d") in OBJECTS3D else "custom",
+                            "move": s.get("move3d") if s.get("move3d") in MOVES3D else "own",
+                            "parts": [] if s.get("object3d") in OBJECTS3D else [dict(p) for p in (s.get("parts3d") or [])[:12]],
+                            "at": round(max(0.5, min(dur - 1.6, (land - t0) if land else 0.8)), 3),
+                            "lead": " ".join(str(s.get("label") or "").split()[:5])}
+            words = [{"text": w.text, "t": round(float(w.start) - t0, 2)} for l in lines for w in (getattr(l, "words", None) or [])
+                     if t0 - 0.01 <= float(w.start) < t1]
+            out.append({"type": "recipe_clip", "start": t0, "duration": dur, "in": "rise", "data": {
+                "recipe": s["recipe"], "brief": str(s["recipe_brief"])[:600], "words": words, "fallback": fallback}})
         elif kind == "metaphor" and s.get("metaphor") in METAPHORS and s["metaphor"] not in used_metaphors \
-                and len(used_metaphors) < METAPHOR_CAP[fmt]:
+                and not (out and out[-1]["type"] == "metaphor"):
             used_metaphors.add(s["metaphor"])
             land = _word_time(lines, s.get("punch") or "", t0, t1)
             items = [str(x) for x in (s.get("items") or [])][:5]
@@ -571,6 +634,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
             out.append(words_scene())
     out = _no_repeats(out, lines, fmt, notes)
     out = _pace(out, lines, fmt)
+    out = _words_cap(out, notes)
     out = _min_length(out, fmt)
     out = _lower_host(out, cues, fmt)
     if bookends and lines:
@@ -578,6 +642,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
     out = one_goli(out)
     _transitions(out, lines)
     return {"format": fmt, "duration": duration, "scenes": out, "notes": notes, "captions": captions(lines, fmt),
+            "look": look if look in LOOKS3D else "glass",
             "chapters": [{"title": f"{getattr(m, 'number', '')} · {getattr(m, 'title', '')}".strip(" ·"),
                           "at": float(getattr(m, "start", 0))} for m in chapters]}
 
@@ -644,7 +709,7 @@ def save(edit: dict[str, Any], path: Path) -> None:
 # A Short shows the proof on top and keeps Goli at his desk below it for the whole run of cards
 # (owner 2026-11-11: no empty space above and below the cards). His pose follows each card.
 REACT = {"browser_shot": "point_up", "stat_counter": "shock", "comparison": "explain", "steps": "point_up",
-         "walkthrough": "point_up", "terminal": "point", "metaphor": "point", "object3d": "point", "prompt_card": "point_up", "checklist": "thumbs_up", "timeline": "explain", "quote_card": "think", "logo_tiles": "thumbs_up", "kinetic_title": "talk",
+         "walkthrough": "point_up", "terminal": "point", "metaphor": "point", "object3d": "point", "recipe_clip": "point", "prompt_card": "point_up", "checklist": "thumbs_up", "timeline": "explain", "quote_card": "think", "logo_tiles": "thumbs_up", "kinetic_title": "talk",
          "chapter_card": "talk", "follow_cta": "wave"}
 
 
@@ -653,7 +718,7 @@ REACT = {"browser_shot": "point_up", "stat_counter": "shock", "comparison": "exp
 # gesture twice in a row for the same kind of card.
 REACT_LONG = {"browser_shot": ["point_left", "point_up", "explain"], "photo": ["point_left", "think"],
               "stat_counter": ["shock", "point_left"], "comparison": ["shrug", "think", "explain"],
-              "steps": ["explain", "point_up", "thumbs_up"], "walkthrough": ["point_left", "point_up", "explain"], "terminal": ["point", "think", "thumbs_up"], "metaphor": ["point", "shock", "think"], "object3d": ["point", "shock", "explain"],
+              "steps": ["explain", "point_up", "thumbs_up"], "walkthrough": ["point_left", "point_up", "explain"], "terminal": ["point", "think", "thumbs_up"], "metaphor": ["point", "shock", "think"], "object3d": ["point", "shock", "explain"], "recipe_clip": ["point_left", "explain", "shock"],
               "prompt_card": ["point_left", "think"], "checklist": ["thumbs_up", "explain"], "timeline": ["point_left", "explain"],
               "flow": ["explain", "point_left"], "quote_card": ["think", "shrug"], "logo_tiles": ["thumbs_up", "point_left"],
               "kinetic_title": ["explain", "talk", "point_left"], "chapter_card": ["wave", "talk"]}
@@ -731,7 +796,7 @@ def captions(lines: list[Any], fmt: str) -> list[dict[str, Any]]:
 # than a beat is cut at word boundaries into beats that each show something new.
 BEAT = {"short": 2.2, "long": 6.5}
 STUDIO_BEAT = {"short": 3.0, "long": 10.0}
-HOLD = {"stat_counter", "comparison", "steps", "walkthrough", "terminal", "metaphor", "object3d", "prompt_card", "checklist", "timeline", "quote_card", "logo_tiles", "chapter_card", "follow_cta"}
+HOLD = {"recipe_clip", "stat_counter", "comparison", "steps", "walkthrough", "terminal", "metaphor", "object3d", "prompt_card", "checklist", "timeline", "quote_card", "logo_tiles", "chapter_card", "follow_cta"}
 
 
 def _spoken(lines, a: float, b: float) -> list[Any]:
@@ -948,9 +1013,38 @@ def quiet_windows(voice_script: str, lines: list[Any], most: int = 2, longest: f
     return out
 
 
-DEEPER = {"walkthrough", "terminal", "object3d"}
-# 2026-11-13 (owner): five metaphors in one 38 s Short read as noise. The picture of an idea is an event.
-METAPHOR_CAP = {"short": 1, "long": 6}      # 2026-11-14 (owner): more metaphor and node blocks in long videos
+DEEPER = {"walkthrough", "terminal", "object3d", "recipe_clip"}
+# 2026-11-17 (owner): no fixed counts for picture blocks: each one matches its words, never the same block twice in
+# a row (and never the same metaphor twice in a video). Words blocks are the exception: at most 2 in a video.
+WORDS_MAX = 2
+
+
+def _words_cap(scenes: list[dict], notes: list[str]) -> list[dict]:
+    """At most WORDS_MAX words blocks: any later one gives its time to the picture before it (the picture holds,
+    owner 2026-11-14), or to the one after when it opens the video."""
+    content = sorted((s for s in scenes if s["type"] != "host" or s["data"].get("place") == "studio"),
+                     key=lambda s: s["start"])
+    hosts = [s for s in scenes if s not in content]
+    keep: list[dict] = []
+    shown, pending = 0, None
+    for sc in content:
+        if sc["type"] == "kinetic_title":
+            if shown < WORDS_MAX:
+                shown += 1
+            elif keep:
+                notes.append(f"words at {sc['start']:.1f}s: the picture before holds instead")
+                keep[-1]["duration"] = round(sc["start"] + sc["duration"] - keep[-1]["start"], 3)
+                continue
+            else:
+                pending = sc
+                continue
+        if pending is not None:
+            sc = dict(sc, start=pending["start"], duration=round(sc["start"] + sc["duration"] - pending["start"], 3))
+            pending = None
+        keep.append(sc)
+    if pending is not None:
+        keep.append(pending)
+    return sorted(keep + hosts, key=lambda s: (s["start"], s["type"] == "host"))
 # the shortest a picture may stay (a fast cut is still a picture the eye can read); the beat's words go on
 MIN_SCENE = {"short": 1.0, "long": 1.5}
 STRONG = {"zoom", "flash", "iris", "whip"}
