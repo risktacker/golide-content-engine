@@ -8,7 +8,7 @@ on:
       ref:
         default: edit-engine
       production_id:
-        description: "A finished production, e.g. golide-long-2026-11-14"
+        description: "A finished production id, or latest-long / latest-short"
         required: true
       goli:
         description: "goli = Goli beside the Stickman video; anything else = Stickman only"
@@ -35,8 +35,18 @@ jobs:
           key: golide-production-checkpoint-${{ github.run_id }}
           restore-keys: |
             golide-production-checkpoint-
-      - name: The production is in the checkpoint
-        run: ls "productions/${{ inputs.production_id }}/narration-owner.wav" "productions/${{ inputs.production_id }}/research.json"
+      - name: Pick the production (latest-long / latest-short = the newest finished one in the checkpoint)
+        id: pick
+        run: |
+          ls productions | tail -40
+          PID="${{ inputs.production_id }}"
+          case "$PID" in latest-*)
+            F="${PID#latest-}"
+            PID=$(ls -t productions | grep -- "-$F-" | grep -v '\.' | while read d; do
+              [ -f "productions/$d/narration-owner.wav" ] && [ -f "productions/$d/research.json" ] && echo "$d" && break; done)
+          esac
+          ls "productions/$PID/narration-owner.wav" "productions/$PID/research.json"
+          echo "pid=$PID" >> "$GITHUB_OUTPUT"
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -51,7 +61,7 @@ jobs:
       - name: TRIAL Stickman
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: python scripts/stickman_trial.py "${{ inputs.production_id }}" "${{ inputs.goli }}"
+        run: python scripts/stickman_trial.py "${{ steps.pick.outputs.pid }}" "${{ inputs.goli }}"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
