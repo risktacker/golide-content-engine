@@ -1151,7 +1151,7 @@ async function handleApi(request,env,url){
     const id=decodeURIComponent(aiMatch[1]);
     let body={}; try{body=await request.json();}catch{}
     const platforms=normalizePlatforms(body.platforms);
-    const style=["goli","illustration","stickman"].includes(String(body.style||""))?String(body.style):"goli";
+    const style=["goli","illustration","stickman","stickman_goli"].includes(String(body.style||""))?String(body.style):"goli";
     const r=await env.DB.prepare(`UPDATE production_jobs SET spec_json=json_set(spec_json,'$.voice_choice','ai','$.platforms',json(?),'$.video_style',?),status='queued',stage='ai-voice',error=NULL,updated_at=? WHERE job_id=? AND status='waiting_owner_voice'`)
       .bind(platforms?JSON.stringify(platforms):"null",style,nowIso(),id).run();
     if(!r.meta?.changes) return json({status:"unchanged"});
@@ -1166,7 +1166,7 @@ async function handleApi(request,env,url){
     let body={}; try{body=await request.json();}catch{}
     const style=String(body.style||"");
     // 2026-11-17 (owner): Stickman is the third style (long videos; a Short asked for it is made in Goli)
-    if(!["goli","illustration","stickman"].includes(style)) return err("Choose goli, illustration or stickman.",400);
+    if(!["goli","illustration","stickman","stickman_goli"].includes(style)) return err("Choose goli, illustration, stickman or stickman_goli.",400);
     const r=await env.DB.prepare(`UPDATE production_jobs SET spec_json=json_set(spec_json,'$.video_style',?),updated_at=? WHERE job_id=? AND status IN ('waiting_owner_voice','queued','scheduled_generation','pending')`)
       .bind(style,nowIso(),id).run();
     if(!r.meta?.changes) return err("This video is already being built; its style can no longer change.",409);
@@ -1297,7 +1297,7 @@ async function handleApi(request,env,url){
       const jobId=decodeURIComponent(voiceMatch[1]);
       const before=await env.DB.prepare(`SELECT owner_voice_media_ref FROM production_jobs WHERE job_id=?`).bind(jobId).first();
       // 2026-11-11 (owner): after the upload he picks the video type (goli or illustration)
-      if(["goli","illustration","stickman"].includes(String(payload.style||"")))
+      if(["goli","illustration","stickman","stickman_goli"].includes(String(payload.style||"")))
         await env.DB.prepare(`UPDATE production_jobs SET spec_json=json_set(spec_json,'$.video_style',?) WHERE job_id=?`).bind(String(payload.style),jobId).run();
       const attached=await attachOwnerVoice(env.DB,jobId,payload.media_ref,normalizePlatforms(payload.platforms));
       // 2026-10-18: replacing a recording stops any build still using the old one;

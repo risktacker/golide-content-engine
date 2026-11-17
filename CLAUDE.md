@@ -87,7 +87,10 @@ storyboard call picks gold words and pictures. Copy the method of model scripts,
 - Our engine feeds only the voice, our word timings and research; Sol writes story.json (long) or the world, story,
   cast and cue table (Short) from the kit's own documents. Checks (the kit's plan check / our look check) go back to
   the writer once; a Short that fails twice is made in Goli.
-- Next: Goli as an optional layer beside a Stickman scene (his channel only), on/off per video.
+- Stickman + Goli (owner 2026-11-17, `stickman/goli_layer.py`): a fourth choice in Studio, per video. The finished
+  Stickman video plays in a framed panel; Goli stands full-body beside it ("beside" place in `edit/compose.py`),
+  facing it, mouth on the voice, reactions on the story's events (numbers -> point, shock lines -> shock, lists and
+  versus -> explain, payoff -> both hands up), at least 2.2 s apart. The video's own sound is kept untouched.
 
 ## Checks
 `python3 -m pytest -q` must pass before every push (467 tests as of 2026-11-06).

@@ -398,6 +398,29 @@ class ProductionService:
         (work / "storyboard-vector.json").write_text(json.dumps({"renderer": "stickman", "scenes": scenes}, indent=2) + "\n",
                                                      encoding="utf-8")
 
+    def _goli_layer(self, spec, work: Path, production_id: str, narration: Path, video_path: Path) -> None:
+        """Goli beside a finished Stickman video (stickman/goli_layer.py): the video in a framed panel, Goli standing
+        beside it with his mouth on the voice and reactions on the story's events; the video's own sound is kept."""
+        from ..edit.pipeline import outfit_today
+        from ..stickman import goli_layer, longform
+
+        fmt = str(spec["format"])
+        made = video_path.with_name("stickman-only.mp4")
+
+        def stage() -> None:
+            if not made.exists():
+                shutil.copy(video_path, made)
+            duration = goli_layer._duration(made)
+            if fmt == "long":
+                poses = goli_layer.reactions_long(work / "stickman", duration)
+                pauses = longform.gaps(work / "stickman")
+            else:
+                poses = goli_layer.reactions_short(work / "stickman-short", duration)
+                pauses = []
+            goli_layer.add(fmt, made, narration, work / "goli-layer", video_path, outfit_today(), poses, pauses)
+
+        self.runner.run(production_id, "goli-layer-v1", stage, attempts=1)
+
     def _stickman_short(self, spec, work: Path, production_id: str, timed_words, narration: Path,
                         narration_seconds: float, video_path: Path) -> bool:
         """A Short in the Stickman style: the cartoon-short-kit (vendor/cartoon-short-kit), its world and story written
@@ -1396,7 +1419,8 @@ class ProductionService:
         # the ReachMora 2D long-form engine (stickman/longform.py), Shorts with the cartoon-short-kit
         # (stickman/short.py). A Short whose scene could not be made twice is made in Goli instead.
         stickman_made = False
-        if vector_mode and str(spec.get("video_style") or "").lower() == "stickman":
+        style_now = str(spec.get("video_style") or "").lower()
+        if vector_mode and style_now in ("stickman", "stickman_goli"):
             if str(spec["format"]) == "long":
                 self._stickman_long(spec, work, production_id, timed_words, narration, narration_seconds, video_path,
                                     research)
@@ -1410,6 +1434,9 @@ class ProductionService:
             else:
                 stickman_made = self._stickman_short(spec, work, production_id, timed_words, narration,
                                                      narration_seconds, video_path)
+            if stickman_made and style_now == "stickman_goli":
+                # 2026-11-17 (owner): Goli beside the Stickman scene as the explainer (his channel), per video
+                self._goli_layer(spec, work, production_id, narration, video_path)
             if not stickman_made:
                 print(json.dumps({"status": "stickman_fallback_goli", "production_id": production_id}))
                 spec = {**spec, "video_style": "goli"}

@@ -42,7 +42,8 @@ export function buildExternalSpec(payload, now = new Date()) {
   // 2026-11-17 (owner): a Short or a long video, in Goli or Inkee (the illustration engine)
   const format = payload.format === "long" ? "long" : "short";
   // Stickman (owner 2026-11-17): the third style, for Shorts (cartoon-short-kit) and long videos (ReachMora)
-  const style = ["goli", "illustration", "stickman"].includes(payload.video_style) ? payload.video_style : "goli";
+  // "stickman_goli": Goli beside the Stickman scene as the explainer (owner's channel), chosen per video
+  const style = ["goli", "illustration", "stickman", "stickman_goli"].includes(payload.video_style) ? payload.video_style : "goli";
   const id = "golide-external-" + lusakaStamp(now);
   return {
     id,

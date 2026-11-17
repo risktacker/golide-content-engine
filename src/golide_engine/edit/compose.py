@@ -796,6 +796,23 @@ class Composer:
             if e.get("what") in sounds and 0.3 <= float(e.get("t", 0)) < dur - 0.2:
                 self.cue(sounds[e["what"]], t0 + float(e["t"]))
 
+    STAGE = {"long": (24, 152, 1380, 776), "short": (350, 60, 700, 1244)}   # x, y, w, h of a finished video's panel
+
+    def stage_video(self, t0, dur, data, how="cut"):
+        """2026-11-17 (owner): a finished video (a Stickman video) playing in a dark frame, with Goli beside it as the
+        explainer. Long: the panel on the left, Goli on the right facing it. Short: the panel at the top right, Goli
+        standing at the bottom left in front of its corner. The video sits at the top level of the composition."""
+        sid = self._id("stage")
+        x, y, w, h = data.get("rect") or self.STAGE[self.fmt]
+        inner = (f'<div class="frame" id="{sid}-f" style="left:{x - 6}px;top:{y - 6}px;width:{w + 12}px;height:{h + 12}px;'
+                 f'background:#050607;border:2px solid rgba(232,194,104,.5);border-radius:18px;'
+                 f'box-shadow:0 30px 90px rgba(0,0,0,.7)"></div>')
+        self.scene(sid, t0, dur, inner)
+        name = self.asset(Path(data["video"]))
+        self.parts.append(f'<video id="{sid}-v" class="clip" src="{name}" muted playsinline data-start="{t0:.3f}" '
+                          f'data-duration="{dur:.3f}" data-volume="0" style="position:absolute;left:{x}px;top:{y}px;'
+                          f'width:{w}px;height:{h}px;object-fit:cover;border-radius:14px"></video>')
+
     def metaphor(self, t0, dur, data, how="rise"):
         """2026-11-13 (owner): an idea as a moving picture (scales, a lock, a magnifier, a funnel...), landing on
         the spoken word; drawn in code (edit/metaphors.py)."""
@@ -1157,21 +1174,26 @@ class Composer:
         # 2026-11-12 (owner): big enough to be seen; 2026-11-13 (review): at 820 he took 30% of the frame and
         # pushed the proof small, so 700 beside a larger proof area
         side = 560 if self.fmt == "short" else 700
+        # "beside": next to a finished video's panel (Stickman + Goli, 2026-11-17): full body so his arms read
+        beside = 800 if self.fmt == "long" else 680
         size = {"full": 1000, "left": 860, "right": 860, "corner": 420, "studio": studio.layout(self.fmt)["size"],
-                "lower": studio.layout("lower")["size"], "side": side}[place]
+                "lower": studio.layout("lower")["size"], "side": side, "beside": beside}[place]
         w = size * mascot.VIEW[0] / mascot.VIEW[1]
         x = {"full": self.w * 0.27 - w / 2, "left": 40, "right": self.w - w - 40, "corner": self.w - w - 50,
              "studio": studio.layout(self.fmt)["seat_x"] - w / 2, "lower": studio.layout("lower")["seat_x"] - w / 2,
-             "side": 10 if self.fmt == "short" else self.w - w + 60}[place]
+             "side": 10 if self.fmt == "short" else self.w - w + 60,
+             "beside": -10 if self.fmt == "short" else self.w - w + 20}[place]
         y = self.h - size - (30 if place != "corner" else 20)
         if place == "side":   # standing beside the block; on a Short his feet stay above YouTube's caption area
             y = (1700 if self.fmt == "short" else self.h + 150) - size   # long: knees at the frame's bottom edge
+        if place == "beside":     # long: feet just under the frame's edge; Short: feet above YouTube's caption area
+            y = (1700 if self.fmt == "short" else self.h + 30) - size
         if place in ("studio", "lower"):      # seated: desk top at his waist
             y = studio.layout(self.fmt if place == "studio" else "lower")["desk_y"] - 430 * size / 540
         # 2026-11-13 (owner): Goli gestures TOWARD what he talks about. His poses point to screen right; standing on
         # the right of a long video (the content on his left) he is mirrored, so a point, a thumbs up or a look goes
         # to the content and never off the frame edge. A pose that would point away from the content is turned round.
-        mirror = self.fmt == "long" and place in ("side", "corner", "right")
+        mirror = self.fmt == "long" and place in ("side", "corner", "right", "beside")
         if self.fmt == "long":
             poses = [dict(p, pose="point") if p.get("pose") == "point_left" else p for p in poses]
         flip = "transform:scaleX(-1);" if mirror else ""
@@ -1211,7 +1233,7 @@ class Composer:
                       f'{panels}{dots}'
                       f'<div class="disc" style="left:{cxp - w * .62:.0f}px;top:{y + size * .9:.0f}px;width:{w * 1.24:.0f}px;'
                       f'height:{size * .13:.0f}px"></div></div>')
-        if place == "side":
+        if place in ("side", "beside"):
             bubble = (f'<div class="disc" style="left:{x + w * .12:.0f}px;top:{y + size * .93:.0f}px;width:{w * .76:.0f}px;'
                       f'height:{size * .09:.0f}px"></div>')
         if place == "corner":
@@ -1262,7 +1284,7 @@ class Composer:
                  f'height:{size}px"><div id="{sid}-act" style="position:absolute;inset:0"><div style="position:absolute;inset:0;{flip}">'
                  f'{layers}</div></div></div>{front}{dim}')
         self.parts.append(f'<section id="{sid}" class="scene clip" data-start="{t0:.3f}" data-duration="{dur:.3f}" '
-                          f'style="z-index:{40 if place in ("corner", "lower", "side") else 1}"><div class="stage"><div class="cam">{inner}</div></div></section>')
+                          f'style="z-index:{40 if place in ("corner", "lower", "side", "beside") else 1}"><div class="stage"><div class="cam">{inner}</div></div></section>')
         # 2026-11-13 (owner): when a scene needs his space, Goli steps aside (fades out) for it and comes back after;
         # nothing may ever overlap him
         te = t0          # when he comes in: later when the first scene of his run needs his space
@@ -1285,7 +1307,7 @@ class Composer:
             self.tw(f'tl.to("#brand .logo",{{opacity:0,duration:.2}},{t0:.3f});tl.to("#brand .logo",{{opacity:.92,duration:.3}},{t0 + dur:.3f});')
             if intro != "close_pull":
                 self.tw(f'tl.fromTo("#{sid} .cam",{{scale:1.06}},{{scale:1.0,duration:{min(2.0, dur):.2f},ease:"power2.out"}},{t0:.3f});')
-        elif place == "side":
+        elif place in ("side", "beside"):
             self.tw(f'tl.fromTo("#{sid}-ch",{{x:{-w if self.fmt == "short" else w:.0f},opacity:0}},{{x:0,opacity:1,duration:.45,'
                     f'ease:"back.out(1.5)",immediateRender:{str(te == t0).lower()}}},{te:.3f});')
         elif place != "lower":
@@ -1327,7 +1349,7 @@ class Composer:
         # reactions to what is said: a head tilt on a question, a hop on an exclamation, a lean toward the
         # content when something lands (a number, a metaphor, a 3D move)
         toward = -1 if mirror or place in ("corner",) else 1
-        if place in ("side", "corner", "lower", "full", "left", "right"):
+        if place in ("side", "beside", "corner", "lower", "full", "left", "right"):
             last = -9.0
             for at, kind in getattr(self, "reacts", []):
                 if not (t0 + 0.6 <= at <= t0 + dur - 0.8) or at - last < 1.6:

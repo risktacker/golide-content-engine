@@ -614,7 +614,7 @@ function pickedPlatforms(scope) {
 // The choice comes up right after "Use AI voice" or after the recording uploads; the build starts on the tap.
 // 2026-11-17 (owner): the illustration style is called Inkee
 // 2026-11-17 (owner): Stickman is the third style (Shorts: cartoon-short-kit; long: ReachMora)
-const VIDEO_STYLES = [["goli", "Goli"], ["illustration", "Inkee"], ["stickman", "Stickman"]];
+const VIDEO_STYLES = [["goli", "Goli"], ["illustration", "Inkee"], ["stickman", "Stickman"], ["stickman_goli", "Stickman + Goli"]];
 let styleAsking = null;
 
 function askStyle(jobId) {
