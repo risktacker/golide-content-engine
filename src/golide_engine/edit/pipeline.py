@@ -79,7 +79,19 @@ def _recipes(production, spec: dict[str, Any], folder: Path, production_id: str,
     writer = OpenAITextProvider(conf.get("model", "gpt-5.6-sol"), conf.get("reasoning_effort", "medium"))
     for k, sc in enumerate(scenes):
         key = f"{k}-{sc['data']['recipe']}"
-        if key not in made and conf.get("enabled", True):
+        if key not in made and sc["data"].get("fill") and sc["data"]["recipe"] in recipes.FREE:
+            # 2026-11-17 (owner): a free style: the storyboard filled the reference's content block; no model call
+            def free(sc=sc, key=key):
+                made[key] = recipes.make_free(sc["data"]["recipe"], sc["data"]["fill"], float(sc["duration"]),
+                                              str(spec["format"]), folder / "recipes" / key,
+                                              samples=int(conf.get("samples", 5)), workers=int(conf.get("workers", 3)))
+                made_path.write_text(json.dumps(made, indent=2) + "\n", encoding="utf-8")
+            try:
+                production.runner.run(production_id, f"recipe-free-{key}-v1", free, attempts=1)
+            except Exception as error:  # noqa: BLE001 - a recipe scene never stops the video
+                print(json.dumps({"status": "recipe_failed", "scene": key, "error": str(error)[:300]}))
+                made[key] = None
+        elif key not in made and conf.get("enabled", True) and sc["data"]["recipe"] in recipes.PAID:
             def stage(sc=sc, key=key):
                 production._reserve(spec, writer.model, Usage(input_tokens=40000, output_tokens=24000))
                 result = recipes.make(writer, sc["data"]["recipe"], sc["data"]["brief"], sc["data"]["words"],
@@ -109,6 +121,45 @@ def _recipes(production, spec: dict[str, Any], folder: Path, production_id: str,
             if before:
                 before[-1]["duration"] = round(sc["start"] + sc["duration"] - before[-1]["start"], 3)
             edit["notes"].append(f"recipe scene {key} could not be made: the picture before holds")
+
+
+def _puppets(production, spec: dict[str, Any], folder: Path, production_id: str, edit: dict[str, Any]) -> None:
+    """2026-11-17 (owner): beats about people as ReachMora puppet shots (stickman/scene.py), drawn by the kit's own
+    engine from the shot the storyboard wrote: no model call. One that cannot be drawn shows its metaphor stand-in,
+    or the picture before it holds."""
+    from ..stickman import scene as puppet
+
+    scenes = [s for s in edit["scenes"] if s["type"] == "puppet_clip"]
+    if not scenes:
+        return
+    made_path = folder / "puppets.json"
+    made = json.loads(made_path.read_text(encoding="utf-8")) if made_path.exists() else {}
+    res = (settings().get("stickman") or {}).get("res")
+    for k, sc in enumerate(scenes):
+        key = f"{k}"
+        if key not in made:
+            def stage(sc=sc, key=key):
+                made[key] = puppet.make(sc["data"]["text"], sc["data"]["words"], float(sc["duration"]),
+                                        sc["data"]["doc"], folder / "puppets" / key, res=res)
+                made_path.write_text(json.dumps(made, indent=2) + "\n", encoding="utf-8")
+            try:
+                production.runner.run(production_id, f"puppet-{key}-v1", stage, attempts=1)
+            except Exception as error:  # noqa: BLE001 - a puppet scene never stops the video
+                print(json.dumps({"status": "puppet_failed", "scene": key, "error": str(error)[:300]}))
+                made[key] = None
+        result = made.get(key)
+        if result and Path(result["video"]).exists():
+            sc["data"] = {"video": result["video"], "size": result.get("size")}
+            print(json.dumps({"status": "puppet_scene", "scene": key}))
+        elif sc["data"].get("fallback"):
+            sc["type"], sc["data"] = "metaphor", sc["data"]["fallback"]
+            edit["notes"].append(f"puppet scene {key} could not be drawn: metaphor instead")
+        else:
+            edit["scenes"].remove(sc)
+            before = [s for s in edit["scenes"] if s["type"] != "host" and s["start"] < sc["start"]]
+            if before:
+                before[-1]["duration"] = round(sc["start"] + sc["duration"] - before[-1]["start"], 3)
+            edit["notes"].append(f"puppet scene {key} could not be drawn: the picture before holds")
 
 
 def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: dict[str, Any],
@@ -177,13 +228,15 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
     follow = {b.index for b in beat_lines for i in follow_lines
               if i < len(lines) and lines[i].start - 0.01 <= b.start <= lines[i].end}
     raw_path = folder / "edit-plan-raw-v2.json"     # v2: planned per beat (2026-11-11)
+    looks = editor.looks_for(spec.get("looks"))     # 2026-11-17 (owner): the video's style switches from Studio
+    print(json.dumps({"status": "edit_looks", **looks}))
 
     def plan_stage():
         production._require_absent(raw_path, "edit-plan")
         content = editor.request(str(spec.get("title", "")), beat_lines, sources, marks, follow, demo_list)
         out_tokens = min(60000, 6000 + 260 * len(beat_lines))
         production._reserve(spec, text_model, Usage(input_tokens=len(content) // 3 + 3000, output_tokens=out_tokens))
-        output = text.generate_json(editor.instructions(fmt), content, editor.EDIT_SCHEMA, max_output_tokens=out_tokens)
+        output = text.generate_json(editor.instructions(fmt, looks), content, editor.EDIT_SCHEMA, max_output_tokens=out_tokens)
         production._record_text(production_id, "edit-plan", output)
         raw_path.write_text(json.dumps(output.value, indent=2) + "\n", encoding="utf-8")
 
@@ -227,8 +280,9 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
     look = json.loads(look_path.read_text(encoding="utf-8"))["look3d"]
     print(json.dumps({"status": "edit_look", "look3d": look}))
     edit = editor.build(raw, beat_lines, narration_seconds, fmt, sources, capture_dir, cues, marks,
-                        logo_tile_maker(folder / "logos"), bookends=bookends, demos=demo_list, look=look)
+                        logo_tile_maker(folder / "logos"), bookends=bookends, demos=demo_list, look=look, looks=looks)
     _recipes(production, spec, folder, production_id, edit, text_model)
+    _puppets(production, spec, folder, production_id, edit)
     edit["title"] = str(spec.get("title", ""))
     # music drops for these; a Short keeps one steady bed (owner 2026-11-13: the dips sounded like the music changing)
     edit["quiet"] = [] if fmt == "short" else editor.quiet_windows(str(plan.get("voice_script") or ""), lines)

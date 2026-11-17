@@ -16,12 +16,30 @@ from pathlib import Path
 from typing import Any
 
 POSES = ["talk", "explain", "point", "point_up", "point_left", "shock", "think", "thumbs_up", "shrug", "wave"]
-TYPES = ["studio", "source", "terminal", "metaphor", "object3d", "recipe", "walkthrough", "photo", "stat", "compare", "steps", "checklist", "prompt", "timeline", "flow",
+TYPES = ["studio", "source", "terminal", "metaphor", "object3d", "recipe", "puppets", "walkthrough", "photo", "stat", "compare", "steps", "checklist", "prompt", "timeline", "flow",
          "quote", "words", "logos", "icon", "chapter", "follow"]
 
 OBJECTS3D = ("laptop", "phone", "server", "chip", "battery")
 # 2026-11-17 (owner): Futurepedia style recipes, a new scene written for the beat (edit/recipes.py)
 RECIPE_KEYS = ("xray", "layers", "white", "circuit", "glass", "blueprint")
+# 2026-11-17 (owner): cost to cents. Free styles (the storyboard fills the reference's content block, no model call)
+# and the free puppet scenes are on unless switched off for the video; paid styles (a model writes the scene) only
+# when switched on for the video, each up to its count. Scheduled automatic runs use the free ones only.
+FREE_LOOKS = ("layers", "circuit", "glass", "puppets")
+PAID_LOOKS = ("xray", "white", "blueprint")
+
+
+def looks_for(spec_looks: Any) -> dict[str, Any]:
+    """The styles a video may use, from its Studio switches ({"free": [...], "paid": {"xray": 1}}); none given
+    means every free one and no paid one."""
+    got = spec_looks if isinstance(spec_looks, dict) else {}
+    free = got.get("free")
+    free = [k for k in (free if isinstance(free, list) else FREE_LOOKS) if k in FREE_LOOKS]
+    paid = {k: max(0, int(v)) for k, v in (got.get("paid") or {}).items()
+            if k in PAID_LOOKS and isinstance(v, (int, float)) and int(v) > 0}
+    return {"free": free, "paid": paid}
+
+
 # 2026-11-17 (owner): animated 3D blocks; any object, not only the five presets (built from parts3d)
 MOVES3D = ("own", "explode", "assemble", "lift", "rise", "spin")
 # Futurepedia 3D atlas looks (owner's picks), one per video: Glass and Light, X-Ray, Circuit City, White Model,
@@ -74,6 +92,7 @@ SCENE = {
         "move3d": {"type": ["string", "null"], "enum": list(MOVES3D) + [None]},
         "recipe": {"type": ["string", "null"], "enum": list(RECIPE_KEYS) + [None]},
         "recipe_brief": _nstr,
+        "fill": _nstr, "puppet": _nstr,
         "parts3d": {"type": "array", "items": {"type": "object", "additionalProperties": False, "properties": {
             "shape": {"type": "string", "enum": ["box", "cyl", "sphere"]}, "x": {"type": "number"},
             "y": {"type": "number"}, "z": {"type": "number"}, "w": {"type": "number"}, "d": {"type": "number"},
@@ -84,15 +103,18 @@ SCENE = {
     },
     "required": ["type", "first_line", "last_line", "goli_corner", "poses", "screen_words", "punch", "source", "phrase",
                  "callout", "callout_sub", "edge", "value", "prefix", "suffix", "label", "quote", "quote_by", "left",
-                 "right", "rows", "items", "shots", "points", "brands", "metaphor", "object3d", "move3d", "parts3d", "recipe", "recipe_brief"],
+                 "right", "rows", "items", "shots", "points", "brands", "metaphor", "object3d", "move3d", "parts3d", "recipe", "recipe_brief", "fill", "puppet"],
 }
 EDIT_SCHEMA = {"type": "object", "additionalProperties": False,
                "properties": {"scenes": {"type": "array", "items": SCENE}}, "required": ["scenes"]}
 
 
-def instructions(fmt: str) -> str:
+def instructions(fmt: str, looks: dict[str, Any] | None = None) -> str:
     short = fmt == "short"
-    return f"""You are the editor of GOLIDE, a faceless AI-explainer channel. Its host is Goli, an original cartoon
+    looks = looks or looks_for(None)
+    allowed = [k for k in RECIPE_KEYS if k in looks["free"] or k in looks["paid"]]
+    puppets = "puppets" in looks["free"]
+    return _looks_text(allowed, looks["paid"], puppets) + f"""You are the editor of GOLIDE, a faceless AI-explainer channel. Its host is Goli, an original cartoon
 pangolin in a GOLIDE hoodie who talks with the owner's voice. You cut a {"vertical Short" if short else "long video"} the way
 the best channels in the niche do: fast, real proof on screen, and the picture ALWAYS shows what is being said
 at that moment.
@@ -190,6 +212,33 @@ same words, number, logo or shot twice in the video; numbers and names exactly a
 or on the page, never invented; only listed page and shot numbers."""
 
 
+def _looks_text(allowed: list[str], paid: dict[str, int], puppets: bool) -> str:
+    """What this video may use of the styles and puppets (its Studio switches), and how to fill them."""
+    out = ["STYLES FOR THIS VIDEO (Studio switches): recipe may be "
+           + (", ".join(f"{k}{f' (at most {paid[k]} in the video)' if k in paid else ''}" for k in allowed) or "none: do not use recipe")
+           + ". " + ("puppets may be used." if puppets else "Do not use puppets.")]
+    out.append("""How to fill them:
+- layers, circuit, glass: fill = a JSON string with the scene's content (no recipe_brief needed):
+  layers: {"title": [line 1, line 2] (max 3 words each, may be ["", ""]), "layers": [3 to 5 of {"name": 1-2 words,
+    "note": 2-4 words, "diagram": one of chat, steps, network, files, chips}] top to bottom}
+  circuit: {"stops": exactly 4 stage names, 1-2 words each, in the order something travels through them}
+  glass: {"first": {"name", "colour" "#rrggbb", "parts" 1-3}, "second": {same}, "binder": {"name", "colour"},
+    "mix_colour": "#rrggbb", "captions": exactly 5 lines of 2-6 words: the idea, the first amount, the second amount,
+    what binds them, the result}; the two parts add up to at most 4.
+- xray, white, blueprint: recipe_brief as described below (a writer builds the scene).
+- puppets: a beat about PEOPLE who are not one named real person (a team, customers, engineers, a crowd, "most
+  people", a founder in a story) or a moment between people. puppet = a JSON string {"cast": {...}, "shot": {...}}
+  in the ReachMora story format below: ONE shot of kind wide, closeup, walk, crowd, table, versus, icon, map,
+  counter or chart; cast = 1-3 original characters (distinct hair and outfit colours); "at" cues are words of this
+  beat; at most 2 labels of 1-3 words; no talk, no title, no lower_third, no polaroid. A real person the words name
+  is a photo scene, never a puppet. ALSO set metaphor (+ its fields) as the stand-in if the shot cannot be drawn.""")
+    if puppets:
+        from ..stickman.longform import KIT as RM
+        out.append("PUPPET SHOT FORMAT (the ReachMora kit's own reference):\n"
+                   + (RM / "references" / "story-format.md").read_text(encoding="utf-8"))
+    return "\n".join(out) + "\n\n"
+
+
 HOOK_MAX = 40.0
 
 
@@ -281,6 +330,18 @@ def request(title: str, lines: list[Any], sources: list[dict[str, Any]], chapter
     return (f"TITLE: {title}\n\nBEATS\n" + "\n".join(rows) + "\n\nCAPTURED PAGES\n" + ("\n".join(pages) or "none")
             + "\n\nREAL RUNS (terminal)\n" + (listing(demos or []) or "none")
             + "\n\nCHAPTERS\n" + (chap or "none"))
+
+
+def _metaphor_data(s: dict, lines, t0: float, t1: float, dur: float) -> dict:
+    """A metaphor scene's data from the editor's fields (the free stand-in for a puppet shot)."""
+    land = _word_time(lines, s.get("punch") or "", t0, t1)
+    items = [str(x) for x in (s.get("items") or [])][:5]
+    right = str(s.get("right") or "")
+    winner = "right" if s.get("punch") and right and str(s["punch"]).lower() in right.lower() else "left"
+    return {"kind": s["metaphor"], "at": round(max(0.6, min(dur - 0.8, (land - t0) if land else dur * 0.45)), 3),
+            "label": s.get("label") or s.get("screen_words") or "", "items": items,
+            "times": _item_times(items, lines, t0, t1) if items else None,
+            "left": s.get("left") or "", "right": right, "winner": winner, "value": s.get("value")}
 
 
 def _item_times(items: list[str], lines, t0: float, t1: float, first: float = 0.3) -> list[float]:
@@ -413,7 +474,7 @@ def _cues_between(cues: list[dict], start: float, end: float) -> list[dict]:
 def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sources: list[dict[str, Any]],
           capture_dir: Path | None, cues: list[dict], chapters: list[Any], logo_tiles=None,
           bookends: tuple[str, str] | None = None, demos: list[dict[str, Any]] | None = None,
-          look: str = "glass") -> dict[str, Any]:
+          look: str = "glass", looks: dict[str, Any] | None = None) -> dict[str, Any]:
     """The editor's answer as a timed edit list for compose.Composer. Line ranges are repaired so every
     line is covered once; references to pages, phrases or words that do not exist are dropped (the scene
     keeps its words), and every such repair is reported in the edit list's `notes`."""
@@ -440,6 +501,8 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
     if nxt < n:
         fixed[-1]["last_line"] = n - 1
 
+    looks = looks or looks_for(None)
+    paid_left = dict(looks["paid"])
     out: list[dict] = []
     shown_runs: set[int] = set()
     used_metaphors: set[str] = set()
@@ -564,8 +627,28 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
                 "parts": [] if s["object3d"] in OBJECTS3D else [dict(p) for p in (s.get("parts3d") or [])[:12]],
                 "at": round(max(0.5, min(dur - 1.6, (land - t0) if land else 0.8)), 3),
                 "lead": " ".join(str(s.get("label") or s.get("screen_words") or "").split()[:5])}})
-        elif kind == "recipe" and s.get("recipe") in RECIPE_KEYS and s.get("recipe_brief") \
+        elif kind == "puppets" and "puppets" in looks["free"] and s.get("puppet") \
+                and not (out and out[-1]["type"] == "puppet_clip"):
+            try:
+                doc = json.loads(s["puppet"])
+            except (TypeError, ValueError):
+                doc = None
+            fallback = _metaphor_data(s, lines, t0, t1, dur) if s.get("metaphor") in METAPHORS else None
+            if isinstance(doc, dict):
+                spoken = [w for l in lines for w in (getattr(l, "words", None) or []) if t0 - 0.01 <= float(w.start) < t1]
+                out.append({"type": "puppet_clip", "start": t0, "duration": dur, "in": "rise", "data": {
+                    "doc": doc, "text": " ".join(w.text for w in spoken) or " ".join(l.text for l in lines[s["first_line"]:s["last_line"] + 1]),
+                    "words": [{"text": w.text, "t": round(float(w.start) - t0, 2)} for w in spoken], "fallback": fallback}})
+            elif fallback:
+                out.append({"type": "metaphor", "start": t0, "duration": dur, "in": "rise", "data": fallback})
+                notes.append(f"scene {k}: puppet shot unreadable, metaphor instead")
+            else:
+                out.append(words_scene())
+        elif kind == "recipe" and s.get("recipe") in RECIPE_KEYS \
+                and (s["recipe"] in looks["free"] and s.get("fill") or paid_left.get(s["recipe"], 0) > 0 and s.get("recipe_brief")) \
                 and not (out and out[-1]["type"] == "recipe_clip"):
+            if s["recipe"] in paid_left:
+                paid_left[s["recipe"]] -= 1
             fallback = None
             if s.get("object3d") in OBJECTS3D or len(s.get("parts3d") or []) >= 2:
                 land = _word_time(lines, s.get("punch") or "", t0, t1)
@@ -576,8 +659,15 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
                             "lead": " ".join(str(s.get("label") or "").split()[:5])}
             words = [{"text": w.text, "t": round(float(w.start) - t0, 2)} for l in lines for w in (getattr(l, "words", None) or [])
                      if t0 - 0.01 <= float(w.start) < t1]
+            fill = None
+            if s["recipe"] in looks["free"]:
+                try:
+                    fill = json.loads(s.get("fill") or "")
+                except ValueError:
+                    fill = None
             out.append({"type": "recipe_clip", "start": t0, "duration": dur, "in": "rise", "data": {
-                "recipe": s["recipe"], "brief": str(s["recipe_brief"])[:600], "words": words, "fallback": fallback}})
+                "recipe": s["recipe"], "brief": str(s.get("recipe_brief") or "")[:600], "words": words,
+                "fill": fill if isinstance(fill, dict) else None, "fallback": fallback}})
         elif kind == "metaphor" and s.get("metaphor") in METAPHORS and s["metaphor"] not in used_metaphors \
                 and not (out and out[-1]["type"] == "metaphor"):
             used_metaphors.add(s["metaphor"])
@@ -721,7 +811,7 @@ def save(edit: dict[str, Any], path: Path) -> None:
 # A Short shows the proof on top and keeps Goli at his desk below it for the whole run of cards
 # (owner 2026-11-11: no empty space above and below the cards). His pose follows each card.
 REACT = {"browser_shot": "point_up", "stat_counter": "shock", "comparison": "explain", "steps": "point_up",
-         "walkthrough": "point_up", "terminal": "point", "metaphor": "point", "object3d": "point", "recipe_clip": "point", "prompt_card": "point_up", "checklist": "thumbs_up", "timeline": "explain", "quote_card": "think", "logo_tiles": "thumbs_up", "kinetic_title": "talk",
+         "walkthrough": "point_up", "terminal": "point", "metaphor": "point", "object3d": "point", "recipe_clip": "point", "puppet_clip": "point", "prompt_card": "point_up", "checklist": "thumbs_up", "timeline": "explain", "quote_card": "think", "logo_tiles": "thumbs_up", "kinetic_title": "talk",
          "chapter_card": "talk", "follow_cta": "wave"}
 
 
@@ -730,7 +820,7 @@ REACT = {"browser_shot": "point_up", "stat_counter": "shock", "comparison": "exp
 # gesture twice in a row for the same kind of card.
 REACT_LONG = {"browser_shot": ["point_left", "point_up", "explain"], "photo": ["point_left", "think"],
               "stat_counter": ["shock", "point_left"], "comparison": ["shrug", "think", "explain"],
-              "steps": ["explain", "point_up", "thumbs_up"], "walkthrough": ["point_left", "point_up", "explain"], "terminal": ["point", "think", "thumbs_up"], "metaphor": ["point", "shock", "think"], "object3d": ["point", "shock", "explain"], "recipe_clip": ["point_left", "explain", "shock"],
+              "steps": ["explain", "point_up", "thumbs_up"], "walkthrough": ["point_left", "point_up", "explain"], "terminal": ["point", "think", "thumbs_up"], "metaphor": ["point", "shock", "think"], "object3d": ["point", "shock", "explain"], "recipe_clip": ["point_left", "explain", "shock"], "puppet_clip": ["point_left", "think", "explain"],
               "prompt_card": ["point_left", "think"], "checklist": ["thumbs_up", "explain"], "timeline": ["point_left", "explain"],
               "flow": ["explain", "point_left"], "quote_card": ["think", "shrug"], "logo_tiles": ["thumbs_up", "point_left"],
               "kinetic_title": ["explain", "talk", "point_left"], "chapter_card": ["wave", "talk"]}
@@ -808,7 +898,7 @@ def captions(lines: list[Any], fmt: str) -> list[dict[str, Any]]:
 # than a beat is cut at word boundaries into beats that each show something new.
 BEAT = {"short": 2.2, "long": 6.5}
 STUDIO_BEAT = {"short": 3.0, "long": 10.0}
-HOLD = {"recipe_clip", "stat_counter", "comparison", "steps", "walkthrough", "terminal", "metaphor", "object3d", "prompt_card", "checklist", "timeline", "quote_card", "logo_tiles", "chapter_card", "follow_cta"}
+HOLD = {"recipe_clip", "puppet_clip", "stat_counter", "comparison", "steps", "walkthrough", "terminal", "metaphor", "object3d", "prompt_card", "checklist", "timeline", "quote_card", "logo_tiles", "chapter_card", "follow_cta"}
 
 
 def _spoken(lines, a: float, b: float) -> list[Any]:
@@ -1025,7 +1115,7 @@ def quiet_windows(voice_script: str, lines: list[Any], most: int = 2, longest: f
     return out
 
 
-DEEPER = {"walkthrough", "terminal", "object3d", "recipe_clip"}
+DEEPER = {"walkthrough", "terminal", "object3d", "recipe_clip", "puppet_clip"}
 # 2026-11-17 (owner): no fixed counts for picture blocks: each one matches its words, never the same block twice in
 # a row (and never the same metaphor twice in a video). Words blocks are the exception: at most 2 in a video.
 # 2026-11-17 (owner): no text blocks. Text only where it IS the content: a real quote (quote_card), a prompt to

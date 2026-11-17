@@ -1,6 +1,6 @@
 import { ANALYTICS_SCHEMA, analyticsReport, storeAnalytics } from "./analytics.js";
 import { labelMissing } from "./triage.js";
-import { buildExternalSpec } from "./external.js";
+import { buildExternalSpec, cleanLooks } from "./external.js";
 import { handleContact } from "./contact.js";
 import { sweepMedia } from "./storage.js";
 import { collectHealth, renderHealth, sendHealthEmail } from "./health.js";
@@ -1178,8 +1178,10 @@ async function handleApi(request,env,url){
     let body={}; try{body=await request.json();}catch{}
     const platforms=normalizePlatforms(body.platforms);
     const style=["goli","illustration","stickman","stickman_goli"].includes(String(body.style||""))?String(body.style):"goli";
-    const r=await env.DB.prepare(`UPDATE production_jobs SET spec_json=json_set(spec_json,'$.voice_choice','ai','$.platforms',json(?),'$.video_style',?),status='queued',stage='ai-voice',error=NULL,updated_at=? WHERE job_id=? AND status='waiting_owner_voice'`)
-      .bind(platforms?JSON.stringify(platforms):"null",style,nowIso(),id).run();
+    // 2026-11-17 (owner): a Goli video carries its style switches (free on, paid by count); none sent = the defaults
+    const looks=style==="goli"?cleanLooks(body.looks):null;
+    const r=await env.DB.prepare(`UPDATE production_jobs SET spec_json=json_set(spec_json,'$.voice_choice','ai','$.platforms',json(?),'$.video_style',?,'$.looks',json(?)),status='queued',stage='ai-voice',error=NULL,updated_at=? WHERE job_id=? AND status='waiting_owner_voice'`)
+      .bind(platforms?JSON.stringify(platforms):"null",style,looks?JSON.stringify(looks):"null",nowIso(),id).run();
     if(!r.meta?.changes) return json({status:"unchanged"});
     try{await dispatchWorkflow(env,"production-scheduler.yml");}catch(e){console.log(JSON.stringify({dispatch:"ai_voice_failed",error:String(e?.message||e)}));}
     return json({status:"queued"});
@@ -1324,8 +1326,10 @@ async function handleApi(request,env,url){
       const jobId=decodeURIComponent(voiceMatch[1]);
       const before=await env.DB.prepare(`SELECT owner_voice_media_ref FROM production_jobs WHERE job_id=?`).bind(jobId).first();
       // 2026-11-11 (owner): after the upload he picks the video type (goli or illustration)
-      if(["goli","illustration","stickman","stickman_goli"].includes(String(payload.style||"")))
-        await env.DB.prepare(`UPDATE production_jobs SET spec_json=json_set(spec_json,'$.video_style',?) WHERE job_id=?`).bind(String(payload.style),jobId).run();
+      if(["goli","illustration","stickman","stickman_goli"].includes(String(payload.style||""))){
+        const looks=String(payload.style)==="goli"?cleanLooks(payload.looks):null;   // 2026-11-17: the video's style switches
+        await env.DB.prepare(`UPDATE production_jobs SET spec_json=json_set(spec_json,'$.video_style',?,'$.looks',json(?)) WHERE job_id=?`).bind(String(payload.style),looks?JSON.stringify(looks):"null",jobId).run();
+      }
       const attached=await attachOwnerVoice(env.DB,jobId,payload.media_ref,normalizePlatforms(payload.platforms));
       // 2026-10-18: replacing a recording stops any build still using the old one;
       // the next run resets the voice-built checkpoints (see voice_reset.py).

@@ -796,6 +796,11 @@ class Composer:
             if e.get("what") in sounds and 0.3 <= float(e.get("t", 0)) < dur - 0.2:
                 self.cue(sounds[e["what"]], t0 + float(e["t"]))
 
+    def puppet_clip(self, t0, dur, data, how="rise"):
+        """2026-11-17 (owner): a beat about people as one ReachMora puppet shot (stickman/scene.py), rendered before,
+        in the same dark frame as a style scene."""
+        self.recipe_clip(t0, dur, dict(data, events=[]), how)
+
     # x, y, w, h of a finished video's panel. Long: it ends 12 px before Goli's box (x = 1920 - 459 + 20 = 1481), so
     # the two never overlap (owner 2026-11-17: no collision in anything)
     STAGE = {"long": (24, 133, 1445, 813), "short": (350, 60, 700, 1244)}

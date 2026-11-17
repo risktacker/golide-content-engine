@@ -650,6 +650,41 @@ function pickedPlatforms(scope) {
 const VIDEO_STYLES = [["goli", "Goli"], ["illustration", "Inkee"], ["stickman", "Stickman"], ["stickman_goli", "Stickman + Goli"]];
 let styleAsking = null;
 
+// 2026-11-17 (owner): when Goli is picked, the styles for that video. Free ones (no model call) are on by default;
+// paid ones (a model writes the scene, about $0.30 each) start at 0 and he raises the count by choice.
+const FREE_LOOKS = [["puppets", "Puppets (people)"], ["layers", "Layer Stack"], ["circuit", "Circuit City"], ["glass", "Glass and Light"]];
+const PAID_LOOKS = [["xray", "X-Ray"], ["white", "White Model"], ["blueprint", "Blueprint"]];
+const PAID_EACH = 0.30;
+const pickedLooks = {};
+
+function looksHtml() {
+  return '<div class="looks"><span class="post-to-label">Styles in this video</span>' +
+    '<div class="looks-row"><span class="looks-kind">Free</span>' + FREE_LOOKS.map(([key, name]) =>
+      '<label class="post-chip"><input type="checkbox" class="look-free" value="' + key + '" checked><span>' + name + '</span></label>').join("") + '</div>' +
+    '<div class="looks-row"><span class="looks-kind">Paid, about $' + PAID_EACH.toFixed(2) + ' a scene</span>' + PAID_LOOKS.map(([key, name]) =>
+      '<label class="look-paid"><span>' + name + '</span><input type="number" class="look-count" data-look="' + key + '" min="0" max="20" step="1" value="0" inputmode="numeric"></label>').join("") + '</div>' +
+    '<span class="looks-cost">Extra cost: $0.00</span></div>';
+}
+
+function readLooks(root) {
+  const paid = {};
+  root.querySelectorAll(".look-count").forEach((input) => {
+    const n = Math.max(0, Math.min(20, Math.round(Number(input.value) || 0)));
+    if (n) paid[input.dataset.look] = n;
+  });
+  return { free: [...root.querySelectorAll(".look-free:checked")].map((input) => input.value), paid };
+}
+
+function bindLooks(root) {
+  const cost = root.querySelector(".looks-cost");
+  const update = () => {
+    const n = Object.values(readLooks(root).paid).reduce((a, b) => a + b, 0);
+    if (cost) cost.textContent = "Extra cost: up to $" + (n * PAID_EACH).toFixed(2) + (n ? " (" + n + " paid scene" + (n > 1 ? "s" : "") + ", only where the words fit)" : "");
+  };
+  root.querySelectorAll("input").forEach((input) => { input.oninput = update; input.onchange = update; });
+  update();
+}
+
 function askStyle(jobId) {
   return new Promise((resolve) => {
     const card = document.getElementById("job-" + jobId);
@@ -662,8 +697,18 @@ function askStyle(jobId) {
       '<button class="action-button style-cancel">Cancel</button>';
     styleAsking = jobId;
     (card?.querySelector(".action-controls") || card || document.body).prepend(row);
+    const done = (style) => { styleAsking = null; row.remove(); resolve(style); };
     row.querySelectorAll("button").forEach((button) => {
-      button.onclick = () => { styleAsking = null; row.remove(); resolve(button.dataset.style || null); };
+      button.onclick = () => {
+        const style = button.dataset.style || null;
+        if (style !== "goli") { delete pickedLooks[jobId]; return done(style); }
+        // Goli: choose the styles for this video, then start
+        row.innerHTML = looksHtml() + '<button class="action-button style-go primary looks-start">Start</button>' +
+          '<button class="action-button looks-back">Back</button>';
+        bindLooks(row);
+        row.querySelector(".looks-start").onclick = () => { pickedLooks[jobId] = readLooks(row); done("goli"); };
+        row.querySelector(".looks-back").onclick = () => { delete pickedLooks[jobId]; done(null); };
+      };
     });
   });
 }
@@ -781,7 +826,7 @@ function renderActionQueues() {
       const card = button.closest(".action-card");
       const picked = card?.querySelector(".post-to") ? pickedPlatforms(card) : null;
       await api("/api/production-jobs/" + encodeURIComponent(button.dataset.job) + "/ai-voice",
-        { method: "POST", body: JSON.stringify(Object.assign({ style }, picked ? { platforms: picked } : {})) });
+        { method: "POST", body: JSON.stringify(Object.assign({ style }, pickedLooks[button.dataset.job] ? { looks: pickedLooks[button.dataset.job] } : {}, picked ? { platforms: picked } : {})) });
       await loadProductionJobs();
     };
   });
@@ -939,7 +984,7 @@ async function uploadVoice(jobId, file) {
     if (!style) { if (status) status.textContent = "Upload kept here; upload again when you are ready."; return; }
     await api("/api/production-jobs/" + encodeURIComponent(jobId) + "/voice", {
       method: "POST",
-      body: JSON.stringify(Object.assign({ media_ref: mediaRef, style },
+      body: JSON.stringify(Object.assign({ media_ref: mediaRef, style }, pickedLooks[jobId] ? { looks: pickedLooks[jobId] } : {},
         card?.querySelector(".post-to") ? { platforms: pickedPlatforms(card) } : {})),
     });
     if (status) status.textContent = "Uploaded. Production has started; the video is ready in about 20 to 30 minutes.";
@@ -1189,6 +1234,15 @@ function syncExtStyles() {
 }
 document.querySelectorAll('input[name="ext-format"]').forEach((input) => { input.onchange = syncExtStyles; });
 syncExtStyles();
+// the styles row shows under the visual when Goli is picked (2026-11-17)
+function syncExtLooks() {
+  const box = $("#ext-looks");
+  if (!box) return;
+  if (!box.dataset.ready) { box.innerHTML = looksHtml(); bindLooks(box); box.dataset.ready = "1"; }
+  box.hidden = (document.querySelector('input[name="ext-style"]:checked')?.value || "goli") !== "goli";
+}
+document.querySelectorAll('input[name="ext-style"]').forEach((input) => { input.addEventListener("change", syncExtLooks); });
+syncExtLooks();
 
 $("#external-form").onsubmit = async (event) => {
   event.preventDefault();
@@ -1218,6 +1272,7 @@ $("#external-form").onsubmit = async (event) => {
         link: $("#ext-link").value.trim(), reference_link: $("#ext-ref-link").value.trim(),
         platforms: pickedPlatforms($("#ext-post-to")),
         format: extFormat(), video_style: document.querySelector('input[name="ext-style"]:checked')?.value || "goli",
+        looks: readLooks($("#ext-looks")),
       }),
     });
     say("Building now. It publishes when it is ready; follow it under Production below.");

@@ -66,6 +66,125 @@ RECIPES: dict[str, dict[str, str]] = {
     },
 }
 
+# 2026-11-17 (owner): cost to cents. Each reference scene opens with a block marked "content (change this block for a
+# new topic)": the prompt's own way to reuse it. Where that block holds the whole topic (the objects are generic), the
+# storyboard fills it and no model writes code ($0 extra): Layer Stack, Circuit City, Glass and Light. X-Ray, White
+# Model and Blueprint build their object in code below the block, so a new subject needs the writer (paid, chosen
+# per video in Studio with a count).
+FREE = ("layers", "circuit", "glass")
+PAID = tuple(k for k in RECIPES if k not in FREE)
+DIAGRAMS = ("chat", "steps", "network", "files", "chips")      # Layer Stack's prints (its DIAGRAMS)
+
+
+def _js(value) -> str:
+    return json.dumps(value, ensure_ascii=False)
+
+
+def _colour(value, default: str) -> str:
+    v = str(value or "").strip()
+    return v if len(v) == 7 and v.startswith("#") and all(c in "0123456789abcdefABCDEF" for c in v[1:]) else default
+
+
+def _caps(text, most: int) -> str:
+    words = " ".join(str(text or "").split()).upper()
+    return words[:most].strip()
+
+
+def content_block(key: str, fill: dict[str, Any]) -> str:
+    """The reference's content block, rewritten for our topic with the same names and shapes. Raises ValueError when
+    the fill does not have what the block needs."""
+    if key == "layers":
+        layers = [x for x in (fill.get("layers") or []) if isinstance(x, dict) and str(x.get("name", "")).strip()][:5]
+        if len(layers) < 3:
+            raise ValueError("layers: 3 to 5 layers needed")
+        title = [str(t)[:22] for t in (fill.get("title") or [])][:2]
+        title = (title + ["", ""])[:2] if any(title) else ["", ""]
+        rows = ",\n".join(f"    {{ name: {_js(_caps(x['name'], 14))}, note: {_js(' '.join(str(x.get('note', '')).split())[:24])}, "
+                           f"diagram: {_js(x.get('diagram') if x.get('diagram') in DIAGRAMS else DIAGRAMS[i % len(DIAGRAMS)])} }}"
+                           for i, x in enumerate(layers))
+        return (f"  const TITLE = {_js(title)};\n  const LAYERS = [\n{rows},\n  ];\n  const N = LAYERS.length;\n")
+    if key == "circuit":
+        stops = [_caps(x, 12) for x in (fill.get("stops") or []) if str(x).strip()]
+        if len(stops) != 4:
+            raise ValueError("circuit: exactly 4 stops needed")
+        return (f"  const STOPS = {_js(stops)};\n  const REFS = ['J1', 'U1-U4', 'U5', 'J2'];\n  const CORES = 4;\n"
+                "  const T = { launch: 0.3, memEnd: 2.0, memOut: 2.35, cpu: 3.55, wave: 3.7, waveLen: 1.35, cpuOut: 5.65, answer: 6.5 };\n")
+    if key == "glass":
+        a, b = fill.get("first") or {}, fill.get("second") or {}
+        pa, pb = int(a.get("parts") or 0), int(b.get("parts") or 0)
+        if not (str(a.get("name", "")).strip() and str(b.get("name", "")).strip()) or not (1 <= pa <= 3 and 1 <= pb <= 3 and pa + pb <= 4):
+            raise ValueError("glass: two liquids with 1-3 parts each, 4 parts at most")
+        binder = fill.get("binder") or {}
+        caps = [" ".join(str(c).split())[:34] for c in (fill.get("captions") or [])][:5]
+        if len(caps) != 5:
+            raise ValueError("glass: five captions needed")
+        ta, tb = _colour(a.get("colour"), "#b8242f"), _colour(b.get("colour"), "#dcc82e")
+        mix, spoon = _colour(fill.get("mix_colour"), "#f2cb66"), _colour(binder.get("colour"), "#e2b32c")
+        return ("  const PART = 0.55;\n  const MARKS = 4;\n  const POURS = [\n"
+                f"    {{ name: {_js(str(a['name'])[:20])}, tint: {_js(ta)}, parts: {pa}, pour: [1.5, 2.7], bottle: 'cruet', at: [-3.0, 0.45], stream: 0.055 }},\n"
+                f"    {{ name: {_js(str(b['name'])[:20])}, tint: {_js(tb)}, parts: {pb}, pour: [3.9, 6.0], bottle: 'tall', at: [3.3, -0.35], stream: 0.08 }},\n"
+                "  ];\n"
+                f"  const MIX = {{ tint: {_js(mix)}, spoonful: {_js(spoon)}, spoon: 6.6, drop: 7.6, lid: 8.75, shake: [9.25, 10.25] }};\n"
+                "  const CAPTIONS = [\n"
+                f"    [0.15, 1.5, {_js(caps[0])}],\n    [1.6, 3.55, {_js(caps[1])}, POURS[0].tint],\n"
+                f"    [3.8, 6.8, {_js(caps[2])}, POURS[1].tint],\n    [6.95, 8.6, {_js(caps[3])}, MIX.spoonful],\n"
+                f"    [9.3, 99, {_js(caps[4])}, MIX.tint],\n  ];\n  const DURATION = 12;\n")
+    raise ValueError(f"{key} has no free mode")
+
+
+def reference_code(key: str) -> str:
+    text = (BOOK / RECIPES[key]["file"]).read_text(encoding="utf-8")
+    ref = _section(text, "REFERENCE STYLE SOURCE", None)
+    a = ref.find("```js") + 5
+    return ref[a:ref.rfind("```")].strip() + "\n"
+
+
+def fill_code(key: str, fill: dict[str, Any], duration: float) -> str:
+    """The reference scene with its content block replaced, played over `duration` seconds (its own timing,
+    stretched evenly: the picture keeps its order and rhythm)."""
+    code = reference_code(key)
+    a = code.find("\n", code.find("// ----------------------------------------------------------------")) + 1
+    b = code.find("  // ----------------------------------------------------------------", a)
+    if a <= 0 or b < 0:
+        raise ValueError(f"{key}: content block not found")
+    code = code[:a] + content_block(key, fill) + "\n" + code[b:]
+    return code + f"""
+// GOLIDE (2026-11-17): the scene played over the beat's length, its own timing stretched evenly
+(function () {{
+  const st = STYLES[STYLES.length - 1], D0 = st.duration, D = {float(duration):.3f}, k = D0 / D, build = st.build;
+  st.duration = D;
+  st.build = function (S) {{
+    const wrap = (api) => Object.assign({{}}, api, {{
+      update: (t) => api.update(t * k),
+      overlay: api.overlay ? (ctx, t, W, H) => api.overlay(ctx, t * k, W, H) : undefined,
+    }});
+    const out = build.call(this, S);
+    return out && typeof out.then === 'function' ? out.then(wrap) : wrap(out);
+  }};
+}})();
+"""
+
+
+def make_free(key: str, fill: dict[str, Any], duration: float, fmt: str, folder: Path, samples: int = 5,
+              workers: int = 3) -> dict[str, Any] | None:
+    """A free scene: no model call. Filled, checked (errors, empty frames, motion, collisions) and rendered; one
+    that fails its check is not retried (that would cost a model call): the caller shows the free stand-in."""
+    size = FRAME[fmt]
+    try:
+        code = fill_code(key, fill, duration)
+    except ValueError as error:
+        print(json.dumps({"status": "recipe_free_unfilled", "recipe": key, "why": str(error)}))
+        return None
+    stills, problems = check(code, folder / "free", size, duration)
+    print(json.dumps({"status": "recipe_free_check", "recipe": key, "ok": not problems, "problems": problems[:300]}))
+    if problems:
+        return None
+    video = render_clip(code, folder / "free", size, duration, folder / f"{key}.mp4", samples=samples, workers=workers)
+    (folder / "style.js").write_text(code, encoding="utf-8")
+    return {"video": str(video), "accent": "", "events": [], "stills": [str(s) for s in stills], "size": list(size),
+            "free": True}
+
+
 CODE_SCHEMA = {
     "type": "object", "additionalProperties": False,
     "properties": {

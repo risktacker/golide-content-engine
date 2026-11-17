@@ -520,3 +520,13 @@ body.sheet-open{overflow:hidden}
 .section-switch.on .dot{background:#3ecf6e}
 .section-switch:disabled{opacity:.5;cursor:wait}
 .control{flex-wrap:wrap}
+
+/* 2026-11-17 (owner): the styles in a Goli video, free on, paid by count */
+.looks{display:flex;flex-direction:column;gap:10px;width:100%}
+.looks-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.looks-kind{width:100%;font-size:.8rem;color:var(--muted)}
+.look-paid{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--line-strong);border-radius:999px;font-size:.875rem}
+.look-paid input{width:52px;padding:4px 6px;border-radius:8px;border:1px solid var(--line-strong);background:transparent;color:inherit;font:inherit;text-align:center}
+.looks-cost{font-size:.85rem;color:#E8C268}
+.ext-looks{margin-top:4px}
+.ext-looks[hidden]{display:none}
