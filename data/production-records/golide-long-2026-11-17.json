@@ -1,0 +1,646 @@
+{
+  "production_id": "golide-long-2026-11-17",
+  "youtube_video_id": "vQPYaYcI9XA",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "vQPYaYcI9XA",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-11-17T19:55:12.368270+00:00"
+  },
+  "production": {
+    "format": "long",
+    "title": "NVIDIA Scandal Explained Like You're 5",
+    "status": "scheduled",
+    "scheduled_at": "2026-11-17T17:30:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-long-tue-thu-sat\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-choice\"}"
+  },
+  "narration": "November 2026.\nJensen Huang resigns as CEO of Nvidia, the company he built over 33 years.\nIn one week, nearly half a trillion dollars of its value disappears.\nEvery headline says the same thing.\nAffairs.\nOne with a woman US officials suspected of being a Chinese spy.\nBut here's the strange part.\nWashington had reportedly known about her for a year.\nAnd did nothing.\nSo what really brought down the most powerful CEO in tech?\nIt starts with an email.\nNvidia makes the chips behind almost every AI you've used.\nIt's worth over $5.5 trillion.\nAnd Nvidia is Jensen.\nAround 60 executives report straight to him.\nNo number 2.\nThen Jensen writes to his staff:\n\"I owe my family and all of you an apology.\nI was unfaithful to my wife.\nI'm committed to supporting America's national security.\" National security?\nWhy say that?\nBecause the woman was Alice Huang.\nNo relation.\nHer company was one of Nvidia's biggest customers in Southeast Asia.\nAnd according to US intelligence claims,\nChina's spy agency had sent her to get close to him.\nA honeypot.\n3 days later, The New York Times reported a second relationship,\nwith an executive who reported directly to Jensen.\nThe board met that night.\nBy morning, he was out.\nThen Reuters reported a third woman.\n33 years.\nOver in 4 days.\nA billionaire, a spy, a honeypot.\nCase closed.\nExcept 2 things don't fit.\nFirst, the spy.\nAlice had a husband who'd known Jensen for 10 years.\nThe Wall Street Journal reported he introduced them and called\nhis wife \"Jensen's personal secretary.\" That's not how honeypots work.\nSingapore police never investigated her for spying.\nSecond, the timing.\nThe president had reportedly been briefed about her a year earlier.\nNobody stopped Jensen.\nNobody even told him.\nSo forget the affair.\nFollow the chips.\nWashington, 2022.\n\"Mr.\nHuang,\nyour best chips don't go to China anymore.\" \"But we own 95%\nof that market.\" \"Sounds like your problem.\" Jensen fought it for years.\nThe best chips stayed banned.\n3 years in, he said Nvidia's China share went from 95% to 0.\nLose a market that big and you're supposed to shrink.\nNvidia didn't.\nOne quarter: $44 billion, up from 26 a year before.\nBut the fine print had something odd.\nRight behind America in Nvidia's country table: Singapore.\nSmaller than New York.\nReportedly over a fifth of Nvidia's revenue.\nIs every grandma in Singapore running a data center?\nNvidia's answer: Singapore is just where the invoices go.\nSo are banned chips being snuck into China?\nJensen laughed it off.\nOur systems weigh 2 tons and cost $3 million.\nNobody carries that through an airport.\nOkay.\nLet's go look.\nSingapore, 2025.\nMegaspeed, one of Nvidia's biggest customers in Asia.\nNearly $5 billion of Nvidia hardware in 3 years.\n\"Where is everybody?\" \"This is everybody.\" 2 people on a workday.\nIts Australian branch was reportedly run by a 29-year-old who worked at a newsstand.\n5 months after the chip ban,\na British Virgin Islands shell bought the company and renamed it.\nThat shell was Hang Lee Limited, reportedly Alice Huang's Chinese name.\nEmployees later said she still ran it.\nIts job: buy Nvidia chips, put them in Malaysian data centers,\nrent out the power.\nLegal.\nMalaysia isn't China.\nBut first year, 0 revenue.\nA year later, $3 billion in assets.\nWhere's the money from?\nShort seller Culper Research alleged it came from a\nSingapore company that paid over $4 billion in advance.\nIts parent: Alibaba.\nChinese money in.\nNvidia chips out.\n\"Why are the servers still in their boxes?\" \"We're still setting\nup.\" Nobody buys millions in chips to leave them boxed.\nUnless they're not staying.\nUS investigators allege around 240,000 banned Nvidia chips\nwent through Megaspeed's shell companies into China.\nSo this was never just a love story.\nAlice got access.\nChina got the chips.\nNvidia got a customer that never stopped buying.\nEverybody wins.\nExcept Washington.\nSo why did nothing happen?\nOfficials pushed to blacklist Megaspeed.\nCommerce never did.\nIt reportedly added no one for over a year,\nits longest gap in 18 years.\nIts agents were building a case, then Nvidia's lawyers got involved, and it stalled.\nBecause Jensen was one of Donald Trump's favorite guests.\nA reported $1 million Mar-a-Lago dinner.\nTrips abroad with Trump.\nA $25 million donation to the White House ballroom.\nMarco Rubio's team reportedly wrote a classified memo warning she might be a spy.\nTrump still took Jensen to Beijing.\nThat was the shield.\nThen America voted.\nThe president's party lost Congress.\nThe memo leaked.\nCongress summoned Jensen.\nA second affair broke.\nThen a third.\nJensen Huang resigned.\n\"An affair?\nHe washed dishes at Denny's and built all this.\" \"Banned chips flowed\ninto China through her company while he said there was no smuggling.\nAnd he dated someone who reported to him.\" Allegedly.\nHe hasn't been charged with anything.\nSo who runs the company AI depends on?\nThere's no second Jensen.\nExcept everyone is replaceable.\nSteve Jobs died, and Apple got bigger.\nBuilding Nvidia was extraordinary.\nBut once nobody can replace you, nobody can stop you.\nFollow the channel for the next one.\nToo important to fire.\nToo rich to refuse.\nToo connected to touch.\nPower tends to corrupt, and absolute power corrupts absolutely.\n",
+  "research": {
+    "summary": "The linked video’s central event is real: NVIDIA announced that Jensen Huang resigned as president, CEO, and board member in November 2026 after revelations about extramarital relationships and scrutiny over his connection to Alice Huang, a Singapore-based technology executive whom U.S. officials reportedly suspected of working for Chinese intelligence. However, several details in the supplied brief require correction or qualification. The company said its board had no reason to believe that NVIDIA secrets or national security information were compromised, and the alleged espionage claims remained unproven. The financial impact was larger than the brief states: Reuters reported approximately $550 billion in NVIDIA market value was erased during the week of November 9–12, 2026, while AP later reported a loss of about $735 billion since the disclosures. The strongest evidence points to a combined corporate-governance, national-security, export-control, and leadership crisis—not a proven spy operation.",
+    "claims": [
+      {
+        "claim": "NVIDIA announced on November 12, 2026 that Jensen Huang had resigned immediately as president, chief executive officer, and a member of the board. CFO Colette Kress was appointed interim CEO, and Harvey C. Jones became board chair.",
+        "source_title": "NVIDIA Announces CEO Transition",
+        "source_url": "https://nvidianews.nvidia.com/news/nvidia-announces-ceo-transition?frmapp=yes",
+        "published_or_updated": "November 12, 2026"
+      },
+      {
+        "claim": "Huang founded NVIDIA in 1993 and had led the company for 33 years before his resignation.",
+        "source_title": "NVIDIA Announces CEO Transition",
+        "source_url": "https://nvidianews.nvidia.com/news/nvidia-announces-ceo-transition?frmapp=yes",
+        "published_or_updated": "November 12, 2026"
+      },
+      {
+        "claim": "NVIDIA’s board opened an independent investigation on November 8, 2026 into reports that Huang had been targeted by a foreign intelligence effort. The board explicitly said it had no reason to believe that national security or NVIDIA secrets had been compromised.",
+        "source_title": "Statement From NVIDIA Board of Directors",
+        "source_url": "https://investor.nvidia.com/news/press-release-details/2026/Statement-from-NVIDIA-Board-of-Directors/",
+        "published_or_updated": "November 8, 2026"
+      },
+      {
+        "claim": "NVIDIA published a message from Huang on November 8, 2026 in which he apologized to his family and colleagues and acknowledged that he had been unfaithful to his wife.",
+        "source_title": "NVIDIA News Archive — A Message to Our Company",
+        "source_url": "https://nvidianews.nvidia.com/news/a-message-to-our-company",
+        "published_or_updated": "November 8, 2026"
+      },
+      {
+        "claim": "Reuters reported that the U.S. intelligence allegation concerned Alice Huang, a Chinese businesswoman and former executive at Singapore-based Megaspeed, and that U.S. intelligence officials believed she had passed information to the Chinese government. Reuters also said it could not independently verify the allegation.",
+        "source_title": "Trump’s close ties to Nvidia’s Huang scrutinized after foreign intelligence concerns",
+        "source_url": "https://www.investing.com/news/stock-market-news/trumps-close-ties-to-nvidias-huang-scrutinized-after-foreign-intelligence-concerns-5012979",
+        "published_or_updated": "November 9, 2026"
+      },
+      {
+        "claim": "The supplied brief’s claim that the board acted after a second relationship was reported is broadly supported by contemporaneous reporting, but the exact identity and employment details of every alleged additional partner should not be stated as settled fact without a direct primary source.",
+        "source_title": "Jensen Huang steps down and Nvidia shares drop",
+        "source_url": "https://apnews.com/article/f9ac67fed10c86c1ed1ad1f41dd921a5",
+        "published_or_updated": "November 12, 2026"
+      },
+      {
+        "claim": "NVIDIA’s market value fell by approximately $550 billion during the week ending November 12, 2026, according to Reuters. Bloomberg reported that the company’s market capitalization fell below $4 trillion after Huang’s resignation.",
+        "source_title": "Retail buyers limit Nvidia stock rout",
+        "source_url": "https://www.investing.com/news/stock-market-news/retail-buyers-limit-nvidia-stock-rout-5023063",
+        "published_or_updated": "November 12, 2026"
+      },
+      {
+        "claim": "AP later reported that NVIDIA had lost about $735 billion in market value since disclosures about Huang’s affairs and his ties to the alleged Chinese spy. These figures describe different measurement windows and should not be presented as contradictory exact totals.",
+        "source_title": "World markets mostly drop as AI stocks remain under pressure",
+        "source_url": "https://apnews.com/article/4d5a35288288389d894e63e6bebe8240",
+        "published_or_updated": "November 17, 2026"
+      },
+      {
+        "claim": "The phrase “95% market share to 0%” is a real quotation attributed to Huang in a transcript of a 2025 discussion about NVIDIA’s China business and U.S. export controls. It should be framed as Huang’s characterization, not as an independently audited current market-share measurement.",
+        "source_title": "NVIDIA’s Jensen Huang on AI: The Next Frontier of Growth",
+        "source_url": "https://www.citadelsecurities.com/wp-content/uploads/sites/2/2025/11/Nvidias-Jensen-Huang-on-AI-the-Next-Frontier-of-Growth.pdf",
+        "published_or_updated": "November 2025"
+      },
+      {
+        "claim": "NVIDIA’s filings and Singapore government statements support the point that revenue billed to Singapore did not necessarily mean the physical chips were consumed there. NVIDIA reported that more than 99% of controlled data-center compute revenue billed to Singapore was for orders from U.S.-based customers in the relevant fiscal 2026 reporting period; Singapore’s trade ministry separately said physical delivery of NVIDIA products to Singapore represented less than 1% of overall revenue.",
+        "source_title": "NVIDIA Form 10-Q; Singapore Ministry of Trade and Industry statement reported by CNA",
+        "source_url": "https://s201.q4cdn.com/141608511/files/doc_financials/2026/q2/2e217538-c226-4d05-8f74-aaca89a21b33.pdf",
+        "published_or_updated": "NVIDIA filing dated 2025; Singapore statement updated February 18, 2025"
+      },
+      {
+        "claim": "Megaspeed was suspected by U.S. authorities of helping Chinese companies obtain restricted NVIDIA AI chips, but the available reporting describes an investigation or suspicion, not a proven criminal finding. Megaspeed said it cooperated with U.S. Commerce Department inspections and undertook an inventory and export-control review.",
+        "source_title": "The Latest: Trump says he plans to talk about war in Ukraine during meeting with Xi and Putin",
+        "source_url": "https://apnews.com/article/a31165456bf217de16f1c4e646b72bd2",
+        "published_or_updated": "November 16, 2026"
+      },
+      {
+        "claim": "The U.S. government moved on November 16, 2026 to require licenses for advanced-chip sales to Singapore, Malaysia, Indonesia, Thailand, and Brazil because officials considered those routes at elevated risk of diversion to China. This policy development strengthens the export-control context of the NVIDIA scandal but does not prove that NVIDIA or Megaspeed illegally diverted chips.",
+        "source_title": "Trump administration moves to block China from indirect access to American AI technology",
+        "source_url": "https://apnews.com/article/60f868d3bb430b85a8657b27d421096e",
+        "published_or_updated": "November 16, 2026"
+      },
+      {
+        "claim": "The allegation that Washington knew about Alice Huang for roughly a year is reported, but it remains an account attributed to news reports and officials rather than a publicly released government finding. The Atlantic reported that President Trump was reportedly warned in 2025 and again in 2026, while Reuters reported renewed scrutiny of the administration’s relationship with Huang.",
+        "source_title": "China’s Intelligence Coup in the AI War",
+        "source_url": "https://www.theatlantic.com/national-security/2026/11/jensen-huang-chinese-intelligence-nvidia/689430/",
+        "published_or_updated": "November 14, 2026"
+      },
+      {
+        "claim": "NVIDIA’s official materials identify the company as founded in 1993, led by Jensen Huang until his November 2026 resignation, and focused on accelerated computing and AI infrastructure. The brief’s wording that Huang started the company in “Adenis” is an error; the company was founded in the United States by Jensen Huang, Chris Malachowsky, and Curtis Priem.",
+        "source_title": "NVIDIA in Brief",
+        "source_url": "https://www.nvidia.com/content/dam/en-zz/Solutions/about-nvidia/corporate-nvidia-in-brief.pdf",
+        "published_or_updated": "2026"
+      }
+    ],
+    "core_fact": {
+      "fact": "The topic video concerns NVIDIA’s November 2026 leadership crisis: NVIDIA’s board accepted Jensen Huang’s resignation effective immediately on November 11, 2026, and the company announced the transition publicly on November 12, 2026, after reports about his extramarital relationships and alleged ties to a Chinese intelligence operation involving Alice Huang. The intelligence allegation was not established as fact; NVIDIA said it had no reason to believe that company secrets or national security information had been compromised.",
+      "source_url": "https://nvidianews.nvidia.com/news/nvidia-announces-ceo-transition?frmapp=yes",
+      "published_or_updated": "November 12, 2026",
+      "verified": true
+    }
+  },
+  "metadata": {
+    "title": "NVIDIA Scandal Explained: Affairs, Chips, and China",
+    "description": "Free guide to this video (steps and every source): https://studio.golidee.com/guides/golide-long-2026-11-17.pdf\n\nJensen Huang built Nvidia into the most valuable company in the AI boom. Then, in November 2026, he resigned after reports of affairs, a suspected Chinese intelligence connection, and questions about Nvidia chips reaching China through Singapore-based Megaspeed.\n\nThis video follows the money, the export-control investigation, the political connections, and the unanswered questions surrounding Nvidia’s sudden leadership crisis. It also examines whether the affair was the real cause of Huang’s downfall—or just the story that exposed a much bigger problem.\n\n#JensenHuang #Nvidia #NvidiaScandal #AIChips #ChinaTech #ExportControls #TechNews #GOLIDE",
+    "tags": [
+      "Jensen Huang",
+      "Jensen Huang resignation",
+      "Nvidia CEO resignation",
+      "Nvidia scandal",
+      "Nvidia China scandal",
+      "Nvidia spy scandal",
+      "Nvidia chip smuggling",
+      "Nvidia China chips",
+      "Nvidia export controls",
+      "Nvidia Megaspeed",
+      "Alice Huang",
+      "Megaspeed International",
+      "Nvidia CEO scandal",
+      "AI chip scandal",
+      "China AI chips",
+      "Nvidia news",
+      "Nvidia investigation",
+      "Nvidia board",
+      "Nvidia stock crash",
+      "Nvidia latest news",
+      "Nvidia national security",
+      "US China chips",
+      "GOLIDE"
+    ],
+    "category_id": 25,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "keywords": [
+      "Jensen Huang resignation",
+      "Nvidia CEO resignation",
+      "Nvidia China scandal",
+      "Nvidia spy scandal",
+      "Nvidia Megaspeed scandal",
+      "Jensen Huang scandal",
+      "Nvidia chip smuggling",
+      "Nvidia China chips",
+      "Nvidia export controls",
+      "Alice Huang Nvidia",
+      "Nvidia CEO affair",
+      "Nvidia investigation",
+      "AI chip export ban",
+      "Nvidia stock crash",
+      "Nvidia news"
+    ],
+    "hashtags": [
+      "#JensenHuang",
+      "#Nvidia",
+      "#NvidiaScandal",
+      "#AIChips",
+      "#ChinaTech",
+      "#ExportControls",
+      "#TechNews",
+      "#GOLIDE"
+    ],
+    "format": "long",
+    "title_description_language": "en",
+    "seo_body": "Jensen Huang built Nvidia into the most valuable company in the AI boom. Then, in November 2026, he resigned after reports of affairs, a suspected Chinese intelligence connection, and questions about Nvidia chips reaching China through Singapore-based Megaspeed.\n\nThis video follows the money, the export-control investigation, the political connections, and the unanswered questions surrounding Nvidia’s sudden leadership crisis. It also examines whether the affair was the real cause of Huang’s downfall—or just the story that exposed a much bigger problem.",
+    "title_checked": true
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "NVIDIA announced on November 12, 2026 that Jensen Huang had resigned immediately as president, chief executive officer, and a member of the board. CFO Colette Kress was appointed interim CEO, and Harvey C. Jones became board chair.",
+        "source_title": "NVIDIA Announces CEO Transition",
+        "source_url": "https://nvidianews.nvidia.com/news/nvidia-announces-ceo-transition?frmapp=yes",
+        "published_or_updated": "November 12, 2026"
+      },
+      {
+        "claim": "Huang founded NVIDIA in 1993 and had led the company for 33 years before his resignation.",
+        "source_title": "NVIDIA Announces CEO Transition",
+        "source_url": "https://nvidianews.nvidia.com/news/nvidia-announces-ceo-transition?frmapp=yes",
+        "published_or_updated": "November 12, 2026"
+      },
+      {
+        "claim": "NVIDIA’s board opened an independent investigation on November 8, 2026 into reports that Huang had been targeted by a foreign intelligence effort. The board explicitly said it had no reason to believe that national security or NVIDIA secrets had been compromised.",
+        "source_title": "Statement From NVIDIA Board of Directors",
+        "source_url": "https://investor.nvidia.com/news/press-release-details/2026/Statement-from-NVIDIA-Board-of-Directors/",
+        "published_or_updated": "November 8, 2026"
+      },
+      {
+        "claim": "NVIDIA published a message from Huang on November 8, 2026 in which he apologized to his family and colleagues and acknowledged that he had been unfaithful to his wife.",
+        "source_title": "NVIDIA News Archive — A Message to Our Company",
+        "source_url": "https://nvidianews.nvidia.com/news/a-message-to-our-company",
+        "published_or_updated": "November 8, 2026"
+      },
+      {
+        "claim": "Reuters reported that the U.S. intelligence allegation concerned Alice Huang, a Chinese businesswoman and former executive at Singapore-based Megaspeed, and that U.S. intelligence officials believed she had passed information to the Chinese government. Reuters also said it could not independently verify the allegation.",
+        "source_title": "Trump’s close ties to Nvidia’s Huang scrutinized after foreign intelligence concerns",
+        "source_url": "https://www.investing.com/news/stock-market-news/trumps-close-ties-to-nvidias-huang-scrutinized-after-foreign-intelligence-concerns-5012979",
+        "published_or_updated": "November 9, 2026"
+      },
+      {
+        "claim": "The supplied brief’s claim that the board acted after a second relationship was reported is broadly supported by contemporaneous reporting, but the exact identity and employment details of every alleged additional partner should not be stated as settled fact without a direct primary source.",
+        "source_title": "Jensen Huang steps down and Nvidia shares drop",
+        "source_url": "https://apnews.com/article/f9ac67fed10c86c1ed1ad1f41dd921a5",
+        "published_or_updated": "November 12, 2026"
+      },
+      {
+        "claim": "NVIDIA’s market value fell by approximately $550 billion during the week ending November 12, 2026, according to Reuters. Bloomberg reported that the company’s market capitalization fell below $4 trillion after Huang’s resignation.",
+        "source_title": "Retail buyers limit Nvidia stock rout",
+        "source_url": "https://www.investing.com/news/stock-market-news/retail-buyers-limit-nvidia-stock-rout-5023063",
+        "published_or_updated": "November 12, 2026"
+      },
+      {
+        "claim": "AP later reported that NVIDIA had lost about $735 billion in market value since disclosures about Huang’s affairs and his ties to the alleged Chinese spy. These figures describe different measurement windows and should not be presented as contradictory exact totals.",
+        "source_title": "World markets mostly drop as AI stocks remain under pressure",
+        "source_url": "https://apnews.com/article/4d5a35288288389d894e63e6bebe8240",
+        "published_or_updated": "November 17, 2026"
+      },
+      {
+        "claim": "The phrase “95% market share to 0%” is a real quotation attributed to Huang in a transcript of a 2025 discussion about NVIDIA’s China business and U.S. export controls. It should be framed as Huang’s characterization, not as an independently audited current market-share measurement.",
+        "source_title": "NVIDIA’s Jensen Huang on AI: The Next Frontier of Growth",
+        "source_url": "https://www.citadelsecurities.com/wp-content/uploads/sites/2/2025/11/Nvidias-Jensen-Huang-on-AI-the-Next-Frontier-of-Growth.pdf",
+        "published_or_updated": "November 2025"
+      },
+      {
+        "claim": "NVIDIA’s filings and Singapore government statements support the point that revenue billed to Singapore did not necessarily mean the physical chips were consumed there. NVIDIA reported that more than 99% of controlled data-center compute revenue billed to Singapore was for orders from U.S.-based customers in the relevant fiscal 2026 reporting period; Singapore’s trade ministry separately said physical delivery of NVIDIA products to Singapore represented less than 1% of overall revenue.",
+        "source_title": "NVIDIA Form 10-Q; Singapore Ministry of Trade and Industry statement reported by CNA",
+        "source_url": "https://s201.q4cdn.com/141608511/files/doc_financials/2026/q2/2e217538-c226-4d05-8f74-aaca89a21b33.pdf",
+        "published_or_updated": "NVIDIA filing dated 2025; Singapore statement updated February 18, 2025"
+      },
+      {
+        "claim": "Megaspeed was suspected by U.S. authorities of helping Chinese companies obtain restricted NVIDIA AI chips, but the available reporting describes an investigation or suspicion, not a proven criminal finding. Megaspeed said it cooperated with U.S. Commerce Department inspections and undertook an inventory and export-control review.",
+        "source_title": "The Latest: Trump says he plans to talk about war in Ukraine during meeting with Xi and Putin",
+        "source_url": "https://apnews.com/article/a31165456bf217de16f1c4e646b72bd2",
+        "published_or_updated": "November 16, 2026"
+      },
+      {
+        "claim": "The U.S. government moved on November 16, 2026 to require licenses for advanced-chip sales to Singapore, Malaysia, Indonesia, Thailand, and Brazil because officials considered those routes at elevated risk of diversion to China. This policy development strengthens the export-control context of the NVIDIA scandal but does not prove that NVIDIA or Megaspeed illegally diverted chips.",
+        "source_title": "Trump administration moves to block China from indirect access to American AI technology",
+        "source_url": "https://apnews.com/article/60f868d3bb430b85a8657b27d421096e",
+        "published_or_updated": "November 16, 2026"
+      },
+      {
+        "claim": "The allegation that Washington knew about Alice Huang for roughly a year is reported, but it remains an account attributed to news reports and officials rather than a publicly released government finding. The Atlantic reported that President Trump was reportedly warned in 2025 and again in 2026, while Reuters reported renewed scrutiny of the administration’s relationship with Huang.",
+        "source_title": "China’s Intelligence Coup in the AI War",
+        "source_url": "https://www.theatlantic.com/national-security/2026/11/jensen-huang-chinese-intelligence-nvidia/689430/",
+        "published_or_updated": "November 14, 2026"
+      },
+      {
+        "claim": "NVIDIA’s official materials identify the company as founded in 1993, led by Jensen Huang until his November 2026 resignation, and focused on accelerated computing and AI infrastructure. The brief’s wording that Huang started the company in “Adenis” is an error; the company was founded in the United States by Jensen Huang, Chris Malachowsky, and Curtis Priem.",
+        "source_title": "NVIDIA in Brief",
+        "source_url": "https://www.nvidia.com/content/dam/en-zz/Solutions/about-nvidia/corporate-nvidia-in-brief.pdf",
+        "published_or_updated": "2026"
+      }
+    ],
+    "platform_demand": {
+      "verdict": "pass",
+      "signal_type": "owner-replace",
+      "query": "NVIDIA Scandal Explained Like You're 5"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -14.91,
+      "true_peak_dbtp": -3.08,
+      "loudness_range": 2.7
+    },
+    "editorial": {
+      "beats": 76,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-11-17T19:29:19.600619+00:00",
+    "warnings": [
+      "possible misspelling: golidee"
+    ]
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-choice",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-long-tue-thu-sat",
+    "thumbnail_style": "side_course"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-long-2026-11-17",
+    "created_at": "2026-11-17T19:54:41.814479+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-11-17T17:30:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "b7a23f22daf63554fad9e3d0f266961543fb580e20c2e4dff478b4e53789b1f8",
+        "bytes": 283055813
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "1c0d405d0b29ffbd65e4c8e0a0a491fb419b8e301b17c7f0f40829e26af8baf2",
+        "bytes": 829908
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "6d1246b60c44d24b8518cbc1a9a598d42066963915d88ed268b386203e397e6a",
+        "bytes": 2895
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-stickman.srt",
+        "sha256": "b6e0c2f0bf0dee695a0293cb55da6d8348a621058f9fa5ec5188dbef198170bc",
+        "bytes": 12806
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "531773b102745b923f55cf822abc2b18ef903a5ec93925cce4298227bcba7446",
+        "bytes": 8489
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "a2fc29c3c5012c12580a81797a961951fe60c44855b54c3b9153c9f8adf0bb0c",
+        "bytes": 416
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "aea888091848ad47377614b42eac0ac45a555cc1db7036308c8f9724798f3825",
+        "bytes": 316
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 20016.0,
+      "cached_input_units": 0.0,
+      "output_units": 1739.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00609,
+      "created_at": "2026-11-17T11:43:05.418033+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-17T11:43:05.421013+00:00"
+    },
+    {
+      "stage": "script-story",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 18980.0,
+      "cached_input_units": 0.0,
+      "output_units": 8931.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.014513,
+      "created_at": "2026-11-17T11:59:04.045449+00:00"
+    },
+    {
+      "stage": "script-story-delivery",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 18807.0,
+      "cached_input_units": 17561.0,
+      "output_units": 4928.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006514,
+      "created_at": "2026-11-17T11:59:47.547554+00:00"
+    },
+    {
+      "stage": "script-voice-direction",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1545.0,
+      "cached_input_units": 0.0,
+      "output_units": 1466.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002068,
+      "created_at": "2026-11-17T11:59:59.145533+00:00"
+    },
+    {
+      "stage": "script-board",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1626.0,
+      "cached_input_units": 0.0,
+      "output_units": 3225.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004195,
+      "created_at": "2026-11-17T12:00:29.068890+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 18807.0,
+      "cached_input_units": 17561.0,
+      "output_units": 4928.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006514,
+      "created_at": "2026-11-17T12:00:29.071824+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 31502.0,
+      "cached_input_units": 0.0,
+      "output_units": 2847.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.009717,
+      "created_at": "2026-11-17T12:27:02.905885+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-17T12:27:02.907764+00:00"
+    },
+    {
+      "stage": "script-story",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 7066.0,
+      "cached_input_units": 0.0,
+      "output_units": 10570.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.014097,
+      "created_at": "2026-11-17T12:28:43.274480+00:00"
+    },
+    {
+      "stage": "script-story-delivery",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2092.0,
+      "cached_input_units": 0.0,
+      "output_units": 2066.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002898,
+      "created_at": "2026-11-17T12:29:01.565913+00:00"
+    },
+    {
+      "stage": "script-voice-direction",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1602.0,
+      "cached_input_units": 0.0,
+      "output_units": 1438.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002046,
+      "created_at": "2026-11-17T12:29:13.514694+00:00"
+    },
+    {
+      "stage": "script-board",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1692.0,
+      "cached_input_units": 0.0,
+      "output_units": 3373.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004386,
+      "created_at": "2026-11-17T12:29:46.254018+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2092.0,
+      "cached_input_units": 0.0,
+      "output_units": 2066.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002898,
+      "created_at": "2026-11-17T12:29:46.256573+00:00"
+    },
+    {
+      "stage": "script-edit-board",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1777.0,
+      "cached_input_units": 0.0,
+      "output_units": 4841.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006165,
+      "created_at": "2026-11-17T15:00:43.282805+00:00"
+    },
+    {
+      "stage": "owner-voice",
+      "provider": "elevenlabs",
+      "model": "eleven_v4",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 5323,
+      "cost_usd": 1.0646,
+      "created_at": "2026-11-17T15:02:18.216332+00:00"
+    },
+    {
+      "stage": "stickman-story-1",
+      "provider": "openai",
+      "model": "gpt-5.6-sol",
+      "input_units": 9100.0,
+      "cached_input_units": 0.0,
+      "output_units": 11760.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.2716,
+      "created_at": "2026-11-17T15:04:19.965909+00:00"
+    },
+    {
+      "stage": "stickman-story-2",
+      "provider": "openai",
+      "model": "gpt-5.6-sol",
+      "input_units": 9329.0,
+      "cached_input_units": 3795.0,
+      "output_units": 10672.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.237094,
+      "created_at": "2026-11-17T15:05:55.157503+00:00"
+    },
+    {
+      "stage": "guide",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2516.0,
+      "cached_input_units": 0.0,
+      "output_units": 1090.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001811,
+      "created_at": "2026-11-17T17:52:59.334781+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 14563.0,
+      "cached_input_units": 0.0,
+      "output_units": 874.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.003961,
+      "created_at": "2026-11-17T17:53:00.804538+00:00"
+    },
+    {
+      "stage": "title-check",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1348.0,
+      "cached_input_units": 0.0,
+      "output_units": 399.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000748,
+      "created_at": "2026-11-17T17:53:05.943009+00:00"
+    }
+  ],
+  "recorded_at": "2026-11-17T19:55:12.374630+00:00"
+}
