@@ -78,6 +78,8 @@ class Board:
                           MaskFilter=sk.MaskFilter.MakeBlur(sk.kNormal_BlurStyle, 14))
         self.c.drawRect(sk.Rect(x0 + 10, y0 + 16, x1 + 10, y1 + 16), shadow)
         self.fill(rect, paper)
+        sheen = sk.GradientShader.MakeLinear([(x0, y0), (x1, y1)], [sk.Color(255, 255, 255, 70), sk.Color(0, 0, 0, 38)])
+        self.c.drawRect(sk.Rect(*rect), sk.Paint(Shader=sheen))
         pad = max(14, (x1 - x0) * .045)
         inner_rect = (x0 + pad, y0 + pad, x1 - pad, y1 - pad)
         self.fill(inner_rect, inner)
@@ -159,8 +161,9 @@ class Board:
         sk = self.skia
         kit = self.kit
         text = text.upper()
-        size = kit.fit_size(text, size, max_w - 80, kit.MARKER)
-        tw = kit.text_w(text, size, kit.MARKER)
+        face = self.bold()
+        size = kit.fit_size(text, size, max_w - 80, face)
+        tw = kit.text_w(text, size, face)
         w, h = tw + 80, size * 1.35
         rect = (cx - w / 2, top, cx + w / 2, top + h)
         shadow = sk.Paint(AntiAlias=True, Color=sk.Color(0, 0, 0, 120), MaskFilter=sk.MaskFilter.MakeBlur(sk.kNormal_BlurStyle, 10))
@@ -168,9 +171,18 @@ class Board:
         self.fill(rect, "#C8242C")
         self.c.drawRect(sk.Rect(*rect), sk.Paint(AntiAlias=True, Color=sk.Color(255, 255, 255), StrokeWidth=6,
                                                  Style=sk.Paint.kStroke_Style))
-        font = sk.Font(kit.MARKER, size)
-        self.c.drawString(text, cx - tw / 2, top + h / 2 + size * .36, font, sk.Paint(AntiAlias=True, Color=sk.Color(255, 255, 255)))
+        font = sk.Font(face, size)
+        base = top + h / 2 + size * .36
+        self.c.drawString(text, cx - tw / 2, base, font, sk.Paint(AntiAlias=True, Color=sk.Color(10, 10, 12), StrokeWidth=size * .14,
+                                                                    Style=sk.Paint.kStroke_Style, StrokeJoin=sk.Paint.kRound_Join))
+        self.c.drawString(text, cx - tw / 2, base, font, sk.Paint(AntiAlias=True, Color=sk.Color(255, 255, 255)))
         self.boxes.append((text, rect))
+
+    def bold(self):
+        """Anton (OFL, assets/fonts/thumb): the bold condensed lettering of the thumbnails that work."""
+        root = Path(__file__).resolve().parents[3] / "assets" / "fonts" / "thumb"
+        face = self.skia.Typeface.MakeFromFile(str(root / "anton-latin-400-normal.woff"))
+        return face if face is not None and face.getFamilyName() else self.skia.Typeface.MakeFromFile(str(root / "InterDisplay-Black.otf"))
 
     def detective(self, x, feet, s=2.6, emotion="angry", face=.55):
         kit = self.kit
@@ -178,10 +190,35 @@ class Board:
         kit.draw_char(self.c, x, feet, s, kit.make_look(DETECTIVE), face=face, eyes=eyes, mouth=mouth, brow=brow,
                       brow_tilt=tilt, arms=kit.POSES["think"])
 
+    def light(self):
+        """The finish of the video's own look (kit.py lighting): a warm key light on the board's centre, a soft
+        glow, darker edges."""
+        kit = self.kit
+        kit.add_light(self.c, 1130, 360, 1050, (255, 200, 140), .22)
+        kit.add_light(self.c, 1150, 400, 560, (255, 236, 205), .14)
+        kit.vignette(self.c, .85, .30)
+
+    def goli(self, x, y, height, pose="shock", outfit="royal"):
+        """Goli reacting, for the Stickman + Goli videos (edit/mascot.py, the same Goli as the videos)."""
+        import cairosvg
+        from ..edit import mascot
+        w0, h0 = mascot.VIEW
+        width = int(height * w0 / h0)
+        png = cairosvg.svg2png(bytestring=mascot.svg(pose, width=width, mouth="O", outfit=outfit).encode("utf-8"),
+                               output_width=width, output_height=int(height))
+        img = self.skia.Image.MakeFromEncoded(png)
+        shadow = self.skia.Paint(AntiAlias=True, Color=self.skia.Color(0, 0, 0, 120),
+                                 MaskFilter=self.skia.MaskFilter.MakeBlur(self.skia.kNormal_BlurStyle, 24))
+        self.c.drawOval(self.skia.Rect(x + width * .15, y + height * .9, x + width * .85, y + height * 1.02), shadow)
+        self.c.drawImage(img, x, y)
+
     def save(self, out: Path, size=(1280, 720)) -> Path:
         from PIL import Image
         img = self.surface.makeImageSnapshot()
+        from PIL import ImageEnhance
         png = Image.open(io.BytesIO(bytes(img.encodeToData()))).convert("RGB").resize(size, Image.LANCZOS)
+        # the grade of the Stickman thumbnails that work: richer colour, a little more contrast
+        png = ImageEnhance.Contrast(ImageEnhance.Color(png).enhance(1.22)).enhance(1.10)
         out.parent.mkdir(parents=True, exist_ok=True)
         png.save(out, quality=92)
         return out
@@ -198,15 +235,17 @@ def collisions(boxes, margin=0.02) -> list[str]:
     return out
 
 
-def board(main: dict[str, Any], others: list[dict[str, Any]], logos_: list[str], flags: list[str], out: Path) -> Path:
+def board(main: dict[str, Any], others: list[dict[str, Any]], logos_: list[str], flags: list[str], out: Path,
+          reactor: str = "detective", outfit: str = "royal") -> Path:
     """main / others: {"name", "look" (a kit cast look), "emotion"}. The main person's big card in the middle with
     the name banner; up to 5 pinned cards round it (people, logos, flags), joined by red strings; the detective in
     front on the left."""
     b = Board()
     b.cork()
-    slots = [((580, 50, 820, 280), -6), ((1540, 50, 1860, 300), 5), ((1560, 380, 1830, 690), -4),
-             ((570, 360, 810, 640), 5), ((1550, 760, 1810, 1040), 4), ((590, 720, 820, 980), -5)]
-    main_rect = (860, 100, 1430, 770)
+    # packed like the thumbnails that work: the main card nearly full height, the others crowding round it
+    slots = [((470, 30, 760, 290), -6), ((1380, 40, 1780, 300), 5), ((1400, 330, 1720, 700), -4),
+             ((480, 330, 760, 640), 5), ((1560, 690, 1850, 1030), 4), ((490, 680, 760, 960), -5)]
+    main_rect = (760, 40, 1380, 850)
     main_pin = ((main_rect[0] + main_rect[2]) / 2, main_rect[1] + 8)
     items: list[tuple[str, Any]] = [("logo", n) for n in logos_][:2] + [("flag", f) for f in flags][:1] + \
         [("person", p) for p in others][:3]
@@ -232,8 +271,12 @@ def board(main: dict[str, Any], others: list[dict[str, Any]], logos_: list[str],
     b.end_card()
     for p in pins + [main_pin]:
         b.pin(*p)
-    b.banner(main["name"], (main_rect[0] + main_rect[2]) / 2, main_rect[3] + 26, 760)
-    b.detective(250, 1640, s=2.75, emotion=main.get("detective", "angry"))
+    b.banner(main["name"], (main_rect[0] + main_rect[2]) / 2, main_rect[3] - 70, 900, size=130)
+    if reactor == "goli":        # Stickman + Goli videos: Goli in front, surprised at the board
+        b.goli(-90, 250, 980, pose="shock", outfit=outfit)
+    else:
+        b.detective(200, 1900, s=3.4, emotion=main.get("detective", "angry"))
+    b.light()
     problems = collisions(b.boxes)
     if problems:
         raise ValueError("; ".join(problems))
