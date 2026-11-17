@@ -2563,6 +2563,10 @@ class ProductionService:
         self._budget(spec)
 
         visual_srt = self.root / "build" / production_id / "visual-labels.srt"
+        if not visual_srt.exists():
+            # 2026-11-17: a Stickman video has no on-screen label track of ours (its words are the kit's): an empty one
+            visual_srt.parent.mkdir(parents=True, exist_ok=True)
+            visual_srt.write_text("", encoding="utf-8")
         source_ledger = work / "source-ledger.json"
         source_ledger.write_text(
             json.dumps({
