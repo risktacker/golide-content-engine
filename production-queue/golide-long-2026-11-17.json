@@ -2,8 +2,8 @@
   "id": "golide-long-2026-11-17",
   "studio_managed": true,
   "format": "long",
-  "title": "GOLIDE Long \u00b7 2026-11-17",
-  "brief": "Choose the AI or tech story people are talking about this week (a launch, a viral demo, a big company move or what a well-known tech leader said or did) and explain what it means for ordinary people in plain words, so a curious non-technical viewer follows it and wants to comment. Evidence-backed only. Keep Shorts and long-form product-independent; never turn scheduled video into a GOLIDE product advertisement and never copy an existing video.",
+  "title": "NVIDIA Scandal Explained Like You're 5",
+  "brief": "Today's video is modelled on the YouTube video \"NVIDIA Scandal Explained Like You're 5\" by Crayon Capital (https://www.youtube.com/watch?v=eS1zZKHFzwE), chosen by the owner. Explain the same subject: what happened, how it works and what the viewer can do with it. Gather the facts from other credible sources, not only that video.\nWhat that video says (for the subject only, never its sentences): ",
   "demand_query": "AI tech news everyone is talking about this week",
   "demand_validation_required": true,
   "budget_class": "scheduled",
@@ -52,5 +52,25 @@
     "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
     "scheduled_at": "2026-11-17T17:30:00Z"
   },
-  "_studio_job_id": "golide-long-2026-11-17"
+  "_studio_job_id": "golide-long-2026-11-17",
+  "replace_model": {
+    "url": "https://youtu.be/eS1zZKHFzwE?si=qYZzm2aukU7ihVE7",
+    "requested_at": "2026-11-17T11:39:31.445Z"
+  },
+  "model_title": "NVIDIA Scandal Explained Like You're 5",
+  "source_breakout": {
+    "url": "https://www.youtube.com/watch?v=eS1zZKHFzwE",
+    "title": "NVIDIA Scandal Explained Like You're 5",
+    "channel": "Crayon Capital",
+    "views": 513439,
+    "duration_seconds": 870,
+    "description": "Source: \nhttps://docs.google.com/document/d/1IlcbCoWz2rDc36nrrsivJ24-1gw68vhgfmVebV8sL9Q/edit?usp=sharing\n\n\u26a0\ufe0f Disclaimer \nThis video is for educational and entertainment purposes only. Some details may be simplified or contain inaccuracies. Always conduct your own research to gain a deeper understanding of the topic.\n\n\ud83d\udcbc Business Inquiries: contact.crayoncapital@gmail.com \n\ud83d\uded1 Copyright Notice \nIf you have any copyright concerns, don't hesitate to contact me. I\u2019ll be happy to work on a fair resolution. Please use \"Copyright Issue\" as the subject of your email."
+  },
+  "platform_demand": {
+    "verdict": "pass",
+    "signal_type": "owner-replace",
+    "query": "NVIDIA Scandal Explained Like You're 5"
+  },
+  "selected_topic_source": "https://www.youtube.com/watch?v=eS1zZKHFzwE",
+  "_failed_runs": 1
 }
