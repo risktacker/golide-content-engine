@@ -931,7 +931,13 @@ class ProductionService:
         research = json.loads(research_path.read_text(encoding="utf-8"))
         # 2026-11-12 (owner): no script and no voice for a topic the research could not verify
         if (problem := core_problem(research)) and not (work / "script.txt").exists():
-            raise RuntimeError(f"research did not find this video's topic, stopped before the script: {problem}")
+            # 2026-11-17 (owner, after the Nvidia link stopped with no script): a video HE pasted is his call. The
+            # script is written from what the research did verify, and he reads and edits it in Studio before any
+            # voice; only a topic the engine picked itself stops here.
+            if not (spec.get("replace_model") or {}).get("url"):
+                raise RuntimeError(f"research did not find this video's topic, stopped before the script: {problem}")
+            print(json.dumps({"status": "core_fact_unverified_owner_link", "problem": problem[:300]}))
+            print(f"::warning title=Check the script::{problem[:300]}")
         self._budget(spec)
 
         script_path = work / "script.txt"
