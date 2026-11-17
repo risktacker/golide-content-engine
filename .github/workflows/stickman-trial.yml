@@ -15,7 +15,7 @@ on:
         default: goli
 
 permissions:
-  contents: read
+  contents: write      # the trial's stills and logs go to the trial-results branch
 
 jobs:
   trial:
@@ -61,6 +61,7 @@ jobs:
       - name: TRIAL Stickman
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PYTHONUNBUFFERED: "1"
         run: python scripts/stickman_trial.py "${{ steps.pick.outputs.pid }}" "${{ inputs.goli }}"
       - uses: actions/upload-artifact@v4
         if: always()
@@ -72,3 +73,16 @@ jobs:
             build/stickman-trial/*/*.json
             build/stickman-trial/*/*.js
             build/stickman-trial/*/*.md
+      - name: Results to the trial-results branch (readable where artifact downloads are not)
+        if: always()
+        run: |
+          set -e
+          R=$(mktemp -d)
+          cp -r build/stickman-trial/. "$R/" 2>/dev/null || true
+          find "$R" -type f -size +45M -delete
+          find "$R" -type d -name stickman -o -type d -name stickman-short -o -type d -name goli | xargs rm -rf
+          cd "$R"
+          git init -q && git checkout -q -b trial-results
+          git config user.name "golide-trial" && git config user.email "trial@golidee.com"
+          git add -A && git commit -qm "Stickman trial ${{ github.run_id }}" || exit 0
+          git push -qf "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" trial-results
