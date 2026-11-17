@@ -189,6 +189,12 @@ async function ensureSchema(db){
       updated_at TEXT NOT NULL,
       updated_by TEXT NOT NULL DEFAULT 'system'
     )`,
+    // 2026-11-17 (owner): one switch per automation section under the master Start/Pause
+    `CREATE TABLE IF NOT EXISTS automation_sections (
+      name TEXT PRIMARY KEY,
+      enabled INTEGER NOT NULL,
+      updated_at TEXT NOT NULL
+    )`,
     `CREATE TABLE IF NOT EXISTS x_oauth_sessions (
       state TEXT PRIMARY KEY,
       verifier TEXT NOT NULL,
@@ -241,6 +247,9 @@ async function ensureSchema(db){
   await ensureSocialOauthSchema(db);
   await db.prepare(`INSERT OR IGNORE INTO automation_control(id,enabled,updated_at,updated_by) VALUES(1,0,?,'deployment-default')`)
     .bind(nowIso()).run();
+  // first defaults (owner 2026-11-17): static posts and the emailed cover off; Shorts and long videos on
+  for(const [name,on] of Object.entries(SECTION_DEFAULTS))
+    await db.prepare(`INSERT OR IGNORE INTO automation_sections(name,enabled,updated_at) VALUES(?,?,?)`).bind(name,on?1:0,nowIso()).run();
   schemaReady=true;
 }
 
@@ -740,14 +749,31 @@ async function markMediaDeleted(db,payload){
   return {deleted:refs.length};
 }
 
+// 2026-11-17 (owner): static = the daily static post, shorts / long = the scheduled video slots, cover = the cover
+// image emailed after each upload (made with the paid image model)
+const SECTION_DEFAULTS={static:false,shorts:true,long:true,cover:false};
+
 async function automationState(db){
   const row=await db.prepare(`SELECT enabled,updated_at,updated_by FROM automation_control WHERE id=1`).first();
+  const sections={...SECTION_DEFAULTS};
+  try{
+    const rows=(await db.prepare(`SELECT name,enabled FROM automation_sections`).all()).results||[];
+    for(const r of rows) if(r.name in sections) sections[r.name]=Number(r.enabled)===1;
+  }catch{}
   return {
     enabled:Boolean(Number(row?.enabled||0)),
     state:Number(row?.enabled||0)===1?"running":"paused",
     updated_at:row?.updated_at||null,
     updated_by:row?.updated_by||"system",
+    sections,
   };
+}
+
+async function setSection(db,name,enabled){
+  if(!(name in SECTION_DEFAULTS)) throw new Error("unknown section");
+  await db.prepare(`INSERT INTO automation_sections(name,enabled,updated_at) VALUES(?,?,?)
+    ON CONFLICT(name) DO UPDATE SET enabled=excluded.enabled,updated_at=excluded.updated_at`).bind(name,enabled?1:0,nowIso()).run();
+  return automationState(db);
 }
 
 async function setAutomationState(db,enabled,actor){
@@ -1272,6 +1298,7 @@ async function handleApi(request,env,url){
     try{
       const payload=await request.json();
       if(typeof payload.enabled!=="boolean") return err("enabled must be a boolean",400);
+      if(payload.section) return json(await setSection(env.DB,String(payload.section),payload.enabled));
       return json(await setAutomationState(env.DB,payload.enabled,"studio-admin"));
     }catch(e){return err(e?.message||String(e),400);}
   }

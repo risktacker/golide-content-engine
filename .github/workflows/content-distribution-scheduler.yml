@@ -56,7 +56,8 @@ jobs:
             head -c 300 gate.json 2>/dev/null || true
             exit 0
           fi
-          ENABLED="$(jq -r '.enabled // false' gate.json)"
+          # 2026-11-17 (owner): static posts have their own switch in Studio (sections.static)
+          ENABLED="$(jq -r '(.enabled // false) and (.sections.static // true)' gate.json)"
           if [ "$ENABLED" = "true" ]; then
             echo "enabled=true" >> "$GITHUB_OUTPUT"
             echo "Studio automation is RUNNING."

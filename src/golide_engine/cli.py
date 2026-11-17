@@ -442,9 +442,21 @@ def main() -> int:
             from .studio_bridge import StudioBridge
             bridge = StudioBridge(studio_url)
 
+        # 2026-11-17 (owner): each automation section has its own switch in Studio (static posts, Shorts, long
+        # videos, the emailed cover). A scheduled slot whose format is off is not opened, and one already open is
+        # set aside; videos he starts by hand still run.
+        sections = {"static": True, "shorts": True, "long": True, "cover": True}
+        if bridge:
+            try:
+                sections = bridge.automation_sections()
+            except Exception as exc:
+                print(json.dumps({"status": "studio_sections_unavailable", "error": str(exc)[:200]}))
+        off_formats = {fmt for fmt, key in (("short", "shorts"), ("long", "long")) if not sections[key]}
+        if off_formats:
+            print(json.dumps({"status": "sections_off", "formats": sorted(off_formats)}))
         from .orchestration.schedule import materialize_due
         created = materialize_due(
-            args.queue, "config/automation-schedule.json"
+            args.queue, "config/automation-schedule.json", off_formats=off_formats
         )
         for created_path in created:
             created_spec = json.loads(created_path.read_text(encoding="utf-8"))
@@ -489,6 +501,18 @@ def main() -> int:
                     json.dumps(claimed_spec, indent=2) + "\n", encoding="utf-8"
                 )
         due = due_specs(args.queue)
+        for due_path in list(due):
+            due_spec = json.loads(due_path.read_text(encoding="utf-8"))
+            if due_spec.get("purpose") == "channel-automation" and due_spec.get("format") in off_formats:
+                due_path.rename(due_path.with_name(due_path.name[:-len(".json")] + ".section-off.json"))
+                due.remove(due_path)
+                print(json.dumps({"status": "set_aside_section_off", "production_id": due_spec["id"]}))
+                if bridge:
+                    try:
+                        bridge.report(str(due_spec.get("_studio_job_id") or due_spec["id"]), status="skipped",
+                                      stage="section-off")
+                    except Exception as exc:
+                        print(json.dumps({"status": "studio_telemetry_unavailable", "error": str(exc)[:200]}))
         # 2026-10-13: a job written into the queue by hand (not by the schedule) must
         # still appear in Studio, or the owner has nowhere to upload the recording.
         for due_path in due:
@@ -820,7 +844,9 @@ def main() -> int:
                 long_social = {"status": "failed", "error": str(exc)[:500]}
                 print(f"::warning title=Long video not queued for Facebook/LinkedIn::{str(exc)[:300]}")
         reel_cover = None
-        if spec.get("format") in ("long", "short"):
+        if spec.get("format") in ("long", "short") and not sections["cover"]:
+            reel_cover = {"status": "off", "reason": "switched off in Studio (2026-11-17)"}
+        elif spec.get("format") in ("long", "short"):
             # Owner direction 2026-10-31 (Shorts too, 2026-11-01): after every upload, email a 1080x1920 cover
             # for the reel or Short cut from it, in the Shorts-cover style. Best effort.
             try:

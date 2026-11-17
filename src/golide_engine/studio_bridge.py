@@ -91,6 +91,15 @@ class StudioBridge:
             raise RuntimeError(f"Studio job status request failed with HTTP {status}")
         return json.loads(body.decode("utf-8"))
 
+    def automation_sections(self) -> dict[str, bool]:
+        """The owner's per-section switches in Studio (2026-11-17): static, shorts, long, cover. A section Studio
+        does not report is on (the master Start/Pause gate is checked by the workflow before the engine runs)."""
+        status, body = self._request("GET", "/api/engine/automation/status")
+        if status != 200:
+            raise RuntimeError(f"Studio automation status failed with HTTP {status}")
+        sections = json.loads(body.decode("utf-8")).get("sections") or {}
+        return {key: bool(sections.get(key, True)) for key in ("static", "shorts", "long", "cover")}
+
     def register(self, spec: dict[str, Any]) -> None:
         job_id = str(spec["id"])
         status, _ = self._request(

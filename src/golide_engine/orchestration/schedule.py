@@ -110,6 +110,7 @@ def materialize_due(
     queue_directory: str | Path,
     config_path: str | Path,
     now: datetime | None = None,
+    off_formats: set[str] | None = None,
 ) -> list[Path]:
     config = json.loads(Path(config_path).read_text(encoding="utf-8"))
     zone = ZoneInfo(config["timezone"])
@@ -124,6 +125,8 @@ def materialize_due(
         if day.isoformat() < rule["start_date"]:
             continue
         if day.strftime("%A").lower() not in rule["weekdays"]:
+            continue
+        if rule["format"] in (off_formats or set()):      # 2026-11-17: switched off in Studio
             continue
         spec = build_spec(rule, day, config["timezone"], config["channel_id"])
         generate_at = datetime.fromisoformat(spec["generate_at"].replace("Z", "+00:00"))

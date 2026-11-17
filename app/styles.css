@@ -511,3 +511,12 @@ body.sheet-open{overflow:hidden}
 .style-ask .post-to-label{width:100%;color:var(--text,inherit);font-weight:600}
 .style-ask .style-go{min-width:120px}
 .style-ask .style-go.primary{background:#E8C268;color:#111;border-color:#E8C268;font-weight:700}
+
+/* 2026-11-17 (owner): one switch per automation section under the master Start/Pause */
+.control .sections{flex-basis:100%;display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.section-switch{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border:1px solid var(--line-strong);border-radius:999px;font-size:.875rem;background:none;color:var(--muted);cursor:pointer}
+.section-switch .dot{width:9px;height:9px;border-radius:50%;background:#6b6b70}
+.section-switch.on{color:var(--text,#f4f1ea);border-color:rgba(232,194,104,.6)}
+.section-switch.on .dot{background:#3ecf6e}
+.section-switch:disabled{opacity:.5;cursor:wait}
+.control{flex-wrap:wrap}
