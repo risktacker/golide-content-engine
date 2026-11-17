@@ -655,7 +655,9 @@ function askStyle(jobId) {
     const card = document.getElementById("job-" + jobId);
     const row = document.createElement("div");
     row.className = "style-ask";
-    row.innerHTML = '<span class="post-to-label">Video type</span>' + VIDEO_STYLES.map(([key, name]) =>
+    // 2026-11-17 (owner): Stickman + Goli is for long videos; a Short in Stickman runs without Goli
+    const isLong = (productionJobs.find((item) => item.job_id === jobId) || {}).format === "long";
+    row.innerHTML = '<span class="post-to-label">Video type</span>' + VIDEO_STYLES.filter(([key]) => isLong || key !== "stickman_goli").map(([key, name]) =>
       '<button class="action-button style-go' + (key === "goli" ? " primary" : "") + '" data-style="' + key + '">' + name + '</button>').join("") +
       '<button class="action-button style-cancel">Cancel</button>';
     styleAsking = jobId;
@@ -1177,6 +1179,16 @@ $("#ext-ref").onchange = (e) => showPicked(e.target, "#ext-ref-name");
 
 // 2026-11-17 (owner): his own video can be a Short or a long video, in Goli or Inkee
 function extFormat() { return document.querySelector('input[name="ext-format"]:checked')?.value === "long" ? "long" : "short"; }
+// Stickman + Goli only for a long video (owner 2026-11-17: on a Short, Goli would distract)
+function syncExtStyles() {
+  const box = document.querySelector('input[name="ext-style"][value="stickman_goli"]');
+  if (!box) return;
+  const long = extFormat() === "long";
+  box.closest("label").hidden = !long;
+  if (!long && box.checked) document.querySelector('input[name="ext-style"][value="stickman"]').checked = true;
+}
+document.querySelectorAll('input[name="ext-format"]').forEach((input) => { input.onchange = syncExtStyles; });
+syncExtStyles();
 
 $("#external-form").onsubmit = async (event) => {
   event.preventDefault();
