@@ -71,3 +71,11 @@ def test_labels_that_touch_or_leave_the_frame_are_sent_back():
     assert len(problems) == 1 and "NV-HBI LINK" in problems[0] and "TWO DIES" in problems[0]
     assert "leaves the frame" in recipes.label_problems([box("X", 1590, 100, 1650, 150)], (1600, 900), 1)[0]
     assert recipes.label_problems([box("A", 100, 100, 300, 150), box("B", 100, 170, 300, 220)], (1600, 900), 1) == []
+
+
+def test_layer_stack_is_a_recipe_from_its_own_prompt():
+    text = recipes.recipe_text("layers")
+    assert "Name: Layer Stack" in text and "styles/layer-stack.js" in text and "SOUND KIT (" not in text
+    assert "layers" in editor.RECIPE_KEYS
+    player = (recipes.KIT / "player.html").read_text(encoding="utf-8")
+    assert "userData.words" in player and "inset" in player and '"Inter"' in player   # 3D labels are measured

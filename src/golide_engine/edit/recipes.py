@@ -33,6 +33,12 @@ RECIPES: dict[str, dict[str, str]] = {
                 "rack, a body part): up to three inner parts, each lit and named in turn, with a simple flow (heat, "
                 "air, current, data, force) shown acting on them",
     },
+    "layers": {
+        "file": "layer-stack.txt", "name": "Layer Stack",
+        "fits": "anything BUILT IN LAYERS: a tech stack, what an AI product is made of, a product teardown, how a request "
+                "travels through a system: 3 to 5 layers, top to bottom, each a glass sheet with a simple diagram, a "
+                "name and a short line, and a pulse that shows the order things happen in",
+    },
 }
 
 CODE_SCHEMA = {

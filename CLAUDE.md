@@ -92,5 +92,12 @@ storyboard call picks gold words and pictures. Copy the method of model scripts,
   facing it, mouth on the voice, reactions on the story's events (numbers -> point, shock lines -> shock, lists and
   versus -> explain, payoff -> both hands up), at least 2.2 s apart. The video's own sound is kept untouched.
 
+## No collision (owner 2026-11-17: "I don't want collision in anything")
+- Recipe scenes (`edit/recipes.py`, `assets/recipes/player.html`): every word on screen is measured on 4 moments,
+  overlay text and 3D text planes (trimmed to their letters); touching or leaving the frame sends the scene back.
+- Stickman long (`stickman/collide.py`): real frames of every shot; text touching text, leaving the frame or over a
+  head goes back to Sol, and whatever still collides is taken out of the story. Goli never covers the panel.
+- Recipes ship OFF (`config/edit-engine.json` recipes.enabled): no Sol spend without the owner's go.
+
 ## Checks
 `python3 -m pytest -q` must pass before every push (467 tests as of 2026-11-06).

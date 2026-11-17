@@ -5,6 +5,8 @@
 <style>
 @font-face { font-family: "Space Grotesk"; font-weight: 500; src: url(fonts/space-grotesk-latin-500-normal.woff2) format("woff2"); }
 @font-face { font-family: "Space Grotesk"; font-weight: 700; src: url(fonts/space-grotesk-latin-700-normal.woff2) format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 500; src: url(fonts/inter-latin-500-normal.woff2) format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 700; src: url(fonts/inter-latin-700-normal.woff2) format("woff2"); }
 @font-face { font-family: "IBM Plex Mono"; font-weight: 500; src: url(fonts/ibm-plex-mono-latin-500-normal.woff2) format("woff2"); }
 @font-face { font-family: "IBM Plex Mono"; font-weight: 700; src: url(fonts/ibm-plex-mono-latin-700-normal.woff2) format("woff2"); }
 html, body { margin: 0; background: #000; }
@@ -39,14 +41,49 @@ CanvasRenderingContext2D.prototype.fillText = function (text, x, y, ...rest) {
 const load = (src) => new Promise((ok, bad) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = () => bad(new Error('cannot load ' + src)); document.head.append(s); });
 try {
   await document.fonts.load('700 40px "Space Grotesk"'); await document.fonts.load('500 40px "Space Grotesk"');
-  await document.fonts.load('500 40px "IBM Plex Mono"');
+  await document.fonts.load('500 40px "IBM Plex Mono"'); await document.fonts.load('500 40px "Inter"');
+  await document.fonts.load('700 40px "Inter"');
   await load('stage.js');
+  // words that live in the 3D scene (K.textPlane, e.g. Layer Stack's labels) are measured too: tagged here, and
+  // after each frame their corners are projected to the screen (2026-11-17: no collision in anything)
+  const plane = K.textPlane;
+  K.textPlane = (text, o = {}) => {
+    const m = plane(text, o);
+    // where the letters sit inside the plane, from the kit's own sizes: pad on every side, line height 1.12 x the
+    // font size, letters about 0.74 x the font size tall (caps and descenders)
+    const px = +(/(\d+(?:\.\d+)?)px/.exec(o.font || '700 160px "Inter"') || [0, 160])[1];
+    const pad = o.pad == null ? Math.ceil(px * 0.25) : o.pad, lh = (o.lineHeight || 1.12) * px;
+    const lines = String(text).split('\n').length, hpx = lh * lines + pad * 2;
+    const wpx = m.geometry.parameters.width / m.geometry.parameters.height * hpx;
+    m.userData.words = String(text);
+    m.userData.inset = [pad / wpx, (pad + (lh - 0.74 * px) / 2) / hpx];
+    return m;
+  };
   await load('style.js');
   const style = window.STYLES[window.STYLES.length - 1];
   if (!style) throw new Error('style.js did not register a style');
   window.S = await K.run(c, style, { samples: N, width: W, height: H });
   window.DURATION = window.S.duration;
-  window.seek = (t) => { window.boxes = []; window.recording = true; try { window.S.seek(t); } finally { window.recording = false; } };
+  const shown = (o) => { for (let p = o; p; p = p.parent) if (!p.visible) return false; return true; };
+  const corner = new THREE.Vector3();
+  const planes = () => {
+    const { scene, camera } = window.S;
+    camera.updateMatrixWorld();
+    scene.traverse((m) => {
+      if (!m.isMesh || !m.userData.words || !shown(m) || (m.material.opacity ?? 1) < 0.5) return;
+      m.updateMatrixWorld(); m.geometry.computeBoundingBox();
+      const b = m.geometry.boundingBox, xs = [], ys = [];
+      for (const x of [b.min.x, b.max.x]) for (const y of [b.min.y, b.max.y]) {
+        corner.set(x, y, 0).applyMatrix4(m.matrixWorld).project(camera);
+        xs.push((corner.x + 1) / 2 * W); ys.push((1 - corner.y) / 2 * H);
+      }
+      const [ix, iy] = m.userData.inset || [0, 0];     // trim the plane to its letters
+      const padX = (Math.max(...xs) - Math.min(...xs)) * ix, padY = (Math.max(...ys) - Math.min(...ys)) * iy;
+      window.boxes.push({ text: m.userData.words, x0: Math.min(...xs) + padX, y0: Math.min(...ys) + padY,
+                          x1: Math.max(...xs) - padX, y1: Math.max(...ys) - padY });
+    });
+  };
+  window.seek = (t) => { window.boxes = []; window.recording = true; try { window.S.seek(t); planes(); } finally { window.recording = false; } };
   window.ready = true;
 } catch (e) { window.errors.push(String(e && e.stack || e)); window.ready = true; }
 </script></body></html>

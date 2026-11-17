@@ -21,7 +21,7 @@ TYPES = ["studio", "source", "terminal", "metaphor", "object3d", "recipe", "walk
 
 OBJECTS3D = ("laptop", "phone", "server", "chip", "battery")
 # 2026-11-17 (owner): Futurepedia style recipes, a new scene written for the beat (edit/recipes.py)
-RECIPE_KEYS = ("xray",)
+RECIPE_KEYS = ("xray", "layers")
 # 2026-11-17 (owner): animated 3D blocks; any object, not only the five presets (built from parts3d)
 MOVES3D = ("own", "explode", "assemble", "lift", "rise", "spin")
 # Futurepedia 3D atlas looks (owner's picks), one per video: Glass and Light, X-Ray, Circuit City, White Model,
@@ -128,9 +128,12 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
   exactly what the style is for, and only then; the words decide, there is no quota. recipe = which style:
   xray = what is INSIDE a real thing and how it works (a chip, a battery, a phone, an engine, a data-centre rack):
   up to three inner parts, each lit and named in turn, with a simple flow (heat, air, current, data, force) acting
-  on them. recipe_brief = what the scene must show, from the words and research only (max 60 words): the object
-  and its real look, the 1-3 inner parts to light in order and what each does in 2-5 words, the flow, and the brand
-  if there is one (its colour becomes the accent). ALSO fill object3d (+ parts3d, move3d) as the stand-in shown if
+  on them. layers = anything BUILT IN LAYERS (a tech stack, what an AI product is made of, how a request travels
+  through a system): 3-5 layers top to bottom, each with a simple diagram, a name and a short line, and a pulse
+  showing the order things happen. recipe_brief = what the scene must show, from the words and research only (max 60 words). xray: the
+  object and its real look, the 1-3 inner parts to light in order and what each does in 2-5 words, the flow, and the
+  brand if there is one (its colour becomes the accent). layers: each layer top to bottom with its name (1-2 words),
+  a 2-4 word line and what its little diagram shows, and what the pulse carries (a request down, the answer up). ALSO fill object3d (+ parts3d, move3d) as the stand-in shown if
   the scene cannot be made. Never two recipe scenes in a row.
 - metaphor: the beat explains an IDEA (a trade-off, a hidden cost, a bottleneck, layers, a loop, a level, a change):
   show it as a moving picture instead of text. metaphor = one of:
