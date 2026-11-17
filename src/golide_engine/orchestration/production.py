@@ -1476,6 +1476,14 @@ class ProductionService:
             music = MusicRegistry(self.root / "config/music-registry.json").select(
                 spec["music"]["mood"], spec["music"].get("track_id")
             )
+            # 2026-11-17: QA and the release record read the storyboard (the Nvidia video stopped at QA without it):
+            # the Stickman shots are this video's beats
+            board_path = work / "storyboard-vector.json"
+            storyboard = json.loads(board_path.read_text(encoding="utf-8")) if board_path.exists() else \
+                {"renderer": "stickman", "scenes": [{"id": "scene-000", "start": 0.0, "end": narration_seconds,
+                                                     "duration": narration_seconds, "visual": "stickman",
+                                                     "visual_caption": "stickman"}]}
+            rendered_seconds = self._duration(video_path)
         elif vector_mode and edit_pipeline.enabled(str(spec["format"]), spec):
             held = render_hold_reason(self.root, str(spec["format"]))
             already = self.database.rows(
@@ -2399,6 +2407,14 @@ class ProductionService:
                 return
             self._require_absent(raw_thumbnail, "thumbnail")
             self._require_absent(thumbnail, "thumbnail")
+            # 2026-11-17 (owner): a thumbnail made for this video and approved (a file in the repo) is used as it is
+            given = self.root / str(spec.get("thumbnail_image") or "")
+            if spec.get("thumbnail_image") and given.is_file():
+                from PIL import Image
+                thumbnail.parent.mkdir(parents=True, exist_ok=True)
+                Image.open(given).convert("RGB").resize((1280, 720)).save(thumbnail)
+                print(json.dumps({"status": "thumbnail_given", "file": str(spec["thumbnail_image"])}))
+                return
             if str(spec["format"]) == "short":
                 # 2026-10-27 owner: "the video first block itself is enough" for a short.
                 # No paid image: the short's own opening card becomes its thumbnail.
