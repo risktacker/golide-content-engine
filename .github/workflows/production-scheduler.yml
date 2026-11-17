@@ -16,6 +16,8 @@ on:
     - cron: "0 11 * * *"
     # 2026-11-14 (owner): 19:30 Africa/Lusaka on long-video days: no link pasted by then, the engine takes over.
     - cron: "30 17 * * 2,4,6"
+    # 2026-11-17 (owner): 00:05 Africa/Lusaka on slot days (Mon-Sat): the day's link card appears in Studio
+    - cron: "5 22 * * 0-5"
   workflow_dispatch:
 
 concurrency:
