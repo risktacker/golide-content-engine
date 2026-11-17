@@ -158,8 +158,21 @@ def prepare(project: Path, display: str, words: list[dict[str, Any]], duration: 
     return doc
 
 
+def collisions(project: Path) -> dict[str, Any]:
+    """Text touching text, leaving the frame or covering a head, on real frames of every shot (stickman/collide.py,
+    run in its own process because it wraps the engine's label drawing)."""
+    result = subprocess.run([sys.executable, "-m", "golide_engine.stickman.collide", str(project)], capture_output=True,
+                            text=True, timeout=1800,
+                            env=dict(os.environ, PYTHONPATH=os.pathsep.join([str(ROOT / "src"), os.environ.get("PYTHONPATH", "")])))
+    if result.returncode != 0:
+        raise RuntimeError(f"stickman collision check failed: {result.stderr[-800:]}")
+    return json.loads(result.stdout.strip().splitlines()[-1])
+
+
 def storyboard(text, project: Path, title: str, doc: dict[str, Any], research: dict[str, Any], record=None) -> list[str]:
-    """Write story.json, run the kit's plan check, send its warnings back once. Returns the warnings left."""
+    """Write story.json, then check it: the kit's plan check and our collision check (owner 2026-11-17: no collision
+    in anything). Problems go back to the writer once. Any collision still there after that is removed (the text
+    that collides is taken out), so the video is clean. Returns the plan warnings left."""
     problems = ""
     left: list[str] = []
     for attempt in (1, 2):
@@ -174,11 +187,29 @@ def storyboard(text, project: Path, title: str, doc: dict[str, Any], research: d
             left = warnings(kit("plan", project, timeout=900))
         except RuntimeError as error:
             left = [str(error)]
-        print(json.dumps({"status": "stickman_plan", "attempt": attempt, "warnings": len(left)}))
-        if not left:
+        hit = collisions(project)["problems"] if not any("failed" in w for w in left) else []
+        print(json.dumps({"status": "stickman_plan", "attempt": attempt, "warnings": len(left), "collisions": len(hit)}),
+              flush=True)
+        if not left and not hit:
             return []
-        problems = "\n".join(f"- {w}" for w in left)
+        problems = "\n".join(f"- {w}" for w in left + hit)
+    clean_up(project)
     return left
+
+
+def clean_up(project: Path, rounds: int = 4) -> None:
+    """The last resort: take out the text that still collides, until nothing does."""
+    from .collide import drop
+
+    for _ in range(rounds):
+        found = collisions(project)
+        if not found["problems"]:
+            return
+        story = drop(json.loads((project / "story.json").read_text(encoding="utf-8")), found["hits"])
+        (project / "story.json").write_text(json.dumps(story, indent=1, ensure_ascii=False), encoding="utf-8")
+        print(json.dumps({"status": "stickman_collisions_removed", "count": len(found["hits"])}), flush=True)
+    if collisions(project)["problems"]:
+        raise RuntimeError("stickman: collisions remain after clean-up")
 
 
 def gaps(project: Path) -> list[tuple[float, float]]:

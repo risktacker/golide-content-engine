@@ -41,3 +41,12 @@ def test_the_panel_and_goli_are_built_into_one_composition(tmp_path):
     html = (tmp_path / "comp" / "index.html").read_text(encoding="utf-8")
     assert '<video id="s1-stage' in html or "stage" in html and "<video" in html
     assert 'muted' in html and "s2-host" in html or "host" in html
+
+
+def test_goli_never_covers_the_panel_in_a_long_video():
+    from golide_engine.edit import mascot
+    size = 620
+    w = size * mascot.VIEW[0] / mascot.VIEW[1]
+    goli_left = 1920 - w + 20
+    x, y, pw, ph = Composer.STAGE["long"]
+    assert x + pw <= goli_left - 10 and abs(pw / ph - 16 / 9) < 0.01 and y >= 0 and y + ph <= 1080

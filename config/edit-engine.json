@@ -3,8 +3,8 @@
   "short": true,
   "long": true,
   "recipes": {
-    "_note": "2026-11-17 (owner): Futurepedia style recipes (edit/recipes.py). The scene for a beat is written by this model from the recipe, checked on 3 stills (one retry), rendered with `samples` passes per frame across `workers` browsers; a failed scene shows the house 3D.",
-    "enabled": true,
+    "_note": "2026-11-17 (owner): Futurepedia style recipes (edit/recipes.py). The scene for a beat is written by this model from the recipe, checked on 3 stills (one retry), rendered with `samples` passes per frame across `workers` browsers; a failed scene shows the house 3D. OFF until the owner switches it on (2026-11-17: no spend without his go); a recipe beat shows its house 3D stand-in.",
+    "enabled": false,
     "model": "gpt-5.6-sol",
     "reasoning_effort": "medium",
     "samples": 5,

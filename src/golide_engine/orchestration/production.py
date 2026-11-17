@@ -1434,7 +1434,11 @@ class ProductionService:
             else:
                 stickman_made = self._stickman_short(spec, work, production_id, timed_words, narration,
                                                      narration_seconds, video_path)
-            if stickman_made and style_now == "stickman_goli":
+            if stickman_made and style_now == "stickman_goli" and str(spec["format"]) != "long":
+                # 2026-11-17: beside a vertical video on a phone screen the picture would be under half the width;
+                # until the owner picks a Short layout, a Short asked for with Goli is the Stickman video alone
+                print(json.dumps({"status": "goli_layer_long_only", "production_id": production_id}))
+            elif stickman_made and style_now == "stickman_goli":
                 # 2026-11-17 (owner): Goli beside the Stickman scene as the explainer (his channel), per video
                 self._goli_layer(spec, work, production_id, narration, video_path)
             if not stickman_made:
