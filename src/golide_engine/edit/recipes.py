@@ -152,8 +152,11 @@ def white_layout(fill: dict[str, Any]) -> dict[str, Any]:
     stops = [s for s in (fill.get("stops") or []) if isinstance(s, dict) and s.get("kind") in WHITE_PIECES and s.get("kind") not in WIDE][:6]
     if len(stops) < 2:
         raise ValueError("white: 2 to 6 stops of known kinds needed")
-    widths = [WHITE_PIECES[s["kind"]] for s in stops]
-    gap = max(0.8, (26 - sum(widths)) / max(1, len(stops) - 1))
+    # people as a stop of the story stand out: a figure or a crowd at 2.4x scale (a person among buildings would
+    # otherwise be a speck, owner 2026-11-18 "people, i didnt see it")
+    hero = {"person": 2.4, "crowd": 2.2}
+    widths = [WHITE_PIECES[s["kind"]] * hero.get(s["kind"], 1) for s in stops]
+    gap = 1.6                                           # the pieces sit together: the camera frames what is there
     span = sum(widths) + gap * (len(stops) - 1)
     scale = min(1.0, 26 / span)
     x = -span * scale / 2
@@ -162,7 +165,7 @@ def white_layout(fill: dict[str, Any]) -> dict[str, Any]:
         cx = x + w * scale / 2
         z = -1.6 if i % 2 == 0 else -3.4
         pid = f"s{i}"
-        pieces.append({"id": pid, "kind": st["kind"], "at": [round(cx, 2), z], "scale": round(scale, 2)})
+        pieces.append({"id": pid, "kind": st["kind"], "at": [round(cx, 2), z], "scale": round(scale * hero.get(st["kind"], 1), 2)})
         used.append((cx - w * scale / 2, cx + w * scale / 2))
         path.append(pid)
         steps.append({"name": " ".join(str(st.get("name", "")).upper().split())[:16],
@@ -172,7 +175,9 @@ def white_layout(fill: dict[str, Any]) -> dict[str, Any]:
     front = [e for e in extras if e in WIDE][:1]
     if front:
         pieces.append({"kind": front[0], "at": [0, 3.2]})
-    slots = [(-9.5, 1.4), (9.5, 1.4), (-4.5, 1.6), (4.5, 1.6), (0, 1.7), (-11.5, -5.5), (11.5, -5.5)]
+    half = span * scale / 2
+    # extras stand behind the row and at its ends, never in front of a stop (the camera looks from the front)
+    slots = [(-half - 1.4, -2.4), (half + 1.4, -2.4), (-half * 0.5, -6.0), (half * 0.5, -6.0), (0, -6.4), (-half - 1.2, -5.8), (half + 1.2, -5.8)]
     for e, (ex, ez) in zip([e for e in extras if e not in WIDE], slots):
         on_road = front and front[0] == "road" and e in ("car", "truck", "bus")
         pieces.append({"kind": e, "at": [ex, 3.2 if on_road else ez], "scale": round(min(1.0, scale + 0.15), 2),
