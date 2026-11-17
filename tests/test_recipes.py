@@ -160,3 +160,28 @@ def test_free_fills_rewrite_only_the_content_block_and_stretch_to_the_beat():
     with pytest.raises(ValueError):
         recipes.content_block("xray", {})
     assert set(recipes.FREE) | set(recipes.PAID) == set(recipes.RECIPES)
+
+
+def test_white_model_is_a_free_kit_laid_out_by_code():
+    """2026-11-18: the storyboard names the stops and extras; code places them so pieces never overlap."""
+    fill = {"stops": [{"kind": "factory", "name": "tsmc", "note": "makes the chips"}, {"kind": "ship", "name": "Singapore"},
+                      {"kind": "datacenter", "name": "Malaysia"}, {"kind": "spaceship", "name": "x"}],
+            "extras": ["road", "car", "tree", "bogus"], "accent": "#76b900"}
+    scene = recipes.white_layout(fill)
+    stops = [p for p in scene["pieces"] if p.get("id")]
+    assert [p["kind"] for p in stops] == ["factory", "ship", "datacenter"] and scene["path"] == ["s0", "s1", "s2"]
+    xs = [(p["at"][0], recipes.WHITE_PIECES[p["kind"]] * p["scale"]) for p in stops]
+    for (a, wa), (b, wb) in zip(xs, xs[1:]):
+        assert b - wb / 2 >= a + wa / 2                         # no two stops overlap
+    assert scene["steps"][0]["name"] == "TSMC" and scene["accent"] == "#76b900"
+    assert any(p["kind"] == "road" for p in scene["pieces"]) and not any(p["kind"] == "bogus" for p in scene["pieces"])
+    code = recipes.fill_code("white", fill, 6.0)
+    assert "__SCENE__" not in code and '"duration": 6.0' in code and "white-model-kit" in code
+    assert "white" in recipes.FREE and "white" in editor.FREE_LOOKS and "white" not in editor.PAID_LOOKS
+    try:
+        recipes.white_layout({"stops": [{"kind": "house"}]})
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("one stop is not a flow")
+    assert "THE REAL THING ONLY" in editor.instructions("long")

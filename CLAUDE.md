@@ -113,7 +113,10 @@ against research, unconfirmed claims kept as "reportedly/allegedly" once (`story
   "content (change this block for a new topic)" block, `recipes.fill_code`, timing stretched to the beat) and
   Puppets: beats about people who are not one named real person as ONE ReachMora shot (`stickman/scene.py`, the
   kit's story format, drawn by its own engine). A free scene that fails its check is not retried: its stand-in shows.
-- Paid (Sol writes the scene, about $0.30 each): X-Ray, White Model, Blueprint. Only when switched on for the video
+- White Model is a free kit of pieces (owner 2026-11-18, `assets/recipes/kits/white-kit.js`): the recipe's own whites,
+  daylight, accent conduits, labels and crane camera, with 35 pieces (buildings, nature, roads, vehicles, people,
+  power); the storyboard names the stops and extras, `recipes.white_layout` places them (no overlaps).
+- Paid (Sol writes the scene, about $0.30 each): X-Ray, Blueprint. Only when switched on for the video
   in Studio, each up to the count he sets (`spec.looks = {free: [...], paid: {xray: n}}`, `editor.looks_for`).
   Scheduled automatic runs never switch paid ones on. Real people stay real photo cards, never puppets.
 

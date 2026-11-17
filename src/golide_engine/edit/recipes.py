@@ -71,7 +71,18 @@ RECIPES: dict[str, dict[str, str]] = {
 # storyboard fills it and no model writes code ($0 extra): Layer Stack, Circuit City, Glass and Light. X-Ray, White
 # Model and Blueprint build their object in code below the block, so a new subject needs the writer (paid, chosen
 # per video in Studio with a count).
-FREE = ("layers", "circuit", "glass")
+FREE = ("layers", "circuit", "glass", "white")
+WHITE_KIT = KIT / "kits" / "white-kit.js"
+# 2026-11-18: White Model as a kit of pieces (assets/recipes/kits/white-kit.js): the storyboard names the stops in
+# order and a few extras; code lays them out on the board so no two pieces overlap
+WHITE_PIECES = {   # kind: footprint width on the board
+    "house": 3.0, "tower": 2.0, "bank": 3.6, "factory": 4.6, "datacenter": 5.4, "shop": 2.6, "school": 4.0,
+    "hospital": 3.8, "tree": 1.3, "pine": 1.2, "forest": 3.4, "mountain": 6.0, "hill": 4.8, "lake": 4.6,
+    "river": 12.0, "cloud": 1.8, "sun": 1.4, "rain": 1.8, "road": 12.0, "bridge": 6.2, "car": 1.9, "truck": 3.0,
+    "bus": 3.4, "train": 9.8, "plane": 3.4, "ship": 5.4, "pole": 1.1, "turbine": 2.2, "solar": 3.6,
+    "tower_mast": 1.2, "person": 0.6, "crowd": 2.6, "battery": 3.0, "dam": 6.2,
+}
+WIDE = ("road", "river", "train")
 PAID = tuple(k for k in RECIPES if k not in FREE)
 DIAGRAMS = ("chat", "steps", "network", "files", "chips")      # Layer Stack's prints (its DIAGRAMS)
 
@@ -129,7 +140,51 @@ def content_block(key: str, fill: dict[str, Any]) -> str:
                 f"    [0.15, 1.5, {_js(caps[0])}],\n    [1.6, 3.55, {_js(caps[1])}, POURS[0].tint],\n"
                 f"    [3.8, 6.8, {_js(caps[2])}, POURS[1].tint],\n    [6.95, 8.6, {_js(caps[3])}, MIX.spoonful],\n"
                 f"    [9.3, 99, {_js(caps[4])}, MIX.tint],\n  ];\n  const DURATION = 12;\n")
+    if key == "white":
+        return "  const SCENE = " + json.dumps(white_layout(fill), ensure_ascii=False) + ";\n"
     raise ValueError(f"{key} has no free mode")
+
+
+def white_layout(fill: dict[str, Any]) -> dict[str, Any]:
+    """Stops in story order left to right on the board (a gentle zigzag so the path reads), extras in the gaps in
+    front and behind, wide pieces (road, river, track) across the front. Raises ValueError when there is nothing to
+    show."""
+    stops = [s for s in (fill.get("stops") or []) if isinstance(s, dict) and s.get("kind") in WHITE_PIECES and s.get("kind") not in WIDE][:6]
+    if len(stops) < 2:
+        raise ValueError("white: 2 to 6 stops of known kinds needed")
+    # people as a stop of the story stand out: a figure or a crowd at 2.4x scale (a person among buildings would
+    # otherwise be a speck, owner 2026-11-18 "people, i didnt see it")
+    hero = {"person": 2.4, "crowd": 2.2}
+    widths = [WHITE_PIECES[s["kind"]] * hero.get(s["kind"], 1) for s in stops]
+    gap = 1.6                                           # the pieces sit together: the camera frames what is there
+    span = sum(widths) + gap * (len(stops) - 1)
+    scale = min(1.0, 26 / span)
+    x = -span * scale / 2
+    pieces, path, steps, used = [], [], [], []
+    for i, (st, w) in enumerate(zip(stops, widths)):
+        cx = x + w * scale / 2
+        z = -1.6 if i % 2 == 0 else -3.4
+        pid = f"s{i}"
+        pieces.append({"id": pid, "kind": st["kind"], "at": [round(cx, 2), z], "scale": round(scale * hero.get(st["kind"], 1), 2)})
+        used.append((cx - w * scale / 2, cx + w * scale / 2))
+        path.append(pid)
+        steps.append({"name": " ".join(str(st.get("name", "")).upper().split())[:16],
+                      "note": " ".join(str(st.get("note", "")).split())[:26]})
+        x += (w + gap) * scale
+    extras = [e for e in (fill.get("extras") or []) if e in WHITE_PIECES][:6]
+    front = [e for e in extras if e in WIDE][:1]
+    if front:
+        pieces.append({"kind": front[0], "at": [0, 3.2]})
+    half = span * scale / 2
+    # extras stand behind the row and at its ends, never in front of a stop (the camera looks from the front)
+    slots = [(-half - 1.4, -2.4), (half + 1.4, -2.4), (-half * 0.5, -6.0), (half * 0.5, -6.0), (0, -6.4), (-half - 1.2, -5.8), (half + 1.2, -5.8)]
+    for e, (ex, ez) in zip([e for e in extras if e not in WIDE], slots):
+        on_road = front and front[0] == "road" and e in ("car", "truck", "bus")
+        pieces.append({"kind": e, "at": [ex, 3.2 if on_road else ez], "scale": round(min(1.0, scale + 0.15), 2),
+                       "turn": 180 if on_road and ex > 0 else 0})
+    accent = str(fill.get("accent") or "#ff6a00")
+    return {"accent": accent if len(accent) == 7 and accent.startswith("#") else "#ff6a00", "title": ["", ""],
+            "pieces": pieces, "path": path, "steps": steps}
 
 
 def reference_code(key: str) -> str:
@@ -141,7 +196,11 @@ def reference_code(key: str) -> str:
 
 def fill_code(key: str, fill: dict[str, Any], duration: float) -> str:
     """The reference scene with its content block replaced, played over `duration` seconds (its own timing,
-    stretched evenly: the picture keeps its order and rhythm)."""
+    stretched evenly: the picture keeps its order and rhythm). White Model is its kit of pieces, timed to the beat."""
+    if key == "white":
+        scene = white_layout(fill)
+        scene["duration"] = round(float(duration), 3)
+        return WHITE_KIT.read_text(encoding="utf-8").replace("__SCENE__", json.dumps(scene, ensure_ascii=False))
     code = reference_code(key)
     a = code.find("\n", code.find("// ----------------------------------------------------------------")) + 1
     b = code.find("  // ----------------------------------------------------------------", a)
