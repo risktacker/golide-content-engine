@@ -104,11 +104,10 @@ def _duration(path: Path) -> float:
 
 
 def edit_list(fmt: str, video: Path, duration: float, poses: list[dict[str, Any]], cues: list[dict[str, Any]],
-              outfit: str, empty: bool = False) -> dict[str, Any]:
+              outfit: str) -> dict[str, Any]:
     return {"format": fmt, "duration": duration, "notes": [], "captions": [], "look": "glass",
             "scenes": [
-                {"type": "stage_video", "start": 0.0, "duration": duration, "in": "cut",
-                 "data": {"video": str(video), "empty": empty}},
+                {"type": "stage_video", "start": 0.0, "duration": duration, "in": "cut", "data": {"video": str(video)}},
                 {"type": "host", "start": 0.0, "duration": duration, "in": "cut",
                  "data": {"place": "beside", "poses": poses, "cues": cues, "outfit": outfit}},
             ]}
@@ -132,31 +131,12 @@ def add(fmt: str, video: Path, narration: Path, folder: Path, output: Path, outf
     comp = folder / "goli-composition"
     if comp.exists():
         shutil.rmtree(comp)
-    # 2026-11-17 (owner, after a 1-hour second render): the browser draws only the room, the empty panel and Goli;
-    # ffmpeg then lays the finished Stickman video into the panel (rounded like the frame) and puts its sound back
-    composer = Composer(fmt, outfit=outfit)
-    composer.build(edit_list(fmt, video, duration, poses, cues, outfit, empty=True), comp)
+    Composer(fmt, outfit=outfit).build(edit_list(fmt, video, duration, poses, cues, outfit), comp)
     pictures = folder / "goli-pictures.mp4"
     env = dict(os.environ, HYPERFRAMES_BROWSER_PATH=_browser())
     subprocess.run(["npx", "-y", HYPERFRAMES, "render", str(comp), "-o", str(pictures), "--fps", "30",
                     "--quality", "high", "--workers", "auto", "--quiet"], check=True, env=env)
     output.parent.mkdir(parents=True, exist_ok=True)
-    x, y, w, h = composer.STAGE[fmt]
-    mask = folder / "panel-mask.png"
-    _rounded_mask(w, h, 14, mask)
-    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(pictures), "-i", str(video), "-loop", "1", "-i", str(mask),
-                    "-filter_complex",
-                    f"[1:v]fps=30,scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h},format=rgba[v];"
-                    f"[2:v]format=gray,scale={w}:{h}[m];[v][m]alphamerge[vm];"
-                    f"[0:v][vm]overlay={x}:{y}:shortest=1:format=auto,format=yuv420p[out]",
-                    "-map", "[out]", "-map", "1:a:0", "-c:v", "libx264", "-preset", "veryfast", "-crf", "18",
-                    "-c:a", "copy", "-shortest", "-movflags", "+faststart", str(output)], check=True)
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(pictures), "-i", str(video), "-map", "0:v:0", "-map", "1:a:0",
+                    "-c:v", "copy", "-c:a", "copy", "-shortest", "-movflags", "+faststart", str(output)], check=True)
     return output
-
-
-def _rounded_mask(w: int, h: int, r: int, path: Path) -> None:
-    """White rounded rectangle on black: the panel's rounded corners for the overlaid video."""
-    from PIL import Image, ImageDraw
-    img = Image.new("L", (w, h), 0)
-    ImageDraw.Draw(img).rounded_rectangle((0, 0, w - 1, h - 1), radius=r, fill=255)
-    img.save(path)

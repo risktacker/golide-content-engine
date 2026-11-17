@@ -815,10 +815,6 @@ class Composer:
                  f'background:#050607;border:2px solid rgba(232,194,104,.5);border-radius:18px;'
                  f'box-shadow:0 30px 90px rgba(0,0,0,.7)"></div>')
         self.scene(sid, t0, dur, inner)
-        if data.get("empty"):
-            # 2026-11-17: the panel is left empty here and the video is laid in afterwards by ffmpeg (goli_layer), so
-            # the browser never re-draws the finished video frame by frame
-            return
         name = self.asset(Path(data["video"]))
         self.parts.append(f'<video id="{sid}-v" class="clip" src="{name}" muted playsinline data-start="{t0:.3f}" '
                           f'data-duration="{dur:.3f}" data-volume="0" style="position:absolute;left:{x}px;top:{y}px;'
