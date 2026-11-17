@@ -22,7 +22,8 @@ from typing import Any
 REPLACE_FILES = ("research.json", "script.txt", "scene-plan.json", "model-scripts.json", "spoken-pass.json",
                  "rescript-done.txt", "script-edit.txt", "thumbnail-words.json", "visual-plan.json", "metadata.json",
                  "thumbnail.jpg", "thumbnail.png", "guide.pdf")
-REPLACE_KEEP = ("title", "model_title", "source_breakout", "brief", "platform_demand", "selected_topic_source")
+REPLACE_KEEP = ("title", "model_title", "source_breakout", "brief", "platform_demand", "selected_topic_source",
+                "model_transcript")
 REPLACE_SPEC = "replace-spec.json"
 REPLACE_STAGES = ("research", "script")
 REPLACE_DONE = "replace-done.txt"
@@ -72,18 +73,33 @@ def apply_replace(spec: dict[str, Any], spec_path: Path, work: Path, database, p
     model = model_from_link(youtube, str(ask["url"]))
     if transcript is None:
         from ..youtube.transcripts import fetch as transcript
-    words = transcript(model["url"]) or ""
+    # 2026-11-17 (owner): a transcript he pasted with the link wins (the engine's own fetch can be refused)
+    pasted = " ".join(str(ask.get("transcript") or "").split())
+    words = pasted if len(pasted.split()) >= 40 else (transcript(model["url"]) or "")
     if not model["title"] and not words:
         raise RuntimeError("the pasted video could not be read (no title and no transcript)")
     subject = model["title"] or " ".join(words.split()[:40])
     spec["title"] = model["title"] or spec.get("title", production_id)
     spec["model_title"] = model["title"] or spec.get("title", "")
     spec["source_breakout"] = {k: v for k, v in model.items()}
-    spec["brief"] = (
-        f"Today's video is modelled on the YouTube video \"{subject}\" by {model.get('channel') or 'its creator'} "
-        f"({model['url']}), chosen by the owner. Explain the same subject: what happened, how it works and what "
-        f"the viewer can do with it. Gather the facts from other credible sources, not only that video.\n"
-        f"What that video says (for the subject only, never its sentences): {' '.join(words.split()[:350])}")
+    if len(words.split()) >= 40:
+        # 2026-11-17 (owner): with its transcript, the video is retold closely; research checks its facts
+        spec["brief"] = (
+            f"Today's video retells the YouTube video \"{subject}\" by {model.get('channel') or 'its creator'} "
+            f"({model['url']}), chosen by the owner: the same story, beats and flow. Verify its names, numbers, dates "
+            f"and claims from other credible sources, and find the exact figures.\n"
+            f"What that video says: {' '.join(words.split()[:900])}")
+    else:
+        spec["brief"] = (
+            f"Today's video is modelled on the YouTube video \"{subject}\" by {model.get('channel') or 'its creator'} "
+            f"({model['url']}), chosen by the owner. Explain the same subject: what happened, how it works and what "
+            f"the viewer can do with it. Gather the facts from other credible sources, not only that video.\n"
+            f"What that video says (for the subject only, never its sentences): {' '.join(words.split()[:350])}")
+    # 2026-11-17 (owner): the script follows the video he chose closely: its whole transcript goes to the writer
+    if len(words.split()) >= 40:
+        spec["model_transcript"] = words
+    else:
+        spec.pop("model_transcript", None)
     spec["platform_demand"] = {"verdict": "pass", "signal_type": "owner-replace", "query": subject}
     spec["selected_topic_source"] = model["url"]
     spec.pop("topic_candidates", None)

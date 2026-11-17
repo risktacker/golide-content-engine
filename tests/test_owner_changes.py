@@ -80,3 +80,21 @@ def test_a_replaced_title_survives_studios_old_copy(tmp_path):
     claimed = dict(spec, title="ONE PHONE", brief="phone")      # Studio's stale copy merged back
     assert oc.keep_replaced(claimed, spec_path, work)
     assert claimed["title"] == "How Compaq Cloned IBM" and "phone" not in claimed["brief"]
+
+
+def test_a_pasted_transcript_wins_and_the_script_retells_it_closely(tmp_path):
+    """2026-11-17 (owner): the transcript he pastes with the link is the model; the writer retells it beat by beat."""
+    from golide_engine.engine.story import story_instructions
+    work = tmp_path / "w"
+    work.mkdir()
+    pasted = "November 2026, the CEO resigns. " * 20
+    spec = {"id": "p1", "format": "long", "title": "old", "brief": "old",
+            "replace_model": {"url": "https://youtu.be/v_XdN5-ya9A", "requested_at": "t2", "transcript": pasted}}
+    fetched = []
+    oc.apply_replace(spec, tmp_path / "p1.json", work, FakeDB(), "p1", FakeYouTube(),
+                     transcript=lambda u: fetched.append(u) or "")
+    assert not fetched and spec["model_transcript"].startswith("November 2026") and "retells" in spec["brief"]
+    assert "model_transcript" in oc.REPLACE_KEEP
+    close = story_instructions("long", 600, close_model=True)
+    assert "beat by beat" in close and "METHOD EXAMPLE" not in close and "Never reuse a sentence" not in close
+    assert "beat by beat" not in story_instructions("long", 600)

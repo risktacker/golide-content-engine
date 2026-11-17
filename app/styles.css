@@ -538,3 +538,6 @@ body.sheet-open{overflow:hidden}
 .lane.lane-off .lane-count{display:none}
 .lane.lane-off .lane-off-tag{display:inline-block}
 .lane-grid:has(.lane-off){align-items:start}
+
+/* 2026-11-17 (owner): the model's transcript, pasted with the link */
+.replace-transcript{width:100%;min-height:72px;padding:10px 12px;border-radius:10px;border:1px solid var(--line-strong);background:transparent;color:inherit;font:inherit;font-size:.875rem;resize:vertical}

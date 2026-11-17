@@ -1001,14 +1001,18 @@ class ProductionService:
             from ..engine.story import (BOARD_SCHEMA, STORY_SCHEMA, apply_board, board_input, board_instructions,
                                         plan_from_story, story_instructions)
             self._require_absent(script_path, "script")
-            models_block = model_scripts_block()
+            # 2026-11-17 (owner): a video he chose with its transcript is retold closely (engine/story.py CLOSE_MODEL)
+            close = bool((spec.get("replace_model") or {}).get("url") and len(str(spec.get("model_transcript") or "").split()) >= 40)
+            models_block = ("\n\nMODEL SCRIPT (the video to retell, whole)\n" + str(spec["model_transcript"])) if close \
+                else model_scripts_block()
+            print(json.dumps({"status": "script_mode", "close_model": close}))
             fmt = str(spec["format"])
             script_input = spec["brief"] + json.dumps(research) + source_video + models_block
             self._reserve(spec, text_model,
                           Usage(input_tokens=max(1, len(script_input) // 4) + 9000, output_tokens=script_tokens * 2),
                           stage="script")
             output = text.generate_json(
-                story_instructions(fmt, model_seconds),
+                story_instructions(fmt, model_seconds, close_model=close),
                 f"{topic_packet(spec)}TOPIC BRIEF\n{spec['brief']}{source_video}{models_block}\n\nVERIFIED RESEARCH\n{json.dumps(research)}",
                 STORY_SCHEMA,
                 max_output_tokens=script_tokens * 2,   # high effort thinks first
@@ -1027,7 +1031,7 @@ class ProductionService:
                 self._reserve(spec, text_model, Usage(input_tokens=len(json.dumps(output.value)) // 3 + 9000,
                                                       output_tokens=script_tokens * 2), stage="script")
                 output = text.generate_json(
-                    story_instructions(fmt, model_seconds),
+                    story_instructions(fmt, model_seconds, close_model=close),
                     f"YOUR SCRIPT (it is {spoken} spoken words; it must be {target['words_min']} to "
                     f"{target['words_max']}). Rewrite it to that size: the same story, facts, order, chapters and "
                     f"markers, every part kept in proportion; {'tighten every part' if spoken > target['words_max'] else 'go deeper inside every part with real facts from the research'}.\n"
@@ -1043,7 +1047,7 @@ class ProductionService:
                 self._reserve(spec, text_model, Usage(input_tokens=len(json.dumps(output.value)) // 3 + 9000,
                                                       output_tokens=script_tokens * 2), stage="script")
                 output = text.generate_json(
-                    story_instructions(fmt, model_seconds),
+                    story_instructions(fmt, model_seconds, close_model=close),
                     "YOUR SCRIPT has these problems: " + "; ".join(flat) + ". Fix only those: the same story, facts, "
                     "order, chapters, markers and length (within 5%).\n" + json.dumps(output.value),
                     STORY_SCHEMA, max_output_tokens=script_tokens * 2, reasoning_effort=SPOKEN_PASS_EFFORT)
