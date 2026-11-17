@@ -360,11 +360,17 @@ class ProductionService:
         if measure_loudness(video)["true_peak_dbtp"] <= ceiling_db:
             return
         fixed = video.with_name(video.stem + "-limited" + video.suffix)
-        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(video), "-map", "0:v:0", "-map", "0:a:0", "-c:v", "copy",
-                        "-af", "alimiter=limit=0.79:attack=1:release=60:level=disabled", "-c:a", "aac", "-b:a", "256k",
-                        "-movflags", "+faststart", str(fixed)], check=True)
+        # the encoder adds a little back after the limiter (+1.1 dB on the Nvidia video): measure, and go lower until
+        # the finished file is under the ceiling with room to spare
+        for limit_db in (-2.5, -3.5, -4.5, -6.0):
+            subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(video), "-map", "0:v:0", "-map", "0:a:0", "-c:v", "copy",
+                            "-af", f"aresample=192000,alimiter=limit={10 ** (limit_db / 20):.4f}:attack=1:release=60:level=disabled,"
+                                   "aresample=48000", "-c:a", "aac", "-b:a", "256k", "-movflags", "+faststart", str(fixed)], check=True)
+            peak = measure_loudness(fixed)["true_peak_dbtp"]
+            print(json.dumps({"status": "peaks_limited", "limit_db": limit_db, "true_peak_dbtp": peak}))
+            if peak <= ceiling_db - 0.3:
+                break
         fixed.replace(video)
-        print(json.dumps({"status": "peaks_limited", "true_peak_dbtp": measure_loudness(video)["true_peak_dbtp"]}))
 
     def _stickman_long(self, spec, work: Path, production_id: str, timed_words, narration: Path,
                        narration_seconds: float, video_path: Path, research) -> None:
