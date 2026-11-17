@@ -65,7 +65,15 @@ def check(project: Path) -> dict:
     tl = R._G["tl"]
     problems, hits = [], []
     for i, spec in enumerate(tl.shots):
-        shot = SH.build(spec, tl, R._G["cast"], R._G["env"])
+        try:
+            shot = SH.build(spec, tl, R._G["cast"], R._G["env"])
+            for q in FRACS:
+                f = shot.f0 + int((shot.f1 - shot.f0 - 1) * q)
+                R.draw_frame(shot, R.Frame(), f, False, False)
+        except Exception as error:  # noqa: BLE001 - a shot the kit cannot draw (2026-11-17: an unknown icon)
+            problems.append(f"shot {i} cannot be drawn: {str(error)[:200]}")
+            hits.append({"shot": i, "broken": True, "text": ""})
+            continue
         for q in FRACS:
             f = shot.f0 + int((shot.f1 - shot.f0 - 1) * q)
             found.clear()
@@ -96,8 +104,27 @@ def check(project: Path) -> dict:
 def drop(story: dict, hits: list[dict]) -> dict:
     """The last resort, so the finished video is clean: the text that still collides is taken out of its shot
     (a label, a tag, a lower third, a stamp, a caption); the shot itself and its story stay."""
+    shots = story.get("shots") or []
+    broken = {h["shot"] for h in hits if h.get("broken")}
+    for i in sorted(broken):
+        # a shot the kit cannot draw takes a plain copy of the nearest shot that draws (its set and characters,
+        # nothing timed to words), over its own sentences
+        good = [j for j in sorted(range(len(shots)), key=lambda j: abs(j - i)) if j != i and j not in broken]
+        if not good:
+            continue
+        twin = json.loads(json.dumps(shots[good[0]]))
+        for key in ("labels", "props", "bubble", "tag", "caption", "lower_third", "stamp", "polaroid", "icons",
+                    "value", "compare", "items", "left", "right", "at"):
+            twin.pop(key, None)
+        if twin.get("kind") not in ("wide", "closeup", "walk", "crowd", "table"):
+            twin = {"kind": "wide", "set": "office", "chars": []}
+        for c in twin.get("chars") or []:
+            c.pop("beats", None)
+        twin["s"] = shots[i].get("s")
+        shots[i] = twin
     for h in hits:
-        shots = story.get("shots") or []
+        if h.get("broken"):
+            continue
         if not 0 <= h["shot"] < len(shots):
             continue
         sp, text = shots[h["shot"]], h["text"].strip().lower()

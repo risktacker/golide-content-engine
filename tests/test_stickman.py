@@ -59,3 +59,20 @@ def test_the_kits_timeline_gives_the_pauses(tmp_path):
                                                                {"kind": "wide", "s": [1]}]}))
     pauses = longform.gaps(tmp_path)
     assert len(pauses) == 1 and pauses[0][1] == 1.6
+
+
+def test_unknown_icons_become_the_nearest_kit_icon_or_are_left_out():
+    """2026-11-17: 'receipt' stopped the Nvidia render; an icon name is now always one the kit draws."""
+    from golide_engine.stickman import longform
+    known = longform.kit_icons()
+    assert {"bulb", "moneybag", "chart_up", "shopping", "warning"} <= known and "receipt" not in known
+    story = {"shots": [
+        {"kind": "icon", "icons": [{"name": "receipt", "label": "PAID", "at": "paid"}, {"name": "bulb", "at": "x"}]},
+        {"kind": "wide", "props": [{"icon": "gpu", "x": 1500}, {"icon": "zzqx", "x": 900}],
+         "bubble": {"who": "a", "text": "hm", "icon": "spy"}, "chars": [{"id": "a", "name": "ignored"}]},
+        {"kind": "counter", "compare": {"text": "6 YEARS", "icon": "home", "at": "w"}}]}
+    changed = longform.fix_icons(story, known)
+    assert story["shots"][0]["icons"][0]["name"] == "shopping" and story["shots"][0]["icons"][1]["name"] == "bulb"
+    assert [p["icon"] for p in story["shots"][1]["props"]] == ["laptop"]          # the unknown prop is left out
+    assert story["shots"][1]["bubble"]["icon"] == "warning" and story["shots"][2]["compare"]["icon"] == "house"
+    assert story["shots"][1]["chars"][0]["name"] == "ignored" and len(changed) == 5
