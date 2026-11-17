@@ -225,7 +225,9 @@ ICON_NEAR = {
 
 def fix_icons(story: dict[str, Any], known: set[str] | None = None) -> list[str]:
     """Every icon name in the story is one the kit can draw: an unknown one becomes the nearest kit icon (by meaning,
-    then by spelling) or is left out. Returns what changed. No model call."""
+    then by spelling) or is left out. Only the story format's icon places are touched: props[].icon, bubble.icon,
+    a counter's icon and compare.icon, and icons[].name (2026-11-17: a first version also hit lower_third names).
+    Returns what changed. No model call."""
     import difflib
     known = known or kit_icons()
     changed: list[str] = []
@@ -240,37 +242,37 @@ def fix_icons(story: dict[str, Any], known: set[str] | None = None) -> list[str]
         close = difflib.get_close_matches(n, sorted(known), n=1, cutoff=0.75)
         return close[0] if close else None
 
-    def walk(node: Any) -> Any:
-        if isinstance(node, list):
-            out = []
-            for item in node:
-                item = walk(item)
-                if isinstance(item, dict) and item.get("_drop"):
-                    continue
-                out.append(item)
-            return out
-        if not isinstance(node, dict):
-            return node
-        for key in list(node):
-            node[key] = walk(node[key])
-        for key in ("icon", "name"):
-            if key == "name" and not ({"label", "at", "x", "y", "s"} & set(node)) and "icon" not in node:
-                continue                      # "name" is an icon only inside an icons list item
-            value = node.get(key)
-            if isinstance(value, str) and value and value not in known and (key == "icon" or "label" in node or "at" in node):
-                if key == "name" and value in ("", None):
-                    continue
-                to = near(value)
-                changed.append(f"{value} -> {to or 'left out'}")
-                if to:
-                    node[key] = to
-                elif key == "icon" and ("x" in node or "s" in node):
-                    node["_drop"] = True      # a prop that is only its icon
-                else:
-                    node.pop(key, None)
-        return node
+    def fix(holder: dict, key: str) -> bool:
+        """True when the holder keeps a drawable icon."""
+        value = holder.get(key)
+        if not isinstance(value, str) or not value or value in known:
+            return True
+        to = near(value)
+        changed.append(f"{value} -> {to or 'left out'}")
+        if to:
+            holder[key] = to
+            return True
+        holder.pop(key, None)
+        return False
 
-    walk(story)
+    for shot in story.get("shots") or []:
+        if not isinstance(shot, dict):
+            continue
+        if isinstance(shot.get("props"), list):
+            shot["props"] = [p for p in shot["props"] if isinstance(p, dict) and fix(p, "icon")]
+        for key in ("bubble", "compare"):
+            if isinstance(shot.get(key), dict):
+                fix(shot[key], "icon")
+        if isinstance(shot.get("icon"), str):
+            fix(shot, "icon")
+        if isinstance(shot.get("icons"), list):
+            shot["icons"] = [i for i in shot["icons"] if isinstance(i, dict) and fix(i, "name")]
+            if not shot["icons"]:
+                shot.pop("icons")
+        # repair of the first version's damage: a name card that lost its name goes
+        if isinstance(shot.get("lower_third"), dict) and not str(shot["lower_third"].get("name") or "").strip():
+            shot.pop("lower_third")
+            changed.append("lower_third without a name -> left out")
     return changed
 
 
@@ -287,13 +289,21 @@ def clean_up(project: Path, rounds: int = 4) -> None:
     """The last resort: take out the text that still collides, until nothing does."""
     from .collide import drop
 
+    last = None
     for _ in range(rounds):
         found = collisions(project)
         if not found["problems"]:
             return
-        story = drop(json.loads((project / "story.json").read_text(encoding="utf-8")), found["hits"])
+        stuck = last is not None and len(found["hits"]) >= last
+        story = json.loads((project / "story.json").read_text(encoding="utf-8"))
+        # text that removing did not shift (2026-11-17: 32 stayed, round after round): its shot becomes a plain copy
+        # of a neighbour that draws, with no text, so the video is clean and never stops
+        hits = [dict(h, broken=True) for h in found["hits"]] if stuck else found["hits"]
+        story = drop(story, hits)
         (project / "story.json").write_text(json.dumps(story, indent=1, ensure_ascii=False), encoding="utf-8")
-        print(json.dumps({"status": "stickman_collisions_removed", "count": len(found["hits"])}), flush=True)
+        print(json.dumps({"status": "stickman_collisions_removed", "count": len(found["hits"]), "plain_shots": stuck,
+                          "examples": found["problems"][:6]}), flush=True)
+        last = len(found["hits"])
     if collisions(project)["problems"]:
         raise RuntimeError("stickman: collisions remain after clean-up")
 
