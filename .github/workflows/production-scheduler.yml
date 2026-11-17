@@ -104,9 +104,10 @@ jobs:
           from_cache() {
             ls ~/apt-debs/*.deb >/dev/null 2>&1 || return 1
             sudo dpkg -i --force-depends ~/apt-debs/*.deb >/dev/null 2>&1 || true
-            command -v ffmpeg >/dev/null && pkg-config --exists cairo
+            command -v ffmpeg >/dev/null && pkg-config --exists cairo && ldconfig -p | grep -q libEGL.so.1
           }
-          if command -v ffmpeg >/dev/null && fc-match DejaVuSans >/dev/null && pkg-config --exists cairo; then
+          # 2026-11-17: skia (the Stickman engine) needs libEGL/libGL at import, even when drawing on the CPU
+          if command -v ffmpeg >/dev/null && fc-match DejaVuSans >/dev/null && pkg-config --exists cairo && ldconfig -p | grep -q libEGL.so.1; then
             ffmpeg -version | head -1
             pkg-config --modversion cairo
           else
@@ -114,7 +115,7 @@ jobs:
             # 2026-11-06: a hung mirror held this step 40 minutes; give up after 6 and retry once
             for attempt in 1 2; do
               if timeout 240 sudo apt-get update -o Acquire::Retries=2 \
-                 && timeout 600 sudo apt-get install -y -o Acquire::Retries=3 ffmpeg fonts-dejavu-core libcairo2-dev pkg-config; then
+                 && timeout 600 sudo apt-get install -y -o Acquire::Retries=3 ffmpeg fonts-dejavu-core libcairo2-dev pkg-config libegl1 libgl1; then
                 mkdir -p ~/apt-debs && cp /var/cache/apt/archives/*.deb ~/apt-debs/ 2>/dev/null || true
                 break
               fi

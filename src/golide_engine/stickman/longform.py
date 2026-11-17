@@ -187,6 +187,9 @@ def storyboard(text, project: Path, title: str, doc: dict[str, Any], research: d
             left = warnings(kit("plan", project, timeout=900))
         except RuntimeError as error:
             left = [str(error)]
+        if any(k in w for w in left for k in ("ImportError", "ModuleNotFoundError", "cannot open shared object")):
+            # 2026-11-17: the machine is broken, not the story; never pay the writer again for that
+            raise RuntimeError("stickman: the kit cannot run on this machine: " + left[0][-400:])
         hit = collisions(project)["problems"] if not any("failed" in w for w in left) else []
         print(json.dumps({"status": "stickman_plan", "attempt": attempt, "warnings": len(left), "collisions": len(hit)}),
               flush=True)
