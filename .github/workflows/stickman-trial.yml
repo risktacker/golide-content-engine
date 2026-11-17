@@ -1,0 +1,62 @@
+name: Stickman trial
+
+# TRIAL (owner 2026-11-17): a Stickman video (optionally with Goli beside it) made from a finished production's own
+# voice, word timings and research. Only the storyboard writer is new spend. Nothing is published.
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        default: edit-engine
+      production_id:
+        description: "A finished production, e.g. golide-long-2026-11-14"
+        required: true
+      goli:
+        description: "goli = Goli beside the Stickman video; anything else = Stickman only"
+        default: goli
+
+permissions:
+  contents: read
+
+jobs:
+  trial:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            productions
+            build
+          key: golide-production-checkpoint-${{ github.run_id }}
+          restore-keys: |
+            golide-production-checkpoint-
+      - name: The production is in the checkpoint
+        run: ls "productions/${{ inputs.production_id }}/narration-owner.wav" "productions/${{ inputs.production_id }}/research.json"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg libcairo2-dev pkg-config
+      - run: python -m pip install -e '.[production,video]'
+      - run: python -m playwright install --with-deps chromium
+      - name: Rhubarb Lip Sync (Goli's mouth)
+        run: |
+          R="$HOME/.cache/golide-rhubarb"; mkdir -p "$R"
+          curl -sSL -o "$R/r.zip" https://github.com/DanielSWolf/rhubarb-lip-sync/releases/download/v1.14.0/Rhubarb-Lip-Sync-1.14.0-Linux.zip
+          unzip -qo "$R/r.zip" -d "$R"
+      - name: TRIAL Stickman
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python scripts/stickman_trial.py "${{ inputs.production_id }}" "${{ inputs.goli }}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: stickman-trial
+          path: |
+            build/stickman-trial/*/*.mp4
+            build/stickman-trial/*/*.jpg
+            build/stickman-trial/*/*.json
+            build/stickman-trial/*/*.js
+            build/stickman-trial/*/*.md
