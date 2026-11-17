@@ -293,6 +293,39 @@ function renderAutomationControl() {
     $("#autopilot-state").classList.toggle("running", enabled);
     $("#autopilot-state").classList.toggle("paused", !enabled);
   }
+  renderSections();
+}
+
+// 2026-11-17 (owner): each section switches on and off by itself (the master button still pauses everything)
+const SECTIONS = [["static", "Static posts"], ["shorts", "Shorts"], ["long", "Long videos"], ["cover", "Cover emails"]];
+let sectionBusy = null;
+
+function renderSections() {
+  const box = $("#automation-sections");
+  if (!box) return;
+  const on = automationControl?.sections || {};
+  box.innerHTML = SECTIONS.map(([key, name]) =>
+    '<button type="button" class="section-switch' + (on[key] ? " on" : "") + '" data-section="' + key + '"' +
+    (sectionBusy ? " disabled" : "") + ' title="' + name + (on[key] ? ' on: tap to switch off' : ' off: tap to switch on') + '">' +
+    '<span class="dot"></span>' + name + ': ' + (on[key] ? "on" : "off") + '</button>').join("");
+  box.querySelectorAll(".section-switch").forEach((button) => {
+    button.onclick = async () => {
+      if (sectionBusy) return;
+      const key = button.dataset.section;
+      sectionBusy = key;
+      renderSections();
+      try {
+        automationControl = await api("/api/automation-control", {
+          method: "POST", body: JSON.stringify({ section: key, enabled: !Boolean((automationControl?.sections || {})[key]) }),
+        });
+      } catch (error) {
+        alert(error.message);
+      } finally {
+        sectionBusy = null;
+        renderAutomationControl();
+      }
+    };
+  });
 }
 
 async function loadAutomationControl() {
