@@ -183,6 +183,7 @@ def storyboard(text, project: Path, title: str, doc: dict[str, Any], research: d
         story = json.loads(out.value["story_json"])
         story["title"] = title
         (project / "story.json").write_text(json.dumps(story, indent=1, ensure_ascii=False), encoding="utf-8")
+        fix_story_icons(project)
         try:
             left = warnings(kit("plan", project, timeout=900))
         except RuntimeError as error:
@@ -198,6 +199,88 @@ def storyboard(text, project: Path, title: str, doc: dict[str, Any], research: d
         problems = "\n".join(f"- {w}" for w in left + hit)
     clean_up(project)
     return left
+
+
+def kit_icons() -> set[str]:
+    """The icon names the kit can draw (vendor/reachmora/engine/props.py ICONS), read from its source."""
+    import re
+    src = (KIT / "engine" / "props.py").read_text(encoding="utf-8")
+    block = src[src.find("ICONS = dict("):src.find("\n\n", src.find("ICONS = dict("))]
+    return set(re.findall(r"(\w+)=(?:ic_|lambda)", block))
+
+
+# words a writer reaches for, and the kit icon that shows the same thing (2026-11-17: 'receipt' stopped a render)
+ICON_NEAR = {
+    "receipt": "shopping", "invoice": "shopping", "bill": "money", "cash": "money", "dollar": "money", "bank": "moneybag",
+    "wallet": "moneybag", "salary": "coins", "price": "coins", "document": "book", "paper": "book", "contract": "book",
+    "report": "book", "file": "book", "memo": "book", "letter": "book", "email": "laptop", "computer": "laptop",
+    "server": "laptop", "chip": "laptop", "gpu": "laptop", "code": "laptop", "data": "laptop", "mobile": "phone",
+    "message": "phone", "spy": "warning", "alert": "warning", "danger": "warning", "ban": "lock", "secret": "lock",
+    "security": "lock", "idea": "bulb", "mind": "brain", "time": "clock", "deadline": "hourglass", "date": "calendar",
+    "goal": "target", "win": "trophy", "award": "trophy", "love": "heart", "home": "house", "building": "house",
+    "growth": "chart_up", "rise": "chart_up", "fall": "chart_down", "loss": "chart_down", "crash": "chart_down",
+    "truck": "car", "vehicle": "car", "shop": "shopping", "cart": "shopping", "present": "gift",
+}
+
+
+def fix_icons(story: dict[str, Any], known: set[str] | None = None) -> list[str]:
+    """Every icon name in the story is one the kit can draw: an unknown one becomes the nearest kit icon (by meaning,
+    then by spelling) or is left out. Returns what changed. No model call."""
+    import difflib
+    known = known or kit_icons()
+    changed: list[str] = []
+
+    def near(name: str) -> str | None:
+        n = str(name or "").strip().lower().replace(" ", "_").replace("-", "_")
+        if n in known:
+            return n
+        for word in [n] + n.split("_"):
+            if ICON_NEAR.get(word) in known:
+                return ICON_NEAR[word]
+        close = difflib.get_close_matches(n, sorted(known), n=1, cutoff=0.75)
+        return close[0] if close else None
+
+    def walk(node: Any) -> Any:
+        if isinstance(node, list):
+            out = []
+            for item in node:
+                item = walk(item)
+                if isinstance(item, dict) and item.get("_drop"):
+                    continue
+                out.append(item)
+            return out
+        if not isinstance(node, dict):
+            return node
+        for key in list(node):
+            node[key] = walk(node[key])
+        for key in ("icon", "name"):
+            if key == "name" and not ({"label", "at", "x", "y", "s"} & set(node)) and "icon" not in node:
+                continue                      # "name" is an icon only inside an icons list item
+            value = node.get(key)
+            if isinstance(value, str) and value and value not in known and (key == "icon" or "label" in node or "at" in node):
+                if key == "name" and value in ("", None):
+                    continue
+                to = near(value)
+                changed.append(f"{value} -> {to or 'left out'}")
+                if to:
+                    node[key] = to
+                elif key == "icon" and ("x" in node or "s" in node):
+                    node["_drop"] = True      # a prop that is only its icon
+                else:
+                    node.pop(key, None)
+        return node
+
+    walk(story)
+    return changed
+
+
+def fix_story_icons(project: Path) -> None:
+    path = project / "story.json"
+    story = json.loads(path.read_text(encoding="utf-8"))
+    changed = fix_icons(story)
+    if changed:
+        path.write_text(json.dumps(story, indent=1, ensure_ascii=False), encoding="utf-8")
+        print(json.dumps({"status": "stickman_icons_fixed", "changed": changed[:20]}), flush=True)
 
 
 def clean_up(project: Path, rounds: int = 4) -> None:

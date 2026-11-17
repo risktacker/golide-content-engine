@@ -382,6 +382,7 @@ class ProductionService:
             elif not (project / "checked").exists():
                 # 2026-11-17: a run that stopped after the story was written (paid for) but before its collision
                 # check finished: check and clean the saved story, never write it again
+                longform.fix_story_icons(project)
                 left = longform.warnings(longform.kit("plan", project, timeout=900))
                 print(json.dumps({"status": "stickman_saved_story_checked", "warnings": left[:10]}))
                 longform.clean_up(project)
