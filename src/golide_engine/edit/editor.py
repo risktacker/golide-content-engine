@@ -21,7 +21,7 @@ TYPES = ["studio", "source", "terminal", "metaphor", "object3d", "recipe", "walk
 
 OBJECTS3D = ("laptop", "phone", "server", "chip", "battery")
 # 2026-11-17 (owner): Futurepedia style recipes, a new scene written for the beat (edit/recipes.py)
-RECIPE_KEYS = ("xray",)
+RECIPE_KEYS = ("xray", "layers", "white", "circuit", "glass", "blueprint")
 # 2026-11-17 (owner): animated 3D blocks; any object, not only the five presets (built from parts3d)
 MOVES3D = ("own", "explode", "assemble", "lift", "rise", "spin")
 # Futurepedia 3D atlas looks (owner's picks), one per video: Glass and Light, X-Ray, Circuit City, White Model,
@@ -128,9 +128,21 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
   exactly what the style is for, and only then; the words decide, there is no quota. recipe = which style:
   xray = what is INSIDE a real thing and how it works (a chip, a battery, a phone, an engine, a data-centre rack):
   up to three inner parts, each lit and named in turn, with a simple flow (heat, air, current, data, force) acting
-  on them. recipe_brief = what the scene must show, from the words and research only (max 60 words): the object
-  and its real look, the 1-3 inner parts to light in order and what each does in 2-5 words, the flow, and the brand
-  if there is one (its colour becomes the accent). ALSO fill object3d (+ parts3d, move3d) as the stand-in shown if
+  on them. layers = anything BUILT IN LAYERS (a tech stack, what an AI product is made of, how a request travels
+  through a system): 3-5 layers top to bottom, each with a simple diagram, a name and a short line, and a pulse
+  showing the order things happen. white = how something FLOWS THROUGH A SYSTEM (energy, water, money, data,
+  people): a white architect's model of the system, one accent travelling its path in order, a numbered label at each
+  stop. circuit = a JOURNEY or PIPELINE through stages (a prompt through a chip, a payment through a network): a
+  circuit board at night, each stage a landmark with its printed name, a pulse carrying the order. glass = MIXTURES,
+  RATIOS AND AMOUNTS (a split of money or time, a blend, a recipe, chemistry): real glassware, amounts as levels
+  against the marks, one action per beat. blueprint = a PLAN, SET-UP or HOW SOMETHING IS MADE: a flat drawing that
+  rises into the real object, with dimensions and 2-3 numbered pointers. recipe_brief = what the scene must show, from the words and research only (max 60 words). xray: the
+  object and its real look, the 1-3 inner parts to light in order and what each does in 2-5 words, the flow, and the
+  brand if there is one (its colour becomes the accent). layers: each layer top to bottom with its name (1-2 words),
+  a 2-4 word line and what its little diagram shows, and what the pulse carries (a request down, the answer up).
+  white/circuit: the source, then each stop in order with its name (1-2 words) and a 2-4 word line, and what travels.
+  glass: each ingredient with its colour and amount (in parts or %), and the action (pour, add, shake, settle).
+  blueprint: the object, its 2-3 key measurements, and 2-3 pointers (where, 2-4 words each). ALSO fill object3d (+ parts3d, move3d) as the stand-in shown if
   the scene cannot be made. Never two recipe scenes in a row.
 - metaphor: the beat explains an IDEA (a trade-off, a hidden cost, a bottleneck, layers, a loop, a level, a change):
   show it as a moving picture instead of text. metaphor = one of:
@@ -161,9 +173,9 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
 - quote: a short real quote from the pages or research (quote, quote_by).
 - logos: 2 to 4 real product or company names (brands) named together in the beat.
 - icon: one product or company named in the beat (brands = [that name], label = what about it, max 5 words).
-- words: kinetic words, ONLY when no picture fits, AT MOST 2 IN THE WHOLE VIDEO (owner 2026-11-17: text blocks
-  almost zero; any more are dropped and the picture before holds): screen_words = a complete phrase that makes sense on its own, like a headline (max 5 words, e.g.
-  "Black pixels switch off"), never the first words of a sentence cut off and never a pile of keywords; a punch word.
+- words: NEVER (owner 2026-11-17: no text blocks; a words scene is dropped and the picture before holds). Text
+  appears only where it IS the content: a real quote (quote), a prompt the viewer copies (prompt), the key number
+  (stat). Every other beat is a picture.
 - studio: Goli at his desk, his screen shows screen_words (max 5 words) with a punch word. Use it for the opening hook,
   a reaction, a question to the viewer and the payoff; at most 1 beat in 5. poses: 1 to 2, each on a word spoken in
   that beat (talk, explain, point, point_up, point_left, shock, think, thumbs_up, shrug, wave).
@@ -1016,7 +1028,9 @@ def quiet_windows(voice_script: str, lines: list[Any], most: int = 2, longest: f
 DEEPER = {"walkthrough", "terminal", "object3d", "recipe_clip"}
 # 2026-11-17 (owner): no fixed counts for picture blocks: each one matches its words, never the same block twice in
 # a row (and never the same metaphor twice in a video). Words blocks are the exception: at most 2 in a video.
-WORDS_MAX = 2
+# 2026-11-17 (owner): no text blocks. Text only where it IS the content: a real quote (quote_card), a prompt to
+# copy (prompt_card), the key number (stat_counter); anything else is a picture
+WORDS_MAX = 0
 
 
 def _words_cap(scenes: list[dict], notes: list[str]) -> list[dict]:

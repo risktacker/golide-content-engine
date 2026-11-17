@@ -5,6 +5,8 @@
 <style>
 @font-face { font-family: "Space Grotesk"; font-weight: 500; src: url(fonts/space-grotesk-latin-500-normal.woff2) format("woff2"); }
 @font-face { font-family: "Space Grotesk"; font-weight: 700; src: url(fonts/space-grotesk-latin-700-normal.woff2) format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 500; src: url(fonts/inter-latin-500-normal.woff2) format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 700; src: url(fonts/inter-latin-700-normal.woff2) format("woff2"); }
 @font-face { font-family: "IBM Plex Mono"; font-weight: 500; src: url(fonts/ibm-plex-mono-latin-500-normal.woff2) format("woff2"); }
 @font-face { font-family: "IBM Plex Mono"; font-weight: 700; src: url(fonts/ibm-plex-mono-latin-700-normal.woff2) format("woff2"); }
 html, body { margin: 0; background: #000; }
@@ -23,30 +25,102 @@ const c = document.getElementById('c'); c.width = W; c.height = H;
 // every word the scene writes on its overlay is recorded with its box on screen, so the engine can check that labels
 // never touch each other or leave the frame (2026-11-17)
 window.boxes = [];
+// words painted on a texture (a board's silkscreen, marks on a glass) are recorded per canvas, so words on the same
+// surface can be checked against each other; the kit's own text planes are measured on screen instead (below)
+window.printed = [];
+let inPlane = false;
+const sheets = new WeakMap();
+let sheetN = 0;
+const sheetOf = (cv) => { if (!sheets.has(cv)) sheets.set(cv, ++sheetN); return sheets.get(cv); };
 const fill = CanvasRenderingContext2D.prototype.fillText;
 CanvasRenderingContext2D.prototype.fillText = function (text, x, y, ...rest) {
-  const cv = this.canvas;
-  if (window.recording && cv.width === W && cv.height === H && cv.id !== 'c' && this.globalAlpha > 0.5 && String(text).trim()) {
+  const cv = this.canvas, overlay = cv.width === W && cv.height === H && cv.id !== 'c';
+  if (this.globalAlpha > 0.5 && String(text).trim() && ((window.recording && overlay) || (!overlay && !inPlane && cv.id !== 'c'))) {
     const m = this.measureText(text), t = this.getTransform();
     const left = x - (m.actualBoundingBoxLeft || 0), right = x + (m.actualBoundingBoxRight || m.width);
     const top = y - (m.actualBoundingBoxAscent || 0), bottom = y + (m.actualBoundingBoxDescent || 0);
     const p = (a, b) => [t.a * a + t.c * b + t.e, t.b * a + t.d * b + t.f];
     const [x0, y0] = p(left, top), [x1, y1] = p(right, bottom);
-    window.boxes.push({ text: String(text), x0: Math.min(x0, x1), y0: Math.min(y0, y1), x1: Math.max(x0, x1), y1: Math.max(y0, y1) });
+    const box = { text: String(text), x0: Math.min(x0, x1), y0: Math.min(y0, y1), x1: Math.max(x0, x1), y1: Math.max(y0, y1) };
+    if (overlay) window.boxes.push(box); else window.printed.push(Object.assign(box, { sheet: sheetOf(cv) }));
   }
   return fill.call(this, text, x, y, ...rest);
 };
 const load = (src) => new Promise((ok, bad) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = () => bad(new Error('cannot load ' + src)); document.head.append(s); });
 try {
   await document.fonts.load('700 40px "Space Grotesk"'); await document.fonts.load('500 40px "Space Grotesk"');
-  await document.fonts.load('500 40px "IBM Plex Mono"');
+  await document.fonts.load('500 40px "IBM Plex Mono"'); await document.fonts.load('500 40px "Inter"');
+  await document.fonts.load('700 40px "Inter"');
   await load('stage.js');
+  await load('strokefont.js');   // Blueprint Build's lettering library, unchanged from its prompt
+  const layout = STROKEFONT.layout; STROKEFONT.__calls = 0;
+  STROKEFONT.layout = (text, o) => { if (String(text).trim()) STROKEFONT.__calls++; return layout(text, o); };
+  // words that live in the 3D scene (K.textPlane, e.g. Layer Stack's labels) are measured too: tagged here, and
+  // after each frame their corners are projected to the screen (2026-11-17: no collision in anything)
+  const plane = K.textPlane;
+  K.textPlane = (text, o = {}) => {
+    inPlane = true;
+    let m; try { m = plane(text, o); } finally { inPlane = false; }
+    // where the letters sit inside the plane, from the kit's own sizes: pad on every side, line height 1.12 x the
+    // font size, letters about 0.74 x the font size tall (caps and descenders)
+    const px = +(/(\d+(?:\.\d+)?)px/.exec(o.font || '700 160px "Inter"') || [0, 160])[1];
+    const pad = o.pad == null ? Math.ceil(px * 0.25) : o.pad, lh = (o.lineHeight || 1.12) * px;
+    const lines = String(text).split('\n').length, hpx = lh * lines + pad * 2;
+    const wpx = m.geometry.parameters.width / m.geometry.parameters.height * hpx;
+    m.userData.words = String(text);
+    m.userData.inset = [pad / wpx, (pad + (lh - 0.74 * px) / 2) / hpx];
+    return m;
+  };
+  // lettering made of lines (STROKEFONT) is registered by the scene: K.words(text, records, object); each record is
+  // a line {a, b, at} in the object's space, counted once its time has come
+  const lettering = [];
+  K.words = (text, recs, object) => { lettering.push({ text: String(text), recs: recs || [], object: object || null }); };
   await load('style.js');
   const style = window.STYLES[window.STYLES.length - 1];
   if (!style) throw new Error('style.js did not register a style');
   window.S = await K.run(c, style, { samples: N, width: W, height: H });
   window.DURATION = window.S.duration;
-  window.seek = (t) => { window.boxes = []; window.recording = true; try { window.S.seek(t); } finally { window.recording = false; } };
+  const shown = (o) => { for (let p = o; p; p = p.parent) if (!p.visible) return false; return true; };
+  const corner = new THREE.Vector3();
+  const planes = () => {
+    const { scene, camera } = window.S;
+    camera.updateMatrixWorld();
+    scene.traverse((m) => {
+      if (!m.isMesh || !m.userData.words || !shown(m) || (m.material.opacity ?? 1) < 0.5) return;
+      m.updateMatrixWorld(); m.geometry.computeBoundingBox();
+      const b = m.geometry.boundingBox, xs = [], ys = [];
+      let behind = false;
+      for (const x of [b.min.x, b.max.x]) for (const y of [b.min.y, b.max.y]) {
+        corner.set(x, y, 0).applyMatrix4(m.matrixWorld).project(camera);
+        if (corner.z > 1) behind = true;
+        xs.push((corner.x + 1) / 2 * W); ys.push((1 - corner.y) / 2 * H);
+      }
+      if (behind) return;   // behind the camera: not on screen
+      const [ix, iy] = m.userData.inset || [0, 0];     // trim the plane to its letters
+      const padX = (Math.max(...xs) - Math.min(...xs)) * ix, padY = (Math.max(...ys) - Math.min(...ys)) * iy;
+      window.boxes.push({ text: m.userData.words, x0: Math.min(...xs) + padX, y0: Math.min(...ys) + padY,
+                          x1: Math.max(...xs) - padX, y1: Math.max(...ys) - padY, world: true });
+    });
+  };
+  const v = new THREE.Vector3();
+  const lines = (t) => {
+    for (const { text, recs, object } of lettering) {
+      if (object && !shown(object)) continue;
+      if (object) object.updateMatrixWorld();
+      const xs = [], ys = [];
+      for (const r of recs) {
+        if ((r.at == null ? -10 : r.at) > t || !r.a || !r.b) continue;
+        for (const q of [r.a, r.b]) {
+          v.set(q[0], q[1], q[2]); if (object) v.applyMatrix4(object.matrixWorld); v.project(window.S.camera);
+          if (v.z > 1) continue;
+          xs.push((v.x + 1) / 2 * W); ys.push((1 - v.y) / 2 * H);
+        }
+      }
+      if (xs.length) window.boxes.push({ text, x0: Math.min(...xs), y0: Math.min(...ys), x1: Math.max(...xs), y1: Math.max(...ys), world: true });
+    }
+  };
+  window.seek = (t) => { window.boxes = []; window.recording = true; try { window.S.seek(t); planes(); lines(t); } finally { window.recording = false; } };
+  window.usesLettering = () => typeof STROKEFONT !== 'undefined' && STROKEFONT.__calls > 0 && !lettering.length;
   window.ready = true;
 } catch (e) { window.errors.push(String(e && e.stack || e)); window.ready = true; }
 </script></body></html>

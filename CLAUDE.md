@@ -62,7 +62,8 @@ storyboard call picks gold words and pictures. Copy the method of model scripts,
   about 1 in 4 scenes of a long video (max 6), 1 per Short, never the same twice in a video.
 - Owner review 2026-11-14: long videos are mostly pictures (glass 3D up to 4, metaphors, nodes, real runs); a words
   block is rare and shows a complete headline phrase, never a cut sentence or keyword pile; a long picture holds
-  instead of cutting to word fragments. His recording is the script: changed words rebuild lines, captions and
+  instead of cutting to word fragments; owner 2026-11-17: NO words blocks at all (`editor.WORDS_MAX = 0`). Text only where it is the
+  content: a real quote, a prompt to copy, the key number. His recording is the script: changed words rebuild lines, captions and
   blocks from what he said (`owner_changes.reading_from_audio`).
 - Glass 3D (`assets/edit/g3d/glass3d.js`, three.js in the video): laptop, phone, server, chip, battery in clear glass
   with lit edges, one gold part with a callout line to its label, two other parts named. Max 4 per long video, 2 per
@@ -92,6 +93,17 @@ storyboard call picks gold words and pictures. Copy the method of model scripts,
   facing it, mouth on the voice, reactions on the story's events (numbers -> point, shock lines -> shock, lists and
   versus -> explain, payoff -> both hands up), at least 2.2 s apart. The video's own sound is kept untouched.
   Long videos only (owner 2026-11-17): on a Short Goli would distract, so a Stickman Short runs without him.
+
+## No collision (owner 2026-11-17: "I don't want collision in anything")
+- Recipe scenes (`edit/recipes.py`, `assets/recipes/player.html`): every word on screen is measured on 4 moments,
+  overlay text and 3D text planes (trimmed to their letters); touching or leaving the frame sends the scene back.
+  Words painted on a texture (silkscreen, glass marks) may not touch on the same surface; Blueprint's line lettering
+  (STROKEFONT, `assets/recipes/strokefont.js`) is registered by the scene with K.words and measured too. 3D words may
+  pass the frame edge while the camera travels (the recipes' own camera language), never on the held last frame.
+- Stickman long (`stickman/collide.py`): real frames of every shot; text touching text, leaving the frame or over a
+  head goes back to Sol, and whatever still collides is taken out of the story. Goli never covers the panel.
+- All six Futurepedia prompts are recipes (owner 2026-11-17): xray, layers, white, circuit, glass, blueprint.
+- Recipes ship OFF (`config/edit-engine.json` recipes.enabled): no Sol spend without the owner's go.
 
 ## Checks
 `python3 -m pytest -q` must pass before every push (467 tests as of 2026-11-06).

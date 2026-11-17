@@ -33,6 +33,37 @@ RECIPES: dict[str, dict[str, str]] = {
                 "rack, a body part): up to three inner parts, each lit and named in turn, with a simple flow (heat, "
                 "air, current, data, force) shown acting on them",
     },
+    "layers": {
+        "file": "layer-stack.txt", "name": "Layer Stack",
+        "fits": "anything BUILT IN LAYERS: a tech stack, what an AI product is made of, a product teardown, how a request "
+                "travels through a system: 3 to 5 layers, top to bottom, each a glass sheet with a simple diagram, a "
+                "name and a short line, and a pulse that shows the order things happen in",
+    },
+    # 2026-11-17 (owner): the last four, each from its own prompt; "fits" is the prompt's own "Good for" line
+    "white": {
+        "file": "white-model.txt", "name": "White Model",
+        "fits": "how something FLOWS THROUGH A SYSTEM (energy, water, money, data, people): the system built as a white "
+                "architect's model, the path laid through it as conduits, one accent travelling the path in the right "
+                "order while a numbered label names each stop",
+    },
+    "circuit": {
+        "file": "circuit-city.txt", "name": "Circuit City",
+        "fits": "JOURNEYS AND PIPELINES: something travels through a system and each stage does its part (a prompt "
+                "through a chip, a payment through a network, a signal through a device): every stage a landmark on a "
+                "circuit board with its printed name, a pulse and the camera carrying the order",
+    },
+    "glass": {
+        "file": "glass-and-light.txt", "name": "Glass and Light",
+        "fits": "MIXTURES, RATIOS AND AMOUNTS (a recipe, a split of money or time, a blend of parts, chemistry): "
+                "anything that fills, pours, layers or changes colour, told with real glassware; amounts are levels "
+                "against the marks, ingredients are colours, one action per beat",
+    },
+    "blueprint": {
+        "file": "blueprint-build.txt", "name": "Blueprint Build",
+        "fits": "PLANS, SET-UPS AND HOW SOMETHING IS MADE: first the layout as a flat drawing on a blueprint sheet, "
+                "then the same thing as a real object standing on its plan, with dimensions and two or three numbered "
+                "pointers on the places the words talk about",
+    },
 }
 
 CODE_SCHEMA = {
@@ -66,7 +97,12 @@ def recipe_text(key: str) -> str:
     rules = _section(text, "HOW TO STAY IN THE STYLE", "SOUND (")
     card_and_kit = _section(text, "STYLE CARD", "SOUND KIT (")
     reference = _section(text, "REFERENCE STYLE SOURCE", None)
-    return "\n\n".join([rules, card_and_kit, reference])
+    parts = [rules, card_and_kit]
+    # Blueprint Build's lettering library (lib/strokefont.js, loaded by the player unchanged): its API, as written
+    lib = _section(text, "STROKEFONT (lib/strokefont.js)", "*/")
+    if lib:
+        parts.append(lib + "\n */\n(the library itself is loaded for you as a global STROKEFONT, unchanged)")
+    return "\n\n".join(parts + [reference])
 
 
 def instructions(key: str) -> str:
@@ -102,6 +138,11 @@ THIS SCENE IS ONE BEAT OF A NARRATED VIDEO
   materials and colours.
 - Draw the subject accurately (real proportions, the parts the words name); simple forms beautifully lit beat
   complicated models that look wrong. Only facts from the words and brief you are given.
+- No collision: words never touch each other or leave the frame; printed labels on the same surface never touch.
+  The engine measures every word you draw (overlay text, K.textPlane, text painted on a texture). Lettering made of
+  lines (STROKEFONT, e.g. the reference's letter()) cannot be seen by the engine, so register each block once it is
+  built: `K.words(text, records, object)` with the records letter() returned and the Object3D they are drawn in
+  (the mesh ink() made from them, or null when they are in world space).
 - No sound() is needed: the video has its own sound. Instead return `events`: every moment something lands (t in
   seconds, what, label).
 
@@ -128,7 +169,7 @@ CHROMIUM_ARGS = ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-s
 def stage_folder(code: str, folder: Path) -> Path:
     """A folder the player can run from: the player, the kit, three.js 0.187.0, the fonts and the written scene."""
     folder.mkdir(parents=True, exist_ok=True)
-    for name in ("player.html", "stage.js"):
+    for name in ("player.html", "stage.js", "strokefont.js"):
         shutil.copy(KIT / name, folder / name)
     for sub in ("three", "fonts"):
         shutil.copytree(KIT / sub, folder / sub, dirs_exist_ok=True)
@@ -150,7 +191,7 @@ def _serve(folder: Path):
 
 
 def frames(folder: Path, size: tuple[int, int], samples: int, times: list[float], out: Path,
-           timeout_ms: int = 180000, boxes: list | None = None) -> list[str]:
+           timeout_ms: int = 180000, boxes: list | None = None, printed: list | None = None) -> list[str]:
     """Render the scene at the given times into out/NNNNN.jpg (numbered by position in `times`). Returns the page's
     errors (empty when it ran clean). `boxes`, when given, gets the words written on screen at each time with their
     boxes (from the player's record of the overlay)."""
@@ -167,6 +208,8 @@ def frames(folder: Path, size: tuple[int, int], samples: int, times: list[float]
             page.goto(f"http://127.0.0.1:{server.server_address[1]}/player.html?w={size[0]}&h={size[1]}&n={samples}")
             page.wait_for_function("window.ready === true", timeout=timeout_ms)
             errors += page.evaluate("window.errors")
+            if printed is not None:
+                printed += page.evaluate("window.printed || []")
             if not errors:
                 for i, t in enumerate(times):
                     data = page.evaluate("(t) => { window.seek(t); return document.getElementById('c').toDataURL("
@@ -175,6 +218,8 @@ def frames(folder: Path, size: tuple[int, int], samples: int, times: list[float]
                     if boxes is not None:
                         boxes.append(page.evaluate("window.boxes"))
                 errors += page.evaluate("window.errors")
+                if printed is not None and page.evaluate("window.usesLettering()"):
+                    printed.append({"unregistered": True})
             browser.close()
     finally:
         server.shutdown()
@@ -189,7 +234,8 @@ def check(code: str, folder: Path, size: tuple[int, int], duration: float) -> tu
     stage_folder(code, folder)
     times = [min(0.4, duration * 0.1), duration * 0.5, max(0.0, duration - 0.15), duration * 0.75]
     words: list = []
-    errors = frames(folder, size, 2, times, folder / "check", boxes=words)
+    printed: list = []
+    errors = frames(folder, size, 2, times, folder / "check", boxes=words, printed=printed)
     if errors:
         return [], "The page threw errors:\n" + "\n".join(e[:600] for e in errors[:5])
     stills = [folder / "check" / f"{i:05d}.jpg" for i in range(3)]
@@ -201,24 +247,47 @@ def check(code: str, folder: Path, size: tuple[int, int], duration: float) -> tu
             problems.append(f"the {name} frame is empty (nearly one flat colour): the object or the camera is wrong")
     if ImageStat.Stat(ImageChops.difference(images[0], images[2]).resize((160, 90))).mean[0] < 1.0:
         problems.append("nothing changes between the first and last frame: the scene does not move")
-    for t, found in zip(times, words):
-        problems += label_problems(found, size, t)
+    for i, (t, found) in enumerate(zip(times, words)):
+        problems += label_problems(found, size, t, last=(i == 2))
+    problems += printed_problems(printed)
     return stills[:3], "\n".join(dict.fromkeys(problems))
 
 
-def label_problems(found: list[dict], size: tuple[int, int], t: float, pad: float = 6, margin: float = 0.025) -> list[str]:
-    """Words on screen that touch each other (with a small gap) or leave the frame."""
+def label_problems(found: list[dict], size: tuple[int, int], t: float, pad: float = 6, margin: float = 0.025,
+                   last: bool = True) -> list[str]:
+    """Words on screen that touch each other (with a small gap) or leave the frame. Words that live in the 3D world
+    (`world`) may pass the frame edge while the camera travels, as the recipes' cameras do; they are held to the
+    frame on the last frame, which holds. Words wholly off screen are not on screen."""
     out = []
     w, h = size
+    found = [b for b in found if b["x1"] > 0 and b["y1"] > 0 and b["x0"] < w and b["y0"] < h]
     for b in found:
+        if b.get("world") and not last:
+            continue
         if b["x0"] < w * margin or b["y0"] < h * margin or b["x1"] > w * (1 - margin) or b["y1"] > h * (1 - margin):
             out.append(f'at {t:.1f} s the label "{b["text"]}" leaves the frame: keep labels inside it')
     for i, a in enumerate(found):
         for b in found[i + 1:]:
             if a["text"] == b["text"]:
                 continue
-            if min(a["x1"], b["x1"]) + pad > max(a["x0"], b["x0"]) and min(a["y1"], b["y1"]) + pad > max(a["y0"], b["y0"]):
+            gap = 0 if a.get("world") or b.get("world") else pad    # 3D boxes are already the letters' outer box
+            if min(a["x1"], b["x1"]) + gap > max(a["x0"], b["x0"]) and min(a["y1"], b["y1"]) + gap > max(a["y0"], b["y0"]):
                 out.append(f'at {t:.1f} s the labels "{a["text"]}" and "{b["text"]}" overlap: move one so they never touch')
+    return out
+
+
+def printed_problems(found: list[dict], pad: float = 2) -> list[str]:
+    """Words painted on the same texture (a board's silkscreen, the marks on a glass) that touch each other."""
+    out = []
+    if any(b.get("unregistered") for b in found):
+        out.append("lettering made with STROKEFONT is not registered: call K.words(text, records, object) for every block")
+    found = [b for b in found if not b.get("unregistered")]
+    for i, a in enumerate(found):
+        for b in found[i + 1:]:
+            if a["sheet"] != b["sheet"] or a["text"] == b["text"]:
+                continue
+            if min(a["x1"], b["x1"]) + pad > max(a["x0"], b["x0"]) and min(a["y1"], b["y1"]) + pad > max(a["y0"], b["y0"]):
+                out.append(f'the printed labels "{a["text"]}" and "{b["text"]}" touch on the same surface: move one apart')
     return out
 
 

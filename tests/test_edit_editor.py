@@ -39,8 +39,8 @@ class EditorTest(unittest.TestCase):
         ]}
         edit = editor.build(raw, self.lines, 12.0, "short", self.sources, Path("/tmp"), [], [])
         types = [s["type"] for s in edit["scenes"]]
-        self.assertEqual(types[:4], ["host", "browser_shot", "host", "kinetic_title"])
-        # 2026-11-17 (owner): words blocks almost zero: at most 2; past that the picture holds
+        self.assertEqual(types[:3], ["host", "browser_shot", "host"])
+        # 2026-11-17 (owner): no words blocks; the picture before holds
         self.assertLessEqual(types.count("kinetic_title"), editor.WORDS_MAX)
         self.assertTrue(edit["captions"] and edit["captions"][0]["words"])
         lower = edit["scenes"][2]["data"]
