@@ -38,7 +38,7 @@ jobs:
       - name: Pick the production (latest-long / latest-short = the newest finished one in the checkpoint)
         id: pick
         run: |
-          ls productions | tail -40
+          for d in productions/*/; do echo "$d: $(ls "$d" | grep -E 'narration|research|timed-words' | tr '\n' ' ')"; done
           PID="${{ inputs.production_id }}"
           case "$PID" in latest-*)
             F="${PID#latest-}"
