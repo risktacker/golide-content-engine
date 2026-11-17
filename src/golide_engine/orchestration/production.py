@@ -1011,9 +1011,17 @@ class ProductionService:
             self._reserve(spec, text_model,
                           Usage(input_tokens=max(1, len(script_input) // 4) + 9000, output_tokens=script_tokens * 2),
                           stage="script")
+            if close:
+                # 2026-11-17 (owner): the one job, like the free tool that did it better: the transcript, a short fact
+                # check of names and numbers, nothing else (no brief, no topic packet, no research dump)
+                checks = "\n".join(f"- {c.get('claim', '')}" for c in (research.get("claims") or [])[:40] if c.get("claim"))
+                script_request = f"{models_block}\n\nFACT CHECK (names, numbers and dates only)\n{checks or '(none)'}"
+            else:
+                script_request = (f"{topic_packet(spec)}TOPIC BRIEF\n{spec['brief']}{source_video}{models_block}\n\n"
+                                  f"VERIFIED RESEARCH\n{json.dumps(research)}")
             output = text.generate_json(
                 story_instructions(fmt, model_seconds, close_model=close),
-                f"{topic_packet(spec)}TOPIC BRIEF\n{spec['brief']}{source_video}{models_block}\n\nVERIFIED RESEARCH\n{json.dumps(research)}",
+                script_request,
                 STORY_SCHEMA,
                 max_output_tokens=script_tokens * 2,   # high effort thinks first
                 reasoning_effort=SPOKEN_PASS_EFFORT,
@@ -1034,8 +1042,8 @@ class ProductionService:
                     story_instructions(fmt, model_seconds, close_model=close),
                     f"YOUR SCRIPT (it is {spoken} spoken words; it must be {target['words_min']} to "
                     f"{target['words_max']}). Rewrite it to that size: the same story, facts, order, chapters and "
-                    f"markers, every part kept in proportion; {'tighten every part' if spoken > target['words_max'] else 'go deeper inside every part with real facts from the research'}.\n"
-                    f"{json.dumps(output.value)}\n\nVERIFIED RESEARCH\n{json.dumps(research)}",
+                    f"markers, every part kept in proportion; {'tighten every part' if spoken > target['words_max'] else ('keep more of each beat from the MODEL SCRIPT' if close else 'go deeper inside every part with real facts from the research')}.\n"
+                    f"{json.dumps(output.value)}\n\n" + (script_request if close else f"VERIFIED RESEARCH\n{json.dumps(research)}"),
                     STORY_SCHEMA, max_output_tokens=script_tokens * 2, reasoning_effort=SPOKEN_PASS_EFFORT)
                 self._record_text(production_id, "script-story-resize", output)
             # 2026-11-13 (owner): problems that would make the read sound wrong ("..." stops, loose sentences in a
