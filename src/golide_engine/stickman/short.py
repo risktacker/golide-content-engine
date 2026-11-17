@@ -240,8 +240,8 @@ def shot_frames(project: Path) -> list[int]:
     text = _read(project / "web" / "story.js")
     spans = [(int(a), int(b)) for a, b in re.findall(r"\ba:\s*(\d+)\s*,\s*b:\s*(\d+)", text)]
     out = set()
-    for a, b in spans:
-        out |= {(a + b) // 2, min(b, a + 3)}
+    for a, b in spans:          # just after the cut, past the kit's 6-frame white flash on a time jump
+        out |= {(a + b) // 2, min(b, a + 10)}
     return sorted(out)
 
 
@@ -264,7 +264,7 @@ def look_check(project: Path) -> tuple[list[Path], str]:
     images = [Image.open(p).convert("L").resize((108, 192)) for p in paths]
     for f, im in zip(picks, images):
         st = ImageStat.Stat(im)
-        if st.stddev[0] < 8:
+        if st.stddev[0] < 8 and st.mean[0] < 235:       # a bright flat frame is the kit's flash, on purpose
             problems.append(f"frame {f} is nearly one flat colour: the camera is inside or behind something, or nothing is lit")
     for (f0, a), (f1, b) in zip(zip(picks, images), list(zip(picks, images))[1:]):
         if ImageStat.Stat(ImageChops.difference(a, b)).mean[0] < 1.0:
@@ -373,28 +373,75 @@ def finish(project: Path, voice: Path) -> Path:
 
 
 # ---------------------------------------------------------------- the whole Short
+FIX_SCHEMA = {
+    "type": "object", "additionalProperties": False,
+    "properties": {"edits": {"type": "array", "items": {"type": "object", "additionalProperties": False, "properties": {
+        "part": {"type": "string", "enum": ["world_js", "world_state_js", "story_js", "cast_js", "cues_py"]},
+        "old": {"type": "string"}, "new": {"type": "string"}}, "required": ["part", "old", "new"]}}},
+    "required": ["edits"],
+}
+FIX_ROUNDS = 2
+
+
+def fix_request(parts: dict[str, Any], problems: str) -> str:
+    """The build that failed, part by part, with the check's problems: the writer answers with small exact edits."""
+    shown = "\n\n".join(f"===== {k} =====\n{parts.get(k) or ''}" for k in ("world_js", "world_state_js", "story_js", "cast_js", "cues_py"))
+    return (f"YOUR BUILD BELOW FAILED THE LOOK CHECK:\n{problems}\n\nFix it with the fewest exact edits. Each edit names the "
+            f"part, an `old` text that occurs exactly once in that part, and its `new` text. Change nothing else.\n\n{shown}")
+
+
+def apply_edits(parts: dict[str, Any], edits: list[dict[str, str]]) -> dict[str, Any]:
+    out = dict(parts)
+    for e in edits:
+        text = str(out.get(e["part"]) or "")
+        if text.count(e["old"]) != 1:
+            raise ValueError(f"edit for {e['part']} does not match exactly once: {e['old'][:80]!r}")
+        out[e["part"]] = text.replace(e["old"], e["new"])
+    return out
+
+
+def _check(project: Path, parts: dict[str, Any], timing: dict[str, Any], attempt: int) -> str:
+    try:
+        build_project(project, parts, timing)
+        _, problems = look_check(project)        # a script that does not parse shows up as a page error here
+    except Exception as error:  # noqa: BLE001 - a broken build goes back to the writer (timeouts too)
+        problems = str(error)[:1500]
+    sheet = project / "stills" / "sheet.jpg"
+    if sheet.exists():
+        shutil.copy(sheet, project / "stills" / f"sheet-attempt{attempt}.jpg")
+    print(json.dumps({"status": "stickman_look_check", "attempt": attempt, "ok": not problems, "problems": problems[:400]}),
+          flush=True)
+    return problems
+
+
 def make(text, project: Path, title: str, words: list[dict[str, Any]], duration: float, voice: Path,
          workers: int = 3, record=None) -> Path | None:
-    """Write (one retry with the look check's problems), render and finish one Short. None when it failed twice."""
+    """Write the Short, then up to FIX_ROUNDS rounds of small edits for whatever the look check finds; render and
+    finish it. None when it still fails (production makes the Short in Goli)."""
     timing = phrases(words, duration)
     total = timing["phrases"]["frames30"]
-    problems = ""
-    for attempt in (1, 2):
-        out = text.generate_json(instructions(), request(title, timing, problems), CODE_SCHEMA, max_output_tokens=60000)
-        if record:
-            record(f"stickman-short-{attempt}", out)
-        parts = out.value
-        try:
-            build_project(project, parts, timing)
-            _, problems = look_check(project)        # a script that does not parse shows up as a page error here
-        except Exception as error:  # noqa: BLE001 - a broken build goes back to the writer once (timeouts too)
-            problems = str(error)[:1500]
-        print(json.dumps({"status": "stickman_look_check", "attempt": attempt, "ok": not problems, "problems": problems[:300]}))
+    out = text.generate_json(instructions(), request(title, timing), CODE_SCHEMA, max_output_tokens=60000)
+    if record:
+        record("stickman-short-1", out)
+    parts = out.value
+    problems = _check(project, parts, timing, 1)
+    for attempt in range(2, FIX_ROUNDS + 2):
         if not problems:
-            shutil.copy(voice, project / f"voice{voice.suffix.lower()}")
-            render(project, total, workers)
-            return finish(project, voice)
-    return None
+            break
+        fix = text.generate_json(instructions(), fix_request(parts, problems), FIX_SCHEMA, max_output_tokens=12000)
+        if record:
+            record(f"stickman-short-fix-{attempt}", fix)
+        try:
+            parts = apply_edits(parts, fix.value["edits"])
+        except ValueError as error:
+            problems = f"{problems}\nYour last edits did not apply: {error}"
+            continue
+        problems = _check(project, parts, timing, attempt)
+    if problems:
+        return None
+    shutil.copy(voice, project / f"voice{voice.suffix.lower()}")
+    render(project, total, workers)
+    return finish(project, voice)
 
 
 if __name__ == "__main__" and len(sys.argv) > 1 and sys.argv[1] == "frames":

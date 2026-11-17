@@ -49,3 +49,13 @@ def test_the_writer_gets_the_skill_and_the_kit_code():
     for piece in ("window.renderFrame", "export const camFromKeys", "export class Pen", "export const romanFront"):
         assert piece in rules
     assert "nobody's mouth talks" in rules
+
+
+def test_fix_rounds_apply_exact_edits_only():
+    parts = {"story_js": "const x = MATH.sin(1);", "world_js": "a", "world_state_js": "b", "cast_js": "", "cues_py": ""}
+    fixed = short.apply_edits(parts, [{"part": "story_js", "old": "MATH.sin", "new": "Math.sin"}])
+    assert fixed["story_js"] == "const x = Math.sin(1);" and parts["story_js"].startswith("const x = MATH")
+    import pytest
+    with pytest.raises(ValueError):
+        short.apply_edits(parts, [{"part": "world_js", "old": "zzz", "new": "y"}])
+    assert "MATH.sin" in short.fix_request(parts, "ReferenceError: MATH is not defined")
