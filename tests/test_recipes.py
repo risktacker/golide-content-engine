@@ -79,3 +79,28 @@ def test_layer_stack_is_a_recipe_from_its_own_prompt():
     assert "layers" in editor.RECIPE_KEYS
     player = (recipes.KIT / "player.html").read_text(encoding="utf-8")
     assert "userData.words" in player and "inset" in player and '"Inter"' in player   # 3D labels are measured
+
+
+def test_all_six_futurepedia_prompts_are_recipes_and_blueprint_gets_its_lettering_library():
+    assert set(editor.RECIPE_KEYS) == {"xray", "layers", "white", "circuit", "glass", "blueprint"} == set(recipes.RECIPES)
+    for key in recipes.RECIPES:
+        text = recipes.recipe_text(key)
+        assert f"Name: {recipes.RECIPES[key]['name']}" in text and "REFERENCE STYLE SOURCE" in text and "SOUND KIT (" not in text
+    assert "STROKEFONT.layout(text, opts)" in recipes.recipe_text("blueprint")
+    assert "STROKEFONT.layout" not in recipes.recipe_text("glass")
+    source = (recipes.BOOK / "blueprint-build.txt").read_text(encoding="utf-8")
+    lib = (recipes.KIT / "strokefont.js").read_text(encoding="utf-8").strip()
+    assert lib.startswith("/*") and lib in source                 # the library, unchanged from its prompt
+    assert "K.words" in recipes.instructions("blueprint")
+
+
+def test_printed_labels_on_one_surface_and_3d_words_passing_the_edge():
+    box = lambda text, x0, y0, x1, y1, **k: {"text": text, "x0": x0, "y0": y0, "x1": x1, "y1": y1, **k}
+    found = [box("220", 100, 90, 200, 128, sheet=1), box("16V", 110, 120, 190, 150, sheet=1), box("C8", 100, 90, 160, 120, sheet=2)]
+    problems = recipes.printed_problems(found)
+    assert len(problems) == 1 and "220" in problems[0] and "16V" in problems[0]
+    assert "not registered" in recipes.printed_problems([{"unregistered": True}])[0]
+    passing = [box("PROMPT", -40, 300, 120, 340, world=True)]
+    assert recipes.label_problems(passing, (1600, 900), 2.0, last=False) == []      # the camera is still travelling
+    assert "leaves the frame" in recipes.label_problems(passing, (1600, 900), 7.8, last=True)[0]   # the hold
+    assert recipes.label_problems([box("GONE", -300, 10, -100, 40, world=True)], (1600, 900), 7.8) == []

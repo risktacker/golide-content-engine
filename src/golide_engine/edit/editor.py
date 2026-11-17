@@ -21,7 +21,7 @@ TYPES = ["studio", "source", "terminal", "metaphor", "object3d", "recipe", "walk
 
 OBJECTS3D = ("laptop", "phone", "server", "chip", "battery")
 # 2026-11-17 (owner): Futurepedia style recipes, a new scene written for the beat (edit/recipes.py)
-RECIPE_KEYS = ("xray", "layers")
+RECIPE_KEYS = ("xray", "layers", "white", "circuit", "glass", "blueprint")
 # 2026-11-17 (owner): animated 3D blocks; any object, not only the five presets (built from parts3d)
 MOVES3D = ("own", "explode", "assemble", "lift", "rise", "spin")
 # Futurepedia 3D atlas looks (owner's picks), one per video: Glass and Light, X-Ray, Circuit City, White Model,
@@ -130,10 +130,19 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
   up to three inner parts, each lit and named in turn, with a simple flow (heat, air, current, data, force) acting
   on them. layers = anything BUILT IN LAYERS (a tech stack, what an AI product is made of, how a request travels
   through a system): 3-5 layers top to bottom, each with a simple diagram, a name and a short line, and a pulse
-  showing the order things happen. recipe_brief = what the scene must show, from the words and research only (max 60 words). xray: the
+  showing the order things happen. white = how something FLOWS THROUGH A SYSTEM (energy, water, money, data,
+  people): a white architect's model of the system, one accent travelling its path in order, a numbered label at each
+  stop. circuit = a JOURNEY or PIPELINE through stages (a prompt through a chip, a payment through a network): a
+  circuit board at night, each stage a landmark with its printed name, a pulse carrying the order. glass = MIXTURES,
+  RATIOS AND AMOUNTS (a split of money or time, a blend, a recipe, chemistry): real glassware, amounts as levels
+  against the marks, one action per beat. blueprint = a PLAN, SET-UP or HOW SOMETHING IS MADE: a flat drawing that
+  rises into the real object, with dimensions and 2-3 numbered pointers. recipe_brief = what the scene must show, from the words and research only (max 60 words). xray: the
   object and its real look, the 1-3 inner parts to light in order and what each does in 2-5 words, the flow, and the
   brand if there is one (its colour becomes the accent). layers: each layer top to bottom with its name (1-2 words),
-  a 2-4 word line and what its little diagram shows, and what the pulse carries (a request down, the answer up). ALSO fill object3d (+ parts3d, move3d) as the stand-in shown if
+  a 2-4 word line and what its little diagram shows, and what the pulse carries (a request down, the answer up).
+  white/circuit: the source, then each stop in order with its name (1-2 words) and a 2-4 word line, and what travels.
+  glass: each ingredient with its colour and amount (in parts or %), and the action (pour, add, shake, settle).
+  blueprint: the object, its 2-3 key measurements, and 2-3 pointers (where, 2-4 words each). ALSO fill object3d (+ parts3d, move3d) as the stand-in shown if
   the scene cannot be made. Never two recipe scenes in a row.
 - metaphor: the beat explains an IDEA (a trade-off, a hidden cost, a bottleneck, layers, a loop, a level, a change):
   show it as a moving picture instead of text. metaphor = one of:
