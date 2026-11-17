@@ -183,11 +183,17 @@ def storyboard(text, project: Path, title: str, doc: dict[str, Any], research: d
         story = json.loads(out.value["story_json"])
         story["title"] = title
         (project / "story.json").write_text(json.dumps(story, indent=1, ensure_ascii=False), encoding="utf-8")
-        fix_story_icons(project)
+        unknown = fix_icons(json.loads(json.dumps(story)))
+        if attempt == 2 or not unknown:
+            fix_story_icons(project)
         try:
             left = warnings(kit("plan", project, timeout=900))
         except RuntimeError as error:
             left = [str(error)]
+        if attempt == 1 and unknown:
+            known = ", ".join(sorted(kit_icons()))
+            left = left + [f"icon {c.split(' -> ')[0]!r} is not one the kit draws; use one of: {known}, or no icon"
+                           for c in unknown if " -> " in c and not c.startswith("lower_third")]
         if any(k in w for w in left for k in ("ImportError", "ModuleNotFoundError", "cannot open shared object")):
             # 2026-11-17: the machine is broken, not the story; never pay the writer again for that
             raise RuntimeError("stickman: the kit cannot run on this machine: " + left[0][-400:])
@@ -209,38 +215,18 @@ def kit_icons() -> set[str]:
     return set(re.findall(r"(\w+)=(?:ic_|lambda)", block))
 
 
-# words a writer reaches for, and the kit icon that shows the same thing (2026-11-17: 'receipt' stopped a render)
-ICON_NEAR = {
-    "receipt": "shopping", "invoice": "shopping", "bill": "money", "cash": "money", "dollar": "money", "bank": "moneybag",
-    "wallet": "moneybag", "salary": "coins", "price": "coins", "document": "book", "paper": "book", "contract": "book",
-    "report": "book", "file": "book", "memo": "book", "letter": "book", "email": "laptop", "computer": "laptop",
-    "server": "laptop", "chip": "laptop", "gpu": "laptop", "code": "laptop", "data": "laptop", "mobile": "phone",
-    "message": "phone", "spy": "warning", "alert": "warning", "danger": "warning", "ban": "lock", "secret": "lock",
-    "security": "lock", "idea": "bulb", "mind": "brain", "time": "clock", "deadline": "hourglass", "date": "calendar",
-    "goal": "target", "win": "trophy", "award": "trophy", "love": "heart", "home": "house", "building": "house",
-    "growth": "chart_up", "rise": "chart_up", "fall": "chart_down", "loss": "chart_down", "crash": "chart_down",
-    "truck": "car", "vehicle": "car", "shop": "shopping", "cart": "shopping", "present": "gift",
-}
-
-
 def fix_icons(story: dict[str, Any], known: set[str] | None = None) -> list[str]:
-    """Every icon name in the story is one the kit can draw: an unknown one becomes the nearest kit icon (by meaning,
-    then by spelling) or is left out. Only the story format's icon places are touched: props[].icon, bubble.icon,
+    """Every icon name in the story is one the kit can draw: an unknown one is left out (nothing drawn rather than
+    a wrong picture; the voice still says it). Only the story format's icon places are touched: props[].icon, bubble.icon,
     a counter's icon and compare.icon, and icons[].name (2026-11-17: a first version also hit lower_third names).
     Returns what changed. No model call."""
-    import difflib
     known = known or kit_icons()
     changed: list[str] = []
 
     def near(name: str) -> str | None:
+        # owner 2026-11-17: never a different picture from what is said; only the same name in another spelling
         n = str(name or "").strip().lower().replace(" ", "_").replace("-", "_")
-        if n in known:
-            return n
-        for word in [n] + n.split("_"):
-            if ICON_NEAR.get(word) in known:
-                return ICON_NEAR[word]
-        close = difflib.get_close_matches(n, sorted(known), n=1, cutoff=0.75)
-        return close[0] if close else None
+        return n if n in known else None
 
     def fix(holder: dict, key: str) -> bool:
         """True when the holder keeps a drawable icon."""
@@ -294,14 +280,12 @@ def clean_up(project: Path, rounds: int = 4) -> None:
         found = collisions(project)
         if not found["problems"]:
             return
-        stuck = last is not None and len(found["hits"]) >= last
-        story = json.loads((project / "story.json").read_text(encoding="utf-8"))
-        # text that removing did not shift (2026-11-17: 32 stayed, round after round): its shot becomes a plain copy
-        # of a neighbour that draws, with no text, so the video is clean and never stops
-        hits = [dict(h, broken=True) for h in found["hits"]] if stuck else found["hits"]
-        story = drop(story, hits)
+        if last is not None and len(found["hits"]) >= last:
+            # owner 2026-11-17: only the colliding text is ever removed, never a whole shot swapped for another
+            raise RuntimeError("stickman: text that cannot be removed still collides: " + "; ".join(found["problems"][:8]))
+        story = drop(json.loads((project / "story.json").read_text(encoding="utf-8")), found["hits"])
         (project / "story.json").write_text(json.dumps(story, indent=1, ensure_ascii=False), encoding="utf-8")
-        print(json.dumps({"status": "stickman_collisions_removed", "count": len(found["hits"]), "plain_shots": stuck,
+        print(json.dumps({"status": "stickman_collisions_removed", "count": len(found["hits"]),
                           "examples": found["problems"][:6]}), flush=True)
         last = len(found["hits"])
     if collisions(project)["problems"]:
