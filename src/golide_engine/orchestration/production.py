@@ -2533,6 +2533,12 @@ class ProductionService:
             stamp(thumbnail)
             self._record_image(production_id, "thumbnail", thumbnail_cost_model, output)
         self.runner.run(production_id, "thumbnail", thumbnail_stage)
+        given = self.root / str(spec.get("thumbnail_image") or "")
+        if spec.get("thumbnail_image") and given.is_file():
+            # an approved thumbnail wins even when this video's thumbnail stage already ran on an earlier attempt
+            from PIL import Image
+            Image.open(given).convert("RGB").resize((1280, 720)).save(thumbnail)
+            print(json.dumps({"status": "thumbnail_given", "file": str(spec["thumbnail_image"])}))
         self._budget(spec)
 
         visual_srt = self.root / "build" / production_id / "visual-labels.srt"
