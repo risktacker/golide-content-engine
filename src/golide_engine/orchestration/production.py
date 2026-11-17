@@ -378,6 +378,14 @@ class ProductionService:
                               output_tokens=out.output_tokens), out.request_id))
                 if left:
                     print(json.dumps({"status": "stickman_plan_warnings_left", "warnings": left[:10]}))
+                (project / "checked").write_text("ok\n")
+            elif not (project / "checked").exists():
+                # 2026-11-17: a run that stopped after the story was written (paid for) but before its collision
+                # check finished: check and clean the saved story, never write it again
+                left = longform.warnings(longform.kit("plan", project, timeout=900))
+                print(json.dumps({"status": "stickman_saved_story_checked", "warnings": left[:10]}))
+                longform.clean_up(project)
+                (project / "checked").write_text("ok\n")
             mp4 = longform.render(project, conf.get("res"))
             video_path.parent.mkdir(parents=True, exist_ok=True)
             video_path.write_bytes(mp4.read_bytes())
