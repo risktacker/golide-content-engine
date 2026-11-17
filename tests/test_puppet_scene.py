@@ -1,8 +1,6 @@
 """2026-11-17 (owner): people in Goli videos as ReachMora puppet shots, written by the storyboard (no extra call)."""
 import json
 
-import pytest
-
 from golide_engine.edit import editor
 from golide_engine.stickman import scene
 from golide_engine.vector.align import TimedLine, Word
@@ -17,10 +15,12 @@ def test_a_shot_is_cleaned_to_what_a_beat_may_show():
     cast, shot = scene.shot_from(json.loads(json.dumps(DOC)))
     assert "talk" not in shot and "lower_third" not in shot and "s" not in shot
     assert "talk" not in shot["chars"][0] and len(shot["labels"]) == 2
-    with pytest.raises(ValueError):
-        scene.shot_from({"cast": {}, "shot": {"kind": "title"}})
-    with pytest.raises(ValueError):
-        scene.shot_from({"cast": {}, "shot": {"kind": "wide", "chars": [{"id": "ghost"}]}})
+    for bad in ({"cast": {}, "shot": {"kind": "title"}}, {"cast": {}, "shot": {"kind": "wide", "chars": [{"id": "ghost"}]}}):
+        try:
+            scene.shot_from(bad)
+        except ValueError:
+            continue
+        raise AssertionError(f"accepted {bad}")
 
 
 def test_a_project_has_the_beats_words_timing_and_one_shot(tmp_path):
