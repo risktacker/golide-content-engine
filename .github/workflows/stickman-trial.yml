@@ -30,6 +30,8 @@ jobs:
           path: |
             productions
             build
+            release-packages
+            generated
           key: golide-production-checkpoint-${{ github.run_id }}
           restore-keys: |
             golide-production-checkpoint-
