@@ -91,6 +91,7 @@ storyboard call picks gold words and pictures. Copy the method of model scripts,
   Stickman video plays in a framed panel; Goli stands full-body beside it ("beside" place in `edit/compose.py`),
   facing it, mouth on the voice, reactions on the story's events (numbers -> point, shock lines -> shock, lists and
   versus -> explain, payoff -> both hands up), at least 2.2 s apart. The video's own sound is kept untouched.
+  Long videos only (owner 2026-11-17): on a Short Goli would distract, so a Stickman Short runs without him.
 
 ## No collision (owner 2026-11-17: "I don't want collision in anything")
 - Recipe scenes (`edit/recipes.py`, `assets/recipes/player.html`): every word on screen is measured on 4 moments,
