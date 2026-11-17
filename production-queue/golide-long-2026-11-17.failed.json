@@ -83,5 +83,6 @@
     "linkedin"
   ],
   "video_style": "stickman_goli",
-  "thumbnail_image": "assets/thumbs/given/golide-long-2026-11-17.jpg"
+  "thumbnail_image": "assets/thumbs/given/golide-long-2026-11-17.jpg",
+  "_failed_runs": 3
 }
