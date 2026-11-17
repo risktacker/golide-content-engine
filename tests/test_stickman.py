@@ -1,4 +1,5 @@
 """2026-11-17 (owner): Stickman, the third visual style. Long videos run the ReachMora engine unchanged."""
+import json
 from golide_engine.stickman import longform
 
 
@@ -70,9 +71,31 @@ def test_unknown_icons_become_the_nearest_kit_icon_or_are_left_out():
         {"kind": "icon", "icons": [{"name": "receipt", "label": "PAID", "at": "paid"}, {"name": "bulb", "at": "x"}]},
         {"kind": "wide", "props": [{"icon": "gpu", "x": 1500}, {"icon": "zzqx", "x": 900}],
          "bubble": {"who": "a", "text": "hm", "icon": "spy"}, "chars": [{"id": "a", "name": "ignored"}]},
-        {"kind": "counter", "compare": {"text": "6 YEARS", "icon": "home", "at": "w"}}]}
+        {"kind": "counter", "compare": {"text": "6 YEARS", "icon": "home", "at": "w"},
+         "lower_third": {"name": "JENSEN HUANG", "sub": "CEO", "at": "jensen"}, "places": [{"name": "MORA"}]},
+        {"kind": "wide", "lower_third": {"sub": "CEO", "at": "x"}}]}
     changed = longform.fix_icons(story, known)
     assert story["shots"][0]["icons"][0]["name"] == "shopping" and story["shots"][0]["icons"][1]["name"] == "bulb"
     assert [p["icon"] for p in story["shots"][1]["props"]] == ["laptop"]          # the unknown prop is left out
     assert story["shots"][1]["bubble"]["icon"] == "warning" and story["shots"][2]["compare"]["icon"] == "house"
-    assert story["shots"][1]["chars"][0]["name"] == "ignored" and len(changed) == 5
+    assert story["shots"][1]["chars"][0]["name"] == "ignored" and len(changed) == 6
+    assert story["shots"][2]["lower_third"]["name"] == "JENSEN HUANG" and story["shots"][2]["places"][0]["name"] == "MORA"
+    assert "lower_third" not in story["shots"][3]          # a name card that lost its name goes
+
+
+def test_clean_up_turns_text_that_will_not_move_into_plain_shots(tmp_path, monkeypatch):
+    from golide_engine.stickman import longform
+    story = {"shots": [{"kind": "wide", "set": "office", "s": [0], "chars": [{"id": "a"}]},
+                       {"kind": "chart", "s": [1], "title": "STUCK", "labels": [{"text": "STUCK"}]}]}
+    (tmp_path / "story.json").write_text(json.dumps(story))
+    calls = []
+
+    def fake(project):
+        st = json.loads((project / "story.json").read_text())
+        calls.append(1)
+        bad = st["shots"][1].get("kind") == "chart"
+        return {"problems": ["shot 1: STUCK touches"] if bad else [], "hits": [{"shot": 1, "text": "NOT THERE"}] if bad else []}
+    monkeypatch.setattr(longform, "collisions", fake)
+    longform.clean_up(tmp_path)
+    out = json.loads((tmp_path / "story.json").read_text())
+    assert out["shots"][1]["kind"] == "wide" and out["shots"][1]["s"] == [1] and "labels" not in out["shots"][1]
