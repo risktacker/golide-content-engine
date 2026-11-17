@@ -41,7 +41,10 @@ export function buildExternalSpec(payload, now = new Date()) {
   if (referenceRef && !referenceRef.startsWith("r2://")) throw new Error("The reference picture did not finish uploading.");
   // 2026-11-17 (owner): a Short or a long video, in Goli or Inkee (the illustration engine)
   const format = payload.format === "long" ? "long" : "short";
-  const style = ["goli", "illustration"].includes(payload.video_style) ? payload.video_style : "goli";
+  // Stickman (owner 2026-11-17): long videos only until the Shorts kit is wired in
+  const styles = format === "long" ? ["goli", "illustration", "stickman"] : ["goli", "illustration"];
+  if (payload.video_style === "stickman" && format !== "long") throw new Error("Stickman is for long videos for now.");
+  const style = styles.includes(payload.video_style) ? payload.video_style : "goli";
   const id = "golide-external-" + lusakaStamp(now);
   return {
     id,

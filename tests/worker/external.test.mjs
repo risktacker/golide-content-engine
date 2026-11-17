@@ -40,3 +40,9 @@ test("2026-11-17: his own video can be a long video and in Inkee", () => {
   assert.equal(plain.format, "short");
   assert.equal(plain.video_style, "goli");
 });
+
+test("Stickman (2026-11-17) is a long-video style; a Short asking for it is refused", () => {
+  const spec = buildExternalSpec({ ...base, format: "long", video_style: "stickman" });
+  assert.equal(spec.video_style, "stickman");
+  assert.throws(() => buildExternalSpec({ ...base, format: "short", video_style: "stickman" }), /Stickman/);
+});

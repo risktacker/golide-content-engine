@@ -352,6 +352,52 @@ class ProductionService:
         except (OSError, ValueError):
             return ""
 
+    def _stickman_long(self, spec, work: Path, production_id: str, timed_words, narration: Path,
+                       narration_seconds: float, video_path: Path, research) -> None:
+        """A long video in the Stickman style: the ReachMora engine (vendor/reachmora) fed with the words as they were
+        spoken (so its sentences are exactly the voice), our word timings, and a storyboard written by the model
+        from the kit's story format. Runs once; the finished MP4 (picture, the kit's music and sound) is the video."""
+        from ..edit.pipeline import settings
+        from ..providers.openai_text import OpenAITextProvider
+        from ..stickman import longform
+
+        conf = settings().get("stickman") or {}
+        project = work / "stickman"
+        writer = OpenAITextProvider(conf.get("model", "gpt-5.6-sol"), conf.get("reasoning_effort", "medium"))
+
+        def stage() -> None:
+            spoken = " ".join(str(w.get("word", "")).strip() for w in timed_words if str(w.get("word", "")).strip())
+            doc = longform.prepare(project, spoken, timed_words, narration_seconds, narration)
+            if not (project / "story.json").exists():
+                self._reserve(spec, writer.model, Usage(input_tokens=30000, output_tokens=30000))
+                left = longform.storyboard(
+                    writer, project, str(spec.get("title") or "GOLIDE"), doc, research,
+                    record=lambda name, out: self.costs.record(
+                        production_id, name, "openai", writer.model,
+                        Usage(input_tokens=out.input_tokens, cached_input_tokens=out.cached_input_tokens,
+                              output_tokens=out.output_tokens), out.request_id))
+                if left:
+                    print(json.dumps({"status": "stickman_plan_warnings_left", "warnings": left[:10]}))
+            mp4 = longform.render(project, conf.get("res"))
+            video_path.parent.mkdir(parents=True, exist_ok=True)
+            video_path.write_bytes(mp4.read_bytes())
+
+        self.runner.run(production_id, "render-stickman-v1", stage, attempts=1)
+        story = json.loads((project / "story.json").read_text(encoding="utf-8"))
+        timing_doc = json.loads((project / "timing.json").read_text(encoding="utf-8"))
+        starts = {s["i"]: s["start"] for s in timing_doc["sentences"]}
+        scenes = []
+        for k, shot in enumerate(story.get("shots") or []):
+            s = shot.get("s") or []
+            if s and s[0] in starts:
+                scenes.append({"id": f"scene-{k:03d}", "start": starts[s[0]], "visual": shot.get("kind", "wide"),
+                               "visual_caption": shot.get("kind", "wide")})
+        for a, b in zip(scenes, scenes[1:] + [{"start": narration_seconds}]):
+            a["end"] = b["start"]
+            a["duration"] = round(a["end"] - a["start"], 3)
+        (work / "storyboard-vector.json").write_text(json.dumps({"renderer": "stickman", "scenes": scenes}, indent=2) + "\n",
+                                                     encoding="utf-8")
+
     def _record_text(self, production_id: str, stage: str, output: ProviderOutput) -> None:
         model = self.providers.config["text"]["model"]
         self.costs.record(production_id, stage, "openai", model, Usage(
@@ -1309,7 +1355,17 @@ class ProductionService:
         from ..edit import pipeline as edit_pipeline
         # 2026-11-11 (owner): the edit engine (real sources, Goli the host, HyperFrames motion design),
         # switched on per format in config/edit-engine.json.
-        if vector_mode and edit_pipeline.enabled(str(spec["format"]), spec):
+        stickman = str(spec.get("video_style") or "").lower() == "stickman"
+        if vector_mode and stickman and str(spec["format"]) == "long":
+            # 2026-11-17 (owner): Stickman, the third visual style. Long videos run the ReachMora 2D long-form
+            # engine unchanged (stickman/longform.py); the voice and its word timings drive it.
+            self._stickman_long(spec, work, production_id, timed_words, narration, narration_seconds, video_path,
+                                research)
+            # the kit synthesizes its own music bed; the registry entry keeps the ledger's shape
+            music = MusicRegistry(self.root / "config/music-registry.json").select(
+                spec["music"]["mood"], spec["music"].get("track_id")
+            )
+        elif vector_mode and edit_pipeline.enabled(str(spec["format"]), spec):
             held = render_hold_reason(self.root, str(spec["format"]))
             already = self.database.rows(
                 "SELECT 1 FROM stage_runs WHERE production_id=? AND stage='render-edit-v1' AND status='completed' LIMIT 1",

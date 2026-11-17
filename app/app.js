@@ -613,7 +613,8 @@ function pickedPlatforms(scope) {
 // illustration engine stays available as an option.
 // The choice comes up right after "Use AI voice" or after the recording uploads; the build starts on the tap.
 // 2026-11-17 (owner): the illustration style is called Inkee
-const VIDEO_STYLES = [["goli", "Goli"], ["illustration", "Inkee"]];
+// 2026-11-17 (owner): Stickman is the third style; long videos only until the Shorts kit is wired in
+const VIDEO_STYLES = [["goli", "Goli"], ["illustration", "Inkee"], ["stickman", "Stickman"]];
 let styleAsking = null;
 
 function askStyle(jobId) {
@@ -621,7 +622,8 @@ function askStyle(jobId) {
     const card = document.getElementById("job-" + jobId);
     const row = document.createElement("div");
     row.className = "style-ask";
-    row.innerHTML = '<span class="post-to-label">Video type</span>' + VIDEO_STYLES.map(([key, name]) =>
+    const long = (productionJobs.find((item) => item.job_id === jobId) || {}).format === "long";
+    row.innerHTML = '<span class="post-to-label">Video type</span>' + VIDEO_STYLES.filter(([key]) => long || key !== "stickman").map(([key, name]) =>
       '<button class="action-button style-go' + (key === "goli" ? " primary" : "") + '" data-style="' + key + '">' + name + '</button>').join("") +
       '<button class="action-button style-cancel">Cancel</button>';
     styleAsking = jobId;
