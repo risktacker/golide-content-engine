@@ -79,5 +79,15 @@ storyboard call picks gold words and pictures. Copy the method of model scripts,
 - Pace: no picture under 1.0 s (Short) / 1.5 s (long); 1 metaphor per Short, 3 per long; a strong transition
   (zoom, flash, iris, whip) at most once in three cuts, the rest glide or cut.
 
+## Stickman (owner 2026-11-17): the third visual style, next to Inkee and Goli
+- Made with the kits' own packages, imported not copied: long videos with ReachMora (`vendor/reachmora`,
+  `stickman/longform.py`), Shorts with the cartoon-short-kit (`vendor/cartoon-short-kit`, `stickman/short.py`).
+  The kit's rules win for these videos (its music, SFX, captions, chapter cards); our Short music rule doesn't apply.
+- The characters are actors: the narrator speaks, nobody's mouth talks. Real people are generic puppets, no likeness.
+- Our engine feeds only the voice, our word timings and research; Sol writes story.json (long) or the world, story,
+  cast and cue table (Short) from the kit's own documents. Checks (the kit's plan check / our look check) go back to
+  the writer once; a Short that fails twice is made in Goli.
+- Next: Goli as an optional layer beside a Stickman scene (his channel only), on/off per video.
+
 ## Checks
 `python3 -m pytest -q` must pass before every push (467 tests as of 2026-11-06).

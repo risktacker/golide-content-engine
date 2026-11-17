@@ -398,6 +398,43 @@ class ProductionService:
         (work / "storyboard-vector.json").write_text(json.dumps({"renderer": "stickman", "scenes": scenes}, indent=2) + "\n",
                                                      encoding="utf-8")
 
+    def _stickman_short(self, spec, work: Path, production_id: str, timed_words, narration: Path,
+                        narration_seconds: float, video_path: Path) -> bool:
+        """A Short in the Stickman style: the cartoon-short-kit (vendor/cartoon-short-kit), its world and story written
+        by the model for this voice (stickman/short.py). True when the video was made."""
+        from ..edit.pipeline import settings
+        from ..providers.openai_text import OpenAITextProvider
+        from ..stickman import short
+
+        conf = settings().get("stickman") or {}
+        project = work / "stickman-short"
+        writer = OpenAITextProvider(conf.get("model", "gpt-5.6-sol"), conf.get("reasoning_effort", "medium"))
+        made: dict[str, bool] = {"ok": (project / "out" / "stickman.mp4").exists()}
+
+        def stage() -> None:
+            if not made["ok"]:
+                self._reserve(spec, writer.model, Usage(input_tokens=60000, output_tokens=40000))
+                mp4 = short.make(writer, project, str(spec.get("title") or "GOLIDE"), timed_words, narration_seconds,
+                                 narration, workers=int(conf.get("workers", 3)),
+                                 record=lambda name, out: self.costs.record(
+                                     production_id, name, "openai", writer.model,
+                                     Usage(input_tokens=out.input_tokens, cached_input_tokens=out.cached_input_tokens,
+                                           output_tokens=out.output_tokens), out.request_id))
+                made["ok"] = bool(mp4 and mp4.exists())
+            if made["ok"]:
+                video_path.parent.mkdir(parents=True, exist_ok=True)
+                video_path.write_bytes((project / "out" / "stickman.mp4").read_bytes())
+
+        self.runner.run(production_id, "render-stickman-short-v1", stage, attempts=1)
+        if made["ok"]:
+            story = (project / "web" / "story.js").read_text(encoding="utf-8")
+            spans = [(int(a), int(b)) for a, b in re.findall(r"\ba:\s*(\d+)\s*,\s*b:\s*(\d+)", story)]
+            scenes = [{"id": f"scene-{k:03d}", "start": a / 30, "end": (b + 1) / 30, "duration": round((b + 1 - a) / 30, 3),
+                       "visual": "stickman", "visual_caption": "stickman"} for k, (a, b) in enumerate(spans)]
+            (work / "storyboard-vector.json").write_text(json.dumps({"renderer": "stickman", "scenes": scenes}, indent=2) + "\n",
+                                                         encoding="utf-8")
+        return made["ok"]
+
     def _record_text(self, production_id: str, stage: str, output: ProviderOutput) -> None:
         model = self.providers.config["text"]["model"]
         self.costs.record(production_id, stage, "openai", model, Usage(
@@ -1355,13 +1392,29 @@ class ProductionService:
         from ..edit import pipeline as edit_pipeline
         # 2026-11-11 (owner): the edit engine (real sources, Goli the host, HyperFrames motion design),
         # switched on per format in config/edit-engine.json.
-        stickman = str(spec.get("video_style") or "").lower() == "stickman"
-        if vector_mode and stickman and str(spec["format"]) == "long":
-            # 2026-11-17 (owner): Stickman, the third visual style. Long videos run the ReachMora 2D long-form
-            # engine unchanged (stickman/longform.py); the voice and its word timings drive it.
-            self._stickman_long(spec, work, production_id, timed_words, narration, narration_seconds, video_path,
-                                research)
-            # the kit synthesizes its own music bed; the registry entry keeps the ledger's shape
+        # 2026-11-17 (owner): Stickman, the third visual style, made with the kits' own packages: long videos with
+        # the ReachMora 2D long-form engine (stickman/longform.py), Shorts with the cartoon-short-kit
+        # (stickman/short.py). A Short whose scene could not be made twice is made in Goli instead.
+        stickman_made = False
+        if vector_mode and str(spec.get("video_style") or "").lower() == "stickman":
+            if str(spec["format"]) == "long":
+                self._stickman_long(spec, work, production_id, timed_words, narration, narration_seconds, video_path,
+                                    research)
+                stickman_made = True
+                from ..stickman import longform
+                pauses = longform.gaps(work / "stickman")
+                if pauses:     # the kit's silent chapter cards: the captions move with the voice
+                    shifted = work / "spoken-captions-stickman.srt"
+                    shifted.write_text(longform.shift_srt(spoken_srt.read_text(encoding="utf-8"), pauses), encoding="utf-8")
+                    spoken_srt = shifted
+            else:
+                stickman_made = self._stickman_short(spec, work, production_id, timed_words, narration,
+                                                     narration_seconds, video_path)
+            if not stickman_made:
+                print(json.dumps({"status": "stickman_fallback_goli", "production_id": production_id}))
+                spec = {**spec, "video_style": "goli"}
+        if stickman_made:
+            # the kit makes its own music bed; the registry entry keeps the ledger's shape
             music = MusicRegistry(self.root / "config/music-registry.json").select(
                 spec["music"]["mood"], spec["music"].get("track_id")
             )

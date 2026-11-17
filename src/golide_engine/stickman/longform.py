@@ -103,8 +103,7 @@ video's title and the verified research. Follow the format and its pacing rules 
   numbers ONLY from the script and research, never invented (charts without real numbers use show_values false);
 - a reaction closeup after every big claim or twist; re-hook moments (spoken title, stamp, versus) every 60-90 s;
 - tag the first shot in each new place or era; a lower_third the first time each person appears;
-- NO silent title cards (a shot without "s"): our captions and checks follow the voice second by second, so the
-  timeline may not grow. Use spoken title shots (with "s") for chapter moments and punchlines instead;
+- chapter cards: 1-2 silent title cards for 5 min, 3-6 for 10-15 min, 0-1 for 3 min (as the format says);
 - cue mid-shot events with words from that shot's own sentences ("at": "word");
 - end on a polaroid shot whose caption is the payoff line, cued 1-2 s before the end.
 - cast: 2-4 ORIGINAL characters with distinct silhouettes and colours. Real people (a CEO, a founder) are generic
@@ -180,6 +179,31 @@ def storyboard(text, project: Path, title: str, doc: dict[str, Any], research: d
             return []
         problems = "\n".join(f"- {w}" for w in left)
     return left
+
+
+def gaps(project: Path) -> list[tuple[float, float]]:
+    """The pauses the silent chapter cards put into the video: (voice time, seconds), from the kit's own timeline."""
+    sys.path.insert(0, str(KIT))
+    try:
+        from engine.timeline import Timeline
+    finally:
+        sys.path.remove(str(KIT))
+    story = json.loads((project / "story.json").read_text(encoding="utf-8"))
+    timing_doc = json.loads((project / "timing.json").read_text(encoding="utf-8"))
+    return [(float(v), float(d)) for v, d in Timeline(story, timing_doc).gaps]
+
+
+def shift_srt(srt: str, pauses: list[tuple[float, float]]) -> str:
+    """Captions moved by the chapter-card pauses before them, so they stay on the voice in the finished video."""
+    def at(stamp: str) -> str:
+        h, m, rest = stamp.split(":")
+        sec, ms = rest.split(",")
+        t = int(h) * 3600 + int(m) * 60 + int(sec) + int(ms) / 1000
+        t += sum(d for v, d in pauses if v <= t + 1e-9)
+        ms_total = int(round(t * 1000))
+        return f"{ms_total // 3600000:02d}:{ms_total // 60000 % 60:02d}:{ms_total // 1000 % 60:02d},{ms_total % 1000:03d}"
+    return re.sub(r"(\d\d:\d\d:\d\d,\d\d\d) --> (\d\d:\d\d:\d\d,\d\d\d)",
+                  lambda m: f"{at(m.group(1))} --> {at(m.group(2))}", srt)
 
 
 def render(project: Path, res: str | None = None) -> Path:

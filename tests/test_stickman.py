@@ -31,7 +31,7 @@ def test_the_writer_follows_the_kits_story_format_without_silent_cards():
     rules = longform.instructions()
     fmt = (longform.KIT / "references" / "story-format.md").read_text(encoding="utf-8")
     assert fmt in rules
-    assert "NO silent title cards" in rules and "never invented" in rules and "never a likeness" in rules
+    assert "chapter cards" in rules and "never invented" in rules and "never a likeness" in rules
 
 
 def test_plan_warnings_are_read_from_the_kits_output():
@@ -42,3 +42,20 @@ def test_plan_warnings_are_read_from_the_kits_output():
 def test_the_kit_is_vendored_unchanged():
     assert (longform.KIT / "engine" / "shots.py").exists() and (longform.KIT / "CREDITS.md").exists()
     assert "ReachMora" in (longform.KIT / "SKILL.md").read_text(encoding="utf-8")
+
+
+def test_captions_move_with_the_chapter_card_pauses():
+    srt = "1\n00:00:01,000 --> 00:00:02,000\nhello there\n\n2\n00:00:12,500 --> 00:00:13,000\nlater on\n"
+    out = longform.shift_srt(srt, [(10.0, 1.6)])
+    assert "00:00:01,000 --> 00:00:02,000" in out and "00:00:14,100 --> 00:00:14,600" in out
+
+
+def test_the_kits_timeline_gives_the_pauses(tmp_path):
+    import json
+    script = "One two three. Four five six.\n"
+    doc = longform.timing(script, _words(script), 3.0)
+    (tmp_path / "timing.json").write_text(json.dumps(doc))
+    (tmp_path / "story.json").write_text(json.dumps({"shots": [{"kind": "wide", "s": [0]}, {"kind": "title", "text": "Two"},
+                                                               {"kind": "wide", "s": [1]}]}))
+    pauses = longform.gaps(tmp_path)
+    assert len(pauses) == 1 and pauses[0][1] == 1.6
