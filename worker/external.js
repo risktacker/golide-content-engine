@@ -17,6 +17,21 @@ const SHORT_SCORES = {
   evidence_strength: 8, novelty: 8, replay_or_loop: 8, revenue_fit: 6,
 };
 
+// 2026-11-17 (owner): the styles a Goli video may use. Free ones (no model call) listed by key; paid ones (a model
+// writes the scene) with how many, 0 to 20. Anything else is dropped. Null when nothing usable was sent.
+const FREE_LOOKS = ["puppets", "layers", "circuit", "glass"];
+const PAID_LOOKS = ["xray", "white", "blueprint"];
+export function cleanLooks(value) {
+  if (!value || typeof value !== "object") return null;
+  const free = Array.isArray(value.free) ? [...new Set(value.free.map(String).filter((k) => FREE_LOOKS.includes(k)))] : [...FREE_LOOKS];
+  const paid = {};
+  for (const [key, n] of Object.entries(value.paid && typeof value.paid === "object" ? value.paid : {})) {
+    const count = Math.max(0, Math.min(20, Math.round(Number(n) || 0)));
+    if (PAID_LOOKS.includes(key) && count) paid[key] = count;
+  }
+  return { free, paid };
+}
+
 function text(value, max = 20000) {
   return String(value ?? "").trim().slice(0, max);
 }
@@ -46,8 +61,10 @@ export function buildExternalSpec(payload, now = new Date()) {
   let style = ["goli", "illustration", "stickman", "stickman_goli"].includes(payload.video_style) ? payload.video_style : "goli";
   if (style === "stickman_goli" && format !== "long") style = "stickman";   // Shorts: Stickman alone (owner 2026-11-17)
   const id = "golide-external-" + lusakaStamp(now);
+  const looks = style === "goli" ? cleanLooks(payload.looks) : null;
   return {
     id,
+    ...(looks ? { looks } : {}),
     studio_managed: true,
     format,
     video_style: style,

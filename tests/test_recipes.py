@@ -41,7 +41,8 @@ def test_the_editor_makes_a_recipe_scene_with_its_words_and_a_house_3d_stand_in(
     s.update(type="recipe", first_line=0, last_line=0, goli_corner=False, poses=[], rows=[], items=[], shots=[],
              points=[], brands=[], parts3d=[], recipe="xray", recipe_brief="A GPU: die, memory, heat", object3d="chip",
              move3d="explode", punch="memory")
-    edit = editor.build({"scenes": [s]}, _lines(), 4.0, "long", [], None, [], [])
+    edit = editor.build({"scenes": [s]}, _lines(), 4.0, "long", [], None, [], [],
+                        looks=editor.looks_for({"paid": {"xray": 1}}))
     sc = next(x for x in edit["scenes"] if x["type"] == "recipe_clip")
     assert sc["data"]["recipe"] == "xray" and sc["data"]["words"][0]["text"] == "Inside"
     assert sc["data"]["fallback"]["object"] == "chip" and sc["data"]["fallback"]["move"] == "explode"
@@ -104,3 +105,58 @@ def test_printed_labels_on_one_surface_and_3d_words_passing_the_edge():
     assert recipes.label_problems(passing, (1600, 900), 2.0, last=False) == []      # the camera is still travelling
     assert "leaves the frame" in recipes.label_problems(passing, (1600, 900), 7.8, last=True)[0]   # the hold
     assert recipes.label_problems([box("GONE", -300, 10, -100, 40, world=True)], (1600, 900), 7.8) == []
+
+
+def _scene(**kw):
+    s = {k: None for k in editor.SCENE["required"]}
+    s.update(type="recipe", first_line=0, last_line=0, goli_corner=False, poses=[], rows=[], items=[], shots=[],
+             points=[], brands=[], parts3d=[])
+    s.update(kw)
+    return s
+
+
+def test_switches_default_to_every_free_style_and_no_paid_one():
+    assert editor.looks_for(None) == {"free": list(editor.FREE_LOOKS), "paid": {}}
+    got = editor.looks_for({"free": ["layers", "bogus"], "paid": {"xray": 2, "white": 0, "layers": 3}})
+    assert got == {"free": ["layers"], "paid": {"xray": 2}}
+    text = editor.instructions("long", got)
+    assert "recipe may be xray (at most 2 in the video), layers" in text and "Do not use puppets" in text
+    assert "PUPPET SHOT FORMAT" in editor.instructions("long") and "glass:" in editor.instructions("long")
+
+
+def test_a_paid_style_is_used_only_when_switched_on_and_only_up_to_its_count():
+    x = dict(recipe="xray", recipe_brief="A GPU", object3d="chip", move3d="explode")
+    lines = _lines()
+    raw = {"scenes": [_scene(**x)]}
+    off = editor.build(raw, lines, 4.0, "long", [], None, [], [])
+    assert not any(s["type"] == "recipe_clip" for s in off["scenes"])          # not switched on: no spend
+    on = editor.build(raw, lines, 4.0, "long", [], None, [], [], looks=editor.looks_for({"paid": {"xray": 1}}))
+    assert [s["data"]["recipe"] for s in on["scenes"] if s["type"] == "recipe_clip"] == ["xray"]
+
+
+def test_a_free_style_scene_carries_its_fill_and_needs_no_brief():
+    fill = {"stops": ["Prompt", "Memory", "Blackwell", "Answer"]}
+    raw = {"scenes": [_scene(recipe="circuit", fill=json.dumps(fill))]}
+    edit = editor.build(raw, _lines(), 4.0, "long", [], None, [], [])
+    sc = next(s for s in edit["scenes"] if s["type"] == "recipe_clip")
+    assert sc["data"]["fill"] == fill and sc["data"]["recipe"] == "circuit"
+    off = editor.build(raw, _lines(), 4.0, "long", [], None, [], [], looks=editor.looks_for({"free": []}))
+    assert not any(s["type"] == "recipe_clip" for s in off["scenes"])
+
+
+def test_free_fills_rewrite_only_the_content_block_and_stretch_to_the_beat():
+    code = recipes.fill_code("circuit", {"stops": ["Prompt", "HBM memory", "Blackwell", "Answer"]}, 6.0)
+    ref = recipes.reference_code("circuit")
+    assert '["PROMPT", "HBM MEMORY", "BLACKWELL", "ANSWER"]' in code and "'MEMORY', 'PROCESSOR'" not in code
+    assert code[code.find("// ---------------------------------------------------------------- materials"):][:2000] in ref \
+        or len(code) > len(ref) - 2000
+    assert "D = 6.000" in code and "api.update(t * k)" in code
+    import pytest
+    with pytest.raises(ValueError):
+        recipes.content_block("circuit", {"stops": ["one", "two"]})
+    with pytest.raises(ValueError):
+        recipes.content_block("glass", {"first": {"name": "a", "parts": 3}, "second": {"name": "b", "parts": 3},
+                                        "captions": ["a"] * 5})
+    with pytest.raises(ValueError):
+        recipes.content_block("xray", {})
+    assert set(recipes.FREE) | set(recipes.PAID) == set(recipes.RECIPES)

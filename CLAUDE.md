@@ -103,7 +103,15 @@ storyboard call picks gold words and pictures. Copy the method of model scripts,
 - Stickman long (`stickman/collide.py`): real frames of every shot; text touching text, leaving the frame or over a
   head goes back to Sol, and whatever still collides is taken out of the story. Goli never covers the panel.
 - All six Futurepedia prompts are recipes (owner 2026-11-17): xray, layers, white, circuit, glass, blueprint.
-- Recipes ship OFF (`config/edit-engine.json` recipes.enabled): no Sol spend without the owner's go.
+
+## Styles in Goli videos: cost in cents (owner 2026-11-17)
+- Free (no model call, the storyboard fills them): Layer Stack, Circuit City, Glass and Light (the reference's own
+  "content (change this block for a new topic)" block, `recipes.fill_code`, timing stretched to the beat) and
+  Puppets: beats about people who are not one named real person as ONE ReachMora shot (`stickman/scene.py`, the
+  kit's story format, drawn by its own engine). A free scene that fails its check is not retried: its stand-in shows.
+- Paid (Sol writes the scene, about $0.30 each): X-Ray, White Model, Blueprint. Only when switched on for the video
+  in Studio, each up to the count he sets (`spec.looks = {free: [...], paid: {xray: n}}`, `editor.looks_for`).
+  Scheduled automatic runs never switch paid ones on. Real people stay real photo cards, never puppets.
 
 ## Checks
 `python3 -m pytest -q` must pass before every push (467 tests as of 2026-11-06).

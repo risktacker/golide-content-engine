@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { buildExternalSpec } from "../../worker/external.js";
+import { buildExternalSpec, cleanLooks } from "../../worker/external.js";
 
 const base = { script: "one two three four five six seven eight nine ten.", voice_ref: "r2://temp/a.m4a" };
 
@@ -49,4 +49,15 @@ test("Stickman (2026-11-17) is the third style, for Shorts and long videos", () 
 test("Stickman + Goli is for long videos; a Short asked for it is Stickman alone", () => {
   assert.equal(buildExternalSpec({ ...base, format: "short", video_style: "stickman_goli" }).video_style, "stickman");
   assert.equal(buildExternalSpec({ ...base, format: "long", video_style: "stickman_goli" }).video_style, "stickman_goli");
+});
+
+
+test("a Goli video carries its style switches; paid counts are whole numbers 0-20; others are dropped", () => {
+  assert.deepEqual(cleanLooks({ free: ["layers", "bogus", "layers"], paid: { xray: 2.4, white: 0, blueprint: 99, nope: 3 } }),
+    { free: ["layers"], paid: { xray: 2, blueprint: 20 } });
+  assert.equal(cleanLooks(null), null);
+  assert.deepEqual(cleanLooks({}).free, ["puppets", "layers", "circuit", "glass"]);
+  const spec = buildExternalSpec({ ...base, video_style: "goli", looks: { free: [], paid: { xray: 1 } } });
+  assert.deepEqual(spec.looks, { free: [], paid: { xray: 1 } });
+  assert.equal(buildExternalSpec({ ...base, video_style: "stickman", looks: { paid: { xray: 1 } } }).looks, undefined);
 });
