@@ -796,7 +796,7 @@ class Composer:
             if e.get("what") in sounds and 0.3 <= float(e.get("t", 0)) < dur - 0.2:
                 self.cue(sounds[e["what"]], t0 + float(e["t"]))
 
-    STAGE = {"long": (24, 152, 1380, 776), "short": (350, 60, 700, 1244)}   # x, y, w, h of a finished video's panel
+    STAGE = {"long": (28, 118, 1500, 844), "short": (350, 60, 700, 1244)}   # x, y, w, h of a finished video's panel
 
     def stage_video(self, t0, dur, data, how="cut"):
         """2026-11-17 (owner): a finished video (a Stickman video) playing in a dark frame, with Goli beside it as the
@@ -1175,7 +1175,7 @@ class Composer:
         # pushed the proof small, so 700 beside a larger proof area
         side = 560 if self.fmt == "short" else 700
         # "beside": next to a finished video's panel (Stickman + Goli, 2026-11-17): full body so his arms read
-        beside = 800 if self.fmt == "long" else 680
+        beside = 660 if self.fmt == "long" else 680     # 2026-11-17 (owner): 800 looked huge on long
         size = {"full": 1000, "left": 860, "right": 860, "corner": 420, "studio": studio.layout(self.fmt)["size"],
                 "lower": studio.layout("lower")["size"], "side": side, "beside": beside}[place]
         w = size * mascot.VIEW[0] / mascot.VIEW[1]
