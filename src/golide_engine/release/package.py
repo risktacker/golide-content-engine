@@ -38,7 +38,11 @@ class ReleasePackager:
             archive = destination.with_suffix(".zip")
             if not failures and archive.exists():
                 return archive
-            raise FileExistsError(f"release package already exists but is incomplete: {destination}; {failures}")
+            if "manifest missing" in failures:
+                # a build that stopped half way (a missing source file) left only copies behind: start it again
+                shutil.rmtree(destination)
+            else:
+                raise FileExistsError(f"release package already exists but is incomplete: {destination}; {failures}")
         destination.mkdir(parents=True)
         manifest_files = {}
         for role in REQUIRED_FILES:
