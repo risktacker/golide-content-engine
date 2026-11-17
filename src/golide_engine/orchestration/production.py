@@ -352,6 +352,20 @@ class ProductionService:
         except (OSError, ValueError):
             return ""
 
+    @staticmethod
+    def _limit_peaks(video: Path, ceiling_db: float = -1.0) -> None:
+        """2026-11-17: the kit's own mix can peak above the channel's ceiling (the Nvidia video measured +0.16 dBTP
+        against -1). Only the peaks are held down, the picture is copied and nothing else in the sound changes."""
+        from ..quality.audio import measure_loudness
+        if measure_loudness(video)["true_peak_dbtp"] <= ceiling_db:
+            return
+        fixed = video.with_name(video.stem + "-limited" + video.suffix)
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(video), "-map", "0:v:0", "-map", "0:a:0", "-c:v", "copy",
+                        "-af", "alimiter=limit=0.79:attack=1:release=60:level=disabled", "-c:a", "aac", "-b:a", "256k",
+                        "-movflags", "+faststart", str(fixed)], check=True)
+        fixed.replace(video)
+        print(json.dumps({"status": "peaks_limited", "true_peak_dbtp": measure_loudness(video)["true_peak_dbtp"]}))
+
     def _stickman_long(self, spec, work: Path, production_id: str, timed_words, narration: Path,
                        narration_seconds: float, video_path: Path, research) -> None:
         """A long video in the Stickman style: the ReachMora engine (vendor/reachmora) fed with the words as they were
@@ -1484,6 +1498,7 @@ class ProductionService:
                                                      "duration": narration_seconds, "visual": "stickman",
                                                      "visual_caption": "stickman"}]}
             rendered_seconds = self._duration(video_path)
+            self._limit_peaks(video_path)
         elif vector_mode and edit_pipeline.enabled(str(spec["format"]), spec):
             held = render_hold_reason(self.root, str(spec["format"]))
             already = self.database.rows(
