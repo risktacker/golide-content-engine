@@ -150,9 +150,10 @@ def _serve(folder: Path):
 
 
 def frames(folder: Path, size: tuple[int, int], samples: int, times: list[float], out: Path,
-           timeout_ms: int = 180000) -> list[str]:
+           timeout_ms: int = 180000, boxes: list | None = None) -> list[str]:
     """Render the scene at the given times into out/NNNNN.jpg (numbered by position in `times`). Returns the page's
-    errors (empty when it ran clean)."""
+    errors (empty when it ran clean). `boxes`, when given, gets the words written on screen at each time with their
+    boxes (from the player's record of the overlay)."""
     from playwright.sync_api import sync_playwright
 
     out.mkdir(parents=True, exist_ok=True)
@@ -171,6 +172,8 @@ def frames(folder: Path, size: tuple[int, int], samples: int, times: list[float]
                     data = page.evaluate("(t) => { window.seek(t); return document.getElementById('c').toDataURL("
                                          "'image/jpeg', 0.94); }", t)
                     (out / f"{i:05d}.jpg").write_bytes(base64.b64decode(data.split(",", 1)[1]))
+                    if boxes is not None:
+                        boxes.append(page.evaluate("window.boxes"))
                 errors += page.evaluate("window.errors")
             browser.close()
     finally:
@@ -184,8 +187,9 @@ def check(code: str, folder: Path, size: tuple[int, int], duration: float) -> tu
     from PIL import Image, ImageChops, ImageStat
 
     stage_folder(code, folder)
-    times = [min(0.4, duration * 0.1), duration * 0.5, max(0.0, duration - 0.15)]
-    errors = frames(folder, size, 2, times, folder / "check")
+    times = [min(0.4, duration * 0.1), duration * 0.5, max(0.0, duration - 0.15), duration * 0.75]
+    words: list = []
+    errors = frames(folder, size, 2, times, folder / "check", boxes=words)
     if errors:
         return [], "The page threw errors:\n" + "\n".join(e[:600] for e in errors[:5])
     stills = [folder / "check" / f"{i:05d}.jpg" for i in range(3)]
@@ -197,7 +201,25 @@ def check(code: str, folder: Path, size: tuple[int, int], duration: float) -> tu
             problems.append(f"the {name} frame is empty (nearly one flat colour): the object or the camera is wrong")
     if ImageStat.Stat(ImageChops.difference(images[0], images[2]).resize((160, 90))).mean[0] < 1.0:
         problems.append("nothing changes between the first and last frame: the scene does not move")
-    return stills, "\n".join(problems)
+    for t, found in zip(times, words):
+        problems += label_problems(found, size, t)
+    return stills[:3], "\n".join(dict.fromkeys(problems))
+
+
+def label_problems(found: list[dict], size: tuple[int, int], t: float, pad: float = 6, margin: float = 0.025) -> list[str]:
+    """Words on screen that touch each other (with a small gap) or leave the frame."""
+    out = []
+    w, h = size
+    for b in found:
+        if b["x0"] < w * margin or b["y0"] < h * margin or b["x1"] > w * (1 - margin) or b["y1"] > h * (1 - margin):
+            out.append(f'at {t:.1f} s the label "{b["text"]}" leaves the frame: keep labels inside it')
+    for i, a in enumerate(found):
+        for b in found[i + 1:]:
+            if a["text"] == b["text"]:
+                continue
+            if min(a["x1"], b["x1"]) + pad > max(a["x0"], b["x0"]) and min(a["y1"], b["y1"]) + pad > max(a["y0"], b["y0"]):
+                out.append(f'at {t:.1f} s the labels "{a["text"]}" and "{b["text"]}" overlap: move one so they never touch')
+    return out
 
 
 def render_clip(code: str, folder: Path, size: tuple[int, int], duration: float, video: Path, samples: int = 5,

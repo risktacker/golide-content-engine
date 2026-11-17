@@ -20,6 +20,22 @@ window.addEventListener('unhandledrejection', (e) => window.errors.push(String(e
 const q = new URLSearchParams(location.search);
 const W = +q.get('w') || 1920, H = +q.get('h') || 1080, N = +q.get('n') || 4;
 const c = document.getElementById('c'); c.width = W; c.height = H;
+// every word the scene writes on its overlay is recorded with its box on screen, so the engine can check that labels
+// never touch each other or leave the frame (2026-11-17)
+window.boxes = [];
+const fill = CanvasRenderingContext2D.prototype.fillText;
+CanvasRenderingContext2D.prototype.fillText = function (text, x, y, ...rest) {
+  const cv = this.canvas;
+  if (window.recording && cv.width === W && cv.height === H && cv.id !== 'c' && this.globalAlpha > 0.5 && String(text).trim()) {
+    const m = this.measureText(text), t = this.getTransform();
+    const left = x - (m.actualBoundingBoxLeft || 0), right = x + (m.actualBoundingBoxRight || m.width);
+    const top = y - (m.actualBoundingBoxAscent || 0), bottom = y + (m.actualBoundingBoxDescent || 0);
+    const p = (a, b) => [t.a * a + t.c * b + t.e, t.b * a + t.d * b + t.f];
+    const [x0, y0] = p(left, top), [x1, y1] = p(right, bottom);
+    window.boxes.push({ text: String(text), x0: Math.min(x0, x1), y0: Math.min(y0, y1), x1: Math.max(x0, x1), y1: Math.max(y0, y1) });
+  }
+  return fill.call(this, text, x, y, ...rest);
+};
 const load = (src) => new Promise((ok, bad) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = () => bad(new Error('cannot load ' + src)); document.head.append(s); });
 try {
   await document.fonts.load('700 40px "Space Grotesk"'); await document.fonts.load('500 40px "Space Grotesk"');
@@ -30,7 +46,7 @@ try {
   if (!style) throw new Error('style.js did not register a style');
   window.S = await K.run(c, style, { samples: N, width: W, height: H });
   window.DURATION = window.S.duration;
-  window.seek = (t) => window.S.seek(t);
+  window.seek = (t) => { window.boxes = []; window.recording = true; try { window.S.seek(t); } finally { window.recording = false; } };
   window.ready = true;
 } catch (e) { window.errors.push(String(e && e.stack || e)); window.ready = true; }
 </script></body></html>

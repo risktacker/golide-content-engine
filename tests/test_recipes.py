@@ -62,3 +62,12 @@ def test_a_recipe_scene_that_cannot_be_made_becomes_the_house_3d(tmp_path, monke
                                                                                     "words": [], "fallback": None}}
     pipeline._recipes(None, {"format": "long"}, tmp_path, "p", edit, "m")
     assert [s["type"] for s in edit["scenes"]] == ["photo"] and edit["scenes"][0]["duration"] == 6
+
+
+def test_labels_that_touch_or_leave_the_frame_are_sent_back():
+    box = lambda text, x0, y0, x1, y1: {"text": text, "x0": x0, "y0": y0, "x1": x1, "y1": y1}
+    found = [box("NV-HBI LINK", 200, 100, 600, 160), box("TWO DIES", 500, 140, 800, 200), box("HBM", 200, 700, 400, 760)]
+    problems = recipes.label_problems(found, (1600, 900), 6.9)
+    assert len(problems) == 1 and "NV-HBI LINK" in problems[0] and "TWO DIES" in problems[0]
+    assert "leaves the frame" in recipes.label_problems([box("X", 1590, 100, 1650, 150)], (1600, 900), 1)[0]
+    assert recipes.label_problems([box("A", 100, 100, 300, 150), box("B", 100, 170, 300, 220)], (1600, 900), 1) == []
