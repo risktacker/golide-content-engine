@@ -25,8 +25,8 @@ RECIPE_KEYS = ("xray", "layers", "white", "circuit", "glass", "blueprint")
 # 2026-11-17 (owner): cost to cents. Free styles (the storyboard fills the reference's content block, no model call)
 # and the free puppet scenes are on unless switched off for the video; paid styles (a model writes the scene) only
 # when switched on for the video, each up to its count. Scheduled automatic runs use the free ones only.
-FREE_LOOKS = ("layers", "circuit", "glass", "puppets")
-PAID_LOOKS = ("xray", "white", "blueprint")
+FREE_LOOKS = ("layers", "circuit", "glass", "white", "puppets")
+PAID_LOOKS = ("xray", "blueprint")
 
 
 def looks_for(spec_looks: Any) -> dict[str, Any]:
@@ -225,7 +225,16 @@ def _looks_text(allowed: list[str], paid: dict[str, int], puppets: bool) -> str:
   glass: {"first": {"name", "colour" "#rrggbb", "parts" 1-3}, "second": {same}, "binder": {"name", "colour"},
     "mix_colour": "#rrggbb", "captions": exactly 5 lines of 2-6 words: the idea, the first amount, the second amount,
     what binds them, the result}; the two parts add up to at most 4.
-- xray, white, blueprint: recipe_brief as described below (a writer builds the scene).
+  white: {"stops": 2 to 6 of {"kind", "name" 1-2 words, "note" 2-4 words} in the order the thing travels,
+    "extras": up to 6 kinds that set the scene, "accent": "#rrggbb" (the one colour of what flows)}; kinds: house,
+    tower, bank, factory, datacenter, shop, school, hospital, tree, pine, forest, mountain, hill, lake, cloud, sun,
+    rain, bridge, car, truck, bus, plane, ship, pole, turbine, solar, tower_mast, person, crowd, battery, dam
+    (extras may also be road, river, train). Code lays them out.
+- xray, blueprint: recipe_brief as described below (a writer builds the scene).
+- THE REAL THING ONLY (owner 2026-11-17): a style is used only when its own objects ARE what the line names:
+  circuit only for chips, boards and electronics; glass only for liquids, mixing and amounts; layers only for things
+  that really are layered; white for buildings, nature, cities, roads, vehicles and what flows between them; xray for
+  the inside of a real object; blueprint for plans and how a thing is built. A mountain is never shown as a chip.
 - puppets: a beat about PEOPLE who are not one named real person (a team, customers, engineers, a crowd, "most
   people", a founder in a story) or a moment between people. puppet = a JSON string {"cast": {...}, "shot": {...}}
   in the ReachMora story format below: ONE shot of kind wide, closeup, walk, crowd, table, versus, icon, map,
