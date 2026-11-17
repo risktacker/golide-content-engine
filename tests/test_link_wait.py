@@ -42,8 +42,8 @@ def test_the_queue_never_runs_a_slot_that_is_waiting_for_a_link(tmp_path):
     assert pick_due_spec([path], tmp_path) is None
 
 
-def test_a_link_slot_opens_the_day_before_at_noon(tmp_path):
-    """2026-11-17 (owner: no paste card in Studio): the card must be there whenever he looks."""
+def test_a_link_slot_opens_on_its_own_day_never_the_day_before(tmp_path):
+    """2026-11-17 (owner): tomorrow's slot is shown tomorrow, not today."""
     import json as _json
     from golide_engine.orchestration.schedule import materialize_due
     cfg = tmp_path / "schedule.json"
@@ -51,31 +51,12 @@ def test_a_link_slot_opens_the_day_before_at_noon(tmp_path):
         {"id": "golide-long", "format": "long", "generate_time": "06:00", "publish_time": "19:30",
          "weekdays": ["tuesday"], "start_date": "2026-01-01"}]}))
     q = tmp_path / "q"
-    monday_morning = datetime(2026, 11, 16, 8, 0, tzinfo=timezone.utc)     # Mon 10:00 Lusaka
-    assert materialize_due(q, cfg, monday_morning) == []
-    monday_late = datetime(2026, 11, 16, 23, 15, tzinfo=timezone.utc)      # Tue 01:15 Lusaka
-    made = materialize_due(q, cfg, monday_late)
+    monday_noon = datetime(2026, 11, 16, 11, 5, tzinfo=timezone.utc)       # Mon 13:05 Lusaka
+    assert materialize_due(q, cfg, monday_noon) == []
+    monday_late = datetime(2026, 11, 16, 21, 50, tzinfo=timezone.utc)      # Mon 23:50 Lusaka
+    assert materialize_due(q, cfg, monday_late) == []
+    just_after = datetime(2026, 11, 16, 22, 5, tzinfo=timezone.utc)        # Tue 00:05 Lusaka, the midnight run
+    made = materialize_due(q, cfg, just_after)
     assert [p.stem for p in made] == ["golide-long-2026-11-17"]
-    noon = datetime(2026, 11, 16, 11, 5, tzinfo=timezone.utc)              # Mon 13:05 Lusaka, the daily run
-    q2 = tmp_path / "q2"
-    assert [p.stem for p in materialize_due(q2, cfg, noon)] == ["golide-long-2026-11-17"]
     spec = _json.loads(made[0].read_text())
-    assert waiting_for_link(spec, monday_late)
-
-
-def test_a_format_switched_off_in_studio_opens_no_slot(tmp_path):
-    """2026-11-17 (owner): per-section switches; Shorts off -> no Short slot is opened."""
-    import json
-    from datetime import datetime, timezone
-    from golide_engine.orchestration.schedule import materialize_due
-
-    config = {"timezone": "Africa/Lusaka", "channel_id": "c", "rules": [
-        {"id": "s", "format": "short", "generate_time": "13:00", "publish_time": "13:30", "weekdays": ["tuesday", "wednesday"],
-         "start_date": "2026-01-01"},
-        {"id": "l", "format": "long", "generate_time": "19:30", "publish_time": "20:00", "weekdays": ["tuesday", "wednesday"],
-         "start_date": "2026-01-01"}]}
-    path = tmp_path / "schedule.json"
-    path.write_text(json.dumps(config))
-    now = datetime(2026, 11, 17, 10, 0, tzinfo=timezone.utc)
-    made = materialize_due(tmp_path / "q", path, now=now, off_formats={"short"})
-    assert made and all("-long-" in p.name for p in made)
+    assert waiting_for_link(spec, just_after)

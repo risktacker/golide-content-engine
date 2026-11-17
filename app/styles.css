@@ -530,3 +530,11 @@ body.sheet-open{overflow:hidden}
 .looks-cost{font-size:.85rem;color:#E8C268}
 .ext-looks{margin-top:4px}
 .ext-looks[hidden]{display:none}
+
+/* 2026-11-17 (owner): a lane whose section is off collapses to its title and "Off" */
+.lane-off-tag{display:none;margin-left:auto;padding:3px 10px;border-radius:999px;border:1px solid var(--line-strong);color:var(--muted);font-size:.8rem}
+.lane.lane-off{gap:0;opacity:.75}
+.lane.lane-off>:not(.lane-top){display:none}
+.lane.lane-off .lane-count{display:none}
+.lane.lane-off .lane-off-tag{display:inline-block}
+.lane-grid:has(.lane-off){align-items:start}

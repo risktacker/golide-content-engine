@@ -46,10 +46,10 @@ def build_spec(rule: dict[str, Any], day, timezone_name: str, channel_id: str) -
     zone = ZoneInfo(timezone_name)
     generate_at = datetime.combine(day, _clock(rule["generate_time"]), zone)
     if rule.get("link_wait", True):
-        # 2026-11-17 (owner: "no paste card at all in Studio"): a slot that waits for his link opens the day
-        # before at 12:00, so the card is there whenever he looks; nothing runs or is spent until he pastes
-        # or the slot's time passes
-        generate_at = datetime.combine(day - timedelta(days=1), time(12, 0), zone)
+        # 2026-11-17 (owner): a slot that waits for his link opens at the start of its own day (00:00 Lusaka; a
+        # 00:05 run puts the card in Studio), never the day before ("supposed to be shown tomorrow not today");
+        # nothing runs or is spent until he pastes or the slot's time passes
+        generate_at = datetime.combine(day, time(0, 0), zone)
     publish_at = datetime.combine(day, _clock(rule["publish_time"]), zone)
     format = rule["format"]
     production_id = f"golide-{format}-{day.isoformat()}"
@@ -119,8 +119,7 @@ def materialize_due(
     queue = Path(queue_directory)
     queue.mkdir(parents=True, exist_ok=True)
     created: list[Path] = []
-    # 2026-11-17: today's slots and tomorrow's (a link slot opens the day before)
-    days = [local_now.date(), local_now.date() + timedelta(days=1)]
+    days = [local_now.date()]      # 2026-11-17 (owner): a slot appears on its own day only
     for rule, day in [(r, d) for d in days for r in config["rules"]]:
         if day.isoformat() < rule["start_date"]:
             continue

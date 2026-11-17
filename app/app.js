@@ -301,9 +301,13 @@ const SECTIONS = [["static", "Static posts"], ["shorts", "Shorts"], ["long", "Lo
 let sectionBusy = null;
 
 function renderSections() {
+  const on = automationControl?.sections || {};
+  // 2026-11-17 (owner): a section switched off shows only its title and "Off"
+  document.querySelectorAll(".lane[data-section]").forEach((lane) => {
+    lane.classList.toggle("lane-off", automationControl?.sections ? !on[lane.dataset.section] : false);
+  });
   const box = $("#automation-sections");
   if (!box) return;
-  const on = automationControl?.sections || {};
   box.innerHTML = SECTIONS.map(([key, name]) =>
     '<button type="button" class="section-switch' + (on[key] ? " on" : "") + '" data-section="' + key + '"' +
     (sectionBusy ? " disabled" : "") + ' title="' + name + (on[key] ? ' on: tap to switch off' : ' off: tap to switch on') + '">' +
@@ -1013,7 +1017,10 @@ async function retryJob(jobId) {
 async function loadProductionJobs() {
   try {
     const data = await api("/api/production-jobs");
-    productionJobs = data.jobs || [];
+    // 2026-11-17 (owner): a slot waiting for his link shows on its own day (Lusaka), never the day before
+    const today = new Date(Date.now() + LUSAKA_OFFSET_MS).toISOString().slice(0, 10);
+    productionJobs = (data.jobs || []).filter((job) => !(job.status === "waiting_owner_link" && job.scheduled_at &&
+      new Date(new Date(job.scheduled_at).getTime() + LUSAKA_OFFSET_MS).toISOString().slice(0, 10) > today));
   } catch {
     productionJobs = [];
   }
