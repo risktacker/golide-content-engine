@@ -62,7 +62,8 @@ storyboard call picks gold words and pictures. Copy the method of model scripts,
   about 1 in 4 scenes of a long video (max 6), 1 per Short, never the same twice in a video.
 - Owner review 2026-11-14: long videos are mostly pictures (glass 3D up to 4, metaphors, nodes, real runs); a words
   block is rare and shows a complete headline phrase, never a cut sentence or keyword pile; a long picture holds
-  instead of cutting to word fragments. His recording is the script: changed words rebuild lines, captions and
+  instead of cutting to word fragments; owner 2026-11-17: NO words blocks at all (`editor.WORDS_MAX = 0`). Text only where it is the
+  content: a real quote, a prompt to copy, the key number. His recording is the script: changed words rebuild lines, captions and
   blocks from what he said (`owner_changes.reading_from_audio`).
 - Glass 3D (`assets/edit/g3d/glass3d.js`, three.js in the video): laptop, phone, server, chip, battery in clear glass
   with lit edges, one gold part with a callout line to its label, two other parts named. Max 4 per long video, 2 per

@@ -173,9 +173,9 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
 - quote: a short real quote from the pages or research (quote, quote_by).
 - logos: 2 to 4 real product or company names (brands) named together in the beat.
 - icon: one product or company named in the beat (brands = [that name], label = what about it, max 5 words).
-- words: kinetic words, ONLY when no picture fits, AT MOST 2 IN THE WHOLE VIDEO (owner 2026-11-17: text blocks
-  almost zero; any more are dropped and the picture before holds): screen_words = a complete phrase that makes sense on its own, like a headline (max 5 words, e.g.
-  "Black pixels switch off"), never the first words of a sentence cut off and never a pile of keywords; a punch word.
+- words: NEVER (owner 2026-11-17: no text blocks; a words scene is dropped and the picture before holds). Text
+  appears only where it IS the content: a real quote (quote), a prompt the viewer copies (prompt), the key number
+  (stat). Every other beat is a picture.
 - studio: Goli at his desk, his screen shows screen_words (max 5 words) with a punch word. Use it for the opening hook,
   a reaction, a question to the viewer and the payoff; at most 1 beat in 5. poses: 1 to 2, each on a word spoken in
   that beat (talk, explain, point, point_up, point_left, shock, think, thumbs_up, shrug, wave).
@@ -1028,7 +1028,9 @@ def quiet_windows(voice_script: str, lines: list[Any], most: int = 2, longest: f
 DEEPER = {"walkthrough", "terminal", "object3d", "recipe_clip"}
 # 2026-11-17 (owner): no fixed counts for picture blocks: each one matches its words, never the same block twice in
 # a row (and never the same metaphor twice in a video). Words blocks are the exception: at most 2 in a video.
-WORDS_MAX = 2
+# 2026-11-17 (owner): no text blocks. Text only where it IS the content: a real quote (quote_card), a prompt to
+# copy (prompt_card), the key number (stat_counter); anything else is a picture
+WORDS_MAX = 0
 
 
 def _words_cap(scenes: list[dict], notes: list[str]) -> list[dict]:
