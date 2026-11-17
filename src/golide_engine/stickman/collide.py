@@ -139,7 +139,27 @@ def drop(story: dict, hits: list[dict]) -> dict:
         for side in ("left", "right"):
             if isinstance(sp.get(side), dict) and str(sp[side].get("title", "")).strip().lower() == text:
                 sp[side].pop("title")
+        _remove_text(sp, text)
     return story
+
+
+TEXT_KEYS = ("text", "title", "label", "caption", "sub", "top", "tag")
+
+
+def _remove_text(node, text: str):
+    """Only the colliding words go, wherever they sit in the shot (a list item, a bubble, a card's title); the
+    shot, its characters and its picture stay (owner 2026-11-17)."""
+    if isinstance(node, list):
+        node[:] = [x for x in node if not (isinstance(x, str) and x.strip().lower() == text)]
+        for x in node:
+            _remove_text(x, text)
+    elif isinstance(node, dict):
+        for key in list(node):
+            value = node[key]
+            if key in TEXT_KEYS and isinstance(value, str) and value.strip().lower() == text:
+                node.pop(key)
+            else:
+                _remove_text(value, text)
 
 
 if __name__ == "__main__":
