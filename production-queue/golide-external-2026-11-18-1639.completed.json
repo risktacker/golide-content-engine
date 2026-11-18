@@ -1,0 +1,83 @@
+{
+  "id": "golide-external-2026-11-18-1639",
+  "looks": {
+    "free": [
+      "puppets",
+      "white",
+      "layers",
+      "circuit",
+      "glass",
+      "xray",
+      "blueprint"
+    ],
+    "paid": {}
+  },
+  "studio_managed": true,
+  "format": "short",
+  "video_style": "goli",
+  "purpose": "external-video",
+  "title": "External video \u00b7 2026-11-18",
+  "brief": "A video built from the owner's own script and recording.",
+  "external": {
+    "title": "",
+    "script": "[curious] You\u2019re Elon Musk, the world\u2019s first trillionaire, and you\u2019re losing the AI race to a company you co-founded: OpenAI.\n\nGoogle and Anthropic are beating you, too, and it\u2019s annoying you.\n\nBut they don\u2019t know your secret genius master plan.\n\nFirst, you need an AI company. So you build xAI.\n\nNow, to train your AI model, you need GPUs. So xAI builds Colossus, one of the largest AI data centres, in just 122 days.\n\nThat\u2019s barely four months.\n\nThen Nvidia and TSMC can\u2019t make chips fast enough. You can\u2019t wait around. You want to move at full speed.\n\nSo you announce Terafab, your own chip factory.\n\n[confidently] Now, your AI is starving for training data. So you strike a $60 billion deal for Cursor, a software company that people use to build software with AI.\n\nThen you launch Grokbot, an AI agent company, so regular people can hand over their work to your AI every single day.\n\nStill not enough?\n\nYou bought Twitter back in 2022. It\u2019s a social media platform where intellectual people post their thoughts.\n\nEvery post, every reply gives you more data, a megaphone, and a promotion system for everything you sell, because you control the algorithm.\n\nAnd you\u2019re not even halfway there.\n\nYou need real-world data and images. So you build a self-driving car company called Tesla, which captures real-world data from the streets.\n\nThen Tesla builds Optimus 3, a robot with hands gentle enough to hold an egg, with incredibly precise motor control.\n\nAnd every movement it makes gives you even more data.\n\n[serious] Then you hit a wall.\n\nYour AI needs three things that Earth can\u2019t easily provide at the scale you want: power, internet, and cooling.\n\nSo you look at the Moon.\n\nThe Moon has no taxes, no politics, no shortage of space, and it\u2019s only a short distance away.\n\nIt takes just three days to travel from Earth to the Moon.\n\nSo you start a rocket company called SpaceX, which builds Starship, a rocket designed to land and fly again.\n\nNow, you need internet to train your AI.\n\nSo you create Starlink.\n\nYou wrap the planet in your own fleet of satellites, and millions of homes, ships, and planes connect through you.\n\nYou can even build spy satellites for the US government.\n\nAnd you also bought a solar company called SolarCity and renamed it Tesla Energy.\n\n[thoughtful] Now your own energy company starts building towards the biggest project anyone could imagine: a Dyson sphere.\n\nPicture the Sun as a giant light bulb.\n\nAlmost all its light flies off into space, unused.\n\nNow imagine surrounding it with millions of solar panels, swarming like bees, catching that light before it escapes.\n\nUp there, the Sun never sets, and the heat radiates into the freezing darkness of space.\n\n[slight emphasis] Now you\u2019ve won.\n\nBut one day, the internet runs out of things to say.\n\nSo you open your final company: Neuralink.\n\nA chip that reads directly from the human brain.\n\nAnd now you can expand your business to Mars, too.\n\nBecause, at this point, you already own the Earth.\n\nLike, literally.",
+    "link": "",
+    "reference_ref": "",
+    "reference_link": ""
+  },
+  "owner_voice_media_ref": "r2://temp/2026/11/18/b9db9f6f0ddd4d01b8049809872972bc-Elon-short-2m55.mp3",
+  "owner_voice_required": true,
+  "budget_class": "scheduled",
+  "generate_at": "2026-11-18T14:39:47.345Z",
+  "max_cost_usd": 6,
+  "production_authorized": true,
+  "output_destination": "render-and-upload",
+  "concept": {
+    "family": "owner-video",
+    "promise": "The owner's own script, illustrated",
+    "scores": {
+      "scroll_stop": 9,
+      "visual_payoff": 9,
+      "curiosity_gap": 9,
+      "retention_design": 9,
+      "broad_relevance": 8,
+      "evidence_strength": 8,
+      "novelty": 8,
+      "replay_or_loop": 8,
+      "revenue_fit": 6
+    }
+  },
+  "platform_demand": {
+    "verdict": "pass",
+    "reason": "owner-started external video"
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "schedule_rule": "studio-external-video"
+  },
+  "music": {
+    "mood": "curious-tension"
+  },
+  "avatar_reference_images": [],
+  "release": {
+    "approved": true,
+    "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+    "scheduled_at": "2026-11-18T14:39:47Z"
+  },
+  "platforms": [
+    "youtube",
+    "instagram",
+    "facebook",
+    "linkedin"
+  ],
+  "_studio_job_id": "golide-external-2026-11-18-1639"
+}

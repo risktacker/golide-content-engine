@@ -1,0 +1,256 @@
+{
+  "production_id": "golide-external-2026-11-18-1639",
+  "youtube_video_id": "DWFGor-lrfk",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "DWFGor-lrfk",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-11-18T15:40:09.579396+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "External video · 2026-11-18",
+    "status": "scheduled",
+    "scheduled_at": "2026-11-18T14:39:47Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"schedule_rule\": \"studio-external-video\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "[curious] You’re Elon Musk, the world’s first trillionaire,\nand you’re losing the AI race to a company you co-founded: OpenAI.\nGoogle and Anthropic are beating you, too, and it’s annoying you.\nBut they don’t know your secret genius master plan.\nFirst, you need an AI company.\nSo you build xAI.\nNow, to train your AI model, you need GPUs.\nSo xAI builds Colossus, one of the largest AI data centres,\nin just 122 days.\nThat’s barely four months.\nThen Nvidia and TSMC can’t make chips fast enough.\nYou can’t wait around.\nYou want to move at full speed.\nSo you announce Terafab, your own chip factory.\n[confidently] Now, your AI is starving for training data.\nSo you strike a $60 billion deal for Cursor,\na software company that people use to build software with AI.\nThen you launch Grokbot, an AI agent company,\nso regular people can hand over their work to your AI every single day.\nStill not enough?\nYou bought Twitter back in 2022.\nIt’s a social media platform where intellectual people post their thoughts.\nEvery post, every reply gives you more data, a megaphone,\nand a promotion system for everything you sell, because you control the algorithm.\nAnd you’re not even halfway there.\nYou need real-world data and images.\nSo you build a self-driving car company called Tesla,\nwhich captures real-world data from the streets.\nThen Tesla builds Optimus 3,\na robot with hands gentle enough to hold an egg,\nwith incredibly precise motor control.\nAnd every movement it makes gives you even more data.\n[serious] Then you hit a wall.\nYour AI needs three things that Earth can’t\neasily provide at the scale you want: power, internet, and cooling.\nSo you look at the Moon.\nThe Moon has no taxes, no politics, no shortage of space,\nand it’s only a short distance away.\nIt takes just three days to travel from Earth to the Moon.\nSo you start a rocket company called SpaceX, which builds Starship,\na rocket designed to land and fly again.\nNow, you need internet to train your AI.\nSo you create Starlink.\nYou wrap the planet in your own fleet of satellites, and millions of homes,\nships, and planes connect through you.\nYou can even build spy satellites for the US government.\nAnd you also bought a solar company called SolarCity and renamed it Tesla Energy.\n[thoughtful] Now your own energy company starts building\ntowards the biggest project anyone could imagine: a Dyson sphere.\nPicture the Sun as a giant light bulb.\nAlmost all its light flies off into space, unused.\nNow imagine surrounding it with millions of solar panels, swarming like bees,\ncatching that light before it escapes.\nUp there, the Sun never sets,\nand the heat radiates into the freezing darkness of space.\n[slight emphasis] Now you’ve won.\nBut one day, the internet runs out of things to say.\nSo you open your final company: Neuralink.\nA chip that reads directly from the human brain.\nAnd now you can expand your business to Mars, too.\nBecause, at this point, you already own the Earth.\nLike, literally.\n",
+  "research": {
+    "summary": "Video built from the owner's own script and recording.",
+    "claims": [
+      {
+        "claim": "The owner's own script.",
+        "source_title": "Owner",
+        "source_url": "",
+        "published_or_updated": ""
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Elon Musk’s Secret Plan to Own the Future",
+    "description": "Free guide to this video (steps and every source): https://studio.golidee.com/guides/golide-external-2026-11-18-1639.pdf\n\nWhat if Elon Musk’s companies were all part of one massive plan? From xAI and Grok to Tesla, Starlink, SpaceX, Neuralink, and a possible Dyson sphere, this video explores how his businesses could connect into one AI-powered empire.\n\nIt’s a fast-moving thought experiment about data, chips, robots, satellites, energy, space, and the future of artificial intelligence. How far could Musk’s strategy really go?\n\n#ElonMusk #xAI #Grok #ArtificialIntelligence #Tesla #SpaceX #Neuralink #FutureTechnology",
+    "tags": [
+      "Elon Musk",
+      "Elon Musk AI",
+      "Elon Musk empire",
+      "Elon Musk companies",
+      "xAI",
+      "Grok AI",
+      "OpenAI vs xAI",
+      "Tesla AI",
+      "SpaceX",
+      "Starlink",
+      "Neuralink",
+      "Tesla Optimus",
+      "Optimus robot",
+      "SpaceX Starship",
+      "AI data center",
+      "Colossus AI",
+      "AI chip factory",
+      "Terafab",
+      "Dyson sphere",
+      "AI future",
+      "artificial intelligence",
+      "AI race",
+      "Musk business strategy",
+      "Musk future plan",
+      "tech empire",
+      "future technology",
+      "GOLIDE",
+      "Elon Musk AI empire",
+      "Elon Musk secret plan",
+      "xAI and Grok",
+      "AI news"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "keywords": [
+      "Elon Musk AI empire",
+      "Elon Musk secret plan",
+      "Elon Musk companies",
+      "xAI and Grok",
+      "Elon Musk AI strategy",
+      "Tesla Optimus robot",
+      "SpaceX Starlink AI",
+      "Elon Musk future plan",
+      "AI data centers",
+      "OpenAI vs xAI",
+      "Neuralink future",
+      "Dyson sphere explained",
+      "Tesla AI strategy",
+      "Elon Musk technology",
+      "future of AI"
+    ],
+    "hashtags": [
+      "#ElonMusk",
+      "#xAI",
+      "#Grok",
+      "#ArtificialIntelligence",
+      "#Tesla",
+      "#SpaceX",
+      "#Neuralink",
+      "#FutureTechnology"
+    ],
+    "format": "short",
+    "title_description_language": "en",
+    "seo_body": "What if Elon Musk’s companies were all part of one massive plan? From xAI and Grok to Tesla, Starlink, SpaceX, Neuralink, and a possible Dyson sphere, this video explores how his businesses could connect into one AI-powered empire.\n\nIt’s a fast-moving thought experiment about data, chips, robots, satellites, energy, space, and the future of artificial intelligence. How far could Musk’s strategy really go?",
+    "link": ""
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "The owner's own script.",
+        "source_title": "Owner",
+        "source_url": "",
+        "published_or_updated": ""
+      }
+    ],
+    "platform_demand": {
+      "verdict": "pass",
+      "reason": "owner-started external video"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -15.99,
+      "true_peak_dbtp": -1.89,
+      "loudness_range": 2.3
+    },
+    "editorial": {
+      "beats": 64,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-11-18T15:40:00.882159+00:00",
+    "warnings": [
+      "possible misspelling: golidee"
+    ]
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "schedule_rule": "studio-external-video",
+    "look3d": "glass"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-external-2026-11-18-1639",
+    "created_at": "2026-11-18T15:40:02.496178+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-11-18T14:39:47Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "ddc36ed2440fcf264263583b60267720aa0b8d157fb61f51648b15f5d107dee3",
+        "bytes": 26810259
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "f951e0f74d45f06bc372d892c97b2346bfb5514088d42b55c8de358a1c4449a1",
+        "bytes": 175785
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "9b71989ea08a7e18e973a89d7a3c1f2ceea5bbedd0ee134b09b2870841c2630b",
+        "bytes": 2612
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "bd87896769fa9e4655d97314d8c040c5bf887d1dff6426bcdf0b3c37054b0f5b",
+        "bytes": 5871
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "316315328cc41f016250ef802e3e00c3f211e9a601098dddd546784e9e47e9db",
+        "bytes": 1532
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "bc5481e875c6a8a7366c603e0c512baa58fed7f0d285ecdd8480b252a5ec1797",
+        "bytes": 548
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "25ceaf014a291993aaa0095ea2bf60e63eb8254e1706f985d3bfb28189f28570",
+        "bytes": 356
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "acd4c0719370cc1667a978fa4e2ce30e5aae9d5995fe6f1dbdedf3b7d3b1aa1d",
+        "bytes": 316
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "edit-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9265.0,
+      "cached_input_units": 0.0,
+      "output_units": 14359.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.019084,
+      "created_at": "2026-11-18T15:05:51.677595+00:00"
+    },
+    {
+      "stage": "guide",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 920.0,
+      "cached_input_units": 0.0,
+      "output_units": 1014.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001401,
+      "created_at": "2026-11-18T15:39:42.865085+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9650.0,
+      "cached_input_units": 0.0,
+      "output_units": 687.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002754,
+      "created_at": "2026-11-18T15:39:44.274402+00:00"
+    }
+  ],
+  "recorded_at": "2026-11-18T15:40:09.583070+00:00"
+}
