@@ -25,8 +25,8 @@ RECIPE_KEYS = ("xray", "layers", "white", "circuit", "glass", "blueprint")
 # 2026-11-17 (owner): cost to cents. Free styles (the storyboard fills the reference's content block, no model call)
 # and the free puppet scenes are on unless switched off for the video; paid styles (a model writes the scene) only
 # when switched on for the video, each up to its count. Scheduled automatic runs use the free ones only.
-FREE_LOOKS = ("layers", "circuit", "glass", "white", "xray", "puppets")
-PAID_LOOKS = ("blueprint",)   # 2026-11-18: X-Ray became a free kit of objects
+FREE_LOOKS = ("layers", "circuit", "glass", "white", "xray", "blueprint", "puppets")
+PAID_LOOKS: tuple[str, ...] = ()   # 2026-11-18: every style is a free kit now; the paid path stays for later ones
 
 
 def looks_for(spec_looks: Any) -> dict[str, Any]:
@@ -218,7 +218,7 @@ def _looks_text(allowed: list[str], paid: dict[str, int], puppets: bool) -> str:
            + (", ".join(f"{k}{f' (at most {paid[k]} in the video)' if k in paid else ''}" for k in allowed) or "none: do not use recipe")
            + ". " + ("puppets may be used." if puppets else "Do not use puppets.")]
     out.append("""How to fill them:
-- layers, circuit, glass, white, xray: fill = a JSON string with the scene's content (no recipe_brief needed):
+- layers, circuit, glass, white, xray, blueprint: fill = a JSON string with the scene's content (no recipe_brief needed):
   layers: {"title": [line 1, line 2] (max 3 words each, may be ["", ""]), "layers": [3 to 5 of {"name": 1-2 words,
     "note": 2-4 words, "diagram": one of chat, steps, network, files, chips}] top to bottom}
   circuit: {"stops": 2 to 6 of {"kind", "name" 1-2 words} in the order the signal travels; kinds: port (where it
@@ -237,7 +237,10 @@ def _looks_text(allowed: list[str], paid: dict[str, int], puppets: bool) -> str:
     chip, memory, storage, fan, speaker; chip die, memory, spreader, substrate, balls; battery electrodes, core,
     terminal, vent, can; server processor, memory, gpu, fans, power, storage. Only these objects: anything else
     inside is another picture, never a look-alike.
-- blueprint: recipe_brief as described below (a writer builds the scene).
+  blueprint: {"subject": house, tower or bridge, "title": [1-2 short lines], "notes": 1 to 3 of {"at", "lines":
+    [1-2 lines of 1-2 words]}, "dims": optional [width, depth, height] as printed, e.g. "10.0 M"}; at: house foundation,
+    walls, roof, door, windows, chimney; tower foundation, core, columns, floors, facade, roof; bridge footings, piers,
+    abutments, deck, railings, span. Only these subjects: anything else is another picture.
 - THE REAL THING ONLY (owner 2026-11-17): a style is used only when its own objects ARE what the line names:
   circuit only for chips, boards and electronics; glass only for liquids, mixing and amounts; layers only for things
   that really are layered; white for buildings, nature, cities, roads, vehicles and what flows between them; xray for

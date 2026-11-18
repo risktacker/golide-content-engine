@@ -656,8 +656,8 @@ let styleAsking = null;
 
 // 2026-11-17 (owner): when Goli is picked, the styles for that video. Free ones (no model call) are on by default;
 // paid ones (a model writes the scene, about $0.30 each) start at 0 and he raises the count by choice.
-const FREE_LOOKS = [["puppets", "Puppets (people)"], ["white", "White Model"], ["layers", "Layer Stack"], ["circuit", "Circuit City"], ["glass", "Glass and Light"], ["xray", "X-Ray"]];
-const PAID_LOOKS = [["blueprint", "Blueprint"]];   // 2026-11-18: X-Ray became a free kit
+const FREE_LOOKS = [["puppets", "Puppets (people)"], ["white", "White Model"], ["layers", "Layer Stack"], ["circuit", "Circuit City"], ["glass", "Glass and Light"], ["xray", "X-Ray"], ["blueprint", "Blueprint"]];
+const PAID_LOOKS = [];   // 2026-11-18: every style is a free kit now
 const PAID_EACH = 0.30;
 const pickedLooks = {};
 
@@ -665,9 +665,9 @@ function looksHtml() {
   return '<div class="looks"><span class="post-to-label">Styles in this video</span>' +
     '<div class="looks-row"><span class="looks-kind">Free</span>' + FREE_LOOKS.map(([key, name]) =>
       '<label class="post-chip"><input type="checkbox" class="look-free" value="' + key + '" checked><span>' + name + '</span></label>').join("") + '</div>' +
-    '<div class="looks-row"><span class="looks-kind">Paid, about $' + PAID_EACH.toFixed(2) + ' a scene</span>' + PAID_LOOKS.map(([key, name]) =>
+    (PAID_LOOKS.length ? '<div class="looks-row"><span class="looks-kind">Paid, about $' + PAID_EACH.toFixed(2) + ' a scene</span>' + PAID_LOOKS.map(([key, name]) =>
       '<label class="look-paid"><span>' + name + '</span><input type="number" class="look-count" data-look="' + key + '" min="0" max="20" step="1" value="0" inputmode="numeric"></label>').join("") + '</div>' +
-    '<span class="looks-cost">Extra cost: $0.00</span></div>';
+    '<span class="looks-cost">Extra cost: $0.00</span>' : '') + '</div>';
 }
 
 function readLooks(root) {

@@ -120,9 +120,11 @@ against research, unconfirmed claims kept as "reportedly/allegedly" once (`story
   City takes 2-6 board parts in the signal's order (port, memory, processor, chip, battery, antenna, power, sensor);
   X-Ray takes one real object (phone, laptop, chip, battery cell, server) and 1-3 of its own parts with the flow.
   Each keeps its recipe's own construction; `recipes.circuit_layout` / `xray_layout` refuse anything unknown.
-- Paid (Sol writes the scene, about $0.30 each): Blueprint. Only when switched on for the video
-  in Studio, each up to the count he sets (`spec.looks = {free: [...], paid: {blueprint: n}}`, `editor.looks_for`).
-  Scheduled automatic runs never switch paid ones on. Real people stay real photo cards, never puppets.
+- Blueprint is a free kit too (owner 2026-11-18, `assets/recipes/kits/blueprint-kit.js`): the recipe's own drafting
+  kit with civil subjects (house, tower, bridge) and 1-3 notes on named points (`recipes.blueprint_layout`).
+- No paid styles left (2026-11-18). The paid path stays for later ones: only when switched on for the video in Studio,
+  each up to the count he sets (`spec.looks = {free: [...], paid: {key: n}}`, `editor.looks_for`); scheduled
+  automatic runs never switch paid ones on. Real people stay real photo cards, never puppets.
 
 ## Checks
 `python3 -m pytest -q` must pass before every push (467 tests as of 2026-11-06).

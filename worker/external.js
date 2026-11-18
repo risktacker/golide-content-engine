@@ -19,8 +19,8 @@ const SHORT_SCORES = {
 
 // 2026-11-17 (owner): the styles a Goli video may use. Free ones (no model call) listed by key; paid ones (a model
 // writes the scene) with how many, 0 to 20. Anything else is dropped. Null when nothing usable was sent.
-const FREE_LOOKS = ["puppets", "white", "layers", "circuit", "glass", "xray"];
-const PAID_LOOKS = ["blueprint"];   // 2026-11-18: X-Ray became a free kit
+const FREE_LOOKS = ["puppets", "white", "layers", "circuit", "glass", "xray", "blueprint"];
+const PAID_LOOKS = [];   // 2026-11-18: every style is a free kit now
 export function cleanLooks(value) {
   if (!value || typeof value !== "object") return null;
   const free = Array.isArray(value.free) ? [...new Set(value.free.map(String).filter((k) => FREE_LOOKS.includes(k)))] : [...FREE_LOOKS];

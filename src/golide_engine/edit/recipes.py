@@ -71,7 +71,7 @@ RECIPES: dict[str, dict[str, str]] = {
 # storyboard fills it and no model writes code ($0 extra): Layer Stack, Circuit City, Glass and Light. X-Ray, White
 # Model and Blueprint build their object in code below the block, so a new subject needs the writer (paid, chosen
 # per video in Studio with a count).
-FREE = ("layers", "circuit", "glass", "white", "xray")
+FREE = ("layers", "circuit", "glass", "white", "xray", "blueprint")
 WHITE_KIT = KIT / "kits" / "white-kit.js"
 # 2026-11-18: White Model as a kit of pieces (assets/recipes/kits/white-kit.js): the storyboard names the stops in
 # order and a few extras; code lays them out on the board so no two pieces overlap
@@ -97,7 +97,14 @@ XRAY_OBJECTS = {
     "battery": ("electrodes", "core", "terminal", "vent", "can"),
     "server": ("processor", "memory", "gpu", "fans", "power", "storage"),
 }
-XRAY_FLOWS = ("current", "data", "heat", "air", "force")      # the reference's own four, for a fill of plain names
+XRAY_FLOWS = ("current", "data", "heat", "air", "force")
+# 2026-11-18: Blueprint as a kit of civil subjects (assets/recipes/kits/blueprint-kit.js) with notes on named points
+BLUEPRINT_KIT = KIT / "kits" / "blueprint-kit.js"
+BLUEPRINT_SUBJECTS = {
+    "house": ("foundation", "walls", "roof", "door", "windows", "chimney"),
+    "tower": ("foundation", "core", "columns", "floors", "facade", "roof"),
+    "bridge": ("footings", "piers", "abutments", "deck", "railings", "span"),
+}      # the reference's own four, for a fill of plain names
 PAID = tuple(k for k in RECIPES if k not in FREE)
 DIAGRAMS = ("chat", "steps", "network", "files", "chips")      # Layer Stack's prints (its DIAGRAMS)
 
@@ -155,7 +162,31 @@ def content_block(key: str, fill: dict[str, Any]) -> str:
         return "  const SCENE = " + json.dumps(white_layout(fill), ensure_ascii=False) + ";\n"
     if key == "xray":
         return "  const SCENE = " + json.dumps(xray_layout(fill), ensure_ascii=False) + ";\n"
+    if key == "blueprint":
+        return "  const SCENE = " + json.dumps(blueprint_layout(fill), ensure_ascii=False) + ";\n"
     raise ValueError(f"{key} has no free mode")
+
+
+def blueprint_layout(fill: dict[str, Any]) -> dict[str, Any]:
+    """A subject of the library, a two-line title and 1-3 notes on its named points. Raises ValueError when the
+    subject is not in the library."""
+    sub = str(fill.get("subject") or "").lower()
+    if sub not in BLUEPRINT_SUBJECTS:
+        raise ValueError(f"blueprint: subject must be one of {', '.join(BLUEPRINT_SUBJECTS)}")
+    notes, seen = [], set()
+    for n in fill.get("notes") or []:
+        lines = [_caps(x, 14) for x in (n.get("lines") or [])[:2] if str(x).strip()] if isinstance(n, dict) else []
+        if lines and n.get("at") in BLUEPRINT_SUBJECTS[sub] and n["at"] not in seen:
+            seen.add(n["at"])
+            notes.append({"at": n["at"], "lines": lines})
+    if not notes:
+        raise ValueError(f"blueprint: 1 to 3 notes on the {sub} needed at: {', '.join(BLUEPRINT_SUBJECTS[sub])}")
+    title = [_caps(x, 14) for x in (fill.get("title") or [])[:2] if str(x).strip()] or [sub.upper()]
+    dims = [" ".join(str(x).upper().split())[:8] for x in (fill.get("dims") or [])]
+    out = {"subject": sub, "title": title, "notes": notes[:3]}
+    if len(dims) == 3 and all(dims):
+        out["dims"] = dims
+    return out
 
 
 def xray_layout(fill: dict[str, Any]) -> dict[str, Any]:
@@ -244,10 +275,10 @@ def reference_code(key: str) -> str:
 def fill_code(key: str, fill: dict[str, Any], duration: float) -> str:
     """The reference scene with its content block replaced, played over `duration` seconds (its own timing,
     stretched evenly: the picture keeps its order and rhythm). White Model is its kit of pieces, timed to the beat."""
-    if key in ("white", "circuit", "xray"):
-        scene = {"white": white_layout, "circuit": circuit_layout, "xray": xray_layout}[key](fill)
+    if key in ("white", "circuit", "xray", "blueprint"):
+        scene = {"white": white_layout, "circuit": circuit_layout, "xray": xray_layout, "blueprint": blueprint_layout}[key](fill)
         scene["duration"] = round(float(duration), 3)
-        kit = {"white": WHITE_KIT, "circuit": CIRCUIT_KIT, "xray": XRAY_KIT}[key]
+        kit = {"white": WHITE_KIT, "circuit": CIRCUIT_KIT, "xray": XRAY_KIT, "blueprint": BLUEPRINT_KIT}[key]
         return kit.read_text(encoding="utf-8").replace("__SCENE__", json.dumps(scene, ensure_ascii=False))
     code = reference_code(key)
     a = code.find("\n", code.find("// ----------------------------------------------------------------")) + 1

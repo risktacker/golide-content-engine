@@ -36,7 +36,9 @@ def _lines():
     return [TimedLine(0, " ".join(w.text for w in words), "", "", "", "", 0.0, words[-1].end, words)]
 
 
-def test_the_editor_makes_a_recipe_scene_with_its_words_and_a_house_3d_stand_in():
+def test_the_editor_makes_a_recipe_scene_with_its_words_and_a_house_3d_stand_in(monkeypatch):
+    monkeypatch.setattr(editor, "PAID_LOOKS", ("blueprint",))
+    monkeypatch.setattr(editor, "FREE_LOOKS", tuple(k for k in editor.FREE_LOOKS if k != "blueprint"))
     s = {k: None for k in editor.SCENE["required"]}
     s.update(type="recipe", first_line=0, last_line=0, goli_corner=False, poses=[], rows=[], items=[], shots=[],
              points=[], brands=[], parts3d=[], recipe="blueprint", recipe_brief="A GPU: die, memory, heat", object3d="chip",
@@ -115,7 +117,9 @@ def _scene(**kw):
     return s
 
 
-def test_switches_default_to_every_free_style_and_no_paid_one():
+def test_switches_default_to_every_free_style_and_no_paid_one(monkeypatch):
+    monkeypatch.setattr(editor, "PAID_LOOKS", ("blueprint",))
+    monkeypatch.setattr(editor, "FREE_LOOKS", tuple(k for k in editor.FREE_LOOKS if k != "blueprint"))
     assert editor.looks_for(None) == {"free": list(editor.FREE_LOOKS), "paid": {}}
     got = editor.looks_for({"free": ["layers", "bogus"], "paid": {"blueprint": 2, "xray": 2, "white": 0, "layers": 3}})
     assert got == {"free": ["layers"], "paid": {"blueprint": 2}}          # xray is free since 2026-11-18
@@ -124,7 +128,9 @@ def test_switches_default_to_every_free_style_and_no_paid_one():
     assert "PUPPET SHOT FORMAT" in editor.instructions("long") and "glass:" in editor.instructions("long")
 
 
-def test_a_paid_style_is_used_only_when_switched_on_and_only_up_to_its_count():
+def test_a_paid_style_is_used_only_when_switched_on_and_only_up_to_its_count(monkeypatch):
+    monkeypatch.setattr(editor, "PAID_LOOKS", ("blueprint",))
+    monkeypatch.setattr(editor, "FREE_LOOKS", tuple(k for k in editor.FREE_LOOKS if k != "blueprint"))
     x = dict(recipe="blueprint", recipe_brief="A GPU", object3d="chip", move3d="explode")
     lines = _lines()
     raw = {"scenes": [_scene(**x)]}
@@ -158,6 +164,22 @@ def test_free_fills_rewrite_only_the_content_block_and_stretch_to_the_beat():
     assert set(recipes.FREE) | set(recipes.PAID) == set(recipes.RECIPES)
 
 
+def test_blueprint_is_a_free_kit_of_civil_subjects():
+    """2026-11-18: a house, tower or bridge with 1-3 notes on its named points; anything else is refused."""
+    scene = recipes.blueprint_layout({"subject": "House", "title": ["Two-storey", "house", "extra"], "notes": [
+        {"at": "roof", "lines": ["roof pitch", "30 degrees", "x"]}, {"at": "garage", "lines": ["x"]}, {"at": "roof", "lines": ["again"]}],
+        "dims": ["10 m", "8 m", "7 m"]})
+    assert scene == {"subject": "house", "title": ["TWO-STOREY", "HOUSE"], "notes": [{"at": "roof", "lines": ["ROOF PITCH", "30 DEGREES"]}],
+                     "dims": ["10 M", "8 M", "7 M"]}
+    code = recipes.fill_code("blueprint", {"subject": "bridge", "notes": [{"at": "deck", "lines": ["DECK"]}]}, 7.0)
+    assert "__SCENE__" not in code and '"duration": 7.0' in code and "blueprint-kit" in code
+    assert "blueprint" in recipes.FREE and not editor.PAID_LOOKS
+    import pytest
+    for bad in ({"subject": "castle", "notes": [{"at": "roof", "lines": ["x"]}]}, {"subject": "tower", "notes": []}):
+        with pytest.raises(ValueError):
+            recipes.blueprint_layout(bad)
+
+
 def test_x_ray_is_a_free_kit_of_real_objects():
     """2026-11-18: an object from the library and 1-3 of its own parts; anything else is refused, never faked."""
     scene = recipes.xray_layout({"object": "Phone", "flow": "magic", "parts": [
@@ -167,7 +189,7 @@ def test_x_ray_is_a_free_kit_of_real_objects():
     assert [p["part"] for p in scene["parts"]] == ["battery", "chip"] and scene["parts"][1]["name"] == "A19 CHIP"
     code = recipes.fill_code("xray", {"object": "chip", "parts": [{"part": "die", "name": "GPU die"}]}, 6.0)
     assert "__SCENE__" not in code and '"duration": 6.0' in code and "x-ray-kit" in code
-    assert "xray" in recipes.FREE and "xray" in editor.FREE_LOOKS and "xray" not in editor.PAID_LOOKS
+    assert "xray" in recipes.FREE and "xray" in editor.FREE_LOOKS and not editor.PAID_LOOKS
     import pytest
     for bad in ({"object": "toaster", "parts": [{"part": "die", "name": "x"}]}, {"object": "phone", "parts": []}):
         with pytest.raises(ValueError):
