@@ -54,6 +54,6 @@ def test_a_long_hook_gets_a_picture_per_sentence_or_clause_and_the_rest_and_shor
     got = beats([hook, body], "long")
     in_hook = [b for b in got if b.start < 15]
     assert len(in_hook) == 4 and all(b.text[-1] in ",." for b in in_hook)    # cut where a clause ends
-    assert len([b for b in got if b.start >= 15]) == 2                       # after the hook: the usual pace
+    assert len([b for b in got if b.start >= 15]) == 4                       # after the hook: ~3 s beats (2026-11-18)
     short = beats([hook], "short")
     assert [b.text for b in short] == [b.text for b in beats([hook], "short")]

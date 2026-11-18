@@ -16,8 +16,11 @@ from pathlib import Path
 from typing import Any
 
 POSES = ["talk", "explain", "point", "point_up", "point_left", "shock", "think", "thumbs_up", "shrug", "wave"]
-TYPES = ["studio", "source", "terminal", "metaphor", "object3d", "recipe", "puppets", "walkthrough", "photo", "stat", "compare", "steps", "checklist", "prompt", "timeline", "flow",
-         "quote", "words", "logos", "icon", "chapter", "follow"]
+# 2026-11-18 (owner: "draw what is being said, no text blocks except those 3"): no compare, steps, checklist,
+# timeline, flow or words scenes; text only as a quote, a prompt to copy or the key number (stat)
+TYPES = ["studio", "source", "terminal", "metaphor", "object3d", "recipe", "puppets", "walkthrough", "photo", "stat",
+         "prompt", "quote", "logos", "icon", "chapter", "follow"]
+TEXT_CARDS = {"kinetic_title", "comparison", "steps", "checklist", "timeline", "flow"}
 
 OBJECTS3D = ("laptop", "phone", "server", "chip", "battery")
 # 2026-11-17 (owner): Futurepedia style recipes, a new scene written for the beat (edit/recipes.py)
@@ -119,13 +122,21 @@ pangolin in a GOLIDE hoodie who talks with the owner's voice. You cut a {"vertic
 the best channels in the niche do: fast, real proof on screen, and the picture ALWAYS shows what is being said
 at that moment.
 
-{"The narration is cut into BEATS of about 2 seconds: the Short is fast. Give every beat its own picture that shows exactly what that beat says. A scene normally covers ONE beat (first_line = last_line = the beat number). Only a stat, compare, steps, timeline or flow card may cover 2 beats, and a studio scene at most 2." if short else "The narration is cut into BEATS of about 4 to 5 seconds: a long video EXPLAINS, so every picture stays long enough to be read and understood. Give every beat its own picture that shows what that beat says. A scene covers 1 beat, or 2 when the picture needs time (a page the camera walks through, a walkthrough, a flow, a comparison, steps, a typed prompt)."}
+{"The narration is cut into BEATS of about 2 seconds: the Short is fast. Give every beat its own picture that shows exactly what that beat says. A scene covers ONE beat (first_line = last_line = the beat number); only a studio scene may cover 2." if short else "The narration is cut into BEATS of about 3 seconds: fast, like the best channels (owner 2026-11-18). Give every beat its own picture that shows exactly what that beat says. A scene covers 1 beat; only a page the camera walks through, a walkthrough or a typed prompt may cover 2."}
 Scenes cover every beat exactly once, in order, no gaps: scene N+1's first_line = scene N's last_line + 1.
 
 You also get CAPTURED PAGES: the real web pages behind the story, each cut into SHOTS (its headline, the exact
 facts found on it, and every paragraph, list item and table cell with its text). A shot is a place on the page the
 camera zooms to. Match beats to shots by meaning: when a beat states a fact, pick the shot whose text says it.
-Never use the same shot twice in the whole video. {"On a Short, screenshots are the proof, not the whole show: at most one beat in three is a source scene, never two source scenes in a row; the rest are photos, numbers, flows, comparisons, steps, logos, quotes and words." if short else "On a long video the pages carry the explanation: walk through a page across its shots, but put another kind of picture between pages."}
+Never use the same shot twice in the whole video. {"On a Short, screenshots are the proof, not the whole show: at most one beat in three is a source scene, never two source scenes in a row; the rest are the drawn styles (recipes), 3D objects, metaphors, photos and logos." if short else "On a long video the pages carry the explanation: walk through a page across its shots, but put another kind of picture between pages."}
+
+DRAW WHAT IS SAID (owner 2026-11-18, no two ways): every beat is a moving PICTURE of what its words say, made with
+the graphics below: a recipe style first (X-Ray, Layer Stack, White Model, Circuit City, Glass and Light, Blueprint,
+Puppets), a 3D object, a metaphor, a real photo, a real page, a real run, logos, Goli. Something that moves, never a
+still card. NO TEXT CARDS: text appears only as a real quote (quote), a prompt the viewer copies (prompt) or the key
+number (stat, at most 1 in a Short and 1 per minute of a long video). There are no compare, steps, checklist,
+timeline, flow or words scenes any more: draw them (a comparison is scales or two objects side by side, steps are a
+blueprint or a white model, a flow is a white model or a circuit city, a timeline is layers or a white model).
 
 Scene types (fill only the fields the type uses; null or [] for the rest):
 - source: a captured page, zoomed to one shot (source = page index, phrase = shot index). callout = the fact in at
@@ -133,7 +144,6 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
 - photo: a real picture (source = page index; pages marked "photo: yes" or PICTURE): a person, a product, a place the
   words name. Owner 2026-11-17: when a line names a person or a product and a picture of it exists, show it.
 - stat: one number that matters (value as a number, prefix like "$", suffix like "%" or "x", label 2 to 5 words).
-- compare: left vs right, 2 to 4 rows (label, a, b, winner).
 - object3d: the words talk about a real thing or what is inside it. object3d = its name. Five are built in:
   laptop, phone, server (a data centre rack), chip (a GPU), battery; parts3d = [] for those. ANY other real thing
   (a robot, a car, a drone, a headset, a power plant, a house...): build it from 3 to 12 simple parts in parts3d
@@ -146,8 +156,9 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
   story is about turns gold with a line to a label: label = what it is in this story, max 5 words ("Your rented
   GPU"); two other parts get their own name. Never two in a row; use it whenever the words are about one of these
   devices, as often as the story is (owner 2026-11-17: no fixed count, the words decide).
-- recipe: a FILM-QUALITY 3D scene written for this beat in a named style. Use it when the beat (or 2 beats) is
-  exactly what the style is for, and only then; the words decide, there is no quota. recipe = which style:
+- recipe: a FILM-QUALITY 3D scene for this beat in a named style: the MAIN picture of the video, used for every
+  beat whose words name a thing, a system, a place, a stack, a plan, an amount or what is inside something (owner
+  2026-11-18: all of them are required, draw what is being said). recipe = which style:
   xray = what is INSIDE a real thing and how it works (a chip, a battery, a phone, an engine, a data-centre rack):
   up to three inner parts, each lit and named in turn, with a simple flow (heat, air, current, data, force) acting
   on them. layers = anything BUILT IN LAYERS (a tech stack, what an AI product is made of, how a request travels
@@ -165,7 +176,7 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
   white/circuit: the source, then each stop in order with its name (1-2 words) and a 2-4 word line, and what travels.
   glass: each ingredient with its colour and amount (in parts or %), and the action (pour, add, shake, settle).
   blueprint: the object, its 2-3 key measurements, and 2-3 pointers (where, 2-4 words each). ALSO fill object3d (+ parts3d, move3d) as the stand-in shown if
-  the scene cannot be made. Never two recipe scenes in a row.
+  the scene cannot be made. Two recipe scenes in a row are fine in different styles; never the same style twice in a row.
 - metaphor: the beat explains an IDEA (a trade-off, a hidden cost, a bottleneck, layers, a loop, a level, a change):
   show it as a moving picture instead of text. metaphor = one of:
   scales (two things weighed: left, right, punch = the heavier one), unlock (something now possible: label),
@@ -175,7 +186,7 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
   hidden mass: label = what people see, items = what is hidden), cycle (a loop: items = 3-5 steps).
   punch = the spoken word it lands on. Words max 4 each, as spoken. Use one whenever a beat explains an idea
   with a shape (owner 2026-11-17: no fixed count); never two metaphor scenes in a row, never the same metaphor
-  twice in a video; prefer it over steps/flow/compare/checklist whenever the idea has a shape.
+  twice in a video.
 - terminal: a REAL RUN (listed under REAL RUNS) proves what the beat says (the repo, the tool, the model actually
   working): source = the run's index, phrase = the words in its output to highlight. The viewer watches the real
   commands and the real output. Use each real run once, on the beat it proves best, over 2 beats.
@@ -184,14 +195,8 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
   4 words each, as spoken), shots = for each step the shot on that page where its button, menu, field, setting or
   command is (prefer [control] shots: the page's own buttons, menus, fields and commands). The viewer sees the real page; the camera goes to each place, the cursor clicks it and a numbered
   badge names the step. ALWAYS prefer this over steps when such a page exists: show the real thing, not text.
-- steps: 2 to 4 short imperative items (max 5 words each) when the beat tells the viewer what to do and NO captured
-  page shows where it is done.
 - prompt: the beat says what to type or ask an AI tool: quote = the exact prompt (max 20 words, as spoken or as the
   research gives it), label = the tool's name. It is typed into a chat box on screen and sent.
-- checklist: 2 to 5 things the viewer needs, should check, or that a product has (items, max 5 words each); each is
-  ticked on the word that says it.
-- timeline: 3 to 4 points (when, what) when the beat moves through time.
-- flow: how something works or what leads to what: 2 to 4 short nodes in items (max 3 words each).
 - quote: a short real quote from the pages or research (quote, quote_by).
 - logos: 2 to 4 real product or company names (brands) named together in the beat.
 - icon: one product or company named in the beat (brands = [that name], label = what about it, max 5 words).
@@ -279,8 +284,9 @@ def beats(lines: list[Any], fmt: str) -> list[Any]:
     so a picture can be chosen for every few words (owner 2026-11-11: what is on screen is what is said)."""
     from ..vector.align import TimedLine
 
-    # owner 2026-11-12: the Short's pace is right; a long video explains, so its pictures stay 4 to 6 s
-    target, low = (1.9, 1.1) if fmt == "short" else (4.6, 2.6)
+    # owner 2026-11-12: the Short's pace is right. 2026-11-18 (owner: "no boring 2-5 second block, fast moves and
+    # clips, that's how you engage"): long videos move fast too, a new picture about every 3 s
+    target, low = (1.9, 1.1) if fmt == "short" else (3.0, 1.8)
     hook_end = hook_ends(lines, fmt)
     out: list[Any] = []
     for line in lines:
@@ -757,7 +763,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
             out.append(words_scene())
     out = _no_repeats(out, lines, fmt, notes)
     out = _pace(out, lines, fmt)
-    out = _words_cap(out, notes)
+    out = _words_cap(out, notes, fmt)
     out = _min_length(out, fmt)
     out = _lower_host(out, cues, fmt)
     if bookends and lines:
@@ -1144,7 +1150,7 @@ DEEPER = {"walkthrough", "terminal", "object3d", "recipe_clip", "puppet_clip"}
 WORDS_MAX = 0
 
 
-def _words_cap(scenes: list[dict], notes: list[str]) -> list[dict]:
+def _words_cap(scenes: list[dict], notes: list[str], fmt: str = "long") -> list[dict]:
     """At most WORDS_MAX words blocks: any later one gives its time to the picture before it (the picture holds,
     owner 2026-11-14), or to the one after when it opens the video."""
     content = sorted((s for s in scenes if s["type"] != "host" or s["data"].get("place") == "studio"),
@@ -1152,8 +1158,15 @@ def _words_cap(scenes: list[dict], notes: list[str]) -> list[dict]:
     hosts = [s for s in scenes if s not in content]
     keep: list[dict] = []
     shown, pending = 0, None
+    total = max((s["start"] + s["duration"] for s in scenes), default=0.0)
+    stats_max, stats = (1 if fmt == "short" else max(1, int(total // 60))), 0
     for sc in content:
-        if sc["type"] == "kinetic_title":
+        # the key number: 1 in a Short, 1 per minute of a long video; any more is a text card
+        if sc["type"] == "stat_counter":
+            stats += 1
+            if stats > stats_max:
+                sc = dict(sc, type="kinetic_title")
+        if sc["type"] in TEXT_CARDS:
             if shown < WORDS_MAX:
                 shown += 1
             elif keep:

@@ -57,10 +57,10 @@ def test_prompt_and_checklist_render(tmp_path):
                       _scene(type="checklist", first_line=1, last_line=1, items=["An account", "A task", "A budget"])]}
     edit = editor.build(raw, lines, 7.0, "long", [], None, [], [])
     kinds = [s["type"] for s in edit["scenes"]]
-    assert "prompt_card" in kinds and "checklist" in kinds
+    assert "prompt_card" in kinds and "checklist" not in kinds     # 2026-11-18: no text cards; a prompt stays
     html = Composer("long").build(edit, tmp_path / "out").read_text()
     assert "Read my sales sheet" not in html.replace("</span><span", "")  # typed letter by letter
-    assert "stagger" in html and "strokeDashoffset" in html
+    # (the checklist's ticks are gone with the checklist: 2026-11-18, no text cards)
 
 
 def test_one_goli_per_block():
