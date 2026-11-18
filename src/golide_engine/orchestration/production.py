@@ -1474,6 +1474,11 @@ class ProductionService:
             fetch_narration()
             print(json.dumps({"status": "owner_voice_refetched", "production_id": production_id}))
         narration_seconds = self._duration(narration)
+        # 2026-11-18 (owner): a Short is 45-75 seconds, no two ways about it. His recording outside that stops here,
+        # before the paid picture work, with the reason (the 2:55 Elon Short cost an hour of drawing and $1)
+        if str(spec.get("format")) == "short" and owner_voice_ref and not 44.5 <= narration_seconds <= 75.5:
+            raise RuntimeError(f"This Short's recording is {narration_seconds:.0f} s; a Short must be 45 to 75 seconds. "
+                               "Re-record it in that length and upload again.")
         # The owner recording is the master timeline: never retime the voice.
         check_recording_length(str(spec["format"]), narration_seconds)
 

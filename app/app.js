@@ -597,7 +597,7 @@ function renderJobList() {
 }
 
 // Locked 2026-10-04: recordings outside these windows are refused before upload.
-const RECORDING_WINDOWS = { short: [30, 180], long: [150, 780] };
+const RECORDING_WINDOWS = { short: [45, 75], long: [150, 780] };   // 2026-11-18 (owner): Shorts are 45-75 s, no two ways
 
 function clock(seconds) {
   const whole = Math.round(seconds);

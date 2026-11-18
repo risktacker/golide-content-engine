@@ -74,7 +74,9 @@ against research, unconfirmed claims kept as "reportedly/allegedly" once (`story
   Short, never two in a row. Goli faces the content (mirrored on the right).
 
 ## Shorts (owner 2026-11-13, after the broken USB Short)
-- Script: 150-185 words (60-75 s), its own method (`engine/story.py` short shape): one direction, a hook that puts the
+- Length (owner 2026-11-18, no two ways): every Short is 45-75 s. Studio refuses a recording outside it, the engine
+  stops one before the paid work.
+- Script: 115-185 words (45-75 s), its own method (`engine/story.py` short shape): one direction, a hook that puts the
   viewer in someone's shoes, then a chain where each step causes the next, a turn, a payoff tied to the first line.
   Model: `8e4TYDVZTwk` (read for every Short, `config/model-videos.txt` "always"). No "..." in a Short; long at most 1;
   "..." is never shown on screen. One read; voice parts must add up to the script.
