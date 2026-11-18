@@ -57,7 +57,8 @@ jobs:
             exit 0
           fi
           # 2026-11-17 (owner): static posts have their own switch in Studio (sections.static)
-          ENABLED="$(jq -r '(.enabled // false) and (.sections.static // true)' gate.json)"
+          # 2026-11-18: jq's // also replaces false, so "off" read as on; only a missing switch counts as on
+          ENABLED="$(jq -r '(.enabled == true) and (.sections.static != false)' gate.json)"
           if [ "$ENABLED" = "true" ]; then
             echo "enabled=true" >> "$GITHUB_OUTPUT"
             echo "Studio automation is RUNNING."
