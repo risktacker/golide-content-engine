@@ -698,6 +698,16 @@ class ProductionService:
         production_id = spec["id"]
         work = self.root / "productions" / production_id
         work.mkdir(parents=True, exist_ok=True)
+        # 2026-11-18 (owner: "remove the broken stuff"): spec.fresh_start = a new token wipes this production's work
+        # files and step records once, so a run stopped halfway can never leave half-made files behind for the next
+        fresh = str(spec.get("fresh_start") or "")
+        marker = work / ".fresh-start"
+        if fresh and (not marker.exists() or marker.read_text(encoding="utf-8").strip() != fresh):
+            shutil.rmtree(work, ignore_errors=True)
+            work.mkdir(parents=True, exist_ok=True)
+            self.database.execute("DELETE FROM stage_runs WHERE production_id=?", (production_id,))
+            marker.write_text(fresh + "\n", encoding="utf-8")
+            print(json.dumps({"status": "fresh_start", "production_id": production_id}))
 
         # Validate every paid unit before the first API request.
         text_model = self.providers.config["text"]["model"]
