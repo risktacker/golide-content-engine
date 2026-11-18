@@ -15,7 +15,7 @@
   },
   "owner_voice_media_ref": "r2://temp/2026/11/18/84495a2442bf42d5ab3f43db5cf1250e-Elon-short-2m55.mp3",
   "owner_voice_required": true,
-  "budget_class": "scheduled",
+  "budget_class": "independent",
   "generate_at": "2026-11-18T07:59:05.388Z",
   "max_cost_usd": 6,
   "production_authorized": true,
@@ -68,5 +68,6 @@
     "linkedin"
   ],
   "_studio_job_id": "golide-external-2026-11-18-0959",
-  "fresh_start": "2026-11-18T13:20"
+  "fresh_start": "2026-11-18T13:20",
+  "openai_budget_usd": 2.2
 }
