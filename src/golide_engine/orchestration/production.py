@@ -2544,6 +2544,22 @@ class ProductionService:
                     except Exception as exc:  # noqa: BLE001 - designs without screenshots still work
                         print(json.dumps({"status": "thumbnail_capture_failed", "error": str(exc)[:200]}))
                 shots = sorted(sources.glob("*-top.png"))
+                # 2026-11-18 (owner): a Stickman + Goli video uses the Goli thumbnails, with the Stickman cartoon
+                # small behind Goli the way the real pages are shown (two stills from the plain Stickman video)
+                plain = self.root / "build" / production_id / "stickman-only.mp4"
+                if str(spec.get("video_style") or "") == "stickman_goli" and plain.exists():
+                    stills = []
+                    try:
+                        seconds = self._duration(plain)
+                        for k, at in enumerate((0.32, 0.64)):
+                            still = work / "thumb-sources" / f"stickman-{k + 1}-top.png"
+                            still.parent.mkdir(parents=True, exist_ok=True)
+                            subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", f"{seconds * at:.2f}", "-i", str(plain),
+                                            "-frames:v", "1", str(still)], check=True, timeout=120)
+                            stills.append(still)
+                    except Exception as exc:  # noqa: BLE001 - the thumbnail is still made from the real pages
+                        print(json.dumps({"status": "thumbnail_stickman_stills_failed", "error": str(exc)[:200]}))
+                    shots = stills + shots
                 photos = sorted(sources.glob("*-photo.png"))
                 # 2026-11-17 (owner): a story about one person shows his real photo on the thumbnail
                 person, person_photo = "", None
