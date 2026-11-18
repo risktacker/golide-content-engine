@@ -164,36 +164,48 @@ def test_free_fills_rewrite_only_the_content_block_and_stretch_to_the_beat():
     assert set(recipes.FREE) | set(recipes.PAID) == set(recipes.RECIPES)
 
 
-def test_blueprint_is_a_free_kit_of_civil_subjects():
-    """2026-11-18: a house, tower or bridge with 1-3 notes on its named points; anything else is refused."""
-    scene = recipes.blueprint_layout({"subject": "House", "title": ["Two-storey", "house", "extra"], "notes": [
-        {"at": "roof", "lines": ["roof pitch", "30 degrees", "x"]}, {"at": "garage", "lines": ["x"]}, {"at": "roof", "lines": ["again"]}],
-        "dims": ["10 m", "8 m", "7 m"]})
-    assert scene == {"subject": "house", "title": ["TWO-STOREY", "HOUSE"], "notes": [{"at": "roof", "lines": ["ROOF PITCH", "30 DEGREES"]}],
-                     "dims": ["10 M", "8 M", "7 M"]}
-    code = recipes.fill_code("blueprint", {"subject": "bridge", "notes": [{"at": "deck", "lines": ["DECK"]}]}, 7.0)
+def test_any_object_is_read_from_named_parts_and_fitted():
+    """2026-11-18 (owner: every script has different objects): the engine's 3D part format, named, any object."""
+    parts = recipes.object_parts(["body: box 0 0 0 4 2 1", "motor: cyl 1 0 1 1 1 1", "motor: cyl -1 0 1 1 1 1 rx90 gold",
+                                  "nonsense", "x: box 0 0 0 0 1 1"], (8.0, 3.0, 8.0))
+    assert [p["name"] for p in parts] == ["body", "motor", "motor"] and parts[2]["gold"]
+    assert max(p["c"][0] + p["s"][0] / 2 for p in parts) <= 4.0 and min(p["c"][1] - p["s"][1] / 2 for p in parts) == 0
+    import pytest
+    with pytest.raises(ValueError):
+        recipes.object_parts(["just words"], (1, 1, 1))
+
+
+def test_blueprint_draws_any_structure_from_parts():
+    fill = {"title": ["Gravity", "dam", "x"], "dims": ["420 m", "90 m", "130 m"],
+            "build": ["wall: box 0 0 0 10 2 6", "spillway: box 0 -1.6 0 2.2 1.2 3.6"],
+            "notes": [{"at": "Wall", "lines": ["concrete", "wall", "x"]}, {"at": "tower", "lines": ["x"]}]}
+    scene = recipes.blueprint_layout(fill)
+    assert scene["title"] == ["GRAVITY", "DAM"] and scene["dims"] == ["420 M", "90 M", "130 M"]
+    assert scene["notes"] == [{"at": "wall", "lines": ["CONCRETE", "WALL"]}] and len(scene["build"]) == 2
+    code = recipes.fill_code("blueprint", fill, 7.0)
     assert "__SCENE__" not in code and '"duration": 7.0' in code and "blueprint-kit" in code
     assert "blueprint" in recipes.FREE and not editor.PAID_LOOKS
     import pytest
-    for bad in ({"subject": "castle", "notes": [{"at": "roof", "lines": ["x"]}]}, {"subject": "tower", "notes": []}):
-        with pytest.raises(ValueError):
-            recipes.blueprint_layout(bad)
+    with pytest.raises(ValueError):
+        recipes.blueprint_layout({"build": ["wall: box 0 0 0 1 1 1"], "notes": [{"at": "roof", "lines": ["x"]}]})
 
 
-def test_x_ray_is_a_free_kit_of_real_objects():
-    """2026-11-18: an object from the library and 1-3 of its own parts; anything else is refused, never faked."""
-    scene = recipes.xray_layout({"object": "Phone", "flow": "magic", "parts": [
-        {"part": "battery", "name": "Battery", "note": "stores the charge"}, {"part": "engine", "name": "x"},
-        {"part": "chip", "name": "A19 chip"}, {"part": "battery", "name": "again"}]})
-    assert scene["object"] == "phone" and scene["flow"] == "current"
-    assert [p["part"] for p in scene["parts"]] == ["battery", "chip"] and scene["parts"][1]["name"] == "A19 CHIP"
-    code = recipes.fill_code("xray", {"object": "chip", "parts": [{"part": "die", "name": "GPU die"}]}, 6.0)
-    assert "__SCENE__" not in code and '"duration": 6.0' in code and "x-ray-kit" in code
+def test_x_ray_shows_any_object_from_parts():
+    fill = {"object": "Delivery drone", "flow": "magic", "build": ["body: box 0 0 0 2 2 0.6", "battery: box 0 0 0.1 1 0.6 0.3"],
+            "parts": [{"part": "battery", "name": "Battery", "note": "20 minutes"}, {"part": "engine", "name": "x"}]}
+    scene = recipes.xray_layout(fill)
+    assert scene["object"] == "DELIVERY DRONE" and scene["flow"] == "current"
+    assert [p["part"] for p in scene["parts"]] == ["battery"] and scene["parts"][0]["name"] == "BATTERY"
+    assert "x-ray-kit" in recipes.fill_code("xray", fill, 6.0)
     assert "xray" in recipes.FREE and "xray" in editor.FREE_LOOKS and not editor.PAID_LOOKS
-    import pytest
-    for bad in ({"object": "toaster", "parts": [{"part": "die", "name": "x"}]}, {"object": "phone", "parts": []}):
-        with pytest.raises(ValueError):
-            recipes.xray_layout(bad)
+
+
+def test_white_model_builds_what_its_pieces_do_not_have():
+    scene = recipes.white_layout({"stops": [{"kind": "mine", "name": "Copper mine", "build": ["headframe: box 0 0 0 2 2 4", "wheel: cyl 0 0 4 1.5 0.3 1.5 rx90 gold"]},
+                                            {"kind": "factory", "name": "Smelter"}],
+                                  "extras": ["tree", {"build": ["silo: cyl 0 0 0 1 1 3"]}]})
+    kinds = [p["kind"] for p in scene["pieces"]]
+    assert kinds[:2] == ["custom", "factory"] and "custom" in kinds[2:] and scene["pieces"][0]["build"][1]["gold"]
 
 
 def test_circuit_city_is_a_kit_of_board_parts():
@@ -202,9 +214,9 @@ def test_circuit_city_is_a_kit_of_board_parts():
     assert [s["kind"] for s in old["stops"]] == ["port", "memory", "processor", "port"]
     assert [s["name"] for s in old["stops"]] == ["PROMPT", "HBM MEMORY", "BLACKWELL", "ANSWER"]
     assert [s["ref"] for s in old["stops"]] == ["J1", "U1", "U2", "J2"]
-    fill = {"stops": [{"kind": "sensor", "name": "Camera"}, {"kind": "spaceship", "name": "x"}, {"kind": "battery", "name": "Battery"}]}
+    fill = {"stops": [{"kind": "sensor", "name": "Camera"}, {"kind": "lidar", "name": "Lidar"}, {"kind": "battery", "name": "Battery"}]}
     scene = recipes.circuit_layout(fill)
-    assert [s["kind"] for s in scene["stops"]] == ["sensor", "battery"]
+    assert [s["kind"] for s in scene["stops"]] == ["sensor", "chip", "battery"]          # never dropped
     code = recipes.fill_code("circuit", fill, 7.0)
     assert "__SCENE__" not in code and '"duration": 7.0' in code and "registerStyle" in code
     import pytest

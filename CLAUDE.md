@@ -116,12 +116,11 @@ against research, unconfirmed claims kept as "reportedly/allegedly" once (`story
 - White Model is a free kit of pieces (owner 2026-11-18, `assets/recipes/kits/white-kit.js`): the recipe's own whites,
   daylight, accent conduits, labels and crane camera, with 35 pieces (buildings, nature, roads, vehicles, people,
   power); the storyboard names the stops and extras, `recipes.white_layout` places them (no overlaps).
-- Circuit City and X-Ray are free kits too (owner 2026-11-18, `assets/recipes/kits/circuit-kit.js`, `xray-kit.js`): Circuit
-  City takes 2-6 board parts in the signal's order (port, memory, processor, chip, battery, antenna, power, sensor);
-  X-Ray takes one real object (phone, laptop, chip, battery cell, server) and 1-3 of its own parts with the flow.
-  Each keeps its recipe's own construction; `recipes.circuit_layout` / `xray_layout` refuse anything unknown.
-- Blueprint is a free kit too (owner 2026-11-18, `assets/recipes/kits/blueprint-kit.js`): the recipe's own drafting
-  kit with civil subjects (house, tower, bridge) and 1-3 notes on named points (`recipes.blueprint_layout`).
+- ANY object (owner 2026-11-18: "every script has different objects"): no fixed object lists. The storyboard writes
+  the real thing as named parts in the engine's 3D part format ("name: box|cyl|sphere|cone x y z w d h [rx90] [gold]",
+  `recipes.object_parts` reads, checks and fits it). X-Ray and Blueprint draw only from parts (any object inside, any
+  structure built); White Model's 35 pieces take a "custom" piece from parts for anything else; Circuit City draws a
+  part it does not know as a chip with its name. Never a look-alike swap, never a dropped thing.
 - No paid styles left (2026-11-18). The paid path stays for later ones: only when switched on for the video in Studio,
   each up to the count he sets (`spec.looks = {free: [...], paid: {key: n}}`, `editor.looks_for`); scheduled
   automatic runs never switch paid ones on. Real people stay real photo cards, never puppets.

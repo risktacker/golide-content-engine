@@ -12,61 +12,30 @@
   const FLOW = SCENE.flow || 'current';                            // heat, air: wavy rays; current, data, force: straight
   const K0 = globalThis.K;
 
-  // ---------------------------------------------------------------- the objects
-  // Each object lies flat on the scanner bed, its long side along x. A part is one or more closed boxes, cylinders or
-  // spheres: [shape, size, centre] with box [w, h, d], cyl [r, h] standing (or 'cylx' lying along x), ball [r].
-  // `lit` is its look before the scan, `k` its film density (thin and dense parts high, bulky parts low).
-  const OBJECTS = {
-    phone: { len: 7.6, depth: 3.6, parts: {
-      body: { shapes: [['box', [7.6, 0.38, 3.6], [0, 0.19, 0], 0.3]], lit: 'alu', k: 0.1, shell: true },
-      battery: { shapes: [['box', [4.2, 0.22, 2.9], [-1.1, 0.19, 0]]], lit: 'dark', k: 0.36 },
-      board: { shapes: [['box', [2.5, 0.05, 3.0], [2.4, 0.17, 0]]], lit: 'pcb', k: 0.7 },
-      chip: { shapes: [['box', [0.85, 0.12, 0.85], [2.2, 0.25, 0.55]]], lit: 'dark', k: 1.3 },
-      memory: { shapes: [['box', [0.7, 0.1, 0.5], [2.2, 0.24, -0.45]]], lit: 'dark', k: 1.2 },
-      camera: { shapes: [['cyl', [0.4, 0.3], [3.1, 0.22, -1.05]], ['cyl', [0.4, 0.3], [3.1, 0.22, 1.05]]], lit: 'glass', k: 0.8 },
-      speaker: { shapes: [['box', [0.3, 0.14, 1.3], [-3.5, 0.19, 0]]], lit: 'dark', k: 0.9 },
-      antenna: { shapes: [['box', [0.08, 0.3, 3.3], [3.7, 0.19, 0]], ['box', [0.08, 0.3, 3.3], [-3.7, 0.19, 0]]], lit: 'alu', k: 1.1 },
-    } },
-    laptop: { len: 8.0, depth: 5.4, parts: {
-      body: { shapes: [['box', [8.0, 0.5, 5.4], [0, 0.25, 0], 0.25]], lit: 'alu', k: 0.07, shell: true },
-      battery: { shapes: [['box', [3.0, 0.22, 1.7], [-1.6, 0.2, 1.55]], ['box', [3.0, 0.22, 1.7], [1.6, 0.2, 1.55]]], lit: 'dark', k: 0.34 },
-      board: { shapes: [['box', [5.6, 0.05, 2.3], [0, 0.17, -1.2]]], lit: 'pcb', k: 0.7 },
-      chip: { shapes: [['box', [0.95, 0.12, 0.95], [-0.3, 0.26, -1.2]]], lit: 'dark', k: 1.3 },
-      memory: { shapes: [['box', [1.5, 0.07, 0.5], [-2.4, 0.24, -1.9]]], lit: 'dark', k: 1.1 },
-      storage: { shapes: [['box', [1.5, 0.07, 0.5], [-2.4, 0.24, -0.7]]], lit: 'dark', k: 1.1 },
-      fan: { shapes: [['cyl', [0.75, 0.26], [1.9, 0.27, -1.3]]], lit: 'dark', k: 0.6 },
-      speaker: { shapes: [['box', [0.5, 0.16, 1.2], [-3.55, 0.24, 1.4]], ['box', [0.5, 0.16, 1.2], [3.55, 0.24, 1.4]]], lit: 'dark', k: 0.8 },
-    } },
-    chip: { len: 7.0, depth: 7.0, parts: {
-      substrate: { shapes: [['box', [7.0, 0.3, 7.0], [0, 0.15, 0], 0.08]], lit: 'pcb', k: 0.16, shell: true },
-      die: { shapes: [['box', [3.0, 0.24, 3.8], [-0.9, 0.42, 0]]], lit: 'silicon', k: 0.9 },
-      memory: { shapes: [-1.5, 0, 1.5].flatMap((z) => [['box', [1.0, 0.36, 1.2], [1.75, 0.48, z]]]), lit: 'dark', k: 0.8 },
-      spreader: { shapes: [['box', [6.4, 0.1, 6.4], [0, 0.72, 0], 0.05]], lit: 'alu', k: 0.3 },
-      balls: { shapes: [-2.6, -1.3, 0, 1.3, 2.6].flatMap((x) => [-2.6, 2.6].map((z) => ['ball', [0.22], [x, 0.04, z]])), lit: 'alu', k: 0.9 },
-    } },
-    battery: { len: 7.2, depth: 3.0, axis: 1.5, parts: {
-      can: { shapes: [['cylx', [1.5, 7.0], [0, 1.5, 0]]], lit: 'alu', k: 0.08, shell: true },
-      electrodes: { shapes: [['cylx', [1.3, 6.1], [-0.1, 1.5, 0]]], lit: 'copper', k: 0.2 },
-      core: { shapes: [['cylx', [0.22, 6.1], [-0.1, 1.5, 0]]], lit: 'dark', k: 0.9 },
-      terminal: { shapes: [['cylx', [0.55, 0.3], [3.6, 1.5, 0]]], lit: 'alu', k: 1.1 },
-      vent: { shapes: [['cylx', [1.25, 0.12], [3.2, 1.5, 0]]], lit: 'alu', k: 1.0 },
-    } },
-    server: { len: 8.4, depth: 5.6, parts: {
-      chassis: { shapes: [['box', [8.4, 1.0, 5.6], [0, 0.5, 0], 0.06]], lit: 'alu', k: 0.05, shell: true },
-      processor: { shapes: [['box', [1.2, 0.3, 1.2], [-0.6, 0.35, -1.25]], ['box', [1.2, 0.3, 1.2], [-0.6, 0.35, 1.25]]], lit: 'dark', k: 0.9 },
-      memory: { shapes: [-1.75, -1.55, -1.35, -1.15, 1.15, 1.35, 1.55, 1.75].map((z) => ['box', [1.6, 0.6, 0.1], [-2.1, 0.45, z]]), lit: 'pcb', k: 0.9 },
-      gpu: { shapes: [['box', [2.2, 0.4, 1.3], [1.5, 0.4, 0]]], lit: 'dark', k: 0.6 },
-      fans: { shapes: [-1.8, -0.6, 0.6, 1.8].map((z) => ['cylx', [0.38, 0.5], [-3.6, 0.5, z]]), lit: 'dark', k: 0.6 },
-      power: { shapes: [['box', [2.0, 0.6, 1.3], [3.0, 0.4, 1.9]]], lit: 'dark', k: 0.4 },
-      storage: { shapes: [-0.55, -1.55].map((z) => ['box', [1.4, 0.5, 0.8], [3.2, 0.35, z - 0.4]]), lit: 'dark', k: 0.6 },
-    } },
-  };
-  const OBJ = OBJECTS[SCENE.object] || OBJECTS.phone;
-  const LEN = OBJ.len, HALF = LEN / 2, AXIS_Y = OBJ.axis || 0.4;
+  // ---------------------------------------------------------------- the object: ANY object, from the storyboard's parts
+  // (the engine's part format, read and scaled by recipes.object_parts). The shell is the part named like one, else
+  // the biggest; film density follows size (small, compact parts read dense), the look before the scan follows the name.
+  const OBJ = (() => {
+    const by = {}, vol = (p) => p.s[0] * p.s[1] * p.s[2];
+    SCENE.build.forEach((p) => (by[p.name] = by[p.name] || []).push(p));
+    const names = Object.keys(by), total = (n) => by[n].reduce((v, p) => v + vol(p), 0);
+    const big = names.reduce((a, b) => (total(b) > total(a) ? b : a));
+    const SHELL = /^(shell|body|case|casing|housing|chassis|frame|hull|can|skin|cover|outer|enclosure)/;
+    const look = (n, g) => g ? 'copper' : /glass|lens|screen|window|display/.test(n) ? 'glass' : /board|pcb/.test(n) ? 'pcb' : /die|silicon|wafer/.test(n) ? 'silicon' : /copper|coil|wire|winding|cable/.test(n) ? 'copper' : 'dark';
+    const parts = {};
+    names.forEach((n) => {
+      const shell = SHELL.test(n) || (n === big && names.length > 1 && !names.some((m) => SHELL.test(m)));
+      const v = total(n) / by[n].length;
+      parts[n] = { shapes: by[n], lit: shell ? 'alu' : look(n, by[n][0].gold), k: shell ? 0.08 : K0.clamp(0.95 / (1 + Math.cbrt(v)), 0.25, 1.3), shell };
+    });
+    const span = (k) => { const lo = Math.min(...SCENE.build.map((p) => p.c[k] - p.s[k] / 2)), hi = Math.max(...SCENE.build.map((p) => p.c[k] + p.s[k] / 2)); return hi - lo; };
+    return { len: span(0), depth: span(2), height: span(1), parts };
+  })();
+  const LEN = OBJ.len, HALF = LEN / 2, AXIS_Y = OBJ.height / 2;
   // the story's parts, lit one at a time; `at` is when the flow reaches the part and it flares, as in the recipe
   const PARTS = (SCENE.parts || []).filter((p) => OBJ.parts[p.part]).slice(0, 3).map((p, i, A) => ({ ...p, at: (A.length === 1 ? 4.6 : 3.5 + i * (2.8 / (A.length - 1))) * Q }));
-  const centre = (name) => { const sh = OBJ.parts[name].shapes.length <= 2 ? OBJ.parts[name].shapes.slice(0, 1) : OBJ.parts[name].shapes, c = [0, 0, 0]; sh.forEach((s) => s[2].forEach((v, k) => (c[k] += v / sh.length))); return c; };
-  const top = (name) => Math.max(...OBJ.parts[name].shapes.map((s) => s[2][1] + (s[0] === 'box' ? s[1][1] / 2 : s[0] === 'cylx' || s[0] === 'ball' ? s[1][0] : s[1][1] / 2)));
+  const centre = (name) => { const sh = OBJ.parts[name].shapes.length <= 2 ? OBJ.parts[name].shapes.slice(0, 1) : OBJ.parts[name].shapes, c = [0, 0, 0]; sh.forEach((p) => p.c.forEach((v, k) => (c[k] += v / sh.length))); return c; };
+  const top = (name) => Math.max(...OBJ.parts[name].shapes.map((p) => p.c[1] + p.s[1] / 2));
   const FLOOR = Math.max(...Object.keys(OBJ.parts).map(top)) + 0.06;   // the flow is drawn in a plane just above the object
 
   // ---------------------------------------------------------------- the flow (shared by picture and sound)
@@ -207,13 +176,13 @@
       const obj = new THREE.Group(); scene.add(obj);
       const lit = new THREE.Group(), film = new THREE.Group(); obj.add(lit, film);
       const X = {}, KD = {};
-      const shapeGeo = ([kind, size, at, r]) => {
-        let g;
-        if (kind === 'box') g = K.roundedBox(size[0], size[1], size[2], Math.min(r || 0.02, size[1] * 0.45, size[0] * 0.45, size[2] * 0.45), 2);
-        else if (kind === 'cyl') g = new THREE.CylinderGeometry(size[0], size[0], size[1], 48);
-        else if (kind === 'cylx') { g = new THREE.CylinderGeometry(size[0], size[0], size[1], 64); g.rotateZ(Math.PI / 2); }
-        else g = new THREE.SphereGeometry(size[0], 20, 14);
-        g.translate(at[0], at[1], at[2]); return g;
+      const shapeGeo = (p) => {
+        const [w, h, d] = p.s; let g;
+        if (p.shape === 'box') g = K.roundedBox(w, h, d, Math.min(0.04, w * 0.3, h * 0.3, d * 0.3), 2);
+        else if (p.shape === 'sphere') g = new THREE.SphereGeometry(0.5, 32, 20).scale(w, h, d);
+        else if (p.shape === 'cone') g = new THREE.ConeGeometry(0.5, 1, 48).scale(w, h, d);
+        else g = new THREE.CylinderGeometry(0.5, 0.5, 1, 48).scale(w, h, d);
+        g.applyMatrix4(new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(...p.r))); g.translate(...p.c); return g;
       };
       const story = new Set(PARTS.map((p) => p.part));
       for (const [name, def] of Object.entries(OBJ.parts)) {

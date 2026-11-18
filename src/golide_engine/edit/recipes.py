@@ -90,21 +90,9 @@ CIRCUIT_PARTS = ("port", "memory", "processor", "chip", "battery", "antenna", "p
 _OLD_FOUR = ("port", "memory", "processor", "port")
 # 2026-11-18: X-Ray as a kit of real objects whose inner parts are known (assets/recipes/kits/xray-kit.js)
 XRAY_KIT = KIT / "kits" / "xray-kit.js"
-XRAY_OBJECTS = {
-    "phone": ("battery", "board", "chip", "memory", "camera", "speaker", "antenna"),
-    "laptop": ("battery", "board", "chip", "memory", "storage", "fan", "speaker"),
-    "chip": ("die", "memory", "spreader", "substrate", "balls"),
-    "battery": ("electrodes", "core", "terminal", "vent", "can"),
-    "server": ("processor", "memory", "gpu", "fans", "power", "storage"),
-}
 XRAY_FLOWS = ("current", "data", "heat", "air", "force")
-# 2026-11-18: Blueprint as a kit of civil subjects (assets/recipes/kits/blueprint-kit.js) with notes on named points
+# 2026-11-18: Blueprint as a kit (assets/recipes/kits/blueprint-kit.js): any structure from parts, notes on named parts
 BLUEPRINT_KIT = KIT / "kits" / "blueprint-kit.js"
-BLUEPRINT_SUBJECTS = {
-    "house": ("foundation", "walls", "roof", "door", "windows", "chimney"),
-    "tower": ("foundation", "core", "columns", "floors", "facade", "roof"),
-    "bridge": ("footings", "piers", "abutments", "deck", "railings", "span"),
-}      # the reference's own four, for a fill of plain names
 PAID = tuple(k for k in RECIPES if k not in FREE)
 DIAGRAMS = ("chat", "steps", "network", "files", "chips")      # Layer Stack's prints (its DIAGRAMS)
 
@@ -167,43 +155,104 @@ def content_block(key: str, fill: dict[str, Any]) -> str:
     raise ValueError(f"{key} has no free mode")
 
 
+# 2026-11-18 (owner: "every script has different objects"): X-Ray and Blueprint draw ANY object the storyboard
+# writes, in the engine's own 3D part format (vector/figures/devices.py): "name: box|cyl|sphere|cone x y z w d h
+# [rx90] [ry0] [rz45] [gold]", z up, z = the part's base. Parts with the same name are one part (4 motors).
+PART_SHAPES = ("box", "cyl", "sphere", "cone")
+PART_MAX = 40
+
+
+def object_parts(lines: Any, span: tuple[float, float, float]) -> list[dict[str, Any]]:
+    """Named parts in three.js terms ({name, shape, c: centre, s: size [x, y up, z], r: radians, gold}), scaled as
+    one so the object fits span (x, height, z), standing on y = 0 and centred. Raises ValueError when there are no
+    readable parts."""
+    import math
+    import re as _re
+
+    parts = []
+    for line in (lines if isinstance(lines, list) else []):
+        m = _re.match(r"\s*([^:]{1,24}):\s*(.+)$", str(line))
+        if not m:
+            continue
+        name = " ".join(m.group(1).lower().split())
+        words = m.group(2).replace(",", " ").split()
+        if not words or words[0].lower() not in PART_SHAPES:
+            continue
+        nums, rot, gold = [], [0.0, 0.0, 0.0], False
+        for w in words[1:]:
+            low = w.lower()
+            if low == "gold":
+                gold = True
+            elif low[:2] in ("rx", "ry", "rz"):
+                try:
+                    rot["xyz".index(low[1])] = math.radians(float(low[2:].lstrip("=")))
+                except ValueError:
+                    pass
+            else:
+                try:
+                    nums.append(float(w))
+                except ValueError:
+                    pass
+        if len(nums) < 6 or min(nums[3:6]) <= 0 or max(abs(v) for v in nums[:6]) > 100:
+            continue
+        x, y, z, w, d, h = nums[:6]
+        # engine (x, y depth, z up, base) -> three (x, y up, z), centre; rx stays x, ry turns about z, rz about y
+        parts.append({"name": name, "shape": words[0].lower(), "c": [x, z + h / 2, y], "s": [w, h, d],
+                      "r": [rot[0], rot[2], rot[1]], "gold": gold})
+    if not parts:
+        raise ValueError("no readable parts: write each as 'name: box|cyl|sphere|cone x y z w d h'")
+    parts = parts[:PART_MAX]
+    lo = [min(p["c"][k] - p["s"][k] / 2 for p in parts) for k in range(3)]
+    hi = [max(p["c"][k] + p["s"][k] / 2 for p in parts) for k in range(3)]
+    k = min(span[i] / max(hi[i] - lo[i], 1e-6) for i in range(3))
+    mid = [(lo[0] + hi[0]) / 2, lo[1], (lo[2] + hi[2]) / 2]
+    for p in parts:
+        p["c"] = [round((p["c"][i] - mid[i]) * k, 4) for i in range(3)]
+        p["s"] = [round(v * k, 4) for v in p["s"]]
+        p["r"] = [round(v, 4) for v in p["r"]]
+    return parts
+
+
 def blueprint_layout(fill: dict[str, Any]) -> dict[str, Any]:
-    """A subject of the library, a two-line title and 1-3 notes on its named points. Raises ValueError when the
-    subject is not in the library."""
-    sub = str(fill.get("subject") or "").lower()
-    if sub not in BLUEPRINT_SUBJECTS:
-        raise ValueError(f"blueprint: subject must be one of {', '.join(BLUEPRINT_SUBJECTS)}")
+    """ANY structure or object, written by the storyboard as named parts ("build", the engine's part format), a
+    two-line title and 1-3 notes tied to its named parts; real sizes ("dims": width, depth, height) are printed when
+    given. Raises ValueError when there are no readable parts or no note names one of them."""
+    build = object_parts(fill.get("build"), (1.2, 1.35, 1.2))
+    names = {p["name"] for p in build}
     notes, seen = [], set()
     for n in fill.get("notes") or []:
+        at = " ".join(str(n.get("at", "")).lower().split()) if isinstance(n, dict) else ""
         lines = [_caps(x, 14) for x in (n.get("lines") or [])[:2] if str(x).strip()] if isinstance(n, dict) else []
-        if lines and n.get("at") in BLUEPRINT_SUBJECTS[sub] and n["at"] not in seen:
-            seen.add(n["at"])
-            notes.append({"at": n["at"], "lines": lines})
+        if lines and at in names and at not in seen:
+            seen.add(at)
+            notes.append({"at": at, "lines": lines})
     if not notes:
-        raise ValueError(f"blueprint: 1 to 3 notes on the {sub} needed at: {', '.join(BLUEPRINT_SUBJECTS[sub])}")
-    title = [_caps(x, 14) for x in (fill.get("title") or [])[:2] if str(x).strip()] or [sub.upper()]
+        raise ValueError(f"blueprint: 1 to 3 notes on the parts needed: {', '.join(sorted(names))}")
+    title = [_caps(x, 14) for x in (fill.get("title") or [])[:2] if str(x).strip()] or ["GENERAL", "ARRANGEMENT"]
     dims = [" ".join(str(x).upper().split())[:8] for x in (fill.get("dims") or [])]
-    out = {"subject": sub, "title": title, "notes": notes[:3]}
+    out = {"build": build, "title": title, "notes": notes[:3]}
     if len(dims) == 3 and all(dims):
         out["dims"] = dims
     return out
 
 
 def xray_layout(fill: dict[str, Any]) -> dict[str, Any]:
-    """One object of the library and 1-3 of its own parts in the order the flow reaches them. Raises ValueError when
-    the object or its parts are not in the library (the beat then needs another picture, never a look-alike)."""
-    obj = str(fill.get("object") or "").lower()
-    if obj not in XRAY_OBJECTS:
-        raise ValueError(f"xray: object must be one of {', '.join(XRAY_OBJECTS)}")
+    """ANY object, written by the storyboard as named parts ("build", the engine's part format, lying on the scanner
+    bed), and 1-3 of those parts to light in the order the flow reaches them. Raises ValueError when the object has
+    no readable parts or none of the named ones is in it."""
+    build = object_parts(fill.get("build"), (8.0, 3.2, 6.0))
+    names = {p["name"] for p in build}
     parts, seen = [], set()
     for p in fill.get("parts") or []:
-        if isinstance(p, dict) and p.get("part") in XRAY_OBJECTS[obj] and p["part"] not in seen and str(p.get("name", "")).strip():
-            seen.add(p["part"])
-            parts.append({"part": p["part"], "name": _caps(p["name"], 14), "note": " ".join(str(p.get("note", "")).split())[:28]})
+        key = " ".join(str(p.get("part", "")).lower().split()) if isinstance(p, dict) else ""
+        if key in names and key not in seen and str(p.get("name", "")).strip():
+            seen.add(key)
+            parts.append({"part": key, "name": _caps(p["name"], 14), "note": " ".join(str(p.get("note", "")).split())[:28]})
     if not parts:
-        raise ValueError(f"xray: 1 to 3 parts of the {obj} needed: {', '.join(XRAY_OBJECTS[obj])}")
+        raise ValueError(f"xray: 1 to 3 of the object's own parts needed: {', '.join(sorted(names))}")
     flow = fill.get("flow") if fill.get("flow") in XRAY_FLOWS else "current"
-    return {"object": obj, "parts": parts[:3], "flow": flow, "accent": _colour(fill.get("accent"), "#ff9a22")}
+    return {"object": _caps(fill.get("object") or "object", 20), "build": build, "parts": parts[:3], "flow": flow,
+            "accent": _colour(fill.get("accent"), "#ff9a22")}
 
 
 def circuit_layout(fill: dict[str, Any]) -> dict[str, Any]:
@@ -212,7 +261,7 @@ def circuit_layout(fill: dict[str, Any]) -> dict[str, Any]:
     raw = [x for x in (fill.get("stops") or []) if x]
     if raw and all(isinstance(x, str) for x in raw) and len(raw) == 4:
         raw = [{"kind": k, "name": n} for k, n in zip(_OLD_FOUR, raw)]
-    stops = [x for x in raw if isinstance(x, dict) and x.get("kind") in CIRCUIT_PARTS][:6]
+    stops = [x if x.get("kind") in CIRCUIT_PARTS else {**x, "kind": "chip"} for x in raw if isinstance(x, dict) and str(x.get("name", "")).strip()][:6]
     if len(stops) < 2:
         raise ValueError("circuit: 2 to 6 stops of known parts needed")
     refs, n = [], {"J": 0, "U": 0, "BT": 0, "L": 0, "S": 0, "ANT": 0}
@@ -227,13 +276,25 @@ def white_layout(fill: dict[str, Any]) -> dict[str, Any]:
     """Stops in story order left to right on the board (a gentle zigzag so the path reads), extras in the gaps in
     front and behind, wide pieces (road, river, track) across the front. Raises ValueError when there is nothing to
     show."""
-    stops = [s for s in (fill.get("stops") or []) if isinstance(s, dict) and s.get("kind") in WHITE_PIECES and s.get("kind") not in WIDE][:6]
+    # a stop or extra the 35 pieces do not cover is written as parts ("build") and built in white card (kind custom)
+    def custom(item):
+        try:
+            return {"kind": "custom", "build": object_parts(item.get("build"), (2.6, 3.2, 2.0))} if isinstance(item, dict) and item.get("build") else None
+        except ValueError:
+            return None
+    stops = []
+    for s in fill.get("stops") or []:
+        if isinstance(s, dict) and s.get("kind") in WHITE_PIECES and s.get("kind") not in WIDE:
+            stops.append(s)
+        elif custom(s):
+            stops.append({**s, **custom(s)})
+    stops = stops[:6]
     if len(stops) < 2:
         raise ValueError("white: 2 to 6 stops of known kinds needed")
     # people as a stop of the story stand out: a figure or a crowd at 2.4x scale (a person among buildings would
     # otherwise be a speck, owner 2026-11-18 "people, i didnt see it")
     hero = {"person": 2.4, "crowd": 2.2}
-    widths = [WHITE_PIECES[s["kind"]] * hero.get(s["kind"], 1) for s in stops]
+    widths = [(2.6 if s["kind"] == "custom" else WHITE_PIECES[s["kind"]]) * hero.get(s["kind"], 1) for s in stops]
     gap = 1.6                                           # the pieces sit together: the camera frames what is there
     span = sum(widths) + gap * (len(stops) - 1)
     scale = min(1.0, 26 / span)
@@ -243,20 +304,24 @@ def white_layout(fill: dict[str, Any]) -> dict[str, Any]:
         cx = x + w * scale / 2
         z = -1.6 if i % 2 == 0 else -3.4
         pid = f"s{i}"
-        pieces.append({"id": pid, "kind": st["kind"], "at": [round(cx, 2), z], "scale": round(scale * hero.get(st["kind"], 1), 2)})
+        pieces.append({"id": pid, "kind": st["kind"], "at": [round(cx, 2), z], "scale": round(scale * hero.get(st["kind"], 1), 2),
+                       **({"build": st["build"]} if st["kind"] == "custom" else {})})
         used.append((cx - w * scale / 2, cx + w * scale / 2))
         path.append(pid)
         steps.append({"name": " ".join(str(st.get("name", "")).upper().split())[:16],
                       "note": " ".join(str(st.get("note", "")).split())[:26]})
         x += (w + gap) * scale
-    extras = [e for e in (fill.get("extras") or []) if e in WHITE_PIECES][:6]
-    front = [e for e in extras if e in WIDE][:1]
+    extras = [e if isinstance(e, str) else custom(e) for e in (fill.get("extras") or []) if (isinstance(e, str) and e in WHITE_PIECES) or custom(e)][:6]
+    front = [e for e in extras if isinstance(e, str) and e in WIDE][:1]
     if front:
         pieces.append({"kind": front[0], "at": [0, 3.2]})
     half = span * scale / 2
     # extras stand behind the row and at its ends, never in front of a stop (the camera looks from the front)
     slots = [(-half - 1.4, -2.4), (half + 1.4, -2.4), (-half * 0.5, -6.0), (half * 0.5, -6.0), (0, -6.4), (-half - 1.2, -5.8), (half + 1.2, -5.8)]
-    for e, (ex, ez) in zip([e for e in extras if e not in WIDE], slots):
+    for e, (ex, ez) in zip([e for e in extras if not (isinstance(e, str) and e in WIDE)], slots):
+        if isinstance(e, dict):
+            pieces.append({**e, "at": [ex, ez], "scale": round(min(1.0, scale + 0.15), 2)})
+            continue
         on_road = front and front[0] == "road" and e in ("car", "truck", "bus")
         pieces.append({"kind": e, "at": [ex, 3.2 if on_road else ez], "scale": round(min(1.0, scale + 0.15), 2),
                        "turn": 180 if on_road and ex > 0 else 0})

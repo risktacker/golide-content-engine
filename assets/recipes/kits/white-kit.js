@@ -102,6 +102,21 @@
         return ws;
       };
       const P = {
+        // any thing the 35 pieces do not cover, written by the storyboard as parts (recipes.object_parts), in white card;
+        // gold parts take the accent when the flow arrives (the first part when none is gold)
+        custom(x, z, ry, s, p) {
+          const g = at(x, z, ry, s), glow = glowMat(), parts = p.build || [];
+          const hot = parts.some((q) => q.gold) ? (q) => q.gold : (q) => q === parts[0];
+          let H = 0;
+          for (const q of parts) {
+            const [w, h, d] = q.s, mat = hot(q) ? glow : M.card;
+            const geo = q.shape === 'box' ? new THREE.BoxGeometry(w, h, d) : q.shape === 'sphere' ? new THREE.SphereGeometry(0.5, 32, 20).scale(w, h, d)
+              : q.shape === 'cone' ? new THREE.ConeGeometry(0.5, 1, 40).scale(w, h, d) : new THREE.CylinderGeometry(0.5, 0.5, 1, 40).scale(w, h, d);
+            put(geo, mat, q.c, q.r, g); H = Math.max(H, q.c[1] + h / 2);
+          }
+          const W = Math.max(...parts.map((q) => q.c[0] + q.s[0] / 2), 0.5);
+          return { top: world(g, [0, H + 0.6, 0]), port: world(g, [W + 0.05, 0.05, 0]), glow: [glow] };
+        },
         house(x, z, ry, s) {
           const g = at(x, z, ry, s), W = 2.6, D = 2.0, E = 1.5, R = 2.35, win = glowMat();
           box(W, E, D, M.card, [0, E / 2, 0], null, g);
@@ -332,7 +347,7 @@
       for (const p of SCENE.pieces || []) {
         const make = P[p.kind];
         if (!make) continue;
-        const out = make(p.at[0], p.at[1], (p.turn || 0) * Math.PI / 180, p.scale || 1);
+        const out = make(p.at[0], p.at[1], (p.turn || 0) * Math.PI / 180, p.scale || 1, p);
         out.id = p.id || p.kind + Object.keys(placed).length;
         placed[out.id] = out;
         marks.push({ ring: [p.at[0], p.at[1], 0.3 * (p.scale || 1)] });

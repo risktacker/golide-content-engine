@@ -222,25 +222,23 @@ def _looks_text(allowed: list[str], paid: dict[str, int], puppets: bool) -> str:
   layers: {"title": [line 1, line 2] (max 3 words each, may be ["", ""]), "layers": [3 to 5 of {"name": 1-2 words,
     "note": 2-4 words, "diagram": one of chat, steps, network, files, chips}] top to bottom}
   circuit: {"stops": 2 to 6 of {"kind", "name" 1-2 words} in the order the signal travels; kinds: port (where it
-    comes in or goes out), memory, processor, chip, battery, antenna, power, sensor}. Code lays them out.
-  glass: {"first": {"name", "colour" "#rrggbb", "parts" 1-3}, "second": {same}, "binder": {"name", "colour"},
-    "mix_colour": "#rrggbb", "captions": exactly 5 lines of 2-6 words: the idea, the first amount, the second amount,
-    what binds them, the result}; the two parts add up to at most 4.
+    comes in or goes out), memory, processor, chip, battery, antenna, power, sensor (any other part is drawn as a chip
+    with its name)}. Code lays them out.
   white: {"stops": 2 to 6 of {"kind", "name" 1-2 words, "note" 2-4 words} in the order the thing travels,
     "extras": up to 6 kinds that set the scene, "accent": "#rrggbb" (the one colour of what flows)}; kinds: house,
     tower, bank, factory, datacenter, shop, school, hospital, tree, pine, forest, mountain, hill, lake, cloud, sun,
     rain, bridge, car, truck, bus, plane, ship, pole, turbine, solar, tower_mast, person, crowd, battery, dam
-    (extras may also be road, river, train). Code lays them out.
-  xray: {"object": one of phone, laptop, chip, battery (a cell), server, "parts": 1 to 3 of {"part", "name" 1-2
-    words, "note" 2-4 words} in the order the flow reaches them, "flow": current, data, heat, air or force,
-    "accent": "#rrggbb"}; parts: phone battery, board, chip, memory, camera, speaker, antenna; laptop battery, board,
-    chip, memory, storage, fan, speaker; chip die, memory, spreader, substrate, balls; battery electrodes, core,
-    terminal, vent, can; server processor, memory, gpu, fans, power, storage. Only these objects: anything else
-    inside is another picture, never a look-alike.
-  blueprint: {"subject": house, tower or bridge, "title": [1-2 short lines], "notes": 1 to 3 of {"at", "lines":
-    [1-2 lines of 1-2 words]}, "dims": optional [width, depth, height] as printed, e.g. "10.0 M"}; at: house foundation,
-    walls, roof, door, windows, chimney; tower foundation, core, columns, floors, facade, roof; bridge footings, piers,
-    abutments, deck, railings, span. Only these subjects: anything else is another picture.
+    (extras may also be road, river, train). Code lays them out. A thing the pieces do not have is
+    {"kind": "custom", "name", "note", "build": PARTS} (also allowed in extras), never left out.
+  PARTS = ANY object written as named parts, one string each, in the 3D part format: "name: box|cyl|sphere|cone x y z
+    w d h [rx90] [ry0] [rz45] [gold]" (z up, z = the part's base, any units; parts with the same name are one part).
+    Build the REAL object the script names, its real proportions and its real inner parts, 3 to 40 parts.
+  xray: {"object": its name, "build": PARTS lying flat as on a scanner bed (an outer part named shell, body, case or
+    chassis, the inner parts inside it), "parts": 1 to 3 of {"part": a name in build, "name" 1-2 words, "note" 2-4
+    words} in the order the flow reaches them, "flow": current, data, heat, air or force, "accent": "#rrggbb"}.
+  blueprint: {"title": [1-2 short lines], "build": PARTS standing on the ground (any building, structure, machine or
+    set-up), "notes": 1 to 3 of {"at": a name in build, "lines": [1-2 lines of 1-2 words]}, "dims": [width, depth,
+    height] as printed with units, e.g. "60 M", only when the research gives them}.
 - THE REAL THING ONLY (owner 2026-11-17): a style is used only when its own objects ARE what the line names:
   circuit only for chips, boards and electronics; glass only for liquids, mixing and amounts; layers only for things
   that really are layered; white for buildings, nature, cities, roads, vehicles and what flows between them; xray for

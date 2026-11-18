@@ -9,22 +9,20 @@
   const TITLE = SCENE.title, BLOCK = ['DRG  ' + (SCENE.drawing || 'S-101'), SCENE.scale || 'SCALE 1:100'];
   const NOTES = SCENE.notes.map((n) => n.lines);
 
-  // the subjects, in sheet units (the sheet is about 2 x 2; each subject's real size is printed on its dimensions)
-  const SUBJECTS = {
-    house: { groups: ['slab', 'walls', 'openings', 'roof', 'chimney'], size: [1.2, 0.96, 0.84], dims: ['10.0 M', '8.0 M', '7.0 M'],
-      points: { foundation: [-0.6, 0.04, 0.48], walls: [-0.6, 0.3, 0.2], roof: [0, 0.84, 0], door: [0.2, 0.2, 0.495], windows: [-0.3, 0.38, 0.495], chimney: [-0.35, 0.9, -0.12] } },
-    tower: { groups: ['raft', 'core', 'columns', 'floors', 'facade', 'crown'], size: [0.62, 0.62, 1.32], dims: ['30 M', '30 M', '120 M'],
-      points: { foundation: [-0.36, 0.04, 0.36], core: [0, 0.7, 0], columns: [-0.27, 0.5, 0.27], floors: [0.27, 0.92, 0.27], facade: [0.31, 0.6, 0], roof: [0, 1.32, 0] } },
-    bridge: { groups: ['footings', 'piers', 'abutments', 'deck', 'railings'], size: [1.36, 0.34, 0.54], dims: ['120 M', '14 M', '22 M'],
-      points: { footings: [-0.3, 0.05, 0.13], piers: [0.3, 0.25, 0.09], abutments: [-0.64, 0.3, 0.15], deck: [0.05, 0.44, 0.11], railings: [0.45, 0.52, 0.11], span: [0, 0.44, 0] } },
-  };
-  const SUB = SUBJECTS[SCENE.subject] || SUBJECTS.house;
+  // the subject: ANY structure or object, from the storyboard's parts (the engine's part format, read and scaled to
+  // the sheet by recipes.object_parts). Each part name is one lift group, in the order written (the last ones share a
+  // group past ten); notes are tied to the top of the part they name.
+  const NAMES = [...new Set(SCENE.build.map((p) => p.name))];
+  const GROUP_OF = (n) => (NAMES.indexOf(n) < 10 ? n : NAMES[9]);
+  const span = (k) => [Math.min(...SCENE.build.map((p) => p.c[k] - p.s[k] / 2)), Math.max(...SCENE.build.map((p) => p.c[k] + p.s[k] / 2))];
+  const SUB = { groups: NAMES.slice(0, 10), size: [span(0)[1] - span(0)[0], span(2)[1] - span(2)[0], span(1)[1]], dims: SCENE.dims || null,
+    points: Object.fromEntries(NAMES.map((n) => { const p = SCENE.build.find((q) => q.name === n); return [n, [p.c[0], p.c[1] + p.s[1] / 2, p.c[2]]]; })) };
   const HS = SUB.size[2];                                            // the subject's height on the sheet
 
   // ---------------------------------------------------------------- the beats, in seconds (the recipe's 8 s, stretched to the beat)
   const NG = SUB.groups.length;
   const T = {
-    draw: Object.fromEntries(SUB.groups.map((g, i) => { const a = -2.2 + i * (3.4 / (NG - 1)); return [g, [a * Q, Math.min(a + 1.1, 1.75) * Q]]; })),
+    draw: Object.fromEntries(SUB.groups.map((g, i) => { const a = -2.2 + i * (3.4 / Math.max(1, NG - 1)); return [g, [a * Q, Math.min(a + 1.1, 1.75) * Q]]; })),
     lift: 1.85 * Q, liftGap: 0.13 * Q, liftDur: 0.9 * Q,
     notes: [3.0, 3.2, 3.4].map((x) => x * Q), fly: 0.85 * Q,
     marks: [3.85, 4.25, 4.65].map((x) => x * Q),
@@ -348,28 +346,21 @@
       };
       const L = LIGHT;
 
-      if (SCENE.subject === 'tower') {
-        box('raft', MAT.concrete, [0, 0.025, 0], [0.72, 0.05, 0.72], { r: 0.006 });
-        box('core', MAT.concrete, [0, 0.69, 0], [0.2, 1.28, 0.2], { r: 0.006 });
-        for (const x of [-0.27, 0, 0.27]) for (const z of [-0.27, 0, 0.27]) if (x || z) box('columns', MAT.steel, [x, 0.65, z], [0.03, 1.2, 0.03], { r: 0.004, w: L });
-        for (let k = 1; k <= 8; k++) box('floors', MAT.concrete, [0, 0.05 + k * 0.15, 0], [0.62, 0.022, 0.62], { r: 0.004, w: L });
-        for (const [x, z, w, d] of [[0, 0.31, 0.62, 0.012], [0, -0.31, 0.62, 0.012], [0.31, 0, 0.012, 0.62], [-0.31, 0, 0.012, 0.62]]) box('facade', MAT.glass, [x, 0.66, z], [w, 1.2, d], { r: 0.002, w: L });
-        box('crown', MAT.steel, [0, 1.3, 0], [0.5, 0.04, 0.5], { r: 0.006 });
-      } else if (SCENE.subject === 'bridge') {
-        for (const x of [-0.3, 0.3]) box('footings', MAT.concrete, [x, 0.025, 0], [0.2, 0.05, 0.3], { r: 0.006 });
-        for (const x of [-0.3, 0.3]) box('piers', MAT.concrete, [x, 0.23, 0], [0.08, 0.36, 0.18], { r: 0.008 });
-        for (const x of [-0.62, 0.62]) box('abutments', MAT.concrete, [x, 0.2, 0], [0.12, 0.4, 0.3], { r: 0.008 });
-        box('deck', MAT.concrete, [0, 0.43, 0], [1.36, 0.045, 0.22], { r: 0.006 });
-        for (const z of [-0.1, 0.1]) { box('railings', MAT.steel, [0, 0.53, z], [1.3, 0.012, 0.012], { r: 0.003, w: L }); for (let k = 0; k <= 12; k++) box('railings', MAT.steel, [-0.65 + k * (1.3 / 12), 0.49, z], [0.01, 0.075, 0.01], { r: 0.002, w: FINE }); }
-      } else {
-        box('slab', MAT.concrete, [0, 0.02, 0], [1.26, 0.04, 1.02], { r: 0.006 });
-        box('walls', MAT.plaster, [0, 0.29, 0.465], [1.2, 0.5, 0.03], { r: 0.004 }); box('walls', MAT.plaster, [0, 0.29, -0.465], [1.2, 0.5, 0.03], { r: 0.004 });
-        box('walls', MAT.plaster, [0.585, 0.29, 0], [0.03, 0.5, 0.9], { r: 0.004 }); box('walls', MAT.plaster, [-0.585, 0.29, 0], [0.03, 0.5, 0.9], { r: 0.004 });
-        for (const x of [-0.585, 0.585]) prism('walls', MAT.plaster, [[-0.48, 0.54], [0.48, 0.54], [0, 0.84]], 0.03, 0, { w: L, rotY: true, x });
-        box('openings', MAT.oak, [0.2, 0.19, 0.485], [0.16, 0.3, 0.012], { r: 0.003, w: L });
-        for (const x of [-0.3, 0.45]) box('openings', MAT.glass, [x, 0.38, 0.485], [0.2, 0.15, 0.012], { r: 0.003, w: L });
-        for (const s of [-1, 1]) box('roof', MAT.slate, [0, 0.7, s * 0.245], [1.32, 0.025, 0.6], { r: 0.004, rot: [s * 0.559, 0, 0] });
-        box('chimney', MAT.brick, [-0.35, 0.8, -0.12], [0.1, 0.26, 0.1], { r: 0.004 });
+      // each part: its solid (rounded like the recipe's) and the edges a draughtsman would draw
+      const LOOK = (n) => /glass|window|facade|curtain|glazing|water|pool|lake|screen/.test(n) ? MAT.glass : /roof|slate|tile/.test(n) ? MAT.slate
+        : /wall|plaster|render/.test(n) ? MAT.plaster : /steel|beam|column|rail|truss|cable|frame|mast|tower|pipe|girder|arch/.test(n) ? MAT.steel
+        : /door|wood|timber|oak|floor/.test(n) ? MAT.oak : /brick|chimney/.test(n) ? MAT.brick : /dark|tyre|tire|rubber|panel|solar/.test(n) ? MAT.graphite : MAT.concrete;
+      for (const q of SCENE.build) {
+        const [w, h, d] = q.s, thin = Math.min(w, h, d) < 0.05, m = pose(q.c, q.r);
+        let geo, wire;
+        if (q.shape === 'box') { geo = K.roundedBox(w, h, d, Math.min(0.008, w * 0.3, h * 0.3, d * 0.3), 3); wire = B.edgesOf(new THREE.BoxGeometry(w, h, d)); }
+        else if (q.shape === 'sphere') { geo = new THREE.SphereGeometry(0.5, 40, 26).scale(w, h, d); const g = ring(0.5, 0), sc = (p) => [p[0] * w, p[1] * h, p[2] * d]; wire = [...g, ...g.map((l) => rec([l.a[0], l.a[2], 0], [l.b[0], l.b[2], 0])), ...g.map((l) => rec([0, l.a[2], l.a[0]], [0, l.b[2], l.b[0]]))].map((l) => Object.assign(l, { a: sc(l.a), b: sc(l.b) })); }
+        else {
+          const cone = q.shape === 'cone', gen = [0, 1, 2, 3].map((k) => rec([Math.cos(k * 1.5708) * 0.5, -0.5, Math.sin(k * 1.5708) * 0.5], cone ? [0, 0.5, 0] : [Math.cos(k * 1.5708) * 0.5, 0.5, Math.sin(k * 1.5708) * 0.5], { capA: 0, capB: 0 }));
+          geo = (cone ? new THREE.ConeGeometry(0.5, 1, 40) : new THREE.CylinderGeometry(0.5, 0.5, 1, 40)).scale(w, h, d);
+          wire = ring(0.5, -0.5).concat(cone ? [] : ring(0.5, 0.5), gen).map((l) => Object.assign(l, { a: [l.a[0] * w, l.a[1] * h, l.a[2] * d], b: [l.b[0] * w, l.b[1] * h, l.b[2] * d] }));
+        }
+        part(GROUP_OF(q.name), LOOK(q.name), geo, wire, m, thin ? FINE : Math.min(w, h, d) < 0.12 ? LIGHT : HEAVY);
       }
 
       // ---------------------------------------------------------------- lift groups: solids, depth shells and edges
@@ -409,9 +400,11 @@
       TITLE.forEach((s, i) => print.push(...letter(s, { size: 0.082, w: 4.2, map: onSheet(TB[0] + 0.055, TITLE_Z + i * TITLE_GAP) })));
       BLOCK.forEach((s, i) => print.push(...letter(s, { size: 0.032, w: 1.7, alpha: 0.9, step: 0.14, map: onSheet((i ? MID : TB[0]) + 0.045, (RULE + BZ) / 2) })));
       // plan dimensions and the height, from the subject's real size
-      const [SX, SZ] = [SUB.size[0] / 2, SUB.size[1] / 2], DIMS = (SCENE.dims || []).length === 3 ? SCENE.dims : SUB.dims;
-      print.push(...dimension([-SX, 0, SZ], [-SX, 0, -SZ], { off: [-0.2, 0, 0], text: DIMS[1], at: -1.0 * Q }));
-      print.push(...dimension([-SX, 0, SZ], [SX, 0, SZ], { off: [0, 0, 0.13], flip: true, text: DIMS[0], at: 0.15 * Q }));
+      const [SX, SZ] = [SUB.size[0] / 2, SUB.size[1] / 2], DIMS = SUB.dims;
+      if (DIMS) {
+        print.push(...dimension([-SX, 0, SZ], [-SX, 0, -SZ], { off: [-0.2, 0, 0], text: DIMS[1], at: -1.0 * Q }));
+        print.push(...dimension([-SX, 0, SZ], [SX, 0, SZ], { off: [0, 0, 0.13], flip: true, text: DIMS[0], at: 0.15 * Q }));
+      }
       print.push(rec([-SX - 0.12, 0, 0], [SX + 0.12, 0, 0], { dash: 0.11, dashStyle: 2, alpha: 0.75, at: 1.0 * Q, dur: 0.6 }));
       const printMesh = ink(print, { order: 1, bias: 0.006 });
 
@@ -420,7 +413,7 @@
       const POINTS = SCENE.notes.map((n) => SUB.points[n.at] || [0, HS / 2, 0]);
       // a ring drawn round each point the note talks about
       POINTS.forEach((p, i) => { const at = T.marks[i] + 0.1; for (let k = 0; k < 20; k++) { const a0 = k / 20 * 6.2832, a1 = (k + 1) / 20 * 6.2832; marks.push(rec([p[0] + Math.cos(a0) * 0.05, p[1], p[2] + Math.sin(a0) * 0.05], [p[0] + Math.cos(a1) * 0.05, p[1], p[2] + Math.sin(a1) * 0.05], { w: 2.4, capA: 0.2, capB: 0.2, at: at + k * 0.012, dur: 0.04 })); } });
-      marks.push(...dimension([-SX, 0, SZ], [-SX, HS, SZ], { off: [-0.175, 0, 0.097], text: DIMS[2], at: T.lift + 1.35 * Q }));
+      if (DIMS) marks.push(...dimension([-SX, 0, SZ], [-SX, HS, SZ], { off: [-0.175, 0, 0.097], text: DIMS[2], at: T.lift + 1.35 * Q }));
       // the balloons float east of the subject, highest note highest; each leader runs to its point
       const TOP = Math.max(HS * 1.05, 0.95), GAP = (TOP - 0.2) / 2, order = POINTS.map((p, i) => i).sort((a, b) => POINTS[b][1] - POINTS[a][1]);
       const NOTE_AT = []; order.forEach((i, r) => { NOTE_AT[i] = [SX + 0.32, TOP - r * GAP, [-0.3, -0.25, 0.05][r]]; });
