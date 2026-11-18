@@ -32,12 +32,18 @@ FREE_LOOKS = ("layers", "circuit", "glass", "white", "xray", "blueprint", "puppe
 PAID_LOOKS: tuple[str, ...] = ()   # 2026-11-18: every style is a free kit now; the paid path stays for later ones
 
 
-def looks_for(spec_looks: Any) -> dict[str, Any]:
+# 2026-11-18: Layer Stack's labels sit beside a long-lens stack: in the Short's square frame they are too small to
+# read, so it is a long-video style until it is reframed for the square
+NOT_IN_SHORTS = ("layers",)
+
+
+def looks_for(spec_looks: Any, fmt: str | None = None) -> dict[str, Any]:
     """The styles a video may use, from its Studio switches ({"free": [...], "paid": {"blueprint": 1}}); none given
-    means every free one and no paid one."""
+    means every free one and no paid one. A Short leaves out the styles that do not read in its frame."""
     got = spec_looks if isinstance(spec_looks, dict) else {}
     free = got.get("free")
-    free = [k for k in (free if isinstance(free, list) else FREE_LOOKS) if k in FREE_LOOKS]
+    free = [k for k in (free if isinstance(free, list) else FREE_LOOKS) if k in FREE_LOOKS
+            and not (fmt == "short" and k in NOT_IN_SHORTS)]
     paid = {k: max(0, int(v)) for k, v in (got.get("paid") or {}).items()
             if k in PAID_LOOKS and isinstance(v, (int, float)) and int(v) > 0}
     return {"free": free, "paid": paid}

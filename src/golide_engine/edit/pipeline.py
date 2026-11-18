@@ -228,7 +228,7 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
     follow = {b.index for b in beat_lines for i in follow_lines
               if i < len(lines) and lines[i].start - 0.01 <= b.start <= lines[i].end}
     raw_path = folder / "edit-plan-raw-v2.json"     # v2: planned per beat (2026-11-11)
-    looks = editor.looks_for(spec.get("looks"))     # 2026-11-17 (owner): the video's style switches from Studio
+    looks = editor.looks_for(spec.get("looks"), fmt)     # 2026-11-17 (owner): the video's style switches from Studio
     print(json.dumps({"status": "edit_looks", **looks}))
 
     def plan_stage():

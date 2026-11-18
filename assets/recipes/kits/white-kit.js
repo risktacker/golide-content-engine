@@ -347,7 +347,9 @@
       for (const p of SCENE.pieces || []) {
         const make = P[p.kind];
         if (!make) continue;
+        const before = new Set(scene.children);
         const out = make(p.at[0], p.at[1], (p.turn || 0) * Math.PI / 180, p.scale || 1, p);
+        out.groups = scene.children.filter((o) => !before.has(o));
         out.id = p.id || p.kind + Object.keys(placed).length;
         placed[out.id] = out;
         marks.push({ ring: [p.at[0], p.at[1], 0.3 * (p.scale || 1)] });
@@ -426,18 +428,39 @@
         const keep = camera.matrixWorld.clone(), pos = camera.position.clone(), q = camera.quaternion.clone();
         aimAt(DUR);
         const taken = [], R = 25;
-        const tries = [[-380, -170], [160, -150], [-380, 110], [160, 110], [-420, -320], [200, -320], [-440, 260], [220, 260], [-60, -300]];
+        // 2026-11-18 (owner: no collision): a label never sits on a piece of the model either; each piece's outline
+        // on the held frame is an obstacle, and the least-covering place wins when none is clear
+        const solid = [], bb = new THREE.Box3(), cv = new THREE.Vector3();
+        for (const pc of Object.values(placed)) for (const g of pc.groups || []) {
+          bb.setFromObject(g); if (bb.isEmpty()) continue;
+          const xs = [], ys = [];
+          for (let k = 0; k < 8; k++) { cv.set(k & 1 ? bb.max.x : bb.min.x, k & 2 ? bb.max.y : bb.min.y, k & 4 ? bb.max.z : bb.min.z).project(camera); xs.push((cv.x * 0.5 + 0.5) * W); ys.push((-cv.y * 0.5 + 0.5) * H); }
+          solid.push([Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)]);
+        }
+        const leads = [];
+        const crosses = (l, b) => {      // a line from (x0,y0) to (x1,y1) passing through box b (its ends just outside)
+          for (let k = 1; k < 20; k++) { const u = k / 20, x = l[0] + (l[2] - l[0]) * u, y = l[1] + (l[3] - l[1]) * u;
+            if (x > b[0] && x < b[2] && y > b[1] && y < b[3]) return true; }
+          return false;
+        };
+        const cover = (b, list) => list.reduce((n, o) => n + Math.max(0, Math.min(b[2], o[2]) - Math.max(b[0], o[0])) * Math.max(0, Math.min(b[3], o[3]) - Math.max(b[1], o[1])), 0);
+        const tries = [[-380, -170], [160, -150], [-380, 110], [160, 110], [-420, -320], [200, -320], [-440, 260], [220, 260], [-60, -300],
+                       [-560, -60], [300, -40], [-200, -420], [100, -440], [-600, -260], [360, -260], [-120, 340]];
         STEPS.forEach((st) => {
           ctx.font = '700 50px "Inter"'; ctx.letterSpacing = '3px'; const wName = ctx.measureText(st.name).width;
           ctx.font = '500 38px "Inter"'; ctx.letterSpacing = '0px'; const w = Math.max(wName, ctx.measureText(st.note || '').width) + R * 2 + 30;
           const a = px(placed[st.key].top, W, H);
-          let best = null;
+          let best = null, low = Infinity;
           for (const off of (st.off ? [st.off] : []).concat(tries)) {
             const cx = K.clamp(a[0] + off[0], 60 + R, W - 60 - R - 18 - (w - R * 2 - 30)), cy = K.clamp(a[1] + off[1], 60 + R, H - 110);
             const b = [cx - R - 6, cy - 40, cx + w + 6, cy + 74];
-            if (!taken.some((o) => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1])) { best = [off, b]; break; }
+            // its leader line may not cross another label, and no earlier leader may cross it
+            const lead = [a[0], a[1], cx, cy];
+            const score = cover(b, taken) * 50 + cover(b, solid) + (taken.some((o) => crosses(lead, o)) || leads.some((l) => crosses(l, b)) ? 2e5 : 0);
+            if (score < low) { low = score; best = [off, b]; }
+            if (score === 0) break;
           }
-          if (best) { st.off = best[0]; taken.push(best[1]); }
+          if (best) { st.off = best[0]; taken.push(best[1]); const bx = best[1]; leads.push([a[0], a[1], bx[0] + R + 6, bx[1] + 40]); }
         });
         camera.position.copy(pos); camera.quaternion.copy(q); camera.matrixWorld.copy(keep);
       }

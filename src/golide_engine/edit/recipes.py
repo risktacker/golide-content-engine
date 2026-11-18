@@ -362,6 +362,18 @@ def fill_code(key: str, fill: dict[str, Any], duration: float) -> str:
       overlay: api.overlay ? (ctx, t, W, H) => api.overlay(ctx, t * k, W, H) : undefined,
     }});
     const out = build.call(this, S);
+    if ({'true' if key == 'layers' else 'false'}) {{
+      // 2026-11-18: in the Short's square frame the lens widens so labels beside the stack stay inside
+      const cam = S.camera, G = Math.pow(Math.max(1, 1.78 / cam.aspect), 0.75);
+      let base = cam.fov, last = null;
+      const widen = (api) => Object.assign({{}}, api, {{ update: (t) => {{
+        api.update(t);
+        if (cam.fov !== last) base = cam.fov;
+        cam.fov = 2 * Math.atan(Math.tan(base * Math.PI / 360) * G) * 360 / Math.PI;
+        cam.updateProjectionMatrix(); last = cam.fov;
+      }} }});
+      return out && typeof out.then === 'function' ? out.then((a) => widen(wrap(a))) : widen(wrap(out));
+    }}
     return out && typeof out.then === 'function' ? out.then(wrap) : wrap(out);
   }};
 }})();
