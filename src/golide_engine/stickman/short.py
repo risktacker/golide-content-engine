@@ -472,6 +472,9 @@ def make(text, project: Path, title: str, words: list[dict[str, Any]], duration:
     finish it. None when it still fails (production makes the Short in Goli)."""
     timing = phrases(words, duration)
     total = timing["phrases"]["frames30"]
+    # 2026-11-18: every call writes a new cartoon, so frames a stopped run left in the restored cache belong to the
+    # old one: start from none (a mix of two cartoons in one Short)
+    shutil.rmtree(project / "frames", ignore_errors=True)
     out = text.generate_json(instructions(), request(title, timing), CODE_SCHEMA, max_output_tokens=60000)
     if record:
         record("stickman-short-1", out)

@@ -1216,6 +1216,11 @@ class ProductionService:
                 except ValueError:
                     finished = False
                 if finished:
+                    # 2026-11-18: a run stopped mid-write can leave a broken file in the restored cache: fetch again
+                    if narration.exists() and subprocess.run(
+                            ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=nw=1:nk=1",
+                             str(narration)], capture_output=True).returncode != 0:
+                        narration.unlink()
                     if not narration.exists():
                         fetch_narration()  # free: the paid transcription is kept
                     print(json.dumps({"status": "owner_voice_reconciled", "production_id": production_id}))
@@ -1415,6 +1420,14 @@ class ProductionService:
                 script = script_path.read_text(encoding="utf-8").strip()
                 print(json.dumps({"status": "script_from_recording", "lines": len(plan["lines"])}))
             replan_done.write_text("done\n", encoding="utf-8")
+        # 2026-11-18: a stopped run can leave a broken or missing voice file in the restored cache while its stage
+        # counts as done: fetch his recording again (free) instead of failing on it
+        if (owner_voice_ref or ai_voice) and (not narration.exists() or subprocess.run(
+                ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=nw=1:nk=1", str(narration)],
+                capture_output=True).returncode != 0):
+            narration.unlink(missing_ok=True)
+            fetch_narration()
+            print(json.dumps({"status": "owner_voice_refetched", "production_id": production_id}))
         narration_seconds = self._duration(narration)
         # The owner recording is the master timeline: never retime the voice.
         check_recording_length(str(spec["format"]), narration_seconds)
