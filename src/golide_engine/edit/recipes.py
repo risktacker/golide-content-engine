@@ -497,6 +497,9 @@ def request(key: str, brief: str, words: list[dict[str, Any]], duration: float, 
 
 
 # ---------------------------------------------------------------- running a scene in headless Chromium
+# 2026-11-18: the runner has no GPU. Mesa's llvmpipe through EGL draws the same picture as SwiftShader about 2.5x
+# faster (measured on the Stickman kit); SwiftShader stays as the fallback where EGL cannot start a WebGL page
+EGL_ARGS = ["--use-gl=angle", "--use-angle=gl-egl", "--ignore-gpu-blocklist"]
 CHROMIUM_ARGS = ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"]
 
 
@@ -536,11 +539,25 @@ def frames(folder: Path, size: tuple[int, int], samples: int, times: list[float]
     errors: list[str] = []
     try:
         with sync_playwright() as p:
-            browser = p.chromium.launch(args=CHROMIUM_ARGS)
-            page = browser.new_page(viewport={"width": 640, "height": 360})
-            page.on("pageerror", lambda e: errors.append(str(e)))
-            page.goto(f"http://127.0.0.1:{server.server_address[1]}/player.html?w={size[0]}&h={size[1]}&n={samples}")
-            page.wait_for_function("window.ready === true", timeout=timeout_ms)
+            def open_page(args):
+                browser = p.chromium.launch(args=args)
+                page = browser.new_page(viewport={"width": 640, "height": 360})
+                page.on("pageerror", lambda e: errors.append(str(e)))
+                page.goto(f"http://127.0.0.1:{server.server_address[1]}/player.html?w={size[0]}&h={size[1]}&n={samples}")
+                page.wait_for_function("window.ready === true", timeout=timeout_ms)
+                return browser, page
+
+            try:
+                browser, page = open_page(EGL_ARGS)
+                if not page.evaluate("!!document.createElement('canvas').getContext('webgl2')"):
+                    raise RuntimeError("no WebGL2 through EGL")
+            except Exception:  # noqa: BLE001 - no EGL here: the software GPU every machine has
+                try:
+                    browser.close()
+                except Exception:  # noqa: BLE001
+                    pass
+                errors.clear()
+                browser, page = open_page(CHROMIUM_ARGS)
             errors += page.evaluate("window.errors")
             if printed is not None:
                 printed += page.evaluate("window.printed || []")
@@ -633,6 +650,7 @@ def render_clip(code: str, folder: Path, size: tuple[int, int], duration: float,
     chunks = [(k * n // workers, (k + 1) * n // workers) for k in range(workers)]
     import os
     env = dict(os.environ, PYTHONPATH=os.pathsep.join([str(ROOT / "src"), os.environ.get("PYTHONPATH", "")]))
+    env["LP_NUM_THREADS"] = str(max(1, (os.cpu_count() or 4) // max(1, workers)))    # llvmpipe: share the cores
     procs = [subprocess.Popen([sys.executable, "-m", "golide_engine.edit.recipes", "frames", str(folder), str(size[0]),
                                str(size[1]), str(samples), str(fps), str(a), str(b)], env=env)
              for a, b in chunks if b > a]
