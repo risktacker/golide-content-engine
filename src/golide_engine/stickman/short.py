@@ -245,6 +245,11 @@ def shot_frames(project: Path) -> list[int]:
     return sorted(out)
 
 
+def _mids(project: Path) -> set[int]:
+    text = _read(project / "web" / "story.js")
+    return {(int(a) + int(b)) // 2 for a, b in re.findall(r"\ba:\s*(\d+)\s*,\s*b:\s*(\d+)", text)}
+
+
 def look_check(project: Path) -> tuple[list[Path], str]:
     """Stills at every shot's middle and just after each cut. Problems: page errors, a frame that is one flat colour,
     two shots in a row that render the same picture (the story did not move)."""
@@ -269,6 +274,21 @@ def look_check(project: Path) -> tuple[list[Path], str]:
     for (f0, a), (f1, b) in zip(zip(picks, images), list(zip(picks, images))[1:]):
         if ImageStat.Stat(ImageChops.difference(a, b)).mean[0] < 1.0:
             problems.append(f"frames {f0} and {f1} are the same picture: nothing moves between them")
+    # 2026-11-18 (owner, after the long video: "no black blocks and stupid repetition")
+    for f, im in zip(picks, images):
+        dark = sum(im.histogram()[:14]) / (im.width * im.height)
+        if dark > 0.6:
+            problems.append(f"frame {f} is {round(dark * 100)}% black: light the set, or the camera is inside or behind something")
+    mids = [(f, im) for f, im in zip(picks, images) if f in _mids(project)]
+    same = {}
+    for i, (f0, a) in enumerate(mids):
+        for f1, b in mids[i + 1:]:
+            if ImageStat.Stat(ImageChops.difference(a, b)).mean[0] < 3.0:
+                same.setdefault(f0, {f0}).add(f1)
+    for group in same.values():
+        if len(group) >= 3:
+            problems.append(f"the shots at frames {', '.join(map(str, sorted(group)))} show nearly the same picture: "
+                            "give each its own place, framing or action so the story moves")
     sheet = project / "stills" / "sheet.jpg"
     subprocess.run([sys.executable, str(project / "sheet.py"), str(stills), str(sheet)], check=False, capture_output=True)
     return paths, "\n".join(problems)

@@ -59,3 +59,38 @@ def test_fix_rounds_apply_exact_edits_only():
     with pytest.raises(ValueError):
         short.apply_edits(parts, [{"part": "world_js", "old": "zzz", "new": "y"}])
     assert "MATH.sin" in short.fix_request(parts, "ReferenceError: MATH is not defined")
+
+
+def test_look_check_catches_black_frames_and_repeated_pictures(tmp_path, monkeypatch):
+    """2026-11-18 (owner): no black blocks, no picture repeated across the Short."""
+    from PIL import Image, ImageDraw
+    from golide_engine.stickman import short
+
+    (tmp_path / "web").mkdir()
+    (tmp_path / "web" / "story.js").write_text(
+        "const SHOTS = [" + ",".join(f"{{a: {a}, b: {a + 60}}}" for a in (0, 60, 120, 180, 240)) + "];")
+
+    def scene(f):
+        im = Image.new("L", (216, 384), 200)
+        d = ImageDraw.Draw(im)
+        if f in (30, 90, 150):                                  # three shots, the same picture
+            d.rectangle((40, 100, 170, 300), fill=60)
+        elif f == 210:                                          # mostly black
+            d.rectangle((0, 0, 216, 330), fill=3)
+        else:
+            d.ellipse(((f * 7) % 150, 40, (f * 7) % 150 + 60, 100 + f % 200), fill=20)
+            d.rectangle((0, f % 300, 216, f % 300 + 40), fill=255)
+        return im
+
+    def fake_frames(project, picks, outdir, resume=True):
+        outdir.mkdir(parents=True, exist_ok=True)
+        for f in picks:
+            scene(f).convert("RGB").save(outdir / f"f{f:04d}.jpg")
+        return []
+
+    monkeypatch.setattr(short, "frames", fake_frames)
+    monkeypatch.setattr(short.subprocess, "run", lambda *a, **k: None)
+    _, problems = short.look_check(tmp_path)
+    assert "frame 210 is" in problems and "black" in problems
+    assert "frames 30, 90, 150 show nearly the same picture" in problems
+    assert "frame 270" not in problems
