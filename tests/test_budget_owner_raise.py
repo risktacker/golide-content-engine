@@ -19,7 +19,9 @@ class OwnerRaiseTests(unittest.TestCase):
             (root / "budget.json").write_text(json.dumps({"openai": {
                 "monthly_cap_usd": 35, "monthly_reserve_usd": 0, "scheduled_allocations_usd": {"long": 4, "short": 1.2}}}))
             budget = MonthlyBudget(db, CostTracker(db, root / "pricing.json"), root / "budget.json")
-            spec = {"id": "short-1", "format": "short", "release": {"approved": True}}
+            spec = {"id": "short-1", "format": "short", "concept": {"family": "science"}, "release": {"approved": True},
+                    "max_cost_usd": 6}
+            db.upsert_production(spec)
             self.assertEqual(budget.ensure_allocation(spec), ("scheduled", 1.2))
             spec["openai_budget_usd"] = 2.2
             self.assertEqual(budget.ensure_allocation(spec), ("scheduled", 2.2))
