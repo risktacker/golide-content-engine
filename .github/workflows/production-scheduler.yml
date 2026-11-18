@@ -97,7 +97,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/apt-debs
-          key: apt-debs-v1
+          # v2 (2026-11-18): saved with libEGL/libGL and the browser's own packages (v1 predated them)
+          key: apt-debs-v2
       - name: Ensure FFmpeg, fonts and Cairo (vector renderer)
         if: steps.automation.outputs.enabled == 'true'
         run: |
@@ -107,7 +108,14 @@ jobs:
             command -v ffmpeg >/dev/null && pkg-config --exists cairo && ldconfig -p | grep -q libEGL.so.1
           }
           # 2026-11-17: skia (the Stickman engine) needs libEGL/libGL at import, even when drawing on the CPU
-          if command -v ffmpeg >/dev/null && fc-match DejaVuSans >/dev/null && pkg-config --exists cairo && ldconfig -p | grep -q libEGL.so.1; then
+          have() { command -v ffmpeg && fc-match DejaVuSans && pkg-config --exists cairo && ldconfig -p | grep -q libEGL.so.1; } >/dev/null 2>&1
+          # 2026-11-18 (owner: "queue was only taking seconds, why 20 minutes"): the kept packages first, in
+          # seconds; Ubuntu's mirrors only when something is missing from them (a slow mirror held runs 11-15 min)
+          if ! have && ls ~/apt-debs/*.deb >/dev/null 2>&1; then
+            sudo dpkg -i --force-depends ~/apt-debs/*.deb >/dev/null 2>&1 || true
+            sudo ldconfig
+          fi
+          if have; then
             ffmpeg -version | head -1
             pkg-config --modversion cairo
           else
@@ -125,9 +133,22 @@ jobs:
           fi
       - run: python -m pip install -e '.[production,video]'
         if: steps.automation.outputs.enabled == 'true'
+      - name: Keep the browser between runs
+        if: steps.automation.outputs.enabled == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-browsers-${{ runner.os }}-v1
       - name: Browser for the thumbnail logo tiles
         if: steps.automation.outputs.enabled == 'true'
-        run: python -m playwright install --with-deps chromium
+        # 2026-11-18: the browser is kept between runs and its system packages go into the kept packages; Ubuntu's
+        # mirrors are asked only when the browser cannot start
+        run: |
+          python -m playwright install chromium
+          if ! python -c "from playwright.sync_api import sync_playwright as p; x = p().start(); x.chromium.launch().close(); x.stop()" >/dev/null 2>&1; then
+            timeout 600 python -m playwright install-deps chromium
+            mkdir -p ~/apt-debs && cp /var/cache/apt/archives/*.deb ~/apt-debs/ 2>/dev/null || true
+          fi
       - name: Edit engine tools (Rhubarb Lip Sync, HyperFrames)
         if: steps.automation.outputs.enabled == 'true'
         run: |
