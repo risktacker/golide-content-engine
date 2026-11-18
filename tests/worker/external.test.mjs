@@ -54,10 +54,10 @@ test("Stickman + Goli is for long videos; a Short asked for it is Stickman alone
 
 test("a Goli video carries its style switches; paid counts are whole numbers 0-20; others are dropped", () => {
   assert.deepEqual(cleanLooks({ free: ["layers", "bogus", "layers"], paid: { xray: 2.4, white: 3, blueprint: 99, nope: 3 } }),
-    { free: ["layers"], paid: { xray: 2, blueprint: 20 } });
+    { free: ["layers"], paid: { blueprint: 20 } });   // xray is free since 2026-11-18
   assert.equal(cleanLooks(null), null);
-  assert.deepEqual(cleanLooks({}).free, ["puppets", "white", "layers", "circuit", "glass"]);
-  const spec = buildExternalSpec({ ...base, video_style: "goli", looks: { free: [], paid: { xray: 1 } } });
-  assert.deepEqual(spec.looks, { free: [], paid: { xray: 1 } });
-  assert.equal(buildExternalSpec({ ...base, video_style: "stickman", looks: { paid: { xray: 1 } } }).looks, undefined);
+  assert.deepEqual(cleanLooks({}).free, ["puppets", "white", "layers", "circuit", "glass", "xray"]);
+  const spec = buildExternalSpec({ ...base, video_style: "goli", looks: { free: [], paid: { blueprint: 1 } } });
+  assert.deepEqual(spec.looks, { free: [], paid: { blueprint: 1 } });
+  assert.equal(buildExternalSpec({ ...base, video_style: "stickman", looks: { paid: { blueprint: 1 } } }).looks, undefined);
 });

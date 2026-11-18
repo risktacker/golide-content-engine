@@ -39,12 +39,12 @@ def _lines():
 def test_the_editor_makes_a_recipe_scene_with_its_words_and_a_house_3d_stand_in():
     s = {k: None for k in editor.SCENE["required"]}
     s.update(type="recipe", first_line=0, last_line=0, goli_corner=False, poses=[], rows=[], items=[], shots=[],
-             points=[], brands=[], parts3d=[], recipe="xray", recipe_brief="A GPU: die, memory, heat", object3d="chip",
+             points=[], brands=[], parts3d=[], recipe="blueprint", recipe_brief="A GPU: die, memory, heat", object3d="chip",
              move3d="explode", punch="memory")
     edit = editor.build({"scenes": [s]}, _lines(), 4.0, "long", [], None, [], [],
-                        looks=editor.looks_for({"paid": {"xray": 1}}))
+                        looks=editor.looks_for({"paid": {"blueprint": 1}}))
     sc = next(x for x in edit["scenes"] if x["type"] == "recipe_clip")
-    assert sc["data"]["recipe"] == "xray" and sc["data"]["words"][0]["text"] == "Inside"
+    assert sc["data"]["recipe"] == "blueprint" and sc["data"]["words"][0]["text"] == "Inside"
     assert sc["data"]["fallback"]["object"] == "chip" and sc["data"]["fallback"]["move"] == "explode"
     assert set(editor.SCENE["required"]) == set(editor.SCENE["properties"])
 
@@ -117,21 +117,21 @@ def _scene(**kw):
 
 def test_switches_default_to_every_free_style_and_no_paid_one():
     assert editor.looks_for(None) == {"free": list(editor.FREE_LOOKS), "paid": {}}
-    got = editor.looks_for({"free": ["layers", "bogus"], "paid": {"xray": 2, "white": 0, "layers": 3}})
-    assert got == {"free": ["layers"], "paid": {"xray": 2}}
+    got = editor.looks_for({"free": ["layers", "bogus"], "paid": {"blueprint": 2, "xray": 2, "white": 0, "layers": 3}})
+    assert got == {"free": ["layers"], "paid": {"blueprint": 2}}          # xray is free since 2026-11-18
     text = editor.instructions("long", got)
-    assert "recipe may be xray (at most 2 in the video), layers" in text and "Do not use puppets" in text
+    assert "recipe may be layers, blueprint (at most 2 in the video)" in text and "Do not use puppets" in text
     assert "PUPPET SHOT FORMAT" in editor.instructions("long") and "glass:" in editor.instructions("long")
 
 
 def test_a_paid_style_is_used_only_when_switched_on_and_only_up_to_its_count():
-    x = dict(recipe="xray", recipe_brief="A GPU", object3d="chip", move3d="explode")
+    x = dict(recipe="blueprint", recipe_brief="A GPU", object3d="chip", move3d="explode")
     lines = _lines()
     raw = {"scenes": [_scene(**x)]}
     off = editor.build(raw, lines, 4.0, "long", [], None, [], [])
     assert not any(s["type"] == "recipe_clip" for s in off["scenes"])          # not switched on: no spend
-    on = editor.build(raw, lines, 4.0, "long", [], None, [], [], looks=editor.looks_for({"paid": {"xray": 1}}))
-    assert [s["data"]["recipe"] for s in on["scenes"] if s["type"] == "recipe_clip"] == ["xray"]
+    on = editor.build(raw, lines, 4.0, "long", [], None, [], [], looks=editor.looks_for({"paid": {"blueprint": 1}}))
+    assert [s["data"]["recipe"] for s in on["scenes"] if s["type"] == "recipe_clip"] == ["blueprint"]
 
 
 def test_a_free_style_scene_carries_its_fill_and_needs_no_brief():
@@ -145,12 +145,8 @@ def test_a_free_style_scene_carries_its_fill_and_needs_no_brief():
 
 
 def test_free_fills_rewrite_only_the_content_block_and_stretch_to_the_beat():
-    code = recipes.fill_code("circuit", {"stops": ["Prompt", "HBM memory", "Blackwell", "Answer"]}, 6.0)
-    ref = recipes.reference_code("circuit")
-    assert '["PROMPT", "HBM MEMORY", "BLACKWELL", "ANSWER"]' in code and "'MEMORY', 'PROCESSOR'" not in code
-    assert code[code.find("// ---------------------------------------------------------------- materials"):][:2000] in ref \
-        or len(code) > len(ref) - 2000
-    assert "D = 6.000" in code and "api.update(t * k)" in code
+    code = recipes.fill_code("layers", {"layers": [{"name": "App"}, {"name": "Model"}, {"name": "Chips"}]}, 6.0)
+    assert '"APP"' in code and "D = 6.000" in code and "api.update(t * k)" in code
     import pytest
     with pytest.raises(ValueError):
         recipes.content_block("circuit", {"stops": ["one", "two"]})
@@ -160,6 +156,38 @@ def test_free_fills_rewrite_only_the_content_block_and_stretch_to_the_beat():
     with pytest.raises(ValueError):
         recipes.content_block("xray", {})
     assert set(recipes.FREE) | set(recipes.PAID) == set(recipes.RECIPES)
+
+
+def test_x_ray_is_a_free_kit_of_real_objects():
+    """2026-11-18: an object from the library and 1-3 of its own parts; anything else is refused, never faked."""
+    scene = recipes.xray_layout({"object": "Phone", "flow": "magic", "parts": [
+        {"part": "battery", "name": "Battery", "note": "stores the charge"}, {"part": "engine", "name": "x"},
+        {"part": "chip", "name": "A19 chip"}, {"part": "battery", "name": "again"}]})
+    assert scene["object"] == "phone" and scene["flow"] == "current"
+    assert [p["part"] for p in scene["parts"]] == ["battery", "chip"] and scene["parts"][1]["name"] == "A19 CHIP"
+    code = recipes.fill_code("xray", {"object": "chip", "parts": [{"part": "die", "name": "GPU die"}]}, 6.0)
+    assert "__SCENE__" not in code and '"duration": 6.0' in code and "x-ray-kit" in code
+    assert "xray" in recipes.FREE and "xray" in editor.FREE_LOOKS and "xray" not in editor.PAID_LOOKS
+    import pytest
+    for bad in ({"object": "toaster", "parts": [{"part": "die", "name": "x"}]}, {"object": "phone", "parts": []}):
+        with pytest.raises(ValueError):
+            recipes.xray_layout(bad)
+
+
+def test_circuit_city_is_a_kit_of_board_parts():
+    """2026-11-18: 2-6 stops, each a real part of a board, in the signal's order; plain names keep the reference's four."""
+    old = recipes.circuit_layout({"stops": ["Prompt", "HBM memory", "Blackwell", "Answer"]})
+    assert [s["kind"] for s in old["stops"]] == ["port", "memory", "processor", "port"]
+    assert [s["name"] for s in old["stops"]] == ["PROMPT", "HBM MEMORY", "BLACKWELL", "ANSWER"]
+    assert [s["ref"] for s in old["stops"]] == ["J1", "U1", "U2", "J2"]
+    fill = {"stops": [{"kind": "sensor", "name": "Camera"}, {"kind": "spaceship", "name": "x"}, {"kind": "battery", "name": "Battery"}]}
+    scene = recipes.circuit_layout(fill)
+    assert [s["kind"] for s in scene["stops"]] == ["sensor", "battery"]
+    code = recipes.fill_code("circuit", fill, 7.0)
+    assert "__SCENE__" not in code and '"duration": 7.0' in code and "registerStyle" in code
+    import pytest
+    with pytest.raises(ValueError):
+        recipes.circuit_layout({"stops": [{"kind": "port", "name": "only one"}]})
 
 
 def test_white_model_is_a_free_kit_laid_out_by_code():

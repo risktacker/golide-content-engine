@@ -656,8 +656,8 @@ let styleAsking = null;
 
 // 2026-11-17 (owner): when Goli is picked, the styles for that video. Free ones (no model call) are on by default;
 // paid ones (a model writes the scene, about $0.30 each) start at 0 and he raises the count by choice.
-const FREE_LOOKS = [["puppets", "Puppets (people)"], ["white", "White Model"], ["layers", "Layer Stack"], ["circuit", "Circuit City"], ["glass", "Glass and Light"]];
-const PAID_LOOKS = [["xray", "X-Ray"], ["blueprint", "Blueprint"]];
+const FREE_LOOKS = [["puppets", "Puppets (people)"], ["white", "White Model"], ["layers", "Layer Stack"], ["circuit", "Circuit City"], ["glass", "Glass and Light"], ["xray", "X-Ray"]];
+const PAID_LOOKS = [["blueprint", "Blueprint"]];   // 2026-11-18: X-Ray became a free kit
 const PAID_EACH = 0.30;
 const pickedLooks = {};
 

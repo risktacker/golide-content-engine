@@ -71,7 +71,7 @@ RECIPES: dict[str, dict[str, str]] = {
 # storyboard fills it and no model writes code ($0 extra): Layer Stack, Circuit City, Glass and Light. X-Ray, White
 # Model and Blueprint build their object in code below the block, so a new subject needs the writer (paid, chosen
 # per video in Studio with a count).
-FREE = ("layers", "circuit", "glass", "white")
+FREE = ("layers", "circuit", "glass", "white", "xray")
 WHITE_KIT = KIT / "kits" / "white-kit.js"
 # 2026-11-18: White Model as a kit of pieces (assets/recipes/kits/white-kit.js): the storyboard names the stops in
 # order and a few extras; code lays them out on the board so no two pieces overlap
@@ -83,6 +83,21 @@ WHITE_PIECES = {   # kind: footprint width on the board
     "tower_mast": 1.2, "person": 0.6, "crowd": 2.6, "battery": 3.0, "dam": 6.2,
 }
 WIDE = ("road", "river", "train")
+# 2026-11-18: Circuit City as a kit of landmarks (assets/recipes/kits/circuit-kit.js): 2-6 stops, each a real part of
+# a board, in the order the signal travels; the kit lays them out away from the camera and flies after the pulse
+CIRCUIT_KIT = KIT / "kits" / "circuit-kit.js"
+CIRCUIT_PARTS = ("port", "memory", "processor", "chip", "battery", "antenna", "power", "sensor")
+_OLD_FOUR = ("port", "memory", "processor", "port")
+# 2026-11-18: X-Ray as a kit of real objects whose inner parts are known (assets/recipes/kits/xray-kit.js)
+XRAY_KIT = KIT / "kits" / "xray-kit.js"
+XRAY_OBJECTS = {
+    "phone": ("battery", "board", "chip", "memory", "camera", "speaker", "antenna"),
+    "laptop": ("battery", "board", "chip", "memory", "storage", "fan", "speaker"),
+    "chip": ("die", "memory", "spreader", "substrate", "balls"),
+    "battery": ("electrodes", "core", "terminal", "vent", "can"),
+    "server": ("processor", "memory", "gpu", "fans", "power", "storage"),
+}
+XRAY_FLOWS = ("current", "data", "heat", "air", "force")      # the reference's own four, for a fill of plain names
 PAID = tuple(k for k in RECIPES if k not in FREE)
 DIAGRAMS = ("chat", "steps", "network", "files", "chips")      # Layer Stack's prints (its DIAGRAMS)
 
@@ -115,11 +130,7 @@ def content_block(key: str, fill: dict[str, Any]) -> str:
                            for i, x in enumerate(layers))
         return (f"  const TITLE = {_js(title)};\n  const LAYERS = [\n{rows},\n  ];\n  const N = LAYERS.length;\n")
     if key == "circuit":
-        stops = [_caps(x, 12) for x in (fill.get("stops") or []) if str(x).strip()]
-        if len(stops) != 4:
-            raise ValueError("circuit: exactly 4 stops needed")
-        return (f"  const STOPS = {_js(stops)};\n  const REFS = ['J1', 'U1-U4', 'U5', 'J2'];\n  const CORES = 4;\n"
-                "  const T = { launch: 0.3, memEnd: 2.0, memOut: 2.35, cpu: 3.55, wave: 3.7, waveLen: 1.35, cpuOut: 5.65, answer: 6.5 };\n")
+        return "  const SCENE = " + json.dumps(circuit_layout(fill), ensure_ascii=False) + ";\n"
     if key == "glass":
         a, b = fill.get("first") or {}, fill.get("second") or {}
         pa, pb = int(a.get("parts") or 0), int(b.get("parts") or 0)
@@ -142,7 +153,43 @@ def content_block(key: str, fill: dict[str, Any]) -> str:
                 f"    [9.3, 99, {_js(caps[4])}, MIX.tint],\n  ];\n  const DURATION = 12;\n")
     if key == "white":
         return "  const SCENE = " + json.dumps(white_layout(fill), ensure_ascii=False) + ";\n"
+    if key == "xray":
+        return "  const SCENE = " + json.dumps(xray_layout(fill), ensure_ascii=False) + ";\n"
     raise ValueError(f"{key} has no free mode")
+
+
+def xray_layout(fill: dict[str, Any]) -> dict[str, Any]:
+    """One object of the library and 1-3 of its own parts in the order the flow reaches them. Raises ValueError when
+    the object or its parts are not in the library (the beat then needs another picture, never a look-alike)."""
+    obj = str(fill.get("object") or "").lower()
+    if obj not in XRAY_OBJECTS:
+        raise ValueError(f"xray: object must be one of {', '.join(XRAY_OBJECTS)}")
+    parts, seen = [], set()
+    for p in fill.get("parts") or []:
+        if isinstance(p, dict) and p.get("part") in XRAY_OBJECTS[obj] and p["part"] not in seen and str(p.get("name", "")).strip():
+            seen.add(p["part"])
+            parts.append({"part": p["part"], "name": _caps(p["name"], 14), "note": " ".join(str(p.get("note", "")).split())[:28]})
+    if not parts:
+        raise ValueError(f"xray: 1 to 3 parts of the {obj} needed: {', '.join(XRAY_OBJECTS[obj])}")
+    flow = fill.get("flow") if fill.get("flow") in XRAY_FLOWS else "current"
+    return {"object": obj, "parts": parts[:3], "flow": flow, "accent": _colour(fill.get("accent"), "#ff9a22")}
+
+
+def circuit_layout(fill: dict[str, Any]) -> dict[str, Any]:
+    """Stops in the order the signal travels, each a real part of a board (a plain name list keeps the reference's
+    own port, memory, processor, port). Raises ValueError when there is nothing to show."""
+    raw = [x for x in (fill.get("stops") or []) if x]
+    if raw and all(isinstance(x, str) for x in raw) and len(raw) == 4:
+        raw = [{"kind": k, "name": n} for k, n in zip(_OLD_FOUR, raw)]
+    stops = [x for x in raw if isinstance(x, dict) and x.get("kind") in CIRCUIT_PARTS][:6]
+    if len(stops) < 2:
+        raise ValueError("circuit: 2 to 6 stops of known parts needed")
+    refs, n = [], {"J": 0, "U": 0, "BT": 0, "L": 0, "S": 0, "ANT": 0}
+    for st in stops:
+        pre = {"port": "J", "battery": "BT", "power": "L", "sensor": "S", "antenna": "ANT"}.get(st["kind"], "U")
+        n[pre] += 1
+        refs.append(f"{pre}{n[pre]}")
+    return {"stops": [{"kind": st["kind"], "name": _caps(st.get("name"), 12), "ref": r} for st, r in zip(stops, refs)]}
 
 
 def white_layout(fill: dict[str, Any]) -> dict[str, Any]:
@@ -197,10 +244,11 @@ def reference_code(key: str) -> str:
 def fill_code(key: str, fill: dict[str, Any], duration: float) -> str:
     """The reference scene with its content block replaced, played over `duration` seconds (its own timing,
     stretched evenly: the picture keeps its order and rhythm). White Model is its kit of pieces, timed to the beat."""
-    if key == "white":
-        scene = white_layout(fill)
+    if key in ("white", "circuit", "xray"):
+        scene = {"white": white_layout, "circuit": circuit_layout, "xray": xray_layout}[key](fill)
         scene["duration"] = round(float(duration), 3)
-        return WHITE_KIT.read_text(encoding="utf-8").replace("__SCENE__", json.dumps(scene, ensure_ascii=False))
+        kit = {"white": WHITE_KIT, "circuit": CIRCUIT_KIT, "xray": XRAY_KIT}[key]
+        return kit.read_text(encoding="utf-8").replace("__SCENE__", json.dumps(scene, ensure_ascii=False))
     code = reference_code(key)
     a = code.find("\n", code.find("// ----------------------------------------------------------------")) + 1
     b = code.find("  // ----------------------------------------------------------------", a)

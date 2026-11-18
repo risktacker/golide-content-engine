@@ -25,12 +25,12 @@ RECIPE_KEYS = ("xray", "layers", "white", "circuit", "glass", "blueprint")
 # 2026-11-17 (owner): cost to cents. Free styles (the storyboard fills the reference's content block, no model call)
 # and the free puppet scenes are on unless switched off for the video; paid styles (a model writes the scene) only
 # when switched on for the video, each up to its count. Scheduled automatic runs use the free ones only.
-FREE_LOOKS = ("layers", "circuit", "glass", "white", "puppets")
-PAID_LOOKS = ("xray", "blueprint")
+FREE_LOOKS = ("layers", "circuit", "glass", "white", "xray", "puppets")
+PAID_LOOKS = ("blueprint",)   # 2026-11-18: X-Ray became a free kit of objects
 
 
 def looks_for(spec_looks: Any) -> dict[str, Any]:
-    """The styles a video may use, from its Studio switches ({"free": [...], "paid": {"xray": 1}}); none given
+    """The styles a video may use, from its Studio switches ({"free": [...], "paid": {"blueprint": 1}}); none given
     means every free one and no paid one."""
     got = spec_looks if isinstance(spec_looks, dict) else {}
     free = got.get("free")
@@ -218,10 +218,11 @@ def _looks_text(allowed: list[str], paid: dict[str, int], puppets: bool) -> str:
            + (", ".join(f"{k}{f' (at most {paid[k]} in the video)' if k in paid else ''}" for k in allowed) or "none: do not use recipe")
            + ". " + ("puppets may be used." if puppets else "Do not use puppets.")]
     out.append("""How to fill them:
-- layers, circuit, glass: fill = a JSON string with the scene's content (no recipe_brief needed):
+- layers, circuit, glass, white, xray: fill = a JSON string with the scene's content (no recipe_brief needed):
   layers: {"title": [line 1, line 2] (max 3 words each, may be ["", ""]), "layers": [3 to 5 of {"name": 1-2 words,
     "note": 2-4 words, "diagram": one of chat, steps, network, files, chips}] top to bottom}
-  circuit: {"stops": exactly 4 stage names, 1-2 words each, in the order something travels through them}
+  circuit: {"stops": 2 to 6 of {"kind", "name" 1-2 words} in the order the signal travels; kinds: port (where it
+    comes in or goes out), memory, processor, chip, battery, antenna, power, sensor}. Code lays them out.
   glass: {"first": {"name", "colour" "#rrggbb", "parts" 1-3}, "second": {same}, "binder": {"name", "colour"},
     "mix_colour": "#rrggbb", "captions": exactly 5 lines of 2-6 words: the idea, the first amount, the second amount,
     what binds them, the result}; the two parts add up to at most 4.
@@ -230,7 +231,13 @@ def _looks_text(allowed: list[str], paid: dict[str, int], puppets: bool) -> str:
     tower, bank, factory, datacenter, shop, school, hospital, tree, pine, forest, mountain, hill, lake, cloud, sun,
     rain, bridge, car, truck, bus, plane, ship, pole, turbine, solar, tower_mast, person, crowd, battery, dam
     (extras may also be road, river, train). Code lays them out.
-- xray, blueprint: recipe_brief as described below (a writer builds the scene).
+  xray: {"object": one of phone, laptop, chip, battery (a cell), server, "parts": 1 to 3 of {"part", "name" 1-2
+    words, "note" 2-4 words} in the order the flow reaches them, "flow": current, data, heat, air or force,
+    "accent": "#rrggbb"}; parts: phone battery, board, chip, memory, camera, speaker, antenna; laptop battery, board,
+    chip, memory, storage, fan, speaker; chip die, memory, spreader, substrate, balls; battery electrodes, core,
+    terminal, vent, can; server processor, memory, gpu, fans, power, storage. Only these objects: anything else
+    inside is another picture, never a look-alike.
+- blueprint: recipe_brief as described below (a writer builds the scene).
 - THE REAL THING ONLY (owner 2026-11-17): a style is used only when its own objects ARE what the line names:
   circuit only for chips, boards and electronics; glass only for liquids, mixing and amounts; layers only for things
   that really are layered; white for buildings, nature, cities, roads, vehicles and what flows between them; xray for
