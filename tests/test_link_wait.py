@@ -28,6 +28,13 @@ def test_a_pasted_link_starts_it_and_it_waits_for_his_recording():
     assert not link_fallback(spec, AFTER) and spec.get("voice_choice") != "ai"
 
 
+def test_find_a_topic_starts_it_now_and_it_waits_for_his_recording():
+    """2026-11-18 (owner): no video in mind, "Find a topic" researches now; one research run, his voice as usual."""
+    spec = dict(_spec(), research_now=True)
+    assert not waiting_for_link(spec, BEFORE)
+    assert not link_fallback(spec, AFTER) and spec.get("voice_choice") != "ai"
+
+
 def test_no_link_by_the_slot_time_means_engine_topic_and_ai_voice():
     spec = _spec()
     assert link_fallback(spec, AFTER) and spec["voice_choice"] == "ai" and spec["link_fallback"]

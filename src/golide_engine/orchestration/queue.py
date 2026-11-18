@@ -31,7 +31,8 @@ def _deadline(spec: dict) -> datetime | None:
 def waiting_for_link(spec: dict, now: datetime | None = None) -> bool:
     """2026-11-14 (owner): a scheduled slot first waits for him to paste the video to model. Until the slot's
     time (Short 13:00, long 19:30) nothing runs and nothing is spent; a pasted link starts it."""
-    if not spec.get("link_wait") or (spec.get("replace_model") or {}).get("url") or spec.get("external"):
+    # 2026-11-18 (owner): "Find a topic" in Studio starts it now: the engine researches the topic and writes the script
+    if not spec.get("link_wait") or (spec.get("replace_model") or {}).get("url") or spec.get("external") or spec.get("research_now"):
         return False
     deadline = _deadline(spec)
     return bool(deadline) and (now or datetime.now(timezone.utc)) < deadline
@@ -40,8 +41,9 @@ def waiting_for_link(spec: dict, now: datetime | None = None) -> bool:
 def link_fallback(spec: dict, now: datetime | None = None) -> bool:
     """No link by the slot's time: the engine finds the topic itself and reads it with the AI voice (owner
     2026-11-14, option (a): it publishes 30 minutes after the render). Sets it on the spec; True when it did."""
-    if not spec.get("link_wait") or (spec.get("replace_model") or {}).get("url") or spec.get("link_fallback"):
-        return False
+    if (not spec.get("link_wait") or (spec.get("replace_model") or {}).get("url") or spec.get("link_fallback")
+            or spec.get("research_now")):
+        return False   # he asked for a topic himself: it waits for his voice like a pasted link
     deadline = _deadline(spec)
     if not deadline or (now or datetime.now(timezone.utc)) < deadline:
         return False

@@ -1232,6 +1232,17 @@ async function handleApi(request,env,url){
     try{await dispatchWorkflow(env,"production-scheduler.yml");}catch(e){console.log(JSON.stringify({dispatch:"replace_script_failed",error:String(e?.message||e)}));}
     return json({status:"queued"});
   }
+  // 2026-11-18 (owner): "Find a topic" on a slot waiting for his link: the engine researches the topic now and
+  // writes the script as usual (it then waits for his recording or the AI voice tap). One research run per slot.
+  const findMatch=url.pathname.match(/^\/api\/production-jobs\/([^/]+)\/find-topic$/);
+  if(findMatch&&request.method==="POST"){
+    const id=decodeURIComponent(findMatch[1]);
+    const r=await env.DB.prepare(`UPDATE production_jobs SET spec_json=json_set(spec_json,'$.research_now',json('true')),status='queued',stage='find-topic',error=NULL,updated_at=? WHERE job_id=? AND status='waiting_owner_link'`)
+      .bind(nowIso(),id).run();
+    if(!r.meta?.changes) return err("Only a slot waiting for your link can look for a topic.",409);
+    try{await dispatchWorkflow(env,"production-scheduler.yml");}catch(e){console.log(JSON.stringify({dispatch:"find_topic_failed",error:String(e?.message||e)}));}
+    return json({status:"queued"});
+  }
   // 2026-11-04 (owner): a short he will not record is skipped, not left "Needs your recording".
   const skipMatch=url.pathname.match(/^\/api\/production-jobs\/([^/]+)\/skip$/);
   if(skipMatch&&request.method==="POST"){

@@ -753,13 +753,15 @@ function linkCard(job) {
   return '<article class="action-card" id="job-' + id + '"><div><span class="kicker">' +
     (job.format === "long" ? "Long video" : "Short") + ', link by ' + by + '</span><h4>Paste today\'s video</h4>' +
     '<p>Paste the YouTube video to model. The engine writes the script from it (with the voice tags) and waits for your recording. ' +
-    'No link by ' + by + ': the engine picks a topic itself, records with the AI voice and publishes 30 minutes after it is built.</p>' +
+    'No video in mind? Tap Find a topic: the engine researches one now and writes the script. ' +
+    'Nothing by ' + by + ': the engine picks a topic itself, records with the AI voice and publishes 30 minutes after it is built.</p>' +
     '<div class="replace-row" id="replace-row-' + id + '">' +
       '<input class="replace-link" type="url" inputmode="url" placeholder="Paste the YouTube link" data-job="' + id + '">' +
       '<textarea class="replace-transcript" rows="3" placeholder="Optional: paste its transcript (from any free transcript site). The script then follows it closely." data-job="' + id + '"></textarea>' +
       '<button class="action-button replace-go" data-job="' + id + '">Write the script</button></div>' +
     '<span class="voice-status script-status" id="script-status-' + id + '"></span></div>' +
-    '<div class="action-controls"><button class="action-button skip-slot" data-job="' + id + '">Skip this slot</button></div></article>';
+    '<div class="action-controls"><button class="action-button find-topic" data-job="' + id + '">Find a topic</button>' +
+    '<button class="action-button skip-slot" data-job="' + id + '">Skip this slot</button></div></article>';
 }
 
 // 2026-10-18: a recording can be replaced until the video is released (a wrong
@@ -922,6 +924,21 @@ function renderActionQueues() {
         await loadProductionJobs();
       } catch (error) {
         button.disabled = false; button.textContent = "Write a new script";
+        if (status) status.textContent = error.message;
+      }
+    };
+  });
+  // 2026-11-18 (owner): no video in mind, the engine researches a topic now and writes the script as usual
+  $$(".find-topic").forEach((button) => {
+    button.onclick = async () => {
+      const id = button.dataset.job, status = document.getElementById("script-status-" + id);
+      button.disabled = true; button.textContent = "Starting...";
+      try {
+        await api(`/api/production-jobs/${encodeURIComponent(id)}/find-topic`, { method: "POST", body: "{}" });
+        studioNotice = "Looking for today's topic. The script appears in Automation when it is ready; you get the usual email.";
+        await loadProductionJobs();
+      } catch (error) {
+        button.disabled = false; button.textContent = "Find a topic";
         if (status) status.textContent = error.message;
       }
     };
