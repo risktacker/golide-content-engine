@@ -59,7 +59,8 @@ export function buildExternalSpec(payload, now = new Date()) {
   // Stickman (owner 2026-11-17): the third style, for Shorts (cartoon-short-kit) and long videos (ReachMora)
   // "stickman_goli": Goli beside the Stickman scene as the explainer (owner's channel), chosen per video
   let style = ["goli", "illustration", "stickman", "stickman_goli"].includes(payload.video_style) ? payload.video_style : "goli";
-  if (style.startsWith("stickman") && format !== "long") style = "goli";   // Stickman is long only (owner 2026-11-18)
+  // Stickman is on Shorts again (owner 2026-11-18, after the fast-cut Elon test); Stickman + Goli stays long only
+  if (style === "stickman_goli" && format !== "long") style = "stickman";
   const id = "golide-external-" + lusakaStamp(now);
   const looks = style === "goli" ? cleanLooks(payload.looks) : null;
   return {

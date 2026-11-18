@@ -96,7 +96,10 @@ in the format below. The engine draws everything from it; you never write drawin
 
 The voiceover is already recorded and timed. You get its sentences, numbered (use these numbers in "s"), the
 video's title and the verified research. Follow the format and its pacing rules exactly:
-- cover every sentence number once, in order; about one shot per 3-8 s (the sentence times are given);
+- cover every sentence number once, in order. FAST (owner 2026-11-18, after his fast-cut test): one shot per
+  sentence, aim 1.5-4 s a shot (the sentence times are given); join two sentences only when both are under 1.5 s;
+  a sentence longer than 4 s gets beats, labels, props or a stamp landing on its own words about every 1.5 s, so
+  the picture changes on the voice and never sits still. Plan each shot's picture to be surprising and literal;
 - never more than two of the same kind in a row; rotate world shots (wide, closeup, walk) with graphics (icon,
   counter, chart, table, versus, list);
 - every number in the script on screen (counter, chart or label), with an everyday comparison where it helps;

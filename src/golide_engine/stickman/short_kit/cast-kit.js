@@ -1,0 +1,125 @@
+// ===== GOLIDE cast kit (2026-11-18, the owner's fast-cut Elon test): chunky modern puppets with definition =====
+// T.modernFront(p, O, opts): O = { tunic (top colour), skin, hair, style: short|swoop|slick|spiky|curly|bun, pants, shoes,
+//   jacket: true + shirt + tie, hood: true, sleeve, belt, moustache }; opts as romanFront (expr, blink, look, facing, seed, L, R,
+//   tilt, headTilt, bob, step, wv, swirl, lift) plus seated: true (no legs, for karts and chairs).
+// Arm poses: hang point up wave hip temple cross reach. T.billFx(p, rot, squash): a falling $100 bill for fx cards.
+// GOLIDE modern cast: chunkier puppets with definition, drawn whole (not over the kit's body): a round torso with
+// shoulders, thick sleeved arms with cuffs and mitten hands, trousers with a crease and hem, shoes with soles and a
+// shine, a belt, the top (T-shirt, hoodie, jacket with shirt and tie), fuller hair, heavier ink and a shadow side.
+// The kit's own head, face and hair helpers draw the head (same faces and expressions).
+// hairstyles of our own: a cap over the head whose hairline always stays above the brows, with sideburns at the ears
+const hairDo = (p, style, col, cx, hc, H, u, ow, thick, seed) => {
+  const A = H.a * 1.08, B = H.b * 1.08, hl = hc - 0.5 * H.b, dark = mul(col, [0.72, 0.72, 0.8]), lite = mix(col, '#ffffff', 0.28);
+  let crown = ellPts(cx, hc - 0.02 * H.b, A, B, 180, 360, 0, 44);
+  if (style === 'spiky') crown = crown.map(([x, y], i) => i % 4 === 2 ? [x + (x - cx) * 0.08, y - 14 * u] : [x, y]);
+  if (style === 'curly') crown = crown.map(([x, y], i) => { const k = 1 + 0.07 * Math.sin(i * 1.9 + seed); return [cx + (x - cx) * k, hc + (y - hc) * k]; });
+  const dip = { short: [0, 2, 6, 2, 0], swoop: [10, 8, 5, 1, -2], slick: [-6, -8, -9, -8, -6], spiky: [4, 0, 5, 0, 4], curly: [3, 7, 3, 7, 3], bun: [0, 2, 3, 2, 0] }[style] || [0, 2, 4, 2, 0];
+  const line = [[cx + A, hc], [cx + H.a * 0.96, hc + 0.12 * H.b], [cx + H.a * 0.84, hc + 0.08 * H.b], [cx + H.a * 0.8, hl + 4 * u]];
+  for (let k = 0; k < 5; k++) { const x = cx + H.a * (0.6 - k * 0.3); line.push([x, hl + dip[4 - k] * u]); }
+  line.push([cx - H.a * 0.8, hl + 4 * u], [cx - H.a * 0.84, hc + 0.08 * H.b], [cx - H.a * 0.96, hc + 0.12 * H.b], [cx - A, hc]);
+  const cap = [...crown, ...line];
+  if (style === 'bun') { const bp = blobPts(cx, hc - B - 8 * u, { a: 0.36 * H.a, b: 0.32 * H.b, nTop: 2, nBot: 2, egg: 0, asym: 0, rot: 0, noise: 0.02, seed }); p.poly(bp, col, 0); p.inkRing(bp, ow * 0.85, thick); }
+  p.poly(cap, col, 0);
+  p.clip(cap, () => {                                    // strands and a shine
+    for (let i = -3; i <= 3; i++) p.stroke(curve([cx + i * 12 * u, hc - B * 0.95], [cx + i * 14 * u + 6 * u, hc - B * 0.6], [cx + i * 15 * u + (style === 'swoop' ? 14 : 4) * u, hl + 2 * u]), 1.8 * u, dark);
+    p.stroke(ellPts(cx - 0.25 * A, hc - 0.55 * B, 0.3 * A, 0.18 * B, 200, 320, 0, 12), 4 * u, lite);
+  });
+  p.inkRing(cap, ow * 0.9, thick);
+};
+export const modernFront = (p, O, opts = {}) => {
+  const { expr = 'neutral', blink = 0, look = 0, facing = 0, seed = 3, L = 'hang', R = 'hang', tilt = 0, headTilt = 0,
+    bob = 0, light = rad(-120), step = 0, seated = false } = opts;
+  const lid = lidOf(blink), skin = O.skin ?? SKIN;
+  const H = headBlob(seed, 124, facing), W = 2 * H.a, HH = 2 * H.b, u = W / 100;
+  const sole = 975, legsL = 1.12, torsoL = 1.02;
+  const torsoBot = sole - legsL * HH - bob * HH, chin = torsoBot - torsoL * HH, hc = chin - H.b * 0.96, hipY = torsoBot - 0.1 * HH;
+  const thick = thickAngle(light), ow = 6.2 * u, cx = 300, tcx = cx + 3 * u * facing;
+  const top = O.tunic, topD = mul(top, [0.68, 0.68, 0.78]), pants = O.pants || '#2c3e5c', shoe = O.shoes || '#17161b';
+  p.rot = null;
+  // ---- legs: trousers and shoes ----
+  if (!seated) for (const side of [-1, 1]) {
+    const up = step ? Math.max(0, Math.sin(Math.PI * 2 * (step + (side > 0 ? 0.5 : 0)))) * 34 : 0;
+    const hx = tcx + side * 17 * u, fx = cx + side * 21 * u, fy = sole - 5 * u - up;
+    const leg = curve([hx, hipY], [(hx + fx) / 2 + side * 2 * u, (hipY + fy) / 2], [fx, fy - 7 * u]);
+    p.stroke(leg, 19 * u + 2 * ow * 0.55, INK); p.stroke(leg, 19 * u, pants);
+    p.stroke(leg.map(([x, y]) => [x - side * 5 * u, y]), 4 * u, mul(pants, [0.78, 0.78, 0.86]));      // shadow side
+    p.stroke(leg.map(([x, y]) => [x + side * 2 * u, y]), 1.4 * u, mul(pants, [0.62, 0.62, 0.72]));    // crease
+    p.ell(fx + side * 7 * u, fy - 3 * u, 16 * u, 8 * u, shoe, ow * 0.55);
+    p.stroke([[fx - side * 7 * u, fy + 3.4 * u], [fx + side * 22 * u, fy + 3.4 * u]], 2.6 * u, O.soles || '#ece6da');
+    p.ell(fx + side * 12 * u, fy - 7 * u, 4.5 * u, 2 * u, '#ffffff70', 0);
+  }
+  // ---- torso: a round body with shoulders ----
+  p.rot = tilt ? [rad(tilt), cx, hipY] : null;
+  const T = { a: 0.5 * W, b: 0.5 * (torsoBot - (chin - 0.2 * HH)), nTop: 1.7, nBot: 2.4, egg: 0.06, asym: 0.03 * facing, rot: 0, noise: 0.004, seed: seed + 7 };
+  const tcy = torsoBot - T.b, tp = blobPts(tcx, tcy, T);
+  const S = (side) => [tcx + side * 0.8 * T.a, chin + 0.2 * HH];
+  const arm = (side, pose) => {
+    const s = S(side), X = (k) => tcx + side * (T.a * 1.05 + k * u);
+    switch (pose) {
+      case 'point': return { pts: [s, [X(26), s[1] + 0.04 * HH], [X(58), s[1] - 0.06 * HH]], finger: true };
+      case 'up': return { pts: [s, [X(16), s[1] - 0.3 * HH], [X(22), s[1] - 0.72 * HH]] };
+      case 'wave': return { pts: [s, [X(18), s[1] - 0.18 * HH], [X(30 + 10 * Math.sin(opts.wv || 0)), s[1] - 0.6 * HH]] };
+      case 'hip': return { pts: [s, [X(20), s[1] + 0.3 * HH], [tcx + side * T.a * 0.92, torsoBot - 0.3 * HH]] };
+      case 'temple': return { pts: [s, [X(24), s[1] + 0.05 * HH], [cx + side * (H.a + 14 * u), hc - 0.08 * HH]], swirl: true };
+      case 'cross': return { pts: [s, [X(2), s[1] + 0.34 * HH], [tcx - side * 0.42 * T.a, s[1] + 0.28 * HH]], front: true };
+      case 'reach': { const lf = (opts.lift || 0) * 0.6 * HH; return { pts: [s, [X(36), s[1] - 0.08 * HH - lf * 0.6], [X(72), s[1] - 0.42 * HH - lf]] }; }
+      default: return { pts: [s, [X(5), s[1] + 0.46 * HH], [X(3), torsoBot - 0.02 * HH]] };
+    }
+  };
+  const arms = [arm(-1, L), arm(1, R)];
+  const drawArm = (a) => {
+    const c = curve(a.pts[0], a.pts[1], a.pts[2]), [hx, hy] = a.pts[2];
+    p.stroke(c, 15 * u + 2 * ow * 0.5, INK); p.stroke(c, 15 * u, O.sleeve || top);
+    p.stroke(c.map(([x, y]) => [x, y + 3 * u]).slice(2), 4 * u, O.jacket ? mul(top, [0.8, 0.8, 0.88]) : topD);
+    const n = c.length, q = c[Math.max(0, n - 3)];            // a cuff near the wrist
+    p.stroke([[q[0] - 6 * u, q[1]], [q[0] + 6 * u, q[1]]], 3 * u, O.jacket ? (O.shirt || '#f4f2ec') : mul(top, [0.78, 0.78, 0.86]));
+    p.ell(hx, hy, 9 * u, 8.5 * u, skin, ow * 0.45);         // mitten hand + thumb
+    p.ell(hx + Math.sign(hx - cx) * -6 * u, hy - 5 * u, 3.6 * u, 4.6 * u, skin, ow * 0.35);
+    if (a.finger) { const dx = hx - a.pts[1][0], dy = hy - a.pts[1][1], l = Math.hypot(dx, dy) || 1;
+      p.stroke([[hx, hy], [hx + dx / l * 15 * u, hy + dy / l * 15 * u]], 6 * u, INK); p.stroke([[hx, hy], [hx + dx / l * 14 * u, hy + dy / l * 14 * u]], 3.6 * u, skin); }
+  };
+  arms.filter((a) => !a.front).forEach(drawArm);
+  p.gradFill(tp, top, topD, light);
+  p.clip(tp, () => { p.ell(tcx - facing * 4 * u - 0.55 * T.a, tcy, 0.34 * T.a, T.b * 1.1, mul(top, [0.82, 0.82, 0.9]), 0); });  // shadow side
+  const tTop = chin + 0.04 * HH, mid = (tTop + torsoBot) / 2;
+  p.clip(tp, () => {
+    if (O.jacket) {
+      p.poly([[tcx - 11 * u, tTop - 4 * u], [tcx + 11 * u, tTop - 4 * u], [tcx + 5 * u, torsoBot], [tcx - 5 * u, torsoBot]], O.shirt || '#f4f2ec', 1.6 * u);
+      if (O.tie) p.poly([[tcx - 3.5 * u, tTop + 3 * u], [tcx + 3.5 * u, tTop + 3 * u], [tcx + 5 * u, mid + 10 * u], [tcx, mid + 17 * u], [tcx - 5 * u, mid + 10 * u]], O.tie, 1.4 * u);
+      for (const s of [-1, 1]) p.poly([[tcx + s * 11 * u, tTop - 4 * u], [tcx + s * 24 * u, tTop + 4 * u], [tcx + s * 8 * u, mid + 4 * u], [tcx + s * 5 * u, mid - 4 * u]], mul(top, [0.8, 0.8, 0.88]), 1.8 * u);
+      for (const k of [0, 1]) p.dot(tcx - 7 * u, mid + 14 * u + k * 12 * u, 2.2 * u, '#1b1a20');
+    } else {
+      p.stroke(curve([tcx - 13 * u, tTop - 2 * u], [tcx, tTop + 10 * u], [tcx + 13 * u, tTop - 2 * u]), 3.6 * u, topD);
+      if (O.hood) { p.stroke(curve([tcx - 22 * u, tTop - 4 * u], [tcx, tTop + 16 * u], [tcx + 22 * u, tTop - 4 * u]), 7 * u, mul(top, [0.86, 0.86, 0.92]));
+        for (const s of [-1, 1]) p.stroke([[tcx + s * 6 * u, tTop + 10 * u], [tcx + s * 7 * u, mid + 4 * u]], 1.8 * u, '#f4f2ec');
+        p.poly([[tcx - 16 * u, mid + 10 * u], [tcx + 16 * u, mid + 10 * u], [tcx + 18 * u, torsoBot - 6 * u], [tcx - 18 * u, torsoBot - 6 * u]], mul(top, [0.86, 0.86, 0.92]), 1.6 * u); }
+    }
+    if (!seated) p.band([[tcx - T.a, torsoBot - 5 * u], [tcx + T.a, torsoBot - 5 * u]], O.belt || '#1b1a20', 5 * u, 1.4 * u, 'butt');
+  });
+  p.inkRing(tp, ow, thick);
+  if (!seated) p.poly([[tcx - 4.5 * u, torsoBot - 8.5 * u], [tcx + 4.5 * u, torsoBot - 8.5 * u], [tcx + 4.5 * u, torsoBot - 1.5 * u], [tcx - 4.5 * u, torsoBot - 1.5 * u]], '#d2b56a', 1.3 * u);
+  arms.filter((a) => a.front).forEach(drawArm);
+  // ---- head: fuller hair behind, the kit's head, face and hair on top ----
+  const [cpx, cpy] = rotAbout([cx, chin], rad(tilt), [cx, hipY]);
+  const Ah = tilt + headTilt;
+  p.rot = Ah ? [rad(Ah), cx, chin, cpx - cx, cpy - chin] : null;
+  const hp = blobPts(cx, hc, H);
+  if (O.hair) { const big = O.style === 'curly' ? 1.14 : O.style === 'bun' ? 1.06 : 1.1; const hb = blobPts(cx - facing * 2 * u, hc - (O.style === 'curly' ? 0.12 : 0.07) * HH, { ...H, a: H.a * big, b: H.b * big * 0.97, noise: O.style === 'curly' ? 0.06 : 0.03, seed: seed + 3 });
+    p.poly(hb, O.hair, 0); p.inkRing(hb, ow * 0.9, thick); }
+  p.shadedFill(hp, skin, mul(skin, SH_SKIN), light, H.a);
+  p.inkRing(hp, ow, thick);
+  for (const s of [-1, 1]) p.ell(cx + s * (H.a - 1 * u), hc + 0.08 * H.b, 7 * u, 10 * u, skin, ow * 0.45);   // ears
+  if (O.hair) hairDo(p, O.style || 'short', O.hair, cx, hc, H, u, ow, thick, seed);
+  faceFront(p, cx, hc, W, expr, facing, look, lid, false, skin, O.moustache, false);
+  p.rot = null;
+  if (arms.some((a) => a.swirl)) {
+    const a = arms.find((x) => x.swirl), [hx, hy] = a.pts[2], ph = opts.swirl || 0, pts = [];
+    for (let i = 0; i < 40; i++) { const t = i / 40 * Math.PI * 4 + ph, r = (4 + i * 0.7) * u; pts.push([hx + Math.cos(t) * r, hy - 40 * u + Math.sin(t) * r]); }
+    p.stroke(pts, 3 * u, '#ffffff'); p.stroke(pts, 1.4 * u, INK);
+  }
+};
+export const billFx = (p, rot = 0, sq = 1) => { const g = p.g; g.save(); g.translate(300, 500); g.rotate(rot); g.scale(1, sq);
+  g.fillStyle = '#cfdcc4'; g.fillRect(-170, -72, 340, 144); g.strokeStyle = '#3f6a4a'; g.lineWidth = 9; g.strokeRect(-160, -62, 320, 124);
+  g.fillStyle = '#9fbf98'; g.beginPath(); g.ellipse(0, 0, 40, 52, 0, 0, 7); g.fill(); g.fillStyle = '#2f5a3c'; g.font = '900 52px sans-serif';
+  g.textBaseline = 'middle'; g.fillText('100', -148, -30); g.fillText('100', 62, 34); g.restore(); };
+// ===== end of the GOLIDE cast kit =====

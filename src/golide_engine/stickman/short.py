@@ -37,6 +37,11 @@ SKILL = ROOT / "vendor" / "cartoon-short-kit" / "SKILL.md"
 FPS = 30
 
 WORLD_A, WORLD_B = "// ---------- world ----------", "// ---------- cards ----------"
+# 2026-11-18 (owner, after the fast-cut Elon test): our own pieces on top of the kit, given to every Short: the world
+# kit (signs with real logos, the city, cash, karts, the Earth, satellites, signposts, screens) goes in front of the
+# writer's world, the cast kit (chunky modern puppets with definition, their hairstyles, falling bills) after roman.js
+SHORT_KIT = Path(__file__).resolve().parent / "short_kit"
+WORLD_KIT, CAST_KIT = SHORT_KIT / "world-kit.js", SHORT_KIT / "cast-kit.js"
 
 
 # ---------------------------------------------------------------- timing (the kit's work/phrases.json format)
@@ -117,7 +122,37 @@ WHAT YOU RETURN (JSON):
   thunk rumble crash cuckoo scrape ting sting creak snap splash whoosh snore leaves water, and F = frames to seconds.
 
 Rules on top of the skill: real public figures in the story are generic cartoon characters (no likeness, never
-named in diegetic text) and no brand logos; no captions; facts only as the script says them.
+named in diegetic text); no captions; facts only as the script says them.
+
+========================= GOLIDE RULES (owner 2026-11-18, after his fast-cut test: these win over the skill and the example) =========================
+PACE: one shot per phrase, about 1.2-2.5 s each (30 fps: 36-75 frames); a phrase longer than 2.5 s gets two shots.
+Every shot starts on the first frame of its phrase from the timings given (never before its words are spoken, never
+after the next phrase starts): picture, voice and timing land together. Every shot is a NEW fully built place or a
+new angle on a big set piece: never the same framing twice, nothing static, the camera always moves (push, pull-back
+reveal, crane, tilt up to a sign, tracking alongside). Hard cuts between places; a 4-6 frame white flash on a jump.
+STORY BUILDING: tell each phrase literally with a picture a viewer gets in one glance, and make it SURPRISING. Before
+you write code, brainstorm in plan_md 2-3 outside-the-box picture ideas per phrase and keep the boldest one that still
+says the line. Stickman-style ideas that work: the Earth spinning with satellites circling it; a signpost whose arrow
+flips to the new direction; a race of mini rides (karts) with each company's logo on its kart; a podium with the
+winners' logo boards; a giant stack of $100 bundles with bills fluttering down; a rocket on its pad as the camera
+pulls back; a building whose sign is revealed by a tilt up; a phone or laptop screen with the app's logo; a door
+slamming shut, a bridge breaking, a balloon popping, a domino line falling for a chain of causes. Props carry jokes.
+SETTING: tech and money stories happen in the city: streets, glass towers with lit windows, offices, data centres,
+launch pads, vaults, stages. No village, no grass and trees unless the story is in the countryside.
+LOGOS: companies and products the story names show their REAL logos (given below as LOGO slugs) on signs, boards,
+karts, screens and satellites: signBoard('Google', x, y, z, w, h, {{ slug: 'google' }}). Never draw a look-alike logo;
+a brand with no logo given gets its name on a sign.
+MONEY looks like money: cashBlock / cashBundle and falling bills (T.billFx), never coin piles that read as gold
+cylinders.
+CHARACTERS: draw people with T.modernFront(p, O, opts) (the GOLIDE cast kit below), not romanFront: chunky bodies,
+sleeved arms with hands, real clothes and a hairstyle each (style: short, swoop, slick, spiky, curly, bun). Give each
+character a distinct top colour, outfit and hairstyle. In a kart or chair pass seated: true and place the card's feet
+at the seat (DECK + 0.3). A real public figure is a generic character in plain clothes (no likeness).
+
+THE GOLIDE WORLD KIT (already defined in front of your world_js; call it, do not redefine it):
+{_read(WORLD_KIT)}
+THE GOLIDE CAST KIT (already in toon.js; call T.modernFront and T.billFx from story.js):
+{_read(CAST_KIT)}
 
 ========================= THE ENGINE AND KIT CODE (read-only reference) =========================
 --- engine/main.js (the worked example's world is between the markers) ---
@@ -136,12 +171,15 @@ named in diegetic text) and no brand logos; no captions; facts only as the scrip
 {_read(KIT / "example" / "soldier" / "audio.py")}"""
 
 
-def request(title: str, timing: dict[str, Any], problems: str = "") -> str:
+def request(title: str, timing: dict[str, Any], problems: str = "", logos: dict | None = None) -> str:
     p = timing["phrases"]
     rows = "\n".join(f"{x['s']:6.2f}-{x['e']:6.2f}  f{int(x['s'] * FPS):4d}-{int(x['e'] * FPS):4d}  {x['text']}" for x in p["phrases"])
     words = " ".join(f"{w['w']}@{w['s']:.2f}" for w in timing["words"])
     out = (f"TITLE: {title}\nDURATION: {p['duration']:.2f} s, TOTAL FRAMES: {p['frames30']}\n\nPHRASES:\n{rows}\n\n"
            f"WORDS (word@seconds): {words}\n")
+    if logos:
+        out += ("\nREAL LOGOS READY (slug: brand), use them for the companies the story is about: "
+                + ", ".join(f"{k}: {v['title']}" for k, v in logos.items()) + "\n")
     if problems:
         out += f"\nTHE LOOK CHECK FOUND THESE PROBLEMS IN YOUR LAST BUILD. Fix every one and send all the parts again:\n{problems}\n"
     return out
@@ -176,9 +214,11 @@ def build_project(project: Path, parts: dict[str, Any], timing: dict[str, Any]) 
     shutil.copy(KIT / "vendor" / "lib" / "three.module.js", web / "lib" / "three.module.js")
     if not (web / "toonbase.js").exists():     # toon.ts with its types stripped, as tools/setup.sh makes it
         shutil.copy(KIT / "vendor" / "toonbase.js", web / "toonbase.js")
-    (web / "toon.js").write_text(_read(web / "toonbase.js") + "\n" + _read(web / "roman.js") + "\n"
-                                 + str(parts.get("cast_js") or "") + "\n", encoding="utf-8")
-    (web / "main.js").write_text(splice(_read(KIT / "engine" / "main.js"), parts["world_js"], parts["world_state_js"]),
+    (web / "toon.js").write_text(_read(web / "toonbase.js") + "\n" + _read(web / "roman.js") + "\n" + _read(CAST_KIT)
+                                 + "\n" + str(parts.get("cast_js") or "") + "\n", encoding="utf-8")
+    from . import logos as _logos
+    world = _logos.js(parts.get("logos") or {}) + _read(WORLD_KIT) + "\n" + parts["world_js"]
+    (web / "main.js").write_text(splice(_read(KIT / "engine" / "main.js"), world, parts["world_state_js"]),
                                  encoding="utf-8")
     (web / "story.js").write_text(parts["story_js"], encoding="utf-8")
     (project / "work" / "PLAN.md").write_text(str(parts.get("plan_md") or ""), encoding="utf-8")
@@ -476,10 +516,12 @@ def make(text, project: Path, title: str, words: list[dict[str, Any]], duration:
     # old one: start from none (a mix of two cartoons in one Short)
     shutil.rmtree(project / "frames", ignore_errors=True)
     if parts is None:            # 2026-11-18: a cartoon already written for this recording is reused, never paid twice
-        out = text.generate_json(instructions(), request(title, timing), CODE_SCHEMA, max_output_tokens=60000)
+        from . import logos as _logos
+        found = _logos.for_script(" ".join(str(w.get("w") or w.get("word") or "") for w in words) + " " + title)
+        out = text.generate_json(instructions(), request(title, timing, logos=found), CODE_SCHEMA, max_output_tokens=60000)
         if record:
             record("stickman-short-1", out)
-        parts = out.value
+        parts = dict(out.value, logos=found)
     else:
         print(json.dumps({"status": "stickman_cartoon_reused"}), flush=True)
     problems = _check(project, parts, timing, 1)

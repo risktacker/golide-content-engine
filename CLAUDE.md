@@ -99,11 +99,17 @@ against research, unconfirmed claims kept as "reportedly/allegedly" once (`story
   facing it, mouth on the voice, reactions on the story's events (numbers -> point, shock lines -> shock, lists and
   versus -> explain, payoff -> both hands up), at least 2.2 s apart. The video's own sound is kept untouched.
   Long videos only (owner 2026-11-17): on a Short Goli would distract, so a Stickman Short runs without him.
-- Stickman is OFF Shorts (owner 2026-11-18, after the 2:55 Elon Short: empty blocks, wrong music, an hour of drawing):
-  long videos only, until a Short matches the model's look (a new fully built place for every line, every 6-8 s).
-  Studio hides it for Shorts; the worker and the engine turn a Stickman Short into Goli. Shorts music = Discipline
-  Finishes only. Stickman + Goli thumbnails are Goli thumbnails with Stickman small behind; the Stickman board
-  thumbnail is for pure Stickman videos only.
+- Stickman is ON Shorts again (owner 2026-11-18, after his fast-cut Elon test); Stickman + Goli stays long only (a
+  Short asked for it is pure Stickman). Shorts music = the kit's own. Stickman + Goli thumbnails are Goli thumbnails
+  with Stickman small behind; the Stickman board thumbnail is for pure Stickman videos only.
+- Fast cut (owner 2026-11-18): one shot per phrase, 1.2-2.5 s (long: one per sentence, 1.5-4 s), starting on its
+  phrase's first frame from the real word timings; a new built place or angle every shot; Sol brainstorms 2-3
+  surprising pictures per phrase (Earth spinning with satellites, signpost flip, kart race, podium, cash pile...).
+- Our kits on top of the cartoon kit (`stickman/short_kit/`): world-kit.js (signs with REAL logos, city, street,
+  cash bundles and falling $100 bills, karts, Earth, satellites, signposts, screens) and cast-kit.js
+  (`T.modernFront`: chunky bodies, sleeved arms with hands, real clothes, hairstyles short/swoop/slick/spiky/curly/bun).
+  Logos: `stickman/logos.py` (simple-icons from npm) for the brands the script names. Tech stories are set in the
+  city, not a village; money is bills, not coin piles.
 
 ## No collision (owner 2026-11-17: "I don't want collision in anything")
 - Recipe scenes (`edit/recipes.py`, `assets/recipes/player.html`): every word on screen is measured on 4 moments,
