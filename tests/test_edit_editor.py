@@ -54,7 +54,9 @@ class EditorTest(unittest.TestCase):
         self.assertAlmostEqual(shot["data"]["highlights"][0]["at"], max(0.6, self.lines[1].words[2].start - shot["start"]), 2)  # card lands first
         last = edit["scenes"][-1]
         self.assertAlmostEqual(last["start"] + last["duration"], 12.0)
-        self.assertAlmostEqual(edit["scenes"][2]["duration"], 12.0 - edit["scenes"][1]["start"])
+        # 2026-11-18 (owner): a scene that cannot be made is Goli saying it, never a text card
+        self.assertTrue(any("Goli says it" in n for n in edit["notes"]))
+        self.assertNotIn("kinetic_title", [s["type"] for s in edit["scenes"]])
         starts = [s["start"] for s in edit["scenes"] if s["type"] != "host" or s["data"]["place"] == "studio"]
         self.assertEqual(starts, sorted(starts))
 

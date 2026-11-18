@@ -566,6 +566,22 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
             return {"type": "kinetic_title", "start": t0, "duration": dur, "in": "cut",
                     "data": {"words": _screen_words(text, lines, t0, t1), "punch": (punch or "").lower().strip(".,!?")}}
 
+        # 2026-11-18 (owner: "if it fails we use the other scenes"): a scene that cannot be made never becomes a text
+        # card. A how-to step with no screenshot shows its page; with no page, Goli says it in the studio.
+        walk = _walkthrough(s, sources, capture_dir, lines, t0, t1, notes, k) if kind == "walkthrough" else None
+        if kind == "walkthrough" and not walk:
+            src = s.get("source")
+            page = sources[src] if isinstance(src, int) and 0 <= src < len(sources) else None
+            kind = "source" if page and page.get("ok") and capture_dir else "studio"
+            notes.append(f"scene {k}: walkthrough shown as {'its page' if kind == 'source' else 'Goli in the studio'}")
+        elif kind == "source":
+            src = s.get("source")
+            page = sources[src] if isinstance(src, int) and 0 <= src < len(sources) else None
+            if not (page and page.get("picture_only") and page.get("photo") and capture_dir) and \
+                    (not page or not page.get("ok") or not capture_dir):
+                notes.append(f"scene {k}: source {src} not captured, Goli says it in the studio")
+                kind = "studio"
+
         if kind == "studio":
             out.append({"type": "host", "start": t0, "duration": dur, "data": {
                 "place": "studio", "cues": _cues_between(cues, t0, t1), "poses": poses,
@@ -719,7 +735,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
             shown_runs.add(s["source"])
             out.append({"type": "terminal", "start": t0, "duration": dur, "data": scene_data(demos[s["source"]],
                                                                                              s.get("phrase"))})
-        elif kind == "walkthrough" and (walk := _walkthrough(s, sources, capture_dir, lines, t0, t1, notes, k)):
+        elif kind == "walkthrough" and walk:
             out.append({"type": "walkthrough", "start": t0, "duration": dur, "data": walk})
         elif kind == "prompt" and s.get("quote"):
             out.append({"type": "prompt_card", "start": t0, "duration": dur, "in": "rise", "data": {
@@ -764,9 +780,11 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
                 "poses": [{"pose": "point" if fmt == "long" else "point_up", "at": 0},
                           {"pose": "thumbs_up", "at": round(min(dur - 0.4, 2.2), 2)}]}})
         else:
-            if kind not in ("words", None):
-                notes.append(f"scene {k}: {kind} without its data, shown as words")
-            out.append(words_scene())
+            # 2026-11-18 (owner): no text cards; a scene without its data is Goli saying the line
+            notes.append(f"scene {k}: {kind} without its data, Goli says it in the studio")
+            out.append({"type": "host", "start": t0, "duration": dur, "data": {
+                "place": "studio", "cues": _cues_between(cues, t0, t1), "poses": poses,
+                "words": _screen_words(words, lines, t0, t1), "punch": (s.get("punch") or "").lower().strip(".,!?")}})
     out = _no_repeats(out, lines, fmt, notes)
     out = _pace(out, lines, fmt)
     out = _words_cap(out, notes, fmt)

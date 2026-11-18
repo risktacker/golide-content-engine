@@ -43,12 +43,13 @@ def test_walkthrough_on_the_real_page(tmp_path):
     assert "Open the playground" in html and "-sp2" in html and "-cur" in html
 
 
-def test_walkthrough_without_shots_falls_back_to_steps(tmp_path):
+def test_walkthrough_without_shots_shows_its_page(tmp_path):
     lines = _lines(["Copy the name and open the playground.", "Then run it."])
     raw = {"scenes": [_scene(type="walkthrough", source=0, items=["Copy the name", "Open the playground"], shots=[9])]}
     edit = editor.build(raw, lines, 6.0, "long", _page(tmp_path), tmp_path, [], [])
-    assert any(s["type"] == "steps" for s in edit["scenes"])
-    assert any("walkthrough" in n for n in edit["notes"])
+    kinds = [s["type"] for s in edit["scenes"]]
+    assert "steps" not in kinds and "kinetic_title" not in kinds      # 2026-11-18 (owner): other scenes, never text
+    assert any("walkthrough shown as" in n for n in edit["notes"])
 
 
 def test_prompt_and_checklist_render(tmp_path):
