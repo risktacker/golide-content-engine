@@ -347,13 +347,13 @@
       // White silkscreen, stretched along the direction of flight like road markings so it still reads from a low camera.
       const STRETCH = 1.4;
       const label = (text, ref, x, z, align) => {
-        const m = K.textPlane(text, { font: '600 200px "IBM Plex Mono"', height: 1.0, color: '#eceadf', lit: true, letterSpacing: 6, roughness: 0.78, pad: 20 });
+        const m = K.textPlane(text, { font: '600 200px "IBM Plex Mono"', height: 0.6, color: '#eceadf', lit: true, letterSpacing: 6, roughness: 0.78, pad: 20 });
         const r = K.rng(text), c = m.userData.tex.ctx; c.globalCompositeOperation = 'destination-out';       // pinholes and thin patches, as in real screen print
         for (let i = 0; i < 500; i++) { c.fillStyle = `rgba(0,0,0,${r.range(0.15, 0.9)})`; c.beginPath(); c.arc(r() * c.canvas.width, r() * c.canvas.height, r.range(0.6, 2.4), 0, 7); c.fill(); }
         m.userData.tex.needsUpdate = true;
         const w = m.userData.size[0], d = m.userData.size[1] * STRETCH, cx = align === 'left' ? x + w / 2 : align === 'right' ? x - w / 2 : x;
         m.rotation.x = -Math.PI / 2; m.scale.y = STRETCH; m.position.set(cx, 0.006, z); m.receiveShadow = true; scene.add(m);
-        const s = K.textPlane(ref, { font: '500 64px "IBM Plex Mono"', height: 0.3, color: '#eceadf', lit: true, roughness: 0.78 });
+        const s = K.textPlane(ref, { font: '500 64px "IBM Plex Mono"', height: 0.2, color: '#eceadf', lit: true, roughness: 0.78 });
         s.rotation.x = -Math.PI / 2; s.scale.y = STRETCH; s.position.set(cx - w / 2 + s.userData.size[0] / 2 + 0.1, 0.006, z - d / 2 + 0.02); s.receiveShadow = true; scene.add(s);
         claim(cx, z - 0.15, w, d + 0.5, 0.2); printed.push([cx, z - 0.12, w + 0.3, d + 0.55]);
         return m;

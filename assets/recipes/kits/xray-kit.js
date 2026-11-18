@@ -288,7 +288,7 @@
         overlay(ctx, t, W, H) {
           camera.updateMatrixWorld();
           const P = (p) => { v3.set(p[0], p[1], p[2]).project(camera); return [(v3.x * 0.5 + 0.5) * W, (0.5 - v3.y * 0.5) * H]; };
-          const s = H / 1080, mix = (k) => `rgb(${Math.round(K.lerp(214, 255, k))},${Math.round(K.lerp(232, 150, k))},${Math.round(K.lerp(247, 60, k))})`;
+          const s = H / 1080 * 0.6, mix = (k) => `rgb(${Math.round(K.lerp(214, 255, k))},${Math.round(K.lerp(232, 150, k))},${Math.round(K.lerp(247, 60, k))})`;
           ctx.textBaseline = 'alphabetic'; ctx.lineCap = 'butt';
           // the object's outline on screen
           let y0 = 1e9, y1 = -1e9, x0 = 1e9, x1 = -1e9;

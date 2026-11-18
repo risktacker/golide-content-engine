@@ -397,7 +397,7 @@
       // title block, hard in the corner of the border as on any drawing
       const TB = [0.9, 0.57], RULE = 0.825, MID = 1.335, TITLE_Z = 0.64, TITLE_GAP = 0.122;
       print.push(rec([TB[0], 0, BZ], [TB[0], 0, TB[1]], { w: HEAVY }), rec([TB[0], 0, TB[1]], [BX, 0, TB[1]], { w: HEAVY }), rec([TB[0], 0, RULE], [BX, 0, RULE]), rec([MID, 0, RULE], [MID, 0, BZ]));
-      TITLE.forEach((s, i) => print.push(...letter(s, { size: 0.082, w: 4.2, map: onSheet(TB[0] + 0.055, TITLE_Z + i * TITLE_GAP) })));
+      TITLE.forEach((s, i) => print.push(...letter(s, { size: 0.05, w: 3.6, map: onSheet(TB[0] + 0.055, TITLE_Z + i * TITLE_GAP) })));
       BLOCK.forEach((s, i) => print.push(...letter(s, { size: 0.032, w: 1.7, alpha: 0.9, step: 0.14, map: onSheet((i ? MID : TB[0]) + 0.045, (RULE + BZ) / 2) })));
       // plan dimensions and the height, from the subject's real size
       const [SX, SZ] = [SUB.size[0] / 2, SUB.size[1] / 2], DIMS = SUB.dims;
@@ -424,9 +424,9 @@
       // to a place in space while it turns to face the lens, so the same strokes serve as print and as a label.
       const FLAT = new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 2, 0, 0)), flyers = [];
       const flyer = (home, away, at, dur, strokes) => { const g = new THREE.Group(); scene.add(g); ink(strokes, { parent: g, order: 8, onTop: true }); flyers.push({ g, home: v3(home), away: v3(away), at, dur, pulse: T.marks[flyers.length] }); return g; };
-      const SIZE = 0.086, RB = 0.085;
+      const SIZE = 0.052, RB = 0.06;
       NOTES.forEach((lines, i) => {
-        const txt = letter(String(i + 1), { size: 0.09, w: 4.8, ink: 1, align: 'center' });
+        const txt = letter(String(i + 1), { size: 0.058, w: 4.2, ink: 1, align: 'center' });
         lines.forEach((s, k) => txt.push(...letter(s, { size: SIZE, squeeze: 0.84, w: 4.2, map: (x, y) => [RB + 0.05 + x, y + (0.5 - k) * SIZE * 1.6, 0] })));
         const g = flyer([0.75, 0.004, -0.54 + i * 0.36], NOTE_AT[i], T.notes[i], T.fly, txt);
         if (globalThis.K.words) globalThis.K.words(lines.join(' '), txt, g);

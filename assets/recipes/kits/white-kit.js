@@ -16,7 +16,7 @@
     look: 'An architect\'s presentation model: everything is matte white card and foam on a white site board, and one saturated accent colour is reserved for the thing being explained.',
     motion: 'Nothing in the model moves. Only the accent moves: it starts at the source and travels through the model along thin conduits, switching each part on as it arrives, and a numbered label with a thin leader line draws in at every stop.',
     duration: DUR,
-    fonts: ['700 50px "Inter"', '700 44px "Inter"', '500 38px "Inter"', '600 30px "IBM Plex Mono"'],
+    fonts: ['700 30px "Inter"', '700 44px "Inter"', '500 23px "Inter"', '600 30px "IBM Plex Mono"'],
     render: { samples: 64, shutter: 0.5, tone: 'neutral', exposure: 1.0, bloom: 0.32, bloomThreshold: 1.1, vignette: 0.3, grain: 0.012, contrast: 1.05, fov: 24, background: '#b4b8bd' },
 
     build(S) {
@@ -383,11 +383,11 @@
         .filter((s) => placed[s.key]);
       const INK = '#1b1e22', pv = new THREE.Vector3();
       const px = (p, W, H) => { pv.set(p[0], p[1], p[2]).project(camera); return [(pv.x * 0.5 + 0.5) * W, (-pv.y * 0.5 + 0.5) * H]; };
-      const halo = (ctx, text, x, y) => { ctx.strokeStyle = 'rgba(255,255,255,0.55)'; ctx.lineWidth = 6; ctx.lineJoin = 'round'; ctx.strokeText(text, x, y); ctx.fillStyle = INK; ctx.fillText(text, x, y); };
+      const halo = (ctx, text, x, y) => { ctx.strokeStyle = 'rgba(255,255,255,0.55)'; ctx.lineWidth = 4; ctx.lineJoin = 'round'; ctx.strokeText(text, x, y); ctx.fillStyle = INK; ctx.fillText(text, x, y); };
       function label(ctx, step, i, t, W, H) {
         const p = K.seg(t, step.at, step.at + 0.6); if (p <= 0) return;
-        ctx.font = '700 50px "Inter"'; ctx.letterSpacing = '3px'; const wName = ctx.measureText(step.name).width;
-        ctx.font = '500 38px "Inter"'; ctx.letterSpacing = '0px'; const wText = Math.max(wName, ctx.measureText(step.note || '').width), R = 25;
+        ctx.font = '700 30px "Inter"'; ctx.letterSpacing = '2px'; const wName = ctx.measureText(step.name).width;
+        ctx.font = '500 23px "Inter"'; ctx.letterSpacing = '0px'; const wText = Math.max(wName, ctx.measureText(step.note || '').width), R = 15;
         const off = step.off || [-380, -170];
         const a = px(placed[step.key].top, W, H), c = [K.clamp(a[0] + off[0], 60 + R, W - 60 - R - 18 - wText), K.clamp(a[1] + off[1], 60 + R, H - 110)];
         const d = Math.hypot(a[0] - c[0], a[1] - c[1]) || 1, ux = (a[0] - c[0]) / d, uy = (a[1] - c[1]) / d;
@@ -397,10 +397,10 @@
         ctx.fillStyle = INK; ctx.beginPath(); ctx.arc(a[0], a[1], 6, 0, 7); ctx.fill();
         const pop = K.ease.outBack(K.clamp((p - 0.35) / 0.4)); if (pop <= 0) return;
         ctx.fillStyle = 'rgba(255,255,255,0.92)'; ctx.beginPath(); ctx.arc(c[0], c[1], R * pop, 0, 7); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = INK; ctx.stroke();
-        ctx.globalAlpha = K.clamp((p - 0.45) / 0.3); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = '600 30px "IBM Plex Mono"'; ctx.fillStyle = INK; ctx.fillText(String(i + 1), c[0], c[1] + 2);
-        const tx = c[0] + R + 18 - (1 - K.ease.out(K.clamp((p - 0.4) / 0.5))) * 14;
-        ctx.textAlign = 'left'; ctx.font = '700 50px "Inter"'; ctx.letterSpacing = '3px'; halo(ctx, step.name, tx, c[1] + 2);
-        if (step.note) { ctx.font = '500 38px "Inter"'; ctx.letterSpacing = '0px'; halo(ctx, step.note, tx, c[1] + 50); }
+        ctx.globalAlpha = K.clamp((p - 0.45) / 0.3); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = '600 18px "IBM Plex Mono"'; ctx.fillStyle = INK; ctx.fillText(String(i + 1), c[0], c[1] + 2);
+        const tx = c[0] + R + 11 - (1 - K.ease.out(K.clamp((p - 0.4) / 0.5))) * 14;
+        ctx.textAlign = 'left'; ctx.font = '700 30px "Inter"'; ctx.letterSpacing = '2px'; halo(ctx, step.name, tx, c[1] + 2);
+        if (step.note) { ctx.font = '500 23px "Inter"'; ctx.letterSpacing = '0px'; halo(ctx, step.note, tx, c[1] + 30); }
         ctx.globalAlpha = 1;
       }
 
@@ -427,7 +427,7 @@
         laidOut = true;
         const keep = camera.matrixWorld.clone(), pos = camera.position.clone(), q = camera.quaternion.clone();
         aimAt(DUR);
-        const taken = [], R = 25;
+        const taken = [], R = 15;
         // 2026-11-18 (owner: no collision): a label never sits on a piece of the model either; each piece's outline
         // on the held frame is an obstacle, and the least-covering place wins when none is clear
         const solid = [], bb = new THREE.Box3(), cv = new THREE.Vector3();
@@ -447,13 +447,13 @@
         const tries = [[-380, -170], [160, -150], [-380, 110], [160, 110], [-420, -320], [200, -320], [-440, 260], [220, 260], [-60, -300],
                        [-560, -60], [300, -40], [-200, -420], [100, -440], [-600, -260], [360, -260], [-120, 340]];
         STEPS.forEach((st) => {
-          ctx.font = '700 50px "Inter"'; ctx.letterSpacing = '3px'; const wName = ctx.measureText(st.name).width;
-          ctx.font = '500 38px "Inter"'; ctx.letterSpacing = '0px'; const w = Math.max(wName, ctx.measureText(st.note || '').width) + R * 2 + 30;
+          ctx.font = '700 30px "Inter"'; ctx.letterSpacing = '2px'; const wName = ctx.measureText(st.name).width;
+          ctx.font = '500 23px "Inter"'; ctx.letterSpacing = '0px'; const w = Math.max(wName, ctx.measureText(st.note || '').width) + R * 2 + 30;
           const a = px(placed[st.key].top, W, H);
           let best = null, low = Infinity;
           for (const off of (st.off ? [st.off] : []).concat(tries)) {
             const cx = K.clamp(a[0] + off[0], 60 + R, W - 60 - R - 18 - (w - R * 2 - 30)), cy = K.clamp(a[1] + off[1], 60 + R, H - 110);
-            const b = [cx - R - 6, cy - 40, cx + w + 6, cy + 74];
+            const b = [cx - R - 6, cy - 26, cx + w + 6, cy + 46];
             // its leader line may not cross another label, and no earlier leader may cross it
             const lead = [a[0], a[1], cx, cy];
             const score = cover(b, taken) * 50 + cover(b, solid) + (taken.some((o) => crosses(lead, o)) || leads.some((l) => crosses(l, b)) ? 2e5 : 0);
@@ -484,8 +484,8 @@
           if (TITLE[0] || TITLE[1]) {
             ctx.textAlign = 'right'; ctx.textBaseline = 'alphabetic'; ctx.fillStyle = INK;
             const ta = 1 - K.seg(t, DUR * 0.55, DUR * 0.55 + 0.5);
-            ctx.font = '600 30px "IBM Plex Mono"'; ctx.letterSpacing = '5px'; ctx.globalAlpha = 0.7 * ta; ctx.fillText(TITLE[0], W - 64, 86);
-            ctx.font = '700 44px "Inter"'; ctx.letterSpacing = '0px'; ctx.globalAlpha = ta; ctx.fillText(TITLE[1], W - 66, 140); ctx.globalAlpha = 1;
+            ctx.font = '600 19px "IBM Plex Mono"'; ctx.letterSpacing = '4px'; ctx.globalAlpha = 0.7 * ta; ctx.fillText(TITLE[0], W - 64, 86);
+            ctx.font = '700 28px "Inter"'; ctx.letterSpacing = '0px'; ctx.globalAlpha = ta; ctx.fillText(TITLE[1], W - 66, 112); ctx.globalAlpha = 1;
           }
         },
       };
