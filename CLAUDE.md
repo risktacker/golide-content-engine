@@ -121,7 +121,7 @@ against research, unconfirmed claims kept as "reportedly/allegedly" once (`story
   X-Ray takes one real object (phone, laptop, chip, battery cell, server) and 1-3 of its own parts with the flow.
   Each keeps its recipe's own construction; `recipes.circuit_layout` / `xray_layout` refuse anything unknown.
 - Paid (Sol writes the scene, about $0.30 each): Blueprint. Only when switched on for the video
-  in Studio, each up to the count he sets (`spec.looks = {free: [...], paid: {xray: n}}`, `editor.looks_for`).
+  in Studio, each up to the count he sets (`spec.looks = {free: [...], paid: {blueprint: n}}`, `editor.looks_for`).
   Scheduled automatic runs never switch paid ones on. Real people stay real photo cards, never puppets.
 
 ## Checks
