@@ -256,6 +256,11 @@ main{width:100%;max-width:1320px;margin:0 auto;padding:28px clamp(16px,3.5vw,48p
 .connection.attention .state{color:var(--gold);border-color:color-mix(in srgb,var(--gold) 35%,transparent)}
 .connection-action{align-self:flex-start;display:inline-flex;align-items:center;min-height:40px;margin-top:8px;padding:8px 14px;border:1px solid var(--line-strong);border-radius:10px;text-decoration:none;font-size:.875rem;font-weight:500}
 .connection-action:hover{border-color:var(--gold);color:var(--gold)}
+.connection-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.connection-actions .connection-action{margin-top:0;background:none;color:inherit;font:inherit;font-size:.875rem;font-weight:500;cursor:pointer}
+.connection-action.disconnect{color:var(--muted,inherit)}
+.connection-action.disconnect:hover,.connection-action.disconnect.armed{border-color:var(--danger);color:var(--danger)}
+@media (max-width:720px){.connection-actions .connection-action{flex:1 1 140px;justify-content:center}}
 
 /* ---------- Loading placeholders ---------- */
 .skeleton,.line-skeleton{position:relative;overflow:hidden;background:var(--raised)}

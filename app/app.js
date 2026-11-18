@@ -1204,9 +1204,12 @@ async function loadConnections() {
     const verified = item.synced_at
       ? "Checked " + when(item.synced_at)
       : (configured ? "Not connected yet" : "OAuth app not configured");
+    // 2026-11-18 (owner): a connected account can be disconnected here (two taps, so a slip never does it)
     const action = configured
-      ? '<a class="connection-action" href="/api/' + platform + '/connect">' +
-        (connected ? "Reconnect " : "Connect ") + esc(labels[platform]) + "</a>"
+      ? '<div class="connection-actions"><a class="connection-action" href="/api/' + platform + '/connect">' +
+        (connected ? "Reconnect" : "Connect " + esc(labels[platform])) + "</a>" +
+        (connected ? '<button type="button" class="connection-action disconnect" data-platform="' + platform + '">Disconnect</button>' : "") +
+        "</div>"
       : "";
 
     return '<div class="connection ' + stateClass + '"><strong>' +
@@ -1214,6 +1217,24 @@ async function loadConnections() {
       '</small><small class="verified-at">' + esc(verified) +
       '</small><div class="state">' + esc(state) + '</div>' + action + '</div>';
   }).join("");
+  $$("#connection-grid .disconnect").forEach((button) => {
+    let armed = null;
+    button.onclick = async () => {
+      if (!armed) {
+        button.textContent = "Tap again to disconnect"; button.classList.add("armed");
+        armed = setTimeout(() => { armed = null; button.textContent = "Disconnect"; button.classList.remove("armed"); }, 4000);
+        return;
+      }
+      clearTimeout(armed); button.disabled = true; button.textContent = "Disconnecting...";
+      try {
+        await api("/api/" + button.dataset.platform + "/disconnect", { method: "POST", body: "{}" });
+        await loadConnections();
+      } catch (error) {
+        button.disabled = false; button.textContent = "Disconnect"; button.classList.remove("armed"); armed = null;
+        button.insertAdjacentHTML("afterend", '<small class="micro">' + esc(error.message) + "</small>");
+      }
+    };
+  });
 }
 
 $("#refresh-jobs").onclick = loadProductionJobs;

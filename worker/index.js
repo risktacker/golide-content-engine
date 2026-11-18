@@ -1305,6 +1305,16 @@ async function handleApi(request,env,url){
   if(url.pathname==="/api/x/connect"&&request.method==="GET"){
     try{return Response.redirect(await xStartOauth(env),302);}catch(e){return err(e?.message||String(e),503);}
   }
+  // 2026-11-18 (owner): Disconnect in Studio. The stored login is removed and the account shows as not connected;
+  // publishing skips it ("<platform> is not connected") and carries on with the others. Connect brings it back.
+  const socialDisconnect=url.pathname.match(/^\/api\/(instagram|facebook|linkedin|youtube|x)\/disconnect$/);
+  if(socialDisconnect&&request.method==="POST"){
+    const platform=socialDisconnect[1];
+    if(platform==="x") await env.DB.prepare(`DELETE FROM x_oauth_tokens WHERE id=1`).run();
+    else await env.DB.prepare(`DELETE FROM social_oauth_tokens WHERE platform=?`).bind(platform).run();
+    await env.DB.prepare(`UPDATE engine_connections SET connected=0,verification_note='Disconnected in Studio' WHERE platform=?`).bind(platform).run();
+    return json({status:"disconnected",platform});
+  }
   const socialConnect=url.pathname.match(/^\/api\/(instagram|facebook|linkedin|youtube)\/connect$/);
   if(socialConnect&&request.method==="GET"){
     try{return Response.redirect(await startSocialOauth(env,socialConnect[1]),302);}catch(e){return err(e?.message||String(e),503);}
