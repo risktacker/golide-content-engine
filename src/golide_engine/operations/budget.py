@@ -119,6 +119,16 @@ class MonthlyBudget:
                     (desired, production_id, provider, month),
                 )
                 allocated = desired
+            # 2026-11-18: an allowance the owner set for this video (openai_budget_usd) raises the saved one; the
+            # monthly cap still applies to its class
+            explicit = spec.get("openai_budget_usd") if provider == "openai" else None
+            if explicit is not None and float(explicit) > allocated:
+                allocated = float(explicit)
+                self.database.execute(
+                    """UPDATE budget_allocations SET allocated_usd=?
+                       WHERE production_id=? AND provider=? AND month=?""",
+                    (allocated, production_id, provider, month),
+                )
             return budget_class, allocated
         budget_class, amount = self._allocation_for(spec, provider)
         self.database.execute(
