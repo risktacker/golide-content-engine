@@ -277,7 +277,7 @@
 
       // ---- camera: [azimuth, elevation, distance, target x, y, z]. One move, still travelling on the last frame.
       // The recipe's crane, its distance sized to the object (and a square Short frame stands further back).
-      const WIDE = Math.max(1, 1.78 / (camera.aspect || 1.78)), Dz = Math.max(LEN * 1.15 / 8.4, OBJ.depth * 2.6 / 8.4) * WIDE;
+      const WIDE = Math.max(1, 1.78 / (camera.aspect || 1.78)), Dz = Math.max(LEN * 1.5 / 8.4, OBJ.depth * 2.6 / 8.4) * WIDE;
       const camPath = K.path([[0, [-50, 22, 15.0 * Dz, -0.75, AXIS_Y, 0]], [1.4 * Q, [-44, 31, 13.6 * Dz, -0.3, AXIS_Y, 0]], [3.2 * Q, [-9, 65, 15.6 * Dz, 0, AXIS_Y, 0.05]], [5.4 * Q, [-2, 72, 15.9 * Dz, 0, AXIS_Y, 0.1]], [9.2 * Q, [0.4, 80, 14.3 * Dz, 0, AXIS_Y, 0.1]]]);
       const camAt = (t) => { const [az, el, d, tx, ty, tz] = camPath(t), a = az * Math.PI / 180, e = el * Math.PI / 180; return { pos: [tx + d * Math.cos(e) * Math.sin(a), ty + d * Math.sin(e), tz + d * Math.cos(e) * Math.cos(a)], aim: [tx, ty, tz] }; };
 
@@ -334,7 +334,7 @@
             ctx.fillText(label, K.clamp((v3.x * 0.5 + 0.5) * W + 14 * s, 40 * s, W - ctx.measureText(label).width - 40 * s), K.clamp((0.5 - v3.y * 0.5) * H - 12 * s, 60 * s, H - 40 * s));
           }
 
-          const placed = [];
+          const placed = [[x0 + 6 * s, y0 + 6 * s, x1 - 6 * s, y1 - 6 * s]], texts = [];   // the object itself; the labels so far
           { const a = P([HALF - 50 / MM - 0.1, 0, OBJ.depth / 2 + 0.25]), b = P([HALF + 0.1, 0, OBJ.depth / 2 + 0.85]); placed.push([Math.min(a[0], b[0]), Math.min(a[1], b[1]), Math.max(a[0], b[0]), Math.max(a[1], b[1])]); }   // the printed scale bar
           PARTS.forEach((p) => {
             const k = K.seg(t, p.at - 0.08, p.at + 0.3, K.ease.out), kn = K.seg(t, p.at + 0.02, p.at + 0.35, K.ease.out), ko = K.seg(t, p.at + 0.22, p.at + 0.6, K.ease.out);
@@ -343,24 +343,38 @@
             ctx.font = `500 ${44 * s}px "Space Grotesk"`; ctx.letterSpacing = `${0.5 * s}px`; const wo = ctx.measureText(p.note || '').width;
             const bw = Math.max(wn, wo) + 22 * s, bh = 126 * s;
             // candidates: its own side of the object first, the pole's right then left, then the other side, then stacked out
-            const fits = (x, e) => x >= 40 * s && x + bw <= W - 40 * s && e - bh >= 40 * s && e <= H - 30 * s && !placed.some((q) => x < q[2] + 24 * s && x + bw > q[0] - 24 * s && e - bh < q[3] + 12 * s && e > q[1] - 12 * s);
+            const ownPole = () => false;   // the pole stops short of its label's edge, so it never runs into its own letters
+            // the pole (and its elbow) from the part to a label at (x, e) may not cross a label already placed
+            const poleSegs = (x, e) => {
+              if (x > x1 || x + bw < x0) { const hx = x > ax ? x - 10 * s : x + bw + 10 * s; return [[Math.min(ax, hx), ay - 3 * s, Math.max(ax, hx), ay + 3 * s]]; }
+              const far = e - bh > ay ? e - bh : e, segs = [[ax - 3 * s, Math.min(ay, far), ax + 3 * s, Math.max(ay, far)]];
+              if (x > ax + 30 * s) segs.push([ax, far - 3 * s, x, far + 3 * s]); else if (x + bw < ax) segs.push([x + bw, far - 3 * s, ax, far + 3 * s]);
+              return segs;
+            };
+            const poleClear = (x, e) => !poleSegs(x, e).some((g) => texts.some((q) => g[0] < q[2] + 6 * s && g[2] > q[0] - 6 * s && g[1] < q[3] + 4 * s && g[3] > q[1] - 4 * s));
+            const fits = (x, e) => !ownPole(x, e) && poleClear(x, e) && x >= 40 * s && x + bw <= W - 40 * s && e - bh >= 40 * s && e <= H - 30 * s && !placed.some((q) => x < q[2] + 24 * s && x + bw > q[0] - 24 * s && e - bh < q[3] + 12 * s && e > q[1] - 12 * s);
             const cands = [];
             for (let st = 0; st < 4; st++) for (const d of [dir, -dir]) for (const right of [true, false]) {
               const e = (d < 0 ? y0 - 24 * s : y1 + bh + 24 * s) + d * st * (bh + 18 * s);
               cands.push([right ? ax + 22 * s : ax - 22 * s - bw, e]);
             }
+            // then centred over or under its pole (kept inside the frame), for a label too wide to stand beside it
+            for (const d of [dir, -dir]) cands.push([K.clamp(ax - bw / 2, 40 * s, W - 40 * s - bw), d < 0 ? y0 - 24 * s : y1 + bh + 24 * s]);
+            // then slid along the top or bottom, the pole bending to reach it
+            for (let j = 1; j <= 4; j++) for (const d of [dir, -dir]) for (const sgn of [1, -1]) cands.push([sgn > 0 ? ax + 22 * s + j * (bw * 0.5 + 20 * s) : ax - 22 * s - bw - j * (bw * 0.5 + 20 * s), d < 0 ? y0 - 24 * s : y1 + bh + 24 * s]);
             // then beside the object, level with the part (a short arm out to the side)
-            for (let st = 0; st < 3; st++) for (const right of [ax > (x0 + x1) / 2, ax <= (x0 + x1) / 2]) cands.push([right ? x1 + 40 * s : x0 - 40 * s - bw, ay + bh / 2 + (st % 2 ? 1 : -1) * Math.ceil(st / 2) * (bh + 18 * s)]);
+            for (let st = 0; st < 3; st++) for (const right of [ax > (x0 + x1) / 2]) cands.push([right ? x1 + 40 * s : x0 - 40 * s - bw, ay + bh / 2 + (st % 2 ? 1 : -1) * Math.ceil(st / 2) * (bh + 18 * s)]);
             const inside = cands.map(([x, e]) => [K.clamp(x, 40 * s, W - 40 * s - bw), K.clamp(e, bh + 40 * s, H - 30 * s)]);
             const clash = ([x, e]) => placed.reduce((n, q) => n + Math.max(0, Math.min(x + bw, q[2]) - Math.max(x, q[0])) * Math.max(0, Math.min(e, q[3]) - Math.max(e - bh, q[1])), 0);
-            let [tx, end] = cands.find(([x, e]) => fits(x, e)) || inside.reduce((best, c) => (clash(c) < clash(best) ? c : best));
-            placed.push([tx, end - bh, tx + bw, end]);
+            let [tx, end] = cands.find(([x, e]) => fits(x, e)) || inside.reduce((best, c) => (clash(c) + (ownPole(...c) ? 1e9 : 0) + (poleClear(...c) ? 0 : 1e8) < clash(best) + (ownPole(...best) ? 1e9 : 0) + (poleClear(...best) ? 0 : 1e8) ? c : best));
+            placed.push([tx, end - bh, tx + bw, end]); texts.push([tx, end - bh, tx + bw, end]);
+            { const far = end - bh > ay ? end - bh : end; placed.push([ax - 4 * s, Math.min(ay, far), ax + 4 * s, Math.max(ay, far)]); }   // its pole
             if (k <= 0) return;
-            const below = end - bh > ay, hot = flare(t, p.at, 0.0), tip = ay + ((below ? end - bh : end) - ay) * k, col = mix(Math.min(1, hot * 1.3));
+            const below = end - bh > ay, hot = flare(t, p.at, 0.0), tip = ay + ((below ? end - bh - 12 * s : end + 12 * s) - ay) * k, col = mix(Math.min(1, hot * 1.3));
             ctx.globalAlpha = 1; ctx.shadowColor = 'rgba(0,0,0,0.85)'; ctx.shadowBlur = 14 * s; ctx.strokeStyle = col; ctx.fillStyle = col;
             ctx.lineWidth = 3 * s; ctx.beginPath();
             if (tx > x1 || tx + bw < x0) { const hx = tx > ax ? tx - 10 * s : tx + bw + 10 * s, ex = ax + (hx - ax) * k; ctx.moveTo(ax + Math.sign(hx - ax) * 11 * s, ay); ctx.lineTo(ex, ay); }
-            else { ctx.moveTo(ax, ay + Math.sign(tip - ay) * 11 * s); ctx.lineTo(ax, tip); if (Math.abs(tx - ax) > 30 * s && tx + bw < ax) ctx.lineTo(tx + bw + 6 * s, tip); }
+            else { ctx.moveTo(ax, ay + Math.sign(tip - ay) * 11 * s); ctx.lineTo(ax, tip); if (tx > ax + 30 * s) ctx.lineTo(ax + (tx - 8 * s - ax) * k, tip); else if (tx + bw < ax) ctx.lineTo(ax + (tx + bw + 6 * s - ax) * k, tip); }
             ctx.stroke();
             ctx.beginPath(); ctx.arc(ax, ay, 10 * s, 0, 7); ctx.stroke(); ctx.beginPath(); ctx.arc(ax, ay, 3.5 * s, 0, 7); ctx.fill();
             const top1 = end - bh;

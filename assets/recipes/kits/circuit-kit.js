@@ -304,14 +304,17 @@
       }
       // a printed antenna: a meander of gold track fed by a small radio chip; it lights from the chip outwards
       function antenna(s, a, l) {
-        const x0 = s.x - s.w / 2 + 0.3, pts = [[x0, s.z + s.d / 2 - 0.2]];
-        for (let k = 0; k < 7; k++) { const x = x0 + 0.55 * k + 0.55; pts.push([x - 0.55, k % 2 ? s.z + s.d / 2 - 0.2 : s.z - s.d / 2 + 0.6]); pts.push([x, k % 2 ? s.z + s.d / 2 - 0.2 : s.z - s.d / 2 + 0.6]); }
-        const m = measure(pts), rr = run(m.len, a + 0.05, a + 0.05 + Math.min(0.6, (l - a) * 0.7), 1);
-        track(pts, 0.11, rr.timeAt, 1.2);
-        chip(s.x + s.w / 2 + 0.2, s.z - 0.1, 1.0, 1.0, 0.24, { mark: ['RF'], pins: ['-x', '+x'], pitch: 0.2, ref: 'U' + (40 + N) });
-        claim(s.x, s.z, s.w + 0.4, s.d + 0.4);
-        const lamp = new THREE.PointLight('#ffb060', 0, 7, 2); lamp.position.set(s.x, 0.9, s.z); scene.add(lamp);
-        return (t) => { lamp.intensity = 1.8 * wake(t, a, l); };
+        // wide gold meander (a real PCB antenna is a broad track), fed from its radio chip by a short track
+        const x0 = s.x - s.w / 2 + 0.25, zt = s.z + s.d / 2 - 0.25, zb = s.z - s.d / 2 + 0.25, P0 = 0.62, pts = [[x0, zt]];
+        for (let k = 0; k < 6; k++) { const x = x0 + P0 * (k + 1); pts.push([x - P0, k % 2 ? zt : zb]); pts.push([x, k % 2 ? zt : zb]); }
+        const m = measure(pts), rr = run(m.len, a + 0.05, a + 0.05 + Math.min(0.7, (l - a) * 0.7), 1);
+        track(pts, 0.24, rr.timeAt, 1.6);
+        const cx = s.x + s.w / 2 + 0.55, end = pts[pts.length - 1];
+        track([[end[0], end[1]], [cx - 0.75, end[1]]], 0.13, (q) => a + q / 9, 1.2);
+        chip(cx, end[1], 1.3, 1.3, 0.26, { mark: ['RF', '5G'], pins: ['-x', '+x', '+z'], pitch: 0.2, ref: 'U' + (40 + N) });
+        claim(s.x + 0.4, s.z, s.w + 1.6, s.d + 0.6);
+        const g = underglow(s.x, s.z, s.w + 0.4, s.d + 0.3), lamp = new THREE.PointLight('#ffb060', 0, 8, 2); lamp.position.set(s.x, 1.1, s.z); scene.add(lamp);
+        return (t) => { const k = wake(t, a, l); g.copy(amber).multiplyScalar(1.5 * k); lamp.intensity = 2.6 * k; };
       }
       // power: the recipe's shielded inductor between two aluminium cans
       function power(s, a, l) {
