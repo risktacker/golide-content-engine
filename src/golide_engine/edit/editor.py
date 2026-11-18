@@ -232,7 +232,11 @@ def _looks_text(allowed: list[str], paid: dict[str, int], puppets: bool) -> str:
     {"kind": "custom", "name", "note", "build": PARTS} (also allowed in extras), never left out.
   PARTS = ANY object written as named parts, one string each, in the 3D part format: "name: box|cyl|sphere|cone x y z
     w d h [rx90] [ry0] [rz45] [gold]" (z up, z = the part's base, any units; parts with the same name are one part).
-    Build the REAL object the script names, its real proportions and its real inner parts, 3 to 40 parts.
+    Build the REAL object the script names, its real proportions (from the research when it gives sizes) and its real
+    parts. DETAIL: 15 to 40 parts for the object the scene is about (fewer only for a truly simple thing). Break every
+    big plain shape into what it really is: a reservoir is a water surface, its shoreline steps and the dam face, not
+    one block; a car has its body, cabin, windows, lights, wheel arches and 4 wheels; a building has its floors,
+    windows, entrance and roof plant. Name each part as what it is, and mark the part the line is about gold.
   xray: {"object": its name, "build": PARTS lying flat as on a scanner bed (an outer part named shell, body, case or
     chassis, the inner parts inside it), "parts": 1 to 3 of {"part": a name in build, "name" 1-2 words, "note" 2-4
     words} in the order the flow reaches them, "flow": current, data, heat, air or force, "accent": "#rrggbb"}.
