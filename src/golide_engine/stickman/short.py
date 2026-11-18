@@ -191,7 +191,11 @@ def build_project(project: Path, parts: dict[str, Any], timing: dict[str, Any]) 
 
 
 # ---------------------------------------------------------------- driving the page (tools/render.mjs, from Python)
-CHROMIUM_ARGS = ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"]
+# 2026-11-18: the runner has no GPU. Mesa's llvmpipe (through EGL) draws the same picture (mean difference under 1 of
+# 255, edge anti-aliasing) 2.5x faster than SwiftShader; SwiftShader stays as the fallback when EGL is missing.
+CHROMIUM_ARGS = ["--use-gl=angle", "--use-angle=gl-egl", "--ignore-gpu-blocklist"]
+SWIFTSHADER_ARGS = ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"]
+STALL_SECONDS = 120          # no new frame from any browser for this long: the drawing is stuck, stop with the reason
 
 
 class _Quiet(http.server.SimpleHTTPRequestHandler):
@@ -212,11 +216,18 @@ def frames(project: Path, frame_list: list[int], outdir: Path, quality: float = 
     errors: list[str] = []
     try:
         with sync_playwright() as p:
-            browser = p.chromium.launch(args=CHROMIUM_ARGS)
-            page = browser.new_page(viewport={"width": 1080, "height": 1920})
-            page.on("pageerror", lambda e: errors.append(str(e)))
-            page.goto(f"http://127.0.0.1:{server.server_address[1]}/index.html")
-            page.wait_for_function("() => window.ready || window.err", timeout=180000)
+            def open_page(args):
+                browser = p.chromium.launch(args=args)
+                page = browser.new_page(viewport={"width": 1080, "height": 1920})
+                page.on("pageerror", lambda e: errors.append(str(e)))
+                page.goto(f"http://127.0.0.1:{server.server_address[1]}/index.html")
+                page.wait_for_function("() => window.ready || window.err", timeout=180000)
+                return browser, page
+
+            browser, page = open_page(CHROMIUM_ARGS)
+            if errors or page.evaluate("() => window.err || null"):       # no EGL on this machine: the old driver
+                browser.close(); errors.clear()
+                browser, page = open_page(SWIFTSHADER_ARGS)
             err = page.evaluate("() => window.err || null")
             if err or errors:
                 return errors + ([err] if err else [])
@@ -299,10 +310,31 @@ def render(project: Path, total: int, workers: int = 3) -> None:
     import os
 
     env = dict(os.environ, PYTHONPATH=os.pathsep.join([str(ROOT / "src"), os.environ.get("PYTHONPATH", "")]))
+    import time
+
+    # llvmpipe draws with every core in each browser; split the cores between the browsers instead of fighting
+    env["LP_NUM_THREADS"] = str(max(1, (os.cpu_count() or 4) // max(1, workers)))
     chunks = [(k * total // workers, (k + 1) * total // workers - 1) for k in range(workers)]
     procs = [subprocess.Popen([sys.executable, "-m", "golide_engine.stickman.short", "frames", str(project), str(a), str(b)],
                               env=env) for a, b in chunks if b >= a]
-    if any(p.wait() != 0 for p in procs):
+    # progress in the run's live log every 30 s, and a stalled drawing stops in minutes, not at the 5-hour limit
+    out, start, last_count, last_change, last_print = project / "frames", time.time(), -1, time.time(), 0.0
+    while any(p.poll() is None for p in procs):
+        time.sleep(5)
+        count = sum(1 for _ in out.glob("f*.jpg"))
+        now = time.time()
+        if count != last_count:
+            last_count, last_change = count, now
+        if now - last_print >= 30:
+            rate = count / max(1.0, now - start)
+            print(json.dumps({"status": "stickman_drawing", "frames": count, "of": total, "per_second": round(rate, 2),
+                              "minutes_left": round((total - count) / rate / 60, 1) if rate > 0 else None}), flush=True)
+            last_print = now
+        if now - last_change > STALL_SECONDS:
+            for p in procs:
+                p.kill()
+            raise RuntimeError(f"Stickman drawing stopped at frame {count} of {total}: no new frame for {STALL_SECONDS} s")
+    if any(p.returncode != 0 for p in procs):
         raise RuntimeError("a Stickman frame worker failed")
     missing = [f for f in range(total) if not (project / "frames" / f"f{f:04d}.jpg").exists()]
     if missing:
