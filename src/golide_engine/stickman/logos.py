@@ -52,12 +52,6 @@ def slug_of(title: str) -> str:
     return re.sub(r"[^a-z0-9]", "", s)
 
 
-def _names(icon: dict) -> list[str]:
-    names = [icon["title"]]
-    aka = (icon.get("aliases") or {}).get("aka") or []
-    return names + [a for a in aka if isinstance(a, str)]
-
-
 def _said(name: str, text: str) -> bool:
     if len(name) < 3:
         return False
@@ -67,26 +61,38 @@ def _said(name: str, text: str) -> bool:
     return any(re.search(r"(?<![\w])" + re.escape(n) + r"(?![\w])", text) for n in alt)
 
 
-def for_script(text: str, pkg: Path | None = None) -> dict[str, dict[str, str]]:
-    """The logos of the brands the script names, most-mentioned first, up to MOST."""
+VENDORED = Path(__file__).resolve().parents[3] / "vendor" / "simple-icons" / "icons.json"
+
+
+def _icons(pkg: Path | None) -> list[dict]:
+    """Every icon as {slug, title, hex, aka, d}: from the copy kept in the repo (vendor/simple-icons, so a run never
+    needs the network), or from an unpacked simple-icons package folder when one is given."""
+    if pkg is None and VENDORED.exists():
+        data = json.loads(VENDORED.read_text(encoding="utf-8"))
+        return [{"slug": k, "title": v["t"], "hex": v["h"], "aka": v.get("a") or [], "d": v["d"]} for k, v in data.items()]
     pkg = pkg or package()
     if not pkg:
-        return {}
+        return []
     data = json.loads((pkg / "_data" / "simple-icons.json").read_text(encoding="utf-8"))
-    icons = data if isinstance(data, list) else data.get("icons", [])
-    found: list[tuple[int, str, dict]] = []
-    for icon in icons:
-        hits = [n for n in _names(icon) if _said(n, text)]
-        if not hits:
-            continue
+    out = []
+    for icon in data if isinstance(data, list) else data.get("icons", []):
         slug = icon.get("slug") or slug_of(icon["title"])
         svg = pkg / "icons" / f"{slug}.svg"
-        if not svg.exists():
-            continue
-        m = re.search(r' d="([^"]+)"', svg.read_text(encoding="utf-8"))
+        m = re.search(r' d="([^"]+)"', svg.read_text(encoding="utf-8")) if svg.exists() else None
         if m:
+            out.append({"slug": slug, "title": icon["title"], "hex": icon.get("hex") or "111111",
+                        "aka": [a for a in ((icon.get("aliases") or {}).get("aka") or []) if isinstance(a, str)], "d": m.group(1)})
+    return out
+
+
+def for_script(text: str, pkg: Path | None = None) -> dict[str, dict[str, str]]:
+    """The logos of the brands the script names, in the order it names them, up to MOST."""
+    found: list[tuple[int, str, dict]] = []
+    for icon in _icons(pkg):
+        hits = [n for n in [icon["title"], *icon["aka"]] if _said(n, text)]
+        if hits:
             first = min(text.lower().find(n.lower()) for n in hits)
-            found.append((first, slug, {"d": m.group(1), "hex": icon.get("hex") or "111111", "title": icon["title"]}))
+            found.append((first, icon["slug"], {"d": icon["d"], "hex": icon["hex"], "title": icon["title"]}))
     found.sort(key=lambda x: x[0])
     return {slug: v for _, slug, v in found[:MOST]}
 

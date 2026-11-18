@@ -164,7 +164,9 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
   devices, as often as the story is (owner 2026-11-17: no fixed count, the words decide).
 - recipe: a FILM-QUALITY 3D scene for this beat in a named style: the MAIN picture of the video, used for every
   beat whose words name a thing, a system, a place, a stack, a plan, an amount or what is inside something (owner
-  2026-11-18: all of them are required, draw what is being said). recipe = which style:
+  2026-11-18: all of them are required, draw what is being said). They are the slowest pictures to draw, so a video
+  has at most {"10" if short else "24"} recipe scenes: put them on the beats that need them most and draw the rest with
+  photos, pages, real runs, 3D objects, metaphors, logos and puppets. recipe = which style:
   xray = what is INSIDE a real thing and how it works (a chip, a battery, a phone, an engine, a data-centre rack):
   up to three inner parts, each lit and named in turn, with a simple flow (heat, air, current, data, force) acting
   on them. layers = anything BUILT IN LAYERS (a tech stack, what an AI product is made of, how a request travels

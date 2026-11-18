@@ -61,6 +61,10 @@ def logo_tile_maker(folder: Path):
     return make
 
 
+RECIPES_MOST = {"short": 10, "long": 24}       # recipe scenes drawn per video (config: recipes.most)
+RECIPE_MINUTES = {"short": 40, "long": 100}   # drawing time for them per run (config: recipes.minutes)
+
+
 def _recipes(production, spec: dict[str, Any], folder: Path, production_id: str, edit: dict[str, Any],
              text_model: str) -> None:
     """2026-11-17 (owner): every recipe scene the editor chose is written by the strong model from its Futurepedia
@@ -77,8 +81,22 @@ def _recipes(production, spec: dict[str, Any], folder: Path, production_id: str,
     made_path = folder / "recipes.json"
     made = json.loads(made_path.read_text(encoding="utf-8")) if made_path.exists() else {}
     writer = OpenAITextProvider(conf.get("model", "gpt-5.6-sol"), conf.get("reasoning_effort", "medium"))
+    # 2026-11-18: a recipe scene is the slowest picture to draw (a three.js film rendered frame by frame on the
+    # runner's CPU), so a video draws at most `most` of them, spread over the video, and stops drawing new ones once
+    # its time is used; the others show their house 3D stand-in or the picture before them (the run never times out)
+    import time as _time
+    fmt = str(spec["format"])
+    most = int((conf.get("most") or {}).get(fmt, RECIPES_MOST.get(fmt, 10)))
+    budget = 60 * float((conf.get("minutes") or {}).get(fmt, RECIPE_MINUTES.get(fmt, 40)))
+    keep = set(range(len(scenes))) if len(scenes) <= most else \
+        {round(i * (len(scenes) - 1) / max(1, most - 1)) for i in range(most)}
+    began = _time.monotonic()
     for k, sc in enumerate(scenes):
         key = f"{k}-{sc['data']['recipe']}"
+        if key not in made and (k not in keep or _time.monotonic() - began > budget):
+            print(json.dumps({"status": "recipe_skipped", "scene": key,
+                              "why": "over the count" if k not in keep else "out of drawing time"}))
+            made[key] = None
         if key not in made and sc["data"].get("fill") and sc["data"]["recipe"] in recipes.FREE:
             # 2026-11-17 (owner): a free style: the storyboard filled the reference's content block; no model call
             def free(sc=sc, key=key):
