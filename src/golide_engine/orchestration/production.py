@@ -1525,6 +1525,9 @@ class ProductionService:
         # (stickman/short.py). A Short whose scene could not be made twice is made in Goli instead.
         stickman_made = False
         style_now = str(spec.get("video_style") or "").lower()
+        # 2026-11-18 (owner, after the empty-block Elon Short): Stickman is for long videos only; a Short is Goli
+        if style_now.startswith("stickman") and str(spec["format"]) != "long":
+            style_now = "goli"
         if vector_mode and style_now in ("stickman", "stickman_goli"):
             if str(spec["format"]) == "long":
                 self._stickman_long(spec, work, production_id, timed_words, narration, narration_seconds, video_path,

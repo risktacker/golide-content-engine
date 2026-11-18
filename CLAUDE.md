@@ -97,6 +97,11 @@ against research, unconfirmed claims kept as "reportedly/allegedly" once (`story
   facing it, mouth on the voice, reactions on the story's events (numbers -> point, shock lines -> shock, lists and
   versus -> explain, payoff -> both hands up), at least 2.2 s apart. The video's own sound is kept untouched.
   Long videos only (owner 2026-11-17): on a Short Goli would distract, so a Stickman Short runs without him.
+- Stickman is OFF Shorts (owner 2026-11-18, after the 2:55 Elon Short: empty blocks, wrong music, an hour of drawing):
+  long videos only, until a Short matches the model's look (a new fully built place for every line, every 6-8 s).
+  Studio hides it for Shorts; the worker and the engine turn a Stickman Short into Goli. Shorts music = Discipline
+  Finishes only. Stickman + Goli thumbnails are Goli thumbnails with Stickman small behind; the Stickman board
+  thumbnail is for pure Stickman videos only.
 
 ## No collision (owner 2026-11-17: "I don't want collision in anything")
 - Recipe scenes (`edit/recipes.py`, `assets/recipes/player.html`): every word on screen is measured on 4 moments,

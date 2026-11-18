@@ -387,7 +387,8 @@ function validateSchedule(payload,klass,variants,units){
   if(!scheduled) return;
   const actual=variants.map((v)=>safeText(v.platform).toLowerCase());
   const expected=ROUTES[klass];
-  if(actual.length!==expected.length||expected.some((p)=>!actual.includes(p))) throw new Error(`${klass} route is locked; all destination platforms are required`);
+  // 2026-11-18 (owner picks the platforms per video): any of the route's platforms, never one outside it
+  if(!actual.length||actual.some((p)=>!expected.includes(p))||new Set(actual).size!==actual.length) throw new Error(`${klass} route allows only: ${expected.join(", ")}`);
   if(!payload.release_approved) throw new Error("release approval is required before scheduling");
   if(klass==="post"){
     if(units.length<3||units.length>5) throw new Error("static posts require 3 to 5 related value units");

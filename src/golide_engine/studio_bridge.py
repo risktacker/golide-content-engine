@@ -194,7 +194,7 @@ class StudioBridge:
     def create_content(self, payload: dict[str, Any]) -> dict[str, Any]:
         status, body = self._request("POST", "/api/engine/posts", payload)
         if status not in {200, 201}:
-            raise RuntimeError(f"Studio content creation failed with HTTP {status}")
+            raise RuntimeError(f"Studio content creation failed with HTTP {status}: {body.decode('utf-8', 'replace')[:300]}")
         return json.loads(body.decode("utf-8"))
 
     def content_exists(self, content_id: str) -> bool:

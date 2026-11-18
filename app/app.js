@@ -696,7 +696,8 @@ function askStyle(jobId) {
     row.className = "style-ask";
     // 2026-11-17 (owner): Stickman + Goli is for long videos; a Short in Stickman runs without Goli
     const isLong = (productionJobs.find((item) => item.job_id === jobId) || {}).format === "long";
-    row.innerHTML = '<span class="post-to-label">Video type</span>' + VIDEO_STYLES.filter(([key]) => isLong || key !== "stickman_goli").map(([key, name]) =>
+    // 2026-11-18 (owner): Stickman is off Shorts (long videos only) until a Short matches the model's look
+    row.innerHTML = '<span class="post-to-label">Video type</span>' + VIDEO_STYLES.filter(([key]) => isLong || !key.startsWith("stickman")).map(([key, name]) =>
       '<button class="action-button style-go' + (key === "goli" ? " primary" : "") + '" data-style="' + key + '">' + name + '</button>').join("") +
       '<button class="action-button style-cancel">Cancel</button>';
     styleAsking = jobId;
@@ -1274,11 +1275,12 @@ $("#ext-ref").onchange = (e) => showPicked(e.target, "#ext-ref-name");
 function extFormat() { return document.querySelector('input[name="ext-format"]:checked')?.value === "long" ? "long" : "short"; }
 // Stickman + Goli only for a long video (owner 2026-11-17: on a Short, Goli would distract)
 function syncExtStyles() {
-  const box = document.querySelector('input[name="ext-style"][value="stickman_goli"]');
-  if (!box) return;
+  // 2026-11-18 (owner): Stickman and Stickman + Goli are long videos only
   const long = extFormat() === "long";
-  box.closest("label").hidden = !long;
-  if (!long && box.checked) document.querySelector('input[name="ext-style"][value="stickman"]').checked = true;
+  document.querySelectorAll('input[name="ext-style"][value^="stickman"]').forEach((box) => {
+    box.closest("label").hidden = !long;
+    if (!long && box.checked) document.querySelector('input[name="ext-style"][value="goli"]').checked = true;
+  });
 }
 document.querySelectorAll('input[name="ext-format"]').forEach((input) => { input.onchange = syncExtStyles; });
 syncExtStyles();

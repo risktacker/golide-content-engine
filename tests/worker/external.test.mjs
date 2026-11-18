@@ -43,11 +43,11 @@ test("2026-11-17: his own video can be a long video and in Inkee", () => {
 
 test("Stickman (2026-11-17) is the third style, for Shorts and long videos", () => {
   assert.equal(buildExternalSpec({ ...base, format: "long", video_style: "stickman" }).video_style, "stickman");
-  assert.equal(buildExternalSpec({ ...base, format: "short", video_style: "stickman" }).video_style, "stickman");
+  assert.equal(buildExternalSpec({ ...base, format: "short", video_style: "stickman" }).video_style, "goli");   // long only (2026-11-18)
 });
 
 test("Stickman + Goli is for long videos; a Short asked for it is Stickman alone", () => {
-  assert.equal(buildExternalSpec({ ...base, format: "short", video_style: "stickman_goli" }).video_style, "stickman");
+  assert.equal(buildExternalSpec({ ...base, format: "short", video_style: "stickman_goli" }).video_style, "goli");
   assert.equal(buildExternalSpec({ ...base, format: "long", video_style: "stickman_goli" }).video_style, "stickman_goli");
 });
 
@@ -59,5 +59,5 @@ test("a Goli video carries its style switches; paid counts are whole numbers 0-2
   assert.deepEqual(cleanLooks({}).free, ["puppets", "white", "layers", "circuit", "glass", "xray", "blueprint"]);
   const spec = buildExternalSpec({ ...base, video_style: "goli", looks: { free: ["blueprint"], paid: { blueprint: 1 } } });
   assert.deepEqual(spec.looks, { free: ["blueprint"], paid: {} });
-  assert.equal(buildExternalSpec({ ...base, video_style: "stickman", looks: { paid: { blueprint: 1 } } }).looks, undefined);
+  assert.equal(buildExternalSpec({ ...base, format: "long", video_style: "stickman", looks: { paid: { blueprint: 1 } } }).looks, undefined);
 });
