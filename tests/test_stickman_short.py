@@ -94,3 +94,21 @@ def test_look_check_catches_black_frames_and_repeated_pictures(tmp_path, monkeyp
     assert "frame 210 is" in problems and "black" in problems
     assert "frames 30, 90, 150 show nearly the same picture" in problems
     assert "frame 270" not in problems
+
+
+def test_a_saved_cartoon_is_reused_without_paying_sol(tmp_path, monkeypatch):
+    """2026-11-18 (owner): never pay twice for the same cartoon."""
+    from golide_engine.stickman import short
+
+    class NoSol:
+        def generate_json(self, *a, **k):
+            raise AssertionError("Sol was called for a cartoon that was already written")
+
+    monkeypatch.setattr(short, "_check", lambda project, parts, timing, attempt: "")
+    monkeypatch.setattr(short, "render", lambda project, total, workers=3: None)
+    monkeypatch.setattr(short, "finish", lambda project, voice: project / "out" / "stickman.mp4")
+    saved = []
+    voice = tmp_path / "v.wav"; voice.write_bytes(b"x")
+    words = [{"word": "Hello.", "start": 0.0, "end": 0.5}]
+    out = short.make(NoSol(), tmp_path, "T", words, 1.0, voice, parts={"story_js": "x"}, save=saved.append)
+    assert out == tmp_path / "out" / "stickman.mp4" and saved == [{"story_js": "x"}]

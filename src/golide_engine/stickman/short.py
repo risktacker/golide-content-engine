@@ -467,7 +467,7 @@ def _check(project: Path, parts: dict[str, Any], timing: dict[str, Any], attempt
 
 
 def make(text, project: Path, title: str, words: list[dict[str, Any]], duration: float, voice: Path,
-         workers: int = 3, record=None) -> Path | None:
+         workers: int = 3, record=None, parts: dict[str, Any] | None = None, save=None) -> Path | None:
     """Write the Short, then up to FIX_ROUNDS rounds of small edits for whatever the look check finds; render and
     finish it. None when it still fails (production makes the Short in Goli)."""
     timing = phrases(words, duration)
@@ -475,10 +475,13 @@ def make(text, project: Path, title: str, words: list[dict[str, Any]], duration:
     # 2026-11-18: every call writes a new cartoon, so frames a stopped run left in the restored cache belong to the
     # old one: start from none (a mix of two cartoons in one Short)
     shutil.rmtree(project / "frames", ignore_errors=True)
-    out = text.generate_json(instructions(), request(title, timing), CODE_SCHEMA, max_output_tokens=60000)
-    if record:
-        record("stickman-short-1", out)
-    parts = out.value
+    if parts is None:            # 2026-11-18: a cartoon already written for this recording is reused, never paid twice
+        out = text.generate_json(instructions(), request(title, timing), CODE_SCHEMA, max_output_tokens=60000)
+        if record:
+            record("stickman-short-1", out)
+        parts = out.value
+    else:
+        print(json.dumps({"status": "stickman_cartoon_reused"}), flush=True)
     problems = _check(project, parts, timing, 1)
     for attempt in range(2, FIX_ROUNDS + 2):
         if not problems:
@@ -494,6 +497,8 @@ def make(text, project: Path, title: str, words: list[dict[str, Any]], duration:
         problems = _check(project, parts, timing, attempt)
     if problems:
         return None
+    if save:
+        save(parts)              # the cartoon that passed its checks, for any later run of the same recording
     shutil.copy(voice, project / f"voice{voice.suffix.lower()}")
     render(project, total, workers)
     return finish(project, voice)

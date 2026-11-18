@@ -463,15 +463,50 @@ class ProductionService:
         writer = OpenAITextProvider(conf.get("model", "gpt-5.6-sol"), conf.get("reasoning_effort", "medium"))
         made: dict[str, bool] = {"ok": (project / "out" / "stickman.mp4").exists()}
 
+        # 2026-11-18 (owner: "you spend that 1 dollar again and again"): the cartoon Sol wrote is kept in R2 under a
+        # fingerprint of the recording's words and length, so a retry, a cancel or a new upload of the same
+        # recording reuses it for free
+        import hashlib
+        from ..storage.r2 import r2_store_from_environment
+        store = r2_store_from_environment()
+        mark = hashlib.sha256(json.dumps([[w.get("word"), round(float(w.get("start", 0)), 2)] for w in timed_words]
+                                         + [round(float(narration_seconds), 2)]).encode()).hexdigest()[:24]
+        saved_key = f"stickman-short/{mark}.json"
+
+        def saved_parts() -> dict[str, Any] | None:
+            if store is None:
+                return None
+            try:
+                with urllib.request.urlopen(store.resolve(f"r2://{saved_key}", expires_seconds=600), timeout=30) as r:
+                    return json.loads(r.read().decode("utf-8"))
+            except Exception:  # noqa: BLE001 - nothing saved yet (or storage unreachable): Sol writes it
+                return None
+
+        def save_parts(parts: dict[str, Any]) -> None:
+            if store is not None:
+                try:
+                    store.put_object(saved_key, json.dumps(parts).encode("utf-8"), "application/json")
+                except Exception as error:  # noqa: BLE001 - the video still goes on
+                    print(json.dumps({"status": "stickman_cartoon_not_saved", "error": str(error)[:200]}))
+
+        def record_call(name: str, out) -> None:
+            before = self.costs.total(production_id)
+            self.costs.record(production_id, name, "openai", writer.model,
+                              Usage(input_tokens=out.input_tokens, cached_input_tokens=out.cached_input_tokens,
+                                    output_tokens=out.output_tokens), out.request_id)
+            # the real numbers of every Sol call, in the run log (owner 2026-11-18: no more estimates)
+            print(json.dumps({"status": "stickman_sol_call", "call": name, "input_tokens": out.input_tokens,
+                              "cached_input_tokens": out.cached_input_tokens, "output_tokens": out.output_tokens,
+                              "cost_usd": round(self.costs.total(production_id) - before, 4)}), flush=True)
+
         def stage() -> None:
             if not made["ok"]:
-                self._reserve(spec, writer.model, Usage(input_tokens=60000, output_tokens=40000))
+                reused = saved_parts()
+                if reused is None:
+                    self._reserve(spec, writer.model, Usage(input_tokens=60000, output_tokens=40000))
                 mp4 = short.make(writer, project, str(spec.get("title") or "GOLIDE"), timed_words, narration_seconds,
-                                 narration, workers=int(conf.get("workers", 3)),
-                                 record=lambda name, out: self.costs.record(
-                                     production_id, name, "openai", writer.model,
-                                     Usage(input_tokens=out.input_tokens, cached_input_tokens=out.cached_input_tokens,
-                                           output_tokens=out.output_tokens), out.request_id))
+                                 narration, workers=int(conf.get("workers", 3)), parts=reused, save=save_parts,
+                                 record=record_call)
                 made["ok"] = bool(mp4 and mp4.exists())
             if made["ok"]:
                 video_path.parent.mkdir(parents=True, exist_ok=True)
