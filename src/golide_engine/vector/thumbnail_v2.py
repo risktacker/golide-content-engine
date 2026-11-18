@@ -112,6 +112,8 @@ def big_words(text, title: str, line: str = "", source_title: str = "", count: i
         "Write the big words printed on a YouTube thumbnail for a tech explainer. Each option is 2 or "
         "3 short, strong words (Title Case) that make someone tap: the hook or tension the title sets up, "
         "never the title repeated. Model the idea of the source video's title, in our own words. "
+        "When the story is about a named person, the big words use his name, never a general word for him "
+        "(\"JENSEN QUIT\", not \"CEO RESIGNED\"; owner 2026-11-18). "
         "\"punch\" is the 1 or 2 words of that option, copied exactly, that get the accent colour. "
         f"Give {count} clearly different options. \"brands\": the 1 to 6 real companies, apps or products "
         "the video is about whose logo viewers know (e.g. Claude, Blender, Apple, Nvidia, Tesla), most "
