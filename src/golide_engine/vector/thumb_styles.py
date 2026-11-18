@@ -27,7 +27,8 @@ W, H = 1280, 720
 STYLES = ("light_glass", "editorial", "grid_paper", "platter", "dark_drama")
 ALERT = re.compile(r"\b(crash|crashed|hack|hacked|breach|leak|leaked|scam|warning|danger|attack|ban|banned|"
                    r"lawsuit|sued|fired|collapse|collapses|lost|loses|loss|outage|down|fail|failed|dead|kill|"
-                   r"heist|stolen|exploit|threat|alert|emergency|\-\$)", re.I)
+                   r"heist|stolen|exploit|threat|alert|emergency|scandal|resign|resigns|resigned|quit|quits|"
+                   r"ousted|arrested|charged)|-\$", re.I)   # 2026-11-18: scandals and resignations are alarms too
 
 
 def is_alert(text: str) -> bool:
