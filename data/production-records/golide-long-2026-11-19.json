@@ -1,0 +1,584 @@
+{
+  "production_id": "golide-long-2026-11-19",
+  "youtube_video_id": "Ob5ZHg317x4",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "Ob5ZHg317x4",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-11-19T08:17:56.103157+00:00"
+  },
+  "production": {
+    "format": "long",
+    "title": "The Hidden Cost of China’s Perfect Cars",
+    "status": "scheduled",
+    "scheduled_at": "2026-11-19T17:30:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-long-tue-thu-sat\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-choice\"}"
+  },
+  "narration": "A car can arrive with a huge screen, fast charging and driver assistance included,\nyet cost less than a plainer rival.\nThe surprising part is that this isn't magic,\nand it doesn't mean every Chinese car is better.\nIn May 2026,\nthe International Energy Agency reported that China produced about 70% of the\nworld's electric cars in 2025 and more than 80% of battery cells.\nThat scale reaches almost every part of the vehicle.\nBy the end, you'll know where the saving comes from,\nwhy these cars feel polished,\nand what to check before the low price becomes an ownership problem.\nStart with the part that usually decides the price: the battery.\nIn 2025, LFP packs were, on average,\nmore than 40% cheaper per kilowatt-hour than NMC packs.\nLFP contains no cobalt and has lower material costs,\nalthough it gives up some energy density,\nso the right choice depends on the car and its range.\nThe IEA also found Chinese packs about 30% cheaper than\nNorth American packs and 35% cheaper than European ones.\nThat gap comes from chemistry, manufacturing efficiency, automation, and cheaper materials and components.\nSo a lower sticker price can reflect a real manufacturing advantage,\nnot automatically worse quality.\nHere's the tip: compare chemistry, usable range, warranty and charging speed,\nnot just the badge or advertised price.\nBut a cheap battery doesn't explain the whole car.\nNow follow that battery backward into the factory.\nChina accounted for about 85% of cathode-active-material production and\nmore than 90% of anode-active-material production in 2025.\nThose are the 2 sides of a battery cell.\nAdd cell factories, pack assembly, motors and vehicle plants,\nand many links sit close together.\nThat's vertical integration: manufacturers can draw on a dense network making the chemicals,\ncomponents and machines they need instead of sourcing every part from far away.\nThe IEA describes Chinese production costs as around 35% lower than in advanced economies.\nCompetition adds another squeeze.\nA domestic EV price war pushed margins down,\nwhile Chinese electric-car exports doubled in 2025 as manufacturers looked overseas.\nThat pressure encourages more equipment, better interfaces and less waste.\nHere's the practical catch: scale can lower prices,\nbut thin profits may affect what happens after the sale.\nBefore buying, check who supplies parts, repairs and warranty work where you live.\nThe factory advantage only helps if support reaches your town.\nAnd the next advantage isn't under the floor.\nIt's on the screen.\nModern Chinese EVs often feel polished because software is part of the product,\nnot an afterthought.\nThe IEA says software-defined vehicles use more centralized electrical systems.\nIn plain English,\nfewer separate computers and less wiring can coordinate more of the car.\nOnce production is large enough, that can reduce complexity and cost.\nOver-the-air updates can also change features after the car leaves the factory.\nThat's why the vehicle can feel like a phone on wheels: display, navigation,\ncharging controls and driver assistance work as one experience.\nAdvanced driver-assistance features are more often included in Chinese base models,\nwhile comparable Level 2-plus systems in the United\nStates are more often premium options or subscriptions.\nBut included features don't prove every sensor, motor or safety system is better.\nThey show what manufacturers chose to package as standard.\nThe trade-off is dependence: the company and its suppliers may control updates,\nthe interface and the data throughout ownership.\nThat brings us to the hidden cost:\nownership doesn't end when you sign the finance agreement.\nA connected car exchanges information through cameras, sensors, apps and communications systems.\nNHTSA treats vehicle cybersecurity as involving electronic systems, control software, users and vehicle data.\nBefore buying, find out what data the car collects,\nwhere it's processed and how long updates are promised.\nRepair is another question.\nReliability isn't enough if independent shops can't access diagnostics, parts or software.\nThe EU Data Act, in force since September 12, 2025,\ngives users of connected products including cars access to\ndata and the ability to choose repair providers.\nVehicle rules adopted in 2026 also require information about battery chemistry,\nremoval procedures and necessary tools.\nThose protections help, but they don't create a local parts network.\nThen there are tariffs.\nThe United States raised its tariff on Chinese electric vehicles to 100% in 2024,\nwhile a separate 25% tariff on automobile imports generally took effect in April 2025.\nA car that's cheap at the factory can lose that advantage before reaching you.\nConcentration creates a resilience risk too.\nThe IEA says LFP materials and precursors remain almost entirely concentrated in China,\nwhile production costs in Europe and the United States can\nstill be up to 50% higher without public support.\nSo here's the buyer's checklist: verify the delivered price, local service, parts access,\nsoftware support, data policy and battery warranty.\nThe perfect screen is easy to see.\nThe supply chain and service plan are what you live with.\nThe simple version is that Chinese EVs can be\ncheaper and more polished because China combines LFP batteries, dense suppliers, huge scale,\nfierce competition and software designed into the car from the beginning.\nThat shows a powerful manufacturing advantage, not that every model is superior.\nThe free guide to this video and the link to our\ncommunity for updates and all these stories are in the description.\nFollow the channel for more breakdowns that separate an impressive\ndemo from what it really means to own the technology.\n",
+  "research": {
+    "summary": "China’s EV advantage is real but narrower than the slogan. The IEA reports that China combined massive scale, an integrated battery-to-vehicle supply chain, lower battery costs, LFP chemistry, intense domestic competition and increasingly software-defined vehicle architectures. Those advantages can produce polished vehicles at lower prices, but they do not prove that every Chinese car is better. The buyer trade-offs are dependence on concentrated Chinese supply chains, potential tariff exposure, software and data governance, cybersecurity, and the availability of independent repair and service.",
+    "claims": [
+      {
+        "claim": "In 2025, China produced about 70% of the world’s electric cars and more than 80% of battery cells. It also accounted for about 85% of cathode-active-material production and more than 90% of anode-active-material production, creating a tightly clustered supply chain from mineral processing to finished vehicles.",
+        "source_title": "Manufacturing and trade — Global EV Outlook 2026",
+        "source_url": "https://www.iea.org/reports/global-ev-outlook-2026/manufacturing-and-trade",
+        "published_or_updated": "May 20, 2026"
+      },
+      {
+        "claim": "LFP batteries help explain lower prices: in 2025, LFP battery packs were more than 40% cheaper per kWh on average than NMC packs, although the comparison is partly affected by different applications and energy-density requirements. LFP contains no cobalt and has structurally lower material costs.",
+        "source_title": "Electric vehicle batteries — Global EV Outlook 2026",
+        "source_url": "https://www.iea.org/reports/global-ev-outlook-2026/electric-vehicle-batteries",
+        "published_or_updated": "May 20, 2026"
+      },
+      {
+        "claim": "Battery pack prices in China were about 30% lower than in North America and 35% lower than in Europe in 2025. The IEA attributes the cost gap partly to China’s manufacturing efficiency, automation, and lower material and component costs.",
+        "source_title": "Electric vehicle batteries — Global EV Outlook 2026",
+        "source_url": "https://www.iea.org/reports/global-ev-outlook-2026/electric-vehicle-batteries",
+        "published_or_updated": "May 20, 2026"
+      },
+      {
+        "claim": "China’s advantage is not only battery chemistry. The IEA describes Chinese EV manufacturers as benefiting from integrated supply chains, strong battery capabilities and production costs around 35% lower than in advanced economies.",
+        "source_title": "Electric Car Markets in a Time of Uncertainty — Executive summary",
+        "source_url": "https://www.iea.org/reports/electric-car-markets-in-a-time-of-uncertainty/executive-summary",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "Competition inside China is unusually intense: Chinese electric-car exports doubled in 2025 while a domestic EV price war squeezed automakers’ profit margins and encouraged them to seek sales abroad.",
+        "source_title": "Manufacturing and trade — Global EV Outlook 2026",
+        "source_url": "https://www.iea.org/reports/global-ev-outlook-2026/manufacturing-and-trade",
+        "published_or_updated": "May 20, 2026"
+      },
+      {
+        "claim": "Software is part of the product advantage. The IEA says software-defined vehicles use more centralized electrical architectures, can receive over-the-air updates, reduce wiring complexity and potentially lower production costs when manufacturers achieve sufficient scale.",
+        "source_title": "Vehicle software and software-defined vehicles — Global EV Outlook 2026",
+        "source_url": "https://www.iea.org/reports/vehicle-software-and-software-defined-vehicles",
+        "published_or_updated": "May 20, 2026"
+      },
+      {
+        "claim": "Advanced driver-assistance features are more commonly included in Chinese EV base models, while comparable Level 2+ systems in the United States are more often sold as premium features or software subscriptions. This can make a Chinese EV feel unusually well-equipped for its price without proving that its underlying engineering is superior in every category.",
+        "source_title": "Autonomous vehicles — Global EV Outlook 2026",
+        "source_url": "https://www.iea.org/reports/autonomous-vehicles",
+        "published_or_updated": "May 20, 2026"
+      },
+      {
+        "claim": "The same software architecture that enables rapid feature updates creates buyer concerns beyond conventional mechanical reliability. The IEA identifies dependency on technology providers, data governance and long-term control of the in-car interface as strategic questions for software-defined vehicles.",
+        "source_title": "Vehicle software and software-defined vehicles — Global EV Outlook 2026",
+        "source_url": "https://www.iea.org/reports/vehicle-software-and-software-defined-vehicles",
+        "published_or_updated": "May 20, 2026"
+      },
+      {
+        "claim": "Connected-car cybersecurity is a real ownership issue regardless of brand nationality. NHTSA defines vehicle cybersecurity as protecting electronic systems, communications, control software, users and vehicle data, and recommends maintaining software inventories and update histories throughout a vehicle’s life.",
+        "source_title": "Cybersecurity Best Practices for the Safety of Modern Vehicles — NHTSA",
+        "source_url": "https://www.nhtsa.gov/sites/nhtsa.gov/files/documents/vehicle_cybersecurity_best_practices_01072021.pdf",
+        "published_or_updated": "January 7, 2021"
+      },
+      {
+        "claim": "Repairability depends partly on access to data, diagnostics and parts—not just the purchase price. The EU Data Act, applying since September 12, 2025, gives users of connected products including cars access to data and the ability to choose repair and maintenance providers, while EU vehicle rules adopted in 2026 require information about battery chemistry, removal procedures and necessary tools.",
+        "source_title": "EU Data Act gives users control over data from connected devices",
+        "source_url": "https://digital-strategy.ec.europa.eu/en/news/eu-data-act-gives-users-control-over-data-connected-devices",
+        "published_or_updated": "September 12, 2025"
+      },
+      {
+        "claim": "China’s battery dominance creates resilience risk: the IEA says LFP materials and precursors remain almost entirely concentrated in China, while battery production costs in Europe and the United States can still be up to 50% higher than in China without public support.",
+        "source_title": "Electric vehicle batteries — Global EV Outlook 2026",
+        "source_url": "https://www.iea.org/reports/global-ev-outlook-2026/electric-vehicle-batteries",
+        "published_or_updated": "May 20, 2026"
+      },
+      {
+        "claim": "Tariffs can erase part of the apparent price advantage for buyers outside China. The United States raised its Section 301 tariff on Chinese electric vehicles to 100% in 2024, and a separate 25% tariff on automobile imports generally took effect in April 2025.",
+        "source_title": "2026 USMCA Autos Report to Congress",
+        "source_url": "https://www.ustr.gov/sites/default/files/files/agreements/FTA/USMCA/2026%20USMCA%20Autos%20Report%20to%20Congress_070126.pdf",
+        "published_or_updated": "July 1, 2026"
+      },
+      {
+        "claim": "The evidence supports a manufacturing advantage, not the blanket claim that every Chinese car is superior. The IEA’s figures are industry-level measures of production, costs, batteries and exports; they do not establish that every model has better safety, durability, service, software or resale value than every competing vehicle.",
+        "source_title": "Manufacturing and trade — Global EV Outlook 2026",
+        "source_url": "https://www.iea.org/reports/global-ev-outlook-2026/manufacturing-and-trade",
+        "published_or_updated": "May 20, 2026"
+      }
+    ],
+    "core_fact": {
+      "fact": "On May 20, 2026, the IEA reported that China accounted for 70% of global electric-car production and more than 80% of global battery-cell production in 2025, alongside roughly 85% of cathode-active-material production and more than 90% of anode-active-material production. The agency described China as having unmatched EV supply-chain capacity and low production costs.",
+      "source_url": "https://www.iea.org/reports/global-ev-outlook-2026/manufacturing-and-trade",
+      "published_or_updated": "May 20, 2026",
+      "verified": true
+    }
+  },
+  "metadata": {
+    "title": "The Hidden Cost of China’s Polished EVs",
+    "description": "Free guide to this video (steps and every source): https://studio.golidee.com/guides/golide-long-2026-11-19.pdf\n\nChinese electric cars can offer large screens, fast charging, driver assistance and polished software at prices that surprise buyers. This video explains how LFP batteries, dense supply chains, factory scale and fierce competition help reduce costs without assuming every Chinese EV is automatically better.\n\nIt also looks beyond the sticker price. You’ll learn what to check before buying, including battery chemistry, usable range, warranty coverage, local servicing, replacement parts, software updates, data privacy, repair access and tariffs.\n\nThe key lesson is simple: a low price can reflect a real manufacturing advantage, but ownership depends on the support network behind the car.\n\nChapters\n0:00 Intro\n0:35 Battery economics\n1:27 The factory advantage\n2:39 Software on wheels\n3:40 The ownership trade-off\n5:26 Close\n\n#ChineseEVs #ElectricCars #EVBattery #LFPBattery #EVTechnology #EVBuyingGuide #GOLIDE\n\nMusic: Uplifting by Nastelbom",
+    "tags": [
+      "Chinese EVs",
+      "Chinese electric cars",
+      "why Chinese EVs are cheap",
+      "Chinese EV price advantage",
+      "EV battery costs",
+      "LFP battery explained",
+      "NMC vs LFP",
+      "EV supply chain",
+      "China EV manufacturing",
+      "EV manufacturing costs",
+      "vertical integration EV",
+      "EV price war China",
+      "Chinese EV technology",
+      "software defined vehicle",
+      "EV driver assistance",
+      "EV ownership costs",
+      "EV repairability",
+      "EV data privacy",
+      "connected car security",
+      "EV tariffs",
+      "BYD EV",
+      "CATL battery"
+    ],
+    "category_id": 2,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [
+      "0:00 Intro",
+      "0:35 Battery economics",
+      "1:27 The factory advantage",
+      "2:39 Software on wheels",
+      "3:40 The ownership trade-off",
+      "5:26 Close"
+    ],
+    "keywords": [
+      "why Chinese EVs cheaper",
+      "Chinese EV price advantage",
+      "Chinese EV technology",
+      "Chinese electric cars",
+      "best Chinese EVs",
+      "LFP vs NMC battery",
+      "EV battery cost",
+      "China EV manufacturing",
+      "EV vertical integration",
+      "software defined vehicle",
+      "Chinese EV tariffs",
+      "EV ownership costs",
+      "EV data privacy",
+      "EV repair costs",
+      "cheap electric cars"
+    ],
+    "hashtags": [
+      "#ChineseEVs",
+      "#ElectricCars",
+      "#EVBattery",
+      "#LFPBattery",
+      "#EVTechnology",
+      "#EVBuyingGuide",
+      "#GOLIDE"
+    ],
+    "format": "long",
+    "title_description_language": "en",
+    "seo_body": "Chinese electric cars can offer large screens, fast charging, driver assistance and polished software at prices that surprise buyers. This video explains how LFP batteries, dense supply chains, factory scale and fierce competition help reduce costs without assuming every Chinese EV is automatically better.\n\nIt also looks beyond the sticker price. You’ll learn what to check before buying, including battery chemistry, usable range, warranty coverage, local servicing, replacement parts, software updates, data privacy, repair access and tariffs.\n\nThe key lesson is simple: a low price can reflect a real manufacturing advantage, but ownership depends on the support network behind the car.",
+    "title_checked": true
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "In 2025, China produced about 70% of the world’s electric cars and more than 80% of battery cells. It also accounted for about 85% of cathode-active-material production and more than 90% of anode-active-material production, creating a tightly clustered supply chain from mineral processing to finished vehicles.",
+        "source_title": "Manufacturing and trade — Global EV Outlook 2026",
+        "source_url": "https://www.iea.org/reports/global-ev-outlook-2026/manufacturing-and-trade",
+        "published_or_updated": "May 20, 2026"
+      },
+      {
+        "claim": "LFP batteries help explain lower prices: in 2025, LFP battery packs were more than 40% cheaper per kWh on average than NMC packs, although the comparison is partly affected by different applications and energy-density requirements. LFP contains no cobalt and has structurally lower material costs.",
+        "source_title": "Electric vehicle batteries — Global EV Outlook 2026",
+        "source_url": "https://www.iea.org/reports/global-ev-outlook-2026/electric-vehicle-batteries",
+        "published_or_updated": "May 20, 2026"
+      },
+      {
+        "claim": "Battery pack prices in China were about 30% lower than in North America and 35% lower than in Europe in 2025. The IEA attributes the cost gap partly to China’s manufacturing efficiency, automation, and lower material and component costs.",
+        "source_title": "Electric vehicle batteries — Global EV Outlook 2026",
+        "source_url": "https://www.iea.org/reports/global-ev-outlook-2026/electric-vehicle-batteries",
+        "published_or_updated": "May 20, 2026"
+      },
+      {
+        "claim": "China’s advantage is not only battery chemistry. The IEA describes Chinese EV manufacturers as benefiting from integrated supply chains, strong battery capabilities and production costs around 35% lower than in advanced economies.",
+        "source_title": "Electric Car Markets in a Time of Uncertainty — Executive summary",
+        "source_url": "https://www.iea.org/reports/electric-car-markets-in-a-time-of-uncertainty/executive-summary",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "Competition inside China is unusually intense: Chinese electric-car exports doubled in 2025 while a domestic EV price war squeezed automakers’ profit margins and encouraged them to seek sales abroad.",
+        "source_title": "Manufacturing and trade — Global EV Outlook 2026",
+        "source_url": "https://www.iea.org/reports/global-ev-outlook-2026/manufacturing-and-trade",
+        "published_or_updated": "May 20, 2026"
+      },
+      {
+        "claim": "Software is part of the product advantage. The IEA says software-defined vehicles use more centralized electrical architectures, can receive over-the-air updates, reduce wiring complexity and potentially lower production costs when manufacturers achieve sufficient scale.",
+        "source_title": "Vehicle software and software-defined vehicles — Global EV Outlook 2026",
+        "source_url": "https://www.iea.org/reports/vehicle-software-and-software-defined-vehicles",
+        "published_or_updated": "May 20, 2026"
+      },
+      {
+        "claim": "Advanced driver-assistance features are more commonly included in Chinese EV base models, while comparable Level 2+ systems in the United States are more often sold as premium features or software subscriptions. This can make a Chinese EV feel unusually well-equipped for its price without proving that its underlying engineering is superior in every category.",
+        "source_title": "Autonomous vehicles — Global EV Outlook 2026",
+        "source_url": "https://www.iea.org/reports/autonomous-vehicles",
+        "published_or_updated": "May 20, 2026"
+      },
+      {
+        "claim": "The same software architecture that enables rapid feature updates creates buyer concerns beyond conventional mechanical reliability. The IEA identifies dependency on technology providers, data governance and long-term control of the in-car interface as strategic questions for software-defined vehicles.",
+        "source_title": "Vehicle software and software-defined vehicles — Global EV Outlook 2026",
+        "source_url": "https://www.iea.org/reports/vehicle-software-and-software-defined-vehicles",
+        "published_or_updated": "May 20, 2026"
+      },
+      {
+        "claim": "Connected-car cybersecurity is a real ownership issue regardless of brand nationality. NHTSA defines vehicle cybersecurity as protecting electronic systems, communications, control software, users and vehicle data, and recommends maintaining software inventories and update histories throughout a vehicle’s life.",
+        "source_title": "Cybersecurity Best Practices for the Safety of Modern Vehicles — NHTSA",
+        "source_url": "https://www.nhtsa.gov/sites/nhtsa.gov/files/documents/vehicle_cybersecurity_best_practices_01072021.pdf",
+        "published_or_updated": "January 7, 2021"
+      },
+      {
+        "claim": "Repairability depends partly on access to data, diagnostics and parts—not just the purchase price. The EU Data Act, applying since September 12, 2025, gives users of connected products including cars access to data and the ability to choose repair and maintenance providers, while EU vehicle rules adopted in 2026 require information about battery chemistry, removal procedures and necessary tools.",
+        "source_title": "EU Data Act gives users control over data from connected devices",
+        "source_url": "https://digital-strategy.ec.europa.eu/en/news/eu-data-act-gives-users-control-over-data-connected-devices",
+        "published_or_updated": "September 12, 2025"
+      },
+      {
+        "claim": "China’s battery dominance creates resilience risk: the IEA says LFP materials and precursors remain almost entirely concentrated in China, while battery production costs in Europe and the United States can still be up to 50% higher than in China without public support.",
+        "source_title": "Electric vehicle batteries — Global EV Outlook 2026",
+        "source_url": "https://www.iea.org/reports/global-ev-outlook-2026/electric-vehicle-batteries",
+        "published_or_updated": "May 20, 2026"
+      },
+      {
+        "claim": "Tariffs can erase part of the apparent price advantage for buyers outside China. The United States raised its Section 301 tariff on Chinese electric vehicles to 100% in 2024, and a separate 25% tariff on automobile imports generally took effect in April 2025.",
+        "source_title": "2026 USMCA Autos Report to Congress",
+        "source_url": "https://www.ustr.gov/sites/default/files/files/agreements/FTA/USMCA/2026%20USMCA%20Autos%20Report%20to%20Congress_070126.pdf",
+        "published_or_updated": "July 1, 2026"
+      },
+      {
+        "claim": "The evidence supports a manufacturing advantage, not the blanket claim that every Chinese car is superior. The IEA’s figures are industry-level measures of production, costs, batteries and exports; they do not establish that every model has better safety, durability, service, software or resale value than every competing vehicle.",
+        "source_title": "Manufacturing and trade — Global EV Outlook 2026",
+        "source_url": "https://www.iea.org/reports/global-ev-outlook-2026/manufacturing-and-trade",
+        "published_or_updated": "May 20, 2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "IEA 2026 why Chinese electric cars are cheaper batteries supply chain software",
+      "score": 88.2,
+      "verdict": "pass",
+      "recent_videos": 1,
+      "median_views_per_day": 5225524.800000001,
+      "top_views_per_day": 5225524.800000001,
+      "market_coverage": 1,
+      "title_query_overlap": 1.0,
+      "measured_at": "2026-11-19T05:31:52.221207+00:00",
+      "signal_type": "youtube-breakout-v1"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -15.78,
+      "true_peak_dbtp": -1.8,
+      "loudness_range": 2.0
+    },
+    "editorial": {
+      "beats": 123,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-11-19T08:17:43.027701+00:00",
+    "warnings": [
+      "possible misspelling: golidee"
+    ]
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-choice",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-long-tue-thu-sat",
+    "thumbnail_style": "desk_wall",
+    "intro": "close_pull",
+    "outro": "lean_back",
+    "look3d": "layers"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-long-2026-11-19",
+    "created_at": "2026-11-19T08:17:44.632827+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-11-19T17:30:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "c73e20ef39cd06530ca223e7936add6098f0a05d8080b330c8765604d7f3cfaa",
+        "bytes": 82419610
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "381526f0c053cfd755586ee2ada912714ae68dff96a96679090df35372700ff0",
+        "bytes": 465856
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "d69df441c2d7dd1d9a277b08df477ab3e30a3b265da71926c49b2adb61ed864d",
+        "bytes": 3463
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "5597750658909b6c8c290781ca33910af5b15af46875873c99084e5f4b3a4970",
+        "bytes": 13292
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "ae90c3fc3947c24252d983ccbd5640131f04208eb737a80069083cb78394d955",
+        "bytes": 2972
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "0aafeb443a67442a0466233d8000d68c20ee88b89391fbff14f6a56f7ad8374d",
+        "bytes": 8063
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "cb8ef56d8b7988a5e52b7b8bd9788e05bece5c05ce9ce46c5c5af6439b777ba2",
+        "bytes": 485
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "0fddcfc5c4ad3bd6465d4f16aae2c058bb3b59a66842030bc90773fbbdd0eaab",
+        "bytes": 316
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-titles",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 337.0,
+      "cached_input_units": 0.0,
+      "output_units": 236.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000351,
+      "created_at": "2026-11-19T05:31:50.596405+00:00"
+    },
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 25228.0,
+      "cached_input_units": 0.0,
+      "output_units": 2728.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008319,
+      "created_at": "2026-11-19T05:31:51.840775+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-19T05:31:51.842379+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 43923.0,
+      "cached_input_units": 0.0,
+      "output_units": 3214.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.012641,
+      "created_at": "2026-11-19T05:32:28.266473+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-19T05:32:28.323087+00:00"
+    },
+    {
+      "stage": "script-story",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 19830.0,
+      "cached_input_units": 0.0,
+      "output_units": 4009.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008777,
+      "created_at": "2026-11-19T05:37:28.774793+00:00"
+    },
+    {
+      "stage": "script-story-resize",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 20923.0,
+      "cached_input_units": 17561.0,
+      "output_units": 5984.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008204,
+      "created_at": "2026-11-19T05:38:18.418380+00:00"
+    },
+    {
+      "stage": "script-voice-direction",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1663.0,
+      "cached_input_units": 0.0,
+      "output_units": 1398.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00201,
+      "created_at": "2026-11-19T05:38:28.485962+00:00"
+    },
+    {
+      "stage": "script-board",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1654.0,
+      "cached_input_units": 0.0,
+      "output_units": 3317.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004311,
+      "created_at": "2026-11-19T05:38:59.444177+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 20923.0,
+      "cached_input_units": 17561.0,
+      "output_units": 5984.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008204,
+      "created_at": "2026-11-19T05:38:59.523343+00:00"
+    },
+    {
+      "stage": "owner-voice",
+      "provider": "elevenlabs",
+      "model": "eleven_v4",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 5819,
+      "cost_usd": 1.1638,
+      "created_at": "2026-11-19T06:37:27.528141+00:00"
+    },
+    {
+      "stage": "demo-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2540.0,
+      "cached_input_units": 0.0,
+      "output_units": 135.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00067,
+      "created_at": "2026-11-19T06:38:04.243893+00:00"
+    },
+    {
+      "stage": "edit-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 11498.0,
+      "cached_input_units": 0.0,
+      "output_units": 20432.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.026818,
+      "created_at": "2026-11-19T06:42:18.516718+00:00"
+    },
+    {
+      "stage": "guide",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2321.0,
+      "cached_input_units": 0.0,
+      "output_units": 1114.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001801,
+      "created_at": "2026-11-19T08:16:54.431073+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 14477.0,
+      "cached_input_units": 0.0,
+      "output_units": 1367.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004536,
+      "created_at": "2026-11-19T08:16:55.174424+00:00"
+    },
+    {
+      "stage": "title-check",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1301.0,
+      "cached_input_units": 0.0,
+      "output_units": 305.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000626,
+      "created_at": "2026-11-19T08:17:00.669402+00:00"
+    }
+  ],
+  "recorded_at": "2026-11-19T08:17:56.106616+00:00"
+}

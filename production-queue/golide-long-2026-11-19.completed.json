@@ -335,5 +335,23 @@
     "measured_at": "2026-11-19T05:31:52.221207+00:00",
     "signal_type": "youtube-breakout-v1"
   },
-  "selected_topic_source": "https://www.iea.org/reports/global-ev-outlook-2026/manufacturing-and-trade"
+  "selected_topic_source": "https://www.iea.org/reports/global-ev-outlook-2026/manufacturing-and-trade",
+  "voice_choice": "ai",
+  "platforms": [
+    "youtube",
+    "instagram"
+  ],
+  "video_style": "goli",
+  "looks": {
+    "free": [
+      "puppets",
+      "white",
+      "layers",
+      "circuit",
+      "glass",
+      "xray",
+      "blueprint"
+    ],
+    "paid": {}
+  }
 }
