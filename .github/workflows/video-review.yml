@@ -1,0 +1,68 @@
+name: Video review (read-only stills)
+
+# 2026-11-19: lets a finished video be reviewed before it goes public. Read only: it downloads the rendered video and
+# its cover from temporary storage, cuts a still every few seconds into contact sheets and pushes them (no video, no
+# upload anywhere else) to the review-results branch.
+on:
+  workflow_dispatch:
+    inputs:
+      video_ref:
+        description: "r2://temp/... of the rendered video"
+        required: true
+      cover_ref:
+        description: "r2://temp/... of the thumbnail (optional)"
+        default: ""
+      every:
+        description: "Seconds between stills"
+        default: "3"
+
+permissions:
+  contents: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get install -y -qq ffmpeg >/dev/null && python -m pip install -q pillow
+      - name: Download and cut stills
+        run: |
+          mkdir -p out
+          PYTHONPATH=src python - "${{ inputs.video_ref }}" "${{ inputs.cover_ref }}" <<'EOF'
+          import os, sys, urllib.request
+          from golide_engine.storage.r2 import R2TemporaryMediaStore
+          s = R2TemporaryMediaStore(account_id=os.environ["R2_ACCOUNT_ID"], access_key_id=os.environ["R2_ACCESS_KEY_ID"],
+                                    secret_access_key=os.environ["R2_SECRET_ACCESS_KEY"], bucket=os.environ["R2_BUCKET"])
+          for ref, name in ((sys.argv[1], "video.mp4"), (sys.argv[2], "cover.jpg")):
+              if ref:
+                  urllib.request.urlretrieve(s.resolve(ref, expires_seconds=900), f"out/{name}")
+          EOF
+          ffprobe -v error -show_entries format=duration -of csv=p=0 out/video.mp4 > out/duration.txt
+          mkdir -p out/f && ffmpeg -loglevel error -i out/video.mp4 -vf "fps=1/${{ inputs.every }},scale=480:-2" out/f/%04d.jpg
+          python - <<'EOF'
+          import glob
+          from PIL import Image, ImageDraw
+          fs = sorted(glob.glob("out/f/*.jpg")); every = float("${{ inputs.every }}")
+          w, h = Image.open(fs[0]).size; cols, rows = 5, 6
+          for p in range(0, len(fs), cols * rows):
+              page = fs[p:p + cols * rows]; S = Image.new("RGB", (cols * (w + 4), rows * (h + 22)), "#111"); d = ImageDraw.Draw(S)
+              for i, f in enumerate(page):
+                  x, y = (i % cols) * (w + 4), (i // cols) * (h + 22)
+                  S.paste(Image.open(f), (x, y + 20)); t = (p + i) * every; d.text((x + 4, y + 4), f"{int(t // 60)}:{int(t % 60):02d}", fill="#ffd66b")
+              S.save(f"out/sheet-{p // (cols * rows) + 1:02d}.jpg", quality=80)
+          EOF
+          rm -rf out/f out/video.mp4
+      - name: Results to the review-results branch
+        run: |
+          cd out && git init -q && git checkout -q -b review-results && git add -A
+          git -c user.name=golide-bot -c user.email=bot@golidee.com commit -qm "review ${{ inputs.video_ref }}"
+          git push -qf "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" review-results
