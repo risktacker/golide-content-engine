@@ -37,8 +37,10 @@ def test_no_words_blocks_and_the_picture_before_holds():
     out = editor._words_cap(scenes, notes)
     assert sum(s["type"] == "kinetic_title" for s in out) == 0
     photo = next(s for s in out if s["type"] == "photo")
-    assert photo["duration"] == 6 and len(notes) == 3
-    assert out[0]["type"] == "metaphor" and out[0]["start"] == 0 and out[0]["duration"] == 6   # an opening words block goes to the picture after
+    assert photo["duration"] == 4                     # holds up to 4 s; longer than that Goli takes the beat (2026-11-19)
+    assert out[0]["type"] == "metaphor" and out[0]["start"] == 0 and out[0]["duration"] == 4   # an opening words block goes to the picture after
+    goli = [(s["start"], s["duration"]) for s in out if s["type"] == "host"]
+    assert goli == [(4, 2), (10, 2)] and all(not s["data"]["words"] for s in out if s["type"] == "host")
     assert sum(s["duration"] for s in out) == 14
 
 
@@ -57,3 +59,16 @@ def test_a_long_hook_gets_a_picture_per_sentence_or_clause_and_the_rest_and_shor
     assert len([b for b in got if b.start >= 15]) == 4                       # after the hook: ~3 s beats (2026-11-18)
     short = beats([hook], "short")
     assert [b.text for b in short] == [b.text for b in beats([hook], "short")]
+
+
+def test_numbers_one_a_minute_and_cards_short_then_goli():
+    """2026-11-19 (owner review of the China EV video): 8 number cards in a minute, "40%" and a chapter card ~9 s."""
+    sc = lambda t, s, d: {"type": t, "start": s, "duration": d, "data": {}}
+    scenes = [sc("stat_counter", 0, 3), sc("photo", 3, 3), sc("stat_counter", 6, 3), sc("photo", 9, 60),
+              sc("stat_counter", 69, 3), sc("photo", 72, 60)]
+    notes = []
+    out = editor._words_cap(scenes, notes, "long")
+    stats = [s["start"] for s in out if s["type"] == "stat_counter"]
+    assert stats == [0, 69] and any(s["type"] == "host" and s["start"] == 6 for s in out)
+    cards = editor._short_cards([sc("chapter_card", 0, 9), sc("photo", 9, 3)], [], [])
+    assert [(s["type"], s["start"], s["duration"]) for s in cards] == [("chapter_card", 0, 2.0), ("host", 2, 7), ("photo", 9, 3)]

@@ -2577,6 +2577,10 @@ class ProductionService:
                             break
                 except (OSError, ValueError):
                     pass
+                # 2026-11-19 (owner: "a vehicle video, why not a factory or a car in the background"): with no one
+                # person in the title, the real pictures of the story's things go on the thumbnail's screens first
+                if not person_photo and photos:
+                    shots = list(photos[:2]) + list(shots)
                 model = spec.get("source_breakout") or {}
                 style = engine_make(metadata["title"], str(chosen.get("words", "")), str(chosen.get("punch", "")),
                                     [str(b) for b in chosen.get("brands") or []], thumbnail, shots=shots,

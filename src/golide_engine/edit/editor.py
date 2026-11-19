@@ -166,7 +166,12 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
   beat whose words name a thing, a system, a place, a stack, a plan, an amount or what is inside something (owner
   2026-11-18: all of them are required, draw what is being said). They are the slowest pictures to draw, so a video
   has at most {"10" if short else "24"} recipe scenes: put them on the beats that need them most and draw the rest with
-  photos, pages, real runs, 3D objects, metaphors, logos and puppets. recipe = which style:
+  photos, pages, real runs, 3D objects, metaphors, logos and puppets. DRAW THE SUBJECT (owner 2026-11-19, after a
+  car video with no car in it): the real things the video is about must be seen, again and again: their photos (pages
+  marked PICTURE) and recipes/3D objects BUILT AS THOSE THINGS from their real parts (a car: body, wheels, battery
+  pack, motor, seats, screen; a factory: halls, lines, robots, trucks; a battery: cells, modules, case). Never an
+  abstract stack of labelled cards for a real object. A flag only when the line is about the country itself.
+  recipe = which style:
   xray = what is INSIDE a real thing and how it works (a chip, a battery, a phone, an engine, a data-centre rack):
   up to three inner parts, each lit and named in turn, with a simple flow (heat, air, current, data, force) acting
   on them. layers = anything BUILT IN LAYERS (a tech stack, what an AI product is made of, how a request travels
@@ -587,7 +592,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
         if kind == "studio":
             out.append({"type": "host", "start": t0, "duration": dur, "data": {
                 "place": "studio", "cues": _cues_between(cues, t0, t1), "poses": poses,
-                "words": _screen_words(words, lines, t0, t1), "punch": (s.get("punch") or "").lower().strip(".,!?")}})
+                "words": [], "punch": ""}})      # 2026-11-19 (owner review): the studio screen shows no headline
         elif kind == "source":
             src = s.get("source")
             page = sources[src] if isinstance(src, int) and 0 <= src < len(sources) else None
@@ -786,10 +791,11 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
             notes.append(f"scene {k}: {kind} without its data, Goli says it in the studio")
             out.append({"type": "host", "start": t0, "duration": dur, "data": {
                 "place": "studio", "cues": _cues_between(cues, t0, t1), "poses": poses,
-                "words": _screen_words(words, lines, t0, t1), "punch": (s.get("punch") or "").lower().strip(".,!?")}})
+                "words": [], "punch": ""}})      # 2026-11-19 (owner review): the studio screen shows no headline
     out = _no_repeats(out, lines, fmt, notes)
     out = _pace(out, lines, fmt)
-    out = _words_cap(out, notes, fmt)
+    out = _words_cap(out, notes, fmt, cues)
+    out = _short_cards(out, notes, cues)
     out = _min_length(out, fmt)
     out = _lower_host(out, cues, fmt)
     if bookends and lines:
@@ -1176,7 +1182,33 @@ DEEPER = {"walkthrough", "terminal", "object3d", "recipe_clip", "puppet_clip"}
 WORDS_MAX = 0
 
 
-def _words_cap(scenes: list[dict], notes: list[str], fmt: str = "long") -> list[dict]:
+def _studio(start: float, end: float, cues: list[dict] | None) -> dict:
+    """Goli talking in the studio over [start, end): the picture a beat falls back to (never a held card)."""
+    return {"type": "host", "start": round(start, 3), "duration": round(end - start, 3), "data": {
+        "place": "studio", "cues": _cues_between(cues or [], start, end), "poses": [{"pose": "talk", "at": 0}],
+        "words": [], "punch": ""}}
+
+
+# 2026-11-19 (owner review of the China EV video: "The factory advantage" and "40%" held ~9 s): a card shows for
+# its read and Goli takes the rest of the beat
+CARD_MAX = {"chapter_card": 2.0, "stat_counter": 3.0}
+
+
+def _short_cards(scenes: list[dict], notes: list[str], cues: list[dict] | None) -> list[dict]:
+    out = []
+    for sc in scenes:
+        most = CARD_MAX.get(sc["type"])
+        if most and sc["duration"] > most + 0.6:
+            end = sc["start"] + sc["duration"]
+            out.append(dict(sc, duration=most))
+            out.append(_studio(sc["start"] + most, end, cues))
+            notes.append(f"{sc['type']} at {sc['start']:.1f}s: {most:.0f} s, then Goli")
+        else:
+            out.append(sc)
+    return sorted(out, key=lambda s: (s["start"], s["type"] == "host"))
+
+
+def _words_cap(scenes: list[dict], notes: list[str], fmt: str = "long", cues: list[dict] | None = None) -> list[dict]:
     """At most WORDS_MAX words blocks: any later one gives its time to the picture before it (the picture holds,
     owner 2026-11-14), or to the one after when it opens the video."""
     content = sorted((s for s in scenes if s["type"] != "host" or s["data"].get("place") == "studio"),
@@ -1186,15 +1218,24 @@ def _words_cap(scenes: list[dict], notes: list[str], fmt: str = "long") -> list[
     shown, pending = 0, None
     total = max((s["start"] + s["duration"] for s in scenes), default=0.0)
     stats_max, stats = (1 if fmt == "short" else max(1, int(total // 60))), 0
+    last_stat = -999.0
     for sc in content:
-        # the key number: 1 in a Short, 1 per minute of a long video; any more is a text card
+        # the key number: 1 in a Short, 1 per minute of a long video and never two within a minute (2026-11-19: the
+        # China EV video had 8 in its first minute); any more is Goli saying it
         if sc["type"] == "stat_counter":
-            stats += 1
-            if stats > stats_max:
-                sc = dict(sc, type="kinetic_title")
+            if stats + 1 > stats_max or (fmt != "short" and sc["start"] - last_stat < 60):
+                notes.append(f"number at {sc['start']:.1f}s: one a minute, Goli says it")
+                keep.append(_studio(sc["start"], sc["start"] + sc["duration"], cues))
+                continue
+            stats, last_stat = stats + 1, sc["start"]
         if sc["type"] in TEXT_CARDS:
             if shown < WORDS_MAX:
                 shown += 1
+            elif keep and sc["start"] + sc["duration"] - keep[-1]["start"] > 4.0:
+                # holding the picture before would sit still too long: Goli takes the beat
+                notes.append(f"words at {sc['start']:.1f}s: Goli says it")
+                keep.append(_studio(sc["start"], sc["start"] + sc["duration"], cues))
+                continue
             elif keep:
                 notes.append(f"words at {sc['start']:.1f}s: the picture before holds instead")
                 keep[-1]["duration"] = round(sc["start"] + sc["duration"] - keep[-1]["start"], 3)

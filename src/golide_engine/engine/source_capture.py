@@ -258,7 +258,10 @@ def capture(research: dict[str, Any], folder: Path) -> list[dict[str, Any]]:
             entry["captured_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
             log.append(entry)
         browser.close()
-    log.extend(subject_pictures(named_subjects(research, str(research.get("title") or "")), folder, len(log) + 1))
+    title = str(research.get("title") or "")
+    names = named_subjects(research, title)
+    names += [t for t in subject_things(research, title) if t not in names]
+    log.extend(subject_pictures(names[:8], folder, len(log) + 1))
     (folder / "sources.json").write_text(json.dumps(log, indent=2) + "\n", encoding="utf-8")
     return log
 
@@ -295,6 +298,45 @@ def named_subjects(research: dict[str, Any], title: str = "", most: int = 4) -> 
     return keep[:most]
 
 
+# 2026-11-19 (owner, after a car video with no car in it): the THINGS a story is about get real pictures too, not
+# only the capitalised names (which gave a China EV video two flags). Words in the story -> the Wikipedia page whose
+# picture shows the thing.
+THINGS = {
+    "electric car": "Electric car", "electric vehicle": "Electric car", " ev ": "Electric car", " evs ": "Electric car",
+    " car ": "Car", " cars ": "Car",
+    "car factory": "Automotive industry", "assembly line": "Assembly line", "gigafactory": "Gigafactory",
+    "factory": "Factory", "battery": "Electric vehicle battery", "lfp": "Lithium iron phosphate battery",
+    "lithium": "Lithium-ion battery", "charging": "Charging station", "self-driving": "Self-driving car",
+    "driver assist": "Advanced driver-assistance system", "robot": "Industrial robot", "humanoid": "Humanoid robot",
+    "smartphone": "Smartphone", "iphone": "IPhone", "laptop": "Laptop", "chip": "Integrated circuit",
+    "semiconductor": "Semiconductor device fabrication", "gpu": "Graphics processing unit",
+    "data center": "Data center", "data centre": "Data center", "server": "Server room", "satellite": "Satellite",
+    "rocket": "Rocket", "space station": "International Space Station", "telescope": "Space telescope",
+    "solar panel": "Solar panel", "wind turbine": "Wind turbine", "nuclear": "Nuclear power plant",
+    "oil": "Oil refinery", "ship": "Container ship", "port": "Port", "drone": "Unmanned aerial vehicle",
+    "airplane": "Airliner", "plane": "Airliner", "train": "High-speed rail", "truck": "Truck",
+    "game console": "Video game console", "video game": "Video game", "headset": "Virtual reality headset",
+}
+
+
+def subject_things(research: dict[str, Any], title: str = "", most: int = 4) -> list[str]:
+    """The things the story keeps talking about (title words count three times), as Wikipedia page titles."""
+    text = " " + " ".join([title] * 3 + [str(research.get("core_fact") or "")]
+                          + [str(c.get("claim", "")) for c in research.get("claims", [])]).lower() + " "
+    text = re.sub(r"[^a-z0-9\-]+", " ", text)
+    counts: dict[str, int] = {}
+    for word, page in THINGS.items():
+        n = text.count(word if word.startswith(" ") else f" {word}")
+        if n:
+            counts[page] = counts.get(page, 0) + n
+    return sorted(counts, key=lambda p: -counts[p])[:most]
+
+
+# pictures that are not the thing: flags, coats of arms, seals, maps, logos and locator images
+NOT_A_PICTURE = re.compile(r"flag_of|coat_of_arms|seal_of|emblem_of|_map|map_|locator|orthographic|logo|location",
+                           re.IGNORECASE)
+
+
 def subject_pictures(names: list[str], folder: Path, start: int) -> list[dict[str, Any]]:
     """2026-11-17 (owner): the real picture of each person or product the story names (people too, not only
     things), from Wikipedia: free, credited on screen as the source. Never stops a video."""
@@ -317,7 +359,7 @@ def subject_pictures(names: list[str], folder: Path, start: int) -> list[dict[st
                     timeout=20) as r:
                 summary = json.loads(r.read().decode("utf-8"))
             src = (summary.get("originalimage") or summary.get("thumbnail") or {}).get("source")
-            if not src or src.lower().endswith(".svg"):
+            if not src or src.lower().endswith(".svg") or NOT_A_PICTURE.search(src):
                 continue
             file = folder / f"{start + k:02d}-photo.png"
             with urllib.request.urlopen(urllib.request.Request(src, headers=headers), timeout=30) as r:
