@@ -72,3 +72,12 @@ def test_numbers_one_a_minute_and_cards_short_then_goli():
     assert stats == [0, 69] and any(s["type"] == "host" and s["start"] == 6 for s in out)
     cards = editor._short_cards([sc("chapter_card", 0, 9), sc("photo", 9, 3)], [], [])
     assert [(s["type"], s["start"], s["duration"]) for s in cards] == [("chapter_card", 0, 2.0), ("host", 2, 7), ("photo", 9, 3)]
+
+
+def test_a_recipe_plays_long_enough_to_watch():
+    """2026-11-19 (owner): recipes lasted under a second while text cards got 2-3 s."""
+    sc = lambda t, s, d: {"type": t, "start": s, "duration": d, "data": {}}
+    out = editor._recipe_time([sc("recipe_clip", 0, 1.0), sc("photo", 1, 2), sc("metaphor", 3, 4)], "long", [])
+    assert [(s["type"], s["start"], s["duration"]) for s in out] == [("recipe_clip", 0, 4.5), ("metaphor", 4.5, 2.5)]
+    out = editor._recipe_time([sc("recipe_clip", 0, 1.0), sc("recipe_clip", 1, 1.0)], "short", [])
+    assert [s["duration"] for s in out] == [1.0, 1.0]         # never eats another recipe

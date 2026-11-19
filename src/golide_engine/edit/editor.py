@@ -797,6 +797,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
     out = _words_cap(out, notes, fmt, cues)
     out = _short_cards(out, notes, cues)
     out = _min_length(out, fmt)
+    out = _recipe_time(out, fmt, notes)
     out = _lower_host(out, cues, fmt)
     if bookends and lines:
         out = _bookends(out, lines, cues, duration, *bookends)
@@ -1253,6 +1254,40 @@ def _words_cap(scenes: list[dict], notes: list[str], fmt: str = "long", cues: li
 # the shortest a picture may stay (a fast cut is still a picture the eye can read); the beat's words go on
 MIN_SCENE = {"short": 1.0, "long": 1.5}
 STRONG = {"zoom", "flash", "iris", "whip"}
+
+
+# 2026-11-19 (owner review: "recipe scenes were not even lasting a second while the text blocks spent 2-3 s"): a
+# recipe is the big picture of the video, so it plays long enough to watch; it takes the time from the scenes after it
+RECIPE_MIN = {"short": 2.5, "long": 4.5}
+
+
+def _recipe_time(scenes: list[dict], fmt: str, notes: list[str]) -> list[dict]:
+    content = sorted((s for s in scenes if s["type"] != "host" or s["data"].get("place") == "studio"),
+                     key=lambda s: s["start"])
+    layers = [s for s in scenes if s not in content]
+    total = max((s["start"] + s["duration"] for s in content), default=0.0)
+    out: list[dict] = []
+    i = 0
+    while i < len(content):
+        sc = dict(content[i])
+        i += 1
+        if sc["type"] == "recipe_clip" and sc["duration"] < RECIPE_MIN[fmt]:
+            want = sc["start"] + RECIPE_MIN[fmt]
+            while i < len(content) and content[i]["start"] < want - 0.05 and content[i]["type"] != "recipe_clip":
+                nxt = content[i]
+                end = nxt["start"] + nxt["duration"]
+                if end - want < MIN_SCENE[fmt]:          # what is left of it is too short to read: the recipe takes it
+                    want = max(want, end)
+                    i += 1
+                else:
+                    content[i] = dict(nxt, start=round(want, 3), duration=round(end - want, 3))
+                    break
+            want = min(want, content[i]["start"] if i < len(content) else total)   # never past the next or the end
+            if want > sc["start"] + sc["duration"] + 0.05:
+                notes.append(f"recipe at {sc['start']:.1f}s: plays {want - sc['start']:.1f} s")
+                sc["duration"] = round(want - sc["start"], 3)
+        out.append(sc)
+    return sorted(out + layers, key=lambda s: (s["start"], s["type"] == "host"))
 
 
 def _min_length(scenes: list[dict], fmt: str) -> list[dict]:
