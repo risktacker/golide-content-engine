@@ -1,0 +1,17 @@
+{
+  "calls": [
+    {
+      "call": "stickman-short-1",
+      "in": 74231,
+      "cached": 0,
+      "out": 10911
+    },
+    {
+      "call": "stickman-short-fix-2",
+      "in": 80542,
+      "cached": 0,
+      "out": 921
+    }
+  ],
+  "usd": 0.856
+}
