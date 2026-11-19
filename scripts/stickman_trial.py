@@ -47,6 +47,14 @@ def main() -> None:
     duration = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0",
                                      str(narration)], capture_output=True, text=True, check=True).stdout)
     fmt = "long" if "-long-" in pid else "short"
+    # 2026-11-19 (owner): a short test cut: only the first N seconds of the voice, ending on a whole word
+    cut = float(sys.argv[3]) if len(sys.argv) > 3 and sys.argv[3] else 0
+    if cut:
+        kept = [w for w in words if float(w.get("end", 0)) <= cut]
+        duration = round(float(kept[-1]["end"]) + 0.3, 2)
+        clip = out / f"voice-{int(cut)}s.wav"
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-t", str(duration), "-i", str(narration), str(clip)], check=True)
+        words, narration = kept, clip
     conf = settings().get("stickman") or {}
     writer = OpenAITextProvider(conf.get("model", "gpt-5.6-sol"), conf.get("reasoning_effort", "medium"))
     spent = []

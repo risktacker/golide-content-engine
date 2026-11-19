@@ -13,6 +13,9 @@ on:
       goli:
         description: "goli = Goli beside the Stickman video; anything else = Stickman only"
         default: goli
+      seconds:
+        description: "Only the first N seconds of the voice (empty = all of it)"
+        default: ""
 
 permissions:
   contents: write      # the trial's stills and logs go to the trial-results branch
@@ -62,7 +65,7 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           PYTHONUNBUFFERED: "1"
-        run: python scripts/stickman_trial.py "${{ steps.pick.outputs.pid }}" "${{ inputs.goli }}"
+        run: python scripts/stickman_trial.py "${{ steps.pick.outputs.pid }}" "${{ inputs.goli }}" "${{ inputs.seconds }}"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
