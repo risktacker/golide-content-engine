@@ -1,0 +1,82 @@
+{
+  "id": "golide-external-2026-11-20-0932",
+  "looks": {
+    "free": [
+      "puppets",
+      "white",
+      "layers",
+      "circuit",
+      "glass",
+      "xray",
+      "blueprint"
+    ],
+    "paid": {}
+  },
+  "studio_managed": true,
+  "format": "short",
+  "video_style": "goli",
+  "purpose": "external-video",
+  "title": "Why did GTA 6 take 13 years? From a bug in Scotland in 1995 to November 19, 2026.",
+  "brief": "A video built from the owner's own script and recording.",
+  "external": {
+    "title": "Why did GTA 6 take 13 years? From a bug in Scotland in 1995 to November 19, 2026.",
+    "script": "Why did GTA 6 take 13 years to come out? If you were 15 when GTA 5 launched, you\u2019re 28 today. And the reason goes all the way back to a mistake.\n\nIn 1995, in Dundee, Scotland, a young team was making a cops-and-robbers game called Race and Chase. Then a bug made the police cars go crazy. Instead of chasing you, they started ramming your car. The team loved it, so they kept it.\n\nIn 1997, the game became Grand Theft Auto. It was viewed from above, with tiny cars driving through the streets. Rockstar\u2019s marketing team deliberately stirred up controversy, and even the British Parliament debated banning it. That Christmas, it sold half a million copies in the UK.\n\nIn 1998, Sam and Dan Houser co-founded Rockstar Games. And in 2001, GTA 3 changed everything. For the first time, you could explore a full 3D city: Liberty City, inspired by New York. After September 11th, Rockstar delayed the release by three weeks, changed the police cars and removed a mission.\n\nThen came Vice City in 2002, with its Miami-inspired beaches, neon and 1980s music. In 2004, San Andreas went even bigger, giving you three cities, huge landscapes, and a hero you could customize. It became the best-selling game on PlayStation 2, although a hidden adult scene later forced Rockstar to release a revised version.\n\nThree massive games in three years. But then the pace changed.\n\nGTA 4 took four years. GTA 5 took five. It introduced three playable characters, cost an estimated $265 million to make and market, and made a billion dollars in just three days.\n\nAnd then it kept selling. GTA 5 has now moved more than 230 million copies across three console generations, while GTA Online kept players coming back with years of updates.\n\nSo Rockstar took its time and made Red Dead Redemption 2 first. When GTA 6 finally entered development in September 2022, the worst happened: a teenage hacker\u2026",
+    "link": "",
+    "reference_ref": "",
+    "reference_link": ""
+  },
+  "owner_voice_media_ref": "r2://temp/2026/11/20/2d3efdd533404fc9a20eb47b33f5bf4c-GTA-1.mp3",
+  "owner_voice_required": true,
+  "budget_class": "scheduled",
+  "generate_at": "2026-11-20T07:32:06.238Z",
+  "max_cost_usd": 6,
+  "production_authorized": true,
+  "output_destination": "render-and-upload",
+  "concept": {
+    "family": "owner-video",
+    "promise": "The owner's own script, illustrated",
+    "scores": {
+      "scroll_stop": 9,
+      "visual_payoff": 9,
+      "curiosity_gap": 9,
+      "retention_design": 9,
+      "broad_relevance": 8,
+      "evidence_strength": 8,
+      "novelty": 8,
+      "replay_or_loop": 8,
+      "revenue_fit": 6
+    }
+  },
+  "platform_demand": {
+    "verdict": "pass",
+    "reason": "owner-started external video"
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "schedule_rule": "studio-external-video"
+  },
+  "music": {
+    "mood": "curious-tension"
+  },
+  "avatar_reference_images": [],
+  "release": {
+    "approved": true,
+    "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+    "scheduled_at": "2026-11-20T07:32:06Z"
+  },
+  "platforms": [
+    "youtube",
+    "instagram"
+  ],
+  "_studio_job_id": "golide-external-2026-11-20-0932",
+  "_failed_runs": 1
+}
