@@ -117,7 +117,9 @@ def big_words(text, title: str, line: str = "", source_title: str = "", count: i
         "Say the real thing directly, naming the company, product or country and the concrete fact: "
         "\"BYD'S $10K CAR\", \"CHINA'S CHEAP EVS\", not vague mood lines like \"LOOKS CAN LIE\" or "
         "\"THE HIDDEN TRUTH\" (owner 2026-11-19: people click when the real thing hits them). "
-        "\"punch\" is the 1 or 2 words of that option, copied exactly, that get the accent colour. "
+        "\"punch\" is the 1 or 2 words of that option, copied exactly, that get the accent colour; they are the "
+        "LAST word(s) of the option, because designs print them on their own after the rest (\"CHINA'S CHEAP EVS\" "
+        "with punch \"EVS\", never punch \"CHEAP\", which would print \"CHINA'S EVS CHEAP\"). "
         f"Give {count} clearly different options. \"brands\": the 1 to 6 real companies, apps or products "
         "the video is about whose logo viewers know (e.g. Claude, Blender, Apple, Nvidia, Tesla), most "
         "important first; empty when none.",
