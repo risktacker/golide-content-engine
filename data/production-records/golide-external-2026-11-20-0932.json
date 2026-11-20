@@ -1,0 +1,264 @@
+{
+  "production_id": "golide-external-2026-11-20-0932",
+  "youtube_video_id": "tGrLzSRI1lg",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "tGrLzSRI1lg",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-11-20T12:21:57.636020+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "Why did GTA 6 take 13 years? From a bug in Scotland in 1995 to November 19, 2026.",
+    "status": "scheduled",
+    "scheduled_at": "2026-11-20T07:32:06Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"schedule_rule\": \"studio-external-video\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-recording-only\"}"
+  },
+  "narration": "Why did GTA 6 take 13 years to come out?\nIf you were 15 when GTA 5 launched, you’re 28 today.\nIt started In 1995, in Dundee, Scotland,\na young team accidentally made police cars go crazy.\nInstead of chasing you, they loved it, so they kept it.\nand In 1997, the game became Grand Theft Auto.\nIn 1998, Sam and Dan Houser co-founded Rockstar Games.\nAnd in 2001,\nGTA 3 changed gaming with its first fully\n3D open city Vice City followed In 2004, San Andreas went even bigger,\ngiving you 3 cities, and a massive world 3 huge games in 3 years.\nthen things slowed down GTA 4 took 4 years.\nGTA 5 took 5.\nIt introduced 3 playable characters, and made a billion dollars in just 3 days.\nAnd then it kept selling.\nOver 230 million copies later GTA 5 had survived 3 console generations,\nwhile GTA Online kept growing Rockstar then made Red Dead Redemption 2 first.\nWhen GTA 6 finally entered development in September 2022,\neverything went wrong a teenage hacker.\n",
+  "research": {
+    "summary": "Video built from the owner's own script and recording.",
+    "claims": [
+      {
+        "claim": "The owner's own script.",
+        "source_title": "Owner",
+        "source_url": "",
+        "published_or_updated": ""
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Why did GTA 6 take 13 years? From a bug in Scotland in 1995 to November 19, 2026.",
+    "description": "Free guide to this video (steps and every source): https://studio.golidee.com/guides/golide-external-2026-11-20-0932.pdf\n\nWhy did GTA 6 take 13 years to come out? This short traces Rockstar Games’ journey from the original Grand Theft Auto in Dundee to GTA 3, Vice City, San Andreas, GTA 4, GTA 5, and Red Dead Redemption 2.\n\nIt explains how GTA 5 and GTA Online kept growing, why Rockstar’s development cycles became longer, and what happened when GTA 6 finally entered serious development—ending with the teenage hacker who changed everything.\n\n#GTA6 #GrandTheftAuto6 #RockstarGames #GTAV #GamingHistory #GameDevelopment #GOLIDE",
+    "tags": [
+      "GTA 6",
+      "Grand Theft Auto 6",
+      "GTA 6 development",
+      "why GTA 6 took so long",
+      "GTA 6 explained",
+      "GTA 6 history",
+      "Rockstar Games",
+      "Rockstar history",
+      "GTA timeline",
+      "Grand Theft Auto history",
+      "GTA 5",
+      "GTA Online",
+      "Red Dead Redemption 2",
+      "GTA 3",
+      "GTA Vice City",
+      "GTA San Andreas",
+      "GTA 4",
+      "GTA 6 hacker",
+      "GTA 6 delay",
+      "GTA 6 facts",
+      "GTA story",
+      "video game history",
+      "open world games",
+      "gaming history",
+      "game development",
+      "Rockstar North",
+      "Sam Houser",
+      "Dan Houser"
+    ],
+    "category_id": 20,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "keywords": [
+      "why GTA 6 took so long",
+      "GTA 6 development",
+      "GTA 6 history",
+      "GTA 6 explained",
+      "GTA 6 delay",
+      "Grand Theft Auto 6",
+      "Rockstar Games history",
+      "GTA timeline",
+      "GTA 5 history",
+      "GTA 6 hacker",
+      "Rockstar development",
+      "Grand Theft Auto history",
+      "GTA game history",
+      "video game development"
+    ],
+    "hashtags": [
+      "#GTA6",
+      "#GrandTheftAuto6",
+      "#RockstarGames",
+      "#GTAV",
+      "#GamingHistory",
+      "#GameDevelopment",
+      "#GOLIDE"
+    ],
+    "format": "short",
+    "title_description_language": "en",
+    "seo_body": "Why did GTA 6 take 13 years to come out? This short traces Rockstar Games’ journey from the original Grand Theft Auto in Dundee to GTA 3, Vice City, San Andreas, GTA 4, GTA 5, and Red Dead Redemption 2.\n\nIt explains how GTA 5 and GTA Online kept growing, why Rockstar’s development cycles became longer, and what happened when GTA 6 finally entered serious development—ending with the teenage hacker who changed everything.",
+    "link": ""
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "The owner's own script.",
+        "source_title": "Owner",
+        "source_url": "",
+        "published_or_updated": ""
+      }
+    ],
+    "platform_demand": {
+      "verdict": "pass",
+      "reason": "owner-started external video"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -15.77,
+      "true_peak_dbtp": -1.9,
+      "loudness_range": 2.4
+    },
+    "editorial": {
+      "beats": 39,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-11-20T12:21:40.564355+00:00",
+    "warnings": [
+      "possible misspelling: golidee"
+    ]
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-recording-only",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "schedule_rule": "studio-external-video",
+    "look3d": "glass"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-external-2026-11-20-0932",
+    "created_at": "2026-11-20T12:21:48.953059+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-11-20T07:32:06Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "ad73b839a217d099a65c92e10080137ed2dd29dbb58f4b6b1e0ce0b6fa7db0c4",
+        "bytes": 15789482
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "1445c73ebbe9479a03c74b8f739417a51d7e2fd873b33963ddfb3c43fcd14736",
+        "bytes": 157680
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "d25f9f0c2cce70cba9e01d159ad5ec46ba6a3e1d6975d10011afc4f60e841c17",
+        "bytes": 2591
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "56153d8f6dc5113465d482b67935ea4835db13ae1dc73f64cc8a28a3f4a078ab",
+        "bytes": 2204
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "20d91bcaa567c521522b7e70cf55f5e7f86023dc37b87d990afca7adf38d786a",
+        "bytes": 925
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "bc5481e875c6a8a7366c603e0c512baa58fed7f0d285ecdd8480b252a5ec1797",
+        "bytes": 548
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "25ceaf014a291993aaa0095ea2bf60e63eb8254e1706f985d3bfb28189f28570",
+        "bytes": 356
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "520407b520cc148fe3e5c487a9fe2bc41a813969b35d956273262ca5dac040c7",
+        "bytes": 315
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "script-from-audio-board",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 631.0,
+      "cached_input_units": 0.0,
+      "output_units": 994.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001319,
+      "created_at": "2026-11-20T11:59:49.077419+00:00"
+    },
+    {
+      "stage": "edit-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 8581.0,
+      "cached_input_units": 0.0,
+      "output_units": 8991.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.012505,
+      "created_at": "2026-11-20T12:01:28.517866+00:00"
+    },
+    {
+      "stage": "guide",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 507.0,
+      "cached_input_units": 0.0,
+      "output_units": 835.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001103,
+      "created_at": "2026-11-20T12:21:29.587539+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9370.0,
+      "cached_input_units": 0.0,
+      "output_units": 814.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002851,
+      "created_at": "2026-11-20T12:21:30.938346+00:00"
+    }
+  ],
+  "recorded_at": "2026-11-20T12:21:57.639554+00:00"
+}
