@@ -340,11 +340,29 @@ NOT_A_PICTURE = re.compile(r"flag_of|coat_of_arms|seal_of|emblem_of|_map|map_|lo
 def subject_pictures(names: list[str], folder: Path, start: int) -> list[dict[str, Any]]:
     """2026-11-17 (owner): the real picture of each person or product the story names (people too, not only
     things), from Wikipedia: free, credited on screen as the source. Never stops a video."""
+    import time
+    import urllib.error
     import urllib.parse
     import urllib.request
 
+
     out = []
-    headers = {"User-Agent": "GOLIDE-engine/1.0 (studio.golidee.com)"}
+    # 2026-11-20: Wikimedia answers 429 to bare bot agents and to bursts of full-size originals; a proper agent with a
+    # contact, a resized copy (1280 px) and a short wait-and-retry get the picture
+    headers = {"User-Agent": "GOLIDE-engine/1.0 (https://studio.golidee.com; hello@golidee.com) python-urllib"}
+    folder.mkdir(parents=True, exist_ok=True)
+
+    def fetch(url: str, timeout: int = 30) -> bytes:
+        for wait in (0, 2, 6):
+            time.sleep(wait)
+            try:
+                with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=timeout) as r:
+                    return r.read()
+            except urllib.error.HTTPError as e:   # noqa: PERF203
+                if e.code != 429 or wait == 6:
+                    raise
+        raise RuntimeError("unreachable")
+
     for k, name in enumerate(names):
         try:
             q = urllib.parse.quote(name)
@@ -358,12 +376,13 @@ def subject_pictures(names: list[str], folder: Path, start: int) -> list[dict[st
                     f"https://en.wikipedia.org/api/rest_v1/page/summary/{urllib.parse.quote(key)}", headers=headers),
                     timeout=20) as r:
                 summary = json.loads(r.read().decode("utf-8"))
-            src = (summary.get("originalimage") or summary.get("thumbnail") or {}).get("source")
+            src = (summary.get("thumbnail") or summary.get("originalimage") or {}).get("source")
+            if src and re.search(r"/\d+px-", src):
+                src = re.sub(r"/\d+px-", "/1280px-", src)
             if not src or src.lower().endswith(".svg") or NOT_A_PICTURE.search(src):
                 continue
             file = folder / f"{start + k:02d}-photo.png"
-            with urllib.request.urlopen(urllib.request.Request(src, headers=headers), timeout=30) as r:
-                raw = r.read()
+            raw = fetch(src)
             from io import BytesIO
             from PIL import Image as _Image
             with _Image.open(BytesIO(raw)) as im:
