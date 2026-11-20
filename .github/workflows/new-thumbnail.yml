@@ -1,0 +1,69 @@
+name: New thumbnail (options, then upload the one picked)
+
+# 2026-11-20 (owner: the long videos with the real thing glowing on black got hundreds of views, the Goli-and-two-
+# web-pages ones a handful): make options in that look for a published video (about $0.05 each), push them to the
+# review-results branch to look at; run again with `upload` = the option number to set it on YouTube.
+on:
+  workflow_dispatch:
+    inputs:
+      production_id: {description: "e.g. golide-long-2026-11-19", required: true}
+      video_id: {description: "YouTube video id", required: true}
+      title: {description: "The video title", required: true}
+      count: {description: "How many options", default: "2"}
+      upload: {description: "Empty = make options; a number = upload that option from review-results", default: ""}
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  thumb:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache/restore@v4
+        with:
+          path: productions
+          key: golide-production-checkpoint-${{ github.run_id }}
+          restore-keys: golide-production-checkpoint-
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core libcairo2-dev pkg-config >/dev/null
+      - run: python -m pip install -q -e '.[production,video]'
+      - name: Make options
+        if: inputs.upload == ''
+        env:
+          GOLIDE_ENABLE_PAID_PRODUCTION: "1"
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GOLIDE_SMTP_USER: ${{ secrets.GOLIDE_SMTP_USER }}
+          GOLIDE_SMTP_APP_PASSWORD: ${{ secrets.GOLIDE_SMTP_APP_PASSWORD }}
+          GOLIDE_NOTIFY_EMAIL: ${{ secrets.GOLIDE_NOTIFY_EMAIL }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: |
+          python tools/thumb_options.py "${{ inputs.production_id }}" "${{ inputs.title }}" "${{ inputs.count }}" || true
+          mkdir -p out && cp production-queue/preview/thumb-options/${{ inputs.production_id }}-option-*.png out/
+          ls out
+          cd out && git init -q && git checkout -q -b thumb-options && git add -A
+          git -c user.name=golide-bot -c user.email=bot@golidee.com commit -qm "thumbnail options ${{ inputs.production_id }}"
+          git push -qf "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" thumb-options
+      - name: Upload the picked option
+        if: inputs.upload != ''
+        env:
+          GOLIDE_STUDIO_BASE_URL: "https://studio.golidee.com"
+          PID: ${{ inputs.production_id }}
+          VID: ${{ inputs.video_id }}
+          PICK: ${{ inputs.upload }}
+        run: |
+          git fetch -q origin thumb-options && git show "origin/thumb-options:${PID}-option-${PICK}.png" > picked.png
+          python - <<'PY'
+          import os
+          from PIL import Image
+          from golide_engine.youtube.auth import services
+          from googleapiclient.http import MediaFileUpload
+          Image.open("picked.png").convert("RGB").save("picked.jpg", quality=92)
+          youtube, _ = services()
+          youtube.thumbnails().set(videoId=os.environ["VID"], media_body=MediaFileUpload("picked.jpg", mimetype="image/jpeg")).execute()
+          print("thumbnail set on", os.environ["VID"])
+          PY

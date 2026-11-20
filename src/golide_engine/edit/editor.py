@@ -592,7 +592,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
         if kind == "studio":
             out.append({"type": "host", "start": t0, "duration": dur, "data": {
                 "place": "studio", "cues": _cues_between(cues, t0, t1), "poses": poses,
-                "words": [], "punch": ""}})      # 2026-11-19 (owner review): the studio screen shows no headline
+                "words": _screen_words(words, lines, t0, t1), "punch": (s.get("punch") or "").lower().strip(".,!?")}})
         elif kind == "source":
             src = s.get("source")
             page = sources[src] if isinstance(src, int) and 0 <= src < len(sources) else None
@@ -791,7 +791,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
             notes.append(f"scene {k}: {kind} without its data, Goli says it in the studio")
             out.append({"type": "host", "start": t0, "duration": dur, "data": {
                 "place": "studio", "cues": _cues_between(cues, t0, t1), "poses": poses,
-                "words": [], "punch": ""}})      # 2026-11-19 (owner review): the studio screen shows no headline
+                "words": _screen_words(words, lines, t0, t1), "punch": (s.get("punch") or "").lower().strip(".,!?")}})
     out = _no_repeats(out, lines, fmt, notes)
     out = _pace(out, lines, fmt)
     out = _words_cap(out, notes, fmt, cues)
@@ -1187,7 +1187,8 @@ WORDS_MAX = 0
 def _screen_pictures(scenes: list[dict], sources: list[dict], capture_dir: Path | None) -> None:
     """2026-11-20 (owner: "the screen is coming, but empty, nothing"): the studio's video wall shows a real picture
     of the story (the pages' photos of its people, products and places), the one whose page best matches what is being
-    said, never the same as the studio scene before; with no pictures it keeps its chart."""
+    said, never the same as the studio scene before. With no pictures it keeps its spoken headline (never an empty
+    wall: owner 2026-11-20, "if it breaks, better text lands")."""
     if not capture_dir:
         return
     pics: list[tuple[Path, str]] = []
@@ -1208,14 +1209,27 @@ def _screen_pictures(scenes: list[dict], sources: list[dict], capture_dir: Path 
         if pick[0] == last and len(pics) > 1:
             pick = pics[(n + 1) % len(pics)]
         sc["data"]["screen"] = pick[0]
+        sc["data"]["words"], sc["data"]["punch"] = [], ""     # the picture replaces the headline
         last, n = pick[0], n + 1
 
 
-def _studio(start: float, end: float, cues: list[dict] | None) -> dict:
-    """Goli talking in the studio over [start, end): the picture a beat falls back to (never a held card)."""
+def _card_words(sc: dict | None) -> list[dict]:
+    """The words a card carried (its number and label, title or text), for the studio screen when no picture fits."""
+    if not sc:
+        return []
+    d = sc.get("data") or {}
+    if d.get("words") and isinstance(d["words"], list) and all(isinstance(w, dict) for w in d["words"]):
+        return [dict(w, at=0) for w in d["words"]][:6]
+    text = " ".join(str(d.get(k) or "") for k in ("value", "label", "title", "text")).strip()
+    return [{"text": w, "at": 0} for w in text.split()[:6]]
+
+
+def _studio(start: float, end: float, cues: list[dict] | None, card: dict | None = None) -> dict:
+    """Goli talking in the studio over [start, end): the picture a beat falls back to (never a held card). The card's
+    words go on the studio screen unless a real picture takes it (never an empty wall)."""
     return {"type": "host", "start": round(start, 3), "duration": round(end - start, 3), "data": {
         "place": "studio", "cues": _cues_between(cues or [], start, end), "poses": [{"pose": "talk", "at": 0}],
-        "words": [], "punch": ""}}
+        "words": _card_words(card), "punch": ""}}
 
 
 # 2026-11-19 (owner review of the China EV video: "The factory advantage" and "40%" held ~9 s): a card shows for
@@ -1230,7 +1244,7 @@ def _short_cards(scenes: list[dict], notes: list[str], cues: list[dict] | None) 
         if most and sc["duration"] > most + 0.6:
             end = sc["start"] + sc["duration"]
             out.append(dict(sc, duration=most))
-            out.append(_studio(sc["start"] + most, end, cues))
+            out.append(_studio(sc["start"] + most, end, cues, sc))
             notes.append(f"{sc['type']} at {sc['start']:.1f}s: {most:.0f} s, then Goli")
         else:
             out.append(sc)
@@ -1254,7 +1268,7 @@ def _words_cap(scenes: list[dict], notes: list[str], fmt: str = "long", cues: li
         if sc["type"] == "stat_counter":
             if stats + 1 > stats_max or (fmt != "short" and sc["start"] - last_stat < 60):
                 notes.append(f"number at {sc['start']:.1f}s: one a minute, Goli says it")
-                keep.append(_studio(sc["start"], sc["start"] + sc["duration"], cues))
+                keep.append(_studio(sc["start"], sc["start"] + sc["duration"], cues, sc))
                 continue
             stats, last_stat = stats + 1, sc["start"]
         if sc["type"] in TEXT_CARDS:
@@ -1263,7 +1277,7 @@ def _words_cap(scenes: list[dict], notes: list[str], fmt: str = "long", cues: li
             elif keep and sc["start"] + sc["duration"] - keep[-1]["start"] > 4.0:
                 # holding the picture before would sit still too long: Goli takes the beat
                 notes.append(f"words at {sc['start']:.1f}s: Goli says it")
-                keep.append(_studio(sc["start"], sc["start"] + sc["duration"], cues))
+                keep.append(_studio(sc["start"], sc["start"] + sc["duration"], cues, sc))
                 continue
             elif keep:
                 notes.append(f"words at {sc['start']:.1f}s: the picture before holds instead")

@@ -40,7 +40,7 @@ def test_no_words_blocks_and_the_picture_before_holds():
     assert photo["duration"] == 4                     # holds up to 4 s; longer than that Goli takes the beat (2026-11-19)
     assert out[0]["type"] == "metaphor" and out[0]["start"] == 0 and out[0]["duration"] == 4   # an opening words block goes to the picture after
     goli = [(s["start"], s["duration"]) for s in out if s["type"] == "host"]
-    assert goli == [(4, 2), (10, 2)] and all(not s["data"]["words"] for s in out if s["type"] == "host")
+    assert goli == [(4, 2), (10, 2)]
     assert sum(s["duration"] for s in out) == 14
 
 
