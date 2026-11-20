@@ -34,7 +34,7 @@ jobs:
         with:
           python-version: "3.12"
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core libcairo2-dev pkg-config >/dev/null
-      - run: python -m pip install -q -e '.[production,video]'
+      - run: python -m pip install -q -e '.[production,video]' && python -m playwright install --with-deps chromium >/dev/null
       - name: Make options
         if: inputs.upload == ''
         env:
@@ -62,7 +62,7 @@ jobs:
           got = subject_pictures(things, Path("goli-pics"), 1)
           pics = [Path("goli-pics") / p for g in got for p in (g.get("photos") or ([g["photo"]] if g.get("photo") else []))]
           pics = [p for p in pics if p.exists()]
-          print(json.dumps({"photos": [p.name for p in pics]}))
+          print(json.dumps({"photos": [p.name for p in pics], "fetched": [{k: g.get(k) for k in ("subject", "ok", "error")} for g in got]}))
           n = len([f for f in os.listdir("out") if f.endswith(".png")]) + 1
           out = Path("out") / f"${{ inputs.production_id }}-option-{n}.png"
           text = ProviderRegistry(Path("config/providers.json")).text(live=True)
