@@ -11,6 +11,9 @@ on:
       title: {description: "The video title", required: true}
       count: {description: "How many options", default: "2"}
       upload: {description: "Empty = make options; a number = upload that option from review-results", default: ""}
+      goli_words: {description: "Words for a Goli design with real photos of the story's things (empty = skip it)", default: ""}
+      goli_punch: {description: "Accent word of those words", default: ""}
+      things: {description: "Wikipedia pages whose photos go on the Goli design, comma-separated", default: ""}
 
 permissions:
   contents: write
@@ -42,8 +45,32 @@ jobs:
           GOLIDE_NOTIFY_EMAIL: ${{ secrets.GOLIDE_NOTIFY_EMAIL }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         run: |
-          python tools/thumb_options.py "${{ inputs.production_id }}" "${{ inputs.title }}" "${{ inputs.count }}" || true
-          mkdir -p out && cp production-queue/preview/thumb-options/${{ inputs.production_id }}-option-*.png out/
+          if [ "${{ inputs.count }}" != "0" ]; then
+            python tools/thumb_options.py "${{ inputs.production_id }}" "${{ inputs.title }}" "${{ inputs.count }}" || true
+          fi
+          mkdir -p out && cp production-queue/preview/thumb-options/${{ inputs.production_id }}-option-*.png out/ 2>/dev/null || true
+          git fetch -q origin thumb-options 2>/dev/null && for f in $(git ls-tree --name-only origin/thumb-options); do
+            [ -e "out/$f" ] || git show "origin/thumb-options:$f" > "out/$f"; done || true
+          if [ -n "${{ inputs.goli_words }}" ]; then
+            python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from golide_engine.engine.source_capture import subject_pictures
+          from golide_engine.vector.thumb_engine import make
+          from golide_engine.providers.registry import ProviderRegistry
+          things = [t.strip() for t in "${{ inputs.things }}".split(",") if t.strip()]
+          got = subject_pictures(things, Path("goli-pics"), 1)
+          pics = [Path("goli-pics") / p for g in got for p in (g.get("photos") or ([g["photo"]] if g.get("photo") else []))]
+          pics = [p for p in pics if p.exists()]
+          print(json.dumps({"photos": [p.name for p in pics]}))
+          n = len([f for f in os.listdir("out") if f.endswith(".png")]) + 1
+          out = Path("out") / f"${{ inputs.production_id }}-option-{n}.png"
+          text = ProviderRegistry(Path("config/providers.json")).text(live=True)
+          style = make("${{ inputs.title }}", "${{ inputs.goli_words }}", "${{ inputs.goli_punch }}", [], out,
+                       shots=pics, photo=pics[0] if pics else None, text=text, seed=1, log=lambda e: print(json.dumps(e)))
+          print(json.dumps({"goli_design": style, "file": out.name}))
+          PY
+          fi
           ls out
           cd out && git init -q && git checkout -q -b thumb-options && git add -A
           git -c user.name=golide-bot -c user.email=bot@golidee.com commit -qm "thumbnail options ${{ inputs.production_id }}"
