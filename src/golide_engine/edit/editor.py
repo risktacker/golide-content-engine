@@ -796,6 +796,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
     out = _pace(out, lines, fmt)
     out = _words_cap(out, notes, fmt, cues)
     out = _short_cards(out, notes, cues)
+    _screen_pictures(out, sources, capture_dir)
     out = _min_length(out, fmt)
     out = _recipe_time(out, fmt, notes)
     out = _lower_host(out, cues, fmt)
@@ -1181,6 +1182,33 @@ DEEPER = {"walkthrough", "terminal", "object3d", "recipe_clip", "puppet_clip"}
 # 2026-11-17 (owner): no text blocks. Text only where it IS the content: a real quote (quote_card), a prompt to
 # copy (prompt_card), the key number (stat_counter); anything else is a picture
 WORDS_MAX = 0
+
+
+def _screen_pictures(scenes: list[dict], sources: list[dict], capture_dir: Path | None) -> None:
+    """2026-11-20 (owner: "the screen is coming, but empty, nothing"): the studio's video wall shows a real picture
+    of the story (the pages' photos of its people, products and places), the one whose page best matches what is being
+    said, never the same as the studio scene before; with no pictures it keeps its chart."""
+    if not capture_dir:
+        return
+    pics: list[tuple[Path, str]] = []
+    for page in sources or []:
+        for name in page.get("photos") or ([page["photo"]] if page.get("photo") else []):
+            if (capture_dir / name).exists():
+                pics.append((capture_dir / name, str(page.get("title") or page.get("name") or "").lower()))
+    if not pics:
+        return
+    last, n = None, 0
+    for sc in scenes:
+        if sc["type"] != "host" or sc["data"].get("place") != "studio" or sc["data"].get("intro") or sc["data"].get("outro"):
+            continue
+        said = " ".join(str(c.get("word") or c.get("text") or "") for c in sc["data"].get("cues") or []).lower()
+        ranked = sorted(pics, key=lambda p: -sum(1 for w in p[1].split() if len(w) > 3 and w in said))
+        pick = next((p for p in ranked if p[0] != last), ranked[0]) if ranked[0][1] and any(
+            w in said for w in ranked[0][1].split() if len(w) > 3) else pics[n % len(pics)]
+        if pick[0] == last and len(pics) > 1:
+            pick = pics[(n + 1) % len(pics)]
+        sc["data"]["screen"] = pick[0]
+        last, n = pick[0], n + 1
 
 
 def _studio(start: float, end: float, cues: list[dict] | None) -> dict:

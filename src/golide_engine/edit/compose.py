@@ -1258,6 +1258,13 @@ class Composer:
             else:
                 title = (f'<div style="position:absolute;left:{self.w * 0.52:.0f}px;right:110px;top:50%;margin-top:-170px">'
                          f'<div class="title" style="font-size:96px">{spans}</div></div>')
+        if place == "studio" and data.get("screen") and not title:
+            # 2026-11-20 (owner): the video wall shows a real picture of the story, never an empty wall or headline
+            wx, wy, ww, wf = studio.layout(self.fmt)["words"]
+            src = self.asset(data["screen"])
+            title = (f'<div id="{sid}-scr" style="position:absolute;left:{wx - 10}px;width:{ww + 20}px;top:{wy - 14}px;'
+                     f'height:{int(ww * 0.56)}px;border-radius:14px;overflow:hidden;box-shadow:0 0 0 2px rgba(232,194,104,.45)">'
+                     f'<img src="{src}" style="width:100%;height:100%;object-fit:cover"></div>')
         front = (studio.front(sid, self.fmt) if place == "studio" else studio.front(sid, "lower") if place == "lower" else "")
         floor = (studio.layout(self.fmt)["desk_y"] if place == "studio" else studio.layout("lower")["desk_y"]
                  if place == "lower" else "")
