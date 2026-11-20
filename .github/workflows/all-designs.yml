@@ -1,0 +1,33 @@
+name: All thumbnail designs for one video (preview sheet)
+
+# 2026-11-20 (owner): every Goli design drawn for one video, ingredient rules ignored, one sheet on review-results.
+on:
+  workflow_dispatch:
+    inputs:
+      title: {description: "Video title", required: true}
+      words: {description: "Big words", required: true}
+      punch: {description: "Accent word (the last word)", required: true}
+      brands: {description: "Brands for logos, comma-separated", default: ""}
+      things: {description: "Wikipedia pages for real photos, comma-separated", default: ""}
+      person: {description: "Name shown with the photo (photo_card)", default: ""}
+
+permissions:
+  contents: write
+
+jobs:
+  sheet:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq fonts-dejavu-core libcairo2-dev pkg-config >/dev/null
+      - run: python -m pip install -q -e '.[production,video]' && python -m playwright install --with-deps chromium >/dev/null
+      - run: |
+          mkdir -p out
+          python tools/all_designs.py "${{ inputs.title }}" "${{ inputs.words }}" "${{ inputs.punch }}" "${{ inputs.brands }}" "${{ inputs.things }}" "${{ inputs.person }}" out/all-designs.jpg
+          cd out && git init -q && git checkout -q -b review-results && git add -A
+          git -c user.name=golide-bot -c user.email=bot@golidee.com commit -qm "all designs"
+          git push -qf "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" review-results
