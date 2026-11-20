@@ -1419,10 +1419,17 @@ class ProductionService:
                 _normalized_words(transcript).split(),
                 autojunk=False,
             ).ratio()
-            if similarity < 0.55:
+            # 2026-11-20 (owner: a Short failed at 0.49): what he says IS the script (owner 2026-11-14). A reading that
+            # differs from the written script goes on and the lines, captions and pictures are rebuilt from his words
+            # below; only a recording with almost nothing in common (the wrong file) stops the run.
+            print(json.dumps({"status": "owner_voice_match", "similarity": round(similarity, 2)}))
+            if similarity < 0.2:
                 raise RuntimeError(
-                    f"owner voice does not match the approved script closely enough ({similarity:.2f})"
+                    f"this recording does not seem to be this video's script ({similarity:.2f} in common): "
+                    "check that the right audio file was uploaded"
                 )
+            (work / "owner-voice-differs.json").write_text(json.dumps({"similarity": round(similarity, 3)}),
+                                                           encoding="utf-8")
 
             timed_words_path.write_text(
                 json.dumps(words, indent=2) + "\n", encoding="utf-8"
@@ -1437,8 +1444,11 @@ class ProductionService:
         # on ElevenLabs) the lines, gold words and pictures are made again from what was said, so the captions
         # and the blocks follow the audio (the 14 Nov hook showed the old script's words). About $0.03.
         replan_done = work / "script-from-audio.done"
-        if not ai_voice and not external and (work / "scene-plan.json").exists() and not replan_done.exists() \
-                and timed_words_path.exists():
+        # (a pasted script, "Create my own video", is rebuilt too when his reading changed it: 2026-11-20)
+        differs = (work / "owner-voice-differs.json").exists() and json.loads(
+            (work / "owner-voice-differs.json").read_text(encoding="utf-8")).get("similarity", 1) < 0.9
+        if not ai_voice and (not external or differs) and (work / "scene-plan.json").exists() \
+                and not replan_done.exists() and timed_words_path.exists():
             from ..engine.story import BOARD_SCHEMA, apply_board, board_input, board_instructions, plan_from_story
             from .owner_changes import reading_from_audio, story_from_reading
             plan_path = work / "scene-plan.json"
