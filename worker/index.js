@@ -458,7 +458,11 @@ async function createPost(env,payload){
       status,scheduled,now,now).run();
 
   const refs=new Set();
+  // 2026-11-21 (owner): a platform he disconnected is off: its post is not queued at all (no failed post, no to-do)
+  const {results:onRows}=await db.prepare(`SELECT platform FROM engine_connections WHERE connected=1`).all();
+  const onNow=new Set((onRows||[]).map((r)=>String(r.platform).toLowerCase()));
   for(const v of variants){
+    if(!onNow.has(v.platform)) continue;
     if(v.media_ref) refs.add(v.media_ref);
     await db.prepare(`INSERT INTO social_variants
       (id,post_id,platform,title,body,parts_json,media_ref,status,created_at,updated_at)
@@ -570,6 +574,17 @@ export function normalizePlatforms(value){
   if(!Array.isArray(value)) return null;
   const picked=VIDEO_PLATFORMS.filter((p)=>value.map((v)=>String(v).toLowerCase()).includes(p));
   return picked.length?picked:["none"];
+}
+
+// 2026-11-21 (owner): a platform he disconnected is off; it is never on a video's list (that is where the
+// "did not reach Facebook" errors came from). No choice = every CONNECTED platform, not every platform.
+export async function onlyConnected(db,platforms){
+  const {results}=await db.prepare(`SELECT platform FROM engine_connections WHERE connected=1`).all();
+  const on=new Set((results||[]).map((r)=>String(r.platform).toLowerCase()));
+  const list=platforms===null?VIDEO_PLATFORMS:platforms;
+  if(list.length===1&&list[0]==="none") return list;
+  const kept=list.filter((p)=>on.has(p));
+  return kept.length?kept:["none"];
 }
 
 async function attachOwnerVoice(db,jobId,mediaRef,platforms=null){
@@ -1185,7 +1200,7 @@ async function handleApi(request,env,url){
   if(aiMatch&&request.method==="POST"){
     const id=decodeURIComponent(aiMatch[1]);
     let body={}; try{body=await request.json();}catch{}
-    const platforms=normalizePlatforms(body.platforms);
+    const platforms=await onlyConnected(env.DB,normalizePlatforms(body.platforms));
     const style=["goli","illustration","stickman","stickman_goli"].includes(String(body.style||""))?String(body.style):"goli";
     // 2026-11-17 (owner): a Goli video carries its style switches (free on, paid by count); none sent = the defaults
     const looks=style==="goli"?cleanLooks(body.looks):null;
@@ -1343,8 +1358,7 @@ async function handleApi(request,env,url){
     try{
       const body=await request.json();
       const spec=buildExternalSpec(body);
-      const platforms=normalizePlatforms(body.platforms);
-      if(platforms) spec.platforms=platforms;
+      spec.platforms=await onlyConnected(env.DB,normalizePlatforms(body.platforms));
       const saved=await registerProductionJob(env.DB,{jobId:spec.id,spec});
       await env.DB.prepare(`UPDATE production_jobs SET script=?,stage='external-video-queued' WHERE job_id=?`)
         .bind(spec.external.script,spec.id).run();
@@ -1363,7 +1377,7 @@ async function handleApi(request,env,url){
         const looks=String(payload.style)==="goli"?cleanLooks(payload.looks):null;   // 2026-11-17: the video's style switches
         await env.DB.prepare(`UPDATE production_jobs SET spec_json=json_set(spec_json,'$.video_style',?,'$.looks',json(?)) WHERE job_id=?`).bind(String(payload.style),looks?JSON.stringify(looks):"null",jobId).run();
       }
-      const attached=await attachOwnerVoice(env.DB,jobId,payload.media_ref,normalizePlatforms(payload.platforms));
+      const attached=await attachOwnerVoice(env.DB,jobId,payload.media_ref,await onlyConnected(env.DB,normalizePlatforms(payload.platforms)));
       // 2026-10-18: replacing a recording stops any build still using the old one;
       // the next run resets the voice-built checkpoints (see voice_reset.py).
       if(before?.owner_voice_media_ref&&before.owner_voice_media_ref!==attached.mediaRef){
