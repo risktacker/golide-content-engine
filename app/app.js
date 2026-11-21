@@ -420,9 +420,12 @@ function renderBudget() {
   };
   const video = Number(overview.video_openai_spend_usd || 0);
   const staticEstimate = Number(overview.static_openai_estimate_usd || 0);
+  // 2026-11-21 (owner): the voice is shown as characters of the plan, not dollars (a flat monthly plan)
+  const voiceUsed = Number(overview.voice_month_characters || 0), voiceCap = Number(overview.voice_month_limit || 115000);
   const cards = [
     [money(budget.openai_deposit_target_usd), "OpenAI API opening balance", "One prepaid API balance"],
-    [money(video), "Video API spend this month", "Guard: " + money(budget.scheduled_video_guard_usd)],
+    [money(video), "OpenAI on videos this month", "Guard: " + money(budget.scheduled_video_guard_usd)],
+    [voiceUsed.toLocaleString("en-US"), "Voice characters this month", "of " + voiceCap.toLocaleString("en-US") + " in the ElevenLabs plan"],
     [money(staticEstimate), "Static estimate this month", "Guard: " + money(budget.static_post_guard_usd)],
     [money(budget.x_opening_credit_usd), "X opening credits", "Separate pay-per-use balance"],
   ];
@@ -590,9 +593,13 @@ function renderJobList() {
     const remove = finished
       ? '<button class="ghost archive-job" data-job="' + escAttr(job.job_id) + '" title="Remove from this list">Remove</button>'
       : "";
+    // 2026-11-21 (owner): real spend only: OpenAI in dollars, the voice in characters of the monthly plan
+    const spent = [];
+    if (Number(job.openai_cost_usd) > 0) spent.push("OpenAI " + money(Number(job.openai_cost_usd)));
+    if (Number(job.voice_characters) > 0) spent.push("Voice " + Number(job.voice_characters).toLocaleString("en-US") + " characters");
     return '<div class="job-card"><div class="job-title"><strong>' +
       esc(job.title || "Engine planning job") + '</strong><small>' +
-      esc(jobSecondary(job)) + '</small></div>' +
+      esc(jobSecondary(job)) + '</small>' + (spent.length ? '<small class="job-spend">' + esc(spent.join(" · ")) + '</small>' : '') + '</div>' +
       stageBars(job) +
       '<div><span class="status-pill ' + escAttr(jobStatus(job)) + '">' +
       esc(statusLabel(jobStatus(job))) + '</span>' + retry + skip + remove + '</div></div>';
