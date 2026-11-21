@@ -249,6 +249,9 @@ def face_clear(d):
 
 
 # ------------------------------------------------------------------ haircuts (all built from his scales)
+FRINGE_LIFT = 24      # degrees: the front plates sit a little higher, leaving a forehead band for the brows
+
+
 def hair_classic():
     rows = ((90, 1), (70, 5), (50, 8), (30, 10), (10, 12))
     for k, (el, n) in enumerate(rows):
@@ -257,6 +260,8 @@ def hair_classic():
             d = head_dir(math.radians(el), az)
             if face_clear(d):
                 continue
+            if d.y < -0.2 and el < 85:          # 2026-11-21 (owner): the fringe never covers the brows
+                d = head_dir(math.radians(min(84, el + FRINGE_LIFT * min(1.0, -d.y / 0.6))), az)
             plate(on_head(d), d, 0.21 - k * 0.008, SCALE)
 
 
@@ -621,12 +626,19 @@ def eyelid(x, side, up, tilt, low):
         subsurf(o, 1); shade(o)
 
 
+BROW_BAND = (2.035, 2.175)   # the forehead between the glasses and the fringe: brows move only inside it
+
+
 def brow(side, lift, ang, arch):
-    """A smooth brow in v1's place (in front of the forehead, above the glasses)."""
+    """A smooth brow in v1's place (in front of the forehead, above the glasses). 2026-11-21 (owner): it moves
+    inside the forehead band only, never over the hair or into the glasses."""
+    lo, hi = BROW_BAND
     xi, xo = side * 0.07, side * 0.3
-    zb = 2.06 + lift
-    zi, zo = zb + ang, zb - ang * 0.4
-    pts = [(xi, -0.565, zi), ((xi + xo) / 2, -0.575, (zi + zo) / 2 + arch + 0.012), (xo, -0.52, zo)]
+    zb = 2.08 + lift * 0.8
+    zi, zo = zb + ang * 0.7, zb - ang * 0.3
+    zm = (zi + zo) / 2 + arch * 0.8 + 0.01
+    zi, zm, zo = (min(hi, max(lo, z)) for z in (zi, zm, zo))
+    pts = [(xi, -0.565, zi), ((xi + xo) / 2, -0.575, zm), (xo, -0.52, zo)]
     curve(pts, 1.0, BROW, radii=[0.034, 0.032, 0.022])
 
 
@@ -648,7 +660,7 @@ def build_face(e, talk):
     if "sweat" in ex:
         drop((0.66, -0.25, 2.05), 0.06, rot=(0, math.radians(-15), 0))
     if "anger" in ex:
-        c = Vector((0.4, -0.45, 2.25)); s = 0.11
+        c = Vector((0.68, -0.3, 2.22)); s = 0.11            # beside his head, never on the hair
         for k in range(4):
             a = math.radians(45 + 90 * k)
             d = Vector((math.cos(a), 0, math.sin(a))); pp = Vector((-d.z, 0, d.x))

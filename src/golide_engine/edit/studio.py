@@ -160,7 +160,8 @@ def front(sid: str, fmt: str = "long") -> str:
   <path id="{sid}-steam" d="M254 {772 - 110} Q244 {772 - 140} 258 {772 - 165} Q272 {772 - 190} 262 {772 - 215}"
         fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".18"/>
 </g>
-<g filter="url(#st-drop)" {near}>
+<g filter="url(#st-drop)" {near}><g transform="translate(-120 0)">
+  <!-- 2026-11-21 (owner: no collision): the mic stands beside the 3D Goli's face, never across it -->
   <rect x="380" y="{772 - 6}" width="54" height="22" rx="6" fill="#16181F"/>
   <path d="M407 {772 - 6} L330 {772 - 150} L434 {772 - 195}" fill="none" stroke="url(#st-metal)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
   <circle cx="330" cy="{772 - 150}" r="12" fill="#3A3F4D"/>
@@ -169,7 +170,7 @@ def front(sid: str, fmt: str = "long") -> str:
     <rect x="420" y="{772 - 296}" width="70" height="14" rx="7" fill="#E8C268"/>
     <path d="M430 {772 - 328} L480 {772 - 328} M430 {772 - 312} L480 {772 - 312}" stroke="#555B6B" stroke-width="3"/>
   </g>
-</g>
+</g></g>
 </svg>"""
 
 
