@@ -35,8 +35,10 @@ sc = bpy.context.scene
 # ------------------------------------------------------------------ camera and pixel -> world
 # 2026-11-21 (owner): one premium camera shot. Raised and tilted down a little, so the table top shows its depth.
 LENS, SENSOR = 50.0, 36.0
-TILT = math.radians(6.0)
-CAM = Vector((0, -6.0, 1.55))           # wall plane at y = 0 (6 units away)
+TILT = 0.0                               # no tilt: a raised camera with lens shift (verticals stay vertical)
+CAM = Vector((0, -6.0, 2.05))           # wall plane at y = 0 (6 units away)
+_BIG = (SENSOR / 2) / LENS
+SHIFT_Y = (1.3 - CAM.z) / (2 * _BIG * 6.0)   # frames the same view as before, seen from a little higher
 from mathutils import Euler  # noqa: E402
 
 ROT = Euler((math.pi / 2 - TILT, 0, 0)).to_matrix()
@@ -45,7 +47,7 @@ ROT = Euler((math.pi / 2 - TILT, 0, 0)).to_matrix()
 def _ray(px, py):
     big = (SENSOR / 2) / LENS
     hx, hz = (big, big * H / W) if W >= H else (big * W / H, big)
-    return ROT @ Vector(((px / W - 0.5) * 2 * hx, (0.5 - py / H) * 2 * hz, -1.0))
+    return ROT @ Vector(((px / W - 0.5) * 2 * hx, (0.5 - py / H) * 2 * hz + SHIFT_Y * 2 * big, -1.0))
 
 
 def P(px, py, d):
@@ -218,8 +220,9 @@ x0, y0 = g("wall", 1124, 124); x1, y1 = g("wall", 1846, 636)
 DT = DW - 0.18
 a, b = P(x0, y0, DT), P(x1, y1, DT)
 cx, cz, sw, shh = (a.x + b.x) / 2, (a.z + b.z) / 2, b.x - a.x, a.z - b.z
-bez = 18 * U(DT) * (LAY["wall"][2] if LAY["wall"] else 1)
-box((cx, CAM.y + DT + 0.05, cz), (sw + 2 * bez, 0.08, shh + 2 * bez), M["bezel"], back_col, 0.012)
+bez = 7 * U(DT)                          # a hairline bezel, like a current smart TV
+box((cx, CAM.y + DT + 0.03, cz), (sw + 2 * bez, 0.045, shh + 2 * bez), M["bezel"], back_col, 0.004)
+box((cx, CAM.y + DT + 0.055, cz), (sw + 2 * bez - 0.01, 0.01, shh + 2 * bez - 0.01), M["alu_dark"], back_col, 0.003)  # thin metal edge
 scr = box((cx, CAM.y + DT - 0.0, cz), (sw, 0.01, shh), M["screen"], back_col, 0)
 box((cx, CAM.y + DT + 0.12, cz), (sw * 0.3, 0.06, shh * 0.3), M["metal"], back_col, 0.01)      # wall mount
 halo = area("tv_halo", (cx, CAM.y + DT + 0.14, cz), 260, sw * 0.9, (0.25, 0.4, 1.0), (cx, CAM.y + DW + 1, cz), back_col, sy=shh * 0.9)
@@ -367,23 +370,43 @@ def desk_point(px, depth_px=0.0):
     return Vector((p.x, p.y, top_z))
 
 
-# laptop (right): open, lid facing the camera with the glowing mark
+# laptop: a thin MacBook-style aluminium laptop, used by Goli: the keyboard on his side, the lid's back (with our
+# glowing mark) toward the camera, turned a little toward him so the screen's edge shows
 lp = desk_point(1070 if FMT == "long" else 930, 2)
-lw, lh = 290 * k * du, 186 * k * du
-box((lp.x, lp.y + 0.12, lp.z + 0.012), (lw * 1.05, lw * 0.7, 0.024), M["alu"], front_col, 0.01)
-lid = box((lp.x, lp.y + 0.36, lp.z + lh / 2 + 0.02), (lw, 0.025, lh), M["alu"], front_col, 0.012, rot=(math.radians(-14), 0, 0))
-if SPEC.get("neon_logo"):                    # the GOLIDE mark glowing on the lid
+lw = 280 * k * du
+ld = lw * 0.68
+lid_h = lw * 0.66
+turn = math.radians(-22 if FMT == "long" else -18)
+lap = bpy.data.objects.new("laptop", None); front_col.objects.link(lap)   # built around its hinge, then placed
+
+
+def lap_part(o, loc, rot_x=0.0):
+    o.parent = lap
+    o.location = loc
+    o.rotation_euler = (rot_x, 0, 0)
+    return o
+
+
+LT = math.radians(12)                        # the lid leans back from the user, toward the camera
+cl, sl = math.cos(LT), math.sin(LT)
+lid_c = (0, -sl * lid_h / 2, cl * lid_h / 2 + 0.016)
+lap_part(box((0, 0, 0), (lw, ld, 0.016), M["alu"], front_col, 0.012), (0, ld / 2, 0.008))                 # base
+lap_part(box((0, 0, 0), (lw * 0.86, ld * 0.42, 0.002), M["mic"], front_col, 0.001), (0, ld * 0.55, 0.017))  # keys
+lap_part(box((0, 0, 0), (lw, 0.008, lid_h), M["alu"], front_col, 0.012), lid_c, LT)                        # lid
+lap_part(box((0, 0, 0), (lw * 0.97, 0.002, lid_h * 0.95), M["screen"], front_col, 0.006),
+         (0, lid_c[1] + 0.006 * cl, lid_c[2] + 0.006 * sl), LT)                                          # screen (Goli's side)
+if SPEC.get("neon_logo"):                    # our mark glowing on the lid's back
     im2 = bpy.data.images.load(SPEC["neon_logo"])
     lm2 = bpy.data.materials.new("lidlogo"); lm2.use_nodes = True
     n2 = lm2.node_tree; b2 = n2.nodes["Principled BSDF"]
     t2 = n2.nodes.new("ShaderNodeTexImage"); t2.image = im2
     n2.links.new(t2.outputs["Color"], b2.inputs["Base Color"]); n2.links.new(t2.outputs["Color"], b2.inputs["Emission Color"])
     n2.links.new(t2.outputs["Alpha"], b2.inputs["Alpha"]); b2.inputs["Emission Strength"].default_value = 4.0
-    r2 = 46 * k * du
-    bpy.ops.mesh.primitive_plane_add(size=2 * r2, location=(lp.x, lp.y + 0.33, lp.z + lh * 0.52), rotation=(math.pi / 2 - math.radians(14), 0, 0))
-    put(bpy.context.object, front_col).data.materials.append(lm2)
-else:
-    cyl((lp.x, lp.y + 0.33, lp.z + lh * 0.52), 38 * k * du, 0.01, M["gold_glow"], front_col, rot=(math.pi / 2, 0, 0))
+    bpy.ops.mesh.primitive_plane_add(size=lid_h * 0.4)
+    lg = put(bpy.context.object, front_col); lg.data.materials.append(lm2)
+    lap_part(lg, (0, lid_c[1] - 0.0055 * cl, lid_c[2] - 0.0055 * sl), math.pi / 2 + LT)
+lap.location = (lp.x, lp.y - ld * 0.2, lp.z)
+lap.rotation_euler = (0, 0, turn)
 # mug (left), with coffee
 mp = desk_point(880, 0) if FMT == "long" else desk_point(360, -110)
 mr, mh = 39 * k * du, 96 * k * du
@@ -416,6 +439,7 @@ cam = bpy.data.cameras.new("cam"); cam.lens = LENS; cam.sensor_width = SENSOR; c
 co = bpy.data.objects.new("cam", cam); co.location = CAM; co.rotation_euler = (math.pi / 2, 0, 0)
 sc.collection.objects.link(co); sc.camera = co
 co.rotation_euler = (math.pi / 2 - TILT, 0, 0)
+cam.shift_y = SHIFT_Y
 cam.dof.use_dof = True                        # a premium lens: the set behind Goli a touch soft
 cam.dof.focus_distance = (CAM.y + DD + 0.9) - CAM.y
 cam.dof.aperture_fstop = SPEC.get("fstop", 3.2)
