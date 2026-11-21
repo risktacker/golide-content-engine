@@ -661,11 +661,18 @@ function recordingLengthProblem(format, seconds) {
 // 2026-11-04 (owner): pick where the video goes in the same step as the upload. All on by default.
 const POST_TO = [["youtube", "YouTube"], ["instagram", "Instagram"], ["facebook", "Facebook"], ["linkedin", "LinkedIn"]];
 
+// 2026-11-21 (owner): a platform he disconnected is shown as "Off" and is never ticked or sent
+let connectedNow = null;     // set by loadConnections(); null = not known yet (then nothing is hidden)
+
 function postToHtml(chosen) {
   const on = Array.isArray(chosen) ? new Set(chosen) : null;
-  return '<div class="post-to"><span class="post-to-label">Post to</span>' + POST_TO.map(([key, name]) =>
-    '<label class="post-chip"><input type="checkbox" value="' + key + '"' + (!on || on.has(key) ? " checked" : "") + '><span>' + name + '</span></label>'
-  ).join("") + '</div>';
+  return '<div class="post-to"><span class="post-to-label">Post to</span>' + POST_TO.map(([key, name]) => {
+    if (connectedNow && !connectedNow.has(key)) {
+      return '<label class="post-chip post-chip-off" title="Disconnected in Connections"><input type="checkbox" value="' + key +
+        '" disabled><span>' + name + ': Off</span></label>';
+    }
+    return '<label class="post-chip"><input type="checkbox" value="' + key + '"' + (!on || on.has(key) ? " checked" : "") + '><span>' + name + '</span></label>';
+  }).join("") + '</div>';
 }
 
 function pickedPlatforms(scope) {
@@ -1218,6 +1225,7 @@ async function loadConnections() {
   }
 
   const byPlatform = Object.fromEntries(connections.map((item) => [item.platform, item]));
+  connectedNow = new Set(connections.filter((item) => item.connected || item.status === "connected").map((item) => item.platform));
   $("#connection-grid").innerHTML = ["instagram", "facebook", "linkedin", "x", "youtube"].map((platform) => {
     const item = byPlatform[platform] || {};
     const connected = Boolean(item.connected || item.status === "connected");
