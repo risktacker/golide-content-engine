@@ -15,7 +15,7 @@ export const WISHES_SCHEMA = [
   )`,
 ];
 
-const KINDS = new Set(["place", "icon", "move", "camera", "role", "logo"]);
+const KINDS = new Set(["place", "icon", "move", "camera", "role", "logo", "act"]);
 
 export async function storeWishes(db, body) {
   const items = Array.isArray(body?.items) ? body.items.slice(0, 200) : [];

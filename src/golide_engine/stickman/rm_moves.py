@@ -312,10 +312,163 @@ def m_logo_pop(c, u, d, t):
         label(c, name, x, y + sz * .66 + 90, fit_size(name, 80, 900), '#FFFFFF', align='center', stroke=8, skew=0)
 
 
+# ---------------------------------------------------------------- lots at once (owner 2026-11-21, @afterhourtheories)
+_DRAW = {}          # the dressed draw_char (roles, finish, acts), set by register()
+SAT = ["#FF4FA0", "#22C8E8", "#FFC928", "#8E4FE0", "#2DBE5A", "#FF8A1E", "#2F7BEA"]
+
+
+def _heart(c, x, y, r, colr="#FF4FA0", a=255):
+    p = skia.Path(); p.moveTo(x, y + r); p.cubicTo(x - 2 * r, y - .2 * r, x - r, y - 1.6 * r, x, y - .6 * r)
+    p.cubicTo(x + r, y - 1.6 * r, x + 2 * r, y - .2 * r, x, y + r); p.close()
+    c.drawPath(p, fp(colr, a)); c.drawPath(p, ink(LW * .6, INK, a))
+
+
+def m_hearts_rise(c, u, d, t):
+    """Hearts floating up over the scene (likes pouring in)."""
+    n = d.get("n", 18); x0, x1 = d.get("from", [200, 1720])
+    for k in range(n):
+        ph = (t * .45 + k * .618) % 1; x = x0 + (x1 - x0) * ((k * .377) % 1) + 30 * math.sin(t * 2 + k)
+        y = 1040 - ph * 1000; r = 16 + 14 * ((k * .53) % 1)
+        _heart(c, x, y, r, SAT[k % 3 if k % 4 else 0] if k % 5 else "#FF4FA0", int(255 * min(1, (1 - ph) * 3) * min(1, u * 4)))
+
+
+def _fmt(v):
+    return f"{v / 1e6:.1f}M" if v >= 1e6 else (f"{v / 1e3:.1f}K" if v >= 1e4 else f"{int(v):,}")
+
+
+def m_like_counter(c, u, d, t):
+    """A big heart and a number ticking up ("from" -> "to"): 4,630 -> 12.4K."""
+    x, y = d.get("x", 960), d.get("y", 300); a, b = float(d.get("from", 1000)), float(d.get("to", 12400))
+    k = ease_out(min(1, u)); v = a + (b - a) * k; pulse = 1 + .12 * abs(math.sin(t * 8)) * (1 - k * .5)
+    _heart(c, x - 190, y, 62 * pulse * back(min(1, u * 3), 1.6))
+    label(c, _fmt(v), x - 100, y + 40, 130, "#FF4FA0", stroke=14, stroke_col="#FFFFFF", skew=0)
+    if d.get("text"): label(c, d["text"].upper(), x, y + 130, fit_size(d["text"].upper(), 54, 700), "#FFFFFF", align="center", stroke=8, skew=0)
+
+
+def _card(c, x, y, w, h, name, body, colr, s=1.0):
+    c.save(); c.translate(x, y); c.scale(s, s)
+    rect(c, -w / 2, -h / 2, w / 2, h / 2, "#FFFFFF", LW * .8, r=18)
+    circ(c, -w / 2 + 50, -h / 2 + 50, 26, colr, LW * .5)
+    label(c, name, -w / 2 + 92, -h / 2 + 60, 34, "#3A3D4A", skew=0)
+    label(c, body, -w / 2 + 30, -h / 2 + 110, fit_size(body, 34, w - 60), "#5A5E6E", skew=0)
+    _heart(c, -w / 2 + 44, h / 2 - 26, 10); label(c, "12.4K  Reply", -w / 2 + 64, h / 2 - 16, 24, "#FF4FA0", skew=0)
+    c.restore()
+
+
+def m_comment_pop(c, u, d, t):
+    """Comment cards popping in around the frame, one after another ("lines": what they say)."""
+    lines = d.get("lines") or ["this is so true", "who's here in 2026?", "ok this made my day", "saving this for later",
+                               "no way this is real", "agreed 100%"]
+    names = d.get("names") or ["pixel_pam", "dave.codes", "sunny_side22", "mia.loops", "jt_skates", "kaycee_k"]
+    spots = [(420, 240), (1500, 300), (330, 640), (1580, 700), (960, 160), (1000, 820)]
+    for k, (x, y) in enumerate(spots[:d.get("n", 6)]):
+        a = K(u * 3.0, k * .4, .5)
+        if a <= 0: continue
+        _card(c, x, y + 6 * math.sin(t * 2 + k), 470, 190, names[k % len(names)], lines[k % len(lines)], SAT[k % len(SAT)], back(a, 1.5) * .9)
+
+
+def m_emoji_pop(c, u, d, t):
+    """A speech bubble with an emoji face (laughing by default; "face": laugh|love|angry|shock|cry)."""
+    x, y = d.get("x", 1350), d.get("y", 320); s = back(min(1, u * 3), 1.7)
+    if s <= .01: return
+    c.save(); c.translate(x, y + 6 * math.sin(t * 3)); c.scale(s, s)
+    rect(c, -150, -130, 150, 110, "#FFFFFF", LW, r=40); poly(c, [(-60, 106), (-20, 106), (-90, 170)], "#FFFFFF", LW * .8)
+    c.drawRect(skia.Rect(-58, 98, -22, 112), fp("#FFFFFF"))
+    face = d.get("face", "laugh")
+    circ(c, 0, -10, 90, "#FFC928", LW * .8)
+    if face == "love":
+        _heart(c, -32, -30, 18); _heart(c, 32, -30, 18)
+    elif face in ("angry",):
+        line(c, -50, -50, -14, -36, LW); line(c, 50, -50, 14, -36, LW); circ(c, -30, -20, 9, INK, 0); circ(c, 30, -20, 9, INK, 0)
+    elif face == "shock":
+        circ(c, -30, -30, 14, "#FFFFFF", LW * .5); circ(c, 30, -30, 14, "#FFFFFF", LW * .5)
+    else:
+        for sx in (-1, 1):
+            pp = skia.Path(); pp.addArc(skia.Rect(sx * 30 - 18, -46, sx * 30 + 18, -16), 200, 140); c.drawPath(pp, ink(LW))
+    if face == "cry":
+        for sx in (-1, 1): c.drawOval(skia.Rect(sx * 44 - 10, -10, sx * 44 + 10, 40), fp("#7FC8F8"))
+    m = skia.Path()
+    if face == "shock": m.addOval(skia.Rect(-20, 18, 20, 58))
+    else: m.moveTo(-50, 14); m.lineTo(50, 14); m.cubicTo(48, 70, -48, 70, -50, 14); m.close()
+    c.drawPath(m, fp("#5A1A1E")); c.drawPath(m, ink(LW * .7))
+    c.restore()
+
+
+def m_notif_pop(c, u, d, t):
+    """Notification badges popping onto the scene (likes, follows, messages)."""
+    kinds = [("#FF4FA0", "+1"), ("#2F7BEA", "@"), ("#2DBE5A", "+99"), ("#FF8A1E", "!")]
+    r = random.Random(d.get("seed", 4))
+    for k in range(d.get("n", 10)):
+        a = K(u * 2.5, k * .2, .3)
+        if a <= 0: continue
+        x, y = r.uniform(200, 1720), r.uniform(150, 800); colr, txt = kinds[k % 4]; sz = 44 * back(a, 1.8)
+        circ(c, x, y, sz, colr, LW * .6); label(c, txt, x, y + sz * .32, sz * .9, "#FFFFFF", align="center", skew=0)
+
+
+def m_big_phone(c, u, d, t):
+    """A giant phone with a feed of comments scrolling up (the social-media close-up)."""
+    x, y, s = d.get("x", 960), d.get("y", 560), d.get("s", 1.0) * back(min(1, u * 2.2), 1.3)
+    if s <= .01: return
+    c.save(); c.translate(x, y); c.scale(s, s); c.rotate(-8)
+    rect(c, -300, -560, 300, 560, d.get("color", "#FF4FA0"), LW, r=70); rect(c, -260, -500, 260, 500, "#FFFFFF", LW * .7, r=40)
+    c.save(); c.clipRect(skia.Rect(-258, -498, 258, 498))
+    lines = d.get("lines") or ["ok this made my day", "agreed 100%", "saving this for later", "who's here in 2026?",
+                               "this is so true", "no way"]
+    names = ["jt_skates", "sunny_side22", "kaycee_k", "dave.codes", "pixel_pam", "mia.loops"]
+    off = (t * 90) % 1200
+    for k in range(12):
+        yy = -460 + k * 200 - off
+        circ(c, -200, yy, 34, SAT[k % len(SAT)], LW * .5)
+        label(c, names[k % 6], -150, yy - 4, 38, "#3A3D4A", skew=0); label(c, lines[k % 6], -150, yy + 50, 34, "#5A5E6E", skew=0)
+        _heart(c, -150, yy + 90, 10); label(c, "1.8K", -130, yy + 100, 24, "#FF4FA0", skew=0)
+    c.restore(); c.restore()
+
+
+def _bot(c, x, y, s, t, k, mode):
+    draw = _DRAW.get("f")
+    if not draw: return
+    from engine.kit import make_look
+    look = make_look({"outfit": "tshirt", "color": "#F4F4F2", "hair": "bald", "skin": "#F4F4F2", "hair_col": "#D8D8DE"})
+    if mode == "type":
+        arms = ("type", "type2") if math.sin(t * 40 + k) > 0 else ("type2", "type")
+        draw(c, x, y, s, look, face=.2, eyes="half", mouth="flat", arms=arms, bob=2 * math.sin(t * 5 + k))
+    else:
+        arms = ("up", "up") if mode == "cheer" and math.sin(t * 6 + k) > 0 else ("down", "down")
+        draw(c, x, y - 12 * s * abs(math.sin(t * 4 + k * .7)), s, look, face=.0, eyes="dot", mouth="open" if mode == "cheer" else "smile",
+             arms=arms, bob=3 * math.sin(t * 5 + k))
+
+
+def m_bot_rows(c, u, d, t):
+    """Rows of identical puppets (bots, a crowd, an army of accounts) bobbing or cheering together."""
+    rows, cols = d.get("rows", 3), d.get("cols", 8); mode = d.get("mode", "idle")
+    for j in range(rows):
+        s = .42 + j * .12; y = 620 + j * 150
+        for i in range(cols):
+            x = 960 + (i - (cols - 1) / 2) * (1700 / cols) * (.8 + j * .1)
+            _bot(c, x, y, s, t, i + j * 7, mode)
+
+
+def m_desk_row(c, u, d, t):
+    """A row of identical puppets typing at computers (a bot farm, a call centre, an office)."""
+    n = d.get("n", 4); y = d.get("y", 960); s = d.get("s", .62)
+    for i in range(n):
+        x = 960 + (i - (n - 1) / 2) * (1680 / n) - 60
+        mx = x + 190 * s                                   # the screen stands beside him, never over his face
+        rect(c, mx - 110 * s, y - 520 * s, mx + 110 * s, y - 360 * s, "#1E1F26", LW * .6, r=8)
+        c.drawRect(skia.Rect(mx - 100 * s, y - 510 * s, mx + 100 * s, y - 370 * s), fp(SAT[i % len(SAT)]))
+        rect(c, mx - 12 * s, y - 360 * s, mx + 12 * s, y - 250 * s, "#3A3D4A", LW * .4)
+        rect(c, x - 150 * s, y - 250 * s, mx + 140 * s, y - 228 * s, "#E8ECF2", LW * .6)
+        _bot(c, x, y, s, t, i, "type")
+        for k in range(3):
+            ph = (t * .6 + k / 3 + i * .2) % 1
+            if (i + k) % 2 == 0: _heart(c, mx + (k - 1) * 40 * s, y - 540 * s - ph * 220 * s, 14 * s, "#FF4FA0", int(255 * (1 - ph)))
+
+
 MOVES = {k[2:]: v for k, v in dict(globals()).items() if k.startswith("m_") and callable(v)}
 LENGTH = dict(money_rain=3.0, rocket_launch=2.6, cash_pile=1.4, kart_race=2.8, podium=1.4, dominoes=1.8, signpost=1.2,
               chart_up=1.6, chart_down=1.6, explosion=1.1, alarm=1.0, plane_fly=2.4, ship_sail=4.0, car_drive=1.8,
-              planet_zoom=1.6, logo_pop=1.0, door_slam=.8, lightning=.8, data_flow=1.2, price_tag=1.0, earth_spin=1.0)
+              planet_zoom=1.6, logo_pop=1.0, like_counter=1.6, comment_pop=1.6, emoji_pop=1.0, notif_pop=1.4, big_phone=1.0,
+              hearts_rise=1.0, door_slam=.8, lightning=.8, data_flow=1.2, price_tag=1.0, earth_spin=1.0)
 DAY_SETS = {"factory", "lab", "openoffice", "exchange", "court", "parliament", "hospital", "classroom", "press", "prison",
             "market", "airport", "port", "highway", "station", "farm", "forest", "ocean", "desert", "mountains", "kitchen", "hq",
             "church", "mosque", "village"}
@@ -325,7 +478,22 @@ HEAVY = {"explosion", "door_slam", "lightning", "rocket_launch"}     # get a cam
 def register(shots_module) -> None:
     from golide_engine.stickman import rm_look, rm_roles
     rm_roles.install(shots_module)              # characters dressed for their role
-    rm_look.install(shots_module)               # then thick round limbs over the gear, thumb feet, textured hair              # characters dressed for their role
+    rm_look.install(shots_module)               # then thick round limbs over the gear, thumb feet, textured hair
+    from golide_engine.stickman import rm_acts
+    rm_acts.install(shots_module)               # behaviour: nod, scratch, tap a foot, laugh, cry, argue, hold things...
+    _DRAW["f"] = shots_module.draw_char
+    Walk = shots_module.KINDS.get("walk")
+    if Walk is not None:                         # a group walk: one behind the other, never on top of each other
+        walk_init = Walk.__init__
+
+        def walk_in_line(self, sh, tl, cast, env):
+            chars = sh["spec"].get("chars", [])
+            for i, d in enumerate(chars):
+                d.setdefault("walk", [80 - i * 380, 1700 - i * 380])
+                d.setdefault("x", 0)
+            walk_init(self, sh, tl, cast, env)
+
+        Walk.__init__ = walk_in_line              # characters dressed for their role
     Shot = shots_module.Shot
     init = Shot.__init__
 
