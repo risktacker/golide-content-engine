@@ -50,7 +50,7 @@
   "release": {
     "approved": true,
     "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
-    "scheduled_at": "2026-11-21T17:30:00Z"
+    "scheduled_at": "2026-11-28T17:30:00Z"
   },
   "_studio_job_id": "golide-long-2026-11-21",
   "research_now": true,
@@ -68,7 +68,7 @@
       "evidence_valid": true,
       "platform_seed_demand": {
         "query": "NVIDIA SC26 agentic AI scientific computing Ian Buck scientific agents experiments simulation",
-        "score": 88.0,
+        "score": 88,
         "verdict": "pass",
         "recent_videos": 56,
         "median_views_per_day": 570292.84,
@@ -84,7 +84,7 @@
         "subscribers": 2270000,
         "views": 3071593,
         "views_per_hour": 43152.8,
-        "breakout": 13.0,
+        "breakout": 13,
         "hours_old": 71.2,
         "duration_seconds": 2899,
         "format": "long",
@@ -98,9 +98,9 @@
       "trend_pulse": {
         "query": "NVIDIA SC26 agentic AI scientific computing Ian Buck scientific agents experiments simulation",
         "fresh_videos": 0,
-        "median_views_per_hour": 0.0,
-        "top_views_per_hour": 0.0,
-        "score": 15.0,
+        "median_views_per_hour": 0,
+        "top_views_per_hour": 0,
+        "score": 15,
         "hot": false,
         "measured_at": "2026-11-21T17:47:58.907735+00:00"
       }
@@ -135,7 +135,7 @@
         "views": 629588,
         "views_per_hour": 12336.6,
         "breakout": 0.9,
-        "hours_old": 51.0,
+        "hours_old": 51,
         "duration_seconds": 670,
         "format": "long",
         "found_by": "search Samsung",
@@ -199,7 +199,7 @@
         "query": "Claude Riemann hypothesis proof Lean Alpoge Mathlib independent verification explained",
         "fresh_videos": 10,
         "median_views_per_hour": 9.8,
-        "top_views_per_hour": 6308.0,
+        "top_views_per_hour": 6308,
         "score": 66.4,
         "hot": true,
         "measured_at": "2026-11-21T17:47:59.515303+00:00"
@@ -234,7 +234,7 @@
         "subscribers": 646000,
         "views": 237055,
         "views_per_hour": 6053.8,
-        "breakout": 3.0,
+        "breakout": 3,
         "hours_old": 39.2,
         "duration_seconds": 593,
         "format": "long",
@@ -248,9 +248,9 @@
       "trend_pulse": {
         "query": "Google Gemini 4 Neon November 2026 model capabilities speed cost agent swarm official",
         "fresh_videos": 0,
-        "median_views_per_hour": 0.0,
-        "top_views_per_hour": 0.0,
-        "score": 15.0,
+        "median_views_per_hour": 0,
+        "top_views_per_hour": 0,
+        "score": 15,
         "hot": false,
         "measured_at": "2026-11-21T17:47:59.855629+00:00"
       }
@@ -298,9 +298,9 @@
       "trend_pulse": {
         "query": "AI agents replacing SaaS workflows computer use agents software as a service 2026 evidence",
         "fresh_videos": 0,
-        "median_views_per_hour": 0.0,
-        "top_views_per_hour": 0.0,
-        "score": 15.0,
+        "median_views_per_hour": 0,
+        "top_views_per_hour": 0,
+        "score": 15,
         "hot": false,
         "measured_at": "2026-11-21T17:48:00.139817+00:00"
       }
@@ -313,7 +313,7 @@
     "subscribers": 2270000,
     "views": 3071593,
     "views_per_hour": 43152.8,
-    "breakout": 13.0,
+    "breakout": 13,
     "hours_old": 71.2,
     "duration_seconds": 2899,
     "format": "long",
@@ -331,7 +331,7 @@
     "median_views_per_day": 1035667.2000000001,
     "top_views_per_day": 1035667.2000000001,
     "market_coverage": 1,
-    "title_query_overlap": 1.0,
+    "title_query_overlap": 1,
     "measured_at": "2026-11-21T17:48:05.664411+00:00",
     "signal_type": "youtube-breakout-v1"
   },
@@ -340,8 +340,9 @@
   "platforms": [
     "youtube",
     "instagram",
-    "facebook",
     "linkedin"
   ],
-  "video_style": "stickman_goli"
+  "video_style": "stickman_goli",
+  "redo_picture": "2026-11-21-remake-2",
+  "_failed_runs": 0
 }

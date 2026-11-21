@@ -1,19 +1,19 @@
 {
   "production_id": "golide-long-2026-11-21",
-  "youtube_video_id": "2LbdOttQC-I",
+  "youtube_video_id": "ZQ5_BLJFVWE",
   "retention_hours": 48,
   "upload": {
-    "youtube_video_id": "2LbdOttQC-I",
+    "youtube_video_id": "ZQ5_BLJFVWE",
     "upload_status": "scheduled",
     "privacy_status": "private",
     "scheduled_at": null,
-    "uploaded_at": "2026-11-21T19:09:11.689322+00:00"
+    "uploaded_at": "2026-11-21T23:01:57.308531+00:00"
   },
   "production": {
     "format": "long",
     "title": "NVIDIA SC26 Special Breakdown",
     "status": "scheduled",
-    "scheduled_at": "2026-11-21T17:30:00Z",
+    "scheduled_at": "2026-11-28T17:30:00Z",
     "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-long-tue-thu-sat\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-choice\"}"
   },
   "narration": "An AI system can now take a research question, choose an experiment,\nrun the code on a lab's own computer, inspect the result,\nand suggest what to try next.\nPut that on screen and it looks less like a chatbot and more\nlike a junior lab partner who never gets tired of running simulations.\nOn November 17, 2026, the company used its SC26 presentation to show this workflow,\nalongside new scientific models, datasets, and computing systems.\nBy the end, you'll know exactly how the loop works,\nwhy it could speed up chemistry, climate modeling and engineering,\nand where a human still has to stop the machine before trusting an answer.\nStart with the research goal, not a request for a paragraph.\nThe agent has to turn that goal into actions: define a hypothesis,\nchoose a simulation or database, run it,\nand compare the output with what the scientist expected.\nIt can also decide what information is missing and plan another test.\nThat makes it different from an ordinary chatbot.\nA chatbot mainly predicts a response to your prompt.\nAn agent keeps a working plan, uses tools, reads their results,\nand then chooses the next move.\nThink of it like a lab notebook connected to the instruments:\nthe model writes the next instruction, the computer carries it out,\nand the result comes back for inspection.\nThe systems described at SC26 can run code\nand simulations on infrastructure controlled by researchers.\nThat lets the agent work beside existing scientific software,\nwhere the data and tools already live.\nUnderneath, this is a loop of planning, tool use, evaluation, and replanning.\nThe CPUs handle tool calls, operations, and gathering results,\nwhile accelerators do the heavy simulation work.\nBut the agent still needs a real scientific question to guide it,\nand that brings us to what it can actually discover.\nNow see what that means in chemistry.\nA scientist might ask which molecular shapes could attach to a target protein.\nThe agent can break that question into hypotheses, select a simulation, run candidates,\nand inspect the structures that come back.\nIt isn't discovering by intuition; it's narrowing a search by running tests.\nIn the SC26 material,\nthe company says an agent at Argonne National Laboratory accepted a prompt,\nplanned and tested hypotheses, selected simulations, and identified 2 new binding sites.\nThe model proposed, the simulator checked, and the result changed the next proposal.\nThat needs more than general conversation text.\nNemotron for Science combines Nemotron 3.5 Super VL, scientific evaluations, an open chemistry dataset,\nand post-training recipes for specialized agents.\nLitmusBench v0.2 contains nearly 50,000 chemistry questions covering molecular properties, drug-discovery data, solubility,\nand how the body processes molecules.\nHere's the practical takeaway:\njudge an agent by whether it chooses valid tools and gets measurable results,\nnot by how convincing its explanation sounds.\nBut even a good result needs the next checks.\nThat's where the hardware and the wider scientific pipeline become important.\nThat brings us to the part people don't see: the computing underneath.\nScientific agents are useful only if they can call\nserious tools quickly enough to explore many possibilities.\nGPU-accelerated simulation handles repeated numerical work, from molecular dynamics to climate and engineering models.\nThe accelerator isn't the scientist; it's a very fast test bench.\nThe agent sits above that bench.\nIt decides which run is worth paying for, sends the job,\nwaits for the output, and compares it with the goal.\nIf the result is weak,\nit can change the inputs instead of asking a person to rewrite every command.\nSC26 also connects this to Vera for climate, molecular and engineering simulations,\nand Rubin HPC for testing materials, molecules and designs.\nThe point isn't that one model knows all of science.\nIt's that the model, simulator, GPU system,\nand researcher can be joined into one repeatable pipeline.\nWhy does that matter?\nThe expensive part of discovery is often trying possibilities that fail.\nFaster simulation doesn't guarantee a breakthrough, but it can make more attempts affordable.\nAnd that only helps if the loop knows when a result is trustworthy.\nBut now ask the question the demo cannot answer:\nhow do we know the agent is right?\nA fluent plan can still choose a bad simulation, misunderstand an output,\nor carry an error into the next step.\nScience can't use confidence as proof.\nThe reported examples show why checks have to sit inside the loop.\nThe company says a KTH Royal Institute of\nTechnology agent repaired broken GROMACS molecular-dynamics setups,\nfixing 81% of test cases in one overnight run.\nEach fix was independently checked by GROMACS.\nThat's much stronger than the agent simply claiming success.\nThe check has to come from the scientific software, a benchmark, a simulation,\nor a researcher with the right expertise.\nThe company's guidance says verification can require computational or\nreal-world data and may take hours or days.\nOne wrong assumption can derail the task.\nSo if you use a system like this, give it a bounded job,\nnot control of the whole lab.\nDefine the goal, limit the tools, inspect the output, and run an independent check.\nKeep the inputs and logs so someone can reproduce what happened.\nThat's how a fast assistant becomes useful evidence, rather than a confident guess.\nSimple version: the agent turns a research goal into a plan, uses scientific tools,\nchecks results, and suggests the next test.\nGPUs speed simulations, but verification decides whether the answer is worth believing.\nThe free guide to this video and the link to our\ncommunity for updates and all these stories are in the description.\nFollow the channel for more breakdowns of the machines behind scientific progress.\n",
@@ -198,7 +198,7 @@
       "median_views_per_day": 1035667.2000000001,
       "top_views_per_day": 1035667.2000000001,
       "market_coverage": 1,
-      "title_query_overlap": 1.0,
+      "title_query_overlap": 1,
       "measured_at": "2026-11-21T17:48:05.664411+00:00",
       "signal_type": "youtube-breakout-v1"
     },
@@ -216,14 +216,14 @@
     "failures": [],
     "audio": {
       "integrated_lufs": -14.37,
-      "true_peak_dbtp": -1.07,
-      "loudness_range": 2.2
+      "true_peak_dbtp": -1.15,
+      "loudness_range": 2.1
     },
     "editorial": {
       "beats": 60,
       "renderer": "vector"
     },
-    "checked_at": "2026-11-21T19:08:55.457118+00:00",
+    "checked_at": "2026-11-21T23:01:46.763269+00:00",
     "warnings": [
       "possible misspelling: golidee"
     ]
@@ -246,11 +246,11 @@
   "package_manifest": {
     "version": 1,
     "production_id": "golide-long-2026-11-21",
-    "created_at": "2026-11-21T19:09:00.651190+00:00",
+    "created_at": "2026-11-21T23:01:48.437544+00:00",
     "release": {
       "approved": true,
       "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
-      "scheduled_at": "2026-11-21T17:30:00Z",
+      "scheduled_at": "2026-11-28T17:30:00Z",
       "qa": {
         "passed": true
       }
@@ -258,8 +258,8 @@
     "files": {
       "video": {
         "file": "video.mp4",
-        "sha256": "2f5d139d4004148851df54fbaa63d2f6bfb9bae27e40de8c9f8ad2321a441404",
-        "bytes": 97593723
+        "sha256": "61783cc5773a0be781260b80bd9f1edd2eabce2a89d9234ed978cc2d8ee4c702",
+        "bytes": 106969270
       },
       "thumbnail": {
         "file": "thumbnail.png",
@@ -283,8 +283,8 @@
       },
       "source_ledger": {
         "file": "source-ledger.json",
-        "sha256": "79c34009344b9cf844063a9c7823faf43f5cd2f3f1e45aa5b52259a8afd19b59",
-        "bytes": 4853
+        "sha256": "e3bc076d52480ef1972ebbf57a65dc113bd969619dbf9195995e45b7fd104565",
+        "bytes": 4851
       },
       "generation_parameters": {
         "file": "generation-parameters.json",
@@ -293,7 +293,7 @@
       },
       "qa_report": {
         "file": "qa-report.json",
-        "sha256": "3b426b87e3c8de174b74323ba6aae9cfbe616c93db989648b6ebab2c29ed46c5",
+        "sha256": "609cc55db7af26266f079ccbc8b946ae5c206c6d93763dfd29a1951080db0fbd",
         "bytes": 316
       }
     },
@@ -494,7 +494,33 @@
       "characters": 0,
       "cost_usd": 0.000715,
       "created_at": "2026-11-21T19:07:31.844220+00:00"
+    },
+    {
+      "stage": "stickman-story-1",
+      "provider": "openai",
+      "model": "gpt-5.6-sol",
+      "input_units": 9087.0,
+      "cached_input_units": 0.0,
+      "output_units": 14348.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.323308,
+      "created_at": "2026-11-21T20:20:50.799977+00:00"
+    },
+    {
+      "stage": "stickman-story-2",
+      "provider": "openai",
+      "model": "gpt-5.6-sol",
+      "input_units": 14200.0,
+      "cached_input_units": 5831.0,
+      "output_units": 12592.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.287648,
+      "created_at": "2026-11-21T20:24:03.882148+00:00"
     }
   ],
-  "recorded_at": "2026-11-21T19:09:11.692878+00:00"
+  "recorded_at": "2026-11-21T23:01:57.311763+00:00"
 }
