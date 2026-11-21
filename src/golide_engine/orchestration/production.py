@@ -1564,6 +1564,12 @@ class ProductionService:
             elif stickman_made and style_now == "stickman_goli":
                 # 2026-11-17 (owner): Goli beside the Stickman scene as the explainer (his channel), per video
                 self._goli_layer(spec, work, production_id, narration, video_path)
+            if stickman_made and str(spec["format"]) == "long":
+                # 2026-11-21 (owner): Inkee's small captions as one more layer over ReachMora's own edit (its cuts,
+                # object sounds and chapter cards stay); under the panel beside Goli, else under the floor line
+                from ..stickman import captions as stickman_captions
+                stickman_captions.add(video_path, timed_words, pauses, "beside" if style_now == "stickman_goli" else "full",
+                                      work / "stickman-captions")
             if not stickman_made:
                 print(json.dumps({"status": "stickman_fallback_goli", "production_id": production_id}))
                 spec = {**spec, "video_style": "goli"}
