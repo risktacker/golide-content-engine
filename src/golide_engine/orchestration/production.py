@@ -743,6 +743,23 @@ class ProductionService:
             self.database.execute("DELETE FROM stage_runs WHERE production_id=?", (production_id,))
             marker.write_text(fresh + "\n", encoding="utf-8")
             print(json.dumps({"status": "fresh_start", "production_id": production_id}))
+        # 2026-11-21 (owner: "do it one more time"): spec.redo_picture = a new token remakes only the PICTURE once
+        # (storyboard, Stickman, Goli layer, captions, QA, package). The script, research and the paid voice stay.
+        redo = str(spec.get("redo_picture") or "")
+        redo_marker = work / ".redo-picture"
+        if redo and (not redo_marker.exists() or redo_marker.read_text(encoding="utf-8").strip() != redo):
+            for name in ("stickman", "goli-layer", "stickman-captions", "edit", "storyboard-vector.json", "qa-report.json"):
+                path = work / name
+                shutil.rmtree(path, ignore_errors=True) if path.is_dir() else path.unlink(missing_ok=True)
+            shutil.rmtree(self.root / "build" / production_id, ignore_errors=True)
+            shutil.rmtree(self.root / "release-packages" / production_id, ignore_errors=True)
+            (self.root / "release-packages" / f"{production_id}.zip").unlink(missing_ok=True)
+            stages = ("render-stickman-v1", "render-stickman-short-v1", "goli-layer-v1", "render-vector-v1",
+                      "render-edit-v1", "qa", "release")
+            self.database.execute(f"DELETE FROM stage_runs WHERE production_id=? AND stage IN ({','.join('?' for _ in stages)})",
+                                  (production_id, *stages))
+            redo_marker.write_text(redo + "\n", encoding="utf-8")
+            print(json.dumps({"status": "redo_picture", "production_id": production_id}))
 
         # Validate every paid unit before the first API request.
         text_model = self.providers.config["text"]["model"]

@@ -207,3 +207,30 @@ def test_collision_check_sees_our_library_and_ignores_text_inside_drawings():
     col = (Path(L.__file__).resolve().parent / "collide.py").read_text()
     assert "_art_depth" in col
     assert "art(v)" in (Path(L.__file__).resolve().parent / "rm_moves.py").read_text()
+
+
+def test_the_cast_carries_the_story():
+    bad = {"shots": [{"kind": "icon"}, {"kind": "title"}, {"kind": "wide", "chars": [{"id": "a", "acts": [{"do": "nod"}]}]}]}
+    good = {"shots": [{"kind": "wide", "chars": [{"id": "a", "acts": [{"do": "nod"}]}]}, {"kind": "icon"},
+                      {"kind": "wide", "chars": [{"id": "a", "acts": [{"do": "laugh"}]}]}]}
+    assert len(L.puppet_problems(bad)) == 2 and L.puppet_problems(good) == []
+    assert "THE CAST CARRIES THE STORY" in L.instructions()
+
+
+def test_redo_picture_keeps_the_voice_and_clears_the_picture():
+    src = (Path(L.__file__).resolve().parents[1] / "orchestration" / "production.py").read_text()
+    i = src.find('redo = str(spec.get("redo_picture")')
+    block = src[i:i + 1600]
+    assert "render-stickman-v1" in block and "goli-layer-v1" in block
+    assert "owner-voice" not in block and "narration" not in block and "script" not in block.split("stages")[1]
+
+
+def test_the_engine_gives_the_cast_to_shots_without_it_never_stops():
+    st = {"cast": {"elon": {"role": "corporate"}}, "shots": [
+        {"kind": "icon", "s": [0], "icons": [{"name": "chip"}]}, {"kind": "title", "s": [1]},
+        {"kind": "chart", "s": [2]}, {"kind": "table", "s": [3]}]}
+    L.cast_in(st, ["Nvidia lost the race.", "They waited.", "Revenue went up.", "Then it crashed suddenly."])
+    assert L.puppet_problems(st) == []
+    first = st["shots"][0]
+    assert first["kind"] == "wide" and first["chars"][0]["acts"][0]["do"] == "head_down" and first["props"][0]["icon"] == "chip"
+    assert st["shots"][2]["moves"][0]["do"] == "chart_up" and st["shots"][2]["chars"][0]["x"] < 700
