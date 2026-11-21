@@ -62,7 +62,7 @@ def test_the_kits_timeline_gives_the_pauses(tmp_path):
     assert len(pauses) == 1 and pauses[0][1] == 1.6
 
 
-def test_unknown_icons_are_left_out_never_swapped():
+def test_unknown_icons_become_name_cards_never_swapped():
     """2026-11-17: 'receipt' stopped the Nvidia render; an icon name is now always one the kit draws."""
     from golide_engine.stickman import longform
     known = longform.kit_icons()
@@ -75,10 +75,12 @@ def test_unknown_icons_are_left_out_never_swapped():
          "lower_third": {"name": "JENSEN HUANG", "sub": "CEO", "at": "jensen"}, "places": [{"name": "MORA"}]},
         {"kind": "wide", "lower_third": {"sub": "CEO", "at": "x"}}]}
     changed = longform.fix_icons(story, known)
-    assert [i["name"] for i in story["shots"][0]["icons"]] == ["bulb"]     # nothing drawn rather than a wrong picture
-    assert story["shots"][1]["props"] == []
+    # 2026-11-21: an unknown thing is a card with its own name (never a gap, never a wrong picture)
+    assert story["shots"][0]["icons"][0] == {"name": "label", "label": "PAID", "at": "paid", "text": "receipt"}
+    assert story["shots"][0]["icons"][1]["name"] == "bulb"
+    assert story["shots"][1]["props"] == [{"icon": "gpu", "x": 1500}, {"icon": "label", "x": 900, "text": "zzqx"}]
     assert "icon" not in story["shots"][1]["bubble"] and "icon" not in story["shots"][2]["compare"]
-    assert story["shots"][1]["chars"][0]["name"] == "ignored" and len(changed) == 6
+    assert story["shots"][1]["chars"][0]["name"] == "ignored" and len(changed) == 5   # gpu is drawn now
     assert story["shots"][2]["lower_third"]["name"] == "JENSEN HUANG" and story["shots"][2]["places"][0]["name"] == "MORA"
     assert "lower_third" not in story["shots"][3]          # a name card that lost its name goes
 

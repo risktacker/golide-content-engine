@@ -112,6 +112,9 @@ video's title and the verified research. Follow the format and its pacing rules 
 - cast: 2-4 ORIGINAL characters with distinct silhouettes and colours. Real people (a CEO, a founder) are generic
   puppets with a lower_third name card, never a likeness; no brand mascots or logos.
 - labels: 1-4 words each, at most 3 per shot; characters' x between 250 and 1670.
+- icons (owner 2026-11-21: show the real things the story names): use the kit's icons, which include ours:
+  {", ".join(sorted(kit_icons()))}. Draw what is said (chip, datacenter, rocket, factory, court...). A thing
+  with no icon gets icon "label" with "text": its name (1-3 words); never skip it.
 - mood: pick from the format's list to fit the story.
 - checked on our renders (2026-11-17): a title shot ALWAYS has "text" (spoken or not; without it the card is
   black); a walk shot has ONE character (two walk on the same line and hide each other); in icon, list, counter,
@@ -138,8 +141,13 @@ def request(title: str, script: str, timing_doc: dict[str, Any], research: dict[
 # ---------------------------------------------------------------- running the kit
 def kit(command: str, project: Path, *args: str, timeout: int = 6 * 3600) -> str:
     """python3 -m engine <command> <P> ..., run from the kit folder as its skill says."""
+    # 2026-11-21: our extra icons load into the kit (stickman/rm_hook) in its process and every render worker
+    hook = str(Path(__file__).resolve().parent / "rm_hook")
+    src = str(Path(__file__).resolve().parents[2])
+    path = os.pathsep.join([hook, src] + ([os.environ["PYTHONPATH"]] if os.environ.get("PYTHONPATH") else []))
     result = subprocess.run([sys.executable, "-m", "engine", command, str(project), *args], cwd=KIT, text=True,
-                            capture_output=True, timeout=timeout, env=dict(os.environ, PYTHONDONTWRITEBYTECODE="1"))
+                            capture_output=True, timeout=timeout,
+                            env=dict(os.environ, PYTHONDONTWRITEBYTECODE="1", PYTHONPATH=path))
     if result.returncode != 0:
         raise RuntimeError(f"stickman {command} failed: {(result.stderr or result.stdout)[-1500:]}")
     return result.stdout
@@ -195,8 +203,8 @@ def storyboard(text, project: Path, title: str, doc: dict[str, Any], research: d
             left = [str(error)]
         if attempt == 1 and unknown:
             known = ", ".join(sorted(kit_icons()))
-            left = left + [f"icon {c.split(' -> ')[0]!r} is not one the kit draws; use one of: {known}, or no icon"
-                           for c in unknown if " -> " in c and not c.startswith("lower_third")]
+            left = left + [f"icon {c.split(' -> ')[0]!r} is not one the kit draws; use one of: {known}; for anything else "
+                           f"use icon \"label\" with \"text\": its name" for c in unknown if " -> " in c and not c.startswith("lower_third")]
         if any(k in w for w in left for k in ("ImportError", "ModuleNotFoundError", "cannot open shared object")):
             # 2026-11-17: the machine is broken, not the story; never pay the writer again for that
             raise RuntimeError("stickman: the kit cannot run on this machine: " + left[0][-400:])
@@ -215,7 +223,9 @@ def kit_icons() -> set[str]:
     import re
     src = (KIT / "engine" / "props.py").read_text(encoding="utf-8")
     block = src[src.find("ICONS = dict("):src.find("\n\n", src.find("ICONS = dict("))]
-    return set(re.findall(r"(\w+)=(?:ic_|lambda)", block))
+    ours = (Path(__file__).resolve().parent / "rm_extra.py").read_text(encoding="utf-8")
+    ours = ours[ours.find("ICONS = {"):ours.find("}", ours.find("ICONS = {"))]
+    return set(re.findall(r"(\w+)=(?:ic_|lambda)", block)) | set(re.findall(r'"(\w+)": ic_', ours))
 
 
 def fix_icons(story: dict[str, Any], known: set[str] | None = None) -> list[str]:
@@ -231,16 +241,22 @@ def fix_icons(story: dict[str, Any], known: set[str] | None = None) -> list[str]
         n = str(name or "").strip().lower().replace(" ", "_").replace("-", "_")
         return n if n in known else None
 
-    def fix(holder: dict, key: str) -> bool:
+    def fix(holder: dict, key: str, card: bool = False) -> bool:
         """True when the holder keeps a drawable icon."""
         value = holder.get(key)
         if not isinstance(value, str) or not value or value in known:
             return True
         to = near(value)
-        changed.append(f"{value} -> {to or 'left out'}")
         if to:
+            changed.append(f"{value} -> {to}")
             holder[key] = to
             return True
+        if card:                              # 2026-11-21 (owner): never dropped; a card with its name
+            changed.append(f"{value} -> label card")
+            holder[key] = "label"
+            holder.setdefault("text", value.replace("_", " "))
+            return True
+        changed.append(f"{value} -> left out")
         holder.pop(key, None)
         return False
 
@@ -248,14 +264,14 @@ def fix_icons(story: dict[str, Any], known: set[str] | None = None) -> list[str]
         if not isinstance(shot, dict):
             continue
         if isinstance(shot.get("props"), list):
-            shot["props"] = [p for p in shot["props"] if isinstance(p, dict) and fix(p, "icon")]
+            shot["props"] = [p for p in shot["props"] if isinstance(p, dict) and fix(p, "icon", card=True)]
         for key in ("bubble", "compare"):
             if isinstance(shot.get(key), dict):
                 fix(shot[key], "icon")
         if isinstance(shot.get("icon"), str):
             fix(shot, "icon")
         if isinstance(shot.get("icons"), list):
-            shot["icons"] = [i for i in shot["icons"] if isinstance(i, dict) and fix(i, "name")]
+            shot["icons"] = [i for i in shot["icons"] if isinstance(i, dict) and fix(i, "name", card=True)]
             if not shot["icons"]:
                 shot.pop("icons")
         # repair of the first version's damage: a name card that lost its name goes
