@@ -32,3 +32,13 @@ def test_thumbnail_reaction_fits_the_title():
 def test_every_pose_with_every_reaction_is_drawn():
     """Owner 2026-11-21: no stand-ins, so the whole library must be there."""
     assert library.missing_files() == []
+
+
+def test_render_plan_lists_every_job():
+    import subprocess
+    import sys
+    run = lambda *a: subprocess.run([sys.executable, "tools/goli3d_plan.py", *a], capture_output=True, text=True, check=True).stdout.split()  # noqa: E731
+    assert run("library") == list(library.POSES)
+    from golide_engine.goli3d import video
+    assert sorted(run("video")) == sorted(video.POSES)
+    assert run("studio") == ["short", "long", "lower"]

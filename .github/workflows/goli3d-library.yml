@@ -23,15 +23,8 @@ jobs:
       - uses: actions/checkout@v4
       - id: p
         run: |
-          if [ -n "${{ inputs.poses }}" ]; then P="${{ inputs.poses }}"; else
-            if [ "${{ inputs.kind }}" = "studio" ]; then
-              P="short long lower"
-            elif [ "${{ inputs.kind }}" = "video" ]; then
-              P=$(python3 -c "import re;s=open('tools/goli3d_video.py').read();print(' '.join(re.findall(r'\"(\w+)\": \"', s[s.index('FACE = {'):s.index('}', s.index('FACE = {'))])))")
-            else
-              P=$(python3 -c "import re;s=open('tools/goli3d_library.py').read();i=s.index('POSES = (');print(' '.join(re.findall(r'\"(\w+)\"', s[i:s.index(')', i)])))")
-          [ -n "$P" ] || { echo "::error::no poses found to draw"; exit 1; }
-          echo "poses=$(python3 -c "import json,sys;print(json.dumps(sys.argv[1:]))" $P)" >> "$GITHUB_OUTPUT"
+          P=$(python3 tools/goli3d_plan.py "${{ inputs.kind }}" ${{ inputs.poses }})
+          echo "poses=$(python3 -c 'import json,sys; print(json.dumps(sys.argv[1:]))' $P)" >> "$GITHUB_OUTPUT"
   render:
     needs: plan
     if: inputs.from_run == ''
