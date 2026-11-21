@@ -205,6 +205,7 @@ def goli(pose: str = "point_left", outfit: str = "royal", mouth: str = "C", expr
     out = img.resize((int(img.width * k), height), Image.LANCZOS)
     if head:
         out.info["head"] = tuple(int(v * k) for v in head)
+    out.info["points"] = {"point": "right", "point_left": "left"}.get(pose, "")
     return out
 
 

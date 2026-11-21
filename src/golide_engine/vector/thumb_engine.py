@@ -106,6 +106,15 @@ def check(rec: list[tuple[str, Image.Image]], allow: int = 25) -> list[str]:
 
 
 def _put_goli(b: Image.Image, cut: Image.Image, cx: float, bottom: float, rim=None) -> None:
+    pts = cut.info.get("points")
+    if (pts == "right" and cx > W / 2) or (pts == "left" and cx < W / 2):     # he points at the content, never off the edge
+        info = dict(cut.info)
+        cut = cut.transpose(Image.FLIP_LEFT_RIGHT)
+        if info.get("head"):
+            x0, y0, x1, y1 = info["head"]
+            info["head"] = (cut.width - x1, y0, cut.width - x0, y1)
+        info["points"] = "left" if pts == "right" else "right"
+        cut.info.update(info)
     if rim:
         cut = T._rim(cut, rim)
     xy = (int(cx - cut.width / 2), int(bottom - cut.height))
