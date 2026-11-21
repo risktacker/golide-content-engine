@@ -245,6 +245,8 @@ async function ensureSchema(db){
   try{await db.prepare(`ALTER TABLE inbox_threads ADD COLUMN label TEXT NOT NULL DEFAULT ''`).run();}catch{}
   try{await db.prepare(`ALTER TABLE inbox_threads ADD COLUMN label_reason TEXT NOT NULL DEFAULT ''`).run();}catch{}
   try{await db.prepare(`ALTER TABLE production_jobs ADD COLUMN archived_at TEXT`).run();}catch{}
+  // 2026-11-21 (owner): the voice is counted in characters of the monthly plan, never in made-up dollars
+  try{await db.prepare(`ALTER TABLE production_jobs ADD COLUMN voice_characters INTEGER NOT NULL DEFAULT 0`).run();}catch{}
   await ensureSocialOauthSchema(db);
   await db.prepare(`INSERT OR IGNORE INTO automation_control(id,enabled,updated_at,updated_by) VALUES(1,0,?,'deployment-default')`)
     .bind(nowIso()).run();
@@ -277,6 +279,8 @@ async function overview(env){
     waiting_voice:await count(db,`SELECT COUNT(*) count FROM production_jobs WHERE status='waiting_owner_voice'`),
     production_running:await count(db,`SELECT COUNT(*) count FROM production_jobs WHERE status IN ('claimed','running')`),
     video_openai_spend_usd:Number(videoSpend?.total||0),
+    voice_month_characters:Number((await db.prepare(`SELECT COALESCE(SUM(voice_characters),0) total FROM production_jobs WHERE substr(updated_at,1,7)=substr(datetime('now'),1,7)`).first())?.total||0),
+    voice_month_limit:115000,
     static_openai_estimate_usd:Number(staticMonth?.count||0)*0.049,
     r2_ready:hasAll(env,["R2_ACCOUNT_ID","R2_ACCESS_KEY_ID","R2_SECRET_ACCESS_KEY","R2_BUCKET"]),
   };
@@ -482,7 +486,7 @@ async function createPost(env,payload){
 async function listProductionJobs(db){
   const {results=[]}=await db.prepare(`SELECT job_id,format,status,stage,title,selected_topic,script,owner_voice_media_ref,
     json_extract(spec_json,'$.video_style') AS video_style,
-    generate_at,scheduled_at,actual_cost_usd,openai_cost_usd,run_url,release_url,error,claimed_at,created_at,updated_at
+    generate_at,scheduled_at,actual_cost_usd,openai_cost_usd,voice_characters,run_url,release_url,error,claimed_at,created_at,updated_at
     FROM production_jobs
     WHERE archived_at IS NULL
       -- finished videos leave the list on their own three days after release
@@ -555,13 +559,14 @@ async function updateProductionStatus(db,jobId,payload){
     title=CASE WHEN ?<>'' THEN ? ELSE title END,
     selected_topic=CASE WHEN ?<>'' THEN ? ELSE selected_topic END,
     script=CASE WHEN ?<>'' THEN ? ELSE script END,
-    actual_cost_usd=?,openai_cost_usd=?,
+    actual_cost_usd=?,openai_cost_usd=?,voice_characters=MAX(voice_characters,?),
     run_url=?,release_url=?,error=?,updated_at=?
     WHERE job_id=?`)
     .bind(
       JSON.stringify(spec),status,stage,clearVoice?1:0,
       title,title,topic,topic,script,script,
       Number(payload.actualCostUsd||0),Number(payload.providerUsage?.openAiCostUsd||0),
+      Math.max(0,Math.round(Number(payload.providerUsage?.elevenLabsCharacters||0))),
       safeText(payload.runUrl)||null,safeText(payload.releaseUrl)||null,safeText(payload.error)||null,
       nowIso(),jobId
     ).run();
