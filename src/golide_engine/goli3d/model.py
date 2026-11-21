@@ -497,7 +497,27 @@ def open_mouth(poly, teeth_top=False, teeth_both=False, tongue=True):
     curve(rim, 0.006, LIP, closed=True, bezier=False)
 
 
+VISEME = {  # Rhubarb: A closed (M B P), B teeth, C open, D wide, E round, F pucker, G F/V, H L, X rest
+    "A": ("press_smile", 0), "B": ("teeth", 0.35), "C": ("smile", 0.75), "D": ("grin", 1.35), "E": ("O", 0.75),
+    "F": ("O", 0.2), "G": ("teeth", 0.25), "H": ("smile", 0.6), "X": ("smile", 0.0),
+}
+
+
 def build_mouth(kind, amt, talk=None):
+    if isinstance(talk, str):             # a Rhubarb shape (video lip sync)
+        kind, amt = VISEME.get(talk, ("smile", 0.0))
+        talk = None
+    if kind == "press_smile":
+        line(lambda u: 0.012 * u * u, r=0.012)
+        creases(True)
+        return
+    if kind == "teeth":                   # lips apart just enough to show the teeth
+        o = 0.05 + 0.04 * amt
+        poly = [(-MW * 0.9 + 1.8 * MW * i / 48, MZ + 0.014 * (-1 + 2 * i / 48) ** 2 - 0.004) for i in range(49)]
+        poly += [(MW * 0.9 * math.cos(math.pi * i / 48), MZ - 0.004 - o * math.sin(math.pi * i / 48) ** 0.9) for i in range(1, 48)]
+        open_mouth(poly, teeth_both=True, tongue=False)
+        creases(True)
+        return
     if talk is not None:                  # talking: the default smile, opened by the voice
         kind, amt = "smile", talk
     w = MW
@@ -611,6 +631,8 @@ def brow(side, lift, ang, arch):
 
 
 def build_face(e, talk):
+    if SPEC.get("blink"):
+        e = dict(e, up=-0.92, tilt=0, low=-1)
     for side in (-1, 1):
         x = side * 0.2
         sphere((x, -0.47, 1.86), (0.12, 0.08, 0.13), eye_mat(f"eye{side}", e["gaze"], e.get("ps", 1.0), e.get("sparkle", False)), seg=64)
@@ -704,6 +726,15 @@ OUTFITS = {
     "varsity":      dict(body="#14286E", trim="#E7A92C", sleeve="#F4F2EC", hood=False, logo="#E7A92C", strings=False, collar=True),
     "suit":         dict(body="#22252B", trim="#14161A", sleeve="#22252B", hood=False, logo=None, strings=False, suit=True),
 }
+
+
+WEEKLY = {  # the old Goli's weekday hoodies (edit/mascot.py WEEK), same colours
+    "royal": ("#2450E6", "#1A3BB8"), "ember": ("#E8462F", "#B7301C"), "emerald": ("#12A36B", "#0D7E52"),
+    "midnight": ("#454C66", "#333A50"), "violet": ("#7B3FE4", "#5A2BBE"), "sky": ("#19A7E0", "#0F82B5"),
+    "crimson": ("#C81E4A", "#981638"),
+}
+for _k, (_m, _d) in WEEKLY.items():
+    OUTFITS[_k] = dict(body=_m, trim=_d, sleeve=_m, hood=True, logo="#F7F5F0", strings=True)
 
 
 def build_outfit(name):
@@ -825,7 +856,7 @@ HAIR[hair]()
 for s in (-1, 1):
     sphere((s * 0.55, 0.02, 2.02), (0.14, 0.08, 0.15), SCALE, rot=(0, 0, s * 0.3))
     sphere((s * 0.555, -0.035, 2.02), (0.08, 0.04, 0.09), EAR_IN, rot=(0, 0, s * 0.3))
-build_face(e, SPEC.get("mouth_open"))
+build_face(e, SPEC.get("viseme", SPEC.get("mouth_open")))
 g = SPEC.get("glasses", "round_gold")
 if g and g != "none":
     build_glasses(g)
@@ -899,7 +930,25 @@ for i in range(24):                      # the head with its hair and ears: wher
         pts.append(H + Vector((math.cos(b) * math.sin(a) * 0.72, -math.cos(b) * math.cos(a) * 0.78, math.sin(b) * 0.62 + 0.04)))
 uv = [world_to_camera_view(sc, co, p) for p in pts]
 xs, ys = [u.x * rx for u in uv], [(1 - u.y) * ry for u in uv]
+def box(points):
+    uv_ = [world_to_camera_view(sc, co, Vector(p)) for p in points]
+    return [min(u.x for u in uv_) * rx, min((1 - u.y) * ry for u in uv_), max(u.x for u in uv_) * rx, max((1 - u.y) * ry for u in uv_)]
+
+
+REGIONS = {"mouth": [(x, y, z) for x in (-0.17, 0.17) for y in (-0.72, -0.5) for z in (1.29, 1.54)],
+           "eyes": [(x, y, z) for x in (-0.38, 0.38) for y in (-0.66, -0.45) for z in (1.69, 2.02)]}
+side_ = {"head": [min(xs), min(ys), max(xs), max(ys)], "waist": box([(0, -0.44, 0.75)])[1]}
+for k, pts_ in REGIONS.items():
+    side_[k] = box(pts_)
 with open(OUT + ".json", "w") as fh:
-    json.dump({"head": [min(xs), min(ys), max(xs), max(ys)]}, fh)
+    json.dump(side_, fh)
+reg = SPEC.get("region")
+if reg:                                   # draw only this part of the frame (a mouth or blink patch)
+    x0, y0, x1, y1 = side_[reg]
+    pad = 6
+    sc.render.use_border = True
+    sc.render.use_crop_to_border = True
+    sc.render.border_min_x, sc.render.border_max_x = max(0, (x0 - pad) / rx), min(1, (x1 + pad) / rx)
+    sc.render.border_min_y, sc.render.border_max_y = max(0, 1 - (y1 + pad) / ry), min(1, 1 - (y0 - pad) / ry)
 bpy.ops.render.render(write_still=True)
 print("rendered", OUT)

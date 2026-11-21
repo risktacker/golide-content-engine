@@ -239,14 +239,15 @@ class Board:
         kit.vignette(self.c, .85, .30)
 
     def goli(self, x, y, height, pose="think", outfit="royal", mirror=True):
-        """Goli reacting, for the Stickman + Goli videos (edit/mascot.py, the same Goli as the videos)."""
-        import cairosvg
-        from ..edit import mascot
-        w0, h0 = mascot.VIEW
-        width = int(height * w0 / h0)
-        png = cairosvg.svg2png(bytestring=mascot.svg(pose, width=width, mouth="O", outfit=outfit).encode("utf-8"),
-                               output_width=width, output_height=int(height))
-        img = self.skia.Image.MakeFromEncoded(png)
+        """Goli reacting, for the Stickman + Goli videos: the real 3D Goli from the render library (2026-11-21)."""
+        import io
+
+        from ..vector.thumb_styles import goli as goli_cut
+        cut = goli_cut(pose, outfit, "E", None, int(height), upper=1.0)
+        buf = io.BytesIO()
+        cut.save(buf, "PNG")
+        width = cut.width
+        img = self.skia.Image.MakeFromEncoded(buf.getvalue())
         shadow = self.skia.Paint(AntiAlias=True, Color=self.skia.Color(0, 0, 0, 120),
                                  MaskFilter=self.skia.MaskFilter.MakeBlur(self.skia.kNormal_BlurStyle, 24))
         self.c.save()
