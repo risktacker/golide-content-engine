@@ -115,6 +115,18 @@ video's title and the verified research. Follow the format and its pacing rules 
 - icons (owner 2026-11-21: show the real things the story names): use the kit's icons, which include ours:
   {", ".join(sorted(kit_icons()))}. Draw what is said (chip, datacenter, rocket, factory, court...). A thing
   with no icon gets icon "label" with "text": its name (1-3 words); never skip it.
+- PLACES (owner 2026-11-21: "it's the whole world"): a wide, walk or closeup shot stands in a real place that
+  fits its sentence. Sets: {", ".join(sorted(kit_sets()))}. Options: "time" (day/dusk/night), and where the place
+  carries a name, "sign" or "logo" (hq, cutaway, press, newsroom, exchange, highway, launchpad, stage) or "flag"
+  (moon, mars). A new place at least every 2-3 shots; never the same place twice in a row.
+- MOVING PICTURES: any shot may carry "moves": [{{"do": name, "at": "word", ...}}], a picture that plays on its word:
+  {", ".join(sorted(kit_moves()))}. Options: x, y, s, "text" (a label), "names" (kart_race, podium, dominoes:
+  2-5 short names from the script). "at" is a word in the FIRST HALF of the shot's sentence (a move on the last
+  word is cut off). Use one move in about every second shot, matched literally to what is said (money -> money_rain
+  or cash_pile, launch -> rocket_launch, crash -> chart_down + alarm, race/competition -> kart_race, winner -> podium,
+  chain reaction -> dominoes, change of direction -> signpost, ban/shut down -> door_slam); never the same move in
+  two shots in a row.
+- CAMERA: "cam" may be one of {", ".join(CAM_PRESETS)}; vary it from shot to shot (shake only on a shock).
 - mood: pick from the format's list to fit the story.
 - checked on our renders (2026-11-17): a title shot ALWAYS has "text" (spoken or not; without it the card is
   black); a walk shot has ONE character (two walk on the same line and hide each other); in icon, list, counter,
@@ -195,6 +207,10 @@ def storyboard(text, project: Path, title: str, doc: dict[str, Any], research: d
         story["title"] = title
         (project / "story.json").write_text(json.dumps(story, indent=1, ensure_ascii=False), encoding="utf-8")
         unknown = fix_icons(json.loads(json.dumps(story)))
+        places = fix_places(json.loads(json.dumps(story)))
+        if attempt == 2 and places:
+            fix_places(story, final=True)
+            (project / "story.json").write_text(json.dumps(story, indent=1, ensure_ascii=False), encoding="utf-8")
         if attempt == 2 or not unknown:
             fix_story_icons(project)
         try:
@@ -205,6 +221,8 @@ def storyboard(text, project: Path, title: str, doc: dict[str, Any], research: d
             known = ", ".join(sorted(kit_icons()))
             left = left + [f"icon {c.split(' -> ')[0]!r} is not one the kit draws; use one of: {known}; for anything else "
                            f"use icon \"label\" with \"text\": its name" for c in unknown if " -> " in c and not c.startswith("lower_third")]
+        if attempt == 1:
+            left = left + places
         if any(k in w for w in left for k in ("ImportError", "ModuleNotFoundError", "cannot open shared object")):
             # 2026-11-17: the machine is broken, not the story; never pay the writer again for that
             raise RuntimeError("stickman: the kit cannot run on this machine: " + left[0][-400:])
@@ -226,6 +244,57 @@ def kit_icons() -> set[str]:
     ours = (Path(__file__).resolve().parent / "rm_extra.py").read_text(encoding="utf-8")
     ours = ours[ours.find("ICONS = {"):ours.find("}", ours.find("ICONS = {"))]
     return set(re.findall(r"(\w+)=(?:ic_|lambda)", block)) | set(re.findall(r'"(\w+)": ic_', ours))
+
+
+CAM_PRESETS = ("push", "pull", "pan_left", "pan_right", "tilt_up", "tilt_down", "crane", "orbit", "shake")
+HERE = Path(__file__).resolve().parent
+
+
+def kit_sets() -> set[str]:
+    """The places the kit draws: its own sets (engine/sets.py SETS) and ours (rm_sets.py NEW_SETS), read from source."""
+    import re
+    src = (KIT / "engine" / "sets.py").read_text(encoding="utf-8")
+    block = src[src.find("SETS = dict("):]
+    ours = (HERE / "rm_sets.py").read_text(encoding="utf-8")
+    ours = ours[ours.find("NEW_SETS = dict("):ours.find("\n\n\n", ours.find("NEW_SETS = dict("))]
+    return set(re.findall(r"(\w+)=set_", block)) | set(re.findall(r"(\w+)=set_", ours))
+
+
+def kit_moves() -> set[str]:
+    """The moving pictures a shot can carry (rm_moves.py, one m_<name> function each)."""
+    import re
+    return set(re.findall(r"^def m_(\w+)\(", (HERE / "rm_moves.py").read_text(encoding="utf-8"), re.M))
+
+
+def fix_places(story: dict[str, Any], final: bool = False) -> list[str]:
+    """Problems with places, moves and camera names (for the writer's retry). With final=True they are repaired so
+    the render never stops: an unknown place becomes the kit's own place for that shot kind, an unknown move or camera
+    name is left out (nothing drawn rather than a wrong picture). No model call."""
+    sets, moves = kit_sets(), kit_moves()
+    found: list[str] = []
+    for i, shot in enumerate(story.get("shots") or []):
+        if not isinstance(shot, dict):
+            continue
+        name = shot.get("set")
+        if name is not None and name not in sets:
+            found.append(f"shot {i}: set {name!r} is not a place the kit draws; use one of: {', '.join(sorted(sets))}")
+            if final:
+                shot.pop("set")
+        if isinstance(shot.get("moves"), list):
+            keep = []
+            for m in shot["moves"]:
+                if isinstance(m, dict) and m.get("do") in moves:
+                    keep.append(m)
+                else:
+                    found.append(f"shot {i}: move {(m or {}).get('do') if isinstance(m, dict) else m!r} is not one of: {', '.join(sorted(moves))}")
+            if final:
+                shot["moves"] = keep
+        cam = shot.get("cam")
+        if isinstance(cam, str) and cam not in CAM_PRESETS:
+            found.append(f"shot {i}: cam {cam!r} is not one of: {', '.join(CAM_PRESETS)} (or the format's zoom/focus object)")
+            if final:
+                shot.pop("cam")
+    return found
 
 
 def fix_icons(story: dict[str, Any], known: set[str] | None = None) -> list[str]:
