@@ -32,9 +32,19 @@ jobs:
           from golide_engine.youtube.auth import services
           vid = os.environ["VID"]
           youtube, _ = services()
-          youtube.videos().update(part="status", body={"id": vid, "status": {
-              "privacyStatus": "public", "selfDeclaredMadeForKids": False}}).execute()
-          item = youtube.videos().list(part="status,snippet", id=vid).execute()["items"][0]
+          import time
+          before = youtube.videos().list(part="status,processingDetails", id=vid).execute()["items"][0]
+          print(json.dumps({"before": before.get("status"), "processing": before.get("processingDetails", {}).get("processingStatus")}))
+          status = {k: v for k, v in before["status"].items()
+                    if k in ("embeddable", "license", "publicStatsViewable", "containsSyntheticMedia")}
+          status.update({"privacyStatus": "public", "selfDeclaredMadeForKids": False})   # no publishAt: the hold ends now
+          answer = youtube.videos().update(part="status", body={"id": vid, "status": status}).execute()
+          print(json.dumps({"answer": answer.get("status")}))
+          for _ in range(12):
+              item = youtube.videos().list(part="status,snippet", id=vid).execute()["items"][0]
+              if item["status"]["privacyStatus"] == "public":
+                  break
+              time.sleep(15)
           print(json.dumps({"status": "published", "video_id": vid, "privacy": item["status"]["privacyStatus"],
                             "title": item["snippet"]["title"]}))
           if item["status"]["privacyStatus"] != "public":
