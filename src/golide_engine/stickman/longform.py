@@ -307,11 +307,11 @@ def cast_in(story: dict[str, Any], sentences: list[str]) -> int:
         if chart:                                   # the chart stands on the right, the cast on the left
             moves.append({"do": "chart_up", "box": [760, 200, 1740, 800]})
         who = ids[changed % len(ids)]
-        new = {"kind": "wide", "s": shot.get("s", []), "set": shot.get("set") or place, "cam": shot.get("cam", "push"),
+        new = {"kind": "wide", "set": shot.get("set") or place, "cam": shot.get("cam", "push"),
                "chars": [{"id": who, "x": 360 if chart else 560, "face": .7,
                           "acts": _acts_for(text_of(shot), bool(things), things[0] if things else None)}],
                "props": [] if chart else [{"icon": n, "x": 1180 + k * 300, "y": 700, "s": .75} for k, n in enumerate(things[:2])]}
-        for key in ("time", "labels", "lower_third", "logo", "sign", "beats"):
+        for key in ("s", "time", "labels", "lower_third", "logo", "sign", "beats"):   # "s" only when the shot has it
             if key in shot:
                 new[key] = shot[key]
         if moves:
@@ -599,6 +599,9 @@ def fix_story_icons(project: Path) -> None:
     story = json.loads(path.read_text(encoding="utf-8"))
     before = json.dumps(story, sort_keys=True)
     changed = fix_icons(story)
+    for shot in story.get("shots") or []:          # a follow-on shot has no "s"; an empty one breaks the kit's timeline
+        if isinstance(shot, dict) and shot.get("s") == []:
+            shot.pop("s")
     attach_logos(story)
     from .rm_roles import apply_roles
     apply_roles(story)

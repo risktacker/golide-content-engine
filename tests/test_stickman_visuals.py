@@ -234,3 +234,14 @@ def test_the_engine_gives_the_cast_to_shots_without_it_never_stops():
     first = st["shots"][0]
     assert first["kind"] == "wide" and first["chars"][0]["acts"][0]["do"] == "head_down" and first["props"][0]["icon"] == "chip"
     assert st["shots"][2]["moves"][0]["do"] == "chart_up" and st["shots"][2]["chars"][0]["x"] < 700
+
+
+def test_a_follow_on_shot_keeps_no_sentence_numbers(tmp_path):
+    st = {"cast": {"a": {}}, "shots": [{"kind": "wide", "s": [0], "chars": [{"id": "a", "acts": [{"do": "nod"}]}]},
+                                       {"kind": "icon", "icons": [{"name": "chip"}]}, {"kind": "icon", "s": [1]}]}
+    L.cast_in(st, ["One.", "Two."])
+    assert "s" not in st["shots"][1] or st["shots"][1]["s"]
+    assert all(s.get("s") != [] for s in st["shots"])
+    (tmp_path / "story.json").write_text(json.dumps({"shots": [{"kind": "wide", "s": []}]}))
+    L.fix_story_icons(tmp_path)
+    assert "s" not in json.loads((tmp_path / "story.json").read_text())["shots"][0]
