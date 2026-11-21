@@ -767,7 +767,12 @@ POSES = {
 def hand(h, d, kind, side):
     sphere(tuple(h + d * 0.08), (0.12, 0.1, 0.12), SKIN, seg=40)                # smooth mitten paw, no claws
     if kind == "point":
-        limb(h + d * 0.14, h + d * 0.34, 0.036, 0.033, SKIN)
+        # index finger from the thumb side of the paw, thumb tucked in front: reads as pointing, never one middle finger
+        inward = Vector((-side, 0, 0))
+        perp = (inward - d * inward.dot(d)).normalized()
+        base = h + d * 0.12 + perp * 0.06 + Vector((0, -0.04, 0))
+        limb(base, base + d * 0.2, 0.034, 0.031, SKIN)
+        limb(h + d * 0.05 + perp * 0.07 + Vector((0, -0.09, 0)), h + d * 0.02 + perp * 0.0 + Vector((0, -0.11, 0)), 0.03, 0.028, SKIN)
     elif kind == "thumb":
         limb(h + d * 0.05 + Vector((0, -0.02, 0.08)), h + d * 0.03 + Vector((0, -0.04, 0.22)), 0.038, 0.035, SKIN)
     elif kind == "open":
@@ -883,5 +888,18 @@ sc.render.image_settings.color_mode = "RGBA"
 sc.view_settings.view_transform = "AgX"
 sc.view_settings.look = "AgX - Punchy"
 sc.render.filepath = OUT
+bpy.context.view_layer.update()
+from bpy_extras.object_utils import world_to_camera_view  # noqa: E402
+
+rx, ry = sc.render.resolution_x, sc.render.resolution_y
+pts = []
+for i in range(24):                      # the head with its hair and ears: where nothing may cover him
+    for j in range(12):
+        a, b = 2 * math.pi * i / 24, math.pi * (j / 11 - 0.5)
+        pts.append(H + Vector((math.cos(b) * math.sin(a) * 0.72, -math.cos(b) * math.cos(a) * 0.78, math.sin(b) * 0.62 + 0.04)))
+uv = [world_to_camera_view(sc, co, p) for p in pts]
+xs, ys = [u.x * rx for u in uv], [(1 - u.y) * ry for u in uv]
+with open(OUT + ".json", "w") as fh:
+    json.dump({"head": [min(xs), min(ys), max(xs), max(ys)]}, fh)
 bpy.ops.render.render(write_still=True)
 print("rendered", OUT)

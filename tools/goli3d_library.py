@@ -38,8 +38,16 @@ def render(job):
     subprocess.run([sys.executable, str(MODEL), json.dumps(spec), str(raw)], check=True, capture_output=True)
     im = Image.open(raw).convert("RGBA")
     solid = im.getchannel("A").point(lambda v: 255 if v > 40 else 0)
-    im.crop(solid.getbbox()).save(f, optimize=True)
+    box = solid.getbbox()
+    side = Path(str(raw) + ".json")
+    head = json.loads(side.read_text())["head"]
+    head = [max(0, round(head[0] - box[0])), max(0, round(head[1] - box[1])), round(head[2] - box[0]), round(head[3] - box[1])]
+    from PIL.PngImagePlugin import PngInfo
+    meta = PngInfo()
+    meta.add_text("head", ",".join(map(str, head)))         # x0,y0,x1,y1 of his head in this file
+    im.crop(box).save(f, optimize=True, pnginfo=meta)
     raw.unlink()
+    side.unlink()
     print(pose, expr, flush=True)
 
 
