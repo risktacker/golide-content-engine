@@ -335,5 +335,13 @@
     "measured_at": "2026-11-21T17:48:05.664411+00:00",
     "signal_type": "youtube-breakout-v1"
   },
-  "selected_topic_source": "https://blogs.nvidia.com/blog/ian-buck-sc26/"
+  "selected_topic_source": "https://blogs.nvidia.com/blog/ian-buck-sc26/",
+  "voice_choice": "ai",
+  "platforms": [
+    "youtube",
+    "instagram",
+    "facebook",
+    "linkedin"
+  ],
+  "video_style": "stickman_goli"
 }

@@ -1,0 +1,500 @@
+{
+  "production_id": "golide-long-2026-11-21",
+  "youtube_video_id": "2LbdOttQC-I",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "2LbdOttQC-I",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-11-21T19:09:11.689322+00:00"
+  },
+  "production": {
+    "format": "long",
+    "title": "NVIDIA SC26 Special Breakdown",
+    "status": "scheduled",
+    "scheduled_at": "2026-11-21T17:30:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-long-tue-thu-sat\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-choice\"}"
+  },
+  "narration": "An AI system can now take a research question, choose an experiment,\nrun the code on a lab's own computer, inspect the result,\nand suggest what to try next.\nPut that on screen and it looks less like a chatbot and more\nlike a junior lab partner who never gets tired of running simulations.\nOn November 17, 2026, the company used its SC26 presentation to show this workflow,\nalongside new scientific models, datasets, and computing systems.\nBy the end, you'll know exactly how the loop works,\nwhy it could speed up chemistry, climate modeling and engineering,\nand where a human still has to stop the machine before trusting an answer.\nStart with the research goal, not a request for a paragraph.\nThe agent has to turn that goal into actions: define a hypothesis,\nchoose a simulation or database, run it,\nand compare the output with what the scientist expected.\nIt can also decide what information is missing and plan another test.\nThat makes it different from an ordinary chatbot.\nA chatbot mainly predicts a response to your prompt.\nAn agent keeps a working plan, uses tools, reads their results,\nand then chooses the next move.\nThink of it like a lab notebook connected to the instruments:\nthe model writes the next instruction, the computer carries it out,\nand the result comes back for inspection.\nThe systems described at SC26 can run code\nand simulations on infrastructure controlled by researchers.\nThat lets the agent work beside existing scientific software,\nwhere the data and tools already live.\nUnderneath, this is a loop of planning, tool use, evaluation, and replanning.\nThe CPUs handle tool calls, operations, and gathering results,\nwhile accelerators do the heavy simulation work.\nBut the agent still needs a real scientific question to guide it,\nand that brings us to what it can actually discover.\nNow see what that means in chemistry.\nA scientist might ask which molecular shapes could attach to a target protein.\nThe agent can break that question into hypotheses, select a simulation, run candidates,\nand inspect the structures that come back.\nIt isn't discovering by intuition; it's narrowing a search by running tests.\nIn the SC26 material,\nthe company says an agent at Argonne National Laboratory accepted a prompt,\nplanned and tested hypotheses, selected simulations, and identified 2 new binding sites.\nThe model proposed, the simulator checked, and the result changed the next proposal.\nThat needs more than general conversation text.\nNemotron for Science combines Nemotron 3.5 Super VL, scientific evaluations, an open chemistry dataset,\nand post-training recipes for specialized agents.\nLitmusBench v0.2 contains nearly 50,000 chemistry questions covering molecular properties, drug-discovery data, solubility,\nand how the body processes molecules.\nHere's the practical takeaway:\njudge an agent by whether it chooses valid tools and gets measurable results,\nnot by how convincing its explanation sounds.\nBut even a good result needs the next checks.\nThat's where the hardware and the wider scientific pipeline become important.\nThat brings us to the part people don't see: the computing underneath.\nScientific agents are useful only if they can call\nserious tools quickly enough to explore many possibilities.\nGPU-accelerated simulation handles repeated numerical work, from molecular dynamics to climate and engineering models.\nThe accelerator isn't the scientist; it's a very fast test bench.\nThe agent sits above that bench.\nIt decides which run is worth paying for, sends the job,\nwaits for the output, and compares it with the goal.\nIf the result is weak,\nit can change the inputs instead of asking a person to rewrite every command.\nSC26 also connects this to Vera for climate, molecular and engineering simulations,\nand Rubin HPC for testing materials, molecules and designs.\nThe point isn't that one model knows all of science.\nIt's that the model, simulator, GPU system,\nand researcher can be joined into one repeatable pipeline.\nWhy does that matter?\nThe expensive part of discovery is often trying possibilities that fail.\nFaster simulation doesn't guarantee a breakthrough, but it can make more attempts affordable.\nAnd that only helps if the loop knows when a result is trustworthy.\nBut now ask the question the demo cannot answer:\nhow do we know the agent is right?\nA fluent plan can still choose a bad simulation, misunderstand an output,\nor carry an error into the next step.\nScience can't use confidence as proof.\nThe reported examples show why checks have to sit inside the loop.\nThe company says a KTH Royal Institute of\nTechnology agent repaired broken GROMACS molecular-dynamics setups,\nfixing 81% of test cases in one overnight run.\nEach fix was independently checked by GROMACS.\nThat's much stronger than the agent simply claiming success.\nThe check has to come from the scientific software, a benchmark, a simulation,\nor a researcher with the right expertise.\nThe company's guidance says verification can require computational or\nreal-world data and may take hours or days.\nOne wrong assumption can derail the task.\nSo if you use a system like this, give it a bounded job,\nnot control of the whole lab.\nDefine the goal, limit the tools, inspect the output, and run an independent check.\nKeep the inputs and logs so someone can reproduce what happened.\nThat's how a fast assistant becomes useful evidence, rather than a confident guess.\nSimple version: the agent turns a research goal into a plan, uses scientific tools,\nchecks results, and suggests the next test.\nGPUs speed simulations, but verification decides whether the answer is worth believing.\nThe free guide to this video and the link to our\ncommunity for updates and all these stories are in the description.\nFollow the channel for more breakdowns of the machines behind scientific progress.\n",
+  "research": {
+    "summary": "At SC26, NVIDIA presented a scientific-agent workflow that goes beyond chatbot answers: an agent can interpret a research goal, plan hypotheses, select simulations or tools, run code on systems controlled by researchers, inspect outputs, and help determine the next step. NVIDIA’s announcements combine Nemotron 3.5 Super VL, the LitmusBench chemistry dataset, post-training recipes, CUDA-X scientific tools, and HPC infrastructure. The opportunity is faster iteration in chemistry, drug discovery, climate modeling, and engineering—but the evidence also shows why verification remains essential: results must be checked by domain-specific software, benchmarks, simulations, or researchers. Note: the supplied topic source is dated November 17, 2026, not November 18, 2026; the supplied audience-performance figures were not independently verified in the cited NVIDIA materials.",
+    "claims": [
+      {
+        "claim": "NVIDIA’s SC26 presentation describes agents that can plan experiments, run code, and check results on researchers’ own systems.",
+        "source_title": "Ian Buck Kicks Off NVIDIA’s Week at SC26 as Science Enters the Age of Agents",
+        "source_url": "https://blogs.nvidia.com/blog/ian-buck-sc26/",
+        "published_or_updated": "November 17, 2026"
+      },
+      {
+        "claim": "NVIDIA says an Argonne National Laboratory agent accepted a prompt, planned and tested hypotheses, selected simulations, and identified two new binding sites.",
+        "source_title": "Ian Buck Kicks Off NVIDIA’s Week at SC26 as Science Enters the Age of Agents",
+        "source_url": "https://blogs.nvidia.com/blog/ian-buck-sc26/",
+        "published_or_updated": "November 17, 2026"
+      },
+      {
+        "claim": "Nemotron for Science combines Nemotron 3.5 Super VL with scientific evaluations, an open chemistry dataset, and post-training recipes for specialized science agents; NVIDIA says researchers can adapt the models for tasks including chemistry experiments and protein design.",
+        "source_title": "NVIDIA Introduces Nemotron for Science to Accelerate Discoveries With Agents",
+        "source_url": "https://nvidianews.nvidia.com/news/nvidia-introduces-nemotron-for-science-to-accelerate-discoveries-with-agents",
+        "published_or_updated": "November 16, 2026"
+      },
+      {
+        "claim": "LitmusBench v0.2 contains nearly 50,000 chemistry questions for training and evaluation, including tasks related to molecular properties, drug-discovery data, solubility, and how the body processes molecules.",
+        "source_title": "NVIDIA Introduces Nemotron for Science to Accelerate Discoveries With Agents",
+        "source_url": "https://nvidianews.nvidia.com/news/nvidia-introduces-nemotron-for-science-to-accelerate-discoveries-with-agents",
+        "published_or_updated": "November 16, 2026"
+      },
+      {
+        "claim": "NVIDIA reports that a KTH Royal Institute of Technology agent repaired broken GROMACS molecular-dynamics setups, fixing 81% of test cases in one overnight run; each fix was independently checked by GROMACS.",
+        "source_title": "NVIDIA Introduces Nemotron for Science to Accelerate Discoveries With Agents",
+        "source_url": "https://nvidianews.nvidia.com/news/nvidia-introduces-nemotron-for-science-to-accelerate-discoveries-with-agents",
+        "published_or_updated": "November 16, 2026"
+      },
+      {
+        "claim": "The agent loop depends on tool use and evaluation between model steps: NVIDIA describes CPUs handling tool calls, operations, result gathering, and evaluation, while its agent-evaluation guidance says multi-step systems must be assessed through tool calls and task outcomes rather than a single text response.",
+        "source_title": "How to Evaluate AI Agents From Tool Calls to Task Completion",
+        "source_url": "https://developer.nvidia.com/blog/how-to-evaluate-ai-agents-from-tool-calls-to-task-completion",
+        "published_or_updated": "September 21, 2026"
+      },
+      {
+        "claim": "NVIDIA’s own scientific-agent material warns that verification can require computational or real-world data and may take hours or days, because a single mistake can derail a research task.",
+        "source_title": "How to Train Scientific Agents with Reinforcement Learning",
+        "source_url": "https://developer.nvidia.com/blog/how-to-train-scientific-agents-with-reinforcement-learning/",
+        "published_or_updated": "December 17, 2025"
+      },
+      {
+        "claim": "NVIDIA connects the SC26 infrastructure story to climate modeling and engineering: Vera is presented for climate, molecular, and engineering simulations, while Rubin HPC is described as accelerating simulations used to test candidate materials, molecules, and designs.",
+        "source_title": "NVIDIA Expands Vera CPU Platform to Accelerate Scientific Discovery",
+        "source_url": "https://nvidianews.nvidia.com/news/nvidia-expands-vera-cpu-platform-to-accelerate-scientific-discovery",
+        "published_or_updated": "November 16, 2026"
+      }
+    ],
+    "core_fact": {
+      "fact": "On November 17, 2026, NVIDIA said at SC26 that it was introducing scientific-agent tools that can plan experiments, run code, and check results on researchers’ own systems; the same presentation highlighted Nemotron for Science, simulation-driven discovery, and related HPC platforms.",
+      "source_url": "https://blogs.nvidia.com/blog/ian-buck-sc26/",
+      "published_or_updated": "November 17, 2026",
+      "verified": true
+    }
+  },
+  "metadata": {
+    "title": "SC26 Scientific Agent Breakdown",
+    "description": "Free guide to this video (steps and every source): https://studio.golidee.com/guides/golide-long-2026-11-21.pdf\n\nNVIDIA’s new scientific AI workflow can turn a research goal into hypotheses, simulations, code runs, result checks, and follow-up tests. This video explains how the agent works with tools and computing systems instead of responding like a standard chatbot.\n\nWe look at Nemotron for Science, chemistry research, molecular simulations, GROMACS, Argonne National Laboratory, GPU-accelerated computing, and the role of human verification. The key lesson is simple: AI can speed up scientific discovery, but independent checks decide whether a result is worth trusting.\n\n#NVIDIA #Nemotron #ScientificAI #AgenticScience #SC26 #AIResearch #ScientificComputing",
+    "tags": [
+      "NVIDIA science agent",
+      "Nemotron for Science",
+      "Nemotron 3.5 Super VL",
+      "AI scientific discovery",
+      "scientific AI agents",
+      "AI research assistant",
+      "agentic science",
+      "SC26 NVIDIA",
+      "Supercomputing 2026",
+      "AI chemistry",
+      "molecular simulation AI",
+      "protein design AI",
+      "Argonne National Lab",
+      "StructBioReasoner",
+      "LitmusBench",
+      "LitmusBench v0.2",
+      "GROMACS AI agent",
+      "GROMACS molecular dynamics",
+      "GPU scientific computing",
+      "GPU accelerated simulation",
+      "NVIDIA Rubin HPC",
+      "GOLIDE"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "keywords": [
+      "NVIDIA science agent",
+      "Nemotron for Science",
+      "AI scientific discovery",
+      "AI research agent",
+      "scientific AI agents",
+      "SC26 NVIDIA",
+      "AI chemistry research",
+      "AI molecular simulation",
+      "automated scientific experiments",
+      "GROMACS AI agent",
+      "LitmusBench v0.2",
+      "Argonne AI research",
+      "GPU accelerated simulation",
+      "AI climate modeling"
+    ],
+    "hashtags": [
+      "#NVIDIA",
+      "#Nemotron",
+      "#ScientificAI",
+      "#AgenticScience",
+      "#SC26",
+      "#AIResearch",
+      "#ScientificComputing"
+    ],
+    "format": "long",
+    "title_description_language": "en",
+    "seo_body": "NVIDIA’s new scientific AI workflow can turn a research goal into hypotheses, simulations, code runs, result checks, and follow-up tests. This video explains how the agent works with tools and computing systems instead of responding like a standard chatbot.\n\nWe look at Nemotron for Science, chemistry research, molecular simulations, GROMACS, Argonne National Laboratory, GPU-accelerated computing, and the role of human verification. The key lesson is simple: AI can speed up scientific discovery, but independent checks decide whether a result is worth trusting.",
+    "title_checked": true
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "NVIDIA’s SC26 presentation describes agents that can plan experiments, run code, and check results on researchers’ own systems.",
+        "source_title": "Ian Buck Kicks Off NVIDIA’s Week at SC26 as Science Enters the Age of Agents",
+        "source_url": "https://blogs.nvidia.com/blog/ian-buck-sc26/",
+        "published_or_updated": "November 17, 2026"
+      },
+      {
+        "claim": "NVIDIA says an Argonne National Laboratory agent accepted a prompt, planned and tested hypotheses, selected simulations, and identified two new binding sites.",
+        "source_title": "Ian Buck Kicks Off NVIDIA’s Week at SC26 as Science Enters the Age of Agents",
+        "source_url": "https://blogs.nvidia.com/blog/ian-buck-sc26/",
+        "published_or_updated": "November 17, 2026"
+      },
+      {
+        "claim": "Nemotron for Science combines Nemotron 3.5 Super VL with scientific evaluations, an open chemistry dataset, and post-training recipes for specialized science agents; NVIDIA says researchers can adapt the models for tasks including chemistry experiments and protein design.",
+        "source_title": "NVIDIA Introduces Nemotron for Science to Accelerate Discoveries With Agents",
+        "source_url": "https://nvidianews.nvidia.com/news/nvidia-introduces-nemotron-for-science-to-accelerate-discoveries-with-agents",
+        "published_or_updated": "November 16, 2026"
+      },
+      {
+        "claim": "LitmusBench v0.2 contains nearly 50,000 chemistry questions for training and evaluation, including tasks related to molecular properties, drug-discovery data, solubility, and how the body processes molecules.",
+        "source_title": "NVIDIA Introduces Nemotron for Science to Accelerate Discoveries With Agents",
+        "source_url": "https://nvidianews.nvidia.com/news/nvidia-introduces-nemotron-for-science-to-accelerate-discoveries-with-agents",
+        "published_or_updated": "November 16, 2026"
+      },
+      {
+        "claim": "NVIDIA reports that a KTH Royal Institute of Technology agent repaired broken GROMACS molecular-dynamics setups, fixing 81% of test cases in one overnight run; each fix was independently checked by GROMACS.",
+        "source_title": "NVIDIA Introduces Nemotron for Science to Accelerate Discoveries With Agents",
+        "source_url": "https://nvidianews.nvidia.com/news/nvidia-introduces-nemotron-for-science-to-accelerate-discoveries-with-agents",
+        "published_or_updated": "November 16, 2026"
+      },
+      {
+        "claim": "The agent loop depends on tool use and evaluation between model steps: NVIDIA describes CPUs handling tool calls, operations, result gathering, and evaluation, while its agent-evaluation guidance says multi-step systems must be assessed through tool calls and task outcomes rather than a single text response.",
+        "source_title": "How to Evaluate AI Agents From Tool Calls to Task Completion",
+        "source_url": "https://developer.nvidia.com/blog/how-to-evaluate-ai-agents-from-tool-calls-to-task-completion",
+        "published_or_updated": "September 21, 2026"
+      },
+      {
+        "claim": "NVIDIA’s own scientific-agent material warns that verification can require computational or real-world data and may take hours or days, because a single mistake can derail a research task.",
+        "source_title": "How to Train Scientific Agents with Reinforcement Learning",
+        "source_url": "https://developer.nvidia.com/blog/how-to-train-scientific-agents-with-reinforcement-learning/",
+        "published_or_updated": "December 17, 2025"
+      },
+      {
+        "claim": "NVIDIA connects the SC26 infrastructure story to climate modeling and engineering: Vera is presented for climate, molecular, and engineering simulations, while Rubin HPC is described as accelerating simulations used to test candidate materials, molecules, and designs.",
+        "source_title": "NVIDIA Expands Vera CPU Platform to Accelerate Scientific Discovery",
+        "source_url": "https://nvidianews.nvidia.com/news/nvidia-expands-vera-cpu-platform-to-accelerate-scientific-discovery",
+        "published_or_updated": "November 16, 2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "NVIDIA SC26 agentic AI scientific computing Ian Buck scientific agents experiments simulation",
+      "score": 86.8,
+      "verdict": "pass",
+      "recent_videos": 1,
+      "median_views_per_day": 1035667.2000000001,
+      "top_views_per_day": 1035667.2000000001,
+      "market_coverage": 1,
+      "title_query_overlap": 1.0,
+      "measured_at": "2026-11-21T17:48:05.664411+00:00",
+      "signal_type": "youtube-breakout-v1"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -14.37,
+      "true_peak_dbtp": -1.07,
+      "loudness_range": 2.2
+    },
+    "editorial": {
+      "beats": 60,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-11-21T19:08:55.457118+00:00",
+    "warnings": [
+      "possible misspelling: golidee"
+    ]
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-choice",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-long-tue-thu-sat",
+    "thumbnail_style": "side_course"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-long-2026-11-21",
+    "created_at": "2026-11-21T19:09:00.651190+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-11-21T17:30:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "2f5d139d4004148851df54fbaa63d2f6bfb9bae27e40de8c9f8ad2321a441404",
+        "bytes": 97593723
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "f1c453fa24a94c27e493a10d84ab31937e4caf33a67eff9276c76ea6655a0f24",
+        "bytes": 557102
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "eafacc6a4fa73398ef57afcbb2ef550059e0657c5229205e1c229e9f783308f8",
+        "bytes": 2839
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-stickman.srt",
+        "sha256": "8709b48c3e952c495e3de297bef0360310041a7870281b250777b9ab423268f6",
+        "bytes": 13743
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "79c34009344b9cf844063a9c7823faf43f5cd2f3f1e45aa5b52259a8afd19b59",
+        "bytes": 4853
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "a2fc29c3c5012c12580a81797a961951fe60c44855b54c3b9153c9f8adf0bb0c",
+        "bytes": 416
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "3b426b87e3c8de174b74323ba6aae9cfbe616c93db989648b6ebab2c29ed46c5",
+        "bytes": 316
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-titles",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 264.0,
+      "cached_input_units": 0.0,
+      "output_units": 178.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000266,
+      "created_at": "2026-11-21T17:47:58.901734+00:00"
+    },
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 27798.0,
+      "cached_input_units": 0.0,
+      "output_units": 2799.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008918,
+      "created_at": "2026-11-21T17:48:00.383665+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-21T17:48:00.384872+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 23194.0,
+      "cached_input_units": 0.0,
+      "output_units": 1694.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006672,
+      "created_at": "2026-11-21T17:48:22.153792+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-21T17:48:22.154848+00:00"
+    },
+    {
+      "stage": "script-story",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 19141.0,
+      "cached_input_units": 0.0,
+      "output_units": 7994.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.013421,
+      "created_at": "2026-11-21T17:53:44.143517+00:00"
+    },
+    {
+      "stage": "script-voice-direction",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1692.0,
+      "cached_input_units": 0.0,
+      "output_units": 1710.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00239,
+      "created_at": "2026-11-21T17:53:56.712258+00:00"
+    },
+    {
+      "stage": "script-board",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1684.0,
+      "cached_input_units": 0.0,
+      "output_units": 3154.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004122,
+      "created_at": "2026-11-21T17:54:23.340580+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 19141.0,
+      "cached_input_units": 0.0,
+      "output_units": 7994.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.013421,
+      "created_at": "2026-11-21T17:54:23.343113+00:00"
+    },
+    {
+      "stage": "owner-voice",
+      "provider": "elevenlabs",
+      "model": "eleven_v4",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 5945,
+      "cost_usd": 1.189,
+      "created_at": "2026-11-21T18:02:32.388727+00:00"
+    },
+    {
+      "stage": "stickman-story-1",
+      "provider": "openai",
+      "model": "gpt-5.6-sol",
+      "input_units": 8936.0,
+      "cached_input_units": 0.0,
+      "output_units": 10974.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.255224,
+      "created_at": "2026-11-21T18:03:55.745460+00:00"
+    },
+    {
+      "stage": "stickman-story-2",
+      "provider": "openai",
+      "model": "gpt-5.6-sol",
+      "input_units": 11032.0,
+      "cached_input_units": 5680.0,
+      "output_units": 14126.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.3062,
+      "created_at": "2026-11-21T18:05:37.317148+00:00"
+    },
+    {
+      "stage": "guide",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1982.0,
+      "cached_input_units": 0.0,
+      "output_units": 892.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001467,
+      "created_at": "2026-11-21T19:07:21.109938+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 14307.0,
+      "cached_input_units": 0.0,
+      "output_units": 1363.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004497,
+      "created_at": "2026-11-21T19:07:22.263988+00:00"
+    },
+    {
+      "stage": "title-check",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1321.0,
+      "cached_input_units": 0.0,
+      "output_units": 376.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000715,
+      "created_at": "2026-11-21T19:07:31.844220+00:00"
+    }
+  ],
+  "recorded_at": "2026-11-21T19:09:11.692878+00:00"
+}
