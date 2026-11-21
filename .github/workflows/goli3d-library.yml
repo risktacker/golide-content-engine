@@ -7,6 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       poses: {description: "Poses to draw, space-separated (empty = all)", default: ""}
+      kind: {description: "library (thumbnail cut-outs) or video (talking sprites)", default: "library"}
 
 permissions:
   contents: write
@@ -21,7 +22,10 @@ jobs:
       - id: p
         run: |
           if [ -n "${{ inputs.poses }}" ]; then P="${{ inputs.poses }}"; else
-            P=$(python3 -c "import ast,re;s=open('tools/goli3d_library.py').read();print(' '.join(re.findall(r'\"(\w+)\": ', s[s.index('PLAN = {'):])))"); fi
+            if [ "${{ inputs.kind }}" = "video" ]; then
+              P=$(python3 -c "import re;s=open('tools/goli3d_video.py').read();print(' '.join(re.findall(r'\"(\w+)\": \"', s[s.index('FACE = {'):s.index('}', s.index('FACE = {'))])))")
+            else
+              P=$(python3 -c "import re;s=open('tools/goli3d_library.py').read();print(' '.join(re.findall(r'\"(\w+)\": ', s[s.index('PLAN = {'):])))"); fi; fi
           echo "poses=$(python3 -c "import json,sys;print(json.dumps(sys.argv[1:]))" $P)" >> "$GITHUB_OUTPUT"
   render:
     needs: plan
@@ -36,11 +40,11 @@ jobs:
         with:
           python-version: "3.13"
       - run: python -m pip install -q bpy==5.3.0 pillow
-      - run: python tools/goli3d_library.py ${{ matrix.pose }}
+      - run: python tools/goli3d_${{ inputs.kind }}.py ${{ matrix.pose }}
       - uses: actions/upload-artifact@v4
         with:
           name: goli3d-${{ matrix.pose }}
-          path: assets/goli3d/full/${{ matrix.pose }}
+          path: assets/goli3d/${{ inputs.kind == 'video' && 'video' || 'full' }}/${{ matrix.pose }}
   commit:
     needs: render
     runs-on: ubuntu-24.04
@@ -50,7 +54,8 @@ jobs:
         with:
           path: dl
       - run: |
-          for d in dl/goli3d-*; do p=${d#dl/goli3d-}; mkdir -p assets/goli3d/full/$p; cp -n $d/*.png assets/goli3d/full/$p/; done
+          K=${{ inputs.kind == 'video' && 'video' || 'full' }}
+          for d in dl/goli3d-*; do p=${d#dl/goli3d-}; mkdir -p assets/goli3d/$K/$p; cp $d/* assets/goli3d/$K/$p/; done
           git add assets/goli3d
-          git -c user.name=golide-bot -c user.email=bot@golidee.com commit -qm "goli3d: render library" || exit 0
+          git -c user.name=golide-bot -c user.email=bot@golidee.com commit -qm "goli3d: render ${{ inputs.kind }}" || exit 0
           git pull -q --rebase origin ${{ github.ref_name }} && git push -q origin HEAD:${{ github.ref_name }}
