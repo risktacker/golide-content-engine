@@ -464,7 +464,8 @@ def m_desk_row(c, u, d, t):
             if (i + k) % 2 == 0: _heart(c, mx + (k - 1) * 40 * s, y - 540 * s - ph * 220 * s, 14 * s, "#FF4FA0", int(255 * (1 - ph)))
 
 
-MOVES = {k[2:]: v for k, v in dict(globals()).items() if k.startswith("m_") and callable(v)}
+from golide_engine.stickman.rm_art import art  # noqa: E402
+MOVES = {k[2:]: art(v) for k, v in dict(globals()).items() if k.startswith("m_") and callable(v)}
 LENGTH = dict(money_rain=3.0, rocket_launch=2.6, cash_pile=1.4, kart_race=2.8, podium=1.4, dominoes=1.8, signpost=1.2,
               chart_up=1.6, chart_down=1.6, explosion=1.1, alarm=1.0, plane_fly=2.4, ship_sail=4.0, car_drive=1.8,
               planet_zoom=1.6, logo_pop=1.0, like_counter=1.6, comment_pop=1.6, emoji_pop=1.0, notif_pop=1.4, big_phone=1.0,
