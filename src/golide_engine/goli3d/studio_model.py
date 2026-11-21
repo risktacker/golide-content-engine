@@ -25,6 +25,8 @@ PASS = SPEC.get("pass", "full")
 LAY = {
     "long": dict(w=1920, h=1080, desk_y=772, seat_x=640, size=820, wall=(0, 0, 1.0), neon=(0, 0, 1.0), shelf=(0, 0, 1.0)),
     "short": dict(w=1080, h=1920, desk_y=1560, seat_x=540, size=900, wall=(-1361, 48, 1.28), neon=None, shelf=(-80, 540, 1.0)),
+    # the Short's lower third (proof on top, Goli at the desk below): no TV, no shelves
+    "lower": dict(w=1080, h=1920, desk_y=1752, seat_x=540, size=640, wall=None, neon=None, shelf=None, top=1250),
 }[FMT]
 W, H = LAY["w"], LAY["h"]
 
@@ -212,23 +214,25 @@ box((0, y_wall + 0.02, (top_left.z + bot_right.z) / 2), (span_w + 1, 0.02, span_
 # warm LED uplight at the foot of the wall
 f0, f1 = P(-40, H - 6, DW - 0.25), P(W + 40, H - 6, DW - 0.25)
 box(((f0.x + f1.x) / 2, y_wall - 0.25, f0.z), (f1.x - f0.x, 0.03, 0.03), M["gold_glow"], back_col, 0)
-area("uplight", ((f0.x + f1.x) / 2, y_wall - 0.5, f0.z - 0.1), 900, f1.x - f0.x, (1.0, 0.78, 0.45),
+area("uplight", ((f0.x + f1.x) / 2, y_wall - 0.5, f0.z - 0.1), 900 if FMT != "lower" else 150, f1.x - f0.x, (1.0, 0.78, 0.45),
      ((f0.x + f1.x) / 2, y_wall, f0.z + 3), back_col, sy=0.2)
 
 # the video wall: a big flat TV with a slim bezel; the screen is left plain (content is laid on in the video)
-x0, y0 = g("wall", 1124, 124); x1, y1 = g("wall", 1846, 636)
-DT = DW - 0.18
-a, b = P(x0, y0, DT), P(x1, y1, DT)
-cx, cz, sw, shh = (a.x + b.x) / 2, (a.z + b.z) / 2, b.x - a.x, a.z - b.z
-bez = 7 * U(DT)                          # a hairline bezel, like a current smart TV
-box((cx, CAM.y + DT + 0.03, cz), (sw + 2 * bez, 0.045, shh + 2 * bez), M["bezel"], back_col, 0.004)
-box((cx, CAM.y + DT + 0.055, cz), (sw + 2 * bez - 0.01, 0.01, shh + 2 * bez - 0.01), M["alu_dark"], back_col, 0.003)  # thin metal edge
-scr = box((cx, CAM.y + DT - 0.0, cz), (sw, 0.01, shh), M["screen"], back_col, 0)
-box((cx, CAM.y + DT + 0.12, cz), (sw * 0.3, 0.06, shh * 0.3), M["metal"], back_col, 0.01)      # wall mount
-halo = area("tv_halo", (cx, CAM.y + DT + 0.14, cz), 260, sw * 0.9, (0.25, 0.4, 1.0), (cx, CAM.y + DW + 1, cz), back_col, sy=shh * 0.9)
-glow = mat("tvglow", "#3D6CFF", 0.5, emit=3.0, ecolor="#2C55E0")
-area("tv_wash", (cx, CAM.y + DT - 0.4, cz), 220, sw, (0.35, 0.5, 1.0), (cx, CAM.y + DT - 3, cz - 1.5), back_col, sy=shh)
-screen_px = [[x0, y0], [x1, y0], [x1, y1], [x0, y1]]
+screen_px = None
+if LAY["wall"]:
+  x0, y0 = g("wall", 1124, 124); x1, y1 = g("wall", 1846, 636)
+  DT = DW - 0.18
+  a, b = P(x0, y0, DT), P(x1, y1, DT)
+  cx, cz, sw, shh = (a.x + b.x) / 2, (a.z + b.z) / 2, b.x - a.x, a.z - b.z
+  bez = 7 * U(DT)                          # a hairline bezel, like a current smart TV
+  box((cx, CAM.y + DT + 0.03, cz), (sw + 2 * bez, 0.045, shh + 2 * bez), M["bezel"], back_col, 0.004)
+  box((cx, CAM.y + DT + 0.055, cz), (sw + 2 * bez - 0.01, 0.01, shh + 2 * bez - 0.01), M["alu_dark"], back_col, 0.003)  # thin metal edge
+  scr = box((cx, CAM.y + DT - 0.0, cz), (sw, 0.01, shh), M["screen"], back_col, 0)
+  box((cx, CAM.y + DT + 0.12, cz), (sw * 0.3, 0.06, shh * 0.3), M["metal"], back_col, 0.01)      # wall mount
+  halo = area("tv_halo", (cx, CAM.y + DT + 0.14, cz), 260, sw * 0.9, (0.25, 0.4, 1.0), (cx, CAM.y + DW + 1, cz), back_col, sy=shh * 0.9)
+  glow = mat("tvglow", "#3D6CFF", 0.5, emit=3.0, ecolor="#2C55E0")
+  area("tv_wash", (cx, CAM.y + DT - 0.4, cz), 220, sw, (0.35, 0.5, 1.0), (cx, CAM.y + DT - 3, cz - 1.5), back_col, sy=shh)
+  screen_px = [[x0, y0], [x1, y0], [x1, y1], [x0, y1]]
 
 # GOLIDE neon ring (long only; the logo mark itself is drawn on top as before)
 if LAY["neon"]:
@@ -251,39 +255,41 @@ if LAY["neon"]:
     po = bpy.data.objects.new("neon", pl); po.location = c + Vector((0, -0.3, 0)); back_col.objects.link(po)
 
 # floating shelves: books, trophy, LED cube, plant
-DS = DW - 0.45
-for sy_px in (470, 640):
-    sx0, sy0 = g("shelf", 96, sy_px); sx1, _ = g("shelf", 396, sy_px)
-    p0, p1 = P(sx0, sy0, DS), P(sx1, sy0, DS)
-    box(((p0.x + p1.x) / 2, CAM.y + DS + 0.1, p0.z - 0.025), (p1.x - p0.x, 0.42, 0.05), M["shelf"], back_col, 0.008)
-    box(((p0.x + p1.x) / 2, CAM.y + DS - 0.08, p0.z - 0.06), (p1.x - p0.x - 0.04, 0.01, 0.01), M["gold_glow"], back_col, 0)
-u = U(DS)
-bx = 120
-for i, (w_, h_) in enumerate(((26, 92), (20, 104), (30, 86), (22, 98), (18, 80))):
-    px_, py_ = g("shelf", bx + w_ / 2, 470)
-    base = P(px_, py_, DS)
-    tilt = (0, -0.12 if i == 4 else 0, 0)
-    box((base.x, CAM.y + DS + 0.1, base.z + h_ * u / 2), (w_ * u * 0.95, 0.3, h_ * u), BOOKS[i], back_col, 0.006, rot=tilt)
-    bx += w_ + 4
-tx, ty = g("shelf", 320, 470)
-tb = P(tx, ty, DS)
-box((tb.x, CAM.y + DS + 0.1, tb.z + 0.03), (0.1, 0.1, 0.06), M["trophy_base"], back_col, 0.008)
-cyl((tb.x, CAM.y + DS + 0.1, tb.z + 0.09), 0.016, 0.07, M["gold"], back_col)
-sph((tb.x, CAM.y + DS + 0.1, tb.z + 0.18), (0.075, 0.075, 0.07), M["gold"], back_col)
-for s in (-1, 1):
-    bpy.ops.mesh.primitive_torus_add(major_radius=0.03, minor_radius=0.008, location=(tb.x + s * 0.078, CAM.y + DS + 0.1, tb.z + 0.19), rotation=(math.pi / 2, 0, 0))
-    put(shade(bpy.context.object), back_col).data.materials.append(M["gold"])
-cx_, cy_ = g("shelf", 150, 640)
-cb = P(cx_, cy_, DS)
-box((cb.x, CAM.y + DS + 0.1, cb.z + 30 * u), (60 * u, 60 * u, 60 * u), M["cube"], back_col, 0.02)
-px_, py_ = g("shelf", 304, 640)
-pb = P(px_, py_, DS)
-cyl((pb.x, CAM.y + DS + 0.1, pb.z + 25 * u), 34 * u, 50 * u, M["pot"], back_col, bevel=0.01)
-for k, (ang, ln) in enumerate(((-35, 1.0), (-12, 1.2), (8, 1.25), (30, 1.05), (52, 0.9), (-55, 0.85))):
-    a_ = math.radians(ang)
-    tip = Vector((pb.x + math.sin(a_) * 70 * u * ln, CAM.y + DS + 0.1 + (k % 2) * 0.06, pb.z + 50 * u + math.cos(a_) * 90 * u * ln))
-    mid = Vector((pb.x, CAM.y + DS + 0.1, pb.z + 50 * u)).lerp(tip, 0.55)
-    sph(tuple(mid), (18 * u, 6 * u, 48 * u * ln), M["leaf"], back_col).rotation_euler = (0, a_, 0)
+if LAY["shelf"]:
+    DS = DW - 0.45
+    for sy_px in (470, 640):
+        sx0, sy0 = g("shelf", 96, sy_px); sx1, _ = g("shelf", 396, sy_px)
+        p0, p1 = P(sx0, sy0, DS), P(sx1, sy0, DS)
+        box(((p0.x + p1.x) / 2, CAM.y + DS + 0.1, p0.z - 0.025), (p1.x - p0.x, 0.42, 0.05), M["shelf"], back_col, 0.008)
+        box(((p0.x + p1.x) / 2, CAM.y + DS - 0.08, p0.z - 0.06), (p1.x - p0.x - 0.04, 0.01, 0.01), M["gold_glow"], back_col, 0)
+    u = U(DS)
+    bx = 120
+    for i, (w_, h_) in enumerate(((26, 92), (20, 104), (30, 86), (22, 98), (18, 80))):
+        px_, py_ = g("shelf", bx + w_ / 2, 470)
+        base = P(px_, py_, DS)
+        tilt = (0, -0.12 if i == 4 else 0, 0)
+        box((base.x, CAM.y + DS + 0.1, base.z + h_ * u / 2), (w_ * u * 0.95, 0.3, h_ * u), BOOKS[i], back_col, 0.006, rot=tilt)
+        bx += w_ + 4
+    tx, ty = g("shelf", 320, 470)
+    tb = P(tx, ty, DS)
+    box((tb.x, CAM.y + DS + 0.1, tb.z + 0.03), (0.1, 0.1, 0.06), M["trophy_base"], back_col, 0.008)
+    cyl((tb.x, CAM.y + DS + 0.1, tb.z + 0.09), 0.016, 0.07, M["gold"], back_col)
+    sph((tb.x, CAM.y + DS + 0.1, tb.z + 0.18), (0.075, 0.075, 0.07), M["gold"], back_col)
+    for s in (-1, 1):
+        bpy.ops.mesh.primitive_torus_add(major_radius=0.03, minor_radius=0.008, location=(tb.x + s * 0.078, CAM.y + DS + 0.1, tb.z + 0.19), rotation=(math.pi / 2, 0, 0))
+        put(shade(bpy.context.object), back_col).data.materials.append(M["gold"])
+    cx_, cy_ = g("shelf", 150, 640)
+    cb = P(cx_, cy_, DS)
+    box((cb.x, CAM.y + DS + 0.1, cb.z + 30 * u), (60 * u, 60 * u, 60 * u), M["cube"], back_col, 0.02)
+    px_, py_ = g("shelf", 304, 640)
+    pb = P(px_, py_, DS)
+    cyl((pb.x, CAM.y + DS + 0.1, pb.z + 25 * u), 34 * u, 50 * u, M["pot"], back_col, bevel=0.01)
+    for k, (ang, ln) in enumerate(((-35, 1.0), (-12, 1.2), (8, 1.25), (30, 1.05), (52, 0.9), (-55, 0.85))):
+        a_ = math.radians(ang)
+        tip = Vector((pb.x + math.sin(a_) * 70 * u * ln, CAM.y + DS + 0.1 + (k % 2) * 0.06, pb.z + 50 * u + math.cos(a_) * 90 * u * ln))
+        mid = Vector((pb.x, CAM.y + DS + 0.1, pb.z + 50 * u)).lerp(tip, 0.55)
+        sph(tuple(mid), (18 * u, 6 * u, 48 * u * ln), M["leaf"], back_col).rotation_euler = (0, a_, 0)
+
 
 # the chair behind Goli: a high-backed leather chair with gold piping
 k = LAY["size"] / 820
@@ -460,10 +466,13 @@ elif PASS == "back":
 from bpy_extras.object_utils import world_to_camera_view  # noqa: E402
 bpy.context.view_layer.update()
 mug_top = world_to_camera_view(sc, co, Vector((mp.x, mp.y, mp.z + mh)))
+e0 = world_to_camera_view(sc, co, Vector((cxT - half, CAM.y + DD, top_z - T * 0.55)))
+e1 = world_to_camera_view(sc, co, Vector((cxT + half, CAM.y + DD, top_z - T * 0.55)))
 neon_px = None
 with open(OUT + ".json", "w") as fh:
     json.dump({"screen": screen_px, "fmt": FMT, "w": W, "h": H,
-               "mug_top": [mug_top.x * W, (1 - mug_top.y) * H]}, fh)
+               "mug_top": [mug_top.x * W, (1 - mug_top.y) * H],
+               "edge": [e0.x * W, (1 - e0.y) * H, e1.x * W, (1 - e1.y) * H], "top": LAY.get("top", 0)}, fh)
 sc.render.filepath = OUT
 bpy.ops.render.render(write_still=True)
 print("rendered", OUT)
