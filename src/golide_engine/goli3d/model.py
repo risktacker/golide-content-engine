@@ -805,7 +805,14 @@ def hand(h, d, kind, side):
         limb(base, base + d * 0.2, 0.034, 0.031, SKIN)
         limb(h + d * 0.05 + perp * 0.07 + Vector((0, -0.09, 0)), h + d * 0.02 + perp * 0.0 + Vector((0, -0.11, 0)), 0.03, 0.028, SKIN)
     elif kind == "thumb":
-        limb(h + d * 0.05 + Vector((0, -0.02, 0.08)), h + d * 0.03 + Vector((0, -0.04, 0.22)), 0.038, 0.035, SKIN)
+        # a fist seen from the front: curled fingers across it, the thumb up off its inner side (a clear thumbs up)
+        c = h + d * 0.08
+        inward = Vector((-side, 0, 0))
+        for k in range(3):
+            z = c.z + 0.05 - k * 0.045
+            limb(Vector((c.x - 0.075, c.y - 0.085, z)), Vector((c.x + 0.075, c.y - 0.085, z)), 0.026, 0.026, SKIN)
+        base = c + inward * 0.07 + Vector((0, -0.04, 0.07))
+        limb(base, base + Vector((0, -0.01, 0.16)) + inward * 0.02, 0.04, 0.034, SKIN)
     elif kind == "open":
         limb(h + d * 0.04 + Vector((side * -0.08, -0.05, 0.0)), h + d * 0.1 + Vector((side * -0.11, -0.07, 0.03)), 0.034, 0.03, SKIN)
 
