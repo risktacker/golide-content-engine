@@ -123,7 +123,7 @@ video's title and the verified research. Follow the format and its pacing rules 
 - PLACES (owner 2026-11-21: "it's the whole world"): a wide, walk or closeup shot stands in a real place that
   fits its sentence. Sets: {", ".join(sorted(kit_sets()))}. Options: "time" (day/dusk/night), and where the place
   carries a name, "sign" (hq, cutaway, press, newsroom, exchange, highway, launchpad, stage, classroom "board_text")
-  or "flag" (moon, mars). "logo": the company's name (hq, cutaway, press) puts its REAL logo on the sign. A new place at least every 2-3 shots; never the same place twice in a row.
+  or "flag" (moon, mars). "logo": the company's name (hq, cutaway, press, campus) puts its REAL logo on the sign or roof. A new place at least every 2-3 shots; never the same place twice in a row.
 - MOVING PICTURES: any shot may carry "moves": [{{"do": name, "at": "word", ...}}], a picture that plays on its word:
   {", ".join(sorted(kit_moves()))}. Options: x, y, s, "text" (a label), "names" (kart_race, podium, dominoes:
   2-5 short names from the script; company names get their real logos), logo_pop ("logo": a company the

@@ -113,54 +113,78 @@ def _tree(c, x, y, s=1.0, col='#3E9A56', kind='round'):
 
 # ---------------------------------------------------------------- tech
 def set_datacenter(c, o):
-    """One-point aisle of server racks, cold blue light, ceiling trays (the Colossus shot)."""
-    vx, vy = 960, 470
-    c.drawRect(skia.Rect(L0, -700, R0, H + 700), fp('#1B2238'))
-    c.drawRect(skia.Rect(L0, 760, R0, H + 700), fp('#2A3350'))
-    for i in range(-10, 11): c.drawLine(vx + i * 30, vy, vx + i * 420, H + 300, ink(3, '#36406A'))
-    for k in range(8): yy = 760 + k * k * 9; c.drawLine(L0, yy, R0, yy, ink(2, '#36406A'))
+    """High-tech data-centre aisle (owner's model, @afterhourtheories): bright white hall, white racks with dark faces
+    and cyan lights, yellow and blue cable trays on top, light bars above, a red sign at the far end."""
+    vx, vy = 960, 520
+    c.drawRect(skia.Rect(L0, -700, R0, H + 700), fp('#E6E8EE'))
+    c.drawRect(skia.Rect(L0, 780, R0, H + 700), fp('#D8DBE2'))
+    for i in range(-10, 11): c.drawLine(vx + i * 28, vy, vx + i * 420, H + 300, ink(2, '#C4C8D2'))
+    for k in range(8): yy = 780 + k * k * 9; c.drawLine(L0, yy, R0, yy, ink(2, '#C4C8D2'))
+    for k in range(6):                                            # ceiling light bars running to the end
+        f = 1 - k / 6.0; w = 60 + 200 * f ** 1.6; y = vy - 120 - 520 * f ** 1.6
+        rect(c, vx - w / 2 - 6, y - 10 * f - 4, vx + w / 2 + 6, y + 10 * f + 4, '#F8FAFF', LW * .4)
+    sign = (o.get('sign') or '').upper()
+    rect(c, vx - 230, vy - 150, vx + 230, vy - 40, '#E04848', LW * .7)
+    if sign: label(c, sign, vx, vy - 75, fit_size(sign, 56, 420), '#F2C14E', align='center', skew=0)
+    rect(c, vx - 150, vy - 40, vx + 150, vy + 60, '#FFFFFF', LW * .5)
     for side in (-1, 1):
         for k in range(7):
             f0, f1 = 1 - k / 7.0, 1 - (k + 1) / 7.0
-            xa, xb = vx + side * (130 + 1100 * f0 ** 1.6), vx + side * (130 + 1100 * f1 ** 1.6)
-            ta, tb = vy - 40 - 560 * f0 ** 1.6, vy - 40 - 560 * f1 ** 1.6
-            ba, bb = vy + 40 + 640 * f0 ** 1.6, vy + 40 + 640 * f1 ** 1.6
-            poly(c, [(xa, ta), (xb, tb), (xb, bb), (xa, ba)], '#2E3448' if k % 2 else '#353C52', LW * .6)
-            for j in range(1, 7):
-                ya, yb = ta + (ba - ta) * j / 7, tb + (bb - tb) * j / 7
-                c.drawLine(xa, ya, xb, yb, ink(2, '#1A1E2C'))
-                for q in (.3, .6):
-                    lx = xa + (xb - xa) * q; ly = ya + (yb - ya) * q - 6 * f0
-                    c.drawCircle(lx, ly, max(2, 6 * f0), fp('#5FE08A' if (j + k + int(q * 10)) % 3 else '#7FC8F8'))
-    for k in range(5):
-        y = 120 - k * 18; c.drawLine(L0, y + k * 40, R0, y + k * 40, ink(4, '#3E4866'))
-    for side in (-1, 1): line(c, vx + side * 60, vy - 60, vx + side * 900, -200, 10, '#F2C14E')
-    rect(c, vx - 120, vy - 60, vx + 120, vy + 60, '#BFE3F2', LW * .6)
-    return dict(floor=FLOOR, ambient='#5A6AB0', lights=[('pool', 960, 500, 900, .85)], bulbs=[(960, 470, 300, '#7FC8F8', 60)],
-                spots=[(700, FLOOR), (1220, FLOOR)])
+            xa, xb = vx + side * (160 + 1100 * f0 ** 1.6), vx + side * (160 + 1100 * f1 ** 1.6)
+            ta, tb = vy - 40 - 520 * f0 ** 1.6, vy - 40 - 520 * f1 ** 1.6
+            ba, bb = vy + 60 + 640 * f0 ** 1.6, vy + 60 + 640 * f1 ** 1.6
+            poly(c, [(xa, ta), (xb, tb), (xb, bb), (xa, ba)], '#2E333F', LW * .5)
+            inset = (xb - xa) * .08
+            poly(c, [(xa, ta), (xa + inset, ta), (xa + inset, ba), (xa, ba)], '#F4F5F8', 0)
+            for j in range(1, 9):
+                ya, yb = ta + (ba - ta) * j / 9, tb + (bb - tb) * j / 9
+                c.drawLine(xa, ya, xb, yb, ink(max(1, 2 * f0), '#454B5A'))
+                lx = xa + (xb - xa) * .7; ly = ya + (yb - ya) * .7 - 6 * f0
+                c.drawCircle(lx, ly, max(1.5, 4 * f0), fp('#5FE0E0' if (j + k) % 3 else '#5FE08A'))
+            for (dy, colr, h) in ((-60, '#3B6EA8', 26), (-100, '#F2C14E', 34)):   # trays on top of the racks
+                h0, h1 = h * f0 + 2, h * f1 + 2
+                poly(c, [(xa, ta + dy * f0), (xb, tb + dy * f1), (xb, tb + dy * f1 + h1), (xa, ta + dy * f0 + h0)], colr, LW * .4)
+            poly(c, [(xa, ta - 24 * f0), (xb, tb - 24 * f1), (xb, tb), (xa, ta)], '#E04848', 0)
+    return dict(floor=FLOOR, ambient=None, lights=[], bulbs=[(960, 420, 700, '#FFFFFF', 30)], spots=[(700, FLOOR), (1220, FLOOR)])
 
 
 def set_factory(c, o):
-    """Long factory hall: high windows, conveyor with boxes, robot arms, hazard floor."""
-    _room(c, '#B9BDC6', '#7D828E', 760, boards=False)
-    for i in range(-3, 9):
-        x = i * 280; rect(c, x + 30, 80, x + 230, 380, '#DCEAF2', LW * .7)
-        line(c, x + 130, 80, x + 130, 380, LW * .5); line(c, x + 30, 230, x + 230, 230, LW * .5)
-    for i in range(-3, 9):
-        if not _in_band(i * 280): rect(c, i * 280 - 14, -100, i * 280 + 14, 760, '#8A8F9C', LW * .6)
-    for i in range(-4, 30): c.drawLine(i * 140, 760, i * 140 - 300, H + 300, ink(3, '#6C717C'))
-    rect(c, L0, 640, R0, 700, '#3A3F4C', LW); rect(c, L0, 700, R0, 740, '#262A34', LW * .7)
-    for i in range(-6, 22): circ(c, i * 120, 720, 14, '#5A6070', LW * .4)
-    for i, x in enumerate((180, 520, 1260, 1640)):
-        rect(c, x - 70, 560, x + 70, 640, '#C9965A', LW * .7); line(c, x - 70, 600, x + 70, 600, 4, '#8E6236')
-    for x in (860, 1460):
-        rect(c, x - 50, 690, x + 50, 740, '#F2A13C', LW * .7)
-        line(c, x, 700, x + 60, 470, 26, INK); line(c, x, 700, x + 60, 470, 18, '#F2A13C')
-        line(c, x + 60, 470, x - 30, 520, 22, INK); line(c, x + 60, 470, x - 30, 520, 14, '#F2A13C')
-        circ(c, x + 60, 470, 20, '#3A3F4C', LW * .6); poly(c, [(x - 50, 512), (x - 10, 512), (x - 20, 552), (x - 40, 552)], '#3A3F4C', LW * .5)
-    for i in range(-10, 30):
-        x = i * 80; poly(c, [(x, 980), (x + 40, 980), (x + 10, 1010), (x - 30, 1010)], '#F2C14E' if i % 2 else '#1C1C22', 0)
-    return _info(o.get('time', 'day'), [('pool', 960, 500, 1000, .9)])
+    """High-tech factory (owner's model): bright hall, white machines, a yellow-railed conveyor running into the
+    distance, gantry rails with hanging lamps, a blue ceiling."""
+    vx, vy = 960, 560
+    c.drawRect(skia.Rect(L0, -700, R0, vy), fp('#5A66B0'))
+    for k in range(7):
+        f = 1 - k / 7.0; y = vy - 40 - 560 * f ** 1.5; w = 200 + 1400 * f ** 1.5
+        for sx in (-1, 1):
+            poly(c, [(vx + sx * w * .15, y), (vx + sx * w * .45, y), (vx + sx * w * .42, y + 26 * f), (vx + sx * w * .17, y + 26 * f)], '#E8E27A', 0)
+    for sx in (-1, 1):
+        line(c, vx + sx * 60, vy - 40, vx + sx * 900, -400, 26, '#2E333F')
+        for k in range(1, 6):
+            f = k / 6.0; x = vx + sx * (60 + 840 * f ** 1.4); y = vy - 40 - 900 * f ** 1.4 * .52
+            line(c, x, y, x, y + 40 * f + 10, 6 * f + 2, '#2E333F')
+            rect(c, x - 40 * f - 8, y + 40 * f + 10, x + 40 * f + 8, y + 100 * f + 30, '#F4F5F8', LW * .5, r=8)
+            c.drawRect(skia.Rect(x - 40 * f - 8, y + 40 * f + 10, x + 40 * f + 8, y + 50 * f + 16), fp('#3B6EA8'))
+    c.drawRect(skia.Rect(L0, vy, R0, H + 700), fp('#EDEAE0'))
+    for i in range(-12, 13): c.drawLine(vx + i * 34, vy, vx + i * 500, H + 300, ink(2, '#D6D2C4'))
+    for k in range(10): yy = vy + k * k * 7; c.drawLine(L0, yy, R0, yy, ink(2, '#D6D2C4'))
+    for side in (-1,):
+        for k in range(6):
+            f0, f1 = 1 - k / 6.0, 1 - (k + 1) / 6.0
+            xa, xb = vx + side * (130 + 1000 * f0 ** 1.5), vx + side * (130 + 1000 * f1 ** 1.5)
+            ta, tb = vy - 20 - 420 * f0 ** 1.5, vy - 20 - 420 * f1 ** 1.5
+            ba, bb = vy + 30 + 560 * f0 ** 1.5, vy + 30 + 560 * f1 ** 1.5
+            poly(c, [(xa, ta), (xb, tb), (xb, bb), (xa, ba)], '#F4F2E8', LW * .5)
+            poly(c, [(xa, ta), (xb, tb), (xb, tb + 40 * f1 + 4), (xa, ta + 40 * f0 + 4)], '#E8E27A', 0)
+            mx = xa + (xb - xa) * .5
+            rect(c, mx - 18 * f0, ta + 70 * f0, mx + 18 * f0, ta + 200 * f0, '#3E9A56', LW * .3)
+    # the conveyor: from the right foreground into the distance (characters stand left of it)
+    p = skia.Path(); p.moveTo(vx + 40, vy); p.lineTo(vx + 90, vy); p.lineTo(2300, H + 400); p.lineTo(1500, H + 400); p.close()
+    shape(c, p, '#2E333F', LW * .7)
+    line(c, vx + 40, vy, 1500, H + 400, 22, '#F2C14E'); line(c, vx + 90, vy, 2300, H + 400, 22, '#F2C14E')
+    for k in range(1, 9):
+        f = (k / 9.0) ** 1.6; cx = vx + 65 + (1900 - vx - 65) * f; cy = vy + (H + 400 - vy) * f
+        rect(c, cx - 24 * f - 6, cy - 8 * f - 3, cx + 24 * f + 6, cy + 4, '#E8C27A', LW * .3)
+    return dict(floor=FLOOR, ambient=None, lights=[], bulbs=[(960, 560, 600, '#FFF3C8', 40)], spots=[(380, FLOOR), (760, FLOOR), (1150, FLOOR)])
 
 
 def set_lab(c, o):
@@ -778,6 +802,50 @@ def set_warroom(c, o):
 
 
 NEW_SETS.update(casino=set_casino, church=set_church, mosque=set_mosque, village=set_village, warroom=set_warroom)
+
+
+def set_campus(c, o):
+    """Aerial view of a tech campus (owner's model): a huge white flat-roof building with the company's real logo
+    on the roof, rows of cooling units, trucks, trees, a far city skyline at dusk."""
+    time = o.get('time', 'dusk')
+    sky(c, time, 520)
+    rr = random.Random(12)
+    for k in range(40):
+        x = 300 + k * 32 + rr.uniform(-6, 6); h = rr.uniform(60, 190)
+        rect(c, x, 470 - h, x + 24, 470, rr.choice(['#5A62A8', '#6A72B8', '#4E569A']), 0)
+        for j in range(int(h // 18)): c.drawRect(skia.Rect(x + 4, 470 - h + 6 + j * 18, x + 20, 470 - h + 10 + j * 18), fp('#DCE4FF', 160))
+    p = skia.Path(); p.addArc(skia.Rect(-120, 380, 360, 760), 200, 140); c.drawPath(p, ink(14, '#B9BDC6'))
+    c.drawRect(skia.Rect(L0, 470, R0, H + 700), fp('#7FA84E'))
+    for k in range(9): c.drawRect(skia.Rect(L0, 470 + k * k * 9, R0, 474 + k * k * 9), fp('#76A04A'))
+    for _ in range(70):
+        x, y = rr.uniform(L0, R0), rr.uniform(500, 1060); s_ = .25 + (y - 470) / 1100
+        if 380 < x < 1580 and 600 < y < 940: continue
+        c.drawCircle(x + 10 * s_, y + 6 * s_, 26 * s_, fp('#4E7A34')); circ(c, x, y, 24 * s_, '#5E9A42', LW * .4 * s_)
+    top = [(470, 640), (1450, 640), (1640, 760), (280, 760)]
+    poly(c, top, '#F4F5F8', LW)
+    poly(c, [(280, 760), (1640, 760), (1640, 880), (280, 880)], '#E4E6EC', LW)
+    for i in range(14): rect(c, 330 + i * 94, 800, 380 + i * 94, 880, '#B9BDC6', LW * .4)
+    rect(c, 900, 800, 1020, 880, '#BFE3A0', LW * .5)
+    for j in range(4):
+        for i in range(16):
+            fx = (i + .5) / 16; fy = (j + .5) / 4
+            x0 = 470 + (280 - 470) * fy + ((1450 + (1640 - 1450) * fy) - (470 + (280 - 470) * fy)) * fx; y0 = 640 + 120 * fy
+            c.drawLine(x0 - 10, y0, x0 + 10, y0, ink(4, '#B9BDC6'))
+    art = o.get('logo_art'); name = (o.get('sign') or (art or {}).get('title') or o.get('logo') or '').upper()
+    poly(c, [(800, 664), (1120, 664), (1160, 736), (760, 736)], '#1C1C22', LW * .6)
+    if not brand(c, art, 960, 700, 62) and name:
+        label(c, name, 960, 716, fit_size(name, 44, 330), '#FFFFFF', align='center', skew=0)
+    for side in (-1, 1):
+        for j in range(3):
+            for i in range(6):
+                x = (180 if side < 0 else 1680) + i * 34 * side + j * 14; y = 700 + j * 40 + i * 6
+                rect(c, x - 14, y - 10, x + 14, y + 10, '#DCE0E8', LW * .3)
+    for (x, y) in ((620, 960), (1300, 1000)):
+        rect(c, x - 18, y - 60, x + 18, y + 30, '#F4F5F8', LW * .5); rect(c, x - 18, y - 60, x + 18, y - 40, '#3A3F4C', 0)
+    return dict(floor=FLOOR, ambient=AMBIENT.get(time), lights=[('pool', 960, 700, 900, .95)], bulbs=[], spots=[(520, FLOOR), (1400, FLOOR)])
+
+
+NEW_SETS.update(campus=set_campus)
 
 
 def register(sets_module) -> None:

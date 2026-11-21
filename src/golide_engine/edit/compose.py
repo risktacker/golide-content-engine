@@ -803,7 +803,9 @@ class Composer:
 
     # x, y, w, h of a finished video's panel. Long: it ends 12 px before Goli's box (x = 1920 - 459 + 20 = 1481), so
     # the two never overlap (owner 2026-11-17: no collision in anything)
-    STAGE = {"long": (24, 133, 1445, 813), "short": (350, 60, 700, 1244)}
+    # 2026-11-21 (owner, "fix the collision"): Goli's point reached 169 px into the 1445-wide panel; the panel is
+    # 1286 wide (16:9) and Goli stands 20 px further right, so every pose clears the frame (tests measure the sprites)
+    STAGE = {"long": (24, 178, 1286, 723), "short": (350, 60, 700, 1244)}
 
     def stage_video(self, t0, dur, data, how="cut"):
         """2026-11-17 (owner): a finished video (a Stickman video) playing in a dark frame, with Goli beside it as the
@@ -1180,7 +1182,7 @@ class Composer:
         # pushed the proof small, so 700 beside a larger proof area
         side = 560 if self.fmt == "short" else 700
         # "beside": next to a finished video's panel (Stickman + Goli, 2026-11-17): full body so his arms read
-        beside = 620 if self.fmt == "long" else 680     # 2026-11-17 (owner): 800 looked huge on long
+        beside = 600 if self.fmt == "long" else 680     # 2026-11-17: 800 looked huge on long; 2026-11-21: 600 keeps his point 30 px off the panel
         size = {"full": 1000, "left": 860, "right": 860, "corner": 420, "studio": studio.layout(self.fmt)["size"],
                 "lower": studio.layout("lower")["size"], "side": side, "beside": beside}[place]
         from ..goli3d import video as goli3d
@@ -1190,7 +1192,7 @@ class Composer:
         x = {"full": self.w * 0.27 - w / 2, "left": 40, "right": self.w - w - 40, "corner": self.w - w - 50,
              "studio": studio.layout(self.fmt)["seat_x"] - w / 2, "lower": studio.layout("lower")["seat_x"] - w / 2,
              "side": 10 if self.fmt == "short" else self.w - w + 60,
-             "beside": -10 if self.fmt == "short" else self.w - w + 20}[place]
+             "beside": -10 if self.fmt == "short" else self.w - w + 40}[place]
         y = self.h - size - (30 if place != "corner" else 20)
         if place == "side":   # standing beside the block; on a Short his feet stay above YouTube's caption area
             y = (1700 if self.fmt == "short" else self.h + 150) - size   # long: knees at the frame's bottom edge
