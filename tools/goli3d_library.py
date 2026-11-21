@@ -17,14 +17,9 @@ MODEL = ROOT / "src" / "golide_engine" / "goli3d" / "model.py"
 OUT = ROOT / "assets" / "goli3d" / "full"
 EXPRS = ("neutral happy laughing excited angry determined surprised astonished scared disappointed crying shy "
          "trying_hard thinking confused smug sleepy hungry in_love savage").split()
-PLAN = {
-    "talk": EXPRS,
-    "point_left": ["smug", "excited", "determined", "happy"], "point": ["smug", "excited", "determined", "happy"],
-    "point_up": ["smug", "excited", "surprised"], "thumbs_up": ["happy", "excited", "smug"],
-    "shock": ["astonished", "scared", "excited", "surprised"], "point_both_up": ["excited", "happy", "astonished"],
-    "wave": ["happy", "excited"], "shrug": ["confused", "disappointed", "smug"], "think": ["thinking", "confused"],
-    "explain": ["neutral", "determined", "happy", "smug"], "facepalm": ["disappointed", "trying_hard"],
-}
+POSES = ("talk", "point_left", "point", "point_up", "thumbs_up", "shock", "point_both_up", "wave", "shrug", "think",
+         "explain", "facepalm")
+PLAN = {p: EXPRS for p in POSES}     # owner 2026-11-21: every pose with every reaction, no stand-ins
 
 
 def render(job):

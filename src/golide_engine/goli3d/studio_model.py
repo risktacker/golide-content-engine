@@ -214,7 +214,7 @@ box((0, y_wall + 0.02, (top_left.z + bot_right.z) / 2), (span_w + 1, 0.02, span_
 # warm LED uplight at the foot of the wall
 f0, f1 = P(-40, H - 6, DW - 0.25), P(W + 40, H - 6, DW - 0.25)
 box(((f0.x + f1.x) / 2, y_wall - 0.25, f0.z), (f1.x - f0.x, 0.03, 0.03), M["gold_glow"], back_col, 0)
-area("uplight", ((f0.x + f1.x) / 2, y_wall - 0.5, f0.z - 0.1), 900 if FMT != "lower" else 150, f1.x - f0.x, (1.0, 0.78, 0.45),
+area("uplight", ((f0.x + f1.x) / 2, y_wall - 0.5, f0.z - 0.1), 900 if FMT != "lower" else 10, f1.x - f0.x, (1.0, 0.78, 0.45),
      ((f0.x + f1.x) / 2, y_wall, f0.z + 3), back_col, sy=0.2)
 
 # the video wall: a big flat TV with a slim bezel; the screen is left plain (content is laid on in the video)
