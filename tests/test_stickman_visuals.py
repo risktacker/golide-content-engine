@@ -1,4 +1,5 @@
 import json
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -45,9 +46,9 @@ def test_the_writer_sees_places_moves_and_camera():
 
 
 def test_unknown_place_move_or_camera_goes_back_then_never_stops_the_render():
-    story = {"shots": [{"set": "casino", "moves": [{"do": "fireworks"}, {"do": "money_rain"}], "cam": "zoomy"},
+    story = {"shots": [{"set": "zoo", "moves": [{"do": "fireworks"}, {"do": "money_rain"}], "cam": "zoomy"},
                        {"set": "vault", "cam": "push", "moves": [{"do": "cash_pile"}]}]}
-    assert len(L.fix_places(story)) == 3 and story["shots"][0]["set"] == "casino"    # first: told to the writer
+    assert len(L.fix_places(story)) == 3 and story["shots"][0]["set"] == "zoo"    # first: told to the writer
     L.fix_places(story, final=True)
     assert story["shots"][0] == {"moves": [{"do": "money_rain"}]}                     # kit's own place for the kind
     assert story["shots"][1] == {"set": "vault", "cam": "push", "moves": [{"do": "cash_pile"}]}
@@ -76,6 +77,9 @@ def test_every_place_and_move_draws():
             "from golide_engine.stickman import rm_sets, rm_moves\n"
             "s = skia.Surface(480, 270); c = s.getCanvas(); c.scale(.25, .25)\n"
             "for n, f in rm_sets.NEW_SETS.items(): f(c, {}); f(c, {'time': 'night', 'sign': 'Nvidia', 'flag': 'X'})\n"
+            "import engine.shots as S\nfrom engine.kit import make_look\nfrom golide_engine.stickman.rm_roles import ROLES\n"
+            "for r in ROLES: S.draw_char(c, 500, 900, .6, make_look(dict(ROLES[r], role=r)), face=.3)\n"
+            "S.draw_char(c, 500, 900, .6, make_look({'headscarf': True}))\n"
             "for n, f in rm_moves.MOVES.items():\n    [f(c, u, {'text': 'GO', 'names': ['A', 'B', 'C']}, 3.0 + u) for u in (0, .3, .7, 1, 2)]\n"
             "print('drew', len(rm_sets.NEW_SETS), len(rm_moves.MOVES))\n")
     f = Path("/tmp/_rm_draw_check.py")
@@ -83,3 +87,45 @@ def test_every_place_and_move_draws():
     out = subprocess.run([sys.executable, str(f)], cwd=L.KIT, capture_output=True, text=True, timeout=300,
                          env={"PYTHONPATH": f"{hook}:{src}", "PATH": "/usr/bin:/bin"})
     assert "drew" in out.stdout, out.stderr[-800:]
+
+
+def test_roles_dress_the_cast_and_unknown_roles_are_reported():
+    from golide_engine.stickman.rm_roles import apply_roles
+    story = {"cast": {"a": {"role": "Soldier"}, "b": {"role": "worker", "color": "#123456"}, "c": {"role": "cowboy"}}}
+    assert apply_roles(story) == ["cowboy"]
+    assert story["cast"]["a"]["outfit"] == "sweater" and story["cast"]["a"]["hat"] == "none"
+    assert story["cast"]["b"]["color"] == "#123456"                 # what the writer set wins
+    assert "role" not in story["cast"]["c"]
+    assert "soldier" in L.instructions() and "headscarf" in L.instructions()
+
+
+def test_logos_are_attached_from_the_logo_book_never_drawn(monkeypatch):
+    from golide_engine.vector import logos
+    book = {"nvidia": {"svg": "<svg></svg>", "hex": "76B900", "title": "NVIDIA"}}
+    monkeypatch.setattr(logos, "find", lambda n: book.get(n.lower()))
+    story = {"shots": [{"set": "hq", "logo": "Nvidia"},
+                       {"moves": [{"do": "kart_race", "names": ["Nvidia", "BYD"]}, {"do": "logo_pop", "logo": "BYD"}]}]}
+    assert L.attach_logos(story) == ["BYD", "BYD"]
+    assert story["shots"][0]["logo_art"]["title"] == "NVIDIA"
+    assert story["shots"][1]["moves"][0]["logo_art"][0]["hex"] == "76B900" and story["shots"][1]["moves"][0]["logo_art"][1] is None
+    assert "logo_art" not in story["shots"][1]["moves"][1]           # no mark: its name in text, never a look-alike
+
+
+def test_what_the_writer_wanted_is_listed(monkeypatch, tmp_path):
+    from golide_engine.vector import logos
+    monkeypatch.setattr(logos, "find", lambda n: None)
+    story = {"cast": {"a": {"role": "cowboy"}}, "shots": [
+        {"set": "casino2", "cam": "dolly", "icons": [{"name": "slot_machine"}, {"name": "chip"}], "logo": "BYD",
+         "moves": [{"do": "fireworks"}, {"do": "money_rain"}]}]}
+    got = {(w["kind"], w["name"]) for w in L.wishes(story)}
+    assert got == {("role", "cowboy"), ("place", "casino2"), ("camera", "dolly"), ("icon", "slot machine"),
+                   ("move", "fireworks"), ("logo", "BYD")}
+    monkeypatch.delenv("GOLIDE_STUDIO_BASE_URL", raising=False)
+    L.report_wishes(tmp_path, "t", L.wishes(story))
+    assert len(json.loads((tmp_path / "wishes.json").read_text())) == 6
+
+
+def test_no_pole_stands_where_characters_stand():
+    src = (Path(L.__file__).resolve().parent / "rm_sets.py").read_text()
+    assert "for x in (130, 1790):" in src and "for x in (150, 1770):" in src     # court and press flags
+    assert "_in_band(i * 280)" in src and "_in_band(i * 260)" in src            # factory and station pillars

@@ -109,19 +109,25 @@ video's title and the verified research. Follow the format and its pacing rules 
 - chapter cards: 1-2 silent title cards for 5 min, 3-6 for 10-15 min, 0-1 for 3 min (as the format says);
 - cue mid-shot events with words from that shot's own sentences ("at": "word");
 - end on a polaroid shot whose caption is the payoff line, cued 1-2 s before the end.
-- cast: 2-4 ORIGINAL characters with distinct silhouettes and colours. Real people (a CEO, a founder) are generic
-  puppets with a lower_third name card, never a likeness; no brand mascots or logos.
+- cast: 2-4 ORIGINAL characters with distinct silhouettes and colours. Dress them for who they are with "role":
+  {", ".join(sorted(ROLES))} (the role sets outfit, colours and gear: helmet, hard hat and hi-vis vest, lab coat,
+  stethoscope, badge, cap, crown...); "headscarf": true (with "scarf_col") for a woman who wears one; "headwear":
+  one of {", ".join(HEADWEAR)} on anyone. Women: "outfit": "dress" or a suit with "hair": "long" or "bun".
+  Extras for one shot (soldiers, workers, crowd members) are cast members too. Real people (a CEO, a founder) are generic
+  puppets with a lower_third name card, never a likeness; no brand mascots. Company logos are real (owner
+  2026-11-21): use "logo" / logo_pop / names, never draw a logo yourself.
 - labels: 1-4 words each, at most 3 per shot; characters' x between 250 and 1670.
 - icons (owner 2026-11-21: show the real things the story names): use the kit's icons, which include ours:
   {", ".join(sorted(kit_icons()))}. Draw what is said (chip, datacenter, rocket, factory, court...). A thing
   with no icon gets icon "label" with "text": its name (1-3 words); never skip it.
 - PLACES (owner 2026-11-21: "it's the whole world"): a wide, walk or closeup shot stands in a real place that
   fits its sentence. Sets: {", ".join(sorted(kit_sets()))}. Options: "time" (day/dusk/night), and where the place
-  carries a name, "sign" or "logo" (hq, cutaway, press, newsroom, exchange, highway, launchpad, stage) or "flag"
-  (moon, mars). A new place at least every 2-3 shots; never the same place twice in a row.
+  carries a name, "sign" (hq, cutaway, press, newsroom, exchange, highway, launchpad, stage, classroom "board_text")
+  or "flag" (moon, mars). "logo": the company's name (hq, cutaway, press) puts its REAL logo on the sign. A new place at least every 2-3 shots; never the same place twice in a row.
 - MOVING PICTURES: any shot may carry "moves": [{{"do": name, "at": "word", ...}}], a picture that plays on its word:
   {", ".join(sorted(kit_moves()))}. Options: x, y, s, "text" (a label), "names" (kart_race, podium, dominoes:
-  2-5 short names from the script). "at" is a word in the FIRST HALF of the shot's sentence (a move on the last
+  2-5 short names from the script; company names get their real logos), logo_pop ("logo": a company the
+  sentence names, its real mark pops in). "at" is a word in the FIRST HALF of the shot's sentence (a move on the last
   word is cut off). Use one move in about every second shot, matched literally to what is said (money -> money_rain
   or cash_pile, launch -> rocket_launch, crash -> chart_down + alarm, race/competition -> kart_race, winner -> podium,
   chain reaction -> dominoes, change of direction -> signpost, ban/shut down -> door_slam); never the same move in
@@ -198,6 +204,7 @@ def storyboard(text, project: Path, title: str, doc: dict[str, Any], research: d
     that collides is taken out), so the video is clean. Returns the plan warnings left."""
     problems = ""
     left: list[str] = []
+    asked: list[dict[str, str]] = []
     for attempt in (1, 2):
         out = text.generate_json(instructions(), request(title, (project / "script.txt").read_text(encoding="utf-8"),
                                                          doc, research, problems), STORY_SCHEMA, max_output_tokens=60000)
@@ -205,6 +212,7 @@ def storyboard(text, project: Path, title: str, doc: dict[str, Any], research: d
             record(f"stickman-story-{attempt}", out)
         story = json.loads(out.value["story_json"])
         story["title"] = title
+        asked += [w for w in wishes(story) if w not in asked]
         (project / "story.json").write_text(json.dumps(story, indent=1, ensure_ascii=False), encoding="utf-8")
         unknown = fix_icons(json.loads(json.dumps(story)))
         places = fix_places(json.loads(json.dumps(story)))
@@ -230,8 +238,10 @@ def storyboard(text, project: Path, title: str, doc: dict[str, Any], research: d
         print(json.dumps({"status": "stickman_plan", "attempt": attempt, "warnings": len(left), "collisions": len(hit)}),
               flush=True)
         if not left and not hit:
+            report_wishes(project, title, asked)
             return []
         problems = "\n".join(f"- {w}" for w in left + hit)
+    report_wishes(project, title, asked)
     clean_up(project)
     return left
 
@@ -246,6 +256,8 @@ def kit_icons() -> set[str]:
     return set(re.findall(r"(\w+)=(?:ic_|lambda)", block)) | set(re.findall(r'"(\w+)": ic_', ours))
 
 
+from .rm_roles import HEADWEAR, ROLES  # noqa: E402
+
 CAM_PRESETS = ("push", "pull", "pan_left", "pan_right", "tilt_up", "tilt_down", "crane", "orbit", "shake")
 HERE = Path(__file__).resolve().parent
 
@@ -255,8 +267,7 @@ def kit_sets() -> set[str]:
     import re
     src = (KIT / "engine" / "sets.py").read_text(encoding="utf-8")
     block = src[src.find("SETS = dict("):]
-    ours = (HERE / "rm_sets.py").read_text(encoding="utf-8")
-    ours = ours[ours.find("NEW_SETS = dict("):ours.find("\n\n\n", ours.find("NEW_SETS = dict("))]
+    ours = (HERE / "rm_sets.py").read_text(encoding="utf-8")       # NEW_SETS = dict(...) and NEW_SETS.update(...)
     return set(re.findall(r"(\w+)=set_", block)) | set(re.findall(r"(\w+)=set_", ours))
 
 
@@ -295,6 +306,66 @@ def fix_places(story: dict[str, Any], final: bool = False) -> list[str]:
             if final:
                 shot.pop("cam")
     return found
+
+
+def wishes(story: dict[str, Any]) -> list[dict[str, str]]:
+    """What the writer asked for that the library cannot draw (owner 2026-11-21): places, icons, moves, cameras,
+    roles and brand logos. Listed in Studio so each new batch is drawn from what real videos needed. No model call."""
+    from ..vector import logos
+    from .rm_roles import ROLES
+
+    sets, moves, icons = kit_sets(), kit_moves(), kit_icons()
+    out: list[tuple[str, str]] = []
+    for d in (story.get("cast") or {}).values():
+        if isinstance(d, dict) and d.get("role") and str(d["role"]).lower() not in ROLES:
+            out.append(("role", str(d["role"])))
+    for shot in story.get("shots") or []:
+        if not isinstance(shot, dict):
+            continue
+        if shot.get("set") is not None and shot["set"] not in sets:
+            out.append(("place", str(shot["set"])))
+        cam = shot.get("cam")
+        if isinstance(cam, str) and cam not in CAM_PRESETS:
+            out.append(("camera", cam))
+        names = [p.get("icon") for p in shot.get("props") or [] if isinstance(p, dict)]
+        names += [i.get("name") for i in shot.get("icons") or [] if isinstance(i, dict)]
+        names += [(shot.get(k) or {}).get("icon") for k in ("bubble", "compare") if isinstance(shot.get(k), dict)]
+        for n in names:
+            if isinstance(n, str) and n and n not in icons:
+                out.append(("icon", n.replace("_", " ")))
+        brands = [shot.get("logo")]
+        for m in shot.get("moves") or []:
+            if not isinstance(m, dict):
+                continue
+            if m.get("do") not in moves:
+                out.append(("move", str(m.get("do"))))
+            if m.get("do") == "logo_pop":
+                brands.append(m.get("logo") or m.get("text"))
+            elif m.get("do") in LOGO_MOVES:
+                brands += list(m.get("names") or [])
+        for b in brands:
+            if isinstance(b, str) and b.strip() and not logos.find(b.strip()):
+                out.append(("logo", b.strip()))
+    seen, items = set(), []
+    for kind, name in out:
+        if (kind, name.lower()) not in seen:
+            seen.add((kind, name.lower()))
+            items.append({"kind": kind, "name": name})
+    return items
+
+
+def report_wishes(project: Path, title: str, items: list[dict[str, str]]) -> None:
+    """Keep the wishes beside the story and send them to Studio's list. A failed send never stops the video."""
+    (project / "wishes.json").write_text(json.dumps(items, indent=1, ensure_ascii=False), encoding="utf-8")
+    print(json.dumps({"status": "stickman_wishes", "count": len(items), "items": items[:30]}), flush=True)
+    url = os.getenv("GOLIDE_STUDIO_BASE_URL", "").strip()
+    if not items or not url:
+        return
+    try:
+        from ..studio_bridge import StudioBridge
+        StudioBridge(url).stickman_wishes(title, items)
+    except Exception as exc:  # noqa: BLE001 - the list is a help for the next batch, not part of the video
+        print(json.dumps({"status": "stickman_wishes_not_sent", "error": str(exc)[:200]}), flush=True)
 
 
 def fix_icons(story: dict[str, Any], known: set[str] | None = None) -> list[str]:
@@ -350,11 +421,54 @@ def fix_icons(story: dict[str, Any], known: set[str] | None = None) -> list[str]
     return changed
 
 
+LOGO_MOVES = ("kart_race", "podium", "dominoes")
+
+
+def attach_logos(story: dict[str, Any]) -> list[str]:
+    """Real brand marks (owner 2026-11-10/21): a shot's "logo" (hq, cutaway, press...) and the names in a kart race,
+    podium or logo_pop get the brand's own simple-icons mark (vector/logos.py). A brand simple-icons does not carry
+    stays its name in text, never a look-alike. Returns the names that had no mark (for the missing list)."""
+    from ..vector import logos
+
+    missing: list[str] = []
+
+    def art(name: Any) -> dict | None:
+        if not isinstance(name, str) or not name.strip():
+            return None
+        icon = logos.find(name.strip())
+        if not icon:
+            missing.append(name.strip())
+            return None
+        return {"svg": icon["svg"], "hex": icon.get("hex", "000000"), "title": icon.get("title", name)}
+
+    for shot in story.get("shots") or []:
+        if not isinstance(shot, dict):
+            continue
+        if shot.get("logo") and "logo_art" not in shot:
+            found = art(shot["logo"])
+            if found:
+                shot["logo_art"] = found
+        for m in shot.get("moves") or []:
+            if not isinstance(m, dict) or "logo_art" in m:
+                continue
+            if m.get("do") == "logo_pop":
+                found = art(m.get("logo") or m.get("text"))
+                if found:
+                    m["logo_art"] = found
+            elif m.get("do") in LOGO_MOVES and isinstance(m.get("names"), list):
+                m["logo_art"] = [art(n) for n in m["names"]]
+    return missing
+
+
 def fix_story_icons(project: Path) -> None:
     path = project / "story.json"
     story = json.loads(path.read_text(encoding="utf-8"))
+    before = json.dumps(story, sort_keys=True)
     changed = fix_icons(story)
-    if changed:
+    attach_logos(story)
+    from .rm_roles import apply_roles
+    apply_roles(story)
+    if changed or json.dumps(story, sort_keys=True) != before:
         path.write_text(json.dumps(story, indent=1, ensure_ascii=False), encoding="utf-8")
         print(json.dumps({"status": "stickman_icons_fixed", "changed": changed[:20]}), flush=True)
 

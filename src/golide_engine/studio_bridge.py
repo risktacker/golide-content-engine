@@ -108,6 +108,12 @@ class StudioBridge:
         if status not in {200, 201}:
             raise RuntimeError(f"Studio job registration failed with HTTP {status}")
 
+    def stickman_wishes(self, title: str, items: list[dict[str, str]]) -> None:
+        """What a Stickman storyboard asked for that the library cannot draw yet (owner 2026-11-21)."""
+        status, _ = self._request("POST", "/api/engine/stickman/wishes", {"title": title, "items": items})
+        if status != 200:
+            raise RuntimeError(f"Studio stickman wishes failed with HTTP {status}")
+
     def sync_analytics(self, payload: dict[str, Any]) -> None:
         status, _ = self._request("POST", "/api/engine/analytics", payload)
         if status != 200:
