@@ -248,7 +248,8 @@ def install(shots_module) -> None:
             i, name, size = o["item"]
             if name in P.ICONS:
                 hx, hy = _hand(arms[i], i, x, y, s, bob)
-                P.draw_prop(c, name, hx, hy - 30 * s * size / .2, s * size, 0.0)
+                out = -1 if i == 0 else 1                    # held beside the hand, never over the face
+                P.draw_prop(c, name, hx + out * 70 * s, hy + 40 * s, s * size, 0.0)
         if o.get("item_front") and o["item_front"] in P.ICONS:
             P.draw_prop(c, o["item_front"], x, y - 190 * s, s * .36, 0.0)
 

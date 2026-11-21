@@ -120,6 +120,11 @@ video's title and the verified research. Follow the format and its pacing rules 
 - icons (owner 2026-11-21: show the real things the story names): use the kit's icons, which include ours:
   {", ".join(sorted(kit_icons()))}. Draw what is said (chip, datacenter, rocket, factory, court...). A thing
   with no icon gets icon "label" with "text": its name (1-3 words); never skip it.
+- THE CAST CARRIES THE STORY (owner 2026-11-21): at least 2 of every 3 shots are wide/walk/dialogue/closeup shots
+  with characters ACTING (chars with acts) in a place; icon/title/table/chart shots are at most 1 in 3 and never two in
+  a row. The FIRST shot is the hook: a character in a real place doing something on the first words (never an empty
+  card or a title alone). Every character in a shot has at least one act on a word of its sentence. (The engine
+  puts the cast into any shot you leave without it, so give them the place, the things and the acts yourself.)
 - PLACES (owner 2026-11-21: "it's the whole world"): a wide, walk or closeup shot stands in a real place that
   fits its sentence. Sets: {", ".join(sorted(kit_sets()))}. Options: "time" (day/dusk/night), and where the place
   carries a name, "sign" (hq, cutaway, press, newsroom, exchange, highway, launchpad, stage, classroom "board_text")
@@ -215,6 +220,108 @@ def collisions(project: Path) -> dict[str, Any]:
     return json.loads(result.stdout.strip().splitlines()[-1])
 
 
+CHAR_SHARE = 2 / 3     # owner 2026-11-21: "I don't see much of puppets": at least 2 of every 3 shots show characters
+
+
+def puppet_problems(story: dict[str, Any]) -> list[str]:
+    """The puppets carry the story: at least 2 of every 3 shots have characters in them (acting), and never two shots
+    in a row without any. Returned as problems for the writer; a storyboard that still breaks it is not drawn."""
+    shots = [s for s in story.get("shots") or [] if isinstance(s, dict)]
+    if not shots:
+        return ["the story has no shots"]
+    has = [bool(s.get("chars")) for s in shots]
+    out = []
+    if sum(has) < CHAR_SHARE * len(shots):
+        out.append(f"only {sum(has)} of {len(shots)} shots have characters; at least {int(-(-CHAR_SHARE * len(shots) // 1))} "
+                   "must show the cast acting (wide/walk/dialogue/closeup with chars and acts): the puppets carry the story")
+    for i in range(1, len(has)):
+        if not has[i] and not has[i - 1]:
+            out.append(f"shots {i - 1} and {i} both have no characters; never two in a row without the cast")
+    acting = sum(1 for s in shots for ch in s.get("chars") or [] if isinstance(ch, dict) and ch.get("acts"))
+    if sum(has) and acting < sum(has) * .8:
+        out.append(f"only {acting} characters act; every shot with characters gives them acts on the words")
+    return out
+
+
+ACT_WORDS = [   # the act a sentence's words call for (first match wins); "point" at the shot's things otherwise
+    (("lost", "lose", "failed", "fail", "behind", "dropped", "fell"), ["head_down", "shake_head"]),
+    (("waiting", "wait", "queue", "line", "delay", "slow"), ["scratch", "tap_foot"]),
+    (("money", "billion", "million", "cash", "paid", "profit", "revenue", "price"), ["grab"]),
+    (("laugh", "joke", "funny"), ["laugh"]), (("argue", "fight", "versus", "rival", "against"), ["argue"]),
+    (("deal", "agree", "partner", "together"), ["handshake"]), (("no", "not", "never", "won't"), ["shake_head"]),
+    (("yes", "right", "exactly", "true"), ["nod"]), (("shock", "suddenly", "boom", "crash", "huge"), ["jump"]),
+    (("won", "win", "record", "first", "success", "launch"), ["cheer"]), (("type", "code", "write", "posting"), ["type"]),
+    (("phone", "app", "online", "scroll", "post"), ["scroll"]), (("call",), ["call"]), (("think", "why", "how", "what"), ["think"]),
+    (("tired", "hard", "struggle"), ["sigh"]), (("secret", "quiet", "hidden"), ["shh"]),
+]
+CHART_KINDS = ("chart",)
+
+
+def sentence_texts(project: Path) -> list[str]:
+    try:
+        return [str(s.get("text", "")) for s in json.loads((project / "timing.json").read_text(encoding="utf-8"))["sentences"]]
+    except Exception:  # noqa: BLE001 - no timing yet: acts default to pointing
+        return []
+
+
+def _acts_for(text: str, has_things: bool, item: str | None) -> list[dict[str, Any]]:
+    words = re.findall(r"[a-z']+", text.lower())
+    first = words[min(1, len(words) - 1)] if words else None
+    for keys, acts in ACT_WORDS:
+        hit = next((w for w in words if w in keys), None)
+        if hit:
+            out = [{"do": a, "at": hit} for a in acts]
+            if acts == ["grab"] and item:
+                out[0]["item"] = item
+            return out
+    return [{"do": "point" if has_things else "nod", "at": first}] if first else [{"do": "point" if has_things else "nod"}]
+
+
+def cast_in(story: dict[str, Any], sentences: list[str]) -> int:
+    """The cast carries the story (owner 2026-11-21): the engine turns shots without characters into scenes where the
+    cast stands in the place with that shot's things and acts on its words, so at least 2 of every 3 shots and the
+    first shot have the cast, never two in a row without; and every character on screen acts. Returns shots changed."""
+    shots = [s for s in story.get("shots") or [] if isinstance(s, dict)]
+    cast = story.setdefault("cast", {})
+    if not cast:
+        cast["host"] = {"role": "corporate"}
+    ids = list(cast)
+    place, changed, bare = "openoffice", 0, 0
+    def text_of(shot):
+        return " ".join(sentences[i] for i in shot.get("s", []) if isinstance(i, int) and 0 <= i < len(sentences))
+    for i, shot in enumerate(shots):
+        if shot.get("chars"):
+            place = shot.get("set") or place
+            for ch in shot["chars"]:
+                if isinstance(ch, dict) and not ch.get("acts"):
+                    ch["acts"] = _acts_for(text_of(shot), bool(shot.get("props")), None)
+            continue
+        keep = i > 0 and bool(shots[i - 1].get("chars")) and (bare + 1) <= len(shots) / 3
+        if keep:
+            bare += 1
+            continue
+        things = [x.get("name") for x in shot.get("icons") or [] if isinstance(x, dict) and x.get("name")]
+        things += [x.get("icon") for x in shot.get("props") or [] if isinstance(x, dict) and x.get("icon")]
+        moves = list(shot.get("moves") or [])
+        chart = shot.get("kind") in CHART_KINDS
+        if chart:                                   # the chart stands on the right, the cast on the left
+            moves.append({"do": "chart_up", "box": [760, 200, 1740, 800]})
+        who = ids[changed % len(ids)]
+        new = {"kind": "wide", "s": shot.get("s", []), "set": shot.get("set") or place, "cam": shot.get("cam", "push"),
+               "chars": [{"id": who, "x": 360 if chart else 560, "face": .7,
+                          "acts": _acts_for(text_of(shot), bool(things), things[0] if things else None)}],
+               "props": [] if chart else [{"icon": n, "x": 1180 + k * 300, "y": 700, "s": .75} for k, n in enumerate(things[:2])]}
+        for key in ("time", "labels", "lower_third", "logo", "sign", "beats"):
+            if key in shot:
+                new[key] = shot[key]
+        if moves:
+            new["moves"] = [m for m in moves if isinstance(m, dict)]
+        shot.clear(); shot.update(new)
+        changed += 1
+    print(json.dumps({"status": "stickman_cast_in", "shots_given_the_cast": changed, "shots": len(shots)}), flush=True)
+    return changed
+
+
 def storyboard(text, project: Path, title: str, doc: dict[str, Any], research: dict[str, Any], record=None) -> list[str]:
     """Write story.json, then check it: the kit's plan check and our collision check (owner 2026-11-17: no collision
     in anything). Problems go back to the writer once. Any collision still there after that is removed (the text
@@ -230,6 +337,7 @@ def storyboard(text, project: Path, title: str, doc: dict[str, Any], research: d
         story = json.loads(out.value["story_json"])
         story["title"] = title
         asked += [w for w in wishes(story) if w not in asked]
+        cast_in(story, sentence_texts(project))        # owner 2026-11-21: the engine puts the cast in, never a stop
         (project / "story.json").write_text(json.dumps(story, indent=1, ensure_ascii=False), encoding="utf-8")
         unknown = fix_icons(json.loads(json.dumps(story)))
         places = fix_places(json.loads(json.dumps(story)))
