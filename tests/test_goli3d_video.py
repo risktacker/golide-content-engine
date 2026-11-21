@@ -20,14 +20,17 @@ def _fake(tmp_path, monkeypatch):
         fn.cache_clear()
 
 
-import pytest
+try:                     # CI runs unittest (no pytest there): the pytest-style tests below are only collected by pytest
+    import pytest
+except ImportError:      # pragma: no cover
+    pytest = None
 
-
-@pytest.fixture(autouse=True)
-def _clear_caches():
-    yield
-    for fn in (video.meta, video.frame, video._size):
-        fn.cache_clear()
+if pytest is not None:
+    @pytest.fixture(autouse=True)
+    def _clear_caches():
+        yield
+        for fn in (video.meta, video.frame, video._size):
+            fn.cache_clear()
 
 
 def test_layer_has_every_mouth_and_blink_and_one_frame_for_all_poses(tmp_path, monkeypatch):
