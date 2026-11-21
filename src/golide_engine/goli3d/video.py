@@ -24,12 +24,32 @@ def meta(pose: str) -> dict | None:
     return json.loads(f.read_text()) if f.exists() else None
 
 
-def available() -> bool:
-    return meta("talk") is not None
+# what the videos can ask for: every pose the editor, the intros/outros and the Stickman + Goli layer use,
+# in every weekday outfit (tools/goli3d_video.py draws exactly these)
+POSES = ("talk", "explain", "point", "point_up", "point_left", "shock", "think", "thumbs_up", "shrug", "point_both_up", "wave")
+OUTFITS = ("royal", "ember", "emerald", "midnight", "violet", "sky", "crimson")
+
+
+def missing_files() -> list[str]:
+    out = []
+    for p in POSES:
+        d = SPRITES / p
+        need = ["meta.json", "blink.webp"] + [f"body-{o}.webp" for o in OUTFITS] + [f"mouth-{s}.webp" for s in SHAPES]
+        out += [f"{p}/{f}" for f in need if not (d / f).exists()]
+    return out
+
+
+def require() -> None:
+    """Stop before any rendering if a sprite is missing (owner 2026-11-21: no fallbacks; nothing may fail late)."""
+    missing = missing_files()
+    if missing:
+        raise FileNotFoundError(f"Goli 3D sprites missing ({len(missing)}): {missing[:5]}; run goli3d-library.yml kind=video")
 
 
 def pose_name(pose: str) -> str:
-    return pose if meta(pose) else "talk"
+    if pose not in POSES:
+        raise ValueError(f"Goli has no 3D pose {pose!r}; poses: {', '.join(POSES)}")
+    return pose
 
 
 @lru_cache(maxsize=None)
@@ -62,7 +82,8 @@ def layer(pose: str, uid: str, outfit: str, size: float, asset) -> str:
     m = meta(p)
     x0, y0, _, y1 = frame()
     k = size / (y1 - y0)
-    outfit = outfit if outfit in m["body"] else "royal"
+    if outfit not in m["body"]:
+        raise ValueError(f"Goli has no 3D outfit {outfit!r}; outfits: {', '.join(OUTFITS)}")
 
     def img(f: Path, xy, id_="", show=True) -> str:
         w, h = _size(f)

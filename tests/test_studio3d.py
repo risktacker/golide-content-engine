@@ -25,6 +25,22 @@ def test_3d_plates_replace_the_flat_set_and_keep_the_live_parts(tmp_path, monkey
     assert "st-slat" not in back                                  # no flat SVG wall when the 3D set is there
 
 
-def test_flat_set_stays_when_no_plates(tmp_path, monkeypatch):
+def test_missing_plates_stop_the_run_instead_of_a_fallback(tmp_path, monkeypatch):
+    import pytest
     monkeypatch.setattr(studio, "PLATES", tmp_path)
-    assert "st-slat" in studio.back("s1", "short", lambda p: p.name)
+    with pytest.raises(FileNotFoundError):
+        studio.back("s1", "short", lambda p: p.name)
+
+
+def test_every_3d_picture_the_videos_need_is_in_the_repo():
+    """Owner 2026-11-21: no fallbacks, so every picture must be there before anything renders."""
+    from golide_engine.edit.editor import INTRO_POSES, OUTRO_POSES, POSES
+    from golide_engine.goli3d import video
+    for fn in (video.meta, video.frame, video._size):
+        fn.cache_clear()
+    assert video.missing_files() == []
+    asked = set(POSES) | {p for v in (*INTRO_POSES.values(), *OUTRO_POSES.values()) for p, _ in v} | {"point_both_up"}
+    assert asked <= set(video.POSES)
+    for fmt in ("short", "long", "lower"):
+        m = studio.need(fmt)
+        assert {"mug_top", "edge", "back_at", "front_at"} <= set(m)

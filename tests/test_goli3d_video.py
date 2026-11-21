@@ -32,11 +32,12 @@ def _clear_caches():
 
 def test_layer_has_every_mouth_and_blink_and_one_frame_for_all_poses(tmp_path, monkeypatch):
     _fake(tmp_path, monkeypatch)
-    assert video.available()
     assert video.frame() == (60, 20, 340, 400)                    # union of the poses: no jump on a pose change
     got = []
-    html = video.layer("wave", "s1-host-p0", "ember", 760, lambda f: got.append(f) or f.name)
-    assert "body-ember.webp" in html                              # a pose not drawn falls back to talk
+    html = video.layer("shock", "s1-host-p0", "ember", 760, lambda f: got.append(f) or f.name)
+    assert "body-ember.webp" in html
+    with pytest.raises(ValueError):                               # no quiet swaps: an unknown pose is an error
+        video.layer("moonwalk", "s1-host-p1", "ember", 760, lambda f: f.name)
     for s in "ABCDEFGHX":
         assert f'id="s1-host-p0-m{s}"' in html
     assert 'id="s1-host-p0-lid"' in html

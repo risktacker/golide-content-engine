@@ -1,6 +1,8 @@
 """Goli's studio (owner 2026-11-11): the set the GOLIDE host talks from.
 
-A 1920x1080 set drawn in SVG, in two layers so Goli sits between them:
+2026-11-21: the set is the real 3D studio from Blender (goli3d/studio_model.py, rendered once to
+assets/goli3d/studio/). There is no flat fallback: missing plates stop the run before rendering. Two layers so Goli
+sits between them:
 - back: slatted wall with a warm LED uplight, GOLIDE neon sign, shelves (plant, books, award, glowing
   cube), a curved high-tech video wall that carries the scene's words and live-looking data, the chair;
 - front: the desk with a gold edge light, laptop with the GOLIDE mark, mug, the podcast mic on a boom
@@ -49,6 +51,15 @@ def plates(fmt: str) -> dict | None:
     return json.loads(f.read_text())
 
 
+def need(fmt: str) -> dict:
+    """The 3D studio for this format, or a clear stop before rendering (owner 2026-11-21: no fallbacks)."""
+    m = plates(fmt)
+    files = [PLATES / fmt / f for f in ("back.webp", "front.webp")]
+    if not m or not all(f.exists() for f in files):
+        raise FileNotFoundError(f"3D studio plates missing for {fmt!r} in {PLATES}; run goli3d-library.yml kind=studio")
+    return m
+
+
 def _img(path: Path, at, asset, w=None, h=None, extra="") -> str:
     from PIL import Image
     with Image.open(path) as im:
@@ -63,19 +74,8 @@ def layout(fmt: str) -> dict:
 
 def lower_back(sid: str, asset=None) -> str:
     """The Short's lower third: a slice of the studio behind Goli while the proof plays on top."""
-    m = plates("lower") if asset else None
-    if m:
-        return f'<div id="{sid}-low">{_img(PLATES / "lower" / "back.webp", m["back_at"], asset)}</div>'
-    L = LAYOUTS["lower"]
-    W, H, top = L["w"], L["h"], L["top"]
-    slats = "".join(f'<rect x="{x}" y="{top}" width="58" height="{H - top}" fill="url(#st-slat)"/>'
-                    f'<rect x="{x + 58}" y="{top}" width="8" height="{H - top}" fill="#070A12"/>' for x in range(0, W, 66))
-    return (f'<svg id="{sid}-low" viewBox="0 0 {W} {H}" width="{W}" height="{H}" style="position:absolute;left:0;top:0">'
-            f'<rect x="0" y="{top}" width="{W}" height="{H - top}" fill="url(#st-wall)"/>{slats}'
-            f'<rect x="0" y="{top}" width="{W}" height="{H - top}" fill="url(#st-up)"/>'
-            f'<ellipse cx="{L["seat_x"]}" cy="{top + 260}" rx="330" ry="260" fill="url(#st-glowb)"/>'
-            f'<rect x="0" y="{top - 3}" width="{W}" height="4" fill="url(#st-edge)"/>'
-            f'<rect x="0" y="{top}" width="{W}" height="40" fill="#F2C14E" opacity=".10" filter="url(#st-blur)"/></svg>')
+    m = need("lower")
+    return f'<div id="{sid}-low">{_img(PLATES / "lower" / "back.webp", m["back_at"], asset)}</div>'
 
 DEFS = """<svg width="0" height="0" style="position:absolute"><defs>
 <linearGradient id="st-wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0A0E1A"/><stop offset=".7" stop-color="#121A30"/><stop offset="1" stop-color="#1A1408"/></linearGradient>
@@ -99,113 +99,13 @@ DEFS = """<svg width="0" height="0" style="position:absolute"><defs>
 
 
 def back(sid: str, fmt: str = "long", asset=None) -> str:
-    """Wall, neon sign, shelves, video wall and chair (behind Goli)."""
-    m = plates(fmt) if asset else None
-    if m:
-        return back3d(sid, fmt, m, asset)
-    L = layout(fmt)
-    W, H, DESK_Y, SEAT_X = L["w"], L["h"], L["desk_y"], L["seat_x"]
-    k = L["size"] / 820
-    g = lambda key: ('transform="translate({} {}) scale({})"'.format(*L[key]) if L[key]  # noqa: E731
-                     else 'style="display:none"')
-    slats = "".join(f'<rect x="{x}" y="0" width="58" height="{H}" fill="url(#st-slat)"/>'
-                    f'<rect x="{x + 58}" y="0" width="8" height="{H}" fill="#070A12"/>' for x in range(0, W, 66))
-    books = ""
-    bx = 120
-    for w_, h_, c in ((26, 92, "#E8462F"), (20, 104, "#2450E6"), (30, 86, "#F2C14E"), (22, 98, "#12A36B"), (18, 80, "#7B3FE4")):
-        books += (f'<rect x="{bx}" y="{470 - h_}" width="{w_}" height="{h_}" rx="3" fill="{c}"/>'
-                  f'<rect x="{bx + 3}" y="{470 - h_ + 10}" width="{w_ - 6}" height="5" fill="#fff" opacity=".35"/>')
-        bx += w_ + 4
-    bars = "".join(f'<rect id="{sid}-bar{i}" x="{1196 + i * 46}" y="{600 - h_}" width="30" height="{h_}" rx="6" '
-                   f'fill="{"#F2C14E" if i == 5 else "#3D6CFF"}" opacity=".55"/>'
-                   for i, h_ in enumerate((40, 56, 46, 74, 64, 100, 84)))
-    ticks = "".join(f'<rect x="{1560 + i * 26}" y="{200 + (i % 3) * 4}" width="16" height="4" rx="2" fill="#3D6CFF" '
-                    f'opacity="{.3 + .1 * (i % 4)}"/>' for i in range(9))
-    return f"""<svg viewBox="0 0 {W} {H}" width="{W}" height="{H}" style="position:absolute;left:0;top:0">
-<rect width="{W}" height="{H}" fill="url(#st-wall)"/>{slats}
-<rect width="{W}" height="{H}" fill="url(#st-up)"/>
-<rect y="{H - 40}" width="{W}" height="40" fill="#F2C14E" opacity=".25" filter="url(#st-blur)"/>
-<ellipse cx="{SEAT_X}" cy="{DESK_Y - 390 * k}" rx="{460 * k}" ry="{380 * k}" fill="url(#st-glowb)"/>
-<g {g("neon")}><g filter="url(#st-neon)" id="{sid}-neon">
-  <circle cx="170" cy="170" r="66" fill="none" stroke="#F2C14E" stroke-width="5" opacity=".9"/>
-  {logo_mark(170, 170, 78, "#FFF4D6", "#F2C14E")}
-</g></g>
-<g {g("shelf")}><g filter="url(#st-drop)">
-  <rect x="96" y="470" width="300" height="14" rx="4" fill="#2A2F3D"/><rect x="96" y="640" width="300" height="14" rx="4" fill="#2A2F3D"/>
-  {books}
-  <path d="M290 470 L300 420 L340 420 L350 470 Z" fill="#E8C268"/><circle cx="320" cy="398" r="26" fill="#F2C14E"/>
-  {logo_mark(320, 398, 30, "#0E1A4A", "#FFF4D6")}
-  <rect x="120" y="580" width="60" height="60" rx="10" fill="#3D6CFF" opacity=".85"/><rect x="128" y="588" width="44" height="44" rx="6" fill="#8FB0FF" opacity=".5"/>
-  <path d="M268 640 L276 590 L332 590 L340 640 Z" fill="#E9E2D3"/>
-  <ellipse cx="290" cy="575" rx="22" ry="34" fill="url(#st-leaf)" transform="rotate(-25 290 575)"/>
-  <ellipse cx="318" cy="566" rx="22" ry="40" fill="url(#st-leaf)"/>
-  <ellipse cx="344" cy="578" rx="20" ry="32" fill="url(#st-leaf)" transform="rotate(25 344 578)"/>
-</g></g>
-<g {g("wall")}><g filter="url(#st-drop)" id="{sid}-wall">
-  <path d="M1110 110 Q1500 80 1860 120 L1860 640 Q1500 680 1110 650 Z" fill="#05070D" stroke="#2A3354" stroke-width="10"/>
-  <path d="M1124 124 Q1500 96 1846 132 L1846 626 Q1500 664 1124 636 Z" fill="url(#st-screen)"/>
-  <path d="M1124 124 Q1500 96 1846 132 L1846 200 Q1500 170 1124 190 Z" fill="#fff" opacity=".035"/>
-  <circle cx="1160" cy="160" r="7" fill="#E8462F"/><text x="1176" y="167" font-family="Inter" font-weight="600" font-size="20" fill="#E8462F">LIVE</text>
-  {ticks}{bars}
-  <path id="{sid}-line" d="M1180 590 L1260 566 L1330 578 L1420 536 L1500 548 L1590 500 L1680 512 L1800 450" fill="none"
-        stroke="#F2C14E" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="900" stroke-dashoffset="900"/>
-  {logo_mark(1806, 594, 40, "#8FA0C8", "#F2C14E")}
-</g>
-<rect x="1100" y="660" width="770" height="40" fill="#3D6CFF" opacity=".22" filter="url(#st-blur)"/></g>
-<g filter="url(#st-drop)" transform="translate({SEAT_X} {DESK_Y}) scale({k}) translate(-640 -772)">
-  <path d="M390 772 L410 330 Q640 280 870 330 L890 772 Z" fill="url(#st-chair)"/>
-  <path d="M428 752 L444 360 Q640 316 836 360 L852 752" fill="none" stroke="#E8C268" stroke-width="4" opacity=".75"/>
-</g>
-</svg>"""
+    """Wall, neon sign, shelves, video wall and chair (behind Goli): the 3D studio plate and the TV's live content."""
+    return back3d(sid, fmt, need(fmt), asset)
 
 
 def front(sid: str, fmt: str = "long", asset=None) -> str:
-    """Desk, laptop, mug and the podcast mic (in front of Goli)."""
-    m = plates(fmt) if asset else None
-    if m:
-        return front3d(sid, fmt, m, asset)
-    L = layout(fmt)
-    W, H, DESK_Y, SEAT_X = L["w"], L["h"], L["desk_y"], L["seat_x"]
-    k = L["size"] / 820
-    near = f'transform="translate({SEAT_X} {DESK_Y}) scale({k}) translate(-640 -772)"'
-    return f"""<svg viewBox="0 0 {W} {H}" width="{W}" height="{H}" style="position:absolute;left:0;top:0">
-<g filter="url(#st-drop)">
-  <path d="M-20 {DESK_Y} L{W + 20} {DESK_Y} L{W + 20} {DESK_Y + 30} L-20 {DESK_Y + 30} Z" fill="url(#st-top)"/>
-  <rect x="-20" y="{DESK_Y + 30}" width="{W + 40}" height="{H - DESK_Y}" fill="url(#st-desk)"/>
-  <rect id="{sid}-edge" x="-20" y="{DESK_Y + 28}" width="{W + 40}" height="5" fill="url(#st-edge)"/>
-  <rect x="-20" y="{DESK_Y + 33}" width="{W + 40}" height="60" fill="#F2C14E" opacity=".12" filter="url(#st-blur)"/>
-  {"".join(f'<rect x="{x}" y="{DESK_Y + 52}" width="3" height="{H - DESK_Y}" fill="#F2C14E" opacity=".22"/>' for x in (W * .25, W * .5, W * .75))}
-  <g style="display:none" transform="translate({W / 2} {DESK_Y + min(172, (H - DESK_Y) * .55)}) scale({min(1.0, (H - DESK_Y) / 300):.3f})">
-  <rect x="-230" y="-52" width="460" height="104" rx="52" fill="#0B0E16" stroke="#F2C14E" stroke-opacity=".55" stroke-width="3"/>
-  {logo_mark(-160, 0, 64, "#F4F1EA", "#F2C14E")}
-  <text x="-112" y="22" font-family="Poppins" font-weight="900" font-size="60" letter-spacing="8" fill="#F4F1EA">GOLIDE</text></g>
-  
-</g>
-<g filter="url(#st-drop)" {near}>
-  <path d="M930 {776} L1210 {776} L1236 {772 + 22} L904 {772 + 22} Z" fill="#9AA1B1"/>
-  <path d="M948 {776} L962 {772 - 186} L1178 {772 - 186} L1192 {776} Z" fill="url(#st-laptop)"/>
-  <ellipse cx="1070" cy="{772 - 92}" rx="60" ry="60" fill="url(#st-glowg)"/>
-  {logo_mark(1070, DESK_Y - 92, 74, "#F4F1EA", "#F2C14E")}
-</g>
-<g filter="url(#st-drop)" {near}>
-  <rect x="230" y="{772 - 96}" width="78" height="96" rx="12" fill="#F4F1EA"/>
-  <path d="M308 {772 - 76} Q348 {772 - 70} 340 {772 - 40} Q334 {772 - 18} 306 {772 - 22}" fill="none" stroke="#F4F1EA" stroke-width="12"/>
-  {logo_mark(268, DESK_Y - 50, 40, "#16181F", "#E8C268")}
-  <path id="{sid}-steam" d="M254 {772 - 110} Q244 {772 - 140} 258 {772 - 165} Q272 {772 - 190} 262 {772 - 215}"
-        fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".18"/>
-</g>
-<g filter="url(#st-drop)" {near}><g transform="translate(-120 0)">
-  <!-- 2026-11-21 (owner: no collision): the mic stands beside the 3D Goli's face, never across it -->
-  <rect x="380" y="{772 - 6}" width="54" height="22" rx="6" fill="#16181F"/>
-  <path d="M407 {772 - 6} L330 {772 - 150} L434 {772 - 195}" fill="none" stroke="url(#st-metal)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="330" cy="{772 - 150}" r="12" fill="#3A3F4D"/>
-  <g transform="rotate(25 455 {772 - 240})">
-    <rect x="424" y="{772 - 340}" width="62" height="150" rx="31" fill="url(#st-mic)"/>
-    <rect x="420" y="{772 - 296}" width="70" height="14" rx="7" fill="#E8C268"/>
-    <path d="M430 {772 - 328} L480 {772 - 328} M430 {772 - 312} L480 {772 - 312}" stroke="#555B6B" stroke-width="3"/>
-  </g>
-</g></g>
-</svg>"""
+    """The table, laptop, mug and the podcast mic (in front of Goli): the 3D studio plate, steam and the lit edge."""
+    return front3d(sid, fmt, need(fmt), asset)
 
 
 def back3d(sid: str, fmt: str, m: dict, asset) -> str:

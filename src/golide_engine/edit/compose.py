@@ -1128,10 +1128,8 @@ class Composer:
         elif intro == "screen_on":
             self.tw(f'tl.fromTo("#{sid}-wall",{{opacity:.12}},{{opacity:1,duration:.25,ease:"power2.out"}},{t0 + .9:.3f});')
             self.tw(f'tl.fromTo("#{sid}-scr",{{opacity:0,scale:1.15}},{{opacity:1,scale:1,duration:.4,ease:"back.out(2)"}},{t0 + 1.0:.3f});')
-            None if getattr(self, "goli3d", False) else self.tw(f'tl.fromTo("#{sid} [id$=-eyes]",{{x:9,y:-4}},{{x:0,y:0,duration:.2,immediateRender:true}},{t0 + 1.4:.3f});')
             self.cue("click", t0 + .85)
         elif intro == "coffee":
-            None if getattr(self, "goli3d", False) else self.tw(f'tl.fromTo("#{sid} [id$=-eyes]",{{x:0,y:7}},{{x:0,y:0,duration:.18,immediateRender:true}},{t0 + 1.0:.3f});')
             self.tw(f'tl.fromTo("{ch}",{{rotation:4,transformOrigin:"50% 90%"}},{{rotation:0,duration:.4,ease:"back.out(2)"}},{t0 + 1.0:.3f});')
         elif intro == "stage_slam":
             self.tw(f'tl.fromTo("#{sid} .title",{{scale:2.6,opacity:0}},{{scale:1,opacity:1,duration:.32,ease:"power4.in"}},{t0 + .35:.3f});')
@@ -1187,9 +1185,8 @@ class Composer:
                 "lower": studio.layout("lower")["size"], "side": side, "beside": beside}[place]
         from ..goli3d import video as goli3d
 
-        g3 = goli3d.available()          # 2026-11-21 (owner): the real 3D Goli; the flat SVG one only if no sprites
-        self.goli3d = g3
-        w = size * (goli3d.aspect() if g3 else mascot.VIEW[0] / mascot.VIEW[1])
+        goli3d.require()                 # 2026-11-21 (owner): the real 3D Goli only; no flat fallback, a gap stops the run
+        w = size * goli3d.aspect()
         x = {"full": self.w * 0.27 - w / 2, "left": 40, "right": self.w - w - 40, "corner": self.w - w - 50,
              "studio": studio.layout(self.fmt)["seat_x"] - w / 2, "lower": studio.layout("lower")["seat_x"] - w / 2,
              "side": 10 if self.fmt == "short" else self.w - w + 60,
@@ -1200,7 +1197,7 @@ class Composer:
         if place == "beside":     # long: feet just under the frame's edge; Short: feet above YouTube's caption area
             y = (1700 if self.fmt == "short" else self.h + 30) - size
         if place in ("studio", "lower"):      # seated: desk top at his waist
-            y = studio.layout(self.fmt if place == "studio" else "lower")["desk_y"] - (goli3d.waist(size) if g3 else 430 * size / 540)
+            y = studio.layout(self.fmt if place == "studio" else "lower")["desk_y"] - goli3d.waist(size)
         # 2026-11-13 (owner): Goli gestures TOWARD what he talks about. His poses point to screen right; standing on
         # the right of a long video (the content on his left) he is mirrored, so a point, a thumbs up or a look goes
         # to the content and never off the frame edge. A pose that would point away from the content is turned round.
@@ -1211,14 +1208,9 @@ class Composer:
         layers = ""
         for k, p in enumerate(poses):
             uid = f"{sid}-p{k}"
-            if g3:
-                layers += (f'<div id="{uid}" class="{sid}-pose" style="position:absolute;left:0;top:0;width:{w:.0f}px;'
-                           f'height:{size}px;opacity:{1 if k == 0 else 0}">'
-                           f'{goli3d.layer(p["pose"], uid, outfit, size, self.asset)}</div>')
-                continue
-            layers += (f'<svg id="{uid}" class="{sid}-pose" viewBox="0 0 400 540" width="{w:.0f}" height="{size}" '
-                       f'style="position:absolute;left:0;top:0;opacity:{1 if k == 0 else 0}">'
-                       f'{mascot.character(p["pose"], uid=uid, expression=p.get("face"), outfit=outfit)}</svg>')
+            layers += (f'<div id="{uid}" class="{sid}-pose" style="position:absolute;left:0;top:0;width:{w:.0f}px;'
+                       f'height:{size}px;opacity:{1 if k == 0 else 0}">'
+                       f'{goli3d.layer(p["pose"], uid, outfit, size, self.asset)}</div>')
         bubble = ""
         if place == "studio":
             self.uses_studio = True
@@ -1403,31 +1395,12 @@ class Composer:
                 self.tw(f'tl.set("#{sid} [id$=-mX]",{{opacity:0}},{at:.3f});')
             self.tw(f'tl.set("#{sid} [id$=-m{v}]",{{opacity:1}},{at:.3f});')
             last = v
-        # eyes alive (owner 2026-11-11): small glances on a fixed pattern, up to what he points at,
-        # back to the viewer; never static
-        looks = {"point_up": (1, -7), "point_left": (-8, -2), "point": (8, -3), "think": (-5, -7), "shock": (0, -1)}
-        if g3:                      # the 3D renders look where the pose looks; no separate eyes to move
-            looks = {}
-        glance = [(4, 1), (-4, 2), (0, 0), (5, -2), (-3, -1), (0, 0)]
-        marks_ = sorted([(t0 + float(p["at"]), looks.get(p["pose"])) for p in poses if looks.get(p["pose"])])
-        at, i = (t0 + 0.7, 0) if not g3 else (t0 + dur, 0)
-        while at < t0 + dur - 0.2:
-            gx, gy = glance[i % len(glance)]
-            self.tw(f'tl.to("#{sid} [id$=-eyes]",{{x:{gx},y:{gy},duration:.12,ease:"power2.out"}},{at:.3f});')
-            at += (1.4, 1.9, 1.1, 2.3)[i % 4]
-            i += 1
-        for at_, (gx, gy) in marks_:
-            self.tw(f'tl.to("#{sid} [id$=-eyes]",{{x:{gx},y:{gy},duration:.1,ease:"power2.out"}},{at_ + 0.05:.3f});')
+        # eyes: the 3D renders look where each pose looks (no separate eyes to move)
         # blinks every 2.8 to 4.2 s (fixed pattern, so renders repeat exactly)
         at, gaps, i = t0 + 1.2, (3.1, 2.8, 4.2, 3.5), 0
         while at < t0 + dur - 0.3:
-            # 2026-11-12: the lids close on the eyes (SVG point 200,176). A box-relative origin on the collapsed lid
-            # group threw them up onto the beanie for a frame, which looked like the top of his head was cut off.
-            if g3:                   # 3D: the closed-eyes patch shows for 0.12 s
-                self.tw(f'tl.set("#{sid} [id$=-lid]",{{opacity:1}},{at:.3f});tl.set("#{sid} [id$=-lid]",{{opacity:0}},{at + 0.12:.3f});')
-            else:
-                self.tw(f'tl.fromTo("#{sid} [id$=-lid]",{{scaleY:0.001,svgOrigin:"200 176"}},'
-                        f'{{scaleY:1,svgOrigin:"200 176",duration:.06,yoyo:true,repeat:1,immediateRender:false}},{at:.3f});')
+            # the closed-eyes 3D patch shows for 0.12 s
+            self.tw(f'tl.set("#{sid} [id$=-lid]",{{opacity:1}},{at:.3f});tl.set("#{sid} [id$=-lid]",{{opacity:0}},{at + 0.12:.3f});')
             at += gaps[i % len(gaps)]
             i += 1
         for i, w_ in enumerate(data.get("words") or []):

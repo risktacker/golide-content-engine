@@ -16,17 +16,8 @@ EXPRESSIONS = ("neutral happy laughing excited angry determined surprised astoni
 # the old flat Goli's faces -> the 3D reactions
 OLD_FACES = {"sure": "smug", "shock": "astonished", "think": "thinking", "skeptic": "confused", "happy": "excited",
              "neutral": "neutral"}
-# when a pose was not drawn with that reaction, the nearest one that was
-NEAR = {
-    "smug": ["determined", "happy", "neutral"], "excited": ["happy", "laughing", "astonished"],
-    "happy": ["excited", "smug", "neutral"], "astonished": ["surprised", "scared", "excited"],
-    "surprised": ["astonished", "excited"], "scared": ["astonished", "surprised"],
-    "angry": ["determined", "trying_hard"], "determined": ["smug", "angry"], "thinking": ["confused", "smug"],
-    "confused": ["thinking", "disappointed"], "disappointed": ["confused", "crying"], "crying": ["disappointed"],
-    "laughing": ["excited", "happy"], "in_love": ["excited", "happy"], "hungry": ["excited", "happy"],
-    "savage": ["determined", "smug"], "trying_hard": ["determined"], "shy": ["happy"], "sleepy": ["neutral"],
-    "neutral": ["smug", "happy"],
-}
+POSES = ("talk", "point_left", "point", "point_up", "thumbs_up", "shock", "point_both_up", "wave", "shrug", "think",
+         "explain", "facepalm")
 
 
 def expression(name: str | None) -> str:
@@ -36,15 +27,18 @@ def expression(name: str | None) -> str:
 
 
 def path(pose: str = "talk", expr: str | None = None) -> Path:
-    """The library file for this pose and reaction (nearest reaction, then the talking pose, if not drawn)."""
+    """The library file for this pose and reaction. Owner 2026-11-21: no stand-ins; a gap is an error."""
     e = expression(expr)
-    pose = pose if (LIBRARY / pose).is_dir() else "talk"
-    for p in (pose, "talk"):
-        for cand in [e] + NEAR.get(e, []) + ["neutral"]:
-            f = LIBRARY / p / f"{cand}.png"
-            if f.exists():
-                return f
-    raise FileNotFoundError(f"Goli 3D library is empty at {LIBRARY}")
+    if pose not in POSES:
+        raise ValueError(f"Goli has no 3D pose {pose!r}; poses: {', '.join(POSES)}")
+    f = LIBRARY / pose / f"{e}.png"
+    if not f.exists():
+        raise FileNotFoundError(f"Goli 3D library is missing {pose}/{e}.png; run goli3d-library.yml kind=library")
+    return f
+
+
+def missing_files() -> list[str]:
+    return [f"{p}/{e}.png" for p in POSES for e in EXPRESSIONS if not (LIBRARY / p / f"{e}.png").exists()]
 
 
 def available() -> dict[str, list[str]]:
