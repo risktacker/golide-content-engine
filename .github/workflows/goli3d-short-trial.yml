@@ -1,0 +1,38 @@
+name: Goli 3D Short trial (10 seconds)
+
+# 2026-11-21 (owner): a 10-second Goli Short with the new 3D Goli talking, to see the work done. TRIAL: nothing is
+# published; the video goes to the review-results branch. AI voice: about 150 characters of the ElevenLabs cap.
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  trial:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg libcairo2-dev pkg-config >/dev/null
+      - run: python -m pip install -q -e '.[production,video]' && python -m playwright install --with-deps chromium >/dev/null
+      - name: Rhubarb Lip Sync
+        run: |
+          R="$HOME/.cache/golide-rhubarb"; mkdir -p "$R"
+          curl -sSL -o "$R/r.zip" https://github.com/DanielSWolf/rhubarb-lip-sync/releases/download/v1.14.0/Rhubarb-Lip-Sync-1.14.0-Linux.zip
+          unzip -qo "$R/r.zip" -d "$R"
+      - name: Trial render
+        env:
+          GOLIDE_ENABLE_PAID_PRODUCTION: "1"
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: python scripts/goli3d_short_trial.py
+      - name: Push the video for review
+        run: |
+          mkdir -p out && cp build/goli3d-trial/video.mp4 out/goli3d-short-trial.mp4
+          ffmpeg -loglevel error -y -i out/goli3d-short-trial.mp4 -vf "fps=1,scale=360:-1,tile=5x2" -frames:v 1 out/goli3d-short-trial-frames.jpg || true
+          cd out && git init -q && git checkout -q -b review-results && git add -A
+          git -c user.name=golide-bot -c user.email=bot@golidee.com commit -qm "goli3d short trial"
+          git push -qf "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" review-results
