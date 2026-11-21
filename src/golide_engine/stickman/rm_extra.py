@@ -635,5 +635,6 @@ def _fitted(fn):
 def register(props_module) -> None:
     """Add our icons to the kit's ICONS at the kit's own size (theirs win on a name clash)."""
     from golide_engine.stickman import rm_gear       # equipment, smart devices and neon/LED signs (2026-11-21)
+    from golide_engine.stickman.rm_art import art
     for k, v in {**ICONS, **rm_gear.ICONS}.items():
-        props_module.ICONS.setdefault(k, _fitted(v))
+        props_module.ICONS.setdefault(k, art(_fitted(v)) if k != "label" else _fitted(v))   # a name card is story text

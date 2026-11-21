@@ -71,8 +71,13 @@ def brand(c, art, cx, cy, size, dark_bg=True):
     if key not in _LOGOS:
         svg = art["svg"].replace("<svg ", f'<svg fill="{hexc}" width="{px}" height="{px}" ', 1)
         dom = skia.SVGDOM.MakeFromStream(skia.MemoryStream(svg.encode()))
-        surf = skia.Surface(px, px); cv = surf.getCanvas(); cv.clear(skia.ColorTRANSPARENT)
-        dom.setContainerSize(skia.Size(px, px)); dom.render(cv); _LOGOS[key] = surf.makeImageSnapshot()
+        if dom is None:                      # a mark skia cannot read: the name stays in text, the shot still draws
+            _LOGOS[key] = None
+        else:
+            surf = skia.Surface(px, px); cv = surf.getCanvas(); cv.clear(skia.ColorTRANSPARENT)
+            dom.setContainerSize(skia.Size(px, px)); dom.render(cv); _LOGOS[key] = surf.makeImageSnapshot()
+    if _LOGOS[key] is None:
+        return False
     c.drawImageRect(_LOGOS[key], skia.Rect(cx - size / 2, cy - size / 2, cx + size / 2, cy + size / 2), LINEAR)
     return True
 
@@ -849,5 +854,6 @@ NEW_SETS.update(campus=set_campus)
 
 
 def register(sets_module) -> None:
+    from golide_engine.stickman.rm_art import art
     for k, v in NEW_SETS.items():
-        sets_module.SETS.setdefault(k, v)
+        sets_module.SETS.setdefault(k, art(v))

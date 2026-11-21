@@ -204,9 +204,12 @@ def prepare(project: Path, display: str, words: list[dict[str, Any]], duration: 
 def collisions(project: Path) -> dict[str, Any]:
     """Text touching text, leaving the frame or covering a head, on real frames of every shot (stickman/collide.py,
     run in its own process because it wraps the engine's label drawing)."""
+    # 2026-11-21: with our hook, exactly as the kit renders (icons, places, moves, acts); without it the check called
+    # every new icon "cannot be drawn" and took 84 things out of the Nvidia SC26 video
+    hook = str(Path(__file__).resolve().parent / "rm_hook")
     result = subprocess.run([sys.executable, "-m", "golide_engine.stickman.collide", str(project)], capture_output=True,
                             text=True, timeout=1800,
-                            env=dict(os.environ, PYTHONPATH=os.pathsep.join([str(ROOT / "src"), os.environ.get("PYTHONPATH", "")])))
+                            env=dict(os.environ, PYTHONPATH=os.pathsep.join([hook, str(ROOT / "src"), os.environ.get("PYTHONPATH", "")])))
     if result.returncode != 0:
         raise RuntimeError(f"stickman collision check failed: {result.stderr[-800:]}")
     return json.loads(result.stdout.strip().splitlines()[-1])

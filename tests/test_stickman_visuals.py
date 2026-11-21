@@ -198,3 +198,12 @@ def test_walking_swings_the_arms_against_the_legs():
     assert a[0][2] == 1.0 and b[0][2] == 0.0                     # the arm swings the other way to its leg
     assert swing(("point", "down"), left_fwd)[0] == "point"       # an arm doing something keeps doing it
     assert swing(("down", "down"), None) == ("down", "down")
+
+
+def test_collision_check_sees_our_library_and_ignores_text_inside_drawings():
+    src = (Path(L.__file__).resolve().parent / "longform.py").read_text()
+    i = src.find("def collisions(")
+    assert "rm_hook" in src[i:i + 900]                                   # same additions as the render
+    col = (Path(L.__file__).resolve().parent / "collide.py").read_text()
+    assert "_art_depth" in col
+    assert "art(v)" in (Path(L.__file__).resolve().parent / "rm_moves.py").read_text()

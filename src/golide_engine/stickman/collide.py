@@ -44,7 +44,8 @@ def check(project: Path) -> dict:
 
     def label(c, s, x, y, size, color, font=None, align="left", stroke=0, stroke_col=kit.INK, skew=-0.16, alpha=1.0,
               rot=0.0):
-        if alpha > 0.5 and str(s).strip():
+        # 2026-11-21: text inside our drawings (feeds, cards, signs, "zzz") is art, not the story's words
+        if alpha > 0.5 and str(s).strip() and not getattr(kit, "_art_depth", 0):
             f = skia.Font(font or kit.KALAM, size)
             w = f.measureText(s)
             ox = -w / 2 if align == "center" else -w if align == "right" else 0

@@ -232,8 +232,9 @@ def install(shots_module) -> None:
             draw_char(c, x, y, s, spec, face=face, eyes=eyes, mouth=mouth, brow=brow, brow_tilt=brow_tilt, arms=arms, tilt=tilt,
                       bob=bob, squash=squash, sweat=sweat, light=light, rim=rim, hat=hat, legs=legs, pupil=pupil, sparkle=sparkle)
             hx, hy = x, y + (K.HEAD_CY - bob) * s
-            _items(c, o, x, y, s, arms, bob)
-            _fx(c, o, hx, hy, x, y, s, face, current.get("actor"))
+            from golide_engine.stickman.rm_art import art
+            art(_items)(c, o, x, y, s, arms, bob)
+            art(_fx)(c, o, hx, hy, x, y, s, face, current.get("actor"))
         finally:
             K.HEAD_CY = head0
             c.restore()
