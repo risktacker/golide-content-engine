@@ -14,6 +14,9 @@ on:
       goli_words: {description: "Words for a Goli design with real photos of the story's things (empty = skip it)", default: ""}
       goli_punch: {description: "Accent word of those words", default: ""}
       things: {description: "Wikipedia pages whose photos go on the Goli design, comma-separated", default: ""}
+      design: {description: "Force this Goli design (e.g. photo_card); empty = the director picks", default: ""}
+      person: {description: "Name shown with the photo (photo_card)", default: ""}
+      reaction: {description: "Goli's reaction[/gesture], e.g. smug/point_left (empty = picked for the title)", default: ""}
 
 permissions:
   contents: write
@@ -67,7 +70,9 @@ jobs:
           out = Path("out") / f"${{ inputs.production_id }}-option-{n}.png"
           text = ProviderRegistry(Path("config/providers.json")).text(live=True)
           style = make("${{ inputs.title }}", "${{ inputs.goli_words }}", "${{ inputs.goli_punch }}", [], out,
-                       shots=pics, photo=pics[0] if pics else None, text=text, seed=1, log=lambda e: print(json.dumps(e)))
+                       shots=pics, photo=pics[0] if pics else None, text=text, seed=1, log=lambda e: print(json.dumps(e)),
+                       design="${{ inputs.design }}", person="${{ inputs.person }}",
+                       reaction="${{ inputs.reaction }}".split("/")[0], gesture=("${{ inputs.reaction }}".split("/") + [""])[1])
           print(json.dumps({"goli_design": style, "file": out.name}))
           PY
           fi

@@ -192,29 +192,21 @@ def _vivid(rgb, floor=90):
 def goli(pose: str = "point_left", outfit: str = "royal", mouth: str = "C", expression: str | None = None,
          height: int = 760, upper: float = 0.8) -> Image.Image:
     """Goli as a transparent cut-out for a thumbnail (owner 2026-11-12: our host replaces the person in
-    the reference thumbnails). `upper` keeps the top part (head and chest) so his face reads big."""
-    from playwright.sync_api import sync_playwright
+    the reference thumbnails). 2026-11-21 (owner): the real 3D Goli from the render library (goli3d), the flat
+    SVG one is gone. `upper` keeps the top part (head and chest) so his face reads big; `mouth` is kept for
+    old callers (each 3D reaction has its own mouth)."""
+    from ..goli3d import library
 
-    from ..edit import mascot
-
-    w = 1200
-    svg = mascot.svg(pose, width=w, mouth=mouth, outfit=outfit, expression=expression)
-    # room around the character: a pointing arm or raised hands reach past the 400 x 540 drawing box
-    svg = re.sub(r'height="\d+" viewBox="0 0 400 540"', f'height="{w * 620 // 720}" viewBox="-160 -40 720 620"', svg, 1)
-    with sync_playwright() as p:
-        browser = p.chromium.launch()
-        page = browser.new_page(viewport={"width": w, "height": w * 620 // 720})
-        page.set_content(f'<html><body style="margin:0;background:transparent">{svg}</body></html>')
-        png = page.locator("svg").first.screenshot(omit_background=True)
-        browser.close()
-    import io
-
-    img = Image.open(io.BytesIO(png)).convert("RGBA")
-    box = img.getbbox()
-    img = img.crop(box) if box else img
+    src = Image.open(library.path(pose, expression))
+    head = [int(v) for v in src.info["head"].split(",")] if src.info.get("head") else None
+    img = src.convert("RGBA")
     img = img.crop((0, 0, img.width, int(img.height * upper)))
     k = height / img.height
-    return img.resize((int(img.width * k), height), Image.LANCZOS)
+    out = img.resize((int(img.width * k), height), Image.LANCZOS)
+    if head:
+        out.info["head"] = tuple(int(v * k) for v in head)
+    out.info["points"] = {"point": "right", "point_left": "left"}.get(pose, "")
+    return out
 
 
 # each style's Goli: pose, mouth, where his cut-out stands (x of its centre, height), and where the
@@ -274,6 +266,7 @@ def _rim(cut: Image.Image, colour: tuple = (120, 170, 255)) -> Image.Image:
     out = Image.new("RGBA", cut.size, (0, 0, 0, 0))
     out.alpha_composite(halo)
     out.alpha_composite(cut)
+    out.info.update(cut.info)
     return out
 
 
@@ -304,7 +297,11 @@ def record_goli(cut: Image.Image, xy: tuple[int, int]) -> None:
     a = cut.getchannel("A")
     record("goli", a, xy)
     head = Image.new("L", a.size, 0)
-    head.paste(a.crop((0, 0, a.width, int(a.height * .52))), (0, 0))
+    if cut.info.get("head"):            # the 3D library knows exactly where his head is (raised hands are not face)
+        x0, y0, x1, y1 = cut.info["head"]
+        head.paste(a.crop((x0, y0, x1, y1)), (x0, y0))
+    else:
+        head.paste(a.crop((0, 0, a.width, int(a.height * .52))), (0, 0))
     record("face", head, xy)
 
 
