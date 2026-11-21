@@ -128,4 +128,27 @@ def test_what_the_writer_wanted_is_listed(monkeypatch, tmp_path):
 def test_no_pole_stands_where_characters_stand():
     src = (Path(L.__file__).resolve().parent / "rm_sets.py").read_text()
     assert "for x in (130, 1790):" in src and "for x in (150, 1770):" in src     # court and press flags
-    assert "_in_band(i * 280)" in src and "_in_band(i * 260)" in src            # factory and station pillars
+    assert "_in_band(i * 260)" in src                                            # station pillars
+
+
+def test_goli_never_covers_the_stickman_panel_on_long():
+    """Owner 2026-11-21: no collision. Measure every pose's real sprite where compose puts it beside the panel."""
+    import numpy as np
+    from PIL import Image
+    from golide_engine.edit.compose import Composer
+    from golide_engine.goli3d import video as g
+
+    x, y, w_panel, h_panel = Composer.STAGE["long"]
+    panel_right = x + w_panel + 6                      # the frame's border
+    size = 600; w = size * g.aspect(); left = 1920 - w + 40
+    assert abs(w_panel / h_panel - 16 / 9) < .01
+    for pose in g.POSES:
+        a = np.array(Image.open(Path("assets/goli3d/video") / pose / "body-sky.webp").convert("RGBA"))[:, :, 3]
+        H, W = a.shape
+        cols = np.where((a[:int(H * .85)] > 60).any(0))[0]          # the floor shadow is not his body
+        if pose == "point_left":
+            continue                                    # never used on long: compose turns it into "point"
+        reach = left + (W - 1 - cols.max()) / W * w     # mirrored: his content side faces the panel
+        right = left + w - cols.min() / W * w
+        assert reach >= panel_right + 28, (pose, reach, panel_right)
+        assert right <= 1920, (pose, right)

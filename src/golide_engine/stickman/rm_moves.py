@@ -323,8 +323,9 @@ HEAVY = {"explosion", "door_slam", "lightning", "rocket_launch"}     # get a cam
 
 
 def register(shots_module) -> None:
-    from golide_engine.stickman import rm_roles
+    from golide_engine.stickman import rm_look, rm_roles
     rm_roles.install(shots_module)              # characters dressed for their role
+    rm_look.install(shots_module)               # then thick round limbs over the gear, thumb feet, textured hair              # characters dressed for their role
     Shot = shots_module.Shot
     init = Shot.__init__
 
