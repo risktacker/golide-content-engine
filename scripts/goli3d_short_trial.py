@@ -1,7 +1,8 @@
 """TRIAL (owner 2026-11-21): a 10-second Goli Short with the 3D Goli, to see the new look talking.
 
-Reads a 10-second line with the AI voice (ElevenLabs "Mark", about 150 characters of the monthly cap), lip-syncs
-it with Rhubarb, builds a Goli studio edit (three poses) and renders it exactly as the daily Short is rendered.
+Uses the owner's own saved recording (assets/trial/voice.mp3 + voice.txt, one line per sentence). Owner
+2026-11-21: never spends ElevenLabs characters; with no saved recording it stops and says so. It lip-syncs it with
+Rhubarb, builds a Goli studio edit (three poses) and renders it exactly as the daily Short is rendered.
 Output: build/goli3d-trial/video.mp4. Nothing is published.
 """
 import json
@@ -13,18 +14,19 @@ sys.path.insert(0, str(ROOT / "src"))
 from golide_engine.edit import editor  # noqa: E402
 from golide_engine.edit.pipeline import logo_tile_maker, outfit_today  # noqa: E402
 from golide_engine.edit.render import lipsync, render  # noqa: E402
-from golide_engine.providers.registry import ProviderRegistry  # noqa: E402
 from golide_engine.vector.align import TimedLine, Word  # noqa: E402
 
 out = ROOT / "build/goli3d-trial"
 out.mkdir(parents=True, exist_ok=True)
-SCRIPT = ["This is Goli, now in real 3D.", "Same voice, same channel, a brand new look.",
-          "Watch his mouth: it moves with every word.", "Follow for one AI story a day."]
-voice = out / "voice.mp3"
-res = ProviderRegistry(ROOT / "config/providers.json").voice(live=True).synthesize(" ".join(SCRIPT), voice)
-said = [w for w in (res.details or {}).get("words") or []]
-dur = float((res.details or {}).get("duration_seconds") or 10.0)
-print(json.dumps({"voice_s": round(dur, 2), "characters": (res.details or {}).get("characters")}))
+saved = ROOT / "assets/trial/voice.mp3"
+if not saved.exists() or not saved.with_suffix(".txt").exists():
+    sys.exit("No saved recording at assets/trial/voice.mp3 (+ voice.txt). The trial never uses ElevenLabs (owner 2026-11-21).")
+SCRIPT = [ln.strip() for ln in saved.with_suffix(".txt").read_text().splitlines() if ln.strip()]
+voice = saved
+said = []
+import subprocess  # noqa: E402
+dur = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(voice)],
+                           capture_output=True, text=True, check=True).stdout)
 
 # lines from the voice's own word timings (even spread if none came back)
 flat = [w for ln in SCRIPT for w in ln.split()]
