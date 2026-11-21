@@ -46,6 +46,8 @@ class Story:
     mood: str = "calm"                                     # calm | hype | alarm | money
     seed: int = 0
     person: str = ""                                       # 2026-11-17: the person the photo shows, named in the title
+    reaction: str = ""                                     # 2026-11-21: Goli's 3D reaction picked for this title
+    gesture: str = ""                                      # and the pose that goes with it
 
     @property
     def rest(self) -> str:
@@ -183,7 +185,7 @@ def d_point_up(s: Story) -> Image.Image:
     for icon, cx, rot in ((s.icons[0], 230, [8, 24, -8]), (s.icons[1], 1050, [8, -24, 8])):
         t = _tiles([T._tile(icon, pos=[0, 0, 0], rot=rot, size=3.5)], 380, 380, 9.5)
         T._place(b, t, (cx - 190, 340), 0.4)
-    _put_goli(b, T.goli("point_both_up", s.outfit, "D", "happy", 450, upper=.72), 640, H + 20)
+    _put_goli(b, T.goli("point_both_up", s.outfit, "D", _face(s, "happy"), 450, upper=.72), 640, H + 20)
     return b
 
 
@@ -203,7 +205,7 @@ def d_hug_tiles(s: Story) -> Image.Image:
         d.line([pts[k], pts[k + 1]], fill=a, width=6)
     d.polygon([(352, y3 + 10), (322, y3 - 10), (324, y3 + 32)], fill=a)
     _shadow(b, 860, 712, 700, 90)
-    _put_goli(b, T.goli("talk", s.outfit, "D", "happy", 700, upper=.8), 860, H + 40)
+    _put_goli(b, T.goli("talk", s.outfit, "D", _face(s, "happy"), 700, upper=.8), 860, H + 40)
     sign = "∞" if re.search(r"free|unlimited|forever", s.words, re.I) else "!" if s.mood == "alarm" else "★"
     badge = "%02x%02x%02x" % a
     spots = [([-2.7, 0.9, 0], [6, 18, -8]), ([2.7, 0.9, -0.2], [-4, -18, 8]), ([0.0, -0.9, 1.0], [-8, 4, -3])]
@@ -245,7 +247,7 @@ def d_crash(s: Story) -> Image.Image:
     lit = lit.rotate(18, expand=True, resample=Image.BICUBIC)
     at = (500, 400)
     T.record("object", lit.getchannel("A"), at)
-    g = T.goli("talk", s.outfit, "E", "shock", 560, upper=.86)
+    g = T.goli("talk", s.outfit, "E", _face(s, "shock"), 560, upper=.86)
     gd = ImageDraw.Draw(g)
     for (x, y) in ((0.30, 0.30), (0.25, 0.42), (0.72, 0.27)):        # sweat drops
         X, Y = g.width * x, g.height * y
@@ -304,7 +306,7 @@ def d_giant_word(s: Story) -> Image.Image:
     b.alpha_composite(floor)
     _shadow(b, 1050, 712, 480, 120, 18)
     pose = {"alarm": "shock", "hype": "point_up", "money": "thumbs_up"}.get(s.mood, "point_left")
-    _put_goli(b, T.goli(pose, s.outfit, "A" if s.mood == "calm" else "D", _pose(s, "skeptic"), 700, upper=.8), 1050, H + 6)
+    _put_goli(b, T.goli(pose, s.outfit, "A" if s.mood == "calm" else "D", _face(s, _pose(s, "skeptic")), 700, upper=.8), 1050, H + 6)
     return b
 
 
@@ -323,7 +325,7 @@ def d_platter(s: Story) -> Image.Image:
     mid = k // 2
     items = [T._tile(ic, pos=[x, 0.3 + size * .11 + (0.4 if i == mid else 0), 0.6 if i == mid else 0],
                      rot=[4, x * -3, 0], size=size * (1.3 if i == mid else 1.0)) for i, (ic, x) in enumerate(zip(icons, xs))]
-    _put_goli(b, T.goli("talk", s.outfit, "B", _pose(s), 690, upper=.82), 1120, H)
+    _put_goli(b, T.goli("talk", s.outfit, "B", _face(s, _pose(s)), 690, upper=.82), 1120, H)
     t = _tiles(items, 1280, 560, 17, camY=3.2, platter={"r": 8.2, "pos": [0, -0.75, -0.3]})
     t = t.resize((int(t.width * .82), int(t.height * .82)), Image.LANCZOS)
     T._place(b, t, (10, 230), 0.25)
@@ -442,8 +444,37 @@ def _fitp(text: str, w: int, h: int, start: int = 300, face: str = HEAVY):
     return T.fit(text, face, w, h, start)
 
 
+# 2026-11-21 (owner): Goli's reaction fits the title ("China's cheap EVs" with a hidden cost is a knowing look at
+# the car, not a scream). The director picks it; these rules decide when there is no director call.
+REACTIONS = ("neutral happy laughing excited angry determined surprised astonished scared disappointed crying shy "
+             "trying_hard thinking confused smug sleepy hungry in_love savage").split()
+GESTURES = ("talk", "point_left", "point", "point_up", "thumbs_up", "shock", "point_both_up", "wave", "shrug", "think",
+            "explain", "facepalm")
+REACTION_RULES = [   # (words in the title, reaction, gesture); first match wins
+    (r"hidden|secret|truth|really|catch|trap|scam|lie|dark side|nobody tells|exposed", "smug", "point_left"),
+    (r"crash|collaps|dead|dying|ban|warning|danger|fail|broke|lost|layoff|hack", "scared", "shock"),
+    (r"angry|war|fight|stole|steal|copied|lawsuit|sued|attack", "angry", "point_left"),
+    (r"insane|crazy|unbelievable|record|billion|trillion|shock|just (did|made|launched)|wow", "astonished", "shock"),
+    (r"free|best|win|easy|profit|rich|cheap|save", "excited", "thumbs_up"),
+    (r"why|how|what if|explained|vs\b|versus|should you", "thinking", "think"),
+    (r"sad|mistake|regret|worst|ruined|disappoint", "disappointed", "shrug"),
+]
+
+
+def reaction_for(title: str, words: str = "") -> tuple[str, str]:
+    t = f"{title} {words}".lower()
+    for rx, r, g in REACTION_RULES:
+        if re.search(rx, t):
+            return r, g
+    return "", ""
+
+
+def _face(s: Story, default: str | None) -> str | None:
+    return s.reaction or default
+
+
 def _bust(s: Story, pose: str, mouth: str, face: str | None, h: int = 690) -> Image.Image:
-    return T.goli(pose, s.outfit, mouth, face, h, upper=.74)
+    return T.goli(s.gesture or pose, s.outfit, mouth, _face(s, face), h, upper=.74)
 
 
 def _lines(words: list[str], n: int) -> list[str]:
@@ -753,7 +784,7 @@ def _grad_text(rgb) -> str:
 
 def h_desk_wall(s: Story) -> str:
     """Goli at a white desk with a keyboard; two real pages curve away on both sides behind him; title on top."""
-    cut = T.goli("talk", s.outfit, "A", _pose(s), 500, upper=.74)
+    cut = T.goli("talk", s.outfit, "A", _face(s, _pose(s)), 500, upper=.74)
     a = s.accent
     left, right = s.shots[0], s.shots[1 % len(s.shots)]
     body = (_shot(_uri(left), 10, 205, 600, 32, 1.4, origin="left") + _shot(_uri(right), 670, 205, 600, -32, 1.4, origin="right")
@@ -773,7 +804,7 @@ def h_side_course(s: Story) -> str:
     """Stacked big words and glass logos on one side; Goli on the other with a real page tilted behind him."""
     a = s.accent
     flip = s.seed % 2 == 1                      # Goli right or left, so two of these never look alike
-    cut = T.goli("think", s.outfit, "A", "think", 690, upper=.8)
+    cut = T.goli("think", s.outfit, "A", _face(s, "think"), 690, upper=.8)
     words_x, goli_cx, shot_x, ry = (660, 250, -40, 26) if flip else (40, 1030, 470, -26)
     origin = "left" if flip else "right"
     body = (_shot(_uri(s.shots[0]), shot_x, 60, 760, ry, 1.2, origin=origin) + _goli_html(cut, goli_cx, 730)
@@ -791,7 +822,7 @@ def h_floating(s: Story) -> str:
     """A real page out of focus as the back wall; glass logos float around Goli; words across the bottom."""
     a = s.accent
     pose = {"alarm": "shock", "money": "thumbs_up"}.get(s.mood, "point_both_up")
-    cut = T.goli(pose, s.outfit, "D", _pose(s, "happy"), 520, upper=.74)
+    cut = T.goli(pose, s.outfit, "D", _face(s, _pose(s, "happy")), 520, upper=.74)
     body = _shot(_uri(s.shots[0]), 220, 20, 840, 0, 4, -120) + _goli_html(cut, 640, 545)
     for icon, (size, x, y, r) in zip(s.icons[:4], [(120, 60, 60, -10), (110, 1100, 60, 10), (104, 150, 250, 8),
                                                      (104, 1020, 250, -6)]):
@@ -866,10 +897,12 @@ DESIGNS = [
 BY_NAME = {d.name: d for d in DESIGNS}
 
 DIRECTOR_SCHEMA = {
-    "type": "object", "additionalProperties": False, "required": ["ranking", "mood", "reason"],
+    "type": "object", "additionalProperties": False, "required": ["ranking", "mood", "reaction", "gesture", "reason"],
     "properties": {
         "ranking": {"type": "array", "items": {"type": "string", "enum": [d.name for d in DESIGNS]}},
         "mood": {"type": "string", "enum": ["calm", "hype", "alarm", "money"]},
+        "reaction": {"type": "string", "enum": REACTIONS},
+        "gesture": {"type": "string", "enum": list(GESTURES)},
         "reason": {"type": "string"},
     },
 }
@@ -889,12 +922,18 @@ def direct(text, s: Story, model_url: str, model_title: str, choices: list[Desig
         "You art-direct a YouTube thumbnail for a tech channel whose host is a mascot (Goli, a pangolin). "
         "Look at the thumbnail of the video ours is modelled on (if given) and the story, then rank the designs "
         "below from best to worst fit: the closest in idea and composition to the model thumbnail first, then by "
-        "what the story is about. Use only designs from the list. Also give the mood of the story.",
+        "what the story is about. Use only designs from the list. Also give the mood of the story, and Goli's "
+        "reaction and gesture that fit THIS title the way a human host would react on the thumbnail (an expose of a hidden "
+        "cost: a knowing smug look pointing at the thing; a disaster: scared; a record or huge number: astonished; a "
+        "free or winning thing: excited thumbs up; a question: thinking).",
         f"OUR TITLE: {s.title}\nBIG WORDS: {s.words} (accent: {s.punch})\nLOGOS WE HAVE: {', '.join(s.names) or 'none'}\n"
         f"REAL PAGE SCREENSHOTS: {len(s.shots)}\nSOURCE PHOTO: {'yes' if s.photo else 'no'}\n"
         f"MODEL VIDEO TITLE: {model_title or 'unknown'}\n\nDESIGNS:\n{menu}",
         DIRECTOR_SCHEMA, max_output_tokens=800, images=images)
     v = out.value
+    if v.get("reaction") in REACTIONS and not s.reaction:
+        s.reaction = v["reaction"]
+        s.gesture = v.get("gesture") if v.get("gesture") in GESTURES else s.gesture
     return [n for n in v.get("ranking", []) if n in BY_NAME], str(v.get("mood", "calm")), str(v.get("reason", ""))
 
 
@@ -945,7 +984,7 @@ def render(design: Design, s: Story) -> tuple[Image.Image, list[str]]:
 def make(title: str, words: str, punch: str, brands: list[str], out: Path, *, shots: list[Path] | None = None,
          photo: Path | None = None, outfit: str = "royal", recent: list[str] | None = None, text=None,
          model_url: str = "", model_title: str = "", seed: int = 0, log: Callable[[dict], None] = print,
-         person: str = "", design: str = "") -> str:
+         person: str = "", design: str = "", reaction: str = "", gesture: str = "") -> str:
     """Draw the thumbnail; returns the design used. Never the design of the last videos; never with a collision."""
     found = [(b, logos.find(b)) for b in brands]
     found = [(b, i) for b, i in found if i][:7]
@@ -955,6 +994,10 @@ def make(title: str, words: str, punch: str, brands: list[str], out: Path, *, sh
               seed, person if photo and Path(photo).exists() else "")
     if not s.punch or s.punch not in s.words:
         s.punch = s.words.split()[-1] if s.words else ""
+    if reaction in REACTIONS:                               # the owner's pick wins
+        s.reaction, s.gesture = reaction, gesture if gesture in GESTURES else ""
+    log({"status": "thumbnail_reaction", "reaction": s.reaction, "gesture": s.gesture})
+    owner_pick = bool(s.reaction)
     recent = recent or []
     fit = [d for d in DESIGNS if d.fits(s) and not d.fallback] or [d for d in DESIGNS if d.fallback]
     choices = [d for d in fit if d.name not in recent[:2]] or fit          # never the last two again
@@ -962,10 +1005,13 @@ def make(title: str, words: str, punch: str, brands: list[str], out: Path, *, sh
     if text is not None:
         try:
             ranking, mood, reason = direct(text, s, model_url, model_title, choices)
+            log({"status": "thumbnail_reaction", "reaction": s.reaction, "gesture": s.gesture, "by": "owner" if owner_pick else "director"})
             s.mood = "alarm" if s.mood == "alarm" else mood
             log({"status": "thumbnail_director", "ranking": ranking[:5], "mood": s.mood, "reason": reason[:200]})
         except Exception as exc:  # noqa: BLE001 - the designs still rank by the story without the director
             log({"status": "thumbnail_director_failed", "error": str(exc)[:200]})
+    if not s.reaction:                                     # no pick and no director: the title's own words decide
+        s.reaction, s.gesture = reaction_for(title, words)
     rnd = random.Random(seed)
     rest = [d.name for d in choices if d.name not in ranking]
     rnd.shuffle(rest)

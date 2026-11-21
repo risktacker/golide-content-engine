@@ -18,3 +18,11 @@ def test_path_falls_back_to_nearest_reaction_then_talk(tmp_path, monkeypatch):
     assert library.path("shock", "scared") == tmp_path / "shock/astonished.png"      # nearest reaction
     assert library.path("wave", "happy") == tmp_path / "talk/excited.png"            # pose not drawn -> talk
     assert library.path("point", "angry") == tmp_path / "talk/neutral.png"
+
+
+def test_thumbnail_reaction_fits_the_title():
+    from golide_engine.vector.thumb_engine import reaction_for
+    assert reaction_for("The Hidden Cost of China's Polished EVs", "China's Cheap EVs") == ("smug", "point_left")
+    assert reaction_for("This Free AI Tool Beats ChatGPT")[0] == "excited"
+    assert reaction_for("Why Nvidia Is Worth $5 Trillion")[0] == "astonished"
+    assert reaction_for("Plain words") == ("", "")
