@@ -634,5 +634,6 @@ def _fitted(fn):
 
 def register(props_module) -> None:
     """Add our icons to the kit's ICONS at the kit's own size (theirs win on a name clash)."""
-    for k, v in ICONS.items():
+    from golide_engine.stickman import rm_gear       # equipment, smart devices and neon/LED signs (2026-11-21)
+    for k, v in {**ICONS, **rm_gear.ICONS}.items():
         props_module.ICONS.setdefault(k, _fitted(v))

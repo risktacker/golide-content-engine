@@ -152,3 +152,49 @@ def test_goli_never_covers_the_stickman_panel_on_long():
         right = left + w - cols.min() / W * w
         assert reach >= panel_right + 28, (pose, reach, panel_right)
         assert right <= 1920, (pose, right)
+
+
+def test_every_behaviour_act_gives_a_state_and_the_writer_knows_them():
+    from golide_engine.stickman.rm_acts import ACTS, act_state
+    for name in ACTS:
+        for tl in (0.0, .4, 1.3):
+            o = act_state(name, min(1, tl), tl, 5 + tl, {"item": "phone"}, 1)
+            assert isinstance(o, dict), name
+    assert {"nod", "shake_head", "head_down", "scratch", "tap_foot", "laugh", "cry", "argue", "handshake", "type",
+            "scroll", "grab", "walk_to", "run_to"} <= set(ACTS)
+    text = L.instructions()
+    assert "tap_foot" in text and "handshake" in text and "desk_row" in text
+
+
+def test_acts_equipment_and_crowds_draw_in_the_kit():
+    hook = Path(L.__file__).resolve().parent / "rm_hook"
+    src = Path(L.__file__).resolve().parents[2]
+    code = ("import sys,os; sys.path.insert(0, os.getcwd())\nimport skia, engine.props as P, engine.shots as S\n"
+            "from engine.kit import make_look\n"
+            "from golide_engine.stickman import rm_gear, rm_moves, rm_acts\n"
+            "s = skia.Surface(480, 270); c = s.getCanvas(); c.scale(.25, .25)\n"
+            "for n in rm_gear.ICONS: P.ICONS[n](c, 1.0, {'text': 'OPEN'})\n"
+            "for n in ('bot_rows', 'desk_row', 'big_phone', 'comment_pop', 'like_counter'): rm_moves.MOVES[n](c, .6, {}, 2.0)\n"
+            "for a in rm_acts.ARMS: S.draw_char(c, 500, 900, .6, make_look({}), arms=(a, a))\n"
+            "print('drew', len(rm_gear.ICONS))\n")
+    f = Path("/tmp/_rm_acts_check.py")
+    f.write_text(code)
+    out = subprocess.run([sys.executable, str(f)], cwd=L.KIT, capture_output=True, text=True, timeout=300,
+                         env={"PYTHONPATH": f"{hook}:{src}", "PATH": "/usr/bin:/bin"})
+    assert "drew 50" in out.stdout, out.stderr[-800:]
+
+
+def test_unknown_acts_go_on_the_missing_list(monkeypatch):
+    from golide_engine.vector import logos
+    monkeypatch.setattr(logos, "find", lambda n: None)
+    story = {"shots": [{"chars": [{"id": "a", "acts": [{"do": "moonwalk"}, {"do": "nod"}]}]}]}
+    assert {"kind": "act", "name": "moonwalk"} in L.wishes(story) and {"kind": "act", "name": "nod"} not in L.wishes(story)
+
+
+def test_walking_swings_the_arms_against_the_legs():
+    from golide_engine.stickman.rm_acts import swing
+    left_fwd, right_fwd = ((-10, 46, 0), (10, -46, 20)), ((-10, -46, 20), (10, 46, 0))
+    a, b = swing(("down", "down"), left_fwd), swing(("down", "down"), right_fwd)
+    assert a[0][2] == 1.0 and b[0][2] == 0.0                     # the arm swings the other way to its leg
+    assert swing(("point", "down"), left_fwd)[0] == "point"       # an arm doing something keeps doing it
+    assert swing(("down", "down"), None) == ("down", "down")

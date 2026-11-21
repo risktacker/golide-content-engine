@@ -132,6 +132,20 @@ video's title and the verified research. Follow the format and its pacing rules 
   or cash_pile, launch -> rocket_launch, crash -> chart_down + alarm, race/competition -> kart_race, winner -> podium,
   chain reaction -> dominoes, change of direction -> signpost, ban/shut down -> door_slam); never the same move in
   two shots in a row.
+- BEHAVIOUR (owner 2026-11-21, "the all ingredient"): every character in a shot DOES something on the story's words:
+  "acts": [{{"do": name, "at": "word", "for": seconds (optional), "item": icon, "to": x}}] on the char. Acts:
+  {", ".join(ACTS)}. Several at once on one char when the story says so (a man tired of waiting: scratch + tap_foot;
+  he lost: head_down + shake_head). Match the words literally: agree/deal -> handshake (the two chars about 430 apart,
+  facing each other), fight/disagree -> argue (both, facing), joke/funny -> laugh, lost/failed -> head_down, no/never
+  -> shake_head, yes/right -> nod, waiting/queue -> scratch + tap_foot, typing/posting -> type, scrolling/online ->
+  scroll, calling -> call, money/won -> grab or hold with "item", gave/sold -> give, secret -> shh, shocked -> jump,
+  won/success -> cheer, exhausted -> sigh, collapse -> faint, sad/lost money -> cry, in love/likes -> love, arrives ->
+  walk_to or run_to with "to". "item" is any icon name (phone, laptop, moneybag, chip, gift...).
+- LOTS AT ONCE: like the channels that work, 2-3 things move together in a shot: a char's act + a moving picture +
+  a prop. Social media and attention: hearts_rise, like_counter ("from", "to"), comment_pop ("lines"), emoji_pop
+  ("face"), notif_pop, big_phone ("lines"); crowds and bots: bot_rows ("mode": idle|cheer), desk_row (typing at
+  computers). Equipment and signs are icons in props: industrial, home, school, office, smart devices, and glowing
+  neon ("text", "color") / led_board ("text") / exit_sign / neon_heart / neon_arrow / tombstone ("text").
 - CAMERA: "cam" may be one of {", ".join(CAM_PRESETS)}; vary it from shot to shot (shake only on a shock).
 - mood: pick from the format's list to fit the story.
 - checked on our renders (2026-11-17): a title shot ALWAYS has "text" (spoken or not; without it the card is
@@ -253,10 +267,14 @@ def kit_icons() -> set[str]:
     block = src[src.find("ICONS = dict("):src.find("\n\n", src.find("ICONS = dict("))]
     ours = (Path(__file__).resolve().parent / "rm_extra.py").read_text(encoding="utf-8")
     ours = ours[ours.find("ICONS = {"):ours.find("}", ours.find("ICONS = {"))]
-    return set(re.findall(r"(\w+)=(?:ic_|lambda)", block)) | set(re.findall(r'"(\w+)": ic_', ours))
+    gear = (Path(__file__).resolve().parent / "rm_gear.py").read_text(encoding="utf-8")
+    gear = gear[gear.find("ICONS = {"):]
+    return (set(re.findall(r"(\w+)=(?:ic_|lambda)", block)) | set(re.findall(r'"(\w+)": ic_', ours))
+            | set(re.findall(r'"(\w+)": ic_', gear)))
 
 
 from .rm_roles import HEADWEAR, ROLES  # noqa: E402
+from .rm_acts import ACTS  # noqa: E402
 
 CAM_PRESETS = ("push", "pull", "pan_left", "pan_right", "tilt_up", "tilt_down", "crane", "orbit", "shake")
 HERE = Path(__file__).resolve().parent
@@ -333,6 +351,11 @@ def wishes(story: dict[str, Any]) -> list[dict[str, str]]:
         for n in names:
             if isinstance(n, str) and n and n not in icons:
                 out.append(("icon", n.replace("_", " ")))
+        from .rm_acts import LENGTH as ACT_NAMES
+        for ch in shot.get("chars") or []:
+            for a in (ch.get("acts") or []) if isinstance(ch, dict) else []:
+                if isinstance(a, dict) and a.get("do") not in ACT_NAMES:
+                    out.append(("act", str(a.get("do"))))
         brands = [shot.get("logo")]
         for m in shot.get("moves") or []:
             if not isinstance(m, dict):

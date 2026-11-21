@@ -15,7 +15,7 @@ def install(shots_module) -> None:
     import skia
     from engine import kit as K
 
-    BT, BB, R, HCY = K.BODY_TOP, K.BODY_BOT, K.HEAD_R, K.HEAD_CY
+    BT, BB, R = K.BODY_TOP, K.BODY_BOT, K.HEAD_R   # HEAD_CY read live: a nod moves the head
     original = shots_module.draw_char
 
     def tube(c, path, w, lw):
@@ -68,12 +68,12 @@ def install(shots_module) -> None:
 
     def long_hair_texture(c, spec, lw, head_tilt):
         colr = spec.get("hair_col", "#1C1B22"); lo = K.shade(colr, .62)
-        panel = skia.Path(); panel.addRRect(skia.RRect.MakeRectXY(skia.Rect(-R - 14, HCY - 40, R + 14, HCY + 150), 60, 60))
-        head = skia.Path(); head.addCircle(0, HCY, R + 2)
+        panel = skia.Path(); panel.addRRect(skia.RRect.MakeRectXY(skia.Rect(-R - 14, K.HEAD_CY - 40, R + 14, K.HEAD_CY + 150), 60, 60))
+        head = skia.Path(); head.addCircle(0, K.HEAD_CY, R + 2)
         vis = skia.Op(skia.Op(panel, head, skia.PathOp.kDifference_PathOp), body_shape(spec), skia.PathOp.kDifference_PathOp)
         c.save(); c.clipPath(vis, doAntiAlias=True)
         for x in range(-R - 4, R + 8, 16):
-            p = skia.Path(); p.moveTo(x, HCY - 30); p.quadTo(x + (8 if x < 0 else -8), HCY + 60, x, HCY + 150)
+            p = skia.Path(); p.moveTo(x, K.HEAD_CY - 30); p.quadTo(x + (8 if x < 0 else -8), K.HEAD_CY + 60, x, K.HEAD_CY + 150)
             c.drawPath(p, _stroke(skia, lw * .5, lo))
         c.restore()
 
@@ -98,9 +98,9 @@ def install(shots_module) -> None:
             c.drawOval(skia.Rect(fx0 - 10 + d * 16, fy0 - 16, fx0 + 4 + d * 16, fy0 - 9), K.fp("#FFFFFF", 60))
         # arms: thick and round, never over the face (the head is drawn after the arms in the kit)
         c.translate(0, -bob); c.scale(1 + squash * .6, 1 - squash)
-        head = skia.Path(); head.addCircle(0, HCY, R + 6)
+        head = skia.Path(); head.addCircle(0, K.HEAD_CY, R + 6)
         if spec.get("hair") == "bun":
-            head.addCircle(0, HCY - R - 26, 46)
+            head.addCircle(0, K.HEAD_CY - R - 26, 46)
         c.save(); c.clipPath(head, skia.ClipOp.kDifference, True)
         for side, a in ((-1, arms[0]), (1, arms[1])):
             e, h, show = K._arm(a); mm = 1 if side < 0 else -1
@@ -116,7 +116,7 @@ def install(shots_module) -> None:
         c.restore()
         if spec.get("hair") == "long":
             long_hair_texture(c, spec, lw, tilt)
-        c.translate(0, HCY); c.rotate(tilt)
+        c.translate(0, K.HEAD_CY); c.rotate(tilt)
         from .rm_roles import ROLE_HEAD
         covered = spec.get("headscarf") or spec.get("headwear") or ROLE_HEAD.get(spec.get("role") or "")
         if not covered and (hat or spec.get("hat") or "none") == "none":

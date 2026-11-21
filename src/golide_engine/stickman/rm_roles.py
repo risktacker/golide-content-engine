@@ -61,7 +61,7 @@ def install(shots_module) -> None:
     import skia
     from engine import kit as K
 
-    BT, BB, R, HCY = K.BODY_TOP, K.BODY_BOT, K.HEAD_R, K.HEAD_CY
+    BT, BB, R = K.BODY_TOP, K.BODY_BOT, K.HEAD_R   # HEAD_CY read live: a nod moves the head
     original = shots_module.draw_char
     body_rr = skia.RRect.MakeRectXY(skia.Rect(-84, BT, 84, BB), 66, 72)
 
@@ -169,7 +169,7 @@ def install(shots_module) -> None:
         if role:
             body_gear(c, role, spec, lw)
         if head in HEADWEAR:
-            c.save(); c.translate(0, HCY); c.rotate(tilt); head_gear(c, head, spec, face, lw); c.restore()
+            c.save(); c.translate(0, K.HEAD_CY); c.rotate(tilt); head_gear(c, head, spec, face, lw); c.restore()
         c.restore()
 
     shots_module.draw_char = draw_char
