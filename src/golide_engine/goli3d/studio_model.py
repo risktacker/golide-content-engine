@@ -33,25 +33,37 @@ sc = bpy.context.scene
 
 
 # ------------------------------------------------------------------ camera and pixel -> world
+# 2026-11-21 (owner): one premium camera shot. Raised and tilted down a little, so the table top shows its depth.
 LENS, SENSOR = 50.0, 36.0
-CAM = Vector((0, -6.0, 1.3))          # wall plane at y = 0 (6 units away)
+TILT = math.radians(6.0)
+CAM = Vector((0, -6.0, 1.55))           # wall plane at y = 0 (6 units away)
+from mathutils import Euler  # noqa: E402
+
+ROT = Euler((math.pi / 2 - TILT, 0, 0)).to_matrix()
 
 
-def hw(d):
-    """Half the visible width/height (world units) at distance d from the camera."""
-    big = d * (SENSOR / 2) / LENS
-    return (big, big * H / W) if W >= H else (big * W / H, big)
+def _ray(px, py):
+    big = (SENSOR / 2) / LENS
+    hx, hz = (big, big * H / W) if W >= H else (big * W / H, big)
+    return ROT @ Vector(((px / W - 0.5) * 2 * hx, (0.5 - py / H) * 2 * hz, -1.0))
 
 
 def P(px, py, d):
-    """The world point that lands on pixel (px, py) at distance d in front of the camera."""
-    hx, hz = hw(d)
-    return Vector((CAM.x + (px / W - 0.5) * 2 * hx, CAM.y + d, CAM.z + (0.5 - py / H) * 2 * hz))
+    """The world point that lands on pixel (px, py) on the upright plane d units in front of the camera."""
+    r = _ray(px, py)
+    return CAM + r * (d / r.y)
 
 
-def U(d):
-    """World units per pixel at distance d."""
-    return 2 * hw(d)[0] / W
+def PZ(px, py, z):
+    """The world point that lands on pixel (px, py) on the level plane at height z (the table top, the floor)."""
+    r = _ray(px, py)
+    return CAM + r * ((z - CAM.z) / r.z)
+
+
+def U(d, py=None):
+    """World units per pixel on the upright plane at distance d."""
+    py = H / 2 if py is None else py
+    return (P(W / 2 + 0.5, py, d) - P(W / 2 - 0.5, py, d)).length
 
 
 def g(key, x, y):
@@ -87,7 +99,7 @@ def mat(name, color, rough=0.5, metal=0.0, coat=0.0, sheen=0.0, emit=0.0, ecolor
 
 def wood(name, base, dark, scale=6.0):
     """Walnut-like wood: a stretched noise grain."""
-    m = mat(name, base, 0.45, coat=0.25)
+    m = mat(name, base, 0.6, coat=0.08)
     nt = m.node_tree
     b = nt.nodes["Principled BSDF"]
     tc = nt.nodes.new("ShaderNodeTexCoord")
@@ -107,7 +119,7 @@ M = dict(
     gold=mat("gold", "#E8B84A", 0.22, metal=1.0), gold_glow=mat("gold_glow", "#FFD27A", 0.3, emit=9.0, ecolor="#FFC75A"),
     blue_glow=mat("blue_glow", "#3D6CFF", 0.3, emit=6.0, ecolor="#3D6CFF"),
     shelf=wood("shelfwood", "#6B4A2E", "#3E2817", 8), metal=mat("metal", "#2C303A", 0.35, metal=0.9),
-    desk=wood("deskwood", "#3A2A1E", "#21160E", 5), desk_side=mat("desk_side", "#14161D", 0.5, coat=0.3),
+    desk=wood("deskwood", "#5A3A22", "#2E1C10", 5), desk_side=mat("desk_side", "#14161D", 0.5, coat=0.3),
     alu=mat("alu", "#B7BCC6", 0.25, metal=1.0), alu_dark=mat("alu_dark", "#8E949F", 0.3, metal=1.0),
     ceramic=mat("ceramic", "#F4F1EA", 0.18, coat=0.6), coffee=mat("coffee", "#3B2212", 0.1, coat=1.0),
     mic=mat("mic", "#1B1D23", 0.35, metal=0.6), grille=mat("grille", "#2E323B", 0.5, metal=0.8),
@@ -195,8 +207,6 @@ while x < bot_right.x:                       # vertical acoustic slats with dark
     box((x + slat_w / 2, y_wall - 0.03, (top_left.z + bot_right.z) / 2), (slat_w, 0.06, span_h), M["slat"], back_col, 0.006)
     x += 66 * U(DW)
 box((0, y_wall + 0.02, (top_left.z + bot_right.z) / 2), (span_w + 1, 0.02, span_h + 1), M["gap"], back_col, 0)
-floor_z = P(0, H + 400, DW).z
-box((0, y_wall - 3, floor_z), (span_w + 6, 8, 0.05), M["floor"], back_col, 0)
 # warm LED uplight at the foot of the wall
 f0, f1 = P(-40, H - 6, DW - 0.25), P(W + 40, H - 6, DW - 0.25)
 box(((f0.x + f1.x) / 2, y_wall - 0.25, f0.z), (f1.x - f0.x, 0.03, 0.03), M["gold_glow"], back_col, 0)
@@ -223,6 +233,17 @@ if LAY["neon"]:
     c = P(nx, ny, DW - 0.1)
     bpy.ops.mesh.primitive_torus_add(major_radius=66 * U(DW - 0.1), minor_radius=5 * U(DW - 0.1), location=c, rotation=(math.pi / 2, 0, 0))
     t = put(shade(bpy.context.object), back_col); t.data.materials.append(M["gold_glow"])
+    logo = SPEC.get("neon_logo")
+    if logo:                                  # the GOLIDE mark glowing inside the ring
+        im = bpy.data.images.load(logo)
+        lm = bpy.data.materials.new("neonlogo"); lm.use_nodes = True
+        ln = lm.node_tree; bsdf = ln.nodes["Principled BSDF"]
+        tex = ln.nodes.new("ShaderNodeTexImage"); tex.image = im
+        ln.links.new(tex.outputs["Color"], bsdf.inputs["Base Color"]); ln.links.new(tex.outputs["Color"], bsdf.inputs["Emission Color"])
+        ln.links.new(tex.outputs["Alpha"], bsdf.inputs["Alpha"]); bsdf.inputs["Emission Strength"].default_value = 6.0
+        r_ = 60 * U(DW - 0.1)
+        bpy.ops.mesh.primitive_plane_add(size=2 * r_, location=c + Vector((0, -0.01, 0)), rotation=(math.pi / 2, 0, 0))
+        lp_ = put(bpy.context.object, back_col); lp_.data.materials.append(lm)
     pl = bpy.data.lights.new("neon", "POINT"); pl.energy = 60; pl.color = (1, 0.8, 0.45); pl.shadow_soft_size = 0.3
     po = bpy.data.objects.new("neon", pl); po.location = c + Vector((0, -0.3, 0)); back_col.objects.link(po)
 
@@ -293,34 +314,78 @@ tube(pip, 0.012, M["gold"], back_col)
 for s in (-1, 1):                            # stitched panels
     tube([(cbase.x + s * ch_w * 0.18, CAM.y + DC - 0.02, cbase.z + 0.1), (cbase.x + s * ch_w * 0.18, CAM.y + DC - 0.02, cbase.z + ch_h * 0.88)], 0.006, M["gold"], back_col)
 
-# ------------------------------------------------------------------ front: desk, laptop, mug, mic
-DD = 3.9                                     # the desk's front edge
-dtop = P(LAY["seat_x"], LAY["desk_y"], DD)
+# ------------------------------------------------------------------ front: the table, laptop, mug, mic
+# 2026-11-21 (owner): it must read as a table: a thick rounded top with depth, overhanging a recessed front panel,
+# legs at both ends, the floor beside and under them, its shadow on the floor.
+DD = 3.75                                    # the table's front edge
+k = LAY["size"] / 820
+back_px = LAY["desk_y"] - 18 * k             # the top's back edge sits just over Goli's waist
+d_back = DD + 0.95
+top_z = P(LAY["seat_x"], back_px, d_back).z
+front = PZ(LAY["seat_x"], 0, top_z)          # just for x scale
 du = U(DD)
-desk_w = (W + 300) * du
-box((0, CAM.y + DD + 0.45, dtop.z - 0.03), (desk_w, 0.9, 0.06), M["desk"], front_col, 0.012)        # top
-box((0, CAM.y + DD + 0.05, dtop.z - 0.06 - (H * du) / 2), (desk_w, 0.1, H * du), M["desk_side"], front_col, 0.01)
-box((0, CAM.y + DD - 0.002, dtop.z - 0.075), (desk_w, 0.012, 0.014), M["gold_glow"], front_col, 0)  # gold edge light
-for fx in (0.25, 0.5, 0.75):
-    lx = P(W * fx, 0, DD).x
-    box((lx, CAM.y + DD - 0.003, dtop.z - 0.06 - (H * du) / 2), (0.006, 0.006, H * du), mat(f"seam{fx}", "#F2C14E", 0.4, emit=1.2), front_col, 0)
+half = (W * 0.53 if FMT == "short" else 760) * du
+cxT = P(LAY["seat_x"] if FMT == "long" else W / 2, 0, DD).x
+T = 0.085                                    # top thickness
+top_d = d_back - DD
+bm = bmesh.new()
+bmesh.ops.create_cube(bm, size=1.0)
+me = bpy.data.meshes.new("tabletop"); bm.to_mesh(me); bm.free()
+tt = bpy.data.objects.new("tabletop", me); front_col.objects.link(tt); me.materials.append(M["desk"])
+tt.location = (cxT, CAM.y + DD + top_d / 2, top_z - T / 2); tt.scale = (2 * half, top_d, T)
+bpy.context.view_layer.objects.active = tt
+shade(tt, 0.03, 6)
+# gold inlay strip along the top's front edge and a soft LED under the overhang
+box((cxT, CAM.y + DD - 0.005, top_z - T * 0.55), (2 * half - 0.06, 0.008, 0.012), M["gold_glow"], front_col, 0)
+floor_z = top_z - 0.95
+# recessed front (modesty) panel: dark wood with a gold-framed inset, set back from the top's edge
+panel_y = CAM.y + DD + 0.16
+ph = top_z - T - floor_z - 0.12
+box((cxT, panel_y, floor_z + 0.12 + ph / 2), (2 * half - 0.5, 0.05, ph), M["desk_side"], front_col, 0.01)
+box((cxT, panel_y - 0.03, floor_z + 0.12 + ph / 2), (2 * half - 0.9, 0.02, ph - 0.22), M["desk"], front_col, 0.01)
+for zz in (floor_z + 0.12 + 0.11, top_z - T - 0.11):
+    box((cxT, panel_y - 0.045, zz), (2 * half - 0.9, 0.01, 0.01), M["gold"], front_col, 0)
+for sx_ in (-1, 1):
+    box((cxT + sx_ * (half - 0.45), panel_y - 0.045, floor_z + 0.12 + ph / 2), (0.01, 0.01, ph - 0.22), M["gold"], front_col, 0)
+# legs: tapered blocks at both ends with gold feet
+for sx_ in (-1, 1):
+    lx = cxT + sx_ * (half - 0.16)
+    for ly in (CAM.y + DD + 0.12, CAM.y + d_back - 0.12):
+        box((lx, ly, (floor_z + top_z - T) / 2), (0.1, 0.1, top_z - T - floor_z), M["desk_side"], front_col, 0.015)
+        cyl((lx, ly, floor_z + 0.015), 0.07, 0.03, M["gold"], front_col, bevel=0.005)
+area("under", (cxT, CAM.y + DD + 0.2, top_z - T - 0.03), 25, 2 * half - 0.3, (1.0, 0.8, 0.5), (cxT, CAM.y + DD + 0.2, floor_z), front_col, sy=0.05)
+# the studio floor: dark, glossy, catching the lights
+fm = mat("studiofloor", "#0D1018", 0.18, coat=0.6)
+box((0, CAM.y + 4, floor_z - 0.025), (40, 16, 0.05), fm, back_col, 0)
+dtop = Vector((0, 0, top_z))
 
 
 def desk_point(px, depth_px=0.0):
-    """A point on the desk top at pixel x (relative to the seat, like the flat set), pushed back by depth_px."""
+    """A point on the table top at pixel x (relative to the seat, like the flat set), pushed back by depth_px."""
     xx = LAY["seat_x"] + (px - 640) * k
-    p = P(xx, LAY["desk_y"], DD)
-    return Vector((p.x, CAM.y + DD + 0.15 + depth_px * du, dtop.z))
+    p = P(xx, back_px, d_back - 0.35 - depth_px * du)
+    return Vector((p.x, p.y, top_z))
 
 
 # laptop (right): open, lid facing the camera with the glowing mark
-lp = desk_point(1070, 2)
+lp = desk_point(1070 if FMT == "long" else 930, 2)
 lw, lh = 290 * k * du, 186 * k * du
 box((lp.x, lp.y + 0.12, lp.z + 0.012), (lw * 1.05, lw * 0.7, 0.024), M["alu"], front_col, 0.01)
 lid = box((lp.x, lp.y + 0.36, lp.z + lh / 2 + 0.02), (lw, 0.025, lh), M["alu"], front_col, 0.012, rot=(math.radians(-14), 0, 0))
-cyl((lp.x, lp.y + 0.33, lp.z + lh * 0.52), 38 * k * du, 0.01, M["gold_glow"], front_col, rot=(math.pi / 2, 0, 0))
+if SPEC.get("neon_logo"):                    # the GOLIDE mark glowing on the lid
+    im2 = bpy.data.images.load(SPEC["neon_logo"])
+    lm2 = bpy.data.materials.new("lidlogo"); lm2.use_nodes = True
+    n2 = lm2.node_tree; b2 = n2.nodes["Principled BSDF"]
+    t2 = n2.nodes.new("ShaderNodeTexImage"); t2.image = im2
+    n2.links.new(t2.outputs["Color"], b2.inputs["Base Color"]); n2.links.new(t2.outputs["Color"], b2.inputs["Emission Color"])
+    n2.links.new(t2.outputs["Alpha"], b2.inputs["Alpha"]); b2.inputs["Emission Strength"].default_value = 4.0
+    r2 = 46 * k * du
+    bpy.ops.mesh.primitive_plane_add(size=2 * r2, location=(lp.x, lp.y + 0.33, lp.z + lh * 0.52), rotation=(math.pi / 2 - math.radians(14), 0, 0))
+    put(bpy.context.object, front_col).data.materials.append(lm2)
+else:
+    cyl((lp.x, lp.y + 0.33, lp.z + lh * 0.52), 38 * k * du, 0.01, M["gold_glow"], front_col, rot=(math.pi / 2, 0, 0))
 # mug (left), with coffee
-mp = desk_point(880)
+mp = desk_point(880, 0) if FMT == "long" else desk_point(360, -110)
 mr, mh = 39 * k * du, 96 * k * du
 cyl((mp.x, mp.y, mp.z + mh / 2), mr, mh, M["ceramic"], front_col, bevel=0.006)
 cyl((mp.x, mp.y, mp.z + mh - 0.012), mr * 0.86, 0.01, M["coffee"], front_col)
@@ -350,6 +415,10 @@ sc.world = world
 cam = bpy.data.cameras.new("cam"); cam.lens = LENS; cam.sensor_width = SENSOR; cam.sensor_fit = "AUTO"
 co = bpy.data.objects.new("cam", cam); co.location = CAM; co.rotation_euler = (math.pi / 2, 0, 0)
 sc.collection.objects.link(co); sc.camera = co
+co.rotation_euler = (math.pi / 2 - TILT, 0, 0)
+cam.dof.use_dof = True                        # a premium lens: the set behind Goli a touch soft
+cam.dof.focus_distance = (CAM.y + DD + 0.9) - CAM.y
+cam.dof.aperture_fstop = SPEC.get("fstop", 3.2)
 
 scale = SPEC.get("scale", 1.0)
 sc.render.resolution_x, sc.render.resolution_y = int(W * scale), int(H * scale)
@@ -363,8 +432,14 @@ if PASS == "front":                           # the back stays in the scene (lig
     vl.layer_collection.children["back"].holdout = True
 elif PASS == "back":
     vl.layer_collection.children["front"].exclude = True
+# (no compositor bloom: the glowing parts carry their own light)
+from bpy_extras.object_utils import world_to_camera_view  # noqa: E402
+bpy.context.view_layer.update()
+mug_top = world_to_camera_view(sc, co, Vector((mp.x, mp.y, mp.z + mh)))
+neon_px = None
 with open(OUT + ".json", "w") as fh:
-    json.dump({"screen": screen_px, "fmt": FMT, "w": W, "h": H}, fh)
+    json.dump({"screen": screen_px, "fmt": FMT, "w": W, "h": H,
+               "mug_top": [mug_top.x * W, (1 - mug_top.y) * H]}, fh)
 sc.render.filepath = OUT
 bpy.ops.render.render(write_still=True)
 print("rendered", OUT)
