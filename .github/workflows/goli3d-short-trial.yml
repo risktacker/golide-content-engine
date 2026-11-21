@@ -1,7 +1,8 @@
 name: Goli 3D Short trial (10 seconds)
 
 # 2026-11-21 (owner): a 10-second Goli Short with the new 3D Goli talking, to see the work done. TRIAL: nothing is
-# published; the video goes to the review-results branch. AI voice: about 150 characters of the ElevenLabs cap.
+# published; the video goes to the review-results branch. Voice: the owner's saved recording only (assets/trial/),
+# never ElevenLabs (owner 2026-11-21).
 on:
   workflow_dispatch: {}
 
@@ -25,9 +26,6 @@ jobs:
           curl -sSL -o "$R/r.zip" https://github.com/DanielSWolf/rhubarb-lip-sync/releases/download/v1.14.0/Rhubarb-Lip-Sync-1.14.0-Linux.zip
           unzip -qo "$R/r.zip" -d "$R"
       - name: Trial render
-        env:
-          GOLIDE_ENABLE_PAID_PRODUCTION: "1"
-          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
         run: python scripts/goli3d_short_trial.py
       - name: Push the video for review
         run: |
