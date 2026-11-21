@@ -8,9 +8,11 @@ on:
     inputs:
       poses: {description: "Poses to draw, space-separated (empty = all)", default: ""}
       kind: {description: "library (thumbnail cut-outs) or video (talking sprites)", default: "library"}
+      from_run: {description: "Only collect the renders of this finished run id (no new renders)", default: ""}
 
 permissions:
   contents: write
+  actions: read
 
 jobs:
   plan:
@@ -29,6 +31,7 @@ jobs:
           echo "poses=$(python3 -c "import json,sys;print(json.dumps(sys.argv[1:]))" $P)" >> "$GITHUB_OUTPUT"
   render:
     needs: plan
+    if: inputs.from_run == ''
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     strategy:
@@ -47,15 +50,20 @@ jobs:
           path: assets/goli3d/${{ inputs.kind == 'video' && 'video' || 'full' }}/${{ matrix.pose }}
   commit:
     needs: render
+    if: always() && (needs.render.result == 'success' || inputs.from_run != '')
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           path: dl
+          run-id: ${{ inputs.from_run || github.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - run: |
+          # the branch may have moved while the renders ran: commit on its newest commit, no rebase needed
+          git fetch -q --depth=1 origin ${{ github.ref_name }} && git checkout -q -B out FETCH_HEAD
           K=${{ inputs.kind == 'video' && 'video' || 'full' }}
           for d in dl/goli3d-*; do p=${d#dl/goli3d-}; mkdir -p assets/goli3d/$K/$p; cp $d/* assets/goli3d/$K/$p/; done
           git add assets/goli3d
           git -c user.name=golide-bot -c user.email=bot@golidee.com commit -qm "goli3d: render ${{ inputs.kind }}" || exit 0
-          git pull -q --rebase origin ${{ github.ref_name }} && git push -q origin HEAD:${{ github.ref_name }}
+          git push -q origin HEAD:${{ github.ref_name }}
