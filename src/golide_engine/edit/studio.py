@@ -8,7 +8,10 @@ A 1920x1080 set drawn in SVG, in two layers so Goli sits between them:
 Everything is original and drawn in code. Ids are prefixed so several studio shots can share a page.
 """
 
+
 from __future__ import annotations
+
+from pathlib import Path
 
 from .mascot import logo_mark
 
@@ -32,12 +35,37 @@ LAYOUTS = {
 LAYOUTS["lower"] = {"w": 1080, "h": 1920, "desk_y": 1752, "seat_x": 540, "size": 640, "top": 1250}
 
 
+# 2026-11-21 (owner, approved): the real 3D studio from Blender (goli3d/studio_model.py). Rendered once as pictures
+# (assets/goli3d/studio/<fmt>/back.webp behind Goli, front.webp in front of him); the live parts stay layers on top:
+# the TV's chart, LIVE and words, the steam over the mug and the table's pulsing gold edge.
+PLATES = Path(__file__).resolve().parents[3] / "assets" / "goli3d" / "studio"
+
+
+def plates(fmt: str) -> dict | None:
+    f = PLATES / fmt / "meta.json"
+    if not f.exists():
+        return None
+    import json
+    return json.loads(f.read_text())
+
+
+def _img(path: Path, at, asset, w=None, h=None, extra="") -> str:
+    from PIL import Image
+    with Image.open(path) as im:
+        iw, ih = im.size
+    return (f'<img src="{asset(path)}" style="position:absolute;left:{at[0]}px;top:{at[1]}px;'
+            f'width:{w or iw}px;height:{h or ih}px{extra}">')
+
+
 def layout(fmt: str) -> dict:
     return LAYOUTS[fmt] if fmt in ("short", "lower") else LAYOUTS["long"]
 
 
-def lower_back(sid: str) -> str:
+def lower_back(sid: str, asset=None) -> str:
     """The Short's lower third: a slice of the studio behind Goli while the proof plays on top."""
+    m = plates("lower") if asset else None
+    if m:
+        return f'<div id="{sid}-low">{_img(PLATES / "lower" / "back.webp", m["back_at"], asset)}</div>'
     L = LAYOUTS["lower"]
     W, H, top = L["w"], L["h"], L["top"]
     slats = "".join(f'<rect x="{x}" y="{top}" width="58" height="{H - top}" fill="url(#st-slat)"/>'
@@ -70,8 +98,11 @@ DEFS = """<svg width="0" height="0" style="position:absolute"><defs>
 </defs></svg>"""
 
 
-def back(sid: str, fmt: str = "long") -> str:
+def back(sid: str, fmt: str = "long", asset=None) -> str:
     """Wall, neon sign, shelves, video wall and chair (behind Goli)."""
+    m = plates(fmt) if asset else None
+    if m:
+        return back3d(sid, fmt, m, asset)
     L = layout(fmt)
     W, H, DESK_Y, SEAT_X = L["w"], L["h"], L["desk_y"], L["seat_x"]
     k = L["size"] / 820
@@ -128,8 +159,11 @@ def back(sid: str, fmt: str = "long") -> str:
 </svg>"""
 
 
-def front(sid: str, fmt: str = "long") -> str:
+def front(sid: str, fmt: str = "long", asset=None) -> str:
     """Desk, laptop, mug and the podcast mic (in front of Goli)."""
+    m = plates(fmt) if asset else None
+    if m:
+        return front3d(sid, fmt, m, asset)
     L = layout(fmt)
     W, H, DESK_Y, SEAT_X = L["w"], L["h"], L["desk_y"], L["seat_x"]
     k = L["size"] / 820
@@ -172,6 +206,42 @@ def front(sid: str, fmt: str = "long") -> str:
   </g>
 </g></g>
 </svg>"""
+
+
+def back3d(sid: str, fmt: str, m: dict, asset) -> str:
+    """The 3D set behind Goli, with the TV's live content (chart, bars, LIVE) drawn on its screen."""
+    L = layout(fmt)
+    W, H = L["w"], L["h"]
+    g = 'transform="translate({} {}) scale({})"'.format(*L["wall"])
+    bars = "".join(f'<rect id="{sid}-bar{i}" x="{1196 + i * 46}" y="{600 - h_}" width="30" height="{h_}" rx="6" '
+                   f'fill="{"#F2C14E" if i == 5 else "#3D6CFF"}" opacity=".6"/>'
+                   for i, h_ in enumerate((40, 56, 46, 74, 64, 100, 84)))
+    ticks = "".join(f'<rect x="{1560 + i * 26}" y="{200 + (i % 3) * 4}" width="16" height="4" rx="2" fill="#3D6CFF" '
+                    f'opacity="{.3 + .1 * (i % 4)}"/>' for i in range(9))
+    screen = (f'<svg viewBox="0 0 {W} {H}" width="{W}" height="{H}" style="position:absolute;left:0;top:0">'
+              f'<g {g}><g id="{sid}-wall">'
+              f'<circle cx="1160" cy="160" r="7" fill="#E8462F"/><text x="1176" y="167" font-family="Inter" font-weight="600" '
+              f'font-size="20" fill="#E8462F">LIVE</text>{ticks}{bars}'
+              f'<path id="{sid}-line" d="M1180 590 L1260 566 L1330 578 L1420 536 L1500 548 L1590 500 L1680 512 L1800 450" '
+              f'fill="none" stroke="#F2C14E" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" '
+              f'stroke-dasharray="900" stroke-dashoffset="900"/>{logo_mark(1806, 594, 40, "#8FA0C8", "#F2C14E")}'
+              f'</g></g><g id="{sid}-neon"></g></svg>')
+    return _img(PLATES / fmt / "back.webp", [0, 0], asset, W, H) + screen
+
+
+def front3d(sid: str, fmt: str, m: dict, asset) -> str:
+    """The 3D table in front of Goli, the steam over the mug and the table's pulsing gold edge."""
+    L = layout(fmt)
+    W, H = L["w"], L["h"]
+    mx, my = m["mug_top"]
+    x0, ey, x1, _ = m["edge"]
+    steam = (f'<path id="{sid}-steam" d="M{mx - 8:.0f} {my - 8:.0f} Q{mx - 18:.0f} {my - 38:.0f} {mx - 4:.0f} {my - 63:.0f} '
+             f'Q{mx + 10:.0f} {my - 88:.0f} {mx:.0f} {my - 113:.0f}" fill="none" stroke="#fff" stroke-width="6" '
+             f'stroke-linecap="round" opacity=".18"/>')
+    edge = (f'<rect id="{sid}-edge" x="{max(0, x0):.0f}" y="{ey - 3:.0f}" width="{min(W, x1) - max(0, x0):.0f}" height="6" '
+            f'fill="url(#st-edge)" opacity=".35" style="mix-blend-mode:screen"/>') if ey < H else f'<g id="{sid}-edge"></g>'
+    return (_img(PLATES / fmt / "front.webp", m["front_at"], asset)
+            + f'<svg viewBox="0 0 {W} {H}" width="{W}" height="{H}" style="position:absolute;left:0;top:0">{steam}{edge}</svg>')
 
 
 def motion(sid: str, t0: float, dur: float) -> list[str]:

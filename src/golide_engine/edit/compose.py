@@ -1222,10 +1222,10 @@ class Composer:
         bubble = ""
         if place == "studio":
             self.uses_studio = True
-            bubble = studio.back(sid, self.fmt)
+            bubble = studio.back(sid, self.fmt, self.asset)
         elif place == "lower":
             self.uses_studio = True
-            bubble = studio.lower_back(sid)
+            bubble = studio.lower_back(sid, self.asset)
         elif place != "corner":     # open stage: back-wall wordmark, spotlight, floor grid to the horizon, glow disc
             # the end card or the subscribe button owns the right side: no floating panels
             end_card = data.get("outro") == "end_card" or bool(data.get("subscribe"))
@@ -1274,7 +1274,8 @@ class Composer:
             title = (f'<div id="{sid}-scr" style="position:absolute;left:{wx - 10}px;width:{ww + 20}px;top:{wy - 14}px;'
                      f'height:{int(ww * 0.56)}px;border-radius:14px;overflow:hidden;box-shadow:0 0 0 2px rgba(232,194,104,.45)">'
                      f'<img src="{src}" style="width:100%;height:100%;object-fit:cover"></div>')
-        front = (studio.front(sid, self.fmt) if place == "studio" else studio.front(sid, "lower") if place == "lower" else "")
+        front = (studio.front(sid, self.fmt, self.asset) if place == "studio" else studio.front(sid, "lower", self.asset)
+                 if place == "lower" else "")
         floor = (studio.layout(self.fmt)["desk_y"] if place == "studio" else studio.layout("lower")["desk_y"]
                  if place == "lower" else "")
         intro, outro = data.get("intro"), data.get("outro")
