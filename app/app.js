@@ -112,6 +112,32 @@ function ytChart(daily) {
   return '<svg class="yt-chart" viewBox="0 0 100 84" preserveAspectRatio="none" role="img" aria-label="Daily views">' + bars + "</svg>";
 }
 
+// 2026-11-21 (owner): what Stickman storyboards asked for that the library cannot draw yet; batches come from this.
+async function loadWishes() {
+  const body = $("#wishes-body");
+  if (!body) return;
+  let data;
+  try { data = await api("/api/stickman/wishes"); }
+  catch (error) { body.className = "empty-state"; body.textContent = "Could not load the list: " + error.message; return; }
+  const open = (data.wishes || []).filter((w) => !w.done);
+  if (!open.length) {
+    body.className = "empty-state";
+    body.textContent = "Nothing missing yet. Every Stickman storyboard adds what it could not get.";
+    return;
+  }
+  body.className = "";
+  body.innerHTML = '<table class="yt-table"><thead><tr><th>What</th><th>Kind</th><th>Videos</th><th>Last asked by</th><th></th></tr></thead><tbody>'
+    + open.map((w) => "<tr><td><b>" + esc(w.name) + "</b></td><td>" + esc(w.kind) + "</td><td>" + esc(w.times) + "</td><td>"
+      + esc(w.last_title) + '</td><td><button type="button" class="ghost" data-wish-kind="' + escAttr(w.kind)
+      + '" data-wish-name="' + escAttr(w.name) + '">Drawn</button></td></tr>').join("") + "</tbody></table>";
+  body.querySelectorAll("[data-wish-name]").forEach((button) => button.addEventListener("click", async () => {
+    button.disabled = true;
+    try {
+      await api("/api/stickman/wishes/done", { method: "POST", body: JSON.stringify({ kind: button.dataset.wishKind, name: button.dataset.wishName }) });
+    } finally { loadWishes(); }
+  }));
+}
+
 async function loadYouTube() {
   const body = $("#yt-body");
   if (!body) return;
@@ -1350,7 +1376,7 @@ async function boot() {
   // Load everything at once; the page you are on fills in as soon as its own data arrives.
   await Promise.allSettled([
     loadHealth(), loadPolicy(), loadAutomationControl(), refreshInboxBadge(),
-    loadOverview(), loadProductionJobs(), loadConnections(), loadYouTube(),
+    loadOverview(), loadProductionJobs(), loadConnections(), loadYouTube(), loadWishes(),
   ]);
   renderBudget();
 

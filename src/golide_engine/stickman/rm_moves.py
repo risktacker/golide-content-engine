@@ -11,6 +11,7 @@ import random
 import skia
 from engine.kit import *  # noqa: F401,F403
 from engine.fx import poplabel, stamp
+from golide_engine.stickman.rm_sets import brand
 
 _R = random.Random(11)
 BILLS = [(_R.uniform(-300, W + 300), _R.uniform(0, 1), _R.uniform(.6, 1.4), _R.uniform(0, 6.28), _R.uniform(.6, 1.1)) for _ in range(70)]
@@ -96,7 +97,13 @@ def m_kart_race(c, u, d, t):
         rect(c, x - 110, y - 40, x + 110, y + 10, cols[i % 5], LW * .7, r=16)
         circ(c, x - 70, y + 16, 22, '#1C1C22', LW * .4); circ(c, x + 70, y + 16, 22, '#1C1C22', LW * .4)
         circ(c, x + 10, y - 66, 26, '#F4F4F2', LW * .5)
-        label(c, nm.strip().upper(), x, y - 6, fit_size(nm.strip().upper(), 36, 190), '#FFFFFF', align='center', skew=0)
+        arts = d.get("logo_art") or []
+        art = arts[i] if i < len(arts) else None
+        if art:
+            circ(c, x - 50, y - 15, 30, '#FFFFFF', LW * .4); brand(c, art, x - 50, y - 15, 44, dark_bg=False)
+            label(c, nm.strip().upper(), x + 30, y - 6, fit_size(nm.strip().upper(), 32, 130), '#FFFFFF', align='center', skew=0)
+        else:
+            label(c, nm.strip().upper(), x, y - 6, fit_size(nm.strip().upper(), 36, 190), '#FFFFFF', align='center', skew=0)
         for k in range(3): c.drawLine(x - 130 - k * 40, y - 20 + k * 12, x - 170 - k * 40, y - 20 + k * 12, ink(4, '#FFFFFF', 140))
 
 
@@ -108,7 +115,12 @@ def m_podium(c, u, d, t):
         rect(c, x + dx - 140, base - hh, x + dx + 140, base, colr, LW)
         if hh > 60: label(c, num, x + dx, base - hh + 70, 70, INK, align='center', skew=0)
         if K(u, .4 + i * .1, .3) > 0:
+            arts = d.get("logo_art") or []
+            art = arts[i] if i < len(arts) else None
             nm = names[i].strip().upper(); label(c, nm, x + dx, base - hh - 30, fit_size(nm, 54, 280), INK, align='center', stroke=6, stroke_col='#FFFFFF', skew=0)
+            if art:
+                sz = 110 * back(K(u, .4 + i * .1, .3), 1.5); circ(c, x + dx, base - hh - 150, sz * .62, '#FFFFFF', LW * .6)
+                brand(c, art, x + dx, base - hh - 150, sz * .8, dark_bg=False)
 
 
 def m_dominoes(c, u, d, t):
@@ -288,16 +300,31 @@ def m_door_slam(c, u, d, t):
     if d.get("text") and u > .45: _txt = d["text"].upper(); rect(c, x - 140, y - 420, x + 120, y - 340, '#FFFFFF', LW * .6); label(c, _txt, x - 10, y - 365, fit_size(_txt, 44, 240), RED, align='center', skew=0)
 
 
+def m_logo_pop(c, u, d, t):
+    """A company's real mark pops in big (its name under it); the move for 'Nvidia', 'Tesla', 'OpenAI'..."""
+    x, y, sz = d.get("x", 960), d.get("y", 470), d.get("size", 360) * back(min(1, u * 2.5), 1.6)
+    if sz <= 1: return
+    art = d.get("logo_art"); name = (d.get("text") or (art or {}).get("title") or d.get("logo") or "").upper()
+    circ(c, x, y, sz * .66, '#FFFFFF', LW); 
+    if not brand(c, art, x, y, sz * .82, dark_bg=False):
+        label(c, name, x, y + sz * .12, fit_size(name, sz * .3, sz * 1.1), INK, align='center', skew=0)
+    elif name and u > .3:
+        label(c, name, x, y + sz * .66 + 90, fit_size(name, 80, 900), '#FFFFFF', align='center', stroke=8, skew=0)
+
+
 MOVES = {k[2:]: v for k, v in dict(globals()).items() if k.startswith("m_") and callable(v)}
 LENGTH = dict(money_rain=3.0, rocket_launch=2.6, cash_pile=1.4, kart_race=2.8, podium=1.4, dominoes=1.8, signpost=1.2,
               chart_up=1.6, chart_down=1.6, explosion=1.1, alarm=1.0, plane_fly=2.4, ship_sail=4.0, car_drive=1.8,
-              planet_zoom=1.6, door_slam=.8, lightning=.8, data_flow=1.2, price_tag=1.0, earth_spin=1.0)
+              planet_zoom=1.6, logo_pop=1.0, door_slam=.8, lightning=.8, data_flow=1.2, price_tag=1.0, earth_spin=1.0)
 DAY_SETS = {"factory", "lab", "openoffice", "exchange", "court", "parliament", "hospital", "classroom", "press", "prison",
-            "market", "airport", "port", "highway", "station", "farm", "forest", "ocean", "desert", "mountains", "kitchen", "hq"}
+            "market", "airport", "port", "highway", "station", "farm", "forest", "ocean", "desert", "mountains", "kitchen", "hq",
+            "church", "mosque", "village"}
 HEAVY = {"explosion", "door_slam", "lightning", "rocket_launch"}     # get a camera shake on their word
 
 
 def register(shots_module) -> None:
+    from golide_engine.stickman import rm_roles
+    rm_roles.install(shots_module)              # characters dressed for their role
     Shot = shots_module.Shot
     init = Shot.__init__
 

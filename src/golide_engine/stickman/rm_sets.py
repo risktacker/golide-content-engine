@@ -17,6 +17,11 @@ L0, R0 = -900, W + 900       # draw past the frame for camera moves
 STEEL = '#8C95A6'; DARKSTEEL = '#4A5163'; WOOD = '#8E5C36'; DARKWOOD = '#5A3A22'
 
 
+def _in_band(x):
+    """Characters stand between x 250 and 1670 (the writer's rule): no pole or pillar there, it would grow out of a head."""
+    return 230 <= x <= 1690
+
+
 def _info(time='day', lights=(), bulbs=(), floor=FLOOR, spots=((520, FLOOR), (960, FLOOR), (1400, FLOOR))):
     return dict(floor=floor, ambient=AMBIENT.get(time, AMBIENT['day']), lights=list(lights), bulbs=list(bulbs), spots=list(spots))
 
@@ -43,9 +48,44 @@ def _ground(c, top, col, line_=True):
     if line_: line(c, L0, top, R0, top, LW)
 
 
-def _sign(c, text, x, y, w, h, fill, colr='#FFFFFF', size=70):
+_LOGOS = {}
+
+
+def _dark(hexc):
+    h = str(hexc).lstrip("#"); r, g, b = (int(h[i:i + 2], 16) for i in (0, 2, 4))
+    return .2126 * r + .7152 * g + .0722 * b < 128
+
+
+def brand(c, art, cx, cy, size, dark_bg=True):
+    """A real brand mark (simple-icons SVG attached to the story by longform.attach_logos) drawn at its own colour;
+    a mark too dark for a dark sign is drawn white. Returns False when there is no mark."""
+    if not isinstance(art, dict) or not art.get("svg"):
+        return False
+    hexc = "#" + str(art.get("hex") or "FFFFFF").lstrip("#")
+    r, g, b = (int(hexc[i:i + 2], 16) for i in (1, 3, 5))
+    lum = .2126 * r + .7152 * g + .0722 * b
+    if dark_bg and lum < 70: hexc = "#FFFFFF"
+    if not dark_bg and lum > 215: hexc = "#1C1C22"
+    px = max(8, int(size * OS * 1.5))
+    key = (art["svg"][:200], hexc, px)
+    if key not in _LOGOS:
+        svg = art["svg"].replace("<svg ", f'<svg fill="{hexc}" width="{px}" height="{px}" ', 1)
+        dom = skia.SVGDOM.MakeFromStream(skia.MemoryStream(svg.encode()))
+        surf = skia.Surface(px, px); cv = surf.getCanvas(); cv.clear(skia.ColorTRANSPARENT)
+        dom.setContainerSize(skia.Size(px, px)); dom.render(cv); _LOGOS[key] = surf.makeImageSnapshot()
+    c.drawImageRect(_LOGOS[key], skia.Rect(cx - size / 2, cy - size / 2, cx + size / 2, cy + size / 2), LINEAR)
+    return True
+
+
+def _sign(c, text, x, y, w, h, fill, colr='#FFFFFF', size=70, art=None):
+    """A sign; with a real logo (art) the mark stands at its left and the name beside it."""
     rect(c, x - w / 2, y - h / 2, x + w / 2, y + h / 2, fill, LW, r=14)
-    label(c, text, x, y + size * .34, fit_size(text, size, w - 40), colr, align='center', skew=0)
+    if art and art.get("svg"):
+        m = h * .7; brand(c, art, x - w / 2 + 20 + m / 2, y, m, dark_bg=_dark(fill))
+        tx = x + (20 + m) / 2
+        label(c, text, tx, y + size * .34, fit_size(text, size, w - 70 - m), colr, align='center', skew=0)
+    else:
+        label(c, text, x, y + size * .34, fit_size(text, size, w - 40), colr, align='center', skew=0)
 
 
 def _screen(c, x0, y0, x1, y1, kind='up', seed=1):
@@ -106,7 +146,8 @@ def set_factory(c, o):
     for i in range(-3, 9):
         x = i * 280; rect(c, x + 30, 80, x + 230, 380, '#DCEAF2', LW * .7)
         line(c, x + 130, 80, x + 130, 380, LW * .5); line(c, x + 30, 230, x + 230, 230, LW * .5)
-    for i in range(-3, 9): rect(c, i * 280 - 14, -100, i * 280 + 14, 760, '#8A8F9C', LW * .6)
+    for i in range(-3, 9):
+        if not _in_band(i * 280): rect(c, i * 280 - 14, -100, i * 280 + 14, 760, '#8A8F9C', LW * .6)
     for i in range(-4, 30): c.drawLine(i * 140, 760, i * 140 - 300, H + 300, ink(3, '#6C717C'))
     rect(c, L0, 640, R0, 700, '#3A3F4C', LW); rect(c, L0, 700, R0, 740, '#262A34', LW * .7)
     for i in range(-6, 22): circ(c, i * 120, 720, 14, '#5A6070', LW * .4)
@@ -154,8 +195,8 @@ def set_cutaway(c, o):
             cx, cy = a + (x1 - x0) / 6, b + (y1 - y0) / 3 - 30
             rect(c, cx - 90, cy - 50, cx + 90, cy - 36, WOOD, LW * .5); rect(c, cx - 40, cy - 110, cx + 40, cy - 56, '#1A1D2A', LW * .5)
             _person_dot(c, cx - 110, cy - 30, .9, ['#3B4660', '#C8242C', '#3E9A56'][(i * 3 + j) % 3])
-    sign = o.get('sign') or o.get('logo') or 'HQ'
-    _sign(c, sign.upper(), 960, y0 - 100, 520, 110, '#1C1C22', '#F2C14E', 76)
+    sign = o.get('sign') or (o.get('logo_art') or {}).get('title') or o.get('logo') or 'HQ'
+    _sign(c, sign.upper(), 960, y0 - 100, 560, 110, '#1C1C22', '#F2C14E', 76, o.get('logo_art'))
     _ground(c, y1, '#4A5163')
     return _info(o.get('time', 'dusk'), [('pool', 960, 600, 900, .95)], [(960, 600, 700, '#FFD98A', 40)])
 
@@ -252,7 +293,7 @@ def set_court(c, o):
     _room(c, '#7A4E2E', '#5A3A22', 820, stripe='#6E4428')
     rect(c, 560, 420, 1360, 820, '#6A4428', LW); rect(c, 520, 380, 1400, 430, '#8E5C36', LW)
     circ(c, 960, 230, 110, '#D0A548', LW); circ(c, 960, 230, 80, '#C8A040', LW * .5); label(c, 'COURT', 960, 245, 40, '#5A3A22', align='center', skew=0)
-    for x in (380, 1540):
+    for x in (130, 1790):                    # owner 2026-11-21: poles never stand where a character's head goes
         line(c, x, 820, x, 200, 8, '#3A3F4C'); poly(c, [(x, 210), (x + 120 * (1 if x < 960 else -1), 230), (x, 330)], '#3B6EA8' if x < 960 else '#C8242C', LW * .6)
     rect(c, 1500, 640, 1820, 820, '#8E5C36', LW); rect(c, 100, 640, 420, 820, '#8E5C36', LW)
     return _info(o.get('time', 'day'), [('pool', 960, 400, 900, .95)], [(960, 230, 300, '#FFD98A', 30)])
@@ -284,7 +325,7 @@ def set_hospital(c, o):
     rect(c, 1500, 360, 1760, 540, '#1A1D2A', LW); hp = skia.Path(); hp.moveTo(1520, 460)
     for (x, y) in ((1580, 460), (1600, 400), (1625, 510), (1645, 440), (1660, 460), (1740, 460)): hp.lineTo(x, y)
     c.drawPath(hp, ink(5, '#5FE08A'))
-    line(c, 1000, 880, 1000, 300, 8, STEEL); rect(c, 970, 300, 1030, 400, '#DCEAF2', LW * .6)
+    line(c, 1880, 880, 1880, 300, 8, STEEL); rect(c, 1850, 300, 1910, 400, '#DCEAF2', LW * .6)
     for k in range(9): c.drawLine(60 + k * 50, 120, 40 + k * 50, 860, ink(18, '#9CC8D6' if k % 2 else '#8ABBCB'))
     rect(c, 20, 100, 520, 124, STEEL, LW * .5)
     return _info(o.get('time', 'day'), [('pool', 960, 380, 1000, .95)])
@@ -333,16 +374,22 @@ def set_stage(c, o):
 
 def set_press(c, o):
     """Press conference: a backdrop printed with the name, a podium with microphones, flags."""
-    name = (o.get('logo') or o.get('sign') or 'PRESS').upper()
+    art = o.get('logo_art')
+    name = (o.get('sign') or (art or {}).get('title') or o.get('logo') or 'PRESS').upper()
     c.drawRect(skia.Rect(L0, -700, R0, 900), fp('#1E3A6A'))
     for j in range(-4, 10):
-        for i in range(-6, 20): label(c, name, i * 330 + (j % 2) * 165, j * 120, fit_size(name, 44, 280), '#3B5E96', align='center', skew=0)
+        for i in range(-6, 20):
+            x, y = i * 330 + (j % 2) * 165, j * 120
+            if art and (i + j) % 2 == 0:
+                brand(c, art, x, y - 14, 70)
+            else:
+                label(c, name, x, y, fit_size(name, 44, 280), '#3B5E96', align='center', skew=0)
     _ground(c, 900, '#2A3044')
-    for x in (300, 1620):
+    for x in (150, 1770):
         line(c, x, 900, x, 280, 8, '#C9CFD8'); poly(c, [(x, 290), (x + (130 if x < 960 else -130), 320), (x, 450)], '#C8242C' if x < 960 else '#F4F0E6', LW * .6)
     poly(c, [(860, 640), (1060, 640), (1040, 900), (880, 900)], '#3A3F4C', LW)
     for dx in (-40, 0, 40): line(c, 960 + dx, 640, 960 + dx * 1.5, 560, 5, INK); circ(c, 960 + dx * 1.5, 556, 12, '#1C1C22', LW * .4)
-    _sign(c, name, 960, 740, 170, 60, '#1C1C22', '#FFFFFF', 34)
+    if not brand(c, art, 960, 735, 80): _sign(c, name, 960, 740, 170, 60, '#1C1C22', '#FFFFFF', 34)
     return _info(o.get('time', 'day'), [('pool', 960, 450, 1000, .95)])
 
 
@@ -506,14 +553,15 @@ def set_highway(c, o):
         a, b = 560 + 18 * k * k * .8, 560 + 18 * (k + .5) ** 2 * .8; c.drawLine(960, a, 960, min(b, H + 200), ink(6 + k * 2, '#F2C14E'))
     line(c, 900, 560, -180, H + 200, 8, '#F4F0E6'); line(c, 1020, 560, 2100, H + 200, 8, '#F4F0E6')
     sign = o.get('sign', 'NEXT EXIT')
-    line(c, 1500, 820, 1500, 520, 10, DARKSTEEL); _sign(c, sign.upper(), 1500, 470, 380, 120, '#2F6B45', '#FFFFFF', 54)
+    line(c, 1780, 820, 1780, 420, 10, DARKSTEEL); _sign(c, sign.upper(), 1700, 380, 380, 120, '#2F6B45', '#FFFFFF', 54)
     return _info(time, [('pool', 960, 500, 1200, .95)], spots=[(700, FLOOR), (1250, FLOOR)])
 
 
 def set_station(c, o):
     """Train station platform: a train at the platform, pillars, a hanging clock."""
     _room(c, '#C9B89A', '#9A9282', 820, boards=False)
-    for i in range(-4, 12): rect(c, i * 260 - 20, -100, i * 260 + 20, 820, '#6A6E7A', LW * .6)
+    for i in range(-4, 12):
+        if not _in_band(i * 260): rect(c, i * 260 - 20, -100, i * 260 + 20, 820, '#6A6E7A', LW * .6)
     rect(c, L0, 380, R0, 720, '#D9DDE4', LW); rect(c, L0, 420, R0, 470, '#C8242C', 0)
     for i in range(-6, 22): rect(c, i * 150 + 20, 500, i * 150 + 120, 600, '#7FB8DA', LW * .6)
     rect(c, L0, 720, R0, 760, '#3A3F4C', LW * .7); rect(c, L0, 820, R0, 850, '#F2C14E', 0)
@@ -620,8 +668,8 @@ def set_hq(c, o):
     rect(c, 700, 140, 1220, 860, '#7FB8DA' if time == 'day' else '#2A3A6A', LW)
     for j in range(14):
         for i in range(6): c.drawRect(skia.Rect(720 + i * 84, 170 + j * 48, 790 + i * 84, 205 + j * 48), fp('#BFE3F2' if time == 'day' else ('#F6DE96' if (i + j) % 3 else '#2A3A6A')))
-    name = (o.get('logo') or o.get('sign') or 'HQ').upper()
-    _sign(c, name, 960, 80, 560, 120, '#1C1C22', '#FFFFFF', 80)
+    name = (o.get('sign') or (o.get('logo_art') or {}).get('title') or o.get('logo') or 'HQ').upper()
+    _sign(c, name, 960, 80, 600, 120, '#1C1C22', '#FFFFFF', 80, o.get('logo_art'))
     _ground(c, 860, '#C9C2B4')
     for x in (300, 520, 1400, 1620): _tree(c, x, 900, .9, '#3E9A56')
     return _info(time, [('pool', 960, 500, 1000, .9)], [(960, 80, 400, '#FFFFFF', 40)] if time == 'night' else [])
@@ -637,6 +685,99 @@ NEW_SETS = dict(
     farm=set_farm, forest=set_forest, ocean=set_ocean, desert=set_desert, mountains=set_mountains,
     kitchen=set_kitchen, bedroom=set_bedroom, hq=set_hq,
 )
+
+
+# ---------------------------------------------------------------- batch 2 (owner 2026-11-21)
+def set_casino(c, o):
+    """Casino floor: dark red carpet, rows of slot machines with lit screens, a roulette table, gold lights."""
+    c.drawRect(skia.Rect(L0, -700, R0, H + 700), fp('#2A0E18'))
+    for k in range(-14, 48): c.drawCircle(k * 70, 60, 10, fp('#F2C14E'))
+    for i in range(-4, 12):
+        if _in_band(i * 230 + 115) and 380 < i * 230 + 115 < 1540: continue
+        x = i * 230; rect(c, x + 20, 300, x + 210, 760, '#8A1F2A', LW * .7, r=20)
+        rect(c, x + 45, 340, x + 185, 450, '#1A1D2A', LW * .5)
+        for q in range(3): label(c, '7', x + 70 + q * 45, 425, 60, ['#F2C14E', '#FF5A5A', '#5FE08A'][q], align='center', skew=0)
+        rect(c, x + 60, 500, x + 170, 540, '#F2C14E', LW * .4); line(c, x + 210, 520, x + 240, 420, 6); circ(c, x + 240, 412, 12, RED, LW * .4)
+    _ground(c, 760, '#5A1420')
+    for k in range(-10, 30):
+        for j in range(4): c.drawCircle(k * 120 + (j % 2) * 60, 800 + j * 70, 12, fp('#7A1E2C'))
+    oval(c, 700, 860, 1220, 980, '#2F6B45', LW); circ(c, 960, 905, 54, '#3A2A1A', LW * .6)
+    for k in range(12): a = k * math.pi / 6; c.drawLine(960, 905, 960 + 50 * math.cos(a), 905 + 20 * math.sin(a), ink(3, RED if k % 2 else INK))
+    return dict(floor=FLOOR, ambient='#7A4A5A', lights=[('pool', 960, 500, 1000, .9)], bulbs=[(960, 60, 1000, '#F2C14E', 40)],
+                spots=[(520, FLOOR), (960, FLOOR), (1400, FLOOR)])
+
+
+def set_church(c, o):
+    """Church interior: stained-glass arches, pews, an altar with a cross."""
+    _room(c, '#E8DCC4', '#9A7A54', 820)
+    for x in (300, 1620):
+        p = skia.Path(); p.moveTo(x - 110, 620); p.lineTo(x - 110, 260); p.quadTo(x, 120, x + 110, 260); p.lineTo(x + 110, 620); p.close()
+        shape(c, p, '#3B6EA8', LW)
+        c.save(); c.clipPath(p, doAntiAlias=True)
+        for k, colr in enumerate(['#C8242C', '#F2C14E', '#3E9A56', '#8A5AB0', '#FF9A3C']):
+            c.drawRect(skia.Rect(x - 110 + k * 44, 120, x - 66 + k * 44, 620), fp(colr, 160))
+        c.restore(); c.drawPath(p, ink(LW))
+    rect(c, 820, 560, 1100, 700, '#F4F0E6', LW); rect(c, 800, 540, 1120, 570, '#D0A548', LW * .7)
+    line(c, 960, 520, 960, 260, 22, '#D0A548'); line(c, 900, 330, 1020, 330, 22, '#D0A548')
+    for row, (y, sc) in enumerate(((880, .8), (990, 1.0))):
+        for side in (-1, 1):
+            x0, x1 = 960 + side * 160, 960 + side * 900
+            rect(c, min(x0, x1), y - 40 * sc, max(x0, x1), y, WOOD, LW * .7)
+    return _info(o.get('time', 'day'), [('pool', 960, 400, 900, .95), ('pool', 300, 380, 300, .8), ('pool', 1620, 380, 300, .8)],
+                 [(960, 380, 400, '#FFF3C8', 50)])
+
+
+def set_mosque(c, o):
+    """A mosque courtyard: a dome, two minarets at the sides, arches, a calm sky."""
+    time = o.get('time', 'dusk'); _sky(c, time, 860)
+    for x in (140, 1780):
+        rect(c, x - 40, 140, x + 40, 860, '#F4F0E6', LW); rect(c, x - 56, 300, x + 56, 330, '#D8D2C2', LW * .6)
+        poly(c, [(x - 40, 140), (x + 40, 140), (x, 40)], '#3E9A56', LW * .7)
+    p = skia.Path(); p.addArc(skia.Rect(700, 180, 1220, 600), 180, 180); p.close(); shape(c, p, '#3E9A56', LW)
+    line(c, 960, 180, 960, 110, 6, '#D0A548'); circ(c, 960, 100, 14, '#D0A548', LW * .4)
+    rect(c, 520, 390, 1400, 860, '#F4F0E6', LW)
+    for k in range(5):
+        x = 600 + k * 180; q = skia.Path(); q.moveTo(x, 860); q.lineTo(x, 600); q.quadTo(x + 60, 520, x + 120, 600); q.lineTo(x + 120, 860); q.close()
+        shape(c, q, '#2F6B9A' if time != 'day' else '#8ABBCB', LW * .7)
+    _ground(c, 860, '#D8D2C2')
+    for k in range(-10, 30): c.drawLine(k * 120, 860, k * 120 - 200, H + 300, ink(3, '#C9C2B4'))
+    return _info(time, [('pool', 960, 600, 1000, .95)], spots=[(400, FLOOR), (960, FLOOR), (1500, FLOOR)])
+
+
+def set_village(c, o):
+    """An African village: round huts with thatched roofs, a big shade tree, a dirt yard."""
+    time = o.get('time', 'day'); _sky(c, time, 760)
+    p = skia.Path(); p.moveTo(L0, 700)
+    for k in range(-6, 20): p.quadTo(k * 260 + 130, 640 + (k % 2) * 30, k * 260 + 260, 700)
+    p.lineTo(R0, 800); p.lineTo(L0, 800); p.close(); shape(c, p, '#8AAE5A', LW)
+    for (x, sc) in ((180, 1.0), (1500, 1.1), (1800, .8)):
+        rect(c, x - 140 * sc, 540 + (1 - sc) * 100, x + 140 * sc, 800, '#C98A5A', LW)
+        poly(c, [(x - 190 * sc, 560 + (1 - sc) * 100), (x + 190 * sc, 560 + (1 - sc) * 100), (x, 360 + (1 - sc) * 160)], '#D8B064', LW)
+        for k in range(6): c.drawLine(x - 160 * sc + k * 64 * sc, 555 + (1 - sc) * 100, x, 380 + (1 - sc) * 160, ink(2, '#B08A40'))
+        rect(c, x - 36 * sc, 680, x + 36 * sc, 800, '#5A3A22', LW * .6, r=30 * sc)
+    rect(c, 920, 480, 980, 800, '#6A4428', LW * .7)
+    for (dx, dy, r) in ((-180, 430, 130), (0, 380, 170), (180, 430, 130)): oval(c, 950 + dx - r * 1.3, dy - r * .6, 950 + dx + r * 1.3, dy + r * .6, '#4F8A4A', LW * .7)
+    _ground(c, 800, '#C9A06A')
+    return _info(time, spots=[(500, FLOOR), (960, FLOOR), (1300, FLOOR)])
+
+
+def set_warroom(c, o):
+    """A war room: a lit world map wall with red markers, a long table, screens, dark blue light."""
+    c.drawRect(skia.Rect(L0, -700, R0, H + 700), fp('#0E1426'))
+    rect(c, 260, 100, 1660, 600, '#14203E', LW)
+    r = random.Random(6)
+    for (cx, cy, rx, ry) in ((560, 330, 230, 150), (1000, 280, 150, 110), (1060, 450, 120, 120), (1400, 320, 230, 140), (1480, 520, 90, 50)):
+        oval(c, cx - rx, cy - ry, cx + rx, cy + ry, '#2A4A7A', LW * .5)
+    for _ in range(9):
+        x, y = r.uniform(340, 1580), r.uniform(160, 540); circ(c, x, y, 12, '#FF3A3A', LW * .4); c.drawCircle(x, y, 30, fp('#FF3A3A', 50))
+    for i in range(-2, 4): _screen(c, i * 300 + 60 if i < 0 else 1700 + (i - 1) * 300, 160, (i * 300 + 260) if i < 0 else 1700 + (i - 1) * 300 + 200, 340, 'down' if i % 2 else 'up', i + 9)
+    _ground(c, 820, '#1A2238')
+    rect(c, 300, 820, 1620, 880, '#3A3F4C', LW); rect(c, 340, 880, 1580, 900, '#262A34', LW * .6)
+    return dict(floor=FLOOR, ambient='#4A5AA0', lights=[('pool', 960, 350, 900, .95)], bulbs=[(960, 350, 800, '#7FC8F8', 40)],
+                spots=[(520, FLOOR), (960, FLOOR), (1400, FLOOR)])
+
+
+NEW_SETS.update(casino=set_casino, church=set_church, mosque=set_mosque, village=set_village, warroom=set_warroom)
 
 
 def register(sets_module) -> None:
