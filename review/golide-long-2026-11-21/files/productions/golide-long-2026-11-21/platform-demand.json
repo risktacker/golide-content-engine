@@ -1,0 +1,12 @@
+{
+  "query": "NVIDIA SC26 agentic AI scientific computing Ian Buck scientific agents experiments simulation",
+  "score": 86.8,
+  "verdict": "pass",
+  "recent_videos": 1,
+  "median_views_per_day": 1035667.2000000001,
+  "top_views_per_day": 1035667.2000000001,
+  "market_coverage": 1,
+  "title_query_overlap": 1.0,
+  "measured_at": "2026-11-21T17:48:05.664411+00:00",
+  "signal_type": "youtube-breakout-v1"
+}

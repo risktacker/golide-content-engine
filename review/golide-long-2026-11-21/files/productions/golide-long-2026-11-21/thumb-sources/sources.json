@@ -1,0 +1,1885 @@
+[
+  {
+    "url": "https://blogs.nvidia.com/blog/ian-buck-sc26/",
+    "title": "Ian Buck Kicks Off NVIDIA\u2019s Week at SC26 as Science Enters the Age of Agents | NVIDIA Blog",
+    "claims": [
+      "NVIDIA\u2019s SC26 presentation describes agents that can plan experiments, run code, and check results on researchers\u2019 own systems.",
+      "NVIDIA says an Argonne National Laboratory agent accepted a prompt, planned and tested hypotheses, selected simulations, and identified two new binding sites."
+    ],
+    "ok": true,
+    "top": "01-top.png",
+    "full": "01-full.png",
+    "full_height": 4259,
+    "scale": 1.5,
+    "highlights": [
+      {
+        "phrase": "SC26",
+        "rects": [
+          [
+            443,
+            1152.375,
+            37,
+            19
+          ]
+        ]
+      }
+    ],
+    "headline": [
+      75,
+      135,
+      1290,
+      90
+    ],
+    "blocks": [
+      {
+        "text": "NVIDIA\u2019s Ian Buck kicked off the company\u2019s week at SC26 in Chicago on Monday with new tools for AI agents, software that can plan experiments, run code and chec",
+        "rect": [
+          75,
+          1149.375,
+          960,
+          50.09375
+        ]
+      },
+      {
+        "text": "In NVIDIA\u2019s special address, Buck announced Nemotron for Science, the Rubin HPC GPU and an expanded Vera CPU platform for high-performance computing. He also de",
+        "rect": [
+          75,
+          1219.46875,
+          960,
+          75.140625
+        ]
+      },
+      {
+        "text": "\u201cThe frontier of computing and the new scientific stack is going to be simulation, as always, but combined with AI and the future of quantum,\u201d said Buck, vice p",
+        "rect": [
+          75,
+          1314.609375,
+          960,
+          50.09375
+        ]
+      },
+      {
+        "text": "Buck opened the talk by looking back to his first public talk on CUDA, at an SC06 tutorial in Tampa, Florida, 20 years ago. NVIDIA now offers more than 1,000 CU",
+        "rect": [
+          75,
+          1384.703125,
+          960,
+          50.09375
+        ]
+      },
+      {
+        "text": "Open Models for Science Agents",
+        "rect": [
+          75,
+          1454.796875,
+          960,
+          25.046875
+        ]
+      },
+      {
+        "text": "\u201c[Agents] have been just a game changer in how we interface with our supercomputers, with our devices, our instruments and how we can do the research,\u201d Buck sai",
+        "rect": [
+          75,
+          1499.84375,
+          960,
+          50.09375
+        ]
+      },
+      {
+        "text": "Simulation remains the foundation of scientific computing, \u201cwhich will always be on the top,\u201d Buck said, with AI, quantum and now agents working alongside it.",
+        "rect": [
+          75,
+          1569.9375,
+          960,
+          50.09375
+        ]
+      },
+      {
+        "text": "Nemotron for Science combines the Nemotron 3.5 Super VL open model with a new open chemistry dataset and post-training recipes for life sciences and chemistry, ",
+        "rect": [
+          75,
+          1640.03125,
+          960,
+          75.140625
+        ]
+      },
+      {
+        "text": "At Argonne National Laboratory, Buck said, an agent built with the toolkit took a single prompt, planned and tested hypotheses, chose which simulations to run a",
+        "rect": [
+          75,
+          1735.171875,
+          960,
+          50.09375
+        ]
+      },
+      {
+        "text": "\u201cYou own your data. You own the model,\u201d Buck said.",
+        "rect": [
+          75,
+          1805.265625,
+          960,
+          25.046875
+        ]
+      },
+      {
+        "text": "Buck highlighted other agents already in use:",
+        "rect": [
+          75,
+          1850.3125,
+          960,
+          25.046875
+        ]
+      },
+      {
+        "text": "GROMACS: An agent from KTH Royal Institute of Technology repairs broken GROMACS setups on its own. In one overnight run on a single DGX Spark, it fixed 81% of t",
+        "rect": [
+          110,
+          1895.359375,
+          925,
+          45
+        ]
+      },
+      {
+        "text": "SETI Institute: At the Allen Telescope Array, an agent took a one-line prompt to plot a methanol line. Buck explained that it then retuned for Doppler shift on ",
+        "rect": [
+          110,
+          1940.359375,
+          925,
+          45
+        ]
+      },
+      {
+        "text": "Nsight AI Porting Agent: NVIDIA\u2019s new agent ported a routine from the Weather Research and Forecasting (WRF) model to GPUs, Buck said, speeding it up more than ",
+        "rect": [
+          110,
+          1985.359375,
+          925,
+          45
+        ]
+      },
+      {
+        "text": "Agents lean on CPUs to run tool calls between model steps, Buck explained.",
+        "rect": [
+          75,
+          2095.40625,
+          960,
+          25.046875
+        ]
+      },
+      {
+        "text": "\u201cThat\u2019s exactly what agents need,\u201d he said. \u201cThey need a CPU that can run, evaluate, run the tool, perform the operations, gather the results.\u201d",
+        "rect": [
+          75,
+          2140.453125,
+          960,
+          50.09375
+        ]
+      },
+      {
+        "text": "DKRZ, the German Climate Computing Center, has selected Vera CPUs for its HLRE-5 supercomputer, expected in early 2028. Buck said it joins Vera systems already ",
+        "rect": [
+          75,
+          2210.546875,
+          960,
+          50.09375
+        ]
+      },
+      {
+        "text": "Rubin HPC is a new GPU in the Vera Rubin platform, built for science, engineering, analytics and AI, Buck said.",
+        "rect": [
+          75,
+          2325.6875,
+          960,
+          25.046875
+        ]
+      },
+      {
+        "text": "It supports precisions from FP64 to FP4, adds sparse-data acceleration and connects over seventh-generation NVIDIA NVLink. With more than 50,000 CUDA cores, it ",
+        "rect": [
+          75,
+          2370.734375,
+          960,
+          50.09375
+        ]
+      },
+      {
+        "text": "Buck said a simulation on J\u00fclich\u2019s JUPITER supercomputer showed that a technique called magic state cultivation can cut the operations needed for one logical st",
+        "rect": [
+          75,
+          2485.875,
+          960,
+          50.09375
+        ]
+      },
+      {
+        "text": "NVIDIA, IBM and Fermilab announced plans today for a quantum computing co-design platform to support error-correction and applications research. NVIDIA and IBM ",
+        "rect": [
+          75,
+          2555.96875,
+          960,
+          75.140625
+        ]
+      },
+      {
+        "text": "Buck also introduced a new breakthrough for quantum decoding. The goal, Buck explained, is to cut decoding latency from about 300 microseconds to 10. A new CUDA",
+        "rect": [
+          75,
+          2651.109375,
+          960,
+          75.140625
+        ]
+      },
+      {
+        "text": "Buck also showed one of the first deployments of NVIDIA Photonics co-packaged optics switches, at Lambda. He said they are 15x more reliable on bit errors and l",
+        "rect": [
+          75,
+          2791.296875,
+          960,
+          50.09375
+        ]
+      },
+      {
+        "text": "See notice regarding software product information.",
+        "rect": [
+          75,
+          2861.390625,
+          960,
+          25.046875
+        ]
+      },
+      {
+        "text": "Ian Buck Kicks Off NVIDIA\u2019s Week at SC26 as Science Enters the Age of Agents",
+        "rect": [
+          75,
+          3830.578125,
+          300,
+          75
+        ]
+      },
+      {
+        "text": "Lambda Boosts AI Factory Resiliency and Efficiency With NVIDIA Photonics",
+        "rect": [
+          405,
+          3830.578125,
+          300,
+          75
+        ]
+      },
+      {
+        "text": "NVIDIA Expands Slurm to Bring Quantum Computing Into Supercomputing",
+        "rect": [
+          735,
+          3830.578125,
+          300,
+          75
+        ]
+      },
+      {
+        "text": "NVIDIA CUDA-X Libraries Give Agents the Tools to Accelerate Scientific Discovery",
+        "rect": [
+          1065,
+          3830.578125,
+          300,
+          75
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "text": "Company Blog",
+        "rect": [
+          219.375,
+          12,
+          111,
+          20
+        ]
+      },
+      {
+        "text": "Artificial Intelligence",
+        "rect": [
+          366.375,
+          11,
+          160,
+          24
+        ]
+      },
+      {
+        "text": "AI Infrastructure",
+        "rect": [
+          546.375,
+          11,
+          132,
+          24
+        ]
+      },
+      {
+        "text": "Physical AI",
+        "rect": [
+          698.375,
+          11,
+          92,
+          24
+        ]
+      },
+      {
+        "text": "Gaming & Creating",
+        "rect": [
+          810.375,
+          11,
+          148,
+          24
+        ]
+      },
+      {
+        "text": "Industries",
+        "rect": [
+          978.375,
+          11,
+          86,
+          24
+        ]
+      },
+      {
+        "text": "Subscribe",
+        "rect": [
+          1095,
+          8,
+          87,
+          28
+        ]
+      },
+      {
+        "text": "begin search",
+        "rect": [
+          1207,
+          10,
+          24,
+          24
+        ]
+      },
+      {
+        "text": "US",
+        "rect": [
+          1246,
+          10,
+          31,
+          24
+        ]
+      },
+      {
+        "text": "Sign In",
+        "rect": [
+          1292,
+          10,
+          73,
+          24
+        ]
+      },
+      {
+        "text": "Brian Caulfield",
+        "rect": [
+          197,
+          320,
+          75,
+          14
+        ]
+      },
+      {
+        "text": "Share",
+        "rect": [
+          282,
+          350.5,
+          40,
+          22.5
+        ]
+      },
+      {
+        "text": "Watch On Demand",
+        "rect": [
+          1085,
+          1443.171875,
+          164,
+          20
+        ]
+      },
+      {
+        "text": "View All Recent News",
+        "rect": [
+          1182,
+          2222.265625,
+          183,
+          20
+        ]
+      },
+      {
+        "text": "Manage Settings",
+        "rect": [
+          14.390625,
+          840,
+          50,
+          50
+        ]
+      }
+    ],
+    "photo": "01-photo.png",
+    "photos": [
+      "01-photo.png"
+    ],
+    "captured_at": "2026-11-21T19:07:45+00:00"
+  },
+  {
+    "url": "https://nvidianews.nvidia.com/news/nvidia-introduces-nemotron-for-science-to-accelerate-discoveries-with-agents",
+    "title": "NVIDIA Introduces Nemotron for Science to Accelerate Discoveries With Agents | NVIDIA Newsroom",
+    "claims": [
+      "Nemotron for Science combines Nemotron 3.5 Super VL with scientific evaluations, an open chemistry dataset, and post-training recipes for specialized science agents; NVIDIA says researchers can adapt the models for tasks including chemistry experiments and protein design.",
+      "LitmusBench v0.2 contains nearly 50,000 chemistry questions for training and evaluation, including tasks related to molecular properties, drug-discovery data, solubility, and how the body processes molecules.",
+      "NVIDIA reports that a KTH Royal Institute of Technology agent repaired broken GROMACS molecular-dynamics setups, fixing 81% of test cases in one overnight run; each fix was independently checked by GROMACS."
+    ],
+    "ok": true,
+    "top": "02-top.png",
+    "full": "02-full.png",
+    "full_height": 4942,
+    "scale": 1.5,
+    "highlights": [],
+    "headline": [
+      95,
+      229,
+      823.328125,
+      80
+    ],
+    "blocks": [],
+    "controls": [
+      {
+        "text": "Newsroom",
+        "rect": [
+          95,
+          50,
+          163,
+          53
+        ]
+      },
+      {
+        "text": "Exec Bios",
+        "rect": [
+          288,
+          53.546875,
+          70,
+          50
+        ]
+      },
+      {
+        "text": "NVIDIA Blog",
+        "rect": [
+          388,
+          53.546875,
+          91,
+          50
+        ]
+      },
+      {
+        "text": "Podcast",
+        "rect": [
+          509,
+          53.546875,
+          60,
+          50
+        ]
+      },
+      {
+        "text": "Media Assets",
+        "rect": [
+          599,
+          53.546875,
+          102,
+          50
+        ]
+      },
+      {
+        "text": "In the News",
+        "rect": [
+          731,
+          53.546875,
+          89,
+          50
+        ]
+      },
+      {
+        "text": "Press Contacts",
+        "rect": [
+          850,
+          53.546875,
+          113,
+          50
+        ]
+      },
+      {
+        "text": "Online Press Kits",
+        "rect": [
+          993,
+          53.546875,
+          126,
+          50
+        ]
+      },
+      {
+        "text": "All Contacts",
+        "rect": [
+          328.75,
+          4021.4375,
+          142.5,
+          53.5
+        ]
+      },
+      {
+        "text": "Subscribe",
+        "rect": [
+          981.75,
+          4021.4375,
+          116.5,
+          49.5
+        ]
+      },
+      {
+        "text": "Manage Settings",
+        "rect": [
+          398,
+          4867.84375,
+          131,
+          19.1875
+        ]
+      }
+    ],
+    "photo": "02-photo.png",
+    "photos": [
+      "02-photo.png"
+    ],
+    "captured_at": "2026-11-21T19:07:50+00:00"
+  },
+  {
+    "url": "https://developer.nvidia.com/blog/how-to-evaluate-ai-agents-from-tool-calls-to-task-completion",
+    "title": "How to Evaluate AI Agents From Tool Calls to Task Completion | NVIDIA Technical Blog",
+    "claims": [
+      "The agent loop depends on tool use and evaluation between model steps: NVIDIA describes CPUs handling tool calls, operations, result gathering, and evaluation, while its agent-evaluation guidance says multi-step systems must be assessed through tool calls and task outcomes rather than a single text response."
+    ],
+    "ok": true,
+    "top": "03-top.png",
+    "full": "03-full.png",
+    "full_height": 5400,
+    "scale": 1.5,
+    "highlights": [],
+    "headline": [
+      87,
+      185.609375,
+      907,
+      120
+    ],
+    "blocks": [
+      {
+        "text": "When you ship an AI agent, the key question is whether it can execute a chain of work across dozens of sequential tool calls against a live environment, and rec",
+        "rect": [
+          87,
+          975.296875,
+          907,
+          84
+        ]
+      },
+      {
+        "text": "That gap is why agent evaluation has had to evolve from scoring a single function call to scoring an entire task, with tool calling as the connective tissue und",
+        "rect": [
+          87,
+          1078.296875,
+          907,
+          84
+        ]
+      },
+      {
+        "text": "Why isn\u2019t standard LLM benchmarking enough?",
+        "rect": [
+          87,
+          1057.296875,
+          891,
+          189
+        ]
+      },
+      {
+        "text": "The original harnesses were built for static tasks. The first model-agnostic, open-source harness decoupled the model from the evaluation protocol.",
+        "rect": [
+          87,
+          1265.296875,
+          907,
+          56
+        ]
+      },
+      {
+        "text": "Agents broke this assumption. Operating across multi-step tasks, an agent calls tools, handles errors, and observes results over many steps, making a single out",
+        "rect": [
+          87,
+          1340.296875,
+          907,
+          141
+        ]
+      },
+      {
+        "text": "From scoring calls to scoring the environment",
+        "rect": [
+          87,
+          1376.296875,
+          891,
+          189
+        ]
+      },
+      {
+        "text": "Full agentic evaluation now requires a full execution environment: one that executes each tool call, tracks state across steps, and reads the world afterward to",
+        "rect": [
+          87,
+          1584.296875,
+          907,
+          56
+        ]
+      },
+      {
+        "text": "Two scoring layers sit on top of it:",
+        "rect": [
+          87,
+          1659.296875,
+          907,
+          28
+        ]
+      },
+      {
+        "text": "Step-level (process scoring) asks was this call valid, relevant, and useful given the state at that point?",
+        "rect": [
+          103,
+          1706.296875,
+          891,
+          24
+        ]
+      },
+      {
+        "text": "End-to-end (E2E, or outcome scoring) ignores the path and checks only the final state: did the refund post, did the ticket route correctly?",
+        "rect": [
+          103,
+          1730.296875,
+          891,
+          48
+        ]
+      },
+      {
+        "text": "Step-level tells you where the chain breaks, which is what you want when debugging or targeting fine-tuning effort; E2E collapses a failure on step one and a fa",
+        "rect": [
+          87,
+          1797.296875,
+          907,
+          112
+        ]
+      },
+      {
+        "text": "Those two scores are two readings of one object: the trace. A trace is the ordered log of a single attempt: the user message, each step, and the environment sta",
+        "rect": [
+          87,
+          1928.296875,
+          907,
+          84
+        ]
+      },
+      {
+        "text": "What a benchmark run measures",
+        "rect": [
+          87,
+          1907.296875,
+          891,
+          189
+        ]
+      },
+      {
+        "text": "A tool-calling benchmark scores three things in order: deciding to use a tool, selecting the right one, and populating its arguments. A model that reaches for a",
+        "rect": [
+          87,
+          2115.296875,
+          907,
+          84
+        ]
+      },
+      {
+        "text": "Every run rolls up through a fixed hierarchy: Benchmark \u2192 Trial \u2192 Task \u2192 Turn \u2192 Step:",
+        "rect": [
+          87,
+          2218.296875,
+          907,
+          28
+        ]
+      },
+      {
+        "text": "A trial is one independent pass over the whole task set under a fixed configuration.",
+        "rect": [
+          103,
+          2265.296875,
+          891,
+          24
+        ]
+      },
+      {
+        "text": "A task is one independently scorable problem instance, identified by a task ID.",
+        "rect": [
+          103,
+          2289.296875,
+          891,
+          24
+        ]
+      },
+      {
+        "text": "A turn is one exchange boundary: a message in, the agent\u2019s reply out, everything between belongs to that turn.",
+        "rect": [
+          103,
+          2313.296875,
+          891,
+          24
+        ]
+      },
+      {
+        "text": "A step is one atomic action inside a turn \u2014 a tool/command invocation, or a non-tool emission like a plan or the final message.",
+        "rect": [
+          103,
+          2337.296875,
+          891,
+          48
+        ]
+      },
+      {
+        "text": "Figure 1. Visualization of turn vs step in agent workflows",
+        "rect": [
+          87,
+          2699.03125,
+          907,
+          23.25
+        ]
+      },
+      {
+        "text": "A step is usually a tool call, and every score above it rolls up from those steps. The metrics worth tracking collapse onto three axes: accuracy, verbosity, cos",
+        "rect": [
+          87,
+          2756.28125,
+          907,
+          56
+        ]
+      },
+      {
+        "text": "The release gate. Did the environment reach the goal state?",
+        "rect": [
+          624.53125,
+          2876.53125,
+          368.96875,
+          63.5
+        ]
+      },
+      {
+        "text": "range of success rate across 3\u20135 trials",
+        "rect": [
+          227.765625,
+          2940.03125,
+          304.765625,
+          62.5
+        ]
+      },
+      {
+        "text": "A 90% / 74% split isn\u2019t 84%. Report 82\u201388%, not a point estimate.",
+        "rect": [
+          624.53125,
+          2940.03125,
+          368.96875,
+          62.5
+        ]
+      },
+      {
+        "text": "correct_calls / calls_issued",
+        "rect": [
+          227.765625,
+          3002.53125,
+          304.765625,
+          62.5
+        ]
+      },
+      {
+        "text": "Hallucinated names and extra calls surface here, not in success rate.",
+        "rect": [
+          624.53125,
+          3002.53125,
+          368.96875,
+          62.5
+        ]
+      },
+      {
+        "text": "correct_args / calls_with_right_tool",
+        "rect": [
+          227.765625,
+          3065.03125,
+          304.765625,
+          62.5
+        ]
+      },
+      {
+        "text": "Separates \u201cwrong API\u201d from \u201cright API, filled wrong.\u201d",
+        "rect": [
+          624.53125,
+          3065.03125,
+          368.96875,
+          62.5
+        ]
+      },
+      {
+        "text": "How long the trajectory runs when the task actually finishes.",
+        "rect": [
+          624.53125,
+          3127.53125,
+          368.96875,
+          62.5
+        ]
+      },
+      {
+        "text": "The economic unit. Tokens and GPU-seconds only matter per successful task.",
+        "rect": [
+          624.53125,
+          3190.03125,
+          368.96875,
+          62.5
+        ]
+      },
+      {
+        "text": "Table 1. Core evaluation metrics, grouped by axis (accuracy, verbosity, cost)",
+        "rect": [
+          87,
+          3253.03125,
+          907,
+          23.25
+        ]
+      },
+      {
+        "text": "The pairings matter: success rate without consistency is a point estimate on a stochastic system (a model that hits 90% then 74% is a worse bet than one holding",
+        "rect": [
+          87,
+          3295.28125,
+          907,
+          56
+        ]
+      },
+      {
+        "text": "Step count is often the axis that varies most across models on the same task \u2014 four steps versus fifteen \u2014 though on suites like Terminal-Bench 2.0 steps-per-tu",
+        "rect": [
+          87,
+          3370.28125,
+          907,
+          112
+        ]
+      },
+      {
+        "text": "How to read an evaluation",
+        "rect": [
+          87,
+          3377.28125,
+          891,
+          189
+        ]
+      },
+      {
+        "text": "Two benchmarks can both claim to test tool calling and produce numbers that aren\u2019t comparable. Three dimensions explain most of the gap:",
+        "rect": [
+          87,
+          3585.28125,
+          907,
+          56
+        ]
+      },
+      {
+        "text": "Task complexity \u2014 single-turn with one tool, or multi-turn requiring planning, error recovery, and state management? A single-call benchmark won\u2019t tell you whet",
+        "rect": [
+          103,
+          3660.28125,
+          891,
+          48
+        ]
+      },
+      {
+        "text": "Statefulness \u2014 does the environment update on each action? Stateful benchmarks surface drift, context loss, and corrupted state that static ones miss.",
+        "rect": [
+          103,
+          3708.28125,
+          891,
+          48
+        ]
+      },
+      {
+        "text": "Methodology \u2014 executable verification (did the DB update, did tests pass) is the gold standard. Reference-based evaluation needs an annotated answer set someone",
+        "rect": [
+          103,
+          3756.28125,
+          891,
+          72
+        ]
+      },
+      {
+        "text": "Contamination now extends beyond training data leaks to live variants: web-searching agents retrieving answer keys during evaluation, and datasets on Hugging Fa",
+        "rect": [
+          87,
+          3847.28125,
+          907,
+          84
+        ]
+      },
+      {
+        "text": "Table 2, below, is a public trace from a real benchmark run using step-level and E2E scoring, where the suite rather than an artificial ticket provides the tool",
+        "rect": [
+          87,
+          3950.28125,
+          907,
+          56
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "text": "DEVELOPER",
+        "rect": [
+          233.015625,
+          18,
+          142,
+          28
+        ]
+      },
+      {
+        "text": "Home",
+        "rect": [
+          375.015625,
+          14.625,
+          61,
+          34.75
+        ]
+      },
+      {
+        "text": "Blog",
+        "rect": [
+          436.015625,
+          14.625,
+          50,
+          34.75
+        ]
+      },
+      {
+        "text": "Forums",
+        "rect": [
+          486.015625,
+          14.625,
+          71,
+          34.75
+        ]
+      },
+      {
+        "text": "Docs",
+        "rect": [
+          557.015625,
+          14.625,
+          53,
+          34.75
+        ]
+      },
+      {
+        "text": "Downloads",
+        "rect": [
+          610.015625,
+          14.625,
+          100,
+          34.75
+        ]
+      },
+      {
+        "text": "Training",
+        "rect": [
+          710.015625,
+          14.625,
+          77,
+          34.75
+        ]
+      },
+      {
+        "text": "Join",
+        "rect": [
+          1258,
+          15,
+          61,
+          34
+        ]
+      },
+      {
+        "text": "field: Search blog",
+        "rect": [
+          306,
+          80.609375,
+          240,
+          32
+        ]
+      },
+      {
+        "text": "field: English \u4e2d\u6587",
+        "rect": [
+          930,
+          151.21875,
+          60,
+          22.390625
+        ]
+      },
+      {
+        "text": "Like",
+        "rect": [
+          861,
+          830.796875,
+          28,
+          18.75
+        ]
+      },
+      {
+        "text": "issue_refund",
+        "rect": [
+          374,
+          1429.296875,
+          115.59375,
+          19
+        ]
+      },
+      {
+        "text": "successful_tasks / tasks",
+        "rect": [
+          240.265625,
+          2890.03125,
+          216.75,
+          18
+        ]
+      },
+      {
+        "text": "range of success rate across 3\u20135 trials",
+        "rect": [
+          240.265625,
+          2952.53125,
+          252.875,
+          36.75
+        ]
+      },
+      {
+        "text": "correct_calls / calls_issued",
+        "rect": [
+          240.265625,
+          3015.03125,
+          252.875,
+          18
+        ]
+      },
+      {
+        "text": "correct_args / calls_with_right_tool",
+        "rect": [
+          240.265625,
+          3077.53125,
+          189.65625,
+          36.75
+        ]
+      },
+      {
+        "text": "steps / successful_tasks",
+        "rect": [
+          240.265625,
+          3140.03125,
+          216.75,
+          18
+        ]
+      },
+      {
+        "text": "spend / successful_tasks",
+        "rect": [
+          240.265625,
+          3202.53125,
+          216.75,
+          18
+        ]
+      },
+      {
+        "text": "pytest-dev__pytest-5262",
+        "rect": [
+          165,
+          4052.28125,
+          221.5625,
+          19
+        ]
+      },
+      {
+        "text": "/testbed",
+        "rect": [
+          740,
+          4077.28125,
+          77.0625,
+          19
+        ]
+      },
+      {
+        "text": "_pytest.capture.EncodedFile",
+        "rect": [
+          568,
+          4102.28125,
+          260.09375,
+          19
+        ]
+      },
+      {
+        "text": "rb+",
+        "rect": [
+          938.09375,
+          4102.28125,
+          28.90625,
+          19
+        ]
+      },
+      {
+        "text": "write()",
+        "rect": [
+          418,
+          4127.28125,
+          67.4375,
+          19
+        ]
+      },
+      {
+        "text": "str",
+        "rect": [
+          587.4375,
+          4127.28125,
+          28.90625,
+          19
+        ]
+      },
+      {
+        "text": ".mode",
+        "rect": [
+          844.34375,
+          4127.28125,
+          48.171875,
+          19
+        ]
+      },
+      {
+        "text": "youtube-dl",
+        "rect": [
+          103,
+          4152.28125,
+          96.328125,
+          19
+        ]
+      },
+      {
+        "text": "bytes",
+        "rect": [
+          380.328125,
+          4152.28125,
+          48.171875,
+          19
+        ]
+      },
+      {
+        "text": "terminal",
+        "rect": [
+          103,
+          4201.28125,
+          77.0625,
+          19
+        ]
+      },
+      {
+        "text": "file_editor",
+        "rect": [
+          188.0625,
+          4201.28125,
+          105.96875,
+          19
+        ]
+      },
+      {
+        "text": "task_tracker",
+        "rect": [
+          302.03125,
+          4201.28125,
+          115.59375,
+          19
+        ]
+      },
+      {
+        "text": "finish",
+        "rect": [
+          425.625,
+          4201.28125,
+          57.796875,
+          19
+        ]
+      },
+      {
+        "text": "terminal(find /testbed -name \"capture.py\")",
+        "rect": [
+          214,
+          4397.03125,
+          126.4375,
+          55.5
+        ]
+      },
+      {
+        "text": "/testbed/src/_pytest/capture.py",
+        "rect": [
+          431.5,
+          4415.78125,
+          279.96875,
+          18
+        ]
+      },
+      {
+        "text": "file_editor(view, capture.py)",
+        "rect": [
+          214,
+          4497.03125,
+          153.53125,
+          36.75
+        ]
+      },
+      {
+        "text": "terminal(grep -n \"EncodedFile\" capture.py)",
+        "rect": [
+          214,
+          4615.78125,
+          144.5,
+          55.5
+        ]
+      },
+      {
+        "text": "return EncodedFile(...)",
+        "rect": [
+          525.5,
+          4615.78125,
+          207.71875,
+          18
+        ]
+      },
+      {
+        "text": "class EncodedFile(object):",
+        "rect": [
+          474.5,
+          4634.53125,
+          234.8125,
+          18
+        ]
+      },
+      {
+        "text": "file_editor(view, view_range=[420,450]/[450,470])",
+        "rect": [
+          214,
+          4734.53125,
+          180.625,
+          55.5
+        ]
+      },
+      {
+        "text": "EncodedFile.__init__",
+        "rect": [
+          482.5,
+          4734.53125,
+          180.625,
+          18
+        ]
+      },
+      {
+        "text": "__getattr__",
+        "rect": [
+          431.5,
+          4753.28125,
+          99.34375,
+          18
+        ]
+      }
+    ],
+    "photo": "03-photo.png",
+    "photos": [
+      "03-photo.png",
+      "03-photo2.png"
+    ],
+    "captured_at": "2026-11-21T19:07:56+00:00"
+  },
+  {
+    "url": "https://developer.nvidia.com/blog/how-to-train-scientific-agents-with-reinforcement-learning/",
+    "title": "How to Train Scientific Agents with Reinforcement Learning | NVIDIA Technical Blog",
+    "claims": [
+      "NVIDIA\u2019s own scientific-agent material warns that verification can require computational or real-world data and may take hours or days, because a single mistake can derail a research task."
+    ],
+    "ok": true,
+    "top": "04-top.png",
+    "full": "04-full.png",
+    "full_height": 5400,
+    "scale": 1.5,
+    "highlights": [],
+    "headline": [
+      87,
+      185.609375,
+      907,
+      120
+    ],
+    "blocks": [
+      {
+        "text": "The scientific process can be repetitive and tedious, with researchers spending hours digging through papers, managing experiment workflows, or wrangling massiv",
+        "rect": [
+          87,
+          975.4375,
+          907,
+          140
+        ]
+      },
+      {
+        "text": "But building scientific AI assistants is challenging. Agents must maintain a high-level plan over many steps of research, incorporating memory and context manag",
+        "rect": [
+          87,
+          1134.4375,
+          907,
+          140
+        ]
+      },
+      {
+        "text": "Available as open-source libraries within the NVIDIA NeMo framework suite, NVIDIA NeMo Gym and NeMo RL offer a unified, modular reinforcement learning stack for",
+        "rect": [
+          87,
+          1293.4375,
+          907,
+          140
+        ]
+      },
+      {
+        "text": "Both libraries played a key role in the post-training of the latest Nemotron-3-Nano, a cost-efficient model optimized for targeted tasks, delivering high accura",
+        "rect": [
+          87,
+          1452.4375,
+          907,
+          56
+        ]
+      },
+      {
+        "text": "One developer using NeMo Gym and NeMo RL is Edison Scientific, which is working on automating scientific discovery. The spinoff of nonprofit research organizati",
+        "rect": [
+          87,
+          1527.4375,
+          907,
+          84
+        ]
+      },
+      {
+        "text": "In this blog, we demonstrate how to implement agentic training environments using NeMo Gym and use them in training with NeMo RL. We feature Aviary as an exampl",
+        "rect": [
+          87,
+          1630.4375,
+          907,
+          84
+        ]
+      },
+      {
+        "text": "How reinforcement learning extends LLM capabilities for science",
+        "rect": [
+          87,
+          1609.4375,
+          891,
+          234
+        ]
+      },
+      {
+        "text": "Not all LLMs can execute complex scientific workflows. Pre-training teaches a model to predict the next token, which builds broad knowledge but not domain skill",
+        "rect": [
+          87,
+          1862.4375,
+          907,
+          112
+        ]
+      },
+      {
+        "text": "Post-training usually begins with supervised fine tuning (SFT), where the model learns from instruction-response pairs using a next-token prediction log-likelih",
+        "rect": [
+          87,
+          1993.4375,
+          907,
+          140
+        ]
+      },
+      {
+        "text": "Training pipelines sometimes add reinforcement learning (RL) to expand a model\u2019s ability to reason and act beyond supervised data. RL uses a reward function to ",
+        "rect": [
+          87,
+          2152.4375,
+          907,
+          168
+        ]
+      },
+      {
+        "text": "RLVR is useful for training scientific agents because it allows models to design and run experiments, evaluate outcomes, and optimize toward scientific metrics ",
+        "rect": [
+          87,
+          2339.4375,
+          907,
+          140
+        ]
+      },
+      {
+        "text": "How NeMo Gym and NeMo RL improve agentic training and evaluation",
+        "rect": [
+          87,
+          2374.4375,
+          891,
+          234
+        ]
+      },
+      {
+        "text": "Implementing RL for LLM agents requires a training framework and environment to define what the agent can do, what it observes, and what rewards it gets for its",
+        "rect": [
+          87,
+          2627.4375,
+          907,
+          140
+        ]
+      },
+      {
+        "text": "An agent drives the interaction loop with the environment by taking actions and leveraging necessary tools, while the environment provides observations and rewa",
+        "rect": [
+          87,
+          2786.4375,
+          907,
+          112
+        ]
+      },
+      {
+        "text": "Training an AI scientist requires models that excel at many complex tasks. In practice, this means hundreds to thousands of diverse tasks across use cases like ",
+        "rect": [
+          87,
+          2917.4375,
+          907,
+          140
+        ]
+      },
+      {
+        "text": "NeMo Gym serves as the hub for RL data, environments, and reward signals used in LLM post-training. It provides the infrastructure to develop training environme",
+        "rect": [
+          87,
+          3076.4375,
+          907,
+          112
+        ]
+      },
+      {
+        "text": "NeMo Gym provides three core server abstractions. A training environment typically includes all three server types working together:",
+        "rect": [
+          87,
+          3207.4375,
+          907,
+          56
+        ]
+      },
+      {
+        "text": "Model: Wraps OpenAI-compatible endpoints with reasoning and tool-calling support. Models can run locally or in the cloud and work with multiple backends includi",
+        "rect": [
+          103,
+          3282.4375,
+          891,
+          72
+        ]
+      },
+      {
+        "text": "Resources: Provides tool implementations that can be invoked via tool calling and verification logic that measures task performance. This abstraction offloads h",
+        "rect": [
+          103,
+          3354.4375,
+          891,
+          72
+        ]
+      },
+      {
+        "text": "Agents: Orchestrate interactions between models and resources\u2014routing requests, coordinating multi-turn conversations, and formatting responses consistently.",
+        "rect": [
+          103,
+          3426.4375,
+          891,
+          48
+        ]
+      },
+      {
+        "text": "NeMo Gym generates rollouts and rewards from complex training environments, producing the optimization targets that RL training requires. Interoperable with exi",
+        "rect": [
+          87,
+          3493.4375,
+          907,
+          140
+        ]
+      },
+      {
+        "text": "NeMo Gym in practice: Training scientific reasoning agents at Edison Scientific",
+        "rect": [
+          87,
+          3528.4375,
+          891,
+          234
+        ]
+      },
+      {
+        "text": "Edison Scientific is using NeMo Gym and NeMo RL to scale AI agents that automate scientific discovery. That includes Aviary, which can train agents in biology, ",
+        "rect": [
+          87,
+          3781.4375,
+          907,
+          112
+        ]
+      },
+      {
+        "text": "Aviary manages state, tool execution, rewards, and observation formatting for RL environments. Its open source repository includes environments for math, scient",
+        "rect": [
+          87,
+          3912.4375,
+          907,
+          112
+        ]
+      },
+      {
+        "text": "Each Aviary environment implements two core methods: reset() and step(). The reset method initializes the environment, returns the first observation, and lists ",
+        "rect": [
+          87,
+          4043.4375,
+          907,
+          112
+        ]
+      },
+      {
+        "text": "Using Aviary through NeMo Gym, Edison Scientific is training a Jupyter-notebook data-analysis agent for bioinformatics tasks. At each step, the agent views the ",
+        "rect": [
+          87,
+          4174.4375,
+          907,
+          224
+        ]
+      },
+      {
+        "text": "Figure 1. High-level architecture of NeMo Gym and NeMo RL for training reinforcement learning agents for scientific tasks. This sketch illustrates how NeMo Gym-",
+        "rect": [
+          87,
+          4901.671875,
+          907,
+          60.75
+        ]
+      },
+      {
+        "text": "Building agentic environments in NeMo Gym for training or downstream use is straightforward, requiring just a few steps",
+        "rect": [
+          87,
+          4996.421875,
+          907,
+          56
+        ]
+      },
+      {
+        "text": "Clone the NeMo Gym repo, install the uv Python package, and create a virtual environment:",
+        "rect": [
+          87,
+          5131.421875,
+          907,
+          28
+        ]
+      },
+      {
+        "text": "# Clone the repository git clone git@github.com:NVIDIA-NeMo/Gym.git cd Gym # Install UV (Python package manager) curl -LsSf https://astral.sh/uv/install.sh | sh",
+        "rect": [
+          97.5,
+          5188.921875,
+          886,
+          259.875
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "text": "DEVELOPER",
+        "rect": [
+          233.015625,
+          18,
+          142,
+          28
+        ]
+      },
+      {
+        "text": "Home",
+        "rect": [
+          375.015625,
+          14.625,
+          61,
+          34.75
+        ]
+      },
+      {
+        "text": "Blog",
+        "rect": [
+          436.015625,
+          14.625,
+          50,
+          34.75
+        ]
+      },
+      {
+        "text": "Forums",
+        "rect": [
+          486.015625,
+          14.625,
+          71,
+          34.75
+        ]
+      },
+      {
+        "text": "Docs",
+        "rect": [
+          557.015625,
+          14.625,
+          53,
+          34.75
+        ]
+      },
+      {
+        "text": "Downloads",
+        "rect": [
+          610.015625,
+          14.625,
+          100,
+          34.75
+        ]
+      },
+      {
+        "text": "Training",
+        "rect": [
+          710.015625,
+          14.625,
+          77,
+          34.75
+        ]
+      },
+      {
+        "text": "Join",
+        "rect": [
+          1258,
+          15,
+          61,
+          34
+        ]
+      },
+      {
+        "text": "field: Search blog",
+        "rect": [
+          306,
+          80.609375,
+          240,
+          32
+        ]
+      },
+      {
+        "text": "field: English \u4e2d\u6587",
+        "rect": [
+          930,
+          151.21875,
+          60,
+          22.390625
+        ]
+      },
+      {
+        "text": "Like",
+        "rect": [
+          861,
+          830.9375,
+          28,
+          18.75
+        ]
+      },
+      {
+        "text": "# Clone the repository",
+        "rect": [
+          97.5,
+          5189.921875,
+          171.640625,
+          15
+        ]
+      },
+      {
+        "text": "Manage Settings",
+        "rect": [
+          14.390625,
+          840,
+          50,
+          50
+        ]
+      }
+    ],
+    "photo": "04-photo.png",
+    "photos": [
+      "04-photo.png",
+      "04-photo2.png"
+    ],
+    "captured_at": "2026-11-21T19:08:03+00:00"
+  },
+  {
+    "url": "https://nvidianews.nvidia.com/news/nvidia-expands-vera-cpu-platform-to-accelerate-scientific-discovery",
+    "title": "NVIDIA Expands Vera CPU Platform to Accelerate Scientific Discovery | NVIDIA Newsroom",
+    "claims": [
+      "NVIDIA connects the SC26 infrastructure story to climate modeling and engineering: Vera is presented for climate, molecular, and engineering simulations, while Rubin HPC is described as accelerating simulations used to test candidate materials, molecules, and designs."
+    ],
+    "ok": true,
+    "top": "05-top.png",
+    "full": "05-full.png",
+    "full_height": 4364,
+    "scale": 1.5,
+    "highlights": [],
+    "headline": [
+      95,
+      229,
+      823.328125,
+      80
+    ],
+    "blocks": [],
+    "controls": [
+      {
+        "text": "Newsroom",
+        "rect": [
+          95,
+          50,
+          163,
+          53
+        ]
+      },
+      {
+        "text": "Exec Bios",
+        "rect": [
+          288,
+          53.546875,
+          70,
+          50
+        ]
+      },
+      {
+        "text": "NVIDIA Blog",
+        "rect": [
+          388,
+          53.546875,
+          91,
+          50
+        ]
+      },
+      {
+        "text": "Podcast",
+        "rect": [
+          509,
+          53.546875,
+          60,
+          50
+        ]
+      },
+      {
+        "text": "Media Assets",
+        "rect": [
+          599,
+          53.546875,
+          102,
+          50
+        ]
+      },
+      {
+        "text": "In the News",
+        "rect": [
+          731,
+          53.546875,
+          89,
+          50
+        ]
+      },
+      {
+        "text": "Press Contacts",
+        "rect": [
+          850,
+          53.546875,
+          113,
+          50
+        ]
+      },
+      {
+        "text": "Online Press Kits",
+        "rect": [
+          993,
+          53.546875,
+          126,
+          50
+        ]
+      },
+      {
+        "text": "All Contacts",
+        "rect": [
+          328.75,
+          3443.5,
+          142.5,
+          53.5
+        ]
+      },
+      {
+        "text": "Subscribe",
+        "rect": [
+          981.75,
+          3443.5,
+          116.5,
+          49.5
+        ]
+      },
+      {
+        "text": "Manage Settings",
+        "rect": [
+          398,
+          4289.90625,
+          131,
+          19.1875
+        ]
+      }
+    ],
+    "photo": "05-photo.png",
+    "photos": [
+      "05-photo.png"
+    ],
+    "captured_at": "2026-11-21T19:08:07+00:00"
+  },
+  {
+    "url": "https://en.wikipedia.org/wiki/Nvidia",
+    "title": "NVIDIA (picture)",
+    "claims": [],
+    "ok": true,
+    "picture_only": true,
+    "subject": "NVIDIA",
+    "photo": "06-photo.png",
+    "photos": [
+      "06-photo.png"
+    ]
+  },
+  {
+    "url": "https://en.wikipedia.org/wiki/7%CE%B1-Thiomethylspironolactone",
+    "title": "SC26 (picture)",
+    "claims": [],
+    "ok": true,
+    "picture_only": true,
+    "subject": "SC26",
+    "photo": "08-photo.png",
+    "photos": [
+      "08-photo.png"
+    ]
+  },
+  {
+    "url": "https://en.wikipedia.org/wiki/High-speed_rail",
+    "title": "High-speed rail (picture)",
+    "claims": [],
+    "ok": true,
+    "picture_only": true,
+    "subject": "High-speed rail",
+    "photo": "10-photo.png",
+    "photos": [
+      "10-photo.png"
+    ]
+  }
+]

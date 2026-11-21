@@ -1,0 +1,1347 @@
+{
+  "title": "NVIDIA SC26 Special Breakdown",
+  "chapters": [
+    {
+      "number": "",
+      "title": "Intro"
+    },
+    {
+      "number": "01",
+      "title": "The Agent Loop"
+    },
+    {
+      "number": "02",
+      "title": "Chemistry in Practice"
+    },
+    {
+      "number": "03",
+      "title": "The Computing Layer"
+    },
+    {
+      "number": "04",
+      "title": "What Still Needs Checking"
+    },
+    {
+      "number": "",
+      "title": "Close"
+    }
+  ],
+  "lines": [
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "An AI system can now take a research question, choose an experiment,",
+      "emphasis": "AI system",
+      "visual": "icon_hero",
+      "subjects": [
+        "computer",
+        "research question",
+        "laboratory"
+      ],
+      "label": "Research Agent",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "run the code on a lab's own computer, inspect the result,",
+      "emphasis": "run the code",
+      "visual": "icon_flow",
+      "subjects": [
+        "laptop",
+        "code window",
+        "laboratory computer"
+      ],
+      "label": "Run Code",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "and suggest what to try next.",
+      "emphasis": "try next",
+      "visual": "icon_flow",
+      "subjects": [
+        "computer screen",
+        "test tubes",
+        "arrow"
+      ],
+      "label": "Next Test",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "Put that on screen and it looks less like a chatbot and more",
+      "emphasis": "less like",
+      "visual": "split_compare",
+      "subjects": [
+        "chatbot window",
+        "laboratory"
+      ],
+      "label": "Not Chatbot",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "like a junior lab partner who never gets tired of running simulations.",
+      "emphasis": "lab partner",
+      "visual": "icon_pair",
+      "subjects": [
+        "robot assistant",
+        "scientist",
+        "simulation screen"
+      ],
+      "label": "Lab Partner",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "On November 17, 2026, the company used its SC26 presentation to show this workflow,",
+      "emphasis": "November 17, 2026",
+      "visual": "icon_hero",
+      "subjects": [
+        "conference stage",
+        "presentation screen",
+        "calendar"
+      ],
+      "label": "SC26",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "alongside new scientific models, datasets, and computing systems.",
+      "emphasis": "scientific models",
+      "visual": "icon_grid",
+      "subjects": [
+        "model diagram",
+        "dataset files",
+        "computer server"
+      ],
+      "label": "Scientific Stack",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "By the end, you'll know exactly how the loop works,",
+      "emphasis": "loop works",
+      "visual": "icon_orbit",
+      "subjects": [
+        "circular arrows",
+        "computer",
+        "laboratory"
+      ],
+      "label": "The Loop",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "why it could speed up chemistry, climate modeling and engineering,",
+      "emphasis": "chemistry",
+      "visual": "icon_grid",
+      "subjects": [
+        "molecule model",
+        "climate globe",
+        "engineering blueprint"
+      ],
+      "label": "Three Fields",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "and where a human still has to stop the machine before trusting an answer.",
+      "emphasis": "human",
+      "visual": "cross_out",
+      "subjects": [
+        "scientist",
+        "robot arm",
+        "stop button"
+      ],
+      "label": "Human Check",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Start with the research goal, not a request for a paragraph.",
+      "emphasis": "research goal",
+      "visual": "icon_hero",
+      "subjects": [
+        "scientist",
+        "target icon",
+        "notebook"
+      ],
+      "label": "Start Here",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "The agent has to turn that goal into actions: define a hypothesis,",
+      "emphasis": "define a hypothesis",
+      "visual": "icon_flow",
+      "subjects": [
+        "notebook",
+        "hypothesis diagram",
+        "scientist"
+      ],
+      "label": "Set Hypothesis",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "choose a simulation or database, run it,",
+      "emphasis": "choose a simulation",
+      "visual": "icon_flow",
+      "subjects": [
+        "simulation screen",
+        "database",
+        "computer"
+      ],
+      "label": "Choose Tool",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "and compare the output with what the scientist expected.",
+      "emphasis": "compare the output",
+      "visual": "split_compare",
+      "subjects": [
+        "expected chart",
+        "result screen",
+        "scientist"
+      ],
+      "label": "Compare Results",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "It can also decide what information is missing and plan another test.",
+      "emphasis": "missing",
+      "visual": "icon_flow",
+      "subjects": [
+        "incomplete dataset",
+        "magnifying glass",
+        "test plan"
+      ],
+      "label": "Find Gaps",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "That makes it different from an ordinary chatbot.",
+      "emphasis": "different",
+      "visual": "split_compare",
+      "subjects": [
+        "chatbot window",
+        "agent workflow"
+      ],
+      "label": "Key Difference",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "A chatbot mainly predicts a response to your prompt.",
+      "emphasis": "predicts a response",
+      "visual": "icon_hero",
+      "subjects": [
+        "chatbot window",
+        "text prompt"
+      ],
+      "label": "Chatbot",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "An agent keeps a working plan, uses tools, reads their results,",
+      "emphasis": "working plan",
+      "visual": "icon_flow",
+      "subjects": [
+        "agent screen",
+        "tool icons",
+        "arrow"
+      ],
+      "label": "Agent Loop",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "and then chooses the next move.",
+      "emphasis": "next move",
+      "visual": "icon_flow",
+      "subjects": [
+        "workflow arrows",
+        "computer",
+        "result screen"
+      ],
+      "label": "Next Move",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Think of it like a lab notebook connected to the instruments:",
+      "emphasis": "lab notebook",
+      "visual": "icon_pair",
+      "subjects": [
+        "lab notebook",
+        "microscope",
+        "computer"
+      ],
+      "label": "Connected Notebook",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "the model writes the next instruction, the computer carries it out,",
+      "emphasis": "next instruction",
+      "visual": "icon_flow",
+      "subjects": [
+        "notebook",
+        "computer terminal",
+        "arrow"
+      ],
+      "label": "Instruction",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "and the result comes back for inspection.",
+      "emphasis": "comes back",
+      "visual": "icon_flow",
+      "subjects": [
+        "simulation screen",
+        "result file",
+        "scientist"
+      ],
+      "label": "Inspect Result",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "The systems described at SC26 can run code",
+      "emphasis": "run code",
+      "visual": "icon_hero",
+      "subjects": [
+        "code terminal",
+        "server",
+        "scientist"
+      ],
+      "label": "Code Execution",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "and simulations on infrastructure controlled by researchers.",
+      "emphasis": "researchers",
+      "visual": "icon_pair",
+      "subjects": [
+        "researcher",
+        "server rack",
+        "simulation screen"
+      ],
+      "label": "Research Control",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "That lets the agent work beside existing scientific software,",
+      "emphasis": "scientific software",
+      "visual": "icon_pair",
+      "subjects": [
+        "software window",
+        "database",
+        "computer"
+      ],
+      "label": "Existing Tools",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "where the data and tools already live.",
+      "emphasis": "data and tools",
+      "visual": "icon_grid",
+      "subjects": [
+        "database",
+        "software window",
+        "server"
+      ],
+      "label": "Where They Live",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Underneath, this is a loop of planning, tool use, evaluation, and replanning.",
+      "emphasis": "planning",
+      "visual": "icon_orbit",
+      "subjects": [
+        "circular arrows",
+        "checkmark",
+        "computer"
+      ],
+      "label": "Agent Loop",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "The CPUs handle tool calls, operations, and gathering results,",
+      "emphasis": "CPUs",
+      "visual": "icon_pair",
+      "subjects": [
+        "CPU chip",
+        "terminal",
+        "result files"
+      ],
+      "label": "CPU Tasks",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "while accelerators do the heavy simulation work.",
+      "emphasis": "accelerators",
+      "visual": "icon_pair",
+      "subjects": [
+        "GPU chip",
+        "molecular simulation"
+      ],
+      "label": "GPU Work",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "But the agent still needs a real scientific question to guide it,",
+      "emphasis": "scientific question",
+      "visual": "icon_hero",
+      "subjects": [
+        "scientist",
+        "question mark",
+        "notebook"
+      ],
+      "label": "Guiding Question",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "and that brings us to what it can actually discover.",
+      "emphasis": "discover",
+      "visual": "icon_hero",
+      "subjects": [
+        "molecule",
+        "magnifying glass",
+        "simulation screen"
+      ],
+      "label": "Discovery",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "Now see what that means in chemistry.",
+      "emphasis": "chemistry",
+      "visual": "icon_pair",
+      "subjects": [
+        "molecule models",
+        "protein target"
+      ],
+      "label": "Molecular Fit",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "A scientist might ask which molecular shapes could attach to a target protein.",
+      "emphasis": "scientist",
+      "visual": "icon_flow",
+      "subjects": [
+        "hypothesis cards",
+        "simulation computer",
+        "molecule models"
+      ],
+      "label": "Test Candidates",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "The agent can break that question into hypotheses, select a simulation, run candidates,",
+      "emphasis": "hypotheses",
+      "visual": "icon_grid",
+      "subjects": [
+        "molecular structures",
+        "simulation output",
+        "scientist"
+      ],
+      "label": "Inspect Structures",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "and inspect the structures that come back.",
+      "emphasis": "structures",
+      "visual": "icon_flow",
+      "subjects": [
+        "test tubes",
+        "simulation screen",
+        "search path"
+      ],
+      "label": "Search By Test",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "It isn't discovering by intuition; it's narrowing a search by running tests.",
+      "emphasis": "discovering",
+      "visual": "icon_hero",
+      "subjects": [
+        "conference presentation",
+        "document pages",
+        "computer"
+      ],
+      "label": "SC26 Material",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "In the SC26 material,",
+      "emphasis": "SC26",
+      "visual": "icon_hero",
+      "subjects": [
+        "laboratory building",
+        "computer terminal",
+        "scientist"
+      ],
+      "label": "Argonne Lab",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "the company says an agent at Argonne National Laboratory accepted a prompt,",
+      "emphasis": "Laboratory",
+      "visual": "icon_pair",
+      "subjects": [
+        "protein model",
+        "two highlighted binding sites",
+        "simulation screen"
+      ],
+      "label": "Two Sites",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "planned and tested hypotheses, selected simulations, and identified 2 new binding sites.",
+      "emphasis": "simulations",
+      "visual": "icon_flow",
+      "subjects": [
+        "simulation result",
+        "new proposal",
+        "circular arrow"
+      ],
+      "label": "Adaptive Loop",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "The model proposed, the simulator checked, and the result changed the next proposal.",
+      "emphasis": "simulator",
+      "visual": "split_compare",
+      "subjects": [
+        "chat bubbles",
+        "scientific software",
+        "molecule"
+      ],
+      "label": "More Than Chat",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "That needs more than general conversation text.",
+      "emphasis": "conversation",
+      "visual": "icon_hero",
+      "subjects": [
+        "AI model graphic",
+        "chemistry dataset",
+        "computer"
+      ],
+      "label": "Nemotron Science",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "Nemotron for Science combines Nemotron 3.5 Super VL, scientific evaluations, an open chemistry dataset,",
+      "emphasis": "3.5",
+      "visual": "icon_grid",
+      "subjects": [
+        "agent diagram",
+        "dataset files",
+        "training computer"
+      ],
+      "label": "Specialized Agents",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "and post-training recipes for specialized agents.",
+      "emphasis": "post-training",
+      "visual": "bar_chart",
+      "subjects": [
+        "question cards",
+        "chemistry molecules",
+        "bar of questions"
+      ],
+      "label": "50,000 Questions",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "LitmusBench v0.2 contains nearly 50,000 chemistry questions covering molecular properties, drug-discovery data, solubility,",
+      "emphasis": "v0.2",
+      "visual": "icon_grid",
+      "subjects": [
+        "human body diagram",
+        "molecule",
+        "database"
+      ],
+      "label": "Molecular Biology",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "and how the body processes molecules.",
+      "emphasis": "processes",
+      "visual": "checklist",
+      "subjects": [
+        "checklist",
+        "scientist",
+        "computer"
+      ],
+      "label": "Takeaway",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "Here's the practical takeaway:",
+      "emphasis": "practical",
+      "visual": "checklist",
+      "subjects": [
+        "tool icons",
+        "simulation screen",
+        "measuring instrument"
+      ],
+      "label": "Valid Tools",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "judge an agent by whether it chooses valid tools and gets measurable results,",
+      "emphasis": "measurable",
+      "visual": "split_compare",
+      "subjects": [
+        "speech bubble",
+        "result chart",
+        "warning symbol"
+      ],
+      "label": "Not Enough",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "not by how convincing its explanation sounds.",
+      "emphasis": "explanation",
+      "visual": "icon_flow",
+      "subjects": [
+        "checklist",
+        "simulation screen",
+        "scientist"
+      ],
+      "label": "Next Checks",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "But even a good result needs the next checks.",
+      "emphasis": "result",
+      "visual": "icon_hero",
+      "subjects": [
+        "GPU server",
+        "scientific pipeline",
+        "data center"
+      ],
+      "label": "The Pipeline",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "That's where the hardware and the wider scientific pipeline become important.",
+      "emphasis": "scientific",
+      "visual": "icon_hero",
+      "subjects": [
+        "server rack",
+        "GPU board",
+        "cables"
+      ],
+      "label": "Underneath",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "That brings us to the part people don't see: the computing underneath.",
+      "emphasis": "underneath",
+      "visual": "icon_pair",
+      "subjects": [
+        "simulation software",
+        "GPU server",
+        "scientist"
+      ],
+      "label": "Serious Tools",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Scientific agents are useful only if they can call",
+      "emphasis": "Scientific",
+      "visual": "icon_grid",
+      "subjects": [
+        "multiple molecule models",
+        "simulation screens",
+        "arrows"
+      ],
+      "label": "Explore Options",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "serious tools quickly enough to explore many possibilities.",
+      "emphasis": "possibilities",
+      "visual": "icon_hero",
+      "subjects": [
+        "GPU chip",
+        "molecular model",
+        "climate globe"
+      ],
+      "label": "GPU Simulation",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "GPU-accelerated simulation handles repeated numerical work, from molecular dynamics to climate and engineering models.",
+      "emphasis": "GPU-accelerated",
+      "visual": "icon_pair",
+      "subjects": [
+        "GPU server",
+        "laboratory test bench",
+        "simulation screen"
+      ],
+      "label": "Test Bench",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "The accelerator isn't the scientist; it's a very fast test bench.",
+      "emphasis": "accelerator",
+      "visual": "icon_hero",
+      "subjects": [
+        "agent interface",
+        "GPU server",
+        "stacked layers"
+      ],
+      "label": "Agent Layer",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "The agent sits above that bench.",
+      "emphasis": "agent",
+      "visual": "icon_flow",
+      "subjects": [
+        "agent screen",
+        "coin",
+        "simulation job"
+      ],
+      "label": "Choose Runs",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "It decides which run is worth paying for, sends the job,",
+      "emphasis": "decides",
+      "visual": "clock",
+      "subjects": [
+        "job queue",
+        "clock",
+        "computer server"
+      ],
+      "label": "Wait For Output",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "waits for the output, and compares it with the goal.",
+      "emphasis": "compares",
+      "visual": "icon_flow",
+      "subjects": [
+        "input fields",
+        "simulation screen",
+        "arrow"
+      ],
+      "label": "Change Inputs",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "If the result is weak,",
+      "emphasis": "result",
+      "visual": "icon_grid",
+      "subjects": [
+        "climate globe",
+        "molecule model",
+        "engineering blueprint"
+      ],
+      "label": "Vera",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "it can change the inputs instead of asking a person to rewrite every command.",
+      "emphasis": "instead",
+      "visual": "icon_grid",
+      "subjects": [
+        "HPC server",
+        "materials sample",
+        "molecule model"
+      ],
+      "label": "Rubin HPC",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "SC26 also connects this to Vera for climate, molecular and engineering simulations,",
+      "emphasis": "SC26",
+      "visual": "split_compare",
+      "subjects": [
+        "AI model",
+        "scientist",
+        "multiple science diagrams"
+      ],
+      "label": "Not One Model",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "and Rubin HPC for testing materials, molecules and designs.",
+      "emphasis": "materials",
+      "visual": "icon_flow",
+      "subjects": [
+        "AI model",
+        "GPU server",
+        "scientist"
+      ],
+      "label": "Joined Pipeline",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "The point isn't that one model knows all of science.",
+      "emphasis": "science",
+      "visual": "icon_hero",
+      "subjects": [
+        "scientist",
+        "question mark",
+        "simulation screen"
+      ],
+      "label": "Why It Matters",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "It's that the model, simulator, GPU system,",
+      "emphasis": "simulator",
+      "visual": "icon_grid",
+      "subjects": [
+        "molecule candidates",
+        "failed test results",
+        "simulation screen"
+      ],
+      "label": "Failed Attempts",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "and researcher can be joined into one repeatable pipeline.",
+      "emphasis": "researcher",
+      "visual": "line_chart",
+      "subjects": [
+        "GPU server",
+        "multiple test runs",
+        "coin"
+      ],
+      "label": "More Attempts",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Why does that matter?",
+      "emphasis": "matter",
+      "visual": "gauge",
+      "subjects": [
+        "result screen",
+        "checkmark",
+        "scientist"
+      ],
+      "label": "Trustworthy?",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "The expensive part of discovery is often trying possibilities that fail.",
+      "emphasis": "possibilities",
+      "visual": "cross_out",
+      "subjects": [
+        "demo screen",
+        "question mark",
+        "warning symbol"
+      ],
+      "label": "Unanswered",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Faster simulation doesn't guarantee a breakthrough, but it can make more attempts affordable.",
+      "emphasis": "breakthrough",
+      "visual": "icon_hero",
+      "subjects": [
+        "scientist",
+        "question mark",
+        "result screen"
+      ],
+      "label": "Verify It",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "And that only helps if the loop knows when a result is trustworthy.",
+      "emphasis": "trustworthy",
+      "visual": "cross_out",
+      "subjects": [
+        "simulation screen",
+        "warning symbol",
+        "broken output"
+      ],
+      "label": "Bad Choice",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "But now ask the question the demo cannot answer:",
+      "emphasis": "question",
+      "visual": "cross_out",
+      "subjects": [
+        "speech bubble",
+        "warning symbol",
+        "scientist"
+      ],
+      "label": "Confidence Is Not Proof",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "how do we know the agent is right?",
+      "emphasis": "agent",
+      "visual": "checklist",
+      "subjects": [
+        "checklist",
+        "simulation screen",
+        "scientist"
+      ],
+      "label": "Built-In Checks",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "A fluent plan can still choose a bad simulation, misunderstand an output,",
+      "emphasis": "misunderstand",
+      "visual": "icon_hero",
+      "subjects": [
+        "university building",
+        "computer terminal",
+        "scientist"
+      ],
+      "label": "KTH Institute",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "or carry an error into the next step.",
+      "emphasis": "carry",
+      "visual": "bar_chart",
+      "subjects": [
+        "GROMACS screen",
+        "bar chart",
+        "broken molecular setup"
+      ],
+      "label": "81% Fixed",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Science can't use confidence as proof.",
+      "emphasis": "confidence",
+      "visual": "checklist",
+      "subjects": [
+        "GROMACS software",
+        "checkmark",
+        "simulation output"
+      ],
+      "label": "Independent Check",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "The reported examples show why checks have to sit inside the loop.",
+      "emphasis": "reported",
+      "visual": "split_compare",
+      "subjects": [
+        "verified result",
+        "agent claim",
+        "checkmark"
+      ],
+      "label": "Stronger Evidence",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "The company says a KTH Royal Institute of",
+      "emphasis": "Institute",
+      "visual": "icon_grid",
+      "subjects": [
+        "software window",
+        "benchmark chart",
+        "simulation screen"
+      ],
+      "label": "Scientific Check",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Technology agent repaired broken GROMACS molecular-dynamics setups,",
+      "emphasis": "molecular-dynamics",
+      "visual": "icon_pair",
+      "subjects": [
+        "field sensor",
+        "data chart",
+        "scientist"
+      ],
+      "label": "Real-World Check",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "fixing 81% of test cases in one overnight run.",
+      "emphasis": "81%",
+      "visual": "clock",
+      "subjects": [
+        "clock",
+        "calendar",
+        "verification screen"
+      ],
+      "label": "Time Required",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Each fix was independently checked by GROMACS.",
+      "emphasis": "independently",
+      "visual": "cross_out",
+      "subjects": [
+        "wrong input",
+        "broken workflow",
+        "warning symbol"
+      ],
+      "label": "Derailment",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "That's much stronger than the agent simply claiming success.",
+      "emphasis": "stronger",
+      "visual": "icon_hero",
+      "subjects": [
+        "task box",
+        "computer",
+        "boundary line"
+      ],
+      "label": "Bounded Job",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "The check has to come from the scientific software, a benchmark, a simulation,",
+      "emphasis": "scientific",
+      "visual": "cross_out",
+      "subjects": [
+        "laboratory",
+        "robot arm",
+        "stop sign"
+      ],
+      "label": "Limit Control",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "or a researcher with the right expertise.",
+      "emphasis": "researcher",
+      "visual": "checklist",
+      "subjects": [
+        "checklist",
+        "simulation screen",
+        "second computer"
+      ],
+      "label": "Verify Independently",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "The company's guidance says verification can require computational or",
+      "emphasis": "computational",
+      "visual": "icon_grid",
+      "subjects": [
+        "input files",
+        "activity logs",
+        "server"
+      ],
+      "label": "Keep Records",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "real-world data and may take hours or days.",
+      "emphasis": "real-world",
+      "visual": "split_compare",
+      "subjects": [
+        "evidence folder",
+        "checkmark",
+        "scientist"
+      ],
+      "label": "Useful Evidence",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "One wrong assumption can derail the task.",
+      "emphasis": "assumption",
+      "visual": "icon_flow",
+      "subjects": [
+        "target",
+        "agent plan",
+        "scientific tool"
+      ],
+      "label": "Simple Version",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "So if you use a system like this, give it a bounded job,",
+      "emphasis": "bounded",
+      "visual": "icon_flow",
+      "subjects": [
+        "result screen",
+        "checkmark",
+        "next test"
+      ],
+      "label": "Check Results",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "not control of the whole lab.",
+      "emphasis": "control",
+      "visual": "split_compare",
+      "subjects": [
+        "GPU chip",
+        "verification checklist",
+        "scientist"
+      ],
+      "label": "Verify First",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Define the goal, limit the tools, inspect the output, and run an independent check.",
+      "emphasis": "independent",
+      "visual": "icon_pair",
+      "subjects": [
+        "guide document",
+        "video screen",
+        "download icon"
+      ],
+      "label": "Free Guide",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Keep the inputs and logs so someone can reproduce what happened.",
+      "emphasis": "reproduce",
+      "visual": "icon_flow",
+      "subjects": [
+        "video description panel",
+        "link icon",
+        "community screen"
+      ],
+      "label": "Links Below",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "cta",
+      "text": "That's how a fast assistant becomes useful evidence, rather than a confident guess.",
+      "emphasis": "assistant",
+      "visual": "logo_end",
+      "subjects": [
+        "channel logo",
+        "notification bell",
+        "video screen"
+      ],
+      "label": "Follow For More",
+      "follow": true
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "Simple version: the agent turns a research goal into a plan, uses scientific tools,",
+      "emphasis": "scientific",
+      "visual": "icon_hero",
+      "subjects": [],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "checks results, and suggests the next test.",
+      "emphasis": "suggests",
+      "visual": "icon_hero",
+      "subjects": [],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "GPUs speed simulations, but verification decides whether the answer is worth believing.",
+      "emphasis": "verification",
+      "visual": "icon_hero",
+      "subjects": [],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "The free guide to this video and the link to our",
+      "emphasis": "guide",
+      "visual": "icon_hero",
+      "subjects": [],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "community for updates and all these stories are in the description.",
+      "emphasis": "description",
+      "visual": "icon_hero",
+      "subjects": [],
+      "label": "",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "Follow the channel for more breakdowns of the machines behind scientific progress.",
+      "emphasis": "breakdowns",
+      "visual": "icon_hero",
+      "subjects": [],
+      "label": "",
+      "follow": true
+    }
+  ],
+  "voice_script": "[curious] An AI system can now take a research question, choose an experiment, run the code on a lab's own computer, inspect the result, and suggest what to try next. Put that on screen and it looks less like a chatbot and more like a junior lab partner who never gets tired of running simulations. [thoughtful]On November 17, 2026, the company used its SC26 presentation to show this workflow, alongside new scientific models, datasets, and computing systems. By the end, you'll know exactly how the loop works, why it could speed up chemistry, climate modeling and engineering, and where a human still has to stop the machine before trusting an answer.\n\n[thoughtful] Start with the research goal, not a request for a paragraph. The agent has to turn that goal into actions: define a hypothesis, choose a simulation or database, run it, and compare the output with what the scientist expected. It can also decide what information is missing and plan another test.\n\nThat makes it different from an ordinary chatbot. [confidently]A chatbot mainly predicts a response to your prompt. An agent keeps a working plan, uses tools, reads their results, and then chooses the next move. Think of it like a lab notebook connected to the instruments: the model writes the next instruction, the computer carries it out, and the result comes back for inspection.\n\nThe systems described at SC26 can run code and simulations on infrastructure controlled by researchers. That lets the agent work beside existing scientific software, where the data and tools already live.\n\nUnderneath, this is a loop of planning, tool use, evaluation, and replanning. The CPUs handle tool calls, operations, and gathering results, while accelerators do the heavy simulation work. But the agent still needs a real scientific question to guide it, and that brings us to what it can actually discover.\n\n[curious] Now see what that means in chemistry. A scientist might ask which molecular shapes could attach to a target protein. The agent can break that question into hypotheses, select a simulation, run candidates, and inspect the structures that come back. It isn't discovering by intuition; it's narrowing a search by running tests.\n\n[surprised]In the SC26 material, the company says an agent at Argonne National Laboratory accepted a prompt, planned and tested hypotheses, selected simulations, and identified two new binding sites. The model proposed, the simulator checked, and the result changed the next proposal.\n\nThat needs more than general conversation text. Nemotron for Science combines Nemotron 3.5 Super VL, scientific evaluations, an open chemistry dataset, and post-training recipes for specialized agents. LitmusBench v0.2 contains nearly 50,000 chemistry questions covering molecular properties, drug-discovery data, solubility, and how the body processes molecules.\n\nHere's the practical takeaway: judge an agent by whether it chooses valid tools and gets measurable results, not by how convincing its explanation sounds. But even a good result needs the next checks. That's where the hardware and the wider scientific pipeline become important.\n\n[thoughtful] That brings us to the part people don't see: the computing underneath. Scientific agents are useful only if they can call serious tools quickly enough to explore many possibilities. GPU-accelerated simulation handles repeated numerical work, from molecular dynamics to climate and engineering models. The accelerator isn't the scientist; it's a very fast test bench.\n\nThe agent sits above that bench. It decides which run is worth paying for, sends the job, waits for the output, and compares it with the goal. If the result is weak, it can change the inputs instead of asking a person to rewrite every command.\n\nSC26 also connects this to Vera for climate, molecular and engineering simulations, and Rubin HPC for testing materials, molecules and designs. The point isn't that one model knows all of science. It's that the model, simulator, GPU system, and researcher can be joined into one repeatable pipeline.\n\n[confidently]Why does that matter? The expensive part of discovery is often trying possibilities that fail. Faster simulation doesn't guarantee a breakthrough, but it can make more attempts affordable. And that only helps if the loop knows when a result is trustworthy.\n\n[skeptical] But now ask the question the demo cannot answer: how do we know the agent is right? A fluent plan can still choose a bad simulation, misunderstand an output, or carry an error into the next step. Science can't use confidence as proof.\n\nThe reported examples show why checks have to sit inside the loop. The company says a KTH Royal Institute of Technology agent repaired broken GROMACS molecular-dynamics setups, fixing 81% of test cases in one overnight run. Each fix was independently checked by GROMACS. That's much stronger than the agent simply claiming success.\n\n[serious]The check has to come from the scientific software, a benchmark, a simulation, or a researcher with the right expertise. The company's guidance says verification can require computational or real-world data and may take hours or days. One wrong assumption can derail the task.\n\nSo if you use a system like this, give it a bounded job, not control of the whole lab. Define the goal, limit the tools, inspect the output, and run an independent check. Keep the inputs and logs so someone can reproduce what happened. That's how a fast assistant becomes useful evidence, rather than a confident guess.\n\n[warmly] Simple version: the agent turns a research goal into a plan, uses scientific tools, checks results, and suggests the next test. GPUs speed simulations, but verification decides whether the answer is worth believing. The free guide to this video and the link to our community for updates and all these stories are in the description. Follow the channel for more breakdowns of the machines behind scientific progress."
+}

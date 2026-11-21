@@ -1,0 +1,59 @@
+{
+  "summary": "At SC26, NVIDIA presented a scientific-agent workflow that goes beyond chatbot answers: an agent can interpret a research goal, plan hypotheses, select simulations or tools, run code on systems controlled by researchers, inspect outputs, and help determine the next step. NVIDIA\u2019s announcements combine Nemotron 3.5 Super VL, the LitmusBench chemistry dataset, post-training recipes, CUDA-X scientific tools, and HPC infrastructure. The opportunity is faster iteration in chemistry, drug discovery, climate modeling, and engineering\u2014but the evidence also shows why verification remains essential: results must be checked by domain-specific software, benchmarks, simulations, or researchers. Note: the supplied topic source is dated November 17, 2026, not November 18, 2026; the supplied audience-performance figures were not independently verified in the cited NVIDIA materials.",
+  "claims": [
+    {
+      "claim": "NVIDIA\u2019s SC26 presentation describes agents that can plan experiments, run code, and check results on researchers\u2019 own systems.",
+      "source_title": "Ian Buck Kicks Off NVIDIA\u2019s Week at SC26 as Science Enters the Age of Agents",
+      "source_url": "https://blogs.nvidia.com/blog/ian-buck-sc26/",
+      "published_or_updated": "November 17, 2026"
+    },
+    {
+      "claim": "NVIDIA says an Argonne National Laboratory agent accepted a prompt, planned and tested hypotheses, selected simulations, and identified two new binding sites.",
+      "source_title": "Ian Buck Kicks Off NVIDIA\u2019s Week at SC26 as Science Enters the Age of Agents",
+      "source_url": "https://blogs.nvidia.com/blog/ian-buck-sc26/",
+      "published_or_updated": "November 17, 2026"
+    },
+    {
+      "claim": "Nemotron for Science combines Nemotron 3.5 Super VL with scientific evaluations, an open chemistry dataset, and post-training recipes for specialized science agents; NVIDIA says researchers can adapt the models for tasks including chemistry experiments and protein design.",
+      "source_title": "NVIDIA Introduces Nemotron for Science to Accelerate Discoveries With Agents",
+      "source_url": "https://nvidianews.nvidia.com/news/nvidia-introduces-nemotron-for-science-to-accelerate-discoveries-with-agents",
+      "published_or_updated": "November 16, 2026"
+    },
+    {
+      "claim": "LitmusBench v0.2 contains nearly 50,000 chemistry questions for training and evaluation, including tasks related to molecular properties, drug-discovery data, solubility, and how the body processes molecules.",
+      "source_title": "NVIDIA Introduces Nemotron for Science to Accelerate Discoveries With Agents",
+      "source_url": "https://nvidianews.nvidia.com/news/nvidia-introduces-nemotron-for-science-to-accelerate-discoveries-with-agents",
+      "published_or_updated": "November 16, 2026"
+    },
+    {
+      "claim": "NVIDIA reports that a KTH Royal Institute of Technology agent repaired broken GROMACS molecular-dynamics setups, fixing 81% of test cases in one overnight run; each fix was independently checked by GROMACS.",
+      "source_title": "NVIDIA Introduces Nemotron for Science to Accelerate Discoveries With Agents",
+      "source_url": "https://nvidianews.nvidia.com/news/nvidia-introduces-nemotron-for-science-to-accelerate-discoveries-with-agents",
+      "published_or_updated": "November 16, 2026"
+    },
+    {
+      "claim": "The agent loop depends on tool use and evaluation between model steps: NVIDIA describes CPUs handling tool calls, operations, result gathering, and evaluation, while its agent-evaluation guidance says multi-step systems must be assessed through tool calls and task outcomes rather than a single text response.",
+      "source_title": "How to Evaluate AI Agents From Tool Calls to Task Completion",
+      "source_url": "https://developer.nvidia.com/blog/how-to-evaluate-ai-agents-from-tool-calls-to-task-completion",
+      "published_or_updated": "September 21, 2026"
+    },
+    {
+      "claim": "NVIDIA\u2019s own scientific-agent material warns that verification can require computational or real-world data and may take hours or days, because a single mistake can derail a research task.",
+      "source_title": "How to Train Scientific Agents with Reinforcement Learning",
+      "source_url": "https://developer.nvidia.com/blog/how-to-train-scientific-agents-with-reinforcement-learning/",
+      "published_or_updated": "December 17, 2025"
+    },
+    {
+      "claim": "NVIDIA connects the SC26 infrastructure story to climate modeling and engineering: Vera is presented for climate, molecular, and engineering simulations, while Rubin HPC is described as accelerating simulations used to test candidate materials, molecules, and designs.",
+      "source_title": "NVIDIA Expands Vera CPU Platform to Accelerate Scientific Discovery",
+      "source_url": "https://nvidianews.nvidia.com/news/nvidia-expands-vera-cpu-platform-to-accelerate-scientific-discovery",
+      "published_or_updated": "November 16, 2026"
+    }
+  ],
+  "core_fact": {
+    "fact": "On November 17, 2026, NVIDIA said at SC26 that it was introducing scientific-agent tools that can plan experiments, run code, and check results on researchers\u2019 own systems; the same presentation highlighted Nemotron for Science, simulation-driven discovery, and related HPC platforms.",
+    "source_url": "https://blogs.nvidia.com/blog/ian-buck-sc26/",
+    "published_or_updated": "November 17, 2026",
+    "verified": true
+  }
+}

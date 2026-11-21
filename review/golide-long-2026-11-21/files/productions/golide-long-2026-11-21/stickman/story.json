@@ -1,0 +1,3486 @@
+{
+ "title": "NVIDIA SC26 Special Breakdown",
+ "mood": "dramatic",
+ "cast": {
+  "nia": {
+   "skin": "brown",
+   "role": "scientist",
+   "outfit": "suit",
+   "color": "#6A4C93",
+   "hair": "bun",
+   "hair_col": "#241A18",
+   "glasses": true,
+   "shirt": "#BFE3F2",
+   "tie": "none"
+  },
+  "milo": {
+   "skin": "fair",
+   "role": "scientist",
+   "outfit": "sweater",
+   "color": "#168AAD",
+   "hair": "curly",
+   "hair_col": "#5B3525",
+   "shirt": "#BFE3F2",
+   "tie": "none",
+   "glasses": true
+  },
+  "ada": {
+   "skin": "olive",
+   "role": "hacker",
+   "outfit": "hoodie",
+   "color": "#F28C28",
+   "hair": "long",
+   "hair_col": "#2B211E",
+   "hat": "none"
+  },
+  "omar": {
+   "skin": "tan",
+   "outfit": "suit",
+   "color": "#2F6B4F",
+   "hair": "short",
+   "hair_col": "#171717",
+   "glasses": true
+  }
+ },
+ "shots": [
+  {
+   "kind": "wide",
+   "s": [
+    0
+   ],
+   "set": "lab",
+   "time": "night",
+   "tag": "LAB · 2026",
+   "chars": [
+    {
+     "id": "nia",
+     "x": 560,
+     "face": 1,
+     "emotion": "focused",
+     "pose": "explain",
+     "acts": [
+      {
+       "do": "point",
+       "at": "research question",
+       "item": "question"
+      },
+      {
+       "do": "type",
+       "at": "run the code",
+       "item": "laptop"
+      },
+      {
+       "do": "think",
+       "at": "suggest"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "question",
+     "x": 1080,
+     "y": 300,
+     "s": 0.45
+    },
+    {
+     "icon": "code",
+     "x": 1320,
+     "y": 470,
+     "s": 0.42,
+     "at": "run the code"
+    },
+    {
+     "icon": "microscope",
+     "x": 1510,
+     "y": 720,
+     "s": 0.52,
+     "at": "inspect the result"
+    }
+   ],
+   "moves": [
+    {
+     "do": "data_flow",
+     "at": "choose an experiment",
+     "x": 1180,
+     "y": 500,
+     "from": [
+      220,
+      250
+     ],
+     "to": [
+      1700,
+      210
+     ]
+    }
+   ],
+   "cam": {
+    "zoom": [
+     1,
+     1.1
+    ]
+   }
+  },
+  {
+   "kind": "wide",
+   "s": [
+    1
+   ],
+   "set": "datacenter",
+   "time": "night",
+   "tag": "SIMULATION BAY",
+   "chars": [
+    {
+     "id": "milo",
+     "x": 620,
+     "face": 1,
+     "emotion": "excited",
+     "pose": "present",
+     "acts": [
+      {
+       "do": "point",
+       "at": "on screen",
+       "item": "desktop"
+      },
+      {
+       "do": "type",
+       "at": "running simulations",
+       "item": "laptop"
+      },
+      {
+       "do": "shake_head",
+       "at": "never gets tired"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "robot",
+     "x": 1330,
+     "y": 630,
+     "s": 0.6
+    },
+    {
+     "icon": "gpu",
+     "x": 1550,
+     "y": 760,
+     "s": 0.45,
+     "at": "simulations"
+    }
+   ],
+   "moves": [
+    {
+     "do": "bot_rows",
+     "at": "chatbot",
+     "mode": "idle"
+    }
+   ],
+   "cam": {
+    "focus": [
+     [
+      960,
+      545
+     ],
+     [
+      1120,
+      520
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "wide",
+   "s": [
+    2
+   ],
+   "set": "stage",
+   "time": "day",
+   "tag": "SC26 · 2026",
+   "logo": "NVIDIA",
+   "sign": "SC26",
+   "chars": [
+    {
+     "id": "nia",
+     "x": 510,
+     "face": 1,
+     "emotion": "confident",
+     "pose": "present",
+     "acts": [
+      {
+       "do": "point",
+       "at": "November 17, 2026",
+       "item": "calendar"
+      },
+      {
+       "do": "hold",
+       "at": "scientific models",
+       "item": "ai"
+      },
+      {
+       "do": "wave",
+       "at": "computing systems"
+      }
+     ]
+    }
+   ],
+   "labels": [
+    {
+     "text": "NOV 17, 2026",
+     "x": 1450,
+     "y": 230,
+     "size": 54,
+     "color": "cream",
+     "at": "November 17, 2026"
+    }
+   ],
+   "props": [
+    {
+     "icon": "ai",
+     "x": 1120,
+     "y": 390,
+     "s": 0.4,
+     "at": "scientific models"
+    },
+    {
+     "icon": "document",
+     "x": 1330,
+     "y": 500,
+     "s": 0.4,
+     "at": "datasets"
+    },
+    {
+     "icon": "server",
+     "x": 1540,
+     "y": 660,
+     "s": 0.48,
+     "at": "computing systems"
+    }
+   ],
+   "moves": [
+    {
+     "do": "logo_pop",
+     "at": "company",
+     "logo": "NVIDIA",
+     "x": 1220,
+     "y": 190,
+     "s": 0.7,
+     "logo_art": {
+      "svg": "<svg role=\"img\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><title>NVIDIA</title><path d=\"M8.948 8.798v-1.43a6.7 6.7 0 0 1 .424-.018c3.922-.124 6.493 3.374 6.493 3.374s-2.774 3.851-5.75 3.851c-.398 0-.787-.062-1.158-.185v-4.346c1.528.185 1.837.857 2.747 2.385l2.04-1.714s-1.492-1.952-4-1.952a6.016 6.016 0 0 0-.796.035m0-4.735v2.138l.424-.027c5.45-.185 9.01 4.47 9.01 4.47s-4.08 4.964-8.33 4.964c-.37 0-.733-.035-1.095-.097v1.325c.3.035.61.062.91.062 3.957 0 6.82-2.023 9.593-4.408.459.371 2.34 1.263 2.73 1.652-2.633 2.208-8.772 3.984-12.253 3.984-.335 0-.653-.018-.971-.053v1.864H24V4.063zm0 10.326v1.131c-3.657-.654-4.673-4.46-4.673-4.46s1.758-1.944 4.673-2.262v1.237H8.94c-1.528-.186-2.73 1.245-2.73 1.245s.68 2.412 2.739 3.11M2.456 10.9s2.164-3.197 6.5-3.533V6.201C4.153 6.59 0 10.653 0 10.653s2.35 6.802 8.948 7.42v-1.237c-4.84-.6-6.492-5.936-6.492-5.936z\"/></svg>",
+      "hex": "76B900",
+      "title": "NVIDIA"
+     }
+    }
+   ],
+   "cam": {
+    "zoom": [
+     1.04,
+     1
+    ]
+   },
+   "logo_art": {
+    "svg": "<svg role=\"img\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><title>NVIDIA</title><path d=\"M8.948 8.798v-1.43a6.7 6.7 0 0 1 .424-.018c3.922-.124 6.493 3.374 6.493 3.374s-2.774 3.851-5.75 3.851c-.398 0-.787-.062-1.158-.185v-4.346c1.528.185 1.837.857 2.747 2.385l2.04-1.714s-1.492-1.952-4-1.952a6.016 6.016 0 0 0-.796.035m0-4.735v2.138l.424-.027c5.45-.185 9.01 4.47 9.01 4.47s-4.08 4.964-8.33 4.964c-.37 0-.733-.035-1.095-.097v1.325c.3.035.61.062.91.062 3.957 0 6.82-2.023 9.593-4.408.459.371 2.34 1.263 2.73 1.652-2.633 2.208-8.772 3.984-12.253 3.984-.335 0-.653-.018-.971-.053v1.864H24V4.063zm0 10.326v1.131c-3.657-.654-4.673-4.46-4.673-4.46s1.758-1.944 4.673-2.262v1.237H8.94c-1.528-.186-2.73 1.245-2.73 1.245s.68 2.412 2.739 3.11M2.456 10.9s2.164-3.197 6.5-3.533V6.201C4.153 6.59 0 10.653 0 10.653s2.35 6.802 8.948 7.42v-1.237c-4.84-.6-6.492-5.936-6.492-5.936z\"/></svg>",
+    "hex": "76B900",
+    "title": "NVIDIA"
+   }
+  },
+  {
+   "kind": "wide",
+   "s": [
+    3
+   ],
+   "set": "warroom",
+   "time": "night",
+   "tag": "THE BREAKDOWN",
+   "chars": [
+    {
+     "id": "nia",
+     "x": 470,
+     "face": 1,
+     "emotion": "serious",
+     "pose": "explain",
+     "acts": [
+      {
+       "do": "point",
+       "at": "loop works",
+       "item": "gear"
+      },
+      {
+       "do": "hold",
+       "at": "chemistry",
+       "item": "dna"
+      },
+      {
+       "do": "shake_head",
+       "at": "human still has to stop"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "dna",
+     "x": 1050,
+     "y": 370,
+     "s": 0.4,
+     "at": "chemistry"
+    },
+    {
+     "icon": "earth",
+     "x": 1310,
+     "y": 470,
+     "s": 0.4,
+     "at": "climate modeling"
+    },
+    {
+     "icon": "gear",
+     "x": 1550,
+     "y": 640,
+     "s": 0.42,
+     "at": "engineering"
+    }
+   ],
+   "moves": [
+    {
+     "do": "door_slam",
+     "at": "human still has to stop",
+     "x": 1670,
+     "y": 580
+    }
+   ],
+   "cam": {
+    "pan_right": true
+   }
+  },
+  {
+   "kind": "icon",
+   "s": [
+    4
+   ],
+   "icons": [
+    {
+     "name": "target",
+     "x": 792
+    },
+    {
+     "name": "document",
+     "label": "NOT A PARAGRAPH",
+     "at": "not a request",
+     "x": 1478
+    }
+   ],
+   "chars": [
+    {
+     "id": "milo",
+     "x": 170,
+     "s": 0.6,
+     "face": 1,
+     "emotion": "thinking",
+     "pose": "point",
+     "acts": [
+      {
+       "do": "point",
+       "at": "research goal",
+       "item": "target"
+      },
+      {
+       "do": "shake_head",
+       "at": "not a request"
+      }
+     ]
+    }
+   ],
+   "icon_col": 685
+  },
+  {
+   "kind": "wide",
+   "s": [
+    5
+   ],
+   "set": "lab",
+   "time": "day",
+   "tag": "AGENT WORKBENCH",
+   "chars": [
+    {
+     "id": "milo",
+     "x": 480,
+     "face": 1,
+     "emotion": "focused",
+     "pose": "explain",
+     "acts": [
+      {
+       "do": "think",
+       "at": "define a hypothesis"
+      },
+      {
+       "do": "point",
+       "at": "choose a simulation",
+       "item": "console"
+      },
+      {
+       "do": "type",
+       "at": "run it",
+       "item": "laptop"
+      },
+      {
+       "do": "nod",
+       "at": "compare the output"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "bulb",
+     "x": 980,
+     "y": 300,
+     "s": 0.35,
+     "at": "hypothesis"
+    },
+    {
+     "icon": "console",
+     "x": 1200,
+     "y": 470,
+     "s": 0.4,
+     "at": "simulation"
+    },
+    {
+     "icon": "server",
+     "x": 1410,
+     "y": 590,
+     "s": 0.42,
+     "at": "database"
+    },
+    {
+     "icon": "scale",
+     "x": 1600,
+     "y": 710,
+     "s": 0.4,
+     "at": "compare"
+    }
+   ],
+   "moves": [
+    {
+     "do": "data_flow",
+     "at": "turn that goal into actions",
+     "x": 1200,
+     "y": 520,
+     "from": [
+      220,
+      250
+     ],
+     "to": [
+      1700,
+      210
+     ]
+    }
+   ],
+   "cam": {
+    "zoom": [
+     1,
+     1.08
+    ]
+   }
+  },
+  {
+   "kind": "closeup",
+   "s": [
+    6
+   ],
+   "who": "nia",
+   "side": "left",
+   "set": "office",
+   "time": "day",
+   "emotion": "thinking",
+   "pose": "think",
+   "acts": [
+    {
+     "do": "look_around",
+     "at": "information is missing"
+    },
+    {
+     "do": "point",
+     "at": "another test",
+     "item": "question"
+    }
+   ],
+   "bubble": {
+    "who": "nia",
+    "text": "WHAT IS MISSING?",
+    "icon": "question",
+    "at": "information is missing",
+    "thought": true
+   },
+   "cam": {
+    "zoom": [
+     1.02,
+     1.12
+    ]
+   }
+  },
+  {
+   "kind": "versus",
+   "s": [
+    7
+   ],
+   "left": {
+    "who": "ada",
+    "title": "CHATBOT",
+    "emotion": "neutral",
+    "pose": "idle"
+   },
+   "right": {
+    "who": "milo",
+    "title": "SCIENCE AGENT",
+    "emotion": "confident",
+    "pose": "present",
+    "at": "different"
+   },
+   "colors": [
+    "#BFD9F2",
+    "#CDECCF"
+   ],
+   "chars": [
+    {
+     "id": "ada",
+     "x": 500,
+     "s": 0.7,
+     "face": 1,
+     "acts": [
+      {
+       "do": "shrug",
+       "at": "ordinary chatbot"
+      }
+     ]
+    },
+    {
+     "id": "milo",
+     "x": 1420,
+     "s": 0.7,
+     "face": -1,
+     "acts": [
+      {
+       "do": "point",
+       "at": "different"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "wide",
+   "set": "office",
+   "chars": [],
+   "s": [
+    8
+   ]
+  },
+  {
+   "kind": "wide",
+   "s": [
+    9
+   ],
+   "set": "office",
+   "time": "day",
+   "tag": "AGENT DESK",
+   "chars": [
+    {
+     "id": "milo",
+     "x": 520,
+     "face": 1,
+     "emotion": "confident",
+     "pose": "explain",
+     "acts": [
+      {
+       "do": "hold",
+       "at": "working plan",
+       "item": "document"
+      },
+      {
+       "do": "grab",
+       "at": "uses tools",
+       "item": "toolbox"
+      },
+      {
+       "do": "point",
+       "at": "reads their results",
+       "item": "chart_up"
+      },
+      {
+       "do": "walk_to",
+       "at": "next move",
+       "to": 820
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "document",
+     "x": 1050,
+     "y": 320,
+     "s": 0.35
+    },
+    {
+     "icon": "toolbox",
+     "x": 1290,
+     "y": 540,
+     "s": 0.42,
+     "at": "uses tools"
+    },
+    {
+     "icon": "signpost",
+     "x": 1540,
+     "y": 690,
+     "s": 0.45,
+     "at": "next move"
+    }
+   ],
+   "moves": [
+    {
+     "do": "signpost",
+     "at": "working plan",
+     "x": 1470,
+     "y": 520
+    }
+   ],
+   "cam": {
+    "zoom": [
+     1.06,
+     1
+    ]
+   }
+  },
+  {
+   "kind": "icon",
+   "s": [
+    10
+   ],
+   "icons": [
+    {
+     "name": "book",
+     "x": 678
+    },
+    {
+     "name": "microscope",
+     "label": "INSTRUMENTS",
+     "at": "instruments",
+     "x": 1135
+    },
+    {
+     "name": "check",
+     "label": "RESULT RETURNS",
+     "at": "result comes back",
+     "x": 1592
+    }
+   ],
+   "chars": [
+    {
+     "id": "nia",
+     "x": 170,
+     "s": 0.6,
+     "face": 1,
+     "emotion": "focused",
+     "pose": "explain",
+     "acts": [
+      {
+       "do": "type",
+       "at": "writes the next instruction",
+       "item": "laptop"
+      },
+      {
+       "do": "point",
+       "at": "carries it out",
+       "item": "microscope"
+      },
+      {
+       "do": "nod",
+       "at": "inspection"
+      }
+     ]
+    }
+   ],
+   "moves": [],
+   "icon_col": 457
+  },
+  {
+   "kind": "wide",
+   "s": [
+    11
+   ],
+   "set": "datacenter",
+   "time": "night",
+   "tag": "RESEARCHER-CONTROLLED HPC",
+   "chars": [
+    {
+     "id": "ada",
+     "x": 510,
+     "face": 1,
+     "emotion": "confident",
+     "pose": "present",
+     "acts": [
+      {
+       "do": "type",
+       "at": "run code",
+       "item": "keyboard"
+      },
+      {
+       "do": "point",
+       "at": "simulations",
+       "item": "gpu"
+      },
+      {
+       "do": "hold",
+       "at": "controlled by researchers",
+       "item": "key"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "code",
+     "x": 1120,
+     "y": 360,
+     "s": 0.4
+    },
+    {
+     "icon": "gpu",
+     "x": 1370,
+     "y": 530,
+     "s": 0.45,
+     "at": "simulations"
+    },
+    {
+     "icon": "lock",
+     "x": 1580,
+     "y": 690,
+     "s": 0.38,
+     "at": "controlled"
+    }
+   ],
+   "moves": [
+    {
+     "do": "data_flow",
+     "at": "run code",
+     "x": 1300,
+     "y": 500,
+     "from": [
+      220,
+      250
+     ],
+     "to": [
+      1700,
+      210
+     ]
+    }
+   ],
+   "cam": {
+    "zoom": [
+     1,
+     1.09
+    ]
+   }
+  },
+  {
+   "kind": "walk",
+   "s": [
+    12
+   ],
+   "set": "openoffice",
+   "time": "day",
+   "tag": "EXISTING SOFTWARE STACK",
+   "chars": [
+    {
+     "id": "milo",
+     "walk": [
+      280,
+      1580
+     ],
+     "face": 1,
+     "emotion": "happy",
+     "acts": [
+      {
+       "do": "hold",
+       "at": "work beside",
+       "item": "laptop"
+      },
+      {
+       "do": "point",
+       "at": "data and tools",
+       "item": "toolbox"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "server",
+     "x": 1180,
+     "y": 620,
+     "s": 0.45,
+     "at": "data"
+    },
+    {
+     "icon": "toolbox",
+     "x": 1510,
+     "y": 700,
+     "s": 0.4,
+     "at": "tools"
+    }
+   ],
+   "cam": {
+    "pan_right": true
+   }
+  },
+  {
+   "kind": "chart",
+   "s": [
+    13
+   ],
+   "board": "white",
+   "chart": {
+    "type": "line",
+    "values": [
+     1,
+     2,
+     1,
+     2
+    ],
+    "labels": [
+     "PLAN",
+     "TOOLS",
+     "EVALUATE",
+     "REPLAN"
+    ],
+    "title": "THE AGENT LOOP",
+    "show_values": false,
+    "at": "loop"
+   },
+   "who": "nia",
+   "chars": [
+    {
+     "id": "nia",
+     "x": 390,
+     "s": 0.75,
+     "face": 1,
+     "emotion": "confident",
+     "acts": [
+      {
+       "do": "point",
+       "at": "planning",
+       "item": "whiteboard"
+      },
+      {
+       "do": "nod",
+       "at": "replanning"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "wide",
+   "s": [
+    14
+   ],
+   "set": "cutaway",
+   "time": "night",
+   "tag": "CPU + ACCELERATOR",
+   "chars": [
+    {
+     "id": "omar",
+     "x": 480,
+     "face": 1,
+     "emotion": "focused",
+     "pose": "explain",
+     "acts": [
+      {
+       "do": "point",
+       "at": "CPUs",
+       "item": "chip"
+      },
+      {
+       "do": "hold",
+       "at": "gathering results",
+       "item": "document"
+      },
+      {
+       "do": "point",
+       "at": "accelerators",
+       "item": "gpu"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "chip",
+     "x": 1080,
+     "y": 390,
+     "s": 0.52
+    },
+    {
+     "icon": "document",
+     "x": 1330,
+     "y": 510,
+     "s": 0.36,
+     "at": "gathering results"
+    },
+    {
+     "icon": "gpu",
+     "x": 1570,
+     "y": 660,
+     "s": 0.52,
+     "at": "accelerators"
+    }
+   ],
+   "moves": [
+    {
+     "do": "sparks",
+     "at": "CPUs",
+     "x": 1150,
+     "y": 420
+    }
+   ],
+   "cam": {
+    "zoom": [
+     1.04,
+     1.12
+    ]
+   }
+  },
+  {
+   "kind": "closeup",
+   "s": [
+    15
+   ],
+   "who": "nia",
+   "side": "left",
+   "set": "lab",
+   "time": "night",
+   "emotion": "serious",
+   "pose": "think",
+   "acts": [
+    {
+     "do": "hold",
+     "at": "real scientific question",
+     "item": "question"
+    },
+    {
+     "do": "point",
+     "at": "actually discover",
+     "item": "microscope"
+    }
+   ],
+   "bubble": {
+    "who": "nia",
+    "text": "WHAT CAN IT DISCOVER?",
+    "icon": "microscope",
+    "at": "actually discover",
+    "thought": true
+   },
+   "cam": {
+    "zoom": [
+     1,
+     1.1
+    ]
+   }
+  },
+  {
+   "kind": "wide",
+   "set": "cutaway",
+   "cam": "push",
+   "chars": [
+    {
+     "id": "nia",
+     "x": 560,
+     "face": 0.7,
+     "acts": [
+      {
+       "do": "nod"
+      }
+     ]
+    }
+   ],
+   "props": []
+  },
+  {
+   "kind": "wide",
+   "s": [
+    16
+   ],
+   "set": "lab",
+   "time": "day",
+   "tag": "CHEMISTRY LAB",
+   "chars": [
+    {
+     "id": "nia",
+     "x": 620,
+     "face": 1,
+     "emotion": "excited",
+     "pose": "present",
+     "acts": [
+      {
+       "do": "point",
+       "at": "chemistry",
+       "item": "dna"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "dna",
+     "x": 1300,
+     "y": 520,
+     "s": 0.6
+    }
+   ],
+   "moves": [
+    {
+     "do": "spotlight",
+     "at": "what that means",
+     "x": 1300,
+     "y": 500
+    }
+   ],
+   "cam": {
+    "zoom": [
+     1.08,
+     1
+    ]
+   }
+  },
+  {
+   "kind": "icon",
+   "s": [
+    17
+   ],
+   "icons": [
+    {
+     "name": "dna",
+     "x": 792
+    },
+    {
+     "name": "target",
+     "label": "TARGET PROTEIN",
+     "at": "target protein",
+     "x": 1478
+    }
+   ],
+   "chars": [
+    {
+     "id": "nia",
+     "x": 170,
+     "s": 0.6,
+     "face": 1,
+     "emotion": "thinking",
+     "acts": [
+      {
+       "do": "think",
+       "at": "which molecular shapes"
+      },
+      {
+       "do": "point",
+       "at": "attach",
+       "item": "target"
+      }
+     ]
+    }
+   ],
+   "icon_col": 685
+  },
+  {
+   "kind": "wide",
+   "s": [
+    18
+   ],
+   "set": "lab",
+   "time": "night",
+   "tag": "MOLECULAR SCREENING",
+   "chars": [
+    {
+     "id": "milo",
+     "x": 480,
+     "face": 1,
+     "emotion": "focused",
+     "pose": "explain",
+     "acts": [
+      {
+       "do": "think",
+       "at": "hypotheses"
+      },
+      {
+       "do": "point",
+       "at": "select a simulation",
+       "item": "console"
+      },
+      {
+       "do": "type",
+       "at": "run candidates",
+       "item": "laptop"
+      },
+      {
+       "do": "look_around",
+       "at": "inspect the structures"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "bulb",
+     "x": 1020,
+     "y": 300,
+     "s": 0.34,
+     "at": "hypotheses"
+    },
+    {
+     "icon": "console",
+     "x": 1250,
+     "y": 470,
+     "s": 0.42,
+     "at": "simulation"
+    },
+    {
+     "icon": "dna",
+     "x": 1530,
+     "y": 650,
+     "s": 0.5,
+     "at": "structures"
+    }
+   ],
+   "moves": [
+    {
+     "do": "data_flow",
+     "at": "break that question",
+     "x": 1270,
+     "y": 520,
+     "from": [
+      220,
+      250
+     ],
+     "to": [
+      1700,
+      210
+     ]
+    }
+   ],
+   "cam": {
+    "focus": [
+     [
+      960,
+      545
+     ],
+     [
+      1240,
+      520
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "closeup",
+   "s": [
+    19
+   ],
+   "who": "nia",
+   "side": "right",
+   "set": "lab",
+   "time": "day",
+   "emotion": "confident",
+   "pose": "explain",
+   "acts": [
+    {
+     "do": "shake_head",
+     "at": "isn't discovering by intuition"
+    },
+    {
+     "do": "point",
+     "at": "running tests",
+     "item": "check"
+    }
+   ],
+   "stamp": {
+    "text": "TEST, DON'T GUESS",
+    "at": "running tests",
+    "x": 520,
+    "y": 300,
+    "color": "red",
+    "size": 64
+   },
+   "cam": {
+    "zoom": [
+     1.02,
+     1.12
+    ]
+   }
+  },
+  {
+   "kind": "counter",
+   "s": [
+    20
+   ],
+   "value": {
+    "from": 0,
+    "to": 2,
+    "prefix": "",
+    "suffix": "",
+    "at": "2 new binding sites",
+    "short": false
+   },
+   "caption": "NEW BINDING SITES",
+   "icon": "target",
+   "compare": {
+    "text": "ARGONNE AGENT RESULT",
+    "icon": "microscope",
+    "at": "Argonne National Laboratory"
+   },
+   "chars": [
+    {
+     "id": "milo",
+     "x": 340,
+     "s": 0.7,
+     "face": 1,
+     "emotion": "excited",
+     "acts": [
+      {
+       "do": "type",
+       "at": "accepted a prompt",
+       "item": "laptop"
+      },
+      {
+       "do": "point",
+       "at": "selected simulations",
+       "item": "console"
+      },
+      {
+       "do": "cheer",
+       "at": "2 new binding sites"
+      }
+     ]
+    }
+   ],
+   "moves": [
+    {
+     "do": "confetti",
+     "at": "company says",
+     "x": 1300,
+     "y": 350
+    }
+   ]
+  },
+  {
+   "kind": "wide",
+   "s": [
+    21
+   ],
+   "set": "lab",
+   "time": "night",
+   "tag": "PROPOSE > CHECK > REVISE",
+   "chars": [
+    {
+     "id": "nia",
+     "x": 520,
+     "face": 1,
+     "emotion": "focused",
+     "pose": "explain",
+     "acts": [
+      {
+       "do": "give",
+       "at": "model proposed",
+       "item": "document",
+       "to": 1150
+      },
+      {
+       "do": "point",
+       "at": "simulator checked",
+       "item": "console"
+      },
+      {
+       "do": "think",
+       "at": "next proposal"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "document",
+     "x": 1080,
+     "y": 350,
+     "s": 0.34
+    },
+    {
+     "icon": "check",
+     "x": 1350,
+     "y": 520,
+     "s": 0.4,
+     "at": "checked"
+    },
+    {
+     "icon": "bulb",
+     "x": 1580,
+     "y": 680,
+     "s": 0.36,
+     "at": "next proposal"
+    }
+   ],
+   "moves": [
+    {
+     "do": "data_flow",
+     "at": "model proposed",
+     "x": 1270,
+     "y": 500,
+     "from": [
+      220,
+      250
+     ],
+     "to": [
+      1700,
+      210
+     ]
+    }
+   ],
+   "cam": {
+    "zoom": [
+     1,
+     1.08
+    ]
+   }
+  },
+  {
+   "kind": "closeup",
+   "s": [
+    22
+   ],
+   "who": "ada",
+   "side": "left",
+   "set": "office",
+   "time": "day",
+   "emotion": "serious",
+   "pose": "arms_crossed",
+   "acts": [
+    {
+     "do": "shake_head",
+     "at": "more than general conversation text"
+    },
+    {
+     "do": "point",
+     "at": "conversation text",
+     "item": "document"
+    }
+   ],
+   "cam": {
+    "zoom": [
+     1.04,
+     1.1
+    ]
+   }
+  },
+  {
+   "kind": "icon",
+   "s": [
+    23
+   ],
+   "icons": [
+    {
+     "name": "ai",
+     "text": "SUPER VL",
+     "x": 678
+    },
+    {
+     "name": "check",
+     "label": "SCIENCE EVALUATIONS",
+     "at": "scientific evaluations",
+     "x": 1135
+    },
+    {
+     "name": "document",
+     "label": "CHEMISTRY DATA",
+     "at": "open chemistry dataset",
+     "x": 1592
+    }
+   ],
+   "labels": [
+    {
+     "text": "3.5",
+     "x": 1480,
+     "y": 220,
+     "size": 58,
+     "color": "gold",
+     "at": "3.5"
+    }
+   ],
+   "chars": [
+    {
+     "id": "ada",
+     "x": 170,
+     "s": 0.6,
+     "face": 1,
+     "emotion": "confident",
+     "acts": [
+      {
+       "do": "point",
+       "at": "Nemotron for Science",
+       "item": "ai"
+      },
+      {
+       "do": "hold",
+       "at": "post-training recipes",
+       "item": "book"
+      }
+     ]
+    }
+   ],
+   "moves": [],
+   "icon_col": 457
+  },
+  {
+   "kind": "counter",
+   "s": [
+    24
+   ],
+   "value": {
+    "from": 0,
+    "to": 50000,
+    "prefix": "",
+    "suffix": "",
+    "at": "50,000",
+    "short": true
+   },
+   "caption": "NEARLY 50,000 CHEMISTRY QUESTIONS",
+   "icon": "book",
+   "compare": {
+    "text": "LITMUSBENCH v0.2",
+    "icon": "check",
+    "at": "LitmusBench v0.2"
+   },
+   "labels": [
+    {
+     "text": "v0.2",
+     "x": 1510,
+     "y": 220,
+     "size": 54,
+     "color": "sky",
+     "at": "v0.2"
+    }
+   ],
+   "chars": [
+    {
+     "id": "nia",
+     "x": 340,
+     "s": 0.68,
+     "face": 1,
+     "emotion": "focused",
+     "acts": [
+      {
+       "do": "hold",
+       "at": "chemistry questions",
+       "item": "book"
+      },
+      {
+       "do": "point",
+       "at": "drug-discovery data",
+       "item": "pill"
+      },
+      {
+       "do": "point",
+       "at": "solubility",
+       "item": "water"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kind": "wide",
+   "s": [
+    25
+   ],
+   "set": "classroom",
+   "time": "day",
+   "tag": "PRACTICAL TEST",
+   "board_text": "VALID TOOLS + MEASURABLE RESULTS",
+   "chars": [
+    {
+     "id": "nia",
+     "x": 540,
+     "face": 1,
+     "emotion": "serious",
+     "pose": "explain",
+     "acts": [
+      {
+       "do": "point",
+       "at": "valid tools",
+       "item": "toolbox"
+      },
+      {
+       "do": "nod",
+       "at": "measurable results"
+      },
+      {
+       "do": "shake_head",
+       "at": "convincing its explanation"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "toolbox",
+     "x": 1220,
+     "y": 520,
+     "s": 0.42
+    },
+    {
+     "icon": "chart_up",
+     "x": 1500,
+     "y": 650,
+     "s": 0.46,
+     "at": "measurable results"
+    }
+   ],
+   "moves": [
+    {
+     "do": "chart_up",
+     "at": "practical takeaway",
+     "x": 1440,
+     "y": 430
+    }
+   ],
+   "cam": {
+    "zoom": [
+     1.06,
+     1
+    ]
+   }
+  },
+  {
+   "kind": "closeup",
+   "s": [
+    26
+   ],
+   "who": "milo",
+   "side": "right",
+   "set": "lab",
+   "time": "night",
+   "emotion": "worried",
+   "pose": "think",
+   "acts": [
+    {
+     "do": "nod",
+     "at": "good result"
+    },
+    {
+     "do": "point",
+     "at": "next checks",
+     "item": "check"
+    }
+   ],
+   "bubble": {
+    "who": "milo",
+    "text": "CHECK AGAIN",
+    "icon": "check",
+    "at": "next checks"
+   },
+   "cam": {
+    "zoom": [
+     1,
+     1.1
+    ]
+   }
+  },
+  {
+   "kind": "wide",
+   "s": [
+    27
+   ],
+   "set": "datacenter",
+   "time": "night",
+   "tag": "THE WIDER PIPELINE",
+   "chars": [
+    {
+     "id": "omar",
+     "x": 570,
+     "face": 1,
+     "emotion": "confident",
+     "pose": "present",
+     "acts": [
+      {
+       "do": "point",
+       "at": "hardware",
+       "item": "gpu"
+      },
+      {
+       "do": "hold",
+       "at": "scientific pipeline",
+       "item": "gear"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "gpu",
+     "x": 1190,
+     "y": 480,
+     "s": 0.52
+    },
+    {
+     "icon": "gear",
+     "x": 1510,
+     "y": 660,
+     "s": 0.48,
+     "at": "pipeline"
+    }
+   ],
+   "moves": [
+    {
+     "do": "data_flow",
+     "at": "hardware",
+     "x": 1330,
+     "y": 510,
+     "from": [
+      220,
+      250
+     ],
+     "to": [
+      1700,
+      210
+     ]
+    }
+   ],
+   "cam": {
+    "zoom": [
+     1,
+     1.08
+    ]
+   }
+  },
+  {
+   "kind": "wide",
+   "s": [
+    28
+   ],
+   "set": "cutaway",
+   "time": "night",
+   "tag": "UNDER THE DEMO",
+   "chars": [
+    {
+     "id": "omar",
+     "x": 520,
+     "face": 1,
+     "emotion": "serious",
+     "pose": "explain",
+     "acts": [
+      {
+       "do": "point",
+       "at": "computing underneath",
+       "item": "server"
+      },
+      {
+       "do": "look_around",
+       "at": "people don't see"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "server",
+     "x": 1240,
+     "y": 530,
+     "s": 0.55
+    },
+    {
+     "icon": "gpu",
+     "x": 1540,
+     "y": 680,
+     "s": 0.45
+    }
+   ],
+   "moves": [
+    {
+     "do": "spotlight",
+     "at": "part people don't see",
+     "x": 1330,
+     "y": 500
+    }
+   ],
+   "cam": {
+    "tilt_down": true
+   }
+  },
+  {
+   "kind": "icon",
+   "s": [
+    29
+   ],
+   "icons": [
+    {
+     "name": "ai",
+     "x": 678
+    },
+    {
+     "name": "toolbox",
+     "label": "SERIOUS TOOLS",
+     "at": "serious tools",
+     "x": 1135
+    },
+    {
+     "name": "clock",
+     "label": "FAST ENOUGH",
+     "at": "quickly enough",
+     "x": 1592
+    }
+   ],
+   "chars": [
+    {
+     "id": "omar",
+     "x": 170,
+     "s": 0.6,
+     "face": 1,
+     "emotion": "focused",
+     "acts": [
+      {
+       "do": "point",
+       "at": "call serious tools",
+       "item": "toolbox"
+      },
+      {
+       "do": "tap_foot",
+       "at": "quickly enough"
+      }
+     ]
+    }
+   ],
+   "icon_col": 457
+  },
+  {
+   "kind": "wide",
+   "s": [
+    30
+   ],
+   "set": "datacenter",
+   "time": "night",
+   "tag": "GPU SIMULATION FLOOR",
+   "chars": [
+    {
+     "id": "omar",
+     "x": 490,
+     "face": 1,
+     "emotion": "excited",
+     "pose": "present",
+     "acts": [
+      {
+       "do": "point",
+       "at": "GPU-accelerated simulation",
+       "item": "gpu"
+      },
+      {
+       "do": "hold",
+       "at": "molecular dynamics",
+       "item": "dna"
+      },
+      {
+       "do": "point",
+       "at": "climate",
+       "item": "earth"
+      },
+      {
+       "do": "point",
+       "at": "engineering models",
+       "item": "gear"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "gpu",
+     "x": 1050,
+     "y": 380,
+     "s": 0.5
+    },
+    {
+     "icon": "dna",
+     "x": 1260,
+     "y": 500,
+     "s": 0.4,
+     "at": "molecular dynamics"
+    },
+    {
+     "icon": "earth",
+     "x": 1450,
+     "y": 600,
+     "s": 0.4,
+     "at": "climate"
+    },
+    {
+     "icon": "gear",
+     "x": 1630,
+     "y": 720,
+     "s": 0.38,
+     "at": "engineering"
+    }
+   ],
+   "moves": [
+    {
+     "do": "sparks",
+     "at": "GPU-accelerated",
+     "x": 1120,
+     "y": 410
+    }
+   ],
+   "cam": {
+    "zoom": [
+     1,
+     1.1
+    ]
+   }
+  },
+  {
+   "kind": "closeup",
+   "s": [
+    31
+   ],
+   "who": "omar",
+   "side": "left",
+   "set": "datacenter",
+   "time": "night",
+   "emotion": "confident",
+   "pose": "explain",
+   "acts": [
+    {
+     "do": "shake_head",
+     "at": "isn't the scientist"
+    },
+    {
+     "do": "point",
+     "at": "fast test bench",
+     "item": "gpu"
+    }
+   ],
+   "bubble": {
+    "who": "omar",
+    "text": "FAST TEST BENCH",
+    "icon": "gpu",
+    "at": "test bench"
+   },
+   "cam": {
+    "zoom": [
+     1.02,
+     1.12
+    ]
+   }
+  },
+  {
+   "kind": "wide",
+   "s": [
+    32
+   ],
+   "set": "lab",
+   "time": "day",
+   "tag": "CONTROL LAYER",
+   "chars": [
+    {
+     "id": "milo",
+     "x": 610,
+     "face": 1,
+     "emotion": "confident",
+     "pose": "present",
+     "acts": [
+      {
+       "do": "point",
+       "at": "agent sits above",
+       "item": "ai"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "ai",
+     "x": 1280,
+     "y": 320,
+     "s": 0.42
+    },
+    {
+     "icon": "gpu",
+     "x": 1280,
+     "y": 690,
+     "s": 0.5
+    }
+   ],
+   "cam": {
+    "tilt_up": true
+   }
+  },
+  {
+   "kind": "wide",
+   "s": [
+    33
+   ],
+   "set": "office",
+   "time": "night",
+   "tag": "JOB QUEUE",
+   "chars": [
+    {
+     "id": "milo",
+     "x": 500,
+     "face": 1,
+     "emotion": "focused",
+     "pose": "explain",
+     "acts": [
+      {
+       "do": "think",
+       "at": "which run is worth paying for"
+      },
+      {
+       "do": "give",
+       "at": "sends the job",
+       "item": "document",
+       "to": 1280
+      },
+      {
+       "do": "tap_foot",
+       "at": "waits for the output"
+      },
+      {
+       "do": "point",
+       "at": "compares it with the goal",
+       "item": "target"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "coins",
+     "x": 1050,
+     "y": 330,
+     "s": 0.34,
+     "at": "paying"
+    },
+    {
+     "icon": "server",
+     "x": 1320,
+     "y": 540,
+     "s": 0.45,
+     "at": "sends the job"
+    },
+    {
+     "icon": "target",
+     "x": 1570,
+     "y": 690,
+     "s": 0.4,
+     "at": "goal"
+    }
+   ],
+   "moves": [
+    {
+     "do": "data_flow",
+     "at": "decides which run",
+     "x": 1310,
+     "y": 500,
+     "from": [
+      220,
+      250
+     ],
+     "to": [
+      1700,
+      210
+     ]
+    }
+   ],
+   "cam": {
+    "focus": [
+     [
+      960,
+      545
+     ],
+     [
+      1250,
+      520
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "icon",
+   "s": [
+    34
+   ],
+   "icons": [
+    {
+     "name": "chart_down",
+     "x": 678
+    },
+    {
+     "name": "keyboard",
+     "label": "CHANGE INPUTS",
+     "at": "change the inputs",
+     "x": 1135
+    },
+    {
+     "name": "people",
+     "label": "NO REWRITE",
+     "at": "instead of asking",
+     "x": 1592
+    }
+   ],
+   "chars": [
+    {
+     "id": "ada",
+     "x": 170,
+     "s": 0.6,
+     "face": 1,
+     "emotion": "confident",
+     "acts": [
+      {
+       "do": "shake_head",
+       "at": "result is weak"
+      },
+      {
+       "do": "type",
+       "at": "change the inputs",
+       "item": "keyboard"
+      }
+     ]
+    }
+   ],
+   "moves": [
+    {
+     "do": "chart_down",
+     "at": "result is weak",
+     "x": 1250,
+     "y": 430
+    }
+   ],
+   "icon_col": 457
+  },
+  {
+   "kind": "wide",
+   "s": [
+    35
+   ],
+   "set": "warroom",
+   "time": "night",
+   "tag": "VERA + RUBIN HPC",
+   "chars": [
+    {
+     "id": "omar",
+     "x": 470,
+     "face": 1,
+     "emotion": "confident",
+     "pose": "explain",
+     "acts": [
+      {
+       "do": "point",
+       "at": "Vera",
+       "item": "chip"
+      },
+      {
+       "do": "hold",
+       "at": "climate",
+       "item": "earth"
+      },
+      {
+       "do": "point",
+       "at": "Rubin HPC",
+       "item": "gpu"
+      },
+      {
+       "do": "hold",
+       "at": "materials",
+       "item": "gear"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "chip",
+     "x": 1040,
+     "y": 340,
+     "s": 0.44
+    },
+    {
+     "icon": "earth",
+     "x": 1240,
+     "y": 460,
+     "s": 0.4,
+     "at": "climate"
+    },
+    {
+     "icon": "gpu",
+     "x": 1450,
+     "y": 590,
+     "s": 0.46,
+     "at": "Rubin HPC"
+    },
+    {
+     "icon": "gear",
+     "x": 1630,
+     "y": 710,
+     "s": 0.38,
+     "at": "materials"
+    }
+   ],
+   "moves": [
+    {
+     "do": "data_flow",
+     "at": "connects this to Vera",
+     "x": 1320,
+     "y": 500,
+     "from": [
+      220,
+      250
+     ],
+     "to": [
+      1700,
+      210
+     ]
+    }
+   ],
+   "cam": {
+    "pan_right": true
+   }
+  },
+  {
+   "kind": "closeup",
+   "s": [
+    36
+   ],
+   "who": "nia",
+   "side": "right",
+   "set": "lab",
+   "time": "day",
+   "emotion": "serious",
+   "pose": "arms_crossed",
+   "acts": [
+    {
+     "do": "shake_head",
+     "at": "isn't that one model"
+    },
+    {
+     "do": "shrug",
+     "at": "all of science"
+    }
+   ],
+   "bubble": {
+    "who": "nia",
+    "text": "NOT ONE MODEL",
+    "icon": "ai",
+    "at": "one model"
+   },
+   "cam": {
+    "zoom": [
+     1.03,
+     1.11
+    ]
+   }
+  },
+  {
+   "kind": "wide",
+   "s": [
+    37
+   ],
+   "set": "cutaway",
+   "time": "night",
+   "tag": "REPEATABLE PIPELINE",
+   "chars": [
+    {
+     "id": "nia",
+     "x": 430,
+     "face": 1,
+     "emotion": "confident",
+     "pose": "explain",
+     "acts": [
+      {
+       "do": "point",
+       "at": "model",
+       "item": "ai"
+      },
+      {
+       "do": "point",
+       "at": "simulator",
+       "item": "console"
+      },
+      {
+       "do": "point",
+       "at": "GPU system",
+       "item": "gpu"
+      },
+      {
+       "do": "hold",
+       "at": "researcher",
+       "item": "people"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "ai",
+     "x": 980,
+     "y": 330,
+     "s": 0.36
+    },
+    {
+     "icon": "console",
+     "x": 1200,
+     "y": 450,
+     "s": 0.4,
+     "at": "simulator"
+    },
+    {
+     "icon": "gpu",
+     "x": 1410,
+     "y": 570,
+     "s": 0.44,
+     "at": "GPU system"
+    },
+    {
+     "icon": "people",
+     "x": 1610,
+     "y": 690,
+     "s": 0.38,
+     "at": "researcher"
+    }
+   ],
+   "moves": [
+    {
+     "do": "data_flow",
+     "at": "model",
+     "x": 1300,
+     "y": 520,
+     "from": [
+      220,
+      250
+     ],
+     "to": [
+      1700,
+      210
+     ]
+    }
+   ],
+   "cam": {
+    "zoom": [
+     1,
+     1.08
+    ]
+   }
+  },
+  {
+   "kind": "closeup",
+   "s": [
+    38
+   ],
+   "who": "milo",
+   "side": "left",
+   "set": "office",
+   "time": "day",
+   "emotion": "thinking",
+   "pose": "think",
+   "acts": [
+    {
+     "do": "shrug",
+     "at": "Why"
+    },
+    {
+     "do": "point",
+     "at": "matter",
+     "item": "question"
+    }
+   ],
+   "bubble": {
+    "who": "milo",
+    "text": "WHY?",
+    "icon": "question",
+    "at": "Why"
+   },
+   "cam": {
+    "zoom": [
+     1,
+     1.12
+    ]
+   }
+  },
+  {
+   "kind": "wide",
+   "s": [
+    39
+   ],
+   "set": "lab",
+   "time": "night",
+   "tag": "FAILED ATTEMPTS",
+   "chars": [
+    {
+     "id": "nia",
+     "x": 560,
+     "face": 1,
+     "emotion": "worried",
+     "pose": "explain",
+     "acts": [
+      {
+       "do": "hold",
+       "at": "expensive part",
+       "item": "moneybag"
+      },
+      {
+       "do": "head_down",
+       "at": "possibilities that fail"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "moneybag",
+     "x": 1160,
+     "y": 480,
+     "s": 0.45
+    },
+    {
+     "icon": "chart_down",
+     "x": 1500,
+     "y": 650,
+     "s": 0.46,
+     "at": "fail"
+    }
+   ],
+   "moves": [
+    {
+     "do": "cash_pile",
+     "at": "expensive part",
+     "x": 1250,
+     "y": 650
+    }
+   ],
+   "cam": {
+    "zoom": [
+     1.06,
+     1
+    ]
+   }
+  },
+  {
+   "kind": "icon",
+   "s": [
+    40
+   ],
+   "icons": [
+    {
+     "name": "gpu",
+     "x": 678
+    },
+    {
+     "name": "coins",
+     "label": "MORE ATTEMPTS",
+     "at": "more attempts",
+     "x": 1135
+    },
+    {
+     "name": "trophy",
+     "label": "NO GUARANTEE",
+     "at": "doesn't guarantee",
+     "x": 1592
+    }
+   ],
+   "chars": [
+    {
+     "id": "omar",
+     "x": 170,
+     "s": 0.6,
+     "face": 1,
+     "emotion": "serious",
+     "acts": [
+      {
+       "do": "shake_head",
+       "at": "doesn't guarantee"
+      },
+      {
+       "do": "point",
+       "at": "more attempts",
+       "item": "gpu"
+      }
+     ]
+    }
+   ],
+   "icon_col": 457
+  },
+  {
+   "kind": "closeup",
+   "s": [
+    41
+   ],
+   "who": "nia",
+   "side": "right",
+   "set": "lab",
+   "time": "night",
+   "emotion": "worried",
+   "pose": "think",
+   "acts": [
+    {
+     "do": "nod",
+     "at": "only helps"
+    },
+    {
+     "do": "point",
+     "at": "trustworthy",
+     "item": "check"
+    }
+   ],
+   "bubble": {
+    "who": "nia",
+    "text": "TRUSTWORTHY?",
+    "icon": "check",
+    "at": "trustworthy",
+    "thought": true
+   },
+   "cam": {
+    "zoom": [
+     1.02,
+     1.12
+    ]
+   }
+  },
+  {
+   "kind": "wide",
+   "set": "lab",
+   "cam": "push",
+   "chars": [
+    {
+     "id": "milo",
+     "x": 560,
+     "face": 0.7,
+     "acts": [
+      {
+       "do": "nod"
+      }
+     ]
+    }
+   ],
+   "props": []
+  },
+  {
+   "kind": "wide",
+   "s": [
+    42
+   ],
+   "set": "court",
+   "time": "day",
+   "tag": "THE QUESTION THE DEMO CAN'T ANSWER",
+   "chars": [
+    {
+     "id": "nia",
+     "x": 620,
+     "face": 1,
+     "emotion": "serious",
+     "pose": "explain",
+     "acts": [
+      {
+       "do": "point",
+       "at": "question",
+       "item": "question"
+      },
+      {
+       "do": "shrug",
+       "at": "how do we know"
+      },
+      {
+       "do": "hold",
+       "at": "right",
+       "item": "gavel"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "question",
+     "x": 1280,
+     "y": 420,
+     "s": 0.5
+    },
+    {
+     "icon": "gavel",
+     "x": 1510,
+     "y": 670,
+     "s": 0.42,
+     "at": "right"
+    }
+   ],
+   "moves": [
+    {
+     "do": "spotlight",
+     "at": "question the demo",
+     "x": 1280,
+     "y": 450
+    }
+   ],
+   "cam": {
+    "zoom": [
+     1,
+     1.08
+    ]
+   }
+  },
+  {
+   "kind": "wide",
+   "s": [
+    43
+   ],
+   "set": "warroom",
+   "time": "night",
+   "tag": "ERROR CASCADE",
+   "chars": [
+    {
+     "id": "ada",
+     "x": 510,
+     "face": 1,
+     "emotion": "worried",
+     "pose": "stressed",
+     "acts": [
+      {
+       "do": "point",
+       "at": "bad simulation",
+       "item": "warning"
+      },
+      {
+       "do": "confused",
+       "at": "misunderstand an output"
+      },
+      {
+       "do": "head_down",
+       "at": "carry an error"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "warning",
+     "x": 1080,
+     "y": 350,
+     "s": 0.42,
+     "at": "bad simulation"
+    },
+    {
+     "icon": "document",
+     "x": 1350,
+     "y": 510,
+     "s": 0.38,
+     "at": "output"
+    },
+    {
+     "icon": "dominoes",
+     "x": 1580,
+     "y": 680,
+     "s": 0.45,
+     "at": "error"
+    }
+   ],
+   "moves": [
+    {
+     "do": "dominoes",
+     "at": "fluent plan",
+     "names": [
+      "BAD TOOL",
+      "MISREAD",
+      "ERROR"
+     ],
+     "x": 1320,
+     "y": 550,
+     "logo_art": [
+      null,
+      null,
+      null
+     ]
+    }
+   ],
+   "cam": {
+    "shake": true
+   }
+  },
+  {
+   "kind": "closeup",
+   "s": [
+    44
+   ],
+   "who": "nia",
+   "side": "left",
+   "set": "court",
+   "time": "day",
+   "emotion": "angry",
+   "pose": "arms_crossed",
+   "acts": [
+    {
+     "do": "shake_head",
+     "at": "can't use confidence"
+    },
+    {
+     "do": "hold",
+     "at": "proof",
+     "item": "gavel"
+    }
+   ],
+   "stamp": {
+    "text": "PROOF REQUIRED",
+    "at": "proof",
+    "x": 1380,
+    "y": 300,
+    "color": "red",
+    "size": 68
+   },
+   "cam": {
+    "zoom": [
+     1.05,
+     1.14
+    ]
+   }
+  },
+  {
+   "kind": "icon",
+   "s": [
+    45
+   ],
+   "icons": [
+    {
+     "name": "check",
+     "x": 792
+    },
+    {
+     "name": "gear",
+     "label": "REPORTED EXAMPLES",
+     "at": "reported examples",
+     "x": 1478
+    }
+   ],
+   "chars": [
+    {
+     "id": "milo",
+     "x": 170,
+     "s": 0.6,
+     "face": 1,
+     "emotion": "serious",
+     "acts": [
+      {
+       "do": "point",
+       "at": "checks",
+       "item": "check"
+      },
+      {
+       "do": "nod",
+       "at": "inside the loop"
+      }
+     ]
+    }
+   ],
+   "icon_col": 685
+  },
+  {
+   "kind": "counter",
+   "s": [
+    46
+   ],
+   "value": {
+    "from": 0,
+    "to": 81,
+    "prefix": "",
+    "suffix": "%",
+    "at": "81%",
+    "short": false
+   },
+   "caption": "TEST CASES FIXED",
+   "icon": "check",
+   "compare": {
+    "text": "1 OVERNIGHT RUN",
+    "icon": "moon",
+    "at": "one overnight run"
+   },
+   "chars": [
+    {
+     "id": "ada",
+     "x": 340,
+     "s": 0.7,
+     "face": 1,
+     "emotion": "excited",
+     "acts": [
+      {
+       "do": "type",
+       "at": "repaired broken GROMACS",
+       "item": "code"
+      },
+      {
+       "do": "point",
+       "at": "81%",
+       "item": "check"
+      },
+      {
+       "do": "hold",
+       "at": "one overnight run",
+       "item": "moon"
+      }
+     ]
+    }
+   ],
+   "moves": [
+    {
+     "do": "chart_up",
+     "at": "company says",
+     "x": 1320,
+     "y": 430
+    }
+   ]
+  },
+  {
+   "kind": "wide",
+   "s": [
+    47
+   ],
+   "set": "lab",
+   "time": "night",
+   "tag": "GROMACS CHECK",
+   "chars": [
+    {
+     "id": "milo",
+     "x": 560,
+     "face": 1,
+     "emotion": "focused",
+     "pose": "explain",
+     "acts": [
+      {
+       "do": "point",
+       "at": "independently checked",
+       "item": "check"
+      },
+      {
+       "do": "nod",
+       "at": "GROMACS"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "console",
+     "x": 1210,
+     "y": 520,
+     "s": 0.48
+    },
+    {
+     "icon": "check",
+     "x": 1510,
+     "y": 650,
+     "s": 0.45,
+     "at": "checked"
+    }
+   ],
+   "moves": [
+    {
+     "do": "data_flow",
+     "at": "Each fix",
+     "x": 1300,
+     "y": 500,
+     "from": [
+      220,
+      250
+     ],
+     "to": [
+      1700,
+      210
+     ]
+    }
+   ],
+   "cam": {
+    "zoom": [
+     1,
+     1.09
+    ]
+   }
+  },
+  {
+   "kind": "closeup",
+   "s": [
+    48
+   ],
+   "who": "nia",
+   "side": "right",
+   "set": "lab",
+   "time": "day",
+   "emotion": "confident",
+   "pose": "explain",
+   "acts": [
+    {
+     "do": "nod",
+     "at": "much stronger"
+    },
+    {
+     "do": "shake_head",
+     "at": "simply claiming success"
+    }
+   ],
+   "stamp": {
+    "text": "EVIDENCE > CLAIM",
+    "at": "much stronger",
+    "x": 500,
+    "y": 300,
+    "color": "green",
+    "size": 62
+   },
+   "cam": {
+    "zoom": [
+     1.02,
+     1.12
+    ]
+   }
+  },
+  {
+   "kind": "wide",
+   "s": [
+    49
+   ],
+   "set": "court",
+   "time": "day",
+   "tag": "INDEPENDENT EVIDENCE",
+   "chars": [
+    {
+     "id": "nia",
+     "x": 470,
+     "face": 1,
+     "emotion": "serious",
+     "pose": "explain",
+     "acts": [
+      {
+       "do": "point",
+       "at": "scientific software",
+       "item": "console"
+      },
+      {
+       "do": "hold",
+       "at": "benchmark",
+       "item": "document"
+      },
+      {
+       "do": "point",
+       "at": "simulation",
+       "item": "gpu"
+      },
+      {
+       "do": "hold",
+       "at": "researcher",
+       "item": "people"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "console",
+     "x": 980,
+     "y": 330,
+     "s": 0.38
+    },
+    {
+     "icon": "document",
+     "x": 1200,
+     "y": 460,
+     "s": 0.36,
+     "at": "benchmark"
+    },
+    {
+     "icon": "gpu",
+     "x": 1420,
+     "y": 580,
+     "s": 0.42,
+     "at": "simulation"
+    },
+    {
+     "icon": "people",
+     "x": 1620,
+     "y": 700,
+     "s": 0.38,
+     "at": "researcher"
+    }
+   ],
+   "moves": [
+    {
+     "do": "data_flow",
+     "at": "check has to come",
+     "x": 1300,
+     "y": 520,
+     "from": [
+      220,
+      250
+     ],
+     "to": [
+      1700,
+      210
+     ]
+    }
+   ],
+   "cam": {
+    "pan_right": true
+   }
+  },
+  {
+   "kind": "icon",
+   "s": [
+    50
+   ],
+   "icons": [
+    {
+     "name": "clock",
+     "x": 678
+    },
+    {
+     "name": "desktop",
+     "label": "COMPUTATIONAL DATA",
+     "at": "computational",
+     "x": 1135
+    },
+    {
+     "name": "earth",
+     "label": "REAL-WORLD DATA",
+     "at": "real-world data",
+     "x": 1592
+    }
+   ],
+   "chars": [
+    {
+     "id": "omar",
+     "x": 170,
+     "s": 0.6,
+     "face": 1,
+     "emotion": "serious",
+     "acts": [
+      {
+       "do": "hold",
+       "at": "hours or days",
+       "item": "clock"
+      },
+      {
+       "do": "point",
+       "at": "computational",
+       "item": "desktop"
+      }
+     ]
+    }
+   ],
+   "icon_col": 457
+  },
+  {
+   "kind": "closeup",
+   "s": [
+    51
+   ],
+   "who": "ada",
+   "side": "left",
+   "set": "warroom",
+   "time": "night",
+   "emotion": "shocked",
+   "pose": "stressed",
+   "acts": [
+    {
+     "do": "jump",
+     "at": "One wrong assumption"
+    },
+    {
+     "do": "head_down",
+     "at": "derail the task"
+    }
+   ],
+   "labels": [
+    {
+     "text": "ONE WRONG ASSUMPTION",
+     "x": 1390,
+     "y": 280,
+     "size": 54,
+     "color": "red",
+     "at": "One wrong assumption"
+    }
+   ],
+   "moves": [
+    {
+     "do": "alarm",
+     "at": "One wrong assumption",
+     "x": 1400,
+     "y": 510
+    }
+   ],
+   "cam": {
+    "shake": true
+   }
+  },
+  {
+   "kind": "wide",
+   "s": [
+    52
+   ],
+   "set": "lab",
+   "time": "day",
+   "tag": "BOUNDED AUTONOMY",
+   "chars": [
+    {
+     "id": "nia",
+     "x": 520,
+     "face": 1,
+     "emotion": "serious",
+     "pose": "explain",
+     "acts": [
+      {
+       "do": "give",
+       "at": "bounded job",
+       "item": "document",
+       "to": 1260
+      },
+      {
+       "do": "shake_head",
+       "at": "not control of the whole lab"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "document",
+     "x": 1220,
+     "y": 480,
+     "s": 0.42
+    },
+    {
+     "icon": "lock",
+     "x": 1510,
+     "y": 650,
+     "s": 0.46,
+     "at": "control"
+    }
+   ],
+   "moves": [
+    {
+     "do": "door_slam",
+     "at": "bounded job",
+     "x": 1600,
+     "y": 560
+    }
+   ],
+   "cam": {
+    "zoom": [
+     1.04,
+     1
+    ]
+   }
+  },
+  {
+   "kind": "wide",
+   "s": [
+    53
+   ],
+   "set": "classroom",
+   "time": "day",
+   "tag": "SAFE OPERATING RULES",
+   "board_text": "GOAL · TOOLS · OUTPUT · CHECK",
+   "chars": [
+    {
+     "id": "nia",
+     "x": 470,
+     "face": 1,
+     "emotion": "confident",
+     "pose": "explain",
+     "acts": [
+      {
+       "do": "point",
+       "at": "Define the goal",
+       "item": "target"
+      },
+      {
+       "do": "hold",
+       "at": "limit the tools",
+       "item": "toolbox"
+      },
+      {
+       "do": "look_around",
+       "at": "inspect the output"
+      },
+      {
+       "do": "nod",
+       "at": "independent check"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "target",
+     "x": 1020,
+     "y": 360,
+     "s": 0.36
+    },
+    {
+     "icon": "toolbox",
+     "x": 1240,
+     "y": 490,
+     "s": 0.4,
+     "at": "tools"
+    },
+    {
+     "icon": "document",
+     "x": 1440,
+     "y": 600,
+     "s": 0.36,
+     "at": "output"
+    },
+    {
+     "icon": "check",
+     "x": 1620,
+     "y": 700,
+     "s": 0.38,
+     "at": "check"
+    }
+   ],
+   "moves": [
+    {
+     "do": "data_flow",
+     "at": "Define the goal",
+     "x": 1300,
+     "y": 520,
+     "from": [
+      220,
+      250
+     ],
+     "to": [
+      1700,
+      210
+     ]
+    }
+   ],
+   "cam": {
+    "zoom": [
+     1,
+     1.08
+    ]
+   }
+  },
+  {
+   "kind": "icon",
+   "s": [
+    54
+   ],
+   "icons": [
+    {
+     "name": "document",
+     "x": 678
+    },
+    {
+     "name": "code",
+     "label": "KEEP LOGS",
+     "at": "logs",
+     "x": 1135
+    },
+    {
+     "name": "check",
+     "label": "REPRODUCE",
+     "at": "reproduce",
+     "x": 1592
+    }
+   ],
+   "chars": [
+    {
+     "id": "ada",
+     "x": 170,
+     "s": 0.6,
+     "face": 1,
+     "emotion": "focused",
+     "acts": [
+      {
+       "do": "hold",
+       "at": "inputs and logs",
+       "item": "document"
+      },
+      {
+       "do": "point",
+       "at": "reproduce",
+       "item": "check"
+      }
+     ]
+    }
+   ],
+   "icon_col": 457
+  },
+  {
+   "kind": "closeup",
+   "s": [
+    55
+   ],
+   "who": "nia",
+   "side": "right",
+   "set": "lab",
+   "time": "night",
+   "emotion": "confident",
+   "pose": "present",
+   "acts": [
+    {
+     "do": "point",
+     "at": "useful evidence",
+     "item": "check"
+    },
+    {
+     "do": "shake_head",
+     "at": "confident guess"
+    }
+   ],
+   "bubble": {
+    "who": "nia",
+    "text": "USEFUL EVIDENCE",
+    "icon": "check",
+    "at": "useful evidence"
+   },
+   "cam": {
+    "zoom": [
+     1.03,
+     1.12
+    ]
+   }
+  },
+  {
+   "kind": "wide",
+   "s": [
+    56
+   ],
+   "set": "cutaway",
+   "time": "night",
+   "tag": "THE SIMPLE LOOP",
+   "chars": [
+    {
+     "id": "milo",
+     "x": 430,
+     "face": 1,
+     "emotion": "confident",
+     "pose": "explain",
+     "acts": [
+      {
+       "do": "hold",
+       "at": "research goal",
+       "item": "target"
+      },
+      {
+       "do": "point",
+       "at": "plan",
+       "item": "document"
+      },
+      {
+       "do": "grab",
+       "at": "scientific tools",
+       "item": "toolbox"
+      },
+      {
+       "do": "nod",
+       "at": "checks results"
+      },
+      {
+       "do": "point",
+       "at": "next test",
+       "item": "signpost"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "target",
+     "x": 930,
+     "y": 300,
+     "s": 0.34
+    },
+    {
+     "icon": "document",
+     "x": 1110,
+     "y": 410,
+     "s": 0.34,
+     "at": "plan"
+    },
+    {
+     "icon": "toolbox",
+     "x": 1300,
+     "y": 520,
+     "s": 0.38,
+     "at": "tools"
+    },
+    {
+     "icon": "check",
+     "x": 1480,
+     "y": 620,
+     "s": 0.36,
+     "at": "checks results"
+    },
+    {
+     "icon": "signpost",
+     "x": 1640,
+     "y": 710,
+     "s": 0.38,
+     "at": "next test"
+    }
+   ],
+   "moves": [
+    {
+     "do": "data_flow",
+     "at": "turns a research goal",
+     "x": 1300,
+     "y": 520,
+     "from": [
+      220,
+      250
+     ],
+     "to": [
+      1700,
+      210
+     ]
+    }
+   ],
+   "cam": {
+    "pan_right": true
+   }
+  },
+  {
+   "kind": "versus",
+   "s": [
+    57
+   ],
+   "left": {
+    "who": "omar",
+    "title": "GPUs SPEED TESTS",
+    "emotion": "excited",
+    "pose": "present"
+   },
+   "right": {
+    "who": "nia",
+    "emotion": "confident",
+    "pose": "explain",
+    "at": "verification"
+   },
+   "colors": [
+    "#BFD9F2",
+    "#CDECCF"
+   ],
+   "chars": [
+    {
+     "id": "omar",
+     "x": 500,
+     "s": 0.72,
+     "face": 1,
+     "acts": [
+      {
+       "do": "point",
+       "at": "GPUs speed simulations",
+       "item": "gpu"
+      }
+     ]
+    },
+    {
+     "id": "nia",
+     "x": 1420,
+     "s": 0.72,
+     "face": -1,
+     "acts": [
+      {
+       "do": "hold",
+       "at": "verification",
+       "item": "check"
+      },
+      {
+       "do": "nod",
+       "at": "worth believing"
+      }
+     ]
+    }
+   ],
+   "moves": [
+    {
+     "do": "sparks",
+     "at": "GPUs",
+     "x": 620,
+     "y": 420
+    }
+   ]
+  },
+  {
+   "kind": "wide",
+   "set": "office",
+   "chars": [],
+   "s": [
+    58
+   ]
+  },
+  {
+   "kind": "walk",
+   "s": [
+    59
+   ],
+   "set": "campus",
+   "time": "dusk",
+   "tag": "SCIENTIFIC PROGRESS",
+   "chars": [
+    {
+     "id": "nia",
+     "walk": [
+      300,
+      1550
+     ],
+     "face": 1,
+     "emotion": "happy",
+     "acts": [
+      {
+       "do": "wave",
+       "at": "Follow the channel"
+      },
+      {
+       "do": "point",
+       "at": "machines",
+       "item": "gear"
+      },
+      {
+       "do": "proud",
+       "at": "scientific progress"
+      }
+     ]
+    }
+   ],
+   "props": [
+    {
+     "icon": "gear",
+     "x": 1330,
+     "y": 600,
+     "s": 0.45,
+     "at": "machines"
+    },
+    {
+     "icon": "microscope",
+     "x": 1580,
+     "y": 700,
+     "s": 0.42,
+     "at": "scientific progress"
+    }
+   ],
+   "moves": [
+    {
+     "do": "hearts_rise",
+     "at": "Follow the channel",
+     "x": 1220,
+     "y": 460
+    }
+   ],
+   "polaroid": {
+    "at": "breakdowns",
+    "who": "nia",
+    "caption": "VERIFY BEFORE BELIEVING"
+   },
+   "cam": {
+    "pull": true
+   }
+  }
+ ]
+}

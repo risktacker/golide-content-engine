@@ -1,0 +1,72 @@
+{
+  "claims": [
+    {
+      "claim": "NVIDIA\u2019s SC26 presentation describes agents that can plan experiments, run code, and check results on researchers\u2019 own systems.",
+      "source_title": "Ian Buck Kicks Off NVIDIA\u2019s Week at SC26 as Science Enters the Age of Agents",
+      "source_url": "https://blogs.nvidia.com/blog/ian-buck-sc26/",
+      "published_or_updated": "November 17, 2026"
+    },
+    {
+      "claim": "NVIDIA says an Argonne National Laboratory agent accepted a prompt, planned and tested hypotheses, selected simulations, and identified two new binding sites.",
+      "source_title": "Ian Buck Kicks Off NVIDIA\u2019s Week at SC26 as Science Enters the Age of Agents",
+      "source_url": "https://blogs.nvidia.com/blog/ian-buck-sc26/",
+      "published_or_updated": "November 17, 2026"
+    },
+    {
+      "claim": "Nemotron for Science combines Nemotron 3.5 Super VL with scientific evaluations, an open chemistry dataset, and post-training recipes for specialized science agents; NVIDIA says researchers can adapt the models for tasks including chemistry experiments and protein design.",
+      "source_title": "NVIDIA Introduces Nemotron for Science to Accelerate Discoveries With Agents",
+      "source_url": "https://nvidianews.nvidia.com/news/nvidia-introduces-nemotron-for-science-to-accelerate-discoveries-with-agents",
+      "published_or_updated": "November 16, 2026"
+    },
+    {
+      "claim": "LitmusBench v0.2 contains nearly 50,000 chemistry questions for training and evaluation, including tasks related to molecular properties, drug-discovery data, solubility, and how the body processes molecules.",
+      "source_title": "NVIDIA Introduces Nemotron for Science to Accelerate Discoveries With Agents",
+      "source_url": "https://nvidianews.nvidia.com/news/nvidia-introduces-nemotron-for-science-to-accelerate-discoveries-with-agents",
+      "published_or_updated": "November 16, 2026"
+    },
+    {
+      "claim": "NVIDIA reports that a KTH Royal Institute of Technology agent repaired broken GROMACS molecular-dynamics setups, fixing 81% of test cases in one overnight run; each fix was independently checked by GROMACS.",
+      "source_title": "NVIDIA Introduces Nemotron for Science to Accelerate Discoveries With Agents",
+      "source_url": "https://nvidianews.nvidia.com/news/nvidia-introduces-nemotron-for-science-to-accelerate-discoveries-with-agents",
+      "published_or_updated": "November 16, 2026"
+    },
+    {
+      "claim": "The agent loop depends on tool use and evaluation between model steps: NVIDIA describes CPUs handling tool calls, operations, result gathering, and evaluation, while its agent-evaluation guidance says multi-step systems must be assessed through tool calls and task outcomes rather than a single text response.",
+      "source_title": "How to Evaluate AI Agents From Tool Calls to Task Completion",
+      "source_url": "https://developer.nvidia.com/blog/how-to-evaluate-ai-agents-from-tool-calls-to-task-completion",
+      "published_or_updated": "September 21, 2026"
+    },
+    {
+      "claim": "NVIDIA\u2019s own scientific-agent material warns that verification can require computational or real-world data and may take hours or days, because a single mistake can derail a research task.",
+      "source_title": "How to Train Scientific Agents with Reinforcement Learning",
+      "source_url": "https://developer.nvidia.com/blog/how-to-train-scientific-agents-with-reinforcement-learning/",
+      "published_or_updated": "December 17, 2025"
+    },
+    {
+      "claim": "NVIDIA connects the SC26 infrastructure story to climate modeling and engineering: Vera is presented for climate, molecular, and engineering simulations, while Rubin HPC is described as accelerating simulations used to test candidate materials, molecules, and designs.",
+      "source_title": "NVIDIA Expands Vera CPU Platform to Accelerate Scientific Discovery",
+      "source_url": "https://nvidianews.nvidia.com/news/nvidia-expands-vera-cpu-platform-to-accelerate-scientific-discovery",
+      "published_or_updated": "November 16, 2026"
+    }
+  ],
+  "platform_demand": {
+    "query": "NVIDIA SC26 agentic AI scientific computing Ian Buck scientific agents experiments simulation",
+    "score": 86.8,
+    "verdict": "pass",
+    "recent_videos": 1,
+    "median_views_per_day": 1035667.2000000001,
+    "top_views_per_day": 1035667.2000000001,
+    "market_coverage": 1,
+    "title_query_overlap": 1,
+    "measured_at": "2026-11-21T17:48:05.664411+00:00",
+    "signal_type": "youtube-breakout-v1"
+  },
+  "music": {
+    "type": "music",
+    "title": "GOLIDE Curiosity Bed",
+    "creator": "GOLIDE",
+    "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+    "license": "GOLIDE-Owned-Procedural-1.0",
+    "attribution": ""
+  }
+}
