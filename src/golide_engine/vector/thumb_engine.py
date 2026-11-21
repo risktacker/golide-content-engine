@@ -945,7 +945,7 @@ def render(design: Design, s: Story) -> tuple[Image.Image, list[str]]:
 def make(title: str, words: str, punch: str, brands: list[str], out: Path, *, shots: list[Path] | None = None,
          photo: Path | None = None, outfit: str = "royal", recent: list[str] | None = None, text=None,
          model_url: str = "", model_title: str = "", seed: int = 0, log: Callable[[dict], None] = print,
-         person: str = "") -> str:
+         person: str = "", design: str = "") -> str:
     """Draw the thumbnail; returns the design used. Never the design of the last videos; never with a collision."""
     found = [(b, logos.find(b)) for b in brands]
     found = [(b, i) for b, i in found if i][:7]
@@ -974,6 +974,8 @@ def make(title: str, words: str, punch: str, brands: list[str], out: Path, *, sh
         order.remove("photo_card")
         order.insert(0, "photo_card")
     order = order[:6] + [d.name for d in DESIGNS if d.fallback and d.name not in order]
+    if design in BY_NAME:                                  # the owner picked the design for this video
+        order = [design] + [n for n in order if n != design]
     best: tuple[int, str, Image.Image] | None = None
     for name in order:
         T.REC = []

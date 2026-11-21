@@ -1,0 +1,56 @@
+name: Goli 3D library (render the reaction folders)
+
+# 2026-11-21 (owner): Goli in real 3D replaces the flat SVG everywhere. His renders live in folders
+# (assets/goli3d/full/<pose>/<expression>.png), drawn once with Blender and reused. One job per pose in parallel,
+# then one commit with every new file. Files already in the folders are kept.
+on:
+  workflow_dispatch:
+    inputs:
+      poses: {description: "Poses to draw, space-separated (empty = all)", default: ""}
+
+permissions:
+  contents: write
+
+jobs:
+  plan:
+    runs-on: ubuntu-24.04
+    outputs:
+      poses: ${{ steps.p.outputs.poses }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: p
+        run: |
+          if [ -n "${{ inputs.poses }}" ]; then P="${{ inputs.poses }}"; else
+            P=$(python3 -c "import ast,re;s=open('tools/goli3d_library.py').read();print(' '.join(re.findall(r'\"(\w+)\": ', s[s.index('PLAN = {'):])))"); fi
+          echo "poses=$(python3 -c "import json,sys;print(json.dumps(sys.argv[1:]))" $P)" >> "$GITHUB_OUTPUT"
+  render:
+    needs: plan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        pose: ${{ fromJson(needs.plan.outputs.poses) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python -m pip install -q bpy==5.3.0 pillow
+      - run: python tools/goli3d_library.py ${{ matrix.pose }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: goli3d-${{ matrix.pose }}
+          path: assets/goli3d/full/${{ matrix.pose }}
+  commit:
+    needs: render
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: dl
+      - run: |
+          for d in dl/goli3d-*; do p=${d#dl/goli3d-}; mkdir -p assets/goli3d/full/$p; cp -n $d/*.png assets/goli3d/full/$p/; done
+          git add assets/goli3d
+          git -c user.name=golide-bot -c user.email=bot@golidee.com commit -qm "goli3d: render library" || exit 0
+          git pull -q --rebase origin ${{ github.ref_name }} && git push -q origin HEAD:${{ github.ref_name }}
