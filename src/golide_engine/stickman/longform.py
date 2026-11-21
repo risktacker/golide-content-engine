@@ -594,6 +594,71 @@ def attach_logos(story: dict[str, Any]) -> list[str]:
     return missing
 
 
+BEHIND_MOVES = ("bot_rows", "crowd_cheer")
+
+
+def place_clear(story: dict[str, Any]) -> int:
+    """Owner 2026-11-21 (tonight's remake): nothing drawn over a person. A flow line goes in the widest gap between
+    the cast and the things on the floor (never across a body); in an icon card the person stands at the left
+    edge and the icons share the rest, each label as wide as its own column."""
+    fixed = 0
+    arrows = str.maketrans({"\u2192": ">", "\u2190": "<", "\u279c": ">", "\u21d2": ">", "\u2014": "-", "\u2013": "-"})
+
+    def plain(v):                              # the kit's fonts have no arrow glyphs: they drew as empty boxes
+        if isinstance(v, str):
+            return v.translate(arrows)
+        if isinstance(v, list):
+            return [plain(x) for x in v]
+        if isinstance(v, dict):
+            return {k: plain(x) for k, x in v.items()}
+        return v
+
+    for shot in story.get("shots") or []:
+        if not isinstance(shot, dict):
+            continue
+        for key in ("tag", "lower_third", "labels", "stamp", "icons", "left", "right", "bubble"):
+            if key in shot:
+                shot[key] = plain(shot[key])
+        chars = [c for c in shot.get("chars") or [] if isinstance(c, dict)]
+        if shot.get("kind") == "icon" and chars:
+            icons = [d for d in shot.get("icons") or [] if isinstance(d, dict)]
+            for k, c in enumerate(chars[:2]):
+                c["x"], c["s"], c["face"] = 170 + k * 150, min(float(c.get("s", .6) or .6), .6), 1
+            left = 300 + 150 * min(len(chars), 2); n = max(1, len(icons)); col = (1820 - left) / n
+            for i, d in enumerate(icons):
+                d["x"] = round(left + (i + .5) * col); d.pop("y", None)
+            shot["icon_col"] = round(col)
+            fixed += 1
+        moves = [m for m in shot.get("moves") or [] if isinstance(m, dict)]
+        flows = [m for m in moves if m.get("do") == "data_flow"]
+        if not flows:
+            continue
+        if shot.get("kind") in ("icon", "closeup", "counter"):   # the card or the face fills the frame: no line across it
+            shot["moves"] = [m for m in moves if m.get("do") != "data_flow"]; fixed += 1
+            continue
+        busy = []
+        for c in chars:
+            sc = float(c.get("s", 1) or 1); x = float(c.get("x", 960) or 960); busy.append((x - 260 * sc, x + 260 * sc))
+        for pr in shot.get("props") or []:
+            if isinstance(pr, dict):
+                sc = float(pr.get("s", .6) or .6); x = float(pr.get("x", 1500) or 1500); busy.append((x - 220 * sc, x + 220 * sc))
+        edges, gaps, x = sorted(busy), [], 160.0
+        for a, b in edges:
+            if a > x:
+                gaps.append((x, a))
+            x = max(x, b)
+        if x < 1760:
+            gaps.append((x, 1760.0))
+        a, b = max(gaps, key=lambda g: g[1] - g[0], default=(0.0, 0.0))
+        for m in flows:
+            if b - a >= 420:
+                m["from"], m["to"] = [round(a + 40), 420], [round(b - 40), 360]
+            else:                                  # no room beside them: the line runs high over every head
+                m["from"], m["to"] = [220, 250], [1700, 210]
+        fixed += 1
+    return fixed
+
+
 def fix_story_icons(project: Path) -> None:
     path = project / "story.json"
     story = json.loads(path.read_text(encoding="utf-8"))
@@ -605,6 +670,7 @@ def fix_story_icons(project: Path) -> None:
     attach_logos(story)
     from .rm_roles import apply_roles
     apply_roles(story)
+    place_clear(story)
     if changed or json.dumps(story, sort_keys=True) != before:
         path.write_text(json.dumps(story, indent=1, ensure_ascii=False), encoding="utf-8")
         print(json.dumps({"status": "stickman_icons_fixed", "changed": changed[:20]}), flush=True)

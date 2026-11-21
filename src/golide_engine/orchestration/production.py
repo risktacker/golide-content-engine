@@ -748,7 +748,14 @@ class ProductionService:
         redo = str(spec.get("redo_picture") or "")
         redo_marker = work / ".redo-picture"
         if redo and (not redo_marker.exists() or redo_marker.read_text(encoding="utf-8").strip() != redo):
-            for name in ("stickman", "goli-layer", "stickman-captions", "edit", "storyboard-vector.json", "qa-report.json"):
+            # owner 2026-11-21: the storyboard is never deleted; the errors come after it. Only drawn output goes.
+            keep = {"story.json", "timing.json", "script.txt"}
+            sm = work / "stickman"
+            if sm.is_dir():
+                for path in sm.iterdir():
+                    if path.name not in keep:
+                        shutil.rmtree(path, ignore_errors=True) if path.is_dir() else path.unlink(missing_ok=True)
+            for name in ("goli-layer", "stickman-captions", "edit", "qa-report.json"):
                 path = work / name
                 shutil.rmtree(path, ignore_errors=True) if path.is_dir() else path.unlink(missing_ok=True)
             shutil.rmtree(self.root / "build" / production_id, ignore_errors=True)

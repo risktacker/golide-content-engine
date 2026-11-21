@@ -1,3 +1,4 @@
+import unittest
 import json
 import json
 import subprocess
@@ -245,3 +246,33 @@ def test_a_follow_on_shot_keeps_no_sentence_numbers(tmp_path):
     (tmp_path / "story.json").write_text(json.dumps({"shots": [{"kind": "wide", "s": []}]}))
     L.fix_story_icons(tmp_path)
     assert "s" not in json.loads((tmp_path / "story.json").read_text())["shots"][0]
+
+
+class PlaceClearTests(unittest.TestCase):
+    def test_flow_line_never_crosses_a_person_and_icon_cards_keep_the_person_clear(self):
+        from golide_engine.stickman.longform import place_clear
+        story = {"shots": [
+            {"kind": "wide", "chars": [{"id": "a", "x": 600}], "props": [{"icon": "gpu", "x": 1500}],
+             "moves": [{"do": "data_flow", "x": 1200, "y": 500}], "tag": "PLAN → CHECK"},
+            {"kind": "icon", "chars": [{"id": "a", "x": 330, "s": .68}],
+             "icons": [{"name": "ai", "label": "A"}, {"name": "check", "label": "B"}, {"name": "document", "label": "C"}],
+             "moves": [{"do": "data_flow"}]},
+        ]}
+        place_clear(story)
+        wide, card = story["shots"]
+        f = wide["moves"][0]
+        for x in (f["from"][0], f["to"][0]):
+            self.assertFalse(600 - 260 <= x <= 600 + 260)
+        self.assertEqual(wide["tag"], "PLAN > CHECK")
+        self.assertEqual(card["moves"], [])
+        self.assertLessEqual(card["chars"][0]["x"], 200)
+        xs = [d["x"] for d in card["icons"]]
+        self.assertTrue(all(x > 450 for x in xs) and xs == sorted(xs))
+
+
+class RedoKeepsStoryboardTests(unittest.TestCase):
+    def test_redo_picture_keeps_the_storyboard(self):
+        src = (Path(__file__).resolve().parents[1] / "src/golide_engine/orchestration/production.py").read_text()
+        block = src[src.index('redo = str(spec.get("redo_picture")'):src.index('"status": "redo_picture"')]
+        self.assertIn('"story.json"', block)
+        self.assertNotIn('"storyboard-vector.json"', block)

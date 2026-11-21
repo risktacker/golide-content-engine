@@ -419,7 +419,8 @@ def m_big_phone(c, u, d, t):
     for k in range(12):
         yy = -460 + k * 200 - off
         circ(c, -200, yy, 34, SAT[k % len(SAT)], LW * .5)
-        label(c, names[k % 6], -150, yy - 4, 38, "#3A3D4A", skew=0); label(c, lines[k % 6], -150, yy + 50, 34, "#5A5E6E", skew=0)
+        label(c, names[k % len(names)], -150, yy - 4, 38, "#3A3D4A", skew=0)
+        label(c, str(lines[k % len(lines)]), -150, yy + 50, fit_size(str(lines[k % len(lines)]), 34, 400), "#5A5E6E", skew=0)
         _heart(c, -150, yy + 90, 10); label(c, "1.8K", -130, yy + 100, 24, "#FF4FA0", skew=0)
     c.restore(); c.restore()
 
@@ -476,6 +477,26 @@ DAY_SETS = {"factory", "lab", "openoffice", "exchange", "court", "parliament", "
 HEAVY = {"explosion", "door_slam", "lightning", "rocket_launch"}     # get a camera shake on their word
 
 
+BEHIND = ("bot_rows", "crowd_cheer")
+
+
+def icon_world(self, c, t):
+    """The kit's icon card, with each label kept inside its own column (owner 2026-11-21: labels ran into each
+    other and over the person)."""
+    from engine import shots as S
+    S.Shot.world(self, c, t); draw_prop = S.draw_prop
+    col = self.spec.get("icon_col") or (1320 if len(self.icons) < 2 else 1320 / len(self.icons))
+    for d in self.icons:
+        if t < d["t"]:
+            continue
+        k = back(K(t, d["t"], .4), 1.6); fl = 8 * math.sin((t - d["t"]) * 2.2)
+        sc = d.get("s", 1.6 if len(self.icons) == 1 else 1.2 if len(self.icons) == 2 else .95)
+        draw_prop(c, d["name"], d["x"], d["y"] + fl, sc * k, t, **{x: v for x, v in d.items() if x not in ("name", "x", "y", "s", "at", "t", "label")})
+        if d.get("label"):
+            s_ = d["label"]; w = min(620 if len(self.icons) < 3 else 520, col - 50)
+            label(c, s_, d["x"], d["y"] + 210 * sc + 70, fit_size(s_, 80, w), INK, align='center', skew=-0.1, alpha=K(t, d["t"] + .2, .2))
+
+
 def register(shots_module) -> None:
     from golide_engine.stickman import rm_look, rm_roles
     rm_roles.install(shots_module)              # characters dressed for their role
@@ -521,6 +542,8 @@ def register(shots_module) -> None:
     def with_moves(world):
         def run(self, c, t):
             depth = getattr(self, "_mv_depth", 0); self._mv_depth = depth + 1
+            if not depth:
+                self._mv_t, self._mv_behind = t, False
             try:
                 world(self, c, t)          # a kind that calls super().world() must not draw the moves twice
             finally:
@@ -528,9 +551,34 @@ def register(shots_module) -> None:
             if depth:
                 return
             for m, tt in getattr(self, "moves", []):
-                if t >= tt:
+                if t >= tt and not (m["do"] in BEHIND and self._mv_behind):
                     MOVES[m["do"]](c, (t - tt) / LENGTH.get(m["do"], 1.4), m, t)
         return run
+
+    bg = Shot.draw_bg
+
+    def draw_bg(self, c):                  # crowds and bot rows stand behind the cast, never over a person
+        bg(self, c)
+        t = getattr(self, "_mv_t", None)
+        if t is None:
+            return
+        for m, tt in getattr(self, "moves", []):
+            if m["do"] in BEHIND and t >= tt:
+                MOVES[m["do"]](c, (t - tt) / LENGTH.get(m["do"], 1.4), m, t)
+        self._mv_behind = True
+
+    Shot.draw_bg = draw_bg
+    pop = shots_module.poplabel
+
+    def poplabel_fit(c, text, x, y, *a, **k):   # a side title stays on its own half (versus titles ran together)
+        if "max_w" not in k and len(a) < 6 and abs(x - 960) > 200:
+            k["max_w"] = max(300, min(2 * min(x, W - x) - 140, 2 * abs(x - 960) - 60))
+        return pop(c, text, x, y, *a, **k)
+
+    shots_module.poplabel = poplabel_fit
+    Icon = shots_module.KINDS.get("icon")
+    if Icon is not None and "world" in Icon.__dict__:
+        Icon.world = icon_world
 
     Shot.__init__ = __init__
     for cls in {Shot, *shots_module.KINDS.values()}:      # every kind, including the ones with their own world()
