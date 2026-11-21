@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       poses: {description: "Poses to draw, space-separated (empty = all)", default: ""}
-      kind: {description: "library (thumbnail cut-outs) or video (talking sprites)", default: "library"}
+      kind: {description: "library (thumbnail cut-outs), video (talking sprites) or studio (the 3D set)", default: "library"}
       from_run: {description: "Only collect the renders of this finished run id (no new renders)", default: ""}
 
 permissions:
@@ -24,7 +24,9 @@ jobs:
       - id: p
         run: |
           if [ -n "${{ inputs.poses }}" ]; then P="${{ inputs.poses }}"; else
-            if [ "${{ inputs.kind }}" = "video" ]; then
+            if [ "${{ inputs.kind }}" = "studio" ]; then
+              P="short long lower"
+            elif [ "${{ inputs.kind }}" = "video" ]; then
               P=$(python3 -c "import re;s=open('tools/goli3d_video.py').read();print(' '.join(re.findall(r'\"(\w+)\": \"', s[s.index('FACE = {'):s.index('}', s.index('FACE = {'))])))")
             else
               P=$(python3 -c "import re;s=open('tools/goli3d_library.py').read();print(' '.join(re.findall(r'\"(\w+)\": ', s[s.index('PLAN = {'):])))"); fi; fi
@@ -47,7 +49,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: goli3d-${{ matrix.pose }}
-          path: assets/goli3d/${{ inputs.kind == 'video' && 'video' || 'full' }}/${{ matrix.pose }}
+          path: assets/goli3d/${{ inputs.kind == 'video' && 'video' || inputs.kind == 'studio' && 'studio' || 'full' }}/${{ matrix.pose }}
   commit:
     needs: render
     if: always() && (needs.render.result == 'success' || inputs.from_run != '')
@@ -62,7 +64,7 @@ jobs:
       - run: |
           # the branch may have moved while the renders ran: commit on its newest commit, no rebase needed
           git fetch -q --depth=1 origin ${{ github.ref_name }} && git checkout -q -B out FETCH_HEAD
-          K=${{ inputs.kind == 'video' && 'video' || 'full' }}
+          K=${{ inputs.kind == 'video' && 'video' || inputs.kind == 'studio' && 'studio' || 'full' }}
           for d in dl/goli3d-*; do p=${d#dl/goli3d-}; mkdir -p assets/goli3d/$K/$p; cp $d/* assets/goli3d/$K/$p/; done
           git add assets/goli3d
           git -c user.name=golide-bot -c user.email=bot@golidee.com commit -qm "goli3d: render ${{ inputs.kind }}" || exit 0
