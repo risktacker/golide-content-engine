@@ -51,6 +51,8 @@ jobs:
             ffmpeg -v info -i "$VIDEO" -af "silencedetect=n=-38dB:d=0.35,ebur128" -f null - 2> "$OUT/audio.txt" || true
           fi
           find "$W" -maxdepth 3 -type f \( -name "*.json" -o -name "*.txt" -o -name "*.md" \) -size -2M -exec cp --parents {} "$OUT/files" \;
+          # 2026-11-22: the voice too (small), for local previews of a scene
+          find "$W" -maxdepth 1 -type f \( -name "narration*.mp3" -o -name "narration*.wav" \) -size -8M -exec cp --parents {} "$OUT/files" \;
           git config user.name "golide-bot" && git config user.email "bot@golidee.com"
           git checkout -b "review-$PID"
           git add -f review && git commit -qm "Review files for $PID"
