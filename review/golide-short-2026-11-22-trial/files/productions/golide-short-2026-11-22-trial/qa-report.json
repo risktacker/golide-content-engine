@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "failures": [],
+  "audio": {
+    "integrated_lufs": -15.67,
+    "true_peak_dbtp": -4.11,
+    "loudness_range": 1.4
+  },
+  "editorial": {
+    "beats": 39,
+    "renderer": "vector"
+  },
+  "checked_at": "2026-11-22T12:24:06.334482+00:00",
+  "warnings": [
+    "possible misspelling: golidee"
+  ]
+}

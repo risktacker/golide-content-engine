@@ -1,0 +1,259 @@
+{
+  "title": "Jensen Huang\u2019s AI Bubble Rocks NVIDIA",
+  "chapters": [],
+  "lines": [
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "Imagine you're running the chipmaker, and a huge AI IPO lands,",
+      "emphasis": "AI IPO",
+      "visual": "icon_hero",
+      "subjects": [
+        "chipmaker executive",
+        "exchange building",
+        "AI IPO document"
+      ],
+      "label": "AI IPO",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "but instead of reassuring investors, it makes them question the AI buildout.",
+      "emphasis": "question",
+      "visual": "split_compare",
+      "subjects": [
+        "investor",
+        "question marks",
+        "AI server racks"
+      ],
+      "label": "Investor Doubt",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "That question exposes a $3.8 trillion bet: can future AI profits justify today's spending?",
+      "emphasis": "$3.8 trillion",
+      "visual": "gauge",
+      "subjects": [
+        "money stack",
+        "AI data center",
+        "calculator"
+      ],
+      "label": "$3.8 Trillion Bet",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "After Anthropic's strong debut on November 19, its shares fell on November 20,",
+      "emphasis": "November 19",
+      "visual": "clock",
+      "subjects": [
+        "Anthropic logo",
+        "stock exchange screen",
+        "calendar"
+      ],
+      "label": "November 19\u201320",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "and the Nasdaq erased all its 2026 gains.",
+      "emphasis": "2026 gains",
+      "visual": "line_chart",
+      "subjects": [
+        "Nasdaq screen",
+        "falling arrow",
+        "stock chart"
+      ],
+      "label": "Gains Erased",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "That didn't prove AI failed; it changed what investors were asking.",
+      "emphasis": "AI failed",
+      "visual": "cross_out",
+      "subjects": [
+        "AI chip",
+        "investor",
+        "question mark"
+      ],
+      "label": "Not Failure",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "So investors started looking at the bill: data centers,",
+      "emphasis": "data centers",
+      "visual": "icon_grid",
+      "subjects": [
+        "data center",
+        "investor bill",
+        "server racks"
+      ],
+      "label": "The Bill",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "chips and debt cost money now, but profits may arrive later.",
+      "emphasis": "profits",
+      "visual": "split_compare",
+      "subjects": [
+        "computer chips",
+        "debt papers",
+        "calendar"
+      ],
+      "label": "Costs Now, Profits Later",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "And that bill gets enormous:",
+      "emphasis": "enormous",
+      "visual": "icon_hero",
+      "subjects": [
+        "oversized invoice",
+        "data center",
+        "money stack"
+      ],
+      "label": "Enormous Bill",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "Morgan Stanley estimates hyperscalers could spend $3.8 trillion from 2026 through 2028,",
+      "emphasis": "$3.8 trillion",
+      "visual": "bar_chart",
+      "subjects": [
+        "hyperscale data center",
+        "bar chart",
+        "money stack"
+      ],
+      "label": "2026\u20132028 Spending",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "with more than half likely financed through credit.",
+      "emphasis": "more than half",
+      "visual": "bar_chart",
+      "subjects": [
+        "credit document",
+        "hyperscale data center",
+        "bar chart"
+      ],
+      "label": "Debt Financed",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "So when investors doubt the timing, AI-linked shares fall together,",
+      "emphasis": "fall together",
+      "visual": "icon_flow",
+      "subjects": [
+        "AI company logos",
+        "falling stock arrows",
+        "investor"
+      ],
+      "label": "Shares Fall Together",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "leaving the chipmaker exposed because its chips sit at the center of that buildout.",
+      "emphasis": "chipmaker",
+      "visual": "icon_hero",
+      "subjects": [
+        "chipmaker factory",
+        "AI chip",
+        "data center"
+      ],
+      "label": "At The Center",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "And that pressure reaches people: retirement funds move, startups face tighter funding,",
+      "emphasis": "retirement funds",
+      "visual": "icon_flow",
+      "subjects": [
+        "retirement account",
+        "startup office",
+        "funding document"
+      ],
+      "label": "Pressure Spreads",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "and AI jobs must show results.",
+      "emphasis": "AI jobs",
+      "visual": "checklist",
+      "subjects": [
+        "AI worker",
+        "performance dashboard",
+        "office desk"
+      ],
+      "label": "Results Required",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "But the twist is that more efficient AI could make services cheaper.",
+      "emphasis": "cheaper",
+      "visual": "split_compare",
+      "subjects": [
+        "AI service screen",
+        "price tag",
+        "customer"
+      ],
+      "label": "Efficiency Wins",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "cta",
+      "text": "Follow the channel; the free guide and our community link are in the description.",
+      "emphasis": "Follow the channel",
+      "visual": "icon_flow",
+      "subjects": [
+        "follow button",
+        "free guide",
+        "community webpage"
+      ],
+      "label": "Join Us",
+      "follow": true
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "AI isn't over; the easy money story is.",
+      "emphasis": "easy money story",
+      "visual": "logo_end",
+      "subjects": [
+        "AI logo",
+        "gold coin",
+        "crossed-out money trail"
+      ],
+      "label": "AI Isn't Over",
+      "follow": false
+    }
+  ],
+  "voice_script": "[curious] Imagine you're running the chipmaker, and a huge AI IPO lands, but instead of reassuring investors, it makes them question the AI buildout. That question exposes a $3.8 trillion bet: can future AI profits justify today's spending? After Anthropic's strong debut on November 19, its shares fell on November 20, and the Nasdaq erased all its 2026 gains. That didn't prove AI failed; it changed what investors were asking. [serious] So investors started looking at the bill: data centers, chips and debt cost money now, but profits may arrive later. And that bill gets enormous: Morgan Stanley estimates hyperscalers could spend $3.8 trillion from 2026 through 2028, with more than half likely financed through credit. So when investors doubt the timing, AI-linked shares fall together, leaving the chipmaker exposed because its chips sit at the center of that buildout. And that pressure reaches people: retirement funds move, startups face tighter funding, and AI jobs must show results. [confidently] But the twist is that more efficient AI could make services cheaper. Follow the channel; the free guide and our community link are in the description. AI isn't over; the easy money story is."
+}

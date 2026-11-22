@@ -1,0 +1,72 @@
+{
+  "claims": [
+    {
+      "claim": "On November 20, 2026, Anthropic\u2019s shares fell during their second trading session while the Nasdaq erased its gains for the year; the broader AI-linked sell-off followed a record-setting IPO debut rather than being stopped by it.",
+      "source_title": "Nasdaq erases all 2026 gains as AI sell-off dampens Anthropic\u2019s second day of trading",
+      "source_url": "https://www.theguardian.com/business/2026/nov/20/global-stock-markets-slump-anthropic-ipo-ai-sell-off",
+      "published_or_updated": "November 20, 2026"
+    },
+    {
+      "claim": "The central market concern is not that AI has stopped working, but that AI-company valuations may have risen faster than profits. Investors are questioning whether demand for processors, memory and data-center equipment can remain strong if AI businesses are less profitable than expected.",
+      "source_title": "A 10% drop for the stock market is unnerving, but it\u2019s not that unusual",
+      "source_url": "https://apnews.com/article/e69b0efcc423bc91871c1afabf36742d",
+      "published_or_updated": "November 21, 2026"
+    },
+    {
+      "claim": "AI infrastructure requires unusually large upfront spending. The Federal Reserve reported that advanced-computing-related borrowing rose from less than 6% of investment-grade corporate debt issuance in 2023 to about 31% in 2026, increasing the financial system\u2019s exposure to the buildout.",
+      "source_title": "Financial Stability Report",
+      "source_url": "https://www.federalreserve.gov/publications/files/financial-stability-report-20261113.pdf",
+      "published_or_updated": "November 13, 2026"
+    },
+    {
+      "claim": "The scale of expected spending helps explain why investors are demanding evidence of returns: Morgan Stanley estimated that hyperscalers could spend about $3.8 trillion from 2026 through 2028, with credit markets likely financing more than half of it.",
+      "source_title": "How Credit Markets Are Financing AI Infrastructure",
+      "source_url": "https://www.morganstanley.com/insights/articles/credit-markets-financing-ai-infrastructure",
+      "published_or_updated": "November 2026"
+    },
+    {
+      "claim": "NVIDIA is especially exposed to changing expectations because its chips are central to the AI industry and its valuation depends heavily on continued infrastructure demand. AP reported that the sell-off reflects a need for earlier capital spending to translate into measurable earnings and returns.",
+      "source_title": "A 10% drop for the stock market is unnerving, but it\u2019s not that unusual",
+      "source_url": "https://apnews.com/article/e69b0efcc423bc91871c1afabf36742d",
+      "published_or_updated": "November 21, 2026"
+    },
+    {
+      "claim": "For startups, a market reset can mean less generous valuations and more pressure to show revenue before raising money. A November 11 report said venture investors were already applying more conservative revenue multiples in AI funding discussions during the public-market sell-off.",
+      "source_title": "OpenAI, Anthropic valuations fuel VC fears of startup correction",
+      "source_url": "https://www.spokesman.com/stories/2026/nov/11/openai-anthropic-valuations-fuel-vc-fears-of-start/",
+      "published_or_updated": "November 11, 2026"
+    },
+    {
+      "claim": "Retirement savers may see account balances move with the sell-off if their 401(k) plans or funds hold technology-heavy stocks. SEC investor guidance says stock and stock-fund values can fall quickly and that diversification can reduce, but cannot eliminate, market losses.",
+      "source_title": "Beginners\u2019 Guide to Asset Allocation, Diversification, and Rebalancing",
+      "source_url": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+      "published_or_updated": "2026"
+    },
+    {
+      "claim": "The market decline does not determine the eventual price of AI services. Separate research on AI inference markets found substantial quality-adjusted price declines, suggesting that competition and efficiency can make AI cheaper even while the companies supplying it face pressure to justify their spending.",
+      "source_title": "The Price of Intelligence: A Quality-Adjusted Price Index for AI Services",
+      "source_url": "https://arxiv.org/abs/2608.29843",
+      "published_or_updated": "August 30, 2026"
+    }
+  ],
+  "platform_demand": {
+    "query": "Anthropic IPO second trading day AI selloff Nasdaq November 20 2026 explanation",
+    "score": 72.9,
+    "verdict": "pass",
+    "recent_videos": 1,
+    "median_views_per_day": 254464.80000000002,
+    "top_views_per_day": 254464.80000000002,
+    "market_coverage": 1,
+    "title_query_overlap": 1,
+    "measured_at": "2026-11-22T08:56:11.509711+00:00",
+    "signal_type": "youtube-breakout-v1"
+  },
+  "music": {
+    "type": "music",
+    "title": "GOLIDE Curiosity Bed",
+    "creator": "GOLIDE",
+    "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+    "license": "GOLIDE-Owned-Procedural-1.0",
+    "attribution": ""
+  }
+}

@@ -1,0 +1,1590 @@
+[
+  {
+    "url": "https://www.theguardian.com/business/2026/nov/20/global-stock-markets-slump-anthropic-ipo-ai-sell-off",
+    "title": "Nasdaq erases all 2026 gains as AI sell-off dampens Anthropic\u2019s second day of trading | Stock markets | The Guardian",
+    "claims": [
+      "On November 20, 2026, Anthropic\u2019s shares fell during their second trading session while the Nasdaq erased its gains for the year; the broader AI-linked sell-off followed a record-setting IPO debut rather than being stopped by it."
+    ],
+    "ok": true,
+    "top": "01-top.png",
+    "full": "01-full.png",
+    "full_height": 5400,
+    "scale": 1.5,
+    "highlights": [
+      {
+        "phrase": "2026",
+        "rects": [
+          [
+            599,
+            238,
+            74,
+            43
+          ]
+        ]
+      }
+    ],
+    "headline": [
+      330,
+      236,
+      620,
+      121.28125
+    ],
+    "blocks": [
+      {
+        "text": "Shares in Anthropic, which makes the Claude chatbot, were on Friday worth hardly more than when they listed. Photograph: Leonardo Mu\u00f1oz/AFP/Getty Images",
+        "rect": [
+          330,
+          1032.28125,
+          620,
+          43.8125
+        ]
+      },
+      {
+        "text": "The Nasdaq lost trillions in value, with the AI startup\u2019s IPO failing to buoy it as investors question huge sums being poured into AI buildout",
+        "rect": [
+          330,
+          393.28125,
+          540,
+          69
+        ]
+      },
+      {
+        "text": "Who are Anthropic\u2019s seven co-founders, now worth $180bn?",
+        "rect": [
+          330,
+          470.28125,
+          540,
+          46
+        ]
+      },
+      {
+        "text": "As Anthropic\u2019s stock dropped during its second day of trading, the wider stock market dipped with it. On Friday, the Nasdaq Composite erased all its gains for 2",
+        "rect": [
+          330,
+          1094.09375,
+          620,
+          95.1875
+        ]
+      },
+      {
+        "text": "Anthropic\u2019s record-breaking IPO failed to stem a global sell-off in AI-linked companies, and the tech-heavy Nasdaq erased some $4tn in market value this week, a",
+        "rect": [
+          330,
+          1201.28125,
+          620,
+          71.390625
+        ]
+      },
+      {
+        "text": "Shares in the frontier AI company behind the Claude chatbot, which floated in the US on Thursday, fell by 9% on Friday, ceding most of the gains from the bigges",
+        "rect": [
+          330,
+          1284.671875,
+          620,
+          95.1875
+        ]
+      },
+      {
+        "text": "Anthropic\u2019s first two days as a listed company have been volatile. Its shares jumped by 17% on Thursday, after briefly surging by almost 40% when trading in the",
+        "rect": [
+          330,
+          1391.859375,
+          620,
+          71.390625
+        ]
+      },
+      {
+        "text": "Is Claude creator Anthropic really worth $1.3 trillion? - The Latest",
+        "rect": [
+          330,
+          1824.328125,
+          620,
+          24.90625
+        ]
+      },
+      {
+        "text": "US technology stocks followed Anthropic down on Friday, with the memory chipmaker SanDisk falling 14% and rival Micron down 12%. Nvidia fell 14%, eliminating hu",
+        "rect": [
+          330,
+          1861.234375,
+          620,
+          71.390625
+        ]
+      },
+      {
+        "text": "Neil Wilson, a UK investor strategist at Saxo, said there was \u201cjust relentless selling in tech\u201d. He warned: \u201cAnthropic shares tumbled to take an $85 handle as t",
+        "rect": [
+          330,
+          1944.625,
+          620,
+          95.1875
+        ]
+      },
+      {
+        "text": "Global markets slumped on Friday too; Asian stock markets recorded their worst week since 2020, as shares in big chip companies fell. In Taiwan, stocks dropped ",
+        "rect": [
+          330,
+          2051.8125,
+          620,
+          95.1875
+        ]
+      },
+      {
+        "text": "The scale of the decline in Taiwan prompted the chair of its stock exchange to pledge to ensure the stable operation \u2060of capital markets, and reassure investors",
+        "rect": [
+          330,
+          2545,
+          620,
+          95.1875
+        ]
+      },
+      {
+        "text": "In Japan, the Nikkei index fell 5%, while South Korea\u2019s tech-heavy Kospi index lost 5.5%. Shares in the tech investor SoftBank had their worst day in more than ",
+        "rect": [
+          330,
+          2652.1875,
+          620,
+          95.1875
+        ]
+      },
+      {
+        "text": "European stock markets posted their biggest weekly loss since March 2025, with the pan-European Stoxx 600 dropping 1.9% on Friday. London\u2019s blue-chip stock inde",
+        "rect": [
+          330,
+          2759.375,
+          620,
+          71.390625
+        ]
+      },
+      {
+        "text": "The sell-off followed losses on Wall Street on Thursday, where the main indices all fell by more than 2% on a day dominated by Anthropic\u2019s IPO.",
+        "rect": [
+          330,
+          2842.765625,
+          620,
+          47.59375
+        ]
+      },
+      {
+        "text": "South Korea\u2019s Kospi index lost 5.5% at end of trading. Photograph: Yonhap/EPA",
+        "rect": [
+          330,
+          3398.359375,
+          620,
+          24.90625
+        ]
+      },
+      {
+        "text": "Chris Beauchamp, the chief market analyst at the investing and trading platform IG, said Anthropic could be \u201cdraining market liquidity\u201d, as investors sell share",
+        "rect": [
+          330,
+          3435.265625,
+          620,
+          95.1875
+        ]
+      },
+      {
+        "text": "after newsletter promotion",
+        "rect": [
+          -2550,
+          3826.546875,
+          209,
+          40
+        ]
+      },
+      {
+        "text": "\u201cThe slide from yesterday\u2019s highs sends a message that there might be more at work here than investors realise, and while brokers are scrambling to buy more, th",
+        "rect": [
+          330,
+          3826.546875,
+          620,
+          95.1875
+        ]
+      },
+      {
+        "text": "Anthropic\u2019s flotation has failed to ease worries around the AI trade, as investors increasingly question whether companies can deliver the returns necessary to ",
+        "rect": [
+          330,
+          3933.734375,
+          620,
+          71.390625
+        ]
+      },
+      {
+        "text": "Daniela Hathorn, a senior market analyst at Capital.com, said: \u201cThe IPO demonstrated that demand for AI exposure remains strong, but it has not been enough to o",
+        "rect": [
+          330,
+          4017.125,
+          620,
+          95.1875
+        ]
+      },
+      {
+        "text": "\u201cThe broader market mood has shifted from buying the dip towards questioning whether the correction has further to run. The weakness in equal-weighted indices s",
+        "rect": [
+          330,
+          4124.3125,
+          620,
+          118.984375
+        ]
+      },
+      {
+        "text": "Nvidia shares fell byafter California served the chip company with a subpoena as part of an investigation into whether its advanced semiconductors ended up in C",
+        "rect": [
+          330,
+          4255.296875,
+          620,
+          71.390625
+        ]
+      },
+      {
+        "text": "Britain\u2019s FTSE 100 share index dropped by 5.1% this week, its biggest weekly fall since the start of the Iran war.",
+        "rect": [
+          330,
+          4338.6875,
+          620,
+          47.59375
+        ]
+      },
+      {
+        "text": "Fears that US central bankers may raise interest rates to fight inflation have lifted the dollar to a 19-month high, and pushed down the gold price \u2013 with gold ",
+        "rect": [
+          330,
+          4398.28125,
+          620,
+          71.390625
+        ]
+      },
+      {
+        "text": "Bitcoin hit its lowest level in four months, dropping below the $60,000 point for the first time since early July.",
+        "rect": [
+          330,
+          4481.671875,
+          620,
+          47.59375
+        ]
+      },
+      {
+        "text": "This is just the beginning \u2026",
+        "rect": [
+          338,
+          4665.359375,
+          604,
+          23
+        ]
+      },
+      {
+        "text": "We hope you appreciated this article. Before you close this tab, can we ask you to support the Guardian at this crucial time for democracy in the US? With Black",
+        "rect": [
+          338,
+          4700.359375,
+          604,
+          95.1875
+        ]
+      },
+      {
+        "text": "For two years, Americans have witnessed a largely unchecked assault on the foundations of US democracy. While enriching themselves through flagrant corruption, ",
+        "rect": [
+          338,
+          4803.546875,
+          604,
+          142.78125
+        ]
+      },
+      {
+        "text": "On election day, America\u2019s embattled democracy came roaring back to life: from Texas to Ohio to South Carolina, a majority of Americans rejected this path at th",
+        "rect": [
+          338,
+          4954.328125,
+          604,
+          118.984375
+        ]
+      },
+      {
+        "text": "The past two years demonstrated just how fragile our fundamental freedoms are, when precious few powerful institutions are willing to stand up for them. Major l",
+        "rect": [
+          338,
+          5081.3125,
+          604,
+          118.984375
+        ]
+      },
+      {
+        "text": "California train burglars carefully executed heists for \u2018staggering\u2019 $22m haul",
+        "rect": [
+          1050,
+          1317.4375,
+          300,
+          75
+        ]
+      },
+      {
+        "text": "\u2018Legally, they don\u2019t exist\u2019: the hybrid crabs puzzling biologists and fishers",
+        "rect": [
+          1050,
+          1404.4375,
+          300,
+          80
+        ]
+      },
+      {
+        "text": "Two groups verify mathematician\u2019s claim that Claude helped prove mathematics problem",
+        "rect": [
+          1050,
+          1496.4375,
+          300,
+          87.1875
+        ]
+      },
+      {
+        "text": "Police called to Strictly Come Dancing after \u2018disruption\u2019 during live show",
+        "rect": [
+          1050,
+          1595.625,
+          300,
+          87.1875
+        ]
+      },
+      {
+        "text": "My husband has such bad breath we haven\u2019t kissed in years \u2013 but he won\u2019t see a dentist",
+        "rect": [
+          1050,
+          1694.8125,
+          300,
+          87.1875
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "text": "Make a year-end gift",
+        "rect": [
+          429,
+          13.109375,
+          176,
+          24
+        ]
+      },
+      {
+        "text": "Print subscriptions",
+        "rect": [
+          905,
+          0,
+          158,
+          64
+        ]
+      },
+      {
+        "text": "Newsletters",
+        "rect": [
+          1076,
+          0,
+          102,
+          64
+        ]
+      },
+      {
+        "text": "Sign in",
+        "rect": [
+          1191,
+          0,
+          79,
+          64
+        ]
+      },
+      {
+        "text": "US",
+        "rect": [
+          1239,
+          72,
+          31,
+          28.09375
+        ]
+      },
+      {
+        "text": "The Guardian - Back to home The Guardian",
+        "rect": [
+          946,
+          72,
+          324,
+          112
+        ]
+      },
+      {
+        "text": "News",
+        "rect": [
+          90,
+          140,
+          136,
+          52
+        ]
+      },
+      {
+        "text": "Opinion",
+        "rect": [
+          226,
+          140,
+          136,
+          52
+        ]
+      },
+      {
+        "text": "Sport",
+        "rect": [
+          362,
+          140,
+          136,
+          52
+        ]
+      },
+      {
+        "text": "Culture",
+        "rect": [
+          498,
+          140,
+          136,
+          52
+        ]
+      },
+      {
+        "text": "Lifestyle",
+        "rect": [
+          634,
+          140,
+          136,
+          52
+        ]
+      },
+      {
+        "text": "Show more",
+        "rect": [
+          776,
+          138,
+          40,
+          40
+        ]
+      },
+      {
+        "text": "Business",
+        "rect": [
+          90,
+          206,
+          57,
+          17
+        ]
+      },
+      {
+        "text": "Economics",
+        "rect": [
+          155,
+          206,
+          71,
+          17
+        ]
+      },
+      {
+        "text": "Banking",
+        "rect": [
+          234,
+          206,
+          54,
+          17
+        ]
+      },
+      {
+        "text": "Money",
+        "rect": [
+          296,
+          206,
+          46,
+          17
+        ]
+      },
+      {
+        "text": "Markets",
+        "rect": [
+          350,
+          206,
+          57,
+          17
+        ]
+      },
+      {
+        "text": "Project Syndicate",
+        "rect": [
+          415,
+          206,
+          110,
+          17
+        ]
+      },
+      {
+        "text": "B2B",
+        "rect": [
+          533,
+          206,
+          30,
+          17
+        ]
+      },
+      {
+        "text": "Retail",
+        "rect": [
+          571,
+          206,
+          39,
+          17
+        ]
+      },
+      {
+        "text": "Share",
+        "rect": [
+          90,
+          630.96875,
+          105,
+          36
+        ]
+      },
+      {
+        "text": "11:06",
+        "rect": [
+          330,
+          1475.25,
+          620,
+          349.078125
+        ]
+      },
+      {
+        "text": "field: ",
+        "rect": [
+          342,
+          3742.546875,
+          486,
+          44
+        ]
+      },
+      {
+        "text": "Sign up",
+        "rect": [
+          840,
+          3742.546875,
+          98,
+          44
+        ]
+      }
+    ],
+    "photo": "01-photo.png",
+    "photos": [
+      "01-photo.png",
+      "01-photo2.png",
+      "01-photo3.png"
+    ],
+    "captured_at": "2026-11-22T09:47:12+00:00"
+  },
+  {
+    "url": "https://apnews.com/article/e69b0efcc423bc91871c1afabf36742d",
+    "title": "Just a moment...",
+    "claims": [
+      "The central market concern is not that AI has stopped working, but that AI-company valuations may have risen faster than profits. Investors are questioning whether demand for processors, memory and data-center equipment can remain strong if AI businesses are less profitable than expected.",
+      "NVIDIA is especially exposed to changing expectations because its chips are central to the AI industry and its valuation depends heavily on continued infrastructure demand. AP reported that the sell-off reflects a need for earlier capital spending to translate into measurable earnings and returns."
+    ],
+    "ok": true,
+    "top": "02-top.png",
+    "full": "02-full.png",
+    "full_height": 900,
+    "scale": 1.5,
+    "highlights": [],
+    "headline": [
+      328,
+      128,
+      280.0625,
+      50
+    ],
+    "blocks": [
+      {
+        "text": "Performing security verification",
+        "rect": [
+          272,
+          186,
+          896,
+          30
+        ]
+      },
+      {
+        "text": "This website uses a security service to protect against malicious bots. This page is displayed while the website verifies you are not a bot.",
+        "rect": [
+          272,
+          224,
+          896,
+          48
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "text": "a5e702ed2c6dc651",
+        "rect": [
+          685.6875,
+          850,
+          115.59375,
+          14
+        ]
+      }
+    ],
+    "photo": null,
+    "photos": [],
+    "captured_at": "2026-11-22T09:47:16+00:00"
+  },
+  {
+    "url": "https://www.federalreserve.gov/publications/files/financial-stability-report-20261113.pdf",
+    "title": "Financial Stability Report",
+    "claims": [
+      "AI infrastructure requires unusually large upfront spending. The Federal Reserve reported that advanced-computing-related borrowing rose from less than 6% of investment-grade corporate debt issuance in 2023 to about 31% in 2026, increasing the financial system\u2019s exposure to the buildout."
+    ],
+    "ok": false,
+    "error": "Page.goto: Download is starting\nCall log:\n  - navigating to \"https://www.federalreserve.gov/publications/files/financial-stability-report-20261113.pdf\", waiting until \"domcontentloaded\"\n",
+    "captured_at": "2026-11-22T09:47:16+00:00"
+  },
+  {
+    "url": "https://www.morganstanley.com/insights/articles/credit-markets-financing-ai-infrastructure",
+    "title": "How Credit Markets Are Financing AI Infrastructure",
+    "claims": [
+      "The scale of expected spending helps explain why investors are demanding evidence of returns: Morgan Stanley estimated that hyperscalers could spend about $3.8 trillion from 2026 through 2028, with credit markets likely financing more than half of it."
+    ],
+    "ok": false,
+    "error": "Page.goto: net::ERR_HTTP2_PROTOCOL_ERROR at https://www.morganstanley.com/insights/articles/credit-markets-financing-ai-infrastructure\nCall log:\n  - navigating to \"https://www.morganstanley.com/insigh",
+    "captured_at": "2026-11-22T09:47:16+00:00"
+  },
+  {
+    "url": "https://www.spokesman.com/stories/2026/nov/11/openai-anthropic-valuations-fuel-vc-fears-of-start/",
+    "title": "OpenAI, Anthropic\u00a0valuations fuel VC fears of startup correction",
+    "claims": [
+      "For startups, a market reset can mean less generous valuations and more pressure to show revenue before raising money. A November 11 report said venture investors were already applying more conservative revenue multiples in AI funding discussions during the public-market sell-off."
+    ],
+    "ok": true,
+    "top": "05-top.png",
+    "full": "05-full.png",
+    "full_height": 4452,
+    "scale": 1.5,
+    "highlights": [],
+    "headline": [
+      32,
+      444.390625,
+      1012,
+      79.1875
+    ],
+    "blocks": [
+      {
+        "text": "In late September, OpenAI entered discussions for its latest funding round with confidence. After having early discussions with prospective backers who had expr",
+        "rect": [
+          32,
+          748.078125,
+          1012,
+          54
+        ]
+      },
+      {
+        "text": "Few startups have been as successful at fundraising as OpenAI, which was last valued at $852 billion. This time, however, some investors felt the terms were too",
+        "rect": [
+          32,
+          820.078125,
+          1012,
+          108
+        ]
+      },
+      {
+        "text": "OpenAI\u2019s downsized deal, combined with rival Anthropic PBC\u2019s decision to pursue an IPO at a lower-than-expected $1.4 trillion valuation on a fully diluted basis",
+        "rect": [
+          32,
+          946.078125,
+          1012,
+          81
+        ]
+      },
+      {
+        "text": "To be sure, some buzzy AI startups are still raising money at hefty valuations, sometimes without a product or revenue to speak of. There have also been positiv",
+        "rect": [
+          32,
+          1045.078125,
+          1012,
+          108
+        ]
+      },
+      {
+        "text": "Tomasz Tunguz, a general partner at Theory Ventures, said he\u2019s begun to see investors apply more conservative revenue multiples for AI startup funding discussio",
+        "rect": [
+          32,
+          1171.078125,
+          1012,
+          81
+        ]
+      },
+      {
+        "text": "\u201cWe\u2019re seeing this in a number of companies we\u2019re looking at investing in the AI space, where they were hoping for high single-digit or even double-digit billio",
+        "rect": [
+          32,
+          1270.078125,
+          1012,
+          81
+        ]
+      },
+      {
+        "text": "If it persists, that thinking would represent a stark shift. Throughout this year, venture investors have aggressively courted promising founders with unsolicit",
+        "rect": [
+          32,
+          1369.078125,
+          1012,
+          81
+        ]
+      },
+      {
+        "text": "Over the past few weeks, the venture world has been beset by a series of new risks, including a rout in AI stocks, the prospect of rising interest rates and a s",
+        "rect": [
+          32,
+          1468.078125,
+          1012,
+          81
+        ]
+      },
+      {
+        "text": "Any sign of tighter access to capital or diminished valuation prospects for either OpenAI or Anthropic has the potential to ripple across the entire AI sector.",
+        "rect": [
+          32,
+          1567.078125,
+          1012,
+          54
+        ]
+      },
+      {
+        "text": "More than other startups, the two companies have defined the current AI boom and propelled it forward through their technology and by placing themselves at the ",
+        "rect": [
+          32,
+          1639.078125,
+          1012,
+          108
+        ]
+      },
+      {
+        "text": "\u201cAnthropic going public is almost like a whole ecosystem going public,\u201d said Sapphire Ventures president and partner Jai Das. If the public listing, expected ne",
+        "rect": [
+          32,
+          1765.078125,
+          1012,
+          81
+        ]
+      },
+      {
+        "text": "For now, Das said, many startups hoping to pursue potential public offerings and other deals find themselves in a holding pattern until at least after the Anthr",
+        "rect": [
+          32,
+          1864.078125,
+          1012,
+          54
+        ]
+      },
+      {
+        "text": "Uncertainty remains the watchword of the moment. Eric Bahn, partner at early-stage venture firm Hustle Fund, said that his firm is advising founders to \u201craise w",
+        "rect": [
+          32,
+          1936.078125,
+          1012,
+          81
+        ]
+      },
+      {
+        "text": "\u201cThe best founders sleep with one eye open to the markets,\u201d she said. \u201cIn moments where you can see a sizable correction or a medium correction, cash is king.\u201d",
+        "rect": [
+          32,
+          2035.078125,
+          1012,
+          54
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "text": "View complete weather report",
+        "rect": [
+          1142.390625,
+          60.796875,
+          140.796875,
+          80.390625
+        ]
+      },
+      {
+        "text": "Menu",
+        "rect": [
+          12,
+          0,
+          68.703125,
+          37
+        ]
+      },
+      {
+        "text": "Search",
+        "rect": [
+          80.703125,
+          0,
+          80.59375,
+          37
+        ]
+      },
+      {
+        "text": "News",
+        "rect": [
+          161.296875,
+          0,
+          52.578125,
+          37
+        ]
+      },
+      {
+        "text": "Sports",
+        "rect": [
+          213.875,
+          0,
+          60.34375,
+          37
+        ]
+      },
+      {
+        "text": "Business",
+        "rect": [
+          274.21875,
+          0,
+          78.25,
+          37
+        ]
+      },
+      {
+        "text": "A&E",
+        "rect": [
+          352.46875,
+          0,
+          45.5625,
+          37
+        ]
+      },
+      {
+        "text": "Weather",
+        "rect": [
+          398.03125,
+          0,
+          70.984375,
+          37
+        ]
+      },
+      {
+        "text": "Obits",
+        "rect": [
+          469.015625,
+          0,
+          51.78125,
+          37
+        ]
+      },
+      {
+        "text": "Puzzles",
+        "rect": [
+          817.34375,
+          1.5,
+          60.015625,
+          34
+        ]
+      },
+      {
+        "text": "Newsletters",
+        "rect": [
+          877.359375,
+          1.5,
+          83.375,
+          34
+        ]
+      },
+      {
+        "text": "e-Edition",
+        "rect": [
+          960.734375,
+          1.5,
+          67.328125,
+          34
+        ]
+      },
+      {
+        "text": "Classifieds",
+        "rect": [
+          1028.0625,
+          1.5,
+          79.375,
+          34
+        ]
+      },
+      {
+        "text": "Weekly Deals",
+        "rect": [
+          1107.4375,
+          1.5,
+          92.5,
+          34
+        ]
+      },
+      {
+        "text": "Customer Care",
+        "rect": [
+          1199.9375,
+          1.5,
+          102.03125,
+          34
+        ]
+      },
+      {
+        "text": "Subscribe",
+        "rect": [
+          1301.96875,
+          1.5,
+          74.03125,
+          34
+        ]
+      },
+      {
+        "text": "Log In",
+        "rect": [
+          1376,
+          1.5,
+          52,
+          34
+        ]
+      },
+      {
+        "text": "Washington",
+        "rect": [
+          434.90625,
+          179,
+          106.953125,
+          34.390625
+        ]
+      },
+      {
+        "text": "Idaho",
+        "rect": [
+          546.3125,
+          179,
+          58.671875,
+          34.390625
+        ]
+      },
+      {
+        "text": "Education",
+        "rect": [
+          701.03125,
+          179,
+          93.34375,
+          34.390625
+        ]
+      },
+      {
+        "text": "Photos",
+        "rect": [
+          798.828125,
+          179,
+          70.21875,
+          34.390625
+        ]
+      },
+      {
+        "text": "Further Review",
+        "rect": [
+          873.5,
+          179,
+          131.59375,
+          34.390625
+        ]
+      },
+      {
+        "text": "NEWS",
+        "rect": [
+          32,
+          419.390625,
+          42,
+          21
+        ]
+      },
+      {
+        "text": "NATIONAL BUSINESS",
+        "rect": [
+          98.078125,
+          419.390625,
+          143.15625,
+          21
+        ]
+      },
+      {
+        "text": "Share on Reddit",
+        "rect": [
+          98.5,
+          585.578125,
+          33.5,
+          33.5
+        ]
+      },
+      {
+        "text": "Jesse Tinsley",
+        "rect": [
+          222.3125,
+          3068.015625,
+          32,
+          32
+        ]
+      },
+      {
+        "text": "Jim Meehan",
+        "rect": [
+          258.765625,
+          3068.015625,
+          32,
+          32
+        ]
+      },
+      {
+        "text": "Molly Quinn",
+        "rect": [
+          295.21875,
+          3068.015625,
+          32,
+          32
+        ]
+      },
+      {
+        "text": "Rob Curley",
+        "rect": [
+          331.671875,
+          3068.015625,
+          32,
+          32
+        ]
+      },
+      {
+        "text": "Sign up",
+        "rect": [
+          488,
+          3335.09375,
+          100,
+          30
+        ]
+      },
+      {
+        "text": "Facebook",
+        "rect": [
+          32,
+          3811.09375,
+          94.71875,
+          17
+        ]
+      },
+      {
+        "text": "Instagram",
+        "rect": [
+          32,
+          3839.09375,
+          91.140625,
+          17
+        ]
+      },
+      {
+        "text": "TikTok",
+        "rect": [
+          32,
+          3867.09375,
+          69.796875,
+          17
+        ]
+      },
+      {
+        "text": "Newsletter",
+        "rect": [
+          32,
+          3923.09375,
+          100.03125,
+          17
+        ]
+      },
+      {
+        "text": "Donate",
+        "rect": [
+          32,
+          3996.6875,
+          51.59375,
+          17
+        ]
+      },
+      {
+        "text": "Visit the S-R Shop",
+        "rect": [
+          32,
+          4024.6875,
+          130.4375,
+          17
+        ]
+      },
+      {
+        "text": "Buy Photo Reprints",
+        "rect": [
+          32,
+          4052.6875,
+          137.859375,
+          17
+        ]
+      },
+      {
+        "text": "Print edition home delivery",
+        "rect": [
+          392,
+          3811.09375,
+          188.546875,
+          17
+        ]
+      },
+      {
+        "text": "Newspaper Routes Available",
+        "rect": [
+          392,
+          3839.09375,
+          204.28125,
+          17
+        ]
+      },
+      {
+        "text": "Sitemap",
+        "rect": [
+          392,
+          3940.6875,
+          58.703125,
+          17
+        ]
+      }
+    ],
+    "photo": null,
+    "photos": [],
+    "captured_at": "2026-11-22T09:47:21+00:00"
+  },
+  {
+    "url": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+    "title": "Access Denied",
+    "claims": [
+      "Retirement savers may see account balances move with the sell-off if their 401(k) plans or funds hold technology-heavy stocks. SEC investor guidance says stock and stock-fund values can fall quickly and that diversification can reduce, but cannot eliminate, market losses."
+    ],
+    "ok": true,
+    "top": "06-top.png",
+    "full": "06-full.png",
+    "full_height": 900,
+    "scale": 1.5,
+    "highlights": [],
+    "headline": [
+      8,
+      8,
+      1424,
+      37
+    ],
+    "blocks": [
+      {
+        "text": "Reference #18.900c0317.1795340841.b5a897c8",
+        "rect": [
+          8,
+          100.4375,
+          1424,
+          18
+        ]
+      },
+      {
+        "text": "https://errors.edgesuite.net/18.900c0317.1795340841.b5a897c8",
+        "rect": [
+          8,
+          134.4375,
+          1424,
+          18
+        ]
+      }
+    ],
+    "controls": [],
+    "photo": null,
+    "photos": [],
+    "captured_at": "2026-11-22T09:47:24+00:00"
+  },
+  {
+    "url": "https://arxiv.org/abs/2608.29843",
+    "title": "[2608.29843] The Price of Intelligence: A Quality-Adjusted Price Index for AI Services",
+    "claims": [
+      "The market decline does not determine the eventual price of AI services. Separate research on AI inference markets found substantial quality-adjusted price declines, suggesting that competition and efficiency can make AI cheaper even while the companies supplying it face pressure to justify their spending."
+    ],
+    "ok": true,
+    "top": "07-top.png",
+    "full": "07-full.png",
+    "full_height": 1047,
+    "scale": 1.5,
+    "highlights": [],
+    "headline": [
+      0,
+      55.59375,
+      1180.796875,
+      21.15625
+    ],
+    "blocks": [
+      {
+        "text": "How fast AI inference prices have fallen depends on how an index holds quality constant. We build quality-adjusted price indices for text and code inference sol",
+        "rect": [
+          40,
+          184.5,
+          1100.796875,
+          126.5625
+        ]
+      },
+      {
+        "text": "50 pages, 9 figures. v2 ends the headline window in July 2026, adds three treatments of measurement error and withdraws the per-task result of v1. Accepted (pos",
+        "rect": [
+          90.265625,
+          334.65625,
+          1088.53125,
+          35.09375
+        ]
+      },
+      {
+        "text": "General Economics (econ.GN); Machine Learning (cs.LG)",
+        "rect": [
+          90.265625,
+          371.75,
+          1088.53125,
+          17.546875
+        ]
+      },
+      {
+        "text": "arXiv:2608.29843 [econ.GN]",
+        "rect": [
+          90.265625,
+          391.296875,
+          1088.53125,
+          17.546875
+        ]
+      },
+      {
+        "text": "(or arXiv:2608.29843v2 [econ.GN] for this version)",
+        "rect": [
+          90.265625,
+          410.84375,
+          1088.53125,
+          17.546875
+        ]
+      },
+      {
+        "text": "https://doi.org/10.48550/arXiv.2608.29843 Focus to learn more",
+        "rect": [
+          90.265625,
+          430.390625,
+          244.3125,
+          20.546875
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "text": "archive home",
+        "rect": [
+          24,
+          6,
+          86.671875,
+          39
+        ]
+      },
+      {
+        "text": "Search",
+        "rect": [
+          1109.5,
+          11,
+          83.5,
+          29
+        ]
+      },
+      {
+        "text": "Submit",
+        "rect": [
+          1201,
+          11,
+          63,
+          29
+        ]
+      },
+      {
+        "text": "Donate",
+        "rect": [
+          1272,
+          11,
+          63,
+          29
+        ]
+      },
+      {
+        "text": "Log in",
+        "rect": [
+          1360,
+          11,
+          56,
+          29
+        ]
+      },
+      {
+        "text": "View PDF",
+        "rect": [
+          1217.46875,
+          92.859375,
+          70.078125,
+          17
+        ]
+      },
+      {
+        "text": "HTML (experimental)",
+        "rect": [
+          1217.46875,
+          110.859375,
+          148.0625,
+          17
+        ]
+      },
+      {
+        "text": "TeX Source",
+        "rect": [
+          1217.46875,
+          128.859375,
+          81.828125,
+          17
+        ]
+      },
+      {
+        "text": "< prev",
+        "rect": [
+          1205.765625,
+          211.03125,
+          36.375,
+          15
+        ]
+      },
+      {
+        "text": "next >",
+        "rect": [
+          1283.125,
+          211.03125,
+          35.65625,
+          15
+        ]
+      },
+      {
+        "text": "recent",
+        "rect": [
+          1232.109375,
+          228.609375,
+          36.015625,
+          15
+        ]
+      },
+      {
+        "text": "2026-08",
+        "rect": [
+          1278.703125,
+          228.609375,
+          47.546875,
+          15
+        ]
+      },
+      {
+        "text": "SciX",
+        "rect": [
+          1217.765625,
+          382.3125,
+          26.640625,
+          15
+        ]
+      },
+      {
+        "text": "Google Scholar",
+        "rect": [
+          1217.765625,
+          397.3125,
+          89.296875,
+          15
+        ]
+      },
+      {
+        "text": "Semantic Scholar",
+        "rect": [
+          1217.765625,
+          412.3125,
+          101.515625,
+          15
+        ]
+      },
+      {
+        "text": "Export BibTeX Citation",
+        "rect": [
+          1197.765625,
+          434.1875,
+          149.15625,
+          24.0625
+        ]
+      },
+      {
+        "text": "Bibliographic Tools",
+        "rect": [
+          21.59375,
+          578.765625,
+          152,
+          33.34375
+        ]
+      },
+      {
+        "text": "Code, Data, Media",
+        "rect": [
+          176.78125,
+          578.765625,
+          142.09375,
+          33.34375
+        ]
+      },
+      {
+        "text": "Demos",
+        "rect": [
+          322.0625,
+          578.765625,
+          77.515625,
+          33.34375
+        ]
+      },
+      {
+        "text": "Related Papers",
+        "rect": [
+          402.765625,
+          578.765625,
+          125.125,
+          33.34375
+        ]
+      },
+      {
+        "text": "About arXivLabs",
+        "rect": [
+          531.078125,
+          578.765625,
+          133.9375,
+          33.34375
+        ]
+      },
+      {
+        "text": "About",
+        "rect": [
+          10,
+          995.1875,
+          35,
+          23.390625
+        ]
+      },
+      {
+        "text": "Help",
+        "rect": [
+          70,
+          995.1875,
+          28,
+          23.390625
+        ]
+      },
+      {
+        "text": "Contact",
+        "rect": [
+          123,
+          995.1875,
+          46,
+          23.390625
+        ]
+      },
+      {
+        "text": "Subscribe",
+        "rect": [
+          194,
+          995.1875,
+          59,
+          23.390625
+        ]
+      },
+      {
+        "text": "Copyright",
+        "rect": [
+          278,
+          995.1875,
+          56,
+          23.390625
+        ]
+      },
+      {
+        "text": "Privacy",
+        "rect": [
+          359,
+          995.1875,
+          42,
+          23.390625
+        ]
+      },
+      {
+        "text": "Accessibility",
+        "rect": [
+          426,
+          995.1875,
+          73,
+          23.390625
+        ]
+      },
+      {
+        "text": "Operational Status (opens in new tab)",
+        "rect": [
+          524,
+          995.1875,
+          110,
+          23.390625
+        ]
+      }
+    ],
+    "photo": null,
+    "photos": [],
+    "captured_at": "2026-11-22T09:47:28+00:00"
+  },
+  {
+    "url": "https://en.wikipedia.org/wiki/Anthropic",
+    "title": "Anthropic (picture)",
+    "claims": [],
+    "ok": true,
+    "picture_only": true,
+    "subject": "Anthropic",
+    "photo": "09-photo.png",
+    "photos": [
+      "09-photo.png"
+    ]
+  },
+  {
+    "url": "https://en.wikipedia.org/wiki/Nasdaq",
+    "title": "Nasdaq (picture)",
+    "claims": [],
+    "ok": true,
+    "picture_only": true,
+    "subject": "Nasdaq",
+    "photo": "10-photo.png",
+    "photos": [
+      "10-photo.png"
+    ]
+  },
+  {
+    "url": "https://en.wikipedia.org/wiki/Integrated_circuit",
+    "title": "Integrated circuit (picture)",
+    "claims": [],
+    "ok": true,
+    "picture_only": true,
+    "subject": "Integrated circuit",
+    "photo": "12-photo.png",
+    "photos": [
+      "12-photo.png"
+    ]
+  }
+]
