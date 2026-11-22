@@ -48,9 +48,12 @@ export async function run(K) {
   const FIXES = [{}, { dist: 1.1 }, { dist: 1.22 }];
   for (const p of [-0.12, -0.24]) FIXES.push({ pitch: p });
   for (const y of [0.12, -0.12, 0.24, -0.24, 0.36, -0.36, 0.5, -0.5]) for (const p of [0, 0.1, -0.08, -0.18]) FIXES.push({ yaw: y, pitch: p });
-  for (const fk of [1.2, 1.35, 0.85]) for (const y of [0, 0.2, -0.2]) for (const p of [0, -0.15]) FIXES.push({ fovK: fk, yaw: y, pitch: p });
+  // a wider lens brings the camera closer (out of walls, in front of people who would block the view)
+  for (const fk of [1.2, 1.35, 1.5]) for (const y of [0, 0.12, -0.12, 0.24, -0.24, 0.36, -0.36, 0.5, -0.5]) for (const p of [0, -0.12, 0.1]) FIXES.push({ fovK: fk, yaw: y, pitch: p });
+  for (const y of [0, 0.2, -0.2]) FIXES.push({ fovK: 0.85, yaw: y });
   function direct() {
-    const report = { scene: name, ok: true, stepped, shots: [] };
+    const sizes = {}; props.filter(q => q.obj.name).forEach(q => { const s = q.box.getSize(new THREE.Vector3()); sizes[q.label] = s.toArray().map(v => +v.toFixed(2)); });
+    const report = { scene: name, ok: true, stepped, props: sizes, shots: [] };
     for (const sh of S.shots) {
       frameShot(sh); let first = null, done = null;
       for (const fx of FIXES) { sh.fix = fx; const pr = problems(sh); if (!first) first = pr; if (!pr.length) { done = fx; break; } }

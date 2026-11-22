@@ -73,7 +73,7 @@ jobs:
         if: always()
         run: |
           B=review-shorts3d-${{ inputs.scene }}; D=review/shorts3d/${{ inputs.scene }}
-          mkdir -p $D && cp out/*.jpg out/*.mp4 $D/ 2>/dev/null || true; cp out/stills-debug/report.json $D/ 2>/dev/null || true
+          mkdir -p $D && cp out/*.jpg out/*.mp4 $D/ 2>/dev/null || true; cp out/stills-debug/report.json $D/ 2>/dev/null || true; mkdir -p $D/debug && cp out/stills-debug/*.jpg $D/debug/ 2>/dev/null || true
           mkdir -p $D/stills && cp out/stills/*.jpg $D/stills/ 2>/dev/null || true; rm -f $D/picture.mp4
           ls -la $D
           git config user.name "golide-bot" && git config user.email "bot@golidee.com"

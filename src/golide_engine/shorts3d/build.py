@@ -47,7 +47,8 @@ def scene_words(words: list[dict], until: float | None) -> list[dict]:
 
 
 def _node(engine: Path, scene: str, out: Path, *args: str) -> subprocess.Popen:
-    return subprocess.Popen(["node", str(ASSETS / "render.cjs"), str(engine), scene, str(out), str(W), str(H), str(FPS), *args],
+    # absolute paths: the browser runner works inside the engine folder
+    return subprocess.Popen(["node", str(ASSETS / "render.cjs"), str(engine.resolve()), scene, str(out.resolve()), str(W), str(H), str(FPS), *args],
                             cwd=engine)
 
 

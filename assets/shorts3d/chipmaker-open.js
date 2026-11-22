@@ -104,7 +104,7 @@ export async function build(K, words) {
     { name: '2 low push: a huge AI IPO', t0: T.and, t1: T.ipo, who: [you], dof: 0.01, view: u => ({ yaw: 0.38, pitch: -0.16, fov: 36, k: lerp(1.16, 1.0, eio(u)) }) },
     { name: '3 the news lands on the TV', t0: T.ipo, t1: T.but, who: [you, tv], dof: 0, view: (u, t) => ({ yaw: 0.16, pitch: -0.04, fov: 46, k: t < T.lands ? lerp(1.3, 1.22, clamp((t - T.ipo) / (T.lands - T.ipo))) : lerp(1.22, 1.0, eio(clamp((t - T.lands) / 0.14))) }) },
     { name: '4 the investors, hopeful', t0: T.but, t1: T.it, who: [A, B, C], dof: 0, view: u => ({ yaw: lerp(0.3, 0.18, u), pitch: 0.06, fov: 30, k: lerp(1.12, 1.0, eio(u)) }) },
-    { name: '5 they start asking', t0: T.it, t1: T.build, who: [A, B, C], extras: bubbleBoxes, dof: 0, view: u => ({ yaw: lerp(-0.95, -0.85, u), pitch: 0.12, fov: 34, k: lerp(1.1, 1.0, eio(u)) }) },
+    { name: '5 they start asking', t0: T.it, t1: T.build, who: [A, B, C], extras: bubbleBoxes, dof: 0, view: u => ({ yaw: lerp(-0.62, -0.52, u), pitch: 0.12, fov: 38, k: lerp(1.1, 1.0, eio(u)) }) },
     { name: '6 dolly-zoom: the buildout', t0: T.build, t1: DUR, who: [you], dof: 0.012, view: u => ({ yaw: 0.0, pitch: 0.06, fov: lerp(44, 24, eio(u)), k: 1.0, roll: -0.08 * eio(u) }) },
   ];
   // what the director may not put the camera in or people through: furniture, the TV (walls are the room bounds)
