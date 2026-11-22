@@ -86,18 +86,19 @@ best unmodelled video of the last 45 days, no numbers bar. The channel's style i
   Model: `8e4TYDVZTwk` (read for every Short, `config/model-videos.txt` "always"). No "..." in a Short; long at most 1;
   "..." is never shown on screen. One read; voice parts must add up to the script.
 - Sound: no pops or ticks; whoosh on cuts, an impact only on a big number (`edit/render.py` sound_plan).
-- Music: Discipline Finishes under every Short until 2026-12-13 (`short_signature`), one steady bed, no dips.
+- Music: Discipline Finishes under every Short until 2026-12-13 (`short_signature`), 3D Shorts included, one steady
+  bed, no dips.
 - Frame: content stays inside the phone crop (130 px left, 160 right, 230 top) at every moment (`layout.keep_inside`).
 - Pace: no picture under 1.0 s (Short) / 1.5 s (long); 1 metaphor per Short, 3 per long; a strong transition
   (zoom, flash, iris, whip) at most once in three cuts, the rest glide or cut.
 
 ## Stickman (owner 2026-11-17): the third visual style, next to Inkee and Goli
-- Made with the kits' own packages, imported not copied: long videos with ReachMora (`vendor/reachmora`,
-  `stickman/longform.py`), Shorts with the cartoon-short-kit (`vendor/cartoon-short-kit`, `stickman/short.py`).
-  The kit's rules win for these videos (its music, SFX, captions, chapter cards); our Short music rule doesn't apply.
+- Long videos are made with ReachMora's own package, imported not copied (`vendor/reachmora`, `stickman/longform.py`);
+  its rules win for them (its music, SFX, captions, chapter cards). Shorts are made in the 3D Shorts engine (see
+  "3D Shorts" below); the flat-card cartoon-short-kit was removed on 2026-11-22.
 - The characters are actors: the narrator speaks, nobody's mouth talks. Real people are generic puppets, no likeness.
-- Our engine feeds only the voice, our word timings and research; Sol writes story.json (long) or the world, story,
-  cast and cue table (Short) from the kit's own documents. No paid retries (owner 2026-11-22): Sol writes the storyboard ONCE and it is
+- Our engine feeds only the voice, our word timings and research; Sol writes story.json (long) from the kit's own
+  documents. No paid retries (owner 2026-11-22): Sol writes the storyboard ONCE and it is
   saved at once; the plan / look checks are repaired by the engine for free on that same storyboard (camera guard, more
   light, safe helpers, collisions taken out) and it re-renders. Nothing goes back to Sol and nothing falls back to Goli.
 - Stickman + Goli (owner 2026-11-17, `stickman/goli_layer.py`): a fourth choice in Studio, per video. The finished
@@ -105,29 +106,36 @@ best unmodelled video of the last 45 days, no numbers bar. The channel's style i
   facing it, mouth on the voice, reactions on the story's events (numbers -> point, shock lines -> shock, lists and
   versus -> explain, payoff -> both hands up), at least 2.2 s apart. The video's own sound is kept untouched.
   Long videos only (owner 2026-11-17): on a Short Goli would distract, so a Stickman Short runs without him.
-- Stickman is ON Shorts again (owner 2026-11-18, after his fast-cut Elon test); Stickman + Goli stays long only (a
-  Short asked for it is pure Stickman). Shorts music = the kit's own. Stickman + Goli thumbnails are Goli thumbnails
-  with Stickman small behind; the Stickman board thumbnail is for pure Stickman videos only.
-- Fast cut (owner 2026-11-18): one shot per phrase, 1.2-2.5 s (long: one per sentence, 1.5-4 s), starting on its
-  phrase's first frame from the real word timings; a new built place or angle every shot; Sol brainstorms 2-3
-  surprising pictures per phrase (Earth spinning with satellites, signpost flip, kart race, podium, cash pile...).
-- Our kits on top of the cartoon kit (`stickman/short_kit/`): world-kit.js (signs with REAL logos, city, street,
-  cash bundles and falling $100 bills, karts, Earth, satellites, signposts, screens) and cast-kit.js
-  (`T.modernFront`: chunky bodies, sleeved arms with hands, real clothes, hairstyles short/swoop/slick/spiky/curly/bun).
-  Logos: `stickman/logos.py` (simple-icons from npm) for the brands the script names. Tech stories are set in the
-  city, not a village; money is bills, not coin piles.
+- Stickman + Goli stays long only (a Short asked for it is a 3D Short). Stickman + Goli thumbnails are Goli
+  thumbnails with Stickman small behind; the Stickman board thumbnail is for pure Stickman videos only.
+- Fast cut (owner 2026-11-18, long): one shot per sentence, 1.5-4 s, from the real word timings.
 
-- Shorts kit library (owner 2026-11-22, batches 1-10, from the Shorts models Ricks Clips / Afterhour Theory / Marshall):
-  `stickman/short_kit/world-kit.js` holds ready places (offices, casino, prison, vault, spaceship, liner, tent, street,
-  courtroom, hospital, data centre, classroom, news desk, stage, home rooms, restaurant, gym, factory, plane cabin, bank,
-  lab, supermarket, construction, police, rooftop, farm, forest, beach, snow, desert, airport, metro, highway, gas station,
-  port, hotel, castle, pyramid, colosseum, pirate ship, treasure cave, jungle, volcano, underwater, Moon, Mars, trading
-  floor, war room, power plant, launch pad, GPU rack, giant phone/laptop/chip, night city), weather (rain, snow, lightning,
-  clouds), vehicles and reacting pieces (doors, reels, bursts, dominoes, buttons, rocket lift, sirens); each place at its
-  own x 600 m apart. `cast-kit.js`: hats, glasses, beards, coats, vests, hair styles, 20 job looks (T.LOOKS), the AI robot
-  (T.robotFront), 14 animals (T.animal), crowds (T.crowd), 30+ arm poses, held items, movement helpers (walkPath,
-  followCam, jumpAt, nod, shakeAt), fx and face effects, speech bubbles. Shorts get Inkee word captions (`captions.py`
-  "short"). Unknown faces draw neutral; Sol names its own constants with a leading underscore.
+## 3D Shorts (owner 2026-11-22: "Bingo. Now this is the direction")
+- Engine: thuann-vn/claude-3d-animated-shorts (MIT), Ricks Clips style (white deadpan heads, pear bodies, noodle limbs,
+  lit office/home sets, CC0 furniture), cloned at the pinned `ENGINE_COMMIT` (`shorts3d/build.py`), assets cached on
+  GitHub; Chrome through the software-WebGL wrapper (`.github/actions/shorts3d-setup`). Our code hooks in at its skit
+  branch (`assets/shorts3d/hook.py`, refuses if that line moves); the engine's own files are never edited.
+- A Short in the Stickman style goes here (`production._shorts3d_short`). Sol writes ONE storyboard as data, never
+  code (`shorts3d/board.py`: set, 2-4 cast with places and looks, beats on word numbers, wall-TV states, shots with
+  who/angle/lens/move), strict schema, capped at $0.86 (output limit; the provider's re-ask off), saved at once in R2
+  under a fingerprint of the recording, never paid twice. Everything wrong is repaired for free (`board.repair`).
+  One generic scene builds any storyboard (`assets/shorts3d/board.js`).
+- The director (`assets/shorts3d/director.js`, owner: "heads and bodies well contained... nothing cropped and nothing
+  crashing"): each shot frames its `who` inside the phone crop (130/160/230 px) and every 0.1 s checks: anyone who
+  shows is whole; no head under the captions; no face hidden; heads never overlap; words in the set (TV) never cut
+  or behind a head; a head never touches the TV; the camera never inside walls, props or people; nobody through
+  furniture. Failures are repaired for free (step back, orbit, rise/drop, lens); a shot it cannot repair stops the
+  render with its reasons. People behind a desk are framed from the desk top up (owner: "zoom a little").
+- Render: `shorts3d-render.yml` (director check, then one browser per machine across `parts` machines: several
+  browsers on one machine were slower than one; then join). Production hands over through R2 and waits
+  (`shorts3d/remote.py`); captions ("short3d": 2 words, lower third), the voice levelled only, Discipline Finishes
+  as one steady bed (`build.finish`). Trials: `shorts3d.yml` (scene trials), `shorts3d-selftest.yml` (the production
+  handoff with a hand-written storyboard, free).
+- First 3D Shorts upload PRIVATE with no Reels until the owner approves the engine (`config/edit-engine.json`
+  shorts3d.hold_private).
+- Scripts for Shorts follow the Ricks Clips formula (`engine/story.py` short shape): odd act as fact, context with
+  one number, a doubter's line, a stubborn reply, early evidence for the doubters, the turn, "You see," + one number +
+  one everyday comparison, payoff on the doubter, last line cut to loop. Length stays 45-75 s.
 
 ## No collision (owner 2026-11-17: "I don't want collision in anything")
 - Recipe scenes (`edit/recipes.py`, `assets/recipes/player.html`): every word on screen is measured on 4 moments,
@@ -135,6 +143,7 @@ best unmodelled video of the last 45 days, no numbers bar. The channel's style i
   Words painted on a texture (silkscreen, glass marks) may not touch on the same surface; Blueprint's line lettering
   (STROKEFONT, `assets/recipes/strokefont.js`) is registered by the scene with K.words and measured too. 3D words may
   pass the frame edge while the camera travels (the recipes' own camera language), never on the held last frame.
+- 3D Shorts: the director (see "3D Shorts").
 - Stickman long (`stickman/collide.py`): real frames of every shot; text touching text, leaving the frame or over a
   head goes back to Sol, and whatever still collides is taken out of the story. Goli never covers the panel.
 - All six Futurepedia prompts are recipes (owner 2026-11-17): xray, layers, white, circuit, glass, blueprint.
@@ -157,4 +166,4 @@ best unmodelled video of the last 45 days, no numbers bar. The channel's style i
   automatic runs never switch paid ones on. Real people stay real photo cards, never puppets.
 
 ## Checks
-`python3 -m pytest -q` must pass before every push (467 tests as of 2026-11-06).
+`python3 -m pytest -q` must pass before every push (666 tests as of 2026-11-22).
