@@ -31,7 +31,7 @@ export async function build(K, words) {
   const tv = new THREE.Group(); tv.name = 'the wall TV'; tv.userData.label = 'the wall TV';
   { const frameM = new THREE.Mesh(new THREE.BoxGeometry(TVW + 0.08, TVH + 0.08, 0.06), new THREE.MeshStandardMaterial({ color: '#15171c', roughness: 0.35, metalness: 0.4 })); frameM.castShadow = true; tv.add(frameM);
     const scr = new THREE.Mesh(new THREE.PlaneGeometry(TVW, TVH), new THREE.MeshBasicMaterial({ map: tvT, toneMapped: false })); scr.position.z = 0.032; tv.add(scr);
-    tv.position.set(ME, TVY, ZB + 0.16); O.add(tv); }
+    tv.position.set(ME + 1.0, TVY, ZB + 0.16); O.add(tv); }   // beside you, not behind your head: front shots keep both
   const chipIcon = (g, x, y, s, col = '#e8c268') => { g.fillStyle = col; for (let i = 0; i < 5; i++) { const o = -s * 0.36 + i * s * 0.18; g.fillRect(x + o - s * 0.03, y - s * 0.62, s * 0.06, s * 0.14); g.fillRect(x + o - s * 0.03, y + s * 0.48, s * 0.06, s * 0.14); g.fillRect(x - s * 0.62, y + o - s * 0.03, s * 0.14, s * 0.06); g.fillRect(x + s * 0.48, y + o - s * 0.03, s * 0.14, s * 0.06); }
     g.fillRect(x - s * 0.5, y - s * 0.5, s, s); g.fillStyle = '#14161c'; g.fillRect(x - s * 0.3, y - s * 0.3, s * 0.6, s * 0.6); g.strokeStyle = col; g.lineWidth = s * 0.05; g.strokeRect(x - s * 0.2, y - s * 0.2, s * 0.4, s * 0.4); };
   function drawTV(t) {
@@ -92,7 +92,13 @@ export async function build(K, words) {
     glows.forEach(l => { l.color.set(r > 0 ? '#ff3b3b' : '#2fd47a'); l.intensity = r > 0 ? 3.0 * r : 2.0 * g; });
     ALL.forEach(c => SR.updateLimbs(c));
   }
-  const bubbleBoxes = t => investors.map((c, i) => t >= bubAt(i) ? { box: new THREE.Box3().setFromCenterAndSize(bub[i].position, V(0.4, 0.4, 0.4)), label: `${c.label}'s "?"` } : null).filter(Boolean);
+  // the TV's words as world boxes (canvas px -> the screen plane), so the director never cuts a headline at the frame edge
+  const tvBox = (x0, y0, x1, y1) => { tv.updateMatrixWorld(true); const a = V((x0 / 1024 - 0.5) * TVW, (0.5 - y1 / 576) * TVH, 0.03), b = V((x1 / 1024 - 0.5) * TVW, (0.5 - y0 / 576) * TVH, 0.04);
+    return new THREE.Box3().setFromPoints([tv.localToWorld(a), tv.localToWorld(b)]); };
+  const tvWords = t => t < T.lands ? [{ box: tvBox(70, 90, 1000, 340), label: 'the TV words "CHIPMAKER"' }]
+    : t < T.build ? [{ box: tvBox(220, 180, 800, 390), label: 'the TV headline "AI IPO"' }]
+    : [{ box: tvBox(180, 100, 845, 235), label: 'the TV headline "AI BUILDOUT?"' }];
+  const bubbleBoxes = t => investors.map((c, i) => t >= bubAt(i) ? { box: new THREE.Box3().setFromCenterAndSize(bub[i].position, V(0.4, 0.4, 0.4)), label: `${c.label}'s "?"`, onTop: true } : null).filter(Boolean);
   function light(t, cam, sh) {   // the engine's dim office look (its skit's numbers), sun shadow around the shot
     K.setLook('day'); K.hemi.intensity = 0.32; K.hemi.color.set('#9fb4e0'); K.sun.intensity = 2.6; K.sun.color.set('#ffd29a'); K.SUNDIR.set(0.35, 0.5, -0.75).normalize();
     K.U.uSat.value = 1.2; K.U.uCon.value = 1.22; K.U.uWarm.value = 0.07; K.renderer.toneMappingExposure = 0.42; K.U.uVig.value = 0.55;
@@ -105,7 +111,7 @@ export async function build(K, words) {
     { name: '3 the news lands on the TV', t0: T.ipo, t1: T.but, who: [you, tv], dof: 0, view: (u, t) => ({ yaw: 0.16, pitch: -0.04, fov: 46, k: t < T.lands ? lerp(1.3, 1.22, clamp((t - T.ipo) / (T.lands - T.ipo))) : lerp(1.22, 1.0, eio(clamp((t - T.lands) / 0.14))) }) },
     { name: '4 the investors, hopeful', t0: T.but, t1: T.it, who: [A, B, C], dof: 0, view: u => ({ yaw: lerp(0.3, 0.18, u), pitch: 0.06, fov: 30, k: lerp(1.12, 1.0, eio(u)) }) },
     { name: '5 they start asking', t0: T.it, t1: T.build, who: [A, B, C], extras: bubbleBoxes, dof: 0, view: u => ({ yaw: lerp(-0.62, -0.52, u), pitch: 0.12, fov: 38, k: lerp(1.1, 1.0, eio(u)) }) },
-    { name: '6 dolly-zoom: the buildout', t0: T.build, t1: DUR, who: [you], dof: 0.012, view: u => ({ yaw: 0.0, pitch: 0.06, fov: lerp(44, 24, eio(u)), k: 1.0, roll: -0.08 * eio(u) }) },
+    { name: '6 dolly-zoom: the buildout', t0: T.build, t1: DUR, who: [you, tv], dof: 0, view: u => ({ yaw: 0.0, pitch: 0.06, fov: lerp(44, 24, eio(u)), k: 1.0, roll: -0.08 * eio(u) }) },
   ];
   // what the director may not put the camera in or people through: furniture, the TV (walls are the room bounds)
   const props = [];
@@ -113,5 +119,5 @@ export async function build(K, words) {
     if (o.name) { const floor = /rug/i.test(o.name); props.push({ obj: o, label: o.name.replace(/_/g, ' ').replace(/\d+$/, '').trim(), floor }); return; }
     if (o.isMesh && o.geometry.type === 'BoxGeometry') { const s = new THREE.Box3().setFromObject(o).getSize(V(0, 0, 0)); if (Math.max(s.x, s.y, s.z) < 6 && s.y > 0.2) props.push({ obj: o, label: 'a set piece' }); } });
   const room = { min: V(-8.85, FY + 0.03, ZB + 0.12), max: V(8.85, FY + 4.15, ZF - 0.1) };
-  return { dur: DUR, people, props, room, pose, light, shots };
+  return { dur: DUR, people, props, room, pose, light, shots, words: tvWords };
 }

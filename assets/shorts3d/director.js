@@ -114,7 +114,11 @@ export function makeDirector(K, opt = {}) {
     const heads = people.map(c => [c, rect(headBox(c))]).filter(([, r]) => shows(r) && !r.crossing);
     for (let i = 0; i < heads.length; i++) for (let j = i + 1; j < heads.length; j++) { const [a, ra] = heads[i], [b, rb] = heads[j];
       if (ra.x1 > rb.x0 && rb.x1 > ra.x0 && ra.y1 > rb.y0 && rb.y1 > ra.y0) out.push(`the heads of ${a.label} and ${b.label} overlap in the frame`); }
-    for (const e of extras) { const r = rect(e.box); if (shows(r) && !within(r, SAFE)) out.push(`${e.label} is cropped at the frame edge`); }
+    for (const e of extras) { const r = rect(e.box); if (!shows(r)) continue; if (!within(r, SAFE)) out.push(`${e.label} is cropped at the frame edge`);
+      // words may not sit behind a head nearer the camera (bubbles drawn on top of everything are exempt)
+      if (e.onTop) continue;
+      const ez = e.box.getCenter(new THREE.Vector3()).distanceTo(camera.position);
+      for (const [c, h] of heads) if (h.x1 > r.x0 && r.x1 > h.x0 && h.y1 > r.y0 && r.y1 > h.y0 && headBox(c).getCenter(new THREE.Vector3()).distanceTo(camera.position) < ez - 0.05) out.push(`${e.label} is covered by the head of ${c.label}`); }
     for (const c of subjects) if (c.root) { const h = hidden(c, propObjs, people); if (h) out.push(h); }
     out.push(...collisions(people, props));
     return [...new Set(out)];

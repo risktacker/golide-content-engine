@@ -3,6 +3,7 @@
 // runs one GOLIDE scene module (`?golide=<name>` loads ./<name>.js and ./<name>.words.json).
 //
 // A scene module exports build(K, words) -> { dur, people, props, room, pose(t), light(t), shots }:
+//   words(t) -> [{box, label}]: words painted in the set (a TV headline); if they show they must be whole (checked, not framed)
 //   shots: [{ name, t0, t1, who: [people or props], extras(t) -> [{box, label}], view(u, t) -> {yaw, pitch, fov, k, roll}, dof }]
 // The director (director.js) frames each shot on its `who`, checks every frame and repairs failures for free.
 // window.GOLIDE = { ready, dur, direct() -> report, frame(t, debug) -> jpeg dataURL }.
@@ -40,7 +41,7 @@ export async function run(K) {
     const out = [];
     for (const t of times(sh)) {
       S.pose(t); camAt(sh, t);
-      for (const p of D.issues({ subjects: sh.who.filter(isPerson), people: S.people, props, propObjs, extras: sh.extras?.(t) || [] })) out.push({ t: +t.toFixed(2), p });
+      for (const p of D.issues({ subjects: sh.who.filter(isPerson), people: S.people, props, propObjs, extras: [...(sh.extras?.(t) || []), ...(S.words?.(t) || [])] })) out.push({ t: +t.toFixed(2), p });
     }
     return out;
   }
