@@ -1,0 +1,524 @@
+{
+  "production_id": "golide-short-2026-11-22-trial",
+  "youtube_video_id": "EH8BEm1MwLg",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "EH8BEm1MwLg",
+    "upload_status": "uploaded_private",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-11-22T12:24:24.201674+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "Jensen Huang’s AI Bubble Rocks NVIDIA",
+    "status": "uploaded_private",
+    "scheduled_at": null,
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-shorts-mon-wed-fri\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-choice\"}"
+  },
+  "narration": "Imagine you're running the chipmaker, and a huge AI IPO lands,\nbut instead of reassuring investors, it makes them question the AI buildout.\nThat question exposes a $3.8 trillion bet: can future AI profits justify today's spending?\nAfter Anthropic's strong debut on November 19, its shares fell on November 20,\nand the Nasdaq erased all its 2026 gains.\nThat didn't prove AI failed; it changed what investors were asking.\nSo investors started looking at the bill: data centers,\nchips and debt cost money now, but profits may arrive later.\nAnd that bill gets enormous:\nMorgan Stanley estimates hyperscalers could spend $3.8 trillion from 2026 through 2028,\nwith more than half likely financed through credit.\nSo when investors doubt the timing, AI-linked shares fall together,\nleaving the chipmaker exposed because its chips sit at the center of that buildout.\nAnd that pressure reaches people: retirement funds move, startups face tighter funding,\nand AI jobs must show results.\nBut the twist is that more efficient AI could make services cheaper.\nFollow the channel; the free guide and our community link are in the description.\nAI isn't over; the easy money story is.\n",
+  "research": {
+    "summary": "Anthropic’s strong November 19, 2026 debut did not reassure investors because the market is judging the entire AI buildout against enormous expectations. By November 20, Anthropic shares fell on their second trading day, the Nasdaq had erased its 2026 gains, and AI-linked stocks were selling off. The evidence points to a repricing of risk: investors want clearer proof that spending on chips, data centers, debt and talent will produce durable profits. For ordinary people, the main effects are potential volatility in retirement accounts, tighter startup financing, pressure on AI-related jobs and a continuing push to make AI services cheaper and more efficient—not proof that AI technology has failed.",
+    "claims": [
+      {
+        "claim": "On November 20, 2026, Anthropic’s shares fell during their second trading session while the Nasdaq erased its gains for the year; the broader AI-linked sell-off followed a record-setting IPO debut rather than being stopped by it.",
+        "source_title": "Nasdaq erases all 2026 gains as AI sell-off dampens Anthropic’s second day of trading",
+        "source_url": "https://www.theguardian.com/business/2026/nov/20/global-stock-markets-slump-anthropic-ipo-ai-sell-off",
+        "published_or_updated": "November 20, 2026"
+      },
+      {
+        "claim": "The central market concern is not that AI has stopped working, but that AI-company valuations may have risen faster than profits. Investors are questioning whether demand for processors, memory and data-center equipment can remain strong if AI businesses are less profitable than expected.",
+        "source_title": "A 10% drop for the stock market is unnerving, but it’s not that unusual",
+        "source_url": "https://apnews.com/article/e69b0efcc423bc91871c1afabf36742d",
+        "published_or_updated": "November 21, 2026"
+      },
+      {
+        "claim": "AI infrastructure requires unusually large upfront spending. The Federal Reserve reported that advanced-computing-related borrowing rose from less than 6% of investment-grade corporate debt issuance in 2023 to about 31% in 2026, increasing the financial system’s exposure to the buildout.",
+        "source_title": "Financial Stability Report",
+        "source_url": "https://www.federalreserve.gov/publications/files/financial-stability-report-20261113.pdf",
+        "published_or_updated": "November 13, 2026"
+      },
+      {
+        "claim": "The scale of expected spending helps explain why investors are demanding evidence of returns: Morgan Stanley estimated that hyperscalers could spend about $3.8 trillion from 2026 through 2028, with credit markets likely financing more than half of it.",
+        "source_title": "How Credit Markets Are Financing AI Infrastructure",
+        "source_url": "https://www.morganstanley.com/insights/articles/credit-markets-financing-ai-infrastructure",
+        "published_or_updated": "November 2026"
+      },
+      {
+        "claim": "NVIDIA is especially exposed to changing expectations because its chips are central to the AI industry and its valuation depends heavily on continued infrastructure demand. AP reported that the sell-off reflects a need for earlier capital spending to translate into measurable earnings and returns.",
+        "source_title": "A 10% drop for the stock market is unnerving, but it’s not that unusual",
+        "source_url": "https://apnews.com/article/e69b0efcc423bc91871c1afabf36742d",
+        "published_or_updated": "November 21, 2026"
+      },
+      {
+        "claim": "For startups, a market reset can mean less generous valuations and more pressure to show revenue before raising money. A November 11 report said venture investors were already applying more conservative revenue multiples in AI funding discussions during the public-market sell-off.",
+        "source_title": "OpenAI, Anthropic valuations fuel VC fears of startup correction",
+        "source_url": "https://www.spokesman.com/stories/2026/nov/11/openai-anthropic-valuations-fuel-vc-fears-of-start/",
+        "published_or_updated": "November 11, 2026"
+      },
+      {
+        "claim": "Retirement savers may see account balances move with the sell-off if their 401(k) plans or funds hold technology-heavy stocks. SEC investor guidance says stock and stock-fund values can fall quickly and that diversification can reduce, but cannot eliminate, market losses.",
+        "source_title": "Beginners’ Guide to Asset Allocation, Diversification, and Rebalancing",
+        "source_url": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+        "published_or_updated": "2026"
+      },
+      {
+        "claim": "The market decline does not determine the eventual price of AI services. Separate research on AI inference markets found substantial quality-adjusted price declines, suggesting that competition and efficiency can make AI cheaper even while the companies supplying it face pressure to justify their spending.",
+        "source_title": "The Price of Intelligence: A Quality-Adjusted Price Index for AI Services",
+        "source_url": "https://arxiv.org/abs/2608.29843",
+        "published_or_updated": "August 30, 2026"
+      }
+    ],
+    "core_fact": {
+      "fact": "On November 20, 2026, Anthropic’s shares fell on their second trading day after a strong November 19 debut, while the Nasdaq erased its 2026 gains as AI-linked stocks sold off more broadly. The episode intensified investor debate about whether enormous AI spending will produce profits quickly enough to justify current valuations.",
+      "source_url": "https://apnews.com/article/e69b0efcc423bc91871c1afabf36742d",
+      "published_or_updated": "November 21, 2026",
+      "verified": true
+    }
+  },
+  "metadata": {
+    "title": "Anthropic’s IPO Puts AI Spending Under Pressure",
+    "description": "This video explains how Anthropic’s IPO exposed the $3.8 trillion AI spending bet—and why NVIDIA and AI stocks came under pressure.\n\nFree guide to this video (steps and every source): https://studio.golidee.com/guides/golide-short-2026-11-22-trial.pdf\n\nAI is not over, but investors are questioning data center costs, debt, chip demand, and when the profits will arrive. The easy-money story may be ending even as AI keeps getting more efficient and useful.\n\n#Anthropic #NVIDIA #AIBubble #AIStocks #AI #TechNews #ArtificialIntelligence",
+    "tags": [
+      "NVIDIA",
+      "Anthropic",
+      "Anthropic IPO",
+      "AI bubble",
+      "AI boom",
+      "AI stocks",
+      "NVIDIA stock",
+      "AI spending",
+      "AI investment",
+      "AI market crash",
+      "data centers",
+      "AI chips",
+      "Jensen Huang",
+      "artificial intelligence",
+      "tech news",
+      "stock market",
+      "AI debt",
+      "AI profits",
+      "AI economy",
+      "what is Anthropic",
+      "why AI stocks fell",
+      "AI industry",
+      "chip stocks",
+      "Nasdaq",
+      "AI future",
+      "stock market crash",
+      "AI news",
+      "AI explained",
+      "automation",
+      "technology",
+      "AI tools",
+      "AI trends",
+      "future of AI"
+    ],
+    "category_id": 25,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": true,
+    "chapters": [],
+    "keywords": [
+      "AI bubble",
+      "Anthropic IPO",
+      "AI stocks",
+      "NVIDIA stock",
+      "AI boom",
+      "AI spending",
+      "AI market crash",
+      "AI investment",
+      "AI chips",
+      "data centers",
+      "artificial intelligence",
+      "AI debt",
+      "AI profits",
+      "stock market crash",
+      "AI future"
+    ],
+    "hashtags": [
+      "#Anthropic",
+      "#NVIDIA",
+      "#AIBubble",
+      "#AIStocks",
+      "#AI",
+      "#TechNews",
+      "#ArtificialIntelligence"
+    ],
+    "format": "short",
+    "title_description_language": "en",
+    "seo_body": "This video explains how Anthropic’s IPO exposed the $3.8 trillion AI spending bet—and why NVIDIA and AI stocks came under pressure.\n\nAI is not over, but investors are questioning data center costs, debt, chip demand, and when the profits will arrive. The easy-money story may be ending even as AI keeps getting more efficient and useful.",
+    "title_checked": true
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "On November 20, 2026, Anthropic’s shares fell during their second trading session while the Nasdaq erased its gains for the year; the broader AI-linked sell-off followed a record-setting IPO debut rather than being stopped by it.",
+        "source_title": "Nasdaq erases all 2026 gains as AI sell-off dampens Anthropic’s second day of trading",
+        "source_url": "https://www.theguardian.com/business/2026/nov/20/global-stock-markets-slump-anthropic-ipo-ai-sell-off",
+        "published_or_updated": "November 20, 2026"
+      },
+      {
+        "claim": "The central market concern is not that AI has stopped working, but that AI-company valuations may have risen faster than profits. Investors are questioning whether demand for processors, memory and data-center equipment can remain strong if AI businesses are less profitable than expected.",
+        "source_title": "A 10% drop for the stock market is unnerving, but it’s not that unusual",
+        "source_url": "https://apnews.com/article/e69b0efcc423bc91871c1afabf36742d",
+        "published_or_updated": "November 21, 2026"
+      },
+      {
+        "claim": "AI infrastructure requires unusually large upfront spending. The Federal Reserve reported that advanced-computing-related borrowing rose from less than 6% of investment-grade corporate debt issuance in 2023 to about 31% in 2026, increasing the financial system’s exposure to the buildout.",
+        "source_title": "Financial Stability Report",
+        "source_url": "https://www.federalreserve.gov/publications/files/financial-stability-report-20261113.pdf",
+        "published_or_updated": "November 13, 2026"
+      },
+      {
+        "claim": "The scale of expected spending helps explain why investors are demanding evidence of returns: Morgan Stanley estimated that hyperscalers could spend about $3.8 trillion from 2026 through 2028, with credit markets likely financing more than half of it.",
+        "source_title": "How Credit Markets Are Financing AI Infrastructure",
+        "source_url": "https://www.morganstanley.com/insights/articles/credit-markets-financing-ai-infrastructure",
+        "published_or_updated": "November 2026"
+      },
+      {
+        "claim": "NVIDIA is especially exposed to changing expectations because its chips are central to the AI industry and its valuation depends heavily on continued infrastructure demand. AP reported that the sell-off reflects a need for earlier capital spending to translate into measurable earnings and returns.",
+        "source_title": "A 10% drop for the stock market is unnerving, but it’s not that unusual",
+        "source_url": "https://apnews.com/article/e69b0efcc423bc91871c1afabf36742d",
+        "published_or_updated": "November 21, 2026"
+      },
+      {
+        "claim": "For startups, a market reset can mean less generous valuations and more pressure to show revenue before raising money. A November 11 report said venture investors were already applying more conservative revenue multiples in AI funding discussions during the public-market sell-off.",
+        "source_title": "OpenAI, Anthropic valuations fuel VC fears of startup correction",
+        "source_url": "https://www.spokesman.com/stories/2026/nov/11/openai-anthropic-valuations-fuel-vc-fears-of-start/",
+        "published_or_updated": "November 11, 2026"
+      },
+      {
+        "claim": "Retirement savers may see account balances move with the sell-off if their 401(k) plans or funds hold technology-heavy stocks. SEC investor guidance says stock and stock-fund values can fall quickly and that diversification can reduce, but cannot eliminate, market losses.",
+        "source_title": "Beginners’ Guide to Asset Allocation, Diversification, and Rebalancing",
+        "source_url": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+        "published_or_updated": "2026"
+      },
+      {
+        "claim": "The market decline does not determine the eventual price of AI services. Separate research on AI inference markets found substantial quality-adjusted price declines, suggesting that competition and efficiency can make AI cheaper even while the companies supplying it face pressure to justify their spending.",
+        "source_title": "The Price of Intelligence: A Quality-Adjusted Price Index for AI Services",
+        "source_url": "https://arxiv.org/abs/2608.29843",
+        "published_or_updated": "August 30, 2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "Anthropic IPO second trading day AI selloff Nasdaq November 20 2026 explanation",
+      "score": 72.9,
+      "verdict": "pass",
+      "recent_videos": 1,
+      "median_views_per_day": 254464.80000000002,
+      "top_views_per_day": 254464.80000000002,
+      "market_coverage": 1,
+      "title_query_overlap": 1,
+      "measured_at": "2026-11-22T08:56:11.509711+00:00",
+      "signal_type": "youtube-breakout-v1"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -15.67,
+      "true_peak_dbtp": -4.11,
+      "loudness_range": 1.4
+    },
+    "editorial": {
+      "beats": 39,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-11-22T12:24:06.334482+00:00",
+    "warnings": [
+      "possible misspelling: golidee"
+    ]
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-choice",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri",
+    "thumbnail_style": "side_course"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-short-2026-11-22-trial",
+    "created_at": "2026-11-22T12:24:16.869374+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "df37a409e6eeab33c5f27507991ad68eaa3a48afca929ffb0c93d7dfdb26b9c5",
+        "bytes": 30209625
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "ad139f8ee7db385c4fe07b535263eec08f19b8c36865670d56c6c0640bc2e07a",
+        "bytes": 655013
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "2240fb8f7dfd9541bc406a3f78f99dea2467847de1f833599793322fbea0a34b",
+        "bytes": 2355
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "cba0751c9c59722354e2102d61f9cebb14885e7d99b0bbf7c56f664e359e3652",
+        "bytes": 2688
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "59b143cf5a69922f0e36f742948989b4e2560bb5f4eaa5f8471d4c320aa5a569",
+        "bytes": 5182
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "19e9f025f89cc12503d2dea4297b3584d649dda745b1ac425f2ba232a49df5b4",
+        "bytes": 418
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "2d355085dc1f90430478d951a9b6afcad6c58022fbd60ae0b0ba07c0f756710d",
+        "bytes": 316
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 17136.0,
+      "cached_input_units": 0.0,
+      "output_units": 2489.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006414,
+      "created_at": "2026-11-22T08:56:11.145965+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-22T08:56:11.149873+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 46851.0,
+      "cached_input_units": 0.0,
+      "output_units": 2556.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.012437,
+      "created_at": "2026-11-22T08:56:35.781348+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-22T08:56:35.782935+00:00"
+    },
+    {
+      "stage": "script-story",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 11891.0,
+      "cached_input_units": 0.0,
+      "output_units": 4525.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007808,
+      "created_at": "2026-11-22T08:58:43.805004+00:00"
+    },
+    {
+      "stage": "script-story-delivery",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9613.0,
+      "cached_input_units": 9289.0,
+      "output_units": 4819.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006033,
+      "created_at": "2026-11-22T08:59:21.131228+00:00"
+    },
+    {
+      "stage": "script-voice-direction",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 781.0,
+      "cached_input_units": 0.0,
+      "output_units": 456.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000703,
+      "created_at": "2026-11-22T08:59:24.622526+00:00"
+    },
+    {
+      "stage": "script-board",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 638.0,
+      "cached_input_units": 0.0,
+      "output_units": 899.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001206,
+      "created_at": "2026-11-22T08:59:33.123793+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9613.0,
+      "cached_input_units": 9289.0,
+      "output_units": 4819.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.006033,
+      "created_at": "2026-11-22T08:59:33.126082+00:00"
+    },
+    {
+      "stage": "owner-voice",
+      "provider": "elevenlabs",
+      "model": "eleven_v4",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 1201,
+      "cost_usd": 0.2402,
+      "created_at": "2026-11-22T09:41:15.085166+00:00"
+    },
+    {
+      "stage": "stickman-short-1",
+      "provider": "openai",
+      "model": "gpt-5.6-sol",
+      "input_units": 129146.0,
+      "cached_input_units": 0.0,
+      "output_units": 17375.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.864084,
+      "created_at": "2026-11-22T09:43:28.959232+00:00"
+    },
+    {
+      "stage": "stickman-short-fix-2",
+      "provider": "openai",
+      "model": "gpt-5.6-sol",
+      "input_units": 139491.0,
+      "cached_input_units": 0.0,
+      "output_units": 588.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.569724,
+      "created_at": "2026-11-22T09:43:54.885702+00:00"
+    },
+    {
+      "stage": "stickman-short-fix-3",
+      "provider": "openai",
+      "model": "gpt-5.6-sol",
+      "input_units": 139700.0,
+      "cached_input_units": 127327.0,
+      "output_units": 2035.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.141123,
+      "created_at": "2026-11-22T09:45:38.989548+00:00"
+    },
+    {
+      "stage": "guide",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1141.0,
+      "cached_input_units": 0.0,
+      "output_units": 826.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001219,
+      "created_at": "2026-11-22T12:23:25.975656+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9609.0,
+      "cached_input_units": 0.0,
+      "output_units": 865.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00296,
+      "created_at": "2026-11-22T12:23:26.963610+00:00"
+    },
+    {
+      "stage": "title-check",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 492.0,
+      "cached_input_units": 0.0,
+      "output_units": 550.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000758,
+      "created_at": "2026-11-22T12:23:32.029932+00:00"
+    }
+  ],
+  "recorded_at": "2026-11-22T12:24:24.205590+00:00"
+}
