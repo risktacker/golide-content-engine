@@ -260,9 +260,9 @@ class PlaceClearTests(unittest.TestCase):
         ]}
         place_clear(story)
         wide, card = story["shots"]
-        f = wide["moves"][0]
-        for x in (f["from"][0], f["to"][0]):
-            self.assertFalse(600 - 260 <= x <= 600 + 260)
+        for f in wide.get("moves") or []:          # either clear of the person, or left out when there is no room
+            for x in (f["from"][0], f["to"][0]):
+                self.assertFalse(600 - 260 <= x <= 600 + 260)
         self.assertEqual(wide["tag"], "PLAN > CHECK")
         self.assertEqual(card["moves"], [])
         self.assertLessEqual(card["chars"][0]["x"], 200)
@@ -276,3 +276,28 @@ class RedoKeepsStoryboardTests(unittest.TestCase):
         block = src[src.index('redo = str(spec.get("redo_picture")'):src.index('"status": "redo_picture"')]
         self.assertIn('"story.json"', block)
         self.assertNotIn('"storyboard-vector.json"', block)
+
+
+class NoEmptyShotTests(unittest.TestCase):
+    def test_a_shot_that_failed_to_draw_keeps_its_cast_and_things(self):
+        from golide_engine.stickman.collide import drop
+        story = {"shots": [{"kind": "wide", "set": "home", "chars": [{"id": "ada"}], "props": [{"icon": "book"}],
+                            "moves": [{"do": "big_phone"}], "tag": "VIDEO RESOURCES", "s": [3]}]}
+        drop(story, [{"shot": 0, "broken": True, "text": ""}])
+        shot = story["shots"][0]
+        self.assertEqual(shot["chars"], [{"id": "ada"}]); self.assertEqual(shot["set"], "home")
+        self.assertEqual(shot["props"], [{"icon": "book"}]); self.assertNotIn("moves", shot)
+
+    def test_things_stand_in_a_tidy_row_beside_the_cast_and_cards_keep_light_layers_only(self):
+        from golide_engine.stickman.longform import place_clear
+        story = {"shots": [
+            {"kind": "wide", "chars": [{"id": "a", "x": 430}], "props": [
+                {"icon": "target", "x": 930, "y": 300, "s": .34}, {"icon": "document", "x": 1110, "y": 410, "s": .34},
+                {"icon": "toolbox", "x": 1300, "y": 520, "s": .38}]},
+            {"kind": "counter", "value": {"to": 2}, "moves": [{"do": "chart_up"}, {"do": "confetti"}]}]}
+        place_clear(story)
+        props = story["shots"][0]["props"]
+        self.assertEqual(len({p["y"] for p in props}), 1)
+        self.assertTrue(all(p["x"] > 430 + 230 and p["s"] >= .5 for p in props))
+        self.assertEqual([m["do"] for m in story["shots"][1]["moves"]], ["confetti"])
+        self.assertTrue(story["shots"][1]["value"]["short"])

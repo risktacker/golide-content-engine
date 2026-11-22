@@ -108,21 +108,11 @@ def drop(story: dict, hits: list[dict]) -> dict:
     shots = story.get("shots") or []
     broken = {h["shot"] for h in hits if h.get("broken")}
     for i in sorted(broken):
-        # a shot the kit cannot draw takes a plain copy of the nearest shot that draws (its set and characters,
-        # nothing timed to words), over its own sentences
-        good = [j for j in sorted(range(len(shots)), key=lambda j: abs(j - i)) if j != i and j not in broken]
-        if not good:
-            continue
-        twin = json.loads(json.dumps(shots[good[0]]))
-        for key in ("labels", "props", "bubble", "tag", "caption", "lower_third", "stamp", "polaroid", "icons",
-                    "value", "compare", "items", "left", "right", "at"):
-            twin.pop(key, None)
-        if twin.get("kind") not in ("wide", "closeup", "walk", "crowd", "table"):
-            twin = {"kind": "wide", "set": "office", "chars": []}
-        for c in twin.get("chars") or []:
-            c.pop("beats", None)
-        twin["s"] = shots[i].get("s")
-        shots[i] = twin
+        # owner 2026-11-22: a shot that failed to draw came out as an empty room (the old twin copy). The shot
+        # keeps its own place, cast, things and words; only its extra layers go (that is where a draw fails).
+        if 0 <= i < len(shots):
+            for key in ("moves", "polaroid"):
+                shots[i].pop(key, None)
     for h in hits:
         if h.get("broken"):
             continue

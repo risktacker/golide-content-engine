@@ -497,6 +497,34 @@ def icon_world(self, c, t):
             label(c, s_, d["x"], d["y"] + 210 * sc + 70, fit_size(s_, 80, w), INK, align='center', skew=-0.1, alpha=K(t, d["t"] + .2, .2))
 
 
+def counter_world(self, c, t):
+    """The kit's counter card (owner 2026-11-22): its icon and caption are there from the first frame, so the card
+    is never empty before the number is spoken; the caption fits between the two icons; whole numbers count whole."""
+    from engine import shots as S
+    self.draw_bg(c); v = self.v; u = S.ease_out(S.K(t, self.ct, v.get("dur", 1.3)))
+    y = 470 if self.cmp or self.spec.get("caption") else 600
+    if self.spec.get("icon"):
+        S.draw_prop(c, self.spec["icon"], 300, 560, .9 * (S.back(S.K(t, self.t0, .4), 1.5)), t)
+    cap = self.spec.get("caption")
+    if cap:
+        label(c, cap, 960, y + 130, fit_size(cap, 80, 1040), INK, align='center', skew=-0.1, alpha=S.K(t, self.t0 + .15, .3))
+    if t >= self.ct:
+        whole = float(v["to"]).is_integer() and float(v.get("from", 0)).is_integer()
+        nf = S.fmt if (v.get("short") or whole) else (lambda q: f"{q:.1f}".rstrip("0").rstrip("."))
+        val = S.lerp(v.get("from", 0), v["to"], u); txt = f"{v.get('prefix', '')}{nf(val)}{v.get('suffix', '')}"
+        full = f"{v.get('prefix', '')}{nf(v['to'])}{v.get('suffix', '')}"; size = fit_size(full, 240, 1040, S.MARKER)
+        pu = S.pop(S.K(t, self.ct, .3))
+        c.save(); c.translate(960, y); c.rotate(-3); c.scale(pu, pu)
+        label(c, txt, 0, 0, size, S.colr(v.get("color"), S.LIME), font=S.MARKER, align='center', stroke=0, skew=0); c.restore()
+    if self.cmp and t >= self.cmp["t"]:
+        k = S.back(S.K(t, self.cmp["t"], .35), 1.4); c.save(); c.translate(960, 860); c.scale(k, k); c.rotate(2)
+        s_ = self.cmp["text"]; size = fit_size(s_, 70, 1040); w = S.text_w(s_, size)
+        S.rect(c, -w / 2 - 50, -size, w / 2 + 50, size * .55, '#FFFFFF', S.LW, r=20); label(c, s_, 0, 0, size, S.RED, align='center', skew=-0.08)
+        c.restore()
+        if self.cmp.get("icon"):
+            S.draw_prop(c, self.cmp["icon"], 1640, 560, .8 * S.back(S.K(t, self.cmp["t"], .4), 1.5), t)
+
+
 def register(shots_module) -> None:
     from golide_engine.stickman import rm_look, rm_roles
     rm_roles.install(shots_module)              # characters dressed for their role
@@ -576,6 +604,15 @@ def register(shots_module) -> None:
         return pop(c, text, x, y, *a, **k)
 
     shots_module.poplabel = poplabel_fit
+    fmt = shots_module.fmt
+
+    def fmt_whole(v):                      # counters to a whole number go in whole steps (never "1.2" on the way to 2)
+        return f"{round(v):,}" if abs(v) < 1e4 else fmt(v)
+
+    shots_module.fmt = fmt_whole
+    Counter = shots_module.KINDS.get("counter")
+    if Counter is not None and "world" in Counter.__dict__:
+        Counter.world = counter_world
     Icon = shots_module.KINDS.get("icon")
     if Icon is not None and "world" in Icon.__dict__:
         Icon.world = icon_world

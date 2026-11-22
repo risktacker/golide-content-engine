@@ -595,6 +595,37 @@ def attach_logos(story: dict[str, Any]) -> list[str]:
 
 
 BEHIND_MOVES = ("bot_rows", "crowd_cheer")
+SMALL_FX = ("confetti", "sparks", "hearts_rise", "emoji_pop")
+PROP_Y = (600, 760)
+
+
+def line_up(shot: dict[str, Any], chars: list[dict]) -> int:
+    """Owner 2026-11-22: things were small and scattered down a diagonal, some on the set's own boards. They now
+    stand in a tidy row (two rows past four) in the widest space beside the cast, in the order they are spoken,
+    each big enough to read."""
+    props = [p for p in shot.get("props") or [] if isinstance(p, dict)]
+    if not props:
+        return 0
+    busy = sorted((float(c.get("x", 960) or 960) - 230 * float(c.get("s", 1) or 1),
+                   float(c.get("x", 960) or 960) + 230 * float(c.get("s", 1) or 1)) for c in chars)
+    gaps, x = [], 140.0
+    for a, b in busy:
+        if a > x:
+            gaps.append((x, a))
+        x = max(x, b)
+    if x < 1780:
+        gaps.append((x, 1780.0))
+    a, b = max(gaps, key=lambda g: g[1] - g[0], default=(140.0, 1780.0))
+    per_row = max(1, min(4, int((b - a) // 250)))
+    rows = [props[i:i + per_row] for i in range(0, len(props), per_row)][:len(PROP_Y)]
+    kept = [p for row in rows for p in row]
+    for r, row in enumerate(rows):
+        step = (b - a) / len(row)
+        for k, p in enumerate(row):
+            p["x"], p["y"] = round(a + (k + .5) * step), PROP_Y[r] if len(rows) > 1 else 680
+            p["s"] = round(min(.62, max(.5, float(p.get("s", .5) or .5), min(.62, step / 420))), 2)
+    shot["props"] = kept + [p for p in shot["props"] if not isinstance(p, dict)]
+    return 1
 
 
 def place_clear(story: dict[str, Any]) -> int:
@@ -629,7 +660,20 @@ def place_clear(story: dict[str, Any]) -> int:
                 d["x"] = round(left + (i + .5) * col); d.pop("y", None)
             shot["icon_col"] = round(col)
             fixed += 1
+        kind = shot.get("kind")
         moves = [m for m in shot.get("moves") or [] if isinstance(m, dict)]
+        if kind in ("counter", "versus", "icon", "chart") and moves:
+            # owner 2026-11-22: a chart flying in over the counter hid its number and card. A card shot keeps
+            # only light sparkle; big layers belong to scenes.
+            keep = [m for m in moves if m.get("do") in SMALL_FX]
+            if len(keep) != len(moves):
+                shot["moves"] = keep; moves = keep; fixed += 1
+        if kind == "counter":
+            v = shot.get("value")
+            if isinstance(v, dict) and isinstance(v.get("to"), (int, float)) and float(v["to"]).is_integer():
+                v["short"] = True                  # whole numbers count in whole steps: never "1.2" on the way to 2
+        if kind in ("wide", "walk", "closeup", "crowd", "table") and shot.get("props"):
+            fixed += line_up(shot, chars)
         flows = [m for m in moves if m.get("do") == "data_flow"]
         if not flows:
             continue
@@ -650,11 +694,11 @@ def place_clear(story: dict[str, Any]) -> int:
         if x < 1760:
             gaps.append((x, 1760.0))
         a, b = max(gaps, key=lambda g: g[1] - g[0], default=(0.0, 0.0))
-        for m in flows:
-            if b - a >= 420:
+        if b - a >= 420:
+            for m in flows:
                 m["from"], m["to"] = [round(a + 40), 420], [round(b - 40), 360]
-            else:                                  # no room beside them: the line runs high over every head
-                m["from"], m["to"] = [220, 250], [1700, 210]
+        else:                                      # no free room: a line over the set's own signs and boards hid them
+            shot["moves"] = [m for m in moves if m.get("do") != "data_flow"]
         fixed += 1
     return fixed
 
