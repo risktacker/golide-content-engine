@@ -85,7 +85,10 @@ TITLE_RULE = (
     "unsupported every name, product, model version, company, number, date or claim in the title that the script "
     "does not say. If the list is empty, return the title exactly as given. If not, write a new title (max 90 "
     "characters) in the same form, hook and length as the MODELLED TITLE, using only what the script says, and "
-    "return it. No clickbait the script cannot pay off; no hashtags.")
+    "return it. No clickbait the script cannot pay off; no hashtags. Also list in unsupported any word a normal "
+    "viewer would not search or understand (event codes like 'SC26', benchmark or internal project names, a bare "
+    "'Breakdown'): the new title is what a viewer of this niche would click and type, under 65 characters "
+    "(owner 2026-11-22).")
 
 
 def title_input(title: str, modelled: str, script: str) -> str:

@@ -101,6 +101,27 @@ class WaitingOwnerVoice(RuntimeError):
         self.script = script
 
 
+def model_video_metadata(youtube: Any, spec: dict[str, Any]) -> str:
+    """The modelled video's own title, description and tags (owner 2026-11-22: we model what works, and the YouTube
+    API shows another channel's description and tags too). Empty when there is no model or the API can't say."""
+    url = str((spec.get("replace_model") or {}).get("url") or (spec.get("source_breakout") or {}).get("url") or "")
+    import re as _re
+    m = _re.search(r"(?:v=|youtu\.be/|shorts/)([A-Za-z0-9_-]{11})", url)
+    if not m or youtube is None:
+        return ""
+    try:
+        item = (youtube.videos().list(part="snippet", id=m.group(1)).execute().get("items") or [{}])[0]
+    except Exception:  # noqa: BLE001 - the metadata is written from the script alone
+        return ""
+    sn = item.get("snippet") or {}
+    if not sn:
+        return ""
+    return ("MODEL VIDEO (the video we modelled; copy what makes viewers find and click it)\n"
+            f"title: {sn.get('title', '')}\n"
+            f"tags: {', '.join((sn.get('tags') or [])[:40])}\n"
+            f"description (start): {str(sn.get('description', ''))[:900]}\n\n")
+
+
 def apply_locked_upload_defaults(metadata: dict[str, Any], policy: dict[str, Any]) -> dict[str, Any]:
     """Apply deterministic channel defaults after creative metadata generation."""
     normalized = dict(metadata)
@@ -2417,26 +2438,35 @@ class ProductionService:
         def metadata_stage():
             self._require_absent(metadata_path, "metadata")
             self._reserve(spec, text_model, Usage(input_tokens=max(1, len(script) // 4), output_tokens=12000))
+            model_meta = model_video_metadata(self.youtube, spec)
             output = text.generate_json(
-                "Create accurate, search-optimised YouTube metadata for GOLIDE. No hashtags in the title. "
-                "description: two or three short paragraphs that describe the actual video in plain, human words "
-                "(no hashtags, no keyword list, no timestamps, no links, no source citations; those are added separately or not at all). "
-                "keywords: 12 to 15 search phrases people are typing right now about this topic (use web search for "
-                "what is trending), most specific first, each 1 to 4 words. "
+                "Write the YouTube title, description and tags FROM THE VIEWER'S SIDE (owner 2026-11-22): we are "
+                "the people who watch this niche too. Ask: scrolling YouTube, what title would make ME click? What "
+                "words would I type into search to find this? Use only words a normal viewer knows and searches "
+                "(product, company and people names, the plain benefit or shock); never an event code, internal "
+                "name or jargon a viewer would not type (no 'SC26', no benchmark names, no 'Breakdown' on its own). "
+                "title: under 65 characters, the promise or the surprise first, a real name in it when the story "
+                "has one; no hashtags. When a MODEL VIDEO is given, model its title closely (same shape and hook "
+                "words) for our topic. "
+                "description: the FIRST sentence says plainly what the viewer gets, with the 2-3 main search words "
+                "in it (it is what search and the feed show); then one or two short plain paragraphs (no hashtags, "
+                "no keyword list, no timestamps, no links, no source citations). "
+                "keywords: 12 to 15 search phrases viewers really type about this (use web search), most searched "
+                "first, each 1 to 4 words. "
                 "hashtags: 5 to 8 relevant hashtags without spaces. "
-                "tags: 25 to 30 unique YouTube tags (exact topic, named companies, products and people, common "
-                "synonyms and searches, GOLIDE), each under 30 characters. "
+                "tags: 20 to 30 tags that are what viewers type (names, the topic in plain words, common questions "
+                "like 'what is ...'); when the MODEL VIDEO has tags, reuse the ones that fit our video; never the "
+                "channel name, never jargon nobody searches; each under 30 characters. "
                 "Do not write any timestamps or a chapter list; real chapters are added from the recording. "
                 "Return chapters as an empty list.",
-                f"FORMAT={spec['format']}\nSCRIPT\n{script}", METADATA_SCHEMA,
+                f"FORMAT={spec['format']}\n{model_meta}SCRIPT\n{script}", METADATA_SCHEMA,
                 web_search=True,
             )
             metadata = apply_locked_upload_defaults(
                 output.value | {"format": spec["format"]}, policy
             )
-            if spec.get("model_title"):
-                # 2026-10-21: the title rides the breakout it was modelled on.
-                metadata["title"] = str(spec["model_title"])[:100]
+            # 2026-11-22 (owner): the writer above models the source video's title from the viewer's side; the
+            # breakout's raw title is no longer pasted over it (it gave "SC26 Scientific Agent Breakdown").
             # 2026-10-13 SEO layout: summary, keywords, (chapters), hashtags; 20+ tags.
             from ..youtube_metadata import compose_description, fit_tags, seo_body
             metadata["seo_body"] = seo_body(str(metadata["description"]))
@@ -2483,8 +2513,11 @@ class ProductionService:
                 if offer.get("community_url") and offer["community_url"] not in metadata["description"]:
                     extra.append(f"Join the GOLIDE community for updates and all these stories: {offer['community_url']}")
                 if extra:
+                    # owner 2026-11-22: the first lines are what search and the feed read, so they stay the
+                    # viewer's sentence; the guide and community links come after the first paragraph
                     body = str(metadata["description"])
-                    metadata["description"] = "\n".join(extra) + "\n\n" + body
+                    first, _, rest = body.partition("\n\n")
+                    metadata["description"] = first + "\n\n" + "\n".join(extra) + ("\n\n" + rest if rest else "")
                 print(json.dumps({"status": "guide", "url": guide_url}))
             except Exception as exc:  # noqa: BLE001 - the video still ships without its guide
                 print(json.dumps({"status": "guide_failed", "error": str(exc)[:300]}))

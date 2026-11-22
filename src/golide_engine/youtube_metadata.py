@@ -148,7 +148,7 @@ def clean_tag(tag: str) -> str:
 def fit_tags(tags: list[str], keywords: list[str], limit_chars: int = 460, minimum: int = 21) -> list[str]:
     """More than 20 unique tags, safely inside YouTube's 500-character budget,
     counted the way YouTube counts them (quotes around multi-word tags, commas)."""
-    pool = _clean_keywords(list(tags) + list(keywords) + ["GOLIDE", "AI news", "tech news", "artificial intelligence",
+    pool = _clean_keywords(list(tags) + list(keywords) + ["AI news", "tech news", "artificial intelligence",
                                                           "AI explained", "automation", "technology", "AI tools",
                                                           "AI trends", "future of AI", "tech explained",
                                                           "machine learning", "AI update", "AI technology",
