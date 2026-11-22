@@ -43,10 +43,11 @@ One story call writes the whole narration the way working videos do (model scrip
 `config/story-example.txt` and `config/story-example-2.txt`), in the owner's voice guide
 (`config/script-voice.md`), facts only from verified research. Code cuts it into screen lines; a separate
 storyboard call picks gold words and pictures. Copy the method of model scripts, never their sentences.
-Close model (owner 2026-11-17, "we only use what is actually working"): a video he pastes with its transcript (the
-Studio box under the link, from any free transcript site; else the engine's own fetch) is retold beat by beat:
-same hook, reveals, scenes, dialogues and ending, a few words changed per sentence, cut to our length, facts checked
-against research, unconfirmed claims kept as "reportedly/allegedly" once (`story.CLOSE_MODEL`, `spec.model_transcript`).
+Close model (owner 2026-11-22, replaces 2026-11-17): a video he pastes with its transcript (the Studio box under the link,
+or the engine's own fetch: the Studio Worker reads the captions first, `worker/transcript.js`) is CONDENSED to our length
+without changing its context: the model's own sentences word for word, cut repeats, side stories, intros and filler first,
+then the weakest beats; a few joining words only where a cut leaves a gap; the creator's own plugs out
+(`story.CLOSE_MODEL`, `spec.model_transcript`).
 
 ## 3D engine (`src/golide_engine/vector/motion3d.py`)
 - Any object: the storyboard writes `3d: object=<name>; move=<lift|slide|open|swing|spin|explode|rise>;

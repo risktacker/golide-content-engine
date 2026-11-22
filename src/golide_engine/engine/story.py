@@ -78,19 +78,17 @@ def script_offer(format_name: str) -> str:
 
 
 CLOSE_MODEL = (
-    "YOUR ONE JOB (owner 2026-11-17): retell the MODEL SCRIPT below, shorter. It is a video that works; keep what "
-    "makes it work.\n"
-    "- Every beat stays, in the same order: the hook, each question to the viewer, each reveal and \"here's the strange "
-    "part\" turn, each little scene and dialogue (the narrator voices both sides, as the model does), each concrete "
-    "detail (names, places, amounts, the odd specifics that make it real), the jokes, the debate and the ending line.\n"
-    "- Fit the LENGTH by making each beat shorter (1 to 3 sentences), never by dropping beats. Keep each sentence's "
-    "shape and rhythm and change a few words in it, not every word.\n"
-    "- Short paragraphs: one thought per paragraph; a punch line stands alone on its own line.\n"
-    "- The FACT CHECK list only corrects a name, number or date the model got wrong. Never add a fact from it, never "
-    "add a rebuttal or a company's denial that the model does not make. A claim the model states as fact but the "
-    "check does not confirm gets one word (\"reportedly\", \"allegedly\", \"according to...\") and the story moves on.\n"
-    "- Leave out the model creator's own channel (their other videos, sponsor, name, calls to action). Ours is one "
-    "follow sentence near the end.\n"
+    "YOUR ONE JOB (owner 2026-11-22): CONDENSE the MODEL SCRIPT below to the LENGTH, without changing its context. "
+    "It is a video that works; this is the same transcript, shorter.\n"
+    "- Keep the model's own sentences, word for word. Do not reword, paraphrase or swap synonyms.\n"
+    "- Cut, in this order, until it fits: repeats of a point already made, side stories that do not move the story, "
+    "long intros and recaps, filler (\"so\", \"basically\", \"you know\"), then the weakest whole beats.\n"
+    "- Keep the hook, every key point, the numbers, names and examples, the turns and the ending, in the model's order.\n"
+    "- Where a cut leaves a gap, add at most a few joining words so it reads as one piece; nothing else is added.\n"
+    "- Leave out the model creator's own channel (their name, sponsor reads, other videos, calls to action). Ours is "
+    "one follow sentence near the end.\n"
+    "- A plain error of name, number or date is corrected from the FACT CHECK list; nothing else changes.\n"
+    "- Short paragraphs: one thought per paragraph.\n"
     "- Chapters: put the markers where the model's story turns.\n\n")
 
 
