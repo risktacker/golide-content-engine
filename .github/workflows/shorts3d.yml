@@ -1,0 +1,80 @@
+name: 3D Shorts engine (stills or clip, with the director's checks)
+
+# owner 2026-11-22: Shorts move to the open-source 3D Shorts engine (thuann-vn/claude-3d-animated-shorts, MIT), cloned at
+# the pinned commit in src/golide_engine/shorts3d/build.py, our scenes + director wired in by assets/shorts3d/hook.py.
+# Free: code + CC0 assets, no model calls, no ElevenLabs (the voice comes from the production's files).
+# mode=stills: director report + sheet.jpg (captions burned in) + sheet-debug.jpg. mode=video: the clip, frames split
+# across parallel browsers. Results go to the branch review-shorts3d-<scene>.
+on:
+  workflow_dispatch:
+    inputs:
+      mode: { description: "stills or video", default: stills }
+      scene: { description: "scene module in assets/shorts3d", default: chipmaker-open }
+      production: { description: "production id with the voice and word timings", default: golide-short-2026-11-22-trial }
+      review_branch: { description: "branch holding the production files", default: review-golide-short-2026-11-22-trial }
+      words: { description: "word timings file", default: timed-words-authoritative-v3.json }
+      voice: { description: "voice file", default: narration-ai.mp3 }
+      until: { description: "cut the voice at (seconds), empty = whole", default: "9.1" }
+      parts: { description: "parallel browsers for video", default: "4" }
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Engine at the pinned commit
+        run: |
+          C=$(python3 -c "import re;print(re.search(r'ENGINE_COMMIT = \"(\w+)\"', open('src/golide_engine/shorts3d/build.py').read())[1])")
+          git init -q ~/c3d && cd ~/c3d && git remote add origin https://github.com/thuann-vn/claude-3d-animated-shorts
+          git fetch -q --depth 1 origin "$C" && git checkout -q FETCH_HEAD && git log -1 --format='engine %H %cd'
+          mkdir -p engine/assets/rigs engine/assets/horse engine/film   # its fetch script writes here; the repo does not ship them
+      - name: Cached engine assets (Xbot rig, fonts, Poly Haven props)
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/c3d/engine/assets/rigs
+            ~/c3d/engine/assets/horse
+            ~/c3d/engine/assets/props/polyhaven
+            ~/c3d/engine/film/Anton.ttf
+            ~/c3d/engine/film/Inter-Black.otf
+          key: c3d-assets-f5b4c4a-v1
+      - name: Fetch the engine assets (first run only)
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: cd ~/c3d && bash scripts/fetch-assets.sh
+      - name: Engine packages, ffmpeg, software-WebGL Chrome
+        run: |
+          cd ~/c3d/engine && npm install --no-audit --no-fund
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg >/dev/null
+          # the engine's Chrome flags are for a Mac GPU; the runner has none, so Chrome starts through this wrapper
+          printf '#!/bin/sh\nexec /usr/bin/google-chrome "$@" --use-angle=swiftshader --use-gl=angle --enable-unsafe-swiftshader --ignore-gpu-blocklist\n' > ~/chrome-sw && chmod +x ~/chrome-sw
+          pip install -q -e .
+      - name: Production voice and word timings
+        run: |
+          P=review/${{ inputs.production }}/files/productions/${{ inputs.production }}
+          git fetch -q --depth 1 origin "+refs/heads/${{ inputs.review_branch }}:refs/remotes/origin/src"
+          mkdir -p ~/prod && git archive origin/src "$P/${{ inputs.words }}" "$P/${{ inputs.voice }}" | tar -x -C ~/prod
+          mv ~/prod/$P/* ~/prod/ && ls -la ~/prod
+      - name: Render (${{ inputs.mode }})
+        env: { CHROME: /home/runner/chrome-sw }
+        run: |
+          U="${{ inputs.until }}"; python3 -m golide_engine.shorts3d.build --engine ~/c3d/engine --scene "${{ inputs.scene }}" \
+            --words ~/prod/${{ inputs.words }} --voice ~/prod/${{ inputs.voice }} ${U:+--until $U} \
+            --out out --mode "${{ inputs.mode }}" --parts "${{ inputs.parts }}"
+      - name: Results to the review branch
+        if: always()
+        run: |
+          B=review-shorts3d-${{ inputs.scene }}; D=review/shorts3d/${{ inputs.scene }}
+          mkdir -p $D && cp out/*.jpg out/*.mp4 $D/ 2>/dev/null || true; cp out/stills-debug/report.json $D/ 2>/dev/null || true
+          mkdir -p $D/stills && cp out/stills/*.jpg $D/stills/ 2>/dev/null || true; rm -f $D/picture.mp4
+          ls -la $D
+          git config user.name "golide-bot" && git config user.email "bot@golidee.com"
+          git checkout -q -b "$B" && git add -f review && git commit -qm "TRIAL: 3D Shorts ${{ inputs.scene }} (${{ inputs.mode }})" && git push -qf origin "$B"

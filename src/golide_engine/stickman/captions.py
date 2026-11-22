@@ -21,9 +21,12 @@ DIM = 0x9E                                             # unsaid words at 38% (In
 REGION = {"full": (120, 120, 10, 44), "beside": (64, 644, 40, SIZE),
           # owner 2026-11-22: Stickman Shorts get the Inkee captions too, like Ricks Clips and Afterhour Theory: a few
           # big words at a time in the lower middle, inside the phone crop (130 px left, 160 right)
-          "short": (150, 180, 560, 84)}
-FRAME = {"short": (1080, 1920)}
-WORDS = {"short": 4}
+          "short": (150, 180, 560, 84),
+          # 3D Shorts engine (owner 2026-11-22, Ricks Clips format): 1-2 big words at a time in the lower third, below the
+          # faces; the director keeps every head out of this band (assets/shorts3d/director.js capTop/capBottom)
+          "short3d": (150, 180, 330, 84)}
+FRAME = {"short": (1080, 1920), "short3d": (1080, 1920)}
+WORDS = {"short": 4, "short3d": 2}
 
 
 def _shift(pauses: list[tuple[float, float]]):
@@ -81,7 +84,7 @@ def ass(lines: list[dict[str, Any]], place: str = "full", width: int = 1920, hei
             "Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, "
             "MarginR, MarginV, Encoding\n"
             f"Style: Cap,Poppins ExtraBold,{size},{_bgr(TEXT)},{_bgr(TEXT, DIM)},&H00000000,&H50000000,0,0,0,0,100,100,1,0,1,"
-            f"{4 if place == 'short' else 2.2},3,2,{left},{right},{bottom},1\n\n[Events]\n"
+            f"{4 if place.startswith('short') else 2.2},3,2,{left},{right},{bottom},1\n\n[Events]\n"
             "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n")
     rows = []
     for c in lines:
