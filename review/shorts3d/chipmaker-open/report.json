@@ -1,0 +1,186 @@
+{
+ "scene": "chipmaker-open",
+ "ok": true,
+ "stepped": [
+  "you (the chipmaker's boss) stepped clear of metal office desk",
+  "investor 1 stepped clear of metal office desk",
+  "investor 2 stepped clear of metal office desk",
+  "investor 3 stepped clear of metal office desk"
+ ],
+ "props": {
+  "metal office desk": [
+   1.68,
+   0.66,
+   0.79
+  ],
+  "clipboard": [
+   0.29,
+   0.04,
+   0.33
+  ],
+  "laptop": [
+   0.45,
+   0.28,
+   0.41
+  ],
+  "office notepads": [
+   1,
+   0.02,
+   0.86
+  ],
+  "desk lamp arm": [
+   0.43,
+   0.75,
+   0.52
+  ],
+  "alarm clock": [
+   0.12,
+   0.15,
+   0.08
+  ],
+  "potted plant": [
+   0.59,
+   0.7,
+   0.55
+  ],
+  "ceramic vase": [
+   0.17,
+   0.34,
+   0.17
+  ],
+  "Shelf": [
+   0.84,
+   1.74,
+   0.22
+  ],
+  "book encyclopedia set": [
+   0.46,
+   0.2,
+   0.14
+  ],
+  "drawer cabinet": [
+   0.96,
+   1.58,
+   0.41
+  ],
+  "painted wooden shelves": [
+   0.43,
+   0.94,
+   0.31
+  ],
+  "pachira aquatica": [
+   5.76,
+   1.6,
+   0.84
+  ],
+  "CoffeeCart": [
+   0.9,
+   1.44,
+   1.82
+  ],
+  "hanging picture frame": [
+   0.03,
+   0.42,
+   0.63
+  ],
+  "fire alarm": [
+   0.08,
+   0.12,
+   0.02
+  ],
+  "mounted fluorescent lights": [
+   0.76,
+   0.03,
+   0.54
+  ],
+  "rug rectangle stripes A": [
+   4.09,
+   0.14,
+   2.73
+  ],
+  "the wall TV": [
+   1.28,
+   0.75,
+   0.06
+  ]
+ },
+ "shots": [
+  {
+   "name": "1 establish: you and your company",
+   "t0": 0,
+   "t1": 1.88,
+   "found": [
+    "the camera is outside the set (inside a wall, floor or ceiling)"
+   ],
+   "ok": true,
+   "repair": {
+    "pitch": -0.12
+   }
+  },
+  {
+   "name": "2 low push: a huge AI IPO",
+   "t0": 1.88,
+   "t1": 3.04,
+   "found": [
+    "the wall TV is covered by the head of you (the chipmaker's boss)",
+    "the TV words \"CHIPMAKER\" is cropped at the frame edge",
+    "the TV words \"CHIPMAKER\" is covered by the head of you (the chipmaker's boss)"
+   ],
+   "ok": true,
+   "repair": {
+    "yaw": 0.5,
+    "pitch": 0
+   }
+  },
+  {
+   "name": "3 the news lands on the TV",
+   "t0": 3.04,
+   "t1": 4.32,
+   "found": [],
+   "ok": true,
+   "repair": null
+  },
+  {
+   "name": "4 the investors, hopeful",
+   "t0": 4.32,
+   "t1": 6.52,
+   "found": [
+    "the camera is outside the set (inside a wall, floor or ceiling)"
+   ],
+   "ok": true,
+   "repair": {
+    "fovK": 1.35,
+    "yaw": 0,
+    "pitch": 0
+   }
+  },
+  {
+   "name": "5 they start asking",
+   "t0": 6.52,
+   "t1": 8.12,
+   "found": [
+    "the camera is outside the set (inside a wall, floor or ceiling)",
+    "you (the chipmaker's boss) is cropped at the frame edge",
+    "the TV headline \"AI IPO\" is cropped at the frame edge"
+   ],
+   "ok": true,
+   "repair": {
+    "fovK": 1.2,
+    "yaw": 0.5,
+    "pitch": 0
+   }
+  },
+  {
+   "name": "6 dolly-zoom: the buildout",
+   "t0": 8.12,
+   "t1": 9.1,
+   "found": [
+    "the head of you (the chipmaker's boss) sits under the captions"
+   ],
+   "ok": true,
+   "repair": {
+    "dist": 1.1
+   }
+  }
+ ]
+}
