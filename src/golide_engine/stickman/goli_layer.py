@@ -81,22 +81,6 @@ def reactions_long(project: Path, duration: float) -> list[dict[str, Any]]:
     return _settle(events, duration)
 
 
-def reactions_short(project: Path, duration: float) -> list[dict[str, Any]]:
-    """Goli's poses for a cartoon-kit Short: a reaction at each new shot (point, explain, think in turn), shock on
-    the twist (where the music stops), both hands up for the payoff in the last shot."""
-    story = (project / "web" / "story.js").read_text(encoding="utf-8")
-    spans = [(int(a), int(b)) for a, b in re.findall(r"\ba:\s*(\d+)\s*,\s*b:\s*(\d+)", story)]
-    audio = (project / "audio.py").read_text(encoding="utf-8") if (project / "audio.py").exists() else ""
-    twist = re.search(r"MUSIC_END = ([\d.]+)", audio)
-    cycle = ("point", "explain", "think")
-    events = [(a / 30 + 0.3, cycle[k % 3]) for k, (a, _) in enumerate(spans[1:-1])]
-    if twist:
-        events.append((float(twist.group(1)), "shock"))
-    if spans:
-        events.append((spans[-1][0] / 30 + 0.4, "point_both_up"))
-    return _settle(events, duration)
-
-
 def _duration(path: Path) -> float:
     out = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)],
                          capture_output=True, text=True, check=True).stdout

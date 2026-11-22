@@ -1,0 +1,64 @@
+name: TRIAL 3D Short self-test (production handoff, free)
+
+# Free end-to-end test of the production path of a 3D Short, with a hand-written storyboard
+# (tests/fixtures/shorts3d-board-trial.json) in place of Sol's, so nothing is paid: hands the bundle to R2, starts
+# shorts3d-render.yml from Python exactly as production does (remote.render), waits, joins, then captions, voice and
+# Discipline Finishes (build.finish). The clip lands on review-shorts3d-selftest.
+on:
+  workflow_dispatch:
+    inputs:
+      until: { description: "seconds of the trial voice to use", default: "21" }
+      parts: { description: "render machines", default: "6" }
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  selftest:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    env:
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg >/dev/null
+          pip install -q -e "$GITHUB_WORKSPACE" numpy pillow
+      - name: Trial voice and word timings
+        run: |
+          P=review/golide-short-2026-11-22-trial/files/productions/golide-short-2026-11-22-trial
+          git fetch -q --depth 1 origin "+refs/heads/review-golide-short-2026-11-22-trial:refs/remotes/origin/src"
+          mkdir -p ~/prod && git archive origin/src "$P/timed-words-authoritative-v3.json" "$P/narration-ai.mp3" | tar -x -C ~/prod
+          mv ~/prod/$P/* ~/prod/
+      - name: Production handoff (bundle, render machines, join, finish)
+        run: |
+          python3 - <<'PY'
+          import json, time
+          from pathlib import Path
+          from golide_engine.shorts3d import board, build, remote
+          home = Path.home() / "prod"
+          words = build.scene_words(json.loads((home / "timed-words-authoritative-v3.json").read_text()), float("${{ inputs.until }}"))
+          fixed, notes = board.repair(json.loads(Path("tests/fixtures/shorts3d-board-trial.json").read_text()), words)
+          print("repaired:", notes)
+          pid = f"selftest-{int(time.time())}"
+          picture = remote.render(pid, fixed, words, Path("out/picture.mp4"), parts=int("${{ inputs.parts }}"), wait_minutes=100)
+          build.finish(picture, words, home / "narration-ai.mp3", Path("out/finish"), Path("out/clip.mp4"))
+          for name in ("sheet.jpg", "report.json"):
+              data = remote.get(pid, name)
+              if data:
+                  Path("out", name).write_bytes(data)
+          print("clip:", build._seconds(Path("out/clip.mp4")), "s; production id", pid)
+          PY
+      - name: Clip to the review branch
+        if: always()
+        run: |
+          D=review/shorts3d/selftest; mkdir -p $D && cp out/clip.mp4 out/sheet.jpg out/report.json $D/ 2>/dev/null || true
+          git config user.name "golide-bot" && git config user.email "bot@golidee.com"
+          git checkout -q -b review-shorts3d-selftest && git add -f review && { git diff --cached --quiet && exit 0; } ; git commit -qm "TRIAL: 3D Short self-test" && git push -qf origin review-shorts3d-selftest

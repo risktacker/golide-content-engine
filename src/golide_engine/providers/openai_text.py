@@ -22,10 +22,11 @@ def _cut_off(response) -> bool:
     return reason in (None, "max_output_tokens")
 
 
-def _create(kwargs: dict):
-    """One Responses call; a cut-off answer is retried with double the output budget."""
+def _create(kwargs: dict, grow: bool = True):
+    """One Responses call; a cut-off answer is retried with double the output budget (unless grow=False: a call with a
+    hard cost cap, owner 2026-11-22 "I ain't paying for retries")."""
     response = client().responses.create(**kwargs)
-    for _ in range(BUDGET_RETRIES):
+    for _ in range(BUDGET_RETRIES if grow else 0):
         if not _cut_off(response) or kwargs["max_output_tokens"] >= MAX_OUTPUT_CAP:
             break
         kwargs = {**kwargs, "max_output_tokens": min(MAX_OUTPUT_CAP, kwargs["max_output_tokens"] * 2)}
@@ -55,7 +56,7 @@ class OpenAITextProvider:
 
     def generate_json(self, instructions: str, content: str, schema: dict, web_search: bool = False,
                       max_output_tokens: int = 12000, reasoning_effort: str | None = None,
-                      images: list[str] | None = None) -> ProviderOutput:
+                      images: list[str] | None = None, grow: bool = True) -> ProviderOutput:
         """``images``: image URLs or data URLs the model looks at with the text (2026-11-01)."""
         payload = content
         if images:
@@ -71,7 +72,7 @@ class OpenAITextProvider:
         }
         if web_search:
             kwargs["tools"] = [{"type": "web_search"}]
-        response = _create(kwargs)
+        response = _create(kwargs, grow)
         input_tokens, cached, output_tokens = usage_from_response(response)
         return ProviderOutput(json.loads(response.output_text), response.id, input_tokens, cached, output_tokens)
 

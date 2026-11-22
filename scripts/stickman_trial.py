@@ -18,7 +18,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from golide_engine.edit.pipeline import outfit_today, settings  # noqa: E402
 from golide_engine.providers.openai_text import OpenAITextProvider  # noqa: E402
-from golide_engine.stickman import goli_layer, longform, short  # noqa: E402
+from golide_engine.stickman import goli_layer, longform  # noqa: E402
 
 PRICES = {"gpt-5.6-sol": (4.0, 20.0)}   # USD per million input / output tokens (config/provider-pricing.json)
 
@@ -76,19 +76,8 @@ def main() -> None:
         poses = goli_layer.reactions_long(project, goli_layer._duration(video)) if goli else []
         shutil.copy(project / "story.json", out / "story.json")
     else:
-        project = out / "stickman-short"
-        try:
-            video = short.make(writer, project, title, words, duration, narration, record=record)
-        finally:
-            for sheet in sorted((project / "stills").glob("sheet-attempt*.jpg")):
-                shutil.copy(sheet, out / sheet.name)
-            for f in ("web/story.js", "work/PLAN.md"):
-                if (project / f).exists():
-                    shutil.copy(project / f, out / Path(f).name)
-            write_cost(out, spent)
-        if not video:
-            raise SystemExit("TRIAL: the Short still failed its look check after the fix rounds (Goli would make it)")
-        pauses, poses = [], (goli_layer.reactions_short(project, goli_layer._duration(video)) if goli else [])
+        # owner 2026-11-22: Shorts are made in the 3D Shorts engine (.github/workflows/shorts3d.yml)
+        raise SystemExit("Stickman trials are long videos; Shorts use the 3D Shorts engine (shorts3d.yml)")
     shutil.copy(video, out / "stickman.mp4")
     if goli:
         goli_layer.add(fmt, out / "stickman.mp4", narration, out / "goli", out / "stickman-goli.mp4", outfit_today(),

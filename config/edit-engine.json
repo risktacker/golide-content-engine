@@ -12,10 +12,18 @@
     "max_cost_usd_per_scene": 0.6
   },
   "stickman": {
-    "_note": "2026-11-17 (owner): Stickman style, made with the kits' own packages. Long: ReachMora (vendor/reachmora), story.json written by this model from the kit's story format. Shorts: cartoon-short-kit (vendor/cartoon-short-kit), world and story written by this model per its skill, rendered across `workers` browsers. res null = 1080p long, '720' = half the render time.",
+    "_note": "2026-11-17 (owner): Stickman style, long videos: ReachMora (vendor/reachmora), story.json written by this model from the kit's story format. res null = 1080p long, '720' = half the render time. Shorts: see shorts3d (2026-11-22).",
     "model": "gpt-5.6-sol",
     "reasoning_effort": "medium",
     "res": null,
     "workers": 3
+  },
+  "shorts3d": {
+    "_note": "2026-11-22 (owner): Shorts in the Stickman style are made in the 3D Shorts engine (thuann-vn/claude-3d-animated-shorts, MIT; src/golide_engine/shorts3d). Sol writes ONE storyboard (data, never code), capped at max_cost_usd, saved at once and never paid twice; the director frames and checks every shot for free; frames render across `parts` GitHub machines. hold_private: uploaded private and no Reels until the owner approves the new engine; set false to publish on schedule.",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "medium",
+    "max_cost_usd": 0.86,
+    "parts": 12,
+    "hold_private": true
   }
 }

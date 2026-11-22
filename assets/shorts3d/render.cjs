@@ -16,7 +16,7 @@ const CHROME = process.env.CHROME || '/usr/bin/google-chrome';
   const page = await browser.newPage(); const errors = [];
   page.on('pageerror', e => { errors.push(e.message); console.log('PAGE ERROR', e.message); });
   page.on('response', r => { if (r.status() >= 400 && !r.url().endsWith('favicon.ico')) console.log('HTTP', r.status(), r.url()); });
-  await page.goto(`http://127.0.0.1:${srv.address().port}/index.html?w=${w}&h=${h}&look=c&style=ph&viewer=1&golide=${SCENE}`);
+  await page.goto(`http://127.0.0.1:${srv.address().port}/index.html?w=${w}&h=${h}&look=c&style=ph&viewer=1&golide=${SCENE}${process.env.XQ || ''}`);   // XQ: e.g. &set=home
   await page.waitForFunction('window.GOLIDE && window.GOLIDE.ready || window.__err', { timeout: 300000 }).catch(e => { throw new Error('the scene never got ready: ' + (errors.join(' | ') || e.message)); });
   fs.mkdirSync(OUT, { recursive: true });
   const report = await page.evaluate(() => window.GOLIDE.direct());
@@ -26,7 +26,7 @@ const CHROME = process.env.CHROME || '/usr/bin/google-chrome';
   const dur = await page.evaluate(() => window.GOLIDE.dur);
   if (mode === 'stills') {
     const ts = a ? a.split(',').map(Number) : (await page.evaluate(() => window.GOLIDE.shots)).flatMap(s => [s.t0 + 0.05, (s.t0 + s.t1) / 2, s.t1 - 0.05]);
-    for (const t of ts) { const d = await page.evaluate((t, dbg) => window.GOLIDE.frame(t, dbg), t, b === 'debug'); fs.writeFileSync(path.join(OUT, `still-${t.toFixed(2)}.jpg`), Buffer.from(d.split(',')[1], 'base64')); }
+    for (const t of ts) { const d = await page.evaluate((t, dbg) => window.GOLIDE.frame(t, dbg), t, b === 'debug'); fs.writeFileSync(path.join(OUT, `still-${t.toFixed(2).padStart(6, '0')}.jpg`), Buffer.from(d.split(',')[1], 'base64')); }
     console.log(`${ts.length} stills -> ${OUT}`);
   }
   if (!report.ok) { await browser.close(); srv.close(); console.error('director: a shot could not be repaired; see report.json'); process.exit(3); }

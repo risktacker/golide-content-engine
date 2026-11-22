@@ -476,97 +476,90 @@ class ProductionService:
             if not made.exists():
                 shutil.copy(video_path, made)
             duration = goli_layer._duration(made)
-            if fmt == "long":
-                poses = goli_layer.reactions_long(work / "stickman", duration)
-                pauses = longform.gaps(work / "stickman")
-            else:
-                poses = goli_layer.reactions_short(work / "stickman-short", duration)
-                pauses = []
+            if fmt != "long":      # owner 2026-11-17: Goli beside Stickman is long only (a Short runs without him)
+                raise RuntimeError("Goli beside Stickman is for long videos only")
+            poses = goli_layer.reactions_long(work / "stickman", duration)
+            pauses = longform.gaps(work / "stickman")
             goli_layer.add(fmt, made, narration, work / "goli-layer", video_path, outfit_today(), poses, pauses)
 
         self.runner.run(production_id, "goli-layer-v1", stage, attempts=1)
 
-    def _stickman_short(self, spec, work: Path, production_id: str, timed_words, narration: Path,
+    def _shorts3d_short(self, spec, work: Path, production_id: str, timed_words, narration: Path,
                         narration_seconds: float, video_path: Path) -> bool:
-        """A Short in the Stickman style: the cartoon-short-kit (vendor/cartoon-short-kit), its world and story written
-        by the model for this voice (stickman/short.py). True when the video was made."""
+        """A Short in the 3D Shorts engine (owner 2026-11-22: "Bingo. Now this is the direction"; src/golide_engine/
+        shorts3d). Sol writes ONE storyboard as data, saved at once under a fingerprint of the recording and never paid
+        for twice; it is repaired for free (shorts3d/board.py) and the director frames and checks every shot; frames
+        render across GitHub machines (shorts3d/remote.py); captions, the voice and Discipline Finishes go on here."""
+        import hashlib
         from ..edit.pipeline import settings
         from ..providers.openai_text import OpenAITextProvider
-        from ..stickman import short
-
-        conf = settings().get("stickman") or {}
-        project = work / "stickman-short"
-        writer = OpenAITextProvider(conf.get("model", "gpt-5.6-sol"), conf.get("reasoning_effort", "medium"))
-        made: dict[str, bool] = {"ok": (project / "out" / "stickman.mp4").exists()}
-
-        # 2026-11-18 (owner: "you spend that 1 dollar again and again"): the cartoon Sol wrote is kept in R2 under a
-        # fingerprint of the recording's words and length, so a retry, a cancel or a new upload of the same
-        # recording reuses it for free
-        import hashlib
+        from ..shorts3d import board as board3d, build as build3d, remote as remote3d
         from ..storage.r2 import r2_store_from_environment
-        store = r2_store_from_environment()
-        mark = hashlib.sha256(json.dumps([[w.get("word"), round(float(w.get("start", 0)), 2)] for w in timed_words]
-                                         + [round(float(narration_seconds), 2)]).encode()).hexdigest()[:24]
-        saved_key = f"stickman-short/{mark}.json"
 
-        def saved_parts() -> dict[str, Any] | None:
+        if not 45.0 <= float(narration_seconds) <= 75.0:     # owner 2026-11-18: every Short is 45-75 s, no two ways
+            raise RuntimeError(f"3D Short: the recording is {narration_seconds:.1f} s; a Short is 45-75 s")
+        conf = settings().get("shorts3d") or {}
+        folder = work / "shorts3d"
+        folder.mkdir(parents=True, exist_ok=True)
+        words = build3d.scene_words(timed_words, None)
+        writer = OpenAITextProvider(conf.get("model", "gpt-5.6-sol"), conf.get("reasoning_effort", "medium"))
+        store = r2_store_from_environment()
+        mark = hashlib.sha256(json.dumps([[w["word"], round(w["start"], 2)] for w in words]
+                                         + [round(float(narration_seconds), 2)]).encode()).hexdigest()[:24]
+        saved_key = f"shorts3d-board/{mark}.json"
+        board_file = folder / "board.json"
+
+        def saved() -> dict[str, Any] | None:
+            if board_file.exists():
+                return json.loads(board_file.read_text(encoding="utf-8"))
             if store is None:
                 return None
             try:
                 with urllib.request.urlopen(store.resolve(f"r2://{saved_key}", expires_seconds=600), timeout=30) as r:
                     return json.loads(r.read().decode("utf-8"))
-            except Exception:  # noqa: BLE001 - nothing saved yet (or storage unreachable): Sol writes it
+            except Exception:  # noqa: BLE001 - nothing saved yet: Sol writes it (once)
                 return None
 
-        def save_parts(parts: dict[str, Any]) -> None:
-            if store is not None:
-                try:
-                    store.put_object(saved_key, json.dumps(parts).encode("utf-8"), "application/json")
-                except Exception as error:  # noqa: BLE001 - the video still goes on
-                    print(json.dumps({"status": "stickman_cartoon_not_saved", "error": str(error)[:200]}))
-
-        def record_call(name: str, out) -> None:
-            before = self.costs.total(production_id)
-            self.costs.record(production_id, name, "openai", writer.model,
-                              Usage(input_tokens=out.input_tokens, cached_input_tokens=out.cached_input_tokens,
-                                    output_tokens=out.output_tokens), out.request_id)
-            # the real numbers of every Sol call, in the run log (owner 2026-11-18: no more estimates)
-            print(json.dumps({"status": "stickman_sol_call", "call": name, "input_tokens": out.input_tokens,
-                              "cached_input_tokens": out.cached_input_tokens, "output_tokens": out.output_tokens,
-                              "cost_usd": round(self.costs.total(production_id) - before, 4)}), flush=True)
-
         def stage() -> None:
-            if not made["ok"]:
-                reused = saved_parts()
-                if reused is None and (project / "web" / "story.js").exists():
-                    reused = short.recover_parts(project)     # owner 2026-11-22: a storyboard written once is never paid twice
-                if reused is None:
-                    self._reserve(spec, writer.model, Usage(input_tokens=60000, output_tokens=40000))
-                mp4 = short.make(writer, project, str(spec.get("title") or "GOLIDE"), timed_words, narration_seconds,
-                                 narration, workers=int(conf.get("workers", 3)), parts=reused, save=save_parts,
-                                 record=record_call)
-                made["ok"] = bool(mp4 and mp4.exists())
-                if not made["ok"]:
-                    # 2026-11-22: a stage that did not make the video is not "completed", so the next run tries the
-                    # same saved storyboard again (after the engine fix) instead of skipping it
-                    raise RuntimeError("Stickman Short: the page could not load the saved storyboard; it is kept, "
-                                       "re-render after the engine fix (no new storyboard is paid for)")
-            if made["ok"]:
-                video_path.parent.mkdir(parents=True, exist_ok=True)
-                video_path.write_bytes((project / "out" / "stickman.mp4").read_bytes())
-                # owner 2026-11-22: word captions on Stickman Shorts too (Inkee's), burned over the kit's picture
-                from ..stickman import captions as stickman_captions
-                stickman_captions.add(video_path, timed_words, [], "short", work / "stickman-captions")
+            raw = saved()
+            if raw is None:
+                ins = board3d.instructions()
+                est = board3d.estimate_input_tokens(ins + board3d.request(str(spec.get("title") or ""), words, board3d.phrases(words)))
+                self._reserve(spec, writer.model, Usage(input_tokens=est, output_tokens=board3d.max_output_tokens(est)))
+                raw, out = board3d.write(writer, str(spec.get("title") or "GOLIDE"), words)
+                before = self.costs.total(production_id)
+                self.costs.record(production_id, "shorts3d-storyboard", "openai", writer.model,
+                                  Usage(input_tokens=out.input_tokens, cached_input_tokens=out.cached_input_tokens,
+                                        output_tokens=out.output_tokens), out.request_id)
+                print(json.dumps({"status": "shorts3d_storyboard_written", "input_tokens": out.input_tokens,
+                                  "output_tokens": out.output_tokens,
+                                  "cost_usd": round(self.costs.total(production_id) - before, 4)}), flush=True)
+                board_file.write_text(json.dumps(raw), encoding="utf-8")     # saved at once: never paid for twice
+                if store is not None:
+                    try:
+                        store.put_object(saved_key, json.dumps(raw).encode("utf-8"), "application/json")
+                    except Exception as error:  # noqa: BLE001 - kept on this machine; the video goes on
+                        print(json.dumps({"status": "shorts3d_storyboard_not_saved", "error": str(error)[:200]}))
+            fixed, notes = board3d.repair(raw, words)
+            for n in notes:
+                print(json.dumps({"status": "shorts3d_storyboard_repaired", "note": n}))
+            (folder / "board-fixed.json").write_text(json.dumps(fixed, indent=1), encoding="utf-8")
+            picture = remote3d.render(production_id, fixed, words, folder / "picture.mp4",
+                                      parts=int(conf.get("parts", remote3d.PARTS)))
+            build3d.finish(picture, words, narration, folder / "finish", video_path)
 
-        self.runner.run(production_id, "render-stickman-short-v2", stage, attempts=1)
-        if made["ok"]:
-            story = (project / "web" / "story.js").read_text(encoding="utf-8")
-            spans = [(int(a), int(b)) for a, b in re.findall(r"\ba:\s*(\d+)\s*,\s*b:\s*(\d+)", story)]
-            scenes = [{"id": f"scene-{k:03d}", "start": a / 30, "end": (b + 1) / 30, "duration": round((b + 1 - a) / 30, 3),
-                       "visual": "stickman", "visual_caption": "stickman"} for k, (a, b) in enumerate(spans)]
-            (work / "storyboard-vector.json").write_text(json.dumps({"renderer": "stickman", "scenes": scenes}, indent=2) + "\n",
-                                                         encoding="utf-8")
-        return made["ok"]
+        self.runner.run(production_id, "render-shorts3d-v1", stage, attempts=1)
+        if not video_path.exists():
+            raise RuntimeError("3D Short: the render did not make a video (the storyboard is kept; re-run renders it again)")
+        fixed = json.loads((folder / "board-fixed.json").read_text(encoding="utf-8"))
+        starts = [words[s["from"]]["start"] if s["from"] else 0.0 for s in fixed["shots"]] + [words[-1]["end"]]
+        scenes = [{"id": f"scene-{k:03d}", "start": round(a, 3), "end": round(b, 3), "duration": round(b - a, 3),
+                   "visual": "shorts3d", "visual_caption": "3D"} for k, (a, b) in enumerate(zip(starts, starts[1:]))]
+        (work / "storyboard-vector.json").write_text(json.dumps({"renderer": "shorts3d", "scenes": scenes}, indent=2) + "\n",
+                                                     encoding="utf-8")
+        if conf.get("hold_private", True):
+            self._hold_private = getattr(self, "_hold_private", set()) | {production_id}
+        return True
 
     def _record_text(self, production_id: str, stage: str, output: ProviderOutput) -> None:
         model = self.providers.config["text"]["model"]
@@ -1623,9 +1616,8 @@ class ProductionService:
         from ..edit import pipeline as edit_pipeline
         # 2026-11-11 (owner): the edit engine (real sources, Goli the host, HyperFrames motion design),
         # switched on per format in config/edit-engine.json.
-        # 2026-11-17 (owner): Stickman, the third visual style, made with the kits' own packages: long videos with
-        # the ReachMora 2D long-form engine (stickman/longform.py), Shorts with the cartoon-short-kit
-        # (stickman/short.py). A Short whose scene could not be made twice is made in Goli instead.
+        # 2026-11-17 (owner): Stickman, the third visual style: long videos with the ReachMora 2D long-form engine
+        # (stickman/longform.py); Shorts (owner 2026-11-22) with the 3D Shorts engine (shorts3d/).
         stickman_made = False
         style_now = str(spec.get("video_style") or "").lower()
         # 2026-11-18 (owner, after the fast-cut Elon test): Stickman is on Shorts again; Stickman + Goli stays long only
@@ -1643,7 +1635,8 @@ class ProductionService:
                     shifted.write_text(longform.shift_srt(spoken_srt.read_text(encoding="utf-8"), pauses), encoding="utf-8")
                     spoken_srt = shifted
             else:
-                stickman_made = self._stickman_short(spec, work, production_id, timed_words, narration,
+                # owner 2026-11-22: Shorts move to the 3D Shorts engine (the flat-card cartoon kit is retired)
+                stickman_made = self._shorts3d_short(spec, work, production_id, timed_words, narration,
                                                      narration_seconds, video_path)
             if stickman_made and style_now == "stickman_goli" and str(spec["format"]) != "long":
                 # 2026-11-17: beside a vertical video on a phone screen the picture would be under half the width;
@@ -2819,6 +2812,10 @@ class ProductionService:
             raise RuntimeError("automatic QA failed: " + "; ".join(qa.failures))
 
         release = spec["release"] | {"qa": {"passed": True}}
+        if production_id in getattr(self, "_hold_private", set()):
+            # owner plan 2026-11-22: the first 3D Shorts go up private until he approves the engine (no publish time,
+            # no Reels); config/edit-engine.json shorts3d.hold_private
+            release = {k: v for k, v in release.items() if k != "scheduled_at"} | {"hold_private": True}
         files = {
             "video": video_path, "thumbnail": thumbnail, "metadata": metadata_path,
             "spoken_captions": spoken_srt, "visual_captions": visual_srt,

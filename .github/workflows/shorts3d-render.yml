@@ -1,0 +1,101 @@
+name: 3D Short render (director check, then frames across machines)
+run-name: "3D Short render ${{ inputs.production_id }}"
+
+# Started by the production job (src/golide_engine/shorts3d/remote.py) for a Short in the 3D engine. Free: code plus
+# CC0 assets on GitHub machines, no model calls. The check job runs the director on the storyboard (stills + report);
+# a shot it cannot repair stops everything before any frame is drawn. Then one browser per machine renders its frames
+# (several browsers on one machine were slower than one) and the join job stitches the picture.
+on:
+  workflow_dispatch:
+    inputs:
+      production_id: { description: "production id (its bundle is in R2 under shorts3d/<id>/)", required: true }
+      parts: { description: "machines", default: "12" }
+
+permissions:
+  contents: read
+
+env:
+  R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+  R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+  R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+  R2_BUCKET: ${{ secrets.R2_BUCKET }}
+  CHROME: /home/runner/chrome-sw
+  PID: ${{ inputs.production_id }}
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    outputs:
+      parts: ${{ steps.parts.outputs.list }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/shorts3d-setup
+      - name: Storyboard and words
+        run: python3 -m golide_engine.shorts3d.remote fetch --pid "$PID" --file ~/bundle/board.json
+      - name: Director check (stills)
+        run: python3 -m golide_engine.shorts3d.build --engine ~/c3d/engine --board ~/bundle/board.json --words ~/bundle/words.json --out out --mode stills
+      - name: Report and sheet to R2
+        if: always()
+        run: |
+          [ -f out/stills-debug/report.json ] && python3 -m golide_engine.shorts3d.remote put --pid "$PID" --file out/stills-debug/report.json || true
+          [ -f out/sheet.jpg ] && python3 -m golide_engine.shorts3d.remote put --pid "$PID" --file out/sheet.jpg || true
+          [ -f out/sheet-debug.jpg ] && python3 -m golide_engine.shorts3d.remote put --pid "$PID" --file out/sheet-debug.jpg || true
+      - id: parts
+        run: echo "list=$(python3 -c "print(list(range(int('${{ inputs.parts }}'))))")" >> "$GITHUB_OUTPUT"
+
+  frames:
+    needs: check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    strategy:
+      fail-fast: true
+      matrix:
+        part: ${{ fromJSON(needs.check.outputs.parts) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/shorts3d-setup
+      - run: python3 -m golide_engine.shorts3d.remote fetch --pid "$PID" --file ~/bundle/board.json
+      - name: Frames ${{ matrix.part }} of ${{ inputs.parts }}
+        run: |
+          python3 -m golide_engine.shorts3d.build --engine ~/c3d/engine --board ~/bundle/board.json --words ~/bundle/words.json \
+            --out "$PWD/out" --mode part --part ${{ matrix.part }} --parts ${{ inputs.parts }}
+          python3 -m golide_engine.shorts3d.remote put --pid "$PID" --file out/part-${{ matrix.part }}.mp4
+
+  join:
+    needs: frames
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg >/dev/null
+          pip install -q -e "$GITHUB_WORKSPACE"
+      - name: Join the parts
+        run: |
+          N=${{ inputs.parts }}; mkdir -p parts
+          python3 - <<PY
+          from pathlib import Path
+          from golide_engine.shorts3d import remote, build
+          n = int("$N"); d = Path("parts")
+          for i in range(n):
+              (d / f"part-{i}.mp4").write_bytes(remote.get("$PID", f"part-{i}.mp4") or b"")
+          build.join(d, n, Path("picture.mp4"))
+          PY
+          python3 -m golide_engine.shorts3d.remote put --pid "$PID" --file picture.mp4
+          python3 -m golide_engine.shorts3d.remote done --pid "$PID"
+
+  failed:
+    needs: [check, frames, join]
+    if: failure() || cancelled()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: |
+          pip install -q -e "$GITHUB_WORKSPACE"
+          python3 -m golide_engine.shorts3d.remote failed --pid "$PID" \
+            --message "render run ${{ github.run_id }} failed (check: ${{ needs.check.result }}, frames: ${{ needs.frames.result }}, join: ${{ needs.join.result }}); see https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} and shorts3d/$PID/report.json"

@@ -1,0 +1,38 @@
+name: 3D Shorts engine setup
+description: The engine at its pinned commit (assets cached), Node packages, ffmpeg, software-WebGL Chrome, our package.
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with: { node-version: "20" }
+    - uses: actions/setup-python@v5
+      with: { python-version: "3.12" }
+    - name: Engine at the pinned commit
+      shell: bash
+      run: |
+        C=$(python3 -c "import re;print(re.search(r'ENGINE_COMMIT = \"(\w+)\"', open('src/golide_engine/shorts3d/build.py').read())[1])")
+        rm -rf ~/c3d && git init -q ~/c3d && cd ~/c3d && git remote add origin https://github.com/thuann-vn/claude-3d-animated-shorts
+        git fetch -q --depth 1 origin "$C" && git checkout -q FETCH_HEAD
+        mkdir -p engine/assets/rigs engine/assets/horse engine/film
+    - name: Cached engine assets
+      id: cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/c3d/engine/assets/rigs
+          ~/c3d/engine/assets/horse
+          ~/c3d/engine/assets/props/polyhaven
+          ~/c3d/engine/film/Anton.ttf
+          ~/c3d/engine/film/Inter-Black.otf
+        key: c3d-assets-f5b4c4a-v1
+    - name: Fetch the engine assets (first run only)
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: cd ~/c3d && bash scripts/fetch-assets.sh
+    - name: Packages, ffmpeg, Chrome wrapper
+      shell: bash
+      run: |
+        cd ~/c3d/engine && npm install --no-audit --no-fund --silent
+        sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg >/dev/null
+        printf '#!/bin/sh\nexec /usr/bin/google-chrome "$@" --use-angle=swiftshader --use-gl=angle --enable-unsafe-swiftshader --ignore-gpu-blocklist\n' > ~/chrome-sw && chmod +x ~/chrome-sw
+        pip install -q -e "$GITHUB_WORKSPACE" numpy pillow

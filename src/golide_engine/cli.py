@@ -802,7 +802,7 @@ def main() -> int:
                 delivered = False
                 print(f"::warning title=Video email not sent::{str(exc)[:300]}")
         reels = None
-        if spec.get("format") == "short" and bridge:
+        if spec.get("format") == "short" and bridge and not release.get("hold_private"):   # held: no Reels until approved
             # Shorts also go out as Instagram and Facebook Reels (with a cover
             # frame). Best effort: YouTube is already live, and a failed Reel
             # is retried by the distribution runs.
