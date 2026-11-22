@@ -47,3 +47,16 @@ def test_the_writer_gets_the_fast_pace_logo_and_city_rules():
     ask = short.request("T", short.phrases([{"word": "Google.", "start": 0.0, "end": 0.5}], 1.0),
                         logos={"google": {"d": "", "hex": "", "title": "Google"}})
     assert "REAL LOGOS READY" in ask and "google: Google" in ask
+
+
+def test_the_kits_parse_as_javascript():
+    """A stray comment once swallowed a loop and broke every Short: both kits must parse."""
+    import shutil, subprocess
+    from pathlib import Path
+    if not shutil.which("node"):
+        return
+    root = Path(__file__).resolve().parents[1] / "src" / "golide_engine" / "stickman" / "short_kit"
+    world = (root / "world-kit.js").read_text()
+    subprocess.run(["node", "-e", "new Function(require('fs').readFileSync(0, 'utf8'))"], input=world, text=True, check=True)
+    cast = (root / "cast-kit.js").read_text().replace("export const ", "const ")
+    subprocess.run(["node", "-e", "new Function(require('fs').readFileSync(0, 'utf8'))"], input=cast, text=True, check=True)

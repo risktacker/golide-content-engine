@@ -369,13 +369,14 @@ const groundPaint = (g, colour, tex = null, size = 540) => { size = Math.min(siz
   const m = tex ? toon({ map: P.tex(tex, size / 8, size / 8), color: colour }) : KC(colour);
   const pl = add(new THREE.CircleGeometry(size / 2, 64), m, 0, 0.005, 0, g, { cast: false }); pl.rotation.x = -Math.PI / 2; pl.userData.ndSkip = true;   // no ink from the ground's far edge
   const hill = KC(new THREE.Color(colour).multiplyScalar(0.86).getStyle()), r_ = P.rng(size);
-  for (let i = 0; i < 46; i++) { const a = i / 46 * Math.PI * 2, d = size / 2 - 24 - r_() * 10; const h = add(new THREE.SphereGeometry(26 + r_() * 14, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), hill, Math.cos(a) * d, 0, Math.sin(a) * d, g, { cast: false }); h.scale.y = 0.28 + r_() * 0.2; h.userData.ndSkip = true; }
+  // small grounds (a rooftop) have no hills: they would stand on the set
+  if (size >= 300) for (let i = 0; i < 46; i++) { const a = i / 46 * Math.PI * 2, d = size / 2 - 24 - r_() * 10; const h = add(new THREE.SphereGeometry(26 + r_() * 14, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), hill, Math.cos(a) * d, 0, Math.sin(a) * d, g, { cast: false }); h.scale.y = 0.28 + r_() * 0.2; h.userData.ndSkip = true; }
   return pl; };
 const tree = (g, x, z, h = 6, c = '#4f9a46') => { furn(g, 0.5, h * 0.45, 0.5, '#6b4a2a', x, h * 0.22, z); const t = add(new THREE.ConeGeometry(h * 0.3, h * 0.7, 10), KC(c), x, h * 0.75, z, g); return t; };
 const rooftop = (x, z) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); groundPaint(g, '#8b8f96', floorTex('concrete'), 120);
   for (const s_ of [-1, 1]) furn(g, 0.3, 1.1, 30, '#9aa3ad', s_ * 15, 0.55, 0); furn(g, 30, 1.1, 0.3, '#9aa3ad', 0, 0.55, -15);
   furn(g, 3, 2.5, 3, '#5f6f82', -8, 1.25, -9); furn(g, 2, 1.2, 2, '#9aa3ad', 6, 0.6, -8); const city_ = new THREE.Group(); g.add(city_);
-  const r_ = P.rng(4); for (let i = 0; i < 40; i++) { const a = Math.PI * (1.05 + r_() * 0.9), d = 40 + r_() * 120; tower(x + Math.cos(a) * d, z + Math.sin(a) * d, 8 + r_() * 10, 8 + r_() * 10, -20 + r_() * 80); } return { group: g }; };
+  const r_ = P.rng(4); for (let i = 0; i < 40; i++) { const a = Math.PI * (1.08 + r_() * 0.84), d = 70 + r_() * 150; tower(x + Math.cos(a) * d, z + Math.sin(a) * d, 8 + r_() * 10, 8 + r_() * 10, 12 + r_() * 80); } return { group: g }; };
 const farm = (x, z) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); groundPaint(g, '#7aa64c', null, 400);
   const barn = new THREE.Group(); barn.position.set(-8, 0, -14); g.add(barn); furn(barn, 8, 5, 7, '#b8282b', 0, 2.5, 0); const rf = add(new THREE.ConeGeometry(6, 3, 4), KC('#5a2a22'), 0, 6.5, 0, barn); rf.rotation.y = Math.PI / 4; rf.scale.set(1, 1, 0.9);
   furn(barn, 2.6, 3.2, 0.1, '#f1efe8', 0, 1.6, 3.55); for (let i = 0; i < 14; i++) furn(g, 0.12, 1.1, 0.12, '#c39668', -14 + i * 2, 0.55, -2); furn(g, 28, 0.1, 0.1, '#c39668', -1, 0.9, -2);
