@@ -471,6 +471,98 @@ const robotArm = (x, z, colour = '#e2a52c') => { const g = new THREE.Group(); g.
   add(new THREE.BoxGeometry(0.4, 2.2, 0.4), KC(colour), 0, 1.1, 0, j2); add(new THREE.BoxGeometry(0.7, 0.3, 0.7), KM.dark, 0, 2.3, 0, j2); j2.rotation.z = 1.2;
   return { group: g, swing: (k) => { j1.rotation.z = -0.4 + 0.8 * k; j1.rotation.y = 1.2 * k; } }; };
 // ===== end of batch 7 =====
+// ===== GOLIDE places, batch 8 (2026-11-22): travel, city life, history and adventure =====
+// airportGate(x, z) windows onto a parked plane, seats, a departures board; trainCar(x, z) a metro carriage with poles and
+// seats (.shake(f)); highway(x, z) lanes with moving traffic (.run(f)); gasStation(x, z, slug); port(x, z) container stacks,
+// a crane and a cargo ship; hotelLobby(x, z, name); castle(x, z) walls, towers and a gate; pyramidTomb(x, z) a torch-lit
+// stone chamber with a sarcophagus (.open(k)); colosseum(x, z); pirateShip(x, z, name) sails and a skull flag; treasureCave(x, z)
+// rocks, a chest (.open(k)) and gold; jungle(x, z); volcano(x, z) (.erupt(k)); underwater(x, z) seabed, fish, a wreck;
+// moonSurface(x, z) / marsSurface(x, z) craters, a lander and a flag.
+const seatsRow = (g, x, z, n = 4, c = '#2f5fb8') => { for (let i = 0; i < n; i++) { furn(g, 0.8, 0.12, 0.7, c, x + i * 0.9, 0.55, z); furn(g, 0.8, 0.8, 0.1, c, x + i * 0.9, 0.95, z - 0.32); } };
+const airportGate = (x, z) => { const r = room(x, z, 22, 12, 6, { floor: 'tiles', wall: '#dfe6ee', lights: 5 }); const g = r.group;
+  furn(g, 20, 4, 0.1, '#9fd0f2', 0, 3, -5.84); for (let i = 0; i < 6; i++) furn(g, 0.2, 4.2, 0.2, '#5f6f82', -10 + i * 4, 3, -5.8);
+  const pl = new THREE.Group(); pl.position.set(2, 0, -26); g.add(pl); const body = add(new THREE.CapsuleGeometry(2.2, 22, 6, 20), KM.white, 0, 4, 0, pl); body.rotation.z = Math.PI / 2;
+  const wing = add(new THREE.BoxGeometry(5, 0.3, 26), KM.white, 1, 3.4, 0, pl); add(new THREE.BoxGeometry(3.5, 4, 0.3), KC('#c7322e'), -11, 7, 0, pl);
+  for (let i = 0; i < 12; i++) add(new THREE.CircleGeometry(0.28, 12), KM.glass, -9 + i * 1.6, 4.6, 2.2, pl);
+  seatsRow(g, -8, 0, 5); seatsRow(g, 2, 0, 5); stockBoard(6.5, 4.4, -5.6, 4, 5, g); return { group: g }; };
+const trainCar = (x, z) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); const w = 3.4, L = 20;
+  const fl = add(new THREE.PlaneGeometry(w, L), KC('#7a7f88'), 0, 0.01, -L / 2 + 3, g, { cast: false }); fl.rotation.x = -Math.PI / 2;
+  for (const s_ of [-1, 1]) { furn(g, 0.1, 2.8, L, '#dfe6ee', s_ * w / 2, 1.4, -L / 2 + 3); for (let i = 0; i < 6; i++) furn(g, 0.08, 1.0, 1.8, '#9fd0f2', s_ * (w / 2 - 0.06), 1.8, 1.5 - i * 3.2);
+    furn(g, 0.6, 0.12, L - 2, '#2f78c4', s_ * (w / 2 - 0.4), 0.55, -L / 2 + 3); } furn(g, w, 0.1, L, '#f1efe8', 0, 2.8, -L / 2 + 3);
+  for (let i = 0; i < 6; i++) add(new THREE.CylinderGeometry(0.04, 0.04, 2.8, 8), KM.steel, 0, 1.4, 1 - i * 3, g);
+  return { group: g, shake: (f) => { g.position.y = DECK + 0.02 * Math.sin(f * 1.7); g.rotation.z = 0.004 * Math.sin(f * 0.9); } }; };
+const highway = (x, z, lanes = 4) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); groundPaint(g, '#7aa64c', null, 540);
+  furn(g, 400, 0.05, lanes * 3.6, '#5a5e66', 0, 0.02, 0); for (let l = 1; l < lanes; l++) for (let k = -60; k < 60; k++) furn(g, 2, 0.06, 0.15, '#f4efe4', k * 6, 0.04, -lanes * 1.8 + l * 3.6);
+  const cars = []; for (let i = 0; i < 10; i++) { const c = car(['#c7322e', '#2f78c4', '#e9b43a', '#f1efe8', '#2b2d34'][i % 5]); c.userData.lane = i % lanes; c.userData.off = i * 23; cars.push(c); }
+  return { group: g, run: (f) => cars.forEach((c) => { const dir = c.userData.lane < lanes / 2 ? 1 : -1; c.position.set(x + ((c.userData.off + f * 0.35 * dir) % 120) - 60 * dir, DECK, z - lanes * 1.8 + 1.8 + c.userData.lane * 3.6); c.rotation.y = dir > 0 ? 0 : Math.PI; }) }; };
+const gasStation = (x, z, slug = null, name = 'FUEL') => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); groundPaint(g, '#8b8f96', floorTex('concrete'), 200);
+  furn(g, 14, 0.5, 8, '#f1efe8', 0, 5, -2); furn(g, 14.2, 0.6, 0.2, '#c7322e', 0, 4.7, 2); for (const a of [-5, 5]) furn(g, 0.4, 5, 0.4, '#9aa3ad', a, 2.5, -2);
+  for (const a of [-2.5, 2.5]) { furn(g, 0.9, 1.8, 0.6, '#c7322e', a, 0.9, -2); furn(g, 0.7, 0.5, 0.02, '#10141c', a, 1.4, -1.69); }
+  signBoard(name, 9, 5.5, -2, 3, 2.2, { slug, bg: '#ffffff', fg: '#c7322e' }, g); furn(g, 8, 3.5, 5, '#e8e1cf', 0, 1.75, -12); return { group: g }; };
+const port = (x, z) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); groundPaint(g, '#8b8f96', floorTex('concrete'), 300);
+  const sea = add(new THREE.PlaneGeometry(300, 120), KC('#2f6f9f'), 0, -0.4, -80, g, { cast: false }); sea.rotation.x = -Math.PI / 2; sea.userData.ndSkip = true;
+  const cc = ['#c7322e', '#2f78c4', '#e9b43a', '#3fa36b', '#e8e8e8', '#8a3bd2']; const r_ = P.rng(6);
+  for (let i = 0; i < 8; i++) for (let j = 0; j < 3; j++) for (let lv = 0; lv < 1 + Math.floor(r_() * 4); lv++) furn(g, 6, 2.5, 2.4, cc[Math.floor(r_() * 6)], -24 + i * 6.4, 1.25 + lv * 2.5, -6 - j * 2.6);
+  furn(g, 1.2, 20, 1.2, '#2f78c4', 18, 10, -14); furn(g, 1.2, 20, 1.2, '#2f78c4', 24, 10, -14); furn(g, 2, 1.2, 30, '#2f78c4', 21, 20, -22);
+  const ship = new THREE.Group(); ship.position.set(0, 0, -30); g.add(ship); furn(ship, 70, 5, 12, '#1b1c22', 0, -1, 0); for (let i = 0; i < 10; i++) for (let lv = 0; lv < 3; lv++) furn(ship, 6, 2.5, 10, cc[(i + lv) % 6], -28 + i * 6.2, 2.75 + lv * 2.5, 0);
+  return { group: g }; };
+const hotelLobby = (x, z, name = 'GRAND HOTEL') => { const r = room(x, z, 20, 13, 7, { floor: 'checker', wall: '#efe4c8', lights: 4, trim: '#e9b43a' }); const g = r.group;
+  furn(g, 7, 1.2, 1.2, '#5a3a24', 0, 0.6, -4); furn(g, 7.2, 0.1, 1.4, '#e9b43a', 0, 1.25, -4); signBoard(name, 0, 4.4, -6.3, 7, 1.2, { bg: '#5a3a24', fg: '#e9b43a', border: false }, g);
+  for (const a of [-8, 8]) { add(new THREE.CylinderGeometry(0.5, 0.5, 7, 20), KM.white, a, 3.5, -3, g); pottedPlant(a, 0.5, 1.6, g, 0); }
+  add(new THREE.SphereGeometry(1, 16, 10), toon({ color: '#ffe8a8', emissive: '#ffe8a8', emissiveIntensity: 0.8 }), 0, 5.6, -1, g); sofa(g, -5, 2, '#8e1f2a', 0); sofa(g, 5, 2, '#8e1f2a', 0); return { group: g }; };
+const stoneM = () => toon({ map: P.tex(P.stone(4), 2, 2) });
+const castle = (x, z) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); groundPaint(g, '#7aa64c', null, 540); const st = stoneM();
+  add(new THREE.BoxGeometry(30, 9, 2), st, 0, 4.5, -16, g); for (const a of [-15, 15]) { add(new THREE.CylinderGeometry(3, 3.4, 14, 16), st, a, 7, -16, g); add(new THREE.ConeGeometry(3.6, 5, 16), KC('#2f4f8f'), a, 16.5, -16, g); }
+  for (let i = 0; i < 12; i++) add(new THREE.BoxGeometry(1.2, 1.2, 2.2), st, -13.5 + i * 2.5, 9.6, -16, g); add(new THREE.BoxGeometry(5, 6, 2.4), KC('#3a2414'), 0, 3, -15.5, g);
+  add(new THREE.BoxGeometry(0.06, 2, 1.2), KC('#c7322e'), 15, 20, -16, g); add(new THREE.CylinderGeometry(0.05, 0.05, 4, 6), KM.dark, 15, 20, -16.7, g); return { group: g }; };
+const pyramidTomb = (x, z) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); const st = toon({ map: P.tex(P.stone(7), 3, 3), color: '#d9b77a' });
+  const fl = add(new THREE.PlaneGeometry(16, 14), st, 0, 0.01, 0, g, { cast: false }); fl.rotation.x = -Math.PI / 2;
+  for (const s_ of [-1, 1]) add(new THREE.BoxGeometry(0.4, 6, 14), st, s_ * 8, 3, 0, g); add(new THREE.BoxGeometry(16, 6, 0.4), st, 0, 3, -7, g); add(new THREE.BoxGeometry(16, 0.4, 14), st, 0, 6, 0, g);
+  const sarc = furn(g, 3, 1.2, 1.4, '#c9a04a', 0, 0.6, -3.5); const lid = new THREE.Group(); lid.position.set(0, 1.2, -3.5); g.add(lid); furn(lid, 3.1, 0.25, 1.5, '#e9b43a', 0, 0.12, 0);
+  for (const a of [-6, 6]) { furn(g, 0.2, 0.8, 0.2, '#5a3a24', a, 3.4, -6.7); add(new THREE.ConeGeometry(0.25, 0.6, 10), toon({ color: '#ffb020', emissive: '#ff7a1a', emissiveIntensity: 1 }), a, 4.1, -6.6, g); }
+  return { group: g, open: (k) => { lid.position.x = 2.6 * k; lid.rotation.z = -0.3 * k; } }; };
+const colosseum = (x, z) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); groundPaint(g, '#d9c08a', null, 540); const st = toon({ map: P.tex(P.stone(9), 6, 2), color: '#e8d6b0' });
+  const ring = add(new THREE.CylinderGeometry(40, 40, 16, 64, 1, true, Math.PI * 0.15, Math.PI * 1.7), st, 0, 8, -10, g); ring.material.side = THREE.DoubleSide;
+  for (let i = 0; i < 40; i++) { const a = Math.PI * 0.15 + i / 40 * Math.PI * 1.7; for (let lv = 0; lv < 3; lv++) add(new THREE.BoxGeometry(2, 2.6, 0.3), KC('#5a4a3a'), Math.sin(a) * 39.6, 2.5 + lv * 4.8, -10 + Math.cos(a) * 39.6, g).rotation.y = a; }
+  return { group: g }; };
+const pirateShip = (x, z, name = 'BLACK PEARL') => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); const sea = add(new THREE.PlaneGeometry(500, 500), KC('#2f6f9f'), 0, -1.6, 0, g, { cast: false }); sea.rotation.x = -Math.PI / 2; sea.userData.ndSkip = true;
+  const hull = KC('#5a3a24'); add(new THREE.BoxGeometry(24, 4, 8), hull, 0, -0.4, 0, g); add(new THREE.BoxGeometry(6, 3, 8), hull, -10, 3, 0, g);
+  const dk = add(new THREE.PlaneGeometry(24, 8), toon({ map: P.tex(floorTex('wood'), 8, 3) }), 0, 1.62, 0, g, { cast: false }); dk.rotation.x = -Math.PI / 2;
+  for (const [a, h] of [[-3, 18], [5, 15]]) { add(new THREE.CylinderGeometry(0.3, 0.35, h, 10), KC('#3a2414'), a, h / 2, 0, g); const sl = add(new THREE.BoxGeometry(0.1, h * 0.5, 7), KC('#f1ead8'), a + 0.4, h * 0.6, 0, g); sl.rotation.y = 0.1; }
+  add(new THREE.BoxGeometry(0.05, 1.6, 2.4), signMat('☠', { bg: '#17161b', fg: '#ffffff', border: false, w: 256, h: 256 }), -3, 19, 0, g);
+  add(new THREE.BoxGeometry(8, 1.2, 0.05), signMat(name, { bg: '#5a3a24', fg: '#e9b43a', border: false, w: 1024, h: 160 }), 4, 0.6, 4.03, g); return { group: g }; };
+const rock = (g, x, z, s = 1, c = '#7a6e62') => { const m = add(new THREE.DodecahedronGeometry(s, 0), KC(c), x, s * 0.6, z, g); m.rotation.set(x, z, s); return m; };
+const treasureCave = (x, z) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); const fl = add(new THREE.PlaneGeometry(30, 30), KC('#5a4a3a'), 0, 0.01, 0, g, { cast: false }); fl.rotation.x = -Math.PI / 2;
+  const dome = add(new THREE.SphereGeometry(14, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2), KC('#4a3e34'), 0, 0, -2, g); dome.material.side = THREE.BackSide; dome.scale.y = 0.6;
+  for (let i = 0; i < 14; i++) rock(g, -10 + (i * 7) % 20, -10 + (i * 5) % 8, 0.6 + (i % 4) * 0.5);
+  coinPileAt(g, 3, -5); const ch = new THREE.Group(); ch.position.set(-2, 0, -4); g.add(ch); furn(ch, 2, 1.1, 1.2, '#7a5434', 0, 0.55, 0); furn(ch, 2.1, 0.12, 1.3, '#e9b43a', 0, 0.6, 0);
+  const lid = new THREE.Group(); lid.position.set(0, 1.1, -0.6); ch.add(lid); furn(lid, 2, 0.4, 1.2, '#7a5434', 0, 0.2, 0.6);
+  return { group: g, open: (k) => { lid.rotation.x = -1.6 * k; } }; };
+function coinPileAt(g, x, z) { const m = add(new THREE.SphereGeometry(2.4, 20, 10, 0, Math.PI * 2, 0, Math.PI / 2), coinM, x, 0, z, g); m.scale.y = 0.4; const r_ = P.rng(3);
+  for (let i = 0; i < 60; i++) { const a = r_() * 6.28, d = Math.sqrt(r_()) * 2.3; add(new THREE.CylinderGeometry(0.16, 0.16, 0.04, 10), [coinEdge, coinM, coinM], x + Math.cos(a) * d, 0.96 * Math.sqrt(Math.max(0, 1 - (d / 2.4) ** 2)) + 0.02, z + Math.sin(a) * d, g, { cast: false }).rotation.set(r_(), r_() * 6, r_()); } }
+const jungle = (x, z, n = 50) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); groundPaint(g, '#4f7a2e', null, 540); const r_ = P.rng(15);
+  for (let i = 0; i < n; i++) { const a = r_() * 6.28, d = 6 + r_() * 50; if (Math.abs(Math.sin(a) * d) < 4 && Math.cos(a) * d > 0) continue; const tx = Math.cos(a) * d, tz = Math.sin(a) * d - 8;
+    furn(g, 0.6, 9, 0.6, '#6b4a2a', tx, 4.5, tz); for (let k = 0; k < 5; k++) { const lf = add(new THREE.SphereGeometry(2.2, 10, 6), KC(['#2f6b2e', '#3f8a3e', '#4f9a46'][k % 3]), tx + Math.cos(k) * 1.6, 9 + (k % 2), tz + Math.sin(k) * 1.6, g); lf.scale.y = 0.5; } }
+  for (let i = 0; i < 20; i++) { const b = add(new THREE.SphereGeometry(0.9, 8, 6), KC('#3f8a3e'), -12 + (i * 5) % 24, 0.5, -3 - (i % 4) * 2, g); b.scale.y = 0.6; } return { group: g }; };
+const volcano = (x, z) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); groundPaint(g, '#5a4a3a', null, 540);
+  const v = add(new THREE.CylinderGeometry(8, 40, 40, 24, 1, true), KC('#4a3e34'), 0, 20, -80, g); v.material.side = THREE.DoubleSide; add(new THREE.CircleGeometry(8, 24), toon({ color: '#ff5a1a', emissive: '#ff5a1a', emissiveIntensity: 1 }), 0, 39.8, -80, g).rotation.x = -Math.PI / 2;
+  const lava = []; for (let i = 0; i < 24; i++) lava.push(add(new THREE.SphereGeometry(1.2, 8, 6), toon({ color: '#ffb020', emissive: '#ff5a1a', emissiveIntensity: 1 }), 0, 40, -80, g, { cast: false }));
+  const smoke = add(new THREE.SphereGeometry(10, 14, 10), KC('#5f5a58'), 0, 52, -80, g, { cast: false }); return { group: g, erupt: (k) => { smoke.scale.setScalar(0.6 + k * 1.4);
+    lava.forEach((m, i) => { const a = i / 24 * 6.28, t = (k * 2 + i / 24) % 1; m.position.set(Math.cos(a) * t * 30, 40 + 30 * t - 40 * t * t, -80 + Math.sin(a) * t * 30); m.visible = k > 0; }); } }; };
+const underwater = (x, z) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); groundPaint(g, '#d8c493', null, 540); const fish = [];
+  for (let i = 0; i < 16; i++) rock(g, -20 + (i * 9) % 40, -6 - (i * 7) % 20, 0.8 + (i % 3), '#6f7f78');
+  for (let i = 0; i < 12; i++) { const sw = furn(g, 0.12, 2 + (i % 4), 0.12, '#3f8a5e', -10 + i * 1.8, 1 + (i % 4) / 2, -4 - (i % 3)); }
+  const wreck = new THREE.Group(); wreck.position.set(8, 0, -14); wreck.rotation.z = 0.25; g.add(wreck); furn(wreck, 14, 3, 4, '#5a3a24', 0, 1.2, 0); add(new THREE.CylinderGeometry(0.2, 0.2, 8, 8), KC('#3a2414'), 0, 5, 0, wreck);
+  for (let i = 0; i < 9; i++) { const f = new THREE.Group(); scene.add(f); add(new THREE.SphereGeometry(0.35, 10, 6), KC(['#ff8a1a', '#ffd23f', '#2f78c4'][i % 3]), 0, 0, 0, f).scale.set(1.6, 1, 0.6); add(new THREE.ConeGeometry(0.3, 0.5, 4), KC('#ff8a1a'), -0.7, 0, 0, f).rotation.z = Math.PI / 2; fish.push([f, i]); }
+  return { group: g, swim: (f_) => fish.forEach(([f, i]) => f.position.set(x - 10 + ((i * 7 + f_ * 0.05) % 20), 2 + (i % 4) + 0.3 * Math.sin(f_ * 0.1 + i), z - 4 - (i % 3) * 2)) }; };
+const moonSurface = (x, z, mars = false) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); groundPaint(g, mars ? '#c4643a' : '#b9b6ad', null, 540);
+  const r_ = P.rng(mars ? 9 : 19); for (let i = 0; i < 18; i++) { const c = add(new THREE.TorusGeometry(1.5 + r_() * 3, 0.35, 6, 20), KC(mars ? '#a8522e' : '#9a978e'), -30 + r_() * 60, 0.1, -6 - r_() * 40, g); c.rotation.x = Math.PI / 2; }
+  const lander = new THREE.Group(); lander.position.set(6, 0, -8); g.add(lander); furn(lander, 3, 2, 3, '#e9b43a', 0, 2.6, 0); for (const [a, b] of [[-1.8, -1.8], [1.8, -1.8], [-1.8, 1.8], [1.8, 1.8]]) add(new THREE.CylinderGeometry(0.08, 0.08, 2.6, 6), KM.steel, a, 1.1, b, lander).rotation.z = a * 0.12;
+  add(new THREE.CylinderGeometry(0.04, 0.04, 3, 6), KM.white, -3, 1.5, -4, g); add(new THREE.BoxGeometry(1.4, 0.9, 0.02), signMat('', { bg: '#ffffff', border: false, w: 256, h: 160 }), -2.3, 2.6, -4, g);
+  if (!mars) earth(x - 40, 60, z - 200, 14); return { group: g }; };
+const marsSurface = (x, z) => moonSurface(x, z, true);
+// ===== end of batch 8 =====
+
 
 
 
