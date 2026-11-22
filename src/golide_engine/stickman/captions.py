@@ -18,7 +18,12 @@ TEXT, GOLD = "F4F1EA", "E8C268"
 DIM = 0x9E                                             # unsaid words at 38% (Inkee: opacity .38)
 # where the captions go: the whole frame (pure Stickman) or under the panel, clear of Goli (Stickman + Goli)
 # full: in the strip under the floor (characters' feet stand at 1010; the kit's name card ends at 1004)
-REGION = {"full": (120, 120, 10, 44), "beside": (64, 644, 40, SIZE)}   # margin left, right, from the bottom; size
+REGION = {"full": (120, 120, 10, 44), "beside": (64, 644, 40, SIZE),
+          # owner 2026-11-22: Stickman Shorts get the Inkee captions too, like Ricks Clips and Afterhour Theory: a few
+          # big words at a time in the lower middle, inside the phone crop (130 px left, 160 right)
+          "short": (150, 180, 560, 84)}
+FRAME = {"short": (1080, 1920)}
+WORDS = {"short": 4}
 
 
 def _shift(pauses: list[tuple[float, float]]):
@@ -76,7 +81,7 @@ def ass(lines: list[dict[str, Any]], place: str = "full", width: int = 1920, hei
             "Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, "
             "MarginR, MarginV, Encoding\n"
             f"Style: Cap,Poppins ExtraBold,{size},{_bgr(TEXT)},{_bgr(TEXT, DIM)},&H00000000,&H50000000,0,0,0,0,100,100,1,0,1,"
-            f"2.2,3,2,{left},{right},{bottom},1\n\n[Events]\n"
+            f"{4 if place == 'short' else 2.2},3,2,{left},{right},{bottom},1\n\n[Events]\n"
             "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n")
     rows = []
     for c in lines:
@@ -100,9 +105,9 @@ def add(video: Path, words: list[dict[str, Any]], pauses: list[tuple[float, floa
         folder: Path) -> Path:
     """Burn the caption layer into the finished video in place (its sound copied untouched)."""
     folder.mkdir(parents=True, exist_ok=True)
-    lines = chunks(words, pauses)
+    lines = chunks(words, pauses, WORDS.get(place, MAX_WORDS))
     sub = folder / "captions.ass"
-    sub.write_text(ass(lines, place), encoding="utf-8")
+    sub.write_text(ass(lines, place, *FRAME.get(place, (1920, 1080))), encoding="utf-8")
     out = folder / "captioned.mp4"
     flt = f"ass='{sub.as_posix()}':fontsdir='{FONTS.as_posix()}'"
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(video), "-vf", flt, "-c:v", "libx264", "-preset", "veryfast",

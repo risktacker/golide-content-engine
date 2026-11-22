@@ -122,7 +122,8 @@ WHAT YOU RETURN (JSON):
   thunk rumble crash cuckoo scrape ting sting creak snap splash whoosh snore leaves water, and F = frames to seconds.
 
 Rules on top of the skill: real public figures in the story are generic cartoon characters (no likeness, never
-named in diegetic text); no captions; facts only as the script says them.
+named in diegetic text); no captions drawn in the picture (the engine burns word captions in the lower middle
+afterwards, around 1250-1450 px: keep faces out of that band when you can); facts only as the script says them.
 
 ========================= GOLIDE RULES (owner 2026-11-18, after his fast-cut test: these win over the skill and the example) =========================
 PACE: one shot per phrase, about 1.2-2.5 s each (30 fps: 36-75 frames); a phrase longer than 2.5 s gets two shots.

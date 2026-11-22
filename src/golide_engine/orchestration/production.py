@@ -511,6 +511,9 @@ class ProductionService:
             if made["ok"]:
                 video_path.parent.mkdir(parents=True, exist_ok=True)
                 video_path.write_bytes((project / "out" / "stickman.mp4").read_bytes())
+                # owner 2026-11-22: word captions on Stickman Shorts too (Inkee's), burned over the kit's picture
+                from ..stickman import captions as stickman_captions
+                stickman_captions.add(video_path, timed_words, [], "short", work / "stickman-captions")
 
         self.runner.run(production_id, "render-stickman-short-v1", stage, attempts=1)
         if made["ok"]:
