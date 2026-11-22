@@ -1,7 +1,8 @@
 // ===== GOLIDE cast kit (2026-11-18, the owner's fast-cut Elon test): chunky modern puppets with definition =====
-// T.modernFront(p, O, opts): O = { tunic (top colour), skin, hair, style: short|swoop|slick|spiky|curly|bun, pants, shoes,
+// T.modernFront(p, O, opts): O = { tunic (top colour), skin, hair, style: short|swoop|slick|spiky|curly|bun|long|ponytail|afro|bald, pants, shoes,
 //   jacket: true + shirt + tie, hood: true, sleeve, belt, moustache, hat: cap|police|top|cowboy|beanie|hardhat|chef|crown|helmet|nurse|grad
-//   (+ hatColour), shades: true, beard: colour, holds: phone|laptop|briefcase|coffee|cash|paper|mic|trophy|bag|sign:WORDS
+//   (+ hatColour), shades: true, beard: colour, coat: true|colour (lab or doctor coat), vest: true|colour (hi-vis), stethoscope, badge, headphones: true|colour,
+//   holds: phone|laptop|briefcase|coffee|cash|paper|mic|trophy|bag|sign:WORDS
 //   (or opts.holds per frame, opts.holdIn 'L' for the left hand) }
 // Movement helpers for story.js (import { walkPath, sitDown, jumpAt, shakeAt, followCam, nod, lookAround } from './toon.js'):
 //   walkPath(f, f0, f1, from, to) -> { x, z, step, facing, done }; sitDown(f, f0) -> 0..1 (pass seated when 1, bob down
@@ -142,6 +143,13 @@ export const modernFront = (p, O, opts = {}) => {
     }
     if (!seated) p.band([[tcx - T.a, torsoBot - 5 * u], [tcx + T.a, torsoBot - 5 * u]], O.belt || '#1b1a20', 5 * u, 1.4 * u, 'butt');
   });
+  if (O.coat) { const cc = O.coat === true ? '#f4f4f2' : O.coat;               // a long coat (lab, doctor, trench) over the top
+    for (const sd of [-1, 1]) p.poly([[tcx + sd * 6 * u, tTop - 2 * u], [tcx + sd * T.a * 1.02, tTop + 6 * u], [tcx + sd * T.a * 1.12, torsoBot + 0.22 * HH], [tcx + sd * 8 * u, torsoBot + 0.22 * HH]], cc, ow * 0.6);
+    p.dot(tcx - 10 * u, mid, 2.4 * u, '#9aa2ad'); p.dot(tcx - 10 * u, mid + 14 * u, 2.4 * u, '#9aa2ad'); }
+  if (O.vest) { for (const sd of [-1, 1]) { p.poly([[tcx + sd * 8 * u, tTop], [tcx + sd * T.a * 0.9, tTop + 8 * u], [tcx + sd * T.a * 0.95, torsoBot - 4 * u], [tcx + sd * 10 * u, torsoBot - 4 * u]], O.vest === true ? '#ff8a1a' : O.vest, ow * 0.5);
+    p.band([[tcx + sd * 12 * u, mid + 6 * u], [tcx + sd * T.a * 0.9, mid + 6 * u]], '#e8eef2', 6 * u, 1 * u, 'butt'); } }
+  if (O.stethoscope) p.stroke(curve([tcx - 14 * u, tTop], [tcx - 2 * u, mid + 18 * u], [tcx + 14 * u, tTop]), 3.4 * u, '#2b2d34');
+  if (O.badge) p.poly(blobPts(tcx - 0.45 * T.a, mid - 6 * u, { a: 7 * u, b: 7 * u, nTop: 2, nBot: 2, egg: 0, asym: 0, rot: 0, noise: 0, seed: 1 }), '#e9b43a', 1.4 * u);
   p.inkRing(tp, ow, thick);
   if (!seated) p.poly([[tcx - 4.5 * u, torsoBot - 8.5 * u], [tcx + 4.5 * u, torsoBot - 8.5 * u], [tcx + 4.5 * u, torsoBot - 1.5 * u], [tcx - 4.5 * u, torsoBot - 1.5 * u]], '#d2b56a', 1.3 * u);
   arms.filter((a) => a.front).forEach(drawArm);
@@ -151,12 +159,20 @@ export const modernFront = (p, O, opts = {}) => {
   const Ah = tilt + headTilt;
   p.rot = Ah ? [rad(Ah), cx, chin, cpx - cx, cpy - chin] : null;
   const hp = blobPts(cx, hc, H);
-  if (O.hair) { const big = O.style === 'curly' ? 1.14 : O.style === 'bun' ? 1.06 : 1.1; const hb = blobPts(cx - facing * 2 * u, hc - (O.style === 'curly' ? 0.12 : 0.07) * HH, { ...H, a: H.a * big, b: H.b * big * 0.97, noise: O.style === 'curly' ? 0.06 : 0.03, seed: seed + 3 });
+  if (O.hair && O.style === 'long') { const lh = [...ellPts(cx, hc - 0.05 * HH, H.a * 1.16, H.b * 1.1, 180, 360, 0, 24), [cx + H.a * 1.18, hc + 0.75 * HH], [cx + H.a * 0.7, hc + 0.9 * HH], [cx - H.a * 0.7, hc + 0.9 * HH], [cx - H.a * 1.18, hc + 0.75 * HH]];
+    p.poly(lh, O.hair, 0); p.inkRing(lh, ow * 0.9, thick); }
+  if (O.hair && O.style === 'ponytail') { const pt = blobPts(cx + (facing || 1) * H.a * 0.95, hc + 0.25 * HH, { a: 0.28 * H.a, b: 0.55 * H.b, nTop: 2, nBot: 2, egg: 0.2, asym: 0, rot: 0.3, noise: 0.03, seed }); p.poly(pt, O.hair, 0); p.inkRing(pt, ow * 0.85, thick); }
+  if (O.hair && O.style === 'afro') { const af = blobPts(cx, hc - 0.18 * HH, { ...H, a: H.a * 1.45, b: H.b * 1.3, noise: 0.08, seed: seed + 5 }); p.poly(af, O.hair, 0); p.inkRing(af, ow * 0.9, thick); }
+  if (O.hair && !['bald', 'afro'].includes(O.style)) { const big = O.style === 'curly' ? 1.14 : O.style === 'bun' ? 1.06 : 1.1; const hb = blobPts(cx - facing * 2 * u, hc - (O.style === 'curly' ? 0.12 : 0.07) * HH, { ...H, a: H.a * big, b: H.b * big * 0.97, noise: O.style === 'curly' ? 0.06 : 0.03, seed: seed + 3 });
     p.poly(hb, O.hair, 0); p.inkRing(hb, ow * 0.9, thick); }
   p.shadedFill(hp, skin, mul(skin, SH_SKIN), light, H.a);
   p.inkRing(hp, ow, thick);
   for (const s of [-1, 1]) p.ell(cx + s * (H.a - 1 * u), hc + 0.08 * H.b, 7 * u, 10 * u, skin, ow * 0.45);   // ears
-  if (O.hair) hairDo(p, O.style || 'short', O.hair, cx, hc, H, u, ow, thick, seed);
+  if (O.hair && !['bald', 'afro', 'long', 'ponytail'].includes(O.style)) hairDo(p, O.style || 'short', O.hair, cx, hc, H, u, ow, thick, seed);
+  if (O.hair && ['long', 'ponytail'].includes(O.style)) hairDo(p, 'swoop', O.hair, cx, hc, H, u, ow, thick, seed);
+  if (O.style === 'bald') p.stroke(ellPts(cx - 0.25 * H.a, hc - 0.6 * H.b, 0.28 * H.a, 0.12 * H.b, 200, 320, 0, 10), 4 * u, '#ffffff80');
+  if (O.headphones) { p.stroke(ellPts(cx, hc - 0.05 * H.b, H.a * 1.06, H.b * 1.08, 190, 350, 0, 20), 8 * u, O.headphones === true ? '#2b2d34' : O.headphones);
+    for (const sd of [-1, 1]) p.ell(cx + sd * H.a * 1.02, hc + 0.08 * H.b, 11 * u, 16 * u, O.headphones === true ? '#2b2d34' : O.headphones, ow * 0.5); }
   faceFront(p, cx, hc, W, expr, facing, look, lid, false, skin, O.moustache, false);
   if (O.beard) { const bp = [...ellPts(cx, hc + 0.42 * H.b, 0.72 * H.a, 0.5 * H.b, 0, 180, 0, 20), [cx - 0.72 * H.a, hc + 0.3 * H.b], [cx + 0.72 * H.a, hc + 0.3 * H.b]];
     p.poly(ellPts(cx, hc + 0.5 * H.b, 0.7 * H.a, 0.46 * H.b, 10, 170, 0, 18), O.beard, ow * 0.6); }
@@ -220,6 +236,53 @@ export const sweatFx = (p) => p.poly([[300, 380], [340, 470], [300, 520], [260, 
 export const questionFx = (p) => { p.g.save(); p.g.font = '900 260px sans-serif'; p.g.textAlign = 'center'; p.g.lineWidth = 18; p.g.strokeStyle = '#17161b'; p.g.strokeText('?', 300, 600); p.g.fillStyle = '#ffd23f'; p.g.fillText('?', 300, 600); p.g.restore(); };
 export const ideaFx = (p) => { p.ell(300, 460, 90, 100, '#ffe36a', 12); p.poly([[255, 540], [345, 540], [330, 610], [270, 610]], '#b9bfc9', 10); for (let k = 0; k < 6; k++) { const a = -Math.PI * (0.1 + k * 0.16); p.stroke([[300 + Math.cos(a) * 120, 460 + Math.sin(a) * 130], [300 + Math.cos(a) * 170, 460 + Math.sin(a) * 180]], 12, '#ffd23f'); } };
 export const zzzFx = (p) => { p.g.save(); p.g.font = '900 140px sans-serif'; p.g.lineWidth = 14; p.g.strokeStyle = '#17161b'; for (const [x, y, s] of [[200, 640, 1], [300, 500, 1.3], [400, 340, 1.6]]) { p.g.font = `900 ${110 * s}px sans-serif`; p.g.strokeText('Z', x, y); p.g.fillStyle = '#ffffff'; p.g.fillText('Z', x, y); } p.g.restore(); };
+// ready outfits by job: T.modernFront(p, { ...T.LOOKS.doctor, hair: '#2b211c' }, opts)
+export const LOOKS = {
+  doctor: { tunic: '#9fc9e6', sleeve: '#f4f4f2', coat: true, stethoscope: true, pants: '#2c3e5c', style: 'short', hair: '#2b211c' },
+  scientist: { tunic: '#5a7fc0', coat: true, pants: '#2b2d34', style: 'curly', hair: '#6b4a2a', shades: false },
+  nurse: { tunic: '#9fc9bd', sleeve: '#9fc9bd', pants: '#9fc9bd', style: 'bun', hair: '#6b4a2a', hat: 'nurse' },
+  chef: { tunic: '#f4f4f2', sleeve: '#f4f4f2', pants: '#2b2d34', style: 'short', hair: '#2b211c', hat: 'chef' },
+  police: { tunic: '#2f4f8f', sleeve: '#2f4f8f', pants: '#1f2a44', style: 'short', hair: '#1b1a20', hat: 'police', badge: true },
+  soldier: { tunic: '#5b6b3a', sleeve: '#5b6b3a', pants: '#4a5530', style: 'short', hair: '#1b1a20', hat: 'helmet', belt: '#3a2a1a' },
+  worker: { tunic: '#3b5b8f', vest: true, pants: '#3b3b44', style: 'short', hair: '#6b4a2a', hat: 'hardhat' },
+  ceo: { tunic: '#17161b', jacket: true, shirt: '#ffffff', tie: '#c7322e', pants: '#17161b', style: 'slick', hair: '#8a8a92' },
+  techie: { tunic: '#2b2d34', hood: true, pants: '#2c3e5c', style: 'spiky', hair: '#1b1a20', headphones: true },
+  gamer: { tunic: '#8a3bd2', pants: '#2b2d34', style: 'swoop', hair: '#c9a04a', headphones: '#e8445a' },
+  student: { tunic: '#e86a92', pants: '#2c3e5c', style: 'ponytail', hair: '#2b211c', holds: 'paper' },
+  elder: { tunic: '#a58a6a', jacket: true, shirt: '#f4f2ec', pants: '#5a4a3a', style: 'bald', hair: '#d9d9d9', beard: '#e8e8e8', shades: false },
+  woman: { tunic: '#c7322e', pants: '#2b2d34', style: 'long', hair: '#3b2414' },
+  rich: { tunic: '#2b2d34', jacket: true, shirt: '#ffffff', tie: '#e9b43a', pants: '#2b2d34', style: 'slick', hair: '#6b4a2a', hat: 'top', holds: 'bag' },
+  hacker: { tunic: '#17161b', hood: true, pants: '#17161b', style: 'short', hair: '#1b1a20', shades: true, holds: 'laptop' },
+  astronaut: { tunic: '#f1efe8', sleeve: '#f1efe8', pants: '#f1efe8', style: 'short', hair: '#2b211c', hat: 'hardhat', hatColour: '#f1efe8', badge: true },
+  king: { tunic: '#8e1f2a', pants: '#3b2a1a', style: 'curly', hair: '#6b4a2a', beard: '#6b4a2a', hat: 'crown', coat: '#c7322e' },
+  farmer: { tunic: '#c7322e', pants: '#3b5b8f', style: 'short', hair: '#8a5a2b', hat: 'cowboy', hatColour: '#d8b36a' },
+  athlete: { tunic: '#e9b43a', pants: '#17161b', style: 'afro', hair: '#1b1a20' },
+  judge: { tunic: '#17161b', sleeve: '#17161b', pants: '#17161b', style: 'bald', hair: '#d9d9d9', coat: '#17161b' },
+};
+// an AI robot (for AI and tech stories): a rounded metal body, a screen face whose eyes show the feeling, antenna
+// T.robotFront(p, { body: '#c9ccd2', screen: '#10141c', eyes: '#5aa8ff' }, { expr, L, R, bob, glow }) ; expr changes the eyes
+export const robotFront = (p, O = {}, opts = {}) => {
+  const { expr = 'neutral', bob = 0, L = 'hang', R = 'hang', glow = 1 } = opts, body = O.body || '#c9ccd2', dark = mul(body, [0.72, 0.72, 0.8]), eye = O.eyes || '#5aa8ff';
+  const g = p.g, by = bob * 300, u = 2.4;
+  for (const sd of [-1, 1]) { p.stroke([[300 + sd * 40, 860 - by], [300 + sd * 44, 970 - by]], 26, INK); p.stroke([[300 + sd * 40, 860 - by], [300 + sd * 44, 970 - by]], 18, dark); p.ell(300 + sd * 46, 975 - by, 30, 12, '#2b2d34', 6); }
+  const tb = blobPts(300, 760 - by, { a: 108, b: 112, nTop: 3, nBot: 3, egg: 0, asym: 0, rot: 0, noise: 0, seed: 2 }); p.gradFill(tb, body, dark, rad(-120)); p.inkRing(tb, 12, 1);
+  p.ell(300, 760 - by, 34, 34, mix(eye, '#ffffff', 0.3), 8); p.ell(300, 760 - by, 18, 18, eye, 0);
+  const arm = (sd, pose) => { const sx = 300 + sd * 104, sy = 690 - by, end = { up: [sx + sd * 40, sy - 150], point: [sx + sd * 150, sy - 20], wave: [sx + sd * 70, sy - 140], reach: [sx + sd * 140, sy - 80] }[pose] || [sx + sd * 18, sy + 130];
+    p.stroke([[sx, sy], end], 30, INK); p.stroke([[sx, sy], end], 22, dark); p.ell(end[0], end[1], 22, 20, body, 7); };
+  arm(-1, L); arm(1, R);
+  const hb = blobPts(300, 520 - by, { a: 120, b: 96, nTop: 4, nBot: 4, egg: 0, asym: 0, rot: 0, noise: 0, seed: 3 }); p.gradFill(hb, body, dark, rad(-120)); p.inkRing(hb, 12, 1);
+  const sb = blobPts(300, 522 - by, { a: 94, b: 70, nTop: 4, nBot: 4, egg: 0, asym: 0, rot: 0, noise: 0, seed: 4 }); p.poly(sb, O.screen || '#10141c', 6);
+  g.save(); g.shadowColor = eye; g.shadowBlur = 24 * glow; const ey = 512 - by;
+  if (expr === 'happy' || expr === 'grin' || expr === 'laugh' || expr === 'excited') for (const sd of [-1, 1]) p.stroke(ellPts(300 + sd * 36, ey + 8, 20, 16, 200, 340, 0, 10), 10, eye);
+  else if (expr === 'angry' || expr === 'stern' || expr === 'evil') for (const sd of [-1, 1]) p.poly([[300 + sd * 16, ey - 4], [300 + sd * 58, ey - 22], [300 + sd * 58, ey + 12], [300 + sd * 16, ey + 12]], eye, 0);
+  else if (expr === 'sad' || expr === 'worried') for (const sd of [-1, 1]) p.stroke(ellPts(300 + sd * 36, ey - 8, 20, 16, 20, 160, 0, 10), 10, eye);
+  else if (expr === 'shock' || expr === 'scared' || expr === 'surprised') for (const sd of [-1, 1]) p.ell(300 + sd * 36, ey, 20, 24, eye, 0);
+  else if (expr === 'thinking' || expr === 'loading') { for (let k = 0; k < 3; k++) p.dot(270 + k * 30, ey + 4, 10, eye); }
+  else for (const sd of [-1, 1]) p.ell(300 + sd * 36, ey, 14, 16, eye, 0);
+  g.restore();
+  for (const sd of [-1, 1]) p.ell(300 + sd * 124, 520 - by, 14, 26, dark, 6);
+  p.stroke([[300, 424 - by], [300, 372 - by]], 10, INK); p.dot(300, 366 - by, 16, '#e8445a');
+};
 export const billFx = (p, rot = 0, sq = 1) => { const g = p.g; g.save(); g.translate(300, 500); g.rotate(rot); g.scale(1, sq);
   g.fillStyle = '#cfdcc4'; g.fillRect(-170, -72, 340, 144); g.strokeStyle = '#3f6a4a'; g.lineWidth = 9; g.strokeRect(-160, -62, 320, 124);
   g.fillStyle = '#9fbf98'; g.beginPath(); g.ellipse(0, 0, 40, 52, 0, 0, 7); g.fill(); g.fillStyle = '#2f5a3c'; g.font = '900 52px sans-serif';

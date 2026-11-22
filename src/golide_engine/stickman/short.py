@@ -143,8 +143,14 @@ launch pads, vaults, stages. No village, no grass and trees unless the story is 
 LOGOS: companies and products the story names show their REAL logos (given below as LOGO slugs) on signs, boards,
 karts, screens and satellites: signBoard('Google', x, y, z, w, h, {{ slug: 'google' }}). Never draw a look-alike logo;
 a brand with no logo given gets its name on a sign.
-MONEY looks like money: cashBlock / cashBundle and falling bills (T.billFx), never coin piles that read as gold
-cylinders.
+MONEY looks like money: cashBlock / cashBundle and falling bills (T.billFx); coinPile and burst('coins') only for gold,
+treasure, jackpots and casinos.
+PLACES (owner 2026-11-22, the Shorts models Ricks Clips and Afterhour Theory): use the kit's ready places (rooms, offices,
+casino, prison, vault, spaceship, liner deck, tent, street, courtroom, hospital, data centre, classroom, news desk, stage,
+home rooms, restaurant, gym, factory, plane cabin, bank, lab, supermarket, construction, police, rooftop, farm, forest,
+beach, snow, desert), each at its own x (0, 600, 1200, ...), and fill them with props; MOVE things on the words (doors,
+reels, bursts, dominoes, buttons, walkers with walkPath and followCam). PEOPLE: start from T.LOOKS (doctor, police, ceo,
+hacker, robot via T.robotFront for AI ...) and give each a different colour; crowds with T.crowd.
 CHARACTERS: draw people with T.modernFront(p, O, opts) (the GOLIDE cast kit below), not romanFront: chunky bodies,
 sleeved arms with hands, real clothes and a hairstyle each (style: short, swoop, slick, spiky, curly, bun). Give each
 character a distinct top colour, outfit and hairstyle. In a kart or chair pass seated: true and place the card's feet
