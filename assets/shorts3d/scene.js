@@ -33,6 +33,7 @@ export async function run(K) {
   }
   function camAt(sh, t) {
     const u = THREE.MathUtils.clamp((t - sh.t0) / (sh.t1 - sh.t0), 0, 1), v = { ...sh.view(u, t) }, f = sh.fix || {};
+    if (f.yawAbs !== undefined) v.yaw = f.yawAbs; if (f.pitchAbs !== undefined) v.pitch = f.pitchAbs;
     v.yaw += f.yaw || 0; v.pitch += f.pitch || 0; v.fov *= f.fovK || 1; v.k = (v.k ?? 1) * (f.dist || 1);
     const c = D.fit(sh.box, v); if (!c) throw new Error(`shot ${sh.name}: its subjects cannot fit the frame at ${v.fov.toFixed(0)} degrees`);
     K.look(c.pos, c.tgt, c.fov, c.roll); camera().updateMatrixWorld(true); return c;
@@ -54,18 +55,39 @@ export async function run(K) {
   // a wider lens brings the camera closer (out of walls, in front of people who would block the view)
   for (const fk of [1.2, 1.35, 1.5]) for (const y of [0, 0.12, -0.12, 0.24, -0.24, 0.36, -0.36, 0.5, -0.5]) for (const p of [0, -0.12, 0.1]) FIXES.push({ fovK: fk, yaw: y, pitch: p });
   for (const y of [0, 0.2, -0.2]) FIXES.push({ fovK: 0.85, yaw: y });
+  // the last free repairs, in order (owner 2026-11-22: never pay a model to retry): another angle, then fewer people,
+  // then the shot before holds a little longer. Only a first shot that nothing fixes stops the render.
+  const ANGLES = [[0, 0.06], [0, 0.25], [-0.4, 0.1], [0.4, 0.1], [-0.9, 0.1], [0.9, 0.1], [0, -0.12]];
+  const ANGLE_FIXES = []; for (const [ya, pa] of ANGLES) for (const fk of [1, 1.2, 1.4]) for (const d of [1, 1.15]) ANGLE_FIXES.push({ yawAbs: ya, pitchAbs: pa, fovK: fk, dist: d });
+  const tryFixes = (sh, list) => { for (const fx of list) { sh.fix = fx; if (!problems(sh).length) return fx; } return null; };
   function direct() {
-    const sizes = {}; props.filter(q => q.obj.name).forEach(q => { const s = q.box.getSize(new THREE.Vector3()); sizes[q.label] = s.toArray().map(v => +v.toFixed(2)); });
-    const report = { scene: name, ok: true, stepped, props: sizes, shots: [] };
-    for (const sh of S.shots) {
-      frameShot(sh); let first = null, done = null;
-      for (const fx of FIXES) { sh.fix = fx; const pr = problems(sh); if (!first) first = pr; if (!pr.length) { done = fx; break; } }
-      const summary = pr => [...new Set(pr.map(x => x.p))];
-      const entry = { name: sh.name, t0: +sh.t0.toFixed(2), t1: +sh.t1.toFixed(2), found: summary(first) };
-      if (done) { entry.ok = true; entry.repair = Object.keys(done).length ? done : null; }
+    const report = { scene: name, ok: true, stepped, shots: [] };
+    const summary = pr => [...new Set(pr.map(x => x.p))];
+    for (let i = 0; i < S.shots.length; i++) {
+      const sh = S.shots[i]; frameShot(sh); sh.fix = {};
+      const entry = { name: sh.name, t0: +sh.t0.toFixed(2), t1: +sh.t1.toFixed(2), found: summary(problems(sh)) };
+      let done = entry.found.length ? tryFixes(sh, FIXES) : {};
+      if (!done) { done = tryFixes(sh, ANGLE_FIXES); if (done) entry.repair_note = 'another angle'; }
+      if (!done) {                                                     // fewer people: the people first, then each one alone
+        const whoAll = sh.who, people = whoAll.filter(isPerson), subsets = [];
+        if (people.length && people.length < whoAll.length) subsets.push(people);
+        for (let k = people.length - 1; k >= 1; k--) subsets.push(people.slice(0, k)); people.forEach(p => subsets.push([p]));
+        for (const sub of subsets) { sh.who = sub; frameShot(sh); done = tryFixes(sh, [{}, ...FIXES, ...ANGLE_FIXES]); if (done) { entry.repair_note = `only ${sub.map(x => x.label).join(', ')}`; break; } }
+        if (!done) { sh.who = whoAll; frameShot(sh); }
+      }
+      if (!done && i > 0) {                                            // the shot before holds over this one
+        const prev = S.shots[i - 1], keepT1 = prev.t1, keepBox = prev.box, keepFix = prev.fix;
+        prev.t1 = sh.t1; frameShot(prev); prev.fix = keepFix;
+        if (!problems(prev).length || tryFixes(prev, [{}, ...FIXES, ...ANGLE_FIXES])) {
+          S.shots.splice(i, 1); i--; entry.ok = true; entry.repair_note = `merged into the shot before (${prev.name})`; report.shots.push(entry); continue;
+        }
+        prev.t1 = keepT1; prev.box = keepBox; prev.fix = keepFix;
+      }
+      if (done) { sh.fix = done; entry.ok = true; entry.repair = Object.keys(done).length ? done : null; }
       else { sh.fix = {}; entry.ok = false; entry.still = summary(problems(sh)); report.ok = false; }
       report.shots.push(entry);
     }
+    window.GOLIDE.shots = S.shots.map(s => ({ name: s.name, t0: s.t0, t1: s.t1 }));
     return report;
   }
   // ---- rendering ----

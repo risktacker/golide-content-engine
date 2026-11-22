@@ -21,7 +21,7 @@ const CHROME = process.env.CHROME || '/usr/bin/google-chrome';
   fs.mkdirSync(OUT, { recursive: true });
   const report = await page.evaluate(() => window.GOLIDE.direct());
   fs.writeFileSync(path.join(OUT, 'report.json'), JSON.stringify(report, null, 1));
-  for (const s of report.shots) console.log(`${s.ok ? 'OK  ' : 'FAIL'} ${s.name} [${s.t0}-${s.t1}]` + (s.found.length ? `  found: ${s.found.join('; ')}` : '') + (s.repair ? `  repaired: ${JSON.stringify(s.repair)}` : '') + (s.still ? `  STILL: ${s.still.join('; ')}` : ''));
+  for (const s of report.shots) console.log(`${s.ok ? 'OK  ' : 'FAIL'} ${s.name} [${s.t0}-${s.t1}]` + (s.found.length ? `  found: ${s.found.join('; ')}` : '') + (s.repair ? `  repaired: ${JSON.stringify(s.repair)}` : '') + (s.repair_note ? `  (${s.repair_note})` : '') + (s.still ? `  STILL: ${s.still.join('; ')}` : ''));
   for (const m of report.stepped) console.log('set:', m);
   const dur = await page.evaluate(() => window.GOLIDE.dur);
   if (mode === 'stills') {
