@@ -9,6 +9,8 @@ const kCanvas = (w, h) => { const c = document.createElement('canvas'); c.width 
 // a brand's real logo as a canvas drawing (simple-icons 24x24 path), or nothing when the brand is not known
 const drawLogo = (g, slug, x, y, size, colour) => { const L = (typeof LOGO !== 'undefined') && LOGO[slug]; if (!L) return false;
   g.save(); g.translate(x, y); g.scale(size / 24, size / 24); g.fillStyle = colour || ('#' + (L.hex || '111111')); g.fill(new Path2D(L.d)); g.restore(); return true; };
+// SETS: build each place at least 600 m from the others (x = 0, 600, 1200, ...): far pieces (the city ring, a starfield,
+// the sea) are big and must never show up in another place's shot.
 // a sign: optional logo + words, fitted to the board; front face material for a box (face 4 = +z)
 const signMat = (text, opts = {}) => { const { slug = null, bg = '#ffffff', fg = '#111114', w = 1024, h = 320, border = true } = opts;
   const [c, g] = kCanvas(w, h); g.fillStyle = bg; g.fillRect(0, 0, w, h);
@@ -36,10 +38,12 @@ const winTex = (() => { const [c, g] = kCanvas(128, 256); g.fillStyle = '#5f6f82
   for (let y = 10; y < 256; y += 32) for (let x = 10; x < 128; x += 30) { g.fillStyle = (x * 7 + y * 3) % 5 ? '#9ec3e6' : '#f1d38a'; g.fillRect(x, y, 18, 20); } return c; })();
 const tower = (x, z, w, d, h, parent = scene) => { const m = toon({ map: P.tex(winTex, Math.max(1, w / 4), Math.max(1, h / 8)) });
   return add(new THREE.BoxGeometry(w, h, d), [m, m, KM.steel, KM.steel, m, m], x, DECK + h / 2, z, parent); };
-const city = (x0, x1, zNear = -18, seed = 21) => { const r = P.rng(seed);
+// 2026-11-22: the far ring circles the street's own middle (it used to circle 0,0 and stood inside other sets)
+const city = (x0, x1, zNear = -18, seed = 21) => { const r = P.rng(seed), mx = (x0 + x1) / 2;
   for (let x = x0; x < x1; x += 6 + r() * 5) tower(x, zNear - r() * 30, 5 + r() * 7, 5 + r() * 6, 12 + r() * 38);
-  for (let i = 0; i < 50; i++) { const a = r() * Math.PI * 2, d = 160 + r() * 200; tower(Math.cos(a) * d, Math.sin(a) * d, 12 + r() * 16, 12 + r() * 16, 30 + r() * 90); } };
-const street = (x0, x1, z = 10) => { const g = add(new THREE.PlaneGeometry(2400, 2400), KM.road, 0, DECK, 0, scene, { cast: false }); g.rotation.x = -Math.PI / 2;
+  for (let i = 0; i < 50; i++) { const a = Math.PI * (1.05 + r() * 0.9), d = 160 + r() * 200; tower(mx + Math.cos(a) * d, zNear + Math.sin(a) * d, 12 + r() * 16, 12 + r() * 16, 30 + r() * 90); } };
+// the road covers its own stretch only (a 2400 m plane at 0,0 used to pave over every other set)
+const street = (x0, x1, z = 10) => { const g = add(new THREE.PlaneGeometry(x1 - x0 + 200, 260), KM.road, (x0 + x1) / 2, DECK, z - 60, scene, { cast: false }); g.rotation.x = -Math.PI / 2;
   for (let x = x0; x < x1; x += 6) add(new THREE.BoxGeometry(3, 0.03, 0.25), KM.lane, x, DECK + 0.01, z, scene, { cast: false }); return g; };
 // money that reads as money: $100 bills, bundles with a paper band, a block of bundles to stand on
 const billCanvas = (() => { const [c, g] = kCanvas(512, 220); g.fillStyle = '#cfdcc4'; g.fillRect(0, 0, 512, 220); g.strokeStyle = '#3f6a4a'; g.lineWidth = 10; g.strokeRect(12, 12, 488, 196);
@@ -153,4 +157,64 @@ const bunkBed = (x, z, ry = 0) => { const g = new THREE.Group(); g.position.set(
   for (const y of [0.5, 1.7]) { add(new THREE.BoxGeometry(2.2, 0.08, 1.0), f, 0, y, 0, g); add(new THREE.BoxGeometry(2.0, 0.2, 0.9), KC('#e8e4da'), 0, y + 0.14, 0, g);
     add(new THREE.BoxGeometry(2.0, 0.1, 0.9), KC(y < 1 ? '#c7322e' : '#3b5b8f'), 0.2, y + 0.27, 0, g); } return g; };
 // ===== end of the GOLIDE indoor kit =====
+// ===== GOLIDE indoor kit, batch 2 (2026-11-22): spaceship, ship deck, tent, street traffic, banners =====
+// spaceCabin(x, z, w, d, h): a dark cabin with panel walls, lit consoles, two seats and a big window onto stars (and the
+// Earth, opts.earth). shipDeck(x, z, name, opts): a liner's deck and hull with its NAME on the bow, funnels, railings,
+// lifeboats; ship.group.position/rotation can tilt it (sinking). tentRoom(x, z, w, d): canvas walls and a rug.
+// car(colour) / bus(colour, name) / busStop(x, z) / trafficLight(x, z): move cars and buses with .position over time.
+// banners(x, z, n, colour, emblem): a row of tall flags (armies, rallies, a company's campus).
+const starTex = (() => { const [c, g] = kCanvas(1024, 512); g.fillStyle = '#05070f'; g.fillRect(0, 0, 1024, 512); const r = P.rng(12);
+  for (let i = 0; i < 500; i++) { g.fillStyle = r() > 0.85 ? '#ffe9b0' : '#ffffff'; const s = r() * 2.4; g.fillRect(r() * 1024, r() * 512, s, s); } return c; })();
+const spaceCabin = (x, z, w = 12, d = 9, h = 4.2, opts = {}) => { const grp = new THREE.Group(); grp.position.set(x, DECK, z); scene.add(grp);
+  const panel = (() => { const [c, g] = kCanvas(256, 256); g.fillStyle = '#d9dde3'; g.fillRect(0, 0, 256, 256); g.strokeStyle = '#9aa2ad'; g.lineWidth = 6; g.strokeRect(8, 8, 240, 240);
+    g.fillStyle = '#b8bfc9'; for (let k = 0; k < 4; k++) g.fillRect(30 + k * 52, 200, 30, 12); return toon({ map: P.tex(c, w / 3, h / 3) }); })();
+  const fl = add(new THREE.PlaneGeometry(w, d), KC('#4a4f5a'), 0, 0.01, 0, grp, { cast: false }); fl.rotation.x = -Math.PI / 2;
+  add(new THREE.BoxGeometry(0.3, h, d), panel, -w / 2, h / 2, 0, grp); add(new THREE.BoxGeometry(0.3, h, d), panel, w / 2, h / 2, 0, grp);
+  add(new THREE.BoxGeometry(w, 0.3, d), panel, 0, h, 0, grp, { cast: false });
+  const wall = new THREE.Group(); wall.position.set(0, 0, -d / 2); grp.add(wall);              // the back wall around a big window
+  add(new THREE.BoxGeometry(w, 0.9, 0.3), panel, 0, 0.45, 0, wall); add(new THREE.BoxGeometry(w, 0.7, 0.3), panel, 0, h - 0.35, 0, wall);
+  add(new THREE.BoxGeometry(1.2, h, 0.3), panel, -w / 2 + 0.6, h / 2, 0, wall); add(new THREE.BoxGeometry(1.2, h, 0.3), panel, w / 2 - 0.6, h / 2, 0, wall);
+  const sky = add(new THREE.PlaneGeometry(300, 160), new THREE.MeshBasicMaterial({ map: kTex(starTex) }), 0, h / 2, -60, grp, { cast: false }); sky.userData.ndSkip = true;
+  if (opts.earth !== false) earth(x - 8, DECK + 2, z - d / 2 - 40, 14);
+  for (const s of [-1, 1]) { add(new THREE.BoxGeometry(2.6, 1.0, 1.0), KC('#2b2d34'), s * 2.2, 0.5, -d / 2 + 1.0, grp);
+    add(new THREE.BoxGeometry(2.4, 0.06, 0.8), screenTex(s < 0 ? 'chart' : 'code', ''), s * 2.2, 1.03, -d / 2 + 1.0, grp);
+    for (let k = 0; k < 5; k++) add(new THREE.BoxGeometry(0.16, 0.08, 0.16), toon({ color: ['#ff4d4d', '#3fe08a', '#ffd23f'][k % 3], emissive: ['#ff4d4d', '#3fe08a', '#ffd23f'][k % 3], emissiveIntensity: 0.8 }), s * 2.2 - 0.8 + k * 0.4, 1.05, -d / 2 + 1.42, grp);
+    const seat = new THREE.Group(); seat.position.set(s * 2.2, 0, -d / 2 + 2.6); grp.add(seat); add(new THREE.BoxGeometry(1.0, 0.2, 0.9), KC('#e2a52c'), 0, 0.8, 0, seat); add(new THREE.BoxGeometry(1.0, 1.4, 0.2), KC('#e2a52c'), 0, 1.5, 0.45, seat); add(new THREE.CylinderGeometry(0.12, 0.12, 0.8, 8), KM.steel, 0, 0.4, 0, seat); }
+  return { group: grp, back: -d / 2 + 0.2 }; };
+const shipDeck = (x, z, name = 'TITANIC', opts = {}) => { const { hull = '#1b1c22', deck = '#b08a5a', funnels = 4 } = opts; const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g);
+  const L = 60, Wd = 10; add(new THREE.BoxGeometry(L, 6, Wd), KC(hull), 0, -3, 0, g); add(new THREE.BoxGeometry(L, 0.6, Wd), KC('#c7322e'), 0, -6.0, 0, g);
+  const nm = signMat(name, { bg: hull, fg: '#e9b43a', border: false, w: 1024, h: 256 }); add(new THREE.BoxGeometry(8, 2, 0.05), nm, L / 2 - 7, -1.6, Wd / 2 + 0.03, g);
+  for (let i = 0; i < 18; i++) add(new THREE.CylinderGeometry(0.22, 0.22, 0.06, 12), KC('#e8e4da'), -L / 2 + 4 + i * 3, -1.6, Wd / 2 + 0.02, g).rotation.x = Math.PI / 2;
+  const dk = add(new THREE.PlaneGeometry(L, Wd), toon({ map: P.tex(floorTex('wood'), L / 3, Wd / 3) }), 0, 0.01, 0, g, { cast: false }); dk.rotation.x = -Math.PI / 2;
+  add(new THREE.BoxGeometry(L * 0.55, 3, Wd * 0.6), KC('#f1efe8'), -4, 1.5, -1, g);
+  for (let i = 0; i < funnels; i++) { add(new THREE.CylinderGeometry(1.1, 1.2, 6, 20), KC('#e9b43a'), -16 + i * 7, 6, -1, g); add(new THREE.CylinderGeometry(1.15, 1.15, 1.4, 20), KC('#17161b'), -16 + i * 7, 8.4, -1, g); }
+  for (const s of [-1, 1]) for (let i = 0; i < 30; i++) add(new THREE.BoxGeometry(0.06, 1.0, 0.06), KM.white, -L / 2 + 1 + i * 2, 0.5, s * (Wd / 2 - 0.1), g);
+  for (const s of [-1, 1]) add(new THREE.BoxGeometry(L, 0.08, 0.08), KM.white, 0, 1.0, s * (Wd / 2 - 0.1), g);
+  for (let i = 0; i < 4; i++) { const b = add(new THREE.CapsuleGeometry(0.6, 2.4, 4, 10), KM.white, -14 + i * 6, 3.6, Wd * 0.3 + 0.9, g); b.rotation.z = Math.PI / 2; }
+  return { group: g, deckY: DECK, front: Wd / 2 }; };
+const tentRoom = (x, z, w = 10, d = 8, h = 4.5) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); const cv = KC('#d8c9a3'), cvD = KC('#b9a77e');
+  const fl = add(new THREE.PlaneGeometry(w, d), toon({ map: P.tex(floorTex('carpet'), 2, 2) }), 0, 0.02, 0, g, { cast: false }); fl.rotation.x = -Math.PI / 2;
+  const roofL = add(new THREE.PlaneGeometry(d, Math.hypot(w / 2, h * 0.45)), cv, -w / 4, h * 0.78, 0, g); roofL.rotation.set(0, Math.PI / 2, 0); roofL.rotation.x = 0;
+  for (const s of [-1, 1]) { const r = add(new THREE.BoxGeometry(w / 2 + 0.4, 0.1, d), s < 0 ? cv : cvD, s * w / 4, h * 0.8, 0, g); r.rotation.z = -s * 0.42; }
+  add(new THREE.BoxGeometry(w, h * 0.62, 0.15), cvD, 0, h * 0.31, -d / 2, g); for (const s of [-1, 1]) add(new THREE.BoxGeometry(0.15, h * 0.62, d), cv, s * w / 2, h * 0.31, 0, g);
+  add(new THREE.CylinderGeometry(0.1, 0.1, h * 1.02, 8), KC('#6b4a2a'), 0, h * 0.51, -d / 2 + 0.4, g); return g; };
+const car = (col = '#2f78c4') => { const g = new THREE.Group(); scene.add(g); const b = KC(col);
+  add(new THREE.BoxGeometry(3.8, 0.8, 1.7), b, 0, 0.7, 0, g); add(new THREE.BoxGeometry(2.0, 0.7, 1.5), b, -0.2, 1.4, 0, g); add(new THREE.BoxGeometry(1.9, 0.5, 1.52), KM.glass, -0.2, 1.45, 0, g);
+  for (const [a, c] of [[1.2, 0.85], [1.2, -0.85], [-1.2, 0.85], [-1.2, -0.85]]) { const w = add(new THREE.CylinderGeometry(0.38, 0.38, 0.3, 16), KM.dark, a, 0.38, c, g); w.rotation.x = Math.PI / 2; } return g; };
+const bus = (col = '#f2c230', name = 'CITY') => { const g = new THREE.Group(); scene.add(g); const b = KC(col);
+  add(new THREE.BoxGeometry(10, 2.8, 2.5), b, 0, 1.9, 0, g); add(new THREE.BoxGeometry(9.6, 0.9, 2.52), KM.glass, 0, 2.5, 0, g); add(new THREE.BoxGeometry(10.02, 0.3, 2.52), KC('#c7322e'), 0, 1.2, 0, g);
+  add(new THREE.BoxGeometry(3, 0.5, 0.02), signMat(name, { bg: '#17161b', fg: '#ffd23f', border: false, w: 768, h: 128 }), 3.2, 3.05, 1.27, g);
+  for (const [a, c] of [[3.4, 1.15], [3.4, -1.15], [-3.4, 1.15], [-3.4, -1.15]]) { const w = add(new THREE.CylinderGeometry(0.5, 0.5, 0.35, 16), KM.dark, a, 0.5, c, g); w.rotation.x = Math.PI / 2; } return g; };
+const busStop = (x, z, ry = 0) => { const g = new THREE.Group(); g.position.set(x, DECK, z); g.rotation.y = ry; scene.add(g);
+  add(new THREE.CylinderGeometry(0.07, 0.07, 3, 8), KM.steel, 0, 1.5, 0, g); add(new THREE.BoxGeometry(1.2, 0.5, 0.08), signMat('BUS STOP', { bg: '#2f5fb8', fg: '#ffffff', w: 768, h: 256 }), 0, 2.8, 0.05, g);
+  add(new THREE.BoxGeometry(2.6, 0.1, 0.6), KM.dark, 1.6, 0.6, -0.4, g); return g; };
+const trafficLight = (x, z, on = 'red') => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); add(new THREE.CylinderGeometry(0.08, 0.08, 3.2, 8), KM.dark, 0, 1.6, 0, g);
+  add(new THREE.BoxGeometry(0.5, 1.3, 0.4), KM.dark, 0, 3.5, 0, g); g.lamps = {};
+  for (const [k, c, y] of [['red', '#ff3b30', 3.9], ['amber', '#ffb020', 3.5], ['green', '#3fe08a', 3.1]]) g.lamps[k] = add(new THREE.SphereGeometry(0.14, 12, 8), toon({ color: c, emissive: c, emissiveIntensity: k === on ? 1.2 : 0.05 }), 0, y, 0.21, g);
+  return g; };
+const banners = (x, z, n = 6, colour = '#f2c230', emblem = '') => { const out = []; for (let i = 0; i < n; i++) { const g = new THREE.Group(); g.position.set(x + i * 1.6, DECK, z - (i % 2) * 0.8); scene.add(g);
+  add(new THREE.CylinderGeometry(0.05, 0.05, 5, 8), KC('#6b4a2a'), 0, 2.5, 0, g); add(new THREE.ConeGeometry(0.12, 0.3, 8), KM.steel, 0, 5.1, 0, g);
+  add(new THREE.BoxGeometry(1.1, 1.6, 0.04), signMat(emblem, { bg: colour, fg: '#17161b', w: 256, h: 384 }), 0.6, 4.1, 0, g); out.push(g); } return out; };
+// ===== end of batch 2 =====
+
 

@@ -49,10 +49,20 @@ const kitHat = (p, kind, col, cx, hc, H, u, ow, thick) => {
   if (kind === 'police') { p.band([[cx - 1.0 * H.a, brow - 7 * u], [cx + 1.0 * H.a, brow - 7 * u]], '#17161b', 12 * u, 1.2 * u, 'butt'); p.poly(blobPts(cx, brow - 0.42 * H.b, { a: 9 * u, b: 9 * u, nTop: 2, nBot: 2, egg: 0, asym: 0, rot: 0, noise: 0, seed: 1 }), '#e9b43a', 1.6 * u); }
   p.poly([[cx - 0.85 * H.a, brow], [cx + 0.85 * H.a, brow], [cx + 0.7 * H.a, brow + 0.16 * H.b], [cx - 0.7 * H.a, brow + 0.16 * H.b]], kind === 'police' ? '#17161b' : dark, ow * 0.6);
 };
+// more faces (2026-11-22): every feeling a story needs, built from the library's own eyes, brows and mouths; any name
+// the writer uses that is still unknown draws the nearest known face, never a crash
+Object.assign(FACE, {
+  smirk: { eye: ['lid', 'lid'], brow: [2, -3], mouth: 'grin' }, angry: { ...FACE.stern, brow: [6, -6] }, mad: { ...FACE.stern, brow: [6, -6] },
+  sad: { ...FACE.nervous, brow: [-4, 3] }, worried: FACE.nervous, scared: FACE.shock, surprised: FACE.shock, amazed: FACE.shock,
+  happy: FACE.smile, excited: FACE.laugh, proud: FACE.smile_closed || FACE.smile, confident: FACE.grin, focused: FACE.stern,
+  thinking: FACE.nervous, bored: FACE.dazed || FACE.neutral, tired: FACE.dazed || FACE.neutral, relieved: FACE.relief,
+  sleepy: FACE.snore || FACE.neutral, determined: FACE.stern, curious: FACE.neutral, evil: { eye: ['lid', 'lid'], brow: [6, -6], mouth: 'grin' },
+});
+const faceName = (e) => (FACE[e] ? e : 'neutral');
 export const modernFront = (p, O, opts = {}) => {
-  const { expr = 'neutral', blink = 0, look = 0, facing = 0, seed = 3, L = 'hang', R = 'hang', tilt = 0, headTilt = 0,
+  const { expr: expr0 = 'neutral', blink = 0, look = 0, facing = 0, seed = 3, L = 'hang', R = 'hang', tilt = 0, headTilt = 0,
     bob = 0, light = rad(-120), step = 0, seated = false } = opts;
-  const lid = lidOf(blink), skin = O.skin ?? SKIN;
+  const expr = faceName(expr0), lid = lidOf(blink), skin = O.skin ?? SKIN;
   const H = headBlob(seed, 124, facing), W = 2 * H.a, HH = 2 * H.b, u = W / 100;
   const sole = 975, legsL = 1.12, torsoL = 1.02;
   const torsoBot = sole - legsL * HH - bob * HH, chin = torsoBot - torsoL * HH, hc = chin - H.b * 0.96, hipY = torsoBot - 0.1 * HH;
