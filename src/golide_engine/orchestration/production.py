@@ -546,6 +546,11 @@ class ProductionService:
                                  narration, workers=int(conf.get("workers", 3)), parts=reused, save=save_parts,
                                  record=record_call)
                 made["ok"] = bool(mp4 and mp4.exists())
+                if not made["ok"]:
+                    # 2026-11-22: a stage that did not make the video is not "completed", so the next run tries the
+                    # same saved storyboard again (after the engine fix) instead of skipping it
+                    raise RuntimeError("Stickman Short: the page could not load the saved storyboard; it is kept, "
+                                       "re-render after the engine fix (no new storyboard is paid for)")
             if made["ok"]:
                 video_path.parent.mkdir(parents=True, exist_ok=True)
                 video_path.write_bytes((project / "out" / "stickman.mp4").read_bytes())
@@ -553,7 +558,7 @@ class ProductionService:
                 from ..stickman import captions as stickman_captions
                 stickman_captions.add(video_path, timed_words, [], "short", work / "stickman-captions")
 
-        self.runner.run(production_id, "render-stickman-short-v1", stage, attempts=1)
+        self.runner.run(production_id, "render-stickman-short-v2", stage, attempts=1)
         if made["ok"]:
             story = (project / "web" / "story.js").read_text(encoding="utf-8")
             spans = [(int(a), int(b)) for a, b in re.findall(r"\ba:\s*(\d+)\s*,\s*b:\s*(\d+)", story)]
@@ -802,7 +807,7 @@ class ProductionService:
             shutil.rmtree(self.root / "build" / production_id, ignore_errors=True)
             shutil.rmtree(self.root / "release-packages" / production_id, ignore_errors=True)
             (self.root / "release-packages" / f"{production_id}.zip").unlink(missing_ok=True)
-            stages = ("render-stickman-v1", "render-stickman-short-v1", "goli-layer-v1", "render-vector-v1",
+            stages = ("render-stickman-v1", "render-stickman-short-v1", "render-stickman-short-v2", "goli-layer-v1", "render-vector-v1",
                       "render-edit-v1", "qa", "release")
             self.database.execute(f"DELETE FROM stage_runs WHERE production_id=? AND stage IN ({','.join('?' for _ in stages)})",
                                   (production_id, *stages))
