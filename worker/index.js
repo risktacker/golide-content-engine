@@ -487,6 +487,7 @@ async function createPost(env,payload){
 async function listProductionJobs(db){
   const {results=[]}=await db.prepare(`SELECT job_id,format,status,stage,title,selected_topic,script,owner_voice_media_ref,
     json_extract(spec_json,'$.video_style') AS video_style,
+    json_extract(spec_json,'$.suggested_model') AS suggested_model,
     generate_at,scheduled_at,actual_cost_usd,openai_cost_usd,voice_characters,run_url,release_url,error,claimed_at,created_at,updated_at
     FROM production_jobs
     WHERE archived_at IS NULL
@@ -1097,6 +1098,24 @@ async function handleMachineApi(request,env,url){
   }
   if(url.pathname==="/api/engine/media/deleted"&&request.method==="POST"){
     try{return json(await markMediaDeleted(env.DB,await request.json()));}catch(e){return err(e?.message||String(e),400);}
+  }
+  // owner 2026-11-22: the morning pick. The engine lists the slots still waiting for his link and shows its choice
+  // of video to model on each (he can fetch its transcript and paste it; otherwise the slot makes that video).
+  if(url.pathname==="/api/engine/link-slots"&&request.method==="GET"){
+    const {results=[]}=await env.DB.prepare(`SELECT job_id,format,scheduled_at,json_extract(spec_json,'$.suggested_model') AS suggested_model
+      FROM production_jobs WHERE status='waiting_owner_link' AND archived_at IS NULL
+        AND json_extract(spec_json,'$.replace_model.url') IS NULL`).all();
+    return json({slots:results.map(r=>({...r,suggested_model:r.suggested_model?JSON.parse(r.suggested_model):null}))});
+  }
+  const suggestPick=url.pathname.match(/^\/api\/engine\/jobs\/([^/]+)\/suggest$/);
+  if(suggestPick&&request.method==="POST"){
+    try{
+      const pick=await request.json();
+      if(!pick||!/^https:\/\/(www\.)?(youtube\.com|youtu\.be)\//.test(String(pick.url||""))) return err("a YouTube url is required",400);
+      const r=await env.DB.prepare(`UPDATE production_jobs SET spec_json=json_set(spec_json,'$.suggested_model',json(?)),updated_at=? WHERE job_id=? AND status='waiting_owner_link'`)
+        .bind(JSON.stringify(pick),new Date().toISOString(),decodeURIComponent(suggestPick[1])).run();
+      return json({ok:(r.meta?.changes||0)>0});
+    }catch(e){return err(e?.message||String(e),400);}
   }
   if(url.pathname==="/api/engine/transcript"&&request.method==="GET"){
     // owner 2026-11-22: free transcript of a model video, read by the Studio's own Worker.

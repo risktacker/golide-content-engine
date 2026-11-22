@@ -873,6 +873,11 @@ class ProductionService:
                         breakouts = []
                     # 2026-11-05 (owner): never model the same video twice. The same channel is
                     # fine, a different video of theirs; the "F-You" source was picked again 2 days on.
+                    # 2026-11-22 (owner): the morning pick shown in Studio is the video this slot makes when he
+                    # pasted nothing (the same video he may have fetched a transcript for).
+                    pick = spec.get("suggested_model") or {}
+                    if pick.get("url") and not (spec.get("topic_focus") or {}).get("queries"):
+                        breakouts = [dict(pick)]
                     from .history import used_source_videos, video_key
                     used = used_source_videos(production_id)
                     breakouts = [b for b in breakouts if video_key(b.get("url", "")) not in used]

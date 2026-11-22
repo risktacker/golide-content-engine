@@ -1,0 +1,28 @@
+name: Morning pick (the video to model, shown in Studio)
+
+# Owner 2026-11-22: at 08:00 Lusaka every slot still waiting for his link shows the engine's pick (title, channel,
+# Copy link). He can fetch its transcript from a free site and paste it back; otherwise the slot makes that video
+# at its time. No OpenAI here, only the YouTube data quota.
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  pick:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -q -e '.[production]'
+      - name: Pick today's videos to model
+        env:
+          GOLIDE_STUDIO_BASE_URL: "https://studio.golidee.com"
+        run: python -m golide_engine.orchestration.pick

@@ -796,6 +796,7 @@ function linkCard(job) {
     '<p>Paste the YouTube video to model. The engine writes the script from it (with the voice tags) and waits for your recording. ' +
     'No video in mind? Tap Find a topic: the engine researches one now and writes the script. ' +
     'Nothing by ' + by + ': the engine picks a topic itself, records with the AI voice and publishes 30 minutes after it is built.</p>' +
+    pickHtml(job) +
     '<div class="replace-row" id="replace-row-' + id + '">' +
       '<input class="replace-link" type="url" inputmode="url" placeholder="Paste the YouTube link" data-job="' + id + '">' +
       '<textarea class="replace-transcript" rows="3" placeholder="Optional: paste its transcript (from any free transcript site). The script then follows it closely." data-job="' + id + '"></textarea>' +
@@ -803,6 +804,32 @@ function linkCard(job) {
     '<span class="voice-status script-status" id="script-status-' + id + '"></span></div>' +
     '<div class="action-controls"><button class="action-button find-topic" data-job="' + id + '">Find a topic</button>' +
     '<button class="action-button skip-slot" data-job="' + id + '">Skip this slot</button></div></article>';
+}
+
+// 2026-11-22 (owner): the engine's morning pick on a slot. He copies the link, gets its transcript from a free
+// site and pastes both below; nothing pasted by the slot's time and the slot makes this same video.
+function suggestedPick(job) {
+  try {
+    const pick = typeof job.suggested_model === "string" ? JSON.parse(job.suggested_model) : job.suggested_model;
+    return pick && pick.url ? pick : null;
+  } catch (e) { return null; }
+}
+
+function pickHtml(job) {
+  const pick = suggestedPick(job);
+  if (!pick) return "";
+  const id = escAttr(job.job_id);
+  const views = pick.views ? Number(pick.views).toLocaleString() + " views" : "";
+  const style = pick.style === "stickman_goli" ? "Stickman + Goli" : pick.style === "goli" ? "Goli" : "";
+  return '<div class="engine-pick"><span class="kicker">Engine\'s pick</span>' +
+    '<p><b>' + esc(pick.title || pick.url) + '</b><br>' + esc(pick.channel || "") + (views ? ' · ' + esc(views) : "") +
+    (style ? ' · suggests ' + esc(style) : "") + '</p>' +
+    '<div class="script-tools"><button class="action-button copy-pick" data-job="' + id + '">Copy link</button>' +
+    '<button class="action-button use-pick" data-job="' + id + '">Use this link</button>' +
+    '<a class="action-button" href="' + escAttr(pick.url) + '" target="_blank" rel="noopener">Open</a></div>' +
+    '<p class="replace-note">Get its transcript from any free transcript site, tap <b>Use this link</b>, paste the transcript ' +
+    'below and tap <b>Write the script</b>: it is cut to our length in their own words. Nothing by the slot\'s time: ' +
+    'this video is made the normal way.</p></div>';
 }
 
 // 2026-10-18: a recording can be replaced until the video is released (a wrong
@@ -982,6 +1009,22 @@ function renderActionQueues() {
         button.disabled = false; button.textContent = "Find a topic";
         if (status) status.textContent = error.message;
       }
+    };
+  });
+  $$(".copy-pick").forEach((button) => {
+    button.onclick = async () => {
+      const pick = suggestedPick(productionJobs.find((item) => item.job_id === button.dataset.job) || {});
+      if (!pick) return;
+      await navigator.clipboard.writeText(pick.url);
+      button.textContent = "Copied";
+      setTimeout(() => { button.textContent = "Copy link"; }, 1200);
+    };
+  });
+  $$(".use-pick").forEach((button) => {
+    button.onclick = () => {
+      const pick = suggestedPick(productionJobs.find((item) => item.job_id === button.dataset.job) || {});
+      const input = document.querySelector('#replace-row-' + CSS.escape(button.dataset.job) + ' .replace-link');
+      if (pick && input) { input.value = pick.url; input.focus(); }
     };
   });
   $$(".copy-script").forEach((button) => {

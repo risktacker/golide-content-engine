@@ -82,6 +82,17 @@ class StudioBridge:
         payload["spec"]["_studio_job_id"] = payload["jobId"]
         return payload
 
+    def link_slots(self) -> list[dict[str, Any]]:
+        """Slots still waiting for the owner's link (owner 2026-11-22: the engine shows its pick on them)."""
+        status, body = self._request("GET", "/api/engine/link-slots")
+        if status != 200:
+            raise RuntimeError(f"Studio link-slots request failed with HTTP {status}")
+        return list(json.loads(body.decode("utf-8") or "{}").get("slots") or [])
+
+    def suggest(self, job_id: str, pick: dict[str, Any]) -> bool:
+        status, _ = self._request("POST", f"/api/engine/jobs/{quote(job_id, safe='')}/suggest", pick)
+        return status == 200
+
     def transcript(self, video: str) -> str:
         """A video's spoken words read by the Studio's own Worker (owner 2026-11-22: free, no paid service)."""
         status, body = self._request("GET", f"/api/engine/transcript?v={quote(video, safe='')}")

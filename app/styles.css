@@ -546,3 +546,8 @@ body.sheet-open{overflow:hidden}
 
 /* 2026-11-17 (owner): the model's transcript, pasted with the link */
 .replace-transcript{width:100%;min-height:72px;padding:10px 12px;border-radius:10px;border:1px solid var(--line-strong);background:transparent;color:inherit;font:inherit;font-size:.875rem;resize:vertical}
+/* 2026-11-22 (owner): the engine's morning pick on a slot waiting for his link */
+.engine-pick{margin-top:12px;padding:12px 14px;border:1px solid var(--gold);border-radius:12px;background:var(--surface)}
+.engine-pick p{margin:6px 0}
+.engine-pick .script-tools{margin:8px 0}
+.engine-pick a.action-button{text-decoration:none;display:inline-flex;align-items:center}
