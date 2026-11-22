@@ -10,7 +10,7 @@
 //   from, to, height, back) -> a camera that tracks a walker; coinFx / sparkFx / heartFx / angerFx / sweatFx / questionFx /
 //   ideaFx / zzzFx fx cards (T.coinFx(p, t) ...).; opts as romanFront (expr, blink, look, facing, seed, L, R,
 //   tilt, headTilt, bob, step, wv, swirl, lift) plus seated: true (no legs, for karts and chairs).
-// Arm poses: hang point up wave hip temple cross reach. T.billFx(p, rot, squash): a falling $100 bill for fx cards.
+// Arm poses: hang point up wave hip temple cross reach chin facepalm cheer shrug hug shake mouth ear salute clap fist stop count heart. T.billFx(p, rot, squash): a falling $100 bill for fx cards.
 // GOLIDE modern cast: chunkier puppets with definition, drawn whole (not over the kit's body): a round torso with
 // shoulders, thick sleeved arms with cuffs and mitten hands, trousers with a crease and hem, shoes with soles and a
 // shine, a belt, the top (T-shirt, hoodie, jacket with shirt and tie), fuller hair, heavier ink and a shadow side.
@@ -110,6 +110,23 @@ export const modernFront = (p, O, opts = {}) => {
       case 'temple': return { pts: [s, [X(24), s[1] + 0.05 * HH], [cx + side * (H.a + 14 * u), hc - 0.08 * HH]], swirl: true };
       case 'cross': return { pts: [s, [X(2), s[1] + 0.34 * HH], [tcx - side * 0.42 * T.a, s[1] + 0.28 * HH]], front: true };
       case 'reach': { const lf = (opts.lift || 0) * 0.6 * HH; return { pts: [s, [X(36), s[1] - 0.08 * HH - lf * 0.6], [X(72), s[1] - 0.42 * HH - lf]] }; }
+      // behaviour poses (2026-11-22): chin (thinking), facepalm, cheer (fist up), shrug, hug (both forward), shake (hand out
+      // at waist height for a handshake), mouth (hand over mouth), ear (phone to ear), salute, clap (hands together, use
+      // opts.clap 0..1), fist (fight), stop (palm out), count (finger up), heart (hands on chest)
+      case 'chin': return { pts: [s, [X(-2), s[1] + 0.28 * HH], [cx + side * 10 * u, hc + 0.5 * H.b]], front: true };
+      case 'facepalm': return { pts: [s, [X(10), s[1] - 0.02 * HH], [cx + side * 4 * u, hc + 0.05 * H.b]], front: true };
+      case 'cheer': return { pts: [s, [X(14), s[1] - 0.34 * HH], [X(8), s[1] - 0.78 * HH]] };
+      case 'shrug': return { pts: [s, [X(28), s[1] + 0.12 * HH], [X(40), s[1] - 0.12 * HH]] };
+      case 'hug': return { pts: [s, [X(34), s[1] + 0.1 * HH], [X(62), s[1] + 0.06 * HH]] };
+      case 'shake': return { pts: [s, [X(30), s[1] + 0.3 * HH], [X(64), s[1] + 0.3 * HH]] };
+      case 'mouth': return { pts: [s, [X(6), s[1] + 0.22 * HH], [cx + side * 2 * u, hc + 0.42 * H.b]], front: true };
+      case 'ear': return { pts: [s, [X(18), s[1] + 0.1 * HH], [cx + side * (H.a + 4 * u), hc + 0.15 * H.b]] };
+      case 'salute': return { pts: [s, [X(28), s[1] - 0.12 * HH], [cx + side * 0.5 * H.a, hc - 0.38 * H.b]] };
+      case 'clap': { const k = opts.clap || 0; return { pts: [s, [X(10), s[1] + 0.26 * HH], [tcx + side * (6 + 20 * k) * u, s[1] + 0.12 * HH]], front: true }; }
+      case 'fist': return { pts: [s, [X(26), s[1] + 0.18 * HH], [X(44), s[1] - 0.02 * HH]] };
+      case 'stop': return { pts: [s, [X(34), s[1] - 0.02 * HH], [X(70), s[1] - 0.14 * HH]], palm: true };
+      case 'count': return { pts: [s, [X(16), s[1] - 0.12 * HH], [X(22), s[1] - 0.52 * HH]], finger: true };
+      case 'heart': return { pts: [s, [X(4), s[1] + 0.3 * HH], [tcx + side * 8 * u, s[1] + 0.22 * HH]], front: true };
       default: return { pts: [s, [X(5), s[1] + 0.46 * HH], [X(3), torsoBot - 0.02 * HH]] };
     }
   };
@@ -120,7 +137,7 @@ export const modernFront = (p, O, opts = {}) => {
     p.stroke(c.map(([x, y]) => [x, y + 3 * u]).slice(2), 4 * u, O.jacket ? mul(top, [0.8, 0.8, 0.88]) : topD);
     const n = c.length, q = c[Math.max(0, n - 3)];            // a cuff near the wrist
     p.stroke([[q[0] - 6 * u, q[1]], [q[0] + 6 * u, q[1]]], 3 * u, O.jacket ? (O.shirt || '#f4f2ec') : mul(top, [0.78, 0.78, 0.86]));
-    p.ell(hx, hy, 9 * u, 8.5 * u, skin, ow * 0.45);         // mitten hand + thumb
+    p.ell(hx, hy, a.palm ? 12 * u : 9 * u, a.palm ? 13 * u : 8.5 * u, skin, ow * 0.45);         // mitten hand + thumb (an open palm is bigger)
     p.ell(hx + Math.sign(hx - cx) * -6 * u, hy - 5 * u, 3.6 * u, 4.6 * u, skin, ow * 0.35);
     if (a.finger) { const dx = hx - a.pts[1][0], dy = hy - a.pts[1][1], l = Math.hypot(dx, dy) || 1;
       p.stroke([[hx, hy], [hx + dx / l * 15 * u, hy + dy / l * 15 * u]], 6 * u, INK); p.stroke([[hx, hy], [hx + dx / l * 14 * u, hy + dy / l * 14 * u]], 3.6 * u, skin); }
@@ -283,6 +300,24 @@ export const robotFront = (p, O = {}, opts = {}) => {
   for (const sd of [-1, 1]) p.ell(300 + sd * 124, 520 - by, 14, 26, dark, 6);
   p.stroke([[300, 424 - by], [300, 372 - by]], 10, INK); p.dot(300, 366 - by, 16, '#e8445a');
 };
+// a speech or thought bubble card with a few words (T.bubble(p, 'NO WAY!', { think: true, tail: -1 })): short words only
+export const bubble = (p, text = '', o = {}) => { const g = p.g, { think = false, tail = 1, colour = '#ffffff', ink = '#17161b' } = o;
+  let fs = 120; g.font = `900 ${fs}px sans-serif`; while (g.measureText(text).width > 460 && fs > 40) { fs -= 6; g.font = `900 ${fs}px sans-serif`; }
+  const w = Math.max(260, g.measureText(text).width + 90), h = fs + 110, cx = 300, cy = 420;
+  const pts = think ? blobPts(cx, cy, { a: w / 2, b: h / 2, nTop: 2, nBot: 2, egg: 0, asym: 0, rot: 0, noise: 0.06, seed: 9 }) : blobPts(cx, cy, { a: w / 2, b: h / 2, nTop: 3, nBot: 3, egg: 0, asym: 0, rot: 0, noise: 0, seed: 1 });
+  p.poly(pts, colour, 12);
+  if (think) for (const [k, r] of [[0, 26], [1, 16]]) p.ell(cx + tail * (60 + k * 50), cy + h / 2 + 30 + k * 50, r, r, colour, 9);
+  else p.poly([[cx + tail * 30, cy + h / 2 - 8], [cx + tail * 110, cy + h / 2 + 90], [cx + tail * 90, cy + h / 2 - 8]], colour, 10);
+  g.save(); g.fillStyle = ink; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(text, cx, cy + 6); g.restore(); };
+// more feelings drawn on top of a character: tears, a blush, steam from the ears, a dizzy ring, a sparkle of joy
+// face effects line up with T.modernFront's head (centre y 364, half-width 124 on the 600 x 1000 card): put the fx card at
+// the same x, y, z and scale as the character it belongs to
+const HY = 364, HR = 124;
+export const tearsFx = (p, t = 0) => { for (const sd of [-1, 1]) { const y = HY + 20 + (t * 160) % 160; p.poly([[300 + sd * 48, y], [300 + sd * 62, y + 30], [300 + sd * 48, y + 46], [300 + sd * 34, y + 30]], '#7fc8ff', 5); } };
+export const blushFx = (p) => { for (const sd of [-1, 1]) p.ell(300 + sd * 66, HY + 48, 28, 15, '#ff8fa3', 0); };
+export const steamFx = (p, t = 0) => { for (const sd of [-1, 1]) for (let k = 0; k < 3; k++) p.ell(300 + sd * (HR + 30 + k * 28 + t * 30), HY - 30 - k * 44 - t * 30, 22 + k * 8, 20 + k * 6, '#f1f1f1', 7); };
+export const dizzyFx = (p, t = 0) => { for (let k = 0; k < 4; k++) { const a = t * 6.28 + k * 1.57; p.ell(300 + Math.cos(a) * 120, HY - HR - 30 + Math.sin(a) * 24, 18, 18, '#ffd23f', 5); } };
+export const joyFx = (p, t = 0) => { for (let k = 0; k < 5; k++) { const a = k / 5 * 6.28 + t * 2; const x = 300 + Math.cos(a) * 190, y = HY + Math.sin(a) * 170; p.poly([[x, y - 26], [x + 8, y - 8], [x + 26, y], [x + 8, y + 8], [x, y + 26], [x - 8, y + 8], [x - 26, y], [x - 8, y - 8]], '#ffd23f', 5); } };
 export const billFx = (p, rot = 0, sq = 1) => { const g = p.g; g.save(); g.translate(300, 500); g.rotate(rot); g.scale(1, sq);
   g.fillStyle = '#cfdcc4'; g.fillRect(-170, -72, 340, 144); g.strokeStyle = '#3f6a4a'; g.lineWidth = 9; g.strokeRect(-160, -62, 320, 124);
   g.fillStyle = '#9fbf98'; g.beginPath(); g.ellipse(0, 0, 40, 52, 0, 0, 7); g.fill(); g.fillStyle = '#2f5a3c'; g.font = '900 52px sans-serif';
