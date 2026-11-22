@@ -305,5 +305,6 @@
     "hours_old": 210.8,
     "style": "stickman"
   },
-  "voice_choice": "ai"
+  "voice_choice": "ai",
+  "openai_budget_usd": 1.75
 }

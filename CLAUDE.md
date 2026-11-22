@@ -97,8 +97,9 @@ best unmodelled video of the last 45 days, no numbers bar. The channel's style i
   The kit's rules win for these videos (its music, SFX, captions, chapter cards); our Short music rule doesn't apply.
 - The characters are actors: the narrator speaks, nobody's mouth talks. Real people are generic puppets, no likeness.
 - Our engine feeds only the voice, our word timings and research; Sol writes story.json (long) or the world, story,
-  cast and cue table (Short) from the kit's own documents. Checks (the kit's plan check / our look check) go back to
-  the writer once; a Short that fails twice is made in Goli.
+  cast and cue table (Short) from the kit's own documents. No paid retries (owner 2026-11-22): Sol writes the storyboard ONCE and it is
+  saved at once; the plan / look checks are repaired by the engine for free on that same storyboard (camera guard, more
+  light, safe helpers, collisions taken out) and it re-renders. Nothing goes back to Sol and nothing falls back to Goli.
 - Stickman + Goli (owner 2026-11-17, `stickman/goli_layer.py`): a fourth choice in Studio, per video. The finished
   Stickman video plays in a framed panel; Goli stands full-body beside it ("beside" place in `edit/compose.py`),
   facing it, mouth on the voice, reactions on the story's events (numbers -> point, shock lines -> shock, lists and

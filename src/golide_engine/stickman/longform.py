@@ -323,51 +323,34 @@ def cast_in(story: dict[str, Any], sentences: list[str]) -> int:
 
 
 def storyboard(text, project: Path, title: str, doc: dict[str, Any], research: dict[str, Any], record=None) -> list[str]:
-    """Write story.json, then check it: the kit's plan check and our collision check (owner 2026-11-17: no collision
-    in anything). Problems go back to the writer once. Any collision still there after that is removed (the text
-    that collides is taken out), so the video is clean. Returns the plan warnings left."""
-    problems = ""
-    left: list[str] = []
-    asked: list[dict[str, str]] = []
-    for attempt in (1, 2):
-        out = text.generate_json(instructions(), request(title, (project / "script.txt").read_text(encoding="utf-8"),
-                                                         doc, research, problems), STORY_SCHEMA, max_output_tokens=60000)
-        if record:
-            record(f"stickman-story-{attempt}", out)
-        story = json.loads(out.value["story_json"])
-        story["title"] = title
-        asked += [w for w in wishes(story) if w not in asked]
-        cast_in(story, sentence_texts(project))        # owner 2026-11-21: the engine puts the cast in, never a stop
-        (project / "story.json").write_text(json.dumps(story, indent=1, ensure_ascii=False), encoding="utf-8")
-        unknown = fix_icons(json.loads(json.dumps(story)))
-        places = fix_places(json.loads(json.dumps(story)))
-        if attempt == 2 and places:
-            fix_places(story, final=True)
-            (project / "story.json").write_text(json.dumps(story, indent=1, ensure_ascii=False), encoding="utf-8")
-        if attempt == 2 or not unknown:
-            fix_story_icons(project)
-        try:
-            left = warnings(kit("plan", project, timeout=900))
-        except RuntimeError as error:
-            left = [str(error)]
-        if attempt == 1 and unknown:
-            known = ", ".join(sorted(kit_icons()))
-            left = left + [f"icon {c.split(' -> ')[0]!r} is not one the kit draws; use one of: {known}; for anything else "
-                           f"use icon \"label\" with \"text\": its name" for c in unknown if " -> " in c and not c.startswith("lower_third")]
-        if attempt == 1:
-            left = left + places
-        if any(k in w for w in left for k in ("ImportError", "ModuleNotFoundError", "cannot open shared object")):
-            # 2026-11-17: the machine is broken, not the story; never pay the writer again for that
-            raise RuntimeError("stickman: the kit cannot run on this machine: " + left[0][-400:])
-        hit = collisions(project)["problems"] if not any("failed" in w for w in left) else []
-        print(json.dumps({"status": "stickman_plan", "attempt": attempt, "warnings": len(left), "collisions": len(hit)}),
-              flush=True)
-        if not left and not hit:
-            report_wishes(project, title, asked)
-            return []
-        problems = "\n".join(f"- {w}" for w in left + hit)
+    """Write story.json ONCE, then check it: the kit's plan check and our collision check (owner 2026-11-17: no
+    collision in anything). Owner 2026-11-22: "I ain't paying for retries": nothing goes back to the writer. Unknown
+    icons and places are mapped by the engine, and any collision still there is removed (the text that collides is
+    taken out), so the video is clean. Returns the plan warnings left."""
+    out = text.generate_json(instructions(), request(title, (project / "script.txt").read_text(encoding="utf-8"),
+                                                     doc, research, ""), STORY_SCHEMA, max_output_tokens=60000)
+    if record:
+        record("stickman-story-1", out)
+    story = json.loads(out.value["story_json"])
+    story["title"] = title
+    asked = wishes(story)
+    cast_in(story, sentence_texts(project))        # owner 2026-11-21: the engine puts the cast in, never a stop
+    fix_places(story, final=True)
+    (project / "story.json").write_text(json.dumps(story, indent=1, ensure_ascii=False), encoding="utf-8")
+    fix_story_icons(project)
+    try:
+        left = warnings(kit("plan", project, timeout=900))
+    except RuntimeError as error:
+        left = [str(error)]
+    if any(k in w for w in left for k in ("ImportError", "ModuleNotFoundError", "cannot open shared object")):
+        # 2026-11-17: the machine is broken, not the story; never pay the writer again for that
+        raise RuntimeError("stickman: the kit cannot run on this machine: " + left[0][-400:])
+    hit = collisions(project)["problems"] if not any("failed" in w for w in left) else []
+    print(json.dumps({"status": "stickman_plan", "attempt": 1, "warnings": len(left), "collisions": len(hit)}),
+          flush=True)
     report_wishes(project, title, asked)
-    clean_up(project)
+    if hit:
+        clean_up(project)
     return left
 
 

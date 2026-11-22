@@ -51,14 +51,68 @@ def test_the_writer_gets_the_skill_and_the_kit_code():
     assert "nobody's mouth talks" in rules
 
 
-def test_fix_rounds_apply_exact_edits_only():
-    parts = {"story_js": "const x = MATH.sin(1);", "world_js": "a", "world_state_js": "b", "cast_js": "", "cues_py": ""}
-    fixed = short.apply_edits(parts, [{"part": "story_js", "old": "MATH.sin", "new": "Math.sin"}])
-    assert fixed["story_js"] == "const x = Math.sin(1);" and parts["story_js"].startswith("const x = MATH")
-    import pytest
-    with pytest.raises(ValueError):
-        short.apply_edits(parts, [{"part": "world_js", "old": "zzz", "new": "y"}])
-    assert "MATH.sin" in short.fix_request(parts, "ReferenceError: MATH is not defined")
+def test_no_paid_retries_the_engine_repairs_the_same_storyboard(tmp_path, monkeypatch):
+    """2026-11-22 (owner): "I ain't paying for retries": Sol is called once; dark frames are repaired for free."""
+    from golide_engine.stickman import short
+
+    calls = []
+
+    class Sol:
+        def generate_json(self, *a, **k):
+            calls.append(1)
+            class Out:
+                value = {"story_js": "SHOTS = [{a: 0, b: 40}, {a: 41, b: 90}]"}
+            return Out()
+
+    checks = iter(["frame 60 is 100% black: light the set", "frame 60 is 100% black: light the set", ""])
+    seen = []
+
+    def check(project, parts, timing, attempt):
+        seen.append(parts.get("repair"))
+        (project / "web").mkdir(exist_ok=True)
+        (project / "web" / "story.js").write_text(parts["story_js"])
+        return next(checks)
+
+    monkeypatch.setattr(short, "_check", check)
+    monkeypatch.setattr(short, "render", lambda project, total, workers=3: None)
+    monkeypatch.setattr(short, "finish", lambda project, voice: project / "out" / "stickman.mp4")
+    monkeypatch.setattr("golide_engine.stickman.logos.for_script", lambda text: {})
+    voice = tmp_path / "v.wav"; voice.write_bytes(b"x")
+    saved = []
+    out = short.make(Sol(), tmp_path, "T", [{"word": "Hi.", "start": 0.0, "end": 3.0}], 3.0, voice, save=saved.append)
+    assert out is not None and len(calls) == 1
+    assert seen[1] == {"guard": [[41, 90]]} and seen[2] == {"guard": [[41, 90]], "lift": [[41, 90]]}
+    assert saved[-1]["repair"]["lift"] == [[41, 90]]
+
+
+def test_a_page_that_cannot_load_stops_without_paying(tmp_path, monkeypatch):
+    from golide_engine.stickman import short
+
+    class NoSol:
+        def generate_json(self, *a, **k):
+            raise AssertionError("Sol called again")
+
+    monkeypatch.setattr(short, "_check", lambda *a: "The page threw errors:\nSyntaxError: Unexpected token")
+    voice = tmp_path / "v.wav"; voice.write_bytes(b"x")
+    assert short.make(NoSol(), tmp_path, "T", [{"word": "Hi.", "start": 0.0, "end": 1.0}], 1.0, voice,
+                      parts={"story_js": "x"}) is None
+
+
+def test_repairs_are_built_into_our_copy_of_main_and_the_storyboard_comes_back(tmp_path):
+    from golide_engine.stickman import short
+
+    parts = {"plan_md": "plan", "world_js": "const DECK = 0;", "world_state_js": "function worldState(S, f) {\n  waterU.t.value = f / 30;\n}",
+             "story_js": "export const SHOTS = [{a: 0, b: 29}];", "cast_js": "export const extra = 1;", "music_end": 3.5,
+             "cues_py": "place(sfx, whoosh(0.6), F(18), 0.5)", "logos": {"nvidia": {"svg": "x"}},
+             "repair": {"guard": [[0, 29]]}}
+    timing = short.phrases([{"word": "Hi.", "start": 0.0, "end": 1.0}], 1.0)
+    project = short.build_project(tmp_path, parts, timing)
+    main = (project / "web" / "main.js").read_text()
+    assert main.startswith("import { M as _EASE } from './motion.js';")
+    assert "_camGuard(C);" in main and '"guard": [[0, 29]]' in main and "try { W_ = worldAt(f)" in main
+    back = short.recover_parts(project)
+    for k in ("world_js", "world_state_js", "story_js", "cast_js", "cues_py", "music_end", "logos", "plan_md"):
+        assert back[k] == parts[k], k
 
 
 def test_look_check_catches_black_frames_and_repeated_pictures(tmp_path, monkeypatch):

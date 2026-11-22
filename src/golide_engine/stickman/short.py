@@ -202,7 +202,7 @@ def _strip_types(ts: Path, out: Path) -> None:
     subprocess.run(["node", "-e", js], check=True, capture_output=True)
 
 
-def splice(main: str, world_js: str, world_state_js: str) -> str:
+def splice(main: str, world_js: str, world_state_js: str, repair: dict | None = None) -> str:
     a, b = main.index(WORLD_A) + len(WORLD_A), main.index(WORLD_B)
     main = main[:a] + "\n" + world_js.strip() + "\n\n" + main[b:]
     s0 = main.index("function worldState(S, f) {")
@@ -211,7 +211,8 @@ def splice(main: str, world_js: str, world_state_js: str) -> str:
     h0 = main.index("const helmetState = (h) => {")
     h1 = main.index("const swapForNd")
     main = main[:h0] + main[h1:]
-    return main.replace("helmetState(W_.helmet);", "worldProps(W_, f);")
+    main = main.replace("helmetState(W_.helmet);", "worldProps(W_, f);")
+    return _with_repairs(main, repair)
 
 
 def build_project(project: Path, parts: dict[str, Any], timing: dict[str, Any]) -> Path:
@@ -228,7 +229,7 @@ def build_project(project: Path, parts: dict[str, Any], timing: dict[str, Any]) 
                                  + "\n" + str(parts.get("cast_js") or "") + "\n", encoding="utf-8")
     from . import logos as _logos
     world = _logos.js(parts.get("logos") or {}) + _read(WORLD_KIT) + "\n" + parts["world_js"]
-    (web / "main.js").write_text(splice(_read(KIT / "engine" / "main.js"), world, parts["world_state_js"]),
+    (web / "main.js").write_text(splice(_read(KIT / "engine" / "main.js"), world, parts["world_state_js"], parts.get("repair")),
                                  encoding="utf-8")
     (web / "story.js").write_text(parts["story_js"], encoding="utf-8")
     (project / "work" / "PLAN.md").write_text(str(parts.get("plan_md") or ""), encoding="utf-8")
@@ -474,32 +475,119 @@ def finish(project: Path, voice: Path) -> Path:
     return project / "out" / "stickman.mp4"
 
 
-# ---------------------------------------------------------------- the whole Short
-FIX_SCHEMA = {
-    "type": "object", "additionalProperties": False,
-    "properties": {"edits": {"type": "array", "items": {"type": "object", "additionalProperties": False, "properties": {
-        "part": {"type": "string", "enum": ["world_js", "world_state_js", "story_js", "cast_js", "cues_py"]},
-        "old": {"type": "string"}, "new": {"type": "string"}}, "required": ["part", "old", "new"]}}},
-    "required": ["edits"],
+
+# ---------------------------------------------------------------- free repairs (owner 2026-11-22)
+# "I ain't paying for retries. Sol writes the storyboard once; any failure uses the same storyboard to re-render."
+# Nothing here calls a model: the engine fixes what its check finds in its own copy of main.js and renders again.
+REPAIR_HEAD = "import { M as _EASE } from './motion.js';\n"
+REPAIR_BODY = r"""
+// ---------- GOLIDE free repairs (no model call) ----------
+for (const k of Object.keys(_EASE)) if (!(k in M)) M[k] = _EASE[k];   // M here is the material set: easing names work on it too
+const _REPAIR = __REPAIR__;
+const _inSpan = (spans, f) => (spans || []).some(([a, b]) => f >= a && f <= b);
+window.__gErrs = window.__gErrs || [];
+const _gErr = (where, e) => { const m = where + ': ' + String(e && e.message || e).slice(0, 160); if (!window.__gErrs.includes(m)) window.__gErrs.push(m); };
+const _ray = new THREE.Raycaster();
+function _camGuard(C) {      // the camera is moved to the near side of whatever stands between it and what it looks at
+  const look = new THREE.Vector3(...C.look), pos = camera.position.clone();
+  const out = pos.clone().sub(look), dist = out.length();
+  if (dist < 0.8) return;
+  out.normalize();
+  const skip = new Set([sky, ...clouds]);
+  cards.forEach((c) => { skip.add(c.mesh); skip.add(c.blob); });
+  const solid = (h) => h.object.isMesh && h.object.visible && !skip.has(h.object);
+  let near = Infinity;
+  _ray.far = dist;
+  _ray.set(look, out);
+  for (const h of _ray.intersectObjects(scene.children, true)) if (solid(h) && h.distance > 0.5) near = Math.min(near, h.distance);
+  _ray.set(pos, out.clone().negate());
+  for (const h of _ray.intersectObjects(scene.children, true)) if (solid(h) && dist - h.distance > 0.5) near = Math.min(near, dist - h.distance);
+  if (!isFinite(near)) return;
+  camera.position.copy(look).addScaledVector(out, Math.max(0.7, near - 0.35));
+  camera.up.set(0, 1, 0); camera.lookAt(look); camera.rotateZ(rx(C.roll || 0)); camera.updateMatrixWorld();
 }
-FIX_ROUNDS = 2
+function _lift() { hemi.intensity = Math.max(hemi.intensity, 1.3); sun.intensity = Math.max(sun.intensity, 1.6); }
+"""
 
 
-def fix_request(parts: dict[str, Any], problems: str) -> str:
-    """The build that failed, part by part, with the check's problems: the writer answers with small exact edits."""
-    shown = "\n\n".join(f"===== {k} =====\n{parts.get(k) or ''}" for k in ("world_js", "world_state_js", "story_js", "cast_js", "cues_py"))
-    return (f"YOUR BUILD BELOW FAILED THE LOOK CHECK:\n{problems}\n\nFix it with the fewest exact edits. Each edit names the "
-            f"part, an `old` text that occurs exactly once in that part, and its `new` text. Change nothing else.\n\n{shown}")
+def _with_repairs(main: str, repair: dict | None) -> str:
+    body = REPAIR_BODY.replace("__REPAIR__", json.dumps(repair or {}))
+    main = REPAIR_HEAD + main.replace(WORLD_B, body + "\n" + WORLD_B, 1)
+    swaps = [
+        ("  applyLight(L, f);\n", "  applyLight(L, f); if (_inSpan(_REPAIR.lift, f)) _lift();\n"),
+        ("camera.fov = C.fov; camera.updateProjectionMatrix(); camera.updateMatrixWorld();",
+         "camera.fov = C.fov; camera.updateProjectionMatrix(); camera.updateMatrixWorld(); if (_inSpan(_REPAIR.guard, f)) _camGuard(C);"),
+        ("const W_ = worldAt(f); worldState(W_, f);",
+         "let W_ = {}; try { W_ = worldAt(f); worldState(W_, f); } catch (e) { _gErr('world', e); }"),
+        ("drawActors([...actorsAt(f, T), ...fxAt(f, T)], camera);",
+         "let _A = [], _F = []; try { _A = actorsAt(f, T); } catch (e) { _gErr('actors', e); } "
+         "try { _F = fxAt(f, T); } catch (e) { _gErr('fx', e); } drawActors([..._A, ..._F], camera);"),
+        ("worldProps(W_, f);", "try { worldProps(W_, f); } catch (e) { _gErr('props', e); }"),
+    ]
+    for a, b in swaps:
+        if a not in main:
+            raise ValueError(f"kit main.js changed: repair hook not found: {a.strip()[:60]}")
+        main = main.replace(a, b, 1)
+    return main
 
 
-def apply_edits(parts: dict[str, Any], edits: list[dict[str, str]]) -> dict[str, Any]:
-    out = dict(parts)
-    for e in edits:
-        text = str(out.get(e["part"]) or "")
-        if text.count(e["old"]) != 1:
-            raise ValueError(f"edit for {e['part']} does not match exactly once: {e['old'][:80]!r}")
-        out[e["part"]] = text.replace(e["old"], e["new"])
+def _spans(project: Path) -> list[tuple[int, int]]:
+    return [(int(a), int(b)) for a, b in re.findall(r"\ba:\s*(\d+)\s*,\s*b:\s*(\d+)", _read(project / "web" / "story.js"))]
+
+
+def _bad_frames(problems: str) -> set[int]:
+    out = set()
+    for line in problems.splitlines():
+        if "flat colour" in line or "% black" in line:
+            out |= {int(x) for x in re.findall(r"frame (\d+)", line)}
     return out
+
+
+def recover_parts(project: Path) -> dict[str, Any] | None:
+    """A storyboard Sol already wrote, read back from its built project (the run's checkpoint), so it is never paid
+    twice: world, world state, story, cast, cues and music stop, exactly as they were last built."""
+    web = project / "web"
+    try:
+        main, story = _read(web / "main.js"), _read(web / "story.js")
+        toon, audio = _read(web / "toon.js"), _read(project / "audio.py")
+        a = main.index(WORLD_A) + len(WORLD_A)
+        world = main[a:main.index("// ---------- GOLIDE free repairs") if "// ---------- GOLIDE free repairs" in main else main.index(WORLD_B)]
+        kit = _read(WORLD_KIT)
+        world_js = world[world.index(kit) + len(kit):] if kit in world else world
+        s0, s1 = main.index("function worldState(S, f) {"), main.index("function drawActors(")
+        cast_kit = _read(CAST_KIT)
+        cast_js = toon[toon.index(cast_kit) + len(cast_kit):] if cast_kit in toon else ""
+        logos = {}
+        m = re.search(r"const LOGO = (\{.*?\});\n", world)
+        if m:
+            logos = json.loads(m.group(1))
+        music_end = float(re.search(r"MUSIC_END = ([\d.]+)", audio).group(1))
+        cues = audio[audio.index("F = lambda f: f / 30\n") + len("F = lambda f: f / 30\n"):audio.rindex("\ndef write(name, x):")]
+        plan = project / "work" / "PLAN.md"
+        return {"plan_md": _read(plan) if plan.exists() else "", "world_js": world_js.strip(),
+                "world_state_js": main[s0:s1].strip(), "story_js": story, "cast_js": cast_js.strip(),
+                "music_end": music_end, "cues_py": cues.strip(), "logos": logos}
+    except (OSError, ValueError, AttributeError) as error:
+        print(json.dumps({"status": "stickman_recover_failed", "error": str(error)[:200]}), flush=True)
+        return None
+
+
+def repair(project: Path, parts: dict[str, Any], timing: dict[str, Any], problems: str) -> tuple[dict[str, Any], str]:
+    """Free rounds on the same storyboard: the camera guard on shots with dark or flat frames, then more light there.
+    Returns the parts (with their repair settings, saved with the storyboard) and whatever is still wrong."""
+    for step in ("guard", "lift"):
+        bad = _bad_frames(problems)
+        if not bad:
+            break
+        spans = [[a, b] for a, b in _spans(project) if any(a <= f <= b for f in bad)] or [[f - 15, f + 15] for f in sorted(bad)]
+        rep = dict(parts.get("repair") or {})
+        rep[step] = sorted({tuple(x) for x in (rep.get(step) or []) + spans})
+        parts = dict(parts, repair={k: [list(x) for x in v] for k, v in rep.items()})
+        print(json.dumps({"status": "stickman_free_repair", "step": step, "shots": spans}), flush=True)
+        problems = _check(project, parts, timing, f"repair-{step}")
+    return parts, problems
+
+# ---------------------------------------------------------------- the whole Short
 
 
 def _check(project: Path, parts: dict[str, Any], timing: dict[str, Any], attempt: int) -> str:
@@ -518,12 +606,16 @@ def _check(project: Path, parts: dict[str, Any], timing: dict[str, Any], attempt
 
 def make(text, project: Path, title: str, words: list[dict[str, Any]], duration: float, voice: Path,
          workers: int = 3, record=None, parts: dict[str, Any] | None = None, save=None) -> Path | None:
-    """Write the Short, then up to FIX_ROUNDS rounds of small edits for whatever the look check finds; render and
-    finish it. None when it still fails (production makes the Short in Goli)."""
+    """Sol writes the Short once (owner 2026-11-22: no paid retries); the storyboard is saved at once. Whatever the
+    look check finds is repaired by the engine for free on that same storyboard, then the Short is rendered. None only
+    when the page cannot load at all (the storyboard stays saved; the engine is fixed and it re-renders, never re-paid)."""
     timing = phrases(words, duration)
     total = timing["phrases"]["frames30"]
-    # 2026-11-18: every call writes a new cartoon, so frames a stopped run left in the restored cache belong to the
-    # old one: start from none (a mix of two cartoons in one Short)
+    if parts is None:
+        parts = recover_parts(project) if (project / "web" / "story.js").exists() else None
+        if parts is not None:
+            print(json.dumps({"status": "stickman_storyboard_recovered"}), flush=True)
+    # 2026-11-18: frames a stopped run left in the restored cache may belong to another build: start from none
     shutil.rmtree(project / "frames", ignore_errors=True)
     if parts is None:            # 2026-11-18: a cartoon already written for this recording is reused, never paid twice
         from . import logos as _logos
@@ -534,23 +626,19 @@ def make(text, project: Path, title: str, words: list[dict[str, Any]], duration:
         parts = dict(out.value, logos=found)
     else:
         print(json.dumps({"status": "stickman_cartoon_reused"}), flush=True)
-    problems = _check(project, parts, timing, 1)
-    for attempt in range(2, FIX_ROUNDS + 2):
-        if not problems:
-            break
-        fix = text.generate_json(instructions(), fix_request(parts, problems), FIX_SCHEMA, max_output_tokens=12000)
-        if record:
-            record(f"stickman-short-fix-{attempt}", fix)
-        try:
-            parts = apply_edits(parts, fix.value["edits"])
-        except ValueError as error:
-            problems = f"{problems}\nYour last edits did not apply: {error}"
-            continue
-        problems = _check(project, parts, timing, attempt)
-    if problems:
-        return None
     if save:
-        save(parts)              # the cartoon that passed its checks, for any later run of the same recording
+        save(parts)              # kept from the first moment: every later run of this recording uses it
+    problems = _check(project, parts, timing, 1)
+    if problems and not problems.startswith("The page threw errors"):
+        parts, problems = repair(project, parts, timing, problems)
+        if save:
+            save(parts)
+    drawable = ("flat colour", "% black", "same picture", "nearly the same picture")
+    if problems and not all(any(k in line for k in drawable) for line in problems.splitlines() if line.strip()):
+        print(json.dumps({"status": "stickman_needs_engine_fix", "problems": problems[:600]}), flush=True)
+        return None
+    if problems:                 # what the free repairs could not clear is shown on the owner's preview, not re-paid
+        print(json.dumps({"status": "stickman_render_with_notes", "notes": problems[:600]}), flush=True)
     shutil.copy(voice, project / f"voice{voice.suffix.lower()}")
     render(project, total, workers)
     return finish(project, voice)

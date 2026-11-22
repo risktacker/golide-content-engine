@@ -538,6 +538,8 @@ class ProductionService:
         def stage() -> None:
             if not made["ok"]:
                 reused = saved_parts()
+                if reused is None and (project / "web" / "story.js").exists():
+                    reused = short.recover_parts(project)     # owner 2026-11-22: a storyboard written once is never paid twice
                 if reused is None:
                     self._reserve(spec, writer.model, Usage(input_tokens=60000, output_tokens=40000))
                 mp4 = short.make(writer, project, str(spec.get("title") or "GOLIDE"), timed_words, narration_seconds,
@@ -1652,8 +1654,10 @@ class ProductionService:
                 stickman_captions.add(video_path, timed_words, pauses, "beside" if style_now == "stickman_goli" else "full",
                                       work / "stickman-captions")
             if not stickman_made:
-                print(json.dumps({"status": "stickman_fallback_goli", "production_id": production_id}))
-                spec = {**spec, "video_style": "goli"}
+                # owner 2026-11-22: "I ain't paying for retries": no new storyboard in another style either. The
+                # storyboard Sol wrote is kept; the engine is fixed and the same storyboard re-renders.
+                raise RuntimeError("Stickman Short: the page could not load the saved storyboard; it is kept, "
+                                   "re-render after the engine fix (no new storyboard is paid for)")
         if stickman_made:
             # the kit makes its own music bed; the registry entry keeps the ledger's shape
             music = MusicRegistry(self.root / "config/music-registry.json").select(
