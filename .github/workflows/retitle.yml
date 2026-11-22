@@ -1,0 +1,66 @@
+name: Change a video's title, description or tags
+
+# 2026-11-22 (owner): fix what decides impressions (title, description, tags) on a published video. Empty inputs keep
+# what the video has; the description input replaces only its first lines (the part search and the feed show).
+on:
+  workflow_dispatch:
+    inputs:
+      video_id:
+        description: "YouTube video id"
+        required: true
+      title:
+        description: "New title (empty = keep)"
+        required: false
+        default: ""
+      description_top:
+        description: "New first lines of the description (empty = keep)"
+        required: false
+        default: ""
+      tags:
+        description: "Tags, comma-separated (empty = keep)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  retitle:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -q -e '.[production]'
+      - name: Update the video
+        env:
+          GOLIDE_STUDIO_BASE_URL: "https://studio.golidee.com"
+          VID: ${{ inputs.video_id }}
+          TITLE: ${{ inputs.title }}
+          TOP: ${{ inputs.description_top }}
+          TAGS: ${{ inputs.tags }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from golide_engine.youtube.auth import services
+          youtube, _ = services()
+          vid = os.environ["VID"].strip()
+          item = youtube.videos().list(part="snippet", id=vid).execute()["items"][0]
+          sn = item["snippet"]
+          before = {"title": sn.get("title"), "tags": sn.get("tags", [])[:20], "description_start": sn.get("description", "")[:200]}
+          body = {k: sn[k] for k in ("title", "description", "categoryId", "tags", "defaultLanguage", "defaultAudioLanguage") if k in sn}
+          if os.environ["TITLE"].strip():
+              body["title"] = os.environ["TITLE"].strip()[:100]
+          if os.environ["TOP"].strip():
+              rest = sn.get("description", "")
+              body["description"] = (os.environ["TOP"].strip() + "\n\n" + rest)[:5000]
+          if os.environ["TAGS"].strip():
+              body["tags"] = [t.strip() for t in os.environ["TAGS"].split(",") if t.strip()][:30]
+          youtube.videos().update(part="snippet", body={"id": vid, "snippet": body}).execute()
+          after = youtube.videos().list(part="snippet", id=vid).execute()["items"][0]["snippet"]
+          print(json.dumps({"status": "retitled", "video_id": vid, "before": before,
+                            "after": {"title": after.get("title"), "tags": after.get("tags", [])[:20], "description_start": after.get("description", "")[:200]}}))
+          PY
