@@ -301,3 +301,13 @@ class NoEmptyShotTests(unittest.TestCase):
         self.assertTrue(all(p["x"] > 430 + 230 and p["s"] >= .5 for p in props))
         self.assertEqual([m["do"] for m in story["shots"][1]["moves"]], ["confetti"])
         self.assertTrue(story["shots"][1]["value"]["short"])
+
+
+class FocusChannelTests(unittest.TestCase):
+    def test_the_month_models_only_the_chosen_channels_with_their_style(self):
+        from datetime import datetime, timezone
+        from golide_engine.youtube.breakouts import focus_channels, load_sources
+        lane = focus_channels(load_sources(), datetime(2026, 11, 23, tzinfo=timezone.utc))
+        self.assertEqual(lane["@Crayon_Capital"], "stickman_goli")
+        self.assertEqual(lane["@outskillai"], "goli")
+        self.assertEqual(focus_channels(load_sources(), datetime(2027, 1, 5, tzinfo=timezone.utc)), {})

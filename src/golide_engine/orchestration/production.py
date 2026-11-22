@@ -983,6 +983,10 @@ class ProductionService:
                 # The YouTube title is modelled on the winning video's title (2026-10-21).
                 spec["model_title"] = str(candidate.get("model_title") or candidate["title"]).strip()
                 spec["source_breakout"] = candidate["breakout"]
+                # owner 2026-11-22: the month's model channels suggest the style (Crayon Capital -> Stickman + Goli,
+                # the AI how-to channels -> Goli); the owner's own pick in Studio always wins.
+                if not spec.get("video_style") and candidate["breakout"].get("style"):
+                    spec["video_style"] = str(candidate["breakout"]["style"])
             spec["platform_demand"] = asdict(demand)
             spec["selected_topic_source"] = candidate.get("authoritative_source_url")
             Path(spec_path).write_text(
@@ -1100,7 +1104,15 @@ class ProductionService:
                                         plan_from_story, story_instructions)
             self._require_absent(script_path, "script")
             # 2026-11-17 (owner): a video he chose with its transcript is retold closely (engine/story.py CLOSE_MODEL)
-            close = bool((spec.get("replace_model") or {}).get("url") and len(str(spec.get("model_transcript") or "").split()) >= 40)
+            # 2026-11-22 (owner): a video from the month's model channels is condensed the same way, when its
+            # transcript can be read (the Studio Worker first, free).
+            focus_src = spec.get("source_breakout") or {}
+            if (not (spec.get("replace_model") or {}).get("url") and focus_src.get("style") and focus_src.get("url")
+                    and len(str(spec.get("model_transcript") or "").split()) < 40):
+                from ..youtube.transcripts import fetch as read_transcript
+                spec["model_transcript"] = read_transcript(str(focus_src["url"])) or ""
+            close = bool(((spec.get("replace_model") or {}).get("url") or focus_src.get("style"))
+                         and len(str(spec.get("model_transcript") or "").split()) >= 40)
             models_block = ("\n\nMODEL SCRIPT (the video to retell, whole)\n" + str(spec["model_transcript"])) if close \
                 else model_scripts_block()
             print(json.dumps({"status": "script_mode", "close_model": close}))

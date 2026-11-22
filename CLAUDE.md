@@ -49,6 +49,10 @@ without changing its context: the model's own sentences word for word, cut repea
 then the weakest beats; a few joining words only where a cut leaves a gap; the creator's own plugs out
 (`story.CLOSE_MODEL`, `spec.model_transcript`).
 
+Model channels (owner 2026-11-22, until 2026-12-22, `config/trend-sources.json` "focus"): the engine models ONLY
+Crayon Capital (suggests Stickman + Goli) and Outskill, Nate Herk, Matt Penny, Sanji Nai-Chien (suggest Goli); their
+best unmodelled video of the last 45 days, no numbers bar. The channel's style is used only when the owner picked none.
+
 ## 3D engine (`src/golide_engine/vector/motion3d.py`)
 - Any object: the storyboard writes `3d: object=<name>; move=<lift|slide|open|swing|spin|explode|rise>;
   on=<spoken word>; <box|cyl|sphere|cone x y z w d h [rx90] [gold] [mover]>; ...` (parsed in

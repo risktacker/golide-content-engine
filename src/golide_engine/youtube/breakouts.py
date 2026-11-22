@@ -229,7 +229,7 @@ def _chart_videos(youtube: Any, sources: dict) -> list[dict]:
     return out
 
 
-def _channel_upload_ids(youtube: Any, handles: list[str], after: datetime) -> dict[str, str]:
+def _channel_upload_ids(youtube: Any, handles: list[str], after: datetime, per_channel: int = 10) -> dict[str, str]:
     """Latest uploads of the tech channels that cover everything (2 quota units each)."""
     found: dict[str, str] = {}
     for handle in handles:
@@ -243,7 +243,7 @@ def _channel_upload_ids(youtube: Any, handles: list[str], after: datetime) -> di
         if not uploads:
             continue
         latest = _call(f"uploads:{handle}", lambda u=uploads: youtube.playlistItems().list(
-            part="contentDetails", playlistId=u, maxResults=10))
+            part="contentDetails", playlistId=u, maxResults=per_channel))
         for item in latest.get("items", []):
             details = item.get("contentDetails") or {}
             published = details.get("videoPublishedAt", "")
@@ -327,6 +327,53 @@ def _measure(youtube: Any, videos: list[dict], fmt: str, now: datetime) -> list[
     return out
 
 
+def focus_channels(sources: dict, now: datetime) -> dict[str, str]:
+    """Owner 2026-11-22: the month's model channels and the style each one suggests; empty when off or past `until`."""
+    focus = sources.get("focus") or {}
+    until = str(focus.get("until") or "")
+    try:
+        if until and now.date() > datetime.fromisoformat(until).date():
+            return {}
+    except ValueError:
+        pass
+    return {str(k): str(v) for k, v in (focus.get("channels") or {}).items()}
+
+
+def _handle_or_search(youtube: Any, name: str) -> str:
+    """A handle (@x) is used as is; a plain channel name is looked up once (search, 100 quota units)."""
+    if name.startswith("@"):
+        return name
+    found = _call(f"find:{name}", lambda: youtube.search().list(part="snippet", q=name, type="channel", maxResults=1))
+    items = found.get("items") or []
+    cid = ((items[0].get("snippet") or {}).get("channelId") or (items[0].get("id") or {}).get("channelId")) if items else ""
+    if not cid:
+        print(json.dumps({"status": "channel_name_unknown", "name": name}))
+        return ""
+    got = _call(f"channel:{cid}", lambda: youtube.channels().list(part="snippet", id=cid))
+    handle = (((got.get("items") or [{}])[0].get("snippet") or {}).get("customUrl") or "")
+    return handle if handle.startswith("@") else ("@" + handle if handle else "")
+
+
+def focus_breakouts(youtube: Any, fmt: str, now: datetime, lane: dict[str, str], days: int,
+                    limit: int = 25) -> list[dict[str, Any]]:
+    """The month's model channels only (owner 2026-11-22): their videos of the last `days` in our format, best
+    numbers first, each tagged with the style its channel suggests. No numbers bar: they post weekly."""
+    handles = {}
+    for name, style in lane.items():
+        handle = _handle_or_search(youtube, name)
+        if handle:
+            handles[handle] = style
+    after = now - timedelta(days=days)
+    videos = _fetch(youtube, _channel_upload_ids(youtube, list(handles), after, per_channel=25))
+    measured = _measure(youtube, videos, fmt, now)
+    for b in measured:
+        tag = str(b.get("found_by", ""))
+        b["style"] = next((st for h, st in handles.items() if tag.lower().endswith(h.lower())), "goli")
+    measured.sort(key=lambda b: -b["score"])
+    print(json.dumps({"status": "focus_breakouts", "format": fmt, "channels": list(handles), "videos": len(measured)}))
+    return measured[:limit]
+
+
 def find_breakouts(youtube: Any, fmt: str = "long", now: datetime | None = None, hours: int | None = None,
                    queries: tuple | None = None, per_query: int = 15, limit: int = 25,
                    sources: dict | None = None) -> list[dict[str, Any]]:
@@ -336,6 +383,11 @@ def find_breakouts(youtube: Any, fmt: str = "long", now: datetime | None = None,
     names several channels are talking about today, and a rotating industry watchlist.
     Passing ``queries`` searches only those (used by tests and manual checks)."""
     now = now or datetime.now(timezone.utc)
+    if queries is None:
+        sources = sources or load_sources()
+        lane = focus_channels(sources, now)
+        if lane:
+            return focus_breakouts(youtube, fmt, now, lane, int((sources.get("focus") or {}).get("days", 45)), limit)
     fresh_hours = hours or FRESH_HOURS.get(fmt, 48)
     wide = now - timedelta(hours=max(WIDER_HOURS, fresh_hours))
     videos: list[dict] = []
