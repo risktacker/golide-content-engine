@@ -562,6 +562,55 @@ const moonSurface = (x, z, mars = false) => { const g = new THREE.Group(); g.pos
   if (!mars) earth(x - 40, 60, z - 200, 14); return { group: g }; };
 const marsSurface = (x, z) => moonSurface(x, z, true);
 // ===== end of batch 8 =====
+// ===== GOLIDE weather and vehicles, batch 10 (2026-11-22) =====
+// rain(x, z, w) / snowfall(x, z, w) particles that fall with .at(f); lightning(x, z) a bolt that flashes with .flash(on);
+// cloudsOver(x, z, n, dark) puffy clouds; nightCity(x, z) the city at night (lit windows, street lamps, moon);
+// plane(colour, slug) a flying jet (.position / .rotation); helicopter(colour) (.spin(f)); truck(colour, words);
+// policeCar() / ambulance() with flashing lights (.flash(f)); bike(colour); motorbike(colour); boat(colour); trainOutside(x, z)
+// a train on rails passing (.run(f)).
+const rain = (x, z, w = 30, n = 260, snow = false) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); const r_ = P.rng(n), drops = [];
+  const m = snow ? KM.white : new THREE.MeshBasicMaterial({ color: '#bcd6f0', transparent: true, opacity: 0.7 });
+  for (let i = 0; i < n; i++) { const d = add(snow ? new THREE.SphereGeometry(0.06, 6, 4) : new THREE.BoxGeometry(0.02, 0.5, 0.02), m, (r_() - 0.5) * w, r_() * 14, (r_() - 0.5) * w * 0.6, g, { cast: false }); d.userData.ndSkip = true; drops.push([d, r_()]); }
+  return { group: g, at: (f) => drops.forEach(([d, o]) => { const sp = snow ? 0.04 : 0.5; d.position.y = 14 - ((o * 14 + f * sp) % 14); if (snow) d.position.x += Math.sin(f * 0.05 + o * 10) * 0.004; }) }; };
+const snowfall = (x, z, w = 30, n = 220) => rain(x, z, w, n, true);
+const lightning = (x, z, h = 30) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); const m = new THREE.MeshBasicMaterial({ color: '#fff9c8' }); let y = h, px = 0;
+  for (let i = 0; i < 7; i++) { const nx = px + (i % 2 ? 2 : -2.5), ny = y - h / 7; const len = Math.hypot(nx - px, ny - y), seg = add(new THREE.BoxGeometry(0.35, len, 0.35), m, (px + nx) / 2, (y + ny) / 2, 0, g, { cast: false }); seg.rotation.z = Math.atan2(nx - px, -(ny - y)) * -1; seg.userData.ndSkip = true; px = nx; y = ny; }
+  g.visible = false; return { group: g, flash: (on) => { g.visible = !!on; } }; };
+const cloudsOver = (x, z, n = 8, dark = false, y = 24) => { const g = new THREE.Group(); g.position.set(x, y, z); scene.add(g); const r_ = P.rng(n * 3), m = KC(dark ? '#5f6470' : '#ffffff');
+  for (let i = 0; i < n; i++) { const cx_ = (r_() - 0.5) * 80, cz = -20 - r_() * 40; for (let k = 0; k < 5; k++) add(new THREE.SphereGeometry(3 + r_() * 2.5, 12, 8), m, cx_ + k * 2.6 - 5, (k % 2) * 1.4, cz + (r_() - 0.5) * 2, g, { cast: false }); } return g; };
+const nightCity = (x, z) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); street(x - 60, x + 60, z + 6); const r_ = P.rng(23);
+  const lit = (() => { const [c, gg] = kCanvas(128, 256); gg.fillStyle = '#1b2233'; gg.fillRect(0, 0, 128, 256); for (let yy = 10; yy < 256; yy += 32) for (let xx = 10; xx < 128; xx += 30) { gg.fillStyle = (xx * 7 + yy * 3) % 3 ? '#ffd879' : '#2a3550'; gg.fillRect(xx, yy, 18, 20); } return c; })();
+  for (let i = 0; i < 26; i++) { const w = 6 + r_() * 8, h = 14 + r_() * 50; const m = toon({ map: P.tex(lit, Math.max(1, w / 4), Math.max(1, h / 8)), emissive: '#ffffff', emissiveMap: P.tex(lit, Math.max(1, w / 4), Math.max(1, h / 8)), emissiveIntensity: 0.6 });
+    add(new THREE.BoxGeometry(w, h, 8), [m, m, KM.dark, KM.dark, m, m], -60 + i * 4.8 + r_() * 2, h / 2, -20 - r_() * 26, g); }
+  for (let i = 0; i < 6; i++) { furn(g, 0.12, 5, 0.12, '#2b2d34', -15 + i * 6, 2.5, 3); add(new THREE.SphereGeometry(0.35, 12, 8), toon({ color: '#ffe8a8', emissive: '#ffe8a8', emissiveIntensity: 1 }), -15 + i * 6, 5.1, 3, g); }
+  add(new THREE.SphereGeometry(5, 24, 16), toon({ color: '#f4f1e0', emissive: '#f4f1e0', emissiveIntensity: 0.8 }), 30, 70, -160, g, { cast: false }); return { group: g }; };
+const plane = (colour = '#ffffff', slug = null) => { const g = new THREE.Group(); scene.add(g); const b = KC(colour);
+  const body = add(new THREE.CapsuleGeometry(1.1, 10, 6, 16), b, 0, 0, 0, g); body.rotation.z = Math.PI / 2; add(new THREE.BoxGeometry(3, 0.2, 13), b, 0.6, -0.2, 0, g); add(new THREE.BoxGeometry(1.6, 0.15, 5), b, -5, 0.3, 0, g);
+  add(new THREE.BoxGeometry(1.6, 2.4, 0.2), KC('#c7322e'), -5.4, 1.4, 0, g); for (const s_ of [-1, 1]) { const e = add(new THREE.CylinderGeometry(0.45, 0.45, 1.6, 12), KM.steel, 1, -0.7, s_ * 3, g); e.rotation.z = Math.PI / 2; }
+  if (slug) add(new THREE.BoxGeometry(1.2, 1.2, 0.02), signMat('', { slug, bg: '#ffffff', border: false, w: 256, h: 256 }), -5.4, 1.4, 0.11, g); return g; };
+const helicopter = (colour = '#2f5fb8') => { const g = new THREE.Group(); scene.add(g); add(new THREE.SphereGeometry(1.4, 16, 12), KC(colour), 0, 0, 0, g).scale.set(1.5, 1, 1); add(new THREE.BoxGeometry(5, 0.4, 0.4), KC(colour), -3.2, 0.3, 0, g);
+  add(new THREE.SphereGeometry(1.0, 12, 8), KM.glass, 1.1, 0.2, 0, g); const rotor = add(new THREE.BoxGeometry(9, 0.08, 0.4), KM.dark, 0, 1.6, 0, g); for (const s_ of [-1, 1]) add(new THREE.BoxGeometry(3, 0.1, 0.1), KM.dark, 0, -1.4, s_ * 0.8, g);
+  g.spin = (f) => { rotor.rotation.y = f * 0.9; }; return g; };
+const truck = (colour = '#c7322e', words = '') => { const g = new THREE.Group(); scene.add(g); add(new THREE.BoxGeometry(2.4, 2.4, 2.4), KC(colour), 3.4, 1.6, 0, g); add(new THREE.BoxGeometry(1.2, 1, 2.42), KM.glass, 3.9, 2.2, 0, g);
+  add(new THREE.BoxGeometry(6.5, 3.2, 2.6), KM.white, -1.2, 2.0, 0, g); if (words) add(new THREE.BoxGeometry(6, 1.6, 0.02), signMat(words, { bg: '#ffffff', fg: colour, border: false }), -1.2, 2.1, 1.31, g);
+  for (const [a, c] of [[3.4, 1.2], [3.4, -1.2], [-0.4, 1.2], [-0.4, -1.2], [-3, 1.2], [-3, -1.2]]) { const w = add(new THREE.CylinderGeometry(0.5, 0.5, 0.35, 16), KM.dark, a, 0.5, c, g); w.rotation.x = Math.PI / 2; } return g; };
+const sirenCar = (body, stripe, label) => { const g = car(body); add(new THREE.BoxGeometry(3.84, 0.25, 1.72), KC(stripe), 0, 0.85, 0, g);
+  if (label) add(new THREE.BoxGeometry(1.6, 0.35, 0.02), signMat(label, { bg: body, fg: stripe, border: false, w: 512, h: 112 }), 0, 0.75, 0.87, g);
+  const l1 = add(new THREE.BoxGeometry(0.4, 0.2, 0.3), toon({ color: '#ff3b30', emissive: '#ff3b30', emissiveIntensity: 1 }), -0.4, 1.85, 0, g), l2 = add(new THREE.BoxGeometry(0.4, 0.2, 0.3), toon({ color: '#2f78ff', emissive: '#2f78ff', emissiveIntensity: 1 }), 0.1, 1.85, 0, g);
+  g.flash = (f) => { const on = Math.floor(f / 4) % 2; l1.material.emissiveIntensity = on ? 1.4 : 0.05; l2.material.emissiveIntensity = on ? 0.05 : 1.4; }; return g; };
+const policeCar = () => sirenCar('#f1efe8', '#1f2a44', 'POLICE');
+const ambulance = () => { const g = sirenCar('#ffffff', '#c7322e', 'AMBULANCE'); return g; };
+const bike = (colour = '#c7322e') => { const g = new THREE.Group(); scene.add(g); for (const a of [-0.6, 0.6]) add(new THREE.TorusGeometry(0.42, 0.05, 6, 20), KM.dark, a, 0.45, 0, g);
+  add(new THREE.BoxGeometry(1.2, 0.08, 0.08), KC(colour), 0, 0.75, 0, g).rotation.z = 0.2; add(new THREE.BoxGeometry(0.08, 0.6, 0.08), KC(colour), -0.1, 0.75, 0, g); return g; };
+const motorbike = (colour = '#17161b') => { const g = bike(colour); add(new THREE.BoxGeometry(0.9, 0.4, 0.4), KC(colour), 0, 0.85, 0, g); add(new THREE.BoxGeometry(0.4, 0.2, 0.4), KM.steel, -0.3, 0.55, 0, g); return g; };
+const boat = (colour = '#ffffff') => { const g = new THREE.Group(); scene.add(g); add(new THREE.BoxGeometry(5, 1, 2), KC(colour), 0, 0.5, 0, g); add(new THREE.ConeGeometry(1, 1.6, 4), KC(colour), 3.1, 0.5, 0, g).rotation.z = -Math.PI / 2;
+  add(new THREE.BoxGeometry(1.6, 1.2, 1.6), KM.glass, -0.6, 1.6, 0, g); return g; };
+const trainOutside = (x, z, cars = 5, colour = '#c7322e') => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); for (const s_ of [-0.7, 0.7]) furn(g, 300, 0.12, 0.12, '#9aa3ad', 0, 0.1, s_);
+  for (let i = -60; i < 60; i++) furn(g, 0.3, 0.06, 2.2, '#6b4a2a', i * 2.5, 0.03, 0); const tr = new THREE.Group(); g.add(tr);
+  for (let i = 0; i < cars; i++) { furn(tr, 9, 3, 2.6, i ? '#dfe6ee' : colour, -i * 9.6, 1.9, 0); furn(tr, 8.6, 0.6, 2.62, colour, -i * 9.6, 2.6, 0); for (let k = 0; k < 4; k++) furn(tr, 1.2, 0.9, 2.64, '#9fd0f2', -i * 9.6 - 3 + k * 2, 2.3, 0); }
+  return { group: g, run: (f) => { tr.position.x = -60 + (f * 0.6) % 160; } }; };
+// ===== end of batch 10 =====
+
 
 
 

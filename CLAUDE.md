@@ -116,6 +116,18 @@ best unmodelled video of the last 45 days, no numbers bar. The channel's style i
   Logos: `stickman/logos.py` (simple-icons from npm) for the brands the script names. Tech stories are set in the
   city, not a village; money is bills, not coin piles.
 
+- Shorts kit library (owner 2026-11-22, batches 1-10, from the Shorts models Ricks Clips / Afterhour Theory / Marshall):
+  `stickman/short_kit/world-kit.js` holds ready places (offices, casino, prison, vault, spaceship, liner, tent, street,
+  courtroom, hospital, data centre, classroom, news desk, stage, home rooms, restaurant, gym, factory, plane cabin, bank,
+  lab, supermarket, construction, police, rooftop, farm, forest, beach, snow, desert, airport, metro, highway, gas station,
+  port, hotel, castle, pyramid, colosseum, pirate ship, treasure cave, jungle, volcano, underwater, Moon, Mars, trading
+  floor, war room, power plant, launch pad, GPU rack, giant phone/laptop/chip, night city), weather (rain, snow, lightning,
+  clouds), vehicles and reacting pieces (doors, reels, bursts, dominoes, buttons, rocket lift, sirens); each place at its
+  own x 600 m apart. `cast-kit.js`: hats, glasses, beards, coats, vests, hair styles, 20 job looks (T.LOOKS), the AI robot
+  (T.robotFront), 14 animals (T.animal), crowds (T.crowd), 30+ arm poses, held items, movement helpers (walkPath,
+  followCam, jumpAt, nod, shakeAt), fx and face effects, speech bubbles. Shorts get Inkee word captions (`captions.py`
+  "short"). Unknown faces draw neutral; Sol names its own constants with a leading underscore.
+
 ## No collision (owner 2026-11-17: "I don't want collision in anything")
 - Recipe scenes (`edit/recipes.py`, `assets/recipes/player.html`): every word on screen is measured on 4 moments,
   overlay text and 3D text planes (trimmed to their letters); touching or leaving the frame sends the scene back.

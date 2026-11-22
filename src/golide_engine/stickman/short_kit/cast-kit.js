@@ -318,6 +318,34 @@ export const blushFx = (p) => { for (const sd of [-1, 1]) p.ell(300 + sd * 66, H
 export const steamFx = (p, t = 0) => { for (const sd of [-1, 1]) for (let k = 0; k < 3; k++) p.ell(300 + sd * (HR + 30 + k * 28 + t * 30), HY - 30 - k * 44 - t * 30, 22 + k * 8, 20 + k * 6, '#f1f1f1', 7); };
 export const dizzyFx = (p, t = 0) => { for (let k = 0; k < 4; k++) { const a = t * 6.28 + k * 1.57; p.ell(300 + Math.cos(a) * 120, HY - HR - 30 + Math.sin(a) * 24, 18, 18, '#ffd23f', 5); } };
 export const joyFx = (p, t = 0) => { for (let k = 0; k < 5; k++) { const a = k / 5 * 6.28 + t * 2; const x = 300 + Math.cos(a) * 190, y = HY + Math.sin(a) * 170; p.poly([[x, y - 26], [x + 8, y - 8], [x + 26, y], [x + 8, y + 8], [x, y + 26], [x - 8, y + 8], [x - 26, y], [x - 8, y - 8]], '#ffd23f', 5); } };
+// animals as cards, in the same ink: T.animal(p, kind, { colour, expr }) kind = dog | cat | bird | horse | cow | pig | sheep |
+// shark | fish | monkey | lion | chicken | rabbit | bear. Place them like people (feet on DECK), scale 0.5-1.2.
+export const animal = (p, kind = 'dog', o = {}) => { const g = p.g, c = o.colour || { dog: '#c98a4a', cat: '#e9a24a', bird: '#4aa3e9', horse: '#8a5a2b', cow: '#f1efe8', pig: '#f3a6b8',
+    sheep: '#f4f2ec', shark: '#7f8fa6', fish: '#ff8a1a', monkey: '#7a5434', lion: '#e9b43a', chicken: '#ffffff', rabbit: '#e8e4da', bear: '#6b4a2a' }[kind] || '#c98a4a';
+  const dark = mul(c, [0.75, 0.75, 0.82]), eye = (x, y, r = 12) => { p.ell(x, y, r, r * 1.1, '#ffffff', 4); p.dot(x + 2, y + 2, r * 0.5, '#17161b'); };
+  const leg = (x, y0, y1, w = 22) => { p.stroke([[x, y0], [x, y1]], w + 10, INK); p.stroke([[x, y0], [x, y1]], w, dark); };
+  if (kind === 'fish' || kind === 'shark') { const big = kind === 'shark'; const bp = blobPts(300, 560, { a: big ? 230 : 150, b: big ? 90 : 80, nTop: 2, nBot: 2, egg: 0.2, asym: 0, rot: 0, noise: 0, seed: 2 });
+    p.poly([[80 - (big ? 60 : 0), 480], [150 - (big ? 50 : 0), 560], [80 - (big ? 60 : 0), 640]], dark, 10); p.poly(bp, c, 12); if (big) { p.poly([[290, 470], [340, 360], [380, 480]], dark, 10); for (let k = 0; k < 5; k++) p.poly([[430 + k * 14, 600], [437 + k * 14, 622], [444 + k * 14, 600]], '#ffffff', 2); }
+    eye(big ? 450 : 380, 530); return; }
+  if (kind === 'bird' || kind === 'chicken') { const bp = blobPts(300, 640, { a: 120, b: 110, nTop: 2, nBot: 2.4, egg: 0.1, asym: 0, rot: 0, noise: 0, seed: 3 }); leg(270, 740, 960, 10); leg(330, 740, 960, 10); p.poly(bp, c, 12);
+    p.poly([[400, 600], [470, 625], [400, 650]], '#f2a51a', 6); p.poly(blobPts(260, 640, { a: 60, b: 44, nTop: 2, nBot: 2, egg: 0, asym: 0, rot: 0.4, noise: 0, seed: 4 }), dark, 8); if (kind === 'chicken') p.poly([[330, 520], [345, 490], [360, 520], [375, 495], [385, 530]], '#e23b3b', 6); eye(360, 600); return; }
+  // four-legged: body, legs, head on the right
+  const tall = { horse: 1.3, cow: 1.1, lion: 1.0, bear: 1.0, sheep: 0.85, pig: 0.75, dog: 0.85, cat: 0.7, rabbit: 0.6, monkey: 0.9 }[kind] || 0.9, by = 975 - 230 * tall;
+  if (kind === 'monkey' || kind === 'bear' && o.stand) { const bp = blobPts(300, 700, { a: 120, b: 150, nTop: 2, nBot: 2, egg: 0, asym: 0, rot: 0, noise: 0, seed: 5 }); leg(260, 820, 960, 26); leg(340, 820, 960, 26); p.poly(bp, c, 12);
+    const hp = blobPts(300, 480, { a: 100, b: 90, nTop: 2, nBot: 2, egg: 0, asym: 0, rot: 0, noise: 0, seed: 6 }); for (const sd of [-1, 1]) p.ell(300 + sd * 100, 460, 32, 32, dark, 8); p.poly(hp, c, 12); p.ell(300, 510, 60, 42, mix(c, '#ffffff', 0.4), 6); eye(265, 465); eye(335, 465); return; }
+  for (const x of [190, 230, 370, 410]) leg(x, by + 40, 960, kind === 'horse' || kind === 'cow' ? 26 : 20);
+  const bp = blobPts(300, by, { a: 170, b: 85 * Math.min(1.2, tall + 0.1), nTop: 2.2, nBot: 2.2, egg: 0, asym: 0, rot: 0, noise: kind === 'sheep' ? 0.08 : 0, seed: 7 }); p.poly(bp, c, 12);
+  if (kind === 'cow') for (const [a, b, r] of [[250, by - 20, 40], [340, by + 10, 30]]) p.ell(a, b, r, r * 0.8, '#2b2d34', 0);
+  p.stroke([[130, by - 10], [80, by - 70]], kind === 'lion' || kind === 'cow' ? 12 : 16, dark);
+  const hx = 470, hy = by - 70 * tall; if (kind === 'lion') p.ell(hx, hy, 105, 105, '#c78f24', 10);
+  if (kind === 'horse') p.poly([[430, by - 30], [470, hy - 80], [560, hy - 50], [530, by + 10]], c, 10);
+  const hp = blobPts(hx, hy, { a: kind === 'horse' ? 62 : 75, b: kind === 'horse' ? 95 : 68, nTop: 2, nBot: 2, egg: 0, asym: 0, rot: kind === 'horse' ? 0.6 : 0, noise: 0, seed: 8 }); p.poly(hp, c, 12);
+  const ears = { cat: 'pt', dog: 'flop', rabbit: 'long', pig: 'pt', bear: 'round', lion: 'round', sheep: 'flop', cow: 'flop', horse: 'pt' }[kind] || 'pt';
+  for (const sd of [-1, 1]) { const ex = hx + sd * 45; if (ears === 'long') p.poly(blobPts(ex, hy - 130, { a: 20, b: 70, nTop: 2, nBot: 2, egg: 0, asym: 0, rot: 0, noise: 0, seed: 9 }), c, 8); else if (ears === 'round') p.ell(ex, hy - 55, 24, 24, dark, 8);
+    else if (ears === 'flop') p.poly([[ex - 16, hy - 50], [ex + sd * 34, hy - 10], [ex + 10, hy - 50]], dark, 8); else p.poly([[ex - 20, hy - 40], [ex, hy - 95], [ex + 20, hy - 40]], c, 8); }
+  p.ell(hx + 30, hy + 25, kind === 'pig' ? 28 : 16, kind === 'pig' ? 22 : 12, kind === 'pig' ? '#e88aa0' : '#17161b', 5); eye(hx - 15, hy - 12); eye(hx + 25, hy - 14);
+  if (o.expr === 'happy' || o.expr === 'grin') p.stroke(ellPts(hx + 18, hy + 30, 22, 14, 20, 160, 0, 10), 6, INK);
+};
 export const billFx = (p, rot = 0, sq = 1) => { const g = p.g; g.save(); g.translate(300, 500); g.rotate(rot); g.scale(1, sq);
   g.fillStyle = '#cfdcc4'; g.fillRect(-170, -72, 340, 144); g.strokeStyle = '#3f6a4a'; g.lineWidth = 9; g.strokeRect(-160, -62, 320, 124);
   g.fillStyle = '#9fbf98'; g.beginPath(); g.ellipse(0, 0, 40, 52, 0, 0, 7); g.fill(); g.fillStyle = '#2f5a3c'; g.font = '900 52px sans-serif';
