@@ -25,15 +25,18 @@ jobs:
           bash scripts/fetch-assets.sh
           cd engine && npm install
           sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg >/dev/null
+          # its launch flags are for a Mac GPU (--use-angle=metal); this machine has no GPU, so Chrome is started through a
+          # wrapper that adds the software WebGL switches (a later switch wins). The skill's own code is not touched.
+          printf '#!/bin/sh\nexec /usr/bin/google-chrome "$@" --use-angle=swiftshader --use-gl=angle --enable-unsafe-swiftshader --ignore-gpu-blocklist\n' > ~/chrome-sw && chmod +x ~/chrome-sw
       - name: Render its 10 s office skit (README "Try it")
         run: |
           cd ~/c3d/engine
-          XQ="&viewer=1&skit=1" CHROME=/usr/bin/google-chrome node render.cjs out/skit.mp4 1080 1920 30
+          XQ="&viewer=1&skit=1" CHROME=$HOME/chrome-sw node render.cjs out/skit.mp4 1080 1920 30
       - name: Render its rail film (the default page)
         continue-on-error: true
         run: |
           cd ~/c3d/engine
-          CHROME=/usr/bin/google-chrome timeout 80m node render.cjs out/rail-film.mp4 1080 1920 30
+          CHROME=$HOME/chrome-sw timeout 80m node render.cjs out/rail-film.mp4 1080 1920 30
       - name: Put the videos on a review branch
         if: always()
         run: |
