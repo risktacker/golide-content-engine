@@ -18,7 +18,9 @@ async function watchPage(id) {
   const r = await fetch(`https://www.youtube.com/watch?v=${id}&hl=en&bpctr=9999999999&has_verified=1`, {
     headers: { "user-agent": UA, "accept-language": "en-US,en;q=0.9", cookie: "CONSENT=YES+1; SOCS=CAI" },
   });
-  return r.ok ? await r.text() : "";
+  const html = r.ok ? await r.text() : "";
+  note(`watch ${r.status} ${html.length} panel:${/getTranscriptEndpoint/.test(html)} tracks:${/captionTracks/.test(html)} playability:${between(html, /"playabilityStatus":\{"status":"([A-Z_]+)"/)}`);
+  return html;
 }
 
 function between(html, re) { const m = html.match(re); return m ? m[1] : ""; }
@@ -33,7 +35,8 @@ async function fromPanel(id, html) {
     headers: { "content-type": "application/json", "user-agent": UA, origin: "https://www.youtube.com" },
     body: JSON.stringify({ context: { client: { clientName: "WEB", clientVersion: version, hl: "en" } }, params }),
   });
-  if (!r.ok) return "";
+  note(`get_transcript ${r.status}`);
+  if (!r.ok) { note((await r.text()).slice(0, 120)); return ""; }
   const out = [];
   (function walk(n) {
     if (!n || typeof n !== "object") return;
@@ -49,8 +52,8 @@ async function fromPanel(id, html) {
 async function fromTrack(url) {
   if (!url) return "";
   const r = await fetch(url.replace(/&fmt=[^&]*/, "") + "&fmt=json3", { headers: { "user-agent": UA } });
-  if (!r.ok) return "";
-  const body = await r.text();
+  const body = r.ok ? await r.text() : "";
+  note(`track ${r.status} ${body.length} ${/[?&]kind=asr/.test(url) ? "asr" : ""} pot:${/[?&]pot=/.test(url)} exp:${between(url, /[?&]exp=([^&]+)/)}`);
   if (!body) return "";
   try {
     const data = JSON.parse(body);
@@ -72,8 +75,9 @@ async function fromAndroid(id) {
     headers: { "content-type": "application/json", "user-agent": "com.google.android.youtube/20.10.38 (Linux; U; Android 14) gzip" },
     body: JSON.stringify({ videoId: id, context: { client: { clientName: "ANDROID", clientVersion: "20.10.38", androidSdkVersion: 34, hl: "en" } } }),
   });
-  if (!r.ok) return "";
-  const data = await r.json();
+  const data = r.ok ? await r.json() : {};
+  const tr = data?.captions?.playerCaptionsTracklistRenderer?.captionTracks || [];
+  note(`android ${r.status} ${data?.playabilityStatus?.status} tracks:${tr.length} ${tr.map((t) => t.languageCode + (t.kind || "")).join(",")}`);
   return fromTrack(pickTrack(data?.captions?.playerCaptionsTracklistRenderer?.captionTracks));
 }
 
@@ -83,7 +87,11 @@ async function fromWebTracks(html) {
   try { return fromTrack(pickTrack(JSON.parse(raw))); } catch { return ""; }
 }
 
+const NOTE = [];
+const note = (x) => { if (NOTE.length < 12) NOTE.push(String(x).slice(0, 140)); };
+
 export async function transcript(input) {
+  NOTE.length = 0;
   const id = videoId(input);
   if (!id) return { ok: false, error: "not a YouTube link", tried: [] };
   const tried = [];
@@ -102,5 +110,5 @@ export async function transcript(input) {
       tried.push({ route: name, error: String(e?.message || e).slice(0, 160) });
     }
   }
-  return { ok: false, video_id: id, error: "no transcript from any route", tried };
+  return { ok: false, video_id: id, error: "no transcript from any route", tried, notes: [...NOTE] };
 }

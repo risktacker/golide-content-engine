@@ -89,7 +89,7 @@ class StudioBridge:
             return ""
         data = json.loads(body.decode("utf-8") or "{}")
         print(json.dumps({"status": "studio_transcript", "ok": data.get("ok"), "route": data.get("route"),
-                          "words": data.get("words"), "tried": data.get("tried")}))
+                          "words": data.get("words"), "tried": data.get("tried"), "notes": data.get("notes")}))
         return str(data.get("text") or "") if data.get("ok") else ""
 
     def job_status(self, job_id: str) -> dict[str, Any] | None:
