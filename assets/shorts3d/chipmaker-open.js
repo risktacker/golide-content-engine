@@ -45,7 +45,7 @@ export async function build(K, words) {
       const slam = eio(clamp((t - T.lands) / 0.16)), red = clamp((t - T.makes) / 0.5);
       g.fillStyle = '#d7262c'; g.fillRect(0, 0, 1024 * slam, 96); g.fillStyle = '#ffffff'; g.font = '62px Anton'; if (slam > 0.6) g.fillText('BREAKING', 36, 74);
       // the headline sits in the TV's top half: in the last shot your head covers its lower half
-      const turn = t >= T.build; g.save(); g.translate(512, turn ? 230 : 300); const s = lerp(1.6, 1, slam); g.scale(s, s); g.fillStyle = turn ? '#ff3b3b' : '#ffffff'; g.font = turn ? '150px Anton' : '210px Anton'; g.textAlign = 'center'; g.fillText(turn ? 'AI BUILDOUT?' : 'AI IPO', 0, 70); g.restore();
+      const turn = t >= T.build; g.save(); g.translate(512, turn ? 150 : 300); const s = lerp(1.6, 1, slam); g.scale(s, s); g.fillStyle = turn ? '#ff3b3b' : '#ffffff'; g.font = turn ? '120px Anton' : '210px Anton'; g.textAlign = 'center'; g.fillText(turn ? 'AI BUILDOUT?' : 'AI IPO', 0, 70); g.restore();
       if (red <= 0) { g.fillStyle = '#2fd47a'; g.beginPath(); g.moveTo(870, 470); g.lineTo(930, 400); g.lineTo(990, 470); g.fill(); g.fillRect(912, 470, 36, 70); }
       else { g.strokeStyle = '#ff3b3b'; g.lineWidth = 12; g.beginPath(); const n = 9; for (let i = 0; i <= n * red; i++) { const x = 60 + i * 100, y = 410 + i * 14 + (i % 2) * 26; i ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke();
       }

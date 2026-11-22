@@ -110,6 +110,10 @@ export function makeDirector(K, opt = {}) {
       else if (subjects.includes(c) && !shows(r)) out.push(`${c.label} is out of the shot`);
       const h = rect(headBox(c)); if (shows(h) && meets(h, CAP)) out.push(`the head of ${c.label} sits under the captions`);
     }
+    // two heads overlapping on screen read as a crash even when neither face is fully hidden
+    const heads = people.map(c => [c, rect(headBox(c))]).filter(([, r]) => shows(r) && !r.crossing);
+    for (let i = 0; i < heads.length; i++) for (let j = i + 1; j < heads.length; j++) { const [a, ra] = heads[i], [b, rb] = heads[j];
+      if (ra.x1 > rb.x0 && rb.x1 > ra.x0 && ra.y1 > rb.y0 && rb.y1 > ra.y0) out.push(`the heads of ${a.label} and ${b.label} overlap in the frame`); }
     for (const e of extras) { const r = rect(e.box); if (shows(r) && !within(r, SAFE)) out.push(`${e.label} is cropped at the frame edge`); }
     for (const c of subjects) if (c.root) { const h = hidden(c, propObjs, people); if (h) out.push(h); }
     out.push(...collisions(people, props));

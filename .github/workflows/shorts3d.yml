@@ -4,7 +4,7 @@ name: 3D Shorts engine (stills or clip, with the director's checks)
 # the pinned commit in src/golide_engine/shorts3d/build.py, our scenes + director wired in by assets/shorts3d/hook.py.
 # Free: code + CC0 assets, no model calls, no ElevenLabs (the voice comes from the production's files).
 # mode=stills: director report + sheet.jpg (captions burned in) + sheet-debug.jpg. mode=video: the clip, frames split
-# across parallel browsers. Results go to the branch review-shorts3d-<scene>.
+# across parallel browsers. Results go to the branch review-shorts3d-<scene>-<mode>.
 on:
   workflow_dispatch:
     inputs:
@@ -72,7 +72,7 @@ jobs:
       - name: Results to the review branch
         if: always()
         run: |
-          B=review-shorts3d-${{ inputs.scene }}; D=review/shorts3d/${{ inputs.scene }}
+          B=review-shorts3d-${{ inputs.scene }}-${{ inputs.mode }}; D=review/shorts3d/${{ inputs.scene }}
           mkdir -p $D && cp out/*.jpg out/*.mp4 $D/ 2>/dev/null || true; cp out/stills-debug/report.json $D/ 2>/dev/null || true; mkdir -p $D/debug && cp out/stills-debug/*.jpg $D/debug/ 2>/dev/null || true
           mkdir -p $D/stills && cp out/stills/*.jpg $D/stills/ 2>/dev/null || true; rm -f $D/picture.mp4
           ls -la $D
