@@ -306,5 +306,6 @@
     "style": "stickman"
   },
   "voice_choice": "ai",
-  "openai_budget_usd": 1.75
+  "openai_budget_usd": 1.75,
+  "_failed_runs": 1
 }
