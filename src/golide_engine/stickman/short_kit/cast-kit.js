@@ -350,4 +350,29 @@ export const billFx = (p, rot = 0, sq = 1) => { const g = p.g; g.save(); g.trans
   g.fillStyle = '#cfdcc4'; g.fillRect(-170, -72, 340, 144); g.strokeStyle = '#3f6a4a'; g.lineWidth = 9; g.strokeRect(-160, -62, 320, 124);
   g.fillStyle = '#9fbf98'; g.beginPath(); g.ellipse(0, 0, 40, 52, 0, 0, 7); g.fill(); g.fillStyle = '#2f5a3c'; g.font = '900 52px sans-serif';
   g.textBaseline = 'middle'; g.fillText('100', -148, -30); g.fillText('100', 62, 34); g.restore(); };
+
+// ---- (2026-11-22, owner: "be a director for an actual movie") the puppet seen from BEHIND, for over-the-shoulder shots:
+// the same body and clothes as modernFront, the head turned away (all hair, no face), the collar and jacket back, no tie
+// T.modernBack(p, O, { L, R, seed, bob }) — draw it in the foreground with the camera behind the character
+export const modernBack = (p, O, opts = {}) => {
+  const seed = opts.seed ?? 3, bob = opts.bob || 0;
+  modernFront(p, { ...O, tie: null, shirt: O.jacket ? O.tunic : O.shirt, stethoscope: false, badge: false }, { ...opts, expr: 'neutral', facing: 0 });
+  const H = headBlob(seed, 124, 0), HH = 2 * H.b, u = 2 * H.a / 100;
+  const torsoBot = 975 - 1.12 * HH - bob * HH, chin = torsoBot - 1.02 * HH, hc = chin - H.b * 0.96, hair = O.hair || '#2b211c';
+  p.ell(300, chin + 2 * u, 15 * u, 9 * u, mul(O.skin ?? SKIN, [0.86, 0.82, 0.8]), 5 * u);             // the back of the neck
+  p.ell(300, chin + 9 * u, 30 * u, 8 * u, O.jacket ? mul(O.tunic, [0.85, 0.85, 0.92]) : mul(O.tunic, [0.8, 0.8, 0.88]), 5 * u);   // collar
+  p.ell(300, hc, H.a * 1.04, H.b * 1.04, hair, 7 * u);                                                  // the head turned away: hair
+  p.ell(300 - H.a * 0.35, hc - H.b * 0.35, H.a * 0.32, H.b * 0.16, mul(hair, [1.45, 1.45, 1.5]), 0);   // a rim of light on the hair
+  for (const sd of [-1, 1]) p.ell(300 + sd * H.a * 0.98, hc + H.b * 0.1, 9 * u, 15 * u, O.skin ?? SKIN, 4 * u);   // ears
+};
+// a hand reaching into the frame from the top (a sleeve and a pointing finger), for close-ups where someone touches a
+// screen, a button or a paper: T.reachHand(p, { sleeve, skin, press }) — the fingertip is at (300, 900); press 0..1 squashes it
+export const reachHand = (p, o = {}) => {
+  const sleeve = o.sleeve || '#3b4a6b', skin = o.skin || SKIN, k = o.press || 0;
+  p.stroke([[300, -40], [300, 560]], 150, INK); p.stroke([[300, -40], [300, 560]], 130, sleeve);
+  p.stroke([[232, 540], [368, 540]], 26, mul(sleeve, [0.75, 0.75, 0.85]));
+  p.ell(300, 650 + k * 10, 92, 96 - k * 10, skin, 12);                                // the back of the hand
+  p.stroke([[300, 700], [300, 880 - k * 20]], 54, INK); p.stroke([[300, 700], [300, 880 - k * 20]], 38, skin);   // the finger
+  for (const dx of [-52, 52]) p.ell(300 + dx, 712, 24, 30, skin, 10);                  // curled fingers
+};
 // ===== end of the GOLIDE cast kit =====
