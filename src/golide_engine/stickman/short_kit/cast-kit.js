@@ -1,6 +1,6 @@
 // ===== GOLIDE cast kit (2026-11-18, the owner's fast-cut Elon test): chunky modern puppets with definition =====
 // T.modernFront(p, O, opts): O = { tunic (top colour), skin, hair, style: short|swoop|slick|spiky|curly|bun, pants, shoes,
-//   jacket: true + shirt + tie, hood: true, sleeve, belt, moustache, hat: cap|police|top|cowboy|beanie|hardhat|chef|crown
+//   jacket: true + shirt + tie, hood: true, sleeve, belt, moustache, hat: cap|police|top|cowboy|beanie|hardhat|chef|crown|helmet|nurse|grad
 //   (+ hatColour), shades: true, beard: colour }; opts as romanFront (expr, blink, look, facing, seed, L, R,
 //   tilt, headTilt, bob, step, wv, swirl, lift) plus seated: true (no legs, for karts and chairs).
 // Arm poses: hang point up wave hip temple cross reach. T.billFx(p, rot, squash): a falling $100 bill for fx cards.
@@ -44,6 +44,13 @@ const kitHat = (p, kind, col, cx, hc, H, u, ow, thick) => {
     p.band([[cx - 1.0 * H.a, brow - 6 * u], [cx + 1.0 * H.a, brow - 6 * u]], dark, 16 * u, 1.4 * u, 'round'); p.ell(cx, brow - 0.98 * H.b, 12 * u, 10 * u, dark, ow * 0.6); return; }
   if (kind === 'hardhat') { const cr = ellPts(cx, brow, 1.0 * H.a, 0.85 * H.b, 180, 360, 0, 30); p.poly(cr, c, ow * 0.8); p.ell(cx, brow + 2 * u, 1.18 * H.a, 0.1 * H.b, c, ow * 0.8);
     p.stroke([[cx, brow - 0.82 * H.b], [cx, brow]], 6 * u, dark); return; }
+  if (kind === 'helmet') { const cr = ellPts(cx, brow + 4 * u, 1.08 * H.a, 0.92 * H.b, 180, 360, 0, 30); p.poly(cr, col || '#5b6b3a', ow * 0.8);
+    p.stroke([[cx - 1.08 * H.a, brow + 4 * u], [cx + 1.08 * H.a, brow + 4 * u]], 5 * u, mul(col || '#5b6b3a', [0.7, 0.7, 0.78])); return; }
+  if (kind === 'nurse') { p.poly([[cx - 0.55 * H.a, brow], [cx - 0.45 * H.a, top - 0.15 * H.b], [cx + 0.45 * H.a, top - 0.15 * H.b], [cx + 0.55 * H.a, brow]], '#ffffff', ow * 0.7);
+    p.stroke([[cx, top + 0.02 * H.b], [cx, top + 0.3 * H.b]], 6 * u, '#c7322e'); p.stroke([[cx - 0.14 * H.a, top + 0.16 * H.b], [cx + 0.14 * H.a, top + 0.16 * H.b]], 6 * u, '#c7322e'); return; }
+  if (kind === 'grad') { const cr = ellPts(cx, brow, 0.9 * H.a, 0.5 * H.b, 180, 360, 0, 24); p.poly(cr, '#17161b', ow * 0.8);
+    p.poly([[cx - 1.25 * H.a, top - 0.05 * H.b], [cx, top - 0.35 * H.b], [cx + 1.25 * H.a, top - 0.05 * H.b], [cx, top + 0.25 * H.b]], '#17161b', ow * 0.7);
+    p.stroke([[cx, top - 0.05 * H.b], [cx + 0.9 * H.a, top + 0.35 * H.b]], 3 * u, '#e9b43a'); return; }
   // cap and police: a dome with a brim to the front; police adds a badge and a band
   const cr = ellPts(cx, brow, 1.0 * H.a, 0.72 * H.b, 180, 360, 0, 30); p.poly(cr, c, ow * 0.8);
   if (kind === 'police') { p.band([[cx - 1.0 * H.a, brow - 7 * u], [cx + 1.0 * H.a, brow - 7 * u]], '#17161b', 12 * u, 1.2 * u, 'butt'); p.poly(blobPts(cx, brow - 0.42 * H.b, { a: 9 * u, b: 9 * u, nTop: 2, nBot: 2, egg: 0, asym: 0, rot: 0, noise: 0, seed: 1 }), '#e9b43a', 1.6 * u); }
@@ -157,6 +164,19 @@ export const modernFront = (p, O, opts = {}) => {
     p.stroke(pts, 3 * u, '#ffffff'); p.stroke(pts, 1.4 * u, INK);
   }
 };
+// crowd(T, n, at, opts): n people as cards in loose rows around at = [x, y, z] (an audience, a queue, an army). opts:
+// uniform (an O that everyone wears, e.g. soldiers), spread [w, d], expr, arms, seed, facing, s. Returns card entries for
+// actorsAt: out.push(...T.crowd(T, 24, [x, DECK, z], { uniform: SOLDIER, expr: 'stern' }, f)).
+const CROWD_TOPS = ['#c7322e', '#2f78c4', '#3fa36b', '#e9b43a', '#8a3bd2', '#e86a92', '#f1efe8', '#2b2d34', '#c86f3d'];
+const CROWD_HAIR = ['#1b1a20', '#6b4a2a', '#c9a04a', '#2b211c', '#8a8a92'];
+export const crowd = (T_, n, at, opts = {}, f = 0) => { const { uniform = null, spread = [8, 4], expr = 'neutral', arms = 'hang', seed = 1, facing = 0, s = 0.9 } = opts;
+  const out = [], cols = Math.ceil(Math.sqrt(n * spread[0] / spread[1])), rows = Math.ceil(n / cols);
+  for (let k = 0; k < n; k++) { const c = k % cols, r = Math.floor(k / cols), j = (k * 37 + seed * 13) % 100 / 100;
+    const O = uniform ? { ...uniform } : { tunic: CROWD_TOPS[(k + seed) % CROWD_TOPS.length], hair: CROWD_HAIR[(k * 3 + seed) % CROWD_HAIR.length], style: ['short', 'swoop', 'curly', 'bun', 'spiky', 'slick'][(k + seed * 2) % 6] };
+    const bob = Math.round(0.006 * Math.sin((f + k * 9) * 0.2) * 1000) / 1000;
+    const x = at[0] - spread[0] / 2 + (c + 0.5) * spread[0] / cols + (j - 0.5) * 0.4, z = at[2] - r * spread[1] / Math.max(1, rows - 1 || 1) + (j - 0.5) * 0.3;
+    out.push({ key: 'crowd' + k + (uniform ? 'u' : '') + expr + arms + bob, draw: (p) => modernFront(p, O, { expr, L: arms, R: arms, seed: seed + k, facing, bob }), x, y: at[1], z, s });
+  } return out; };
 export const billFx = (p, rot = 0, sq = 1) => { const g = p.g; g.save(); g.translate(300, 500); g.rotate(rot); g.scale(1, sq);
   g.fillStyle = '#cfdcc4'; g.fillRect(-170, -72, 340, 144); g.strokeStyle = '#3f6a4a'; g.lineWidth = 9; g.strokeRect(-160, -62, 320, 124);
   g.fillStyle = '#9fbf98'; g.beginPath(); g.ellipse(0, 0, 40, 52, 0, 0, 7); g.fill(); g.fillStyle = '#2f5a3c'; g.font = '900 52px sans-serif';

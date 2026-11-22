@@ -216,5 +216,56 @@ const banners = (x, z, n = 6, colour = '#f2c230', emblem = '') => { const out = 
   add(new THREE.CylinderGeometry(0.05, 0.05, 5, 8), KC('#6b4a2a'), 0, 2.5, 0, g); add(new THREE.ConeGeometry(0.12, 0.3, 8), KM.steel, 0, 5.1, 0, g);
   add(new THREE.BoxGeometry(1.1, 1.6, 0.04), signMat(emblem, { bg: colour, fg: '#17161b', w: 256, h: 384 }), 0.6, 4.1, 0, g); out.push(g); } return out; };
 // ===== end of batch 2 =====
+// ===== GOLIDE indoor kit, batch 3 (2026-11-22): courtroom, hospital ward, data centre, classroom, news desk, stage =====
+// courtroom(x, z): judge's raised bench with a gavel, witness box, two counsel tables, flags. hospitalWard(x, z, beds):
+// beds with pillows and blankets, drip stands, curtains, a heart monitor. dataCentre(x, z, rows, len): aisles of server
+// racks with blinking lights (call .blink(f) every frame). classroom(x, z): blackboard with words, rows of school desks.
+// newsDesk(x, z, title): a curved anchor desk with a big screen behind. stage(x, z, slug, title): a raised stage, a podium
+// with the brand's logo, spotlights and a giant screen. Each returns { group } (and extras named below).
+const courtroom = (x, z) => { const r = room(x, z, 16, 12, 5.5, { floor: 'wood', wall: '#8a5a33', lights: 3, trim: '#5a3a24' }); const g = r.group, wd = KC('#6b3f22'), wd2 = KC('#8a5a33');
+  // the judge stands on a dais behind a chest-high bench: place the judge card at y = DECK + 1.0, z = -5.3
+  add(new THREE.BoxGeometry(6, 1.0, 2.0), wd2, 0, 0.5, -5.2, g);
+  add(new THREE.BoxGeometry(6, 1.55, 1.2), wd, 0, 0.78, -4.0, g); add(new THREE.BoxGeometry(6.4, 0.15, 1.5), wd2, 0, 1.6, -4.0, g);
+  add(new THREE.BoxGeometry(1.4, 0.7, 0.06), signMat('COURT', { bg: '#e9b43a', fg: '#5a3a24', border: false, w: 512, h: 256 }), 0, 3.6, -5.8, g);
+  const gavel = add(new THREE.CylinderGeometry(0.12, 0.12, 0.5, 12), wd2, 1.4, 1.8, -3.8, g); gavel.rotation.z = Math.PI / 2;
+  add(new THREE.BoxGeometry(2.2, 1.3, 1.6), wd, 4.6, 0.65, -2.6, g);
+  for (const s_ of [-1, 1]) { add(new THREE.BoxGeometry(3.4, 0.12, 1.4), wd2, s_ * 3.6, 1.05, 1.6, g); for (const a of [-1.5, 1.5]) add(new THREE.BoxGeometry(0.12, 1.0, 1.2), wd, s_ * 3.6 + a, 0.5, 1.6, g); }
+  for (const [s_, c] of [[-1, '#2f5fb8'], [1, '#c7322e']]) { add(new THREE.CylinderGeometry(0.05, 0.05, 3.6, 8), KM.gold, s_ * 6.6, 1.8, -5.2, g); add(new THREE.BoxGeometry(1.0, 1.4, 0.04), KC(c), s_ * 6.6 + 0.55, 2.9, -5.2, g); }
+  return { group: g, gavel }; };
+const hospitalWard = (x, z, beds = 3) => { const r = room(x, z, 16, 11, 4.2, { floor: 'tiles', wall: '#dfeee9', lights: 3, trim: '#9fc9bd' }); const g = r.group;
+  for (let i = 0; i < beds; i++) { const bx = -5 + i * 5; add(new THREE.BoxGeometry(2.0, 0.6, 3.6), KC('#e8e8e8'), bx, 0.9, -2.4, g); add(new THREE.BoxGeometry(2.0, 0.25, 3.0), KC('#9fc3e6'), bx, 1.3, -2.1, g);
+    add(new THREE.BoxGeometry(1.4, 0.3, 0.6), KM.white, bx, 1.35, -3.8, g); add(new THREE.BoxGeometry(2.1, 1.2, 0.1), KM.steel, bx, 1.2, -4.25, g);
+    for (const [a, b] of [[-0.9, -4.1], [0.9, -4.1], [-0.9, -0.7], [0.9, -0.7]]) add(new THREE.CylinderGeometry(0.05, 0.05, 0.6, 8), KM.steel, bx + a, 0.3, b, g);
+    add(new THREE.CylinderGeometry(0.03, 0.03, 2.4, 8), KM.steel, bx + 1.4, 1.2, -3.4, g); add(new THREE.BoxGeometry(0.3, 0.45, 0.1), KC('#bfe3ff'), bx + 1.4, 2.3, -3.4, g);
+    if (i < beds - 1) add(new THREE.BoxGeometry(0.08, 2.6, 3.4), KC('#9fc9bd'), bx + 2.5, 1.5, -2.4, g); }
+  const mon = add(new THREE.BoxGeometry(1.0, 0.7, 0.1), screenTex('chart', ''), -6.8, 2.4, -4.6, g); return { group: g, monitor: mon }; };
+const dataCentre = (x, z, rows = 2, len = 6) => { const r = room(x, z, 14, 18, 4.5, { floor: 'checker', wall: '#d9dde3', lights: 4 }); const g = r.group, lights = [];
+  for (let rw = 0; rw < rows; rw++) for (let i = 0; i < len; i++) for (const s_ of [-1, 1]) { const rx = s_ * (1.8 + rw * 3.6), rz = 5 - i * 1.4;
+    add(new THREE.BoxGeometry(1.0, 3.2, 1.2), KC('#1d2027'), rx, 1.6, rz, g);
+    for (let k = 0; k < 8; k++) { const m = toon({ color: '#3fe08a', emissive: '#3fe08a', emissiveIntensity: 1 }); lights.push(m); add(new THREE.BoxGeometry(0.06, 0.06, 0.06), m, rx - s_ * 0.52, 0.5 + k * 0.33, rz + ((k * 7) % 5 - 2) * 0.18, g); } }
+  return { group: g, blink: (f) => lights.forEach((m, k) => { m.emissiveIntensity = ((f + k * 7) % 23) < 3 ? 0.05 : 1; m.color.set(((f + k * 11) % 97) < 2 ? '#ff4d4d' : '#3fe08a'); m.emissive.copy(m.color); }) }; };
+const classroom = (x, z, words = '') => { const r = room(x, z, 16, 12, 4.4, { floor: 'wood', wall: '#efe4c8', lights: 3 }); const g = r.group;
+  add(new THREE.BoxGeometry(7, 2.6, 0.1), KC('#7a5434'), 0, 2.5, -5.75, g);
+  add(new THREE.BoxGeometry(6.6, 2.2, 0.06), signMat(words, { bg: '#2f5a44', fg: '#f4f1ea', border: false, w: 1024, h: 340 }), 0, 2.5, -5.68, g);
+  for (let rw = 0; rw < 3; rw++) for (let c = 0; c < 4; c++) { const dx = -4.5 + c * 3, dz = -2 + rw * 2.2; add(new THREE.BoxGeometry(1.6, 0.08, 0.9), KC('#c39668'), dx, 1.0, dz, g);
+    for (const [a, b] of [[-0.7, -0.35], [0.7, -0.35], [-0.7, 0.35], [0.7, 0.35]]) add(new THREE.BoxGeometry(0.06, 1.0, 0.06), KM.steel, dx + a, 0.5, dz + b, g); }
+  add(new THREE.BoxGeometry(2.4, 1.1, 1.0), KC('#8a5a33'), -5.6, 0.55, -4.2, g); return { group: g }; };
+const newsDesk = (x, z, title = 'BREAKING NEWS') => { const r = room(x, z, 14, 10, 5, { floor: 'concrete', wall: '#1d2a44', lights: 3, trim: '#c7322e' }); const g = r.group;
+  const desk = add(new THREE.CylinderGeometry(3.2, 3.2, 1.2, 40, 1, false, Math.PI * 0.75, Math.PI * 0.5), KC('#2f78c4'), 0, 0.6, 1.2, g); desk.rotation.y = Math.PI;
+  add(new THREE.BoxGeometry(9, 4, 0.1), screenTex('chart', title), 0, 2.8, -4.7, g);
+  add(new THREE.BoxGeometry(14, 0.6, 0.06), signMat(title, { bg: '#c7322e', fg: '#ffffff', border: false, w: 1536, h: 128 }), 0, 0.35, -4.6, g); return { group: g }; };
+const stage = (x, z, slug = null, title = '') => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g);
+  const fl = add(new THREE.PlaneGeometry(40, 30), KC('#17161b'), 0, 0.01, 0, g, { cast: false }); fl.rotation.x = -Math.PI / 2;
+  add(new THREE.BoxGeometry(14, 1.0, 7), KC('#2b2d34'), 0, 0.5, -3, g);
+  add(new THREE.BoxGeometry(12, 6, 0.2), signMat(title, { slug, bg: '#0f1a2a', fg: '#ffffff', border: false, w: 1024, h: 512 }), 0, 4.6, -6.4, g);
+  const pod = add(new THREE.BoxGeometry(1.2, 1.4, 0.8), KC('#e9e3d6'), 2.8, 1.7, -2, g); add(new THREE.BoxGeometry(1.0, 0.6, 0.02), signMat('', { slug, bg: '#ffffff', border: false, w: 256, h: 160 }), 2.8, 1.9, -1.59, g);
+  // spotlights: lamps on a truss and bright pools on the stage (light cones drew as grey wedges through the ink pass)
+  add(new THREE.BoxGeometry(14, 0.25, 0.25), KM.steel, 0, 8.2, -1, g);
+  const spots = []; for (const s_ of [-1, 0, 1]) { add(new THREE.CylinderGeometry(0.3, 0.42, 0.7, 14), KM.dark, s_ * 4, 7.8, -1, g);
+    const pool = add(new THREE.CircleGeometry(1.8, 32), new THREE.MeshBasicMaterial({ color: '#fff1c8', transparent: true, opacity: 0.35, depthWrite: false }), s_ * 4, 1.02, -2.6, g, { cast: false });
+    pool.rotation.x = -Math.PI / 2; pool.userData.ndSkip = true; spots.push(pool); }
+  return { group: g, top: DECK + 1.0, spots }; };
+// ===== end of batch 3 =====
+
 
 
