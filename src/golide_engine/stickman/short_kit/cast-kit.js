@@ -1,6 +1,7 @@
 // ===== GOLIDE cast kit (2026-11-18, the owner's fast-cut Elon test): chunky modern puppets with definition =====
 // T.modernFront(p, O, opts): O = { tunic (top colour), skin, hair, style: short|swoop|slick|spiky|curly|bun, pants, shoes,
-//   jacket: true + shirt + tie, hood: true, sleeve, belt, moustache }; opts as romanFront (expr, blink, look, facing, seed, L, R,
+//   jacket: true + shirt + tie, hood: true, sleeve, belt, moustache, hat: cap|police|top|cowboy|beanie|hardhat|chef|crown
+//   (+ hatColour), shades: true, beard: colour }; opts as romanFront (expr, blink, look, facing, seed, L, R,
 //   tilt, headTilt, bob, step, wv, swirl, lift) plus seated: true (no legs, for karts and chairs).
 // Arm poses: hang point up wave hip temple cross reach. T.billFx(p, rot, squash): a falling $100 bill for fx cards.
 // GOLIDE modern cast: chunkier puppets with definition, drawn whole (not over the kit's body): a round torso with
@@ -25,6 +26,28 @@ const hairDo = (p, style, col, cx, hc, H, u, ow, thick, seed) => {
     p.stroke(ellPts(cx - 0.25 * A, hc - 0.55 * B, 0.3 * A, 0.18 * B, 200, 320, 0, 12), 4 * u, lite);
   });
   p.inkRing(cap, ow * 0.9, thick);
+};
+// hats over the hair: the brim sits on the brow line, the crown above the head (one ink weight with the head)
+const kitHat = (p, kind, col, cx, hc, H, u, ow, thick) => {
+  const top = hc - H.b, brow = hc - 0.42 * H.b, c = col || { cap: '#2f5fb8', police: '#1f2a44', top: '#17161b', cowboy: '#8a5a2b', beanie: '#c7322e', hardhat: '#f2c230', chef: '#f7f5ef', crown: '#e9b43a' }[kind] || '#2f5fb8';
+  const dark = mul(c, [0.72, 0.72, 0.8]);
+  const crown = (w, h, y0) => blobPts(cx, y0 - h / 2, { a: w, b: h / 2, nTop: 3, nBot: 6, egg: 0, asym: 0, rot: 0, noise: 0, seed: 2 });
+  if (kind === 'top') { const cr = crown(0.62 * H.a, 1.15 * H.b, brow + 2 * u); p.poly(cr, c, ow * 0.8); p.band([[cx - 0.62 * H.a, brow - 14 * u], [cx + 0.62 * H.a, brow - 14 * u]], '#c7322e', 9 * u, 1.4 * u, 'butt');
+    p.ell(cx, brow + 2 * u, 0.98 * H.a, 0.13 * H.b, c, ow * 0.8); return; }
+  if (kind === 'cowboy') { p.ell(cx, brow + 2 * u, 1.35 * H.a, 0.2 * H.b, c, ow * 0.8); const cr = crown(0.66 * H.a, 0.78 * H.b, brow); p.poly(cr, c, ow * 0.8);
+    p.band([[cx - 0.66 * H.a, brow - 8 * u], [cx + 0.66 * H.a, brow - 8 * u]], dark, 7 * u, 1.2 * u, 'butt'); return; }
+  if (kind === 'chef') { const cr = crown(0.7 * H.a, 1.1 * H.b, brow); p.poly(cr, c, ow * 0.8); for (const s of [-1, 0, 1]) p.ell(cx + s * 0.42 * H.a, top - 0.45 * H.b, 0.34 * H.a, 0.3 * H.b, c, ow * 0.7);
+    p.band([[cx - 0.7 * H.a, brow - 6 * u], [cx + 0.7 * H.a, brow - 6 * u]], '#e6e2d8', 12 * u, 1.2 * u, 'butt'); return; }
+  if (kind === 'crown') { const pts = [[cx - 0.7 * H.a, brow], [cx - 0.7 * H.a, top - 0.2 * H.b], [cx - 0.35 * H.a, top + 0.1 * H.b], [cx, top - 0.35 * H.b], [cx + 0.35 * H.a, top + 0.1 * H.b], [cx + 0.7 * H.a, top - 0.2 * H.b], [cx + 0.7 * H.a, brow]];
+    p.poly(pts, c, ow * 0.8); for (const s of [-1, 0, 1]) p.dot(cx + s * 0.35 * H.a, brow - 12 * u, 5 * u, s ? '#2f78c4' : '#c7322e'); return; }
+  if (kind === 'beanie') { const cr = ellPts(cx, brow, 1.02 * H.a, 0.95 * H.b, 180, 360, 0, 30); p.poly(cr, c, ow * 0.8);
+    p.band([[cx - 1.0 * H.a, brow - 6 * u], [cx + 1.0 * H.a, brow - 6 * u]], dark, 16 * u, 1.4 * u, 'round'); p.ell(cx, brow - 0.98 * H.b, 12 * u, 10 * u, dark, ow * 0.6); return; }
+  if (kind === 'hardhat') { const cr = ellPts(cx, brow, 1.0 * H.a, 0.85 * H.b, 180, 360, 0, 30); p.poly(cr, c, ow * 0.8); p.ell(cx, brow + 2 * u, 1.18 * H.a, 0.1 * H.b, c, ow * 0.8);
+    p.stroke([[cx, brow - 0.82 * H.b], [cx, brow]], 6 * u, dark); return; }
+  // cap and police: a dome with a brim to the front; police adds a badge and a band
+  const cr = ellPts(cx, brow, 1.0 * H.a, 0.72 * H.b, 180, 360, 0, 30); p.poly(cr, c, ow * 0.8);
+  if (kind === 'police') { p.band([[cx - 1.0 * H.a, brow - 7 * u], [cx + 1.0 * H.a, brow - 7 * u]], '#17161b', 12 * u, 1.2 * u, 'butt'); p.poly(blobPts(cx, brow - 0.42 * H.b, { a: 9 * u, b: 9 * u, nTop: 2, nBot: 2, egg: 0, asym: 0, rot: 0, noise: 0, seed: 1 }), '#e9b43a', 1.6 * u); }
+  p.poly([[cx - 0.85 * H.a, brow], [cx + 0.85 * H.a, brow], [cx + 0.7 * H.a, brow + 0.16 * H.b], [cx - 0.7 * H.a, brow + 0.16 * H.b]], kind === 'police' ? '#17161b' : dark, ow * 0.6);
 };
 export const modernFront = (p, O, opts = {}) => {
   const { expr = 'neutral', blink = 0, look = 0, facing = 0, seed = 3, L = 'hang', R = 'hang', tilt = 0, headTilt = 0,
@@ -111,6 +134,12 @@ export const modernFront = (p, O, opts = {}) => {
   for (const s of [-1, 1]) p.ell(cx + s * (H.a - 1 * u), hc + 0.08 * H.b, 7 * u, 10 * u, skin, ow * 0.45);   // ears
   if (O.hair) hairDo(p, O.style || 'short', O.hair, cx, hc, H, u, ow, thick, seed);
   faceFront(p, cx, hc, W, expr, facing, look, lid, false, skin, O.moustache, false);
+  if (O.beard) { const bp = [...ellPts(cx, hc + 0.42 * H.b, 0.72 * H.a, 0.5 * H.b, 0, 180, 0, 20), [cx - 0.72 * H.a, hc + 0.3 * H.b], [cx + 0.72 * H.a, hc + 0.3 * H.b]];
+    p.poly(ellPts(cx, hc + 0.5 * H.b, 0.7 * H.a, 0.46 * H.b, 10, 170, 0, 18), O.beard, ow * 0.6); }
+  if (O.shades) { for (const s of [-1, 1]) p.poly(blobPts(cx + s * 0.3 * H.a + facing * 6 * u, hc - 0.02 * H.b, { a: 0.27 * H.a, b: 0.17 * H.b, nTop: 2.6, nBot: 1.6, egg: 0, asym: 0, rot: 0, noise: 0, seed: 1 }), '#17161b', ow * 0.5);
+    p.stroke([[cx - 0.04 * H.a + facing * 6 * u, hc - 0.06 * H.b], [cx + 0.04 * H.a + facing * 6 * u, hc - 0.06 * H.b]], 3 * u, '#17161b');
+    for (const s of [-1, 1]) p.stroke([[cx + s * 0.38 * H.a + facing * 6 * u, hc - 0.1 * H.b], [cx + s * 0.22 * H.a + facing * 6 * u, hc - 0.02 * H.b]], 2.4 * u, '#ffffff90'); }
+  if (O.hat) kitHat(p, O.hat, O.hatColour, cx, hc, H, u, ow, thick);
   p.rot = null;
   if (arms.some((a) => a.swirl)) {
     const a = arms.find((x) => x.swirl), [hx, hy] = a.pts[2], ph = opts.swirl || 0, pts = [];
