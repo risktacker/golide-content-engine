@@ -46,6 +46,4 @@ trillionaire  # seen in your recording
 dataset  # seen in your recording and the research sources
 datasets  # seen in your recording
 replanning  # seen in your recording
-buildout  # seen in your recording and the research sources
-chipmaker  # seen in your recording
-hyperscalers  # seen in your recording and the research sources
+golidee
