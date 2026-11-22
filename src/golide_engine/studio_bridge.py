@@ -82,6 +82,16 @@ class StudioBridge:
         payload["spec"]["_studio_job_id"] = payload["jobId"]
         return payload
 
+    def transcript(self, video: str) -> str:
+        """A video's spoken words read by the Studio's own Worker (owner 2026-11-22: free, no paid service)."""
+        status, body = self._request("GET", f"/api/engine/transcript?v={quote(video, safe='')}")
+        if status != 200:
+            return ""
+        data = json.loads(body.decode("utf-8") or "{}")
+        print(json.dumps({"status": "studio_transcript", "ok": data.get("ok"), "route": data.get("route"),
+                          "words": data.get("words"), "tried": data.get("tried")}))
+        return str(data.get("text") or "") if data.get("ok") else ""
+
     def job_status(self, job_id: str) -> dict[str, Any] | None:
         """Studio's status for a job (2026-11-06): {"status": ..., "archived": bool}, None if unknown."""
         status, body = self._request("GET", f"/api/engine/jobs/{quote(job_id, safe='')}/status")

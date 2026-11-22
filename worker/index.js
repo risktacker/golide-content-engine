@@ -1,5 +1,6 @@
 import { ANALYTICS_SCHEMA, analyticsReport, storeAnalytics } from "./analytics.js";
 import { WISHES_SCHEMA, listWishes, markWishDone, storeWishes } from "./wishes.js";
+import { transcript } from "./transcript.js";
 import { labelMissing } from "./triage.js";
 import { buildExternalSpec, cleanLooks } from "./external.js";
 import { handleContact } from "./contact.js";
@@ -1096,6 +1097,10 @@ async function handleMachineApi(request,env,url){
   }
   if(url.pathname==="/api/engine/media/deleted"&&request.method==="POST"){
     try{return json(await markMediaDeleted(env.DB,await request.json()));}catch(e){return err(e?.message||String(e),400);}
+  }
+  if(url.pathname==="/api/engine/transcript"&&request.method==="GET"){
+    // owner 2026-11-22: free transcript of a model video, read by the Studio's own Worker.
+    return json(await transcript(url.searchParams.get("v")||url.searchParams.get("url")||""));
   }
   if(url.pathname==="/api/engine/stickman/wishes"&&request.method==="POST"){
     try{return json(await storeWishes(env.DB,await request.json()));}catch(e){return err(e?.message||String(e),400);}

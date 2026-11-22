@@ -74,6 +74,14 @@ def _direct(vid: str) -> str:
     return _clean(" ".join(s.text for s in fetched))
 
 
+def _studio(vid: str) -> str:
+    """The free route first (owner 2026-11-22): the Studio's Worker reads the captions."""
+    if not os.getenv("ACTIONS_ID_TOKEN_REQUEST_URL"):
+        return ""
+    from ..studio_bridge import StudioBridge
+    return StudioBridge(os.getenv("GOLIDE_STUDIO_BASE_URL", "https://studio.golidee.com")).transcript(vid)
+
+
 def fetch(url: str) -> str:
     """The video's spoken words, or "" when no source can get them."""
     vid = video_id(url)
@@ -81,7 +89,7 @@ def fetch(url: str) -> str:
         return ""
     key = os.getenv("SUPADATA_API_KEY", "").strip()
     full = f"https://www.youtube.com/watch?v={vid}"
-    for attempt in ((lambda: _supadata(full, key)) if key else None, lambda: _direct(vid)):
+    for attempt in (lambda: _studio(vid), (lambda: _supadata(full, key)) if key else None, lambda: _direct(vid)):
         if attempt is None:
             continue
         try:
