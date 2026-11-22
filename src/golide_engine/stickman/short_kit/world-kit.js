@@ -299,6 +299,105 @@ const bigButton = (x, z, label = '') => { const g = new THREE.Group(); g.positio
   if (label) add(new THREE.BoxGeometry(0.9, 0.25, 0.02), signMat(label, { bg: '#ffd23f', fg: '#17161b', border: false, w: 512, h: 128 }), 0, 0.6, 0.6, g);
   g.press = (k) => { cap.position.y = 1.08 - 0.1 * k; }; return g; };
 // ===== end of batch 4 =====
+// ===== GOLIDE places, batch 5 (2026-11-22): everyday life and work, outdoors =====
+// livingRoom, kitchen, bedroom, restaurant, gym, factory (assembly line with .run(f)), planeCabin, bankHall (counter, vault
+// door .open(k)), lab, supermarket, constructionSite, policeDesk / interrogation, rooftop, farm, forest, beach, snowPeak,
+// desert. Each takes (x, z) and returns { group, ... }. Outdoor places paint their own ground; build each 600 m apart.
+const furn = (g, w, h, d, c, x, y, z) => add(new THREE.BoxGeometry(w, h, d), KC(c), x, y, z, g);
+const sofa = (g, x, z, c = '#3b5b8f', ry = 0) => { const s_ = new THREE.Group(); s_.position.set(x, 0, z); s_.rotation.y = ry; g.add(s_);
+  furn(s_, 3.2, 0.5, 1.1, c, 0, 0.45, 0); furn(s_, 3.2, 0.9, 0.3, c, 0, 0.95, -0.42); for (const a of [-1.5, 1.5]) furn(s_, 0.3, 0.75, 1.1, c, a, 0.6, 0); return s_; };
+const livingRoom = (x, z) => { const r = room(x, z, 16, 11, 4.2, { floor: 'wood', wall: '#e8d9c0', lights: 2 }); const g = r.group;
+  sofa(g, 0, -3.2); furn(g, 2.2, 0.4, 1.0, '#7a5434', 0, 0.3, -1.4); const tv = add(new THREE.BoxGeometry(3.6, 2.0, 0.1), screenTex('chart', ''), 0, 2.4, -5.3, g);
+  furn(g, 4.2, 0.6, 0.5, '#5a3a24', 0, 0.3, -5.2); pottedPlant(5.5, -4.5, 1.6, g, 0); furn(g, 3.0, 2.0, 0.1, '#bfe3ff', -5, 2.6, -5.4);
+  const lamp = add(new THREE.CylinderGeometry(0.4, 0.6, 0.6, 16), toon({ color: '#ffe8a8', emissive: '#ffe8a8', emissiveIntensity: 0.6 }), 4.6, 1.9, -3.6, g); add(new THREE.CylinderGeometry(0.04, 0.04, 1.6, 8), KM.dark, 4.6, 0.8, -3.6, g);
+  return { group: g, tv }; };
+const kitchen = (x, z) => { const r = room(x, z, 14, 10, 4.2, { floor: 'checker', wall: '#f2efe6', lights: 2 }); const g = r.group;
+  furn(g, 10, 1.0, 1.0, '#e9e3d6', 0, 0.5, -4.4); furn(g, 10.2, 0.1, 1.1, '#5f6f82', 0, 1.05, -4.4); furn(g, 1.6, 2.6, 1.0, '#d9dde3', 5.2, 1.3, -4.4);
+  for (let i = 0; i < 4; i++) furn(g, 1.8, 0.9, 0.5, '#e9e3d6', -4 + i * 2.2, 2.9, -4.7); const stove = furn(g, 1.6, 0.06, 0.9, '#17161b', -1.5, 1.12, -4.4);
+  for (const [a, b] of [[-1.9, -4.6], [-1.1, -4.6], [-1.9, -4.2], [-1.1, -4.2]]) add(new THREE.TorusGeometry(0.16, 0.03, 6, 16), KM.dark, a, 1.16, b, g).rotation.x = Math.PI / 2;
+  furn(g, 3, 0.1, 1.6, '#c39668', 0, 1.0, -0.5); for (const a of [-1.2, 1.2]) furn(g, 0.1, 1.0, 1.4, '#7a5434', a, 0.5, -0.5); return { group: g }; };
+const bedroom = (x, z) => { const r = room(x, z, 14, 10, 4.0, { floor: 'wood', wall: '#cfd8e8', lights: 1 }); const g = r.group;
+  furn(g, 3, 0.6, 4, '#e8e4da', 0, 0.5, -2.6); furn(g, 3, 0.25, 3.0, '#5a7fc0', 0, 0.9, -2.2); furn(g, 1.2, 0.25, 0.6, '#ffffff', -0.7, 0.95, -4.2); furn(g, 1.2, 0.25, 0.6, '#ffffff', 0.7, 0.95, -4.2);
+  furn(g, 3.2, 1.4, 0.2, '#7a5434', 0, 1.0, -4.7); furn(g, 0.8, 0.8, 0.8, '#7a5434', 2.2, 0.4, -4.2); add(new THREE.SphereGeometry(0.25, 12, 8), toon({ color: '#ffe8a8', emissive: '#ffe8a8', emissiveIntensity: 0.7 }), 2.2, 1.1, -4.2, g);
+  furn(g, 2.2, 1.6, 0.1, '#0b1430', -4.5, 2.4, -4.9); return { group: g }; };
+const restaurant = (x, z) => { const r = room(x, z, 18, 12, 4.4, { floor: 'checker', wall: '#7a2f2a', lights: 4, trim: '#e9b43a' }); const g = r.group;
+  for (let i = 0; i < 3; i++) for (let j = 0; j < 2; j++) { const tx = -5 + i * 5, tz = -3.5 + j * 4; add(new THREE.CylinderGeometry(0.9, 0.9, 0.08, 24), KM.white, tx, 1.0, tz, g); add(new THREE.CylinderGeometry(0.08, 0.08, 1.0, 8), KM.dark, tx, 0.5, tz, g);
+    for (const a of [-1.2, 1.2]) { furn(g, 0.6, 0.08, 0.6, '#5a3a24', tx + a, 0.6, tz); furn(g, 0.6, 0.8, 0.08, '#5a3a24', tx + a * 1.25, 1.0, tz); } add(new THREE.CylinderGeometry(0.3, 0.3, 0.04, 16), KM.white, tx, 1.06, tz, g); }
+  signBoard('OPEN', 7, 3, -5.8, 2.2, 0.8, { bg: '#17161b', fg: '#ff5a5a' }, g); return { group: g }; };
+const gym = (x, z) => { const r = room(x, z, 18, 12, 5, { floor: 'concrete', wall: '#2b2d34', lights: 4, trim: '#e9b43a' }); const g = r.group;
+  for (let i = 0; i < 3; i++) { const tx = -6 + i * 3; furn(g, 1.0, 1.2, 2.4, '#3b3d44', tx, 0.6, -4); furn(g, 0.9, 0.05, 2.0, '#17161b', tx, 1.22, -4); furn(g, 0.9, 0.8, 0.1, '#5aa8ff', tx, 2.0, -5.1); }
+  const bar = add(new THREE.CylinderGeometry(0.05, 0.05, 3, 8), KM.steel, 4, 1.0, -2, g); bar.rotation.z = Math.PI / 2; for (const a of [-1.3, 1.3]) { const w = add(new THREE.CylinderGeometry(0.5, 0.5, 0.2, 20), KM.dark, 4 + a, 1.0, -2, g); w.rotation.z = Math.PI / 2; }
+  furn(g, 6, 3, 0.1, '#bfe3ff', 4, 2.4, -5.9); return { group: g, bar }; };
+const factory = (x, z, item = '#e9b43a') => { const r = room(x, z, 24, 14, 7, { floor: 'concrete', wall: '#9aa3ad', lights: 5 }); const g = r.group, boxes = [];
+  furn(g, 20, 0.9, 1.6, '#3b3d44', 0, 0.45, -2); for (let i = 0; i < 20; i++) add(new THREE.CylinderGeometry(0.2, 0.2, 1.6, 10), KM.steel, -9.5 + i, 0.95, -2, g).rotation.x = Math.PI / 2;
+  for (let i = 0; i < 9; i++) boxes.push(add(new THREE.BoxGeometry(0.9, 0.7, 0.9), KC(item), -9 + i * 2.2, 1.5, -2, g));
+  for (const a of [-5, 3]) { furn(g, 1.2, 4, 1.2, '#e2a52c', a, 2, -4.4); const armR = furn(g, 0.3, 0.3, 2.8, '#e2a52c', a, 3.9, -3.2); }
+  furn(g, 4, 2.4, 2.4, '#5f6f82', 8, 1.2, -5.4); return { group: g, run: (f) => boxes.forEach((b, i) => { b.position.x = -10 + ((i * 2.2 + f * 0.05) % 20); }) }; };
+const planeCabin = (x, z, rows = 8) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); const w = 5.6, L = rows * 1.3 + 4, wall = KC('#eef0f3');
+  const fl = add(new THREE.PlaneGeometry(w, L), KC('#6a6f7a'), 0, 0.01, -L / 2 + 2, g, { cast: false }); fl.rotation.x = -Math.PI / 2;
+  const tube = add(new THREE.CylinderGeometry(3.0, 3.0, L, 32, 1, true, Math.PI * 0.62, Math.PI * 1.76), wall, 0, 1.2, -L / 2 + 2, g); tube.rotation.x = Math.PI / 2; tube.material.side = THREE.DoubleSide;
+  furn(g, 0.7, 0.03, L, '#8e1f2a', 0, 0.02, -L / 2 + 2);
+  for (let i = 0; i < rows; i++) for (const s_ of [-1, 1]) for (const k of [0, 1]) { const sx = s_ * (1.1 + k * 0.7), sz = 0.5 - i * 1.3; furn(g, 0.62, 0.15, 0.6, '#2f4f8f', sx, 0.6, sz); furn(g, 0.62, 1.0, 0.14, '#2f4f8f', sx, 1.15, sz + 0.3); furn(g, 0.5, 0.1, 0.08, '#e8e4da', sx, 1.7, sz + 0.3); }
+  for (let i = 0; i < rows; i++) for (const s_ of [-1, 1]) add(new THREE.BoxGeometry(0.06, 0.5, 0.36), KC('#bfe3ff'), s_ * 2.62, 1.8, 0.4 - i * 1.3, g);
+  for (const s_ of [-1, 1]) furn(g, 1.6, 0.5, L, '#e1e4e9', s_ * 1.8, 2.75, -L / 2 + 2); return { group: g, aisleZ: (i) => 0.5 - i * 1.3 }; };
+const bankHall = (x, z) => { const r = room(x, z, 18, 12, 5.5, { floor: 'checker', wall: '#e8e1cf', lights: 4, trim: '#e9b43a' }); const g = r.group;
+  furn(g, 12, 1.3, 1.0, '#7a5434', 0, 0.65, -1.5); for (let i = 0; i < 4; i++) furn(g, 0.08, 1.0, 0.9, '#e9b43a', -4.5 + i * 3, 1.8, -1.5);
+  const vg = new THREE.Group(); vg.position.set(5.5, 2.2, -5.7); g.add(vg); const vd = add(new THREE.CylinderGeometry(1.8, 1.8, 0.4, 36), KM.steel, 0, 0, 0, vg); vd.rotation.x = Math.PI / 2;
+  for (let k = 0; k < 6; k++) { const sp = add(new THREE.CylinderGeometry(0.06, 0.06, 1.6, 8), KM.gold, 0, 0, 0.3, vg); sp.rotation.z = k * Math.PI / 6; }
+  signBoard('BANK', -5, 4.2, -5.8, 3, 1, { bg: '#1f2a44', fg: '#e9b43a' }, g); return { group: g, vault: { open: (k) => { vg.rotation.y = -1.4 * k; vg.position.x = 5.5 - 1.6 * k; } } }; };
+const lab = (x, z) => { const r = room(x, z, 16, 11, 4.4, { floor: 'tiles', wall: '#eef3f6', lights: 4 }); const g = r.group; const glass = toon({ color: '#bfe3ff', transparent: true, opacity: 0.75 });
+  furn(g, 10, 1.0, 1.4, '#e9e3d6', 0, 0.5, -3.6); furn(g, 10.2, 0.08, 1.5, '#2b2d34', 0, 1.04, -3.6);
+  for (let i = 0; i < 7; i++) { const lx = -4 + i * 1.3, c = ['#3fe08a', '#5aa8ff', '#e8445a', '#ffd23f'][i % 4]; add(new THREE.CylinderGeometry(0.18, 0.28, 0.5, 14), glass, lx, 1.35, -3.6, g); add(new THREE.CylinderGeometry(0.24, 0.27, 0.22, 14), toon({ color: c, emissive: c, emissiveIntensity: 0.4 }), lx, 1.22, -3.6, g); }
+  const mic = furn(g, 0.5, 0.9, 0.5, '#d9dde3', 4.5, 1.5, -3.6); furn(g, 3, 2, 0.1, '#2b2d34', -4, 2.8, -5.3); return { group: g }; };
+const supermarket = (x, z) => { const r = room(x, z, 20, 14, 5, { floor: 'tiles', wall: '#f2efe6', lights: 5, trim: '#3fa36b' }); const g = r.group;
+  for (let a = 0; a < 3; a++) for (let lv = 0; lv < 4; lv++) { const sx = -6 + a * 6; furn(g, 4.4, 0.08, 1.0, '#9aa3ad', sx, 0.4 + lv * 0.6, -3); const r_ = P.rng(a * 10 + lv);
+    for (let k = 0; k < 9; k++) furn(g, 0.36, 0.45, 0.4, ['#e8445a', '#ffd23f', '#3fa36b', '#5aa8ff', '#e2a52c'][Math.floor(r_() * 5)], sx - 2 + k * 0.5, 0.66 + lv * 0.6, -3); }
+  const cart = new THREE.Group(); cart.position.set(2, 0, 1.5); g.add(cart); furn(cart, 1.2, 0.7, 0.8, '#9aa3ad', 0, 0.9, 0); for (const [a, b] of [[-0.5, -0.3], [0.5, -0.3], [-0.5, 0.3], [0.5, 0.3]]) add(new THREE.CylinderGeometry(0.1, 0.1, 0.06, 10), KM.dark, a, 0.1, b, cart).rotation.x = Math.PI / 2;
+  signBoard('SALE -50%', 0, 4.2, -6.8, 4, 1.1, { bg: '#e8445a', fg: '#ffffff' }, g); return { group: g, cart }; };
+const constructionSite = (x, z) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g);
+  const gr = add(new THREE.PlaneGeometry(200, 200), toon({ map: P.tex(floorTex('concrete'), 20, 20), color: '#d8c49a' }), 0, 0.01, 0, g, { cast: false }); gr.rotation.x = -Math.PI / 2;
+  for (let lv = 0; lv < 5; lv++) { furn(g, 10, 0.3, 8, '#b9b6ad', 0, lv * 3 + 0.15, -10); for (const [a, b] of [[-4.6, -6.4], [4.6, -6.4], [-4.6, -13.6], [4.6, -13.6]]) furn(g, 0.4, 3, 0.4, '#9aa3ad', a, lv * 3 + 1.5, b); }
+  furn(g, 0.6, 22, 0.6, '#f2c230', 9, 11, -8); const jib = furn(g, 16, 0.5, 0.5, '#f2c230', 4, 22, -8); add(new THREE.CylinderGeometry(0.02, 0.02, 10, 4), KM.dark, -2, 17, -8, g);
+  for (let i = 0; i < 6; i++) add(new THREE.ConeGeometry(0.25, 0.7, 12), KC('#ff7a1a'), -6 + i * 2.4, 0.35, 2, g); return { group: g, jib }; };
+const policeDesk = (x, z) => { const r = room(x, z, 14, 10, 4.2, { floor: 'tiles', wall: '#c9d3df', lights: 2, trim: '#1f2a44' }); const g = r.group;
+  furn(g, 4, 1.0, 1.6, '#5a6d7a', 0, 0.5, -1); furn(g, 4.2, 0.08, 1.8, '#2b2d34', 0, 1.04, -1); add(new THREE.CylinderGeometry(0.5, 0.6, 0.12, 20), toon({ color: '#fff3c8', emissive: '#fff3c8', emissiveIntensity: 0.6 }), 0, 3.6, -1, g);
+  furn(g, 0.9, 0.08, 0.9, '#3b3d44', 0, 0.7, 0.8); furn(g, 0.9, 0.08, 0.9, '#3b3d44', 0, 0.7, -2.8); furn(g, 4, 2.4, 0.08, '#2a2f38', -4.5, 2.2, -4.9);
+  signBoard('POLICE', 3.5, 3.4, -4.85, 3, 0.9, { bg: '#1f2a44', fg: '#ffffff' }, g); return { group: g }; };
+// outdoor ground: a disc that ends before the next set (sets stand 600 m apart), its edge hidden behind a ring of low
+// hills in the ground's own colour (a bare edge drew a black ink band at the horizon; a bigger plane covered other sets)
+const groundPaint = (g, colour, tex = null, size = 540) => { size = Math.min(size, 540);
+  const m = tex ? toon({ map: P.tex(tex, size / 8, size / 8), color: colour }) : KC(colour);
+  const pl = add(new THREE.CircleGeometry(size / 2, 64), m, 0, 0.005, 0, g, { cast: false }); pl.rotation.x = -Math.PI / 2; pl.userData.ndSkip = true;   // no ink from the ground's far edge
+  const hill = KC(new THREE.Color(colour).multiplyScalar(0.86).getStyle()), r_ = P.rng(size);
+  for (let i = 0; i < 46; i++) { const a = i / 46 * Math.PI * 2, d = size / 2 - 24 - r_() * 10; const h = add(new THREE.SphereGeometry(26 + r_() * 14, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), hill, Math.cos(a) * d, 0, Math.sin(a) * d, g, { cast: false }); h.scale.y = 0.28 + r_() * 0.2; h.userData.ndSkip = true; }
+  return pl; };
+const tree = (g, x, z, h = 6, c = '#4f9a46') => { furn(g, 0.5, h * 0.45, 0.5, '#6b4a2a', x, h * 0.22, z); const t = add(new THREE.ConeGeometry(h * 0.3, h * 0.7, 10), KC(c), x, h * 0.75, z, g); return t; };
+const rooftop = (x, z) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); groundPaint(g, '#8b8f96', floorTex('concrete'), 120);
+  for (const s_ of [-1, 1]) furn(g, 0.3, 1.1, 30, '#9aa3ad', s_ * 15, 0.55, 0); furn(g, 30, 1.1, 0.3, '#9aa3ad', 0, 0.55, -15);
+  furn(g, 3, 2.5, 3, '#5f6f82', -8, 1.25, -9); furn(g, 2, 1.2, 2, '#9aa3ad', 6, 0.6, -8); const city_ = new THREE.Group(); g.add(city_);
+  const r_ = P.rng(4); for (let i = 0; i < 40; i++) { const a = Math.PI * (1.05 + r_() * 0.9), d = 40 + r_() * 120; tower(x + Math.cos(a) * d, z + Math.sin(a) * d, 8 + r_() * 10, 8 + r_() * 10, -20 + r_() * 80); } return { group: g }; };
+const farm = (x, z) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); groundPaint(g, '#7aa64c', null, 400);
+  const barn = new THREE.Group(); barn.position.set(-8, 0, -14); g.add(barn); furn(barn, 8, 5, 7, '#b8282b', 0, 2.5, 0); const rf = add(new THREE.ConeGeometry(6, 3, 4), KC('#5a2a22'), 0, 6.5, 0, barn); rf.rotation.y = Math.PI / 4; rf.scale.set(1, 1, 0.9);
+  furn(barn, 2.6, 3.2, 0.1, '#f1efe8', 0, 1.6, 3.55); for (let i = 0; i < 14; i++) furn(g, 0.12, 1.1, 0.12, '#c39668', -14 + i * 2, 0.55, -2); furn(g, 28, 0.1, 0.1, '#c39668', -1, 0.9, -2);
+  for (let r_ = 0; r_ < 6; r_++) for (let c = 0; c < 10; c++) add(new THREE.SphereGeometry(0.35, 8, 6), KC('#5f9a3a'), 4 + c * 1.2, 0.3, -8 - r_ * 1.4, g);
+  for (let i = 0; i < 8; i++) tree(g, -25 + i * 7, -30 - (i % 3) * 4, 7); return { group: g }; };
+const forest = (x, z, n = 60) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); groundPaint(g, '#5f8a3e', null, 300); const r_ = P.rng(8);
+  for (let i = 0; i < n; i++) { const a = r_() * Math.PI * 2, d = 5 + r_() * 60; if (Math.abs(Math.sin(a) * d) < 3 && Math.cos(a) * d > -4) continue; tree(g, Math.cos(a) * d, Math.sin(a) * d - 6, 5 + r_() * 6, ['#3f6b36', '#4f8a3e', '#5c8a3c'][i % 3]); }
+  furn(g, 2.2, 0.1, 80, '#9b7d55', 0, 0.02, 0); return { group: g }; };
+const beach = (x, z) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); groundPaint(g, '#ecd9a6', null, 300);
+  const sea = add(new THREE.PlaneGeometry(520, 230), KC('#2f8fc4'), 0, 0.02, -125, g, { cast: false }); sea.userData.ndSkip = true; sea.rotation.x = -Math.PI / 2;
+  for (let i = 0; i < 3; i++) { const px = -8 + i * 9, trunk = add(new THREE.CylinderGeometry(0.22, 0.32, 6, 8), KC('#8a6a3a'), px, 3, -4 - i * 2, g); trunk.rotation.z = 0.15;
+    for (let k = 0; k < 6; k++) { const lf = add(new THREE.BoxGeometry(3, 0.08, 0.7), KC('#3f8a3e'), px + 0.4 + Math.cos(k) * 1.2, 6.1, -4 - i * 2 + Math.sin(k) * 1.2, g); lf.rotation.y = k; lf.rotation.z = -0.4; } }
+  add(new THREE.ConeGeometry(1.8, 0.6, 16), KC('#e8445a'), 3, 2.6, 2, g); add(new THREE.CylinderGeometry(0.05, 0.05, 2.6, 6), KM.white, 3, 1.3, 2, g); furn(g, 0.9, 0.2, 2.0, '#ffd23f', 4.5, 0.3, 2.2); return { group: g }; };
+const snowPeak = (x, z) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); groundPaint(g, '#f4f6fa', null, 400); const r_ = P.rng(11);
+  for (let i = 0; i < 9; i++) { const m = add(new THREE.ConeGeometry(18 + r_() * 20, 30 + r_() * 40, 7), KC('#8fa7b8'), -80 + i * 22, 15, -90 - r_() * 40, g); add(new THREE.ConeGeometry(8, 12, 7), KC('#f4f6fa'), m.position.x, m.position.y + 18 + r_() * 6, m.position.z, g); }
+  for (let i = 0; i < 10; i++) tree(g, -20 + i * 4.5, -14 - (i % 2) * 4, 5, '#2f5a3a'); return { group: g }; };
+const desert = (x, z) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); groundPaint(g, '#e2b877', null, 400); const r_ = P.rng(13);
+  for (let i = 0; i < 12; i++) { const d = add(new THREE.SphereGeometry(10 + r_() * 14, 18, 10, 0, Math.PI * 2, 0, Math.PI / 2), KC(i % 2 ? '#d9a865' : '#e8c48a'), -90 + i * 16, 0, -50 - r_() * 50, g); d.scale.y = 0.3; }
+  for (let i = 0; i < 4; i++) { const cx_ = -6 + i * 5; furn(g, 0.5, 3, 0.5, '#4f8a3e', cx_, 1.5, -6 - i); furn(g, 0.35, 1.2, 0.35, '#4f8a3e', cx_ + 0.5, 2.0, -6 - i); }
+  const pyr = add(new THREE.ConeGeometry(16, 14, 4), KC('#d6a35c'), 30, 7, -70, g); pyr.rotation.y = Math.PI / 4; return { group: g }; };
+// ===== end of batch 5 =====
+
 
 
 
