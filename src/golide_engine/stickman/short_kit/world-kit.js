@@ -124,10 +124,13 @@ const counter = (x, z, w = 4, ry = 0, colour = '#6b4b8f') => { const g = new THR
 const slotMachine = (x, z, ry = 0, opts = {}) => { const { colour = '#d23b4a', top = 'JACKPOT', reels = '7 7 7' } = opts;
   const g = new THREE.Group(); g.position.set(x, DECK, z); g.rotation.y = ry; scene.add(g); const body = KC(colour);
   add(new THREE.BoxGeometry(1.1, 1.9, 0.9), body, 0, 0.95, 0, g); add(new THREE.BoxGeometry(1.15, 0.12, 0.95), KM.gold, 0, 1.92, 0, g);
-  add(new THREE.BoxGeometry(0.9, 0.45, 0.04), screenTex('reels', reels), 0, 1.35, 0.46, g);
+  const reelMats = [reels, '7 BAR 7', 'BAR 7 BAR', '$ $ 7', '7 $ BAR'].map((t) => screenTex('reels', t));
+  const reelWin = add(new THREE.BoxGeometry(0.9, 0.45, 0.04), reelMats[0], 0, 1.35, 0.46, g);
+  g.spin = (f, stopAt = 1e9) => { reelWin.material = f >= stopAt ? reelMats[0] : reelMats[1 + (Math.floor(f / 2) % 4)]; };   // reels roll, then land on `reels`
+  g.pull = (k) => { arm.rotation.x = -0.9 * k; };                                                                         // lever 0..1
   add(new THREE.BoxGeometry(1.05, 0.5, 0.5), screenTex('jackpot', top), 0, 2.25, 0.1, g);
   add(new THREE.BoxGeometry(1.0, 0.1, 0.35), KM.dark, 0, 0.95, 0.55, g);
-  const arm = add(new THREE.CylinderGeometry(0.04, 0.04, 0.8, 8), KM.steel, 0.62, 1.4, 0, g); add(new THREE.SphereGeometry(0.1, 12, 8), KM.red, 0.62, 1.82, 0, g); g.arm = arm;
+  const armG = new THREE.Group(); armG.position.set(0.62, 1.05, 0); g.add(armG); add(new THREE.CylinderGeometry(0.04, 0.04, 0.8, 8), KM.steel, 0, 0.4, 0, armG); add(new THREE.SphereGeometry(0.1, 12, 8), KM.red, 0, 0.8, 0, armG); const arm = armG; g.arm = armG;
   const stool = add(new THREE.CylinderGeometry(0.32, 0.32, 0.12, 16), KC('#c7322e'), 0, 0.75, 1.0, g); add(new THREE.CylinderGeometry(0.05, 0.05, 0.75, 8), KM.steel, 0, 0.37, 1.0, g);
   return g; };
 const slotRow = (x0, z, n = 5, gap = 1.25, ry = 0) => { const c = ['#d23b4a', '#3b6fd2', '#e2a52c', '#8a3bd2', '#2cae6e']; const out = [];
@@ -266,6 +269,37 @@ const stage = (x, z, slug = null, title = '') => { const g = new THREE.Group(); 
     pool.rotation.x = -Math.PI / 2; pool.userData.ndSkip = true; spots.push(pool); }
   return { group: g, top: DECK + 1.0, spots }; };
 // ===== end of batch 3 =====
+// ===== GOLIDE reactions, batch 4 (2026-11-22): set pieces that move on the story's words =====
+// door(x, z, w, h, colour): a door that swings open with door.open(k) (0..1). breakTo(obj, k): shatter a box object into
+// falling chunks (k 0..1). burst(x, y, z, kind): a 3D burst of coins | bills | confetti | sparks with .at(t). dominoes(x, z, n):
+// a domino line that falls with .fall(t). balloon(x, y, z, colour): .pop(k). bigButton(x, z, label): a pressable red button
+// .press(k). The engine calls worldProps(W, f) every frame: drive these from W there.
+const door = (x, z, w = 1.4, h = 2.6, colour = '#7a5434', ry = 0) => { const g = new THREE.Group(); g.position.set(x, DECK, z); g.rotation.y = ry; scene.add(g);
+  add(new THREE.BoxGeometry(w + 0.3, h + 0.2, 0.2), KM.white, 0, (h + 0.2) / 2, -0.12, g); const hinge = new THREE.Group(); hinge.position.set(-w / 2, 0, 0); g.add(hinge);
+  add(new THREE.BoxGeometry(w, h, 0.1), KC(colour), w / 2, h / 2, 0.02, hinge); add(new THREE.SphereGeometry(0.07, 10, 8), KM.gold, w - 0.18, h * 0.48, 0.1, hinge);
+  g.open = (k) => { hinge.rotation.y = -1.6 * k; }; return g; };
+const burst = (x, y, z, kind = 'coins', n = 40, seed = 3) => { const g = new THREE.Group(); g.position.set(x, y, z); scene.add(g); const r = P.rng(seed), parts = [];
+  const mat = { coins: coinM, bills: billM, confetti: null, sparks: toon({ color: '#ffd23f', emissive: '#ffd23f', emissiveIntensity: 1 }) }[kind];
+  for (let i = 0; i < n; i++) { const m = kind === 'confetti' ? KC(['#c7322e', '#2f78c4', '#3fa36b', '#e9b43a', '#e86a92'][i % 5]) : mat;
+    const geo = kind === 'coins' ? new THREE.CylinderGeometry(0.16, 0.16, 0.04, 12) : kind === 'bills' ? new THREE.BoxGeometry(0.6, 0.01, 0.26) : new THREE.BoxGeometry(0.12, 0.12, 0.02);
+    const o = add(geo, m, 0, 0, 0, g, { cast: false }); const v = [(r() - 0.5) * 6, 3 + r() * 5, (r() - 0.5) * 4]; parts.push([o, v, r() * 6]); }
+  g.at = (t) => { g.visible = t > 0; for (const [o, v, s] of parts) { const tt = Math.max(0, t) * 1.6; o.position.set(v[0] * tt, v[1] * tt - 4.9 * tt * tt, v[2] * tt); o.rotation.set(s + tt * 6, s * 2 + tt * 4, s); } };
+  g.at(0); return g; };
+const breakTo = (obj, k) => { if (!obj.userData.chunks) { obj.userData.chunks = []; obj.traverse((m) => { if (m.isMesh) obj.userData.chunks.push([m, m.position.clone(), m.rotation.clone(), Math.random() * 2 - 1]); }); }
+  for (const [m, p0, r0, s] of obj.userData.chunks) { m.position.set(p0.x + s * k * 1.5, Math.max(-p0.y, p0.y - 4.9 * k * k * 0.6), p0.z + s * k); m.rotation.set(r0.x + k * 2 * s, r0.y, r0.z + k * 2.5 * s); } };
+const dominoes = (x, z, n = 12, gap = 0.55, colour = '#f1efe8') => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); const out = [];
+  for (let i = 0; i < n; i++) { const piv = new THREE.Group(); piv.position.set(i * gap, 0, 0); g.add(piv); add(new THREE.BoxGeometry(0.12, 1.0, 0.5), KC(colour), 0.06, 0.5, 0, piv);
+    for (const y of [0.3, 0.7]) p_dot(piv, 0.125, y); out.push(piv); }
+  function p_dot(pv, x_, y_) { add(new THREE.SphereGeometry(0.04, 8, 6), KM.dark, x_, y_, 0, pv); }
+  g.fall = (t) => out.forEach((pv, i) => { const k = Math.max(0, Math.min(1, t * n - i)); pv.rotation.z = -1.25 * k; }); return g; };
+const balloon = (x, y, z, colour = '#e8445a') => { const g = new THREE.Group(); g.position.set(x, y, z); scene.add(g); const b = add(new THREE.SphereGeometry(0.6, 20, 14), KC(colour), 0, 0, 0, g); b.scale.y = 1.2;
+  add(new THREE.CylinderGeometry(0.01, 0.01, 1.6, 4), KM.dark, 0, -1.4, 0, g); g.pop = (k) => { b.visible = k < 0.5; b.scale.setScalar(1 + k * 0.6); b.scale.y = (1 + k * 0.6) * 1.2; }; return g; };
+const bigButton = (x, z, label = '') => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); add(new THREE.CylinderGeometry(0.5, 0.6, 1.0, 20), KM.dark, 0, 0.5, 0, g);
+  const cap = add(new THREE.CylinderGeometry(0.36, 0.36, 0.18, 20), toon({ color: '#e23b3b', emissive: '#e23b3b', emissiveIntensity: 0.3 }), 0, 1.08, 0, g);
+  if (label) add(new THREE.BoxGeometry(0.9, 0.25, 0.02), signMat(label, { bg: '#ffd23f', fg: '#17161b', border: false, w: 512, h: 128 }), 0, 0.6, 0.6, g);
+  g.press = (k) => { cap.position.y = 1.08 - 0.1 * k; }; return g; };
+// ===== end of batch 4 =====
+
 
 
 

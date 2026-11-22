@@ -1,7 +1,13 @@
 // ===== GOLIDE cast kit (2026-11-18, the owner's fast-cut Elon test): chunky modern puppets with definition =====
 // T.modernFront(p, O, opts): O = { tunic (top colour), skin, hair, style: short|swoop|slick|spiky|curly|bun, pants, shoes,
 //   jacket: true + shirt + tie, hood: true, sleeve, belt, moustache, hat: cap|police|top|cowboy|beanie|hardhat|chef|crown|helmet|nurse|grad
-//   (+ hatColour), shades: true, beard: colour }; opts as romanFront (expr, blink, look, facing, seed, L, R,
+//   (+ hatColour), shades: true, beard: colour, holds: phone|laptop|briefcase|coffee|cash|paper|mic|trophy|bag|sign:WORDS
+//   (or opts.holds per frame, opts.holdIn 'L' for the left hand) }
+// Movement helpers for story.js (import { walkPath, sitDown, jumpAt, shakeAt, followCam, nod, lookAround } from './toon.js'):
+//   walkPath(f, f0, f1, from, to) -> { x, z, step, facing, done }; sitDown(f, f0) -> 0..1 (pass seated when 1, bob down
+//   before); jumpAt(f, f0, height) -> y offset; shakeAt(f, f0, dur) -> head tilt; nod(f, f0) -> head tilt; followCam(f, f0, f1,
+//   from, to, height, back) -> a camera that tracks a walker; coinFx / sparkFx / heartFx / angerFx / sweatFx / questionFx /
+//   ideaFx / zzzFx fx cards (T.coinFx(p, t) ...).; opts as romanFront (expr, blink, look, facing, seed, L, R,
 //   tilt, headTilt, bob, step, wv, swirl, lift) plus seated: true (no legs, for karts and chairs).
 // Arm poses: hang point up wave hip temple cross reach. T.billFx(p, rot, squash): a falling $100 bill for fx cards.
 // GOLIDE modern cast: chunkier puppets with definition, drawn whole (not over the kit's body): a round torso with
@@ -139,6 +145,7 @@ export const modernFront = (p, O, opts = {}) => {
   p.inkRing(tp, ow, thick);
   if (!seated) p.poly([[tcx - 4.5 * u, torsoBot - 8.5 * u], [tcx + 4.5 * u, torsoBot - 8.5 * u], [tcx + 4.5 * u, torsoBot - 1.5 * u], [tcx - 4.5 * u, torsoBot - 1.5 * u]], '#d2b56a', 1.3 * u);
   arms.filter((a) => a.front).forEach(drawArm);
+  if (O.holds || opts.holds) heldItem(p, opts.holds || O.holds, arms[opts.holdIn === 'L' ? 0 : 1].pts[2], u, ow);
   // ---- head: fuller hair behind, the kit's head, face and hair on top ----
   const [cpx, cpy] = rotAbout([cx, chin], rad(tilt), [cx, hipY]);
   const Ah = tilt + headTilt;
@@ -177,6 +184,42 @@ export const crowd = (T_, n, at, opts = {}, f = 0) => { const { uniform = null, 
     const x = at[0] - spread[0] / 2 + (c + 0.5) * spread[0] / cols + (j - 0.5) * 0.4, z = at[2] - r * spread[1] / Math.max(1, rows - 1 || 1) + (j - 0.5) * 0.3;
     out.push({ key: 'crowd' + k + (uniform ? 'u' : '') + expr + arms + bob, draw: (p) => modernFront(p, O, { expr, L: arms, R: arms, seed: seed + k, facing, bob }), x, y: at[1], z, s });
   } return out; };
+// things in a hand, drawn at the hand in the card's own ink
+const heldItem = (p, what, at, u, ow) => { const [hx, hy] = at, g = p.g; const kind = String(what).split(':')[0], words = String(what).split(':').slice(1).join(':');
+  const box = (x0, y0, x1, y1, fill, r = 4) => p.poly([[x0 + r, y0], [x1 - r, y0], [x1, y0 + r], [x1, y1 - r], [x1 - r, y1], [x0 + r, y1], [x0, y1 - r], [x0, y0 + r]], fill, ow * 0.5);
+  if (kind === 'phone') { box(hx - 11 * u, hy - 34 * u, hx + 11 * u, hy + 4 * u, '#17161b'); box(hx - 8 * u, hy - 30 * u, hx + 8 * u, hy, '#5aa8ff', 2 * u); return; }
+  if (kind === 'laptop') { box(hx - 36 * u, hy - 30 * u, hx + 30 * u, hy + 2 * u, '#c9ccd2'); box(hx - 31 * u, hy - 26 * u, hx + 25 * u, hy - 3 * u, '#10141c', 2 * u); p.dot(hx - 3 * u, hy - 14 * u, 4 * u, '#ffffff'); return; }
+  if (kind === 'briefcase') { box(hx - 26 * u, hy + 2 * u, hx + 26 * u, hy + 38 * u, '#5a3a24'); p.stroke([[hx - 9 * u, hy + 2 * u], [hx - 9 * u, hy - 6 * u], [hx + 9 * u, hy - 6 * u], [hx + 9 * u, hy + 2 * u]], 4 * u, '#3a2414'); return; }
+  if (kind === 'coffee') { box(hx - 10 * u, hy - 22 * u, hx + 10 * u, hy + 6 * u, '#f1efe8'); p.band([[hx - 10 * u, hy - 10 * u], [hx + 10 * u, hy - 10 * u]], '#8a5a33', 8 * u, 1 * u, 'butt'); box(hx - 12 * u, hy - 26 * u, hx + 12 * u, hy - 21 * u, '#2b2d34', 2 * u); return; }
+  if (kind === 'cash') { for (let k = 0; k < 3; k++) box(hx - 26 * u + k * 3 * u, hy - 12 * u - k * 5 * u, hx + 26 * u + k * 3 * u, hy + 10 * u - k * 5 * u, '#9fbf98', 2 * u); p.band([[hx - 4 * u, hy - 24 * u], [hx - 4 * u, hy + 10 * u]], '#e8d7a6', 8 * u, 1 * u, 'butt'); return; }
+  if (kind === 'paper') { box(hx - 18 * u, hy - 46 * u, hx + 18 * u, hy + 2 * u, '#ffffff', 2 * u); for (let k = 0; k < 5; k++) p.stroke([[hx - 12 * u, hy - 38 * u + k * 8 * u], [hx + 12 * u, hy - 38 * u + k * 8 * u]], 2 * u, '#9aa2ad'); return; }
+  if (kind === 'mic') { p.stroke([[hx, hy], [hx + 4 * u, hy - 26 * u]], 7 * u, '#2b2d34'); p.ell(hx + 5 * u, hy - 32 * u, 10 * u, 11 * u, '#8e959e', ow * 0.5); return; }
+  if (kind === 'trophy') { p.poly([[hx - 18 * u, hy - 46 * u], [hx + 18 * u, hy - 46 * u], [hx + 10 * u, hy - 18 * u], [hx - 10 * u, hy - 18 * u]], '#e9b43a', ow * 0.5); box(hx - 12 * u, hy - 8 * u, hx + 12 * u, hy + 2 * u, '#7a5434', 2 * u); p.stroke([[hx, hy - 18 * u], [hx, hy - 8 * u]], 5 * u, '#e9b43a'); return; }
+  if (kind === 'bag') { p.ell(hx, hy + 22 * u, 24 * u, 24 * u, '#d8b36a', ow * 0.5); p.stroke([[hx - 8 * u, hy + 2 * u], [hx + 8 * u, hy + 2 * u]], 5 * u, '#8a6a3a'); g.save(); g.fillStyle = '#5a3a24'; g.font = `900 ${22 * u}px sans-serif`; g.textAlign = 'center'; g.fillText('$', hx, hy + 30 * u); g.restore(); return; }
+  if (kind === 'sign') { p.stroke([[hx, hy + 6 * u], [hx, hy - 60 * u]], 5 * u, '#7a5434'); box(hx - 46 * u, hy - 96 * u, hx + 46 * u, hy - 56 * u, '#ffffff', 3 * u);
+    g.save(); let fs = 20 * u; g.font = `900 ${fs}px sans-serif`; while (g.measureText(words).width > 84 * u && fs > 6 * u) { fs -= u; g.font = `900 ${fs}px sans-serif`; } g.fillStyle = '#17161b'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(words, hx, hy - 76 * u); g.restore(); }
+};
+// movement helpers (pure functions of the frame)
+const sm_ = (t) => { t = Math.max(0, Math.min(1, t)); return t * t * (3 - 2 * t); };
+export const walkPath = (f, f0, f1, from, to) => { const t = Math.max(0, Math.min(1, (f - f0) / Math.max(1, f1 - f0))), e = sm_(t);
+  const x = from[0] + (to[0] - from[0]) * e, z = from[1] + (to[1] - from[1]) * e, moving = t > 0 && t < 1;
+  return { x, z, step: moving ? Math.round(((f - f0) / 14) % 1 * 100) / 100 : 0, facing: Math.sign(to[0] - from[0]) || 0, done: t >= 1 }; };
+export const sitDown = (f, f0, dur = 10) => sm_((f - f0) / dur);
+export const jumpAt = (f, f0, h = 0.5, dur = 14) => { const t = (f - f0) / dur; return t > 0 && t < 1 ? Math.round(4 * h * t * (1 - t) * 1000) / 1000 : 0; };
+export const shakeAt = (f, f0, dur = 18, deg = 9) => { const t = (f - f0) / dur; return t > 0 && t < 1 ? Math.round(deg * Math.sin(t * Math.PI * 6) * (1 - t)) : 0; };
+export const nod = (f, f0, dur = 16, deg = 8) => { const t = (f - f0) / dur; return t > 0 && t < 1 ? Math.round(deg * Math.abs(Math.sin(t * Math.PI * 3))) : 0; };
+export const lookAround = (f, seed = 1) => Math.round(Math.sin((f + seed * 17) * 0.06) * 100) / 100;
+export const followCam = (f, f0, f1, from, to, height = 1.9, back = 6.5, fov = 46) => { const w = walkPath(f, f0, f1, from, to);
+  return { pos: [w.x - Math.sign(to[0] - from[0]) * 1.2, height + 0.4, w.z + back], look: [w.x, height - 0.2, w.z], fov }; };
+// fx cards (t = 0..1 through the effect)
+export const coinFx = (p, t = 0) => { p.ell(300, 500, 70, 70, '#e9b43a', 10); p.ell(300, 500, 46, 46, '#f5d56a', 0); p.g.save(); p.g.fillStyle = '#b07d22'; p.g.font = '900 70px sans-serif'; p.g.textAlign = 'center'; p.g.textBaseline = 'middle'; p.g.fillText('$', 300, 504); p.g.restore(); };
+export const sparkFx = (p, t = 0) => { for (let k = 0; k < 8; k++) { const a = k / 8 * Math.PI * 2, r0 = 40 + t * 120, r1 = 90 + t * 180; p.stroke([[300 + Math.cos(a) * r0, 500 + Math.sin(a) * r0], [300 + Math.cos(a) * r1, 500 + Math.sin(a) * r1]], 14, k % 2 ? '#ffd23f' : '#ffffff'); } };
+export const heartFx = (p) => p.poly([[300, 620], [190, 500], [200, 420], [260, 400], [300, 450], [340, 400], [400, 420], [410, 500]], '#e8445a', 12);
+export const angerFx = (p) => { for (const [a, b] of [[[250, 420], [290, 470]], [[350, 420], [310, 470]], [[250, 580], [290, 530]], [[350, 580], [310, 530]]]) p.stroke([a, b], 22, '#e23b3b'); };
+export const sweatFx = (p) => p.poly([[300, 380], [340, 470], [300, 520], [260, 470]], '#9fd4ff', 10);
+export const questionFx = (p) => { p.g.save(); p.g.font = '900 260px sans-serif'; p.g.textAlign = 'center'; p.g.lineWidth = 18; p.g.strokeStyle = '#17161b'; p.g.strokeText('?', 300, 600); p.g.fillStyle = '#ffd23f'; p.g.fillText('?', 300, 600); p.g.restore(); };
+export const ideaFx = (p) => { p.ell(300, 460, 90, 100, '#ffe36a', 12); p.poly([[255, 540], [345, 540], [330, 610], [270, 610]], '#b9bfc9', 10); for (let k = 0; k < 6; k++) { const a = -Math.PI * (0.1 + k * 0.16); p.stroke([[300 + Math.cos(a) * 120, 460 + Math.sin(a) * 130], [300 + Math.cos(a) * 170, 460 + Math.sin(a) * 180]], 12, '#ffd23f'); } };
+export const zzzFx = (p) => { p.g.save(); p.g.font = '900 140px sans-serif'; p.g.lineWidth = 14; p.g.strokeStyle = '#17161b'; for (const [x, y, s] of [[200, 640, 1], [300, 500, 1.3], [400, 340, 1.6]]) { p.g.font = `900 ${110 * s}px sans-serif`; p.g.strokeText('Z', x, y); p.g.fillStyle = '#ffffff'; p.g.fillText('Z', x, y); } p.g.restore(); };
 export const billFx = (p, rot = 0, sq = 1) => { const g = p.g; g.save(); g.translate(300, 500); g.rotate(rot); g.scale(1, sq);
   g.fillStyle = '#cfdcc4'; g.fillRect(-170, -72, 340, 144); g.strokeStyle = '#3f6a4a'; g.lineWidth = 9; g.strokeRect(-160, -62, 320, 124);
   g.fillStyle = '#9fbf98'; g.beginPath(); g.ellipse(0, 0, 40, 52, 0, 0, 7); g.fill(); g.fillStyle = '#2f5a3c'; g.font = '900 52px sans-serif';
