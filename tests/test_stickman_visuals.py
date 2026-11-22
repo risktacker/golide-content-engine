@@ -311,3 +311,5 @@ class FocusChannelTests(unittest.TestCase):
         self.assertEqual(lane["@Crayon_Capital"], "stickman_goli")
         self.assertEqual(lane["@outskillai"], "goli")
         self.assertEqual(focus_channels(load_sources(), datetime(2027, 1, 5, tzinfo=timezone.utc)), {})
+        shorts = focus_channels(load_sources(), datetime(2026, 11, 23, tzinfo=timezone.utc), "short")
+        self.assertEqual(list(shorts)[0], "@RicksClips3000")

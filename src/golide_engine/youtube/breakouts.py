@@ -327,8 +327,9 @@ def _measure(youtube: Any, videos: list[dict], fmt: str, now: datetime) -> list[
     return out
 
 
-def focus_channels(sources: dict, now: datetime) -> dict[str, str]:
-    """Owner 2026-11-22: the month's model channels and the style each one suggests; empty when off or past `until`."""
+def focus_channels(sources: dict, now: datetime, fmt: str = "long") -> dict[str, str]:
+    """Owner 2026-11-22: the month's model channels and the style each one suggests; empty when off or past `until`.
+    Long videos and Shorts have their own lists (Shorts: Ricks Clips, Afterhour Theory, Marshall)."""
     focus = sources.get("focus") or {}
     until = str(focus.get("until") or "")
     try:
@@ -336,7 +337,8 @@ def focus_channels(sources: dict, now: datetime) -> dict[str, str]:
             return {}
     except ValueError:
         pass
-    return {str(k): str(v) for k, v in (focus.get("channels") or {}).items()}
+    lane = focus.get("short_channels") if fmt == "short" else focus.get("channels")
+    return {str(k): str(v) for k, v in (lane or {}).items()}
 
 
 def _handle_or_search(youtube: Any, name: str) -> str:
@@ -385,7 +387,7 @@ def find_breakouts(youtube: Any, fmt: str = "long", now: datetime | None = None,
     now = now or datetime.now(timezone.utc)
     if queries is None:
         sources = sources or load_sources()
-        lane = focus_channels(sources, now)
+        lane = focus_channels(sources, now, fmt)
         if lane:
             return focus_breakouts(youtube, fmt, now, lane, int((sources.get("focus") or {}).get("days", 45)), limit)
     fresh_hours = hours or FRESH_HOURS.get(fmt, 48)

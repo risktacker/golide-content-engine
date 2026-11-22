@@ -131,7 +131,7 @@
   ],
   "_news_about": "Owner 2026-11-10: news channels' videos rank below creators' (score halved) and their titles are never copied: a news story gets a creator-style title.",
   "focus": {
-    "_about": "Owner 2026-11-22: for a month the engine models ONLY these channels (one lane, not the whole of tech). Each channel's style is used when the owner has not picked one: Crayon Capital -> Stickman + Goli, Outskill and the AI how-to channels -> Goli. Their best video of the last `days` that we have not modelled comes first; the numbers bar is off here (these channels post weekly). Remove this block to go back to the wide feed.",
+    "_about": "Owner 2026-11-22: for a month the engine models ONLY these channels (one lane, not the whole of tech). Each channel's style is used when the owner has not picked one: Crayon Capital -> Stickman + Goli, Outskill and the AI how-to channels -> Goli. Their best video of the last `days` that we have not modelled comes first; the numbers bar is off here (these channels post weekly). Remove this block to go back to the wide feed. Shorts (owner 2026-11-22): Ricks Clips first (visuals and cutting), Afterhour Theory (story and narration), Marshall; all three suggest Stickman.",
     "until": "2026-12-22",
     "days": 45,
     "channels": {
@@ -140,6 +140,11 @@
       "@nateherk": "goli",
       "@matt-j-penny": "goli",
       "Sanji Nai-Chien": "goli"
+    },
+    "short_channels": {
+      "@RicksClips3000": "stickman",
+      "@afterhourtheories": "stickman",
+      "@Marshall-t8l": "stickman"
     }
   }
 }
