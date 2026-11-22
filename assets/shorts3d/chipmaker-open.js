@@ -25,13 +25,13 @@ export async function build(K, words) {
   lapI.rotation.y = Math.PI; const lapY = lapI.clone(true); lapY.position.x = ME + (lapI.position.x - -2.1); O.add(lapY);
   // the back wall's whiteboard makes way for a wall TV behind you
   O.children.filter(o => o.isMesh && o.geometry.type === 'BoxGeometry' && Math.abs(o.position.x - 2.2) < 1.9 && o.position.z < ZB + 0.3 && o.position.y > FY + 1.4 && o.position.y < FY + 3.3).forEach(o => (o.visible = false));
-  const TVW = 1.6, TVH = 0.9, TVY = FY + 2.2;
+  const TVW = 1.2, TVH = 0.675, TVY = FY + 2.4;
   const tvc = document.createElement('canvas'); tvc.width = 1024; tvc.height = 576; const tg = tvc.getContext('2d');
   const tvT = new THREE.CanvasTexture(tvc); tvT.colorSpace = THREE.SRGBColorSpace;
   const tv = new THREE.Group(); tv.name = 'the wall TV'; tv.userData.label = 'the wall TV';
   { const frameM = new THREE.Mesh(new THREE.BoxGeometry(TVW + 0.08, TVH + 0.08, 0.06), new THREE.MeshStandardMaterial({ color: '#15171c', roughness: 0.35, metalness: 0.4 })); frameM.castShadow = true; tv.add(frameM);
     const scr = new THREE.Mesh(new THREE.PlaneGeometry(TVW, TVH), new THREE.MeshBasicMaterial({ map: tvT, toneMapped: false })); scr.position.z = 0.032; tv.add(scr);
-    tv.position.set(ME + 1.0, TVY, ZB + 0.16); O.add(tv); }   // beside you, not behind your head: front shots keep both
+    tv.position.set(ME, TVY, ZB + 0.16); O.add(tv); }   // above your head (a tall stack fits the phone frame); its bottom clears your head
   const chipIcon = (g, x, y, s, col = '#e8c268') => { g.fillStyle = col; for (let i = 0; i < 5; i++) { const o = -s * 0.36 + i * s * 0.18; g.fillRect(x + o - s * 0.03, y - s * 0.62, s * 0.06, s * 0.14); g.fillRect(x + o - s * 0.03, y + s * 0.48, s * 0.06, s * 0.14); g.fillRect(x - s * 0.62, y + o - s * 0.03, s * 0.14, s * 0.06); g.fillRect(x + s * 0.48, y + o - s * 0.03, s * 0.14, s * 0.06); }
     g.fillRect(x - s * 0.5, y - s * 0.5, s, s); g.fillStyle = '#14161c'; g.fillRect(x - s * 0.3, y - s * 0.3, s * 0.6, s * 0.6); g.strokeStyle = col; g.lineWidth = s * 0.05; g.strokeRect(x - s * 0.2, y - s * 0.2, s * 0.4, s * 0.4); };
   function drawTV(t) {
@@ -95,23 +95,25 @@ export async function build(K, words) {
   // the TV's words as world boxes (canvas px -> the screen plane), so the director never cuts a headline at the frame edge
   const tvBox = (x0, y0, x1, y1) => { tv.updateMatrixWorld(true); const a = V((x0 / 1024 - 0.5) * TVW, (0.5 - y1 / 576) * TVH, 0.03), b = V((x1 / 1024 - 0.5) * TVW, (0.5 - y0 / 576) * TVH, 0.04);
     return new THREE.Box3().setFromPoints([tv.localToWorld(a), tv.localToWorld(b)]); };
-  const tvWords = t => t < T.lands ? [{ box: tvBox(70, 90, 1000, 340), label: 'the TV words "CHIPMAKER"' }]
+  const tvAll = () => ({ box: new THREE.Box3().setFromObject(tv), label: 'the wall TV', noCrop: true });   // a head may not touch the TV on screen
+  const tvWords = t => [tvAll(), ...(t < T.lands ? [{ box: tvBox(70, 90, 1000, 340), label: 'the TV words "CHIPMAKER"' }]
     : t < T.build ? [{ box: tvBox(220, 180, 800, 390), label: 'the TV headline "AI IPO"' }]
-    : [{ box: tvBox(180, 100, 845, 235), label: 'the TV headline "AI BUILDOUT?"' }];
+    : [{ box: tvBox(180, 100, 845, 235), label: 'the TV headline "AI BUILDOUT?"' }])];
   const bubbleBoxes = t => investors.map((c, i) => t >= bubAt(i) ? { box: new THREE.Box3().setFromCenterAndSize(bub[i].position, V(0.4, 0.4, 0.4)), label: `${c.label}'s "?"`, onTop: true } : null).filter(Boolean);
   function light(t, cam, sh) {   // the engine's dim office look (its skit's numbers), sun shadow around the shot
     K.setLook('day'); K.hemi.intensity = 0.32; K.hemi.color.set('#9fb4e0'); K.sun.intensity = 2.6; K.sun.color.set('#ffd29a'); K.SUNDIR.set(0.35, 0.5, -0.75).normalize();
     K.U.uSat.value = 1.2; K.U.uCon.value = 1.22; K.U.uWarm.value = 0.07; K.renderer.toneMappingExposure = 0.42; K.U.uVig.value = 0.55;
     const f = sh.box.getCenter(V(0, 0, 0)); K.sun.target.position.copy(f); K.sun.position.copy(f).addScaledVector(K.SUNDIR, 60); const sc = K.sun.shadow.camera; sc.left = sc.bottom = -10; sc.right = sc.top = 10; sc.near = 1; sc.far = 140; sc.updateProjectionMatrix();
   }
+  const behindDesk = [{ who: you, below: FY + 0.66, frontZ: ZD + 0.4 }];   // you stand behind your desk: from the front it hides your legs
   // ---- shots (director's plan: establish → low hero push → the news lands → reactions → the turn → dolly-zoom) ----
   const shots = [
     { name: '1 establish: you and your company', t0: 0, t1: T.and, who: [you, tv], dof: 0, view: u => ({ yaw: lerp(-0.55, -0.32, eio(u)), pitch: lerp(0.32, 0.12, eio(u)), fov: 46, k: lerp(1.14, 1.0, eio(u)) }) },
-    { name: '2 low push: a huge AI IPO', t0: T.and, t1: T.ipo, who: [you], dof: 0.01, view: u => ({ yaw: 0.38, pitch: -0.16, fov: 36, k: lerp(1.16, 1.0, eio(u)) }) },
-    { name: '3 the news lands on the TV', t0: T.ipo, t1: T.but, who: [you, tv], dof: 0, view: (u, t) => ({ yaw: 0.16, pitch: -0.04, fov: 46, k: t < T.lands ? lerp(1.3, 1.22, clamp((t - T.ipo) / (T.lands - T.ipo))) : lerp(1.22, 1.0, eio(clamp((t - T.lands) / 0.14))) }) },
+    { name: '2 low push: a huge AI IPO', t0: T.and, t1: T.ipo, who: [you], hidden: behindDesk, dof: 0.01, view: u => ({ yaw: 0.38, pitch: -0.16, fov: 36, k: lerp(1.16, 1.0, eio(u)) }) },
+    { name: '3 the news lands on the TV', t0: T.ipo, t1: T.but, who: [you, tv], hidden: behindDesk, dof: 0, view: (u, t) => ({ yaw: 0.16, pitch: -0.04, fov: 46, k: t < T.lands ? lerp(1.3, 1.22, clamp((t - T.ipo) / (T.lands - T.ipo))) : lerp(1.22, 1.0, eio(clamp((t - T.lands) / 0.14))) }) },
     { name: '4 the investors, hopeful', t0: T.but, t1: T.it, who: [A, B, C], dof: 0, view: u => ({ yaw: lerp(0.3, 0.18, u), pitch: 0.06, fov: 30, k: lerp(1.12, 1.0, eio(u)) }) },
     { name: '5 they start asking', t0: T.it, t1: T.build, who: [A, B, C], extras: bubbleBoxes, dof: 0, view: u => ({ yaw: lerp(-0.62, -0.52, u), pitch: 0.12, fov: 38, k: lerp(1.1, 1.0, eio(u)) }) },
-    { name: '6 dolly-zoom: the buildout', t0: T.build, t1: DUR, who: [you, tv], dof: 0, view: u => ({ yaw: 0.0, pitch: 0.06, fov: lerp(44, 24, eio(u)), k: 1.0, roll: -0.08 * eio(u) }) },
+    { name: '6 dolly-zoom: the buildout', t0: T.build, t1: DUR, who: [you, tv], hidden: behindDesk, dof: 0, view: u => ({ yaw: 0.0, pitch: 0.06, fov: lerp(44, 24, eio(u)), k: 1.0, roll: -0.08 * eio(u) }) },
   ];
   // what the director may not put the camera in or people through: furniture, the TV (walls are the room bounds)
   const props = [];

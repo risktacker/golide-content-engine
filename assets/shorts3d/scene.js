@@ -19,14 +19,15 @@ export async function run(K) {
   const props = S.props.map(p => { p.obj.userData.label = p.label; return { ...p, box: new THREE.Box3().setFromObject(p.obj) }; });
   const propObjs = S.props.filter(p => !p.floor).map(p => p.obj);
   const isPerson = s => !!s.root;
-  const boxOf = s => isPerson(s) ? D.personBox(s) : new THREE.Box3().setFromObject(s);
+  const boxOf = s => isPerson(s) ? D.shownBox(s) : new THREE.Box3().setFromObject(s);
+  const useHide = sh => { D.hide.clear(); (sh.hidden || []).forEach(h => D.hide.set(h.who, h)); };
   const SAMPLE = 0.1;
   const times = sh => { const a = []; for (let t = sh.t0 + 0.02; t < sh.t1 - 0.03; t += SAMPLE) a.push(t); a.push(sh.t1 - 0.02); return a; };
   const shotAt = t => { let s = S.shots[0]; for (const x of S.shots) if (t >= x.t0) s = x; return s; };
 
   const stepped = D.separate(S.people, props, () => S.pose(0));   // nobody starts inside a desk
   function frameShot(sh) {                                         // what the shot must hold, over its whole length
-    const b = new THREE.Box3();
+    useHide(sh); const b = new THREE.Box3();
     for (const t of times(sh)) { S.pose(t); sh.who.forEach(s => b.union(boxOf(s))); (sh.extras?.(t) || []).forEach(e => b.union(e.box)); }
     sh.box = b;
   }
@@ -39,6 +40,7 @@ export async function run(K) {
   const camera = () => K.camera;
   function problems(sh) {
     const out = [];
+    useHide(sh);
     for (const t of times(sh)) {
       S.pose(t); camAt(sh, t);
       for (const p of D.issues({ subjects: sh.who.filter(isPerson), people: S.people, props, propObjs, extras: [...(sh.extras?.(t) || []), ...(S.words?.(t) || [])] })) out.push({ t: +t.toFixed(2), p });
@@ -69,7 +71,7 @@ export async function run(K) {
   // ---- rendering ----
   const ov = document.createElement('canvas'); ov.width = K.WW; ov.height = K.HH; const og = ov.getContext('2d');
   function frame(t, debug = false) {
-    const sh = shotAt(t); if (!sh.box) frameShot(sh);
+    const sh = shotAt(t); if (!sh.box) frameShot(sh); useHide(sh);
     S.pose(t); const c = camAt(sh, t); S.light(t, c, sh);
     K.post.bokeh.enabled = !!sh.dof; if (sh.dof) { K.post.bokeh.uniforms.focus.value = c.dist; K.post.bokeh.uniforms.aperture.value = sh.dof; }
     K.U.uTime.value = t; K.post.render();
@@ -77,7 +79,7 @@ export async function run(K) {
     og.drawImage(K.renderer.domElement, 0, 0); og.lineWidth = 3;
     const R = (r, col) => { if (r.behind || r.crossing) return; og.strokeStyle = col; og.strokeRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0); };
     og.setLineDash([12, 8]); R({ x0: D.SAFE.l, y0: D.SAFE.t, x1: D.SAFE.r, y1: D.SAFE.b }, '#00e5ff'); R({ x0: D.CAP.l, y0: D.CAP.t, x1: D.CAP.r, y1: D.CAP.b }, '#ffd400'); og.setLineDash([]);
-    S.people.forEach(p => { const r = D.rect(D.personBox(p)); if (D.shows(r)) R(r, D.within(r, D.SAFE) ? '#3cff6b' : '#ff2d2d'); });
+    S.people.forEach(p => { const r = D.rect(D.shownBox(p)); if (D.shows(r)) R(r, D.within(r, D.SAFE) ? '#3cff6b' : '#ff2d2d'); });
     og.fillStyle = '#fff'; og.font = `bold ${Math.round(26 * K.WW / 1080)}px sans-serif`; og.fillText(`${sh.name}  t=${t.toFixed(2)}`, 20, 40);
     return ov.toDataURL('image/jpeg', 0.9);
   }

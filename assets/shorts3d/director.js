@@ -29,6 +29,11 @@ export function makeDirector(K, opt = {}) {
     (c.dyn || []).forEach(d => { const m = d.mesh; if (m && m.visible && m.parent) { m.updateMatrixWorld(true); m.userData.dynGeo = true; meshBox(m, box); } });
     return box;
   }
+  // what the camera can see of a person: a desk between the camera and someone standing behind it hides their legs, so a
+  // shot frames (and checks) them from the desk top up, like a camera operator's medium shot (owner 2026-11-22: "zoom a
+  // little"). hide: Map person -> { below: y, frontZ: z } — only while the camera is in front of that desk.
+  const hide = new Map();
+  function shownBox(c) { const b = personBox(c), h = hide.get(c); if (h && camera.position.z > h.frontZ && b.max.y > h.below + 0.3) b.min.y = Math.max(b.min.y, h.below); return b; }
   const headBox = c => { c.head.updateMatrixWorld(true); return new THREE.Box3().setFromObject(c.head); };
   function coreBox(c) {                                       // the body without reaching arms: what may not pass through furniture
     const b = personBox(c), h = c.bone('Hips'); h.getWorldPosition(_v); const r = 0.3 * c.root.scale.x / 0.8;
@@ -104,7 +109,7 @@ export function makeDirector(K, opt = {}) {
     const out = [];
     const where = insideAnything(camera.position, props, people); if (where) out.push(where);
     for (const c of people) {
-      const r = rect(personBox(c));
+      const r = rect(shownBox(c));
       if (r.crossing) out.push(`${c.label} is cut by the camera`);
       else if (shows(r) && !within(r, SAFE)) out.push(`${c.label} is cropped at the frame edge`);
       else if (subjects.includes(c) && !shows(r)) out.push(`${c.label} is out of the shot`);
@@ -114,7 +119,7 @@ export function makeDirector(K, opt = {}) {
     const heads = people.map(c => [c, rect(headBox(c))]).filter(([, r]) => shows(r) && !r.crossing);
     for (let i = 0; i < heads.length; i++) for (let j = i + 1; j < heads.length; j++) { const [a, ra] = heads[i], [b, rb] = heads[j];
       if (ra.x1 > rb.x0 && rb.x1 > ra.x0 && ra.y1 > rb.y0 && rb.y1 > ra.y0) out.push(`the heads of ${a.label} and ${b.label} overlap in the frame`); }
-    for (const e of extras) { const r = rect(e.box); if (!shows(r)) continue; if (!within(r, SAFE)) out.push(`${e.label} is cropped at the frame edge`);
+    for (const e of extras) { const r = rect(e.box); if (!shows(r)) continue; if (!e.noCrop && !within(r, SAFE)) out.push(`${e.label} is cropped at the frame edge`);
       // words may not sit behind a head nearer the camera (bubbles drawn on top of everything are exempt)
       if (e.onTop) continue;
       const ez = e.box.getCenter(new THREE.Vector3()).distanceTo(camera.position);
@@ -139,5 +144,5 @@ export function makeDirector(K, opt = {}) {
     }
     return moved;
   }
-  return { SAFE, CAP, personBox, headBox, coreBox, rect, setCam, fit, issues, separate, dirOf, within, shows };
+  return { SAFE, CAP, hide, shownBox, personBox, headBox, coreBox, rect, setCam, fit, issues, separate, dirOf, within, shows };
 }
