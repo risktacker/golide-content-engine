@@ -32,8 +32,10 @@ async function fromPanel(id, html) {
   const key = between(html, /"INNERTUBE_API_KEY":"([^"]+)"/);
   const r = await fetch(`https://www.youtube.com/youtubei/v1/get_transcript${key ? `?key=${key}` : ""}`, {
     method: "POST",
-    headers: { "content-type": "application/json", "user-agent": UA, origin: "https://www.youtube.com" },
-    body: JSON.stringify({ context: { client: { clientName: "WEB", clientVersion: version, hl: "en" } }, params }),
+    headers: { "content-type": "application/json", "user-agent": UA, origin: "https://www.youtube.com",
+      "x-goog-visitor-id": between(html, /"VISITOR_DATA":"([^"]+)"/), "x-youtube-client-name": "1", "x-youtube-client-version": version },
+    body: JSON.stringify({ context: { client: { clientName: "WEB", clientVersion: version, hl: "en",
+      visitorData: between(html, /"VISITOR_DATA":"([^"]+)"/) || undefined } }, params }),
   });
   note(`get_transcript ${r.status}`);
   if (!r.ok) { note((await r.text()).slice(0, 120)); return ""; }
@@ -69,6 +71,29 @@ function pickTrack(tracks) {
     || list[0] || {}).baseUrl || "";
 }
 
+const CLIENTS = {
+  ios: [{ clientName: "IOS", clientVersion: "20.10.4", deviceMake: "Apple", deviceModel: "iPhone16,2", osName: "iPhone", osVersion: "18.3.2.22D82" },
+    "com.google.ios.youtube/20.10.4 (iPhone16,2; U; CPU iOS 18_3_2 like Mac OS X;)"],
+  tv_embed: [{ clientName: "TVHTML5_SIMPLY_EMBEDDED_PLAYER", clientVersion: "2.0" }, UA],
+  web_embed: [{ clientName: "WEB_EMBEDDED_PLAYER", clientVersion: "1.20251120.01.00" }, UA],
+  mweb: [{ clientName: "MWEB", clientVersion: "2.20251120.01.00" }, "Mozilla/5.0 (iPhone; CPU iPhone OS 18_3 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148"],
+  tv: [{ clientName: "TVHTML5", clientVersion: "7.20251120.10.00" }, "Mozilla/5.0 (ChromiumStylePlatform) Cobalt/Version"],
+};
+
+async function fromClient(id, name) {
+  const [client, agent] = CLIENTS[name];
+  const body = { videoId: id, context: { client: { ...client, hl: "en" } }, contentCheckOk: true, racyCheckOk: true };
+  if (/EMBED/.test(client.clientName)) body.context.thirdParty = { embedUrl: `https://www.youtube.com/embed/${id}` };
+  const r = await fetch("https://www.youtube.com/youtubei/v1/player?prettyPrint=false", {
+    method: "POST", headers: { "content-type": "application/json", "user-agent": agent, origin: "https://www.youtube.com" },
+    body: JSON.stringify(body),
+  });
+  const data = r.ok ? await r.json() : {};
+  const tr = data?.captions?.playerCaptionsTracklistRenderer?.captionTracks || [];
+  note(`${name} ${r.status} ${data?.playabilityStatus?.status} tracks:${tr.length}`);
+  return fromTrack(pickTrack(tr));
+}
+
 async function fromAndroid(id) {
   const r = await fetch("https://www.youtube.com/youtubei/v1/player", {
     method: "POST",
@@ -88,7 +113,7 @@ async function fromWebTracks(html) {
 }
 
 const NOTE = [];
-const note = (x) => { if (NOTE.length < 12) NOTE.push(String(x).slice(0, 140)); };
+const note = (x) => { if (NOTE.length < 20) NOTE.push(String(x).slice(0, 140)); };
 
 export async function transcript(input) {
   NOTE.length = 0;
@@ -100,6 +125,7 @@ export async function transcript(input) {
     ["panel", async () => { html = html || await watchPage(id); return fromPanel(id, html); }],
     ["android", () => fromAndroid(id)],
     ["web-tracks", async () => { html = html || await watchPage(id); return fromWebTracks(html); }],
+    ...Object.keys(CLIENTS).map((name) => [name, () => fromClient(id, name)]),
   ];
   for (const [name, run] of routes) {
     try {
