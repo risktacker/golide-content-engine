@@ -77,7 +77,7 @@ export async function build(K, words) {
       if (s.kicker) { g.fillStyle = s.tone === 'good' ? '#1f9e5a' : '#d7262c'; g.fillRect(0, 0, 1024 * slam, 96); g.fillStyle = '#fff'; g.font = '62px Anton'; if (slam > 0.6) g.fillText(String(s.kicker).toUpperCase().slice(0, 22), 36, 74); tv.userData.words.push([20, 0, 1000, 96]); }
       const icon = s.icon === 'chip'; if (icon) chip(g, 150, 250, 150, '#e8c268');
       const left = icon ? 290 : 40, max = 1024 - left - 40, title = String(s.title || '').toUpperCase().slice(0, 24);
-      g.save(); const f = fit(g, title, max, 190), cx = left + max / 2; g.translate(cx, 250); const k = lerp(0.6, 1, slam);   // grows in: never wider than its final, measured size g.scale(k, k); g.fillStyle = col; g.textAlign = 'center'; g.fillText(title, 0, f * 0.36); g.restore();
+      g.save(); const f = fit(g, title, max, 190), cx = left + max / 2; g.translate(cx, 250); const k = lerp(0.6, 1, slam); /* grows in: never wider than its final, measured size */ g.scale(k, k); g.fillStyle = col; g.textAlign = 'center'; g.fillText(title, 0, f * 0.36); g.restore();
       tv.userData.words.push([left, 250 - f * 0.55, left + max, 250 + f * 0.45]);
       const k2 = clamp(age / 1.2);
       if (s.chart === 'up' || s.chart === 'down') { g.strokeStyle = s.chart === 'up' ? '#2fd47a' : '#ff3b3b'; g.lineWidth = 12; g.beginPath();

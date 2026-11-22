@@ -104,3 +104,15 @@ def test_old_flat_card_kit_is_gone():
 def test_held_short_skips_reels_in_the_upload_step():
     src = (Path(build.ROOT) / "src" / "golide_engine" / "cli.py").read_text()
     assert 'not release.get("hold_private")' in src
+
+
+def test_no_line_comment_swallows_code_in_scene_modules():
+    """A // comment in the middle of a one-line statement chain hid the TV headline (2026-11-22): every // must end
+    its line, so nothing after it on that line is meant to run."""
+    import re
+    for f in (Path(build.ASSETS)).glob("*.js"):
+        for n, line in enumerate(f.read_text().splitlines(), 1):
+            code = re.sub(r"'[^']*'|\"[^\"]*\"|`[^`]*`", "''", line)
+            if "//" in code:
+                tail = code.split("//", 1)[1]
+                assert not re.search(r";\s*[A-Za-z_$][\w$.]*\s*\(.*\)\s*;", tail), f"{f.name}:{n} code after //"
