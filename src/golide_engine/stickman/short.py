@@ -156,6 +156,9 @@ sleeved arms with hands, real clothes and a hairstyle each (style: short, swoop,
 character a distinct top colour, outfit and hairstyle. In a kart or chair pass seated: true and place the card's feet
 at the seat (DECK + 0.3). A real public figure is a generic character in plain clothes (no likeness).
 
+NAMES: every name the kits and the engine define is taken (room, door, car, bus, stage, lab, gym, farm, forest, beach,
+desert, tree, sofa, drone, burst, kitchen, street, city, tower, earth, ...). Name your own constants with a leading
+underscore (_desk1, _bossRoom) so nothing is declared twice: a name declared twice stops the whole Short.
 THE GOLIDE WORLD KIT (already defined in front of your world_js; call it, do not redefine it):
 {_read(WORLD_KIT)}
 THE GOLIDE CAST KIT (already in toon.js; call T.modernFront and T.billFx from story.js):

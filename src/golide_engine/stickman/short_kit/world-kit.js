@@ -398,6 +398,80 @@ const desert = (x, z) => { const g = new THREE.Group(); g.position.set(x, DECK, 
   for (let i = 0; i < 4; i++) { const cx_ = -6 + i * 5; furn(g, 0.5, 3, 0.5, '#4f8a3e', cx_, 1.5, -6 - i); furn(g, 0.35, 1.2, 0.35, '#4f8a3e', cx_ + 0.5, 2.0, -6 - i); }
   const pyr = add(new THREE.ConeGeometry(16, 14, 4), KC('#d6a35c'), 30, 7, -70, g); pyr.rotation.y = Math.PI / 4; return { group: g }; };
 // ===== end of batch 5 =====
+// ===== GOLIDE tech and money, batch 7 (2026-11-22) =====
+// giantPhone(x, z, h, app, opts) a phone as tall as a building with an app screen (opts.lines, opts.slug); giantLaptop(x, z, w,
+// text, slug); giantChip(x, z, size, label, slug) a processor with gold pins on a board; gpuRack(x, z, n) GPU boards with fans
+// (.spin(f)); launchPad(x, z, label) a rocket on its pad (.lift(k)) with a gantry; satelliteDish(x, z); tradingFloor(x, z) desks
+// with screens and a big ticker wall (.tick(f)); stockBoard(x, y, z, rows) a red/green price board; warRoom(x, z) a world map
+// table and wall screens; powerPlant(x, z) cooling towers with steam; evCharger(x, z, slug) and evCar(colour); drone(slug)
+// (.fly(f)); vrHeadset (drawn over a face: O.vr in the cast kit is not needed, use the item); likesWall(x, y, z) a wall of
+// floating social reactions (.pop(f)); cryptoRig(x, z) a mining shelf; robotArm(x, z) an assembly arm (.swing(k)).
+const appTex = (title = 'APP', lines = [], accent = '#2f78c4', slug = null) => { const [c, g] = kCanvas(512, 1024); g.fillStyle = '#ffffff'; g.fillRect(0, 0, 512, 1024);
+  g.fillStyle = accent; g.fillRect(0, 0, 512, 150); if (slug && drawLogo(g, slug, 24, 30, 90, '#ffffff')) {} g.fillStyle = '#ffffff'; g.font = '900 54px sans-serif'; g.textBaseline = 'middle'; g.fillText(title, slug ? 130 : 30, 78);
+  const L = lines.length ? lines : ['', '', '', '']; L.forEach((t, i) => { const y = 200 + i * 190; g.fillStyle = '#f1f3f6'; g.fillRect(24, y, 464, 160); g.fillStyle = ['#e8445a', '#3fa36b', '#e9b43a', '#8a3bd2', '#2f78c4'][i % 5]; g.beginPath(); g.arc(84, y + 80, 44, 0, 7); g.fill();
+    g.fillStyle = '#17161b'; g.font = '800 40px sans-serif'; g.fillText(String(t).slice(0, 16), 150, y + 60); g.fillStyle = '#b9bfc9'; g.fillRect(150, y + 100, 280, 18); }); return toon({ map: kTex(c), emissive: '#ffffff', emissiveMap: kTex(c), emissiveIntensity: 0.25 }); };
+const giantPhone = (x, z, h = 12, app = 'APP', opts = {}) => { const g = new THREE.Group(); g.position.set(x, DECK, z); g.rotation.y = opts.ry || 0; scene.add(g); const w = h * 0.48;
+  add(new THREE.BoxGeometry(w, h, 0.8), KC(opts.colour || '#17161b'), 0, h / 2, 0, g); add(new THREE.BoxGeometry(w * 0.9, h * 0.92, 0.05), appTex(app, opts.lines || [], opts.accent, opts.slug), 0, h / 2, 0.42, g);
+  add(new THREE.BoxGeometry(w * 0.25, h * 0.02, 0.05), KM.dark, 0, h * 0.975, 0.43, g); return g; };
+const giantLaptop = (x, z, w = 10, text = '', slug = null) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g);
+  add(new THREE.BoxGeometry(w, 0.4, w * 0.66), KC('#c9ccd2'), 0, 0.2, 0, g); add(new THREE.BoxGeometry(w * 0.8, 0.02, w * 0.3), KM.dark, 0, 0.41, -0.05 * w, g);
+  const lid = new THREE.Group(); lid.position.set(0, 0.4, -w * 0.33); g.add(lid); add(new THREE.BoxGeometry(w, w * 0.64, 0.3), KC('#c9ccd2'), 0, w * 0.32, 0, lid);
+  add(new THREE.BoxGeometry(w * 0.92, w * 0.56, 0.02), slug || text ? signMat(text, { slug, bg: '#10141c', fg: '#e9f2ff', border: false }) : screenTex('code', ''), 0, w * 0.33, 0.16, lid); lid.rotation.x = -0.18; g.lid = lid; return g; };
+const giantChip = (x, z, size = 6, label = 'AI', slug = null) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g);
+  add(new THREE.BoxGeometry(size * 2.2, 0.3, size * 2.2), KC('#2f6b3a'), 0, 0.15, 0, g); for (let i = 0; i < 16; i++) for (const s_ of [-1, 1]) { furnL(g, size * 0.06, 0.08, size * 0.5, s_ * size * 0.75, 0.35, -size * 0.6 + i * size * 0.08); furnL(g, size * 0.5, 0.08, size * 0.06, -size * 0.6 + i * size * 0.08, 0.35, s_ * size * 0.75); }
+  add(new THREE.BoxGeometry(size, size * 0.18, size), KC('#2b2d34'), 0, 0.42, 0, g); add(new THREE.BoxGeometry(size * 0.8, 0.02, size * 0.8), signMat(label, { slug, bg: '#c9ccd2', fg: '#17161b', w: 512, h: 512 }), 0, 0.52 + size * 0.0, 0, g).rotation.x = 0; return g; };
+const furnL = (g, w, h, d, x, y, z) => add(new THREE.BoxGeometry(w, h, d), KM.gold, x, y, z, g, { cast: false });
+const gpuRack = (x, z, n = 6) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); const fans = [];
+  add(new THREE.BoxGeometry(5, 0.2, 2), KM.steel, 0, 0.1, 0, g); for (let i = 0; i < n; i++) { const y = 0.4 + i * 0.55; add(new THREE.BoxGeometry(4.4, 0.4, 1.6), KC('#1d2027'), 0, y, 0, g); add(new THREE.BoxGeometry(4.4, 0.06, 1.62), KC('#76b900'), 0, y + 0.18, 0, g);
+    for (const a of [-1.2, 0, 1.2]) { const f = add(new THREE.CylinderGeometry(0.28, 0.28, 0.04, 6), KM.dark, a, y, 0.82, g); f.rotation.x = Math.PI / 2; fans.push(f); } }
+  for (const a of [-2.3, 2.3]) add(new THREE.BoxGeometry(0.12, n * 0.55 + 0.5, 1.8), KM.steel, a, (n * 0.55 + 0.5) / 2, 0, g); return { group: g, spin: (f) => fans.forEach((m, i) => { m.rotation.y = f * 0.5 + i; }) }; };
+const launchPad = (x, z, label = '') => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); add(new THREE.CylinderGeometry(9, 10, 1.4, 32), KC('#9aa3ad'), 0, 0.7, 0, g);
+  const rocket = new THREE.Group(); rocket.position.set(0, 1.4, 0); g.add(rocket); add(new THREE.CylinderGeometry(1.4, 1.4, 22, 24), KM.white, 0, 11, 0, rocket); add(new THREE.ConeGeometry(1.4, 4, 24), KC('#2b2d34'), 0, 24, 0, rocket);
+  for (let k = 0; k < 4; k++) { const fin = add(new THREE.BoxGeometry(0.15, 3, 2.2), KC('#2b2d34'), Math.cos(k * Math.PI / 2) * 1.5, 1.5, Math.sin(k * Math.PI / 2) * 1.5, rocket); fin.rotation.y = -k * Math.PI / 2; }
+  if (label) add(new THREE.BoxGeometry(0.02, 8, 1.6), signMat(label, { bg: '#ffffff', fg: '#17161b', border: false, w: 256, h: 1024 }), 1.42, 13, 0, rocket);
+  const flame = add(new THREE.ConeGeometry(1.2, 6, 16), toon({ color: '#ffb020', emissive: '#ff7a1a', emissiveIntensity: 1 }), 0, -3, 0, rocket); flame.rotation.x = Math.PI; flame.visible = false;
+  for (let lv = 0; lv < 8; lv++) add(new THREE.BoxGeometry(2.4, 0.2, 2.4), KC('#c7322e'), -5, 1.4 + lv * 3, 0, g); for (const [a, b] of [[-6, -1], [-4, -1], [-6, 1], [-4, 1]]) add(new THREE.BoxGeometry(0.2, 24, 0.2), KC('#c7322e'), a, 13, b, g);
+  return { group: g, rocket, lift: (k) => { rocket.position.y = 1.4 + 60 * k * k; flame.visible = k > 0; flame.scale.y = 1 + 2 * k; } }; };
+const satelliteDish = (x, z, s = 1) => { const g = new THREE.Group(); g.position.set(x, DECK, z); g.scale.setScalar(s); scene.add(g); add(new THREE.CylinderGeometry(0.4, 0.6, 4, 12), KM.steel, 0, 2, 0, g);
+  const d = add(new THREE.SphereGeometry(4, 24, 12, 0, Math.PI * 2, 0, Math.PI / 3.2), KM.white, 0, 5, 0, g); d.rotation.x = -1.0; d.material.side = THREE.DoubleSide; add(new THREE.CylinderGeometry(0.05, 0.05, 3, 6), KM.steel, 0, 6.2, 1.2, g).rotation.x = -0.6; return g; };
+const stockBoard = (x, y, z, rows = 6, w = 8, parent = scene) => { const [c, g] = kCanvas(1024, 128 * rows); g.fillStyle = '#0b0d16'; g.fillRect(0, 0, 1024, 128 * rows); const r = P.rng(rows * 7);
+  const names = ['NVDA', 'AAPL', 'TSLA', 'MSFT', 'GOOG', 'AMZN', 'META', 'BTC', 'AMD', 'OPENAI'];
+  for (let i = 0; i < rows; i++) { const up = r() > 0.45, ch = (r() * 9).toFixed(2); g.font = '900 72px monospace'; g.fillStyle = '#e8eef7'; g.textBaseline = 'middle'; g.fillText(names[i % names.length], 40, i * 128 + 64);
+    g.fillStyle = up ? '#3fe08a' : '#ff4d4d'; g.fillText((up ? '▲ +' : '▼ -') + ch + '%', 560, i * 128 + 64); }
+  return add(new THREE.BoxGeometry(w, w * rows / 8, 0.12), [KM.dark, KM.dark, KM.dark, KM.dark, toon({ map: kTex(c), emissive: '#ffffff', emissiveMap: kTex(c), emissiveIntensity: 0.6 }), KM.dark], x, y, z, parent); };
+const tradingFloor = (x, z) => { const r = room(x, z, 20, 12, 6, { floor: 'carpet', wall: '#1d2a44', lights: 4, trim: '#2f78c4' }); const g = r.group;
+  for (let i = 0; i < 4; i++) for (let j = 0; j < 2; j++) { const d = deskSet(x - 6 + i * 4, z - 1 + j * 3.2, 0, { screen: (i + j) % 2 ? 'chart' : 'down', plant: false }); }
+  stockBoard(x, 3.8, z - 5.7, 5, 9); const tape = new THREE.Group(); tape.position.set(x, 5.4, z - 5.6); scene.add(tape); const tk = signMat('NVDA +4.2%  TSLA -1.8%  BTC +6.1%  AAPL +0.9%', { bg: '#0b0d16', fg: '#ffd23f', border: false, w: 2048, h: 96 });
+  const strip = add(new THREE.BoxGeometry(24, 0.5, 0.05), tk, 0, 0, 0, tape); return { group: g, tick: (f) => { strip.position.x = 6 - (f * 0.08) % 12; } }; };
+const warRoom = (x, z) => { const r = room(x, z, 18, 12, 5, { floor: 'concrete', wall: '#1b2230', lights: 2, trim: '#c7322e' }); const g = r.group;
+  const table = add(new THREE.BoxGeometry(8, 0.2, 4.5), toon({ map: P.tex(earthCanvas) }), 0, 1.05, -1, g); add(new THREE.BoxGeometry(8.2, 1.0, 4.7), KC('#2b2d34'), 0, 0.5, -1, g);
+  for (const [a, w_] of [[-5.5, 'down'], [0, 'chart'], [5.5, 'code']]) add(new THREE.BoxGeometry(4.6, 2.6, 0.1), screenTex(w_, ''), a, 3.2, -5.8, g);
+  for (let k = 0; k < 6; k++) add(new THREE.SphereGeometry(0.12, 10, 8), toon({ color: '#ff4d4d', emissive: '#ff4d4d', emissiveIntensity: 1 }), -3 + k * 1.2, 1.2, -1 + Math.sin(k) * 1.2, g); return { group: g }; };
+const powerPlant = (x, z) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); groundPaint(g, '#8fa070', null, 540); const puffs = [];
+  for (const a of [-12, 0, 12]) { const t = add(new THREE.CylinderGeometry(4.2, 6.5, 18, 28, 1, true), KC('#d9dde3'), a, 9, -30, g); t.material.side = THREE.DoubleSide;
+    for (let k = 0; k < 5; k++) { const p_ = add(new THREE.SphereGeometry(3 + k * 0.6, 12, 8), KM.white, a, 20 + k * 3, -30, g, { cast: false }); puffs.push([p_, k]); } }
+  furn(g, 14, 6, 8, '#9aa3ad', 0, 3, -14); for (let i = 0; i < 6; i++) furn(g, 0.3, 14, 0.3, '#5f6f82', -20 + i * 8, 7, -6); return { group: g, steam: (f) => puffs.forEach(([m, k]) => { m.position.y = 20 + ((k * 3 + f * 0.06) % 15); m.scale.setScalar(1 + ((k * 3 + f * 0.06) % 15) / 10); }) }; };
+const evCar = (col = '#e8e8e8') => { const g = car(col); add(new THREE.BoxGeometry(0.5, 0.25, 0.02), KC('#3fe08a'), 1.6, 0.9, 0.86, g); return g; };
+const evCharger = (x, z, slug = null) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); add(new THREE.BoxGeometry(0.8, 2.0, 0.5), KM.white, 0, 1.0, 0, g);
+  add(new THREE.BoxGeometry(0.6, 0.6, 0.02), signMat('', { slug, bg: '#3fe08a', border: false, w: 256, h: 256 }), 0, 1.5, 0.26, g); add(new THREE.TorusGeometry(0.3, 0.04, 6, 16, Math.PI), KM.dark, 0.35, 0.8, 0.3, g); return g; };
+const drone = (slug = null) => { const g = new THREE.Group(); scene.add(g); add(new THREE.BoxGeometry(0.8, 0.25, 0.8), KC('#2b2d34'), 0, 0, 0, g); const props = [];
+  for (const [a, b] of [[0.7, 0.7], [-0.7, 0.7], [0.7, -0.7], [-0.7, -0.7]]) { add(new THREE.BoxGeometry(0.9, 0.06, 0.08), KM.dark, a / 2, 0, b / 2, g).rotation.y = Math.atan2(b, a); props.push(add(new THREE.BoxGeometry(0.7, 0.02, 0.08), KM.steel, a, 0.12, b, g)); }
+  if (slug) add(new THREE.BoxGeometry(0.4, 0.4, 0.02), signMat('', { slug, border: false, w: 256, h: 256 }), 0, 0, 0.41, g); g.fly = (f) => props.forEach((p_) => { p_.rotation.y = f * 1.5; }); return g; };
+const likesWall = (x, y, z, n = 14) => { const g = new THREE.Group(); g.position.set(x, y, z); scene.add(g); const items = [];
+  const icon = (kind) => { const [c, gg] = kCanvas(128, 128); gg.fillStyle = { like: '#2f78c4', heart: '#e8445a', fire: '#ff7a1a', star: '#e9b43a' }[kind]; gg.beginPath(); gg.arc(64, 64, 60, 0, 7); gg.fill();
+    gg.fillStyle = '#ffffff'; gg.font = '900 64px sans-serif'; gg.textAlign = 'center'; gg.textBaseline = 'middle'; gg.fillText({ like: '+1', heart: '♥', fire: '!', star: '★' }[kind], 64, 70); return new THREE.MeshBasicMaterial({ map: kTex(c), transparent: true }); };
+  const mats = ['like', 'heart', 'fire', 'star'].map(icon); const r = P.rng(n);
+  for (let i = 0; i < n; i++) { const m = add(new THREE.PlaneGeometry(0.9, 0.9), mats[i % 4], (r() - 0.5) * 6, 0, (r() - 0.5) * 1, g, { cast: false }); m.userData.ndSkip = true; items.push([m, r() * 60]); }
+  return { group: g, pop: (f) => items.forEach(([m, d]) => { const t = ((f + d) % 60) / 60; m.position.y = t * 5; m.material.opacity = 1 - t; m.scale.setScalar(0.6 + t * 0.6); }) }; };
+const cryptoRig = (x, z) => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); for (let lv = 0; lv < 4; lv++) { furn(g, 5, 0.08, 1.2, '#7a7f88', 0, 0.6 + lv * 0.8, 0);
+  for (let i = 0; i < 5; i++) { furn(g, 0.8, 0.5, 0.9, '#1d2027', -2 + i, 0.9 + lv * 0.8, 0); add(new THREE.BoxGeometry(0.06, 0.06, 0.06), toon({ color: '#3fe08a', emissive: '#3fe08a', emissiveIntensity: 1 }), -1.7 + i, 0.95 + lv * 0.8, 0.46, g); } }
+  add(new THREE.BoxGeometry(1.4, 1.4, 0.05), signMat('₿', { bg: '#f7931a', fg: '#ffffff', border: false, w: 256, h: 256 }), 3.4, 2.6, 0.3, g); return g; };
+const robotArm = (x, z, colour = '#e2a52c') => { const g = new THREE.Group(); g.position.set(x, DECK, z); scene.add(g); add(new THREE.CylinderGeometry(0.7, 0.9, 0.6, 16), KC('#3b3d44'), 0, 0.3, 0, g);
+  const j1 = new THREE.Group(); j1.position.set(0, 0.6, 0); g.add(j1); add(new THREE.BoxGeometry(0.5, 2.6, 0.5), KC(colour), 0, 1.3, 0, j1); const j2 = new THREE.Group(); j2.position.set(0, 2.6, 0); j1.add(j2);
+  add(new THREE.BoxGeometry(0.4, 2.2, 0.4), KC(colour), 0, 1.1, 0, j2); add(new THREE.BoxGeometry(0.7, 0.3, 0.7), KM.dark, 0, 2.3, 0, j2); j2.rotation.z = 1.2;
+  return { group: g, swing: (k) => { j1.rotation.z = -0.4 + 0.8 * k; j1.rotation.y = 1.2 * k; } }; };
+// ===== end of batch 7 =====
+
 
 
 
