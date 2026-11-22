@@ -1,0 +1,44 @@
+name: TRIAL 3D animated Shorts engine (unchanged, as its author ships it)
+
+# owner 2026-11-22: "don't change nothing about it, I wanna see something". Clones thuann-vn/claude-3d-animated-shorts (MIT),
+# runs its own fetch script and its own render commands from its README, and puts the videos on a review branch.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Get the skill exactly as published
+        run: |
+          git clone --depth 1 https://github.com/thuann-vn/claude-3d-animated-shorts ~/c3d
+          cd ~/c3d && git log -1 --format='%H %cd' | tee commit.txt
+          bash scripts/fetch-assets.sh
+          cd engine && npm install
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg >/dev/null
+      - name: Render its 10 s office skit (README "Try it")
+        run: |
+          cd ~/c3d/engine
+          XQ="&viewer=1&skit=1" CHROME=/usr/bin/google-chrome node render.cjs out/skit.mp4 1080 1920 30
+      - name: Render its rail film (the default page)
+        continue-on-error: true
+        run: |
+          cd ~/c3d/engine
+          CHROME=/usr/bin/google-chrome timeout 80m node render.cjs out/rail-film.mp4 1080 1920 30
+      - name: Put the videos on a review branch
+        if: always()
+        run: |
+          mkdir -p review/trial-3d && cp ~/c3d/engine/out/*.mp4 review/trial-3d/ 2>/dev/null || true
+          cp ~/c3d/commit.txt review/trial-3d/ 2>/dev/null || true
+          ls -la review/trial-3d
+          git config user.name "golide-bot" && git config user.email "bot@golidee.com"
+          git checkout -b review-trial-3d
+          git add -f review && git commit -qm "TRIAL: 3D animated Shorts engine renders, unchanged" && git push -f origin review-trial-3d
