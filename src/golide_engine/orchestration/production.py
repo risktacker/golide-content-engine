@@ -70,6 +70,21 @@ def transcription_prompt(script: str) -> str:
     return "GOLIDE, golidee.com. " + ", ".join(names[:60]) + "."
 
 
+def report_modelled(spec: dict, breakout: dict) -> bool:
+    """Owner 2026-11-22: the script card in Studio shows the video this one is modelled on (title, channel, link)."""
+    url = os.getenv("GOLIDE_STUDIO_BASE_URL", "").strip()
+    if not url or not str(breakout.get("url") or "").startswith("https://"):
+        return False
+    try:
+        from ..studio_bridge import StudioBridge
+        keep = ("url", "title", "channel", "views", "views_per_hour", "hours_old", "style")
+        return StudioBridge(url).suggest(str(spec.get("_studio_job_id") or spec["id"]),
+                                         {"modelled": True, **{k: breakout.get(k) for k in keep if k in breakout}})
+    except Exception as exc:  # noqa: BLE001 — a note for the card; never stops the video
+        print(json.dumps({"status": "modelled_report_failed", "error": str(exc)[:200]}))
+        return False
+
+
 def render_hold_reason(root: Path, format_name: str) -> str | None:
     path = Path(root) / "config" / "render-hold.json"
     if not path.exists():
@@ -1012,6 +1027,7 @@ class ProductionService:
                 # The YouTube title is modelled on the winning video's title (2026-10-21).
                 spec["model_title"] = str(candidate.get("model_title") or candidate["title"]).strip()
                 spec["source_breakout"] = candidate["breakout"]
+                report_modelled(spec, candidate["breakout"])
                 # owner 2026-11-22: the month's model channels suggest the style (Crayon Capital -> Stickman + Goli,
                 # the AI how-to channels -> Goli); the owner's own pick in Studio always wins.
                 if not spec.get("video_style") and candidate["breakout"].get("style"):

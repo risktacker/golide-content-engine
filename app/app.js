@@ -671,18 +671,44 @@ const POST_TO = [["youtube", "YouTube"], ["instagram", "Instagram"], ["facebook"
 // 2026-11-21 (owner): a platform he disconnected is shown as "Off" and is never ticked or sent
 let connectedNow = null;     // set by loadConnections(); null = not known yet (then nothing is hidden)
 
+// 2026-11-22 (owner): only connected platforms appear at all; the list is filled once Connections has loaded
 function postToHtml(chosen) {
   const on = Array.isArray(chosen) ? new Set(chosen) : null;
-  return '<div class="post-to"><span class="post-to-label">Post to</span>' + POST_TO.map(([key, name]) => {
-    if (connectedNow && !connectedNow.has(key)) {
-      return '<label class="post-chip post-chip-off" title="Disconnected in Connections"><input type="checkbox" value="' + key +
-        '" disabled><span>' + name + ': Off</span></label>';
-    }
+  return '<div class="post-to" data-chosen="' + escAttr(on ? [...on].join(",") : "") + '"><span class="post-to-label">Post to</span>' + POST_TO.map(([key, name]) => {
+    if (!connectedNow || !connectedNow.has(key)) return "";
     return '<label class="post-chip"><input type="checkbox" value="' + key + '"' + (!on || on.has(key) ? " checked" : "") + '><span>' + name + '</span></label>';
   }).join("") + '</div>';
 }
 
+function jobPlatforms(job) {
+  try {
+    const list = typeof job.platforms === "string" ? JSON.parse(job.platforms) : job.platforms;
+    return Array.isArray(list) ? list : null;
+  } catch (e) { return null; }
+}
+
+function refreshPostTo() {
+  $$(".post-to").forEach((box) => {
+    const chosen = box.dataset.chosen ? box.dataset.chosen.split(",") : null;
+    const fresh = document.createElement("div");
+    fresh.innerHTML = postToHtml(chosen);
+    box.innerHTML = fresh.firstChild.innerHTML;    // keeps the box itself (and its id, e.g. #ext-post-to)
+  });
+}
+
+// 2026-11-22 (owner): the script card names the video it was modelled on, with its channel and link
+function modelledHtml(job) {
+  let m = null;
+  try { m = typeof job.modelled_on === "string" ? JSON.parse(job.modelled_on) : job.modelled_on; } catch (e) { m = null; }
+  if (!m || !m.url) return "";
+  const views = m.views ? Number(m.views).toLocaleString() + " views" : "";
+  return '<div class="engine-pick"><span class="kicker">Modelled on</span><p><b>' + esc(m.title || m.url) + '</b><br>' +
+    esc(m.channel || "") + (views ? ' · ' + esc(views) : "") + '</p><div class="script-tools">' +
+    '<a class="action-button" href="' + escAttr(m.url) + '" target="_blank" rel="noopener">Open</a></div></div>';
+}
+
 function pickedPlatforms(scope) {
+  if (!connectedNow) return null;   // connections not known yet: the job keeps its own platforms
   return [...(scope?.querySelectorAll(".post-to input:checked") || [])].map((input) => input.value);
 }
 
@@ -767,6 +793,7 @@ function actionCard(job) {
   return '<article class="action-card" id="job-' + escAttr(job.job_id) + '"><div><span class="kicker">' +
     (job.format === "long" ? "Long video" : "Short") + ', record ' + clock(windowRange[0]) + ' to ' + clock(windowRange[1]) + '</span><h4>' +
     esc(job.title || "Script ready") + '</h4><p>Read the script below in your own voice. The engine picks it up automatically after you upload.</p>' + rejected +
+    modelledHtml(job) +
     '<div class="script-box" id="script-box-' + escAttr(job.job_id) + '">' + scriptHtml(script) + '</div>' +
     '<div class="script-tools"><button class="action-button edit-script" data-job="' + escAttr(job.job_id) + '">Edit script</button>' +
       '<button class="action-button replace-script" data-job="' + escAttr(job.job_id) + '">Replace script</button></div>' +
@@ -777,7 +804,7 @@ function actionCard(job) {
       '<button class="action-button replace-cancel" data-job="' + escAttr(job.job_id) + '">Cancel</button>' +
       '<p class="replace-note">Paste the link, then tap <b>Write a new script</b>. The engine treats that video as today\'s title: it researches the subject from other sources and writes a new script here (a few cents).</p></div>' +
     '<span class="voice-status script-status" id="script-status-' + escAttr(job.job_id) + '"></span></div>' +
-    '<div class="action-controls">' + postToHtml(null) +
+    '<div class="action-controls">' + postToHtml(jobPlatforms(job)) +
       '<button class="ai-voice-button" data-job="' + escAttr(job.job_id) + '">Use AI voice</button>' +
       '<label class="upload-button">Upload my recording<input class="voice-input" type="file" accept="audio/*,video/*,.m4a,.mp3,.wav,.aac,.caf,.ogg,.opus,.webm,.mp4,.mov" data-job="' + escAttr(job.job_id) + '"></label>' +
       '<button class="action-button copy-script" data-job="' + escAttr(job.job_id) + '">Copy script</button>' +
@@ -1093,7 +1120,7 @@ async function uploadVoice(jobId, file) {
     await api("/api/production-jobs/" + encodeURIComponent(jobId) + "/voice", {
       method: "POST",
       body: JSON.stringify(Object.assign({ media_ref: mediaRef, style }, pickedLooks[jobId] ? { looks: pickedLooks[jobId] } : {},
-        card?.querySelector(".post-to") ? { platforms: pickedPlatforms(card) } : {})),
+        card?.querySelector(".post-to") && pickedPlatforms(card) ? { platforms: pickedPlatforms(card) } : {})),
     });
     if (status) status.textContent = "Uploaded. Production has started; the video is ready in about 20 to 30 minutes.";
     await loadProductionJobs();
@@ -1276,6 +1303,7 @@ async function loadConnections() {
 
   const byPlatform = Object.fromEntries(connections.map((item) => [item.platform, item]));
   connectedNow = new Set(connections.filter((item) => item.connected || item.status === "connected").map((item) => item.platform));
+  refreshPostTo();
   $("#connection-grid").innerHTML = ["instagram", "facebook", "linkedin", "x", "youtube"].map((platform) => {
     const item = byPlatform[platform] || {};
     const connected = Boolean(item.connected || item.status === "connected");

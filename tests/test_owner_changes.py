@@ -96,5 +96,5 @@ def test_a_pasted_transcript_wins_and_the_script_retells_it_closely(tmp_path):
     assert not fetched and spec["model_transcript"].startswith("November 2026") and "retells" in spec["brief"]
     assert "model_transcript" in oc.REPLACE_KEEP
     close = story_instructions("long", 600, close_model=True)
-    assert "Every beat stays" in close and "METHOD EXAMPLE" not in close and "Never reuse a sentence" not in close
-    assert "Every beat stays" not in story_instructions("long", 600)
+    assert "CONDENSE the MODEL SCRIPT" in close and "METHOD EXAMPLE" not in close and "Never reuse a sentence" not in close
+    assert "CONDENSE the MODEL SCRIPT" not in story_instructions("long", 600)
