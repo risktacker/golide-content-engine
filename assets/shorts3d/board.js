@@ -60,7 +60,12 @@ export async function build(K, words) {
   const tvP = (B.tv && B.tv.place) || 'none'; let tv = null; const TVW = 1.2, TVH = 0.675;
   const tvc = document.createElement('canvas'); tvc.width = 1024; tvc.height = 576; const tg = tvc.getContext('2d'); const tvT = new THREE.CanvasTexture(tvc); tvT.colorSpace = THREE.SRGBColorSpace;
   if (tvP !== 'none') { const who = tvP.startsWith('above:') ? cast[tvP.slice(6)] : null;
-    const x = who ? who.spot.x : tvP === 'wall-left' ? -3.5 : 3.5;
+    // never over a window or anything else on the back wall (2026-11-23: window bars cut through the TV's words)
+    const want = who ? who.spot.x : tvP === 'wall-left' ? -3.5 : 3.5;
+    const busy = O.children.filter(o => o.visible && o !== tv).map(o => new THREE.Box3().setFromObject(o)).filter(b => {
+      const s = b.getSize(new THREE.Vector3()); return b.min.z < ZB + 0.6 && b.max.y > FY + 1.6 && b.min.y < FY + 3.3 && s.x < 6 && s.x > 0.1; });
+    const free = xx => busy.every(b => xx + TVW / 2 + 0.15 < b.min.x || xx - TVW / 2 - 0.15 > b.max.x);
+    let x = want; for (let d = 0; d <= 8 && !free(x); d += 0.1) { if (free(want + d)) { x = want + d; break; } if (free(want - d)) { x = want - d; break; } }
     tv = new THREE.Group(); tv.name = 'the wall TV';
     const fr = new THREE.Mesh(new THREE.BoxGeometry(TVW + 0.07, TVH + 0.07, 0.06), new THREE.MeshStandardMaterial({ color: '#15171c', roughness: 0.35, metalness: 0.4 })); fr.castShadow = true; tv.add(fr);
     const scr = new THREE.Mesh(new THREE.PlaneGeometry(TVW, TVH), new THREE.MeshBasicMaterial({ map: tvT, toneMapped: false })); scr.position.z = 0.032; tv.add(scr);
@@ -92,7 +97,7 @@ export async function build(K, words) {
   // bubbles and screen glows
   const BUB = {}; for (const ch of ['?', '!', '$']) { const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d'); g.fillStyle = '#fff'; g.beginPath(); g.arc(64, 60, 50, 0, 7); g.fill(); g.lineWidth = 6; g.strokeStyle = '#2a1612'; g.stroke(); g.fillStyle = ch === '$' ? '#1f9e5a' : '#e8442a'; g.font = '80px Anton'; g.textAlign = 'center'; g.fillText(ch, 64, 90); BUB[ch] = new THREE.CanvasTexture(c); BUB[ch].colorSpace = THREE.SRGBColorSpace; }
   const bub = new Map(people.map(c => { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: BUB['?'], transparent: true, depthTest: false })); s.visible = false; scene.add(s); return [c, s]; }));
-  const glows = (B.glow || []).map(gl => { const sp = P[gl.place]; const l = new THREE.PointLight(TONE[gl.tone] || '#ffffff', 0, 2.4, 2); l.position.set(sp ? (sp.desk ?? sp.faceDesk ?? sp.x) : 0, FY + 0.95, ZD); scene.add(l); return { ...gl, t: at(gl.from), l }; });
+  const glows = (B.glow || []).map(gl => { const sp = P[gl.place]; const l = new THREE.PointLight(TONE[gl.tone] || '#ffffff', 0, 1.6, 2); l.position.set(sp ? (sp.desk ?? sp.faceDesk ?? sp.x) : 0, FY + 0.95, ZD); scene.add(l); return { ...gl, t: at(gl.from), l }; });
 
   // beats: what each person is doing from a word on, held until their next beat
   const beats = new Map(people.map(c => [c, []]));
@@ -127,7 +132,7 @@ export async function build(K, words) {
       const s = bub.get(c), on = b && b.bubble && b.bubble !== 'none' && BUB[b.bubble]; s.visible = !!on;
       if (on) { s.material.map = BUB[b.bubble]; const h = headC(c), kk = Math.min(1, (t - b.t) * 6); s.position.set(h.x + 0.24, h.y + 0.42 + 0.03 * Math.sin(t * 8), h.z); s.scale.setScalar(0.36 * kk); }
     }
-    for (const g of glows) { g.l.intensity = t >= g.t ? 2.4 * clamp((t - g.t) / 0.4) : 0; }
+    for (const g of glows) { g.l.intensity = t >= g.t ? 1.0 * clamp((t - g.t) / 0.4) : 0; /* a glow on the faces, not a green desk */ }
     ALL.forEach(c => SR.updateLimbs(c));
   }
   const bubbleBoxes = (ids, t) => ids.map(c => bub.get(c)).filter(s => s && s.visible).map(s => ({ box: new THREE.Box3().setFromCenterAndSize(s.position, V(0.4, 0.4, 0.4)), label: 'a bubble', onTop: true }));

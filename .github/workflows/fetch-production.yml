@@ -40,7 +40,9 @@ jobs:
           W="productions/$PID"
           OUT="review/$PID"
           mkdir -p "$OUT/frames" "$OUT/files"
-          VIDEO=$(find "$W" -name "*.mp4" -size +5M -printf "%s %p\n" | sort -n | tail -1 | cut -d' ' -f2-)
+          # the finished video (it has sound); the 3D Short's raw picture (no sound) is bigger and must not be taken
+          VIDEO=""; for f in $(find "$W" -name "*.mp4" -size +5M -printf "%s %p\n" | sort -rn | cut -d' ' -f2-); do
+            if ffprobe -v error -select_streams a -show_entries stream=codec_type -of csv=p=0 "$f" | grep -q audio; then VIDEO="$f"; break; fi; done
           echo "video: ${VIDEO:-none yet}"
           if [ -n "$VIDEO" ]; then
             ffprobe -v error -show_entries format=duration:stream=width,height,codec_type -of json "$VIDEO" > "$OUT/probe.json"

@@ -128,3 +128,16 @@ def test_voice_tags_survive_a_director_that_changed_a_word():
     assert "[surprised] Then summer comes" in out and "two" not in out
     assert why.startswith("words changed: tags moved")
     assert apply_direction(plain, "Something else entirely.")[0] == plain
+
+
+def test_scene_modules_parse(tmp_path):
+    """Every 3D Short scene module must be valid JavaScript (2026-11-23: a // comment swallowed a closing brace)."""
+    import shutil
+    node = shutil.which("node")
+    if not node:
+        pytest.skip("node not installed")
+    for f in Path(build.ASSETS).glob("*.js"):
+        copy = tmp_path / (f.stem + ".mjs")
+        copy.write_text(f.read_text())
+        r = subprocess.run([node, "--check", str(copy)], capture_output=True, text=True)
+        assert r.returncode == 0, f"{f.name}: {r.stderr[:300]}"

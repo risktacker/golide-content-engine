@@ -84,7 +84,7 @@ export function makeDirector(K, opt = {}) {
     // a wall between the camera and the action is taken away like a TV set's fourth wall (scene.js), so the camera
     // may stand beyond the walls; never under the floor, over the ceiling or far out of the building
     if (ROOM && !(p.y > ROOM.min.y && p.y < ROOM.max.y)) return 'the camera is below the floor or above the ceiling';
-    if (ROOM && !(p.x > ROOM.min.x - 10 && p.x < ROOM.max.x + 10 && p.z > ROOM.min.z - 10 && p.z < ROOM.max.z + 10)) return 'the camera is far outside the set';
+    if (ROOM && !(p.x > ROOM.min.x - 2.5 && p.x < ROOM.max.x + 2.5 && p.z > ROOM.min.z - 2.5 && p.z < ROOM.max.z + 2.5)) return 'the camera is far outside the set';
     for (const q of props) if (q.box.clone().expandByScalar(0.06).containsPoint(p)) return `the camera is inside ${q.label}`;
     for (const c of people) if (personBox(c).expandByScalar(0.06).containsPoint(p)) return `the camera is inside ${c.label}`;
     return null;
@@ -116,6 +116,7 @@ export function makeDirector(K, opt = {}) {
       if (r.crossing) out.push(`${c.label} is cut by the camera`);
       else if (shows(r) && !within(r, SAFE)) out.push(`${c.label} is cropped at the frame edge`);
       else if (subjects.includes(c) && !shows(r)) out.push(`${c.label} is out of the shot`);
+      else if (subjects.includes(c)) { const f = rect(personBox(c)); if (!f.behind && !f.crossing && f.y1 - f.y0 < HH * (opt.minPerson ?? 0.2)) out.push(`${c.label} is too small in the frame`); }   /* whole body, a desk in front does not count */
       const h = rect(headBox(c)); if (shows(h) && meets(h, CAP)) out.push(`the head of ${c.label} sits under the captions`);
     }
     // two heads overlapping on screen read as a crash even when neither face is fully hidden
