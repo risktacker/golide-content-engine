@@ -1,0 +1,155 @@
+[
+  {
+    "url": "https://railroadfasteners.com/download/AREMA-Stand-for-Track.pdf",
+    "title": "AREMA Manual for Railway Engineering, Chapter 5: Track",
+    "claims": [
+      "For conventional jointed rail, official railroad engineering guidance lists 39-foot rail sections and specifies temperature-dependent openings between rail ends. For 39-foot rail, the listed gaps range from 5/16 inch in very cold conditions to 1/16 inch at 66\u201385\u00b0F, with no opening specified above 85\u00b0F.",
+      "The video\u2019s \u201cfinger-wide\u201d gap is not consistent with the cited engineering tables: a one-inch-wide gap is substantially larger than the standard 1/16- to 5/16-inch openings specified for 39-foot rail."
+    ],
+    "ok": false,
+    "error": "Page.goto: Download is starting\nCall log:\n  - navigating to \"https://railroadfasteners.com/download/AREMA-Stand-for-Track.pdf\", waiting until \"domcontentloaded\"\n",
+    "captured_at": "2026-11-23T11:25:32+00:00"
+  },
+  {
+    "url": "https://railroads.dot.gov/sites/fra.dot.gov/files/fra_net/14798/110_DOT-TSC-FRA-82-4_ntl.bts.gov-lib-47000-47500-47552.pdf",
+    "title": "Access Denied",
+    "claims": [
+      "U.S. Department of Transportation research states that conventional jointed rail can absorb approximately 8 inches of expansion per mile before joint gaps close; a 20\u00b0F rise above the rail-laying temperature is given as an approximate example that can close those gaps.",
+      "Once rail-joint gaps close, additional heating produces compressive stress. If ballast and rail anchorage do not provide enough restraint, the track can buckle laterally\u2014an engineering failure mode consistent with the video\u2019s image of the track kicking sideways."
+    ],
+    "ok": true,
+    "top": "02-top.png",
+    "full": "02-full.png",
+    "full_height": 900,
+    "scale": 1.5,
+    "highlights": [],
+    "headline": [
+      8,
+      8,
+      1424,
+      37
+    ],
+    "blocks": [
+      {
+        "text": "Reference #18.578ce17.1795433132.1326da44",
+        "rect": [
+          8,
+          100.4375,
+          1424,
+          18
+        ]
+      },
+      {
+        "text": "https://errors.edgesuite.net/18.578ce17.1795433132.1326da44",
+        "rect": [
+          8,
+          134.4375,
+          1424,
+          18
+        ]
+      }
+    ],
+    "controls": [],
+    "photo": null,
+    "photos": [],
+    "captured_at": "2026-11-23T11:25:35+00:00"
+  },
+  {
+    "url": "https://railroads.dot.gov/sites/fra.dot.gov/files/fra_net/2713/RR_12_18.pdf",
+    "title": "Access Denied",
+    "claims": [
+      "Federal Railroad Administration guidance confirms that heat-related track buckling, commonly called a \u201csun kink,\u201d can create derailment risk. The likelihood depends not only on heat but also on rail temperature at installation, ballast, fasteners, lateral restraint, track condition, and maintenance."
+    ],
+    "ok": true,
+    "top": "03-top.png",
+    "full": "03-full.png",
+    "full_height": 900,
+    "scale": 1.5,
+    "highlights": [],
+    "headline": [
+      8,
+      8,
+      1424,
+      37
+    ],
+    "blocks": [
+      {
+        "text": "Reference #18.578ce17.1795433135.1326e449",
+        "rect": [
+          8,
+          100.4375,
+          1424,
+          18
+        ]
+      },
+      {
+        "text": "https://errors.edgesuite.net/18.578ce17.1795433135.1326e449",
+        "rect": [
+          8,
+          134.4375,
+          1424,
+          18
+        ]
+      }
+    ],
+    "controls": [],
+    "photo": null,
+    "photos": [],
+    "captured_at": "2026-11-23T11:25:38+00:00"
+  },
+  {
+    "url": "https://railroads.fra.dot.gov/sites/fra.dot.gov/files/2021-09/FRA%20CWR%20Generic%20Plan%20-%20Effective%20-%20July%202021.pdf",
+    "title": "Access Denied",
+    "claims": [
+      "Modern continuous welded rail is not simply laid end-to-end without engineering controls. FRA guidance defines continuous welded rail as rail welded into a continuous piece exceeding 400 feet and requires railroads to manage rail-neutral temperature and maintenance procedures to reduce both buckling in hot weather and rail breaks in cold weather."
+    ],
+    "ok": true,
+    "top": "04-top.png",
+    "full": "04-full.png",
+    "full_height": 900,
+    "scale": 1.5,
+    "highlights": [],
+    "headline": [
+      8,
+      8,
+      1424,
+      37
+    ],
+    "blocks": [
+      {
+        "text": "Reference #18.578ce17.1795433138.1326eda1",
+        "rect": [
+          8,
+          100.4375,
+          1424,
+          18
+        ]
+      },
+      {
+        "text": "https://errors.edgesuite.net/18.578ce17.1795433138.1326eda1",
+        "rect": [
+          8,
+          134.4375,
+          1424,
+          18
+        ]
+      }
+    ],
+    "controls": [],
+    "photo": null,
+    "photos": [],
+    "captured_at": "2026-11-23T11:25:42+00:00"
+  },
+  {
+    "url": "https://en.wikipedia.org/wiki/Transport",
+    "title": "Transportation (picture)",
+    "claims": [],
+    "ok": true,
+    "picture_only": true,
+    "subject": "Transportation",
+    "photo": "08-photo.png",
+    "photos": [
+      "08-photo.png"
+    ]
+  }
+]

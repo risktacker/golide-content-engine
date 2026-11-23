@@ -1,0 +1,927 @@
+[
+  {
+    "word": "He",
+    "start": 0.133,
+    "end": 0.16
+  },
+  {
+    "word": "saw",
+    "start": 0.2,
+    "end": 0.4
+  },
+  {
+    "word": "gaps",
+    "start": 0.48,
+    "end": 0.72
+  },
+  {
+    "word": "in",
+    "start": 0.8,
+    "end": 0.84
+  },
+  {
+    "word": "a",
+    "start": 0.88,
+    "end": 0.96
+  },
+  {
+    "word": "railroad",
+    "start": 1.04,
+    "end": 1.52
+  },
+  {
+    "word": "every",
+    "start": 1.6,
+    "end": 1.92
+  },
+  {
+    "word": "39",
+    "start": 2.0,
+    "end": 2.48
+  },
+  {
+    "word": "feet,",
+    "start": 2.64,
+    "end": 3.2
+  },
+  {
+    "word": "and",
+    "start": 3.28,
+    "end": 3.36
+  },
+  {
+    "word": "2",
+    "start": 3.44,
+    "end": 3.52
+  },
+  {
+    "word": "companies",
+    "start": 3.6,
+    "end": 4.0
+  },
+  {
+    "word": "are",
+    "start": 4.12,
+    "end": 4.24
+  },
+  {
+    "word": "racing",
+    "start": 4.32,
+    "end": 4.64
+  },
+  {
+    "word": "to",
+    "start": 4.72,
+    "end": 4.8
+  },
+  {
+    "word": "build",
+    "start": 4.88,
+    "end": 4.96
+  },
+  {
+    "word": "a",
+    "start": 5.0,
+    "end": 5.04
+  },
+  {
+    "word": "railroad",
+    "start": 5.12,
+    "end": 5.52
+  },
+  {
+    "word": "along",
+    "start": 5.64,
+    "end": 5.76
+  },
+  {
+    "word": "a",
+    "start": 5.8,
+    "end": 5.84
+  },
+  {
+    "word": "canyon.",
+    "start": 5.92,
+    "end": 6.8
+  },
+  {
+    "word": "Whoever",
+    "start": 6.84,
+    "end": 7.04
+  },
+  {
+    "word": "finishes",
+    "start": 7.12,
+    "end": 7.52
+  },
+  {
+    "word": "first",
+    "start": 7.6,
+    "end": 7.92
+  },
+  {
+    "word": "gets",
+    "start": 8.0,
+    "end": 8.16
+  },
+  {
+    "word": "the",
+    "start": 8.28,
+    "end": 8.4
+  },
+  {
+    "word": "whole",
+    "start": 8.52,
+    "end": 8.64
+  },
+  {
+    "word": "country\u2019s",
+    "start": 8.72,
+    "end": 9.12
+  },
+  {
+    "word": "business.",
+    "start": 9.36,
+    "end": 10.0
+  },
+  {
+    "word": "And",
+    "start": 10.04,
+    "end": 10.08
+  },
+  {
+    "word": "when",
+    "start": 10.16,
+    "end": 10.24
+  },
+  {
+    "word": "his",
+    "start": 10.32,
+    "end": 10.4
+  },
+  {
+    "word": "boss",
+    "start": 10.52,
+    "end": 10.64
+  },
+  {
+    "word": "sees",
+    "start": 10.72,
+    "end": 10.96
+  },
+  {
+    "word": "gaps",
+    "start": 11.04,
+    "end": 11.2
+  },
+  {
+    "word": "between",
+    "start": 11.28,
+    "end": 11.68
+  },
+  {
+    "word": "every",
+    "start": 11.84,
+    "end": 12.0
+  },
+  {
+    "word": "single",
+    "start": 12.08,
+    "end": 12.32
+  },
+  {
+    "word": "rail,",
+    "start": 12.4,
+    "end": 12.96
+  },
+  {
+    "word": "his",
+    "start": 13.04,
+    "end": 13.12
+  },
+  {
+    "word": "face",
+    "start": 13.28,
+    "end": 13.52
+  },
+  {
+    "word": "goes",
+    "start": 13.56,
+    "end": 13.84
+  },
+  {
+    "word": "purple:",
+    "start": 14.04,
+    "end": 14.72
+  },
+  {
+    "word": "You\u2019re",
+    "start": 14.789,
+    "end": 14.96
+  },
+  {
+    "word": "wrecking",
+    "start": 15.04,
+    "end": 15.28
+  },
+  {
+    "word": "my",
+    "start": 15.4,
+    "end": 15.52
+  },
+  {
+    "word": "railroad.",
+    "start": 15.68,
+    "end": 16.56
+  },
+  {
+    "word": "But",
+    "start": 16.6,
+    "end": 16.64
+  },
+  {
+    "word": "he",
+    "start": 16.72,
+    "end": 16.88
+  },
+  {
+    "word": "won\u2019t",
+    "start": 16.92,
+    "end": 17.12
+  },
+  {
+    "word": "close",
+    "start": 17.2,
+    "end": 17.44
+  },
+  {
+    "word": "a",
+    "start": 17.52,
+    "end": 17.76
+  },
+  {
+    "word": "single",
+    "start": 17.92,
+    "end": 18.08
+  },
+  {
+    "word": "one.",
+    "start": 18.16,
+    "end": 18.88
+  },
+  {
+    "word": "So",
+    "start": 19.04,
+    "end": 19.2
+  },
+  {
+    "word": "the",
+    "start": 19.28,
+    "end": 19.36
+  },
+  {
+    "word": "other",
+    "start": 19.48,
+    "end": 19.6
+  },
+  {
+    "word": "company",
+    "start": 19.8,
+    "end": 20.0
+  },
+  {
+    "word": "lays",
+    "start": 20.12,
+    "end": 20.24
+  },
+  {
+    "word": "their",
+    "start": 20.32,
+    "end": 20.4
+  },
+  {
+    "word": "rails",
+    "start": 20.6,
+    "end": 20.8
+  },
+  {
+    "word": "end",
+    "start": 20.88,
+    "end": 21.04
+  },
+  {
+    "word": "to",
+    "start": 21.12,
+    "end": 21.2
+  },
+  {
+    "word": "end,",
+    "start": 21.28,
+    "end": 21.76
+  },
+  {
+    "word": "perfectly",
+    "start": 21.96,
+    "end": 22.32
+  },
+  {
+    "word": "smooth,",
+    "start": 22.52,
+    "end": 22.88
+  },
+  {
+    "word": "and",
+    "start": 22.96,
+    "end": 23.04
+  },
+  {
+    "word": "finishes",
+    "start": 23.12,
+    "end": 23.44
+  },
+  {
+    "word": "first.",
+    "start": 23.52,
+    "end": 24.32
+  },
+  {
+    "word": "Their",
+    "start": 24.44,
+    "end": 24.56
+  },
+  {
+    "word": "trains",
+    "start": 24.6,
+    "end": 24.96
+  },
+  {
+    "word": "glide",
+    "start": 25.04,
+    "end": 25.28
+  },
+  {
+    "word": "across",
+    "start": 25.36,
+    "end": 25.6
+  },
+  {
+    "word": "the",
+    "start": 25.68,
+    "end": 25.76
+  },
+  {
+    "word": "canyon",
+    "start": 25.8,
+    "end": 26.16
+  },
+  {
+    "word": "without",
+    "start": 26.32,
+    "end": 26.48
+  },
+  {
+    "word": "a",
+    "start": 26.64,
+    "end": 26.68
+  },
+  {
+    "word": "sound,",
+    "start": 26.72,
+    "end": 27.2
+  },
+  {
+    "word": "while",
+    "start": 27.28,
+    "end": 27.44
+  },
+  {
+    "word": "his",
+    "start": 27.6,
+    "end": 27.76
+  },
+  {
+    "word": "go",
+    "start": 27.84,
+    "end": 28.0
+  },
+  {
+    "word": "clickety-clack",
+    "start": 28.08,
+    "end": 28.8
+  },
+  {
+    "word": "over",
+    "start": 28.96,
+    "end": 29.12
+  },
+  {
+    "word": "every",
+    "start": 29.28,
+    "end": 29.44
+  },
+  {
+    "word": "gap,",
+    "start": 29.6,
+    "end": 30.0
+  },
+  {
+    "word": "and",
+    "start": 30.04,
+    "end": 30.08
+  },
+  {
+    "word": "the",
+    "start": 30.12,
+    "end": 30.16
+  },
+  {
+    "word": "newspapers",
+    "start": 30.24,
+    "end": 30.72
+  },
+  {
+    "word": "start",
+    "start": 30.8,
+    "end": 30.96
+  },
+  {
+    "word": "calling",
+    "start": 31.04,
+    "end": 31.28
+  },
+  {
+    "word": "it",
+    "start": 31.36,
+    "end": 31.44
+  },
+  {
+    "word": "the",
+    "start": 31.52,
+    "end": 31.6
+  },
+  {
+    "word": "clickety-clack",
+    "start": 31.72,
+    "end": 32.24
+  },
+  {
+    "word": "line.",
+    "start": 32.32,
+    "end": 32.587
+  },
+  {
+    "word": "Then",
+    "start": 33.36,
+    "end": 33.6
+  },
+  {
+    "word": "summer",
+    "start": 33.76,
+    "end": 34.0
+  },
+  {
+    "word": "comes,",
+    "start": 34.08,
+    "end": 34.72
+  },
+  {
+    "word": "and",
+    "start": 34.8,
+    "end": 34.88
+  },
+  {
+    "word": "something",
+    "start": 35.08,
+    "end": 35.28
+  },
+  {
+    "word": "weird",
+    "start": 35.44,
+    "end": 35.68
+  },
+  {
+    "word": "happens.",
+    "start": 35.76,
+    "end": 36.48
+  },
+  {
+    "word": "His",
+    "start": 36.72,
+    "end": 36.88
+  },
+  {
+    "word": "gaps",
+    "start": 36.96,
+    "end": 37.36
+  },
+  {
+    "word": "start",
+    "start": 37.52,
+    "end": 37.76
+  },
+  {
+    "word": "shrinking.",
+    "start": 37.84,
+    "end": 38.8
+  },
+  {
+    "word": "In",
+    "start": 38.88,
+    "end": 38.96
+  },
+  {
+    "word": "May,",
+    "start": 39.04,
+    "end": 39.44
+  },
+  {
+    "word": "you",
+    "start": 39.48,
+    "end": 39.52
+  },
+  {
+    "word": "can",
+    "start": 39.6,
+    "end": 39.68
+  },
+  {
+    "word": "fit",
+    "start": 39.72,
+    "end": 39.76
+  },
+  {
+    "word": "a",
+    "start": 39.84,
+    "end": 39.92
+  },
+  {
+    "word": "coin",
+    "start": 40.0,
+    "end": 40.24
+  },
+  {
+    "word": "in",
+    "start": 40.28,
+    "end": 40.32
+  },
+  {
+    "word": "them.",
+    "start": 40.4,
+    "end": 40.96
+  },
+  {
+    "word": "By",
+    "start": 41.04,
+    "end": 41.12
+  },
+  {
+    "word": "July,",
+    "start": 41.32,
+    "end": 41.84
+  },
+  {
+    "word": "barely",
+    "start": 41.96,
+    "end": 42.16
+  },
+  {
+    "word": "a",
+    "start": 42.24,
+    "end": 42.28
+  },
+  {
+    "word": "sheet",
+    "start": 42.32,
+    "end": 42.48
+  },
+  {
+    "word": "of",
+    "start": 42.56,
+    "end": 42.64
+  },
+  {
+    "word": "paper.",
+    "start": 42.84,
+    "end": 43.6
+  },
+  {
+    "word": "Meanwhile,",
+    "start": 43.84,
+    "end": 44.16
+  },
+  {
+    "word": "on",
+    "start": 44.24,
+    "end": 44.28
+  },
+  {
+    "word": "the",
+    "start": 44.32,
+    "end": 44.4
+  },
+  {
+    "word": "perfect",
+    "start": 44.48,
+    "end": 44.8
+  },
+  {
+    "word": "railroad,",
+    "start": 44.88,
+    "end": 45.52
+  },
+  {
+    "word": "the",
+    "start": 45.6,
+    "end": 45.68
+  },
+  {
+    "word": "rails",
+    "start": 45.84,
+    "end": 46.0
+  },
+  {
+    "word": "have",
+    "start": 46.08,
+    "end": 46.16
+  },
+  {
+    "word": "started",
+    "start": 46.36,
+    "end": 46.56
+  },
+  {
+    "word": "groaning",
+    "start": 46.68,
+    "end": 47.04
+  },
+  {
+    "word": "in",
+    "start": 47.08,
+    "end": 47.12
+  },
+  {
+    "word": "the",
+    "start": 47.16,
+    "end": 47.2
+  },
+  {
+    "word": "afternoon",
+    "start": 47.28,
+    "end": 47.68
+  },
+  {
+    "word": "sun,",
+    "start": 47.84,
+    "end": 48.4
+  },
+  {
+    "word": "pushing",
+    "start": 48.52,
+    "end": 48.72
+  },
+  {
+    "word": "against",
+    "start": 48.8,
+    "end": 49.12
+  },
+  {
+    "word": "each",
+    "start": 49.2,
+    "end": 49.28
+  },
+  {
+    "word": "other",
+    "start": 49.36,
+    "end": 49.52
+  },
+  {
+    "word": "like",
+    "start": 49.6,
+    "end": 49.68
+  },
+  {
+    "word": "they",
+    "start": 49.72,
+    "end": 49.76
+  },
+  {
+    "word": "want",
+    "start": 49.84,
+    "end": 49.92
+  },
+  {
+    "word": "to",
+    "start": 49.96,
+    "end": 50.0
+  },
+  {
+    "word": "get",
+    "start": 50.08,
+    "end": 50.16
+  },
+  {
+    "word": "out.",
+    "start": 50.24,
+    "end": 50.68
+  },
+  {
+    "word": "And",
+    "start": 51.017,
+    "end": 51.04
+  },
+  {
+    "word": "on",
+    "start": 51.08,
+    "end": 51.12
+  },
+  {
+    "word": "the",
+    "start": 51.2,
+    "end": 51.36
+  },
+  {
+    "word": "hottest",
+    "start": 51.4,
+    "end": 51.76
+  },
+  {
+    "word": "day",
+    "start": 51.92,
+    "end": 52.08
+  },
+  {
+    "word": "anyone",
+    "start": 52.24,
+    "end": 52.56
+  },
+  {
+    "word": "can",
+    "start": 52.6,
+    "end": 52.64
+  },
+  {
+    "word": "remember,",
+    "start": 52.72,
+    "end": 53.44
+  },
+  {
+    "word": "his",
+    "start": 53.56,
+    "end": 53.68
+  },
+  {
+    "word": "gaps",
+    "start": 53.72,
+    "end": 54.16
+  },
+  {
+    "word": "finally",
+    "start": 54.24,
+    "end": 54.64
+  },
+  {
+    "word": "close,",
+    "start": 54.88,
+    "end": 55.44
+  },
+  {
+    "word": "rail",
+    "start": 55.52,
+    "end": 55.84
+  },
+  {
+    "word": "touching",
+    "start": 55.92,
+    "end": 56.24
+  },
+  {
+    "word": "rail.",
+    "start": 56.32,
+    "end": 57.04
+  },
+  {
+    "word": "And",
+    "start": 57.12,
+    "end": 57.2
+  },
+  {
+    "word": "halfway",
+    "start": 57.32,
+    "end": 57.52
+  },
+  {
+    "word": "across",
+    "start": 57.6,
+    "end": 57.84
+  },
+  {
+    "word": "the",
+    "start": 57.92,
+    "end": 58.0
+  },
+  {
+    "word": "canyon,",
+    "start": 58.08,
+    "end": 58.64
+  },
+  {
+    "word": "the",
+    "start": 58.72,
+    "end": 58.8
+  },
+  {
+    "word": "perfect",
+    "start": 58.88,
+    "end": 59.2
+  },
+  {
+    "word": "railroad",
+    "start": 59.28,
+    "end": 59.76
+  },
+  {
+    "word": "kicks",
+    "start": 59.84,
+    "end": 60.08
+  },
+  {
+    "word": "sideways",
+    "start": 60.2,
+    "end": 60.56
+  },
+  {
+    "word": "like",
+    "start": 60.64,
+    "end": 60.72
+  },
+  {
+    "word": "a",
+    "start": 60.8,
+    "end": 60.88
+  },
+  {
+    "word": "snake,",
+    "start": 61.04,
+    "end": 61.52
+  },
+  {
+    "word": "right",
+    "start": 61.6,
+    "end": 61.76
+  },
+  {
+    "word": "as",
+    "start": 61.84,
+    "end": 61.92
+  },
+  {
+    "word": "a",
+    "start": 61.96,
+    "end": 62.0
+  },
+  {
+    "word": "train",
+    "start": 62.08,
+    "end": 62.4
+  },
+  {
+    "word": "rolls",
+    "start": 62.52,
+    "end": 62.64
+  },
+  {
+    "word": "onto",
+    "start": 62.76,
+    "end": 62.88
+  },
+  {
+    "word": "it.",
+    "start": 62.96,
+    "end": 63.6
+  },
+  {
+    "word": "Follow",
+    "start": 63.72,
+    "end": 63.84
+  },
+  {
+    "word": "the",
+    "start": 63.92,
+    "end": 64.0
+  },
+  {
+    "word": "channel",
+    "start": 64.12,
+    "end": 64.24
+  },
+  {
+    "word": "for",
+    "start": 64.32,
+    "end": 64.4
+  },
+  {
+    "word": "more.",
+    "start": 64.48,
+    "end": 64.96
+  }
+]

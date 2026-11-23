@@ -1,0 +1,312 @@
+{
+  "title": "The Clickety-Clack Line\u2019s Hidden Advantage",
+  "chapters": [],
+  "lines": [
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "He saw gaps in a railroad every 39 feet,",
+      "emphasis": "39 feet",
+      "visual": "icon_pair",
+      "subjects": [
+        "railroad tracks",
+        "measuring ruler",
+        "rail gap"
+      ],
+      "label": "39 Feet",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "and 2 companies are racing to build a railroad along a canyon.",
+      "emphasis": "2 companies",
+      "visual": "icon_flow",
+      "subjects": [
+        "two railroad crews",
+        "canyon",
+        "railroad tracks"
+      ],
+      "label": "The Race",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "Whoever finishes first gets the whole country\u2019s business.",
+      "emphasis": "whole country\u2019s",
+      "visual": "icon_hero",
+      "subjects": [
+        "railroad map",
+        "train",
+        "country map"
+      ],
+      "label": "Winner Takes All",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "And when his boss sees gaps between every single rail, his face goes purple:",
+      "emphasis": "gaps",
+      "visual": "icon_pair",
+      "subjects": [
+        "angry boss",
+        "railroad tracks",
+        "rail gaps"
+      ],
+      "label": "Purple Rage",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "You\u2019re wrecking my railroad.",
+      "emphasis": "my railroad",
+      "visual": "icon_hero",
+      "subjects": [
+        "angry boss",
+        "broken railroad"
+      ],
+      "label": "Railroad Damage",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "But he won\u2019t close a single one.",
+      "emphasis": "won\u2019t close",
+      "visual": "cross_out",
+      "subjects": [
+        "railroad worker",
+        "rail gap",
+        "wrench"
+      ],
+      "label": "No Fix",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "So the other company lays their rails end to end, perfectly smooth,",
+      "emphasis": "perfectly smooth",
+      "visual": "icon_flow",
+      "subjects": [
+        "railroad crew",
+        "smooth rails",
+        "railroad tracks"
+      ],
+      "label": "Smooth Rails",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "and finishes first.",
+      "emphasis": "finishes first",
+      "visual": "staircase",
+      "subjects": [
+        "railroad crew",
+        "finished tracks",
+        "racing flag"
+      ],
+      "label": "First Place",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "Their trains glide across the canyon without a sound,",
+      "emphasis": "glide",
+      "visual": "icon_flow",
+      "subjects": [
+        "train",
+        "canyon",
+        "smooth railroad"
+      ],
+      "label": "Silent Ride",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "while his go clickety-clack over every gap,",
+      "emphasis": "clickety-clack",
+      "visual": "icon_flow",
+      "subjects": [
+        "train",
+        "rail gaps",
+        "railroad tracks"
+      ],
+      "label": "Clickety-Clack",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "and the newspapers start calling it the clickety-clack line.",
+      "emphasis": "clickety-clack line",
+      "visual": "icon_hero",
+      "subjects": [
+        "newspaper",
+        "train",
+        "railroad tracks"
+      ],
+      "label": "Clickety-Clack Line",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "Then summer comes, and something weird happens.",
+      "emphasis": "summer",
+      "visual": "icon_orbit",
+      "subjects": [
+        "sun",
+        "railroad tracks",
+        "calendar"
+      ],
+      "label": "Summer Arrives",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "His gaps start shrinking.",
+      "emphasis": "shrinking",
+      "visual": "staircase",
+      "subjects": [
+        "rail gap",
+        "railroad tracks",
+        "arrows"
+      ],
+      "label": "Gaps Shrink",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "In May, you can fit a coin in them.",
+      "emphasis": "coin",
+      "visual": "icon_pair",
+      "subjects": [
+        "coin",
+        "rail gap",
+        "railroad tracks"
+      ],
+      "label": "Coin-Sized Gap",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "By July, barely a sheet of paper.",
+      "emphasis": "paper",
+      "visual": "icon_pair",
+      "subjects": [
+        "sheet of paper",
+        "tiny rail gap",
+        "railroad tracks"
+      ],
+      "label": "Paper-Thin Gap",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "Meanwhile, on the perfect railroad, the rails have started groaning in the afternoon sun,",
+      "emphasis": "afternoon sun",
+      "visual": "icon_pair",
+      "subjects": [
+        "sun",
+        "railroad tracks",
+        "bent rails"
+      ],
+      "label": "Heat Builds",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "pushing against each other like they want to get out.",
+      "emphasis": "pushing",
+      "visual": "icon_flow",
+      "subjects": [
+        "two rails",
+        "afternoon sun",
+        "railroad ties"
+      ],
+      "label": "Rails Push",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "And on the hottest day anyone can remember, his gaps finally close,",
+      "emphasis": "hottest day",
+      "visual": "gauge",
+      "subjects": [
+        "blazing sun",
+        "railroad tracks",
+        "closed rail gap"
+      ],
+      "label": "Extreme Heat",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "rail touching rail.",
+      "emphasis": "rail touching",
+      "visual": "icon_pair",
+      "subjects": [
+        "two rails",
+        "railroad ties"
+      ],
+      "label": "Gap Closed",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "And halfway across the canyon, the perfect railroad kicks sideways like a snake,",
+      "emphasis": "kicks sideways",
+      "visual": "spike_vs_curve",
+      "subjects": [
+        "bent railroad",
+        "canyon",
+        "train"
+      ],
+      "label": "Sideways Buckle",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "right as a train rolls onto it.",
+      "emphasis": "train",
+      "visual": "icon_flow",
+      "subjects": [
+        "train",
+        "bent railroad",
+        "canyon"
+      ],
+      "label": "Danger Ahead",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "cta",
+      "text": "Follow the channel for more.",
+      "emphasis": "Follow",
+      "visual": "logo_end",
+      "subjects": [
+        "channel icon",
+        "play button"
+      ],
+      "label": "Follow",
+      "follow": true
+    }
+  ],
+  "voice_script": "[curious] He saw gaps in a railroad every 39 feet, and 2 companies are racing to build a railroad along a canyon. Whoever finishes first gets the whole country\u2019s business. And when his boss sees gaps between every single rail, his face goes purple: [angry] You\u2019re wrecking my railroad. But he won\u2019t close a single one. So the other company lays their rails end to end, perfectly smooth, and finishes first. Their trains glide across the canyon without a sound, while his go clickety-clack over every gap, and the newspapers start calling it the clickety-clack line. [mysterious] Then summer comes, and something weird happens. His gaps start shrinking. In May, you can fit a coin in them. By July, barely a sheet of paper. Meanwhile, on the perfect railroad, the rails have started groaning in the afternoon sun, pushing against each other like they want to get out. [suspenseful] And on the hottest day anyone can remember, his gaps finally close, rail touching rail. And halfway across the canyon, the perfect railroad kicks sideways like a snake, right as a train rolls onto it. Follow the channel for more."
+}

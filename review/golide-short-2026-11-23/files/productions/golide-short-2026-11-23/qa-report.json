@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "failures": [],
+  "audio": {
+    "integrated_lufs": -15.9,
+    "true_peak_dbtp": -2.32,
+    "loudness_range": 3.3
+  },
+  "editorial": {
+    "beats": 26,
+    "renderer": "vector"
+  },
+  "checked_at": "2026-11-23T11:26:14.767796+00:00",
+  "warnings": []
+}

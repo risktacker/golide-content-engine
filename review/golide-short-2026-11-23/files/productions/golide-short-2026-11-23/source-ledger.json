@@ -1,0 +1,59 @@
+{
+  "claims": [
+    {
+      "claim": "The topic video is a 1-minute-plus parable rather than an identified historical railroad incident. Its central scenario is that expansion gaps accommodate temperature-driven rail movement, while tightly constrained rail can buckle in extreme heat.",
+      "source_title": "Why Perfect Railroads Don't Work \u2014 Ricks Clips",
+      "source_url": "https://www.youtube.com/watch?v=7xS87iActkU",
+      "published_or_updated": "2026-11-01"
+    },
+    {
+      "claim": "For conventional jointed rail, official railroad engineering guidance lists 39-foot rail sections and specifies temperature-dependent openings between rail ends. For 39-foot rail, the listed gaps range from 5/16 inch in very cold conditions to 1/16 inch at 66\u201385\u00b0F, with no opening specified above 85\u00b0F.",
+      "source_title": "AREMA Manual for Railway Engineering, Chapter 5: Track",
+      "source_url": "https://railroadfasteners.com/download/AREMA-Stand-for-Track.pdf",
+      "published_or_updated": "2014"
+    },
+    {
+      "claim": "The video\u2019s \u201cfinger-wide\u201d gap is not consistent with the cited engineering tables: a one-inch-wide gap is substantially larger than the standard 1/16- to 5/16-inch openings specified for 39-foot rail.",
+      "source_title": "AREMA Manual for Railway Engineering, Chapter 5: Track",
+      "source_url": "https://railroadfasteners.com/download/AREMA-Stand-for-Track.pdf",
+      "published_or_updated": "2014"
+    },
+    {
+      "claim": "U.S. Department of Transportation research states that conventional jointed rail can absorb approximately 8 inches of expansion per mile before joint gaps close; a 20\u00b0F rise above the rail-laying temperature is given as an approximate example that can close those gaps.",
+      "source_title": "Thermal Loads, U.S. Department of Transportation / Federal Railroad Administration",
+      "source_url": "https://railroads.dot.gov/sites/fra.dot.gov/files/fra_net/14798/110_DOT-TSC-FRA-82-4_ntl.bts.gov-lib-47000-47500-47552.pdf",
+      "published_or_updated": "1982"
+    },
+    {
+      "claim": "Once rail-joint gaps close, additional heating produces compressive stress. If ballast and rail anchorage do not provide enough restraint, the track can buckle laterally\u2014an engineering failure mode consistent with the video\u2019s image of the track kicking sideways.",
+      "source_title": "Thermal Loads, U.S. Department of Transportation / Federal Railroad Administration",
+      "source_url": "https://railroads.dot.gov/sites/fra.dot.gov/files/fra_net/14798/110_DOT-TSC-FRA-82-4_ntl.bts.gov-lib-47000-47500-47552.pdf",
+      "published_or_updated": "1982"
+    },
+    {
+      "claim": "Federal Railroad Administration guidance confirms that heat-related track buckling, commonly called a \u201csun kink,\u201d can create derailment risk. The likelihood depends not only on heat but also on rail temperature at installation, ballast, fasteners, lateral restraint, track condition, and maintenance.",
+      "source_title": "Research Results RR 12-18: In-Motion, Non-Contact Rail Temperature Measurement Sensor",
+      "source_url": "https://railroads.dot.gov/sites/fra.dot.gov/files/fra_net/2713/RR_12_18.pdf",
+      "published_or_updated": "2012-12"
+    },
+    {
+      "claim": "Modern continuous welded rail is not simply laid end-to-end without engineering controls. FRA guidance defines continuous welded rail as rail welded into a continuous piece exceeding 400 feet and requires railroads to manage rail-neutral temperature and maintenance procedures to reduce both buckling in hot weather and rail breaks in cold weather.",
+      "source_title": "Procedures for the Installation, Adjustment, Maintenance, and Inspection of CWR",
+      "source_url": "https://railroads.fra.dot.gov/sites/fra.dot.gov/files/2021-09/FRA%20CWR%20Generic%20Plan%20-%20Effective%20-%20July%202021.pdf",
+      "published_or_updated": "2021-07"
+    }
+  ],
+  "platform_demand": {
+    "verdict": "pass",
+    "signal_type": "owner-replace",
+    "query": "Why Perfect Railroads Don't Work"
+  },
+  "music": {
+    "type": "music",
+    "title": "GOLIDE Curiosity Bed",
+    "creator": "GOLIDE",
+    "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+    "license": "GOLIDE-Owned-Procedural-1.0",
+    "attribution": ""
+  }
+}

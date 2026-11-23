@@ -1,0 +1,733 @@
+{
+ "set": "office",
+ "cast": [
+  {
+   "id": "engineer",
+   "label": "the gap engineer",
+   "place": "desk-2",
+   "look": {
+    "outfit": "vest",
+    "color": "#E6A23C",
+    "accent": "#243447",
+    "pattern": "pinstripe",
+    "hat": "boonie",
+    "glasses": true
+   }
+  },
+  {
+   "id": "boss",
+   "label": "the railroad boss",
+   "place": "desk-2-left",
+   "look": {
+    "outfit": "suit",
+    "color": "#6B2D84",
+    "accent": "#F2C94C",
+    "pattern": "plaid",
+    "hat": "none",
+    "glasses": false
+   }
+  },
+  {
+   "id": "rival",
+   "label": "the rival foreman",
+   "place": "desk-3",
+   "look": {
+    "outfit": "polo",
+    "color": "#2D9CDB",
+    "accent": "#FFFFFF",
+    "pattern": "stripes",
+    "hat": "cap",
+    "glasses": false
+   }
+  },
+  {
+   "id": "buyer",
+   "label": "the national rail buyer",
+   "place": "desk-3-right",
+   "look": {
+    "outfit": "bowtie",
+    "color": "#27AE60",
+    "accent": "#111111",
+    "pattern": "dots",
+    "hat": "beret",
+    "glasses": true
+   }
+  }
+ ],
+ "tv": {
+  "place": "wall-left",
+  "states": [
+   {
+    "from": 0,
+    "kicker": "",
+    "title": "39-FOOT GAPS",
+    "chart": "none",
+    "icon": "none",
+    "tone": "neutral"
+   },
+   {
+    "from": 9,
+    "kicker": "LIVE",
+    "title": "2 COMPANIES",
+    "chart": "none",
+    "icon": "none",
+    "tone": "neutral"
+   },
+   {
+    "from": 21,
+    "kicker": "",
+    "title": "FIRST WINS",
+    "chart": "up",
+    "icon": "none",
+    "tone": "good"
+   },
+   {
+    "from": 54,
+    "kicker": "",
+    "title": "SMOOTH RAILS",
+    "chart": "none",
+    "icon": "none",
+    "tone": "good"
+   },
+   {
+    "from": 66,
+    "kicker": "BREAKING",
+    "title": "RIVAL FINISHES",
+    "chart": "up",
+    "icon": "none",
+    "tone": "good"
+   },
+   {
+    "from": 85,
+    "kicker": "",
+    "title": "CLICKETY-CLACK LINE",
+    "chart": "none",
+    "icon": "none",
+    "tone": "neutral"
+   },
+   {
+    "from": 94,
+    "kicker": "",
+    "title": "SUMMER HEAT",
+    "chart": "up",
+    "icon": "none",
+    "tone": "neutral"
+   },
+   {
+    "from": 101,
+    "kicker": "",
+    "title": "GAPS SHRINK",
+    "chart": "down",
+    "icon": "none",
+    "tone": "good"
+   },
+   {
+    "from": 126,
+    "kicker": "BREAKING",
+    "title": "RAILS GROAN",
+    "chart": "up",
+    "icon": "none",
+    "tone": "bad"
+   },
+   {
+    "from": 153,
+    "kicker": "",
+    "title": "GAPS CLOSED",
+    "chart": "none",
+    "icon": "none",
+    "tone": "good"
+   },
+   {
+    "from": 165,
+    "kicker": "BREAKING",
+    "title": "RAILS KICK SIDEWAYS",
+    "chart": "down",
+    "icon": "none",
+    "tone": "bad"
+   }
+  ]
+ },
+ "beats": [
+  {
+   "from": 0,
+   "who": "engineer",
+   "act": "point",
+   "face": "serious",
+   "bubble": "none",
+   "look": "tv"
+  },
+  {
+   "from": 9,
+   "who": "engineer",
+   "act": "type",
+   "face": "calm",
+   "bubble": "none",
+   "look": "front"
+  },
+  {
+   "from": 9,
+   "who": "rival",
+   "act": "type",
+   "face": "smug",
+   "bubble": "none",
+   "look": "front"
+  },
+  {
+   "from": 21,
+   "who": "buyer",
+   "act": "lean-in",
+   "face": "wide",
+   "bubble": "$",
+   "look": "tv"
+  },
+  {
+   "from": 29,
+   "who": "boss",
+   "act": "lean-in",
+   "face": "squint",
+   "bubble": "?",
+   "look": "engineer"
+  },
+  {
+   "from": 39,
+   "who": "boss",
+   "act": "hands-on-head",
+   "face": "shout",
+   "bubble": "!",
+   "look": "engineer"
+  },
+  {
+   "from": 43,
+   "who": "boss",
+   "act": "point",
+   "face": "shout",
+   "bubble": "!",
+   "look": "engineer"
+  },
+  {
+   "from": 47,
+   "who": "engineer",
+   "act": "arms-crossed",
+   "face": "serious",
+   "bubble": "none",
+   "look": "boss"
+  },
+  {
+   "from": 54,
+   "who": "rival",
+   "act": "type",
+   "face": "smug",
+   "bubble": "none",
+   "look": "tv"
+  },
+  {
+   "from": 64,
+   "who": "rival",
+   "act": "nod",
+   "face": "grin",
+   "bubble": "none",
+   "look": "buyer"
+  },
+  {
+   "from": 66,
+   "who": "rival",
+   "act": "cheer",
+   "face": "grin",
+   "bubble": "!",
+   "look": "tv"
+  },
+  {
+   "from": 66,
+   "who": "buyer",
+   "act": "cheer",
+   "face": "grin",
+   "bubble": "$",
+   "look": "rival"
+  },
+  {
+   "from": 69,
+   "who": "rival",
+   "act": "wave",
+   "face": "smug",
+   "bubble": "none",
+   "look": "front"
+  },
+  {
+   "from": 78,
+   "who": "engineer",
+   "act": "nod",
+   "face": "flat",
+   "bubble": "none",
+   "look": "tv"
+  },
+  {
+   "from": 85,
+   "who": "boss",
+   "act": "scratch-head",
+   "face": "squint",
+   "bubble": "?",
+   "look": "tv"
+  },
+  {
+   "from": 94,
+   "who": "engineer",
+   "act": "point",
+   "face": "calm",
+   "bubble": "none",
+   "look": "tv"
+  },
+  {
+   "from": 97,
+   "who": "buyer",
+   "act": "lean-in",
+   "face": "wide",
+   "bubble": "?",
+   "look": "tv"
+  },
+  {
+   "from": 101,
+   "who": "engineer",
+   "act": "nod",
+   "face": "grin",
+   "bubble": "none",
+   "look": "boss"
+  },
+  {
+   "from": 105,
+   "who": "engineer",
+   "act": "point",
+   "face": "serious",
+   "bubble": "none",
+   "look": "tv"
+  },
+  {
+   "from": 107,
+   "who": "boss",
+   "act": "lean-in",
+   "face": "wide",
+   "bubble": "none",
+   "look": "tv"
+  },
+  {
+   "from": 114,
+   "who": "engineer",
+   "act": "point",
+   "face": "calm",
+   "bubble": "none",
+   "look": "tv"
+  },
+  {
+   "from": 116,
+   "who": "boss",
+   "act": "scratch-head",
+   "face": "squint",
+   "bubble": "?",
+   "look": "engineer"
+  },
+  {
+   "from": 121,
+   "who": "rival",
+   "act": "stand",
+   "face": "smug",
+   "bubble": "none",
+   "look": "tv"
+  },
+  {
+   "from": 122,
+   "who": "buyer",
+   "act": "point",
+   "face": "serious",
+   "bubble": "none",
+   "look": "tv"
+  },
+  {
+   "from": 126,
+   "who": "rival",
+   "act": "lean-in",
+   "face": "wide",
+   "bubble": "!",
+   "look": "tv"
+  },
+  {
+   "from": 135,
+   "who": "rival",
+   "act": "hands-on-head",
+   "face": "pale",
+   "bubble": "!",
+   "look": "tv"
+  },
+  {
+   "from": 145,
+   "who": "engineer",
+   "act": "stand",
+   "face": "serious",
+   "bubble": "none",
+   "look": "tv"
+  },
+  {
+   "from": 145,
+   "who": "boss",
+   "act": "lean-in",
+   "face": "wide",
+   "bubble": "none",
+   "look": "tv"
+  },
+  {
+   "from": 153,
+   "who": "engineer",
+   "act": "cheer",
+   "face": "grin",
+   "bubble": "!",
+   "look": "boss"
+  },
+  {
+   "from": 157,
+   "who": "boss",
+   "act": "nod",
+   "face": "grin",
+   "bubble": "none",
+   "look": "engineer"
+  },
+  {
+   "from": 160,
+   "who": "buyer",
+   "act": "point",
+   "face": "wide",
+   "bubble": "!",
+   "look": "tv"
+  },
+  {
+   "from": 165,
+   "who": "rival",
+   "act": "hands-on-head",
+   "face": "pale",
+   "bubble": "!",
+   "look": "tv"
+  },
+  {
+   "from": 173,
+   "who": "buyer",
+   "act": "hands-on-head",
+   "face": "pale",
+   "bubble": "!",
+   "look": "tv"
+  },
+  {
+   "from": 180,
+   "who": "engineer",
+   "act": "wave",
+   "face": "grin",
+   "bubble": "none",
+   "look": "front"
+  }
+ ],
+ "glow": [
+  {
+   "from": 0,
+   "place": "desk-2",
+   "tone": "neutral"
+  },
+  {
+   "from": 9,
+   "place": "desk-3",
+   "tone": "good"
+  },
+  {
+   "from": 29,
+   "place": "desk-2",
+   "tone": "bad"
+  },
+  {
+   "from": 66,
+   "place": "desk-3",
+   "tone": "good"
+  },
+  {
+   "from": 101,
+   "place": "desk-2",
+   "tone": "good"
+  },
+  {
+   "from": 126,
+   "place": "desk-3",
+   "tone": "bad"
+  },
+  {
+   "from": 153,
+   "place": "desk-2",
+   "tone": "good"
+  },
+  {
+   "from": 165,
+   "place": "desk-3",
+   "tone": "bad"
+  }
+ ],
+ "shots": [
+  {
+   "from": 0,
+   "who": [
+    "engineer",
+    "tv"
+   ],
+   "angle": "front",
+   "lens": "wide",
+   "move": "crane-down"
+  },
+  {
+   "from": 9,
+   "who": [
+    "engineer",
+    "rival"
+   ],
+   "angle": "left",
+   "lens": "wide",
+   "move": "orbit-right"
+  },
+  {
+   "from": 18,
+   "who": [
+    "engineer",
+    "rival"
+   ],
+   "angle": "front",
+   "lens": "wide",
+   "move": "orbit-left"
+  },
+  {
+   "from": 21,
+   "who": [
+    "buyer",
+    "tv"
+   ],
+   "angle": "low",
+   "lens": "medium",
+   "move": "push"
+  },
+  {
+   "from": 29,
+   "who": [
+    "boss",
+    "engineer"
+   ],
+   "angle": "right",
+   "lens": "medium",
+   "move": "orbit-left"
+  },
+  {
+   "from": 39,
+   "who": [
+    "boss"
+   ],
+   "angle": "front",
+   "lens": "close",
+   "move": "dolly-zoom"
+  },
+  {
+   "from": 43,
+   "who": [
+    "boss",
+    "engineer"
+   ],
+   "angle": "low",
+   "lens": "medium",
+   "move": "push"
+  },
+  {
+   "from": 47,
+   "who": [
+    "engineer",
+    "boss"
+   ],
+   "angle": "high",
+   "lens": "wide",
+   "move": "pull"
+  },
+  {
+   "from": 54,
+   "who": [
+    "rival",
+    "tv"
+   ],
+   "angle": "right",
+   "lens": "medium",
+   "move": "orbit-left"
+  },
+  {
+   "from": 64,
+   "who": [
+    "rival",
+    "buyer",
+    "tv"
+   ],
+   "angle": "front",
+   "lens": "wide",
+   "move": "crane-up"
+  },
+  {
+   "from": 69,
+   "who": [
+    "rival"
+   ],
+   "angle": "low",
+   "lens": "close",
+   "move": "push"
+  },
+  {
+   "from": 78,
+   "who": [
+    "engineer",
+    "tv"
+   ],
+   "angle": "left",
+   "lens": "medium",
+   "move": "orbit-right"
+  },
+  {
+   "from": 85,
+   "who": [
+    "boss",
+    "engineer",
+    "tv"
+   ],
+   "angle": "high",
+   "lens": "wide",
+   "move": "crane-down"
+  },
+  {
+   "from": 94,
+   "who": [
+    "engineer",
+    "tv"
+   ],
+   "angle": "right",
+   "lens": "medium",
+   "move": "push"
+  },
+  {
+   "from": 101,
+   "who": [
+    "engineer",
+    "boss"
+   ],
+   "angle": "front",
+   "lens": "medium",
+   "move": "orbit-left"
+  },
+  {
+   "from": 105,
+   "who": [
+    "engineer",
+    "boss",
+    "tv"
+   ],
+   "angle": "low",
+   "lens": "close",
+   "move": "push"
+  },
+  {
+   "from": 114,
+   "who": [
+    "engineer",
+    "boss",
+    "tv"
+   ],
+   "angle": "left",
+   "lens": "medium",
+   "move": "pull"
+  },
+  {
+   "from": 121,
+   "who": [
+    "rival",
+    "buyer",
+    "tv"
+   ],
+   "angle": "high",
+   "lens": "wide",
+   "move": "crane-down"
+  },
+  {
+   "from": 126,
+   "who": [
+    "rival",
+    "tv"
+   ],
+   "angle": "right",
+   "lens": "medium",
+   "move": "dolly-zoom"
+  },
+  {
+   "from": 135,
+   "who": [
+    "rival",
+    "buyer"
+   ],
+   "angle": "front",
+   "lens": "close",
+   "move": "orbit-right"
+  },
+  {
+   "from": 145,
+   "who": [
+    "engineer",
+    "boss",
+    "tv"
+   ],
+   "angle": "low",
+   "lens": "wide",
+   "move": "crane-up"
+  },
+  {
+   "from": 153,
+   "who": [
+    "engineer",
+    "boss"
+   ],
+   "angle": "left",
+   "lens": "medium",
+   "move": "push"
+  },
+  {
+   "from": 158,
+   "who": [
+    "engineer",
+    "boss"
+   ],
+   "angle": "front",
+   "lens": "medium",
+   "move": "orbit-left"
+  },
+  {
+   "from": 160,
+   "who": [
+    "buyer",
+    "tv"
+   ],
+   "angle": "high",
+   "lens": "medium",
+   "move": "pull"
+  },
+  {
+   "from": 165,
+   "who": [
+    "rival",
+    "tv"
+   ],
+   "angle": "right",
+   "lens": "close",
+   "move": "dolly-zoom"
+  },
+  {
+   "from": 173,
+   "who": [
+    "rival",
+    "buyer",
+    "tv"
+   ],
+   "angle": "front",
+   "lens": "wide",
+   "move": "crane-down"
+  }
+ ]
+}
