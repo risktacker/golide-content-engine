@@ -78,6 +78,8 @@ def test_things_match_only_on_their_own_noun():
     assert things.words("pickupTruck_Large") == ["pickup", "truck"]
     assert things.best({"name": "hand cart", "search": "cart"}, [{"lib": "p", "id": "w", "words": ["portable", "welding", "cart"]}]) is None
     assert things.best({"name": "wooden crate", "search": "crate"}, [{"lib": "p", "id": "c", "words": ["wooden", "military", "crate"]}])
+    wall = {"name": "canyon cliffs", "search": "cliff rock", "height_m": 20, "parts": ["rock: box 0 0 0 80 8 20"]}
+    assert things.best(wall, [{"lib": "p", "id": "b", "words": ["boulder", "cliff", "rock"], "dims": [3000, 2800, 2400]}]) is None
 
 
 def test_things_without_a_model_are_built_from_their_parts():

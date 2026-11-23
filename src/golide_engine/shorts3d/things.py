@@ -69,8 +69,25 @@ def score(thing: dict, entry_words: set[str]) -> float:
     return 1.0 + len(q & entry_words) / max(1, len(q)) - 0.02 * max(0, len(entry_words) - len(q & entry_words))
 
 
+def _shape(dims: list[float]) -> tuple[float, float]:
+    a = sorted(max(1e-6, abs(x)) for x in dims)
+    return a[2] / a[1], a[1] / a[0]
+
+
+def same_shape(thing: dict, entry: dict) -> bool:
+    """A model may stand in for a thing only with the thing's proportions: an 80 m canyon wall is not a boulder."""
+    if not entry.get("dims"):
+        return True
+    ps = parts_of(thing)
+    if not ps:
+        return True
+    ext = [max(p["c"][k] + p["s"][k] / 2 for p in ps) - min(p["c"][k] - p["s"][k] / 2 for p in ps) for k in range(3)]
+    a, b = _shape(ext), _shape(entry["dims"])
+    return all(max(x, y) / min(x, y) <= 2.5 for x, y in zip(a, b))
+
+
 def best(thing: dict, index: list[dict]) -> dict | None:
-    scored = [(score(thing, set(e["words"])), e) for e in index]
+    scored = [(score(thing, set(e["words"])), e) for e in index if same_shape(thing, e)]
     scored = [x for x in scored if x[0] > 0]
     return max(scored, key=lambda x: x[0])[1] if scored else None
 
@@ -86,7 +103,8 @@ def _polyhaven_index(lib: Path) -> list[dict]:
         data = json.loads(_get(f"{POLYHAVEN}/assets?t=models"))
         f.write_text(json.dumps(data), encoding="utf-8")
     data = json.loads(f.read_text(encoding="utf-8"))
-    return [{"lib": "polyhaven", "id": k, "words": sorted(set(words(v.get("name", k)) + words(k) + [w for t in v.get("tags", []) for w in words(t)]))}
+    return [{"lib": "polyhaven", "id": k, "words": sorted(set(words(v.get("name", k)) + words(k) + [w for t in v.get("tags", []) for w in words(t)])),
+             **({"dims": [float(x) for x in v["dimensions"][:3]]} if isinstance(v.get("dimensions"), list) and len(v["dimensions"]) >= 3 else {})}
             for k, v in data.items()]
 
 
