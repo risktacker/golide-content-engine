@@ -19,7 +19,9 @@ const CHROME = process.env.CHROME || '/usr/bin/google-chrome';
   await page.goto(`http://127.0.0.1:${srv.address().port}/index.html?w=${w}&h=${h}&look=c&style=ph&viewer=1&golide=${SCENE}${process.env.XQ || ''}`);   // XQ: e.g. &set=home
   await page.waitForFunction('window.GOLIDE && window.GOLIDE.ready || window.__err', { timeout: 300000 }).catch(e => { throw new Error('the scene never got ready: ' + (errors.join(' | ') || e.message)); });
   fs.mkdirSync(OUT, { recursive: true });
-  const report = await page.evaluate(() => window.GOLIDE.direct());
+  // DIRECTION: the check job's decisions (report.json); a render machine applies them instead of searching again
+  const saved = process.env.DIRECTION && fs.existsSync(process.env.DIRECTION) ? JSON.parse(fs.readFileSync(process.env.DIRECTION, 'utf8')).decisions : null;
+  const report = await page.evaluate(d => window.GOLIDE.direct(d || undefined), saved);
   fs.writeFileSync(path.join(OUT, 'report.json'), JSON.stringify(report, null, 1));
   for (const s of report.shots) console.log(`${s.ok ? 'OK  ' : 'FAIL'} ${s.name} [${s.t0}-${s.t1}]` + (s.found.length ? `  found: ${s.found.join('; ')}` : '') + (s.repair ? `  repaired: ${JSON.stringify(s.repair)}` : '') + (s.repair_note ? `  (${s.repair_note})` : '') + (s.still ? `  STILL: ${s.still.join('; ')}` : ''));
   for (const m of report.stepped) console.log('set:', m);

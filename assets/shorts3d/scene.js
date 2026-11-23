@@ -22,7 +22,7 @@ export async function run(K) {
   const boxOf = s => isPerson(s) ? D.shownBox(s) : new THREE.Box3().setFromObject(s);
   const useHide = sh => { D.hide.clear(); (sh.hidden || []).forEach(h => D.hide.set(h.who, h)); };
   const SAMPLE = 0.1;
-  const times = sh => { const a = []; for (let t = sh.t0 + 0.02; t < sh.t1 - 0.03; t += SAMPLE) a.push(t); a.push(sh.t1 - 0.02); return a; };
+  const times = (sh, step = SAMPLE) => { const a = []; for (let t = sh.t0 + 0.02; t < sh.t1 - 0.03; t += step) a.push(t); a.push(sh.t1 - 0.02); return a; };
   const shotAt = t => { let s = S.shots[0]; for (const x of S.shots) if (t >= x.t0) s = x; return s; };
 
   const stepped = D.separate(S.people, props, () => S.pose(0));   // nobody starts inside a desk
@@ -39,12 +39,13 @@ export async function run(K) {
     K.look(c.pos, c.tgt, c.fov, c.roll); camera().updateMatrixWorld(true); return c;
   }
   const camera = () => K.camera;
-  function problems(sh) {
+  // every problem of a shot, checked every 0.1 s; `quick` (the repair search): every 0.25 s, stop at the first one
+  function problems(sh, quick = false) {
     const out = [];
     useHide(sh);
-    for (const t of times(sh)) {
+    for (const t of times(sh, quick ? 0.25 : SAMPLE)) {
       S.pose(t); camAt(sh, t);
-      for (const p of D.issues({ subjects: sh.who.filter(isPerson), people: S.people, props, propObjs, extras: [...(sh.extras?.(t) || []), ...(S.words?.(t) || [])] })) out.push({ t: +t.toFixed(2), p });
+      for (const p of D.issues({ subjects: sh.who.filter(isPerson), people: S.people, props, propObjs, extras: [...(sh.extras?.(t) || []), ...(S.words?.(t) || [])] })) { out.push({ t: +t.toFixed(2), p }); if (quick) return out; }
     }
     return out;
   }
@@ -59,9 +60,23 @@ export async function run(K) {
   // then the shot before holds a little longer. Only a first shot that nothing fixes stops the render.
   const ANGLES = [[0, 0.06], [0, 0.25], [-0.4, 0.1], [0.4, 0.1], [-0.9, 0.1], [0.9, 0.1], [0, -0.12]];
   const ANGLE_FIXES = []; for (const [ya, pa] of ANGLES) for (const fk of [1, 1.2, 1.4]) for (const d of [1, 1.15]) ANGLE_FIXES.push({ yawAbs: ya, pitchAbs: pa, fovK: fk, dist: d });
-  const tryFixes = (sh, list) => { for (const fx of list) { sh.fix = fx; if (!problems(sh).length) return fx; } return null; };
-  function direct() {
-    const report = { scene: name, ok: true, stepped, shots: [] };
+  const tryFixes = (sh, list) => { for (const fx of list) { sh.fix = fx; if (!problems(sh, true).length && !problems(sh).length) return fx; } return null; };
+  // the director's decisions are made ONCE (the check job) and handed to every render machine, which only applies them
+  function apply(saved) {
+    const all = [...S.shots], keep = [];
+    for (const d of saved) {
+      const sh = all[d.i]; if (!sh) throw new Error(`direction: no shot ${d.i}`);
+      if (d.merged) { keep[keep.length - 1].t1 = d.t1; continue; }
+      sh.who = d.who.map(k => sh.who0[k]); sh.fix = d.fix || {}; keep.push(sh);
+    }
+    S.shots.length = 0; S.shots.push(...keep); S.shots.forEach(frameShot);
+    window.GOLIDE.shots = S.shots.map(s => ({ name: s.name, t0: s.t0, t1: s.t1 }));
+    return { scene: name, ok: true, applied: true, stepped, shots: S.shots.map(s => ({ name: s.name, t0: s.t0, t1: s.t1, ok: true, found: [] })) };
+  }
+  function direct(saved) {
+    S.shots.forEach((sh, i) => { sh.idx = i; sh.who0 = [...sh.who]; });
+    if (saved) return apply(saved);
+    const report = { scene: name, ok: true, stepped, shots: [], decisions: [] };
     const summary = pr => [...new Set(pr.map(x => x.p))];
     for (let i = 0; i < S.shots.length; i++) {
       const sh = S.shots[i]; frameShot(sh); sh.fix = {};
@@ -79,12 +94,15 @@ export async function run(K) {
         const prev = S.shots[i - 1], keepT1 = prev.t1, keepBox = prev.box, keepFix = prev.fix;
         prev.t1 = sh.t1; frameShot(prev); prev.fix = keepFix;
         if (!problems(prev).length || tryFixes(prev, [{}, ...FIXES, ...ANGLE_FIXES])) {
+          const pd = report.decisions.find(x => x.i === prev.idx); if (pd) pd.fix = prev.fix;
+          report.decisions.push({ i: sh.idx, merged: true, t1: +sh.t1.toFixed(3) });
           S.shots.splice(i, 1); i--; entry.ok = true; entry.repair_note = `merged into the shot before (${prev.name})`; report.shots.push(entry); continue;
         }
         prev.t1 = keepT1; prev.box = keepBox; prev.fix = keepFix;
       }
       if (done) { sh.fix = done; entry.ok = true; entry.repair = Object.keys(done).length ? done : null; }
       else { sh.fix = {}; entry.ok = false; entry.still = summary(problems(sh)); report.ok = false; }
+      report.decisions.push({ i: sh.idx, fix: sh.fix, who: sh.who.map(w => sh.who0.indexOf(w)) });
       report.shots.push(entry);
     }
     window.GOLIDE.shots = S.shots.map(s => ({ name: s.name, t0: s.t0, t1: s.t1 }));
