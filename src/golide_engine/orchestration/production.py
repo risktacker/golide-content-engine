@@ -487,7 +487,7 @@ class ProductionService:
     def _shorts3d_short(self, spec, work: Path, production_id: str, timed_words, narration: Path,
                         narration_seconds: float, video_path: Path) -> bool:
         """A Short in the 3D Shorts engine (owner 2026-11-22: "Bingo. Now this is the direction"; src/golide_engine/
-        shorts3d). Sol writes ONE storyboard as data, saved at once under a fingerprint of the recording and never paid
+        shorts3d). Sol writes ONE open storyboard (any place, any thing, any action from the script), saved at once under a fingerprint of the recording and never paid
         for twice; it is repaired for free (shorts3d/board.py) and the director frames and checks every shot; frames
         render across GitHub machines (shorts3d/remote.py); captions, the voice and Discipline Finishes go on here."""
         import hashlib
@@ -506,7 +506,7 @@ class ProductionService:
         store = r2_store_from_environment()
         mark = hashlib.sha256(json.dumps([[w["word"], round(w["start"], 2)] for w in words]
                                          + [round(float(narration_seconds), 2)]).encode()).hexdigest()[:24]
-        saved_key = f"shorts3d-board/{mark}.json"
+        saved_key = f"shorts3d-board-v2/{mark}.json"   # v2: the open storyboard (owner 2026-11-23); old office boards are never reused
         board_file = folder / "board.json"
 
         def saved() -> dict[str, Any] | None:

@@ -115,11 +115,20 @@ best unmodelled video of the last 45 days, no numbers bar. The channel's style i
   lit office/home sets, CC0 furniture), cloned at the pinned `ENGINE_COMMIT` (`shorts3d/build.py`), assets cached on
   GitHub; Chrome through the software-WebGL wrapper (`.github/actions/shorts3d-setup`). Our code hooks in at its skit
   branch (`assets/shorts3d/hook.py`, refuses if that line moves); the engine's own files are never edited.
-- A Short in the Stickman style goes here (`production._shorts3d_short`). Sol writes ONE storyboard as data, never
-  code (`shorts3d/board.py`: set, 2-4 cast with places and looks, beats on word numbers, wall-TV states, shots with
-  who/angle/lens/move), strict schema, capped at $0.86 (output limit; the provider's re-ask off), saved at once in R2
-  under a fingerprint of the recording, never paid twice. Everything wrong is repaired for free (`board.repair`).
-  One generic scene builds any storyboard (`assets/shorts3d/board.js`).
+- A Short in the Stickman style goes here (`production._shorts3d_short`). NOTHING IS PRE-DECIDED (owner 2026-11-23:
+  "you don't know what's coming with another script, but you are prepared to make whatever will come", like Inkee).
+  No sets, no prop lists, no topic examples in what Sol is told. Sol writes ONE open storyboard as data
+  (`shorts3d/board.py`): the place from the script (ground, sky, walls, size), every thing the words name (name, search
+  words, real height, spot, and its own 3D parts), the people (role, start, look), what each DOES on which word (walk,
+  run, hold, pick up, give, throw, kick, push, pull, sit, lie, fall, jump, ride, point ... with any target), what the
+  things do (move along a path, spin, shake, bend, break, fall, appear, vanish, glow, smoke, fire, change their words)
+  and the shots (frame, angle, lens, move, the engine's own shot plan). Only the body moves are a vocabulary; every noun
+  and place is free text. Strict schema, capped at $0.86 (output limit; the provider's re-ask off), saved at once in R2
+  under a fingerprint of the recording (`shorts3d-board-v2/`), never paid twice. Everything wrong is repaired for free
+  (`board.repair`). Things are found by name in free CC0 libraries on the render machine (Poly Haven's catalogue,
+  Kenney's 3D kits; only when the thing's own noun matches) or built from their parts (`shorts3d/things.py`), never
+  dropped. One generic scene builds any storyboard (`assets/shorts3d/board.js`); travelling subjects are followed by
+  the camera. Trials are free: a storyboard for a trial is written by hand with the same instructions, never paid.
 - The director (`assets/shorts3d/director.js`, owner: "heads and bodies well contained... nothing cropped and nothing
   crashing"): each shot frames its `who` inside the phone crop (130/160/230 px) and every 0.1 s checks: anyone who
   shows is whole; no head under the captions; no face hidden; heads never overlap; words in the set (TV) never cut
@@ -166,4 +175,4 @@ best unmodelled video of the last 45 days, no numbers bar. The channel's style i
   automatic runs never switch paid ones on. Real people stay real photo cards, never puppets.
 
 ## Checks
-`python3 -m pytest -q` must pass before every push (666 tests as of 2026-11-22).
+`python3 -m pytest -q` must pass before every push (672 tests as of 2026-11-23).

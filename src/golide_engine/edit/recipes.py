@@ -178,11 +178,13 @@ def object_parts(lines: Any, span: tuple[float, float, float]) -> list[dict[str,
         words = m.group(2).replace(",", " ").split()
         if not words or words[0].lower() not in PART_SHAPES:
             continue
-        nums, rot, gold = [], [0.0, 0.0, 0.0], False
+        nums, rot, gold, color = [], [0.0, 0.0, 0.0], False, None
         for w in words[1:]:
             low = w.lower()
             if low == "gold":
                 gold = True
+            elif _re.fullmatch(r"#[0-9a-f]{6}", low):
+                color = low
             elif low[:2] in ("rx", "ry", "rz"):
                 try:
                     rot["xyz".index(low[1])] = math.radians(float(low[2:].lstrip("=")))
@@ -198,7 +200,7 @@ def object_parts(lines: Any, span: tuple[float, float, float]) -> list[dict[str,
         x, y, z, w, d, h = nums[:6]
         # engine (x, y depth, z up, base) -> three (x, y up, z), centre; rx stays x, ry turns about z, rz about y
         parts.append({"name": name, "shape": words[0].lower(), "c": [x, z + h / 2, y], "s": [w, h, d],
-                      "r": [rot[0], rot[2], rot[1]], "gold": gold})
+                      "r": [rot[0], rot[2], rot[1]], "gold": gold, **({"color": color} if color else {})})
     if not parts:
         raise ValueError("no readable parts: write each as 'name: box|cyl|sphere|cone x y z w d h'")
     parts = parts[:PART_MAX]

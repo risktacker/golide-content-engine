@@ -31,6 +31,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/shorts3d-setup
+      - name: CC0 model libraries (Poly Haven, Kenney kits), cached between runs
+        uses: actions/cache@v4
+        with:
+          path: ~/c3d-lib
+          key: c3d-lib-v1-${{ github.run_id }}
+          restore-keys: c3d-lib-v1-
       - name: Storyboard and words
         run: python3 -m golide_engine.shorts3d.remote fetch --pid "$PID" --file ~/bundle/board.json
       - name: Director check (stills)
@@ -41,6 +47,10 @@ jobs:
           [ -f out/stills-debug/report.json ] && python3 -m golide_engine.shorts3d.remote put --pid "$PID" --file out/stills-debug/report.json || true
           [ -f out/sheet.jpg ] && python3 -m golide_engine.shorts3d.remote put --pid "$PID" --file out/sheet.jpg || true
           [ -f out/sheet-debug.jpg ] && python3 -m golide_engine.shorts3d.remote put --pid "$PID" --file out/sheet-debug.jpg || true
+      - name: The things found or built, for the render machines
+        run: |
+          tar -czf things.tgz -C ~/c3d/engine/golide things.json lib
+          python3 -m golide_engine.shorts3d.remote put --pid "$PID" --file things.tgz
       - id: parts
         run: echo "list=$(python3 -c "print(list(range(int('${{ inputs.parts }}'))))")" >> "$GITHUB_OUTPUT"
 
@@ -62,9 +72,13 @@ jobs:
           import sys; from golide_engine.shorts3d import remote
           data = remote.get('$PID', 'report.json')
           if not data: sys.exit('no director report from the check job')
-          open('$HOME/bundle/report.json', 'wb').write(data)"
+          open('$HOME/bundle/report.json', 'wb').write(data)
+          t = remote.get('$PID', 'things.tgz')
+          if not t: sys.exit('no things from the check job')
+          open('$HOME/bundle/things.tgz', 'wb').write(t)"
+          mkdir -p ~/c3d/engine/golide && tar -xzf ~/bundle/things.tgz -C ~/c3d/engine/golide
       - name: Frames ${{ matrix.part }} of ${{ inputs.parts }}
-        env: { DIRECTION: /home/runner/bundle/report.json }
+        env: { DIRECTION: /home/runner/bundle/report.json, THINGS_READY: "1" }
         run: |
           python3 -m golide_engine.shorts3d.build --engine ~/c3d/engine --board ~/bundle/board.json --words ~/bundle/words.json \
             --out "$PWD/out" --mode part --part ${{ matrix.part }} --parts ${{ inputs.parts }}

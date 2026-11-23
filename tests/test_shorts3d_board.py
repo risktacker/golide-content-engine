@@ -17,41 +17,72 @@ def words(n=60, step=0.4):
 def test_fixture_board_repairs_cleanly():
     w = words()
     fixed, notes = board.repair(json.loads(FIX.read_text()), w)
-    assert fixed["set"] == "office" and len(fixed["cast"]) == 4
+    assert len(fixed["cast"]) == 2 and len(fixed["things"]) == 3
     assert fixed["shots"][0]["from"] == 0
     starts = [w[s["from"]]["start"] for s in fixed["shots"]] + [w[-1]["end"]]
     assert all(b - a >= board.MIN_SHOT - 1e-6 for a, b in zip(starts, starts[1:]))
     assert all(a["angle"] != b["angle"] for a, b in zip(fixed["shots"], fixed["shots"][1:]))
 
 
+def test_nothing_is_pre_decided():
+    """Owner 2026-11-23: no set, prop list or topic in what Sol is told; nouns and places are free text."""
+    ins = board.instructions().lower()
+    for word in ("office", "desk", "laptop", "sofa", "kitchen", "tv", "investor", "chip"):
+        assert f" {word}" not in ins, word
+    sch = json.dumps(board.schema())
+    props = board.schema()["properties"]
+    assert "enum" not in json.dumps(props["things"]) and "enum" not in json.dumps(props["world"]["properties"]["place"])
+    assert "set" not in props and '"office"' not in sch
+
+
 def test_repair_fixes_what_a_model_gets_wrong():
     w = words()
-    raw = {"set": "space", "cast": [{"id": "Boss!", "place": "desk-9", "look": {"outfit": "cape", "color": "red"}},
-                                    {"id": "b", "place": "desk-9", "look": {}}],
-           "tv": {"place": "above:nobody", "states": [{"from": 3, "title": "X"}]},
-           "beats": [{"from": 999, "who": "boss", "act": "fly", "face": "angry", "bubble": "#", "look": "moon"},
-                     {"from": 2, "who": "ghost", "act": "type"}],
-           "glow": [{"from": 1, "place": "mars"}],
-           "shots": [{"from": 0, "who": ["boss"], "angle": "front"}, {"from": 1, "who": ["boss"], "angle": "front"},
-                     {"from": 40, "who": ["nobody"]}]}
+    raw = {"world": {"place": "x", "size": [500, -3], "sky": "purple", "ground_color": "green"},
+           "things": [{"id": "Ball!", "name": "ball", "at": [999, 1], "height_m": -1}, {"id": "ball", "name": "other", "on": "ball"}],
+           "cast": [{"id": "Kid", "look": {"outfit": "cape", "color": "red"}}, {"id": "kid", "at": [1, 1]}],
+           "beats": [{"from": 999, "who": "kid", "do": "fly"}, {"from": 2, "who": "ghost", "do": "stand"},
+                     {"from": 3, "who": "kid", "do": "walk"}, {"from": 4, "who": "kid", "do": "kick", "target": "ball"},
+                     {"from": 5, "who": "kid", "do": "ride", "target": "nothing"}],
+           "events": [{"from": 6, "thing": "ball", "do": "move"}, {"from": 7, "thing": "ball", "do": "spin", "amount": 90}],
+           "shots": [{"from": 0, "frame": ["kid"], "angle": "front"}, {"from": 1, "frame": ["kid"], "angle": "front"},
+                     {"from": 40, "frame": ["nobody"]}]}
     fixed, notes = board.repair(raw, w)
-    assert fixed["set"] == "office"
-    assert [c["id"] for c in fixed["cast"]] == ["boss", "b"]
-    assert len({c["place"] for c in fixed["cast"]}) == 2 and all(c["place"] in board.OFFICE_PLACES for c in fixed["cast"])
-    assert fixed["cast"][0]["look"]["outfit"] == "suit" and fixed["cast"][0]["look"]["color"].startswith("#")
-    assert fixed["tv"]["place"] == "none" and fixed["tv"]["states"] == []
-    assert fixed["beats"] == [{"from": 59, "who": "boss", "act": "stand", "face": "calm", "bubble": "none", "look": "front"}]
-    assert fixed["glow"] == []
+    W = fixed["world"]
+    assert W["size"] == [120.0, 10.0] and W["sky"] == "day" and W["ground_color"].startswith("#")
+    ids = [t["id"] for t in fixed["things"]]
+    assert ids == ["ball", "ballx"] and fixed["things"][0]["at"][0] == 60.0 and fixed["things"][0]["height_m"] == 0.02
+    assert fixed["things"][1]["on"] == "ball"
+    assert [c["id"] for c in fixed["cast"]] == ["kid", "kidp"] and fixed["cast"][0]["look"]["outfit"] == "shirt"
+    dos = [(b["from"], b["do"], b["with"]) for b in fixed["beats"]]
+    assert (3, "stand", "") in dos and (4, "kick", "ball") in dos and (5, "stand", "") in dos and (59, "stand", "") in dos
+    assert [e["do"] for e in fixed["events"]] == ["spin"]
     assert notes
 
 
 def test_long_shots_are_split_and_short_ones_merged():
     w = words(100, 0.4)        # 40 s, one shot asked for: split into parts of at most 3.5 s
-    fixed, _ = board.repair({"set": "office", "cast": [{"id": "a", "place": "open-1", "look": {}}],
-                             "shots": [{"from": 0, "who": ["a"], "angle": "front", "lens": "wide", "move": "push"}]}, w)
+    fixed, _ = board.repair({"cast": [{"id": "a", "at": [0, 0], "look": {}}],
+                             "shots": [{"from": 0, "frame": ["a"], "angle": "front", "lens": "wide", "move": "push"}]}, w)
     starts = [w[s["from"]]["start"] for s in fixed["shots"]] + [w[-1]["end"]]
     assert len(fixed["shots"]) > 5
     assert all(b - a <= board.MAX_SHOT + 0.4 for a, b in zip(starts, starts[1:]))
+
+
+def test_things_match_only_on_their_own_noun():
+    from golide_engine.shorts3d import things
+    idx = [{"lib": "k", "id": "ballerina", "words": ["ballerina", "dancer"]}, {"lib": "k", "id": "ball", "words": ["ball", "soccer"]},
+           {"lib": "k", "id": "truck", "words": ["truck", "delivery"]}, {"lib": "k", "id": "fire-truck", "words": ["fire", "truck"]}]
+    assert things.best({"name": "soccer ball", "search": "football"}, idx)["id"] == "ball"
+    assert things.best({"name": "fire truck", "search": "fire engine truck"}, idx)["id"] == "fire-truck"
+    assert things.best({"name": "steam locomotive", "search": "train"}, idx) is None
+    assert things.words("pickupTruck_Large") == ["pickup", "truck"]
+
+
+def test_things_without_a_model_are_built_from_their_parts():
+    from golide_engine.shorts3d import things
+    ps = things.parts_of({"height_m": 2.0, "parts": ["body: box 0 0 0 4 2 1 #ff0000", "wheel: cyl 1 0 0 1 0.3 1 rx90", "junk"]})
+    assert len(ps) == 2 and ps[0]["color"] == "#ff0000"
+    assert abs(max(p["c"][1] + p["s"][1] / 2 for p in ps) - 2.0) < 1e-3
 
 
 def test_cost_cap_keeps_one_call_under_86_cents():

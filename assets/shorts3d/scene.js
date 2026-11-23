@@ -18,6 +18,7 @@ export async function run(K) {
   const D = makeDirector(K, { room: S.room, capTop: 1420, capBottom: 1640 });   // captions in the lower third (stickman/captions.py "short3d")
   const props = S.props.map(p => { p.obj.userData.label = p.label; return { ...p, box: new THREE.Box3().setFromObject(p.obj) }; });
   const propObjs = S.props.filter(p => !p.floor).map(p => p.obj);
+  const poseT = t => { S.pose(t); props.forEach(p => p.box.setFromObject(p.obj)); };   // things move: their boxes follow them
   const isPerson = s => !!s.root;
   const boxOf = s => isPerson(s) ? D.shownBox(s) : new THREE.Box3().setFromObject(s);
   const useHide = sh => { D.hide.clear(); (sh.hidden || []).forEach(h => D.hide.set(h.who, h)); };
@@ -26,12 +27,13 @@ export async function run(K) {
   const shotAt = t => { let s = S.shots[0]; for (const x of S.shots) if (t >= x.t0) s = x; return s; };
 
   const moments = []; for (let t = 0; t < S.dur; t += 0.5) moments.push(t);
-  const stepped = D.separate(S.people, props, t => S.pose(t), moments);   // nobody inside a desk at any moment
+  const stepped = D.separate(S.people, props, t => poseT(t), moments);   // nobody inside a desk at any moment
   // the fourth wall (owner 2026-11-23 run): walls between the camera and the action are hidden with what hangs on them
-  const walls = K.O.children.filter(o => o.isMesh && o.geometry.type === 'BoxGeometry').map(o => ({ o, b: new THREE.Box3().setFromObject(o) }))
+  const SETG = S.group || K.O;
+  const walls = SETG.children.filter(o => o.isMesh && o.geometry.type === 'BoxGeometry').map(o => ({ o, b: new THREE.Box3().setFromObject(o) }))
     .filter(w => { const s = w.b.getSize(new THREE.Vector3()); return s.y > 2 && (s.x > 6 || s.z > 6) && Math.min(s.x, s.z) < 0.6; });
   const onWall = walls.map(w => { const s = w.b.getSize(new THREE.Vector3()), alongX = s.x > s.z, c = w.b.getCenter(new THREE.Vector3());
-    return K.O.children.filter(o => o !== w.o && o.visible && (() => { const q = new THREE.Box3().setFromObject(o).getCenter(new THREE.Vector3()); return alongX ? Math.abs(q.z - c.z) < 0.6 : Math.abs(q.x - c.x) < 0.6; })()); });
+    return SETG.children.filter(o => o !== w.o && o.visible && (() => { const q = new THREE.Box3().setFromObject(o).getCenter(new THREE.Vector3()); return alongX ? Math.abs(q.z - c.z) < 0.6 : Math.abs(q.x - c.x) < 0.6; })()); });
   const wallVisible = walls.map(w => w.o.visible);
   function fourthWall(pos, tgt) {
     walls.forEach((w, i) => { const s = w.b.getSize(new THREE.Vector3()), c = w.b.getCenter(new THREE.Vector3()), alongX = s.x > s.z;
@@ -39,15 +41,25 @@ export async function run(K) {
       w.o.visible = wallVisible[i] && !between; onWall[i].forEach(o => { if (o.userData.wallKeep === undefined) o.userData.wallKeep = o.visible; o.visible = o.userData.wallKeep && !between; }); });
   }
   function frameShot(sh) {                                         // what the shot must hold, over its whole length
-    useHide(sh); const b = new THREE.Box3();
-    for (const t of times(sh)) { S.pose(t); sh.who.forEach(s => b.union(boxOf(s))); (sh.extras?.(t) || []).forEach(e => b.union(e.box)); }
-    sh.box = b;
+    useHide(sh); const b = new THREE.Box3(), at = [];
+    for (const t of times(sh)) { poseT(t); const m = new THREE.Box3(); sh.who.forEach(s => m.union(boxOf(s))); (sh.extras?.(t) || []).forEach(e => m.union(e.box)); b.union(m); at.push({ t, box: m }); }
+    sh.box = b; sh.at = at;
+    // subjects that travel (a vehicle, someone running): the camera follows them instead of framing the whole trip
+    const size = m => m.getSize(new THREE.Vector3()).length(), big = Math.max(...at.map(x => size(x.box)));
+    sh.track = size(b) > big * 1.8;
+  }
+  // the box the camera frames at time t: the whole shot, or (tracking) the subjects around that moment, smoothed
+  function boxAt(sh, t) {
+    if (!sh.track) return sh.box;
+    const b = new THREE.Box3(); for (const x of sh.at) if (Math.abs(x.t - t) <= 0.45) b.union(x.box);
+    if (b.isEmpty()) { let best = sh.at[0]; for (const x of sh.at) if (Math.abs(x.t - t) < Math.abs(best.t - t)) best = x; b.copy(best.box); }
+    return b;
   }
   function camAt(sh, t) {
     const u = THREE.MathUtils.clamp((t - sh.t0) / (sh.t1 - sh.t0), 0, 1), v = { ...sh.view(u, t) }, f = sh.fix || {};
     if (f.yawAbs !== undefined) v.yaw = f.yawAbs; if (f.pitchAbs !== undefined) v.pitch = f.pitchAbs;
     v.yaw += f.yaw || 0; v.pitch += f.pitch || 0; v.fov *= f.fovK || 1; v.k = (v.k ?? 1) * (f.dist || 1);
-    const c = D.fit(sh.box, v); if (!c) throw new Error(`shot ${sh.name}: its subjects cannot fit the frame at ${v.fov.toFixed(0)} degrees`);
+    const c = D.fit(boxAt(sh, t), v); if (!c) throw new Error(`shot ${sh.name}: its subjects cannot fit the frame at ${v.fov.toFixed(0)} degrees`);
     K.look(c.pos, c.tgt, c.fov, c.roll); camera().updateMatrixWorld(true); fourthWall(c.pos, c.tgt); return c;
   }
   const camera = () => K.camera;
@@ -56,7 +68,7 @@ export async function run(K) {
     const out = [];
     useHide(sh);
     for (const t of times(sh, quick ? 0.25 : SAMPLE)) {
-      S.pose(t); camAt(sh, t);
+      poseT(t); camAt(sh, t);
       for (const p of D.issues({ subjects: sh.who.filter(isPerson), people: S.people, props, propObjs, extras: [...(sh.extras?.(t) || []), ...(S.words?.(t) || []).filter(e => !e.subjectOnly || sh.who.includes(e.subjectOnly))] })) { out.push({ t: +t.toFixed(2), p }); if (quick) return out; }
     }
     return out;
@@ -70,7 +82,7 @@ export async function run(K) {
   for (const y of [0, 0.2, -0.2]) FIXES.push({ fovK: 0.85, yaw: y });
   // the last free repairs, in order (owner 2026-11-22: never pay a model to retry): another angle, then fewer people,
   // then the shot before holds a little longer. Only a first shot that nothing fixes stops the render.
-  const ANGLES = [[0, 0.06], [0, 0.25], [-0.4, 0.1], [0.4, 0.1], [-0.9, 0.1], [0.9, 0.1], [0, -0.12]];
+  const ANGLES = [[0, 0.06], [0, 0.25], [-0.4, 0.1], [0.4, 0.1], [-0.9, 0.1], [0.9, 0.1], [0, -0.12], [-1.5, 0.1], [1.5, 0.1], [-2.2, 0.12], [2.2, 0.12], [Math.PI, 0.12]];   // round the back too: people turn and walk anywhere
   const ANGLE_FIXES = []; for (const [ya, pa] of ANGLES) for (const fk of [1, 1.2, 1.4]) for (const d of [1, 1.15]) ANGLE_FIXES.push({ yawAbs: ya, pitchAbs: pa, fovK: fk, dist: d });
   const tryFixes = (sh, list) => { for (const fx of list) { sh.fix = fx; if (!problems(sh, true).length && !problems(sh).length) return fx; } return null; };
   // the director's decisions are made ONCE (the check job) and handed to every render machine, which only applies them
@@ -131,7 +143,7 @@ export async function run(K) {
   const ov = document.createElement('canvas'); ov.width = K.WW; ov.height = K.HH; const og = ov.getContext('2d');
   function frame(t, debug = false) {
     const sh = shotAt(t); if (!sh.box) frameShot(sh); useHide(sh);
-    S.pose(t); const c = camAt(sh, t); S.light(t, c, sh);
+    poseT(t); const c = camAt(sh, t); S.light(t, c, sh);
     K.post.bokeh.enabled = !!sh.dof; if (sh.dof) { K.post.bokeh.uniforms.focus.value = c.dist; K.post.bokeh.uniforms.aperture.value = sh.dof; }
     K.U.uTime.value = t; K.post.render();
     if (!debug) return K.renderer.domElement.toDataURL('image/jpeg', 0.92);

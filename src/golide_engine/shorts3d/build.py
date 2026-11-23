@@ -41,13 +41,19 @@ def install(engine: Path) -> None:
 
 
 def use_board(engine: Path, board_data: dict, words: list[dict]) -> list[str]:
-    """Repair a storyboard for free and hand it to the board scene; returns what was repaired."""
+    """Repair a storyboard for free, find or build every thing it names, and hand it to the board scene; returns
+    what was repaired. The scene builds its own place, so the engine's office is not built (set=track)."""
     global SET_QUERY
+    import os
     from .board import repair
+    from .things import resolve
     fixed, notes = repair(board_data, words)
+    (engine / "golide").mkdir(exist_ok=True)
     (engine / "golide" / "board.json").write_text(json.dumps(fixed), encoding="utf-8")
     (engine / "golide" / "board.words.json").write_text(json.dumps(words), encoding="utf-8")
-    SET_QUERY = "&set=home" if fixed["set"] == "home" else ""
+    if not (os.environ.get("THINGS_READY") and (engine / "golide" / "things.json").exists()):   # render machines: from the check job
+        resolve(fixed, engine, Path(os.environ.get("C3D_LIB", str(Path.home() / "c3d-lib"))))
+    SET_QUERY = "&set=track"
     for n in notes:
         print("storyboard repaired:", n)
     return notes
@@ -59,7 +65,7 @@ def scene_words(words: list[dict], until: float | None) -> list[dict]:
     return [w for w in out if until is None or w["start"] < until]
 
 
-SET_QUERY = ""                                               # &set=home when the storyboard is set at home
+SET_QUERY = ""                                               # &set=track for a storyboard: the board builds its own place
 
 
 def _node(engine: Path, scene: str, out: Path, *args: str) -> subprocess.Popen:

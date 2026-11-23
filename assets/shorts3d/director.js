@@ -129,6 +129,9 @@ export function makeDirector(K, opt = {}) {
       const ez = e.box.getCenter(new THREE.Vector3()).distanceTo(camera.position);
       for (const [c, h] of heads) if (h.x1 > r.x0 && r.x1 > h.x0 && h.y1 > r.y0 && r.y1 > h.y0 && headBox(c).getCenter(new THREE.Vector3()).distanceTo(camera.position) < ez - 0.05) out.push(`${e.label} is covered by the head of ${c.label}`); }
     for (const c of subjects) if (c.root) { const h = hidden(c, propObjs, people); if (h) out.push(h); }
+    // a subject's face turned away from the camera reads as nobody acting (2026-11-23): the camera goes round to the face
+    for (const c of subjects) if (c.root && (opt.faces ?? true)) { const hc = headBox(c).getCenter(new THREE.Vector3()), fwd = new THREE.Vector3(0, 0, 1).applyQuaternion(c.root.quaternion); fwd.y = 0;
+      if (fwd.lengthSq() > 1e-4 && fwd.normalize().dot(camera.position.clone().sub(hc).setY(0).normalize()) < -0.15) out.push(`${c.label} has their back to the camera`); }
     out.push(...collisions(people, props));
     return [...new Set(out)];
   }

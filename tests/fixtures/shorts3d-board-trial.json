@@ -1,40 +1,252 @@
-{"set": "office",
+{
+ "world": {
+  "place": "an open field",
+  "indoor": false,
+  "ground": "grass",
+  "ground_color": "#7da35a",
+  "walls_color": "",
+  "sky": "day",
+  "size": [
+   30,
+   30
+  ],
+  "light": "warm"
+ },
+ "things": [
+  {
+   "id": "crate",
+   "name": "wooden crate",
+   "search": "crate box",
+   "height_m": 0.6,
+   "at": [
+    1,
+    0
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "box: box 0 0 0 1 1 1 #a0703c"
+   ],
+   "text": "",
+   "hero": true
+  },
+  {
+   "id": "cart",
+   "name": "hand cart",
+   "search": "cart",
+   "height_m": 1.0,
+   "at": [
+    -3,
+    -2
+   ],
+   "on": "",
+   "turn_deg": 90,
+   "color": "",
+   "parts": [
+    "bed: box 0 0 0.4 1.6 0.9 0.3",
+    "wheel: cyl 0 0.5 0.3 0.6 0.1 0.6 rx90"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "sign",
+   "name": "sign",
+   "search": "sign board",
+   "height_m": 1.8,
+   "at": [
+    4,
+    -4
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "post: cyl 0 0 0 0.1 0.1 1.2",
+    "board: box 0 0 1.2 1.2 0.05 0.6"
+   ],
+   "text": "OPEN",
+   "hero": false
+  }
+ ],
  "cast": [
-  {"id": "boss", "label": "the chipmaker's boss", "place": "desk-3", "look": {"outfit": "vest", "color": "#2f3542", "accent": "#c8352f", "pattern": "none", "hat": "none", "glasses": false}},
-  {"id": "inv1", "label": "investor 1", "place": "desk-2-left", "look": {"outfit": "suit", "color": "#2c3e6b", "accent": "#3d7be0", "pattern": "pinstripe", "hat": "none", "glasses": false}},
-  {"id": "inv2", "label": "investor 2", "place": "desk-2", "look": {"outfit": "vest", "color": "#3a3f4a", "accent": "#e8b730", "pattern": "none", "hat": "none", "glasses": true}},
-  {"id": "inv3", "label": "investor 3", "place": "desk-2-right", "look": {"outfit": "bowtie", "color": "#7a5134", "accent": "#c8352f", "pattern": "plaid", "hat": "none", "glasses": false}}],
- "tv": {"place": "above:boss", "states": [
-  {"from": 0, "kicker": "", "title": "CHIPMAKER", "chart": "up", "icon": "chip", "tone": "neutral"},
-  {"from": 10, "kicker": "BREAKING", "title": "AI IPO", "chart": "up", "icon": "none", "tone": "good"},
-  {"from": 22, "kicker": "BREAKING", "title": "AI BUILDOUT?", "chart": "down", "icon": "none", "tone": "bad"},
-  {"from": 27, "kicker": "THE BET", "title": "$3.8 TRILLION", "chart": "none", "icon": "none", "tone": "neutral"},
-  {"from": 37, "kicker": "NOV 19", "title": "STRONG DEBUT", "chart": "up", "icon": "none", "tone": "good"},
-  {"from": 45, "kicker": "NOV 20", "title": "SHARES FELL", "chart": "down", "icon": "none", "tone": "bad"}]},
+  {
+   "id": "a",
+   "label": "a worker",
+   "at": [
+    -1,
+    1
+   ],
+   "turn_deg": 0,
+   "look": {
+    "outfit": "overalls",
+    "color": "#3d5a9c",
+    "accent": "#e8442a",
+    "pattern": "none",
+    "hat": "cap",
+    "glasses": false
+   }
+  },
+  {
+   "id": "b",
+   "label": "a buyer",
+   "at": [
+    2,
+    1
+   ],
+   "turn_deg": -30,
+   "look": {
+    "outfit": "coat",
+    "color": "#7a5134",
+    "accent": "#f2cf2c",
+    "pattern": "none",
+    "hat": "none",
+    "glasses": true
+   }
+  }
+ ],
  "beats": [
-  {"from": 0, "who": "boss", "act": "type", "face": "smug", "bubble": "none", "look": "front"},
-  {"from": 7, "who": "boss", "act": "cheer", "face": "grin", "bubble": "none", "look": "front"},
-  {"from": 0, "who": "inv2", "act": "type", "face": "calm", "bubble": "none", "look": "front"},
-  {"from": 14, "who": "inv1", "act": "stand", "face": "grin", "bubble": "none", "look": "inv2"},
-  {"from": 14, "who": "inv3", "act": "stand", "face": "grin", "bubble": "none", "look": "inv2"},
-  {"from": 11, "who": "boss", "act": "stand", "face": "calm", "bubble": "none", "look": "front"},
-  {"from": 18, "who": "inv1", "act": "scratch-head", "face": "wide", "bubble": "?", "look": "inv2"},
-  {"from": 18, "who": "inv2", "act": "hands-on-head", "face": "pale", "bubble": "?", "look": "front"},
-  {"from": 18, "who": "inv3", "act": "arms-crossed", "face": "squint", "bubble": "?", "look": "inv2"},
-  {"from": 22, "who": "boss", "act": "stand", "face": "pale", "bubble": "none", "look": "front"},
-  {"from": 30, "who": "inv1", "act": "shrug", "face": "serious", "bubble": "none", "look": "inv3"},
-  {"from": 30, "who": "inv3", "act": "point", "face": "squint", "bubble": "$", "look": "inv1"},
-  {"from": 37, "who": "boss", "act": "cheer", "face": "grin", "bubble": "none", "look": "front"},
-  {"from": 44, "who": "boss", "act": "hands-on-head", "face": "pale", "bubble": "!", "look": "front"}],
- "glow": [{"from": 11, "place": "desk-2", "tone": "good"}, {"from": 17, "place": "desk-2", "tone": "bad"}],
+  {
+   "from": 0,
+   "until": 5,
+   "who": "a",
+   "do": "walk",
+   "target": "crate",
+   "to": [],
+   "with": "",
+   "face": "calm",
+   "bubble": "none"
+  },
+  {
+   "from": 8,
+   "until": 12,
+   "who": "a",
+   "do": "pick-up",
+   "target": "crate",
+   "to": [],
+   "with": "crate",
+   "face": "serious",
+   "bubble": "none"
+  },
+  {
+   "from": 14,
+   "until": 18,
+   "who": "a",
+   "do": "give",
+   "target": "b",
+   "to": [],
+   "with": "crate",
+   "face": "grin",
+   "bubble": "none"
+  },
+  {
+   "from": 20,
+   "until": 26,
+   "who": "b",
+   "do": "throw",
+   "target": "cart",
+   "to": [],
+   "with": "crate",
+   "face": "smug",
+   "bubble": "!"
+  },
+  {
+   "from": 30,
+   "until": 40,
+   "who": "a",
+   "do": "ride",
+   "target": "cart",
+   "to": [],
+   "with": "",
+   "face": "wide",
+   "bubble": "none"
+  }
+ ],
+ "events": [
+  {
+   "from": 30,
+   "until": 44,
+   "thing": "cart",
+   "do": "move",
+   "to": [
+    -12,
+    -6
+   ],
+   "path": [],
+   "amount": 1,
+   "text": ""
+  },
+  {
+   "from": 46,
+   "until": 50,
+   "thing": "sign",
+   "do": "text",
+   "to": [],
+   "path": [],
+   "amount": 1,
+   "text": "CLOSED"
+  }
+ ],
  "shots": [
-  {"from": 0, "who": ["boss", "tv"], "angle": "high", "lens": "wide", "move": "crane-down"},
-  {"from": 5, "who": ["boss"], "angle": "low", "lens": "close", "move": "push"},
-  {"from": 9, "who": ["boss", "tv"], "angle": "front", "lens": "medium", "move": "push"},
-  {"from": 11, "who": ["inv1", "inv2", "inv3"], "angle": "right", "lens": "medium", "move": "push"},
-  {"from": 16, "who": ["inv1", "inv2", "inv3"], "angle": "left", "lens": "medium", "move": "orbit-right"},
-  {"from": 22, "who": ["boss", "tv"], "angle": "front", "lens": "medium", "move": "dolly-zoom"},
-  {"from": 23, "who": ["boss", "tv"], "angle": "high", "lens": "wide", "move": "crane-down"},
-  {"from": 30, "who": ["inv1", "inv2", "inv3"], "angle": "front", "lens": "medium", "move": "push"},
-  {"from": 37, "who": ["boss", "tv"], "angle": "low", "lens": "medium", "move": "push"},
-  {"from": 44, "who": ["boss", "tv"], "angle": "front", "lens": "medium", "move": "dolly-zoom"}]}
+  {
+   "from": 0,
+   "frame": [
+    "a",
+    "crate"
+   ],
+   "angle": "high",
+   "lens": "wide",
+   "move": "crane-down"
+  },
+  {
+   "from": 8,
+   "frame": [
+    "a",
+    "crate"
+   ],
+   "angle": "low",
+   "lens": "medium",
+   "move": "push"
+  },
+  {
+   "from": 14,
+   "frame": [
+    "a",
+    "b"
+   ],
+   "angle": "left",
+   "lens": "medium",
+   "move": "orbit-left"
+  },
+  {
+   "from": 20,
+   "frame": [
+    "b",
+    "cart"
+   ],
+   "angle": "right",
+   "lens": "close",
+   "move": "snap-zoom"
+  },
+  {
+   "from": 30,
+   "frame": [
+    "a",
+    "cart"
+   ],
+   "angle": "front",
+   "lens": "wide",
+   "move": "track"
+  },
+  {
+   "from": 44,
+   "frame": [
+    "sign"
+   ],
+   "angle": "low",
+   "lens": "close",
+   "move": "push"
+  }
+ ]
+}
