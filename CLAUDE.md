@@ -96,7 +96,8 @@ best unmodelled video of the last 45 days, no numbers bar. The channel's style i
 - Long videos are made with ReachMora's own package, imported not copied (`vendor/reachmora`, `stickman/longform.py`);
   its rules win for them (its music, SFX, captions, chapter cards). Shorts are made in the 3D Shorts engine (see
   "3D Shorts" below); the flat-card cartoon-short-kit was removed on 2026-11-22.
-- The characters are actors: the narrator speaks, nobody's mouth talks. Real people are generic puppets, no likeness.
+- The characters are actors and they talk (owner 2026-11-23): mouths move when they speak the script's quoted lines.
+  Real people are generic puppets, no likeness.
 - Our engine feeds only the voice, our word timings and research; Sol writes story.json (long) from the kit's own
   documents. No paid retries (owner 2026-11-22): Sol writes the storyboard ONCE and it is
   saved at once; the plan / look checks are repaired by the engine for free on that same storyboard (camera guard, more
