@@ -1,0 +1,47 @@
+name: TRIAL upload a review clip to YouTube (private)
+
+# 2026-11-23 (owner): trial clips are too big to download in the chat; a trial goes to YouTube PRIVATE so he watches it
+# there. Private only, never scheduled, never public, no Reels. The title starts with "TRIAL".
+on:
+  workflow_dispatch:
+    inputs:
+      branch: { description: "review branch holding the clip", required: true }
+      path: { description: "clip path on that branch", required: true }
+      title: { description: "title (TRIAL is added in front)", required: true }
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  upload:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: python -m pip install -q -e '.[production]'
+      - name: The clip
+        run: |
+          git fetch -q --depth 1 origin "+refs/heads/${{ inputs.branch }}:refs/remotes/origin/clip"
+          git show "origin/clip:${{ inputs.path }}" > clip.mp4 && ls -la clip.mp4
+      - name: Upload private
+        env:
+          GOLIDE_STUDIO_BASE_URL: "https://studio.golidee.com"
+          TITLE: ${{ inputs.title }}
+        run: |
+          python - <<'PY'
+          import os
+          from googleapiclient.http import MediaFileUpload
+          from golide_engine.youtube.auth import assert_channel, services
+          youtube, _ = services()
+          assert_channel(youtube, "UCqaXVBSBz7iQsRHOupKt-3w")
+          title = ("TRIAL: " + os.environ["TITLE"].strip())[:100]
+          body = {"snippet": {"title": title, "description": "Trial clip for the owner's review. Not for release.", "categoryId": "28"},
+                  "status": {"privacyStatus": "private", "selfDeclaredMadeForKids": False}}
+          r = youtube.videos().insert(part="snippet,status", body=body, media_body=MediaFileUpload("clip.mp4", chunksize=-1, resumable=True)).execute()
+          print("uploaded private:", r["id"], "https://youtu.be/" + r["id"])
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
+              f.write(f"Private trial: https://youtu.be/{r['id']}\n")
+          PY
