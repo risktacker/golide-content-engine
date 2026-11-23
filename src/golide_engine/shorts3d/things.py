@@ -61,6 +61,11 @@ def score(thing: dict, entry_words: set[str]) -> float:
     if not h or h not in entry_words:
         return 0.0
     q = set(words(thing.get("name", ""))) | set(words(thing.get("search", "")))
+    # a "hand cart" is not a "portable welding cart": a named kind needs one more of its words in the model, unless
+    # the model is the plain thing itself
+    extra = entry_words - {h}
+    if len(words(thing.get("name", ""))) > 1 and not ((q - {h}) & entry_words) and len(extra) > 1:
+        return 0.0
     return 1.0 + len(q & entry_words) / max(1, len(q)) - 0.02 * max(0, len(entry_words) - len(q & entry_words))
 
 
@@ -90,10 +95,11 @@ def _kenney_kit(lib: Path, kit: str) -> None:
     if dest.exists():
         return
     page = _get(f"https://kenney.nl/assets/{kit}").decode("utf-8", "replace")
-    m = re.search(r'href="(https://kenney\.nl/media/pages/assets/[^"]+?\.zip)"', page)
-    if not m:
-        raise RuntimeError(f"no download on {kit}")
-    z = zipfile.ZipFile(io.BytesIO(_get(m.group(1), timeout=180)))
+    zips = [u for u in re.findall(r"""["'(]([^"'()\s<>]+?\.zip)(?:\?[^"'()\s<>]*)?["')]""", page)]
+    if not zips:
+        raise RuntimeError(f"no download on {kit} ({len(page)} bytes, {page.count('zip')} 'zip' mentions)")
+    url = zips[0] if zips[0].startswith("http") else "https://kenney.nl" + ("" if zips[0].startswith("/") else "/") + zips[0]
+    z = zipfile.ZipFile(io.BytesIO(_get(url, timeout=180)))
     dest.mkdir(parents=True)
     for n in z.namelist():
         low = n.lower()

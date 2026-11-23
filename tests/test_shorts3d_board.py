@@ -76,6 +76,8 @@ def test_things_match_only_on_their_own_noun():
     assert things.best({"name": "fire truck", "search": "fire engine truck"}, idx)["id"] == "fire-truck"
     assert things.best({"name": "steam locomotive", "search": "train"}, idx) is None
     assert things.words("pickupTruck_Large") == ["pickup", "truck"]
+    assert things.best({"name": "hand cart", "search": "cart"}, [{"lib": "p", "id": "w", "words": ["portable", "welding", "cart"]}]) is None
+    assert things.best({"name": "wooden crate", "search": "crate"}, [{"lib": "p", "id": "c", "words": ["wooden", "military", "crate"]}])
 
 
 def test_things_without_a_model_are_built_from_their_parts():
