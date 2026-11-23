@@ -113,6 +113,12 @@ export function makeDirector(K, opt = {}) {
     if (!hit) return null; const first = ray.intersectObject(o, true)[0];
     return !first || hit.distance < first.distance - 0.05 ? `${o.name || 'the subject'} is hidden behind ${labelOf(hit.object)}` : null;
   }
+  // the middle of the picture may not be a wall: the line to the subjects' centre hits nothing on the way
+  function blocked(point, propObjs) {
+    const from = camera.position.clone(), d = point.distanceTo(from); ray.set(from, point.clone().sub(from).normalize()); ray.far = d * 0.85;
+    const hit = ray.intersectObjects(propObjs, true).find(h => h.object.visible && !h.object.userData.noBlock);
+    return hit ? `the view is blocked by ${labelOf(hit.object)}` : null;
+  }
   const labelOf = o => { for (let x = o; x; x = x.parent) if (x.userData.label) return x.userData.label; return 'a set piece'; };
   function collisions(people, props) {
     const out = [], cb = people.map(coreBox);
@@ -172,5 +178,5 @@ export function makeDirector(K, opt = {}) {
     }
     return moved;
   }
-  return { SAFE, CAP, hide, shownBox, personBox, headBox, faceBox, coreBox, rect, setCam, fit, issues, separate, dirOf, within, shows };
+  return { blocked, SAFE, CAP, hide, shownBox, personBox, headBox, faceBox, coreBox, rect, setCam, fit, issues, separate, dirOf, within, shows };
 }

@@ -68,10 +68,16 @@ def schema() -> dict:
                 "face": _enum(FACES), "bubble": _enum(BUBBLES), "says": {"type": "boolean"}})
     event = obj({"from": i, "until": i, "thing": s, "do": _enum(THING_DOES), "to": spot, "path": {"type": "array", "items": spot},
                  "amount": num, "text": s})
-    landing = obj({"see": s, "from": i, "frame": strs, "angle": _enum(ANGLES), "lens": _enum(LENSES)})
+    landing = obj({"see": s, "from": i, "frame": strs, "near": s, "angle": _enum(ANGLES), "lens": _enum(LENSES)})
+    # the picture plan, written first (the Ricks Clips kits' PICTURE_PLAN.md, column for column)
+    row = obj({"job": _enum(JOBS), "mark": _enum(["none", "hook", "twist", "signature", "last-frame", "stillness"]),
+               "words": s, "landing_word": i, "what_we_see": s, "shown": _enum(["close", "in-scene", "not-shown"]), "why": s,
+               "light": s, "near_lens": s, "far_world": s, "feeling": s, "acted_gag": s, "effect": s})
+    film = obj({"one_sentence": s, "cast_notes": s, "places_and_light": s, "colour_meaning": s, "speaking_lines": s,
+                "extreme_gags": s, "power_moments": s, "impossible_view": s})
     move = obj({"from": i, "job": _enum(JOBS), "follow": s, "landings": {"type": "array", "items": landing}})
     callout = obj({"from": i, "until": i, "on": s, "text": s, "tone": _enum(["good", "bad", "neutral"])})
-    return obj({"world": world, "things": {"type": "array", "items": thing}, "cast": {"type": "array", "items": member},
+    return obj({"film": film, "plan": {"type": "array", "items": row}, "world": world, "things": {"type": "array", "items": thing}, "cast": {"type": "array", "items": member},
                 "beats": {"type": "array", "items": beat}, "events": {"type": "array", "items": event},
                 "callouts": {"type": "array", "items": callout}, "moves": {"type": "array", "items": move}})
 
@@ -87,6 +93,36 @@ def instructions() -> str:
         "what just changed, and what the viewer must feel. Then build the world, then the cast, then the acting, then "
         "the camera. A viewer watching once on a phone with the sound off must understand every moment from the "
         "picture alone: the thing the line names is visible when it is said.\n\n"
+        "STEP 1, THE FILM (film): write it out in full sentences, as a storyboard artist's brief: the film in one "
+        "sentence; every person in it (cast_notes: build, clothes in colour, the one trait that drives their acting, "
+        "how they move and where they look, the mocker and the hero); every place and its light (places_and_light: "
+        "what stands in it near and far, the visible light source and its colour, the time of day, how the light "
+        "changes as the story goes on); the one colour that means one thing in this film (colour_meaning); every "
+        "quoted line (speaking_lines: who says it and, word by word, where their eyes go, what the head does and "
+        "what each hand does); the extreme gags (extreme_gags: every word of amount, size, speed or feeling taken "
+        "literally, 10 to 100 times past real, built from this story's own objects, the best 2 to 4); the power "
+        "moments (power_moments: the 2 to 4 words where something big happens on screen, with the effect that fits "
+        "this scene); the impossible view (impossible_view: one picture from where no real camera could be, inside "
+        "the object or the hidden place that matters most, and how the camera flies in and out).\n"
+        "STEP 2, THE PICTURE PLAN (plan): one row for every thing or action the voice NAMES, in order. Each row: its "
+        "story job; a mark (hook for the first picture, twist, the ONE signature picture of the film on the turn or "
+        "climax, last-frame, or none); words: the exact words with the landing word in CAPITALS; landing_word: that "
+        "word's number; what_we_see: the doer + the thing + the result, one action on the landing word, written so a "
+        "builder could draw it (sizes, positions, what is nearest the lens, what each hand does, what changes); shown: "
+        "close (the camera pushes in, the thing does something for about a second, then back to a face), in-scene "
+        "(clearly in the frame on its word) or not-shown (only when showing it would break the scene); why: what "
+        "this thing does in THIS story (the proof, the joke, the twist, the thing the hero touches, the number the "
+        "viewer must believe), never \"the voice says it\"; light: the visible light source and how it has changed "
+        "since the last row; near_lens: the real prop from this place nearest the lens; far_world: what stands behind; "
+        "feeling: what the person in frame feels on that word, in plain words from this story (\"smug: he has heard "
+        "this joke before\"), never a list word; acted_gag: who, the gag, its mechanism, readable with the sound off, "
+        "no mechanism twice in the film, or none; effect: a small effect that grows out of this story's own world and "
+        "objects (sparks from this tool, dust off this rail), or none. Write every column in full: vague words "
+        "(\"a mountain\", \"people react\", \"he works\") are a failure; say which, how big, where, doing what. A key "
+        "number or term also goes on a sign or label in the world.\n"
+        "STEP 3, BUILD IT: every row of the plan must be built by the data below: its things exist with their parts, "
+        "its people do its action on its word, its effect is an event, its picture is a landing whose near is the "
+        "row's near_lens prop. Nothing in the plan is left out of the data.\n"
         "WORLD: where the story happens (place: the script's own words), indoor or outdoor, the ground (what it is made "
         "of) and its colour (hex), walls colour for indoors, sky (day, dusk, night, overcast, indoor), size [width, "
         "depth] in metres (10 to 120), light warm/cool/neutral. Coordinates are metres: x left to right, z towards the "
@@ -156,7 +192,8 @@ def instructions() -> str:
         "LANDINGS: inside a move, a new landing on almost every phrase and every 3 to 5 words in long phrases (about "
         "1 to 1.5 seconds apart, never under 1 second). Each landing first says in one plain sentence what the "
         "picture shows (see: the subject, its action, what is close in front and what stands behind), then frame (the "
-        "ids it is about: what that moment is about, sized so it reads), angle and lens. Vary the size from landing "
+        "ids it is about: what that moment is about, sized so it reads), near (the id of the prop nearest the lens, "
+        "from the plan row; the camera looks past it), angle and lens. Vary the size from landing "
         "to landing (wide, medium, close, extreme-close on the thing in action, face for every reaction); never the "
         "same size and angle on the same person three times in a row; a face in view within the first 1.5 seconds. "
         "Keep the camera on one side of the action within a place (the 180-degree rule). "
@@ -363,6 +400,8 @@ def repair(board: dict, words: list[dict]) -> tuple[dict, list[str]]:
                        "text": str(e.get("text") or "")[:40]})
     b["events"] = sorted(events, key=lambda e: e["from"])
 
+    b["film"] = {k: str(v)[:4000] for k, v in (b.get("film") or {}).items() if isinstance(v, str)}
+    b["plan"] = [r for r in (b.get("plan") or []) if isinstance(r, dict)][:120]
     b["callouts"] = sorted([{"from": clampw(c.get("from")), "until": max(clampw(c.get("from")), clampw(c.get("until") if c.get("until") is not None else c.get("from"))),
                              "on": c["on"], "text": re.sub(r"\s+", " ", str(c.get("text") or "")).strip()[:24],
                              "tone": _pick(c.get("tone"), ["good", "bad", "neutral"], "neutral")}
@@ -380,7 +419,8 @@ def repair(board: dict, words: list[dict]) -> tuple[dict, list[str]]:
         shots.append({"from": clampw(s.get("from")), "frame": frame, "angle": _pick(s.get("angle"), ANGLES, "front"),
                       "lens": _pick(s.get("lens"), LENSES, "medium"), "move": _pick(s.get("move"), MOVES, "push"),
                       "take": int(s.get("take", len(shots))), "job": _pick(s.get("job"), JOBS, "act"),
-                      "follow": s.get("follow") if s.get("follow") in ids else "", "see": str(s.get("see") or "")[:200]})
+                      "follow": s.get("follow") if s.get("follow") in ids else "", "see": str(s.get("see") or "")[:300],
+                      "near": s.get("near") if s.get("near") in tids and s.get("near") not in frame else ""})
     if not shots:
         shots = [{"from": 0, "frame": [first], "angle": "front", "lens": "wide", "move": "push"}]
         notes.append("no usable shots: one shot on the first person or thing")

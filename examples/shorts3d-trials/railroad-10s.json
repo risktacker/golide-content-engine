@@ -719,9 +719,9 @@
   },
   {
    "id": "pole0",
-   "name": "telegraph pole",
+   "name": "wooden telegraph post",
    "role": "dressing",
-   "search": "telegraph pole utility pole",
+   "search": "telegraph post wooden",
    "height_m": 6.5,
    "at": [
     -18,
@@ -744,9 +744,9 @@
   },
   {
    "id": "pole1",
-   "name": "telegraph pole",
+   "name": "wooden telegraph post",
    "role": "dressing",
-   "search": "telegraph pole utility pole",
+   "search": "telegraph post wooden",
    "height_m": 6.5,
    "at": [
     -8,
@@ -769,9 +769,9 @@
   },
   {
    "id": "pole2",
-   "name": "telegraph pole",
+   "name": "wooden telegraph post",
    "role": "dressing",
-   "search": "telegraph pole utility pole",
+   "search": "telegraph post wooden",
    "height_m": 6.5,
    "at": [
     2,
@@ -794,9 +794,9 @@
   },
   {
    "id": "pole3",
-   "name": "telegraph pole",
+   "name": "wooden telegraph post",
    "role": "dressing",
-   "search": "telegraph pole utility pole",
+   "search": "telegraph post wooden",
    "height_m": 6.5,
    "at": [
     12,
@@ -1082,8 +1082,8 @@
   },
   {
    "id": "moneybags",
-   "name": "money bags",
-   "role": "story",
+   "name": "mountain of money bags",
+   "role": "gag",
    "search": "money bag sack",
    "height_m": 0.6,
    "at": [
@@ -1099,8 +1099,8 @@
    ],
    "text": "",
    "hero": false,
-   "count": 8,
-   "spread": 1.0,
+   "count": 50,
+   "spread": 2.2,
    "life": "none"
   },
   {
@@ -1174,6 +1174,30 @@
    "count": 3,
    "spread": 1.5,
    "life": "spin"
+  },
+  {
+   "id": "bag_pile",
+   "name": "heap of money bags",
+   "role": "gag",
+   "search": "heap sacks",
+   "height_m": 3.6,
+   "at": [
+    42.5,
+    1.2
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "heap: cone 0 0 0 4 4 3.6 #c9b27a",
+    "bag: sphere 1.2 0.8 0.3 0.7 0.7 0.7 #c9b27a",
+    "bag: sphere -1 1 0.2 0.7 0.7 0.7 #c9b27a"
+   ],
+   "text": "",
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
   }
  ],
  "cast": [
@@ -1181,10 +1205,10 @@
    "id": "hero",
    "label": "the engineer who leaves the gaps",
    "at": [
-    -5.9,
-    0.7
+    -5.0,
+    0.95
    ],
-   "turn_deg": 25,
+   "turn_deg": 0,
    "look": {
     "outfit": "overalls",
     "color": "#3d5a9c",
@@ -1351,7 +1375,7 @@
    "id": "banker",
    "label": "banker with the money",
    "at": [
-    43.5,
+    42.5,
     1.6
    ],
    "turn_deg": -20,
@@ -1385,26 +1409,14 @@
  "beats": [
   {
    "from": 0,
-   "until": 1,
+   "until": 6,
    "who": "hero",
    "do": "kneel",
    "target": "gap_a",
    "to": [],
-   "with": "",
+   "with": "tape",
    "face": "squint",
    "bubble": "none",
-   "says": false
-  },
-  {
-   "from": 2,
-   "until": 8,
-   "who": "hero",
-   "do": "hold",
-   "target": "gap_a",
-   "to": [],
-   "with": "tape",
-   "face": "serious",
-   "bubble": "!",
    "says": false
   },
   {
@@ -1597,11 +1609,11 @@
    "from": 24,
    "until": 28,
    "who": "banker",
-   "do": "point",
-   "target": "moneybags",
+   "do": "sit",
+   "target": "bag_pile",
    "to": [],
    "with": "",
-   "face": "smug",
+   "face": "grin",
    "bubble": "$",
    "says": false
   }
@@ -1688,16 +1700,45 @@
    "path": [],
    "amount": 1,
    "text": "THE WHOLE COUNTRY'S BUSINESS"
+  },
+  {
+   "from": 24,
+   "until": 26,
+   "thing": "banner",
+   "do": "glow",
+   "to": [],
+   "path": [],
+   "amount": 1,
+   "text": ""
+  },
+  {
+   "from": 24,
+   "until": 28,
+   "thing": "hats",
+   "do": "move",
+   "to": [
+    40,
+    3
+   ],
+   "path": [
+    [
+     40,
+     1
+    ],
+    [
+     40.5,
+     2
+    ],
+    [
+     40,
+     3
+    ]
+   ],
+   "amount": 1,
+   "text": ""
   }
  ],
  "callouts": [
-  {
-   "from": 7,
-   "until": 9,
-   "on": "gap_b",
-   "text": "39 FEET",
-   "tone": "neutral"
-  },
   {
    "from": 10,
    "until": 12,
@@ -1718,6 +1759,13 @@
    "on": "moneybags",
    "text": "ALL THE BUSINESS",
    "tone": "good"
+  },
+  {
+   "from": 7,
+   "until": 9,
+   "on": "gap_b",
+   "text": "39 FEET",
+   "tone": "neutral"
   }
  ],
  "moves": [
@@ -1727,25 +1775,26 @@
    "follow": "",
    "landings": [
     {
-     "see": "extreme close on the engineer kneeling at a rail joint, the gap between two rails right in front of the lens, his crewmate swinging a hammer behind",
+     "see": "impossible view from inside the gap: two rail ends in front of the lens, the engineer kneeling 1 m behind with his tape across the gap, face calm",
      "from": 0,
      "frame": [
       "hero",
       "gap_a"
      ],
+     "near": "",
      "angle": "low",
-     "lens": "extreme-close"
+     "lens": "close"
     },
     {
-     "see": "pull back and rise: he stretches a tape across the gap and points down the line to the next gap, 39 FEET pops over it, crews and tents behind",
+     "see": "low along his rails: the next gap with 39 FEET over it, his crewmate hammering a spike beside it, sparks",
      "from": 6,
      "frame": [
-      "hero",
-      "gap_a",
-      "gap_b"
+      "gap_b",
+      "crew1"
      ],
-     "angle": "high",
-     "lens": "medium"
+     "near": "gap_a",
+     "angle": "low",
+     "lens": "close"
     }
    ]
   },
@@ -1755,33 +1804,36 @@
    "follow": "",
    "landings": [
     {
-     "see": "his red locomotive puffs smoke and pushes a flatcar of rails up his line, a worker hauls a tie past the lens",
+     "see": "both locomotives side by side, COMPANY 1 and COMPANY 2 labels, flags fluttering, smoke from both chimneys",
      "from": 9,
      "frame": [
       "his_train",
-      "crew2"
+      "rival_train"
      ],
+     "near": "red_flag",
      "angle": "left",
      "lens": "medium"
     },
     {
-     "see": "across the canyon the blue company's train charges along the smooth line, its boss riding the flatcar, a worker sprints beside with a rail",
+     "see": "the blue locomotive charges at the lens, the boss riding his flatcar, a blue worker sprinting with a rail",
      "from": 13,
      "frame": [
-      "rival_train",
       "rival",
-      "rcrew2"
+      "rcrew2",
+      "rival_car"
      ],
-     "angle": "low",
+     "near": "ties_stack",
+     "angle": "front",
      "lens": "medium"
     },
     {
-     "see": "rise above both lines racing side by side along the canyon floor, red cliffs towering behind",
+     "see": "rise high over both trains racing along the canyon floor between the red cliffs",
      "from": 18,
      "frame": [
       "his_train",
       "rival_train"
      ],
+     "near": "",
      "angle": "high",
      "lens": "wide"
     }
@@ -1793,11 +1845,12 @@
    "follow": "",
    "landings": [
     {
-     "see": "the rival boss on his flatcar, hands on hips, a smug grin as he looks ahead",
+     "see": "the rival boss's smug face filling the frame, hands on hips, eyes on the finish",
      "from": 21,
      "frame": [
       "rival"
      ],
+     "near": "",
      "angle": "low",
      "lens": "face"
     }
@@ -1809,18 +1862,136 @@
    "follow": "",
    "landings": [
     {
-     "see": "the finish station: the banner flips to THE WHOLE COUNTRY'S BUSINESS, a banker on a pile of money bags, the town cheering and jumping",
+     "see": "the banner flips to THE WHOLE COUNTRY'S BUSINESS, the banker on a money-bag mountain as tall as the roof, the town cheering, hats flying",
      "from": 24,
      "frame": [
-      "banner",
       "banker",
       "town1",
-      "town2"
+      "town2",
+      "bag_pile"
      ],
+     "near": "",
      "angle": "front",
      "lens": "medium"
     }
    ]
+  }
+ ],
+ "film": {
+  "one_sentence": "An engineer leaves a finger-wide gap every 39 feet in his railroad while a rival races a perfectly smooth line up the same canyon, and the first to the far end wins the whole country's business.",
+  "cast_notes": "The engineer (hero): thin, blue overalls with a red neckerchief, yellow hard hat, carries a brass tape measure; calm, stubborn, he checks everything twice and smiles only when a measurement is right; looks down at his work, then straight into the lens when he is sure. His crew: three men in brown, olive and rust work clothes and flat caps, always busy (one swings a sledgehammer on spikes, one carries a railroad tie on his shoulder, one pushes a wheelbarrow of gravel). The rival boss (mocker): round, black pinstripe suit, red tie, red cowboy hat, rides his own flatcar like a throne, hands on hips, always smug, never works. His crew: navy overalls, they run everywhere. The finish town: a banker in a dark suit and glasses on a mountain of money bags, a townsman in a vest and cowboy hat, a woman in a pink dress, a boy in a teal shirt; they cheer whoever arrives first.",
+  "places_and_light": "A: the canyon floor, red-brown desert sand, two railroads side by side (his with visible joints and yellow gap marks, the rival's continuous and shiny), real red rock cliffs 20 m high behind, a water tower, telegraph posts, tents and a smoking campfire, cacti, sagebrush, scattered rocks, stacks of ties and rails, kegs of spikes, barrels; hard late-morning sun from the upper left, warm white, long blue-grey shadows. B: the finish town 40 m east at the canyon mouth: a wooden station with a porch, a big cloth banner on two posts, bunting, a freight wagon; the same sun, now with dust in the air.",
+  "colour_meaning": "Red means his company (his locomotive cab, his flag, his gap marks are yellow on red ties); blue means the rival (cab, flag, crew).",
+  "speaking_lines": "No quoted line in the first 10 seconds.",
+  "extreme_gags": "\"the whole country's BUSINESS\": a mountain of money bags as tall as the station roof, the banker sitting on top of it, bags tumbling off the sides.",
+  "power_moments": "\"RACING\": both locomotives blast smoke at once and the camera rides beside the blue one. \"BUSINESS\": the banner flips to THE WHOLE COUNTRY'S BUSINESS with a glow while hats fly into the air.",
+  "impossible_view": "\"GAPS\": the camera sits inside the gap between two rail ends, at rail height, looking up at the engineer's face through the gap."
+ },
+ "plan": [
+  {
+   "job": "hook",
+   "mark": "hook",
+   "words": "He saw GAPS in a railroad",
+   "landing_word": 2,
+   "what_we_see": "The engineer kneels on the ties, his face 1 m from the lens; in front of the lens two rail ends with a finger-wide gap between them and a yellow chalk mark; he stretches his brass tape across the gap with both hands.",
+   "shown": "close",
+   "why": "the gap is the strange act the whole film is about; it must be the first thing the viewer sees",
+   "light": "hard late-morning sun from upper left, his hard hat throws a shadow on his face",
+   "near_lens": "gap_a (the two rail ends)",
+   "far_world": "his crewmate swinging a sledgehammer and the red cliffs",
+   "feeling": "calm and certain: he put the gap there on purpose",
+   "acted_gag": "none",
+   "effect": "none"
+  },
+  {
+   "job": "hook",
+   "mark": "none",
+   "words": "every 39 FEET",
+   "landing_word": 7,
+   "what_we_see": "Low along his rails: the next joint with its gap 5 m further, the label 39 FEET pops over it, his crewmate hammering a spike right beside it.",
+   "shown": "in-scene",
+   "why": "the viewer must believe the gaps repeat on purpose, again and again",
+   "light": "same sun, glint on the rail tops",
+   "near_lens": "gap_a",
+   "far_world": "the line of joints running off toward the canyon",
+   "feeling": "crewmate: bored, he has hammered a hundred of these",
+   "acted_gag": "none",
+   "effect": "spark off the spike on each hammer blow"
+  },
+  {
+   "job": "setup",
+   "mark": "none",
+   "words": "and 2 COMPANIES are",
+   "landing_word": 11,
+   "what_we_see": "Both locomotives side by side on their two lines, red cab with COMPANY 1 label, blue cab with COMPANY 2, red and blue flags fluttering beside them.",
+   "shown": "in-scene",
+   "why": "two rivals must be clear before the race",
+   "light": "sun on the brass domes",
+   "near_lens": "red_flag",
+   "far_world": "water tower and cliffs",
+   "feeling": "none (machines)",
+   "acted_gag": "none",
+   "effect": "smoke puffs from both chimneys"
+  },
+  {
+   "job": "setup",
+   "mark": "none",
+   "words": "RACING to build a railroad",
+   "landing_word": 13,
+   "what_we_see": "The blue locomotive charges toward the lens pushing its flatcar, the rival boss riding the flatcar, a blue worker sprinting beside with a rail on his shoulder.",
+   "shown": "in-scene",
+   "why": "the race is the stakes",
+   "light": "dust lit by the sun",
+   "near_lens": "ties_stack",
+   "far_world": "the red train level with it on the other line",
+   "feeling": "boss: smug, he is winning; worker: panic",
+   "acted_gag": "the sprinting worker's rail nearly clips the boss's hat",
+   "effect": "steam and dust"
+  },
+  {
+   "job": "setup",
+   "mark": "none",
+   "words": "along a CANYON",
+   "landing_word": 20,
+   "what_we_see": "Rise high above both trains racing up the canyon floor between the red cliffs, tents and the smoking campfire below.",
+   "shown": "in-scene",
+   "why": "the place sets the scale of the race",
+   "light": "sun across the whole canyon",
+   "near_lens": "near_cliff",
+   "far_world": "the canyon running to the finish town",
+   "feeling": "none",
+   "acted_gag": "none",
+   "effect": "tumbleweed rolls across the tracks"
+  },
+  {
+   "job": "talk",
+   "mark": "none",
+   "words": "Whoever finishes FIRST",
+   "landing_word": 23,
+   "what_we_see": "The rival boss on his flatcar, face filling the frame, hands on hips, a smug grin, looking ahead to the finish.",
+   "shown": "close",
+   "why": "the mocker owns the race in his head",
+   "light": "sun on his red hat, his face half in the hat's shadow",
+   "near_lens": "none",
+   "far_world": "cliff rock",
+   "feeling": "smug: he is sure the smooth line wins",
+   "acted_gag": "none",
+   "effect": "none"
+  },
+  {
+   "job": "place",
+   "mark": "none",
+   "words": "gets the whole country's BUSINESS",
+   "landing_word": 28,
+   "what_we_see": "The finish town: the banner flips to THE WHOLE COUNTRY'S BUSINESS, the banker sits on a mountain of money bags as tall as the station roof pointing at it, the townsman cheers, the woman waves, the boy jumps, hats fly.",
+   "shown": "in-scene",
+   "why": "the prize must look enormous",
+   "light": "sun with dust in the air",
+   "near_lens": "bunting",
+   "far_world": "the station and the canyon mouth",
+   "feeling": "the town: excited, a fortune is coming",
+   "acted_gag": "a money bag rolls off the mountain onto the townsman's foot",
+   "effect": "banner glow on the flip"
   }
  ]
 }

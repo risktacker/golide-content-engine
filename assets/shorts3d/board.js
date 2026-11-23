@@ -17,7 +17,7 @@ const ANGLE = { front: [0, 0.06], low: [0.3, -0.16], high: [-0.2, 0.42], left: [
 const LENS = { wide: 46, medium: 36, close: 30, 'extreme-close': 24, face: 28 };
 const SKY = { day: ['#9cc8ee', '#e6f0f6'], dusk: ['#5b4a7a', '#ffb07a'], night: ['#0d1630', '#2a3a5e'], overcast: ['#aab3bb', '#d8dcdf'] };
 const SPEED = { walk: 1.3, run: 3.4, sneak: 0.7 };
-const HAND_DO = new Set(['hold', 'pick-up', 'use', 'give', 'throw', 'kick', 'put-down', 'work', 'carry']);
+const HAND_DO = new Set(['hold', 'pick-up', 'use', 'give', 'throw', 'kick', 'put-down', 'work', 'carry', 'kneel']);
 
 export async function build(K, words) {
   const { SR, base, ALL, V, place, arm, leg, Lw, dirW, face, headC, hips, headTurn, clamp, eio, lerp, scene } = K;
@@ -147,7 +147,7 @@ export async function build(K, words) {
   function carry(th, t) {
     let st = { free: true }, from = null;
     for (const b of handOf.get(th) || []) { if (t < b.t) break;
-      if (b.do === 'hold' || b.do === 'pick-up' || b.do === 'use' || b.do === 'work' || b.do === 'carry' || SPEED[b.do]) st = { c: b.c, since: b.t, from: st.free ? null : st };
+      if (b.do === 'hold' || b.do === 'pick-up' || b.do === 'use' || b.do === 'work' || b.do === 'carry' || b.do === 'kneel' || SPEED[b.do]) st = { c: b.c, since: b.t, from: st.free ? null : st };
       else if (b.do === 'give') { const to = cast[b.target]; st = to ? { c: to, since: b.t + 0.5, giver: b.c, t0: b.t } : st; }
       else if (b.do === 'put-down') { const s = pathAt(b.c, b.t); st = { free: true, at: s.p.clone().add(V(Math.sin(s.yaw) * 0.5, 0, Math.cos(s.yaw) * 0.5)) }; }
       else if (b.do === 'throw' || b.do === 'kick') { const a = b.do === 'kick' ? pathAt(b.c, b.t).p.clone().add(V(Math.sin(pathAt(b.c, b.t).yaw) * 0.3, 0.1, Math.cos(pathAt(b.c, b.t).yaw) * 0.3)) : handPos(b.c, b.t);
@@ -228,7 +228,8 @@ export async function build(K, words) {
     else if (d === 'shake-head') { rest(); headTurn(c, 0.3 * Math.sin(t * 10), 0); }
     else if (d === 'lean-in') { rest(); hips(c, 0, 0.06 * k); }
     else if (d === 'hands-on-hips') { const hp = Lw(c, 0, 0.78, 0.02); handTo('Left', Lw(c, 0.18, 0.95, 0.5).lerp(hp.clone().add(dirW(c, 0.3, 0, 0)), k), dirW(c, 1, 0.2, -0.6)); handTo('Right', Lw(c, -0.18, 0.95, 0.5).lerp(hp.clone().add(dirW(c, -0.3, 0, 0)), k), dirW(c, -1, 0.2, -0.6)); hips(c, 0, -0.03 * k); }
-    else if (d === 'kneel') { rest(); hips(c, -0.42 * k, 0.05 * k); leg(c, 'Left', Lw(c, 0.12, 0.02, 0.35)); leg(c, 'Right', Lw(c, -0.12, 0.02, -0.25)); const tp = tgt(); if (tp) handTo('Right', tp.clone().lerp(Lw(c, -0.2, 0.6, 0.4), 0.3), dirW(c, -1, -0.4, 0)); }
+    else if (d === 'kneel') { rest(); const fl = Lw(c, 0.12, 0, 0.32), bk = Lw(c, -0.12, 0, -0.3); c.root.position.y -= 0.28 * k; c.root.updateMatrixWorld(true); hips(c, -0.08 * k, 0.06 * k);
+      leg(c, 'Left', fl.setY(0.04)); leg(c, 'Right', bk.setY(0.06)); const tp = tgt(); if (tp && !(b.with && things[b.with])) handTo('Right', tp.clone().lerp(Lw(c, -0.2, 0.6, 0.4), 0.3), dirW(c, -1, -0.4, 0)); }
     else if (d === 'cry') { const h = headC(c), s2 = Math.sin(t * 14) * 0.015; hips(c, -0.04, 0.05); handTo('Left', Lw(c, 0.18, 0.95, 0.5).lerp(h.clone().add(dirW(c, 0.1, -0.1, 0.18)).add(V(0, s2, 0)), k), dirW(c, 1, -0.5, -0.2)); handTo('Right', Lw(c, -0.18, 0.95, 0.5).lerp(h.clone().add(dirW(c, -0.1, -0.1, 0.18)).add(V(0, -s2, 0)), k), dirW(c, -1, -0.5, -0.2)); }
     else if (d === 'facepalm') { rest(); const h = headC(c); handTo('Right', Lw(c, -0.18, 0.95, 0.5).lerp(h.clone().add(dirW(c, 0, 0, 0.22)), k), dirW(c, -1, -0.5, -0.2)); headTurn(c, 0, 0.15 * k); }
     else if (d === 'lean-back') { rest(); hips(c, 0, -0.07 * k); headTurn(c, 0, -0.12 * k); }
@@ -290,7 +291,11 @@ export async function build(K, words) {
   const shots = raw.map((s, i) => {
     const ids = [...(s.frame || s.who || [])]; if (s.follow && !ids.includes(s.follow)) ids.push(s.follow);   // the camera rides with what it follows
     const who = ids.map(byId).filter(Boolean); if (!who.length) throw new Error(`board: shot ${i + 1} frames nothing`);
-    const [yaw, pitch] = ANGLE[s.angle] || ANGLE.front, fov = LENS[s.lens] || LENS.medium, mv = s.move || 'push';
+    let [yaw, pitch] = ANGLE[s.angle] || ANGLE.front; const fov = LENS[s.lens] || LENS.medium, mv = s.move || 'push';
+    // the row's near-lens prop: the camera looks at the subjects from beyond it, so it stands between lens and subject
+    const nearObj = s.near && things[s.near] ? things[s.near].obj : null;
+    if (nearObj) { const c0 = V(0, 0, 0); let k2 = 0; ids.forEach(id => { const p2 = spotOf(id, s.t0); if (p2) { c0.add(p2); k2++; } }); const np = spotOf(s.near, s.t0);
+      if (k2 && np) { c0.multiplyScalar(1 / k2); const dx = np.x - c0.x, dz = np.z - c0.z; if (dx * dx + dz * dz > 0.04) yaw = Math.atan2(dx, dz); } }
     const view = u => { const e = eio(u), v = { yaw, pitch, fov, k: 1, roll: 0 };
       if (mv === 'push') v.k = lerp(1.14, 1.0, e); else if (mv === 'pull') v.k = lerp(1.0, 1.14, e);
       else if (mv === 'crane-down') { v.pitch = pitch + lerp(0.3, 0, e); v.k = lerp(1.12, 1.0, e); } else if (mv === 'crane-up') { v.pitch = pitch + lerp(0, 0.25, e); }
@@ -301,7 +306,7 @@ export async function build(K, words) {
       else if (mv === 'dolly-zoom') { v.fov = lerp(fov + 10, fov - 8, e); v.roll = -0.07 * e; } else v.k = lerp(1.03, 1.0, e);
       return v; };
     return { name: `${i + 1} ${s.job || ''} ${s.angle || 'front'} ${s.lens || 'medium'} ${mv}: ${s.see || who.map(w => w.label || w.name).join(', ')}`.slice(0, 120), t0: s.t0, t1: i + 1 < raw.length ? raw[i + 1].t0 : DUR,
-      take: s.take ?? i, follow: !!s.follow,
+      take: s.take ?? i, follow: !!s.follow, near: nearObj,
       who, hidden: [], dof: s.lens === 'close' || s.lens === 'extreme-close' || s.lens === 'face' ? 0.01 : 0, extras: t => [...bubbleBoxes(who.filter(w => w && w.root)), ...labelBoxes(who.filter(w => !w.root)), ...calloutBoxes(who, t)], view,
       faces: s.lens === 'face' ? who.filter(w => w.root) : [] };
   });
