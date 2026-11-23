@@ -88,5 +88,13 @@
     "signal_type": "owner-replace",
     "query": "Why Perfect Railroads Don't Work"
   },
-  "selected_topic_source": "https://www.youtube.com/watch?v=7xS87iActkU"
+  "selected_topic_source": "https://www.youtube.com/watch?v=7xS87iActkU",
+  "script_edit": "[curious] He saw gaps in a railroad every 39 feet, and 2 companies are racing to build a railroad along a canyon. Whoever finishes first gets the whole country\u2019s business.\n\nAnd when his boss sees gaps between every single rail, his face goes purple: [angry] You\u2019re wrecking my railroad.\n\nBut he won\u2019t close a single one.\n\nSo the other company lays their rails end to end, perfectly smooth, and finishes first. Their trains glide across the canyon without a sound, while his go clickety-clack over every gap, and the newspapers start calling it the clickety-clack line.\n\n[mysterious] Then summer comes, and something weird happens. His gaps start shrinking. In May, you can fit a coin in them. By July, barely a sheet of paper.\n\nMeanwhile, on the perfect railroad, the rails have started groaning in the afternoon sun, pushing against each other like they want to get out.\n\n[suspenseful] And on the hottest day anyone can remember, his gaps finally close, rail touching rail. And halfway across the canyon, the perfect railroad kicks sideways like a snake, right as a train rolls onto it.\n\nFollow the channel for more.",
+  "voice_choice": "ai",
+  "platforms": [
+    "youtube",
+    "instagram"
+  ],
+  "video_style": "stickman",
+  "_failed_runs": 1
 }
