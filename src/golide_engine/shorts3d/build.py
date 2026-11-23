@@ -94,7 +94,13 @@ def stills(engine: Path, scene: str, words: list[dict], out: Path) -> dict:
         raise RuntimeError("the 3D engine page failed before the director ran (see the log above)")
     rep = _report(dbg)
     times = [round(t, 2) for s in rep["shots"] for t in (s["t0"] + 0.05, (s["t0"] + s["t1"]) / 2, s["t1"] - 0.05)]
-    code = _node(engine, scene, raw, "stills", ",".join(f"{t:.2f}" for t in times)).wait()
+    # the clean stills apply the director's decisions from the debug pass instead of searching again
+    import os
+    os.environ["DIRECTION"] = str((dbg / "report.json").resolve())
+    try:
+        code = _node(engine, scene, raw, "stills", ",".join(f"{t:.2f}" for t in times)).wait()
+    finally:
+        os.environ.pop("DIRECTION", None)
     if code not in (0, 3):
         raise RuntimeError("rendering the clean stills failed")
     ass = _ass(words, out)
