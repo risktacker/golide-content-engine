@@ -1,0 +1,446 @@
+{
+ "world": {
+  "place": "a desert canyon where two railroads are being built side by side",
+  "indoor": false,
+  "ground": "red desert sand and gravel",
+  "ground_color": "#c98b5a",
+  "walls_color": "",
+  "sky": "day",
+  "size": [
+   80,
+   80
+  ],
+  "light": "warm"
+ },
+ "things": [
+  {
+   "id": "his_line",
+   "name": "rail line with gaps",
+   "search": "railroad track rails gaps",
+   "height_m": 0.29,
+   "at": [
+    0,
+    2
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "rail: box -12.5 -0.72 0.12 4.7 0.09 0.17 #8c8f96",
+    "rail: box -12.5 0.72 0.12 4.7 0.09 0.17 #8c8f96",
+    "rail: box -7.5 -0.72 0.12 4.7 0.09 0.17 #8c8f96",
+    "rail: box -7.5 0.72 0.12 4.7 0.09 0.17 #8c8f96",
+    "rail: box -2.5 -0.72 0.12 4.7 0.09 0.17 #8c8f96",
+    "rail: box -2.5 0.72 0.12 4.7 0.09 0.17 #8c8f96",
+    "rail: box 2.5 -0.72 0.12 4.7 0.09 0.17 #8c8f96",
+    "rail: box 2.5 0.72 0.12 4.7 0.09 0.17 #8c8f96",
+    "rail: box 7.5 -0.72 0.12 4.7 0.09 0.17 #8c8f96",
+    "rail: box 7.5 0.72 0.12 4.7 0.09 0.17 #8c8f96",
+    "rail: box 12.5 -0.72 0.12 4.7 0.09 0.17 #8c8f96",
+    "rail: box 12.5 0.72 0.12 4.7 0.09 0.17 #8c8f96",
+    "sleeper: box -14 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box -12 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box -10 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box -8 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box -6 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box -4 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box -2 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box 0 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box 2 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box 4 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box 6 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box 8 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box 10 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box 12 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box 14 0 0 0.28 2.4 0.12 #6b4a2f"
+   ],
+   "text": "",
+   "hero": true
+  },
+  {
+   "id": "smooth_line",
+   "name": "smooth rail line",
+   "search": "railroad track rails",
+   "height_m": 0.29,
+   "at": [
+    0,
+    -6
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "rail: box 0 -0.72 0.12 30 0.09 0.17 #8c8f96",
+    "rail: box 0 0.72 0.12 30 0.09 0.17 #8c8f96",
+    "sleeper: box -14 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box -12 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box -10 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box -8 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box -6 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box -4 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box -2 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box 0 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box 2 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box 4 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box 6 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box 8 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box 10 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box 12 0 0 0.28 2.4 0.12 #6b4a2f",
+    "sleeper: box 14 0 0 0.28 2.4 0.12 #6b4a2f"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "his_train",
+   "name": "steam locomotive",
+   "search": "steam locomotive train engine",
+   "height_m": 3.0,
+   "at": [
+    -13,
+    2
+   ],
+   "on": "his_line",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "frame: box 0 0 0.5 6 1.5 0.35 #2a2a2e",
+    "boiler: box -0.5 0 0.85 3.6 1.3 1.3 #1d1d22",
+    "band: box -1.6 0 0.85 0.12 1.36 1.36 #c9a227",
+    "band: box 0.4 0 0.85 0.12 1.36 1.36 #c9a227",
+    "cab: box 2.0 0 0.85 1.8 1.6 2.0 #7a1f1f",
+    "roof: box 2.0 0 2.85 2.1 1.8 0.15 #2a2a2e",
+    "window: box 2.0 0.81 1.9 0.8 0.02 0.6 #f3d27a",
+    "chimney: cyl -1.9 0 2.15 0.45 0.45 0.9 #111111",
+    "dome: sphere -0.6 0 2.0 0.7 0.7 0.5 #c9a227",
+    "cowcatcher: box -3.2 0 0.15 0.5 1.4 0.45 #555555",
+    "lamp: sphere -2.35 0 1.75 0.35 0.35 0.35 #ffe9a0",
+    "wheel: cyl -1.6 -0.8 0.325 0.9 0.9 0.25 rx90 #8a1d1d",
+    "wheel: cyl -1.6 0.8 0.325 0.9 0.9 0.25 rx90 #8a1d1d",
+    "wheel: cyl 0 -0.8 0.325 0.9 0.9 0.25 rx90 #8a1d1d",
+    "wheel: cyl 0 0.8 0.325 0.9 0.9 0.25 rx90 #8a1d1d",
+    "wheel: cyl 1.4 -0.8 0.325 0.9 0.9 0.25 rx90 #8a1d1d",
+    "wheel: cyl 1.4 0.8 0.325 0.9 0.9 0.25 rx90 #8a1d1d"
+   ],
+   "text": "",
+   "hero": true
+  },
+  {
+   "id": "rival_train",
+   "name": "steam locomotive",
+   "search": "steam locomotive train engine",
+   "height_m": 3.0,
+   "at": [
+    -13,
+    -6
+   ],
+   "on": "smooth_line",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "frame: box 0 0 0.5 6 1.5 0.35 #2a2a2e",
+    "boiler: box -0.5 0 0.85 3.6 1.3 1.3 #1d1d22",
+    "band: box -1.6 0 0.85 0.12 1.36 1.36 #c9a227",
+    "band: box 0.4 0 0.85 0.12 1.36 1.36 #c9a227",
+    "cab: box 2.0 0 0.85 1.8 1.6 2.0 #1f3f7a",
+    "roof: box 2.0 0 2.85 2.1 1.8 0.15 #2a2a2e",
+    "window: box 2.0 0.81 1.9 0.8 0.02 0.6 #f3d27a",
+    "chimney: cyl -1.9 0 2.15 0.45 0.45 0.9 #111111",
+    "dome: sphere -0.6 0 2.0 0.7 0.7 0.5 #c9a227",
+    "cowcatcher: box -3.2 0 0.15 0.5 1.4 0.45 #555555",
+    "lamp: sphere -2.35 0 1.75 0.35 0.35 0.35 #ffe9a0",
+    "wheel: cyl -1.6 -0.8 0.325 0.9 0.9 0.25 rx90 #8a1d1d",
+    "wheel: cyl -1.6 0.8 0.325 0.9 0.9 0.25 rx90 #8a1d1d",
+    "wheel: cyl 0 -0.8 0.325 0.9 0.9 0.25 rx90 #8a1d1d",
+    "wheel: cyl 0 0.8 0.325 0.9 0.9 0.25 rx90 #8a1d1d",
+    "wheel: cyl 1.4 -0.8 0.325 0.9 0.9 0.25 rx90 #8a1d1d",
+    "wheel: cyl 1.4 0.8 0.325 0.9 0.9 0.25 rx90 #8a1d1d"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "canyon",
+   "name": "canyon cliffs",
+   "search": "canyon cliff rock",
+   "height_m": 20,
+   "at": [
+    0,
+    -24
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "rock: box -35 0 0 10.5 8 14 #b5562f",
+    "ledge: box -33 3 0 6 4 6.3 #c56a3a",
+    "rock: box -25 0 0 10.5 8 18 #c56a3a",
+    "ledge: box -23 3 0 6 4 8.1 #a34a2a",
+    "rock: box -15 0 0 10.5 8 12 #a34a2a",
+    "ledge: box -13 3 0 6 4 5.4 #cf7a45",
+    "rock: box -5 0 0 10.5 8 16 #cf7a45",
+    "ledge: box -3 3 0 6 4 7.2 #b5562f",
+    "rock: box 5 0 0 10.5 8 20 #b5562f",
+    "ledge: box 7 3 0 6 4 9.0 #c56a3a",
+    "rock: box 15 0 0 10.5 8 13 #c56a3a",
+    "ledge: box 17 3 0 6 4 5.9 #a34a2a",
+    "rock: box 25 0 0 10.5 8 17 #a34a2a",
+    "ledge: box 27 3 0 6 4 7.7 #cf7a45",
+    "rock: box 35 0 0 10.5 8 15 #cf7a45",
+    "ledge: box 37 3 0 6 4 6.8 #b5562f"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "finish",
+   "name": "finish sign",
+   "search": "sign board",
+   "height_m": 3.2,
+   "at": [
+    16,
+    -2
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "post: box -1.6 0 0 0.2 0.2 3.2 #6b4a2f",
+    "post: box 1.6 0 0 0.2 0.2 3.2 #6b4a2f",
+    "board: box 0 0 2.0 3.6 0.15 1.1 #f2e6c8"
+   ],
+   "text": "FINISH",
+   "hero": false
+  }
+ ],
+ "cast": [
+  {
+   "id": "hero",
+   "label": "the engineer who leaves the gaps",
+   "at": [
+    -3,
+    3.6
+   ],
+   "turn_deg": 0,
+   "look": {
+    "outfit": "overalls",
+    "color": "#3d5a9c",
+    "accent": "#e8442a",
+    "pattern": "none",
+    "hat": "hardhat",
+    "glasses": false
+   }
+  },
+  {
+   "id": "rival",
+   "label": "the rival company's boss",
+   "at": [
+    5,
+    -3.6
+   ],
+   "turn_deg": -20,
+   "look": {
+    "outfit": "suit",
+    "color": "#2f3542",
+    "accent": "#c8352f",
+    "pattern": "pinstripe",
+    "hat": "cowboy",
+    "glasses": false
+   }
+  }
+ ],
+ "beats": [
+  {
+   "from": 0,
+   "until": 5,
+   "who": "hero",
+   "do": "look",
+   "target": "his_line",
+   "to": [],
+   "with": "",
+   "face": "squint",
+   "bubble": "none"
+  },
+  {
+   "from": 2,
+   "until": 8,
+   "who": "hero",
+   "do": "point",
+   "target": "his_line",
+   "to": [],
+   "with": "",
+   "face": "serious",
+   "bubble": "none"
+  },
+  {
+   "from": 9,
+   "until": 20,
+   "who": "rival",
+   "do": "arms-crossed",
+   "target": "",
+   "to": [],
+   "with": "",
+   "face": "smug",
+   "bubble": "none"
+  },
+  {
+   "from": 13,
+   "until": 20,
+   "who": "hero",
+   "do": "look",
+   "target": "his_train",
+   "to": [],
+   "with": "",
+   "face": "serious",
+   "bubble": "none"
+  },
+  {
+   "from": 21,
+   "until": 28,
+   "who": "rival",
+   "do": "point",
+   "target": "finish",
+   "to": [],
+   "with": "",
+   "face": "grin",
+   "bubble": "none"
+  },
+  {
+   "from": 24,
+   "until": 28,
+   "who": "rival",
+   "do": "cheer",
+   "target": "",
+   "to": [],
+   "with": "",
+   "face": "grin",
+   "bubble": "$"
+  }
+ ],
+ "events": [
+  {
+   "from": 9,
+   "until": 28,
+   "thing": "his_train",
+   "do": "smoke",
+   "to": [],
+   "path": [],
+   "amount": 1,
+   "text": ""
+  },
+  {
+   "from": 9,
+   "until": 28,
+   "thing": "rival_train",
+   "do": "smoke",
+   "to": [],
+   "path": [],
+   "amount": 1,
+   "text": ""
+  },
+  {
+   "from": 13,
+   "until": 20,
+   "thing": "his_train",
+   "do": "move",
+   "to": [
+    -7,
+    2
+   ],
+   "path": [],
+   "amount": 1,
+   "text": ""
+  },
+  {
+   "from": 13,
+   "until": 20,
+   "thing": "rival_train",
+   "do": "move",
+   "to": [
+    -2,
+    -6
+   ],
+   "path": [],
+   "amount": 1,
+   "text": ""
+  },
+  {
+   "from": 24,
+   "until": 28,
+   "thing": "finish",
+   "do": "text",
+   "to": [],
+   "path": [],
+   "amount": 1,
+   "text": "THE WHOLE COUNTRY'S BUSINESS"
+  }
+ ],
+ "shots": [
+  {
+   "from": 0,
+   "frame": [
+    "hero"
+   ],
+   "angle": "low",
+   "lens": "close",
+   "move": "push"
+  },
+  {
+   "from": 6,
+   "frame": [
+    "his_line"
+   ],
+   "angle": "left",
+   "lens": "wide",
+   "move": "crane-down"
+  },
+  {
+   "from": 9,
+   "frame": [
+    "his_train",
+    "rival_train"
+   ],
+   "angle": "high",
+   "lens": "wide",
+   "move": "crane-down"
+  },
+  {
+   "from": 13,
+   "frame": [
+    "rival_train",
+    "his_train"
+   ],
+   "angle": "low",
+   "lens": "medium",
+   "move": "track"
+  },
+  {
+   "from": 18,
+   "frame": [
+    "canyon",
+    "rival_train"
+   ],
+   "angle": "front",
+   "lens": "wide",
+   "move": "pull"
+  },
+  {
+   "from": 21,
+   "frame": [
+    "rival"
+   ],
+   "angle": "low",
+   "lens": "medium",
+   "move": "push"
+  },
+  {
+   "from": 24,
+   "frame": [
+    "finish"
+   ],
+   "angle": "low",
+   "lens": "close",
+   "move": "snap-zoom"
+  }
+ ]
+}

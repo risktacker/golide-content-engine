@@ -15,7 +15,7 @@ export async function run(K) {
   const name = K.Q.get('golide');
   const words = await (await fetch(`./golide/${name}.words.json`)).json();
   const S = await (await import(`./${name}.js`)).build(K, words);
-  const D = makeDirector(K, { room: S.room, capTop: 1420, capBottom: 1640 });   // captions in the lower third (stickman/captions.py "short3d")
+  const D = makeDirector(K, { room: S.room, capTop: 1420, capBottom: 1640, maxDist: S.maxDist });   // captions in the lower third (stickman/captions.py "short3d")
   const props = S.props.map(p => { p.obj.userData.label = p.label; return { ...p, box: new THREE.Box3().setFromObject(p.obj) }; });
   const propObjs = S.props.filter(p => !p.floor).map(p => p.obj);
   const poseT = t => { S.pose(t); props.forEach(p => p.box.setFromObject(p.obj)); };   // things move: their boxes follow them

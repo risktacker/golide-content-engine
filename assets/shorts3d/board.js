@@ -54,8 +54,8 @@ export async function build(K, words) {
     const sc = document.createElement('canvas'); sc.width = 4; sc.height = 512; { const g = sc.getContext('2d'), gr = g.createLinearGradient(0, 0, 0, 512); gr.addColorStop(0, top); gr.addColorStop(0.55, hor); gr.addColorStop(1, hor); g.fillStyle = gr; g.fillRect(0, 0, 4, 512); }
     const st = new THREE.CanvasTexture(sc); st.colorSpace = THREE.SRGBColorSpace;
     const sky = new THREE.Mesh(new THREE.SphereGeometry(1800, 32, 16), new THREE.MeshBasicMaterial({ map: st, side: THREE.BackSide, fog: false, depthWrite: false })); G.add(sky);
-    scene.background = new THREE.Color(hor); scene.fog.color.set(hor); scene.fog.near = Math.max(SW, SD) * 1.2; scene.fog.far = Math.max(SW, SD) * 6;
-    room = { min: V(-SW / 2 - 40, 0.03, -SD / 2 - 40), max: V(SW / 2 + 40, 60, SD / 2 + 40) };
+    scene.background = new THREE.Color(hor); scene.fog.color.set(hor); scene.fog.near = Math.max(SW, SD) * 4; scene.fog.far = Math.max(SW, SD) * 4 + 1400;   // wide views from far off stay clear
+    room = { min: V(-SW / 2 - 300, 0.03, -SD / 2 - 300), max: V(SW / 2 + 300, 200, SD / 2 + 300) };   // outdoors the camera may stand far off for a wide view
   }
   { const { RoomEnvironment } = await import('three/addons/environments/RoomEnvironment.js'); const pm = new THREE.PMREMGenerator(K.renderer); scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture; scene.environmentIntensity = IN ? 0.55 : 0.4; }
 
@@ -269,5 +269,5 @@ export async function build(K, words) {
   // things people hold, ride, sit on or kick, and flat things, are not obstacles; everything else is
   const touched = new Set(); for (const c of people) for (const b of beats.get(c)) { if (b.with) touched.add(b.with); if (['ride', 'sit', 'push', 'pull', 'hide', 'lie'].includes(b.do) && b.target) touched.add(b.target); }
   const props = list.filter(th => !touched.has(th.id)).map(th => ({ obj: th.obj, label: th.T.name, floor: th.size.y < 0.15 }));
-  return { dur: DUR, people, props, room, pose, light, shots, group: G, walls: IN };
+  return { dur: DUR, people, props, room, pose, light, shots, group: G, walls: IN, maxDist: IN ? 120 : 420 };
 }

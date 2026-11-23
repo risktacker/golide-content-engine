@@ -67,7 +67,7 @@ export function makeDirector(K, opt = {}) {
     const dir = dirOf(v.yaw, v.pitch), tgt = box.getCenter(new THREE.Vector3()); let d = 1;
     const fits = (dd) => { setCam(tgt.clone().addScaledVector(dir, dd), tgt, v.fov, v.roll || 0); return within(rect(box), SAFE, INSET); };
     for (let pass = 0; pass < 3; pass++) {
-      let lo = 0.15, hi = 120; if (!fits(hi)) return null;
+      let lo = 0.15, hi = opt.maxDist ?? 120; if (!fits(hi)) return null;
       for (let i = 0; i < 32; i++) { const m = (lo + hi) / 2; if (fits(m)) hi = m; else lo = m; }
       d = hi; fits(d); const r = rect(box);
       const dx = (r.x0 + r.x1) / 2 - (SAFE.l + SAFE.r) / 2, dy = (r.y0 + r.y1) / 2 - (SAFE.t + SAFE.b) / 2;
