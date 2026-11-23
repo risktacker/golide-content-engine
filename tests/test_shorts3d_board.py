@@ -116,3 +116,15 @@ def test_no_line_comment_swallows_code_in_scene_modules():
             if "//" in code:
                 tail = code.split("//", 1)[1]
                 assert not re.search(r";\s*[A-Za-z_$][\w$.]*\s*\(.*\)\s*;", tail), f"{f.name}:{n} code after //"
+
+
+def test_voice_tags_survive_a_director_that_changed_a_word():
+    """2026-11-23: the director wrote "two" for "2", the check threw all tags away, the Short had none."""
+    from golide_engine.engine.story import apply_direction
+    plain = "He saw gaps every 39 feet, and 2 companies race.\n\nThen summer comes, and something weird happens. His gaps start shrinking."
+    directed = "[curious] He saw gaps every thirty-nine feet, and two companies race.\n\n[surprised] Then summer comes, and something weird happens. His gaps start shrinking."
+    out, why = apply_direction(plain, directed)
+    assert out.startswith("[curious] He saw gaps every 39 feet, and 2 companies race.")
+    assert "[surprised] Then summer comes" in out and "two" not in out
+    assert why.startswith("words changed: tags moved")
+    assert apply_direction(plain, "Something else entirely.")[0] == plain

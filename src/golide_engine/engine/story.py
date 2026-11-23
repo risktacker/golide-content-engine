@@ -289,12 +289,55 @@ def apply_direction(plain: str, directed: str) -> tuple[str, str]:
     if re.findall(r"\[\[\d+\]\]", plain) != re.findall(r"\[\[\d+\]\]", directed):
         return plain, "chapter markers moved"
     if _spoken_words(plain) != _spoken_words(directed):
-        return plain, "words changed"
+        # 2026-11-23: the director changed a word (e.g. "2" -> "two"). The words are never taken from it; its tags
+        # are moved onto the plain script at the matching words instead, so the voice is still directed.
+        moved = _transplant_tags(plain, directed)
+        if moved == plain:
+            return plain, "words changed"
+        directed, note = moved, "words changed: tags moved onto the plain script"
+    else:
+        note = "ok"
     unknown = {t.strip().lower() for t in CUE.findall(directed)} - {f"[{t}]" for t in DIRECTOR_TAGS}
     for tag in unknown:                                   # an unknown tag is dropped, never read aloud
         directed = directed.replace(tag, "").replace(tag.upper(), "")
     directed = re.sub(r"(\[[a-z ]+\])\s*(\[[a-z ]+\])", r"\1", directed)     # never two tags together
-    return directed, "ok"
+    return directed, note
+
+
+def _transplant_tags(plain: str, directed: str) -> str:
+    """The plain script with each of the director's tags put before the same word it preceded there, where that word
+    (and the next two) can be matched; tags that cannot be placed are left out. Words are never changed."""
+    import difflib
+    tok = lambda t: [(m.start(), re.sub(r"[^a-z0-9]", "", m.group().lower().replace("’", "'").replace("'", "")))
+                     for m in re.finditer(r"\S+", t)]
+    ptoks = [(i, w) for i, w in tok(CUE.sub(" ", plain)) if w]
+    # the plain text has no cues, so positions in CUE.sub(" ", plain) are positions in plain
+    dwords, tags_before = [], {}
+    pending: list[str] = []
+    for m in re.finditer(r"\[(?!\[)[^\]\[]{1,30}\](?!\])|\S+", directed):
+        piece = m.group()
+        if CUE.fullmatch(piece):
+            pending.append(piece); continue
+        w = re.sub(r"[^a-z0-9]", "", piece.lower().replace("’", "'").replace("'", ""))
+        if not w:
+            continue
+        if pending:
+            tags_before[len(dwords)] = pending[0]; pending = []
+        dwords.append(w)
+    sm = difflib.SequenceMatcher(a=[w for _, w in ptoks], b=dwords, autojunk=False)
+    where: dict[int, str] = {}
+    for a0, b0, size in sm.get_matching_blocks():
+        for k in range(size):
+            tag = tags_before.get(b0 + k)
+            if tag and k + 2 < size:                      # the tagged word and the next two must match
+                where[ptoks[a0 + k][0]] = tag
+    if not where:
+        return plain
+    out, last = [], 0
+    for pos in sorted(where):
+        out.append(plain[last:pos]); out.append(where[pos] + " "); last = pos
+    out.append(plain[last:])
+    return "".join(out)
 
 
 CUE = re.compile(r"\[(?!\[)[^\]\[]{1,30}\](?!\])")
