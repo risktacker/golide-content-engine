@@ -103,6 +103,16 @@ export function makeDirector(K, opt = {}) {
     for (const o of people) if (o !== c) { const ob = headBox(o).union(coreBox(o)); const p = ray.ray.intersectBox(ob, _v); if (p && p.distanceTo(from) < d - 0.15) return `the face of ${c.label} is hidden behind ${o.label}`; }
     return null;
   }
+  // a thing the shot is about must be seen: the line from the camera to its centre may not hit something else first
+  function thingHidden(o, propObjs) {
+    const b = new THREE.Box3().setFromObject(o), c = b.getCenter(new THREE.Vector3()), from = camera.position.clone(), d = c.distanceTo(from);
+    if (b.containsPoint(from)) return null;
+    ray.set(from, c.clone().sub(from).normalize()); ray.far = d;
+    const own = new Set(); o.traverse(x => own.add(x));
+    const hit = ray.intersectObjects(propObjs.filter(p => p !== o), true).find(h => h.object.visible && !own.has(h.object) && !h.object.userData.noBlock);
+    if (!hit) return null; const first = ray.intersectObject(o, true)[0];
+    return !first || hit.distance < first.distance - 0.05 ? `${o.name || 'the subject'} is hidden behind ${labelOf(hit.object)}` : null;
+  }
   const labelOf = o => { for (let x = o; x; x = x.parent) if (x.userData.label) return x.userData.label; return 'a set piece'; };
   function collisions(people, props) {
     const out = [], cb = people.map(coreBox);
@@ -113,7 +123,7 @@ export function makeDirector(K, opt = {}) {
     return out;
   }
   // everything wrong with the current frame (people posed, camera set)
-  function issues({ subjects, people, props, propObjs, extras = [], faces = [] }) {
+  function issues({ subjects, people, props, propObjs, extras = [], faces = [], things = [] }) {
     const out = [];
     const where = insideAnything(camera.position, props, people); if (where) out.push(where);
     for (const c of people) {
@@ -123,7 +133,7 @@ export function makeDirector(K, opt = {}) {
       if (r.crossing) out.push(`${c.label} is cut by the camera`);
       else if (shows(r) && !within(r, SAFE)) out.push(`${c.label} is cropped at the frame edge`);
       else if (subjects.includes(c) && !shows(r)) out.push(`${c.label} is out of the shot`);
-      else if (subjects.includes(c)) { const f = rect(personBox(c)); if (!f.behind && !f.crossing && f.y1 - f.y0 < HH * (opt.minPerson ?? 0.2)) out.push(`${c.label} is too small in the frame`); }   /* whole body, a desk in front does not count */
+      else if (subjects.includes(c)) { const f = rect(personBox(c)); if (!f.behind && !f.crossing && f.y1 - f.y0 < HH * (things.length ? 0.07 : (opt.minPerson ?? 0.2))) out.push(`${c.label} is too small in the frame`); }   /* whole body, a desk in front does not count */
       const h = rect(headBox(c)); if (shows(h) && meets(h, CAP)) out.push(`the head of ${c.label} sits under the captions`);
     }
     // two heads overlapping on screen read as a crash even when neither face is fully hidden
@@ -136,6 +146,7 @@ export function makeDirector(K, opt = {}) {
       const ez = e.box.getCenter(new THREE.Vector3()).distanceTo(camera.position);
       for (const [c, h] of heads) if (h.x1 > r.x0 && r.x1 > h.x0 && h.y1 > r.y0 && r.y1 > h.y0 && headBox(c).getCenter(new THREE.Vector3()).distanceTo(camera.position) < ez - 0.05) out.push(`${e.label} is covered by the head of ${c.label}`); }
     for (const c of subjects) if (c.root) { const h = hidden(c, propObjs, people); if (h) out.push(h); }
+    for (const o of things) { const h = thingHidden(o, propObjs); if (h) out.push(h); }
     // a subject's face turned away from the camera reads as nobody acting (2026-11-23): the camera goes round to the face
     for (const c of subjects) if (c.root && (opt.faces ?? true)) { const hc = headBox(c).getCenter(new THREE.Vector3()), fwd = new THREE.Vector3(0, 0, 1).applyQuaternion(c.root.quaternion); fwd.y = 0;
       if (fwd.lengthSq() > 1e-4 && fwd.normalize().dot(camera.position.clone().sub(hc).setY(0).normalize()) < -0.15) out.push(`${c.label} has their back to the camera`); }

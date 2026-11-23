@@ -1,14 +1,14 @@
 {
  "world": {
-  "place": "a desert canyon where two railroads are being built side by side",
+  "place": "a red desert canyon where two railroads race, with a finish town at its end",
   "indoor": false,
   "ground": "red desert sand and gravel",
   "ground_color": "#c98b5a",
   "walls_color": "",
   "sky": "day",
   "size": [
-   80,
-   80
+   110,
+   60
   ],
   "light": "warm"
  },
@@ -16,7 +16,8 @@
   {
    "id": "his_line",
    "name": "rail line with gaps",
-   "search": "railroad track rails gaps",
+   "role": "story",
+   "search": "railroad track rails",
    "height_m": 0.29,
    "at": [
     0,
@@ -26,6 +27,8 @@
    "turn_deg": 0,
    "color": "",
    "parts": [
+    "rail: box -17.5 -0.72 0.12 4.7 0.09 0.17 #8c8f96",
+    "rail: box -17.5 0.72 0.12 4.7 0.09 0.17 #8c8f96",
     "rail: box -12.5 -0.72 0.12 4.7 0.09 0.17 #8c8f96",
     "rail: box -12.5 0.72 0.12 4.7 0.09 0.17 #8c8f96",
     "rail: box -7.5 -0.72 0.12 4.7 0.09 0.17 #8c8f96",
@@ -38,28 +41,39 @@
     "rail: box 7.5 0.72 0.12 4.7 0.09 0.17 #8c8f96",
     "rail: box 12.5 -0.72 0.12 4.7 0.09 0.17 #8c8f96",
     "rail: box 12.5 0.72 0.12 4.7 0.09 0.17 #8c8f96",
-    "sleeper: box -14 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box -12 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box -10 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box -8 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box -6 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box -4 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box -2 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box 0 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box 2 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box 4 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box 6 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box 8 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box 10 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box 12 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box 14 0 0 0.28 2.4 0.12 #6b4a2f"
+    "rail: box 17.5 -0.72 0.12 4.7 0.09 0.17 #8c8f96",
+    "rail: box 17.5 0.72 0.12 4.7 0.09 0.17 #8c8f96",
+    "tie: box -19 0 0 0.28 2.4 0.12 #6b4a2f",
+    "tie: box -17 0 0 0.28 2.4 0.12 #6b4a2f",
+    "tie: box -15 0 0 0.28 2.4 0.12 #6b4a2f",
+    "tie: box -13 0 0 0.28 2.4 0.12 #6b4a2f",
+    "tie: box -11 0 0 0.28 2.4 0.12 #6b4a2f",
+    "tie: box -9 0 0 0.28 2.4 0.12 #6b4a2f",
+    "tie: box -7 0 0 0.28 2.4 0.12 #6b4a2f",
+    "tie: box -5 0 0 0.28 2.4 0.12 #6b4a2f",
+    "tie: box -3 0 0 0.28 2.4 0.12 #6b4a2f",
+    "tie: box -1 0 0 0.28 2.4 0.12 #6b4a2f",
+    "tie: box 1 0 0 0.28 2.4 0.12 #6b4a2f",
+    "tie: box 3 0 0 0.28 2.4 0.12 #6b4a2f",
+    "tie: box 5 0 0 0.28 2.4 0.12 #6b4a2f",
+    "tie: box 7 0 0 0.28 2.4 0.12 #6b4a2f",
+    "tie: box 9 0 0 0.28 2.4 0.12 #6b4a2f",
+    "tie: box 11 0 0 0.28 2.4 0.12 #6b4a2f",
+    "tie: box 13 0 0 0.28 2.4 0.12 #6b4a2f",
+    "tie: box 15 0 0 0.28 2.4 0.12 #6b4a2f",
+    "tie: box 17 0 0 0.28 2.4 0.12 #6b4a2f",
+    "tie: box 19 0 0 0.28 2.4 0.12 #6b4a2f"
    ],
    "text": "",
-   "hero": true
+   "hero": true,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
   },
   {
    "id": "smooth_line",
    "name": "smooth rail line",
+   "role": "story",
    "search": "railroad track rails",
    "height_m": 0.29,
    "at": [
@@ -70,34 +84,95 @@
    "turn_deg": 0,
    "color": "",
    "parts": [
-    "rail: box 0 -0.72 0.12 30 0.09 0.17 #8c8f96",
-    "rail: box 0 0.72 0.12 30 0.09 0.17 #8c8f96",
-    "sleeper: box -14 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box -12 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box -10 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box -8 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box -6 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box -4 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box -2 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box 0 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box 2 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box 4 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box 6 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box 8 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box 10 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box 12 0 0 0.28 2.4 0.12 #6b4a2f",
-    "sleeper: box 14 0 0 0.28 2.4 0.12 #6b4a2f"
+    "rail: box 0 -0.72 0.12 40 0.09 0.17 #9a9ea6",
+    "rail: box 0 0.72 0.12 40 0.09 0.17 #9a9ea6",
+    "tie: box -19 0 0 0.28 2.4 0.12 #5e4128",
+    "tie: box -17 0 0 0.28 2.4 0.12 #5e4128",
+    "tie: box -15 0 0 0.28 2.4 0.12 #5e4128",
+    "tie: box -13 0 0 0.28 2.4 0.12 #5e4128",
+    "tie: box -11 0 0 0.28 2.4 0.12 #5e4128",
+    "tie: box -9 0 0 0.28 2.4 0.12 #5e4128",
+    "tie: box -7 0 0 0.28 2.4 0.12 #5e4128",
+    "tie: box -5 0 0 0.28 2.4 0.12 #5e4128",
+    "tie: box -3 0 0 0.28 2.4 0.12 #5e4128",
+    "tie: box -1 0 0 0.28 2.4 0.12 #5e4128",
+    "tie: box 1 0 0 0.28 2.4 0.12 #5e4128",
+    "tie: box 3 0 0 0.28 2.4 0.12 #5e4128",
+    "tie: box 5 0 0 0.28 2.4 0.12 #5e4128",
+    "tie: box 7 0 0 0.28 2.4 0.12 #5e4128",
+    "tie: box 9 0 0 0.28 2.4 0.12 #5e4128",
+    "tie: box 11 0 0 0.28 2.4 0.12 #5e4128",
+    "tie: box 13 0 0 0.28 2.4 0.12 #5e4128",
+    "tie: box 15 0 0 0.28 2.4 0.12 #5e4128",
+    "tie: box 17 0 0 0.28 2.4 0.12 #5e4128",
+    "tie: box 19 0 0 0.28 2.4 0.12 #5e4128"
    ],
    "text": "",
-   "hero": false
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
+  },
+  {
+   "id": "gap_a",
+   "name": "rail joint with a gap",
+   "role": "story",
+   "search": "rail joint",
+   "height_m": 0.31,
+   "at": [
+    -5,
+    2
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "plate: box -0.22 -0.8 0.12 0.44 0.04 0.14 #4a4d52",
+    "plate: box -0.22 0.8 0.12 0.44 0.04 0.14 #4a4d52",
+    "bolt: cyl -0.1 -0.84 0.17 0.04 0.04 0.05 rx90 #c9a227",
+    "bolt: cyl -0.34 -0.84 0.17 0.04 0.04 0.05 rx90 #c9a227",
+    "gapmark: box 0 0 0.3 0.06 1.9 0.01 #f2cf2c"
+   ],
+   "text": "",
+   "hero": true,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
+  },
+  {
+   "id": "gap_b",
+   "name": "rail joint with a gap",
+   "role": "story",
+   "search": "rail joint",
+   "height_m": 0.31,
+   "at": [
+    0,
+    2
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "plate: box -0.22 -0.8 0.12 0.44 0.04 0.14 #4a4d52",
+    "plate: box -0.22 0.8 0.12 0.44 0.04 0.14 #4a4d52",
+    "bolt: cyl -0.1 -0.84 0.17 0.04 0.04 0.05 rx90 #c9a227",
+    "bolt: cyl -0.34 -0.84 0.17 0.04 0.04 0.05 rx90 #c9a227",
+    "gapmark: box 0 0 0.3 0.06 1.9 0.01 #f2cf2c"
+   ],
+   "text": "",
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
   },
   {
    "id": "his_train",
    "name": "steam locomotive",
+   "role": "story",
    "search": "steam locomotive train engine",
-   "height_m": 3.0,
+   "height_m": 3.2,
    "at": [
-    -13,
+    -20,
     2
    ],
    "on": "his_line",
@@ -111,10 +186,15 @@
     "cab: box 2.0 0 0.85 1.8 1.6 2.0 #7a1f1f",
     "roof: box 2.0 0 2.85 2.1 1.8 0.15 #2a2a2e",
     "window: box 2.0 0.81 1.9 0.8 0.02 0.6 #f3d27a",
+    "window: box 2.0 -0.81 1.9 0.8 0.02 0.6 #f3d27a",
     "chimney: cyl -1.9 0 2.15 0.45 0.45 0.9 #111111",
+    "chimneytop: cyl -1.9 0 3.0 0.7 0.7 0.18 #111111",
     "dome: sphere -0.6 0 2.0 0.7 0.7 0.5 #c9a227",
+    "bell: sphere 0.2 0 2.1 0.25 0.25 0.3 #e0b84a",
     "cowcatcher: box -3.2 0 0.15 0.5 1.4 0.45 #555555",
     "lamp: sphere -2.35 0 1.75 0.35 0.35 0.35 #ffe9a0",
+    "rod: box -0.1 0.82 0.45 3.0 0.05 0.08 #b8b8b8",
+    "rod: box -0.1 -0.82 0.45 3.0 0.05 0.08 #b8b8b8",
     "wheel: cyl -1.6 -0.8 0.325 0.9 0.9 0.25 rx90 #8a1d1d",
     "wheel: cyl -1.6 0.8 0.325 0.9 0.9 0.25 rx90 #8a1d1d",
     "wheel: cyl 0 -0.8 0.325 0.9 0.9 0.25 rx90 #8a1d1d",
@@ -123,15 +203,19 @@
     "wheel: cyl 1.4 0.8 0.325 0.9 0.9 0.25 rx90 #8a1d1d"
    ],
    "text": "",
-   "hero": true
+   "hero": true,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
   },
   {
    "id": "rival_train",
    "name": "steam locomotive",
+   "role": "story",
    "search": "steam locomotive train engine",
-   "height_m": 3.0,
+   "height_m": 3.2,
    "at": [
-    -13,
+    -20,
     -6
    ],
    "on": "smooth_line",
@@ -145,10 +229,15 @@
     "cab: box 2.0 0 0.85 1.8 1.6 2.0 #1f3f7a",
     "roof: box 2.0 0 2.85 2.1 1.8 0.15 #2a2a2e",
     "window: box 2.0 0.81 1.9 0.8 0.02 0.6 #f3d27a",
+    "window: box 2.0 -0.81 1.9 0.8 0.02 0.6 #f3d27a",
     "chimney: cyl -1.9 0 2.15 0.45 0.45 0.9 #111111",
+    "chimneytop: cyl -1.9 0 3.0 0.7 0.7 0.18 #111111",
     "dome: sphere -0.6 0 2.0 0.7 0.7 0.5 #c9a227",
+    "bell: sphere 0.2 0 2.1 0.25 0.25 0.3 #e0b84a",
     "cowcatcher: box -3.2 0 0.15 0.5 1.4 0.45 #555555",
     "lamp: sphere -2.35 0 1.75 0.35 0.35 0.35 #ffe9a0",
+    "rod: box -0.1 0.82 0.45 3.0 0.05 0.08 #b8b8b8",
+    "rod: box -0.1 -0.82 0.45 3.0 0.05 0.08 #b8b8b8",
     "wheel: cyl -1.6 -0.8 0.325 0.9 0.9 0.25 rx90 #8a1d1d",
     "wheel: cyl -1.6 0.8 0.325 0.9 0.9 0.25 rx90 #8a1d1d",
     "wheel: cyl 0 -0.8 0.325 0.9 0.9 0.25 rx90 #8a1d1d",
@@ -157,11 +246,81 @@
     "wheel: cyl 1.4 0.8 0.325 0.9 0.9 0.25 rx90 #8a1d1d"
    ],
    "text": "",
-   "hero": false
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
+  },
+  {
+   "id": "his_car",
+   "name": "flatcar of rails",
+   "role": "story",
+   "search": "flatcar railcar",
+   "height_m": 1.1,
+   "at": [
+    -25,
+    2
+   ],
+   "on": "his_line",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "deck: box 0 0 0.75 4.5 1.6 0.18 #6b4a2f",
+    "beam: box 0 0 0.5 4.3 0.3 0.25 #2a2a2e",
+    "wheel: cyl -1.5 0.75 0.3 0.6 0.6 0.2 rx90 #333",
+    "wheel: cyl -1.5 -0.75 0.3 0.6 0.6 0.2 rx90 #333",
+    "wheel: cyl 1.5 0.75 0.3 0.6 0.6 0.2 rx90 #333",
+    "wheel: cyl 1.5 -0.75 0.3 0.6 0.6 0.2 rx90 #333",
+    "cargo rail: box 0 -0.5 0.93 4.2 0.09 0.17 #9a9ea6",
+    "cargo rail: box 0 -0.3 0.93 4.2 0.09 0.17 #9a9ea6",
+    "cargo rail: box 0 -0.09999999999999998 0.93 4.2 0.09 0.17 #9a9ea6",
+    "cargo rail: box 0 0.10000000000000009 0.93 4.2 0.09 0.17 #9a9ea6",
+    "cargo rail: box 0 0.30000000000000004 0.93 4.2 0.09 0.17 #9a9ea6",
+    "cargo rail: box 0 0.5 0.93 4.2 0.09 0.17 #9a9ea6"
+   ],
+   "text": "",
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
+  },
+  {
+   "id": "rival_car",
+   "name": "flatcar of rails",
+   "role": "story",
+   "search": "flatcar railcar",
+   "height_m": 1.1,
+   "at": [
+    -25,
+    -6
+   ],
+   "on": "smooth_line",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "deck: box 0 0 0.75 4.5 1.6 0.18 #6b4a2f",
+    "beam: box 0 0 0.5 4.3 0.3 0.25 #2a2a2e",
+    "wheel: cyl -1.5 0.75 0.3 0.6 0.6 0.2 rx90 #333",
+    "wheel: cyl -1.5 -0.75 0.3 0.6 0.6 0.2 rx90 #333",
+    "wheel: cyl 1.5 0.75 0.3 0.6 0.6 0.2 rx90 #333",
+    "wheel: cyl 1.5 -0.75 0.3 0.6 0.6 0.2 rx90 #333",
+    "cargo rail: box 0 -0.5 0.93 4.2 0.09 0.17 #9a9ea6",
+    "cargo rail: box 0 -0.3 0.93 4.2 0.09 0.17 #9a9ea6",
+    "cargo rail: box 0 -0.09999999999999998 0.93 4.2 0.09 0.17 #9a9ea6",
+    "cargo rail: box 0 0.10000000000000009 0.93 4.2 0.09 0.17 #9a9ea6",
+    "cargo rail: box 0 0.30000000000000004 0.93 4.2 0.09 0.17 #9a9ea6",
+    "cargo rail: box 0 0.5 0.93 4.2 0.09 0.17 #9a9ea6"
+   ],
+   "text": "",
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
   },
   {
    "id": "canyon",
    "name": "canyon cliffs",
+   "role": "story",
    "search": "canyon cliff rock",
    "height_m": 20,
    "at": [
@@ -172,111 +331,373 @@
    "turn_deg": 0,
    "color": "",
    "parts": [
-    "rock: box -35 0 0 10.5 8 14 #b5562f",
-    "ledge: box -33 3 0 6 4 6.3 #c56a3a",
-    "rock: box -25 0 0 10.5 8 18 #c56a3a",
-    "ledge: box -23 3 0 6 4 8.1 #a34a2a",
-    "rock: box -15 0 0 10.5 8 12 #a34a2a",
-    "ledge: box -13 3 0 6 4 5.4 #cf7a45",
-    "rock: box -5 0 0 10.5 8 16 #cf7a45",
-    "ledge: box -3 3 0 6 4 7.2 #b5562f",
-    "rock: box 5 0 0 10.5 8 20 #b5562f",
-    "ledge: box 7 3 0 6 4 9.0 #c56a3a",
-    "rock: box 15 0 0 10.5 8 13 #c56a3a",
-    "ledge: box 17 3 0 6 4 5.9 #a34a2a",
-    "rock: box 25 0 0 10.5 8 17 #a34a2a",
-    "ledge: box 27 3 0 6 4 7.7 #cf7a45",
-    "rock: box 35 0 0 10.5 8 15 #cf7a45",
-    "ledge: box 37 3 0 6 4 6.8 #b5562f"
+    "rock: box -45 0 0 10.5 8 14 #b5562f",
+    "ledge: box -43 3 0 6 4 6.3 #c56a3a",
+    "rock: box -35 0 0 10.5 8 18 #c56a3a",
+    "ledge: box -33 3 0 6 4 8.1 #a34a2a",
+    "rock: box -25 0 0 10.5 8 12 #a34a2a",
+    "ledge: box -23 3 0 6 4 5.4 #cf7a45",
+    "rock: box -15 0 0 10.5 8 16 #cf7a45",
+    "ledge: box -13 3 0 6 4 7.2 #b5562f",
+    "rock: box -5 0 0 10.5 8 20 #b5562f",
+    "ledge: box -3 3 0 6 4 9.0 #c56a3a",
+    "rock: box 5 0 0 10.5 8 13 #c56a3a",
+    "ledge: box 7 3 0 6 4 5.9 #a34a2a",
+    "rock: box 15 0 0 10.5 8 17 #a34a2a",
+    "ledge: box 17 3 0 6 4 7.7 #cf7a45",
+    "rock: box 25 0 0 10.5 8 15 #cf7a45",
+    "ledge: box 27 3 0 6 4 6.8 #b5562f",
+    "rock: box 35 0 0 10.5 8 19 #b5562f",
+    "ledge: box 37 3 0 6 4 8.6 #c56a3a",
+    "rock: box 45 0 0 10.5 8 14 #c56a3a",
+    "ledge: box 47 3 0 6 4 6.3 #a34a2a"
    ],
    "text": "",
-   "hero": false
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
   },
   {
-   "id": "finish",
-   "name": "finish sign",
-   "search": "sign board",
-   "height_m": 3.2,
+   "id": "near_cliff",
+   "name": "canyon cliff",
+   "role": "dressing",
+   "search": "cliff rock",
+   "height_m": 9,
    "at": [
-    16,
+    -24,
+    9
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "rock: box 0 0 0 8 6 9 #b85a33",
+    "rock: box 2 2 0 5 4 6 #c56a3a",
+    "ledge: box -2 -1 0 4 4 4 #a34a2a"
+   ],
+   "text": "",
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
+  },
+  {
+   "id": "rocks",
+   "name": "rocks",
+   "role": "dressing",
+   "search": "rock stones",
+   "height_m": 0.5,
+   "at": [
+    0,
+    6
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "rock: sphere 0 0 0 1 0.8 0.6 #a0603a"
+   ],
+   "text": "",
+   "hero": false,
+   "count": 60,
+   "spread": 24,
+   "life": "none"
+  },
+  {
+   "id": "boulders",
+   "name": "boulders",
+   "role": "dressing",
+   "search": "boulder rock",
+   "height_m": 1.6,
+   "at": [
+    -8,
+    -14
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "rock: sphere 0 0 0 2 1.6 1.6 #9a5634"
+   ],
+   "text": "",
+   "hero": false,
+   "count": 8,
+   "spread": 14,
+   "life": "none"
+  },
+  {
+   "id": "cacti",
+   "name": "saguaro cactus",
+   "role": "dressing",
+   "search": "saguaro cactus",
+   "height_m": 3.0,
+   "at": [
+    6,
+    9
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "trunk: cyl 0 0 0 0.45 0.45 2.6 #3f7a3a",
+    "arm: cyl 0.4 0 1.1 0.3 0.3 0.9 #3f7a3a",
+    "armtop: cyl 0.4 0 2.0 0.28 0.28 0.6 #3f7a3a",
+    "arm: cyl -0.4 0 1.4 0.3 0.3 0.7 #3f7a3a"
+   ],
+   "text": "",
+   "hero": false,
+   "count": 14,
+   "spread": 20,
+   "life": "none"
+  },
+  {
+   "id": "brush",
+   "name": "dry sagebrush",
+   "role": "dressing",
+   "search": "sagebrush shrub bush",
+   "height_m": 0.6,
+   "at": [
+    -2,
+    10
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "bush: sphere 0 0 0 1 1 0.6 #8a8a4a"
+   ],
+   "text": "",
+   "hero": false,
+   "count": 60,
+   "spread": 22,
+   "life": "sway"
+  },
+  {
+   "id": "tumbleweed",
+   "name": "tumbleweed",
+   "role": "gag",
+   "search": "tumbleweed",
+   "height_m": 0.7,
+   "at": [
+    -12,
+    7
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "ball: sphere 0 0 0 0.7 0.7 0.7 #a88a52"
+   ],
+   "text": "",
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "roll"
+  },
+  {
+   "id": "ties_stack",
+   "name": "stack of railroad ties",
+   "role": "detail",
+   "search": "railroad ties lumber stack",
+   "height_m": 0.9,
+   "at": [
+    -9,
+    4.6
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "tie: box 0 0 0.0 2.4 1.6 0.14 #6b4a2f",
+    "tie: box 0 0 0.15 2.4 1.4000000000000001 0.14 #6b4a2f",
+    "tie: box 0 0 0.3 2.4 1.6 0.14 #6b4a2f",
+    "tie: box 0 0 0.44999999999999996 2.4 1.4000000000000001 0.14 #6b4a2f",
+    "tie: box 0 0 0.6 2.4 1.6 0.14 #6b4a2f",
+    "tie: box 0 0 0.75 2.4 1.4000000000000001 0.14 #6b4a2f"
+   ],
+   "text": "",
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
+  },
+  {
+   "id": "rails_stack",
+   "name": "stack of steel rails",
+   "role": "detail",
+   "search": "steel rails stack",
+   "height_m": 0.5,
+   "at": [
+    4,
+    4.6
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "rail: box 0 -0.3 0 4.8 0.09 0.17 #8c8f96",
+    "rail: box 0 -0.15 0 4.8 0.09 0.17 #8c8f96",
+    "rail: box 0 0.0 0 4.8 0.09 0.17 #8c8f96",
+    "rail: box 0 0.14999999999999997 0 4.8 0.09 0.17 #8c8f96",
+    "rail: box 0 0.3 0 4.8 0.09 0.17 #8c8f96"
+   ],
+   "text": "",
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
+  },
+  {
+   "id": "spike_kegs",
+   "name": "keg of rail spikes",
+   "role": "detail",
+   "search": "barrel keg",
+   "height_m": 0.8,
+   "at": [
+    -7,
+    5.2
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "keg: cyl 0 0 0 0.55 0.55 0.8 #7a4a26",
+    "band: cyl 0 0 0.12 0.57 0.57 0.05 #333",
+    "spikes: cyl 0 0 0.8 0.5 0.5 0.08 #5a5a5a"
+   ],
+   "text": "",
+   "hero": false,
+   "count": 4,
+   "spread": 1.2,
+   "life": "none"
+  },
+  {
+   "id": "barrels",
+   "name": "water barrels",
+   "role": "dressing",
+   "search": "wooden barrel",
+   "height_m": 0.9,
+   "at": [
+    8,
+    4.8
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "barrel: cyl 0 0 0 0.6 0.6 0.9 #7a4a26",
+    "band: cyl 0 0 0.15 0.62 0.62 0.06 #333333",
+    "band: cyl 0 0 0.7 0.62 0.62 0.06 #333333"
+   ],
+   "text": "",
+   "hero": false,
+   "count": 6,
+   "spread": 1.6,
+   "life": "none"
+  },
+  {
+   "id": "crates",
+   "name": "supply crates",
+   "role": "dressing",
+   "search": "wooden crate",
+   "height_m": 0.6,
+   "at": [
+    11,
     -2
    ],
    "on": "",
    "turn_deg": 0,
    "color": "",
    "parts": [
-    "post: box -1.6 0 0 0.2 0.2 3.2 #6b4a2f",
-    "post: box 1.6 0 0 0.2 0.2 3.2 #6b4a2f",
-    "board: box 0 0 2.0 3.6 0.15 1.1 #f2e6c8"
+    "crate: box 0 0 0 0.8 0.6 0.6 #9a6a3a"
    ],
-   "text": "FINISH",
-   "hero": false
+   "text": "",
+   "hero": false,
+   "count": 8,
+   "spread": 2.5,
+   "life": "none"
   },
   {
-   "id": "tape",
-   "name": "tape measure",
-   "search": "tape measure",
-   "height_m": 0.12,
+   "id": "tents",
+   "name": "canvas tents",
+   "role": "dressing",
+   "search": "canvas tent camp",
+   "height_m": 2.4,
    "at": [
-    -3,
-    0.9
+    -14,
+    12
    ],
    "on": "",
    "turn_deg": 0,
    "color": "",
    "parts": [
-    "case: box 0 0 0 0.14 0.06 0.12 #f2c12c",
-    "tape: box 0.25 0 0.03 0.4 0.02 0.03 #f6e7a0"
+    "body: cone 0 0 0 3 3 2.4 #e8dcc0",
+    "door: box 0 1.2 0 0.8 0.05 1.2 #5a4a3a"
    ],
    "text": "",
-   "hero": false
+   "hero": false,
+   "count": 4,
+   "spread": 5,
+   "life": "none"
   },
   {
-   "id": "hammer1",
-   "name": "sledgehammer",
-   "search": "sledgehammer hammer",
-   "height_m": 0.9,
+   "id": "campfire",
+   "name": "campfire",
+   "role": "detail",
+   "search": "campfire",
+   "height_m": 0.5,
    "at": [
-    1.6,
-    0.9
+    -11,
+    10
    ],
    "on": "",
    "turn_deg": 0,
    "color": "",
    "parts": [
-    "handle: cyl 0 0 0 0.05 0.05 0.8 #8b5a2b",
-    "head: box 0 0 0.8 0.3 0.12 0.12 #3a3a3a"
+    "logs: box 0 0 0 0.9 0.2 0.15 #4a2e1a",
+    "logs: box 0 0 0.1 0.2 0.9 0.15 #4a2e1a",
+    "stones: cyl 0 0 0 1.2 1.2 0.12 #777"
    ],
    "text": "",
-   "hero": false
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "smoke"
   },
   {
-   "id": "hammer2",
-   "name": "sledgehammer",
-   "search": "sledgehammer hammer",
-   "height_m": 0.9,
+   "id": "lanterns",
+   "name": "oil lanterns",
+   "role": "detail",
+   "search": "oil lantern",
+   "height_m": 0.4,
    "at": [
-    2.6,
-    -7.9
+    -8,
+    5.8
    ],
    "on": "",
    "turn_deg": 0,
    "color": "",
    "parts": [
-    "handle: cyl 0 0 0 0.05 0.05 0.8 #8b5a2b",
-    "head: box 0 0 0.8 0.3 0.12 0.12 #3a3a3a"
+    "base: cyl 0 0 0 0.25 0.25 0.08 #333",
+    "glass: cyl 0 0 0.08 0.2 0.2 0.25 #ffd27a",
+    "top: cone 0 0 0.33 0.26 0.26 0.1 #333"
    ],
    "text": "",
-   "hero": false
+   "hero": false,
+   "count": 3,
+   "spread": 3,
+   "life": "flicker"
   },
   {
-   "id": "tower",
+   "id": "water_tower",
    "name": "water tower",
+   "role": "detail",
    "search": "water tower",
    "height_m": 9.6,
    "at": [
-    -18,
-    -11
+    -16,
+    -12
    ],
    "on": "",
    "turn_deg": 0,
@@ -291,15 +712,19 @@
     "spout: box 1.5 0 6.6 0.9 0.15 0.15 #3a3a3a"
    ],
    "text": "",
-   "hero": false
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "drip"
   },
   {
    "id": "pole0",
    "name": "telegraph pole",
+   "role": "dressing",
    "search": "telegraph pole utility pole",
    "height_m": 6.5,
    "at": [
-    -15,
+    -18,
     -9.5
    ],
    "on": "",
@@ -312,15 +737,19 @@
     "insulator: cyl 0.6 0 6.0 0.1 0.1 0.15 #cfe3ef"
    ],
    "text": "",
-   "hero": false
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
   },
   {
    "id": "pole1",
    "name": "telegraph pole",
+   "role": "dressing",
    "search": "telegraph pole utility pole",
    "height_m": 6.5,
    "at": [
-    -7,
+    -8,
     -9.5
    ],
    "on": "",
@@ -333,15 +762,19 @@
     "insulator: cyl 0.6 0 6.0 0.1 0.1 0.15 #cfe3ef"
    ],
    "text": "",
-   "hero": false
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
   },
   {
    "id": "pole2",
    "name": "telegraph pole",
+   "role": "dressing",
    "search": "telegraph pole utility pole",
    "height_m": 6.5,
    "at": [
-    1,
+    2,
     -9.5
    ],
    "on": "",
@@ -354,15 +787,19 @@
     "insulator: cyl 0.6 0 6.0 0.1 0.1 0.15 #cfe3ef"
    ],
    "text": "",
-   "hero": false
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
   },
   {
    "id": "pole3",
    "name": "telegraph pole",
+   "role": "dressing",
    "search": "telegraph pole utility pole",
    "height_m": 6.5,
    "at": [
-    9,
+    12,
     -9.5
    ],
    "on": "",
@@ -375,258 +812,368 @@
     "insulator: cyl 0.6 0 6.0 0.1 0.1 0.15 #cfe3ef"
    ],
    "text": "",
-   "hero": false
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
   },
   {
-   "id": "cactus0",
-   "name": "saguaro cactus",
-   "search": "saguaro cactus",
-   "height_m": 2.6,
+   "id": "red_flag",
+   "name": "red company flag",
+   "role": "detail",
+   "search": "flag pole",
+   "height_m": 3.2,
    "at": [
-    -9,
-    6
-   ],
-   "on": "",
-   "turn_deg": 0,
-   "color": "",
-   "parts": [
-    "trunk: cyl 0 0 0 0.45 0.45 2.6 #3f7a3a",
-    "arm: cyl 0.4 0 1.1 0.3 0.3 0.9 #3f7a3a",
-    "armtop: cyl 0.4 0 2.0 0.28 0.28 0.6 #3f7a3a",
-    "arm: cyl -0.4 0 1.4 0.3 0.3 0.7 #3f7a3a"
-   ],
-   "text": "",
-   "hero": false
-  },
-  {
-   "id": "cactus1",
-   "name": "saguaro cactus",
-   "search": "saguaro cactus",
-   "height_m": 3.0,
-   "at": [
-    8,
-    7
-   ],
-   "on": "",
-   "turn_deg": 37,
-   "color": "",
-   "parts": [
-    "trunk: cyl 0 0 0 0.45 0.45 2.6 #3f7a3a",
-    "arm: cyl 0.4 0 1.1 0.3 0.3 0.9 #3f7a3a",
-    "armtop: cyl 0.4 0 2.0 0.28 0.28 0.6 #3f7a3a",
-    "arm: cyl -0.4 0 1.4 0.3 0.3 0.7 #3f7a3a"
-   ],
-   "text": "",
-   "hero": false
-  },
-  {
-   "id": "cactus2",
-   "name": "saguaro cactus",
-   "search": "saguaro cactus",
-   "height_m": 3.4000000000000004,
-   "at": [
-    19,
-    3
-   ],
-   "on": "",
-   "turn_deg": 74,
-   "color": "",
-   "parts": [
-    "trunk: cyl 0 0 0 0.45 0.45 2.6 #3f7a3a",
-    "arm: cyl 0.4 0 1.1 0.3 0.3 0.9 #3f7a3a",
-    "armtop: cyl 0.4 0 2.0 0.28 0.28 0.6 #3f7a3a",
-    "arm: cyl -0.4 0 1.4 0.3 0.3 0.7 #3f7a3a"
-   ],
-   "text": "",
-   "hero": false
-  },
-  {
-   "id": "cactus3",
-   "name": "saguaro cactus",
-   "search": "saguaro cactus",
-   "height_m": 2.6,
-   "at": [
-    -20,
-    0
-   ],
-   "on": "",
-   "turn_deg": 111,
-   "color": "",
-   "parts": [
-    "trunk: cyl 0 0 0 0.45 0.45 2.6 #3f7a3a",
-    "arm: cyl 0.4 0 1.1 0.3 0.3 0.9 #3f7a3a",
-    "armtop: cyl 0.4 0 2.0 0.28 0.28 0.6 #3f7a3a",
-    "arm: cyl -0.4 0 1.4 0.3 0.3 0.7 #3f7a3a"
-   ],
-   "text": "",
-   "hero": false
-  },
-  {
-   "id": "cactus4",
-   "name": "saguaro cactus",
-   "search": "saguaro cactus",
-   "height_m": 3.0,
-   "at": [
-    12,
-    -12
-   ],
-   "on": "",
-   "turn_deg": 148,
-   "color": "",
-   "parts": [
-    "trunk: cyl 0 0 0 0.45 0.45 2.6 #3f7a3a",
-    "arm: cyl 0.4 0 1.1 0.3 0.3 0.9 #3f7a3a",
-    "armtop: cyl 0.4 0 2.0 0.28 0.28 0.6 #3f7a3a",
-    "arm: cyl -0.4 0 1.4 0.3 0.3 0.7 #3f7a3a"
-   ],
-   "text": "",
-   "hero": false
-  },
-  {
-   "id": "barrel0",
-   "name": "wooden barrel",
-   "search": "wooden barrel",
-   "height_m": 0.9,
-   "at": [
-    -6,
-    6.5
-   ],
-   "on": "",
-   "turn_deg": 0,
-   "color": "",
-   "parts": [
-    "barrel: cyl 0 0 0 0.6 0.6 0.9 #7a4a26",
-    "band: cyl 0 0 0.15 0.62 0.62 0.06 #333333",
-    "band: cyl 0 0 0.7 0.62 0.62 0.06 #333333"
-   ],
-   "text": "",
-   "hero": false
-  },
-  {
-   "id": "barrel1",
-   "name": "wooden barrel",
-   "search": "wooden barrel",
-   "height_m": 0.9,
-   "at": [
-    4,
-    6
-   ],
-   "on": "",
-   "turn_deg": 0,
-   "color": "",
-   "parts": [
-    "barrel: cyl 0 0 0 0.6 0.6 0.9 #7a4a26",
-    "band: cyl 0 0 0.15 0.62 0.62 0.06 #333333",
-    "band: cyl 0 0 0.7 0.62 0.62 0.06 #333333"
-   ],
-   "text": "",
-   "hero": false
-  },
-  {
-   "id": "barrel2",
-   "name": "wooden barrel",
-   "search": "wooden barrel",
-   "height_m": 0.9,
-   "at": [
-    -11,
-    -3
-   ],
-   "on": "",
-   "turn_deg": 0,
-   "color": "",
-   "parts": [
-    "barrel: cyl 0 0 0 0.6 0.6 0.9 #7a4a26",
-    "band: cyl 0 0 0.15 0.62 0.62 0.06 #333333",
-    "band: cyl 0 0 0.7 0.62 0.62 0.06 #333333"
-   ],
-   "text": "",
-   "hero": false
-  },
-  {
-   "id": "ties",
-   "name": "stack of railroad ties",
-   "search": "railroad ties lumber stack",
-   "height_m": 0.9,
-   "at": [
-    7,
+    -3,
     4.2
    ],
    "on": "",
    "turn_deg": 0,
    "color": "",
    "parts": [
-    "tie: box 0 0 0.0 2.4 1.6 0.14 #6b4a2f",
-    "tie: box 0 0 0.15 2.4 1.4000000000000001 0.14 #6b4a2f",
-    "tie: box 0 0 0.3 2.4 1.6 0.14 #6b4a2f",
-    "tie: box 0 0 0.44999999999999996 2.4 1.4000000000000001 0.14 #6b4a2f",
-    "tie: box 0 0 0.6 2.4 1.6 0.14 #6b4a2f",
-    "tie: box 0 0 0.75 2.4 1.4000000000000001 0.14 #6b4a2f"
+    "pole: cyl 0 0 0 0.08 0.08 3.2 #6b4a2f",
+    "flag: box 0.5 0 2.4 1.0 0.03 0.7 #c8352f"
    ],
    "text": "",
-   "hero": false
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "flutter"
   },
   {
-   "id": "rails",
-   "name": "stack of steel rails",
-   "search": "steel rails stack",
-   "height_m": 0.5,
+   "id": "blue_flag",
+   "name": "blue company flag",
+   "role": "detail",
+   "search": "flag pole",
+   "height_m": 3.2,
    "at": [
-    10,
+    3,
+    -8.6
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "pole: cyl 0 0 0 0.08 0.08 3.2 #6b4a2f",
+    "flag: box 0.5 0 2.4 1.0 0.03 0.7 #2c5aa0"
+   ],
+   "text": "",
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "flutter"
+  },
+  {
+   "id": "wheelbarrow",
+   "name": "wheelbarrow of gravel",
+   "role": "dressing",
+   "search": "wheelbarrow",
+   "height_m": 0.7,
+   "at": [
+    -2,
     4.4
    ],
    "on": "",
    "turn_deg": 0,
    "color": "",
    "parts": [
-    "rail: box 0 -0.3 0 4.8 0.09 0.17 #8c8f96",
-    "rail: box 0 -0.15 0 4.8 0.09 0.17 #8c8f96",
-    "rail: box 0 0.0 0 4.8 0.09 0.17 #8c8f96",
-    "rail: box 0 0.14999999999999997 0 4.8 0.09 0.17 #8c8f96",
-    "rail: box 0 0.3 0 4.8 0.09 0.17 #8c8f96",
-    "rail: box 0 -0.22 0.17 4.8 0.09 0.17 #8c8f96",
-    "rail: box 0 -0.07 0.17 4.8 0.09 0.17 #8c8f96",
-    "rail: box 0 0.07999999999999999 0.17 4.8 0.09 0.17 #8c8f96",
-    "rail: box 0 0.22999999999999995 0.17 4.8 0.09 0.17 #8c8f96"
+    "tray: box 0 0 0.3 1.0 0.7 0.35 #5a5a5a",
+    "gravel: box 0 0 0.62 0.9 0.6 0.08 #9a8a7a",
+    "wheel: cyl 0.6 0 0.2 0.4 0.4 0.1 rx90 #333",
+    "handle: box -0.6 0.25 0.35 0.6 0.05 0.05 #6b4a2f",
+    "handle: box -0.6 -0.25 0.35 0.6 0.05 0.05 #6b4a2f"
    ],
    "text": "",
-   "hero": false
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
   },
   {
-   "id": "tent",
-   "name": "canvas tent",
-   "search": "canvas tent camp",
-   "height_m": 2.4,
+   "id": "tape",
+   "name": "tape measure",
+   "role": "detail",
+   "search": "tape measure",
+   "height_m": 0.12,
+   "at": [
+    -5.6,
+    1.3
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "case: box 0 0 0 0.14 0.06 0.12 #f2c12c",
+    "tape: box 0.25 0 0.03 0.4 0.02 0.03 #f6e7a0"
+   ],
+   "text": "",
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
+  },
+  {
+   "id": "hammer0",
+   "name": "sledgehammer",
+   "role": "detail",
+   "search": "sledgehammer hammer",
+   "height_m": 0.9,
+   "at": [
+    -1,
+    0.9
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "handle: cyl 0 0 0 0.05 0.05 0.8 #8b5a2b",
+    "head: box 0 0 0.8 0.3 0.12 0.12 #3a3a3a"
+   ],
+   "text": "",
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
+  },
+  {
+   "id": "hammer1",
+   "name": "sledgehammer",
+   "role": "detail",
+   "search": "sledgehammer hammer",
+   "height_m": 0.9,
+   "at": [
+    2.5,
+    -7.6
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "handle: cyl 0 0 0 0.05 0.05 0.8 #8b5a2b",
+    "head: box 0 0 0.8 0.3 0.12 0.12 #3a3a3a"
+   ],
+   "text": "",
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
+  },
+  {
+   "id": "hammer2",
+   "name": "sledgehammer",
+   "role": "detail",
+   "search": "sledgehammer hammer",
+   "height_m": 0.9,
+   "at": [
+    -9,
+    -7.7
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "handle: cyl 0 0 0 0.05 0.05 0.8 #8b5a2b",
+    "head: box 0 0 0.8 0.3 0.12 0.12 #3a3a3a"
+   ],
+   "text": "",
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
+  },
+  {
+   "id": "carried_rail",
+   "name": "steel rail",
+   "role": "story",
+   "search": "steel rail",
+   "height_m": 0.17,
    "at": [
     -12,
-    8
+    -7.6
    ],
    "on": "",
    "turn_deg": 0,
    "color": "",
    "parts": [
-    "body: cone 0 0 0 3 3 2.4 #e8dcc0",
-    "door: box 0 1.2 0 0.8 0.05 1.2 #5a4a3a"
+    "rail: box 0 0 0 3 0.09 0.17 #9a9ea6"
    ],
    "text": "",
-   "hero": false
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
   },
   {
-   "id": "crowdsign",
-   "name": "welcome banner",
-   "search": "banner",
-   "height_m": 0.7,
+   "id": "carried_tie",
+   "name": "railroad tie",
+   "role": "story",
+   "search": "railroad tie",
+   "height_m": 0.14,
    "at": [
-    14.5,
-    1.6
+    -8,
+    0.6
    ],
    "on": "",
    "turn_deg": 0,
    "color": "",
    "parts": [
-    "cloth: box 0 0 0 2.4 0.05 0.7 #d7262c"
+    "tie: box 0 0 0 2.4 0.28 0.14 #6b4a2f"
    ],
-   "text": "FIRST WINS",
-   "hero": false
+   "text": "",
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
+  },
+  {
+   "id": "station",
+   "name": "railroad station",
+   "role": "story",
+   "search": "railroad station building",
+   "height_m": 4.0,
+   "at": [
+    44,
+    -6
+   ],
+   "on": "",
+   "turn_deg": 180,
+   "color": "",
+   "parts": [
+    "floor: box 0 0 0 8 5 0.4 #8a6a4a",
+    "wall: box 0 -2 0.4 8 0.3 3.2 #c9a27a",
+    "wall: box -3.9 0 0.4 0.3 4 3.2 #c9a27a",
+    "wall: box 3.9 0 0.4 0.3 4 3.2 #c9a27a",
+    "roof: box 0 0 3.6 9 6 0.3 #6b3a22",
+    "door: box 0 -1.8 0.4 1.2 0.1 2.2 #4a2e1a",
+    "window: box -2.5 -1.8 1.4 1.2 0.1 1 #f3d27a",
+    "window: box 2.5 -1.8 1.4 1.2 0.1 1 #f3d27a",
+    "porch post: cyl -3.8 2.4 0.4 0.15 0.15 3.2 #6b4a2f",
+    "porch post: cyl 3.8 2.4 0.4 0.15 0.15 3.2 #6b4a2f"
+   ],
+   "text": "",
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
+  },
+  {
+   "id": "banner",
+   "name": "banner",
+   "role": "story",
+   "search": "banner",
+   "height_m": 5.0,
+   "at": [
+    40,
+    -1
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "post: box -3.2 0 0 0.25 0.25 5 #6b4a2f",
+    "post: box 3.2 0 0 0.25 0.25 5 #6b4a2f",
+    "cloth: box 0 0 3.4 6.4 0.08 1.4 #f2e6c8"
+   ],
+   "text": "FIRST LINE WINS",
+   "hero": true,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
+  },
+  {
+   "id": "moneybags",
+   "name": "money bags",
+   "role": "story",
+   "search": "money bag sack",
+   "height_m": 0.6,
+   "at": [
+    42.5,
+    1.2
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "sack: sphere 0 0 0 0.6 0.6 0.6 #c9b27a",
+    "tie: cyl 0 0 0.55 0.18 0.18 0.12 #6b4a2f"
+   ],
+   "text": "",
+   "hero": false,
+   "count": 8,
+   "spread": 1.0,
+   "life": "none"
+  },
+  {
+   "id": "wagon",
+   "name": "freight wagon",
+   "role": "dressing",
+   "search": "wagon cart",
+   "height_m": 1.8,
+   "at": [
+    48,
+    2
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "bed: box 0 0 0.7 3.2 1.6 0.6 #8a5a34",
+    "wheel: cyl -1.1 0.85 0.5 1 1 0.1 rx90 #4a2e1a",
+    "wheel: cyl 1.1 0.85 0.5 1 1 0.1 rx90 #4a2e1a",
+    "wheel: cyl -1.1 -0.85 0.5 1 1 0.1 rx90 #4a2e1a",
+    "wheel: cyl 1.1 -0.85 0.5 1 1 0.1 rx90 #4a2e1a",
+    "canvas: cyl 0 0 1.3 1.6 1.6 0.8 #e8dcc0"
+   ],
+   "text": "",
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none"
+  },
+  {
+   "id": "bunting",
+   "name": "bunting flags",
+   "role": "detail",
+   "search": "bunting flags",
+   "height_m": 0.4,
+   "at": [
+    40,
+    -1
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "flag: cone 0 0 0 0.3 0.05 0.4 #c8352f"
+   ],
+   "text": "",
+   "hero": false,
+   "count": 12,
+   "spread": 3,
+   "life": "flutter"
+  },
+  {
+   "id": "hats",
+   "name": "thrown hats",
+   "role": "gag",
+   "search": "hat",
+   "height_m": 0.2,
+   "at": [
+    40,
+    1
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "crown: cyl 0 0 0 0.3 0.3 0.15 #5a3a22",
+    "brim: cyl 0 0 0 0.5 0.5 0.03 #5a3a22"
+   ],
+   "text": "",
+   "hero": false,
+   "count": 3,
+   "spread": 1.5,
+   "life": "spin"
   }
  ],
  "cast": [
@@ -634,10 +1181,10 @@
    "id": "hero",
    "label": "the engineer who leaves the gaps",
    "at": [
-    -3,
-    0.5
+    -5.9,
+    0.7
    ],
-   "turn_deg": 0,
+   "turn_deg": 25,
    "look": {
     "outfit": "overalls",
     "color": "#3d5a9c",
@@ -648,30 +1195,13 @@
    }
   },
   {
-   "id": "rival",
-   "label": "the rival company's boss",
-   "at": [
-    5,
-    -3.6
-   ],
-   "turn_deg": -20,
-   "look": {
-    "outfit": "suit",
-    "color": "#2f3542",
-    "accent": "#c8352f",
-    "pattern": "pinstripe",
-    "hat": "cowboy",
-    "glasses": false
-   }
-  },
-  {
    "id": "crew1",
-   "label": "his rail crew worker",
+   "label": "his crew, hammering spikes",
    "at": [
-    2,
-    0.6
+    -1.4,
+    0.4
    ],
-   "turn_deg": 0,
+   "turn_deg": 10,
    "look": {
     "outfit": "overalls",
     "color": "#8a5634",
@@ -683,12 +1213,12 @@
   },
   {
    "id": "crew2",
-   "label": "his rail crew worker",
+   "label": "his crew, carrying a tie",
    "at": [
-    -6,
-    0.5
+    -8,
+    0.4
    ],
-   "turn_deg": 15,
+   "turn_deg": 0,
    "look": {
     "outfit": "overalls",
     "color": "#5f7a3a",
@@ -699,10 +1229,44 @@
    }
   },
   {
-   "id": "rcrew1",
-   "label": "rival rail crew worker",
+   "id": "crew3",
+   "label": "his crew, pushing gravel",
    "at": [
-    3,
+    -2.6,
+    4.9
+   ],
+   "turn_deg": -20,
+   "look": {
+    "outfit": "shirt",
+    "color": "#a8553a",
+    "accent": "#ffffff",
+    "pattern": "none",
+    "hat": "boonie",
+    "glasses": false
+   }
+  },
+  {
+   "id": "rival",
+   "label": "the rival company's boss",
+   "at": [
+    -21,
+    -6
+   ],
+   "turn_deg": 0,
+   "look": {
+    "outfit": "suit",
+    "color": "#2f3542",
+    "accent": "#c8352f",
+    "pattern": "pinstripe",
+    "hat": "cowboy",
+    "glasses": false
+   }
+  },
+  {
+   "id": "rcrew1",
+   "label": "rival crew, hammering",
+   "at": [
+    2.2,
     -7.5
    ],
    "turn_deg": 0,
@@ -717,12 +1281,12 @@
   },
   {
    "id": "rcrew2",
-   "label": "rival rail crew worker",
+   "label": "rival crew, running with a rail",
    "at": [
-    -3,
+    -12,
     -7.6
    ],
-   "turn_deg": -10,
+   "turn_deg": 0,
    "look": {
     "outfit": "overalls",
     "color": "#3a3f4a",
@@ -733,13 +1297,30 @@
    }
   },
   {
+   "id": "rcrew3",
+   "label": "rival crew, hammering",
+   "at": [
+    -9.4,
+    -7.6
+   ],
+   "turn_deg": 10,
+   "look": {
+    "outfit": "overalls",
+    "color": "#2c4a6b",
+    "accent": "#f2cf2c",
+    "pattern": "none",
+    "hat": "cap",
+    "glasses": false
+   }
+  },
+  {
    "id": "town1",
    "label": "townsman at the finish",
    "at": [
-    14,
-    0.6
+    39,
+    1.8
    ],
-   "turn_deg": -30,
+   "turn_deg": -10,
    "look": {
     "outfit": "vest",
     "color": "#7a5134",
@@ -753,10 +1334,10 @@
    "id": "town2",
    "label": "townswoman at the finish",
    "at": [
-    15.6,
-    0.4
+    41,
+    2.2
    ],
-   "turn_deg": -20,
+   "turn_deg": 10,
    "look": {
     "outfit": "dress",
     "color": "#b5446e",
@@ -765,146 +1346,216 @@
     "hat": "none",
     "glasses": false
    }
+  },
+  {
+   "id": "banker",
+   "label": "banker with the money",
+   "at": [
+    43.5,
+    1.6
+   ],
+   "turn_deg": -20,
+   "look": {
+    "outfit": "suit",
+    "color": "#1f2a24",
+    "accent": "#d8a63a",
+    "pattern": "none",
+    "hat": "none",
+    "glasses": true
+   }
+  },
+  {
+   "id": "town3",
+   "label": "boy at the finish",
+   "at": [
+    38,
+    2.6
+   ],
+   "turn_deg": 15,
+   "look": {
+    "outfit": "shirt",
+    "color": "#3a7a8a",
+    "accent": "#f2cf2c",
+    "pattern": "none",
+    "hat": "cap",
+    "glasses": false
+   }
   }
  ],
  "beats": [
   {
    "from": 0,
-   "until": 2,
+   "until": 1,
    "who": "hero",
-   "do": "look",
-   "target": "his_line",
+   "do": "kneel",
+   "target": "gap_a",
+   "to": [],
+   "with": "",
    "face": "squint",
    "bubble": "none",
-   "to": [],
-   "with": ""
+   "says": false
   },
   {
    "from": 2,
-   "until": 5,
+   "until": 8,
    "who": "hero",
-   "do": "point",
-   "target": "his_line",
+   "do": "hold",
+   "target": "gap_a",
+   "to": [],
+   "with": "tape",
    "face": "serious",
    "bubble": "!",
-   "to": [],
-   "with": ""
+   "says": false
   },
   {
    "from": 6,
-   "until": 9,
+   "until": 8,
    "who": "hero",
-   "do": "hold",
-   "target": "",
-   "with": "tape",
-   "face": "serious",
+   "do": "point",
+   "target": "gap_b",
+   "to": [],
+   "with": "",
+   "face": "smug",
    "bubble": "none",
-   "to": []
+   "says": false
   },
   {
    "from": 0,
    "until": 28,
    "who": "crew1",
-   "do": "use",
+   "do": "work",
    "target": "his_line",
-   "with": "hammer1",
+   "to": [],
+   "with": "hammer0",
    "face": "serious",
    "bubble": "none",
-   "to": []
+   "says": false
   },
   {
    "from": 0,
-   "until": 28,
-   "who": "rcrew1",
-   "do": "use",
-   "target": "smooth_line",
-   "with": "hammer2",
-   "face": "smug",
+   "until": 20,
+   "who": "crew2",
+   "do": "carry",
+   "target": "",
+   "to": [],
+   "with": "carried_tie",
+   "face": "calm",
    "bubble": "none",
-   "to": []
+   "says": false
   },
   {
-   "from": 9,
+   "from": 4,
    "until": 12,
    "who": "crew2",
    "do": "walk",
    "target": "",
    "to": [
-    -9,
-    0.5
+    -12,
+    0.4
    ],
+   "with": "carried_tie",
    "face": "calm",
    "bubble": "none",
-   "with": ""
+   "says": false
+  },
+  {
+   "from": 0,
+   "until": 28,
+   "who": "crew3",
+   "do": "push",
+   "target": "wheelbarrow",
+   "to": [],
+   "with": "",
+   "face": "serious",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 0,
+   "until": 28,
+   "who": "rcrew1",
+   "do": "work",
+   "target": "smooth_line",
+   "to": [],
+   "with": "hammer1",
+   "face": "smug",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 0,
+   "until": 28,
+   "who": "rcrew3",
+   "do": "work",
+   "target": "smooth_line",
+   "to": [],
+   "with": "hammer2",
+   "face": "serious",
+   "bubble": "none",
+   "says": false
   },
   {
    "from": 9,
-   "until": 20,
-   "who": "rival",
-   "do": "arms-crossed",
+   "until": 12,
+   "who": "rcrew2",
+   "do": "carry",
    "target": "",
-   "face": "smug",
-   "bubble": "none",
    "to": [],
-   "with": ""
+   "with": "carried_rail",
+   "face": "wide",
+   "bubble": "none",
+   "says": false
   },
   {
-   "from": 11,
+   "from": 12,
    "until": 20,
    "who": "rcrew2",
    "do": "run",
    "target": "",
    "to": [
-    2,
+    -1,
     -7.6
    ],
+   "with": "carried_rail",
    "face": "wide",
    "bubble": "none",
-   "with": ""
+   "says": false
   },
   {
    "from": 13,
-   "until": 20,
-   "who": "hero",
-   "do": "look",
-   "target": "his_train",
-   "face": "serious",
-   "bubble": "none",
+   "until": 28,
+   "who": "rival",
+   "do": "ride",
+   "target": "rival_car",
    "to": [],
-   "with": ""
+   "with": "",
+   "face": "smug",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 16,
+   "until": 20,
+   "who": "rival",
+   "do": "point",
+   "target": "his_train",
+   "to": [],
+   "with": "",
+   "face": "grin",
+   "bubble": "none",
+   "says": false
   },
   {
    "from": 21,
    "until": 24,
    "who": "rival",
-   "do": "point",
-   "target": "finish",
-   "face": "grin",
-   "bubble": "none",
-   "to": [],
-   "with": ""
-  },
-  {
-   "from": 21,
-   "until": 28,
-   "who": "hero",
-   "do": "look",
-   "target": "rival",
-   "face": "squint",
-   "bubble": "none",
-   "to": [],
-   "with": ""
-  },
-  {
-   "from": 24,
-   "until": 28,
-   "who": "rival",
-   "do": "cheer",
+   "do": "hands-on-hips",
    "target": "",
-   "face": "grin",
-   "bubble": "$",
    "to": [],
-   "with": ""
+   "with": "",
+   "face": "smug",
+   "bubble": "none",
+   "says": false
   },
   {
    "from": 24,
@@ -912,10 +1563,11 @@
    "who": "town1",
    "do": "cheer",
    "target": "",
+   "to": [],
+   "with": "",
    "face": "laugh",
    "bubble": "none",
-   "to": [],
-   "with": ""
+   "says": false
   },
   {
    "from": 24,
@@ -923,10 +1575,35 @@
    "who": "town2",
    "do": "wave",
    "target": "",
+   "to": [],
+   "with": "",
    "face": "grin",
    "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 24,
+   "until": 28,
+   "who": "town3",
+   "do": "jump",
+   "target": "",
    "to": [],
-   "with": ""
+   "with": "",
+   "face": "grin",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 24,
+   "until": 28,
+   "who": "banker",
+   "do": "point",
+   "target": "moneybags",
+   "to": [],
+   "with": "",
+   "face": "smug",
+   "bubble": "$",
+   "says": false
   }
  ],
  "events": [
@@ -951,12 +1628,25 @@
    "text": ""
   },
   {
-   "from": 13,
+   "from": 9,
    "until": 20,
    "thing": "his_train",
    "do": "move",
    "to": [
-    -7,
+    -9,
+    2
+   ],
+   "path": [],
+   "amount": 1,
+   "text": ""
+  },
+  {
+   "from": 9,
+   "until": 20,
+   "thing": "his_car",
+   "do": "move",
+   "to": [
+    -14,
     2
    ],
    "path": [],
@@ -969,7 +1659,20 @@
    "thing": "rival_train",
    "do": "move",
    "to": [
-    -2,
+    -4,
+    -6
+   ],
+   "path": [],
+   "amount": 1,
+   "text": ""
+  },
+  {
+   "from": 13,
+   "until": 20,
+   "thing": "rival_car",
+   "do": "move",
+   "to": [
+    -9,
     -6
    ],
    "path": [],
@@ -979,7 +1682,7 @@
   {
    "from": 24,
    "until": 28,
-   "thing": "finish",
+   "thing": "banner",
    "do": "text",
    "to": [],
    "path": [],
@@ -987,93 +1690,13 @@
    "text": "THE WHOLE COUNTRY'S BUSINESS"
   }
  ],
- "shots": [
-  {
-   "from": 0,
-   "frame": [
-    "hero"
-   ],
-   "angle": "front",
-   "lens": "face",
-   "move": "push"
-  },
-  {
-   "from": 6,
-   "frame": [
-    "hero",
-    "crew1",
-    "his_line"
-   ],
-   "angle": "high",
-   "lens": "wide",
-   "move": "crane-down"
-  },
-  {
-   "from": 9,
-   "frame": [
-    "his_train",
-    "rival_train"
-   ],
-   "angle": "right",
-   "lens": "medium",
-   "move": "snap-zoom"
-  },
-  {
-   "from": 13,
-   "frame": [
-    "rival_train",
-    "rcrew2"
-   ],
-   "angle": "low",
-   "lens": "medium",
-   "move": "track"
-  },
-  {
-   "from": 18,
-   "frame": [
-    "canyon",
-    "his_train",
-    "rival_train"
-   ],
-   "angle": "high",
-   "lens": "wide",
-   "move": "crane-down"
-  },
-  {
-   "from": 21,
-   "frame": [
-    "rival"
-   ],
-   "angle": "low",
-   "lens": "face",
-   "move": "push"
-  },
-  {
-   "from": 24,
-   "frame": [
-    "finish",
-    "town1",
-    "town2"
-   ],
-   "angle": "front",
-   "lens": "medium",
-   "move": "snap-zoom"
-  }
- ],
  "callouts": [
   {
    "from": 7,
    "until": 9,
-   "on": "his_line",
+   "on": "gap_b",
    "text": "39 FEET",
    "tone": "neutral"
-  },
-  {
-   "from": 10,
-   "until": 12,
-   "on": "rival_train",
-   "text": "COMPANY 2",
-   "tone": "bad"
   },
   {
    "from": 10,
@@ -1083,11 +1706,121 @@
    "tone": "good"
   },
   {
-   "from": 26,
+   "from": 11,
+   "until": 13,
+   "on": "rival_train",
+   "text": "COMPANY 2",
+   "tone": "bad"
+  },
+  {
+   "from": 24,
    "until": 28,
-   "on": "finish",
-   "text": "WHOLE COUNTRY",
+   "on": "moneybags",
+   "text": "ALL THE BUSINESS",
    "tone": "good"
+  }
+ ],
+ "moves": [
+  {
+   "from": 0,
+   "job": "hook",
+   "follow": "",
+   "landings": [
+    {
+     "see": "extreme close on the engineer kneeling at a rail joint, the gap between two rails right in front of the lens, his crewmate swinging a hammer behind",
+     "from": 0,
+     "frame": [
+      "hero",
+      "gap_a"
+     ],
+     "angle": "low",
+     "lens": "extreme-close"
+    },
+    {
+     "see": "pull back and rise: he stretches a tape across the gap and points down the line to the next gap, 39 FEET pops over it, crews and tents behind",
+     "from": 6,
+     "frame": [
+      "hero",
+      "gap_a",
+      "gap_b"
+     ],
+     "angle": "high",
+     "lens": "medium"
+    }
+   ]
+  },
+  {
+   "from": 9,
+   "job": "setup",
+   "follow": "",
+   "landings": [
+    {
+     "see": "his red locomotive puffs smoke and pushes a flatcar of rails up his line, a worker hauls a tie past the lens",
+     "from": 9,
+     "frame": [
+      "his_train",
+      "crew2"
+     ],
+     "angle": "left",
+     "lens": "medium"
+    },
+    {
+     "see": "across the canyon the blue company's train charges along the smooth line, its boss riding the flatcar, a worker sprints beside with a rail",
+     "from": 13,
+     "frame": [
+      "rival_train",
+      "rival",
+      "rcrew2"
+     ],
+     "angle": "low",
+     "lens": "medium"
+    },
+    {
+     "see": "rise above both lines racing side by side along the canyon floor, red cliffs towering behind",
+     "from": 18,
+     "frame": [
+      "his_train",
+      "rival_train"
+     ],
+     "angle": "high",
+     "lens": "wide"
+    }
+   ]
+  },
+  {
+   "from": 21,
+   "job": "talk",
+   "follow": "",
+   "landings": [
+    {
+     "see": "the rival boss on his flatcar, hands on hips, a smug grin as he looks ahead",
+     "from": 21,
+     "frame": [
+      "rival"
+     ],
+     "angle": "low",
+     "lens": "face"
+    }
+   ]
+  },
+  {
+   "from": 24,
+   "job": "place",
+   "follow": "",
+   "landings": [
+    {
+     "see": "the finish station: the banner flips to THE WHOLE COUNTRY'S BUSINESS, a banker on a pile of money bags, the town cheering and jumping",
+     "from": 24,
+     "frame": [
+      "banner",
+      "banker",
+      "town1",
+      "town2"
+     ],
+     "angle": "front",
+     "lens": "medium"
+    }
+   ]
   }
  ]
 }

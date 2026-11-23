@@ -17,7 +17,7 @@ const ANGLE = { front: [0, 0.06], low: [0.3, -0.16], high: [-0.2, 0.42], left: [
 const LENS = { wide: 46, medium: 36, close: 30, 'extreme-close': 24, face: 28 };
 const SKY = { day: ['#9cc8ee', '#e6f0f6'], dusk: ['#5b4a7a', '#ffb07a'], night: ['#0d1630', '#2a3a5e'], overcast: ['#aab3bb', '#d8dcdf'] };
 const SPEED = { walk: 1.3, run: 3.4, sneak: 0.7 };
-const HAND_DO = new Set(['hold', 'pick-up', 'use', 'give', 'throw', 'kick', 'put-down']);
+const HAND_DO = new Set(['hold', 'pick-up', 'use', 'give', 'throw', 'kick', 'put-down', 'work', 'carry']);
 
 export async function build(K, words) {
   const { SR, base, ALL, V, place, arm, leg, Lw, dirW, face, headC, hips, headTurn, clamp, eio, lerp, scene } = K;
@@ -79,11 +79,21 @@ export async function build(K, words) {
     const k = (T.height_m || 1) / Math.max(sz.y, 1e-4); obj.scale.multiplyScalar(k); obj.updateMatrixWorld(true);
     bb = new THREE.Box3().setFromObject(obj); const cc = bb.getCenter(V(0, 0, 0)); obj.position.x -= cc.x; obj.position.z -= cc.z; obj.position.y -= bb.min.y;
     const s2 = bb.getSize(V(0, 0, 0)); holder.userData.longX = s2.x >= s2.z; holder.userData.size = s2;
-    if (T.text) { const lb = label(T.text, Math.max(0.3, Math.min(s2.x, 3) * 0.8)); lb.position.set(0, s2.y * 0.6, s2.z / 2 + 0.02); holder.add(lb); holder.userData.sign = lb; }
+    if (T.text) {   // the words go on the thing's biggest flat face (a banner's cloth, a sign's board, a screen), sized to it
+      let face = null; if (!L.model) for (const m of obj.children) { const b = new THREE.Box3().setFromObject(m), z = b.getSize(V(0, 0, 0)); if (!face || z.x * z.y > face.a) face = { a: z.x * z.y, b }; }
+      const fb = face ? face.b : new THREE.Box3(V(-s2.x / 2, s2.y * 0.35, -s2.z / 2), V(s2.x / 2, s2.y * 0.85, s2.z / 2)), fs = fb.getSize(V(0, 0, 0)), fc = fb.getCenter(V(0, 0, 0));
+      const w = Math.max(0.3, Math.min(fs.x * 0.92, fs.y * 0.92 * 4)); const lb = label(T.text, w); lb.position.set(fc.x, fc.y, fb.max.z + 0.02); holder.add(lb); holder.userData.sign = lb; }
     holder.rotation.y = THREE.MathUtils.degToRad(T.turn_deg || 0); G.add(holder);
     const th = { id: T.id, T, obj: holder, inner: obj, base: V(T.at[0], 0, T.at[1]), yaw0: holder.rotation.y, size: s2, parts: obj.children.slice(), hero: !!T.hero };
     things[T.id] = th; list.push(th); }
   for (const th of list) if (th.T.on && things[th.T.on]) { const o = things[th.T.on]; th.base.y = o.size.y; }   // standing on another thing
+  // clusters: one entry stands for count copies scattered within spread metres, each turned and sized a little differently
+  const rnd = (seed => () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; });
+  const copies = [];
+  for (const th of list) { const n = Math.max(1, th.T.count || 1) - 1; if (!n) continue; const r = rnd([...th.id].reduce((a, ch) => a * 31 + ch.charCodeAt(0), 7) % 2147483646 + 1), sp = Math.max(0.5, th.T.spread || 2);
+    for (let i = 0; i < n; i++) { const a = r() * Math.PI * 2, d = sp * Math.sqrt(r()), o = th.inner.clone(true), h = new THREE.Group(); h.add(o); h.name = th.T.name;
+      h.position.set(th.base.x + Math.cos(a) * d, th.base.y, th.base.z + Math.sin(a) * d); h.rotation.y = r() * Math.PI * 2; h.scale.setScalar(0.8 + 0.4 * r()); G.add(h); h.updateMatrixWorld(true);
+      copies.push({ th, obj: h, phase: r() * 6.28, y0: h.position.y, ry0: h.rotation.y }); } }
 
   // ---- cast ----
   const cast = {}, people = [];
@@ -129,7 +139,7 @@ export async function build(K, words) {
         const d = pts[i + 1].clone().sub(pts[i]); if (d.lengthSq() > 1e-6) yaw = Math.atan2(d.x, d.z) - (th.obj.userData.longX ? Math.PI / 2 : 0); break; } acc += seg[i]; } }
     return { p, yaw }; };
   const handOf = new Map();                                             // a thing's hand interactions in time order
-  for (const c of people) for (const b of beats.get(c)) if (HAND_DO.has(b.do) && b.with && things[b.with]) { const th = things[b.with]; if (!handOf.has(th)) handOf.set(th, []); handOf.get(th).push({ ...b, c }); }
+  for (const c of people) for (const b of beats.get(c)) if ((HAND_DO.has(b.do) || SPEED[b.do]) && b.with && things[b.with]) { const th = things[b.with]; if (!handOf.has(th)) handOf.set(th, []); handOf.get(th).push({ ...b, c }); }
   handOf.forEach(l => l.sort((a, b) => a.t - b.t));
   const handPos = (c, t) => { const s = pathAt(c, t); return s.p.clone().add(V(Math.sin(s.yaw) * 0.32, 0.95, Math.cos(s.yaw) * 0.32)); };
   const destOf = (b, t) => b.to && b.to.length === 2 ? V(b.to[0], 0, b.to[1]) : b.target ? (spotOf(b.target, t) || V(0, 0, 0)) : pathAt(b.c, t).p.clone().add(V(Math.sin(pathAt(b.c, t).yaw) * 6, 0, Math.cos(pathAt(b.c, t).yaw) * 6));
@@ -137,7 +147,7 @@ export async function build(K, words) {
   function carry(th, t) {
     let st = { free: true }, from = null;
     for (const b of handOf.get(th) || []) { if (t < b.t) break;
-      if (b.do === 'hold' || b.do === 'pick-up' || b.do === 'use') st = { c: b.c, since: b.t, from: st.free ? null : st };
+      if (b.do === 'hold' || b.do === 'pick-up' || b.do === 'use' || b.do === 'work' || b.do === 'carry' || SPEED[b.do]) st = { c: b.c, since: b.t, from: st.free ? null : st };
       else if (b.do === 'give') { const to = cast[b.target]; st = to ? { c: to, since: b.t + 0.5, giver: b.c, t0: b.t } : st; }
       else if (b.do === 'put-down') { const s = pathAt(b.c, b.t); st = { free: true, at: s.p.clone().add(V(Math.sin(s.yaw) * 0.5, 0, Math.cos(s.yaw) * 0.5)) }; }
       else if (b.do === 'throw' || b.do === 'kick') { const a = b.do === 'kick' ? pathAt(b.c, b.t).p.clone().add(V(Math.sin(pathAt(b.c, b.t).yaw) * 0.3, 0.1, Math.cos(pathAt(b.c, b.t).yaw) * 0.3)) : handPos(b.c, b.t);
@@ -183,7 +193,7 @@ export async function build(K, words) {
   function posePerson(c, t) {
     const b = beatAt(c, t), k = b ? eio(clamp((t - b.t) / 0.3)) : 1, s = pathAt(c, t), ride = rideOf(c, t);
     let p = s.p, yaw = s.yaw, y = 0;
-    if (ride) { p = ride.obj.position.clone(); y = ride.obj.position.y + ride.size.y * 0.55; yaw = ride.obj.rotation.y + (ride.obj.userData.longX ? Math.PI / 2 : 0); }
+    if (ride) { p = ride.obj.position.clone(); y = ride.obj.position.y + (ride.size.y < 1.6 ? ride.size.y : ride.size.y * 0.55);   /* on a low deck or seat: on top; a tall vehicle: in its seat */ yaw = ride.obj.rotation.y + (ride.obj.userData.longX ? Math.PI / 2 : 0); }
     else if (b && b.target && !SPEED[b.do] && !s.moving) { const tp = spotOf(b.target, t); if (tp) { const want = Math.atan2(tp.x - p.x, tp.z - p.z); let d = ((want - yaw + 3 * Math.PI) % (2 * Math.PI)) - Math.PI; yaw += d * eio(clamp((t - b.t) / 0.35)); } }
     if (b && b.do === 'sit' && b.target && things[b.target]) y = things[b.target].size.y * 0.55;
     place(c, p.x, p.z, yaw, y);
@@ -217,20 +227,35 @@ export async function build(K, words) {
     else if (d === 'nod') { rest(); headTurn(c, 0, 0.18 * Math.max(0, Math.sin(t * 9))); }
     else if (d === 'shake-head') { rest(); headTurn(c, 0.3 * Math.sin(t * 10), 0); }
     else if (d === 'lean-in') { rest(); hips(c, 0, 0.06 * k); }
+    else if (d === 'hands-on-hips') { const hp = Lw(c, 0, 0.78, 0.02); handTo('Left', Lw(c, 0.18, 0.95, 0.5).lerp(hp.clone().add(dirW(c, 0.3, 0, 0)), k), dirW(c, 1, 0.2, -0.6)); handTo('Right', Lw(c, -0.18, 0.95, 0.5).lerp(hp.clone().add(dirW(c, -0.3, 0, 0)), k), dirW(c, -1, 0.2, -0.6)); hips(c, 0, -0.03 * k); }
+    else if (d === 'kneel') { rest(); hips(c, -0.42 * k, 0.05 * k); leg(c, 'Left', Lw(c, 0.12, 0.02, 0.35)); leg(c, 'Right', Lw(c, -0.12, 0.02, -0.25)); const tp = tgt(); if (tp) handTo('Right', tp.clone().lerp(Lw(c, -0.2, 0.6, 0.4), 0.3), dirW(c, -1, -0.4, 0)); }
+    else if (d === 'cry') { const h = headC(c), s2 = Math.sin(t * 14) * 0.015; hips(c, -0.04, 0.05); handTo('Left', Lw(c, 0.18, 0.95, 0.5).lerp(h.clone().add(dirW(c, 0.1, -0.1, 0.18)).add(V(0, s2, 0)), k), dirW(c, 1, -0.5, -0.2)); handTo('Right', Lw(c, -0.18, 0.95, 0.5).lerp(h.clone().add(dirW(c, -0.1, -0.1, 0.18)).add(V(0, -s2, 0)), k), dirW(c, -1, -0.5, -0.2)); }
+    else if (d === 'facepalm') { rest(); const h = headC(c); handTo('Right', Lw(c, -0.18, 0.95, 0.5).lerp(h.clone().add(dirW(c, 0, 0, 0.22)), k), dirW(c, -1, -0.5, -0.2)); headTurn(c, 0, 0.15 * k); }
+    else if (d === 'lean-back') { rest(); hips(c, 0, -0.07 * k); headTurn(c, 0, -0.12 * k); }
+    else if (d === 'work' || d === 'carry') { rest(); const st = b.with && things[b.with] ? carry(things[b.with], t) : {}; const sw = d === 'work' ? Math.abs(Math.sin(t * 6)) : 0;
+      if (d === 'work') { const tp = tgt() || Lw(c, 0, 0.2, 0.6); hips(c, -0.08, 0.06); handTo('Right', Lw(c, -0.15, 1.35, 0.25).lerp(tp.clone().add(V(0, 0.15, 0)), 1 - sw), dirW(c, -1, -0.3, -0.2)); handTo('Left', Lw(c, 0.1, 1.2, 0.3).lerp(tp.clone().add(V(0, 0.2, 0)), 1 - sw), dirW(c, 1, -0.3, -0.2)); }
+      else if (st.c === c) { const h = Lw(c, 0, 1.0, 0.34); handTo('Left', h.clone().add(dirW(c, 0.12, 0, 0)), dirW(c, 1, -0.4, -0.3)); handTo('Right', h.clone().add(dirW(c, -0.12, 0, 0)), dirW(c, -1, -0.4, -0.3)); } }
     else if (d === 'arms-crossed') { const ch = Lw(c, 0, 1.12, 0.26); handTo('Left', Lw(c, 0.18, 0.95, 0.5).lerp(ch.clone().add(dirW(c, -1, 0, 0).multiplyScalar(0.12)), k), dirW(c, 1, -0.6, 0)); handTo('Right', Lw(c, -0.18, 0.95, 0.5).lerp(ch.clone().add(dirW(c, 1, 0, 0).multiplyScalar(0.12)).add(V(0, -0.04, 0)), k), dirW(c, -1, -0.6, 0)); }
     else rest();
-    face(c, (b && b.face) || 'calm');
+    // speaking a quoted line: the mouth opens and closes on the words (owner 2026-11-23: characters talking)
+    const talking = b && b.says && t <= b.t1 + 0.25;
+    face(c, talking ? (((t * 8.5) | 0) % 3 === 0 ? (b.face || 'calm') : 'shout') : ((b && b.face) || 'calm'));
     const sp = bub.get(c), on = b && b.bubble && b.bubble !== 'none' && BUB[b.bubble]; sp.visible = !!on;
     if (on) { sp.material.map = BUB[b.bubble]; const h = headC(c), kk = Math.min(1, (t - b.t) * 6); sp.position.set(h.x + 0.24, h.y + 0.42 + 0.03 * Math.sin(t * 8), h.z); sp.scale.setScalar(0.36 * kk); }
   }
   function pose(t) {
     K.resetScene();
     for (const th of list) poseThing(th, t);
+    // the world's own life: every thing with a life keeps moving (Rick: 2+ moving things in every view)
+    const lifeOf = (o, life, ph, base) => { if (life === 'sway') o.rotation.z = 0.05 * Math.sin(t * 1.6 + ph); else if (life === 'spin') o.rotation.y = base.ry + t * 1.4 + ph; else if (life === 'bob') o.position.y = base.y + 0.06 * Math.sin(t * 2.2 + ph);
+      else if (life === 'flutter') o.rotation.x = 0.12 * Math.sin(t * 9 + ph); else if (life === 'roll') o.rotation.x = t * 2 + ph; o.updateMatrixWorld(true); };
+    for (const th of list) if (th.T.life && th.T.life !== 'none' && !carry(th, t).c) lifeOf(th.obj, th.T.life, 0, { y: th.obj.position.y, ry: th.obj.rotation.y });
+    for (const cp of copies) if (cp.th.T.life && cp.th.T.life !== 'none') lifeOf(cp.obj, cp.th.T.life, cp.phase, { y: cp.y0, ry: cp.ry0 });
     for (const c of people) posePerson(c, t);
     for (const th of list) { const st = carry(th, t); if (st.c) { const h = SR.wp(st.c.bone('RightHand')).lerp(SR.wp(st.c.bone('LeftHand')), 0.5), big = th.size.y > 0.25;
       /* carried in front: small things in the hands, big things held from below at the belly, never over the face */ th.obj.position.copy(h).add(dirW(st.c, 0, 0, 1).multiplyScalar(big ? th.size.z / 2 + 0.05 : 0)).add(V(0, big ? -Math.min(th.size.y * 0.75, 0.55) : -th.size.y * 0.5, 0)); th.obj.updateMatrixWorld(true); } }
     for (const f of fx) { const ev = events.get(f.th).filter(e => (e.do === 'smoke' || e.do === 'fire' || e.do === 'glow') && t >= e.t); const top = new THREE.Box3().setFromObject(f.th.obj);
-      const smoke = ev.some(e => e.do === 'smoke'), fire = ev.some(e => e.do === 'fire'), glow = ev.some(e => e.do === 'glow') || fire;
+      const life = f.th.T.life, smoke = ev.some(e => e.do === 'smoke') || life === 'smoke' || life === 'steam', fire = ev.some(e => e.do === 'fire'), glow = ev.some(e => e.do === 'glow') || fire || (life === 'flicker' && Math.sin(t * 23) * Math.sin(t * 7.3) > -0.2);
       f.ps.forEach((s, i) => { s.visible = (smoke || fire) && f.th.obj.visible; if (!s.visible) return; s.material.map = fire && i % 2 ? FIRE : SMOKE; const ph = ((t * 0.7 + i / f.ps.length) % 1); const c2 = top.getCenter(V(0, 0, 0));
         const r = Math.max(0.08, f.th.size.x * 0.25); s.position.set(c2.x + Math.sin(i * 2.1) * r * ph, top.max.y + ph * Math.max(0.4, f.th.size.y), c2.z + Math.cos(i * 1.7) * r * ph); s.scale.setScalar(Math.max(0.12, f.th.size.x * 0.4) * (0.5 + ph)); s.material.opacity = 1 - ph; });
       f.l.intensity = glow ? 3 : 0; f.l.position.copy(top.getCenter(V(0, 0, 0))).setY(top.max.y + 0.3); }
@@ -263,7 +288,8 @@ export async function build(K, words) {
   if (!raw.length) throw new Error('board: no shots');
   raw[0].t0 = 0;
   const shots = raw.map((s, i) => {
-    const who = (s.frame || s.who || []).map(byId).filter(Boolean); if (!who.length) throw new Error(`board: shot ${i + 1} frames nothing`);
+    const ids = [...(s.frame || s.who || [])]; if (s.follow && !ids.includes(s.follow)) ids.push(s.follow);   // the camera rides with what it follows
+    const who = ids.map(byId).filter(Boolean); if (!who.length) throw new Error(`board: shot ${i + 1} frames nothing`);
     const [yaw, pitch] = ANGLE[s.angle] || ANGLE.front, fov = LENS[s.lens] || LENS.medium, mv = s.move || 'push';
     const view = u => { const e = eio(u), v = { yaw, pitch, fov, k: 1, roll: 0 };
       if (mv === 'push') v.k = lerp(1.14, 1.0, e); else if (mv === 'pull') v.k = lerp(1.0, 1.14, e);
@@ -274,12 +300,14 @@ export async function build(K, words) {
       else if (mv === 'snap-zoom') { v.k = u < 0.35 ? 1.18 : lerp(1.18, 0.95, eio(clamp((u - 0.35) / 0.1))); }
       else if (mv === 'dolly-zoom') { v.fov = lerp(fov + 10, fov - 8, e); v.roll = -0.07 * e; } else v.k = lerp(1.03, 1.0, e);
       return v; };
-    return { name: `${i + 1} ${s.angle || 'front'} ${s.lens || 'medium'} ${mv}: ${who.map(w => w.label || w.name).join(', ')}`, t0: s.t0, t1: i + 1 < raw.length ? raw[i + 1].t0 : DUR,
+    return { name: `${i + 1} ${s.job || ''} ${s.angle || 'front'} ${s.lens || 'medium'} ${mv}: ${s.see || who.map(w => w.label || w.name).join(', ')}`.slice(0, 120), t0: s.t0, t1: i + 1 < raw.length ? raw[i + 1].t0 : DUR,
+      take: s.take ?? i, follow: !!s.follow,
       who, hidden: [], dof: s.lens === 'close' || s.lens === 'extreme-close' || s.lens === 'face' ? 0.01 : 0, extras: t => [...bubbleBoxes(who.filter(w => w && w.root)), ...labelBoxes(who.filter(w => !w.root)), ...calloutBoxes(who, t)], view,
       faces: s.lens === 'face' ? who.filter(w => w.root) : [] };
   });
   // things people hold, ride, sit on or kick, and flat things, are not obstacles; everything else is
   const touched = new Set(); for (const c of people) for (const b of beats.get(c)) { if (b.with) touched.add(b.with); if (['ride', 'sit', 'push', 'pull', 'hide', 'lie'].includes(b.do) && b.target) touched.add(b.target); }
-  const props = list.filter(th => !touched.has(th.id)).map(th => ({ obj: th.obj, label: th.T.name, floor: th.size.y < 0.15 }));
+  const props = [...list.filter(th => !touched.has(th.id)).map(th => ({ obj: th.obj, label: th.T.name, floor: th.size.y < 0.15 })),
+    ...copies.filter(cp => cp.th.size.y > 0.6 && !touched.has(cp.th.id)).slice(0, 60).map(cp => ({ obj: cp.obj, label: cp.th.T.name, floor: false }))];
   return { dur: DUR, people, props, room, pose, light, shots, group: G, walls: IN, maxDist: IN ? 120 : 420 };
 }

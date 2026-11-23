@@ -21,7 +21,7 @@ def test_fixture_board_repairs_cleanly():
     assert fixed["shots"][0]["from"] == 0
     starts = [w[s["from"]]["start"] for s in fixed["shots"]] + [w[-1]["end"]]
     assert all(b - a >= board.MIN_SHOT - 1e-6 for a, b in zip(starts, starts[1:]))
-    assert all(a["angle"] != b["angle"] for a, b in zip(fixed["shots"], fixed["shots"][1:]))
+    assert all((a["angle"], a["lens"]) != (b["angle"], b["lens"]) for a, b in zip(fixed["shots"], fixed["shots"][1:]))
 
 
 def test_nothing_is_pre_decided():
@@ -31,7 +31,8 @@ def test_nothing_is_pre_decided():
         assert f" {word}" not in ins, word
     sch = json.dumps(board.schema())
     props = board.schema()["properties"]
-    assert "enum" not in json.dumps(props["things"]) and "enum" not in json.dumps(props["world"]["properties"]["place"])
+    tp = props["things"]["items"]["properties"]
+    assert all("enum" not in tp[k] for k in ("name", "search", "parts", "text")) and "enum" not in json.dumps(props["world"]["properties"]["place"])
     assert "set" not in props and '"office"' not in sch
 
 
@@ -176,3 +177,24 @@ def test_scene_modules_parse(tmp_path):
         copy.write_text(f.read_text())
         r = subprocess.run([node, "--check", str(copy)], capture_output=True, text=True)
         assert r.returncode == 0, f"{f.name}: {r.stderr[:300]}"
+
+
+def test_moves_fly_between_landings_and_cut_between_moves():
+    w = words(60, 0.4)
+    raw = {"cast": [{"id": "a", "at": [0, 0], "look": {}}, {"id": "b", "at": [2, 0], "look": {}}],
+           "moves": [{"from": 0, "job": "hook", "follow": "", "landings": [
+                         {"see": "close on a", "from": 0, "frame": ["a"], "angle": "front", "lens": "face"},
+                         {"see": "pull back to both", "from": 4, "frame": ["a", "b"], "angle": "high", "lens": "wide"}]},
+                     {"from": 10, "job": "talk", "follow": "b", "landings": [
+                         {"see": "b speaks", "from": 10, "frame": ["b"], "angle": "low", "lens": "face"}]}]}
+    fixed, _ = board.repair(raw, w)
+    sh = fixed["shots"]
+    assert [s["take"] for s in sh[:3]] == [0, 0, 1]
+    assert sh[0]["move"] == "push" and sh[1]["move"] == "crane-up" and sh[2]["job"] == "talk" and sh[2]["follow"] == "b"
+    assert sh[0]["see"] == "close on a"
+
+
+def test_instructions_carry_the_measured_method():
+    ins = board.instructions()
+    for k in ("hook", "setup", "explain", "climax", "attention chain", "180-degree", "30 or more kinds", "sound off"):
+        assert k in ins, k

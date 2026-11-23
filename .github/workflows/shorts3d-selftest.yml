@@ -12,6 +12,7 @@ on:
       board: { description: "hand-written storyboard in the repo (free trial)", default: "tests/fixtures/shorts3d-board-trial.json" }
       source: { description: "production whose voice and word timings to use", default: "golide-short-2026-11-22-trial" }
       voice: { description: "voice file in that production", default: "narration-ai.mp3" }
+      youtube_title: { description: "when set: the clip goes to YouTube PRIVATE with this title (TRIAL in front)", default: "" }
 
 permissions:
   contents: write
@@ -65,3 +66,10 @@ jobs:
           D=review/shorts3d/selftest/$(basename "${{ inputs.board }}" .json); mkdir -p $D && cp out/clip.mp4 out/sheet.jpg out/report.json $D/ 2>/dev/null || true
           git config user.name "golide-bot" && git config user.email "bot@golidee.com"
           git checkout -q -b review-shorts3d-selftest && git add -f review && { git diff --cached --quiet && exit 0; } ; git commit -qm "TRIAL: 3D Short self-test" && git push -qf origin review-shorts3d-selftest
+      - name: "To YouTube, private (owner 2026-11-23: trials are watched there)"
+        if: ${{ inputs.youtube_title != '' }}
+        run: |
+          gh api -X POST repos/${{ github.repository }}/actions/workflows/trial-upload.yml/dispatches -f ref=main \
+            -f "inputs[branch]=review-shorts3d-selftest" \
+            -f "inputs[path]=review/shorts3d/selftest/$(basename "${{ inputs.board }}" .json)/clip.mp4" \
+            -f "inputs[title]=${{ inputs.youtube_title }}"

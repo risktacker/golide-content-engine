@@ -46,7 +46,7 @@ export async function run(K) {
     sh.box = b; sh.at = at;
     // subjects that travel (a vehicle, someone running): the camera follows them instead of framing the whole trip
     const size = m => m.getSize(new THREE.Vector3()).length(), big = Math.max(...at.map(x => size(x.box)));
-    sh.track = size(b) > big * 1.8 || !!(sh.faces && sh.faces.length);   // face shots follow the face
+    sh.track = size(b) > big * 1.8 || !!(sh.faces && sh.faces.length) || !!sh.follow;   // face shots follow the face; a followed thing is ridden with
   }
   // the box the camera frames at time t: the whole shot, or (tracking) the subjects around that moment, smoothed
   function boxAt(sh, t) {
@@ -69,7 +69,7 @@ export async function run(K) {
     useHide(sh);
     for (const t of times(sh, quick ? 0.25 : SAMPLE)) {
       poseT(t); camAt(sh, t);
-      for (const p of D.issues({ subjects: sh.who.filter(isPerson), people: S.people, props, propObjs, extras: [...(sh.extras?.(t) || []), ...(S.words?.(t) || []).filter(e => !e.subjectOnly || sh.who.includes(e.subjectOnly))], faces: (sh.faces || []).filter(f => sh.who.includes(f)) })) { out.push({ t: +t.toFixed(2), p }); if (quick) return out; }
+      for (const p of D.issues({ subjects: sh.who.filter(isPerson), people: S.people, props, propObjs, extras: [...(sh.extras?.(t) || []), ...(S.words?.(t) || []).filter(e => !e.subjectOnly || sh.who.includes(e.subjectOnly))], faces: (sh.faces || []).filter(f => sh.who.includes(f)), things: sh.who.filter(w => !isPerson(w)) })) { out.push({ t: +t.toFixed(2), p }); if (quick) return out; }
     }
     return out;
   }
@@ -114,7 +114,7 @@ export async function run(K) {
         for (const sub of subsets) { sh.who = sub; frameShot(sh); done = tryFixes(sh, [{}, ...FIXES, ...ANGLE_FIXES]); if (done) { entry.repair_note = `only ${sub.map(x => x.label).join(', ')}`; break; } }
         if (!done) { sh.who = whoAll; frameShot(sh); }
       }
-      if (!done && i > 0) {                                            // the shot before holds over this one
+      if (!done && i > 0 && false) {                                   // 2026-11-23: never merge a landing away (it carries its own story); the best attempt is kept below
         const prev = S.shots[i - 1], keepT1 = prev.t1, keepBox = prev.box, keepFix = prev.fix;
         prev.t1 = sh.t1; frameShot(prev); prev.fix = keepFix;
         if (!problems(prev).length || tryFixes(prev, [{}, ...FIXES, ...ANGLE_FIXES])) {
@@ -141,9 +141,22 @@ export async function run(K) {
   }
   // ---- rendering ----
   const ov = document.createElement('canvas'); ov.width = K.WW; ov.height = K.HH; const og = ov.getContext('2d');
+  // ONE travelling camera (Rick: few cuts, lands on a new picture about every second): between two landings of the same
+  // move the camera flies from where the last one ended to where this one starts; a new move is a cut
+  const FLY = 0.55;
+  function prevOf(sh) { const i = S.shots.indexOf(sh), p = S.shots[i - 1]; return p && p.take !== undefined && p.take === sh.take ? p : null; }
+  function camFly(sh, t) {
+    const c = camAt(sh, t), p = prevOf(sh), fly = Math.min(FLY, 0.45 * (sh.t1 - sh.t0));
+    if (!p || t - sh.t0 >= fly) return c;
+    if (!p.box) frameShot(p);
+    const a = camAt(p, sh.t0), b = camAt(sh, t), k = THREE.MathUtils.smootherstep((t - sh.t0) / fly, 0, 1);
+    const pos = a.pos.clone().lerp(b.pos, k), tgt = a.tgt.clone().lerp(b.tgt, k), fov = THREE.MathUtils.lerp(a.fov, b.fov, k), roll = THREE.MathUtils.lerp(a.roll || 0, b.roll || 0, k);
+    if (props.some(q => !q.floor && q.box.containsPoint(pos))) return b;   // the flight would pass through a thing: cut instead
+    K.look(pos, tgt, fov, roll); camera().updateMatrixWorld(true); fourthWall(pos, tgt); return { ...b, pos, tgt, fov, roll, dist: pos.distanceTo(tgt) };
+  }
   function frame(t, debug = false) {
     const sh = shotAt(t); if (!sh.box) frameShot(sh); useHide(sh);
-    poseT(t); const c = camAt(sh, t); S.light(t, c, sh);
+    poseT(t); const c = camFly(sh, t); S.light(t, c, sh);
     K.post.bokeh.enabled = !!sh.dof; if (sh.dof) { K.post.bokeh.uniforms.focus.value = c.dist; K.post.bokeh.uniforms.aperture.value = sh.dof; }
     K.U.uTime.value = t; K.post.render();
     if (!debug) return K.renderer.domElement.toDataURL('image/jpeg', 0.92);
