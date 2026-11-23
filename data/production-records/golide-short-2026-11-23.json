@@ -1,0 +1,455 @@
+{
+  "production_id": "golide-short-2026-11-23",
+  "youtube_video_id": "DNzkbz_hCyY",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "DNzkbz_hCyY",
+    "upload_status": "uploaded_private",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-11-23T11:26:26.223861+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "Why Perfect Railroads Don't Work",
+    "status": "uploaded_private",
+    "scheduled_at": "2026-11-23T11:00:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-shorts-mon-wed-fri\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-choice\"}"
+  },
+  "narration": "He saw gaps in a railroad every 39 feet,\nand 2 companies are racing to build a railroad along a canyon.\nWhoever finishes first gets the whole country’s business.\nAnd when his boss sees gaps between every single rail, his face goes purple:\nYou’re wrecking my railroad.\nBut he won’t close a single one.\nSo the other company lays their rails end to end, perfectly smooth,\nand finishes first.\nTheir trains glide across the canyon without a sound,\nwhile his go clickety-clack over every gap,\nand the newspapers start calling it the clickety-clack line.\nThen summer comes, and something weird happens.\nHis gaps start shrinking.\nIn May, you can fit a coin in them.\nBy July, barely a sheet of paper.\nMeanwhile, on the perfect railroad, the rails have started groaning in the afternoon sun,\npushing against each other like they want to get out.\nAnd on the hottest day anyone can remember, his gaps finally close,\nrail touching rail.\nAnd halfway across the canyon, the perfect railroad kicks sideways like a snake,\nright as a train rolls onto it.\nFollow the channel for more.\n",
+  "research": {
+    "summary": "The supplied November 1, 2026 Ricks Clips video is a fictionalized engineering parable about rail expansion: one railroad leaves gaps between 39-foot rail sections while a rival lays rails tightly together, and summer heat eventually creates dangerous compressive stress in the supposedly “perfect” track. The central engineering principle is real, but several story details—finger-wide gaps, the two competing companies, the canyon, the May-to-July progression, and the specific derailment—are not supported as a documented historical event. Standard rail-gap figures are much smaller than a finger width.",
+    "claims": [
+      {
+        "claim": "The topic video is a 1-minute-plus parable rather than an identified historical railroad incident. Its central scenario is that expansion gaps accommodate temperature-driven rail movement, while tightly constrained rail can buckle in extreme heat.",
+        "source_title": "Why Perfect Railroads Don't Work — Ricks Clips",
+        "source_url": "https://www.youtube.com/watch?v=7xS87iActkU",
+        "published_or_updated": "2026-11-01"
+      },
+      {
+        "claim": "For conventional jointed rail, official railroad engineering guidance lists 39-foot rail sections and specifies temperature-dependent openings between rail ends. For 39-foot rail, the listed gaps range from 5/16 inch in very cold conditions to 1/16 inch at 66–85°F, with no opening specified above 85°F.",
+        "source_title": "AREMA Manual for Railway Engineering, Chapter 5: Track",
+        "source_url": "https://railroadfasteners.com/download/AREMA-Stand-for-Track.pdf",
+        "published_or_updated": "2014"
+      },
+      {
+        "claim": "The video’s “finger-wide” gap is not consistent with the cited engineering tables: a one-inch-wide gap is substantially larger than the standard 1/16- to 5/16-inch openings specified for 39-foot rail.",
+        "source_title": "AREMA Manual for Railway Engineering, Chapter 5: Track",
+        "source_url": "https://railroadfasteners.com/download/AREMA-Stand-for-Track.pdf",
+        "published_or_updated": "2014"
+      },
+      {
+        "claim": "U.S. Department of Transportation research states that conventional jointed rail can absorb approximately 8 inches of expansion per mile before joint gaps close; a 20°F rise above the rail-laying temperature is given as an approximate example that can close those gaps.",
+        "source_title": "Thermal Loads, U.S. Department of Transportation / Federal Railroad Administration",
+        "source_url": "https://railroads.dot.gov/sites/fra.dot.gov/files/fra_net/14798/110_DOT-TSC-FRA-82-4_ntl.bts.gov-lib-47000-47500-47552.pdf",
+        "published_or_updated": "1982"
+      },
+      {
+        "claim": "Once rail-joint gaps close, additional heating produces compressive stress. If ballast and rail anchorage do not provide enough restraint, the track can buckle laterally—an engineering failure mode consistent with the video’s image of the track kicking sideways.",
+        "source_title": "Thermal Loads, U.S. Department of Transportation / Federal Railroad Administration",
+        "source_url": "https://railroads.dot.gov/sites/fra.dot.gov/files/fra_net/14798/110_DOT-TSC-FRA-82-4_ntl.bts.gov-lib-47000-47500-47552.pdf",
+        "published_or_updated": "1982"
+      },
+      {
+        "claim": "Federal Railroad Administration guidance confirms that heat-related track buckling, commonly called a “sun kink,” can create derailment risk. The likelihood depends not only on heat but also on rail temperature at installation, ballast, fasteners, lateral restraint, track condition, and maintenance.",
+        "source_title": "Research Results RR 12-18: In-Motion, Non-Contact Rail Temperature Measurement Sensor",
+        "source_url": "https://railroads.dot.gov/sites/fra.dot.gov/files/fra_net/2713/RR_12_18.pdf",
+        "published_or_updated": "2012-12"
+      },
+      {
+        "claim": "Modern continuous welded rail is not simply laid end-to-end without engineering controls. FRA guidance defines continuous welded rail as rail welded into a continuous piece exceeding 400 feet and requires railroads to manage rail-neutral temperature and maintenance procedures to reduce both buckling in hot weather and rail breaks in cold weather.",
+        "source_title": "Procedures for the Installation, Adjustment, Maintenance, and Inspection of CWR",
+        "source_url": "https://railroads.fra.dot.gov/sites/fra.dot.gov/files/2021-09/FRA%20CWR%20Generic%20Plan%20-%20Effective%20-%20July%202021.pdf",
+        "published_or_updated": "2021-07"
+      }
+    ],
+    "core_fact": {
+      "fact": "On November 1, 2026, Ricks Clips published “Why Perfect Railroads Don't Work,” a short fictionalized railroad story in which expansion gaps that initially make one line noisy later protect it from heat-related track buckling; the underlying principle is real, but the video does not identify a real railroad, engineer, canyon, or documented derailment.",
+      "source_url": "https://www.youtube.com/watch?v=7xS87iActkU",
+      "published_or_updated": "2026-11-01",
+      "verified": true
+    }
+  },
+  "metadata": {
+    "title": "Why a Perfect Railroad Can Fail",
+    "description": "Learn why railroad tracks have gaps, how thermal expansion works, and why perfect train tracks can buckle in the heat.\n\nFree guide to this video (steps and every source): https://studio.golidee.com/guides/golide-short-2026-11-23.pdf\n\nTwo companies race to build a railroad across a canyon, but the smoother track may hide a dangerous problem. When summer arrives, the clickety-clack railroad reveals why those gaps were there.\n\n#Railroad #TrainTracks #ThermalExpansion #Railway #TrainFacts #Engineering #RailroadHistory",
+    "tags": [
+      "railroad tracks",
+      "train tracks",
+      "why train tracks have gaps",
+      "railroad buckling",
+      "thermal expansion",
+      "train derailment",
+      "railroad engineering",
+      "railway tracks",
+      "hot weather train tracks",
+      "why train tracks buckle",
+      "rail expansion",
+      "clickety clack train",
+      "railroad history",
+      "old train tracks",
+      "train track physics",
+      "railroad safety",
+      "train facts",
+      "how railroads work",
+      "steel expansion",
+      "railroad construction",
+      "train engineering",
+      "railway engineering",
+      "AI news"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "keywords": [
+      "railroad tracks",
+      "train tracks",
+      "thermal expansion",
+      "railroad buckling",
+      "train derailment",
+      "railroad engineering",
+      "why train tracks have gaps",
+      "rail expansion",
+      "railway tracks",
+      "hot weather train tracks",
+      "why train tracks buckle",
+      "clickety clack train",
+      "railroad history",
+      "train track physics",
+      "railroad safety"
+    ],
+    "hashtags": [
+      "#Railroad",
+      "#TrainTracks",
+      "#ThermalExpansion",
+      "#Railway",
+      "#TrainFacts",
+      "#Engineering",
+      "#RailroadHistory"
+    ],
+    "format": "short",
+    "title_description_language": "en",
+    "seo_body": "Learn why railroad tracks have gaps, how thermal expansion works, and why perfect train tracks can buckle in the heat.\n\nTwo companies race to build a railroad across a canyon, but the smoother track may hide a dangerous problem. When summer arrives, the clickety-clack railroad reveals why those gaps were there.",
+    "title_checked": true
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "The topic video is a 1-minute-plus parable rather than an identified historical railroad incident. Its central scenario is that expansion gaps accommodate temperature-driven rail movement, while tightly constrained rail can buckle in extreme heat.",
+        "source_title": "Why Perfect Railroads Don't Work — Ricks Clips",
+        "source_url": "https://www.youtube.com/watch?v=7xS87iActkU",
+        "published_or_updated": "2026-11-01"
+      },
+      {
+        "claim": "For conventional jointed rail, official railroad engineering guidance lists 39-foot rail sections and specifies temperature-dependent openings between rail ends. For 39-foot rail, the listed gaps range from 5/16 inch in very cold conditions to 1/16 inch at 66–85°F, with no opening specified above 85°F.",
+        "source_title": "AREMA Manual for Railway Engineering, Chapter 5: Track",
+        "source_url": "https://railroadfasteners.com/download/AREMA-Stand-for-Track.pdf",
+        "published_or_updated": "2014"
+      },
+      {
+        "claim": "The video’s “finger-wide” gap is not consistent with the cited engineering tables: a one-inch-wide gap is substantially larger than the standard 1/16- to 5/16-inch openings specified for 39-foot rail.",
+        "source_title": "AREMA Manual for Railway Engineering, Chapter 5: Track",
+        "source_url": "https://railroadfasteners.com/download/AREMA-Stand-for-Track.pdf",
+        "published_or_updated": "2014"
+      },
+      {
+        "claim": "U.S. Department of Transportation research states that conventional jointed rail can absorb approximately 8 inches of expansion per mile before joint gaps close; a 20°F rise above the rail-laying temperature is given as an approximate example that can close those gaps.",
+        "source_title": "Thermal Loads, U.S. Department of Transportation / Federal Railroad Administration",
+        "source_url": "https://railroads.dot.gov/sites/fra.dot.gov/files/fra_net/14798/110_DOT-TSC-FRA-82-4_ntl.bts.gov-lib-47000-47500-47552.pdf",
+        "published_or_updated": "1982"
+      },
+      {
+        "claim": "Once rail-joint gaps close, additional heating produces compressive stress. If ballast and rail anchorage do not provide enough restraint, the track can buckle laterally—an engineering failure mode consistent with the video’s image of the track kicking sideways.",
+        "source_title": "Thermal Loads, U.S. Department of Transportation / Federal Railroad Administration",
+        "source_url": "https://railroads.dot.gov/sites/fra.dot.gov/files/fra_net/14798/110_DOT-TSC-FRA-82-4_ntl.bts.gov-lib-47000-47500-47552.pdf",
+        "published_or_updated": "1982"
+      },
+      {
+        "claim": "Federal Railroad Administration guidance confirms that heat-related track buckling, commonly called a “sun kink,” can create derailment risk. The likelihood depends not only on heat but also on rail temperature at installation, ballast, fasteners, lateral restraint, track condition, and maintenance.",
+        "source_title": "Research Results RR 12-18: In-Motion, Non-Contact Rail Temperature Measurement Sensor",
+        "source_url": "https://railroads.dot.gov/sites/fra.dot.gov/files/fra_net/2713/RR_12_18.pdf",
+        "published_or_updated": "2012-12"
+      },
+      {
+        "claim": "Modern continuous welded rail is not simply laid end-to-end without engineering controls. FRA guidance defines continuous welded rail as rail welded into a continuous piece exceeding 400 feet and requires railroads to manage rail-neutral temperature and maintenance procedures to reduce both buckling in hot weather and rail breaks in cold weather.",
+        "source_title": "Procedures for the Installation, Adjustment, Maintenance, and Inspection of CWR",
+        "source_url": "https://railroads.fra.dot.gov/sites/fra.dot.gov/files/2021-09/FRA%20CWR%20Generic%20Plan%20-%20Effective%20-%20July%202021.pdf",
+        "published_or_updated": "2021-07"
+      }
+    ],
+    "platform_demand": {
+      "verdict": "pass",
+      "signal_type": "owner-replace",
+      "query": "Why Perfect Railroads Don't Work"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -15.9,
+      "true_peak_dbtp": -2.32,
+      "loudness_range": 3.3
+    },
+    "editorial": {
+      "beats": 26,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-11-23T11:26:14.767796+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-choice",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri",
+    "thumbnail_style": "crash"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-short-2026-11-23",
+    "created_at": "2026-11-23T11:26:20.981539+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "qa": {
+        "passed": true
+      },
+      "hold_private": true
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "bd5ad0181afc1ef89e2b94e1cdf866a884af39d822082a1248270d1cc47f74dd",
+        "bytes": 153610574
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "a7574f9c2015bb8351791e601a56da6be3c7c6ba9d88eb7383a12be5a0d98c97",
+        "bytes": 461169
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "8e602d3fc451d387f57ab9885a2260552efe6081fa22dfe8b867e7206378a587",
+        "bytes": 2328
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "1febbb7941afa2ec6b6b5cda1660636b8185a774d0916ab224392f67fda179fc",
+        "bytes": 2626
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "a159445cd76e4ea0fe78aba14e3a8a5de4e042b609a741bb7ff05ea116ac15ba",
+        "bytes": 4376
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "82296346f993d941a1e1a87cb55457fc5c7ac407032c688284434ac9064223c0",
+        "bytes": 412
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "99843312f6fa68d6c2d86b14e6113db3fa3b5117ca97c9404303a9bbec90938c",
+        "bytes": 276
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 26438.0,
+      "cached_input_units": 0.0,
+      "output_units": 2405.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008174,
+      "created_at": "2026-11-23T08:56:49.929691+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-23T08:56:49.931260+00:00"
+    },
+    {
+      "stage": "script-story",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1218.0,
+      "cached_input_units": 0.0,
+      "output_units": 6610.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.008176,
+      "created_at": "2026-11-23T08:57:49.401279+00:00"
+    },
+    {
+      "stage": "script-story-delivery",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 882.0,
+      "cached_input_units": 0.0,
+      "output_units": 3893.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004848,
+      "created_at": "2026-11-23T08:58:22.992176+00:00"
+    },
+    {
+      "stage": "script-voice-direction",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 766.0,
+      "cached_input_units": 0.0,
+      "output_units": 452.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000696,
+      "created_at": "2026-11-23T08:58:27.438730+00:00"
+    },
+    {
+      "stage": "script-board",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 631.0,
+      "cached_input_units": 0.0,
+      "output_units": 1538.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001972,
+      "created_at": "2026-11-23T08:58:45.736994+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 882.0,
+      "cached_input_units": 0.0,
+      "output_units": 3893.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004848,
+      "created_at": "2026-11-23T08:58:45.738768+00:00"
+    },
+    {
+      "stage": "script-edit-board",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 632.0,
+      "cached_input_units": 0.0,
+      "output_units": 1484.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001907,
+      "created_at": "2026-11-23T09:29:07.287877+00:00"
+    },
+    {
+      "stage": "owner-voice",
+      "provider": "elevenlabs",
+      "model": "eleven_v4",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 1110,
+      "cost_usd": 0.222,
+      "created_at": "2026-11-23T09:29:24.511225+00:00"
+    },
+    {
+      "stage": "shorts3d-storyboard",
+      "provider": "openai",
+      "model": "gpt-5.6-sol",
+      "input_units": 2684.0,
+      "cached_input_units": 0.0,
+      "output_units": 3005.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.070836,
+      "created_at": "2026-11-23T09:29:49.259599+00:00"
+    },
+    {
+      "stage": "guide",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1058.0,
+      "cached_input_units": 0.0,
+      "output_units": 860.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001244,
+      "created_at": "2026-11-23T11:25:16.467232+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9484.0,
+      "cached_input_units": 0.0,
+      "output_units": 944.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00303,
+      "created_at": "2026-11-23T11:25:17.650537+00:00"
+    },
+    {
+      "stage": "title-check",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 475.0,
+      "cached_input_units": 0.0,
+      "output_units": 358.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000525,
+      "created_at": "2026-11-23T11:25:23.347390+00:00"
+    }
+  ],
+  "recorded_at": "2026-11-23T11:26:26.227272+00:00"
+}
