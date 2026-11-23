@@ -1,11 +1,15 @@
 name: Morning pick (the video to model, shown in Studio)
 
-# Owner 2026-11-22: at 08:00 Lusaka every slot still waiting for his link shows the engine's pick (title, channel,
+# Owner 2026-11-22: by 08:00 Lusaka every slot still waiting for his link shows the engine's pick (title, channel,
 # Copy link). He can fetch its transcript from a free site and paste it back; otherwise the slot makes that video
 # at its time. No OpenAI here, only the YouTube data quota.
 on:
+  # GitHub drops or delays scheduled runs on busy on-the-hour times (2026-11-23 it never fired at 06:00), so three
+  # off-peak tries: a slot that already has its pick is skipped, so the later runs only fill what is missing.
   schedule:
-    - cron: "0 6 * * *"
+    - cron: "37 5 * * *"
+    - cron: "23 6 * * *"
+    - cron: "11 7 * * *"
   workflow_dispatch:
 
 permissions:
