@@ -25,7 +25,19 @@ export async function run(K) {
   const times = (sh, step = SAMPLE) => { const a = []; for (let t = sh.t0 + 0.02; t < sh.t1 - 0.03; t += step) a.push(t); a.push(sh.t1 - 0.02); return a; };
   const shotAt = t => { let s = S.shots[0]; for (const x of S.shots) if (t >= x.t0) s = x; return s; };
 
-  const stepped = D.separate(S.people, props, () => S.pose(0));   // nobody starts inside a desk
+  const moments = []; for (let t = 0; t < S.dur; t += 0.5) moments.push(t);
+  const stepped = D.separate(S.people, props, t => S.pose(t), moments);   // nobody inside a desk at any moment
+  // the fourth wall (owner 2026-11-23 run): walls between the camera and the action are hidden with what hangs on them
+  const walls = K.O.children.filter(o => o.isMesh && o.geometry.type === 'BoxGeometry').map(o => ({ o, b: new THREE.Box3().setFromObject(o) }))
+    .filter(w => { const s = w.b.getSize(new THREE.Vector3()); return s.y > 2 && (s.x > 6 || s.z > 6) && Math.min(s.x, s.z) < 0.6; });
+  const onWall = walls.map(w => { const s = w.b.getSize(new THREE.Vector3()), alongX = s.x > s.z, c = w.b.getCenter(new THREE.Vector3());
+    return K.O.children.filter(o => o !== w.o && o.visible && (() => { const q = new THREE.Box3().setFromObject(o).getCenter(new THREE.Vector3()); return alongX ? Math.abs(q.z - c.z) < 0.6 : Math.abs(q.x - c.x) < 0.6; })()); });
+  const wallVisible = walls.map(w => w.o.visible);
+  function fourthWall(pos, tgt) {
+    walls.forEach((w, i) => { const s = w.b.getSize(new THREE.Vector3()), c = w.b.getCenter(new THREE.Vector3()), alongX = s.x > s.z;
+      const between = alongX ? (pos.z - c.z) * (tgt.z - c.z) < 0 : (pos.x - c.x) * (tgt.x - c.x) < 0;
+      w.o.visible = wallVisible[i] && !between; onWall[i].forEach(o => { if (o.userData.wallKeep === undefined) o.userData.wallKeep = o.visible; o.visible = o.userData.wallKeep && !between; }); });
+  }
   function frameShot(sh) {                                         // what the shot must hold, over its whole length
     useHide(sh); const b = new THREE.Box3();
     for (const t of times(sh)) { S.pose(t); sh.who.forEach(s => b.union(boxOf(s))); (sh.extras?.(t) || []).forEach(e => b.union(e.box)); }
@@ -36,7 +48,7 @@ export async function run(K) {
     if (f.yawAbs !== undefined) v.yaw = f.yawAbs; if (f.pitchAbs !== undefined) v.pitch = f.pitchAbs;
     v.yaw += f.yaw || 0; v.pitch += f.pitch || 0; v.fov *= f.fovK || 1; v.k = (v.k ?? 1) * (f.dist || 1);
     const c = D.fit(sh.box, v); if (!c) throw new Error(`shot ${sh.name}: its subjects cannot fit the frame at ${v.fov.toFixed(0)} degrees`);
-    K.look(c.pos, c.tgt, c.fov, c.roll); camera().updateMatrixWorld(true); return c;
+    K.look(c.pos, c.tgt, c.fov, c.roll); camera().updateMatrixWorld(true); fourthWall(c.pos, c.tgt); return c;
   }
   const camera = () => K.camera;
   // every problem of a shot, checked every 0.1 s; `quick` (the repair search): every 0.25 s, stop at the first one
@@ -45,7 +57,7 @@ export async function run(K) {
     useHide(sh);
     for (const t of times(sh, quick ? 0.25 : SAMPLE)) {
       S.pose(t); camAt(sh, t);
-      for (const p of D.issues({ subjects: sh.who.filter(isPerson), people: S.people, props, propObjs, extras: [...(sh.extras?.(t) || []), ...(S.words?.(t) || [])] })) { out.push({ t: +t.toFixed(2), p }); if (quick) return out; }
+      for (const p of D.issues({ subjects: sh.who.filter(isPerson), people: S.people, props, propObjs, extras: [...(sh.extras?.(t) || []), ...(S.words?.(t) || []).filter(e => !e.subjectOnly || sh.who.includes(e.subjectOnly))] })) { out.push({ t: +t.toFixed(2), p }); if (quick) return out; }
     }
     return out;
   }
@@ -101,7 +113,14 @@ export async function run(K) {
         prev.t1 = keepT1; prev.box = keepBox; prev.fix = keepFix;
       }
       if (done) { sh.fix = done; entry.ok = true; entry.repair = Object.keys(done).length ? done : null; }
-      else { sh.fix = {}; entry.ok = false; entry.still = summary(problems(sh)); report.ok = false; }
+      else {
+        // nothing made it perfect: keep the attempt with the fewest problem moments and say so in the report
+        // (owner 2026-11-22: a paid storyboard never ends without a video; nothing goes back to Sol)
+        let best = {}, bestN = Infinity;
+        for (const fx of [{}, ...FIXES.slice(0, 20), ...ANGLE_FIXES]) { sh.fix = fx; const n = problems(sh).length; if (n < bestN) { best = fx; bestN = n; if (!n) break; } }
+        sh.fix = best; entry.ok = true; entry.kept_with = summary(problems(sh));
+        (report.warnings = report.warnings || []).push(`${sh.name}: ${entry.kept_with.join('; ')}`);
+      }
       report.decisions.push({ i: sh.idx, fix: sh.fix, who: sh.who.map(w => sh.who0.indexOf(w)) });
       report.shots.push(entry);
     }

@@ -86,7 +86,7 @@ export async function build(K, words) {
   }
   const tvBox = (x0, y0, x1, y1) => { tv.updateMatrixWorld(true); const a = V((x0 / 1024 - 0.5) * TVW, (0.5 - y1 / 576) * TVH, 0.03), b = V((x1 / 1024 - 0.5) * TVW, (0.5 - y0 / 576) * TVH, 0.04);
     return new THREE.Box3().setFromPoints([tv.localToWorld(a), tv.localToWorld(b)]); };
-  const setWords = t => !tv ? [] : [{ box: new THREE.Box3().setFromObject(tv), label: 'the wall TV', noCrop: true },
+  const setWords = t => !tv ? [] : [{ box: new THREE.Box3().setFromObject(tv), label: 'the wall TV', noCrop: true, subjectOnly: tv },
     ...(drawTV(t), tv.userData.words || []).map((r, i) => ({ box: tvBox(...r), label: `the TV words (${i + 1})` }))];
 
   // bubbles and screen glows

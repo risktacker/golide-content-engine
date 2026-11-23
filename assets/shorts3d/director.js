@@ -81,7 +81,10 @@ export function makeDirector(K, opt = {}) {
 
   // ---- checks ----
   function insideAnything(p, props, people) {
-    if (ROOM && !(p.x > ROOM.min.x && p.x < ROOM.max.x && p.y > ROOM.min.y && p.y < ROOM.max.y && p.z > ROOM.min.z && p.z < ROOM.max.z)) return 'the camera is outside the set (inside a wall, floor or ceiling)';
+    // a wall between the camera and the action is taken away like a TV set's fourth wall (scene.js), so the camera
+    // may stand beyond the walls; never under the floor, over the ceiling or far out of the building
+    if (ROOM && !(p.y > ROOM.min.y && p.y < ROOM.max.y)) return 'the camera is below the floor or above the ceiling';
+    if (ROOM && !(p.x > ROOM.min.x - 10 && p.x < ROOM.max.x + 10 && p.z > ROOM.min.z - 10 && p.z < ROOM.max.z + 10)) return 'the camera is far outside the set';
     for (const q of props) if (q.box.clone().expandByScalar(0.06).containsPoint(p)) return `the camera is inside ${q.label}`;
     for (const c of people) if (personBox(c).expandByScalar(0.06).containsPoint(p)) return `the camera is inside ${c.label}`;
     return null;
@@ -129,11 +132,14 @@ export function makeDirector(K, opt = {}) {
     return [...new Set(out)];
   }
   // people standing inside furniture step back (away from what they hit), a little at a time, before anything is shot
-  function separate(people, props, poseAt) {
+  // people standing inside furniture step clear, checked at every given moment of the Short (a lean or a new pose
+  // later on must not walk them back into a desk; 2026-11-23 a pose at 7 s put a buyer through his desk)
+  function separate(people, props, poseAt, moments = [0]) {
     const moved = [];
     for (const c of people) {
-      for (let n = 0; n < 40; n++) {
-        poseAt(); const cb = coreBox(c), hit = props.find(q => !q.floor && cb.intersectsBox(q.box));
+      for (let n = 0; n < 60; n++) {
+        let hit = null, cb = null;
+        for (const t of moments) { poseAt(t); cb = coreBox(c); hit = props.find(q => !q.floor && cb.intersectsBox(q.box)); if (hit) break; }
         if (!hit) break;
         // step out along the shallower overlap (x or z), away from the piece's centre
         const ox = Math.min(cb.max.x, hit.box.max.x) - Math.max(cb.min.x, hit.box.min.x), oz = Math.min(cb.max.z, hit.box.max.z) - Math.max(cb.min.z, hit.box.min.z);

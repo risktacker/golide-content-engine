@@ -23,7 +23,7 @@ const CHROME = process.env.CHROME || '/usr/bin/google-chrome';
   const saved = process.env.DIRECTION && fs.existsSync(process.env.DIRECTION) ? JSON.parse(fs.readFileSync(process.env.DIRECTION, 'utf8')).decisions : null;
   const report = await page.evaluate(d => window.GOLIDE.direct(d || undefined), saved);
   fs.writeFileSync(path.join(OUT, 'report.json'), JSON.stringify(report, null, 1));
-  for (const s of report.shots) console.log(`${s.ok ? 'OK  ' : 'FAIL'} ${s.name} [${s.t0}-${s.t1}]` + (s.found.length ? `  found: ${s.found.join('; ')}` : '') + (s.repair ? `  repaired: ${JSON.stringify(s.repair)}` : '') + (s.repair_note ? `  (${s.repair_note})` : '') + (s.still ? `  STILL: ${s.still.join('; ')}` : ''));
+  for (const s of report.shots) console.log(`${s.ok ? 'OK  ' : 'FAIL'} ${s.name} [${s.t0}-${s.t1}]` + (s.found.length ? `  found: ${s.found.join('; ')}` : '') + (s.repair ? `  repaired: ${JSON.stringify(s.repair)}` : '') + (s.repair_note ? `  (${s.repair_note})` : '') + (s.kept_with ? `  KEPT WITH: ${s.kept_with.join('; ')}` : '') + (s.still ? `  STILL: ${s.still.join('; ')}` : ''));
   for (const m of report.stepped) console.log('set:', m);
   const dur = await page.evaluate(() => window.GOLIDE.dur);
   if (mode === 'stills') {
