@@ -2,8 +2,8 @@
   "id": "golide-short-2026-11-23",
   "studio_managed": true,
   "format": "short",
-  "title": "GOLIDE Short \u00b7 2026-11-23",
-  "brief": "Choose the AI or tech story people are talking about this week (a launch, a viral demo, a big company move or what a well-known tech leader said or did) and explain what it means for ordinary people in plain words, so a curious non-technical viewer follows it and wants to comment. Evidence-backed only. Keep Shorts and long-form product-independent; never turn scheduled video into a GOLIDE product advertisement and never copy an existing video.",
+  "title": "Why Perfect Railroads Don't Work",
+  "brief": "Today's video retells the YouTube video \"Why Perfect Railroads Don't Work\" by Ricks Clips (https://www.youtube.com/watch?v=7xS87iActkU), chosen by the owner: the same story, beats and flow. Verify its names, numbers, dates and claims from other credible sources, and find the exact figures.\nWhat that video says: He saw gaps in a railroad every 39 feet. You see, two companies are racing to build a railroad along a canyon so deep you can\u2019t see the bottom. And whoever finishes first gets the whole country\u2019s business. He\u2019s the youngest engineer on the job, and when his boss sees a finger-wide gap between every single rail, his face goes purple. You\u2019re wrecking my railroad. But he won\u2019t close a single one. The other company lays their rails end to end, perfectly smooth, and finishes first. Their trains glide across the canyon without a sound, while his go clickety-clack over every gap. The newspapers start calling it the clickety-clack line, and everyone switches to the quiet trains. Then summer comes, and something weird happens. His gaps start shrinking. In May, you can fit a coin in them. By July, barely a sheet of paper. And his boss is thrilled. See, even your gaps know you were wrong. Meanwhile, on the perfect railroad, the rails have started groaning in the afternoon sun, pushing against each other like they want to get out. On the hottest day anyone can remember, his gaps finally close. Rail touching rail. And halfway across the canyon, the perfect railroad kicks sideways like a snake, right as a train rolls onto it.",
   "demand_query": "AI tech news everyone is talking about this week",
   "demand_validation_required": true,
   "budget_class": "scheduled",
@@ -52,5 +52,41 @@
     "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
     "scheduled_at": "2026-11-23T11:00:00Z"
   },
-  "_studio_job_id": "golide-short-2026-11-23"
+  "_studio_job_id": "golide-short-2026-11-23",
+  "suggested_model": {
+    "url": "https://www.youtube.com/watch?v=7xS87iActkU",
+    "title": "Why Perfect Railroads Don't Work",
+    "channel": "Ricks Clips",
+    "views": 31219439,
+    "views_per_hour": 59152.1,
+    "breakout": 10,
+    "hours_old": 527.8,
+    "duration_seconds": 66,
+    "description": "Why Perfect Railroads Don't Work",
+    "found_by": "channel @RicksClips3000",
+    "news": false,
+    "score": 88.4,
+    "style": "stickman"
+  },
+  "replace_model": {
+    "url": "https://www.youtube.com/watch?v=7xS87iActkU",
+    "requested_at": "2026-11-23T08:54:13.649Z",
+    "transcript": "He saw gaps in a railroad every 39 feet. You see, two companies are racing to build a railroad along a canyon so deep you can\u2019t see the bottom. And whoever finishes first gets the whole country\u2019s business. He\u2019s the youngest engineer on the job, and when his boss sees a finger-wide gap between every single rail, his face goes purple. You\u2019re wrecking my railroad. But he won\u2019t close a single one. The other company lays their rails end to end, perfectly smooth, and finishes first. Their trains glide across the canyon without a sound, while his go clickety-clack over every gap. The newspapers start calling it the clickety-clack line, and everyone switches to the quiet trains. Then summer comes, and something weird happens. His gaps start shrinking. In May, you can fit a coin in them. By July, barely a sheet of paper. And his boss is thrilled. See, even your gaps know you were wrong. Meanwhile, on the perfect railroad, the rails have started groaning in the afternoon sun, pushing against each other like they want to get out. On the hottest day anyone can remember, his gaps finally close. Rail touching rail. And halfway across the canyon, the perfect railroad kicks sideways like a snake, right as a train rolls onto it."
+  },
+  "model_title": "Why Perfect Railroads Don't Work",
+  "source_breakout": {
+    "url": "https://www.youtube.com/watch?v=7xS87iActkU",
+    "title": "Why Perfect Railroads Don't Work",
+    "channel": "Ricks Clips",
+    "views": 31227415,
+    "duration_seconds": 66,
+    "description": "Why Perfect Railroads Don't Work"
+  },
+  "model_transcript": "He saw gaps in a railroad every 39 feet. You see, two companies are racing to build a railroad along a canyon so deep you can\u2019t see the bottom. And whoever finishes first gets the whole country\u2019s business. He\u2019s the youngest engineer on the job, and when his boss sees a finger-wide gap between every single rail, his face goes purple. You\u2019re wrecking my railroad. But he won\u2019t close a single one. The other company lays their rails end to end, perfectly smooth, and finishes first. Their trains glide across the canyon without a sound, while his go clickety-clack over every gap. The newspapers start calling it the clickety-clack line, and everyone switches to the quiet trains. Then summer comes, and something weird happens. His gaps start shrinking. In May, you can fit a coin in them. By July, barely a sheet of paper. And his boss is thrilled. See, even your gaps know you were wrong. Meanwhile, on the perfect railroad, the rails have started groaning in the afternoon sun, pushing against each other like they want to get out. On the hottest day anyone can remember, his gaps finally close. Rail touching rail. And halfway across the canyon, the perfect railroad kicks sideways like a snake, right as a train rolls onto it.",
+  "platform_demand": {
+    "verdict": "pass",
+    "signal_type": "owner-replace",
+    "query": "Why Perfect Railroads Don't Work"
+  },
+  "selected_topic_source": "https://www.youtube.com/watch?v=7xS87iActkU"
 }
