@@ -37,7 +37,9 @@ def test_direction_is_kept_only_when_the_words_are_the_same():
     plain = "[[0]] The dummy units show 4 cameras. Sounds convincing, right? It's a rumour, not a reveal."
     good = "[[0]] [skeptical] The dummy units show 4 cameras.\n\nSounds convincing, right? It's a RUMOUR, not a reveal."
     assert apply_direction(plain, good) == (good, "ok")
-    assert apply_direction(plain, good.replace("4", "four"))[1] == "words changed"
+    # 2026-11-23: a changed word never gets in; the director's tag is moved onto the plain script instead
+    out, why = apply_direction(plain, good.replace("4", "four"))
+    assert why.startswith("words changed") and "four" not in out and "4 cameras" in out and "[skeptical] The dummy" in out
     assert apply_direction(plain, good.replace("[[0]] ", ""))[1] == "chapter markers moved"
     stacked = "[[0]] [skeptical] [surprised] The dummy units show 4 cameras. Sounds convincing, right? It's a rumour, not a reveal."
     assert "[surprised]" not in apply_direction(plain, stacked)[0]
