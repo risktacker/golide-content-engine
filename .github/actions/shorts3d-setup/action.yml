@@ -29,10 +29,10 @@ runs:
       if: steps.cache.outputs.cache-hit != 'true'
       shell: bash
       run: cd ~/c3d && bash scripts/fetch-assets.sh
-    - name: Packages, ffmpeg, Chrome wrapper
+    - uses: ./.github/actions/ffmpeg
+    - name: Packages, Chrome wrapper
       shell: bash
       run: |
         cd ~/c3d/engine && npm install --no-audit --no-fund --silent
-        sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg >/dev/null
         printf '#!/bin/sh\nexec /usr/bin/google-chrome "$@" --use-angle=swiftshader --use-gl=angle --enable-unsafe-swiftshader --ignore-gpu-blocklist\n' > ~/chrome-sw && chmod +x ~/chrome-sw
         pip install -q -e "$GITHUB_WORKSPACE" numpy pillow
