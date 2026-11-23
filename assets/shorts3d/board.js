@@ -14,7 +14,7 @@ const OUTFITS = { suit: { style: 'tunic', civil: true, details: ['tie', 'buttons
   dress: { style: 'tunic', civil: true, details: [] }, jersey: { details: ['polo'] }, apron: { pattern: 'vest', details: [] } };
 const HATS = { cap: 'cap', beret: 'beret', boonie: 'boonie', pith: 'pith', helmet: 'm1', police: 'cap79', hardhat: 'pith', chef: 'beret', cowboy: 'boonie', beanie: 'beret' };
 const ANGLE = { front: [0, 0.06], low: [0.3, -0.16], high: [-0.2, 0.42], left: [-0.62, 0.08], right: [0.62, 0.08], 'over-shoulder': [Math.PI - 0.45, 0.12], top: [0, 1.15] };
-const LENS = { wide: 46, medium: 36, close: 30, 'extreme-close': 24 };
+const LENS = { wide: 46, medium: 36, close: 30, 'extreme-close': 24, face: 28 };
 const SKY = { day: ['#9cc8ee', '#e6f0f6'], dusk: ['#5b4a7a', '#ffb07a'], night: ['#0d1630', '#2a3a5e'], overcast: ['#aab3bb', '#d8dcdf'] };
 const SPEED = { walk: 1.3, run: 3.4, sneak: 0.7 };
 const HAND_DO = new Set(['hold', 'pick-up', 'use', 'give', 'throw', 'kick', 'put-down']);
@@ -234,8 +234,19 @@ export async function build(K, words) {
       f.ps.forEach((s, i) => { s.visible = (smoke || fire) && f.th.obj.visible; if (!s.visible) return; s.material.map = fire && i % 2 ? FIRE : SMOKE; const ph = ((t * 0.7 + i / f.ps.length) % 1); const c2 = top.getCenter(V(0, 0, 0));
         const r = Math.max(0.08, f.th.size.x * 0.25); s.position.set(c2.x + Math.sin(i * 2.1) * r * ph, top.max.y + ph * Math.max(0.4, f.th.size.y), c2.z + Math.cos(i * 1.7) * r * ph); s.scale.setScalar(Math.max(0.12, f.th.size.x * 0.4) * (0.5 + ph)); s.material.opacity = 1 - ph; });
       f.l.intensity = glow ? 3 : 0; f.l.position.copy(top.getCenter(V(0, 0, 0))).setY(top.max.y + 0.3); }
-    ALL.forEach(c => SR.updateLimbs(c));
+    ALL.forEach(c => SR.updateLimbs(c)); poseCallouts(t);
   }
+  // callouts: a label that pops up over a thing or a person on a word (a number, an amount, a status)
+  const CT = { good: ['#1f9e5a', '#ffffff'], bad: ['#d7262c', '#ffffff'], neutral: ['#14161c', '#f2cf2c'] };
+  const callouts = (B.callouts || []).map(cl => { const c = document.createElement('canvas'); c.width = 768; c.height = 192; const g = c.getContext('2d'), [bg, fg] = CT[cl.tone] || CT.neutral;
+    g.font = '120px Anton'; const text = String(cl.text).toUpperCase(); let f = 120; while (g.measureText(text).width > 680 && f > 40) { f -= 6; g.font = `${f}px Anton`; } const w = Math.min(760, g.measureText(text).width + 80);
+    g.fillStyle = bg; g.beginPath(); g.roundRect((768 - w) / 2, 16, w, 160, 80); g.fill(); g.lineWidth = 10; g.strokeStyle = '#ffffff'; g.stroke(); g.fillStyle = fg; g.textAlign = 'center'; g.fillText(text, 384, 96 + f * 0.36);
+    const t2 = new THREE.CanvasTexture(c); t2.colorSpace = THREE.SRGBColorSpace; const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t2, transparent: true, depthTest: false, toneMapped: false })); sp.visible = false; sp.renderOrder = 10; scene.add(sp);
+    return { ...cl, t: at(cl.from), t1: Math.max(at(cl.until ?? cl.from) + 0.6, at(cl.from) + 1.2), sp, aspect: w / 160 }; });
+  function poseCallouts(t) { for (const cl of callouts) { const on = t >= cl.t && t < cl.t1, o = byId(cl.on); cl.sp.visible = on && !!o; if (!cl.sp.visible) continue;
+    const b = cast[cl.on] ? new THREE.Box3().setFromObject(cast[cl.on].head) : new THREE.Box3().setFromObject(o), c2 = b.getCenter(V(0, 0, 0)), size = cast[cl.on] ? 0.32 : Math.max(0.3, Math.min(1.6, b.getSize(V(0, 0, 0)).y * 0.3));
+    const k = eio(clamp((t - cl.t) / 0.18)) * (1 + 0.12 * Math.sin(clamp((t - cl.t) / 0.3) * Math.PI)); cl.sp.position.set(c2.x, b.max.y + size * 0.8, c2.z); cl.sp.scale.set(size * cl.aspect * k, size * k, 1); } }
+  const calloutBoxes = (objs, t) => callouts.filter(cl => cl.sp.visible && objs.includes(byId(cl.on))).map(cl => ({ box: new THREE.Box3().setFromCenterAndSize(cl.sp.position, V(cl.sp.scale.x, cl.sp.scale.y, 0.05)), label: `the label ${cl.text}`, onTop: true }));
   const bubbleBoxes = (ids) => ids.map(c => bub.get(c)).filter(s => s && s.visible).map(s => ({ box: new THREE.Box3().setFromCenterAndSize(s.position, V(0.4, 0.4, 0.4)), label: 'a bubble', onTop: true }));
   const labelBoxes = (objs) => objs.filter(o => o && o.userData && o.userData.sign && o.visible).map(o => ({ box: new THREE.Box3().setFromObject(o.userData.sign), label: `the words on ${o.name}` }));
   const LIGHT = { day: { hemi: 1.1, sun: 3.0, sunC: '#fff2dc', hemiC: '#cfe4ff', exp: 0.85, dir: [-0.45, 0.8, 0.45] }, dusk: { hemi: 0.8, sun: 2.4, sunC: '#ffaf80', hemiC: '#a08fc0', exp: 0.8, dir: [-0.72, 0.25, 0.62] },
@@ -264,7 +275,8 @@ export async function build(K, words) {
       else if (mv === 'dolly-zoom') { v.fov = lerp(fov + 10, fov - 8, e); v.roll = -0.07 * e; } else v.k = lerp(1.03, 1.0, e);
       return v; };
     return { name: `${i + 1} ${s.angle || 'front'} ${s.lens || 'medium'} ${mv}: ${who.map(w => w.label || w.name).join(', ')}`, t0: s.t0, t1: i + 1 < raw.length ? raw[i + 1].t0 : DUR,
-      who, hidden: [], dof: s.lens === 'close' || s.lens === 'extreme-close' ? 0.01 : 0, extras: t => [...bubbleBoxes(who.filter(w => w && w.root)), ...labelBoxes(who.filter(w => !w.root))], view };
+      who, hidden: [], dof: s.lens === 'close' || s.lens === 'extreme-close' || s.lens === 'face' ? 0.01 : 0, extras: t => [...bubbleBoxes(who.filter(w => w && w.root)), ...labelBoxes(who.filter(w => !w.root)), ...calloutBoxes(who, t)], view,
+      faces: s.lens === 'face' ? who.filter(w => w.root) : [] };
   });
   // things people hold, ride, sit on or kick, and flat things, are not obstacles; everything else is
   const touched = new Set(); for (const c of people) for (const b of beats.get(c)) { if (b.with) touched.add(b.with); if (['ride', 'sit', 'push', 'pull', 'hide', 'lie'].includes(b.do) && b.target) touched.add(b.target); }

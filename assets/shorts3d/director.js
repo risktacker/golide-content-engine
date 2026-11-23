@@ -35,6 +35,11 @@ export function makeDirector(K, opt = {}) {
   const hide = new Map();
   function shownBox(c) { const b = personBox(c), h = hide.get(c); if (h && camera.position.z > h.frontZ && b.max.y > h.below + 0.3) b.min.y = Math.max(b.min.y, h.below); return b; }
   const headBox = c => { c.head.updateMatrixWorld(true); return new THREE.Box3().setFromObject(c.head); };
+  // a face shot (owner 2026-11-23, the references' reaction close-ups): head and shoulders, the body may leave the frame
+  // a fixed head-and-shoulders box around the skull's centre (the head group holds the face decal's full plane and the
+  // hat brim, far wider than the face): 0.3 m head radius at the cast's scale
+  const faceBox = c => { c.hm.updateMatrixWorld(true); const ctr = new THREE.Box3().setFromObject(c.hm).getCenter(new THREE.Vector3()), r = 0.3 * c.root.scale.x;
+    return new THREE.Box3(new THREE.Vector3(ctr.x - 0.75 * r, ctr.y - 1.8 * r, ctr.z - 0.45 * r), new THREE.Vector3(ctr.x + 0.75 * r, ctr.y + 1.2 * r, ctr.z + 0.45 * r)); };
   function coreBox(c) {                                       // the body without reaching arms: what may not pass through furniture
     const b = personBox(c), h = c.bone('Hips'); h.getWorldPosition(_v); const r = 0.3 * c.root.scale.x / 0.8;
     b.min.x = Math.max(b.min.x, _v.x - r); b.max.x = Math.min(b.max.x, _v.x + r); b.min.z = Math.max(b.min.z, _v.z - r); b.max.z = Math.min(b.max.z, _v.z + r);
@@ -108,10 +113,12 @@ export function makeDirector(K, opt = {}) {
     return out;
   }
   // everything wrong with the current frame (people posed, camera set)
-  function issues({ subjects, people, props, propObjs, extras = [] }) {
+  function issues({ subjects, people, props, propObjs, extras = [], faces = [] }) {
     const out = [];
     const where = insideAnything(camera.position, props, people); if (where) out.push(where);
     for (const c of people) {
+      if (faces.includes(c)) { const f = rect(faceBox(c)); if (f.crossing || f.behind) out.push(`${c.label} is cut by the camera`); else if (!within(f, SAFE)) out.push(`the face of ${c.label} is cropped at the frame edge`); else if (f.y1 - f.y0 < HH * 0.22) out.push(`the face of ${c.label} is too small for a face shot`);
+        const hh = rect(headBox(c)); if (shows(hh) && meets(hh, CAP)) out.push(`the head of ${c.label} sits under the captions`); continue; }
       const r = rect(shownBox(c));
       if (r.crossing) out.push(`${c.label} is cut by the camera`);
       else if (shows(r) && !within(r, SAFE)) out.push(`${c.label} is cropped at the frame edge`);
@@ -154,5 +161,5 @@ export function makeDirector(K, opt = {}) {
     }
     return moved;
   }
-  return { SAFE, CAP, hide, shownBox, personBox, headBox, coreBox, rect, setCam, fit, issues, separate, dirOf, within, shows };
+  return { SAFE, CAP, hide, shownBox, personBox, headBox, faceBox, coreBox, rect, setCam, fit, issues, separate, dirOf, within, shows };
 }

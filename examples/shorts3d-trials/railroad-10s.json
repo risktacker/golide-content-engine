@@ -211,6 +211,422 @@
    ],
    "text": "FINISH",
    "hero": false
+  },
+  {
+   "id": "tape",
+   "name": "tape measure",
+   "search": "tape measure",
+   "height_m": 0.12,
+   "at": [
+    -3,
+    0.9
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "case: box 0 0 0 0.14 0.06 0.12 #f2c12c",
+    "tape: box 0.25 0 0.03 0.4 0.02 0.03 #f6e7a0"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "hammer1",
+   "name": "sledgehammer",
+   "search": "sledgehammer hammer",
+   "height_m": 0.9,
+   "at": [
+    1.6,
+    0.9
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "handle: cyl 0 0 0 0.05 0.05 0.8 #8b5a2b",
+    "head: box 0 0 0.8 0.3 0.12 0.12 #3a3a3a"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "hammer2",
+   "name": "sledgehammer",
+   "search": "sledgehammer hammer",
+   "height_m": 0.9,
+   "at": [
+    2.6,
+    -7.9
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "handle: cyl 0 0 0 0.05 0.05 0.8 #8b5a2b",
+    "head: box 0 0 0.8 0.3 0.12 0.12 #3a3a3a"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "tower",
+   "name": "water tower",
+   "search": "water tower",
+   "height_m": 9.6,
+   "at": [
+    -18,
+    -11
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "leg: box -1 -1 0 0.2 0.2 6 #6b4a2f",
+    "leg: box 1 -1 0 0.2 0.2 6 #6b4a2f",
+    "leg: box -1 1 0 0.2 0.2 6 #6b4a2f",
+    "leg: box 1 1 0 0.2 0.2 6 #6b4a2f",
+    "tank: cyl 0 0 6 2.8 2.8 2.4 #8a5a34",
+    "roof: cone 0 0 8.4 3.0 3.0 1.2 #5a3a22",
+    "spout: box 1.5 0 6.6 0.9 0.15 0.15 #3a3a3a"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "pole0",
+   "name": "telegraph pole",
+   "search": "telegraph pole utility pole",
+   "height_m": 6.5,
+   "at": [
+    -15,
+    -9.5
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "pole: cyl 0 0 0 0.25 0.25 6.5 #6b4a2f",
+    "arm: box 0 0 5.9 1.6 0.12 0.12 #6b4a2f",
+    "insulator: cyl -0.6 0 6.0 0.1 0.1 0.15 #cfe3ef",
+    "insulator: cyl 0.6 0 6.0 0.1 0.1 0.15 #cfe3ef"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "pole1",
+   "name": "telegraph pole",
+   "search": "telegraph pole utility pole",
+   "height_m": 6.5,
+   "at": [
+    -7,
+    -9.5
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "pole: cyl 0 0 0 0.25 0.25 6.5 #6b4a2f",
+    "arm: box 0 0 5.9 1.6 0.12 0.12 #6b4a2f",
+    "insulator: cyl -0.6 0 6.0 0.1 0.1 0.15 #cfe3ef",
+    "insulator: cyl 0.6 0 6.0 0.1 0.1 0.15 #cfe3ef"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "pole2",
+   "name": "telegraph pole",
+   "search": "telegraph pole utility pole",
+   "height_m": 6.5,
+   "at": [
+    1,
+    -9.5
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "pole: cyl 0 0 0 0.25 0.25 6.5 #6b4a2f",
+    "arm: box 0 0 5.9 1.6 0.12 0.12 #6b4a2f",
+    "insulator: cyl -0.6 0 6.0 0.1 0.1 0.15 #cfe3ef",
+    "insulator: cyl 0.6 0 6.0 0.1 0.1 0.15 #cfe3ef"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "pole3",
+   "name": "telegraph pole",
+   "search": "telegraph pole utility pole",
+   "height_m": 6.5,
+   "at": [
+    9,
+    -9.5
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "pole: cyl 0 0 0 0.25 0.25 6.5 #6b4a2f",
+    "arm: box 0 0 5.9 1.6 0.12 0.12 #6b4a2f",
+    "insulator: cyl -0.6 0 6.0 0.1 0.1 0.15 #cfe3ef",
+    "insulator: cyl 0.6 0 6.0 0.1 0.1 0.15 #cfe3ef"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "cactus0",
+   "name": "saguaro cactus",
+   "search": "saguaro cactus",
+   "height_m": 2.6,
+   "at": [
+    -9,
+    6
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "trunk: cyl 0 0 0 0.45 0.45 2.6 #3f7a3a",
+    "arm: cyl 0.4 0 1.1 0.3 0.3 0.9 #3f7a3a",
+    "armtop: cyl 0.4 0 2.0 0.28 0.28 0.6 #3f7a3a",
+    "arm: cyl -0.4 0 1.4 0.3 0.3 0.7 #3f7a3a"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "cactus1",
+   "name": "saguaro cactus",
+   "search": "saguaro cactus",
+   "height_m": 3.0,
+   "at": [
+    8,
+    7
+   ],
+   "on": "",
+   "turn_deg": 37,
+   "color": "",
+   "parts": [
+    "trunk: cyl 0 0 0 0.45 0.45 2.6 #3f7a3a",
+    "arm: cyl 0.4 0 1.1 0.3 0.3 0.9 #3f7a3a",
+    "armtop: cyl 0.4 0 2.0 0.28 0.28 0.6 #3f7a3a",
+    "arm: cyl -0.4 0 1.4 0.3 0.3 0.7 #3f7a3a"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "cactus2",
+   "name": "saguaro cactus",
+   "search": "saguaro cactus",
+   "height_m": 3.4000000000000004,
+   "at": [
+    19,
+    3
+   ],
+   "on": "",
+   "turn_deg": 74,
+   "color": "",
+   "parts": [
+    "trunk: cyl 0 0 0 0.45 0.45 2.6 #3f7a3a",
+    "arm: cyl 0.4 0 1.1 0.3 0.3 0.9 #3f7a3a",
+    "armtop: cyl 0.4 0 2.0 0.28 0.28 0.6 #3f7a3a",
+    "arm: cyl -0.4 0 1.4 0.3 0.3 0.7 #3f7a3a"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "cactus3",
+   "name": "saguaro cactus",
+   "search": "saguaro cactus",
+   "height_m": 2.6,
+   "at": [
+    -20,
+    0
+   ],
+   "on": "",
+   "turn_deg": 111,
+   "color": "",
+   "parts": [
+    "trunk: cyl 0 0 0 0.45 0.45 2.6 #3f7a3a",
+    "arm: cyl 0.4 0 1.1 0.3 0.3 0.9 #3f7a3a",
+    "armtop: cyl 0.4 0 2.0 0.28 0.28 0.6 #3f7a3a",
+    "arm: cyl -0.4 0 1.4 0.3 0.3 0.7 #3f7a3a"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "cactus4",
+   "name": "saguaro cactus",
+   "search": "saguaro cactus",
+   "height_m": 3.0,
+   "at": [
+    12,
+    -12
+   ],
+   "on": "",
+   "turn_deg": 148,
+   "color": "",
+   "parts": [
+    "trunk: cyl 0 0 0 0.45 0.45 2.6 #3f7a3a",
+    "arm: cyl 0.4 0 1.1 0.3 0.3 0.9 #3f7a3a",
+    "armtop: cyl 0.4 0 2.0 0.28 0.28 0.6 #3f7a3a",
+    "arm: cyl -0.4 0 1.4 0.3 0.3 0.7 #3f7a3a"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "barrel0",
+   "name": "wooden barrel",
+   "search": "wooden barrel",
+   "height_m": 0.9,
+   "at": [
+    -6,
+    6.5
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "barrel: cyl 0 0 0 0.6 0.6 0.9 #7a4a26",
+    "band: cyl 0 0 0.15 0.62 0.62 0.06 #333333",
+    "band: cyl 0 0 0.7 0.62 0.62 0.06 #333333"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "barrel1",
+   "name": "wooden barrel",
+   "search": "wooden barrel",
+   "height_m": 0.9,
+   "at": [
+    4,
+    6
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "barrel: cyl 0 0 0 0.6 0.6 0.9 #7a4a26",
+    "band: cyl 0 0 0.15 0.62 0.62 0.06 #333333",
+    "band: cyl 0 0 0.7 0.62 0.62 0.06 #333333"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "barrel2",
+   "name": "wooden barrel",
+   "search": "wooden barrel",
+   "height_m": 0.9,
+   "at": [
+    -11,
+    -3
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "barrel: cyl 0 0 0 0.6 0.6 0.9 #7a4a26",
+    "band: cyl 0 0 0.15 0.62 0.62 0.06 #333333",
+    "band: cyl 0 0 0.7 0.62 0.62 0.06 #333333"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "ties",
+   "name": "stack of railroad ties",
+   "search": "railroad ties lumber stack",
+   "height_m": 0.9,
+   "at": [
+    7,
+    4.2
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "tie: box 0 0 0.0 2.4 1.6 0.14 #6b4a2f",
+    "tie: box 0 0 0.15 2.4 1.4000000000000001 0.14 #6b4a2f",
+    "tie: box 0 0 0.3 2.4 1.6 0.14 #6b4a2f",
+    "tie: box 0 0 0.44999999999999996 2.4 1.4000000000000001 0.14 #6b4a2f",
+    "tie: box 0 0 0.6 2.4 1.6 0.14 #6b4a2f",
+    "tie: box 0 0 0.75 2.4 1.4000000000000001 0.14 #6b4a2f"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "rails",
+   "name": "stack of steel rails",
+   "search": "steel rails stack",
+   "height_m": 0.5,
+   "at": [
+    10,
+    4.4
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "rail: box 0 -0.3 0 4.8 0.09 0.17 #8c8f96",
+    "rail: box 0 -0.15 0 4.8 0.09 0.17 #8c8f96",
+    "rail: box 0 0.0 0 4.8 0.09 0.17 #8c8f96",
+    "rail: box 0 0.14999999999999997 0 4.8 0.09 0.17 #8c8f96",
+    "rail: box 0 0.3 0 4.8 0.09 0.17 #8c8f96",
+    "rail: box 0 -0.22 0.17 4.8 0.09 0.17 #8c8f96",
+    "rail: box 0 -0.07 0.17 4.8 0.09 0.17 #8c8f96",
+    "rail: box 0 0.07999999999999999 0.17 4.8 0.09 0.17 #8c8f96",
+    "rail: box 0 0.22999999999999995 0.17 4.8 0.09 0.17 #8c8f96"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "tent",
+   "name": "canvas tent",
+   "search": "canvas tent camp",
+   "height_m": 2.4,
+   "at": [
+    -12,
+    8
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "body: cone 0 0 0 3 3 2.4 #e8dcc0",
+    "door: box 0 1.2 0 0.8 0.05 1.2 #5a4a3a"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "crowdsign",
+   "name": "welcome banner",
+   "search": "banner",
+   "height_m": 0.7,
+   "at": [
+    14.5,
+    1.6
+   ],
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "parts": [
+    "cloth: box 0 0 0 2.4 0.05 0.7 #d7262c"
+   ],
+   "text": "FIRST WINS",
+   "hero": false
   }
  ],
  "cast": [
@@ -219,7 +635,7 @@
    "label": "the engineer who leaves the gaps",
    "at": [
     -3,
-    3.6
+    0.5
    ],
    "turn_deg": 0,
    "look": {
@@ -247,30 +663,179 @@
     "hat": "cowboy",
     "glasses": false
    }
+  },
+  {
+   "id": "crew1",
+   "label": "his rail crew worker",
+   "at": [
+    2,
+    0.6
+   ],
+   "turn_deg": 0,
+   "look": {
+    "outfit": "overalls",
+    "color": "#8a5634",
+    "accent": "#f2cf2c",
+    "pattern": "none",
+    "hat": "cap",
+    "glasses": false
+   }
+  },
+  {
+   "id": "crew2",
+   "label": "his rail crew worker",
+   "at": [
+    -6,
+    0.5
+   ],
+   "turn_deg": 15,
+   "look": {
+    "outfit": "overalls",
+    "color": "#5f7a3a",
+    "accent": "#e8442a",
+    "pattern": "none",
+    "hat": "cap",
+    "glasses": false
+   }
+  },
+  {
+   "id": "rcrew1",
+   "label": "rival rail crew worker",
+   "at": [
+    3,
+    -7.5
+   ],
+   "turn_deg": 0,
+   "look": {
+    "outfit": "overalls",
+    "color": "#2c3e6b",
+    "accent": "#e8b730",
+    "pattern": "none",
+    "hat": "cap",
+    "glasses": false
+   }
+  },
+  {
+   "id": "rcrew2",
+   "label": "rival rail crew worker",
+   "at": [
+    -3,
+    -7.6
+   ],
+   "turn_deg": -10,
+   "look": {
+    "outfit": "overalls",
+    "color": "#3a3f4a",
+    "accent": "#c8352f",
+    "pattern": "none",
+    "hat": "boonie",
+    "glasses": false
+   }
+  },
+  {
+   "id": "town1",
+   "label": "townsman at the finish",
+   "at": [
+    14,
+    0.6
+   ],
+   "turn_deg": -30,
+   "look": {
+    "outfit": "vest",
+    "color": "#7a5134",
+    "accent": "#f2cf2c",
+    "pattern": "none",
+    "hat": "cowboy",
+    "glasses": false
+   }
+  },
+  {
+   "id": "town2",
+   "label": "townswoman at the finish",
+   "at": [
+    15.6,
+    0.4
+   ],
+   "turn_deg": -20,
+   "look": {
+    "outfit": "dress",
+    "color": "#b5446e",
+    "accent": "#ffffff",
+    "pattern": "none",
+    "hat": "none",
+    "glasses": false
+   }
   }
  ],
  "beats": [
   {
    "from": 0,
-   "until": 5,
+   "until": 2,
    "who": "hero",
    "do": "look",
    "target": "his_line",
-   "to": [],
-   "with": "",
    "face": "squint",
-   "bubble": "none"
+   "bubble": "none",
+   "to": [],
+   "with": ""
   },
   {
    "from": 2,
-   "until": 8,
+   "until": 5,
    "who": "hero",
    "do": "point",
    "target": "his_line",
-   "to": [],
-   "with": "",
    "face": "serious",
-   "bubble": "none"
+   "bubble": "!",
+   "to": [],
+   "with": ""
+  },
+  {
+   "from": 6,
+   "until": 9,
+   "who": "hero",
+   "do": "hold",
+   "target": "",
+   "with": "tape",
+   "face": "serious",
+   "bubble": "none",
+   "to": []
+  },
+  {
+   "from": 0,
+   "until": 28,
+   "who": "crew1",
+   "do": "use",
+   "target": "his_line",
+   "with": "hammer1",
+   "face": "serious",
+   "bubble": "none",
+   "to": []
+  },
+  {
+   "from": 0,
+   "until": 28,
+   "who": "rcrew1",
+   "do": "use",
+   "target": "smooth_line",
+   "with": "hammer2",
+   "face": "smug",
+   "bubble": "none",
+   "to": []
+  },
+  {
+   "from": 9,
+   "until": 12,
+   "who": "crew2",
+   "do": "walk",
+   "target": "",
+   "to": [
+    -9,
+    0.5
+   ],
+   "face": "calm",
+   "bubble": "none",
+   "with": ""
   },
   {
    "from": 9,
@@ -278,10 +843,24 @@
    "who": "rival",
    "do": "arms-crossed",
    "target": "",
-   "to": [],
-   "with": "",
    "face": "smug",
-   "bubble": "none"
+   "bubble": "none",
+   "to": [],
+   "with": ""
+  },
+  {
+   "from": 11,
+   "until": 20,
+   "who": "rcrew2",
+   "do": "run",
+   "target": "",
+   "to": [
+    2,
+    -7.6
+   ],
+   "face": "wide",
+   "bubble": "none",
+   "with": ""
   },
   {
    "from": 13,
@@ -289,21 +868,32 @@
    "who": "hero",
    "do": "look",
    "target": "his_train",
-   "to": [],
-   "with": "",
    "face": "serious",
-   "bubble": "none"
+   "bubble": "none",
+   "to": [],
+   "with": ""
+  },
+  {
+   "from": 21,
+   "until": 24,
+   "who": "rival",
+   "do": "point",
+   "target": "finish",
+   "face": "grin",
+   "bubble": "none",
+   "to": [],
+   "with": ""
   },
   {
    "from": 21,
    "until": 28,
-   "who": "rival",
-   "do": "point",
-   "target": "finish",
+   "who": "hero",
+   "do": "look",
+   "target": "rival",
+   "face": "squint",
+   "bubble": "none",
    "to": [],
-   "with": "",
-   "face": "grin",
-   "bubble": "none"
+   "with": ""
   },
   {
    "from": 24,
@@ -311,10 +901,32 @@
    "who": "rival",
    "do": "cheer",
    "target": "",
-   "to": [],
-   "with": "",
    "face": "grin",
-   "bubble": "$"
+   "bubble": "$",
+   "to": [],
+   "with": ""
+  },
+  {
+   "from": 24,
+   "until": 28,
+   "who": "town1",
+   "do": "cheer",
+   "target": "",
+   "face": "laugh",
+   "bubble": "none",
+   "to": [],
+   "with": ""
+  },
+  {
+   "from": 24,
+   "until": 28,
+   "who": "town2",
+   "do": "wave",
+   "target": "",
+   "face": "grin",
+   "bubble": "none",
+   "to": [],
+   "with": ""
   }
  ],
  "events": [
@@ -381,16 +993,18 @@
    "frame": [
     "hero"
    ],
-   "angle": "low",
-   "lens": "close",
+   "angle": "front",
+   "lens": "face",
    "move": "push"
   },
   {
    "from": 6,
    "frame": [
+    "hero",
+    "crew1",
     "his_line"
    ],
-   "angle": "left",
+   "angle": "high",
    "lens": "wide",
    "move": "crane-down"
   },
@@ -400,15 +1014,15 @@
     "his_train",
     "rival_train"
    ],
-   "angle": "high",
-   "lens": "wide",
-   "move": "crane-down"
+   "angle": "right",
+   "lens": "medium",
+   "move": "snap-zoom"
   },
   {
    "from": 13,
    "frame": [
     "rival_train",
-    "his_train"
+    "rcrew2"
    ],
    "angle": "low",
    "lens": "medium",
@@ -418,11 +1032,12 @@
    "from": 18,
    "frame": [
     "canyon",
+    "his_train",
     "rival_train"
    ],
-   "angle": "front",
+   "angle": "high",
    "lens": "wide",
-   "move": "pull"
+   "move": "crane-down"
   },
   {
    "from": 21,
@@ -430,17 +1045,49 @@
     "rival"
    ],
    "angle": "low",
-   "lens": "medium",
+   "lens": "face",
    "move": "push"
   },
   {
    "from": 24,
    "frame": [
-    "finish"
+    "finish",
+    "town1",
+    "town2"
    ],
-   "angle": "low",
-   "lens": "close",
+   "angle": "front",
+   "lens": "medium",
    "move": "snap-zoom"
+  }
+ ],
+ "callouts": [
+  {
+   "from": 7,
+   "until": 9,
+   "on": "his_line",
+   "text": "39 FEET",
+   "tone": "neutral"
+  },
+  {
+   "from": 10,
+   "until": 12,
+   "on": "rival_train",
+   "text": "COMPANY 2",
+   "tone": "bad"
+  },
+  {
+   "from": 10,
+   "until": 12,
+   "on": "his_train",
+   "text": "COMPANY 1",
+   "tone": "good"
+  },
+  {
+   "from": 26,
+   "until": 28,
+   "on": "finish",
+   "text": "WHOLE COUNTRY",
+   "tone": "good"
   }
  ]
 }

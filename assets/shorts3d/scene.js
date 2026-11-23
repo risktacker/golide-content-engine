@@ -20,7 +20,7 @@ export async function run(K) {
   const propObjs = S.props.filter(p => !p.floor).map(p => p.obj);
   const poseT = t => { S.pose(t); props.forEach(p => p.box.setFromObject(p.obj)); };   // things move: their boxes follow them
   const isPerson = s => !!s.root;
-  const boxOf = s => isPerson(s) ? D.shownBox(s) : new THREE.Box3().setFromObject(s);
+  const boxOf = (s, sh) => isPerson(s) ? ((sh && sh.faces || []).includes(s) ? D.faceBox(s) : D.shownBox(s)) : new THREE.Box3().setFromObject(s);
   const useHide = sh => { D.hide.clear(); (sh.hidden || []).forEach(h => D.hide.set(h.who, h)); };
   const SAMPLE = 0.1;
   const times = (sh, step = SAMPLE) => { const a = []; for (let t = sh.t0 + 0.02; t < sh.t1 - 0.03; t += step) a.push(t); a.push(sh.t1 - 0.02); return a; };
@@ -42,11 +42,11 @@ export async function run(K) {
   }
   function frameShot(sh) {                                         // what the shot must hold, over its whole length
     useHide(sh); const b = new THREE.Box3(), at = [];
-    for (const t of times(sh)) { poseT(t); const m = new THREE.Box3(); sh.who.forEach(s => m.union(boxOf(s))); (sh.extras?.(t) || []).forEach(e => m.union(e.box)); b.union(m); at.push({ t, box: m }); }
+    for (const t of times(sh)) { poseT(t); const m = new THREE.Box3(); sh.who.forEach(s => m.union(boxOf(s, sh))); (sh.extras?.(t) || []).filter(e => !(sh.faces?.length && e.onTop)).forEach(e => m.union(e.box));   /* a face shot frames the face; bubbles and labels are checked, not framed */ b.union(m); at.push({ t, box: m }); }
     sh.box = b; sh.at = at;
     // subjects that travel (a vehicle, someone running): the camera follows them instead of framing the whole trip
     const size = m => m.getSize(new THREE.Vector3()).length(), big = Math.max(...at.map(x => size(x.box)));
-    sh.track = size(b) > big * 1.8;
+    sh.track = size(b) > big * 1.8 || !!(sh.faces && sh.faces.length);   // face shots follow the face
   }
   // the box the camera frames at time t: the whole shot, or (tracking) the subjects around that moment, smoothed
   function boxAt(sh, t) {
@@ -69,7 +69,7 @@ export async function run(K) {
     useHide(sh);
     for (const t of times(sh, quick ? 0.25 : SAMPLE)) {
       poseT(t); camAt(sh, t);
-      for (const p of D.issues({ subjects: sh.who.filter(isPerson), people: S.people, props, propObjs, extras: [...(sh.extras?.(t) || []), ...(S.words?.(t) || []).filter(e => !e.subjectOnly || sh.who.includes(e.subjectOnly))] })) { out.push({ t: +t.toFixed(2), p }); if (quick) return out; }
+      for (const p of D.issues({ subjects: sh.who.filter(isPerson), people: S.people, props, propObjs, extras: [...(sh.extras?.(t) || []), ...(S.words?.(t) || []).filter(e => !e.subjectOnly || sh.who.includes(e.subjectOnly))], faces: (sh.faces || []).filter(f => sh.who.includes(f)) })) { out.push({ t: +t.toFixed(2), p }); if (quick) return out; }
     }
     return out;
   }
@@ -104,7 +104,7 @@ export async function run(K) {
     const summary = pr => [...new Set(pr.map(x => x.p))];
     for (let i = 0; i < S.shots.length; i++) {
       const sh = S.shots[i]; frameShot(sh); sh.fix = {};
-      const entry = { name: sh.name, t0: +sh.t0.toFixed(2), t1: +sh.t1.toFixed(2), found: summary(problems(sh)) };
+      const entry = { name: sh.name, t0: +sh.t0.toFixed(2), t1: +sh.t1.toFixed(2), found: summary(problems(sh)), box: sh.box.getSize(new THREE.Vector3()).toArray().map(v => +v.toFixed(2)), faces: (sh.faces || []).map(f => [D.faceBox(f).getSize(new THREE.Vector3()).toArray().map(v => +v.toFixed(2)), D.headBox(f).getSize(new THREE.Vector3()).toArray().map(v => +v.toFixed(2))]), ex: (sh.extras?.(sh.t0 + 0.5) || []).map(e => [e.label, e.box.getSize(new THREE.Vector3()).toArray().map(v => +v.toFixed(2))]), cam: (() => { poseT(sh.t0 + 0.1); const c = camAt(sh, sh.t0 + 0.1); return [+c.dist.toFixed(2), +c.fov.toFixed(1)]; })() };
       let done = entry.found.length ? tryFixes(sh, FIXES) : {};
       if (!done) { done = tryFixes(sh, ANGLE_FIXES); if (done) entry.repair_note = 'another angle'; }
       if (!done) {                                                     // fewer people: the people first, then each one alone

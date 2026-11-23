@@ -33,12 +33,12 @@ PATTERNS = ["none", "stripes", "hstripes", "pinstripe", "plaid", "dots", "zigzag
 HATS = ["none", "cap", "beret", "boonie", "pith", "helmet", "police", "hardhat", "chef", "cowboy", "beanie"]
 SKIES = ["day", "dusk", "night", "overcast", "indoor"]
 ANGLES = ["front", "low", "high", "left", "right", "over-shoulder", "top"]
-LENSES = ["wide", "medium", "close", "extreme-close"]
+LENSES = ["wide", "medium", "close", "extreme-close", "face"]
 MOVES = ["push", "pull", "crane-down", "crane-up", "orbit-left", "orbit-right", "pan", "track", "whip", "dolly-zoom",
          "snap-zoom", "hold"]
 BUBBLES = ["none", "?", "!", "$", "..."]
-MIN_SHOT, MAX_SHOT = 1.0, 3.5                               # CLAUDE.md pace: no picture under 1.0 s; engine: 2-3.5 s
-MAX_THINGS, MAX_CAST, STAGE = 30, 6, 60.0                   # metres from the centre a spot may be
+MIN_SHOT, MAX_SHOT = 1.0, 2.0                               # CLAUDE.md: no picture under 1.0 s; owner 2026-11-23: fast, like the references (a new picture every 1-2 s)
+MAX_THINGS, MAX_CAST, MAX_CALLOUTS, STAGE = 45, 10, 24, 60.0                   # metres from the centre a spot may be
 
 
 def _enum(values: list[str]) -> dict:
@@ -63,9 +63,10 @@ def schema() -> dict:
     event = obj({"from": i, "until": i, "thing": s, "do": _enum(THING_DOES), "to": spot, "path": {"type": "array", "items": spot},
                  "amount": num, "text": s})
     shot = obj({"from": i, "frame": strs, "angle": _enum(ANGLES), "lens": _enum(LENSES), "move": _enum(MOVES)})
+    callout = obj({"from": i, "until": i, "on": s, "text": s, "tone": _enum(["good", "bad", "neutral"])})
     return obj({"world": world, "things": {"type": "array", "items": thing}, "cast": {"type": "array", "items": member},
                 "beats": {"type": "array", "items": beat}, "events": {"type": "array", "items": event},
-                "shots": {"type": "array", "items": shot}})
+                "callouts": {"type": "array", "items": callout}, "shots": {"type": "array", "items": shot}})
 
 
 def instructions() -> str:
@@ -88,21 +89,35 @@ def instructions() -> str:
         "6 to 30 parts that make it recognisable, used when no library has the thing. Long things (a road, a rail "
         "line, a river, a fence, a bridge) are one thing with their real length. text: words printed on it (a sign, a "
         "screen, a newspaper) or empty. hero: true for the one or two things the story is about.\n"
-        "CAST: the people, 1 to 6, each with an id, a role (label; real people are never drawn as themselves: give a "
+        "THE PLACE IS FULL, like a real lived-in place: besides the things the story names, dress it with 10 to 25 "
+        "more things that belong there (what stands, lies, hangs and grows in such a place), so no shot shows an empty "
+        "floor or a bare wall.\n"
+        "CAST: the people, 1 to 10, each with an id, a role (label; real people are never drawn as themselves: give a "
         "role), where they start [x, z], which way they face (turn_deg, 0 = towards the viewer) and a look that fits "
-        "the role (outfit, main colour and accent hex, pattern, hat, glasses). Make each person easy to tell apart.\n"
+        "the role (outfit, main colour and accent hex, pattern, hat, glasses). Make each person easy to tell apart. "
+        "Besides the story's people, add background people who belong in the place, each busy with their own action "
+        "(working, walking past, carrying something), so the place is alive.\n"
         f"BEATS: what each person does, from word number `from` until word `until`: do is one of {', '.join(DOES)}. "
         "target is the thing or person it is done to or towards (any id) or empty; to is a spot [x, z] to walk or run "
         "to, or []; with is a thing in their hands (held, thrown, kicked, used, given) or empty. walk/run need to or a "
         "target; ride puts them on or in a thing that moves; give passes `with` to `target`; throw and kick send `with` "
         f"to `to` or `target`. A face ({', '.join(FACES)}) and a bubble (?, !, $, ... or none). Every line of the voice "
-        "has a matching action on screen; gestures (cheer, shrug, point) are reactions, never the whole story.\n"
+        "has a matching action on screen; gestures (cheer, shrug, point) are reactions, never the whole story. Act it "
+        "in detail: every person in a shot is doing something on every phrase, and the people react to each other "
+        "with big faces (shock, smug, crying, laughing) the moment something happens.\n"
         f"EVENTS: what things do, from word `from` until `until`: do is one of {', '.join(THING_DOES)}. move goes to "
         "`to` or along `path` (a list of spots); spin/shake/bend/tilt/grow/shrink use amount (degrees or times); break "
         "splits it; fall tips it over; appear/vanish; glow lights it; smoke/fire on it; text changes the words printed "
         "on it to `text`. People riding a thing move with it.\n"
-        "SHOTS: a new shot starts on the FIRST word of a phrase (use the phrase starts given). Each lasts 1.5 to 3.5 "
-        "seconds; every shot moves; never the same angle twice in a row. frame = the ids (people and things) the shot "
+        "CALLOUTS: small labels that pop up over a thing or a person on a word: a number, an amount, a price, a "
+        "name or a status from the script (at most 3 short words), tone good/bad/neutral, from word `from` until word "
+        "`until`. Use them whenever the words give a figure or a label.\n"
+        "PACE: FAST. A new picture every 1 to 2 seconds: a new shot on almost every phrase, and on every 3 to 5 words "
+        "inside long phrases. Each phrase gets its own picture of exactly what it says. Mix the sizes hard: wide "
+        "establishing views, face shots (lens face: head and shoulders) for every reaction, extreme close-ups on the "
+        "thing in action, over-the-shoulder views. Never two wide shots in a row.\n"
+        "SHOTS: a new shot starts on the FIRST word of a phrase or on a word inside it (use the phrase starts given). "
+        "Each lasts 1 to 2 seconds; every shot moves; never the same angle twice in a row. frame = the ids (people and things) the shot "
         "is about. Plan like a director: establish the place with a crane-down, a low push-in on the hero, an "
         "over-the-shoulder insert on what they look at, an extreme close-up with a snap-zoom on the key action, a whip "
         "between reactions, a dolly-zoom on the \"oh no\". Angles: " + ", ".join(ANGLES) + ". Lenses: "
@@ -277,7 +292,13 @@ def repair(board: dict, words: list[dict]) -> tuple[dict, list[str]]:
                        "text": str(e.get("text") or "")[:40]})
     b["events"] = sorted(events, key=lambda e: e["from"])
 
-    # shots: on word starts, 1.0-3.5 s, never the same angle twice in a row, framing known ids
+    b["callouts"] = sorted([{"from": clampw(c.get("from")), "until": max(clampw(c.get("from")), clampw(c.get("until") if c.get("until") is not None else c.get("from"))),
+                             "on": c["on"], "text": re.sub(r"\s+", " ", str(c.get("text") or "")).strip()[:24],
+                             "tone": _pick(c.get("tone"), ["good", "bad", "neutral"], "neutral")}
+                            for c in (b.get("callouts") or [])[:MAX_CALLOUTS] if c.get("on") in ids and str(c.get("text") or "").strip()],
+                           key=lambda c: c["from"])
+
+    # shots: on word starts, 1.0-2.0 s, never the same angle twice in a row, framing known ids
     end = words[-1]["end"]
     first = (cast[0]["id"] if cast else things[0]["id"])
     shots = []
@@ -305,7 +326,7 @@ def repair(board: dict, words: list[dict]) -> tuple[dict, list[str]]:
         out.append(s)
         cur = s
         while stop - t(cur["from"]) > MAX_SHOT:
-            nxt = next((j for j in range(cur["from"] + 1, n) if t(j) - t(cur["from"]) >= 2.2), None)
+            nxt = next((j for j in range(cur["from"] + 1, n) if t(j) - t(cur["from"]) >= 1.2), None)
             if nxt is None or stop - t(nxt) < MIN_SHOT:
                 break
             cur = {**cur, "from": nxt, "angle": ANGLES[(ANGLES.index(cur["angle"]) + 2) % 5],
