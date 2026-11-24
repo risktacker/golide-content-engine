@@ -1,0 +1,1657 @@
+{
+ "scene": "board",
+ "ok": true,
+ "stepped": [
+  "resourceful pirate gunner and hero stepped clear of wooden pirate sailing ship (dutch_ship_large_01_rigging)",
+  "smug pirate captain and mocker stepped clear of wooden pirate sailing ship (dutch_ship_large_01_rigging)",
+  "serious navy gunner stepped clear of wooden navy frigate",
+  "methodical navy sailor stepped clear of wooden navy frigate (rails)",
+  "Rodman artillery crew stepped clear of reinforced Rodman loading cart",
+  "confident iron warship crewman stepped clear of riveted iron warship (armoured hull)"
+ ],
+ "shots": [
+  {
+   "name": "1 hook front face push: The cannonball breaks the rail beside the gunner's face, with broken timber close and the mast b",
+   "t0": 0,
+   "t1": 2.48,
+   "found": [
+    "the face of resourceful pirate gunner and hero is too small for a face shot",
+    "serious navy gunner is cropped at the frame edge",
+    "cautious hotshot loader is cropped at the frame edge",
+    "methodical navy sailor is cropped at the frame edge",
+    "solid navy cannonball is hidden behind cannon and fire smoke",
+    "solid navy cannonball is hidden behind flying oak splinters",
+    "smug pirate captain and mocker is cropped at the frame edge"
+   ],
+   "box": [
+    28.07,
+    6.32,
+    3.78
+   ],
+   "faces": [
+    [
+     [
+      0.36,
+      0.72,
+      0.22
+     ],
+     [
+      0.7,
+      0.55,
+      0.73
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "a bubble",
+     [
+      0.4,
+      0.4,
+      0.4
+     ]
+    ]
+   ],
+   "cam": [
+    3.99,
+    23.9
+   ],
+   "station_dropped": [
+    "the camera is inside wooden pirate sailing ship (dutch_ship_large_01_rigging)",
+    "solid navy cannonball is hidden behind flying oak splinters",
+    "freshly broken pirate rail is hidden behind flying oak splinters",
+    "the face of resourceful pirate gunner and hero is hidden behind flying oak splinters",
+    "the view is blocked by flying oak splinters"
+   ],
+   "ok": true,
+   "kept_with": [
+    "the face of resourceful pirate gunner and hero is too small for a face shot",
+    "freshly broken pirate rail is hidden behind wooden pirate sailing ship (dutch_ship_large_01_rigging)",
+    "serious navy gunner is cropped at the frame edge",
+    "methodical navy sailor is cropped at the frame edge",
+    "cautious hotshot loader is cropped at the frame edge",
+    "solid navy cannonball is hidden behind flying oak splinters"
+   ]
+  },
+  {
+   "name": "2 hook low wide crane-up: The camera rides behind the ball through debris while the gunner ducks and the navy ship remai",
+   "t0": 2.48,
+   "t1": 4.52,
+   "found": [
+    "the camera is below the floor or above the ceiling",
+    "resourceful pirate gunner and hero is too small in the frame",
+    "solid navy cannonball is hidden behind flying oak splinters",
+    "resourceful pirate gunner and hero has their back to the camera",
+    "the heads of resourceful pirate gunner and hero and nervous pirate deckhand overlap in the frame",
+    "solid navy cannonball is hidden behind cannon and fire smoke"
+   ],
+   "box": [
+    37.41,
+    25.1,
+    20.31
+   ],
+   "faces": [],
+   "ex": [
+    [
+     "a bubble",
+     [
+      0.4,
+      0.4,
+      0.4
+     ]
+    ],
+    [
+     "the words on wooden navy frigate",
+     [
+      0,
+      2.87,
+      11.5
+     ]
+    ]
+   ],
+   "cam": [
+    8.23,
+    73.7
+   ],
+   "station_dropped": [
+    "solid navy cannonball is hidden behind flying oak splinters"
+   ],
+   "ok": true,
+   "kept_with": [
+    "resourceful pirate gunner and hero is too small in the frame",
+    "solid navy cannonball is hidden behind cannon and fire smoke",
+    "wooden navy frigate is hidden behind gunpowder barrels"
+   ]
+  },
+  {
+   "name": "3 place high wide crane-down: Rope coils lead into a broad period sea battle between the two square-rigged ships.",
+   "t0": 4.52,
+   "t1": 6.24,
+   "found": [],
+   "box": [
+    43.61,
+    26.16,
+    48.4
+   ],
+   "faces": [],
+   "ex": [
+    [
+     "the words on wooden pirate sailing ship",
+     [
+      0,
+      5.89,
+      23.58
+     ]
+    ],
+    [
+     "the words on wooden navy frigate",
+     [
+      0,
+      2.87,
+      11.5
+     ]
+    ]
+   ],
+   "cam": [
+    20.53,
+    73.7
+   ],
+   "ok": true,
+   "station": true
+  },
+  {
+   "name": "4 place right close push: The navy gunner pulls the cannon lanyard, with the barrel close and the gunport wall behind.",
+   "t0": 6.24,
+   "t1": 10.56,
+   "found": [
+    "serious navy gunner is too small in the frame",
+    "the head of serious navy gunner sits under the captions",
+    "the head of cautious hotshot loader sits under the captions",
+    "the head of methodical navy sailor sits under the captions",
+    "the face of serious navy gunner is hidden behind American fort flag",
+    "serious navy gunner has their back to the camera"
+   ],
+   "box": [
+    2.94,
+    26.78,
+    2.25
+   ],
+   "faces": [],
+   "ex": [],
+   "cam": [
+    5.83,
+    39.6
+   ],
+   "station_dropped": [
+    "serious navy gunner is out of the shot"
+   ],
+   "repair_note": "only serious navy gunner",
+   "ok": true,
+   "repair": {
+    "yawAbs": -0.4,
+    "pitchAbs": 0.1,
+    "fovK": 1,
+    "dist": 1
+   }
+  },
+  {
+   "name": "5 place front wide push: The crew shelter beneath a splinter cloud, with a bucket close and a timber rib behind.",
+   "t0": 10.56,
+   "t1": 13.95,
+   "found": [
+    "resourceful pirate gunner and hero is too small in the frame",
+    "Rodman artillery crew is cropped at the frame edge",
+    "the face of resourceful pirate gunner and hero is hidden behind choppy ocean waves",
+    "smug pirate captain and mocker has their back to the camera",
+    "nervous pirate deckhand has their back to the camera",
+    "the heads of resourceful pirate gunner and hero and nervous pirate deckhand overlap in the frame",
+    "resourceful pirate gunner and hero has their back to the camera",
+    "the face of nervous pirate deckhand is hidden behind resourceful pirate gunner and hero",
+    "calm American artillery officer is cropped at the frame edge"
+   ],
+   "box": [
+    8.65,
+    8.58,
+    4.87
+   ],
+   "faces": [],
+   "ex": [],
+   "cam": [
+    4.99,
+    73.7
+   ],
+   "station_dropped": [
+    "the camera is inside wooden pirate sailing ship (dutch_ship_large_01_rigging)",
+    "resourceful pirate gunner and hero is out of the shot",
+    "smug pirate captain and mocker is out of the shot",
+    "nervous pirate deckhand is out of the shot"
+   ],
+   "ok": true,
+   "kept_with": [
+    "resourceful pirate gunner and hero is too small in the frame",
+    "smug pirate captain and mocker is too small in the frame",
+    "resourceful pirate gunner and hero has their back to the camera"
+   ]
+  },
+  {
+   "name": "6 setup left medium pan: The pirates ram a bulging junk sack into their cannon with the mast behind.",
+   "t0": 13.95,
+   "t1": 16.64,
+   "found": [
+    "resourceful pirate gunner and hero is too small in the frame",
+    "the head of smug pirate captain and mocker sits under the captions",
+    "nervous pirate deckhand is too small in the frame",
+    "resourceful pirate gunner and hero has their back to the camera"
+   ],
+   "box": [
+    3.08,
+    25.58,
+    4.35
+   ],
+   "faces": [],
+   "ex": [],
+   "cam": [
+    4.12,
+    54.4
+   ],
+   "station_dropped": [
+    "resourceful pirate gunner and hero is out of the shot",
+    "nervous pirate deckhand is out of the shot"
+   ],
+   "repair_note": "only resourceful pirate gunner and hero",
+   "ok": true,
+   "repair": {
+    "yawAbs": 1.5,
+    "pitchAbs": 0.1,
+    "fovK": 1,
+    "dist": 1
+   }
+  },
+  {
+   "name": "7 setup low wide pan: A cone of literal garbage blasts toward the navy ship, with airborne junk nearest the lens.",
+   "t0": 16.64,
+   "t1": 18.8,
+   "found": [
+    "the head of serious navy gunner sits under the captions",
+    "the words on wooden navy frigate is cropped at the frame edge",
+    "the words on wooden navy frigate is covered by the head of serious navy gunner",
+    "the heads of cautious hotshot loader and confident iron warship crewman overlap in the frame"
+   ],
+   "box": [
+    37.63,
+    25.11,
+    20.31
+   ],
+   "faces": [],
+   "ex": [
+    [
+     "the words on wooden navy frigate",
+     [
+      0,
+      2.87,
+      11.5
+     ]
+    ]
+   ],
+   "cam": [
+    12.62,
+    73.7
+   ],
+   "ok": true,
+   "station": true,
+   "kept_with": [
+    "the head of serious navy gunner sits under the captions",
+    "the words on wooden navy frigate is cropped at the frame edge",
+    "the words on wooden navy frigate is covered by the head of serious navy gunner",
+    "the heads of cautious hotshot loader and confident iron warship crewman overlap in the frame"
+   ]
+  },
+  {
+   "name": "8 turn right close crane-up: Long tongs lift a ball from the furnace while heat bends the view of the cannon behind.",
+   "t0": 18.8,
+   "t1": 19.84,
+   "found": [
+    "the view is blocked by wooden navy frigate (rails)",
+    "serious navy gunner is cropped at the frame edge",
+    "the heads of cautious hotshot loader and methodical navy sailor overlap in the frame",
+    "cautious hotshot loader has their back to the camera",
+    "glowing hotshot ball is hidden behind wooden navy frigate (rails)",
+    "the face of cautious hotshot loader is hidden behind airborne literal garbage",
+    "long hotshot tongs is hidden behind cannon and fire smoke",
+    "the view is blocked by cannon and fire smoke",
+    "the face of cautious hotshot loader is hidden behind cannon and fire smoke",
+    "glowing hotshot ball is hidden behind cannon and fire smoke",
+    "the head of methodical navy sailor sits under the captions"
+   ],
+   "box": [
+    2.16,
+    4.84,
+    2.16
+   ],
+   "faces": [],
+   "ex": [
+    [
+     "the words on glowing hotshot ball",
+     [
+      0.32,
+      0.08,
+      0
+     ]
+    ]
+   ],
+   "cam": [
+    3.59,
+    39.6
+   ],
+   "station_dropped": [
+    "the camera is inside airborne literal garbage",
+    "cautious hotshot loader is out of the shot"
+   ],
+   "repair_note": "only cautious hotshot loader",
+   "ok": true,
+   "repair": {
+    "yawAbs": -2.2,
+    "pitchAbs": 0.12,
+    "fovK": 1.2,
+    "dist": 1
+   }
+  },
+  {
+   "name": "9 turn front extreme-close crane-up: The red hotshot hangs centre-frame in tongs, reflected in the gunner's eyes.",
+   "t0": 19.84,
+   "t1": 21,
+   "found": [
+    "serious navy gunner has their back to the camera",
+    "the view is blocked by cannon and fire smoke",
+    "glowing hotshot ball is hidden behind cannon and fire smoke",
+    "navy hotshot furnace is hidden behind cannon and fire smoke",
+    "the face of serious navy gunner is hidden behind cannon and fire smoke"
+   ],
+   "box": [
+    4.01,
+    4.57,
+    3.93
+   ],
+   "faces": [],
+   "ex": [
+    [
+     "the words on glowing hotshot ball",
+     [
+      0.32,
+      0.08,
+      0
+     ]
+    ],
+    [
+     "the words on navy hotshot furnace",
+     [
+      1.37,
+      0.34,
+      0
+     ]
+    ],
+    [
+     "the label HOTSHOT",
+     [
+      0.88,
+      0.3,
+      0.05
+     ]
+    ]
+   ],
+   "cam": [
+    1.99,
+    23.9
+   ],
+   "station_dropped": [
+    "the camera is inside airborne literal garbage",
+    "serious navy gunner is out of the shot"
+   ],
+   "repair_note": "another angle",
+   "ok": true,
+   "repair": {
+    "yawAbs": 0.9,
+    "pitchAbs": 0.1,
+    "fovK": 1,
+    "dist": 1
+   }
+  },
+  {
+   "name": "10 explain right medium track: The loader rakes black cannonballs into the furnace while the gunner checks the timer.",
+   "t0": 21,
+   "t1": 22.56,
+   "found": [
+    "the view is blocked by wooden navy frigate (rails)",
+    "serious navy gunner is cropped at the frame edge",
+    "the face of cautious hotshot loader is hidden behind wooden navy frigate (rails)",
+    "cautious hotshot loader has their back to the camera",
+    "the heads of cautious hotshot loader and methodical navy sailor overlap in the frame",
+    "the face of cautious hotshot loader is hidden behind methodical navy sailor",
+    "methodical navy sailor is cropped at the frame edge"
+   ],
+   "box": [
+    2.36,
+    4.94,
+    3.34
+   ],
+   "faces": [],
+   "ex": [
+    [
+     "the words on navy hotshot furnace",
+     [
+      1.37,
+      0.34,
+      0
+     ]
+    ],
+    [
+     "the words on glowing hotshot ball",
+     [
+      0.32,
+      0.08,
+      0
+     ]
+    ],
+    [
+     "the label HOTSHOT",
+     [
+      0.88,
+      0.3,
+      0.05
+     ]
+    ]
+   ],
+   "cam": [
+    2.88,
+    54.4
+   ],
+   "station_dropped": [
+    "the view is blocked by airborne literal garbage",
+    "the camera is inside airborne literal garbage",
+    "the face of cautious hotshot loader is hidden behind airborne literal garbage",
+    "glowing hotshot ball is hidden behind airborne literal garbage",
+    "navy hotshot furnace is hidden behind airborne literal garbage"
+   ],
+   "repair_note": "another angle",
+   "ok": true,
+   "repair": {
+    "yawAbs": 1.5,
+    "pitchAbs": 0.1,
+    "fovK": 1.4,
+    "dist": 1.15
+   }
+  },
+  {
+   "name": "11 explain front extreme-close track: Inside the furnace, three balls glow red beside the rising heat scale.",
+   "t0": 22.56,
+   "t1": 23.76,
+   "found": [
+    "the camera is inside wooden navy frigate",
+    "cautious hotshot loader is cropped at the frame edge"
+   ],
+   "box": [
+    2.18,
+    4.56,
+    3.54
+   ],
+   "faces": [],
+   "ex": [
+    [
+     "the words on glowing hotshot ball",
+     [
+      0.32,
+      0.08,
+      0
+     ]
+    ],
+    [
+     "the words on navy hotshot furnace",
+     [
+      1.37,
+      0.34,
+      0
+     ]
+    ]
+   ],
+   "cam": [
+    1,
+    23.9
+   ],
+   "station_dropped": [
+    "the camera is inside airborne literal garbage"
+   ],
+   "ok": true,
+   "kept_with": [
+    "cautious hotshot loader is cropped at the frame edge"
+   ]
+  },
+  {
+   "name": "12 explain over-shoulder close track: The wet wad enters the cannon before the loader lowers the glowing ball.",
+   "t0": 23.76,
+   "t1": 27.44,
+   "found": [
+    "the view is blocked by navy hotshot furnace",
+    "the camera is inside distant square-rigged ships",
+    "the words on soaking wet cannon plug is covered by the head of serious navy gunner",
+    "the face of cautious hotshot loader is hidden behind wooden navy frigate (stern)",
+    "the face of serious navy gunner is hidden behind hotshot furnace door",
+    "cautious hotshot loader has their back to the camera",
+    "serious navy gunner has their back to the camera",
+    "soaking wet cannon plug is hidden behind hotshot furnace door",
+    "the view is blocked by distant square-rigged ships",
+    "the face of cautious hotshot loader is hidden behind distant square-rigged ships",
+    "the face of serious navy gunner is hidden behind distant square-rigged ships",
+    "soaking wet cannon plug is hidden behind distant square-rigged ships",
+    "glowing hotshot ball is hidden behind distant square-rigged ships",
+    "the head of serious navy gunner sits under the captions",
+    "the view is blocked by hotshot furnace door"
+   ],
+   "box": [
+    3.71,
+    6.6,
+    2.64
+   ],
+   "faces": [],
+   "ex": [
+    [
+     "the words on soaking wet cannon plug",
+     [
+      0.23,
+      0.08,
+      0.23
+     ]
+    ],
+    [
+     "the words on glowing hotshot ball",
+     [
+      0.32,
+      0.08,
+      0
+     ]
+    ],
+    [
+     "the label WET PLUG",
+     [
+      0.96,
+      0.3,
+      0.05
+     ]
+    ]
+   ],
+   "cam": [
+    3.6,
+    39.6
+   ],
+   "station_moved": [
+    6.6,
+    7.2,
+    -4.4
+   ],
+   "station_dropped": [
+    "serious navy gunner is out of the shot",
+    "cautious hotshot loader is cut by the camera"
+   ],
+   "repair_note": "another angle",
+   "ok": true,
+   "repair": {
+    "yawAbs": 0,
+    "pitchAbs": 0.25,
+    "fovK": 1.4,
+    "dist": 1.15
+   }
+  },
+  {
+   "name": "13 explain left extreme-close track: The cannon cutaway shows dark powder, wet barrier and red ball in separate layers.",
+   "t0": 27.44,
+   "t1": 28.88,
+   "found": [],
+   "box": [
+    4.2,
+    26.62,
+    1.86
+   ],
+   "faces": [],
+   "ex": [
+    [
+     "the words on soaking wet cannon plug",
+     [
+      0.23,
+      0.08,
+      0.23
+     ]
+    ],
+    [
+     "the words on glowing hotshot ball",
+     [
+      0.32,
+      0.08,
+      0
+     ]
+    ]
+   ],
+   "cam": [
+    2.23,
+    23.9
+   ],
+   "ok": true,
+   "station": true
+  },
+  {
+   "name": "14 climax low close track: The camera follows the red ball into breaking pirate planks and between two ribs.",
+   "t0": 28.88,
+   "t1": 31.24,
+   "found": [
+    "the camera is below the floor or above the ceiling",
+    "methodical navy sailor is cropped at the frame edge",
+    "the heads of resourceful pirate gunner and hero and nervous pirate deckhand overlap in the frame"
+   ],
+   "box": [
+    36.52,
+    24.23,
+    26.35
+   ],
+   "faces": [],
+   "ex": [
+    [
+     "the words on glowing hotshot ball",
+     [
+      0.32,
+      0.08,
+      0.02
+     ]
+    ],
+    [
+     "the words on wooden pirate sailing ship",
+     [
+      0,
+      5.89,
+      23.58
+     ]
+    ]
+   ],
+   "cam": [
+    6.39,
+    39.6
+   ],
+   "station_dropped": [
+    "the view is blocked by flying oak splinters",
+    "wooden pirate sailing ship is hidden behind flying oak splinters"
+   ],
+   "ok": true,
+   "repair": {
+    "fovK": 1.35,
+    "yaw": -0.5,
+    "pitch": 0.1
+   }
+  },
+  {
+   "name": "15 climax front extreme-close track: Inside the hull, tarred rope touches the embedded ball and the navy ship appears th",
+   "t0": 31.24,
+   "t1": 34.64,
+   "found": [
+    "the camera is inside wooden pirate sailing ship (dutch_ship_large_01_rigging)",
+    "cautious hotshot loader is cropped at the frame edge",
+    "the head of cautious hotshot loader sits under the captions",
+    "the head of methodical navy sailor sits under the captions",
+    "the words on wooden navy frigate is cropped at the frame edge",
+    "tarred rope bundle is hidden behind wooden pirate sailing ship (dutch_ship_large_01_sails)",
+    "tarred rope bundle is hidden behind flying oak splinters"
+   ],
+   "box": [
+    38.95,
+    25.12,
+    20.31
+   ],
+   "faces": [],
+   "ex": [
+    [
+     "the words on glowing hotshot ball",
+     [
+      0.32,
+      0.08,
+      0.02
+     ]
+    ],
+    [
+     "the words on wooden navy frigate",
+     [
+      0,
+      2.87,
+      11.5
+     ]
+    ]
+   ],
+   "cam": [
+    1.12,
+    23.9
+   ],
+   "station_dropped": [
+    "the view is blocked by flying oak splinters",
+    "the camera is inside wooden pirate sailing ship (dutch_ship_large_01_rigging)",
+    "glowing hotshot ball is hidden behind tarred rope bundle",
+    "wooden navy frigate is hidden behind tarred rope bundle",
+    "wooden navy frigate is hidden behind cannon and fire smoke"
+   ],
+   "ok": true,
+   "kept_with": [
+    "the camera is inside wooden pirate sailing ship (dutch_ship_large_01_rigging)",
+    "the head of cautious hotshot loader sits under the captions",
+    "the words on wooden navy frigate is cropped at the frame edge",
+    "tarred rope bundle is hidden behind wooden pirate sailing ship (dutch_ship_large_01_sails)",
+    "the head of methodical navy sailor sits under the captions",
+    "tarred rope bundle is hidden behind flying oak splinters"
+   ]
+  },
+  {
+   "name": "16 climax low wide snap-zoom: The camera exits the hole as internal flames silhouette the pirate hull and bucket crew.",
+   "t0": 34.64,
+   "t1": 37,
+   "found": [
+    "the camera is below the floor or above the ceiling",
+    "resourceful pirate gunner and hero is too small in the frame",
+    "smug pirate captain and mocker is too small in the frame",
+    "resourceful pirate gunner and hero has their back to the camera",
+    "the face of smug pirate captain and mocker is hidden behind wooden pirate sailing ship (dutch_ship_large_01_rigging)",
+    "methodical navy sailor is cropped at the frame edge"
+   ],
+   "box": [
+    36.5,
+    24.41,
+    26.02
+   ],
+   "faces": [],
+   "ex": [
+    [
+     "the words on wooden pirate sailing ship",
+     [
+      0,
+      5.89,
+      23.58
+     ]
+    ],
+    [
+     "the words on glowing hotshot ball",
+     [
+      0.32,
+      0.08,
+      0.02
+     ]
+    ]
+   ],
+   "cam": [
+    11.16,
+    73.7
+   ],
+   "station_moved": [
+    -29.5,
+    8,
+    -9
+   ],
+   "station_dropped": [
+    "the view is blocked by cannon and fire smoke",
+    "the face of smug pirate captain and mocker is hidden behind wooden pirate sailing ship (dutch_ship_large_01_sails)"
+   ],
+   "ok": true,
+   "kept_with": [
+    "resourceful pirate gunner and hero is too small in the frame",
+    "smug pirate captain and mocker is too small in the frame",
+    "the face of smug pirate captain and mocker is hidden behind wooden pirate sailing ship (dutch_ship_large_01_rigging)"
+   ]
+  },
+  {
+   "name": "17 turn right close crane-up: The gunner rotates the perforated shell above the pitch pot and cannon breech.",
+   "t0": 37,
+   "t1": 38.96,
+   "found": [
+    "resourceful pirate gunner and hero is too small in the frame",
+    "the head of smug pirate captain and mocker sits under the captions",
+    "the heads of resourceful pirate gunner and hero and nervous pirate deckhand overlap in the frame"
+   ],
+   "box": [
+    3.51,
+    24.71,
+    4.58
+   ],
+   "faces": [],
+   "ex": [
+    [
+     "the words on pirate carcass shell",
+     [
+      0.3,
+      0.08,
+      0
+     ]
+    ],
+    [
+     "the words on burning tar pitch pot",
+     [
+      0.64,
+      0.16,
+      0
+     ]
+    ],
+    [
+     "the label CARCASS",
+     [
+      0.9,
+      0.3,
+      0.05
+     ]
+    ]
+   ],
+   "cam": [
+    2.82,
+    39.6
+   ],
+   "station_dropped": [
+    "resourceful pirate gunner and hero is out of the shot"
+   ],
+   "ok": true,
+   "kept_with": [
+    "the head of smug pirate captain and mocker sits under the captions"
+   ]
+  },
+  {
+   "name": "18 explain front extreme-close track: A cutaway shows the carcass shell's hollow cavity, vents and cap in the gunner's h",
+   "t0": 38.96,
+   "t1": 41.04,
+   "found": [
+    "the camera is inside wooden pirate sailing ship"
+   ],
+   "box": [
+    1.24,
+    1.78,
+    0.73
+   ],
+   "faces": [],
+   "ex": [
+    [
+     "the words on pirate carcass shell",
+     [
+      0.3,
+      0.08,
+      0
+     ]
+    ],
+    [
+     "the label CARCASS",
+     [
+      0.9,
+      0.3,
+      0.05
+     ]
+    ]
+   ],
+   "cam": [
+    1,
+    23.9
+   ],
+   "station_dropped": [
+    "resourceful pirate gunner and hero is out of the shot"
+   ],
+   "ok": true,
+   "repair": {
+    "yaw": 0.12,
+    "pitch": 0
+   }
+  },
+  {
+   "name": "19 explain left close track: The gunner pours tar into the shell while the deckhand holds it in sand.",
+   "t0": 41.04,
+   "t1": 44.64,
+   "found": [
+    "burning tar pitch pot is hidden behind freshly broken pirate rail",
+    "pirate carcass shell is hidden behind freshly broken pirate rail"
+   ],
+   "box": [
+    2.5,
+    1.82,
+    1.92
+   ],
+   "faces": [],
+   "ex": [
+    [
+     "the words on burning tar pitch pot",
+     [
+      0.64,
+      0.16,
+      0
+     ]
+    ],
+    [
+     "the words on pirate carcass shell",
+     [
+      0.3,
+      0.08,
+      0
+     ]
+    ]
+   ],
+   "cam": [
+    2.84,
+    39.6
+   ],
+   "station_moved": [
+    -21.6,
+    7.44,
+    -5.6
+   ],
+   "station_dropped": [
+    "resourceful pirate gunner and hero is out of the shot",
+    "nervous pirate deckhand is out of the shot"
+   ],
+   "ok": true,
+   "repair": {
+    "yaw": 0.12,
+    "pitch": 0.1
+   }
+  },
+  {
+   "name": "20 explain low wide track: The navy ship burns like a mast-high torch while one sailor continues mopping.",
+   "t0": 44.64,
+   "t1": 45.89,
+   "found": [
+    "the camera is below the floor or above the ceiling",
+    "methodical navy sailor is too small in the frame",
+    "calm American artillery officer is cropped at the frame edge",
+    "Rodman artillery crew is cropped at the frame edge",
+    "the face of methodical navy sailor is hidden behind wooden navy frigate (rails)",
+    "methodical navy sailor has their back to the camera",
+    "confident iron warship crewman is cropped at the frame edge",
+    "the heads of resourceful pirate gunner and hero and nervous pirate deckhand overlap in the frame",
+    "pirate carcass shell is hidden behind choppy ocean waves",
+    "the view is blocked by cannon and fire smoke"
+   ],
+   "box": [
+    46.99,
+    25.08,
+    35.49
+   ],
+   "faces": [],
+   "ex": [
+    [
+     "the words on wooden navy frigate",
+     [
+      0,
+      2.87,
+      11.5
+     ]
+    ],
+    [
+     "the words on pirate carcass shell",
+     [
+      0.3,
+      0.08,
+      0
+     ]
+    ]
+   ],
+   "cam": [
+    13.1,
+    73.7
+   ],
+   "station_dropped": [
+    "the camera is inside cannon and fire smoke",
+    "methodical navy sailor is out of the shot",
+    "the face of methodical navy sailor is hidden behind airborne literal garbage"
+   ],
+   "ok": true,
+   "kept_with": [
+    "methodical navy sailor is too small in the frame",
+    "calm American artillery officer is cropped at the frame edge",
+    "Rodman artillery crew is cropped at the frame edge",
+    "methodical navy sailor has their back to the camera"
+   ]
+  },
+  {
+   "name": "21 place high wide crane-down: The cool iron warship slides before the burning wooden vessel and blocks the flames.",
+   "t0": 45.89,
+   "t1": 47.76,
+   "found": [
+    "the words on riveted iron warship is covered by the head of confident iron warship crewman",
+    "the words on wooden navy frigate is covered by the head of cautious hotshot loader",
+    "the words on wooden navy frigate is covered by the head of methodical navy sailor",
+    "riveted iron warship is hidden behind Rodman-torn armour plate",
+    "riveted iron warship is hidden behind iron armour plate section"
+   ],
+   "box": [
+    54.42,
+    25.12,
+    20.31
+   ],
+   "faces": [],
+   "ex": [
+    [
+     "the words on riveted iron warship",
+     [
+      10.87,
+      2.72,
+      0
+     ]
+    ],
+    [
+     "the words on wooden navy frigate",
+     [
+      0,
+      2.87,
+      11.5
+     ]
+    ]
+   ],
+   "cam": [
+    12.38,
+    73.7
+   ],
+   "station_dropped": [
+    "riveted iron warship is hidden behind iron armour plate section"
+   ],
+   "ok": true,
+   "kept_with": [
+    "the words on riveted iron warship is covered by the head of confident iron warship crewman"
+   ]
+  },
+  {
+   "name": "22 place front close push: The material display shows oak collapsing while riveted iron remains straight.",
+   "t0": 47.76,
+   "t1": 49.12,
+   "found": [
+    "calm American artillery officer is too small in the frame",
+    "the words on riveted iron warship is covered by the head of confident iron warship crewman",
+    "the face of calm American artillery officer is hidden behind stone coastal battery (magazine)"
+   ],
+   "box": [
+    18.61,
+    14.16,
+    20.92
+   ],
+   "faces": [],
+   "ex": [
+    [
+     "the words on wood versus iron test display",
+     [
+      0.44,
+      0.11,
+      0
+     ]
+    ],
+    [
+     "the words on iron armour plate section",
+     [
+      4.6,
+      1.15,
+      0
+     ]
+    ],
+    [
+     "the words on riveted iron warship",
+     [
+      10.87,
+      2.72,
+      0
+     ]
+    ],
+    [
+     "the label IRON",
+     [
+      2.65,
+      1.5,
+      0.05
+     ]
+    ]
+   ],
+   "cam": [
+    4.46,
+    39.6
+   ],
+   "station_dropped": [
+    "the face of calm American artillery officer is hidden behind stone coastal battery (parapet)",
+    "iron armour plate section is hidden behind riveted iron warship (casemate)",
+    "calm American artillery officer is out of the shot"
+   ],
+   "ok": true,
+   "kept_with": [
+    "calm American artillery officer is too small in the frame",
+    "the words on riveted iron warship is covered by the head of confident iron warship crewman"
+   ]
+  },
+  {
+   "name": "23 place right medium push: The carcass shell squashes against iron and drops as the iron crewman shrugs.",
+   "t0": 49.12,
+   "t1": 54,
+   "found": [
+    "confident iron warship crewman is too small in the frame",
+    "the heads of resourceful pirate gunner and hero and nervous pirate deckhand overlap in the frame",
+    "the heads of cautious hotshot loader and methodical navy sailor overlap in the frame",
+    "the words on riveted iron warship is covered by the head of confident iron warship crewman",
+    "the face of confident iron warship crewman is hidden behind stone coastal battery (parapet)",
+    "iron armour plate section is hidden behind Rodman-torn armour plate",
+    "confident iron warship crewman has their back to the camera"
+   ],
+   "box": [
+    65.49,
+    14.16,
+    9.06
+   ],
+   "faces": [],
+   "ex": [
+    [
+     "the words on iron armour plate section",
+     [
+      4.6,
+      1.15,
+      0
+     ]
+    ],
+    [
+     "the words on riveted iron warship",
+     [
+      10.87,
+      2.72,
+      0
+     ]
+    ]
+   ],
+   "cam": [
+    6.4,
+    54.4
+   ],
+   "station_dropped": [
+    "confident iron warship crewman is out of the shot",
+    "the face of confident iron warship crewman is hidden behind riveted iron warship (part)"
+   ],
+   "ok": true,
+   "kept_with": [
+    "confident iron warship crewman is too small in the frame",
+    "the face of confident iron warship crewman is hidden behind riveted iron warship (part)"
+   ]
+  },
+  {
+   "name": "24 climax left medium track: Six crewmen roll the single giant ball toward the Rodman muzzle beneath a ONE board.",
+   "t0": 54,
+   "t1": 55.68,
+   "found": [
+    "Rodman artillery crew is too small in the frame",
+    "the face of Rodman artillery crew is hidden behind stone coastal battery (magazine)",
+    "one-thousand-pound Rodman ball is hidden behind stone coastal battery (magazine)",
+    "Rodman gun is hidden behind stone coastal battery (magazine)",
+    "confident iron warship crewman is cropped at the frame edge",
+    "calm American artillery officer is cropped at the frame edge"
+   ],
+   "box": [
+    5.61,
+    6.34,
+    7.79
+   ],
+   "faces": [],
+   "ex": [
+    [
+     "the words on one-thousand-pound Rodman ball",
+     [
+      0.74,
+      0.19,
+      0
+     ]
+    ],
+    [
+     "the words on Rodman gun",
+     [
+      2.56,
+      0.64,
+      0
+     ]
+    ],
+    [
+     "the label 1000+ LB",
+     [
+      1.07,
+      0.36,
+      0.05
+     ]
+    ]
+   ],
+   "cam": [
+    5.73,
+    54.4
+   ],
+   "station_dropped": [
+    "the view is blocked by stone coastal battery (parapet)",
+    "the face of Rodman artillery crew is hidden behind stone coastal battery (parapet)",
+    "one-thousand-pound Rodman ball is hidden behind stone coastal battery (parapet)",
+    "Rodman gun is hidden behind stone coastal battery (parapet)"
+   ],
+   "repair_note": "another angle",
+   "ok": true,
+   "repair": {
+    "yawAbs": 0,
+    "pitchAbs": 0.06,
+    "fovK": 1.2,
+    "dist": 1.15
+   }
+  },
+  {
+   "name": "25 climax high close track: The 1,000-pound scale and crushed cart fill the foreground while the crew lean into the ramm",
+   "t0": 55.68,
+   "t1": 60.06,
+   "found": [
+    "the words on one-thousand-pound hanging scale is covered by the head of calm American artillery officer",
+    "one-thousand-pound hanging scale is hidden behind stone coastal battery (magazine)",
+    "one-thousand-pound Rodman ball is hidden behind Rodman carriage wheel",
+    "the head of calm American artillery officer sits under the captions",
+    "Rodman artillery crew is too small in the frame",
+    "one-thousand-pound Rodman ball is hidden behind riveted iron warship (armoured hull)"
+   ],
+   "box": [
+    14.31,
+    6.69,
+    14.93
+   ],
+   "faces": [],
+   "ex": [
+    [
+     "the words on one-thousand-pound hanging scale",
+     [
+      2.76,
+      0.69,
+      0
+     ]
+    ],
+    [
+     "the words on one-thousand-pound Rodman ball",
+     [
+      0.18,
+      0.19,
+      0.72
+     ]
+    ]
+   ],
+   "cam": [
+    5.83,
+    39.6
+   ],
+   "station_dropped": [
+    "the view is blocked by stone coastal battery (parapet)",
+    "the face of Rodman artillery crew is hidden behind stone coastal battery (parapet)",
+    "one-thousand-pound hanging scale is hidden behind stone coastal battery (parapet)",
+    "one-thousand-pound Rodman ball is hidden behind stone coastal battery (parapet)",
+    "one-thousand-pound Rodman ball is hidden behind wood versus iron test display",
+    "one-thousand-pound Rodman ball is hidden behind riveted iron warship (casemate)",
+    "one-thousand-pound Rodman ball is hidden behind riveted iron warship (armoured hull)",
+    "one-thousand-pound Rodman ball is hidden behind riveted iron warship (part)"
+   ],
+   "ok": true,
+   "kept_with": [
+    "one-thousand-pound Rodman ball is hidden behind Rodman carriage wheel",
+    "the view is blocked by Rodman carriage wheel",
+    "the head of calm American artillery officer sits under the captions",
+    "one-thousand-pound Rodman ball is hidden behind stone coastal battery (part)",
+    "one-thousand-pound Rodman ball is hidden behind stone coastal battery (parapet)",
+    "Rodman artillery crew is too small in the frame",
+    "one-thousand-pound Rodman ball is hidden behind riveted iron warship (armoured hull)"
+   ]
+  }
+ ],
+ "decisions": [
+  {
+   "i": 0,
+   "fix": {
+    "dist": 1.22
+   },
+   "who": [
+    0,
+    1,
+    2
+   ],
+   "nostation": true
+  },
+  {
+   "i": 1,
+   "fix": {
+    "yawAbs": -1.5,
+    "pitchAbs": 0.1,
+    "fovK": 1.4,
+    "dist": 1.15
+   },
+   "who": [
+    0,
+    1,
+    2
+   ],
+   "nostation": true
+  },
+  {
+   "i": 2,
+   "fix": {},
+   "who": [
+    0,
+    1,
+    2
+   ]
+  },
+  {
+   "i": 3,
+   "fix": {
+    "yawAbs": -0.4,
+    "pitchAbs": 0.1,
+    "fovK": 1,
+    "dist": 1
+   },
+   "who": [
+    0
+   ],
+   "nostation": true
+  },
+  {
+   "i": 4,
+   "fix": {
+    "yawAbs": -0.4,
+    "pitchAbs": 0.1,
+    "fovK": 1.4,
+    "dist": 1
+   },
+   "who": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "nostation": true
+  },
+  {
+   "i": 5,
+   "fix": {
+    "yawAbs": 1.5,
+    "pitchAbs": 0.1,
+    "fovK": 1,
+    "dist": 1
+   },
+   "who": [
+    0
+   ],
+   "nostation": true
+  },
+  {
+   "i": 6,
+   "fix": {},
+   "who": [
+    0,
+    1,
+    2
+   ]
+  },
+  {
+   "i": 7,
+   "fix": {
+    "yawAbs": -2.2,
+    "pitchAbs": 0.12,
+    "fovK": 1.2,
+    "dist": 1
+   },
+   "who": [
+    0
+   ],
+   "nostation": true
+  },
+  {
+   "i": 8,
+   "fix": {
+    "yawAbs": 0.9,
+    "pitchAbs": 0.1,
+    "fovK": 1,
+    "dist": 1
+   },
+   "who": [
+    0,
+    1,
+    2
+   ],
+   "nostation": true
+  },
+  {
+   "i": 9,
+   "fix": {
+    "yawAbs": 1.5,
+    "pitchAbs": 0.1,
+    "fovK": 1.4,
+    "dist": 1.15
+   },
+   "who": [
+    0,
+    1,
+    2
+   ],
+   "nostation": true
+  },
+  {
+   "i": 10,
+   "fix": {
+    "dist": 1.1
+   },
+   "who": [
+    0,
+    1
+   ],
+   "nostation": true
+  },
+  {
+   "i": 11,
+   "fix": {
+    "yawAbs": 0,
+    "pitchAbs": 0.25,
+    "fovK": 1.4,
+    "dist": 1.15
+   },
+   "who": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "nostation": true
+  },
+  {
+   "i": 12,
+   "fix": {},
+   "who": [
+    0,
+    1,
+    2
+   ]
+  },
+  {
+   "i": 13,
+   "fix": {
+    "fovK": 1.35,
+    "yaw": -0.5,
+    "pitch": 0.1
+   },
+   "who": [
+    0,
+    1
+   ],
+   "nostation": true
+  },
+  {
+   "i": 14,
+   "fix": {
+    "yawAbs": 0,
+    "pitchAbs": 0.06,
+    "fovK": 1.4,
+    "dist": 1
+   },
+   "who": [
+    0,
+    1,
+    2
+   ],
+   "nostation": true
+  },
+  {
+   "i": 15,
+   "fix": {
+    "yawAbs": -0.4,
+    "pitchAbs": 0.1,
+    "fovK": 1,
+    "dist": 1
+   },
+   "who": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "nostation": true
+  },
+  {
+   "i": 16,
+   "fix": {
+    "yawAbs": -0.4,
+    "pitchAbs": 0.1,
+    "fovK": 1.4,
+    "dist": 1
+   },
+   "who": [
+    0,
+    1,
+    2
+   ],
+   "nostation": true
+  },
+  {
+   "i": 17,
+   "fix": {
+    "yaw": 0.12,
+    "pitch": 0
+   },
+   "who": [
+    0,
+    1
+   ],
+   "nostation": true
+  },
+  {
+   "i": 18,
+   "fix": {
+    "yaw": 0.12,
+    "pitch": 0.1
+   },
+   "who": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "nostation": true
+  },
+  {
+   "i": 19,
+   "fix": {
+    "yaw": -0.12,
+    "pitch": 0.1
+   },
+   "who": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "nostation": true
+  },
+  {
+   "i": 20,
+   "fix": {
+    "yawAbs": 0,
+    "pitchAbs": 0.06,
+    "fovK": 1,
+    "dist": 1
+   },
+   "who": [
+    0,
+    1
+   ],
+   "nostation": true
+  },
+  {
+   "i": 21,
+   "fix": {
+    "yaw": 0.24,
+    "pitch": 0
+   },
+   "who": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "nostation": true
+  },
+  {
+   "i": 22,
+   "fix": {
+    "yawAbs": 3.141592653589793,
+    "pitchAbs": 0.12,
+    "fovK": 1,
+    "dist": 1.15
+   },
+   "who": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "nostation": true
+  },
+  {
+   "i": 23,
+   "fix": {
+    "yawAbs": 0,
+    "pitchAbs": 0.06,
+    "fovK": 1.2,
+    "dist": 1.15
+   },
+   "who": [
+    0,
+    1,
+    2
+   ],
+   "nostation": true
+  },
+  {
+   "i": 24,
+   "fix": {
+    "yaw": 0.12,
+    "pitch": 0.1
+   },
+   "who": [
+    0,
+    1,
+    2
+   ],
+   "nostation": true
+  }
+ ],
+ "warnings": [
+  "1 hook front face push: The cannonball breaks the rail beside the gunner's face, with broken timber close and the mast b: the face of resourceful pirate gunner and hero is too small for a face shot; freshly broken pirate rail is hidden behind wooden pirate sailing ship (dutch_ship_large_01_rigging); serious navy gunner is cropped at the frame edge; methodical navy sailor is cropped at the frame edge; cautious hotshot loader is cropped at the frame edge; solid navy cannonball is hidden behind flying oak splinters",
+  "2 hook low wide crane-up: The camera rides behind the ball through debris while the gunner ducks and the navy ship remai: resourceful pirate gunner and hero is too small in the frame; solid navy cannonball is hidden behind cannon and fire smoke; wooden navy frigate is hidden behind gunpowder barrels",
+  "5 place front wide push: The crew shelter beneath a splinter cloud, with a bucket close and a timber rib behind.: resourceful pirate gunner and hero is too small in the frame; smug pirate captain and mocker is too small in the frame; resourceful pirate gunner and hero has their back to the camera",
+  "7 setup low wide pan: A cone of literal garbage blasts toward the navy ship, with airborne junk nearest the lens.: the head of serious navy gunner sits under the captions; the words on wooden navy frigate is cropped at the frame edge; the words on wooden navy frigate is covered by the head of serious navy gunner; the heads of cautious hotshot loader and confident iron warship crewman overlap in the frame",
+  "11 explain front extreme-close track: Inside the furnace, three balls glow red beside the rising heat scale.: cautious hotshot loader is cropped at the frame edge",
+  "15 climax front extreme-close track: Inside the hull, tarred rope touches the embedded ball and the navy ship appears th: the camera is inside wooden pirate sailing ship (dutch_ship_large_01_rigging); the head of cautious hotshot loader sits under the captions; the words on wooden navy frigate is cropped at the frame edge; tarred rope bundle is hidden behind wooden pirate sailing ship (dutch_ship_large_01_sails); the head of methodical navy sailor sits under the captions; tarred rope bundle is hidden behind flying oak splinters",
+  "16 climax low wide snap-zoom: The camera exits the hole as internal flames silhouette the pirate hull and bucket crew.: resourceful pirate gunner and hero is too small in the frame; smug pirate captain and mocker is too small in the frame; the face of smug pirate captain and mocker is hidden behind wooden pirate sailing ship (dutch_ship_large_01_rigging)",
+  "17 turn right close crane-up: The gunner rotates the perforated shell above the pitch pot and cannon breech.: the head of smug pirate captain and mocker sits under the captions",
+  "20 explain low wide track: The navy ship burns like a mast-high torch while one sailor continues mopping.: methodical navy sailor is too small in the frame; calm American artillery officer is cropped at the frame edge; Rodman artillery crew is cropped at the frame edge; methodical navy sailor has their back to the camera",
+  "21 place high wide crane-down: The cool iron warship slides before the burning wooden vessel and blocks the flames.: the words on riveted iron warship is covered by the head of confident iron warship crewman",
+  "22 place front close push: The material display shows oak collapsing while riveted iron remains straight.: calm American artillery officer is too small in the frame; the words on riveted iron warship is covered by the head of confident iron warship crewman",
+  "23 place right medium push: The carcass shell squashes against iron and drops as the iron crewman shrugs.: confident iron warship crewman is too small in the frame; the face of confident iron warship crewman is hidden behind riveted iron warship (part)",
+  "25 climax high close track: The 1,000-pound scale and crushed cart fill the foreground while the crew lean into the ramm: one-thousand-pound Rodman ball is hidden behind Rodman carriage wheel; the view is blocked by Rodman carriage wheel; the head of calm American artillery officer sits under the captions; one-thousand-pound Rodman ball is hidden behind stone coastal battery (part); one-thousand-pound Rodman ball is hidden behind stone coastal battery (parapet); Rodman artillery crew is too small in the frame; one-thousand-pound Rodman ball is hidden behind riveted iron warship (armoured hull)"
+ ],
+ "staging": [
+  "smug pirate captain and mocker passes through wooden pirate sailing ship (dutch_ship_large_01_rigging)",
+  "smug pirate captain and mocker passes through freshly broken pirate rail",
+  "serious navy gunner passes through wooden navy frigate",
+  "confident iron warship crewman passes through riveted iron warship (armoured hull)",
+  "resourceful pirate gunner and hero passes through choppy ocean waves",
+  "resourceful pirate gunner and hero passes through wooden pirate sailing ship",
+  "smug pirate captain and mocker passes through wooden pirate sailing ship",
+  "confident iron warship crewman passes through riveted iron warship"
+ ]
+}

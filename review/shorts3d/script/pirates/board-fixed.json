@@ -1,0 +1,4346 @@
+{
+ "film": {
+  "one_sentence": "Across a crowded 1700s sea battle and a later American coastal battery, increasingly vicious incendiary cannonballs fail against iron until the enormous Rodman gun punches one colossal shot through an iron warship and sinks it.",
+  "cast_notes": "The hero is a compact pirate gunner with a white deadpan head, pear body, red vest, cream shirt, black tricorn-like cap and one driving trait: practical ingenuity; he handles every improvised weapon carefully, watches his hands, then checks the target. His lanky pirate captain wears a weathered navy coat and yellow accent, mocks the navy with smug folded arms, but becomes pale when fire appears. A stocky navy gunner in a blue uniform and white cap is the serious antagonist, moving by exact drill and staring down the cannon barrel. A navy loader in a grey apron handles hotshot with long tongs and recoils from its heat. An American artillery officer in a dark blue coat and cap is the later hero figure, calm beside the gigantic Rodman gun and looking from the marked 1,000-pound ball to the iron target. Background sailors pump, swab, carry buckets and haul ropes without copying one another's reactions.",
+  "places_and_light": "The main place is open sea split between a wooden pirate ship at left and a wooden navy ship at centre-right, with rigging, sails, gun smoke, rolling water, barrels, ropes and distant ships filling the horizon. Warm late-afternoon sun is visible through the rigging, while lanterns and cannon flashes add orange practical light. A navy hotshot furnace glows beside the navy cannon and changes nearby faces from daylight gold to threatening red. The impossible interior of the pirate hull is cramped among ribs, powder barrels and embedded iron, lit first by thin blue daylight through the shot hole and then by spreading orange fire. The final place is a later American coastal battery beside an iron warship under cooler overcast light; the Rodman muzzle flash briefly turns the entire battery white-orange before the scene settles into smoky dusk.",
+  "colour_meaning": "Incendiary danger is always saturated ember red-orange: it begins inside heated hotshot, spreads through the pirate hull and carcass spray, fails visibly against cold blue-grey iron, then returns only as the Rodman gun's brief impact flash.",
+  "speaking_lines": "There are no quoted character lines; all characters communicate through silent poses, eye-lines, labels and reactions while the narration remains off-screen.",
+  "extreme_gags": "The words 'lucky ones' become a cannonball-sized hole that misses the hero by a finger-width while an absurd forest of splinters pins his hat to the mast. 'Literal garbage' becomes a bulging cannon load of forks, horseshoes, broken mugs and one deadpan boot, ten times more junk than the muzzle should hold. 'Ships into torches' becomes a navy ship-shaped torch with mast-high flames while one sailor still methodically mops the deck. 'Over 1,000 pounds' becomes a ball that squashes a reinforced loading cart flat and makes six artillerymen lean almost horizontally against its rammer.",
+  "power_moments": "On 'smashed,' the navy ball bursts through planks with an impact flash, expanding wood ring and camera kick. On 'HOTSHOT,' the furnace door opens and a red ball reveals itself with a narrow light sweep. On 'from WITHIN,' the camera enters the hull as hidden fire blooms around the embedded ball. On 'one SHOT,' the Rodman ball punches through iron with a white impact ring, torn plates and a distant water plume.",
+  "impossible_view": "The camera flies through the fresh cannonball hole into the sealed pirate hull, rests inches from the red ball buried between oak ribs while tarred rope begins smoking behind it, then retreats through the same hole as internal flames reveal the ship's silhouette from within."
+ },
+ "plan": [
+  {
+   "sentence": 0,
+   "job": "hook",
+   "mark": "hook",
+   "words": "If your ship got HIT",
+   "landing_word": 4,
+   "what_we_see": "A black cannonball tears through the pirate rail a finger-width beside the pirate gunner's face; his left hand freezes on a rope and his right hand protects his hat.",
+   "shown": "close",
+   "why": "The near miss instantly establishes the danger and the hero who survives it.",
+   "light": "Warm sun behind the sail; a white-orange impact flash appears at the rail.",
+   "near_lens": "broken_rail",
+   "far_world": "The pirate mast and cream mainsail fill the background.",
+   "feeling": "The gunner is suddenly wide-eyed because the ball has missed his nose by centimetres.",
+   "acted_gag": "The cannonball shaves one curl from his cap without changing his deadpan mouth.",
+   "effect": "Impact flash, wooden ring burst and a short camera kick on HIT."
+  },
+  {
+   "sentence": 0,
+   "job": "hook",
+   "mark": "none",
+   "words": "by a CANNONBALL, you'd actually be",
+   "landing_word": 9,
+   "what_we_see": "The camera rides behind the cannonball through a ship-shaped tunnel of shattered rail, loose rope and flying deck objects while the gunner ducks below it.",
+   "shown": "in-scene",
+   "why": "It identifies the projectile and proves how violently it crosses the ship.",
+   "light": "The impact flash fades back to warm sunlight through suspended dust.",
+   "near_lens": "cannonball_navy",
+   "far_world": "The navy ship sits across choppy water behind the projectile's path.",
+   "feeling": "The gunner crouches in focused panic, watching the ball continue past him.",
+   "acted_gag": "A hanging mug spins untouched after every larger object explodes around it.",
+   "effect": "Short charcoal speed lines trail the cannonball."
+  },
+  {
+   "sentence": 0,
+   "job": "hook",
+   "mark": "none",
+   "words": "one of the LUCKY ones.",
+   "landing_word": 14,
+   "what_we_see": "The pirate gunner stands unharmed inside the circular hole while dozens of long splinters pin only his cap and coat tails to the mast; injured-looking mannequins are absent and the crew stare at the near miss.",
+   "shown": "in-scene",
+   "why": "The absurdly precise survival makes 'lucky' visually clear despite the devastation.",
+   "light": "Sun forms a bright halo through the new hole; no new effect.",
+   "near_lens": "splinters",
+   "far_world": "The scarred mast stands immediately behind the pinned gunner.",
+   "feeling": "The gunner feels baffled relief because every splinter missed his body.",
+   "acted_gag": "He tests one foot, discovers his clothes are pinned, and remains standing like a notice nailed to the mast.",
+   "effect": "none"
+  },
+  {
+   "sentence": 1,
+   "job": "place",
+   "mark": "none",
+   "words": "In the 1700S,",
+   "landing_word": 18,
+   "what_we_see": "A wide view shows the wooden pirate and navy sailing ships exchanging smoke beneath square sails, period flags and dense rigging; a brass date plaque reads 1700s.",
+   "shown": "in-scene",
+   "why": "The ships, dress, weapons and plaque establish the era before the mechanism is shown.",
+   "light": "Late-afternoon sun shines warm through both ships' rigging.",
+   "near_lens": "rope_coils",
+   "far_world": "Three distant square-rigged ships and a hazy coastline fill the horizon.",
+   "feeling": "Both crews are tense and busy because a broadside is underway.",
+   "acted_gag": "A pirate uses an oversized spyglass backwards and sees nothing.",
+   "effect": "none"
+  },
+  {
+   "sentence": 1,
+   "job": "act",
+   "mark": "none",
+   "words": "navy CANNONBALLS",
+   "landing_word": 20,
+   "what_we_see": "The serious navy gunner yanks a lanyard with both hands as the cannon recoils and a ball exits the smoking muzzle toward the pirate hull.",
+   "shown": "close",
+   "why": "The firing action establishes who launches the lethal shot.",
+   "light": "Warm daylight is overwhelmed for one beat by orange muzzle light.",
+   "near_lens": "navy_cannon",
+   "far_world": "The navy ship's gunport wall and recoiling tackle stand behind the gunner.",
+   "feeling": "The navy gunner is stern and certain because his drilled shot is on target.",
+   "acted_gag": "The recoil slides his cap backward while his expression remains perfectly flat.",
+   "effect": "A compact muzzle flash and smoke ring mark the shot."
+  },
+  {
+   "sentence": 1,
+   "job": "climax",
+   "mark": "none",
+   "words": "SMASHED through pirate ships,",
+   "landing_word": 21,
+   "what_we_see": "The navy ball breaks through the pirate hull from right to left, folding six oak planks inward and blasting iron nails and chips around the entry hole.",
+   "shown": "close",
+   "why": "The broken layered planks prove why a solid hit is worse than the opening near miss.",
+   "light": "A sharp white-orange flash silhouettes the dark interior ribs.",
+   "near_lens": "pirate_hull",
+   "far_world": "The pirate cannon deck and opposite gunports are visible through the new hole.",
+   "feeling": "The pirate captain turns pale because the wall beside him has become shrapnel.",
+   "acted_gag": "His smug folded arms remain posed for half a beat after the wall disappears behind them.",
+   "effect": "Impact flash, expanding splinter ring and camera kick on SMASHED."
+  },
+  {
+   "sentence": 1,
+   "job": "climax",
+   "mark": "none",
+   "words": "sending wooden SPLINTERS flying",
+   "landing_word": 27,
+   "what_we_see": "A cloud of metre-long oak splinters crosses the gun deck at head height while the gunner drops flat and the captain leans backward beneath them.",
+   "shown": "in-scene",
+   "why": "The splinters, not only the ball, reveal the hidden danger to the crew.",
+   "light": "Dust softens the warm sunbeams entering through gunports.",
+   "near_lens": "splinters",
+   "far_world": "The large pirate cannon and timber ribs crowd the background.",
+   "feeling": "The crew are terrified because their own ship has become the projectile.",
+   "acted_gag": "One splinter neatly skewers three ration biscuits without touching the sailor holding them.",
+   "effect": "Wood-chip speed lines follow the splinter cloud."
+  },
+  {
+   "sentence": 1,
+   "job": "climax",
+   "mark": "none",
+   "words": "through the CREW.",
+   "landing_word": 31,
+   "what_we_see": "The pirate gunner lies safe beneath crossed splinters, the captain is pinned by his coat to a rib, and a deckhand holds a bucket over his head while fragments stick into it.",
+   "shown": "in-scene",
+   "why": "Specific crew reactions complete the cause-and-result chain without showing gore.",
+   "light": "Warm shafts from the shot hole illuminate dust and frightened faces.",
+   "near_lens": "water_bucket",
+   "far_world": "A massive timber rib and cannon carriage stand close behind the crew.",
+   "feeling": "The gunner feels grim recognition; the captain feels humiliated; the deckhand expects another strike.",
+   "acted_gag": "The bucket shield becomes a porcupine of splinters while the deckhand peeks through its handle.",
+   "effect": "none"
+  },
+  {
+   "sentence": 2,
+   "job": "setup",
+   "mark": "none",
+   "words": "Pirates couldn't AFFORD proper ammunition,",
+   "landing_word": 34,
+   "what_we_see": "The pirate gunner opens an almost empty ammunition chest containing one tiny coin and no cannonballs; the captain turns out both empty pockets.",
+   "shown": "close",
+   "why": "The empty chest and single coin make the pirates' poverty readable.",
+   "light": "Warm deck light; a swinging lantern adds a weak amber pool inside the chest.",
+   "near_lens": "ammo_chest",
+   "far_world": "The pirate cannon and cracked hull wall loom behind them.",
+   "feeling": "The gunner is disappointed because the correct ammunition is unavailable; the captain pretends not to care.",
+   "acted_gag": "A moth flies from the empty coin purse and the captain hurriedly closes it.",
+   "effect": "none"
+  },
+  {
+   "sentence": 2,
+   "job": "act",
+   "mark": "none",
+   "words": "so they FIRED back",
+   "landing_word": 39,
+   "what_we_see": "The pirate gunner and deckhand ram a bulging sack into the pirate cannon while the captain points grandly at the navy ship.",
+   "shown": "in-scene",
+   "why": "The loading action shows their improvised solution beginning.",
+   "light": "Sunlight warms the deck while the lantern flickers beside the muzzle.",
+   "near_lens": "pirate_cannon",
+   "far_world": "The mast base, stacked barrels and torn sail fill the background.",
+   "feeling": "The gunner is determined because any load is better than none; the captain is theatrically confident.",
+   "acted_gag": "The sack squeaks because a rubber duck is trapped among the junk.",
+   "effect": "none"
+  },
+  {
+   "sentence": 2,
+   "job": "explain",
+   "mark": "none",
+   "words": "with LANGRAGE,",
+   "landing_word": 42,
+   "what_we_see": "A cutaway at the muzzle shows forks, nails, chain links, horseshoes and stones packed behind a wad; a brass label over the pile reads LANGRAGE.",
+   "shown": "close",
+   "why": "The labelled contents define the unfamiliar term through visible objects.",
+   "light": "A lantern reflection picks out the mixed metal pieces inside the dark muzzle.",
+   "near_lens": "langrage_pile",
+   "far_world": "The gunner's hands grip the rammer beyond the muzzle.",
+   "feeling": "The gunner looks proudly practical because the rubbish now functions as ammunition.",
+   "acted_gag": "One bent dinner fork points forward like a tiny commander.",
+   "effect": "Five small four-point glints mark the labelled special ammunition."
+  },
+  {
+   "sentence": 2,
+   "job": "act",
+   "mark": "none",
+   "words": "basically literal GARBAGE.",
+   "landing_word": 45,
+   "what_we_see": "The pirate cannon fires an enormous cone of broken mugs, forks, boot, horseshoes and chain toward the navy ship as the gunner braces behind the wheel.",
+   "shown": "in-scene",
+   "why": "The ridiculous airborne rubbish makes the definition unforgettable.",
+   "light": "Orange muzzle light flashes across the warm deck.",
+   "near_lens": "garbage_cluster",
+   "far_world": "The navy ship's broadside and cream sail fill the target area.",
+   "feeling": "The gunner grins because his worthless objects have become a weapon; the captain looks smug again.",
+   "acted_gag": "A single boot flies toe-first at the navy captain's open gunport.",
+   "effect": "A muzzle flash and diverging speed lines mark the garbage blast."
+  },
+  {
+   "sentence": 3,
+   "job": "turn",
+   "mark": "twist",
+   "words": "But the navy had something NASTIER:",
+   "landing_word": 51,
+   "what_we_see": "The navy loader swings open a squat iron furnace door; red light strikes his face while the serious gunner turns from the pirate garbage to the furnace.",
+   "shown": "in-scene",
+   "why": "The concealed furnace introduces a deliberate escalation beyond improvised debris.",
+   "light": "Warm daylight shifts locally to deep furnace red across the navy gun deck.",
+   "near_lens": "furnace_door",
+   "far_world": "The navy cannon and thick gunport wall stand behind the loader.",
+   "feeling": "The loader squints from the heat; the gunner is coldly satisfied because their answer is prepared.",
+   "acted_gag": "The incoming pirate boot lands beside the furnace and immediately begins smoking.",
+   "effect": "A narrow red light sweep reveals the furnace interior."
+  },
+  {
+   "sentence": 3,
+   "job": "turn",
+   "mark": "none",
+   "words": "something nastier:",
+   "landing_word": 51,
+   "what_we_see": "Using long tongs, the loader lifts a dark ball from the furnace bed while heat bends the air and the gunner presents a wet wad beside the cannon.",
+   "shown": "close",
+   "why": "The controlled handling shows that the new ammunition is dangerously hot.",
+   "light": "The furnace mouth is the visible red-orange key light; daylight remains cool outside.",
+   "near_lens": "hotshot_tongs",
+   "far_world": "The bulky furnace chimney and cannon breech crowd the frame.",
+   "feeling": "The loader is strained and cautious because the ball can ignite the deck.",
+   "acted_gag": "His apron front steams although it never touches the ball.",
+   "effect": "Heat shimmer rises only around the tongs and ball."
+  },
+  {
+   "sentence": 3,
+   "job": "turn",
+   "mark": "signature",
+   "words": "HOTSHOT.",
+   "landing_word": 52,
+   "what_we_see": "The glowing red cannonball hangs in tongs centre-frame above a stone tray, reflected in the navy gunner's wide white eyes; a plaque reads HOTSHOT.",
+   "shown": "close",
+   "why": "This is the film's signature reveal of the weapon driving the middle story.",
+   "light": "The ball carries its own saturated red glow and paints nearby hands and metal.",
+   "near_lens": "hotshot_ball",
+   "far_world": "The open furnace and navy cannon form a dark mechanical wall behind it.",
+   "feeling": "The gunner is confident; the loader is afraid to breathe because the weapon is live.",
+   "acted_gag": "A drop from the wet wad lands on the ball and vanishes in an instant hiss.",
+   "effect": "The ball glows from within with five tiny edge stars."
+  },
+  {
+   "sentence": 4,
+   "job": "explain",
+   "mark": "none",
+   "words": "They HEATED cannonballs",
+   "landing_word": 54,
+   "what_we_see": "The loader pushes three black balls into the furnace with a long rake while coal burns below and the gunner checks an hourglass.",
+   "shown": "in-scene",
+   "why": "The furnace, rake and waiting drill explain the first preparation step.",
+   "light": "Coal fire pulses orange through the furnace grating.",
+   "near_lens": "furnace",
+   "far_world": "A stone heat shield and navy cannon stand immediately behind the crew.",
+   "feeling": "The loader is methodical because overheating or dropping the balls would be disastrous.",
+   "acted_gag": "One ball rolls back toward him and he stops it with the rake while leaning impossibly far away.",
+   "effect": "none"
+  },
+  {
+   "sentence": 4,
+   "job": "explain",
+   "mark": "none",
+   "words": "until they GLOWED red,",
+   "landing_word": 58,
+   "what_we_see": "Inside the furnace, three cannonballs change from black to cherry red while a painted heat scale rises into a marked RED zone.",
+   "shown": "close",
+   "why": "The visible colour change and scale prove when the ammunition is ready.",
+   "light": "The entire furnace interior becomes saturated ember red.",
+   "near_lens": "hotshot_ball",
+   "far_world": "Coal, iron grate and furnace bricks surround the balls.",
+   "feeling": "No face is visible; the dangerous readiness comes from the glowing metal.",
+   "acted_gag": "A tiny pirate boot from the garbage load curls at the toe in the heat.",
+   "effect": "The three balls glow progressively and the heat-scale marker ticks upward."
+  },
+  {
+   "sentence": 4,
+   "job": "act",
+   "mark": "none",
+   "words": "then LOADED them into cannons behind a soaking wet plug",
+   "landing_word": 61,
+   "what_we_see": "The loader lowers the red ball into the navy cannon with tongs after the gunner rams a dripping cylindrical wet wad between it and the powder chamber.",
+   "shown": "in-scene",
+   "why": "The ordered layers show how hot metal can enter a gun without touching powder.",
+   "light": "Red ball light reflects along the dark bore; water sparkles in daylight at the muzzle.",
+   "near_lens": "wet_wad",
+   "far_world": "The navy cannon carriage and thick hull wall fill the background.",
+   "feeling": "Both men concentrate on the sequence because reversing it would ignite the charge.",
+   "acted_gag": "Water streams from the wad into the gunner's shoe while he refuses to look down.",
+   "effect": "none"
+  },
+  {
+   "sentence": 4,
+   "job": "explain",
+   "mark": "none",
+   "words": "to stop the gunpowder IGNITING too early.",
+   "landing_word": 74,
+   "what_we_see": "An impossible cutaway through the cannon shows powder at the breech, the thick dripping wad in the middle and the red ball forward, with a blocked flame icon printed over the wad.",
+   "shown": "close",
+   "why": "The separated layers make the safety function readable without dialogue.",
+   "light": "Red glow stops sharply at the wet blue-grey wad; the powder remains dark.",
+   "near_lens": "navy_cannon",
+   "far_world": "The loader and gunner watch from either side of the cutaway barrel.",
+   "feeling": "The gunner is relieved because the wet barrier is holding; the loader remains wary.",
+   "acted_gag": "One nervous powder grain backs away from the damp edge like a tiny crowd.",
+   "effect": "none"
+  },
+  {
+   "sentence": 5,
+   "job": "climax",
+   "mark": "none",
+   "words": "The BALL buried itself",
+   "landing_word": 78,
+   "what_we_see": "The camera rides behind the fired red ball as it enters the pirate hull, crushes planks inward and wedges between two timber ribs.",
+   "shown": "close",
+   "why": "The projectile's final hidden position begins the delayed-fire mechanism.",
+   "light": "Muzzle-white light gives way to dark blue hull shade and the ball's red glow.",
+   "near_lens": "hotshot_ball",
+   "far_world": "Oak ribs, rope bundles and powder barrels fill the pirate interior.",
+   "feeling": "The nearby pirate gunner recoils because the apparently stopped ball is still glowing.",
+   "acted_gag": "His dropped mug lands upright while the surrounding wall collapses.",
+   "effect": "Impact flash, debris ring and camera kick as the ball buries itself."
+  },
+  {
+   "sentence": 5,
+   "job": "explain",
+   "mark": "none",
+   "words": "inside the pirate SHIP,",
+   "landing_word": 84,
+   "what_we_see": "From inside the sealed hull, the embedded ball presses against tarred rope and scorched oak while the small entry hole frames the distant navy ship.",
+   "shown": "close",
+   "why": "The impossible view reveals the hidden contact points that can start an internal fire.",
+   "light": "Thin cool daylight enters the hole while the ball provides a red underlight.",
+   "near_lens": "tar_rope",
+   "far_world": "The pirate hull ribs and powder barrels make a cramped tunnel.",
+   "feeling": "The gunner peers through the hole from outside, unaware of the smoking rope below him.",
+   "acted_gag": "A rat warms its paws at the ball, notices the powder barrel, and flees.",
+   "effect": "A thin smoke curl begins where rope touches iron."
+  },
+  {
+   "sentence": 5,
+   "job": "turn",
+   "mark": "none",
+   "words": "and MINUTES later,",
+   "landing_word": 86,
+   "what_we_see": "A shipboard sand timer empties rapidly beside the hidden ball as smoke thickens and a glowing ember crawls along the tarred rope toward oak planks.",
+   "shown": "close",
+   "why": "The timer and advancing ember show delayed rather than instant destruction.",
+   "light": "Daylight dims toward dusk while the ember becomes the local orange source.",
+   "near_lens": "sand_timer",
+   "far_world": "Blackened ribs and the embedded ball remain behind the timer.",
+   "feeling": "The captain above deck is still smug because he cannot see the danger below.",
+   "acted_gag": "The fleeing rat returns wearing a tiny bucket, sees the larger flame and leaves again.",
+   "effect": "The whole scene shifts from late-afternoon gold to smoky dusk."
+  },
+  {
+   "sentence": 5,
+   "job": "climax",
+   "mark": "none",
+   "words": "the entire vessel could catch FIRE from WITHIN.",
+   "landing_word": 95,
+   "what_we_see": "The camera pulls through the shot hole to reveal orange fire filling the pirate hull between every rib while the outer sails remain briefly intact and the crew scramble with buckets.",
+   "shown": "in-scene",
+   "why": "The internal orange silhouette completes hotshot's delayed purpose.",
+   "light": "Hidden interior flames become the dominant source, shining through seams and gunports into dusk.",
+   "near_lens": "pirate_hull",
+   "far_world": "The mast, sails and smoke-covered sea stand behind the burning hull.",
+   "feeling": "The gunner is urgently practical with a bucket; the captain is pale because the threat came from below.",
+   "acted_gag": "One sailor pours a thimble-sized cup onto a wall of flame.",
+   "effect": "Fire blooms through the hull seams on WITHIN."
+  },
+  {
+   "sentence": 6,
+   "job": "turn",
+   "mark": "twist",
+   "words": "But pirates had their own WEAPON:",
+   "landing_word": 101,
+   "what_we_see": "On the surviving bow, the pirate gunner kicks open a marked weapon chest and lifts a black perforated shell while the captain regains his smug pose.",
+   "shown": "in-scene",
+   "why": "The chest reveal gives the pirates a distinct answer to navy hotshot.",
+   "light": "Firelight behind them is balanced by cool dusk from the sea.",
+   "near_lens": "carcass_chest",
+   "far_world": "The scorched mast and large pirate cannon fill the background.",
+   "feeling": "The gunner is fiercely pleased because he has one prepared weapon left; the captain takes undeserved credit.",
+   "acted_gag": "The captain points heroically while secretly stamping out his burning coat tail.",
+   "effect": "A narrow spotlight from the opened chest reveals the shell."
+  },
+  {
+   "sentence": 6,
+   "job": "explain",
+   "mark": "none",
+   "words": "their own weapon:",
+   "landing_word": 101,
+   "what_we_see": "The gunner rotates the hollow shell to show its drilled vents, hinged filling cap and tar residue while a deckhand brings a pitch pot.",
+   "shown": "close",
+   "why": "The shell's openings distinguish it from the solid hotshot.",
+   "light": "A deck lantern rims the shell while distant hull fire flickers red.",
+   "near_lens": "carcass_shell",
+   "far_world": "The pitch pot and pirate cannon breech sit behind the gunner's hands.",
+   "feeling": "The gunner is careful because the shell is fragile and combustible.",
+   "acted_gag": "The captain tries to inspect a vent, gets soot on his nose and immediately resumes dignity.",
+   "effect": "none"
+  },
+  {
+   "sentence": 6,
+   "job": "turn",
+   "mark": "none",
+   "words": "the CARCASS.",
+   "landing_word": 103,
+   "what_we_see": "The perforated shell rests above the open chest with a brass CARCASS label, black tar visible through four holes and a fuse protruding from its cap.",
+   "shown": "close",
+   "why": "The labelled hero object anchors the second unfamiliar weapon term.",
+   "light": "The fuse tip glows orange against cool dusk.",
+   "near_lens": "carcass_shell",
+   "far_world": "The gunner's red vest and the cannon muzzle frame the shell.",
+   "feeling": "The gunner looks calmly proud because this is pirate engineering rather than random rubbish.",
+   "acted_gag": "A sticky tar thread stretches to the captain's sleeve and follows him as he leans away.",
+   "effect": "Five small four-point stars mark the special shell edges."
+  },
+  {
+   "sentence": 7,
+   "job": "explain",
+   "mark": "none",
+   "words": "A HOLLOW cannonball",
+   "landing_word": 105,
+   "what_we_see": "A clean cutaway of the carcass shell shows a thin iron wall, empty central cavity, four angled spray vents and a screw cap held in the gunner's hands.",
+   "shown": "close",
+   "why": "The cavity proves how the ball can carry burning material.",
+   "light": "Cool dusk outlines the iron while lantern light enters the open cavity.",
+   "near_lens": "carcass_shell",
+   "far_world": "The pitch pot and packing tools cover the cannon deck behind it.",
+   "feeling": "The gunner is focused on demonstrating the shell's construction.",
+   "acted_gag": "The captain looks through one vent like a spyglass and receives a soot ring around his eye.",
+   "effect": "none"
+  },
+  {
+   "sentence": 7,
+   "job": "act",
+   "mark": "none",
+   "words": "packed with burning TAR",
+   "landing_word": 110,
+   "what_we_see": "The gunner pours thick black tar from a pitch pot into the cavity, closes the cap and lights the fuse while the deckhand holds the shell in a sand cradle.",
+   "shown": "in-scene",
+   "why": "The filling and ignition show what supplies the later fire spray.",
+   "light": "The small fuse and pitch-pot flame warm their faces against the blue sea.",
+   "near_lens": "pitch_pot",
+   "far_world": "The pirate cannon and scorched hull wall stand close behind.",
+   "feeling": "The gunner is tense because the fuse has started; the deckhand stares only at the dripping tar.",
+   "acted_gag": "A tar drip glues the deckhand's shoe to the deck as he tries to step back.",
+   "effect": "none"
+  },
+  {
+   "sentence": 7,
+   "job": "climax",
+   "mark": "none",
+   "words": "that SPRAYED fire as it flew,",
+   "landing_word": 112,
+   "what_we_see": "The camera rides beside the spinning carcass shell over the sea as four jets of burning tar spiral from its vents toward the navy ship.",
+   "shown": "close",
+   "why": "The rotating fire jets demonstrate the shell's defining airborne mechanism.",
+   "light": "The shell's orange jets illuminate smoke against deepening blue dusk.",
+   "near_lens": "carcass_shell",
+   "far_world": "The navy ship grows rapidly larger beyond the projectile.",
+   "feeling": "The navy loader sees it approaching and leans away in alarm.",
+   "acted_gag": "The earlier pirate boot is still lodged in the navy rail and catches one passing spark.",
+   "effect": "Curved flame trails and speed lines follow the spinning shell."
+  },
+  {
+   "sentence": 7,
+   "job": "climax",
+   "mark": "none",
+   "words": "turning enemy ships into TORCHES.",
+   "landing_word": 121,
+   "what_we_see": "The navy ship burns mast-high like an enormous torch, sails glowing orange while sailors pump water and one sailor continues mopping a tiny clean square.",
+   "shown": "in-scene",
+   "why": "The ship-shaped blaze exaggerates the incendiary result into a readable final image.",
+   "light": "Towering orange flames replace dusk as the dominant source.",
+   "near_lens": "navy_ship",
+   "far_world": "Black smoke, scattered birds and the dark horizon fill the sky.",
+   "feeling": "The pirate gunner feels vindicated; the navy gunner stares flatly at his burning mop bucket.",
+   "acted_gag": "A navy sailor methodically mops one spotless square while the entire deck burns around it.",
+   "effect": "A tall smoke column, drifting embers and scattering seabirds mark the catastrophe."
+  },
+  {
+   "sentence": 8,
+   "job": "place",
+   "mark": "none",
+   "words": "Then ships started using IRON instead of wood,",
+   "landing_word": 126,
+   "what_we_see": "A later blue-grey iron warship slides between camera and the burning wooden ship; carcass flames splash across riveted plates without entering.",
+   "shown": "in-scene",
+   "why": "The side-by-side materials show the technological change and immediate protection.",
+   "light": "Time changes to cool overcast daylight; old flames remain orange behind the iron hull.",
+   "near_lens": "iron_hull",
+   "far_world": "The obsolete burning wooden ship is partly hidden beyond the armoured vessel.",
+   "feeling": "The iron ship crew remain calm because the plates block the flames.",
+   "acted_gag": "A sailor calmly warms tea against the outside of a flame-splashed iron plate.",
+   "effect": "The whole light changes from fiery dusk to cool overcast day."
+  },
+  {
+   "sentence": 8,
+   "job": "explain",
+   "mark": "none",
+   "words": "instead of WOOD,",
+   "landing_word": 129,
+   "what_we_see": "A split material display shows a charred oak plank collapsing on the left and a riveted iron plate remaining straight on the right while identical flame jets strike both.",
+   "shown": "close",
+   "why": "The controlled comparison proves why iron replaces wood.",
+   "light": "Orange test flames reflect brightly from cold blue-grey iron.",
+   "near_lens": "material_display",
+   "far_world": "The iron warship's turret-like casemate and smokestack fill the background.",
+   "feeling": "The American officer watches with measured approval because the iron sample survives.",
+   "acted_gag": "The wooden side becomes ash around a painted GOOD LUCK message while the iron side preserves it perfectly.",
+   "effect": "none"
+  },
+  {
+   "sentence": 8,
+   "job": "turn",
+   "mark": "none",
+   "words": "making fireballs USELESS.",
+   "landing_word": 132,
+   "what_we_see": "A burning carcass shell strikes the iron hull, squashes, drops hissing into the sea and leaves only a soot flower while the iron crewman shrugs.",
+   "shown": "in-scene",
+   "why": "The failed impact visibly ends the usefulness of incendiary balls.",
+   "light": "Cool daylight dominates as the shell's orange flame extinguishes in water.",
+   "near_lens": "carcass_shell",
+   "far_world": "The enormous riveted iron hull blocks the entire background.",
+   "feeling": "The pirate gunner is crestfallen because his best weapon has become a harmless smudge; the iron crewman is bored.",
+   "acted_gag": "The soot mark resembles the pirate captain's smug moustache, making him facepalm.",
+   "effect": "none"
+  },
+  {
+   "sentence": 9,
+   "job": "place",
+   "mark": "none",
+   "words": "So America built the Rodman GUN,",
+   "landing_word": 138,
+   "what_we_see": "At a coastal fort, the American officer presents a gigantic black Rodman cannon on a curved iron carriage while six artillerymen and a flag establish the new era and scale.",
+   "shown": "in-scene",
+   "why": "The new place and enormous purpose-built weapon answer the failure of fireballs.",
+   "light": "Cool overcast daylight is warmed by forge braziers beside the battery.",
+   "near_lens": "rodman_wheel",
+   "far_world": "A stone fort wall and the Rodman barrel tower behind the crew.",
+   "feeling": "The officer is calm and certain because the engineering solution is brute force.",
+   "acted_gag": "A normal cannon beside the Rodman looks toy-sized and is used as a coat rack.",
+   "effect": "A soft light sweep travels along the Rodman barrel to reveal its scale."
+  },
+  {
+   "sentence": 9,
+   "job": "explain",
+   "mark": "none",
+   "words": "a cannon that fired a single BALL",
+   "landing_word": 145,
+   "what_we_see": "Six artillerymen roll one enormous iron ball from a reinforced cart to the muzzle while the officer points at a chalk ONE on the loading board.",
+   "shown": "in-scene",
+   "why": "The single huge projectile contrasts with clouds of splinters, garbage and fire spray.",
+   "light": "Overcast sky gives broad neutral light; brazier highlights rim the ball.",
+   "near_lens": "rodman_ball",
+   "far_world": "The Rodman muzzle and stone parapet fill the background.",
+   "feeling": "The crew strain because one ball demands their combined effort; the officer remains composed.",
+   "acted_gag": "The ball rolls over a dropped lunch tin and flattens it into a perfect metal pancake.",
+   "effect": "A mechanical counter beside the muzzle clicks to 1."
+  },
+  {
+   "sentence": 9,
+   "job": "act",
+   "mark": "none",
+   "words": "weighing over 1,000 POUNDS,",
+   "landing_word": 149,
+   "what_we_see": "The enormous ball rests on a crushed loading cart beneath a hanging scale marked 1,000+ LB as six crewmen lean nearly horizontal on the rammer.",
+   "shown": "close",
+   "why": "The scale, crushed cart and collective strain make the spoken weight believable.",
+   "light": "A brazier reflection curves across the ball under cool daylight.",
+   "near_lens": "weight_scale",
+   "far_world": "The broad Rodman breech and sweating artillery crew crowd the frame.",
+   "feeling": "The crew are exhausted by the ball's mass; the officer is impressed but refuses to show it.",
+   "acted_gag": "One crewman pushes with both feet off the ground while his cap stays suspended on the rammer.",
+   "effect": "The weight display ticks rapidly and stops at 1,000+ LB."
+  },
+  {
+   "sentence": 9,
+   "job": "climax",
+   "mark": "last-frame",
+   "words": "designed to PUNCH through an iron warship and sink it in one SHOT.",
+   "landing_word": 162,
+   "what_we_see": "The camera rides the Rodman ball through a torn circular hole in the iron warship; plates peel inward, water erupts through the opposite side and the ship lists as the calm officer fills the foreground beside smoking Rodman gun.",
+   "shown": "in-scene",
+   "why": "The penetrated iron and immediate sinking complete the weapon escalation and resolve the film.",
+   "light": "A white-orange impact flash cuts through cool daylight, then settles into smoky dusk around the calm hero.",
+   "near_lens": "torn_iron_plate",
+   "far_world": "The listing iron warship, water plume and scattering seabirds fill the horizon.",
+   "feeling": "The officer is quietly satisfied because one solid shot succeeded where fire failed; the iron crew are shocked by the breach.",
+   "acted_gag": "The iron crewman's untouched tea slides down the listing deck and lands upright in a lifeboat.",
+   "effect": "A white impact ring, plate debris, camera kick and distant water plume mark SHOT."
+  }
+ ],
+ "world": {
+  "place": "1700s sea battle, pirate and navy gun decks, hidden pirate hull, and later American coastal Rodman battery",
+  "indoor": false,
+  "ground": "Rolling ocean around wooden ships, changing to stone battery paving at the easte",
+  "ground_color": "#27485A",
+  "walls_color": "#6B5642",
+  "sky": "overcast",
+  "size": [
+   120,
+   80.0
+  ],
+  "light": "neutral"
+ },
+ "things": [
+  {
+   "id": "pirate_ship",
+   "name": "wooden pirate sailing ship",
+   "role": "story",
+   "count": 1,
+   "spread": 0,
+   "life": "bob",
+   "arrange": "row",
+   "search": "18th century pirate frigate square rigged ship",
+   "height_m": 24.0,
+   "at": [
+    -25.0,
+    0.0
+   ],
+   "on": "",
+   "turn_deg": 90.0,
+   "color": "#513626",
+   "parts": [
+    "keel: box 0 0 1 24 5 2 #3B2419",
+    "lower hull: box 0 0 3 22 6 4 #513626",
+    "upper hull: box 0 0 5 20 7 2 #704A31",
+    "deck: box 0 0 6.1 20 6 0.3 #9A6A42",
+    "port rail: box 0 -3 7 20 0.3 1.5 #5B3927",
+    "starboard rail: box 0 3 7 20 0.3 1.5 #5B3927",
+    "bow: cone 11 0 3 5 6 5 rx90 #513626",
+    "stern cabin: box -8 0 8 5 5 4 #68432E",
+    "main mast: cyl 0 0 13 0.7 0.7 18 #6E482C",
+    "fore mast: cyl 6 0 12 0.6 0.6 15 #6E482C",
+    "main yard: box 0 0 18 1 14 0.4 #5A3927",
+    "main sail: box 0 0 15 0.15 12 7 #D8C9A5",
+    "crow nest: cyl 0 0 20 2 2 1 #60402A",
+    "shot hole: cyl 4 -3.2 4 1.4 0.4 1.4 rx90 #16110E",
+    "burn marks: box 3 -3.3 4 4 0.05 3 #201612",
+    "gold nameplate: box -7 -3.3 5 3 0.08 0.7 #B58B3D"
+   ],
+   "text": "FORTUNE",
+   "hero": true
+  },
+  {
+   "id": "navy_ship",
+   "name": "wooden navy frigate",
+   "role": "story",
+   "count": 1,
+   "spread": 0,
+   "life": "bob",
+   "arrange": "row",
+   "search": "1700 navy frigate ship square sails",
+   "height_m": 25.0,
+   "at": [
+    10.0,
+    0.0
+   ],
+   "on": "",
+   "turn_deg": 270.0,
+   "color": "#70513A",
+   "parts": [
+    "keel: box 0 0 1 26 5 2 #3D2A20",
+    "lower hull: box 0 0 3 25 6 4 #57402F",
+    "gun stripe: box 0 -3.1 5 23 0.3 2 #D6C6A0",
+    "deck: box 0 0 6.2 23 6 0.3 #9B7652",
+    "rails: box 0 -3 7 23 0.3 1.5 #5B4330",
+    "stern: box -10 0 8 5 5 4 #6E513A",
+    "main mast: cyl 0 0 14 0.7 0.7 19 #705137",
+    "fore mast: cyl 7 0 13 0.6 0.6 16 #705137",
+    "main yard: box 0 0 19 1 14 0.4 #513827",
+    "main sail: box 0 0 16 0.15 12 7 #E0D7BC",
+    "gunports: box 0 -3.3 5 18 0.08 1.3 #171717",
+    "blue ensign: box -11 0 16 0.1 4 3 #1F4268",
+    "rope ladder: box 1 -3.2 13 0.05 4 10 #72543A",
+    "nameplate: box -8 -3.3 6 3 0.08 0.7 #B89A55"
+   ],
+   "text": "RESOLUTE",
+   "hero": true
+  },
+  {
+   "id": "iron_warship",
+   "name": "riveted iron warship",
+   "role": "story",
+   "count": 1,
+   "spread": 0,
+   "life": "bob",
+   "arrange": "row",
+   "search": "19th century ironclad warship",
+   "height_m": 13.0,
+   "at": [
+    40.0,
+    0.0
+   ],
+   "on": "",
+   "turn_deg": 270.0,
+   "color": "#46545A",
+   "parts": [
+    "keel: box 0 0 1 28 7 2 #27343A",
+    "armoured hull: box 0 0 4 27 8 5 #46545A",
+    "deck: box 0 0 7 24 7 0.4 #59676B",
+    "casemate: box 0 0 9 15 6 4 #3F4A50",
+    "sloped roof: box 0 0 11 16 7 0.5 #303A3F",
+    "smokestack: cyl -5 0 15 2 2 8 #262C2F",
+    "gun slit: box 4 -3.2 9 4 0.2 1 #151A1C",
+    "rivets left: sphere 0 -4.1 5 0.25 0.25 0.25 #7D898C",
+    "rivets right: sphere 0 4.1 5 0.25 0.25 0.25 #7D898C",
+    "bow ram: cone 15 0 2 5 2 2 rx90 #303A3E",
+    "torn plate: box 6 -4.2 4 4 0.3 4 #6F7C80",
+    "period flag: box -11 0 15 0.1 4 2 #2E5275"
+   ],
+   "text": "IRONCLAD",
+   "hero": true
+  },
+  {
+   "id": "rodman_gun",
+   "name": "Rodman gun",
+   "role": "story",
+   "count": 1,
+   "spread": 0,
+   "life": "none",
+   "arrange": "row",
+   "search": "Rodman gun civil war cannon coastal artillery",
+   "height_m": 4.5,
+   "at": [
+    35.0,
+    15.0
+   ],
+   "on": "fort_battery",
+   "turn_deg": 180.0,
+   "color": "#1F2527",
+   "parts": [
+    "barrel: cyl 0 0 3 3.2 3.2 10 rx90 #202628",
+    "muzzle ring: cyl 0 -5 3 4 4 1 rx90 #171C1E",
+    "breech bulb: sphere 0 4 3 4.5 4.5 4.5 #252C2E",
+    "vent: cyl 0 3 5 0.3 0.3 0.6 #050505",
+    "left trunnion: cyl -2 1 3 1 1 2 rx90 #181D1F",
+    "right trunnion: cyl 2 1 3 1 1 2 rx90 #181D1F",
+    "carriage left: box -2 1 1.5 1 9 2 #475155",
+    "carriage right: box 2 1 1.5 1 9 2 #475155",
+    "front axle: cyl 0 -3 1 1 1 5 rx90 #30383B",
+    "rear axle: cyl 0 4 1 1 1 5 rx90 #30383B",
+    "elevation screw: cyl 0 4 2 0.5 0.5 2 #A67C3C",
+    "chalk lettering: box 0 0 4 2 0.05 0.5 #D8D3C4"
+   ],
+   "text": "RODMAN",
+   "hero": true
+  },
+  {
+   "id": "navy_cannon",
+   "name": "navy deck cannon",
+   "role": "story",
+   "count": 1,
+   "spread": 0,
+   "life": "none",
+   "arrange": "row",
+   "search": "18th century naval cannon carriage",
+   "height_m": 1.5,
+   "at": [
+    5.0,
+    -2.0
+   ],
+   "on": "navy_ship",
+   "turn_deg": 270.0,
+   "color": "#202427",
+   "parts": [
+    "barrel: cyl 0 0 1.3 0.8 0.8 4 rx90 #202427",
+    "muzzle: cyl 0 -2 1.3 1 1 0.4 rx90 #15191B",
+    "breech: sphere 0 1.5 1.3 1.1 1.1 1.1 #242A2C",
+    "carriage: box 0 0 0.6 2 3 0.7 #70472D",
+    "wheel L: cyl -1 0 0.6 1.2 1.2 0.4 rx90 #5A3825",
+    "wheel R: cyl 1 0 0.6 1.2 1.2 0.4 rx90 #5A3825",
+    "lanyard: cyl 0 2 1 0.06 0.06 3 #B79768",
+    "tackle hook: sphere 1 2 1 0.3 0.3 0.3 #9D8A65"
+   ],
+   "text": "",
+   "hero": true
+  },
+  {
+   "id": "pirate_cannon",
+   "name": "pirate deck cannon",
+   "role": "story",
+   "count": 1,
+   "spread": 0,
+   "life": "none",
+   "arrange": "row",
+   "search": "weathered pirate cannon wood carriage",
+   "height_m": 1.5,
+   "at": [
+    -20.0,
+    -2.0
+   ],
+   "on": "pirate_ship",
+   "turn_deg": 90.0,
+   "color": "#242729",
+   "parts": [
+    "barrel: cyl 0 0 1.3 0.8 0.8 4 rx90 #242729",
+    "cracked muzzle: cyl 0 -2 1.3 1 1 0.4 rx90 #17191A",
+    "breech: sphere 0 1.5 1.3 1.1 1.1 1.1 #292D2E",
+    "carriage: box 0 0 0.6 2 3 0.7 #684029",
+    "wheel L: cyl -1 0 0.6 1.2 1.2 0.4 rx90 #4F3020",
+    "wheel R: cyl 1 0 0.6 1.2 1.2 0.4 rx90 #4F3020",
+    "rope repair: cyl 0 1 1 0.1 0.1 2 #A07B50",
+    "skull scratch: box 0 -2.1 1.3 0.5 0.05 0.4 #C5B995"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "furnace",
+   "name": "navy hotshot furnace",
+   "role": "story",
+   "count": 1,
+   "spread": 0,
+   "life": "smoke",
+   "arrange": "row",
+   "search": "historic cannonball heating furnace",
+   "height_m": 3.0,
+   "at": [
+    9.0,
+    -5.0
+   ],
+   "on": "navy_ship",
+   "turn_deg": 0.0,
+   "color": "#49423A",
+   "parts": [
+    "stone base: box 0 0 0.4 4 3 0.8 #696055",
+    "brick body: box 0 0 1.5 3 2.5 2.2 #704B3B",
+    "iron door: box 0 -1.3 1.4 1.8 0.2 1.5 #282829",
+    "grate: box 0 -1.4 0.7 1.5 0.2 0.4 #1C1C1C",
+    "coal bed: box 0 0 0.8 2 1.5 0.4 #A43A1E",
+    "chimney: cyl 0 0 3.5 1 1 3 #44413C",
+    "heat scale: box 1.6 -1.3 1.8 0.5 0.1 1.5 #D1C4A5",
+    "ash tray: box 0 -1.7 0.3 2 1 0.3 #393633"
+   ],
+   "text": "HOT SHOT",
+   "hero": true
+  },
+  {
+   "id": "fort_battery",
+   "name": "stone coastal battery",
+   "role": "story",
+   "count": 1,
+   "spread": 0,
+   "life": "none",
+   "arrange": "row",
+   "search": "19th century coastal artillery fort",
+   "height_m": 5.0,
+   "at": [
+    35.0,
+    15.0
+   ],
+   "on": "",
+   "turn_deg": 0.0,
+   "color": "#77736B",
+   "parts": [
+    "platform: box 0 0 0.5 35 20 1 #77736B",
+    "parapet: box 0 -9 3 35 2 5 #69665F",
+    "left wall: box -17 0 3 2 20 5 #69665F",
+    "right wall: box 17 0 3 2 20 5 #69665F",
+    "magazine: box -10 5 3 8 7 6 #595750",
+    "arch door: box -10 1.4 2 3 0.2 4 #272B2D",
+    "drain: cyl 8 -8 1 0.4 0.4 2 rx90 #3D4142",
+    "date plaque: box 0 -10.1 3 4 0.1 1 #B19A62"
+   ],
+   "text": "COAST BATTERY",
+   "hero": false
+  },
+  {
+   "id": "cannonball_navy",
+   "name": "solid navy cannonball",
+   "role": "story",
+   "count": 1,
+   "spread": 0,
+   "life": "spin",
+   "arrange": "row",
+   "search": "iron cannon ball",
+   "height_m": 0.35,
+   "at": [
+    -7.0,
+    0.0,
+    7.0
+   ],
+   "on": "",
+   "turn_deg": 0.0,
+   "color": "#202325",
+   "parts": [
+    "iron sphere: sphere 0 0 0.18 0.35 0.35 0.35 #202325",
+    "casting seam: cyl 0 0 0.18 0.36 0.36 0.03 #414548",
+    "impact chip: sphere 0.12 0 0.25 0.06 0.06 0.04 #777B7D",
+    "rust spot: sphere -0.1 0 0.12 0.05 0.05 0.02 #74422E",
+    "navy mark: box 0 -0.18 0.2 0.12 0.01 0.08 #B7A77D",
+    "powder soot: sphere 0.08 0.1 0.1 0.08 0.03 0.03 #090909",
+    "flat base: box 0 0 0.01 0.1 0.1 0.02 #191C1D",
+    "shine: sphere -0.08 -0.1 0.25 0.04 0.02 0.02 #A3A7A8"
+   ],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "hotshot_ball",
+   "name": "glowing hotshot ball",
+   "role": "story",
+   "count": 3,
+   "spread": 1.0,
+   "life": "flicker",
+   "arrange": "row",
+   "search": "red hot iron cannonball",
+   "height_m": 0.4,
+   "at": [
+    8.0,
+    -4.0,
+    2.0
+   ],
+   "on": "",
+   "turn_deg": 0.0,
+   "color": "#E53B1F",
+   "parts": [
+    "hot sphere: sphere 0 0 0.2 0.4 0.4 0.4 #E53B1F",
+    "yellow core patch: sphere 0 -0.19 0.23 0.12 0.03 0.1 #FFB32E",
+    "casting seam: cyl 0 0 0.2 0.41 0.41 0.03 #982312",
+    "black scale: sphere -0.12 -0.17 0.13 0.08 0.02 0.05 #351A15",
+    "ember spot: sphere 0.14 -0.16 0.25 0.06 0.02 0.06 #FFD061",
+    "navy stamp: box 0 -0.2 0.2 0.12 0.01 0.08 #662319",
+    "heat halo: sphere 0 0 0.2 0.55 0.55 0.55 #F05A2A",
+    "tong mark: box 0.1 -0.2 0.12 0.08 0.01 0.12 #551B14"
+   ],
+   "text": "HOTSHOT",
+   "hero": true
+  },
+  {
+   "id": "carcass_shell",
+   "name": "pirate carcass shell",
+   "role": "story",
+   "count": 1,
+   "spread": 0,
+   "life": "spin",
+   "arrange": "row",
+   "search": "historic carcass incendiary shell",
+   "height_m": 0.45,
+   "at": [
+    -20.0,
+    -4.0,
+    1.3
+   ],
+   "on": "carcass_chest",
+   "turn_deg": 0.0,
+   "color": "#242322",
+   "parts": [
+    "hollow shell: sphere 0 0 0.23 0.45 0.45 0.45 #242322",
+    "vent north: cyl 0 -0.23 0.25 0.08 0.08 0.12 rx90 #111111",
+    "vent south: cyl 0 0.23 0.25 0.08 0.08 0.12 rx90 #111111",
+    "vent east: cyl 0.23 0 0.25 0.08 0.08 0.12 #111111",
+    "vent west: cyl -0.23 0 0.25 0.08 0.08 0.12 #111111",
+    "screw cap: cyl 0 0 0.46 0.18 0.18 0.08 #55504A",
+    "fuse: cyl 0 0 0.58 0.05 0.05 0.25 #9D7040",
+    "tar bead: sphere 0.1 -0.2 0.15 0.07 0.04 0.06 #080706",
+    "pirate scratch: box 0 -0.23 0.3 0.15 0.01 0.08 #B7A97C"
+   ],
+   "text": "CARCASS",
+   "hero": true
+  },
+  {
+   "id": "rodman_ball",
+   "name": "one-thousand-pound Rodman ball",
+   "role": "story",
+   "count": 1,
+   "spread": 0,
+   "life": "none",
+   "arrange": "row",
+   "search": "giant Rodman cannon ball",
+   "height_m": 1.2,
+   "at": [
+    35.0,
+    10.0
+   ],
+   "on": "loading_cart",
+   "turn_deg": 0.0,
+   "color": "#202628",
+   "parts": [
+    "iron sphere: sphere 0 0 0.6 1.2 1.2 1.2 #202628",
+    "casting seam: cyl 0 0 0.6 1.21 1.21 0.05 #4B5558",
+    "foundry stamp: box 0 -0.61 0.65 0.35 0.02 0.2 #A5A9A6",
+    "weight mark: box 0.2 -0.61 0.4 0.45 0.02 0.16 #D2CDBE",
+    "rust streak: box -0.3 -0.61 0.3 0.12 0.02 0.5 #79452F",
+    "lifting scar: sphere 0.4 -0.5 0.9 0.12 0.03 0.08 #6F7778",
+    "flat rest: box 0 0 0.02 0.3 0.3 0.04 #171B1C",
+    "highlight: sphere -0.35 -0.5 0.9 0.15 0.03 0.1 #788184"
+   ],
+   "text": "1000+ LB",
+   "hero": true
+  },
+  {
+   "id": "broken_rail",
+   "name": "freshly broken pirate rail",
+   "role": "story",
+   "count": 5,
+   "spread": 2.0,
+   "life": "none",
+   "arrange": "scatter",
+   "search": "broken ship railing wood",
+   "height_m": 1.2,
+   "at": [
+    -24.0,
+    -3.0
+   ],
+   "on": "pirate_ship",
+   "turn_deg": 0.0,
+   "color": "#8A5B39",
+   "parts": [],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "splinters",
+   "name": "flying oak splinters",
+   "role": "story",
+   "count": 50,
+   "spread": 5.0,
+   "life": "spin",
+   "arrange": "scatter",
+   "search": "wood splinters debris",
+   "height_m": 1.5,
+   "at": [
+    -22.0,
+    -1.0,
+    7.0
+   ],
+   "on": "",
+   "turn_deg": 70.0,
+   "color": "#B47A48",
+   "parts": [],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "langrage_pile",
+   "name": "langrage ammunition pile",
+   "role": "story",
+   "count": 30,
+   "spread": 1.2,
+   "life": "none",
+   "arrange": "heap",
+   "search": "scrap metal forks chain horseshoes stones",
+   "height_m": 0.8,
+   "at": [
+    -19.0,
+    -3.0
+   ],
+   "on": "pirate_ship",
+   "turn_deg": 0.0,
+   "color": "",
+   "parts": [],
+   "text": "LANGRAGE",
+   "hero": true
+  },
+  {
+   "id": "garbage_cluster",
+   "name": "airborne literal garbage",
+   "role": "gag",
+   "count": 40,
+   "spread": 6.0,
+   "life": "spin",
+   "arrange": "scatter",
+   "search": "broken mug boot fork horseshoe chain debris",
+   "height_m": 1.0,
+   "at": [
+    -5.0,
+    -1.0,
+    8.0
+   ],
+   "on": "",
+   "turn_deg": 90.0,
+   "color": "",
+   "parts": [],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "wet_wad",
+   "name": "soaking wet cannon plug",
+   "role": "story",
+   "count": 1,
+   "spread": 0,
+   "life": "drip",
+   "arrange": "row",
+   "search": "wet rope cannon wad sponge",
+   "height_m": 0.35,
+   "at": [
+    5.0,
+    -2.0,
+    1.3
+   ],
+   "on": "navy_cannon",
+   "turn_deg": 0.0,
+   "color": "#667F86",
+   "parts": [],
+   "text": "WET PLUG",
+   "hero": true
+  },
+  {
+   "id": "hotshot_tongs",
+   "name": "long hotshot tongs",
+   "role": "story",
+   "count": 1,
+   "spread": 0,
+   "life": "none",
+   "arrange": "row",
+   "search": "blacksmith cannonball tongs",
+   "height_m": 1.8,
+   "at": [
+    8.0,
+    -4.0
+   ],
+   "on": "",
+   "turn_deg": 0.0,
+   "color": "#343638",
+   "parts": [],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "furnace_door",
+   "name": "hotshot furnace door",
+   "role": "detail",
+   "count": 1,
+   "spread": 0,
+   "life": "none",
+   "arrange": "row",
+   "search": "iron furnace door historic",
+   "height_m": 1.4,
+   "at": [
+    9.0,
+    -6.0
+   ],
+   "on": "furnace",
+   "turn_deg": 0.0,
+   "color": "#292929",
+   "parts": [],
+   "text": "DANGER HOT",
+   "hero": false
+  },
+  {
+   "id": "ammo_chest",
+   "name": "empty pirate ammunition chest",
+   "role": "story",
+   "count": 1,
+   "spread": 0,
+   "life": "none",
+   "arrange": "row",
+   "search": "wooden naval ammunition chest",
+   "height_m": 0.8,
+   "at": [
+    -23.0,
+    -2.0
+   ],
+   "on": "pirate_ship",
+   "turn_deg": 20.0,
+   "color": "#684126",
+   "parts": [],
+   "text": "SHOT",
+   "hero": false
+  },
+  {
+   "id": "carcass_chest",
+   "name": "pirate weapon chest",
+   "role": "story",
+   "count": 1,
+   "spread": 0,
+   "life": "none",
+   "arrange": "row",
+   "search": "pirate wooden weapon chest iron bands",
+   "height_m": 0.9,
+   "at": [
+    -20.0,
+    -4.0
+   ],
+   "on": "pirate_ship",
+   "turn_deg": 0.0,
+   "color": "#53321F",
+   "parts": [],
+   "text": "LAST RESORT",
+   "hero": false
+  },
+  {
+   "id": "pitch_pot",
+   "name": "burning tar pitch pot",
+   "role": "story",
+   "count": 1,
+   "spread": 0,
+   "life": "smoke",
+   "arrange": "row",
+   "search": "historic pitch tar pot brazier",
+   "height_m": 0.7,
+   "at": [
+    -19.0,
+    -4.0
+   ],
+   "on": "pirate_ship",
+   "turn_deg": 0.0,
+   "color": "#171717",
+   "parts": [],
+   "text": "TAR",
+   "hero": false
+  },
+  {
+   "id": "tar_rope",
+   "name": "tarred rope bundle",
+   "role": "story",
+   "count": 8,
+   "spread": 2.0,
+   "life": "smoke",
+   "arrange": "heap",
+   "search": "tarred ship rope coil",
+   "height_m": 0.8,
+   "at": [
+    -23.0,
+    1.0
+   ],
+   "on": "pirate_ship",
+   "turn_deg": 0.0,
+   "color": "#241C17",
+   "parts": [],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "sand_timer",
+   "name": "shipboard sand timer",
+   "role": "story",
+   "count": 1,
+   "spread": 0,
+   "life": "none",
+   "arrange": "row",
+   "search": "18th century hourglass brass",
+   "height_m": 0.5,
+   "at": [
+    -23.0,
+    1.0
+   ],
+   "on": "pirate_ship",
+   "turn_deg": 0.0,
+   "color": "#C09B55",
+   "parts": [],
+   "text": "MINUTES",
+   "hero": false
+  },
+  {
+   "id": "water_bucket",
+   "name": "wooden fire buckets",
+   "role": "story",
+   "count": 12,
+   "spread": 5.0,
+   "life": "bob",
+   "arrange": "scatter",
+   "search": "wooden ship bucket rope handle",
+   "height_m": 0.45,
+   "at": [
+    -23.0,
+    -1.0
+   ],
+   "on": "pirate_ship",
+   "turn_deg": 0.0,
+   "color": "#7C5232",
+   "parts": [],
+   "text": "FIRE",
+   "hero": false
+  },
+  {
+   "id": "rope_coils",
+   "name": "deck rope coils",
+   "role": "dressing",
+   "count": 24,
+   "spread": 8.0,
+   "life": "sway",
+   "arrange": "scatter",
+   "search": "nautical rope coil sailing ship",
+   "height_m": 0.2,
+   "at": [
+    -26.0,
+    -2.0
+   ],
+   "on": "pirate_ship",
+   "turn_deg": 0.0,
+   "color": "#AD8B5F",
+   "parts": [],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "powder_barrels",
+   "name": "gunpowder barrels",
+   "role": "dressing",
+   "count": 15,
+   "spread": 4.0,
+   "life": "none",
+   "arrange": "stack",
+   "search": "18th century powder barrel",
+   "height_m": 1.0,
+   "at": [
+    -25.0,
+    2.0
+   ],
+   "on": "pirate_ship",
+   "turn_deg": 0.0,
+   "color": "#6C482D",
+   "parts": [],
+   "text": "POWDER",
+   "hero": false
+  },
+  {
+   "id": "material_display",
+   "name": "wood versus iron test display",
+   "role": "story",
+   "count": 1,
+   "spread": 0,
+   "life": "none",
+   "arrange": "row",
+   "search": "oak plank riveted iron plate comparison",
+   "height_m": 2.0,
+   "at": [
+    34.0,
+    7.0
+   ],
+   "on": "fort_battery",
+   "turn_deg": 0.0,
+   "color": "",
+   "parts": [],
+   "text": "WOOD / IRON",
+   "hero": false
+  },
+  {
+   "id": "iron_hull",
+   "name": "iron armour plate section",
+   "role": "story",
+   "count": 12,
+   "spread": 10.0,
+   "life": "bob",
+   "arrange": "row",
+   "search": "riveted ironclad armor plate",
+   "height_m": 5.0,
+   "at": [
+    39.0,
+    -4.0
+   ],
+   "on": "iron_warship",
+   "turn_deg": 0.0,
+   "color": "#4D5B60",
+   "parts": [],
+   "text": "IRON",
+   "hero": false
+  },
+  {
+   "id": "torn_iron_plate",
+   "name": "Rodman-torn armour plate",
+   "role": "story",
+   "count": 8,
+   "spread": 4.0,
+   "life": "none",
+   "arrange": "scatter",
+   "search": "torn riveted steel plate hole",
+   "height_m": 3.0,
+   "at": [
+    44.0,
+    -4.0
+   ],
+   "on": "iron_warship",
+   "turn_deg": 0.0,
+   "color": "#69777B",
+   "parts": [],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "loading_cart",
+   "name": "reinforced Rodman loading cart",
+   "role": "story",
+   "count": 1,
+   "spread": 0,
+   "life": "none",
+   "arrange": "row",
+   "search": "civil war artillery loading cart",
+   "height_m": 1.2,
+   "at": [
+    35.0,
+    10.0
+   ],
+   "on": "fort_battery",
+   "turn_deg": 0.0,
+   "color": "#614630",
+   "parts": [],
+   "text": "HEAVY SHOT",
+   "hero": false
+  },
+  {
+   "id": "rodman_wheel",
+   "name": "Rodman carriage wheel",
+   "role": "detail",
+   "count": 4,
+   "spread": 4.0,
+   "life": "none",
+   "arrange": "row",
+   "search": "heavy artillery iron wheel",
+   "height_m": 2.0,
+   "at": [
+    33.0,
+    14.0
+   ],
+   "on": "rodman_gun",
+   "turn_deg": 0.0,
+   "color": "#3E484B",
+   "parts": [],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "weight_scale",
+   "name": "one-thousand-pound hanging scale",
+   "role": "story",
+   "count": 1,
+   "spread": 0,
+   "life": "none",
+   "arrange": "row",
+   "search": "historic industrial hanging weight scale",
+   "height_m": 3.0,
+   "at": [
+    32.0,
+    11.0
+   ],
+   "on": "fort_battery",
+   "turn_deg": 0.0,
+   "color": "#8B7654",
+   "parts": [],
+   "text": "1000+ LB",
+   "hero": false
+  },
+  {
+   "id": "fort_flag",
+   "name": "American fort flag",
+   "role": "detail",
+   "count": 1,
+   "spread": 0,
+   "life": "flutter",
+   "arrange": "row",
+   "search": "19th century American flag fort",
+   "height_m": 10.0,
+   "at": [
+    22.0,
+    18.0
+   ],
+   "on": "fort_battery",
+   "turn_deg": 0.0,
+   "color": "#B33A36",
+   "parts": [],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "sea_birds",
+   "name": "seabirds",
+   "role": "dressing",
+   "count": 30,
+   "spread": 25.0,
+   "life": "flutter",
+   "arrange": "scatter",
+   "search": "gull seabird flying flock",
+   "height_m": 0.5,
+   "at": [
+    5.0,
+    -20.0,
+    18.0
+   ],
+   "on": "",
+   "turn_deg": 0.0,
+   "color": "#E8E5DB",
+   "parts": [],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "waves",
+   "name": "choppy ocean waves",
+   "role": "dressing",
+   "count": 60,
+   "spread": 30,
+   "life": "sway",
+   "arrange": "scatter",
+   "search": "ocean wave foam cluster",
+   "height_m": 1.2,
+   "at": [
+    0.0,
+    0.0
+   ],
+   "on": "",
+   "turn_deg": 0.0,
+   "color": "#416A78",
+   "parts": [],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "smoke_clouds",
+   "name": "cannon and fire smoke",
+   "role": "dressing",
+   "count": 25,
+   "spread": 30,
+   "life": "smoke",
+   "arrange": "scatter",
+   "search": "black powder smoke cloud",
+   "height_m": 4.0,
+   "at": [
+    -5.0,
+    -5.0,
+    8.0
+   ],
+   "on": "",
+   "turn_deg": 0.0,
+   "color": "#777571",
+   "parts": [],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "lanterns",
+   "name": "ship lanterns",
+   "role": "dressing",
+   "count": 18,
+   "spread": 14.0,
+   "life": "flicker",
+   "arrange": "scatter",
+   "search": "18th century brass ship lantern",
+   "height_m": 0.5,
+   "at": [
+    -20.0,
+    0.0,
+    8.0
+   ],
+   "on": "pirate_ship",
+   "turn_deg": 0.0,
+   "color": "#D69A3A",
+   "parts": [],
+   "text": "",
+   "hero": false
+  },
+  {
+   "id": "distant_ships",
+   "name": "distant square-rigged ships",
+   "role": "dressing",
+   "count": 7,
+   "spread": 30,
+   "life": "bob",
+   "arrange": "scatter",
+   "search": "age of sail ship distant",
+   "height_m": 12.0,
+   "at": [
+    0.0,
+    -30.0
+   ],
+   "on": "",
+   "turn_deg": 90.0,
+   "color": "#59656A",
+   "parts": [],
+   "text": "",
+   "hero": false
+  }
+ ],
+ "cast": [
+  {
+   "id": "pirate_gunner",
+   "label": "resourceful pirate gunner and hero",
+   "at": [
+    -22.0,
+    -1.0
+   ],
+   "turn_deg": 0.0,
+   "look": {
+    "outfit": "vest",
+    "color": "#A33A31",
+    "accent": "#E5D2A6",
+    "pattern": "stripes",
+    "hat": "cap",
+    "glasses": false
+   }
+  },
+  {
+   "id": "pirate_captain",
+   "label": "smug pirate captain and mocker",
+   "at": [
+    -25.0,
+    -1.0
+   ],
+   "turn_deg": 0.0,
+   "look": {
+    "outfit": "coat",
+    "color": "#243D59",
+    "accent": "#D2A93D",
+    "pattern": "pinstripe",
+    "hat": "cowboy",
+    "glasses": false
+   }
+  },
+  {
+   "id": "pirate_deckhand",
+   "label": "nervous pirate deckhand",
+   "at": [
+    -20.0,
+    1.0
+   ],
+   "turn_deg": 0.0,
+   "look": {
+    "outfit": "shirt",
+    "color": "#D3C19A",
+    "accent": "#5B7C76",
+    "pattern": "none",
+    "hat": "beanie",
+    "glasses": false
+   }
+  },
+  {
+   "id": "navy_gunner",
+   "label": "serious navy gunner",
+   "at": [
+    6.0,
+    -1.0
+   ],
+   "turn_deg": 0.0,
+   "look": {
+    "outfit": "uniform",
+    "color": "#294E72",
+    "accent": "#E6E1D1",
+    "pattern": "none",
+    "hat": "cap",
+    "glasses": false
+   }
+  },
+  {
+   "id": "navy_loader",
+   "label": "cautious hotshot loader",
+   "at": [
+    8.0,
+    -3.0
+   ],
+   "turn_deg": 0.0,
+   "look": {
+    "outfit": "apron",
+    "color": "#777C80",
+    "accent": "#C9D6DB",
+    "pattern": "none",
+    "hat": "beanie",
+    "glasses": false
+   }
+  },
+  {
+   "id": "navy_sailor",
+   "label": "methodical navy sailor",
+   "at": [
+    12.0,
+    1.0
+   ],
+   "turn_deg": 0.0,
+   "look": {
+    "outfit": "shirt",
+    "color": "#E1DDC9",
+    "accent": "#315776",
+    "pattern": "stripes",
+    "hat": "cap",
+    "glasses": false
+   }
+  },
+  {
+   "id": "american_officer",
+   "label": "calm American artillery officer",
+   "at": [
+    31.0,
+    14.0
+   ],
+   "turn_deg": 0.0,
+   "look": {
+    "outfit": "coat",
+    "color": "#223E62",
+    "accent": "#C9A34B",
+    "pattern": "none",
+    "hat": "cap",
+    "glasses": false
+   }
+  },
+  {
+   "id": "artillery_crew",
+   "label": "Rodman artillery crew",
+   "at": [
+    35.0,
+    11.0
+   ],
+   "turn_deg": 0.0,
+   "look": {
+    "outfit": "uniform",
+    "color": "#50677A",
+    "accent": "#B9A16E",
+    "pattern": "none",
+    "hat": "cap",
+    "glasses": false
+   }
+  },
+  {
+   "id": "iron_crewman",
+   "label": "confident iron warship crewman",
+   "at": [
+    40.0,
+    -1.0
+   ],
+   "turn_deg": 0.0,
+   "look": {
+    "outfit": "uniform",
+    "color": "#4B5D64",
+    "accent": "#D5D8D3",
+    "pattern": "none",
+    "hat": "cap",
+    "glasses": false
+   }
+  }
+ ],
+ "beats": [
+  {
+   "from": 0,
+   "until": 7,
+   "who": "pirate_gunner",
+   "do": "lean-back",
+   "target": "cannonball_navy",
+   "to": [],
+   "with": "rope_coils",
+   "face": "wide",
+   "bubble": "!",
+   "says": false
+  },
+  {
+   "from": 8,
+   "until": 15,
+   "who": "pirate_gunner",
+   "do": "stand",
+   "target": "splinters",
+   "to": [],
+   "with": "",
+   "face": "wide",
+   "bubble": "?",
+   "says": false
+  },
+  {
+   "from": 16,
+   "until": 20,
+   "who": "navy_gunner",
+   "do": "pull",
+   "target": "navy_cannon",
+   "to": [],
+   "with": "navy_cannon",
+   "face": "serious",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 21,
+   "until": 31,
+   "who": "pirate_gunner",
+   "do": "fall",
+   "target": "pirate_ship",
+   "to": [],
+   "with": "",
+   "face": "pale",
+   "bubble": "!",
+   "says": false
+  },
+  {
+   "from": 21,
+   "until": 31,
+   "who": "pirate_captain",
+   "do": "lean-back",
+   "target": "splinters",
+   "to": [],
+   "with": "",
+   "face": "pale",
+   "bubble": "!",
+   "says": false
+  },
+  {
+   "from": 32,
+   "until": 36,
+   "who": "pirate_gunner",
+   "do": "look",
+   "target": "ammo_chest",
+   "to": [],
+   "with": "",
+   "face": "flat",
+   "bubble": "...",
+   "says": false
+  },
+  {
+   "from": 32,
+   "until": 36,
+   "who": "pirate_captain",
+   "do": "shrug",
+   "target": "ammo_chest",
+   "to": [],
+   "with": "",
+   "face": "smug",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 37,
+   "until": 42,
+   "who": "pirate_gunner",
+   "do": "push",
+   "target": "pirate_cannon",
+   "to": [],
+   "with": "langrage_pile",
+   "face": "serious",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 43,
+   "until": 45,
+   "who": "pirate_gunner",
+   "do": "use",
+   "target": "pirate_cannon",
+   "to": [],
+   "with": "pirate_cannon",
+   "face": "grin",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 46,
+   "until": 52,
+   "who": "navy_loader",
+   "do": "pick-up",
+   "target": "hotshot_ball",
+   "to": [],
+   "with": "hotshot_tongs",
+   "face": "squint",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 46,
+   "until": 52,
+   "who": "navy_gunner",
+   "do": "point",
+   "target": "hotshot_ball",
+   "to": [],
+   "with": "wet_wad",
+   "face": "smug",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 53,
+   "until": 59,
+   "who": "navy_loader",
+   "do": "use",
+   "target": "furnace",
+   "to": [],
+   "with": "hotshot_tongs",
+   "face": "serious",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 60,
+   "until": 76,
+   "who": "navy_loader",
+   "do": "put-down",
+   "target": "navy_cannon",
+   "to": [],
+   "with": "hotshot_ball",
+   "face": "squint",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 60,
+   "until": 76,
+   "who": "navy_gunner",
+   "do": "push",
+   "target": "navy_cannon",
+   "to": [],
+   "with": "wet_wad",
+   "face": "serious",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 77,
+   "until": 84,
+   "who": "pirate_gunner",
+   "do": "lean-back",
+   "target": "hotshot_ball",
+   "to": [],
+   "with": "",
+   "face": "wide",
+   "bubble": "!",
+   "says": false
+  },
+  {
+   "from": 85,
+   "until": 95,
+   "who": "pirate_gunner",
+   "do": "carry",
+   "target": "pirate_ship",
+   "to": [
+    -23.0,
+    0.0
+   ],
+   "with": "water_bucket",
+   "face": "shout",
+   "bubble": "!",
+   "says": false
+  },
+  {
+   "from": 85,
+   "until": 95,
+   "who": "pirate_captain",
+   "do": "hands-on-head",
+   "target": "pirate_ship",
+   "to": [],
+   "with": "",
+   "face": "pale",
+   "bubble": "!",
+   "says": false
+  },
+  {
+   "from": 96,
+   "until": 103,
+   "who": "pirate_gunner",
+   "do": "pick-up",
+   "target": "carcass_shell",
+   "to": [],
+   "with": "carcass_shell",
+   "face": "grin",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 96,
+   "until": 103,
+   "who": "pirate_captain",
+   "do": "arms-crossed",
+   "target": "carcass_shell",
+   "to": [],
+   "with": "",
+   "face": "smug",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 104,
+   "until": 110,
+   "who": "pirate_gunner",
+   "do": "use",
+   "target": "carcass_shell",
+   "to": [],
+   "with": "pitch_pot",
+   "face": "serious",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 111,
+   "until": 116,
+   "who": "pirate_gunner",
+   "do": "use",
+   "target": "pirate_cannon",
+   "to": [],
+   "with": "carcass_shell",
+   "face": "grin",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 117,
+   "until": 121,
+   "who": "navy_sailor",
+   "do": "work",
+   "target": "navy_ship",
+   "to": [],
+   "with": "water_bucket",
+   "face": "flat",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 122,
+   "until": 132,
+   "who": "iron_crewman",
+   "do": "shrug",
+   "target": "carcass_shell",
+   "to": [],
+   "with": "",
+   "face": "calm",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 122,
+   "until": 132,
+   "who": "pirate_gunner",
+   "do": "facepalm",
+   "target": "iron_warship",
+   "to": [],
+   "with": "",
+   "face": "flat",
+   "bubble": "...",
+   "says": false
+  },
+  {
+   "from": 133,
+   "until": 138,
+   "who": "american_officer",
+   "do": "point",
+   "target": "rodman_gun",
+   "to": [],
+   "with": "",
+   "face": "calm",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 139,
+   "until": 149,
+   "who": "artillery_crew",
+   "do": "push",
+   "target": "rodman_gun",
+   "to": [],
+   "with": "rodman_ball",
+   "face": "squint",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 150,
+   "until": 162,
+   "who": "american_officer",
+   "do": "use",
+   "target": "rodman_gun",
+   "to": [],
+   "with": "rodman_gun",
+   "face": "serious",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 150,
+   "until": 162,
+   "who": "iron_crewman",
+   "do": "fall",
+   "target": "iron_warship",
+   "to": [],
+   "with": "",
+   "face": "wide",
+   "bubble": "!",
+   "says": false
+  }
+ ],
+ "events": [
+  {
+   "from": 4,
+   "until": 7,
+   "thing": "cannonball_navy",
+   "do": "move",
+   "to": [
+    -18.0,
+    0.0
+   ],
+   "path": [
+    [
+     5.0,
+     0.0,
+     7.0
+    ],
+    [
+     -7.0,
+     0.0,
+     7.0
+    ],
+    [
+     -18.0,
+     0.0,
+     7.0
+    ]
+   ],
+   "amount": 0.0,
+   "text": ""
+  },
+  {
+   "from": 4,
+   "until": 7,
+   "thing": "broken_rail",
+   "do": "break",
+   "to": [],
+   "path": [],
+   "amount": 0.0,
+   "text": ""
+  },
+  {
+   "from": 19,
+   "until": 24,
+   "thing": "navy_cannon",
+   "do": "shake",
+   "to": [],
+   "path": [],
+   "amount": 12.0,
+   "text": ""
+  },
+  {
+   "from": 20,
+   "until": 24,
+   "thing": "cannonball_navy",
+   "do": "move",
+   "to": [
+    -24.0,
+    0.0
+   ],
+   "path": [
+    [
+     5.0,
+     -2.0,
+     7.0
+    ],
+    [
+     -8.0,
+     -1.0,
+     8.0
+    ],
+    [
+     -24.0,
+     0.0,
+     5.0
+    ]
+   ],
+   "amount": 0.0,
+   "text": ""
+  },
+  {
+   "from": 25,
+   "until": 31,
+   "thing": "splinters",
+   "do": "move",
+   "to": [
+    -18.0,
+    1.0
+   ],
+   "path": [
+    [
+     -25.0,
+     0.0,
+     6.0
+    ],
+    [
+     -22.0,
+     0.0,
+     7.0
+    ],
+    [
+     -18.0,
+     1.0,
+     7.0
+    ]
+   ],
+   "amount": 0.0,
+   "text": ""
+  },
+  {
+   "from": 39,
+   "until": 45,
+   "thing": "garbage_cluster",
+   "do": "appear",
+   "to": [],
+   "path": [],
+   "amount": 0.0,
+   "text": ""
+  },
+  {
+   "from": 43,
+   "until": 45,
+   "thing": "garbage_cluster",
+   "do": "move",
+   "to": [
+    8.0,
+    0.0
+   ],
+   "path": [
+    [
+     -18.0,
+     -1.0,
+     7.0
+    ],
+    [
+     -5.0,
+     -1.0,
+     8.0
+    ],
+    [
+     8.0,
+     0.0,
+     7.0
+    ]
+   ],
+   "amount": 0.0,
+   "text": ""
+  },
+  {
+   "from": 46,
+   "until": 52,
+   "thing": "furnace_door",
+   "do": "tilt",
+   "to": [],
+   "path": [],
+   "amount": 90.0,
+   "text": ""
+  },
+  {
+   "from": 52,
+   "until": 59,
+   "thing": "hotshot_ball",
+   "do": "glow",
+   "to": [],
+   "path": [],
+   "amount": 5.0,
+   "text": ""
+  },
+  {
+   "from": 53,
+   "until": 58,
+   "thing": "hotshot_ball",
+   "do": "text",
+   "to": [],
+   "path": [],
+   "amount": 0.0,
+   "text": "RED HOT"
+  },
+  {
+   "from": 60,
+   "until": 69,
+   "thing": "wet_wad",
+   "do": "move",
+   "to": [
+    5.0,
+    -2.0
+   ],
+   "path": [
+    [
+     6.0,
+     -1.0,
+     1.5
+    ],
+    [
+     5.0,
+     -2.0,
+     1.3
+    ]
+   ],
+   "amount": 0.0,
+   "text": ""
+  },
+  {
+   "from": 61,
+   "until": 69,
+   "thing": "hotshot_ball",
+   "do": "move",
+   "to": [
+    5.0,
+    -2.0
+   ],
+   "path": [
+    [
+     8.0,
+     -4.0,
+     2.0
+    ],
+    [
+     6.0,
+     -2.0,
+     2.0
+    ],
+    [
+     5.0,
+     -2.0,
+     1.3
+    ]
+   ],
+   "amount": 0.0,
+   "text": ""
+  },
+  {
+   "from": 77,
+   "until": 84,
+   "thing": "hotshot_ball",
+   "do": "move",
+   "to": [
+    -23.0,
+    1.0
+   ],
+   "path": [
+    [
+     5.0,
+     -2.0,
+     7.0
+    ],
+    [
+     -8.0,
+     0.0,
+     8.0
+    ],
+    [
+     -23.0,
+     1.0,
+     4.0
+    ]
+   ],
+   "amount": 0.0,
+   "text": ""
+  },
+  {
+   "from": 77,
+   "until": 84,
+   "thing": "pirate_ship",
+   "do": "shake",
+   "to": [],
+   "path": [],
+   "amount": 8.0,
+   "text": ""
+  },
+  {
+   "from": 81,
+   "until": 95,
+   "thing": "tar_rope",
+   "do": "smoke",
+   "to": [],
+   "path": [],
+   "amount": 0.0,
+   "text": ""
+  },
+  {
+   "from": 88,
+   "until": 95,
+   "thing": "pirate_ship",
+   "do": "fire",
+   "to": [],
+   "path": [],
+   "amount": 0.0,
+   "text": ""
+  },
+  {
+   "from": 96,
+   "until": 103,
+   "thing": "carcass_shell",
+   "do": "glow",
+   "to": [],
+   "path": [],
+   "amount": 2.0,
+   "text": ""
+  },
+  {
+   "from": 104,
+   "until": 110,
+   "thing": "carcass_shell",
+   "do": "text",
+   "to": [],
+   "path": [],
+   "amount": 0.0,
+   "text": "TAR PACKED"
+  },
+  {
+   "from": 111,
+   "until": 116,
+   "thing": "carcass_shell",
+   "do": "move",
+   "to": [
+    8.0,
+    0.0
+   ],
+   "path": [
+    [
+     -19.0,
+     -2.0,
+     7.0
+    ],
+    [
+     -5.0,
+     -2.0,
+     10.0
+    ],
+    [
+     8.0,
+     0.0,
+     8.0
+    ]
+   ],
+   "amount": 0.0,
+   "text": ""
+  },
+  {
+   "from": 111,
+   "until": 116,
+   "thing": "carcass_shell",
+   "do": "spin",
+   "to": [],
+   "path": [],
+   "amount": 720.0,
+   "text": ""
+  },
+  {
+   "from": 112,
+   "until": 121,
+   "thing": "carcass_shell",
+   "do": "fire",
+   "to": [],
+   "path": [],
+   "amount": 0.0,
+   "text": ""
+  },
+  {
+   "from": 117,
+   "until": 121,
+   "thing": "navy_ship",
+   "do": "fire",
+   "to": [],
+   "path": [],
+   "amount": 0.0,
+   "text": ""
+  },
+  {
+   "from": 117,
+   "until": 121,
+   "thing": "sea_birds",
+   "do": "move",
+   "to": [
+    25.0,
+    -25.0
+   ],
+   "path": [
+    [
+     5.0,
+     -20.0,
+     18.0
+    ],
+    [
+     15.0,
+     -24.0,
+     20.0
+    ],
+    [
+     25.0,
+     -25.0,
+     22.0
+    ]
+   ],
+   "amount": 0.0,
+   "text": ""
+  },
+  {
+   "from": 122,
+   "until": 129,
+   "thing": "iron_warship",
+   "do": "move",
+   "to": [
+    35.0,
+    0.0
+   ],
+   "path": [
+    [
+     50.0,
+     0.0
+    ],
+    [
+     42.0,
+     0.0
+    ],
+    [
+     35.0,
+     0.0
+    ]
+   ],
+   "amount": 0.0,
+   "text": ""
+  },
+  {
+   "from": 130,
+   "until": 132,
+   "thing": "carcass_shell",
+   "do": "fall",
+   "to": [],
+   "path": [],
+   "amount": 90.0,
+   "text": ""
+  },
+  {
+   "from": 130,
+   "until": 132,
+   "thing": "carcass_shell",
+   "do": "vanish",
+   "to": [],
+   "path": [],
+   "amount": 0.0,
+   "text": ""
+  },
+  {
+   "from": 139,
+   "until": 149,
+   "thing": "rodman_ball",
+   "do": "move",
+   "to": [
+    35.0,
+    14.0
+   ],
+   "path": [
+    [
+     35.0,
+     10.0,
+     1.0
+    ],
+    [
+     35.0,
+     12.0,
+     2.0
+    ],
+    [
+     35.0,
+     14.0,
+     3.0
+    ]
+   ],
+   "amount": 0.0,
+   "text": ""
+  },
+  {
+   "from": 146,
+   "until": 149,
+   "thing": "weight_scale",
+   "do": "text",
+   "to": [],
+   "path": [],
+   "amount": 0.0,
+   "text": "1000+ LB"
+  },
+  {
+   "from": 150,
+   "until": 162,
+   "thing": "rodman_ball",
+   "do": "move",
+   "to": [
+    44.0,
+    0.0
+   ],
+   "path": [
+    [
+     35.0,
+     10.0,
+     3.0
+    ],
+    [
+     36.0,
+     5.0,
+     6.0
+    ],
+    [
+     40.0,
+     1.0,
+     5.0
+    ],
+    [
+     44.0,
+     0.0,
+     4.0
+    ]
+   ],
+   "amount": 0.0,
+   "text": ""
+  },
+  {
+   "from": 152,
+   "until": 156,
+   "thing": "torn_iron_plate",
+   "do": "break",
+   "to": [],
+   "path": [],
+   "amount": 0.0,
+   "text": ""
+  },
+  {
+   "from": 158,
+   "until": 162,
+   "thing": "iron_warship",
+   "do": "tilt",
+   "to": [],
+   "path": [],
+   "amount": 18.0,
+   "text": ""
+  },
+  {
+   "from": 158,
+   "until": 162,
+   "thing": "iron_warship",
+   "do": "move",
+   "to": [
+    40.0,
+    0.0
+   ],
+   "path": [
+    [
+     40.0,
+     0.0,
+     0
+    ],
+    [
+     40.0,
+     0.0,
+     0
+    ],
+    [
+     40.0,
+     0.0,
+     0
+    ]
+   ],
+   "amount": 0.0,
+   "text": ""
+  }
+ ],
+ "callouts": [
+  {
+   "from": 16,
+   "until": 18,
+   "on": "pirate_ship",
+   "text": "1700s",
+   "tone": "neutral"
+  },
+  {
+   "from": 42,
+   "until": 45,
+   "on": "langrage_pile",
+   "text": "LANGRAGE",
+   "tone": "neutral"
+  },
+  {
+   "from": 52,
+   "until": 59,
+   "on": "hotshot_ball",
+   "text": "HOTSHOT",
+   "tone": "bad"
+  },
+  {
+   "from": 67,
+   "until": 74,
+   "on": "wet_wad",
+   "text": "WET PLUG",
+   "tone": "good"
+  },
+  {
+   "from": 86,
+   "until": 87,
+   "on": "sand_timer",
+   "text": "MINUTES",
+   "tone": "bad"
+  },
+  {
+   "from": 102,
+   "until": 110,
+   "on": "carcass_shell",
+   "text": "CARCASS",
+   "tone": "bad"
+  },
+  {
+   "from": 126,
+   "until": 132,
+   "on": "iron_hull",
+   "text": "IRON",
+   "tone": "good"
+  },
+  {
+   "from": 137,
+   "until": 145,
+   "on": "rodman_gun",
+   "text": "RODMAN GUN",
+   "tone": "neutral"
+  },
+  {
+   "from": 146,
+   "until": 149,
+   "on": "rodman_ball",
+   "text": "1000+ LB",
+   "tone": "neutral"
+  },
+  {
+   "from": 160,
+   "until": 162,
+   "on": "iron_warship",
+   "text": "ONE SHOT",
+   "tone": "bad"
+  }
+ ],
+ "moves": [
+  {
+   "from": 0,
+   "job": "hook",
+   "follow": "cannonball_navy",
+   "landings": [
+    {
+     "see": "The cannonball breaks the rail beside the gunner's face, with broken timber close and the mast behind.",
+     "from": 4,
+     "frame": [
+      "cannonball_navy",
+      "pirate_gunner",
+      "broken_rail"
+     ],
+     "near": "broken_rail",
+     "eye": "",
+     "angle": "front",
+     "lens": "face",
+     "cam": [
+      -22,
+      -5,
+      7.2
+     ],
+     "aim": [
+      -22,
+      -1,
+      7.3
+     ],
+     "mm": 85
+    },
+    {
+     "see": "The camera rides behind the ball through debris while the gunner ducks and the navy ship remains across the water.",
+     "from": 9,
+     "frame": [
+      "cannonball_navy",
+      "pirate_gunner",
+      "navy_ship"
+     ],
+     "near": "cannonball_navy",
+     "eye": "",
+     "angle": "low",
+     "lens": "wide",
+     "cam": [
+      -10,
+      2,
+      7.3
+     ],
+     "aim": [
+      -18,
+      0,
+      7
+     ],
+     "mm": 24
+    },
+    {
+     "see": "The unharmed gunner stands pinned by clothing among splinters with the mast filling the background.",
+     "from": 14,
+     "frame": [
+      "pirate_gunner",
+      "splinters",
+      "pirate_ship"
+     ],
+     "near": "splinters",
+     "eye": "",
+     "angle": "front",
+     "lens": "medium",
+     "cam": [
+      -22,
+      -5,
+      7.5
+     ],
+     "aim": [
+      -22,
+      -1,
+      7.2
+     ],
+     "mm": 35
+    }
+   ]
+  },
+  {
+   "from": 16,
+   "job": "place",
+   "follow": "",
+   "landings": [
+    {
+     "see": "Rope coils lead into a broad period sea battle between the two square-rigged ships.",
+     "from": 18,
+     "frame": [
+      "pirate_ship",
+      "navy_ship",
+      "distant_ships"
+     ],
+     "near": "rope_coils",
+     "eye": "",
+     "angle": "high",
+     "lens": "wide",
+     "cam": [
+      -8,
+      18,
+      18
+     ],
+     "aim": [
+      -8,
+      0,
+      8
+     ],
+     "mm": 24
+    },
+    {
+     "see": "The navy gunner pulls the cannon lanyard, with the barrel close and the gunport wall behind.",
+     "from": 20,
+     "frame": [
+      "navy_gunner",
+      "navy_cannon"
+     ],
+     "near": "navy_cannon",
+     "eye": "",
+     "angle": "right",
+     "lens": "close",
+     "cam": [
+      3,
+      -6,
+      7
+     ],
+     "aim": [
+      6,
+      -1,
+      7.2
+     ],
+     "mm": 50
+    },
+    {
+     "see": "The ball folds the pirate hull inward, with oak planks close and the cannon deck beyond.",
+     "from": 21,
+     "frame": [
+      "cannonball_navy",
+      "pirate_ship",
+      "splinters"
+     ],
+     "near": "pirate_hull",
+     "eye": "",
+     "angle": "low",
+     "lens": "extreme-close",
+     "cam": [
+      -24,
+      -5,
+      5.5
+     ],
+     "aim": [
+      -24,
+      0,
+      5
+     ],
+     "mm": 85
+    },
+    {
+     "see": "The crew shelter beneath a splinter cloud, with a bucket close and a timber rib behind.",
+     "from": 31,
+     "frame": [
+      "pirate_gunner",
+      "pirate_captain",
+      "pirate_deckhand",
+      "splinters"
+     ],
+     "near": "water_bucket",
+     "eye": "",
+     "angle": "front",
+     "lens": "wide",
+     "cam": [
+      -22,
+      -5,
+      7
+     ],
+     "aim": [
+      -22,
+      0,
+      7
+     ],
+     "mm": 24
+    }
+   ]
+  },
+  {
+   "from": 32,
+   "job": "setup",
+   "follow": "",
+   "landings": [
+    {
+     "see": "The gunner opens an empty ammunition chest while the captain displays empty pockets.",
+     "from": 34,
+     "frame": [
+      "pirate_gunner",
+      "pirate_captain",
+      "ammo_chest"
+     ],
+     "near": "ammo_chest",
+     "eye": "",
+     "angle": "high",
+     "lens": "close",
+     "cam": [
+      -23,
+      -4,
+      7.5
+     ],
+     "aim": [
+      -23,
+      -2,
+      6.5
+     ],
+     "mm": 50
+    },
+    {
+     "see": "The pirates ram a bulging junk sack into their cannon with the mast behind.",
+     "from": 39,
+     "frame": [
+      "pirate_gunner",
+      "pirate_deckhand",
+      "pirate_cannon"
+     ],
+     "near": "pirate_cannon",
+     "eye": "",
+     "angle": "left",
+     "lens": "medium",
+     "cam": [
+      -19,
+      -6,
+      7
+     ],
+     "aim": [
+      -20,
+      -2,
+      7
+     ],
+     "mm": 35
+    },
+    {
+     "see": "The muzzle cutaway reveals labelled forks, chain and horseshoes beneath the gunner's hands.",
+     "from": 42,
+     "frame": [
+      "langrage_pile",
+      "pirate_gunner"
+     ],
+     "near": "langrage_pile",
+     "eye": "pirate_cannon",
+     "angle": "front",
+     "lens": "extreme-close",
+     "cam": [
+      -19,
+      -3,
+      7.2
+     ],
+     "aim": [
+      -19,
+      -2,
+      7.2
+     ],
+     "mm": 85
+    },
+    {
+     "see": "A cone of literal garbage blasts toward the navy ship, with airborne junk nearest the lens.",
+     "from": 45,
+     "frame": [
+      "garbage_cluster",
+      "pirate_cannon",
+      "navy_ship"
+     ],
+     "near": "garbage_cluster",
+     "eye": "",
+     "angle": "low",
+     "lens": "wide",
+     "cam": [
+      -12,
+      -4,
+      8
+     ],
+     "aim": [
+      0,
+      0,
+      8
+     ],
+     "mm": 24
+    }
+   ]
+  },
+  {
+   "from": 46,
+   "job": "turn",
+   "follow": "",
+   "landings": [
+    {
+     "see": "The loader opens the furnace and red light reveals the gunner beside the navy cannon.",
+     "from": 51,
+     "frame": [
+      "navy_loader",
+      "navy_gunner",
+      "furnace"
+     ],
+     "near": "furnace_door",
+     "eye": "",
+     "angle": "left",
+     "lens": "medium",
+     "cam": [
+      7,
+      -8,
+      8
+     ],
+     "aim": [
+      8,
+      -4,
+      7.5
+     ],
+     "mm": 35
+    },
+    {
+     "see": "Long tongs lift a ball from the furnace while heat bends the view of the cannon behind.",
+     "from": 51,
+     "frame": [
+      "navy_loader",
+      "hotshot_tongs",
+      "hotshot_ball"
+     ],
+     "near": "hotshot_tongs",
+     "eye": "",
+     "angle": "right",
+     "lens": "close",
+     "cam": [
+      10,
+      -7,
+      7.5
+     ],
+     "aim": [
+      8,
+      -4,
+      7.5
+     ],
+     "mm": 50
+    },
+    {
+     "see": "The red hotshot hangs centre-frame in tongs, reflected in the gunner's eyes.",
+     "from": 52,
+     "frame": [
+      "hotshot_ball",
+      "navy_gunner",
+      "furnace"
+     ],
+     "near": "hotshot_ball",
+     "eye": "",
+     "angle": "front",
+     "lens": "extreme-close",
+     "cam": [
+      8,
+      -6,
+      7.6
+     ],
+     "aim": [
+      8,
+      -4,
+      7.5
+     ],
+     "mm": 85
+    }
+   ]
+  },
+  {
+   "from": 53,
+   "job": "explain",
+   "follow": "hotshot_ball",
+   "landings": [
+    {
+     "see": "The loader rakes black cannonballs into the furnace while the gunner checks the timer.",
+     "from": 54,
+     "frame": [
+      "navy_loader",
+      "furnace",
+      "hotshot_ball"
+     ],
+     "near": "furnace",
+     "eye": "",
+     "angle": "right",
+     "lens": "medium",
+     "cam": [
+      11,
+      -7,
+      8
+     ],
+     "aim": [
+      9,
+      -5,
+      7.4
+     ],
+     "mm": 35
+    },
+    {
+     "see": "Inside the furnace, three balls glow red beside the rising heat scale.",
+     "from": 58,
+     "frame": [
+      "hotshot_ball",
+      "furnace"
+     ],
+     "near": "hotshot_ball",
+     "eye": "furnace",
+     "angle": "front",
+     "lens": "extreme-close",
+     "cam": [
+      9,
+      -6,
+      7.3
+     ],
+     "aim": [
+      9,
+      -5,
+      7.2
+     ],
+     "mm": 85
+    },
+    {
+     "see": "The wet wad enters the cannon before the loader lowers the glowing ball.",
+     "from": 61,
+     "frame": [
+      "wet_wad",
+      "hotshot_ball",
+      "navy_loader",
+      "navy_gunner"
+     ],
+     "near": "wet_wad",
+     "eye": "",
+     "angle": "over-shoulder",
+     "lens": "close",
+     "cam": [
+      7,
+      -5,
+      7.2
+     ],
+     "aim": [
+      5,
+      -2,
+      7.2
+     ],
+     "mm": 50
+    },
+    {
+     "see": "The cannon cutaway shows dark powder, wet barrier and red ball in separate layers.",
+     "from": 74,
+     "frame": [
+      "navy_cannon",
+      "wet_wad",
+      "hotshot_ball"
+     ],
+     "near": "navy_cannon",
+     "eye": "navy_cannon",
+     "angle": "left",
+     "lens": "extreme-close",
+     "cam": [
+      4,
+      -4,
+      7.2
+     ],
+     "aim": [
+      5,
+      -2,
+      7.2
+     ],
+     "mm": 85
+    }
+   ]
+  },
+  {
+   "from": 77,
+   "job": "climax",
+   "follow": "hotshot_ball",
+   "landings": [
+    {
+     "see": "The camera follows the red ball into breaking pirate planks and between two ribs.",
+     "from": 78,
+     "frame": [
+      "hotshot_ball",
+      "pirate_ship"
+     ],
+     "near": "hotshot_ball",
+     "eye": "",
+     "angle": "low",
+     "lens": "close",
+     "cam": [
+      -17,
+      2,
+      6
+     ],
+     "aim": [
+      -23,
+      1,
+      4
+     ],
+     "mm": 50
+    },
+    {
+     "see": "Inside the hull, tarred rope touches the embedded ball and the navy ship appears through the hole.",
+     "from": 84,
+     "frame": [
+      "hotshot_ball",
+      "tar_rope",
+      "navy_ship"
+     ],
+     "near": "tar_rope",
+     "eye": "pirate_ship",
+     "angle": "front",
+     "lens": "extreme-close",
+     "cam": [
+      -24,
+      1,
+      4.5
+     ],
+     "aim": [
+      -23,
+      1,
+      4
+     ],
+     "mm": 85
+    },
+    {
+     "see": "The sand timer empties beside thickening smoke and a crawling ember.",
+     "from": 86,
+     "frame": [
+      "sand_timer",
+      "tar_rope",
+      "hotshot_ball"
+     ],
+     "near": "sand_timer",
+     "eye": "pirate_ship",
+     "angle": "high",
+     "lens": "close",
+     "cam": [
+      -24,
+      2,
+      5
+     ],
+     "aim": [
+      -23,
+      1,
+      4
+     ],
+     "mm": 50
+    },
+    {
+     "see": "The camera exits the hole as internal flames silhouette the pirate hull and bucket crew.",
+     "from": 95,
+     "frame": [
+      "pirate_ship",
+      "pirate_gunner",
+      "pirate_captain"
+     ],
+     "near": "pirate_hull",
+     "eye": "",
+     "angle": "low",
+     "lens": "wide",
+     "cam": [
+      -30,
+      -10,
+      8
+     ],
+     "aim": [
+      -25,
+      0,
+      8
+     ],
+     "mm": 24
+    }
+   ]
+  },
+  {
+   "from": 96,
+   "job": "turn",
+   "follow": "",
+   "landings": [
+    {
+     "see": "The gunner opens the last-resort chest while the captain stamps out his coat tail.",
+     "from": 101,
+     "frame": [
+      "pirate_gunner",
+      "pirate_captain",
+      "carcass_chest"
+     ],
+     "near": "carcass_chest",
+     "eye": "",
+     "angle": "front",
+     "lens": "medium",
+     "cam": [
+      -20,
+      -7,
+      7
+     ],
+     "aim": [
+      -20,
+      -4,
+      7
+     ],
+     "mm": 35
+    },
+    {
+     "see": "The gunner rotates the perforated shell above the pitch pot and cannon breech.",
+     "from": 101,
+     "frame": [
+      "pirate_gunner",
+      "carcass_shell",
+      "pitch_pot"
+     ],
+     "near": "carcass_shell",
+     "eye": "",
+     "angle": "right",
+     "lens": "close",
+     "cam": [
+      -18,
+      -6,
+      7.4
+     ],
+     "aim": [
+      -20,
+      -4,
+      7.3
+     ],
+     "mm": 50
+    },
+    {
+     "see": "The labelled carcass shell fills the frame with tar visible through its vents.",
+     "from": 103,
+     "frame": [
+      "carcass_shell"
+     ],
+     "near": "carcass_shell",
+     "eye": "",
+     "angle": "front",
+     "lens": "extreme-close",
+     "cam": [
+      -20,
+      -5,
+      7.4
+     ],
+     "aim": [
+      -20,
+      -4,
+      7.3
+     ],
+     "mm": 85
+    }
+   ]
+  },
+  {
+   "from": 104,
+   "job": "explain",
+   "follow": "carcass_shell",
+   "landings": [
+    {
+     "see": "A cutaway shows the carcass shell's hollow cavity, vents and cap in the gunner's hands.",
+     "from": 105,
+     "frame": [
+      "carcass_shell",
+      "pirate_gunner"
+     ],
+     "near": "carcass_shell",
+     "eye": "carcass_shell",
+     "angle": "front",
+     "lens": "extreme-close",
+     "cam": [
+      -20,
+      -5,
+      7.4
+     ],
+     "aim": [
+      -20,
+      -4,
+      7.3
+     ],
+     "mm": 85
+    },
+    {
+     "see": "The gunner pours tar into the shell while the deckhand holds it in sand.",
+     "from": 110,
+     "frame": [
+      "pirate_gunner",
+      "pirate_deckhand",
+      "pitch_pot",
+      "carcass_shell"
+     ],
+     "near": "pitch_pot",
+     "eye": "",
+     "angle": "left",
+     "lens": "close",
+     "cam": [
+      -22,
+      -6,
+      7.5
+     ],
+     "aim": [
+      -20,
+      -4,
+      7.2
+     ],
+     "mm": 50
+    },
+    {
+     "see": "The camera rides beside the spinning shell and its four spiral fire jets over the sea.",
+     "from": 112,
+     "frame": [
+      "carcass_shell",
+      "navy_ship"
+     ],
+     "near": "carcass_shell",
+     "eye": "",
+     "angle": "right",
+     "lens": "close",
+     "cam": [
+      -3,
+      -5,
+      10
+     ],
+     "aim": [
+      0,
+      0,
+      9
+     ],
+     "mm": 50
+    },
+    {
+     "see": "The navy ship burns like a mast-high torch while one sailor continues mopping.",
+     "from": 121,
+     "frame": [
+      "navy_ship",
+      "navy_sailor",
+      "sea_birds"
+     ],
+     "near": "navy_ship",
+     "eye": "",
+     "angle": "low",
+     "lens": "wide",
+     "cam": [
+      15,
+      -12,
+      10
+     ],
+     "aim": [
+      10,
+      0,
+      12
+     ],
+     "mm": 24
+    }
+   ]
+  },
+  {
+   "from": 122,
+   "job": "place",
+   "follow": "iron_warship",
+   "landings": [
+    {
+     "see": "The cool iron warship slides before the burning wooden vessel and blocks the flames.",
+     "from": 126,
+     "frame": [
+      "iron_warship",
+      "navy_ship"
+     ],
+     "near": "iron_hull",
+     "eye": "",
+     "angle": "low",
+     "lens": "wide",
+     "cam": [
+      43,
+      -12,
+      8
+     ],
+     "aim": [
+      40,
+      0,
+      7
+     ],
+     "mm": 24
+    },
+    {
+     "see": "The material display shows oak collapsing while riveted iron remains straight.",
+     "from": 129,
+     "frame": [
+      "material_display",
+      "iron_hull",
+      "american_officer"
+     ],
+     "near": "material_display",
+     "eye": "",
+     "angle": "front",
+     "lens": "close",
+     "cam": [
+      34,
+      3,
+      5
+     ],
+     "aim": [
+      34,
+      7,
+      3
+     ],
+     "mm": 50
+    },
+    {
+     "see": "The carcass shell squashes against iron and drops as the iron crewman shrugs.",
+     "from": 132,
+     "frame": [
+      "carcass_shell",
+      "iron_hull",
+      "iron_crewman"
+     ],
+     "near": "carcass_shell",
+     "eye": "",
+     "angle": "right",
+     "lens": "medium",
+     "cam": [
+      42,
+      -8,
+      7
+     ],
+     "aim": [
+      40,
+      -2,
+      6
+     ],
+     "mm": 35
+    }
+   ]
+  },
+  {
+   "from": 133,
+   "job": "climax",
+   "follow": "rodman_ball",
+   "landings": [
+    {
+     "see": "A carriage wheel leads to the officer presenting the immense Rodman gun against the fort wall.",
+     "from": 138,
+     "frame": [
+      "rodman_gun",
+      "american_officer",
+      "fort_battery"
+     ],
+     "near": "rodman_wheel",
+     "eye": "",
+     "angle": "low",
+     "lens": "wide",
+     "cam": [
+      28,
+      7,
+      3
+     ],
+     "aim": [
+      35,
+      15,
+      4
+     ],
+     "mm": 24
+    },
+    {
+     "see": "Six crewmen roll the single giant ball toward the Rodman muzzle beneath a ONE board.",
+     "from": 145,
+     "frame": [
+      "rodman_ball",
+      "artillery_crew",
+      "rodman_gun"
+     ],
+     "near": "rodman_ball",
+     "eye": "",
+     "angle": "left",
+     "lens": "medium",
+     "cam": [
+      31,
+      7,
+      3
+     ],
+     "aim": [
+      35,
+      11,
+      2
+     ],
+     "mm": 35
+    },
+    {
+     "see": "The 1,000-pound scale and crushed cart fill the foreground while the crew lean into the rammer.",
+     "from": 149,
+     "frame": [
+      "weight_scale",
+      "rodman_ball",
+      "artillery_crew"
+     ],
+     "near": "weight_scale",
+     "eye": "",
+     "angle": "high",
+     "lens": "close",
+     "cam": [
+      30,
+      8,
+      5
+     ],
+     "aim": [
+      34,
+      11,
+      2
+     ],
+     "mm": 50
+    },
+    {
+     "see": "The Rodman ball tears through iron, the ship lists beyond the plate, and the calm officer stands beside the smoking gun.",
+     "from": 162,
+     "frame": [
+      "torn_iron_plate",
+      "rodman_ball",
+      "iron_warship",
+      "american_officer",
+      "rodman_gun"
+     ],
+     "near": "torn_iron_plate",
+     "eye": "",
+     "angle": "low",
+     "lens": "wide",
+     "cam": [
+      43,
+      -6,
+      5
+     ],
+     "aim": [
+      40,
+      0,
+      5
+     ],
+     "mm": 24
+    }
+   ]
+  }
+ ],
+ "shots": [
+  {
+   "from": 0,
+   "frame": [
+    "cannonball_navy",
+    "pirate_gunner",
+    "broken_rail"
+   ],
+   "angle": "front",
+   "lens": "face",
+   "move": "push",
+   "take": 0,
+   "job": "hook",
+   "follow": "cannonball_navy",
+   "see": "The cannonball breaks the rail beside the gunner's face, with broken timber close and the mast behind.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    -22.0,
+    -5.0,
+    7.2
+   ],
+   "aim": [
+    -22.0,
+    -1.0,
+    7.3
+   ],
+   "mm": 85.0
+  },
+  {
+   "from": 9,
+   "frame": [
+    "cannonball_navy",
+    "pirate_gunner",
+    "navy_ship"
+   ],
+   "angle": "low",
+   "lens": "wide",
+   "move": "crane-up",
+   "take": 0,
+   "job": "hook",
+   "follow": "cannonball_navy",
+   "see": "The camera rides behind the ball through debris while the gunner ducks and the navy ship remains across the water.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    -10.0,
+    2.0,
+    7.3
+   ],
+   "aim": [
+    -18.0,
+    0.0,
+    7.0
+   ],
+   "mm": 24.0
+  },
+  {
+   "from": 16,
+   "frame": [
+    "pirate_ship",
+    "navy_ship",
+    "distant_ships"
+   ],
+   "angle": "high",
+   "lens": "wide",
+   "move": "crane-down",
+   "take": 1,
+   "job": "place",
+   "follow": "",
+   "see": "Rope coils lead into a broad period sea battle between the two square-rigged ships.",
+   "near": "rope_coils",
+   "eye": "",
+   "cam": [
+    -8.0,
+    18.0,
+    18.0
+   ],
+   "aim": [
+    -8.0,
+    0.0,
+    8.0
+   ],
+   "mm": 24.0
+  },
+  {
+   "from": 20,
+   "frame": [
+    "navy_gunner",
+    "navy_cannon"
+   ],
+   "angle": "right",
+   "lens": "close",
+   "move": "push",
+   "take": 1,
+   "job": "place",
+   "follow": "",
+   "see": "The navy gunner pulls the cannon lanyard, with the barrel close and the gunport wall behind.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    3.0,
+    -6.0,
+    7.0
+   ],
+   "aim": [
+    6.0,
+    -1.0,
+    7.2
+   ],
+   "mm": 50.0
+  },
+  {
+   "from": 31,
+   "frame": [
+    "pirate_gunner",
+    "pirate_captain",
+    "pirate_deckhand",
+    "splinters"
+   ],
+   "angle": "front",
+   "lens": "wide",
+   "move": "push",
+   "take": 1,
+   "job": "place",
+   "follow": "",
+   "see": "The crew shelter beneath a splinter cloud, with a bucket close and a timber rib behind.",
+   "near": "water_bucket",
+   "eye": "",
+   "cam": [
+    -22.0,
+    -5.0,
+    7.0
+   ],
+   "aim": [
+    -22.0,
+    0.0,
+    7.0
+   ],
+   "mm": 24.0
+  },
+  {
+   "from": 39,
+   "frame": [
+    "pirate_gunner",
+    "pirate_deckhand",
+    "pirate_cannon"
+   ],
+   "angle": "left",
+   "lens": "medium",
+   "move": "pan",
+   "take": 2,
+   "job": "setup",
+   "follow": "",
+   "see": "The pirates ram a bulging junk sack into their cannon with the mast behind.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    -19.0,
+    -6.0,
+    7.0
+   ],
+   "aim": [
+    -20.0,
+    -2.0,
+    7.0
+   ],
+   "mm": 35.0
+  },
+  {
+   "from": 45,
+   "frame": [
+    "garbage_cluster",
+    "pirate_cannon",
+    "navy_ship"
+   ],
+   "angle": "low",
+   "lens": "wide",
+   "move": "pan",
+   "take": 2,
+   "job": "setup",
+   "follow": "",
+   "see": "A cone of literal garbage blasts toward the navy ship, with airborne junk nearest the lens.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    -12.0,
+    -4.0,
+    8.0
+   ],
+   "aim": [
+    0.0,
+    0.0,
+    8.0
+   ],
+   "mm": 24.0
+  },
+  {
+   "from": 51,
+   "frame": [
+    "navy_loader",
+    "hotshot_tongs",
+    "hotshot_ball"
+   ],
+   "angle": "right",
+   "lens": "close",
+   "move": "crane-up",
+   "take": 3,
+   "job": "turn",
+   "follow": "",
+   "see": "Long tongs lift a ball from the furnace while heat bends the view of the cannon behind.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    10.0,
+    -7.0,
+    7.5
+   ],
+   "aim": [
+    8.0,
+    -4.0,
+    7.5
+   ],
+   "mm": 50.0
+  },
+  {
+   "from": 52,
+   "frame": [
+    "hotshot_ball",
+    "navy_gunner",
+    "furnace"
+   ],
+   "angle": "front",
+   "lens": "extreme-close",
+   "move": "crane-up",
+   "take": 3,
+   "job": "turn",
+   "follow": "",
+   "see": "The red hotshot hangs centre-frame in tongs, reflected in the gunner's eyes.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    8.0,
+    -6.0,
+    7.6
+   ],
+   "aim": [
+    8.0,
+    -4.0,
+    7.5
+   ],
+   "mm": 85.0
+  },
+  {
+   "from": 53,
+   "frame": [
+    "navy_loader",
+    "furnace",
+    "hotshot_ball"
+   ],
+   "angle": "right",
+   "lens": "medium",
+   "move": "track",
+   "take": 4,
+   "job": "explain",
+   "follow": "hotshot_ball",
+   "see": "The loader rakes black cannonballs into the furnace while the gunner checks the timer.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    11.0,
+    -7.0,
+    8.0
+   ],
+   "aim": [
+    9.0,
+    -5.0,
+    7.4
+   ],
+   "mm": 35.0
+  },
+  {
+   "from": 58,
+   "frame": [
+    "hotshot_ball",
+    "furnace"
+   ],
+   "angle": "front",
+   "lens": "extreme-close",
+   "move": "track",
+   "take": 4,
+   "job": "explain",
+   "follow": "hotshot_ball",
+   "see": "Inside the furnace, three balls glow red beside the rising heat scale.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    9.0,
+    -6.0,
+    7.3
+   ],
+   "aim": [
+    9.0,
+    -5.0,
+    7.2
+   ],
+   "mm": 85.0
+  },
+  {
+   "from": 61,
+   "frame": [
+    "wet_wad",
+    "hotshot_ball",
+    "navy_loader",
+    "navy_gunner"
+   ],
+   "angle": "over-shoulder",
+   "lens": "close",
+   "move": "track",
+   "take": 4,
+   "job": "explain",
+   "follow": "hotshot_ball",
+   "see": "The wet wad enters the cannon before the loader lowers the glowing ball.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    7.0,
+    -5.0,
+    7.2
+   ],
+   "aim": [
+    5.0,
+    -2.0,
+    7.2
+   ],
+   "mm": 50.0
+  },
+  {
+   "from": 74,
+   "frame": [
+    "navy_cannon",
+    "wet_wad",
+    "hotshot_ball"
+   ],
+   "angle": "left",
+   "lens": "extreme-close",
+   "move": "track",
+   "take": 4,
+   "job": "explain",
+   "follow": "hotshot_ball",
+   "see": "The cannon cutaway shows dark powder, wet barrier and red ball in separate layers.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    4.0,
+    -4.0,
+    7.2
+   ],
+   "aim": [
+    5.0,
+    -2.0,
+    7.2
+   ],
+   "mm": 85.0
+  },
+  {
+   "from": 77,
+   "frame": [
+    "hotshot_ball",
+    "pirate_ship"
+   ],
+   "angle": "low",
+   "lens": "close",
+   "move": "track",
+   "take": 5,
+   "job": "climax",
+   "follow": "hotshot_ball",
+   "see": "The camera follows the red ball into breaking pirate planks and between two ribs.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    -17.0,
+    2.0,
+    6.0
+   ],
+   "aim": [
+    -23.0,
+    1.0,
+    4.0
+   ],
+   "mm": 50.0
+  },
+  {
+   "from": 84,
+   "frame": [
+    "hotshot_ball",
+    "tar_rope",
+    "navy_ship"
+   ],
+   "angle": "front",
+   "lens": "extreme-close",
+   "move": "track",
+   "take": 5,
+   "job": "climax",
+   "follow": "hotshot_ball",
+   "see": "Inside the hull, tarred rope touches the embedded ball and the navy ship appears through the hole.",
+   "near": "",
+   "eye": "pirate_ship",
+   "cam": [
+    -24.0,
+    1.0,
+    4.5
+   ],
+   "aim": [
+    -23.0,
+    1.0,
+    4.0
+   ],
+   "mm": 85.0
+  },
+  {
+   "from": 95,
+   "frame": [
+    "pirate_ship",
+    "pirate_gunner",
+    "pirate_captain"
+   ],
+   "angle": "low",
+   "lens": "wide",
+   "move": "snap-zoom",
+   "take": 5,
+   "job": "climax",
+   "follow": "hotshot_ball",
+   "see": "The camera exits the hole as internal flames silhouette the pirate hull and bucket crew.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    -30.0,
+    -10.0,
+    8.0
+   ],
+   "aim": [
+    -25.0,
+    0.0,
+    8.0
+   ],
+   "mm": 24.0
+  },
+  {
+   "from": 101,
+   "frame": [
+    "pirate_gunner",
+    "carcass_shell",
+    "pitch_pot"
+   ],
+   "angle": "right",
+   "lens": "close",
+   "move": "crane-up",
+   "take": 6,
+   "job": "turn",
+   "follow": "",
+   "see": "The gunner rotates the perforated shell above the pitch pot and cannon breech.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    -18.0,
+    -6.0,
+    7.4
+   ],
+   "aim": [
+    -20.0,
+    -4.0,
+    7.3
+   ],
+   "mm": 50.0
+  },
+  {
+   "from": 104,
+   "frame": [
+    "carcass_shell",
+    "pirate_gunner"
+   ],
+   "angle": "front",
+   "lens": "extreme-close",
+   "move": "track",
+   "take": 7,
+   "job": "explain",
+   "follow": "carcass_shell",
+   "see": "A cutaway shows the carcass shell's hollow cavity, vents and cap in the gunner's hands.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    -20.0,
+    -5.0,
+    7.4
+   ],
+   "aim": [
+    -20.0,
+    -4.0,
+    7.3
+   ],
+   "mm": 85.0
+  },
+  {
+   "from": 110,
+   "frame": [
+    "pirate_gunner",
+    "pirate_deckhand",
+    "pitch_pot",
+    "carcass_shell"
+   ],
+   "angle": "left",
+   "lens": "close",
+   "move": "track",
+   "take": 7,
+   "job": "explain",
+   "follow": "carcass_shell",
+   "see": "The gunner pours tar into the shell while the deckhand holds it in sand.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    -22.0,
+    -6.0,
+    7.5
+   ],
+   "aim": [
+    -20.0,
+    -4.0,
+    7.2
+   ],
+   "mm": 50.0
+  },
+  {
+   "from": 121,
+   "frame": [
+    "navy_ship",
+    "navy_sailor",
+    "sea_birds"
+   ],
+   "angle": "low",
+   "lens": "wide",
+   "move": "track",
+   "take": 7,
+   "job": "explain",
+   "follow": "carcass_shell",
+   "see": "The navy ship burns like a mast-high torch while one sailor continues mopping.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    15.0,
+    -12.0,
+    10.0
+   ],
+   "aim": [
+    10.0,
+    0.0,
+    12.0
+   ],
+   "mm": 24.0
+  },
+  {
+   "from": 122,
+   "frame": [
+    "iron_warship",
+    "navy_ship"
+   ],
+   "angle": "high",
+   "lens": "wide",
+   "move": "crane-down",
+   "take": 8,
+   "job": "place",
+   "follow": "iron_warship",
+   "see": "The cool iron warship slides before the burning wooden vessel and blocks the flames.",
+   "near": "iron_hull",
+   "eye": "",
+   "cam": [
+    43.0,
+    -12.0,
+    8.0
+   ],
+   "aim": [
+    40.0,
+    0.0,
+    7.0
+   ],
+   "mm": 24.0
+  },
+  {
+   "from": 129,
+   "frame": [
+    "material_display",
+    "iron_hull",
+    "american_officer"
+   ],
+   "angle": "front",
+   "lens": "close",
+   "move": "push",
+   "take": 8,
+   "job": "place",
+   "follow": "iron_warship",
+   "see": "The material display shows oak collapsing while riveted iron remains straight.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    34.0,
+    3.0,
+    5.0
+   ],
+   "aim": [
+    34.0,
+    7.0,
+    3.0
+   ],
+   "mm": 50.0
+  },
+  {
+   "from": 132,
+   "frame": [
+    "carcass_shell",
+    "iron_hull",
+    "iron_crewman"
+   ],
+   "angle": "right",
+   "lens": "medium",
+   "move": "push",
+   "take": 8,
+   "job": "place",
+   "follow": "iron_warship",
+   "see": "The carcass shell squashes against iron and drops as the iron crewman shrugs.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    42.0,
+    -8.0,
+    7.0
+   ],
+   "aim": [
+    40.0,
+    -2.0,
+    6.0
+   ],
+   "mm": 35.0
+  },
+  {
+   "from": 145,
+   "frame": [
+    "rodman_ball",
+    "artillery_crew",
+    "rodman_gun"
+   ],
+   "angle": "left",
+   "lens": "medium",
+   "move": "track",
+   "take": 9,
+   "job": "climax",
+   "follow": "rodman_ball",
+   "see": "Six crewmen roll the single giant ball toward the Rodman muzzle beneath a ONE board.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    31.0,
+    7.0,
+    3.0
+   ],
+   "aim": [
+    35.0,
+    11.0,
+    2.0
+   ],
+   "mm": 35.0
+  },
+  {
+   "from": 149,
+   "frame": [
+    "weight_scale",
+    "rodman_ball",
+    "artillery_crew"
+   ],
+   "angle": "high",
+   "lens": "close",
+   "move": "track",
+   "take": 9,
+   "job": "climax",
+   "follow": "rodman_ball",
+   "see": "The 1,000-pound scale and crushed cart fill the foreground while the crew lean into the rammer.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    30.0,
+    8.0,
+    5.0
+   ],
+   "aim": [
+    34.0,
+    11.0,
+    2.0
+   ],
+   "mm": 50.0
+  }
+ ]
+}
