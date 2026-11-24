@@ -151,7 +151,7 @@ export async function build(K, words) {
     if (!obj && (L.parts || []).length) { obj = new THREE.Group();
       for (const p of L.parts) { const kind = matOf(p), geo = (SHAPE[p.shape] || SHAPE.box)(p).scale(...p.s); if (!geo.attributes.normal) geo.computeVertexNormals();
         const m = new THREE.Mesh(geo, toonOf(p.color || T.color || '#9aa0a6', kind)); m.position.set(...p.c); m.rotation.set(...p.r); m.castShadow = m.receiveShadow = true; m.name = p.name; m.userData.kind = kind; inked(m); obj.add(m); } }
-    if (!obj) { obj = new THREE.Group(); const m = new THREE.Mesh(SHAPE.box(), new THREE.MeshStandardMaterial({ color: T.color || '#9aa0a6', roughness: 0.7 })); m.position.y = 0.5; obj.add(m); { const lb = label(T.name, 1.2); lb.position.set(0, 0.5, 0.51); obj.add(lb); } }
+    if (!obj) { obj = new THREE.Group(); const m = inked(new THREE.Mesh(SHAPE.box({}), toonOf(T.color || "#9aa0a6", null))); m.position.y = 0.5; obj.add(m); { const lb = label(T.name, 1.2); lb.position.set(0, 0.5, 0.51); obj.add(lb); } }
     if (T.color && L.model) obj.traverse(m => { if (m.isMesh && m.material) { m.material = m.material.clone(); m.material.color?.lerp(new THREE.Color(T.color), 0.5); } });
     if (L.model) { const ms = []; obj.traverse(m => { if (m.isMesh && !m.userData.ink) ms.push(m); }); ms.forEach(inked); }
     const holder = new THREE.Group(); holder.name = T.name; holder.userData.thing = T.id; holder.add(obj);
