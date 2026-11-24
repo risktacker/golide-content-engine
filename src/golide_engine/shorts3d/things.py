@@ -180,7 +180,7 @@ def parts_of(thing: dict) -> list[dict]:
     from ..edit.recipes import object_parts
     h = float(thing.get("height_m") or 1.0)
     try:
-        return object_parts(thing.get("parts") or [], (1e4, h, 1e4))
+        return object_parts(thing.get("parts") or [], (1e4, h, 1e4), max_parts=90)
     except ValueError:
         return []
 

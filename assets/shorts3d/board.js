@@ -53,35 +53,94 @@ export async function build(K, words) {
     far.rotation.x = -Math.PI / 2; far.position.y = -0.02; far.receiveShadow = true; G.add(far);
     const sc = document.createElement('canvas'); sc.width = 4; sc.height = 512; { const g = sc.getContext('2d'), gr = g.createLinearGradient(0, 0, 0, 512); gr.addColorStop(0, top); gr.addColorStop(0.55, hor); gr.addColorStop(1, hor); g.fillStyle = gr; g.fillRect(0, 0, 4, 512); }
     const st = new THREE.CanvasTexture(sc); st.colorSpace = THREE.SRGBColorSpace;
-    const sky = new THREE.Mesh(new THREE.SphereGeometry(1800, 32, 16), new THREE.MeshBasicMaterial({ map: st, side: THREE.BackSide, fog: false, depthWrite: false })); G.add(sky);
+    const day = !/sunset|dusk|night|dawn|storm/.test(W.sky || 'day');   // Ricks Clips is a bright cartoon day unless the script says otherwise
+    const sky = day ? new THREE.Mesh(new THREE.SphereGeometry(1800, 32, 16), new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false,
+        vertexShader: 'varying vec3 vp; void main(){ vp = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+        fragmentShader: `varying vec3 vp; void main(){ float h = vp.y; vec3 c = mix(vec3(0.86,0.94,1.0), vec3(0.52,0.78,1.0), smoothstep(0.0, 0.12, h));
+          c = mix(c, vec3(0.27,0.6,0.98), smoothstep(0.1, 0.4, h)); c = mix(c, vec3(0.16,0.45,0.92), smoothstep(0.4, 0.9, h)); c = mix(c, vec3(0.7,0.82,0.9), smoothstep(0.0, -0.05, h)); gl_FragColor = vec4(c, 1.0); }` }))
+      : new THREE.Mesh(new THREE.SphereGeometry(1800, 32, 16), new THREE.MeshBasicMaterial({ map: st, side: THREE.BackSide, fog: false, depthWrite: false }));
+    sky.renderOrder = -1; G.add(sky);
+    if (day) {   // flat cartoon clouds in three rings (the engine's own clouds)
+      let sd = 11; const R = () => (sd = (sd * 9301 + 49297) % 233280) / 233280;
+      const cloudM = (fade) => new THREE.ShaderMaterial({ fog: false, uniforms: { fade: { value: fade } },
+        vertexShader: 'varying vec3 vN; void main(){ vN = normalize(mat3(modelMatrix) * normal); gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0); }',
+        fragmentShader: `uniform float fade; varying vec3 vN; void main(){ float l = dot(normalize(vN), normalize(vec3(-0.7, 0.15, 0.6)));
+          vec3 top = vec3(1.0), mid = vec3(0.95, 0.97, 1.0), bot = vec3(0.74, 0.82, 0.94); vec3 c = l > 0.35 ? top : (l > -0.1 ? mid : bot); c = mix(c, vec3(0.86, 0.92, 1.0), fade); gl_FragColor = vec4(c, 1.0); }` });
+      for (const [n, d0, d1, sz, fade] of [[10, 420, 700, 0.8, 0.0], [14, 800, 1200, 1.2, 0.25], [16, 1300, 1700, 1.6, 0.5]]) { const m = cloudM(fade);
+        for (let i = 0; i < n; i++) { const g2 = new THREE.Group(), a = R() * Math.PI * 2, dist = d0 + R() * (d1 - d0); g2.position.set(Math.sin(a) * dist, 90 + R() * 130 * sz, Math.cos(a) * dist);
+          const w = (50 + R() * 60) * sz, puffs = 9 + Math.floor(R() * 8);
+          for (let k = 0; k < puffs; k++) { const u = R() * 2 - 1, r = w * (0.22 + R() * 0.2) * (1 - Math.abs(u) * 0.45); const s2 = new THREE.Mesh(new THREE.IcosahedronGeometry(1, 3), m); s2.scale.set(r * 1.15, r, r);
+            s2.position.set(u * w, Math.max(0, r * 0.55 - Math.abs(u) * w * 0.12) + R() * r * 0.4, (R() - 0.5) * w * 0.35); g2.add(s2); }
+          g2.lookAt(0, g2.position.y, 0); G.add(g2); } } }
     scene.background = new THREE.Color(hor); scene.fog.color.set(hor); scene.fog.near = Math.max(SW, SD) * 4; scene.fog.far = Math.max(SW, SD) * 4 + 1400;   // wide views from far off stay clear
     room = { min: V(-SW / 2 - 300, 0.03, -SD / 2 - 300), max: V(SW / 2 + 300, 200, SD / 2 + 300) };   // outdoors the camera may stand far off for a wide view
   }
   { const { RoomEnvironment } = await import('three/addons/environments/RoomEnvironment.js'); const pm = new THREE.PMREMGenerator(K.renderer); scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture; scene.environmentIntensity = IN ? 0.55 : 0.4; }
 
-  // ---- Rick's look, measured by the Ricks Clips kits (references/reports/outlines.md, grade.md): black ink lines about
-  // 3 px wide at 1080p on silhouettes and depth jumps of the 3D world (the warm black-point lift is left out: it washed the picture)
-  { const PP = await import('postprocessing');
-    class InkEffect extends PP.Effect { constructor() { super('GolideInk', `
-      uniform vec2 px; uniform float uInk;
-      float vz(vec2 p) { return getViewZ(readDepth(p)); }
-      void mainImage(const in vec4 inputColor, const in vec2 uv, const in float depth, out vec4 outputColor) {
-        float c = getViewZ(depth), m = 0.0;
-        vec2 o[8]; o[0] = vec2(2.2, 0.0); o[1] = vec2(-2.2, 0.0); o[2] = vec2(0.0, 2.2); o[3] = vec2(0.0, -2.2);
-        o[4] = vec2(1.6, 1.6); o[5] = vec2(-1.6, 1.6); o[6] = vec2(1.6, -1.6); o[7] = vec2(-1.6, -1.6);
-        for (int i = 0; i < 8; i++) { float n = vz(uv + o[i] * px); m = max(m, abs(n - c) / max(0.25, abs(c))); }
-        float a = smoothstep(0.02, 0.055, m) * uInk;
-        vec3 col = mix(inputColor.rgb, vec3(0.09, 0.05, 0.06), a);
-        outputColor = vec4(col, inputColor.a);
-      }`, { attributes: PP.EffectAttribute.DEPTH, uniforms: new Map([['px', new THREE.Uniform(new THREE.Vector2(1 / 1080, 1 / 1920))], ['uInk', new THREE.Uniform(1)]]) }); } }
-    const comp = K.post.composer, pass = new PP.EffectPass(K.camera, new InkEffect());
-    comp.addPass(pass, Math.max(1, comp.passes.length - 1));   // after the grade, before the anti-aliasing
-  }
+  // ---- Rick's look (owner 2026-11-24, his pirates Short): toon shading with painted surfaces and a constant ~3 px ink
+  // line drawn as an inverted hull around every set piece (the engine's own way for its puppets); the screen-space ink
+  // pass of 2026-11-23 is gone: it flickered on the puppets' thin limbs ----
+  const { mergeVertices } = await import('three/addons/utils/BufferGeometryUtils.js');
+  const GKIND = (() => { const g = `${W.ground || ''} ${W.place || ''}`.toLowerCase(); return /sea|ocean|water|lake|river|harbou?r|bay/.test(g) ? 'water' : /deck|plank|wooden floor|boards/.test(g) ? 'planks'
+    : /cobble|paving|paved|stone|flagstone|plaza|courtyard|fort/.test(g) ? 'stone' : /sand|beach|desert|dune/.test(g) ? 'sand' : /brick/.test(g) ? 'brick' : /rock|canyon|cliff|mountain/.test(g) ? 'rock' : IN ? null : 'grass'; })();
+  const INK_PX = 2.6, inkRes = new THREE.Vector2(1080, 1920);
+  const inkMat = new THREE.ShaderMaterial({ side: THREE.BackSide, uniforms: { res: { value: inkRes }, px: { value: INK_PX } },
+    vertexShader: `uniform vec2 res; uniform float px; varying float vD; void main() { vec4 mv = modelViewMatrix * vec4(position, 1.0); vD = -mv.z; vec4 c = projectionMatrix * mv;
+      vec3 n = normalize(normalMatrix * normal); vec2 d = (projectionMatrix * vec4(n, 0.0)).xy; float l = length(d); if (l > 1e-5) c.xy += d / l * px * 2.0 / res * c.w; gl_Position = c; }`,
+    fragmentShader: 'varying float vD; void main() { if (vD < 1.5) discard; gl_FragColor = vec4(0.086, 0.067, 0.059, 1.0); }' });   /* no ink sheet when the lens is right at a thing */
+  const inked = (mesh) => { const g = mesh.geometry.clone(); for (const k of Object.keys(g.attributes)) if (k !== 'position') g.deleteAttribute(k);
+    const h = new THREE.Mesh(mergeVertices(g, 1e-4), inkMat); h.geometry.computeVertexNormals(); h.castShadow = false; h.receiveShadow = false; h.userData.ink = true; h.raycast = () => {}; mesh.add(h); return mesh; };
+  // painted surfaces: neutral detail tinted by the part's own colour (toon map), tiled by real metres (box projection)
+  const PAINT = {}, TILE = { planks: 1.2, wood: 0.9, brick: 1.0, stone: 1.6, rock: 3, metal: 1.2, iron: 1.2, rope: 0.25, cloth: 1.6, water: 7, sand: 2.5, grass: 2.5, leather: 0.8 };
+  const paint = (kind) => { if (PAINT[kind] !== undefined) return PAINT[kind]; if (!TILE[kind]) return (PAINT[kind] = null);
+    const N = 256, c = document.createElement('canvas'); c.width = c.height = N; const g = c.getContext('2d'); let sd = 7 + kind.length * 13; const R = () => (sd = (sd * 9301 + 49297) % 233280) / 233280;
+    const sh = (v) => `rgb(${v},${v},${v})`; g.fillStyle = '#fff'; g.fillRect(0, 0, N, N);
+    if (kind === 'planks' || kind === 'wood') { const rows = kind === 'planks' ? 4 : 1;
+      for (let r = 0; r < rows; r++) { const y0 = r * N / rows, hh = N / rows; g.fillStyle = sh(232 + Math.floor(R() * 23)); g.fillRect(0, y0, N, hh);
+        for (let k = 0; k < 7; k++) { g.strokeStyle = `rgba(90,55,30,${0.12 + R() * 0.12})`; g.lineWidth = 1 + R() * 2; g.beginPath(); const yy = y0 + R() * hh; g.moveTo(0, yy); for (let x = 0; x <= N; x += 32) g.lineTo(x, yy + Math.sin(x / 40 + R() * 3) * 3); g.stroke(); }
+        if (rows > 1) { g.fillStyle = 'rgba(60,35,20,0.55)'; g.fillRect(0, y0, N, 3); const jx = R() * N; g.fillRect(jx, y0, 3, hh); g.fillStyle = 'rgba(60,35,20,0.5)'; g.beginPath(); g.arc(jx + 10, y0 + hh / 2, 2, 0, 7); g.arc(jx - 8, y0 + hh / 2, 2, 0, 7); g.fill(); } } }
+    else if (kind === 'brick') { g.fillStyle = sh(238); g.fillRect(0, 0, N, N); const rows = 8, cols = 4, bh = N / rows, bw = N / cols;
+      for (let r = 0; r < rows; r++) for (let k = -1; k <= cols; k++) { const x = k * bw + (r % 2 ? bw / 2 : 0); g.fillStyle = `rgb(${200 + Math.floor(R() * 40)},${150 + Math.floor(R() * 30)},${140 + Math.floor(R() * 25)})`; g.fillRect(x + 3, r * bh + 3, bw - 6, bh - 6); } }
+    else if (kind === 'stone' || kind === 'rock') { const n = kind === 'stone' ? 4 : 3, cs = N / n; g.fillStyle = sh(150); g.fillRect(0, 0, N, N);
+      for (let a = 0; a < n; a++) for (let b = 0; b < n; b++) { g.fillStyle = sh(205 + Math.floor(R() * 45)); const j = () => (R() - 0.5) * cs * 0.12; g.beginPath(); g.moveTo(a * cs + 4 + j(), b * cs + 4 + j()); g.lineTo((a + 1) * cs - 4 + j(), b * cs + 4 + j()); g.lineTo((a + 1) * cs - 4 + j(), (b + 1) * cs - 4 + j()); g.lineTo(a * cs + 4 + j(), (b + 1) * cs - 4 + j()); g.closePath(); g.fill(); } }
+    else if (kind === 'metal' || kind === 'iron') { const gr = g.createLinearGradient(0, 0, N, 0); gr.addColorStop(0, sh(220)); gr.addColorStop(0.45, sh(255)); gr.addColorStop(0.55, sh(240)); gr.addColorStop(1, sh(215)); g.fillStyle = gr; g.fillRect(0, 0, N, N); }
+    else if (kind === 'rope') { for (let k = -N; k < N * 2; k += 24) { g.strokeStyle = sh(200); g.lineWidth = 9; g.beginPath(); g.moveTo(k, 0); g.lineTo(k + N, N); g.stroke(); } }
+    else if (kind === 'cloth') { for (let k = 0; k < N; k += 4) { g.fillStyle = 'rgba(0,0,0,0.035)'; g.fillRect(k, 0, 1, N); g.fillRect(0, k, N, 1); } g.fillStyle = 'rgba(0,0,0,0.12)'; g.fillRect(0, N / 2, N, 2); }
+    else if (kind === 'water') { g.fillStyle = sh(235); g.fillRect(0, 0, N, N); for (let k = 0; k < 34; k++) { g.strokeStyle = `rgba(255,255,255,${0.5 + R() * 0.5})`; g.lineWidth = 2 + R() * 2; const x = R() * N, y = R() * N, w = 14 + R() * 30; g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + w / 2, y - 5, x + w, y); g.stroke(); } }
+    else { for (let k = 0; k < 2200; k++) { g.fillStyle = `rgba(0,0,0,${R() * 0.08})`; g.fillRect(R() * N, R() * N, 1 + R() * 2, 1 + R() * 2); } }
+    const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return (PAINT[kind] = t); };
+  const MATWORD = [[/plank|deck|floor ?board|hull|bulwark|rail|gunwale|quarterdeck/, 'planks'], [/brick|chimney|furnace|oven|kiln/, 'brick'], [/stone|paving|cobble|wall of rock|pier|quay|battery wall/, 'stone'], [/rock|cliff|boulder|pillar of rock/, 'rock'],
+    [/barrel(?!.*gun)|crate|chest|hull|rail|mast|bowsprit|yard|oar|cart|wheel|carriage|table|chair|bench|stool|door|frame|post|pole|beam|log|wood|staff|handle|keg|box|shelf|ladder|hut|fence|boat/, 'wood'],
+    [/cannon|barrel of the gun|muzzle|gun|anchor|chain|iron|steel|metal|blade|sword|pipe|tongs|shovel|hoop|band|rivet|plate|pot|kettle|engine|tank|machine/, 'metal'],
+    [/sail|flag|cloth|banner|curtain|tent|blanket|sack|bag|shirt|coat/, 'cloth'], [/rope|rigging|line|net/, 'rope'], [/water|sea|wave|river|lake|ocean/, 'water'], [/sand|beach|dune/, 'sand'], [/grass|lawn|hedge|bush|leaf|leaves|palm top|tree top/, 'grass']];
+  const matOf = (p) => p.gold ? 'gold' : (p.mat || (MATWORD.find(([re]) => re.test(p.name || '')) || [0, null])[1]);
+  const boxUV = (geo, k, tile) => { const P = geo.attributes.position, Nn = geo.attributes.normal, uv = new Float32Array(P.count * 2);
+    for (let i = 0; i < P.count; i++) { const nx = Math.abs(Nn.getX(i)), ny = Math.abs(Nn.getY(i)), nz = Math.abs(Nn.getZ(i)), x = P.getX(i) * k / tile, y = P.getY(i) * k / tile, z = P.getZ(i) * k / tile;
+      if (ny >= nx && ny >= nz) { uv[i * 2] = x; uv[i * 2 + 1] = z; } else if (nx >= nz) { uv[i * 2] = z; uv[i * 2 + 1] = y; } else { uv[i * 2] = x; uv[i * 2 + 1] = y; } }
+    geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2)); };
+  const toonOf = (col, kind) => { if (kind === 'gold') return SR.toon('#e0b040', { rim: 0.9 }); if (kind === 'glass') { const m = SR.toon(col); m.transparent = true; m.opacity = 0.45; return m; }
+    if (kind === 'fire') { return new THREE.MeshBasicMaterial({ color: col || '#ff8a2a', toneMapped: false }); }
+    const t = paint(kind), m = SR.toon(col, { rim: 0, kick: 0, flat2: true, ...(t ? { map: t } : {}) }); m.emissive = new THREE.Color(col).multiplyScalar(0.32); if (t) m.emissiveMap = t; return m; };   /* shade stays warm and coloured (Ricks: no black sides) */   /* two bright bands like Ricks: a side in shade is never near-black */   /* no rim light on set pieces: it bleached big flat decks white */
+  if (GKIND) for (const pl of [ground, G.children.find(o => o.isMesh && o !== ground && o.geometry?.parameters?.width === 4000)].filter(Boolean)) {   // the ground painted like the place
+    pl.material = toonOf(GKIND === 'water' ? (W.ground_color || '#2fb3c9') : gcol, GKIND); boxUV(pl.geometry, 1, TILE[GKIND] || 2); pl.receiveShadow = true; }
 
   // ---- things: a library model found by name, or the thing's own parts; scaled to its real height ----
   const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js'); const GL = new GLTFLoader();
   const { RoundedBoxGeometry } = await import('three/addons/geometries/RoundedBoxGeometry.js');
-  const SHAPE = { box: () => new RoundedBoxGeometry(1, 1, 1, 3, 0.12), cyl: () => new THREE.CylinderGeometry(0.5, 0.5, 1, 28), sphere: () => new THREE.SphereGeometry(0.5, 28, 16), cone: () => new THREE.ConeGeometry(0.5, 1, 28) };
+  const lathe = (prof) => { const n = prof.length, pts = [V(0, -0.5, 0)], cv = new THREE.CatmullRomCurve3(prof.map((r, i) => V(Math.max(0.001, r * 0.5), -0.5 + i / (n - 1), 0)));
+    for (const q of cv.getPoints(Math.max(8, n * 5))) pts.push(new THREE.Vector2(q.x, q.y)); pts.push(new THREE.Vector2(0, 0.5)); pts[0] = new THREE.Vector2(0, -0.5); return new THREE.LatheGeometry(pts, 36); };
+  const loft = (top, bot) => { const g = new THREE.BufferGeometry(), v = [], n = top.length, tri = (a, b, c) => v.push(...a, ...b, ...c);
+    const T3 = top.map(([x, z]) => [x, 0.5, z]), B3 = bot.map(([x, z]) => [x, -0.5, z]);
+    for (let i = 0; i < n; i++) { const a = T3[i], b = T3[(i + 1) % n], c = B3[(i + 1) % n], d = B3[i]; tri(a, d, c); tri(a, c, b); }
+    for (let i = 1; i < n - 1; i++) { tri(T3[0], T3[i + 1], T3[i]); tri(B3[0], B3[i], B3[i + 1]); }
+    let vol = 0; for (let i = 0; i < v.length; i += 9) vol += v[i] * (v[i + 4] * v[i + 8] - v[i + 5] * v[i + 7]) - v[i + 1] * (v[i + 3] * v[i + 8] - v[i + 5] * v[i + 6]) + v[i + 2] * (v[i + 3] * v[i + 7] - v[i + 4] * v[i + 6]);
+    if (vol < 0) for (let i = 0; i < v.length; i += 9) for (let k = 0; k < 3; k++) { const t = v[i + 3 + k]; v[i + 3 + k] = v[i + 6 + k]; v[i + 6 + k] = t; }   /* faces point outward */
+    g.setAttribute('position', new THREE.Float32BufferAttribute(v, 3)); g.computeVertexNormals(); return g; };
+  const SHAPE = { box: (p) => p.round ? new RoundedBoxGeometry(1, 1, 1, 3, 0.12) : new THREE.BoxGeometry(1, 1, 1), cyl: () => new THREE.CylinderGeometry(0.5, 0.5, 1, 32),
+    taper: (p) => new THREE.CylinderGeometry(0.5 * (p.taper ?? 0.6), 0.5, 1, 32), turned: (p) => lathe(p.profile || [0.8, 1, 0.8]),
+    sphere: () => new THREE.SphereGeometry(0.5, 32, 18), cone: () => new THREE.ConeGeometry(0.5, 1, 32), ring: () => new THREE.TorusGeometry(0.4, 0.1, 12, 40).rotateX(Math.PI / 2).scale(1, 5, 1),
+    wedge: () => loft([[-0.5, -0.5], [0.5, -0.5], [0.5, -0.49], [-0.5, -0.49]], [[-0.5, -0.5], [0.5, -0.5], [0.5, 0.5], [-0.5, 0.5]]),
+    prow: () => loft([[-0.5, -0.5], [0.22, -0.5], [0.5, 0], [0.22, 0.5], [-0.5, 0.5]], [[-0.44, -0.3], [0.16, -0.3], [0.42, 0], [0.16, 0.3], [-0.44, 0.3]]) };
   const things = {}, list = [];
   const label = (text, w) => { const c = document.createElement('canvas'); c.width = 1024; c.height = 256; const g = c.getContext('2d'); g.fillStyle = '#fbf7ef'; g.fillRect(0, 0, 1024, 256);
     g.fillStyle = '#17141a'; let f = 170; g.font = `${f}px Anton`; while (g.measureText(text).width > 960 && f > 40) { f -= 8; g.font = `${f}px Anton`; } g.textAlign = 'center'; g.fillText(text, 512, 128 + f * 0.36);
@@ -90,19 +149,22 @@ export async function build(K, words) {
     const L = LIB.find(x => x.id === T.id) || {}; let obj = null;
     if (L.model) { try { const g = await GL.loadAsync(L.model); obj = g.scene.clone(true); obj.traverse(m => { if (m.isMesh) { m.castShadow = m.receiveShadow = true; } }); } catch (e) { console.warn('board: model failed', T.id, e); obj = null; } }
     if (!obj && (L.parts || []).length) { obj = new THREE.Group();
-      for (const p of L.parts) { const mat = new THREE.MeshStandardMaterial({ color: p.gold ? '#d8a63a' : (p.color || T.color || '#9aa0a6'), roughness: p.gold ? 0.3 : 0.7, metalness: p.gold ? 0.8 : 0.05 });
-        const m = new THREE.Mesh((SHAPE[p.shape] || SHAPE.box)(), mat); m.scale.set(...p.s); m.position.set(...p.c); m.rotation.set(...p.r); m.castShadow = m.receiveShadow = true; m.name = p.name; obj.add(m); } }
+      for (const p of L.parts) { const kind = matOf(p), geo = (SHAPE[p.shape] || SHAPE.box)(p).scale(...p.s); if (!geo.attributes.normal) geo.computeVertexNormals();
+        const m = new THREE.Mesh(geo, toonOf(p.color || T.color || '#9aa0a6', kind)); m.position.set(...p.c); m.rotation.set(...p.r); m.castShadow = m.receiveShadow = true; m.name = p.name; m.userData.kind = kind; inked(m); obj.add(m); } }
     if (!obj) { obj = new THREE.Group(); const m = new THREE.Mesh(SHAPE.box(), new THREE.MeshStandardMaterial({ color: T.color || '#9aa0a6', roughness: 0.7 })); m.position.y = 0.5; obj.add(m); { const lb = label(T.name, 1.2); lb.position.set(0, 0.5, 0.51); obj.add(lb); } }
     if (T.color && L.model) obj.traverse(m => { if (m.isMesh && m.material) { m.material = m.material.clone(); m.material.color?.lerp(new THREE.Color(T.color), 0.5); } });
+    if (L.model) { const ms = []; obj.traverse(m => { if (m.isMesh && !m.userData.ink) ms.push(m); }); ms.forEach(inked); }
     const holder = new THREE.Group(); holder.name = T.name; holder.userData.thing = T.id; holder.add(obj);
     obj.updateMatrixWorld(true); let bb = new THREE.Box3().setFromObject(obj); const sz = bb.getSize(V(0, 0, 0));
     const k = (T.height_m || 1) / Math.max(sz.y, 1e-4); obj.scale.multiplyScalar(k); obj.updateMatrixWorld(true);
+    obj.traverse(m => { if (m.isMesh && m.userData.kind && TILE[m.userData.kind]) boxUV(m.geometry, k, TILE[m.userData.kind]); });
     bb = new THREE.Box3().setFromObject(obj); const cc = bb.getCenter(V(0, 0, 0)); obj.position.x -= cc.x; obj.position.z -= cc.z; obj.position.y -= bb.min.y;
     const s2 = bb.getSize(V(0, 0, 0)); holder.userData.longX = s2.x >= s2.z; holder.userData.size = s2;
     if (T.text) {   // the words go on the thing's biggest flat face (a banner's cloth, a sign's board, a screen), sized to it
-      let face = null; if (!L.model) for (const m of obj.children) { const b = new THREE.Box3().setFromObject(m), z = b.getSize(V(0, 0, 0)); if (!face || z.x * z.y > face.a) face = { a: z.x * z.y, b }; }
+      let face = null; const signy = obj.children.filter(m => /sign|label|plate|board|banner|screen|plaque|name/.test(m.name || ''));
+      if (!L.model) for (const m of (signy.length ? signy : obj.children)) { const b = new THREE.Box3().setFromObject(m), z = b.getSize(V(0, 0, 0)); if (!face || z.x * z.y > face.a) face = { a: z.x * z.y, b }; }
       const fb = face ? face.b : new THREE.Box3(V(-s2.x / 2, s2.y * 0.35, -s2.z / 2), V(s2.x / 2, s2.y * 0.85, s2.z / 2)), fs = fb.getSize(V(0, 0, 0)), fc = fb.getCenter(V(0, 0, 0));
-      const w = Math.max(0.3, Math.min(fs.x * 0.92, fs.y * 0.92 * 4)); const lb = label(T.text, w); lb.position.set(fc.x, fc.y, fb.max.z + 0.02); holder.add(lb); holder.userData.sign = lb; }
+      const w = Math.max(0.3, Math.min(fs.x * 0.92, fs.y * 0.92 * 4, 1.8)); const lb = label(T.text, w);   /* a real sign's size, never a billboard */ lb.position.set(fc.x, fc.y, fb.max.z + 0.02); holder.add(lb); holder.userData.sign = lb; }
     holder.rotation.y = THREE.MathUtils.degToRad(T.turn_deg || 0); G.add(holder);
     const th = { id: T.id, T, obj: holder, inner: obj, base: V(T.at[0], T.at.length > 2 ? T.at[2] : 0, T.at[1]), yaw0: holder.rotation.y, size: s2, parts: obj.children.slice(), hero: !!T.hero };
     things[T.id] = th; list.push(th); }

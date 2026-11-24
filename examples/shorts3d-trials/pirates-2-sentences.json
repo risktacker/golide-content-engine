@@ -127,7 +127,7 @@
   "place": "open sea where a navy frigate fights a pirate ship in the 1700s",
   "indoor": false,
   "ground": "open sea water",
-  "ground_color": "#2d6c96",
+  "ground_color": "#2fb3c9",
   "walls_color": "",
   "sky": "day",
   "size": [
@@ -157,7 +157,7 @@
     -14
    ],
    "parts": [
-    "hull: box 0 0 0 32 9 4.2 #2b2320",
+    "hull: prow 0 0 0 32 9 4.2 #2b2320",
     "gun band: box 0 4.52 2.2 30 0.06 1.1 #d9b23a",
     "gun port: box -10 4.57 2.35 0.9 0.06 0.8 #111111",
     "gun port: box -5 4.57 2.35 0.9 0.06 0.8 #111111",
@@ -168,9 +168,9 @@
     "rail near: box 0 4.25 4.4 31 0.3 0.9 #3a2a22",
     "rail far: box 0 -4.25 4.4 31 0.3 0.9 #3a2a22",
     "quarterdeck: box -12.5 0 4.4 6 8.4 1.4 #3a2a22",
-    "main mast: cyl 3 0 4.4 0.8 0.8 19.6 #6b4a2b",
-    "fore mast: cyl 11 0 4.4 0.6 0.6 15 #6b4a2b",
-    "mizzen mast: cyl -6 0 4.4 0.65 0.65 16 #6b4a2b",
+    "main mast: taper 3 0 4.4 0.8 0.8 19.6 #6b4a2b taper=0.55",
+    "fore mast: taper 11 0 4.4 0.6 0.6 15 #6b4a2b taper=0.55",
+    "mizzen mast: taper -6 0 4.4 0.65 0.65 16 #6b4a2b taper=0.55",
     "main sail: box 3 0 11 0.25 7.6 7 #f1ead8",
     "main topsail: box 3 0 18.5 0.25 5.5 4 #f1ead8",
     "fore sail: box 11 0 10.5 0.25 6.4 5.5 #f1ead8",
@@ -212,11 +212,10 @@
     "wheel: box 0.55 0.55 0 0.12 0.45 0.45 #3a2416",
     "wheel: box -0.55 -0.55 0 0.12 0.45 0.45 #3a2416",
     "wheel: box 0.55 -0.55 0 0.12 0.45 0.45 #3a2416",
-    "barrel: cyl 0 0.2 -0.4 0.48 0.48 2.4 rx90 #26262a",
-    "muzzle ring: cyl 0 1.4 0.7 0.6 0.6 0.2 rx90 #1a1a1e",
-    "cascabel: sphere 0 -1.05 0.68 0.22 0.22 0.22 #26262a",
     "brass touch-hole: sphere 0 -0.6 1.0 0.12 0.12 0.1 #c9a227",
-    "breeching rope: box 0 -0.9 0.5 1.1 0.06 0.06 #c8b07a"
+    "breeching rope: box 0 -0.9 0.5 1.1 0.06 0.06 #c8b07a",
+    "barrel: turned 0 0.2 -0.4 0.5 0.5 2.4 rx90 turn=0.95/1/0.9/0.78/0.72/0.7/0.85 mat=iron #3a3d44",
+    "cascabel: sphere 0 -1.05 0.68 0.24 0.24 0.24 mat=iron #3a3d44"
    ]
   },
   {
@@ -264,9 +263,9 @@
     -15.0
    ],
    "parts": [
-    "keg: cyl 0 0 0 0.4 0.4 0.45 #6b4423",
-    "hoop: cyl 0 0 0.05 0.42 0.42 0.04 #2a2a2a",
-    "hoop: cyl 0 0 0.36 0.42 0.42 0.04 #2a2a2a"
+    "keg: turned 0 0 0 0.4 0.4 0.45 turn=0.85/1/0.85 mat=wood #6b4423",
+    "hoop: ring 0 0 0.08 0.38 0.38 0.03 mat=metal #2a2a2a",
+    "hoop: ring 0 0 0.34 0.38 0.38 0.03 mat=metal #2a2a2a"
    ]
   },
   {
@@ -313,7 +312,7 @@
     9
    ],
    "parts": [
-    "hull: box 0 0 0 26 8 3.6 #5a3b24",
+    "hull: prow 0 0 0 26 8 3.6 #5a3b24",
     "weed at the waterline: box 0 -4.03 0 25 0.06 0.6 #2e4a2a",
     "patch: box -6 -4.04 1.6 1.8 0.06 1.0 #8a6a44",
     "patch: box 8 -4.04 2.2 1.4 0.06 0.8 #7a5a3a",
@@ -321,8 +320,8 @@
     "rail near left: box -8 -3.85 3.8 9 0.3 1.0 #4a3020",
     "rail near right: box 6 -3.85 3.8 13 0.3 1.0 #4a3020",
     "rail far: box 0 3.85 3.8 25 0.3 1.0 #4a3020",
-    "main mast: cyl -5 0 3.8 0.6 0.6 16.2 #5a3f28",
-    "fore mast: cyl 5 0 3.8 0.55 0.55 13.5 #5a3f28",
+    "main mast: taper -5 0 3.8 0.6 0.6 16.2 #5a3f28 taper=0.55",
+    "fore mast: taper 5 0 3.8 0.55 0.55 13.5 #5a3f28 taper=0.55",
     "crow's nest: cyl -5 0 15 1.4 1.4 0.8 #5a3f28",
     "main sail: box -5 0 9 0.25 6.6 6.2 #d6cdb8",
     "fore sail: box 5 0 8.4 0.25 6 5 #d6cdb8",
@@ -459,10 +458,10 @@
     11.6
    ],
    "parts": [
-    "body: cyl 0 0 0 0.6 0.6 0.85 #7a4f2a",
-    "hoop: cyl 0 0 0.68 0.63 0.63 0.07 #3a3a3a",
-    "hoop: cyl 0 0 0.1 0.63 0.63 0.07 #3a3a3a",
-    "bung: sphere 0 0.3 0.42 0.06 0.06 0.06 #2a1a0e"
+    "bung: sphere 0 0.3 0.42 0.06 0.06 0.06 #2a1a0e",
+    "body: turned 0 0 0 0.62 0.62 0.85 turn=0.82/0.95/1/0.95/0.82 mat=wood #8a5a2e",
+    "hoop: ring 0 0 0.12 0.6 0.6 0.05 mat=metal #3a3a3a",
+    "hoop: ring 0 0 0.68 0.6 0.6 0.05 mat=metal #3a3a3a"
    ]
   },
   {
@@ -485,9 +484,9 @@
     10.9
    ],
    "parts": [
-    "body: cyl 0 0 0 0.6 0.6 0.85 #7a4f2a",
-    "hoop: cyl 0 0 0.68 0.63 0.63 0.07 #3a3a3a",
-    "hoop: cyl 0 0 0.1 0.63 0.63 0.07 #3a3a3a"
+    "body: turned 0 0 0 0.62 0.62 0.85 turn=0.82/0.95/1/0.95/0.82 mat=wood #8a5a2e",
+    "hoop: ring 0 0 0.12 0.6 0.6 0.05 mat=metal #3a3a3a",
+    "hoop: ring 0 0 0.68 0.6 0.6 0.05 mat=metal #3a3a3a"
    ]
   },
   {
@@ -510,9 +509,9 @@
     16
    ],
    "parts": [
-    "hull: box 0 0 0 16 5.5 2.6 #4e3420",
+    "hull: prow 0 0 0 16 5.5 2.6 #4e3420",
     "deck: box 0 0 2.6 15.5 5 0.15 #9b7a4f",
-    "mast: cyl 0 0 2.75 0.45 0.45 11.25 #5a3f28",
+    "mast: taper 0 0 2.75 0.45 0.45 11.25 #5a3f28 taper=0.55",
     "sail: box 0 0 6 0.2 4.6 5 #cfc4ad",
     "black flag: box -1.2 0 12 1.6 0.04 1 #121212",
     "skull: sphere -1.2 -0.03 12.3 0.35 0.04 0.35 #efe9dc",
@@ -539,7 +538,7 @@
     19.5
    ],
    "parts": [
-    "hull: box 0 0 0 4.2 1.5 0.7 #7a5a3a",
+    "hull: prow 0 0 0 4.2 1.5 0.7 #7a5a3a",
     "gunwale: box 0 0 0.7 4.2 1.6 0.12 #4a3020",
     "thwart: box -0.8 0 0.45 0.25 1.4 0.12 #9b7a4f",
     "thwart: box 0.9 0 0.45 0.25 1.4 0.12 #9b7a4f",

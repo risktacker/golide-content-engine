@@ -158,11 +158,18 @@ def content_block(key: str, fill: dict[str, Any]) -> str:
 # 2026-11-18 (owner: "every script has different objects"): X-Ray and Blueprint draw ANY object the storyboard
 # writes, in the engine's own 3D part format (vector/figures/devices.py): "name: box|cyl|sphere|cone x y z w d h
 # [rx90] [ry0] [rz45] [gold]", z up, z = the part's base. Parts with the same name are one part (4 motors).
-PART_SHAPES = ("box", "cyl", "sphere", "cone")
+PART_SHAPES = ("box", "cyl", "sphere", "cone", "taper", "turned", "ring", "wedge", "prow")
 PART_MAX = 40
+# owner 2026-11-24 (Ricks Clips' pirates): real shapes, not toy blocks. taper = a cylinder narrowing to taper=k of its
+# width at the top (a cannon barrel, a mast); turned = a lathe profile turn=a/b/c... (radius fractions from bottom to
+# top: a barrel, a bottle, a vase, a column); ring = a hoop or wheel; wedge = a ramp or roof; prow = a pointed hull
+# (pointed toward +x). mat= the surface (wood, planks, brick, stone, metal, iron, rope, cloth, water, sand, grass,
+# glass, paint); round = soft rounded edges (only for soft things)
+PART_MATS = ("wood", "planks", "brick", "stone", "metal", "iron", "rope", "cloth", "water", "sand", "grass", "glass",
+             "paint", "leather", "rock", "fire", "gold")
 
 
-def object_parts(lines: Any, span: tuple[float, float, float]) -> list[dict[str, Any]]:
+def object_parts(lines: Any, span: tuple[float, float, float], max_parts: int = PART_MAX) -> list[dict[str, Any]]:
     """Named parts in three.js terms ({name, shape, c: centre, s: size [x, y up, z], r: radians, gold}), scaled as
     one so the object fits span (x, height, z), standing on y = 0 and centred. Raises ValueError when there are no
     readable parts."""
@@ -178,11 +185,27 @@ def object_parts(lines: Any, span: tuple[float, float, float]) -> list[dict[str,
         words = m.group(2).replace(",", " ").split()
         if not words or words[0].lower() not in PART_SHAPES:
             continue
-        nums, rot, gold, color = [], [0.0, 0.0, 0.0], False, None
+        nums, rot, gold, color, extra = [], [0.0, 0.0, 0.0], False, None, {}
         for w in words[1:]:
             low = w.lower()
             if low == "gold":
                 gold = True
+            elif low == "round":
+                extra["round"] = True
+            elif low.startswith("mat=") and low[4:] in PART_MATS:
+                extra["mat"] = low[4:]
+            elif low.startswith("taper="):
+                try:
+                    extra["taper"] = max(0.0, min(3.0, float(low[6:])))
+                except ValueError:
+                    pass
+            elif low.startswith("turn="):
+                try:
+                    prof = [max(0.0, min(3.0, float(v))) for v in low[5:].split("/") if v]
+                    if len(prof) >= 2:
+                        extra["profile"] = prof[:16]
+                except ValueError:
+                    pass
             elif _re.fullmatch(r"#[0-9a-f]{6}", low):
                 color = low
             elif low[:2] in ("rx", "ry", "rz"):
@@ -200,10 +223,10 @@ def object_parts(lines: Any, span: tuple[float, float, float]) -> list[dict[str,
         x, y, z, w, d, h = nums[:6]
         # engine (x, y depth, z up, base) -> three (x, y up, z), centre; rx stays x, ry turns about z, rz about y
         parts.append({"name": name, "shape": words[0].lower(), "c": [x, z + h / 2, y], "s": [w, h, d],
-                      "r": [rot[0], rot[2], rot[1]], "gold": gold, **({"color": color} if color else {})})
+                      "r": [rot[0], rot[2], rot[1]], "gold": gold, **({"color": color} if color else {}), **extra})
     if not parts:
         raise ValueError("no readable parts: write each as 'name: box|cyl|sphere|cone x y z w d h'")
-    parts = parts[:PART_MAX]
+    parts = parts[:max_parts]
     lo = [min(p["c"][k] - p["s"][k] / 2 for p in parts) for k in range(3)]
     hi = [max(p["c"][k] + p["s"][k] / 2 for p in parts) for k in range(3)]
     k = min(span[i] / max(hi[i] - lo[i], 1e-6) for i in range(3))
