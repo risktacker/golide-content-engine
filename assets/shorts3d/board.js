@@ -151,7 +151,7 @@ export async function build(K, words) {
     if (!obj && (L.parts || []).length) { obj = new THREE.Group();
       for (const p of L.parts) { const kind = matOf(p), geo = (SHAPE[p.shape] || SHAPE.box)(p).scale(...p.s); if (!geo.attributes.normal) geo.computeVertexNormals();
         const m = new THREE.Mesh(geo, toonOf(p.color || T.color || '#9aa0a6', kind)); m.position.set(...p.c); m.rotation.set(...p.r); m.castShadow = m.receiveShadow = true; m.name = p.name; m.userData.kind = kind; inked(m); obj.add(m); } }
-    if (!obj) { obj = new THREE.Group(); const m = inked(new THREE.Mesh(SHAPE.box({}), toonOf(T.color || "#9aa0a6", null))); m.position.y = 0.5; obj.add(m); { const lb = label(T.name, 1.2); lb.position.set(0, 0.5, 0.51); obj.add(lb); } }
+    if (!obj) { obj = new THREE.Group(); const m = inked(new THREE.Mesh(SHAPE.box({}), toonOf(T.color || "#9aa0a6", null))); m.position.y = 0.5; obj.add(m); if (T.role !== 'story' && !T.hero) obj.visible = false; }   /* owner 2026-11-24: no grey boxes with name tags; a dressing thing with no shape is left out */
     if (T.color && L.model) obj.traverse(m => { if (m.isMesh && m.material) { m.material = m.material.clone(); m.material.color?.lerp(new THREE.Color(T.color), 0.5); } });
     if (L.model) { const ms = []; obj.traverse(m => { if (m.isMesh && !m.userData.ink) ms.push(m); }); ms.forEach(inked); }
     const holder = new THREE.Group(); holder.name = T.name; holder.userData.thing = T.id; holder.add(obj);
@@ -208,6 +208,21 @@ export async function build(K, words) {
   // things people stand on: any thing above 0.3 m whose footprint holds a person's start or a walk spot
   const standOn = list.filter(th => th.size.y > 0.3 && (th.T.count || 1) <= 1);
   const stoodOn = new Set();
+  // nobody stands in water or inside a thing (owner 2026-11-24: Sol's crews stood in the sea beside their ships): a person
+  // whose start is in the water, or inside a big thing with no floor under them, is moved to the nearest real floor
+  const floorSpots = new Map(), moved = [];
+  const spotsOn = (th) => { if (floorSpots.has(th)) return floorSpots.get(th); const b = footprint(th, 0.4), out = [];
+    for (let x = b.min.x; x <= b.max.x; x += 0.7) for (let z = b.min.z; z <= b.max.z; z += 0.7) { const h = surfaceAt(th, x, z); if (h !== null && h > 0.3) out.push(V(x, h, z)); }
+    const hist = new Map(); for (const q of out) { const k = Math.round(q.y * 2) / 2; hist.set(k, (hist.get(k) || 0) + 1); }   // the main floor is the height most of the top is at (a deck, not a crow's nest)
+    const main = [...hist.entries()].sort((a2, b2) => b2[1] - a2[1])[0]; const keep = main ? out.filter(q => Math.abs(q.y - main[0]) <= 0.6) : out;
+    floorSpots.set(th, keep); return keep; };
+  for (const c of people) {
+    const inThing = standOn.find(th => th.size.y > 1.2 && inside(footprint(th, 0.05), c.start) && !(surfaceAt(th, c.start.x, c.start.z) > 0.3));
+    if (!(inThing || GKIND === 'water')) continue;
+    if (!inThing && standOn.some(th => inside(footprint(th, 0.05), c.start) && surfaceAt(th, c.start.x, c.start.z) > 0.3)) continue;
+    let best = null; for (const th of (inThing ? [inThing] : standOn)) for (const q of spotsOn(th)) { const d = Math.hypot(q.x - c.start.x, q.z - c.start.z); if (!best || d < best.d) best = { d, q, th }; }
+    if (best && best.d < 25) { moved.push(`${c.id} moved onto ${best.th.T.name} (${best.d.toFixed(1)} m)`); c.start = V(best.q.x, 0, best.q.z); c.spot = c.start; } }
+  if (moved.length) console.log('GOLIDE ' + moved.join('; '));
   for (const c of people) { for (const th of standOn) { const b = footprint(th, 0.05); const spots = [c.start, ...(B.beats || []).filter(b2 => b2.who === c.id && b2.to && b2.to.length === 2).map(b2 => V(b2.to[0], 0, b2.to[1]))];
       if (spots.some(q => inside(b, q) && (surfaceAt(th, q.x, q.z) ?? 0) > 0.3)) stoodOn.add(th); }
     let best = null; for (const th of stoodOn) { const y = inside(footprint(th, 0.05), c.start) ? surfaceAt(th, c.start.x, c.start.z) : null; if (y !== null && y > 0.3 && (!best || y > best.y)) best = { th, y }; }
@@ -422,15 +437,32 @@ export async function build(K, words) {
     if (!dir) { const f = first.root ? V(0, 0, 1).applyQuaternion(first.root.quaternion).setY(0) : V(0, 0, 1); if (f.lengthSq() < 1e-4) f.set(0, 0, 1); f.normalize();
       dir = f.applyAxisAngle(V(0, 1, 0), YAWOF[s.angle] ?? 0); }
     dir.normalize();
-    let y = c.y + (s.angle === 'low' ? -Math.min(0.6, sz.y * 0.4) : s.angle === 'high' ? dist * 0.25 : s.angle === 'top' ? dist * 1.2 : 0.05);
-    const pos = c.clone().addScaledVector(dir, s.angle === 'top' ? dist * 0.25 : dist);
+    const y = c.y + (s.angle === 'low' ? -Math.min(0.6, sz.y * 0.4) : s.angle === 'high' ? dist * 0.25 : s.angle === 'top' ? dist * 1.2 : 0.05);
     if (s.angle === 'over-shoulder' && who.filter(w => w.root).length >= 2) {   // behind the first person's shoulder, on the second's face
-      const a2 = new THREE.Box3().expandByObject(who[0].root), b2 = new THREE.Box3().expandByObject(who.filter(w => w.root)[1].root), ah = a2.getCenter(V(0, 0, 0)), bh = b2.getCenter(V(0, 0, 0));
+      const pp = who.filter(w => w.root), a2 = new THREE.Box3().expandByObject(pp[0].root), b2 = new THREE.Box3().expandByObject(pp[1].root), ah = a2.getCenter(V(0, 0, 0)), bh = b2.getCenter(V(0, 0, 0));
       ah.y = a2.max.y - (a2.max.y - a2.min.y) * 0.2; bh.y = b2.max.y - (b2.max.y - b2.min.y) * 0.25; const back = ah.clone().sub(bh).setY(0).normalize(), side = V(-back.z, 0, back.x);
       return { pos: ah.clone().addScaledVector(back, 0.9).addScaledVector(side, 0.45).add(V(0, 0.15, 0)), aim: bh, fov: THREE.MathUtils.radToDeg(vfov) }; }
-    let floor = 0.3; for (const th of stoodOn) if (inside(footprint(th), pos)) { const h2 = surfaceAt(th, pos.x, pos.z); if (h2 !== null) floor = Math.max(floor, h2 + 0.3); }
-    pos.y = Math.max(floor, y);
-    return { pos, aim: c, fov: THREE.MathUtils.radToDeg(vfov) };
+    // a clear view (owner 2026-11-24: 32 of 35 engine stations were blocked by the place's big things): the wanted
+    // side first, then turning round the subject, higher, and closer, until the lens stands in the open and most of
+    // five lines to the subject cross nothing
+    const mine = new Set(who.map(w => w.userData && w.userData.thing).filter(Boolean)), whoObjs = new Set(); who.forEach(w => (w.root || w).traverse(o => whoObjs.add(o)));
+    const objs = [...list.map(th => th.obj), ...copies.map(cp => cp.obj)].filter(o => o.visible && !mine.has(o.userData.thing));
+    for (const o of objs) { o.updateMatrixWorld(true); o.userData._box = new THREE.Box3().setFromObject(o); }
+    const pts = [c, ...[[0.3, 0.3], [-0.3, 0.3], [0.3, -0.3], [-0.3, -0.3]].map(([a, b]) => c.clone().add(V(sz.x * a, sz.y * b, sz.z * a)))];
+    const RCv = new THREE.Raycaster();
+    const deckUnder = (q) => { for (const th of stoodOn) if (inside(footprint(th), q)) { const h2 = surfaceAt(th, q.x, q.z); if (h2 !== null && q.y > h2 + 0.2) return th; } return null; };
+    const open = (q) => !objs.some(o => o.userData._box.containsPoint(q) && deckUnder(q) !== things[o.userData.thing]);
+    const seen = (q) => { let bad = 0; for (const pt of pts) { const d = pt.distanceTo(q); RCv.set(q, pt.clone().sub(q).normalize()); RCv.far = d * 0.95;
+        for (const o of objs) { if (!RCv.ray.intersectsBox(o.userData._box)) continue; if (RCv.intersectObject(o, true).some(h => h.object.visible && !h.object.userData.ink && !h.object.userData.proxy && !whoObjs.has(h.object))) { bad++; break; } } }
+      return bad <= 1; };
+    const place = (d0, yaw, up, k) => { const d = d0.clone().applyAxisAngle(V(0, 1, 0), yaw), q = c.clone().addScaledVector(d, (s.angle === 'top' ? dist * 0.25 : dist) * k);
+      let floor = 0.3; for (const th of stoodOn) if (inside(footprint(th), q)) { const h2 = surfaceAt(th, q.x, q.z); if (h2 !== null) floor = Math.max(floor, h2 + 0.3); }
+      q.y = Math.max(floor, y + up); return q; };
+    const tries = [];
+    for (const k of [1, 0.75, 0.55]) for (const up of [0, 1.2, 3]) for (const yaw of [0, 0.35, -0.35, 0.7, -0.7, 1.1, -1.1, 1.6, -1.6, 2.2, -2.2, Math.PI]) tries.push([yaw, up, k]);
+    tries.sort((a, b) => (Math.abs(a[0]) + a[1] * 0.25 + (1 - a[2]) * 1.5) - (Math.abs(b[0]) + b[1] * 0.25 + (1 - b[2]) * 1.5));
+    for (const [yaw, up, k] of tries) { const q = place(dir, yaw, up, k); if (open(q) && seen(q)) return { pos: q, aim: c, fov: THREE.MathUtils.radToDeg(vfov) }; }
+    return { pos: place(dir, 0, 0, 1), aim: c, fov: THREE.MathUtils.radToDeg(vfov) };   // nothing clear: the director repairs it
   }
   const raw = (B.shots || []).map(s => ({ ...s, t0: at(s.from) })).sort((a, b) => a.t0 - b.t0);
   if (!raw.length) throw new Error('board: no shots');

@@ -14,7 +14,7 @@ const CHROME = process.env.CHROME || '/usr/bin/google-chrome';
   // the engine's flags are for a Mac GPU; CHROME may be a wrapper adding software WebGL (see the workflow)
   const browser = await puppeteer.launch({ executablePath: CHROME, headless: true, protocolTimeout: 0, args: ['--ignore-gpu-blocklist'] });
   const page = await browser.newPage(); const errors = [];
-  page.on('pageerror', e => { errors.push(e.message); console.log('PAGE ERROR', e.message); });
+  page.on('pageerror', e => { errors.push(e.message); console.log('PAGE ERROR', e.message, (e.stack || '').split('\n').slice(0, 4).join(' | ')); });
   page.on('console', m => { const t = m.text(); if (t.startsWith('GOLIDE')) console.log(t); });
   page.on('response', r => { if (r.status() >= 400 && !r.url().endsWith('favicon.ico')) console.log('HTTP', r.status(), r.url()); });
   await page.goto(`http://127.0.0.1:${srv.address().port}/index.html?w=${w}&h=${h}&look=c&style=ph&viewer=1&golide=${SCENE}${process.env.XQ || ''}`);   // XQ: e.g. &set=home
