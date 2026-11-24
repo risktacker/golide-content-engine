@@ -15,7 +15,7 @@ const OUTFITS = { suit: { style: 'tunic', civil: true, details: ['tie', 'buttons
 const HATS = { cap: 'cap', beret: 'beret', boonie: 'boonie', pith: 'pith', helmet: 'm1', police: 'cap79', hardhat: 'pith', chef: 'beret', cowboy: 'boonie', beanie: 'beret' };
 const ANGLE = { front: [0, 0.06], low: [0.3, -0.16], high: [-0.2, 0.42], left: [-0.62, 0.08], right: [0.62, 0.08], 'over-shoulder': [Math.PI - 0.45, 0.12], top: [0, 1.15] };
 const LENS = { wide: 46, medium: 36, close: 30, 'extreme-close': 24, face: 28 };
-const SKY = { day: ['#9cc8ee', '#e6f0f6'], dusk: ['#5b4a7a', '#ffb07a'], night: ['#0d1630', '#2a3a5e'], overcast: ['#aab3bb', '#d8dcdf'] };
+const SKY = { day: ['#5b96d3', '#9fb6e6'],   /* Rick's day sky, measured: upper #5b96d3, horizon #9fb6e6 */ dusk: ['#5b4a7a', '#ffb07a'], night: ['#0d1630', '#2a3a5e'], overcast: ['#aab3bb', '#d8dcdf'] };
 const SPEED = { walk: 1.3, run: 3.4, sneak: 0.7 };
 const HAND_DO = new Set(['hold', 'pick-up', 'use', 'give', 'throw', 'kick', 'put-down', 'work', 'carry', 'kneel']);
 
@@ -58,6 +58,25 @@ export async function build(K, words) {
     room = { min: V(-SW / 2 - 300, 0.03, -SD / 2 - 300), max: V(SW / 2 + 300, 200, SD / 2 + 300) };   // outdoors the camera may stand far off for a wide view
   }
   { const { RoomEnvironment } = await import('three/addons/environments/RoomEnvironment.js'); const pm = new THREE.PMREMGenerator(K.renderer); scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture; scene.environmentIntensity = IN ? 0.55 : 0.4; }
+
+  // ---- Rick's look, measured by the Ricks Clips kits (references/reports/outlines.md, grade.md): black ink lines about
+  // 3 px wide at 1080p on silhouettes and depth jumps of the 3D world (the warm black-point lift is left out: it washed the picture)
+  { const PP = await import('postprocessing');
+    class InkEffect extends PP.Effect { constructor() { super('GolideInk', `
+      uniform vec2 px; uniform float uInk;
+      float vz(vec2 p) { return getViewZ(readDepth(p)); }
+      void mainImage(const in vec4 inputColor, const in vec2 uv, const in float depth, out vec4 outputColor) {
+        float c = getViewZ(depth), m = 0.0;
+        vec2 o[8]; o[0] = vec2(2.2, 0.0); o[1] = vec2(-2.2, 0.0); o[2] = vec2(0.0, 2.2); o[3] = vec2(0.0, -2.2);
+        o[4] = vec2(1.6, 1.6); o[5] = vec2(-1.6, 1.6); o[6] = vec2(1.6, -1.6); o[7] = vec2(-1.6, -1.6);
+        for (int i = 0; i < 8; i++) { float n = vz(uv + o[i] * px); m = max(m, abs(n - c) / max(0.25, abs(c))); }
+        float a = smoothstep(0.02, 0.055, m) * uInk;
+        vec3 col = mix(inputColor.rgb, vec3(0.09, 0.05, 0.06), a);
+        outputColor = vec4(col, inputColor.a);
+      }`, { attributes: PP.EffectAttribute.DEPTH, uniforms: new Map([['px', new THREE.Uniform(new THREE.Vector2(1 / 1080, 1 / 1920))], ['uInk', new THREE.Uniform(1)]]) }); } }
+    const comp = K.post.composer, pass = new PP.EffectPass(K.camera, new InkEffect());
+    comp.addPass(pass, Math.max(1, comp.passes.length - 1));   // after the grade, before the anti-aliasing
+  }
 
   // ---- things: a library model found by name, or the thing's own parts; scaled to its real height ----
   const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js'); const GL = new GLTFLoader();
@@ -287,7 +306,7 @@ export async function build(K, words) {
   function light(t, cam, sh) {
     K.setLook('day'); scene.fog.color.set(IN ? '#f3e9d6' : (SKY[W.sky] || SKY.day)[1]);
     if (IN) { K.hemi.intensity = 0.32; K.hemi.color.set('#9fb4e0'); K.sun.intensity = 2.6; K.sun.color.set('#ffd29a'); K.SUNDIR.set(0.35, 0.5, -0.75).normalize(); K.renderer.toneMappingExposure = 0.42; K.U.uVig.value = 0.55; K.U.uCon.value = 1.22; }
-    else { const l = LIGHT[W.sky] || LIGHT.day; K.hemi.intensity = l.hemi; K.hemi.color.set(l.hemiC); K.sun.intensity = l.sun; K.sun.color.set(l.sunC); K.SUNDIR.set(...l.dir).normalize(); K.renderer.toneMappingExposure = l.exp; K.U.uVig.value = 0.6; K.U.uCon.value = 1.12; }
+    else { const l = LIGHT[W.sky] || LIGHT.day; K.hemi.intensity = l.hemi; K.hemi.color.set(l.hemiC); K.sun.intensity = l.sun; K.sun.color.set(l.sunC); K.SUNDIR.set(...l.dir).normalize(); K.renderer.toneMappingExposure = l.exp * 1.18; K.U.uVig.value = 0.7; K.U.uCon.value = 1.12; }
     K.U.uSat.value = 1.15; K.U.uWarm.value = W.light === 'cool' ? -0.02 : W.light === 'neutral' ? 0.02 : 0.07;
     const f = sh.box.getCenter(V(0, 0, 0)), r = Math.max(10, sh.box.getSize(V(0, 0, 0)).length()); K.sun.target.position.copy(f); K.sun.position.copy(f).addScaledVector(K.SUNDIR, 60 + r); const sc = K.sun.shadow.camera; sc.left = sc.bottom = -r; sc.right = sc.top = r; sc.near = 1; sc.far = 200 + r * 2; sc.updateProjectionMatrix();
   }
