@@ -59,19 +59,33 @@ export async function run(K) {
     const u = THREE.MathUtils.clamp((t - sh.t0) / (sh.t1 - sh.t0), 0, 1), v = { ...sh.view(u, t) }, f = sh.fix || {};
     if (f.yawAbs !== undefined) v.yaw = f.yawAbs; if (f.pitchAbs !== undefined) v.pitch = f.pitchAbs;
     v.yaw += f.yaw || 0; v.pitch += f.pitch || 0; v.fov *= f.fovK || 1; v.k = (v.k ?? 1) * (f.dist || 1);
+    // a station the storyboard wrote (camera position, aim, lens): played exactly as written, with a slow rest drift
+    if (sh.station) { const st = sh.station, pos = st.pos.clone(), tg = st.aim.clone(), side = new THREE.Vector3().subVectors(tg, pos).cross(new THREE.Vector3(0, 1, 0)).normalize();
+      const dd = pos.distanceTo(tg); pos.addScaledVector(side, (u - 0.5) * Math.min(0.35, dd * 0.06)); pos.lerp(tg, 0.05 * u * (st.push ?? 1));
+      const c3 = { pos, tgt: tg, fov: st.fov, roll: 0, dist: pos.distanceTo(tg) }; K.look(c3.pos, c3.tgt, c3.fov, 0); camera().updateMatrixWorld(true); fourthWall(c3.pos, c3.tgt); return c3; }
+    // the impossible view (the plan's eye): the camera sits inside a thing (in the gap, in the drawer, behind the glass)
+    // and looks at the subjects; the move only creeps a little toward them
+    if (sh.eye) { const eb = new THREE.Box3().setFromObject(sh.eye), tg = boxAt(sh, t).getCenter(new THREE.Vector3());
+      const pos = eb.getCenter(new THREE.Vector3()); pos.y = Math.max(0.12, eb.min.y + (eb.max.y - eb.min.y) * (sh.eyeY ?? 0.6)); pos.lerp(tg, 0.12 * u);
+      const c2 = { pos, tgt: tg, fov: v.fov, roll: v.roll || 0, dist: pos.distanceTo(tg) };
+      K.look(c2.pos, c2.tgt, c2.fov, c2.roll); camera().updateMatrixWorld(true); fourthWall(c2.pos, c2.tgt); return c2; }
     const c = D.fit(boxAt(sh, t), v); if (!c) throw new Error(`shot ${sh.name}: its subjects cannot fit the frame at ${v.fov.toFixed(0)} degrees`);
     K.look(c.pos, c.tgt, c.fov, c.roll); camera().updateMatrixWorld(true); fourthWall(c.pos, c.tgt); return c;
   }
   const camera = () => K.camera;
   // every problem of a shot, checked every 0.1 s; `quick` (the repair search): every 0.25 s, stop at the first one
+  const staging = new Set();
   function problems(sh, quick = false) {
     const out = [];
     useHide(sh);
     for (const t of times(sh, quick ? 0.25 : SAMPLE)) {
       poseT(t); camAt(sh, t);
-      { const own = new Set(); sh.who.forEach(w => (w.root || w).traverse?.(x => own.add(x))); const objs = propObjs.filter(o => o !== sh.near && !own.has(o));
+      { const own = new Set(); sh.who.forEach(w => (w.root || w).traverse?.(x => own.add(x))); const objs = propObjs.filter(o => o !== sh.near && o !== sh.eye && !own.has(o));
         const b2 = D.blocked(boxAt(sh, t).getCenter(new THREE.Vector3()), objs); if (b2) { out.push({ t: +t.toFixed(2), p: b2 }); if (quick) return out; } }
-      for (const p of D.issues({ subjects: sh.who.filter(isPerson), people: S.people, props, propObjs: sh.near ? propObjs.filter(o => o !== sh.near) : propObjs, extras: [...(sh.extras?.(t) || []), ...(S.words?.(t) || []).filter(e => !e.subjectOnly || sh.who.includes(e.subjectOnly))], faces: (sh.faces || []).filter(f => sh.who.includes(f)), things: sh.who.filter(w => !isPerson(w)) })) { out.push({ t: +t.toFixed(2), p }); if (quick) return out; }
+      for (const p of D.issues({ subjects: sh.who.filter(isPerson), people: S.people, propObjs: propObjs.filter(o => o !== sh.near && o !== sh.eye), props: sh.eye ? props.filter(q => q.obj !== sh.eye) : props, extras: [...(sh.extras?.(t) || []), ...(S.words?.(t) || []).filter(e => !e.subjectOnly || sh.who.includes(e.subjectOnly))], faces: (sh.faces || []).filter(f => sh.who.includes(f)), things: sh.who.filter(w => !isPerson(w)) })) {
+        // people passing through things is staging, not framing: the camera cannot fix it, so it never moves the camera (reported once)
+        if (p.includes(' passes through ')) { staging.add(p); continue; }
+        out.push({ t: +t.toFixed(2), p }); if (quick) return out; }
     }
     return out;
   }
@@ -93,7 +107,7 @@ export async function run(K) {
     for (const d of saved) {
       const sh = all[d.i]; if (!sh) throw new Error(`direction: no shot ${d.i}`);
       if (d.merged) { keep[keep.length - 1].t1 = d.t1; continue; }
-      sh.who = d.who.map(k => sh.who0[k]); sh.fix = d.fix || {}; keep.push(sh);
+      sh.who = d.who.map(k => sh.who0[k]); sh.fix = d.fix || {}; if (d.nostation) sh.station = null; if (d.station_pos && sh.station) sh.station.pos.set(...d.station_pos); keep.push(sh);
     }
     S.shots.length = 0; S.shots.push(...keep); S.shots.forEach(frameShot);
     window.GOLIDE.shots = S.shots.map(s => ({ name: s.name, t0: s.t0, t1: s.t1 }));
@@ -107,6 +121,16 @@ export async function run(K) {
     for (let i = 0; i < S.shots.length; i++) {
       const sh = S.shots[i]; frameShot(sh); sh.fix = {};
       const entry = { name: sh.name, t0: +sh.t0.toFixed(2), t1: +sh.t1.toFixed(2), found: summary(problems(sh)), box: sh.box.getSize(new THREE.Vector3()).toArray().map(v => +v.toFixed(2)), faces: (sh.faces || []).map(f => [D.faceBox(f).getSize(new THREE.Vector3()).toArray().map(v => +v.toFixed(2)), D.headBox(f).getSize(new THREE.Vector3()).toArray().map(v => +v.toFixed(2))]), ex: (sh.extras?.(sh.t0 + 0.5) || []).map(e => [e.label, e.box.getSize(new THREE.Vector3()).toArray().map(v => +v.toFixed(2))]), cam: (() => { poseT(sh.t0 + 0.1); const c = camAt(sh, sh.t0 + 0.1); return [+c.dist.toFixed(2), +c.fov.toFixed(1)]; })() };
+      // a written station is the plan and is kept as written; only a station that cannot work at all (camera inside a
+      // thing, below the ground, the subject out of the shot or hidden) falls back to the director's own framing
+      const HARD = /camera is|out of the shot|is hidden behind|cut by the camera|blocked/;
+      // a station written inside a thing first steps toward its aim until it is out (free), before anything is dropped
+      if (sh.station && entry.found.some(q => /camera is inside/.test(q))) { const st = sh.station, from = st.pos.clone();
+        for (let k = 1; k <= 12 && entry.found.some(q => /camera is inside/.test(q)); k++) { st.pos.copy(from).lerp(st.aim, 0.05 * k); entry.found = summary(problems(sh)); }
+        if (entry.found.some(q => /camera is inside/.test(q))) st.pos.copy(from); else entry.station_moved = st.pos.toArray().map(v => +v.toFixed(2)); }
+      if (sh.station) { if (entry.found.some(q => HARD.test(q))) { entry.station_dropped = entry.found.filter(q => HARD.test(q)); sh.station = null; sh.nostation = true; entry.found = summary(problems(sh)); }
+        else { entry.ok = true; entry.station = true; if (entry.found.length) { entry.kept_with = entry.found; (report.warnings = report.warnings || []).push(`${sh.name}: ${entry.found.join('; ')}`); }
+          report.decisions.push({ i: sh.idx, fix: {}, who: sh.who.map(w => sh.who0.indexOf(w)), ...(entry.station_moved ? { station_pos: entry.station_moved } : {}) }); report.shots.push(entry); continue; } }
       let done = entry.found.length ? tryFixes(sh, FIXES) : {};
       if (!done) { done = tryFixes(sh, ANGLE_FIXES); if (done) entry.repair_note = 'another angle'; }
       if (!done) {                                                     // fewer people: the people first, then each one alone
@@ -131,30 +155,40 @@ export async function run(K) {
         // nothing made it perfect: keep the attempt with the fewest problem moments and say so in the report
         // (owner 2026-11-22: a paid storyboard never ends without a video; nothing goes back to Sol)
         let best = {}, bestN = Infinity;
-        for (const fx of [{}, ...FIXES.slice(0, 20), ...ANGLE_FIXES]) { sh.fix = fx; const n = problems(sh).length; if (n < bestN) { best = fx; bestN = n; if (!n) break; } }
+        // the plan's own angle is worth keeping: an attempt that throws it away (another angle) must be clearly better
+        const weight = q => /out of the shot|is hidden behind|camera is|cut by the camera|blocked/.test(q.p) ? 3 : 1;
+        for (const fx of [{}, ...FIXES.slice(0, 20), ...ANGLE_FIXES]) { sh.fix = fx; const n = problems(sh).reduce((a, q) => a + weight(q), 0) + (fx.yawAbs !== undefined ? 6 : 0); if (n < bestN) { best = fx; bestN = n; if (!n) break; } }
         sh.fix = best; entry.ok = true; entry.kept_with = summary(problems(sh));
         (report.warnings = report.warnings || []).push(`${sh.name}: ${entry.kept_with.join('; ')}`);
       }
-      report.decisions.push({ i: sh.idx, fix: sh.fix, who: sh.who.map(w => sh.who0.indexOf(w)) });
+      report.decisions.push({ i: sh.idx, fix: sh.fix, who: sh.who.map(w => sh.who0.indexOf(w)), ...(sh.nostation ? { nostation: true } : {}) });
       report.shots.push(entry);
     }
     window.GOLIDE.shots = S.shots.map(s => ({ name: s.name, t0: s.t0, t1: s.t1 }));
+    if (staging.size) report.staging = [...staging];   // people through things: for the storyboard, not the camera
     return report;
   }
   // ---- rendering ----
   const ov = document.createElement('canvas'); ov.width = K.WW; ov.height = K.HH; const og = ov.getContext('2d');
   // ONE travelling camera (Rick: few cuts, lands on a new picture about every second): between two landings of the same
   // move the camera flies from where the last one ended to where this one starts; a new move is a cut
-  const FLY = 0.55;
-  function prevOf(sh) { const i = S.shots.indexOf(sh), p = S.shots[i - 1]; return p && p.take !== undefined && p.take === sh.take ? p : null; }
+  // CAMERA V2, stolen from the Ricks Clips kit (CINEMATOGRAPHY.md section 7): the camera rests on a station, then TRAVELS
+  // to the next one and lands ON its word; travel time grows with distance (1.5 s + 0.25 s per metre, at most 6 s), inside
+  // the rest before it minus a 0.7 s hold; the ease is on the picture (slow off, cruise, slow in). A new move is a cut.
+  const HOLD = 0.7;
+  function nextOf(sh) { const i = S.shots.indexOf(sh), n = S.shots[i + 1]; return n && n.take !== undefined && n.take === sh.take ? n : null; }
   function camFly(sh, t) {
-    const c = camAt(sh, t), p = prevOf(sh), fly = Math.min(FLY, 0.45 * (sh.t1 - sh.t0));
-    if (!p || t - sh.t0 >= fly) return c;
-    if (!p.box) frameShot(p);
-    const a = camAt(p, sh.t0), b = camAt(sh, t), k = THREE.MathUtils.smootherstep((t - sh.t0) / fly, 0, 1);
-    const pos = a.pos.clone().lerp(b.pos, k), tgt = a.tgt.clone().lerp(b.tgt, k), fov = THREE.MathUtils.lerp(a.fov, b.fov, k), roll = THREE.MathUtils.lerp(a.roll || 0, b.roll || 0, k);
-    if (props.some(q => !q.floor && q.box.containsPoint(pos))) return b;   // the flight would pass through a thing: cut instead
-    K.look(pos, tgt, fov, roll); camera().updateMatrixWorld(true); fourthWall(pos, tgt); return { ...b, pos, tgt, fov, roll, dist: pos.distanceTo(tgt) };
+    const c = camAt(sh, t), n = nextOf(sh);
+    if (!n) return c;
+    if (!n.box) frameShot(n);
+    const b = camAt(n, n.t0), a0 = camAt(sh, Math.max(sh.t0, n.t0 - 0.01));
+    const dist = a0.pos.distanceTo(b.pos), tr = Math.max(0.5, Math.min(6, 1.5 + 0.25 * dist, (n.t0 - sh.t0) - HOLD));
+    if (t < n.t0 - tr) { camAt(sh, t); return c; }
+    const a = camAt(sh, t), k = THREE.MathUtils.smootherstep((t - (n.t0 - tr)) / tr, 0, 1);
+    const pos = a.pos.clone().lerp(b.pos, k), tgt = a.tgt.clone().lerp(b.tgt, k), fov = THREE.MathUtils.lerp(a.fov, b.fov, k);
+    const roll = Math.sin(k * Math.PI) * 0.07 * Math.sign(b.pos.x - a.pos.x || 1);   // roll only inside a travel, back to level on landing
+    if (props.some(q => !q.floor && q.box.containsPoint(pos))) { camAt(sh, t); return c; }   // never through a thing: rest, then cut
+    K.look(pos, tgt, fov, roll); camera().updateMatrixWorld(true); fourthWall(pos, tgt); return { ...a, pos, tgt, fov, roll, dist: pos.distanceTo(tgt) };
   }
   function frame(t, debug = false) {
     const sh = shotAt(t); if (!sh.box) frameShot(sh); useHide(sh);

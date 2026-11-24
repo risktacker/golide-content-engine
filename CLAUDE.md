@@ -130,6 +130,12 @@ best unmodelled video of the last 45 days, no numbers bar. The channel's style i
   Kenney's 3D kits; only when the thing's own noun matches) or built from their parts (`shorts3d/things.py`), never
   dropped. One generic scene builds any storyboard (`assets/shorts3d/board.js`); travelling subjects are followed by
   the camera. Trials are free: a storyboard for a trial is written by hand with the same instructions, never paid.
+- Stolen from the Ricks Clips kits (owner 2026-11-24: "steal it"): Sol writes the film brief and the PICTURE PLAN first
+  (their columns), then builds every row; the camera is written as STATIONS (cam [x, z, height], aim, lens in mm) and
+  played exactly as written; camera v2 travel between stations (1.5 s + 0.25 s/m, at most 6 s, 0.7 s hold, roll only in
+  travel); the director only checks a written station, steps it out of a thing it sits in, and falls back to its own
+  framing only when the station cannot work (camera inside, subject hidden or out of shot). Every thing carries five
+  story-specific details. Notes: claude/golide-3d-shorts-storyboard-research-2026-11-23.md.
 - The director (`assets/shorts3d/director.js`, owner: "heads and bodies well contained... nothing cropped and nothing
   crashing"): each shot frames its `who` inside the phone crop (130/160/230 px) and every 0.1 s checks: anyone who
   shows is whole; no head under the captions; no face hidden; heads never overlap; words in the set (TV) never cut
@@ -176,4 +182,4 @@ best unmodelled video of the last 45 days, no numbers bar. The channel's style i
   automatic runs never switch paid ones on. Real people stay real photo cards, never puppets.
 
 ## Checks
-`python3 -m pytest -q` must pass before every push (672 tests as of 2026-11-23).
+`python3 -m pytest -q` must pass before every push (674 tests as of 2026-11-24).

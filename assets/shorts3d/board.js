@@ -61,7 +61,8 @@ export async function build(K, words) {
 
   // ---- things: a library model found by name, or the thing's own parts; scaled to its real height ----
   const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js'); const GL = new GLTFLoader();
-  const SHAPE = { box: () => new THREE.BoxGeometry(1, 1, 1), cyl: () => new THREE.CylinderGeometry(0.5, 0.5, 1, 28), sphere: () => new THREE.SphereGeometry(0.5, 28, 16), cone: () => new THREE.ConeGeometry(0.5, 1, 28) };
+  const { RoundedBoxGeometry } = await import('three/addons/geometries/RoundedBoxGeometry.js');
+  const SHAPE = { box: () => new RoundedBoxGeometry(1, 1, 1, 3, 0.12), cyl: () => new THREE.CylinderGeometry(0.5, 0.5, 1, 28), sphere: () => new THREE.SphereGeometry(0.5, 28, 16), cone: () => new THREE.ConeGeometry(0.5, 1, 28) };
   const things = {}, list = [];
   const label = (text, w) => { const c = document.createElement('canvas'); c.width = 1024; c.height = 256; const g = c.getContext('2d'); g.fillStyle = '#fbf7ef'; g.fillRect(0, 0, 1024, 256);
     g.fillStyle = '#17141a'; let f = 170; g.font = `${f}px Anton`; while (g.measureText(text).width > 960 && f > 40) { f -= 8; g.font = `${f}px Anton`; } g.textAlign = 'center'; g.fillText(text, 512, 128 + f * 0.36);
@@ -91,8 +92,13 @@ export async function build(K, words) {
   const rnd = (seed => () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; });
   const copies = [];
   for (const th of list) { const n = Math.max(1, th.T.count || 1) - 1; if (!n) continue; const r = rnd([...th.id].reduce((a, ch) => a * 31 + ch.charCodeAt(0), 7) % 2147483646 + 1), sp = Math.max(0.5, th.T.spread || 2);
-    for (let i = 0; i < n; i++) { const a = r() * Math.PI * 2, d = sp * Math.sqrt(r()), o = th.inner.clone(true), h = new THREE.Group(); h.add(o); h.name = th.T.name;
-      h.position.set(th.base.x + Math.cos(a) * d, th.base.y, th.base.z + Math.sin(a) * d); h.rotation.y = r() * Math.PI * 2; h.scale.setScalar(0.8 + 0.4 * r()); G.add(h); h.updateMatrixWorld(true);
+    const ar = th.T.arrange || 'scatter', sz = th.size;
+    for (let i = 0; i < n; i++) { const a = r() * Math.PI * 2, o = th.inner.clone(true), h = new THREE.Group(); h.add(o); h.name = th.T.name; let x = 0, y = 0, z = 0;
+      if (ar === 'heap') { const d = sp * Math.sqrt(r()); x = Math.cos(a) * d; z = Math.sin(a) * d; y = Math.max(0, (1 - d / sp) * sp * 0.75 - sz.y * 0.5 * r()); }   // a mound, highest in the middle
+      else if (ar === 'stack') { y = (i + 1) * sz.y * 0.98; x = (r() - 0.5) * sz.x * 0.08; z = (r() - 0.5) * sz.z * 0.08; }
+      else if (ar === 'row') { x = (i + 1) * Math.max(sz.x, 0.1) * 1.1; }
+      else { const d = sp * Math.sqrt(r()); x = Math.cos(a) * d; z = Math.sin(a) * d; }
+      h.position.set(th.base.x + x, th.base.y + y, th.base.z + z); h.rotation.y = ar === 'stack' || ar === 'row' ? th.yaw0 + (r() - 0.5) * 0.15 : r() * Math.PI * 2; h.scale.setScalar(ar === 'scatter' || ar === 'heap' ? 0.8 + 0.4 * r() : 1); G.add(h); h.updateMatrixWorld(true);
       copies.push({ th, obj: h, phase: r() * 6.28, y0: h.position.y, ry0: h.rotation.y }); } }
 
   // ---- cast ----
@@ -158,7 +164,8 @@ export async function build(K, words) {
     if (st.fly) { const u = clamp((t - st.t0) / st.dur); if (t < st.t0) return st.a.clone(); const p = st.a.clone().lerp(st.b, u); p.y = lerp(st.a.y, 0, u) + Math.sin(u * Math.PI) * st.h; return p; }
     if (st.c) return handPos(st.c, t); if (st.at) return st.at.clone(); return m.p; }
   // riding: a person rides a thing from a beat on; they sit on top of it and move with it
-  const rideOf = (c, t) => { const b = beatAt(c, t); return b && b.do === 'ride' && things[b.target] ? things[b.target] : null; };
+  // riding lasts until the person gets off (walks, runs, jumps, falls or rides something else), not until the next gesture
+  const rideOf = (c, t) => { let on = null; for (const b of beats.get(c)) { if (b.t > t) break; if (b.do === 'ride') on = things[b.target] || null; else if (['walk', 'run', 'sneak', 'jump', 'fall', 'lie', 'sit'].includes(b.do)) on = null; } return on; };
 
   // ---- small effects: bubbles, smoke, fire, glow ----
   const BUB = {}; for (const ch of ['?', '!', '$', '...']) { const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d'); g.fillStyle = '#fff'; g.beginPath(); g.arc(64, 60, 50, 0, 7); g.fill(); g.lineWidth = 6; g.strokeStyle = '#2a1612'; g.stroke(); g.fillStyle = ch === '$' ? '#1f9e5a' : '#e8442a'; g.font = `${ch.length > 1 ? 60 : 80}px Anton`; g.textAlign = 'center'; g.fillText(ch, 64, ch.length > 1 ? 80 : 90); BUB[ch] = new THREE.CanvasTexture(c); BUB[ch].colorSpace = THREE.SRGBColorSpace; }
@@ -194,7 +201,7 @@ export async function build(K, words) {
     const b = beatAt(c, t), k = b ? eio(clamp((t - b.t) / 0.3)) : 1, s = pathAt(c, t), ride = rideOf(c, t);
     let p = s.p, yaw = s.yaw, y = 0;
     if (ride) { p = ride.obj.position.clone(); y = ride.obj.position.y + (ride.size.y < 1.6 ? ride.size.y : ride.size.y * 0.55);   /* on a low deck or seat: on top; a tall vehicle: in its seat */ yaw = ride.obj.rotation.y + (ride.obj.userData.longX ? Math.PI / 2 : 0); }
-    else if (b && b.target && !SPEED[b.do] && !s.moving) { const tp = spotOf(b.target, t); if (tp) { const want = Math.atan2(tp.x - p.x, tp.z - p.z); let d = ((want - yaw + 3 * Math.PI) % (2 * Math.PI)) - Math.PI; yaw += d * eio(clamp((t - b.t) / 0.35)); } }
+    else if (b && b.target && !SPEED[b.do] && !s.moving && !['sit', 'lie', 'ride'].includes(b.do)) { const tp = spotOf(b.target, t); if (tp) { const want = Math.atan2(tp.x - p.x, tp.z - p.z); let d = ((want - yaw + 3 * Math.PI) % (2 * Math.PI)) - Math.PI; yaw += d * eio(clamp((t - b.t) / 0.35)); } }
     if (b && b.do === 'sit' && b.target && things[b.target]) y = things[b.target].size.y * 0.55;
     place(c, p.x, p.z, yaw, y);
     if (s.moving && !ride) SR.clipAt(c, s.moving.kind === 'run' ? 'run' : 'walk', t * (s.moving.kind === 'sneak' ? 0.6 : 1) + c.phase);
@@ -307,12 +314,13 @@ export async function build(K, words) {
       return v; };
     return { name: `${i + 1} ${s.job || ''} ${s.angle || 'front'} ${s.lens || 'medium'} ${mv}: ${s.see || who.map(w => w.label || w.name).join(', ')}`.slice(0, 120), t0: s.t0, t1: i + 1 < raw.length ? raw[i + 1].t0 : DUR,
       take: s.take ?? i, follow: !!s.follow, near: nearObj,
+      station: s.cam && s.cam.length === 3 && s.aim && s.aim.length === 3 ? { pos: V(s.cam[0], s.cam[2], s.cam[1]), aim: V(s.aim[0], s.aim[2], s.aim[1]), fov: THREE.MathUtils.radToDeg(2 * Math.atan(18 / Math.max(12, s.mm || 35))), push: mv === 'pull' ? -1 : 1 } : null, eye: s.eye && things[s.eye] ? things[s.eye].obj : null,
       who, hidden: [], dof: s.lens === 'close' || s.lens === 'extreme-close' || s.lens === 'face' ? 0.01 : 0, extras: t => [...bubbleBoxes(who.filter(w => w && w.root)), ...labelBoxes(who.filter(w => !w.root)), ...calloutBoxes(who, t)], view,
       faces: s.lens === 'face' ? who.filter(w => w.root) : [] };
   });
   // things people hold, ride, sit on or kick, and flat things, are not obstacles; everything else is
   const touched = new Set(); for (const c of people) for (const b of beats.get(c)) { if (b.with) touched.add(b.with); if (['ride', 'sit', 'push', 'pull', 'hide', 'lie'].includes(b.do) && b.target) touched.add(b.target); }
-  const props = [...list.filter(th => !touched.has(th.id)).map(th => ({ obj: th.obj, label: th.T.name, floor: th.size.y < 0.15 })),
+  const props = [...list.filter(th => !touched.has(th.id)).map(th => ({ obj: th.obj, label: th.T.name, floor: th.size.y < 0.4 })),   /* rails, rugs, tracks: walked on and looked across, never obstacles */
     ...copies.filter(cp => cp.th.size.y > 0.6 && !touched.has(cp.th.id)).slice(0, 60).map(cp => ({ obj: cp.obj, label: cp.th.T.name, floor: false }))];
   return { dur: DUR, people, props, room, pose, light, shots, group: G, walls: IN, maxDist: IN ? 120 : 420 };
 }

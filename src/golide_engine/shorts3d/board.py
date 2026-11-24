@@ -39,6 +39,7 @@ LENSES = ["wide", "medium", "close", "extreme-close", "face"]
 JOBS = ["hook", "setup", "talk", "act", "explain", "analogy", "turn", "place", "climax", "end"]
 LIFE = ["none", "sway", "spin", "bob", "flutter", "smoke", "steam", "flicker", "drip", "roll"]
 ROLES = ["story", "dressing", "detail", "gag"]
+ARRANGE = ["scatter", "heap", "stack", "row"]
 MOVES = ["push", "pull", "crane-down", "crane-up", "orbit-left", "orbit-right", "pan", "track", "whip", "dolly-zoom",
          "snap-zoom", "hold"]
 BUBBLES = ["none", "?", "!", "$", "..."]
@@ -60,7 +61,7 @@ def schema() -> dict:
                  "sky": _enum(SKIES), "size": spot, "light": _enum(["warm", "cool", "neutral"])})
     thing = obj({"id": s, "name": s, "role": _enum(ROLES), "search": s, "height_m": num, "at": spot, "on": s, "turn_deg": num,
                  "color": s, "parts": strs, "text": s, "hero": {"type": "boolean"}, "count": i, "spread": num,
-                 "life": _enum(LIFE)})
+                 "life": _enum(LIFE), "arrange": _enum(ARRANGE)})
     look = obj({"outfit": _enum(OUTFITS), "color": s, "accent": s, "pattern": _enum(PATTERNS), "hat": _enum(HATS),
                 "glasses": {"type": "boolean"}})
     member = obj({"id": s, "label": s, "at": spot, "turn_deg": num, "look": look})
@@ -68,7 +69,8 @@ def schema() -> dict:
                 "face": _enum(FACES), "bubble": _enum(BUBBLES), "says": {"type": "boolean"}})
     event = obj({"from": i, "until": i, "thing": s, "do": _enum(THING_DOES), "to": spot, "path": {"type": "array", "items": spot},
                  "amount": num, "text": s})
-    landing = obj({"see": s, "from": i, "frame": strs, "near": s, "angle": _enum(ANGLES), "lens": _enum(LENSES)})
+    landing = obj({"see": s, "from": i, "frame": strs, "near": s, "eye": s, "angle": _enum(ANGLES), "lens": _enum(LENSES),
+                   "cam": spot, "aim": spot, "mm": num})
     # the picture plan, written first (the Ricks Clips kits' PICTURE_PLAN.md, column for column)
     row = obj({"job": _enum(JOBS), "mark": _enum(["none", "hook", "twist", "signature", "last-frame", "stillness"]),
                "words": s, "landing_word": i, "what_we_see": s, "shown": _enum(["close", "in-scene", "not-shown"]), "why": s,
@@ -134,12 +136,13 @@ def instructions() -> str:
         "real height in metres, where it stands [x, z], on (another thing's id it sits on, or empty), turn in degrees, "
         "a colour (hex or empty) and parts: the thing built from simple 3D parts, one per line, \"name: "
         "box|cyl|sphere|cone x y z w d h [rx90] [#hex]\" (x, y on the ground, z up from its base, sizes w d h), 8 to 30 "
-        "parts with real proportions, its own colours and its telling details (handles, wheels, windows, rivets, labels, "
-        "trims), used when no library has the thing. Long things (a road, a rail line, a river, a fence, a bridge, a "
+        "parts with real proportions, its own colours and FIVE details specific to this story and period (wear, lettering, marks, period "
+        "parts, what is on it), used when no library has the thing; nothing generic: a plain box is a failure. Long things (a road, a rail line, a river, a fence, a bridge, a "
         "pipe, a wire) are one thing with their real length. text: words printed on it or empty. hero: true for the "
         "one or two things the story is about; give them the most parts. count and spread: one entry can stand for a "
-        "cluster of the same thing (count 1 to 60 copies scattered within spread metres, each turned and sized a little "
-        "differently): rocks, crates, bottles, plants, bricks, coins, papers, tools. life: the thing's own constant "
+        "cluster of the same thing (count 1 to 60 copies within spread metres, each turned and sized a little "
+        "differently), and arrange says how: scatter (lying around), heap (piled into a mound, highest in the middle), "
+        "stack (one on top of another), row (side by side in a line). life: the thing's own constant "
         "motion (sway, spin, bob, flutter, smoke, steam, flicker, drip, roll, or none).\n"
         "DENSITY, measured on Ricks Clips' frames: every place carries 30 or more kinds of things and hundreds of "
         "objects (use clusters), grouped big, medium and small around the action, never in lines or grids; at least 2 "
@@ -189,11 +192,20 @@ def instructions() -> str:
         "- climax (it happens): ride with the moving thing, then one fast push on the hit.\n"
         "- end: pull back from the result with the hero calm and big in front of it, then creep in on the face, "
         "matching the first picture so the Short loops.\n"
-        "LANDINGS: inside a move, a new landing on almost every phrase and every 3 to 5 words in long phrases (about "
-        "1 to 1.5 seconds apart, never under 1 second). Each landing first says in one plain sentence what the "
+        "LANDINGS ARE CAMERA STATIONS (Rick's camera, measured): the camera rests on a station, then travels to the next "
+        "and lands on its word; travel takes 1.5 s + 0.25 s per metre of camera path (at most 6 s), so write stations "
+        "about 2.5 s or more apart inside a move (a new picture every 1 to 1.5 s comes from the travel itself and from "
+        "the people acting, not from more stations). Write EVERY station exactly, the way a camera operator would: cam "
+        "= where the camera stands [x, z, height in metres], aim = the point it looks at [x, z, height] (a face is at "
+        "about 1.3 m, hands at about 0.9 m, a thing at its middle), mm = the lens (24 wide, 35 medium, 50 close, 85 a "
+        "face). You placed every person and thing, so you know where they are: put the camera where the picture of "
+        "the plan row is (low at rail height for a low view, 2 m in front of a face for a face, high above for the "
+        "place). Keep the camera out of things and people, in front of the near-lens prop's far side so the prop is "
+        "between lens and subject, and never with a wall between camera and subject. Each landing first says in one plain sentence what the "
         "picture shows (see: the subject, its action, what is close in front and what stands behind), then frame (the "
         "ids it is about: what that moment is about, sized so it reads), near (the id of the prop nearest the lens, "
-        "from the plan row; the camera looks past it), angle and lens. Vary the size from landing "
+        "from the plan row; the camera looks past it), eye (for the plan's impossible view or a point of view: the "
+        "id of the thing the camera sits INSIDE, looking out at the frame, or empty), angle and lens. Vary the size from landing "
         "to landing (wide, medium, close, extreme-close on the thing in action, face for every reaction); never the "
         "same size and angle on the same person three times in a row; a face in view within the first 1.5 seconds. "
         "Keep the camera on one side of the action within a place (the 180-degree rule). "
@@ -271,6 +283,20 @@ def _pick(v: Any, allowed: list[str], default: str) -> str:
     return v if v in allowed else default
 
 
+def _station(s: dict) -> dict:
+    """A camera station the storyboard wrote: [x, z, height] for the camera and for its aim, and the lens in mm."""
+    def p3(v):
+        try:
+            x, z, h = (float(q) for q in v[:3])
+        except (TypeError, ValueError):
+            return None
+        return [round(max(-300, min(300, x)), 3), round(max(-300, min(300, z)), 3), round(max(0.05, min(150, h)), 3)]
+    cam, aim = p3(s.get("cam") or []), p3(s.get("aim") or [])
+    if not cam or not aim or cam == aim:
+        return {"cam": [], "aim": [], "mm": 0}
+    return {"cam": cam, "aim": aim, "mm": _num(s.get("mm"), 35, 12, 135)}
+
+
 def _job_move(job: str, k: int, n: int) -> str:
     """The camera move of the k-th of n landings in a move with this story job (Rick's camera by situation)."""
     last = k == n - 1
@@ -331,7 +357,7 @@ def repair(board: dict, words: list[dict]) -> tuple[dict, list[str]]:
         if at is None:
             at = [0.0, 0.0]; notes.append(f"{tid} had no spot, put at the centre")
         things.append({"id": tid, "name": name, "role": _pick(t.get("role"), ROLES, "dressing"), "count": int(_num(t.get("count"), 1, 1, MAX_COUNT)),
-                       "spread": _num(t.get("spread"), 0, 0, 30), "life": _pick(t.get("life"), LIFE, "none"), "search": str(t.get("search") or name)[:80],
+                       "spread": _num(t.get("spread"), 0, 0, 30), "life": _pick(t.get("life"), LIFE, "none"), "arrange": _pick(t.get("arrange"), ARRANGE, "scatter"), "search": str(t.get("search") or name)[:80],
                        "height_m": _num(t.get("height_m"), 1.0, 0.02, 200), "at": at, "on": _id(t.get("on"), ""),
                        "turn_deg": _num(t.get("turn_deg"), 0, -360, 360), "color": _hex(t.get("color"), ""),
                        "parts": parts, "text": str(t.get("text") or "")[:40], "hero": bool(t.get("hero"))})
@@ -420,7 +446,9 @@ def repair(board: dict, words: list[dict]) -> tuple[dict, list[str]]:
                       "lens": _pick(s.get("lens"), LENSES, "medium"), "move": _pick(s.get("move"), MOVES, "push"),
                       "take": int(s.get("take", len(shots))), "job": _pick(s.get("job"), JOBS, "act"),
                       "follow": s.get("follow") if s.get("follow") in ids else "", "see": str(s.get("see") or "")[:300],
-                      "near": s.get("near") if s.get("near") in tids and s.get("near") not in frame else ""})
+                      "near": s.get("near") if s.get("near") in tids and s.get("near") not in frame else "",
+                      "eye": s.get("eye") if s.get("eye") in tids and s.get("eye") not in frame else "",
+                      **_station(s)})
     if not shots:
         shots = [{"from": 0, "frame": [first], "angle": "front", "lens": "wide", "move": "push"}]
         notes.append("no usable shots: one shot on the first person or thing")
@@ -438,7 +466,7 @@ def repair(board: dict, words: list[dict]) -> tuple[dict, list[str]]:
         stop = t(merged[i + 1]["from"]) if i + 1 < len(merged) else end
         out.append(s)
         cur = s
-        while stop - t(cur["from"]) > MAX_SHOT:
+        while stop - t(cur["from"]) > (7.0 if cur.get("cam") else MAX_SHOT):   # a written station rests and drifts (Rick: 2.5 s and up)
             nxt = next((j for j in range(cur["from"] + 1, n) if t(j) - t(cur["from"]) >= 1.2), None)
             if nxt is None or stop - t(nxt) < MIN_SHOT:
                 break

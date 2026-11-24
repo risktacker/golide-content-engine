@@ -896,8 +896,8 @@
    "search": "tape measure",
    "height_m": 0.12,
    "at": [
-    -5.6,
-    1.3
+    -5,
+    2.8
    ],
    "on": "",
    "turn_deg": 0,
@@ -919,8 +919,8 @@
    "search": "sledgehammer hammer",
    "height_m": 0.9,
    "at": [
-    -1,
-    0.9
+    0.5,
+    2.8
    ],
    "on": "",
    "turn_deg": 0,
@@ -1206,9 +1206,9 @@
    "label": "the engineer who leaves the gaps",
    "at": [
     -5.0,
-    0.95
+    3.15
    ],
-   "turn_deg": 0,
+   "turn_deg": 180,
    "look": {
     "outfit": "overalls",
     "color": "#3d5a9c",
@@ -1222,10 +1222,10 @@
    "id": "crew1",
    "label": "his crew, hammering spikes",
    "at": [
-    -1.4,
-    0.4
+    0.7,
+    3.1
    ],
-   "turn_deg": 10,
+   "turn_deg": 200,
    "look": {
     "outfit": "overalls",
     "color": "#8a5634",
@@ -1783,7 +1783,19 @@
      ],
      "near": "",
      "angle": "low",
-     "lens": "close"
+     "lens": "close",
+     "cam": [
+      -5.0,
+      1.75,
+      0.22
+     ],
+     "aim": [
+      -5,
+      3.1,
+      0.85
+     ],
+     "mm": 24,
+     "eye": ""
     },
     {
      "see": "low along his rails: the next gap with 39 FEET over it, his crewmate hammering a spike beside it, sparks",
@@ -1794,7 +1806,19 @@
      ],
      "near": "gap_a",
      "angle": "low",
-     "lens": "close"
+     "lens": "close",
+     "cam": [
+      -3,
+      1.0,
+      0.45
+     ],
+     "aim": [
+      0.5,
+      2.6,
+      0.6
+     ],
+     "mm": 35,
+     "eye": ""
     }
    ]
   },
@@ -1812,19 +1836,42 @@
      ],
      "near": "red_flag",
      "angle": "left",
-     "lens": "medium"
+     "lens": "medium",
+     "cam": [
+      -14,
+      12,
+      3
+     ],
+     "aim": [
+      -20,
+      -2,
+      1.4
+     ],
+     "mm": 35,
+     "eye": ""
     },
     {
      "see": "the blue locomotive charges at the lens, the boss riding his flatcar, a blue worker sprinting with a rail",
      "from": 13,
      "frame": [
       "rival",
-      "rcrew2",
-      "rival_car"
+      "rival_train"
      ],
      "near": "ties_stack",
      "angle": "front",
-     "lens": "medium"
+     "lens": "medium",
+     "cam": [
+      -12,
+      -1.6,
+      1.6
+     ],
+     "aim": [
+      -21,
+      -6,
+      1.8
+     ],
+     "mm": 35,
+     "eye": ""
     },
     {
      "see": "rise high over both trains racing along the canyon floor between the red cliffs",
@@ -1835,7 +1882,19 @@
      ],
      "near": "",
      "angle": "high",
-     "lens": "wide"
+     "lens": "wide",
+     "cam": [
+      -6,
+      26,
+      20
+     ],
+     "aim": [
+      -10,
+      -6,
+      2
+     ],
+     "mm": 24,
+     "eye": ""
     }
    ]
   },
@@ -1852,7 +1911,19 @@
      ],
      "near": "",
      "angle": "low",
-     "lens": "face"
+     "lens": "face",
+     "cam": [
+      -7.2,
+      -4.6,
+      2.5
+     ],
+     "aim": [
+      -9,
+      -6,
+      2.4
+     ],
+     "mm": 50,
+     "eye": ""
     }
    ]
   },
@@ -1872,7 +1943,19 @@
      ],
      "near": "",
      "angle": "front",
-     "lens": "medium"
+     "lens": "medium",
+     "cam": [
+      41,
+      9,
+      2.0
+     ],
+     "aim": [
+      41.2,
+      0.5,
+      2.0
+     ],
+     "mm": 35,
+     "eye": ""
     }
    ]
   }

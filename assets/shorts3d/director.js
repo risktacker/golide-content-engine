@@ -60,7 +60,12 @@ export function makeDirector(K, opt = {}) {
       const x = (_v.x + 1) / 2 * WW, y = (1 - _v.y) / 2 * HH;
       r.x0 = Math.min(r.x0, x); r.x1 = Math.max(r.x1, x); r.y0 = Math.min(r.y0, y); r.y1 = Math.max(r.y1, y);
     }
-    if (back === 8) return { behind: true }; if (back) return { crossing: true }; return r;
+    if (back === 8) return { behind: true };
+    // half behind the camera plane: cut by the camera only when it is right at the lens; far off to the side it is just
+    // partly outside the picture (its front corners decide)
+    if (back) { if (box.distanceToPoint(camera.position) < 2) return { crossing: true }; if (r.x1 < r.x0) return { behind: true };
+      r.x0 = Math.min(r.x0, r.x0 < WW / 2 ? -1 : r.x0); r.x1 = Math.max(r.x1, r.x1 > WW / 2 ? WW + 1 : r.x1); }
+    return r;
   }
   const shows = r => !r.behind && (r.crossing || (r.x1 > 0 && r.x0 < WW && r.y1 > 0 && r.y0 < HH));
   const within = (r, a, m = 0) => !r.behind && !r.crossing && r.x0 >= a.l + m && r.x1 <= a.r - m && r.y0 >= a.t + m && r.y1 <= a.b - m;
@@ -137,7 +142,8 @@ export function makeDirector(K, opt = {}) {
         const hh = rect(headBox(c)); if (shows(hh) && meets(hh, CAP)) out.push(`the head of ${c.label} sits under the captions`); continue; }
       const r = rect(shownBox(c));
       if (r.crossing) out.push(`${c.label} is cut by the camera`);
-      else if (shows(r) && !within(r, SAFE)) out.push(`${c.label} is cropped at the frame edge`);
+      // the shot's subjects are whole; a passer-by may leave the frame edge with their body, never with their head
+      else if (shows(r) && !within(r, SAFE) && (subjects.includes(c) || (() => { const h = rect(headBox(c)); return shows(h) && !within(h, SAFE); })())) out.push(`${c.label} is cropped at the frame edge`);
       else if (subjects.includes(c) && !shows(r)) out.push(`${c.label} is out of the shot`);
       else if (subjects.includes(c)) { const f = rect(personBox(c)); if (!f.behind && !f.crossing && f.y1 - f.y0 < HH * (things.length ? 0.07 : (opt.minPerson ?? 0.2))) out.push(`${c.label} is too small in the frame`); }   /* whole body, a desk in front does not count */
       const h = rect(headBox(c)); if (shows(h) && meets(h, CAP)) out.push(`the head of ${c.label} sits under the captions`);
