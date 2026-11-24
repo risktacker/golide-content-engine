@@ -162,7 +162,8 @@ def _method() -> str:
         "THINGS: every object, vehicle, building, animal, plant, piece of land, sign or screen. Each has an id, its plain "
         "name, a role (story: the script names it; dressing: it belongs in the place; detail: something only THIS place "
         "and time would have; gag: a small visual joke), search words a free 3D model library would file it under, its "
-        "real height in metres, where it stands [x, z], on (another thing's id it sits on, or empty), turn in degrees, "
+        "real height in metres, where it stands [x, z] (or [x, z, height] for a thing above the ground: high on a wall, "
+        "in the side of something tall, in the air), on (another thing's id it sits on, or empty), turn in degrees, "
         "a colour (hex or empty) and parts: the thing built from simple 3D parts, one per line, \"name: "
         "box|cyl|sphere|cone x y z w d h [rx90] [#hex]\" (x, y on the ground, z up from its base, sizes w d h), 8 to 30 "
         "parts with real proportions, its own colours and FIVE details specific to this story and period (wear, lettering, marks, period "
@@ -192,9 +193,12 @@ def _method() -> str:
         "only when the thought changes; the face is big and specific to the moment (smug, shocked, crying, laughing) "
         "and comes from what that person just saw or knows; two people never react the same way. Every action beat is "
         "an attention chain: the face, then the hands, then the object, then what happens, then someone's reaction. "
-        "Hands end on the object; nothing floats; people stand beside furniture, not inside it.\n"
+        "Hands end on the object; nothing floats; people stand beside furniture, not inside it. People on a raised thing "
+        "(a deck, a roof, a stage, a platform, a bridge) start at a spot inside its footprint: they stand on its real top "
+        "and move with it when it moves, so build that top as a part (a flat box at its height).\n"
         f"EVENTS: what things do from word `from` until `until`: do is one of {', '.join(THING_DOES)}. move goes to `to` "
-        "or along `path` (a list of spots); spin/shake/bend/tilt/grow/shrink use amount (degrees or times); break "
+        "or along `path` (a list of spots; a spot may carry a third number, its height in metres, for a flight through "
+        "the air: a thrown, shot or flying thing rises and falls along its path); spin/shake/bend/tilt/grow/shrink use amount (degrees or times); break "
         "splits it; fall tips it over; appear/vanish; glow lights it; smoke/fire on it; text changes its printed words. "
         "People riding a thing move with it. Every change of state is caused by an action you show.\n"
         "CALLOUTS: small labels that pop up over a thing or a person on a word: a number, an amount, a price, a name or "
@@ -421,6 +425,8 @@ def repair(board: dict, words: list[dict]) -> tuple[dict, list[str]]:
         at = _spot(t.get("at"), half)
         if at is None:
             at = [0.0, 0.0]; notes.append(f"{tid} had no spot, put at the centre")
+        elif isinstance(t.get("at"), (list, tuple)) and len(t["at"]) > 2 and _num(t["at"][2], 0, 0, 150) > 0:
+            at.append(round(_num(t["at"][2], 0, 0, 150), 3))      # [x, z, height]: hung on a wall, in a hull, in the air
         things.append({"id": tid, "name": name, "role": _pick(t.get("role"), ROLES, "dressing"), "count": int(_num(t.get("count"), 1, 1, MAX_COUNT)),
                        "spread": _num(t.get("spread"), 0, 0, 30), "life": _pick(t.get("life"), LIFE, "none"), "arrange": _pick(t.get("arrange"), ARRANGE, "scatter"), "search": str(t.get("search") or name)[:80],
                        "height_m": _num(t.get("height_m"), 1.0, 0.02, 200), "at": at, "on": _id(t.get("on"), ""),
@@ -481,7 +487,13 @@ def repair(board: dict, words: list[dict]) -> tuple[dict, list[str]]:
         do = _pick(e.get("do"), THING_DOES, "")
         if not do:
             continue
-        path = [p for p in (_spot(q, half) for q in (e.get("path") or [])) if p]
+        path = []
+        for q in e.get("path") or []:                 # [x, z] or [x, z, height]: a flight through the air keeps its height
+            sp = _spot(q, half)
+            if sp:
+                if isinstance(q, (list, tuple)) and len(q) > 2:
+                    sp.append(round(_num(q[2], 0, 0, 150), 3))
+                path.append(sp)
         to = _spot(e.get("to"), half)
         if do == "move" and not to and not path:
             notes.append(f"{e['thing']} move at word {e.get('from')} had nowhere to go, dropped"); continue

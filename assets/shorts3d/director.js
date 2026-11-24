@@ -109,20 +109,30 @@ export function makeDirector(K, opt = {}) {
     return null;
   }
   // a thing the shot is about must be seen: the line from the camera to its centre may not hit something else first
+  // (owner 2026-11-24, pirates trial): five lines (the centre and four points around it); hidden only when most are
+  // blocked, so a mast or a rope across a ship does not count; its own copies (a row of cannons) never hide it
+  const thingOf = o => { for (let x = o; x; x = x.parent) if (x.userData.thing) return x.userData.thing; return null; };
+  const spread5 = (b) => { const c = b.getCenter(new THREE.Vector3()), s = b.getSize(new THREE.Vector3()).multiplyScalar(0.3);
+    return [c, c.clone().add(new THREE.Vector3(s.x, s.y, 0)), c.clone().add(new THREE.Vector3(-s.x, s.y, 0)), c.clone().add(new THREE.Vector3(s.x, -s.y, s.z)), c.clone().add(new THREE.Vector3(-s.x, -s.y, -s.z))]; };
   function thingHidden(o, propObjs) {
-    const b = new THREE.Box3().setFromObject(o), c = b.getCenter(new THREE.Vector3()), from = camera.position.clone(), d = c.distanceTo(from);
+    const b = new THREE.Box3().setFromObject(o), from = camera.position.clone();
     if (b.containsPoint(from)) return null;
-    ray.set(from, c.clone().sub(from).normalize()); ray.far = d;
-    const own = new Set(); o.traverse(x => own.add(x));
-    const hit = ray.intersectObjects(propObjs.filter(p => p !== o), true).find(h => h.object.visible && !own.has(h.object) && !h.object.userData.noBlock);
-    if (!hit) return null; const first = ray.intersectObject(o, true)[0];
-    return !first || hit.distance < first.distance - 0.05 ? `${o.name || 'the subject'} is hidden behind ${labelOf(hit.object)}` : null;
+    const own = new Set(); o.traverse(x => own.add(x)); const me = thingOf(o);
+    const others = propObjs.filter(p => p !== o && !(me && thingOf(p) === me));
+    let n = 0, label = null;
+    for (const pt of spread5(b)) { const d = pt.distanceTo(from); ray.set(from, pt.clone().sub(from).normalize()); ray.far = d;
+      const hit = ray.intersectObjects(others, true).find(h => h.object.visible && !own.has(h.object) && !h.object.userData.noBlock && !(me && thingOf(h.object) === me));
+      if (!hit) continue; const first = ray.intersectObject(o, true)[0];
+      if (!first || hit.distance < first.distance - 0.05) { n++; label = label || labelOf(hit.object); } }
+    return n >= 3 ? `${o.name || 'the subject'} is hidden behind ${label}` : null;
   }
-  // the middle of the picture may not be a wall: the line to the subjects' centre hits nothing on the way
+  // the middle of the picture may not be a wall: of five lines around the subjects' centre, most must be clear
   function blocked(point, propObjs) {
-    const from = camera.position.clone(), d = point.distanceTo(from); ray.set(from, point.clone().sub(from).normalize()); ray.far = d * 0.85;
-    const hit = ray.intersectObjects(propObjs, true).find(h => h.object.visible && !h.object.userData.noBlock);
-    return hit ? `the view is blocked by ${labelOf(hit.object)}` : null;
+    const from = camera.position.clone(); let n = 0, label = null;
+    const pts = [point, ...[[0.6, 0.4], [-0.6, 0.4], [0.6, -0.4], [-0.6, -0.4]].map(([x, y]) => { const r = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0), u = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 1), k = point.distanceTo(from) * 0.08; return point.clone().addScaledVector(r, x * k).addScaledVector(u, y * k); })];
+    for (const pt of pts) { const d = pt.distanceTo(from); ray.set(from, pt.clone().sub(from).normalize()); ray.far = d * 0.85;
+      const hit = ray.intersectObjects(propObjs, true).find(h => h.object.visible && !h.object.userData.noBlock); if (hit) { n++; label = label || labelOf(hit.object); } }
+    return n >= 3 ? `the view is blocked by ${label}` : null;
   }
   const labelOf = o => { for (let x = o; x; x = x.parent) if (x.userData.label) return x.userData.label; return 'a set piece'; };
   function collisions(people, props) {

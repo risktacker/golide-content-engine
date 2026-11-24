@@ -94,7 +94,7 @@ export async function build(K, words) {
         const m = new THREE.Mesh((SHAPE[p.shape] || SHAPE.box)(), mat); m.scale.set(...p.s); m.position.set(...p.c); m.rotation.set(...p.r); m.castShadow = m.receiveShadow = true; m.name = p.name; obj.add(m); } }
     if (!obj) { obj = new THREE.Group(); const m = new THREE.Mesh(SHAPE.box(), new THREE.MeshStandardMaterial({ color: T.color || '#9aa0a6', roughness: 0.7 })); m.position.y = 0.5; obj.add(m); { const lb = label(T.name, 1.2); lb.position.set(0, 0.5, 0.51); obj.add(lb); } }
     if (T.color && L.model) obj.traverse(m => { if (m.isMesh && m.material) { m.material = m.material.clone(); m.material.color?.lerp(new THREE.Color(T.color), 0.5); } });
-    const holder = new THREE.Group(); holder.name = T.name; holder.add(obj);
+    const holder = new THREE.Group(); holder.name = T.name; holder.userData.thing = T.id; holder.add(obj);
     obj.updateMatrixWorld(true); let bb = new THREE.Box3().setFromObject(obj); const sz = bb.getSize(V(0, 0, 0));
     const k = (T.height_m || 1) / Math.max(sz.y, 1e-4); obj.scale.multiplyScalar(k); obj.updateMatrixWorld(true);
     bb = new THREE.Box3().setFromObject(obj); const cc = bb.getCenter(V(0, 0, 0)); obj.position.x -= cc.x; obj.position.z -= cc.z; obj.position.y -= bb.min.y;
@@ -104,15 +104,29 @@ export async function build(K, words) {
       const fb = face ? face.b : new THREE.Box3(V(-s2.x / 2, s2.y * 0.35, -s2.z / 2), V(s2.x / 2, s2.y * 0.85, s2.z / 2)), fs = fb.getSize(V(0, 0, 0)), fc = fb.getCenter(V(0, 0, 0));
       const w = Math.max(0.3, Math.min(fs.x * 0.92, fs.y * 0.92 * 4)); const lb = label(T.text, w); lb.position.set(fc.x, fc.y, fb.max.z + 0.02); holder.add(lb); holder.userData.sign = lb; }
     holder.rotation.y = THREE.MathUtils.degToRad(T.turn_deg || 0); G.add(holder);
-    const th = { id: T.id, T, obj: holder, inner: obj, base: V(T.at[0], 0, T.at[1]), yaw0: holder.rotation.y, size: s2, parts: obj.children.slice(), hero: !!T.hero };
+    const th = { id: T.id, T, obj: holder, inner: obj, base: V(T.at[0], T.at.length > 2 ? T.at[2] : 0, T.at[1]), yaw0: holder.rotation.y, size: s2, parts: obj.children.slice(), hero: !!T.hero };
     things[T.id] = th; list.push(th); }
-  for (const th of list) if (th.T.on && things[th.T.on]) { const o = things[th.T.on]; th.base.y = o.size.y; }   // standing on another thing
+  // ---- surfaces: a deck, a roof, a stage, a table top. People and things stand on the real top of what is under them
+  // (a ray down through the thing's own meshes, sails and walls skipped by their slope), never on its bounding box ----
+  const RC = new THREE.Raycaster(), DOWN = V(0, -1, 0), NM = new THREE.Matrix3(), surf = new Map();
+  const footprint = (th, shrink = 0) => { th.obj.updateMatrixWorld(true); const b = new THREE.Box3().setFromObject(th.inner); b.min.x += shrink; b.min.z += shrink; b.max.x -= shrink; b.max.z -= shrink; return b; };
+  const inside = (b, p) => p.x >= b.min.x && p.x <= b.max.x && p.z >= b.min.z && p.z <= b.max.z;
+  function surfaceAt(th, x, z, room = 1.8) {   // height of the lowest upward top of th at world (x, z) with `room` free above it (a deck under the sails, a table top), or null
+    const loc = th.obj.worldToLocal(V(x, 0, z)), key = `${th.id}:${loc.x.toFixed(1)},${loc.z.toFixed(1)}:${room.toFixed(1)}`;
+    if (surf.has(key)) { const h = surf.get(key); return h === null ? null : th.obj.position.y + h; }
+    const top = footprint(th).max.y + 2; RC.set(V(x, top, z), DOWN); RC.far = top + 1; let h = null;
+    const hits = RC.intersectObject(th.inner, true).filter(q => !q.object.userData.proxy && q.face), y0 = th.obj.position.y;
+    const ups = hits.filter(q => q.face.normal.clone().applyMatrix3(NM.getNormalMatrix(q.object.matrixWorld)).normalize().y > 0.5)   /* the normal matrix: parts are scaled unevenly */.map(q => q.point.y).sort((a2, b2) => a2 - b2);
+    for (const u of ups) { if (u - y0 < 0.05) continue; if (!hits.some(q => q.point.y > u + 0.02 && q.point.y < u + room)) { h = u - y0; break; } }
+    surf.set(key, h); return h === null ? null : y0 + h; }
+  for (const th of list) { th.obj.position.copy(th.base); th.obj.rotation.y = th.yaw0; th.obj.updateMatrixWorld(true); }
+  for (const th of list) if (th.T.on && things[th.T.on]) { const o = things[th.T.on]; th.base.y = surfaceAt(o, th.base.x, th.base.z, Math.max(0.05, th.size.y * 0.9)) ?? o.size.y; }   // standing on another thing's real top
   // clusters: one entry stands for count copies scattered within spread metres, each turned and sized a little differently
   const rnd = (seed => () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; });
   const copies = [];
   for (const th of list) { const n = Math.max(1, th.T.count || 1) - 1; if (!n) continue; const r = rnd([...th.id].reduce((a, ch) => a * 31 + ch.charCodeAt(0), 7) % 2147483646 + 1), sp = Math.max(0.5, th.T.spread || 2);
     const ar = th.T.arrange || 'scatter', sz = th.size;
-    for (let i = 0; i < n; i++) { const a = r() * Math.PI * 2, o = th.inner.clone(true), h = new THREE.Group(); h.add(o); h.name = th.T.name; let x = 0, y = 0, z = 0;
+    for (let i = 0; i < n; i++) { const a = r() * Math.PI * 2, o = th.inner.clone(true), h = new THREE.Group(); h.add(o); h.name = th.T.name; h.userData.thing = th.id; let x = 0, y = 0, z = 0;
       if (ar === 'heap') { const d = sp * Math.sqrt(r()); x = Math.cos(a) * d; z = Math.sin(a) * d; y = Math.max(0, (1 - d / sp) * sp * 0.75 - sz.y * 0.5 * r()); }   // a mound, highest in the middle
       else if (ar === 'stack') { y = (i + 1) * sz.y * 0.98; x = (r() - 0.5) * sz.x * 0.08; z = (r() - 0.5) * sz.z * 0.08; }
       else if (ar === 'row') { x = (i + 1) * Math.max(sz.x, 0.1) * 1.1; }
@@ -129,6 +143,14 @@ export async function build(K, words) {
     c.root.scale.setScalar(0.8); c.phase = 0.4 + i * 0.7; c.root.rotation.order = 'YXZ'; c.tint = c.hm.material.uniforms.base.value.clone(); ALL.push(c);
     c.label = m.label || m.id; c.id = m.id; c.start = V(m.at[0], 0, m.at[1]); c.spot = c.start; c.yaw0 = THREE.MathUtils.degToRad(m.turn_deg || 0); cast[m.id] = c; people.push(c); });
   const byId = id => cast[id] || (things[id] && things[id].obj) || null;
+  // things people stand on: any thing above 0.3 m whose footprint holds a person's start or a walk spot
+  const standOn = list.filter(th => th.size.y > 0.3 && (th.T.count || 1) <= 1);
+  const stoodOn = new Set();
+  for (const c of people) { for (const th of standOn) { const b = footprint(th, 0.05); const spots = [c.start, ...(B.beats || []).filter(b2 => b2.who === c.id && b2.to && b2.to.length === 2).map(b2 => V(b2.to[0], 0, b2.to[1]))];
+      if (spots.some(q => inside(b, q) && (surfaceAt(th, q.x, q.z) ?? 0) > 0.3)) stoodOn.add(th); }
+    let best = null; for (const th of stoodOn) { const y = inside(footprint(th, 0.05), c.start) ? surfaceAt(th, c.start.x, c.start.z) : null; if (y !== null && y > 0.3 && (!best || y > best.y)) best = { th, y }; }
+    c.platform = best ? best.th : null; }   // they move with it when it moves (a ship sails, a cart rolls)
+  console.log('GOLIDE stood on: ' + [...stoodOn].map(th => th.id).join(', ') + ' | ' + people.map(c => `${c.id}@${c.platform ? c.platform.id + ':' + surfaceAt(c.platform, c.start.x, c.start.z)?.toFixed(2) : '-'}`).join(' '));
 
   // ---- beats: what each person does, on the real word timings ----
   const beats = new Map(people.map(c => [c, []]));
@@ -157,9 +179,9 @@ export async function build(K, words) {
   const events = new Map(list.map(th => [th, []]));
   (B.events || []).forEach(e => { const th = things[e.thing]; if (th) events.get(th).push({ ...e, t: at(e.from), t1: Math.max(at(e.until ?? e.from), at(e.from)) }); });
   const moveOf = (th, t) => { let p = th.base.clone(), yaw = th.yaw0;
-    for (const e of events.get(th)) { if (e.do !== 'move' || t < e.t) continue; const pts = [p.clone(), ...(e.path.length ? e.path : [e.to]).map(q => V(q[0], th.base.y, q[1]))];
+    for (const e of events.get(th)) { if (e.do !== 'move' || t < e.t) continue; const pts = [p.clone(), ...(e.path.length ? e.path : [e.to]).map(q => V(q[0], q.length > 2 ? q[2] : th.base.y, q[1]))];
       let len = 0; const seg = []; for (let i = 1; i < pts.length; i++) { const d = pts[i].distanceTo(pts[i - 1]); seg.push(d); len += d; }
-      const dur = Math.max(e.t1 - e.t, Math.min(6, len / 6), 0.6), u = clamp((t - e.t) / dur) * len; let acc = 0;
+      const dur = e.t1 > e.t + 0.05 ? Math.max(0.3, e.t1 - e.t) : Math.max(Math.min(6, len / 6), 0.6),   /* a written until is kept: a shot ball flies fast */ u = clamp((t - e.t) / dur) * len; let acc = 0;
       for (let i = 0; i < seg.length; i++) { if (u <= acc + seg[i] || i === seg.length - 1) { const k = seg[i] ? clamp((u - acc) / seg[i]) : 1; p = pts[i].clone().lerp(pts[i + 1], k);
         const d = pts[i + 1].clone().sub(pts[i]); if (d.lengthSq() > 1e-6) yaw = Math.atan2(d.x, d.z) - (th.obj.userData.longX ? Math.PI / 2 : 0); break; } acc += seg[i]; } }
     return { p, yaw }; };
@@ -221,7 +243,9 @@ export async function build(K, words) {
     let p = s.p, yaw = s.yaw, y = 0;
     if (ride) { p = ride.obj.position.clone(); y = ride.obj.position.y + (ride.size.y < 1.6 ? ride.size.y : ride.size.y * 0.55);   /* on a low deck or seat: on top; a tall vehicle: in its seat */ yaw = ride.obj.rotation.y + (ride.obj.userData.longX ? Math.PI / 2 : 0); }
     else if (b && b.target && !SPEED[b.do] && !s.moving && !['sit', 'lie', 'ride'].includes(b.do)) { const tp = spotOf(b.target, t); if (tp) { const want = Math.atan2(tp.x - p.x, tp.z - p.z); let d = ((want - yaw + 3 * Math.PI) % (2 * Math.PI)) - Math.PI; yaw += d * eio(clamp((t - b.t) / 0.35)); } }
-    if (b && b.do === 'sit' && b.target && things[b.target]) y = things[b.target].size.y * 0.55;
+    if (!ride && c.platform) { const pf = c.platform, d = thingPos(pf, t).sub(pf.base); p = p.clone().add(d.setY(0)); }
+    if (!ride && stoodOn.size) { for (const th of stoodOn) { if (!inside(footprint(th, 0.02), p)) continue; const h = surfaceAt(th, p.x, p.z); if (h !== null && h > y) y = h; } }
+    if (b && b.do === 'sit' && b.target && things[b.target]) y = Math.max(y, (surfaceAt(things[b.target], p.x, p.z) ?? things[b.target].size.y * 0.55));
     place(c, p.x, p.z, yaw, y);
     if (s.moving && !ride) SR.clipAt(c, s.moving.kind === 'run' ? 'run' : 'walk', t * (s.moving.kind === 'sneak' ? 0.6 : 1) + c.phase);
     else if (b && b.do === 'sneak') SR.clipAt(c, 'sneak_pose', 0.3);
@@ -277,7 +301,12 @@ export async function build(K, words) {
     const lifeOf = (o, life, ph, base) => { if (life === 'sway') o.rotation.z = 0.05 * Math.sin(t * 1.6 + ph); else if (life === 'spin') o.rotation.y = base.ry + t * 1.4 + ph; else if (life === 'bob') o.position.y = base.y + 0.06 * Math.sin(t * 2.2 + ph);
       else if (life === 'flutter') o.rotation.x = 0.12 * Math.sin(t * 9 + ph); else if (life === 'roll') o.rotation.x = t * 2 + ph; o.updateMatrixWorld(true); };
     for (const th of list) if (th.T.life && th.T.life !== 'none' && !carry(th, t).c) lifeOf(th.obj, th.T.life, 0, { y: th.obj.position.y, ry: th.obj.rotation.y });
-    for (const cp of copies) if (cp.th.T.life && cp.th.T.life !== 'none') lifeOf(cp.obj, cp.th.T.life, cp.phase, { y: cp.y0, ry: cp.ry0 });
+    for (const cp of copies) { const m = cp.th, o = cp.obj; if (cp.p0 === undefined) cp.p0 = o.position.clone();
+      const d = m.obj.position.clone().sub(m.base), br = events.get(m).find(e => e.do === 'break' && t >= e.t), off = cp.p0.clone().sub(m.base);
+      o.visible = m.obj.visible; o.position.copy(cp.p0).add(d);
+      if (br) { const u = eio(clamp((t - br.t) / 0.9)), out = off.clone().setY(0); if (out.lengthSq() < 1e-4) out.set(Math.sin(cp.phase), 0, Math.cos(cp.phase)); out.setLength(Math.max(0.6, m.T.spread || 1) * 2.2 * u);
+        o.position.add(out); o.position.y = Math.max(0, cp.p0.y + d.y + Math.sin(u * Math.PI) * (0.8 + (cp.phase % 1)) - u * cp.p0.y); o.rotation.x = u * (3 + cp.phase); }
+      if (m.T.life && m.T.life !== 'none') lifeOf(o, m.T.life, cp.phase, { y: o.position.y, ry: cp.ry0 }); else o.updateMatrixWorld(true); }
     for (const c of people) posePerson(c, t);
     for (const th of list) { const st = carry(th, t); if (st.c) { const h = SR.wp(st.c.bone('RightHand')).lerp(SR.wp(st.c.bone('LeftHand')), 0.5), big = th.size.y > 0.25;
       /* carried in front: small things in the hands, big things held from below at the belly, never over the face */ th.obj.position.copy(h).add(dirW(st.c, 0, 0, 1).multiplyScalar(big ? th.size.z / 2 + 0.05 : 0)).add(V(0, big ? -Math.min(th.size.y * 0.75, 0.55) : -th.size.y * 0.5, 0)); th.obj.updateMatrixWorld(true); } }
@@ -339,7 +368,13 @@ export async function build(K, words) {
   });
   // things people hold, ride, sit on or kick, and flat things, are not obstacles; everything else is
   const touched = new Set(); for (const c of people) for (const b of beats.get(c)) { if (b.with) touched.add(b.with); if (['ride', 'sit', 'push', 'pull', 'hide', 'lie'].includes(b.do) && b.target) touched.add(b.target); }
-  const props = [...list.filter(th => !touched.has(th.id)).map(th => ({ obj: th.obj, label: th.T.name, floor: th.size.y < 0.4 })),   /* rails, rugs, tracks: walked on and looked across, never obstacles */
+  const deckProps = []; for (const th of stoodOn) { touched.add(th.id); const b = footprint(th), c0 = b.getCenter(V(0, 0, 0));
+    const hs = people.filter(c => inside(b, c.start)).map(c => surfaceAt(th, c.start.x, c.start.z)).filter(h => h !== null), deck = (hs.length ? Math.min(...hs) : b.max.y) - 0.3;   /* the solid part stops under the feet: a person standing on the deck never touches it */
+    const px = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ visible: false })); px.userData.proxy = true; px.visible = false;   /* solid to the camera and to people, never an occluder (the real hull is drawn) */
+    const lp = th.obj.worldToLocal(V(c0.x, (b.min.y + deck - 0.05) / 2, c0.z)); px.position.copy(lp); px.scale.set(b.max.x - b.min.x, Math.max(0.05, deck - 0.05 - b.min.y), b.max.z - b.min.z);
+    px.rotation.y = -th.obj.rotation.y; px.updateMatrix(); th.obj.add(px); th.obj.updateMatrixWorld(true); deckProps.push({ obj: px, label: th.T.name, floor: false });
+    th.obj.traverse(m => { if (m.isMesh && !m.userData.proxy) { const mb = new THREE.Box3().setFromObject(m); if (mb.min.y > deck - 0.15 && mb.max.y - mb.min.y > 0.3) deckProps.push({ obj: m, label: `${th.T.name} (${m.name || 'part'})`, floor: false }); } }); }
+  const props = [...deckProps, ...list.filter(th => !touched.has(th.id)).map(th => ({ obj: th.obj, label: th.T.name, floor: th.size.y < 0.4 })),   /* rails, rugs, tracks: walked on and looked across, never obstacles */
     // every copy in a cluster is solid to the camera (never inside a rock, never a rock filling the lens); small ones are
     // stepped over by people (walk), big ones are obstacles
     ...copies.filter(cp => !touched.has(cp.th.id)).slice(0, 400).map(cp => ({ obj: cp.obj, label: cp.th.T.name, floor: false, walk: cp.th.size.y <= 0.6 }))];

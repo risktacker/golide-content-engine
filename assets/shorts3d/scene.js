@@ -80,7 +80,8 @@ export async function run(K) {
     useHide(sh);
     for (const t of times(sh, quick ? 0.25 : SAMPLE)) {
       poseT(t); camAt(sh, t);
-      { const own = new Set(); sh.who.forEach(w => (w.root || w).traverse?.(x => own.add(x))); const objs = propObjs.filter(o => o !== sh.near && o !== sh.eye && !own.has(o));
+      { const own = new Set(); sh.who.forEach(w => (w.root || w).traverse?.(x => own.add(x))); const tid = o => { for (let x = o; x && x.userData; x = x.parent) if (x.userData.thing) return x.userData.thing; return null; }, mine = new Set(sh.who.map(tid).filter(Boolean));   /* a row of the subject's own copies is the picture, not a wall */
+        const objs = propObjs.filter(o => o !== sh.near && o !== sh.eye && !own.has(o) && !mine.has(tid(o)));
         const b2 = D.blocked(boxAt(sh, t).getCenter(new THREE.Vector3()), objs); if (b2) { out.push({ t: +t.toFixed(2), p: b2 }); if (quick) return out; } }
       for (const p of D.issues({ subjects: sh.who.filter(isPerson), people: S.people, propObjs: propObjs.filter(o => o !== sh.near && o !== sh.eye), props: sh.eye ? props.filter(q => q.obj !== sh.eye) : props, extras: [...(sh.extras?.(t) || []), ...(S.words?.(t) || []).filter(e => !e.subjectOnly || sh.who.includes(e.subjectOnly))], faces: (sh.faces || []).filter(f => sh.who.includes(f)), things: sh.who.filter(w => !isPerson(w)) })) {
         // people passing through things is staging, not framing: the camera cannot fix it, so it never moves the camera (reported once)

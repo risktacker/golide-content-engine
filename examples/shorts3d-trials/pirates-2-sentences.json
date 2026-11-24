@@ -1,0 +1,1597 @@
+{
+ "film": {
+  "one_sentence": "A navy frigate and a pirate ship trade cannon fire in the 1700s: the ball hits the ship, not the sailor, and the splinters are what fly through the crew.",
+  "cast_notes": "Navy gunner: striped shirt, blue knit cap, calm, squints when he fires. Second gunner: blue vest, covers his ears, then works. Navy captain: blue coat with gold, peaked cap, points, smug. Powder boy: carries a keg. The lucky sailor: red-and-white striped shirt, red knit cap, the 'you' of the film, grins when he is spared. Pirate captain: brown coat, wide hat, smug then pale. Deckhand: brown vest, fixes the rail, ducks and falls. Barrel carrier, lookout, deckhand: busy all the time.",
+  "places_and_light": "Open blue sea at late morning: the dark navy frigate (yellow gun band, red ensign) 22 m from the patched brown pirate ship (black flag), a second pirate ship behind, an island with palms far off, gulls, floating planks. Sun from upper left; gun smoke dims it when the guns fire.",
+  "colour_meaning": "black = the cannonballs and the pirate flag; pale fresh wood = damage",
+  "speaking_lines": "none",
+  "extreme_gags": "the lucky sailor keeps grinning through everything",
+  "power_moments": "CANNONBALL: muzzle flash and the hull hit; SMASHED: the rail bursts; SPLINTERS: the burst across the deck",
+  "impossible_view": "none in these two lines"
+ },
+ "plan": [
+  {
+   "sentence": 0,
+   "job": "hook",
+   "mark": "hook",
+   "words": "If your ship got hit by a CANNONBALL",
+   "landing_word": 7,
+   "what_we_see": "A navy gunner in a striped shirt and blue knit cap touches his smouldering linstock to the brass touch-hole of a black cannon on the frigate's deck; flame and grey smoke blast out of the muzzle; the ball leaves toward the pirate ship 22 m across the water.",
+   "shown": "close",
+   "why": "the cannonball is what the whole sentence is about: we see it fired before we see it hit",
+   "light": "bright late-morning sun from upper left, the flame lights the gunner's face orange for a moment",
+   "near_lens": "the next cannon on the deck",
+   "far_world": "the pirate ship with its black flag across the water",
+   "feeling": "the gunner squints: he has done this a hundred times",
+   "acted_gag": "the second gunner holds both hands over his ears before the bang",
+   "effect": "flash and smoke at the muzzle (an impact)"
+  },
+  {
+   "sentence": 0,
+   "job": "climax",
+   "mark": "none",
+   "words": "got hit by a CANNONBALL",
+   "landing_word": 7,
+   "what_we_see": "From just above the water, the black ball punches into the pirate hull 2 m above the waterline; a dark hole bursts open with pale fresh splinters around it; the whole ship shakes.",
+   "shown": "in-scene",
+   "why": "the hit is the 'got hit' of the line, the ship takes it",
+   "light": "same sun, dust and smoke puff from the hole",
+   "near_lens": "floating planks bobbing in the water",
+   "far_world": "the pirate ship's sails and black flag",
+   "feeling": "none: the picture is the hit",
+   "acted_gag": "none",
+   "effect": "smoke puff from the hole, the ship shakes"
+  },
+  {
+   "sentence": 0,
+   "job": "turn",
+   "mark": "twist",
+   "words": "you'd actually be one of the LUCKY ones",
+   "landing_word": 14,
+   "what_we_see": "The sailor in the red-and-white striped shirt leans over the rail, looks down at the hole right under his feet, then straightens up and cheers with a big grin, not a scratch on him; LUCKY pops up over him in green.",
+   "shown": "close",
+   "why": "the twist of the line: the ship got hit, he did not",
+   "light": "sun on his face",
+   "near_lens": "the rail he leans on",
+   "far_world": "open sea and the navy frigate's sails",
+   "feeling": "wide-eyed relief turning into a grin: it missed him by a metre",
+   "acted_gag": "he checks himself all over, then cheers",
+   "effect": "none"
+  },
+  {
+   "sentence": 1,
+   "job": "place",
+   "mark": "none",
+   "words": "In the 1700S",
+   "landing_word": 18,
+   "what_we_see": "High and wide over a blue sea: the dark navy frigate with its yellow gun band and red ensign on the left, the patched brown pirate ship with its black flag on the right, a second pirate ship further back, an island with palms far away, gulls above, a rowing longboat close to the lens; 1700s pops over the frigate.",
+   "shown": "in-scene",
+   "why": "the era and the two sides of the story in one picture",
+   "light": "bright day, long shadows of the masts on the decks",
+   "near_lens": "the longboat",
+   "far_world": "the island with palm trees",
+   "feeling": "none",
+   "acted_gag": "none",
+   "effect": "none"
+  },
+  {
+   "sentence": 1,
+   "job": "act",
+   "mark": "none",
+   "words": "navy cannonballs SMASHED",
+   "landing_word": 21,
+   "what_we_see": "Along the frigate's gun deck: the row of four cannons fires, smoke rolling along the deck, a volley of five balls leaves toward the pirates, the second gunner works the next gun, the captain points.",
+   "shown": "in-scene",
+   "why": "the navy's firepower: many balls, not one",
+   "light": "smoke dims the sun along the deck",
+   "near_lens": "the nearest cannon",
+   "far_world": "the navy captain pointing, the masts",
+   "feeling": "the captain is smug: this is routine for the navy",
+   "acted_gag": "none",
+   "effect": "muzzle flash and smoke"
+  },
+  {
+   "sentence": 1,
+   "job": "climax",
+   "mark": "none",
+   "words": "through pirate SHIPS",
+   "landing_word": 24,
+   "what_we_see": "From the water, looking up at the pirate rail: the volley hits and the 3 m rail section bursts into flying planks; the deckhand repairing it is right behind.",
+   "shown": "close",
+   "why": "'smashed through' made literal: the wood gives way",
+   "light": "sun behind the rail, planks catch the light as they fly",
+   "near_lens": "none",
+   "far_world": "the pirate sails",
+   "feeling": "the deckhand freezes: he was just fixing that rail",
+   "acted_gag": "none",
+   "effect": "the rail breaks apart (impact)"
+  },
+  {
+   "sentence": 1,
+   "job": "climax",
+   "mark": "signature",
+   "words": "sending wooden SPLINTERS flying through the CREW",
+   "landing_word": 27,
+   "what_we_see": "On the pirate deck: thirty-six pale wooden splinters burst out and fly across the deck through the crew; the deckhand throws his hands over his head and falls; the barrel carrier drops his barrel and hides behind the rum barrels; the lucky sailor in the background is still grinning.",
+   "shown": "in-scene",
+   "why": "the splinters were the real killer, the point of the line",
+   "light": "same sun, splinters bright against the dark deck",
+   "near_lens": "the pirate deckhand's shoulder",
+   "far_world": "the rum barrels and the lucky sailor",
+   "feeling": "panic: nobody expected the wood itself to fly",
+   "acted_gag": "the lucky sailor still grinning while everyone else ducks",
+   "effect": "none"
+  }
+ ],
+ "world": {
+  "place": "open sea where a navy frigate fights a pirate ship in the 1700s",
+  "indoor": false,
+  "ground": "open sea water",
+  "ground_color": "#2d6c96",
+  "walls_color": "",
+  "sky": "day",
+  "size": [
+   120,
+   80
+  ],
+  "light": "warm"
+ },
+ "things": [
+  {
+   "role": "story",
+   "search": "frigate sailing warship",
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "text": "",
+   "hero": true,
+   "count": 1,
+   "spread": 0,
+   "life": "bob",
+   "arrange": "scatter",
+   "id": "navy_frigate",
+   "name": "navy frigate",
+   "height_m": 24,
+   "at": [
+    -6,
+    -14
+   ],
+   "parts": [
+    "hull: box 0 0 0 32 9 4.2 #2b2320",
+    "gun band: box 0 4.52 2.2 30 0.06 1.1 #d9b23a",
+    "gun port: box -10 4.57 2.35 0.9 0.06 0.8 #111111",
+    "gun port: box -5 4.57 2.35 0.9 0.06 0.8 #111111",
+    "gun port: box 0 4.57 2.35 0.9 0.06 0.8 #111111",
+    "gun port: box 5 4.57 2.35 0.9 0.06 0.8 #111111",
+    "gun port: box 10 4.57 2.35 0.9 0.06 0.8 #111111",
+    "deck: box 0 0 4.2 31 8.4 0.2 #a8834f",
+    "rail near: box 0 4.25 4.4 31 0.3 0.9 #3a2a22",
+    "rail far: box 0 -4.25 4.4 31 0.3 0.9 #3a2a22",
+    "quarterdeck: box -12.5 0 4.4 6 8.4 1.4 #3a2a22",
+    "main mast: cyl 3 0 4.4 0.8 0.8 19.6 #6b4a2b",
+    "fore mast: cyl 11 0 4.4 0.6 0.6 15 #6b4a2b",
+    "mizzen mast: cyl -6 0 4.4 0.65 0.65 16 #6b4a2b",
+    "main sail: box 3 0 11 0.25 7.6 7 #f1ead8",
+    "main topsail: box 3 0 18.5 0.25 5.5 4 #f1ead8",
+    "fore sail: box 11 0 10.5 0.25 6.4 5.5 #f1ead8",
+    "mizzen sail: box -6 0 10.5 0.25 6 5 #f1ead8",
+    "ensign staff: cyl -15.6 0 5.8 0.15 0.15 5 #6b4a2b",
+    "red ensign: box -16.8 0 9.2 2.4 0.05 1.5 #c8202a",
+    "ensign canton: box -17.5 0.03 9.9 0.9 0.05 0.6 #f2f2f2",
+    "stern lantern: sphere -15.4 0 6.2 0.6 0.6 0.8 #f2c14e",
+    "ship's boat on deck: box 7 -2.2 4.4 3.6 1.5 0.7 #7a5a3a",
+    "rope coil: cyl -2 -3 4.4 0.9 0.9 0.25 #c8b07a",
+    "bowsprit: box 18.5 0 5.2 6 0.4 0.4 #6b4a2b",
+    "gilded figurehead: sphere 16.3 0 4.4 0.8 0.8 1.2 #d9b23a"
+   ]
+  },
+  {
+   "role": "story",
+   "search": "cannon",
+   "on": "navy_frigate",
+   "turn_deg": 0,
+   "color": "",
+   "text": "",
+   "hero": true,
+   "count": 4,
+   "spread": 0,
+   "life": "none",
+   "arrange": "row",
+   "id": "navy_cannon",
+   "name": "cannon on a wooden carriage",
+   "height_m": 1.1,
+   "at": [
+    -2,
+    -11.3
+   ],
+   "parts": [
+    "carriage: box 0 0 0 1.0 1.5 0.55 #6b3e22",
+    "cheek left: box -0.42 0 0.55 0.15 1.3 0.35 #5a3320",
+    "cheek right: box 0.42 0 0.55 0.15 1.3 0.35 #5a3320",
+    "wheel: box -0.55 0.55 0 0.12 0.45 0.45 #3a2416",
+    "wheel: box 0.55 0.55 0 0.12 0.45 0.45 #3a2416",
+    "wheel: box -0.55 -0.55 0 0.12 0.45 0.45 #3a2416",
+    "wheel: box 0.55 -0.55 0 0.12 0.45 0.45 #3a2416",
+    "barrel: cyl 0 0.2 -0.4 0.48 0.48 2.4 rx90 #26262a",
+    "muzzle ring: cyl 0 1.4 0.7 0.6 0.6 0.2 rx90 #1a1a1e",
+    "cascabel: sphere 0 -1.05 0.68 0.22 0.22 0.22 #26262a",
+    "brass touch-hole: sphere 0 -0.6 1.0 0.12 0.12 0.1 #c9a227",
+    "breeching rope: box 0 -0.9 0.5 1.1 0.06 0.06 #c8b07a"
+   ]
+  },
+  {
+   "role": "story",
+   "search": "linstock",
+   "on": "navy_frigate",
+   "turn_deg": 0,
+   "color": "",
+   "text": "",
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "flicker",
+   "arrange": "scatter",
+   "id": "linstock",
+   "name": "linstock with a smouldering match",
+   "height_m": 1.48,
+   "at": [
+    -3.3,
+    -13.0
+   ],
+   "parts": [
+    "pole: cyl 0 0 0 0.05 0.05 1.4 #6b4a2b",
+    "forked head: box 0 0 1.35 0.2 0.04 0.06 #3a3a3a",
+    "glowing match: sphere 0 0 1.4 0.08 0.08 0.08 #ff7a1a"
+   ]
+  },
+  {
+   "role": "detail",
+   "search": "powder keg barrel",
+   "on": "navy_frigate",
+   "turn_deg": 0,
+   "color": "",
+   "text": "POWDER",
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none",
+   "arrange": "scatter",
+   "id": "powder_keg",
+   "name": "gunpowder keg",
+   "height_m": 0.45,
+   "at": [
+    5.5,
+    -15.0
+   ],
+   "parts": [
+    "keg: cyl 0 0 0 0.4 0.4 0.45 #6b4423",
+    "hoop: cyl 0 0 0.05 0.42 0.42 0.04 #2a2a2a",
+    "hoop: cyl 0 0 0.36 0.42 0.42 0.04 #2a2a2a"
+   ]
+  },
+  {
+   "role": "story",
+   "search": "cannonball iron ball",
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "text": "",
+   "hero": true,
+   "count": 1,
+   "spread": 0,
+   "life": "none",
+   "arrange": "scatter",
+   "id": "cannonball",
+   "name": "cannonball",
+   "height_m": 0.22,
+   "at": [
+    -2,
+    -9.3,
+    5.2
+   ],
+   "parts": [
+    "ball: sphere 0 0 0 0.22 0.22 0.22 #1b1b1d"
+   ]
+  },
+  {
+   "role": "story",
+   "search": "pirate ship galleon",
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "text": "",
+   "hero": true,
+   "count": 1,
+   "spread": 0,
+   "life": "bob",
+   "arrange": "scatter",
+   "id": "pirate_ship",
+   "name": "pirate ship",
+   "height_m": 20,
+   "at": [
+    2,
+    9
+   ],
+   "parts": [
+    "hull: box 0 0 0 26 8 3.6 #5a3b24",
+    "weed at the waterline: box 0 -4.03 0 25 0.06 0.6 #2e4a2a",
+    "patch: box -6 -4.04 1.6 1.8 0.06 1.0 #8a6a44",
+    "patch: box 8 -4.04 2.2 1.4 0.06 0.8 #7a5a3a",
+    "deck: box 0 0 3.6 25 7.4 0.2 #9b7a4f",
+    "rail near left: box -8 -3.85 3.8 9 0.3 1.0 #4a3020",
+    "rail near right: box 6 -3.85 3.8 13 0.3 1.0 #4a3020",
+    "rail far: box 0 3.85 3.8 25 0.3 1.0 #4a3020",
+    "main mast: cyl -5 0 3.8 0.6 0.6 16.2 #5a3f28",
+    "fore mast: cyl 5 0 3.8 0.55 0.55 13.5 #5a3f28",
+    "crow's nest: cyl -5 0 15 1.4 1.4 0.8 #5a3f28",
+    "main sail: box -5 0 9 0.25 6.6 6.2 #d6cdb8",
+    "fore sail: box 5 0 8.4 0.25 6 5 #d6cdb8",
+    "sail patch: box -5 0.6 10.5 0.27 1.6 1.3 #b3a68a",
+    "sail tear: box 5 -1.2 9.2 0.27 1.0 0.9 #8f8470",
+    "flag staff: cyl -12 0 3.8 0.15 0.15 6.6 #5a3f28",
+    "black flag: box -13.2 0 8.8 2.2 0.05 1.4 #121212",
+    "skull on the flag: sphere -13.2 -0.04 9.35 0.45 0.04 0.45 #efe9dc",
+    "lantern: sphere 11.5 0 5.6 0.5 0.5 0.7 #e8a33a"
+   ]
+  },
+  {
+   "role": "story",
+   "search": "",
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "text": "",
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none",
+   "arrange": "scatter",
+   "id": "hull_breach",
+   "name": "smashed hole in the hull",
+   "height_m": 1.6,
+   "at": [
+    2.6,
+    4.9,
+    1.6
+   ],
+   "parts": [
+    "hole: box 0 0 0 2.2 0.12 1.6 #120d0a",
+    "jagged plank: box -0.6 0.02 1.35 0.8 0.14 0.3 ry25 #d6b07a",
+    "jagged plank: box 0.7 0.02 1.3 0.7 0.14 0.35 ry-30 #d6b07a",
+    "jagged plank: box 0.9 0.02 0.1 0.6 0.14 0.3 ry15 #d6b07a",
+    "jagged plank: box -0.8 0.02 0.05 0.7 0.14 0.25 ry-20 #c9a06a"
+   ]
+  },
+  {
+   "role": "story",
+   "search": "",
+   "on": "pirate_ship",
+   "turn_deg": 0,
+   "color": "",
+   "text": "",
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none",
+   "arrange": "scatter",
+   "id": "pirate_rail_section",
+   "name": "pirate ship rail section",
+   "height_m": 1.05,
+   "at": [
+    0,
+    5.15
+   ],
+   "parts": [
+    "plank: box -1.25 0 0 0.45 0.25 1.05 #6a4630",
+    "plank: box -0.75 0 0 0.45 0.25 1.05 #5e3d28",
+    "plank: box -0.25 0 0 0.45 0.25 1.05 #6a4630",
+    "plank: box 0.25 0 0 0.45 0.25 1.05 #5e3d28",
+    "plank: box 0.75 0 0 0.45 0.25 1.05 #6a4630",
+    "plank: box 1.25 0 0 0.45 0.25 1.05 #5e3d28",
+    "top rail: box 0 0 0.9 3 0.3 0.15 #4a3020"
+   ]
+  },
+  {
+   "role": "story",
+   "search": "cannonball iron ball",
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "text": "",
+   "hero": false,
+   "count": 5,
+   "spread": 2.5,
+   "life": "none",
+   "arrange": "scatter",
+   "id": "navy_volley",
+   "name": "volley of cannonballs",
+   "height_m": 0.22,
+   "at": [
+    -0.5,
+    -9.3,
+    5.3
+   ],
+   "parts": [
+    "ball: sphere 0 0 0 0.22 0.22 0.22 #1b1b1d"
+   ]
+  },
+  {
+   "role": "story",
+   "search": "",
+   "on": "pirate_ship",
+   "turn_deg": 0,
+   "color": "",
+   "text": "",
+   "hero": true,
+   "count": 36,
+   "spread": 2.2,
+   "life": "none",
+   "arrange": "scatter",
+   "id": "splinters",
+   "name": "flying wooden splinters",
+   "height_m": 0.06,
+   "at": [
+    -1.2,
+    6.6
+   ],
+   "parts": [
+    "splinter: box 0 0 0 0.1 0.9 0.06 #d8b07a",
+    "dark edge: box 0.04 0 0 0.03 0.9 0.06 #8a6a44"
+   ]
+  },
+  {
+   "role": "detail",
+   "search": "wooden barrel",
+   "on": "pirate_ship",
+   "turn_deg": 0,
+   "color": "",
+   "text": "RUM",
+   "hero": false,
+   "count": 7,
+   "spread": 1.4,
+   "life": "none",
+   "arrange": "heap",
+   "id": "pirate_barrels",
+   "name": "rum barrels",
+   "height_m": 0.85,
+   "at": [
+    -3.5,
+    11.6
+   ],
+   "parts": [
+    "body: cyl 0 0 0 0.6 0.6 0.85 #7a4f2a",
+    "hoop: cyl 0 0 0.68 0.63 0.63 0.07 #3a3a3a",
+    "hoop: cyl 0 0 0.1 0.63 0.63 0.07 #3a3a3a",
+    "bung: sphere 0 0.3 0.42 0.06 0.06 0.06 #2a1a0e"
+   ]
+  },
+  {
+   "role": "dressing",
+   "search": "wooden barrel",
+   "on": "pirate_ship",
+   "turn_deg": 0,
+   "color": "",
+   "text": "",
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none",
+   "arrange": "scatter",
+   "id": "loose_barrel",
+   "name": "wooden barrel",
+   "height_m": 0.85,
+   "at": [
+    1.8,
+    10.9
+   ],
+   "parts": [
+    "body: cyl 0 0 0 0.6 0.6 0.85 #7a4f2a",
+    "hoop: cyl 0 0 0.68 0.63 0.63 0.07 #3a3a3a",
+    "hoop: cyl 0 0 0.1 0.63 0.63 0.07 #3a3a3a"
+   ]
+  },
+  {
+   "role": "story",
+   "search": "pirate sloop sailing ship",
+   "on": "",
+   "turn_deg": 15,
+   "color": "",
+   "text": "",
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "bob",
+   "arrange": "scatter",
+   "id": "pirate_sloop",
+   "name": "second pirate ship",
+   "height_m": 14,
+   "at": [
+    34,
+    16
+   ],
+   "parts": [
+    "hull: box 0 0 0 16 5.5 2.6 #4e3420",
+    "deck: box 0 0 2.6 15.5 5 0.15 #9b7a4f",
+    "mast: cyl 0 0 2.75 0.45 0.45 11.25 #5a3f28",
+    "sail: box 0 0 6 0.2 4.6 5 #cfc4ad",
+    "black flag: box -1.2 0 12 1.6 0.04 1 #121212",
+    "skull: sphere -1.2 -0.03 12.3 0.35 0.04 0.35 #efe9dc",
+    "patch: box 3 -2.78 1 1.2 0.05 0.8 #7a5a3a"
+   ]
+  },
+  {
+   "role": "dressing",
+   "search": "rowing boat",
+   "on": "",
+   "turn_deg": 30,
+   "color": "",
+   "text": "",
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "bob",
+   "arrange": "scatter",
+   "id": "longboat",
+   "name": "rowing longboat",
+   "height_m": 1.1,
+   "at": [
+    13,
+    19.5
+   ],
+   "parts": [
+    "hull: box 0 0 0 4.2 1.5 0.7 #7a5a3a",
+    "gunwale: box 0 0 0.7 4.2 1.6 0.12 #4a3020",
+    "thwart: box -0.8 0 0.45 0.25 1.4 0.12 #9b7a4f",
+    "thwart: box 0.9 0 0.45 0.25 1.4 0.12 #9b7a4f",
+    "oar: box 0.3 1.6 0.6 0.12 2.6 0.08 #b08a5a"
+   ]
+  },
+  {
+   "role": "detail",
+   "search": "",
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "text": "",
+   "hero": false,
+   "count": 10,
+   "spread": 6,
+   "life": "bob",
+   "arrange": "scatter",
+   "id": "floating_planks",
+   "name": "floating planks",
+   "height_m": 0.08,
+   "at": [
+    6,
+    0.5
+   ],
+   "parts": [
+    "plank: box 0 0 0 1.6 0.25 0.08 #8a6a44"
+   ]
+  },
+  {
+   "role": "dressing",
+   "search": "seagull",
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "text": "",
+   "hero": false,
+   "count": 6,
+   "spread": 7,
+   "life": "flutter",
+   "arrange": "scatter",
+   "id": "seagulls",
+   "name": "seagulls",
+   "height_m": 0.35,
+   "at": [
+    -10,
+    -2,
+    14
+   ],
+   "parts": [
+    "body: sphere 0 0 0 0.35 0.7 0.3 #f2f2f2",
+    "wing: box -0.45 0 0.15 0.6 0.25 0.04 #e6e6e6",
+    "wing: box 0.45 0 0.15 0.6 0.25 0.04 #e6e6e6",
+    "wingtip: box -0.8 0 0.16 0.15 0.25 0.04 #2a2a2a",
+    "wingtip: box 0.8 0 0.16 0.15 0.25 0.04 #2a2a2a",
+    "beak: cone 0 0.4 0.05 0.08 0.15 0.08 #f2b134"
+   ]
+  },
+  {
+   "role": "dressing",
+   "search": "",
+   "on": "",
+   "turn_deg": 0,
+   "color": "",
+   "text": "",
+   "hero": false,
+   "count": 1,
+   "spread": 0,
+   "life": "none",
+   "arrange": "scatter",
+   "id": "island",
+   "name": "island with palm trees",
+   "height_m": 9,
+   "at": [
+    -38,
+    -36
+   ],
+   "parts": [
+    "sand: box 0 0 0 26 14 1.2 #e2cf95",
+    "hill: sphere -3 0 0 14 10 8 #4f7a3a",
+    "palm trunk: cyl 6 2 1.2 0.4 0.4 6 #8a6a44",
+    "palm trunk: cyl 9 -1 1.2 0.4 0.4 5.5 #8a6a44",
+    "palm top: sphere 6 2 7 3 3 1.2 #3f7a34",
+    "palm top: sphere 9 -1 6.5 2.6 2.6 1.1 #3f7a34",
+    "hut: box -8 3 1.2 2.4 2 1.8 #8a6a44"
+   ]
+  }
+ ],
+ "cast": [
+  {
+   "id": "navy_gunner",
+   "label": "navy gunner who fires",
+   "at": [
+    -3.0,
+    -13.2
+   ],
+   "turn_deg": 0,
+   "look": {
+    "outfit": "shirt",
+    "color": "#efe8d8",
+    "accent": "#1f3a6e",
+    "pattern": "stripes",
+    "hat": "beanie",
+    "glasses": false
+   }
+  },
+  {
+   "id": "navy_gunner2",
+   "label": "second navy gunner",
+   "at": [
+    0.4,
+    -13.2
+   ],
+   "turn_deg": 0,
+   "look": {
+    "outfit": "vest",
+    "color": "#2f4f7a",
+    "accent": "#efe8d8",
+    "pattern": "none",
+    "hat": "cap",
+    "glasses": false
+   }
+  },
+  {
+   "id": "navy_officer",
+   "label": "navy captain",
+   "at": [
+    -9.5,
+    -14.8
+   ],
+   "turn_deg": 20,
+   "look": {
+    "outfit": "coat",
+    "color": "#1f3a6e",
+    "accent": "#d9b23a",
+    "pattern": "none",
+    "hat": "police",
+    "glasses": false
+   }
+  },
+  {
+   "id": "powder_boy",
+   "label": "powder boy",
+   "at": [
+    5.5,
+    -15.5
+   ],
+   "turn_deg": -60,
+   "look": {
+    "outfit": "shirt",
+    "color": "#c7b38a",
+    "accent": "#6b3e22",
+    "pattern": "none",
+    "hat": "none",
+    "glasses": false
+   }
+  },
+  {
+   "id": "lucky_pirate",
+   "label": "the lucky sailor",
+   "at": [
+    3.6,
+    6.3
+   ],
+   "turn_deg": 180,
+   "look": {
+    "outfit": "shirt",
+    "color": "#f1ece0",
+    "accent": "#b3262b",
+    "pattern": "hstripes",
+    "hat": "beanie",
+    "glasses": false
+   }
+  },
+  {
+   "id": "pirate_captain",
+   "label": "pirate captain",
+   "at": [
+    -6.5,
+    9.0
+   ],
+   "turn_deg": 160,
+   "look": {
+    "outfit": "coat",
+    "color": "#3b1f1a",
+    "accent": "#c9a227",
+    "pattern": "none",
+    "hat": "cowboy",
+    "glasses": false
+   }
+  },
+  {
+   "id": "pirate_ducker",
+   "label": "pirate at the rail",
+   "at": [
+    -1.0,
+    7.4
+   ],
+   "turn_deg": 200,
+   "look": {
+    "outfit": "vest",
+    "color": "#6e4a2e",
+    "accent": "#2c5d3f",
+    "pattern": "none",
+    "hat": "none",
+    "glasses": false
+   }
+  },
+  {
+   "id": "pirate_barrel",
+   "label": "pirate with a barrel",
+   "at": [
+    1.8,
+    10.4
+   ],
+   "turn_deg": 210,
+   "look": {
+    "outfit": "shirt",
+    "color": "#8a2f2a",
+    "accent": "#e0c070",
+    "pattern": "none",
+    "hat": "beanie",
+    "glasses": false
+   }
+  },
+  {
+   "id": "pirate_lookout",
+   "label": "pirate lookout",
+   "at": [
+    9,
+    7.0
+   ],
+   "turn_deg": 170,
+   "look": {
+    "outfit": "jersey",
+    "color": "#2c5d3f",
+    "accent": "#e0c070",
+    "pattern": "zigzag",
+    "hat": "none",
+    "glasses": false
+   }
+  },
+  {
+   "id": "pirate_gunner",
+   "label": "pirate deckhand",
+   "at": [
+    -4.0,
+    6.0
+   ],
+   "turn_deg": 180,
+   "look": {
+    "outfit": "overalls",
+    "color": "#5b4a3a",
+    "accent": "#c8b07a",
+    "pattern": "none",
+    "hat": "beanie",
+    "glasses": false
+   }
+  }
+ ],
+ "beats": [
+  {
+   "from": 0,
+   "until": 3,
+   "who": "navy_gunner",
+   "do": "use",
+   "target": "navy_cannon",
+   "to": [],
+   "with": "linstock",
+   "face": "squint",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 4,
+   "until": 15,
+   "who": "navy_gunner",
+   "do": "arms-crossed",
+   "target": "pirate_ship",
+   "to": [],
+   "with": "",
+   "face": "smug",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 16,
+   "until": 18,
+   "who": "navy_gunner",
+   "do": "use",
+   "target": "navy_cannon",
+   "to": [],
+   "with": "linstock",
+   "face": "serious",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 19,
+   "until": 31,
+   "who": "navy_gunner",
+   "do": "cheer",
+   "target": "",
+   "to": [],
+   "with": "",
+   "face": "laugh",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 0,
+   "until": 4,
+   "who": "navy_gunner2",
+   "do": "hands-on-head",
+   "target": "",
+   "to": [],
+   "with": "",
+   "face": "squint",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 5,
+   "until": 31,
+   "who": "navy_gunner2",
+   "do": "work",
+   "target": "navy_cannon",
+   "to": [],
+   "with": "",
+   "face": "serious",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 0,
+   "until": 7,
+   "who": "navy_officer",
+   "do": "point",
+   "target": "pirate_ship",
+   "to": [],
+   "with": "",
+   "face": "shout",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 8,
+   "until": 15,
+   "who": "navy_officer",
+   "do": "arms-crossed",
+   "target": "",
+   "to": [],
+   "with": "",
+   "face": "smug",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 16,
+   "until": 21,
+   "who": "navy_officer",
+   "do": "point",
+   "target": "pirate_ship",
+   "to": [],
+   "with": "",
+   "face": "shout",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 22,
+   "until": 31,
+   "who": "navy_officer",
+   "do": "nod",
+   "target": "",
+   "to": [],
+   "with": "",
+   "face": "smug",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 0,
+   "until": 15,
+   "who": "powder_boy",
+   "do": "hold",
+   "target": "powder_keg",
+   "to": [],
+   "with": "powder_keg",
+   "face": "wide",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 16,
+   "until": 24,
+   "who": "powder_boy",
+   "do": "walk",
+   "target": "",
+   "to": [
+    1.5,
+    -13.6
+   ],
+   "with": "powder_keg",
+   "face": "serious",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 25,
+   "until": 31,
+   "who": "powder_boy",
+   "do": "put-down",
+   "target": "",
+   "to": [],
+   "with": "powder_keg",
+   "face": "wide",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 0,
+   "until": 6,
+   "who": "lucky_pirate",
+   "do": "look",
+   "target": "navy_frigate",
+   "to": [],
+   "with": "",
+   "face": "flat",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 7,
+   "until": 7,
+   "who": "lucky_pirate",
+   "do": "hands-on-head",
+   "target": "",
+   "to": [],
+   "with": "",
+   "face": "wide",
+   "bubble": "!",
+   "says": false
+  },
+  {
+   "from": 8,
+   "until": 11,
+   "who": "lucky_pirate",
+   "do": "look",
+   "target": "hull_breach",
+   "to": [],
+   "with": "",
+   "face": "wide",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 12,
+   "until": 21,
+   "who": "lucky_pirate",
+   "do": "cheer",
+   "target": "",
+   "to": [],
+   "with": "",
+   "face": "grin",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 22,
+   "until": 31,
+   "who": "lucky_pirate",
+   "do": "hands-on-hips",
+   "target": "",
+   "to": [],
+   "with": "",
+   "face": "grin",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 0,
+   "until": 6,
+   "who": "pirate_captain",
+   "do": "lean-back",
+   "target": "",
+   "to": [],
+   "with": "",
+   "face": "smug",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 7,
+   "until": 15,
+   "who": "pirate_captain",
+   "do": "shake-head",
+   "target": "",
+   "to": [],
+   "with": "",
+   "face": "pale",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 16,
+   "until": 20,
+   "who": "pirate_captain",
+   "do": "point",
+   "target": "navy_frigate",
+   "to": [],
+   "with": "",
+   "face": "shout",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 21,
+   "until": 31,
+   "who": "pirate_captain",
+   "do": "hands-on-head",
+   "target": "",
+   "to": [],
+   "with": "",
+   "face": "pale",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 0,
+   "until": 25,
+   "who": "pirate_ducker",
+   "do": "work",
+   "target": "pirate_rail_section",
+   "to": [],
+   "with": "",
+   "face": "calm",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 26,
+   "until": 27,
+   "who": "pirate_ducker",
+   "do": "hands-on-head",
+   "target": "",
+   "to": [],
+   "with": "",
+   "face": "wide",
+   "bubble": "!",
+   "says": false
+  },
+  {
+   "from": 28,
+   "until": 31,
+   "who": "pirate_ducker",
+   "do": "fall",
+   "target": "",
+   "to": [],
+   "with": "",
+   "face": "pale",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 0,
+   "until": 24,
+   "who": "pirate_barrel",
+   "do": "carry",
+   "target": "",
+   "to": [],
+   "with": "loose_barrel",
+   "face": "calm",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 25,
+   "until": 25,
+   "who": "pirate_barrel",
+   "do": "put-down",
+   "target": "",
+   "to": [],
+   "with": "loose_barrel",
+   "face": "wide",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 26,
+   "until": 31,
+   "who": "pirate_barrel",
+   "do": "hide",
+   "target": "pirate_barrels",
+   "to": [],
+   "with": "",
+   "face": "pale",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 0,
+   "until": 21,
+   "who": "pirate_lookout",
+   "do": "point",
+   "target": "navy_frigate",
+   "to": [],
+   "with": "",
+   "face": "shout",
+   "bubble": "!",
+   "says": false
+  },
+  {
+   "from": 22,
+   "until": 31,
+   "who": "pirate_lookout",
+   "do": "hands-on-head",
+   "target": "",
+   "to": [],
+   "with": "",
+   "face": "wide",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 0,
+   "until": 22,
+   "who": "pirate_gunner",
+   "do": "arms-crossed",
+   "target": "",
+   "to": [],
+   "with": "",
+   "face": "squint",
+   "bubble": "none",
+   "says": false
+  },
+  {
+   "from": 23,
+   "until": 31,
+   "who": "pirate_gunner",
+   "do": "lean-back",
+   "target": "",
+   "to": [],
+   "with": "",
+   "face": "wide",
+   "bubble": "none",
+   "says": false
+  }
+ ],
+ "events": [
+  {
+   "from": 1,
+   "until": 3,
+   "thing": "navy_cannon",
+   "do": "fire",
+   "to": [],
+   "path": [],
+   "amount": 1,
+   "text": ""
+  },
+  {
+   "from": 1,
+   "until": 6,
+   "thing": "navy_cannon",
+   "do": "smoke",
+   "to": [],
+   "path": [],
+   "amount": 1,
+   "text": ""
+  },
+  {
+   "from": 1,
+   "until": 2,
+   "thing": "navy_cannon",
+   "do": "shake",
+   "to": [],
+   "path": [],
+   "amount": 1,
+   "text": ""
+  },
+  {
+   "from": 2,
+   "until": 2,
+   "thing": "cannonball",
+   "do": "appear",
+   "to": [],
+   "path": [],
+   "amount": 1,
+   "text": ""
+  },
+  {
+   "from": 2,
+   "until": 7,
+   "thing": "cannonball",
+   "do": "move",
+   "to": [],
+   "path": [
+    [
+     -0.5,
+     -3,
+     7.0
+    ],
+    [
+     2.6,
+     4.6,
+     2.4
+    ]
+   ],
+   "amount": 1,
+   "text": ""
+  },
+  {
+   "from": 8,
+   "until": 8,
+   "thing": "cannonball",
+   "do": "vanish",
+   "to": [],
+   "path": [],
+   "amount": 1,
+   "text": ""
+  },
+  {
+   "from": 7,
+   "until": 7,
+   "thing": "hull_breach",
+   "do": "appear",
+   "to": [],
+   "path": [],
+   "amount": 1,
+   "text": ""
+  },
+  {
+   "from": 7,
+   "until": 14,
+   "thing": "hull_breach",
+   "do": "smoke",
+   "to": [],
+   "path": [],
+   "amount": 1,
+   "text": ""
+  },
+  {
+   "from": 7,
+   "until": 8,
+   "thing": "pirate_ship",
+   "do": "shake",
+   "to": [],
+   "path": [],
+   "amount": 1.5,
+   "text": ""
+  },
+  {
+   "from": 19,
+   "until": 20,
+   "thing": "navy_cannon",
+   "do": "fire",
+   "to": [],
+   "path": [],
+   "amount": 1,
+   "text": ""
+  },
+  {
+   "from": 19,
+   "until": 27,
+   "thing": "navy_cannon",
+   "do": "smoke",
+   "to": [],
+   "path": [],
+   "amount": 1,
+   "text": ""
+  },
+  {
+   "from": 19,
+   "until": 20,
+   "thing": "navy_cannon",
+   "do": "shake",
+   "to": [],
+   "path": [],
+   "amount": 1,
+   "text": ""
+  },
+  {
+   "from": 20,
+   "until": 20,
+   "thing": "navy_volley",
+   "do": "appear",
+   "to": [],
+   "path": [],
+   "amount": 1,
+   "text": ""
+  },
+  {
+   "from": 20,
+   "until": 21,
+   "thing": "navy_volley",
+   "do": "move",
+   "to": [],
+   "path": [
+    [
+     1,
+     -2,
+     7.5
+    ],
+    [
+     0,
+     4.6,
+     4.3
+    ]
+   ],
+   "amount": 1,
+   "text": ""
+  },
+  {
+   "from": 23,
+   "until": 23,
+   "thing": "navy_volley",
+   "do": "vanish",
+   "to": [],
+   "path": [],
+   "amount": 1,
+   "text": ""
+  },
+  {
+   "from": 21,
+   "until": 22,
+   "thing": "pirate_ship",
+   "do": "shake",
+   "to": [],
+   "path": [],
+   "amount": 2,
+   "text": ""
+  },
+  {
+   "from": 22,
+   "until": 24,
+   "thing": "pirate_rail_section",
+   "do": "break",
+   "to": [],
+   "path": [],
+   "amount": 1,
+   "text": ""
+  },
+  {
+   "from": 26,
+   "until": 26,
+   "thing": "splinters",
+   "do": "appear",
+   "to": [],
+   "path": [],
+   "amount": 1,
+   "text": ""
+  },
+  {
+   "from": 26,
+   "until": 29,
+   "thing": "splinters",
+   "do": "break",
+   "to": [],
+   "path": [],
+   "amount": 1,
+   "text": ""
+  }
+ ],
+ "callouts": [
+  {
+   "from": 14,
+   "until": 15,
+   "on": "lucky_pirate",
+   "text": "LUCKY",
+   "tone": "good"
+  },
+  {
+   "from": 18,
+   "until": 21,
+   "on": "navy_frigate",
+   "text": "1700s",
+   "tone": "neutral"
+  }
+ ],
+ "moves": [
+  {
+   "from": 0,
+   "job": "hook",
+   "follow": "",
+   "landings": [
+    {
+     "see": "close past the navy gunner's shoulder: his smouldering linstock touches the cannon's brass touch-hole, flame and smoke blast from the muzzle toward the pirate ship across the water",
+     "from": 0,
+     "frame": [
+      "navy_gunner",
+      "navy_cannon"
+     ],
+     "near": "",
+     "eye": "",
+     "angle": "left",
+     "lens": "close",
+     "cam": [
+      -5.2,
+      -11.6,
+      5.6
+     ],
+     "aim": [
+      -2.4,
+      -12.4,
+      5.0
+     ],
+     "mm": 35
+    },
+    {
+     "see": "low over the water between the ships: the black ball punches into the pirate hull, a hole bursts open in the planks with fresh pale splinters around it, floating planks bob in front",
+     "from": 7,
+     "frame": [
+      "hull_breach"
+     ],
+     "near": "floating_planks",
+     "eye": "",
+     "angle": "low",
+     "lens": "wide",
+     "cam": [
+      8,
+      -1.0,
+      3.0
+     ],
+     "aim": [
+      3.0,
+      5.0,
+      3.0
+     ],
+     "mm": 28
+    },
+    {
+     "see": "the lucky sailor's face over the rail: he looks down at the hole right under his feet, then grins, untouched",
+     "from": 10,
+     "frame": [
+      "lucky_pirate"
+     ],
+     "near": "",
+     "eye": "",
+     "angle": "front",
+     "lens": "face",
+     "cam": [
+      3.2,
+      4.4,
+      5.0
+     ],
+     "aim": [
+      3.6,
+      6.3,
+      4.85
+     ],
+     "mm": 50
+    }
+   ]
+  },
+  {
+   "from": 16,
+   "job": "place",
+   "follow": "",
+   "landings": [
+    {
+     "see": "high and wide over the sea: the navy frigate and the pirate ship side by side, a second pirate ship behind, gun smoke drifting, gulls overhead, a longboat close to the lens; 1700s over the frigate",
+     "from": 16,
+     "frame": [
+      "navy_frigate",
+      "pirate_ship"
+     ],
+     "near": "longboat",
+     "eye": "",
+     "angle": "high",
+     "lens": "wide",
+     "cam": [
+      12,
+      20,
+      7
+     ],
+     "aim": [
+      -2,
+      -3,
+      5
+     ],
+     "mm": 24
+    },
+    {
+     "see": "along the navy gun deck: the row of cannons fires one after another, the second gunner ramming the next gun, the captain pointing behind",
+     "from": 19,
+     "frame": [
+      "navy_cannon",
+      "navy_gunner2"
+     ],
+     "near": "",
+     "eye": "",
+     "angle": "left",
+     "lens": "medium",
+     "cam": [
+      9.5,
+      -11.6,
+      5.9
+     ],
+     "aim": [
+      -1,
+      -10.8,
+      5.0
+     ],
+     "mm": 35
+    },
+    {
+     "see": "low from the water up at the pirate rail: the volley smashes the rail section into flying planks, the deckhand behind it",
+     "from": 22,
+     "frame": [
+      "pirate_rail_section",
+      "pirate_ducker"
+     ],
+     "near": "",
+     "eye": "",
+     "angle": "low",
+     "lens": "wide",
+     "cam": [
+      -1.5,
+      1.0,
+      4.6
+     ],
+     "aim": [
+      0,
+      5.5,
+      4.4
+     ],
+     "mm": 28
+    },
+    {
+     "see": "on the pirate deck: a burst of wooden splinters sprays across the crew, the deckhand ducks and falls, the lucky sailor still standing grinning beyond",
+     "from": 26,
+     "frame": [
+      "pirate_ducker",
+      "splinters"
+     ],
+     "near": "",
+     "eye": "",
+     "angle": "over-shoulder",
+     "lens": "wide",
+     "cam": [
+      -7.0,
+      6.4,
+      5.4
+     ],
+     "aim": [
+      -0.8,
+      7.6,
+      4.6
+     ],
+     "mm": 28
+    }
+   ]
+  }
+ ]
+}
