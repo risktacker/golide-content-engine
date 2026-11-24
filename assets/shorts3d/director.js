@@ -129,7 +129,7 @@ export function makeDirector(K, opt = {}) {
     const out = [], cb = people.map(coreBox);
     for (let i = 0; i < people.length; i++) {
       for (let j = i + 1; j < people.length; j++) if (cb[i].intersectsBox(cb[j])) out.push(`${people[i].label} passes through ${people[j].label}`);
-      for (const q of props) if (!q.floor && cb[i].intersectsBox(q.box)) out.push(`${people[i].label} passes through ${q.label}`);
+      for (const q of props) if (!q.floor && !q.walk && cb[i].intersectsBox(q.box)) out.push(`${people[i].label} passes through ${q.label}`);
     }
     return out;
   }
@@ -173,7 +173,7 @@ export function makeDirector(K, opt = {}) {
     for (const c of people) {
       for (let n = 0; n < 60; n++) {
         let hit = null, cb = null;
-        for (const t of moments) { poseAt(t); cb = coreBox(c); hit = props.find(q => !q.floor && cb.intersectsBox(q.box)); if (hit) break; }
+        for (const t of moments) { poseAt(t); cb = coreBox(c); hit = props.find(q => !q.floor && !q.walk && cb.intersectsBox(q.box)); if (hit) break; }
         if (!hit) break;
         // step out along the shallower overlap (x or z), away from the piece's centre
         const ox = Math.min(cb.max.x, hit.box.max.x) - Math.max(cb.min.x, hit.box.min.x), oz = Math.min(cb.max.z, hit.box.max.z) - Math.max(cb.min.z, hit.box.min.z);

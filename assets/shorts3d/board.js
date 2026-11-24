@@ -321,6 +321,8 @@ export async function build(K, words) {
   // things people hold, ride, sit on or kick, and flat things, are not obstacles; everything else is
   const touched = new Set(); for (const c of people) for (const b of beats.get(c)) { if (b.with) touched.add(b.with); if (['ride', 'sit', 'push', 'pull', 'hide', 'lie'].includes(b.do) && b.target) touched.add(b.target); }
   const props = [...list.filter(th => !touched.has(th.id)).map(th => ({ obj: th.obj, label: th.T.name, floor: th.size.y < 0.4 })),   /* rails, rugs, tracks: walked on and looked across, never obstacles */
-    ...copies.filter(cp => cp.th.size.y > 0.6 && !touched.has(cp.th.id)).slice(0, 60).map(cp => ({ obj: cp.obj, label: cp.th.T.name, floor: false }))];
+    // every copy in a cluster is solid to the camera (never inside a rock, never a rock filling the lens); small ones are
+    // stepped over by people (walk), big ones are obstacles
+    ...copies.filter(cp => !touched.has(cp.th.id)).slice(0, 400).map(cp => ({ obj: cp.obj, label: cp.th.T.name, floor: false, walk: cp.th.size.y <= 0.6 }))];
   return { dur: DUR, people, props, room, pose, light, shots, group: G, walls: IN, maxDist: IN ? 120 : 420 };
 }
