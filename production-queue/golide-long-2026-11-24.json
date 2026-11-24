@@ -88,5 +88,24 @@
     "signal_type": "owner-replace",
     "query": "DeepSeek + REA Cloned Claude Code for FREE (Full Build)"
   },
-  "selected_topic_source": "https://www.youtube.com/watch?v=ihElfZhR-eI"
+  "selected_topic_source": "https://www.youtube.com/watch?v=ihElfZhR-eI",
+  "voice_choice": "ai",
+  "platforms": [
+    "youtube",
+    "instagram"
+  ],
+  "video_style": "goli",
+  "looks": {
+    "free": [
+      "puppets",
+      "white",
+      "layers",
+      "circuit",
+      "glass",
+      "xray",
+      "blueprint"
+    ],
+    "paid": {}
+  },
+  "_failed_runs": 1
 }
