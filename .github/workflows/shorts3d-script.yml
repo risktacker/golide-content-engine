@@ -1,0 +1,64 @@
+name: 3D Short from a given script
+
+# owner 2026-11-24: a script he hands over, made the way production makes a 3D Short (tools/shorts3d_script.py):
+# the AI voice reads it once (saved, never read twice), Sol writes ONE storyboard (at most $1.50, saved, never paid
+# twice) unless a hand-written board is given (a free trial), the render machines, the lessons, the finish. The clip
+# goes to YouTube PRIVATE (trial-upload.yml) when a title is given.
+on:
+  workflow_dispatch:
+    inputs:
+      script: { description: "script file in the repo", required: true }
+      slug: { description: "short name, e.g. pirates", required: true }
+      board: { description: "hand-written storyboard file (free trial); empty = Sol writes it (paid, at most $1.50)", default: "" }
+      until: { description: "seconds of the voice to use (trials); empty = all", default: "" }
+      parts: { description: "render machines", default: "12" }
+      voice_only: { description: "only read the voice (no board, no render)", default: "false" }
+      youtube_title: { description: "when set: the clip goes to YouTube PRIVATE with this title", default: "" }
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  make:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    env:
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+      GITHUB_TOKEN: ${{ github.token }}
+      GH_TOKEN: ${{ github.token }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+      GOLIDE_ENABLE_PAID_PRODUCTION: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: ./.github/actions/ffmpeg
+      - run: pip install -q -e "$GITHUB_WORKSPACE[production]" numpy pillow
+      - name: Make the Short
+        run: |
+          ARGS=(--script "${{ inputs.script }}" --slug "${{ inputs.slug }}" --parts "${{ inputs.parts }}" --out out)
+          [ -n "${{ inputs.board }}" ] && ARGS+=(--board "${{ inputs.board }}")
+          [ -n "${{ inputs.until }}" ] && ARGS+=(--until "${{ inputs.until }}")
+          [ "${{ inputs.voice_only }}" = "true" ] && ARGS+=(--voice-only)
+          python3 tools/shorts3d_script.py "${ARGS[@]}"
+      - name: Results to the review branch
+        if: always()
+        run: |
+          D=review/shorts3d/script/${{ inputs.slug }}$([ -n "${{ inputs.board }}" ] && echo -trial)
+          mkdir -p /tmp/keep && cp out/clip.mp4 out/sheet.jpg out/report.json out/board.json out/board-fixed.json out/scene-words.json out/sentences.json /tmp/keep/ 2>/dev/null || true
+          git config user.name "golide-bot" && git config user.email "bot@golidee.com"
+          git stash -q -u || true
+          if git fetch -q origin review-shorts3d-script; then git checkout -q -B rv FETCH_HEAD; else git checkout -q --orphan rv && git rm -rqf . >/dev/null; fi
+          mkdir -p $D && cp /tmp/keep/* $D/ 2>/dev/null || true
+          git add -f $D && git commit -qm "3D Short from a script: ${{ inputs.slug }}" && git push -q origin rv:review-shorts3d-script || true
+      - name: "To YouTube, private"
+        if: ${{ success() && inputs.youtube_title != '' && inputs.voice_only != 'true' }}
+        run: |
+          D=review/shorts3d/script/${{ inputs.slug }}$([ -n "${{ inputs.board }}" ] && echo -trial)
+          gh api -X POST repos/${{ github.repository }}/actions/workflows/trial-upload.yml/dispatches -f ref=main \
+            -f "inputs[branch]=review-shorts3d-script" -f "inputs[path]=$D/clip.mp4" -f "inputs[title]=${{ inputs.youtube_title }}"

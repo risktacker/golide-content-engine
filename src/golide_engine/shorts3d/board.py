@@ -7,7 +7,10 @@ when no library has it), the people and what each one DOES on which word (walk t
 fall), what the things do (move, spin, break, bend, appear) and the shots. Only the body moves are a fixed vocabulary
 (the puppet's controls, like an animator's); every noun and every place is free text.
 
-One call per Short, at most COST_CAP_USD (owner 2026-11-22), the provider's re-ask off; everything Sol gets wrong is
+Owner 2026-11-24: Ricks Clips storyboards almost every full stop. Every sentence of the script is its own little
+scene of 2 to 4 pictures with a whole chain of action, so the board grows with the script (sentences()).
+
+One call per Short, at most COST_CAP_USD (owner 2026-11-22, $1.50 since 2026-11-24), the provider's re-ask off; everything Sol gets wrong is
 repaired here for free and the director (assets/shorts3d/director.js) frames and checks every shot.
 """
 from __future__ import annotations
@@ -17,7 +20,7 @@ import math
 import re
 from typing import Any
 
-COST_CAP_USD = 0.86
+COST_CAP_USD = 1.50                                  # owner 2026-11-24: raised from $0.86 for full per-sentence boards; measure the real spend
 PRICE_IN, PRICE_OUT = 4.0 / 1e6, 20.0 / 1e6        # gpt-5.6-sol (config/provider-pricing.json)
 
 # the puppet's controls (verbs). Targets and props are free: any thing id, any person id or a spot [x, z].
@@ -72,7 +75,7 @@ def schema() -> dict:
     landing = obj({"see": s, "from": i, "frame": strs, "near": s, "eye": s, "angle": _enum(ANGLES), "lens": _enum(LENSES),
                    "cam": spot, "aim": spot, "mm": num})
     # the picture plan, written first (the Ricks Clips kits' PICTURE_PLAN.md, column for column)
-    row = obj({"job": _enum(JOBS), "mark": _enum(["none", "hook", "twist", "signature", "last-frame", "stillness"]),
+    row = obj({"sentence": i, "job": _enum(JOBS), "mark": _enum(["none", "hook", "twist", "signature", "last-frame", "stillness"]),
                "words": s, "landing_word": i, "what_we_see": s, "shown": _enum(["close", "in-scene", "not-shown"]), "why": s,
                "light": s, "near_lens": s, "far_world": s, "feeling": s, "acted_gag": s, "effect": s})
     film = obj({"one_sentence": s, "cast_notes": s, "places_and_light": s, "colour_meaning": s, "speaking_lines": s,
@@ -84,8 +87,17 @@ def schema() -> dict:
                 "callouts": {"type": "array", "items": callout}, "moves": {"type": "array", "items": move}})
 
 
-def instructions() -> str:
-    """What Sol is told. Method only (measured on Ricks Clips' films and the storyboard craft), never a topic."""
+def instructions(lessons: list[str] | None = None) -> str:
+    """What Sol is told. Method only (measured on Ricks Clips' films and the storyboard craft), never a topic; plus the
+    lessons from earlier films (shorts3d/lessons.py), mistakes the engine measured, written as general rules."""
+    learned = ""
+    if lessons:
+        learned = ("\nLESSONS FROM EARLIER FILMS (the engine measured these mistakes on boards written with these same "
+                   "instructions; do not repeat them):\n" + "\n".join(f"- {x}" for x in lessons) + "\n")
+    return _method() + learned
+
+
+def _method() -> str:
     return (
         "You are the director and storyboard artist of a 3D animated YouTube Short in the Ricks Clips style: white "
         "deadpan heads, pear bodies, noodle limbs, acting inside a detailed, lit 3D world. You do not know the topic in "
@@ -106,8 +118,18 @@ def instructions() -> str:
         "moments (power_moments: the 2 to 4 words where something big happens on screen, with the effect that fits "
         "this scene); the impossible view (impossible_view: one picture from where no real camera could be, inside "
         "the object or the hidden place that matters most, and how the camera flies in and out).\n"
-        "STEP 2, THE PICTURE PLAN (plan): one row for every thing or action the voice NAMES, in order. Each row: its "
-        "story job; a mark (hook for the first picture, twist, the ONE signature picture of the film on the turn or "
+        "STEP 2, THE PICTURE PLAN (plan), SENTENCE BY SENTENCE: you are given the script's SENTENCES, numbered. "
+        "Every sentence is its own little scene, storyboarded on its own, with 2 to 4 pictures (about one for every 1.2 to "
+        "2 seconds of its voice; a sentence under 2 seconds gets 1 or 2). One sentence often holds a whole chain of "
+        "action and every link of it is a picture: who prepares the thing, who sets it off, what moves, what it reaches, "
+        "what breaks or changes, who is hurt or spared, who reacts. The first picture of a sentence shows what it is "
+        "about, the middle ones the chain step by step, the last lands on its key word with the result. Show what the "
+        "sentence MEANS, not only its nouns: a sentence that says something cannot be done, fails, is too poor or is "
+        "useless shows the attempt and the failure (it misses, falls short, bounces off, breaks in the hand); one that "
+        "says something works shows it working and the result; a better or worse thing shows both side by side; a date, "
+        "an era or a place shows that era's place, dress and objects; a feeling word (lucky, nasty, smug) is a face and a "
+        "pose on a person who has a reason to feel it. One plan row per picture, in order, sentence = its sentence "
+        "number. Each row: its story job; a mark (hook for the first picture, twist, the ONE signature picture of the film on the turn or "
         "climax, last-frame, or none); words: the exact words with the landing word in CAPITALS; landing_word: that "
         "word's number; what_we_see: the doer + the thing + the result, one action on the landing word, written so a "
         "builder could draw it (sizes, positions, what is nearest the lens, what each hand does, what changes); shown: "
@@ -130,7 +152,8 @@ def instructions() -> str:
         "number or term also goes on a sign or label in the world.\n"
         "STEP 3, BUILD IT: every row of the plan must be built by the data below: its things exist with their parts, "
         "its people do its action on its word, its effect is an event, its picture is a landing whose near is the "
-        "row's near_lens prop. Nothing in the plan is left out of the data.\n"
+        "row's near_lens prop. Nothing in the plan is left out of the data: as many plan rows, as many landings; every "
+        "link of a chain of action is beats and events on its own words.\n"
         "WORLD: where the story happens (place: the script's own words), indoor or outdoor, the ground (what it is made "
         "of) and its colour (hex), walls colour for indoors, sky (day, dusk, night, overcast, indoor), size [width, "
         "depth] in metres (10 to 120), light warm/cool/neutral. Coordinates are metres: x left to right, z towards the "
@@ -176,11 +199,11 @@ def instructions() -> str:
         "People riding a thing move with it. Every change of state is caused by an action you show.\n"
         "CALLOUTS: small labels that pop up over a thing or a person on a word: a number, an amount, a price, a name or "
         "a status the script gives (at most 3 short words), tone good/bad/neutral, from word `from` until `until`.\n"
-        "THE CAMERA, measured on Ricks Clips' films: ONE travelling camera that almost never cuts (a hard cut only "
-        "when the story changes place or time), is moving about two thirds of the time, keeps catching moving things "
-        "and lands on a new picture about every second. Write the camera as MOVES. A move starts on a word, has a "
-        "story job and lasts as long as that job (often 3 to 12 seconds); inside it the camera flies from landing to "
-        "landing without a cut. follow: the id of the thing or person the camera rides with during the move (a moving "
+        "THE CAMERA, measured on Ricks Clips' films: the camera is moving about two thirds of the time, keeps catching "
+        "moving things and lands on a new picture every 1 to 2 seconds. Write the camera as MOVES, one move per "
+        "sentence (a move may carry on into the next sentence only when the place and the action carry on): it starts "
+        "on the sentence's first word, has the sentence's story job, and inside it the camera flies from landing to "
+        "landing without a cut, one landing per plan row of that sentence; the next sentence's move starts with a cut. follow: the id of the thing or person the camera rides with during the move (a moving "
         "vehicle, a runner, a thrown thing), or empty. The job decides how it moves:\n"
         "- hook: land close on the strange act, then pull back and rise to reveal the big thing; two or three landings "
         "in the first 4 seconds.\n"
@@ -199,9 +222,9 @@ def instructions() -> str:
         "- end: pull back from the result with the hero calm and big in front of it, then creep in on the face, "
         "matching the first picture so the Short loops.\n"
         "LANDINGS ARE CAMERA STATIONS (Rick's camera, measured): the camera rests on a station, then travels to the next "
-        "and lands on its word; travel takes 1.5 s + 0.25 s per metre of camera path (at most 6 s), so write stations "
-        "about 2.5 s or more apart inside a move (a new picture every 1 to 1.5 s comes from the travel itself and from "
-        "the people acting, not from more stations). Write EVERY station exactly, the way a camera operator would: cam "
+        "and lands on its word; travel takes 1.5 s + 0.25 s per metre of camera path (at most 6 s, and never more than the time to the next "
+        "station less a 0.7 s rest), so write stations 1.2 to 2.5 seconds apart, a few metres from each other inside a "
+        "sentence (short hops are quick), and let the people acting fill the rest. Write EVERY station exactly, the way a camera operator would: cam "
         "= where the camera stands [x, z, height in metres], aim = the point it looks at [x, z, height] (a face is at "
         "about 1.3 m, hands at about 0.9 m, a thing at its middle), mm = the lens (24 wide, 35 medium, 50 close, 85 a "
         "face). You placed every person and thing, so you know where they are: put the camera where the picture of "
@@ -224,8 +247,44 @@ def instructions() -> str:
 def request(title: str, words: list[dict], phrases: list[dict]) -> str:
     numbered = " ".join(f"{i}:{w['word']}" for i, w in enumerate(words))
     starts = "; ".join(f"{p['from']} ({p['start']:.1f}s) {p['text']}" for p in phrases)
+    sents = "\n".join(f"{k}. words {s['from']}-{s['until']} ({s['start']:.1f}-{s['end']:.1f}s, {s['pictures']} pictures): {s['text']}"
+                      for k, s in enumerate(sentences(words)))
     return (f"TITLE: {title}\nLENGTH: {words[-1]['end']:.1f} seconds\n\nWORDS (number:word):\n{numbered}\n\n"
+            f"SENTENCES (number. word range, time, how many pictures it needs: text):\n{sents}\n\n"
             f"PHRASE STARTS (word number, time, phrase):\n{starts}\n")
+
+
+def sentences(words: list[dict]) -> list[dict]:
+    """The script cut at every full stop (. ! ? or a semicolon), with the number of
+    pictures each one needs: one per 1.2-2 s of its voice, 2 to 4 (1 or 2 under 2 s)."""
+    out, cur = [], []
+    for i, w in enumerate(words):
+        cur.append(i)
+        if re.search(r"[.!?;]['\")]*$", w["word"]) or i == len(words) - 1:
+            out.append(cur); cur = []
+    res = []
+    for p in out:
+        a, z = words[p[0]]["start"], words[p[-1]]["end"]
+        d = z - a
+        need = 1 if d < 1.2 else 2 if d < 3.2 else 3 if d < 5.0 else 4
+        res.append({"from": p[0], "until": p[-1], "start": a, "end": z, "pictures": need,
+                    "text": " ".join(words[i]["word"] for i in p)})
+    return res
+
+
+def coverage(board: dict, words: list[dict]) -> list[dict]:
+    """Per sentence: the pictures it needs and the landings and plan rows the board gave it (free check)."""
+    shots = board.get("shots") or _landings(board)
+    froms = [int(_num(s.get("from"), 0, 0, len(words))) for s in shots]
+    rows = [int(_num(r.get("sentence"), -1, -1, 999)) for r in (board.get("plan") or []) if isinstance(r, dict)]
+    out = []
+    for k, s in enumerate(sentences(words)):
+        got = sum(1 for f in froms if s["from"] <= f <= s["until"])
+        if k == 0:
+            got = max(got, 1 if froms else 0)
+        out.append({"sentence": k, "needs": s["pictures"], "landings": got, "plan_rows": rows.count(k),
+                    "short": got < s["pictures"], "text": s["text"][:80]})
+    return out
 
 
 def phrases(words: list[dict], gap: float = 0.25) -> list[dict]:
@@ -249,9 +308,9 @@ def estimate_input_tokens(text: str) -> int:
     return int(len(text) / 3.2) + 200
 
 
-def write(text_provider, title: str, words: list[dict]) -> tuple[dict, Any]:
+def write(text_provider, title: str, words: list[dict], lessons: list[str] | None = None) -> tuple[dict, Any]:
     """The one paid call. Returns (storyboard, provider output with token counts)."""
-    ins, req = instructions(), request(title, words, phrases(words))
+    ins, req = instructions(lessons), request(title, words, phrases(words))
     limit = max_output_tokens(estimate_input_tokens(ins + req))
     out = text_provider.generate_json(ins, req, schema(), max_output_tokens=limit, grow=False)
     return out.value, out

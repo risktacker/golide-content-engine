@@ -493,7 +493,7 @@ class ProductionService:
         import hashlib
         from ..edit.pipeline import settings
         from ..providers.openai_text import OpenAITextProvider
-        from ..shorts3d import board as board3d, build as build3d, remote as remote3d
+        from ..shorts3d import board as board3d, build as build3d, lessons as lessons3d, remote as remote3d
         from ..storage.r2 import r2_store_from_environment
 
         if not 45.0 <= float(narration_seconds) <= 75.0:     # owner 2026-11-18: every Short is 45-75 s, no two ways
@@ -522,11 +522,12 @@ class ProductionService:
 
         def stage() -> None:
             raw = saved()
+            learned = lessons3d.for_sol(lessons3d.load(store))      # owner 2026-11-24: the engine learns from every film
             if raw is None:
-                ins = board3d.instructions()
+                ins = board3d.instructions(learned)
                 est = board3d.estimate_input_tokens(ins + board3d.request(str(spec.get("title") or ""), words, board3d.phrases(words)))
                 self._reserve(spec, writer.model, Usage(input_tokens=est, output_tokens=board3d.max_output_tokens(est)))
-                raw, out = board3d.write(writer, str(spec.get("title") or "GOLIDE"), words)
+                raw, out = board3d.write(writer, str(spec.get("title") or "GOLIDE"), words, learned)
                 before = self.costs.total(production_id)
                 self.costs.record(production_id, "shorts3d-storyboard", "openai", writer.model,
                                   Usage(input_tokens=out.input_tokens, cached_input_tokens=out.cached_input_tokens,
@@ -543,9 +544,20 @@ class ProductionService:
             fixed, notes = board3d.repair(raw, words)
             for n in notes:
                 print(json.dumps({"status": "shorts3d_storyboard_repaired", "note": n}))
+            cover = board3d.coverage(fixed, words)
+            print(json.dumps({"status": "shorts3d_sentences", "sentences": len(cover),
+                              "short": [c["sentence"] for c in cover if c["short"]]}))
             (folder / "board-fixed.json").write_text(json.dumps(fixed, indent=1), encoding="utf-8")
-            picture = remote3d.render(production_id, fixed, words, folder / "picture.mp4",
-                                      parts=int(conf.get("parts", remote3d.PARTS)))
+            try:
+                picture = remote3d.render(production_id, fixed, words, folder / "picture.mp4",
+                                          parts=int(conf.get("parts", remote3d.PARTS)))
+            finally:
+                try:
+                    rep = remote3d.get(production_id, "report.json")
+                    print(json.dumps({"status": "shorts3d_lessons",
+                                      **lessons3d.learn(store, notes, json.loads(rep) if rep else None, cover, fixed)}))
+                except Exception as error:  # noqa: BLE001 - learning never stops a video
+                    print(json.dumps({"status": "shorts3d_lessons_failed", "error": str(error)[:200]}))
             build3d.finish(picture, words, narration, folder / "finish", video_path)
 
         self.runner.run(production_id, "render-shorts3d-v1", stage, attempts=1)

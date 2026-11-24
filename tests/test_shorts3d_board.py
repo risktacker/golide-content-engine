@@ -1,4 +1,4 @@
-"""3D Short storyboards (owner 2026-11-22): written once by Sol, repaired for free, capped at $0.86."""
+"""3D Short storyboards (owner 2026-11-22): written once by Sol, repaired for free, capped at $1.50 since 2026-11-24."""
 import json
 import subprocess
 from pathlib import Path
@@ -90,7 +90,7 @@ def test_things_without_a_model_are_built_from_their_parts():
     assert abs(max(p["c"][1] + p["s"][1] / 2 for p in ps) - 2.0) < 1e-3
 
 
-def test_cost_cap_keeps_one_call_under_86_cents():
+def test_cost_cap_keeps_one_call_under_the_cap():
     ins = board.instructions() + board.request("T", words(180, 0.4), board.phrases(words(180, 0.4)))
     est = board.estimate_input_tokens(ins)
     cost = est * board.PRICE_IN + board.max_output_tokens(est) * board.PRICE_OUT
@@ -198,3 +198,46 @@ def test_instructions_carry_the_measured_method():
     ins = board.instructions()
     for k in ("hook", "setup", "explain", "climax", "attention chain", "180-degree", "30 or more kinds", "sound off"):
         assert k in ins, k
+
+
+def sentence_words(text, step=0.4):
+    return [{"word": t, "start": round(i * step, 2), "end": round(i * step + 0.3, 2)} for i, t in enumerate(text.split())]
+
+
+def test_every_full_stop_is_its_own_scene_with_enough_pictures():
+    """Owner 2026-11-24: Ricks Clips storyboards almost every full stop; a long sentence needs more pictures."""
+    w = sentence_words("One two three. " + " ".join(f"w{i}" for i in range(14)) + ". End now!")
+    ss = board.sentences(w)
+    assert [s["from"] for s in ss] == [0, 3, 17] and ss[1]["until"] == 16
+    assert ss[1]["pictures"] == 4 and ss[0]["pictures"] == 1
+    req = board.request("T", w, board.phrases(w))
+    assert "SENTENCES" in req and "4 pictures" in req
+    ins = board.instructions()
+    assert "SENTENCE BY SENTENCE" in ins and "one move per sentence" in ins.lower()
+
+
+def test_coverage_finds_a_sentence_with_too_few_pictures():
+    w = sentence_words("One two three. " + " ".join(f"w{i}" for i in range(14)) + ". End now!")
+    b = {"moves": [{"from": 0, "job": "hook", "follow": "", "landings": [{"from": 0}, {"from": 5}]}],
+         "plan": [{"sentence": 0}, {"sentence": 1}]}
+    cov = board.coverage(b, w)
+    assert cov[1]["short"] and cov[1]["landings"] == 1 and cov[1]["needs"] == 4 and cov[1]["plan_rows"] == 1
+
+
+def test_the_engine_learns_general_rules_from_each_film():
+    from golide_engine.shorts3d import lessons
+    report = {"shots": [{"station_dropped": ["Hero is hidden behind cliff"], "found": ["Hero is hidden behind cliff"]},
+                        {"station_moved": [1, 2, 3]}],
+              "staging": ["Sailor passes through crate"]}
+    keys = lessons.observe(["p1 walk at word 4 had nowhere to go: stands"], report, [{"short": True}])
+    assert {"station-hidden", "station-inside", "staging", "walk-nowhere", "sentence-short"} <= set(keys)
+    st = lessons.update(None, keys)
+    st = lessons.update(st, ["staging"])
+    rules = lessons.for_sol(st)
+    assert rules[0].startswith("People walked") and "2 films" in rules[0]
+    assert all("cliff" not in r and "crate" not in r and "Sailor" not in r for r in rules)   # general, never the film's nouns
+    for _ in range(lessons.LAPSE):
+        st = lessons.update(st, [])
+    assert lessons.for_sol(st) == []
+    ins = board.instructions(rules)
+    assert "LESSONS FROM EARLIER FILMS" in ins and rules[0] in ins

@@ -22,7 +22,7 @@
     "_note": "2026-11-22 (owner): Shorts in the Stickman style are made in the 3D Shorts engine (thuann-vn/claude-3d-animated-shorts, MIT; src/golide_engine/shorts3d). Sol writes ONE storyboard (data, never code), capped at max_cost_usd, saved at once and never paid twice; the director frames and checks every shot for free; frames render across `parts` GitHub machines. hold_private: uploaded private and no Reels until the owner approves the new engine; set false to publish on schedule.",
     "model": "gpt-5.6-sol",
     "reasoning_effort": "medium",
-    "max_cost_usd": 0.86,
+    "max_cost_usd": 1.50,
     "parts": 12,
     "hold_private": true
   }

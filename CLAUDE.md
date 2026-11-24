@@ -124,7 +124,7 @@ best unmodelled video of the last 45 days, no numbers bar. The channel's style i
   run, hold, pick up, give, throw, kick, push, pull, sit, lie, fall, jump, ride, point ... with any target), what the
   things do (move along a path, spin, shake, bend, break, fall, appear, vanish, glow, smoke, fire, change their words)
   and the shots (frame, angle, lens, move, the engine's own shot plan). Only the body moves are a vocabulary; every noun
-  and place is free text. Strict schema, capped at $0.86 (output limit; the provider's re-ask off), saved at once in R2
+  and place is free text. Strict schema, capped at $1.50 (owner 2026-11-24, was $0.86; output limit; the provider's re-ask off), saved at once in R2
   under a fingerprint of the recording (`shorts3d-board-v2/`), never paid twice. Everything wrong is repaired for free
   (`board.repair`). Things are found by name in free CC0 libraries on the render machine (Poly Haven's catalogue,
   Kenney's 3D kits; only when the thing's own noun matches) or built from their parts (`shorts3d/things.py`), never
@@ -135,7 +135,15 @@ best unmodelled video of the last 45 days, no numbers bar. The channel's style i
   played exactly as written; camera v2 travel between stations (1.5 s + 0.25 s/m, at most 6 s, 0.7 s hold, roll only in
   travel); the director only checks a written station, steps it out of a thing it sits in, and falls back to its own
   framing only when the station cannot work (camera inside, subject hidden or out of shot). Every thing carries five
-  story-specific details. Notes: claude/golide-3d-shorts-storyboard-research-2026-11-23.md.
+  story-specific details.
+- Sentence by sentence (owner 2026-11-24: "he's building storyboards almost for every full stop"): every sentence is its
+  own little scene of 2-4 pictures (one per 1.2-2 s of its voice, `board.sentences`), the whole chain of action link by
+  link, failures shown as failures; one camera move per sentence (a cut to the next), stations 1.2-2.5 s apart;
+  `board.coverage` measures it for free.
+- The engine learns (owner 2026-11-24, `shorts3d/lessons.py`): after every film the repairs, sentence coverage and
+  the director's report become general rules (never a topic or thing name), counted in R2 (`shorts3d-lessons/`);
+  Sol reads the top 12 next time; a rule not seen for 8 films retires. A script he hands over runs through
+  `shorts3d-script.yml` (`tools/shorts3d_script.py`, free with a hand-written board). Notes: claude/golide-3d-shorts-storyboard-research-2026-11-23.md.
 - The director (`assets/shorts3d/director.js`, owner: "heads and bodies well contained... nothing cropped and nothing
   crashing"): each shot frames its `who` inside the phone crop (130/160/230 px) and every 0.1 s checks: anyone who
   shows is whole; no head under the captions; no face hidden; heads never overlap; words in the set (TV) never cut
@@ -182,4 +190,4 @@ best unmodelled video of the last 45 days, no numbers bar. The channel's style i
   automatic runs never switch paid ones on. Real people stay real photo cards, never puppets.
 
 ## Checks
-`python3 -m pytest -q` must pass before every push (674 tests as of 2026-11-24).
+`python3 -m pytest -q` must pass before every push (677 tests as of 2026-11-24).
