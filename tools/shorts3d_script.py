@@ -122,7 +122,7 @@ def main() -> int:
     finally:
         rep = remote3d.get(pid, "report.json")
         report = json.loads(rep) if rep else None
-        if not a.board:                               # a hand trial teaches nothing about Sol
+        if not a.board and not a.pid:                 # a hand trial teaches nothing about Sol; a reused render was learned once
             print(json.dumps({"status": "lessons", **lessons3d.learn(store, notes, report, cover, fixed)}))
         for name in ("sheet.jpg", "report.json"):
             data = remote3d.get(pid, name)

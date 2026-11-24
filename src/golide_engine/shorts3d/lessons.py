@@ -61,7 +61,7 @@ RULES: list[tuple[str, str, str]] = [
     ("move-nowhere", r"move at word .* had nowhere",
      "A thing's move had no to and no path. Every move needs to [x, z] or a path of spots."),
     ("too-close-shots", r"under .*s, merged|under the minimum",
-     "Two landings were under 1 second apart and were merged. Keep landings at least 1.2 s apart."),
+     "Two landings were too close and one was moved or merged. Keep landings at least 0.7 s apart."),
     ("sentence-short", r"^sentence-short",
      "A sentence got fewer pictures than it needed. Every sentence gets the number of pictures it is given, each a "
      "plan row and a landing on that sentence's words, the chain of action shown link by link."),

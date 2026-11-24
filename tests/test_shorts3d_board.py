@@ -196,7 +196,7 @@ def test_moves_fly_between_landings_and_cut_between_moves():
 
 def test_instructions_carry_the_measured_method():
     ins = board.instructions()
-    for k in ("hook", "setup", "explain", "climax", "attention chain", "180-degree", "30 or more kinds", "sound off"):
+    for k in ("hook", "setup", "explain", "climax", "attention chain", "180-degree", "8 to 20 kinds", "sound off", "THE ENGINE STANDS THE CAMERA", "CLOSE on the exact", "painted ON a thing", "turned"):
         assert k in ins, k
 
 
@@ -209,9 +209,9 @@ def test_every_full_stop_is_its_own_scene_with_enough_pictures():
     w = sentence_words("One two three. " + " ".join(f"w{i}" for i in range(14)) + ". End now!")
     ss = board.sentences(w)
     assert [s["from"] for s in ss] == [0, 3, 17] and ss[1]["until"] == 16
-    assert ss[1]["pictures"] == 4 and ss[0]["pictures"] == 1
+    assert ss[1]["pictures"] == 6 and ss[0]["pictures"] == 1
     req = board.request("T", w, board.phrases(w))
-    assert "SENTENCES" in req and "4 pictures" in req
+    assert "SENTENCES" in req and "6 pictures" in req
     ins = board.instructions()
     assert "SENTENCE BY SENTENCE" in ins and "one move per sentence" in ins.lower()
 
@@ -221,7 +221,7 @@ def test_coverage_finds_a_sentence_with_too_few_pictures():
     b = {"moves": [{"from": 0, "job": "hook", "follow": "", "landings": [{"from": 0}, {"from": 5}]}],
          "plan": [{"sentence": 0}, {"sentence": 1}]}
     cov = board.coverage(b, w)
-    assert cov[1]["short"] and cov[1]["landings"] == 1 and cov[1]["needs"] == 4 and cov[1]["plan_rows"] == 1
+    assert cov[1]["short"] and cov[1]["landings"] == 1 and cov[1]["needs"] == 6 and cov[1]["plan_rows"] == 1
 
 
 def test_the_engine_learns_general_rules_from_each_film():
@@ -241,3 +241,11 @@ def test_the_engine_learns_general_rules_from_each_film():
     assert lessons.for_sol(st) == []
     ins = board.instructions(rules)
     assert "LESSONS FROM EARLIER FILMS" in ins and rules[0] in ins
+
+
+def test_too_close_shots_move_to_the_next_free_word_instead_of_vanishing():
+    w = sentence_words(" ".join(f"w{i}" for i in range(20)), step=0.3)
+    b = {"cast": [{"id": "a", "at": [0, 0]}], "moves": [{"from": 0, "job": "hook", "follow": "", "landings": [
+        {"from": 0, "frame": ["a"]}, {"from": 1, "frame": ["a"]}, {"from": 9, "frame": ["a"]}]}]}
+    fixed, notes = board.repair(b, w)
+    assert [s["from"] for s in fixed["shots"]][:3] == [0, 3, 9] and any("moved to word 3" in n for n in notes)

@@ -402,6 +402,36 @@ export async function build(K, words) {
     const f = sh.box.getCenter(V(0, 0, 0)), r = Math.max(10, sh.box.getSize(V(0, 0, 0)).length()); K.sun.target.position.copy(f); K.sun.position.copy(f).addScaledVector(K.SUNDIR, 60 + r); const sc = K.sun.shadow.camera; sc.left = sc.bottom = -r; sc.right = sc.top = r; sc.near = 1; sc.far = 200 + r * 2; sc.updateProjectionMatrix();
   }
   // shots
+  // ---- the camera from the shot's intent (owner 2026-11-24: Sol's typed coordinates missed 22 of 25 times). The
+  // storyboard says WHO or WHAT the picture is about, from which side (angle, or the side its written cam stands on),
+  // how close (lens) and the lens length; the engine poses the scene at that moment, measures the subjects and stands
+  // the camera where they fill the picture the way the lens means (Ricks Clips: close on the named thing) ----
+  const FILL = { face: 0.8, 'extreme-close': 0.95, close: 0.85, medium: 0.75, wide: 0.6 };   /* Ricks fills the frame */
+  const YAWOF = { front: 0, low: 0.25, high: -0.2, left: -0.75, right: 0.75, 'over-shoulder': Math.PI, top: 0 };
+  function intent(s, who, t) {
+    pose(t); const box = new THREE.Box3(); who.forEach(w => box.expandByObject(w.root || w)); if (box.isEmpty()) return null;
+    const first = who[0], lens = s.lens || 'medium', vfov = THREE.MathUtils.degToRad(s.mm ? 2 * THREE.MathUtils.radToDeg(Math.atan(18 / Math.max(12, s.mm))) : (LENS[lens] || 36)), hfov = 2 * Math.atan(Math.tan(vfov / 2) * 1080 / 1920);
+    let sub = box.clone();
+    if (first.root && (lens === 'face' || lens === 'close' || lens === 'extreme-close') && who.filter(w => w.root).length === 1) { const pb = new THREE.Box3().expandByObject(first.root), h = pb.max.y - pb.min.y;
+      sub = pb.clone(); sub.min.y = pb.max.y - h * (lens === 'face' ? 0.42 : lens === 'close' ? 0.68 : 0.3); }
+    const c = sub.getCenter(V(0, 0, 0)), sz = sub.getSize(V(0, 0, 0)), fill = FILL[lens] || 0.6;
+    const dist = Math.max(0.9, (sz.y / fill) / (2 * Math.tan(vfov / 2)), 0.55 * (Math.max(sz.x, sz.z) / fill) / (2 * Math.tan(hfov / 2)));   /* a phone frame is tall: long things run past its sides, as in Ricks */
+    // the side: where the written cam stands (Sol's choice of side kept), else the angle around the first person's facing
+    let dir = null;
+    if (s.cam && s.cam.length === 3) { dir = V(s.cam[0] - c.x, 0, s.cam[1] - c.z); if (dir.lengthSq() < 0.01) dir = null; }
+    if (!dir) { const f = first.root ? V(0, 0, 1).applyQuaternion(first.root.quaternion).setY(0) : V(0, 0, 1); if (f.lengthSq() < 1e-4) f.set(0, 0, 1); f.normalize();
+      dir = f.applyAxisAngle(V(0, 1, 0), YAWOF[s.angle] ?? 0); }
+    dir.normalize();
+    let y = c.y + (s.angle === 'low' ? -Math.min(0.6, sz.y * 0.4) : s.angle === 'high' ? dist * 0.25 : s.angle === 'top' ? dist * 1.2 : 0.05);
+    const pos = c.clone().addScaledVector(dir, s.angle === 'top' ? dist * 0.25 : dist);
+    if (s.angle === 'over-shoulder' && who.filter(w => w.root).length >= 2) {   // behind the first person's shoulder, on the second's face
+      const a2 = new THREE.Box3().expandByObject(who[0].root), b2 = new THREE.Box3().expandByObject(who.filter(w => w.root)[1].root), ah = a2.getCenter(V(0, 0, 0)), bh = b2.getCenter(V(0, 0, 0));
+      ah.y = a2.max.y - (a2.max.y - a2.min.y) * 0.2; bh.y = b2.max.y - (b2.max.y - b2.min.y) * 0.25; const back = ah.clone().sub(bh).setY(0).normalize(), side = V(-back.z, 0, back.x);
+      return { pos: ah.clone().addScaledVector(back, 0.9).addScaledVector(side, 0.45).add(V(0, 0.15, 0)), aim: bh, fov: THREE.MathUtils.radToDeg(vfov) }; }
+    let floor = 0.3; for (const th of stoodOn) if (inside(footprint(th), pos)) { const h2 = surfaceAt(th, pos.x, pos.z); if (h2 !== null) floor = Math.max(floor, h2 + 0.3); }
+    pos.y = Math.max(floor, y);
+    return { pos, aim: c, fov: THREE.MathUtils.radToDeg(vfov) };
+  }
   const raw = (B.shots || []).map(s => ({ ...s, t0: at(s.from) })).sort((a, b) => a.t0 - b.t0);
   if (!raw.length) throw new Error('board: no shots');
   raw[0].t0 = 0;
@@ -424,7 +454,8 @@ export async function build(K, words) {
       return v; };
     return { name: `${i + 1} ${s.job || ''} ${s.angle || 'front'} ${s.lens || 'medium'} ${mv}: ${s.see || who.map(w => w.label || w.name).join(', ')}`.slice(0, 120), t0: s.t0, t1: i + 1 < raw.length ? raw[i + 1].t0 : DUR,
       take: s.take ?? i, follow: !!s.follow, near: nearObj,
-      station: s.cam && s.cam.length === 3 && s.aim && s.aim.length === 3 ? { pos: V(s.cam[0], s.cam[2], s.cam[1]), aim: V(s.aim[0], s.aim[2], s.aim[1]), fov: THREE.MathUtils.radToDeg(2 * Math.atan(18 / Math.max(12, s.mm || 35))), push: mv === 'pull' ? -1 : 1 } : null, eye: s.eye && things[s.eye] ? things[s.eye].obj : null,
+      station: (() => { if (s.place === 'written' && s.cam && s.cam.length === 3 && s.aim && s.aim.length === 3) return { pos: V(s.cam[0], s.cam[2], s.cam[1]), aim: V(s.aim[0], s.aim[2], s.aim[1]), fov: THREE.MathUtils.radToDeg(2 * Math.atan(18 / Math.max(12, s.mm || 35))), push: mv === 'pull' ? -1 : 1 };
+        const st = intent(s, who, s.t0 + 0.05); return st ? { ...st, push: mv === 'pull' ? -1 : 1 } : null; })(), eye: s.eye && things[s.eye] ? things[s.eye].obj : null,
       who, hidden: [], dof: s.lens === 'close' || s.lens === 'extreme-close' || s.lens === 'face' ? 0.01 : 0, extras: t => [...bubbleBoxes(who.filter(w => w && w.root)), ...labelBoxes(who.filter(w => !w.root)), ...calloutBoxes(who, t)], view,
       faces: s.lens === 'face' ? who.filter(w => w.root) : [] };
   });
