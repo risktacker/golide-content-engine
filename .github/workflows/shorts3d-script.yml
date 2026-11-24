@@ -13,6 +13,7 @@ on:
       until: { description: "seconds of the voice to use (trials); empty = all", default: "" }
       parts: { description: "render machines", default: "12" }
       voice_only: { description: "only read the voice (no board, no render)", default: "false" }
+      pid: { description: "an earlier render's id to reuse its finished picture (free)", default: "" }
       youtube_title: { description: "when set: the clip goes to YouTube PRIVATE with this title", default: "" }
 
 permissions:
@@ -45,12 +46,13 @@ jobs:
           [ -n "${{ inputs.board }}" ] && ARGS+=(--board "${{ inputs.board }}")
           [ -n "${{ inputs.until }}" ] && ARGS+=(--until "${{ inputs.until }}")
           [ "${{ inputs.voice_only }}" = "true" ] && ARGS+=(--voice-only)
+          [ -n "${{ inputs.pid }}" ] && ARGS+=(--pid "${{ inputs.pid }}")
           python3 tools/shorts3d_script.py "${ARGS[@]}"
       - name: Results to the review branch
         if: always()
         run: |
           D=review/shorts3d/script/${{ inputs.slug }}$([ -n "${{ inputs.board }}" ] && echo -trial || true)
-          mkdir -p /tmp/keep && cp out/clip.mp4 out/sheet.jpg out/report.json out/board.json out/board-fixed.json out/scene-words.json out/sentences.json /tmp/keep/ 2>/dev/null || true
+          mkdir -p /tmp/keep && cp out/sheet.jpg out/report.json out/board.json out/board-fixed.json out/scene-words.json out/sentences.json /tmp/keep/ 2>/dev/null || true
           git config user.name "golide-bot" && git config user.email "bot@golidee.com"
           if git fetch -q origin review-shorts3d-script; then git worktree add -q /tmp/rv FETCH_HEAD; else git worktree add -q --detach /tmp/rv && git -C /tmp/rv checkout -q --orphan rvx && git -C /tmp/rv rm -rqf . >/dev/null; fi
           cd /tmp/rv && mkdir -p $D && cp /tmp/keep/* $D/ 2>/dev/null || true
@@ -58,6 +60,5 @@ jobs:
       - name: "To YouTube, private"
         if: ${{ success() && inputs.youtube_title != '' && inputs.voice_only != 'true' }}
         run: |
-          D=review/shorts3d/script/${{ inputs.slug }}$([ -n "${{ inputs.board }}" ] && echo -trial || true)
           gh api -X POST repos/${{ github.repository }}/actions/workflows/trial-upload.yml/dispatches -f ref=main \
-            -f "inputs[branch]=review-shorts3d-script" -f "inputs[path]=$D/clip.mp4" -f "inputs[title]=${{ inputs.youtube_title }}"
+            -f "inputs[r2]=$(cat out/clip-key.txt)" -f "inputs[title]=${{ inputs.youtube_title }}"

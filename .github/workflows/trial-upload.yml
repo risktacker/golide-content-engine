@@ -5,8 +5,9 @@ name: TRIAL upload a review clip to YouTube (private)
 on:
   workflow_dispatch:
     inputs:
-      branch: { description: "review branch holding the clip", required: true }
-      path: { description: "clip path on that branch", required: true }
+      branch: { description: "review branch holding the clip", default: "" }
+      path: { description: "clip path on that branch", default: "" }
+      r2: { description: "or: the clip's key in R2 (clips too big for git)", default: "" }
       title: { description: "title (TRIAL is added in front)", required: true }
 
 permissions:
@@ -23,9 +24,20 @@ jobs:
         with: { python-version: "3.12" }
       - run: python -m pip install -q -e '.[production]'
       - name: The clip
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          KEY: ${{ inputs.r2 }}
         run: |
-          git fetch -q --depth 1 origin "+refs/heads/${{ inputs.branch }}:refs/remotes/origin/clip"
-          git show "origin/clip:${{ inputs.path }}" > clip.mp4 && ls -la clip.mp4
+          if [ -n "$KEY" ]; then
+            python -c "import os,urllib.request; from golide_engine.storage.r2 import r2_store_from_environment as s; urllib.request.urlretrieve(s().resolve('r2://'+os.environ['KEY'], expires_seconds=3600), 'clip.mp4')"
+          else
+            git fetch -q --depth 1 origin "+refs/heads/${{ inputs.branch }}:refs/remotes/origin/clip"
+            git show "origin/clip:${{ inputs.path }}" > clip.mp4
+          fi
+          ls -la clip.mp4
       - name: Upload private
         env:
           GOLIDE_STUDIO_BASE_URL: "https://studio.golidee.com"

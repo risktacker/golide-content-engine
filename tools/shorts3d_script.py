@@ -64,6 +64,7 @@ def main() -> int:
     ap.add_argument("--until", type=float, help="use only the first seconds of the voice (trials)")
     ap.add_argument("--parts", type=int, default=remote3d.PARTS)
     ap.add_argument("--voice-only", action="store_true")
+    ap.add_argument("--pid", default="", help="an earlier render's id: its finished picture is reused, never redone")
     ap.add_argument("--out", type=Path, default=Path("out"))
     a = ap.parse_args()
     a.out.mkdir(parents=True, exist_ok=True)
@@ -114,7 +115,7 @@ def main() -> int:
     print(json.dumps({"status": "repaired", "notes": notes}))
     print(json.dumps({"status": "sentences", "coverage": cover}))
     (a.out / "board-fixed.json").write_text(json.dumps(fixed, indent=1), encoding="utf-8")
-    pid = f"script-{a.slug}-{int(time.time())}"
+    pid = a.pid or f"script-{a.slug}-{int(time.time())}"
     report = None
     try:
         picture = remote3d.render(pid, fixed, words, a.out / "picture.mp4", parts=a.parts, wait_minutes=110)
@@ -133,7 +134,10 @@ def main() -> int:
         subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(mp3), "-t", f"{words[-1]['end'] + 0.3:.2f}", str(cut)], check=True)
         mp3 = cut
     build3d.finish(picture, words, mp3, a.out / "finish", a.out / "clip.mp4")
-    print(json.dumps({"status": "clip", "seconds": build3d._seconds(a.out / "clip.mp4"), "production_id": pid}))
+    clip_key = f"shorts3d-script/{pid}/clip.mp4"            # a 60 s clip is ~200 MB: too big for git, kept in R2
+    store.put_object(clip_key, (a.out / "clip.mp4").read_bytes(), "video/mp4")
+    (a.out / "clip-key.txt").write_text(clip_key, encoding="utf-8")
+    print(json.dumps({"status": "clip", "seconds": build3d._seconds(a.out / "clip.mp4"), "production_id": pid, "r2": clip_key}))
     return 0
 
 
