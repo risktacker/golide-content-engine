@@ -52,10 +52,9 @@ jobs:
           D=review/shorts3d/script/${{ inputs.slug }}$([ -n "${{ inputs.board }}" ] && echo -trial || true)
           mkdir -p /tmp/keep && cp out/clip.mp4 out/sheet.jpg out/report.json out/board.json out/board-fixed.json out/scene-words.json out/sentences.json /tmp/keep/ 2>/dev/null || true
           git config user.name "golide-bot" && git config user.email "bot@golidee.com"
-          git stash -q -u || true
-          if git fetch -q origin review-shorts3d-script; then git checkout -q -B rv FETCH_HEAD; else git checkout -q --orphan rv && git rm -rqf . >/dev/null; fi
-          mkdir -p $D && cp /tmp/keep/* $D/ 2>/dev/null || true
-          git add -f $D && git commit -qm "3D Short from a script: ${{ inputs.slug }}" && git push -q origin rv:review-shorts3d-script || true
+          if git fetch -q origin review-shorts3d-script; then git worktree add -q /tmp/rv FETCH_HEAD; else git worktree add -q --detach /tmp/rv && git -C /tmp/rv checkout -q --orphan rvx && git -C /tmp/rv rm -rqf . >/dev/null; fi
+          cd /tmp/rv && mkdir -p $D && cp /tmp/keep/* $D/ 2>/dev/null || true
+          git add -f $D && git commit -qm "3D Short from a script: ${{ inputs.slug }}" && git push -q origin HEAD:refs/heads/review-shorts3d-script || true
       - name: "To YouTube, private"
         if: ${{ success() && inputs.youtube_title != '' && inputs.voice_only != 'true' }}
         run: |
