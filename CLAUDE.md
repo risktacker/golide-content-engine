@@ -89,7 +89,7 @@ best unmodelled video of the last 45 days, no numbers bar. The channel's style i
 - Music: Discipline Finishes under every Short until 2026-12-13 (`short_signature`), 3D Shorts included, one steady
   bed, no dips.
 - Frame: content stays inside the phone crop (130 px left, 160 right, 230 top) at every moment (`layout.keep_inside`).
-- Pace: no picture under 1.0 s (Short) / 1.5 s (long); 1 metaphor per Short, 3 per long; a strong transition
+- Pace: no picture under 1.0 s (Short; 3D Shorts 0.7 s, owner 2026-11-24) / 1.5 s (long); 1 metaphor per Short, 3 per long; a strong transition
   (zoom, flash, iris, whip) at most once in three cuts, the rest glide or cut.
 
 ## Stickman (owner 2026-11-17): the third visual style, next to Inkee and Goli
@@ -140,6 +140,13 @@ best unmodelled video of the last 45 days, no numbers bar. The channel's style i
   own little scene of 2-4 pictures (one per 1.2-2 s of its voice, `board.sentences`), the whole chain of action link by
   link, failures shown as failures; one camera move per sentence (a cut to the next), stations 1.2-2.5 s apart;
   `board.coverage` measures it for free.
+- Ricks Clips' own pirates Short, measured (owner 2026-11-24, "ride with a finding";
+  claude/golide-3d-shorts-ricks-pirates-breakdown-2026-11-24.md): about one picture per second (4-8 per sentence, 0.7 s
+  minimum), every picture close on the named thing, a small place per idea, words only painted on things. THE ENGINE
+  STANDS THE CAMERA from the shot's intent (`board.js` intent: frame, angle, lens, mm; Sol's cam gives only the side;
+  `place: written` keeps a hand-written station). Look: set pieces in toon with painted surfaces (planks, brick, stone,
+  metal ...) tiled by metres, constant-width ink hulls, hard edges by default, real shapes (taper, turned, ring, wedge,
+  prow, `recipes.PART_SHAPES`), cartoon day sky with clouds; the screen-space ink pass was removed (puppets flickered).
 - The engine learns (owner 2026-11-24, `shorts3d/lessons.py`): after every film the repairs, sentence coverage and
   the director's report become general rules (never a topic or thing name), counted in R2 (`shorts3d-lessons/`);
   Sol reads the top 12 next time; a rule not seen for 8 films retires. A script he hands over runs through
@@ -190,4 +197,4 @@ best unmodelled video of the last 45 days, no numbers bar. The channel's style i
   automatic runs never switch paid ones on. Real people stay real photo cards, never puppets.
 
 ## Checks
-`python3 -m pytest -q` must pass before every push (677 tests as of 2026-11-24).
+`python3 -m pytest -q` must pass before every push (678 tests as of 2026-11-24).
