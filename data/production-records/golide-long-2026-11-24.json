@@ -1,0 +1,538 @@
+{
+  "production_id": "golide-long-2026-11-24",
+  "youtube_video_id": "h4QY7d-OFe0",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "h4QY7d-OFe0",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-11-24T20:36:55.607964+00:00"
+  },
+  "production": {
+    "format": "long",
+    "title": "DeepSeek + REA Cloned Claude Code for FREE (Full Build)",
+    "status": "scheduled",
+    "scheduled_at": "2026-11-24T17:30:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-long-tue-thu-sat\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-choice\"}"
+  },
+  "narration": "Last month, one single developer shook the walls of Adobe,\na company worth close to 100 billion dollars.\nPhotoshop, Premiere, all in just one week.\nHe used about 8 Claude agents running at once.\nBut today, no paid Claude.\nWe're doing the same thing with free open models you can run tonight.\nWe're not rebuilding Photoshop.\nWe're rebuilding Claude Code itself.\nAn award-winning 3D website studied by the same free AI rebuilt in\nits own code and checked screenshot by screenshot against the real thing.\nSomewhere in the middle, the free AI hits a wall.\nI'll show you the one line that gets you straight past it.\nBy the end, our free version goes head-to-head with the real Claude.\nSame task, same clock, one winner.\nEvery AI coding tool has 2 parts.\nThe body, the app you type into, and the brain,\nthe AI model doing the thinking.\nToday, the body is OpenCode.\nThe brain is DeepSeek V4.1 Flash Free.\nIt will run out.\nWhen it does, we swap in GLM 5.3 Flash and carry on.\nThe third piece is REA, reverse engineer anything.\n229 tools for looking inside software.\nPlug it into an AI and the AI becomes the detective.\nIt doesn't copy code.\nIt doesn't write code.\nIt reads and reports back with proof.\nUnderstand the recipe.\nDon't photocopy the cookbook.\nInstall OpenCode, choose Windows x64, not ARM 64, and choose DeepSeek V4.1 Flash Free.\nPaste the setup prompt and run REA's health check until it passes.\nToday, a desktop app.\nFor native programs, REA needs a decompiler called Ghidra.\nThe wrong version came first; the AI swapped in 12.1.4 and tested Notepad:\n853 functions mapped.\nGreen, 229 tools ready.\nBefore the big one, a warm-up.\nThis is igloo.inc.\nIt won site of the year at the awards.\nCan a free AI study it and rebuild it in its own code?\nFor websites, REA drives a real Chrome browser, reads the layout, the scripts,\neverything the page downloads, and takes screenshots.\nError 429.\nOpenRouter's free models give you 50 requests a day for your whole account,\nand an AI agent burns through requests fast.\nSo, I added Nvidia as a second provider, picked GLM 5.3 Flash,\nand typed one line: Carry on from where you stopped.\nIt picked up exactly where it left off.\nAt one point, the AI proudly said, All 58 assets downloaded.\nI opened the folder: 3 files.\nSo I sent one line back: Check the folder.\nNever say a file is saved unless a folder listing shows it.\nTry again.\nThis time, 105 real files, 17.7 megabytes.\nRead reverse.md and rebuild the site scene by scene in your own code.\nNever load the site's own JavaScript.\nPlain HTML and 3.js, checking each scene in the browser before moving on.\nThen compare screenshots of the real site and our copy.\nThe Claude app is the window.\nClaude Code is the engine inside that window.\nWe're going after both, the window and the engine.\nSo, we changed the name, changed the icon,\nand this stays a private learning build, not for sale, not for release.\nI called it Kiln.\nThe AI then writes its own code from scratch.\nNot one line of Anthropic's code makes it in.\nInstead of repeating the same rules in every prompt,\nthe AI writes them once into agents.md.\nThen there are 3 files: agents.md, the rules; features.md, our own engine and window;\nand spec.md, every feature, one test each, and a 3-part build plan.\nThen spec.md lands: every feature in the AI's own words, one test for each,\nand a plan in 3 parts.\nThe build prompt is: Read agents.md, spec.md, and our saved versions.\nBuild the next unfinished part of the plan one feature\nat a time and test each one with the self-check.\nThe self-check drives the real Kiln window, types a message,\nand checks the file really got written.\nKiln is not allowed to say anything works until that robot hand says pass.\n29 out of 29 passed.\nThen: Done.\nVersion 1.0.\n77 out of 77 checks passing.\nThen DeepSeek ran out and wouldn't reset for 13 hours.\nI switched to that model and typed: Read our files and saved versions.\nCheck any unsaved changes and carry on where the work stopped.\nNothing lost because every finished feature was already saved into Git.\n77 out of 77 sounds perfect, right?\nIt wasn't.\nThe model picker wouldn't scroll.\n4 features were missing: /compact, helper agents, MCP servers, and hooks.\nThe self-check only tests what the AI decided to build,\nnot what it was supposed to build.\nDone is a claim.\nCheck the receipt.\nOne prompt fixed everything: Make the model picker scroll and add a search box.\nThen build what's missing: /compact, helper agents, MCP, hooks, and retry on rate limits,\nrunning the full self-check after each work.\n40 minutes later, the self-check went from 77 to 102.\nEvery old test still passing.\n25 new tests added and passing.\nThen I asked Kiln which model it was using.\nIt said it wasn't powered by any separate large language model, which wasn't true.\nNow it knows its own brain.\nSame task, same clock.\nOn the left, the real Claude app.\nOn the right, Kiln on a free model.\nSame empty folders.\nBuild a simple todo app as one file called todo.html.\nAdd tasks, remove them, delete one, refresh, and see how many are left.\nWhich one would you keep?\nFree isn't unlimited or private.\nThe free DeepSeek model ran out for 13 hours.\nNvidia logs what you send.\nNever put passwords or client code through a free cloud model.\nOne free app, one free brain, and REA.\nThe free AI studied the Claude app and Claude Code, wrote its own blueprint,\nand built Kiln.\n0 lines of code typed by me.\nIf you want more workflows like this, follow the channel.\n",
+  "research": {
+    "summary": "The November 11, 2026 Outskill video presents a tutorial for rebuilding Claude Code-like functionality with OpenCode, free or limited-cost models, REA, and a custom tool called Kiln. The central workflow is supported by the video’s transcript mirror and official tool documentation. The Adobe comparison is broadly factual but overstated: one developer released seven early-alpha Adobe-style applications in roughly a week using parallel Claude agents, but the projects were not full Photoshop or Creative Cloud replacements. The claim that GLM 5.3 Flash is free is not supported by OpenCode’s current pricing table, which lists it at $0.15 per million input tokens and $0.50 per million output tokens. The claim that REA has 229 tools is supported for REA 6.8.0-era installations, though the count varies by version.",
+    "claims": [
+      {
+        "claim": "The Outskill video was published on November 11, 2026, runs approximately 26 minutes, and demonstrates rebuilding Claude Code-like functionality with DeepSeek V4.1 Flash, GLM 5.3 Flash, REA, OpenCode, and a custom tool named Kiln.",
+        "source_title": "DeepSeek + REA Cloned Claude Code for FREE (Full Build) — transcript mirror",
+        "source_url": "https://postsingularityinstitute.com/en/syntheses/UCNssyoLJiA2oB5xM7XjxmJA_ihElfZhR-eI/",
+        "published_or_updated": "November 11, 2026"
+      },
+      {
+        "claim": "The tutorial reports a Kiln self-check progressing from 77/77 initial tests to 102/102 after missing features were fixed. This is a claim made by the video and its transcript mirror, not an independently reproduced benchmark.",
+        "source_title": "DeepSeek + REA Cloned Claude Code for FREE (Full Build) — transcript mirror",
+        "source_url": "https://postsingularityinstitute.com/en/syntheses/UCNssyoLJiA2oB5xM7XjxmJA_ihElfZhR-eI/",
+        "published_or_updated": "Observed November 15, 2026; video dated November 11, 2026"
+      },
+      {
+        "claim": "REA is an MCP-based reverse-engineering toolkit that connects AI agents to tools for inspecting native binaries, JavaScript and Electron applications, .NET assemblies, and websites. Its documentation says analysis runs locally and returns evidence and limitations for conclusions.",
+        "source_title": "REA official GitHub repository",
+        "source_url": "https://github.com/morluto/rea",
+        "published_or_updated": "Crawled November 2026"
+      },
+      {
+        "claim": "The claim that REA exposes 229 tools is accurate for the REA 6.8.0-era tool catalog. Official repository issue data records 229 advertised MCP tools, while later version 6.9.0 data records 255, so the number is version-dependent.",
+        "source_title": "REA GitHub issue: schema and tool-count comparison",
+        "source_url": "https://github.com/morluto/rea/issues/10436",
+        "published_or_updated": "November 2026"
+      },
+      {
+        "claim": "REA does not itself automatically produce a finished software clone. Its official workflow is to inspect an application, return evidence, and let the connected coding agent implement a similar feature or behavior.",
+        "source_title": "REA official GitHub repository",
+        "source_url": "https://github.com/morluto/rea",
+        "published_or_updated": "Crawled November 2026"
+      },
+      {
+        "claim": "OpenCode’s official model table lists DeepSeek V4.1 Flash Free as free for both input and output, but the documentation says the free availability is for a limited time.",
+        "source_title": "OpenCode console models documentation",
+        "source_url": "https://opencode.ai/docs/console/models/",
+        "published_or_updated": "Crawled November 2026"
+      },
+      {
+        "claim": "The video’s description of GLM 5.3 Flash as free is not supported by OpenCode’s current official model table. That table lists GLM 5.3 Flash at $0.15 per million input tokens and $0.50 per million output tokens.",
+        "source_title": "OpenCode console models documentation",
+        "source_url": "https://opencode.ai/docs/console/models/",
+        "published_or_updated": "Crawled November 2026"
+      },
+      {
+        "claim": "The Adobe story is based on ArtCraft, a project by developer Brandon Thomas. Reporting says seven Adobe-style applications were released under the ArtCraft brand between September 30 and October 1, 2026, including Photoshop, Illustrator, Premiere Pro, Lightroom, Acrobat Pro, After Effects, and InDesign-style tools.",
+        "source_title": "Someone Rebuilt Adobe in Rust with AI Agents. Is It Usable?",
+        "source_url": "https://flowtivityconsulting.com/blog/adobe-rust-cleanroom-clones/",
+        "published_or_updated": "October 8, 2026; updated October 30, 2026"
+      },
+      {
+        "claim": "The claim that approximately eight Claude agents worked in parallel is supported by reporting on the ArtCraft workflow, which describes about eight Claude Opus 5.5 agents working on independent subsystems while a human handled integration and testing.",
+        "source_title": "Someone Rebuilt Adobe in Rust with AI Agents. Is It Usable?",
+        "source_url": "https://flowtivityconsulting.com/blog/adobe-rust-cleanroom-clones/",
+        "published_or_updated": "October 8, 2026; updated October 30, 2026"
+      },
+      {
+        "claim": "The Adobe apps were not complete replacements for Adobe Creative Cloud. The project’s reported self-assessment put professional daily-work parity at roughly 25% to 35%; 115 of 170 reference files reportedly rendered pixel-identically in one Photoshop-style test, or about 68%.",
+        "source_title": "Someone Rebuilt Adobe in Rust with AI Agents. Is It Usable?",
+        "source_url": "https://flowtivityconsulting.com/blog/adobe-rust-cleanroom-clones/",
+        "published_or_updated": "October 8, 2026; updated October 30, 2026"
+      },
+      {
+        "claim": "The ArtCraft apps were described as early-alpha software with substantial bugs and missing features. Independent testing coverage warned that the projects should not yet be treated as reliable professional replacements for Adobe applications.",
+        "source_title": "I tried those free AI-coded Adobe Creative Cloud clones, and they have some big problems",
+        "source_url": "https://www.creativebloq.com/news/i-tried-those-free-ai-coded-adobe-creative-cloud-clones-and-they-have-some-big-problems",
+        "published_or_updated": "November 2026"
+      },
+      {
+        "claim": "Adobe’s market value was approximately in the high-$80-billion to roughly $90-billion range around November 23–24, 2026, so the video’s phrase 'close to a hundred billion dollars' is directionally reasonable but should not be presented as an exact current valuation without a timestamp.",
+        "source_title": "Adobe market-cap data",
+        "source_url": "https://stockanalysis.com/stocks/adbe/statistics/",
+        "published_or_updated": "November 24, 2026"
+      }
+    ],
+    "core_fact": {
+      "fact": "On November 11, 2026, Outskill published a tutorial showing how it used OpenCode, DeepSeek V4.1 Flash, REA, and other model providers to study Claude Code’s visible behavior and build a separate Claude Code-like tool called Kiln, including a reported 102/102 self-check result after fixes.",
+      "source_url": "https://www.youtube.com/watch?v=ihElfZhR-eI",
+      "published_or_updated": "November 11, 2026",
+      "verified": true
+    }
+  },
+  "metadata": {
+    "title": "DeepSeek + Free AI Rebuilt Claude Code (Full Build)",
+    "description": "See how I rebuilt Claude Code for free using DeepSeek, OpenCode, and REA (Reverse Engineer Anything). No paid Claude subscription, no paid API, and no hand-written code.\n\nFree guide to this video (steps and every source): https://studio.golidee.com/guides/golide-long-2026-11-24.pdf\n\nChapters\n0:00 Intro\n0:44 Free setup\n1:50 Website warm-up\n3:01 Building Kiln\n4:15 Testing the copy\n5:50 Close\n\n#ClaudeCode #OpenCode #DeepSeek #AICoding #VibeCoding #ReverseEngineering #FreeAI\n\nMusic: Motivational Trailer by DailyVibe",
+    "tags": [
+      "claude code",
+      "claude code alternative",
+      "free claude code",
+      "opencode",
+      "deepseek",
+      "rea reverse engineer anything",
+      "free ai coding agent",
+      "ai coding agent",
+      "claude code clone",
+      "reverse engineering with ai",
+      "clone app with ai",
+      "vibe coding",
+      "free ai models",
+      "openrouter free models",
+      "ghidra",
+      "claude code tutorial",
+      "how to use opencode",
+      "build ai coding agent",
+      "free coding tools",
+      "ai coding tools",
+      "reverse engineer software",
+      "build app with ai",
+      "deepseek v4.1 flash"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [
+      "0:00 Intro",
+      "0:44 Free setup",
+      "1:50 Website warm-up",
+      "3:01 Building Kiln",
+      "4:15 Testing the copy",
+      "5:50 Close"
+    ],
+    "keywords": [
+      "Claude Code",
+      "Claude Code alternative",
+      "free Claude Code",
+      "OpenCode",
+      "DeepSeek",
+      "AI coding agent",
+      "free AI coding agent",
+      "Claude Code clone",
+      "REA reverse engineer",
+      "reverse engineering AI",
+      "clone app with AI",
+      "vibe coding",
+      "free AI models",
+      "Ghidra",
+      "OpenRouter"
+    ],
+    "hashtags": [
+      "#ClaudeCode",
+      "#OpenCode",
+      "#DeepSeek",
+      "#AICoding",
+      "#VibeCoding",
+      "#ReverseEngineering",
+      "#FreeAI"
+    ],
+    "format": "long",
+    "title_description_language": "en",
+    "seo_body": "See how I rebuilt Claude Code for free using DeepSeek, OpenCode, and REA (Reverse Engineer Anything). No paid Claude subscription, no paid API, and no hand-written code.",
+    "title_checked": true
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "The Outskill video was published on November 11, 2026, runs approximately 26 minutes, and demonstrates rebuilding Claude Code-like functionality with DeepSeek V4.1 Flash, GLM 5.3 Flash, REA, OpenCode, and a custom tool named Kiln.",
+        "source_title": "DeepSeek + REA Cloned Claude Code for FREE (Full Build) — transcript mirror",
+        "source_url": "https://postsingularityinstitute.com/en/syntheses/UCNssyoLJiA2oB5xM7XjxmJA_ihElfZhR-eI/",
+        "published_or_updated": "November 11, 2026"
+      },
+      {
+        "claim": "The tutorial reports a Kiln self-check progressing from 77/77 initial tests to 102/102 after missing features were fixed. This is a claim made by the video and its transcript mirror, not an independently reproduced benchmark.",
+        "source_title": "DeepSeek + REA Cloned Claude Code for FREE (Full Build) — transcript mirror",
+        "source_url": "https://postsingularityinstitute.com/en/syntheses/UCNssyoLJiA2oB5xM7XjxmJA_ihElfZhR-eI/",
+        "published_or_updated": "Observed November 15, 2026; video dated November 11, 2026"
+      },
+      {
+        "claim": "REA is an MCP-based reverse-engineering toolkit that connects AI agents to tools for inspecting native binaries, JavaScript and Electron applications, .NET assemblies, and websites. Its documentation says analysis runs locally and returns evidence and limitations for conclusions.",
+        "source_title": "REA official GitHub repository",
+        "source_url": "https://github.com/morluto/rea",
+        "published_or_updated": "Crawled November 2026"
+      },
+      {
+        "claim": "The claim that REA exposes 229 tools is accurate for the REA 6.8.0-era tool catalog. Official repository issue data records 229 advertised MCP tools, while later version 6.9.0 data records 255, so the number is version-dependent.",
+        "source_title": "REA GitHub issue: schema and tool-count comparison",
+        "source_url": "https://github.com/morluto/rea/issues/10436",
+        "published_or_updated": "November 2026"
+      },
+      {
+        "claim": "REA does not itself automatically produce a finished software clone. Its official workflow is to inspect an application, return evidence, and let the connected coding agent implement a similar feature or behavior.",
+        "source_title": "REA official GitHub repository",
+        "source_url": "https://github.com/morluto/rea",
+        "published_or_updated": "Crawled November 2026"
+      },
+      {
+        "claim": "OpenCode’s official model table lists DeepSeek V4.1 Flash Free as free for both input and output, but the documentation says the free availability is for a limited time.",
+        "source_title": "OpenCode console models documentation",
+        "source_url": "https://opencode.ai/docs/console/models/",
+        "published_or_updated": "Crawled November 2026"
+      },
+      {
+        "claim": "The video’s description of GLM 5.3 Flash as free is not supported by OpenCode’s current official model table. That table lists GLM 5.3 Flash at $0.15 per million input tokens and $0.50 per million output tokens.",
+        "source_title": "OpenCode console models documentation",
+        "source_url": "https://opencode.ai/docs/console/models/",
+        "published_or_updated": "Crawled November 2026"
+      },
+      {
+        "claim": "The Adobe story is based on ArtCraft, a project by developer Brandon Thomas. Reporting says seven Adobe-style applications were released under the ArtCraft brand between September 30 and October 1, 2026, including Photoshop, Illustrator, Premiere Pro, Lightroom, Acrobat Pro, After Effects, and InDesign-style tools.",
+        "source_title": "Someone Rebuilt Adobe in Rust with AI Agents. Is It Usable?",
+        "source_url": "https://flowtivityconsulting.com/blog/adobe-rust-cleanroom-clones/",
+        "published_or_updated": "October 8, 2026; updated October 30, 2026"
+      },
+      {
+        "claim": "The claim that approximately eight Claude agents worked in parallel is supported by reporting on the ArtCraft workflow, which describes about eight Claude Opus 5.5 agents working on independent subsystems while a human handled integration and testing.",
+        "source_title": "Someone Rebuilt Adobe in Rust with AI Agents. Is It Usable?",
+        "source_url": "https://flowtivityconsulting.com/blog/adobe-rust-cleanroom-clones/",
+        "published_or_updated": "October 8, 2026; updated October 30, 2026"
+      },
+      {
+        "claim": "The Adobe apps were not complete replacements for Adobe Creative Cloud. The project’s reported self-assessment put professional daily-work parity at roughly 25% to 35%; 115 of 170 reference files reportedly rendered pixel-identically in one Photoshop-style test, or about 68%.",
+        "source_title": "Someone Rebuilt Adobe in Rust with AI Agents. Is It Usable?",
+        "source_url": "https://flowtivityconsulting.com/blog/adobe-rust-cleanroom-clones/",
+        "published_or_updated": "October 8, 2026; updated October 30, 2026"
+      },
+      {
+        "claim": "The ArtCraft apps were described as early-alpha software with substantial bugs and missing features. Independent testing coverage warned that the projects should not yet be treated as reliable professional replacements for Adobe applications.",
+        "source_title": "I tried those free AI-coded Adobe Creative Cloud clones, and they have some big problems",
+        "source_url": "https://www.creativebloq.com/news/i-tried-those-free-ai-coded-adobe-creative-cloud-clones-and-they-have-some-big-problems",
+        "published_or_updated": "November 2026"
+      },
+      {
+        "claim": "Adobe’s market value was approximately in the high-$80-billion to roughly $90-billion range around November 23–24, 2026, so the video’s phrase 'close to a hundred billion dollars' is directionally reasonable but should not be presented as an exact current valuation without a timestamp.",
+        "source_title": "Adobe market-cap data",
+        "source_url": "https://stockanalysis.com/stocks/adbe/statistics/",
+        "published_or_updated": "November 24, 2026"
+      }
+    ],
+    "platform_demand": {
+      "verdict": "pass",
+      "signal_type": "owner-replace",
+      "query": "DeepSeek + REA Cloned Claude Code for FREE (Full Build)"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -15.77,
+      "true_peak_dbtp": -1.83,
+      "loudness_range": 2.1
+    },
+    "editorial": {
+      "beats": 131,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-11-24T20:36:32.332185+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-choice",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-long-tue-thu-sat",
+    "thumbnail_style": "desk_wall",
+    "intro": "screen_on",
+    "outro": "end_card",
+    "look3d": "layers"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-long-2026-11-24",
+    "created_at": "2026-11-24T20:36:40.393586+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-11-24T17:30:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "8887b4c62824abf58bdc51ec534f38395c4ad498bfddfe6d586693d8bfba6571",
+        "bytes": 80834698
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "05c2918b3c65b77eca76045bbb53cc6006168e0f6815e0e2e4f7eac21d7c7fe2",
+        "bytes": 710916
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "42ab24aa769bd5b5117c27440e733dac80d1e57638c8fcfe5a24661bf2922fcc",
+        "bytes": 2297
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "24fa6cc65dc9d65186a879419ca2bae95dc9734b2e9479ab2b94c445ee012b0c",
+        "bytes": 14274
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "4bec019897da81d518d9e182e0f002d379752802ffe39cbda4d09a5e6ff0de75",
+        "bytes": 3257
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "778668e1a33557db48ff8d9f9fef612cb81a1da9913aba3af5ecd2be75ab9769",
+        "bytes": 6489
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "cd4be2eade1d14a68c83472177a52135bb20f032a0b4c3b7f06e4fd030ed5327",
+        "bytes": 483
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "966954f755126f13a536208e8ecae589509a4b1e52fcc87a9c16ae6323552fac",
+        "bytes": 278
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 42476.0,
+      "cached_input_units": 0.0,
+      "output_units": 2894.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.011968,
+      "created_at": "2026-11-24T17:36:46.558263+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-24T17:36:46.560048+00:00"
+    },
+    {
+      "stage": "script-story",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 7086.0,
+      "cached_input_units": 0.0,
+      "output_units": 15525.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.020047,
+      "created_at": "2026-11-24T17:38:34.020901+00:00"
+    },
+    {
+      "stage": "script-story-resize",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 8900.0,
+      "cached_input_units": 0.0,
+      "output_units": 16762.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.021894,
+      "created_at": "2026-11-24T17:40:30.126667+00:00"
+    },
+    {
+      "stage": "script-story-delivery",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2174.0,
+      "cached_input_units": 0.0,
+      "output_units": 6227.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007907,
+      "created_at": "2026-11-24T17:41:09.643429+00:00"
+    },
+    {
+      "stage": "script-voice-direction",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1844.0,
+      "cached_input_units": 0.0,
+      "output_units": 1919.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002672,
+      "created_at": "2026-11-24T17:41:24.761587+00:00"
+    },
+    {
+      "stage": "script-board",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1879.0,
+      "cached_input_units": 0.0,
+      "output_units": 4403.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.005659,
+      "created_at": "2026-11-24T17:42:01.333968+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2174.0,
+      "cached_input_units": 0.0,
+      "output_units": 6227.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.007907,
+      "created_at": "2026-11-24T17:42:01.337392+00:00"
+    },
+    {
+      "stage": "owner-voice",
+      "provider": "elevenlabs",
+      "model": "eleven_v4",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 5625,
+      "cost_usd": 1.125,
+      "created_at": "2026-11-24T18:35:27.527274+00:00"
+    },
+    {
+      "stage": "demo-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2549.0,
+      "cached_input_units": 0.0,
+      "output_units": 576.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001201,
+      "created_at": "2026-11-24T18:36:39.498702+00:00"
+    },
+    {
+      "stage": "edit-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 19770.0,
+      "cached_input_units": 0.0,
+      "output_units": 19644.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.027527,
+      "created_at": "2026-11-24T18:40:49.445309+00:00"
+    },
+    {
+      "stage": "guide",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2455.0,
+      "cached_input_units": 0.0,
+      "output_units": 1196.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001926,
+      "created_at": "2026-11-24T20:35:15.485081+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 11088.0,
+      "cached_input_units": 0.0,
+      "output_units": 1115.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.003556,
+      "created_at": "2026-11-24T20:35:16.656043+00:00"
+    },
+    {
+      "stage": "title-check",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1546.0,
+      "cached_input_units": 0.0,
+      "output_units": 552.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000972,
+      "created_at": "2026-11-24T20:35:22.562414+00:00"
+    }
+  ],
+  "recorded_at": "2026-11-24T20:36:55.611260+00:00"
+}

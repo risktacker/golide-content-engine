@@ -47,3 +47,8 @@ dataset  # seen in your recording and the research sources
 datasets  # seen in your recording
 replanning  # seen in your recording
 golidee
+decompiler  # seen in your recording
+html  # seen in your recording
+screenshot  # seen in your recording
+screenshots  # seen in your recording
+todo  # seen in your recording
