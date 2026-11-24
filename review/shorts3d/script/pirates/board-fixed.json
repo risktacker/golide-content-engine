@@ -3701,6 +3701,34 @@
    "mm": 24.0
   },
   {
+   "from": 14,
+   "frame": [
+    "pirate_gunner",
+    "splinters",
+    "pirate_ship"
+   ],
+   "angle": "front",
+   "lens": "medium",
+   "move": "push",
+   "take": 0,
+   "job": "hook",
+   "follow": "cannonball_navy",
+   "see": "The unharmed gunner stands pinned by clothing among splinters with the mast filling the background.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    -22.0,
+    -5.0,
+    7.5
+   ],
+   "aim": [
+    -22.0,
+    -1.0,
+    7.2
+   ],
+   "mm": 35.0
+  },
+  {
    "from": 16,
    "frame": [
     "pirate_ship",
@@ -3756,6 +3784,34 @@
    "mm": 50.0
   },
   {
+   "from": 22,
+   "frame": [
+    "cannonball_navy",
+    "pirate_ship",
+    "splinters"
+   ],
+   "angle": "low",
+   "lens": "extreme-close",
+   "move": "push",
+   "take": 1,
+   "job": "place",
+   "follow": "",
+   "see": "The ball folds the pirate hull inward, with oak planks close and the cannon deck beyond.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    -24.0,
+    -5.0,
+    5.5
+   ],
+   "aim": [
+    -24.0,
+    0.0,
+    5.0
+   ],
+   "mm": 85.0
+  },
+  {
    "from": 31,
    "frame": [
     "pirate_gunner",
@@ -3783,6 +3839,34 @@
     7.0
    ],
    "mm": 24.0
+  },
+  {
+   "from": 33,
+   "frame": [
+    "pirate_gunner",
+    "pirate_captain",
+    "ammo_chest"
+   ],
+   "angle": "high",
+   "lens": "close",
+   "move": "track",
+   "take": 2,
+   "job": "setup",
+   "follow": "",
+   "see": "The gunner opens an empty ammunition chest while the captain displays empty pockets.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    -23.0,
+    -4.0,
+    7.5
+   ],
+   "aim": [
+    -23.0,
+    -2.0,
+    6.5
+   ],
+   "mm": 50.0
   },
   {
    "from": 39,
@@ -3813,6 +3897,33 @@
    "mm": 35.0
   },
   {
+   "from": 43,
+   "frame": [
+    "langrage_pile",
+    "pirate_gunner"
+   ],
+   "angle": "front",
+   "lens": "extreme-close",
+   "move": "track",
+   "take": 2,
+   "job": "setup",
+   "follow": "",
+   "see": "The muzzle cutaway reveals labelled forks, chain and horseshoes beneath the gunner's hands.",
+   "near": "",
+   "eye": "pirate_cannon",
+   "cam": [
+    -19.0,
+    -3.0,
+    7.2
+   ],
+   "aim": [
+    -19.0,
+    -2.0,
+    7.2
+   ],
+   "mm": 85.0
+  },
+  {
    "from": 45,
    "frame": [
     "garbage_cluster",
@@ -3839,6 +3950,34 @@
     8.0
    ],
    "mm": 24.0
+  },
+  {
+   "from": 46,
+   "frame": [
+    "navy_loader",
+    "navy_gunner",
+    "furnace"
+   ],
+   "angle": "left",
+   "lens": "medium",
+   "move": "pull",
+   "take": 3,
+   "job": "turn",
+   "follow": "",
+   "see": "The loader opens the furnace and red light reveals the gunner beside the navy cannon.",
+   "near": "furnace_door",
+   "eye": "",
+   "cam": [
+    7.0,
+    -8.0,
+    8.0
+   ],
+   "aim": [
+    8.0,
+    -4.0,
+    7.5
+   ],
+   "mm": 35.0
   },
   {
    "from": 51,
@@ -4064,6 +4203,34 @@
    "mm": 85.0
   },
   {
+   "from": 87,
+   "frame": [
+    "sand_timer",
+    "tar_rope",
+    "hotshot_ball"
+   ],
+   "angle": "high",
+   "lens": "close",
+   "move": "track",
+   "take": 5,
+   "job": "climax",
+   "follow": "hotshot_ball",
+   "see": "The sand timer empties beside thickening smoke and a crawling ember.",
+   "near": "",
+   "eye": "pirate_ship",
+   "cam": [
+    -24.0,
+    2.0,
+    5.0
+   ],
+   "aim": [
+    -23.0,
+    1.0,
+    4.0
+   ],
+   "mm": 50.0
+  },
+  {
    "from": 95,
    "frame": [
     "pirate_ship",
@@ -4090,6 +4257,34 @@
     8.0
    ],
    "mm": 24.0
+  },
+  {
+   "from": 96,
+   "frame": [
+    "pirate_gunner",
+    "pirate_captain",
+    "carcass_chest"
+   ],
+   "angle": "front",
+   "lens": "medium",
+   "move": "pull",
+   "take": 6,
+   "job": "turn",
+   "follow": "",
+   "see": "The gunner opens the last-resort chest while the captain stamps out his coat tail.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    -20.0,
+    -7.0,
+    7.0
+   ],
+   "aim": [
+    -20.0,
+    -4.0,
+    7.0
+   ],
+   "mm": 35.0
   },
   {
    "from": 101,
@@ -4120,12 +4315,38 @@
    "mm": 50.0
   },
   {
+   "from": 103,
+   "frame": [
+    "carcass_shell"
+   ],
+   "angle": "front",
+   "lens": "extreme-close",
+   "move": "crane-up",
+   "take": 6,
+   "job": "turn",
+   "follow": "",
+   "see": "The labelled carcass shell fills the frame with tar visible through its vents.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    -20.0,
+    -5.0,
+    7.4
+   ],
+   "aim": [
+    -20.0,
+    -4.0,
+    7.3
+   ],
+   "mm": 85.0
+  },
+  {
    "from": 104,
    "frame": [
     "carcass_shell",
     "pirate_gunner"
    ],
-   "angle": "front",
+   "angle": "low",
    "lens": "extreme-close",
    "move": "track",
    "take": 7,
@@ -4172,6 +4393,33 @@
     -20.0,
     -4.0,
     7.2
+   ],
+   "mm": 50.0
+  },
+  {
+   "from": 113,
+   "frame": [
+    "carcass_shell",
+    "navy_ship"
+   ],
+   "angle": "right",
+   "lens": "close",
+   "move": "track",
+   "take": 7,
+   "job": "explain",
+   "follow": "carcass_shell",
+   "see": "The camera rides beside the spinning shell and its four spiral fire jets over the sea.",
+   "near": "",
+   "eye": "",
+   "cam": [
+    -3.0,
+    -5.0,
+    10.0
+   ],
+   "aim": [
+    0.0,
+    0.0,
+    9.0
    ],
    "mm": 50.0
   },
@@ -4285,6 +4533,34 @@
     6.0
    ],
    "mm": 35.0
+  },
+  {
+   "from": 133,
+   "frame": [
+    "rodman_gun",
+    "american_officer",
+    "fort_battery"
+   ],
+   "angle": "low",
+   "lens": "wide",
+   "move": "track",
+   "take": 9,
+   "job": "climax",
+   "follow": "rodman_ball",
+   "see": "A carriage wheel leads to the officer presenting the immense Rodman gun against the fort wall.",
+   "near": "rodman_wheel",
+   "eye": "",
+   "cam": [
+    28.0,
+    7.0,
+    3.0
+   ],
+   "aim": [
+    35.0,
+    15.0,
+    4.0
+   ],
+   "mm": 24.0
   },
   {
    "from": 145,

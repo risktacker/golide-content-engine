@@ -4,7 +4,7 @@
   "until": 15,
   "start": 0.133,
   "end": 4.48,
-  "pictures": 3,
+  "pictures": 4,
   "text": "If your ship got hit by a cannonball, you'd actually be one of the lucky ones."
  },
  {
@@ -12,7 +12,7 @@
   "until": 31,
   "start": 4.52,
   "end": 11.2,
-  "pictures": 4,
+  "pictures": 7,
   "text": "In the 1700s, navy cannonballs smashed through pirate ships, sending wooden splinters flying through the crew."
  },
  {
@@ -20,7 +20,7 @@
   "until": 45,
   "start": 11.24,
   "end": 17.52,
-  "pictures": 4,
+  "pictures": 6,
   "text": "Pirates couldn't afford proper ammunition, so they fired back with langrage, basically literal garbage."
  },
  {
@@ -36,7 +36,7 @@
   "until": 76,
   "start": 21.0,
   "end": 28.8,
-  "pictures": 4,
+  "pictures": 8,
   "text": "They heated cannonballs until they glowed red, then loaded them into cannons behind a soaking wet plug to stop the gunpowder igniting too early."
  },
  {
@@ -44,7 +44,7 @@
   "until": 95,
   "start": 28.88,
   "end": 35.2,
-  "pictures": 4,
+  "pictures": 6,
   "text": "The ball buried itself inside the pirate ship, and minutes later, the entire vessel could catch fire from within."
  },
  {
@@ -60,7 +60,7 @@
   "until": 121,
   "start": 38.96,
   "end": 45.787,
-  "pictures": 4,
+  "pictures": 7,
   "text": "A hollow cannonball packed with burning tar that sprayed fire as it flew, turning enemy ships into torches."
  },
  {
@@ -68,7 +68,7 @@
   "until": 132,
   "start": 45.893,
   "end": 50.0,
-  "pictures": 3,
+  "pictures": 4,
   "text": "Then ships started using iron instead of wood, making fireballs useless."
  },
  {
@@ -76,7 +76,7 @@
   "until": 162,
   "start": 50.08,
   "end": 60.0,
-  "pictures": 4,
+  "pictures": 8,
   "text": "So America built the Rodman gun, a cannon that fired a single ball weighing over 1,000 pounds, designed to punch through an iron warship and sink it in one shot."
  }
 ]
