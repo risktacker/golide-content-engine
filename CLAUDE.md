@@ -197,4 +197,4 @@ best unmodelled video of the last 45 days, no numbers bar. The channel's style i
   automatic runs never switch paid ones on. Real people stay real photo cards, never puppets.
 
 ## Checks
-`python3 -m pytest -q` must pass before every push (678 tests as of 2026-11-24).
+`python3 -m pytest -q` must pass before every push (679 tests as of 2026-11-24).

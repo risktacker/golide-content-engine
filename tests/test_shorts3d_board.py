@@ -3,7 +3,6 @@ import json
 import subprocess
 from pathlib import Path
 
-import pytest
 
 from golide_engine.shorts3d import board, build, remote
 
@@ -115,8 +114,12 @@ def test_phrases_start_after_punctuation():
 
 
 def test_join_refuses_missing_parts(tmp_path):
-    with pytest.raises(RuntimeError, match="parts missing"):
+    try:
         build.join(tmp_path, 2, tmp_path / "p.mp4")
+    except RuntimeError as error:
+        assert "parts missing" in str(error)
+    else:
+        raise AssertionError("join accepted missing parts")
 
 
 def test_join_in_order(tmp_path):
@@ -171,7 +174,7 @@ def test_scene_modules_parse(tmp_path):
     import shutil
     node = shutil.which("node")
     if not node:
-        pytest.skip("node not installed")
+        return                                          # node not installed
     for f in Path(build.ASSETS).glob("*.js"):
         copy = tmp_path / (f.stem + ".mjs")
         copy.write_text(f.read_text())

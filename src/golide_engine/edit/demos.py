@@ -183,7 +183,7 @@ def listing(demos: list[dict[str, Any]]) -> str:
 
 
 def scene_data(demo: dict[str, Any], phrase: str | None) -> dict[str, Any]:
-    want = (phrase or demo.get("highlight") or "").lower()
+    want = str(phrase or demo.get("highlight") or "").strip().lower()      # the storyboard may give a number (2026-11-24 long video)
     rows, mark = [], None
     for s in demo["steps"]:
         rows.append({"kind": "cmd", "text": s["command"], "t": 0.0})

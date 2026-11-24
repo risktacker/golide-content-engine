@@ -36,3 +36,9 @@ def test_terminal_scene_from_a_real_run(tmp_path):
     assert term["data"]["mark"] == 3 and term["data"]["ok"]
     html = Composer("long").build(edit, tmp_path / "out").read_text()
     assert "real run" in html and "# REA: Reverse Engineer Anything" in html
+
+
+def test_a_number_as_the_proving_phrase_does_not_stop_the_video():
+    from golide_engine.edit.demos import scene_data
+    demo = {"purpose": "p", "ok": True, "highlight": "", "steps": [{"command": "ls", "lines": [{"text": "found 42 tools", "t": 0.1}]}]}
+    assert scene_data(demo, 42)["mark"] == 1
