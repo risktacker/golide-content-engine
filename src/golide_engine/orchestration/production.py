@@ -1635,6 +1635,11 @@ class ProductionService:
         # 2026-11-18 (owner, after the fast-cut Elon test): Stickman is on Shorts again; Stickman + Goli stays long only
         if style_now == "stickman_goli" and str(spec["format"]) != "long":
             style_now = "stickman"
+        if (style_now == "stickman" and str(spec["format"]) != "long"
+                and not (edit_pipeline.settings().get("shorts3d") or {}).get("enabled", True)):
+            # owner 2026-11-24: "call this off" - 3D Shorts are off; a Stickman Short is made in Goli's style
+            style_now = "goli"; spec = {**spec, "video_style": "goli"}
+            print(json.dumps({"status": "shorts3d_off_goli_short", "production_id": production_id}))
         if vector_mode and style_now in ("stickman", "stickman_goli"):
             if str(spec["format"]) == "long":
                 self._stickman_long(spec, work, production_id, timed_words, narration, narration_seconds, video_path,

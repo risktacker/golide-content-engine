@@ -112,6 +112,8 @@ best unmodelled video of the last 45 days, no numbers bar. The channel's style i
 - Fast cut (owner 2026-11-18, long): one shot per sentence, 1.5-4 s, from the real word timings.
 
 ## 3D Shorts (owner 2026-11-22: "Bingo. Now this is the direction")
+- OFF since 2026-11-24 (owner: "call this shit off"; we could not reach Ricks Clips): `edit-engine.json` shorts3d.enabled
+  false, a Stickman Short is made in Goli's style. Focus moves to Goli visuals. The engine stays for later.
 - Engine: thuann-vn/claude-3d-animated-shorts (MIT), Ricks Clips style (white deadpan heads, pear bodies, noodle limbs,
   lit office/home sets, CC0 furniture), cloned at the pinned `ENGINE_COMMIT` (`shorts3d/build.py`), assets cached on
   GitHub; Chrome through the software-WebGL wrapper (`.github/actions/shorts3d-setup`). Our code hooks in at its skit
