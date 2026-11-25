@@ -501,6 +501,8 @@ async function listProductionJobs(db){
     json_extract(spec_json,'$.suggested_model') AS suggested_model,
     json_extract(spec_json,'$.modelled_on') AS modelled_on,
     json_extract(spec_json,'$.platforms') AS platforms,
+    json_extract(spec_json,'$.looks') AS looks,
+    json_extract(spec_json,'$.made_with') AS made_with,
     generate_at,scheduled_at,actual_cost_usd,openai_cost_usd,voice_characters,run_url,release_url,error,claimed_at,created_at,updated_at
     FROM production_jobs
     WHERE archived_at IS NULL
@@ -553,6 +555,7 @@ async function claimNextProduction(db,nowValue){
   return {jobId:row.job_id,spec:JSON.parse(row.spec_json)};
 }
 
+export { updateProductionStatus as updateProductionStatusForTest };
 async function updateProductionStatus(db,jobId,payload){
   const current=await db.prepare(`SELECT spec_json FROM production_jobs WHERE job_id=?`).bind(jobId).first();
   if(!current) throw new Error("production job not found");
@@ -568,6 +571,8 @@ async function updateProductionStatus(db,jobId,payload){
   // the voice slot cleared, so the next upload is a clean replacement.
   const clearVoice=payload.clearVoice===true&&status==="waiting_owner_voice";
   if(clearVoice) delete spec.owner_voice_media_ref;
+  // 2026-11-25 (owner): what the engine really used (type, styles, platforms, kit, doctor), shown on the card
+  if(payload.madeWith&&typeof payload.madeWith==="object") spec.made_with=payload.madeWith;
   await db.prepare(`UPDATE production_jobs SET
     spec_json=?,status=?,stage=?,
     owner_voice_media_ref=CASE WHEN ?=1 THEN NULL ELSE owner_voice_media_ref END,
@@ -1214,7 +1219,7 @@ async function receiveUpload(env,request,refValue){
   return {media_ref:ref,status:"uploaded"};
 }
 
-async function handleApi(request,env,url){
+export async function handleApi(request,env,url){
   await ensureSchema(env.DB);
   if(url.pathname==="/api/health"&&request.method==="GET") return json({status:"ok"});
   if(url.pathname==="/api/overview"&&request.method==="GET") return json(await overview(env));
