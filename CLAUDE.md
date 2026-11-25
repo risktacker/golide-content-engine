@@ -63,6 +63,15 @@ Owner: Esiah (Lusaka, UTC+2). Direct, no sugar-coating. Studio: studio.golidee.c
 - Short models (owner 2026-11-25): channels like Outskill, AI how-to and the tech industry told as tech (the GTA 6 Short,
   1.1K), all Goli (`trend-sources.json` focus.short_channels); the Short script is the tech chain again, not the Ricks
   Clips skit formula, while 3D Shorts are off.
+- The doctor (owner 2026-11-25: "if something is broken before it goes, it has to be fixed before it goes"):
+  `edit/doctor.py`, stage doctor-v1 after the render. Reads the finished video every 0.5 s against the script: black or
+  empty blocks, repeated pictures, pictures off the words, cards held too long. Free fixes (next real matching picture,
+  else Goli in the studio with the line's words), re-render, read again; 2 rounds, then the studio block. Never blocks.
+- Storyboard per sentence (owner 2026-11-25, from the Stickman engine): the editor writes a PICTURE PLAN first (one row
+  per sentence: named, proof, block), then the scenes from it (`editor.PLAN_TEXT`, `plan_coverage`: a sentence whose
+  named thing is not on screen is a miss; its TV takes the named words).
+- Lessons (owner 2026-11-25): the doctor's fixes and plan misses become general rules counted in R2
+  (`edit/lessons.py`, goli-lessons/lessons.json); the editor reads the top 12; a rule unseen for 8 videos retires.
 - Don't poll or babysit long runs; it burns the owner's usage.
 - Never start with limits. Build the general capability the owner asks for, not a fixed short list.
 
@@ -227,4 +236,4 @@ best unmodelled video of the last 45 days, no numbers bar. The channel's style i
   automatic runs never switch paid ones on. Real people stay real photo cards, never puppets.
 
 ## Checks
-`python3 -m pytest -q` must pass before every push (688 tests as of 2026-11-25).
+`python3 -m pytest -q` must pass before every push (692 tests as of 2026-11-25).

@@ -252,9 +252,13 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
     def plan_stage():
         production._require_absent(raw_path, "edit-plan")
         content = editor.request(str(spec.get("title", "")), beat_lines, sources, marks, follow, demo_list)
-        out_tokens = min(60000, 6000 + 260 * len(beat_lines))
+        out_tokens = min(64000, 7000 + 300 * len(beat_lines))     # 2026-11-25: + the picture plan
         production._reserve(spec, text_model, Usage(input_tokens=len(content) // 3 + 3000, output_tokens=out_tokens))
-        output = text.generate_json(editor.instructions(fmt, looks), content, editor.EDIT_SCHEMA, max_output_tokens=out_tokens)
+        from . import lessons
+        learned = lessons.for_editor(lessons.load())         # owner 2026-11-25: the doctor's fixes, learned
+        print(json.dumps({"status": "edit_lessons", "count": len(learned)}))
+        output = text.generate_json(editor.instructions(fmt, looks, learned), content, editor.EDIT_SCHEMA,
+                                    max_output_tokens=out_tokens)
         production._record_text(production_id, "edit-plan", output)
         raw_path.write_text(json.dumps(output.value, indent=2) + "\n", encoding="utf-8")
 
@@ -325,6 +329,24 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
         render(edit, folder, narration, video_path, outfit, track)
 
     production.runner.run(production_id, "render-edit-v1", render_stage, attempts=1)
+
+    def doctor_stage():
+        """Owner 2026-11-25: the finished video is read against the script and every broken block is fixed (free)
+        and rendered again before it goes; the fixes become lessons for the next video (edit/lessons.py)."""
+        from . import doctor, lessons
+        from ..goli3d import kits
+        outfit = kits.choose(folder, ROOT / "data" / "production-records")
+        track = json.loads(track_path.read_text(encoding="utf-8")) if track_path.exists() else None
+        report = doctor.run(edit, folder, video_path, beat_lines, cues, sources, capture_dir,
+                            lambda: render(edit, folder, narration, video_path, outfit, track or None))
+        editor.save(edit, folder / "edit-list.json")
+        try:
+            lessons.learn(production, report)
+        except Exception as error:  # noqa: BLE001 - learning never stops a video
+            print(f"::warning title=Lessons::{str(error)[:200]}")
+        print(json.dumps({"status": "doctor", "fixed": report.get("fixed", 0), "left": len(report.get("left") or [])}))
+
+    production.runner.run(production_id, "doctor-v1", doctor_stage, attempts=1)
 
     def remix_stage():
         """2026-11-12: the sound is mixed again over the finished pictures (no new render) with the

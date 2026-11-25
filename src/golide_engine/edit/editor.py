@@ -115,11 +115,36 @@ SCENE = {
                  "callout", "callout_sub", "edge", "value", "prefix", "suffix", "label", "quote", "quote_by", "left",
                  "right", "rows", "items", "shots", "points", "brands", "metaphor", "object3d", "move3d", "parts3d", "recipe", "recipe_brief", "fill", "puppet"],
 }
+# owner 2026-11-25 ("storyboards per statement", taken from the Stickman engine): the editor first writes a PICTURE
+# PLAN, one row per sentence (what it names, what real thing proves it, which block shows it), then the scenes follow
+# it beat by beat. The plan comes first in the answer, so the scenes are built from it.
+PLAN_ROW = {"type": "object", "additionalProperties": False,
+            "properties": {"first_line": {"type": "integer"}, "last_line": {"type": "integer"},
+                           "named": {"type": "string"}, "proof": {"type": "string"}, "block": {"type": "string"}},
+            "required": ["first_line", "last_line", "named", "proof", "block"]}
 EDIT_SCHEMA = {"type": "object", "additionalProperties": False,
-               "properties": {"scenes": {"type": "array", "items": SCENE}}, "required": ["scenes"]}
+               "properties": {"plan": {"type": "array", "items": PLAN_ROW}, "scenes": {"type": "array", "items": SCENE}},
+               "required": ["plan", "scenes"]}
 
 
-def instructions(fmt: str, looks: dict[str, Any] | None = None) -> str:
+PLAN_TEXT = """PICTURE PLAN FIRST (owner 2026-11-25: "storyboards per statement"): before any scene, write `plan`, ONE row per
+sentence of the narration, in order, covering every beat once (first_line/last_line = the sentence's first and last
+beat). named = the thing the sentence names or is about, in its own words (a product, a page, a number, a person,
+an action); proof = the real thing on screen that shows it (that product's captured page or logo, the number, the
+command run, the person's photo, a puppet doing the action); block = the scene type that shows it. Then build the
+scenes FROM the plan: every scene inside a sentence shows that sentence's named thing or its proof, a new picture on
+every beat of a long sentence, never a picture of something the sentence does not say.
+"""
+
+
+def instructions(fmt: str, looks: dict[str, Any] | None = None, lessons: list[str] | None = None) -> str:
+    """The editor's instructions; `lessons` are the doctor's rules from earlier videos (edit/lessons.py)."""
+    learned = ("\nLESSONS FROM EARLIER VIDEOS (the doctor had to fix these after the render; do not make them again):\n"
+               + "\n".join(f"- {x}" for x in lessons) + "\n") if lessons else ""
+    return PLAN_TEXT + learned + _instructions(fmt, looks)
+
+
+def _instructions(fmt: str, looks: dict[str, Any] | None = None) -> str:
     short = fmt == "short"
     looks = looks or looks_for(None)
     allowed = [k for k in RECIPE_KEYS if k in looks["free"] or k in looks["paid"]]
@@ -889,10 +914,52 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
     out = one_goli(out)
     out = one_goli(_cap_cards(out, lines, cues, notes))
     _transitions(out, lines)
+    misses = plan_coverage(raw.get("plan") or [], out, lines, sources, notes)
     return {"format": fmt, "duration": duration, "scenes": out, "notes": notes, "captions": captions(lines, fmt),
+            "plan": raw.get("plan") or [], "plan_misses": misses,
             "look": look if look in LOOKS3D else "glass",
             "chapters": [{"title": f"{getattr(m, 'number', '')} · {getattr(m, 'title', '')}".strip(" ·"),
                           "at": float(getattr(m, "start", 0))} for m in chapters]}
+
+
+def _scene_words(sc: dict, sources: list[dict]) -> set[str]:
+    """Everything a scene shows, as words: its data (labels, names, words, fills) and the page its picture is from."""
+    text = json.dumps(sc.get("data") or {}, default=str)
+    pic = Path(str(sc["data"].get("screen") or sc["data"].get("image") or "")).name
+    for page in sources or []:
+        if pic and pic in {Path(str(page.get(k) or "")).name for k in ("top", "full", "photo")} | \
+                {Path(str(x)).name for x in page.get("photos") or []}:
+            text += " " + str(page.get("title") or "") + " " + str(page.get("subject") or page.get("product") or "")
+    return {w for w in re.findall(r"[a-z0-9]+", text.lower()) if len(w) > 2}
+
+
+def plan_coverage(plan: list[dict], scenes: list[dict], lines, sources: list[dict], notes: list[str]) -> list[dict]:
+    """Owner 2026-11-25 (storyboard per statement): every sentence's named thing must be on screen while it is said.
+    A sentence whose scenes show nothing of it is a miss: its studio TV takes the named words (free), and the doctor
+    counts it as a lesson."""
+    misses = []
+    for row in plan:
+        try:
+            a, b = int(row.get("first_line", -1)), int(row.get("last_line", -1))
+            t0, t1 = float(lines[a].start), float(lines[b].end)
+        except (IndexError, TypeError, ValueError):
+            continue
+        named = {w for w in re.findall(r"[a-z0-9]+", str(row.get("named") or "").lower())
+                 if len(w) > 2 and w not in _SCREEN_STOP}
+        if not named:
+            continue
+        inside = [sc for sc in scenes if sc["start"] < t1 - 0.2 and sc["start"] + sc["duration"] > t0 + 0.2
+                  and not (sc["type"] == "host" and sc["data"].get("place") in ("side", "corner", "lower"))]
+        if any(named & _scene_words(sc, sources) for sc in inside):
+            continue
+        misses.append({"first_line": a, "last_line": b, "named": row.get("named"), "at": round(t0, 2)})
+        for sc in inside:
+            if sc["type"] == "host" and sc["data"].get("place") == "studio" and not sc["data"].get("screen"):
+                sc["data"]["words"] = _screen_words(str(row.get("named")), lines, sc["start"], sc["start"] + sc["duration"])
+                sc["data"]["punch"] = next(iter(named))
+                break
+        notes.append(f"plan: '{row.get('named')}' at {t0:.1f}s is not on screen")
+    return misses
 
 
 # 2026-11-12 (owner): long videos never open or close the same way, and Goli is "interactive".
