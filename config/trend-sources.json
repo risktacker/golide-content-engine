@@ -131,7 +131,7 @@
  ],
  "_news_about": "Owner 2026-11-10: news channels' videos rank below creators' (score halved) and their titles are never copied: a news story gets a creator-style title.",
  "focus": {
-  "_about": "Owner 2026-11-22: for a month the engine models ONLY these channels (one lane, not the whole of tech). Each channel's style is used when the owner has not picked one: Crayon Capital -> Stickman + Goli, Outskill and the AI how-to channels -> Goli. Their best video of the last `days` that we have not modelled comes first; the numbers bar is off here (these channels post weekly). Remove this block to go back to the wide feed. Shorts (owner 2026-11-25: channels like Outskill: AI how-to and the tech industry told as tech, as the GTA 6 Short that did 1.1K; the Stickman story channels Ricks Clips, Afterhour Theory and Marshall are off while 3D Shorts are off): all suggest Goli.",
+  "_about": "Owner 2026-11-22: for a month the engine models ONLY these channels (one lane, not the whole of tech). Each channel's style is used when the owner has not picked one: Crayon Capital -> Stickman + Goli, Outskill and the AI how-to channels -> Goli. Their best video of the last `days` that we have not modelled comes first; the numbers bar is off here (these channels post weekly). Remove this block to go back to the wide feed. Shorts (owner 2026-11-25: channels like Outskill: AI how-to and the tech industry told as tech, as the GTA 6 Short that did 1.1K; the Stickman story channels Ricks Clips, Afterhour Theory and Marshall are off while 3D Shorts are off): all suggest Goli. Owner 2026-11-25 (evening): Afterhour Theory back, first, as Goli: tech stories told as \"Imagine you're Mark Zuckerberg\" (666K) and \"You're Elon Musk\".",
   "until": "2026-12-22",
   "days": 45,
   "channels": {
@@ -142,6 +142,7 @@
    "Sanji Nai-Chien": "goli"
   },
   "short_channels": {
+   "@afterhourtheories": "goli",
    "@outskillai": "goli",
    "@nateherk": "goli",
    "@mreflow": "goli",

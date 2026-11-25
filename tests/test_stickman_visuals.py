@@ -312,5 +312,5 @@ class FocusChannelTests(unittest.TestCase):
         self.assertEqual(lane["@outskillai"], "goli")
         self.assertEqual(focus_channels(load_sources(), datetime(2027, 1, 5, tzinfo=timezone.utc)), {})
         shorts = focus_channels(load_sources(), datetime(2026, 11, 23, tzinfo=timezone.utc), "short")
-        self.assertEqual(list(shorts)[0], "@outskillai")      # owner 2026-11-25: Shorts model channels like Outskill
+        self.assertEqual(list(shorts)[0], "@afterhourtheories")   # owner 2026-11-25: tech stories first, then channels like Outskill
         self.assertEqual(set(shorts.values()), {"goli"})
