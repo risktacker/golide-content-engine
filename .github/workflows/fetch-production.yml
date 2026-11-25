@@ -8,6 +8,9 @@ on:
       production_id:
         description: "Production id, e.g. golide-long-2026-11-12-r"
         required: true
+      every:
+        description: "Seconds between frames (owner 2026-11-25: reviews at 0.5-1 s)"
+        default: "2"
 
 permissions:
   contents: write
@@ -50,7 +53,7 @@ jobs:
           if [ -n "$VIDEO" ]; then
             ffprobe -v error -show_entries format=duration:stream=width,height,codec_type -of json "$VIDEO" > "$OUT/probe.json"
             # one frame every 2 s at 480 px, and contact sheets of 40 s (5 x 4)
-            ffmpeg -v error -i "$VIDEO" -vf "fps=1/2,scale=480:-2" -q:v 4 "$OUT/frames/f%04d.jpg"
+            ffmpeg -v error -i "$VIDEO" -vf "fps=1/${{ inputs.every }},scale=360:-2" -q:v 5 "$OUT/frames/f%04d.jpg"
             ffmpeg -v error -i "$VIDEO" -vf "fps=1/2,scale=384:-2,drawtext=text='%{pts\:hms}':x=6:y=6:fontsize=18:fontcolor=yellow:box=1:boxcolor=black@0.6,tile=5x4" -q:v 4 "$OUT/sheet%02d.jpg"
             # loudness and silences of the final mix
             ffmpeg -v info -i "$VIDEO" -af "silencedetect=n=-38dB:d=0.35,ebur128" -f null - 2> "$OUT/audio.txt" || true
