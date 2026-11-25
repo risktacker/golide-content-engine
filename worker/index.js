@@ -466,6 +466,17 @@ async function createPost(env,payload){
   // 2026-11-21 (owner): a platform he disconnected is off: its post is not queued at all (no failed post, no to-do)
   const {results:onRows}=await db.prepare(`SELECT platform FROM engine_connections WHERE connected=1`).all();
   const onNow=new Set((onRows||[]).map((r)=>String(r.platform).toLowerCase()));
+  // 2026-11-25 (owner: "I choose what goes to LinkedIn"): the platforms he ticks on the video in Studio are read
+  // here, when its posts are queued, so a change made while the video is still being made counts too
+  const jobId=String(id).replace(/-(reels|social)(-\d+)?$/,"");
+  if(jobId!==String(id)){
+    const job=await db.prepare(`SELECT json_extract(spec_json,'$.platforms') AS p FROM production_jobs WHERE job_id=?`).bind(jobId).first();
+    let picked=null; try{picked=job&&job.p?JSON.parse(job.p):null;}catch{picked=null;}
+    if(Array.isArray(picked)){
+      const keep=new Set(picked.map((x)=>String(x).toLowerCase()));
+      for(const p of [...onNow]) if(p!=="youtube"&&!keep.has(p)) onNow.delete(p);
+    }
+  }
   for(const v of variants){
     if(!onNow.has(v.platform)) continue;
     if(v.media_ref) refs.add(v.media_ref);
