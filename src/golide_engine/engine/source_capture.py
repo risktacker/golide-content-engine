@@ -219,31 +219,42 @@ def product_pages(names: list[str], skip_domains: set[str]) -> list[dict[str, An
     def key(x: str) -> str:
         return re.sub(r"[^a-z0-9]", "", x.lower())
 
+    def dom_of(url: str) -> str:
+        return re.sub(r"^www\.", "", urllib.parse.urlparse(url).netloc.lower())
+
     out: list[dict[str, Any]] = []
     for name in names:
         found: list[tuple[str, str]] = []
+        # owner 2026-11-25 (the Elon Short: "solar plant ... Tesla Energy" showed a stranger's GitHub repository): a
+        # company or product is shown on its OWN site first (Wikidata's official website). A GitHub repository is used
+        # only when it is the product's own: its homepage is that official site, or, for software with no Wikidata
+        # site, the repository names a homepage of its own (a real project does). A repo that only shares the name is
+        # never shown.
+        official = ""
+        try:
+            hits = get("https://www.wikidata.org/w/api.php?" + urllib.parse.urlencode(
+                {"action": "wbsearchentities", "search": name, "language": "en", "format": "json", "limit": 1})).get("search") or []
+            if hits and key(hits[0].get("label", "")) == key(name):
+                ent = get(f"https://www.wikidata.org/wiki/Special:EntityData/{hits[0]['id']}.json")["entities"][hits[0]["id"]]
+                for c in ent.get("claims", {}).get("P856", [])[:1]:
+                    official = c["mainsnak"]["datavalue"]["value"]
+        except Exception:  # noqa: BLE001 - no Wikidata answer: GitHub may still know a software project
+            pass
+        if official:
+            found.append((official, f"{name} (official site)"))
         try:
             repos = get("https://api.github.com/search/repositories?" + urllib.parse.urlencode(
                 {"q": f"{name} in:name", "sort": "stars", "per_page": 5})).get("items") or []
             repo = next((r for r in repos if key(r.get("name", "")) == key(name) and r.get("stargazers_count", 0) >= 200), None)
-            if repo:
-                if repo.get("homepage", "").startswith("http"):
-                    found.append((repo["homepage"], f"{name} (official site)"))
+            home = (repo or {}).get("homepage") or ""
+            if repo and home.startswith("http") and (not official or dom_of(home) == dom_of(official)):
+                if not official:
+                    found.append((home, f"{name} (official site)"))
                 found.append((repo["html_url"], f"{name} on GitHub"))
-        except Exception:  # noqa: BLE001 - no GitHub answer: try Wikidata
+        except Exception:  # noqa: BLE001
             pass
-        if not found:
-            try:
-                hits = get("https://www.wikidata.org/w/api.php?" + urllib.parse.urlencode(
-                    {"action": "wbsearchentities", "search": name, "language": "en", "format": "json", "limit": 1})).get("search") or []
-                if hits and key(hits[0].get("label", "")) == key(name):
-                    ent = get(f"https://www.wikidata.org/wiki/Special:EntityData/{hits[0]['id']}.json")["entities"][hits[0]["id"]]
-                    for c in ent.get("claims", {}).get("P856", [])[:1]:
-                        found.append((c["mainsnak"]["datavalue"]["value"], f"{name} (official site)"))
-            except Exception:  # noqa: BLE001
-                pass
         for url, title in found:
-            dom = re.sub(r"^www\.", "", urllib.parse.urlparse(url).netloc.lower())
+            dom = dom_of(url)
             if dom and dom not in skip_domains and not SKIP.search(url):
                 skip_domains.add(dom)
                 out.append({"url": url, "title": title, "claims": [], "product": name})

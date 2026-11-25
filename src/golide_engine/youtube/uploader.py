@@ -31,6 +31,9 @@ def release_time(publish_at: str, now: datetime | None = None) -> datetime:
 def _initial_release_status(release: dict) -> tuple[dict, str, str]:
     """Set final visibility during upload so youtube.upload scope is sufficient."""
     status = {"privacyStatus": "private", "selfDeclaredMadeForKids": False}
+    if release.get("public_now"):
+        # owner 2026-11-25 ("I said make it public"): a video he has already watched and approved goes public at once
+        return {"privacyStatus": "public", "selfDeclaredMadeForKids": False}, "published", "public"
     publish_at = release.get("scheduled_at")
     if not publish_at:
         return status, "uploaded_private", "private"

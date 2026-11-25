@@ -246,3 +246,12 @@ class CoverTests(unittest.TestCase):
                                             media_ref="https://x/clip.mp4", cover_url="https://x/cover.jpg"))
         self.assertEqual(calls[0]["cover_url"], "https://x/cover.jpg")
         self.assertEqual(calls[0]["media_type"], "REELS")
+
+
+def test_an_approved_rebuild_goes_public_at_once():
+    # owner 2026-11-25: "I said make it public"
+    from golide_engine.youtube.uploader import _initial_release_status
+    status, state, privacy = _initial_release_status({"scheduled_at": "2030-01-01T00:00:00Z", "public_now": True})
+    assert status["privacyStatus"] == "public" and "publishAt" not in status and privacy == "public"
+    status, _, _ = _initial_release_status({"scheduled_at": "2030-01-01T00:00:00Z"})
+    assert status["privacyStatus"] == "private" and status["publishAt"].startswith("2030")

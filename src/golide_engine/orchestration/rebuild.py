@@ -225,7 +225,8 @@ class Rebuild:
             try:
                 video_id = uploader.upload_private(
                     self.id, root / files["video"]["file"], root / files["thumbnail"]["file"],
-                    metadata, package["release"],
+                    # owner 2026-11-25: he watched the preview and said publish, so it is public the moment it is up
+                    metadata, dict(package["release"], public_now=True),
                 )
             finally:
                 if previous is None:
