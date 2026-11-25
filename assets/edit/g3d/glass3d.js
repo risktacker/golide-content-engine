@@ -13,9 +13,10 @@ const B = (cx, cy, cz, sx, sy, sz, gold = false, rx = null, shape = 'box') => ({
 
 const OBJECTS = {
   laptop(u) {
+    // owner 2026-11-25: a thin lid with slim bezels, like a MacBook (the lid was 3 times too thick)
     const a = -108 * Math.PI / 180 * u, hinge = [0, 1.0, 0.145];
     return [B(0, 0, 0, 3.0, 2.0, 0.12), B(0, 0.32, 0.12, 2.6, 0.95, 0.012), B(0, -0.55, 0.12, 0.95, 0.52, 0.006),
-            B(0, 0, 0.145, 3.0, 2.0, 0.065, false, { a, p: hinge }), B(0, 0.02, 0.137, 2.7, 1.66, 0.008, u > 0.55, { a, p: hinge })];
+            B(0, 0, 0.145, 3.0, 2.0, 0.022, false, { a, p: hinge }), B(0, -0.02, 0.139, 2.9, 1.84, 0.005, u > 0.55, { a, p: hinge })];
   },
   phone(u) {
     const out = []; let z = 0;
@@ -218,7 +219,7 @@ export function mount(canvas, name, opts = {}) {
   const elev = [0.5, 0.28, 0.78, 0.4][(+opts.view || 0) % 4];
   camera.position.set(0, centre.y + size * elev, dist);
   camera.lookAt(0, centre.y, 0);
-  const SCREEN = { laptop: { part: 4, w: 2.62, h: 1.58, y: -1 }, phone: { part: 5, w: 1.17, h: 2.38, y: 1 } };
+  const SCREEN = { laptop: { part: 4, w: 2.86, h: 1.8, y: -1 }, phone: { part: 5, w: 1.17, h: 2.38, y: 1 } };
   const glass = SCREEN[name];
   const shot = glass && opts.screen ? document.getElementById(opts.screen) : null;
   let tex = null, shown = false;
