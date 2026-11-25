@@ -30,17 +30,19 @@ jobs:
     needs: plan
     if: inputs.from_run == ''
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 150
     strategy:
       matrix:
         pose: ${{ fromJson(needs.plan.outputs.poses) }}
+        # owner 2026-11-25: one job per pose AND kit, so 7 kits x 20 reactions never outrun a job's time limit
+        kit: ${{ fromJson(inputs.kit == 'all' && '["royal","ember","emerald","midnight","violet","sky","crimson"]' || format('["{0}"]', inputs.kit)) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
       - run: python -m pip install -q bpy==5.3.0 pillow
-      - run: python tools/goli3d_${{ inputs.kind }}.py ${{ matrix.pose }} ${{ inputs.kit != '' && format('kit={0}', inputs.kit) || '' }}
+      - run: python tools/goli3d_${{ inputs.kind }}.py ${{ matrix.pose }} ${{ matrix.kit != '' && format('kit={0}', matrix.kit) || '' }}
       - uses: actions/upload-artifact@v4
         if: inputs.kit == ''
         with:
@@ -49,7 +51,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: inputs.kit != ''
         with:
-          name: goli3dkits-${{ matrix.pose }}
+          name: goli3dkits-${{ matrix.pose }}-${{ matrix.kit }}
           path: assets/goli3d/full/kits
   commit:
     needs: render
