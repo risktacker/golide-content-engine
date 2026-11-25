@@ -1,4 +1,5 @@
 """2026-11-13 (owner): ideas shown as moving pictures, landing on the spoken word."""
+from pathlib import Path
 from golide_engine.edit import editor, metaphors
 from golide_engine.edit.compose import Composer
 
@@ -41,7 +42,9 @@ def test_glass_object_with_its_label_and_limits(tmp_path):
     raw = {"scenes": [_s3d("laptop", 0, 0), _s3d("laptop", 1, 1), _s3d("server", 2, 2, "slides"), _s3d("chip", 3, 3, "rise")]}
     edit = editor.build(raw, lines, 8.0, "long", [], None, [], [])
     objs = [s for s in edit["scenes"] if s["type"] == "object3d"]
-    assert len(objs) == 2                                  # at most 2 in a long video, never two in a row
+    # laptops with nothing real for their screens give way; never two objects in a row (the chip follows the server)
+    assert [o["data"]["object"] for o in objs] == ["server"]
+    assert any("no real picture for its screen" in n for n in edit["notes"])
     assert objs[0]["data"]["lead"] == "Your rented GPU"
     html = Composer("long").build(edit, tmp_path / "o")
     text = html.read_text()
@@ -49,16 +52,34 @@ def test_glass_object_with_its_label_and_limits(tmp_path):
     assert (html.parent / "three" / "g3d" / "glass3d.js").exists()
 
 
-def test_a_3d_object_needs_its_name_spoken_and_shows_at_most_twice():
-    """owner 2026-11-25: the same laptop 11 times for lines about names, Git and folders."""
-    lines = _lines(["We changed the name and the icon.", "My laptop runs it.", "Saved into Git.",
-                    "On my laptop again.", "Words.", "This laptop once more."])
-    raw = {"scenes": [_s3d("laptop", 0, 0), _s3d("laptop", 1, 1), {"type": "studio", "first_line": 2, "last_line": 2},
-                      _s3d("laptop", 3, 3), {"type": "studio", "first_line": 4, "last_line": 4}, _s3d("laptop", 5, 5)]}
-    edit = editor.build(raw, lines, 12.0, "long", [], None, [], [])
+def test_a_screen_device_shows_the_real_thing_and_never_the_same_way_twice(tmp_path):
+    """Owner 2026-11-25: "11 times is not wrong; what is wrong is the same way, same colour, and the screen empty".
+    A laptop shows the real picture of what is said on its screen, as often as that fits; each showing gets its own
+    look and view; a laptop with nothing real for its screen is not shown. Other objects need their name said."""
+    from PIL import Image, ImageDraw
+    for i, colour in enumerate(("#1d4ed8", "#16a34a")):
+        im = Image.new("RGB", (1440, 900), "white")
+        d = ImageDraw.Draw(im)
+        d.rectangle([0, 0, 1440, 90], fill="#111827")
+        d.rectangle([80, 200, 700, 760], fill=colour)
+        for y in range(220, 740, 40):
+            d.rectangle([760, y, 1360, y + 14], fill="#374151")
+        im.save(tmp_path / f"0{i}-top.png")
+    sources = [{"ok": True, "url": "https://opencode.ai", "title": "OpenCode terminal agent", "top": "00-top.png",
+                "product": "OpenCode"},
+               {"ok": True, "url": "https://openrouter.ai", "title": "OpenRouter free models", "top": "01-top.png",
+                "product": "OpenRouter"}]
+    lines = _lines(["Install OpenCode on your machine.", "Saved into Git.", "Then open OpenRouter for free models.",
+                    "Words.", "Plug the battery in."])
+    raw = {"scenes": [_s3d("laptop", 0, 0), {"type": "studio", "first_line": 1, "last_line": 1},
+                      _s3d("laptop", 2, 2), {"type": "studio", "first_line": 3, "last_line": 3}, _s3d("server", 4, 4)]}
+    edit = editor.build(raw, lines, 10.0, "long", sources, tmp_path, [], [])
     objs = [s for s in edit["scenes"] if s["type"] == "object3d"]
-    assert len(objs) == 2 and all(o["start"] > 1.5 for o in objs)    # not on the line that never says laptop
-    assert any("do not name it" in n for n in edit["notes"]) and any("already shown 2 times" in n for n in edit["notes"])
+    assert [Path(o["data"]["screen"]).name for o in objs] == ["00-top.png", "01-top.png"]
+    assert objs[0]["data"]["look"] != objs[1]["data"]["look"] and objs[0]["data"]["view"] != objs[1]["data"]["view"]
+    assert any("do not name it" in n for n in edit["notes"])          # a server on a line about a battery
+    html = Composer("long").build(edit, tmp_path / "o").read_text()
+    assert '"screen": "' in html and "-scr" in html
 
 
 def test_counters_carry_the_spoken_units():

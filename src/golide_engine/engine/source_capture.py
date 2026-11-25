@@ -252,6 +252,46 @@ def product_pages(names: list[str], skip_domains: set[str]) -> list[dict[str, An
     return out[:PRODUCT_PAGES]
 
 
+# owner 2026-11-25: "if the recorded screen is broken it is not used; another block is". A page whose styles did not
+# load (bare blue links on white), a block or error page, a cookie or bot wall, or a near-empty screen is not shown.
+HEALTH = """() => {
+  const b = document.body; if (!b) return {ok: false, why: 'no page'};
+  const text = (b.innerText || '').slice(0, 4000);
+  const font = getComputedStyle(b).fontFamily.toLowerCase();
+  const sheets = [...document.styleSheets].filter((s) => { try { return s.cssRules.length > 0; } catch (e) { return true; } }).length;
+  const links = [...document.querySelectorAll('a')].slice(0, 80);
+  const raw = links.filter((a) => { const c = getComputedStyle(a); return c.color === 'rgb(0, 0, 238)' && c.textDecorationLine.includes('underline'); }).length;
+  const imgs = [...document.images].filter((i) => i.getBoundingClientRect().width > 120);
+  const broken = imgs.filter((i) => i.complete && i.naturalWidth === 0).length;
+  return {text, font, sheets, links: links.length, raw, imgs: imgs.length, broken,
+          words: text.split(/\s+/).filter(Boolean).length, title: document.title};
+}"""
+BLOCKED = re.compile(r"\b(access denied|403 forbidden|404 not found|page not found|just a moment|verify you are human|"
+                     r"are you a robot|captcha|enable javascript|attention required|too many requests|"
+                     r"this site can.t be reached|err_[a-z_]+)\b", re.I)
+
+
+def broken_page(h: dict[str, Any] | None) -> str:
+    """Why a captured page is not fit for the screen ("" when it is)."""
+    if not h:
+        return "the page could not be read"
+    if h.get("ok") is False:
+        return str(h.get("why") or "no page")
+    if BLOCKED.search(str(h.get("title") or "") + " " + str(h.get("text") or "")[:600]):
+        return "an error, block or bot-check page"
+    if int(h.get("sheets") or 0) == 0:
+        return "its styles did not load"
+    font = str(h.get("font") or "")
+    if int(h.get("links") or 0) >= 10 and int(h.get("raw") or 0) >= 0.6 * int(h.get("links") or 1) \
+            and ("times" in font or font.strip('"') in ("serif", "")):
+        return "unstyled (bare blue links)"
+    if int(h.get("imgs") or 0) >= 3 and int(h.get("broken") or 0) >= 0.5 * int(h.get("imgs") or 1):
+        return "its pictures did not load"
+    if int(h.get("words") or 0) < 15 and int(h.get("imgs") or 0) == 0:
+        return "near empty"
+    return ""
+
+
 def capture(research: dict[str, Any], folder: Path, script: str = "") -> list[dict[str, Any]]:
     """Open every source page and keep its screens, claim positions and link. Never stops a video:
     a page that will not open is logged and skipped. With the script, the real pages of the products it names are
@@ -280,6 +320,9 @@ def capture(research: dict[str, Any], folder: Path, script: str = "") -> list[di
                 page.evaluate(DISMISS)
                 page.wait_for_timeout(600)
                 entry["title"] = page.title() or entry["title"]
+                why = broken_page(page.evaluate(HEALTH))
+                if why:                                    # never shown; the editor uses another block
+                    raise RuntimeError(f"broken screen: {why}")
                 top = folder / f"{i:02d}-top.png"
                 page.screenshot(path=str(top))
                 height = min(MAX_FULL_HEIGHT, page.evaluate("document.documentElement.scrollHeight"))

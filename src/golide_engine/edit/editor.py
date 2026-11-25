@@ -748,6 +748,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
                 "move": s.get("move3d") if s.get("move3d") in MOVES3D else "own",
                 "parts": [] if s["object3d"] in OBJECTS3D else [dict(p) for p in (s.get("parts3d") or [])[:12]],
                 "at": round(max(0.5, min(dur - 1.6, (land - t0) if land else 0.8)), 3),
+                "said": " ".join(str(w.text) for w in _spoken(lines, t0, t1)),
                 "lead": " ".join(str(s.get("label") or s.get("screen_words") or "").split()[:5])}})
         elif kind == "puppets" and "puppets" in looks["free"] and s.get("puppet") \
                 and not (out and out[-1]["type"] == "puppet_clip"):
@@ -879,7 +880,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
     out = _pace(out, lines, fmt)
     out = _words_cap(out, notes, fmt, cues)
     out = _short_cards(out, notes, cues)
-    _screen_pictures(out, sources, capture_dir)
+    out = _screen_pictures(out, sources, capture_dir, lines, cues, notes, look if look in LOOKS3D else "glass")
     out = _min_length(out, fmt)
     out = _recipe_time(out, fmt, notes)
     out = _lower_host(out, cues, fmt)
@@ -1046,14 +1047,16 @@ STUDIO_BEAT = {"short": 3.0, "long": 10.0}
 HOLD = {"recipe_clip", "puppet_clip", "stat_counter", "comparison", "steps", "walkthrough", "terminal", "metaphor", "object3d", "prompt_card", "checklist", "timeline", "quote_card", "logo_tiles", "chapter_card", "follow_cta"}
 
 
-# owner 2026-11-25 ("plenty of repeated blocks": the same laptop 11 times for lines about names, Git and folders): a 3D
-# object is shown only when its beat's words name it, and the same object at most twice in a video
+# owner 2026-11-25: a 3D object is shown only when it is the real thing being said. A device with a screen (laptop,
+# phone) is right whenever its screen shows the real page or picture of what is said (owner: "11 times is not wrong;
+# what is wrong is the same way, same colour, and the screen empty"); any other object only when the words name it.
+# Each showing gets its own look and view, never the previous one's.
+SCREEN_DEVICES = ("laptop", "phone")
 OBJECT_WORDS = {"laptop": ("laptop", "computer", "pc", "macbook", "notebook", "desktop"),
                 "phone": ("phone", "iphone", "android", "mobile", "smartphone"),
                 "server": ("server", "servers", "datacenter", "data", "rack", "cloud"),
                 "chip": ("chip", "chips", "gpu", "gpus", "processor", "cpu", "silicon", "nvidia"),
                 "battery": ("battery", "batteries", "cell", "cells", "charge", "charging")}
-OBJECT_MAX = 2
 
 
 def _stat_units(value: float, prefix: str, suffix: str, said: str) -> tuple[float, str, str]:
@@ -1078,11 +1081,10 @@ def _object_unsaid(s: dict, lines, t0: float, t1: float, shown: list[str], notes
     name = str(s.get("object3d") or "").lower()
     said = {_norm(w.text) for w in _spoken(lines, t0 - 0.3, t1 + 0.3)}
     names = OBJECT_WORDS.get(name) or tuple(_norm(x) for x in re.findall(r"[A-Za-z]+", name + " " + str(s.get("label") or "")) if len(x) > 3)
+    if name in SCREEN_DEVICES:
+        return False              # its screen decides (_screen_pictures): the real thing on it, else another block
     if not any(n in said for n in names):
         notes.append(f"scene {k}: 3D {name} but the words do not name it, Goli and the TV instead")
-        return True
-    if shown.count(name) >= OBJECT_MAX:
-        notes.append(f"scene {k}: 3D {name} already shown {OBJECT_MAX} times, Goli and the TV instead")
         return True
     return False
 
@@ -1332,14 +1334,19 @@ _SCREEN_STOP = set("this that with from have about your they their there what wh
                    "just like then than them been were will also only more most some very much over even back".split())
 
 
-def _screen_pictures(scenes: list[dict], sources: list[dict], capture_dir: Path | None) -> None:
+def _screen_pictures(scenes: list[dict], sources: list[dict], capture_dir: Path | None, lines=None,
+                     cues: list[dict] | None = None, notes: list[str] | None = None, look: str = "glass") -> list[dict]:
     """The studio TV (owner 2026-11-20, 2026-11-25): it shows the real thing being said. A picture goes on it only when
     its page names what the line names (the spoken words, 2026-11-25: the old match read the mouth cues, found no words
     and cycled 10 pictures in order), never a black, blank or texture picture, and never twice in a video unless it is
     the product itself (its page's subject is named in the line), at most 3 times. Otherwise the TV shows the line's
-    own words with the key word lit (owner 2026-11-25: "add these to the TV"), never a meaningless chart."""
+    own words with the key word lit (owner 2026-11-25: "add these to the TV"), never a meaningless chart.
+    A laptop or phone shows the same kind of real picture on its own screen; with none it gives way to Goli and the TV
+    (owner 2026-11-25: an empty screen is not real). Each 3D showing gets its own look and view."""
+    notes = notes if notes is not None else []
+    scenes = _object_variety(scenes, look)
     if not capture_dir:
-        return
+        return _no_empty_screens(scenes, lines, cues, notes)
     pics: list[tuple[Path, set[str], set[str]]] = []
     seen: set[str] = set()
     for page in sources or []:
@@ -1357,6 +1364,23 @@ def _screen_pictures(scenes: list[dict], sources: list[dict], capture_dir: Path 
                 seen.add(f.name)
                 pics.append((f, keys, subject))
     used: Counter = Counter()
+    last = None
+    for sc in scenes:
+        d = sc["data"]
+        if sc["type"] == "object3d" and d.get("object") in SCREEN_DEVICES:
+            said = {w for w in re.findall(r"[a-z0-9]+", str(d.get("said") or "").lower()) if len(w) > 3 and w not in _SCREEN_STOP}
+            best, score = None, 0
+            for f, keys, subject in pics:
+                product = bool(subject) and subject <= said
+                if f == last or used[f] >= (3 if product else 1):
+                    continue
+                sc_ = len(keys & said) + (2 if product else 0)
+                if sc_ > score:
+                    best, score = f, sc_
+            if best is not None:
+                d["screen"], last = best, best
+                used[best] += 1
+    scenes = _no_empty_screens(scenes, lines, cues, notes)
     last = None
     for sc in scenes:
         d = sc["data"]
@@ -1379,6 +1403,37 @@ def _screen_pictures(scenes: list[dict], sources: list[dict], capture_dir: Path 
             last = best
         else:
             last = None                          # the line's own words stay on the TV
+    return scenes
+
+
+def _no_empty_screens(scenes: list[dict], lines, cues, notes: list[str]) -> list[dict]:
+    """A laptop or phone with nothing real on its screen is not shown: Goli says the line with its words on the TV."""
+    out = []
+    for sc in scenes:
+        d = sc["data"]
+        if sc["type"] == "object3d" and d.get("object") in SCREEN_DEVICES and not d.get("screen"):
+            notes.append(f"3D {d['object']} at {sc['start']:.1f}s: no real picture for its screen, Goli and the TV instead")
+            host = _studio(sc["start"], sc["start"] + sc["duration"], cues)
+            if lines is not None and d.get("said"):
+                host["data"]["words"] = _screen_words(d["said"], lines, sc["start"], sc["start"] + sc["duration"])
+            out.append(host)
+        else:
+            out.append(sc)
+    return out
+
+
+def _object_variety(scenes: list[dict], look: str) -> list[dict]:
+    """Owner 2026-11-25 ("same way, same colour, same visual"): every 3D showing gets a look and a view that the one
+    before did not have; the video's own look comes first."""
+    order = [look] + [k for k in LOOKS3D if k != look]
+    prev_look, n = None, 0
+    for sc in sorted((s for s in scenes if s["type"] == "object3d"), key=lambda s: s["start"]):
+        pick = order[n % len(order)]
+        if pick == prev_look:
+            pick = order[(n + 1) % len(order)]
+        sc["data"]["look"], sc["data"]["view"] = pick, n % 4
+        prev_look, n = pick, n + 1
+    return scenes
 
 
 def _card_words(sc: dict | None) -> list[dict]:

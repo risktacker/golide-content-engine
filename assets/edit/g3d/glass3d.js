@@ -181,7 +181,8 @@ export function mount(canvas, name, opts = {}) {
 
   // fit: centre and scale over the whole move so the object never leaves its frame
   const box = new THREE.Box3();
-  for (let i = 0; i <= 10; i++) for (const p of make(i / 10)) {
+  const whole = name === 'phone' && !!opts.screen;    // a phone showing a real screen does not come apart
+  for (let i = 0; i <= 10; i++) for (const p of make(whole ? 0 : i / 10)) {
     const { pos } = place(p); const h = new THREE.Vector3(p.s[0] / 2, p.s[2] / 2, p.s[1] / 2);
     box.expandByPoint(pos.clone().sub(h)); box.expandByPoint(pos.clone().add(h));
   }
@@ -212,8 +213,32 @@ export function mount(canvas, name, opts = {}) {
 
   const camera = new THREE.PerspectiveCamera(28, canvas.width / canvas.height, 0.1, 100);
   const dist = size * 1.75;
-  camera.position.set(0, centre.y + size * 0.5, dist);
+  // owner 2026-11-25 ("same way, same colour, same visual, and the screen is empty"): each showing sits at its own
+  // height, and a device with a screen shows the real page or picture of what is being said on it
+  const elev = [0.5, 0.28, 0.78, 0.4][(+opts.view || 0) % 4];
+  camera.position.set(0, centre.y + size * elev, dist);
   camera.lookAt(0, centre.y, 0);
+  const SCREEN = { laptop: { part: 4, w: 2.62, h: 1.58, y: -1 }, phone: { part: 5, w: 1.17, h: 2.38, y: 1 } };
+  const glass = SCREEN[name];
+  const shot = glass && opts.screen ? document.getElementById(opts.screen) : null;
+  let tex = null, shown = false;
+  if (shot) {
+    tex = new THREE.Texture(shot); tex.colorSpace = THREE.SRGBColorSpace;
+    const plane = new THREE.Mesh(new THREE.PlaneGeometry(glass.w, glass.h),
+      new THREE.MeshBasicMaterial({ map: tex, toneMapped: false, side: THREE.DoubleSide }));
+    const host = meshes[glass.part].m, thick = parts0[glass.part].s[2];
+    plane.rotation.x = glass.y < 0 ? Math.PI / 2 : -Math.PI / 2;
+    plane.position.y = glass.y * (thick / 2 + 0.004);
+    host.add(plane);
+  }
+  const fit = () => {       // the page's top, cropped to fill the screen (cover), once the picture has loaded
+    if (!tex || shown || !shot.complete || !shot.naturalWidth) return;
+    const a = (shot.naturalWidth / shot.naturalHeight) / (glass.w / glass.h);
+    // a page reads from its left: a tall phone shows the page's left column, a laptop its middle
+    if (a > 1) { tex.repeat.set(1 / a, 1); tex.offset.set(name === 'phone' ? 0 : (1 - 1 / a) / 2, 0); }
+    else { tex.repeat.set(1, a); tex.offset.set(0, 1 - a); }
+    tex.needsUpdate = true; shown = true;
+  };
 
   // callouts: a thin line from the exact spot on a part to a small label beside the object (owner 2026-11-13)
   const overlay = opts.overlay || null;
@@ -282,10 +307,13 @@ export function mount(canvas, name, opts = {}) {
   }
 
   return function render(u, yaw, t = 0) {
-    make(u).forEach((p, i) => {
+    fit();
+    // a phone showing a real screen stays whole (its layers would hide the screen); the camera does the moving
+    make(whole ? 0 : u).forEach((p, i) => {
       const { pos, a } = place(p); const { m, e, k } = meshes[i];
       m.position.copy(pos); m.rotation.set(a, 0, 0);
-      m.material = p.gold ? look.gold : look.body(k); e.material = p.gold ? look.goldEdge : look.edge;
+      const lit = p.gold && !(tex && glass && i === glass.part);   // a screen showing a picture is not painted gold
+      m.material = lit ? look.gold : look.body(k); e.material = p.gold ? look.goldEdge : look.edge;
       const f = p.fade === undefined ? 1 : p.fade;
       m.visible = f > 0.02; m.scale.setScalar(0.6 + 0.4 * f);
     });

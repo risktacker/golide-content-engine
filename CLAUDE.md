@@ -42,6 +42,11 @@ Owner: Esiah (Lusaka, UTC+2). Direct, no sugar-coating. Studio: studio.golidee.c
 - Studio TV (owner 2026-11-25, long and Shorts): no decoration chart; it shows the real thing being said: a picture
   whose page names what the line names (never black/blank/texture, never twice unless it is the product, 3 at most),
   else the line's own words with the key word lit (`editor._screen_pictures`, `studio.back3d`).
+- 3D devices (owner 2026-11-25): repeating a laptop is fine; the same look, the same angle and an empty screen are not.
+  A laptop or phone shows the real page or picture of what is said on its screen, else another block; every 3D
+  showing gets its own look and view (`editor._object_variety`, glass3d.js screen). Other objects need their name said.
+- Broken screens (owner 2026-11-25): a captured page whose styles did not load, an error/block/bot page, broken
+  pictures or a near-empty page is never used (`source_capture.broken_page`); another block takes the beat.
 - Don't poll or babysit long runs; it burns the owner's usage.
 - Never start with limits. Build the general capability the owner asks for, not a fixed short list.
 

@@ -810,21 +810,28 @@ class Composer:
             at = min(at, 0.35)
         opts = {"at": at, "callouts": data.get("callouts") or [], "lead": data.get("lead") or "",
                 "look": data.get("look") or getattr(self, "look", "glass"), "move": move3d,
-                "parts": data.get("parts") or []}
+                "parts": data.get("parts") or [], "view": int(data.get("view") or 0)}
+        shot = ""
+        if data.get("screen") and Path(data["screen"]).exists():
+            # the real picture for the device's screen (owner 2026-11-25), loaded in the page before the first frame
+            opts["screen"] = f"{sid}-scr"
+            shot = f'<img id="{sid}-scr" src="{self.asset(Path(data["screen"]))}" style="display:none">'
+        # each showing turns its own way (owner 2026-11-25: "same way" every time)
+        yaw0, sweep = [(-0.6, 0.55), (0.45, -0.5), (-0.25, 0.4), (0.75, -0.45)][opts["view"] % 4]
         pos = f'position:absolute;left:{(self.w - cw) / 2:.0f}px;top:{self.cy - ch / 2:.0f}px;width:{cw}px;height:{ch}px'
         inner = (f'<canvas id="{sid}-cv" width="{cw}" height="{ch}" style="{pos}"></canvas>'
-                 f'<svg id="{sid}-ov" viewBox="0 0 {cw} {ch}" width="{cw}" height="{ch}" style="{pos};overflow:visible"></svg>{label}'
+                 f'<svg id="{sid}-ov" viewBox="0 0 {cw} {ch}" width="{cw}" height="{ch}" style="{pos};overflow:visible"></svg>{label}{shot}'
                  f'<script type="module">import {{ mount }} from "./three/g3d/glass3d.js";'
                  f'window.__g3d = window.__g3d || {{}};'
                  f'const r = mount(document.getElementById("{sid}-cv"), {json.dumps(data["object"])}, '
                  f'Object.assign({json.dumps(opts)}, {{overlay: document.getElementById("{sid}-ov")}}));'
-                 f'window.__g3d["{sid}"] = r; r(0, -0.6, 0);</script>')
+                 f'window.__g3d["{sid}"] = r; r(0, {yaw0}, 0);</script>')
         self.scene(sid, t0, dur, inner)
         self.entrance(sid, t0, how)
         move = {"explode": 1.4, "assemble": 1.4, "rise": 1.8, "spin": 1.6}.get(move3d, 0.9)
         self.tw(f'(function(){{var o={{s:0}};tl.fromTo(o,{{s:0}},{{s:{dur:.3f},duration:{dur:.3f},ease:"none",onUpdate:function(){{'
                 f'var f=window.__g3d&&window.__g3d["{sid}"];if(!f)return;var m=Math.min(1,Math.max(0,(o.s-{at:.3f})/{move}));'
-                f'm=m*m*(3-2*m);f(m,-0.6+0.55*o.s/{dur:.3f},o.s);}}}},{t0:.3f});}})();')
+                f'm=m*m*(3-2*m);f(m,{yaw0}+{sweep}*o.s/{dur:.3f},o.s);}}}},{t0:.3f});}})();')
         self.cue("riser", t0 + at - 0.8)
         self.cue("impact", t0 + at)
         self.cue("shimmer", t0 + at + 0.5)
