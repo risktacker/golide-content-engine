@@ -77,6 +77,7 @@ def test_a_screen_device_shows_the_real_thing_and_never_the_same_way_twice(tmp_p
     objs = [s for s in edit["scenes"] if s["type"] == "object3d"]
     assert [Path(o["data"]["screen"]).name for o in objs] == ["00-top.png", "01-top.png"]
     assert objs[0]["data"]["look"] != objs[1]["data"]["look"] and objs[0]["data"]["view"] != objs[1]["data"]["view"]
+    assert objs[0]["data"]["keys"] != objs[1]["data"]["keys"]          # smooth, real keys or neon, in turn
     assert any("do not name it" in n for n in edit["notes"])          # a server on a line about a battery
     html = Composer("long").build(edit, tmp_path / "o").read_text()
     assert '"screen": "' in html and "-scr" in html

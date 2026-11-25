@@ -12,11 +12,28 @@ const ease = (t) => { t = Math.min(1, Math.max(0, t)); return t * t * (3 - 2 * t
 const B = (cx, cy, cz, sx, sy, sz, gold = false, rx = null, shape = 'box') => ({ c: [cx, cy, cz], s: [sx, sy, sz], gold, rx, shape });
 
 const OBJECTS = {
-  laptop(u) {
-    // owner 2026-11-25: a thin lid with slim bezels, like a MacBook (the lid was 3 times too thick)
+  laptop(u, o = {}) {
+    // owner 2026-11-25: a thin lid with slim bezels, like a MacBook (the lid was 3 times too thick); the keyboard
+    // changes from showing to showing: smooth (no keys), real keys, or neon keys
     const a = -108 * Math.PI / 180 * u, hinge = [0, 1.0, 0.145];
-    return [B(0, 0, 0, 3.0, 2.0, 0.12), B(0, 0.32, 0.12, 2.6, 0.95, 0.012), B(0, -0.55, 0.12, 0.95, 0.52, 0.006),
-            B(0, 0, 0.145, 3.0, 2.0, 0.022, false, { a, p: hinge }), B(0, -0.02, 0.139, 2.9, 1.84, 0.005, u > 0.55, { a, p: hinge })];
+    const out = [B(0, 0, 0, 3.0, 2.0, 0.12), B(0, 0.32, 0.12, 2.6, 0.95, o.keys === 'none' || !o.keys ? 0.012 : 0.003),
+                 B(0, -0.55, 0.12, 0.95, 0.52, 0.006),
+                 B(0, 0, 0.145, 3.0, 2.0, 0.022, false, { a, p: hinge }), B(0, -0.02, 0.139, 2.9, 1.84, 0.005, u > 0.55, { a, p: hinge })];
+    if (o.keys === 'keys' || o.keys === 'neon') {
+      const cols = 14, rows = 5, w = 2.6 / cols, h = 0.95 / rows, back = 0.32 + 0.475;
+      for (let r = 0; r < rows; r++) {
+        const y = back - h * (r + 0.5);
+        if (r === rows - 1) {          // the front row: a space bar between the side keys
+          for (let c = 0; c < cols; c++) {
+            if (c >= 4 && c <= 9) { if (c === 4) out.push({ ...B(0 + w * (6.5 - 6.5), y, 0.123, w * 6 - 0.03, h - 0.035, 0.012), key: c / cols }); continue; }
+            out.push({ ...B(-1.3 + w * (c + 0.5), y, 0.123, w - 0.03, h - 0.035, 0.012), key: c / cols });
+          }
+        } else {
+          for (let c = 0; c < cols; c++) out.push({ ...B(-1.3 + w * (c + 0.5), y, 0.123, w - 0.03, h - 0.035, 0.012), key: c / cols });
+        }
+      }
+    }
+    return out;
   },
   phone(u) {
     const out = []; let z = 0;
@@ -171,7 +188,12 @@ export function mount(canvas, name, opts = {}) {
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
   for (const [c, i, p] of look.lights) { const l = new THREE.DirectionalLight(c, i); l.position.set(...p); scene.add(l); }
 
-  const base = OBJECTS[name] || (opts.parts && opts.parts.length ? custom(opts.parts) : OBJECTS.chip);
+  const base = OBJECTS[name] ? ((u) => OBJECTS[name](u, opts))
+    : (opts.parts && opts.parts.length ? custom(opts.parts) : OBJECTS.chip);
+  const keyMat = (hue) => opts.keys === 'neon'      // neon keys: a lit rainbow across the board
+    ? new THREE.MeshStandardMaterial({ color: 0x0b0d14, emissive: new THREE.Color().setHSL(0.5 + 0.45 * hue, 1, 0.38),
+      emissiveIntensity: 1.0, roughness: 0.4, toneMapped: false })
+    : new THREE.MeshStandardMaterial({ color: 0x1b1e26, metalness: 0.2, roughness: 0.55 });
   const names = NAMES[name] || (opts.parts || []).map((p, k) => p.name || `Part ${k + 1}`);
   const parts0 = base(0);
   let goldIndex = parts0.findIndex((p) => p.gold);
@@ -193,6 +215,7 @@ export function mount(canvas, name, opts = {}) {
   const meshes = parts0.map((p, k) => {
     const m = new THREE.Mesh(shapeGeo(p), look.body(k));
     const e = new THREE.LineSegments(edgeGeo(p), look.edge);
+    if (p.key !== undefined) { m.material = keyMat(p.key); m.userData.key = true; e.visible = false; }
     m.add(e); group.add(m); return { m, e, k };
   });
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(size * 0.95, size * 0.95),
@@ -314,7 +337,7 @@ export function mount(canvas, name, opts = {}) {
       const { pos, a } = place(p); const { m, e, k } = meshes[i];
       m.position.copy(pos); m.rotation.set(a, 0, 0);
       const lit = p.gold && !(tex && glass && i === glass.part);   // a screen showing a picture is not painted gold
-      m.material = lit ? look.gold : look.body(k); e.material = p.gold ? look.goldEdge : look.edge;
+      if (!m.userData.key) { m.material = lit ? look.gold : look.body(k); e.material = p.gold ? look.goldEdge : look.edge; }
       const f = p.fade === undefined ? 1 : p.fade;
       m.visible = f > 0.02; m.scale.setScalar(0.6 + 0.4 * f);
     });

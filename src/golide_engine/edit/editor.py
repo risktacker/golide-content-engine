@@ -1432,6 +1432,8 @@ def _object_variety(scenes: list[dict], look: str) -> list[dict]:
         if pick == prev_look:
             pick = order[(n + 1) % len(order)]
         sc["data"]["look"], sc["data"]["view"] = pick, n % 4
+        if sc["data"].get("object") == "laptop":     # owner 2026-11-25: smooth, real keys or neon keys, in turn
+            sc["data"]["keys"] = ("neon", "none", "keys")[n % 3]
         prev_look, n = pick, n + 1
     return scenes
 

@@ -810,7 +810,8 @@ class Composer:
             at = min(at, 0.35)
         opts = {"at": at, "callouts": data.get("callouts") or [], "lead": data.get("lead") or "",
                 "look": data.get("look") or getattr(self, "look", "glass"), "move": move3d,
-                "parts": data.get("parts") or [], "view": int(data.get("view") or 0)}
+                "parts": data.get("parts") or [], "view": int(data.get("view") or 0),
+                "keys": str(data.get("keys") or "none")}
         shot = ""
         if data.get("screen") and Path(data["screen"]).exists():
             # the real picture for the device's screen (owner 2026-11-25), loaded in the page before the first frame
