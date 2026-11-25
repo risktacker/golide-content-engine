@@ -68,8 +68,35 @@ jobs:
         run: |
           sudo find /etc/apt/sources.list.d -maxdepth 1 -type f -iname '*microsoft*' -exec mv {} {}.disabled \;
           sudo apt-get update
-          sudo apt-get install -y ffmpeg fonts-dejavu-core libcairo2-dev pkg-config
+          sudo apt-get install -y ffmpeg fonts-dejavu-core libcairo2-dev pkg-config libegl1 libgl1
       - run: python -m pip install -e '.[production,video]'
+      # 2026-11-25: an edit-engine video is re-cut here too (HyperFrames + the browser), as in production-scheduler.yml
+      - name: Keep the browser between runs
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-browsers-${{ runner.os }}-v1
+      - name: Browser
+        run: |
+          python -m playwright install chromium
+          if ! python -c "from playwright.sync_api import sync_playwright as p; x = p().start(); x.chromium.launch().close(); x.stop()" >/dev/null 2>&1; then
+            timeout 600 python -m playwright install-deps chromium
+          fi
+      - name: Keep the edit engine tools between runs
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/golide-rhubarb
+            ~/.npm
+          key: edit-tools-v2-hyperframes-0.9.32-rhubarb-1.14.0
+      - name: Edit engine tools (Rhubarb Lip Sync, HyperFrames)
+        run: |
+          R="$HOME/.cache/golide-rhubarb"
+          if [ ! -x "$R/Rhubarb-Lip-Sync-1.14.0-Linux/rhubarb" ]; then
+            mkdir -p "$R" && curl -sSL -o "$R/r.zip" https://github.com/DanielSWolf/rhubarb-lip-sync/releases/download/v1.14.0/Rhubarb-Lip-Sync-1.14.0-Linux.zip \
+              && unzip -qo "$R/r.zip" -d "$R" && rm "$R/r.zip" || echo "::warning title=Rhubarb::download failed, mouth follows loudness"
+          fi
+          npx -y hyperframes@0.9.32 --version || true
       - name: Rebuild (${{ inputs.step }})
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
