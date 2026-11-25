@@ -224,6 +224,8 @@ function statusLabel(value) { return STATUS_LABELS[value] || pretty(value); }
 // nothing reports back, so after the time passes it is shown as published.
 function jobStatus(job) {
   if (job.status === "scheduled" && job.scheduled_at && new Date(job.scheduled_at) <= new Date()) return "published";
+  // 2026-11-25 (owner): a video uploaded with no slot (a trial) is out on YouTube too: it can be removed from the list
+  if (job.status === "scheduled" && !job.scheduled_at && job.stage === "youtube-scheduled") return "published";
   return job.status;
 }
 
