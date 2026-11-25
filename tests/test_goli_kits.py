@@ -31,7 +31,8 @@ def test_paused_platforms_get_nothing():
         if saved is not None:
             os.environ["GOLIDE_PAUSED_PLATFORMS"] = saved
     os.environ["GOLIDE_PAUSED_PLATFORMS"] = ",".join(sorted(paused))
-    assert {"instagram", "linkedin"} <= paused
+    os.environ["GOLIDE_PAUSED_PLATFORMS"] = "instagram,linkedin"
+    paused = reels.paused_platforms()
     assert not ({"instagram", "linkedin"} & reels.chosen_platforms({}))
     payload = reels.keep_variants({"variants": [{"platform": p} for p in reels.PLATFORMS]}, None, "abc")
     assert {v["platform"] for v in payload["variants"]} == set(reels.PLATFORMS) - paused

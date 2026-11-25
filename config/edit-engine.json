@@ -28,9 +28,6 @@
     "parts": 12,
     "hold_private": true
   },
-  "paused_platforms": [
-    "instagram",
-    "linkedin"
-  ],
-  "_paused_platforms_note": "Owner 2026-11-25: no uploads to Instagram or LinkedIn until he switches them back on (remove them from paused_platforms). YouTube keeps publishing."
+  "paused_platforms": [],
+  "_paused_platforms_note": "Platforms listed here get no upload on any path (owner switch). Empty = normal production everywhere connected. 2026-11-25: Instagram and LinkedIn were paused by mistake for a few hours and turned back on (the owner only meant the broken 13:00 Short)."
 }

@@ -58,8 +58,8 @@ Owner: Esiah (Lusaka, UTC+2). Direct, no sugar-coating. Studio: studio.golidee.c
   style, in rotation per upload (`goli3d/kits.py` choose: the next after the last record's "kit"), in the video sprites
   and the thumbnail library (`full/kits/<outfit>/`, goli3d-library.yml kind=library kit=all). Blinks are smooth:
   half, closed, half (0.2 s), a double blink now and then. Eye movement (gaze) waits for the Blender motion session.
-- Instagram and LinkedIn are paused (owner 2026-11-25): no upload there on any path until he switches them back on
-  (`config/edit-engine.json` paused_platforms, `reels.paused_platforms`). YouTube keeps publishing.
+- Pausing a platform: `config/edit-engine.json` paused_platforms (empty = normal production on every connected platform,
+  `reels.paused_platforms`). Only on the owner's word; "off that video" means that one video, not all of them.
 - Short models (owner 2026-11-25): channels like Outskill, AI how-to and the tech industry told as tech (the GTA 6 Short,
   1.1K), all Goli (`trend-sources.json` focus.short_channels); the Short script is the tech chain again, not the Ricks
   Clips skit formula, while 3D Shorts are off.
