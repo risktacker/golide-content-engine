@@ -47,6 +47,13 @@ Owner: Esiah (Lusaka, UTC+2). Direct, no sugar-coating. Studio: studio.golidee.c
   showing gets its own look and view (`editor._object_variety`, glass3d.js screen). Other objects need their name said.
 - Broken screens (owner 2026-11-25): a captured page whose styles did not load, an error/block/bot page, broken
   pictures or a near-empty page is never used (`source_capture.broken_page`); another block takes the beat.
+- Studio set (owner 2026-11-25): a wide boardroom smart screen standing off the wall on its mount with a neon glow behind
+  it (`goli3d/studio_model.py` TV_PX, plates rendered locally or by goli3d-library.yml kind=studio); pictures and
+  words fill it (`studio.screen_rect`). The laptop is in front of Goli, its screen facing him.
+- Shorts = long videos in 9:16 (owner 2026-11-25: "the only difference is framing"): the same blocks and flow; the
+  proof on top, captions under it, Goli standing below (`place: side`), never the desk-and-TV as the default.
+- Chapter cards (owner 2026-11-25): leave the moment their stage is named (1-2 s, `editor._chapter_end`), smooth exit.
+- Small neon edge on photo cards, steps on a page and the logo dock (owner 2026-11-25).
 - Don't poll or babysit long runs; it burns the owner's usage.
 - Never start with limits. Build the general capability the owner asks for, not a fixed short list.
 
@@ -211,4 +218,4 @@ best unmodelled video of the last 45 days, no numbers bar. The channel's style i
   automatic runs never switch paid ones on. Real people stay real photo cards, never puppets.
 
 ## Checks
-`python3 -m pytest -q` must pass before every push (679 tests as of 2026-11-24).
+`python3 -m pytest -q` must pass before every push (686 tests as of 2026-11-25).

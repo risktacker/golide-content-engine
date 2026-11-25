@@ -72,6 +72,14 @@ def layout(fmt: str) -> dict:
     return LAYOUTS[fmt] if fmt in ("short", "lower") else LAYOUTS["long"]
 
 
+def screen_rect(fmt: str) -> tuple[float, float, float, float]:
+    """The TV screen on the frame (x0, y0, x1, y1), from the rendered set (owner 2026-11-25: the boardroom screen)."""
+    m = plates("short" if fmt == "short" else "long") or {}
+    pts = m.get("screen") or [[1124, 124], [1846, 124], [1846, 636], [1124, 636]]
+    xs, ys = [p[0] for p in pts], [p[1] for p in pts]
+    return min(xs), min(ys), max(xs), max(ys)
+
+
 def lower_back(sid: str, asset=None) -> str:
     """The Short's lower third: a slice of the studio behind Goli while the proof plays on top."""
     m = need("lower")
@@ -112,14 +120,14 @@ def back3d(sid: str, fmt: str, m: dict, asset) -> str:
     """The 3D set behind Goli, with the TV's live content (chart, bars, LIVE) drawn on its screen."""
     L = layout(fmt)
     W, H = L["w"], L["h"]
-    g = 'transform="translate({} {}) scale({})"'.format(*L["wall"])
     # owner 2026-11-25: no decoration chart on the TV ("that nonsensical graph that has no meaning"): only LIVE and
     # the logo; the screen itself shows the real thing being said (editor._screen_pictures)
+    x0, y0, x1, y1 = screen_rect(fmt)
     screen = (f'<svg viewBox="0 0 {W} {H}" width="{W}" height="{H}" style="position:absolute;left:0;top:0">'
-              f'<g {g}><g id="{sid}-wall">'
-              f'<circle cx="1160" cy="160" r="7" fill="#E8462F"/><text x="1176" y="167" font-family="Inter" font-weight="600" '
-              f'font-size="20" fill="#E8462F">LIVE</text>{logo_mark(1806, 594, 40, "#8FA0C8", "#F2C14E")}'
-              f'</g></g><g id="{sid}-neon"></g></svg>')
+              f'<g id="{sid}-wall">'
+              f'<circle cx="{x0 + 30}" cy="{y0 + 30}" r="7" fill="#E8462F"/><text x="{x0 + 46}" y="{y0 + 37}" font-family="Inter" '
+              f'font-weight="600" font-size="20" fill="#E8462F">LIVE</text>{logo_mark(x1 - 36, y1 - 36, 34, "#8FA0C8", "#F2C14E")}'
+              f'</g><g id="{sid}-neon"></g></svg>')
     return _img(PLATES / fmt / "back.webp", [0, 0], asset, W, H) + screen
 
 

@@ -460,6 +460,8 @@ class Composer:
         fw = 940 if self.fmt == "short" else 1300
         fh = min(fw * ratio, 760 if self.fmt == "short" else 760)
         fx, fy = (self.w - fw) / 2, (self.cy - fh / 2 - 20)
+        if self.zone and self.fmt == "long":     # Goli beside it: the card keeps to the left, clear of his arm
+            fx = 90
         img = self.asset(data["image"])
         domain = re.sub(r"^https?://(www\.)?", "", str(data.get("url", ""))).split("/")[0]
         inner = (f'<div class="frame" id="{sid}-f" style="left:{fx:.0f}px;top:{fy:.0f}px;width:{fw}px;height:{fh:.0f}px;'
@@ -911,12 +913,12 @@ class Composer:
         at = float(data.get("at", 1.0))
         args = {k: v for k, v in data.items() if k not in ("kind", "at", "goli_zone", "heading")}
         svg, tweens, cues = metaphors.DRAW[kind](sid, at, **args)
-        width = 1640 if self.fmt == "long" else 1000      # drawn large: the idea fills the proof area
+        width = (1440 if self.zone else 1640) if self.fmt == "long" else 1000     # drawn large: the idea fills the proof area
         height = width * metaphors.H / metaphors.W
         head = (f'<div class="label" style="position:absolute;left:0;right:0;top:{max(40, self.cy - height / 2 - 60):.0f}px;'
                 f'text-align:center;font-size:36px">{_e(data["heading"])}</div>') if data.get("heading") else ""
         inner = (f'{head}<svg viewBox="0 0 {metaphors.W} {metaphors.H}" width="{width}" height="{height:.0f}" '
-                 f'style="position:absolute;left:{(self.w - width) / 2:.0f}px;top:{self.cy - height / 2 + 20:.0f}px;overflow:visible">'
+                 f'style="position:absolute;left:{(60 if self.zone and self.fmt == "long" else (self.w - width) / 2):.0f}px;top:{self.cy - height / 2 + 20:.0f}px;overflow:visible">'
                  f'{svg}</svg>')
         self.scene(sid, t0, dur, inner)
         self.entrance(sid, t0, how)
@@ -1408,20 +1410,23 @@ class Composer:
         if place in ("full", "studio") and data.get("words") and data.get("outro") != "end_card" and not data.get("subscribe"):
             spans = "".join(f'<span class="word{" gold" if w_["text"].lower().strip(".,!?") == str(data.get("punch", "")).lower() else ""}" '
                             f'id="{sid}-w{i}">{_e(w_["text"])}</span>' for i, w_ in enumerate(data["words"]))
-            if place == "studio":       # the words appear on the studio's video wall
-                wx, wy, ww, wf = studio.layout(self.fmt)["words"]
-                title = (f'<div id="{sid}-scr" style="position:absolute;left:{wx}px;width:{ww}px;top:{wy}px">'
+            if place == "studio":       # the words appear on the studio's screen, filling it (owner 2026-11-25)
+                x0, y0, x1, y1 = studio.screen_rect(self.fmt)
+                wf = 92 if self.fmt == "short" else 84
+                title = (f'<div id="{sid}-scr" style="position:absolute;left:{x0 + 60:.0f}px;width:{x1 - x0 - 120:.0f}px;'
+                         f'top:{y0:.0f}px;height:{y1 - y0:.0f}px;display:flex;align-items:center">'
                          f'<div class="title" style="font-size:{wf}px;line-height:1.05">{spans}</div></div>')
             else:
                 title = (f'<div style="position:absolute;left:{self.w * 0.52:.0f}px;right:110px;top:50%;margin-top:-170px">'
                          f'<div class="title" style="font-size:96px">{spans}</div></div>')
         if place == "studio" and data.get("screen") and not title:
             # 2026-11-20 (owner): the video wall shows a real picture of the story, never an empty wall or headline
-            wx, wy, ww, wf = studio.layout(self.fmt)["words"]
+            # owner 2026-11-25: the picture fills the boardroom screen (a slim margin, so LIVE and the mark stay)
+            x0, y0, x1, y1 = studio.screen_rect(self.fmt)
             src = self.asset(data["screen"])
-            title = (f'<div id="{sid}-scr" style="position:absolute;left:{wx - 10}px;width:{ww + 20}px;top:{wy - 14}px;'
-                     f'height:{int(ww * 0.56)}px;border-radius:14px;overflow:hidden;box-shadow:0 0 0 2px rgba(232,194,104,.45)">'
-                     f'<img src="{src}" style="width:100%;height:100%;object-fit:cover"></div>')
+            title = (f'<div id="{sid}-scr" style="position:absolute;left:{x0 + 22:.0f}px;width:{x1 - x0 - 44:.0f}px;top:{y0 + 56:.0f}px;'
+                     f'height:{y1 - y0 - 100:.0f}px;border-radius:10px;overflow:hidden">'
+                     f'<img src="{src}" style="width:100%;height:100%;object-fit:cover;object-position:50% 0"></div>')
         front = (studio.front(sid, self.fmt, self.asset) if place == "studio" else studio.front(sid, "lower", self.asset)
                  if place == "lower" else "")
         floor = (studio.layout(self.fmt)["desk_y"] if place == "studio" else studio.layout("lower")["desk_y"]

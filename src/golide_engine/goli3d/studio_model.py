@@ -218,18 +218,28 @@ area("uplight", ((f0.x + f1.x) / 2, y_wall - 0.5, f0.z - 0.1), 900 if FMT != "lo
      ((f0.x + f1.x) / 2, y_wall, f0.z + 3), back_col, sy=0.2)
 
 # the video wall: a big flat TV with a slim bezel; the screen is left plain (content is laid on in the video)
+# owner 2026-11-25: a boardroom smart screen, wide and big enough that a page reads on it (the old one was a 32-inch
+# TV), standing off the wall on its mount with a neon glow behind it so it never looks stuck to the wall
+TV_PX = {"long": (880, 64, 1888, 631), "short": (40, 96, 1040, 659)}
 screen_px = None
 if LAY["wall"]:
-  x0, y0 = g("wall", 1124, 124); x1, y1 = g("wall", 1846, 636)
-  DT = DW - 0.18
+  x0, y0, x1, y1 = TV_PX[FMT]
+  DT = DW - 0.6
   a, b = P(x0, y0, DT), P(x1, y1, DT)
   cx, cz, sw, shh = (a.x + b.x) / 2, (a.z + b.z) / 2, b.x - a.x, a.z - b.z
   bez = 7 * U(DT)                          # a hairline bezel, like a current smart TV
   box((cx, CAM.y + DT + 0.03, cz), (sw + 2 * bez, 0.045, shh + 2 * bez), M["bezel"], back_col, 0.004)
   box((cx, CAM.y + DT + 0.055, cz), (sw + 2 * bez - 0.01, 0.01, shh + 2 * bez - 0.01), M["alu_dark"], back_col, 0.003)  # thin metal edge
   scr = box((cx, CAM.y + DT - 0.0, cz), (sw, 0.01, shh), M["screen"], back_col, 0)
-  box((cx, CAM.y + DT + 0.12, cz), (sw * 0.3, 0.06, shh * 0.3), M["metal"], back_col, 0.01)      # wall mount
-  halo = area("tv_halo", (cx, CAM.y + DT + 0.14, cz), 260, sw * 0.9, (0.25, 0.4, 1.0), (cx, CAM.y + DW + 1, cz), back_col, sy=shh * 0.9)
+  for sx_ in (-1, 1):                     # the mount: two arms from the wall to the screen's back
+      box((cx + sx_ * sw * 0.18, CAM.y + (DT + DW) / 2, cz), (0.06, DW - DT, 0.06), M["metal"], back_col, 0.01)
+  box((cx, CAM.y + DW - 0.03, cz), (sw * 0.42, 0.04, 0.12), M["metal"], back_col, 0.01)
+  # the neon glow behind it: a lit strip round the back edge, and its light washing the wall
+  neon = mat("tvneon", "#5E8BFF", 0.5, emit=14.0, ecolor="#4F7DFF")
+  for (bx, bz, bw, bh) in ((cx, cz + shh / 2 - 0.02, sw - 0.1, 0.025), (cx, cz - shh / 2 + 0.02, sw - 0.1, 0.025),
+                           (cx - sw / 2 + 0.02, cz, 0.025, shh - 0.1), (cx + sw / 2 - 0.02, cz, 0.025, shh - 0.1)):
+      box((bx, CAM.y + DT + 0.075, bz), (bw, 0.02, bh), neon, back_col, 0)
+  halo = area("tv_halo", (cx, CAM.y + DT + 0.12, cz), 900, sw * 0.95, (0.3, 0.45, 1.0), (cx, CAM.y + DW + 1, cz), back_col, sy=shh * 0.95)
   glow = mat("tvglow", "#3D6CFF", 0.5, emit=3.0, ecolor="#2C55E0")
   area("tv_wash", (cx, CAM.y + DT - 0.4, cz), 220, sw, (0.35, 0.5, 1.0), (cx, CAM.y + DT - 3, cz - 1.5), back_col, sy=shh)
   screen_px = [[x0, y0], [x1, y0], [x1, y1], [x0, y1]]
@@ -378,11 +388,12 @@ def desk_point(px, depth_px=0.0):
 
 # laptop: a thin MacBook-style aluminium laptop, used by Goli: the keyboard on his side, the lid's back (with our
 # glowing mark) toward the camera, turned a little toward him so the screen's edge shows
-lp = desk_point(1070 if FMT == "long" else 930, 2)
+# owner 2026-11-25: the laptop is his: in front of him, its screen facing him, the mark on its back to the camera
+lp = desk_point(640, -40)
 lw = 280 * k * du
 ld = lw * 0.68
 lid_h = lw * 0.66
-turn = math.radians(-22 if FMT == "long" else -18)
+turn = math.radians(0)
 lap = bpy.data.objects.new("laptop", None); front_col.objects.link(lap)   # built around its hinge, then placed
 
 
@@ -414,7 +425,7 @@ if SPEC.get("neon_logo"):                    # our mark glowing on the lid's bac
 lap.location = (lp.x, lp.y - ld * 0.2, lp.z)
 lap.rotation_euler = (0, 0, turn)
 # mug (left), with coffee
-mp = desk_point(880, 0) if FMT == "long" else desk_point(360, -110)
+mp = desk_point(1010, 0) if FMT == "long" else desk_point(900, -110)
 mr, mh = 39 * k * du, 96 * k * du
 cyl((mp.x, mp.y, mp.z + mh / 2), mr, mh, M["ceramic"], front_col, bevel=0.006)
 cyl((mp.x, mp.y, mp.z + mh - 0.012), mr * 0.86, 0.01, M["coffee"], front_col)
