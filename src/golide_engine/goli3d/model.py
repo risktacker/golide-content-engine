@@ -643,8 +643,12 @@ def brow(side, lift, ang, arch):
 
 
 def build_face(e, talk):
-    if SPEC.get("blink"):
+    b = SPEC.get("blink")
+    if b is True or b == 1:
         e = dict(e, up=-0.92, tilt=0, low=-1)
+    elif b:                       # owner 2026-11-25: a half-closed lid, so a blink closes and opens smoothly
+        f = float(b)
+        e = dict(e, up=e["up"] + (-0.92 - e["up"]) * f, tilt=e["tilt"] * (1 - f), low=e["low"] + (-1 - e["low"]) * f)
     for side in (-1, 1):
         x = side * 0.2
         sphere((x, -0.47, 1.86), (0.12, 0.08, 0.13), eye_mat(f"eye{side}", e["gaze"], e.get("ps", 1.0), e.get("sparkle", False)), seg=64)

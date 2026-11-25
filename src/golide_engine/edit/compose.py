@@ -1558,10 +1558,14 @@ class Composer:
             last = v
         # eyes: the 3D renders look where each pose looks (no separate eyes to move)
         # blinks every 2.8 to 4.2 s (fixed pattern, so renders repeat exactly)
-        at, gaps, i = t0 + 1.2, (3.1, 2.8, 4.2, 3.5), 0
+        at, gaps, i = t0 + 1.2, (3.1, 2.8, 4.2, 3.5, 2.4), 0
         while at < t0 + dur - 0.3:
-            # the closed-eyes 3D patch shows for 0.12 s
-            self.tw(f'tl.set("#{sid} [id$=-lid]",{{opacity:1}},{at:.3f});tl.set("#{sid} [id$=-lid]",{{opacity:0}},{at + 0.12:.3f});')
+            # owner 2026-11-25 ("real, not glitching, smooth"): half-closed, closed, half-closed, open (about 0.2 s);
+            # every fourth one a double blink, as people do
+            for b in ((0.0,) if i % 4 != 3 else (0.0, 0.32)):
+                a_ = at + b
+                self.tw(f'tl.set("#{sid} [id$=-half]",{{opacity:1}},{a_:.3f});tl.set("#{sid} [id$=-lid]",{{opacity:1}},{a_ + 0.05:.3f});'
+                        f'tl.set("#{sid} [id$=-lid]",{{opacity:0}},{a_ + 0.12:.3f});tl.set("#{sid} [id$=-half]",{{opacity:0}},{a_ + 0.19:.3f});')
             at += gaps[i % len(gaps)]
             i += 1
         for i, w_ in enumerate(data.get("words") or []):

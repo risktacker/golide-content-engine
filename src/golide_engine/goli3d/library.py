@@ -26,11 +26,18 @@ def expression(name: str | None) -> str:
     return name if name in EXPRESSIONS else "neutral"
 
 
-def path(pose: str = "talk", expr: str | None = None) -> Path:
-    """The library file for this pose and reaction. Owner 2026-11-21: no stand-ins; a gap is an error."""
+def path(pose: str = "talk", expr: str | None = None, outfit: str | None = None) -> Path:
+    """The library file for this pose and reaction. Owner 2026-11-21: no stand-ins; a gap is an error.
+    Owner 2026-11-25: in the day's kit (hoodie and glasses, goli3d/kits.py) once that kit is rendered."""
     e = expression(expr)
     if pose not in POSES:
         raise ValueError(f"Goli has no 3D pose {pose!r}; poses: {', '.join(POSES)}")
+    if outfit is None:
+        from .kits import today
+        outfit = today()
+    kit = LIBRARY / "kits" / outfit / pose / f"{e}.png"
+    if kit.exists():
+        return kit
     f = LIBRARY / pose / f"{e}.png"
     if not f.exists():
         raise FileNotFoundError(f"Goli 3D library is missing {pose}/{e}.png; run goli3d-library.yml kind=library")

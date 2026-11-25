@@ -22,14 +22,20 @@ POSES = ("talk", "point_left", "point", "point_up", "thumbs_up", "shock", "point
 PLAN = {p: EXPRS for p in POSES}     # owner 2026-11-21: every pose with every reaction, no stand-ins
 
 
+sys.path.insert(0, str(ROOT / "src"))
+from golide_engine.goli3d.kits import KITS  # noqa: E402
+
+
 def render(job):
-    pose, expr = job
-    f = OUT / pose / f"{expr}.png"
+    pose, expr, kit = job
+    f = (OUT / "kits" / kit / pose if kit else OUT / pose) / f"{expr}.png"
     if f.exists():
         return
     f.parent.mkdir(parents=True, exist_ok=True)
     raw = f.with_suffix(".raw.png")
     spec = dict(expr=expr, pose=pose, bg="transparent", size=[900, 990], samples=40)
+    if kit:                                   # owner 2026-11-25: the weekday's hoodie and glasses
+        spec.update(outfit=kit, glasses=KITS[kit])
     subprocess.run([sys.executable, str(MODEL), json.dumps(spec), str(raw)], check=True, capture_output=True)
     im = Image.open(raw).convert("RGBA")
     solid = im.getchannel("A").point(lambda v: 255 if v > 40 else 0)
@@ -47,7 +53,10 @@ def render(job):
 
 
 if __name__ == "__main__":
-    poses = sys.argv[1:] or list(PLAN)
-    jobs = [(p, e) for p in poses for e in PLAN[p]]
+    args = sys.argv[1:]
+    kits = [a.split("=", 1)[1] for a in args if a.startswith("kit=")]
+    kits = list(KITS) if kits == ["all"] else kits or [None]
+    poses = [a for a in args if not a.startswith("kit=")] or list(PLAN)
+    jobs = [(p, e, k) for k in kits for p in poses for e in PLAN[p]]
     with ThreadPoolExecutor(2) as ex:
         list(ex.map(render, jobs))

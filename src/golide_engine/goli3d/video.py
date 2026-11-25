@@ -95,5 +95,11 @@ def layer(pose: str, uid: str, outfit: str, size: float, asset) -> str:
     html = img(d / f"body-{outfit}.webp", m["body"][outfit])
     for s in SHAPES:
         html += img(d / f"mouth-{s}.webp", m["patches"][s], f"{uid}-m{s}", show=(s == "X"))
-    html += img(d / "blink.webp", m["patches"]["blink"], f"{uid}-lid", show=False)
+    from .kits import glasses
+    g = glasses(outfit)
+    if (d / f"blink-{g}.webp").exists():       # owner 2026-11-25: the day's glasses, and a half lid for a smooth blink
+        html += img(d / f"half-{g}.webp", m["patches"][f"half-{g}"], f"{uid}-half", show=False)
+        html += img(d / f"blink-{g}.webp", m["patches"][f"blink-{g}"], f"{uid}-lid", show=False)
+    else:
+        html += img(d / "blink.webp", m["patches"]["blink"], f"{uid}-lid", show=False)
     return html
