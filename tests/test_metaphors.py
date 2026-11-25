@@ -97,3 +97,12 @@ def test_a_chapter_card_never_holds_past_two_seconds():
     assert card["duration"] <= 2.0
     studio = [s for s in edit["scenes"] if s["type"] == "host" and s["data"].get("place") == "studio"]
     assert studio and abs(studio[0]["start"] - (card["start"] + card["duration"])) < 0.05
+
+
+def test_a_chapter_card_leaves_once_its_stage_is_named():
+    """Owner 2026-11-25: "once you say 'step 5', the moment you start explaining that stage it has to leave"."""
+    lines = _lines(["Step five. Now open the settings page and paste the key you copied."])
+    raw = {"scenes": [{"type": "chapter", "label": "Step five", "first_line": 0, "last_line": 0}]}
+    edit = editor.build(raw, lines, 6.0, "long", [], None, [], [])
+    card = next(s for s in edit["scenes"] if s["type"] == "chapter_card")
+    assert 1.0 <= card["duration"] < 1.9

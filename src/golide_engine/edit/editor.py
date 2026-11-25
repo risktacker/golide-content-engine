@@ -996,6 +996,7 @@ def _lower_host(scenes: list[dict], cues: list[dict], fmt: str = "short") -> lis
                 scene["data"]["goli_zone"] = True
                 continue
             poses.append({"pose": REACT.get(scene["type"], "talk"), "at": round(scene["start"] - t0, 3)})
+            scene["data"]["goli_zone"] = True       # owner 2026-11-25: a Short is the long video in 9:16: proof on top, Goli under it
             for c in corner:            # the editor's own reaction words for this card win
                 if abs(c["start"] - scene["start"]) < 0.6:
                     for p in c["data"].get("poses", []):
@@ -1003,7 +1004,9 @@ def _lower_host(scenes: list[dict], cues: list[dict], fmt: str = "short") -> lis
                             poses.append({"pose": p["pose"], "at": round(c["start"] - t0 + p["at"], 3)})
         poses = sorted(poses, key=lambda p: p["at"])
         # 2026-11-11 (owner): not always at the desk: every other run of cards he stands beside them
-        place = ("lower", "side")[runs[0] % 2] if fmt == "short" else "side"   # 2026-11-13 (review): the boxed corner Goli left near-empty frames
+        # owner 2026-11-25: "the same way we treat long videos... the only difference is framing": in a Short too he
+        # stands with the proof (under it), never back at the desk with the proof on a TV
+        place = "side"
         runs[0] += 1
         out.append({"type": "host", "start": t0, "duration": t1 - t0, "data": {
             "place": place, "cues": [{"start": round(c["start"] - t0, 3), "value": c["value"]}
@@ -1467,9 +1470,10 @@ def _cap_cards(scenes: list[dict], lines, cues: list[dict] | None, notes: list[s
     the other passes a card that grew past its CARD_MAX is cut back; the rest of its time is Goli in the studio with the
     line on his TV, and a Goli standing beside the card stops with it."""
     out = list(scenes)
-    for sc in [x for x in scenes if CARD_MAX.get(x["type"]) and x["duration"] > CARD_MAX[x["type"]] + 0.3]:
-        cut, end = sc["start"] + CARD_MAX[sc["type"]], sc["start"] + sc["duration"]
-        sc["duration"] = CARD_MAX[sc["type"]]
+    limit = {id(x): _chapter_end(x, lines) if x["type"] == "chapter_card" else CARD_MAX.get(x["type"], 0) for x in scenes}
+    for sc in [x for x in scenes if CARD_MAX.get(x["type"]) and x["duration"] > limit[id(x)] + (0.1 if x["type"] == "chapter_card" else 0.3)]:
+        cut, end = sc["start"] + limit[id(sc)], sc["start"] + sc["duration"]
+        sc["duration"] = round(limit[id(sc)], 3)
         for h in [x for x in out if x["type"] == "host" and x["data"].get("place") in ("side", "lower")
                   and x["start"] < end and x["start"] + x["duration"] > cut]:
             if h["start"] >= cut - 0.05:
@@ -1480,8 +1484,25 @@ def _cap_cards(scenes: list[dict], lines, cues: list[dict] | None, notes: list[s
         out.append({"type": "host", "start": round(cut, 3), "duration": round(end - cut, 3), "data": {
             "place": "studio", "cues": _cues_between(cues or [], cut, end), "poses": [{"pose": "talk", "at": 0}],
             "words": _screen_words(text, lines, cut, end) if text else [], "punch": ""}})
-        notes.append(f"{sc['type']} at {sc['start']:.1f}s held {end - sc['start']:.1f} s: cut to {CARD_MAX[sc['type']]:.0f} s, then the studio")
+        notes.append(f"{sc['type']} at {sc['start']:.1f}s held {end - sc['start']:.1f} s: cut to {limit[id(sc)]:.1f} s, then the studio")
     return sorted(out, key=lambda s: (s["start"], s["type"] == "host"))
+
+
+def _chapter_end(sc: dict, lines) -> float:
+    """Owner 2026-11-25 ("once you say 'let's go to step 5', the moment you start explaining that stage it has to
+    leave"): a chapter card stays while its stage is being named and leaves on the last word that names it; 1-2 s."""
+    t0 = sc["start"]
+    want = {_norm(w) for w in re.findall(r"[A-Za-z0-9]+", str(sc["data"].get("title") or "")) if len(w) > 1}
+    words = list(_spoken(lines, t0 - 0.2, t0 + 2.6))
+    hit = [w for w in words if _norm(w.text) in want]
+    if hit:
+        last = hit[-1]
+        end = float(getattr(last, "end", None) or float(last.start) + 0.35)
+        return max(1.0, min(CARD_MAX["chapter_card"], end - t0 + 0.2))
+    first = next((w for w in words if re.search(r"[.!?]$", w.text)), None)   # no title words said: its first sentence
+    if first is not None:
+        return max(1.0, min(CARD_MAX["chapter_card"], float(getattr(first, "end", None) or first.start + 0.3) - t0 + 0.2))
+    return 1.6
 
 
 def _short_cards(scenes: list[dict], notes: list[str], cues: list[dict] | None) -> list[dict]:

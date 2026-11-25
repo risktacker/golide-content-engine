@@ -242,6 +242,11 @@ class Composer:
             # and Goli has the right quarter, so he is never pushed out and never covers the proof
             inner = (f'<div class="zone" style="position:absolute;inset:0;transform:scale({0.84 * getattr(self, "_boost", 1.0):.3f});'
                      f'transform-origin:2% 50%">{inner}</div>')
+        elif self.zone and self.fmt == "short":
+            # owner 2026-11-25: a Short is framed like the long video: the proof keeps to the top, above the captions,
+            # and Goli stands under it (the long video's right quarter becomes the Short's bottom third)
+            inner = (f'<div class="zone" style="position:absolute;inset:0;transform:scale({0.9 * getattr(self, "_boost", 1.0):.3f});'
+                     f'transform-origin:50% 4%">{inner}</div>')
         elif abs(getattr(self, "_boost", 1.0) - 1.0) > 0.005:
             # 2026-11-13 (point 5): a scene measured too small is enlarged around its middle
             inner = (f'<div style="position:absolute;inset:0;transform:scale({self._boost:.3f});transform-origin:50% 50%">'
@@ -458,7 +463,7 @@ class Composer:
         img = self.asset(data["image"])
         domain = re.sub(r"^https?://(www\.)?", "", str(data.get("url", ""))).split("/")[0]
         inner = (f'<div class="frame" id="{sid}-f" style="left:{fx:.0f}px;top:{fy:.0f}px;width:{fw}px;height:{fh:.0f}px;'
-                 f'border:2px solid rgba(232,194,104,.6);box-shadow:0 30px 90px rgba(0,0,0,.7),0 0 60px rgba(232,194,104,.2)">'
+                 f'border:2px solid #F2C14E;box-shadow:0 30px 90px rgba(0,0,0,.7),0 0 10px rgba(242,193,78,.9),0 0 26px rgba(242,193,78,.45)">'
                  f'<img id="{sid}-i" src="{img}" style="position:absolute;left:0;top:50%;width:100%;transform-origin:50% 50%"></div>')
         if domain:
             inner += (f'<div class="chip" id="{sid}-src" style="position:absolute;left:{fx:.0f}px;top:{fy + fh + 24:.0f}px;'
@@ -581,6 +586,9 @@ class Composer:
         self.tw(f'tl.fromTo("#{sid}-t",{{clipPath:"inset(0 100% 0 0)"}},{{clipPath:"inset(0 0% 0 0)",duration:.6,ease:"power2.inOut"}},{t0 + 0.2:.3f});')
         self.tw(f'tl.to("#{sid}-u",{{width:420,duration:.5,ease:"power3.out"}},{t0 + 0.6:.3f});')
         self.drift(sid, t0, dur, 0.02)
+        # owner 2026-11-25: it leaves smoothly the moment the stage is named and the explaining starts
+        self.tw(f'tl.to("#{sid}-t, #{sid}-u, #{sid}-c",{{y:-60,opacity:0,filter:"blur(6px)",duration:.28,ease:"power2.in",'
+                f'stagger:.03}},{t0 + max(0.7, dur - 0.32):.3f});')
 
     def quote_card(self, t0, dur, data, how="rise"):
         sid = self._id("quote")
@@ -658,10 +666,10 @@ class Composer:
             cx, cw = fx + fw + 50, 560
             cy = top + (ph + 44) / 2
         else:
-            fw, fx, top = 900, 90, 250
-            ph = 640
+            fw, fx, top = 900, 90, 190
+            ph = 380
             cx, cw = 90, 900
-            cy = top + ph + 44 + 60 + 2 * 150
+            cy = top + ph + 44 + 40 + len(items) * 70
         with Image.open(data["image"]) as im:
             img_h = fw * im.height / im.width
         ph = min(ph, img_h)
@@ -670,10 +678,10 @@ class Composer:
         chrome = (f'<div class="bar"><div class="dot" style="background:#ff5f57"></div><div class="dot" '
                   f'style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div>'
                   f'<div class="url">{_e(data.get("url", ""))}</div></div>')
-        fs = 40 if long else 46
+        fs = 40 if long else 38
         rows = ""
         for i, it in enumerate(items):
-            rows += (f'<div id="{sid}-c{i}" style="display:flex;align-items:center;gap:22px;margin:0 0 22px;padding:20px 24px;'
+            rows += (f'<div id="{sid}-c{i}" style="display:flex;align-items:center;gap:22px;margin:0 0 {22 if long else 14}px;padding:{20 if long else 14}px 24px;'
                      f'border-radius:22px;background:rgba(14,15,22,.92);border:2px solid rgba(232,194,104,.25);opacity:0">'
                      f'<div style="position:relative;flex:none;width:{fs * 1.7:.0f}px;height:{fs * 1.7:.0f}px">'
                      f'<div id="{sid}-n{i}" style="position:absolute;inset:0;border-radius:50%;background:#E8C268;color:#07080B;'
@@ -684,7 +692,7 @@ class Composer:
         head = (f'<div class="label" style="margin-bottom:22px;color:#E8C268">{_e(data.get("heading", ""))}</div>'
                 if data.get("heading") else "")
         inner = (f'<div class="frame" id="{sid}-f" style="left:{fx}px;top:{top}px;width:{fw}px;height:{ph + bar:.0f}px;'
-                 f'border:1.5px solid rgba(232,194,104,.55);box-shadow:0 30px 90px rgba(0,0,0,.7),0 0 60px rgba(232,194,104,.18)">'
+                 f'border:2px solid #F2C14E;box-shadow:0 30px 90px rgba(0,0,0,.7),0 0 10px rgba(242,193,78,.9),0 0 26px rgba(242,193,78,.45)">'
                  f'{chrome}<div class="page" style="top:{bar}px"><div id="{sid}-pg" style="position:absolute;left:0;top:0;'
                  f'width:{fw}px;height:{img_h:.0f}px"><img src="{img}" style="width:{fw}px"></div></div></div>'
                  f'<div id="{sid}-col" style="position:absolute;left:{cx}px;width:{cw}px;top:{cy:.0f}px;transform:translateY(-50%)">'
@@ -699,7 +707,7 @@ class Composer:
             at = t0 + float(ats[i] if i < len(ats) else 0.3 + 0.8 * i)
             self.tw(f'tl.fromTo("#{sid}-c{i}",{{x:60,opacity:0}},{{x:0,opacity:1,duration:.4,ease:"back.out(1.6)"}},{at:.3f});')
             self.tw(f'tl.fromTo("#{sid}-c{i}",{{borderColor:"rgba(232,194,104,.25)",boxShadow:"0 0 0 rgba(232,194,104,0)"}},'
-                    f'{{borderColor:"rgba(232,194,104,1)",boxShadow:"0 0 34px rgba(232,194,104,.45)",duration:.3}},{at + 0.05:.3f});')
+                    f'{{borderColor:"#F2C14E",boxShadow:"0 0 10px rgba(242,193,78,.9),0 0 26px rgba(242,193,78,.45)",duration:.3}},{at + 0.05:.3f});')
             self.cue("click", at)
             if i + 1 < len(items):
                 nxt = t0 + float(ats[i + 1] if i + 1 < len(ats) else 0.3 + 0.8 * (i + 1))
@@ -951,9 +959,11 @@ class Composer:
             m1 = remap.get(data["mark"] + 1, len(rows))
             lit = set(range(m0, m1))                       # a wrapped proving line is lit on all its rows
             data = dict(data, mark=m0)
-        visible = 12 if long else 20
+        # a Short's window is sized to its rows and sits in the proof area on top (owner 2026-11-25: framed like long)
+        visible = 12 if long else max(6, min(14, len(rows) + 1))
         fh = lh * visible + 40
-        fx, fy = ((70 if self.zone and long else (self.w - fw) // 2), max(70, (self.h - fh - 50) // 2))
+        fx, fy = ((70 if self.zone and long else (self.w - fw) // 2),
+                  max(70, (self.h - fh - 50) // 2) if long else max(200, self.cy - fh // 2))
         cmds = [i for i, r in enumerate(rows) if r["kind"] == "cmd"]
         bounds = cmds + [len(rows)]
         real = sum(max((r["t"] for r in rows[c + 1:bounds[j + 1]]), default=0.0) for j, c in enumerate(cmds))
@@ -1191,8 +1201,8 @@ class Composer:
                       f'text-align:center;font:800 {34 if long else 30}px Poppins;color:#fff;opacity:0;white-space:nowrap;'
                       f'overflow:hidden;text-overflow:ellipsis">{_e(t.get("name", ""))}</div>')
         inner = (f'<div id="{sid}-d" style="position:absolute;left:{dx:.0f}px;top:{dy:.0f}px;width:{dw:.0f}px;height:{ts + 120}px;'
-                 f'border-radius:48px;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.14);'
-                 f'box-shadow:0 30px 80px rgba(0,0,0,.6)">{slots}</div>')
+                 f'border-radius:48px;background:rgba(255,255,255,.05);border:2px solid #F2C14E;'
+                 f'box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 10px rgba(242,193,78,.9),0 0 26px rgba(242,193,78,.45)">{slots}</div>')
         if data.get("caption"):
             inner += (f'<div class="title" style="position:absolute;left:0;width:{span:.0f}px;top:{dy - 130:.0f}px;'
                       f'text-align:center;font-size:{64 if long else 72}px">{_e(data["caption"])}</div>')
@@ -1322,7 +1332,7 @@ class Composer:
         self.outfits.add(outfit)
         # 2026-11-12 (owner): big enough to be seen; 2026-11-13 (review): at 820 he took 30% of the frame and
         # pushed the proof small, so 700 beside a larger proof area
-        side = 560 if self.fmt == "short" else 700
+        side = 640 if self.fmt == "short" else 700
         # "beside": next to a finished video's panel (Stickman + Goli, 2026-11-17): full body so his arms read
         beside = 600 if self.fmt == "long" else 680     # 2026-11-17: 800 looked huge on long; 2026-11-21: 600 keeps his point 30 px off the panel
         size = {"full": 1000, "left": 860, "right": 860, "corner": 420, "studio": studio.layout(self.fmt)["size"],
@@ -1333,11 +1343,13 @@ class Composer:
         w = size * goli3d.aspect()
         x = {"full": self.w * 0.27 - w / 2, "left": 40, "right": self.w - w - 40, "corner": self.w - w - 50,
              "studio": studio.layout(self.fmt)["seat_x"] - w / 2, "lower": studio.layout("lower")["seat_x"] - w / 2,
-             "side": 10 if self.fmt == "short" else self.w - w + 60,
+             "side": (self.w - w) / 2 if self.fmt == "short" else self.w - w + 60,
              "beside": -10 if self.fmt == "short" else self.w - w + 40}[place]
         y = self.h - size - (30 if place != "corner" else 20)
         if place == "side":   # standing beside the block; on a Short his feet stay above YouTube's caption area
-            y = (1700 if self.fmt == "short" else self.h + 150) - size   # long: knees at the frame's bottom edge
+            # long: knees at the frame's bottom edge; Short (owner 2026-11-25): under the proof and the captions, his
+            # feet low behind YouTube's own buttons
+            y = (1840 if self.fmt == "short" else self.h + 150) - size
         if place == "beside":     # long: feet just under the frame's edge; Short: feet above YouTube's caption area
             y = (1700 if self.fmt == "short" else self.h + 30) - size
         if place in ("studio", "lower"):      # seated: desk top at his waist

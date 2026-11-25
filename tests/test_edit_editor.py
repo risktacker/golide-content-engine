@@ -44,7 +44,7 @@ class EditorTest(unittest.TestCase):
         self.assertLessEqual(types.count("kinetic_title"), editor.WORDS_MAX)
         self.assertTrue(edit["captions"] and edit["captions"][0]["words"])
         lower = edit["scenes"][2]["data"]
-        self.assertEqual(lower["place"], "lower")      # Short: Goli stays below the cards, no corner pop-ins
+        self.assertEqual(lower["place"], "side")       # Short (owner 2026-11-25): he stands under the proof, as in long videos
         self.assertEqual([p["pose"] for p in lower["poses"]][:1], ["point_up"])
         self.assertTrue(any("source 7" in n for n in edit["notes"]))
         host = edit["scenes"][0]["data"]
