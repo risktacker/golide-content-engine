@@ -576,6 +576,26 @@ function jobSecondary(job) {
   return pieces.join(", ");
 }
 
+// 2026-11-25 (owner: "these buttons have to correspond with the backend"): a finished video says what the engine
+// REALLY used, next to what he chose, so a button that did nothing shows the same day
+const PLATFORM_NAMES = { youtube: "YouTube", instagram: "Instagram", facebook: "Facebook", linkedin: "LinkedIn" };
+const STYLE_NAMES = { goli: "Goli", illustration: "Illustration", stickman: "Stickman", stickman_goli: "Stickman + Goli" };
+function madeWithLine(job) {
+  let m = job.made_with;
+  try { m = typeof m === "string" ? JSON.parse(m) : m; } catch { m = null; }
+  if (!m || typeof m !== "object") return "";
+  const parts = [STYLE_NAMES[m.style] || m.style];
+  const blocks = Object.entries(m.blocks || {}).slice(0, 6).map(([k, n]) => n + " " + k);
+  if (blocks.length) parts.push(blocks.join(", "));
+  const recipes = Object.keys(m.recipes || {});
+  if (recipes.length) parts.push("styles: " + recipes.join(", "));
+  parts.push("posted to " + ((m.platforms || []).map((p) => PLATFORM_NAMES[p] || p).join(", ") || "nowhere (emailed)"));
+  if (m.kit) parts.push("kit: " + m.kit);
+  const fixed = Object.values(m.doctor_fixed || {}).reduce((a, b) => a + b, 0);
+  parts.push(fixed ? "doctor fixed " + fixed : "doctor: clean");
+  return '<small class="job-made">Made with: ' + esc(parts.join(" · ")) + '</small>';
+}
+
 function renderJobList() {
   const root = $("#job-list");
   if (!productionJobs.length) {
@@ -601,7 +621,8 @@ function renderJobList() {
     if (Number(job.voice_characters) > 0) spent.push("Voice " + Number(job.voice_characters).toLocaleString("en-US") + " characters");
     return '<div class="job-card"><div class="job-title"><strong>' +
       esc(job.title || "Engine planning job") + '</strong><small>' +
-      esc(jobSecondary(job)) + '</small>' + (spent.length ? '<small class="job-spend">' + esc(spent.join(" · ")) + '</small>' : '') + '</div>' +
+      esc(jobSecondary(job)) + '</small>' + (spent.length ? '<small class="job-spend">' + esc(spent.join(" · ")) + '</small>' : '') +
+      madeWithLine(job) + '</div>' +
       stageBars(job) +
       '<div><span class="status-pill ' + escAttr(jobStatus(job)) + '">' +
       esc(statusLabel(jobStatus(job))) + '</span>' + retry + skip + remove + '</div></div>';

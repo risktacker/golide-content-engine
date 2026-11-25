@@ -602,6 +602,7 @@ def main() -> int:
             script: str | None = None,
             selected_topic: str | None = None,
             clear_voice: bool = False,
+            made_with: dict | None = None,
         ) -> None:
             if not bridge or not studio_job_id or service is None:
                 return
@@ -631,6 +632,7 @@ def main() -> int:
                     script=script,
                     selected_topic=selected_topic,
                     clear_voice=clear_voice,
+                    made_with=made_with,
                 )
             except Exception as exc:
                 print(json.dumps({
@@ -871,9 +873,11 @@ def main() -> int:
             qa_warnings = json.loads((Path("productions") / spec["id"] / "qa-report.json").read_text(encoding="utf-8")).get("warnings", [])
         except Exception:
             pass
+        from .orchestration.made_with import made_with
         report_studio("scheduled", "youtube-scheduled" if video_id else ("released" if platforms else "emailed-to-owner"),
                       ("Published, but check the spelling of: " + ", ".join(w.split(": ", 1)[-1] for w in qa_warnings))
-                      if qa_warnings else None)
+                      if qa_warnings else None,
+                      made_with=made_with(spec, Path("productions") / spec["id"], platforms, reels, long_social))
         print(json.dumps({"status": "scheduled", "production_id": spec["id"], "youtube_video_id": video_id,
                           "retention": retention, "reels": reels, "long_social": long_social,
                           "reel_cover": reel_cover, "platforms": sorted(platforms), "emailed": delivered}))

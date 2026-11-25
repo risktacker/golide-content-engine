@@ -72,6 +72,10 @@ Owner: Esiah (Lusaka, UTC+2). Direct, no sugar-coating. Studio: studio.golidee.c
   named thing is not on screen is a miss; its TV takes the named words).
 - Lessons (owner 2026-11-25): the doctor's fixes and plan misses become general rules counted in R2
   (`edit/lessons.py`, goli-lessons/lessons.json); the editor reads the top 12; a rule unseen for 8 videos retires.
+- Studio buttons (owner 2026-11-25: "they are not there for decoration"): every control on a video is pressed in
+  `tests/worker/studio_buttons.test.mjs` (real SQLite, run in CI) and the engine side in `tests/test_studio_buttons.py`.
+  A new button gets a test there. Each finished video reports "Made with" (`orchestration/made_with.py`: type, blocks,
+  styles, platforms, kit, doctor fixes), shown on its card. Platform ticks are read again when the posts are queued.
 - Don't poll or babysit long runs; it burns the owner's usage.
 - Never start with limits. Build the general capability the owner asks for, not a fixed short list.
 

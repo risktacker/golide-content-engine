@@ -157,6 +157,7 @@ class StudioBridge:
         script: str | None = None,
         selected_topic: str | None = None,
         clear_voice: bool = False,
+        made_with: dict[str, Any] | None = None,
     ) -> None:
         payload: dict[str, Any] = {
             "status": status,
@@ -182,6 +183,8 @@ class StudioBridge:
             payload["selectedTopic"] = selected_topic[:1000]
         if clear_voice:
             payload["clearVoice"] = True
+        if made_with:
+            payload["madeWith"] = made_with      # owner 2026-11-25: what the engine really used, shown on the card
         response_status, _ = self._request(
             "POST", f"/api/engine/jobs/{quote(job_id)}/status", payload
         )
