@@ -35,6 +35,13 @@ Owner: Esiah (Lusaka, UTC+2). Direct, no sugar-coating. Studio: studio.golidee.c
   30 minutes after the render (`orchestration/queue.py` waiting_for_link / link_fallback). The voice is never
   processed after ElevenLabs (no EQ/compressor chain), only levelled.
 - Trials are labelled as trials. Don't paste API tokens. Digits for numbers.
+- What is theirs stays theirs (owner 2026-11-25, the law): steps, tools, prompts and results anyone can repeat may be
+  told as ours; what is personal to another creator (the name of their product, their life) is never claimed. Theirs
+  is told as theirs or handed to the viewer ("name yours whatever you like"); our build gets a GOLIDE trial name
+  (`story.CLOSE_MODEL`, `config/script-voice.md`).
+- Studio TV (owner 2026-11-25, long and Shorts): no decoration chart; it shows the real thing being said: a picture
+  whose page names what the line names (never black/blank/texture, never twice unless it is the product, 3 at most),
+  else the line's own words with the key word lit (`editor._screen_pictures`, `studio.back3d`).
 - Don't poll or babysit long runs; it burns the owner's usage.
 - Never start with limits. Build the general capability the owner asks for, not a fixed short list.
 
