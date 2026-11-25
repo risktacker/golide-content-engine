@@ -1,0 +1,497 @@
+{
+ "bones": {
+  "root": {
+   "head": [
+    0,
+    0,
+    0
+   ],
+   "tail": [
+    0,
+    0,
+    0.3
+   ],
+   "parent": null
+  },
+  "hips": {
+   "head": [
+    0,
+    0,
+    0.45
+   ],
+   "tail": [
+    0,
+    0,
+    0.8
+   ],
+   "parent": "root"
+  },
+  "spine": {
+   "head": [
+    0,
+    0,
+    0.8
+   ],
+   "tail": [
+    0,
+    0,
+    1.15
+   ],
+   "parent": "hips"
+  },
+  "chest": {
+   "head": [
+    0,
+    0,
+    1.15
+   ],
+   "tail": [
+    0,
+    0,
+    1.42
+   ],
+   "parent": "spine"
+  },
+  "neck": {
+   "head": [
+    0,
+    0,
+    1.42
+   ],
+   "tail": [
+    0,
+    0,
+    1.55
+   ],
+   "parent": "chest"
+  },
+  "head": {
+   "head": [
+    0,
+    0,
+    1.55
+   ],
+   "tail": [
+    0,
+    0,
+    2.3
+   ],
+   "parent": "neck"
+  },
+  "jaw": {
+   "head": [
+    0,
+    -0.3,
+    1.5
+   ],
+   "tail": [
+    0,
+    -0.62,
+    1.42
+   ],
+   "parent": "head"
+  },
+  "eye.L": {
+   "head": [
+    -0.2,
+    -0.47,
+    1.86
+   ],
+   "tail": [
+    -0.2,
+    -0.62,
+    1.86
+   ],
+   "parent": "head"
+  },
+  "shoulder.L": {
+   "head": [
+    -0.18,
+    0,
+    1.3
+   ],
+   "tail": [
+    -0.550000011920929,
+    0.0,
+    1.1799999475479126
+   ],
+   "parent": "chest"
+  },
+  "upper_arm.L": {
+   "head": [
+    -0.550000011920929,
+    0.0,
+    1.1799999475479126
+   ],
+   "tail": [
+    -0.6600000262260437,
+    -0.03999999910593033,
+    0.8799999952316284
+   ],
+   "parent": "shoulder.L"
+  },
+  "forearm.L": {
+   "head": [
+    -0.6600000262260437,
+    -0.03999999910593033,
+    0.8799999952316284
+   ],
+   "tail": [
+    -0.6299999952316284,
+    -0.09000000357627869,
+    0.6200000047683716
+   ],
+   "parent": "upper_arm.L"
+  },
+  "hand.L": {
+   "head": [
+    -0.6299999952316284,
+    -0.09000000357627869,
+    0.6200000047683716
+   ],
+   "tail": [
+    -0.6052306294441223,
+    -0.1312822699546814,
+    0.4053322374820709
+   ],
+   "parent": "forearm.L"
+  },
+  "thigh.L": {
+   "head": [
+    -0.2,
+    0,
+    0.5
+   ],
+   "tail": [
+    -0.2,
+    -0.02,
+    0.22
+   ],
+   "parent": "hips"
+  },
+  "foot.L": {
+   "head": [
+    -0.2,
+    -0.02,
+    0.22
+   ],
+   "tail": [
+    -0.21,
+    -0.3,
+    0.06
+   ],
+   "parent": "thigh.L"
+  },
+  "eye.R": {
+   "head": [
+    0.2,
+    -0.47,
+    1.86
+   ],
+   "tail": [
+    0.2,
+    -0.62,
+    1.86
+   ],
+   "parent": "head"
+  },
+  "shoulder.R": {
+   "head": [
+    0.18,
+    0,
+    1.3
+   ],
+   "tail": [
+    0.550000011920929,
+    0.0,
+    1.1799999475479126
+   ],
+   "parent": "chest"
+  },
+  "upper_arm.R": {
+   "head": [
+    0.550000011920929,
+    0.0,
+    1.1799999475479126
+   ],
+   "tail": [
+    0.6600000262260437,
+    -0.03999999910593033,
+    0.8799999952316284
+   ],
+   "parent": "shoulder.R"
+  },
+  "forearm.R": {
+   "head": [
+    0.6600000262260437,
+    -0.03999999910593033,
+    0.8799999952316284
+   ],
+   "tail": [
+    0.6299999952316284,
+    -0.09000000357627869,
+    0.6200000047683716
+   ],
+   "parent": "upper_arm.R"
+  },
+  "hand.R": {
+   "head": [
+    0.6299999952316284,
+    -0.09000000357627869,
+    0.6200000047683716
+   ],
+   "tail": [
+    0.6052306294441223,
+    -0.1312822699546814,
+    0.4053322374820709
+   ],
+   "parent": "forearm.R"
+  },
+  "thigh.R": {
+   "head": [
+    0.2,
+    0,
+    0.5
+   ],
+   "tail": [
+    0.2,
+    -0.02,
+    0.22
+   ],
+   "parent": "hips"
+  },
+  "foot.R": {
+   "head": [
+    0.2,
+    -0.02,
+    0.22
+   ],
+   "tail": [
+    0.21,
+    -0.3,
+    0.06
+   ],
+   "parent": "thigh.R"
+  }
+ },
+ "swaps": {
+  "mouth": {
+   "X": [
+    "mouth_X__c.002",
+    "mouth_X__c.003",
+    "mouth_X__c.004"
+   ],
+   "A": [
+    "mouth_A__c.005",
+    "mouth_A__c.006",
+    "mouth_A__c.007"
+   ],
+   "B": [
+    "mouth_B__mouth",
+    "mouth_B__teeth_u",
+    "mouth_B__teeth_l",
+    "mouth_B__c.008",
+    "mouth_B__c.009",
+    "mouth_B__c.010"
+   ],
+   "C": [
+    "mouth_C__mouth.001",
+    "mouth_C__tongue",
+    "mouth_C__c.011",
+    "mouth_C__c.012",
+    "mouth_C__c.013"
+   ],
+   "D": [
+    "mouth_D__mouth.002",
+    "mouth_D__teeth",
+    "mouth_D__tongue.001",
+    "mouth_D__c.014",
+    "mouth_D__c.015",
+    "mouth_D__c.016"
+   ],
+   "E": [
+    "mouth_E__mouth.003",
+    "mouth_E__tongue.002",
+    "mouth_E__c.017"
+   ],
+   "F": [
+    "mouth_F__mouth.004",
+    "mouth_F__tongue.003",
+    "mouth_F__c.018"
+   ],
+   "G": [
+    "mouth_G__mouth.005",
+    "mouth_G__teeth_u.001",
+    "mouth_G__teeth_l.001",
+    "mouth_G__c.019",
+    "mouth_G__c.020",
+    "mouth_G__c.021"
+   ],
+   "H": [
+    "mouth_H__mouth.006",
+    "mouth_H__tongue.004",
+    "mouth_H__c.022",
+    "mouth_H__c.023",
+    "mouth_H__c.024"
+   ]
+  },
+  "lid": {
+   "half": [
+    "lid_half__lid",
+    "lid_half__lid.001"
+   ],
+   "closed": [
+    "lid_closed__lid.002",
+    "lid_closed__lid.003"
+   ]
+  },
+  "glasses": {
+   "round_gold": [
+    "glasses_round_gold__c.025",
+    "glasses_round_gold__lens",
+    "glasses_round_gold__Cylinder",
+    "glasses_round_gold__Sphere.038",
+    "glasses_round_gold__Sphere.039",
+    "glasses_round_gold__c.026",
+    "glasses_round_gold__lens.001",
+    "glasses_round_gold__Cylinder.001",
+    "glasses_round_gold__Sphere.040",
+    "glasses_round_gold__Sphere.041",
+    "glasses_round_gold__c.027"
+   ],
+   "aviator": [
+    "glasses_aviator__c.028",
+    "glasses_aviator__lens.002",
+    "glasses_aviator__Cylinder.002",
+    "glasses_aviator__Sphere.042",
+    "glasses_aviator__Sphere.043",
+    "glasses_aviator__c.029",
+    "glasses_aviator__lens.003",
+    "glasses_aviator__Cylinder.003",
+    "glasses_aviator__Sphere.044",
+    "glasses_aviator__Sphere.045",
+    "glasses_aviator__c.030",
+    "glasses_aviator__c.031"
+   ],
+   "browline": [
+    "glasses_browline__c.032",
+    "glasses_browline__c.033",
+    "glasses_browline__lens.004",
+    "glasses_browline__Cylinder.004",
+    "glasses_browline__Sphere.046",
+    "glasses_browline__Sphere.047",
+    "glasses_browline__c.034",
+    "glasses_browline__c.035",
+    "glasses_browline__lens.005",
+    "glasses_browline__Cylinder.005",
+    "glasses_browline__Sphere.048",
+    "glasses_browline__Sphere.049",
+    "glasses_browline__c.036"
+   ],
+   "square_black": [
+    "glasses_square_black__c.037",
+    "glasses_square_black__lens.006",
+    "glasses_square_black__Cylinder.006",
+    "glasses_square_black__Sphere.050",
+    "glasses_square_black__Sphere.051",
+    "glasses_square_black__c.038",
+    "glasses_square_black__lens.007",
+    "glasses_square_black__Cylinder.007",
+    "glasses_square_black__Sphere.052",
+    "glasses_square_black__Sphere.053",
+    "glasses_square_black__c.039"
+   ],
+   "round_silver": [
+    "glasses_round_silver__c.040",
+    "glasses_round_silver__lens.008",
+    "glasses_round_silver__Cylinder.008",
+    "glasses_round_silver__Sphere.054",
+    "glasses_round_silver__Sphere.055",
+    "glasses_round_silver__c.041",
+    "glasses_round_silver__lens.009",
+    "glasses_round_silver__Cylinder.009",
+    "glasses_round_silver__Sphere.056",
+    "glasses_round_silver__Sphere.057",
+    "glasses_round_silver__c.042"
+   ]
+  }
+ },
+ "defaults": {
+  "mouth": "X",
+  "lid": "open",
+  "glasses": "round_gold"
+ },
+ "kits": {
+  "hoodie_blue": {
+   "body": "#1F4FF0",
+   "trim": "#1636B0",
+   "sleeve": "#1F4FF0"
+  },
+  "hoodie_black": {
+   "body": "#17181C",
+   "trim": "#0C0C0F",
+   "sleeve": "#17181C"
+  },
+  "hoodie_gold": {
+   "body": "#E7A92C",
+   "trim": "#C88A16",
+   "sleeve": "#E7A92C"
+  },
+  "tee_white": {
+   "body": "#F4F2EC",
+   "trim": "#DAD6CC",
+   "sleeve": "#F4F2EC"
+  },
+  "varsity": {
+   "body": "#14286E",
+   "trim": "#E7A92C",
+   "sleeve": "#F4F2EC"
+  },
+  "suit": {
+   "body": "#22252B",
+   "trim": "#14161A",
+   "sleeve": "#22252B"
+  },
+  "royal": {
+   "body": "#2450E6",
+   "trim": "#1A3BB8",
+   "sleeve": "#2450E6"
+  },
+  "ember": {
+   "body": "#E8462F",
+   "trim": "#B7301C",
+   "sleeve": "#E8462F"
+  },
+  "emerald": {
+   "body": "#12A36B",
+   "trim": "#0D7E52",
+   "sleeve": "#12A36B"
+  },
+  "midnight": {
+   "body": "#454C66",
+   "trim": "#333A50",
+   "sleeve": "#454C66"
+  },
+  "violet": {
+   "body": "#7B3FE4",
+   "trim": "#5A2BBE",
+   "sleeve": "#7B3FE4"
+  },
+  "sky": {
+   "body": "#19A7E0",
+   "trim": "#0F82B5",
+   "sleeve": "#19A7E0"
+  },
+  "crimson": {
+   "body": "#C81E4A",
+   "trim": "#981638",
+   "sleeve": "#C81E4A"
+  }
+ },
+ "materials": {
+  "body": "body",
+  "trim": "trim",
+  "sleeve": "sleeve"
+ },
+ "units": "metres, z up in Blender (y up in the .glb)"
+}

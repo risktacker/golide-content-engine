@@ -870,6 +870,13 @@ e = SPEC.get("expr", "neutral")
 e = dict(EXPR[e]) if isinstance(e, str) else e
 hair = SPEC.get("hair", "classic")
 
+def tag(part):
+    """The rig (goli3d/rig_build.py) needs to know which part each new object belongs to."""
+    for o in sc.objects:
+        if "part" not in o.keys():
+            o["part"] = part
+
+
 sphere(H, tuple(HR), SCALE_D)
 sphere((0, -0.16, 1.68), (0.5, 0.42, 0.47), SKIN)
 sphere((0, -0.5, 1.56), (0.24, 0.2, 0.17), SKIN)
@@ -879,6 +886,10 @@ HAIR[hair]()
 for s in (-1, 1):
     sphere((s * 0.55, 0.02, 2.02), (0.14, 0.08, 0.15), SCALE, rot=(0, 0, s * 0.3))
     sphere((s * 0.555, -0.035, 2.02), (0.08, 0.04, 0.09), EAR_IN, rot=(0, 0, s * 0.3))
+tag("head")
+if SPEC.get("rig"):
+    exec(open(__file__.replace("model.py", "rig_build.py")).read())
+    raise SystemExit(0)
 build_face(e, SPEC.get("viseme", SPEC.get("mouth_open")))
 g = SPEC.get("glasses", "round_gold")
 if g and g != "none":
