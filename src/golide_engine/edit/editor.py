@@ -267,8 +267,12 @@ def _looks_text(allowed: list[str], paid: dict[str, int], puppets: bool) -> str:
   circuit only for chips, boards and electronics; glass only for liquids, mixing and amounts; layers only for things
   that really are layered; white for buildings, nature, cities, roads, vehicles and what flows between them; xray for
   the inside of a real object; blueprint for plans and how a thing is built. A mountain is never shown as a chip.
-- puppets: a beat about PEOPLE who are not one named real person (a team, customers, engineers, a crowd, "most
-  people", a founder in a story) or a moment between people. puppet = a JSON string {"cast": {...}, "shot": {...}}
+- puppets (owner 2026-11-25: "I liked that for bots, but only one puppet was there... maximise them"): EVERY beat
+  where someone DOES something and is not one named real person is a puppet shot: a person, the viewer ("you"), a
+  team, customers, a crowd, a founder in a story, AND an AI agent or bot at work (it reads, builds, gets stuck,
+  hands over, finishes): an agent is a character with skin "#9AA4B2", hair "none", outfit "tshirt",
+  glasses true and a laptop prop, its label the agent's job (1-3 words). In a long video use them about once every 30 s
+  (never two in a row); in a Short 1-2. puppet = a JSON string {"cast": {...}, "shot": {...}}
   in the ReachMora story format below: ONE shot of kind wide, closeup, walk, crowd, table, versus, icon, map,
   counter or chart; cast = 1-3 original characters (distinct hair and outfit colours); "at" cues are words of this
   beat; at most 2 labels of 1-3 words; no talk, no title, no lower_third, no polaroid. A real person the words name
@@ -400,13 +404,63 @@ def _item_times(items: list[str], lines, t0: float, t1: float, first: float = 0.
     return out
 
 
+def _words_of(text: str) -> set[str]:
+    return {w for w in re.findall(r"[a-z0-9]+", str(text).lower()) if len(w) > 2 and w not in _SCREEN_STOP}
+
+
+def _page_for(said: str, sources: list[dict], capture_dir) -> int | None:
+    """Owner 2026-11-25 ("steps on screenshots"): the captured page of the product the beat names: its product name
+    spoken first, else the page whose title shares the most spoken words (2 at least)."""
+    if not capture_dir:
+        return None
+    words = _words_of(said)
+    best, score = None, 0
+    for i, page in enumerate(sources or []):
+        if not page.get("ok") or page.get("picture_only") or not page.get("top"):
+            continue
+        name = _words_of(page.get("product") or "")
+        sc = (10 if name and name <= words else 0) + len(_words_of(page.get("title") or "") & words)
+        if sc > score:
+            best, score = i, sc
+    return best if score >= 2 else None
+
+
+def _auto_shots(items: list[str], page: dict) -> list[int] | None:
+    """Each step's own spot on the page, found by its words (a button or field first): None unless every step
+    has its own spot."""
+    spots = shots(page)
+    picks: list[int] = []
+    for item in items:
+        want = _words_of(item)
+        best, score = None, 0
+        for j, sp in enumerate(spots):
+            if j in picks or sp["rect"][2] < 20 or sp["rect"][3] < 12:
+                continue
+            sc = len(want & _words_of(sp["text"])) * (3 if sp["kind"] == "control" else 2 if sp["kind"] == "headline" else 1)
+            if sc > score:
+                best, score = j, sc
+        if best is None:
+            return None
+        picks.append(best)
+    return picks
+
+
 def _walkthrough(s: dict, sources: list[dict], capture_dir, lines, t0: float, t1: float, notes: list[str],
                  k: int) -> dict | None:
     """The steps on the product's own captured page: one shot per step. None (shown as plain steps) when the
-    page or a shot is missing or the shot is an empty patch."""
+    page or a shot is missing or the shot is an empty patch. 2026-11-25: the page is found from the words when the
+    editor gave none, and each step's spot from its words when the editor picked none."""
     src = s.get("source")
+    items = (s.get("items") or [])[:4]
+    if not (isinstance(src, int) and 0 <= src < len(sources) and sources[src].get("ok")):
+        said = " ".join(str(w.text) for w in _spoken(lines, t0, t1)) + " " + " ".join(items)
+        src = _page_for(said, sources, capture_dir)
+        if src is not None:
+            s["source"] = src
     page = sources[src] if isinstance(src, int) and 0 <= src < len(sources) else None
-    items, picks = (s.get("items") or [])[:4], (s.get("shots") or [])[:4]
+    picks = (s.get("shots") or [])[:4]
+    if page and page.get("ok") and len(items) >= 2 and len(picks) < len(items):
+        picks = _auto_shots(items, page) or picks
     if not page or not page.get("ok") or not capture_dir or len(items) < 2 or len(picks) < len(items):
         notes.append(f"scene {k}: walkthrough without a page or a shot per step, shown as steps")
         return None
@@ -581,7 +635,9 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
         if kind == "walkthrough" and not walk:
             src = s.get("source")
             page = sources[src] if isinstance(src, int) and 0 <= src < len(sources) else None
-            kind = "source" if page and page.get("ok") and capture_dir else "studio"
+            # owner 2026-11-25: the steps are never skipped: numbered steps beside the real page
+            kind = "steps" if page and page.get("ok") and capture_dir and len(s.get("items") or []) >= 2 else \
+                "source" if page and page.get("ok") and capture_dir else "studio"
             notes.append(f"scene {k}: walkthrough shown as {'its page' if kind == 'source' else 'Goli in the studio'}")
         elif kind == "source":
             src = s.get("source")
@@ -767,18 +823,35 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
             for i, item in enumerate(items):
                 at = _phrase_time(lines, item, t0, t1)
                 times.append(round((at - t0) if at is not None else 0.3 + i * min(0.7, (dur - 0.6) / len(items)), 3))
-            out.append({"type": "steps", "start": t0, "duration": dur, "in": "wipe",
-                        "data": {"heading": s.get("label") or "", "items": items, "at": times}})
+            data = {"heading": s.get("label") or "", "items": items, "at": times}
+            # owner 2026-11-25 ("steps to be shown without skipping, on screenshots"): numbered steps stand beside
+            # the product's real page whenever one was captured
+            said = " ".join(str(w.text) for w in _spoken(lines, t0, t1)) + " " + " ".join(items)
+            src = s.get("source") if isinstance(s.get("source"), int) and 0 <= s["source"] < len(sources) \
+                and sources[s["source"]].get("ok") else _page_for(said, sources, capture_dir)
+            if src is not None and capture_dir and (Path(capture_dir) / sources[src]["top"]).exists() \
+                    and _real_picture(Path(capture_dir) / sources[src]["top"]):
+                data.update(image=Path(capture_dir) / sources[src]["top"], url=sources[src].get("url", ""))
+            out.append({"type": "steps", "start": t0, "duration": dur, "in": "wipe", "data": data})
         elif kind == "timeline" and len(s.get("points") or []) >= 2:
             out.append({"type": "timeline", "start": t0, "duration": dur, "in": "whip", "data": {"points": s["points"][:4]}})
         elif kind == "quote" and s.get("quote"):
             out.append({"type": "quote_card", "start": t0, "duration": dur, "in": "rise", "data": {
                 "text": s["quote"], "who": s.get("quote_by") or "", "mark": [s.get("punch") or ""]}})
         elif kind == "logos" and s.get("brands") and logo_tiles:
-            tiles = [t for t in (logo_tiles(b) for b in s["brands"][:4]) if t]
-            if len(tiles) >= 1:
+            pairs = [(b, t) for b, t in ((b, logo_tiles(b)) for b in s["brands"][:5]) if t]
+            if len(pairs) >= 1:
+                # owner 2026-11-25 (Outskill's logo dock): each logo lands in its slot as its name is said
+                ats, last = [], -0.6
+                for i, (b, _) in enumerate(pairs):
+                    at = _phrase_time(lines, b, t0, t1)
+                    at = (at - t0) if at is not None else 0.3 + i * min(0.6, (dur - 0.6) / len(pairs))
+                    at = max(at, last + 0.35)
+                    ats.append(round(min(at, dur - 0.4), 3))
+                    last = at
                 out.append({"type": "logo_tiles", "start": t0, "duration": dur, "data": {
-                    "tiles": [{"image": t} for t in tiles], "caption": s.get("screen_words") or ""}})
+                    "tiles": [{"image": t, "name": b, "at": a} for (b, t), a in zip(pairs, ats)], "dock": True,
+                    "caption": s.get("screen_words") or ""}})
             else:
                 notes.append(f"scene {k}: no logos found for {s['brands']}, shown as words")
                 out.append(words_scene(" ".join(s["brands"][:4])))
@@ -1247,7 +1320,10 @@ def _real_picture(path: Path) -> bool:
             g = im.convert("L").resize((160, 90))
         st = ImageStat.Stat(g)
         edges = ImageStat.Stat(g.filter(ImageFilter.FIND_EDGES)).mean[0]
-        return 22 < st.mean[0] < 245 and st.stddev[0] > 20 and edges > 6
+        # a dark-mode app or terminal is dark but full of edges (2026-11-25: OpenCode's own screenshot); black is not
+        light = 22 < st.mean[0] < 245 and st.stddev[0] > 20
+        dark = st.mean[0] <= 22 and st.stddev[0] > 12 and edges > 12
+        return (light or dark) and edges > 6
     except Exception:  # noqa: BLE001 - unreadable is not a picture
         return False
 
@@ -1268,10 +1344,14 @@ def _screen_pictures(scenes: list[dict], sources: list[dict], capture_dir: Path 
     seen: set[str] = set()
     for page in sources or []:
         title = str(page.get("title") or page.get("name") or "")
-        subject = {w for w in re.findall(r"[a-z0-9]+", str(page.get("subject") or "").lower()) if len(w) > 2}
-        keys = {w for w in re.findall(r"[a-z0-9]+", (title + " " + str(page.get("subject") or "")).lower())
+        who = str(page.get("subject") or page.get("product") or "")
+        subject = {w for w in re.findall(r"[a-z0-9]+", who.lower()) if len(w) > 2}
+        keys = {w for w in re.findall(r"[a-z0-9]+", (title + " " + who).lower())
                 if len(w) > 3 and w not in _SCREEN_STOP}
-        for name in page.get("photos") or ([page["photo"]] if page.get("photo") else []):
+        names = list(page.get("photos") or ([page["photo"]] if page.get("photo") else []))
+        if page.get("product") and page.get("ok") and page.get("top"):
+            names.insert(0, page["top"])      # 2026-11-25: the product's own page is the real thing on the TV
+        for name in names:
             f = capture_dir / name
             if f.exists() and f.name not in seen and _real_picture(f):
                 seen.add(f.name)
@@ -1381,7 +1461,7 @@ def _words_cap(scenes: list[dict], notes: list[str], fmt: str = "long", cues: li
                 keep.append(_studio(sc["start"], sc["start"] + sc["duration"], cues, sc))
                 continue
             stats, last_stat = stats + 1, sc["start"]
-        if sc["type"] in TEXT_CARDS:
+        if sc["type"] in TEXT_CARDS and not sc["data"].get("image"):    # steps on a real page are a picture
             if shown < WORDS_MAX:
                 shown += 1
             elif keep and sc["start"] + sc["duration"] - keep[-1]["start"] > 4.0:

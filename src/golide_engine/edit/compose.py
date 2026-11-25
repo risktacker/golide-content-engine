@@ -625,6 +625,8 @@ class Composer:
         self.drift(sid, t0, dur, 0.01)
 
     def steps(self, t0, dur, data, how="wipe"):
+        if data.get("image"):
+            return self.steps_on_page(t0, dur, data, how)
         sid = self._id("steps")
         items = "".join(f'<div class="row" id="{sid}-i{i}" style="gap:28px;margin:22px 0">'
                         f'<div style="width:86px;height:86px;border-radius:24px;background:#E8C268;color:#07080B;'
@@ -641,6 +643,68 @@ class Composer:
                     f'duration:.45,ease:"power2.out"}},{at:.3f});')
             self.cue("click", at)
         self.drift(sid, t0, dur, 0.012)
+
+    def steps_on_page(self, t0, dur, data, how="rise"):
+        """Owner 2026-11-25 ("steps to be shown without skipping, on screenshots"; Outskill's numbered cards): the
+        product's real page in a browser frame, the camera drifting down it, and the numbered steps building beside
+        it one by one on their spoken words: the step being said lit gold, the ones done ticked and dimmed."""
+        sid = self._id("spg")
+        long = self.fmt == "long"
+        items = list(data["items"])[:4]
+        ats = list(data.get("at") or [0.3 + 0.8 * j for j in range(len(items))])
+        if long:
+            fw, fx, top = 900, 70, 150
+            ph = 700
+            cx, cw = fx + fw + 50, 560
+            cy = top + (ph + 44) / 2
+        else:
+            fw, fx, top = 900, 90, 250
+            ph = 640
+            cx, cw = 90, 900
+            cy = top + ph + 44 + 60 + 2 * 150
+        with Image.open(data["image"]) as im:
+            img_h = fw * im.height / im.width
+        ph = min(ph, img_h)
+        bar = 44
+        img = self.asset(data["image"])
+        chrome = (f'<div class="bar"><div class="dot" style="background:#ff5f57"></div><div class="dot" '
+                  f'style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div>'
+                  f'<div class="url">{_e(data.get("url", ""))}</div></div>')
+        fs = 40 if long else 46
+        rows = ""
+        for i, it in enumerate(items):
+            rows += (f'<div id="{sid}-c{i}" style="display:flex;align-items:center;gap:22px;margin:0 0 22px;padding:20px 24px;'
+                     f'border-radius:22px;background:rgba(14,15,22,.92);border:2px solid rgba(232,194,104,.25);opacity:0">'
+                     f'<div style="position:relative;flex:none;width:{fs * 1.7:.0f}px;height:{fs * 1.7:.0f}px">'
+                     f'<div id="{sid}-n{i}" style="position:absolute;inset:0;border-radius:50%;background:#E8C268;color:#07080B;'
+                     f'display:grid;place-items:center;font:900 {fs}px Poppins">{i + 1}</div>'
+                     f'<div id="{sid}-k{i}" style="position:absolute;inset:0;border-radius:50%;background:#2a2c35;color:#E8C268;'
+                     f'display:grid;place-items:center;font:900 {fs}px Poppins;opacity:0">&#10003;</div></div>'
+                     f'<div style="font:800 {fs}px/1.15 Poppins;color:#fff;overflow-wrap:anywhere">{_e(it)}</div></div>')
+        head = (f'<div class="label" style="margin-bottom:22px;color:#E8C268">{_e(data.get("heading", ""))}</div>'
+                if data.get("heading") else "")
+        inner = (f'<div class="frame" id="{sid}-f" style="left:{fx}px;top:{top}px;width:{fw}px;height:{ph + bar:.0f}px;'
+                 f'border:1.5px solid rgba(232,194,104,.55);box-shadow:0 30px 90px rgba(0,0,0,.7),0 0 60px rgba(232,194,104,.18)">'
+                 f'{chrome}<div class="page" style="top:{bar}px"><div id="{sid}-pg" style="position:absolute;left:0;top:0;'
+                 f'width:{fw}px;height:{img_h:.0f}px"><img src="{img}" style="width:{fw}px"></div></div></div>'
+                 f'<div id="{sid}-col" style="position:absolute;left:{cx}px;width:{cw}px;top:{cy:.0f}px;transform:translateY(-50%)">'
+                 f'{head}{rows}</div>')
+        self.scene(sid, t0, dur, inner)
+        self.tw(f'tl.fromTo("#{sid}-f",{{x:-80,opacity:0}},{{x:0,opacity:1,duration:.5,ease:"power3.out"}},{t0:.3f});')
+        self.cue("whoosh", t0)
+        travel = max(0.0, min(img_h - ph, ph * 0.6))
+        if travel > 10:
+            self.tw(f'tl.to("#{sid}-pg",{{y:{-travel:.0f},duration:{max(1.0, dur - 0.6):.2f},ease:"sine.inOut"}},{t0 + 0.4:.3f});')
+        for i in range(len(items)):
+            at = t0 + float(ats[i] if i < len(ats) else 0.3 + 0.8 * i)
+            self.tw(f'tl.fromTo("#{sid}-c{i}",{{x:60,opacity:0}},{{x:0,opacity:1,duration:.4,ease:"back.out(1.6)"}},{at:.3f});')
+            self.tw(f'tl.fromTo("#{sid}-c{i}",{{borderColor:"rgba(232,194,104,.25)",boxShadow:"0 0 0 rgba(232,194,104,0)"}},'
+                    f'{{borderColor:"rgba(232,194,104,1)",boxShadow:"0 0 34px rgba(232,194,104,.45)",duration:.3}},{at + 0.05:.3f});')
+            self.cue("click", at)
+            if i + 1 < len(items):
+                nxt = t0 + float(ats[i + 1] if i + 1 < len(ats) else 0.3 + 0.8 * (i + 1))
+                self.tw(f'tl.to("#{sid}-c{i}",{{opacity:.55,borderColor:"rgba(232,194,104,.2)",boxShadow:"0 0 0 rgba(0,0,0,0)",duration:.3}},{nxt:.3f});')
+                self.tw(f'tl.to("#{sid}-k{i}",{{opacity:1,duration:.25}},{nxt:.3f});')
 
     def walkthrough(self, t0, dur, data, how="rise"):
         """2026-11-12 (owner, modelled on Outskill): steps are shown IN the real product, not as text. The
@@ -1095,8 +1159,51 @@ class Composer:
                 self.tw(f'tl.fromTo("#{sid}-a{i}",{{{prop}:0}},{{{prop}:1,duration:{step * 0.8:.2f},ease:"power2.out"}},{at + 0.25:.3f});')
         self.drift(sid, t0, dur, 0.01)
 
+    def logo_dock(self, t0, dur, data):
+        """Owner 2026-11-25 (Outskill's logo dock): a glass dock with a slot per tool; each real logo drops into its
+        slot on the word that names it, its name under it, the slot flashing gold."""
+        sid = self._id("dock")
+        tiles = data["tiles"]
+        n = len(tiles)
+        long = self.fmt == "long"
+        ts = (210 if long else 170) if n <= 4 else (190 if long else 140)
+        gap = ts + (60 if long else 34)
+        dw = gap * n + 40
+        span = self.w            # the zone (Goli's quarter) scales the whole scene already
+        dx = (span - dw) / 2
+        dy = self.cy - ts / 2 - 40
+        slots = ""
+        for i, t in enumerate(tiles):
+            x = 20 + gap * i + (gap - ts) / 2
+            slots += (f'<div id="{sid}-s{i}" style="position:absolute;left:{x:.0f}px;top:30px;width:{ts}px;height:{ts}px;'
+                      f'border-radius:36px;border:3px dashed rgba(232,194,104,.35)"></div>'
+                      f'<div class="tile" id="{sid}-t{i}" style="left:{x:.0f}px;top:30px;width:{ts}px;height:{ts}px;opacity:0">'
+                      f'<img src="{self.asset(t["image"])}"></div>'
+                      f'<div id="{sid}-l{i}" style="position:absolute;left:{x - 30:.0f}px;width:{ts + 60}px;top:{ts + 50}px;'
+                      f'text-align:center;font:800 {34 if long else 30}px Poppins;color:#fff;opacity:0;white-space:nowrap;'
+                      f'overflow:hidden;text-overflow:ellipsis">{_e(t.get("name", ""))}</div>')
+        inner = (f'<div id="{sid}-d" style="position:absolute;left:{dx:.0f}px;top:{dy:.0f}px;width:{dw:.0f}px;height:{ts + 120}px;'
+                 f'border-radius:48px;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.14);'
+                 f'box-shadow:0 30px 80px rgba(0,0,0,.6)">{slots}</div>')
+        if data.get("caption"):
+            inner += (f'<div class="title" style="position:absolute;left:0;width:{span:.0f}px;top:{dy - 130:.0f}px;'
+                      f'text-align:center;font-size:{64 if long else 72}px">{_e(data["caption"])}</div>')
+        self.scene(sid, t0, dur, inner)
+        self.tw(f'tl.fromTo("#{sid}-d",{{y:80,opacity:0}},{{y:0,opacity:1,duration:.45,ease:"power3.out"}},{t0:.3f});')
+        self.cue("whoosh", t0)
+        for i, t in enumerate(tiles):
+            at = t0 + float(t.get("at", 0.3 + 0.5 * i))
+            self.tw(f'tl.fromTo("#{sid}-t{i}",{{y:-160,scale:.5,rotation:-12,opacity:0}},{{y:0,scale:1,rotation:0,opacity:1,'
+                    f'duration:.5,ease:"back.out(1.7)"}},{at:.3f});')
+            self.tw(f'tl.fromTo("#{sid}-s{i}",{{borderColor:"rgba(232,194,104,1)",boxShadow:"0 0 40px rgba(232,194,104,.8)"}},'
+                    f'{{borderColor:"rgba(232,194,104,0)",boxShadow:"0 0 0 rgba(0,0,0,0)",duration:.6,immediateRender:false}},{at + 0.35:.3f});')
+            self.tw(f'tl.fromTo("#{sid}-l{i}",{{y:16,opacity:0}},{{y:0,opacity:1,duration:.3}},{at + 0.2:.3f});')
+            self.cue("click", at + 0.35)
+
     def logo_tiles(self, t0, dur, data, how="rise"):
         """The real 3D logo tiles (rendered by vector.thumb_styles) float in with parallax."""
+        if data.get("dock"):
+            return self.logo_dock(t0, dur, data)
         sid = self._id("logos")
         tiles = data["tiles"]                               # [{"image": path}]
         n = len(tiles)

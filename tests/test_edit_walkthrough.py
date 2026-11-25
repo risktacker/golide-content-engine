@@ -14,6 +14,8 @@ def _page(tmp_path):
     d = ImageDraw.Draw(im)
     for x0 in range(0, 2160, 12):                  # text-like marks everywhere, so no shot is an empty patch
         d.rectangle([x0, 0, x0 + 5, 1350], fill="black")
+    d.rectangle([0, 0, 2160, 120], fill="#101828")   # a page header and a picture: a real page, not a texture
+    d.rectangle([1500, 600, 2100, 1200], fill="#2563eb")
     im.save(tmp_path / "01-top.png")
     return [{"ok": True, "url": "https://platform.claude.com/docs", "title": "Docs", "top": "01-top.png",
              "blocks": [{"text": "Try in playground", "rect": [480, 200, 150, 28]},
@@ -48,8 +50,11 @@ def test_walkthrough_without_shots_shows_its_page(tmp_path):
     raw = {"scenes": [_scene(type="walkthrough", source=0, items=["Copy the name", "Open the playground"], shots=[9])]}
     edit = editor.build(raw, lines, 6.0, "long", _page(tmp_path), tmp_path, [], [])
     kinds = [s["type"] for s in edit["scenes"]]
-    assert "steps" not in kinds and "kinetic_title" not in kinds      # 2026-11-18 (owner): other scenes, never text
-    assert any("walkthrough shown as" in n for n in edit["notes"])
+    assert "kinetic_title" not in kinds      # 2026-11-18 (owner): other scenes, never text
+    # 2026-11-25 (owner: "steps to be shown without skipping, on screenshots"): the steps stay, on the real page:
+    # each step found on the page by its own words, else numbered steps beside the page; never plain text steps
+    walk = [s for s in edit["scenes"] if s["type"] in ("walkthrough", "steps")]
+    assert walk and all(s["type"] == "walkthrough" or s["data"].get("image") for s in walk)
 
 
 def test_prompt_and_checklist_render(tmp_path):
@@ -96,3 +101,21 @@ def test_goli_points_at_the_content():
             {"pose": "point_left", "at": 0}]}}]}
     html = Composer("long").build(edit, pathlib.Path(tempfile.mkdtemp()) / "o").read_text()
     assert "scaleX(-1)" in html          # on the right he faces left, toward the content
+
+
+def test_steps_find_their_own_spots_and_stand_beside_the_real_page(tmp_path):
+    """Owner 2026-11-25: steps on real screens. With no shots picked, each step's spot is found by its words; when a
+    step has no spot, the numbered steps stand beside the real page, lit one by one, the done ones ticked."""
+    page = _page(tmp_path)
+    lines = _lines(["Open the playground, then check the pricing.", "That is all."])
+    raw = {"scenes": [_scene(type="walkthrough", source=None, items=["Try the playground", "Check output pricing"])]}
+    page[0]["title"] = "Claude playground pricing docs"
+    edit = editor.build(raw, lines, 6.0, "long", page, tmp_path, [], [])
+    walk = next(s for s in edit["scenes"] if s["type"] == "walkthrough")
+    assert [st["rect"] for st in walk["data"]["steps"]] == [[480, 200, 150, 28], [1100, 280, 270, 70]]
+    raw = {"scenes": [_scene(type="walkthrough", source=0, items=["Sign in first", "Make a new key"])]}
+    edit = editor.build(raw, lines, 6.0, "long", page, tmp_path, [], [])
+    st = next(s for s in edit["scenes"] if s["type"] == "steps")
+    assert st["data"]["image"].name == "01-top.png"
+    html = Composer("long").build(edit, tmp_path / "out").read_text()
+    assert "Make a new key" in html and "-k0" in html and "platform.claude.com" in html

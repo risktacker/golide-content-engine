@@ -199,7 +199,7 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
 
     def capture_stage():
         from ..engine.source_capture import capture
-        capture(research, capture_dir)
+        capture(research, capture_dir, script=" ".join(str(x.get("text") or "") for x in plan.get("lines") or []))
 
     production.runner.run(production_id, "sources-capture-v1", capture_stage, attempts=1)
     sources = json.loads(sources_log.read_text(encoding="utf-8")) if sources_log.exists() else []

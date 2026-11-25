@@ -200,9 +200,62 @@ def blur_faces(path: Path) -> int:
     return len(faces)
 
 
-def capture(research: dict[str, Any], folder: Path) -> list[dict[str, Any]]:
+PRODUCT_PAGES = 6
+
+
+def product_pages(names: list[str], skip_domains: set[str]) -> list[dict[str, Any]]:
+    """Owner 2026-11-25 ("steps to be shown without skipping, on screenshots or screen recordings"): the real page of
+    every product, app or tool the SCRIPT names, so a step like "install OpenCode, choose Windows x64" is shown on
+    the product's own page. Found free: its GitHub repository (and the homepage the repository names), else its
+    official website on Wikidata. Never stops a video."""
+    import urllib.parse
+    import urllib.request
+    headers = {"User-Agent": "GOLIDE-engine/1.0 (https://studio.golidee.com)", "Accept": "application/json"}
+
+    def get(url: str) -> Any:
+        with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=20) as r:
+            return json.loads(r.read().decode("utf-8"))
+
+    def key(x: str) -> str:
+        return re.sub(r"[^a-z0-9]", "", x.lower())
+
+    out: list[dict[str, Any]] = []
+    for name in names:
+        found: list[tuple[str, str]] = []
+        try:
+            repos = get("https://api.github.com/search/repositories?" + urllib.parse.urlencode(
+                {"q": f"{name} in:name", "sort": "stars", "per_page": 5})).get("items") or []
+            repo = next((r for r in repos if key(r.get("name", "")) == key(name) and r.get("stargazers_count", 0) >= 200), None)
+            if repo:
+                if repo.get("homepage", "").startswith("http"):
+                    found.append((repo["homepage"], f"{name} (official site)"))
+                found.append((repo["html_url"], f"{name} on GitHub"))
+        except Exception:  # noqa: BLE001 - no GitHub answer: try Wikidata
+            pass
+        if not found:
+            try:
+                hits = get("https://www.wikidata.org/w/api.php?" + urllib.parse.urlencode(
+                    {"action": "wbsearchentities", "search": name, "language": "en", "format": "json", "limit": 1})).get("search") or []
+                if hits and key(hits[0].get("label", "")) == key(name):
+                    ent = get(f"https://www.wikidata.org/wiki/Special:EntityData/{hits[0]['id']}.json")["entities"][hits[0]["id"]]
+                    for c in ent.get("claims", {}).get("P856", [])[:1]:
+                        found.append((c["mainsnak"]["datavalue"]["value"], f"{name} (official site)"))
+            except Exception:  # noqa: BLE001
+                pass
+        for url, title in found:
+            dom = re.sub(r"^www\.", "", urllib.parse.urlparse(url).netloc.lower())
+            if dom and dom not in skip_domains and not SKIP.search(url):
+                skip_domains.add(dom)
+                out.append({"url": url, "title": title, "claims": [], "product": name})
+        if len(out) >= PRODUCT_PAGES:
+            break
+    return out[:PRODUCT_PAGES]
+
+
+def capture(research: dict[str, Any], folder: Path, script: str = "") -> list[dict[str, Any]]:
     """Open every source page and keep its screens, claim positions and link. Never stops a video:
-    a page that will not open is logged and skipped."""
+    a page that will not open is logged and skipped. With the script, the real pages of the products it names are
+    captured too (owner 2026-11-25: steps on real screens)."""
     from playwright.sync_api import sync_playwright
 
     folder.mkdir(parents=True, exist_ok=True)
@@ -212,7 +265,13 @@ def capture(research: dict[str, Any], folder: Path) -> list[dict[str, Any]]:
         context = browser.new_context(viewport=VIEW, device_scale_factor=1.5, locale="en-US",
                                       user_agent=("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                                                   "(KHTML, like Gecko) Chrome/131.0 Safari/537.36"))
-        for i, page_info in enumerate(sources(research), 1):
+        pages = sources(research)
+        if script:
+            import urllib.parse
+            have = {re.sub(r"^www\.", "", urllib.parse.urlparse(p["url"]).netloc.lower()) for p in pages}
+            names = named_subjects({"core_fact": script, "claims": []}, str(research.get("title") or ""), most=8)
+            pages += product_pages(names, have)
+        for i, page_info in enumerate(pages, 1):
             entry = dict(page_info, ok=False)
             page = context.new_page()
             try:
@@ -269,7 +328,10 @@ def capture(research: dict[str, Any], folder: Path) -> list[dict[str, Any]]:
 NAME = re.compile(r"\b([A-Z][a-zA-Z0-9]+(?:[ -][A-Z][a-zA-Z0-9]+){0,2})\b")
 NOT_NAMES = {"The", "This", "That", "These", "Those", "A", "An", "And", "But", "So", "If", "In", "On", "At", "It",
              "Its", "Why", "How", "What", "When", "Who", "We", "You", "Your", "They", "He", "She", "I", "AI", "CEO",
-             "New", "Now", "Here", "There", "Every", "Most", "One", "Two", "First", "Last", "According"}
+             "New", "Now", "Here", "There", "Every", "Most", "One", "Two", "First", "Last", "According",
+             # 2026-11-25: a step's verb opens the sentence ("Install OpenCode"): it is never part of the name
+             "Install", "Choose", "Open", "Paste", "Run", "Click", "Type", "Add", "Use", "Download", "Go", "Set",
+             "Pick", "Copy", "Save", "Then", "Next", "Today", "Tap", "Select", "Press", "Build", "Ask", "Tell"}
 
 
 def named_subjects(research: dict[str, Any], title: str = "", most: int = 4) -> list[str]:
