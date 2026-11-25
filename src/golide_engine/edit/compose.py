@@ -851,13 +851,37 @@ class Composer:
         printed comes in with its real rhythm (sped up to fit, and the real time is shown), the window scrolls like
         a terminal, the line that proves the point lights up gold, and a check lands when it worked."""
         sid = self._id("term")
-        rows = data["rows"]
         long = self.fmt == "long"
-        fw = 1500 if long else 960
+        fw = (1380 if self.zone else 1500) if long else 960      # with Goli beside it, the window keeps clear of him
         lh, fs = (50, 36) if long else (50, 34)
+        # owner 2026-11-25: code is shown whole, inside its frame with room at the edges: a line longer than the
+        # window wraps onto the next rows (never cut at the frame), and the long lines shrink the type first
+        cols = int((fw - 56 - 24) / (fs * 0.6))
+        longest = max((len(str(r.get("text") or "")) + (2 if r.get("kind") == "cmd" else 0) for r in data["rows"]), default=0)
+        if longest > cols and fs > 28:
+            fs = max(28, int((fw - 56 - 24) / (0.6 * min(longest, int(cols * 1.25)))))
+            lh = int(fs * 1.4)
+            cols = int((fw - 56 - 24) / (fs * 0.6))
+        rows, remap = [], {}
+        for i, r in enumerate(data["rows"]):
+            text = str(r.get("text") or "")
+            width = cols - (2 if r.get("kind") == "cmd" else 0)
+            import textwrap
+            chunks = textwrap.wrap(text, width, break_long_words=True, break_on_hyphens=False,
+                                   subsequent_indent="", drop_whitespace=True) or [""]
+            remap[i] = len(rows)
+            for j, c in enumerate(chunks):
+                rows.append(dict(r, text=c) if j == 0 else {"kind": "out", "text": "  " + c, "t": r.get("t", 0.0),
+                                                            "wrap": True})
+        lit = set()
+        if isinstance(data.get("mark"), int) and data["mark"] in remap:
+            m0 = remap[data["mark"]]
+            m1 = remap.get(data["mark"] + 1, len(rows))
+            lit = set(range(m0, m1))                       # a wrapped proving line is lit on all its rows
+            data = dict(data, mark=m0)
         visible = 12 if long else 20
         fh = lh * visible + 40
-        fx, fy = (self.w - fw) // 2, max(70, (self.h - fh - 50) // 2)
+        fx, fy = ((70 if self.zone and long else (self.w - fw) // 2), max(70, (self.h - fh - 50) // 2))
         cmds = [i for i, r in enumerate(rows) if r["kind"] == "cmd"]
         bounds = cmds + [len(rows)]
         real = sum(max((r["t"] for r in rows[c + 1:bounds[j + 1]]), default=0.0) for j, c in enumerate(cmds))
@@ -877,7 +901,7 @@ class Composer:
             at = [t0 + 0.6 + (a - t0 - 0.6) * sq for a in at]
         body = ""
         for i, r in enumerate(rows):
-            mark = data.get("mark") == i
+            mark = i in lit
             text = _e(r["text"]) or "&nbsp;"
             if r["kind"] == "cmd":
                 body += (f'<div id="{sid}-r{i}" style="height:{lh}px;white-space:pre;opacity:0">'
@@ -915,8 +939,11 @@ class Composer:
             # the camera goes to the line that proves the point and holds there
             shown = min(mark, visible - 1) if mark < visible else visible - 1
             oy = 62 + shown * lh + lh / 2
-            self.tw(f'tl.to("#{sid}-f",{{scale:1.25,transformOrigin:"6% {oy / (fh + 50) * 100:.1f}%",duration:.6,'
-                    f'ease:"power3.inOut"}},{at[mark] + 0.1:.3f});')
+            room = (self.w * (0.74 if self.zone and long else 0.96) - fx) / max(1.0, fw)
+            lean = max(1.0, min(1.25, room))
+            if lean > 1.01:
+                self.tw(f'tl.to("#{sid}-f",{{scale:{lean:.3f},transformOrigin:"0% {oy / (fh + 50) * 100:.1f}%",duration:.6,'
+                        f'ease:"power3.inOut"}},{at[mark] + 0.1:.3f});')
             self.cue("pop", at[mark])
         if data.get("ok") and at:
             self.tw(f'tl.fromTo("#{sid}-ok",{{scale:0,opacity:0}},{{scale:1,opacity:1,duration:.35,ease:"back.out(2.2)"}},{at[-1] + 0.3:.3f});')
@@ -1424,7 +1451,10 @@ class Composer:
         self.reacts = reactions(edit)
         for s in edit["scenes"]:
             s["_sid"] = f"s{self.n + 1}-"      # the layout check finds this scene's boxes by it
-            self.zone = bool(s["data"].get("goli_zone")) if s["type"] != "host" else False
+            self.zone = (bool(s["data"].get("goli_zone")) or any(
+                h["type"] == "host" and h["data"].get("place") in ("corner", "side")
+                and min(h["start"] + h["duration"], s["start"] + s["duration"]) - max(h["start"], s["start"]) > 0.3
+                for h in edit["scenes"])) if s["type"] != "host" else False
             self._boost = float((s.get("data") or {}).get("boost") or 1.0)
             getattr(self, s["type"])(float(s["start"]), float(s["duration"]), s["data"], s.get("in", "rise"))
         duration = float(edit.get("duration") or max(float(s["start"]) + float(s["duration"]) for s in edit["scenes"]))
