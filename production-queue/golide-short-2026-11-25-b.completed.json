@@ -88,5 +88,23 @@
     "signal_type": "owner-replace",
     "query": "What If Elon Musk Took the AI Race to Space?"
   },
-  "selected_topic_source": "https://www.youtube.com/watch?v=znWzWYHoLOg"
+  "selected_topic_source": "https://www.youtube.com/watch?v=znWzWYHoLOg",
+  "voice_choice": "ai",
+  "platforms": [
+    "youtube",
+    "instagram"
+  ],
+  "video_style": "goli",
+  "looks": {
+    "free": [
+      "puppets",
+      "white",
+      "layers",
+      "circuit",
+      "glass",
+      "xray",
+      "blueprint"
+    ],
+    "paid": {}
+  }
 }

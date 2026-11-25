@@ -1,0 +1,540 @@
+{
+  "production_id": "golide-short-2026-11-25-b",
+  "youtube_video_id": "elqQAXUYagk",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "elqQAXUYagk",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-11-25T17:09:11.269165+00:00"
+  },
+  "production": {
+    "format": "short",
+    "title": "What If Elon Musk Took the AI Race to Space?",
+    "status": "scheduled",
+    "scheduled_at": "2026-11-25T20:00:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-shorts-mon-wed-fri\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-choice\"}"
+  },
+  "narration": "You’re Elon Musk, the world’s first trillionaire,\nand you’re losing the AI race to OpenAI, a company you co-founded.\nGoogle and Anthropic are beating you, too.\nBut they don’t know your master plan.\nYou build xAI.\nxAI builds Colossus in 122 days: 4 months.\nYou announce Terafab, a planned chip facility with Tesla, xAI, and SpaceX.\nSpaceX strikes a $60 billion deal involving Cursor’s parent company, with xAI as partner.\nYou launch Grok Bot, so people hand it work.\nYou bought Twitter in 2022.\nEvery post and reply is data because you control the algorithm.\nYou use Tesla’s systems for real-world data.\nTesla’s Optimus Gen 2 holds an egg; every move is more data.\nYour AI needs power, internet, and cooling.\nThe moon is 3 days away, so SpaceX builds Starship,\ndesigned to land and fly again, and creates Starlink.\nSolarCity became Tesla Energy in 2016; imagine a Dyson sphere.\nFollow us.\nOne day, the internet runs out of things to say.\nYou open Neuralink, a chip helping people with paralysis control computers,\nand expand to Mars, because you own the Earth, like literally.\n",
+  "research": {
+    "summary": "The linked Afterhour Theory video is a speculative “what if” narrative, not evidence that Musk has already executed a unified plan to move AI into space. Several real developments support its storyline: xAI’s rapid Colossus build, the Terafab proposal, the Cursor transaction, Starlink’s large satellite network, reusable Starship plans, and Neuralink trials. But the video also conflates companies, generations and future concepts. Most importantly, Tesla Optimus handling an egg was demonstrated with Gen 2 in December 2023—not a verified “Optimus 3” system—and a Dyson sphere remains a hypothetical megastructure, not a Tesla project.",
+    "claims": [
+      {
+        "claim": "Elon Musk was publicly listed as an OpenAI co-chair when OpenAI launched in December 2015. OpenAI says he resigned as co-chair in February 2018, so describing OpenAI as a company he co-founded is broadly supported, but he is no longer part of its management.",
+        "source_title": "Introducing OpenAI; Elon Musk wanted an OpenAI for-profit",
+        "source_url": "https://openai.com/index/introducing-openai/",
+        "published_or_updated": "December 11, 2015; timeline updated December 13, 2024"
+      },
+      {
+        "claim": "Musk was described as the world’s first trillionaire after SpaceX’s June 12, 2026 IPO. Forbes reported a valuation-based figure of about $1 trillion, while other reporting noted that the estimate depended heavily on private-company and newly public SpaceX valuations.",
+        "source_title": "Forbes Declares Elon Musk As The World’s First Trillionaire",
+        "source_url": "https://tollbit.forbes.com/sites/pr/2026/06/12/forbes-declares-elon-musk-as-the-worlds-first-trillionaire/",
+        "published_or_updated": "June 12, 2026"
+      },
+      {
+        "claim": "xAI says its Colossus AI supercomputer became operational in 122 days and began running workloads 19 days after the first servers arrived. The company later said the system was doubled to 200,000 NVIDIA Hopper GPUs; its current Colossus page also describes a roadmap toward 1 million GPUs.",
+        "source_title": "Colossus: The World’s Largest AI Supercomputer; xAI Series C announcement",
+        "source_url": "https://x.ai/colossus",
+        "published_or_updated": "Current page accessed November 25, 2026; Series C announcement December 23, 2024"
+      },
+      {
+        "claim": "Terafab is a real announced project, but it is a planned semiconductor facility rather than an operating chip factory. SpaceX materials describe it as a joint Tesla–xAI–SpaceX effort announced on March 21, 2026, intended to integrate chip design, fabrication, memory, packaging and testing.",
+        "source_title": "SpaceX IPO Roadshow",
+        "source_url": "https://content.spacex.com/cms-assets/FINAL_Documents%20and%20Updates/SpaceX%20IPO%20Roadshow.pdf",
+        "published_or_updated": "2026"
+      },
+      {
+        "claim": "The Cursor transaction was reported as a $60 billion all-stock acquisition or acquisition right involving Anysphere, the company behind Cursor. It was not simply a cash purchase by xAI: the buyer was SpaceX or a SpaceX subsidiary, with xAI involved in the technology partnership.",
+        "source_title": "SpaceX buys AI coding startup Cursor for $60 billion; SpaceX officially closes its Cursor acquisition",
+        "source_url": "https://apnews.com/article/a5c60fcbaaca262cf107d30f1de899ef",
+        "published_or_updated": "June 16, 2026"
+      },
+      {
+        "claim": "Grok Bot is a real AI-agent product. An official launch video dated August 11, 2026 described it as providing AI teammates to which users can assign real work, while noting that it began as an internal prototype.",
+        "source_title": "Introducing Grok Bot",
+        "source_url": "https://www.youtube.com/watch?v=F1_0Lkp16Rc",
+        "published_or_updated": "August 11, 2026"
+      },
+      {
+        "claim": "X can provide xAI with access to large volumes of current user-generated content and interaction data, but the claim that every post automatically becomes usable training data is not established by the cited corporate materials. SpaceX’s 2026 prospectus described real-time X data as a strategic advantage, alongside approximately 550 million monthly active users in March 2026.",
+        "source_title": "Project Apex Australian Wrap and S-1",
+        "source_url": "https://content.spacex.com/cms-assets/FINAL_Documents%20and%20Updates/Project%20Apex%20-%20Australian%20Wrap%20and%20S-1%20-%20Final%20%28Lodgement%204%20June%202026%29%20-%20Compressed%20vF.pdf",
+        "published_or_updated": "June 4, 2026"
+      },
+      {
+        "claim": "Tesla develops driver-assistance and automated-driving technology and collects vehicle sensor data, but describing Tesla simply as a fully self-driving car company overstates the verified status of its products. The supplied video’s broader claim that every vehicle movement automatically becomes useful AI training data is not directly established by the available sources.",
+        "source_title": "Tesla 2026 annual report materials",
+        "source_url": "https://ir.tesla.com/_flysystem/s3/sec/000162828026003837/tsla-20260128-gen.pdf",
+        "published_or_updated": "January 28, 2026"
+      },
+      {
+        "claim": "The egg-handling demonstration is associated with Tesla Optimus Gen 2, shown in December 2023. Tesla’s later 2026 filings referred to a planned Gen 3 and major hand upgrades, but the evidence does not support calling the earlier egg demonstration “Optimus 3.”",
+        "source_title": "Tesla Optimus Gen 2 demonstration coverage; Tesla manufacturing and hardware filing",
+        "source_url": "https://arstechnica.com/information-technology/2023/12/teslas-latest-optimus-robot-can-handle-eggs-without-cracking-them/?trk=article-ssr-frontend-pulse_little-text-block",
+        "published_or_updated": "December 13, 2023; Tesla filing updated January 28, 2026"
+      },
+      {
+        "claim": "Starlink is already a major satellite-internet network. SpaceX reported approximately 9,600 broadband and mobile satellites in low Earth orbit, about 10.3 million subscribers, and service across 164 countries, territories and markets as of March 31, 2026.",
+        "source_title": "Project Apex Australian Wrap and S-1",
+        "source_url": "https://content.spacex.com/cms-assets/FINAL_Documents%20and%20Updates/Project%20Apex%20-%20Australian%20Wrap%20and%20S-1%20-%20Final%20%28Lodgement%204%20June%202026%29%20-%20Compressed%20vF.pdf",
+        "published_or_updated": "June 4, 2026"
+      },
+      {
+        "claim": "SpaceX describes Starship as a transportation system designed for full and rapid reusability and missions to Earth orbit, the Moon and Mars. That is a design goal and development program; it should not be narrated as though routine orbital reuse and Mars operations are already established.",
+        "source_title": "Starship",
+        "source_url": "https://new.spacex.com/vehicles/starship",
+        "published_or_updated": "Current page accessed November 25, 2026"
+      },
+      {
+        "claim": "A crewed trip from Earth to the Moon takes approximately three days under typical mission profiles. NASA uses that figure in its Moon-and-Mars educational material, so the video’s three-day figure is reasonable, although exact travel time varies by trajectory and mission.",
+        "source_title": "Why the Moon and Mars?",
+        "source_url": "https://www.nasa.gov/wp-content/uploads/2025/12/acr25-wp-why-moon-and-mars-v2.pdf?emrc=ad809c",
+        "published_or_updated": "2025"
+      },
+      {
+        "claim": "Tesla acquired SolarCity on November 21, 2016. Tesla described the transaction as creating a vertically integrated sustainable-energy company; the supplied video’s claim that this became “Tesla Energy” is directionally accurate as a branding description, but the acquisition itself was not recent.",
+        "source_title": "Using Your Tesla Account for SolarCity Customers",
+        "source_url": "https://www.tesla.com/support/using-your-account",
+        "published_or_updated": "Current page accessed November 25, 2026"
+      },
+      {
+        "claim": "Neuralink has active clinical trials for brain-computer interfaces aimed at helping people with paralysis control computers, robotic arms or speech systems. Its own patient information says the devices remain investigational and are not approved by the FDA or other regulatory authorities, so the video’s framing of a chip that can generally read human thoughts is unsupported.",
+        "source_title": "Neuralink device-control trial information",
+        "source_url": "https://neuralink.com/trials/device-control/",
+        "published_or_updated": "Current page accessed November 25, 2026"
+      },
+      {
+        "claim": "A Dyson sphere is a theoretical structure intended to capture a large share of a star’s energy; there is no verified evidence in the cited material that Tesla, SpaceX or Tesla Energy has begun building one. The video should present the Dyson-sphere section as speculation rather than an announced project.",
+        "source_title": "Elon Musk, SpaceX and the illusion of wealth",
+        "source_url": "https://www.lemonde.fr/en/economy/article/2026/06/01/elon-musk-spacex-and-the-illusion-of-wealth_6754028_19.html",
+        "published_or_updated": "June 1, 2026"
+      }
+    ],
+    "core_fact": {
+      "fact": "The linked video, titled “What If Elon Musk Took the AI Race to Space?”, presents a hypothetical narrative in which Musk combines xAI, Colossus, Terafab, Cursor, Grok Bot, X, Tesla, Optimus, SpaceX, Starlink, Tesla Energy and Neuralink into a vertically integrated AI-and-space strategy. The video source itself could not be fetched for direct verification, so this core description is based on the supplied brief rather than a confirmed reading of the YouTube page.",
+      "source_url": "https://www.youtube.com/watch?v=znWzWYHoLOg",
+      "published_or_updated": "November 25, 2026 per the assignment; source publication date not verified",
+      "verified": false
+    }
+  },
+  "metadata": {
+    "title": "What If Elon Musk Took the AI Race to Mars?",
+    "description": "This short explains Elon Musk’s AI master plan and how xAI, Tesla, SpaceX, and Neuralink could challenge OpenAI and Google.\n\nFree guide to this video (steps and every source): https://studio.golidee.com/guides/golide-short-2026-11-25-b.pdf\n\n#ElonMusk #AI #ArtificialIntelligence #OpenAI #xAI #Tesla #SpaceX #Neuralink",
+    "tags": [
+      "Elon Musk",
+      "AI",
+      "artificial intelligence",
+      "OpenAI",
+      "xAI",
+      "Tesla AI",
+      "SpaceX",
+      "Grok",
+      "Neuralink",
+      "Starlink",
+      "AI master plan",
+      "Elon Musk AI",
+      "future of AI",
+      "AI race",
+      "Tesla Optimus",
+      "Tesla Energy",
+      "SpaceX AI",
+      "Grok AI",
+      "AI technology",
+      "AI companies",
+      "Elon Musk future",
+      "what is xAI",
+      "what is Grok",
+      "OpenAI vs xAI",
+      "AI data",
+      "AI news",
+      "tech news",
+      "AI explained",
+      "automation",
+      "technology",
+      "AI tools",
+      "AI trends",
+      "tech explained",
+      "machine learning",
+      "AI update",
+      "new technology"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [],
+    "keywords": [
+      "Elon Musk",
+      "AI",
+      "artificial intelligence",
+      "OpenAI",
+      "xAI",
+      "Tesla AI",
+      "SpaceX",
+      "Grok",
+      "Neuralink",
+      "Starlink",
+      "AI master plan",
+      "Elon Musk AI",
+      "AI race",
+      "Tesla Optimus",
+      "future of AI"
+    ],
+    "hashtags": [
+      "#ElonMusk",
+      "#AI",
+      "#ArtificialIntelligence",
+      "#OpenAI",
+      "#xAI",
+      "#Tesla",
+      "#SpaceX",
+      "#Neuralink"
+    ],
+    "format": "short",
+    "title_description_language": "en",
+    "seo_body": "This short explains Elon Musk’s AI master plan and how xAI, Tesla, SpaceX, and Neuralink could challenge OpenAI and Google.",
+    "title_checked": true
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "Elon Musk was publicly listed as an OpenAI co-chair when OpenAI launched in December 2015. OpenAI says he resigned as co-chair in February 2018, so describing OpenAI as a company he co-founded is broadly supported, but he is no longer part of its management.",
+        "source_title": "Introducing OpenAI; Elon Musk wanted an OpenAI for-profit",
+        "source_url": "https://openai.com/index/introducing-openai/",
+        "published_or_updated": "December 11, 2015; timeline updated December 13, 2024"
+      },
+      {
+        "claim": "Musk was described as the world’s first trillionaire after SpaceX’s June 12, 2026 IPO. Forbes reported a valuation-based figure of about $1 trillion, while other reporting noted that the estimate depended heavily on private-company and newly public SpaceX valuations.",
+        "source_title": "Forbes Declares Elon Musk As The World’s First Trillionaire",
+        "source_url": "https://tollbit.forbes.com/sites/pr/2026/06/12/forbes-declares-elon-musk-as-the-worlds-first-trillionaire/",
+        "published_or_updated": "June 12, 2026"
+      },
+      {
+        "claim": "xAI says its Colossus AI supercomputer became operational in 122 days and began running workloads 19 days after the first servers arrived. The company later said the system was doubled to 200,000 NVIDIA Hopper GPUs; its current Colossus page also describes a roadmap toward 1 million GPUs.",
+        "source_title": "Colossus: The World’s Largest AI Supercomputer; xAI Series C announcement",
+        "source_url": "https://x.ai/colossus",
+        "published_or_updated": "Current page accessed November 25, 2026; Series C announcement December 23, 2024"
+      },
+      {
+        "claim": "Terafab is a real announced project, but it is a planned semiconductor facility rather than an operating chip factory. SpaceX materials describe it as a joint Tesla–xAI–SpaceX effort announced on March 21, 2026, intended to integrate chip design, fabrication, memory, packaging and testing.",
+        "source_title": "SpaceX IPO Roadshow",
+        "source_url": "https://content.spacex.com/cms-assets/FINAL_Documents%20and%20Updates/SpaceX%20IPO%20Roadshow.pdf",
+        "published_or_updated": "2026"
+      },
+      {
+        "claim": "The Cursor transaction was reported as a $60 billion all-stock acquisition or acquisition right involving Anysphere, the company behind Cursor. It was not simply a cash purchase by xAI: the buyer was SpaceX or a SpaceX subsidiary, with xAI involved in the technology partnership.",
+        "source_title": "SpaceX buys AI coding startup Cursor for $60 billion; SpaceX officially closes its Cursor acquisition",
+        "source_url": "https://apnews.com/article/a5c60fcbaaca262cf107d30f1de899ef",
+        "published_or_updated": "June 16, 2026"
+      },
+      {
+        "claim": "Grok Bot is a real AI-agent product. An official launch video dated August 11, 2026 described it as providing AI teammates to which users can assign real work, while noting that it began as an internal prototype.",
+        "source_title": "Introducing Grok Bot",
+        "source_url": "https://www.youtube.com/watch?v=F1_0Lkp16Rc",
+        "published_or_updated": "August 11, 2026"
+      },
+      {
+        "claim": "X can provide xAI with access to large volumes of current user-generated content and interaction data, but the claim that every post automatically becomes usable training data is not established by the cited corporate materials. SpaceX’s 2026 prospectus described real-time X data as a strategic advantage, alongside approximately 550 million monthly active users in March 2026.",
+        "source_title": "Project Apex Australian Wrap and S-1",
+        "source_url": "https://content.spacex.com/cms-assets/FINAL_Documents%20and%20Updates/Project%20Apex%20-%20Australian%20Wrap%20and%20S-1%20-%20Final%20%28Lodgement%204%20June%202026%29%20-%20Compressed%20vF.pdf",
+        "published_or_updated": "June 4, 2026"
+      },
+      {
+        "claim": "Tesla develops driver-assistance and automated-driving technology and collects vehicle sensor data, but describing Tesla simply as a fully self-driving car company overstates the verified status of its products. The supplied video’s broader claim that every vehicle movement automatically becomes useful AI training data is not directly established by the available sources.",
+        "source_title": "Tesla 2026 annual report materials",
+        "source_url": "https://ir.tesla.com/_flysystem/s3/sec/000162828026003837/tsla-20260128-gen.pdf",
+        "published_or_updated": "January 28, 2026"
+      },
+      {
+        "claim": "The egg-handling demonstration is associated with Tesla Optimus Gen 2, shown in December 2023. Tesla’s later 2026 filings referred to a planned Gen 3 and major hand upgrades, but the evidence does not support calling the earlier egg demonstration “Optimus 3.”",
+        "source_title": "Tesla Optimus Gen 2 demonstration coverage; Tesla manufacturing and hardware filing",
+        "source_url": "https://arstechnica.com/information-technology/2023/12/teslas-latest-optimus-robot-can-handle-eggs-without-cracking-them/?trk=article-ssr-frontend-pulse_little-text-block",
+        "published_or_updated": "December 13, 2023; Tesla filing updated January 28, 2026"
+      },
+      {
+        "claim": "Starlink is already a major satellite-internet network. SpaceX reported approximately 9,600 broadband and mobile satellites in low Earth orbit, about 10.3 million subscribers, and service across 164 countries, territories and markets as of March 31, 2026.",
+        "source_title": "Project Apex Australian Wrap and S-1",
+        "source_url": "https://content.spacex.com/cms-assets/FINAL_Documents%20and%20Updates/Project%20Apex%20-%20Australian%20Wrap%20and%20S-1%20-%20Final%20%28Lodgement%204%20June%202026%29%20-%20Compressed%20vF.pdf",
+        "published_or_updated": "June 4, 2026"
+      },
+      {
+        "claim": "SpaceX describes Starship as a transportation system designed for full and rapid reusability and missions to Earth orbit, the Moon and Mars. That is a design goal and development program; it should not be narrated as though routine orbital reuse and Mars operations are already established.",
+        "source_title": "Starship",
+        "source_url": "https://new.spacex.com/vehicles/starship",
+        "published_or_updated": "Current page accessed November 25, 2026"
+      },
+      {
+        "claim": "A crewed trip from Earth to the Moon takes approximately three days under typical mission profiles. NASA uses that figure in its Moon-and-Mars educational material, so the video’s three-day figure is reasonable, although exact travel time varies by trajectory and mission.",
+        "source_title": "Why the Moon and Mars?",
+        "source_url": "https://www.nasa.gov/wp-content/uploads/2025/12/acr25-wp-why-moon-and-mars-v2.pdf?emrc=ad809c",
+        "published_or_updated": "2025"
+      },
+      {
+        "claim": "Tesla acquired SolarCity on November 21, 2016. Tesla described the transaction as creating a vertically integrated sustainable-energy company; the supplied video’s claim that this became “Tesla Energy” is directionally accurate as a branding description, but the acquisition itself was not recent.",
+        "source_title": "Using Your Tesla Account for SolarCity Customers",
+        "source_url": "https://www.tesla.com/support/using-your-account",
+        "published_or_updated": "Current page accessed November 25, 2026"
+      },
+      {
+        "claim": "Neuralink has active clinical trials for brain-computer interfaces aimed at helping people with paralysis control computers, robotic arms or speech systems. Its own patient information says the devices remain investigational and are not approved by the FDA or other regulatory authorities, so the video’s framing of a chip that can generally read human thoughts is unsupported.",
+        "source_title": "Neuralink device-control trial information",
+        "source_url": "https://neuralink.com/trials/device-control/",
+        "published_or_updated": "Current page accessed November 25, 2026"
+      },
+      {
+        "claim": "A Dyson sphere is a theoretical structure intended to capture a large share of a star’s energy; there is no verified evidence in the cited material that Tesla, SpaceX or Tesla Energy has begun building one. The video should present the Dyson-sphere section as speculation rather than an announced project.",
+        "source_title": "Elon Musk, SpaceX and the illusion of wealth",
+        "source_url": "https://www.lemonde.fr/en/economy/article/2026/06/01/elon-musk-spacex-and-the-illusion-of-wealth_6754028_19.html",
+        "published_or_updated": "June 1, 2026"
+      }
+    ],
+    "platform_demand": {
+      "verdict": "pass",
+      "signal_type": "owner-replace",
+      "query": "What If Elon Musk Took the AI Race to Space?"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -15.85,
+      "true_peak_dbtp": -1.92,
+      "loudness_range": 2.6
+    },
+    "editorial": {
+      "beats": 44,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-11-25T17:09:07.404662+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-choice",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-shorts-mon-wed-fri",
+    "look3d": "circuit",
+    "kit": "royal"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-short-2026-11-25-b",
+    "created_at": "2026-11-25T17:09:08.323155+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-11-25T20:00:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "3903760100561789317e63eeff2fb0f02208464d2abca73445b0e8bfe736d013",
+        "bytes": 19155304
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "697f4905ddcb24c4febe5451922f2a921477ed9b97eef00640eb5d2b67c51c57",
+        "bytes": 185118
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "d7affed8c0e5e443dcc74bec712c2e1d0d8d0456b63f860fcf1da4c10a33791b",
+        "bytes": 1893
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "0f5ce2843ed4b5ff971494fda3484b27cdae507f0cd0a09dca0856f86628365a",
+        "bytes": 2712
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "b565ea3a79403ff376e9ec5ea5a48963352dc5c3c6722d817ed2213a8eb6e712",
+        "bytes": 1025
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "d4fa0788a368b66a4dcca99833519ba32e965a9eb887c58c4391e52a0773f96b",
+        "bytes": 9101
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "95c726e89ac1391f405777c737c5251f8a08055930a7b9476fa6c0fdf9d58c1a",
+        "bytes": 423
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "744b883e5ee9c71733617de11743a28f0781c643d400635bec35beb6c0f13b03",
+        "bytes": 277
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 43653.0,
+      "cached_input_units": 0.0,
+      "output_units": 3736.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.013214,
+      "created_at": "2026-11-25T16:34:24.518741+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-25T16:34:24.520552+00:00"
+    },
+    {
+      "stage": "script-story",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2254.0,
+      "cached_input_units": 0.0,
+      "output_units": 11548.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.014308,
+      "created_at": "2026-11-25T16:35:59.530650+00:00"
+    },
+    {
+      "stage": "script-voice-direction",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 800.0,
+      "cached_input_units": 0.0,
+      "output_units": 432.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000678,
+      "created_at": "2026-11-25T16:36:03.391986+00:00"
+    },
+    {
+      "stage": "script-board",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 663.0,
+      "cached_input_units": 0.0,
+      "output_units": 1731.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00221,
+      "created_at": "2026-11-25T16:36:18.635207+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2254.0,
+      "cached_input_units": 0.0,
+      "output_units": 11548.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.014308,
+      "created_at": "2026-11-25T16:36:18.636972+00:00"
+    },
+    {
+      "stage": "owner-voice",
+      "provider": "elevenlabs",
+      "model": "eleven_v4",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 1117,
+      "cost_usd": 0.2234,
+      "created_at": "2026-11-25T16:40:50.380509+00:00"
+    },
+    {
+      "stage": "edit-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 13216.0,
+      "cached_input_units": 0.0,
+      "output_units": 9662.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.014238,
+      "created_at": "2026-11-25T16:44:44.147776+00:00"
+    },
+    {
+      "stage": "guide",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1680.0,
+      "cached_input_units": 0.0,
+      "output_units": 1075.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001626,
+      "created_at": "2026-11-25T17:08:46.239711+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 9626.0,
+      "cached_input_units": 0.0,
+      "output_units": 823.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002913,
+      "created_at": "2026-11-25T17:08:46.914456+00:00"
+    },
+    {
+      "stage": "title-check",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 517.0,
+      "cached_input_units": 0.0,
+      "output_units": 436.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000627,
+      "created_at": "2026-11-25T17:08:52.317895+00:00"
+    }
+  ],
+  "recorded_at": "2026-11-25T17:09:11.273674+00:00"
+}
