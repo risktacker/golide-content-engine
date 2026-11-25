@@ -1,7 +1,7 @@
 {
   "production_id": "golide-short-2026-11-25-b",
   "previous": null,
-  "status": "awaiting_approval",
+  "status": "published",
   "media_ref": "r2://temp/2026/11/25/0cb42c140c284782831de4b9ff25a021-golide-short-2026-11-25-b-rebuild.mp4",
   "built_at": "2026-11-25T18:41:45.550489+00:00",
   "preview_expires_at": "2026-11-27T18:41:45.550498+00:00",
@@ -11,5 +11,9 @@
     "mix-edit-v3",
     "qa",
     "release"
-  ]
+  ],
+  "youtube_video_id": "P4t-BqPWjDo",
+  "social_post_id": "golide-short-2026-11-25-b-reels-20261125184145",
+  "reels_status": "published",
+  "published_at": "2026-11-25T20:44:08.469483+00:00"
 }

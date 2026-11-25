@@ -1,13 +1,13 @@
 {
   "production_id": "golide-short-2026-11-25-b",
-  "youtube_video_id": "elqQAXUYagk",
+  "youtube_video_id": "P4t-BqPWjDo",
   "retention_hours": 48,
   "upload": {
-    "youtube_video_id": "elqQAXUYagk",
+    "youtube_video_id": "P4t-BqPWjDo",
     "upload_status": "scheduled",
     "privacy_status": "private",
     "scheduled_at": null,
-    "uploaded_at": "2026-11-25T17:09:11.269165+00:00"
+    "uploaded_at": "2026-11-25T20:42:44.912236+00:00"
   },
   "production": {
     "format": "short",
@@ -316,7 +316,7 @@
       "beats": 44,
       "renderer": "vector"
     },
-    "checked_at": "2026-11-25T17:09:07.404662+00:00",
+    "checked_at": "2026-11-25T18:41:38.207822+00:00",
     "warnings": []
   },
   "generation_parameters": {
@@ -338,7 +338,7 @@
   "package_manifest": {
     "version": 1,
     "production_id": "golide-short-2026-11-25-b",
-    "created_at": "2026-11-25T17:09:08.323155+00:00",
+    "created_at": "2026-11-25T18:41:38.298295+00:00",
     "release": {
       "approved": true,
       "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
@@ -350,8 +350,8 @@
     "files": {
       "video": {
         "file": "video.mp4",
-        "sha256": "3903760100561789317e63eeff2fb0f02208464d2abca73445b0e8bfe736d013",
-        "bytes": 19155304
+        "sha256": "9feb332971ded1a5868188973c803e43cd6484742baac85e7924ee893f888593",
+        "bytes": 19989055
       },
       "thumbnail": {
         "file": "thumbnail.png",
@@ -385,7 +385,7 @@
       },
       "qa_report": {
         "file": "qa-report.json",
-        "sha256": "744b883e5ee9c71733617de11743a28f0781c643d400635bec35beb6c0f13b03",
+        "sha256": "fff982273c4242cd34c5174dec7d504ceb0ef20f93a65822a601f934102b2a92",
         "bytes": 277
       }
     },
@@ -536,5 +536,5 @@
       "created_at": "2026-11-25T17:08:52.317895+00:00"
     }
   ],
-  "recorded_at": "2026-11-25T17:09:11.273674+00:00"
+  "recorded_at": "2026-11-25T20:42:45.202669+00:00"
 }
