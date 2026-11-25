@@ -36,8 +36,8 @@ def _s3d(obj, first, last, punch="opens", label="Your rented GPU"):
 
 
 def test_glass_object_with_its_label_and_limits(tmp_path):
-    lines = _lines(["The lid opens and the screen lights up.", "In the rack one server slides out.",
-                    "Inside the chip the die is tiny.", "And the battery cells rise out."])
+    lines = _lines(["The laptop lid opens and the screen lights up.", "The laptop again.",
+                    "In the rack one server slides out.", "Inside the chip the die is tiny."])
     raw = {"scenes": [_s3d("laptop", 0, 0), _s3d("laptop", 1, 1), _s3d("server", 2, 2, "slides"), _s3d("chip", 3, 3, "rise")]}
     edit = editor.build(raw, lines, 8.0, "long", [], None, [], [])
     objs = [s for s in edit["scenes"] if s["type"] == "object3d"]
@@ -47,3 +47,31 @@ def test_glass_object_with_its_label_and_limits(tmp_path):
     text = html.read_text()
     assert "glass3d.js" in text and "importmap" in text and '"lead": "Your rented GPU"' in text
     assert (html.parent / "three" / "g3d" / "glass3d.js").exists()
+
+
+def test_a_3d_object_needs_its_name_spoken_and_shows_at_most_twice():
+    """owner 2026-11-25: the same laptop 11 times for lines about names, Git and folders."""
+    lines = _lines(["We changed the name and the icon.", "My laptop runs it.", "Saved into Git.",
+                    "On my laptop again.", "Words.", "This laptop once more."])
+    raw = {"scenes": [_s3d("laptop", 0, 0), _s3d("laptop", 1, 1), {"type": "studio", "first_line": 2, "last_line": 2},
+                      _s3d("laptop", 3, 3), {"type": "studio", "first_line": 4, "last_line": 4}, _s3d("laptop", 5, 5)]}
+    edit = editor.build(raw, lines, 12.0, "long", [], None, [], [])
+    objs = [s for s in edit["scenes"] if s["type"] == "object3d"]
+    assert len(objs) == 2 and all(o["start"] > 1.5 for o in objs)    # not on the line that never says laptop
+    assert any("do not name it" in n for n in edit["notes"]) and any("already shown 2 times" in n for n in edit["notes"])
+
+
+def test_counters_carry_the_spoken_units():
+    assert editor._stat_units(90.92, "", "", "close to hundred billion dollars") == (90.9, "$", "B")
+    assert editor._stat_units(229.0, "", "", "229 tools") == (229.0, "", "")
+    assert editor._stat_units(4_800_000, "", "", "views") == (4.8, "", "M")
+
+
+def test_a_chapter_card_never_holds_past_two_seconds():
+    lines = _lines(["Every AI coding tool has two parts.", "The body, the app you type into.", "And the brain doing the thinking."])
+    raw = {"scenes": [{"type": "chapter", "label": "Two parts", "first_line": 0, "last_line": 2}]}
+    edit = editor.build(raw, lines, 9.0, "long", [], None, [], [])
+    card = next(s for s in edit["scenes"] if s["type"] == "chapter_card")
+    assert card["duration"] <= 2.0
+    studio = [s for s in edit["scenes"] if s["type"] == "host" and s["data"].get("place") == "studio"]
+    assert studio and abs(studio[0]["start"] - (card["start"] + card["duration"])) < 0.05

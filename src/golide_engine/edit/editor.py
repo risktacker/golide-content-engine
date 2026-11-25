@@ -161,8 +161,9 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
   parts come together: "built", "combined"), lift (the gold part rises out: "the one that matters"), rise (it
   builds up part by part: "grows", "stacks up"), spin (it turns all the way round: "every side"). The part the
   story is about turns gold with a line to a label: label = what it is in this story, max 5 words ("Your rented
-  GPU"); two other parts get their own name. Never two in a row; use it whenever the words are about one of these
-  devices, as often as the story is (owner 2026-11-17: no fixed count, the words decide).
+  GPU"); two other parts get their own name. Never two in a row; only on a beat whose words NAME the thing (laptop,
+  computer, phone, server, rack, chip, GPU, battery, or a built thing's own name), and the same object at most twice
+  in a video (owner 2026-11-25: a laptop for lines about names, Git and folders is a repeated block).
 - recipe: a FILM-QUALITY 3D scene for this beat in a named style: the MAIN picture of the video, used for every
   beat whose words name a thing, a system, a place, a stack, a plan, an amount or what is inside something (owner
   2026-11-18: all of them are required, draw what is being said). They are the slowest pictures to draw, so a video
@@ -521,7 +522,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
     keeps its words), and every such repair is reported in the edit list's `notes`."""
     n = len(lines)
     notes: list[str] = []
-    photo_use: dict[int, int] = {}
+    used_pics: set[str] = set()
     scenes = sorted((dict(s) for s in raw.get("scenes") or []), key=lambda s: int(s.get("first_line", 0)))
     fixed: list[dict] = []
     nxt = 0
@@ -644,9 +645,16 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
             page = sources[src] if isinstance(src, int) and 0 <= src < len(sources) else None
             if page and page.get("photo") and capture_dir and (capture_dir / page["photo"]).exists():
                 # each use of a page's photos shows its next picture
-                pics = [p for p in (page.get("photos") or [page["photo"]]) if (capture_dir / p).exists()]
-                pick = pics[photo_use.get(src, 0) % len(pics)]
-                photo_use[src] = photo_use.get(src, 0) + 1
+                pics = [p for p in (page.get("photos") or [page["photo"]]) if (capture_dir / p).exists()
+                        and p not in used_pics and _real_picture(capture_dir / p)]
+                if not pics:               # owner 2026-11-25: never the same picture again: Goli and the TV say it
+                    notes.append(f"scene {k}: every picture of page {src} already shown, Goli and the TV instead")
+                    out.append({"type": "host", "start": t0, "duration": dur, "data": {
+                        "place": "studio", "cues": _cues_between(cues, t0, t1), "poses": poses,
+                        "words": _screen_words(words, lines, t0, t1), "punch": (s.get("punch") or "").lower().strip(".,!?")}})
+                    continue
+                pick = pics[0]
+                used_pics.add(pick)
                 out.append({"type": "photo", "start": t0, "duration": dur, "data": {
                     "image": capture_dir / pick, "url": page.get("url", "")}})
                 if s.get("goli_corner") and dur >= 1.2:
@@ -663,10 +671,11 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
             out.append({"type": "logo_tiles", "start": t0, "duration": dur, "data": {
                 "tiles": [{"image": logo_tiles(s["brands"][0])}], "caption": s.get("label") or s["brands"][0], "big": True}})
         elif kind == "stat" and isinstance(s.get("value"), (int, float)):
-            value = float(s["value"])
+            value, prefix, suffix = _stat_units(float(s["value"]), s.get("prefix") or "", s.get("suffix") or "",
+                                                " ".join(w.text for w in _spoken(lines, t0 - 0.5, t1 + 0.5)))
             out.append({"type": "stat_counter", "start": t0, "duration": dur, "in": "whip", "data": {
-                "value": value, "prefix": s.get("prefix") or "", "suffix": s.get("suffix") or "",
-                "decimals": 0 if value == int(value) else 1, "label": s.get("label") or ""}})
+                "value": value, "prefix": prefix, "suffix": suffix,
+                "decimals": 0 if abs(value - round(value)) < 1e-9 else 1, "label": s.get("label") or ""}})
         elif kind == "compare" and s.get("rows"):
             rows = s["rows"][:4]
             out.append({"type": "comparison", "start": t0, "duration": dur, "in": "wipe", "data": {
@@ -675,7 +684,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
                 "winners": [r["winner"] if r["winner"] != "none" else None for r in rows],
                 "gap": min(0.55, max(0.25, (dur - 0.8) / max(1, len(rows))))}})
         elif kind == "object3d" and (s.get("object3d") in OBJECTS3D or len(s.get("parts3d") or []) >= 2) \
-                and not (out and out[-1]["type"] == "object3d"):
+                and not (out and out[-1]["type"] == "object3d") and not _object_unsaid(s, lines, t0, t1, shown_3d, notes, k):
             shown_3d.append(s["object3d"])
             land = _word_time(lines, s.get("punch") or "", t0, t1)
             out.append({"type": "object3d", "start": t0, "duration": dur, "in": "rise", "data": {
@@ -804,6 +813,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
     if bookends and lines:
         out = _bookends(out, lines, cues, duration, *bookends)
     out = one_goli(out)
+    out = one_goli(_cap_cards(out, lines, cues, notes))
     _transitions(out, lines)
     return {"format": fmt, "duration": duration, "scenes": out, "notes": notes, "captions": captions(lines, fmt),
             "look": look if look in LOOKS3D else "glass",
@@ -961,6 +971,47 @@ def captions(lines: list[Any], fmt: str) -> list[dict[str, Any]]:
 BEAT = {"short": 2.2, "long": 6.5}
 STUDIO_BEAT = {"short": 3.0, "long": 10.0}
 HOLD = {"recipe_clip", "puppet_clip", "stat_counter", "comparison", "steps", "walkthrough", "terminal", "metaphor", "object3d", "prompt_card", "checklist", "timeline", "quote_card", "logo_tiles", "chapter_card", "follow_cta"}
+
+
+# owner 2026-11-25 ("plenty of repeated blocks": the same laptop 11 times for lines about names, Git and folders): a 3D
+# object is shown only when its beat's words name it, and the same object at most twice in a video
+OBJECT_WORDS = {"laptop": ("laptop", "computer", "pc", "macbook", "notebook", "desktop"),
+                "phone": ("phone", "iphone", "android", "mobile", "smartphone"),
+                "server": ("server", "servers", "datacenter", "data", "rack", "cloud"),
+                "chip": ("chip", "chips", "gpu", "gpus", "processor", "cpu", "silicon", "nvidia"),
+                "battery": ("battery", "batteries", "cell", "cells", "charge", "charging")}
+OBJECT_MAX = 2
+
+
+def _stat_units(value: float, prefix: str, suffix: str, said: str) -> tuple[float, str, str]:
+    """A counter reads like money or a count, never "90.92" or "229.0" (owner 2026-11-25): a big number gets its
+    K/M/B, and the unit the voice says ("dollars", "billion", "percent") is put on when the editor left it off."""
+    low = said.lower()
+    if abs(value) >= 1e9:
+        value, suffix = value / 1e9, suffix or "B"
+    elif abs(value) >= 1e6:
+        value, suffix = value / 1e6, suffix or "M"
+    elif abs(value) >= 1e4:
+        value, suffix = value / 1e3, suffix or "K"
+    if not suffix:
+        suffix = ("B" if re.search(r"\bbillions?\b", low) else "M" if re.search(r"\bmillions?\b", low)
+                  else "%" if re.search(r"\bper ?cent\b|%", low) else "")
+    if not prefix and re.search(r"\bdollars?\b|\$", low):
+        prefix = "$"
+    return round(value, 1), prefix, suffix
+
+
+def _object_unsaid(s: dict, lines, t0: float, t1: float, shown: list[str], notes: list[str], k: int) -> bool:
+    name = str(s.get("object3d") or "").lower()
+    said = {_norm(w.text) for w in _spoken(lines, t0 - 0.3, t1 + 0.3)}
+    names = OBJECT_WORDS.get(name) or tuple(_norm(x) for x in re.findall(r"[A-Za-z]+", name + " " + str(s.get("label") or "")) if len(x) > 3)
+    if not any(n in said for n in names):
+        notes.append(f"scene {k}: 3D {name} but the words do not name it, Goli and the TV instead")
+        return True
+    if shown.count(name) >= OBJECT_MAX:
+        notes.append(f"scene {k}: 3D {name} already shown {OBJECT_MAX} times, Goli and the TV instead")
+        return True
+    return False
 
 
 def _spoken(lines, a: float, b: float) -> list[Any]:
@@ -1272,6 +1323,28 @@ def _studio(start: float, end: float, cues: list[dict] | None, card: dict | None
 # 2026-11-19 (owner review of the China EV video: "The factory advantage" and "40%" held ~9 s): a card shows for
 # its read and Goli takes the rest of the beat
 CARD_MAX = {"chapter_card": 2.0, "stat_counter": 3.0}
+
+
+def _cap_cards(scenes: list[dict], lines, cues: list[dict] | None, notes: list[str]) -> list[dict]:
+    """The last word on card length (owner 2026-11-25: a chapter card held 7.4 s while Goli stood beside it): after all
+    the other passes a card that grew past its CARD_MAX is cut back; the rest of its time is Goli in the studio with the
+    line on his TV, and a Goli standing beside the card stops with it."""
+    out = list(scenes)
+    for sc in [x for x in scenes if CARD_MAX.get(x["type"]) and x["duration"] > CARD_MAX[x["type"]] + 0.3]:
+        cut, end = sc["start"] + CARD_MAX[sc["type"]], sc["start"] + sc["duration"]
+        sc["duration"] = CARD_MAX[sc["type"]]
+        for h in [x for x in out if x["type"] == "host" and x["data"].get("place") in ("side", "lower")
+                  and x["start"] < end and x["start"] + x["duration"] > cut]:
+            if h["start"] >= cut - 0.05:
+                out.remove(h)
+            else:
+                h["duration"] = round(cut - h["start"], 3)
+        text = " ".join(w.text for w in _spoken(lines, cut, end))
+        out.append({"type": "host", "start": round(cut, 3), "duration": round(end - cut, 3), "data": {
+            "place": "studio", "cues": _cues_between(cues or [], cut, end), "poses": [{"pose": "talk", "at": 0}],
+            "words": _screen_words(text, lines, cut, end) if text else [], "punch": ""}})
+        notes.append(f"{sc['type']} at {sc['start']:.1f}s held {end - sc['start']:.1f} s: cut to {CARD_MAX[sc['type']]:.0f} s, then the studio")
+    return sorted(out, key=lambda s: (s["start"], s["type"] == "host"))
 
 
 def _short_cards(scenes: list[dict], notes: list[str], cues: list[dict] | None) -> list[dict]:
