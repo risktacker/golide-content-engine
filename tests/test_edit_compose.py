@@ -107,7 +107,7 @@ class StudioWardrobeTest(unittest.TestCase):
                 {"type": "host", "start": 0, "duration": 3, "data": {"place": "studio", "words": [{"text": "Hi", "at": 0.2}]}}]}
             Composer("long", outfit="violet").build(edit, Path(t) / "c")
             page = (Path(t) / "c/index.html").read_text()
-            for needle in ('id="st-desk"', "s1-host-line", 'id="pg-hoodie-violet"', 'id="prog"'):   # no section label (2026-11-12)
+            for needle in ('id="st-desk"', "s1-host-wall", 'id="pg-hoodie-violet"', 'id="prog"'):   # no section label (2026-11-12)
                 self.assertIn(needle, page)
 
 
@@ -129,3 +129,35 @@ class LayoutCheckTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class StudioScreenPicturesTest(unittest.TestCase):
+    """owner 2026-11-25: the TV shows the real thing being said; never black, never the same picture over and over."""
+
+    def test_pictures_follow_the_words_and_never_repeat(self):
+        import tempfile
+        from pathlib import Path
+        from PIL import Image, ImageDraw
+        from golide_engine.edit import editor
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            Image.new("RGB", (800, 450), "black").save(d / "black.png")
+            for name, col in (("adobe.png", "#c33"), ("rea.png", "#3a6")):
+                im = Image.new("RGB", (800, 450), col); dr = ImageDraw.Draw(im)
+                for k in range(0, 800, 40):
+                    dr.line((k, 0, 800 - k, 450), fill="white", width=3)
+                im.save(d / name)
+            sources = [{"title": "Adobe news", "photos": ["black.png", "adobe.png"]},
+                       {"title": "REA reverse engineering toolkit", "subject": "REA", "photos": ["rea.png"]}]
+            said = lambda text: {"type": "host", "start": 0, "duration": 2, "data": {"place": "studio", "cues": [],
+                                 "words": [{"text": w, "at": 0} for w in text.split()]}}
+            scenes = [said("Adobe lost money"), said("Adobe again today"), said("REA reverse engineering tools"),
+                      said("nothing matches here")]
+            editor._screen_pictures(scenes, sources, d)
+            screens = [Path(s["data"].get("screen") or "").name for s in scenes]
+            self.assertEqual(screens[0], "adobe.png")
+            self.assertEqual(screens[1], "")              # never the same picture twice: its words stay on the TV
+            self.assertEqual(screens[2], "rea.png")
+            self.assertEqual(screens[3], "")
+            self.assertTrue(scenes[3]["data"]["words"])   # the line's own words on the TV, not an empty wall
+            self.assertNotIn("black.png", screens)

@@ -88,6 +88,13 @@ CLOSE_MODEL = (
     "- Leave out the model creator's own channel (their name, sponsor reads, other videos, calls to action). Ours is "
     "one follow sentence near the end.\n"
     "- A plain error of name, number or date is corrected from the FACT CHECK list; nothing else changes.\n"
+    "- WHAT IS THEIRS STAYS THEIRS (owner 2026-11-25, the law): the steps, tools, prompts, numbers and results are "
+    "doable by anyone, so they may be told as ours (\"we did\", \"I typed\"). What is personal to the model's creator "
+    "is never claimed: a name they gave their product, app, model or project; their own story, family, job, money, "
+    "clients or opinions about themselves. Tell those as theirs (\"someone named theirs ...\", \"the creator called "
+    "it ...\") or turn them to the viewer (\"name yours whatever you like\"). If we name our own build, it is a GOLIDE "
+    "name marked as a trial (for example \"we called ours GOLIDE Trial 1\"), never their name. Their product name "
+    "never appears as our product.\n"
     "- Short paragraphs: one thought per paragraph.\n"
     "- Chapters: put the markers where the model's story turns.\n\n")
 

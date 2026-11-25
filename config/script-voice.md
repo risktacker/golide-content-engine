@@ -112,3 +112,8 @@ Return the finished script, not an explanation of your writing process.
 Do not mention these rules, describe your edits or provide generic writing advice unless explicitly requested.
 
 The priority is always natural human speech, clarity, substance and authenticity.
+## What is theirs stays theirs (owner 2026-11-25)
+Steps, tools, prompts, numbers and results anyone can repeat may be told as ours. What is personal to another creator
+is never claimed: the name they gave their product, app, model or project, and their own life, money, clients or
+opinions. Tell those as theirs ("someone named theirs ...") or hand them to the viewer ("name yours whatever you
+like"). If we name our own build, it is a GOLIDE trial name (e.g. "GOLIDE Trial 1"), never theirs.

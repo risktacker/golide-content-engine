@@ -18,7 +18,7 @@ def test_3d_plates_replace_the_flat_set_and_keep_the_live_parts(tmp_path, monkey
     asset = lambda p: used.append(p.name) or p.name  # noqa: E731
     back = studio.back("s1", "short", asset)
     front = studio.front("s1", "short", asset)
-    assert "back.webp" in back and 'id="s1-line"' in back and 'id="s1-bar6"' in back   # the TV's chart stays live
+    assert "back.webp" in back and 'id="s1-line"' not in back and 'id="s1-bar6"' not in back and 'LIVE' in back   # owner 2026-11-25: no chart on the TV
     assert "front.webp" in front and 'id="s1-steam"' in front and 'id="s1-edge"' in front
     assert "back.webp" in studio.lower_back("s2", asset)
     assert "front.webp" in used and "back.webp" in used

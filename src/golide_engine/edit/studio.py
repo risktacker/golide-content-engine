@@ -113,18 +113,12 @@ def back3d(sid: str, fmt: str, m: dict, asset) -> str:
     L = layout(fmt)
     W, H = L["w"], L["h"]
     g = 'transform="translate({} {}) scale({})"'.format(*L["wall"])
-    bars = "".join(f'<rect id="{sid}-bar{i}" x="{1196 + i * 46}" y="{600 - h_}" width="30" height="{h_}" rx="6" '
-                   f'fill="{"#F2C14E" if i == 5 else "#3D6CFF"}" opacity=".6"/>'
-                   for i, h_ in enumerate((40, 56, 46, 74, 64, 100, 84)))
-    ticks = "".join(f'<rect x="{1560 + i * 26}" y="{200 + (i % 3) * 4}" width="16" height="4" rx="2" fill="#3D6CFF" '
-                    f'opacity="{.3 + .1 * (i % 4)}"/>' for i in range(9))
+    # owner 2026-11-25: no decoration chart on the TV ("that nonsensical graph that has no meaning"): only LIVE and
+    # the logo; the screen itself shows the real thing being said (editor._screen_pictures)
     screen = (f'<svg viewBox="0 0 {W} {H}" width="{W}" height="{H}" style="position:absolute;left:0;top:0">'
               f'<g {g}><g id="{sid}-wall">'
               f'<circle cx="1160" cy="160" r="7" fill="#E8462F"/><text x="1176" y="167" font-family="Inter" font-weight="600" '
-              f'font-size="20" fill="#E8462F">LIVE</text>{ticks}{bars}'
-              f'<path id="{sid}-line" d="M1180 590 L1260 566 L1330 578 L1420 536 L1500 548 L1590 500 L1680 512 L1800 450" '
-              f'fill="none" stroke="#F2C14E" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" '
-              f'stroke-dasharray="900" stroke-dashoffset="900"/>{logo_mark(1806, 594, 40, "#8FA0C8", "#F2C14E")}'
+              f'font-size="20" fill="#E8462F">LIVE</text>{logo_mark(1806, 594, 40, "#8FA0C8", "#F2C14E")}'
               f'</g></g><g id="{sid}-neon"></g></svg>')
     return _img(PLATES / fmt / "back.webp", [0, 0], asset, W, H) + screen
 
@@ -145,11 +139,8 @@ def front3d(sid: str, fmt: str, m: dict, asset) -> str:
 
 
 def motion(sid: str, t0: float, dur: float) -> list[str]:
-    """Life in the set: chart draws, bars breathe, LED edge pulses, steam rises, a slow camera push."""
-    tw = [f'tl.to("#{sid}-line",{{attr:{{"stroke-dashoffset":0}},duration:{min(2.5, dur * .6):.2f},ease:"power2.inOut"}},{t0 + .4:.3f});']
-    for i in range(7):
-        tw.append(f'tl.fromTo("#{sid}-bar{i}",{{scaleY:.3,transformOrigin:"50% 100%"}},{{scaleY:1,duration:.7,'
-                  f'ease:"back.out(1.6)"}},{t0 + .3 + .08 * i:.3f});')
+    """Life in the set: LED edge pulses, steam rises, a slow camera push (the TV's chart is gone, owner 2026-11-25)."""
+    tw = []
     n = max(1, int(dur / 1.4))
     tw.append(f'tl.to("#{sid}-edge",{{opacity:.55,duration:.7,yoyo:true,repeat:{2 * n - 1},ease:"sine.inOut"}},{t0:.3f});')
     tw.append(f'tl.fromTo("#{sid}-steam",{{y:0,opacity:.18}},{{y:-40,opacity:0,duration:{min(3.0, dur):.2f},ease:"none"}},{t0:.3f});')

@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 import math
 import re
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -1184,33 +1185,69 @@ DEEPER = {"walkthrough", "terminal", "object3d", "recipe_clip", "puppet_clip"}
 WORDS_MAX = 0
 
 
+def _real_picture(path: Path) -> bool:
+    """A picture worth a screen: not black, blank, a flat texture or a tiny icon (2026-11-25: the TV showed 4 black
+    pictures from a news page and a grey texture)."""
+    try:
+        from PIL import Image, ImageFilter, ImageStat
+        with Image.open(path) as im:
+            if im.width < 320 or im.height < 180:
+                return False
+            g = im.convert("L").resize((160, 90))
+        st = ImageStat.Stat(g)
+        edges = ImageStat.Stat(g.filter(ImageFilter.FIND_EDGES)).mean[0]
+        return 22 < st.mean[0] < 245 and st.stddev[0] > 20 and edges > 6
+    except Exception:  # noqa: BLE001 - unreadable is not a picture
+        return False
+
+
+_SCREEN_STOP = set("this that with from have about your they their there what when which would could should into "
+                   "just like then than them been were will also only more most some very much over even back".split())
+
+
 def _screen_pictures(scenes: list[dict], sources: list[dict], capture_dir: Path | None) -> None:
-    """2026-11-20 (owner: "the screen is coming, but empty, nothing"): the studio's video wall shows a real picture
-    of the story (the pages' photos of its people, products and places), the one whose page best matches what is being
-    said, never the same as the studio scene before. With no pictures it keeps its spoken headline (never an empty
-    wall: owner 2026-11-20, "if it breaks, better text lands")."""
+    """The studio TV (owner 2026-11-20, 2026-11-25): it shows the real thing being said. A picture goes on it only when
+    its page names what the line names (the spoken words, 2026-11-25: the old match read the mouth cues, found no words
+    and cycled 10 pictures in order), never a black, blank or texture picture, and never twice in a video unless it is
+    the product itself (its page's subject is named in the line), at most 3 times. Otherwise the TV shows the line's
+    own words with the key word lit (owner 2026-11-25: "add these to the TV"), never a meaningless chart."""
     if not capture_dir:
         return
-    pics: list[tuple[Path, str]] = []
+    pics: list[tuple[Path, set[str], set[str]]] = []
+    seen: set[str] = set()
     for page in sources or []:
+        title = str(page.get("title") or page.get("name") or "")
+        subject = {w for w in re.findall(r"[a-z0-9]+", str(page.get("subject") or "").lower()) if len(w) > 2}
+        keys = {w for w in re.findall(r"[a-z0-9]+", (title + " " + str(page.get("subject") or "")).lower())
+                if len(w) > 3 and w not in _SCREEN_STOP}
         for name in page.get("photos") or ([page["photo"]] if page.get("photo") else []):
-            if (capture_dir / name).exists():
-                pics.append((capture_dir / name, str(page.get("title") or page.get("name") or "").lower()))
-    if not pics:
-        return
-    last, n = None, 0
+            f = capture_dir / name
+            if f.exists() and f.name not in seen and _real_picture(f):
+                seen.add(f.name)
+                pics.append((f, keys, subject))
+    used: Counter = Counter()
+    last = None
     for sc in scenes:
-        if sc["type"] != "host" or sc["data"].get("place") != "studio" or sc["data"].get("intro") or sc["data"].get("outro"):
+        d = sc["data"]
+        if sc["type"] != "host" or d.get("place") != "studio" or d.get("intro") or d.get("outro"):
             continue
-        said = " ".join(str(c.get("word") or c.get("text") or "") for c in sc["data"].get("cues") or []).lower()
-        ranked = sorted(pics, key=lambda p: -sum(1 for w in p[1].split() if len(w) > 3 and w in said))
-        pick = next((p for p in ranked if p[0] != last), ranked[0]) if ranked[0][1] and any(
-            w in said for w in ranked[0][1].split() if len(w) > 3) else pics[n % len(pics)]
-        if pick[0] == last and len(pics) > 1:
-            pick = pics[(n + 1) % len(pics)]
-        sc["data"]["screen"] = pick[0]
-        sc["data"]["words"], sc["data"]["punch"] = [], ""     # the picture replaces the headline
-        last, n = pick[0], n + 1
+        said = {w for w in re.findall(r"[a-z0-9]+", " ".join(str(w.get("text") or "") for w in d.get("words") or []).lower())
+                if len(w) > 3 and w not in _SCREEN_STOP}
+        best, score = None, 0
+        for f, keys, subject in pics:
+            product = bool(subject) and subject <= said
+            if f == last or used[f] >= (3 if product else 1):
+                continue
+            sc_ = len(keys & said) + (2 if product else 0)
+            if sc_ > score:
+                best, score = f, sc_
+        if best is not None and score >= 1:
+            d["screen"] = best
+            d["words"], d["punch"] = [], ""     # the picture replaces the headline
+            used[best] += 1
+            last = best
+        else:
+            last = None                          # the line's own words stay on the TV
 
 
 def _card_words(sc: dict | None) -> list[dict]:
