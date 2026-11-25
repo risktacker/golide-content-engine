@@ -24,8 +24,13 @@
     "_enabled_note": "2026-11-24 (owner): 3D Shorts called off (could not reach Ricks Clips); Stickman Shorts are made in Goli. The engine and its fixes stay in the repo.",
     "model": "gpt-5.6-sol",
     "reasoning_effort": "medium",
-    "max_cost_usd": 1.50,
+    "max_cost_usd": 1.5,
     "parts": 12,
     "hold_private": true
-  }
+  },
+  "paused_platforms": [
+    "instagram",
+    "linkedin"
+  ],
+  "_paused_platforms_note": "Owner 2026-11-25: no uploads to Instagram or LinkedIn until he switches them back on (remove them from paused_platforms). YouTube keeps publishing."
 }

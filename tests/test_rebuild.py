@@ -1,3 +1,5 @@
+import os
+os.environ.setdefault("GOLIDE_PAUSED_PLATFORMS", "")   # the mechanism, not the owner's live switches
 import json
 import tempfile
 import unittest

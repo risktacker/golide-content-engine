@@ -1,4 +1,6 @@
 """2026-11-04 (owner): each video goes only to the platforms he ticked."""
+import os
+os.environ.setdefault("GOLIDE_PAUSED_PLATFORMS", "")   # the mechanism, not the owner's live switches
 from golide_engine.orchestration.reels import chosen_platforms, keep_variants, long_social_payload, reels_payload
 
 META = {"title": "T", "description": "d"}

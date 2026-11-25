@@ -8,6 +8,8 @@ video where the most of the illustration is on screen.
 
 from __future__ import annotations
 
+import json
+
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
@@ -51,18 +53,33 @@ def pick_cover(video: Path, output: Path, *, search_fraction: float = 0.4) -> Pa
 PLATFORMS = ("youtube", "instagram", "facebook", "linkedin")
 
 
+def paused_platforms() -> set[str]:
+    """Owner 2026-11-25: platforms switched off for every video until he turns them back on
+    (config/edit-engine.json "paused_platforms"): nothing is uploaded there. GOLIDE_PAUSED_PLATFORMS (comma list,
+    may be empty) overrides it, for tests and one-off runs."""
+    import os
+    if "GOLIDE_PAUSED_PLATFORMS" in os.environ:
+        return {p.strip().lower() for p in os.environ["GOLIDE_PAUSED_PLATFORMS"].split(",") if p.strip()}
+    try:
+        cfg = json.loads((Path(__file__).resolve().parents[3] / "config" / "edit-engine.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return set()
+    return {str(p).strip().lower() for p in cfg.get("paused_platforms") or []}
+
+
 def chosen_platforms(spec: dict[str, Any]) -> set[str]:
     chosen = spec.get("platforms")
-    if not isinstance(chosen, list):
-        return set(PLATFORMS)
-    return {str(p).strip().lower() for p in chosen} & set(PLATFORMS)
+    base = set(PLATFORMS) if not isinstance(chosen, list) else {str(p).strip().lower() for p in chosen} & set(PLATFORMS)
+    return base - paused_platforms()
 
 
 def keep_variants(payload: dict[str, Any], platforms: set[str] | None, youtube_video_id: str) -> dict[str, Any]:
     """Drop the platforms not chosen; YouTube is only recorded when it was uploaded."""
+    paused = paused_platforms()          # owner 2026-11-25: switched-off platforms never get a post, on any path
     payload["variants"] = [
         v for v in payload["variants"]
         if (platforms is None or v["platform"] in platforms)
+        and v["platform"] not in paused
         and (v["platform"] != "youtube" or youtube_video_id)
     ]
     return payload
@@ -125,7 +142,7 @@ def publish_reels(*, bridge, store, publisher_factory, production_id: str, video
                   platforms: set[str] | None = None) -> dict[str, Any]:
     """Upload (if needed), queue the IG/FB/LinkedIn Reels for one short at YouTube's
     release time, and publish them now if that time has already come."""
-    if platforms is not None and not (platforms - {"youtube"}):
+    if not ((set(PLATFORMS) if platforms is None else platforms) - {"youtube"} - paused_platforms()):
         return {"social_post_id": None, "reels_status": "skipped_by_owner", "cover_ref": None}
     if video_ref is None:
         video_ref = upload_media(store, video, f"{production_id}.mp4", "video/mp4", bridge)

@@ -19,3 +19,20 @@ def test_every_upload_wears_the_next_kit(tmp_path):
     assert all(a != b for a, b in zip(worn, worn[1:]))
     assert len(set(worn[:7])) == 7 and worn[7] == worn[0]
     assert len({kits.glasses(k) for k in worn[:7]}) >= 5        # the glasses change too
+
+
+def test_paused_platforms_get_nothing():
+    """Owner 2026-11-25: no uploads to Instagram or LinkedIn until he switches them back on."""
+    from golide_engine.orchestration import reels
+    saved = os.environ.pop("GOLIDE_PAUSED_PLATFORMS", None)
+    try:
+        paused = reels.paused_platforms()               # the live config
+    finally:
+        if saved is not None:
+            os.environ["GOLIDE_PAUSED_PLATFORMS"] = saved
+    os.environ["GOLIDE_PAUSED_PLATFORMS"] = ",".join(sorted(paused))
+    assert {"instagram", "linkedin"} <= paused
+    assert not ({"instagram", "linkedin"} & reels.chosen_platforms({}))
+    payload = reels.keep_variants({"variants": [{"platform": p} for p in reels.PLATFORMS]}, None, "abc")
+    assert {v["platform"] for v in payload["variants"]} == set(reels.PLATFORMS) - paused
+    os.environ["GOLIDE_PAUSED_PLATFORMS"] = ""        # the other tests check the mechanism with nothing paused

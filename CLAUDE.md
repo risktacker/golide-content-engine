@@ -58,6 +58,11 @@ Owner: Esiah (Lusaka, UTC+2). Direct, no sugar-coating. Studio: studio.golidee.c
   style, in rotation per upload (`goli3d/kits.py` choose: the next after the last record's "kit"), in the video sprites
   and the thumbnail library (`full/kits/<outfit>/`, goli3d-library.yml kind=library kit=all). Blinks are smooth:
   half, closed, half (0.2 s), a double blink now and then. Eye movement (gaze) waits for the Blender motion session.
+- Instagram and LinkedIn are paused (owner 2026-11-25): no upload there on any path until he switches them back on
+  (`config/edit-engine.json` paused_platforms, `reels.paused_platforms`). YouTube keeps publishing.
+- Short models (owner 2026-11-25): channels like Outskill, AI how-to and the tech industry told as tech (the GTA 6 Short,
+  1.1K), all Goli (`trend-sources.json` focus.short_channels); the Short script is the tech chain again, not the Ricks
+  Clips skit formula, while 3D Shorts are off.
 - Don't poll or babysit long runs; it burns the owner's usage.
 - Never start with limits. Build the general capability the owner asks for, not a fixed short list.
 
@@ -222,4 +227,4 @@ best unmodelled video of the last 45 days, no numbers bar. The channel's style i
   automatic runs never switch paid ones on. Real people stay real photo cards, never puppets.
 
 ## Checks
-`python3 -m pytest -q` must pass before every push (687 tests as of 2026-11-25).
+`python3 -m pytest -q` must pass before every push (688 tests as of 2026-11-25).
