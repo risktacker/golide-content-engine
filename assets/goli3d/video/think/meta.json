@@ -41,6 +41,46 @@
    408,
    426
   ],
+  "blink-aviator": [
+   330,
+   240
+  ],
+  "half-aviator": [
+   330,
+   240
+  ],
+  "blink-browline": [
+   330,
+   240
+  ],
+  "half-browline": [
+   330,
+   240
+  ],
+  "blink-round_gold": [
+   330,
+   240
+  ],
+  "half-round_gold": [
+   330,
+   240
+  ],
+  "blink-round_silver": [
+   330,
+   240
+  ],
+  "half-round_silver": [
+   330,
+   240
+  ],
+  "blink-square_black": [
+   330,
+   240
+  ],
+  "half-square_black": [
+   330,
+   240
+  ],
   "blink": [
    330,
    240
@@ -86,7 +126,7 @@
  "bbox": [
   0,
   122,
-  777,
+  776,
   1100
  ]
 }
