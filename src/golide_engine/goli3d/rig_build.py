@@ -165,7 +165,7 @@ bpy.ops.object.mode_set(mode="OBJECT")
 # which bones each part may follow (rigid parts follow one)
 CANDIDATES = {
     "torso": ["hips", "spine", "chest", "neck"],
-    "shoulder_L": ["chest", "shoulder.L", "upper_arm.L"], "shoulder_R": ["chest", "shoulder.R", "upper_arm.R"],
+    "shoulder_L": ["chest", "upper_arm.L"], "shoulder_R": ["chest", "upper_arm.R"],
     "arm_L": ["chest", "shoulder.L", "upper_arm.L", "forearm.L", "hand.L"],
     "arm_R": ["chest", "shoulder.R", "upper_arm.R", "forearm.R", "hand.R"],
     "leg_L": ["hips", "thigh.L", "foot.L"], "leg_R": ["hips", "thigh.R", "foot.R"],
@@ -184,6 +184,9 @@ def _skin(o, part):
     groups = {n: o.vertex_groups.new(name=n) for n in names}
     segs = {n: (_V(BONES[n][0]), _V(BONES[n][1])) for n in names}
     for v in o.data.vertices:
+        if part.startswith("shoulder_"):      # the shoulder plate moves as one piece, half with the arm: never torn
+            groups[names[0]].add([v.index], 0.5, "REPLACE"); groups[names[1]].add([v.index], 0.5, "REPLACE")
+            continue
         if len(names) == 1:
             groups[names[0]].add([v.index], 1.0, "REPLACE")
             continue
