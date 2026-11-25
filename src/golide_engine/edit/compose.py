@@ -20,7 +20,7 @@ from typing import Any
 
 from PIL import Image
 
-from . import studio
+from . import layout, studio
 from .mascot import logo_mark
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -142,6 +142,34 @@ def _shift(tween: str, t0: float) -> str:
     return tween if not m else tween[:m.start()] + f",{t0 + float(m.group(1)):.3f});"
 
 
+SHORT_CAP_CHARS = 30      # two lines at most at 60 px inside the phone's crop
+
+
+def short_lines(caps: list[dict]) -> list[dict]:
+    """owner 2026-11-25 ("captions collided with Goli"): a Short's caption band is two lines high, Goli stands under it.
+    A longer line is cut at its words into lines that follow each other on the spoken timings."""
+    out = []
+    for c in caps:
+        words = c.get("words") or []
+        if len(" ".join(w["text"] for w in words)) <= SHORT_CAP_CHARS:
+            out.append(c)
+            continue
+        keys, chunk, first = set(c.get("keys", [])), [], 0
+        pieces = []
+        for j, w in enumerate(words):
+            if chunk and len(" ".join(x["text"] for x in chunk + [w])) > SHORT_CAP_CHARS:
+                pieces.append((first, chunk))
+                chunk, first = [], j
+            chunk.append(w)
+        pieces.append((first, chunk))
+        for k, (first, chunk) in enumerate(pieces):
+            start = float(c["start"]) if k == 0 else float(chunk[0]["at"])
+            end = float(pieces[k + 1][1][0]["at"]) - 0.01 if k + 1 < len(pieces) else float(c["end"])
+            out.append(dict(c, start=start, end=max(end, start + 0.2), words=chunk,
+                            keys=[j - first for j in keys if first <= j < first + len(chunk)]))
+    return out
+
+
 class Composer:
     """Collects scene markup and one GSAP timeline."""
 
@@ -245,8 +273,10 @@ class Composer:
         elif self.zone and self.fmt == "short":
             # owner 2026-11-25: a Short is framed like the long video: the proof keeps to the top, above the captions,
             # and Goli stands under it (the long video's right quarter becomes the Short's bottom third)
-            inner = (f'<div class="zone" style="position:absolute;inset:0;transform:scale({0.9 * getattr(self, "_boost", 1.0):.3f});'
-                     f'transform-origin:50% 4%">{inner}</div>')
+            # owner 2026-11-25 (first Short with it): not pushed up to the top, where the phone hides it: the proof
+            # sits between the phone's top crop (230 px) and the captions (1062 px), inside its side crops
+            inner = (f'<div class="zone" style="position:absolute;inset:0;transform:translateY(120px) '
+                     f'scale({0.84 * getattr(self, "_boost", 1.0):.3f});transform-origin:50% 0">{inner}</div>')
         elif abs(getattr(self, "_boost", 1.0) - 1.0) > 0.005:
             # 2026-11-13 (point 5): a scene measured too small is enlarged around its middle
             inner = (f'<div style="position:absolute;inset:0;transform:scale({self._boost:.3f});transform-origin:50% 50%">'
@@ -1351,7 +1381,8 @@ class Composer:
         if place == "side":   # standing beside the block; on a Short his feet stay above YouTube's caption area
             # long: knees at the frame's bottom edge; Short (owner 2026-11-25): under the proof and the captions, his
             # feet low behind YouTube's own buttons
-            y = (1840 if self.fmt == "short" else self.h + 150) - size
+            # owner 2026-11-25 ("captions collided with Goli"): his head starts under the caption band
+            y = (max(1840, layout.SHORT_CAP_BOTTOM + 35 + size) if self.fmt == "short" else self.h + 150) - size
         if place == "beside":     # long: feet just under the frame's edge; Short: feet above YouTube's caption area
             y = (1700 if self.fmt == "short" else self.h + 30) - size
         if place in ("studio", "lower"):      # seated: desk top at his waist
@@ -1627,6 +1658,8 @@ class Composer:
         studio_top = 1592 if self.fmt == "short" else self.h - 150
         size = 60 if self.fmt == "short" else 50
         cap_list = edit.get("captions") or []
+        if self.fmt == "short":
+            cap_list[:] = short_lines(cap_list)
         cap_list.sort(key=lambda c: float(c["start"]))
         for i, c in enumerate(cap_list):         # a line leaves before the next one arrives: never two at once
             if i + 1 < len(cap_list):

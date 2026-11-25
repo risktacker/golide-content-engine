@@ -88,6 +88,22 @@ class RebuildTests(unittest.TestCase):
         self.assertEqual(self.stages(), {"script", "owner-voice"})
         self.assertTrue((self.root / "productions" / ID / "narration-owner.wav").exists())
 
+    def test_an_edit_engine_video_is_cut_again_from_its_saved_plan_for_free(self):
+        """Owner 2026-11-25: "we already have the storyboard": the paid edit plan is kept, everything after it
+        (render, doctor, mix, check, package) is redone with today's code."""
+        work = self.root / "productions" / ID
+        (work / "edit").mkdir()
+        (work / "edit" / "edit-plan-raw-v2.json").write_text('{"plan": [], "scenes": []}')
+        (work / "edit" / "doctor.json").write_text("{}")
+        for stage in ("edit-plan-v2", "render-edit-v1", "doctor-v1", "mix-edit-v3"):
+            self.db.execute("INSERT INTO stage_runs(production_id, stage, attempt, status, started_at) "
+                            "VALUES (?, ?, 1, 'completed', '2026-11-25')", (ID, stage))
+        redo = Rebuild(self.root, self.db, ID).prepare()
+        self.assertEqual(redo, ["render-edit-v1", "doctor-v1", "mix-edit-v3", "qa", "release"])
+        self.assertIn("edit-plan-v2", self.stages())            # the storyboard is not paid for again
+        self.assertNotIn("render-edit-v1", self.stages())
+        self.assertFalse((work / "edit" / "doctor.json").exists())
+
     def test_new_art_redraws_the_thumbnail_retitles_and_funds_the_pictures(self):
         # 22 Oct: the Roadster video is redrawn with real-product art under the owner's title.
         work = self.root / "productions" / ID

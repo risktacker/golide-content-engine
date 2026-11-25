@@ -205,11 +205,13 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
   through a system): 3-5 layers top to bottom, each with a simple diagram, a name and a short line, and a pulse
   showing the order things happen. white = how something FLOWS THROUGH A SYSTEM (energy, water, money, data,
   people): a white architect's model of the system, one accent travelling its path in order, a numbered label at each
-  stop. circuit = a JOURNEY or PIPELINE through stages (a prompt through a chip, a payment through a network): a
+  stop. A PLACE where things are made, stored or run (a factory, a chip fab, a data centre, a power plant, a port, a
+  campus, a city: owner 2026-11-25, the Terafab beat) is a white model of that place with what flows in and out, never
+  a blueprint. circuit = a JOURNEY or PIPELINE through stages (a prompt through a chip, a payment through a network): a
   circuit board at night, each stage a landmark with its printed name, a pulse carrying the order. glass = MIXTURES,
   RATIOS AND AMOUNTS (a split of money or time, a blend, a recipe, chemistry): real glassware, amounts as levels
-  against the marks, one action per beat. blueprint = a PLAN, SET-UP or HOW SOMETHING IS MADE: a flat drawing that
-  rises into the real object, with dimensions and 2-3 numbered pointers. recipe_brief = what the scene must show, from the words and research only (max 60 words). xray: the
+  against the marks, one action per beat. blueprint = a PLAN, SET-UP or HOW ONE THING IS MADE (a machine, a
+  device, a part, one building's structure): a flat drawing that rises into the real object, with dimensions and 2-3 numbered pointers. recipe_brief = what the scene must show, from the words and research only (max 60 words). xray: the
   object and its real look, the 1-3 inner parts to light in order and what each does in 2-5 words, the flow, and the
   brand if there is one (its colour becomes the accent). layers: each layer top to bottom with its name (1-2 words),
   a 2-4 word line and what its little diagram shows, and what the pulse carries (a request down, the answer up).

@@ -163,13 +163,19 @@ def legibility(edit: dict[str, Any], comp_builder, comp: Path, size: tuple[int, 
 # sides (about 9% each side on a 19.5:9 screen), the like/comment column covers the right, the Shorts bar the top.
 # Every scene's content stays inside this box, measured through the whole scene (after it lands, before it leaves).
 SAFE = {"short": (130, 230, 1080 - 160, 1920 - 120), "long": (36, 30, 1920 - 36, 1080 - 30)}
+# owner 2026-11-25 ("captions collided with Goli"): a Short with Goli under the proof has three fixed floors: the proof
+# ends above the captions, the captions own their band, Goli's head starts under it. Nothing is pushed into the next.
+SHORT_CAP_TOP, SHORT_CAP_BOTTOM, SHORT_ZONE_Y = 1062, 1205, 120
 
 
-def safe_factor(box: list[float], fmt: str, size: tuple[int, int]) -> float:
-    """How much a box (x0, y0, x1, y1) must shrink about the scene's scale origin to sit inside the safe area."""
+def safe_factor(box: list[float], fmt: str, size: tuple[int, int], zone: bool = False) -> float:
+    """How much a box (x0, y0, x1, y1) must shrink about the scene's scale origin to sit inside the safe area.
+    zone: a Short block with Goli under it, grown from its top; it must end above the captions."""
     w, h = size
     l, t, r, b = SAFE[fmt] if fmt in SAFE else (30, 30, w - 30, h - 30)
     ox, oy = (0.02 * w, h / 2) if fmt == "long" else (w / 2, h / 2)
+    if zone and fmt == "short":
+        b, oy = SHORT_CAP_TOP - 22, SHORT_ZONE_Y
     x0, y0, x1, y1 = box
     f = 1.0
     if x0 < l and ox - x0 > 1:
@@ -201,9 +207,10 @@ def keep_inside(edit: dict[str, Any], comp_builder, comp: Path, size: tuple[int,
             a, d = float(sc["start"]), float(sc["duration"])
             times = sorted({round(a + min(0.45, d * 0.4), 3), round(a + d * 0.6, 3), round(a + max(d * 0.6, d - 0.35), 3)})
             worst = 1.0
+            zone = bool(sc["data"].get("goli_zone"))
             for t in times:
                 for v in (page.evaluate(TEXT_PROBE, t) or {}).values():
-                    worst = min(worst, safe_factor(v["box"], fmt, size))
+                    worst = min(worst, safe_factor(v["box"], fmt, size, zone))
             if worst < 0.99:
                 old = float(sc["data"].get("boost") or 1.0)
                 sc["data"]["boost"] = round(old * worst * 0.98, 3)
@@ -282,7 +289,9 @@ def _times(edit: dict[str, Any]) -> list[float]:
 def bands(fmt: str, h: int) -> list[int]:
     """Caption positions to try, nearest to the usual place first."""
     if fmt == "short":
-        return [1062, 1150, 980, 1592, 900, 1250, 820, 1680]     # 1680 sits under YouTube's title: last
+        # owner 2026-11-25: a caption never moves down into Goli (he stands under the band); it goes up, or the studio's
+        # own low band when Goli sits at the desk (1592 is free there)
+        return [SHORT_CAP_TOP, 1000, 940, 880, 820, 1592]
     return [h - 150, h - 250, h - 360, 120, 230]
 
 

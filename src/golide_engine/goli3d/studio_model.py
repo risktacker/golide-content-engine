@@ -220,7 +220,8 @@ area("uplight", ((f0.x + f1.x) / 2, y_wall - 0.5, f0.z - 0.1), 900 if FMT != "lo
 # the video wall: a big flat TV with a slim bezel; the screen is left plain (content is laid on in the video)
 # owner 2026-11-25: a boardroom smart screen, wide and big enough that a page reads on it (the old one was a 32-inch
 # TV), standing off the wall on its mount with a neon glow behind it so it never looks stuck to the wall
-TV_PX = {"long": (880, 64, 1888, 631), "short": (40, 96, 1040, 659)}
+# Short (owner 2026-11-25): landscape still, but inside the phone's crops (130 px left, 160 right, 230 top), not to the edges
+TV_PX = {"long": (880, 64, 1888, 631), "short": (150, 250, 920, 683)}
 screen_px = None
 if LAY["wall"]:
   x0, y0, x1, y1 = TV_PX[FMT]

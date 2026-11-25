@@ -119,3 +119,18 @@ def test_close_marked_as_intro_becomes_close():
            "lines": [{"text": "a", "chapter": 0}, {"text": "b", "chapter": 1}, {"text": "c", "chapter": 0}]}
     timed = [SimpleNamespace(index=i, start=float(i * 20), section="proof") for i in range(3)]
     assert [m.title for m in chapter_marks(bad, timed)] == ["Intro", "One", "Close"]
+
+
+def test_a_short_caption_never_runs_past_two_lines_into_goli():
+    # owner 2026-11-25: "captions collided with Goli"
+    from golide_engine.edit.compose import SHORT_CAP_CHARS, short_lines
+    words = "Terafab builds the chips that run every model you use".split()
+    cap = {"start": 1.0, "end": 3.0, "keys": [0, 4], "words": [{"text": w, "at": 1.0 + k * 0.2} for k, w in enumerate(words)]}
+    out = short_lines([cap])
+    assert len(out) > 1
+    assert all(len(" ".join(w["text"] for w in c["words"])) <= SHORT_CAP_CHARS for c in out)
+    assert [w["text"] for c in out for w in c["words"]] == words
+    assert out[0]["start"] == 1.0 and out[-1]["end"] == 3.0
+    assert all(a["end"] < b["start"] for a, b in zip(out, out[1:]))
+    lit = [c["words"][k]["text"] for c in out for k in c["keys"]]
+    assert lit == ["Terafab", "that"]

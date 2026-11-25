@@ -130,6 +130,9 @@ best unmodelled video of the last 45 days, no numbers bar. The channel's style i
 - Music: Discipline Finishes under every Short until 2026-12-13 (`short_signature`), 3D Shorts included, one steady
   bed, no dips.
 - Frame: content stays inside the phone crop (130 px left, 160 right, 230 top) at every moment (`layout.keep_inside`).
+- Floors (owner 2026-11-25, "captions collided with Goli"): the proof ends above the captions (1040), captions own
+  1062-1205 (2 lines at most, a longer line split on its word timings, `compose.short_lines`), Goli's head starts under
+  them; a caption only moves up, never down into Goli (`layout.bands`).
 - Pace: no picture under 1.0 s (Short; 3D Shorts 0.7 s, owner 2026-11-24) / 1.5 s (long); 1 metaphor per Short, 3 per long; a strong transition
   (zoom, flash, iris, whip) at most once in three cuts, the rest glide or cut.
 

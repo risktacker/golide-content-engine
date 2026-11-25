@@ -28,6 +28,9 @@ from ..engine.content_rules import script_text
 from ..storage.database import Database
 
 REDO_ALWAYS = ("render-vector-v1", "qa", "release")
+# owner 2026-11-25 ("we already have the storyboard, re-render it"): an edit-engine video keeps its paid edit plan
+# (edit-plan-raw-v2.json) and is cut again with today's code: render, doctor, mix, check and package only
+REDO_EDIT = ("render-edit-v1", "doctor-v1", "mix-edit-v3", "qa", "release")
 REDO_ART = ("visual-plan-v1", "illustrations-v1")
 REDO_VOICE = ("owner-voice", "captions-authoritative-v3")
 PREVIEW_HOURS = 48
@@ -99,10 +102,13 @@ class Rebuild:
             if _words(script_text(plan)) != _words(script):
                 raise RebuildError("the new scene plan does not have exactly the recorded words")
             plan_path.write_text(json.dumps(plan, indent=2) + "\n", encoding="utf-8")
-        if not plan_path.exists():
-            raise RebuildError("no scene plan; only videos made by the vector renderer can be rebuilt")
+        edit_plan = self.work / "edit" / "edit-plan-raw-v2.json"
+        if not plan_path.exists() and not edit_plan.exists():
+            raise RebuildError("no scene plan or edit plan saved; this video cannot be rebuilt without paying again")
 
-        redo = list(REDO_ALWAYS)
+        redo = list(REDO_EDIT if edit_plan.exists() else REDO_ALWAYS)
+        for name in ("doctor.json",):
+            (self.work / "edit" / name).unlink(missing_ok=True)
         if new_art:
             redo += list(REDO_ART)
             (self.work / "visual-plan.json").unlink(missing_ok=True)
