@@ -1,0 +1,4140 @@
+[
+  {
+    "url": "https://postsingularityinstitute.com/en/syntheses/UCNssyoLJiA2oB5xM7XjxmJA_ihElfZhR-eI/",
+    "title": "DeepSeek + REA Cloned Claude Code for FREE (Full Build) \u2014 PostSingularity Institute",
+    "claims": [
+      "The Outskill video was published on November 11, 2026, runs approximately 26 minutes, and demonstrates rebuilding Claude Code-like functionality with DeepSeek V4.1 Flash, GLM 5.3 Flash, REA, OpenCode, and a custom tool named Kiln.",
+      "The tutorial reports a Kiln self-check progressing from 77/77 initial tests to 102/102 after missing features were fixed. This is a claim made by the video and its transcript mirror, not an independently reproduced benchmark."
+    ],
+    "ok": true,
+    "top": "01-top.png",
+    "full": "01-full.png",
+    "full_height": 4936,
+    "scale": 1.5,
+    "highlights": [
+      {
+        "phrase": "DeepSeek V4.1 Flash",
+        "rects": [
+          [
+            983.109375,
+            1338.25,
+            112.078125,
+            17
+          ],
+          [
+            333,
+            1365.4375,
+            39.125,
+            17
+          ]
+        ]
+      },
+      {
+        "phrase": "77/77 initial tests",
+        "rects": [
+          [
+            563.34375,
+            1501.375,
+            119.1875,
+            17
+          ]
+        ]
+      }
+    ],
+    "headline": [
+      310,
+      577.84375,
+      820,
+      88.3125
+    ],
+    "blocks": [
+      {
+        "text": "by Outskill \u00b7 View the channel on PSI",
+        "rect": [
+          310,
+          691.75,
+          820,
+          25.59375
+        ]
+      },
+      {
+        "text": "Value of the Information & Strength of the Argument",
+        "rect": [
+          333,
+          1784.578125,
+          774,
+          40.796875
+        ]
+      },
+      {
+        "text": "The video provides significant practical value for users who want to use AI coding agents without paid subscriptions. The step-by-step approach is exhaustive, s",
+        "rect": [
+          333,
+          1825.375,
+          774,
+          244.6875
+        ]
+      },
+      {
+        "text": "Scientific Rigor, Source Quality, Title Accuracy",
+        "rect": [
+          333,
+          2082.0625,
+          774,
+          40.796875
+        ]
+      },
+      {
+        "text": "The video uses real tools and provides links to official sources: REA GitHub, OpenCode, DeepSeek Harness, OpenRouter, NVIDIA, and the resource library. These ar",
+        "rect": [
+          333,
+          2122.859375,
+          774,
+          217.5
+        ]
+      },
+      {
+        "text": "The title exactly matches the content: the video shows how to clone Claude Code using free AI models (DeepSeek) and REA, providing a full build walkthrough.",
+        "rect": [
+          333,
+          2492.625,
+          774,
+          54.375
+        ]
+      },
+      {
+        "text": "The video is transparent, showing failures and corrections, using real tools and verifiable outputs. It is a practical tutorial rather than a scientific study, ",
+        "rect": [
+          333,
+          2716.03125,
+          774,
+          108.75
+        ]
+      },
+      {
+        "text": "Markers derived by PSI from the transcript: the creator did not define chapters.",
+        "rect": [
+          333,
+          2954.625,
+          774,
+          27.1875
+        ]
+      },
+      {
+        "text": "00:00 Introduction: the concept of rebuilding Claude Code with free AI, and a warm-up on a 3D website.",
+        "rect": [
+          333,
+          2993.8125,
+          774,
+          27.1875
+        ]
+      },
+      {
+        "text": "02:50 Setup overview: free tools (OpenCode, DeepSeek Harness) and the role of REA.",
+        "rect": [
+          333,
+          3029,
+          774,
+          27.1875
+        ]
+      },
+      {
+        "text": "04:36 Installing REA with AI: automatic setup of Ghidra, Java, and health check.",
+        "rect": [
+          333,
+          3064.1875,
+          774,
+          27.1875
+        ]
+      },
+      {
+        "text": "07:16 Warm-up project: reverse-engineering and rebuilding igloo.inc 3D website.",
+        "rect": [
+          333,
+          3099.375,
+          774,
+          27.1875
+        ]
+      },
+      {
+        "text": "12:26 Introducing Kiln: the goal to rebuild both the Claude window and engine.",
+        "rect": [
+          333,
+          3134.5625,
+          774,
+          27.1875
+        ]
+      },
+      {
+        "text": "14:00 Creating AGENTS.md, FEATURES.md, and SPEC.md from REA findings.",
+        "rect": [
+          333,
+          3169.75,
+          774,
+          27.1875
+        ]
+      },
+      {
+        "text": "16:19 The build prompt and the self-check automation robot hand.",
+        "rect": [
+          333,
+          3204.9375,
+          774,
+          27.1875
+        ]
+      },
+      {
+        "text": "20:23 Finding missing features (MCP, hooks, helper agents) and fixing them with new tests.",
+        "rect": [
+          333,
+          3240.125,
+          774,
+          27.1875
+        ]
+      },
+      {
+        "text": "24:19 Head-to-head comparison: Kiln on free models vs real Claude, same task.",
+        "rect": [
+          333,
+          3275.3125,
+          774,
+          27.1875
+        ]
+      },
+      {
+        "text": "REA GitHub \u2014 Official repository of REA, the reverse engineering tool used throughout the video.",
+        "rect": [
+          333,
+          3432.34375,
+          774,
+          27.1875
+        ]
+      },
+      {
+        "text": "OpenCode \u2014 Free AI coding agent application used as one of the bodies for the AI.",
+        "rect": [
+          333,
+          3466.53125,
+          774,
+          27.1875
+        ]
+      },
+      {
+        "text": "DeepSeek Harness \u2014 Free AI harness app used for the website reverse engineering part.",
+        "rect": [
+          333,
+          3500.71875,
+          774,
+          27.1875
+        ]
+      },
+      {
+        "text": "OpenRouter \u2014 Provider of free AI model APIs, used to get free keys. Also mentioned for model selection.",
+        "rect": [
+          333,
+          3534.90625,
+          774,
+          27.1875
+        ]
+      },
+      {
+        "text": "NVIDIA free API keys \u2014 Provides free API keys for models like GLM 5.3 Flash, used as alternative provider.",
+        "rect": [
+          333,
+          3569.09375,
+          774,
+          27.1875
+        ]
+      },
+      {
+        "text": "Resource Library \u2014 Place where the presenter says prompts and setup docs are available.",
+        "rect": [
+          333,
+          3603.28125,
+          774,
+          27.1875
+        ]
+      },
+      {
+        "text": "Outskill Mastermind Promo \u2014 Promotional link for the 8-hour live AI mastermind mentioned in the video.",
+        "rect": [
+          333,
+          3637.46875,
+          774,
+          27.1875
+        ]
+      },
+      {
+        "text": "Next video on REA \u2014 Related video 'How to Use REA GitHub to Reverse Engineer Anything'.",
+        "rect": [
+          333,
+          3671.65625,
+          774,
+          27.1875
+        ]
+      },
+      {
+        "text": "The video\u2019s original contribution is a full, reproducible workflow for building a coding agent (Kiln) using only free AI models and the REA reverse-engineering ",
+        "rect": [
+          335,
+          3827.6875,
+          773,
+          135.9375
+        ]
+      },
+      {
+        "text": "REA on GitHub \u2014 The tool at the heart of the video: a collection of 229 reverse-engineering tools. This is the primary reference for understanding how to study ",
+        "rect": [
+          335,
+          3990.8125,
+          773,
+          54.375
+        ]
+      },
+      {
+        "text": "Ghidra official site \u2014 The NSA\u2019s free decompiler used in the video to analyze native executables. A key component for reverse engineering desktop apps.",
+        "rect": [
+          335,
+          4045.1875,
+          773,
+          54.375
+        ]
+      },
+      {
+        "text": "OpenCode documentation \u2014 The official documentation of the free AI coding agent used as the body. Useful to understand configuration and model selection.",
+        "rect": [
+          335,
+          4099.5625,
+          773,
+          54.375
+        ]
+      },
+      {
+        "text": "three.js official site \u2014 The JavaScript 3D library used to rebuild the website in the warm-up. Relevant for understanding the technical stack mentioned.",
+        "rect": [
+          335,
+          4153.9375,
+          773,
+          54.375
+        ]
+      },
+      {
+        "text": "DeepSeek official site \u2014 The models provider used in the video. More information about DeepSeek V4.1 Flash and free tier limitations.",
+        "rect": [
+          335,
+          4208.3125,
+          773,
+          54.375
+        ]
+      },
+      {
+        "text": "The scores show a high quantity of information (9) and a good technical level (8), indicating a dense and advanced tutorial. Quality and reliability are slightl",
+        "rect": [
+          598,
+          4408.25,
+          507,
+          117.734375
+        ]
+      },
+      {
+        "text": "\ud83d\udcac Tr\u00e8s positif \u2014 sur les 30 commentaires analys\u00e9s, la majorit\u00e9 exprimait de l'enthousiasme et de la reconnaissance pour la d\u00e9monstration, avec quelques demande",
+        "rect": [
+          598,
+          4594.046875,
+          507,
+          87.125
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "text": "PSI",
+        "rect": [
+          190,
+          14.921875,
+          63.359375,
+          28.140625
+        ]
+      },
+      {
+        "text": "Home",
+        "rect": [
+          277.359375,
+          11.46875,
+          62.390625,
+          35.046875
+        ]
+      },
+      {
+        "text": "Tuit",
+        "rect": [
+          343.75,
+          11.46875,
+          47.46875,
+          35.046875
+        ]
+      },
+      {
+        "text": "Domains",
+        "rect": [
+          395.21875,
+          11.46875,
+          80.796875,
+          35.046875
+        ]
+      },
+      {
+        "text": "Channels",
+        "rect": [
+          480.015625,
+          11.46875,
+          84.8125,
+          35.046875
+        ]
+      },
+      {
+        "text": "Add",
+        "rect": [
+          568.828125,
+          11.46875,
+          49.609375,
+          35.046875
+        ]
+      },
+      {
+        "text": "Donate / Support PSI",
+        "rect": [
+          622.4375,
+          11.46875,
+          160,
+          35.046875
+        ]
+      },
+      {
+        "text": "EN",
+        "rect": [
+          1115.78125,
+          16.5,
+          54.21875,
+          25
+        ]
+      },
+      {
+        "text": "Color-blind mode",
+        "rect": [
+          1178,
+          15.5,
+          33,
+          27
+        ]
+      }
+    ],
+    "photo": "01-photo.png",
+    "photos": [
+      "01-photo.png"
+    ],
+    "captured_at": "2026-11-24T18:35:40+00:00"
+  },
+  {
+    "url": "https://github.com/morluto/rea",
+    "title": "GitHub - morluto/rea: Reverse engineer anything with agents, from app behavior down to native binaries. \u00b7 GitHub",
+    "claims": [
+      "REA is an MCP-based reverse-engineering toolkit that connects AI agents to tools for inspecting native binaries, JavaScript and Electron applications, .NET assemblies, and websites. Its documentation says analysis runs locally and returns evidence and limitations for conclusions.",
+      "REA does not itself automatically produce a finished software clone. Its official workflow is to inspect an application, return evidence, and let the connected coding agent implement a similar feature or behavior."
+    ],
+    "ok": true,
+    "top": "02-top.png",
+    "full": "02-full.png",
+    "full_height": 5400,
+    "scale": 1.5,
+    "highlights": [],
+    "headline": [
+      1056,
+      901,
+      272,
+      24
+    ],
+    "blocks": [
+      {
+        "text": "feat(pe): inspect x64 exception-directory function ranges (#14254)",
+        "rect": [
+          473.796875,
+          363,
+          405.203125,
+          40
+        ]
+      },
+      {
+        "text": "chore(main): release rea-agents 6.10.1 (#12737)",
+        "rect": [
+          473.796875,
+          403,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "fix(ci): preserve CodeQL PR checkout history and exclude non-shipped \u2026",
+        "rect": [
+          473.796875,
+          526,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "ci(hooks): skip the staged-file autofix on merge commits (#11530)",
+        "rect": [
+          473.796875,
+          567,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "fix(plugins): align listing metadata with REA branding (#7711)",
+        "rect": [
+          473.796875,
+          608,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "feat(ghidra): admit RISC-V ilp32f ELF with a derived calling conventi\u2026",
+        "rect": [
+          473.796875,
+          649,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "perf(ci): warm caches on main push and run scheduled fast main sweeps (\u2026",
+        "rect": [
+          473.796875,
+          690,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "ci(deps): upgrade setup-node to 7.1.0 and preserve explicit npm cache\u2026",
+        "rect": [
+          473.796875,
+          731,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "chore(deps): update 37 npm pins and preserve capture and release beha\u2026",
+        "rect": [
+          473.796875,
+          772,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "fix(windows): gate transient writes on runtimeWriteTransient capabili\u2026",
+        "rect": [
+          473.796875,
+          813,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "fix(ci): remove unused Mach-O classifier failing deep static checks (#\u2026",
+        "rect": [
+          473.796875,
+          936,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "chore(deps): bump pyyaml from 6.0.3 to 6.0.4 in /website (#14228)",
+        "rect": [
+          473.796875,
+          1059,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "chore(git): ignore two more W9 move commits in blame (#11668)",
+        "rect": [
+          473.796875,
+          1100,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "fix: align MCP archive contracts and documentation (#2478)",
+        "rect": [
+          473.796875,
+          1141,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "chore: ignore the .claude agent directory like other local agent tool\u2026",
+        "rect": [
+          473.796875,
+          1182,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "feat(javascript): recover readable modules with Wakaru (#848)",
+        "rect": [
+          473.796875,
+          1223,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "fix(ci): close static-check cache gaps and prune stale settings (#14017)",
+        "rect": [
+          473.796875,
+          1264,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "feat: add evidence-backed process investigations",
+        "rect": [
+          473.796875,
+          1305,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "fix(runtime)!: require patched Node.js security releases (#6315)",
+        "rect": [
+          473.796875,
+          1346,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "feat(cursor): ship a Marketplace plugin with the skill and pinned MCP\u2026",
+        "rect": [
+          473.796875,
+          1387,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "chore(lint): warn instead of failing on long test functions (#14274)",
+        "rect": [
+          473.796875,
+          1428,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": ".release-please-manifest.json",
+        "rect": [
+          113,
+          1469,
+          360.796875,
+          41
+        ]
+      },
+      {
+        "text": "docs: tighten contributor guidance and prune duplicated skill text (#\u2026",
+        "rect": [
+          473.796875,
+          1510,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "docs: clarify responsible use and preserve third-party notices (#2082)",
+        "rect": [
+          473.796875,
+          1633,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "Initial commit: betterBinaryMCP - Enhanced MCP server for Hopper Disa\u2026",
+        "rect": [
+          473.796875,
+          1674,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "feat(website): recognize contributors in a shared commit-ranked direc\u2026",
+        "rect": [
+          473.796875,
+          1715,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "docs(security): define REA threat model and security properties (#9384)",
+        "rect": [
+          473.796875,
+          1756,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "refactor(cli/server): break remaining module-layer cycles (#14013)",
+        "rect": [
+          473.796875,
+          1879,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "feat(ghidra): open M-profile raw images at a separate load base (#7951)",
+        "rect": [
+          473.796875,
+          2043,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "release-please-config.json",
+        "rect": [
+          113,
+          2084,
+          360.796875,
+          41
+        ]
+      },
+      {
+        "text": "refactor: prune 5 redundant single-call wrapper modules (#13807)",
+        "rect": [
+          473.796875,
+          2166,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "stryker.semantics.config.mjs",
+        "rect": [
+          113,
+          2207,
+          360.796875,
+          41
+        ]
+      },
+      {
+        "text": "refactor(rizin): extract NUL-frame reader and wait helpers from Rizin\u2026",
+        "rect": [
+          473.796875,
+          2207,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "build: separate runtime artifacts and supervise command ownership",
+        "rect": [
+          473.796875,
+          2248,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "tsconfig.frida-verification.json",
+        "rect": [
+          113,
+          2289,
+          360.796875,
+          41
+        ]
+      },
+      {
+        "text": "feat: add Frida instrumentation support (#1359)",
+        "rect": [
+          473.796875,
+          2289,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "fix(ci): track configuration inputs across cached checks (#14015)",
+        "rect": [
+          473.796875,
+          2330,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "tsconfig.reverse-tools-mutation.json",
+        "rect": [
+          113,
+          2371,
+          360.796875,
+          41
+        ]
+      },
+      {
+        "text": "build(scripts): use JSDoc in .mjs files as the single type source (#1\u2026",
+        "rect": [
+          473.796875,
+          2412,
+          405.203125,
+          41
+        ]
+      },
+      {
+        "text": "fix(ci): rerun TODO scans against the host interpreter",
+        "rect": [
+          473.796875,
+          2453,
+          405.203125,
+          41
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "text": "Homepage",
+        "rect": [
+          16,
+          18,
+          32,
+          32
+        ]
+      },
+      {
+        "text": "Products",
+        "rect": [
+          64,
+          20,
+          93.171875,
+          28
+        ]
+      },
+      {
+        "text": "Developers",
+        "rect": [
+          157.171875,
+          20,
+          109.21875,
+          28
+        ]
+      },
+      {
+        "text": "Businesses",
+        "rect": [
+          266.390625,
+          20,
+          110,
+          28
+        ]
+      },
+      {
+        "text": "Resources",
+        "rect": [
+          376.390625,
+          20,
+          105.078125,
+          28
+        ]
+      },
+      {
+        "text": "Pricing",
+        "rect": [
+          481.46875,
+          20,
+          58.796875,
+          28
+        ]
+      },
+      {
+        "text": "Search /",
+        "rect": [
+          1022.765625,
+          16,
+          200,
+          36
+        ]
+      },
+      {
+        "text": "Sign in",
+        "rect": [
+          1230.765625,
+          18,
+          70.28125,
+          32
+        ]
+      },
+      {
+        "text": "Sign up",
+        "rect": [
+          1309.046875,
+          18,
+          74.953125,
+          32
+        ]
+      },
+      {
+        "text": "morluto",
+        "rect": [
+          16,
+          84,
+          58.6875,
+          32
+        ]
+      },
+      {
+        "text": "rea",
+        "rect": [
+          89.6875,
+          84,
+          33.03125,
+          32
+        ]
+      },
+      {
+        "text": "Code",
+        "rect": [
+          16,
+          128,
+          75,
+          32
+        ]
+      },
+      {
+        "text": "Issues 591 (591)",
+        "rect": [
+          99,
+          128,
+          125.625,
+          32
+        ]
+      },
+      {
+        "text": "Pull requests 542 (542)",
+        "rect": [
+          232.625,
+          128,
+          169.953125,
+          32
+        ]
+      },
+      {
+        "text": "Discussions",
+        "rect": [
+          410.578125,
+          128,
+          122.484375,
+          32
+        ]
+      },
+      {
+        "text": "Actions",
+        "rect": [
+          541.0625,
+          128,
+          91.34375,
+          32
+        ]
+      },
+      {
+        "text": "Projects",
+        "rect": [
+          640.40625,
+          128,
+          95.25,
+          32
+        ]
+      },
+      {
+        "text": "Security and quality",
+        "rect": [
+          743.65625,
+          128,
+          173.046875,
+          32
+        ]
+      },
+      {
+        "text": "Insights",
+        "rect": [
+          924.703125,
+          128,
+          93.671875,
+          32
+        ]
+      },
+      {
+        "text": "Notifications",
+        "rect": [
+          997.859375,
+          188,
+          103.375,
+          28
+        ]
+      },
+      {
+        "text": "Fork116k (116k)",
+        "rect": [
+          1109.234375,
+          188,
+          106.046875,
+          28
+        ]
+      },
+      {
+        "text": "Star477k (477k)",
+        "rect": [
+          1223.28125,
+          188,
+          104.71875,
+          28
+        ]
+      },
+      {
+        "text": "main",
+        "rect": [
+          112,
+          261,
+          104.359375,
+          32
+        ]
+      },
+      {
+        "text": "field: Go to file",
+        "rect": [
+          702.53125,
+          262,
+          181,
+          30
+        ]
+      },
+      {
+        "text": "README",
+        "rect": [
+          121,
+          2643,
+          100.671875,
+          32
+        ]
+      },
+      {
+        "text": "Contributing",
+        "rect": [
+          229.671875,
+          2643,
+          123.984375,
+          32
+        ]
+      },
+      {
+        "text": "MIT license",
+        "rect": [
+          361.65625,
+          2643,
+          115.46875,
+          32
+        ]
+      },
+      {
+        "text": "Security",
+        "rect": [
+          485.125,
+          2643,
+          95.25,
+          32
+        ]
+      },
+      {
+        "text": "Outline",
+        "rect": [
+          973,
+          2642.5,
+          34,
+          32
+        ]
+      },
+      {
+        "text": "npx rea-agents setup",
+        "rect": [
+          476.984375,
+          3145.875,
+          174.03125,
+          20.4375
+        ]
+      },
+      {
+        "text": "\"D:/apps/example\"",
+        "rect": [
+          166.34375,
+          5055.828125,
+          149.5625,
+          20.4375
+        ]
+      },
+      {
+        "text": "npm install --global rea-agents rea --help",
+        "rect": [
+          947,
+          5141.328125,
+          28,
+          28
+        ]
+      }
+    ],
+    "photo": "02-photo.png",
+    "photos": [
+      "02-photo.png"
+    ],
+    "captured_at": "2026-11-24T18:35:45+00:00"
+  },
+  {
+    "url": "https://github.com/morluto/rea/issues/10436",
+    "title": "6.9.0 advertised tool schemas contain \\uD800 surrogate-class patterns that the DeepSeek official API rejects with 400 (worked in 6.8.0) \u00b7 Issue #10436 \u00b7 morluto/rea",
+    "claims": [
+      "The claim that REA exposes 229 tools is accurate for the REA 6.8.0-era tool catalog. Official repository issue data records 229 advertised MCP tools, while later version 6.9.0 data records 255, so the number is version-dependent."
+    ],
+    "ok": true,
+    "top": "03-top.png",
+    "full": "03-full.png",
+    "full_height": 3279,
+    "scale": 1.5,
+    "highlights": [],
+    "headline": [
+      104,
+      192,
+      896,
+      120
+    ],
+    "blocks": [
+      {
+        "text": "rea-agents 6.9.0 advertises \\uD800 surrogate-class escape sequences in tool pattern fields. The DeepSeek official API rejects these schemas server-side with HTT",
+        "rect": [
+          121,
+          472.875,
+          878,
+          64.71875
+        ]
+      },
+      {
+        "text": "Register rea-agents@6.9.0 as an MCP server in any client that calls the DeepSeek official API.",
+        "rect": [
+          149,
+          599.46875,
+          850,
+          21.859375
+        ]
+      },
+      {
+        "text": "Start a session. The very first model request fails; no tool call is needed.",
+        "rect": [
+          149,
+          624.828125,
+          850,
+          21
+        ]
+      },
+      {
+        "text": "Error returned by the DeepSeek API (request_id present, so this is server-side):",
+        "rect": [
+          121,
+          661.828125,
+          878,
+          21
+        ]
+      },
+      {
+        "text": "Invalid schema for function 'mcp__rea__binary_session': \"^[^\\uD800-\\uDFFF]*$\" is not a \"regex\" (code: INVALID_REQUEST, status: 400)",
+        "rect": [
+          121,
+          698.828125,
+          878,
+          83.75
+        ]
+      },
+      {
+        "text": "Version comparison (probed via MCP tools/list on the same host)",
+        "rect": [
+          121,
+          822.578125,
+          878,
+          23.875
+        ]
+      },
+      {
+        "text": "Tools whose advertised schema contains \\uD800 escapes",
+        "rect": [
+          121.5,
+          930.953125,
+          393.734375,
+          34.859375
+        ]
+      },
+      {
+        "text": "binary_session \u2192 expected_server_path pattern list",
+        "rect": [
+          121.5,
+          965.8125,
+          393.734375,
+          34.859375
+        ]
+      },
+      {
+        "text": "^[^\\x00]*$, ^[^\\uD800-\\uDFFF]*$, ^\\/",
+        "rect": [
+          661.796875,
+          965.8125,
+          299.421875,
+          34.859375
+        ]
+      },
+      {
+        "text": "binary_session advertised schema size",
+        "rect": [
+          121.5,
+          1000.671875,
+          393.734375,
+          34.859375
+        ]
+      },
+      {
+        "text": "Affected tool names in 6.9.0 include: binary_session, close_binary, extract_artifact, inspect_plist, inspect_with_objdump, start_gdb_session, inspect_keyed_arch",
+        "rect": [
+          121,
+          1052.03125,
+          878,
+          109.296875
+        ]
+      },
+      {
+        "text": "The pattern ^[^\\uD800-\\uDFFF]*$ (no unpaired surrogates on path-like inputs) is valid ECMA-262 regex and legitimate JSON Schema, but several gateway validators ",
+        "rect": [
+          149,
+          1223.203125,
+          850,
+          42.859375
+        ]
+      },
+      {
+        "text": "In 6.8.0 the compact input-schema profile stripped these annotations from advertised schemas. In 6.9.0 the compact profile passes canonical schemas through unch",
+        "rect": [
+          149,
+          1269.5625,
+          850,
+          64.71875
+        ]
+      },
+      {
+        "text": "The 6.9.0 release notes mention caring about \"strict gateway translation\" (compact enum/union normalization), so this looks like an untested corner of the same ",
+        "rect": [
+          149,
+          1337.78125,
+          850,
+          42
+        ]
+      },
+      {
+        "text": "Suggested fixes (any one suffices)",
+        "rect": [
+          121,
+          1403.78125,
+          878,
+          21.875
+        ]
+      },
+      {
+        "text": "Rewrite the surrogate exclusion in a dialect-portable way in advertised schemas (e.g. strip the pattern from the advertised form; the server still validates can",
+        "rect": [
+          149,
+          1441.65625,
+          850,
+          42
+        ]
+      },
+      {
+        "text": "Drop surrogate-class patterns from the compact/full advertised input schema for path-like strings, keeping them only in server-side validation.",
+        "rect": [
+          149,
+          1487.15625,
+          850,
+          42
+        ]
+      },
+      {
+        "text": "Document REA_MCP_INPUT_SCHEMA_PROFILE behavior change for 6.9.0 so clients pairing with strict gateways know to pin 6.8.0.",
+        "rect": [
+          149,
+          1532.65625,
+          850,
+          21.859375
+        ]
+      },
+      {
+        "text": "rea-agents 6.9.0 (npm), Node 24.22.1, macOS 27.2 arm64",
+        "rect": [
+          149,
+          1616.390625,
+          850,
+          21
+        ]
+      },
+      {
+        "text": "Client: MCP stdio; provider: DeepSeek official API (deepseek-flash)",
+        "rect": [
+          149,
+          1640.890625,
+          850,
+          21.859375
+        ]
+      },
+      {
+        "text": "6.8.0 workaround confirmed working end-to-end with the same provider.",
+        "rect": [
+          149,
+          1666.25,
+          850,
+          21
+        ]
+      },
+      {
+        "text": "379061296 commented 379061296 Confirmed on Windows x64 as well, cross-platform consistent with the macOS report above. Additional data points 1. Both DeepSeek s",
+        "rect": [
+          104,
+          1728.25,
+          912,
+          420
+        ]
+      },
+      {
+        "text": "Confirmed on Windows x64 as well, cross-platform consistent with the macOS report above.",
+        "rect": [
+          121,
+          1798.25,
+          878,
+          21
+        ]
+      },
+      {
+        "text": "1. Both DeepSeek surfaces reject it, not just /v1/chat/completions.",
+        "rect": [
+          121,
+          1881.125,
+          878,
+          21.859375
+        ]
+      },
+      {
+        "text": "I POSTed the raw binary_session.inputSchema from tools/list (rea-agents 6.9.0) to both official DeepSeek surfaces with the same result:",
+        "rect": [
+          121,
+          1918.984375,
+          878,
+          42.859375
+        ]
+      },
+      {
+        "text": "POST https://api.deepseek.com/v1/chat/completions (OpenAI-compatible, tools[].function.parameters) \u2192 HTTP 400: Invalid schema for function 'binary_session': \"^[",
+        "rect": [
+          149,
+          1977.84375,
+          850,
+          43.71875
+        ]
+      },
+      {
+        "text": "POST https://api.deepseek.com/anthropic/v1/messages (Anthropic-compatible, tools[].input_schema) \u2192 HTTP 400: same is not a \"regex\" error",
+        "rect": [
+          149,
+          2025.0625,
+          850,
+          43.71875
+        ]
+      },
+      {
+        "text": "So this is not specific to one endpoint/protocol; it is the schema validator itself.",
+        "rect": [
+          121,
+          2084.78125,
+          878,
+          21
+        ]
+      },
+      {
+        "text": "2. Stripping only the surrogate pattern turns 400 into 200.",
+        "rect": [
+          121,
+          2121.78125,
+          878,
+          21.859375
+        ]
+      },
+      {
+        "text": "Same request, same endpoint, after deep-cloning the schema and deleting only pattern values that match a negated surrogate class (^[^\\uD800-\\uDFFF]*$): \u2192 HTTP 2",
+        "rect": [
+          121,
+          2159.640625,
+          878,
+          85.71875
+        ]
+      },
+      {
+        "text": "tools/list on 6.9.0 here: 255 tools, 15 occurrences of the surrogate pattern across 13 tools. Affected: binary_session, close_binary, extract_artifact, inspect_",
+        "rect": [
+          121,
+          2298.359375,
+          878,
+          87.4375
+        ]
+      },
+      {
+        "text": "Windows 10/11 x64, Node (bundled with rea), rea-agents 6.9.0 (npm)",
+        "rect": [
+          149,
+          2447.671875,
+          850,
+          21
+        ]
+      },
+      {
+        "text": "Client: MCP stdio (DeepSeek Harness desktop); provider: DeepSeek official API (deepseek-flash)",
+        "rect": [
+          149,
+          2472.171875,
+          850,
+          21.859375
+        ]
+      },
+      {
+        "text": "Reconfirming this is a 6.9.0 regression, as noted above. A dialect-portable advertised schema (fix #1/#2) would resolve it for all non-JS validators, not only D",
+        "rect": [
+          121,
+          2510.03125,
+          878,
+          42
+        ]
+      },
+      {
+        "text": "morluto commented morluto Owner Fixed on main by b67c1e8ce6, the same fix that closed #10198, #10238 and #10348. On current main the advertised catalog contains",
+        "rect": [
+          104,
+          2581.03125,
+          912,
+          185.578125
+        ]
+      },
+      {
+        "text": "Fixed on main by b67c1e8ce6, the same fix that closed #10198, #10238 and #10348. On current main the advertised catalog contains no \\u-escaped or surrogate-clas",
+        "rect": [
+          121,
+          2651.03125,
+          878,
+          86.578125
+        ]
+      },
+      {
+        "text": "morluto closed this as completed",
+        "rect": [
+          124,
+          2766.609375,
+          892,
+          64
+        ]
+      },
+      {
+        "text": "morluto commented morluto Owner Thanks for documenting the official API rejection and the failing npm version. The fix discussed here is now available in REA 6.",
+        "rect": [
+          104,
+          2830.609375,
+          912,
+          236.859375
+        ]
+      },
+      {
+        "text": "Thanks for documenting the official API rejection and the failing npm version. The fix discussed here is now available in REA 6.10.1 on npm.",
+        "rect": [
+          121,
+          2900.609375,
+          878,
+          21
+        ]
+      },
+      {
+        "text": "I verified the installed 6.10.1 MCP server over stdio. The reported surrogate pattern is gone, and Go's RE2 accepted all patterns in the tested listings. The re",
+        "rect": [
+          121,
+          2937.609375,
+          878,
+          42
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "text": "Homepage",
+        "rect": [
+          16,
+          18,
+          32,
+          32
+        ]
+      },
+      {
+        "text": "Products",
+        "rect": [
+          64,
+          20,
+          93.171875,
+          28
+        ]
+      },
+      {
+        "text": "Developers",
+        "rect": [
+          157.171875,
+          20,
+          109.21875,
+          28
+        ]
+      },
+      {
+        "text": "Businesses",
+        "rect": [
+          266.390625,
+          20,
+          110,
+          28
+        ]
+      },
+      {
+        "text": "Resources",
+        "rect": [
+          376.390625,
+          20,
+          105.078125,
+          28
+        ]
+      },
+      {
+        "text": "Pricing",
+        "rect": [
+          481.46875,
+          20,
+          58.796875,
+          28
+        ]
+      },
+      {
+        "text": "Search /",
+        "rect": [
+          1022.765625,
+          16,
+          200,
+          36
+        ]
+      },
+      {
+        "text": "Sign in",
+        "rect": [
+          1230.765625,
+          18,
+          70.28125,
+          32
+        ]
+      },
+      {
+        "text": "Sign up",
+        "rect": [
+          1309.046875,
+          18,
+          74.953125,
+          32
+        ]
+      },
+      {
+        "text": "morluto",
+        "rect": [
+          16,
+          84,
+          58.6875,
+          32
+        ]
+      },
+      {
+        "text": "rea",
+        "rect": [
+          89.6875,
+          84,
+          33.03125,
+          32
+        ]
+      },
+      {
+        "text": "Code",
+        "rect": [
+          16,
+          128,
+          75,
+          32
+        ]
+      },
+      {
+        "text": "Issues 591 (591)",
+        "rect": [
+          99,
+          128,
+          125.625,
+          32
+        ]
+      },
+      {
+        "text": "Pull requests 542 (542)",
+        "rect": [
+          232.625,
+          128,
+          169.953125,
+          32
+        ]
+      },
+      {
+        "text": "Discussions",
+        "rect": [
+          410.578125,
+          128,
+          122.484375,
+          32
+        ]
+      },
+      {
+        "text": "Actions",
+        "rect": [
+          541.0625,
+          128,
+          91.34375,
+          32
+        ]
+      },
+      {
+        "text": "Projects",
+        "rect": [
+          640.40625,
+          128,
+          95.25,
+          32
+        ]
+      },
+      {
+        "text": "Security and quality",
+        "rect": [
+          743.65625,
+          128,
+          173.046875,
+          32
+        ]
+      },
+      {
+        "text": "Insights",
+        "rect": [
+          924.703125,
+          128,
+          93.671875,
+          32
+        ]
+      },
+      {
+        "text": "\\uD800",
+        "rect": [
+          294.546875,
+          475.5,
+          52.328125,
+          18.75
+        ]
+      },
+      {
+        "text": "pattern",
+        "rect": [
+          612.25,
+          475.5,
+          59.453125,
+          18.75
+        ]
+      },
+      {
+        "text": "INVALID_REQUEST",
+        "rect": [
+          350.265625,
+          497.359375,
+          116.546875,
+          18.75
+        ]
+      },
+      {
+        "text": "rea-agents@6.9.0",
+        "rect": [
+          205.03125,
+          602.09375,
+          123.671875,
+          18.75
+        ]
+      },
+      {
+        "text": "tools/list",
+        "rect": [
+          435.765625,
+          824.578125,
+          112.03125,
+          20
+        ]
+      },
+      {
+        "text": "binary_session",
+        "rect": [
+          135,
+          974.9375,
+          109.40625,
+          18.75
+        ]
+      },
+      {
+        "text": "expected_server_path",
+        "rect": [
+          266.1875,
+          974.9375,
+          152.21875,
+          18.75
+        ]
+      },
+      {
+        "text": "^[^\\x00]*$",
+        "rect": [
+          528.734375,
+          974.9375,
+          80.859375,
+          18.75
+        ]
+      },
+      {
+        "text": "^\\/",
+        "rect": [
+          617.375,
+          974.9375,
+          30.921875,
+          18.75
+        ]
+      },
+      {
+        "text": "^[^\\uD800-\\uDFFF]*$",
+        "rect": [
+          763.9375,
+          974.9375,
+          145.078125,
+          18.75
+        ]
+      },
+      {
+        "text": "close_binary",
+        "rect": [
+          467.53125,
+          1054.65625,
+          95.140625,
+          18.75
+        ]
+      },
+      {
+        "text": "extract_artifact",
+        "rect": [
+          570.453125,
+          1054.65625,
+          123.671875,
+          18.75
+        ]
+      },
+      {
+        "text": "inspect_plist",
+        "rect": [
+          701.90625,
+          1054.65625,
+          102.265625,
+          18.75
+        ]
+      },
+      {
+        "text": "inspect_with_objdump",
+        "rect": [
+          811.953125,
+          1054.65625,
+          152.21875,
+          18.75
+        ]
+      },
+      {
+        "text": "start_gdb_session",
+        "rect": [
+          121,
+          1076.515625,
+          130.8125,
+          18.75
+        ]
+      },
+      {
+        "text": "inspect_keyed_archive",
+        "rect": [
+          259.59375,
+          1076.515625,
+          159.359375,
+          18.75
+        ]
+      },
+      {
+        "text": "inspect_managed_artifact",
+        "rect": [
+          426.734375,
+          1076.515625,
+          180.765625,
+          18.75
+        ]
+      },
+      {
+        "text": "inspect_managed_members",
+        "rect": [
+          615.28125,
+          1076.515625,
+          173.625,
+          18.75
+        ]
+      },
+      {
+        "text": "inspect_packet_capture",
+        "rect": [
+          796.6875,
+          1076.515625,
+          166.484375,
+          18.75
+        ]
+      },
+      {
+        "text": "inspect_pcap_capture",
+        "rect": [
+          121,
+          1098.375,
+          152.21875,
+          18.75
+        ]
+      },
+      {
+        "text": "inspect_dart_aot",
+        "rect": [
+          281,
+          1098.375,
+          123.671875,
+          18.75
+        ]
+      }
+    ],
+    "photo": null,
+    "photos": [],
+    "captured_at": "2026-11-24T18:35:50+00:00"
+  },
+  {
+    "url": "https://opencode.ai/docs/console/models/",
+    "title": "Console models | OpenCode",
+    "claims": [
+      "OpenCode\u2019s official model table lists DeepSeek V4.1 Flash Free as free for both input and output, but the documentation says the free availability is for a limited time.",
+      "The video\u2019s description of GLM 5.3 Flash as free is not supported by OpenCode\u2019s current official model table. That table lists GLM 5.3 Flash at $0.15 per million input tokens and $0.50 per million output tokens."
+    ],
+    "ok": true,
+    "top": "04-top.png",
+    "full": "04-full.png",
+    "full_height": 5400,
+    "scale": 1.5,
+    "highlights": [
+      {
+        "phrase": "DeepSeek V4.1 Flash Free",
+        "rects": [
+          [
+            318.59375,
+            7240.890625,
+            64,
+            16
+          ],
+          [
+            318.59375,
+            7261.6875,
+            62,
+            16
+          ],
+          [
+            318.59375,
+            7282.484375,
+            29,
+            16
+          ]
+        ]
+      },
+      {
+        "phrase": "GLM 5.3 Flash",
+        "rects": [
+          [
+            318.59375,
+            5146.6875,
+            53,
+            16
+          ],
+          [
+            318.59375,
+            5167.484375,
+            33,
+            16
+          ]
+        ]
+      }
+    ],
+    "headline": [
+      305.59375,
+      82,
+      672,
+      29.875
+    ],
+    "blocks": [
+      {
+        "text": "OpenCode Console provides a list of models tested and verified by the OpenCode team. Sign in, add credits, and get an API key to use them with OpenCode or anoth",
+        "rect": [
+          305.59375,
+          135.875,
+          672,
+          76.78125
+        ]
+      },
+      {
+        "text": "Console works like any other provider in OpenCode. It\u2019s completely optional, and you can use any other provider instead. For a subscription with included usage,",
+        "rect": [
+          305.59375,
+          228.65625,
+          672,
+          51.1875
+        ]
+      },
+      {
+        "text": "Sign in to the console, add your billing details and credits, and copy your API key.",
+        "rect": [
+          305.59375,
+          346.78125,
+          672,
+          25.59375
+        ]
+      },
+      {
+        "text": "Run /connect in the TUI, choose the OpenCode pay-as-you-go provider, and paste your API key. Copy /connect",
+        "rect": [
+          305.59375,
+          388.375,
+          672,
+          162.984375
+        ]
+      },
+      {
+        "text": "Run /connect in the TUI, choose the OpenCode pay-as-you-go provider, and paste your API key.",
+        "rect": [
+          345.59375,
+          388.375,
+          632,
+          51.1875
+        ]
+      },
+      {
+        "text": "Run /models to see the available models and select one. Copy /models",
+        "rect": [
+          305.59375,
+          575.359375,
+          672,
+          137.390625
+        ]
+      },
+      {
+        "text": "Run /models to see the available models and select one.",
+        "rect": [
+          345.59375,
+          575.359375,
+          632,
+          25.59375
+        ]
+      },
+      {
+        "text": "You are charged per request and can add credits to your account.",
+        "rect": [
+          305.59375,
+          736.75,
+          672,
+          25.59375
+        ]
+      },
+      {
+        "text": "You can also access the models directly through the following API endpoints. Free-tier chat models require OpenCode; use paid models or Go from other clients.",
+        "rect": [
+          305.59375,
+          829.28125,
+          672,
+          51.1875
+        ]
+      },
+      {
+        "text": "Each model is listed with its native API, but every text model also works through the other APIs, which Console translates. See Base URLs for the full set.",
+        "rect": [
+          305.59375,
+          896.46875,
+          672,
+          51.1875
+        ]
+      },
+      {
+        "text": "https://opencode.ai/inference/openai/v1/responses",
+        "rect": [
+          508.09375,
+          1005.953125,
+          658.65625,
+          66.59375
+        ]
+      },
+      {
+        "text": "https://opencode.ai/inference/anthropic/v1/messages",
+        "rect": [
+          508.09375,
+          2481.03125,
+          658.65625,
+          66.59375
+        ]
+      },
+      {
+        "text": "https://opencode.ai/inference/google/v1beta/models/gemini-4-neon",
+        "rect": [
+          508.09375,
+          3479.9375,
+          658.65625,
+          66.59375
+        ]
+      },
+      {
+        "text": "https://opencode.ai/inference/google/v1beta/models/gemini-4-carbon",
+        "rect": [
+          508.09375,
+          3546.53125,
+          658.65625,
+          66.59375
+        ]
+      },
+      {
+        "text": "https://opencode.ai/inference/google/v1beta/models/gemini-4-argon",
+        "rect": [
+          508.09375,
+          3613.125,
+          658.65625,
+          66.59375
+        ]
+      },
+      {
+        "text": "https://opencode.ai/inference/google/v1beta/models/gemini-4-hydrogen",
+        "rect": [
+          508.09375,
+          3679.71875,
+          658.65625,
+          66.59375
+        ]
+      },
+      {
+        "text": "https://opencode.ai/inference/google/v1beta/models/gemini-3.8-flash",
+        "rect": [
+          508.09375,
+          3746.3125,
+          658.65625,
+          66.59375
+        ]
+      },
+      {
+        "text": "https://opencode.ai/inference/google/v1beta/models/gemini-3.7-flash",
+        "rect": [
+          508.09375,
+          3812.90625,
+          658.65625,
+          66.59375
+        ]
+      },
+      {
+        "text": "https://opencode.ai/inference/google/v1beta/models/gemini-3.6-flash",
+        "rect": [
+          508.09375,
+          3879.5,
+          658.65625,
+          66.59375
+        ]
+      },
+      {
+        "text": "https://opencode.ai/inference/google/v1beta/models/gemini-3.5-flash",
+        "rect": [
+          508.09375,
+          3946.09375,
+          658.65625,
+          66.59375
+        ]
+      },
+      {
+        "text": "https://opencode.ai/inference/google/v1beta/models/gemini-3.5-flash-lite",
+        "rect": [
+          508.09375,
+          4012.6875,
+          658.65625,
+          66.59375
+        ]
+      },
+      {
+        "text": "https://opencode.ai/inference/openai/v1/chat/completions",
+        "rect": [
+          508.09375,
+          4552.640625,
+          658.65625,
+          66.59375
+        ]
+      },
+      {
+        "text": "@ai-sdk/openai-compatible",
+        "rect": [
+          1166.75,
+          4552.640625,
+          210.65625,
+          66.59375
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "text": "CONSOLE DOCS",
+        "rect": [
+          52.375,
+          25,
+          134,
+          25
+        ]
+      },
+      {
+        "text": "[ ] Intro",
+        "rect": [
+          21.6875,
+          71.890625,
+          251.90625,
+          30
+        ]
+      },
+      {
+        "text": "[ ] Models",
+        "rect": [
+          21.6875,
+          106.890625,
+          251.90625,
+          30
+        ]
+      },
+      {
+        "text": "[ ] Providers",
+        "rect": [
+          21.6875,
+          141.890625,
+          251.90625,
+          30
+        ]
+      },
+      {
+        "text": "[ ] Web search",
+        "rect": [
+          21.6875,
+          176.890625,
+          251.90625,
+          30
+        ]
+      },
+      {
+        "text": "[ ] Go",
+        "rect": [
+          21.6875,
+          211.890625,
+          251.90625,
+          30
+        ]
+      },
+      {
+        "text": "[ ] Basics",
+        "rect": [
+          21.6875,
+          295.890625,
+          251.90625,
+          30
+        ]
+      },
+      {
+        "text": "[ ] Members",
+        "rect": [
+          21.6875,
+          330.890625,
+          251.90625,
+          30
+        ]
+      },
+      {
+        "text": "[ ] SSO",
+        "rect": [
+          21.6875,
+          365.890625,
+          251.90625,
+          30
+        ]
+      },
+      {
+        "text": "[ ] SCIM",
+        "rect": [
+          21.6875,
+          400.890625,
+          251.90625,
+          30
+        ]
+      },
+      {
+        "text": "[ ] Budgets",
+        "rect": [
+          21.6875,
+          435.890625,
+          251.90625,
+          30
+        ]
+      },
+      {
+        "text": "[ ] Billing",
+        "rect": [
+          21.6875,
+          470.890625,
+          251.90625,
+          30
+        ]
+      },
+      {
+        "text": "[ ] Overview",
+        "rect": [
+          21.6875,
+          554.890625,
+          251.90625,
+          30
+        ]
+      },
+      {
+        "text": "[ ] Inference",
+        "rect": [
+          21.6875,
+          624.890625,
+          251.90625,
+          30
+        ]
+      },
+      {
+        "text": "[ ] Claude Code",
+        "rect": [
+          21.6875,
+          778.890625,
+          251.90625,
+          30
+        ]
+      },
+      {
+        "text": "[ ] Codex",
+        "rect": [
+          21.6875,
+          813.890625,
+          251.90625,
+          30
+        ]
+      },
+      {
+        "text": "[ ] Hermes",
+        "rect": [
+          21.6875,
+          848.890625,
+          251.90625,
+          30
+        ]
+      },
+      {
+        "text": "[ ] Pi",
+        "rect": [
+          21.6875,
+          883.890625,
+          251.90625,
+          30
+        ]
+      },
+      {
+        "text": "[ ] Raycast",
+        "rect": [
+          21.6875,
+          918.890625,
+          251.90625,
+          30
+        ]
+      },
+      {
+        "text": "How it works",
+        "rect": [
+          305.59375,
+          311.84375,
+          120,
+          22.9375
+        ]
+      },
+      {
+        "text": "/connect",
+        "rect": [
+          377.59375,
+          389.875,
+          84.5,
+          23
+        ]
+      },
+      {
+        "text": "Copy",
+        "rect": [
+          910.59375,
+          456.0625,
+          66,
+          40
+        ]
+      },
+      {
+        "text": "/models",
+        "rect": [
+          377.59375,
+          576.859375,
+          75.5,
+          23
+        ]
+      },
+      {
+        "text": "Endpoints",
+        "rect": [
+          305.59375,
+          794.34375,
+          90,
+          22.9375
+        ]
+      },
+      {
+        "text": "https://opencode.ai/inference/openai/v1/responses",
+        "rect": [
+          520.59375,
+          1019.21875,
+          353.65625,
+          20.46875
+        ]
+      },
+      {
+        "text": "@ai-sdk/openai",
+        "rect": [
+          1179.25,
+          1019.21875,
+          108.65625,
+          20.46875
+        ]
+      },
+      {
+        "text": "https://opencode.ai/inference/anthropic/v1/messages",
+        "rect": [
+          520.59375,
+          2494.296875,
+          367.65625,
+          20.46875
+        ]
+      },
+      {
+        "text": "@ai-sdk/anthropic",
+        "rect": [
+          1179.25,
+          2494.296875,
+          129.65625,
+          20.46875
+        ]
+      },
+      {
+        "text": "@ai-sdk/google",
+        "rect": [
+          1179.25,
+          3493.203125,
+          108.65625,
+          20.46875
+        ]
+      },
+      {
+        "text": "https://opencode.ai/inference/openai/v1/chat/completions",
+        "rect": [
+          520.59375,
+          4565.90625,
+          402.65625,
+          20.46875
+        ]
+      },
+      {
+        "text": "@ai-sdk/openai-compatible",
+        "rect": [
+          1179.25,
+          4565.90625,
+          185.65625,
+          20.46875
+        ]
+      },
+      {
+        "text": "Search Ctrl K",
+        "rect": [
+          1150.40625,
+          82,
+          265.59375,
+          36
+        ]
+      },
+      {
+        "text": "Ctrl K",
+        "rect": [
+          1348,
+          88,
+          54,
+          24
+        ]
+      },
+      {
+        "text": "Model list",
+        "rect": [
+          1150.40625,
+          237,
+          265.59375,
+          30
+        ]
+      },
+      {
+        "text": "Jev",
+        "rect": [
+          1150.40625,
+          267,
+          265.59375,
+          30
+        ]
+      },
+      {
+        "text": "GPT 6 Luna Decision and Gemini Decision 1",
+        "rect": [
+          1150.40625,
+          297,
+          265.59375,
+          30
+        ]
+      },
+      {
+        "text": "Image models",
+        "rect": [
+          1150.40625,
+          327,
+          265.59375,
+          30
+        ]
+      },
+      {
+        "text": "Embedding models",
+        "rect": [
+          1150.40625,
+          357,
+          265.59375,
+          30
+        ]
+      },
+      {
+        "text": "Pricing",
+        "rect": [
+          1150.40625,
+          387,
+          265.59375,
+          30
+        ]
+      },
+      {
+        "text": "Image pricing",
+        "rect": [
+          1150.40625,
+          417,
+          265.59375,
+          30
+        ]
+      }
+    ],
+    "photo": null,
+    "photos": [],
+    "captured_at": "2026-11-24T18:35:54+00:00"
+  },
+  {
+    "url": "https://flowtivityconsulting.com/blog/adobe-rust-cleanroom-clones/",
+    "title": "Someone Rebuilt Adobe in Rust with AI Agents. Is It Usable? | Flowtivity",
+    "claims": [
+      "The Adobe story is based on ArtCraft, a project by developer Brandon Thomas. Reporting says seven Adobe-style applications were released under the ArtCraft brand between September 30 and October 1, 2026, including Photoshop, Illustrator, Premiere Pro, Lightroom, Acrobat Pro, After Effects, and InDesign-style tools.",
+      "The claim that approximately eight Claude agents worked in parallel is supported by reporting on the ArtCraft workflow, which describes about eight Claude Opus 5.5 agents working on independent subsystems while a human handled integration and testing.",
+      "The Adobe apps were not complete replacements for Adobe Creative Cloud. The project\u2019s reported self-assessment put professional daily-work parity at roughly 25% to 35%; 115 of 170 reference files reportedly rendered pixel-identically in one Photoshop-style test, or about 68%."
+    ],
+    "ok": true,
+    "top": "05-top.png",
+    "full": "05-full.png",
+    "full_height": 5400,
+    "scale": 1.5,
+    "highlights": [
+      {
+        "phrase": "September 30 and October",
+        "rects": [
+          [
+            722.515625,
+            1585.609375,
+            88,
+            20
+          ],
+          [
+            260.515625,
+            1614.5,
+            125,
+            20
+          ]
+        ]
+      },
+      {
+        "phrase": "Opus 5.5 agents",
+        "rects": [
+          [
+            681.515625,
+            3400.234375,
+            107,
+            17
+          ]
+        ]
+      },
+      {
+        "phrase": "115 of 170 reference files",
+        "rects": [
+          [
+            449.515625,
+            4234.671875,
+            198,
+            20
+          ]
+        ]
+      }
+    ],
+    "headline": [
+      239.515625,
+      203.390625,
+      736,
+      211.171875
+    ],
+    "blocks": [
+      {
+        "text": "The ArtCraft clean-room clones recreate Photoshop, Premiere, Illustrator and four other Adobe apps in pure Rust using Claude Opus 5.5 coding agents. We verified",
+        "rect": [
+          239.515625,
+          438.5625,
+          688,
+          165
+        ]
+      },
+      {
+        "text": "8 October 2026 \u00b7 13 min read \u00b7 Updated 30 October 2026",
+        "rect": [
+          291.515625,
+          685.0625,
+          378,
+          21
+        ]
+      },
+      {
+        "text": "Last Updated: October 8, 2026",
+        "rect": [
+          239.515625,
+          1440.84375,
+          595,
+          23.796875
+        ]
+      },
+      {
+        "text": "A developer named Brandon Thomas published clean-room Rust rewrites of seven Adobe apps under the ArtCraft brand on September 30 and October 1, 2026, built with",
+        "rect": [
+          239.515625,
+          1552.71875,
+          595,
+          420
+        ]
+      },
+      {
+        "text": "PhotoCraft, the Photoshop clone, hit 19.4K GitHub stars within 8 days, and five more clones followed targeting Word, Excel, PowerPoint, Pro Tools and AutoCAD.",
+        "rect": [
+          260.515625,
+          1689.53125,
+          574,
+          86.671875
+        ]
+      },
+      {
+        "text": "The parity claims need context: 100 percent menu coverage means every menu item dispatches a command, but the project's own assessment puts professional daily-w",
+        "rect": [
+          260.515625,
+          1797.453125,
+          574,
+          115.5625
+        ]
+      },
+      {
+        "text": "The load-bearing part of the workflow is a test oracle: around 1,700 tests plus a composite oracle that diffs PhotoCraft's render against Photoshop's own merged",
+        "rect": [
+          260.515625,
+          1934.265625,
+          574,
+          115.5625
+        ]
+      },
+      {
+        "text": "The apps are free, offline, cross-platform and genuinely impressive, but the project itself says not to use them for professional daily work yet. Adobe alternat",
+        "rect": [
+          260.515625,
+          2071.078125,
+          574,
+          115.5625
+        ]
+      },
+      {
+        "text": "What happened: seven Adobe apps rebuilt in Rust in a week",
+        "rect": [
+          239.515625,
+          2230.640625,
+          672.96875,
+          72
+        ]
+      },
+      {
+        "text": "On September 30, 2026, a GitHub account called storytold published PhotoCraft, VectorCraft, FilmCraft, LightCraft and PdfCraft, five apps that reimplement Photo",
+        "rect": [
+          239.515625,
+          2318.640625,
+          595,
+          317.796875
+        ]
+      },
+      {
+        "text": "The developer, Brandon Thomas, is a former Square engineer with about a decade of Rust experience who says he has coded exclusively with AI tools since February",
+        "rect": [
+          239.515625,
+          2657.6875,
+          595,
+          260.015625
+        ]
+      },
+      {
+        "text": "How it works: public specs and observed behavior feed 8 parallel Opus 5.5 agents on independent subsystems, a human runs integration and releases, and a test or",
+        "rect": [
+          239.515625,
+          3399.234375,
+          672.96875,
+          40
+        ]
+      },
+      {
+        "text": "Is PhotoCraft really 100 percent parity with Photoshop?",
+        "rect": [
+          239.515625,
+          3774.734375,
+          672.96875,
+          72
+        ]
+      },
+      {
+        "text": "No, and the project's own documents explain why that impression is wrong. According to the PhotoCraft repository's parity estimate, updated October 3, all 625 P",
+        "rect": [
+          239.515625,
+          3862.734375,
+          595,
+          288.90625
+        ]
+      },
+      {
+        "text": "The fidelity numbers are measured, not vibes. PhotoCraft opens and re-saves 307 of 309 files in the psd-tools test corpus identically, and its composite oracle ",
+        "rect": [
+          239.515625,
+          4172.890625,
+          595,
+          346.6875
+        ]
+      },
+      {
+        "text": "At a glance: star counts and the projects' own parity self-assessments across the seven flagship Crafting Apps, October 8, 2026.",
+        "rect": [
+          239.515625,
+          4989.78125,
+          672.96875,
+          40
+        ]
+      },
+      {
+        "text": "How does one developer build seven desktop apps in a week?",
+        "rect": [
+          239.515625,
+          5073.78125,
+          672.96875,
+          72
+        ]
+      },
+      {
+        "text": "He does not, not alone, and not from nothing. The workflow visible in the repositories has three parts. First, a fleet of parallel agents: PhotoCraft's planning",
+        "rect": [
+          239.515625,
+          5161.78125,
+          595,
+          231.125
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "text": "Flowtivity",
+        "rect": [
+          127.515625,
+          18,
+          147,
+          44
+        ]
+      },
+      {
+        "text": "Our work",
+        "rect": [
+          650.609375,
+          18,
+          61,
+          44
+        ]
+      },
+      {
+        "text": "About",
+        "rect": [
+          743.609375,
+          18,
+          39,
+          44
+        ]
+      },
+      {
+        "text": "Articles",
+        "rect": [
+          814.609375,
+          18,
+          48,
+          44
+        ]
+      },
+      {
+        "text": "Book a free consult",
+        "rect": [
+          1128.296875,
+          18,
+          184.1875,
+          44
+        ]
+      },
+      {
+        "text": "Copy link",
+        "rect": [
+          1087.109375,
+          663.3125,
+          113.375,
+          40
+        ]
+      },
+      {
+        "text": "field: you@example.com",
+        "rect": [
+          264.515625,
+          3655.734375,
+          492.96875,
+          50
+        ]
+      },
+      {
+        "text": "Subscribe",
+        "rect": [
+          765.484375,
+          3655.734375,
+          122,
+          50
+        ]
+      },
+      {
+        "text": "What happened: seven Adobe apps rebuilt in Rust in a week",
+        "rect": [
+          976.484375,
+          1472.59375,
+          224,
+          51.96875
+        ]
+      },
+      {
+        "text": "Is PhotoCraft really 100 percent parity with Photoshop?",
+        "rect": [
+          976.484375,
+          1524.5625,
+          224,
+          51.96875
+        ]
+      },
+      {
+        "text": "How does one developer build seven desktop apps in a week?",
+        "rect": [
+          976.484375,
+          1576.53125,
+          224,
+          71.5625
+        ]
+      },
+      {
+        "text": "What does this cost compared to Adobe Creative Cloud?",
+        "rect": [
+          976.484375,
+          1648.09375,
+          224,
+          51.96875
+        ]
+      },
+      {
+        "text": "Is this legal? The clean-room question and trade dress risk",
+        "rect": [
+          976.484375,
+          1700.0625,
+          224,
+          51.96875
+        ]
+      },
+      {
+        "text": "Should you use the ArtCraft apps today?",
+        "rect": [
+          976.484375,
+          1752.03125,
+          224,
+          51.96875
+        ]
+      },
+      {
+        "text": "The bottom line on the Rust Adobe clones",
+        "rect": [
+          976.484375,
+          1804,
+          224,
+          51.96875
+        ]
+      }
+    ],
+    "photo": "05-photo.png",
+    "photos": [
+      "05-photo.png",
+      "05-photo3.png",
+      "05-photo4.png"
+    ],
+    "captured_at": "2026-11-24T18:36:04+00:00"
+  },
+  {
+    "url": "https://www.creativebloq.com/news/i-tried-those-free-ai-coded-adobe-creative-cloud-clones-and-they-have-some-big-problems",
+    "title": "I tried those free AI-coded Adobe Creative Cloud clones, and they have some big problems | Creative Bloq",
+    "claims": [
+      "The ArtCraft apps were described as early-alpha software with substantial bugs and missing features. Independent testing coverage warned that the projects should not yet be treated as reliable professional replacements for Adobe applications."
+    ],
+    "ok": true,
+    "top": "06-top.png",
+    "full": "06-full.png",
+    "full_height": 5400,
+    "scale": 1.5,
+    "highlights": [],
+    "headline": [
+      259,
+      469,
+      602,
+      102
+    ],
+    "blocks": [
+      {
+        "text": "ArtCraft isn't ready to replace Adobe's Photoshop and Premiere yet.",
+        "rect": [
+          259,
+          617,
+          602,
+          61
+        ]
+      },
+      {
+        "text": "(Image credit: Adobe / ArtCraft / Future)",
+        "rect": [
+          259,
+          1113.625,
+          602,
+          18
+        ]
+      },
+      {
+        "text": "In 2026, there are more Adobe alternatives than ever. We have Canva's free Affinity, which can do most of what you would do in Photoshop and Illustrator in a si",
+        "rect": [
+          259,
+          1233.625,
+          602,
+          96
+        ]
+      },
+      {
+        "text": "Now there's potentially a more complete competitor on the horizon: an open-source AI-generated replica of most of the Adobe Creative Cloud Suite. The package wa",
+        "rect": [
+          259,
+          1345.625,
+          602,
+          144
+        ]
+      },
+      {
+        "text": "They're at a very early stage, and the developer clarifies that they're not yet in a state where they can replace existing software, but I decided to test it ou",
+        "rect": [
+          259,
+          1505.625,
+          602,
+          72
+        ]
+      },
+      {
+        "text": "Try Adobe Creative Cloud with a free trial",
+        "rect": [
+          274,
+          1593.625,
+          587,
+          24
+        ]
+      },
+      {
+        "text": "ArtCraft takes on Creative Cloud (and beyond)",
+        "rect": [
+          259,
+          1691.625,
+          602,
+          40
+        ]
+      },
+      {
+        "text": "The ArtCraft package was developed by software engineer Brandon Thomas, who says he was inspired by frustration at Adobe's subscription costs and cancellation f",
+        "rect": [
+          259,
+          2199.546875,
+          602,
+          72
+        ]
+      },
+      {
+        "text": "The suite comprises LightCraft (Lightroom), PhotoCraft (Photoshop), FilmCraft (Premiere), EffectCraft (After Effects), DesignCraft (InDesign), VectorCraft (Illu",
+        "rect": [
+          259,
+          2287.546875,
+          602,
+          120
+        ]
+      },
+      {
+        "text": "The apps are free and available in early alpha for PC, Mac and Linux systems. As for legality, the develop claims that nothing copyrighted has been copied. Adob",
+        "rect": [
+          259,
+          2746.921875,
+          602,
+          72
+        ]
+      },
+      {
+        "text": "Installation is straightforward via the ArtCraft Installer. You don't need to create an account or provide any details. The apps are also incredibly light, weig",
+        "rect": [
+          259,
+          2834.921875,
+          602,
+          168
+        ]
+      },
+      {
+        "text": "Sign up to Creative Bloq's daily newsletter, which brings you the latest news and inspiration from the worlds of art, design and technology.",
+        "rect": [
+          279,
+          3094.71875,
+          562,
+          48
+        ]
+      },
+      {
+        "text": "(Image credit: Joe Foley)",
+        "rect": [
+          259,
+          3856.71875,
+          602,
+          16
+        ]
+      },
+      {
+        "text": "Weird sharpening (Image credit: Joe Foley)",
+        "rect": [
+          861,
+          3856.71875,
+          602,
+          16
+        ]
+      },
+      {
+        "text": "No sharpening (Image credit: Joe Foley)",
+        "rect": [
+          1463,
+          3856.71875,
+          602,
+          16
+        ]
+      },
+      {
+        "text": "With masked sharpening (Image credit: Joe Foley)",
+        "rect": [
+          2065,
+          3856.71875,
+          602,
+          16
+        ]
+      },
+      {
+        "text": "Subject mask? (Image credit: Joe Foley)",
+        "rect": [
+          3269,
+          3856.71875,
+          602,
+          16
+        ]
+      },
+      {
+        "text": "In Lightroom (Image credit: Joe Foley)",
+        "rect": [
+          3871,
+          3856.71875,
+          602,
+          16
+        ]
+      },
+      {
+        "text": "I tried LightCraft, PhotoCraft and FilmCraft since these are the areas I'm most familiar with. I used the apps on a Windows PC based on an Intel Core i7 and Nvi",
+        "rect": [
+          259,
+          3893.71875,
+          602,
+          72
+        ]
+      },
+      {
+        "text": "LightCraft is the Lightroom copy for raw image editing. I tested it using some quick shots of Gur\u00ed, who wasn't impressed at being woken up to participate, hence",
+        "rect": [
+          259,
+          3981.71875,
+          602,
+          120
+        ]
+      },
+      {
+        "text": "A bigger issue is that there's no native camera-matched colour profiles or lens profiles, which means starting from a different base, already a step back from w",
+        "rect": [
+          259,
+          4117.71875,
+          602,
+          96
+        ]
+      },
+      {
+        "text": "That aside, I was surprised at how far advanced the program is. Most of Lightroom's main controls are in approximately the same places. Clarity, Texture and Deh",
+        "rect": [
+          259,
+          4553.09375,
+          602,
+          120
+        ]
+      },
+      {
+        "text": "What didn't behave as expected was sharpening. Even the standard 40% looked terribly harsh and added fuzzy artefacts to images. Hitting Alt doesn't bring up an ",
+        "rect": [
+          259,
+          4689.09375,
+          602,
+          96
+        ]
+      },
+      {
+        "text": "Masking in general has issues. When I tried to select the subject (Gur\u00ed), I seemed to get a radial mask instead. Lightroom selected the cat immediately. Object ",
+        "rect": [
+          259,
+          4801.09375,
+          602,
+          96
+        ]
+      },
+      {
+        "text": "1 With 25% off at Ohuhu, it's time to stock up on some of the best markers for art",
+        "rect": [
+          885,
+          2133.6875,
+          300,
+          251
+        ]
+      },
+      {
+        "text": "2 Wacom's Black Friday sale takes up to $500 off the Cintiq Pro \u2013 the best drawing tablets are now affordable",
+        "rect": [
+          885,
+          2384.6875,
+          300,
+          119
+        ]
+      },
+      {
+        "text": "3 Every 3D artist should have an AI assistant, Maxon says as it launches new tools and agentic licences",
+        "rect": [
+          885,
+          2503.6875,
+          300,
+          119
+        ]
+      },
+      {
+        "text": "4 I use AirPods everyday and they just dropped below $150 \u2013 this is an absolute steal",
+        "rect": [
+          885,
+          2622.6875,
+          300,
+          97
+        ]
+      },
+      {
+        "text": "5 This hypnotising app turns your iPhone Duo into a record player",
+        "rect": [
+          885,
+          2719.6875,
+          300,
+          97
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "text": "JOIN NOW",
+        "rect": [
+          1036.21875,
+          -42,
+          110.78125,
+          34
+        ]
+      },
+      {
+        "text": "field: your@example.com",
+        "rect": [
+          951.65625,
+          182,
+          238.765625,
+          44
+        ]
+      },
+      {
+        "text": "field: SIGN UP",
+        "rect": [
+          1202.421875,
+          182,
+          107.578125,
+          44
+        ]
+      },
+      {
+        "text": "Creative Bloq DAILY INSPIRATION FOR CREATIVE PEOPLE",
+        "rect": [
+          235,
+          13,
+          475.65625,
+          34
+        ]
+      },
+      {
+        "text": "Visit us on Facebook",
+        "rect": [
+          731.4375,
+          18,
+          24,
+          24
+        ]
+      },
+      {
+        "text": "Visit us on Twitter",
+        "rect": [
+          763.4375,
+          18,
+          24,
+          24
+        ]
+      },
+      {
+        "text": "Visit us on Instagram",
+        "rect": [
+          795.4375,
+          18,
+          24,
+          24
+        ]
+      },
+      {
+        "text": "Visit us on Youtube",
+        "rect": [
+          827.4375,
+          18,
+          24,
+          24
+        ]
+      },
+      {
+        "text": "Visit us on Pinterest",
+        "rect": [
+          859.4375,
+          18,
+          24,
+          24
+        ]
+      },
+      {
+        "text": "Visit us on Flipboard",
+        "rect": [
+          891.4375,
+          18,
+          24,
+          24
+        ]
+      },
+      {
+        "text": "Subscribe",
+        "rect": [
+          925.828125,
+          17,
+          64,
+          25
+        ]
+      },
+      {
+        "text": "View your notifications and profile settings",
+        "rect": [
+          1080.609375,
+          10,
+          40,
+          40
+        ]
+      },
+      {
+        "text": "Search",
+        "rect": [
+          1131,
+          20,
+          74,
+          20
+        ]
+      },
+      {
+        "text": "home",
+        "rect": [
+          235,
+          60,
+          52,
+          44
+        ]
+      },
+      {
+        "text": "Black Friday",
+        "rect": [
+          287,
+          60,
+          121,
+          44
+        ]
+      },
+      {
+        "text": "Art",
+        "rect": [
+          408,
+          60,
+          55,
+          44
+        ]
+      },
+      {
+        "text": "Design",
+        "rect": [
+          463,
+          60,
+          84,
+          44
+        ]
+      },
+      {
+        "text": "3D",
+        "rect": [
+          547,
+          60,
+          53,
+          44
+        ]
+      },
+      {
+        "text": "Tech",
+        "rect": [
+          600,
+          60,
+          68,
+          44
+        ]
+      },
+      {
+        "text": "Buying Advice",
+        "rect": [
+          668,
+          60,
+          136,
+          44
+        ]
+      },
+      {
+        "text": "More",
+        "rect": [
+          804,
+          60,
+          90,
+          44
+        ]
+      },
+      {
+        "text": "GTA VI review!",
+        "rect": [
+          380,
+          357,
+          110,
+          33
+        ]
+      },
+      {
+        "text": "Nintendo Switch Black Friday live blog",
+        "rect": [
+          534,
+          357,
+          275,
+          33
+        ]
+      },
+      {
+        "text": "Best digital art software",
+        "rect": [
+          853,
+          357,
+          179,
+          33
+        ]
+      },
+      {
+        "text": "Pets at Home rebrand",
+        "rect": [
+          1076,
+          357,
+          166,
+          33
+        ]
+      },
+      {
+        "text": "Photography",
+        "rect": [
+          259,
+          425,
+          100,
+          24
+        ]
+      },
+      {
+        "text": "Photo Editing Software",
+        "rect": [
+          383,
+          425,
+          176,
+          24
+        ]
+      },
+      {
+        "text": "News",
+        "rect": [
+          259,
+          583,
+          53,
+          28
+        ]
+      },
+      {
+        "text": "Joe Foley",
+        "rect": [
+          340,
+          585,
+          58,
+          19
+        ]
+      },
+      {
+        "text": "Here\u2019s how it works",
+        "rect": [
+          259,
+          693,
+          573,
+          36
+        ]
+      },
+      {
+        "text": "Share this article",
+        "rect": [
+          259,
+          1170.625,
+          38,
+          34
+        ]
+      },
+      {
+        "text": "Follow us",
+        "rect": [
+          657,
+          1170.625,
+          93,
+          34
+        ]
+      },
+      {
+        "text": "Newsletter",
+        "rect": [
+          758,
+          1170.625,
+          103,
+          34
+        ]
+      },
+      {
+        "text": "field: Your Email Address",
+        "rect": [
+          279,
+          3158.71875,
+          355.296875,
+          46
+        ]
+      },
+      {
+        "text": "field: Sign me up",
+        "rect": [
+          644.296875,
+          3158.71875,
+          196.6875,
+          46
+        ]
+      },
+      {
+        "text": "Image 7 of 7",
+        "rect": [
+          796,
+          3630.71875,
+          45,
+          45
+        ]
+      },
+      {
+        "text": "Image 3 of 3",
+        "rect": [
+          796,
+          5135.390625,
+          45,
+          45
+        ]
+      }
+    ],
+    "photo": "06-photo.png",
+    "photos": [
+      "06-photo.png",
+      "06-photo2.png",
+      "06-photo3.png",
+      "06-photo4.png"
+    ],
+    "captured_at": "2026-11-24T18:36:22+00:00"
+  },
+  {
+    "url": "https://stockanalysis.com/stocks/adbe/statistics/",
+    "title": "Adobe (ADBE) Statistics & Valuation",
+    "claims": [
+      "Adobe\u2019s market value was approximately in the high-$80-billion to roughly $90-billion range around November 23\u201324, 2026, so the video\u2019s phrase 'close to a hundred billion dollars' is directionally reasonable but should not be presented as an exact current valuation without a timestamp."
+    ],
+    "ok": true,
+    "top": "07-top.png",
+    "full": "07-full.png",
+    "full_height": 4503,
+    "scale": 1.5,
+    "highlights": [],
+    "headline": [
+      276.421875,
+      427.40625,
+      221.203125,
+      32
+    ],
+    "blocks": [
+      {
+        "text": "Adobe has a market cap or net worth of $90.92 billion. The enterprise value is $92.06 billion.",
+        "rect": [
+          276.421875,
+          524.40625,
+          377.1875,
+          75.5625
+        ]
+      },
+      {
+        "text": "The next confirmed earnings date is Wednesday, December 9, 2026, after market close.",
+        "rect": [
+          276.421875,
+          766.96875,
+          377.1875,
+          75.5625
+        ]
+      },
+      {
+        "text": "Adobe has 389.20 million shares outstanding. The number of shares has decreased by -6.22% in one year.",
+        "rect": [
+          276.421875,
+          1009.53125,
+          377.1875,
+          75.5625
+        ]
+      },
+      {
+        "text": "Owned by Institutions (%)",
+        "rect": [
+          276.421875,
+          1306.59375,
+          263.953125,
+          41
+        ]
+      },
+      {
+        "text": "The trailing PE ratio is 13.04 and the forward PE ratio is 8.71. Adobe's PEG ratio is 0.60.",
+        "rect": [
+          276.421875,
+          1457.09375,
+          377.1875,
+          75.5625
+        ]
+      },
+      {
+        "text": "The stock's EV/EBITDA ratio is 9.27, with an EV/FCF ratio of 8.68.",
+        "rect": [
+          276.421875,
+          2048.65625,
+          377.1875,
+          50.375
+        ]
+      },
+      {
+        "text": "The company has a current ratio of 0.77, with a Debt / Equity ratio of 0.58.",
+        "rect": [
+          276.421875,
+          2389.03125,
+          377.1875,
+          50.375
+        ]
+      },
+      {
+        "text": "Return on equity (ROE) is 61.90% and return on invested capital (ROIC) is 58.32%.",
+        "rect": [
+          276.421875,
+          2770.40625,
+          377.1875,
+          50.375
+        ]
+      },
+      {
+        "text": "Return on Invested Capital (ROIC)",
+        "rect": [
+          276.421875,
+          2919.28125,
+          273.171875,
+          65
+        ]
+      },
+      {
+        "text": "Return on Capital Employed (ROCE)",
+        "rect": [
+          276.421875,
+          2984.28125,
+          273.171875,
+          65
+        ]
+      },
+      {
+        "text": "Weighted Average Cost of Capital (WACC)",
+        "rect": [
+          276.421875,
+          3049.28125,
+          273.171875,
+          65
+        ]
+      },
+      {
+        "text": "In the past 12 months, Adobe has paid $2.00 billion in taxes.",
+        "rect": [
+          276.421875,
+          3387.78125,
+          377.1875,
+          50.375
+        ]
+      },
+      {
+        "text": "The stock price has decreased by -28.20% in the last 52 weeks. The beta is 1.38, so Adobe's price volatility has been higher than the market average.",
+        "rect": [
+          693.609375,
+          463.40625,
+          337.1875,
+          100.75
+        ]
+      },
+      {
+        "text": "Relative Strength Index (RSI)",
+        "rect": [
+          693.609375,
+          744.65625,
+          227.09375,
+          65
+        ]
+      },
+      {
+        "text": "Short Selling Information",
+        "rect": [
+          693.609375,
+          907.15625,
+          337.1875,
+          28
+        ]
+      },
+      {
+        "text": "The latest short interest is 16.76 million, so 4.31% of the outstanding shares have been sold short.",
+        "rect": [
+          693.609375,
+          943.15625,
+          337.1875,
+          75.5625
+        ]
+      },
+      {
+        "text": "Short Ratio (days to cover)",
+        "rect": [
+          693.609375,
+          1199.21875,
+          246.484375,
+          41
+        ]
+      },
+      {
+        "text": "In the last 12 months, Adobe had revenue of $25.97 billion and earned $7.28 billion in profits. Earnings per share was $17.92.",
+        "rect": [
+          693.609375,
+          1308.71875,
+          337.1875,
+          100.75
+        ]
+      },
+      {
+        "text": "The company has $5.64 billion in cash and $6.79 billion in debt, with a net cash position of -$1.15 billion or -$2.94 per share.",
+        "rect": [
+          693.609375,
+          1884.46875,
+          337.1875,
+          100.75
+        ]
+      },
+      {
+        "text": "In the last 12 months, operating cash flow was $10.81 billion and capital expenditures -$214.00 million, giving a free cash flow of $10.59 billion.",
+        "rect": [
+          693.609375,
+          2419.21875,
+          337.1875,
+          100.75
+        ]
+      },
+      {
+        "text": "Depreciation & Amortization",
+        "rect": [
+          693.609375,
+          2618.46875,
+          232.875,
+          65
+        ]
+      },
+      {
+        "text": "Gross margin is 89.25%, with operating and profit margins of 36.32% and 28.05%.",
+        "rect": [
+          693.609375,
+          2936.96875,
+          337.1875,
+          75.5625
+        ]
+      },
+      {
+        "text": "Adobe does not appear to pay any dividends at this time.",
+        "rect": [
+          1070.796875,
+          463.40625,
+          337.203125,
+          50.375
+        ]
+      },
+      {
+        "text": "The average price target for Adobe is $266.91, which is 14.26% higher than the current price. The consensus rating is \"Hold\".",
+        "rect": [
+          1070.796875,
+          1352.78125,
+          337.203125,
+          100.75
+        ]
+      },
+      {
+        "text": "Revenue Growth Forecast (3Y)",
+        "rect": [
+          1070.796875,
+          1634.03125,
+          244.328125,
+          65
+        ]
+      },
+      {
+        "text": "There are several formulas that can be used to estimate the intrinsic value of a stock.",
+        "rect": [
+          1070.796875,
+          1870.53125,
+          337.203125,
+          75.5625
+        ]
+      },
+      {
+        "text": "The last stock split was on May 24, 2005. It was a forward split with a ratio of 2:1.",
+        "rect": [
+          1070.796875,
+          2277.09375,
+          337.203125,
+          75.5625
+        ]
+      },
+      {
+        "text": "Adobe has an Altman Z-Score of 8.01 and a Piotroski F-Score of 7.",
+        "rect": [
+          1070.796875,
+          2560.65625,
+          337.203125,
+          50.375
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "text": "Home page",
+        "rect": [
+          24,
+          11,
+          127.359375,
+          36
+        ]
+      },
+      {
+        "text": "field: Company or stock symbol...",
+        "rect": [
+          215.359375,
+          8,
+          600,
+          42
+        ]
+      },
+      {
+        "text": "Ask AI",
+        "rect": [
+          979.15625,
+          13,
+          99.40625,
+          32
+        ]
+      },
+      {
+        "text": "Help",
+        "rect": [
+          1086.5625,
+          9,
+          104.328125,
+          40
+        ]
+      },
+      {
+        "text": "Log In",
+        "rect": [
+          1198.890625,
+          8,
+          96.5,
+          42
+        ]
+      },
+      {
+        "text": "Sign Up",
+        "rect": [
+          1303.390625,
+          8,
+          112.609375,
+          42
+        ]
+      },
+      {
+        "text": "Home",
+        "rect": [
+          20,
+          76,
+          203.421875,
+          40
+        ]
+      },
+      {
+        "text": "Watchlist",
+        "rect": [
+          20,
+          120,
+          203.421875,
+          40
+        ]
+      },
+      {
+        "text": "Stocks",
+        "rect": [
+          20,
+          164,
+          174.421875,
+          40
+        ]
+      },
+      {
+        "text": "Expand Stocks menu",
+        "rect": [
+          194.421875,
+          174,
+          29,
+          20
+        ]
+      },
+      {
+        "text": "Stock Screener",
+        "rect": [
+          20,
+          206,
+          203.421875,
+          32
+        ]
+      },
+      {
+        "text": "Stock Exchanges",
+        "rect": [
+          20,
+          238,
+          203.421875,
+          32
+        ]
+      },
+      {
+        "text": "By Country",
+        "rect": [
+          20,
+          270,
+          203.421875,
+          32
+        ]
+      },
+      {
+        "text": "Comparison Tool",
+        "rect": [
+          20,
+          302,
+          203.421875,
+          32
+        ]
+      },
+      {
+        "text": "Earnings Calendar",
+        "rect": [
+          20,
+          334,
+          203.421875,
+          32
+        ]
+      },
+      {
+        "text": "Earnings CallsNew",
+        "rect": [
+          20,
+          366,
+          203.421875,
+          32
+        ]
+      },
+      {
+        "text": "By Industry",
+        "rect": [
+          20,
+          398,
+          203.421875,
+          32
+        ]
+      },
+      {
+        "text": "Stock Lists",
+        "rect": [
+          20,
+          430,
+          203.421875,
+          32
+        ]
+      },
+      {
+        "text": "Top Stocks",
+        "rect": [
+          20,
+          462,
+          203.421875,
+          32
+        ]
+      },
+      {
+        "text": "Corporate Actions",
+        "rect": [
+          20,
+          494,
+          203.421875,
+          32
+        ]
+      },
+      {
+        "text": "IPOs",
+        "rect": [
+          20,
+          530,
+          174.421875,
+          40
+        ]
+      },
+      {
+        "text": "Expand IPOs menu",
+        "rect": [
+          194.421875,
+          540,
+          29,
+          20
+        ]
+      },
+      {
+        "text": "ETFs",
+        "rect": [
+          20,
+          574,
+          174.421875,
+          40
+        ]
+      },
+      {
+        "text": "Expand ETFs menu",
+        "rect": [
+          194.421875,
+          584,
+          29,
+          20
+        ]
+      },
+      {
+        "text": "Analysts",
+        "rect": [
+          20,
+          618,
+          203.421875,
+          40
+        ]
+      },
+      {
+        "text": "News",
+        "rect": [
+          20,
+          662,
+          203.421875,
+          40
+        ]
+      },
+      {
+        "text": "Trending",
+        "rect": [
+          20,
+          706,
+          203.421875,
+          40
+        ]
+      },
+      {
+        "text": "Private Companies",
+        "rect": [
+          20,
+          750,
+          203.421875,
+          40
+        ]
+      },
+      {
+        "text": "Technical Chart",
+        "rect": [
+          20,
+          794,
+          203.421875,
+          40
+        ]
+      },
+      {
+        "text": "Fundamental Chart",
+        "rect": [
+          20,
+          838,
+          203.421875,
+          40
+        ]
+      },
+      {
+        "text": "Market Movers",
+        "rect": [
+          20,
+          882,
+          174.421875,
+          40
+        ]
+      },
+      {
+        "text": "Expand Market Movers menu",
+        "rect": [
+          194.421875,
+          892,
+          29,
+          20
+        ]
+      },
+      {
+        "text": "Market Newsletter",
+        "rect": [
+          20,
+          926,
+          203.421875,
+          40
+        ]
+      },
+      {
+        "text": "Stock Analysis Pro Black Friday",
+        "rect": [
+          20,
+          966,
+          203.421875,
+          40
+        ]
+      },
+      {
+        "text": "Tools",
+        "rect": [
+          20,
+          1010,
+          203.421875,
+          40
+        ]
+      },
+      {
+        "text": "Collapse",
+        "rect": [
+          20,
+          1071,
+          203.421875,
+          40
+        ]
+      },
+      {
+        "text": "Light",
+        "rect": [
+          29.359375,
+          1151,
+          94.40625,
+          38
+        ]
+      },
+      {
+        "text": "Dark",
+        "rect": [
+          122.765625,
+          1151,
+          91.296875,
+          38
+        ]
+      },
+      {
+        "text": "Full Chart",
+        "rect": [
+          909.734375,
+          172,
+          127.53125,
+          36
+        ]
+      },
+      {
+        "text": "Alerts",
+        "rect": [
+          1181.8125,
+          172,
+          97.78125,
+          36
+        ]
+      }
+    ],
+    "photo": null,
+    "photos": [],
+    "captured_at": "2026-11-24T18:36:26+00:00"
+  },
+  {
+    "url": "https://en.wikipedia.org/wiki/Adobe",
+    "title": "Adobe (picture)",
+    "claims": [],
+    "ok": true,
+    "picture_only": true,
+    "subject": "Adobe",
+    "photo": "09-photo.png",
+    "photos": [
+      "09-photo.png"
+    ]
+  }
+]

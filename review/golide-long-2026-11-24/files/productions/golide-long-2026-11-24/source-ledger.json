@@ -1,0 +1,89 @@
+{
+  "claims": [
+    {
+      "claim": "The Outskill video was published on November 11, 2026, runs approximately 26 minutes, and demonstrates rebuilding Claude Code-like functionality with DeepSeek V4.1 Flash, GLM 5.3 Flash, REA, OpenCode, and a custom tool named Kiln.",
+      "source_title": "DeepSeek + REA Cloned Claude Code for FREE (Full Build) \u2014 transcript mirror",
+      "source_url": "https://postsingularityinstitute.com/en/syntheses/UCNssyoLJiA2oB5xM7XjxmJA_ihElfZhR-eI/",
+      "published_or_updated": "November 11, 2026"
+    },
+    {
+      "claim": "The tutorial reports a Kiln self-check progressing from 77/77 initial tests to 102/102 after missing features were fixed. This is a claim made by the video and its transcript mirror, not an independently reproduced benchmark.",
+      "source_title": "DeepSeek + REA Cloned Claude Code for FREE (Full Build) \u2014 transcript mirror",
+      "source_url": "https://postsingularityinstitute.com/en/syntheses/UCNssyoLJiA2oB5xM7XjxmJA_ihElfZhR-eI/",
+      "published_or_updated": "Observed November 15, 2026; video dated November 11, 2026"
+    },
+    {
+      "claim": "REA is an MCP-based reverse-engineering toolkit that connects AI agents to tools for inspecting native binaries, JavaScript and Electron applications, .NET assemblies, and websites. Its documentation says analysis runs locally and returns evidence and limitations for conclusions.",
+      "source_title": "REA official GitHub repository",
+      "source_url": "https://github.com/morluto/rea",
+      "published_or_updated": "Crawled November 2026"
+    },
+    {
+      "claim": "The claim that REA exposes 229 tools is accurate for the REA 6.8.0-era tool catalog. Official repository issue data records 229 advertised MCP tools, while later version 6.9.0 data records 255, so the number is version-dependent.",
+      "source_title": "REA GitHub issue: schema and tool-count comparison",
+      "source_url": "https://github.com/morluto/rea/issues/10436",
+      "published_or_updated": "November 2026"
+    },
+    {
+      "claim": "REA does not itself automatically produce a finished software clone. Its official workflow is to inspect an application, return evidence, and let the connected coding agent implement a similar feature or behavior.",
+      "source_title": "REA official GitHub repository",
+      "source_url": "https://github.com/morluto/rea",
+      "published_or_updated": "Crawled November 2026"
+    },
+    {
+      "claim": "OpenCode\u2019s official model table lists DeepSeek V4.1 Flash Free as free for both input and output, but the documentation says the free availability is for a limited time.",
+      "source_title": "OpenCode console models documentation",
+      "source_url": "https://opencode.ai/docs/console/models/",
+      "published_or_updated": "Crawled November 2026"
+    },
+    {
+      "claim": "The video\u2019s description of GLM 5.3 Flash as free is not supported by OpenCode\u2019s current official model table. That table lists GLM 5.3 Flash at $0.15 per million input tokens and $0.50 per million output tokens.",
+      "source_title": "OpenCode console models documentation",
+      "source_url": "https://opencode.ai/docs/console/models/",
+      "published_or_updated": "Crawled November 2026"
+    },
+    {
+      "claim": "The Adobe story is based on ArtCraft, a project by developer Brandon Thomas. Reporting says seven Adobe-style applications were released under the ArtCraft brand between September 30 and October 1, 2026, including Photoshop, Illustrator, Premiere Pro, Lightroom, Acrobat Pro, After Effects, and InDesign-style tools.",
+      "source_title": "Someone Rebuilt Adobe in Rust with AI Agents. Is It Usable?",
+      "source_url": "https://flowtivityconsulting.com/blog/adobe-rust-cleanroom-clones/",
+      "published_or_updated": "October 8, 2026; updated October 30, 2026"
+    },
+    {
+      "claim": "The claim that approximately eight Claude agents worked in parallel is supported by reporting on the ArtCraft workflow, which describes about eight Claude Opus 5.5 agents working on independent subsystems while a human handled integration and testing.",
+      "source_title": "Someone Rebuilt Adobe in Rust with AI Agents. Is It Usable?",
+      "source_url": "https://flowtivityconsulting.com/blog/adobe-rust-cleanroom-clones/",
+      "published_or_updated": "October 8, 2026; updated October 30, 2026"
+    },
+    {
+      "claim": "The Adobe apps were not complete replacements for Adobe Creative Cloud. The project\u2019s reported self-assessment put professional daily-work parity at roughly 25% to 35%; 115 of 170 reference files reportedly rendered pixel-identically in one Photoshop-style test, or about 68%.",
+      "source_title": "Someone Rebuilt Adobe in Rust with AI Agents. Is It Usable?",
+      "source_url": "https://flowtivityconsulting.com/blog/adobe-rust-cleanroom-clones/",
+      "published_or_updated": "October 8, 2026; updated October 30, 2026"
+    },
+    {
+      "claim": "The ArtCraft apps were described as early-alpha software with substantial bugs and missing features. Independent testing coverage warned that the projects should not yet be treated as reliable professional replacements for Adobe applications.",
+      "source_title": "I tried those free AI-coded Adobe Creative Cloud clones, and they have some big problems",
+      "source_url": "https://www.creativebloq.com/news/i-tried-those-free-ai-coded-adobe-creative-cloud-clones-and-they-have-some-big-problems",
+      "published_or_updated": "November 2026"
+    },
+    {
+      "claim": "Adobe\u2019s market value was approximately in the high-$80-billion to roughly $90-billion range around November 23\u201324, 2026, so the video\u2019s phrase 'close to a hundred billion dollars' is directionally reasonable but should not be presented as an exact current valuation without a timestamp.",
+      "source_title": "Adobe market-cap data",
+      "source_url": "https://stockanalysis.com/stocks/adbe/statistics/",
+      "published_or_updated": "November 24, 2026"
+    }
+  ],
+  "platform_demand": {
+    "verdict": "pass",
+    "signal_type": "owner-replace",
+    "query": "DeepSeek + REA Cloned Claude Code for FREE (Full Build)"
+  },
+  "music": {
+    "type": "music",
+    "title": "GOLIDE Curiosity Bed",
+    "creator": "GOLIDE",
+    "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+    "license": "GOLIDE-Owned-Procedural-1.0",
+    "attribution": ""
+  }
+}

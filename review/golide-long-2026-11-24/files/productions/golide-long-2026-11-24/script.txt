@@ -1,0 +1,119 @@
+Last month, one single developer shook the walls of Adobe,
+a company worth close to 100 billion dollars.
+Photoshop, Premiere, all in just one week.
+He used about 8 Claude agents running at once.
+But today, no paid Claude.
+We're doing the same thing with free open models you can run tonight.
+We're not rebuilding Photoshop.
+We're rebuilding Claude Code itself.
+An award-winning 3D website studied by the same free AI rebuilt in
+its own code and checked screenshot by screenshot against the real thing.
+Somewhere in the middle, the free AI hits a wall.
+I'll show you the one line that gets you straight past it.
+By the end, our free version goes head-to-head with the real Claude.
+Same task, same clock, one winner.
+Every AI coding tool has 2 parts.
+The body, the app you type into, and the brain,
+the AI model doing the thinking.
+Today, the body is OpenCode.
+The brain is DeepSeek V4.1 Flash Free.
+It will run out.
+When it does, we swap in GLM 5.3 Flash and carry on.
+The third piece is REA, reverse engineer anything.
+229 tools for looking inside software.
+Plug it into an AI and the AI becomes the detective.
+It doesn't copy code.
+It doesn't write code.
+It reads and reports back with proof.
+Understand the recipe.
+Don't photocopy the cookbook.
+Install OpenCode, choose Windows x64, not ARM 64, and choose DeepSeek V4.1 Flash Free.
+Paste the setup prompt and run REA's health check until it passes.
+Today, a desktop app.
+For native programs, REA needs a decompiler called Ghidra.
+The wrong version came first; the AI swapped in 12.1.4 and tested Notepad:
+853 functions mapped.
+Green, 229 tools ready.
+Before the big one, a warm-up.
+This is igloo.inc.
+It won site of the year at the awards.
+Can a free AI study it and rebuild it in its own code?
+For websites, REA drives a real Chrome browser, reads the layout, the scripts,
+everything the page downloads, and takes screenshots.
+Error 429.
+OpenRouter's free models give you 50 requests a day for your whole account,
+and an AI agent burns through requests fast.
+So, I added Nvidia as a second provider, picked GLM 5.3 Flash,
+and typed one line: Carry on from where you stopped.
+It picked up exactly where it left off.
+At one point, the AI proudly said, All 58 assets downloaded.
+I opened the folder: 3 files.
+So I sent one line back: Check the folder.
+Never say a file is saved unless a folder listing shows it.
+Try again.
+This time, 105 real files, 17.7 megabytes.
+Read reverse.md and rebuild the site scene by scene in your own code.
+Never load the site's own JavaScript.
+Plain HTML and 3.js, checking each scene in the browser before moving on.
+Then compare screenshots of the real site and our copy.
+The Claude app is the window.
+Claude Code is the engine inside that window.
+We're going after both, the window and the engine.
+So, we changed the name, changed the icon,
+and this stays a private learning build, not for sale, not for release.
+I called it Kiln.
+The AI then writes its own code from scratch.
+Not one line of Anthropic's code makes it in.
+Instead of repeating the same rules in every prompt,
+the AI writes them once into agents.md.
+Then there are 3 files: agents.md, the rules; features.md, our own engine and window;
+and spec.md, every feature, one test each, and a 3-part build plan.
+Then spec.md lands: every feature in the AI's own words, one test for each,
+and a plan in 3 parts.
+The build prompt is: Read agents.md, spec.md, and our saved versions.
+Build the next unfinished part of the plan one feature
+at a time and test each one with the self-check.
+The self-check drives the real Kiln window, types a message,
+and checks the file really got written.
+Kiln is not allowed to say anything works until that robot hand says pass.
+29 out of 29 passed.
+Then: Done.
+Version 1.0.
+77 out of 77 checks passing.
+Then DeepSeek ran out and wouldn't reset for 13 hours.
+I switched to that model and typed: Read our files and saved versions.
+Check any unsaved changes and carry on where the work stopped.
+Nothing lost because every finished feature was already saved into Git.
+77 out of 77 sounds perfect, right?
+It wasn't.
+The model picker wouldn't scroll.
+4 features were missing: /compact, helper agents, MCP servers, and hooks.
+The self-check only tests what the AI decided to build,
+not what it was supposed to build.
+Done is a claim.
+Check the receipt.
+One prompt fixed everything: Make the model picker scroll and add a search box.
+Then build what's missing: /compact, helper agents, MCP, hooks, and retry on rate limits,
+running the full self-check after each work.
+40 minutes later, the self-check went from 77 to 102.
+Every old test still passing.
+25 new tests added and passing.
+Then I asked Kiln which model it was using.
+It said it wasn't powered by any separate large language model, which wasn't true.
+Now it knows its own brain.
+Same task, same clock.
+On the left, the real Claude app.
+On the right, Kiln on a free model.
+Same empty folders.
+Build a simple todo app as one file called todo.html.
+Add tasks, remove them, delete one, refresh, and see how many are left.
+Which one would you keep?
+Free isn't unlimited or private.
+The free DeepSeek model ran out for 13 hours.
+Nvidia logs what you send.
+Never put passwords or client code through a free cloud model.
+One free app, one free brain, and REA.
+The free AI studied the Claude app and Claude Code, wrote its own blueprint,
+and built Kiln.
+0 lines of code typed by me.
+If you want more workflows like this, follow the channel.

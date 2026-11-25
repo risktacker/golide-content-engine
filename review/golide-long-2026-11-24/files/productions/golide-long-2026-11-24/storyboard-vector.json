@@ -1,0 +1,1053 @@
+{
+  "renderer": "edit",
+  "scenes": [
+    {
+      "id": "scene-000",
+      "start": 0.0,
+      "end": 3.6,
+      "duration": 3.6,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-001",
+      "start": 3.6,
+      "end": 15.52,
+      "duration": 11.92,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-002",
+      "start": 3.92,
+      "end": 7.24,
+      "duration": 3.32,
+      "visual": "stat_counter",
+      "visual_caption": "stat_counter"
+    },
+    {
+      "id": "scene-003",
+      "start": 7.24,
+      "end": 10.52,
+      "duration": 3.28,
+      "visual": "photo",
+      "visual_caption": "photo"
+    },
+    {
+      "id": "scene-004",
+      "start": 10.52,
+      "end": 13.28,
+      "duration": 2.76,
+      "visual": "puppet_clip",
+      "visual_caption": "puppet_clip"
+    },
+    {
+      "id": "scene-005",
+      "start": 13.28,
+      "end": 15.52,
+      "duration": 2.24,
+      "visual": "metaphor",
+      "visual_caption": "metaphor"
+    },
+    {
+      "id": "scene-006",
+      "start": 15.52,
+      "end": 19.2,
+      "duration": 3.68,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-007",
+      "start": 19.2,
+      "end": 20.96,
+      "duration": 1.76,
+      "visual": "photo",
+      "visual_caption": "photo"
+    },
+    {
+      "id": "scene-008",
+      "start": 19.2,
+      "end": 27.439999999999998,
+      "duration": 8.24,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-009",
+      "start": 20.96,
+      "end": 23.200000000000003,
+      "duration": 2.24,
+      "visual": "object3d",
+      "visual_caption": "object3d"
+    },
+    {
+      "id": "scene-010",
+      "start": 23.2,
+      "end": 27.439999999999998,
+      "duration": 4.24,
+      "visual": "photo",
+      "visual_caption": "photo"
+    },
+    {
+      "id": "scene-011",
+      "start": 27.44,
+      "end": 31.560000000000002,
+      "duration": 4.12,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-012",
+      "start": 31.56,
+      "end": 34.56,
+      "duration": 3.0,
+      "visual": "metaphor",
+      "visual_caption": "metaphor"
+    },
+    {
+      "id": "scene-013",
+      "start": 31.56,
+      "end": 37.4,
+      "duration": 5.84,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-014",
+      "start": 34.56,
+      "end": 37.400000000000006,
+      "duration": 2.84,
+      "visual": "prompt_card",
+      "visual_caption": "prompt_card"
+    },
+    {
+      "id": "scene-015",
+      "start": 37.4,
+      "end": 41.199999999999996,
+      "duration": 3.8,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-016",
+      "start": 41.2,
+      "end": 44.227000000000004,
+      "duration": 3.027,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-017",
+      "start": 44.227,
+      "end": 51.599999999999994,
+      "duration": 7.373,
+      "visual": "chapter_card",
+      "visual_caption": "chapter_card"
+    },
+    {
+      "id": "scene-018",
+      "start": 44.227,
+      "end": 57.31999999999999,
+      "duration": 13.093,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-019",
+      "start": 51.6,
+      "end": 53.72,
+      "duration": 2.12,
+      "visual": "logo_tiles",
+      "visual_caption": "logo_tiles"
+    },
+    {
+      "id": "scene-020",
+      "start": 53.72,
+      "end": 57.32,
+      "duration": 3.6,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-021",
+      "start": 57.32,
+      "end": 58.56,
+      "duration": 1.24,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-022",
+      "start": 58.56,
+      "end": 62.68,
+      "duration": 4.12,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-023",
+      "start": 62.68,
+      "end": 67.18,
+      "duration": 4.5,
+      "visual": "recipe_clip",
+      "visual_caption": "recipe_clip"
+    },
+    {
+      "id": "scene-024",
+      "start": 62.68,
+      "end": 73.36,
+      "duration": 10.68,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-025",
+      "start": 67.18,
+      "end": 70.16000000000001,
+      "duration": 2.98,
+      "visual": "stat_counter",
+      "visual_caption": "stat_counter"
+    },
+    {
+      "id": "scene-026",
+      "start": 70.16,
+      "end": 73.36,
+      "duration": 3.2,
+      "visual": "metaphor",
+      "visual_caption": "metaphor"
+    },
+    {
+      "id": "scene-027",
+      "start": 73.36,
+      "end": 76.08,
+      "duration": 2.72,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-028",
+      "start": 76.08,
+      "end": 78.76,
+      "duration": 2.68,
+      "visual": "quote_card",
+      "visual_caption": "quote_card"
+    },
+    {
+      "id": "scene-029",
+      "start": 76.08,
+      "end": 78.76,
+      "duration": 2.68,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-030",
+      "start": 78.76,
+      "end": 81.96000000000001,
+      "duration": 3.2,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-031",
+      "start": 81.96,
+      "end": 89.83999999999999,
+      "duration": 7.88,
+      "visual": "walkthrough",
+      "visual_caption": "walkthrough"
+    },
+    {
+      "id": "scene-032",
+      "start": 81.96,
+      "end": 95.32,
+      "duration": 13.36,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-033",
+      "start": 89.84,
+      "end": 93.68,
+      "duration": 3.84,
+      "visual": "terminal",
+      "visual_caption": "terminal"
+    },
+    {
+      "id": "scene-034",
+      "start": 93.68,
+      "end": 95.32000000000001,
+      "duration": 1.64,
+      "visual": "object3d",
+      "visual_caption": "object3d"
+    },
+    {
+      "id": "scene-035",
+      "start": 95.32,
+      "end": 99.03999999999999,
+      "duration": 3.72,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-036",
+      "start": 99.04,
+      "end": 104.72,
+      "duration": 5.68,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-037",
+      "start": 99.04,
+      "end": 104.72,
+      "duration": 5.68,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-038",
+      "start": 104.72,
+      "end": 107.08,
+      "duration": 2.36,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-039",
+      "start": 107.08,
+      "end": 110.0,
+      "duration": 2.92,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-040",
+      "start": 110.0,
+      "end": 111.92,
+      "duration": 1.92,
+      "visual": "chapter_card",
+      "visual_caption": "chapter_card"
+    },
+    {
+      "id": "scene-041",
+      "start": 110.0,
+      "end": 131.6,
+      "duration": 21.6,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-042",
+      "start": 111.92,
+      "end": 113.60000000000001,
+      "duration": 1.68,
+      "visual": "photo",
+      "visual_caption": "photo"
+    },
+    {
+      "id": "scene-043",
+      "start": 113.6,
+      "end": 115.75999999999999,
+      "duration": 2.16,
+      "visual": "quote_card",
+      "visual_caption": "quote_card"
+    },
+    {
+      "id": "scene-044",
+      "start": 115.76,
+      "end": 119.24000000000001,
+      "duration": 3.48,
+      "visual": "metaphor",
+      "visual_caption": "metaphor"
+    },
+    {
+      "id": "scene-045",
+      "start": 119.24,
+      "end": 124.03999999999999,
+      "duration": 4.8,
+      "visual": "recipe_clip",
+      "visual_caption": "recipe_clip"
+    },
+    {
+      "id": "scene-046",
+      "start": 124.04,
+      "end": 128.6,
+      "duration": 4.56,
+      "visual": "object3d",
+      "visual_caption": "object3d"
+    },
+    {
+      "id": "scene-047",
+      "start": 128.6,
+      "end": 131.6,
+      "duration": 3.0,
+      "visual": "stat_counter",
+      "visual_caption": "stat_counter"
+    },
+    {
+      "id": "scene-048",
+      "start": 131.6,
+      "end": 132.653,
+      "duration": 1.053,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-049",
+      "start": 132.653,
+      "end": 135.72,
+      "duration": 3.067,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-050",
+      "start": 135.72,
+      "end": 138.12,
+      "duration": 2.4,
+      "visual": "logo_tiles",
+      "visual_caption": "logo_tiles"
+    },
+    {
+      "id": "scene-051",
+      "start": 135.72,
+      "end": 143.64,
+      "duration": 7.92,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-052",
+      "start": 138.12,
+      "end": 140.30700000000002,
+      "duration": 2.187,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-053",
+      "start": 140.307,
+      "end": 143.64,
+      "duration": 3.333,
+      "visual": "prompt_card",
+      "visual_caption": "prompt_card"
+    },
+    {
+      "id": "scene-054",
+      "start": 143.64,
+      "end": 146.04,
+      "duration": 2.4,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-055",
+      "start": 146.04,
+      "end": 148.2,
+      "duration": 2.16,
+      "visual": "quote_card",
+      "visual_caption": "quote_card"
+    },
+    {
+      "id": "scene-056",
+      "start": 146.04,
+      "end": 148.2,
+      "duration": 2.16,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-057",
+      "start": 148.2,
+      "end": 150.2,
+      "duration": 2.0,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-058",
+      "start": 150.2,
+      "end": 152.83999999999997,
+      "duration": 2.64,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-059",
+      "start": 152.84,
+      "end": 156.04,
+      "duration": 3.2,
+      "visual": "prompt_card",
+      "visual_caption": "prompt_card"
+    },
+    {
+      "id": "scene-060",
+      "start": 152.84,
+      "end": 160.52,
+      "duration": 7.68,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-061",
+      "start": 156.04,
+      "end": 160.51999999999998,
+      "duration": 4.48,
+      "visual": "quote_card",
+      "visual_caption": "quote_card"
+    },
+    {
+      "id": "scene-062",
+      "start": 160.52,
+      "end": 165.24,
+      "duration": 4.72,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-063",
+      "start": 165.24,
+      "end": 169.96,
+      "duration": 4.72,
+      "visual": "prompt_card",
+      "visual_caption": "prompt_card"
+    },
+    {
+      "id": "scene-064",
+      "start": 165.24,
+      "end": 177.84,
+      "duration": 12.6,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-065",
+      "start": 169.96,
+      "end": 172.48000000000002,
+      "duration": 2.52,
+      "visual": "quote_card",
+      "visual_caption": "quote_card"
+    },
+    {
+      "id": "scene-066",
+      "start": 172.48,
+      "end": 175.64,
+      "duration": 3.16,
+      "visual": "browser_shot",
+      "visual_caption": "browser_shot"
+    },
+    {
+      "id": "scene-067",
+      "start": 175.64,
+      "end": 177.83999999999997,
+      "duration": 2.2,
+      "visual": "object3d",
+      "visual_caption": "object3d"
+    },
+    {
+      "id": "scene-068",
+      "start": 177.84,
+      "end": 181.24,
+      "duration": 3.4,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-069",
+      "start": 181.24,
+      "end": 187.82000000000002,
+      "duration": 6.58,
+      "visual": "chapter_card",
+      "visual_caption": "chapter_card"
+    },
+    {
+      "id": "scene-070",
+      "start": 181.24,
+      "end": 187.82000000000002,
+      "duration": 6.58,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-071",
+      "start": 187.82,
+      "end": 189.44,
+      "duration": 1.62,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-072",
+      "start": 189.44,
+      "end": 192.16,
+      "duration": 2.72,
+      "visual": "object3d",
+      "visual_caption": "object3d"
+    },
+    {
+      "id": "scene-073",
+      "start": 189.44,
+      "end": 196.6,
+      "duration": 7.16,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-074",
+      "start": 192.16,
+      "end": 196.6,
+      "duration": 4.44,
+      "visual": "quote_card",
+      "visual_caption": "quote_card"
+    },
+    {
+      "id": "scene-075",
+      "start": 196.6,
+      "end": 198.12,
+      "duration": 1.52,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-076",
+      "start": 198.12,
+      "end": 204.04,
+      "duration": 5.92,
+      "visual": "recipe_clip",
+      "visual_caption": "recipe_clip"
+    },
+    {
+      "id": "scene-077",
+      "start": 198.12,
+      "end": 215.64000000000001,
+      "duration": 17.52,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-078",
+      "start": 204.04,
+      "end": 210.12,
+      "duration": 6.08,
+      "visual": "object3d",
+      "visual_caption": "object3d"
+    },
+    {
+      "id": "scene-079",
+      "start": 210.12,
+      "end": 215.64000000000001,
+      "duration": 5.52,
+      "visual": "recipe_clip",
+      "visual_caption": "recipe_clip"
+    },
+    {
+      "id": "scene-080",
+      "start": 215.64,
+      "end": 217.55999999999997,
+      "duration": 1.92,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-081",
+      "start": 217.56,
+      "end": 223.0,
+      "duration": 5.44,
+      "visual": "recipe_clip",
+      "visual_caption": "recipe_clip"
+    },
+    {
+      "id": "scene-082",
+      "start": 217.56,
+      "end": 223.0,
+      "duration": 5.44,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-083",
+      "start": 223.0,
+      "end": 225.4,
+      "duration": 2.4,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-084",
+      "start": 225.4,
+      "end": 231.04,
+      "duration": 5.64,
+      "visual": "quote_card",
+      "visual_caption": "quote_card"
+    },
+    {
+      "id": "scene-085",
+      "start": 225.4,
+      "end": 248.72,
+      "duration": 23.32,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-086",
+      "start": 231.04,
+      "end": 237.0,
+      "duration": 5.96,
+      "visual": "prompt_card",
+      "visual_caption": "prompt_card"
+    },
+    {
+      "id": "scene-087",
+      "start": 237.0,
+      "end": 242.84,
+      "duration": 5.84,
+      "visual": "prompt_card",
+      "visual_caption": "prompt_card"
+    },
+    {
+      "id": "scene-088",
+      "start": 242.84,
+      "end": 248.72,
+      "duration": 5.88,
+      "visual": "recipe_clip",
+      "visual_caption": "recipe_clip"
+    },
+    {
+      "id": "scene-089",
+      "start": 248.72,
+      "end": 253.56,
+      "duration": 4.84,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-090",
+      "start": 253.56,
+      "end": 255.8,
+      "duration": 2.24,
+      "visual": "stat_counter",
+      "visual_caption": "stat_counter"
+    },
+    {
+      "id": "scene-091",
+      "start": 253.56,
+      "end": 257.32,
+      "duration": 3.76,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-092",
+      "start": 255.8,
+      "end": 257.32,
+      "duration": 1.52,
+      "visual": "chapter_card",
+      "visual_caption": "chapter_card"
+    },
+    {
+      "id": "scene-093",
+      "start": 257.32,
+      "end": 261.8,
+      "duration": 4.48,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-094",
+      "start": 261.8,
+      "end": 265.72,
+      "duration": 3.92,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-095",
+      "start": 265.72,
+      "end": 273.40000000000003,
+      "duration": 7.68,
+      "visual": "prompt_card",
+      "visual_caption": "prompt_card"
+    },
+    {
+      "id": "scene-096",
+      "start": 265.72,
+      "end": 277.40000000000003,
+      "duration": 11.68,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-097",
+      "start": 273.4,
+      "end": 277.4,
+      "duration": 4.0,
+      "visual": "object3d",
+      "visual_caption": "object3d"
+    },
+    {
+      "id": "scene-098",
+      "start": 277.4,
+      "end": 280.76,
+      "duration": 3.36,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-099",
+      "start": 280.76,
+      "end": 283.64,
+      "duration": 2.88,
+      "visual": "object3d",
+      "visual_caption": "object3d"
+    },
+    {
+      "id": "scene-100",
+      "start": 280.76,
+      "end": 283.64,
+      "duration": 2.88,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-101",
+      "start": 283.64,
+      "end": 289.71999999999997,
+      "duration": 6.08,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-102",
+      "start": 289.72,
+      "end": 294.84000000000003,
+      "duration": 5.12,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-103",
+      "start": 294.84,
+      "end": 297.56,
+      "duration": 2.72,
+      "visual": "quote_card",
+      "visual_caption": "quote_card"
+    },
+    {
+      "id": "scene-104",
+      "start": 294.84,
+      "end": 312.44,
+      "duration": 17.6,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-105",
+      "start": 297.56,
+      "end": 302.28000000000003,
+      "duration": 4.72,
+      "visual": "prompt_card",
+      "visual_caption": "prompt_card"
+    },
+    {
+      "id": "scene-106",
+      "start": 302.28,
+      "end": 309.64,
+      "duration": 7.36,
+      "visual": "recipe_clip",
+      "visual_caption": "recipe_clip"
+    },
+    {
+      "id": "scene-107",
+      "start": 309.64,
+      "end": 312.44,
+      "duration": 2.8,
+      "visual": "object3d",
+      "visual_caption": "object3d"
+    },
+    {
+      "id": "scene-108",
+      "start": 312.44,
+      "end": 317.0,
+      "duration": 4.56,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-109",
+      "start": 317.0,
+      "end": 322.04,
+      "duration": 5.04,
+      "visual": "quote_card",
+      "visual_caption": "quote_card"
+    },
+    {
+      "id": "scene-110",
+      "start": 317.0,
+      "end": 331.4,
+      "duration": 14.4,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-111",
+      "start": 322.04,
+      "end": 329.32,
+      "duration": 7.28,
+      "visual": "prompt_card",
+      "visual_caption": "prompt_card"
+    },
+    {
+      "id": "scene-112",
+      "start": 329.32,
+      "end": 331.4,
+      "duration": 2.08,
+      "visual": "metaphor",
+      "visual_caption": "metaphor"
+    },
+    {
+      "id": "scene-113",
+      "start": 331.4,
+      "end": 333.4,
+      "duration": 2.0,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-114",
+      "start": 333.4,
+      "end": 338.12,
+      "duration": 4.72,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-115",
+      "start": 338.12,
+      "end": 339.88,
+      "duration": 1.76,
+      "visual": "object3d",
+      "visual_caption": "object3d"
+    },
+    {
+      "id": "scene-116",
+      "start": 338.12,
+      "end": 349.32,
+      "duration": 11.2,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-117",
+      "start": 339.88,
+      "end": 344.44,
+      "duration": 4.56,
+      "visual": "prompt_card",
+      "visual_caption": "prompt_card"
+    },
+    {
+      "id": "scene-118",
+      "start": 344.44,
+      "end": 349.32,
+      "duration": 4.88,
+      "visual": "object3d",
+      "visual_caption": "object3d"
+    },
+    {
+      "id": "scene-119",
+      "start": 349.32,
+      "end": 350.76,
+      "duration": 1.44,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-120",
+      "start": 350.76,
+      "end": 353.32,
+      "duration": 2.56,
+      "visual": "chapter_card",
+      "visual_caption": "chapter_card"
+    },
+    {
+      "id": "scene-121",
+      "start": 350.76,
+      "end": 353.32,
+      "duration": 2.56,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-122",
+      "start": 353.32,
+      "end": 356.76,
+      "duration": 3.44,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-123",
+      "start": 356.76,
+      "end": 358.84,
+      "duration": 2.08,
+      "visual": "logo_tiles",
+      "visual_caption": "logo_tiles"
+    },
+    {
+      "id": "scene-124",
+      "start": 356.76,
+      "end": 367.18,
+      "duration": 10.42,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-125",
+      "start": 358.84,
+      "end": 362.67999999999995,
+      "duration": 3.84,
+      "visual": "quote_card",
+      "visual_caption": "quote_card"
+    },
+    {
+      "id": "scene-126",
+      "start": 362.68,
+      "end": 367.18,
+      "duration": 4.5,
+      "visual": "recipe_clip",
+      "visual_caption": "recipe_clip"
+    },
+    {
+      "id": "scene-127",
+      "start": 367.18,
+      "end": 370.92,
+      "duration": 3.74,
+      "visual": "host",
+      "visual_caption": "studio"
+    },
+    {
+      "id": "scene-128",
+      "start": 370.92,
+      "end": 373.6,
+      "duration": 2.68,
+      "visual": "stat_counter",
+      "visual_caption": "stat_counter"
+    },
+    {
+      "id": "scene-129",
+      "start": 370.92,
+      "end": 373.6,
+      "duration": 2.68,
+      "visual": "host",
+      "visual_caption": "side"
+    },
+    {
+      "id": "scene-130",
+      "start": 373.59999999999997,
+      "end": 377.2,
+      "duration": 3.6000000000000227,
+      "visual": "host",
+      "visual_caption": "full"
+    }
+  ]
+}

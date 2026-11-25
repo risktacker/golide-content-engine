@@ -1,0 +1,124 @@
+{
+  "0-layers": null,
+  "1-circuit": {
+    "video": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/1-circuit/circuit.mp4",
+    "accent": "",
+    "events": [],
+    "stills": [
+      "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/1-circuit/free/check/00000.jpg",
+      "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/1-circuit/free/check/00001.jpg",
+      "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/1-circuit/free/check/00002.jpg"
+    ],
+    "size": [
+      1600,
+      900
+    ],
+    "free": true
+  },
+  "2-white": {
+    "video": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/2-white/white.mp4",
+    "accent": "",
+    "events": [],
+    "stills": [
+      "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/2-white/free/check/00000.jpg",
+      "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/2-white/free/check/00001.jpg",
+      "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/2-white/free/check/00002.jpg"
+    ],
+    "size": [
+      1600,
+      900
+    ],
+    "free": true
+  },
+  "3-layers": null,
+  "4-blueprint": {
+    "video": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/4-blueprint/blueprint.mp4",
+    "accent": "",
+    "events": [],
+    "stills": [
+      "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/4-blueprint/free/check/00000.jpg",
+      "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/4-blueprint/free/check/00001.jpg",
+      "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/4-blueprint/free/check/00002.jpg"
+    ],
+    "size": [
+      1600,
+      900
+    ],
+    "free": true
+  },
+  "5-layers": {
+    "video": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/5-layers/layers.mp4",
+    "accent": "",
+    "events": [],
+    "stills": [
+      "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/5-layers/free/check/00000.jpg",
+      "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/5-layers/free/check/00001.jpg",
+      "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/5-layers/free/check/00002.jpg"
+    ],
+    "size": [
+      1600,
+      900
+    ],
+    "free": true
+  },
+  "6-blueprint": {
+    "video": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/6-blueprint/blueprint.mp4",
+    "accent": "",
+    "events": [],
+    "stills": [
+      "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/6-blueprint/free/check/00000.jpg",
+      "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/6-blueprint/free/check/00001.jpg",
+      "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/6-blueprint/free/check/00002.jpg"
+    ],
+    "size": [
+      1600,
+      900
+    ],
+    "free": true
+  },
+  "7-white": {
+    "video": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/7-white/white.mp4",
+    "accent": "",
+    "events": [],
+    "stills": [
+      "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/7-white/free/check/00000.jpg",
+      "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/7-white/free/check/00001.jpg",
+      "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/7-white/free/check/00002.jpg"
+    ],
+    "size": [
+      1600,
+      900
+    ],
+    "free": true
+  },
+  "8-layers": {
+    "video": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/8-layers/layers.mp4",
+    "accent": "",
+    "events": [],
+    "stills": [
+      "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/8-layers/free/check/00000.jpg",
+      "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/8-layers/free/check/00001.jpg",
+      "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/8-layers/free/check/00002.jpg"
+    ],
+    "size": [
+      1600,
+      900
+    ],
+    "free": true
+  },
+  "9-circuit": {
+    "video": "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/9-circuit/circuit.mp4",
+    "accent": "",
+    "events": [],
+    "stills": [
+      "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/9-circuit/free/check/00000.jpg",
+      "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/9-circuit/free/check/00001.jpg",
+      "/home/runner/work/golide-content-engine/golide-content-engine/productions/golide-long-2026-11-24/edit/recipes/9-circuit/free/check/00002.jpg"
+    ],
+    "size": [
+      1600,
+      900
+    ],
+    "free": true
+  }
+}

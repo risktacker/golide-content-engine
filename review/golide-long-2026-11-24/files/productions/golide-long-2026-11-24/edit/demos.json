@@ -1,0 +1,63 @@
+[
+  {
+    "purpose": "Inspecting REA\u2019s MCP toolkit",
+    "highlight": "MCP",
+    "steps": [
+      {
+        "command": "git clone --depth 1 https://github.com/morluto/rea",
+        "lines": [
+          {
+            "t": 0.001,
+            "text": "Cloning into 'rea'..."
+          }
+        ],
+        "seconds": 6.71,
+        "ok": true
+      },
+      {
+        "command": "grep -n MCP rea/README.md",
+        "lines": [
+          {
+            "t": 0.001,
+            "text": "8:### One MCP for reverse engineering across binaries, applications, and runtime behavior."
+          },
+          {
+            "t": 0.001,
+            "text": "73:### Connect your agent (MCP)"
+          },
+          {
+            "t": 0.001,
+            "text": "83:Setup backs up existing configuration and adds REA's MCP connection and"
+          },
+          {
+            "t": 0.001,
+            "text": "183:Your agent uses REA through MCP to inspect a target and trace the relevant code."
+          },
+          {
+            "t": 0.001,
+            "text": "216:Any agent that supports local MCP servers. Setup configures the"
+          },
+          {
+            "t": 0.001,
+            "text": "218:[manual MCP registration](docs/getting-started/installation.md#mcp-registry)."
+          },
+          {
+            "t": 0.001,
+            "text": "238:same user session before your first CLI/MCP operation or unattended job. Open"
+          },
+          {
+            "t": 0.001,
+            "text": "248:to register REA's MCP server and install the matching instructions, then restart"
+          },
+          {
+            "t": 0.001,
+            "text": "301:- [MCP contracts](docs/reference/mcp-contracts.md) and [agent prompts](docs/getting-started/mcp-prompts.md): tool results, sessions and "
+          }
+        ],
+        "seconds": 0.0,
+        "ok": true
+      }
+    ],
+    "ok": true
+  }
+]

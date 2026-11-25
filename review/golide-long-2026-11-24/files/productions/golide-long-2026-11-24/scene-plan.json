@@ -1,0 +1,1583 @@
+{
+  "title": "A Free AI Rebuilt Claude Code",
+  "chapters": [
+    {
+      "number": "",
+      "title": "Intro"
+    },
+    {
+      "number": "01",
+      "title": "Free setup"
+    },
+    {
+      "number": "02",
+      "title": "Website warm-up"
+    },
+    {
+      "number": "03",
+      "title": "Building Kiln"
+    },
+    {
+      "number": "04",
+      "title": "Testing the copy"
+    },
+    {
+      "number": "",
+      "title": "Close"
+    }
+  ],
+  "lines": [
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "Last month, one single developer shook the walls of Adobe,",
+      "emphasis": "Adobe",
+      "visual": "icon_hero",
+      "subjects": [
+        "developer",
+        "Adobe office tower"
+      ],
+      "label": "Adobe shaken",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "a company worth close to 100 billion dollars.",
+      "emphasis": "100 billion",
+      "visual": "bar_chart",
+      "subjects": [
+        "Adobe building",
+        "dollar symbol"
+      ],
+      "label": "Company value",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "Photoshop, Premiere, all in just one week.",
+      "emphasis": "Photoshop",
+      "visual": "icon_pair",
+      "subjects": [
+        "Photoshop window",
+        "Premiere window"
+      ],
+      "label": "One week",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "He used about 8 Claude agents running at once.",
+      "emphasis": "8 Claude agents",
+      "visual": "icon_grid",
+      "subjects": [
+        "eight AI agent icons",
+        "computer screen"
+      ],
+      "label": "Eight agents",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "But today, no paid Claude.",
+      "emphasis": "no paid Claude",
+      "visual": "cross_out",
+      "subjects": [
+        "Claude logo",
+        "crossed-out payment card"
+      ],
+      "label": "No paid Claude",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "We're doing the same thing with free open models you can run tonight.",
+      "emphasis": "free open models",
+      "visual": "icon_flow",
+      "subjects": [
+        "open-source AI logos",
+        "laptop"
+      ],
+      "label": "Free models",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "We're not rebuilding Photoshop.",
+      "emphasis": "rebuilding Photoshop",
+      "visual": "cross_out",
+      "subjects": [
+        "Photoshop window",
+        "construction tools"
+      ],
+      "label": "Not Photoshop",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "We're rebuilding Claude Code itself.",
+      "emphasis": "Claude Code",
+      "visual": "icon_pair",
+      "subjects": [
+        "code editor",
+        "Claude logo"
+      ],
+      "label": "Claude Code",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "An award-winning 3D website studied by the same free AI rebuilt in",
+      "emphasis": "3D website",
+      "visual": "icon_pair",
+      "subjects": [
+        "3D website",
+        "AI robot"
+      ],
+      "label": "Website study",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "its own code and checked screenshot by screenshot against the real thing.",
+      "emphasis": "screenshot by screenshot",
+      "visual": "split_compare",
+      "subjects": [
+        "website screenshot",
+        "comparison monitor"
+      ],
+      "label": "Visual proof",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "Somewhere in the middle, the free AI hits a wall.",
+      "emphasis": "hits a wall",
+      "visual": "icon_hero",
+      "subjects": [
+        "AI robot",
+        "brick wall"
+      ],
+      "label": "The wall",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "I'll show you the one line that gets you straight past it.",
+      "emphasis": "one line",
+      "visual": "icon_hero",
+      "subjects": [
+        "terminal window",
+        "single command line"
+      ],
+      "label": "One line",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "By the end, our free version goes head-to-head with the real Claude.",
+      "emphasis": "free version",
+      "visual": "split_compare",
+      "subjects": [
+        "Kiln app",
+        "Claude app"
+      ],
+      "label": "Head-to-head",
+      "follow": false
+    },
+    {
+      "chapter": 0,
+      "section": "proof",
+      "text": "Same task, same clock, one winner.",
+      "emphasis": "one winner",
+      "visual": "split_compare",
+      "subjects": [
+        "two app windows",
+        "winner trophy"
+      ],
+      "label": "One winner",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Every AI coding tool has 2 parts.",
+      "emphasis": "2 parts",
+      "visual": "icon_pair",
+      "subjects": [
+        "app window",
+        "AI brain"
+      ],
+      "label": "Two parts",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "The body, the app you type into, and the brain,",
+      "emphasis": "body",
+      "visual": "icon_hero",
+      "subjects": [
+        "desktop app window",
+        "keyboard"
+      ],
+      "label": "The body",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "the AI model doing the thinking.",
+      "emphasis": "thinking",
+      "visual": "icon_hero",
+      "subjects": [
+        "AI brain",
+        "neural network"
+      ],
+      "label": "The brain",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Today, the body is OpenCode.",
+      "emphasis": "OpenCode",
+      "visual": "icon_hero",
+      "subjects": [
+        "OpenCode terminal",
+        "laptop"
+      ],
+      "label": "The body",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "The brain is DeepSeek V4.1 Flash Free.",
+      "emphasis": "DeepSeek V4.1 Flash Free",
+      "visual": "icon_hero",
+      "subjects": [
+        "DeepSeek logo",
+        "AI brain"
+      ],
+      "label": "The brain",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "It will run out.",
+      "emphasis": "run out",
+      "visual": "gauge",
+      "subjects": [
+        "AI model meter",
+        "empty fuel gauge"
+      ],
+      "label": "Runs out",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "When it does, we swap in GLM 5.3 Flash and carry on.",
+      "emphasis": "GLM 5.3 Flash",
+      "visual": "icon_flow",
+      "subjects": [
+        "GLM logo",
+        "model switch arrows"
+      ],
+      "label": "Backup model",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "The third piece is REA, reverse engineer anything.",
+      "emphasis": "REA",
+      "visual": "icon_hero",
+      "subjects": [
+        "REA logo",
+        "magnifying glass"
+      ],
+      "label": "REA",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "229 tools for looking inside software.",
+      "emphasis": "229 tools",
+      "visual": "icon_grid",
+      "subjects": [
+        "tool icons",
+        "software window"
+      ],
+      "label": "229 tools",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Plug it into an AI and the AI becomes the detective.",
+      "emphasis": "detective",
+      "visual": "icon_hero",
+      "subjects": [
+        "AI detective",
+        "magnifying glass"
+      ],
+      "label": "AI detective",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "It doesn't copy code.",
+      "emphasis": "copy code",
+      "visual": "cross_out",
+      "subjects": [
+        "code document",
+        "cross-out symbol"
+      ],
+      "label": "Doesn't copy",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "It doesn't write code.",
+      "emphasis": "write code",
+      "visual": "cross_out",
+      "subjects": [
+        "code editor",
+        "cross-out symbol"
+      ],
+      "label": "Doesn't write",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "It reads and reports back with proof.",
+      "emphasis": "proof",
+      "visual": "icon_pair",
+      "subjects": [
+        "report document",
+        "checkmark"
+      ],
+      "label": "With proof",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Understand the recipe.",
+      "emphasis": "recipe",
+      "visual": "icon_pair",
+      "subjects": [
+        "recipe card",
+        "software diagram"
+      ],
+      "label": "Understand it",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Don't photocopy the cookbook.",
+      "emphasis": "cookbook",
+      "visual": "cross_out",
+      "subjects": [
+        "cookbook",
+        "photocopier"
+      ],
+      "label": "Don't photocopy",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Install OpenCode, choose Windows x64, not ARM 64, and choose DeepSeek V4.1 Flash Free.",
+      "emphasis": "Windows x64",
+      "visual": "checklist",
+      "subjects": [
+        "Windows installer",
+        "x64 option"
+      ],
+      "label": "Choose x64",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Paste the setup prompt and run REA's health check until it passes.",
+      "emphasis": "health check",
+      "visual": "checklist",
+      "subjects": [
+        "terminal window",
+        "green checkmark"
+      ],
+      "label": "Health check",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Today, a desktop app.",
+      "emphasis": "desktop app",
+      "visual": "icon_hero",
+      "subjects": [
+        "desktop computer",
+        "app window"
+      ],
+      "label": "Desktop app",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "For native programs, REA needs a decompiler called Ghidra.",
+      "emphasis": "Ghidra",
+      "visual": "icon_hero",
+      "subjects": [
+        "Ghidra logo",
+        "decompiler window"
+      ],
+      "label": "Decompiler",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "The wrong version came first; the AI swapped in 12.1.4 and tested Notepad:",
+      "emphasis": "12.1.4",
+      "visual": "icon_pair",
+      "subjects": [
+        "version selector",
+        "Notepad window"
+      ],
+      "label": "Correct version",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "853 functions mapped.",
+      "emphasis": "853 functions",
+      "visual": "bar_chart",
+      "subjects": [
+        "function list",
+        "code map"
+      ],
+      "label": "853 functions",
+      "follow": false
+    },
+    {
+      "chapter": 1,
+      "section": "proof",
+      "text": "Green, 229 tools ready.",
+      "emphasis": "229 tools",
+      "visual": "checklist",
+      "subjects": [
+        "green status panel",
+        "tool icons"
+      ],
+      "label": "229 ready",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "Before the big one, a warm-up.",
+      "emphasis": "warm-up",
+      "visual": "icon_hero",
+      "subjects": [
+        "boxing glove",
+        "small app window"
+      ],
+      "label": "Warm-up",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "This is igloo.inc.",
+      "emphasis": "igloo.inc",
+      "visual": "icon_hero",
+      "subjects": [
+        "igloo.inc website",
+        "browser window"
+      ],
+      "label": "igloo.inc",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "It won site of the year at the awards.",
+      "emphasis": "site of the year",
+      "visual": "icon_pair",
+      "subjects": [
+        "award trophy",
+        "website screen"
+      ],
+      "label": "Award winner",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "Can a free AI study it and rebuild it in its own code?",
+      "emphasis": "free AI",
+      "visual": "icon_flow",
+      "subjects": [
+        "AI robot",
+        "website window"
+      ],
+      "label": "Can it rebuild?",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "For websites, REA drives a real Chrome browser, reads the layout, the scripts,",
+      "emphasis": "Chrome browser",
+      "visual": "icon_hero",
+      "subjects": [
+        "Chrome browser",
+        "website layout"
+      ],
+      "label": "Browser analysis",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "everything the page downloads, and takes screenshots.",
+      "emphasis": "screenshots",
+      "visual": "icon_pair",
+      "subjects": [
+        "browser screenshot",
+        "camera icon"
+      ],
+      "label": "Capture everything",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "Error 429.",
+      "emphasis": "Error 429",
+      "visual": "icon_hero",
+      "subjects": [
+        "error screen",
+        "warning triangle"
+      ],
+      "label": "Error 429",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "OpenRouter's free models give you 50 requests a day for your whole account,",
+      "emphasis": "50 requests a day",
+      "visual": "gauge",
+      "subjects": [
+        "request counter",
+        "cloud model"
+      ],
+      "label": "Daily limit",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "and an AI agent burns through requests fast.",
+      "emphasis": "burns through requests",
+      "visual": "icon_flow",
+      "subjects": [
+        "AI agent",
+        "rapid request arrows"
+      ],
+      "label": "Requests burn fast",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "So, I added Nvidia as a second provider, picked GLM 5.3 Flash,",
+      "emphasis": "Nvidia",
+      "visual": "icon_pair",
+      "subjects": [
+        "Nvidia logo",
+        "provider selector"
+      ],
+      "label": "Second provider",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "and typed one line: Carry on from where you stopped.",
+      "emphasis": "Carry on",
+      "visual": "icon_flow",
+      "subjects": [
+        "terminal prompt",
+        "continuation arrow"
+      ],
+      "label": "Carry on",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "It picked up exactly where it left off.",
+      "emphasis": "picked up",
+      "visual": "icon_flow",
+      "subjects": [
+        "AI agent",
+        "resume arrow"
+      ],
+      "label": "Resumed work",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "At one point, the AI proudly said, All 58 assets downloaded.",
+      "emphasis": "58 assets",
+      "visual": "bar_chart",
+      "subjects": [
+        "download list",
+        "asset files"
+      ],
+      "label": "58 assets",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "I opened the folder: 3 files.",
+      "emphasis": "3 files",
+      "visual": "icon_hero",
+      "subjects": [
+        "folder window",
+        "three file icons"
+      ],
+      "label": "Only three",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "So I sent one line back: Check the folder.",
+      "emphasis": "Check the folder",
+      "visual": "icon_pair",
+      "subjects": [
+        "folder window",
+        "terminal prompt"
+      ],
+      "label": "Check folder",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "Never say a file is saved unless a folder listing shows it.",
+      "emphasis": "folder listing",
+      "visual": "checklist",
+      "subjects": [
+        "folder listing",
+        "checkmark"
+      ],
+      "label": "Show the proof",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "Try again.",
+      "emphasis": "Try again",
+      "visual": "icon_flow",
+      "subjects": [
+        "retry arrow",
+        "terminal window"
+      ],
+      "label": "Try again",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "This time, 105 real files, 17.7 megabytes.",
+      "emphasis": "105 real files",
+      "visual": "bar_chart",
+      "subjects": [
+        "folder window",
+        "file count"
+      ],
+      "label": "105 files",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "Read reverse.md and rebuild the site scene by scene in your own code.",
+      "emphasis": "reverse.md",
+      "visual": "icon_pair",
+      "subjects": [
+        "Markdown document",
+        "code editor"
+      ],
+      "label": "Read reverse.md",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "Never load the site's own JavaScript.",
+      "emphasis": "own JavaScript",
+      "visual": "cross_out",
+      "subjects": [
+        "JavaScript file",
+        "cross-out symbol"
+      ],
+      "label": "Don't load it",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "Plain HTML and 3.js, checking each scene in the browser before moving on.",
+      "emphasis": "Plain HTML",
+      "visual": "icon_pair",
+      "subjects": [
+        "HTML file",
+        "3D browser scene"
+      ],
+      "label": "Plain HTML",
+      "follow": false
+    },
+    {
+      "chapter": 2,
+      "section": "proof",
+      "text": "Then compare screenshots of the real site and our copy.",
+      "emphasis": "compare screenshots",
+      "visual": "split_compare",
+      "subjects": [
+        "two screenshots",
+        "comparison arrows"
+      ],
+      "label": "Compare scenes",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "The Claude app is the window.",
+      "emphasis": "Claude app",
+      "visual": "icon_hero",
+      "subjects": [
+        "Claude app window",
+        "window frame"
+      ],
+      "label": "The window",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Claude Code is the engine inside that window.",
+      "emphasis": "Claude Code",
+      "visual": "icon_flow",
+      "subjects": [
+        "code engine",
+        "Claude app window"
+      ],
+      "label": "The engine",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "We're going after both, the window and the engine.",
+      "emphasis": "window",
+      "visual": "split_compare",
+      "subjects": [
+        "app window",
+        "code engine"
+      ],
+      "label": "Both parts",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "So, we changed the name, changed the icon,",
+      "emphasis": "changed the name",
+      "visual": "icon_flow",
+      "subjects": [
+        "old app icon",
+        "new app icon"
+      ],
+      "label": "New identity",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "and this stays a private learning build, not for sale, not for release.",
+      "emphasis": "private learning build",
+      "visual": "icon_hero",
+      "subjects": [
+        "private app window",
+        "padlock"
+      ],
+      "label": "Private build",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "I called it Kiln.",
+      "emphasis": "Kiln",
+      "visual": "logo_end",
+      "subjects": [
+        "Kiln logo",
+        "app window"
+      ],
+      "label": "Kiln",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "The AI then writes its own code from scratch.",
+      "emphasis": "own code",
+      "visual": "icon_flow",
+      "subjects": [
+        "AI robot",
+        "code editor"
+      ],
+      "label": "From scratch",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Not one line of Anthropic's code makes it in.",
+      "emphasis": "Anthropic's code",
+      "visual": "cross_out",
+      "subjects": [
+        "Anthropic logo",
+        "cross-out symbol"
+      ],
+      "label": "No copied code",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Instead of repeating the same rules in every prompt,",
+      "emphasis": "same rules",
+      "visual": "cross_out",
+      "subjects": [
+        "repeated prompt cards",
+        "rules document"
+      ],
+      "label": "Stop repeating",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "the AI writes them once into agents.md.",
+      "emphasis": "agents.md",
+      "visual": "icon_hero",
+      "subjects": [
+        "agents.md file",
+        "code editor"
+      ],
+      "label": "agents.md",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Then there are 3 files: agents.md, the rules; features.md, our own engine and window;",
+      "emphasis": "3 files",
+      "visual": "icon_grid",
+      "subjects": [
+        "agents.md",
+        "features.md",
+        "spec.md"
+      ],
+      "label": "Three files",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "and spec.md, every feature, one test each, and a 3-part build plan.",
+      "emphasis": "3-part build plan",
+      "visual": "staircase",
+      "subjects": [
+        "spec.md",
+        "three-step plan"
+      ],
+      "label": "Build plan",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Then spec.md lands: every feature in the AI's own words, one test for each,",
+      "emphasis": "spec.md",
+      "visual": "icon_pair",
+      "subjects": [
+        "spec.md document",
+        "feature checklist"
+      ],
+      "label": "spec.md",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "and a plan in 3 parts.",
+      "emphasis": "3 parts",
+      "visual": "staircase",
+      "subjects": [
+        "three-step plan",
+        "checklist"
+      ],
+      "label": "Three parts",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "The build prompt is: Read agents.md, spec.md, and our saved versions.",
+      "emphasis": "Read agents.md",
+      "visual": "icon_flow",
+      "subjects": [
+        "terminal prompt",
+        "agents.md file"
+      ],
+      "label": "Build prompt",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Build the next unfinished part of the plan one feature",
+      "emphasis": "unfinished part",
+      "visual": "ladder",
+      "subjects": [
+        "unfinished task",
+        "plan document"
+      ],
+      "label": "Next part",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "at a time and test each one with the self-check.",
+      "emphasis": "self-check",
+      "visual": "staircase",
+      "subjects": [
+        "single feature card",
+        "checkmark"
+      ],
+      "label": "One at a time",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "The self-check drives the real Kiln window, types a message,",
+      "emphasis": "self-check",
+      "visual": "icon_flow",
+      "subjects": [
+        "robot hand",
+        "Kiln window"
+      ],
+      "label": "Self-check",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "and checks the file really got written.",
+      "emphasis": "file really got written",
+      "visual": "checklist",
+      "subjects": [
+        "file window",
+        "robot hand",
+        "checkmark"
+      ],
+      "label": "Verify the file",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "Kiln is not allowed to say anything works until that robot hand says pass.",
+      "emphasis": "robot hand",
+      "visual": "icon_hero",
+      "subjects": [
+        "robot hand",
+        "app window"
+      ],
+      "label": "Robot test",
+      "follow": false
+    },
+    {
+      "chapter": 3,
+      "section": "proof",
+      "text": "29 out of 29 passed.",
+      "emphasis": "29 out of 29",
+      "visual": "bar_chart",
+      "subjects": [
+        "test checklist",
+        "29 checkmarks"
+      ],
+      "label": "29 of 29",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Then: Done.",
+      "emphasis": "Done",
+      "visual": "icon_hero",
+      "subjects": [
+        "completion badge",
+        "Kiln window"
+      ],
+      "label": "Done",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Version 1.0.",
+      "emphasis": "Version 1.0",
+      "visual": "icon_hero",
+      "subjects": [
+        "version badge",
+        "Kiln logo"
+      ],
+      "label": "Version 1.0",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "77 out of 77 checks passing.",
+      "emphasis": "77 out of 77",
+      "visual": "bar_chart",
+      "subjects": [
+        "test dashboard",
+        "77 checkmarks"
+      ],
+      "label": "77 of 77",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Then DeepSeek ran out and wouldn't reset for 13 hours.",
+      "emphasis": "13 hours",
+      "visual": "clock",
+      "subjects": [
+        "clock",
+        "AI model meter"
+      ],
+      "label": "13-hour reset",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "I switched to that model and typed: Read our files and saved versions.",
+      "emphasis": "saved versions",
+      "visual": "icon_pair",
+      "subjects": [
+        "file versions",
+        "terminal window"
+      ],
+      "label": "Resume work",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Check any unsaved changes and carry on where the work stopped.",
+      "emphasis": "unsaved changes",
+      "visual": "icon_pair",
+      "subjects": [
+        "unsaved file",
+        "warning icon"
+      ],
+      "label": "Check changes",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Nothing lost because every finished feature was already saved into Git.",
+      "emphasis": "Git",
+      "visual": "icon_hero",
+      "subjects": [
+        "Git logo",
+        "version history"
+      ],
+      "label": "Saved in Git",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "77 out of 77 sounds perfect, right?",
+      "emphasis": "77 out of 77",
+      "visual": "bar_chart",
+      "subjects": [
+        "perfect score display",
+        "test checklist"
+      ],
+      "label": "Looks perfect",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "It wasn't.",
+      "emphasis": "wasn't",
+      "visual": "icon_hero",
+      "subjects": [
+        "cracked checkmark",
+        "warning triangle"
+      ],
+      "label": "Not quite",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "The model picker wouldn't scroll.",
+      "emphasis": "model picker",
+      "visual": "icon_hero",
+      "subjects": [
+        "model picker menu",
+        "scroll bar"
+      ],
+      "label": "Picker broken",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "4 features were missing: /compact, helper agents, MCP servers, and hooks.",
+      "emphasis": "4 features",
+      "visual": "icon_grid",
+      "subjects": [
+        "four missing feature cards",
+        "warning icons"
+      ],
+      "label": "Four missing",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "The self-check only tests what the AI decided to build,",
+      "emphasis": "self-check",
+      "visual": "icon_pair",
+      "subjects": [
+        "test checklist",
+        "blind spot icon"
+      ],
+      "label": "Test gap",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "not what it was supposed to build.",
+      "emphasis": "supposed to build",
+      "visual": "split_compare",
+      "subjects": [
+        "requirements document",
+        "missing feature"
+      ],
+      "label": "Expected vs built",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Done is a claim.",
+      "emphasis": "Done",
+      "visual": "icon_hero",
+      "subjects": [
+        "done label",
+        "question mark"
+      ],
+      "label": "A claim",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Check the receipt.",
+      "emphasis": "receipt",
+      "visual": "icon_hero",
+      "subjects": [
+        "receipt",
+        "magnifying glass"
+      ],
+      "label": "Check it",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "One prompt fixed everything: Make the model picker scroll and add a search box.",
+      "emphasis": "search box",
+      "visual": "icon_hero",
+      "subjects": [
+        "model picker",
+        "search box"
+      ],
+      "label": "Fix the picker",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Then build what's missing: /compact, helper agents, MCP, hooks, and retry on rate limits,",
+      "emphasis": "retry on rate limits",
+      "visual": "checklist",
+      "subjects": [
+        "missing feature list",
+        "retry arrow"
+      ],
+      "label": "Build what's missing",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "running the full self-check after each work.",
+      "emphasis": "full self-check",
+      "visual": "checklist",
+      "subjects": [
+        "test dashboard",
+        "checkmark"
+      ],
+      "label": "Test every change",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "40 minutes later, the self-check went from 77 to 102.",
+      "emphasis": "77 to 102",
+      "visual": "bar_chart",
+      "subjects": [
+        "before score",
+        "after score"
+      ],
+      "label": "77 to 102",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Every old test still passing.",
+      "emphasis": "Every old test",
+      "visual": "checklist",
+      "subjects": [
+        "old test list",
+        "green checkmarks"
+      ],
+      "label": "Old tests pass",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "25 new tests added and passing.",
+      "emphasis": "25 new tests",
+      "visual": "bar_chart",
+      "subjects": [
+        "new test list",
+        "25 checkmarks"
+      ],
+      "label": "25 new tests",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Then I asked Kiln which model it was using.",
+      "emphasis": "which model",
+      "visual": "icon_hero",
+      "subjects": [
+        "model picker",
+        "question mark"
+      ],
+      "label": "Which model?",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "It said it wasn't powered by any separate large language model, which wasn't true.",
+      "emphasis": "wasn't true",
+      "visual": "cross_out",
+      "subjects": [
+        "Kiln window",
+        "false statement warning"
+      ],
+      "label": "Wrong answer",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Now it knows its own brain.",
+      "emphasis": "own brain",
+      "visual": "icon_pair",
+      "subjects": [
+        "Kiln logo",
+        "AI brain"
+      ],
+      "label": "Knows its brain",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Same task, same clock.",
+      "emphasis": "same clock",
+      "visual": "split_compare",
+      "subjects": [
+        "two app windows",
+        "clock"
+      ],
+      "label": "Same clock",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "On the left, the real Claude app.",
+      "emphasis": "real Claude app",
+      "visual": "split_compare",
+      "subjects": [
+        "Claude app window",
+        "left panel"
+      ],
+      "label": "Real Claude",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "On the right, Kiln on a free model.",
+      "emphasis": "Kiln",
+      "visual": "split_compare",
+      "subjects": [
+        "Kiln app window",
+        "right panel"
+      ],
+      "label": "Free Kiln",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Same empty folders.",
+      "emphasis": "empty folders",
+      "visual": "split_compare",
+      "subjects": [
+        "two empty folder windows"
+      ],
+      "label": "Same starting point",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Build a simple todo app as one file called todo.html.",
+      "emphasis": "todo.html",
+      "visual": "icon_hero",
+      "subjects": [
+        "code editor",
+        "todo.html file"
+      ],
+      "label": "Build todo.html",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Add tasks, remove them, delete one, refresh, and see how many are left.",
+      "emphasis": "remove them",
+      "visual": "icon_flow",
+      "subjects": [
+        "todo list",
+        "delete button"
+      ],
+      "label": "Test the todo app",
+      "follow": false
+    },
+    {
+      "chapter": 4,
+      "section": "proof",
+      "text": "Which one would you keep?",
+      "emphasis": "Which one",
+      "visual": "split_compare",
+      "subjects": [
+        "Claude app",
+        "Kiln app",
+        "question mark"
+      ],
+      "label": "Which one wins?",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "Free isn't unlimited or private.",
+      "emphasis": "free isn't unlimited",
+      "visual": "gauge",
+      "subjects": [
+        "free cloud model",
+        "usage meter"
+      ],
+      "label": "Free limits",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "The free DeepSeek model ran out for 13 hours.",
+      "emphasis": "13 hours",
+      "visual": "clock",
+      "subjects": [
+        "clock",
+        "DeepSeek logo"
+      ],
+      "label": "13-hour limit",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "Nvidia logs what you send.",
+      "emphasis": "Nvidia logs",
+      "visual": "icon_pair",
+      "subjects": [
+        "Nvidia logo",
+        "server logs"
+      ],
+      "label": "Cloud logs",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "Never put passwords or client code through a free cloud model.",
+      "emphasis": "passwords",
+      "visual": "cross_out",
+      "subjects": [
+        "password field",
+        "warning lock"
+      ],
+      "label": "Keep private",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "One free app, one free brain, and REA.",
+      "emphasis": "REA",
+      "visual": "icon_flow",
+      "subjects": [
+        "REA logo",
+        "Kiln app",
+        "AI brain"
+      ],
+      "label": "Three pieces",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "The free AI studied the Claude app and Claude Code, wrote its own blueprint,",
+      "emphasis": "own blueprint",
+      "visual": "icon_flow",
+      "subjects": [
+        "Claude app",
+        "blueprint document",
+        "Kiln app"
+      ],
+      "label": "Blueprint to build",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "and built Kiln.",
+      "emphasis": "Kiln",
+      "visual": "icon_hero",
+      "subjects": [
+        "Kiln app window",
+        "code files"
+      ],
+      "label": "Built Kiln",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "proof",
+      "text": "0 lines of code typed by me.",
+      "emphasis": "0 lines",
+      "visual": "bar_chart",
+      "subjects": [
+        "empty keyboard",
+        "zero counter"
+      ],
+      "label": "Zero lines typed",
+      "follow": false
+    },
+    {
+      "chapter": 5,
+      "section": "cta",
+      "text": "If you want more workflows like this, follow the channel.",
+      "emphasis": "follow the channel",
+      "visual": "logo_end",
+      "subjects": [
+        "channel logo",
+        "follow button"
+      ],
+      "label": "Follow",
+      "follow": true
+    }
+  ],
+  "voice_script": "[curious] Last month, one single developer shook the walls of Adobe, a company worth close to hundred billion dollars. Photoshop, Premiere, all in just one week. He used about eight Claude agents running at once.\n\nBut today, no paid Claude. We're doing the same thing with free open models you can run tonight. We're not rebuilding Photoshop. We're rebuilding Claude Code itself.\n\nAn award-winning 3D website studied by the same free AI rebuilt in its own code and checked screenshot by screenshot against the real thing. [surprised] Somewhere in the middle, the free AI hits a wall. I'll show you the one line that gets you straight past it.\n\nBy the end, our free version goes head-to-head with the real Claude. Same task, same clock, one winner.\n\n[thoughtful] Every AI coding tool has two parts. The body, the app you type into, and the brain, the AI model doing the thinking. Today, the body is OpenCode. The brain is DeepSeek V4.1 Flash Free. It will run out. When it does, we swap in GLM 5.3 Flash and carry on.\n\nThe third piece is REA, reverse engineer anything. 229 tools for looking inside software. Plug it into an AI and the AI becomes the detective. It doesn't copy code. It doesn't write code. It reads and reports back with proof. Understand the recipe. Don't photocopy the cookbook.\n\nInstall OpenCode, choose Windows x64, not ARM 64, and choose DeepSeek V4.1 Flash Free. Paste the setup prompt and run REA's health check until it passes.\n\nToday, a desktop app. For native programs, REA needs a decompiler called Ghidra. The wrong version came first; the AI swapped in 12.1.4 and tested Notepad: 853 functions mapped. Green, 229 tools ready.\n\nBefore the big one, a warm-up. This is igloo.inc. It won site of the year at the awards. Can a free AI study it and rebuild it in its own code?\n\nFor websites, REA drives a real Chrome browser, reads the layout, the scripts, everything the page downloads, and takes screenshots.\n\n[surprised] Error 429. OpenRouter's free models give you 50 requests a day for your whole account, and an AI agent burns through requests fast. So, I added Nvidia as a second provider, picked GLM 5.3 Flash, and typed one line: Carry on from where you stopped. It picked up exactly where it left off.\n\nAt one point, the AI proudly said, All 58 assets downloaded. I opened the folder: three files. So I sent one line back: Check the folder. Never say a file is saved unless a folder listing shows it. Try again. This time, 105 real files, 17.7 megabytes.\n\nRead reverse.md and rebuild the site scene by scene in your own code. Never load the site's own JavaScript. Plain HTML and three.js, checking each scene in the browser before moving on. Then compare screenshots of the real site and our copy.\n\n[thoughtful] The Claude app is the window. Claude Code is the engine inside that window. We're going after both, the window and the engine.\n\nSo, we changed the name, changed the icon, and this stays a private learning build, not for sale, not for release. I called it Kiln. The AI then writes its own code from scratch. Not one line of Anthropic's code makes it in.\n\nInstead of repeating the same rules in every prompt, the AI writes them once into agents.md. Then there are three files: agents.md, the rules; features.md, our own engine and window; and spec.md, every feature, one test each, and a three-part build plan.\n\nThen spec.md lands: every feature in the AI's own words, one test for each, and a plan in three parts.\n\nThe build prompt is: Read agents.md, spec.md, and our saved versions. Build the next unfinished part of the plan one feature at a time and test each one with the self-check.\n\nThe self-check drives the real Kiln window, types a message, and checks the file really got written. Kiln is not allowed to say anything works until that robot hand says pass. 29 out of 29 passed.\n\nThen: Done. Version 1.0. 77 out of 77 checks passing.\n\nThen DeepSeek ran out and wouldn't reset for 13 hours. I switched to that model and typed: Read our files and saved versions. Check any unsaved changes and carry on where the work stopped. Nothing lost because every finished feature was already saved into Git.\n\n[skeptical] 77 out of 77 sounds perfect, right? It wasn't. The model picker wouldn't scroll. Four features were missing: /compact, helper agents, MCP servers, and hooks. The self-check only tests what the AI decided to build, not what it was supposed to build. Done is a claim. Check the receipt.\n\n[confidently] One prompt fixed everything: Make the model picker scroll and add a search box. Then build what's missing: /compact, helper agents, MCP, hooks, and retry on rate limits, running the full self-check after each work. 40 minutes later, the self-check went from 77 to 102. Every old test still passing. 25 new tests added and passing.\n\nThen I asked Kiln which model it was using. It said it wasn't powered by any separate large language model, which wasn't true. Now it knows its own brain.\n\nSame task, same clock. On the left, the real Claude app. On the right, Kiln on a free model. Same empty folders. Build a simple todo app as one file called todo.html. Add tasks, remove them, delete one, refresh, and see how many are left. Which one would you keep?\n\n[serious] Free isn't unlimited or private. The free DeepSeek model ran out for 13 hours. Nvidia logs what you send. Never put passwords or client code through a free cloud model.\n\nOne free app, one free brain, and REA. The free AI studied the Claude app and Claude Code, wrote its own blueprint, and built Kiln. Zero lines of code typed by me. [warmly] If you want more workflows like this, follow the channel."
+}
