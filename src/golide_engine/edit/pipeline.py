@@ -319,7 +319,8 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
         n = int(rendered_before[0]["n"]) if rendered_before else None
         track = pick_music(fmt, n, f"{plan.get('title', '')} {spec.get('title', '')}")
         track_path.write_text(json.dumps(track or {}) + "\n", encoding="utf-8")
-        outfit = outfit_today()
+        from ..goli3d import kits        # owner 2026-11-25: every upload wears the next kit in the rotation
+        outfit = kits.choose(folder, ROOT / "data" / "production-records")
         print(json.dumps({"status": "edit_render", "outfit": outfit, "music": (track or {}).get("title", "bed")}))
         render(edit, folder, narration, video_path, outfit, track)
 

@@ -54,8 +54,9 @@ Owner: Esiah (Lusaka, UTC+2). Direct, no sugar-coating. Studio: studio.golidee.c
   proof on top, captions under it, Goli standing below (`place: side`), never the desk-and-TV as the default.
 - Chapter cards (owner 2026-11-25): leave the moment their stage is named (1-2 s, `editor._chapter_end`), smooth exit.
 - Small neon edge on photo cards, steps on a page and the logo dock (owner 2026-11-25).
-- Goli's closet (owner 2026-11-25): a kit per weekday, hoodie colour plus glasses style (`goli3d/kits.py`), in the video
-  sprites and the thumbnail library (`full/kits/<outfit>/`, goli3d-library.yml kind=library kit=all). Blinks are smooth:
+- Goli's closet (owner 2026-11-25: "each uploaded video he wears something else"): 7 kits, hoodie colour plus glasses
+  style, in rotation per upload (`goli3d/kits.py` choose: the next after the last record's "kit"), in the video sprites
+  and the thumbnail library (`full/kits/<outfit>/`, goli3d-library.yml kind=library kit=all). Blinks are smooth:
   half, closed, half (0.2 s), a double blink now and then. Eye movement (gaze) waits for the Blender motion session.
 - Don't poll or babysit long runs; it burns the owner's usage.
 - Never start with limits. Build the general capability the owner asks for, not a fixed short list.
@@ -221,4 +222,4 @@ best unmodelled video of the last 45 days, no numbers bar. The channel's style i
   automatic runs never switch paid ones on. Real people stay real photo cards, never puppets.
 
 ## Checks
-`python3 -m pytest -q` must pass before every push (686 tests as of 2026-11-25).
+`python3 -m pytest -q` must pass before every push (687 tests as of 2026-11-25).

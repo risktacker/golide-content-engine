@@ -2792,7 +2792,8 @@ class ProductionService:
         )
         params_path = work / "generation-parameters.json"
         params = dict(spec.get("generation_parameters", {}))
-        for picked in (work / "thumbnail-style.json", work / "edit" / "bookends.json", work / "edit" / "look.json"):   # never repeated next time
+        for picked in (work / "thumbnail-style.json", work / "edit" / "bookends.json", work / "edit" / "look.json",
+                       work / "edit" / "kit.json"):   # never repeated next time (kit: Goli's closet rotation)
             if picked.exists():
                 params.update(json.loads(picked.read_text(encoding="utf-8")))
         params_path.write_text(json.dumps(params, indent=2) + "\n", encoding="utf-8")

@@ -33,8 +33,8 @@ def path(pose: str = "talk", expr: str | None = None, outfit: str | None = None)
     if pose not in POSES:
         raise ValueError(f"Goli has no 3D pose {pose!r}; poses: {', '.join(POSES)}")
     if outfit is None:
-        from .kits import today
-        outfit = today()
+        from .kits import current
+        outfit = current()
     kit = LIBRARY / "kits" / outfit / pose / f"{e}.png"
     if kit.exists():
         return kit

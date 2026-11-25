@@ -33,6 +33,11 @@ W, H = T.W, T.H
 FONTS = T.FONTS
 
 
+def _kit() -> str:
+    from ..goli3d.kits import current
+    return current()
+
+
 @dataclass
 class Story:
     title: str
@@ -42,7 +47,7 @@ class Story:
     icons: list[dict] = field(default_factory=list)
     shots: list[Path] = field(default_factory=list)       # real page screenshots
     photo: Path | None = None
-    outfit: str = "royal"
+    outfit: str = field(default_factory=lambda: _kit())     # owner 2026-11-25: the upload's kit (Goli's closet)
     mood: str = "calm"                                     # calm | hype | alarm | money
     seed: int = 0
     person: str = ""                                       # 2026-11-17: the person the photo shows, named in the title
