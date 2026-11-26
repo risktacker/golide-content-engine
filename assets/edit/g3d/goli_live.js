@@ -224,6 +224,16 @@ export async function mount(canvas, opts = {}) {
       }
     }
   }
+  // how people talk (owner 2026-11-26): a sentence often starts with a short look away while the thought forms, a blink
+  // lands on the pause between sentences, and the head settles into a slightly different tilt for each sentence
+  const sentences = [];                           // [start, tilt, glance or null]
+  { const r = rand(seed * 13 + 5); let start = true;
+    for (const [ws, , raw] of words) {
+      if (start) sentences.push([ws, (r() - 0.5) * 8, r() < 0.4 ? [r() < 0.5 ? 'up' : (r() < 0.5 ? 'left' : 'right'), 0.35 + r() * 0.4] : null]);
+      start = /[.!?]$/.test(String(raw || ''));
+    }
+    for (const [st] of sentences) if (st > 0.5) blinks.push(st - 0.12);
+    blinks.sort((a, b) => a - b); }
   const written = (plan.moves || []).filter((m) => MOVES[m.name]);
   const moves = [...written, ...autoMoves.filter((a) => !written.some((m) => a.at < m.at + MOVES[m.name].dur + 0.2 && m.at < a.at + MOVES[a.name].dur + 0.2))]
     .sort((a, b) => a.at - b.at);
@@ -258,6 +268,13 @@ export async function mount(canvas, opts = {}) {
     const f = ease(since / 0.25);
     const p = [0, 1, 2].map((i) => prev[i] + (cur[i] - prev[i]) * f);
     let g = [0, 0]; for (const [gt, gx, gz] of glances) { if (gt > t) break; g = [gx, gz]; }
+    // a look away at the start of a sentence (eased out and back)
+    for (const [st, , look] of sentences) {
+      if (!look || t < st - 0.1 || t > st + look[1] + 0.25) continue;
+      const k = Math.min(ease((t - st + 0.1) / 0.15), ease((st + look[1] + 0.25 - t) / 0.25));
+      const q = pointOf(look[0]);
+      return [p[0] + (q[0] - p[0]) * k * 0.6, p[1] + (q[1] - p[1]) * k * 0.6, p[2] + (q[2] - p[2]) * k * 0.6];
+    }
     return [p[0] + g[0], p[1], p[2] + g[1]];
   }
   function moveAt(t) {                            // the active move's pose and its weight
@@ -354,6 +371,9 @@ export async function mount(canvas, opts = {}) {
     turnBone('spine', [1.2 * br, 0, 0.6 * Math.sin(t * 2 * Math.PI / 9)], 1);
     turnBone('chest', [0.8 * br, 0.8 * Math.sin(t * 2 * Math.PI / 11), 0], 1);
     const tk = talking(t) ? 1 : 0;
+    { let tilt = 0, prev = 0, since = 9;           // this sentence's head tilt, eased in from the last one
+      for (const [st, tl] of sentences) { if (st > t) break; prev = tilt; tilt = tl; since = t - st; }
+      turnBone('head', [0, 0, prev + (tilt - prev) * ease(since / 0.6)], 1); }
     turnBone('head', [2.2 * Math.sin(t * 5.1) * tk + 0.8 * Math.sin(t * 0.9), 2.5 * Math.sin(t * 0.7), 1.5 * Math.sin(t * 0.5)], 1);
     // arms at rest: on the desk when seated, loose with a small bend when standing (never stiff by his sides)
     const sitw = sitAt(t).w;
@@ -367,7 +387,12 @@ export async function mount(canvas, opts = {}) {
       }
     };
     root.updateMatrixWorld(true);
-    if (!(at.walk > 0)) restArms(1);
+    if (!(at.walk > 0)) {
+      restArms(1);
+      // resting hands still live: a slow drift of each forearm, out of step with the other
+      turnBone('forearmL', [3 * Math.sin(t * 0.9 + 1.3), 0, 2 * Math.sin(t * 0.6)], 1);
+      turnBone('forearmR', [3 * Math.sin(t * 0.8 + 0.2), 0, 2 * Math.sin(t * 0.7 + 2)], 1);
+    }
     const mv = moveAt(t);
     if (mv) {
       const { a, b, f, w } = mv;

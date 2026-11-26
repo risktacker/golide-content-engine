@@ -143,6 +143,6 @@ export async function mountStudio(canvas, opts = {}) {
     renderer.render(scene, cam);
   }
   frame(0);
-  frame.camera = cam; frame.pieces = pieces;
+  frame.camera = cam; frame.pieces = pieces; frame.renderer = renderer; frame.scene = scene;
   return frame;
 }
