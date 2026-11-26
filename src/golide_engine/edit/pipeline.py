@@ -325,7 +325,12 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
         track_path.write_text(json.dumps(track or {}) + "\n", encoding="utf-8")
         from ..goli3d import kits        # owner 2026-11-25: every upload wears the next kit in the rotation
         outfit = kits.choose(folder, ROOT / "data" / "production-records")
-        print(json.dumps({"status": "edit_render", "outfit": outfit, "music": (track or {}).get("title", "bed")}))
+        # the living studio (owner 2026-11-26): the 3D room with the live Goli in long studio scenes; per video in
+        # Studio (spec.live_studio) or for all by config (edit-engine.json live_studio); off until the owner approves
+        cfg = json.loads((ROOT / "config" / "edit-engine.json").read_text(encoding="utf-8"))
+        edit["live_studio"] = bool(spec.get("live_studio", cfg.get("live_studio", False)))
+        print(json.dumps({"status": "edit_render", "outfit": outfit, "music": (track or {}).get("title", "bed"),
+                          "live_studio": edit["live_studio"]}))
         render(edit, folder, narration, video_path, outfit, track)
 
     production.runner.run(production_id, "render-edit-v1", render_stage, attempts=1)

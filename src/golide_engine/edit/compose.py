@@ -115,6 +115,14 @@ def _e(text: Any) -> str:
 IMPORTMAP = '<script type="importmap">{"imports":{"three":"./three/three.module.js"}}</script>'
 
 
+LIVE_DIR = ASSETS.parent / "goli3d" / "live"
+
+
+def live_ready() -> bool:
+    """The living studio can play: the rigged Goli and the 3D room are built (tools/goli3d_rig.py, goli3d_studio_live.py)."""
+    return all((LIVE_DIR / f).exists() for f in ("goli.glb", "goli-rig.json", "studio.glb", "studio-set.json"))
+
+
 def reactions(edit: dict[str, Any]) -> list[tuple[float, str]]:
     """When Goli reacts (owner 2026-11-13, point 4): the end of a spoken question or exclamation (from the
     captions' words), and the moment something lands on screen (a number, a metaphor, a 3D move)."""
@@ -1349,6 +1357,53 @@ class Composer:
             self.tw(f'tl.fromTo("#{sid}-end",{{x:120,opacity:0}},{{x:0,opacity:1,duration:.5,ease:"back.out(1.6)"}},{t0 + .3:.3f});')
             self.tw(f'tl.fromTo("#{sid}-sub",{{scale:1}},{{scale:1.08,duration:.35,yoyo:true,repeat:5,ease:"sine.inOut"}},{t0 + 1.0:.3f});')
 
+    def live_host(self, sid, t0, dur, data):
+        """The studio scene played live (owner 2026-11-26, assets/edit/g3d/studio_live.js): the 3D room with its
+        baked light, Goli seated and talking, his gestures from the words, eyes on the camera and on the screen when it
+        shows a picture. The screen's picture or words stay on top as before (the main camera keeps the screen where
+        the plates had it)."""
+        self.uses_three = True
+        self.uses_live = True
+        self.live_n += 1
+        moves = {"point": "point_screen", "point_left": "point_screen", "explain": "explain", "think": "think",
+                 "shrug": "shrug", "point_up": "point_up", "point_both_up": "both_up", "wave": "wave", "thumbs_up": "both_up"}
+        plan = {
+            "seed": 11 + self.live_n, "duration": dur, "sit": [[0, 1]],
+            "cues": [[float(c["start"]), c["value"]] for c in data.get("cues") or [] if float(c["start"]) < dur],
+            "words": [[a - t0, a - t0 + 0.2, w] for a, w in self.spoken if t0 <= a < t0 + dur],
+            "moves": [{"name": moves[p["pose"]], "at": float(p["at"])} for p in data.get("poses") or []
+                      if p.get("pose") in moves and 0 < float(p["at"]) < dur - 1.0][:3],
+            "looks": [{"at": 0, "target": "camera"}] + ([{"at": 0.6, "target": "screen"}, {"at": 1.8, "target": "camera"}]
+                                                        if data.get("screen") else []),
+            "talk": [[0, dur]],
+        }
+        from ..goli3d import kits
+        kit = data.get("outfit") or getattr(self, "outfit", None) or "royal"
+        title = ""
+        if data.get("screen"):
+            x0, y0, x1, y1 = studio.screen_rect(self.fmt)
+            title = (f'<div id="{sid}-scr" style="position:absolute;left:{x0 + 22:.0f}px;width:{x1 - x0 - 44:.0f}px;top:{y0 + 56:.0f}px;'
+                     f'height:{y1 - y0 - 100:.0f}px;border-radius:10px;overflow:hidden">'
+                     f'<img src="{self.asset(data["screen"])}" style="width:100%;height:100%;object-fit:cover;object-position:50% 0"></div>')
+        elif data.get("words"):
+            x0, y0, x1, y1 = studio.screen_rect(self.fmt)
+            spans = "".join(f'<span class="word" id="{sid}-w{i}">{_e(w_["text"])}</span>' for i, w_ in enumerate(data["words"]))
+            title = (f'<div id="{sid}-scr" style="position:absolute;left:{x0 + 60:.0f}px;width:{x1 - x0 - 120:.0f}px;'
+                     f'top:{y0:.0f}px;height:{y1 - y0:.0f}px;display:flex;align-items:center">'
+                     f'<div class="title" style="font-size:84px;line-height:1.05">{spans}</div></div>')
+        inner = (f'<canvas id="{sid}-live" width="{self.w}" height="{self.h}" style="position:absolute;left:0;top:0;'
+                 f'width:{self.w}px;height:{self.h}px"></canvas>{title}'
+                 f'<script type="module">import {{ mountStudio }} from "./three/g3d/studio_live.js";'
+                 f'window.__g3d = window.__g3d || {{}}; window.__liveWaits = window.__liveWaits || [];'
+                 f'window.__liveWaits.push(mountStudio(document.getElementById("{sid}-live"), '
+                 f'{{base: "./goli3d", kit: {json.dumps(kit)}, glasses: {json.dumps(kits.glasses(kit))}, plan: {json.dumps(plan)}}}).then((f) => {{ window.__g3d["{sid}"] = f; }}));</script>')
+        self.parts.append(f'<section id="{sid}" class="scene clip" data-start="{t0:.3f}" data-duration="{dur:.3f}" style="z-index:1">'
+                          f'<div class="stage"><div class="cam">{inner}</div></div></section>')
+        self.tw(f'(function(){{var o={{s:0}};tl.fromTo(o,{{s:0}},{{s:{dur:.3f},duration:{dur:.3f},ease:"none",onUpdate:function(){{'
+                f'var f=window.__g3d&&window.__g3d["{sid}"];if(f)f(o.s);}}}},{t0:.3f});}})();')
+        self.tw(f'tl.to("#brand .logo",{{opacity:0,duration:.2}},{t0:.3f});tl.to("#brand .logo",{{opacity:.92,duration:.3}},{t0 + dur:.3f});')
+        self.cue("pop", t0 + 0.1)
+
     def host(self, t0, dur, data, how="rise"):
         """Pango, the GOLIDE host, talking with the owner's voice. place: full (left half, the scene's
         words on the right), left/right (standing beside another scene), corner (small bubble over a
@@ -1356,8 +1411,10 @@ class Composer:
         from . import mascot
 
         sid = self._id("host")
-        self.uses_mascot = True
         place = data.get("place", "full")
+        if place == "studio" and getattr(self, "live", False):
+            return self.live_host(sid, t0, dur, data)
+        self.uses_mascot = True
         poses = data.get("poses") or [{"pose": "talk", "at": 0}]
         cues = data.get("cues") or []
         outfit = data.get("outfit") or self.outfit
@@ -1616,6 +1673,10 @@ class Composer:
         self.look = str(edit.get("look") or "glass")      # 2026-11-17: one 3D look per video
         self.goli_gaps = [tuple(g) for g in edit.get("goli_gaps") or []]
         self.reacts = reactions(edit)
+        # the living studio (owner 2026-11-26): long studio scenes as the 3D room with the live Goli, when switched on
+        self.live = bool(edit.get("live_studio")) and self.fmt == "long" and live_ready()
+        self.spoken = [(float(w["at"]), str(w.get("text", ""))) for c in (edit.get("captions") or []) for w in c.get("words", [])]
+        self.live_n = 0
         for s in edit["scenes"]:
             s["_sid"] = f"s{self.n + 1}-"      # the layout check finds this scene's boxes by it
             self.zone = (bool(s["data"].get("goli_zone")) or any(
@@ -1648,6 +1709,10 @@ class Composer:
             shutil.copy(three / "lib" / "three.module.js", out / "three" / "three.module.js")
             shutil.copytree(three / "examples", out / "three" / "examples", dirs_exist_ok=True)
             shutil.copy(ASSETS / "g3d" / "glass3d.js", out / "three" / "g3d" / "glass3d.js")
+        if getattr(self, "uses_live", False):      # the living studio: its players and the built room and Goli
+            for f in ("goli_live.js", "studio_live.js"):
+                shutil.copy(ASSETS / "g3d" / f, out / "three" / "g3d" / f)
+            shutil.copytree(LIVE_DIR, out / "goli3d", dirs_exist_ok=True)
         (out / "media").mkdir(exist_ok=True)
         for name, src in self.files.items():
             shutil.copy(src, out / name)
@@ -1719,7 +1784,7 @@ const tl=gsap.timeline({{paused:true}});
 tl.fromTo("#glow",{{x:0,y:0}},{{x:-{self.w * 0.18:.0f},y:{self.h * 0.12:.0f},duration:{duration:.3f},ease:"sine.inOut"}},0);
 tl.fromTo("#bg",{{x:0}},{{x:-48,duration:{duration:.3f},ease:"none"}},0);
 {chr(10).join(self.tweens)}
-window.__timelines["main"]=tl;
+{'Promise.all(window.__liveWaits||[]).then(function(){window.__timelines["main"]=tl;});' if getattr(self, "uses_live", False) else 'window.__timelines["main"]=tl;'}
 </script></body></html>"""
         for cls, kind in (('class="card"', "card"), ('class="frame"', "card"), ('class="chip"', "chip"),
                           ('class="title"', "text"), ('class="tile"', "logo"), ('class="label"', "text"), ('class="num"', "text")):
