@@ -1494,16 +1494,19 @@ class Composer:
                      f'<div class="stage"><div class="cam">{canvas}{titles}</div></div><script type="module">window.__g3d = window.__g3d || {{}}; window.__liveWaits = window.__liveWaits || [];'
                      f'{js} window.__liveWaits.push(p.then((f) => {{ window.__g3d["{lid}"] = f; }}));</script></section>')
             # drawn on the video's own clock; hidden outside its scenes
-            self.tw(f'(function(){{var o={{s:0}};tl.fromTo(o,{{s:0}},{{s:{duration:.3f},duration:{duration:.3f},ease:"none",onUpdate:function(){{'
-                    f'var f=window.__g3d&&window.__g3d["{lid}"];if(!f)return;f(o.s);var ov=document.getElementById("{lid}-ov");'
-                    f'if(ov&&f.mainShot)ov.style.opacity=f.mainShot(o.s)?1:0;}}}},0);}})();')
-            self.tw(f'tl.set("#{lid}",{{autoAlpha:0}},0);')
             merged = []
             for a, d in sorted(L["windows"]):
                 if merged and a <= merged[-1][0] + merged[-1][1] + 0.05:
                     merged[-1] = (merged[-1][0], max(merged[-1][0] + merged[-1][1], a + d) - merged[-1][0])
                 else:
                     merged.append((a, d))
+            # drawn only inside its scenes (outside them the 3D is not drawn at all: speed)
+            win = json.dumps([[round(a, 3), round(a + d, 3)] for a, d in merged])
+            self.tw(f'(function(){{var W={win};var o={{s:0}};tl.fromTo(o,{{s:0}},{{s:{duration:.3f},duration:{duration:.3f},ease:"none",onUpdate:function(){{'
+                    f'var f=window.__g3d&&window.__g3d["{lid}"];if(!f)return;var t=o.s,on=false;for(var i=0;i<W.length;i++)if(t>=W[i][0]-0.05&&t<W[i][1]+0.05)on=true;'
+                    f'if(!on)return;f(t);var ov=document.getElementById("{lid}-ov");'
+                    f'if(ov&&f.mainShot)ov.style.opacity=f.mainShot(t)?1:0;}}}},0);}})();')
+            self.tw(f'tl.set("#{lid}",{{autoAlpha:0}},0);')
             for t0, dur in merged:
                 self.tw(f'tl.set("#{lid}",{{autoAlpha:1}},{t0:.3f});tl.set("#{lid}",{{autoAlpha:0}},{t0 + dur:.3f});')
         return html

@@ -304,36 +304,27 @@
   "mouth": {
    "X": [
     "mouth_X__c.002",
-    "mouth_X__c.003",
-    "mouth_X__c.004"
+    "mouth_X__c.003"
    ],
    "A": [
     "mouth_A__c.005",
-    "mouth_A__c.006",
-    "mouth_A__c.007"
+    "mouth_A__c.006"
    ],
    "B": [
     "mouth_B__mouth",
     "mouth_B__teeth_u",
-    "mouth_B__teeth_l",
-    "mouth_B__c.008",
-    "mouth_B__c.009",
-    "mouth_B__c.010"
+    "mouth_B__c.008"
    ],
    "C": [
     "mouth_C__mouth.001",
     "mouth_C__tongue",
-    "mouth_C__c.011",
-    "mouth_C__c.012",
-    "mouth_C__c.013"
+    "mouth_C__c.011"
    ],
    "D": [
     "mouth_D__mouth.002",
     "mouth_D__teeth",
     "mouth_D__tongue.001",
-    "mouth_D__c.014",
-    "mouth_D__c.015",
-    "mouth_D__c.016"
+    "mouth_D__c.014"
    ],
    "E": [
     "mouth_E__mouth.003",
@@ -348,223 +339,88 @@
    "G": [
     "mouth_G__mouth.005",
     "mouth_G__teeth_u.001",
-    "mouth_G__teeth_l.001",
-    "mouth_G__c.019",
-    "mouth_G__c.020",
-    "mouth_G__c.021"
+    "mouth_G__c.019"
    ],
    "H": [
     "mouth_H__mouth.006",
     "mouth_H__tongue.004",
-    "mouth_H__c.022",
-    "mouth_H__c.023",
-    "mouth_H__c.024"
+    "mouth_H__c.022"
    ]
   },
   "lid": {
    "half": [
-    "lid_half__lid",
-    "lid_half__lid.001"
+    "lid_half__lid"
    ],
    "closed": [
-    "lid_closed__lid.002",
-    "lid_closed__lid.003"
+    "lid_closed__lid.002"
    ]
   },
   "glasses": {
    "round_gold": [
     "glasses_round_gold__c.025",
-    "glasses_round_gold__lens",
-    "glasses_round_gold__Cylinder",
-    "glasses_round_gold__Sphere.038",
-    "glasses_round_gold__Sphere.039",
-    "glasses_round_gold__c.026",
-    "glasses_round_gold__lens.001",
-    "glasses_round_gold__Cylinder.001",
-    "glasses_round_gold__Sphere.040",
-    "glasses_round_gold__Sphere.041",
-    "glasses_round_gold__c.027"
+    "glasses_round_gold__lens"
    ],
    "aviator": [
     "glasses_aviator__c.028",
-    "glasses_aviator__lens.002",
-    "glasses_aviator__Cylinder.002",
-    "glasses_aviator__Sphere.042",
-    "glasses_aviator__Sphere.043",
-    "glasses_aviator__c.029",
-    "glasses_aviator__lens.003",
-    "glasses_aviator__Cylinder.003",
-    "glasses_aviator__Sphere.044",
-    "glasses_aviator__Sphere.045",
-    "glasses_aviator__c.030",
-    "glasses_aviator__c.031"
+    "glasses_aviator__lens.002"
    ],
    "browline": [
     "glasses_browline__c.032",
     "glasses_browline__c.033",
-    "glasses_browline__lens.004",
-    "glasses_browline__Cylinder.004",
-    "glasses_browline__Sphere.046",
-    "glasses_browline__Sphere.047",
-    "glasses_browline__c.034",
-    "glasses_browline__c.035",
-    "glasses_browline__lens.005",
-    "glasses_browline__Cylinder.005",
-    "glasses_browline__Sphere.048",
-    "glasses_browline__Sphere.049",
-    "glasses_browline__c.036"
+    "glasses_browline__lens.004"
    ],
    "square_black": [
     "glasses_square_black__c.037",
-    "glasses_square_black__lens.006",
-    "glasses_square_black__Cylinder.006",
-    "glasses_square_black__Sphere.050",
-    "glasses_square_black__Sphere.051",
-    "glasses_square_black__c.038",
-    "glasses_square_black__lens.007",
-    "glasses_square_black__Cylinder.007",
-    "glasses_square_black__Sphere.052",
-    "glasses_square_black__Sphere.053",
-    "glasses_square_black__c.039"
+    "glasses_square_black__lens.006"
    ],
    "round_silver": [
     "glasses_round_silver__c.040",
-    "glasses_round_silver__lens.008",
-    "glasses_round_silver__Cylinder.008",
-    "glasses_round_silver__Sphere.054",
-    "glasses_round_silver__Sphere.055",
-    "glasses_round_silver__c.041",
-    "glasses_round_silver__lens.009",
-    "glasses_round_silver__Cylinder.009",
-    "glasses_round_silver__Sphere.056",
-    "glasses_round_silver__Sphere.057",
-    "glasses_round_silver__c.042"
+    "glasses_round_silver__lens.008"
    ]
   },
   "held": {
    "round_gold": [
     "held_round_gold__c.043",
-    "held_round_gold__lens.010",
-    "held_round_gold__Cylinder.010",
-    "held_round_gold__Sphere.058",
-    "held_round_gold__Sphere.059",
-    "held_round_gold__c.044",
-    "held_round_gold__lens.011",
-    "held_round_gold__Cylinder.011",
-    "held_round_gold__Sphere.060",
-    "held_round_gold__Sphere.061",
-    "held_round_gold__c.045"
+    "held_round_gold__lens.010"
    ],
    "aviator": [
     "held_aviator__c.046",
-    "held_aviator__lens.012",
-    "held_aviator__Cylinder.012",
-    "held_aviator__Sphere.062",
-    "held_aviator__Sphere.063",
-    "held_aviator__c.047",
-    "held_aviator__lens.013",
-    "held_aviator__Cylinder.013",
-    "held_aviator__Sphere.064",
-    "held_aviator__Sphere.065",
-    "held_aviator__c.048",
-    "held_aviator__c.049"
+    "held_aviator__lens.012"
    ],
    "browline": [
     "held_browline__c.050",
     "held_browline__c.051",
-    "held_browline__lens.014",
-    "held_browline__Cylinder.014",
-    "held_browline__Sphere.066",
-    "held_browline__Sphere.067",
-    "held_browline__c.052",
-    "held_browline__c.053",
-    "held_browline__lens.015",
-    "held_browline__Cylinder.015",
-    "held_browline__Sphere.068",
-    "held_browline__Sphere.069",
-    "held_browline__c.054"
+    "held_browline__lens.014"
    ],
    "square_black": [
     "held_square_black__c.055",
-    "held_square_black__lens.016",
-    "held_square_black__Cylinder.016",
-    "held_square_black__Sphere.070",
-    "held_square_black__Sphere.071",
-    "held_square_black__c.056",
-    "held_square_black__lens.017",
-    "held_square_black__Cylinder.017",
-    "held_square_black__Sphere.072",
-    "held_square_black__Sphere.073",
-    "held_square_black__c.057"
+    "held_square_black__lens.016"
    ],
    "round_silver": [
     "held_round_silver__c.058",
-    "held_round_silver__lens.018",
-    "held_round_silver__Cylinder.018",
-    "held_round_silver__Sphere.074",
-    "held_round_silver__Sphere.075",
-    "held_round_silver__c.059",
-    "held_round_silver__lens.019",
-    "held_round_silver__Cylinder.019",
-    "held_round_silver__Sphere.076",
-    "held_round_silver__Sphere.077",
-    "held_round_silver__c.060"
+    "held_round_silver__lens.018"
    ]
   },
   "pawL": {
    "open": [
-    "pawL_open__Sphere.102",
-    "pawL_open__Sphere.103"
+    "pawL_open__Sphere.102"
    ],
    "point": [
-    "pawL_point__c.067",
-    "pawL_point__Sphere.112",
-    "pawL_point__Sphere.113",
-    "pawL_point__c.068",
-    "pawL_point__Sphere.114",
-    "pawL_point__Sphere.115"
+    "pawL_point__c.067"
    ],
    "thumb": [
-    "pawL_thumb__c.069",
-    "pawL_thumb__Sphere.116",
-    "pawL_thumb__Sphere.117",
-    "pawL_thumb__c.070",
-    "pawL_thumb__Sphere.118",
-    "pawL_thumb__Sphere.119",
-    "pawL_thumb__c.071",
-    "pawL_thumb__Sphere.120",
-    "pawL_thumb__Sphere.121",
-    "pawL_thumb__c.072",
-    "pawL_thumb__Sphere.122",
-    "pawL_thumb__Sphere.123"
+    "pawL_thumb__c.069"
    ]
   },
   "pawR": {
    "open": [
-    "pawR_open__Sphere.109",
-    "pawR_open__Sphere.110"
+    "pawR_open__Sphere.109"
    ],
    "point": [
-    "pawR_point__c.073",
-    "pawR_point__Sphere.124",
-    "pawR_point__Sphere.125",
-    "pawR_point__c.074",
-    "pawR_point__Sphere.126",
-    "pawR_point__Sphere.127"
+    "pawR_point__c.073"
    ],
    "thumb": [
-    "pawR_thumb__c.075",
-    "pawR_thumb__Sphere.128",
-    "pawR_thumb__Sphere.129",
-    "pawR_thumb__c.076",
-    "pawR_thumb__Sphere.130",
-    "pawR_thumb__Sphere.131",
-    "pawR_thumb__c.077",
-    "pawR_thumb__Sphere.132",
-    "pawR_thumb__Sphere.133",
-    "pawR_thumb__c.078",
-    "pawR_thumb__Sphere.134",
-    "pawR_thumb__Sphere.135"
+    "pawR_thumb__c.075"
    ]
   }
  },

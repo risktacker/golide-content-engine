@@ -142,6 +142,35 @@ export async function mountStudio(canvas, opts = {}) {
     cam.updateProjectionMatrix();
   }
 
+  // speed (owner 2026-11-26): the room's fixed pieces are drawn ONCE per camera position into a picture with its depth,
+  // and every frame only lays that picture down (one draw, depth included so the desk still hides Goli's legs) and
+  // draws what moves on top: Goli, the moving pieces, the shadows. When the camera moves, the picture is redrawn.
+  const rt = new THREE.WebGLRenderTarget(W, H, { depthTexture: new THREE.DepthTexture(W, H), samples: 4 });
+  rt.texture.colorSpace = THREE.SRGBColorSpace;
+  const quadScene = new THREE.Scene(), quadCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMaterial({
+    uniforms: { tColor: { value: rt.texture }, tDepth: { value: rt.depthTexture } },
+    vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
+    fragmentShader: 'uniform sampler2D tColor; uniform sampler2D tDepth; varying vec2 vUv; void main(){ gl_FragColor = texture2D(tColor, vUv); gl_FragDepth = texture2D(tDepth, vUv).x;\n#include <colorspace_fragment>\n}',
+    depthTest: true, depthWrite: true }));
+  quad.frustumCulled = false; quadScene.add(quad);
+  let cacheKey = '';
+  function draw() {
+    cam.updateMatrixWorld();
+    const key = cam.matrixWorld.elements.join(',') + '|' + cam.projectionMatrix.elements.join(',');
+    if (key !== cacheKey) {                       // the camera moved: draw the fixed room again
+      const shown = scene.children.map((c) => c.visible);
+      scene.children.forEach((c) => { c.visible = c === room; });
+      renderer.setRenderTarget(rt); renderer.render(scene, cam); renderer.setRenderTarget(null);
+      scene.children.forEach((c, i) => { c.visible = shown[i]; });
+      cacheKey = key;
+    }
+    room.visible = false;
+    renderer.autoClear = true; renderer.render(quadScene, quadCam);
+    renderer.autoClear = false; renderer.render(scene, cam); renderer.autoClear = true;
+    room.visible = true;
+  }
+
   const props = (plan.props || []).slice().sort((a, b) => a.at - b.at);
   const home = {}; for (const [k, g] of Object.entries(pieces)) home[k] = { p: g.position.clone(), r: g.rotation.y, x: g.rotation.x };
   function frame(t) {
@@ -161,7 +190,7 @@ export async function mountStudio(canvas, opts = {}) {
       const palm = new THREE.Vector3(0, 0.12, 0).applyMatrix4(m);   // hand space (his scale is in the matrix)
       g.position.copy(palm).add(new THREE.Vector3(0, -0.05, 0)); g.rotation.set(0, home[hold.piece].r, 0);
     }
-    renderer.render(scene, cam);
+    draw();
   }
   frame(0);
   frame.mainShot = (t) => { let k = camKeys[0]; for (const c2 of camKeys) { if (c2.at > t) break; k = c2; }

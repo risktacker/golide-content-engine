@@ -273,6 +273,31 @@ def _skin(o, part):
     o.parent = _arm
 
 
+# speed (owner 2026-11-26: the video render): every separate part is a separate draw for the software renderer, so the
+# parts that never swap are joined, one mesh per part and material (290 meshes became a few dozen); the swaps
+# (mouths, lids, glasses, paws) stay separate so the player can show and hide them
+_groups = {}
+for _o in list(sc.objects):
+    if _o.type != "MESH" or not _o.data.materials:
+        continue
+    _part = _o.get("part", "head")      # a swap's pieces join within their own swap (they show and hide together)
+    _groups.setdefault((_part, _o.data.materials[0].name), []).append(_o)
+for (_part, _mn), _objs in _groups.items():
+    if len(_objs) < 2:
+        continue
+    bpy.ops.object.select_all(action="DESELECT")
+    for _o in _objs:
+        _o.select_set(True)
+    bpy.context.view_layer.objects.active = _objs[0]
+    bpy.ops.object.join()
+    _objs[0]["part"] = _part
+# fewer vertices for the software renderer: the dense subdivided shapes are thinned where it cannot be seen
+for _o in list(sc.objects):
+    if _o.type == "MESH" and len(_o.data.vertices) > 1800:
+        _dm = _o.modifiers.new("thin", "DECIMATE"); _dm.ratio = max(0.2, 1800 / len(_o.data.vertices))
+        bpy.context.view_layer.objects.active = _o
+        bpy.ops.object.modifier_apply(modifier=_dm.name)
+
 SWAPS = {}
 for _o in list(sc.objects):
     if _o.type != "MESH":
