@@ -86,3 +86,17 @@ def test_metaphors_are_3d_scenes_in_the_named_things_colours(tmp_path):
     assert "metaphor3d.js" in page and '"left": "#D97757"' in page and '"right": "#10A37F"' in page
     assert (out / "three" / "g3d" / "metaphor3d.js").exists() and (out / "hero" / "padlock.glb").exists()
     assert 'Promise.all(window.__liveWaits||[]).then' in page
+
+
+def test_metaphor_words_are_shown_as_real_logos_icons_or_the_written_prompt(tmp_path):
+    # owner 2026-11-26: real logos for apps and models, data looks like a chat, the word "prompt" never on screen
+    import json
+    from golide_engine.edit.thing_icons import picture
+    assert json.loads(picture("Data"))["kind"] == "icon" and "M" in json.loads(picture("Data"))["svg"]
+    assert json.loads(picture("Prompt")) == {"kind": "prompt"}
+    assert json.loads(picture("ChatGPT"))["kind"] == "icon"            # no look-alike mark for a brand we have no mark for
+    e = {"format": "long", "duration": 4.0, "captions": [{"start": 0, "end": 4, "words": [{"text": "prompt", "at": 0.3}], "keys": []}],
+         "scenes": [{"type": "metaphor", "start": 0.0, "duration": 4.0,
+                     "data": {"kind": "transform", "left": "Prompt", "right": "App", "at": 1.0, "prompt": "Build me a habit tracker"}}]}
+    page = Composer("long", outfit="royal").build(e, tmp_path / "p").read_text()
+    assert '"kind": "prompt"' in page and "Build me a habit tracker" in page

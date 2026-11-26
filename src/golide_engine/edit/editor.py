@@ -226,7 +226,9 @@ Scene types (fill only the fields the type uses; null or [] for the rest):
   label = the result), stack (layers of a system: items bottom to top, 2-5), gauge (a level or amount: value 0-100,
   label), transform (one thing becomes another: left = before, right = after), iceberg (the visible part and the
   hidden mass: label = what people see, items = what is hidden), cycle (a loop: items = 3-5 steps).
-  punch = the spoken word it lands on. Words max 4 each, as spoken. Use one whenever a beat explains an idea
+  punch = the spoken word it lands on. Words max 4 each, as spoken. Name the real things (the app, the model, the
+  site, the data's source: "Claude", "Gmail", "Reddit posts"): the video shows their real logos and icons. When a
+  word is a prompt, put the prompt's real text in quote: the prompt itself is shown typed, never the word "prompt". Use one whenever a beat explains an idea
   with a shape (owner 2026-11-17: no fixed count); never two metaphor scenes in a row, never the same metaphor
   twice in a video.
 - terminal: a REAL RUN (listed under REAL RUNS) proves what the beat says (the repo, the tool, the model actually
@@ -414,7 +416,8 @@ def _metaphor_data(s: dict, lines, t0: float, t1: float, dur: float) -> dict:
     return {"kind": s["metaphor"], "at": round(max(0.6, min(dur - 0.8, (land - t0) if land else dur * 0.45)), 3),
             "label": s.get("label") or s.get("screen_words") or "", "items": items,
             "times": _item_times(items, lines, t0, t1) if items else None,
-            "left": s.get("left") or "", "right": right, "winner": winner, "value": s.get("value")}
+            "left": s.get("left") or "", "right": right, "winner": winner, "value": s.get("value"),
+            "prompt": " ".join(str(s.get("quote") or "").split()[:24])}
 
 
 def _item_times(items: list[str], lines, t0: float, t1: float, first: float = 0.3) -> list[float]:
@@ -829,7 +832,9 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
                 "kind": s["metaphor"], "at": round(max(0.6, min(dur - 0.8, (land - t0) if land else dur * 0.45)), 3),
                 "label": s.get("label") or s.get("screen_words") or "", "items": items,
                 "times": _item_times(items, lines, t0, t1) if items else None,
-                "left": s.get("left") or "", "right": right, "winner": winner, "value": s.get("value")}})
+                "left": s.get("left") or "", "right": right, "winner": winner, "value": s.get("value"),
+                # owner 2026-11-26: a prompt is shown as the prompt itself (the beat's quote), never as the word
+                "prompt": " ".join(str(s.get("quote") or "").split()[:24])}})
         elif kind == "terminal" and isinstance(s.get("source"), int) and 0 <= s["source"] < len(demos or []) \
                 and s["source"] not in shown_runs:
             from .demos import scene_data

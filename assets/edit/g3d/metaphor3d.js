@@ -46,19 +46,82 @@ export async function mount(canvas, kind, args = {}, opts = {}) {
   };
   const rbox = (w, h, d, r = 0.08) => new RoundedBoxGeometry(w, h, d, 4, Math.min(r, w / 2, h / 2, d / 2));
 
-  // labels: chips pinned to 3D points (the anchor is projected every frame)
+  // owner 2026-11-26: the things are SHOWN, not written: a real app or model gets its real logo in its own colour, a
+  // kind of thing (data, docs, people...) a matching icon (data looks like a chat), a prompt is the written prompt
+  // itself (the word "prompt" never appears). opts.pictures: {left|right|label|itemN: {kind, svg, color}}
+  const PICS = opts.pictures || {};
+  const svgOf = (pic, fg) => (pic.kind === 'logo'
+    ? pic.svg.replace('<svg', `<svg fill="${fg}"`) : pic.svg.replace(/currentColor/g, fg));
+  async function picImage(pic, fg) {
+    const img = new Image(); img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgOf(pic, fg));
+    try { await img.decode(); } catch (e) { return null; }
+    return img;
+  }
+  const tileColor = (pic) => (pic.kind === 'logo' ? pic.color : '#1B1F2A');
+  async function tile3d(pic, size = 0.9) {        // a glossy app tile: the logo (white on its colour) or the icon (gold)
+    const g = new THREE.Group();
+    const body = add(rbox(size, size, size * 0.22, size * 0.2), paint(new THREE.Color(tileColor(pic)), pic.kind === 'logo' ? 0.12 : 0), [0, 0, 0], g);
+    const cv = document.createElement('canvas'); cv.width = cv.height = 256;
+    const img = await picImage(pic, pic.kind === 'logo' ? '#FFFFFF' : '#E8C268');
+    if (img) cv.getContext('2d').drawImage(img, 40, 40, 176, 176);
+    const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
+    const face = new THREE.Mesh(new THREE.PlaneGeometry(size * 0.92, size * 0.92), new THREE.MeshBasicMaterial({ map: tex, transparent: true, toneMapped: false }));
+    face.position.z = size * 0.111 + 0.002; g.add(face);
+    if (pic.kind !== 'logo') body.material.color.set('#1B1F2A');
+    return g;
+  }
+  const picFor = (key, text) => PICS[key] || null;
+  const showWord = (key, text) => (PICS[key] && PICS[key].kind === 'prompt' ? '' : text);
+
+  // labels: chips pinned to 3D points (the anchor is projected every frame), the thing's picture on the left
   const overlay = opts.overlay || null, ns = 'http://www.w3.org/2000/svg', labels = [];
-  function label(text, anchor, { gold = false, at = 0, size = 44, dy = 0 } = {}) {
+  function label(text, anchor, { gold = false, at = 0, size = 44, dy = 0, key = null } = {}) {
+    const pic = key ? PICS[key] : null;
+    if (pic && pic.kind === 'prompt') return promptCard(anchor, { at, dy });
     if (!overlay || !text) return;
     const g = document.createElementNS(ns, 'g'), rect = document.createElementNS(ns, 'rect'), txt = document.createElementNS(ns, 'text');
-    const w = String(text).length * size * 0.6 + 48;
+    const iw = pic ? size * 1.35 : 0;
+    const w = String(text).length * size * 0.6 + 48 + iw;
     rect.setAttribute('rx', '18'); rect.setAttribute('height', size * 1.6); rect.setAttribute('width', w);
     rect.setAttribute('fill', gold ? '#E8C268' : 'rgba(10,12,18,.9)'); rect.setAttribute('stroke', gold ? '#E8C268' : 'rgba(232,194,104,.6)');
     rect.setAttribute('stroke-width', '2.5');
     txt.textContent = text; txt.setAttribute('font-family', 'Poppins'); txt.setAttribute('font-weight', '800'); txt.setAttribute('font-size', size);
     txt.setAttribute('fill', gold ? '#07080B' : '#F4F1EA'); txt.setAttribute('text-anchor', 'middle'); txt.setAttribute('dominant-baseline', 'middle');
-    g.append(rect, txt); overlay.append(g);
-    labels.push({ g, rect, txt, w, h: size * 1.6, anchor, at, dy });
+    g.append(rect, txt);
+    let icon = null;
+    if (pic) {                                    // the logo / icon in its own little tile inside the chip
+      icon = document.createElementNS(ns, 'svg'); icon.setAttribute('viewBox', '-3 -3 30 30');
+      icon.setAttribute('width', size * 1.25); icon.setAttribute('height', size * 1.25);
+      const inner = pic.svg.replace(/<svg[^>]*>/, '').replace('</svg>', '');
+      icon.innerHTML = `<rect x="-3" y="-3" width="30" height="30" rx="7" fill="${pic.kind === 'logo' ? pic.color : '#1B1F2A'}" stroke="rgba(232,194,104,.7)" stroke-width="${pic.kind === 'logo' ? 0 : 1}"/>` +
+        (pic.kind === 'logo' ? `<g fill="#FFFFFF">${inner}</g>`
+          : `<g fill="none" stroke="#E8C268" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">${inner}</g>`);
+      g.append(icon);
+    }
+    overlay.append(g);
+    labels.push({ g, rect, txt, w, h: size * 1.6, anchor, at, dy, icon, iw, size });
+  }
+  // a prompt is shown as the prompt: a small dark card with the words typed in (opts.prompt), never the word "prompt"
+  function promptCard(anchor, { at = 0, dy = 0 } = {}) {
+    if (!overlay) return;
+    const words = String(opts.prompt || '').split(/\s+/).filter(Boolean).slice(0, 14);
+    const text = words.join(' '), size = 26, per = 22;
+    const lines = []; let cur = '';
+    for (const w of words) { if ((cur + ' ' + w).trim().length > per) { lines.push(cur.trim()); cur = w; } else cur += ' ' + w; }
+    if (cur.trim()) lines.push(cur.trim());
+    if (!lines.length) lines.push('');
+    const g = document.createElementNS(ns, 'g'), rect = document.createElementNS(ns, 'rect');
+    const w = Math.max(260, per * size * 0.6 + 70), h = lines.length * size * 1.35 + 40;
+    rect.setAttribute('rx', '16'); rect.setAttribute('width', w); rect.setAttribute('height', h);
+    rect.setAttribute('fill', 'rgba(10,12,18,.94)'); rect.setAttribute('stroke', '#E8C268'); rect.setAttribute('stroke-width', '2.5');
+    g.append(rect);
+    const tx = lines.map((ln, i) => { const e = document.createElementNS(ns, 'text');
+      e.setAttribute('font-family', 'JetBrains Mono, monospace'); e.setAttribute('font-size', size); e.setAttribute('fill', '#F4F1EA');
+      g.append(e); return { e, ln, i }; });
+    const caret = document.createElementNS(ns, 'text'); caret.textContent = '>'; caret.setAttribute('font-family', 'JetBrains Mono, monospace');
+    caret.setAttribute('font-size', size); caret.setAttribute('font-weight', '800'); caret.setAttribute('fill', '#E8C268'); g.append(caret);
+    overlay.append(g);
+    labels.push({ g, rect, w, h, anchor, at, dy, prompt: { tx, caret, total: text.length, size } });
   }
   const v = new THREE.Vector3();
   function drawLabels(t) {
@@ -66,7 +129,18 @@ export async function mount(canvas, kind, args = {}, opts = {}) {
       if (typeof L.anchor === 'function') v.copy(L.anchor()).project(cam); else { L.anchor.getWorldPosition(v); v.project(cam); }
       const x = (v.x + 1) / 2 * W, y = (1 - v.y) / 2 * H + L.dy;
       L.rect.setAttribute('x', x - L.w / 2); L.rect.setAttribute('y', y - L.h / 2);
-      L.txt.setAttribute('x', x); L.txt.setAttribute('y', y + 2);
+      if (L.prompt) {                             // typed in, a letter at a time, from the moment it shows
+        const P = L.prompt, n = Math.max(0, Math.floor((t - L.at) * 28)); let used = 0;
+        P.caret.setAttribute('x', x - L.w / 2 + 18); P.caret.setAttribute('y', y - L.h / 2 + 20 + P.size);
+        for (const { e, ln, i } of P.tx) {
+          e.textContent = ln.slice(0, Math.max(0, n - used)); used += ln.length + 1;
+          e.setAttribute('x', x - L.w / 2 + 18 + P.size * 0.9); e.setAttribute('y', y - L.h / 2 + 20 + P.size + i * P.size * 1.35);
+        }
+      } else {
+        const ix = L.icon ? L.iw / 2 : 0;
+        L.txt.setAttribute('x', x + ix); L.txt.setAttribute('y', y + 2);
+        if (L.icon) { L.icon.setAttribute('x', x - L.w / 2 + 10); L.icon.setAttribute('y', y - L.size * 0.625); }
+      }
       const show = ease((t - L.at) / 0.35);
       L.g.setAttribute('opacity', show.toFixed(3));
       L.g.setAttribute('transform', `translate(0 ${(12 * (1 - show)).toFixed(1)})`);
@@ -88,7 +162,7 @@ export async function mount(canvas, kind, args = {}, opts = {}) {
     const pivot = new THREE.Group(); pivot.position.set(0, 2.75, 0); scene.add(pivot);
     add(new THREE.SphereGeometry(0.16, 32, 16), M.gold, [0, 0, 0], pivot);
     add(rbox(4.4, 0.12, 0.16, 0.05), M.gold, [0, 0, 0], pivot);
-    const pans = [-1, 1].map((s) => {
+    const pans = await Promise.all([-1, 1].map(async (s) => {
       const hang = new THREE.Group(); hang.position.set(s * 2.05, 0, 0); pivot.add(hang);
       const pan = new THREE.Group(); scene.add(pan);
       const c = col(s < 0 ? 'left' : 'right', s < 0 ? '#E8C268' : '#4C7DFF');
@@ -99,9 +173,13 @@ export async function mount(canvas, kind, args = {}, opts = {}) {
         ch.position.copy(from).addScaledVector(dir, 0.5); ch.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize());
       }
       const anchor = new THREE.Object3D(); anchor.position.set(0, -0.15, 0); pan.add(anchor);
-      label(s < 0 ? args.left : args.right, anchor, { gold: (s < 0) === winL, at: at + 0.3, dy: 70 });
+      const key = s < 0 ? 'left' : 'right';
+      label(s < 0 ? args.left : args.right, anchor, { gold: (s < 0) === winL, at: at + 0.3, dy: 70, key });
+      if (PICS[key] && PICS[key].kind !== 'prompt') {           // the thing itself sits in its pan
+        const tl_ = await tile3d(PICS[key], 0.62); tl_.position.set(0, 0.55, 0); tl_.rotation.x = -0.15; pan.add(tl_);
+      }
       return { hang, pan, s };
-    });
+    }));
     look([0, 2.2, 9.0], [0, 1.5, 0]);
     update = (t) => {
       const k = elastic(Math.min(1, Math.max(0, (t - at) / 1.1)));
@@ -114,7 +192,7 @@ export async function mount(canvas, kind, args = {}, opts = {}) {
     const movers = []; lock.traverse((o) => { if (o.isMesh) { o.castShadow = true; if (o.material.name === 'accent') { o.material = o.material.clone(); o.material.color.copy(col('label', '#E8C268')); } if (/^mover/.test(o.name)) movers.push([o, o.position.y]); } });
     const glow = new THREE.PointLight(col('label', '#E8C268'), 0, 8); glow.position.set(0, 2, 1.5); scene.add(glow);
     const anchor = new THREE.Object3D(); anchor.position.set(0, 0, 0.6); scene.add(anchor);
-    label(args.label, anchor, { gold: true, at: at + 0.4, size: 52, dy: 50 });
+    label(args.label, anchor, { gold: true, at: at + 0.4, size: 52, dy: 50, key: 'label' });
     const box = new THREE.Box3().setFromObject(lock), mid = box.getCenter(new THREE.Vector3());
     look([1.4, mid.y + 0.4, mid.y + 8.5], [0, mid.y, 0]);
     update = (t) => { const k = back(Math.min(1, Math.max(0, (t - at) / 0.7))); for (const [o, y] of movers) o.position.y = y + 0.12 * k; glow.intensity = 6 * ease((t - at) / 0.5); lock.rotation.y = -0.3 + 0.08 * Math.sin(t * 0.6); };
@@ -125,7 +203,7 @@ export async function mount(canvas, kind, args = {}, opts = {}) {
       const c = col(`item${i}`, ['#E8C268', '#4C7DFF', '#38BDF8', '#9B5CFF', '#34C759'][i % 5]);
       const m = add(rbox(3.4 - i * 0.25, 0.42, 2.2 - i * 0.12, 0.1), paint(c, 0.05), [0, 0.21 + i * 0.5, 0]);
       const anchor = new THREE.Object3D(); anchor.position.set(1.9 - i * 0.12, 0, 0); m.add(anchor);
-      label(items[i], anchor, { gold: i === n - 1, at: itemAt(i) + 0.25, size: 40 });
+      label(items[i], anchor, { gold: i === n - 1, at: itemAt(i) + 0.25, size: 40, key: `item${i}` });
       layers.push({ m, y: 0.21 + i * 0.5, at: itemAt(i) });
     }
     look([3.2, 2.6 + n * 0.25, 7.5], [0.3, 0.3 + n * 0.25, 0]);
@@ -138,14 +216,16 @@ export async function mount(canvas, kind, args = {}, opts = {}) {
     const n = Math.max(1, items.length), balls = [];
     for (let i = 0; i < n; i++) {
       const a = (i / n) * Math.PI * 2, c = col(`item${i}`, ['#4C7DFF', '#38BDF8', '#9B5CFF', '#34C759', '#E8C268'][i % 5]);
-      const b = add(new THREE.SphereGeometry(0.26, 32, 16), paint(c, 0.15), [0, 0, 0]);
+      const pic = PICS[`item${i}`];
+      const b = pic && pic.kind !== 'prompt' ? await tile3d(pic, 0.5) : add(new THREE.SphereGeometry(0.26, 32, 16), paint(c, 0.15), [0, 0, 0]);
+      if (b.parent !== scene) scene.add(b);
       const anchor = new THREE.Object3D(); b.add(anchor); anchor.position.set(0, 0.45, 0);
-      label(items[i], anchor, { at: itemAt(i) - 0.6, size: 36 });
+      label(items[i], anchor, { at: itemAt(i) - 0.6, size: 36, key: `item${i}` });
       balls.push({ b, x: Math.cos(a) * 2.4, z: Math.sin(a) * 1.2, at: itemAt(i) });
     }
     const out = add(new THREE.SphereGeometry(0.34, 32, 16), paint(col('label', '#E8C268'), 0.4), [0, 0.35, 0]);
     const oa = new THREE.Object3D(); oa.position.set(0, -0.6, 0); out.add(oa);
-    label(args.label, oa, { gold: true, at: at + 1.0, size: 46 });
+    label(args.label, oa, { gold: true, at: at + 1.0, size: 46, key: 'label' });
     look([0, 3.2, 8.0], [0, 1.7, 0]);
     update = (t) => {
       for (const B of balls) {
@@ -169,7 +249,7 @@ export async function mount(canvas, kind, args = {}, opts = {}) {
     add(rbox(0.1, 1.6, 0.06, 0.03), M.gold, [0, 0.8, 0], needle);
     add(new THREE.CylinderGeometry(0.16, 0.16, 0.12, 32), M.gold, [0, 0, 0], needle).rotation.x = Math.PI / 2;
     const anchor = new THREE.Object3D(); anchor.position.set(0, -0.55, 0.3); scene.add(anchor);
-    label((args.label ? args.label + ' ' : '') + `${Math.round(val)}%`, anchor, { gold: true, at: at + 0.4, size: 50 });
+    label((args.label ? args.label + ' ' : '') + `${Math.round(val)}%`, anchor, { gold: true, at: at + 0.4, size: 50, key: PICS.label && PICS.label.kind === 'prompt' ? null : 'label' });
     look([0, 1.1, 6.5], [0, 1.0, 0]);
     update = (t) => { const k = elastic(Math.min(1, Math.max(0, (t - at) / 1.2))); needle.rotation.z = Math.PI / 2 - Math.PI * (val / 100) * k; };
   } else if (kind === 'transform') {
@@ -178,11 +258,11 @@ export async function mount(canvas, kind, args = {}, opts = {}) {
     for (let i = 0; i < 27; i++) {
       const x = (i % 3) - 1, y = Math.floor(i / 3) % 3, z = Math.floor(i / 9) - 1;
       const m = add(rbox(0.42, 0.42, 0.42, 0.06), paint(cA, 0.05), [0, 0, 0]);
-      cubes.push({ m, a: new THREE.Vector3(-2.4 + x * 0.46, 0.25 + y * 0.46, z * 0.46), b: new THREE.Vector3(2.4 + x * 0.46, 0.25 + y * 0.46, z * 0.46), d: i * 0.025 });
+      cubes.push({ m, a: new THREE.Vector3(-2.0 + x * 0.46, 0.25 + y * 0.46, z * 0.46), b: new THREE.Vector3(2.4 + x * 0.46, 0.25 + y * 0.46, z * 0.46), d: i * 0.025 });
     }
-    const aL = new THREE.Object3D(); aL.position.set(-2.4, -0.15, 0.8); scene.add(aL);
+    const aL = new THREE.Object3D(); aL.position.set(-2.0, -0.15, 0.8); scene.add(aL);
     const bL = new THREE.Object3D(); bL.position.set(2.4, -0.15, 0.8); scene.add(bL);
-    label(args.left, aL, { at: 0.3, size: 42 }); label(args.right, bL, { gold: true, at: at + 1.2, size: 42 });
+    label(args.left, aL, { at: 0.3, size: 42, key: 'left' }); label(args.right, bL, { gold: true, at: at + 1.2, size: 42, key: 'right' });
     look([0, 1.8, 8.4], [0, 0.7, 0]);
     update = (t) => {
       for (const c of cubes) {
@@ -198,30 +278,43 @@ export async function mount(canvas, kind, args = {}, opts = {}) {
     const bulk = add(new THREE.IcosahedronGeometry(1.7, 1), M.ice, [0, 0.4, 0], ice); bulk.scale.set(1.25, 1.0, 1);
     const water = add(new THREE.BoxGeometry(60, 0.02, 40), M.water, [0, 2.0, 0]); water.receiveShadow = false;
     const ta = new THREE.Object3D(); ta.position.set(0, 3.6, 0); ice.add(ta);
-    label(args.label, ta, { gold: true, at: 0.4, size: 44 });
+    label(args.label, ta, { gold: true, at: 0.4, size: 44, key: 'label' });
     items.slice(0, 4).forEach((it, i) => {
       const a = new THREE.Object3D(); a.position.set(i % 2 ? 1.9 : -1.9, 1.2 - Math.floor(i / 2) * 1.0, 1.2); ice.add(a);
-      label(it, a, { at: itemAt(i), size: 36 });
+      label(it, a, { at: itemAt(i), size: 36, key: `item${i}` });
     });
     look([0, 4.6, 9.5], [0, 1.3, 0]);
     update = (t) => { ice.position.y = 0.05 * Math.sin(t * 0.8); ice.rotation.y = 0.15 * Math.sin(t * 0.3); };
   } else if (kind === 'magnify') {
-    // a magnifier glides over a frosted card and shows what is really there
-    const card = add(rbox(4.6, 0.12, 2.6, 0.12), M.white, [0, 0.06, 0]);
-    add(rbox(1.3, 0.06, 0.8, 0.06), paint(col('label', '#E8C268'), 0.3), [0, 0.13, 0]);
-    for (const [x, z] of [[-1.6, -0.7], [1.5, 0.7], [-1.4, 0.8], [1.6, -0.8]]) add(rbox(0.9, 0.04, 0.12, 0.03), M.dark, [x, 0.13, z]);
-    const frost = add(rbox(4.4, 0.04, 2.4, 0.1), new THREE.MeshPhysicalMaterial({ color: '#DCE6FF', roughness: 0.6, transmission: 0.4, transparent: true, opacity: 0.85 }), [0, 0.15, 0]);
+    // owner 2026-11-26: the glass lens SCANS across a frosted card (rows of blurred content); on the word it finds the
+    // hidden thing, which lifts out of the card above it into a spotlight, its real logo or icon on a glossy tile
+    const card = add(rbox(5.2, 0.12, 2.8, 0.12), M.white, [0, 0.06, 0]);
+    for (let r = 0; r < 4; r++) for (let k = 0; k < 3; k++)
+      add(rbox(1.1 + ((r + k) % 3) * 0.25, 0.03, 0.14, 0.03), M.dark, [-1.75 + k * 1.75, 0.13, -0.95 + r * 0.62]);
+    add(rbox(5.0, 0.03, 2.6, 0.1), new THREE.MeshPhysicalMaterial({ color: '#DCE6FF', roughness: 0.65, transmission: 0.35, transparent: true, opacity: 0.8 }), [0, 0.16, 0]);
+    const pic = PICS.label && PICS.label.kind !== 'prompt' ? PICS.label : (PICS.item0 && PICS.item0.kind !== 'prompt' ? PICS.item0 : null);
+    const found = pic ? await tile3d(pic, 0.95) : add(rbox(0.95, 0.95, 0.2, 0.18), paint(col('label', '#E8C268'), 0.35), [0, 0, 0]);
+    if (found.parent !== scene) scene.add(found);
+    const spot = new THREE.SpotLight(0xfff1d6, 0, 12, 0.38, 0.6); spot.position.set(0, 5.5, 1.2); spot.target = found; scene.add(spot);
+    const halo = add(new THREE.RingGeometry(0.55, 0.85, 64), new THREE.MeshBasicMaterial({ color: col('label', '#E8C268'), transparent: true, opacity: 0, side: THREE.DoubleSide }), [0, 0.2, 0]);
+    halo.rotation.x = -Math.PI / 2; halo.castShadow = false;
     const mag = new THREE.Group(); scene.add(mag);
     add(new THREE.TorusGeometry(0.75, 0.08, 16, 64), M.gold, [0, 0, 0], mag).rotation.x = Math.PI / 2;
     add(new THREE.CylinderGeometry(0.72, 0.72, 0.04, 64), M.glass, [0, 0, 0], mag);
-    const handle = add(rbox(0.16, 0.16, 1.5, 0.06), M.dark, [1.05, 0, 1.05], mag); handle.rotation.y = Math.PI / 4;
-    const anchor = new THREE.Object3D(); anchor.position.set(0, 0.6, 0); mag.add(anchor);
-    label(args.label || items[0], anchor, { gold: true, at: at + 0.3, size: 46 });
-    look([0, 4.0, 5.6], [0, 0.2, 0]);
+    add(rbox(0.16, 0.16, 1.5, 0.06), M.dark, [1.05, 0, 1.05], mag).rotation.y = Math.PI / 4;
+    const anchor = new THREE.Object3D(); anchor.position.set(0, 0.85, 0); found.add(anchor);
+    label(args.label || items[0], anchor, { gold: true, at: at + 0.45, size: 46, key: PICS.label ? 'label' : 'item0' });
+    look([0, 3.6, 6.2], [0, 0.7, 0]);
     update = (t) => {
-      const k = ease(Math.min(1, Math.max(0, (t - at + 0.6) / 1.0)));
-      mag.position.set(-2.6 + 2.6 * k, 0.9 + 0.1 * Math.sin(t * 2), 0.1);
-      frost.material.opacity = 0.85 - 0.6 * ease((t - at) / 0.6);
+      // the scan: two passes over the card, slowing to the middle where the thing is, landing on the word
+      const s = Math.min(1, Math.max(0, (t - 0.2) / Math.max(0.6, at - 0.2)));
+      const x = s < 1 ? Math.sin(s * Math.PI * 1.5) * 2.1 * (1 - s) : 0, z = s < 1 ? Math.cos(s * Math.PI * 3) * 0.55 * (1 - s) : 0;
+      const after = ease((t - at - 0.8) / 0.6);
+      mag.position.set(x + 2.0 * after, 0.75 + 0.06 * Math.sin(t * 2.2), z + 0.6 * after);
+      const k = back(Math.min(1, Math.max(0, (t - at) / 0.75)));
+      found.position.set(0, 0.1 + 1.25 * k, 0); found.rotation.set(-0.35 * (1 - k) - 0.1, 0.25 * Math.sin(t * 0.8) * k, 0);
+      found.visible = t >= at - 0.05;
+      spot.intensity = 60 * ease((t - at) / 0.5); halo.material.opacity = 0.5 * ease((t - at) / 0.5);
     };
   } else {
     // cycle: a loop of steps on a ring; a light runs round, each step lights on its word
@@ -231,7 +324,7 @@ export async function mount(canvas, kind, args = {}, opts = {}) {
       const a = (i / n) * Math.PI * 2 - Math.PI / 2, c = col(`item${i}`, ['#4C7DFF', '#38BDF8', '#9B5CFF', '#34C759', '#E8C268'][i % 5]);
       const m = add(new THREE.CylinderGeometry(0.42, 0.42, 0.3, 48), paint(c, 0.1), [Math.cos(a) * R, 0.15, Math.sin(a) * R]);
       const anchor = new THREE.Object3D(); anchor.position.set(0, 0.55, 0); m.add(anchor);
-      label(items[i], anchor, { at: itemAt(i), size: 36 });
+      label(items[i], anchor, { at: itemAt(i), size: 36, key: `item${i}` });
       nodes.push({ m, at: itemAt(i) });
     }
     const runner = add(new THREE.SphereGeometry(0.14, 24, 12), paint(new THREE.Color('#ffffff'), 2), [0, 0.2, 0]);

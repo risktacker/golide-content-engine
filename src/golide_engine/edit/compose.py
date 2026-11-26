@@ -1049,6 +1049,12 @@ class Composer:
         for i, it in enumerate(args.get("items") or []):
             if thing_color(it) != "#E8C268":
                 colors[f"item{i}"] = thing_color(it)
+        # owner 2026-11-26: real logos for apps and models, matching icons for kinds of things, the written prompt
+        from .thing_icons import pictures
+        pics = pictures(args)
+        for k, pic in pics.items():
+            if pic.get("kind") == "logo":
+                colors[k] = pic["color"]
         head = (f'<div class="label" style="position:absolute;left:0;right:0;top:{max(40, self.cy - ch / 2 - 40):.0f}px;'
                 f'text-align:center;font-size:36px">{_e(data["heading"])}</div>') if data.get("heading") else ""
         left = 60 if self.zone and long else (self.w - cw) / 2
@@ -1058,7 +1064,8 @@ class Composer:
                  f'<script type="module">import {{ mount }} from "./three/g3d/metaphor3d.js";'
                  f'window.__g3d = window.__g3d || {{}}; window.__liveWaits = window.__liveWaits || [];'
                  f'window.__liveWaits.push(mount(document.getElementById("{sid}-cv"), {json.dumps(data["kind"])}, {json.dumps(args)}, '
-                 f'{{at: {at}, base: "./hero", colors: {json.dumps(colors)}, overlay: document.getElementById("{sid}-ov")}})'
+                 f'{{at: {at}, base: "./hero", colors: {json.dumps(colors)}, pictures: {json.dumps(pics)}, '
+                 f'prompt: {json.dumps(str(data.get("prompt") or ""))}, overlay: document.getElementById("{sid}-ov")}})'
                  f'.then((r) => {{ window.__g3d["{sid}"] = r; r(0); }}));</script>')
         self.scene(sid, t0, dur, inner)
         self.entrance(sid, t0, how)
