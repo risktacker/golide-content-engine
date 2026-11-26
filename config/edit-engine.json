@@ -30,6 +30,6 @@
   },
   "paused_platforms": [],
   "_paused_platforms_note": "Platforms listed here get no upload on any path (owner switch). Empty = normal production everywhere connected. 2026-11-25: Instagram and LinkedIn were paused by mistake for a few hours and turned back on (the owner only meant the broken 13:00 Short).",
-  "_live_studio_note": "2026-11-26 (owner): the living studio: long studio scenes as the 3D room (assets/goli3d/live, baked light) with the live, rigged Goli (assets/edit/g3d/studio_live.js). Off until the owner approves a TRIAL video; per video it can be switched on in Studio (spec.live_studio).",
-  "live_studio": false
+  "_live_studio_note": "2026-11-26 (owner): the living studio: long studio scenes as the 3D room (assets/goli3d/live, baked light) with the live, rigged Goli (assets/edit/g3d/studio_live.js). On for every video since 2026-11-26 (owner: real production with the 3D studio, no flat studio).",
+  "live_studio": true
 }
