@@ -204,12 +204,24 @@ export async function mount(canvas, opts = {}) {
   const autoMoves = [], beats = [];
   if (plan.auto !== false && words.length) {
     const r = rand(seed * 7 + 3);
-    let last = '', busyTill = -1, sentenceStart = true, side = 'R';
+    let last = '', busyTill = -1, sentenceStart = true, side = 'R', lastBig = -99;
     for (let i = 0; i < words.length; i++) {
       const [ws, we, raw] = words[i]; const w = String(raw || '');
       const clean = w.toLowerCase().replace(/[^a-z0-9']/g, '');
       if (sentenceStart && ws >= busyTill) {
         const ahead = words.slice(i, i + 10).map((x) => String(x[2] || '').toLowerCase()).join(' ');
+        // the bigger acts a person does while talking, when the words call for them, at most one every 18 s:
+        // a sip on a pause or a break, glasses off for "honestly / wait / seriously", a thumbs up for "it works / done",
+        // leaning in for "here's the thing / the secret / listen"
+        const big = (plan.acts !== false) && ws - lastBig > 18 && (
+          /\b(coffee|break|breathe|pause|relax)\b/.test(ahead) && plan.mug !== false ? 'sip'
+          : /\b(honestly|seriously|wait|truth|actually)\b/.test(ahead) ? 'glasses_off'
+          : /\b(works|worked|done|easy|perfect|great)\b/.test(ahead) ? 'thumbs_up'
+          : /(here's the thing|the secret|listen|the trick|pay attention)/.test(ahead) ? 'lean_in' : null);
+        if (big && ws >= busyTill) {
+          autoMoves.push({ name: big, at: ws + 0.05, auto: true }); last = big; lastBig = ws;
+          busyTill = ws + MOVES[big].dur + 0.3; sentenceStart = /[.!?]$/.test(w); continue;
+        }
         let pick = /\b(\d+|one|two|three|four|five|six|seven|eight|nine|ten|first|second|third)\b/.test(ahead) ? 'count'
           : /\b(this|look|here|see|screen)\b/.test(ahead) ? 'point_screen'
           : /\?/.test(ahead) ? 'shrug'

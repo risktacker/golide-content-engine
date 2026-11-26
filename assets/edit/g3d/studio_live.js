@@ -95,6 +95,21 @@ export async function mountStudio(canvas, opts = {}) {
     const tex = await loader.loadAsync(url); tex.colorSpace = THREE.SRGBColorSpace;
     screens[k].material = new THREE.MeshBasicMaterial({ map: tex, toneMapped: false });
   }
+  // the TV's picture over time (plan.tv = [[t, url | null]]): the scene's own picture is ON the 3D screen, so it stays
+  // right when the camera moves (the page's overlay only matches the main shot)
+  const tvAt = [];
+  const blank = screens.tv ? screens.tv.material : null;
+  for (const [t, url] of (plan.tv || [])) {
+    if (!screens.tv) break;
+    if (!url) { tvAt.push([t, blank]); continue; }
+    const tex = await loader.loadAsync(url); tex.colorSpace = THREE.SRGBColorSpace;
+    // cover the screen like the overlay does (object-fit: cover, top aligned)
+    const sb = new THREE.Box3().setFromObject(screens.tv), sw = sb.max.x - sb.min.x, sh = sb.max.y - sb.min.y;
+    const ia = tex.image.width / tex.image.height, sa = sw / sh;
+    if (ia > sa) { tex.repeat.set(sa / ia, 1); tex.offset.set((1 - sa / ia) / 2, 0); } else { tex.repeat.set(1, ia / sa); tex.offset.set(0, 1 - ia / sa); }
+    tvAt.push([t, new THREE.MeshBasicMaterial({ map: tex, toneMapped: false })]);
+  }
+  tvAt.sort((a, b) => a[0] - b[0]);
 
   // camera shots (plan.camera = [{at, shot: 'main'|'wide'|'close'|'screen'|{pos, target, lens}, dur}]): 'main' is the
   // plates' own shot; the others are real camera positions in the room; the camera travels between them (eased)
@@ -133,6 +148,7 @@ export async function mountStudio(canvas, opts = {}) {
       g.rotation.x -= (pr.tilt || 0) * Math.PI / 180 * f;     // the lid: tilt 102 closes it onto the keys, -102 opens it
     }
     placeCamera(t);
+    if (tvAt.length) { let m = blank; for (const [tt, mm] of tvAt) { if (tt > t) break; m = mm; } screens.tv.material = m; }
     goli(t);
     const hold = goli.holding(t);
     if (hold && pieces[hold.piece]) {             // the thing travels in his paw (its base in the palm)
@@ -143,6 +159,8 @@ export async function mountStudio(canvas, opts = {}) {
     renderer.render(scene, cam);
   }
   frame(0);
+  frame.mainShot = (t) => { let k = camKeys[0]; for (const c2 of camKeys) { if (c2.at > t) break; k = c2; }
+    return k.shot === 'main' && (k === camKeys[0] || t - k.at >= (k.dur || 1.4)); };
   frame.camera = cam; frame.pieces = pieces; frame.renderer = renderer; frame.scene = scene;
   return frame;
 }

@@ -1374,6 +1374,41 @@ class Composer:
                        if q.get("pose") in moves and 0 < float(q["at"]) < dur - 1.0][:3]
         P["looks"] += [dict(lk, at=t0 + lk["at"]) for lk in looks]
         P["talk"].append([t0, t0 + dur])
+        if layer == "room":
+            P.setdefault("tv", []).append([t0, self.asset(data["screen"]) if data.get("screen") else None])
+            self._live_direct(P, t0, dur, data)
+        else:
+            P["mug"] = False                            # standing: no mug to sip from
+
+    def _live_direct(self, P, t0, dur, data):
+        """The stage director (owner 2026-11-26: "he can get up, move the chair, walk, come back and sit"): in a long
+        studio scene whose screen shows the real page, at most once every 90 s, Goli pushes back from the desk, rolls
+        back, hops off, walks round to the screen, turns his back to point at it, comes back and sits. Free: no model
+        call, from the scene's length and picture. The camera follows (wide, over his shoulder, back to the main shot)."""
+        X, Y, B = -0.574, -0.95, -0.5
+        P.setdefault("path", [{"at": 0, "x": X, "y": Y, "face": 0}])
+        P.setdefault("sit", [[0, 1]]); P.setdefault("props", []); P.setdefault("camera", [{"at": 0, "shot": "main"}])
+        last = getattr(self, "_last_walk", -999)
+        if not data.get("screen") or dur < 19 or t0 - last < 90:
+            return
+        self._last_walk = t0
+        a = t0 + 1.5
+        P["moves"] = [m for m in P["moves"] if not (a - 1 <= m["at"] <= a + 17)]
+        P["moves"] += [{"name": "push_desk", "at": a}, {"name": "point_screen", "at": a + 7.1}, {"name": "explain", "at": a + 9.6},
+                       {"name": "push_desk", "at": a + 15.0}]
+        P["props"] += [{"at": a + 0.3, "piece": "chair", "dy": 0.45, "dur": 0.9}, {"at": a + 15.2, "piece": "chair", "dy": -0.45, "dur": 0.9}]
+        P["sit"] += [[a + 1.3, 0], [a + 14.4, 1]]
+        P["path"] += [{"at": a + 0.3, "x": X, "y": Y, "face": 0}, {"at": a + 1.2, "x": X, "y": B, "face": 0, "glide": True},
+                      {"at": a + 2.2, "x": X, "y": B, "face": 0}, {"at": a + 4.1, "x": 1.05, "y": B, "face": 0},
+                      {"at": a + 5.8, "x": 1.05, "y": -2.75, "face": 0}, {"at": a + 6.3, "x": 1.05, "y": -2.75, "face": 0},
+                      {"at": a + 7.0, "x": 1.05, "y": -2.75, "face": 140}, {"at": a + 8.8, "x": 1.05, "y": -2.75, "face": 140},
+                      {"at": a + 9.5, "x": 1.05, "y": -2.75, "face": 0}, {"at": a + 10.6, "x": 1.05, "y": -2.75, "face": 0},
+                      {"at": a + 12.1, "x": 1.05, "y": B, "face": 0}, {"at": a + 14.0, "x": X, "y": B, "face": 0},
+                      {"at": a + 15.2, "x": X, "y": B, "face": 0}, {"at": a + 16.1, "x": X, "y": Y, "face": 0, "glide": True}]
+        P["camera"] += [{"at": a + 0.6, "shot": "wide", "dur": 1.6}, {"at": a + 6.4, "shot": "screen", "dur": 1.2},
+                        {"at": a + 9.3, "shot": "wide", "dur": 1.2}, {"at": a + 14.6, "shot": "main", "dur": 1.6}]
+        P["looks"] += [{"at": a + 2.0, "target": "right"}, {"at": a + 5.6, "target": "camera"}, {"at": a + 6.8, "target": "screen"},
+                       {"at": a + 9.4, "target": "camera"}]
 
     def live_host(self, sid, t0, dur, data):
         """The studio scene played live (owner 2026-11-26, assets/edit/g3d/studio_live.js): the 3D room with its
@@ -1427,7 +1462,7 @@ class Composer:
             kit = L["data"].get("outfit") or getattr(self, "outfit", None) or "royal"
             plan = dict(L["plan"], duration=duration)
             if layer == "room":
-                plan["sit"] = [[0, 1]]
+                plan.setdefault("sit", [[0, 1]])
                 canvas = (f'<canvas id="{lid}" width="{self.w}" height="{self.h}" style="position:absolute;left:0;top:0;'
                           f'width:{self.w}px;height:{self.h}px"></canvas>')
                 js = (f'import {{ mountStudio }} from "./three/g3d/studio_live.js";'
@@ -1446,8 +1481,9 @@ class Composer:
                       f'const p = mount(document.getElementById("{lid}"), {{base: "./goli3d", kit: {json.dumps(kit)}, '
                       f'glasses: {json.dumps(kits.glasses(kit))}, plan: {json.dumps(plan)}}});')
                 z = 39
-            titles = "".join(f'<div id="{tsid}-t" style="position:absolute;inset:0;visibility:hidden">{t}</div>'
-                             for tsid, a, d, t in L.get("titles", []))
+            titles = (f'<div id="{lid}-ov" style="position:absolute;inset:0">' + "".join(
+                f'<div id="{tsid}-t" style="position:absolute;inset:0;visibility:hidden">{t}</div>'
+                for tsid, a, d, t in L.get("titles", [])) + '</div>')
             for tsid, a, d, _ in L.get("titles", []):
                 self.tw(f'tl.set("#{tsid}-t",{{visibility:"visible"}},{a:.3f});tl.set("#{tsid}-t",{{visibility:"hidden"}},{a + d:.3f});')
             html += (f'<section id="{lid}-s" class="scene clip" data-start="0" data-duration="{duration:.3f}" style="z-index:{z}">'
@@ -1455,7 +1491,8 @@ class Composer:
                      f'{js} window.__liveWaits.push(p.then((f) => {{ window.__g3d["{lid}"] = f; }}));</script></section>')
             # drawn on the video's own clock; hidden outside its scenes
             self.tw(f'(function(){{var o={{s:0}};tl.fromTo(o,{{s:0}},{{s:{duration:.3f},duration:{duration:.3f},ease:"none",onUpdate:function(){{'
-                    f'var f=window.__g3d&&window.__g3d["{lid}"];if(f)f(o.s);}}}},0);}})();')
+                    f'var f=window.__g3d&&window.__g3d["{lid}"];if(!f)return;f(o.s);var ov=document.getElementById("{lid}-ov");'
+                    f'if(ov&&f.mainShot)ov.style.opacity=f.mainShot(o.s)?1:0;}}}},0);}})();')
             self.tw(f'tl.set("#{lid}",{{autoAlpha:0}},0);')
             merged = []
             for a, d in sorted(L["windows"]):
