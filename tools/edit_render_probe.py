@@ -14,6 +14,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from golide_engine.edit import remote  # noqa: E402
 
 job = sys.argv[1]
+seek = float(sys.argv[2]) if len(sys.argv) > 2 else None
 work = Path("probe"); work.mkdir(exist_ok=True)
 with tarfile.open(fileobj=io.BytesIO(remote.get(job, "bundle.tgz")), mode="r:gz") as tar:
     tar.extractall(work, filter="data")
@@ -33,6 +34,12 @@ try:
             time.sleep(2)
         pg.evaluate("window.__timelines.main.pause()")
         print(json.dumps({"ready_s": round(time.time() - t0, 1)}), flush=True)
+        if seek is not None:                      # one moment of the film, as HyperFrames films it
+            s = time.time()
+            pg.evaluate(f"window.__timelines.main.seek({seek}, false)")
+            pg.screenshot(path="probe/at.jpg", type="jpeg")
+            print(json.dumps({"seek": seek, "s": round(time.time() - s, 2)}), flush=True)
+            sys.exit(0)
         keys = pg.evaluate("Object.keys(window.__g3d||{})")
         for k in keys:
             for t in (0.5, 1.0, 3.0):

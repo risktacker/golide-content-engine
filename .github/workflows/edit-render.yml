@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 120
     strategy:
-      fail-fast: true
+      fail-fast: false            # the other spans finish and are kept for the rerun
       matrix:
         part: ${{ fromJSON(inputs.parts) }}
     steps:
