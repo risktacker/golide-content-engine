@@ -88,5 +88,25 @@
     "signal_type": "owner-replace",
     "query": "Claude Artifacts Just Got a Huge Upgrade"
   },
-  "selected_topic_source": "https://www.youtube.com/watch?v=O_-QoxNBDX0"
+  "selected_topic_source": "https://www.youtube.com/watch?v=O_-QoxNBDX0",
+  "voice_choice": "ai",
+  "platforms": [
+    "youtube",
+    "instagram",
+    "linkedin"
+  ],
+  "video_style": "goli",
+  "looks": {
+    "free": [
+      "puppets",
+      "white",
+      "layers",
+      "circuit",
+      "glass",
+      "xray",
+      "blueprint"
+    ],
+    "paid": {}
+  },
+  "_failed_runs": 1
 }
