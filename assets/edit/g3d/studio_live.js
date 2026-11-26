@@ -48,7 +48,22 @@ export async function mountStudio(canvas, opts = {}) {
     const part = (o.name.match(/^(chair|mug|laptop|mic)__/) || [])[1] || (o.name === 'laptop_screen' ? 'laptop' : null);
     if (part) pieces[part].attach(o);
   }
+  // the laptop's lid on its hinge: the parts standing up from the base (lid, screen, our mark) turn about the hinge line
+  {
+    const lap = pieces.laptop, kids = [...lap.children];
+    const box = new THREE.Box3().setFromObject(lap), baseTop = box.min.y + 0.02;
+    const lid = new THREE.Group();
+    const upright = kids.filter((o) => { const b = new THREE.Box3().setFromObject(o); return b.max.y - b.min.y > 0.08; });
+    if (upright.length) {
+      const lb = new THREE.Box3(); upright.forEach((o) => lb.expandByObject(o));
+      // the hinge: along the lid's bottom edge, at the base's top
+      const hinge = new THREE.Vector3((lb.min.x + lb.max.x) / 2, baseTop, (lb.min.z + lb.max.z) / 2);
+      lid.position.copy(hinge); scene.add(lid); upright.forEach((o) => lid.attach(o)); lap.attach(lid);
+      pieces.lid = lid;
+    }
+  }
   for (const [name, g] of Object.entries(pieces)) {    // each piece turns and slides about its own base
+    if (name === 'lid') continue;
     const pv = set.pieces[name]; if (!pv) continue;
     const pivot = new THREE.Group(); pivot.position.copy(V(pv.base)); scene.add(pivot);
     pivot.attach(g); pieces[name] = pivot;
@@ -62,7 +77,10 @@ export async function mountStudio(canvas, opts = {}) {
 
   const centre = (o) => { const b = new THREE.Box3().setFromObject(o); const v = b.getCenter(new THREE.Vector3()); return [v.x, -v.z, v.y]; };
   const targets = { camera: c.pos, screen: screens.tv ? centre(screens.tv) : [1.2, 0, 2.2], laptop: screens.laptop ? centre(screens.laptop) : [SEAT.x, -1.5, 1.2],
-    mug: centre(pieces.mug), up: [SEAT.x + 0.4, -3, 3.2], down: [SEAT.x, -2.2, 0.6], left: [-3, -2, 1.6], right: [2, -2, 1.6] };
+    mug: centre(pieces.mug), chair: (() => { const b = new THREE.Box3().setFromObject(pieces.chair); return [(b.min.x + b.max.x) / 2, -b.max.z + 0.05, b.max.y - 0.25]; })(),
+    lid: pieces.lid ? (() => { const b = new THREE.Box3().setFromObject(pieces.lid); return [(b.min.x + b.max.x) / 2, -(b.min.z + b.max.z) / 2, b.max.y]; })() : c.pos,
+    desk_r: [SEAT.x + 0.28, set.desk.front_y + 0.9, set.desk.top_z + 0.02], desk_l: [SEAT.x - 0.28, set.desk.front_y + 0.9, set.desk.top_z + 0.02],
+    up: [SEAT.x + 0.4, -3, 3.2], down: [SEAT.x, -2.2, 0.6], left: [-3, -2, 1.6], right: [2, -2, 1.6] };
 
   const plan = opts.plan || {};
   plan.path = plan.path || [{ at: 0, x: SEAT.x, y: SEAT.y, face: 0 }];
@@ -84,7 +102,7 @@ export async function mountStudio(canvas, opts = {}) {
     main: { pos: c.pos, target: [c.pos[0], c.pos[1] + 1, c.pos[2]], lens: c.lens, shift: c.shift_y },
     wide: { pos: [0.35, -8.6, 2.75], target: [0.1, -1.2, 0.75], lens: 30, shift: 0 },
     close: { pos: [SEAT.x + 0.35, -3.9, 1.62], target: [SEAT.x, -1.0, 1.38], lens: 55, shift: 0 },
-    screen: { pos: [-0.2, -5.6, 2.1], target: [1.3, 0, 1.75], lens: 36, shift: 0 },
+    screen: { pos: [-0.9, -4.4, 1.95], target: [1.4, 0, 1.8], lens: 34, shift: 0 },   // over his shoulder when he stands at the screen
   };
   const shotOf = (s) => (typeof s === 'string' ? SHOTS[s] || SHOTS.main : { shift: 0, ...s });
   const camKeys = (plan.camera || [{ at: 0, shot: 'main' }]).slice().sort((a, b) => a.at - b.at);
@@ -105,13 +123,14 @@ export async function mountStudio(canvas, opts = {}) {
   }
 
   const props = (plan.props || []).slice().sort((a, b) => a.at - b.at);
-  const home = {}; for (const [k, g] of Object.entries(pieces)) home[k] = { p: g.position.clone(), r: g.rotation.y };
+  const home = {}; for (const [k, g] of Object.entries(pieces)) home[k] = { p: g.position.clone(), r: g.rotation.y, x: g.rotation.x };
   function frame(t) {
-    for (const [k, g] of Object.entries(pieces)) { g.position.copy(home[k].p); g.rotation.y = home[k].r; }
+    for (const [k, g] of Object.entries(pieces)) { g.position.copy(home[k].p); g.rotation.y = home[k].r; g.rotation.x = home[k].x; }
     for (const pr of props) {
       const g = pieces[pr.piece]; if (!g || t < pr.at) continue;
       const f = ease((t - pr.at) / (pr.dur || 0.8));
       g.position.x += (pr.dx || 0) * f; g.position.z -= (pr.dy || 0) * f; g.rotation.y -= (pr.turn || 0) * Math.PI / 180 * f;
+      g.rotation.x -= (pr.tilt || 0) * Math.PI / 180 * f;     // the lid: tilt 102 closes it onto the keys, -102 opens it
     }
     placeCamera(t);
     goli(t);

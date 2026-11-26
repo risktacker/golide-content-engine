@@ -62,6 +62,15 @@ export const MOVES = {
   sip: { dur: 3.0, look: 'mug', hold: { piece: 'mug', side: 'R', from: 0.55, to: 2.45 }, keys: [
     { t: 0.55, reach: { side: 'R', target: 'mug' } }, { t: 1.2, reach: { side: 'R', target: 'mouth' }, rot: { head: [-8, 0, 0] } },
     { t: 1.9, reach: { side: 'R', target: 'mouth' }, rot: { head: [-10, 0, 0] } }, { t: 2.45, reach: { side: 'R', target: 'mug' } }] },
+  // seated, both hands on the desk's edge: he pushes himself back in the chair (or pulls himself in)
+  push_desk: { dur: 1.3, look: 'laptop', keys: [{ t: 0.35, reach: { side: 'R', target: 'desk_r' } }, { t: 0.95, reach: { side: 'R', target: 'desk_r' } }],
+    also: { side: 'L', target: 'desk_l' } },
+  // his hand on the chair's back as he rolls it away to get up, or pulls it in to sit (studio_live.js moves the chair)
+  push_chair: { dur: 1.4, look: 'chair', keys: [{ t: 0.4, reach: { side: 'R', target: 'chair' }, rot: { chest: [0, 25, 0], head: [0, 20, 0] } },
+    { t: 1.0, reach: { side: 'R', target: 'chair' }, rot: { chest: [0, 25, 0], head: [0, 20, 0] } }] },
+  // closes (or opens) the laptop's lid with one hand on its top edge
+  lid: { dur: 1.5, look: 'laptop', keys: [{ t: 0.45, reach: { side: 'R', target: 'lid' }, rot: { head: [10, 0, 0] } },
+    { t: 1.05, reach: { side: 'R', target: 'lid' }, rot: { head: [12, 0, 0] } }] },
   both_up: { dur: 1.4, keys: [{ t: 0.35, aim: both([0.5, -0.1, 0.85], [0.1, -0.1, 1]) }, { t: 1.0, aim: both([0.5, -0.1, 0.85], [0.1, -0.1, 1]) }] },
 };
 
@@ -268,6 +277,10 @@ export async function mount(canvas, opts = {}) {
     const a = path[k], b = path[Math.min(k + 1, path.length - 1)];
     if (a === b || t <= a.at) return { x: a.x, y: a.y, face: a.face || 0, walk: 0, dist: walkLen[k], moving: false };
     const span = b.at - a.at, d = Math.hypot(b.x - a.x, b.y - a.y);
+    if (b.glide) {                                // carried (he rolls back in his chair): no steps, same facing
+      const f = ease((t - a.at) / span);
+      return { x: a.x + (b.x - a.x) * f, y: a.y + (b.y - a.y) * f, face: (a.face || 0) + angDiff(a.face || 0, b.face || 0) * f, walk: 0, dist: walkLen[k], moving: false };
+    }
     if (d < 0.01) { const f = ease((t - a.at) / Math.min(span, 0.8)); return { x: a.x, y: a.y, face: (a.face || 0) + angDiff(a.face || 0, b.face || 0) * f, walk: 0, dist: walkLen[k], moving: false }; }
     // turn toward the way (0.35 s), walk with an eased start and stop, turn to the new facing (0.35 s)
     const head = Math.atan2(b.x - a.x, -(b.y - a.y)) / D;   // facing angle that walks toward b
@@ -367,6 +380,8 @@ export async function mount(canvas, opts = {}) {
         const da = dirs(RA || RB), db = dirs(RB || RA);
         aimTo('upper_arm' + da.side, da.up.clone().lerp(db.up, f).normalize(), w);
         aimTo('forearm' + da.side, da.fore.clone().lerp(db.fore, f).normalize(), w);
+        const A2 = MOVES[mv.name].also;
+        if (A2) { const d2 = dirs(A2); aimTo('upper_arm' + d2.side, d2.up, w); aimTo('forearm' + d2.side, d2.fore, w); }
       }
       // shoulder to hand, in order, so each child aims from where its parent landed
       for (const name of ['upper_armL', 'forearmL', 'upper_armR', 'forearmR']) {
