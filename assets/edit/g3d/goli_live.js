@@ -83,7 +83,33 @@ export const MOVES = {
   thumbs_up: { dur: 1.6, paws: { R: 'thumb' }, look: 'camera', keys: [{ t: 0.4, aim: arm('R', [0.23, -0.3, -0.2], [-0.08, -0.25, 0.22]) , rot: { handR: [0, -70, 0] } },
     { t: 1.2, aim: arm('R', [0.23, -0.3, -0.2], [-0.08, -0.25, 0.22]), rot: { head: [4, 0, -3], handR: [0, -70, 0] } }] },
   both_up: { paws: { L: 'point', R: 'point' }, dur: 1.4, keys: [{ t: 0.35, aim: both([0.5, -0.1, 0.85], [0.1, -0.1, 1]) }, { t: 1.0, aim: both([0.5, -0.1, 0.85], [0.1, -0.1, 1]) }] },
+  // the relaxed YouTuber (owner 2026-11-26: "not professional like scholars, like a normal dude, a YouTuber, on easy,
+  // a bit of play"): one loose hand talking, pointing at the viewer, nodding along, a laugh, leaning back, chin on
+  // the paw, a little swivel of the chair
+  hand_flick: { dur: 1.3, keys: [{ t: 0.35, aim: arm('R', [0.35, -0.6, -0.7], [0.45, -0.85, 0.25]), rot: { head: [0, -6, 3] } },
+    { t: 0.9, aim: arm('R', [0.38, -0.58, -0.7], [0.62, -0.72, 0.22]), rot: { head: [2, -4, 2] } }] },
+  hand_flickL: { dur: 1.3, keys: [{ t: 0.35, aim: arm('L', [-0.35, -0.6, -0.7], [-0.45, -0.85, 0.25]), rot: { head: [0, 6, -3] } },
+    { t: 0.9, aim: arm('L', [-0.38, -0.58, -0.7], [-0.62, -0.72, 0.22]), rot: { head: [2, 4, -2] } }] },
+  point_camera: { paws: { R: 'point' }, dur: 1.4, look: 'camera', keys: [
+    { t: 0.35, aim: arm('R', [0.22, -0.75, -0.35], [0.02, -1, 0.18]), rot: { head: [-3, 0, 4] } },
+    { t: 1.0, aim: arm('R', [0.22, -0.75, -0.35], [0.02, -1, 0.2]), rot: { head: [-2, 0, 3] } }] },
+  nod_yes: { dur: 1.2, look: 'camera', keys: [{ t: 0.25, rot: { head: [9, 0, 0] } }, { t: 0.5, rot: { head: [-2, 0, 0] } },
+    { t: 0.75, rot: { head: [7, 0, 0] } }, { t: 1.0, rot: { head: [0, 0, 0] } }] },
+  laugh: { dur: 1.5, look: 'camera', keys: [
+    { t: 0.25, rot: { head: [-12, 0, 5], chest: [-4, 0, 0], shoulderL: [0, 0, 6], shoulderR: [0, 0, -6] }, aim: both([0.25, -0.5, -0.82], [-0.45, -0.85, 0.2]) },
+    { t: 0.5, rot: { head: [-7, 0, 4], chest: [-2, 0, 0] } },
+    { t: 0.75, rot: { head: [-11, 0, 5], chest: [-4, 0, 0], shoulderL: [0, 0, 5], shoulderR: [0, 0, -5] } },
+    { t: 1.1, rot: { head: [-4, 0, 2] } }] },
+  lean_back: { dur: 3.2, look: 'camera', keys: [
+    { t: 0.6, rot: { spine: [-7, 0, 0], chest: [-4, 0, 0], head: [5, 0, 4] }, aim: both([0.14, -0.35, -0.93], [-0.55, -0.75, 0.12]) },
+    { t: 2.6, rot: { spine: [-7, 0, 0], chest: [-4, 0, 0], head: [5, 0, 3] }, aim: both([0.14, -0.35, -0.93], [-0.55, -0.75, 0.12]) }] },
+  chin_rest: { paws: { R: 'fist' }, dur: 2.6, look: 'camera', keys: [
+    { t: 0.55, aim: arm('R', [0.12, -0.72, -0.68], [-0.38, -0.3, 0.87]), rot: { head: [6, 0, -7], spine: [4, 0, 0] } },
+    { t: 2.1, aim: arm('R', [0.12, -0.72, -0.68], [-0.38, -0.3, 0.87]), rot: { head: [6, 3, -6], spine: [4, 0, 0] } }] },
+  swivel: { dur: 2.2, keys: [{ t: 0.6, rot: { spine: [0, 9, 0], chest: [0, 4, 0], head: [0, -8, 0] } },
+    { t: 1.4, rot: { spine: [0, -5, 0], chest: [0, -2, 0], head: [0, 5, 0] } }, { t: 2.0, rot: { spine: [0, 0, 0] } }] },
 };
+const SEATED_ONLY = new Set(['chin_rest', 'lean_back', 'swivel', 'type']);
 
 // Blender renders Goli with AgX and the "Punchy" look; three.js has plain AgX only, which made him look faded
 // (owner 2026-11-26: "don't change the colour of him, don't make him fade"). This is three's AgX with Blender's
@@ -226,14 +252,27 @@ export async function mount(canvas, opts = {}) {
           autoMoves.push({ name: big, at: ws + 0.05, auto: true }); last = big; lastBig = ws;
           busyTill = ws + MOVES[big].dur + 0.3; sentenceStart = /[.!?]$/.test(w); continue;
         }
+        const casual = plan.vibe !== 'formal';     // owner 2026-11-26: the relaxed YouTuber is the default
+        const first = words.slice(i, i + 4).map((x) => String(x[2] || '').toLowerCase()).join(' ');
         let pick = /\b(\d+|one|two|three|four|five|six|seven|eight|nine|ten|first|second|third)\b/.test(ahead) ? 'count'
           : /\b(this|look|here|see|screen)\b/.test(ahead) ? 'point_screen'
+          : casual && /\b(crazy|insane|wild|funny|lol|haha|ridiculous|joke|hilarious|mad)\b/.test(ahead) ? 'laugh'
+          : casual && /\b(yes|yeah|right|exactly|true|correct|sure)\b/.test(first) ? 'nod_yes'
           : /\?/.test(ahead) ? 'shrug'
-          : /\b(think|wonder|maybe|imagine)\b/.test(ahead) ? 'think'
-          : /\b(you|your)\b/.test(ahead) ? 'open_palms'
+          : /\b(think|wonder|maybe|imagine|guess)\b/.test(ahead) ? (casual && r() < 0.6 ? 'chin_rest' : 'think')
+          : /\b(you|your)\b/.test(ahead) ? (casual && r() < 0.45 ? 'point_camera' : 'open_palms')
+          : casual ? ['hand_flick', 'hand_flickL', 'open_palms', 'hand_flick', 'explain', 'swivel'][Math.floor(r() * 6)]
           : r() < 0.55 ? 'explain' : 'open_palms';
-        if (pick === last) pick = pick === 'explain' ? 'open_palms' : 'explain';
+        if (pick === last) pick = pick === 'hand_flick' ? 'hand_flickL' : pick === 'explain' ? 'open_palms' : 'hand_flick';
         if (r() < 0.8) { autoMoves.push({ name: pick, at: ws + 0.05, auto: true }); last = pick; busyTill = ws + MOVES[pick].dur + 0.3; }
+      }
+      if (plan.vibe !== 'formal' && /[!]$|[.]$/.test(w) && we >= busyTill - 0.2) {
+        let k = i; while (k > 0 && !/[.!?]$/.test(String(words[k - 1][2] || ''))) k--;
+        const nxt = words[i + 1] ? words[i + 1][0] : we + 2;
+        if ((i - k < 6 || /!$/.test(w)) && nxt - we > 0.35 && we - (autoMoves.leanAt ?? -99) > 25) {
+          autoMoves.push({ name: 'lean_back', at: we + 0.05, auto: true }); autoMoves.leanAt = we;
+          busyTill = we + MOVES.lean_back.dur + 0.2; last = 'lean_back';
+        }
       }
       sentenceStart = /[.!?]$/.test(w);
       const stressed = /\d/.test(w) || clean.length >= 7 || /^[A-Z]/.test(w) && i > 0 || /,$/.test(w);
@@ -322,6 +361,7 @@ export async function mount(canvas, opts = {}) {
     for (const m of moves) {
       const M = MOVES[m.name], d = t - m.at;
       if (d < 0 || d >= M.dur) continue;
+      if (SEATED_ONLY.has(m.name) && m.auto && sitAt(m.at).w < 0.5) continue;   // a chair move needs the chair
       const w = Math.min(ease(d / 0.35), ease((M.dur - d) / 0.4));
       let a = M.keys[0], b = M.keys[M.keys.length - 1];
       for (let k = 0; k < M.keys.length - 1; k++) if (d >= M.keys[k].t && d < M.keys[k + 1].t) { a = M.keys[k]; b = M.keys[k + 1]; }
