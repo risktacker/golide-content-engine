@@ -29,7 +29,8 @@ export function cleanLooks(value) {
     const count = Math.max(0, Math.min(20, Math.round(Number(n) || 0)));
     if (PAID_LOOKS.includes(key) && count) paid[key] = count;
   }
-  return { free, paid };
+  // owner 2026-11-26: the living studio (3D room, live Goli) for this video, a TRIAL tick next to the styles
+  return value.live === true ? { free, paid, live: true } : { free, paid };
 }
 
 function text(value, max = 20000) {

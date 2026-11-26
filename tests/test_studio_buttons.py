@@ -48,3 +48,12 @@ class StudioButtonsReachTheEngine(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_the_living_studio_tick_switches_the_3d_room_on_for_that_video_only(monkeypatch):
+    # owner 2026-11-26: the TRIAL tick next to the styles in Studio
+    from golide_engine.edit.pipeline import live_switch
+    monkeypatch.delenv("GOLIDE_LIVE_STUDIO", raising=False)
+    assert live_switch({"looks": {"free": ["layers"], "paid": {}, "live": True}}, {"live_studio": False})
+    assert not live_switch({"looks": {"free": ["layers"], "paid": {}}}, {"live_studio": False})
+    assert live_switch({}, {"live_studio": True})

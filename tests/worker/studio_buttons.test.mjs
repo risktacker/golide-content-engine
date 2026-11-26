@@ -129,3 +129,13 @@ test("The engine's Made with report is kept on the video and shown in the list",
   assert.equal(mw.kit, "ember");
   assert.deepEqual(mw.platforms, ["youtube"]);
 });
+
+test("The living studio tick reaches the video's spec, and stays off when not ticked", async () => {
+  // owner 2026-11-26: a TRIAL tick next to the styles
+  const env = await studio();
+  job(env, "jL1", "waiting_owner_voice"); job(env, "jL2", "waiting_owner_voice");
+  await press(env, "/api/production-jobs/jL1/ai-voice", { style: "goli", platforms: ["youtube"], looks: { free: ["layers"], paid: {}, live: true } });
+  await press(env, "/api/production-jobs/jL2/ai-voice", { style: "goli", platforms: ["youtube"], looks: { free: ["layers"], paid: {} } });
+  assert.equal(spec(env, "jL1").looks.live, true);
+  assert.equal(spec(env, "jL2").looks.live, undefined);
+});

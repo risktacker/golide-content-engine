@@ -329,7 +329,7 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
         # the living studio (owner 2026-11-26): the 3D room with the live Goli in long studio scenes; per video in
         # Studio (spec.live_studio) or for all by config (edit-engine.json live_studio); off until the owner approves
         cfg = json.loads((ROOT / "config" / "edit-engine.json").read_text(encoding="utf-8"))
-        edit["live_studio"] = bool(spec.get("live_studio", cfg.get("live_studio", False))) or os.environ.get("GOLIDE_LIVE_STUDIO") == "1"
+        edit["live_studio"] = live_switch(spec, cfg)
         print(json.dumps({"status": "edit_render", "outfit": outfit, "music": (track or {}).get("title", "bed"),
                           "live_studio": edit["live_studio"]}))
         render(edit, folder, narration, video_path, outfit, track)
@@ -368,3 +368,10 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
         labels.write_text(words_to_srt([{"word": s["type"].replace("_", " ").upper(), "start": s["start"],
                                          "end": s["start"] + s["duration"]} for s in edit["scenes"]]), encoding="utf-8")
     return json.loads(track_path.read_text(encoding="utf-8")) if track_path.exists() else None
+
+
+def live_switch(spec: dict, cfg: dict) -> bool:
+    """The living studio for this video (owner 2026-11-26): his TRIAL tick in Studio (spec.looks.live), spec.live_studio,
+    the rebuild's TRIAL input (GOLIDE_LIVE_STUDIO=1), or the config's live_studio for every video."""
+    return (bool(spec.get("live_studio", cfg.get("live_studio", False))) or bool((spec.get("looks") or {}).get("live"))
+            or os.environ.get("GOLIDE_LIVE_STUDIO") == "1")

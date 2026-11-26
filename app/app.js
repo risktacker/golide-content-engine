@@ -756,7 +756,10 @@ function looksHtml() {
       '<label class="post-chip"><input type="checkbox" class="look-free" value="' + key + '" checked><span>' + name + '</span></label>').join("") + '</div>' +
     (PAID_LOOKS.length ? '<div class="looks-row"><span class="looks-kind">Paid, about $' + PAID_EACH.toFixed(2) + ' a scene</span>' + PAID_LOOKS.map(([key, name]) =>
       '<label class="look-paid"><span>' + name + '</span><input type="number" class="look-count" data-look="' + key + '" min="0" max="20" step="1" value="0" inputmode="numeric"></label>').join("") + '</div>' +
-    '<span class="looks-cost">Extra cost: $0.00</span>' : '') + '</div>';
+    '<span class="looks-cost">Extra cost: $0.00</span>' : '') +
+    // owner 2026-11-26: the living studio, free, a TRIAL until he approves it
+    '<div class="looks-row"><span class="looks-kind">TRIAL</span><label class="post-chip"><input type="checkbox" class="look-live">' +
+    '<span>Living studio (Goli moves in 3D)</span></label></div></div>';
 }
 
 function readLooks(root) {
@@ -765,7 +768,8 @@ function readLooks(root) {
     const n = Math.max(0, Math.min(20, Math.round(Number(input.value) || 0)));
     if (n) paid[input.dataset.look] = n;
   });
-  return { free: [...root.querySelectorAll(".look-free:checked")].map((input) => input.value), paid };
+  const live = root.querySelector(".look-live:checked") ? { live: true } : {};
+  return Object.assign({ free: [...root.querySelectorAll(".look-free:checked")].map((input) => input.value), paid }, live);
 }
 
 function bindLooks(root) {
