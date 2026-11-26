@@ -58,6 +58,17 @@ Owner: Esiah (Lusaka, UTC+2). Direct, no sugar-coating. Studio: studio.golidee.c
   style, in rotation per upload (`goli3d/kits.py` choose: the next after the last record's "kit"), in the video sprites
   and the thumbnail library (`full/kits/<outfit>/`, goli3d-library.yml kind=library kit=all). Blinks are smooth:
   half, closed, half (0.2 s), a double blink now and then. Eye movement (gaze) waits for the Blender motion session.
+- Living studio (owner 2026-11-26: "real and smooth, like real talking", "full 3D, including the back", "the whole office
+  equipment", "don't change his colour, don't make him fade"): Goli rigged once in Blender (`goli3d/rig_build.py`,
+  `tools/goli3d_rig.py`: skeleton with knees, skinned parts, baked eyes and crease shading, swap mouths/lids/glasses,
+  kit colours) and the studio as one 3D room (`goli3d/studio_export.py`, `tools/goli3d_studio_live.py`: whole room,
+  real chair, Cycles light baked per piece, reflections except the floor), played in the video by three.js
+  (`assets/edit/g3d/goli_live.js`, `studio_live.js`): Blender's AgX Punchy look and fitted light (his real colours),
+  breathing, seeded blinks and glances, lip-sync, gestures from the spoken words with beats, 17+ moves (point at the
+  real screen, sip from the real mug, close/open the lid, push back from the desk), walking with knees and turns,
+  sitting/standing, the chair rolling, camera shots (main = the plates' shot, wide, close, screen). Switch:
+  `edit-engine.json` live_studio (off until the owner approves a TRIAL video) or spec.live_studio per video; long studio
+  scenes and the standing Goli on Shorts. About 1 s a frame at 1080p on 2 CPUs.
 - Pausing a platform: `config/edit-engine.json` paused_platforms (empty = normal production on every connected platform,
   `reels.paused_platforms`). Only on the owner's word; "off that video" means that one video, not all of them.
 - Short models (owner 2026-11-25): channels like Outskill, AI how-to and the tech industry told as tech (the GTA 6 Short,

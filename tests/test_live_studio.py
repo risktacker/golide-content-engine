@@ -32,7 +32,16 @@ def test_the_switch_on_plays_the_3d_room_and_waits_for_it(tmp_path):
     assert '"glasses": "aviator"' in page.replace("glasses: ", '"glasses": ') or "aviator" in page   # the kit's glasses
 
 
-def test_a_short_never_uses_it(tmp_path):
+def test_a_short_never_uses_the_studio_room(tmp_path):
     e = _edit(True); e["format"] = "short"
     page = Composer("short", outfit="royal").build(e, tmp_path / "c").read_text()
     assert "studio_live.js" not in page
+
+
+def test_a_short_plays_the_standing_goli_live_under_the_proof(tmp_path):
+    e = _edit(True); e["format"] = "short"
+    e["scenes"][0]["data"]["place"] = "side"
+    page = Composer("short", outfit="royal").build(e, tmp_path / "c").read_text()
+    assert 'import { mount } from "./three/g3d/goli_live.js"' in page and "studio_live.js" not in page
+    plan = json.loads(page.split("plan: ", 1)[1].split("}).then", 1)[0])
+    assert "sit" not in plan and plan["moves"] == [{"name": "point_up", "at": 1.5}]

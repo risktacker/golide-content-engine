@@ -1404,6 +1404,45 @@ class Composer:
         self.tw(f'tl.to("#brand .logo",{{opacity:0,duration:.2}},{t0:.3f});tl.to("#brand .logo",{{opacity:.92,duration:.3}},{t0 + dur:.3f});')
         self.cue("pop", t0 + 0.1)
 
+    def live_standing(self, sid, t0, dur, data, x, y, w, size):
+        """Goli standing beside or under the proof, live (owner 2026-11-26): the rigged Goli in his sprites' own box and
+        camera, so the layout stays as it is; he talks with his hands from the words and looks at the proof above."""
+        self.uses_three = True
+        self.uses_live = True
+        self.live_n += 1
+        moves = {"point": "point_up", "point_left": "point_up", "explain": "explain", "think": "think", "shrug": "shrug",
+                 "point_up": "point_up", "point_both_up": "both_up", "wave": "wave", "thumbs_up": "both_up"}
+        plan = {
+            "seed": 31 + self.live_n, "duration": dur,
+            "cues": [[float(c["start"]), c["value"]] for c in data.get("cues") or [] if float(c["start"]) < dur],
+            "words": [[a - t0, a - t0 + 0.2, wd] for a, wd in self.spoken if t0 <= a < t0 + dur],
+            "moves": [{"name": moves[p["pose"]], "at": float(p["at"])} for p in data.get("poses") or []
+                      if p.get("pose") in moves and 0 < float(p["at"]) < dur - 1.0][:3],
+            "looks": [{"at": 0, "target": "camera"}, {"at": 1.2, "target": "up"}, {"at": 2.4, "target": "camera"}],
+            "talk": [[0, dur]],
+        }
+        from ..goli3d import kits, video as goli3d
+        kit = data.get("outfit") or getattr(self, "outfit", None) or "royal"
+        fx0, fy0, fx1, fy1 = goli3d.frame()             # the sprites' crop of the 1000 x 1100 render
+        k = size / (fy1 - fy0)
+        cw, ch = 1000, 1100
+        left, top = x - fx0 * k, y - fy0 * k
+        mirror = self.fmt == "long"
+        inner = (f'<div id="{sid}-ch" data-box="goli" style="position:absolute;left:{x:.0f}px;top:{y:.0f}px;width:{w:.0f}px;height:{size}px"></div>'
+                 f'<canvas id="{sid}-live" width="{cw}" height="{ch}" style="position:absolute;left:{left:.0f}px;top:{top:.0f}px;'
+                 f'width:{cw * k:.0f}px;height:{ch * k:.0f}px;{"transform:scaleX(-1);" if mirror else ""}"></canvas>'
+                 f'<script type="module">import {{ mount }} from "./three/g3d/goli_live.js";'
+                 f'window.__g3d = window.__g3d || {{}}; window.__liveWaits = window.__liveWaits || [];'
+                 f'window.__liveWaits.push(mount(document.getElementById("{sid}-live"), '
+                 f'{{base: "./goli3d", kit: {json.dumps(kit)}, glasses: {json.dumps(kits.glasses(kit))}, plan: {json.dumps(plan)}}})'
+                 f'.then((f) => {{ window.__g3d["{sid}"] = f; }}));</script>')
+        self.parts.append(f'<section id="{sid}" class="scene clip" data-start="{t0:.3f}" data-duration="{dur:.3f}" style="z-index:40">'
+                          f'<div class="stage"><div class="cam">{inner}</div></div></section>')
+        self.tw(f'(function(){{var o={{s:0}};tl.fromTo(o,{{s:0}},{{s:{dur:.3f},duration:{dur:.3f},ease:"none",onUpdate:function(){{'
+                f'var f=window.__g3d&&window.__g3d["{sid}"];if(f)f(o.s);}}}},{t0:.3f});}})();')
+        self.tw(f'tl.fromTo("#{sid}-live",{{y:{size * 0.4:.0f},opacity:0}},{{y:0,opacity:1,duration:.45,ease:"back.out(1.5)"}},{t0:.3f});')
+        self.cue("pop", t0 + 0.1)
+
     def host(self, t0, dur, data, how="rise"):
         """Pango, the GOLIDE host, talking with the owner's voice. place: full (left half, the scene's
         words on the right), left/right (standing beside another scene), corner (small bubble over a
@@ -1444,6 +1483,8 @@ class Composer:
             y = (1700 if self.fmt == "short" else self.h + 30) - size
         if place in ("studio", "lower"):      # seated: desk top at his waist
             y = studio.layout(self.fmt if place == "studio" else "lower")["desk_y"] - goli3d.waist(size)
+        if place == "side" and getattr(self, "live_side", False):
+            return self.live_standing(sid, t0, dur, data, x, y, w, size)
         # 2026-11-13 (owner): Goli gestures TOWARD what he talks about. His poses point to screen right; standing on
         # the right of a long video (the content on his left) he is mirrored, so a point, a thumbs up or a look goes
         # to the content and never off the frame edge. A pose that would point away from the content is turned round.
@@ -1675,6 +1716,8 @@ class Composer:
         self.reacts = reactions(edit)
         # the living studio (owner 2026-11-26): long studio scenes as the 3D room with the live Goli, when switched on
         self.live = bool(edit.get("live_studio")) and self.fmt == "long" and live_ready()
+        # Shorts are long videos in 9:16 (owner 2026-11-25): the same switch makes the standing Goli under the proof live
+        self.live_side = bool(edit.get("live_studio")) and live_ready()
         self.spoken = [(float(w["at"]), str(w.get("text", ""))) for c in (edit.get("captions") or []) for w in c.get("words", [])]
         self.live_n = 0
         for s in edit["scenes"]:
