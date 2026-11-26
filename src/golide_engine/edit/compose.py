@@ -1029,10 +1029,49 @@ class Composer:
                           f'data-duration="{dur:.3f}" data-volume="0" style="position:absolute;left:{x}px;top:{y}px;'
                           f'width:{w}px;height:{h}px;object-fit:cover;border-radius:14px"></video>')
 
+    def metaphor3d(self, t0, dur, data, how="rise"):
+        """Owner 2026-11-26 ("rebuild in 3D and make them colour match to a said thing"): the nine metaphors as real
+        3D scenes in studio light (assets/edit/g3d/metaphor3d.js); each thing takes the colour of what it names (a
+        brand's own colour, a colour word), the move lands on the spoken word, the words ride on labels pinned to the
+        parts. The film waits for the scene to load."""
+        sid = self._id("meta3d")
+        self.uses_three = True
+        self.uses_hero = True
+        self.uses_meta3d = True
+        long = self.fmt == "long"
+        cw, ch = ((1440 if self.zone else 1640), 900) if long else (1000, 1000)
+        at = float(data.get("at", 1.0))
+        args = {k: v for k, v in data.items() if k not in ("kind", "at", "goli_zone", "heading")}
+        colors = {}
+        for k in ("left", "right", "label"):
+            if args.get(k) and thing_color(args[k]) != "#E8C268":
+                colors[k] = thing_color(args[k])
+        for i, it in enumerate(args.get("items") or []):
+            if thing_color(it) != "#E8C268":
+                colors[f"item{i}"] = thing_color(it)
+        head = (f'<div class="label" style="position:absolute;left:0;right:0;top:{max(40, self.cy - ch / 2 - 40):.0f}px;'
+                f'text-align:center;font-size:36px">{_e(data["heading"])}</div>') if data.get("heading") else ""
+        left = 60 if self.zone and long else (self.w - cw) / 2
+        pos = f'position:absolute;left:{left:.0f}px;top:{self.cy - ch / 2 + 20:.0f}px;width:{cw}px;height:{ch}px'
+        inner = (f'{head}<canvas id="{sid}-cv" width="{cw}" height="{ch}" style="{pos}"></canvas>'
+                 f'<svg id="{sid}-ov" viewBox="0 0 {cw} {ch}" width="{cw}" height="{ch}" style="{pos};overflow:visible"></svg>'
+                 f'<script type="module">import {{ mount }} from "./three/g3d/metaphor3d.js";'
+                 f'window.__g3d = window.__g3d || {{}}; window.__liveWaits = window.__liveWaits || [];'
+                 f'window.__liveWaits.push(mount(document.getElementById("{sid}-cv"), {json.dumps(data["kind"])}, {json.dumps(args)}, '
+                 f'{{at: {at}, base: "./hero", colors: {json.dumps(colors)}, overlay: document.getElementById("{sid}-ov")}})'
+                 f'.then((r) => {{ window.__g3d["{sid}"] = r; r(0); }}));</script>')
+        self.scene(sid, t0, dur, inner)
+        self.entrance(sid, t0, how)
+        self.tw(f'(function(){{var o={{s:0}};tl.fromTo(o,{{s:0}},{{s:{dur:.3f},duration:{dur:.3f},ease:"none",onUpdate:function(){{'
+                f'var f=window.__g3d&&window.__g3d["{sid}"];if(f)f(o.s);}}}},{t0:.3f});}})();')
+        self.cue("impact", t0 + at)
+
     def metaphor(self, t0, dur, data, how="rise"):
         """2026-11-13 (owner): an idea as a moving picture (scales, a lock, a magnifier, a funnel...), landing on
         the spoken word; drawn in code (edit/metaphors.py)."""
         from . import metaphors
+        if data["kind"] in metaphors.KINDS and HERO_DIR.exists() and not data.get("flat"):
+            return self.metaphor3d(t0, dur, data, how)     # owner 2026-11-26: rebuilt in 3D, in the named things' colours
         sid = self._id("meta")
         kind = data["kind"]
         at = float(data.get("at", 1.0))
@@ -1909,6 +1948,7 @@ class Composer:
             shutil.copy(ASSETS / "g3d" / "glass3d.js", out / "three" / "g3d" / "glass3d.js")
         if getattr(self, "uses_hero", False):      # the hero models and their player
             shutil.copy(ASSETS / "g3d" / "hero3d.js", out / "three" / "g3d" / "hero3d.js")
+            shutil.copy(ASSETS / "g3d" / "metaphor3d.js", out / "three" / "g3d" / "metaphor3d.js")
             shutil.copy(ASSETS / "g3d" / "goli_live.js", out / "three" / "g3d" / "goli_live.js")
             shutil.copytree(HERO_DIR, out / "hero", dirs_exist_ok=True)
         if getattr(self, "uses_live", False):      # the living studio: its players and the built room and Goli

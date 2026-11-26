@@ -74,3 +74,15 @@ def test_a_robot_or_a_lock_is_a_real_model_in_the_colour_of_the_named_thing(tmp_
     page = Composer("long", outfit="royal").build(e, out).read_text()
     assert "hero3d.js" in page and '"color": "#E31937"' in page and (out / "hero" / "robot.glb").exists()
     assert 'Promise.all(window.__liveWaits||[]).then' in page
+
+
+def test_metaphors_are_3d_scenes_in_the_named_things_colours(tmp_path):
+    # owner 2026-11-26: "rebuild in 3D and make them colour match to a said thing"
+    e = {"format": "long", "duration": 4.0, "captions": [{"start": 0, "end": 4, "words": [{"text": "Claude", "at": 0.3}], "keys": []}],
+         "scenes": [{"type": "metaphor", "start": 0.0, "duration": 4.0,
+                     "data": {"kind": "scales", "left": "Claude", "right": "ChatGPT", "winner": "left", "at": 1.0}}]}
+    out = tmp_path / "m"
+    page = Composer("long", outfit="royal").build(e, out).read_text()
+    assert "metaphor3d.js" in page and '"left": "#D97757"' in page and '"right": "#10A37F"' in page
+    assert (out / "three" / "g3d" / "metaphor3d.js").exists() and (out / "hero" / "padlock.glb").exists()
+    assert 'Promise.all(window.__liveWaits||[]).then' in page

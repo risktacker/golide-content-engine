@@ -27,7 +27,7 @@ def test_editor_places_a_metaphor_on_its_word(tmp_path):
     assert len(metas) == 1                       # never the same metaphor twice in a video
     assert metas[0]["data"]["winner"] == "right" and metas[0]["data"]["at"] > 0.5
     html = Composer("long").build(edit, tmp_path / "o").read_text()
-    assert "svgOrigin" in html and "Accuracy" in html
+    assert "metaphor3d.js" in html and "Accuracy" in html      # 3D since 2026-11-26
 
 
 def _s3d(obj, first, last, punch="opens", label="Your rented GPU"):
