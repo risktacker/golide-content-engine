@@ -247,6 +247,11 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
     follow = {b.index for b in beat_lines for i in follow_lines
               if i < len(lines) and lines[i].start - 0.01 <= b.start <= lines[i].end}
     raw_path = folder / "edit-plan-raw-v2.json"     # v2: planned per beat (2026-11-11)
+    # the living studio films this video (owner 2026-11-26): its storyboard has the studio's columns (shot, Goli's act,
+    # room or full), so a studio video gets its own plan (one paid editor call, kept)
+    studio = fmt == "long" and live_switch(spec, json.loads((ROOT / "config" / "edit-engine.json").read_text(encoding="utf-8")))
+    if studio:
+        raw_path = folder / "edit-plan-raw-v3-studio.json"
     looks = editor.looks_for(spec.get("looks"), fmt)     # 2026-11-17 (owner): the video's style switches from Studio
     print(json.dumps({"status": "edit_looks", **looks}))
 
@@ -258,12 +263,12 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
         from . import lessons
         learned = lessons.for_editor(lessons.load())         # owner 2026-11-25: the doctor's fixes, learned
         print(json.dumps({"status": "edit_lessons", "count": len(learned)}))
-        output = text.generate_json(editor.instructions(fmt, looks, learned), content, editor.EDIT_SCHEMA,
+        output = text.generate_json(editor.instructions(fmt, looks, learned, studio=studio), content, editor.EDIT_SCHEMA,
                                     max_output_tokens=out_tokens)
         production._record_text(production_id, "edit-plan", output)
         raw_path.write_text(json.dumps(output.value, indent=2) + "\n", encoding="utf-8")
 
-    production.runner.run(production_id, "edit-plan-v2", plan_stage)
+    production.runner.run(production_id, "edit-plan-v3-studio" if studio else "edit-plan-v2", plan_stage)
     raw = json.loads(raw_path.read_text(encoding="utf-8"))
     bookends = None
     if fmt == "long":        # 2026-11-12 (owner): seven openings, five endings, never the same as the last videos
@@ -303,7 +308,8 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
     look = json.loads(look_path.read_text(encoding="utf-8"))["look3d"]
     print(json.dumps({"status": "edit_look", "look3d": look}))
     edit = editor.build(raw, beat_lines, narration_seconds, fmt, sources, capture_dir, cues, marks,
-                        logo_tile_maker(folder / "logos"), bookends=bookends, demos=demo_list, look=look, looks=looks)
+                        logo_tile_maker(folder / "logos"), bookends=bookends, demos=demo_list, look=look, looks=looks,
+                        studio=studio)
     _recipes(production, spec, folder, production_id, edit, text_model)
     _puppets(production, spec, folder, production_id, edit)
     edit["title"] = str(spec.get("title", ""))

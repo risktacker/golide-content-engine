@@ -115,13 +115,41 @@ SCENE = {
                  "callout", "callout_sub", "edge", "value", "prefix", "suffix", "label", "quote", "quote_by", "left",
                  "right", "rows", "items", "shots", "points", "brands", "metaphor", "object3d", "move3d", "parts3d", "recipe", "recipe_brief", "fill", "puppet"],
 }
+GOLI_ACTS = ["none", "sip", "lean_back", "laugh", "nod_yes", "chin_rest", "swivel", "point_screen", "thumbs_up",
+             "glasses_off", "lean_in", "type", "lid_close", "lid_open", "walk_screen"]
+STUDIO_TEXT = """THE STUDIO (owner 2026-11-26: "we are meant to be classic, we have the full studio now"): Goli presents from a real
+3D studio (desk, chair, laptop, mug, mic, a big screen on the wall behind him, a sofa, shelves). Each plan row (one
+sentence) also says how the studio films it:
+- stage: "room" = the sentence's proof plays ON THE BIG SCREEN behind Goli while he talks in the room (a captured page,
+  a photo, a logo: give the sentence a source or photo scene and it is put on the screen); "full" = the proof fills
+  the frame (3D objects, metaphors, recipes, a typed prompt, a real run, a page walk that needs its detail). A classic
+  show lives in its room: about 6 sentences in 10 are "room", never more than 3 "full" sentences in a row.
+- shot: "main" (the desk shot, the default), "close" (his face: punchlines, "you", the personal lines), "wide" (the whole
+  room: a chapter's first sentence and about once a minute to breathe), "screen" (over the desk onto the big screen: when
+  the proof on the screen IS the point). The shot holds for the whole sentence (a cut between sentences, never inside
+  one); never the same shot other than main on two sentences running.
+- goli: what he does as the sentence starts, like a relaxed YouTuber, not a lecturer: "none" most of the time (he talks
+  with his hands on his own); "sip" at a pause or between chapters; "lean_back" after a punchline; "laugh" on something
+  absurd; "nod_yes" when he agrees; "chin_rest" when he wonders; "swivel" when he moves to a new idea; "point_screen"
+  when the big screen shows the thing; "lean_in" for "here's the thing"; "thumbs_up" for "it works"; "glasses_off" for
+  "honestly"; "type" when he says he is typing or running something; "lid_close" when a part is done (and "lid_open" when
+  the laptop is needed again); "walk_screen" (he gets up, walks to the big screen and points, about 17 s) at most once
+  every 90 s, on a sentence whose proof is on the screen. At most one act every 3 sentences.
+"""
+STUDIO_OFF = """(Studio columns: set stage "full", shot "main" and goli "none" on every row.)
+"""
+
 # owner 2026-11-25 ("storyboards per statement", taken from the Stickman engine): the editor first writes a PICTURE
 # PLAN, one row per sentence (what it names, what real thing proves it, which block shows it), then the scenes follow
 # it beat by beat. The plan comes first in the answer, so the scenes are built from it.
 PLAN_ROW = {"type": "object", "additionalProperties": False,
             "properties": {"first_line": {"type": "integer"}, "last_line": {"type": "integer"},
-                           "named": {"type": "string"}, "proof": {"type": "string"}, "block": {"type": "string"}},
-            "required": ["first_line", "last_line", "named", "proof", "block"]}
+                           "named": {"type": "string"}, "proof": {"type": "string"}, "block": {"type": "string"},
+                           # the studio's columns (owner 2026-11-26, "classic, the full studio"): see STUDIO_TEXT
+                           "shot": {"type": "string", "enum": ["main", "close", "wide", "screen"]},
+                           "goli": {"type": "string", "enum": GOLI_ACTS},
+                           "stage": {"type": "string", "enum": ["room", "full"]}},
+            "required": ["first_line", "last_line", "named", "proof", "block", "shot", "goli", "stage"]}
 EDIT_SCHEMA = {"type": "object", "additionalProperties": False,
                "properties": {"plan": {"type": "array", "items": PLAN_ROW}, "scenes": {"type": "array", "items": SCENE}},
                "required": ["plan", "scenes"]}
@@ -137,11 +165,13 @@ every beat of a long sentence, never a picture of something the sentence does no
 """
 
 
-def instructions(fmt: str, looks: dict[str, Any] | None = None, lessons: list[str] | None = None) -> str:
-    """The editor's instructions; `lessons` are the doctor's rules from earlier videos (edit/lessons.py)."""
+def instructions(fmt: str, looks: dict[str, Any] | None = None, lessons: list[str] | None = None,
+                 studio: bool = False) -> str:
+    """The editor's instructions; `lessons` are the doctor's rules from earlier videos (edit/lessons.py); `studio` when
+    the living studio films this video (the plan's shot / goli / stage columns)."""
     learned = ("\nLESSONS FROM EARLIER VIDEOS (the doctor had to fix these after the render; do not make them again):\n"
                + "\n".join(f"- {x}" for x in lessons) + "\n") if lessons else ""
-    return PLAN_TEXT + learned + _instructions(fmt, looks)
+    return PLAN_TEXT + (STUDIO_TEXT if studio and fmt == "long" else STUDIO_OFF) + learned + _instructions(fmt, looks)
 
 
 def _instructions(fmt: str, looks: dict[str, Any] | None = None) -> str:
@@ -600,7 +630,7 @@ def _cues_between(cues: list[dict], start: float, end: float) -> list[dict]:
 def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sources: list[dict[str, Any]],
           capture_dir: Path | None, cues: list[dict], chapters: list[Any], logo_tiles=None,
           bookends: tuple[str, str] | None = None, demos: list[dict[str, Any]] | None = None,
-          look: str = "glass", looks: dict[str, Any] | None = None) -> dict[str, Any]:
+          look: str = "glass", looks: dict[str, Any] | None = None, studio: bool = False) -> dict[str, Any]:
     """The editor's answer as a timed edit list for compose.Composer. Line ranges are repaired so every
     line is covered once; references to pages, phrases or words that do not exist are dropped (the scene
     keeps its words), and every such repair is reported in the edit list's `notes`."""
@@ -922,11 +952,84 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
     out = one_goli(_cap_cards(out, lines, cues, notes))
     _transitions(out, lines)
     misses = plan_coverage(raw.get("plan") or [], out, lines, sources, notes)
+    if studio and fmt == "long":
+        out = stage_room(out, raw.get("plan") or [], lines, cues, notes)
     return {"format": fmt, "duration": duration, "scenes": out, "notes": notes, "captions": captions(lines, fmt),
             "plan": raw.get("plan") or [], "plan_misses": misses,
             "look": look if look in LOOKS3D else "glass",
             "chapters": [{"title": f"{getattr(m, 'number', '')} · {getattr(m, 'title', '')}".strip(" ·"),
                           "at": float(getattr(m, "start", 0))} for m in chapters]}
+
+
+def _tv_picture(sc: dict) -> Path | None:
+    """The picture a page or photo scene puts on the studio's big screen: the photo, or the page cut to the shot its
+    highlight zooms to (16:9, as the screen), saved beside the capture."""
+    img = Path(str(sc["data"].get("image") or ""))
+    if not img.exists():
+        return None
+    if sc["type"] == "photo":
+        return img
+    hl = (sc["data"].get("highlights") or [{}])[0]
+    rect = hl.get("rect")
+    try:
+        from PIL import Image
+        im = Image.open(img)
+        W, H = im.size
+        if rect:
+            x, y, w, h = rect
+            s = W / float(sc["data"].get("page_width") or 1440)
+            cx, cy = (x + w / 2) * s, (y + h / 2) * s
+            cw = min(W, max(w * s * 1.6, W * 0.55)); ch = cw * 9 / 16
+        else:
+            cw, ch = W, W * 9 / 16
+            cx, cy = W / 2, ch / 2
+        x0 = max(0, min(W - cw, cx - cw / 2)); y0 = max(0, min(H - ch, cy - ch / 2))
+        out = img.with_name(f"{img.stem}-tv-{int(x0)}-{int(y0)}-{int(cw)}.png")
+        if not out.exists():
+            im.crop((int(x0), int(y0), int(x0 + cw), int(y0 + ch))).convert("RGB").resize((1280, 720)).save(out)
+        return out
+    except Exception:                               # noqa: BLE001 - the scene keeps filling the frame
+        return None
+
+
+def stage_room(scenes: list[dict], plan: list[dict], lines, cues: list[dict], notes: list[str]) -> list[dict]:
+    """The storyboard's studio columns (owner 2026-11-26, "classic, the full studio"): a "room" sentence's page or
+    photo plays on the big screen behind Goli in the 3D studio, filmed with the sentence's shot; every studio scene of
+    a sentence carries its shot, and the first carries Goli's act. Goli in the corner goes (he is in the room)."""
+    rows = []
+    for row in plan:
+        try:
+            a, b = int(row["first_line"]), int(row["last_line"])
+            rows.append((float(lines[a].start) - 0.12, float(lines[b].end), row))
+        except (KeyError, IndexError, TypeError, ValueError):
+            continue
+    out, moved = [], 0
+    acted: set[int] = set()
+    for sc in scenes:
+        mid = sc["start"] + sc["duration"] / 2
+        hit = next(((t0, t1, r) for t0, t1, r in rows if t0 <= mid < t1 + 0.12), None)
+        if not hit:
+            out.append(sc)
+            continue
+        t0, t1, row = hit
+        room = row.get("stage") == "room"
+        if room and sc["type"] == "host" and sc["data"].get("place") == "corner":
+            continue                                # he is in the room now, not in a corner
+        if room and sc["type"] in ("browser_shot", "photo"):
+            pic = _tv_picture(sc)
+            if pic:
+                sc = {"type": "host", "start": sc["start"], "duration": sc["duration"], "data": {
+                    "place": "studio", "cues": _cues_between(cues, sc["start"], sc["start"] + sc["duration"]),
+                    "poses": [], "screen": pic}}
+                moved += 1
+        if sc["type"] == "host" and sc["data"].get("place") == "studio":
+            sc["data"]["shot"] = row.get("shot") or "main"
+            if id(row) not in acted and (row.get("goli") or "none") != "none":
+                sc["data"]["act"] = row["goli"]
+                acted.add(id(row))
+        out.append(sc)
+    notes.append(f"studio: {moved} page and photo scenes play on the big screen in the room")
+    return out
 
 
 def _scene_words(sc: dict, sources: list[dict]) -> set[str]:

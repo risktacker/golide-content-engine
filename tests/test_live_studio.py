@@ -129,3 +129,29 @@ def test_mouth_keeps_rhubarb_timing_without_flicker(tmp_path):
     assert min(gaps) >= 0.06
     assert any(c["value"] == "X" and 0.95 <= c["start"] <= 1.1 for c in out)      # the half-second pause shuts it
     assert not any(c["value"] == "X" and 0.1 < c["start"] < 0.9 for c in out)      # never shut while he sounds
+
+
+def test_studio_storyboard_puts_pages_on_the_big_screen_with_shots_and_acts(tmp_path):
+    # owner 2026-11-26 ("classic, the full studio"): a room sentence's page plays on the big screen, cut to its shot
+    from types import SimpleNamespace as L
+    from PIL import Image
+    from golide_engine.edit.editor import stage_room, instructions
+    assert "THE STUDIO" in instructions("long", studio=True) and "THE STUDIO" not in instructions("long")
+    img = tmp_path / "page.png"; Image.new("RGB", (1440, 2400), "white").save(img)
+    lines = [L(start=0.0, end=3.0), L(start=3.0, end=6.0)]
+    scenes = [{"type": "browser_shot", "start": 0.0, "duration": 3.0,
+               "data": {"image": img, "page_width": 1440, "highlights": [{"rect": [100, 900, 400, 120]}]}},
+              {"type": "host", "start": 0.35, "duration": 2.6, "data": {"place": "corner"}},
+              {"type": "metaphor", "start": 3.0, "duration": 3.0, "data": {"kind": "scales"}}]
+    plan = [{"first_line": 0, "last_line": 0, "stage": "room", "shot": "screen", "goli": "point_screen"},
+            {"first_line": 1, "last_line": 1, "stage": "full", "shot": "main", "goli": "none"}]
+    out = stage_room(scenes, plan, lines, [], [])
+    assert [s["type"] for s in out] == ["host", "metaphor"]
+    room = out[0]["data"]
+    assert room["place"] == "studio" and room["shot"] == "screen" and room["act"] == "point_screen"
+    assert Image.open(room["screen"]).size == (1280, 720)
+    from golide_engine.edit.compose import Composer
+    c = Composer("long", outfit="royal")
+    P = {"camera": [{"at": 0, "shot": "main"}], "moves": [], "props": []}
+    c._live_storyboard(P, 10.0, 4.0, {"shot": "close", "act": "lid_close"})
+    assert P["camera"][-1] == {"at": 10.0, "shot": "close", "dur": 0.01} and P["props"][-1]["tilt"] == 102

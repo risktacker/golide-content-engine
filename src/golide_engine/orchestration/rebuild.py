@@ -37,6 +37,7 @@ PREVIEW_HOURS = 48
 # New pictures and a thumbnail cost about $0.60 on a long video (22 Oct: 38 pictures at
 # ~$0.015, thumbnail $0.04); the job's budget is raised by this much so it is not paused.
 REBUILD_ART_USD = 0.8
+STUDIO_PLAN_USD = 0.5      # the studio storyboard: one editor call with the picture plan (estimate, capped)
 
 
 def _words(text: str) -> list[str]:
@@ -133,6 +134,9 @@ class Rebuild:
         self.database.initialize()
         if new_art:
             self._fund_new_art()
+        if os.environ.get("GOLIDE_LIVE_STUDIO") == "1":
+            # owner 2026-11-26: a living-studio re-cut gets its own storyboard (the studio's columns): one editor call
+            self._fund_new_art(STUDIO_PLAN_USD)
         marks = ",".join("?" for _ in redo)
         self.database.execute(
             f"DELETE FROM stage_runs WHERE production_id=? AND stage IN ({marks})", (self.id, *redo)
@@ -143,11 +147,11 @@ class Rebuild:
         (self.root / "release-packages" / f"{self.id}.zip").unlink(missing_ok=True)
         return redo
 
-    def _fund_new_art(self) -> None:
-        """Raise this job's OpenAI allocation to what it has spent plus the new art."""
+    def _fund_new_art(self, extra: float = REBUILD_ART_USD) -> None:
+        """Raise this job's OpenAI allocation to what it has spent plus the new art (or the studio storyboard)."""
         spent = self.database.rows(
             "SELECT COALESCE(SUM(cost_usd), 0) AS usd FROM cost_events WHERE production_id=?", (self.id,))
-        need = round(float(spent[0]["usd"] if spent else 0.0) + REBUILD_ART_USD, 2)
+        need = round(float(spent[0]["usd"] if spent else 0.0) + extra, 2)
         self.database.execute(
             "UPDATE budget_allocations SET allocated_usd=MAX(allocated_usd, ?) WHERE production_id=? AND provider='openai'",
             (need, self.id))

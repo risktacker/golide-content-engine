@@ -1510,8 +1510,37 @@ class Composer:
         if layer == "room":
             P.setdefault("tv", []).append([t0, self.asset(data["screen"]) if data.get("screen") else None])
             self._live_direct(P, t0, dur, data)
+            self._live_storyboard(P, t0, dur, data)
         else:
             P["mug"] = False                            # standing: no mug to sip from
+
+    ACTS = {"sip", "lean_back", "laugh", "nod_yes", "chin_rest", "swivel", "point_screen", "thumbs_up", "glasses_off",
+            "lean_in", "type"}
+
+    def _live_storyboard(self, P, t0, dur, data):
+        """The storyboard's studio columns (owner 2026-11-26): the sentence's shot, cut on the sentence (a classic studio
+        cut, never a drift inside it), and Goli's act as it starts: a move, the laptop lid shut or opened, or the walk to
+        the big screen (at most once every 90 s)."""
+        shot = data.get("shot")
+        if shot in ("main", "close", "wide", "screen"):
+            cams = P["camera"]
+            if not cams or cams[-1].get("shot") != shot or cams[-1]["at"] > t0:
+                cams.append({"at": t0, "shot": shot, "dur": 0.01})
+        act = data.get("act")
+        if not act or act == "none":
+            return
+        a = t0 + 0.25
+        if act in self.ACTS:
+            P["moves"] = [m for m in P["moves"] if not (a - 0.5 <= m["at"] <= a + 2.5)]
+            P["moves"].append({"name": act, "at": a})
+        elif act in ("lid_close", "lid_open"):
+            closed = getattr(self, "_lid_closed", False)
+            if (act == "lid_close") != closed:
+                P["moves"].append({"name": "lid", "at": a})
+                P["props"].append({"at": a + 0.55, "piece": "lid", "tilt": 102 if act == "lid_close" else -102, "dur": 0.6})
+                self._lid_closed = act == "lid_close"
+        elif act == "walk_screen" and t0 - getattr(self, "_last_walk", -999) >= 90:
+            self._live_direct(P, t0, max(dur, 19.0), dict(data, screen=data.get("screen") or "tv"))
 
     def _live_direct(self, P, t0, dur, data):
         """The stage director (owner 2026-11-26: "he can get up, move the chair, walk, come back and sit"): in a long
