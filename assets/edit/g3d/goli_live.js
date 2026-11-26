@@ -68,6 +68,8 @@ export const MOVES = {
   // his hand on the chair's back as he rolls it away to get up, or pulls it in to sit (studio_live.js moves the chair)
   push_chair: { dur: 1.4, look: 'chair', keys: [{ t: 0.4, reach: { side: 'R', target: 'chair' }, rot: { chest: [0, 25, 0], head: [0, 20, 0] } },
     { t: 1.0, reach: { side: 'R', target: 'chair' }, rot: { chest: [0, 25, 0], head: [0, 20, 0] } }] },
+  // pulls the podcast mic toward him before he speaks into it (studio_live.js turns the mic with the plan's prop)
+  mic: { dur: 1.4, look: 'mic', paws: { L: 'fist' }, keys: [{ t: 0.4, reach: { side: 'L', target: 'mic' } }, { t: 0.95, reach: { side: 'L', target: 'mic' } }] },
   // closes (or opens) the laptop's lid with one hand on its top edge
   lid: { dur: 1.5, look: 'laptop', keys: [{ t: 0.45, reach: { side: 'R', target: 'lid' }, rot: { head: [10, 0, 0] } },
     { t: 1.05, reach: { side: 'R', target: 'lid' }, rot: { head: [12, 0, 0] } }] },

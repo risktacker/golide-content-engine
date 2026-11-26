@@ -78,6 +78,7 @@ export async function mountStudio(canvas, opts = {}) {
   const centre = (o) => { const b = new THREE.Box3().setFromObject(o); const v = b.getCenter(new THREE.Vector3()); return [v.x, -v.z, v.y]; };
   const targets = { camera: c.pos, screen: screens.tv ? centre(screens.tv) : [1.2, 0, 2.2], laptop: screens.laptop ? centre(screens.laptop) : [SEAT.x, -1.5, 1.2],
     mug: centre(pieces.mug), chair: (() => { const b = new THREE.Box3().setFromObject(pieces.chair); return [(b.min.x + b.max.x) / 2, -b.max.z + 0.05, b.max.y - 0.25]; })(),
+    mic: (() => { const b = new THREE.Box3().setFromObject(pieces.mic); return [(b.min.x + b.max.x) / 2 + 0.05, -(b.min.z + b.max.z) / 2, b.max.y - 0.12]; })(),
     lid: pieces.lid ? (() => { const b = new THREE.Box3().setFromObject(pieces.lid); return [(b.min.x + b.max.x) / 2, -(b.min.z + b.max.z) / 2, b.max.y]; })() : c.pos,
     desk_r: [SEAT.x + 0.28, set.desk.front_y + 0.9, set.desk.top_z + 0.02], desk_l: [SEAT.x - 0.28, set.desk.front_y + 0.9, set.desk.top_z + 0.02],
     up: [SEAT.x + 0.4, -3, 3.2], down: [SEAT.x, -2.2, 0.6], left: [-3, -2, 1.6], right: [2, -2, 1.6] };

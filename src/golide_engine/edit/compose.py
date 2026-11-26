@@ -1388,6 +1388,10 @@ class Composer:
         X, Y, B = -0.574, -0.95, -0.5
         P.setdefault("path", [{"at": 0, "x": X, "y": Y, "face": 0}])
         P.setdefault("sit", [[0, 1]]); P.setdefault("props", []); P.setdefault("camera", [{"at": 0, "shot": "main"}])
+        if not getattr(self, "_mic_pulled", False) and dur >= 4:   # the first studio scene: he pulls the mic in
+            self._mic_pulled = True
+            P["moves"].append({"name": "mic", "at": t0 + 0.4})
+            P["props"].append({"at": t0 + 0.85, "piece": "mic", "dx": 0.07, "dy": -0.03, "turn": -14, "dur": 0.5})
         last = getattr(self, "_last_walk", -999)
         if not data.get("screen") or dur < 19 or t0 - last < 90:
             return
