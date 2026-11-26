@@ -81,6 +81,14 @@ for _i, _o in enumerate(_meshes):
     bpy.ops.object.mode_set(mode="EDIT"); bpy.ops.mesh.select_all(action="SELECT")
     bpy.ops.uv.smart_project(angle_limit=_math.radians(66), island_margin=0.02)
     bpy.ops.object.mode_set(mode="OBJECT")
+    _png = _os.path.join(_DIR, f"{_i:04d}.png")
+    if SPEC.get("resume") and _os.path.exists(_png):        # baked by an earlier, interrupted build: reuse it
+        _tex = bpy.data.images.load(_png)
+        _bm = bpy.data.materials.new(f"baked_{_i}"); _bm.use_nodes = True
+        _t2 = _bm.node_tree.nodes.new("ShaderNodeTexImage"); _t2.image = _tex
+        _bm.node_tree.links.new(_t2.outputs["Color"], _bm.node_tree.nodes["Principled BSDF"].inputs["Base Color"])
+        _o.data.materials.clear(); _o.data.materials.append(_bm); _baked.append(_o.name)
+        continue
     _img = bpy.data.images.new(f"bake_{_i}", _size, _size, float_buffer=True)
     for _m in _o.data.materials:
         if not _m:
@@ -91,14 +99,17 @@ for _i, _o in enumerate(_meshes):
         # no glossy: a baked reflection is only right from one place (it made bright patches on the floor)
         # reflections are baked (metal, gloss, slat sheen) except on the floor, where a baked reflection is only right
         # from one place and showed as bright patches from other shots
-        _floor = _a > 20 and max(v.co.z for v in _o.data.vertices) < 0.2
-        _passes = {"DIRECT", "INDIRECT", "DIFFUSE", "EMIT", "TRANSMISSION"} | (set() if _floor else {"GLOSSY"})
+        # owner 2026-11-26 ("objects are phasing into the background"): a baked reflection is the room seen from ONE
+        # direction; on leather, wood and plastic it read as the wall showing THROUGH the chair when the camera moved.
+        # Only metals keep their baked reflection (gold, aluminium, chrome); everything else bakes its own colour and light.
+        _metal = any(_m and _m.node_tree and "Principled BSDF" in _m.node_tree.nodes
+                     and _m.node_tree.nodes["Principled BSDF"].inputs["Metallic"].default_value > 0.5 for _m in _o.data.materials)
+        _passes = {"DIRECT", "INDIRECT", "DIFFUSE", "EMIT", "TRANSMISSION"} | ({"GLOSSY"} if _metal else set())
         bpy.ops.object.bake(type="COMBINED", pass_filter=_passes)
     except RuntimeError as _err:
         print("bake skipped", _o.name, _err)
         continue
     # through the studio's own view transform (AgX, Medium High Contrast): the picture IS what the camera saw
-    _png = _os.path.join(_DIR, f"{_i:04d}.png")
     _img.save_render(_png, scene=sc)
     _tex = bpy.data.images.load(_png)
     _bm = bpy.data.materials.new(f"baked_{_i}"); _bm.use_nodes = True

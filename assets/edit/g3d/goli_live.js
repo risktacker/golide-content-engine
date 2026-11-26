@@ -317,27 +317,52 @@ export async function mount(canvas, opts = {}) {
   const walkLen = [0];                            // distance walked up to each key
   for (let k = 1; k < path.length; k++) walkLen.push(walkLen[k - 1] + Math.hypot(path[k].x - path[k - 1].x, path[k].y - path[k - 1].y));
   const angDiff = (a, b) => ((b - a + 540) % 360) - 180;
+  // owner 2026-11-26: "he has to move and turn like a normal human, not a robot": no straight lines with a turn on the
+  // spot at every corner, no spinning the long way round. The whole path is worked out once, 30 times a second:
+  // the keys are joined, the corners rounded into curves (a moving average over 0.7 s), he always faces where he is
+  // walking (turning the short way, as fast as a person turns: 260 degrees a second at most), and when he stops he
+  // turns to the key's facing while still finishing his last step. Glides (rolling in the chair) carry him without steps.
+  const FPS = 30, DUR = Math.max(plan.duration || 0, path[path.length - 1].at + 3);
+  const N = Math.ceil(DUR * FPS) + 1;
+  const raw = new Array(N), glide = new Array(N);
+  for (let i = 0; i < N; i++) {
+    const tt = i / FPS;
+    let k = 0; while (k < path.length - 1 && path[k + 1].at <= tt) k++;
+    const p0 = path[k], p1 = path[Math.min(k + 1, path.length - 1)];
+    if (p0 === p1 || tt <= p0.at) { raw[i] = [p0.x, p0.y]; glide[i] = false; continue; }
+    const f = (tt - p0.at) / (p1.at - p0.at), e = p1.glide ? ease(f) : f;
+    raw[i] = [p0.x + (p1.x - p0.x) * e, p0.y + (p1.y - p0.y) * e]; glide[i] = !!p1.glide;
+  }
+  const W = Math.round(0.35 * FPS);               // rounding window (half), corners become curves
+  const pos = raw.map((p, i) => {
+    if (glide[i]) return p;
+    let sx = 0, sy = 0, n = 0;
+    for (let j = Math.max(0, i - W); j <= Math.min(N - 1, i + W); j++) { if (glide[j]) continue; sx += raw[j][0]; sy += raw[j][1]; n++; }
+    return n ? [sx / n, sy / n] : p;
+  });
+  const keyFace = (tt) => { let f = path[0].face || 0; for (const p of path) { if (p.at > tt) break; f = p.face || 0; } return f; };
+  const faceS = new Array(N), walkS = new Array(N), distS = new Array(N);
+  let face = path[0].face || 0, dist = 0, sp = 0;
+  for (let i = 0; i < N; i++) {
+    const j = Math.min(N - 1, i + 1), dx = pos[j][0] - pos[i][0], dy = pos[j][1] - pos[i][1];
+    const v = Math.hypot(dx, dy) * FPS;                       // metres a second
+    sp += (v - sp) * 0.25;                                    // smoothed speed (steps ramp in and out)
+    const moving = !glide[i] && sp > 0.05;
+    // look ahead along the path while walking (people look and turn where they are going), else the key's facing
+    const ahead = Math.min(N - 1, i + 8);
+    const want = moving && Math.hypot(pos[ahead][0] - pos[i][0], pos[ahead][1] - pos[i][1]) > 0.02
+      ? Math.atan2(pos[ahead][0] - pos[i][0], -(pos[ahead][1] - pos[i][1])) / D : keyFace(i / FPS);
+    const turn = angDiff(face, want), max = 260 / FPS;
+    face += Math.max(-max, Math.min(max, turn * 0.22));       // eased, never more than a person turns
+    if (!glide[i]) dist += v / FPS;
+    faceS[i] = face; walkS[i] = glide[i] ? 0 : Math.min(1, sp / (0.55 * S)); distS[i] = dist;
+  }
   function placeAt(t) {
-    let k = 0; while (k < path.length - 1 && path[k + 1].at <= t) k++;
-    const a = path[k], b = path[Math.min(k + 1, path.length - 1)];
-    if (a === b || t <= a.at) return { x: a.x, y: a.y, face: a.face || 0, walk: 0, dist: walkLen[k], moving: false };
-    const span = b.at - a.at, d = Math.hypot(b.x - a.x, b.y - a.y);
-    if (b.glide) {                                // carried (he rolls back in his chair): no steps, same facing
-      const f = ease((t - a.at) / span);
-      return { x: a.x + (b.x - a.x) * f, y: a.y + (b.y - a.y) * f, face: (a.face || 0) + angDiff(a.face || 0, b.face || 0) * f, walk: 0, dist: walkLen[k], moving: false };
-    }
-    if (d < 0.01) { const f = ease((t - a.at) / Math.min(span, 0.8)); return { x: a.x, y: a.y, face: (a.face || 0) + angDiff(a.face || 0, b.face || 0) * f, walk: 0, dist: walkLen[k], moving: false }; }
-    // turn toward the way (0.35 s), walk with an eased start and stop, turn to the new facing (0.35 s)
-    const head = Math.atan2(b.x - a.x, -(b.y - a.y)) / D;   // facing angle that walks toward b
-    const u = (t - a.at) / span;
-    const tw = Math.min(0.35 / span, 0.25);
-    const p = u < tw ? 0 : u > 1 - tw ? 1 : (u - tw) / (1 - 2 * tw);
-    const pe = p * p * (3 - 2 * p) * 0.15 + p * 0.85;          // mostly steady pace, soft at both ends
-    let face = head;
-    if (u < tw) face = (a.face || 0) + angDiff(a.face || 0, head) * ease(u / tw);
-    else if (u > 1 - tw) face = head + angDiff(head, b.face || 0) * ease((u - (1 - tw)) / tw);
-    const walk = u < tw || u > 1 - tw ? 0 : Math.min(1, Math.min(p, 1 - p) * 8);
-    return { x: a.x + (b.x - a.x) * pe, y: a.y + (b.y - a.y) * pe, face, walk, dist: walkLen[k] + d * pe, moving: walk > 0 };
+    const fi = Math.max(0, Math.min(N - 1, t * FPS)), i = Math.floor(fi), j = Math.min(N - 1, i + 1), f = fi - i;
+    const x = pos[i][0] + (pos[j][0] - pos[i][0]) * f, y = pos[i][1] + (pos[j][1] - pos[i][1]) * f;
+    const fc = faceS[i] + angDiff(faceS[i], faceS[j]) * f;
+    const walk = walkS[i] + (walkS[j] - walkS[i]) * f;
+    return { x, y, face: fc, walk: walk > 0.08 ? walk : 0, dist: distS[i] + (distS[j] - distS[i]) * f, moving: walk > 0.08 };
   }
   const groundZ = (opts.place && opts.place.floorZ) || 0;
   const seatZ = (opts.place && opts.place.seatZ) || groundZ;

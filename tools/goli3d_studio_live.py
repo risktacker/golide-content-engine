@@ -15,11 +15,10 @@ OUT = ROOT / "assets" / "goli3d" / "live"
 
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
-    samples = int(sys.argv[1]) if len(sys.argv) > 1 else 32
-    spec = {"fmt": "long", "export": str(OUT / "studio.glb"), "bake_samples": samples, "tex": 0.8}
+    samples = int(next((a for a in sys.argv[1:] if a.isdigit()), 32))
+    # resume: pieces baked by an interrupted build are reused (run it again to finish)
+    spec = {"fmt": "long", "export": str(OUT / "studio.glb"), "bake_samples": samples, "tex": 0.8, "resume": "--resume" in sys.argv}
     subprocess.run([sys.executable, str(ROOT / "src/golide_engine/goli3d/studio_model.py"), json.dumps(spec), "/tmp/unused.png"], check=True)
-    for junk in OUT.glob("studio-bake"):
-        subprocess.run(["rm", "-rf", str(junk)], check=True)
     print(OUT / "studio.glb")
 
 

@@ -491,6 +491,62 @@ tag("mic")
 area("key", (CAM.x - 3.0, CAM.y + 2.2, CAM.z + 2.4), 420, 2.0, (1.0, 0.92, 0.82), (0, CAM.y + DD, dtop.z))
 area("fill", (CAM.x + 3.5, CAM.y + 1.5, CAM.z + 1.0), 120, 3.0, (0.75, 0.82, 1.0), (0, CAM.y + DD, dtop.z))
 area("rim", (CAM.x + 2.5, CAM.y + DW - 0.6, CAM.z + 3.5), 500, 2.0, (0.5, 0.6, 1.0), (0, CAM.y + DC, dtop.z + 1))
+if LIVE:
+    # owner 2026-11-26 ("when the camera goes up, the studio shows its emptiness ... couches, shelves, products, art"):
+    # the rest of the room, seen only in the wide shots: a lounge on the left (sofa, coffee table, rug, floor lamp,
+    # plant), a tall shelf of GOLIDE product boxes on the right wall, framed art on both side walls
+    fl = 0.135
+    sofa = mat("sofa", "#2B3350", 0.75, sheen=0.5)
+    cushion = mat("cushion", "#3A4570", 0.8, sheen=0.6)
+    oak = wood("oak", "#7A5232", "#4A2F1A", 5)
+    rug = mat("rug", "#1B2236", 0.95, sheen=0.3)
+    brass = mat("brass", "#C9A24A", 0.25, metal=1.0)
+    lampshade = mat("lampshade", "#F3E7D0", 0.6, emit=2.5, ecolor="#FFE2B0")
+    boxm = [mat(f"product{i}", c, 0.4, coat=0.4) for i, c in enumerate(("#E8C268", "#2450E6", "#F4F1EA", "#121520", "#4C7DFF"))]
+    # lounge: sofa along the left wall, facing the room
+    sx_, sy_ = -3.55, CAM.y + 3.2
+    box((sx_, sy_, fl + 0.22), (0.9, 2.3, 0.3), sofa, back_col, 0.06)                       # base
+    box((sx_ - 0.34, sy_, fl + 0.62), (0.22, 2.3, 0.62), sofa, back_col, 0.08)              # back
+    for e_ in (-1, 1):
+        box((sx_, sy_ + e_ * 1.1, fl + 0.45), (0.9, 0.18, 0.5), sofa, back_col, 0.07)      # arms
+    for c_ in (-0.68, 0.0, 0.68):
+        box((sx_ + 0.06, sy_ + c_, fl + 0.44), (0.72, 0.64, 0.16), cushion, back_col, 0.07)  # seat cushions
+        box((sx_ - 0.2, sy_ + c_, fl + 0.74), (0.2, 0.6, 0.42), cushion, back_col, 0.08)    # back cushions
+    box((sx_ + 1.25, sy_, fl + 0.005), (2.1, 2.9, 0.01), rug, back_col, 0.002)               # rug
+    box((sx_ + 1.25, sy_, fl + 0.4), (0.7, 1.2, 0.05), oak, back_col, 0.02)                  # coffee table top
+    for lx_ in (-0.28, 0.28):
+        for ly_ in (-0.52, 0.52):
+            cyl((sx_ + 1.25 + lx_, sy_ + ly_, fl + 0.19), 0.025, 0.38, brass, back_col)
+    box((sx_ + 1.15, sy_ - 0.25, fl + 0.45), (0.22, 0.3, 0.04), boxm[0], back_col, 0.01)     # a GOLIDE book on it
+    cyl((sx_ + 1.35, sy_ + 0.3, fl + 0.47), 0.045, 0.09, M["ceramic"], back_col, bevel=0.005)
+    # floor lamp beside the sofa
+    cyl((sx_ + 0.1, sy_ + 1.55, fl + 0.02), 0.16, 0.04, brass, back_col)
+    cyl((sx_ + 0.1, sy_ + 1.55, fl + 0.8), 0.015, 1.56, brass, back_col)
+    cyl((sx_ + 0.1, sy_ + 1.55, fl + 1.6), 0.2, 0.3, lampshade, back_col)
+    area("lamp", (sx_ + 0.1, sy_ + 1.55, fl + 1.45), 60, 0.3, (1.0, 0.85, 0.6), (sx_ + 0.6, sy_ + 1.2, fl), back_col)
+    # a big plant in the corner
+    cyl((sx_ + 0.1, sy_ - 1.6, fl + 0.25), 0.22, 0.5, M["pot"], back_col, bevel=0.02)
+    for k_ in range(9):
+        a_ = k_ * 0.7
+        sph((sx_ + 0.1 + math.cos(a_) * 0.18, sy_ - 1.6 + math.sin(a_) * 0.18, fl + 0.75 + (k_ % 3) * 0.18),
+            (0.09, 0.05, 0.34), M["leaf"], back_col).rotation_euler = (math.cos(a_) * 0.5, math.sin(a_) * 0.5, a_)
+    # tall shelf of product boxes on the right wall
+    hx_, hy_ = 3.9, CAM.y + 3.6
+    for zz_ in (0.5, 1.1, 1.7, 2.3):
+        box((hx_, hy_, fl + zz_), (0.45, 1.8, 0.04), oak, back_col, 0.01)
+        for b_ in range(4):
+            w_, h_ = 0.22 + 0.05 * ((b_ + int(zz_ * 10)) % 3), 0.2 + 0.07 * ((b_ * 7 + int(zz_ * 10)) % 3)
+            box((hx_ - 0.02, hy_ - 0.65 + b_ * 0.43, fl + zz_ + 0.02 + h_ / 2), (0.3, w_, h_), boxm[(b_ + int(zz_ * 3)) % 5], back_col, 0.012)
+    for e_ in (-1, 1):
+        box((hx_, hy_ + e_ * 0.92, fl + 1.25), (0.45, 0.04, 2.5), oak, back_col, 0.01)
+    # framed art: abstract grid panels on both side walls (gold frame, glowing blues)
+    art = [mat(f"art{i}", c, 0.5, emit=0.6, ecolor=c) for i, c in enumerate(("#2450E6", "#E8C268", "#4C7DFF", "#1E3A9E"))]
+    for wx_, yy_ in ((-4.24, CAM.y + 1.6), (-4.24, CAM.y + 4.9), (4.24, CAM.y + 1.7)):
+        sgn = 1 if wx_ < 0 else -1
+        box((wx_, yy_, 1.9), (0.04, 1.1, 0.8), brass, back_col, 0.01)
+        for gi in range(3):
+            for gj in range(2):
+                box((wx_ + sgn * 0.03, yy_ - 0.34 + gi * 0.34, 1.72 + gj * 0.36), (0.01, 0.3, 0.32), art[(gi + gj * 2) % 4], back_col, 0)
 if LIVE:                                     # a whole room needs room light: soft panels in the ceiling
     for cx_ in (-2.2, 0.0, 2.2):
         area(f"ceiling{cx_}", (cx_, CAM.y + 3.6, 3.6), 160, 1.6, (1.0, 0.93, 0.85), (cx_, CAM.y + 3.6, 0))

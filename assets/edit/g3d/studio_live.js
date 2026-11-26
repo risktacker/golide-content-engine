@@ -42,9 +42,13 @@ export async function mountStudio(canvas, opts = {}) {
       o.material = new THREE.MeshBasicMaterial({ color: 0x05060a, toneMapped: false });
       screens[o.name === 'tv_screen' ? 'tv' : 'laptop'] = o;
     } else {
-      o.material = new THREE.MeshBasicMaterial({ map: m.map || null, color: m.map ? 0xffffff : m.color, toneMapped: false });
+      // solid from every side (owner 2026-11-26: the chair "phasing" into the wall when the camera rose): some pieces
+      // were built with their faces turned inward, so drawn one-sided they vanished from other angles
+      if (m.map) m.map.format = THREE.RGBAFormat;
+      o.material = new THREE.MeshBasicMaterial({ map: m.map || null, color: m.map ? 0xffffff : m.color, toneMapped: false,
+        side: THREE.DoubleSide, transparent: false, opacity: 1, alphaTest: 0, depthWrite: true });
     }
-    o.receiveShadow = true;
+    o.receiveShadow = true; o.frustumCulled = false;
     const part = (o.name.match(/^(chair|mug|laptop|mic)__/) || [])[1] || (o.name === 'laptop_screen' ? 'laptop' : null);
     if (part) pieces[part].attach(o);
   }
