@@ -20,6 +20,7 @@ SPEC = json.loads(sys.argv[-2]) if len(sys.argv) > 2 else {}
 OUT = sys.argv[-1]
 FMT = SPEC.get("fmt", "short")
 PASS = SPEC.get("pass", "full")
+LIVE = bool(SPEC.get("export"))             # the living studio: a whole room, not only what the plates' camera sees
 
 # the pixel slots of the flat studio (edit/studio.py LAYOUTS), so nothing else has to move
 LAY = {
@@ -200,10 +201,19 @@ def area(name, loc, energy, size, color, target, col=None, shape="RECTANGLE", sy
     return o
 
 
+def tag(part):
+    """The 3D studio export (goli3d/studio_export.py) needs to know which piece each object belongs to."""
+    for o in sc.objects:
+        if "part" not in o.keys():
+            o["part"] = part
+
+
 # ------------------------------------------------------------------ back: wall, TV, neon, shelves, chair
 DW = 6.0                                    # the wall's distance from the camera
 y_wall = CAM.y + DW
 top_left, bot_right = P(-60, -60, DW), P(W + 60, H + 60, DW)
+if LIVE:                                    # the whole back wall, floor to ceiling, wall to wall
+    top_left, bot_right = Vector((-4.3, y_wall, 3.7)), Vector((4.3, y_wall, 0.1))
 span_w, span_h = bot_right.x - top_left.x, top_left.z - bot_right.z
 slat_w = 58 * U(DW)
 x = top_left.x
@@ -213,6 +223,15 @@ while x < bot_right.x:                       # vertical acoustic slats with dark
 box((0, y_wall + 0.02, (top_left.z + bot_right.z) / 2), (span_w + 1, 0.02, span_h + 1), M["gap"], back_col, 0)
 # warm LED uplight at the foot of the wall
 f0, f1 = P(-40, H - 6, DW - 0.25), P(W + 40, H - 6, DW - 0.25)
+if LIVE:
+    f0, f1 = Vector((-4.2, f0.y, f0.z)), Vector((4.2, f1.y, f1.z))
+    for sxw in (-1, 1):                     # side walls of the same slats, and a dark ceiling
+        yy = y_wall - 0.2
+        while yy > CAM.y + 1.0:
+            box((sxw * 4.3, yy - slat_w / 2, 1.9), (0.06, slat_w, 3.6), M["slat"], back_col, 0.006)
+            yy -= 66 * U(DW)
+        box((sxw * 4.33, (y_wall + CAM.y + 1) / 2, 1.9), (0.02, y_wall - CAM.y, 3.8), M["gap"], back_col, 0)
+    box((0, (y_wall + CAM.y) / 2, 3.75), (8.8, y_wall - CAM.y + 2, 0.05), M["gap"], back_col, 0)
 box(((f0.x + f1.x) / 2, y_wall - 0.25, f0.z), (f1.x - f0.x, 0.03, 0.03), M["gold_glow"], back_col, 0)
 area("uplight", ((f0.x + f1.x) / 2, y_wall - 0.5, f0.z - 0.1), 900 if FMT != "lower" else 10, f1.x - f0.x, (1.0, 0.78, 0.45),
      ((f0.x + f1.x) / 2, y_wall, f0.z + 3), back_col, sy=0.2)
@@ -302,10 +321,17 @@ if LAY["shelf"]:
         sph(tuple(mid), (18 * u, 6 * u, 48 * u * ln), M["leaf"], back_col).rotation_euler = (0, a_, 0)
 
 
+tag("room")
 # the chair behind Goli: a high-backed leather chair with gold piping
 k = LAY["size"] / 820
-DC = 4.7
+# the living studio (owner 2026-11-26) is a real room: the chair stands back far enough for Goli to sit in it (seat
+# top at his hips, 0.86 m; goli_live.js places him there), on a gas lift and a five-star base on the floor. On screen
+# the back keeps the same size and place as the plates (sizes are in pixels at its depth).
+DC = 5.5 if LIVE else 4.7
+SEAT_Z = 0.86
 cbase = P(LAY["seat_x"], LAY["desk_y"], DC)
+if LIVE:
+    cbase = Vector((cbase.x, cbase.y, SEAT_Z + 0.04))
 cu_ = U(DC)
 ch_w, ch_h = 470 * k * cu_, 450 * k * cu_
 bm = bmesh.new()
@@ -333,7 +359,20 @@ pip = [(cbase.x + x_ * 0.9, CAM.y + DC - 0.02, cbase.z + z_ * 0.95 + 0.04) for x
 tube(pip, 0.012, M["gold"], back_col)
 for s in (-1, 1):                            # stitched panels
     tube([(cbase.x + s * ch_w * 0.18, CAM.y + DC - 0.02, cbase.z + 0.1), (cbase.x + s * ch_w * 0.18, CAM.y + DC - 0.02, cbase.z + ch_h * 0.88)], 0.006, M["gold"], back_col)
+if LIVE:                                     # the rest of a real chair: seat, gas lift, five-star base, casters
+    floor_live = 0.135
+    sy = CAM.y + DC - 0.33                   # the seat reaches forward from the back
+    box((cbase.x, sy, SEAT_Z - 0.06), (ch_w * 0.95, 0.62, 0.13), M["leather"], back_col, 0.05)
+    box((cbase.x, sy - 0.28, SEAT_Z - 0.005), (ch_w * 0.9, 0.04, 0.012), M["gold"], back_col, 0.004)
+    cyl((cbase.x, sy + 0.05, (SEAT_Z - 0.13 + floor_live + 0.12) / 2), 0.035, SEAT_Z - 0.13 - floor_live - 0.12, M["metal"], back_col)
+    cyl((cbase.x, sy + 0.05, SEAT_Z - 0.16), 0.07, 0.06, M["leather"], back_col, bevel=0.01)
+    for a5 in range(5):
+        an = math.radians(90 + a5 * 72)
+        tip = Vector((cbase.x + math.cos(an) * 0.36, sy + 0.05 + math.sin(an) * 0.36, floor_live + 0.09))
+        tube([(cbase.x, sy + 0.05, floor_live + 0.12), tuple(tip)], 0.022, M["metal"], back_col)
+        sph((tip.x, tip.y, floor_live + 0.04), (0.035, 0.035, 0.035), M["leather"], back_col)
 
+tag("chair")
 # ------------------------------------------------------------------ front: the table, laptop, mug, mic
 # 2026-11-21 (owner): it must read as a table: a thick rounded top with depth, overhanging a recessed front panel,
 # legs at both ends, the floor beside and under them, its shadow on the floor.
@@ -387,6 +426,7 @@ def desk_point(px, depth_px=0.0):
     return Vector((p.x, p.y, top_z))
 
 
+tag("room")
 # laptop: a thin MacBook-style aluminium laptop, used by Goli: the keyboard on his side, the lid's back (with our
 # glowing mark) toward the camera, turned a little toward him so the screen's edge shows
 # owner 2026-11-25: the laptop is his: in front of him, its screen facing him, the mark on its back to the camera
@@ -425,6 +465,7 @@ if SPEC.get("neon_logo"):                    # our mark glowing on the lid's bac
     lap_part(lg, (0, lid_c[1] - 0.0055 * cl, lid_c[2] - 0.0055 * sl), math.pi / 2 + LT)
 lap.location = (lp.x, lp.y - ld * 0.2, lp.z)
 lap.rotation_euler = (0, 0, turn)
+tag("laptop")
 # mug (left), with coffee
 mp = desk_point(1010, 0) if FMT == "long" else desk_point(900, -110)
 mr, mh = 39 * k * du, 96 * k * du
@@ -432,6 +473,7 @@ cyl((mp.x, mp.y, mp.z + mh / 2), mr, mh, M["ceramic"], front_col, bevel=0.006)
 cyl((mp.x, mp.y, mp.z + mh - 0.012), mr * 0.86, 0.01, M["coffee"], front_col)
 bpy.ops.mesh.primitive_torus_add(major_radius=mh * 0.24, minor_radius=mh * 0.06, location=(mp.x + mr * 1.05, mp.y, mp.z + mh * 0.55), rotation=(math.pi / 2, 0, 0))
 put(shade(bpy.context.object), front_col).data.materials.append(M["ceramic"])
+tag("mug")
 # podcast mic on a boom arm (beside Goli's face, between the mug and him)
 mb = desk_point(300 if FMT == "short" else 175)
 arm = [Vector((mb.x, mb.y, mb.z + 0.01)), Vector((mb.x - 0.04, mb.y + 0.02, mb.z + 150 * k * du)),
@@ -444,6 +486,7 @@ body = cyl(tuple(head), 31 * k * du, 150 * k * du, M["grille"], front_col, rot=(
 cyl(tuple(head), 34 * k * du, 14 * k * du, M["gold"], front_col, rot=(0, math.radians(12), 0))
 sph(tuple(head + Vector((math.sin(math.radians(12)) * 75 * k * du, 0, math.cos(math.radians(12)) * 75 * k * du))), (31 * k * du,) * 3, M["grille"], front_col)
 
+tag("mic")
 # ------------------------------------------------------------------ lights, world, camera, passes
 area("key", (CAM.x - 3.0, CAM.y + 2.2, CAM.z + 2.4), 420, 2.0, (1.0, 0.92, 0.82), (0, CAM.y + DD, dtop.z))
 area("fill", (CAM.x + 3.5, CAM.y + 1.5, CAM.z + 1.0), 120, 3.0, (0.75, 0.82, 1.0), (0, CAM.y + DD, dtop.z))
@@ -462,6 +505,9 @@ cam.dof.use_dof = True                        # a premium lens: the set behind G
 cam.dof.focus_distance = (CAM.y + DD + 0.9) - CAM.y
 cam.dof.aperture_fstop = SPEC.get("fstop", 3.2)
 
+if SPEC.get("export"):                       # the living studio: one 3D set with its light baked in
+    exec(open(__file__.replace("studio_model.py", "studio_export.py")).read())
+    raise SystemExit(0)
 scale = SPEC.get("scale", 1.0)
 sc.render.resolution_x, sc.render.resolution_y = int(W * scale), int(H * scale)
 sc.render.engine = "CYCLES"; sc.cycles.device = "CPU"

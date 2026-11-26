@@ -35,9 +35,9 @@ export const MOVES = {
     { t: 1.45, aim: both([0.35, -0.55, -0.75], [-0.1, -1, 0.3]) }] },
   open_palms: { dur: 1.6, keys: [{ t: 0.4, aim: both([0.55, -0.45, -0.7], [0.55, -0.8, 0.2]), rot: { head: [-3, 0, 0] } },
     { t: 1.2, aim: both([0.6, -0.45, -0.65], [0.65, -0.75, 0.25]) }] },
-  point_screen: { dur: 2.0, look: 'screen', keys: [
-    { t: 0.45, aim: arm('R', [0.85, -0.1, 0.25], [1, -0.05, 0.5]), rot: { head: [0, 22, 0], chest: [0, 6, 0] } },
-    { t: 1.6, aim: arm('R', [0.85, -0.12, 0.3], [1, -0.05, 0.55]), rot: { head: [0, 24, 0], chest: [0, 6, 0] } }] },
+  // reach: the arm points at a real thing in the room, wherever he stands or faces
+  point_screen: { dur: 2.0, look: 'screen', reach: { side: 'R', target: 'screen' }, keys: [
+    { t: 0.45, rot: { head: [0, 18, 0], chest: [0, 5, 0] } }, { t: 1.6, rot: { head: [0, 20, 0], chest: [0, 5, 0] } }] },
   point_up: { dur: 1.6, keys: [{ t: 0.4, aim: arm('R', [0.45, -0.2, 0.85], [0.1, -0.15, 1]) }, { t: 1.2, aim: arm('R', [0.45, -0.2, 0.85], [0.1, -0.15, 1]) }] },
   count: { dur: 1.6, keys: [{ t: 0.4, aim: arm('R', [0.3, -0.75, -0.45], [0.05, -0.5, 0.86]) }, { t: 1.2, aim: arm('R', [0.3, -0.75, -0.45], [0.05, -0.5, 0.86]) }] },
   type: { dur: 2.4, look: 'laptop', keys: [
@@ -85,13 +85,14 @@ export async function mount(canvas, opts = {}) {
   punchyAgX();
   const L = { ...LIGHT, ...(opts.light || {}) };
   const base = opts.base || './goli3d';
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
-  renderer.setPixelRatio(1);
-  renderer.setSize(canvas.width, canvas.height, false);
+  // in the living studio (studio_live.js) he joins its scene, renderer and camera; alone he brings his own
+  const renderer = opts.renderer || new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
+  if (!opts.renderer) { renderer.setPixelRatio(1); renderer.setSize(canvas.width, canvas.height, false); }
+  const S = (opts.place && opts.place.scale) || 1;   // his size in the room (1 = his own model units)
   renderer.toneMapping = THREE.CustomToneMapping;
   renderer.toneMappingExposure = L.exposure;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  const scene = new THREE.Scene();
+  const scene = opts.scene || new THREE.Scene();
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
   scene.environmentIntensity = L.env;
@@ -102,25 +103,26 @@ export async function mount(canvas, opts = {}) {
   // soft self-shadows from the key (an arm in front of the body, the head over the chest), as Cycles has
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   const ks = lights.key; ks.castShadow = true; ks.shadow.mapSize.set(2048, 2048);
-  Object.assign(ks.shadow.camera, { left: -1.8, right: 1.8, top: 2.6, bottom: -0.4, near: 0.5, far: 20 });
+  Object.assign(ks.shadow.camera, { left: -1.8 * S, right: 1.8 * S, top: 2.6 * S, bottom: -0.4 * S, near: 0.1, far: 30 });
   ks.shadow.normalBias = 0.025; ks.shadow.radius = 6; ks.target.position.set(0, 1.1, 0); scene.add(ks.target);
   lights.ambient = new THREE.AmbientLight(0xbfbdcc, L.ambient); scene.add(lights.ambient);
   const setLight = (x) => { Object.assign(L, x); for (const n of ['key', 'fill', 'rim', 'ambient']) lights[n].intensity = L[n];
     scene.environmentIntensity = L.env; renderer.toneMappingExposure = L.exposure; };
   const CAM = { ...CAMERA, ...(opts.camera || {}) };
-  const aspect = canvas.width / canvas.height;
+  const aspect = opts.renderer ? 1 : canvas.width / canvas.height;
   // Blender's AUTO sensor fit: the sensor spans the longer side of the frame
   const half = Math.atan(CAM.sensor / 2 / CAM.lens);
   const vfov = aspect >= 1 ? 2 * Math.atan(Math.tan(half) / aspect) : 2 * half;
-  const cam = new THREE.PerspectiveCamera(vfov / D, aspect, 0.1, 100);
-  cam.position.copy(V(CAM.pos)); cam.lookAt(V(CAM.target));
+  const cam = opts.cameraObj || new THREE.PerspectiveCamera(vfov / D, aspect, 0.1, 100);
+  if (!opts.cameraObj) { cam.position.copy(V(CAM.pos)); cam.lookAt(V(CAM.target)); }
   if (opts.floor) {                               // a floor that only shows his shadow (for scenes without the studio)
     const fl = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.ShadowMaterial({ opacity: 0.35 }));
     fl.rotation.x = -Math.PI / 2; fl.receiveShadow = true; scene.add(fl);
   }
 
   const [gltf, rig] = await Promise.all([new GLTFLoader().loadAsync(`${base}/goli.glb`), fetch(`${base}/goli-rig.json`).then((r) => r.json())]);
-  const root = gltf.scene; scene.add(root);
+  const root = gltf.scene;
+  const holder = new THREE.Group(); holder.add(root); holder.scale.setScalar(S); scene.add(holder);
   root.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; o.frustumCulled = false; } });
   if (opts.mirror) root.scale.x = -1;
   const bones = {}; root.traverse((o) => { if (o.isBone) bones[o.name] = o; });
@@ -172,7 +174,42 @@ export async function mount(canvas, opts = {}) {
   const glances = [];                             // small eye moves around the current target
   { const r = rand(seed * 3 + 1); let t = 0.6; while (t < (plan.duration || 600)) { glances.push([t, (r() - 0.5) * 0.5, (r() - 0.5) * 0.3]); t += 1.1 + r() * 1.8; } }
   const cues = (plan.cues || []).slice().sort((a, b) => a[0] - b[0]);
-  const moves = (plan.moves || []).filter((m) => MOVES[m.name]).sort((a, b) => a.at - b.at);
+  // speech-driven gestures (owner 2026-11-26: "the moves have to be real and smooth, like real talking"). From the
+  // spoken words (plan.words = [[start, end, word]]): each sentence opens with a gesture chosen by what it says
+  // (a number counts, "you" opens the palms, "this/look/here" points at the screen, a question shrugs, "think"
+  // thinks, otherwise explain or open palms, never the same twice running), and stressed words (numbers, long or
+  // capitalised words, the word before a comma) get a beat: a small drop of the hand and a nod. Seeded: the same words
+  // always give the same performance. Moves written in the plan always win.
+  const words = (plan.words || []).map((w) => (Array.isArray(w) ? w : [w.start, w.end, w.word || w.text]));
+  const autoMoves = [], beats = [];
+  if (plan.auto !== false && words.length) {
+    const r = rand(seed * 7 + 3);
+    let last = '', busyTill = -1, sentenceStart = true, side = 'R';
+    for (let i = 0; i < words.length; i++) {
+      const [ws, we, raw] = words[i]; const w = String(raw || '');
+      const clean = w.toLowerCase().replace(/[^a-z0-9']/g, '');
+      if (sentenceStart && ws >= busyTill) {
+        const ahead = words.slice(i, i + 10).map((x) => String(x[2] || '').toLowerCase()).join(' ');
+        let pick = /\b(\d+|one|two|three|four|five|six|seven|eight|nine|ten|first|second|third)\b/.test(ahead) ? 'count'
+          : /\b(this|look|here|see|screen)\b/.test(ahead) ? 'point_screen'
+          : /\?/.test(ahead) ? 'shrug'
+          : /\b(think|wonder|maybe|imagine)\b/.test(ahead) ? 'think'
+          : /\b(you|your)\b/.test(ahead) ? 'open_palms'
+          : r() < 0.55 ? 'explain' : 'open_palms';
+        if (pick === last) pick = pick === 'explain' ? 'open_palms' : 'explain';
+        if (r() < 0.8) { autoMoves.push({ name: pick, at: ws + 0.05, auto: true }); last = pick; busyTill = ws + MOVES[pick].dur + 0.3; }
+      }
+      sentenceStart = /[.!?]$/.test(w);
+      const stressed = /\d/.test(w) || clean.length >= 7 || /^[A-Z]/.test(w) && i > 0 || /,$/.test(w);
+      if (stressed && (!beats.length || ws - beats[beats.length - 1][0] > 0.6)) {
+        if (r() < 0.35) side = side === 'R' ? 'L' : 'R';
+        beats.push([ws + 0.05, 0.6 + 0.4 * r(), side]);
+      }
+    }
+  }
+  const written = (plan.moves || []).filter((m) => MOVES[m.name]);
+  const moves = [...written, ...autoMoves.filter((a) => !written.some((m) => a.at < m.at + MOVES[m.name].dur + 0.2 && m.at < a.at + MOVES[a.name].dur + 0.2))]
+    .sort((a, b) => a.at - b.at);
   const looks = (plan.looks || [{ at: 0, target: 'camera' }]).slice().sort((a, b) => a.at - b.at);
 
   const lidAt = (t) => {
@@ -180,7 +217,8 @@ export async function mount(canvas, opts = {}) {
     return 'open';
   };
   const mouthAt = (t) => { let s = 'X'; for (const [ct, sh] of cues) { if (ct > t) break; s = sh; } return s; };
-  const pointOf = (target) => (Array.isArray(target) ? target : TARGETS[target] || TARGETS.camera);
+  const TG = { ...TARGETS, ...(opts.targets || {}) };   // in the studio: real points of the room
+  const pointOf = (target) => (Array.isArray(target) ? target : TG[target] || TG.camera);
   function gazeAt(t) {                            // where his eyes go, eased between targets (0.25 s)
     let cur = pointOf(looks[0].target), prev = cur, since = 99;
     for (let k = 0; k < looks.length && looks[k].at <= t; k++) { prev = k ? pointOf(looks[k - 1].target) : cur; cur = pointOf(looks[k].target); since = t - looks[k].at; }
@@ -199,7 +237,7 @@ export async function mount(canvas, opts = {}) {
       let a = M.keys[0], b = M.keys[M.keys.length - 1];
       for (let k = 0; k < M.keys.length - 1; k++) if (d >= M.keys[k].t && d < M.keys[k + 1].t) { a = M.keys[k]; b = M.keys[k + 1]; }
       const f = a === b ? 0 : ease((d - a.t) / (b.t - a.t));
-      return { a, b, f, w };
+      return { a, b, f, w, name: m.name };
     }
     return null;
   }
@@ -231,33 +269,49 @@ export async function mount(canvas, opts = {}) {
     const walk = u < tw || u > 1 - tw ? 0 : Math.min(1, Math.min(p, 1 - p) * 8);
     return { x: a.x + (b.x - a.x) * pe, y: a.y + (b.y - a.y) * pe, face, walk, dist: walkLen[k] + d * pe, moving: walk > 0 };
   }
-  const groundZ = 0;
+  const groundZ = (opts.place && opts.place.floorZ) || 0;
+  const seatZ = (opts.place && opts.place.seatZ) || groundZ;
+  // seated or standing: plan.sit = [[t, 1|0], ...]; getting up or down takes 0.9 s with a lean forward
+  const sits = (plan.sit || []).slice().sort((a, b) => a[0] - b[0]);
+  function sitAt(t) {
+    let v = sits.length ? sits[0][1] : 0, from = v, since = 99;
+    for (let k = 0; k < sits.length && sits[k][0] <= t; k++) { from = k ? sits[k - 1][1] : sits[k][1]; v = sits[k][1]; since = t - sits[k][0]; }
+    const f = ease(since / 0.9), w = from + (v - from) * f;
+    const lean = since < 0.9 && from !== v ? 22 * Math.sin(Math.PI * since / 0.9) : 0;
+    return { w, lean };
+  }
 
   function frame(t) {
     for (const k in bones) bones[k].quaternion.copy(rest[k]);
     const at = placeAt(t);
-    root.position.set(at.x, groundZ, -at.y);
-    root.rotation.y = -at.face * D * (opts.mirror ? -1 : 1);
-    root.updateMatrixWorld(true);
+    const sit = sitAt(t);
+    holder.position.set(at.x, groundZ + (seatZ - groundZ) * sit.w, -at.y);
+    holder.rotation.y = at.face * D * (opts.mirror ? -1 : 1);   // +90 = he faces (and walks) to screen right
+    holder.updateMatrixWorld(true);
+    if (sit.w > 0) {                              // seated: thighs forward, shins down, a little lean as he gets up
+      for (const n of ['L', 'R']) { turnBone('thigh' + n, [-85, 0, 0], sit.w); turnBone('shin' + n, [80, 0, 0], sit.w); }
+      turnBone('spine', [sit.lean, 0, 0], 1);
+      holder.updateMatrixWorld(true);
+    }
     // the key light's shadow follows him around the room
-    lights.key.target.position.set(at.x, 1.1, -at.y); lights.key.position.copy(V([-3.2, -4.2, 4.2])).add(lights.key.target.position).sub(new THREE.Vector3(0, 1.1, 0));
+    lights.key.target.position.set(at.x, 1.1 * S, -at.y); lights.key.position.copy(V([-3.2, -4.2, 4.2])).add(lights.key.target.position).sub(new THREE.Vector3(0, 1.1, 0));
     if (at.walk > 0) {
       // a walk cycle: phase from the distance covered, so feet never slide
-      const ph = (at.dist / STRIDE) * Math.PI, w = at.walk;
+      const ph = (at.dist / (STRIDE * S)) * Math.PI, w = at.walk;
       const sL = Math.sin(ph), sR = Math.sin(ph + Math.PI);
       // short legs and a round body walk with a small waddle: a bigger swing, a side sway and a bounce
       turnBone('thighL', [-34 * sL, 0, 0], w); turnBone('thighR', [-34 * sR, 0, 0], w);
       turnBone('shinL', [52 * Math.max(0, Math.cos(ph)), 0, 0], w); turnBone('shinR', [52 * Math.max(0, Math.cos(ph + Math.PI)), 0, 0], w);
       turnBone('footL', [14 * sL, 0, 0], w); turnBone('footR', [14 * sR, 0, 0], w);
-      root.position.y += 0.05 * w * Math.abs(Math.cos(ph));
-      const side = new THREE.Vector3(Math.cos(root.rotation.y), 0, -Math.sin(root.rotation.y));
-      root.position.addScaledVector(side, 0.035 * w * Math.sin(ph));
+      holder.position.y += 0.05 * S * w * Math.abs(Math.cos(ph));
+      const side = new THREE.Vector3(Math.cos(holder.rotation.y), 0, -Math.sin(holder.rotation.y));
+      holder.position.addScaledVector(side, 0.035 * S * w * Math.sin(ph));
       turnBone('hips', [4, 8 * sL, 6 * Math.sin(ph)], w);
       turnBone('chest', [3, -7 * sL, -3 * Math.sin(ph)], w);
       turnBone('head', [0, 4 * sL, 2 * Math.sin(ph)], w);
       turnBone('upper_armL', [32 * sL, 0, 0], w); turnBone('upper_armR', [32 * sR, 0, 0], w);
       turnBone('forearmL', [-16 - 14 * sL, 0, 0], w); turnBone('forearmR', [-16 - 14 * sR, 0, 0], w);
-      root.updateMatrixWorld(true);
+      holder.updateMatrixWorld(true);
     }
     // idle: breathing (4 s), a slow weight shift, a small nod while he talks
     const br = Math.sin(t * 2 * Math.PI / 4.0);
@@ -265,6 +319,19 @@ export async function mount(canvas, opts = {}) {
     turnBone('chest', [0.8 * br, 0.8 * Math.sin(t * 2 * Math.PI / 11), 0], 1);
     const tk = talking(t) ? 1 : 0;
     turnBone('head', [2.2 * Math.sin(t * 5.1) * tk + 0.8 * Math.sin(t * 0.9), 2.5 * Math.sin(t * 0.7), 1.5 * Math.sin(t * 0.5)], 1);
+    // arms at rest: on the desk when seated, loose with a small bend when standing (never stiff by his sides)
+    const sitw = sitAt(t).w;
+    const restArms = (w0) => {
+      for (const n of ['L', 'R']) {
+        const sx = n === 'L' ? -1 : 1;
+        const upper = sitw > 0.5 ? [0.16 * sx, -0.62, -0.77] : [0.22 * sx, -0.12, -0.97];
+        const fore = sitw > 0.5 ? [-0.32 * sx, -0.95, -0.02] : [0.08 * sx, -0.5, -0.86];
+        aimTo('upper_arm' + n, V(upper).applyQuaternion(holder.quaternion), w0);
+        aimTo('forearm' + n, V(fore).applyQuaternion(holder.quaternion), w0);
+      }
+    };
+    root.updateMatrixWorld(true);
+    if (!(at.walk > 0)) restArms(1);
     const mv = moveAt(t);
     if (mv) {
       const { a, b, f, w } = mv;
@@ -273,19 +340,34 @@ export async function mount(canvas, opts = {}) {
         turnBone(name, [0, 1, 2].map((i) => ra[i] + (rb[i] - ra[i]) * f), w);
       }
       root.updateMatrixWorld(true);
+      const R = MOVES[mv.name].reach;
+      if (R) {                                    // point at the thing itself: shoulder toward it, the forearm on it
+        const sh = new THREE.Vector3(); bones['upper_arm' + R.side].getWorldPosition(sh);
+        const to = V(pointOf(R.target)).sub(sh).normalize();
+        aimTo('upper_arm' + R.side, to.clone().add(new THREE.Vector3(0, -0.35, 0)).normalize(), w);
+        aimTo('forearm' + R.side, to.clone().add(new THREE.Vector3(0, 0.15, 0)).normalize(), w);
+      }
       // shoulder to hand, in order, so each child aims from where its parent landed
       for (const name of ['upper_armL', 'forearmL', 'upper_armR', 'forearmR']) {
         const da = (a.aim || {})[name], db = (b.aim || {})[name];
         if (!da && !db) continue;
         const va = V(da || db).normalize(), vb = V(db || da).normalize();
-        aimTo(name, va.clone().lerp(vb, f), w);
+        aimTo(name, va.clone().lerp(vb, f).applyQuaternion(holder.quaternion), w);
       }
+    }
+    // beats: on a stressed word the leading hand drops and comes back (0.45 s) and the head nods with it
+    for (const [bt, amp, side] of beats) {
+      const d = t - bt; if (d < -0.1 || d > 0.45) continue;
+      const e = Math.sin(Math.PI * Math.min(1, Math.max(0, (d + 0.1) / 0.55)));
+      turnBone('forearm' + side, [-14 * amp * e, 0, 0], 1);
+      turnBone('upper_arm' + side, [-5 * amp * e, 0, 0], 1);
+      turnBone('head', [5 * amp * e, 0, 0], 1);
     }
     const g = gazeAt(t);
     lookAt('eyeL', g, 1); lookAt('eyeR', g, 1);
     const lid = lidAt(t), mouth = mouthAt(t);
     for (const [kind, val, o] of swaps) o.visible = kind === 'mouth' ? val === mouth : kind === 'lid' ? val === lid : val === glasses;
-    renderer.render(scene, cam);
+    if (!opts.noRender) renderer.render(scene, cam);
   }
   frame(0);
   frame.setLight = setLight;
