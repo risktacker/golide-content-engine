@@ -36,8 +36,9 @@ export async function mount(canvas, kind, args = {}, opts = {}) {
     chrome: new THREE.MeshPhysicalMaterial({ color: '#D8DCE2', metalness: 1, roughness: 0.14 }),
     dark: new THREE.MeshPhysicalMaterial({ color: '#1C1F26', metalness: 0.5, roughness: 0.35 }),
     white: new THREE.MeshPhysicalMaterial({ color: '#F2F3F5', roughness: 0.25, clearcoat: 0.8 }),
-    glass: new THREE.MeshPhysicalMaterial({ color: '#DCE6FF', roughness: 0.05, transmission: 0.9, thickness: 0.3, transparent: true, opacity: 0.55 }),
-    ice: new THREE.MeshPhysicalMaterial({ color: '#D7F0FF', roughness: 0.12, clearcoat: 1, transmission: 0.35, thickness: 1 }),
+    // no refraction pass (owner 2026-11-26: a software-WebGL frame with refracting glass hung the filming)
+    glass: new THREE.MeshPhysicalMaterial({ color: '#DCE6FF', roughness: 0.05, metalness: 0.1, clearcoat: 1, transparent: true, opacity: 0.32, depthWrite: false }),
+    ice: new THREE.MeshPhysicalMaterial({ color: '#D7F0FF', roughness: 0.12, clearcoat: 1, transparent: true, opacity: 0.9 }),
     water: new THREE.MeshPhysicalMaterial({ color: '#0E2A5A', roughness: 0.08, transparent: true, opacity: 0.62, metalness: 0.1 }),
   };
   const paint = (c, glow = 0) => new THREE.MeshPhysicalMaterial({ color: c, roughness: 0.28, clearcoat: 0.6, metalness: 0.15, emissive: c, emissiveIntensity: glow });
@@ -291,7 +292,7 @@ export async function mount(canvas, kind, args = {}, opts = {}) {
     const card = add(rbox(5.2, 0.12, 2.8, 0.12), M.white, [0, 0.06, 0]);
     for (let r = 0; r < 4; r++) for (let k = 0; k < 3; k++)
       add(rbox(1.1 + ((r + k) % 3) * 0.25, 0.03, 0.14, 0.03), M.dark, [-1.75 + k * 1.75, 0.13, -0.95 + r * 0.62]);
-    add(rbox(5.0, 0.03, 2.6, 0.1), new THREE.MeshPhysicalMaterial({ color: '#DCE6FF', roughness: 0.65, transmission: 0.35, transparent: true, opacity: 0.8 }), [0, 0.16, 0]);
+    add(rbox(5.0, 0.03, 2.6, 0.1), new THREE.MeshPhysicalMaterial({ color: '#DCE6FF', roughness: 0.65, transparent: true, opacity: 0.8 }), [0, 0.16, 0]);
     const pic = PICS.label && PICS.label.kind !== 'prompt' ? PICS.label : (PICS.item0 && PICS.item0.kind !== 'prompt' ? PICS.item0 : null);
     const found = pic ? await tile3d(pic, 0.95) : add(rbox(0.95, 0.95, 0.2, 0.18), paint(col('label', '#E8C268'), 0.35), [0, 0, 0]);
     if (found.parent !== scene) scene.add(found);

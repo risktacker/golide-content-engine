@@ -31,7 +31,7 @@ from pathlib import Path
 
 WORKFLOW = "edit-render.yml"
 FPS = 30
-SPAN_SECONDS = 40            # one machine per ~40 s of video: ~1,200 frames, well under half an hour each
+SPAN_SECONDS = 20            # one machine per ~20 s of video (living-studio frames are slow in software WebGL)
 MAX_PARTS = 16               # GitHub runs 20 jobs at once on a free public repository
 WAIT_MINUTES = 150
 HYPERFRAMES = "hyperframes@0.9.32"
@@ -92,10 +92,11 @@ def bundle(comp: Path) -> bytes:
     return buf.getvalue()
 
 
-def start(job: str, parts: int) -> None:
+def start(job: str, parts: int, which: list[int] | None = None) -> None:
     repo, token = os.environ.get("GITHUB_REPOSITORY"), os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    todo = list(range(parts)) if which is None else which
     body = json.dumps({"ref": os.environ.get("GITHUB_REF_NAME") or "main",
-                       "inputs": {"job": job, "parts": json.dumps(list(range(parts)))}}).encode()
+                       "inputs": {"job": job, "parts": json.dumps(todo or [0])}}).encode()
     req = urllib.request.Request(f"https://api.github.com/repos/{repo}/actions/workflows/{WORKFLOW}/dispatches", data=body,
                                  method="POST", headers={"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"})
     with urllib.request.urlopen(req, timeout=30):
@@ -111,10 +112,15 @@ def render(comp: Path, duration: float, out: Path, label: str = "video", wait_mi
     if get(job, "done.json") is None:                       # the same composition is never filmed twice
         if get(job, "failed.json") not in (None, b"{}"):
             put(job, "failed.json", b"{}", "application/json")
-        put(job, "bundle.tgz", data, "application/gzip")
-        put(job, "meta.json", json.dumps({"duration": duration, "fps": FPS, "parts": parts}).encode(), "application/json")
-        start(job, parts)
-        print(json.dumps({"status": "split_render_started", "job": job, "parts": parts,
+        # owner 2026-11-26 ("don't reset, resume where it left off"): spans already filmed for this same composition
+        # are kept; only the missing ones go to the machines
+        meta = get(job, "meta.json")
+        if meta is None or json.loads(meta).get("parts") != parts:
+            put(job, "bundle.tgz", data, "application/gzip")
+            put(job, "meta.json", json.dumps({"duration": duration, "fps": FPS, "parts": parts}).encode(), "application/json")
+        missing = [i for i in range(parts) if get(job, f"part-{i}.ok") is None]
+        start(job, parts, missing)
+        print(json.dumps({"status": "split_render_started", "job": job, "parts": parts, "to_film": missing,
                           "bundle_mb": round(len(data) / 1e6, 1)}), flush=True)
         t0, deadline = time.time(), time.time() + wait_minutes * 60
         while time.time() < deadline:
@@ -136,8 +142,10 @@ def render(comp: Path, duration: float, out: Path, label: str = "video", wait_mi
 
 
 def film_part(job: str, part: int, work: Path) -> Path:
-    """On a render machine: fetch the composition, film span ``part``, upload it."""
+    """On a render machine: fetch the composition, film span ``part``, upload it (a span already filmed is kept)."""
     meta = json.loads(get(job, "meta.json") or b"{}")
+    if get(job, f"part-{part}.ok") is not None:
+        return work / f"part-{part}.mp4"
     data = get(job, "bundle.tgz")
     if not data or not meta:
         raise SystemExit(f"no bundle for {job}")
@@ -155,6 +163,7 @@ def film_part(job: str, part: int, work: Path) -> Path:
                     "--end", f"{min(meta['duration'], (f1 + 2) / meta['fps']):.4f}", "--keyframe-interval", "1", "--quiet"],
                    check=True, env=env)
     put(job, out.name, out.read_bytes(), "video/mp4")
+    put(job, f"part-{part}.ok", b"1", "text/plain")             # this span is done: a rerun keeps it
     return out
 
 

@@ -24,6 +24,7 @@ env:
   # 2026-11-26: a living-studio frame in software WebGL can take over a minute (the room redrawn as the camera moves);
   # HyperFrames' watchdog gave up after 60 s of no new frame and the whole render fell back to one machine
   HF_DE_STALL_MS: "900000"
+  PRODUCER_PUPPETEER_PROTOCOL_TIMEOUT_MS: "1800000"   # one frame may take minutes; the browser call waits for it
 
 jobs:
   frames:
