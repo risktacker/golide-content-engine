@@ -26,7 +26,7 @@ def test_the_switch_on_plays_the_3d_room_and_waits_for_it(tmp_path):
     assert 'Promise.all(window.__liveWaits||[]).then' in page            # the film waits until the room is loaded
     for f in ("three/g3d/studio_live.js", "three/g3d/goli_live.js", "goli3d/goli.glb", "goli3d/studio.glb"):
         assert (out / f).exists(), f
-    plan = json.loads(page.split("plan: ", 1)[1].split("}).then", 1)[0])
+    plan = json.loads(page.split("plan: ", 1)[1].split("});", 1)[0])
     assert plan["sit"] == [[0, 1]] and plan["moves"] == [{"name": "point_screen", "at": 1.5}]
     assert [w[2] for w in plan["words"]] == ["Look", "here."]
     assert '"glasses": "aviator"' in page.replace("glasses: ", '"glasses": ') or "aviator" in page   # the kit's glasses
@@ -43,5 +43,5 @@ def test_a_short_plays_the_standing_goli_live_under_the_proof(tmp_path):
     e["scenes"][0]["data"]["place"] = "side"
     page = Composer("short", outfit="royal").build(e, tmp_path / "c").read_text()
     assert 'import { mount } from "./three/g3d/goli_live.js"' in page and "studio_live.js" not in page
-    plan = json.loads(page.split("plan: ", 1)[1].split("}).then", 1)[0])
+    plan = json.loads(page.split("plan: ", 1)[1].split("});", 1)[0])
     assert "sit" not in plan and plan["moves"] == [{"name": "point_up", "at": 1.5}]

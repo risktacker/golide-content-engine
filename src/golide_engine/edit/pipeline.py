@@ -14,6 +14,7 @@ Stages, each checkpointed like the rest of the run:
 from __future__ import annotations
 
 import json
+import os
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -328,7 +329,7 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
         # the living studio (owner 2026-11-26): the 3D room with the live Goli in long studio scenes; per video in
         # Studio (spec.live_studio) or for all by config (edit-engine.json live_studio); off until the owner approves
         cfg = json.loads((ROOT / "config" / "edit-engine.json").read_text(encoding="utf-8"))
-        edit["live_studio"] = bool(spec.get("live_studio", cfg.get("live_studio", False)))
+        edit["live_studio"] = bool(spec.get("live_studio", cfg.get("live_studio", False))) or os.environ.get("GOLIDE_LIVE_STUDIO") == "1"
         print(json.dumps({"status": "edit_render", "outfit": outfit, "music": (track or {}).get("title", "bed"),
                           "live_studio": edit["live_studio"]}))
         render(edit, folder, narration, video_path, outfit, track)

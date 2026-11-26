@@ -117,7 +117,7 @@ def legibility(edit: dict[str, Any], comp_builder, comp: Path, size: tuple[int, 
         page = browser.new_page(viewport={"width": size[0], "height": size[1]})
         page.add_init_script("window.__timelines = {};")
         page.goto((comp / "index.html").as_uri())
-        page.wait_for_function("() => !!(window.__timelines && window.__timelines.main)", timeout=20000)
+        page.wait_for_function("() => !!(window.__timelines && window.__timelines.main)", timeout=240000)   # the living studio loads its 3D first
         page.evaluate("document.fonts.ready")
         for sc in scenes:
             t = round(sc["start"] + min(sc["duration"] * 0.75, max(0.2, sc["duration"] - 0.3)), 3)
@@ -201,7 +201,7 @@ def keep_inside(edit: dict[str, Any], comp_builder, comp: Path, size: tuple[int,
         page = browser.new_page(viewport={"width": size[0], "height": size[1]})
         page.add_init_script("window.__timelines = {};")
         page.goto((comp / "index.html").as_uri())
-        page.wait_for_function("() => !!(window.__timelines && window.__timelines.main)", timeout=20000)
+        page.wait_for_function("() => !!(window.__timelines && window.__timelines.main)", timeout=240000)   # the living studio loads its 3D first
         page.evaluate("document.fonts.ready")
         for sc in [x for x in edit["scenes"] if x["type"] != "host"]:
             a, d = float(sc["start"]), float(sc["duration"])
@@ -264,7 +264,7 @@ def probe(comp: Path, size: tuple[int, int], times: list[float]) -> dict[float, 
         page = browser.new_page(viewport={"width": size[0], "height": size[1]})
         page.add_init_script("window.__timelines = {};")
         page.goto((comp / "index.html").as_uri())
-        page.wait_for_function("() => !!(window.__timelines && window.__timelines.main)", timeout=20000)
+        page.wait_for_function("() => !!(window.__timelines && window.__timelines.main)", timeout=240000)   # the living studio loads its 3D first
         page.evaluate("document.fonts.ready")
         for t in times:
             result[round(t, 3)] = page.evaluate(PROBE, t)

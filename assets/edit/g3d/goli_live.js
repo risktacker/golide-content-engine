@@ -71,6 +71,10 @@ export const MOVES = {
   // closes (or opens) the laptop's lid with one hand on its top edge
   lid: { dur: 1.5, look: 'laptop', keys: [{ t: 0.45, reach: { side: 'R', target: 'lid' }, rot: { head: [10, 0, 0] } },
     { t: 1.05, reach: { side: 'R', target: 'lid' }, rot: { head: [12, 0, 0] } }] },
+  // takes his glasses off (the pair moves to his paw), holds them at his chest a moment, puts them back
+  glasses_off: { dur: 4.2, off: [0.62, 3.45], keys: [{ t: 0.55, reach: { side: 'R', target: 'nose' } },
+    { t: 1.3, reach: { side: 'R', target: 'chest' }, rot: { head: [-4, 0, 3] } }, { t: 2.9, reach: { side: 'R', target: 'chest' }, rot: { head: [-4, 0, 3] } },
+    { t: 3.4, reach: { side: 'R', target: 'nose' } }, { t: 3.9, reach: { side: 'R', target: 'nose' } }] },
   both_up: { dur: 1.4, keys: [{ t: 0.35, aim: both([0.5, -0.1, 0.85], [0.1, -0.1, 1]) }, { t: 1.0, aim: both([0.5, -0.1, 0.85], [0.1, -0.1, 1]) }] },
 };
 
@@ -141,7 +145,7 @@ export async function mount(canvas, opts = {}) {
   const bones = {}; root.traverse((o) => { if (o.isBone) bones[o.name] = o; });
   const rest = {}; for (const k in bones) rest[k] = bones[k].quaternion.clone();
   const swaps = [];
-  root.traverse((o) => { const m = o.name.match(/^(mouth|lid|glasses)_([A-Za-z_]+?)__/); if (m) swaps.push([m[1], m[2], o]); });
+  root.traverse((o) => { const m = o.name.match(/^(mouth|lid|glasses|held)_([A-Za-z_]+?)__/); if (m) swaps.push([m[1], m[2], o]); });
   const kit = rig.kits[opts.kit || 'royal'];
   root.traverse((o) => { if (o.material && kit) for (const s of ['body', 'trim', 'sleeve']) if (o.material.name === s && kit[s]) o.material.color = new THREE.Color(kit[s]); });
   const glasses = opts.glasses || 'round_gold';
@@ -232,6 +236,12 @@ export async function mount(canvas, opts = {}) {
   const mouthAt = (t) => { let s = 'X'; for (const [ct, sh] of cues) { if (ct > t) break; s = sh; } return s; };
   const TG = { ...TARGETS, ...(opts.targets || {}) };   // in the studio: real points of the room
   function targetPoint(name) {                    // a world point (three.js) to reach for
+    if (name === 'nose' || name === 'chest') {    // his own face and chest, wherever he is
+      const h = new THREE.Vector3(); bones[name === 'nose' ? 'head' : 'chest'].getWorldPosition(h);
+      const fwd = new THREE.Vector3(0, 0, 1).applyQuaternion(holder.quaternion);
+      return name === 'nose' ? h.add(fwd.multiplyScalar(0.7 * S)).add(new THREE.Vector3(0, 0.42 * S, 0))
+        : h.add(fwd.multiplyScalar(0.75 * S)).add(new THREE.Vector3(0.1 * S, 0.05 * S, 0));
+    }
     if (name === 'mouth') {
       const h = new THREE.Vector3(); bones.head.getWorldPosition(h);
       const fwd = new THREE.Vector3(0, 0, 1).applyQuaternion(holder.quaternion);
@@ -262,6 +272,7 @@ export async function mount(canvas, opts = {}) {
     }
     return null;
   }
+  const glassesOff = (t) => moves.some((m) => { const G = MOVES[m.name].off, d = t - m.at; return G && d >= G[0] && d < G[1]; });
   const talking = (t) => (plan.talk || []).some(([a, b]) => t >= a && t < b) || mouthAt(t) !== 'X';
 
   // where he stands and faces: plan.path = [{at, x, y, face}] (Blender metres on the floor, face in degrees, 0 = the
@@ -402,7 +413,9 @@ export async function mount(canvas, opts = {}) {
     const g = gazeAt(t);
     lookAt('eyeL', g, 1); lookAt('eyeR', g, 1);
     const lid = lidAt(t), mouth = mouthAt(t);
-    for (const [kind, val, o] of swaps) o.visible = kind === 'mouth' ? val === mouth : kind === 'lid' ? val === lid : val === glasses;
+    const off = glassesOff(t);                    // the glasses are in his paw, not on his face
+    for (const [kind, val, o] of swaps) o.visible = kind === 'mouth' ? val === mouth : kind === 'lid' ? val === lid
+      : kind === 'held' ? val === glasses && off : val === glasses && !off;
     if (!opts.noRender) renderer.render(scene, cam);
   }
   frame(0);

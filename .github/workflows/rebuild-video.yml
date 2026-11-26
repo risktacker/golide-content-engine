@@ -28,6 +28,11 @@ on:
         description: "Optional new YouTube title"
         required: false
         default: ""
+      live_studio:
+        description: "TRIAL: the living studio (3D room, live Goli) for this re-cut"
+        required: false
+        type: boolean
+        default: false
 
 concurrency:
   group: golide-state-writer
@@ -41,7 +46,7 @@ permissions:
 jobs:
   rebuild:
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: 300
     env:
       GOLIDE_STUDIO_BASE_URL: "https://studio.golidee.com"
       R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
@@ -115,6 +120,7 @@ jobs:
           SCENE_PLAN: ${{ inputs.scene_plan }}
           NEW_ART: ${{ inputs.new_art }}
           NEW_TITLE: ${{ inputs.title }}
+          GOLIDE_LIVE_STUDIO: ${{ inputs.live_studio && '1' || '0' }}
           # Previews are private to the owner, so they may render during a
           # style hold; publishing never re-renders.
           GOLIDE_RENDER_HOLD_BYPASS: ${{ inputs.step == 'preview' && '1' || '0' }}

@@ -58,6 +58,16 @@ for _g in _STYLES:
     build_glasses(_g)
     tag("glasses_" + _g)
 
+# glasses in his hand (owner 2026-11-26: "takes off his glasses"): a second pair of each style, built at his right paw
+# and skinned to it; the player swaps the pair on his face for the pair in his paw
+_hand_r = _V(POSES["rest"][1][2])
+for _g in _STYLES:
+    _before = set(sc.objects)
+    build_glasses(_g)
+    for _o in set(sc.objects) - _before:
+        _o.location += _hand_r - _V((0, -0.62, 1.86)) + _V((0.0, -0.12, -0.02))
+    tag("held_" + _g)
+
 _sleeve, _trim, _short = build_outfit(SPEC.get("outfit", "royal"))
 tag("torso")
 for _s in (-1, 1):
@@ -205,7 +215,7 @@ def _seg_dist(p, a, b):
 
 
 def _skin(o, part):
-    names = CANDIDATES.get(part, ["head"])
+    names = ["hand.R"] if part.startswith("held_") else CANDIDATES.get(part, ["head"])
     groups = {n: o.vertex_groups.new(name=n) for n in names}
     segs = {n: (_V(BONES[n][0]), _V(BONES[n][1])) for n in names}
     for v in o.data.vertices:
@@ -234,7 +244,7 @@ for _o in list(sc.objects):
     _part = _o.get("part", "head")
     _o.name = f"{_part}__{_o.name}"
     _skin(_o, _part)
-    for _key in ("mouth_", "lid_", "glasses_"):
+    for _key in ("mouth_", "lid_", "glasses_", "held_"):
         if _part.startswith(_key):
             SWAPS.setdefault(_key.rstrip("_"), {}).setdefault(_part[len(_key):], []).append(_o.name)
 
