@@ -116,6 +116,58 @@ IMPORTMAP = '<script type="importmap">{"imports":{"three":"./three/three.module.
 
 
 LIVE_DIR = ASSETS.parent / "goli3d" / "live"
+HERO_DIR = ASSETS / "hero"
+# the words that call each hero model (owner 2026-11-26: a lock only when the line is about locking, never for any
+# "security"); matched on the object's own name first, then its label
+HERO_WORDS = {
+    "robot": ("robot", "humanoid", "android", "optimus", "droid"),
+    "padlock": ("padlock", "lock", "locked", "unlock", "locks"),
+    "shield": ("shield", "protect", "protection", "secure", "security", "safe", "antivirus", "firewall"),
+    "cloud": ("cloud", "aws", "azure", "upload", "sync"),
+    "database": ("database", "data base", "sql", "storage", "records", "postgres", "supabase", "db"),
+    "brain": ("brain", "neural", "ai model", "llm", "intelligence", "reasoning", "mind"),
+    "key": ("key", "api key", "password", "credential", "token", "access"),
+    "globe": ("globe", "world", "worldwide", "global", "internet", "countries", "earth"),
+}
+
+
+# the colour of a thing (owner 2026-11-26: "make them colour match to a said thing"): a brand's own colour when the
+# line names one, a colour word when it says one, else the house gold
+THING_COLORS = {
+    "tesla": "#E31937", "google": "#4285F4", "gemini": "#8E75FF", "microsoft": "#00A4EF", "copilot": "#00A4EF",
+    "apple": "#A2AAAD", "meta": "#0866FF", "facebook": "#0866FF", "instagram": "#E1306C", "whatsapp": "#25D366",
+    "nvidia": "#76B900", "claude": "#D97757", "anthropic": "#D97757", "openai": "#10A37F", "chatgpt": "#10A37F",
+    "aws": "#FF9900", "amazon": "#FF9900", "netflix": "#E50914", "youtube": "#FF0000", "adobe": "#FA0F00",
+    "supabase": "#3ECF8E", "github": "#8250DF", "spotify": "#1DB954", "shopify": "#95BF47", "stripe": "#635BFF",
+    "figma": "#A259FF", "discord": "#5865F2", "slack": "#E01E5A", "python": "#3776AB", "samsung": "#1428A0",
+    "intel": "#0071C5", "amd": "#ED1C24", "bitcoin": "#F7931A", "ethereum": "#627EEA", "zoom": "#2D8CFF",
+    "canva": "#00C4CC", "perplexity": "#20808D", "linkedin": "#0A66C2", "tiktok": "#FE2C55", "cloudflare": "#F38020",
+    "vercel": "#F4F1EA", "x": "#F4F1EA", "twitter": "#1D9BF0", "spacex": "#F4F1EA", "starlink": "#F4F1EA",
+    "red": "#E53935", "blue": "#2450E6", "green": "#34C759", "yellow": "#F7C948", "orange": "#FF8A00",
+    "purple": "#9B5CFF", "pink": "#FF4F9A", "black": "#2A2D33", "white": "#F4F1EA", "gold": "#E8C268", "silver": "#C0C6CE",
+}
+
+
+def thing_color(*texts: str) -> str:
+    for text in texts:
+        low = str(text or "").lower()
+        for name, color in THING_COLORS.items():
+            if re.search(rf"\b{re.escape(name)}\b", low):
+                return color
+    return "#E8C268"
+
+
+def hero_for(data: dict) -> str:
+    """The hero model for a 3D object scene, by the object's name (then its label), or '' for the glass objects."""
+    if not HERO_DIR.exists():
+        return ""
+    obj = data.get("object")
+    name = (obj if isinstance(obj, str) else (obj or {}).get("name", "") if isinstance(obj, dict) else "") or ""
+    for text in (str(name).lower(), str(data.get("label") or "").lower()):
+        for hero, words in HERO_WORDS.items():
+            if (HERO_DIR / f"{hero}.glb").exists() and any(re.search(rf"\b{re.escape(w)}\b", text) for w in words):
+                return hero
+    return ""
 
 
 def live_ready() -> bool:
@@ -842,10 +894,45 @@ class Composer:
         self.cue("whoosh", t0)
         self.tweens.extend(tw)
 
+    def hero3d(self, t0, dur, data, how="rise"):
+        """Owner 2026-11-26 ("the robot is very stupid ... make it beautiful"): a real Blender-built model (robot,
+        padlock, shield, cloud, database, brain, key, globe; assets/edit/hero) in studio light, its accent parts in the
+        colour of the thing the line names, the move on the spoken word, callouts on named parts
+        (assets/edit/g3d/hero3d.js). The film waits for the model to load."""
+        sid = self._id("hero")
+        self.uses_three = True
+        self.uses_hero = True
+        long = self.fmt == "long"
+        cw, ch = (1500, 940) if long else (1000, 1100)
+        at = float(data.get("at", 1.0))
+        name = hero_for(data)
+        opts = {"at": at, "move": str(data.get("move") or "own"), "lead": data.get("lead") or "", "base": "./hero",
+                "color": data.get("color") or thing_color(data.get("label"), data.get("lead"), json.dumps(data.get("object")),
+                                                           " ".join(w for a, w in getattr(self, "spoken", []) if t0 <= a < t0 + dur)),
+                "callouts": [{"text": c.get("text", "")} for c in (data.get("callouts") or []) if isinstance(c, dict)]}
+        yaw0, sweep = [(-0.6, 0.55), (0.45, -0.5), (-0.25, 0.4), (0.75, -0.45)][int(data.get("view") or 0) % 4]
+        pos = f'position:absolute;left:{(self.w - cw) / 2:.0f}px;top:{self.cy - ch / 2:.0f}px;width:{cw}px;height:{ch}px'
+        inner = (f'<canvas id="{sid}-cv" width="{cw}" height="{ch}" style="{pos}"></canvas>'
+                 f'<svg id="{sid}-ov" viewBox="0 0 {cw} {ch}" width="{cw}" height="{ch}" style="{pos};overflow:visible"></svg>'
+                 f'<script type="module">import {{ mount }} from "./three/g3d/hero3d.js";'
+                 f'window.__g3d = window.__g3d || {{}}; window.__liveWaits = window.__liveWaits || [];'
+                 f'window.__liveWaits.push(mount(document.getElementById("{sid}-cv"), {json.dumps(name)}, '
+                 f'Object.assign({json.dumps(opts)}, {{overlay: document.getElementById("{sid}-ov")}}))'
+                 f'.then((r) => {{ window.__g3d["{sid}"] = r; r(0, {yaw0}, 0); }}));</script>')
+        self.scene(sid, t0, dur, inner)
+        self.entrance(sid, t0, how)
+        self.tw(f'(function(){{var o={{s:0}};tl.fromTo(o,{{s:0}},{{s:{dur:.3f},duration:{dur:.3f},ease:"none",onUpdate:function(){{'
+                f'var f=window.__g3d&&window.__g3d["{sid}"];if(!f)return;var m=Math.min(1,Math.max(0,(o.s-{at:.3f})/1.2));'
+                f'f(m,{yaw0}+{sweep}*o.s/{dur:.3f},o.s);}}}},{t0:.3f});}})();')
+        self.cue("riser", t0 + at - 0.8)
+        self.cue("impact", t0 + at)
+
     def object3d(self, t0, dur, data, how="rise"):
         """2026-11-13 (owner): a real device in clear glass with lit edges and one gold part (the one the story is
         about), turning slowly; its move (lid opens, server slides out, chip lid lifts...) lands on the spoken word.
         Rendered by three.js in the video itself (assets/edit/g3d/glass3d.js)."""
+        if hero_for(data):          # owner 2026-11-26: a real Blender model when we have one for the thing
+            return self.hero3d(t0, dur, data, how)
         sid = self._id("g3d")
         self.uses_three = True
         long = self.fmt == "long"
@@ -1820,6 +1907,10 @@ class Composer:
             shutil.copy(three / "lib" / "three.module.js", out / "three" / "three.module.js")
             shutil.copytree(three / "examples", out / "three" / "examples", dirs_exist_ok=True)
             shutil.copy(ASSETS / "g3d" / "glass3d.js", out / "three" / "g3d" / "glass3d.js")
+        if getattr(self, "uses_hero", False):      # the hero models and their player
+            shutil.copy(ASSETS / "g3d" / "hero3d.js", out / "three" / "g3d" / "hero3d.js")
+            shutil.copy(ASSETS / "g3d" / "goli_live.js", out / "three" / "g3d" / "goli_live.js")
+            shutil.copytree(HERO_DIR, out / "hero", dirs_exist_ok=True)
         if getattr(self, "uses_live", False):      # the living studio: its players and the built room and Goli
             for f in ("goli_live.js", "studio_live.js"):
                 shutil.copy(ASSETS / "g3d" / f, out / "three" / "g3d" / f)
@@ -1896,7 +1987,7 @@ const tl=gsap.timeline({{paused:true}});
 tl.fromTo("#glow",{{x:0,y:0}},{{x:-{self.w * 0.18:.0f},y:{self.h * 0.12:.0f},duration:{duration:.3f},ease:"sine.inOut"}},0);
 tl.fromTo("#bg",{{x:0}},{{x:-48,duration:{duration:.3f},ease:"none"}},0);
 {chr(10).join(self.tweens)}
-{'Promise.all(window.__liveWaits||[]).then(function(){window.__timelines["main"]=tl;});' if getattr(self, "uses_live", False) else 'window.__timelines["main"]=tl;'}
+{'Promise.all(window.__liveWaits||[]).then(function(){window.__timelines["main"]=tl;});' if (getattr(self, "uses_live", False) or getattr(self, "uses_hero", False)) else 'window.__timelines["main"]=tl;'}
 </script></body></html>"""
         for cls, kind in (('class="card"', "card"), ('class="frame"', "card"), ('class="chip"', "chip"),
                           ('class="title"', "text"), ('class="tile"', "logo"), ('class="label"', "text"), ('class="num"', "text")):

@@ -59,3 +59,18 @@ def test_a_long_scene_with_a_picture_gets_up_walks_to_the_screen_and_sits_again(
     assert {c["shot"] for c in plan["camera"]} >= {"main", "wide", "screen"}
     assert plan["tv"][0][1].endswith("page.png")                    # the picture is on the 3D screen too
     assert any(m["name"] == "point_screen" for m in plan["moves"])
+
+
+def test_a_robot_or_a_lock_is_a_real_model_in_the_colour_of_the_named_thing(tmp_path):
+    # owner 2026-11-26: "the robot is very stupid ... the lock for anything security"; "colour match to a said thing"
+    from golide_engine.edit.compose import hero_for, thing_color
+    assert hero_for({"object": "robot"}) == "robot" and hero_for({"object": {"name": "Optimus humanoid"}}) == "robot"
+    assert hero_for({"object": "lock"}) == "padlock" and hero_for({"object": "x", "label": "security"}) == "shield"
+    assert hero_for({"object": "laptop"}) == ""                     # the glass devices stay for the devices
+    assert thing_color("Tesla's robot") == "#E31937" and thing_color("a plain line") == "#E8C268"
+    e = {"format": "long", "duration": 4.0, "captions": [{"start": 0, "end": 4, "words": [{"text": "Tesla", "at": 0.3}], "keys": []}],
+         "scenes": [{"type": "object3d", "start": 0.0, "duration": 4.0, "data": {"object": "robot", "label": "Optimus"}}]}
+    out = tmp_path / "c"
+    page = Composer("long", outfit="royal").build(e, out).read_text()
+    assert "hero3d.js" in page and '"color": "#E31937"' in page and (out / "hero" / "robot.glb").exists()
+    assert 'Promise.all(window.__liveWaits||[]).then' in page
