@@ -1358,7 +1358,7 @@ class Composer:
             self.tw(f'tl.fromTo("#{sid}-sub",{{scale:1}},{{scale:1.08,duration:.35,yoyo:true,repeat:5,ease:"sine.inOut"}},{t0 + 1.0:.3f});')
 
     LIVE_MOVES = {"point": "point_screen", "point_left": "point_screen", "explain": "explain", "think": "think",
-                  "shrug": "shrug", "point_up": "point_up", "point_both_up": "both_up", "wave": "wave", "thumbs_up": "both_up"}
+                  "shrug": "shrug", "point_up": "point_up", "point_both_up": "both_up", "wave": "wave", "thumbs_up": "thumbs_up"}
 
     def _live_add(self, layer, t0, dur, data, moves, looks):
         """One live layer for the whole video (one 3D load, one WebGL canvas): each scene adds its stretch of the plan

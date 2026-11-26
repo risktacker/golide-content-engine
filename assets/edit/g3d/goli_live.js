@@ -36,10 +36,10 @@ export const MOVES = {
   open_palms: { dur: 1.6, keys: [{ t: 0.4, aim: both([0.55, -0.45, -0.7], [0.55, -0.8, 0.2]), rot: { head: [-3, 0, 0] } },
     { t: 1.2, aim: both([0.6, -0.45, -0.65], [0.65, -0.75, 0.25]) }] },
   // reach: the arm points at a real thing in the room, wherever he stands or faces
-  point_screen: { dur: 2.0, look: 'screen', reach: { side: 'R', target: 'screen' }, keys: [
+  point_screen: { paws: { R: 'point' }, dur: 2.0, look: 'screen', reach: { side: 'R', target: 'screen' }, keys: [
     { t: 0.45, rot: { head: [0, 18, 0], chest: [0, 5, 0] } }, { t: 1.6, rot: { head: [0, 20, 0], chest: [0, 5, 0] } }] },
-  point_up: { dur: 1.6, keys: [{ t: 0.4, aim: arm('R', [0.45, -0.2, 0.85], [0.1, -0.15, 1]) }, { t: 1.2, aim: arm('R', [0.45, -0.2, 0.85], [0.1, -0.15, 1]) }] },
-  count: { dur: 1.6, keys: [{ t: 0.4, aim: arm('R', [0.3, -0.75, -0.45], [0.05, -0.5, 0.86]) }, { t: 1.2, aim: arm('R', [0.3, -0.75, -0.45], [0.05, -0.5, 0.86]) }] },
+  point_up: { paws: { R: 'point' }, dur: 1.6, keys: [{ t: 0.4, aim: arm('R', [0.45, -0.2, 0.85], [0.1, -0.15, 1]) }, { t: 1.2, aim: arm('R', [0.45, -0.2, 0.85], [0.1, -0.15, 1]) }] },
+  count: { paws: { R: 'point' }, dur: 1.6, keys: [{ t: 0.4, aim: arm('R', [0.3, -0.75, -0.45], [0.05, -0.5, 0.86]) }, { t: 1.2, aim: arm('R', [0.3, -0.75, -0.45], [0.05, -0.5, 0.86]) }] },
   type: { dur: 2.4, look: 'laptop', keys: [
     { t: 0.4, aim: both([0.12, -0.7, -0.7], [-0.3, -1, -0.05]), rot: { head: [12, 0, 0], spine: [5, 0, 0] } },
     { t: 0.7, aim: both([0.12, -0.72, -0.68], [-0.32, -1, -0.12]) },
@@ -47,7 +47,7 @@ export const MOVES = {
     { t: 1.3, aim: both([0.12, -0.72, -0.68], [-0.32, -1, -0.12]) },
     { t: 1.6, aim: both([0.12, -0.7, -0.7], [-0.28, -1, -0.02]), rot: { head: [12, 0, 0], spine: [5, 0, 0] } },
     { t: 2.0, aim: both([0.12, -0.7, -0.7], [-0.3, -1, -0.05]) }] },
-  think: { dur: 2.2, look: 'up', keys: [{ t: 0.5, aim: arm('R', [0.2, -0.8, -0.55], [-0.5, -0.45, 0.75]), rot: { head: [-6, 8, 6] } },
+  think: { paws: { R: 'fist' }, dur: 2.2, look: 'up', keys: [{ t: 0.5, aim: arm('R', [0.2, -0.8, -0.55], [-0.5, -0.45, 0.75]), rot: { head: [-6, 8, 6] } },
     { t: 1.8, aim: arm('R', [0.2, -0.8, -0.55], [-0.5, -0.45, 0.75]), rot: { head: [-6, 8, 6] } }] },
   wave: { dur: 1.8, look: 'camera', keys: [
     { t: 0.4, aim: arm('R', [0.6, -0.1, 0.8], [0.25, -0.1, 1]) }, { t: 0.7, aim: arm('R', [0.6, -0.1, 0.8], [-0.15, -0.1, 1]) },
@@ -59,7 +59,7 @@ export const MOVES = {
   glasses_push: { dur: 1.3, look: 'camera', keys: [{ t: 0.45, aim: arm('R', [0.2, -0.85, -0.45], [-0.45, -0.5, 0.75]) },
     { t: 0.75, aim: arm('R', [0.2, -0.85, -0.45], [-0.45, -0.45, 0.78]), rot: { head: [-3, 0, 0] } }] },
   // picks up the real mug (studio_live.js moves it with his hand between hold.from and hold.to), sips, puts it back
-  sip: { dur: 3.0, look: 'mug', hold: { piece: 'mug', side: 'R', from: 0.55, to: 2.45 }, keys: [
+  sip: { paws: { R: 'fist' }, dur: 3.0, look: 'mug', hold: { piece: 'mug', side: 'R', from: 0.55, to: 2.45 }, keys: [
     { t: 0.55, reach: { side: 'R', target: 'mug' } }, { t: 1.2, reach: { side: 'R', target: 'mouth' }, rot: { head: [-8, 0, 0] } },
     { t: 1.9, reach: { side: 'R', target: 'mouth' }, rot: { head: [-10, 0, 0] } }, { t: 2.45, reach: { side: 'R', target: 'mug' } }] },
   // seated, both hands on the desk's edge: he pushes himself back in the chair (or pulls himself in)
@@ -75,7 +75,10 @@ export const MOVES = {
   glasses_off: { dur: 4.2, off: [0.62, 3.45], keys: [{ t: 0.55, reach: { side: 'R', target: 'nose' } },
     { t: 1.3, reach: { side: 'R', target: 'chest' }, rot: { head: [-4, 0, 3] } }, { t: 2.9, reach: { side: 'R', target: 'chest' }, rot: { head: [-4, 0, 3] } },
     { t: 3.4, reach: { side: 'R', target: 'nose' } }, { t: 3.9, reach: { side: 'R', target: 'nose' } }] },
-  both_up: { dur: 1.4, keys: [{ t: 0.35, aim: both([0.5, -0.1, 0.85], [0.1, -0.1, 1]) }, { t: 1.0, aim: both([0.5, -0.1, 0.85], [0.1, -0.1, 1]) }] },
+  // the arm where the sprite pose had it (model.py POSES thumbs_up), so the thumb stands up as in the sprites
+  thumbs_up: { dur: 1.6, paws: { R: 'thumb' }, look: 'camera', keys: [{ t: 0.4, aim: arm('R', [0.23, -0.3, -0.2], [-0.08, -0.25, 0.22]) , rot: { handR: [0, -70, 0] } },
+    { t: 1.2, aim: arm('R', [0.23, -0.3, -0.2], [-0.08, -0.25, 0.22]), rot: { head: [4, 0, -3], handR: [0, -70, 0] } }] },
+  both_up: { paws: { L: 'point', R: 'point' }, dur: 1.4, keys: [{ t: 0.35, aim: both([0.5, -0.1, 0.85], [0.1, -0.1, 1]) }, { t: 1.0, aim: both([0.5, -0.1, 0.85], [0.1, -0.1, 1]) }] },
 };
 
 // Blender renders Goli with AgX and the "Punchy" look; three.js has plain AgX only, which made him look faded
@@ -145,7 +148,7 @@ export async function mount(canvas, opts = {}) {
   const bones = {}; root.traverse((o) => { if (o.isBone) bones[o.name] = o; });
   const rest = {}; for (const k in bones) rest[k] = bones[k].quaternion.clone();
   const swaps = [];
-  root.traverse((o) => { const m = o.name.match(/^(mouth|lid|glasses|held)_([A-Za-z_]+?)__/); if (m) swaps.push([m[1], m[2], o]); });
+  root.traverse((o) => { const m = o.name.match(/^(mouth|lid|glasses|held|pawL|pawR)_([A-Za-z_]+?)__/); if (m) swaps.push([m[1], m[2], o]); });
   const kit = rig.kits[opts.kit || 'royal'];
   root.traverse((o) => { if (o.material && kit) for (const s of ['body', 'trim', 'sleeve']) if (o.material.name === s && kit[s]) o.material.color = new THREE.Color(kit[s]); });
   const glasses = opts.glasses || 'round_gold';
@@ -439,8 +442,11 @@ export async function mount(canvas, opts = {}) {
     lookAt('eyeL', g, 1); lookAt('eyeR', g, 1);
     const lid = lidAt(t), mouth = mouthAt(t);
     const off = glassesOff(t);                    // the glasses are in his paw, not on his face
+    const pawMv = moves.find((m) => MOVES[m.name].paws && t >= m.at + 0.15 && t < m.at + MOVES[m.name].dur - 0.2);
+    const paw = { L: (pawMv && MOVES[pawMv.name].paws.L) || 'open', R: (pawMv && MOVES[pawMv.name].paws.R) || 'open' };
     for (const [kind, val, o] of swaps) o.visible = kind === 'mouth' ? val === mouth : kind === 'lid' ? val === lid
-      : kind === 'held' ? val === glasses && off : val === glasses && !off;
+      : kind === 'held' ? val === glasses && off : kind === 'pawL' ? val === paw.L : kind === 'pawR' ? val === paw.R
+      : val === glasses && !off;
     if (!opts.noRender) renderer.render(scene, cam);
   }
   frame(0);

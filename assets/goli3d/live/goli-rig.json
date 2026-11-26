@@ -510,6 +510,62 @@
     "held_round_silver__Sphere.077",
     "held_round_silver__c.060"
    ]
+  },
+  "pawL": {
+   "open": [
+    "pawL_open__Sphere.102",
+    "pawL_open__Sphere.103"
+   ],
+   "point": [
+    "pawL_point__c.067",
+    "pawL_point__Sphere.112",
+    "pawL_point__Sphere.113",
+    "pawL_point__c.068",
+    "pawL_point__Sphere.114",
+    "pawL_point__Sphere.115"
+   ],
+   "thumb": [
+    "pawL_thumb__c.069",
+    "pawL_thumb__Sphere.116",
+    "pawL_thumb__Sphere.117",
+    "pawL_thumb__c.070",
+    "pawL_thumb__Sphere.118",
+    "pawL_thumb__Sphere.119",
+    "pawL_thumb__c.071",
+    "pawL_thumb__Sphere.120",
+    "pawL_thumb__Sphere.121",
+    "pawL_thumb__c.072",
+    "pawL_thumb__Sphere.122",
+    "pawL_thumb__Sphere.123"
+   ]
+  },
+  "pawR": {
+   "open": [
+    "pawR_open__Sphere.109",
+    "pawR_open__Sphere.110"
+   ],
+   "point": [
+    "pawR_point__c.073",
+    "pawR_point__Sphere.124",
+    "pawR_point__Sphere.125",
+    "pawR_point__c.074",
+    "pawR_point__Sphere.126",
+    "pawR_point__Sphere.127"
+   ],
+   "thumb": [
+    "pawR_thumb__c.075",
+    "pawR_thumb__Sphere.128",
+    "pawR_thumb__Sphere.129",
+    "pawR_thumb__c.076",
+    "pawR_thumb__Sphere.130",
+    "pawR_thumb__Sphere.131",
+    "pawR_thumb__c.077",
+    "pawR_thumb__Sphere.132",
+    "pawR_thumb__Sphere.133",
+    "pawR_thumb__c.078",
+    "pawR_thumb__Sphere.134",
+    "pawR_thumb__Sphere.135"
+   ]
   }
  },
  "defaults": {

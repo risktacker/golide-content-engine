@@ -77,6 +77,41 @@ build_arms("rest", _sleeve, _trim, _short)
 for _o in sc.objects:
     if "part" not in _o.keys():
         _o["part"] = "arm_" + ("L" if _centre(_o).x < 0 else "R")
+# paws that change shape (owner 2026-11-26: real gestures): the open paw's thumb, a pointing finger, a thumbs up and a
+# fist are swaps on each paw (the round paw itself stays); the player shows the one the move asks for
+for _s, _n in _SIDES.items():
+    _sh, _el, _hd = (_V(p) for p in POSES["rest"][0 if _s < 0 else 1][:3])
+    _d = (_hd - _el).normalized()
+    _palm = _hd + _d * 0.08
+    for _o in list(sc.objects):
+        if (_o.get("part") == f"arm_{_n}" and _o.type == "MESH" and _o.data.materials and _o.data.materials[0] == SKIN
+                and 0.02 < (_centre(_o) - _palm).length < 0.17):
+            _o["part"] = f"paw{_n}_open"
+    for _kind in ("point", "thumb", "fist"):
+        # built as in the sprite pose that shows it (thumbs_up, point_up), then carried into the rest pose's paw frame,
+        # so when the move puts the arm where that pose had it, the finger or thumb stands exactly as in the sprites
+        _pose = {"thumb": "thumbs_up", "point": "point_up"}.get(_kind)
+        if _pose:
+            _psh, _pel, _phd = (_V(p) for p in POSES[_pose][1][:3])
+            if _s < 0:
+                _pel, _phd = _V((-_pel.x, _pel.y, _pel.z)), _V((-_phd.x, _phd.y, _phd.z))
+            _pd = (_phd - _pel).normalized()
+        else:
+            _phd, _pd = _hd, _d
+        _before = set(sc.objects)
+        hand(_phd, _pd, _kind, _s)
+        _new = sorted(set(sc.objects) - _before, key=lambda o: o.name)
+        _q = _pd.rotation_difference(_d)
+        for _o in _new:
+            if (_centre(_o) - (_phd + _pd * 0.08)).length < 0.02:   # the round paw again: already there
+                bpy.data.objects.remove(_o, do_unlink=True)
+                continue
+            _mw = _o.matrix_world.copy()
+            _o.matrix_world = Matrix.Translation(_hd) @ _q.to_matrix().to_4x4() @ Matrix.Translation(-_phd) @ _mw
+        tag(f"paw{_n}_{_kind}")
+        if _kind == "fist":                                # a fist: the round paw alone (an empty swap)
+            pass
+
 for _s in (-1, 1):
     capsule((_s * 0.2, 0, 0.5), (_s * 0.2, -0.02, 0.2), 0.12, LEG)
     sphere((_s * 0.21, -0.08, 0.1), (0.17, 0.25, 0.11), SHOE)
@@ -215,7 +250,8 @@ def _seg_dist(p, a, b):
 
 
 def _skin(o, part):
-    names = ["hand.R"] if part.startswith("held_") else CANDIDATES.get(part, ["head"])
+    names = (["hand.R"] if part.startswith("held_") else [f"hand.{part[3]}"] if part.startswith("paw")
+             else CANDIDATES.get(part, ["head"]))
     groups = {n: o.vertex_groups.new(name=n) for n in names}
     segs = {n: (_V(BONES[n][0]), _V(BONES[n][1])) for n in names}
     for v in o.data.vertices:
@@ -244,7 +280,7 @@ for _o in list(sc.objects):
     _part = _o.get("part", "head")
     _o.name = f"{_part}__{_o.name}"
     _skin(_o, _part)
-    for _key in ("mouth_", "lid_", "glasses_", "held_"):
+    for _key in ("mouth_", "lid_", "glasses_", "held_", "pawL_", "pawR_"):
         if _part.startswith(_key):
             SWAPS.setdefault(_key.rstrip("_"), {}).setdefault(_part[len(_key):], []).append(_o.name)
 
