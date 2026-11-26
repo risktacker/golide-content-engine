@@ -11,6 +11,7 @@ A sidecar <out>.json gives the TV screen's corners in pixels.
 import json
 import math
 import sys
+from pathlib import Path
 
 import bpy  # noqa: loads bmesh
 import bmesh
@@ -268,21 +269,56 @@ if LAY["wall"]:
 if LAY["neon"]:
     nx, ny = g("neon", 170, 170)
     c = P(nx, ny, DW - 0.1)
-    bpy.ops.mesh.primitive_torus_add(major_radius=66 * U(DW - 0.1), minor_radius=5 * U(DW - 0.1), location=c, rotation=(math.pi / 2, 0, 0))
+    bpy.ops.mesh.primitive_torus_add(major_radius=(92 if LIVE else 66) * U(DW - 0.1), minor_radius=(6 if LIVE else 5) * U(DW - 0.1), location=c, rotation=(math.pi / 2, 0, 0))
     t = put(shade(bpy.context.object), back_col); t.data.materials.append(M["gold_glow"])
     logo = SPEC.get("neon_logo")
+    if logo and LIVE:
+        # the living studio bakes every surface, so the mark is built, not a see-through picture: its 13 dots
+        # (read from the mark itself) as glowing studs inside the ring, the gold one brightest
+        dots = [(-0.089, 0.244, 0.045), (-0.196, 0.17, 0.043), (0.196, 0.167, 0.02), (-0.253, 0.055, 0.04),
+                (0.252, 0.05, 0.022), (0.139, 0.001, 0.043), (0.046, 0.001, 0.026), (-0.248, -0.074, 0.037),
+                (0.244, -0.078, 0.025), (-0.18, -0.184, 0.035), (0.174, -0.187, 0.027), (-0.068, -0.248, 0.032),
+                (0.061, -0.249, 0.03)]
+        span = 2 * 84 * U(DW - 0.1) / 0.58           # the dots fill the ring
+        cream = mat("mark_dot", "#FFF3D6", 0.3, emit=9.0, ecolor="#FFF0CC")
+        goldd = mat("mark_gold", "#F2C14E", 0.3, emit=14.0, ecolor="#F2C14E")
+        for dx_, dz_, r_ in dots:
+            sph((c.x + dx_ * span, c.y - 0.02, c.z + dz_ * span), (r_ * span, r_ * span * 0.5, r_ * span),
+                goldd if abs(dx_ - 0.139) < 1e-3 else cream, back_col)
+        logo = None
     if logo:                                  # the GOLIDE mark glowing inside the ring
         im = bpy.data.images.load(logo)
         lm = bpy.data.materials.new("neonlogo"); lm.use_nodes = True
         ln = lm.node_tree; bsdf = ln.nodes["Principled BSDF"]
         tex = ln.nodes.new("ShaderNodeTexImage"); tex.image = im
         ln.links.new(tex.outputs["Color"], bsdf.inputs["Base Color"]); ln.links.new(tex.outputs["Color"], bsdf.inputs["Emission Color"])
-        ln.links.new(tex.outputs["Alpha"], bsdf.inputs["Alpha"]); bsdf.inputs["Emission Strength"].default_value = 6.0
+        ln.links.new(tex.outputs["Alpha"], bsdf.inputs["Alpha"]); bsdf.inputs["Emission Strength"].default_value = 10.0
         r_ = 60 * U(DW - 0.1)
         bpy.ops.mesh.primitive_plane_add(size=2 * r_, location=c + Vector((0, -0.01, 0)), rotation=(math.pi / 2, 0, 0))
         lp_ = put(bpy.context.object, back_col); lp_.data.materials.append(lm)
     pl = bpy.data.lights.new("neon", "POINT"); pl.energy = 60; pl.color = (1, 0.8, 0.45); pl.shadow_soft_size = 0.3
     po = bpy.data.objects.new("neon", pl); po.location = c + Vector((0, -0.3, 0)); back_col.objects.link(po)
+
+# golidee.com in LED neon (owner 2026-11-26: "find where to put LED neon golidee.com"): on the wall under the big
+# screen, between Goli's shoulder and the mug, so it reads in the main shot and in every wide shot; neon tubes on a
+# clear acrylic plate standing off the wall, washing the slats with its light
+if LIVE and LAY["wall"]:
+    DN = DW - 0.06
+    fnt = bpy.data.fonts.load(str(Path(__file__).resolve().parents[3] / "assets" / "fonts" / "Poppins-SemiBold.ttf"))
+    cu = bpy.data.curves.new("neon_text", "FONT"); cu.body = "golidee.com"; cu.font = fnt
+    cu.align_x = "CENTER"; cu.align_y = "CENTER"; cu.size = 84 * U(DN)
+    cu.fill_mode = "NONE"; cu.bevel_depth = 1.3 * U(DN); cu.bevel_resolution = 3     # the letters as glass tubes
+    nt_ = bpy.data.objects.new("neon_text", cu); back_col.objects.link(nt_)
+    nc = P(1290, 700, DN); nt_.location = nc; nt_.rotation_euler = (math.pi / 2, 0, 0)
+    nt_.data.materials.append(mat("neon_tube", "#FFB12E", 0.3, emit=3.2, ecolor="#FF9F1A"))
+    plate_w, plate_h = 600 * U(DN), 130 * U(DN)
+    acryl = mat("acrylic", "#0B1020", 0.15, coat=1.0)
+    box((nc.x, nc.y + 0.03, nc.z), (plate_w, 0.012, plate_h), acryl, back_col, 0.006)
+    for sx_ in (-1, 1):
+        cyl((nc.x + sx_ * plate_w * 0.45, nc.y + 0.045, nc.z), 0.01, 0.03, M["gold"], back_col, rot=(math.pi / 2, 0, 0))
+    sl = bpy.data.lights.new("neon_sign", "AREA"); sl.energy = 45; sl.color = (1, 0.82, 0.5); sl.size = plate_w; sl.size_y = plate_h
+    so = bpy.data.objects.new("neon_sign", sl); so.location = (nc.x, nc.y - 0.15, nc.z); so.rotation_euler = (-math.pi / 2, 0, 0)
+    back_col.objects.link(so)
 
 # floating shelves: books, trophy, LED cube, plant
 if LAY["shelf"]:
@@ -344,12 +380,16 @@ for i in range(41):                          # back outline: straight sides, rou
     else:
         tt = (t - 0.5) / 0.5
         pts.append((ch_w / 2 * (1 - 0.06 * tt) if tt < 0.5 else ch_w / 2 * 1.04, ch_h * (1 - tt) * 0.0 + (0.82 * ch_h) * (1 - tt)))
-outline = [(-ch_w * 0.47, 0)] + [(-ch_w / 2, ch_h * 0.82)] + [(math.cos(math.pi * (1 - j / 20)) * ch_w / 2, ch_h * 0.82 + math.sin(math.pi * j / 20) * ch_h * 0.18) for j in range(21)] + [(ch_w / 2, ch_h * 0.82), (ch_w * 0.47, 0)]
+# owner 2026-11-26 (half the back missing, "phasing"): the outline repeated its corner points, so the face was
+# degenerate and the export dropped half its triangles; each point once now, and the face is cut into clean triangles
+outline = [(-ch_w * 0.47, 0)] + [(math.cos(math.pi * (1 - j / 20)) * ch_w / 2, ch_h * 0.82 + math.sin(math.pi * j / 20) * ch_h * 0.18) for j in range(21)] + [(ch_w * 0.47, 0)]
 vs = [bm.verts.new((x_, 0, z_)) for x_, z_ in outline]
 f = bm.faces.new(vs)
 ext = bmesh.ops.extrude_face_region(bm, geom=[f])
 for v in [e for e in ext["geom"] if isinstance(e, bmesh.types.BMVert)]:
     v.co.y += 0.32
+bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+bmesh.ops.triangulate(bm, faces=[f_ for f_ in bm.faces if len(f_.verts) > 4], quad_method="BEAUTY", ngon_method="BEAUTY")
 me = bpy.data.meshes.new("chair"); bm.to_mesh(me); bm.free()
 chair = bpy.data.objects.new("chair", me); back_col.objects.link(chair); me.materials.append(M["leather"])
 chair.location = (cbase.x, CAM.y + DC, cbase.z)
@@ -459,7 +499,18 @@ if SPEC.get("neon_logo"):                    # our mark glowing on the lid's bac
     n2 = lm2.node_tree; b2 = n2.nodes["Principled BSDF"]
     t2 = n2.nodes.new("ShaderNodeTexImage"); t2.image = im2
     n2.links.new(t2.outputs["Color"], b2.inputs["Base Color"]); n2.links.new(t2.outputs["Color"], b2.inputs["Emission Color"])
-    n2.links.new(t2.outputs["Alpha"], b2.inputs["Alpha"]); b2.inputs["Emission Strength"].default_value = 4.0
+    if LIVE:     # baked surfaces have no see-through: the mark is laid over the lid's own aluminium instead
+        mx = n2.nodes.new("ShaderNodeMix"); mx.data_type = "RGBA"
+        mx.inputs[6].default_value = (*rgb("#B7BCC6"), 1)
+        n2.links.new(t2.outputs["Alpha"], mx.inputs[0]); n2.links.new(t2.outputs["Color"], mx.inputs[7])
+        n2.links.new(mx.outputs[2], b2.inputs["Base Color"])
+        b2.inputs["Metallic"].default_value = 1.0; b2.inputs["Roughness"].default_value = 0.25
+        em = n2.nodes.new("ShaderNodeMix"); em.data_type = "RGBA"; em.inputs[6].default_value = (0, 0, 0, 1)
+        n2.links.new(t2.outputs["Alpha"], em.inputs[0]); n2.links.new(t2.outputs["Color"], em.inputs[7])
+        n2.links.new(em.outputs[2], b2.inputs["Emission Color"])
+    else:
+        n2.links.new(t2.outputs["Alpha"], b2.inputs["Alpha"])
+    b2.inputs["Emission Strength"].default_value = 4.0
     bpy.ops.mesh.primitive_plane_add(size=lid_h * 0.4)
     lg = put(bpy.context.object, front_col); lg.data.materials.append(lm2)
     lap_part(lg, (0, lid_c[1] - 0.0055 * cl, lid_c[2] - 0.0055 * sl), math.pi / 2 + LT)

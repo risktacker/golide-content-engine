@@ -17,7 +17,9 @@ def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     samples = int(next((a for a in sys.argv[1:] if a.isdigit()), 32))
     # resume: pieces baked by an interrupted build are reused (run it again to finish)
-    spec = {"fmt": "long", "export": str(OUT / "studio.glb"), "bake_samples": samples, "tex": 0.8, "resume": "--resume" in sys.argv}
+    spec = {"fmt": "long", "export": str(OUT / "studio.glb"), "bake_samples": samples, "tex": 0.8, "resume": "--resume" in sys.argv,
+            # owner 2026-11-26: our GOLIDE mark glowing inside the neon ring (it was missing: the ring stood empty)
+            "neon_logo": str(ROOT / "assets" / "goli3d" / "studio" / "neon_logo.png")}
     subprocess.run([sys.executable, str(ROOT / "src/golide_engine/goli3d/studio_model.py"), json.dumps(spec), "/tmp/unused.png"], check=True)
     print(OUT / "studio.glb")
 

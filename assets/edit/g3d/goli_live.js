@@ -59,9 +59,11 @@ export const MOVES = {
   glasses_push: { dur: 1.3, look: 'camera', keys: [{ t: 0.45, aim: arm('R', [0.2, -0.85, -0.45], [-0.45, -0.5, 0.75]) },
     { t: 0.75, aim: arm('R', [0.2, -0.85, -0.45], [-0.45, -0.45, 0.78]), rot: { head: [-3, 0, 0] } }] },
   // picks up the real mug (studio_live.js moves it with his hand between hold.from and hold.to), sips, puts it back
-  sip: { paws: { R: 'fist' }, dur: 3.0, look: 'mug', hold: { piece: 'mug', side: 'R', from: 0.55, to: 2.45 }, keys: [
-    { t: 0.55, reach: { side: 'R', target: 'mug' } }, { t: 1.2, reach: { side: 'R', target: 'mouth' }, rot: { head: [-8, 0, 0] } },
-    { t: 1.9, reach: { side: 'R', target: 'mouth' }, rot: { head: [-10, 0, 0] } }, { t: 2.45, reach: { side: 'R', target: 'mug' } }] },
+  sip: { paws: { R: 'fist' }, dur: 3.0, look: 'camera', hold: { piece: 'mug', side: 'R', from: 0.55, to: 2.45 }, keys: [
+        { t: 0.55, reach: { side: 'R', target: 'mug' } },
+    { t: 1.2, reach: { side: 'R', target: 'mouth' }, rot: { head: [0, 0, -6] } },
+    { t: 1.9, reach: { side: 'R', target: 'mouth' }, rot: { head: [0, 0, -8] } },
+    { t: 2.45, reach: { side: 'R', target: 'mug' } }] },
   // seated, both hands on the desk's edge: he pushes himself back in the chair (or pulls himself in)
   push_desk: { dur: 1.3, look: 'laptop', keys: [{ t: 0.35, reach: { side: 'R', target: 'desk_r' } }, { t: 0.95, reach: { side: 'R', target: 'desk_r' } }],
     also: { side: 'L', target: 'desk_l' } },
@@ -272,7 +274,20 @@ export async function mount(canvas, opts = {}) {
     if (name === 'mouth') {
       const h = new THREE.Vector3(); bones.head.getWorldPosition(h);
       const fwd = new THREE.Vector3(0, 0, 1).applyQuaternion(holder.quaternion);
-      return h.add(fwd.multiplyScalar(0.62 * S)).add(new THREE.Vector3(0, -0.08 * S, 0));
+      const head0 = h.clone(), at = h.add(fwd.clone().multiplyScalar(0.62 * S)).add(new THREE.Vector3(0, -0.08 * S, 0));
+      const cup = TG.cup;
+      if (cup) {
+        // owner 2026-11-26 ("cup cutting"): with the mug, the paw stops where the cup's rim meets the FRONT of his
+        // muzzle: the cup in front of the mouth (its radius and a gap ahead of the lips), the paw out at the handle
+        const hand = new THREE.Vector3(); bones.handR.getWorldPosition(hand);
+        const right = hand.sub(at).setY(0); right.addScaledVector(fwd, -right.dot(fwd));
+        if (right.lengthSq() < 1e-6) right.set(-fwd.z, 0, fwd.x); right.normalize();
+        // his arms are short and his muzzle long: the cup comes up BESIDE the muzzle, at the corner of his mouth,
+        // clear of his face (paw out at the handle), and tips toward his lips
+        return head0.addScaledVector(fwd, 0.42 * S).addScaledVector(right, 0.3 * S + cup.reach + cup.r)
+          .add(new THREE.Vector3(0, -0.1 * S, 0));
+      }
+      return at;
     }
     return V(pointOf(name));
   }
@@ -446,6 +461,40 @@ export async function mount(canvas, opts = {}) {
       // reaching for a real thing (the screen, the mug, his mouth): a whole-move reach, or one per key, blended
       const RA = a.reach || MOVES[mv.name].reach, RB = b.reach || MOVES[mv.name].reach;
       if (RA || RB) {
+        // owner 2026-11-26 ("cup cutting"): a NEAR thing (the mug, the lid, his mouth, the desk's edge) is reached
+        // with a real two-bone solve, so the paw lands ON it: shoulder, elbow, paw at the target, the elbow down and out
+        const near = (R) => !['screen', 'camera', 'up', 'down', 'left', 'right'].includes(R.target);
+        if (near(RA || RB) && near(RB || RA)) {
+          const side = (RA || RB).side, sh = new THREE.Vector3(), el = new THREE.Vector3(), wr = new THREE.Vector3();
+          bones['upper_arm' + side].getWorldPosition(sh); bones['forearm' + side].getWorldPosition(el);
+          bones['hand' + side].getWorldPosition(wr);
+          const palm = new THREE.Vector3(0, 0.12, 0).applyMatrix4(bones['hand' + side].matrixWorld);
+          const L1 = sh.distanceTo(el), L2 = el.distanceTo(wr) + wr.distanceTo(palm);
+          const T = targetPoint((RA || RB).target).lerp(targetPoint((RB || RA).target), f);
+          const to = T.clone().sub(sh), d = Math.min(Math.max(to.length(), Math.abs(L1 - L2) + 1e-3), (L1 + L2) * 0.999);
+          const dir = to.normalize(), a_ = (L1 * L1 - L2 * L2 + d * d) / (2 * d), h_ = Math.sqrt(Math.max(0, L1 * L1 - a_ * a_));
+          const chest = new THREE.Vector3(); bones.chest.getWorldPosition(chest);
+          const out = sh.clone().sub(chest).setY(0).normalize();
+          const pole = new THREE.Vector3(0, -1, 0).addScaledVector(out, 0.6).addScaledVector(dir, -dir.dot(new THREE.Vector3(0, -1, 0).addScaledVector(out, 0.6)));
+          if (pole.lengthSq() < 1e-6) pole.set(0, -1, 0); pole.normalize();
+          const elbow = sh.clone().addScaledVector(dir, a_).addScaledVector(pole, h_);
+          const hand = sh.clone().addScaledVector(dir, d);
+          aimTo('upper_arm' + side, elbow.clone().sub(sh), w);
+          aimTo('forearm' + side, hand.sub(elbow), w);
+          const A2 = MOVES[mv.name].also;
+          if (A2) {                                 // the other hand to its own near thing, the same way
+            const s2 = new THREE.Vector3(), e2 = new THREE.Vector3(), w2 = new THREE.Vector3();
+            bones['upper_arm' + A2.side].getWorldPosition(s2); bones['forearm' + A2.side].getWorldPosition(e2); bones['hand' + A2.side].getWorldPosition(w2);
+            const p2 = new THREE.Vector3(0, 0.12, 0).applyMatrix4(bones['hand' + A2.side].matrixWorld);
+            const l1 = s2.distanceTo(e2), l2 = e2.distanceTo(w2) + w2.distanceTo(p2), T2 = targetPoint(A2.target).sub(s2);
+            const dd = Math.min(Math.max(T2.length(), Math.abs(l1 - l2) + 1e-3), (l1 + l2) * 0.999), di = T2.normalize();
+            const aa = (l1 * l1 - l2 * l2 + dd * dd) / (2 * dd), hh = Math.sqrt(Math.max(0, l1 * l1 - aa * aa));
+            const o2 = s2.clone().sub(chest).setY(0).normalize(), pl = new THREE.Vector3(0, -1, 0).addScaledVector(o2, 0.6);
+            pl.addScaledVector(di, -di.dot(pl)).normalize();
+            const eb = s2.clone().addScaledVector(di, aa).addScaledVector(pl, hh);
+            aimTo('upper_arm' + A2.side, eb.clone().sub(s2), w); aimTo('forearm' + A2.side, s2.clone().addScaledVector(di, dd).sub(eb), w);
+          }
+        } else {
         const dirs = (R) => {
           const sh = new THREE.Vector3(); bones['upper_arm' + R.side].getWorldPosition(sh);
           const to = targetPoint(R.target).sub(sh);
@@ -460,6 +509,7 @@ export async function mount(canvas, opts = {}) {
         aimTo('forearm' + da.side, da.fore.clone().lerp(db.fore, f).normalize(), w);
         const A2 = MOVES[mv.name].also;
         if (A2) { const d2 = dirs(A2); aimTo('upper_arm' + d2.side, d2.up, w); aimTo('forearm' + d2.side, d2.fore, w); }
+        }
       }
       // shoulder to hand, in order, so each child aims from where its parent landed
       for (const name of ['upper_armL', 'forearmL', 'upper_armR', 'forearmR']) {
@@ -493,6 +543,15 @@ export async function mount(canvas, opts = {}) {
   frame.holding = (t) => {                        // {piece, side, w} while a move holds a thing
     for (const m of moves) { const H = MOVES[m.name].hold, d = t - m.at; if (H && d >= H.from && d <= H.to) return H; }
     return null;
+  };
+  frame.forward = () => new THREE.Vector3(0, 0, 1).applyQuaternion(holder.quaternion).setY(0).normalize();
+  frame.mouth = () => targetPoint('nose').add(new THREE.Vector3(0, -0.5 * S, 0));
+  frame.body = () => { const c = new THREE.Vector3(); bones.chest.getWorldPosition(c);
+    return c.add(new THREE.Vector3(0, 0, 1).applyQuaternion(holder.quaternion).multiplyScalar(0.2 * S)); };
+  frame.sipping = (t) => {                        // 0..1: how far the cup is tipped to his lips during a sip
+    for (const m of moves) { if (m.name !== 'sip') continue; const d = t - m.at;
+      if (d > 1.0 && d < 2.2) return Math.min(ease((d - 1.0) / 0.3), ease((2.2 - d) / 0.3)); }
+    return 0;
   };
   frame.hand = (side) => { const h = bones['hand' + side]; h.updateWorldMatrix(true, false); return h.matrixWorld; };
   return frame;

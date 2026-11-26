@@ -59,10 +59,29 @@ export async function mountStudio(canvas, opts = {}) {
     const lid = new THREE.Group();
     const upright = kids.filter((o) => { const b = new THREE.Box3().setFromObject(o); return b.max.y - b.min.y > 0.08; });
     if (upright.length) {
-      const lb = new THREE.Box3(); upright.forEach((o) => lb.expandByObject(o));
-      // the hinge: along the lid's bottom edge, at the base's top
-      const hinge = new THREE.Vector3((lb.min.x + lb.max.x) / 2, baseTop, (lb.min.z + lb.max.z) / 2);
+      // owner 2026-11-26 ("when closed the back is joined with the keyboard"): the hinge is the lid's real bottom
+      // edge (it was the middle of the leaning lid, so the lid swung into the keys), raised by half the lid's
+      // thickness so the closed lid rests ON the keys; the close stops where the lid lies flat
+      const pts = []; const v = new THREE.Vector3();
+      for (const o of upright) {
+        o.updateMatrixWorld(); const pos = o.geometry.attributes.position;
+        for (let i = 0; i < pos.count; i++) pts.push(v.fromBufferAttribute(pos, i).applyMatrix4(o.matrixWorld).clone());
+      }
+      const lowY = Math.min(...pts.map((q) => q.y)), topY = Math.max(...pts.map((q) => q.y));
+      const low = pts.filter((q) => q.y < lowY + 0.004), high = pts.filter((q) => q.y > topY - 0.004);
+      const avg = (a) => a.reduce((s, q) => s.add(q), new THREE.Vector3()).multiplyScalar(1 / a.length);
+      const bottom = avg(low), top = avg(high);
+      let keysTop = -Infinity;
+      for (const o of kids) if (!upright.includes(o)) keysTop = Math.max(keysTop, new THREE.Box3().setFromObject(o).max.y);
+      const thick = Math.max(0.004, Math.min(...upright.map((o) => { o.geometry.computeBoundingBox(); const s = new THREE.Vector3();
+        o.geometry.boundingBox.getSize(s); s.multiply(o.getWorldScale(new THREE.Vector3())); return Math.min(s.x, s.y, s.z) || 1; })));
+      const hinge = new THREE.Vector3(bottom.x, Math.max(keysTop, baseTop) + thick / 2 + 0.0015, bottom.z);
       lid.position.copy(hinge); scene.add(lid); upright.forEach((o) => lid.attach(o)); lap.attach(lid);
+      // how far it turns to lie flat: from its lean to level over the keys
+      const keys = new THREE.Box3(); kids.filter((o) => !upright.includes(o)).forEach((o) => keys.expandByObject(o));
+      const toKeys = keys.getCenter(new THREE.Vector3()).sub(hinge).setY(0).normalize();
+      const up = top.clone().sub(bottom).normalize();
+      lid.userData.close = Math.acos(Math.max(-1, Math.min(1, up.dot(toKeys)))) * 180 / Math.PI;
       pieces.lid = lid;
     }
   }
@@ -86,6 +105,28 @@ export async function mountStudio(canvas, opts = {}) {
     lid: pieces.lid ? (() => { const b = new THREE.Box3().setFromObject(pieces.lid); return [(b.min.x + b.max.x) / 2, -(b.min.z + b.max.z) / 2, b.max.y]; })() : c.pos,
     desk_r: [SEAT.x + 0.28, set.desk.front_y + 0.9, set.desk.top_z + 0.02], desk_l: [SEAT.x - 0.28, set.desk.front_y + 0.9, set.desk.top_z + 0.02],
     up: [SEAT.x + 0.4, -3, 3.2], down: [SEAT.x, -2.2, 0.6], left: [-3, -2, 1.6], right: [2, -2, 1.6] };
+
+  // the mug's own measure (owner 2026-11-26, "cup cutting and handling"): its body radius, height and where its handle
+  // points from the middle of its base, so he holds it BY THE HANDLE and the rim meets the front of his muzzle
+  const cup = (() => {
+    const g = pieces.mug, pts = [], v = new THREE.Vector3(); g.updateMatrixWorld(true);
+    g.traverse((o) => { if (!o.isMesh) return; const pos = o.geometry.attributes.position;
+      for (let i = 0; i < pos.count; i++) pts.push(v.fromBufferAttribute(pos, i).applyMatrix4(o.matrixWorld).clone()); });
+    if (!pts.length) return null;
+    const lowY = Math.min(...pts.map((q) => q.y)), topY = Math.max(...pts.map((q) => q.y));
+    const base = pts.filter((q) => q.y < lowY + 0.006), mid = base.reduce((s, q) => s.add(q), new THREE.Vector3()).multiplyScalar(1 / base.length);
+    const r = Math.max(...base.map((q) => Math.hypot(q.x - mid.x, q.z - mid.z)));
+    let far = pts[0], fd = 0;
+    for (const q of pts) { const d = Math.hypot(q.x - mid.x, q.z - mid.z); if (d > fd) { fd = d; far = q; } }
+    const dir = new THREE.Vector3(far.x - mid.x, 0, far.z - mid.z).normalize();
+    // the handle's grip: halfway out along the handle, at mid height; in the piece's own frame (its pivot is the base)
+    const grip = mid.clone().addScaledVector(dir, (r + fd) / 2).setY(lowY + (topY - lowY) * 0.5);
+    return { r, h: topY - lowY, reach: fd, dir, grip: g.worldToLocal(grip.clone()), yaw: Math.atan2(dir.x, dir.z) };
+  })();
+  targets.cup = cup;
+  if (cup) {                                      // he reaches for the handle, not the middle of the mug
+    const gw = pieces.mug.localToWorld(cup.grip.clone()); targets.mug = [gw.x, -gw.z, gw.y];
+  }
 
   const plan = opts.plan || {};
   plan.path = plan.path || [{ at: 0, x: SEAT.x, y: SEAT.y, face: 0 }];
@@ -174,21 +215,38 @@ export async function mountStudio(canvas, opts = {}) {
   const props = (plan.props || []).slice().sort((a, b) => a.at - b.at);
   const home = {}; for (const [k, g] of Object.entries(pieces)) home[k] = { p: g.position.clone(), r: g.rotation.y, x: g.rotation.x };
   function frame(t) {
-    for (const [k, g] of Object.entries(pieces)) { g.position.copy(home[k].p); g.rotation.y = home[k].r; g.rotation.x = home[k].x; }
+    for (const [k, g] of Object.entries(pieces)) { g.rotation.set(home[k].x, home[k].r, 0); g.position.copy(home[k].p); }
     for (const pr of props) {
       const g = pieces[pr.piece]; if (!g || t < pr.at) continue;
       const f = ease((t - pr.at) / (pr.dur || 0.8));
       g.position.x += (pr.dx || 0) * f; g.position.z -= (pr.dy || 0) * f; g.rotation.y -= (pr.turn || 0) * Math.PI / 180 * f;
-      g.rotation.x -= (pr.tilt || 0) * Math.PI / 180 * f;     // the lid: tilt 102 closes it onto the keys, -102 opens it
+      // the lid: a positive tilt closes it onto the keys (never further than flat), a negative one opens it again
+      let tilt = pr.tilt || 0;
+      if (pr.piece === 'lid' && g.userData.close) tilt = Math.sign(tilt) * Math.min(Math.abs(tilt), g.userData.close);
+      g.rotation.x -= tilt * Math.PI / 180 * f;
     }
     placeCamera(t);
     if (tvAt.length) { let m = blank; for (const [tt, mm] of tvAt) { if (tt > t) break; m = mm; } screens.tv.material = m; }
     goli(t);
     const hold = goli.holding(t);
-    if (hold && pieces[hold.piece]) {             // the thing travels in his paw (its base in the palm)
+    if (hold && pieces[hold.piece]) {             // the thing travels in his paw
       const g = pieces[hold.piece], m = goli.hand(hold.side);
       const palm = new THREE.Vector3(0, 0.12, 0).applyMatrix4(m);   // hand space (his scale is in the matrix)
-      g.position.copy(palm).add(new THREE.Vector3(0, -0.05, 0)); g.rotation.set(0, home[hold.piece].r, 0);
+      if (hold.piece === 'mug' && cup) {
+        // held by the handle: the handle points from the cup back to his paw, the cup on the inside of the paw; near
+        // his mouth it tips toward him (the rim to the lips, never the cup through his face)
+        const body = goli.mouth(), toward = body.clone().sub(palm).setY(0);
+        const inward = toward.lengthSq() > 1e-6 ? toward.normalize() : new THREE.Vector3(0, 0, -1);
+        const yaw = Math.atan2(-inward.x, -inward.z) - Math.atan2(cup.dir.x, cup.dir.z) + home.mug.r;
+        const tip = goli.sipping(t) * 0.55;                  // radians at the lips
+        const q = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), yaw);
+        const axis = new THREE.Vector3().crossVectors(inward, new THREE.Vector3(0, 1, 0)).normalize();
+        q.premultiply(new THREE.Quaternion().setFromAxisAngle(axis, -tip));  // its top toward his lips
+        g.quaternion.copy(q);
+        g.position.copy(palm).sub(cup.grip.clone().applyQuaternion(q));
+      } else {
+        g.position.copy(palm).add(new THREE.Vector3(0, -0.05, 0)); g.rotation.set(0, home[hold.piece].r, 0);
+      }
     }
     draw();
   }
