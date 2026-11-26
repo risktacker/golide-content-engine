@@ -126,6 +126,29 @@ for _o in list(sc.objects):
     _o.data.transform(_o.matrix_world)          # bake placement into the vertices: the bones do the moving
     _o.matrix_world = Matrix.Identity(4)
 
+# ------------------------------------------------------------------ soft shading the player cannot compute
+# owner 2026-11-26 ("don't make him fade"): Cycles darkens the creases (under the head, the arms against the body,
+# between the legs); the player cannot. Bake that ambient occlusion into each part's vertex colours once; the player
+# multiplies it in. The eyes, lenses and swap parts are left clean.
+if SPEC.get("ao", True):
+    sc.cycles.samples = SPEC.get("ao_samples", 24)
+    sc.render.bake.target = "VERTEX_COLORS"
+    sc.world = sc.world or bpy.data.worlds.new("w")
+    for _o in list(sc.objects):
+        _part = _o.get("part", "")
+        if _o.type != "MESH" or _part.startswith(("eye_", "mouth_", "lid_")) or not _o.data.vertices:
+            continue
+        if any(_m and _m.name == "lens" for _m in _o.data.materials):
+            continue
+        _o.data.color_attributes.new("ao", "FLOAT_COLOR", "POINT")
+        _o.data.color_attributes.active_color = _o.data.color_attributes["ao"]
+        bpy.ops.object.select_all(action="DESELECT"); _o.select_set(True); bpy.context.view_layer.objects.active = _o
+        bpy.ops.object.bake(type="AO")
+        # keep it soft: AO 0 -> 0.45, 1 -> 1 (the player still lights him; this only darkens creases)
+        for _c in _o.data.color_attributes["ao"].data:
+            _v = 0.45 + 0.55 * _c.color[0]
+            _c.color = (_v, _v, _v, 1.0)
+
 # ------------------------------------------------------------------ the skeleton (rest pose = today's "rest")
 BONES = {   # name: (head, tail, parent)
     "root": ((0, 0, 0), (0, 0, 0.3), None),
@@ -145,8 +168,10 @@ for _s, _n in _SIDES.items():
         f"upper_arm.{_n}": (tuple(_sh), tuple(_el), f"shoulder.{_n}"),
         f"forearm.{_n}": (tuple(_el), tuple(_hd), f"upper_arm.{_n}"),
         f"hand.{_n}": (tuple(_hd), tuple(_hd + _d * 0.22), f"forearm.{_n}"),
-        f"thigh.{_n}": ((_s * 0.2, 0, 0.5), (_s * 0.2, -0.02, 0.22), "hips"),
-        f"foot.{_n}": ((_s * 0.2, -0.02, 0.22), (_s * 0.21, -0.3, 0.06), f"thigh.{_n}"),
+        # owner 2026-11-26: a real walk needs knees
+        f"thigh.{_n}": ((_s * 0.2, 0, 0.5), (_s * 0.2, -0.01, 0.35), "hips"),
+        f"shin.{_n}": ((_s * 0.2, -0.01, 0.35), (_s * 0.2, -0.02, 0.17), f"thigh.{_n}"),
+        f"foot.{_n}": ((_s * 0.2, -0.02, 0.17), (_s * 0.21, -0.3, 0.06), f"shin.{_n}"),
     })
 
 _ad = bpy.data.armatures.new("goli_rig")
@@ -168,7 +193,7 @@ CANDIDATES = {
     "shoulder_L": ["chest", "upper_arm.L"], "shoulder_R": ["chest", "upper_arm.R"],
     "arm_L": ["chest", "shoulder.L", "upper_arm.L", "forearm.L", "hand.L"],
     "arm_R": ["chest", "shoulder.R", "upper_arm.R", "forearm.R", "hand.R"],
-    "leg_L": ["hips", "thigh.L", "foot.L"], "leg_R": ["hips", "thigh.R", "foot.R"],
+    "leg_L": ["hips", "thigh.L", "shin.L", "foot.L"], "leg_R": ["hips", "thigh.R", "shin.R", "foot.R"],
     "eye_L": ["eye.L"], "eye_R": ["eye.R"],
 }
 
@@ -224,7 +249,8 @@ for _name, _bone, _loc in (("socket.hand.L", "hand.L", BONES["hand.L"][0]), ("so
     _em.matrix_world = Matrix.Translation(_loc)
 
 bpy.ops.export_scene.gltf(filepath=_OUT, export_format="GLB", export_apply=False, export_skins=True,
-                          export_animations=False, export_extras=True, export_yup=True)
+                          export_animations=False, export_extras=True, export_yup=True,
+                          export_vertex_color="ACTIVE", export_active_vertex_color_when_no_material=True)
 _info = {
     "bones": {k: {"head": v[0], "tail": v[1], "parent": v[2]} for k, v in BONES.items()},
     "swaps": SWAPS,

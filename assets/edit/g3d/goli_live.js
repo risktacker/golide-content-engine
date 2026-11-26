@@ -61,29 +61,67 @@ export const MOVES = {
   both_up: { dur: 1.4, keys: [{ t: 0.35, aim: both([0.5, -0.1, 0.85], [0.1, -0.1, 1]) }, { t: 1.0, aim: both([0.5, -0.1, 0.85], [0.1, -0.1, 1]) }] },
 };
 
+// Blender renders Goli with AgX and the "Punchy" look; three.js has plain AgX only, which made him look faded
+// (owner 2026-11-26: "don't change the colour of him, don't make him fade"). This is three's AgX with Blender's
+// Punchy look added (power 1.35, saturation 1.4, in AgX's log space before the outset), as CustomToneMapping.
+export function punchyAgX() {
+  const chunk = THREE.ShaderChunk.tonemapping_pars_fragment;
+  if (chunk.includes('PUNCHY_AGX')) return;
+  const agx = chunk.slice(chunk.indexOf('vec3 AgXToneMapping'), chunk.indexOf('vec3 NeutralToneMapping'));
+  const punchy = agx.replace('vec3 AgXToneMapping', 'vec3 PunchyAgX')
+    .replace('color = agxDefaultContrastApprox( color );', `color = agxDefaultContrastApprox( color );
+	color = pow( max( color, vec3( 0.0 ) ), vec3( 1.35 ) );
+	float pl = dot( color, vec3( 0.2126, 0.7152, 0.0722 ) );
+	color = pl + 1.4 * ( color - pl );`);
+  THREE.ShaderChunk.tonemapping_pars_fragment = chunk.replace('vec3 CustomToneMapping( vec3 color ) { return color; }',
+    '// PUNCHY_AGX\n' + punchy + '\nvec3 CustomToneMapping( vec3 color ) { return PunchyAgX( color ); }');
+}
+
+// the sprite library's lights (goli3d/model.py: area key 650 W, fill 160 W, rim 500 W, grey-violet world 0.35),
+// matched by eye-free fitting against a Cycles render (tools: /tmp fit, 2026-11-26)
+export const LIGHT = { key: 2.0, fill: 0.7, rim: 1.5, env: 0.9, ambient: 0.0, exposure: 0.9 };
+
 export async function mount(canvas, opts = {}) {
+  punchyAgX();
+  const L = { ...LIGHT, ...(opts.light || {}) };
   const base = opts.base || './goli3d';
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
   renderer.setPixelRatio(1);
   renderer.setSize(canvas.width, canvas.height, false);
-  renderer.toneMapping = THREE.AgXToneMapping;
+  renderer.toneMapping = THREE.CustomToneMapping;
+  renderer.toneMappingExposure = L.exposure;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   const scene = new THREE.Scene();
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-  scene.environmentIntensity = 0.35;
-  for (const [c, i, p] of [[0xfff4e6, 2.6, [-3.2, -4.2, 4.2]], [0xd8e6ff, 0.7, [4, -3.5, 2.2]], [0xfff2d8, 2.0, [1.5, 3.5, 3.5]]]) {
-    const l = new THREE.DirectionalLight(c, i); l.position.copy(V(p)); scene.add(l);
+  scene.environmentIntensity = L.env;
+  const lights = {};
+  for (const [n, c, p] of [['key', 0xfff4e6, [-3.2, -4.2, 4.2]], ['fill', 0xd8e6ff, [4, -3.5, 2.2]], ['rim', 0xfff2d8, [1.5, 3.5, 3.5]]]) {
+    const l = new THREE.DirectionalLight(c, L[n]); l.position.copy(V(p)); scene.add(l); lights[n] = l;
   }
+  // soft self-shadows from the key (an arm in front of the body, the head over the chest), as Cycles has
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  const ks = lights.key; ks.castShadow = true; ks.shadow.mapSize.set(2048, 2048);
+  Object.assign(ks.shadow.camera, { left: -1.8, right: 1.8, top: 2.6, bottom: -0.4, near: 0.5, far: 20 });
+  ks.shadow.normalBias = 0.025; ks.shadow.radius = 6; ks.target.position.set(0, 1.1, 0); scene.add(ks.target);
+  lights.ambient = new THREE.AmbientLight(0xbfbdcc, L.ambient); scene.add(lights.ambient);
+  const setLight = (x) => { Object.assign(L, x); for (const n of ['key', 'fill', 'rim', 'ambient']) lights[n].intensity = L[n];
+    scene.environmentIntensity = L.env; renderer.toneMappingExposure = L.exposure; };
+  const CAM = { ...CAMERA, ...(opts.camera || {}) };
   const aspect = canvas.width / canvas.height;
   // Blender's AUTO sensor fit: the sensor spans the longer side of the frame
-  const half = Math.atan(CAMERA.sensor / 2 / CAMERA.lens);
+  const half = Math.atan(CAM.sensor / 2 / CAM.lens);
   const vfov = aspect >= 1 ? 2 * Math.atan(Math.tan(half) / aspect) : 2 * half;
   const cam = new THREE.PerspectiveCamera(vfov / D, aspect, 0.1, 100);
-  cam.position.copy(V(CAMERA.pos)); cam.lookAt(V(CAMERA.target));
+  cam.position.copy(V(CAM.pos)); cam.lookAt(V(CAM.target));
+  if (opts.floor) {                               // a floor that only shows his shadow (for scenes without the studio)
+    const fl = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.ShadowMaterial({ opacity: 0.35 }));
+    fl.rotation.x = -Math.PI / 2; fl.receiveShadow = true; scene.add(fl);
+  }
 
   const [gltf, rig] = await Promise.all([new GLTFLoader().loadAsync(`${base}/goli.glb`), fetch(`${base}/goli-rig.json`).then((r) => r.json())]);
   const root = gltf.scene; scene.add(root);
+  root.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; o.frustumCulled = false; } });
   if (opts.mirror) root.scale.x = -1;
   const bones = {}; root.traverse((o) => { if (o.isBone) bones[o.name] = o; });
   const rest = {}; for (const k in bones) rest[k] = bones[k].quaternion.clone();
@@ -167,9 +205,60 @@ export async function mount(canvas, opts = {}) {
   }
   const talking = (t) => (plan.talk || []).some(([a, b]) => t >= a && t < b) || mouthAt(t) !== 'X';
 
+  // where he stands and faces: plan.path = [{at, x, y, face}] (Blender metres on the floor, face in degrees, 0 = the
+  // camera, 90 = his left). Between keys he WALKS: the legs step by the distance covered (no sliding feet), the body
+  // turns toward where he goes, then to the key's facing when he arrives.
+  const path = (plan.path || [{ at: 0, x: 0, y: 0, face: 0 }]).slice().sort((a, b) => a.at - b.at);
+  const STRIDE = 0.42;                            // metres per step (one leg)
+  const walkLen = [0];                            // distance walked up to each key
+  for (let k = 1; k < path.length; k++) walkLen.push(walkLen[k - 1] + Math.hypot(path[k].x - path[k - 1].x, path[k].y - path[k - 1].y));
+  const angDiff = (a, b) => ((b - a + 540) % 360) - 180;
+  function placeAt(t) {
+    let k = 0; while (k < path.length - 1 && path[k + 1].at <= t) k++;
+    const a = path[k], b = path[Math.min(k + 1, path.length - 1)];
+    if (a === b || t <= a.at) return { x: a.x, y: a.y, face: a.face || 0, walk: 0, dist: walkLen[k], moving: false };
+    const span = b.at - a.at, d = Math.hypot(b.x - a.x, b.y - a.y);
+    if (d < 0.01) { const f = ease((t - a.at) / Math.min(span, 0.8)); return { x: a.x, y: a.y, face: (a.face || 0) + angDiff(a.face || 0, b.face || 0) * f, walk: 0, dist: walkLen[k], moving: false }; }
+    // turn toward the way (0.35 s), walk with an eased start and stop, turn to the new facing (0.35 s)
+    const head = Math.atan2(b.x - a.x, -(b.y - a.y)) / D;   // facing angle that walks toward b
+    const u = (t - a.at) / span;
+    const tw = Math.min(0.35 / span, 0.25);
+    const p = u < tw ? 0 : u > 1 - tw ? 1 : (u - tw) / (1 - 2 * tw);
+    const pe = p * p * (3 - 2 * p) * 0.15 + p * 0.85;          // mostly steady pace, soft at both ends
+    let face = head;
+    if (u < tw) face = (a.face || 0) + angDiff(a.face || 0, head) * ease(u / tw);
+    else if (u > 1 - tw) face = head + angDiff(head, b.face || 0) * ease((u - (1 - tw)) / tw);
+    const walk = u < tw || u > 1 - tw ? 0 : Math.min(1, Math.min(p, 1 - p) * 8);
+    return { x: a.x + (b.x - a.x) * pe, y: a.y + (b.y - a.y) * pe, face, walk, dist: walkLen[k] + d * pe, moving: walk > 0 };
+  }
+  const groundZ = 0;
+
   function frame(t) {
     for (const k in bones) bones[k].quaternion.copy(rest[k]);
+    const at = placeAt(t);
+    root.position.set(at.x, groundZ, -at.y);
+    root.rotation.y = -at.face * D * (opts.mirror ? -1 : 1);
     root.updateMatrixWorld(true);
+    // the key light's shadow follows him around the room
+    lights.key.target.position.set(at.x, 1.1, -at.y); lights.key.position.copy(V([-3.2, -4.2, 4.2])).add(lights.key.target.position).sub(new THREE.Vector3(0, 1.1, 0));
+    if (at.walk > 0) {
+      // a walk cycle: phase from the distance covered, so feet never slide
+      const ph = (at.dist / STRIDE) * Math.PI, w = at.walk;
+      const sL = Math.sin(ph), sR = Math.sin(ph + Math.PI);
+      // short legs and a round body walk with a small waddle: a bigger swing, a side sway and a bounce
+      turnBone('thighL', [-34 * sL, 0, 0], w); turnBone('thighR', [-34 * sR, 0, 0], w);
+      turnBone('shinL', [52 * Math.max(0, Math.cos(ph)), 0, 0], w); turnBone('shinR', [52 * Math.max(0, Math.cos(ph + Math.PI)), 0, 0], w);
+      turnBone('footL', [14 * sL, 0, 0], w); turnBone('footR', [14 * sR, 0, 0], w);
+      root.position.y += 0.05 * w * Math.abs(Math.cos(ph));
+      const side = new THREE.Vector3(Math.cos(root.rotation.y), 0, -Math.sin(root.rotation.y));
+      root.position.addScaledVector(side, 0.035 * w * Math.sin(ph));
+      turnBone('hips', [4, 8 * sL, 6 * Math.sin(ph)], w);
+      turnBone('chest', [3, -7 * sL, -3 * Math.sin(ph)], w);
+      turnBone('head', [0, 4 * sL, 2 * Math.sin(ph)], w);
+      turnBone('upper_armL', [32 * sL, 0, 0], w); turnBone('upper_armR', [32 * sR, 0, 0], w);
+      turnBone('forearmL', [-16 - 14 * sL, 0, 0], w); turnBone('forearmR', [-16 - 14 * sR, 0, 0], w);
+      root.updateMatrixWorld(true);
+    }
     // idle: breathing (4 s), a slow weight shift, a small nod while he talks
     const br = Math.sin(t * 2 * Math.PI / 4.0);
     turnBone('spine', [1.2 * br, 0, 0.6 * Math.sin(t * 2 * Math.PI / 9)], 1);
@@ -199,5 +288,6 @@ export async function mount(canvas, opts = {}) {
     renderer.render(scene, cam);
   }
   frame(0);
+  frame.setLight = setLight;
   return frame;
 }
