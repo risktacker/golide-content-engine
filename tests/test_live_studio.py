@@ -155,3 +155,16 @@ def test_studio_storyboard_puts_pages_on_the_big_screen_with_shots_and_acts(tmp_
     P = {"camera": [{"at": 0, "shot": "main"}], "moves": [], "props": []}
     c._live_storyboard(P, 10.0, 4.0, {"shot": "close", "act": "lid_close"})
     assert P["camera"][-1] == {"at": 10.0, "shot": "close", "dur": 0.01} and P["props"][-1]["tilt"] == 102
+
+
+def test_thumbnail_wears_the_videos_kit_and_the_kit_rotates(tmp_path):
+    # owner 2026-11-26: "the engine has to do its work": the next kit after the last upload's, the same on the thumbnail
+    import json
+    from golide_engine.edit.pipeline import outfit_today
+    from golide_engine.goli3d import kits
+    recs = tmp_path / "records"; recs.mkdir()
+    (recs / "a.json").write_text(json.dumps({"recorded_at": "2026-11-25T20:42", "generation_parameters": {"kit": "royal"}}))
+    folder = tmp_path / "edit"
+    kit = kits.choose(folder, recs)
+    assert kit == kits.next_kit("royal") != "royal"
+    assert outfit_today(folder) == kit                     # the thumbnail reads the video's own kit

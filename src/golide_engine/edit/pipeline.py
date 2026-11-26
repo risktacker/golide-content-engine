@@ -36,7 +36,15 @@ def enabled(fmt: str, spec: dict[str, Any] | None = None) -> bool:
     return bool(settings().get(fmt))
 
 
-def outfit_today() -> str:
+def outfit_today(folder: Path | None = None) -> str:
+    """Goli's kit for this production (owner 2026-11-25: each upload wears the next one, goli3d/kits.py): the kit the
+    video was rendered in, so the thumbnail and the video always match; chosen now if the video has not picked it yet.
+    Outside a production: the weekday's outfit."""
+    from ..goli3d import kits
+    if folder is not None:
+        return kits.choose(folder, ROOT / "data" / "production-records")
+    if os.environ.get("GOLIDE_KIT") in kits.KITS:
+        return os.environ["GOLIDE_KIT"]
     from .mascot import outfit_for
 
     return outfit_for(datetime.now(ZoneInfo("Africa/Lusaka")).date())

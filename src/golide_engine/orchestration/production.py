@@ -480,7 +480,7 @@ class ProductionService:
                 raise RuntimeError("Goli beside Stickman is for long videos only")
             poses = goli_layer.reactions_long(work / "stickman", duration)
             pauses = longform.gaps(work / "stickman")
-            goli_layer.add(fmt, made, narration, work / "goli-layer", video_path, outfit_today(), poses, pauses)
+            goli_layer.add(fmt, made, narration, work / "goli-layer", video_path, outfit_today(work / "edit"), poses, pauses)
 
         self.runner.run(production_id, "goli-layer-v1", stage, attempts=1)
 
@@ -2713,7 +2713,7 @@ class ProductionService:
                 style = engine_make(metadata["title"], str(chosen.get("words", "")), str(chosen.get("punch", "")),
                                     [str(b) for b in chosen.get("brands") or []], thumbnail, shots=shots,
                                     photo=person_photo or (photos[0] if photos else None), person=person,
-                                    outfit=outfit_today(),
+                                    outfit=outfit_today(work / "edit"),
                                     recent=recent_designs(self.root), text=self.providers.text(live=True),
                                     model_url=str(model.get("url", "")), model_title=str(model.get("title", "")),
                                     seed=n, log=lambda e: print(json.dumps(e)))
