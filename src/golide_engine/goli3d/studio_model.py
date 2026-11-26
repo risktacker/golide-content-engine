@@ -491,6 +491,9 @@ tag("mic")
 area("key", (CAM.x - 3.0, CAM.y + 2.2, CAM.z + 2.4), 420, 2.0, (1.0, 0.92, 0.82), (0, CAM.y + DD, dtop.z))
 area("fill", (CAM.x + 3.5, CAM.y + 1.5, CAM.z + 1.0), 120, 3.0, (0.75, 0.82, 1.0), (0, CAM.y + DD, dtop.z))
 area("rim", (CAM.x + 2.5, CAM.y + DW - 0.6, CAM.z + 3.5), 500, 2.0, (0.5, 0.6, 1.0), (0, CAM.y + DC, dtop.z + 1))
+if LIVE:                                     # a whole room needs room light: soft panels in the ceiling
+    for cx_ in (-2.2, 0.0, 2.2):
+        area(f"ceiling{cx_}", (cx_, CAM.y + 3.6, 3.6), 160, 1.6, (1.0, 0.93, 0.85), (cx_, CAM.y + 3.6, 0))
 world = bpy.data.worlds.new("w"); world.use_nodes = True
 world.node_tree.nodes["Background"].inputs[0].default_value = (0.02, 0.025, 0.05, 1)
 world.node_tree.nodes["Background"].inputs[1].default_value = 0.15

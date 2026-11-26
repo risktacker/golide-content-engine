@@ -58,6 +58,10 @@ export const MOVES = {
     { t: 1.7, rot: { spine: [8, 0, 0], chest: [6, 0, 0], head: [-6, 0, 0] }, aim: both([0.15, -0.75, -0.65], [-0.3, -1, 0]) }] },
   glasses_push: { dur: 1.3, look: 'camera', keys: [{ t: 0.45, aim: arm('R', [0.2, -0.85, -0.45], [-0.45, -0.5, 0.75]) },
     { t: 0.75, aim: arm('R', [0.2, -0.85, -0.45], [-0.45, -0.45, 0.78]), rot: { head: [-3, 0, 0] } }] },
+  // picks up the real mug (studio_live.js moves it with his hand between hold.from and hold.to), sips, puts it back
+  sip: { dur: 3.0, look: 'mug', hold: { piece: 'mug', side: 'R', from: 0.55, to: 2.45 }, keys: [
+    { t: 0.55, reach: { side: 'R', target: 'mug' } }, { t: 1.2, reach: { side: 'R', target: 'mouth' }, rot: { head: [-8, 0, 0] } },
+    { t: 1.9, reach: { side: 'R', target: 'mouth' }, rot: { head: [-10, 0, 0] } }, { t: 2.45, reach: { side: 'R', target: 'mug' } }] },
   both_up: { dur: 1.4, keys: [{ t: 0.35, aim: both([0.5, -0.1, 0.85], [0.1, -0.1, 1]) }, { t: 1.0, aim: both([0.5, -0.1, 0.85], [0.1, -0.1, 1]) }] },
 };
 
@@ -218,6 +222,14 @@ export async function mount(canvas, opts = {}) {
   };
   const mouthAt = (t) => { let s = 'X'; for (const [ct, sh] of cues) { if (ct > t) break; s = sh; } return s; };
   const TG = { ...TARGETS, ...(opts.targets || {}) };   // in the studio: real points of the room
+  function targetPoint(name) {                    // a world point (three.js) to reach for
+    if (name === 'mouth') {
+      const h = new THREE.Vector3(); bones.head.getWorldPosition(h);
+      const fwd = new THREE.Vector3(0, 0, 1).applyQuaternion(holder.quaternion);
+      return h.add(fwd.multiplyScalar(0.62 * S)).add(new THREE.Vector3(0, -0.08 * S, 0));
+    }
+    return V(pointOf(name));
+  }
   const pointOf = (target) => (Array.isArray(target) ? target : TG[target] || TG.camera);
   function gazeAt(t) {                            // where his eyes go, eased between targets (0.25 s)
     let cur = pointOf(looks[0].target), prev = cur, since = 99;
@@ -340,12 +352,21 @@ export async function mount(canvas, opts = {}) {
         turnBone(name, [0, 1, 2].map((i) => ra[i] + (rb[i] - ra[i]) * f), w);
       }
       root.updateMatrixWorld(true);
-      const R = MOVES[mv.name].reach;
-      if (R) {                                    // point at the thing itself: shoulder toward it, the forearm on it
-        const sh = new THREE.Vector3(); bones['upper_arm' + R.side].getWorldPosition(sh);
-        const to = V(pointOf(R.target)).sub(sh).normalize();
-        aimTo('upper_arm' + R.side, to.clone().add(new THREE.Vector3(0, -0.35, 0)).normalize(), w);
-        aimTo('forearm' + R.side, to.clone().add(new THREE.Vector3(0, 0.15, 0)).normalize(), w);
+      // reaching for a real thing (the screen, the mug, his mouth): a whole-move reach, or one per key, blended
+      const RA = a.reach || MOVES[mv.name].reach, RB = b.reach || MOVES[mv.name].reach;
+      if (RA || RB) {
+        const dirs = (R) => {
+          const sh = new THREE.Vector3(); bones['upper_arm' + R.side].getWorldPosition(sh);
+          const to = targetPoint(R.target).sub(sh);
+          const dist = to.length(), d = to.clone().normalize();
+          // a near thing bends the elbow (the upper arm drops, the forearm comes up to it); a far one straightens it
+          const bend = Math.max(0, Math.min(1, 1 - dist / (0.75 * S)));
+          return { side: R.side, up: d.clone().add(new THREE.Vector3(0, -0.35 - 0.9 * bend, 0)).normalize(),
+                   fore: d.clone().add(new THREE.Vector3(0, 0.15 + 0.5 * bend, 0)).normalize() };
+        };
+        const da = dirs(RA || RB), db = dirs(RB || RA);
+        aimTo('upper_arm' + da.side, da.up.clone().lerp(db.up, f).normalize(), w);
+        aimTo('forearm' + da.side, da.fore.clone().lerp(db.fore, f).normalize(), w);
       }
       // shoulder to hand, in order, so each child aims from where its parent landed
       for (const name of ['upper_armL', 'forearmL', 'upper_armR', 'forearmR']) {
@@ -371,5 +392,10 @@ export async function mount(canvas, opts = {}) {
   }
   frame(0);
   frame.setLight = setLight;
+  frame.holding = (t) => {                        // {piece, side, w} while a move holds a thing
+    for (const m of moves) { const H = MOVES[m.name].hold, d = t - m.at; if (H && d >= H.from && d <= H.to) return H; }
+    return null;
+  };
+  frame.hand = (side) => { const h = bones['hand' + side]; h.updateWorldMatrix(true, false); return h.matrixWorld; };
   return frame;
 }

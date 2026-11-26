@@ -89,7 +89,11 @@ for _i, _o in enumerate(_meshes):
         _m.node_tree.nodes.active = _n
     try:
         # no glossy: a baked reflection is only right from one place (it made bright patches on the floor)
-        bpy.ops.object.bake(type="COMBINED", pass_filter={"DIRECT", "INDIRECT", "DIFFUSE", "EMIT", "TRANSMISSION", "AO"})
+        # reflections are baked (metal, gloss, slat sheen) except on the floor, where a baked reflection is only right
+        # from one place and showed as bright patches from other shots
+        _floor = _a > 20 and max(v.co.z for v in _o.data.vertices) < 0.2
+        _passes = {"DIRECT", "INDIRECT", "DIFFUSE", "EMIT", "TRANSMISSION"} | (set() if _floor else {"GLOSSY"})
+        bpy.ops.object.bake(type="COMBINED", pass_filter=_passes)
     except RuntimeError as _err:
         print("bake skipped", _o.name, _err)
         continue

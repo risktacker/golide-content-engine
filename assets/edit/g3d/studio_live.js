@@ -84,7 +84,7 @@ export async function mountStudio(canvas, opts = {}) {
     main: { pos: c.pos, target: [c.pos[0], c.pos[1] + 1, c.pos[2]], lens: c.lens, shift: c.shift_y },
     wide: { pos: [0.35, -8.6, 2.75], target: [0.1, -1.2, 0.75], lens: 30, shift: 0 },
     close: { pos: [SEAT.x + 0.35, -3.9, 1.62], target: [SEAT.x, -1.0, 1.38], lens: 55, shift: 0 },
-    screen: { pos: [0.2, -4.6, 2.05], target: [1.35, 0, 1.85], lens: 40, shift: 0 },
+    screen: { pos: [-0.2, -5.6, 2.1], target: [1.3, 0, 1.75], lens: 36, shift: 0 },
   };
   const shotOf = (s) => (typeof s === 'string' ? SHOTS[s] || SHOTS.main : { shift: 0, ...s });
   const camKeys = (plan.camera || [{ at: 0, shot: 'main' }]).slice().sort((a, b) => a.at - b.at);
@@ -115,6 +115,12 @@ export async function mountStudio(canvas, opts = {}) {
     }
     placeCamera(t);
     goli(t);
+    const hold = goli.holding(t);
+    if (hold && pieces[hold.piece]) {             // the thing travels in his paw (its base in the palm)
+      const g = pieces[hold.piece], m = goli.hand(hold.side);
+      const palm = new THREE.Vector3(0, 0.12, 0).applyMatrix4(m);   // hand space (his scale is in the matrix)
+      g.position.copy(palm).add(new THREE.Vector3(0, -0.05, 0)); g.rotation.set(0, home[hold.piece].r, 0);
+    }
     renderer.render(scene, cam);
   }
   frame(0);
