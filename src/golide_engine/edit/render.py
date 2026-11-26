@@ -58,15 +58,18 @@ def lipsync(narration: Path, out: Path) -> list[dict[str, Any]]:
                    check=True)
     tool = _rhubarb()
     cues: list[dict[str, Any]]
-    if tool:
-        raw = out.with_suffix(".rhubarb.json")
-        subprocess.run([tool, "-f", "json", "-q", "--extendedShapes", "GHX", "-o", str(raw), str(wav)], check=True)
+    raw = out.with_suffix(".rhubarb.json")
+    if not raw.exists():                         # an earlier read of the same recording is reused
+        raw = out.with_name("mouth-cues.rhubarb.json") if out.with_name("mouth-cues.rhubarb.json").exists() else raw
+    if raw.exists() or tool:
+        if not raw.exists():
+            subprocess.run([tool, "-f", "json", "-q", "--extendedShapes", "GHX", "-o", str(raw), str(wav)], check=True)
         cues = [{"start": float(c["start"]), "value": c["value"]} for c in json.loads(raw.read_text())["mouthCues"]]
     else:
         # Rhubarb missing on this machine: open the mouth with the loudness of the voice instead.
         print("::warning title=Lip sync::Rhubarb not found, mouth follows loudness")
         cues = _loudness_cues(wav)
-    cues = gate(cues, wav)
+    cues = smooth(cues, wav)
     wav.unlink(missing_ok=True)
     out.write_text(json.dumps(cues) + "\n", encoding="utf-8")
     return cues
@@ -79,6 +82,50 @@ def _envelope(wav: Path, step: float) -> tuple[np.ndarray, float]:
     hop = max(1, int(rate * step))
     rms = np.array([np.sqrt(np.mean(x[i:i + hop] ** 2)) for i in range(0, max(1, len(x) - hop), hop)])
     return rms, float(np.percentile(rms, 95)) or 1.0
+
+
+def smooth(cues: list[dict[str, Any]], wav: Path, lead: float = 0.033, hold: float = 0.067,
+           pause: float = 0.22) -> list[dict[str, Any]]:
+    """Owner 2026-11-26 ("he's just mamming, the mouth moves almost opposite"): measured on the 2026-11-24 long video,
+    the old frame-by-frame gate turned Rhubarb's read into flicker (1,079 of 3,018 shape changes shorter than two
+    frames) and pulled the mouth 6 frames off the voice. Now Rhubarb's own timing is kept (it matches the voice best),
+    the mouth shuts only in real pauses (a quarter second of silence or more), no shape flashes for under two frames
+    (the closed M/B/P shape is kept: lips meeting is what the eye reads), and each shape shows one frame before its
+    sound, as animators lead the voice."""
+    if not cues:
+        return cues
+    rms, top = _envelope(wav, 0.01)
+    quiet = rms < top * 0.06
+    spans, i = [], 0                              # silences long enough to be pauses
+    while i < len(quiet):
+        if quiet[i]:
+            j = i
+            while j < len(quiet) and quiet[j]:
+                j += 1
+            if (j - i) * 0.01 >= pause:
+                spans.append((i * 0.01 + 0.04, j * 0.01 - 0.04))
+            i = j
+        else:
+            i += 1
+    seq = sorted(((float(c["start"]), c["value"]) for c in cues))
+    for a, b in spans:                            # a pause shuts the mouth, whatever was read there
+        seq = [(t, v) for t, v in seq if not a <= t < b]
+        before = [v for t, v in seq if t < a]
+        after = [v for t, v in seq if t <= b]
+        seq += [(a, "X"), (b, after[-1] if after else (before[-1] if before else "X"))]
+    seq.sort()
+    loud = lambda t: not quiet[min(len(quiet) - 1, max(0, int(t / 0.01)))]
+    out: list[tuple[float, str]] = []
+    for k, (t, v) in enumerate(seq):
+        nxt = seq[k + 1][0] if k + 1 < len(seq) else t + 1
+        if v == "X" and loud(t) and nxt - t < pause:
+            v = "B"                               # a rest mouth while he is sounding: slightly open instead
+        if nxt - t < hold and v != "A" and out:
+            continue                              # too short to see: the shape before it holds
+        if out and out[-1][1] == v:
+            continue
+        out.append((t, v))
+    return [{"start": round(max(0.0, t - lead), 3), "value": v} for t, v in out]
 
 
 def gate(cues: list[dict[str, Any]], wav: Path, step: float = 1 / 30) -> list[dict[str, Any]]:

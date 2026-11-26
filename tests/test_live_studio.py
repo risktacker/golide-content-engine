@@ -112,3 +112,20 @@ def test_split_render_covers_every_frame_once_and_stays_off_outside_github(monke
         assert 2 <= n <= remote.MAX_PARTS
     monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
     assert not remote.wanted(600)
+
+
+def test_mouth_keeps_rhubarb_timing_without_flicker(tmp_path):
+    # owner 2026-11-26 ("mamming, the mouth moves almost opposite"): no shape under two frames, shut only in pauses
+    import wave, numpy as np
+    from golide_engine.edit.render import smooth
+    sr = 16000
+    x = np.concatenate([np.sin(np.arange(sr) * 0.05) * 0.5, np.zeros(sr // 2), np.sin(np.arange(sr) * 0.05) * 0.5])
+    wav = tmp_path / "v.wav"
+    with wave.open(str(wav), "w") as w:
+        w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr); w.writeframes((x * 32767).astype("<i2").tobytes())
+    cues = [{"start": i * 0.04, "value": "BCDXBC"[i % 6]} for i in range(60)]
+    out = smooth(cues, wav)
+    gaps = [b["start"] - a["start"] for a, b in zip(out, out[1:])]
+    assert min(gaps) >= 0.06
+    assert any(c["value"] == "X" and 0.95 <= c["start"] <= 1.1 for c in out)      # the half-second pause shuts it
+    assert not any(c["value"] == "X" and 0.1 < c["start"] < 0.9 for c in out)      # never shut while he sounds

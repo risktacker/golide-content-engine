@@ -262,7 +262,16 @@ export async function mount(canvas, opts = {}) {
     for (const b of blinks) { const d = t - b; if (d >= 0 && d < 0.2) return d < 0.05 || d >= 0.15 ? 'half' : 'closed'; if (b > t) break; }
     return 'open';
   };
-  const mouthAt = (t) => { let s = 'X'; for (const [ct, sh] of cues) { if (ct > t) break; s = sh; } return s; };
+  // the mouth (owner 2026-11-26: "mamming"): the cues in time order; a big jump in opening (shut to wide) passes
+  // through the shape between for its first frame, so the jaw travels instead of snapping
+  cues.sort((a, b) => a[0] - b[0]);
+  const OPEN = { X: 0, A: 0, F: 0.2, G: 0.25, B: 0.35, H: 0.6, C: 0.75, E: 0.75, D: 1.35 };
+  const mouthAt = (t) => {
+    let s = 'X', prev = 'X', since = 0;
+    for (const [ct, sh] of cues) { if (ct > t) break; prev = s; s = sh; since = ct; }
+    if (t - since < 1 / 30 && Math.abs((OPEN[s] ?? 0) - (OPEN[prev] ?? 0)) >= 0.7) return 'C' === s ? 'B' : 'C';
+    return s;
+  };
   const TG = { ...TARGETS, ...(opts.targets || {}) };   // in the studio: real points of the room
   function targetPoint(name) {                    // a world point (three.js) to reach for
     if (name === 'nose' || name === 'chest') {    // his own face and chest, wherever he is

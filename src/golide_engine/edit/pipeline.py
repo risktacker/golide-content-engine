@@ -232,8 +232,8 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
         print(json.dumps({"status": "demos_failed", "error": str(error)[:300]}))
     demo_list = json.loads(demos_path.read_text(encoding="utf-8")) if demos_path.exists() else []
 
-    cues_path = folder / "mouth-cues.json"
-    production.runner.run(production_id, "lipsync-v1", lambda: lipsync(narration, cues_path), attempts=1)
+    cues_path = folder / "mouth-cues-v2.json"      # v2 (owner 2026-11-26): Rhubarb's timing kept, no flicker
+    production.runner.run(production_id, "lipsync-v2", lambda: lipsync(narration, cues_path), attempts=1)
     cues = json.loads(cues_path.read_text(encoding="utf-8"))
 
     lines = align_lines(plan, timed_words, narration_seconds)
