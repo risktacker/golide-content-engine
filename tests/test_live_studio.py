@@ -100,3 +100,15 @@ def test_metaphor_words_are_shown_as_real_logos_icons_or_the_written_prompt(tmp_
                      "data": {"kind": "transform", "left": "Prompt", "right": "App", "at": 1.0, "prompt": "Build me a habit tracker"}}]}
     page = Composer("long", outfit="royal").build(e, tmp_path / "p").read_text()
     assert '"kind": "prompt"' in page and "Build me a habit tracker" in page
+
+
+def test_split_render_covers_every_frame_once_and_stays_off_outside_github(monkeypatch):
+    # owner 2026-11-26: a long video is filmed across many machines; each frame exactly once, joined in order
+    from golide_engine.edit import remote
+    for dur in (6.0, 61.3, 612.47):
+        n = remote.parts_for(dur)
+        sp = remote.spans(dur, n)
+        assert sp[0][0] == 0 and sp[-1][1] == round(dur * 30) and all(a[1] == b[0] for a, b in zip(sp, sp[1:]))
+        assert 2 <= n <= remote.MAX_PARTS
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    assert not remote.wanted(600)

@@ -1,0 +1,26 @@
+name: Edit render self-test (split filming)
+on:
+  workflow_dispatch: {}
+permissions:
+  contents: read
+  actions: write
+jobs:
+  selftest:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: ./.github/actions/ffmpeg
+      - run: pip install -q -e "$GITHUB_WORKSPACE"
+      - run: python3 tools/edit_render_selftest.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: selftest, path: "selftest/*.jpg\nselftest/picture.mp4" }

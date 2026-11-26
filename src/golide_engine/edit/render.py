@@ -211,9 +211,20 @@ def render(edit: dict[str, Any], folder: Path, narration: Path, output: Path, ou
         if note.startswith("overlap left"):
             print(f"::warning title=Layout::{note}")
     silent = folder / "pictures.mp4"
-    env = dict(os.environ, HYPERFRAMES_BROWSER_PATH=_browser())
-    subprocess.run(["npx", "-y", HYPERFRAMES, "render", str(comp), "-o", str(silent), "--fps", "30",
-                    "--quality", "high", "--workers", workers, "--quiet"], check=True, env=env)
+    # owner 2026-11-26: a long video is filmed across many GitHub machines at once (edit/remote.py), not frame by
+    # frame on one; if that fails for any reason it is filmed here as before
+    from . import remote
+    filmed = False
+    if remote.wanted(duration):
+        try:
+            remote.render(comp, duration, silent, label=str(edit.get("production_id") or folder.name)[:60])
+            filmed = True
+        except Exception as e:                       # noqa: BLE001 - the one-machine path still makes the video
+            print(f"::warning title=Split render::{str(e)[:300]} (filming on this machine instead)")
+    if not filmed:
+        env = dict(os.environ, HYPERFRAMES_BROWSER_PATH=_browser())
+        subprocess.run(["npx", "-y", HYPERFRAMES, "render", str(comp), "-o", str(silent), "--fps", "30",
+                        "--quality", "high", "--workers", workers, "--quiet"], check=True, env=env)
     mix(edit, folder, narration, silent, output, track)
     return output
 
