@@ -301,6 +301,23 @@
   }
  },
  "swaps": {
+  "brow": {
+   "n": [
+    "brow_n__c"
+   ],
+   "up": [
+    "brow_up__c.025"
+   ],
+   "soft": [
+    "brow_soft__c.027"
+   ],
+   "think": [
+    "brow_think__c.029"
+   ],
+   "concern": [
+    "brow_concern__c.031"
+   ]
+  },
   "mouth": {
    "X": [
     "mouth_X__c.002",
@@ -353,51 +370,63 @@
    ],
    "closed": [
     "lid_closed__lid.002"
+   ],
+   "relax": [
+    "lid_relax__lid.004"
+   ],
+   "soft": [
+    "lid_soft__lid.006"
+   ],
+   "smile": [
+    "lid_smile__lid.008"
+   ],
+   "bright": [
+    "lid_bright__lid.012"
    ]
   },
   "glasses": {
    "round_gold": [
-    "glasses_round_gold__c.025",
+    "glasses_round_gold__c.033",
     "glasses_round_gold__lens"
    ],
    "aviator": [
-    "glasses_aviator__c.028",
+    "glasses_aviator__c.036",
     "glasses_aviator__lens.002"
    ],
    "browline": [
-    "glasses_browline__c.032",
-    "glasses_browline__c.033",
+    "glasses_browline__c.040",
+    "glasses_browline__c.041",
     "glasses_browline__lens.004"
    ],
    "square_black": [
-    "glasses_square_black__c.037",
+    "glasses_square_black__c.045",
     "glasses_square_black__lens.006"
    ],
    "round_silver": [
-    "glasses_round_silver__c.040",
+    "glasses_round_silver__c.048",
     "glasses_round_silver__lens.008"
    ]
   },
   "held": {
    "round_gold": [
-    "held_round_gold__c.043",
+    "held_round_gold__c.051",
     "held_round_gold__lens.010"
    ],
    "aviator": [
-    "held_aviator__c.046",
+    "held_aviator__c.054",
     "held_aviator__lens.012"
    ],
    "browline": [
-    "held_browline__c.050",
-    "held_browline__c.051",
+    "held_browline__c.058",
+    "held_browline__c.059",
     "held_browline__lens.014"
    ],
    "square_black": [
-    "held_square_black__c.055",
+    "held_square_black__c.063",
     "held_square_black__lens.016"
    ],
    "round_silver": [
-    "held_round_silver__c.058",
+    "held_round_silver__c.066",
     "held_round_silver__lens.018"
    ]
   },
@@ -406,10 +435,10 @@
     "pawL_open__Sphere.102"
    ],
    "point": [
-    "pawL_point__c.067"
+    "pawL_point__c.075"
    ],
    "thumb": [
-    "pawL_thumb__c.069"
+    "pawL_thumb__c.077"
    ]
   },
   "pawR": {
@@ -417,10 +446,10 @@
     "pawR_open__Sphere.109"
    ],
    "point": [
-    "pawR_point__c.073"
+    "pawR_point__c.081"
    ],
    "thumb": [
-    "pawR_thumb__c.075"
+    "pawR_thumb__c.083"
    ]
   }
  },

@@ -178,7 +178,7 @@ export async function mount(canvas, opts = {}) {
   const bones = {}; root.traverse((o) => { if (o.isBone) bones[o.name] = o; });
   const rest = {}; for (const k in bones) rest[k] = bones[k].quaternion.clone();
   const swaps = [];
-  root.traverse((o) => { const m = o.name.match(/^(mouth|lid|glasses|held|pawL|pawR)_([A-Za-z_]+?)__/); if (m) swaps.push([m[1], m[2], o]); });
+  root.traverse((o) => { const m = o.name.match(/^(mouth|lid|brow|glasses|held|pawL|pawR)_([A-Za-z_]+?)__/); if (m) swaps.push([m[1], m[2], o]); });
   const kit = rig.kits[opts.kit || 'royal'];
   root.traverse((o) => { if (o.material && kit) for (const s of ['body', 'trim', 'sleeve']) if (o.material.name === s && kit[s]) o.material.color = new THREE.Color(kit[s]); });
   const glasses = opts.glasses || 'round_gold';
@@ -222,7 +222,11 @@ export async function mount(canvas, opts = {}) {
   { const r = rand(seed); let t = 0.8 + r() * 1.5; let n = 0;
     while (t < (plan.duration || 600)) { blinks.push(t); n += 1; if (n % 4 === 0) blinks.push(t + 0.32); t += 2.4 + r() * 2.8; } }
   const glances = [];                             // small eye moves around the current target
-  { const r = rand(seed * 3 + 1); let t = 0.6; while (t < (plan.duration || 600)) { glances.push([t, (r() - 0.5) * 0.5, (r() - 0.5) * 0.3]); t += 1.1 + r() * 1.8; } }
+  // owner 2026-11-26 ("where is he looking? the camera is the people listening to him"): talking to someone, the eyes
+  // rest on the listener and move between their two eyes (a few centimetres at the lens, every 0.5 to 1.8 s), with a
+  // rare small drift; never random looks around the room
+  { const r = rand(seed * 3 + 1); let t = 0.6, side = 1;
+    while (t < (plan.duration || 600)) { side = r() < 0.8 ? -side : side; glances.push([t, side * (0.03 + r() * 0.03), (r() - 0.5) * 0.04]); t += 0.5 + r() * 1.3; } }
   const cues = (plan.cues || []).slice().sort((a, b) => a[0] - b[0]);
   // speech-driven gestures (owner 2026-11-26: "the moves have to be real and smooth, like real talking"). From the
   // spoken words (plan.words = [[start, end, word]]): each sentence opens with a gesture chosen by what it says
@@ -297,9 +301,44 @@ export async function mount(canvas, opts = {}) {
     .sort((a, b) => a.at - b.at);
   const looks = (plan.looks || [{ at: 0, target: 'camera' }]).slice().sort((a, b) => a.at - b.at);
 
+  // the face's stance (owner 2026-11-26, "his eyes and lids have no stance"): the upper lid rests over the top of the
+  // eye while he talks to you; softer when he looks down at the desk, the laptop or the mug; the lower lid lifts when he
+  // smiles or laughs; the eye opens a little wider on a surprise word. Brows lift on stressed words and questions, one
+  // goes up when he wonders, they knit on a problem, and settle when he looks down. Seeded, from the words.
+  const SURPRISE = /\b(wow|whoa|insane|crazy|huge|massive|billion|million|free|never|actually)\b/;
+  const CONCERN = /\b(problem|but|risk|wrong|fail|failed|hard|lose|lost|broke|broken|expensive|careful)\b/;
+  const HAPPY = /\b(works|worked|easy|love|great|perfect|nice|cool|fun|win|wins|best)\b/;
+  const faceMarks = [];                           // [start, end, kind]
+  { const r = rand(seed * 17 + 11);
+    for (let i = 0; i < words.length; i++) {
+      const [ws, we, raw] = words[i]; const w = String(raw || '').toLowerCase();
+      if (SURPRISE.test(w)) faceMarks.push([ws - 0.08, we + 0.45, 'surprise']);
+      else if (CONCERN.test(w)) faceMarks.push([ws - 0.05, we + 0.6, 'concern']);
+      else if (HAPPY.test(w)) faceMarks.push([ws, we + 0.9, 'happy']);
+      else if (/\?$/.test(w)) faceMarks.push([ws - 0.1, we + 0.35, 'ask']);
+      else if ((/\d/.test(w) || w.replace(/[^a-z]/g, '').length >= 8) && r() < 0.45) faceMarks.push([ws - 0.05, we + 0.25, 'stress']);
+    } }
+  const markAt = (t) => { let k = null; for (const [a, b, kind] of faceMarks) { if (a > t) break; if (t < b) k = kind; } return k; };
+  const lookingDown = (t) => { const m = moves.find((mv) => t >= mv.at && t < mv.at + MOVES[mv.name].dur && MOVES[mv.name].look);
+    return m && ['laptop', 'mug', 'down'].includes(MOVES[m.name].look); };
+  const smilingMove = (t) => moves.some((mv) => ['laugh', 'thumbs_up', 'nod_yes', 'wave'].includes(mv.name) && t >= mv.at + 0.15 && t < mv.at + MOVES[mv.name].dur - 0.1);
+  const thinkingMove = (t) => moves.some((mv) => ['think', 'chin_rest'].includes(mv.name) && t >= mv.at + 0.2 && t < mv.at + MOVES[mv.name].dur - 0.1);
   const lidAt = (t) => {
     for (const b of blinks) { const d = t - b; if (d >= 0 && d < 0.2) return d < 0.05 || d >= 0.15 ? 'half' : 'closed'; if (b > t) break; }
-    return 'open';
+    const mk = markAt(t);
+    if (lookingDown(t)) return 'soft';
+    if (smilingMove(t) || mk === 'happy') return 'smile';
+    if (mk === 'surprise') return 'bright';
+    if (thinkingMove(t)) return 'soft';
+    return 'relax';
+  };
+  const browAt = (t) => {
+    const mk = markAt(t);
+    if (thinkingMove(t)) return 'think';
+    if (lookingDown(t)) return 'soft';
+    if (mk === 'surprise' || mk === 'ask' || mk === 'stress' || smilingMove(t)) return 'up';
+    if (mk === 'concern') return 'concern';
+    return 'n';
   };
   // the mouth (owner 2026-11-26: "mamming"): the cues in time order; a big jump in opening (shut to wide) passes
   // through the shape between for its first frame, so the jaw travels instead of snapping
@@ -339,7 +378,11 @@ export async function mount(canvas, opts = {}) {
     }
     return V(pointOf(name));
   }
-  const pointOf = (target) => (Array.isArray(target) ? target : TG[target] || TG.camera);
+  const liveCam = () => {                         // the camera that is filming him now (the viewer's eyes)
+    const c = opts.cameraObj; if (!c) return TG.camera;
+    const v = new THREE.Vector3(); c.getWorldPosition(v); return [v.x, -v.z, v.y];
+  };
+  const pointOf = (target) => (Array.isArray(target) ? target : target === 'camera' ? liveCam() : TG[target] || liveCam());
   function gazeAt(t) {                            // where his eyes go, eased between targets (0.25 s)
     let cur = pointOf(looks[0].target), prev = cur, since = 99;
     for (let k = 0; k < looks.length && looks[k].at <= t; k++) { prev = k ? pointOf(looks[k - 1].target) : cur; cur = pointOf(looks[k].target); since = t - looks[k].at; }
@@ -582,7 +625,9 @@ export async function mount(canvas, opts = {}) {
     const off = glassesOff(t);                    // the glasses are in his paw, not on his face
     const pawMv = moves.find((m) => MOVES[m.name].paws && t >= m.at + 0.15 && t < m.at + MOVES[m.name].dur - 0.2);
     const paw = { L: (pawMv && MOVES[pawMv.name].paws.L) || 'open', R: (pawMv && MOVES[pawMv.name].paws.R) || 'open' };
+    const brw = browAt(t);
     for (const [kind, val, o] of swaps) o.visible = kind === 'mouth' ? val === mouth : kind === 'lid' ? val === lid
+      : kind === 'brow' ? val === brw
       : kind === 'held' ? val === glasses && off : kind === 'pawL' ? val === paw.L : kind === 'pawR' ? val === paw.R
       : val === glasses && !off;
     if (!opts.noRender) renderer.render(scene, cam);

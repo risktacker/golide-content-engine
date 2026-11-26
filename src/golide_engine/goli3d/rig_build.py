@@ -53,6 +53,32 @@ for _o in sc.objects:
 _lids(0.5, "lid_half")
 _lids(1.0, "lid_closed")
 
+
+# owner 2026-11-26 ("wide open eyes staring at nothing, his eyes and lids have no stance"): a person talking to the
+# camera has the upper lid resting over the top of the eye, softer still when he looks down, and the lower lid lifts
+# when he smiles; the fully open eye is for surprise only
+def _lid_set(up, low, part):
+    for side in (-1, 1):
+        eyelid(side * 0.2, side, up, e["tilt"], low)
+    tag(part)
+
+
+_lid_set(0.62, -1.0, "lid_relax")
+_lid_set(0.42, -1.0, "lid_soft")
+_lid_set(0.55, -0.55, "lid_smile")
+_lid_set(0.78, -1.0, "lid_bright")
+
+# brows that move (owner 2026-11-26): the face's own brows are the neutral pair; raised, soft, one up (thinking) and
+# concerned (inner ends up) are swaps, all inside the forehead band
+for _o in sc.objects:
+    if _o.get("part") == "face" and getattr(_o.data, "materials", None) and _o.data.materials[0] and _o.data.materials[0].name.startswith("brow"):
+        _o["part"] = "brow_n"
+for _name, _l, _r in (("up", (0.035, 0.0, 0.02), (0.035, 0.0, 0.02)), ("soft", (-0.012, 0.0, 0.006), (-0.012, 0.0, 0.006)),
+                      ("think", (0.0, 0.0, 0.01), (0.06, 0.0, 0.03)), ("concern", (0.012, 0.03, 0.0), (0.012, 0.03, 0.0))):
+    brow(-1, *_l)
+    brow(1, *_r)
+    tag("brow_" + _name)
+
 _STYLES = ["round_gold", "aviator", "browline", "square_black", "round_silver"]
 for _g in _STYLES:
     build_glasses(_g)
@@ -181,7 +207,7 @@ if SPEC.get("ao", True):
     sc.world = sc.world or bpy.data.worlds.new("w")
     for _o in list(sc.objects):
         _part = _o.get("part", "")
-        if _o.type != "MESH" or _part.startswith(("eye_", "mouth_", "lid_")) or not _o.data.vertices:
+        if _o.type != "MESH" or _part.startswith(("eye_", "mouth_", "lid_", "brow_")) or not _o.data.vertices:
             continue
         if any(_m and _m.name == "lens" for _m in _o.data.materials):
             continue
@@ -305,7 +331,7 @@ for _o in list(sc.objects):
     _part = _o.get("part", "head")
     _o.name = f"{_part}__{_o.name}"
     _skin(_o, _part)
-    for _key in ("mouth_", "lid_", "glasses_", "held_", "pawL_", "pawR_"):
+    for _key in ("mouth_", "lid_", "brow_", "glasses_", "held_", "pawL_", "pawR_"):
         if _part.startswith(_key):
             SWAPS.setdefault(_key.rstrip("_"), {}).setdefault(_part[len(_key):], []).append(_o.name)
 
