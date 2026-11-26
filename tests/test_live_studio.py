@@ -27,7 +27,8 @@ def test_the_switch_on_plays_the_3d_room_and_waits_for_it(tmp_path):
     for f in ("three/g3d/studio_live.js", "three/g3d/goli_live.js", "goli3d/goli.glb", "goli3d/studio.glb"):
         assert (out / f).exists(), f
     plan = json.loads(page.split("plan: ", 1)[1].split("});", 1)[0])
-    assert plan["sit"] == [[0, 1]] and plan["moves"] == [{"name": "point_screen", "at": 1.5}]
+    assert plan["sit"] == [[0, 1]] and {"name": "point_screen", "at": 1.5} in plan["moves"]
+    assert {"name": "mic", "at": 0.4} in plan["moves"]           # the first studio scene: he pulls the mic in
     assert [w[2] for w in plan["words"]] == ["Look", "here."]
     assert '"glasses": "aviator"' in page.replace("glasses: ", '"glasses": ') or "aviator" in page   # the kit's glasses
 
