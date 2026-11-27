@@ -44,7 +44,13 @@ jobs:
           [ -z "$OFF" ] && exit 0
           export OFF
           python3 - <<'PY'
+          import os, re
           p = "w/composition/index.html"; h = open(p).read()
+          if os.environ["OFF"] == "novideo":            # every <video> out of the film
+              open(p, "w").write(re.sub(r"<video\b[^>]*>.*?</video>|<video\b[^>]*/>", "", h, flags=re.S)); raise SystemExit
+          if os.environ["OFF"] == "no3d":               # no WebGL at all: the 3D modules never load
+              h = re.sub(r'<script type="module">[^<]*?g3d/[^<]*?</script>', "", h, flags=re.S)
+              open(p, "w").write(h.replace("Promise.all(window.__liveWaits||[]).then(function(){", "(function(){")); raise SystemExit
           js = ("<script>Promise.all(window.__liveWaits||[]).then(function(){var re=new RegExp(%r);"
                 "Object.keys(window.__g3d||{}).forEach(function(k){if(re.test(k))window.__g3d[k]=function(){};});});</script>") % __import__("os").environ["OFF"]
           open(p, "w").write(h.replace("</body>", js + "</body>"))
