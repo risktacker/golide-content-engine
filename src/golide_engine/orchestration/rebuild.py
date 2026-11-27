@@ -103,7 +103,11 @@ class Rebuild:
             if _words(script_text(plan)) != _words(script):
                 raise RebuildError("the new scene plan does not have exactly the recorded words")
             plan_path.write_text(json.dumps(plan, indent=2) + "\n", encoding="utf-8")
-        edit_plan = self.work / "edit" / "edit-plan-raw-v2.json"
+        # 2026-11-27: a living-studio video keeps its storyboard as edit-plan-raw-v3-studio.json; missing it, the re-cut
+        # skipped the edit render and failed with no video
+        edit_plan = next((p for p in (self.work / "edit" / "edit-plan-raw-v3-studio.json",
+                                      self.work / "edit" / "edit-plan-raw-v2.json") if p.exists()),
+                         self.work / "edit" / "edit-plan-raw-v2.json")
         if not plan_path.exists() and not edit_plan.exists():
             raise RebuildError("no scene plan or edit plan saved; this video cannot be rebuilt without paying again")
 
