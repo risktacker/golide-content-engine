@@ -170,6 +170,15 @@ def hero_for(data: dict) -> str:
     return ""
 
 
+# 2026-11-27 (root cause of the frozen filming): when the filming starts a span at second T, HyperFrames' runtime
+# replays the timeline's events up to T inside ONE seek, so every 3D layer's onUpdate fired hundreds of times and each
+# drew a full 1080p frame in software WebGL (210 draws of the standing Goli before frame 1 at T=160; later spans more,
+# until the watchdog gave up). A 3D draw now only records its latest time and draws ONCE, after the seek settles
+# (a microtask, before the frame is captured): reproduced locally and fixed (17 draws, the span films).
+G3D_LATER = ("<script>window.__g3dLater=function(k,fn){var P=window.__g3dPend||(window.__g3dPend={});var first=!(k in P);"
+             "P[k]=fn;if(first)Promise.resolve().then(function(){var g=P[k];delete P[k];if(g)g();});};</script>")
+
+
 def live_ready() -> bool:
     """The living studio can play: the rigged Goli and the 3D room are built (tools/goli3d_rig.py, goli3d_studio_live.py)."""
     return all((LIVE_DIR / f).exists() for f in ("goli.glb", "goli-rig.json", "studio.glb", "studio-set.json"))
@@ -923,7 +932,7 @@ class Composer:
         self.entrance(sid, t0, how)
         self.tw(f'(function(){{var o={{s:0}};tl.fromTo(o,{{s:0}},{{s:{dur:.3f},duration:{dur:.3f},ease:"none",onUpdate:function(){{'
                 f'var f=window.__g3d&&window.__g3d["{sid}"];if(!f)return;var m=Math.min(1,Math.max(0,(o.s-{at:.3f})/1.2));'
-                f'f(m,{yaw0}+{sweep}*o.s/{dur:.3f},o.s);}}}},{t0:.3f});}})();')
+                f'var s_=o.s,y_={yaw0}+{sweep}*s_/{dur:.3f};__g3dLater("{sid}",function(){{f(m,y_,s_);}});}}}},{t0:.3f});}})();')
         self.cue("riser", t0 + at - 0.8)
         self.cue("impact", t0 + at)
 
@@ -967,7 +976,7 @@ class Composer:
         move = {"explode": 1.4, "assemble": 1.4, "rise": 1.8, "spin": 1.6}.get(move3d, 0.9)
         self.tw(f'(function(){{var o={{s:0}};tl.fromTo(o,{{s:0}},{{s:{dur:.3f},duration:{dur:.3f},ease:"none",onUpdate:function(){{'
                 f'var f=window.__g3d&&window.__g3d["{sid}"];if(!f)return;var m=Math.min(1,Math.max(0,(o.s-{at:.3f})/{move}));'
-                f'm=m*m*(3-2*m);f(m,{yaw0}+{sweep}*o.s/{dur:.3f},o.s);}}}},{t0:.3f});}})();')
+                f'm=m*m*(3-2*m);var s_=o.s,y_={yaw0}+{sweep}*s_/{dur:.3f};__g3dLater("{sid}",function(){{f(m,y_,s_);}});}}}},{t0:.3f});}})();')
         self.cue("riser", t0 + at - 0.8)
         self.cue("impact", t0 + at)
         self.cue("shimmer", t0 + at + 0.5)
@@ -1070,7 +1079,7 @@ class Composer:
         self.scene(sid, t0, dur, inner)
         self.entrance(sid, t0, how)
         self.tw(f'(function(){{var o={{s:0}};tl.fromTo(o,{{s:0}},{{s:{dur:.3f},duration:{dur:.3f},ease:"none",onUpdate:function(){{'
-                f'var f=window.__g3d&&window.__g3d["{sid}"];if(f)f(o.s);}}}},{t0:.3f});}})();')
+                f'var f=window.__g3d&&window.__g3d["{sid}"];if(f){{var s_=o.s;__g3dLater("{sid}",function(){{f(s_);}});}}}}}},{t0:.3f});}})();')
         self.cue("impact", t0 + at)
 
     def metaphor(self, t0, dur, data, how="rise"):
@@ -1508,7 +1517,7 @@ class Composer:
         P["looks"] += [dict(lk, at=t0 + lk["at"]) for lk in looks]
         P["talk"].append([t0, t0 + dur])
         if layer == "room":
-            P.setdefault("tv", []).append([t0, self.asset(data["screen"]) if data.get("screen") else None])
+            P.setdefault("tv", []).append([t0, self._tv_content(t0, dur, data)])
             self._live_direct(P, t0, dur, data)
             self._live_storyboard(P, t0, dur, data)
         else:
@@ -1576,6 +1585,26 @@ class Composer:
         P["looks"] += [{"at": a + 2.0, "target": "right"}, {"at": a + 5.6, "target": "camera"}, {"at": a + 6.8, "target": "screen"},
                        {"at": a + 9.4, "target": "camera"}]
 
+    def _tv_content(self, t0, dur, data):
+        """What the 3D TV shows in a studio scene (owner 2026-11-25: never black): the real picture, else the scene's
+        words, else the words spoken in the scene (one short line), the key word lit. Drawn ON the 3D screen."""
+        from .editor import _no_dots
+        if data.get("screen"):
+            return self.asset(data["screen"])
+        words = [_no_dots(str(w.get("text", ""))) for w in data.get("words") or []]
+        if not any(words):
+            spoken = [w for a, w in getattr(self, "spoken", []) if t0 <= a < t0 + dur]
+            words = []
+            for w in spoken:
+                words.append(_no_dots(w))
+                if len(words) >= 7 or w.rstrip().endswith((".", "?", "!")):
+                    break
+        words = [w for w in words if w.strip()]
+        if not words:
+            return None
+        punch = str(data.get("punch") or max(words, key=lambda w: len(w.strip(".,!?"))))
+        return {"words": words, "punch": punch.lower().strip(".,!?")}
+
     def live_host(self, sid, t0, dur, data):
         """The studio scene played live (owner 2026-11-26, assets/edit/g3d/studio_live.js): the 3D room with its
         baked light, Goli seated and talking, his gestures from the words, eyes on the camera and on the screen when it
@@ -1586,22 +1615,7 @@ class Composer:
         looks = [{"at": 0, "target": "camera"}] + ([{"at": 0.6, "target": "screen"}, {"at": 1.8, "target": "camera"}]
                                                    if data.get("screen") else [])
         self._live_add("room", t0, dur, data, self.LIVE_MOVES, looks)
-        title = ""
-        if data.get("screen"):
-            x0, y0, x1, y1 = studio.screen_rect(self.fmt)
-            title = (f'<div id="{sid}-scr" style="position:absolute;left:{x0 + 22:.0f}px;width:{x1 - x0 - 44:.0f}px;top:{y0 + 56:.0f}px;'
-                     f'height:{y1 - y0 - 100:.0f}px;border-radius:10px;overflow:hidden">'
-                     f'<img src="{self.asset(data["screen"])}" style="width:100%;height:100%;object-fit:cover;object-position:50% 0"></div>')
-        elif data.get("words"):
-            x0, y0, x1, y1 = studio.screen_rect(self.fmt)
-            spans = "".join(f'<span class="word" id="{sid}-w{i}">{_e(w_["text"])}</span>' for i, w_ in enumerate(data["words"]))
-            title = (f'<div id="{sid}-scr" style="position:absolute;left:{x0 + 60:.0f}px;width:{x1 - x0 - 120:.0f}px;'
-                     f'top:{y0:.0f}px;height:{y1 - y0:.0f}px;display:flex;align-items:center">'
-                     f'<div class="title" style="font-size:84px;line-height:1.05">{spans}</div></div>')
-        # the screen's picture or words live in the room's own layer (one section, as in the first working render),
-        # shown only in this scene's window
-        if title:
-            self.live_layers["room"].setdefault("titles", []).append((sid, t0, dur, title))
+        # the screen's picture or words are drawn ON the 3D TV (_tv_content, 2026-11-27), right in every camera shot
         self.tw(f'tl.to("#brand .logo",{{opacity:0,duration:.2}},{t0:.3f});tl.to("#brand .logo",{{opacity:.92,duration:.3}},{t0 + dur:.3f});')
         self.cue("pop", t0 + 0.1)
 
@@ -1666,8 +1680,8 @@ class Composer:
             win = json.dumps([[round(a, 3), round(a + d, 3)] for a, d in merged])
             self.tw(f'(function(){{var W={win};var o={{s:0}};tl.fromTo(o,{{s:0}},{{s:{duration:.3f},duration:{duration:.3f},ease:"none",onUpdate:function(){{'
                     f'var f=window.__g3d&&window.__g3d["{lid}"];if(!f)return;var t=o.s,on=false;for(var i=0;i<W.length;i++)if(t>=W[i][0]-0.05&&t<W[i][1]+0.05)on=true;'
-                    f'if(!on)return;f(t);var ov=document.getElementById("{lid}-ov");'
-                    f'if(ov&&f.mainShot)ov.style.opacity=f.mainShot(t)?1:0;}}}},0);}})();')
+                    f'if(!on)return;__g3dLater("{lid}",function(){{f(t);var ov=document.getElementById("{lid}-ov");'
+                    f'if(ov&&f.mainShot)ov.style.opacity=f.mainShot(t)?1:0;}});}}}},0);}})();')
             self.tw(f'tl.set("#{lid}",{{autoAlpha:0}},0);')
             for t0, dur in merged:
                 self.tw(f'tl.set("#{lid}",{{autoAlpha:1}},{t0:.3f});tl.set("#{lid}",{{autoAlpha:0}},{t0 + dur:.3f});')
@@ -2050,7 +2064,7 @@ class Composer:
                            f'tl.set("#brand .logo",{{autoAlpha:.92}},{b:.3f});tl.set("#brand .chap",{{visibility:"inherit"}},{b:.3f});')
         self.tweens.extend(btw)
         page = f"""<!doctype html><html lang="en"><head><meta charset="UTF-8">
-<meta name="viewport" content="width={self.w}, height={self.h}"><script src="gsap.min.js"></script>{IMPORTMAP if getattr(self, "uses_three", False) else ""}
+<meta name="viewport" content="width={self.w}, height={self.h}"><script src="gsap.min.js"></script>{G3D_LATER if getattr(self, "uses_three", False) else ""}{IMPORTMAP if getattr(self, "uses_three", False) else ""}
 <style>{CSS}{":root{--cap-l:130px;--cap-r:160px}" if self.fmt == "short" else ""}</style></head><body>
 <div id="root" data-composition-id="main" data-start="0" data-width="{self.w}" data-height="{self.h}" data-duration="{duration:.3f}">
 <div class="bg" id="bg"></div><div class="glow" id="glow"></div>

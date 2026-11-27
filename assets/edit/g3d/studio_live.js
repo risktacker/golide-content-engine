@@ -41,6 +41,19 @@ export async function mountStudio(canvas, opts = {}) {
     if (o.name === 'tv_screen' || o.name === 'laptop_screen') {
       o.material = new THREE.MeshBasicMaterial({ color: 0x05060a, toneMapped: false });
       screens[o.name === 'tv_screen' ? 'tv' : 'laptop'] = o;
+      // 2026-11-27 (root cause of the garbled TV): the screens are thin boxes with Blender's default cube UVs (a cross
+      // of six faces), so a picture landed as a cropped, zoomed piece. The face is mapped flat across its own width
+      // and height (u along its widest side, v up), so a picture or words fill it the way they should.
+      {
+        const g = o.geometry, pos = g.attributes.position; g.computeBoundingBox();
+        const bb = g.boundingBox, ext = [bb.max.x - bb.min.x, bb.max.y - bb.min.y, bb.max.z - bb.min.z];
+        const thin = ext.indexOf(Math.min(...ext)), axes = [0, 1, 2].filter((a) => a !== thin);
+        const ua = axes[0] === 1 ? axes[1] : axes[0], va = ua === axes[0] ? axes[1] : axes[0];
+        const get = (i, a) => [pos.getX(i), pos.getY(i), pos.getZ(i)][a], lo = [bb.min.x, bb.min.y, bb.min.z];
+        const uv = new Float32Array(pos.count * 2);
+        for (let i = 0; i < pos.count; i++) { uv[2 * i] = (get(i, ua) - lo[ua]) / ext[ua]; uv[2 * i + 1] = (get(i, va) - lo[va]) / ext[va]; }
+        g.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+      }
     } else {
       // solid from every side (owner 2026-11-26: the chair "phasing" into the wall when the camera rose): some pieces
       // were built with their faces turned inward, so drawn one-sided they vanished from other angles
@@ -145,9 +158,47 @@ export async function mountStudio(canvas, opts = {}) {
   // right when the camera moves (the page's overlay only matches the main shot)
   const tvAt = [];
   const blank = screens.tv ? screens.tv.material : null;
+  // 2026-11-27 (owner: never a black TV): a line with no picture puts its own words on the 3D screen, the key word lit
+  // in gold, drawn into the screen itself so it sits right in every camera shot
+  async function wordsTexture(w) {
+    const sb = new THREE.Box3().setFromObject(screens.tv), aspect = (sb.max.x - sb.min.x) / Math.max(1e-6, sb.max.y - sb.min.y);
+    const cw = 1600, ch = Math.round(cw / Math.max(1, aspect)), cv = document.createElement('canvas');
+    cv.width = cw; cv.height = ch;
+    const g = cv.getContext('2d');
+    const bg = g.createLinearGradient(0, 0, cw, ch); bg.addColorStop(0, '#0E1B3D'); bg.addColorStop(1, '#050913');
+    g.fillStyle = bg; g.fillRect(0, 0, cw, ch);
+    try { await document.fonts.load('900 120px Poppins'); } catch (e) {}
+    const words = (w.words || []).map(String).filter(Boolean), key = String(w.punch || '').toLowerCase();
+    const pad = cw * 0.08, maxW = cw - 2 * pad;
+    let size = 190, lines = [];
+    for (; size >= 60; size -= 8) {                 // the biggest size whose lines fit the screen
+      g.font = `900 ${size}px Poppins, sans-serif`;
+      lines = [[]]; let x = 0; const sp = size * 0.26;
+      for (const wd of words) {
+        const ww = g.measureText(wd).width;
+        if (x && x + ww > maxW) { lines.push([]); x = 0; }
+        lines[lines.length - 1].push(wd); x += ww + sp;
+      }
+      if (lines.length * size * 1.08 <= ch * 0.8 && words.every((wd) => g.measureText(wd).width <= maxW)) break;
+    }
+    const lh = size * 1.08, sp = size * 0.26;
+    let y = (ch - lines.length * lh) / 2 + size * 0.82;
+    g.textBaseline = 'alphabetic';
+    for (const ln of lines) {
+      let x = pad;
+      for (const wd of ln) {
+        const lit = key && wd.toLowerCase().replace(/[.,!?:;"']/g, '') === key;
+        g.fillStyle = lit ? '#E8C268' : '#FFFFFF'; g.fillText(wd, x, y); x += g.measureText(wd).width + sp;
+      }
+      y += lh;
+    }
+    const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
+    return new THREE.MeshBasicMaterial({ map: tex, toneMapped: false });
+  }
   for (const [t, url] of (plan.tv || [])) {
     if (!screens.tv) break;
     if (!url) { tvAt.push([t, blank]); continue; }
+    if (typeof url === 'object') { tvAt.push([t, await wordsTexture(url)]); continue; }
     const tex = await loader.loadAsync(url); tex.colorSpace = THREE.SRGBColorSpace;
     // cover the screen like the overlay does (object-fit: cover, top aligned)
     const sb = new THREE.Box3().setFromObject(screens.tv), sw = sb.max.x - sb.min.x, sh = sb.max.y - sb.min.y;
@@ -198,7 +249,8 @@ export async function mountStudio(canvas, opts = {}) {
   let cacheKey = '';
   function draw() {
     cam.updateMatrixWorld();
-    const key = cam.matrixWorld.elements.join(',') + '|' + cam.projectionMatrix.elements.join(',');
+    // the TV is part of the fixed room: a new picture on it draws the room again too (2026-11-27: it stayed stale)
+    const key = cam.matrixWorld.elements.join(',') + '|' + cam.projectionMatrix.elements.join(',') + '|' + (screens.tv ? screens.tv.material.id : 0);
     if (key !== cacheKey) {                       // the camera moved: draw the fixed room again
       const shown = scene.children.map((c) => c.visible);
       scene.children.forEach((c) => { c.visible = c === room; });
