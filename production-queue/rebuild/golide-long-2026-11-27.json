@@ -2,9 +2,9 @@
   "production_id": "golide-long-2026-11-27",
   "previous": null,
   "status": "awaiting_approval",
-  "media_ref": "r2://temp/2026/11/27/bbec8f9225404866847af11eec7dc397-golide-long-2026-11-27-rebuild.mp4",
-  "built_at": "2026-11-27T19:32:39.647763+00:00",
-  "preview_expires_at": "2026-11-29T19:32:39.647773+00:00",
+  "media_ref": "r2://temp/2026/11/27/a89591e233c549ddb0ccca6b83900fdc-golide-long-2026-11-27-rebuild.mp4",
+  "built_at": "2026-11-27T20:34:14.292126+00:00",
+  "preview_expires_at": "2026-11-29T20:34:14.292135+00:00",
   "redone_stages": [
     "render-edit-v1",
     "doctor-v1",
