@@ -6,6 +6,7 @@ on:
     inputs:
       job: { description: "render job (editrender/<job>/ in R2)", required: true }
       times: { description: "JSON list of seconds, one machine each", default: "[150]" }
+      off: { description: "JSON list of 3D layers to switch off per machine (regex on the layer name, '' = none)", default: '[""]' }
 permissions:
   contents: read
 env:
@@ -23,6 +24,7 @@ jobs:
       fail-fast: false
       matrix:
         t: ${{ fromJSON(inputs.times) }}
+        off: ${{ fromJSON(inputs.off) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -38,10 +40,19 @@ jobs:
           from golide_engine.edit import remote
           with tarfile.open(fileobj=io.BytesIO(remote.get("${{ inputs.job }}", "bundle.tgz")), mode="r:gz") as t: t.extractall("w", filter="data")
           PY
+      - name: Switch off layers (${{ matrix.off }})
+        if: matrix.off != ''
+        run: |
+          python3 - <<'PY'
+          p = "w/composition/index.html"; h = open(p).read()
+          js = ("<script>Promise.all(window.__liveWaits||[]).then(function(){var re=new RegExp(%r);"
+                "Object.keys(window.__g3d||{}).forEach(function(k){if(re.test(k))window.__g3d[k]=function(){};});});</script>") % "${{ matrix.off }}"
+          open(p, "w").write(h.replace("</body>", js + "</body>"))
+          PY
       - run: |
           T=${{ matrix.t }}; E=$(python3 -c "print($T + 0.5)")
           if timeout 900 npx -y hyperframes@0.9.32 render w/composition -o at.mp4 --fps 30 --quality draft --start "$T" --end "$E" --quiet > out.txt 2>&1; then
-            echo "PROBE_OK $T"
+            echo "PROBE_OK $T off=${{ matrix.off }}"
           else
-            echo "PROBE_HANG $T"; grep -i "stalled\|error\|timed out" out.txt | tail -5
+            echo "PROBE_HANG $T off=${{ matrix.off }}"; grep -i "stalled\|error\|timed out" out.txt | tail -5
           fi
