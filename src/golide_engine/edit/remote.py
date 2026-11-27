@@ -186,6 +186,14 @@ def _frame_time(path: Path, k: int) -> float:
     return times[k]
 
 
+def _played_seconds(path: Path) -> float:
+    """How long the picture actually plays: frames decoded in display time, last time plus one frame."""
+    r = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "frame=pts_time",
+                        "-of", "csv=p=0", str(path)], capture_output=True, text=True, check=True)
+    t = sorted(float(x.strip(",")) for x in r.stdout.split() if x.strip(", ") and x.strip(", ") != "N/A")
+    return (t[-1] - t[0] + (t[1] - t[0] if len(t) > 1 else 0)) if t else 0.0
+
+
 def frames_of(path: Path) -> int:
     r = subprocess.run(["ffprobe", "-v", "error", "-count_packets", "-select_streams", "v:0", "-show_entries",
                         "stream=nb_read_packets", "-of", "csv=p=0", str(path)], capture_output=True, text=True, check=True)
@@ -224,11 +232,18 @@ def join(job: str, work: Path) -> Path:
         lst.append(cut)
     (work / "list.txt").write_text("".join(f"file '{p.resolve()}'\n" for p in lst), encoding="utf-8")
     picture = work / "picture.mp4"
-    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", str(work / "list.txt"), "-c", "copy",
-                    "-movflags", "+faststart", str(picture)], check=True)
+    # 2026-11-27 (owner: "the blocks stopped"; the Short's picture ended at 19 s of 77): the cut parts kept their own
+    # times, the copy-join stacked them on top of each other and the later mix dropped every frame after part 0. The
+    # parts are now joined in order and timed again from the frame count (one encode, exact), and the joined picture
+    # must PLAY for the whole film, not just hold the right number of packets.
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", str(work / "list.txt"),
+                    "-vf", "setpts=N/FRAME_RATE/TB", "-r", str(meta["fps"]), "-fps_mode", "cfr", "-c:v", "libx264",
+                    "-preset", "veryfast", "-crf", "16", "-pix_fmt", "yuv420p", "-an", "-movflags", "+faststart", str(picture)],
+                   check=True)
     total = round(meta["duration"] * meta["fps"])
-    if abs(frames_of(picture) - total) > 1:
-        raise RuntimeError(f"joined picture has {frames_of(picture)} frames, the film has {total}")
+    played = _played_seconds(picture)
+    if abs(frames_of(picture) - total) > 1 or abs(played - total / meta["fps"]) > 2 / meta["fps"]:
+        raise RuntimeError(f"joined picture has {frames_of(picture)} frames playing {played:.2f}s, the film has {total}")
     put(job, picture.name, picture.read_bytes(), "video/mp4")
     put(job, "done.json", json.dumps({"ok": True}).encode(), "application/json")
     return picture
