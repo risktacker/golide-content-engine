@@ -903,6 +903,13 @@ class Composer:
         self.cue("whoosh", t0)
         self.tweens.extend(tw)
 
+    def _safe_in(self, left, top, cw, ch):
+        """The phone-safe frame (layout.SAFE) as margins inside a canvas placed at (left, top): labels and callouts
+        stay inside it (owner 2026-11-27: "some blocks had cut edges")."""
+        from .layout import SAFE
+        x0, y0, x1, y1 = SAFE.get(self.fmt, SAFE["long"])
+        return [round(max(0, x0 - left)), round(max(0, (left + cw) - x1)), round(max(0, y0 - top)), round(max(0, (top + ch) - y1))]
+
     def hero3d(self, t0, dur, data, how="rise"):
         """Owner 2026-11-26 ("the robot is very stupid ... make it beautiful"): a real Blender-built model (robot,
         padlock, shield, cloud, database, brain, key, globe; assets/edit/hero) in studio light, its accent parts in the
@@ -919,6 +926,7 @@ class Composer:
                 "color": data.get("color") or thing_color(data.get("label"), data.get("lead"), json.dumps(data.get("object")),
                                                            " ".join(w for a, w in getattr(self, "spoken", []) if t0 <= a < t0 + dur)),
                 "callouts": [{"text": c.get("text", "")} for c in (data.get("callouts") or []) if isinstance(c, dict)]}
+        opts["safe"] = self._safe_in((self.w - cw) / 2, self.cy - ch / 2, cw, ch)
         yaw0, sweep = [(-0.6, 0.55), (0.45, -0.5), (-0.25, 0.4), (0.75, -0.45)][int(data.get("view") or 0) % 4]
         pos = f'position:absolute;left:{(self.w - cw) / 2:.0f}px;top:{self.cy - ch / 2:.0f}px;width:{cw}px;height:{ch}px'
         inner = (f'<canvas id="{sid}-cv" width="{cw}" height="{ch}" style="{pos}"></canvas>'
@@ -955,7 +963,8 @@ class Composer:
         opts = {"at": at, "callouts": data.get("callouts") or [], "lead": data.get("lead") or "",
                 "look": data.get("look") or getattr(self, "look", "glass"), "move": move3d,
                 "parts": data.get("parts") or [], "view": int(data.get("view") or 0),
-                "keys": str(data.get("keys") or "none")}
+                "keys": str(data.get("keys") or "none"),
+                "safe": self._safe_in((self.w - cw) / 2, self.cy - ch / 2, cw, ch)}
         shot = ""
         if data.get("screen") and Path(data["screen"]).exists():
             # the real picture for the device's screen (owner 2026-11-25), loaded in the page before the first frame
@@ -1074,7 +1083,8 @@ class Composer:
                  f'window.__g3d = window.__g3d || {{}}; window.__liveWaits = window.__liveWaits || [];'
                  f'window.__liveWaits.push(mount(document.getElementById("{sid}-cv"), {json.dumps(data["kind"])}, {json.dumps(args)}, '
                  f'{{at: {at}, base: "./hero", colors: {json.dumps(colors)}, pictures: {json.dumps(pics)}, '
-                 f'prompt: {json.dumps(str(data.get("prompt") or ""))}, overlay: document.getElementById("{sid}-ov")}})'
+                 f'prompt: {json.dumps(str(data.get("prompt") or ""))}, safe: {json.dumps(self._safe_in(left, self.cy - ch / 2 + 20, cw, ch))}, '
+                 f'overlay: document.getElementById("{sid}-ov")}})'
                  f'.then((r) => {{ window.__g3d["{sid}"] = r; r(0); }}));</script>')
         self.scene(sid, t0, dur, inner)
         self.entrance(sid, t0, how)

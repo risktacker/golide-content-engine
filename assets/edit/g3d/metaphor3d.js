@@ -128,7 +128,11 @@ export async function mount(canvas, kind, args = {}, opts = {}) {
   function drawLabels(t) {
     for (const L of labels) {
       if (typeof L.anchor === 'function') v.copy(L.anchor()).project(cam); else { L.anchor.getWorldPosition(v); v.project(cam); }
-      const x = (v.x + 1) / 2 * W, y = (1 - v.y) / 2 * H + L.dy;
+      // owner 2026-11-27 ("cut edges"): a chip stays whole inside the safe frame, however the object turns
+      const sf = opts.safe || [0, 0, 0, 0], ml = Math.max(24, sf[0] + 12), mr = Math.max(24, sf[1] + 12);
+      const mt = Math.max(24, sf[2] + 12), mb = Math.max(24, sf[3] + 12);
+      const x = Math.min(W - mr - L.w / 2, Math.max(ml + L.w / 2, (v.x + 1) / 2 * W));
+      const y = Math.min(H - mb - L.h / 2, Math.max(mt + L.h / 2, (1 - v.y) / 2 * H + L.dy));
       L.rect.setAttribute('x', x - L.w / 2); L.rect.setAttribute('y', y - L.h / 2);
       if (L.prompt) {                             // typed in, a letter at a time, from the moment it shows
         const P = L.prompt, n = Math.max(0, Math.floor((t - L.at) * 28)); let used = 0;

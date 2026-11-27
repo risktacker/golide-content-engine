@@ -315,8 +315,13 @@ export function mount(canvas, name, opts = {}) {
       let last = -1e9;
       idx.forEach((i) => {
         const p = pts[i], el = els[i], c = callouts[i];
-        let ly = Math.max(p.y - 70, last + 96, 56); ly = Math.min(ly, Hh - 50); last = ly;
-        const lx = side === 'left' ? Math.max(20, Math.min(p.x - 160, W * 0.16)) - el.w : Math.min(W - 20 - el.w, Math.max(p.x + 160, W * 0.84));
+        const st = opts.safe || [0, 0, 0, 0]; let ly = Math.max(p.y - 70, last + 96, 56, st[2] + 52); ly = Math.min(ly, Hh - 50 - st[3]); last = ly;
+        // owner 2026-11-27 ("some blocks had cut edges"): a label never leaves its frame. The left one was kept
+        // 20 px in BEFORE its width was taken off, so long labels ran off the left edge ("...dden credits").
+        // Its real width is measured, and both sides keep a margin (the phone crop on a Short).
+        if (!el.measured && el.txt.getComputedTextLength) { const m = el.txt.getComputedTextLength(); if (m > 0) { el.w = m + 44; el.measured = true; } }
+        const sf = opts.safe || [0, 0, 0, 0], ml = Math.max(40, W * 0.05, sf[0] + 16), mr = Math.max(40, W * 0.05, sf[1] + 16);
+        const lx = side === 'left' ? Math.max(ml, Math.min(p.x - 160, W * 0.16) - el.w) : Math.max(ml, Math.min(W - mr - el.w, Math.max(p.x + 160, W * 0.84)));
         const edge = side === 'left' ? lx + el.w : lx;
         const knee = side === 'left' ? edge + 30 : edge - 30;
         el.line.setAttribute('points', `${p.x},${p.y} ${knee},${ly} ${edge},${ly}`);
