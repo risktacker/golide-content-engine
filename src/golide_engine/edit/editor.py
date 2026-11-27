@@ -862,15 +862,8 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
             out.append({"type": "recipe_clip", "start": t0, "duration": dur, "in": "rise", "data": {
                 "recipe": s["recipe"], "brief": str(s.get("recipe_brief") or "")[:600], "words": words,
                 "fill": fill if isinstance(fill, dict) else None, "fallback": fallback}})
-        elif kind == "metaphor" and s.get("metaphor") in METAPHORS and (
-                s["metaphor"] not in used_metaphors or set(METAPHORS) - used_metaphors):
-            # owner 2026-11-27 ("find a way the intended blocks are used"): a metaphor whose kind was already used is
-            # not dropped to Goli-in-the-studio: it keeps its picture and words in the next unused kind
-            if s["metaphor"] in used_metaphors or (out and out[-1]["type"] == "metaphor" and out[-1]["data"].get("kind") == s["metaphor"]):
-                spare = [m for m in METAPHORS if m not in used_metaphors and not (out and out[-1]["data"].get("kind") == m)]
-                if spare:
-                    notes.append(f"scene {k}: metaphor {s['metaphor']} already used, shown as {spare[0]}")
-                    s = dict(s, metaphor=spare[0])
+        elif kind == "metaphor" and s.get("metaphor") in METAPHORS and s["metaphor"] not in used_metaphors \
+                and not (out and out[-1]["type"] == "metaphor"):
             used_metaphors.add(s["metaphor"])
             land = _word_time(lines, s.get("punch") or "", t0, t1)
             items = [str(x) for x in (s.get("items") or [])][:5]
@@ -1493,9 +1486,9 @@ def _no_repeats(scenes: list[dict], lines, fmt: str, notes: list[str]) -> list[d
         if kind == "browser_shot":
             url = str(sc["data"].get("url"))
             if page_run[-2:] == [url, url]:
-                notes.append(f"page at {sc['start']:.1f}s shown twice in a row already, shown as words")
-                sc = _words_beat(lines, sc["start"], sc["start"] + sc["duration"])
-                kind, page_run = sc["type"], []
+                # owner 2026-11-27: a block that was planned is never thrown away (it left Goli on an empty screen):
+                # the page is shown again, on its own part of the page
+                notes.append(f"page at {sc['start']:.1f}s a third time in a row: kept (the planned block)")
         if kind == "browser_shot":
             page_run.append(str(sc["data"].get("url")))
         elif kind != "host":
@@ -1504,9 +1497,8 @@ def _no_repeats(scenes: list[dict], lines, fmt: str, notes: list[str]) -> list[d
             hl = (sc["data"].get("highlights") or [{}])[0]
             key = (str(sc["data"].get("url")), tuple(hl.get("rect") or sc["data"].get("headline") or []))
             if key in used_rects:
-                notes.append(f"shot at {sc['start']:.1f}s already used, shown as words")
-                sc = _words_beat(lines, sc["start"], sc["start"] + sc["duration"])
-                kind = sc["type"]
+                # owner 2026-11-27: the planned shot stays (it was dropped to words, then to an empty Goli card)
+                notes.append(f"shot at {sc['start']:.1f}s shown before: kept (the planned block)")
             else:
                 used_rects.add(key)
         if kind == "browser_shot":

@@ -83,7 +83,7 @@ def test_one_goli_per_block():
         assert a["start"] + a["duration"] <= b["start"] + 1e-6
 
 
-def test_one_page_at_most_twice_in_a_row():
+def test_planned_pages_are_kept():
     lines = _lines(["One two three four five six.", "Seven eight nine ten eleven twelve.", "More words here now please."])
     shot = lambda a, r: {"type": "browser_shot", "start": a, "duration": 2.0, "data": {
         "url": "https://x.example", "highlights": [{"rect": r}]}}
@@ -91,7 +91,8 @@ def test_one_page_at_most_twice_in_a_row():
     out = editor._no_repeats([shot(0, [1, 1, 1, 1]), shot(2, [2, 2, 2, 2]), shot(4, [3, 3, 3, 3]), shot(6, [4, 4, 4, 4])],
                              lines, "long", notes)
     kinds = [s["type"] for s in out]
-    assert kinds[:2] == ["browser_shot", "browser_shot"] and kinds[2] == "kinetic_title"
+    # owner 2026-11-27: a planned page is never thrown away (it left Goli on an empty screen): all three are kept
+    assert kinds[:3] == ["browser_shot", "browser_shot", "browser_shot"]
 
 
 def test_goli_points_at_the_content():
