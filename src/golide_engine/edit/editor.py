@@ -551,6 +551,32 @@ def _walkthrough(s: dict, sources: list[dict], capture_dir, lines, t0: float, t1
 def one_goli(scenes: list[dict]) -> list[dict]:
     """2026-11-12 (owner): one Goli per block. Goli scenes never overlap: a later one starts when the earlier ends
     (a sliver is dropped)."""
+    # 2026-11-27 (root cause of the owner's black blocks): a page or picture moved onto the studio TV is a studio
+    # scene; when it sat inside a long Goli-beside-the-block scene, the earlier Goli won and the studio scene (and the
+    # page with it) was dropped, leaving Goli on an empty screen. The studio scene wins: the Goli beside steps out
+    # for it and comes back after.
+    studios = [s for s in scenes if s["type"] == "host" and (s.get("data") or {}).get("place") == "studio"]
+    if studios:
+        split = []
+        for h in scenes:
+            if h["type"] != "host" or (h.get("data") or {}).get("place") == "studio":
+                split.append(h)
+                continue
+            parts = [(h["start"], h["start"] + h["duration"])]
+            for st in studios:
+                a, b = st["start"], st["start"] + st["duration"]
+                parts = [q for x0, x1 in parts for q in ((x0, min(x1, a)), (max(x0, b), x1)) if q[1] - q[0] >= 0.4]
+            if parts == [(h["start"], h["start"] + h["duration"])]:
+                split.append(h)
+                continue
+            for x0, x1 in parts:
+                shift = x0 - h["start"]
+                d = dict(h["data"])
+                d["poses"] = [dict(q, at=round(q["at"] - shift, 3)) for q in d.get("poses", []) if 0 <= q["at"] - shift < x1 - x0] \
+                    or [{"pose": "talk", "at": 0}]
+                d["cues"] = [dict(c, start=round(c["start"] - shift, 3)) for c in d.get("cues", []) if 0 <= c["start"] - shift < x1 - x0]
+                split.append(dict(h, start=round(x0, 3), duration=round(x1 - x0, 3), data=d))
+        scenes = split
     hosts = sorted((s for s in scenes if s["type"] == "host"), key=lambda s: s["start"])
     end, drop = -1.0, []
     for h in hosts:

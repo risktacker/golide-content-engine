@@ -186,3 +186,14 @@ def test_owner_review_2026_11_27_fixes():
     assert 0 < editor._hold_limit(metaphor, [N(words=[], start=0, end=14)]) <= editor.HOLD_MAX
     assert editor._hold_limit(dict(metaphor), [N(words=[], start=0, end=14)], "short") == 0.0
     assert remote.lead_frames(0) == 0 and remote.lead_frames(600) == remote.LEAD
+
+
+def test_studio_scene_inside_a_goli_beside_is_kept():
+    """2026-11-27: a page moved to the studio TV inside a long Goli-beside scene was dropped (black block)."""
+    from golide_engine.edit import editor
+    side = {"type": "host", "start": 3.6, "duration": 21.3, "data": {"place": "side", "poses": [{"pose": "talk", "at": 0}], "cues": []}}
+    studio = {"type": "host", "start": 6.4, "duration": 3.4, "data": {"place": "studio", "screen": "x.png", "poses": [], "cues": []}}
+    out = editor.one_goli([side, studio])
+    hosts = sorted((h["start"], round(h["start"] + h["duration"], 2), h["data"]["place"]) for h in out)
+    assert (6.4, 9.8, "studio") in hosts
+    assert all(not (a < 9.8 and b > 6.4) for a, b, p in hosts if p != "studio")
