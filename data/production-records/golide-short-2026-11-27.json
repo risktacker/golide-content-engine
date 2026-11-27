@@ -1,18 +1,18 @@
 {
   "production_id": "golide-short-2026-11-27",
-  "youtube_video_id": "kwgERx0gj0A",
+  "youtube_video_id": "FmRHkghFg8c",
   "retention_hours": 48,
   "upload": {
-    "youtube_video_id": "kwgERx0gj0A",
-    "upload_status": "scheduled",
-    "privacy_status": "private",
+    "youtube_video_id": "FmRHkghFg8c",
+    "upload_status": "published",
+    "privacy_status": "public",
     "scheduled_at": null,
-    "uploaded_at": "2026-11-27T09:22:04.506013+00:00"
+    "uploaded_at": "2026-11-27T11:58:40.689147+00:00"
   },
   "production": {
     "format": "short",
     "title": "ChatGPT, Claude, Gemini and Grok Built Their Own Society for 15 Days",
-    "status": "scheduled",
+    "status": "published",
     "scheduled_at": "2026-11-27T11:00:00Z",
     "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-shorts-mon-wed-fri\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-choice\"}"
   },
@@ -222,7 +222,7 @@
       "beats": 40,
       "renderer": "vector"
     },
-    "checked_at": "2026-11-27T09:21:59.858657+00:00",
+    "checked_at": "2026-11-27T11:44:46.835396+00:00",
     "warnings": []
   },
   "generation_parameters": {
@@ -244,7 +244,7 @@
   "package_manifest": {
     "version": 1,
     "production_id": "golide-short-2026-11-27",
-    "created_at": "2026-11-27T09:22:01.291919+00:00",
+    "created_at": "2026-11-27T11:44:46.863891+00:00",
     "release": {
       "approved": true,
       "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
@@ -256,8 +256,8 @@
     "files": {
       "video": {
         "file": "video.mp4",
-        "sha256": "0927bf70ab858ba79bf1b023c74a6b265f34dfe9ecbbd5a748cf1ff65270bb2c",
-        "bytes": 6780687
+        "sha256": "d68baa4393211cea79b63de3567ad11526d5fbc82485051cf0b8792277e9b7da",
+        "bytes": 23719133
       },
       "thumbnail": {
         "file": "thumbnail.png",
@@ -291,7 +291,7 @@
       },
       "qa_report": {
         "file": "qa-report.json",
-        "sha256": "ae738b736271d85a0eae82722394acd84071455b5bd8289e541146311e2358eb",
+        "sha256": "a190b89f3a0c7c2c640bcc0ccc227a58eb82228c723bb77dfe58534a9403294d",
         "bytes": 277
       }
     },
@@ -494,5 +494,5 @@
       "created_at": "2026-11-27T09:21:46.652399+00:00"
     }
   ],
-  "recorded_at": "2026-11-27T09:22:04.510905+00:00"
+  "recorded_at": "2026-11-27T11:58:40.705030+00:00"
 }
