@@ -139,7 +139,9 @@ jobs:
           grep -o '"status": "[a-z_]*"' engine-output.txt | tail -1 | sed 's/^/::notice title=rebuild::/'
       - name: Save checkpoints
         id: checkpoint_save
-        if: always()
+        # 2026-11-27: a run cancelled before its checkpoints were restored saved nothing (a warning, not a failure), and the
+        # step after it then deleted every older checkpoint: nothing is saved or pruned without the productions folder
+        if: always() && hashFiles('productions/**/spec*.json', 'productions/**/*.json') != ''
         uses: actions/cache/save@v4
         with:
           path: |
@@ -149,7 +151,7 @@ jobs:
             generated
           key: golide-production-checkpoint-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Remove superseded checkpoints
-        if: always() && steps.checkpoint_save.outcome == 'success'
+        if: always() && steps.checkpoint_save.outcome == 'success' && hashFiles('productions/**/*.json') != ''
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
