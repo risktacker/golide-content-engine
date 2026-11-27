@@ -50,7 +50,7 @@
   "release": {
     "approved": true,
     "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
-    "scheduled_at": "2026-11-27T17:30:00Z"
+    "hold_private": true
   },
   "_studio_job_id": "golide-long-2026-11-27",
   "suggested_model": {

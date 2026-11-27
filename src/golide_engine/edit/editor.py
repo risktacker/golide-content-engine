@@ -984,6 +984,7 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
     if studio and fmt == "long":
         out = stage_room(out, raw.get("plan") or [], lines, cues, notes)
         out = one_goli(_cap_cards(out, lines, cues, notes, fmt))      # a page moved to the TV keeps the hold limit too
+        out = _fill_gaps_with_studio(out, lines, cues, notes, duration)
     return {"format": fmt, "duration": duration, "scenes": out, "notes": notes, "captions": captions(lines, fmt),
             "plan": raw.get("plan") or [], "plan_misses": misses,
             "look": look if look in LOOKS3D else "glass",
@@ -1713,6 +1714,29 @@ CARD_MAX = {"chapter_card": 2.0, "stat_counter": 3.0}
 # owner 2026-11-27 ("too much stalling"; his 0.5 s review found one block held 13-16 s): no picture holds longer than
 # this in a long video; past it the talk goes on in the studio (the TV changes with each sentence). Blocks tied to the
 # voice word by word (steps on a page, a real run, a typed prompt) keep their time.
+def _fill_gaps_with_studio(scenes: list[dict], lines, cues, notes: list[str], duration: float) -> list[dict]:
+    """Owner 2026-11-27 (his 0.5 s review: ~35 s of the long video showed only Goli on an empty background): a beat
+    whose block was dropped (a prompt never said, a list with no logos, a capture that failed) left a hole. Every
+    moment not covered by a block is Goli in the living studio, with each sentence on the TV."""
+    covered = sorted((float(x["start"]), float(x["start"]) + float(x["duration"])) for x in scenes
+                     if x["type"] != "host" or (x.get("data") or {}).get("place") == "studio")
+    holes, t = [], 0.0
+    for a, b in covered:
+        if a - t > 0.4:
+            holes.append((t, a))
+        t = max(t, b)
+    if duration - t > 0.4:
+        holes.append((t, duration))
+    out = list(scenes)
+    for a, b in holes:
+        text = " ".join(w.text for w in _spoken(lines, a, b))
+        out.append({"type": "host", "start": round(a, 3), "duration": round(b - a, 3), "data": {
+            "place": "studio", "cues": _cues_between(cues or [], a, b), "poses": [{"pose": "talk", "at": 0}],
+            "words": _screen_words(text, lines, a, b) if text else [], "punch": ""}})
+        notes.append(f"empty {a:.1f}-{b:.1f}s: Goli in the studio")
+    return one_goli(sorted(out, key=lambda s: (s["start"], s["type"] == "host"))) if holes else scenes
+
+
 def _stops_as_said(stops: list, words: list[dict]) -> list:
     """Owner 2026-11-27 ("you say cooler and show heater"): the stops of a path (Circuit City, White Model) carry the
     names the voice says, in the order it says them. A stop whose name is said is placed by when it is said; stops whose
