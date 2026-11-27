@@ -862,8 +862,15 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
             out.append({"type": "recipe_clip", "start": t0, "duration": dur, "in": "rise", "data": {
                 "recipe": s["recipe"], "brief": str(s.get("recipe_brief") or "")[:600], "words": words,
                 "fill": fill if isinstance(fill, dict) else None, "fallback": fallback}})
-        elif kind == "metaphor" and s.get("metaphor") in METAPHORS and s["metaphor"] not in used_metaphors \
-                and not (out and out[-1]["type"] == "metaphor"):
+        elif kind == "metaphor" and s.get("metaphor") in METAPHORS and (
+                s["metaphor"] not in used_metaphors or set(METAPHORS) - used_metaphors):
+            # owner 2026-11-27 ("find a way the intended blocks are used"): a metaphor whose kind was already used is
+            # not dropped to Goli-in-the-studio: it keeps its picture and words in the next unused kind
+            if s["metaphor"] in used_metaphors or (out and out[-1]["type"] == "metaphor" and out[-1]["data"].get("kind") == s["metaphor"]):
+                spare = [m for m in METAPHORS if m not in used_metaphors and not (out and out[-1]["data"].get("kind") == m)]
+                if spare:
+                    notes.append(f"scene {k}: metaphor {s['metaphor']} already used, shown as {spare[0]}")
+                    s = dict(s, metaphor=spare[0])
             used_metaphors.add(s["metaphor"])
             land = _word_time(lines, s.get("punch") or "", t0, t1)
             items = [str(x) for x in (s.get("items") or [])][:5]

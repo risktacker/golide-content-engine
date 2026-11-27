@@ -326,6 +326,8 @@ def run(production, spec: dict[str, Any], work: Path, production_id: str, plan: 
     editor.save(edit, folder / "edit-list.json")
     for note in edit["notes"]:
         print(f"::notice title=Editor::{note}")
+    # every note also in the log itself (annotations keep only the first 10): how each block was placed or replaced
+    print(json.dumps({"status": "edit_notes", "notes": edit["notes"]}))
     print(json.dumps({"status": "edit_list", "scenes": len(edit["scenes"]),
                       "types": sorted({s["type"] for s in edit["scenes"]})}))
 
