@@ -1,0 +1,15 @@
+{
+  "production_id": "golide-short-2026-11-27",
+  "previous": null,
+  "status": "awaiting_approval",
+  "media_ref": "r2://temp/2026/11/27/3c353799801c4721b0de0b6e8bdbedbd-golide-short-2026-11-27-rebuild.mp4",
+  "built_at": "2026-11-27T11:44:55.280806+00:00",
+  "preview_expires_at": "2026-11-29T11:44:55.280816+00:00",
+  "redone_stages": [
+    "render-edit-v1",
+    "doctor-v1",
+    "mix-edit-v3",
+    "qa",
+    "release"
+  ]
+}
