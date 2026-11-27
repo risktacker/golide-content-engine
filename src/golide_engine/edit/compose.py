@@ -1947,7 +1947,10 @@ class Composer:
         # the living studio (owner 2026-11-26): long studio scenes as the 3D room with the live Goli, when switched on
         self.live = bool(edit.get("live_studio")) and self.fmt == "long" and live_ready()
         # Shorts are long videos in 9:16 (owner 2026-11-25): the same switch makes the standing Goli under the proof live
-        self.live_side = bool(edit.get("live_studio")) and live_ready()
+        # 2026-11-27: on a long video the second live 3D Goli (standing beside the cut-ins) froze the filming machines
+        # from 2:40 on (found by switching each 3D layer off); long cut-ins keep Goli in 2D beside them until it is
+        # fixed, the 3D room and its Goli are unchanged. Shorts keep the standing 3D Goli.
+        self.live_side = bool(edit.get("live_studio")) and live_ready() and self.fmt != "long"
         self.spoken = [(float(w["at"]), str(w.get("text", ""))) for c in (edit.get("captions") or []) for w in c.get("words", [])]
         self.live_layers = {}
         for s in edit["scenes"]:
