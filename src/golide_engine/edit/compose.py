@@ -1743,9 +1743,9 @@ class Composer:
                 self.tw(f'tl.set("#{tsid}-t",{{visibility:"visible"}},{a:.3f});tl.set("#{tsid}-t",{{visibility:"hidden"}},{a + d:.3f});')
             html += (f'<section id="{lid}-s" class="scene clip" data-start="0" data-duration="{duration:.3f}" style="z-index:{z}">'
                      f'<div class="stage"><div class="cam">{canvas}{titles}</div></div><script type="module">window.__g3d = window.__g3d || {{}}; window.__liveWaits = window.__liveWaits || [];'
-                     f'{js} window.__liveWaits.push(p.then((f) => {{ window.__g3d["{lid}"] = f; '
-                     # a first draw before filming (2026-11-27: the video opened on a second without the studio)
-                     f'try {{ f({(sorted(L["windows"]) or [(0, 0)])[0][0]:.3f}); }} catch (e) {{}} }}));</script></section>')
+                     # (2026-11-27: a first draw at load was tried for the opening second; it made the page load past
+                     # HyperFrames' 45 s readiness limit on the filming machines, two spans failed every try: removed)
+                     f'{js} window.__liveWaits.push(p.then((f) => {{ window.__g3d["{lid}"] = f; }}));</script></section>')
             # drawn on the video's own clock; hidden outside its scenes
             merged = []
             for a, d in sorted(L["windows"]):

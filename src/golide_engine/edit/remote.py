@@ -177,7 +177,7 @@ def film_part(job: str, part: int, work: Path) -> Path:
     # machine for hours. A span now tries again on this machine, the second time with one browser.
     for attempt in range(3):
         try:
-            subprocess.run(cmd + (["--workers", "1"] if attempt else []), check=True, env=env)
+            subprocess.run(cmd + (["--workers=1"] if attempt else []), check=True, env=env)
             break
         except subprocess.CalledProcessError:
             if attempt == 2:
