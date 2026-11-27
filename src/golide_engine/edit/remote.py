@@ -177,6 +177,14 @@ def film_part(job: str, part: int, work: Path) -> Path:
     return out
 
 
+def _frame_time(path: Path, k: int) -> float:
+    """The presentation time of frame k (in order of display) of a video, from its packets."""
+    r = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "packet=pts_time",
+                        "-of", "csv=p=0", str(path)], capture_output=True, text=True, check=True)
+    times = sorted(float(x.split(",")[0]) for x in r.stdout.split() if x.strip() and x.split(",")[0] != "N/A")
+    return times[k]
+
+
 def frames_of(path: Path) -> int:
     r = subprocess.run(["ffprobe", "-v", "error", "-count_packets", "-select_streams", "v:0", "-show_entries",
                         "stream=nb_read_packets", "-of", "csv=p=0", str(path)], capture_output=True, text=True, check=True)
@@ -200,9 +208,16 @@ def join(job: str, work: Path) -> Path:
         cut = work / f"cut-{i}.mp4"
         # every frame is a keyframe (--keyframe-interval 1): the warm-up frames are skipped without re-encoding
         # (an output-side seek: packets before it are dropped, exact to the frame; checked against frame checksums)
-        skip = ["-ss", f"{(lead - 0.25) / meta['fps']:.5f}"] if lead else []
+        # the seek is the raw file's OWN time of its frame `lead` (a filmed span does not start at 0: 2026-11-27, part 1
+        # lost 25 frames to a fixed 0.1 s seek), minus a quarter frame
+        skip = ["-ss", f"{_frame_time(raw, lead) - 0.25 / meta['fps']:.5f}"] if lead else []
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(raw), *skip, "-frames:v", str(need), "-c", "copy", "-an",
                         str(cut)], check=True)
+        if frames_of(cut) != need:
+            # never lose the film over a cut: frames picked by their index and encoded again (slower, exact)
+            subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(raw), "-vf", f"select=gte(n\\,{lead}),setpts=N/FRAME_RATE/TB",
+                            "-frames:v", str(need), "-r", str(meta["fps"]), "-c:v", "libx264", "-preset", "veryfast", "-crf", "14",
+                            "-pix_fmt", "yuv420p", "-g", "1", "-an", str(cut)], check=True)
         if frames_of(cut) != need:
             raise RuntimeError(f"part {i} cut to {frames_of(cut)} frames, needs {need}")
         lst.append(cut)
