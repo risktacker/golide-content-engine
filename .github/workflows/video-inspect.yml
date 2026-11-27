@@ -34,3 +34,8 @@ jobs:
           echo "== motion per half second (mean change between frames, 0 = still)"
           ffmpeg -nostats -i /tmp/v.mp4 -vf "scale=320:-1,tblend=all_mode=difference,signalstats,metadata=print:key=lavfi.signalstats.YAVG" -f null - 2>&1 \
             | grep -oE "pts_time:[0-9.]+|YAVG=[0-9.]+" | paste - - | awk -F'[: =]' '{t=$2; b=int(t*2)/2; s[b]+=$4; n[b]++} END {for (k in s) printf "%6.1f %.2f\n", k, s[k]/n[k]}' | sort -n
+          echo "== empty picture area (the block's area, Goli's corner and captions left out) per half second"
+          W=$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 /tmp/v.mp4)
+          if [ "$W" -gt 1500 ]; then CROP="crop=1300:880:20:20"; else CROP="crop=900:1000:90:200"; fi
+          ffmpeg -nostats -i /tmp/v.mp4 -vf "fps=2,$CROP,scale=320:-1,signalstats,metadata=print:key=lavfi.signalstats.YHIGH" -f null - 2>&1 \
+            | grep -oE "pts_time:[0-9.]+|YHIGH=[0-9.]+" | paste - - | awk -F'[: =]' '{ if ($4 < 70) printf "%s ", $2 } END {print ""}'
