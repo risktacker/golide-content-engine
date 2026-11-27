@@ -1,0 +1,28 @@
+name: Composition inspect (what each half second shows, text only)
+on:
+  workflow_dispatch:
+    inputs:
+      job: { description: "render job (editrender/<job>/ in R2)", required: true }
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    env:
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+      JOB: ${{ inputs.job }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q -e "$GITHUB_WORKSPACE" playwright && python3 -m playwright install --with-deps chromium >/dev/null
+      - run: |
+          python3 -c "
+          import json
+          from golide_engine.edit import remote
+          open('/tmp/b.tgz','wb').write(remote.get('$JOB','bundle.tgz')); print(json.loads(remote.get('$JOB','meta.json'))['duration'])" > /tmp/dur
+          python3 tools/comp_inspect.py /tmp/b.tgz "$(cat /tmp/dur)"
