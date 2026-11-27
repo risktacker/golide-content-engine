@@ -1,0 +1,548 @@
+{
+  "production_id": "golide-long-2026-11-26",
+  "youtube_video_id": "Er6IZWoVGnc",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "Er6IZWoVGnc",
+    "upload_status": "uploaded_private",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-11-27T03:29:00.715291+00:00"
+  },
+  "production": {
+    "format": "long",
+    "title": "Claude Artifacts Just Got a Huge Upgrade",
+    "status": "uploaded_private",
+    "scheduled_at": null,
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-long-tue-thu-sat\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-choice\"}"
+  },
+  "narration": "Claude just dropped a feature that allows you to install an artifact\nas a real app right on your Mac or Windows computer.\nSo that little tracker or dashboard that you or your team use,\nClaude can now build that right on your desktop.\nSo in this video, I’m going to show you how these new apps work,\nthe other big upgrades that make artifacts one of the most\nimportant Claude features to be getting good at right now,\nand the real risk of getting locked into Claude’s ecosystem.\nSo let’s get right into it.\nAn installed artifact gets its own desktop icon\nand window instead of opening inside Claude.\nThe way this works is you actually build an artifact just like normal.\nAnd then when you open it up inside of the Claude desktop app,\nyou just go to share or you click on the name of the artifact,\nand then you can hit install as app,\nand then it gets its own icon and it opens up in its\nown window like any other app on your actual laptop or desktop.\nThis app can still use Claude and all of your connectors.\nIt can send you notifications or sit in\nyour menu bar or your system tray,\nand it updates itself whenever you actually update the artifact.\nThere’s no API key or anything else to set up.\nNow, right now it is in beta, and it literally just dropped.\nAnd anything made from a template like your docs, slides,\nor sheets can’t be installed.\nAnd if an app asks you for access to your computer,\nlike running programs or changing local files,\nonly allow it for apps you built or\nreally trust because Anthropic doesn’t automatically review these.\nBut anyways, apps are just the newest upgrade to artifacts.\nOver the last few months,\nAnthropic has turned artifacts into something that your\nwhole team can really work out of.\nAnd people have made more than 45 million\ndocs or decks and designs with artifacts.\nAnthropic defines an artifact as anything that Claude makes\nfor you that you’d put in front of someone, like a design, a deck,\na doc, a dashboard, or maybe a small interactive tool.\nBasically, it’s a page that Claude builds that lives at a live public link.\nAnd right now, there are 7 templates.\nWe’ve got docs, slides, design, data, sheets, whiteboards, and motion for short animated explainers.\nAnd then every update that you make is\njust a new version of that same link.\nThe hard part here was never getting Claude to be able to make something.\nBut now with Artifacts, you can just have Claude build it,\nand then you can hit share,\nand then your team just opens up a link, and it’s super simple.\nI don’t think that artifacts will replace Excel or your CRM,\nat least not yet.\nAnthropic even says Sheets only has simple spreadsheet functionality for now.\nAnd if you need a real app with real\nlogin and real backend and real role-based access control,\nthen you’ll probably want to go with something that you actually\ndeploy yourself or some other solution that’s built for that.\nWhat I think Artifacts replaces is like the small software, right?\nLike every team has little things they either\npay a subscription for or never build,\nlike a hiring tracker or an onboarding checklist or\na training quiz or a weekly KPI page,\nor I think you guys get the picture, right?\nAnd now each one is basically just a prompt and a link.\nAnd then just tell Claude,\n“Turn this into a shared artifact that my team can open from a link.\nMake it easy to update every week and show where every number came from.”\nAnd now the last thing I wanted to address,\nbecause some of you might be thinking,\nif everything about your business lives inside of Claude, like as an artifact,\naren’t you just locking yourself into Claude Code or into Anthropic?\nAnd it’s a very fair concern.\nArtifact content, yes, it is stored on Anthropic’s infrastructure.\nPeople in your organization have to sign into Claude to see it.\nEvery big AI company is kind of doing some version\nof this because they’re realizing the model alone might not\nbe the moat heading into the next couple of years.\nSo they’re all building the place where your work actually lives.\nBut of course,\nall of these artifacts have their own sort of like exit door.\nYou can export them to Word or PDF or Google Docs or PowerPoint slides,\nSheets, CSV, HTML, whatever you want.\nThe rule for these artifacts is pretty simple,\nwhich is basically just keep the source of truth in places\nyou own and then just use artifacts as the window.\nIt’s less about Claude-specific artifacts.\nIt’s really more about knowing how to brief\nAI to build what your team needs, how to check it,\nhow to share it,\nhow to get people working from a link instead of a file.\nAnd I think that all of these skills will\ncarry over to whatever tool ends up winning.\nBet on the habit and the skill of\nworking that way rather than one specific tool.\nFollow us for more.\n",
+  "research": {
+    "summary": "Anthropic released “Install as app” for Claude Artifacts on November 24, 2026. The beta lets users turn eligible artifacts into Mac or Windows desktop apps with their own icons and windows. Installed apps can use Claude and connected apps, update when the underlying artifact changes, send notifications, add menu-bar or system-tray items, and—when explicitly permitted—access local files or run programs. The core feature is real, but the video’s broader plan details need correction: template availability differs by plan, installed apps require Claude Desktop version 6.28899.0 or later, and Docs, Slides, Sheets, legacy artifacts, and Claude Cowork live artifacts cannot be installed as apps.",
+    "claims": [
+      {
+        "claim": "Claude released “Install as app” for Artifacts on November 24, 2026, in beta for Mac and Windows.",
+        "source_title": "Turn artifacts into Mac and Windows apps",
+        "source_url": "https://claude.com/resources/articles/install-as-app",
+        "published_or_updated": "November 24, 2026"
+      },
+      {
+        "claim": "An installed artifact gets its own desktop icon and window instead of opening inside Claude, and the installation flow is available from the artifact’s title menu, right-click menu, or Share menu.",
+        "source_title": "Install an artifact as an app",
+        "source_url": "https://support.claude.com/en/articles/18516354-install-an-artifact-as-an-app",
+        "published_or_updated": "Updated November 25, 2026"
+      },
+      {
+        "claim": "Installing artifacts as apps is rolling out in beta on Free, Pro, Max, Ultra, Team, and Enterprise plans, but users need Claude for Mac or Claude for Windows version 6.28899.0 or later.",
+        "source_title": "Install an artifact as an app",
+        "source_url": "https://support.claude.com/en/articles/18516354-install-an-artifact-as-an-app",
+        "published_or_updated": "Updated November 25, 2026"
+      },
+      {
+        "claim": "Installed apps can use Claude and a user’s connected apps, and they can update automatically when the underlying artifact is edited.",
+        "source_title": "Turn artifacts into Mac and Windows apps",
+        "source_url": "https://claude.com/resources/articles/install-as-app",
+        "published_or_updated": "November 24, 2026"
+      },
+      {
+        "claim": "With permission, an installed artifact can send notifications, add a macOS menu-bar item or Windows system-tray item, run programs, and read, change, or delete local files.",
+        "source_title": "Install an artifact as an app",
+        "source_url": "https://support.claude.com/en/articles/18516354-install-an-artifact-as-an-app",
+        "published_or_updated": "Updated November 25, 2026"
+      },
+      {
+        "claim": "Anthropic warns that it does not review apps before installation; full computer access should therefore be granted only to apps whose creators the user trusts.",
+        "source_title": "Turn artifacts into Mac and Windows apps",
+        "source_url": "https://claude.com/resources/articles/install-as-app",
+        "published_or_updated": "November 24, 2026"
+      },
+      {
+        "claim": "Installed apps do not require packaging, code signing, an API key, or a separate login, but they do require the user to be online and signed in to Claude Desktop to open them.",
+        "source_title": "Install an artifact as an app",
+        "source_url": "https://support.claude.com/en/articles/18516354-install-an-artifact-as-an-app",
+        "published_or_updated": "Updated November 25, 2026"
+      },
+      {
+        "claim": "Docs, Slides, Sheets, legacy artifacts, and live artifacts from Claude Cowork cannot be installed as desktop apps at launch; apps are also unavailable on Linux, the web, and mobile.",
+        "source_title": "Install an artifact as an app",
+        "source_url": "https://support.claude.com/en/articles/18516354-install-an-artifact-as-an-app",
+        "published_or_updated": "Updated November 25, 2026"
+      },
+      {
+        "claim": "Claude defines an artifact as something it creates that a user would put in front of someone else, including a design, deck, document, dashboard, or small interactive tool.",
+        "source_title": "What are artifacts and how do I use them?",
+        "source_url": "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-i-use-them",
+        "published_or_updated": "Updated November 2026"
+      },
+      {
+        "claim": "Artifacts can call Claude without users supplying API keys; usage is charged against each user’s own plan limits rather than the artifact creator’s limits.",
+        "source_title": "What are artifacts and how do I use them?",
+        "source_url": "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-I-use-them",
+        "published_or_updated": "Updated November 2026"
+      },
+      {
+        "claim": "Artifacts can connect to services such as Asana, Google Calendar, and Slack, subject to the user’s approval and plan availability.",
+        "source_title": "What are artifacts and how do I use them?",
+        "source_url": "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-I-use-them",
+        "published_or_updated": "Updated November 2026"
+      },
+      {
+        "claim": "Artifacts can store persistent personal or shared data, enabling use cases such as journals, trackers, collaborative tools, and leaderboards; the default storage limit is 100 MB or 25,000 saved records, whichever is reached first.",
+        "source_title": "What are artifacts and how do I use them?",
+        "source_url": "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-I-use-them",
+        "published_or_updated": "Updated November 2026"
+      },
+      {
+        "claim": "Anthropic says users have created more than 45 million documents, decks, and designs in Claude, and that teams can edit the same document, deck, design, or dashboard together.",
+        "source_title": "Build live dashboards and animate explainers with Claude",
+        "source_url": "https://claude.com/resources/articles/dashboards-and-motion",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "The current artifact templates listed by Anthropic are Docs, Slides, Design, Data, Sheets, Whiteboards, and Motion; availability varies by plan, with Docs, Slides, and Design available on all plans, Data on paid plans, Sheets and Whiteboards in beta on paid plans, and Motion in beta on Team and Enterprise.",
+        "source_title": "What are artifacts and how do I use them?",
+        "source_url": "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-I-use-them",
+        "published_or_updated": "Updated November 2026"
+      },
+      {
+        "claim": "The video’s lock-in concern has a factual basis: artifact apps run through Anthropic’s infrastructure, and installed apps require an active Claude Desktop session and Claude account access rather than functioning as fully independent offline applications.",
+        "source_title": "What are artifacts and how do I use them?",
+        "source_url": "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-I-use-them",
+        "published_or_updated": "Updated November 2026"
+      }
+    ],
+    "core_fact": {
+      "fact": "On November 24, 2026, Claude introduced a beta feature that lets users install eligible Artifacts as Mac or Windows desktop apps with their own icons and windows. The apps can use Claude and connected tools, update when the artifact changes, and request permission for operating-system access.",
+      "source_url": "https://www.youtube.com/watch?v=O_-QoxNBDX0",
+      "published_or_updated": "November 24, 2026",
+      "verified": true
+    }
+  },
+  "metadata": {
+    "title": "Claude Artifacts Just Became Real Desktop Apps",
+    "description": "Claude Artifacts can now become real desktop apps on Mac and Windows, and this video shows how Claude apps work, what they can replace, and the risks to know first.\n\nFree guide to this video (steps and every source): https://studio.golidee.com/guides/golide-long-2026-11-26.pdf\n\nYou’ll see how to install an Artifact as an app with its own icon and window, use Claude connectors and notifications, and build simple tools for your team without setting up an API key. The feature is still in beta, so there are important limits and security concerns to understand.\n\nWe also look at whether Claude Artifacts can replace spreadsheets, CRMs, hiring trackers, dashboards, checklists, and other small business tools—and how to avoid getting locked into Claude by keeping your source of truth somewhere you control.\n\nChapters\n0:00 Intro\n0:32 Installed Apps\n1:29 Artifact Basics\n2:21 Small Team Tools\n3:14 Lock-In Risk\n\n#Claude #ClaudeAI #ClaudeArtifacts #AIApps #Anthropic #AIAutomation #Productivity\n\nMusic: Crock Pot by Diamond Ortiz",
+    "tags": [
+      "Claude Artifacts",
+      "Claude desktop app",
+      "Claude apps",
+      "Claude AI",
+      "AI desktop apps",
+      "Claude Mac app",
+      "Claude Windows app",
+      "install Claude Artifact",
+      "Claude Artifact app",
+      "Claude new features",
+      "Anthropic Claude",
+      "Claude tutorial",
+      "AI app builder",
+      "build apps with AI",
+      "AI productivity tools",
+      "Claude for business",
+      "Claude team tools",
+      "Claude app tutorial",
+      "how to use Claude",
+      "Claude Artifacts tutorial",
+      "AI tools for business",
+      "Claude connectors",
+      "Claude"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [
+      "0:00 Intro",
+      "0:32 Installed Apps",
+      "1:29 Artifact Basics",
+      "2:21 Small Team Tools",
+      "3:14 Lock-In Risk"
+    ],
+    "keywords": [
+      "Claude",
+      "Claude AI",
+      "Claude Artifacts",
+      "Claude apps",
+      "AI apps",
+      "Claude desktop app",
+      "Claude Artifact app",
+      "Claude Mac app",
+      "Claude Windows app",
+      "Anthropic Claude",
+      "AI app builder",
+      "install Claude Artifact",
+      "Claude new features",
+      "AI productivity tools",
+      "Claude tutorial"
+    ],
+    "hashtags": [
+      "#Claude",
+      "#ClaudeAI",
+      "#ClaudeArtifacts",
+      "#AIApps",
+      "#Anthropic",
+      "#AIAutomation",
+      "#Productivity"
+    ],
+    "format": "long",
+    "title_description_language": "en",
+    "seo_body": "Claude Artifacts can now become real desktop apps on Mac and Windows, and this video shows how Claude apps work, what they can replace, and the risks to know first.\n\nYou’ll see how to install an Artifact as an app with its own icon and window, use Claude connectors and notifications, and build simple tools for your team without setting up an API key. The feature is still in beta, so there are important limits and security concerns to understand.\n\nWe also look at whether Claude Artifacts can replace spreadsheets, CRMs, hiring trackers, dashboards, checklists, and other small business tools—and how to avoid getting locked into Claude by keeping your source of truth somewhere you control.",
+    "title_checked": true
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "Claude released “Install as app” for Artifacts on November 24, 2026, in beta for Mac and Windows.",
+        "source_title": "Turn artifacts into Mac and Windows apps",
+        "source_url": "https://claude.com/resources/articles/install-as-app",
+        "published_or_updated": "November 24, 2026"
+      },
+      {
+        "claim": "An installed artifact gets its own desktop icon and window instead of opening inside Claude, and the installation flow is available from the artifact’s title menu, right-click menu, or Share menu.",
+        "source_title": "Install an artifact as an app",
+        "source_url": "https://support.claude.com/en/articles/18516354-install-an-artifact-as-an-app",
+        "published_or_updated": "Updated November 25, 2026"
+      },
+      {
+        "claim": "Installing artifacts as apps is rolling out in beta on Free, Pro, Max, Ultra, Team, and Enterprise plans, but users need Claude for Mac or Claude for Windows version 6.28899.0 or later.",
+        "source_title": "Install an artifact as an app",
+        "source_url": "https://support.claude.com/en/articles/18516354-install-an-artifact-as-an-app",
+        "published_or_updated": "Updated November 25, 2026"
+      },
+      {
+        "claim": "Installed apps can use Claude and a user’s connected apps, and they can update automatically when the underlying artifact is edited.",
+        "source_title": "Turn artifacts into Mac and Windows apps",
+        "source_url": "https://claude.com/resources/articles/install-as-app",
+        "published_or_updated": "November 24, 2026"
+      },
+      {
+        "claim": "With permission, an installed artifact can send notifications, add a macOS menu-bar item or Windows system-tray item, run programs, and read, change, or delete local files.",
+        "source_title": "Install an artifact as an app",
+        "source_url": "https://support.claude.com/en/articles/18516354-install-an-artifact-as-an-app",
+        "published_or_updated": "Updated November 25, 2026"
+      },
+      {
+        "claim": "Anthropic warns that it does not review apps before installation; full computer access should therefore be granted only to apps whose creators the user trusts.",
+        "source_title": "Turn artifacts into Mac and Windows apps",
+        "source_url": "https://claude.com/resources/articles/install-as-app",
+        "published_or_updated": "November 24, 2026"
+      },
+      {
+        "claim": "Installed apps do not require packaging, code signing, an API key, or a separate login, but they do require the user to be online and signed in to Claude Desktop to open them.",
+        "source_title": "Install an artifact as an app",
+        "source_url": "https://support.claude.com/en/articles/18516354-install-an-artifact-as-an-app",
+        "published_or_updated": "Updated November 25, 2026"
+      },
+      {
+        "claim": "Docs, Slides, Sheets, legacy artifacts, and live artifacts from Claude Cowork cannot be installed as desktop apps at launch; apps are also unavailable on Linux, the web, and mobile.",
+        "source_title": "Install an artifact as an app",
+        "source_url": "https://support.claude.com/en/articles/18516354-install-an-artifact-as-an-app",
+        "published_or_updated": "Updated November 25, 2026"
+      },
+      {
+        "claim": "Claude defines an artifact as something it creates that a user would put in front of someone else, including a design, deck, document, dashboard, or small interactive tool.",
+        "source_title": "What are artifacts and how do I use them?",
+        "source_url": "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-i-use-them",
+        "published_or_updated": "Updated November 2026"
+      },
+      {
+        "claim": "Artifacts can call Claude without users supplying API keys; usage is charged against each user’s own plan limits rather than the artifact creator’s limits.",
+        "source_title": "What are artifacts and how do I use them?",
+        "source_url": "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-I-use-them",
+        "published_or_updated": "Updated November 2026"
+      },
+      {
+        "claim": "Artifacts can connect to services such as Asana, Google Calendar, and Slack, subject to the user’s approval and plan availability.",
+        "source_title": "What are artifacts and how do I use them?",
+        "source_url": "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-I-use-them",
+        "published_or_updated": "Updated November 2026"
+      },
+      {
+        "claim": "Artifacts can store persistent personal or shared data, enabling use cases such as journals, trackers, collaborative tools, and leaderboards; the default storage limit is 100 MB or 25,000 saved records, whichever is reached first.",
+        "source_title": "What are artifacts and how do I use them?",
+        "source_url": "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-I-use-them",
+        "published_or_updated": "Updated November 2026"
+      },
+      {
+        "claim": "Anthropic says users have created more than 45 million documents, decks, and designs in Claude, and that teams can edit the same document, deck, design, or dashboard together.",
+        "source_title": "Build live dashboards and animate explainers with Claude",
+        "source_url": "https://claude.com/resources/articles/dashboards-and-motion",
+        "published_or_updated": "October 2026"
+      },
+      {
+        "claim": "The current artifact templates listed by Anthropic are Docs, Slides, Design, Data, Sheets, Whiteboards, and Motion; availability varies by plan, with Docs, Slides, and Design available on all plans, Data on paid plans, Sheets and Whiteboards in beta on paid plans, and Motion in beta on Team and Enterprise.",
+        "source_title": "What are artifacts and how do I use them?",
+        "source_url": "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-I-use-them",
+        "published_or_updated": "Updated November 2026"
+      },
+      {
+        "claim": "The video’s lock-in concern has a factual basis: artifact apps run through Anthropic’s infrastructure, and installed apps require an active Claude Desktop session and Claude account access rather than functioning as fully independent offline applications.",
+        "source_title": "What are artifacts and how do I use them?",
+        "source_url": "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-I-use-them",
+        "published_or_updated": "Updated November 2026"
+      }
+    ],
+    "platform_demand": {
+      "verdict": "pass",
+      "signal_type": "owner-replace",
+      "query": "Claude Artifacts Just Got a Huge Upgrade"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -15.81,
+      "true_peak_dbtp": -1.82,
+      "loudness_range": 1.7
+    },
+    "editorial": {
+      "beats": 102,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-11-27T03:28:45.164557+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-choice",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-long-tue-thu-sat",
+    "thumbnail_style": "side_course",
+    "intro": "coffee",
+    "outro": "chair_spin_away",
+    "look3d": "white",
+    "kit": "ember"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-long-2026-11-26",
+    "created_at": "2026-11-27T03:28:53.613623+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "hold_private": true,
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "107cb055649f98d6dc4c152ca0e106abb26f513608f5447b1a00aba1ba0b5c2c",
+        "bytes": 53926928
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "1e8bd5d367815eae9bb00a8ab167994f90f552ee0ba245c466e00b9bb7279b15",
+        "bytes": 597872
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "748015b4fc1b7ad08428df6084224013c5e26ad63fd4b70f0796772525812966",
+        "bytes": 3337
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "6888fdfdfc32fc01bfd413108106edcc7aad4e680da7427fbe2031098764e37c",
+        "bytes": 11663
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "32554363fbd3a3ec8e6102b41aa49bbbd71969531cc6c4bbc0f3dd74cc766420",
+        "bytes": 2410
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "e55b88e14902add6786970eb51178627d0e5244f2d50ec1fee153e2b163aa7d9",
+        "bytes": 6952
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "7d3fb80948520b528df91194d685b123789551c9752697f8235ca91e9e5467ae",
+        "bytes": 506
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "1fd2572277c633e325e8e10fb9b1106c8f30eab79bb396dc30a51f4742971791",
+        "bytes": 278
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 41509.0,
+      "cached_input_units": 0.0,
+      "output_units": 2695.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.011536,
+      "created_at": "2026-11-26T17:09:25.839083+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-26T17:09:25.841598+00:00"
+    },
+    {
+      "stage": "script-story",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 4420.0,
+      "cached_input_units": 0.0,
+      "output_units": 18008.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.022494,
+      "created_at": "2026-11-26T17:11:46.393840+00:00"
+    },
+    {
+      "stage": "script-voice-direction",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1561.0,
+      "cached_input_units": 0.0,
+      "output_units": 1550.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002172,
+      "created_at": "2026-11-26T17:11:57.818520+00:00"
+    },
+    {
+      "stage": "script-board",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1573.0,
+      "cached_input_units": 0.0,
+      "output_units": 3116.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004054,
+      "created_at": "2026-11-26T17:12:24.931197+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 4420.0,
+      "cached_input_units": 0.0,
+      "output_units": 18008.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.022494,
+      "created_at": "2026-11-26T17:12:24.934635+00:00"
+    },
+    {
+      "stage": "owner-voice",
+      "provider": "elevenlabs",
+      "model": "eleven_v4",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 4863,
+      "cost_usd": 0.9726,
+      "created_at": "2026-11-26T18:19:59.110074+00:00"
+    },
+    {
+      "stage": "demo-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2301.0,
+      "cached_input_units": 0.0,
+      "output_units": 217.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000721,
+      "created_at": "2026-11-26T18:20:47.053639+00:00"
+    },
+    {
+      "stage": "edit-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 19152.0,
+      "cached_input_units": 0.0,
+      "output_units": 20996.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.029026,
+      "created_at": "2026-11-26T18:24:25.304725+00:00"
+    },
+    {
+      "stage": "guide",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2113.0,
+      "cached_input_units": 0.0,
+      "output_units": 951.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001564,
+      "created_at": "2026-11-27T03:27:54.446696+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 10626.0,
+      "cached_input_units": 0.0,
+      "output_units": 787.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00307,
+      "created_at": "2026-11-27T03:27:55.193393+00:00"
+    },
+    {
+      "stage": "title-check",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1279.0,
+      "cached_input_units": 0.0,
+      "output_units": 128.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000409,
+      "created_at": "2026-11-27T03:27:58.885762+00:00"
+    }
+  ],
+  "recorded_at": "2026-11-27T03:29:00.720375+00:00"
+}

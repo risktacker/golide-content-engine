@@ -52,3 +52,6 @@ html  # seen in your recording
 screenshot  # seen in your recording
 screenshots  # seen in your recording
 todo  # seen in your recording
+backend  # seen in your recording
+explainers  # seen in your recording and the research sources
+onboarding  # seen in your recording
