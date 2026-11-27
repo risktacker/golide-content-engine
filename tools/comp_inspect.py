@@ -27,7 +27,10 @@ PROBE = r"""(t) => { window.__hf && window.__hf.seek ? window.__hf.seek(t) : win
     }
     out.push({id: sec.id, opacity: cs.opacity, vis: cs.visibility, seen, notes: kids.slice(0, 3)});
   }
-  return out; }"""
+  const room = document.getElementById('live-room');
+  const roomOn = room ? getComputedStyle(room).visibility !== 'hidden' && parseFloat(getComputedStyle(room).opacity) > 0.05 : false;
+  const hosts = [...document.querySelectorAll('section.scene')].filter((sec) => { const s = parseFloat(sec.dataset.start), d = parseFloat(sec.dataset.duration); return t >= s && t < s + d && sec.id.includes('-host'); }).map((x) => x.id);
+  return {out, roomOn, hosts}; }"""
 
 
 def main(bundle: str, duration: float) -> None:
@@ -43,15 +46,16 @@ def main(bundle: str, duration: float) -> None:
         page.wait_for_function("() => !!(window.__timelines && window.__timelines.main)", timeout=300000)
         t, last = 0.0, None
         while t < duration:
-            got = page.evaluate(PROBE, t)
+            res = page.evaluate(PROBE, t)
+            got = res["out"]
             bad = [g for g in got if g["seen"] == 0 or float(g["opacity"]) < 0.05 or g["vis"] == "hidden" or g["notes"]]
             line = None
             if not got:
-                line = "nothing but Goli/studio"
+                line = None if res["roomOn"] else f"EMPTY: no block, no studio (hosts {res['hosts']})"
             elif bad:
                 line = "; ".join(f"{g['id']} op={g['opacity']} vis={g['vis']} seen={g['seen']} {g['notes']}" for g in bad)
-            if line and line != last:
-                print(f"{t:6.1f}  {line}", flush=True)
+            if line != last:
+                print(f"{t:6.1f}  {line or 'ok'}", flush=True)
             last = line
             t = round(t + 0.5, 1)
         b.close()
