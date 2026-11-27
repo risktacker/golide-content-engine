@@ -1186,21 +1186,31 @@ class ProductionService:
             else:
                 script_request = (f"{topic_packet(spec)}TOPIC BRIEF\n{spec['brief']}{source_video}{models_block}\n\n"
                                   f"VERIFIED RESEARCH\n{json.dumps(research)}")
-            output = text.generate_json(
-                story_instructions(fmt, model_seconds, close_model=close),
-                script_request,
-                STORY_SCHEMA,
-                max_output_tokens=script_tokens * 2,   # high effort thinks first
-                reasoning_effort=SPOKEN_PASS_EFFORT,
-            )
-            self._record_text(production_id, "script-story", output)
+            fixed = spec.get("fixed_script") if isinstance(spec.get("fixed_script"), dict) else None
+            if fixed and str(fixed.get("script") or "").strip():
+                # owner 2026-11-27 ("same script, new voice, new storyboard"): a script he has already approved is used
+                # word for word: no writer call, no resize, no delivery rewrite (the voice director still marks it)
+                from types import SimpleNamespace
+                output = SimpleNamespace(value={"title": str(fixed.get("title") or spec.get("title") or ""),
+                                                "chapters": list(fixed.get("chapters") or []),
+                                                "script": str(fixed["script"])})
+                print(json.dumps({"status": "script_fixed", "words": len(str(fixed["script"]).split())}))
+            else:
+                output = text.generate_json(
+                    story_instructions(fmt, model_seconds, close_model=close),
+                    script_request,
+                    STORY_SCHEMA,
+                    max_output_tokens=script_tokens * 2,   # high effort thinks first
+                    reasoning_effort=SPOKEN_PASS_EFFORT,
+                )
+                self._record_text(production_id, "script-story", output)
             # 2026-11-12: if it still lands well off its length, the same writer gets the real count and
             # rewrites it to size (same story, nothing chopped off). One call, rarely needed.
             from ..engine.content_rules import length_target
             target = length_target(fmt, model_seconds)
             from ..engine.story import strip_cues
             spoken = len(re.sub(r"\[\[\d+\]\]", " ", strip_cues(str(output.value.get("script") or ""))).split())
-            if fmt == "long" and not (target["words_min"] * .9 <= spoken <= target["words_max"] * 1.1):
+            if not fixed and fmt == "long" and not (target["words_min"] * .9 <= spoken <= target["words_max"] * 1.1):
                 print(json.dumps({"status": "script_resize", "words": spoken,
                                   "target": [target["words_min"], target["words_max"]]}))
                 self._reserve(spec, text_model, Usage(input_tokens=len(json.dumps(output.value)) // 3 + 9000,
@@ -1216,7 +1226,7 @@ class ProductionService:
             # 2026-11-13 (owner): problems that would make the read sound wrong ("..." stops, loose sentences in a
             # Short, the same thing said twice) go back to the writer once, before any voice is bought.
             from ..engine.story import delivery_problems
-            flat = delivery_problems(str(output.value.get("script") or ""), fmt)
+            flat = [] if fixed else delivery_problems(str(output.value.get("script") or ""), fmt)
             if flat:
                 print(json.dumps({"status": "script_delivery_pass", "problems": flat}))
                 self._reserve(spec, text_model, Usage(input_tokens=len(json.dumps(output.value)) // 3 + 9000,
