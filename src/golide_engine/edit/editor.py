@@ -158,10 +158,19 @@ EDIT_SCHEMA = {"type": "object", "additionalProperties": False,
 PLAN_TEXT = """PICTURE PLAN FIRST (owner 2026-11-25: "storyboards per statement"): before any scene, write `plan`, ONE row per
 sentence of the narration, in order, covering every beat once (first_line/last_line = the sentence's first and last
 beat). named = the thing the sentence names or is about, in its own words (a product, a page, a number, a person,
-an action); proof = the real thing on screen that shows it (that product's captured page or logo, the number, the
-command run, the person's photo, a puppet doing the action); block = the scene type that shows it. Then build the
-scenes FROM the plan: every scene inside a sentence shows that sentence's named thing or its proof, a new picture on
-every beat of a long sentence, never a picture of something the sentence does not say.
+an action); proof = the real thing on screen that shows it, DESCRIBED so it can be found and checked (owner
+2026-11-27: "the storyboard needs to describe the detail so the engine gets that specific thing"): which page and which
+part of it ("Claude Help Center page 'Install an artifact as an app', the Install button"), which logo, which number,
+which command, whose photo; never a loose idea a stock picture could stand for (a city skyline for "a KPI page" is
+wrong: the KPI page itself, or its icon); block = the scene type that shows it. Then build the scenes FROM the plan:
+every scene inside a sentence shows that sentence's named thing or its proof, a new picture on every beat of a long
+sentence, never a picture of something the sentence does not say.
+- Timing: a thing lands on the word that says it. A list of 3 or more things (tools, apps, kinds of work) is a logos
+  dock with every item (a real logo for a brand, else its icon), each landing as it is said; never one item for the list.
+- A path or flow (Circuit City, White Model) has its stops in the order the voice says them, each named with the word
+  the voice uses for it.
+- A prompt card only where the prompt is said, in quote marks, word for word.
+- No block holds longer than about 6 s in a long video; the studio carries the rest.
 """
 
 
@@ -848,6 +857,8 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
                     fill = json.loads(s.get("fill") or "")
                 except ValueError:
                     fill = None
+            if isinstance(fill, dict) and isinstance(fill.get("stops"), list):
+                fill = dict(fill, stops=_stops_as_said(fill["stops"], words))
             out.append({"type": "recipe_clip", "start": t0, "duration": dur, "in": "rise", "data": {
                 "recipe": s["recipe"], "brief": str(s.get("recipe_brief") or "")[:600], "words": words,
                 "fill": fill if isinstance(fill, dict) else None, "fallback": fallback}})
@@ -1702,6 +1713,27 @@ CARD_MAX = {"chapter_card": 2.0, "stat_counter": 3.0}
 # owner 2026-11-27 ("too much stalling"; his 0.5 s review found one block held 13-16 s): no picture holds longer than
 # this in a long video; past it the talk goes on in the studio (the TV changes with each sentence). Blocks tied to the
 # voice word by word (steps on a page, a real run, a typed prompt) keep their time.
+def _stops_as_said(stops: list, words: list[dict]) -> list:
+    """Owner 2026-11-27 ("you say cooler and show heater"): the stops of a path (Circuit City, White Model) carry the
+    names the voice says, in the order it says them. A stop whose name is said is placed by when it is said; stops whose
+    names are never said keep their places."""
+    said = [(_norm(w["text"]), float(w["t"])) for w in words]
+
+    def when(st):
+        name = st.get("name") if isinstance(st, dict) else st
+        toks = [_norm(t) for t in str(name or "").split() if len(_norm(t)) > 2]
+        hits = [t for n, t in said if n in toks or any(n.rstrip("s") == k.rstrip("s") for k in toks)]
+        return min(hits) if hits else None
+
+    timed = [(when(st), i) for i, st in enumerate(stops)]
+    slots = [i for t, i in timed if t is not None]                 # the said stops trade places among themselves
+    order = [i for t, i in sorted((t, i) for t, i in timed if t is not None)]
+    out = list(stops)
+    for slot, i in zip(slots, order):
+        out[slot] = stops[i]
+    return out
+
+
 def _lists_to_dock(scenes: list[dict], lines, notes: list[str]) -> list[dict]:
     """Owner 2026-11-27 ("minor things needed a bit of a list using 3D blocks"; a scale stood for "a hiring tracker or
     an onboarding checklist or a training quiz or a weekly KPI page"): when a metaphor's words list three or more
