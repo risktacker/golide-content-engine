@@ -27,6 +27,18 @@ KINDS = {
     "search": "search", "answer": "message-chatbot", "answers": "message-chatbot", "ship": "rocket", "launch": "rocket",
     "learn": "school", "test": "flask", "tests": "flask", "idea": "bulb", "ideas": "bulb", "video": "video",
     "videos": "video", "images": "photo", "image": "photo", "access": "lock-open", "hidden": "eye",
+    # 2026-11-27 (owner: "docs, slides, design" showed one wrong "Slides" brand tile): kinds of work are their icons
+    "slides": "presentation", "slide": "presentation", "deck": "presentation", "decks": "presentation",
+    "presentation": "presentation", "presentations": "presentation", "design": "palette", "designs": "palette",
+    "sheets": "table", "sheet": "table", "spreadsheet": "file-spreadsheet", "spreadsheets": "file-spreadsheet",
+    "excel": "file-spreadsheet", "whiteboard": "chalkboard", "whiteboards": "chalkboard", "motion": "movie",
+    "animation": "movie", "animations": "movie", "explainer": "movie", "explainers": "movie", "crm": "address-book",
+    "dashboard": "layout-dashboard", "dashboards": "layout-dashboard", "tracker": "list-check", "trackers": "list-check",
+    "checklist": "checklist", "checklists": "checklist", "onboarding": "user-plus", "hiring": "user-plus",
+    "quiz": "help", "quizzes": "help", "training": "school", "kpi": "chart-bar", "kpis": "chart-bar",
+    "report": "chart-bar", "reports": "chart-bar", "link": "link", "links": "link", "login": "login",
+    "backend": "server", "database": "database", "desktop": "device-desktop", "permissions": "key", "permission": "key",
+    "risk": "alert-triangle", "risks": "alert-triangle", "lock-in": "lock", "subscription": "credit-card",
 }
 # brands Simple Icons no longer carries, drawn by their kind (never a look-alike mark)
 NO_MARK = {"chatgpt": "message-chatbot", "openai": "sparkles", "gpt": "message-chatbot", "copilot": "sparkles"}
@@ -54,6 +66,9 @@ def picture(word: str) -> str:
     low = w.lower()
     if low in NO_MARK:
         return json.dumps({"kind": "icon", "svg": _tabler_svg(NO_MARK[low])})
+    if low in KINDS and _tabler_svg(KINDS[low]):
+        # a plain kind of thing ("slides", "sheets") is its icon, never a company that happens to share the word
+        return json.dumps({"kind": "icon", "svg": _tabler_svg(KINDS[low])})
     try:                                     # a real brand: its own mark in its own colour
         from ..vector import logos
         hit = logos.find(w)

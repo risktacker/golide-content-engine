@@ -168,3 +168,21 @@ def test_thumbnail_wears_the_videos_kit_and_the_kit_rotates(tmp_path):
     kit = kits.choose(folder, recs)
     assert kit == kits.next_kit("royal") != "royal"
     assert outfit_today(folder) == kit                     # the thumbnail reads the video's own kit
+
+
+def test_owner_review_2026_11_27_fixes():
+    """Owner's 0.5 s review (2026-11-27): lists become docks, no block holds past the limit, spans film warm-up frames."""
+    from types import SimpleNamespace as N
+    from golide_engine.edit import editor, remote
+    text = "like a hiring tracker or an onboarding checklist or a training quiz or a weekly KPI page,"
+    ws = [N(text=w, start=170 + i * 0.3) for i, w in enumerate(text.split())]
+    lines = [N(words=ws, start=170, end=176, text=text)]
+    out = editor._lists_to_dock([{"type": "metaphor", "start": 170.0, "duration": 6.0, "data": {}}], lines, [])
+    assert out[0]["type"] == "logo_tiles" and len(out[0]["data"]["tiles"]) >= 3 and out[0]["data"]["dock"]
+    long_block = {"type": "stat_counter", "start": 10.0, "duration": 16.0, "data": {}}
+    capped = editor._cap_cards([long_block], [N(words=[N(text="x.", start=12.0)], start=10, end=26)], [], [], "long")
+    assert max(s["duration"] for s in capped if s["type"] != "host") <= editor.HOLD_MAX
+    metaphor = {"type": "metaphor", "start": 0.0, "duration": 14.0, "data": {"at": 1.0}}
+    assert 0 < editor._hold_limit(metaphor, [N(words=[], start=0, end=14)]) <= editor.HOLD_MAX
+    assert editor._hold_limit(dict(metaphor), [N(words=[], start=0, end=14)], "short") == 0.0
+    assert remote.lead_frames(0) == 0 and remote.lead_frames(600) == remote.LEAD

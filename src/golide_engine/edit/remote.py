@@ -107,7 +107,7 @@ def render(comp: Path, duration: float, out: Path, label: str = "video", wait_mi
            poll_seconds: int = 30) -> Path:
     """Hand the composition to the machines and wait for the joined picture (written to ``out``)."""
     data = bundle(comp)
-    job = f"{label}-{hashlib.sha256(data).hexdigest()[:12]}"
+    job = f"{label}-{hashlib.sha256(data + f"lead{LEAD}".encode()).hexdigest()[:12]}"
     parts = parts_for(duration)
     if get(job, "done.json") is None:                       # the same composition is never filmed twice
         if get(job, "failed.json") not in (None, b"{}"):
@@ -141,6 +141,15 @@ def render(comp: Path, duration: float, out: Path, label: str = "video", wait_mi
     return out
 
 
+# 2026-11-27 (owner's 0.5 s review): the first two frames a machine films come out without the 3D studio (its first draw
+# lands a frame late), a flicker at every span's start. Each span is filmed from a few frames earlier and those are cut.
+LEAD = 3
+
+
+def lead_frames(f0: int) -> int:
+    return min(LEAD, f0)
+
+
 def film_part(job: str, part: int, work: Path) -> Path:
     """On a render machine: fetch the composition, film span ``part``, upload it (a span already filmed is kept)."""
     meta = json.loads(get(job, "meta.json") or b"{}")
@@ -153,6 +162,7 @@ def film_part(job: str, part: int, work: Path) -> Path:
     with tarfile.open(fileobj=io.BytesIO(data), mode="r:gz") as tar:
         tar.extractall(work, filter="data")
     f0, f1 = spans(meta["duration"], meta["parts"], meta["fps"])[part]
+    f0 -= lead_frames(f0)                     # a few frames before the span: the 3D's warm-up, cut at the join
     out = work / f"part-{part}.mp4"
     env = dict(os.environ)
     if os.environ.get("CHROME"):
@@ -183,12 +193,18 @@ def join(job: str, work: Path) -> Path:
         raw.write_bytes(get(job, raw.name) or b"")
         if raw.stat().st_size == 0:
             raise RuntimeError(f"part {i} missing")
+        lead = lead_frames(f0)
         need, have = f1 - f0, frames_of(raw)
-        if have < need:
-            raise RuntimeError(f"part {i} has {have} frames, needs {need}")
+        if have < need + lead:
+            raise RuntimeError(f"part {i} has {have} frames, needs {need + lead}")
         cut = work / f"cut-{i}.mp4"
-        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(raw), "-frames:v", str(need), "-c", "copy", "-an", str(cut)],
-                       check=True)
+        # every frame is a keyframe (--keyframe-interval 1): the warm-up frames are skipped without re-encoding
+        # (an output-side seek: packets before it are dropped, exact to the frame; checked against frame checksums)
+        skip = ["-ss", f"{(lead - 0.25) / meta['fps']:.5f}"] if lead else []
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(raw), *skip, "-frames:v", str(need), "-c", "copy", "-an",
+                        str(cut)], check=True)
+        if frames_of(cut) != need:
+            raise RuntimeError(f"part {i} cut to {frames_of(cut)} frames, needs {need}")
         lst.append(cut)
     (work / "list.txt").write_text("".join(f"file '{p.resolve()}'\n" for p in lst), encoding="utf-8")
     picture = work / "picture.mp4"

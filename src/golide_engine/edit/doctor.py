@@ -142,6 +142,10 @@ def examine(edit: dict[str, Any], video: Path | None, lines, sources: list[dict]
                 found.append({"scene": i, "kind": "repeat", "why": f"{Path(pic).name} shown {shown[pic]} times"})
         if shots is None:
             continue
+        if sc["type"] == "host" and d.get("place") == "studio" and (d.get("shot") or "main") != "main":
+            # 2026-11-27: in the living studio the camera moves (wide, close, screen): the TV is only at its fixed place
+            # in the main shot. Read elsewhere, the wall looked "empty" and good pictures were swapped for words.
+            continue
         box = picture_box(sc, fmt)
         a = int((sc["start"] + 0.6) / STEP)              # after its entrance
         b = int((sc["start"] + sc["duration"] - 0.2) / STEP)

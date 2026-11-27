@@ -873,9 +873,13 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
                                                                                              s.get("phrase"))})
         elif kind == "walkthrough" and walk:
             out.append({"type": "walkthrough", "start": t0, "duration": dur, "data": walk})
-        elif kind == "prompt" and s.get("quote"):
+        elif kind == "prompt" and s.get("quote") and _quote_times(s["quote"], lines, t0 - 1.0, t1 + 6.0):
+            # owner 2026-11-27 ("the prompt started after he told people to type"): a prompt is shown only where it is
+            # said, and it is typed word by word as he says it (the words' own times)
+            text = " ".join(str(s["quote"]).split()[:24])
+            said = _quote_times(text, lines, t0 - 1.0, t1 + 6.0)
             out.append({"type": "prompt_card", "start": t0, "duration": dur, "in": "rise", "data": {
-                "text": " ".join(str(s["quote"]).split()[:24]), "tool": s.get("label") or ""}})
+                "text": text, "tool": s.get("label") or "", "word_at": [round(a - t0, 3) for a in said]}})
         elif kind == "checklist" and s.get("items"):
             items = s["items"][:5]
             out.append({"type": "checklist", "start": t0, "duration": dur, "in": "wipe", "data": {
@@ -902,7 +906,20 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
             out.append({"type": "quote_card", "start": t0, "duration": dur, "in": "rise", "data": {
                 "text": s["quote"], "who": s.get("quote_by") or "", "mark": [s.get("punch") or ""]}})
         elif kind == "logos" and s.get("brands") and logo_tiles:
-            pairs = [(b, t) for b, t in ((b, logo_tiles(b)) for b in s["brands"][:5]) if t]
+            # owner 2026-11-27 ("docs, slides, design" showed one wrong Slides tile): every thing named gets its tile:
+            # the real logo for a brand, else the icon that shows that kind of thing (a plain word is never a brand)
+            import json as _json
+            from . import thing_icons
+            pairs = []
+            for b in s["brands"][:6]:
+                low = str(b).lower().strip()
+                tile = None if low in thing_icons.KINDS else logo_tiles(b)
+                if tile:
+                    pairs.append((b, tile))
+                    continue
+                pic = _json.loads(thing_icons.picture(b))
+                if pic and pic.get("svg"):
+                    pairs.append((b, {"svg": pic["svg"], "color": pic.get("color")}))
             if len(pairs) >= 1:
                 # owner 2026-11-25 (Outskill's logo dock): each logo lands in its slot as its name is said
                 ats, last = [], -0.6
@@ -913,7 +930,8 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
                     ats.append(round(min(at, dur - 0.4), 3))
                     last = at
                 out.append({"type": "logo_tiles", "start": t0, "duration": dur, "data": {
-                    "tiles": [{"image": t, "name": b, "at": a} for (b, t), a in zip(pairs, ats)], "dock": True,
+                    "tiles": [dict(t, name=b, at=a) if isinstance(t, dict) else {"image": t, "name": b, "at": a}
+                              for (b, t), a in zip(pairs, ats)], "dock": True,
                     "caption": s.get("screen_words") or ""}})
             else:
                 notes.append(f"scene {k}: no logos found for {s['brands']}, shown as words")
@@ -949,11 +967,12 @@ def build(raw: dict[str, Any], lines: list[Any], duration: float, fmt: str, sour
     if bookends and lines:
         out = _bookends(out, lines, cues, duration, *bookends)
     out = one_goli(out)
-    out = one_goli(_cap_cards(out, lines, cues, notes))
+    out = one_goli(_cap_cards(_lists_to_dock(out, lines, notes), lines, cues, notes, fmt))
     _transitions(out, lines)
     misses = plan_coverage(raw.get("plan") or [], out, lines, sources, notes)
     if studio and fmt == "long":
         out = stage_room(out, raw.get("plan") or [], lines, cues, notes)
+        out = one_goli(_cap_cards(out, lines, cues, notes, fmt))      # a page moved to the TV keeps the hold limit too
     return {"format": fmt, "duration": duration, "scenes": out, "notes": notes, "captions": captions(lines, fmt),
             "plan": raw.get("plan") or [], "plan_misses": misses,
             "look": look if look in LOOKS3D else "glass",
@@ -979,14 +998,32 @@ def _tv_picture(sc: dict) -> Path | None:
             x, y, w, h = rect
             s = W / float(sc["data"].get("page_width") or 1440)
             cx, cy = (x + w / 2) * s, (y + h / 2) * s
-            cw = min(W, max(w * s * 1.6, W * 0.55)); ch = cw * 9 / 16
+            # owner 2026-11-27 ("much text, not aligned"): closer on the part the line is about, readable on the TV
+            cw = min(W, max(w * s * 1.35, W * 0.4)); ch = cw * 9 / 16
         else:
             cw, ch = W, W * 9 / 16
             cx, cy = W / 2, ch / 2
         x0 = max(0, min(W - cw, cx - cw / 2)); y0 = max(0, min(H - ch, cy - ch / 2))
-        out = img.with_name(f"{img.stem}-tv-{int(x0)}-{int(y0)}-{int(cw)}.png")
+        out = img.with_name(f"{img.stem}-tv2-{int(x0)}-{int(y0)}-{int(cw)}.png")
         if not out.exists():
-            im.crop((int(x0), int(y0), int(x0 + cw), int(y0 + ch))).convert("RGB").resize((1280, 720)).save(out)
+            shot = im.crop((int(x0), int(y0), int(x0 + cw), int(y0 + ch))).convert("RGB").resize((1280, 720))
+            if rect:
+                # owner 2026-11-27 ("screenshots had no highlights of the major concern"): the part the line names is
+                # marked on the TV the way page cards mark it: a soft gold wash and a gold frame with a neon edge
+                from PIL import ImageDraw, ImageFilter
+                k = 1280 / cw
+                bx0, by0 = (x * s - x0) * k - 14, (y * s - y0) * k - 10
+                bx1, by1 = ((x + w) * s - x0) * k + 14, ((y + h) * s - y0) * k + 10
+                bx0, by0, bx1, by1 = max(6, bx0), max(6, by0), min(1274, bx1), min(714, by1)
+                wash = Image.new("RGBA", shot.size, (0, 0, 0, 0))
+                ImageDraw.Draw(wash).rounded_rectangle((bx0, by0, bx1, by1), 14, fill=(232, 194, 104, 46))
+                glow = Image.new("RGBA", shot.size, (0, 0, 0, 0))
+                ImageDraw.Draw(glow).rounded_rectangle((bx0, by0, bx1, by1), 14, outline=(242, 193, 78, 200), width=10)
+                glow = glow.filter(ImageFilter.GaussianBlur(7))
+                line = Image.new("RGBA", shot.size, (0, 0, 0, 0))
+                ImageDraw.Draw(line).rounded_rectangle((bx0, by0, bx1, by1), 14, outline=(232, 194, 104, 255), width=5)
+                shot = Image.alpha_composite(Image.alpha_composite(Image.alpha_composite(shot.convert("RGBA"), wash), glow), line).convert("RGB")
+            shot.save(out)
         return out
     except Exception:                               # noqa: BLE001 - the scene keeps filling the frame
         return None
@@ -1267,6 +1304,28 @@ def _object_unsaid(s: dict, lines, t0: float, t1: float, shown: list[str], notes
         notes.append(f"scene {k}: 3D {name} but the words do not name it, Goli and the TV instead")
         return True
     return False
+
+
+def _quote_times(quote: str, lines, a: float, b: float) -> list[float] | None:
+    """When each word of a quoted prompt is said (in order), or None when most of it is never said in [a, b]: then the
+    beat is not a spoken prompt and no prompt card is made for it."""
+    want = [_norm(x) for x in str(quote).split()]
+    heard = [(w.start, _norm(w.text)) for w in _spoken(lines, a, b)]
+    times, j, hit = [], 0, 0
+    for k, q in enumerate(want):
+        found = None
+        for i in range(j, min(len(heard), j + 6)):
+            if heard[i][1] == q:
+                found = i
+                break
+        if found is not None:
+            times.append(float(heard[found][0])); j = found + 1; hit += 1
+        else:
+            times.append(times[-1] + 0.25 if times and times[-1] is not None else None)
+    if not want or hit < max(2, 0.6 * len(want)):
+        return None
+    first = next(t for t in times if t is not None)
+    return [t if t is not None else first for t in times]
 
 
 def _spoken(lines, a: float, b: float) -> list[Any]:
@@ -1640,15 +1699,88 @@ def _studio(start: float, end: float, cues: list[dict] | None, card: dict | None
 # 2026-11-19 (owner review of the China EV video: "The factory advantage" and "40%" held ~9 s): a card shows for
 # its read and Goli takes the rest of the beat
 CARD_MAX = {"chapter_card": 2.0, "stat_counter": 3.0}
+# owner 2026-11-27 ("too much stalling"; his 0.5 s review found one block held 13-16 s): no picture holds longer than
+# this in a long video; past it the talk goes on in the studio (the TV changes with each sentence). Blocks tied to the
+# voice word by word (steps on a page, a real run, a typed prompt) keep their time.
+def _lists_to_dock(scenes: list[dict], lines, notes: list[str]) -> list[dict]:
+    """Owner 2026-11-27 ("minor things needed a bit of a list using 3D blocks"; a scale stood for "a hiring tracker or
+    an onboarding checklist or a training quiz or a weekly KPI page"): when a metaphor's words list three or more
+    things, the block is the list: each thing's logo or icon drops into the dock as it is said."""
+    import json as _json
+    from . import thing_icons
+    out = []
+    for sc in scenes:
+        if sc["type"] != "metaphor":
+            out.append(sc)
+            continue
+        t0, t1 = sc["start"], sc["start"] + sc["duration"]
+        words = list(_spoken(lines, t0 - 0.1, t1))
+        chunks, cur = [], []
+        for w in words:
+            raw = str(w.text)
+            bare = raw.strip(",.?!;:").lower()
+            if bare in ("or", "and") and cur:
+                chunks.append(cur); cur = []
+                continue
+            cur.append(w)
+            if raw.endswith((",", ";")):
+                chunks.append(cur); cur = []
+        if cur:
+            chunks.append(cur)
+        items = []
+        for ch in chunks:
+            toks = [w for w in ch if str(w.text).strip(",.?!").lower() not in ("like", "such", "as", "maybe")]
+            if not toks or str(toks[0].text).strip(",.").lower() not in ("a", "an", "the", "your", "our", "my") or len(toks) > 5:
+                if len(items) >= 3:
+                    break
+                items = []
+                continue
+            name = " ".join(str(w.text).strip(",.?!") for w in toks[1:])[:24]
+            pic = _json.loads(thing_icons.picture(name)) if name else None
+            if not pic or not pic.get("svg"):
+                if len(items) >= 3:
+                    break
+                items = []
+                continue
+            items.append({"name": name, "svg": pic["svg"], "color": pic.get("color"), "at": round(float(toks[0].start) - t0, 3)})
+        if len(items) >= 3:
+            items = items[:6]
+            sc = {"type": "logo_tiles", "start": t0, "duration": sc["duration"], "data": {
+                "tiles": items, "dock": True, "caption": ""}}
+            notes.append(f"list at {t0:.1f}s: a dock of {len(items)} things instead of a metaphor")
+        out.append(sc)
+    return out
 
 
-def _cap_cards(scenes: list[dict], lines, cues: list[dict] | None, notes: list[str]) -> list[dict]:
+HOLD_MAX = 6.5
+HOLD_FREE = {"host", "walkthrough", "terminal", "prompt_card", "steps"}
+
+
+def _hold_limit(sc: dict, lines, fmt: str = "long") -> float:
+    if sc["type"] == "chapter_card":
+        return _chapter_end(sc, lines)
+    if sc["type"] in CARD_MAX:
+        return CARD_MAX[sc["type"]]
+    if sc["type"] in HOLD_FREE or fmt != "long":
+        return 0.0
+    d = sc.get("data") or {}
+    last = max([float(d.get("at") or 0)] + [float(x) for x in (d.get("times") or []) if x is not None]
+               + [float(t.get("at") or 0) for t in (d.get("tiles") or []) if isinstance(t, dict)], default=0.0)
+    limit = max(HOLD_MAX, last + 1.4)
+    # end on a sentence's last word when one ends in the last 1.5 s before the limit
+    t0 = sc["start"]
+    ends = [float(w.start) + 0.35 for w in _spoken(lines, t0 + limit - 1.5, t0 + limit)
+            if str(w.text).rstrip().endswith((".", "?", "!", ","))]
+    return round((max(ends) - t0) if ends else limit, 3)
+
+
+def _cap_cards(scenes: list[dict], lines, cues: list[dict] | None, notes: list[str], fmt: str = "long") -> list[dict]:
     """The last word on card length (owner 2026-11-25: a chapter card held 7.4 s while Goli stood beside it): after all
     the other passes a card that grew past its CARD_MAX is cut back; the rest of its time is Goli in the studio with the
     line on his TV, and a Goli standing beside the card stops with it."""
     out = list(scenes)
-    limit = {id(x): _chapter_end(x, lines) if x["type"] == "chapter_card" else CARD_MAX.get(x["type"], 0) for x in scenes}
-    for sc in [x for x in scenes if CARD_MAX.get(x["type"]) and x["duration"] > limit[id(x)] + (0.1 if x["type"] == "chapter_card" else 0.3)]:
+    limit = {id(x): _hold_limit(x, lines, fmt) for x in scenes}
+    for sc in [x for x in scenes if limit[id(x)] > 0 and x["duration"] > limit[id(x)] + (0.1 if x["type"] == "chapter_card" else 0.3)]:
         cut, end = sc["start"] + limit[id(sc)], sc["start"] + sc["duration"]
         sc["duration"] = round(limit[id(sc)], 3)
         for h in [x for x in out if x["type"] == "host" and x["data"].get("place") in ("side", "lower")

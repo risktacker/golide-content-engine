@@ -213,7 +213,9 @@ export async function mountStudio(canvas, opts = {}) {
   const SHOTS = {
     main: { pos: c.pos, target: [c.pos[0], c.pos[1] + 1, c.pos[2]], lens: c.lens, shift: c.shift_y },
     wide: { pos: [0.35, -8.6, 2.75], target: [0.1, -1.2, 0.75], lens: 30, shift: 0 },
-    close: { pos: [SEAT.x + 0.35, -3.9, 1.62], target: [SEAT.x, -1.0, 1.38], lens: 55, shift: 0 },
+    // close (2026-11-27, owner's review: the TV's words were cut at the frame's edge in the close shot): Goli on the
+    // right third, the camera turned a little left so the TV is out of the shot, never half a sentence
+    close: { pos: [SEAT.x - 0.1, -4.1, 1.66], target: [SEAT.x - 0.58, -1.0, 1.4], lens: 55, shift: 0 },
     screen: { pos: [-1.6, -5.6, 2.4], target: [1.3, 0, 1.55], lens: 30, shift: 0 },   // over his shoulder when he stands at the screen
   };
   const shotOf = (s) => (typeof s === 'string' ? SHOTS[s] || SHOTS.main : { shift: 0, ...s });

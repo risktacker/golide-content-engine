@@ -1236,8 +1236,19 @@ class Composer:
         self.entrance(sid, t0, how)
         start = t0 + 0.45
         typing = max(0.8, min(dur - 1.3, 0.045 * len(text)))
-        self.tw(f'tl.fromTo("#{sid}-t > span:not(#{sid}-caret)",{{display:"none"}},{{display:"inline",duration:.001,'
-                f'stagger:{typing / max(1, len(text)):.4f},immediateRender:true}},{start:.3f});')
+        word_at = data.get("word_at") or []
+        if word_at and len(word_at) == len(text.split()):
+            # typed as he says it (owner 2026-11-27): each word's letters appear over the moment it is spoken
+            pos, k = 0, 0
+            for wi, w in enumerate(text.split()):
+                k = text.index(w, pos)
+                at = t0 + max(0.2, float(word_at[wi]))
+                n = len(w) + (1 if k + len(w) < len(text) else 0)
+                self.tw(f'tl.fromTo("#{sid}-t > span:nth-child(n+{k + 1}):nth-child(-n+{k + n})",{{display:"none"}},'
+                        f'{{display:"inline",duration:.001,stagger:{0.18 / max(1, n):.4f},immediateRender:true}},{at:.3f});')
+                pos = k + len(w)
+            start = t0 + max(0.2, float(word_at[0]))
+            typing = max(0.3, min(dur - 0.6, float(word_at[-1]) + 0.2) - (start - t0))
         self.tw(f'tl.fromTo("#{sid}-caret",{{opacity:1}},{{opacity:0,duration:.01,repeat:{int(dur / 0.5)},yoyo:true,'
                 f'repeatDelay:.25}},{t0:.3f});')
         send = start + typing + 0.25
@@ -1359,6 +1370,18 @@ class Composer:
                 self.tw(f'tl.fromTo("#{sid}-a{i}",{{{prop}:0}},{{{prop}:1,duration:{step * 0.8:.2f},ease:"power2.out"}},{at + 0.25:.3f});')
         self.drift(sid, t0, dur, 0.01)
 
+    def _dock_face(self, t):
+        """A dock tile's face: the rendered logo tile, or for a kind of thing its icon on a glossy tile (owner
+        2026-11-27), in the brand's colour when it has one."""
+        if t.get("image"):
+            return f'<img src="{self.asset(t["image"])}">'
+        svg = t["svg"]
+        fill = ' fill="currentColor"' if 'role="img"' in svg else ""
+        svg = svg.replace("<svg ", f'<svg width="100%" height="100%"{fill} ', 1)
+        return (f'<div style="width:100%;height:100%;border-radius:36px;display:grid;place-items:center;'
+                f'background:linear-gradient(160deg,#2A3350,#0F1424);box-shadow:inset 0 2px 0 rgba(255,255,255,.18),'
+                f'0 18px 40px rgba(0,0,0,.5);color:{t.get("color") or "#E8C268"}"><div style="width:58%;height:58%">{svg}</div></div>')
+
     def logo_dock(self, t0, dur, data):
         """Owner 2026-11-25 (Outskill's logo dock): a glass dock with a slot per tool; each real logo drops into its
         slot on the word that names it, its name under it, the slot flashing gold."""
@@ -1378,7 +1401,8 @@ class Composer:
             slots += (f'<div id="{sid}-s{i}" style="position:absolute;left:{x:.0f}px;top:30px;width:{ts}px;height:{ts}px;'
                       f'border-radius:36px;border:3px dashed rgba(232,194,104,.35)"></div>'
                       f'<div class="tile" id="{sid}-t{i}" style="left:{x:.0f}px;top:30px;width:{ts}px;height:{ts}px;opacity:0">'
-                      f'<img src="{self.asset(t["image"])}"></div>'
+                      + self._dock_face(t)
+                      + '</div>'
                       f'<div id="{sid}-l{i}" style="position:absolute;left:{x - 30:.0f}px;width:{ts + 60}px;top:{ts + 50}px;'
                       f'text-align:center;font:800 {34 if long else 30}px Poppins;color:#fff;opacity:0;white-space:nowrap;'
                       f'overflow:hidden;text-overflow:ellipsis">{_e(t.get("name", ""))}</div>')
@@ -1517,7 +1541,7 @@ class Composer:
         P["looks"] += [dict(lk, at=t0 + lk["at"]) for lk in looks]
         P["talk"].append([t0, t0 + dur])
         if layer == "room":
-            P.setdefault("tv", []).append([t0, self._tv_content(t0, dur, data)])
+            P.setdefault("tv", []).extend(self._tv_content(t0, dur, data))
             self._live_direct(P, t0, dur, data)
             self._live_storyboard(P, t0, dur, data)
         else:
@@ -1586,24 +1610,37 @@ class Composer:
                        {"at": a + 9.4, "target": "camera"}]
 
     def _tv_content(self, t0, dur, data):
-        """What the 3D TV shows in a studio scene (owner 2026-11-25: never black): the real picture, else the scene's
-        words, else the words spoken in the scene (one short line), the key word lit. Drawn ON the 3D screen."""
+        """What the 3D TV shows through a studio scene (owner 2026-11-25: never black; 2026-11-27: no stalling): the
+        real picture when the scene has one; otherwise each spoken sentence's own words as it is said (a long studio
+        stretch changes with the talk), the key word lit. Drawn ON the 3D screen. Returns [[time, content], ...]."""
         from .editor import _no_dots
         if data.get("screen"):
-            return self.asset(data["screen"])
-        words = [_no_dots(str(w.get("text", ""))) for w in data.get("words") or []]
-        if not any(words):
-            spoken = [w for a, w in getattr(self, "spoken", []) if t0 <= a < t0 + dur]
-            words = []
-            for w in spoken:
-                words.append(_no_dots(w))
-                if len(words) >= 7 or w.rstrip().endswith((".", "?", "!")):
-                    break
-        words = [w for w in words if w.strip()]
-        if not words:
-            return None
-        punch = str(data.get("punch") or max(words, key=lambda w: len(w.strip(".,!?"))))
-        return {"words": words, "punch": punch.lower().strip(".,!?")}
+            return [[t0, self.asset(data["screen"])]]
+        out, cur, start = [], [], None
+        spoken = [(a, w) for a, w in getattr(self, "spoken", []) if t0 - 0.05 <= a < t0 + dur]
+
+        def flush():
+            words = [w for w in (_no_dots(x) for x in cur) if w.strip()][:9]
+            if words:
+                at = t0 if not out else max(start - 0.1, t0)
+                punch = str(data.get("punch") or "") if not out else ""
+                if punch.lower().strip(".,!?") not in [w.lower().strip(".,!?") for w in words]:
+                    punch = max(words, key=lambda w: len(w.strip(".,!?\"'")))
+                out.append([round(at, 3), {"words": words, "punch": punch.lower().strip(".,!?\"'")}])
+
+        first = [_no_dots(str(w.get("text", ""))) for w in data.get("words") or []]
+        for a, w in spoken:
+            if start is None:
+                start = a
+            cur.append(w)
+            if w.rstrip().endswith((".", "?", "!")) or len(cur) >= 9:
+                flush(); cur, start = [], None
+        if cur:
+            flush()
+        if first and any(x.strip() for x in first):
+            head = {"words": [x for x in first if x.strip()][:9], "punch": str(data.get("punch") or max(first, key=len)).lower().strip(".,!?")}
+            out = [[t0, head]] + [e for e in out if e[0] > t0 + 1.0]
+        return out or [[t0, None]]
 
     def live_host(self, sid, t0, dur, data):
         """The studio scene played live (owner 2026-11-26, assets/edit/g3d/studio_live.js): the 3D room with its
@@ -1637,6 +1674,34 @@ class Composer:
         """The live layers, one per kind, spanning the video; shown only in their scenes' windows."""
         from ..goli3d import kits, video as goli3d
         html = ""
+
+        def merge(wins):
+            out = []
+            for a, d in sorted(wins):
+                if out and a <= out[-1][0] + out[-1][1] + 0.05:
+                    out[-1] = (out[-1][0], max(out[-1][0] + out[-1][1], a + d) - out[-1][0])
+                else:
+                    out.append((a, d))
+            return out
+
+        # owner 2026-11-27 ("I saw him in two forms... he can only show as one"): while the studio is on screen, no other
+        # Goli: the standing one and every Goli beside a block step out for the studio's windows
+        room_w = merge(getattr(self, "live_layers", {}).get("room", {}).get("windows", []))
+        for hsid, h0, hd in getattr(self, "side_hosts", []):
+            for a, d in room_w:
+                lo, hi = max(a, h0), min(a + d, h0 + hd)
+                if hi - lo > 0.04:
+                    self.tw(f'tl.set("#{hsid}",{{autoAlpha:0}},{lo:.3f});')
+                    if hi < h0 + hd - 0.04:
+                        self.tw(f'tl.set("#{hsid}",{{autoAlpha:1}},{hi:.3f});')
+        if room_w and "stand" in getattr(self, "live_layers", {}):
+            cut = []
+            for a, d in self.live_layers["stand"]["windows"]:
+                segs = [(a, a + d)]
+                for ra, rd in room_w:
+                    segs = [p for x0, x1 in segs for p in ((x0, min(x1, ra)), (max(x0, ra + rd), x1)) if p[1] - p[0] > 0.04]
+                cut += [(x0, x1 - x0) for x0, x1 in segs]
+            self.live_layers["stand"]["windows"] = cut
         for layer, L in getattr(self, "live_layers", {}).items():
             lid = f"live-{layer}"
             kit = L["data"].get("outfit") or getattr(self, "outfit", None) or "royal"
@@ -1668,7 +1733,9 @@ class Composer:
                 self.tw(f'tl.set("#{tsid}-t",{{visibility:"visible"}},{a:.3f});tl.set("#{tsid}-t",{{visibility:"hidden"}},{a + d:.3f});')
             html += (f'<section id="{lid}-s" class="scene clip" data-start="0" data-duration="{duration:.3f}" style="z-index:{z}">'
                      f'<div class="stage"><div class="cam">{canvas}{titles}</div></div><script type="module">window.__g3d = window.__g3d || {{}}; window.__liveWaits = window.__liveWaits || [];'
-                     f'{js} window.__liveWaits.push(p.then((f) => {{ window.__g3d["{lid}"] = f; }}));</script></section>')
+                     f'{js} window.__liveWaits.push(p.then((f) => {{ window.__g3d["{lid}"] = f; '
+                     # a first draw before filming (2026-11-27: the video opened on a second without the studio)
+                     f'try {{ f({(sorted(L["windows"]) or [(0, 0)])[0][0]:.3f}); }} catch (e) {{}} }}));</script></section>')
             # drawn on the video's own clock; hidden outside its scenes
             merged = []
             for a, d in sorted(L["windows"]):
@@ -1697,6 +1764,9 @@ class Composer:
         place = data.get("place", "full")
         if place == "studio" and getattr(self, "live", False):
             return self.live_host(sid, t0, dur, data)
+        if place != "studio":
+            # owner 2026-11-27 ("he can only show as one"): a Goli beside a block steps out while the studio is on screen
+            self.side_hosts = getattr(self, "side_hosts", []) + [(sid, t0, dur)]
         self.uses_mascot = True
         poses = data.get("poses") or [{"pose": "talk", "at": 0}]
         cues = data.get("cues") or []
@@ -1967,6 +2037,7 @@ class Composer:
         self.live_side = bool(edit.get("live_studio")) and live_ready() and self.fmt != "long"
         self.spoken = [(float(w["at"]), str(w.get("text", ""))) for c in (edit.get("captions") or []) for w in c.get("words", [])]
         self.live_layers = {}
+        self.side_hosts = []
         for s in edit["scenes"]:
             s["_sid"] = f"s{self.n + 1}-"      # the layout check finds this scene's boxes by it
             self.zone = (bool(s["data"].get("goli_zone")) or any(

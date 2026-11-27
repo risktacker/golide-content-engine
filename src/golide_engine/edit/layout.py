@@ -60,7 +60,9 @@ TEXT_PROBE = r"""
   window.__timelines.main.seek(t, false);
   const out = {};
   for (const sec of document.querySelectorAll('section.scene.clip')) {
-    if (sec.style.display === 'none' || sec.id.includes('-host')) continue;
+    // 2026-11-27 (root cause of the shrunken blocks): the living studio's layers span the whole video and fill the
+    // frame; measured with every scene, they made each block 'too big' and it was shrunk to half (the tiny circuit)
+    if (sec.style.display === 'none' || sec.id.includes('-host') || sec.id.startsWith('live-')) continue;
     let small = 1e9, x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9, n = 0;
     const visible = (el) => { let o = 1, e = el;
       while (e && e !== sec) { const cs = getComputedStyle(e); if (cs.display === 'none' || cs.visibility === 'hidden') return 0;

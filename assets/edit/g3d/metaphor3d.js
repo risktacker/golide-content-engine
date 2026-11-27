@@ -222,17 +222,34 @@ export async function mount(canvas, kind, args = {}, opts = {}) {
       if (b.parent !== scene) scene.add(b);
       const anchor = new THREE.Object3D(); b.add(anchor); anchor.position.set(0, 0.45, 0);
       label(items[i], anchor, { at: itemAt(i) - 0.6, size: 36, key: `item${i}` });
-      balls.push({ b, x: Math.cos(a) * 2.4, z: Math.sin(a) * 1.2, at: itemAt(i) });
+      balls.push({ b, a, at: itemAt(i) });
     }
+    // owner 2026-11-27 ("the ball rolled outside the funnel"): each thing drops INTO the mouth, rolls down the inside of
+    // the cone in a spiral (on its wall, never through it), then falls through the spout
+    const R = (h) => { const y = h / 2.4; return y < 0.35 ? 0.22 : 0.22 + (y - 0.35) * 2.6; };   // the cone's radius at height h
+    const path = (B, k) => {
+      const rb = 0.26;
+      if (k < 0.25) {                                  // falls straight down into the mouth, inside the rim
+        const e = ease(k / 0.25), r = 1.35;
+        return { p: [Math.cos(B.a) * r, 5.2 - (5.2 - 3.15) * e, Math.sin(B.a) * r], s: 1 };
+      }
+      if (k < 0.85) {                                  // rolls round and down the cone's inside wall
+        const e = (k - 0.25) / 0.6, h = 2.25 - (2.25 - 0.9) * (e * e * 0.4 + e * 0.6);   // speeds up as it drops
+        const ang = B.a + e * Math.PI * 3.2, r = Math.max(0, R(h) - rb * 1.15);
+        return { p: [Math.cos(ang) * r, 0.9 + h + rb * 0.4, Math.sin(ang) * r], s: 1 };
+      }
+      const e = (k - 0.85) / 0.15;                     // through the spout and out
+      return { p: [0, 0.9 + 0.9 + rb * 0.4 - 1.9 * e, 0], s: 1 - 0.5 * e };
+    };
     const out = add(new THREE.SphereGeometry(0.34, 32, 16), paint(col('label', '#E8C268'), 0.4), [0, 0.35, 0]);
     const oa = new THREE.Object3D(); oa.position.set(0, -0.6, 0); out.add(oa);
     label(args.label, oa, { gold: true, at: at + 1.0, size: 46, key: 'label' });
     look([0, 3.2, 8.0], [0, 1.7, 0]);
     update = (t) => {
       for (const B of balls) {
-        const k = Math.min(1, Math.max(0, (t - B.at + 0.6) / 1.2));
+        const k = Math.min(1, Math.max(0, (t - B.at + 0.6) / 2.2));
         B.b.visible = k < 1 && t > B.at - 0.6;
-        const e = ease(k); B.b.position.set(B.x * (1 - e), 4.4 - 3.6 * e, B.z * (1 - e));
+        const q = path(B, k); B.b.position.set(q.p[0], q.p[1], q.p[2]); B.b.scale.setScalar(q.s);
       }
       const k = back(Math.min(1, Math.max(0, (t - at - 0.8) / 0.5))); out.scale.setScalar(Math.max(0.001, k));
     };

@@ -58,7 +58,8 @@ def test_walkthrough_without_shots_shows_its_page(tmp_path):
 
 
 def test_prompt_and_checklist_render(tmp_path):
-    lines = _lines(["Ask it to read your sales sheet.", "You need an account, a task and a budget."])
+    # owner 2026-11-27: a prompt card only where the prompt is said, typed as it is said
+    lines = _lines(["Tell it: read my sales sheet and list three risks.", "You need an account, a task and a budget."])
     raw = {"scenes": [_scene(type="prompt", last_line=0, quote="Read my sales sheet and list three risks", label="Claude"),
                       _scene(type="checklist", first_line=1, last_line=1, items=["An account", "A task", "A budget"])]}
     edit = editor.build(raw, lines, 7.0, "long", [], None, [], [])
@@ -119,3 +120,10 @@ def test_steps_find_their_own_spots_and_stand_beside_the_real_page(tmp_path):
     assert st["data"]["image"].name == "01-top.png"
     html = Composer("long").build(edit, tmp_path / "out").read_text()
     assert "Make a new key" in html and "-k0" in html and "platform.claude.com" in html
+
+
+def test_prompt_never_shown_where_it_is_not_said(tmp_path):
+    lines = _lines(["The hard part was never getting Claude to make something.", "Now it is easy."])
+    raw = {"scenes": [_scene(type="prompt", last_line=0, quote="Turn this into a shared artifact for my team", label="Claude")]}
+    edit = editor.build(raw, lines, 6.0, "long", [], None, [], [])
+    assert "prompt_card" not in [s["type"] for s in edit["scenes"]]
