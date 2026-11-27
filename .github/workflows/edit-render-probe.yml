@@ -1,11 +1,20 @@
 name: Edit render probe (which moment hangs)
+# Films half a second at each given moment of a split-render job with HyperFrames, as the filming machines do; a
+# moment that hangs fails after 3 minutes without a new frame.
 on:
   workflow_dispatch:
     inputs:
       job: { description: "render job (editrender/<job>/ in R2)", required: true }
-      times: { description: "JSON list of seconds to seek to, one machine each", default: "[150]" }
+      times: { description: "JSON list of seconds, one machine each", default: "[150]" }
 permissions:
   contents: read
+env:
+  R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+  R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+  R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+  R2_BUCKET: ${{ secrets.R2_BUCKET }}
+  HF_DE_STALL_MS: "180000"
+  HYPERFRAMES_BROWSER_PATH: /home/runner/chrome-sw
 jobs:
   probe:
     runs-on: ubuntu-24.04
@@ -14,14 +23,25 @@ jobs:
       fail-fast: false
       matrix:
         t: ${{ fromJSON(inputs.times) }}
-    env:
-      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
-      R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-      R2_BUCKET: ${{ secrets.R2_BUCKET }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
-      - run: pip install -q -e "$GITHUB_WORKSPACE" playwright
-      - run: timeout 1200 python3 -u tools/edit_render_probe.py "${{ inputs.job }}" "${{ matrix.t }}" || echo "HUNG_OR_FAILED at ${{ matrix.t }}"
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - uses: ./.github/actions/ffmpeg
+      - run: |
+          pip install -q -e "$GITHUB_WORKSPACE" pillow numpy
+          printf '#!/bin/sh\nexec /usr/bin/google-chrome "$@" --use-angle=swiftshader --use-gl=angle --enable-unsafe-swiftshader --ignore-gpu-blocklist\n' > ~/chrome-sw && chmod +x ~/chrome-sw
+          python3 - <<'PY'
+          import io, tarfile
+          from golide_engine.edit import remote
+          with tarfile.open(fileobj=io.BytesIO(remote.get("${{ inputs.job }}", "bundle.tgz")), mode="r:gz") as t: t.extractall("w", filter="data")
+          PY
+      - run: |
+          T=${{ matrix.t }}; E=$(python3 -c "print($T + 0.5)")
+          if timeout 900 npx -y hyperframes@0.9.32 render w/composition -o at.mp4 --fps 30 --quality draft --start "$T" --end "$E" --quiet > out.txt 2>&1; then
+            echo "PROBE_OK $T"
+          else
+            echo "PROBE_HANG $T"; grep -i "stalled\|error\|timed out" out.txt | tail -5
+          fi
