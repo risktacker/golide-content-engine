@@ -1159,7 +1159,9 @@ class ProductionService:
             rewrites, no second pass."""
             from ..engine.story import (BOARD_SCHEMA, STORY_SCHEMA, apply_board, board_input, board_instructions,
                                         plan_from_story, story_instructions)
-            self._require_absent(script_path, "script")
+            if not isinstance(spec.get("fixed_script"), dict):
+                # (an approved fixed script costs nothing to lay out again: a half-done earlier try is simply redone)
+                self._require_absent(script_path, "script")
             # 2026-11-17 (owner): a video he chose with its transcript is retold closely (engine/story.py CLOSE_MODEL)
             # 2026-11-22 (owner): a video from the month's model channels is condensed the same way, when its
             # transcript can be read (the Studio Worker first, free).
