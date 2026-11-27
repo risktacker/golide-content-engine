@@ -119,6 +119,7 @@ def render(comp: Path, duration: float, out: Path, label: str = "video", wait_mi
             put(job, "bundle.tgz", data, "application/gzip")
             put(job, "meta.json", json.dumps({"duration": duration, "fps": FPS, "parts": parts}).encode(), "application/json")
         missing = [i for i in range(parts) if get(job, f"part-{i}.ok") is None]
+        put(job, "failed.json", b"{}", "application/json")     # a new try: an earlier failure is not this one
         start(job, parts, missing)
         print(json.dumps({"status": "split_render_started", "job": job, "parts": parts, "to_film": missing,
                           "bundle_mb": round(len(data) / 1e6, 1)}), flush=True)
