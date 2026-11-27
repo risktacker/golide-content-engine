@@ -48,6 +48,12 @@ jobs:
           p = "w/composition/index.html"; h = open(p).read()
           if os.environ["OFF"] == "novideo":            # every <video> out of the film
               open(p, "w").write(re.sub(r"<video\b[^>]*>.*?</video>|<video\b[^>]*/>", "", h, flags=re.S)); raise SystemExit
+          if os.environ["OFF"] in ("nostand", "noroom"):   # only the standing Goli / only the 3D room never loads
+              pat = r'<script type="module">[^<]*?goli_live[^<]*?</script>' if os.environ["OFF"] == "nostand" else \
+                    r'<script type="module">[^<]*?studio_live[^<]*?</script>'
+              open(p, "w").write(re.sub(pat, "", h, flags=re.S)); raise SystemExit
+          if os.environ["OFF"] == "workers1":
+              open("workers.txt", "w").write("1"); raise SystemExit
           if os.environ["OFF"] in ("nometa", "nolive"):  # only the metaphors / only the living studio never load
               pat = r'<script type="module">[^<]*?metaphor3d[^<]*?</script>' if os.environ["OFF"] == "nometa" else \
                     r'<script type="module">[^<]*?(?:studio_live|goli_live)[^<]*?</script>'
@@ -61,7 +67,7 @@ jobs:
           PY
       - run: |
           T=$(python3 -c "print('${{ matrix.t }}'.partition('|')[0])"); E=$(python3 -c "print($T + 0.5)")
-          if timeout 900 npx -y hyperframes@0.9.32 render w/composition -o at.mp4 --fps 30 --quality draft --start "$T" --end "$E" --quiet > out.txt 2>&1; then
+          if timeout 900 npx -y hyperframes@0.9.32 render w/composition -o at.mp4 --fps 30 --quality draft --start "$T" --end "$E" --workers "$(cat workers.txt 2>/dev/null || echo auto)" --quiet > out.txt 2>&1; then
             echo "PROBE_OK $T at=${{ matrix.t }}"
           else
             echo "PROBE_HANG $T at=${{ matrix.t }}"; grep -i "stalled\|error\|timed out" out.txt | tail -5
