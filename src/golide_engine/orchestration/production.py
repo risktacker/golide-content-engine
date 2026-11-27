@@ -1190,8 +1190,8 @@ class ProductionService:
             if fixed and str(fixed.get("script") or "").strip():
                 # owner 2026-11-27 ("same script, new voice, new storyboard"): a script he has already approved is used
                 # word for word: no writer call, no resize, no delivery rewrite (the voice director still marks it)
-                from types import SimpleNamespace
-                output = SimpleNamespace(value={"title": str(fixed.get("title") or spec.get("title") or ""),
+                # a real provider result with no tokens (nothing was asked of the writer; costs record zero)
+                output = ProviderOutput(value={"title": str(fixed.get("title") or spec.get("title") or ""),
                                                 "chapters": list(fixed.get("chapters") or []),
                                                 "script": str(fixed["script"])})
                 print(json.dumps({"status": "script_fixed", "words": len(str(fixed["script"]).split())}))
