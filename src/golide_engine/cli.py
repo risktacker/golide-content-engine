@@ -827,7 +827,11 @@ def main() -> int:
                 reels = {"reels_status": "failed", "error": str(exc)[:500]}
                 print(f"::warning title=Reels not published::{str(exc)[:300]}")
         long_social = None
-        if spec.get("format") == "long" and bridge and str(spec.get("generate_at", "")) >= LONG_SOCIAL_FROM:
+        if release.get("hold_private"):
+            # 2026-11-27: a video held private for the owner's review goes nowhere else either (it was queued for
+            # Instagram/LinkedIn with no release time): he releases it himself after he has watched it
+            long_social = {"status": "held_private"}
+        elif spec.get("format") == "long" and bridge and str(spec.get("generate_at", "")) >= LONG_SOCIAL_FROM:
             # Long videos also go to Facebook (native video) and LinkedIn at the
             # YouTube release time; the 19:30 distribution run publishes them.
             try:
