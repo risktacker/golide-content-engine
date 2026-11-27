@@ -169,10 +169,20 @@ def film_part(job: str, part: int, work: Path) -> Path:
     if os.environ.get("CHROME"):
         env["HYPERFRAMES_BROWSER_PATH"] = os.environ["CHROME"]
     # a frame or two past the span's end is filmed and trimmed at the join, so nothing is ever short
-    subprocess.run(["npx", "-y", HYPERFRAMES, "render", str(work / "composition"), "-o", str(out), "--fps", str(meta["fps"]),
-                    "--quality", "high", "--start", f"{f0 / meta['fps']:.4f}",
-                    "--end", f"{min(meta['duration'], (f1 + 2) / meta['fps']):.4f}", "--keyframe-interval", "1", "--quiet"],
-                   check=True, env=env)
+    cmd = ["npx", "-y", HYPERFRAMES, "render", str(work / "composition"), "-o", str(out), "--fps", str(meta["fps"]),
+           "--quality", "high", "--start", f"{f0 / meta['fps']:.4f}",
+           "--end", f"{min(meta['duration'], (f1 + 2) / meta['fps']):.4f}", "--keyframe-interval", "1", "--quiet"]
+    # 2026-11-27: one span's second browser did not get the page ready in time ("window.__hf not ready after 45000ms",
+    # two 3D-heavy browsers starting at once) and HyperFrames gave up the span; the whole video then fell back to one
+    # machine for hours. A span now tries again on this machine, the second time with one browser.
+    for attempt in range(3):
+        try:
+            subprocess.run(cmd + (["--workers", "1"] if attempt else []), check=True, env=env)
+            break
+        except subprocess.CalledProcessError:
+            if attempt == 2:
+                raise
+            print(json.dumps({"status": "span_retry", "part": part, "attempt": attempt + 2}), flush=True)
     put(job, out.name, out.read_bytes(), "video/mp4")
     put(job, f"part-{part}.ok", b"1", "text/plain")             # this span is done: a rerun keeps it
     return out
