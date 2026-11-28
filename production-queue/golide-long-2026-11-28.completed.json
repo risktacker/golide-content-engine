@@ -278,7 +278,7 @@
     "score": 55.8,
     "style": "stickman_goli"
   },
-  "video_style": "stickman_goli",
+  "video_style": "goli",
   "platform_demand": {
     "query": "Anthropic funding revenue cloud partnerships IPO prospectus 2026",
     "score": 55.8,
@@ -291,5 +291,33 @@
     "measured_at": "2026-11-28T07:10:45.011407+00:00",
     "signal_type": "youtube-breakout-v1"
   },
-  "selected_topic_source": "https://ipo.anthropic.com/documents/us/prospectus.pdf"
+  "selected_topic_source": "https://ipo.anthropic.com/documents/us/prospectus.pdf",
+  "modelled_on": {
+    "modelled": true,
+    "url": "https://www.youtube.com/watch?v=H5GYXhpE5yI",
+    "title": "The Rise of Anthropic Explained Like You're 5",
+    "channel": "Crayon Capital",
+    "views": 1303306,
+    "views_per_hour": 1274.2,
+    "hours_old": 1022.8,
+    "style": "stickman_goli"
+  },
+  "voice_choice": "ai",
+  "platforms": [
+    "youtube",
+    "instagram",
+    "linkedin"
+  ],
+  "looks": {
+    "free": [
+      "puppets",
+      "white",
+      "layers",
+      "circuit",
+      "glass",
+      "xray",
+      "blueprint"
+    ],
+    "paid": {}
+  }
 }

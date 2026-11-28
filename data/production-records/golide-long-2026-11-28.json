@@ -1,0 +1,545 @@
+{
+  "production_id": "golide-long-2026-11-28",
+  "youtube_video_id": "uRv1LNTvijU",
+  "retention_hours": 48,
+  "upload": {
+    "youtube_video_id": "uRv1LNTvijU",
+    "upload_status": "scheduled",
+    "privacy_status": "private",
+    "scheduled_at": null,
+    "uploaded_at": "2026-11-28T09:54:33.506582+00:00"
+  },
+  "production": {
+    "format": "long",
+    "title": "The Rise of Anthropic Explained Simply",
+    "status": "scheduled",
+    "scheduled_at": "2026-11-28T17:30:00Z",
+    "parameters_json": "{\"annotation_density\": 3, \"avatar_frequency\": 2, \"brand_preset\": \"golide-editorial\", \"editorial_manifest\": \"beat-motion-audio-v1\", \"image_change_bias\": 4, \"motion_intensity\": 4, \"pacing\": \"fast\", \"platform_demand_gate\": \"youtube-wide-proxy-v1\", \"schedule_rule\": \"golide-long-tue-thu-sat\", \"sound_design\": 3, \"visual_density\": 4, \"voice\": \"owner-choice\"}"
+  },
+  "narration": "This is Anthropic.\nSoon it will go public at a $2 trillion valuation.\nThe biggest IPO ever on Earth.\nBigger than SpaceX and Saudi Aramco.\nBut how did it actually get this big?\nWasn't this just the company that made Claude?\nHow did it become the company leading the AI revolution?\nWell, it all started with a kid named Dario.\nDario Amodei grows up with 2 parents who take their work seriously.\nIn their house, having a moral compass matters more than anything else.\nHe's also very good at science, like annoyingly good.\nThen his father dies from hepatitis C.\nAnd suddenly, the universe feels much less important.\nWhy couldn't science save him?\nA few years after his father's death,\na new treatment pushes the disease cure rate from 50% to 95%.\nA few years earlier, and his father would still be alive.\nThat thought never leaves him.\nSo, he begins looking for something that can search faster than any human.\nIntroducing artificial intelligence.\nAfter working at Baidu and Google,\nDario joins OpenAI in 2016 and eventually leads its AI safety team.\nThe goal?\nBuild a machine that understands language, not one built from rules, one that learns.\nSo, they build something they call GPT, generative pre-trained transformer.\nFeed it a mountain of books and articles and\nmake it guess the next word over and over, billions of times.\nBut, as OpenAI feeds it more data and gives it more computing power,\nsomething strange happens.\nShow people 2 AI answers.\nAsk which one is better.\nRepeat this thousands of times until it stops behaving like an idiot.\nThis is called reinforcement learning from human feedback or RLHF.\nIt works, but it treats the symptom, not the disease underneath.\nThen, OpenAI builds GPT-3.\nIt is roughly 100 times larger than GPT-2.\nIt can write articles, answer questions, translate languages,\nand perform tasks nobody specifically taught it to do.\nSo, after 4 years, Dario walks out.\nHis sister, Daniela, OpenAI's VP of safety and policy,\nand several senior researchers walk out with him.\nSo, they make an impossible bet.\nProve the safest AI can also become the most powerful.\nIn 2021, Anthropic raises $124 million.\nSo, they begin building their AI, Claude, around a new idea.\nConstitutional AI.\nInstead of paying an army of humans to correct every bad answer forever,\nyou give the model a written list of principles, a constitution,\nand train it to check its own homework against that list.\nEarly Claude is safe, mostly because it refuses to do anything remotely suspicious.\nThen November 2022 arrives.\nCryptocurrency exchange FTX has collapsed.\nBillions of dollars in customer funds may be missing.\nOpenAI releases ChatGPT.\nIt reaches 1 million users in 5 days,\nand becomes one of the fastest growing consumer products in history.\nAnthropic releases Claude a few months later.\nClaude is careful, helpful, easier to control.\nYet, the public responds, \"Meh, just another ChatGPT.\"\nClaude cannot win by becoming a second, slightly more polite ChatGPT.\nIt needs to do something ChatGPT flatly cannot do.\nFirst, memory.\nMost chatbots can only hold a limited amount of information at once.\nGive them too much, and they begin forgetting the beginning before reaching the end.\nSo, Anthropic expands Claude's memory from around 9,000 tokens to 100,000.\nIn human language, that means Claude can process roughly 75,000 words at once,\nabout the length of an entire book, 3 times bigger than ChatGPT.\nThen the giants arrive.\nAmazon announces an investment of up to $4 billion.\nGoogle commits billions more and gives Anthropic access to its custom AI chips.\nIntroducing Claude 3.\nThey do not release one model, they release us 3.\nHaiku, fast and cheap.\nSonnet, smarter but still affordable.\nOpus, the giant expensive brain you call when Sonnet starts sweating.\nAnd Opus beats GPT-4 and Google's Gemini Ultra on\nmany of the major tests published at launch.\nThen one engineer realizes something.\nWhat if Claude stopped being a chatbot that helps people to work,\nyet do the work itself?\nSeptember 2024.\nBoris Chen joins Anthropic.\nIn February 2025, Anthropic releases the tool as a research preview.\nIt is called Claude Code.\nDevelopers stop asking for little pieces of code.\nThey begin assigning complete jobs.\nClaude is no longer just answering workers.\nIt is beginning to act like one.\nIn 2025, Anthropic receives a Pentagon contract worth up to 200 million dollars.\nAnthropic allows most of it, but it keeps 2 restrictions.\nNo mass surveillance of Americans and no weapons that\ncan choose and kill targets entirely by themselves.\nThe Pentagon cancels Anthropic's agreement.\nAnthropic's prospectus, dated November 10, 2026,\nsays Claude revenue grew from 0 at its commercial launch in the first\nquarter of 2023 to $17.0 billion for the 3 months ended September 30, 2026.\nThen a number begins spreading around Wall Street.\n$2 trillion.\nInvestors immediately divide into 2 groups.\n$2 trillion?\nAnthropic may need to spend hundreds of billions on chips just to keep up.\nYou're pricing Anthropic as if Claude has already won.\nNo.\nI am pricing what happens if it does.\nAnthropic has shown that a company built around AI\nsafety can reach the front of the race.\nGoing public does not complete that bet.\nIt makes the bet much harder.\nEvery delay angers investors, and every refusal appears in the stock price.\nWhether Anthropic's principles can survive Wall Street remains to be seen.\nFollow the channel.\nAs a wise man once said,\n\"A principle isn't a principle until it costs you money.\"\n",
+  "research": {
+    "summary": "Anthropic’s rise is best explained as a reinforcing business system, not just a chatbot launch. The company combines frontier-model research with enterprise software, cloud distribution and large infrastructure commitments. Better models attract more business usage; usage produces revenue and operational feedback; revenue and financing fund more chips, data, engineering and safety evaluation. The evidence supports explaining this flywheel, but it does not prove Anthropic will remain the market leader.",
+    "claims": [
+      {
+        "claim": "Anthropic’s prospectus, dated November 10, 2026, says the company was founded in 2021 and that Claude revenue grew from zero at its commercial launch in the first quarter of 2023 to $17.0 billion for the three months ended September 30, 2026.",
+        "source_title": "Anthropic Prospectus",
+        "source_url": "https://ipo.anthropic.com/documents/us/prospectus.pdf",
+        "published_or_updated": "November 10, 2026"
+      },
+      {
+        "claim": "Anthropic says its revenue comes from customers using Claude through its platform and applications, with pay-for-intelligence, subscription and combined pricing. A growing number of enterprise customers sign annual or multi-year contracts with minimum-spend commitments.",
+        "source_title": "Anthropic Prospectus — Revenue Model",
+        "source_url": "https://ipo.anthropic.com/documents/us/prospectus.pdf",
+        "published_or_updated": "November 10, 2026"
+      },
+      {
+        "claim": "As of September 30, 2026, Anthropic reported more than 11,900 customers generating at least $100,000 in trailing-twelve-month revenue, up from more than 950 one year earlier. Those customers generated 74% of trailing-twelve-month revenue, according to the prospectus.",
+        "source_title": "Anthropic Prospectus — Customer Growth",
+        "source_url": "https://ipo.anthropic.com/documents/us/prospectus.pdf",
+        "published_or_updated": "November 10, 2026"
+      },
+      {
+        "claim": "Claude is available through Amazon Web Services, Google Cloud Platform and Microsoft Azure. Anthropic says these partnerships let enterprises deploy Claude inside infrastructure, security boundaries and purchasing arrangements they already use, while the cloud providers’ sales teams extend Anthropic’s distribution.",
+        "source_title": "Anthropic Prospectus — Cloud Partnerships",
+        "source_url": "https://ipo.anthropic.com/documents/us/prospectus.pdf",
+        "published_or_updated": "November 10, 2026"
+      },
+      {
+        "claim": "Anthropic announced a $65 billion Series H funding round at a $965 billion post-money valuation on May 28, 2026. The company said the money would support safety and interpretability research, additional compute and expanded products and partnerships.",
+        "source_title": "Anthropic Raises $65B Series H at $965B Valuation",
+        "source_url": "https://www.anthropic.com/news/series-h",
+        "published_or_updated": "May 28, 2026"
+      },
+      {
+        "claim": "The prospectus shows why frontier AI requires substantial capital: compute and infrastructure expenses reached $9.9 billion in the three months ended September 30, 2026, equal to 58% of revenue. Anthropic also reported $5.0 billion of compute under short-term commitments and a $567 million operating loss for that quarter.",
+        "source_title": "Anthropic Prospectus — Compute Costs and Operating Results",
+        "source_url": "https://ipo.anthropic.com/documents/us/prospectus.pdf",
+        "published_or_updated": "November 10, 2026"
+      },
+      {
+        "claim": "Anthropic and Amazon announced an agreement for up to five gigawatts of additional capacity for training and deploying Claude. Anthropic said it would commit more than $100 billion to AWS technologies over ten years, while Amazon announced a $5 billion investment with up to $20 billion more possible in the future.",
+        "source_title": "Anthropic and Amazon Expand Compute Collaboration",
+        "source_url": "https://www.anthropic.com/news/anthropic-amazon-compute",
+        "published_or_updated": "April 20, 2026"
+      },
+      {
+        "claim": "Anthropic said in 2026 that it trains and runs Claude across AWS Trainium, Google TPUs and NVIDIA GPUs. It described this hardware diversity as a way to match workloads to suitable chips and improve performance and resilience, while its Google-Broadcom agreement adds multiple gigawatts of next-generation TPU capacity expected to come online starting in 2027.",
+        "source_title": "Anthropic Expands Google and Broadcom Compute Deal",
+        "source_url": "https://www.anthropic.com/news/google-broadcom-partnership-compute",
+        "published_or_updated": "2026"
+      },
+      {
+        "claim": "Research on language-model scaling finds that model performance depends systematically on model size, training-data size and training compute. Follow-up work found that, under a fixed compute budget, model size and the number of training tokens should be scaled together, illustrating why frontier progress requires balancing chips, data and model capacity rather than buying only larger models.",
+        "source_title": "Scaling Laws for Neural Language Models; Training Compute-Optimal Large Language Models",
+        "source_url": "https://arxiv.org/abs/2001.08361",
+        "published_or_updated": "January 23, 2020; March 29, 2022"
+      },
+      {
+        "claim": "Anthropic’s model-development process includes capability, safety and alignment evaluations. Its published evaluation guidance emphasizes testing different risk categories, reporting uncertainty and running evaluations continuously during development rather than treating them as a one-time check before release.",
+        "source_title": "Building Strong Safety Evaluations",
+        "source_url": "https://www.anthropic.com/research/building-strong-safety-evaluations",
+        "published_or_updated": "November 2026"
+      }
+    ],
+    "core_fact": {
+      "fact": "Anthropic’s official prospectus, dated November 10, 2026, says Anthropic was founded in 2021 and that Claude revenue reached $17.0 billion for the three months ended September 30, 2026.",
+      "source_url": "https://ipo.anthropic.com/documents/us/prospectus.pdf",
+      "published_or_updated": "November 10, 2026",
+      "verified": true
+    }
+  },
+  "metadata": {
+    "title": "The Rise of Anthropic Explained Like You're 5",
+    "description": "This is the story of Anthropic, Claude, and Dario Amodei—and how a safety-first AI startup became one of the biggest companies in the AI race.\n\nFree guide to this video (steps and every source): https://studio.golidee.com/guides/golide-long-2026-11-28.pdf\n\nFrom leaving OpenAI and building Claude to raising billions from Amazon and Google, Anthropic made an impossible bet: that the safest AI could also become the most powerful. This video explains how that bet turned into a fight with ChatGPT, a booming Claude business, Claude Code, and a massive IPO.\n\nBut can Anthropic’s AI safety principles survive Wall Street?\n\nChapters\n0:00 Intro\n0:39 From Physics\n1:47 The Safety Bet\n3:13 Finding An Opening\n4:22 The Public Bet\n5:47 Close\n\n#Anthropic #ClaudeAI #DarioAmodei #AI #ArtificialIntelligence #ClaudeCode #ChatGPT #AIRace\n\nMusic: Uplifting by Nastelbom",
+    "tags": [
+      "Claude",
+      "claude vs chatgpt",
+      "openai",
+      "ai race",
+      "AI bubble",
+      "Anthropic",
+      "Anthropic Explained",
+      "Dario Amodei",
+      "Anthropic IPO",
+      "Claude Code",
+      "Claude AI",
+      "AI explained",
+      "AI company",
+      "AI safety",
+      "Anthropic history",
+      "Amazon Anthropic",
+      "Google Anthropic",
+      "ChatGPT vs Claude",
+      "AI startup",
+      "future of AI",
+      "artificial intelligence",
+      "AI investing",
+      "AI business",
+      "tech explained",
+      "Claude coding",
+      "AI news",
+      "tech news",
+      "automation",
+      "technology",
+      "AI tools",
+      "AI trends",
+      "AI update"
+    ],
+    "category_id": 28,
+    "video_language": "en",
+    "recording_location": null,
+    "location_is_material": false,
+    "altered_content": false,
+    "chapters": [
+      "0:00 Intro",
+      "0:39 From Physics",
+      "1:47 The Safety Bet",
+      "3:13 Finding An Opening",
+      "4:22 The Public Bet",
+      "5:47 Close"
+    ],
+    "keywords": [
+      "Anthropic",
+      "Claude AI",
+      "Claude vs ChatGPT",
+      "Anthropic explained",
+      "Dario Amodei",
+      "Anthropic IPO",
+      "AI race",
+      "AI safety",
+      "Claude Code",
+      "Anthropic history",
+      "artificial intelligence",
+      "AI startup",
+      "AI company",
+      "future of AI",
+      "AI investing"
+    ],
+    "hashtags": [
+      "#Anthropic",
+      "#ClaudeAI",
+      "#DarioAmodei",
+      "#AI",
+      "#ArtificialIntelligence",
+      "#ClaudeCode",
+      "#ChatGPT",
+      "#AIRace"
+    ],
+    "format": "long",
+    "title_description_language": "en",
+    "seo_body": "This is the story of Anthropic, Claude, and Dario Amodei—and how a safety-first AI startup became one of the biggest companies in the AI race.\n\nFrom leaving OpenAI and building Claude to raising billions from Amazon and Google, Anthropic made an impossible bet: that the safest AI could also become the most powerful. This video explains how that bet turned into a fight with ChatGPT, a booming Claude business, Claude Code, and a massive IPO.\n\nBut can Anthropic’s AI safety principles survive Wall Street?",
+    "title_checked": true
+  },
+  "source_ledger": {
+    "claims": [
+      {
+        "claim": "Anthropic’s prospectus, dated November 10, 2026, says the company was founded in 2021 and that Claude revenue grew from zero at its commercial launch in the first quarter of 2023 to $17.0 billion for the three months ended September 30, 2026.",
+        "source_title": "Anthropic Prospectus",
+        "source_url": "https://ipo.anthropic.com/documents/us/prospectus.pdf",
+        "published_or_updated": "November 10, 2026"
+      },
+      {
+        "claim": "Anthropic says its revenue comes from customers using Claude through its platform and applications, with pay-for-intelligence, subscription and combined pricing. A growing number of enterprise customers sign annual or multi-year contracts with minimum-spend commitments.",
+        "source_title": "Anthropic Prospectus — Revenue Model",
+        "source_url": "https://ipo.anthropic.com/documents/us/prospectus.pdf",
+        "published_or_updated": "November 10, 2026"
+      },
+      {
+        "claim": "As of September 30, 2026, Anthropic reported more than 11,900 customers generating at least $100,000 in trailing-twelve-month revenue, up from more than 950 one year earlier. Those customers generated 74% of trailing-twelve-month revenue, according to the prospectus.",
+        "source_title": "Anthropic Prospectus — Customer Growth",
+        "source_url": "https://ipo.anthropic.com/documents/us/prospectus.pdf",
+        "published_or_updated": "November 10, 2026"
+      },
+      {
+        "claim": "Claude is available through Amazon Web Services, Google Cloud Platform and Microsoft Azure. Anthropic says these partnerships let enterprises deploy Claude inside infrastructure, security boundaries and purchasing arrangements they already use, while the cloud providers’ sales teams extend Anthropic’s distribution.",
+        "source_title": "Anthropic Prospectus — Cloud Partnerships",
+        "source_url": "https://ipo.anthropic.com/documents/us/prospectus.pdf",
+        "published_or_updated": "November 10, 2026"
+      },
+      {
+        "claim": "Anthropic announced a $65 billion Series H funding round at a $965 billion post-money valuation on May 28, 2026. The company said the money would support safety and interpretability research, additional compute and expanded products and partnerships.",
+        "source_title": "Anthropic Raises $65B Series H at $965B Valuation",
+        "source_url": "https://www.anthropic.com/news/series-h",
+        "published_or_updated": "May 28, 2026"
+      },
+      {
+        "claim": "The prospectus shows why frontier AI requires substantial capital: compute and infrastructure expenses reached $9.9 billion in the three months ended September 30, 2026, equal to 58% of revenue. Anthropic also reported $5.0 billion of compute under short-term commitments and a $567 million operating loss for that quarter.",
+        "source_title": "Anthropic Prospectus — Compute Costs and Operating Results",
+        "source_url": "https://ipo.anthropic.com/documents/us/prospectus.pdf",
+        "published_or_updated": "November 10, 2026"
+      },
+      {
+        "claim": "Anthropic and Amazon announced an agreement for up to five gigawatts of additional capacity for training and deploying Claude. Anthropic said it would commit more than $100 billion to AWS technologies over ten years, while Amazon announced a $5 billion investment with up to $20 billion more possible in the future.",
+        "source_title": "Anthropic and Amazon Expand Compute Collaboration",
+        "source_url": "https://www.anthropic.com/news/anthropic-amazon-compute",
+        "published_or_updated": "April 20, 2026"
+      },
+      {
+        "claim": "Anthropic said in 2026 that it trains and runs Claude across AWS Trainium, Google TPUs and NVIDIA GPUs. It described this hardware diversity as a way to match workloads to suitable chips and improve performance and resilience, while its Google-Broadcom agreement adds multiple gigawatts of next-generation TPU capacity expected to come online starting in 2027.",
+        "source_title": "Anthropic Expands Google and Broadcom Compute Deal",
+        "source_url": "https://www.anthropic.com/news/google-broadcom-partnership-compute",
+        "published_or_updated": "2026"
+      },
+      {
+        "claim": "Research on language-model scaling finds that model performance depends systematically on model size, training-data size and training compute. Follow-up work found that, under a fixed compute budget, model size and the number of training tokens should be scaled together, illustrating why frontier progress requires balancing chips, data and model capacity rather than buying only larger models.",
+        "source_title": "Scaling Laws for Neural Language Models; Training Compute-Optimal Large Language Models",
+        "source_url": "https://arxiv.org/abs/2001.08361",
+        "published_or_updated": "January 23, 2020; March 29, 2022"
+      },
+      {
+        "claim": "Anthropic’s model-development process includes capability, safety and alignment evaluations. Its published evaluation guidance emphasizes testing different risk categories, reporting uncertainty and running evaluations continuously during development rather than treating them as a one-time check before release.",
+        "source_title": "Building Strong Safety Evaluations",
+        "source_url": "https://www.anthropic.com/research/building-strong-safety-evaluations",
+        "published_or_updated": "November 2026"
+      }
+    ],
+    "platform_demand": {
+      "query": "Anthropic funding revenue cloud partnerships IPO prospectus 2026",
+      "score": 55.8,
+      "verdict": "pass",
+      "recent_videos": 1,
+      "median_views_per_day": 30580.800000000003,
+      "top_views_per_day": 30580.800000000003,
+      "market_coverage": 1,
+      "title_query_overlap": 1.0,
+      "measured_at": "2026-11-28T07:10:45.011407+00:00",
+      "signal_type": "youtube-breakout-v1"
+    },
+    "music": {
+      "type": "music",
+      "title": "GOLIDE Curiosity Bed",
+      "creator": "GOLIDE",
+      "source_url": "https://github.com/risktacker/golide-content-engine/blob/main/src/golide_engine/music/registry.py",
+      "license": "GOLIDE-Owned-Procedural-1.0",
+      "attribution": ""
+    }
+  },
+  "qa_report": {
+    "passed": true,
+    "failures": [],
+    "audio": {
+      "integrated_lufs": -15.81,
+      "true_peak_dbtp": -1.62,
+      "loudness_range": 2.3
+    },
+    "editorial": {
+      "beats": 157,
+      "renderer": "vector"
+    },
+    "checked_at": "2026-11-28T09:54:22.535843+00:00",
+    "warnings": []
+  },
+  "generation_parameters": {
+    "brand_preset": "golide-editorial",
+    "voice": "owner-choice",
+    "pacing": "fast",
+    "visual_density": 4,
+    "motion_intensity": 4,
+    "annotation_density": 3,
+    "avatar_frequency": 2,
+    "sound_design": 3,
+    "image_change_bias": 4,
+    "editorial_manifest": "beat-motion-audio-v1",
+    "platform_demand_gate": "youtube-wide-proxy-v1",
+    "schedule_rule": "golide-long-tue-thu-sat",
+    "thumbnail_style": "desk_wall",
+    "intro": "close_pull",
+    "outro": "wave_walk",
+    "look3d": "glass",
+    "kit": "violet"
+  },
+  "package_manifest": {
+    "version": 1,
+    "production_id": "golide-long-2026-11-28",
+    "created_at": "2026-11-28T09:54:24.147329+00:00",
+    "release": {
+      "approved": true,
+      "channel_id": "UCqaXVBSBz7iQsRHOupKt-3w",
+      "scheduled_at": "2026-11-28T17:30:00Z",
+      "qa": {
+        "passed": true
+      }
+    },
+    "files": {
+      "video": {
+        "file": "video.mp4",
+        "sha256": "01834573b0e4ba8e1a3a1e5913a41f62367839f4f07929315791a629d55a5900",
+        "bytes": 98874878
+      },
+      "thumbnail": {
+        "file": "thumbnail.png",
+        "sha256": "a420434707fb9041bbbbe88a16c94a518232a009f36cf43c51390c53e4a950e6",
+        "bytes": 694830
+      },
+      "metadata": {
+        "file": "upload-metadata.json",
+        "sha256": "47aca15ceda8262acaedfec670af242ef2505486ab69cf1ac79c24b7978238ec",
+        "bytes": 3034
+      },
+      "spoken_captions": {
+        "file": "spoken-captions-authoritative-v3.srt",
+        "sha256": "4c4a0799df4d424e63b119589210dbbe94ee1017c78ad431c38e040ed14c3921",
+        "bytes": 13387
+      },
+      "visual_captions": {
+        "file": "visual-labels.srt",
+        "sha256": "ecb6b72cb8bd8f2346a47099ec43b0fea1aac95ee004baeac12b515b9db6aefa",
+        "bytes": 3712
+      },
+      "source_ledger": {
+        "file": "source-ledger.json",
+        "sha256": "c47d9872a725ac339588c2013aae2855a39303feb655f1422996e414f46c450a",
+        "bytes": 6119
+      },
+      "generation_parameters": {
+        "file": "generation-parameters.json",
+        "sha256": "76ca99ff4e6e53574fc9ce60ccec9910191cb0b0e2466f672d45089659134c14",
+        "bytes": 503
+      },
+      "qa_report": {
+        "file": "qa-report.json",
+        "sha256": "adc4b4a1b47f90c877daa345d350e85343d5675c824de6f922eac8b6d6c49753",
+        "bytes": 278
+      }
+    },
+    "cost_summary": "cost-summary.json"
+  },
+  "cost_events": [
+    {
+      "stage": "trend-titles",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 201.0,
+      "cached_input_units": 0.0,
+      "output_units": 196.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000275,
+      "created_at": "2026-11-28T07:10:38.601570+00:00"
+    },
+    {
+      "stage": "trend-candidates",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 27107.0,
+      "cached_input_units": 0.0,
+      "output_units": 3490.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.009609,
+      "created_at": "2026-11-28T07:10:39.665363+00:00"
+    },
+    {
+      "stage": "trend-candidates-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-28T07:10:39.666560+00:00"
+    },
+    {
+      "stage": "research",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 44376.0,
+      "cached_input_units": 0.0,
+      "output_units": 2363.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.011711,
+      "created_at": "2026-11-28T07:11:19.062250+00:00"
+    },
+    {
+      "stage": "research-search",
+      "provider": "openai",
+      "model": "web-search",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.01,
+      "created_at": "2026-11-28T07:11:19.063600+00:00"
+    },
+    {
+      "stage": "script-story",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 4828.0,
+      "cached_input_units": 0.0,
+      "output_units": 16866.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.021205,
+      "created_at": "2026-11-28T07:13:51.236937+00:00"
+    },
+    {
+      "stage": "script-voice-direction",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1753.0,
+      "cached_input_units": 0.0,
+      "output_units": 1510.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.002163,
+      "created_at": "2026-11-28T07:14:02.254920+00:00"
+    },
+    {
+      "stage": "script-board",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1778.0,
+      "cached_input_units": 0.0,
+      "output_units": 3647.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004732,
+      "created_at": "2026-11-28T07:14:33.361779+00:00"
+    },
+    {
+      "stage": "script",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 4828.0,
+      "cached_input_units": 0.0,
+      "output_units": 16866.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.021205,
+      "created_at": "2026-11-28T07:14:33.364356+00:00"
+    },
+    {
+      "stage": "owner-voice",
+      "provider": "elevenlabs",
+      "model": "eleven_v4",
+      "input_units": 0.0,
+      "cached_input_units": 0.0,
+      "output_units": 0.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 5659,
+      "cost_usd": 1.1318,
+      "created_at": "2026-11-28T07:36:09.632697+00:00"
+    },
+    {
+      "stage": "demo-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2352.0,
+      "cached_input_units": 0.0,
+      "output_units": 550.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.00113,
+      "created_at": "2026-11-28T07:37:23.670502+00:00"
+    },
+    {
+      "stage": "edit-plan",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 18285.0,
+      "cached_input_units": 0.0,
+      "output_units": 29445.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.038991,
+      "created_at": "2026-11-28T07:42:36.137015+00:00"
+    },
+    {
+      "stage": "guide",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 2216.0,
+      "cached_input_units": 0.0,
+      "output_units": 1170.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.001847,
+      "created_at": "2026-11-28T09:53:32.087029+00:00"
+    },
+    {
+      "stage": "metadata",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 15104.0,
+      "cached_input_units": 0.0,
+      "output_units": 940.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.004149,
+      "created_at": "2026-11-28T09:53:32.832173+00:00"
+    },
+    {
+      "stage": "title-check",
+      "provider": "openai",
+      "model": "gpt-5.6-luna",
+      "input_units": 1461.0,
+      "cached_input_units": 0.0,
+      "output_units": 131.0,
+      "images": 0,
+      "audio_minutes": 0.0,
+      "characters": 0,
+      "cost_usd": 0.000449,
+      "created_at": "2026-11-28T09:53:36.738105+00:00"
+    }
+  ],
+  "recorded_at": "2026-11-28T09:54:33.510370+00:00"
+}
